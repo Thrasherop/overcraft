@@ -1,0 +1,10 @@
+.gradle/
+build/
+out/
+run/
+.idea/
+*.iml
+.vscode/
+bin/
+shots/
+.claude/settings.local.json

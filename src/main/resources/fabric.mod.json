@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "overcraft",
+	"version": "${version}",
+	"name": "Overcraft",
+	"description": "Overwatch heroes in Minecraft: pick a hero when you join a world; hotbar slot 1 holds the hero's weapons and abilities.",
+	"authors": ["ultraprim"],
+	"license": "All-Rights-Reserved",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["dev.overcraft.Overcraft"],
+		"client": ["dev.overcraft.client.OvercraftClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
