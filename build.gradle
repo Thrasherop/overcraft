@@ -15,7 +15,38 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+
+	runs {
+		client {
+			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py
+			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+		}
+	}
 }
+
+// Overwatch assets are never shipped (CLAUDE.md): the build fails if the jar has a model, mesh or audio file in it,
+// or anything big enough to be one. Placeholders are small PNGs and JSON.
+def forbiddenAssets = ['glb', 'gltf', 'bin', 'fbx', 'blend', 'obj', 'smd', 'dmx', 'mdl', 'vtx', 'vvd', 'phy', 'vtf', 'vmt',
+	'dds', 'tga', 'wem', 'bnk', 'wav', 'ogg', 'mp3', 'owmdl', 'owmat', 'owanim', 'owentity', 'xps', 'pmx']
+tasks.register('checkNoOverwatchAssets') {
+	def jarFile = tasks.named('jar').flatMap { it.archiveFile }
+	inputs.file(jarFile)
+	doLast {
+		def bad = []
+		new java.util.zip.ZipFile(jarFile.get().asFile).withCloseable { zip ->
+			zip.entries().each { e ->
+				def ext = e.name.tokenize('.').last().toLowerCase()
+				if (!e.directory && (ext in forbiddenAssets || e.size > 512 * 1024)) {
+					bad << "${e.name} (${e.size} bytes)"
+				}
+			}
+		}
+		if (bad) {
+			throw new GradleException("The jar must not contain Overwatch assets or other large media:\n  " + bad.join("\n  "))
+		}
+	}
+}
+tasks.named('build') { dependsOn 'checkNoOverwatchAssets' }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

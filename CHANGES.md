@@ -24,6 +24,11 @@ approval in a live message), so **none of this has been played by hand yet**.
   +30% speed, +50% attack/reload, 2x cooldowns, 1 s linger). Global regen after 6 s.
 - Ult charge: 5/s, 1 per damage/healing, and advancements (owner): task 10%, goal 25%, challenge 50% of the cost.
 - Placeholder art (tools/gen_textures.py) and vanilla sounds until hero assets come from the owner's install.
+- Local Overwatch asset pack (#6): the mod mounts `<game dir>/overcraft/overcraft-assets.zip` (dev: `local-assets/pack/`)
+  as an always-on resource pack; `tools/build_asset_pack.py` converts a model with Blender into it (checked with a
+  test cube); `gradlew build` fails if the jar contains a model/mesh/audio file (checked: a .glb in resources failed
+  the build). Nothing renders the hero model yet: that comes with the first real model. DataTool v2.25.0.0 can't read
+  the installed build 154504 yet (supports up to 154088): waiting on upstream.
 - Issues #1-#5 filed (Juno, Sojourn, communication wheel, emotes, voice lines).
 
 Project started. Fabric for Minecraft 26.3 (Loader 0.20.1, Fabric API 0.165.0+26.3, Loom 1.19); 26.x ships

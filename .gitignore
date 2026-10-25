@@ -8,3 +8,10 @@ run/
 bin/
 shots/
 .claude/settings.local.json
+# Overwatch assets: local only, never committed (CLAUDE.md). Raw downloads/extractions and the built pack.
+local-assets/
+overcraft-assets.zip
+*.glb
+*.fbx
+*.blend
+*.blend1
