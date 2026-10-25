@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroWeaponItem;
 import dev.overcraft.kiriko.KitsuneRush;
+import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
@@ -42,6 +43,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroInputPayload.TYPE, HeroInputPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			Hero hero = Hero.byId(payload.heroId());

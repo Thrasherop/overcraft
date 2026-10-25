@@ -112,6 +112,7 @@ public final class Kiriko implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
 			KitsuneRush.start(player);
+			Combat.animate(player, "ult_cast");
 			s.ultCharge = 0;
 			s.ultActive = Ow.ticks(RUSH_DURATION);
 		}
@@ -139,6 +140,7 @@ public final class Kiriko implements HeroKit {
 		KunaiEntity kunai = new KunaiEntity(player, level);
 		kunai.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(KUNAI_SPEED));
 		level.addFreshEntity(kunai);
+		Combat.animate(player, "throw_kunai");
 		sound(player, SoundEvents.TRIDENT_THROW.value(), 0.5f, 1.7f);
 	}
 
@@ -155,6 +157,7 @@ public final class Kiriko implements HeroKit {
 			ofuda.launch(eye.add(side.scale(offset)).add(0, -0.1, 0), look, Ow.speed(OFUDA_SPEED));
 			level.addFreshEntity(ofuda);
 		}
+		Combat.animate(player, "throw_ofuda");
 		sound(player, SoundEvents.BOOK_PAGE_TURN, 0.5f, 1.6f);
 	}
 
@@ -163,6 +166,7 @@ public final class Kiriko implements HeroKit {
 		SuzuEntity suzu = new SuzuEntity(player, level);
 		suzu.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(SUZU_SPEED));
 		level.addFreshEntity(suzu);
+		Combat.animate(player, "throw_suzu");
 		sound(player, SoundEvents.SNOWBALL_THROW, 0.7f, 1.3f);
 	}
 
@@ -176,6 +180,7 @@ public final class Kiriko implements HeroKit {
 		}
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
 		s.castTarget = target.getUUID();
+		Combat.animate(player, "swift_step");
 		sound(player, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0f, 1.5f);
 	}
 

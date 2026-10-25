@@ -191,6 +191,12 @@ public final class OwMovement {
 		return false;
 	}
 
+	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */
+	public static boolean isClimbing(LivingEntity entity) {
+		Climb climb = CLIMBS.get(entity);
+		return climb != null && climb.climbing;
+	}
+
 	/** Set by the client: the jump key is held. */
 	public static Predicate<LivingEntity> jumpHeld = entity -> false;
 

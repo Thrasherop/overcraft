@@ -2,10 +2,14 @@ package dev.overcraft.hero;
 
 import dev.overcraft.Overcraft;
 import dev.overcraft.Ow;
+import dev.overcraft.net.HeroActionPayload;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -172,6 +176,15 @@ public final class Combat {
 			instance.removeModifier(id);
 		} else if (!instance.hasModifier(id)) {
 			instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+		}
+	}
+
+	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
+	public static void animate(ServerPlayer hero, String clip) {
+		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
+		ServerPlayNetworking.send(hero, payload);
+		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
+			ServerPlayNetworking.send(watcher, payload);
 		}
 	}
 

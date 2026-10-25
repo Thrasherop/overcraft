@@ -5,7 +5,10 @@
 	"client": [
 		"KeyboardInputMixin",
 		"MinecraftMixin",
-		"MinecraftPacksMixin"
+		"MinecraftPacksMixin",
+		"AvatarRendererMixin",
+		"LivingEntityRendererMixin",
+		"CreateWorldScreenAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

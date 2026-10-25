@@ -3,6 +3,7 @@ skin weights, textures, animations).
 
     blender --background --factory-startup --python tools/blender_to_glb.py -- <input> <output.glb>
     blender --background --factory-startup --python tools/blender_to_glb.py -- --test <output.glb>
+    ... -- <input> <output.glb> [<preview.png>] [--stopgap-anims]   (placeholder clips: tools/stopgap_anims.py)
 """
 import sys
 from pathlib import Path
@@ -12,6 +13,8 @@ import bpy
 
 def main():
     args = sys.argv[sys.argv.index("--") + 1:]
+    stopgap = "--stopgap-anims" in args
+    args = [a for a in args if a != "--stopgap-anims"]
     src, out = args[0], Path(args[1])
     out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -45,8 +48,15 @@ def main():
             else:
                 sys.exit(f"don't know how to import {ext}")
 
+    if stopgap:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import stopgap_anims
+        rig = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+        stopgap_anims.add_clips(rig)
+
     bpy.ops.export_scene.gltf(
         filepath=str(out),
+        export_animation_mode="NLA_TRACKS" if stopgap else "ACTIONS",
         export_format="GLB",
         export_yup=True,
         export_skins=True,

@@ -3,6 +3,10 @@ package dev.overcraft.client;
 import dev.overcraft.Overcraft;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
+import dev.overcraft.client.dev.DevServer;
+import dev.overcraft.client.model.HeroAnimator;
+import dev.overcraft.client.model.HeroModels;
+import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.registry.OcEntities;
 import net.fabricmc.api.ClientModInitializer;
@@ -21,12 +25,27 @@ public class OvercraftClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientHero.init();
+		DevServer.startIfEnabled();
 
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
+		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
+			if (context.client().level != null) {
+				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
+			}
+		});
+		HeroModels.init();
 		ClientPlayConnectionEvents.JOIN.register((listener, sender, client) -> ClientHero.onJoin());
-		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> ClientHero.onDisconnect());
+		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			ClientHero.onDisconnect();
+			HeroAnimator.clear();
+		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
-		ClientTickEvents.END_CLIENT_TICK.register(ClientHero::endTick);
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			ClientHero.endTick(client);
+			if (client.level != null && client.level.getGameTime() % 200 == 0) {
+				HeroAnimator.prune(client.level.getGameTime() / 20f);
+			}
+		});
 
 		EntityRendererRegistry.register(OcEntities.KUNAI, ctx -> new ThrownItemRenderer<>(ctx, 1.0f, true));
 		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ThrownItemRenderer<>(ctx, 0.75f, true));

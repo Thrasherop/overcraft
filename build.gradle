@@ -20,6 +20,8 @@ loom {
 		client {
 			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py
 			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
+			vmArg "-Dovercraft.dev=true"
 		}
 	}
 }
