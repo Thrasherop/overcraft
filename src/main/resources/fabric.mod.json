@@ -11,6 +11,13 @@
 		"main": ["dev.overcraft.Overcraft"],
 		"client": ["dev.overcraft.client.OvercraftClient"]
 	},
+	"mixins": [
+		"overcraft.mixins.json",
+		{
+			"config": "overcraft.client.mixins.json",
+			"environment": "client"
+		}
+	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.3",
