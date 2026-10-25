@@ -60,12 +60,13 @@ Rules (CLAUDE.md): Overwatch closed whenever its files are read; never touch the
   (via the **SourceIO 5.5.4** Blender add-on, installed in %APPDATA%\Blender Foundation\Blender\5.2\scripts\addons\
   SourceIO; it needs `directory` + `files`, not just `filepath`). Optional preview render and `--stopgap-anims`.
 - **Stopgap model in place:** Josseda673's Steam Workshop SFM port (item 2878840310, downloaded anonymously with
-  Valve's SteamCMD, kept in the scratchpad), unpacked to `local-assets/raw/kiriko_josseda673/`. Converted:
+  Valve's SteamCMD: `steamcmd +login anonymous +workshop_download_item 1840 2878840310 +quit`; the download is a zip
+  named *_legacy.bin), unpacked to `local-assets/raw/kiriko_josseda673/`. Converted:
   `hero_models/kiriko.glb` (53k tris, 231 bones, ValveBiped skeleton, 16 placeholder clips from
   tools/stopgap_anims.py), `kiriko_weapons.glb` (kunai, ofuda, suzu), `kitsune.glb` (the fox). Previews in
   `local-assets/previews/` (pose_sheet.png = the placeholder poses).
-- DataTool v2.25.0.0+1151 (overtools/OWLib) in the old scratchpad (`...\scratchpad\datatool\DataTool.exe`; re-download
-  from the GitHub release if gone). Always run it with `--online=false` (else it may fetch from Blizzard's CDN).
+- Tools kept on the archive drive, `E:\Overwatch Archive	ools\`: `DataTool-2.25.0.0\DataTool.exe` (overtools/OWLib
+  v2.25.0.0+1151), `steamcmd\steamcmd.exe` (Valve, signed; already self-updated), `SourceIO-5.5.4.zip`. Always run it with `--online=false` (else it may fetch from Blizzard's CDN).
   It refuses the live install: build 154504 (Oct 20 patch) not supported; it supports up to 154088.
 - Snapshot of the live install (build 154504): `E:\Overwatch Archive\build-154504\` (77.32 GB, 117 files, Steam
   buildid 25806476; README.txt there). For when DataTool catches up.
@@ -145,5 +146,7 @@ computer use per CLAUDE.md.
 - Assets from his own install, never shipped; Overwatch never running alongside; ripped models OK as stopgaps
   (he downloads them; Steam Workshop SFM ports were the clean source; a Patreon link I gave was NSFW: vet links
   before giving them). Archive each build's install on the WD_BLACK drive (E:\Overwatch Archive\).
-- Desktop control: he'll use a normal session so computer use works. SteamCMD logged in by him once would let a
-  session download old builds itself (offered, not done).
+- Desktop control: he'll use a normal session so computer use works. SteamCMD logged in by him once
+  (`E:\Overwatch Archive	ools\steamcmd\steamcmd.exe +login <user>`, he types the password) would let a session
+  download old builds itself with `+login <user> +download_depot 2357570 <depot> <manifest>` (offered, not done).
+  Never type his password or Steam Guard code.
