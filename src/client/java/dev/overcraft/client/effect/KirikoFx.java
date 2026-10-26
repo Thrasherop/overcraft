@@ -7,6 +7,7 @@ import dev.overcraft.net.EffectPayload;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.Skeleton;
 import dev.overcraft.client.model.SkinnedModel;
+import dev.overcraft.client.HeroHud;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -75,7 +76,13 @@ public final class KirikoFx {
 			case "rush_gate" -> rushGate(at, dir, e.variant() / 10f);
 			case "rush_tiles" -> rushTiles(at, dir, e.variant() / 10f);
 			case "rush_end" -> rushEnd(at);
-			case "rush_ally" -> rushAlly(at, dir);
+			case "rush_ally" -> {
+				rushAlly(at, dir);
+				Minecraft mc = Minecraft.getInstance();
+				if (mc.player != null && e.entity() == mc.player.getId()) {
+					HeroHud.markInRush();
+				}
+			}
 			default -> {
 			}
 		}

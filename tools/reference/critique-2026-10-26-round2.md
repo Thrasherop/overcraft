@@ -44,8 +44,9 @@ button with kunai on the left, and the kit row under the name on the select scre
 - **Found:** 7's sideways leg was a broken key in the breathing clip, fixed for every pose ("Her leg no longer kicks").
 - **Not ours:** 4 (hooked talismans) and 7's high-knee strafe are in Blizzard's own clips (survey renders A3A7, A8F3).
 - **Done after:** 2 (the paper faces the viewer, thin trail), 18 (a glow pass).
-- **Open:** 17 (path slabs' glyphs, in-path streaks),
-  19 (cloth), 20 (the ofuda flick's fist), 22, 23, 24 (check a reload in a video).
+- **Open:** 17 (path slabs' glyphs; the in-path view is done for every player),
+  19 (cloth), 20 (the ofuda flick's fist), 24 (check a reload in a video).
+- **Left as they are:** 22, 23 (rank cosmetics: wings, level badge, party slot; Minecraft has none).
 
 ---
 

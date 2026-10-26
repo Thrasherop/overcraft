@@ -223,7 +223,35 @@ public final class HeroHud {
 				streak(g, w, h, angle, 1.05f - 0.45f * travel, false, alpha(0x9AFFF4, 0.75f * k));
 			}
 		}
-		if (firstPerson && s.rushed()) {
+	}
+
+	/** The local player stood in an ally Kiriko's Kitsune Rush path at this time (any player, hero or not). */
+	private static long inRushAt = -1;
+
+	/** The server's speed lines on an ally in the rush path named the local player. */
+	public static void markInRush() {
+		inRushAt = Util.getMillis();
+	}
+
+	/**
+	 * In Kitsune Rush's path, a white-cyan mist at the screen's edges and light streaks flying past (the reference, §2):
+	 * for every player in it, Kiriko's allies too, not only heroes (the second critique: the ally saw nothing). Its own
+	 * HUD element, drawn whatever HUD the player has.
+	 */
+	public static void rushView(GuiGraphicsExtractor g, DeltaTracker delta) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null || !mc.options.getCameraType().isFirstPerson()) {
+			return;
+		}
+		boolean hero = ClientHero.hero() != null && ClientHero.sync().rushed();
+		if (!hero && since(inRushAt) > 0.4f) {
+			return;
+		}
+		// a player with no hero has no hero HUD to have made the masks
+		HudShapes.ensure();
+		int w = g.guiWidth();
+		int h = g.guiHeight();
+		{
 			float time = Util.getMillis() / 1000f;
 			float pulse = 0.5f + 0.08f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
 			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xA8F2FF, pulse));

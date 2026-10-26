@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Allies feel Kitsune Rush on their own screen** (round 2's #17, in part: the ally "sees nothing"). The rush's
+in-path mist and streaks are their own HUD element, shown to any player the rush is speeding up (the server's speed
+lines on an ally name them), not only to heroes. Found on the way: a player without a hero had no HUD masks made, so the
+first try drew Minecraft's magenta missing texture (`rv_sheet`); made on demand now. Played with two clients
+(`rv2_sheet`: the second player, no hero, standing in the path).
+
 **Suzu's cleanse glows white** (round 2's #18: the overlay alone only paled her, "a ghost"). Hero models are drawn a
 second time as pure white-cyan light while cleansed, fading over 0.65 s (`HeroModelRenderer.submitGlow`); mobs keep
 Minecraft's white overlay. Played: Suzu at her feet from the front (`cg_sheet`: a solid glowing silhouette, then
