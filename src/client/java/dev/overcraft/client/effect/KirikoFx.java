@@ -97,17 +97,27 @@ public final class KirikoFx {
 		// paper). Ribbon width and length aren't in the game data: ours. Homing, the gold is blended rather than added:
 		// added over grass it turned lime (the critique)
 		if (homing) {
-			// blended gold strong enough to stay gold over grass (at 40% it mixed to khaki, the third critique)
+			// blended gold strong enough to stay gold over grass (at 40% it mixed to khaki, the third critique), in a gold
+			// that stays gold when blended (EffectArt's soft ramps: the game ramp's top read as cream, the fourth)
 			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.07f, 0.08f, 0.9f, true);
-			Fx.attach("ofuda_glow/" + id, at, () -> {
+			// the glow just behind the paper, as seen, so the talisman shows in front of it (it hid the card)
+			Vec3 behind = behindFromCamera(at, 0.12);
+			Fx.attach("ofuda_glow/" + id, behind, () -> {
 				Particle g = Fx.soft("glow", Palette.GOLD);
-				return g == null ? null : g.at(at).life(0.15f).size(0.22f, 0.22f).alpha(0.85f).fade(0.15f, 0.6f);
+				return g == null ? null : g.at(behind).life(0.15f).size(0.2f, 0.2f).alpha(0.8f).fade(0.15f, 0.6f);
 			});
 		} else {
 			// faint, so the white paper reads rather than a cyan core (the third critique)
 			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.06f, 0.08f, 0.35f);
 			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.22f, 0.15f, 0.12f));
 		}
+	}
+
+	/** A point this far beyond at, seen from the camera. */
+	private static Vec3 behindFromCamera(Vec3 at, double distance) {
+		Vec3 cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
+		Vec3 away = at.subtract(cam);
+		return away.lengthSqr() < 1.0E-6 ? at : at.add(away.normalize().scale(distance));
 	}
 
 	/**
@@ -143,12 +153,13 @@ public final class KirikoFx {
 
 	/** On terrain: a soft glow and the flower flat on the surface for 0.73 s (4111 / 3D4A). */
 	static void ofudaHitBlock(Vec3 at, Vec3 normal, Palette p) {
-		// the game's glow is 0.3-1.3 m; kept under a metre here, where it read as a haze two blocks wide (the critique)
-		boolean gold = p == Palette.GOLD;
-		float size = range(0.3f, 0.9f);
-		Particle glow = gold ? Fx.soft("glow", p) : Fx.particle("glow", p);
+		// the game's glow is 0.3-1.3 m; kept under a metre here, where it read as a haze two blocks wide (the critique).
+		// Lifted off the surface (centred on it, the ground cut it off in a straight line) and blended rather than added
+		// (added over sunlit grass it clipped to flat cyan: the fourth critique)
+		float size = range(0.3f, 0.7f);
+		Particle glow = Fx.soft("glow", p);
 		if (glow != null) {
-			Fx.add(glow.at(at).life(range(0.08f, 0.4f)).size(size, size).alpha(0.55f).fade(0.15f, 0.6f));
+			Fx.add(glow.at(at).lift(normal).life(range(0.08f, 0.4f)).size(size, size).alpha(0.5f).fade(0.15f, 0.6f));
 		}
 		Particle decal = Fx.soft("flower", p);
 		if (decal != null && normal.lengthSqr() > 0.5) {
@@ -161,8 +172,11 @@ public final class KirikoFx {
 
 	/** In flight: a thin cyan ribbon, and a lens glint at its head 16 times a second (effect 3BF2). */
 	public static void kunaiFlight(int id, Vec3 at, float dt) {
+		// only while it's moving: the client's kunai rests at the wall a tick before it's removed, and glints there sat
+		// round every hit as a bubble (the fourth critique)
+		boolean flying = Fx.trailMoved(id, at) > 0.05;
 		Fx.trail(id, at, "ribbon", Palette.CYAN, 0.12f, 0.09f, 1);
-		if (Fx.RANDOM.nextFloat() < 16 * dt) {
+		if (flying && Fx.RANDOM.nextFloat() < 16 * dt) {
 			Particle glint = Fx.particle("glint", Palette.CYAN);
 			if (glint != null) {
 				float size = range(0.21f, 0.23f);
@@ -266,13 +280,10 @@ public final class KirikoFx {
 					.easeOut().fade(0.05f, 0.6f));
 			}
 		}
-		// a small ring (it was 3.2 m across: read as a shield bubble, the second critique)
-		Particle burst = atCamera ? null : Fx.particle("ring_line", Palette.TEAL);
-		if (burst != null) {
-			Fx.add(burst.at(chest).life(0.3f).size(0.3f, 1.4f).easeOut().alpha(0.7f).fade(0.05f, 0.6f));
-		}
+		// a soft flash, no rim: a camera-facing ring round her chest still read as a shield bubble at 1.4 m (the second
+		// and fourth critiques; the game's arrival puff is 0.6-0.8 m)
 		if (!atCamera) {
-			Fx.add(glow("glow_hot", Palette.TEAL, chest, 1.6f, 0.22f, 0.45f));
+			Fx.add(glow("glow_hot", Palette.TEAL, chest, 0.8f, 0.22f, 0.45f));
 		}
 		int petals = arrive ? 65 : 39;
 		for (int i = 0; i < petals; i++) {
@@ -297,8 +308,10 @@ public final class KirikoFx {
 			Fx.add(petal.at(from).velocity(v).gravity(2.5f).drag(0.15f).life(life)
 				.size(size, size).aspect(0.65f).tint(PETAL_TINT).alpha(0.85f).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
 		}
-		if (arrive) {
-			slashArcs(chest, atCamera);
+		// the arcs are for others watching her arrive: round her own camera they swept across the middle of the screen,
+		// over the crosshair (the fourth critique), where the HUD's streaks already rush in from the edges
+		if (arrive && !atCamera) {
+			slashArcs(chest);
 		}
 		if (arrive && !atCamera) {
 			Particle puff = Fx.particle("glow", Palette.TEAL);
@@ -311,20 +324,19 @@ public final class KirikoFx {
 
 	/**
 	 * Swift Step's 7 slash arcs at the arrival (10ADC, the half-cylinder shell, with its streak bands; size 3-3.7, 0.24-0.4
-	 * s, random rotation): curved teal bands round her, each turned its own way and sweeping round. Seen from inside
-	 * (her own arrival in first person) they're kept wider and fainter.
+	 * s, random rotation): curved teal bands round her, each turned its own way and sweeping round.
 	 */
-	private static void slashArcs(Vec3 chest, boolean atCamera) {
+	private static void slashArcs(Vec3 chest) {
 		for (int i = 0; i < 7; i++) {
 			Particle arc = Fx.particle("band", Palette.TEAL);
 			if (arc == null) {
 				return;
 			}
 			Quaternionf turn = new Quaternionf().rotateY(range(0, Mth.TWO_PI)).rotateX(range(-0.9f, 0.9f)).rotateZ(range(-0.9f, 0.9f));
-			float size = range(3, 3.7f) * 0.5f * (atCamera ? 1.6f : 1);
+			float size = range(3, 3.7f) * 0.5f;
 			Fx.add(arc.at(chest).arc(turn, range(1.6f, 2.4f)).life(range(0.24f, 0.4f)).size(size * 0.7f, size).easeOut()
 				.aspect(0.12f).spin(range(0, Mth.TWO_PI), range(6, 10) * (Fx.RANDOM.nextBoolean() ? 1 : -1))
-				.alpha(atCamera ? 0.18f : 0.8f).fade(0.05f, 0.6f));
+				.alpha(0.8f).fade(0.05f, 0.6f));
 		}
 	}
 
@@ -338,8 +350,10 @@ public final class KirikoFx {
 				break;
 			}
 			float size = range(0.5f, 2);
+			// kept faint: eight of them added on each other clipped the floor under the cast to flat cyan (the fourth
+			// critique)
 			Fx.add(smoke.at(at.add(randomUnit(Fx.RANDOM).scale(0.4))).velocity(randomUnit(Fx.RANDOM).scale(0.6)).life(range(0.4f, 0.5f))
-				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.8f).fade(0.1f, 0.6f));
+				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.45f).fade(0.1f, 0.6f));
 		}
 		// a few small rings (0F5F at size 1.5, about 0.3 m: the effects survey), not one 3 m ring round her (it read as
 		// a shield bubble, the third critique)
@@ -369,12 +383,14 @@ public final class KirikoFx {
 		Vec3 side = across.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : across.normalize();
 		double half = across.length() / 2;
 		float[] torii = toriiMesh();
-		Particle gate = torii == null ? null : Fx.particle("dome_noise", Palette.TEAL);
+		Particle gate = torii == null ? null : Fx.particle("dome_noise", Palette.WHITE);
 		if (gate != null) {
-			// the game's gate mesh (1048D) glowing teal through its noise, as wide as the path less a step each side
+			// the game's gate mesh (1048D) glowing through its noise, as wide as the path less a step each side
 			float width = (float) (2 * half + 1.6);
-			// translucent, as the game's white-cyan gates are (the critique: ours were nearly solid cyan)
-			Fx.add(gate.at(base).mesh(torii, side).size(width * 0.6f, width).easeOut().life(life).alpha(0.45f).fade(0.04f, 0.08f));
+			// translucent and white-cyan as the game's (look 12FF1 is white through a ramp): faint pale faces and cyan
+			// edges, not one flat clipped cyan (the fourth critique)
+			Fx.add(gate.at(base).mesh(torii, side).tint(0xCFF6F6).rim(0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
+				.alpha(0.55f).fade(0.04f, 0.08f));
 			Particle glow = Fx.particle("glow", Palette.TEAL);
 			if (glow != null) {
 				// a faint flash as it rises (it was a bright orb at the path's head, hiding the fox: the second critique)
@@ -399,12 +415,13 @@ public final class KirikoFx {
 			}
 		}
 		for (int i = 0; i < 4; i++) {
-			Particle plus = Fx.particle("sparkle", Palette.GOLD);
+			// a glowing cross (EffectArt's soft sparkle: the pack's mask is a flat outlined cross, a sticker drawn as it
+			// is, the fourth critique), twinkling; the survey's 0.43-0.6 m, a little smaller
+			Particle plus = Fx.particle("sparkle_soft", Palette.GOLD);
 			if (plus != null) {
-				// the survey's 0.43-0.6, drawn smaller and dimmer: near the camera they were big white crosses
-				float size = range(0.25f, 0.35f);
-				Fx.add(plus.at(base.add(side.scale(range(-1, 1) * half)).add(0, range(1, 4.5f), 0)).life(range(0.6f, 1.2f))
-					.size(size, size * 0.6f).alpha(0.6f).fade(0.2f, 0.5f));
+				float size = range(0.35f, 0.5f);
+				Fx.add(plus.at(base.add(side.scale(range(-1, 1) * half)).add(0, range(1, 4.5f), 0)).life(range(0.9f, 1.2f))
+					.size(size, size * 0.7f).spin(range(-0.15f, 0.15f), 0).twinkle(range(2, 3.5f)).alpha(0.8f).fade(0.2f, 0.5f));
 			}
 		}
 	}

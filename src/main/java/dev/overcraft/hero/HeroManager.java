@@ -48,6 +48,13 @@ public final class HeroManager {
 		builder -> builder.persistent(Codec.STRING).copyOnDeath()
 			.syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.all()));
 
+	/**
+	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
+	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
+	 */
+	public static final AttachmentType<Double> ULT_CHARGE = AttachmentRegistry.create(Overcraft.id("ult_charge"),
+		builder -> builder.persistent(Codec.DOUBLE));
+
 	private static final Identifier HEALTH_MODIFIER = Overcraft.id("hero_health");
 	private static final Map<Hero, HeroKit> KITS = new EnumMap<>(Hero.class);
 	private static final Map<UUID, HeroState> STATES = new HashMap<>();
@@ -182,11 +189,18 @@ public final class HeroManager {
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
 		state.reset(hero != null && hero.playable ? hero : null);
 		state.freePick = true;
+		Double charge = player.getAttached(ULT_CHARGE);
+		if (charge != null && state.hero != null) {
+			state.ultCharge = charge;
+		}
 		applyKit(player, state, true);
 	}
 
 	public static void onLeave(ServerPlayer player) {
-		STATES.remove(player.getUUID());
+		HeroState state = STATES.remove(player.getUUID());
+		if (state != null && state.hero != null) {
+			player.setAttached(ULT_CHARGE, state.ultCharge);
+		}
 		OPTIONS.remove(player.getUUID());
 	}
 

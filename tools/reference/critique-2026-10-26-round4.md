@@ -37,7 +37,26 @@ marked done, not ours or checked are repeated only where these captures show the
 old hazard-stripe one. They can't confirm or refute round 3's items. Everything else is from 05:21 or later.
 
 ## Status (kept up to date)
-- **Open:** all items, 1-15.
+- **Done** (played in game, CHANGES.md 2026-10-26, "Round 4"):
+  - 1: the terrain-hit glow lifted off the surface and blended (`fx9_ofuda_d`).
+  - 2: soft gold from an on-screen gold ramp; the glow sits behind the paper (`fx9_ofuda_b`).
+  - 3: gates white-cyan with cyan edges, gone within 1.5 m, full at 4 m; the cast smoke fainter (`fx12_sheet`).
+  - 5: a light floor on the view model (`hm6_sheet`, before and after).
+  - 6: kunai/fist/skull glyph, bold ">", faces for mobs and players (`feed1_all`, `feed2_cz`). The white frame kept:
+    see below.
+  - 7: the kunai's glint only in flight, its halo cut (`fx9_kunai_a`, `hm6_head`); the arrival's camera-facing ring
+    removed, its flash 0.8 m.
+  - 8: a soft generated "+" that twinkles (`fx10_sheet`, `fx12_sheet`).
+  - 9: the slash arcs are no longer drawn round her own camera (`st_sheet`).
+  - 10: the bar sits a few pixels above the head instead of 0.35 m (`st_c`); off the top of the screen it's hidden.
+  - 11: pips 9 x 8 at an 11 px pitch.
+  - 13: tiles 30 x 15 at the 29 px pitch.
+  - Also found playing: a 4.6 m gate flash covered the first-person view at the cast; big sprites now fade over a
+    reach scaled to their size.
+- **Not reproduced:** 15 (no grey blade in six first-person cast frames, `fx11_sheet`, `fx12_sheet`).
+- **Open:** 4 (the kunai throw's hand over the crosshair: needs Overwatch frames of the throw at the same moment),
+  12 (chat font), 14 (splash shape); 6's white frame on your own kills (kept: R3 left it open, no reference row of
+  your own kill).
 
 ## Confirmed fixed (seen in these captures)
 - **Ammo text (R3 #15):**

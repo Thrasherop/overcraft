@@ -5,6 +5,37 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Round 4 of the critique** (`tools/reference/critique-2026-10-26-round4.md`, a sub-agent on fresh captures; its Status
+section says what's done). Played in game after each change, before and after:
+- **Ofuda hitting the ground or a wall**: the glow sank half into the surface and ended in a straight line, clipped to
+  flat cyan (reproduced on a wall: cut on a diagonal). It's lifted off the surface just enough for the view angle, and
+  blended (`fx9_ofuda_d`: soft, no edge).
+- **Homing ofuda were cream comets**: blended gold took the game ramp's top, near-white. A gold picked on screen
+  (#DCB900 to #A18700, the critique's samples) and the glow put behind the paper (`fx9_ofuda_b`: gold trails).
+- **Kunai hits drew a teal bubble**: the in-flight lens glint, spawned while the client's kunai rested at the wall a
+  tick before removal, its faint halo turned into a disc by gamma. Glints now only in flight, the halo cut: a hit is
+  sparks (`fx9_kunai_a`; at night `hm6_head`).
+- **Arms nearly black at night**: the view model now has a light floor (`hm6_sheet`: before left, after right).
+- **Kitsune Rush gates**: white-cyan, faint where they face you and cyan at their edges, gone within 1.5 m and full
+  at 4 m (a post a metre away was a slab of cyan); the "+" sparkles are soft glowing crosses that twinkle; the cast's
+  smoke fainter. Also found playing: at the cast a 4.6 m flash two metres away covered the whole view in cyan; big
+  sprites now fade over a reach scaled to their size (`fx11_sheet` before, `fx12_sheet` after).
+- **Swift Step**: the slash arcs aren't drawn round her own camera (they swept over the crosshair; the screen's
+  streaks do that job); the arrival's camera-facing ring (a bubble) is gone, its flash 0.8 m (`st_sheet`, `fx10_*`).
+- **Ally health bar**: it floated 0.35 m above the head, near the top of the screen for an ally close by; it now sits
+  a few pixels above the head (`st_c`). Pips 9 x 8 at an 11 px pitch (were 6 x 10 at 8).
+- **Ofuda counter tiles** 30 x 15 px, overlapping like Overwatch's (were 25 x 14 with gaps).
+- **Kill feed**: always a glyph (the weapon's art, else a fist for melee, a skull for the world's doing), a bold ">",
+  and faces for mobs (read off Minecraft's own textures: zombie, skeleton, creeper, spider, villager, pig and 20 more)
+  and for players without a hero (their skin). Played: a kunai kill on a zombie, a melee kill on a pig, killed by a
+  zombie, killed by the void (`feed1_all`, `feed2_cz`).
+- Not reproduced: a grey blade at the left edge during the rush cast (six cast frames). Open: the kunai throw's
+  hand over the crosshair, the chat font, the cooldown splash's shape.
+
+**The ult's charge survives leaving the world** (found playing: rejoining kept the hero but lost a 52% ult). Saved
+with the player when they leave. Played: 60% (1638), Save and Leave, rejoin: 1680 with the passive charge, the HUD
+says 61 (`ult_rejoin`).
+
 **Kiriko's hero options** (Overwatch's "Hero-specific options", wiki table, with Overwatch's defaults): a HERO tab on
 the Overwatch options screen (Esc in hero mode, OPTIONS). Healing Ofuda sensitivity and Swift Step sensitivity (10-100%,
 narrow the lock-on cones), Toggle Healing Ofuda (**on by default, as in Overwatch: one press of the ofuda button throws

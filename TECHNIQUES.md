@@ -104,6 +104,16 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   wrong for the cutout pipeline (`withCull(false)` in RenderPipelines), and CPU culling built on it opened holes in her
   hair. A visual on/off comparison from several angles caught it.
 - Additive light washes out over bright ground (gold over grass turns lime): keep additive for teal/cyan glows, blend
-  warm colours (`Fx.soft`).
+  warm colours (`Fx.soft`). And blend them in a colour picked on screen, not from the game's linear ramp: the ramp's
+  bright end, gamma-encoded, is near-white cream (EffectArt's soft ramps).
+- Faint mask values become strong colour once gamma-encoded and added (linear 0.17 is sRGB 115): a lens glint's barely
+  visible halo drew as a crisp teal disc. Cut a mask's faint floor with a black point when only its core is meant to
+  show.
+- A camera-facing glow centred where something hit a surface sinks half into it and ends in a straight line: lift it
+  along the surface normal by r sin(angle between view and normal) (`Particle.lift`), which clears the surface from any
+  angle without floating far off it face on.
+- Near-camera fades must scale with the sprite: a fixed 1.5 m fade let a 4.6 m glow two metres away cover the screen.
+- The world's light reaches first-person models: at night Minecraft's lightmap turned the arms near-black purple. A
+  view model wants a light floor (Overwatch's arms stay readable on night maps).
 - A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),
   stay out of the Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.

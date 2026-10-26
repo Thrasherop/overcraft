@@ -117,6 +117,8 @@ public final class HeroHud {
 	private static final double ALLY_RANGE = 40;
 	/** Villagers, golems and allays at full health show only this close. */
 	private static final double ALLY_NEAR = 8;
+	/** How far the ally marker's bottom sits above the top of their head, in reference pixels. Ours. */
+	private static final float ALLY_LIFT = 10;
 	private static final int STREAKS = 14;
 	/** Swift Step's streaks rushing in from the edges (the critique: 20-30). */
 	private static final int STEP_STREAKS = 26;
@@ -711,12 +713,15 @@ public final class HeroHud {
 			if (distance > ALLY_RANGE || !always && ally.getHealth() >= ally.getMaxHealth() && distance > ALLY_NEAR) {
 				continue;
 			}
-			// clear above the head (hero mode hides allies' Minecraft name tags: the name is in the marker)
-			Vec3 head = at.add(0, ally.getBbHeight() + 0.35, 0);
+			// just above the head, a few pixels clear of it on screen (hero mode hides allies' Minecraft name tags: the
+			// name is in the marker). It was 0.35 m above in the world, which an ally close by put near the top of the
+			// screen, far above their head (the fourth critique); off the top, it's off the screen
+			Vec3 head = at.add(0, ally.getBbHeight() + 0.05, 0);
 			float[] screen = project(head, w, h);
-			if (screen == null) {
+			if (screen == null || screen[1] < 0) {
 				continue;
 			}
+			screen[1] -= ALLY_LIFT;
 			float size = (float) Math.clamp(1.15 - distance / ALLY_RANGE * 0.5, 0.65, 1);
 			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
 			String name = ally instanceof Player || ally.hasCustomName() ? ally.getName().getString().toUpperCase(Locale.ROOT) : null;
@@ -738,15 +743,18 @@ public final class HeroHud {
 		// one pip per 25 health, at most 20 (a golem's 1250 would run off the screen: then each pip holds more)
 		int pips = Math.clamp((int) Math.ceil(max / 25), 1, 20);
 		float per = max / pips;
-		float pipW = 6;
-		float pitch = 8;
+		// squarer pips, about Overwatch's 10 x 9 at an 11-12 px pitch (the fourth critique: ours were 6 x 10, taller than
+		// wide, 80 px for ten), each with a thin dark edge
+		float pipW = 9;
+		float pipH = 8;
+		float pitch = 11;
 		float left = -(pips * pitch - (pitch - pipW)) / 2;
 		for (int i = 0; i < pips; i++) {
 			float held = Math.clamp((health - i * per) / per, 0, 1);
 			float px = left + i * pitch;
-			fill(g, px - 1, -11, pipW + 2, 12, alpha(0x000000, 0.45f * alpha));
+			fill(g, px - 1, -pipH - 1, pipW + 2, pipH + 2, alpha(0x000000, 0.45f * alpha));
 			if (held > 0) {
-				fill(g, px, -10, pipW * (held > 0.9f ? 1 : held), 10, alpha(0xFFFFFF, alpha));
+				fill(g, px, -pipH, pipW * (held > 0.9f ? 1 : held), pipH, alpha(0xFFFFFF, alpha));
 			}
 		}
 		float below = 4;

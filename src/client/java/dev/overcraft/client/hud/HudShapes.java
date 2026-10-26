@@ -59,6 +59,11 @@ public final class HudShapes {
 	public static final Identifier WHITE = Overcraft.id("hud/white");
 	/** An open "v" (two strokes): the ally marker's chevron. */
 	public static final Identifier CHEVRON = Overcraft.id("hud/chevron");
+	/** The same, bold: the kill feed's ">" (turned). */
+	public static final Identifier CHEVRON_BOLD = Overcraft.id("hud/chevron_bold");
+	/** A fist (the kill feed's melee kill) and a skull (killed by the world: falls, lava). Ours, after Overwatch's. */
+	public static final Identifier FIST = Overcraft.id("hud/fist");
+	public static final Identifier SKULL = Overcraft.id("hud/skull");
 	/** Low health's red edges: deepest in the corners, mottled (ours, after Overwatch's smoky edges). */
 	public static final Identifier LOW_HEALTH = Overcraft.id("hud/low_health");
 	public static final Identifier GLOW = Overcraft.id("hud/glow");
@@ -83,7 +88,7 @@ public final class HudShapes {
 	public static final int MOUSE_W = 48;
 	public static final int MOUSE_H = 64;
 	public static final int SEGMENT_W = 96;
-	public static final int SEGMENT_H = 64;
+	public static final int SEGMENT_H = 72;
 	public static final int SHIELD_W = 120;
 	public static final int SHIELD_H = 132;
 
@@ -125,6 +130,9 @@ public final class HudShapes {
 		register(LOW_HEALTH, SIZE, SIZE, HudShapes::lowHealth);
 		register(WHITE, 16, 16, (x, y) -> 1);
 		register(CHEVRON, 48, 40, (x, y) -> Math.max(stroke(x, y, 6, 8, 24, 32, 3.5f), stroke(x, y, 24, 32, 42, 8, 3.5f)));
+		register(CHEVRON_BOLD, 48, 40, (x, y) -> Math.max(stroke(x, y, 8, 9, 24, 31, 7.5f), stroke(x, y, 24, 31, 40, 9, 7.5f)));
+		register(FIST, 64, 64, HudShapes::fist);
+		register(SKULL, 64, 64, HudShapes::skull);
 		register(LINE_GLOW, 8, LINE_H, (x, y) -> {
 			float d = (y - LINE_H / 2f) / (LINE_H / 2f);
 			return (float) Math.exp(-d * d * 4) * coverage(LINE_H / 2f - 1 - Math.abs(y - LINE_H / 2f));
@@ -323,9 +331,10 @@ public final class HudShapes {
 	}
 
 	/**
-	 * The ofuda counter's segment: a rounded rectangle about 25 x 14 px, its long sides rising 40 degrees to the right
+	 * The ofuda counter's segment: a rounded rectangle about 30 x 15 px, its long sides rising 40 degrees to the right
 	 * (measured at 12x on Overwatch's frames, the third critique; an earlier flat-topped parallelogram read as hazard
-	 * stripes), here at two texels a pixel. Shrunk by inset (for its outline).
+	 * stripes; at 25 x 14 the row had gaps where Overwatch's tiles overlap, the fourth), here at two texels a pixel.
+	 * Shrunk by inset (for its outline).
 	 */
 	private static float segment(float x, float y, float inset) {
 		float px = x - SEGMENT_W / 2f;
@@ -335,7 +344,38 @@ public final class HudShapes {
 		// u along the long side (up and to the right on screen: y runs down), v across it
 		float u = px * c - py * s;
 		float v = px * s + py * c;
-		return coverage(-roundBoxDistance(u, v, 50 - 2 * inset, 28 - 2 * inset, Math.max(1, 6 - inset)));
+		return coverage(-roundBoxDistance(u, v, 60 - 2 * inset, 30 - 2 * inset, Math.max(1, 6 - inset)));
+	}
+
+	/** A fist seen from the front: four knuckles over the back of the hand, the thumb across, a wrist below. */
+	private static float fist(float x, float y) {
+		float hand = roundBox(x, y, 32, 36, 18, 13, 6);
+		float wrist = roundBox(x, y, 33, 54, 10, 8, 3);
+		float knuckles = 0;
+		for (int i = 0; i < 4; i++) {
+			knuckles = Math.max(knuckles, roundBox(x, y, 18.5f + i * 9, 24, 4.5f, 8, 4));
+		}
+		float shape = Math.max(Math.max(hand, wrist), knuckles);
+		// grooves between the fingers, and the thumb's edge across them
+		float grooves = 0;
+		for (int i = 1; i < 4; i++) {
+			grooves = Math.max(grooves, stroke(x, y, 14 + i * 9, 18, 14 + i * 9, 30, 2.6f));
+		}
+		float thumb = stroke(x, y, 15, 38, 40, 33, 2.8f);
+		float wristLine = stroke(x, y, 22, 49.5f, 44, 49.5f, 2.4f);
+		return Math.min(shape, 1 - Math.max(Math.max(grooves, thumb), wristLine));
+	}
+
+	/** A skull from the front: the dome, the jaw, two eyes, the nose, teeth. */
+	private static float skull(float x, float y) {
+		float shape = Math.max(circle(x, y, 32, 27, 20), roundBox(x, y, 32, 46, 12, 8, 3));
+		float eyes = Math.max(circle(x, y, 24, 29, 6), circle(x, y, 40, 29, 6));
+		float nose = triangle(x, y, 32, 35, 29, 41, 35, 41);
+		float teeth = 0;
+		for (int i = -1; i <= 1; i++) {
+			teeth = Math.max(teeth, stroke(x, y, 32 + i * 6, 47, 32 + i * 6, 54, 2.6f));
+		}
+		return Math.min(shape, 1 - Math.max(Math.max(eyes, nose), teeth));
 	}
 
 	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */

@@ -77,7 +77,17 @@ public final class EffectArt {
 	 * Masks whose dim parts the game cuts away (its ring meshes use only the bright edge; the soft interior is for
 	 * other uses): brightness below this is black. Without it Suzu's 8 m ground ring was a lit disc.
 	 */
-	private static final Map<String, Float> BLACK_POINT = Map.of("ring_line", 0.45f);
+	private static final Map<String, Float> BLACK_POINT = Map.of("ring_line", 0.45f,
+		// the kunai's lens glint: its faint halo, gamma-encoded and added, read as a teal sphere round each hit (the
+		// fourth critique); the streak itself is brighter than this
+		"glint", 0.12f);
+	/**
+	 * Blended ("soft") colours given directly in sRGB, brightness stop then red, green, blue (0-1), for palettes whose
+	 * game ramp runs too pale to blend: soft gold took the ramp's top, near-white cream, and read as cream-khaki comets
+	 * over grass (the fourth critique: Overwatch's on-screen gold is about #DCB900 to #A18700). Ours, from those.
+	 */
+	private static final Map<Palette, float[]> SOFT_RAMPS = Map.of(
+		Palette.GOLD, new float[] {0, .60f, .47f, 0, .5f, .85f, .71f, 0, .9f, .91f, .75f, .09f, 1, .96f, .82f, .3f});
 
 	private EffectArt() {
 	}
@@ -110,6 +120,9 @@ public final class EffectArt {
 			copy.copyFrom(talisman);
 			return copy;
 		}
+		if (name.equals("sparkle_soft")) {
+			return softCross(128);
+		}
 		if (!name.equals("card")) {
 			return null;
 		}
@@ -126,6 +139,28 @@ public final class EffectArt {
 				float rim = inside < 0 ? 0 : (float) Math.exp(-Math.pow((inside - 3) / 2.5f, 2));
 				float face = Math.clamp(inside / 4, 0, 1) * 0.35f;
 				int v = Math.round(255 * Math.clamp(Math.max(rim, face), 0, 1));
+				image.setPixel(x, y, 0xFF000000 | v << 16 | v << 8 | v);
+			}
+		}
+		return image;
+	}
+
+	/**
+	 * A glowing "+" (the rush's sparkles, 3DC7): two arms with a gaussian falloff across and along, and a bright core. The
+	 * pack's own sparkle mask is a flat cross with an outline (the game blooms it in HDR); drawn as it is, it read as a
+	 * Minecraft health icon (the fourth critique). Ours.
+	 */
+	private static NativeImage softCross(int size) {
+		NativeImage image = new NativeImage(size, size, false);
+		float c = size / 2f;
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				float dx = (x + 0.5f - c) / c;
+				float dy = (y + 0.5f - c) / c;
+				// each arm: thin across (sigma 0.06), long along (sigma 0.45)
+				float arms = (float) Math.max(Math.exp(-dx * dx / 0.0072f - dy * dy / 0.405f), Math.exp(-dy * dy / 0.0072f - dx * dx / 0.405f));
+				float core = (float) Math.exp(-(dx * dx + dy * dy) / 0.02f);
+				int v = Math.round(255 * Math.clamp(Math.max(arms, core), 0, 1));
 				image.setPixel(x, y, 0xFF000000 | v << 16 | v << 8 | v);
 			}
 		}
@@ -154,7 +189,11 @@ public final class EffectArt {
 					}
 					// the masks are grey (one channel copied to three); their alpha is solid
 					float v = Math.clamp(((((argb >> 16) & 0xFF) / 255f) - black) / (1 - black), 0, 1);
-					if (soft) {
+					float[] ramp = soft ? SOFT_RAMPS.get(palette) : null;
+					if (ramp != null) {
+						ramp(ramp, v, c);
+						out.setPixel(x, y, Math.round(255 * v) << 24 | byte255(c[0]) << 16 | byte255(c[1]) << 8 | byte255(c[2]));
+					} else if (soft) {
 						palette.colour(0.6f + 0.4f * v, c);
 						out.setPixel(x, y, Math.round(255 * v) << 24 | srgb(c[0]) << 16 | srgb(c[1]) << 8 | srgb(c[2]));
 					} else {
@@ -170,6 +209,26 @@ public final class EffectArt {
 			Overcraft.LOG.warn("Effect texture {} didn't load: {}", name, e.toString());
 			return null;
 		}
+	}
+
+	/** A colour from stops of (brightness, r, g, b), as they are. */
+	private static void ramp(float[] stops, float v, float[] out) {
+		int last = stops.length / 4 - 1;
+		for (int i = 0; i < last; i++) {
+			float t0 = stops[i * 4];
+			float t1 = stops[(i + 1) * 4];
+			if (v <= t1 || i == last - 1) {
+				float k = Math.clamp((v - t0) / (t1 - t0), 0, 1);
+				for (int c = 0; c < 3; c++) {
+					out[c] = stops[i * 4 + 1 + c] + (stops[(i + 1) * 4 + 1 + c] - stops[i * 4 + 1 + c]) * k;
+				}
+				return;
+			}
+		}
+	}
+
+	private static int byte255(float v) {
+		return Math.round(255 * Math.clamp(v, 0, 1));
 	}
 
 	private static int srgb(float linear) {

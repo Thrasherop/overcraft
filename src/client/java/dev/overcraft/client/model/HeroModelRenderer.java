@@ -42,9 +42,15 @@ public final class HeroModelRenderer {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
-	/** How white an entity flashes (Protection Suzu's cleanse: client/effect/Cleansed). */
 	/** Packed light for full brightness (block and sky light 15). */
 	private static final int FULL_BRIGHT = 0xF000F0;
+	/**
+	 * The view model's least light, as block light (0-15). Overwatch's arms stay readable on night maps; at Minecraft's
+	 * night light they went nearly black and purple, a quarter of the screen merging into dark grass (the fourth
+	 * critique). Ours.
+	 */
+	private static final int VIEW_MODEL_MIN_LIGHT = 11;
+	/** How white an entity flashes (Protection Suzu's cleanse: client/effect/Cleansed). */
 	public static final RenderStateDataKey<Float> WHITE = RenderStateDataKey.create(() -> "overcraft:white");
 	/** The hero each entity was last drawn as (by entity id), while it's in hero mode or dying. */
 	private static final Map<Integer, Hero> LAST_HERO = new HashMap<>();
@@ -160,7 +166,8 @@ public final class HeroModelRenderer {
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
-		submitModel(loaded, skin, poseStack, collector, light, overlay);
+		int lit = Math.max(light & 0xFFFF, VIEW_MODEL_MIN_LIGHT << 4) | light & 0xFFFF0000;
+		submitModel(loaded, skin, poseStack, collector, lit, overlay);
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		poseStack.popPose();
 		return true;

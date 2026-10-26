@@ -4,6 +4,7 @@ import dev.overcraft.entity.KunaiEntity;
 import dev.overcraft.net.KillFeedPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,8 +41,8 @@ public final class KillFeed {
 		for (ServerPlayer viewer : PlayerLookup.around(level, victim.position(), RANGE)) {
 			boolean killerAlly = killer != null && (killer == viewer || Allies.wasAlly(viewer, killer));
 			boolean victimAlly = victim == viewer || Allies.wasAlly(viewer, victim);
-			ServerPlayNetworking.send(viewer, new KillFeedPayload(killerName, killerHero, weapon, victimName, victimHero,
-				killerAlly, victimAlly, killer == viewer));
+			ServerPlayNetworking.send(viewer, new KillFeedPayload(killerName, killerHero, typeOf(killer), weapon, victimName,
+				victimHero, typeOf(victim), killerAlly, victimAlly, killer == viewer));
 		}
 	}
 
@@ -54,6 +55,11 @@ public final class KillFeed {
 			return "melee";
 		}
 		return "";
+	}
+
+	/** The entity's type id ("minecraft:zombie"), for the feed's face; "" for none. */
+	private static String typeOf(@Nullable Entity entity) {
+		return entity == null ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
 	}
 
 	private static String heroOf(@Nullable Entity entity) {

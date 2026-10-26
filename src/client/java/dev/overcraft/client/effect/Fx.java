@@ -82,6 +82,13 @@ public final class Fx {
 		boolean removed;
 		/** Meant to be seen up close (a first-person hand's puff): not faded near the camera. */
 		boolean near;
+		/** A sprite on a surface it hit (that surface's normal): lifted off it so none of it sinks in. */
+		boolean lift;
+		float lx, ly = 1, lz;
+		/** Twinkles this many times a second (0: steady), from its own point in the cycle. */
+		float twinkle, twinklePhase;
+		/** A mesh shaded by how squarely each face meets the eye: rgb face on, this colour edge on (-1: flat). */
+		int rimRgb = -1;
 
 		public Particle at(Vec3 p) {
 			x = p.x;
@@ -200,6 +207,28 @@ public final class Fx {
 			return this;
 		}
 
+		/** Sits on a surface with this normal: lifted off it just enough that no part of it sinks in. */
+		public Particle lift(Vec3 normal) {
+			Vec3 n = normal.lengthSqr() < 1.0E-6 ? new Vec3(0, 1, 0) : normal.normalize();
+			lift = true;
+			lx = (float) n.x;
+			ly = (float) n.y;
+			lz = (float) n.z;
+			return this;
+		}
+
+		public Particle twinkle(float perSecond) {
+			twinkle = perSecond;
+			twinklePhase = RANDOM.nextFloat();
+			return this;
+		}
+
+		/** A mesh glowing at its edges in this colour and faint where it faces the eye, in its own colour (a fresnel). */
+		public Particle rim(int rgb) {
+			rimRgb = rgb;
+			return this;
+		}
+
 		float size() {
 			float t = Math.clamp(age / life, 0, 1);
 			if (easeOut) {
@@ -212,7 +241,9 @@ public final class Fx {
 			float t = Math.clamp(age / life, 0, 1);
 			float in = fadeIn <= 0 ? 1 : Math.min(1, t / fadeIn);
 			float out = fadeOut <= 0 ? 1 : Math.min(1, (1 - t) / fadeOut);
-			return alpha * in * out;
+			// a twinkle: brightness pulsing, each particle at its own phase
+			float pulse = twinkle <= 0 ? 1 : 0.55f + 0.45f * (float) Math.sin((age * twinkle + twinklePhase) * Math.PI * 2);
+			return alpha * in * out * pulse;
 		}
 
 		Identifier frame() {
@@ -252,8 +283,19 @@ public final class Fx {
 	/** Sprites closer to the camera than this (metres) aren't drawn; they fade in over the next NEAR_FADE. */
 	private static final float NEAR_FADE_START = 0.3f;
 	private static final float NEAR_FADE = 1.2f;
-	/** Meshes (the torii gates) fade over a longer reach: they're big, and the critique asked for about 3 m. */
-	private static final float MESH_FADE = 2.7f;
+	/**
+	 * Big sprites fade over a reach of this many times their size instead, if longer: a 4.6 m glow two metres away
+	 * covered the whole view in cyan at Kitsune Rush's cast (seen playing the fourth critique's fixes).
+	 */
+	private static final float NEAR_FADE_PER_SIZE = 1.2f;
+	/**
+	 * Meshes (the torii gates) are gone within MESH_NEAR of the camera and fade in over the next MESH_FADE: they're big,
+	 * and a post a metre away filled a quarter of the screen with cyan (the fourth critique asked for 1.5 m to 4 m).
+	 */
+	private static final float MESH_NEAR = 1.5f;
+	private static final float MESH_FADE = 2.5f;
+	/** How much of a glow's half size shows (its mask is dark toward the corners): what a lifted glow must clear. */
+	private static final float LIFT_RADIUS = 0.85f;
 	/** Meshes fade in over this height above their base (metres: ours). */
 	private static final float MESH_BASE_FADE = 0.6f;
 	private static float lastTime = -1;
@@ -339,6 +381,14 @@ public final class Fx {
 			trail.points.addLast(new double[] {at.x, at.y, at.z, now});
 		}
 		trail.lastFed = now;
+	}
+
+	/** How far at is from the newest point of entity id's trail (0 without one): whether it's still moving. */
+	public static double trailMoved(int id, Vec3 at) {
+		Trail trail = TRAILS.get(id);
+		double[] last = trail == null ? null : trail.points.peekLast();
+		return last == null ? 0 : Math.sqrt((last[0] - at.x) * (last[0] - at.x) + (last[1] - at.y) * (last[1] - at.y)
+			+ (last[2] - at.z) * (last[2] - at.z));
 	}
 
 	/**
@@ -471,6 +521,14 @@ public final class Fx {
 		return Math.clamp((distance - NEAR_FADE_START) / NEAR_FADE, 0, 1);
 	}
 
+	/** Between two colours, t from 0 (a) to 1 (b). */
+	private static int mix(int a, int b, float t) {
+		int r = Math.round(((a >> 16) & 0xFF) + (((b >> 16) & 0xFF) - ((a >> 16) & 0xFF)) * t);
+		int g = Math.round(((a >> 8) & 0xFF) + (((b >> 8) & 0xFF) - ((a >> 8) & 0xFF)) * t);
+		int bl = Math.round((a & 0xFF) + ((b & 0xFF) - (a & 0xFF)) * t);
+		return r << 16 | g << 8 | bl;
+	}
+
 	private static int argb(int rgb, float alpha) {
 		return Math.clamp(Math.round(alpha * 255), 0, 255) << 24 | (rgb & 0xFFFFFF);
 	}
@@ -479,11 +537,26 @@ public final class Fx {
 		float cx = (float) (p.x - cam.x);
 		float cy = (float) (p.y - cam.y);
 		float cz = (float) (p.z - cam.z);
+		if (p.lift && p.shape == Shape.SPRITE) {
+			// a glow where something hit a surface: lifted along the surface's normal just enough that the camera-facing
+			// quad clears it (by r sin of the view's angle to the normal). Centred on the hit, half of it sank into the
+			// ground and the rest ended in a dead-straight edge (the fourth critique)
+			float d = (float) Math.sqrt(cx * cx + cy * cy + cz * cz);
+			float cos = d < 1.0E-4f ? 1 : -(cx * p.lx + cy * p.ly + cz * p.lz) / d;
+			if (cos > 0) {
+				float r = p.size() / 2 * Math.max(1, p.aspect) * LIFT_RADIUS;
+				float rise = r * (float) Math.sqrt(Math.max(0, 1 - cos * cos));
+				cx += p.lx * rise;
+				cy += p.ly * rise;
+				cz += p.lz * rise;
+			}
+		}
 		float a = p.opacity();
 		if ((p.shape == Shape.SPRITE || p.shape == Shape.STREAK) && !p.near) {
 			// sprites fade out as they reach the camera: one at her own position would otherwise fill the screen
 			float distance = (float) Math.sqrt(cx * cx + cy * cy + cz * cz);
-			a *= nearFade(distance);
+			float reach = Math.max(NEAR_FADE, p.size() * Math.max(1, p.aspect) * NEAR_FADE_PER_SIZE);
+			a *= Math.clamp((distance - NEAR_FADE_START) / reach, 0, 1);
 		}
 		if (a <= 0.003f) {
 			return;
@@ -551,7 +624,9 @@ public final class Fx {
 
 	/**
 	 * A mesh's triangles (each sent as a quad with its last corner twice), scaled and turned to its side, each corner
-	 * fading out within MESH_FADE of the camera: walking through a torii gate, its legs filled the screen.
+	 * fading out near the camera (MESH_NEAR, MESH_FADE): walking through a torii gate, its legs filled the screen. With a
+	 * rim colour, each face is shaded by how squarely it meets the eye: faint and pale face on, bright rim colour edge on,
+	 * so the gate reads as a glowing translucent shape rather than one flat tint.
 	 */
 	private static void mesh(Particle p, PoseStack.Pose pose, VertexConsumer buffer, float cx, float cy, float cz, int color) {
 		float[] m = p.mesh;
@@ -564,20 +639,43 @@ public final class Fx {
 		// X along side, Y up, Z along side x up
 		float fx = -p.sideZ;
 		float fz = p.sideX;
+		float[] corners = new float[9];
 		for (int i = 0; i + 14 < m.length; i += 15) {
-			for (int k = 0; k < 4; k++) {
-				int c = i + Math.min(k, 2) * 5;
+			for (int k = 0; k < 3; k++) {
+				int c = i + k * 5;
 				float x = m[c] * s;
 				float y = m[c + 1] * s;
 				float z = m[c + 2] * s;
-				float vx = cx + x * p.sideX + z * fx;
-				float vy = cy + y;
-				float vz = cz + x * p.sideZ + z * fz;
+				corners[k * 3] = cx + x * p.sideX + z * fx;
+				corners[k * 3 + 1] = cy + y;
+				corners[k * 3 + 2] = cz + x * p.sideZ + z * fz;
+			}
+			int faceRgb = rgb;
+			float faceAlpha = alpha;
+			if (p.rimRgb >= 0) {
+				// the face's normal against the line of sight to its middle: 1 face on, 0 edge on
+				Vector3f e1 = new Vector3f(corners[3] - corners[0], corners[4] - corners[1], corners[5] - corners[2]);
+				Vector3f e2 = new Vector3f(corners[6] - corners[0], corners[7] - corners[1], corners[8] - corners[2]);
+				Vector3f n = e1.cross(e2);
+				Vector3f eye = new Vector3f(corners[0] + corners[3] + corners[6], corners[1] + corners[4] + corners[7],
+					corners[2] + corners[5] + corners[8]);
+				float facing = n.lengthSquared() < 1.0E-12f || eye.lengthSquared() < 1.0E-12f ? 0
+					: Math.abs(n.normalize().dot(eye.normalize()));
+				float rim = (1 - facing) * (1 - facing);
+				faceRgb = mix(rgb, p.rimRgb, rim);
+				faceAlpha = alpha * (0.3f + 0.7f * rim);
+			}
+			for (int k = 0; k < 4; k++) {
+				int c = Math.min(k, 2);
+				float vx = corners[c * 3];
+				float vy = corners[c * 3 + 1];
+				float vz = corners[c * 3 + 2];
+				float y = m[i + c * 5 + 1] * s;
 				float d = (float) Math.sqrt(vx * vx + vy * vy + vz * vz);
 				// and over its bottom MESH_BASE_FADE: the gate's posts are open tubes, their ends showed as rings
 				float base = Math.clamp(y / MESH_BASE_FADE, 0, 1);
-				int corner = argb(rgb, alpha * base * Math.clamp((d - NEAR_FADE_START) / MESH_FADE, 0, 1));
-				vertex(pose, buffer, vx, vy, vz, m[c + 3], m[c + 4], corner);
+				int corner = argb(faceRgb, faceAlpha * base * Math.clamp((d - MESH_NEAR) / MESH_FADE, 0, 1));
+				vertex(pose, buffer, vx, vy, vz, m[i + c * 5 + 3], m[i + c * 5 + 4], corner);
 			}
 		}
 	}
