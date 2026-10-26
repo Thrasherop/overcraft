@@ -70,7 +70,7 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 			// the model faces +Z, like the heroes'
 			poseStack.rotateDegrees(Axis.YP, -state.yRot);
 			poseStack.scale(SCALE, SCALE, SCALE);
-			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY);
+			HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f, 0.5f);
 			poseStack.popPose();
 		}
 		super.submit(state, poseStack, collector, camera);

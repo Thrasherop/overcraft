@@ -280,8 +280,12 @@ public final class HudShapes {
 		float u = x / SIZE;
 		float v = y / SIZE;
 		float side = Math.clamp(1 - Math.min(u, 1 - u) / 0.10f, 0, 1);
-		float topBottom = Math.clamp(1 - Math.min(v, 1 - v) / 0.14f, 0, 1);
-		float edge = Math.max(side, topBottom) + side * topBottom * 0.5f;
+		float topBottom = Math.clamp(1 - Math.min(v, 1 - v) / 0.15f, 0, 1);
+		// the corners reach much further in (Overwatch's: about 400 x 250 px at 1080p)
+		float cu = Math.min(u, 1 - u) / 0.24f;
+		float cv = Math.min(v, 1 - v) / 0.26f;
+		float corner = Math.clamp(1 - (float) Math.hypot(cu, cv), 0, 1);
+		float edge = Math.max(Math.max(side, topBottom), corner * 1.1f) + side * topBottom * 0.5f;
 		float noise = 0.65f + 0.35f * (float) (Math.sin(u * 37 + Math.sin(v * 23) * 2) * Math.sin(v * 29 + Math.sin(u * 17) * 2));
 		return Math.clamp(edge * edge * noise * 1.2f, 0, 1);
 	}
@@ -319,25 +323,19 @@ public final class HudShapes {
 	}
 
 	/**
-	 * The ofuda counter's segment: a fat "/" tile with rounded corners, as measured on Overwatch's frames (zoomed): top
-	 * and bottom edges about 16.5 px, rising 5 degrees to the right; sides about 27 px, 13 px across for 24 down (61
-	 * degrees); here at two texels a pixel. Shrunk by inset (for its outline).
+	 * The ofuda counter's segment: a rounded rectangle about 25 x 14 px, its long sides rising 40 degrees to the right
+	 * (measured at 12x on Overwatch's frames, the third critique; an earlier flat-topped parallelogram read as hazard
+	 * stripes), here at two texels a pixel. Shrunk by inset (for its outline).
 	 */
 	private static float segment(float x, float y, float inset) {
-		// p = u e1 + v e2, e1 along the top edge, e2 down the long side
-		float e1x = (float) Math.cos(Math.toRadians(-5));
-		float e1y = (float) Math.sin(Math.toRadians(-5));
-		float e2x = -0.476f;
-		float e2y = 0.879f;
 		float px = x - SEGMENT_W / 2f;
 		float py = y - SEGMENT_H / 2f;
-		float det = e1x * e2y - e1y * e2x;
-		float u = (px * e2y - py * e2x) / det;
-		float v = (e1x * py - e1y * px) / det;
-		// in (u, v) distances across an edge shrink by the sine of the corner's angle
-		float squash = Math.abs(det);
-		return coverage(-roundBoxDistance(u, v, 33 - 2 * inset / squash, 54.6f - 2 * inset / squash,
-			Math.max(1, 6 - inset)) * squash);
+		float c = (float) Math.cos(Math.toRadians(40));
+		float s = (float) Math.sin(Math.toRadians(40));
+		// u along the long side (up and to the right on screen: y runs down), v across it
+		float u = px * c - py * s;
+		float v = px * s + py * c;
+		return coverage(-roundBoxDistance(u, v, 50 - 2 * inset, 28 - 2 * inset, Math.max(1, 6 - inset)));
 	}
 
 	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */

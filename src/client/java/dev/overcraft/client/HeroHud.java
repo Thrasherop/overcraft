@@ -73,7 +73,7 @@ public final class HeroHud {
 	private static final int FLASH_BORDER = 0xFF2B58DD;
 	private static final int ICON = 0xFF111111;
 	private static final int BLUE = 0xFF2D96DA;
-	private static final int BLUE_GLOW = 0x99153858;
+	private static final int BLUE_GLOW = 0xB30B386A;
 	private static final int ULT_TICK = 0xFFF18449;
 	/** The ticks' inner ends, shading to ULT_TICK outward. */
 	private static final int ULT_TICK_DARK = 0xFFC65B1E;
@@ -207,7 +207,10 @@ public final class HeroHud {
 			// glow strong red")
 			float low = 1 - health / LOW_HEALTH;
 			float pulse = 0.06f * (float) Math.sin(Util.getMillis() / 1000f * Mth.TWO_PI * 0.8f);
-			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0xC0141E, 0.55f + 0.4f * low + pulse));
+			// darkened first, then crimson smoke over it, so it stays red over a bright sky (the third critique)
+			float strength = 0.6f + 0.35f * low + pulse;
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x000000, 0.55f * strength));
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x8C1420, 0.85f * strength));
 		}
 		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
 		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
@@ -215,7 +218,9 @@ public final class HeroHud {
 		if (firstPerson && step < STEP_FLASH) {
 			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)
 			float k = 1 - step / STEP_FLASH;
-			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x29E0CF, 0.6f * k));
+			// dark mottled teal smoke in the corners (Overwatch's mid-step frame, the third critique), then the streaks
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x000000, 0.35f * k));
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x0A8A84, 0.8f * k));
 			java.util.Random random = new java.util.Random(stepCastAt);
 			for (int i = 0; i < STEP_STREAKS; i++) {
 				float angle = random.nextFloat() * Mth.TWO_PI;
@@ -310,8 +315,8 @@ public final class HeroHud {
 		image(g, HudShapes.PLUS, left + 5, 902, 18, 18, WHITE);
 		float x = left + 54;
 		String current = String.valueOf(now);
-		HudText.draw(g, Face.BODY, current, x, 921, 20.5f, WHITE, Align.LEFT);
-		x += HudText.width(Face.BODY, current, 20.5f) + 7;
+		HudText.draw(g, Face.BODY, current, x, 921, 18.8f, WHITE, Align.LEFT);
+		x += HudText.width(Face.BODY, current, 18.8f) + 7;
 		fill(g, x, 899, 2, 22, DIVIDER);
 		HudText.draw(g, Face.BODY, String.valueOf(max), x + 8, 921, 15, TEXT_DIM, Align.LEFT);
 
@@ -457,7 +462,8 @@ public final class HeroHud {
 			float fillH = h * done;
 			box(g, x, y + h - fillH, size, fillH, COOLDOWN_FILL);
 			fill(g, x, y + h - fillH - 1.5f, size, 1.5f, COOLDOWN_EDGE);
-			iconOrName(g, icon, ability, x, y - 2, size, 0xB3101010);
+			// the icon as a faint ghost, a little darker than the box (the third critique: black merged with the splash)
+			iconOrName(g, icon, ability, x, y - 2, size, 0x4D000000);
 			float splashW = 46;
 			float splashH = splashW * HudShapes.SPLASH_H / HudShapes.SPLASH_W;
 			image(g, HudShapes.SPLASH, cx - splashW / 2, y + h / 2 - splashH * 0.43f, splashW, splashH, 0xE6000000);
@@ -483,7 +489,7 @@ public final class HeroHud {
 		// line centres 61-62 px apart, 16 px between the panels, the mice under them (the second critique, measured)
 		weapon(g, hero, w, "healing_ofuda", w - 492, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
 			KirikoStats.OFUDA_AMMO, s.secondaryReload(), HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
-		weapon(g, hero, w, "kunai", w - 307, 938.5f, 251, 65, 109, 36, w - 84, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
+		weapon(g, hero, w, "kunai", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
 			s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 	}
 
@@ -526,8 +532,9 @@ public final class HeroHud {
 	 * where the HUD's curve slopes them.
 	 */
 	private static void line(GuiGraphicsExtractor g, float x, float y, float width) {
-		image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 8, width, 16, BLUE_GLOW);
-		image(g, HudShapes.LINE, x, y + 1.5f - 4.5f, width, 9, BLUE);
+		// a 4 px core with a darker 5 px halo (the third critique, measured on Overwatch's)
+		image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 10, width, 20, BLUE_GLOW);
+		image(g, HudShapes.LINE, x, y + 1.5f - 6, width, 12, BLUE);
 	}
 
 	/** Under a weapon panel: the mouse with the fire button in orange, or the key it's bound to. */

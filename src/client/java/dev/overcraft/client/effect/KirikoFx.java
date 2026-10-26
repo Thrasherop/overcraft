@@ -96,14 +96,16 @@ public final class KirikoFx {
 		// paper). Ribbon width and length aren't in the game data: ours. Homing, the gold is blended rather than added:
 		// added over grass it turned lime (the critique)
 		if (homing) {
-			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.07f, 0.08f, 0.6f, true);
+			// blended gold strong enough to stay gold over grass (at 40% it mixed to khaki, the third critique)
+			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.07f, 0.08f, 0.9f, true);
 			Fx.attach("ofuda_glow/" + id, at, () -> {
 				Particle g = Fx.soft("glow", Palette.GOLD);
-				return g == null ? null : g.at(at).life(0.15f).size(0.24f, 0.24f).alpha(0.4f).fade(0.15f, 0.6f);
+				return g == null ? null : g.at(at).life(0.15f).size(0.22f, 0.22f).alpha(0.85f).fade(0.15f, 0.6f);
 			});
 		} else {
-			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.07f, 0.08f, 0.55f);
-			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.2f, 0.15f, 0.25f));
+			// faint, so the white paper reads rather than a cyan core (the third critique)
+			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.06f, 0.08f, 0.35f);
+			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.22f, 0.15f, 0.12f));
 		}
 	}
 
@@ -338,9 +340,14 @@ public final class KirikoFx {
 			Fx.add(smoke.at(at.add(randomUnit(Fx.RANDOM).scale(0.4))).velocity(randomUnit(Fx.RANDOM).scale(0.6)).life(range(0.4f, 0.5f))
 				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.8f).fade(0.1f, 0.6f));
 		}
-		Particle ring = Fx.particle("ring_line", Palette.TEAL);
-		if (ring != null) {
-			Fx.add(ring.at(at).life(0.35f).size(0.3f, 1.5f * 2).easeOut().fade(0.05f, 0.6f));
+		// a few small rings (0F5F at size 1.5, about 0.3 m: the effects survey), not one 3 m ring round her (it read as
+		// a shield bubble, the third critique)
+		for (int i = 0; i < 3; i++) {
+			Particle ring = Fx.particle("ring_line", Palette.TEAL);
+			if (ring != null) {
+				Fx.add(ring.at(at.add(randomUnit(Fx.RANDOM).scale(0.25))).life(range(0.25f, 0.35f)).size(0.08f, 0.35f).easeOut()
+					.alpha(0.8f).fade(0.05f, 0.6f));
+			}
 		}
 	}
 
@@ -393,9 +400,10 @@ public final class KirikoFx {
 		for (int i = 0; i < 4; i++) {
 			Particle plus = Fx.particle("sparkle", Palette.GOLD);
 			if (plus != null) {
-				float size = range(0.43f, 0.6f);
+				// the survey's 0.43-0.6, drawn smaller and dimmer: near the camera they were big white crosses
+				float size = range(0.25f, 0.35f);
 				Fx.add(plus.at(base.add(side.scale(range(-1, 1) * half)).add(0, range(1, 4.5f), 0)).life(range(0.6f, 1.2f))
-					.size(size, size * 0.6f).fade(0.2f, 0.5f));
+					.size(size, size * 0.6f).alpha(0.6f).fade(0.2f, 0.5f));
 			}
 		}
 	}

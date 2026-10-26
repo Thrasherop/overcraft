@@ -127,6 +127,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 ## Questions for the owner
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
+- While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a
+  reload: does Overwatch's HUD do that, or something else (critique round 2, #24)?
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
 

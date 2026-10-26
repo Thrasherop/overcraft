@@ -30,8 +30,9 @@ public final class KillFeedHud {
 	private static final float ROW_H = 34;
 	private static final float ROW_GAP = 6;
 	private static final float CAP = 13;
-	private static final int ALLY = 0x2D6FE0;
-	private static final int ENEMY = 0xD93644;
+	/** Overwatch's team colours in the feed (the third critique, sampled): teal-blue and crimson. */
+	private static final int ALLY = 0x277CA6;
+	private static final int ENEMY = 0x8B293C;
 
 	private record Line(KillFeedPayload kill, long at) {
 	}
@@ -78,12 +79,15 @@ public final class KillFeedHud {
 		x -= iconW;
 		fill(g, x, y, iconW, ROW_H, argb(0x0B1520, 0.7f * alpha));
 		Identifier icon = weaponIcon(kill);
+		// what it was done with, then always a thin white ">" (Overwatch's)
 		if (icon != null) {
-			image(g, icon, x + 5, y + 4, iconW - 10, ROW_H - 8, argb(0xFFFFFF, alpha));
-		} else {
-			// no weapon to show (a mob's hit, a fall): Overwatch's plain arrow
-			image(g, HudShapes.TRIANGLE, x + iconW / 2 - 7, y + ROW_H / 2 - 7, 14, 14, argb(0xFFFFFF, alpha));
+			image(g, icon, x + 3, y + 5, iconW - 20, ROW_H - 10, argb(0xFFFFFF, alpha));
 		}
+		g.pose().pushMatrix();
+		g.pose().translate(x + iconW - (icon != null ? 10 : iconW / 2), y + ROW_H / 2);
+		g.pose().rotate((float) Math.toRadians(-90));
+		image(g, HudShapes.CHEVRON, -5, -4, 10, 8, argb(0xFFFFFF, alpha));
+		g.pose().popMatrix();
 		if (!kill.killer().isEmpty()) {
 			x = side(g, kill.killer(), kill.killerHero(), kill.killerAlly(), x, y, alpha, false);
 		}
@@ -100,15 +104,17 @@ public final class KillFeedHud {
 		Hero hero = heroId.isEmpty() ? null : Hero.byId(heroId);
 		Identifier portrait = hero == null ? null : HeroArt.portrait(hero);
 		int colour = ally ? ALLY : ENEMY;
-		// the victim's portrait sits outside its name (rightmost), the killer's outside its name (leftmost)
-		if (victim && portrait != null) {
+		// names on the outside, portraits on the inside next to the weapon (Overwatch's: NAME [face] > [face] NAME)
+		if (!victim && portrait != null) {
 			x -= ROW_H;
 			portrait(g, portrait, x, y, colour, alpha);
 		}
 		x -= plateW;
-		fill(g, x, y, plateW, ROW_H, argb(colour, 0.85f * alpha));
+		fill(g, x, y, plateW, ROW_H, argb(colour, 0.9f * alpha));
+		// a light edge on the box's inner end
+		fill(g, victim ? x : x + plateW - 3, y, 3, ROW_H, argb(0x8FD6F0, 0.5f * alpha));
 		HudText.draw(g, Face.BODY, text, x + plateW / 2, y + ROW_H / 2 + CAP / 2, CAP, argb(0xFFFFFF, alpha), Align.CENTER);
-		if (!victim && portrait != null) {
+		if (victim && portrait != null) {
 			x -= ROW_H;
 			portrait(g, portrait, x, y, colour, alpha);
 		}

@@ -5,6 +5,24 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The critique's third round** (`tools/reference/critique-2026-10-26-round3.md`: 15 items on the newest captures).
+- The volley bar's tiles are rounded rectangles about 25 x 14 px with their long sides rising 40 degrees, as measured at
+  12x on Overwatch's frame (the earlier flat-topped shape read as hazard stripes, #7).
+- Cooling down, the ability icon is a faint ghost behind the splash, not black (#8). Health number 8% smaller (#13);
+  panel lines a 4 px core with a darker halo (#14); kunai ammo ends at x 1836 (#15).
+- Low health darkens the corners and lays crimson smoke over them, deep in the corners (about 450 x 280 px), so it
+  stays red over the sky (#3). Swift Step's flash is dark mottled teal smoke in the corners (#2).
+- The kill feed in Overwatch's colours (teal-blue, crimson), portraits on the inside next to the weapon, always a thin
+  ">" after it, a light inner edge on each name box (#6). Played: a player kill (`r3d_feedz`).
+- Gold ofuda blended strongly enough to stay gold over grass (they mixed to khaki, #4); teal ofuda with a fainter trail
+  and glow so the paper reads (#9).
+- Kitsune Rush's cast: a few small rings, no 3 m ring round her (a bubble again, #5). The gates' "+" sparkles smaller
+  and dimmer (big white crosses up close).
+- The fox is a spirit: its texture at 60% opacity, full bright, with a cyan glow over it (#1: it read as a plush toy).
+- Suzu's cleanse keeps her shape: a softer overlay and glow, in third and first person (#10: a flat white cut-out).
+- Played (`r3_sheet_a/b`, `r3b_sheet`, `r3b_vol`, `r3b_cd`), and the first-person wall climb (`cl2_sheet`: Blizzard's
+  hand-over-hand clip plays; round 2 hadn't been able to check it).
+
 **Kitsune Rush's path laid with Kiriko's own talismans** (round 2's #17: "blank glass tiles"). The tiles are now her
 paper talisman, its seal and glyphs glowing teal: cut at load from the ofuda model's texture in the local pack
 (`EffectArt.keepTalisman`; plain cards without the pack). The torii gates fade in over their bottom 0.6 m: their posts

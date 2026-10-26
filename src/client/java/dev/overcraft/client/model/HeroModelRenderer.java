@@ -111,7 +111,7 @@ public final class HeroModelRenderer {
 			return false;
 		}
 		int light = state.lightCoords;
-		int overlay = LivingEntityRenderer.getOverlayCoords(state, white(state));
+		int overlay = LivingEntityRenderer.getOverlayCoords(state, white(state) * 0.6f);
 		poseStack.pushPose();
 		// the model faces +Z; Minecraft's yaw 0 faces +Z (south) and turns the other way
 		poseStack.rotateDegrees(Axis.YP, -state.bodyRot);
@@ -155,7 +155,7 @@ public final class HeroModelRenderer {
 		poseStack.mulPose(view);
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
-		int overlay = white > 0 ? OverlayTexture.pack(white, false) : OverlayTexture.NO_OVERLAY;
+		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
 		submitModel(loaded, skin, poseStack, collector, light, overlay);
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white);
 		poseStack.popPose();
@@ -205,6 +205,24 @@ public final class HeroModelRenderer {
 	}
 
 	/**
+	 * A spirit: the model see-through and glowing (Kitsune Rush's fox: Overwatch's is a translucent ice-blue spirit; drawn
+	 * solid it read as a plush toy, the third critique), its texture at this opacity, full bright, with a cyan glow over it.
+	 */
+	public static void submitSpirit(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		float opacity, float glow) {
+		int color = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | 0xC8F4FF;
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
+			if (texture == null) {
+				continue;
+			}
+			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color));
+		}
+		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow);
+	}
+
+	/**
 	 * The model again as pure added light, white-cyan at this strength (0 to 1): Protection Suzu's cleanse, which in
 	 * Overwatch turns them a glowing white (the second critique: the overlay alone only paled her, a ghost).
 	 */
@@ -214,7 +232,8 @@ public final class HeroModelRenderer {
 			return;
 		}
 		HudShapes.ensure();
-		int color = Math.clamp(Math.round(strength * 0.8f * 255), 0, 255) << 24 | 0xE6FFFF;
+		// below clipping, so her shape still reads (at full white she was a flat cut-out, the third critique)
+		int color = Math.clamp(Math.round(strength * 0.45f * 255), 0, 255) << 24 | 0xCFF8FF;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			if (piece.image() < 0 || loaded.textures()[piece.image()] == null) {
 				continue;
