@@ -3,6 +3,11 @@
 # Ult cast lines: friendly (no criteria = the default line) and the one enemies hear.
 kiriko.ult.friendly = HeroVoice/Kiriko/Ultimate/00000005EB8B.0B2-Let the Kitsune guide you!.ogg
 kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox spirit, unleash your claws!.ogg
+# Victory (#18, the Ender Dragon's death): the match announcer's "Victory." (voice set 001D, file A8C8) and the
+# match-end music's victory sting (graph 0D3B, chain B's fallback: 2B0DE6, 8.76 s). tools/reference/sounds-round8.md
+# has how they were found; both play in the head, so they stay stereo.
+announcer.victory = ExtraSounds/Announcer/00000000A8C8.0B2-Victory..ogg
+music.victory = ExtraSounds/MatchEnd/ChainB/Sounds/000000008B7F.02C/0000002B0DE6.03F.ogg
 
 # ===== How each game event is put together (build_asset_pack.py sounds). Minecraft plays one file per sound event, so
 # the layers Overwatch plays together are mixed into one file per variant, at build time:
