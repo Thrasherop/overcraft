@@ -11,7 +11,9 @@ the border (it was the square portrait clipped inside); the Esc menu's portrait 
 light-blue "1" box (Overwatch's party slot, #41CCFD) with the underline running from it. Played: `pf_cmp` (against
 `ref_queued_02`), `pf_menu2c`. (The wings and level badge round Overwatch's are rank cosmetics: not ours.)
 
-Also played: wall climb in first and third person (`climb_sheet`: her hands reach up the wall in turn, over the top
+Also played: Suzu's cleanse on fresh frames (round 4 couldn't judge it: its captures predated the fix): Suzu at her
+feet, her first-person arms flash white and her body glows white in third person, fading (`cg2_sheet`); low-health
+edges at 50 of 250. Wall climb in first and third person (`climb_sheet`: her hands reach up the wall in turn, over the top
 into idle) and quick melee on a husk (two punches, 20 to 13.7 health: Overwatch's 40 each, `melee_sheet`).
 
 **Played: plain Minecraft in Minecraft mode** (survival, Easy; CLAUDE.md's slots 2-9 check after tonight's mixins on

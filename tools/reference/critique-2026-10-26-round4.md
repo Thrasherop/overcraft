@@ -53,6 +53,7 @@ old hazard-stripe one. They can't confirm or refute round 3's items. Everything 
   - 13: tiles 30 x 15 at the 29 px pitch.
   - Also found playing: a 4.6 m gate flash covered the first-person view at the cast; big sprites now fade over a
     reach scaled to their size.
+- **Checked later:** the Suzu cleanse (R3 #10, under "Not checked"): `cg2_sheet`, arms and body glow white, fading.
 - **Not reproduced:** 15 (no grey blade in six first-person cast frames, `fx11_sheet`, `fx12_sheet`).
 - **Done later:** 12 (chat in the HUD sans, 52 px in, no tag bar: `chat1c`), 14 (a brush stroke round the digits:
   `br2_all`).
