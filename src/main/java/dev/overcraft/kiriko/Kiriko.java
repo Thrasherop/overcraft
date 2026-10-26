@@ -22,8 +22,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import static dev.overcraft.kiriko.KirikoStats.*;
 
@@ -217,8 +217,14 @@ public final class Kiriko implements HeroKit {
 			return; // the target died, left or got out of range during the cast
 		}
 		Vec3 from = player.position();
-		Effects.play(level, "swift_step_depart", from, player);
 		Vec3 arrive = beside(player, target, from);
+		if (arrive == null) {
+			// nowhere she fits by the ally (in a tunnel she can't stand in, half in a wall): she stays, nothing spent
+			// (landing on them anyway put her inside the blocks, suffocating: found playing)
+			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED, player.getEyePosition());
+			return;
+		}
+		Effects.play(level, "swift_step_depart", from, player);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
 		Combat.phase(player, SWIFT_STEP_PHASED);
@@ -232,9 +238,9 @@ public final class Kiriko implements HeroKit {
 	 * their side"; the owner, 2026-10-26: "Swift step should put you beside"), her right first, then her left. Overwatch
 	 * puts her on the ally (its heroes overlap softly), which in Minecraft put the camera inside their head; landing
 	 * between them and where she came from left the ally filling her screen. Failing room at either side, on the side
-	 * she came from, then on them (ours).
+	 * she came from, then on them, then on top of them (ours); null when she fits nowhere there.
 	 */
-	private static Vec3 beside(ServerPlayer player, LivingEntity target, Vec3 from) {
+	private static @Nullable Vec3 beside(ServerPlayer player, LivingEntity target, Vec3 from) {
 		Vec3 at = target.position();
 		Vec3 back = new Vec3(from.x - at.x, 0, from.z - at.z);
 		if (back.lengthSqr() > 1.0E-4) {
@@ -246,14 +252,23 @@ public final class Kiriko implements HeroKit {
 				for (double clear : new double[] {0.5, 0.2}) {
 					double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + clear;
 					Vec3 spot = at.add(side.scale(gap));
-					AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
-					if (player.level().noCollision(player, box)) {
+					if (fits(player, spot)) {
 						return spot;
 					}
 				}
 			}
 		}
-		return at;
+		for (Vec3 spot : new Vec3[] {at, at.add(0, target.getBbHeight(), 0)}) {
+			if (fits(player, spot)) {
+				return spot;
+			}
+		}
+		return null;
+	}
+
+	/** She can stand at spot: no blocks or solid entities in her box. */
+	private static boolean fits(ServerPlayer player, Vec3 spot) {
+		return player.level().noCollision(player, player.getDimensions(player.getPose()).makeBoundingBox(spot));
 	}
 
 	private static void sound(ServerPlayer player, SoundEvent sound, float volume, float pitch) {

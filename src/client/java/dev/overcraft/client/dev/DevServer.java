@@ -139,7 +139,9 @@ public final class DevServer {
 			case "newworld" -> {
 				String[] a = arg.split(" ");
 				String name = a[0];
-				boolean creative = a.length > 1 && a[1].equals("creative");
+				// "newworld <name> [creative] [normal]": flat unless "normal" (real terrain, for survival play)
+				boolean creative = java.util.Arrays.asList(a).contains("creative");
+				boolean normal = java.util.Arrays.asList(a).contains("normal");
 				CreateWorldScreen.openFresh(mc, () -> mc.gui.setScreen(null));
 				mc.execute(() -> {
 					if (mc.gui.screen() instanceof CreateWorldScreen create) {
@@ -147,9 +149,11 @@ public final class DevServer {
 						ui.setName(name);
 						ui.setGameMode(creative ? WorldCreationUiState.SelectedGameMode.CREATIVE : WorldCreationUiState.SelectedGameMode.SURVIVAL);
 						ui.setAllowCommands(true);
-						ui.getNormalPresetList().stream()
-							.filter(e -> e.preset() != null && e.preset().is(WorldPresets.FLAT))
-							.findFirst().ifPresent(ui::setWorldType);
+						if (!normal) {
+							ui.getNormalPresetList().stream()
+								.filter(e -> e.preset() != null && e.preset().is(WorldPresets.FLAT))
+								.findFirst().ifPresent(ui::setWorldType);
+						}
 						((CreateWorldScreenAccessor) create).overcraft$onCreate();
 					}
 				});

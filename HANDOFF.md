@@ -58,7 +58,7 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 
 ## Dev harness
 `gradlew runClient` (`-Dovercraft.dev=true`); `py tools/dev.py <commands...>` or `. tools/devplay.sh`. Commands:
-state, newworld, openworld, screen, close, respawn, key <mapping or hero action> down|up|tap, look/turn, cmd,
+state, newworld <name> [creative] [normal], openworld, screen, close, respawn, key <mapping or hero action> down|up|tap, look/turn, cmd,
 screenshot, perspective, hero <id>, subtitles on|off, and (session 3) **press <key.keyboard.x>** (a real key event:
 Esc, Enter, F1), **screenclick x y** (GUI coordinates), **hover x y** (the game's cursor only), **window w h**,
 **tutorial**, **ult <percent>**, **fx <effect> [variant]**, **select [bed]**, **soundinfo <event>**,

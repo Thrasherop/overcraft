@@ -5,6 +5,20 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: Swift Step could put her inside blocks** (found in the full play pass below: the tamed wolf was in a hill,
+and she landed in it, suffocating, 250 to 238). With no room beside the ally it fell back to the ally's own spot,
+which fits a wolf but not her. Now: beside, either side, the near side, on them, on top of them, and if she fits
+nowhere, no step (the "denied" click, no cooldown spent). Reproduced first on the old build: a wolf in a one-high
+tunnel, she landed in the stone (`tun_after`). After: one-high tunnel, she stays, cooldown 0 (`tun1_aim_c`: the
+target was found); two-high tunnel, she lands just in front of it (x -13.4, the wolf at -14.5).
+
+**Played: a full pass on a fresh normal-terrain survival world** (CLAUDE.md's pre-release play; harness `newworld
+<name> normal`): Kiriko picked on join with real clicks on the select screen; Minecraft mode: punched a log out by
+hand (0 to 1), crafted 4 planks in the inventory grid by clicking, tamed a wolf with bones; night on Normal with
+natural spawns (12 hostiles within 64 blocks, the forest kept them back; kunai at range took them from 7 to 2); a
+zombie killed her (3 per hit, natural regeneration between), death screen, respawn with the kit and ult kept; Save
+and Leave, rejoin: hero select, Enter kept Kiriko, ult kept (`pp_*`, `ppn2_sheet`, `pp_death_sheet`).
+
 **Fixed: her leg kicked out for a moment every 3 seconds, again** (round 6 #3, a Swift Step arrival caught it).
 Overwatch's breath clip has two broken right-thigh keys; the load-time mend caught the one at 0.167 s but not the one
 at 1.967 s, whose neighbours are 23 degrees apart (the mend wanted under 22.5). Now it takes neighbours within 45.
