@@ -45,6 +45,10 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   first, `connect localhost:25565` on the second. See the hero as others do: third-person animation, the sounds
   others hear (subtitles on), effects, ally markers on a real player. Only the client drawing the change needs a
   restart for client-side work; server-side changes restart the host, and the second rejoins.
+- **When a glitch shows up "at random" under different actions, look for something that runs underneath all of
+  them.** The leg kick was blamed on three different clips; it was the idle breathing layer, broken keys every 3 s.
+  Bursts of 40+ screenshots across a whole loop catch periodic glitches; then read the clip's keys (glb animation
+  channels in Python) for single-frame jumps.
 - **Suspect the test before the mod**: white pixel squares round a healed villager were Minecraft's death poofs from
   the villager the test script had just killed; burning "mobs" on the horizon were zombie horses in daylight.
 - **Crop and enlarge** (`oc_crop.ps1`, nearest-neighbour at 2-6x) at native 1080p to judge HUD edges: a faint box
