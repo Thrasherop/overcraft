@@ -12,14 +12,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Locale;
 
 /**
  * The hero HUD, laid out like Overwatch's: health bottom-left, ult meter bottom-centre, abilities and ammo
- * bottom-right, the Swift Step target over the crosshair. Placeholder art (shapes and text) until the hero assets
- * come from the player's own Overwatch install.
+ * bottom-right, the Swift Step target over the crosshair. The portrait and icons come from the player's own Overwatch
+ * install (HeroArt); without it, shapes and text.
  */
 public final class HeroHud {
 	private static final int WHITE = 0xFFFFFFFF;
@@ -49,7 +50,7 @@ public final class HeroHud {
 		health(g, font, player, hero, 10, h - 34);
 		ult(g, font, s, w / 2, h - 30);
 		if (controls) {
-			abilities(g, font, s, w - 10, h - 34);
+			abilities(g, font, hero, s, w - 10, h - 34);
 			swiftStepTarget(g, font, player, s, w / 2, h / 2 + 10);
 		} else {
 			Component hint = Component.translatable("overcraft.hud.hero_mode", ClientHero.HERO_MODE.getTranslatedKeyMessage());
@@ -64,6 +65,14 @@ public final class HeroHud {
 	private static void health(GuiGraphicsExtractor g, Font font, LocalPlayer player, Hero hero, int x, int y) {
 		int max = Math.round(Ow.toOw(player.getMaxHealth()));
 		int now = Math.round(Ow.toOw(player.getHealth()));
+		// the hero's portrait first, like Overwatch's (when the local asset pack has it)
+		Identifier portrait = HeroArt.portrait(hero);
+		if (portrait != null) {
+			int size = 30;
+			g.fill(x - 1, y - 13, x + size + 1, y - 13 + size + 2, PANEL);
+			g.blit(portrait, x, y - 12, x + size, y - 12 + size, 0, 1, 0, 1);
+			x += size + 5;
+		}
 		g.text(font, hero.displayName.toUpperCase(Locale.ROOT), x, y - 12, DIM, true);
 		big(g, font, String.valueOf(now), x, y, WHITE);
 		int numberWidth = font.width(String.valueOf(now)) * 2;
@@ -99,12 +108,16 @@ public final class HeroHud {
 		}
 	}
 
-	private static void abilities(GuiGraphicsExtractor g, Font font, HeroSyncPayload s, int right, int y) {
-		// ammo, rightmost: kunai big, ofuda under it
+	private static void abilities(GuiGraphicsExtractor g, Font font, Hero hero, HeroSyncPayload s, int right, int y) {
+		// ammo, rightmost: kunai big (its icon beside it), ofuda under it
 		String kunai = s.primaryReload() >= 0 ? "--" : String.valueOf(s.primaryAmmo());
 		int kunaiW = font.width(kunai) * 2;
 		big(g, font, kunai, right - kunaiW - 20, y, s.primaryAmmo() == 0 ? ACCENT : WHITE);
 		g.text(font, "/" + KirikoStats.KUNAI_AMMO, right - 18, y + 7, DIM, true);
+		Identifier weapon = HeroArt.ability(hero, "kunai");
+		if (weapon != null) {
+			g.blit(weapon, right - kunaiW - 38, y, right - kunaiW - 24, y + 14, 0, 1, 0, 1);
+		}
 		reloadBar(g, right - 60, y + 18, 60, s.primaryReload());
 		String ofuda = Component.translatable("overcraft.hud.ofuda").getString() + " " + s.secondaryAmmo() + "/" + KirikoStats.OFUDA_AMMO;
 		g.text(font, ofuda, right - font.width(ofuda), y + 22, s.secondaryReload() >= 0 ? DIM : WHITE, true);
@@ -112,27 +125,30 @@ public final class HeroHud {
 
 		// abilities, to the left of the ammo
 		int box = 22;
-		int x = right - 70 - box;
-		ability(g, font, x, y, box, Component.translatable("overcraft.ability.kitsune_rush.short"), ClientHero.ULTIMATE, 0, false);
+		int x = right - 70 - box - (box + 6);
+		ability(g, font, hero, "protection_suzu", x, y, box, ClientHero.ABILITY_2, s.ability2Cooldown());
 		x -= box + 6;
-		ability(g, font, x, y, box, Component.translatable("overcraft.ability.protection_suzu.short"), ClientHero.ABILITY_2, s.ability2Cooldown(), true);
-		x -= box + 6;
-		ability(g, font, x, y, box, Component.translatable("overcraft.ability.swift_step.short"), ClientHero.ABILITY_1, s.ability1Cooldown(), true);
+		ability(g, font, hero, "swift_step", x, y, box, ClientHero.ABILITY_1, s.ability1Cooldown());
 	}
 
-	private static void ability(GuiGraphicsExtractor g, Font font, int x, int y, int box, Component name, KeyMapping key,
-								float cooldown, boolean show) {
-		if (!show) {
-			return;
-		}
+	/** An ability's box: its icon (or short name), dimmed with the seconds left while cooling down, the key under it. */
+	private static void ability(GuiGraphicsExtractor g, Font font, Hero hero, String ability, int x, int y, int box, KeyMapping key,
+								float cooldown) {
 		boolean ready = cooldown <= 0;
 		g.fill(x, y, x + box, y + box, PANEL);
-		g.outline(x, y, box, box, ready ? WHITE : DIM);
-		if (ready) {
-			g.centeredText(font, name, x + box / 2, y + box / 2 - 4, WHITE);
-		} else {
+		Identifier icon = HeroArt.ability(hero, ability);
+		if (icon != null) {
+			g.blit(icon, x + 2, y + 2, x + box - 2, y + box - 2, 0, 1, 0, 1);
+		} else if (ready) {
+			g.centeredText(font, Component.translatable("overcraft.ability." + ability + ".short"), x + box / 2, y + box / 2 - 4, WHITE);
+		}
+		if (!ready) {
+			if (icon != null) {
+				g.fill(x, y, x + box, y + box, 0xB0101828);
+			}
 			g.centeredText(font, String.valueOf((int) Math.ceil(cooldown)), x + box / 2, y + box / 2 - 4, ACCENT);
 		}
+		g.outline(x, y, box, box, ready ? WHITE : DIM);
 		g.centeredText(font, shortKey(key), x + box / 2, y + box + 3, DIM);
 	}
 

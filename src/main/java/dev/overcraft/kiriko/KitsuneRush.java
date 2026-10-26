@@ -1,6 +1,12 @@
 package dev.overcraft.kiriko;
 
 import dev.overcraft.Ow;
+import dev.overcraft.entity.KitsuneEntity;
+import dev.overcraft.registry.OcEntities;
+import dev.overcraft.registry.OcSounds;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.sounds.SoundEvent;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import net.minecraft.core.BlockPos;
@@ -33,6 +39,9 @@ public final class KitsuneRush {
 	private static final int MAX_DROP = 30;
 	/** How far above or below the path's floor still counts as in the corridor (ours). */
 	private static final double CORRIDOR_HEIGHT = 4;
+	private static final float ULT_LINE_VOLUME = 4.0f;
+	/** Ticks the fox stays at the end of its run before vanishing in a puff (ours). */
+	private static final int FOX_FADE_TICKS = 6;
 
 	private static final DustParticleOptions EDGE = new DustParticleOptions(0xFFE0442E, 1.3f);
 	private static final DustParticleOptions FLOOR = new DustParticleOptions(0xFFF6C35B, 0.9f);
@@ -46,6 +55,9 @@ public final class KitsuneRush {
 	private double laid;
 	private boolean laying = true;
 	private int age;
+	/** The fox clients draw (when they have its model): follows {@link #fox}, gone a little after the run ends. */
+	private final KitsuneEntity foxEntity;
+	private int doneAt = -1;
 
 	private KitsuneRush(ServerPlayer owner) {
 		this.owner = owner;
@@ -55,12 +67,21 @@ public final class KitsuneRush {
 		this.direction = flat.lengthSqr() < 1.0E-6 ? new Vec3(0, 0, 1) : flat.normalize();
 		this.fox = owner.position();
 		path.add(fox);
+		foxEntity = new KitsuneEntity(OcEntities.KITSUNE, level);
+		foxEntity.snapTo(fox.x, fox.y, fox.z, (float) Math.toDegrees(Math.atan2(-direction.x, direction.z)), 0);
+		level.addFreshEntity(foxEntity);
 	}
 
 	public static void start(ServerPlayer owner) {
 		ACTIVE.add(new KitsuneRush(owner));
+		// the cast line, as Overwatch plays it: Kiriko and her allies hear "Let the Kitsune guide you!", enemies the
+		// Japanese line. Loud enough to carry across a fight (volume 4 = 64 blocks: ours)
+		for (ServerPlayer listener : owner.level().players()) {
+			SoundEvent line = Allies.isSelfOrAlly(owner, listener) ? OcSounds.KIRIKO_ULT_FRIENDLY : OcSounds.KIRIKO_ULT_ENEMY;
+			listener.connection.send(new ClientboundSoundPacket(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(line), SoundSource.PLAYERS,
+				owner.getX(), owner.getEyeY(), owner.getZ(), ULT_LINE_VOLUME, 1.0f, owner.getRandom().nextLong()));
+		}
 		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.FOX_SCREECH, SoundSource.PLAYERS, 1.5f, 0.8f);
-		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0f, 1.2f);
 	}
 
 	public static void tickAll(MinecraftServer server) {
@@ -68,12 +89,14 @@ public final class KitsuneRush {
 	}
 
 	public static void clear() {
+		ACTIVE.forEach(rush -> rush.foxEntity.discard());
 		ACTIVE.clear();
 	}
 
 	/** One tick; false when the corridor is gone. */
 	private boolean tick() {
 		if (age++ >= Ow.ticks(RUSH_DURATION)) {
+			foxEntity.discard();
 			return false;
 		}
 		if (laying) {
@@ -81,8 +104,14 @@ public final class KitsuneRush {
 			for (double moved = 0; moved < perTick && laying; moved += STEP) {
 				advanceFox();
 			}
+			foxEntity.setPos(fox);
 			level.sendParticles(FOX, fox.x, fox.y + 0.5, fox.z, 8, 0.3, 0.3, 0.3, 0.0);
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, fox.x, fox.y + 0.4, fox.z, 4, 0.2, 0.2, 0.2, 0.01);
+		} else if (doneAt < 0) {
+			doneAt = age;
+		} else if (age - doneAt > FOX_FADE_TICKS && !foxEntity.isRemoved()) {
+			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, fox.x, fox.y + 0.5, fox.z, 20, 0.4, 0.4, 0.4, 0.05);
+			foxEntity.discard();
 		}
 		buffAllies();
 		if (age % 3 == 0) {

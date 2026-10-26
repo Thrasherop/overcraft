@@ -1,0 +1,12 @@
+# Kiriko's first-person view (Gameplay1P entity: same model, look 7A5.119, which textures the arms and hands only).
+# Clips from the animation-data research (kiriko-research.md, the 1P column). Exported with
+# owm_survey.py --entity=...Gameplay1P.owentity --keep=tools/clipmaps/kiriko_1p.txt
+0-60_00000000A3A7 = idle                  # held base pose, both hands in front (+ A45D breathing: additive, not yet)
+0-32_00000000A46E = throw_ofuda           # 1P of the 4-variant volley alias 0x16F (alt A6DA): guessed as Ofuda
+0-32_00000000B088 = throw_kunai           # 1P of alias 0x40A: guessed as Kunai
+0-32_00000000A529 = melee
+128-32_00000000A50A = throw_suzu
+0-32_00000000A591 = swift_step
+0-32_00000000A5F6 = ult_cast
+0-32_00000000AA7E = climb
+0-36_00000000AA7C = climb_top

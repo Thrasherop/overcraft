@@ -17,6 +17,7 @@ public record HeroInputPayload(int held, int pressed) implements CustomPacketPay
 	public static final int PRESS_ABILITY_2 = 2;
 	public static final int PRESS_ULTIMATE = 4;
 	public static final int PRESS_RELOAD = 8;
+	public static final int PRESS_MELEE = 16;
 
 	public static final Type<HeroInputPayload> TYPE = new Type<>(Overcraft.id("hero_input"));
 	public static final StreamCodec<FriendlyByteBuf, HeroInputPayload> CODEC = CustomPacketPayload.codec(

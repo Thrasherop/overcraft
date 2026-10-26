@@ -1,0 +1,10 @@
+{
+	"kiriko.ult.friendly": {
+		"subtitle": "subtitles.overcraft.kiriko.ult.friendly",
+		"sounds": [{"name": "minecraft:entity.evoker.cast_spell", "type": "event"}]
+	},
+	"kiriko.ult.enemy": {
+		"subtitle": "subtitles.overcraft.kiriko.ult.enemy",
+		"sounds": [{"name": "minecraft:entity.evoker.cast_spell", "type": "event"}]
+	}
+}

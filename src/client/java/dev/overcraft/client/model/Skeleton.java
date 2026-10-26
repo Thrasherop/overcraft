@@ -81,6 +81,15 @@ public final class Skeleton {
 		}
 	}
 
+	/** One node's world (model-space) matrix in the pose. */
+	public static Matrix4f world(SkinnedModel model, Pose pose, int node) {
+		Matrix4f m = new Matrix4f().translationRotateScale(pose.t[node], pose.r[node], pose.s[node]);
+		for (int p = model.parent[node]; p >= 0; p = model.parent[p]) {
+			m = new Matrix4f().translationRotateScale(pose.t[p], pose.r[p], pose.s[p]).mul(m);
+		}
+		return m;
+	}
+
 	/**
 	 * Skin matrices (joint world matrix x inverse bind) for the pose. {@code head}, when set, gets an extra turn in model
 	 * space (looking around), which its children follow.

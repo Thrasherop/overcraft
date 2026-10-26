@@ -5,7 +5,10 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.client.dev.DevServer;
 import dev.overcraft.client.model.HeroAnimator;
+import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
+import dev.overcraft.client.model.KitsuneRenderer;
+import dev.overcraft.client.model.ProjectileModelRenderer;
 import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.registry.OcEntities;
@@ -38,6 +41,7 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
 			ClientHero.onDisconnect();
 			HeroAnimator.clear();
+			HeroModelRenderer.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -47,9 +51,10 @@ public class OvercraftClient implements ClientModInitializer {
 			}
 		});
 
-		EntityRendererRegistry.register(OcEntities.KUNAI, ctx -> new ThrownItemRenderer<>(ctx, 1.0f, true));
-		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ThrownItemRenderer<>(ctx, 0.75f, true));
-		EntityRendererRegistry.register(OcEntities.SUZU, ctx -> new ThrownItemRenderer<>(ctx, 1.0f, true));
+		EntityRendererRegistry.register(OcEntities.KUNAI, ctx -> new ProjectileModelRenderer<>(ctx, "kunai", 1.0f, false));
+		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ProjectileModelRenderer<>(ctx, "ofuda", 0.75f, false));
+		EntityRendererRegistry.register(OcEntities.SUZU, ctx -> new ProjectileModelRenderer<>(ctx, "suzu", 1.0f, false));
+		EntityRendererRegistry.register(OcEntities.KITSUNE, KitsuneRenderer::new);
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD

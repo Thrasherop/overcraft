@@ -9,6 +9,10 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
   if it's running, stop and say so. Don't close it yourself: the owner may be playing.
 - Never attach to, debug, read the memory of, inject into or modify the Overwatch client, Battle.net or their files.
   Reading the install is read-only and offline (Overwatch closed).
+- Research goes as far as it can without dealing with the tamper protection or reverse-engineering the encryption
+  (owner, 2026-10-25): game data through DataTool/TankLib, and static reading of an archived copy of the executable
+  (strings, type names, readable sections) are fine; unpacking or decrypting its protected parts, bypassing
+  anti-tamper, or running it for analysis are not.
 - Numbers (damage, cooldowns, speeds, ranges, ult cost) come from public sources: Blizzard's patch notes first, then
   the Overwatch wiki (read through its MediaWiki API: the HTML is Cloudflare-blocked). Each number in the code says
   where it came from, or that it's ours when no source gives one (see `KirikoStats`). Check the latest patch notes

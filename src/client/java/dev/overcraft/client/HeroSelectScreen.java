@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -16,14 +17,17 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * "Select your hero", shown on joining a world and with H near your bed. Portraits along the bottom like Overwatch's
- * hero select; click one to see the kit, click it again (or Confirm / Enter) to play it. Esc keeps the current hero
- * (or plain Minecraft). Placeholder portraits until the hero art comes from the player's own Overwatch install.
+ * "Select your hero", shown on joining a world and with H near your bed, laid out like Overwatch's: the hero's
+ * full-body art large on the right, name, role and kit on the left, the roster of portraits along the bottom. Click a
+ * portrait to see the kit, click it again (or Confirm / Enter) to play it; Esc keeps the current hero (or plain
+ * Minecraft). The art comes from the player's own Overwatch install (HeroArt); without it, placeholder letter cards.
  */
 public class HeroSelectScreen extends Screen {
-	private static final int CARD_W = 44;
-	private static final int CARD_H = 52;
-	private static final int GAP = 6;
+	private static final int CARD_W = 32;
+	private static final int CARD_H = 32;
+	private static final int GAP = 4;
+	/** The kit's rows: an icon, the key, the name (and the description when the screen is tall enough). */
+	private static final int ICON = 14;
 	private static final int BG_TOP = 0xF0101A2E;
 	private static final int BG_BOTTOM = 0xF0050912;
 	private static final int ACCENT = 0xFFF0A030;
@@ -43,7 +47,7 @@ public class HeroSelectScreen extends Screen {
 	@Override
 	protected void init() {
 		confirm = addRenderableWidget(Button.builder(Component.translatable("overcraft.select.confirm"), b -> confirmPick())
-			.bounds(width - 110, height - 34, 96, 20).build());
+			.bounds(width - 92, height - 28, 80, 20).build());
 		updateConfirm();
 	}
 
@@ -73,7 +77,7 @@ public class HeroSelectScreen extends Screen {
 	}
 
 	private int cardsTop() {
-		return height - CARD_H - 44;
+		return height - CARD_H - 10;
 	}
 
 	private @Nullable Hero cardAt(double mx, double my) {
@@ -127,67 +131,119 @@ public class HeroSelectScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
+		int rosterTop = cardsTop() - 12;
+
+		// the previewed hero's art, large, right of centre (behind everything else): the lit card art (the full-body
+		// render is a dark, tinted one)
+		Identifier art = HeroArt.card(preview);
+		if (art != null) {
+			int artH = rosterTop + 4;
+			int artW = artH * 368 / 500;
+			int artX = Math.max(width / 2, width - artW - 96);
+			g.blit(art, artX, 0, artX + artW, artH, 0, 1, 0, 1);
+			// fade the art's cut-off bottom into the background
+			g.fillGradient(artX, artH - 40, artX + artW, artH, 0x00050912, 0xFF070C18);
+		}
+
 		// title, top-left
-		scaled(g, title.getString().toUpperCase(Locale.ROOT), 16, 14, 2.0f, 0xFFFFFFFF);
-		g.text(font, Component.translatable(onJoin ? "overcraft.select.subtitle_join" : "overcraft.select.subtitle_bed"), 16, 36, DIM, true);
+		scaled(g, title.getString().toUpperCase(Locale.ROOT), 12, 8, 1.5f, 0xFFFFFFFF);
+		g.text(font, Component.translatable(onJoin ? "overcraft.select.subtitle_join" : "overcraft.select.subtitle_bed"), 12, 22, DIM, true);
 
 		// the previewed hero: name, role, health, kit
-		int infoX = 24;
-		int infoY = 62;
+		int infoX = 16;
+		int infoY = 38;
 		scaled(g, preview.displayName.toUpperCase(Locale.ROOT), infoX, infoY, 3.0f, preview.color);
+		int roleX = infoX;
+		Identifier badge = HeroArt.role(preview.role);
+		if (badge != null) {
+			g.blit(badge, infoX, infoY + 25, infoX + 11, infoY + 36, 0, 1, 0, 1);
+			roleX += 14;
+		}
 		g.text(font, Component.translatable("overcraft.role." + preview.role.name().toLowerCase(Locale.ROOT))
-			.append("  ·  ").append(Component.translatable("overcraft.select.health", preview.owHealth)), infoX, infoY + 30, DIM, true);
-		int y = infoY + 48;
+			.append("  ·  ").append(Component.translatable("overcraft.select.health", preview.owHealth)), roleX, infoY + 27, DIM, true);
+		int y = infoY + 42;
 		if (preview.playable) {
-			for (Line line : kit(preview)) {
-				g.text(font, "[" + line.key + "]", infoX, y, ACCENT, true);
-				g.text(font, Component.translatable(line.name), infoX + 54, y, 0xFFFFFFFF, true);
-				g.text(font, Component.translatable(line.name + ".desc"), infoX + 54, y + 10, DIM, false);
-				y += 24;
+			List<Line> lines = kit(preview);
+			// descriptions too when there's room above the roster
+			boolean descriptions = y + lines.size() * 26 <= rosterTop;
+			int row = descriptions ? 26 : 16;
+			int keyWidth = 0;
+			for (Line line : lines) {
+				keyWidth = Math.max(keyWidth, font.width(line.key));
+			}
+			for (Line line : lines) {
+				Identifier icon = HeroArt.ability(preview, line.ability);
+				int textX = infoX;
+				if (icon != null) {
+					g.blit(icon, infoX, y - 3, infoX + ICON, y - 3 + ICON, 0, 1, 0, 1);
+					textX += ICON + 4;
+				}
+				g.text(font, line.key, textX, y, ACCENT, true);
+				Component name = Component.translatable("overcraft.ability." + line.ability);
+				g.text(font, name, textX + keyWidth + 6, y, 0xFFFFFFFF, true);
+				if (descriptions) {
+					g.text(font, Component.translatable("overcraft.ability." + line.ability + ".desc"), textX + keyWidth + 6, y + 10, DIM, false);
+				}
+				y += row;
 			}
 		} else {
 			g.text(font, Component.translatable("overcraft.select.coming_soon_long"), infoX, y, DIM, true);
 		}
 
-		// portraits along the bottom
+		// the roster along the bottom
 		int left = cardsLeft();
 		int top = cardsTop();
 		Hero hovered = cardAt(mouseX, mouseY);
 		Hero[] heroes = Hero.values();
-		g.centeredText(font, Component.translatable("overcraft.role.support"), width / 2, top - 12, DIM);
+		Component roleName = Component.translatable("overcraft.role.support");
+		g.centeredText(font, roleName, width / 2, rosterTop, DIM);
+		Identifier supportBadge = HeroArt.role(Hero.Role.SUPPORT);
+		if (supportBadge != null) {
+			int bx = width / 2 - font.width(roleName) / 2 - 13;
+			g.blit(supportBadge, bx, rosterTop - 2, bx + 11, rosterTop + 9, 0, 1, 0, 1);
+		}
 		for (int i = 0; i < heroes.length; i++) {
 			Hero hero = heroes[i];
 			int x = left + i * (CARD_W + GAP);
-			int lift = hero == preview ? 4 : hero == hovered ? 2 : 0;
+			int lift = hero == preview ? 3 : hero == hovered ? 1 : 0;
 			int cy = top - lift;
-			int base = hero.playable ? hero.color : 0xFF3A4152;
-			g.fillGradient(x, cy, x + CARD_W, cy + CARD_H, base, darken(base));
-			scaledCentered(g, hero.displayName.substring(0, 1), x + CARD_W / 2, cy + 10, 3.0f, hero.playable ? 0xFFFFFFFF : 0xFF7A8294);
-			g.fill(x, cy + CARD_H - 12, x + CARD_W, cy + CARD_H, 0xC0000000);
-			g.centeredText(font, hero.displayName.toUpperCase(Locale.ROOT), x + CARD_W / 2, cy + CARD_H - 10, hero.playable ? 0xFFFFFFFF : DIM);
-			if (!hero.playable) {
-				g.centeredText(font, Component.translatable("overcraft.select.soon"), x + CARD_W / 2, cy + 2, DIM);
+			Identifier portrait = HeroArt.portrait(hero);
+			if (portrait != null) {
+				g.fill(x, cy, x + CARD_W, cy + CARD_H, darken(hero.color));
+				g.blit(portrait, x, cy, x + CARD_W, cy + CARD_H, 0, 1, 0, 1);
+				if (!hero.playable) {
+					g.fill(x, cy, x + CARD_W, cy + CARD_H, 0xA0101420);
+					g.centeredText(font, Component.translatable("overcraft.select.soon"), x + CARD_W / 2, cy + CARD_H / 2 - 4, DIM);
+				}
+			} else {
+				int base = hero.playable ? hero.color : 0xFF3A4152;
+				g.fillGradient(x, cy, x + CARD_W, cy + CARD_H, base, darken(base));
+				scaledCentered(g, hero.displayName.substring(0, 1), x + CARD_W / 2, cy + 4, 2.0f, hero.playable ? 0xFFFFFFFF : 0xFF7A8294);
+				if (!hero.playable) {
+					g.centeredText(font, Component.translatable("overcraft.select.soon"), x + CARD_W / 2, cy + CARD_H - 10, DIM);
+				}
 			}
 			if (hero == ClientHero.hero()) {
-				g.fill(x, cy - 3, x + CARD_W, cy - 1, 0xFFFFFFFF);
+				g.fill(x, cy + CARD_H + 1, x + CARD_W, cy + CARD_H + 3, 0xFFFFFFFF);
 			}
 			g.outline(x - 1, cy - 1, CARD_W + 2, CARD_H + 2, hero == preview ? ACCENT : hero == hovered ? 0xFFFFFFFF : 0x60FFFFFF);
 		}
 		super.extractRenderState(g, mouseX, mouseY, a);
 	}
 
-	private record Line(String key, String name) {
+	/** One row of the kit: the key and the ability (its name, description and icon go by this id). */
+	private record Line(String key, String ability) {
 	}
 
 	private static List<Line> kit(Hero hero) {
 		return switch (hero) {
 			case KIRIKO -> List.of(
-				new Line(Component.translatable("overcraft.key.lmb").getString(), "overcraft.ability.kunai"),
-				new Line(Component.translatable("overcraft.key.rmb").getString(), "overcraft.ability.healing_ofuda"),
-				new Line(HeroHud.shortKey(ClientHero.ABILITY_1), "overcraft.ability.swift_step"),
-				new Line(HeroHud.shortKey(ClientHero.ABILITY_2), "overcraft.ability.protection_suzu"),
-				new Line(HeroHud.shortKey(ClientHero.ULTIMATE), "overcraft.ability.kitsune_rush"),
-				new Line(Component.translatable("overcraft.key.passive").getString(), "overcraft.ability.wall_climb"));
+				new Line(Component.translatable("overcraft.key.lmb").getString(), "kunai"),
+				new Line(Component.translatable("overcraft.key.rmb").getString(), "healing_ofuda"),
+				new Line(HeroHud.shortKey(ClientHero.ABILITY_1), "swift_step"),
+				new Line(HeroHud.shortKey(ClientHero.ABILITY_2), "protection_suzu"),
+				new Line(HeroHud.shortKey(ClientHero.ULTIMATE), "kitsune_rush"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "wall_climb"));
 			default -> List.of();
 		};
 	}

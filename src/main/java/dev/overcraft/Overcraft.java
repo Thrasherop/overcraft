@@ -11,6 +11,7 @@ import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
+import dev.overcraft.registry.OcSounds;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -39,6 +40,8 @@ public class Overcraft implements ModInitializer {
 	public void onInitialize() {
 		OcItems.init();
 		OcEntities.init();
+		OcSounds.init();
+		HeroManager.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroInputPayload.TYPE, HeroInputPayload.CODEC);

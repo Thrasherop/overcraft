@@ -6,12 +6,16 @@
 	"entity.overcraft.kunai": "Kunai",
 	"entity.overcraft.ofuda": "Healing Ofuda",
 	"entity.overcraft.suzu": "Protection Suzu",
+	"entity.overcraft.kitsune": "Kitsune",
 
 	"key.category.overcraft.heroes": "Overcraft",
 	"key.overcraft.ability_1": "Ability 1 (hero mode)",
 	"key.overcraft.ability_2": "Ability 2 (hero mode)",
 	"key.overcraft.ultimate": "Ultimate (hero mode)",
 	"key.overcraft.reload": "Reload (hero mode)",
+	"key.overcraft.quick_melee": "Quick melee (hero mode)",
+	"subtitles.overcraft.kiriko.ult.friendly": "Kiriko: Let the Kitsune guide you!",
+	"subtitles.overcraft.kiriko.ult.enemy": "Kiriko: O fox spirit, unleash your claws!",
 	"key.overcraft.hero_mode": "Hero mode / Minecraft",
 	"key.overcraft.hero_select": "Change hero (near your bed)",
 

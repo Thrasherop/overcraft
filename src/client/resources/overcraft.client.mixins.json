@@ -8,6 +8,7 @@
 		"MinecraftPacksMixin",
 		"AvatarRendererMixin",
 		"LivingEntityRendererMixin",
+		"FirstPersonHandsMixin",
 		"CreateWorldScreenAccessor"
 	],
 	"injectors": {

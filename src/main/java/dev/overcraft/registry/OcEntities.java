@@ -1,6 +1,7 @@
 package dev.overcraft.registry;
 
 import dev.overcraft.Overcraft;
+import dev.overcraft.entity.KitsuneEntity;
 import dev.overcraft.entity.KunaiEntity;
 import dev.overcraft.entity.OfudaEntity;
 import dev.overcraft.entity.SuzuEntity;
@@ -20,6 +21,8 @@ public final class OcEntities {
 		.noLootTable().sized((float) KirikoStats.OFUDA_RADIUS * 2, (float) KirikoStats.OFUDA_RADIUS * 2).clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<SuzuEntity> SUZU = register("suzu", EntityType.Builder.<SuzuEntity>of(SuzuEntity::new, MobCategory.MISC)
 		.noLootTable().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
+		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
 	private OcEntities() {
 	}

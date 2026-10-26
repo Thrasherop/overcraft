@@ -1,0 +1,5 @@
+# Kiriko's sounds: <sound id> = <file under the DataTool output dir> (build 154088). `build_asset_pack.py sounds`
+# copies them into the local pack and makes its sounds.json replace the jar's vanilla stand-ins.
+# Ult cast lines: friendly (no criteria = the default line) and the one enemies hear.
+kiriko.ult.friendly = HeroVoice/Kiriko/Ultimate/00000005EB8B.0B2-Let the Kitsune guide you!.ogg
+kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox spirit, unleash your claws!.ogg

@@ -2,11 +2,11 @@ package dev.overcraft.client.model;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import dev.overcraft.Overcraft;
+import dev.overcraft.client.HeroArt;
 import dev.overcraft.hero.Hero;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.reloader.SimpleReloadListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -17,6 +17,7 @@ import org.jspecify.annotations.Nullable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,9 @@ public final class HeroModels {
 	}
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
+	/** Models that aren't heroes (Kitsune Rush's fox), by file name: {@code hero_models/<name>.glb}. */
+	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu");
+	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
 	private static final int MAX_TEXTURE = 2048;
@@ -42,16 +46,26 @@ public final class HeroModels {
 		return MODELS.get(hero);
 	}
 
+	/** The hero's first-person view model (hero_models/<hero>_1p.glb: Overwatch's first-person arms). */
+	public static @Nullable Loaded firstPerson(Hero hero) {
+		return EXTRA_MODELS.get(hero.id + "_1p");
+	}
+
+	/** A model that isn't a hero's (see {@link #EXTRAS}). */
+	public static @Nullable Loaded get(String name) {
+		return EXTRA_MODELS.get(name);
+	}
+
 	public static void init() {
 		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(Overcraft.id("hero_models"),
-			new SimpleReloadListener<Map<Hero, Prepared>>() {
+			new SimpleReloadListener<Map<String, Prepared>>() {
 				@Override
-				protected Map<Hero, Prepared> prepare(SharedState state) {
+				protected Map<String, Prepared> prepare(SharedState state) {
 					return load(state.resourceManager());
 				}
 
 				@Override
-				protected void apply(Map<Hero, Prepared> prepared, SharedState state) {
+				protected void apply(Map<String, Prepared> prepared, SharedState state) {
 					register(prepared);
 				}
 			});
@@ -60,10 +74,16 @@ public final class HeroModels {
 	private record Prepared(SkinnedModel model, List<@Nullable NativeImage> images) {
 	}
 
-	private static Map<Hero, Prepared> load(ResourceManager resources) {
-		Map<Hero, Prepared> out = new EnumMap<>(Hero.class);
+	/** Every model the pack has, by file name (hero ids and {@link #EXTRAS}). */
+	private static Map<String, Prepared> load(ResourceManager resources) {
+		Map<String, Prepared> out = new HashMap<>();
+		List<String> names = new ArrayList<>(EXTRAS);
 		for (Hero hero : Hero.values()) {
-			Optional<Resource> res = resources.getResource(Overcraft.id("hero_models/" + hero.id + ".glb"));
+			names.add(hero.id);
+			names.add(hero.id + "_1p");
+		}
+		for (String name : names) {
+			Optional<Resource> res = resources.getResource(Overcraft.id("hero_models/" + name + ".glb"));
 			if (res.isEmpty()) {
 				continue;
 			}
@@ -73,11 +93,11 @@ public final class HeroModels {
 				for (byte[] png : model.images) {
 					images.add(readImage(png));
 				}
-				out.put(hero, new Prepared(model, images));
-				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", hero.id, model.nodeNames.length,
+				out.put(name, new Prepared(model, images));
+				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
 					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
 			} catch (Exception e) {
-				Overcraft.LOG.error("Couldn't load the {} model", hero.id, e);
+				Overcraft.LOG.error("Couldn't load the {} model", name, e);
 			}
 		}
 		return out;
@@ -99,24 +119,32 @@ public final class HeroModels {
 		}
 	}
 
-	private static void register(Map<Hero, Prepared> prepared) {
+	private static void register(Map<String, Prepared> prepared) {
+		HeroArt.clear();
 		TextureManager textures = Minecraft.getInstance().getTextureManager();
 		REGISTERED.forEach(textures::release);
 		REGISTERED.clear();
 		MODELS.clear();
-		prepared.forEach((hero, p) -> {
+		EXTRA_MODELS.clear();
+		prepared.forEach((name, p) -> {
 			Identifier[] ids = new Identifier[p.images().size()];
 			for (int i = 0; i < ids.length; i++) {
 				NativeImage image = p.images().get(i);
 				if (image == null) {
 					continue;
 				}
-				Identifier id = Overcraft.id("hero_models/" + hero.id + "/" + i);
-				textures.register(id, new DynamicTexture(id::toString, image));
+				Identifier id = Overcraft.id("hero_models/" + name + "/" + i);
+				textures.register(id, new HeroTexture(id, image));
 				REGISTERED.add(id);
 				ids[i] = id;
 			}
-			MODELS.put(hero, new Loaded(p.model(), ids));
+			Loaded loaded = new Loaded(p.model(), ids);
+			Hero hero = Hero.byId(name);
+			if (hero != null) {
+				MODELS.put(hero, loaded);
+			} else {
+				EXTRA_MODELS.put(name, loaded);
+			}
 		});
 	}
 }

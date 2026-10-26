@@ -8,6 +8,8 @@ import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.registry.OcItems;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.GlobalPos;
@@ -37,9 +39,13 @@ import java.util.UUID;
 public final class HeroManager {
 	public static final int HERO_SLOT = 0;
 
-	/** The chosen hero, saved with the player and kept through death. */
+	/**
+	 * The chosen hero, saved with the player and kept through death. Synced to every client: a player looks like
+	 * their hero to everyone, in hero mode and out of it.
+	 */
 	public static final AttachmentType<String> HERO = AttachmentRegistry.create(Overcraft.id("hero"),
-		builder -> builder.persistent(Codec.STRING).copyOnDeath());
+		builder -> builder.persistent(Codec.STRING).copyOnDeath()
+			.syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.all()));
 
 	private static final Identifier HEALTH_MODIFIER = Overcraft.id("hero_health");
 	private static final Map<Hero, HeroKit> KITS = new EnumMap<>(Hero.class);
@@ -202,6 +208,9 @@ public final class HeroManager {
 		}
 		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
 		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
+			QuickMelee.use(player, state);
+		}
 		HeroKit kit = kit(state.hero);
 		if (kit != null && input.pressed() != 0) {
 			kit.press(player, state, input.pressed());
@@ -241,6 +250,7 @@ public final class HeroManager {
 	/** Rules every hero shares: passive ult charge and the global regeneration. */
 	private static void tickRules(ServerPlayer player, HeroState state) {
 		state.rushed = Combat.isRushed(player);
+		QuickMelee.tick(state);
 		if (state.ultActive > 0) {
 			state.ultActive--;
 		} else {
@@ -255,6 +265,13 @@ public final class HeroManager {
 	/** Sends "no hero" so the client's HUD clears. */
 	public static void syncNone(ServerPlayer player) {
 		ServerPlayNetworking.send(player, HeroSyncPayload.NONE);
+	}
+
+	/**
+	 * At mod start: registers {@link #HERO}. A synced attachment has to be registered before players connect (Fabric
+	 * agrees on them while connecting); left to the first event that touches this class, it never syncs.
+	 */
+	public static void init() {
 	}
 
 	public static void clear() {

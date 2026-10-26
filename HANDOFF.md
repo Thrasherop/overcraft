@@ -1,4 +1,4 @@
-# Overcraft: handoff (2026-10-25, end of the first session)
+# Overcraft: handoff (2026-10-25, updated in the second session)
 
 Read this with CLAUDE.md (the rules) and CHANGES.md (the log). This file is the state of play and the path forward.
 Delete or refresh it once it's out of date.
@@ -33,7 +33,7 @@ Steam console should be driven.
   (C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\77e872c0-...\scratchpad\mc and \fapi): re-extract
   if gone (Fabric API sources: download each module's -sources.jar from maven.fabricmc.net).
 
-## What's built (feature/kiriko), none of it played by hand yet
+## What's built (feature/kiriko): played through the dev harness (CHANGES.md), not yet with the real mouse
 - Hero select screen on joining a world (Kiriko playable; Lúcio/Sombra/Illari "coming soon"). H re-opens it within
   5 blocks of your bed/respawn point (or world spawn); the pick on joining is free (owner).
 - Hero mode: G toggles (owner) or hotbar slot 1. Weapon item lives in slot 1; vanilla hotbar/hearts/food/XP hidden,
@@ -65,88 +65,88 @@ Rules (CLAUDE.md): Overwatch closed whenever its files are read; never touch the
   `hero_models/kiriko.glb` (53k tris, 231 bones, ValveBiped skeleton, 16 placeholder clips from
   tools/stopgap_anims.py), `kiriko_weapons.glb` (kunai, ofuda, suzu), `kitsune.glb` (the fox). Previews in
   `local-assets/previews/` (pose_sheet.png = the placeholder poses).
-- Tools kept on the archive drive, `E:\Overwatch Archive	ools\`: `DataTool-2.25.0.0\DataTool.exe` (overtools/OWLib
+- Tools kept on the archive drive, `E:\Overwatch Archive\tools\`: `DataTool-2.25.0.0\DataTool.exe` (overtools/OWLib
   v2.25.0.0+1151), `steamcmd\steamcmd.exe` (Valve, signed; already self-updated), `SourceIO-5.5.4.zip`. Always run it with `--online=false` (else it may fetch from Blizzard's CDN).
   It refuses the live install: build 154504 (Oct 20 patch) not supported; it supports up to 154088.
 - Snapshot of the live install (build 154504): `E:\Overwatch Archive\build-154504\` (77.32 GB, 117 files, Steam
   buildid 25806476; README.txt there). For when DataTool catches up.
 
-**In progress right now: the Oct 6 build (154088), which today's DataTool reads.**
-The owner ran in the Steam console (2026-10-25):
-```
-download_depot 2357570 2357571 7267023877222461613    (game data, 76.5 GB)
-download_depot 2357570 2437288 2963885447373827722    (308 MB)
-```
-Depot 2357572 (English, 1.28 GB) didn't change on Oct 20: manifest 5397310686684469249 is the one in the 154504
-snapshot. Steam puts downloads in `C:\Program Files (x86)\Steam\steamapps\content\app_2357570\depot_<id>\` (2.2 GB
-done at handoff). **Next steps:**
-1. When both say "Depot download complete": assemble `E:\Overwatch Archive\build-154088\` = depot_2357571 +
-   depot_2437288 + the English depot's files (copy them from build-154504; compare with that snapshot's layout: the
-   live install is the three depots merged). Keep the folder structure Overwatch uses (.build.info etc.).
-2. Confirm the build number (DataTool prints "Overwatch build prometheus-..."). If it isn't 154088, check OWLib's
-   supported builds (TACTLib commits "[pro] cmf for <build>").
-3. With Overwatch closed: `DataTool.exe "E:\Overwatch Archive\build-154088" list-heroes --online=false`, then
-   extract Kiriko: `extract-unlocks` (model, skins; check its flags for animations/refpose) and look at what modes
-   export her animations (DataTool's wiki: github.com/overtools/OWLib/wiki). Output is .owmdl/.owanim/.owmat etc.;
-   Blender imports those with the io_scene_owm add-on (ships in the OWLib repo / release: check). Extract into
-   `local-assets/raw/kiriko_owlib/`. Never commit any of it.
-4. Convert to glTF with Blender (extend tools/blender_to_glb.py for .owmdl + .owanim, exporting all clips as glTF
-   animations with their real names), replacing the stopgap `kiriko.glb`. Same for the weapons (and the Kitsune fox,
-   probably an effect/NPC model).
-5. Map Overwatch clip names to the animator's states (see HeroAnimator: idle, run, run_back, strafe_left,
-   strafe_right, crouch_idle, crouch_walk, jump, fall, land, climb, throw_kunai, throw_ofuda, throw_suzu, swift_step,
-   ult_cast): a name table per hero, and the head bone + upper-body root become per-model settings
-   (HeroAnimator.UpperBody is hard-wired to ValveBiped names today).
+**Build 154088 extracted (session 2, 2026-10-25).** All on the archive drive, read-only, checksummed, outside any
+Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` says what's where.
+- `build-154088\`: the Oct 6 install (prometheus-2_25_0_0-154088), from the Steam console's download_depot (the
+  first try died when C: filled up; Steam then needed a restart: "No connection to content servers" = "No target
+  sources connected" in content_log). English data.001.001 copied from build-154504.
+- DataTool 2.25 reads it offline: `DataTool.exe "E:\Overwatch Archive\build-154088" <mode> ... --online=false
+  --language=enUS`. The default skin is now called "Overwatch" (`"Kiriko|skin=Overwatch"`; "Classic" finds nothing).
+- `extracted\154088\`: heroes.txt (every hero's kit + perk text), Heroes\Kiriko (extract-unlocks --extract-refpose),
+  HeroVoice\Kiriko (2265 lines by category, with subtitles: issues #3, #5).
+- Blender add-on: overtools' io_scene_owm 3.3.1 (installed as a Blender 5.2 extension; zip in `E:\Overwatch
+  Archive\tools\`). `tools/owm_survey.py` imports a .owmdl + its clips, surveys them (thumbnails, motion numbers)
+  and exports a .glb (`--keep=<clip map>` picks and renames clips; all 330 takes the glTF exporter >30 min).
+  `tools/owm_previews.py` renders every model in a folder (DataTool names them by id only).
+- Kiriko's models (in Heroes\Kiriko\Skin\Overwatch\Overwatch\Models): `00000000003A.118` = Kiriko (3rd person and
+  1st person use the same model; 94.8k tris before dropping 7 material-less LOD shells; 566 bones, 469 named:
+  Pelvis, Spine_1-3, Neck, Head, Clavicle/Arm/Elbow/Wrist/Weapon_L/R, Thigh/Knee/Foot/Toe_L/R, cloth_*, and a
+  `Camera` bone = the 1st-person eye). Her held kunai x3 / ofuda / Suzu are submeshes on weapon bones (at the origin
+  in the rest pose; the game shows/hides them). `0000000105FB` = the Kitsune fox (8 clips; exported and checked:
+  `E:\Overwatch Archive\work\kitsune\`). `00000001096F` kunai, `000000010945` ofuda (its texture isn't picked up
+  yet), `000000010946` Suzu. `0000000096F5` motorbike, `00000001CBA0` cat: emote props.
+- Her 330 clips: folders `0-*` are full-body clips, `4-*` look like additive layers (garbage when applied alone),
+  `128-32` = quick melee x3, `16-*` long (emotes/intros). Clip map: `tools/clipmaps/kiriko.txt` (8-direction run and
+  crouch-walk confirmed by foot slide; jump/land, melee, death, knockdown, wall climb (`0-32_AC1F`) and its hop over
+  the top (`0-32_AC20`) confirmed by eye; abilities are `cand_`). Run clips move ~3.4 m/s: play them ~1.6x for
+  Overwatch's 5.5. The owner spotted the climb on a contact sheet: show them sheets when stuck.
+- Ability clips (kunai/ofuda/Suzu throws, Swift Step, ult cast, reload) are guesses: render them as frame sequences
+  and compare with gameplay footage. The Suzu throw and Swift Step were found by which clips move the held props'
+  bones (scratchpad script props.py: worth keeping in tools/ if it's needed again).
+- UI art: `py tools/build_asset_pack.py ui "E:\Overwatch Archive\extracted\154088"` (from extract-hero-icons) puts
+  every hero's portrait/card/full-body art and ability/perk icons in the pack (`HeroArt` reads them).
+  `extracted\154088\UITextures` (dump-ui-textures, ~20k files) is for role icons and Overwatch's HUD art.
+- **First person**: Overwatch's first-person animation set isn't in this extraction. All 330 clips are 3rd-person
+  (rendered from the `Camera` bone, the eye sits inside the head; the `4-*` clips are additive layers whose bones
+  collapse when applied alone). DataTool's SkinTheme walks Gameplay3P and names the STUFirstPersonComponent's entity
+  Gameplay1P, but its clips didn't come out. Options: find how DataTool exports them, or "true first person" (her
+  model from the Camera bone with the head hidden, 3rd-person clips).
 
-## Current work: hero model + animation system (written, compiles, NOT yet run)
+## The hero model in game (feature/kiriko, uncommitted until the owner's real-mouse play)
 Owner wants Kiriko's own animations ("when crouching, Kiri crouches; Steve bends at the waist"), not Minecraft's.
-Files (src/client/java/dev/overcraft/client/):
-- `model/Glb.java`: .glb reader (JSON + BIN, accessors, embedded images).
-- `model/SkinnedModel.java`: nodes/rest pose, skin + inverse bind matrices, pieces (one per material), clips.
-- `model/Skeleton.java`: sample clips (linear/slerp/step), blend poses (with a bone mask), skin matrices, head turn.
-- `model/HeroAnimator.java`: per-entity state machine (movement -> base clip, 0.15 s crossfades; actions layered on
-  the upper body; clip fallbacks; head follows the look direction). Remote players: state from position deltas;
-  climbing detected by steady ~climb-speed rise; actions arrive as `HeroActionPayload` (server: `Combat.animate`).
-- `model/HeroModels.java`: loads hero_models/<hero>.glb on resource reload, textures as DynamicTextures (halved to
-  <= 2048).
-- `model/HeroModelRenderer.java` + `mixin/AvatarRendererMixin` (extract) + `mixin/LivingEntityRendererMixin`
-  (submit, cancels vanilla): a player holding a HeroWeaponItem (= hero mode, visible to everyone) is drawn as the
-  hero model, CPU-skinned, triangles emitted as quads with a doubled corner into `RenderTypes.entityCutout`.
-  Model space: glTF Y-up metres, facing +Z; rotated by -bodyRot (yaw 0 = +Z/south). **Unverified guesses to check
-  first in game:** facing direction, feet at y=0, scale, texture V orientation, normals/lighting, performance
-  (53k tris CPU-skinned per frame).
-- Known gaps: name tags/armor/held-item layers are skipped for hero-model players; no first-person arms/weapons yet;
-  weapons model not attached to the hands; Kitsune fox model not used yet (Kitsune Rush is still particles).
+Files (src/client/java/dev/overcraft/client/model/):
+- `Glb`, `SkinnedModel`, `Skeleton`: .glb reading, rest pose, skin, clips, sampling, blending, skin matrices.
+- `HeroAnimator`: per-entity state machine: idle, 8-direction run and crouch-walk (rate matched to ground speed),
+  jump/fall/land, climb (+0.3 m back from the wall) and climb_top, death; actions (throws, casts) on the upper body
+  from `HeroActionPayload`. Bones by name: Overwatch (`Spine_1`, `Head`) or ValveBiped.
+- `HeroModels`: loads hero_models/<hero>.glb and extras (kitsune.glb); `HeroTexture`: mipmapped, linear filtering.
+- `HeroModelRenderer` (+ AvatarRendererMixin, LivingEntityRendererMixin): draws hero-mode players (and dying heroes)
+  as their model, CPU-skinned; hides held props the current clip doesn't use (parked at the origin).
+- `KitsuneRenderer` + `entity/KitsuneEntity`: Kitsune Rush's fox, moved by `KitsuneRush` along the corridor.
+- Known gaps: name tags/armor layers skipped for hero-model players; no first-person arms (see above); no swim pose;
+  quick melee not in the kit; Sombra is listed as a Support (she's Damage).
 
-## Dev harness (written, compiles, NOT yet run)
+## Dev harness
 `gradlew runClient` passes `-Dovercraft.dev=true` and the asset pack path. `client/dev/DevServer.java` listens on
-127.0.0.1:25599; `py tools/dev.py <commands...>` (see its docstring). Commands: state, newworld <name>
-[creative|survival] (flat world via CreateWorldScreenAccessor), openworld, screen, close, key <mapping>
-down|up|tap, look/turn, cmd </command>, screenshot <file.png> (-> run/screenshots/), perspective first|back|front,
-hero <id>. Lets a session drive and screenshot the game without desktop control; still do real hand play with
-computer use per CLAUDE.md.
+127.0.0.1:25599; `py tools/dev.py <commands...>` (see its docstring). Commands: state (with `anim`, the playing
+clip), newworld <name> [creative|survival], openworld, screen, close, respawn, key <mapping> down|up|tap,
+look/turn, cmd </command>, screenshot <file.png> (-> run/screenshots/), perspective first|back|front, hero <id>.
+Lessons: summon test mobs with `Tags:["x"]` and select `@e[tag=x]` (superflat worlds have villages, and SNBT names
+keep their quotes); a fresh client logs "Hero model" before it's done loading: wait for the title screen; the
+harness can't click, so real hand play still needs desktop control (the owner approves it at the PC).
 
-**Suggested first steps for the new session:**
-1. `gradlew runClient` (background). `py tools/dev.py "newworld Test creative"`, then `hero kiriko`,
-   `perspective back`, screenshots: does Kiriko render, facing the right way, feet on the ground, textured?
-   Then walk/crouch/jump/climb via `key` and screenshot each (does the right clip play?).
-2. Fix what that shows. Then play by hand with computer use: the whole Kiriko checklist in CLAUDE.md (kunai on
-   zombies, ofuda on a wolf/villager, Swift Step, Suzu, Kitsune Rush, wall climb, HUD, G toggle, H near bed, death and
-   respawn, rejoin, plain Minecraft on slots 2-9). Write down what was tried in CHANGES.md.
-3. Meanwhile the 154088 download -> DataTool extraction -> real model + clips (above).
-4. Then: first-person view model (arms + weapons), weapons in hands, Kitsune fox model, name tags; perks; quick melee.
-5. Merge feature/kiriko -> next -> main only after hand play (CLAUDE.md). Then Lúcio, Sombra, Illari (stats already
+**Next:**
+1. The owner's real-mouse hand play of all of the above (CLAUDE.md), then commit (they asked: only after play).
+2. First person (above). Role icons and HUD art from UITextures (#7, #8). Swim pose. Quick melee.
+3. Merge feature/kiriko -> next -> main only after hand play (CLAUDE.md). Then Lúcio, Sombra, Illari (stats already
    researched: see CHANGES.md/old research, re-check patch notes), then Juno (#1), Sojourn (#2).
 
 ## Owner's decisions so far (all 2026-10-25)
-- Fabric. Kiriko first, then Lúcio, Sombra, Illari, then Juno, Sojourn.
+- Fabric. Kiriko first, then Lúcio, Sombra, Illari, then Juno, Sojourn. Mercy added to the list (#10, session 2).
 - LMB kunai, RMB ofuda (swapped from Overwatch's default on purpose).
 - G toggles hero mode; H changes hero only near your bed; pick on join is free.
 - Ult charge also from advancements. Movement/animations must feel like Overwatch, not Steve.
-- Assets from his own install, never shipped; Overwatch never running alongside; ripped models OK as stopgaps
-  (he downloads them; Steam Workshop SFM ports were the clean source; a Patreon link I gave was NSFW: vet links
-  before giving them). Archive each build's install on the WD_BLACK drive (E:\Overwatch Archive\).
-- Desktop control: he'll use a normal session so computer use works. SteamCMD logged in by him once
-  (`E:\Overwatch Archive	ools\steamcmd\steamcmd.exe +login <user>`, he types the password) would let a session
-  download old builds itself with `+login <user> +download_depot 2357570 <depot> <manifest>` (offered, not done).
-  Never type his password or Steam Guard code.
+- Assets from the owner's own install, never shipped; Overwatch never running alongside; ripped models OK as
+  stopgaps (the owner downloads them; Steam Workshop SFM ports were the clean source; a Patreon link I gave was NSFW:
+  vet links before giving them). Archive each build's install on the WD_BLACK drive (E:\Overwatch Archive\).
+- The UI uses the game's own art too (owner, session 2).
+- Desktop control: the owner uses a normal session so computer use works (approved at the PC; it can't be approved
+  from the phone). SteamCMD logged in by the owner once (`E:\Overwatch Archive\tools\steamcmd\steamcmd.exe +login
+  <user>`, the owner types the password) would let a session download old builds itself with `+login <user>
+  +download_depot 2357570 <depot> <manifest>` (offered, not done). Never type their password or Steam Guard code.

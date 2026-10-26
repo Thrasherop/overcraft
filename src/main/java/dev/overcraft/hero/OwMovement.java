@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
@@ -37,6 +38,8 @@ public final class OwMovement {
 	public static final double TERMINAL_SPEED = 30;
 	/** Buffs add up to at most +75% (wiki). */
 	public static final double MAX_SPEED_BONUS = 0.75;
+	/** How far below a ledge's top the feet may be for the ledge assist to lift the hero onto it (m, ours). */
+	public static final double LEDGE_REACH = 0.3;
 
 	/** Set by the client: this entity moves the Overwatch way (the local player, a hero, slot 1). */
 	public static Predicate<LivingEntity> active = entity -> false;
@@ -140,10 +143,33 @@ public final class OwMovement {
 
 		entity.setDeltaMovement(horizontal.x, dy, horizontal.z);
 		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		if (!entity.onGround() && entity.horizontalCollision && wish != Vec3.ZERO) {
+			ledge(entity, wish);
+		}
 		Vec3 after = entity.getDeltaMovement();
 		// move() zeroes what a wall or the floor stopped (keep that); the vertical speed carried on is the new one
 		double carried = after.y == 0 || (entity.onGround() && vy < 0) ? 0 : vy;
 		entity.setDeltaMovement(after.x, carried, after.z);
+	}
+
+	/**
+	 * Ledge assist (ours): Overwatch's jump peaks at 0.98 m, just short of a Minecraft block, and Minecraft only steps up
+	 * 0.6 m on landing. In the air, pushing into a ledge whose top is at most {@link #LEDGE_REACH} above the feet lifts
+	 * the hero onto it, from any direction (running, strafing, backing up), as a 1-block step should allow.
+	 */
+	private static void ledge(LivingEntity entity, Vec3 wish) {
+		Vec3 push = wish.normalize().scale(0.1);
+		AABB box = entity.getBoundingBox();
+		if (entity.level().noCollision(entity, box.move(push.x, 0, push.z))) {
+			return; // brushing along a wall, not pushing into a ledge
+		}
+		for (double lift = 0.05; lift <= LEDGE_REACH + 1.0E-6; lift += 0.05) {
+			AABB raised = box.move(0, lift, 0);
+			if (entity.level().noCollision(entity, raised) && entity.level().noCollision(entity, raised.move(push.x, 0, push.z))) {
+				entity.setPos(entity.getX(), entity.getY() + lift, entity.getZ());
+				return;
+			}
+		}
 	}
 
 	/**

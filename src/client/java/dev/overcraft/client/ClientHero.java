@@ -28,10 +28,12 @@ public final class ClientHero {
 	public static final KeyMapping ABILITY_2 = key("ability_2", InputConstants.KEY_E);
 	public static final KeyMapping ULTIMATE = key("ultimate", InputConstants.KEY_Q);
 	public static final KeyMapping RELOAD = key("reload", InputConstants.KEY_R);
+	/** Overwatch's default quick melee key. */
+	public static final KeyMapping QUICK_MELEE = key("quick_melee", InputConstants.KEY_V);
 	public static final KeyMapping HERO_MODE = key("hero_mode", InputConstants.KEY_G);
 	public static final KeyMapping HERO_SELECT = key("hero_select", InputConstants.KEY_H);
 
-	private static final Set<KeyMapping> HERO_KEYS = Set.of(ABILITY_1, ABILITY_2, ULTIMATE, RELOAD);
+	private static final Set<KeyMapping> HERO_KEYS = Set.of(ABILITY_1, ABILITY_2, ULTIMATE, RELOAD, QUICK_MELEE);
 
 	private static HeroSyncPayload sync = HeroSyncPayload.NONE;
 	private static int lastHeld;
@@ -128,6 +130,7 @@ public final class ClientHero {
 		pressed |= drain(ABILITY_2) ? HeroInputPayload.PRESS_ABILITY_2 : 0;
 		pressed |= drain(ULTIMATE) ? HeroInputPayload.PRESS_ULTIMATE : 0;
 		pressed |= drain(RELOAD) ? HeroInputPayload.PRESS_RELOAD : 0;
+		pressed |= drain(QUICK_MELEE) ? HeroInputPayload.PRESS_MELEE : 0;
 
 		// vanilla actions bound to the same keys as a hero key don't happen in hero mode (E inventory, Q drop, ...)
 		for (KeyMapping vanilla : mc.options.keyMappings) {

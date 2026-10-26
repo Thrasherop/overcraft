@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Overcraft;
 import dev.overcraft.client.ClientHero;
 import dev.overcraft.client.mixin.CreateWorldScreenAccessor;
+import dev.overcraft.client.model.HeroAnimator;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Commands: state | newworld <name> [creative|survival] | openworld <folder> | screen | close | key <mapping> down|up|tap
  * | look <yaw> <pitch> | turn <dyaw> <dpitch> | cmd <command> | screenshot <file.png> | perspective first|back|front
+ * | respawn | subtitles on|off
  * | hero <id>
  */
 public final class DevServer {
@@ -125,6 +127,9 @@ public final class DevServer {
 					out.addProperty("vx", player.getDeltaMovement().x);
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
+					out.addProperty("anim", HeroAnimator.of(player).playing());
+					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
+					out.addProperty("heroAttached", attached == null ? "" : attached);
 				}
 			}
 			case "newworld" -> {
@@ -154,6 +159,18 @@ public final class DevServer {
 			case "close" -> {
 				mc.gui.setScreen(null);
 				out.addProperty("ok", true);
+			}
+			case "subtitles" -> {
+				// shows which sound played in screenshots (on or off)
+				mc.options.showSubtitles().set(!arg.equals("off"));
+				out.addProperty("ok", true);
+			}
+			case "respawn" -> {
+				// what the death screen's Respawn button does
+				if (player != null) {
+					player.respawn();
+				}
+				out.addProperty("ok", player != null);
 			}
 			case "key" -> {
 				String[] a = arg.split(" ");

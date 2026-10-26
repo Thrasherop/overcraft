@@ -31,6 +31,8 @@ public final class HeroState {
 	public double ability2Cooldown;
 	public int castTicks = -1;
 	public @Nullable UUID castTarget;
+	/** Quick melee, every hero's (QuickMelee). */
+	public double meleeCooldown;
 
 	public long lastDamagedTick = -10000;
 	/** In (or just out of) a Kitsune Rush corridor this tick. */
@@ -50,6 +52,7 @@ public final class HeroState {
 		primaryAmmoRestored = false;
 		secondaryFiredSinceReload = false;
 		ability1Cooldown = ability2Cooldown = 0;
+		meleeCooldown = 0;
 		castTicks = -1;
 		castTarget = null;
 	}
