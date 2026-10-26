@@ -5,6 +5,11 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Played: a night fight on Normal** (CLAUDE.md: "a real fight"): three skeletons and three zombies against Kiriko in
+open ground, the harness aiming kunai at the nearest of each, Suzu, ofuda at her feet, a strafe-jump, the ult. She dies
+in the fourth round both times (250 to 0 in about 6 s once both groups reach her; her ult charge climbs from her hits
+throughout, so the kit works). Six mobs at once is a lot for a support with scripted aim; no bug found. (`fg1_sheet`.)
+
 **Her model draws faster** (performance). Found by playing: third person ran at 31 FPS against 115 in Minecraft mode
 (this machine's dev client runs on its integrated GPU). Measured with new harness timers (`timing`, `timing stride N`,
 `timing cull on|off`, `state` now has `fps`): posing her took 0.6 ms a frame and writing her vertices 5-6 ms; the rest
