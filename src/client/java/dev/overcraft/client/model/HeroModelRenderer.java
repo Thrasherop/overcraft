@@ -334,6 +334,7 @@ public final class HeroModelRenderer {
 		int[] idx = piece.indices();
 		float[] uv = piece.uv();
 		float parked = STOWED_RADIUS * STOWED_RADIUS;
+		boolean closed = cull && Timing.cull && CLOSED.computeIfAbsent(piece, HeroModelRenderer::isClosed);
 		// into the pose's space once per vertex (camera-relative: the camera at the origin), normals too
 		Matrix4f m = pose.pose();
 		Vector3f t = new Vector3f();
@@ -354,7 +355,7 @@ public final class HeroModelRenderer {
 			if (prop && near(p, a, parked) && near(p, b, parked) && near(p, c, parked)) {
 				continue;
 			}
-			if (cull && Timing.cull && facesAway(q, a, b, c)) {
+			if (closed && facesAway(q, a, b, c)) {
 				continue;
 			}
 			vertex(buffer, q, qn, uv, a, light, overlay, color);
@@ -365,9 +366,10 @@ public final class HeroModelRenderer {
 	}
 
 	/**
-	 * The triangle faces away from the camera (at the origin): the GPU would cull it anyway (the render types cull back
-	 * faces), so it isn't sent. Halves what goes up each frame: sending her 67k triangles cost 23 ms a frame on an
-	 * integrated GPU (31 FPS in third person against 115 without her), almost all of it the upload, not our CPU work.
+	 * The triangle faces away from the camera (at the origin). On a closed piece (her body) it's hidden behind the
+	 * piece's near side anyway, so it isn't sent: sending her 67k triangles cost 23 ms a frame on an integrated GPU (31
+	 * FPS in third person against 115 without her), almost all of it the upload, not our CPU work. Open pieces (hair
+	 * and cloth cards, paper) show both sides and are sent whole: culled, her hair showed the sky through it.
 	 */
 	private static boolean facesAway(float[] q, int a, int b, int c) {
 		float ax = q[a * 3], ay = q[a * 3 + 1], az = q[a * 3 + 2];
@@ -378,6 +380,35 @@ public final class HeroModelRenderer {
 		float nz = e1x * e2y - e1y * e2x;
 		return nx * ax + ny * ay + nz * az >= 0;
 	}
+
+	/**
+	 * Nearly closed: under CLOSED_OPEN_EDGES of its edges border only one triangle (corners welded by position, as UV
+	 * seams split them). Her body pieces: 0.8-2%; hair and prop cards: 5-50%.
+	 */
+	private static boolean isClosed(SkinnedModel.Piece piece) {
+		float[] pos = piece.pos();
+		Map<Long, Integer> weld = new HashMap<>();
+		int[] id = new int[piece.vertexCount()];
+		for (int v = 0; v < id.length; v++) {
+			long key = Math.round(pos[v * 3] * 1e4) * 73856093L ^ Math.round(pos[v * 3 + 1] * 1e4) * 19349663L
+				^ Math.round(pos[v * 3 + 2] * 1e4) * 83492791L;
+			id[v] = weld.computeIfAbsent(key, k -> weld.size());
+		}
+		Map<Long, Integer> edges = new HashMap<>();
+		int[] idx = piece.indices();
+		for (int t = 0; t + 2 < idx.length; t += 3) {
+			for (int e = 0; e < 3; e++) {
+				int a = id[idx[t + e]];
+				int b = id[idx[t + (e + 1) % 3]];
+				edges.merge(Math.min(a, b) * 4294967296L + Math.max(a, b), 1, Integer::sum);
+			}
+		}
+		long open = edges.values().stream().filter(n -> n == 1).count();
+		return !edges.isEmpty() && open < edges.size() * CLOSED_OPEN_EDGES;
+	}
+
+	private static final float CLOSED_OPEN_EDGES = 0.03f;
+	private static final Map<SkinnedModel.Piece, Boolean> CLOSED = new IdentityHashMap<>();
 
 	private static boolean near(float[] p, int i, float radiusSq) {
 		return p[i * 3] * p[i * 3] + p[i * 3 + 1] * p[i * 3 + 1] + p[i * 3 + 2] * p[i * 3 + 2] < radiusSq;

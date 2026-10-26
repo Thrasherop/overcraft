@@ -5,15 +5,19 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
-**Her model draws twice as fast** (performance). Found by playing: third person ran at 31 FPS against 115 in Minecraft
-mode (this machine's dev client runs on its integrated GPU). Measured with new harness timers (`timing`, `timing stride
-N`, `timing cull on|off`, `state` now has `fps`): posing her took 0.6 ms a frame and writing her vertices 5-6 ms; the
-rest of the 23 ms was moving her 67,500 triangles to the GPU, and frame time scaled with the triangle count (all 31 FPS,
-half 62, a quarter 83, none 115). Her render types cull back faces, so the half facing away was uploaded only to be
-thrown away: now those triangles aren't sent (the same test the GPU does, on the CPU), and each vertex is put in the
-camera's space once instead of through two allocating calls. Third person 31 -> 58 FPS, first person 70 -> 98. Not on
-the select screen (Minecraft's GUI view of a model has no camera at the origin). Checked: the same pictures with culling
-on and off, back and front, first person and the select screen (`cull_sheet`, `ccz`).
+**Her model draws faster** (performance). Found by playing: third person ran at 31 FPS against 115 in Minecraft mode
+(this machine's dev client runs on its integrated GPU). Measured with new harness timers (`timing`, `timing stride N`,
+`timing cull on|off`, `state` now has `fps`): posing her took 0.6 ms a frame and writing her vertices 5-6 ms; the rest
+of the 23 ms was moving her 67,500 triangles to the GPU, and frame time scaled with the triangle count (all 31 FPS, half
+62, a quarter 83, none 115).
+- Triangles facing away from the camera on her nearly closed pieces (the body: under 3% of their edges open) aren't
+  sent: they're hidden behind the piece's near side. Open pieces (hair and cloth cards, paper) show both sides and are
+  sent whole. A first version culled everything, believing Minecraft's cutout entity pipeline culls; it doesn't, and
+  her hair showed the sky through it from below (`caw`: caught comparing culling on and off from four angles).
+- Each vertex is put in the camera's space once, not through two allocating calls.
+- Third person 31 -> 46 FPS, first person 70 -> 98 -> 91. Not on the select screen (Minecraft's GUI view of a model has
+  no camera at the origin). Checked: the same pictures with culling on and off, from four angles and close on her head
+  (`ca_sheet`, `caw2`), first person and the select screen.
 
 **Kiriko speaks for the game's moments** (issue #5): her own recorded lines from the archive's voice categories, the
 unconditional ones (lines whose criteria name a hero or map are left out; "NOT (scripted event)" is the normal case),
