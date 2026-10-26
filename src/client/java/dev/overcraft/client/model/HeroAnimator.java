@@ -61,6 +61,10 @@ public final class HeroAnimator {
 	private float landedAt = -100;
 	private int climbTicks;
 	private boolean wasClimbing;
+	/** Its motion last tick (blocks per tick), for the cloth's lag. */
+	private double tickVx, tickVy, tickVz;
+	private @Nullable ClothSim cloth;
+	private @Nullable SkinnedModel clothFor;
 	private float dustAt = -10;
 	private float climbTopAt = -100;
 	private long lastTick = -1;
@@ -84,6 +88,11 @@ public final class HeroAnimator {
 
 	private static boolean isClimb(String clip) {
 		return clip.equals("climb") || clip.equals("climb_top");
+	}
+
+	/** The third-person action playing now ("throw_suzu", ...), or null. */
+	public @Nullable String action() {
+		return actions.playing();
 	}
 
 	/** The clips playing now (base, and the action on top if any), for the dev harness. */
@@ -191,6 +200,18 @@ public final class HeroAnimator {
 		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
 
+		// the cloth the clips leave rigid (coat tails): simulated, kept out of the legs
+		if (clothFor != model) {
+			clothFor = model;
+			cloth = ClothSim.of(model);
+		}
+		if (cloth != null) {
+			// her motion this frame, turned into the model's frame (the renderer turns the model by -bodyRot)
+			Vector3f moved = new Vector3f((float) tickVx, (float) tickVy, (float) tickVz).mul(20 * dt)
+				.rotateY((float) Math.toRadians(entity.yBodyRot));
+			cloth.step(model, pose, dt, moved);
+		}
+
 		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(headPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
 	}
@@ -199,6 +220,9 @@ public final class HeroAnimator {
 		double vx = entity.getX() - entity.xo;
 		double vy = entity.getY() - entity.yo;
 		double vz = entity.getZ() - entity.zo;
+		tickVx = vx;
+		tickVy = vy;
+		tickVz = vz;
 		boolean onGround = entity.onGround();
 		if (!onGround) {
 			fallSpeed = Math.max(fallSpeed, -vy);

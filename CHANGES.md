@@ -29,6 +29,20 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 - Shapes (discs, rings, the ofuda segment, the mouse) are drawn at load as smooth masks (HudShapes): original, not
   from the game.
 
+**Her coat no longer clips through her legs** (owner: "kiri's fabric things being clipped into legs"). Overwatch moves
+cloth bones only with physics, never with clips, so her 24 coat-tail chains (7-8 bones each, hanging from the hips)
+stayed rigid while the thighs swung through them. New ClothSim: per frame, each chain is pinned at the waist, pulled
+back toward its drape (firm at the top, loose at the hem), swings with gravity, trails behind her motion, keeps its bone
+lengths, and is pushed out of capsules around the thighs and shins, lifting outward over a leg rather than parting around
+it. The trouser cuffs (5-bone chains on the knees) are left as they are. Stiffness, damping and radii are ours (the
+game's cloth settings aren't in what we read).
+- Reproduced first: strafing in front view, her thigh passed through the coat panel (`cloth0_g`). After: the coat
+  swings and trails while running (`cloth1_*`), and the strafing leg goes under the coat, not through it
+  (`cloth2_f/g`). A first try pushed points straight off the leg and the chains parted around it: still clipping.
+- **The Suzu bell no longer sits in her hand while she runs, strafes, jumps or falls**: those clips carry it (the props
+  survey), the game hides it until the throw; now it shows only during the throw (seen in `cloth2_*`).
+- Suzu's flash is smaller (a burst at her own feet whited out the screen in third person).
+
 **Real Overwatch effects instead of Minecraft particles** (owner: "I noticed you are still using minecraft assets like
 particle effects for ofuda trails. Thats not how ofuda look in game"). An effects sub-agent read Kiriko's effect files
 from the archived build (their particles, ribbons, meshes, timings, colour ramps: `tools/reference/kiriko-effects.md`;

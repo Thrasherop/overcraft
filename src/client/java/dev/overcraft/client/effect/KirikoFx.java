@@ -175,7 +175,7 @@ public final class KirikoFx {
 		Particle dome = Fx.particle("dome_noise", Palette.SUZU_BLUE);
 		if (dome != null) {
 			Fx.add(dome.at(at.add(0, -0.3, 0)).shape(Shape.DOME).life(0.3f).size(r, 2 * r).easeOut().spin(range(0, Mth.TWO_PI), 1)
-				.alpha(0.7f).fade(0.05f, 0.7f));
+				.alpha(0.5f).fade(0.05f, 0.7f));
 		}
 		Vec3 ground = at.add(0, 0.05, 0);
 		Particle wave = Fx.particle("ring_line", Palette.SUZU_BLUE);
@@ -188,8 +188,9 @@ public final class KirikoFx {
 			Fx.add(flower.at(ground.add(0, 0.02, 0)).normal(new Vec3(0, 1, 0)).life(0.5f).size(1.2f, 2.2f).easeOut()
 				.spin(range(0, Mth.TWO_PI), 0.5f).alpha(0.7f).fade(0.1f, 0.6f));
 		}
-		Fx.add(glow("glow_hot", Palette.SUZU_BLUE, at, 3f, 0.3f, 0.8f));
-		Fx.add(glow("glow", Palette.TEAL, at, 5f, 0.5f, 0.8f));
+		// a flash, kept modest: Suzu is often thrown at her own feet, and a big glow there whites out the screen
+		Fx.add(glow("glow_hot", Palette.SUZU_BLUE, at, 1.6f, 0.25f, 0.5f));
+		Fx.add(glow("glow", Palette.TEAL, at, 3f, 0.4f, 0.35f));
 		Particle mark = Fx.particle("ring_line", Palette.SUZU_GOLD);
 		if (mark != null) {
 			Fx.add(mark.at(ground.add(0, 0.03, 0)).normal(new Vec3(0, 1, 0)).life(5).size(2 * r, 2 * r).alpha(0.7f).fade(0.03f, 0.15f));
@@ -218,7 +219,7 @@ public final class KirikoFx {
 		Fx.add(glow("glow_hot", Palette.TEAL, chest, 1.6f, 0.22f, 0.45f));
 		int petals = arrive ? 65 : 39;
 		for (int i = 0; i < petals; i++) {
-			Particle petal = Fx.particle("petal", Palette.WHITE);
+			Particle petal = Fx.particle("petal", Palette.TEAL);
 			if (petal == null) {
 				break;
 			}
@@ -228,7 +229,7 @@ public final class KirikoFx {
 			float size = range(0.045f, 0.08f);
 			Vec3 v = cone(new Vec3(0, 1, 0), Math.toRadians(60)).scale(speed);
 			Fx.add(petal.at(chest.add(randomUnit(Fx.RANDOM).scale(0.3))).velocity(v).gravity(2.5f).drag(0.15f).life(life)
-				.size(size, size).spin(range(0, Mth.TWO_PI), range(-8, 8)).tint(PETAL_TINT).fade(0.05f, 0.4f));
+				.size(size, size).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
 		}
 		if (arrive) {
 			Particle puff = Fx.particle("glow", Palette.TEAL);
@@ -293,12 +294,12 @@ public final class KirikoFx {
 			gateBar(base.add(0, 3.7, 0), side, (float) (2 * half), 0.25f, life);
 		}
 		for (int i = 0; i < 7; i++) {
-			Particle petal = Fx.particle("petal", Palette.WHITE);
+			Particle petal = Fx.particle("petal", Palette.TEAL);
 			if (petal != null) {
 				float size = range(0.05f, 0.09f);
 				Vec3 from = base.add(side.scale(range(-1, 1) * half)).add(0, range(0.5f, 4.4f), 0);
 				Fx.add(petal.at(from).velocity(randomUnit(Fx.RANDOM).scale(range(0.5f, 1.5f))).gravity(0.6f).drag(0.4f)
-					.life(range(1.5f, 3.5f)).size(size, size).spin(range(0, Mth.TWO_PI), range(-5, 5)).tint(PETAL_TINT).fade(0.05f, 0.4f));
+					.life(range(1.5f, 3.5f)).size(size, size).spin(range(0, Mth.TWO_PI), range(-5, 5)).fade(0.05f, 0.4f));
 			}
 		}
 		for (int i = 0; i < 4; i++) {
@@ -349,14 +350,14 @@ public final class KirikoFx {
 	public static void foxPetals(Vec3 at, float dt, int perSecond) {
 		int n = (int) (perSecond * dt + Fx.RANDOM.nextFloat());
 		for (int i = 0; i < n; i++) {
-			Particle petal = Fx.particle("petal", Palette.WHITE);
+			Particle petal = Fx.particle("petal", Palette.TEAL);
 			if (petal == null) {
 				return;
 			}
 			float size = range(0.05f, 0.09f);
 			Fx.add(petal.at(at.add(randomUnit(Fx.RANDOM).scale(0.6)).add(0, 0.8, 0)).velocity(randomUnit(Fx.RANDOM).scale(0.8))
 				.gravity(1.2f).drag(0.3f).life(range(0.6f, 0.7f) * 2).size(size, size).spin(range(0, Mth.TWO_PI), range(-6, 6))
-				.tint(PETAL_TINT).fade(0.05f, 0.4f));
+				.fade(0.05f, 0.4f));
 		}
 	}
 

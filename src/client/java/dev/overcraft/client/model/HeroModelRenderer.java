@@ -22,8 +22,10 @@ import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Draws a hero's own model in place of the Minecraft player model, for a player in hero mode (holding the hero's
@@ -31,7 +33,7 @@ import java.util.Map;
  */
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift) {
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
@@ -72,7 +74,7 @@ public final class HeroModelRenderer {
 		float now = (entity.level().getGameTime() + partialTicks) / 20f;
 		HeroAnimator animator = HeroAnimator.of(entity);
 		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, state.yRot, state.xRot);
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift()));
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action())));
 	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
@@ -89,7 +91,7 @@ public final class HeroModelRenderer {
 		poseStack.translate(0, 0, -draw.climbShift());
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
-		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay);
+		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden());
 		poseStack.popPose();
 		return true;
 	}
@@ -128,15 +130,43 @@ public final class HeroModelRenderer {
 		return true;
 	}
 
+	/**
+	 * Props shown only during one action: Kiriko's locomotion clips (run, strafe, jump, fall) carry the Suzu in her hand,
+	 * which the game hides until she throws it (the props survey: those clips move its bone, bone_006B, to the hand).
+	 * Bone name -> the action (prefix) that shows it.
+	 */
+	private static final Map<String, String> PROP_ACTIONS = Map.of("bone_006B", "throw_suzu");
+
+	/** The joints of props to hide this frame (their action isn't playing). */
+	private static Set<Integer> hiddenProps(SkinnedModel model, @Nullable String action) {
+		Set<Integer> hidden = new HashSet<>();
+		for (int j = 0; j < model.joints.length; j++) {
+			String shownBy = PROP_ACTIONS.get(model.nodeNames[model.joints[j]]);
+			if (shownBy != null && (action == null || !action.startsWith(shownBy))) {
+				hidden.add(j);
+			}
+		}
+		return hidden;
+	}
+
 	/** Submits a skinned model's pieces (hero models, Kitsune Rush's fox), held props not in use left out. */
 	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		int light, int overlay) {
+		submitModel(loaded, skin, poseStack, collector, light, overlay, Set.of());
+	}
+
+	/** ... with the props on these joints hidden. */
+	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		int light, int overlay, Set<Integer> hidden) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null) {
 				continue;
 			}
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+				continue;
+			}
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture),
 				(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop));
 		}
