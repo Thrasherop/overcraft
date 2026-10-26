@@ -28,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
@@ -154,9 +155,11 @@ public final class HeroHud {
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
-		// Overwatch's kill feed sits where Minecraft's toasts do: below any showing (32 GUI units a slot)
+		// Overwatch's kill feed sits where Minecraft's toasts and status-effect icons do: below any showing (toasts 32 GUI
+		// units a slot; the icons' rows end 25 or 50 units down). The weakness icon hid a line's victim (found playing)
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
-		KillFeedHud.render(g, w - 36, Math.max(36, toastSlots * 32 / scale + 12));
+		float below = Math.max(toastSlots * 32, effectRowsBottom(player));
+		KillFeedHud.render(g, w - 36, Math.max(36, below / scale + 12));
 		crosshair(g, w / 2, h / 2);
 		hitMarker(g, w / 2, h / 2);
 		eliminatedCaption(g, w / 2, h / 2 + 205);
@@ -885,6 +888,22 @@ public final class HeroHud {
 	public static float chatLift(int guiWidth, int guiHeight) {
 		float scale = scale(guiWidth, guiHeight);
 		return Math.max(0, (REF_H - 870) * scale - 40);
+	}
+
+	/** Where Minecraft's status-effect icons end, in GUI units from the top (0 with none): as Hud.extractEffects lays them. */
+	private static float effectRowsBottom(LocalPlayer player) {
+		boolean beneficial = false;
+		boolean harmful = false;
+		for (MobEffectInstance effect : player.getActiveEffects()) {
+			if (effect.showIcon()) {
+				if (effect.getEffect().value().isBeneficial()) {
+					beneficial = true;
+				} else {
+					harmful = true;
+				}
+			}
+		}
+		return harmful ? 51 : beneficial ? 25 : 0;
 	}
 
 	/**

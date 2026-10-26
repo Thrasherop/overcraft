@@ -5,6 +5,11 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: status-effect icons covered the kill feed** (found playing: a weakness icon hid a line's victim). The feed
+already moved below Minecraft's toasts; it now also starts below the effect icons' rows (one row for benefits, two
+with a harmful one). Played: a kill with no effects, with Speed, with Speed and Weakness (`kf_effects`). Also seen:
+the dismount hint names the hero crouch key while riding a horse in hero mode, and drowning works as in Minecraft.
+
 **Underwater, the air bubbles join the hero HUD** (found playing in a lake): Minecraft's bubbles drew in their own
 place, against the ult meter and the ability boxes. In hero mode they sit just above the health readout, as wide as
 its pips and tilted with them (`air2`: full, then draining); Minecraft mode keeps vanilla's. The first try overlapped
