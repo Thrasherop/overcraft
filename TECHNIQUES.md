@@ -164,3 +164,11 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   (`tools/rename_glb_clips.py`); keep tools/clipmaps in step.
 - A flat effect "on the ground" (a ring 8 m across) floats over any slope: lay it in short pieces, each at the top of
   the first solid block under open space near its point (`KirikoFx.groundY`), none where there's no ground in reach.
+- A "feel" report (floaty, mushy) becomes numbers with a per-tick trace: `trace start`, hold keys with
+  `press key.keyboard.w down` / `up`, then `trace` (horizontal speed from the position change, vertical speed, height,
+  on ground). Run the same script on the old build and the new one (scratchpad mvtrace.sh pattern). For the camera,
+  find the sky's edge in a few screenshots taken a frame apart: a still horizon in every frame means no bob.
+- When a research note recommends a model, re-read its source sentence before building it: the movement note said
+  "keep the approach model, it matches Goodman" while Goodman's post says the opposite (speed isn't slowed in a turn).
+- Test courses in a superflat world: the player's feet at y -60 stand on blocks at y -61, so a "ground level" stair
+  goes at y -60, not on a stone block at -60 (that's a 1-block wall).

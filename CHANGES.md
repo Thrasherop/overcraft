@@ -6,6 +6,38 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.2
+Same asset pack as 0.3.1.
+- **Movement feels like Overwatch's, not floaty (#31).** Research (tools/reference/movement.md) found the jump
+  already right and everything around it slow or Minecraft's. Overwatch's own mover (each hero's CharacterMover in the
+  game data, read offline; its numbers agree with the Workshop measurements) now drives hero mode, three steps a tick:
+  - On the ground: friction 15/s on at least 4.5 m/s, acceleration 35 x the input speed. Full speed in one tick (was
+    two), a stop in about two, a strafe reversed in one (was four: ADAD felt mushy).
+  - In the air: 3.5 x the input speed (19 m/s² at a run, was 12). Input within 90° of the velocity turns it without
+    slowing it (Geoff Goodman's 2018 description; a 90° turn takes 0.45 s), input against it brakes: holding back
+    after take-off now turns the jump around before landing. Speed above the run speed (buffs included) decays by
+    2/s in the air.
+  - Falling follows the wiki's measured curve (v = 30 tanh(17.5 t / 30)): 15.8 m/s after 1 s (was 13.3); a 20-block
+    drop lands in 1.63 s (was about 1.75).
+  - The camera no longer bobs and rolls while running, and the view no longer widens with speed (Kitsune Rush zoomed
+    it out 15%). Both only in hero mode; Minecraft mode keeps the player's View Bobbing and FOV Effects.
+  - Played (harness keys through the keyboard handler, a per-tick `trace`, old build against new): from rest to 5.5
+    in 1 tick (was 2); stop 3.0, 0.25, 0; ADAD reversal 1 tick each way (was 4); W then S after take-off reverses
+    in the air (old: slowed 0.6 m/s a tick, never reversed); A instead of W after take-off turns 90° at 5.49-5.50 m/s,
+    W+A turns 45° the same way; a standing jump then W reaches 5.5 in 0.3 s; jump apex still 0.98 m; falling 15.85
+    m/s at 1 s (old 14.8 at 1 s from rest). The horizon stays on the same rows in six frames of a run (old: moved
+    and tilted 1-4 px at 854x480: `r12_run_*`, `r12n_run_*`); in Kitsune Rush a house right of centre stays at 180 px
+    from the centre (old: 148 px, `r12_fov_*`). The course: into a wall and along it (stops, slides at 5.3 m/s with
+    W+D), the 1-block ledge (still lifted on), four oak stairs and a slab step at full speed, water and a ladder
+    (Minecraft's own, unchanged), the wall climb (8.3 m/s for 10 ticks, over the top), crouch 3.0 m/s, a zombie's
+    hits (20 to 15 health, knockback 4.4 m/s carried in the air, stopped in two ticks on landing), TNT throwing her
+    at 10 m/s (decays to 5.7 over 1.6 s in the air), 7.15 m/s in Kitsune Rush, and Minecraft mode (G off: sprint 5.6
+    m/s and the sprint-jump boost as before).
+  - Not done: the 20 Hz tick's latency (the camera drawn a tick behind; an experiment for later) and crouch stopping
+    at ledges like Minecraft's sneak. Not tried with a second player.
+- Dev harness: `trace start` / `trace` (per tick: speeds, height, on ground) and `press <key> down|up` (hold a key
+  through the keyboard handler).
+
 ### Build 0.3.1
 Its asset pack must be rebuilt: Kiriko's model gains two clips (re-export her with `tools/owm_survey.py ... --glb
 --keep=tools/clipmaps/kiriko.txt`, copy it to the pack as `hero_models/kiriko.glb`, then `zip`). An older pack still

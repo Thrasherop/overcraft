@@ -48,6 +48,13 @@ public final class DevServer {
 	private DevServer() {
 	}
 
+	/** Ticks recorded since "trace start" (dev only): one line per client tick. */
+	private static final java.util.List<String> TRACE = new java.util.ArrayList<>();
+	private static boolean tracing;
+	private static boolean traceHooked;
+	private static int traceTick;
+	private static double traceX, traceZ;
+
 	/** Sounds heard since the last "heard" command (dev only). */
 	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
 	private static boolean listening;
@@ -284,11 +291,17 @@ public final class DevServer {
 			case "press" -> {
 				// a real key press through Minecraft's keyboard handler (Esc pauses, screens get keyPressed): the harness's
 				// way to type when the desktop can't take input. "press key.keyboard.escape"
-				InputConstants.Key key = InputConstants.getKey(arg.trim());
+				// "press <key> down" / "press <key> up" holds it (a movement key), through the same handler
+				String[] a = arg.trim().split(" ");
+				InputConstants.Key key = InputConstants.getKey(a[0]);
 				long handle = mc.getWindow().handle();
 				net.minecraft.client.input.KeyEvent event = new net.minecraft.client.input.KeyEvent(key.getValue(), 0, 0);
-				mc.keyboardHandler.keyPress(handle, 1, event);
-				mc.keyboardHandler.keyPress(handle, 0, event);
+				if (a.length > 1) {
+					mc.keyboardHandler.keyPress(handle, a[1].equals("up") ? 0 : 1, event);
+				} else {
+					mc.keyboardHandler.keyPress(handle, 1, event);
+					mc.keyboardHandler.keyPress(handle, 0, event);
+				}
 				out.addProperty("key", key.getName());
 			}
 			case "screenclick" -> {
@@ -350,6 +363,47 @@ public final class DevServer {
 				synchronized (HEARD) {
 					out.addProperty("heard", String.join(" | ", HEARD));
 					HEARD.clear();
+				}
+			}
+			case "trace" -> {
+				// dev only: "trace start", then "trace": per client tick, the local player's horizontal speed (from the
+				// position change, m/s), vertical speed (m/s), height, on ground and the movement keys held
+				if (!traceHooked) {
+					traceHooked = true;
+					net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
+						LocalPlayer p = client.player;
+						if (!tracing || p == null) {
+							return;
+						}
+						double dx = (p.getX() - traceX) * 20;
+						double dz = (p.getZ() - traceZ) * 20;
+						traceX = p.getX();
+						traceZ = p.getZ();
+						var o = client.options;
+						String keys = (o.keyUp.isDown() ? "W" : "") + (o.keyLeft.isDown() ? "A" : "") + (o.keyDown.isDown() ? "S" : "")
+							+ (o.keyRight.isDown() ? "D" : "") + (o.keyJump.isDown() ? "J" : "") + (o.keyShift.isDown() ? "C" : "");
+						synchronized (TRACE) {
+							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f", traceTick++,
+								Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
+								keys.isEmpty() ? "." : keys, dz, p.getYRot()));
+						}
+					});
+				}
+				if (arg.equals("start")) {
+					synchronized (TRACE) {
+						TRACE.clear();
+					}
+					traceTick = 0;
+					traceX = player.getX();
+					traceZ = player.getZ();
+					tracing = true;
+					out.addProperty("ok", true);
+				} else {
+					tracing = false;
+					synchronized (TRACE) {
+						out.addProperty("trace", String.join("\n", TRACE));
+						TRACE.clear();
+					}
 				}
 			}
 			case "heromode" -> {
