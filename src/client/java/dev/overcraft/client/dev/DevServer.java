@@ -260,6 +260,11 @@ public final class DevServer {
 				}
 				out.addProperty("ok", true);
 			}
+			case "select" -> {
+				// dev only: the hero select screen, as if joined ("select") or at the bed ("select bed")
+				mc.gui.setScreen(new dev.overcraft.client.HeroSelectScreen(!arg.equals("bed")));
+				out.addProperty("ok", true);
+			}
 			case "window" -> {
 				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)
 				String[] a = arg.split(" ");

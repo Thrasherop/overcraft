@@ -84,6 +84,19 @@ public final class KirikoFx {
 		Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", p, at, homing ? 0.55f : 0.45f, 0.15f, homing ? 0.5f : 0.4f));
 	}
 
+	/**
+	 * At her fingers each time an ofuda leaves: a soft golden puff (the reference: "a soft golden smoke puff pops at
+	 * the fingertips each time"; the hand effect 2074's golden swirl).
+	 */
+	public static void ofudaHandPuff(Vec3 hand) {
+		Particle puff = Fx.particle("smoke#48", Palette.GOLD);
+		if (puff != null) {
+			float size = range(0.07f, 0.1f);
+			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.15)).life(range(0.25f, 0.35f)).size(size, size * 1.8f)
+				.spin(range(0, Mth.TWO_PI), 0).alpha(0.35f).fade(0.1f, 0.6f).near());
+		}
+	}
+
 	/** Healing received: a quick flash of soft glows drifting up and a five-petal flower (effects 4004 / 40C0). */
 	static void ofudaHitAlly(Vec3 at, Palette p) {
 		for (int i = 0; i < 3; i++) {

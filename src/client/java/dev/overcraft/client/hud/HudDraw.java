@@ -55,6 +55,28 @@ public final class HudDraw {
 		fill(g, x + w - t, y + t, t, h - 2 * t, color);
 	}
 
+	/**
+	 * A texture (texW x texH pixels) over (x, y, w, h), its bottom {@code fade} share fading out (drawn in slices of
+	 * falling opacity): art cut off at the bottom melts away instead of ending in a hard edge.
+	 */
+	public static void imageFadingDown(GuiGraphicsExtractor g, Identifier texture, float x, float y, float w, float h, int texW,
+									   int texH, float fade, int rgb) {
+		int slices = 24;
+		int solidRows = Math.round(texH * (1 - fade));
+		g.pose().pushMatrix();
+		g.pose().translate(x, y);
+		g.pose().scale(w / texW, h / texH);
+		g.blit(RenderPipelines.GUI_TEXTURED, texture, 0, 0, 0, 0, texW, solidRows, texW, solidRows, texW, texH, 0xFF000000 | rgb);
+		for (int i = 0; i < slices; i++) {
+			int top = solidRows + (texH - solidRows) * i / slices;
+			int bottom = solidRows + (texH - solidRows) * (i + 1) / slices;
+			int alpha = Math.round(255 * (1 - (i + 0.5f) / slices));
+			g.blit(RenderPipelines.GUI_TEXTURED, texture, 0, top, 0, top, texW, bottom - top, texW, bottom - top, texW, texH,
+				alpha << 24 | rgb);
+		}
+		g.pose().popMatrix();
+	}
+
 	/** A texture stretched over (x, y, w, h), tinted. */
 	public static void image(GuiGraphicsExtractor g, Identifier texture, float x, float y, float w, float h, int color) {
 		g.pose().pushMatrix();

@@ -43,6 +43,14 @@ public final class HeroModelRenderer {
 	private HeroModelRenderer() {
 	}
 
+	/** The hero the select screen shows the local player as, while it draws them; null otherwise. */
+	private static @Nullable Hero preview;
+
+	/** The select screen draws the player as this hero (null: as they are). */
+	public static void preview(@Nullable Hero hero) {
+		preview = hero;
+	}
+
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
 		LAST_HERO.clear();
@@ -53,7 +61,9 @@ public final class HeroModelRenderer {
 		state.setData(DRAW, null);
 		Hero hero;
 		String chosen = entity.getAttached(HeroManager.HERO);
-		if (entity.getMainHandItem().getItem() instanceof HeroWeaponItem weapon) {
+		if (preview != null && entity == Minecraft.getInstance().player) {
+			hero = preview;
+		} else if (entity.getMainHandItem().getItem() instanceof HeroWeaponItem weapon) {
 			hero = weapon.hero;
 			LAST_HERO.put(entity.getId(), hero);
 		} else if (chosen != null && Hero.byId(chosen) != null) {

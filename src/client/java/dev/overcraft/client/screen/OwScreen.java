@@ -17,33 +17,33 @@ import static dev.overcraft.client.hud.HudDraw.outline;
  * HUD, Overwatch's fonts, the world blurred and darkened behind. Subclasses draw in reference pixels; mouse
  * positions come converted (refX, refY).
  */
-abstract class OwScreen extends Screen {
-	static final int WHITE = 0xFFFFFFFF;
-	static final int TEXT = 0xE6DDE3EA;
-	static final int TEXT_DIM = 0x99C3CBD4;
-	static final int ORANGE = 0xFFF99E1A;
-	static final int ROW = 0x1FFFFFFF;
-	static final int ROW_HOVER = 0x38FFFFFF;
-	static final int KEY_BOX = 0x8C0B1118;
+public abstract class OwScreen extends Screen {
+	protected static final int WHITE = 0xFFFFFFFF;
+	protected static final int TEXT = 0xE6DDE3EA;
+	protected static final int TEXT_DIM = 0x99C3CBD4;
+	protected static final int ORANGE = 0xFFF99E1A;
+	protected static final int ROW = 0x1FFFFFFF;
+	protected static final int ROW_HOVER = 0x38FFFFFF;
+	protected static final int KEY_BOX = 0x8C0B1118;
 
-	OwScreen(Component title) {
+	protected OwScreen(Component title) {
 		super(title);
 	}
 
-	float scale() {
+	protected float scale() {
 		return height / HudDraw.REF_H;
 	}
 
 	/** The reference screen's width (wider screens are wider here, not taller). */
-	float refWidth() {
+	protected float refWidth() {
 		return width / scale();
 	}
 
-	float refX(double mouseX) {
+	protected float refX(double mouseX) {
 		return (float) (mouseX / scale());
 	}
 
-	float refY(double mouseY) {
+	protected float refY(double mouseY) {
 		return (float) (mouseY / scale());
 	}
 
@@ -61,13 +61,13 @@ abstract class OwScreen extends Screen {
 	}
 
 	/** Starts drawing in reference pixels; end with g.pose().popMatrix(). */
-	void begin(GuiGraphicsExtractor g) {
+	protected void begin(GuiGraphicsExtractor g) {
 		g.pose().pushMatrix();
 		g.pose().scale(scale(), scale());
 	}
 
 	/** A key's label in a box, as on the HUD: dark with a thin light edge. */
-	static void keyBox(GuiGraphicsExtractor g, String label, float cx, float cy, int color) {
+	protected static void keyBox(GuiGraphicsExtractor g, String label, float cx, float cy, int color) {
 		float cap = 13;
 		float w = Math.max(30, HudText.width(Face.SMALL, label, cap) + 16);
 		float h = 26;

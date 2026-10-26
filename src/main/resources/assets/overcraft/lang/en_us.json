@@ -81,5 +81,13 @@
 	"overcraft.controls.quick_melee": "Quick melee",
 	"overcraft.controls.interact": "Interact",
 	"overcraft.controls.hero_select": "Change hero",
-	"overcraft.controls.minecraft_mode": "Minecraft mode"
+	"overcraft.controls.minecraft_mode": "Minecraft mode",
+	"overcraft.subrole.medic": "Medic",
+	"overcraft.subrole.tactician": "Tactician",
+	"overcraft.subrole.survivor": "Survivor",
+	"overcraft.select.ready": "Ready",
+	"overcraft.select.details": "Hero details",
+	"overcraft.select.back": "Keep hero",
+	"overcraft.select.mode": "Hero select",
+	"overcraft.select.back_none": "Play as yourself"
 }

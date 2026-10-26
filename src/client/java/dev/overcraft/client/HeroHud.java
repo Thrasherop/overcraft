@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -94,6 +95,10 @@ public final class HeroHud {
 	private static int ofudaSeen = -1;
 	private static long ofudaRefilledAt = -1;
 	private static long ultStartedAt = -1;
+	private static long stepCastAt = -1;
+	/** Swift Step's screen flash: teal at the edges and streaks rushing in, as she steps (the reference, §2). */
+	private static final float STEP_FLASH = 0.45f;
+	private static final int STREAKS = 14;
 
 	private HeroHud() {
 	}
@@ -117,6 +122,7 @@ public final class HeroHud {
 			minecraftMode(g, s, hero);
 			return;
 		}
+		screenEffects(g, s);
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		float w = g.guiWidth() / scale;
 		float h = g.guiHeight() / scale;
@@ -144,6 +150,9 @@ public final class HeroHud {
 		if (ability1Seen > 0 && s.ability1Cooldown() <= 0) {
 			ability1ReadyAt = now;
 		}
+		if (ability1Seen <= 0 && s.ability1Cooldown() > 0) {
+			stepCastAt = now;
+		}
 		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
 			ability2ReadyAt = now;
 		}
@@ -162,6 +171,58 @@ public final class HeroHud {
 
 	private static float since(long at) {
 		return at < 0 ? Float.MAX_VALUE : (Util.getMillis() - at) / 1000f;
+	}
+
+	// ---- the screen itself ----
+
+	/**
+	 * Tints over the whole view (the reference, §2): stepping, the edges flash teal and streaks rush in; in Kitsune
+	 * Rush's path, a white-cyan mist at the edges and light streaks flying past.
+	 */
+	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s) {
+		int w = g.guiWidth();
+		int h = g.guiHeight();
+		float step = since(stepCastAt);
+		if (step < STEP_FLASH) {
+			float k = 1 - step / STEP_FLASH;
+			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x29E0CF, 0.9f * k));
+			java.util.Random random = new java.util.Random(stepCastAt);
+			for (int i = 0; i < STREAKS; i++) {
+				float angle = random.nextFloat() * Mth.TWO_PI;
+				float travel = Math.clamp(step / STEP_FLASH + random.nextFloat() * 0.2f, 0, 1);
+				streak(g, w, h, angle, 1.05f - 0.5f * travel, false, alpha(0x9AFFF4, 0.8f * k));
+			}
+		}
+		if (s.rushed()) {
+			float time = Util.getMillis() / 1000f;
+			float pulse = 0.5f + 0.08f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
+			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xA8F2FF, pulse));
+			for (int i = 0; i < STREAKS / 2; i++) {
+				float phase = (time * 1.6f + i * 0.37f) % 1;
+				float angle = (i * 2.399963f + (int) (time * 1.6f + i * 0.37f) * 1.7f) % Mth.TWO_PI;
+				float fade = (float) Math.sin(phase * Math.PI);
+				streak(g, w, h, angle, 0.45f + 0.65f * phase, true, alpha(0xBDF6FF, 0.45f * fade));
+			}
+		}
+	}
+
+	/** A streak at {@code radius} (of half the screen's diagonal) out along {@code angle}, head outward or inward. */
+	private static void streak(GuiGraphicsExtractor g, int w, int h, float angle, float radius, boolean outward, int color) {
+		float half = (float) Math.hypot(w, h) / 2;
+		float length = 0.28f * half;
+		float thickness = length * HudShapes.STREAK_W / HudShapes.STREAK_H * 0.6f;
+		float x = w / 2f + (float) Math.cos(angle) * radius * half;
+		float y = h / 2f + (float) Math.sin(angle) * radius * half;
+		g.pose().pushMatrix();
+		g.pose().translate(x, y);
+		// the texture's head is toward +y: turn +y onto the direction of travel
+		g.pose().rotate(angle + (outward ? -Mth.HALF_PI : Mth.HALF_PI));
+		image(g, HudShapes.STREAK, -thickness / 2, -length * 0.8f, thickness, length, color);
+		g.pose().popMatrix();
+	}
+
+	private static int alpha(int rgb, float a) {
+		return Math.clamp(Math.round(a * 255), 0, 255) << 24 | (rgb & 0xFFFFFF);
 	}
 
 	// ---- bottom left: portrait, health, pips ----

@@ -31,6 +31,12 @@ public final class HudShapes {
 	public static final Identifier PLUS = Overcraft.id("hud/plus");
 	public static final Identifier SHIELD = Overcraft.id("hud/shield");
 	public static final Identifier SHIELD_BORDER = Overcraft.id("hud/shield_border");
+	/** Clear in the middle, soft toward the edges: screen-edge tints (Kitsune Rush's mist, Swift Step's flash). */
+	public static final Identifier VIGNETTE = Overcraft.id("hud/vignette");
+	/** A soft streak, brightest near one end: speed lines across the screen. */
+	public static final Identifier STREAK = Overcraft.id("hud/streak");
+	public static final int STREAK_W = 32;
+	public static final int STREAK_H = 128;
 	/** Texture sizes: the masks are drawn at this many pixels and scaled (smoothly, mipmapped) to the HUD's size. */
 	public static final int SIZE = 128;
 	public static final int MOUSE_W = 48;
@@ -67,6 +73,19 @@ public final class HudShapes {
 		register(PLUS, SIZE, SIZE, (x, y) -> Math.max(roundBox(x, y, SIZE / 2f, SIZE / 2f, 14, 48, 6),
 			roundBox(x, y, SIZE / 2f, SIZE / 2f, 48, 14, 6)));
 		register(SHIELD, SHIELD_W, SHIELD_H, (x, y) -> shield(x, y, 0));
+		register(VIGNETTE, SIZE, SIZE, (x, y) -> {
+			float dx = x / SIZE * 2 - 1;
+			float dy = y / SIZE * 2 - 1;
+			float t = Math.clamp(((float) Math.hypot(dx, dy) - 0.55f) / 0.75f, 0, 1);
+			return t * t * (3 - 2 * t);
+		});
+		register(STREAK, STREAK_W, STREAK_H, (x, y) -> {
+			float across = (x - STREAK_W / 2f) / (STREAK_W / 2f);
+			float along = y / STREAK_H;
+			// thin and soft across; along, rising fast to a bright head at 80% and fading to the tail
+			float body = along < 0.8f ? along / 0.8f : (1 - along) / 0.2f;
+			return (float) Math.exp(-across * across * 9) * body * body;
+		});
 		register(SHIELD_BORDER, SHIELD_W, SHIELD_H, (x, y) -> Math.min(shield(x, y, 0), 1 - shield(x, y, 5)));
 	}
 

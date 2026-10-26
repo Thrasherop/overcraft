@@ -29,6 +29,28 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 - Shapes (discs, rings, the ofuda segment, the mouse) are drawn at load as smooth masks (HudShapes): original, not
   from the game.
 
+**Hero select like Overwatch's 2026 screen** (#7; spec: the reference's section 6, from the same video at t=500).
+- The hero itself large in the middle: the real 3D model (the player drawn as the previewed hero, following the mouse)
+  when the pack has it; otherwise the hero's card art fading out at the knees, or the bust (Sombra and Illari have no card
+  art in the extraction). "HERO SELECT" top left in Big Noodle, the name huge top right with role, sub-role and health
+  (sub-roles from the wiki's infoboxes: Kiriko medic, Lucio and Sombra tactician, Illari survivor; the wiki lists Sombra
+  as a support since 2026, so her role stays as it was).
+- The roster along the bottom in role groups with a role badge, header and rule; the pick framed in orange with its
+  name tag; heroes not playable yet dimmed "SOON"; an orange READY button (grey "COMING SOON" for those). Key hints along
+  the bottom: F1 hero details, Esc keep hero / play as yourself.
+- Overwatch hides the abilities behind F1; here their icons and keys show under the name, and F1 adds names and
+  descriptions in a panel.
+- Played: the screen on joining (screenshots `select_v2`..`v6`), F1 details on and off, arrows through all four heroes
+  (Kiriko's model, Lucio's faded card, Sombra's bust), READY by click and by Enter picks Kiriko and enters hero mode.
+
+**First-person screen effects** (the reference, section 2):
+- Swift Step: the screen's edges flash teal and streaks rush in as she steps.
+- In Kitsune Rush's path: a cyan mist at the screen's edges, pulsing, and light streaks flying out past.
+- Each ofuda throw: a small soft golden puff at her fingers.
+- Effects fade out as they come near the camera (a petal from her own arrival covered the HUD); the hand puff opts out.
+- Played: Swift Step and rush in first person (`scr_sheet`), ofuda in the open (`puff2`: first try was a big yellow blob
+  with the talismans' own glow blazing at the hand; now small puffs and faded talismans near the camera).
+
 **Her coat no longer clips through her legs** (owner: "kiri's fabric things being clipped into legs"). Overwatch moves
 cloth bones only with physics, never with clips, so her 24 coat-tail chains (7-8 bones each, hanging from the hips)
 stayed rigid while the thighs swung through them. New ClothSim: per frame, each chain is pinned at the waist, pulled

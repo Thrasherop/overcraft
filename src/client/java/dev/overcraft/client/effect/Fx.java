@@ -71,6 +71,8 @@ public final class Fx {
 		/** Flipbook frames per second (0: frames spread over the life). */
 		float fps;
 		boolean removed;
+		/** Meant to be seen up close (a first-person hand's puff): not faded near the camera. */
+		boolean near;
 
 		public Particle at(Vec3 p) {
 			x = p.x;
@@ -171,6 +173,11 @@ public final class Fx {
 			return this;
 		}
 
+		public Particle near() {
+			near = true;
+			return this;
+		}
+
 		public Particle blended() {
 			additive = false;
 			return this;
@@ -223,6 +230,9 @@ public final class Fx {
 	private static final Map<Integer, Float> LAST_SEEN = new HashMap<>();
 	private static final Map<String, Particle> ATTACHED = new HashMap<>();
 	private static final int MAX_PARTICLES = 4000;
+	/** Sprites closer to the camera than this (metres) aren't drawn; they fade in over the next NEAR_FADE. */
+	private static final float NEAR_FADE_START = 0.3f;
+	private static final float NEAR_FADE = 1.2f;
 	private static float lastTime = -1;
 
 	private Fx() {
@@ -416,19 +426,29 @@ public final class Fx {
 			.setNormal(pose, 0, 1, 0);
 	}
 
+	/** 0 at the camera, 1 from NEAR_FADE_START + NEAR_FADE on. */
+	private static float nearFade(float distance) {
+		return Math.clamp((distance - NEAR_FADE_START) / NEAR_FADE, 0, 1);
+	}
+
 	private static int argb(int rgb, float alpha) {
 		return Math.clamp(Math.round(alpha * 255), 0, 255) << 24 | (rgb & 0xFFFFFF);
 	}
 
 	private static void emit(Particle p, PoseStack.Pose pose, VertexConsumer buffer, Vec3 cam, Vector3f right, Vector3f up) {
+		float cx = (float) (p.x - cam.x);
+		float cy = (float) (p.y - cam.y);
+		float cz = (float) (p.z - cam.z);
 		float a = p.opacity();
+		if ((p.shape == Shape.SPRITE || p.shape == Shape.STREAK) && !p.near) {
+			// sprites fade out as they reach the camera: one at her own position would otherwise fill the screen
+			float distance = (float) Math.sqrt(cx * cx + cy * cy + cz * cz);
+			a *= nearFade(distance);
+		}
 		if (a <= 0.003f) {
 			return;
 		}
 		int color = argb(p.rgb, a);
-		float cx = (float) (p.x - cam.x);
-		float cy = (float) (p.y - cam.y);
-		float cz = (float) (p.z - cam.z);
 		float h = p.size() / 2;
 		float w = h * p.aspect;
 		Vector3f ax;
@@ -557,7 +577,7 @@ public final class Fx {
 			side.normalize().mul(trail.width / 2 * (0.25f + 0.75f * life));
 			left[i] = new float[] {rel.x - side.x, rel.y - side.y, rel.z - side.z};
 			rightSide[i] = new float[] {rel.x + side.x, rel.y + side.y, rel.z + side.z};
-			alpha[i] = trail.alpha * life * life;
+			alpha[i] = trail.alpha * life * life * nearFade(rel.length());
 		}
 		for (int i = 0; i < n - 1; i++) {
 			// oldest point first in the deque: V 1 at the tail, 0 at the head
