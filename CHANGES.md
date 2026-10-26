@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Played: plain Minecraft in Minecraft mode** (survival, Easy; CLAUDE.md's slots 2-9 check after tonight's mixins on
+chat, the HUD, the hands and the death screen): mined stone with a pickaxe (cobblestone 0 to 1), placed planks (8 to
+7), opened a chest, the inventory (its preview shows Kiriko) and a crafting table, ate bread when hungry (food 0 to 5,
+bread 4 to 3), G back to hero mode (`mcp4_*`, `mcp5_*`). Nothing broken; the misses on the way were the test's own
+aim (`execute facing` aims from the feet unless anchored at the eyes).
+
 **Ribbons no longer end in the ground in straight lines** (round 5 #4): a projectile's last position is inside what it
 hit, and the ribbon's end there was cut off by the surface. Trails skip points inside solid blocks. Played: unaimed
 ofuda thrown at the grass, frozen at three moments (`rib_sheet`, `rib3z`: soft impacts, no edges).
