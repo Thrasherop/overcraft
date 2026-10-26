@@ -215,11 +215,21 @@ public final class HeroAnimator {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
+		boolean asleep = entity.isSleeping();
+		if (asleep) {
+			// lying in bed: her idle arms, legs straight (the model's rest pose). Laid flat, the idle stance's bent
+			// forward leg pointed at the sky (found playing)
+			for (int i = 0; i < model.nodeNames.length; i++) {
+				if (isLeg(model.nodeNames[i])) {
+					pose.r[i].set(model.restR[i]);
+				}
+			}
+		}
 		// Overwatch's aim pose sheet (A71F) on top of everything: her spine, neck and arms follow where she aims up or
 		// down. Its middle row (frames 21-41) runs through the aim's pitch, 31 level; the rows either side are aim yaw,
 		// not needed while her body faces her aim
-		SkinnedModel.Clip aim = clip(model, "add_aim");
-		float lookPitch = headPitch;
+		SkinnedModel.Clip aim = asleep ? null : clip(model, "add_aim");
+		float lookPitch = asleep ? 0 : headPitch;
 		if (aim != null) {
 			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
 			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
@@ -239,8 +249,18 @@ public final class HeroAnimator {
 			cloth.step(model, pose, dt, moved);
 		}
 
-		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
+		Quaternionf look = asleep ? new Quaternionf()
+			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/**
+	 * A leg bone by Overwatch's skeleton names: the hips (the legs' own parent, under the pelvis with the spine: the idle
+	 * stance tilts it, which laid flat raised one leg) down to the toes.
+	 */
+	private static boolean isLeg(String name) {
+		return name.equals("Hips") || name.startsWith("Thigh") || name.startsWith("Knee") || name.startsWith("Foot")
+			|| name.startsWith("Toe");
 	}
 
 	/**

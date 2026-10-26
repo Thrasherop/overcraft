@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: asleep in a bed she stood upright on it** (found playing a night in survival). The hero renderer drew her
+at her yaw like any other moment; Minecraft lays a sleeping player flat. She now lies on her back, head on the pillow,
+along the bed's direction (Minecraft's offset), her legs and hips straightened (her idle stance's tilted hips and bent
+leg pointed one leg at the sky, `sl2_sheet`), no aim lean or head turn. Played: F on a bed in hero mode, north- and
+east-facing beds, front and back views (`sl3_sheet`, `sl3z`); the first tries: upright (`bedp_z`), legs up (`sl2z`).
+
 **Fixed: status-effect icons covered the kill feed** (found playing: a weakness icon hid a line's victim). The feed
 already moved below Minecraft's toasts; it now also starts below the effect icons' rows (one row for benefits, two
 with a harmful one). Played: a kill with no effects, with Speed, with Speed and Weakness (`kf_effects`). Also seen:

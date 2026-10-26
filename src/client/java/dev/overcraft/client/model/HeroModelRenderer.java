@@ -9,6 +9,8 @@ import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.effect.FxRender;
 import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.hero.HeroManager;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.core.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -22,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Matrix4f;
+import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -42,6 +45,8 @@ public final class HeroModelRenderer {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
+	/** Lying in bed, how far she's lifted so her back rests on the mattress rather than in it (metres: ours). */
+	private static final float SLEEP_LIFT = 0.12f;
 	/** Packed light for full brightness (block and sky light 15). */
 	private static final int FULL_BRIGHT = 0xF000F0;
 	/**
@@ -123,9 +128,22 @@ public final class HeroModelRenderer {
 		int light = state.lightCoords;
 		int overlay = LivingEntityRenderer.getOverlayCoords(state, white(state) * 0.6f);
 		poseStack.pushPose();
-		// the model faces +Z; Minecraft's yaw 0 faces +Z (south) and turns the other way
-		poseStack.rotateDegrees(Axis.YP, -state.bodyRot);
-		poseStack.translate(0, 0, -draw.climbShift());
+		Direction bed = state.hasPose(Pose.SLEEPING) ? state.bedOrientation : null;
+		if (bed != null) {
+			// asleep: on her back, head on the pillow, feet toward the bed's foot, as Minecraft lays a sleeping player
+			// (LivingEntityRenderer: the origin moved eyeHeight - 0.1 toward the foot). She stood upright on the bed
+			// (found playing)
+			float headOffset = state.eyeHeight - 0.1f;
+			poseStack.translate(-bed.getStepX() * headOffset, SLEEP_LIFT, -bed.getStepZ() * headOffset);
+			// her up (+Y) toward the pillow, her front (+Z) to the sky, her side (+X = Y x Z) across the bed
+			Vector3f head = new Vector3f(bed.getStepX(), 0, bed.getStepZ());
+			Vector3f side = new Vector3f(head).cross(0, 1, 0);
+			poseStack.mulPose(new Matrix4f().set(new Matrix3f(side, head, new Vector3f(0, 1, 0))));
+		} else {
+			// the model faces +Z; Minecraft's yaw 0 faces +Z (south) and turns the other way
+			poseStack.rotateDegrees(Axis.YP, -state.bodyRot);
+			poseStack.translate(0, 0, -draw.climbShift());
+		}
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
