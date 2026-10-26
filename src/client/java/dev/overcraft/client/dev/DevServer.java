@@ -293,6 +293,14 @@ public final class DevServer {
 				}
 				out.addProperty("screen", mc.gui.screen() == null ? "" : mc.gui.screen().getClass().getSimpleName());
 			}
+			case "hover" -> {
+				// puts the game's cursor at GUI coordinates, for hover states, without moving the real mouse: "hover 120 80"
+				String[] a = arg.split(" ");
+				var window = mc.getWindow();
+				mc.mouseHandler.onMove(window.handle(), Double.parseDouble(a[0]) * window.getScreenWidth() / window.getGuiScaledWidth(),
+					Double.parseDouble(a[1]) * window.getScreenHeight() / window.getGuiScaledHeight(), 0, 0);
+				out.addProperty("ok", true);
+			}
 			case "fx" -> {
 				// dev only: plays an effect 3 m in front of the camera: "fx suzu_burst 40", "fx climb_dust"
 				String[] a = arg.split(" ");

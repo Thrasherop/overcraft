@@ -60,7 +60,8 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   fix with the same steps.
 - **When the desktop is locked or can't take input**, the harness still types: `press key.keyboard.escape` sends a
   real key event through Minecraft's KeyboardHandler (Esc pauses, screens get keyPressed), `screenclick x y` clicks
-  the open screen at GUI coordinates. `window 1920 1080` matches the reference screenshots' size; check other shapes
+  the open screen at GUI coordinates, `hover x y` puts the game's cursor there (hover states) without touching the
+  real mouse. `window 1920 1080` matches the reference screenshots' size; check other shapes
   too (5:4 and 21:9 found the HUD overlapping itself).
 - Test worlds: summon test mobs with `Tags:["x"]` and select `@e[tag=x]` (superflat villages, SNBT names keep their
   quotes); `/difficulty peaceful` while setting up (a slime killed the test once); gamerules are snake_case in 26.3

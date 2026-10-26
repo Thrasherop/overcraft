@@ -133,5 +133,18 @@
 	"subtitles.overcraft.kiriko.voice.select": "Kiriko: I'll find my own path",
 	"subtitles.overcraft.kiriko.voice.death": "Kiriko cries out",
 	"subtitles.overcraft.kiriko.voice.pain": "Kiriko grunts",
-	"subtitles.overcraft.kiriko.voice.melee": "Kiriko shouts"
+	"subtitles.overcraft.kiriko.voice.melee": "Kiriko shouts",
+	"overcraft.options.tab.hero": "Hero",
+	"overcraft.options.hero.ofuda_sensitivity": "Healing Ofuda sensitivity",
+	"overcraft.options.hero.ofuda_sensitivity.about": "Lower narrows the view angle in which Healing Ofuda lock on to an ally.",
+	"overcraft.options.hero.toggle_ofuda": "Toggle Healing Ofuda",
+	"overcraft.options.hero.toggle_ofuda.about": "On: a press starts Healing Ofuda, the next stops it. Off: it throws while held.",
+	"overcraft.options.hero.swift_step_sensitivity": "Swift Step sensitivity",
+	"overcraft.options.hero.swift_step_sensitivity.about": "Lower narrows the view angle in which Swift Step finds an ally.",
+	"overcraft.options.hero.auto_climb": "Automatically climb walls",
+	"overcraft.options.hero.auto_climb.about": "On: hold forward while airborne to climb. Off: hold jump and forward facing a wall.",
+	"overcraft.options.hero.ofuda_cancels_reload": "Healing Ofuda cancels reload",
+	"overcraft.options.hero.ofuda_cancels_reload.about": "On: throwing ofuda interrupts a reload. Off: they can't be thrown while reloading.",
+	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
+	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair."
 }

@@ -31,6 +31,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import dev.overcraft.net.HeroOptionsPayload;
 
 /**
  * Which hero each player is, their kit (health, the hero's weapon in hotbar slot 1) and the server side of the hero's
@@ -186,6 +187,18 @@ public final class HeroManager {
 
 	public static void onLeave(ServerPlayer player) {
 		STATES.remove(player.getUUID());
+		OPTIONS.remove(player.getUUID());
+	}
+
+	/** Each player's hero options the server acts on (sent by their client: HeroOptionsPayload). */
+	private static final Map<UUID, HeroOptionsPayload> OPTIONS = new HashMap<>();
+
+	public static void setOptions(ServerPlayer player, HeroOptionsPayload options) {
+		OPTIONS.put(player.getUUID(), options);
+	}
+
+	public static HeroOptionsPayload options(Player player) {
+		return OPTIONS.getOrDefault(player.getUUID(), HeroOptionsPayload.DEFAULTS);
 	}
 
 	public static void onRespawn(ServerPlayer player) {

@@ -3,6 +3,7 @@ package dev.overcraft.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Overcraft;
 import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroOptions;
 import dev.overcraft.client.controls.HeroControls.Action;
 import dev.overcraft.client.mixin.MinecraftInvoker;
 import dev.overcraft.hero.Hero;
@@ -31,6 +32,9 @@ public final class ClientHero {
 
 	private static HeroSyncPayload sync = HeroSyncPayload.NONE;
 	private static int lastHeld;
+	/** Toggle Healing Ofuda: whether it's on, and whether the ofuda were refilling last tick. */
+	private static boolean ofudaOn;
+	private static boolean wasRefilling;
 	/** The Steve-mode slot to go back to when hero mode is toggled off. */
 	private static int steveSlot = 1;
 	private static boolean openSelectOnJoin;
@@ -46,6 +50,7 @@ public final class ClientHero {
 	public static void init() {
 		// Minecraft-mode keys are registered by the static fields above; hero mode's come from their own file
 		HeroControls.load();
+		HeroOptions.load();
 	}
 
 	/** The interact key is being handled: Minecraft's right-click may run (MinecraftMixin). */
@@ -75,6 +80,8 @@ public final class ClientHero {
 	public static void onJoin() {
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
+		ofudaOn = false;
+		HeroOptions.send();
 		openSelectOnJoin = true;
 	}
 
@@ -125,6 +132,7 @@ public final class ClientHero {
 		if (!controls || toggled) {
 			// Minecraft mode (or just switched): the hero keys' clicks must not fire later
 			HeroControls.drainAll();
+			ofudaOn = false;
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -134,8 +142,25 @@ public final class ClientHero {
 
 		// the fire buttons: held, or tapped since last tick. Overwatch's primary fire throws Kiriko's ofuda, its
 		// secondary her kunai; the server's weapon slots are the other way round (primary = kunai).
-		boolean ofuda = drain(HeroControls.get(Action.PRIMARY_FIRE)) | HeroControls.get(Action.PRIMARY_FIRE).isDown();
-		boolean kunai = drain(HeroControls.get(Action.SECONDARY_FIRE)) | HeroControls.get(Action.SECONDARY_FIRE).isDown();
+		boolean ofudaPressed = drain(HeroControls.get(Action.PRIMARY_FIRE));
+		boolean kunaiPressed = drain(HeroControls.get(Action.SECONDARY_FIRE));
+		boolean kunai = kunaiPressed | HeroControls.get(Action.SECONDARY_FIRE).isDown();
+		boolean ofuda;
+		if (HeroOptions.get().toggleOfuda) {
+			// Overwatch's default: a press starts Healing Ofuda, the next stops it; it also stops when the clip runs out
+			// (its refill starts) or the kunai are thrown
+			boolean refilling = sync.secondaryReload() >= 0;
+			if (ofudaPressed) {
+				ofudaOn = !ofudaOn;
+			}
+			if (refilling && !wasRefilling || kunai) {
+				ofudaOn = false;
+			}
+			wasRefilling = refilling;
+			ofuda = ofudaOn;
+		} else {
+			ofuda = ofudaPressed | HeroControls.get(Action.PRIMARY_FIRE).isDown();
+		}
 		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0);
 
 		int pressed = 0;

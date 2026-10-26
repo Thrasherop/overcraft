@@ -8,6 +8,7 @@ import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
+import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Targeting;
@@ -83,7 +84,10 @@ public final class Kiriko implements HeroKit {
 				if (s.primaryAmmo == 0) {
 					startPrimaryReload(player, s);
 				}
-			} else if (s.secondaryHeld && s.secondaryAmmo >= OFUDA_PER_THROW && s.secondaryReload < 0) {
+			} else if (s.secondaryHeld && s.secondaryAmmo >= OFUDA_PER_THROW && s.secondaryReload < 0
+				&& (s.primaryReload < 0 || s.primaryAmmoRestored || HeroManager.options(player).ofudaCancelsReload())) {
+				// throwing ofuda interrupts a kunai reload (Overwatch's "Healing Ofuda cancels reload", on by default;
+				// off, the ofuda wait for it)
 				if (s.primaryReload >= 0 && !s.primaryAmmoRestored) {
 					s.primaryReload = -1;
 				}
@@ -159,7 +163,9 @@ public final class Kiriko implements HeroKit {
 
 	private static void throwOfuda(ServerPlayer player) {
 		ServerLevel level = player.level();
-		LivingEntity target = Targeting.allyInView(player, OFUDA_SEEK_RANGE, OFUDA_LOCK_HALF_ANGLE, true);
+		// the cone narrows with the player's Healing Ofuda sensitivity (an Overwatch option)
+		LivingEntity target = Targeting.allyInView(player, OFUDA_SEEK_RANGE,
+			OFUDA_LOCK_HALF_ANGLE * HeroManager.options(player).ofudaSensitivity(), true);
 		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
 		Vec3 side = look.cross(new Vec3(0, 1, 0));
@@ -187,7 +193,8 @@ public final class Kiriko implements HeroKit {
 		if (s.ability1Cooldown > 0 || s.castTicks >= 0) {
 			return;
 		}
-		LivingEntity target = Targeting.allyInView(player, SWIFT_STEP_RANGE, SWIFT_STEP_HALF_ANGLE, false);
+		LivingEntity target = Targeting.allyInView(player, SWIFT_STEP_RANGE,
+			SWIFT_STEP_HALF_ANGLE * HeroManager.options(player).swiftStepSensitivity(), false);
 		if (target == null) {
 			// no ally in view: nothing happens, no cooldown, just the "not now" click (as in Overwatch)
 			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED, player.getEyePosition());

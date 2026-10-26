@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.client.dev.DevServer;
 import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroOptions;
 import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.client.effect.Fx;
 import dev.overcraft.client.effect.FxRender;
@@ -109,7 +110,9 @@ public class OvercraftClient implements ClientModInitializer {
 		Minecraft mc = Minecraft.getInstance();
 		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
-		OwMovement.jumpHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
+		// jump held, or (Overwatch's "Automatically climb walls") just being in the air
+		OwMovement.jumpHeld = entity -> entity == mc.player && (HeroControls.get(HeroControls.Action.JUMP).isDown()
+			|| HeroOptions.get().autoClimb && !entity.onGround());
 	}
 
 	private static HudElement hiddenInHeroMode(HudElement vanilla) {

@@ -36,7 +36,9 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
   Overwatch's fonts, curved sides; ally health markers, a kill feed, low-health edges, Overwatch-sized chat; Minecraft
   mode keeps vanilla's HUD plus a small ult meter.
 - **Controls** (client/controls/HeroControls): hero mode has its own key set; G switches; Esc opens an Overwatch-style
-  menu and options (rebinding); Interact on F.
+  menu and options (rebinding); Interact on F. A HERO tab has Overwatch's hero options for Kiriko with Overwatch's
+  defaults (HeroOptions): **Toggle Healing Ofuda is on by default, as in Overwatch** (one press throws the clip; turn it
+  off there for hold-to-throw), sensitivities, auto climb, ofuda cancels reload, the ofuda counter.
 - **Hero select** like Overwatch 2026's, her real 3D model in the middle.
 - **Effects** (client/effect): Overwatch's own masks and torii mesh, drawn additively; the server sends EffectPayload
   events; no Minecraft particles left. First-person screen effects (Swift Step, Kitsune Rush).
@@ -52,8 +54,9 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 `gradlew runClient` (`-Dovercraft.dev=true`); `py tools/dev.py <commands...>` or `. tools/devplay.sh`. Commands:
 state, newworld, openworld, screen, close, respawn, key <mapping or hero action> down|up|tap, look/turn, cmd,
 screenshot, perspective, hero <id>, subtitles on|off, and (session 3) **press <key.keyboard.x>** (a real key event:
-Esc, Enter, F1), **screenclick x y** (GUI coordinates), **window w h**, **tutorial**, **ult <percent>**,
-**fx <effect> [variant]**, **select [bed]**, **soundinfo <event>**, **connect host:port**, **players**. A second client:
+Esc, Enter, F1), **screenclick x y** (GUI coordinates), **hover x y** (the game's cursor only), **window w h**,
+**tutorial**, **ult <percent>**, **fx <effect> [variant]**, **select [bed]**, **soundinfo <event>**,
+**connect host:port**, **players**. A second client:
 `gradlew runClient2` (harness port 25600: `OC_DEV_PORT=25600 py tools/dev.py ...`; host with `/publish true 25565`).
 The desktop can be locked; the harness still plays.
 
@@ -133,6 +136,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
 - While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a
   reload: does Overwatch's HUD do that, or something else (critique round 2, #24)?
+- Toggle Healing Ofuda is on by default (Overwatch's default, per the wiki): one RMB press throws until the clip is
+  empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
 

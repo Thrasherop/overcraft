@@ -5,6 +5,23 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Kiriko's hero options** (Overwatch's "Hero-specific options", wiki table, with Overwatch's defaults): a HERO tab on
+the Overwatch options screen (Esc in hero mode, OPTIONS). Healing Ofuda sensitivity and Swift Step sensitivity (10-100%,
+narrow the lock-on cones), Toggle Healing Ofuda (**on by default, as in Overwatch: one press of the ofuda button throws
+until the clip is empty or you press again**; off, it throws while held), Automatically climb walls (off), Healing
+Ofuda cancels reload (on), Healing Ofuda UI (the counter under the crosshair, on). Hovering a row says what it does;
+RESTORE DEFAULTS resets the page. Saved in `config/overcraft-hero-options.json`; the server gets the three it acts on.
+Played through the harness (`opt_hero_s`, `opt_r4c`, `opt_hov1c`):
+- Toggle: one press emptied the clip (10, 4, 0, then the refill to 10); press-press stopped at 6.
+- Ofuda sensitivity, a hurt villager (10 HP) 12 m away, looking 5 degrees off it: 100% healed it to 19.6, 10% missed
+  (10.0); 10% aimed straight at it healed it.
+- Swift Step sensitivity 12 degrees off: the target diamond at 100% (`ss100c`), none at 10% (`ss10c`).
+- Auto climb at a 13-block wall, forward held and one 0.1 s jump: on, climbed to the top; off, a plain jump.
+- Cancels reload, three kunai thrown, reload, ofuda 0.2 s later: on, the reload stopped (kunai stay 12) and the ofuda
+  threw at once; off, the ofuda waited until the kunai were back (15), then threw.
+- Ofuda UI off: no counter under the crosshair (`opt_hudz`). Restore defaults: the file back to the defaults.
+Harness: `hover x y` moves the game's cursor only (hover states, without the real mouse).
+
 **The real Suzu burst and Kiriko's own kunai impacts** (the sound research's biggest gaps). A sound sub-agent extracted
 the banks the first extraction missed, from the archived build, offline and read-only, with DataTool's own conversion
 (`tools/reference/kiriko-sounds-extra.md`; the files stay in the archive's `ExtraSounds\`): 236 files. Now in the

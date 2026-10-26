@@ -5,6 +5,7 @@ import dev.overcraft.Ow;
 import dev.overcraft.client.controls.HeroControls;
 import dev.overcraft.client.effect.Fx;
 import dev.overcraft.client.controls.HeroControls.Action;
+import dev.overcraft.client.controls.HeroOptions;
 import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.hud.HudText;
 import dev.overcraft.client.hud.HudText.Align;
@@ -154,7 +155,9 @@ public final class HeroHud {
 		KillFeedHud.render(g, w - 36, Math.max(36, toastSlots * 32 / scale + 12));
 		crosshair(g, w / 2, h / 2);
 		hitMarker(g, w / 2, h / 2);
-		ofudaCounter(g, s, w / 2, h / 2 + 136);
+		if (HeroOptions.get().ofudaUi) {
+			ofudaCounter(g, s, w / 2, h / 2 + 136);
+		}
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
@@ -662,7 +665,8 @@ public final class HeroHud {
 		if (s.ability1Cooldown() > 0) {
 			return;
 		}
-		LivingEntity target = Targeting.allyInView(player, KirikoStats.SWIFT_STEP_RANGE, KirikoStats.SWIFT_STEP_HALF_ANGLE, false);
+		LivingEntity target = Targeting.allyInView(player, KirikoStats.SWIFT_STEP_RANGE,
+			KirikoStats.SWIFT_STEP_HALF_ANGLE * HeroOptions.get().swiftStepSensitivity / 100.0, false);
 		if (target == null) {
 			return;
 		}
