@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -38,7 +39,12 @@ public final class Fx {
 		/** An upper hemisphere (Suzu's burst). */
 		DOME,
 		/** A mesh (the torii gate), standing on its position, its width along {@link Particle#side}. */
-		MESH
+		MESH,
+		/**
+		 * A curved band: part of a cylinder's wall around its position (Swift Step's slash arcs, the game's half-cylinder
+		 * shell 10ADC), radius size / 2, height size x aspect, turned by {@link Particle#arc}, spinning about its axis.
+		 */
+		ARC
 	}
 
 	/** One particle. Sizes are metres (a sprite's height; width = size x aspect); times seconds. */
@@ -67,6 +73,9 @@ public final class Fx {
 		/** A mesh's triangles: x, y, z, u, v per corner, in metres at size 1 (see Fx.Mesh). */
 		float @Nullable [] mesh;
 		float sideX = 1, sideZ;
+		/** An arc's orientation (its cylinder axis is this turn of +Y) and how much of the circle it covers (radians). */
+		@Nullable Quaternionf arcTurn;
+		float arcSpan;
 		int rgb = 0xFFFFFF;
 		/** Flipbook frames per second (0: frames spread over the life). */
 		float fps;
@@ -129,6 +138,14 @@ public final class Fx {
 			Vec3 s = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : new Vec3(side.x, 0, side.z).normalize();
 			sideX = (float) s.x;
 			sideZ = (float) s.z;
+			return this;
+		}
+
+		/** Draws a curved band spanning this many radians, its cylinder's axis turned by turn (see Shape.ARC). */
+		public Particle arc(Quaternionf turn, float span) {
+			shape = Shape.ARC;
+			arcTurn = turn;
+			arcSpan = span;
 			return this;
 		}
 
@@ -505,6 +522,10 @@ public final class Fx {
 				mesh(p, pose, buffer, cx, cy, cz, color);
 				return;
 			}
+			case ARC -> {
+				arc(p, pose, buffer, cx, cy, cz, color);
+				return;
+			}
 			default -> {
 				ax = new Vector3f(right);
 				ay = new Vector3f(up);
@@ -555,6 +576,44 @@ public final class Fx {
 				vertex(pose, buffer, vx, vy, vz, m[c + 3], m[c + 4], corner);
 			}
 		}
+	}
+
+	/**
+	 * A band round part of a cylinder: radius size / 2, height size x aspect, from angle rot over arcSpan; the texture's
+	 * U runs along it (so a band mask streaks round), V across.
+	 */
+	private static void arc(Particle p, PoseStack.Pose pose, VertexConsumer buffer, float cx, float cy, float cz, int color) {
+		if (p.arcTurn == null) {
+			return;
+		}
+		float r = p.size() / 2;
+		float h = p.size() * p.aspect / 2;
+		int steps = 12;
+		Vector3f a = new Vector3f();
+		Vector3f b = new Vector3f();
+		for (int i = 0; i < steps; i++) {
+			float t0 = (float) i / steps;
+			float t1 = (float) (i + 1) / steps;
+			double a0 = p.rot + p.arcSpan * t0;
+			double a1 = p.rot + p.arcSpan * t1;
+			float x0 = (float) Math.cos(a0) * r;
+			float z0 = (float) Math.sin(a0) * r;
+			float x1 = (float) Math.cos(a1) * r;
+			float z1 = (float) Math.sin(a1) * r;
+			// fading toward both ends, so it trails off rather than stopping square
+			int c0 = argb(color & 0xFFFFFF, (color >>> 24) / 255f * (float) Math.sin(Math.PI * t0));
+			int c1 = argb(color & 0xFFFFFF, (color >>> 24) / 255f * (float) Math.sin(Math.PI * t1));
+			corner(p, pose, buffer, a.set(x0, -h, z0), cx, cy, cz, t0, 1, c0);
+			corner(p, pose, buffer, b.set(x1, -h, z1), cx, cy, cz, t1, 1, c1);
+			corner(p, pose, buffer, b.set(x1, h, z1), cx, cy, cz, t1, 0, c1);
+			corner(p, pose, buffer, a.set(x0, h, z0), cx, cy, cz, t0, 0, c0);
+		}
+	}
+
+	private static void corner(Particle p, PoseStack.Pose pose, VertexConsumer buffer, Vector3f local, float cx, float cy, float cz,
+							   float u, float v, int color) {
+		p.arcTurn.transform(local);
+		vertex(pose, buffer, cx + local.x, cy + local.y, cz + local.z, u, v, color);
 	}
 
 	/** An upper hemisphere of radius size/2, its texture wrapped twice round and once up. */

@@ -127,6 +127,6 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 ## Next
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
 2. The critique sub-agent's list (tools/reference/critique-2026-10-26.md) and the sound map (soundmaps/kiriko-proposed.txt).
-3. Effects still missing: the enemy-red view, Suzu's white outline on allies, the rush path's talisman slabs, Swift
-   Step's slash arcs. (The reload and the aim lean are in.)
+3. Effects still missing: the enemy-red view (matters only with scoreboard teams). (Suzu's white flash, the rush
+   path's talismans, Swift Step's slash arcs, the reload and the aim lean are in.)
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).

@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -283,12 +284,34 @@ public final class KirikoFx {
 			Fx.add(petal.at(from).velocity(v).gravity(2.5f).drag(0.15f).life(life)
 				.size(size, size).aspect(0.65f).tint(PETAL_TINT).alpha(0.85f).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
 		}
+		if (arrive) {
+			slashArcs(chest, atCamera);
+		}
 		if (arrive && !atCamera) {
 			Particle puff = Fx.particle("glow", Palette.TEAL);
 			if (puff != null) {
 				float size = range(0.6f, 0.8f);
 				Fx.add(puff.at(chest).life(range(0.24f, 0.48f)).size(size, size * 1.6f).easeOut().fade(0.05f, 0.7f));
 			}
+		}
+	}
+
+	/**
+	 * Swift Step's 7 slash arcs at the arrival (10ADC, the half-cylinder shell, with its streak bands; size 3-3.7, 0.24-0.4
+	 * s, random rotation): curved teal bands round her, each turned its own way and sweeping round. Seen from inside
+	 * (her own arrival in first person) they're kept wider and fainter.
+	 */
+	private static void slashArcs(Vec3 chest, boolean atCamera) {
+		for (int i = 0; i < 7; i++) {
+			Particle arc = Fx.particle("band", Palette.TEAL);
+			if (arc == null) {
+				return;
+			}
+			Quaternionf turn = new Quaternionf().rotateY(range(0, Mth.TWO_PI)).rotateX(range(-0.9f, 0.9f)).rotateZ(range(-0.9f, 0.9f));
+			float size = range(3, 3.7f) * 0.5f * (atCamera ? 1.6f : 1);
+			Fx.add(arc.at(chest).arc(turn, range(1.6f, 2.4f)).life(range(0.24f, 0.4f)).size(size * 0.7f, size).easeOut()
+				.aspect(0.12f).spin(range(0, Mth.TWO_PI), range(6, 10) * (Fx.RANDOM.nextBoolean() ? 1 : -1))
+				.alpha(atCamera ? 0.35f : 0.8f).fade(0.05f, 0.6f));
 		}
 	}
 

@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Swift Step's slash arcs** (HANDOFF's missing effects; the effects research: 7 arcs of the half-cylinder shell 10ADC
+with streak bands, size 3-3.7, 0.24-0.4 s, random rotation). A new effect shape, a curved band round part of a
+cylinder in any orientation, spinning about its axis and fading toward its ends, drawn with the game's band mask:
+seven at each arrival, each turned its own way. Played with the game frozen at the arrival (`arc_sheet`): swirls
+round the arrival point among the petals, gone in a quarter second; her own arrival in first person stays clear.
+
 **A kill feed** (critique #44; Overwatch's, top right). Who killed whom with what, for kills by a player playing a hero
 and every player's death, seen within 64 blocks: names on their side's colour as each player sees it (blue theirs, red
 the other), a hero's portrait beside their name, the weapon's icon between (the kunai's; an arrow for quick melee or a
