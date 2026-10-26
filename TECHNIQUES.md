@@ -99,6 +99,9 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 - Minecraft's mipmapper (`MipmapGenerator`, AUTO strategy) treats any texture with transparency as a cutout: it
   rescales alpha and adds 0.025 to every pixel of the smaller mips. Fine for alpha-tested models; for soft masks drawn
   blended it shows as faint boxes and swollen glows. Pass `MipmapStrategy.MEAN` for those (`HeroTexture`).
+- Check an engine assumption in its source before building on it: "the entity render types cull back faces" was
+  wrong for the cutout pipeline (`withCull(false)` in RenderPipelines), and CPU culling built on it opened holes in her
+  hair. A visual on/off comparison from several angles caught it.
 - Additive light washes out over bright ground (gold over grass turns lime): keep additive for teal/cyan glows, blend
   warm colours (`Fx.soft`).
 - A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),
