@@ -888,6 +888,27 @@ public final class HeroHud {
 	}
 
 	/**
+	 * Minecraft's air bubbles in hero mode (Overwatch has no breath): just above the health readout, as wide as its
+	 * pips and tilted with them. In their own place they sat against the ult meter and the ability boxes (found playing
+	 * underwater). Sets the pose so vanilla's bubbles, drawn where vanilla puts them (right end at the hotbar's right
+	 * edge, top 59 GUI units up from the bottom), land there.
+	 */
+	public static void airPlace(GuiGraphicsExtractor g) {
+		float scale = scale(g.guiWidth(), g.guiHeight());
+		float left = 194;
+		float pipsWidth = 10 * 26.6f - 2.6f;
+		g.pose().scale(scale, scale);
+		curve(g, left, 933, slopeAt(left + 120 - 960));
+		// the bubbles' right end over the last pip, just above the "+" box (vanilla's air line is 10 units lower than the
+		// 59 below assumes when the food bar is hidden: 34 reference px, measured on screen)
+		g.pose().translate(left + 2 + pipsWidth, 830);
+		// vanilla's ten bubbles span 81 units: as wide as the pips
+		float k = pipsWidth / 81;
+		g.pose().scale(k, k);
+		g.pose().translate(-(g.guiWidth() / 2f + 91), -(g.guiHeight() - 59));
+	}
+
+	/**
 	 * Hero mode's chat, as Overwatch's (the second critique: text about 18 px tall, at the left, its bottom near y
 	 * 700): Minecraft's chat scaled about its bottom-left corner (40 GUI units up from the screen's bottom).
 	 */

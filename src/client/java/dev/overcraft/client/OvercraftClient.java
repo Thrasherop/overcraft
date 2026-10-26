@@ -91,6 +91,17 @@ public class OvercraftClient implements ClientModInitializer {
 			VanillaHudElements.INFO_BAR, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
+		// the air bubbles join the hero HUD, above the health (HeroHud.airPlace)
+		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, vanilla -> (graphics, delta) -> {
+			if (!ClientHero.heroView()) {
+				vanilla.extractRenderState(graphics, delta);
+				return;
+			}
+			graphics.pose().pushMatrix();
+			HeroHud.airPlace(graphics);
+			vanilla.extractRenderState(graphics, delta);
+			graphics.pose().popMatrix();
+		});
 		// and the chat moves out of the hero HUD's way: as Overwatch's, small text at the left above the health (while
 		// typing, just lifted, so clicks on its lines still land)
 		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, vanilla -> (graphics, delta) -> {

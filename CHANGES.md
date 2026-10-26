@@ -5,6 +5,14 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Underwater, the air bubbles join the hero HUD** (found playing in a lake): Minecraft's bubbles drew in their own
+place, against the ult meter and the ability boxes. In hero mode they sit just above the health readout, as wide as
+its pips and tilted with them (`air2`: full, then draining); Minecraft mode keeps vanilla's. The first try overlapped
+the health number (`air`). Also played in water: she floats in her fall pose, the HUD and arms as usual (`sw_sheet`).
+Checked: every other screen shape still fits (21:9, 4:3, 5:4: `asp2`); the model costs about 3 ms a frame in third
+person in the forest world, 1 ms in first person; Kiriko's numbers match the wiki's patch log (its ability box is stale
+on three of them: seek range, fire rate, kunai size).
+
 **Fixed: "ELIMINATED <name>" could stay on screen for good** (found in the play pass: "ELIMINATED PIG" over every
 frame in the survival world, minutes after a kill in the test world). The caption and the hit marker time themselves
 on the world's clock; a kill in an older world, read in a younger one, had a negative age, clamped to "just now".
