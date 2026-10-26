@@ -3,6 +3,63 @@
 A day-by-day log of development: releases, features, bugs fixed, investigations, and what's waiting on the owner.
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues.
 
+## 2026-10-26
+
+**The hero HUD rebuilt like Overwatch's** (#8; spec: the owner's gameplay screenshots plus
+`tools/reference/kiriko-reference.md`, a reference sub-agent's measurements from the same video at 1080p).
+- Laid out in pixels of a 1080-high screen and scaled to the window, so it looks the same at any GUI scale; both side
+  groups curve up toward the centre as Overwatch's do (2.6-4.4 degree tilts, one curve formula).
+- Bottom left: the portrait cut to a shield with a light-blue border, a "+" box, `250 | 250` (max smaller and dimmer),
+  one white pip per 25 health (a nearly full pip reads full), a name plate with a glowing blue underline.
+- Bottom centre: the ult meter: a dark disc, 60 radial ticks filling clockwise from 12 in orange, the charge in
+  italic Big Noodle; ready: a white disc with the fox emblem in a glowing blue ring, the Q label inverted; running:
+  white ticks counting down the rush.
+- Bottom right: ability boxes (ready off-white with a black icon, just used coral, cooling down dark with an orange
+  fill rising and the whole seconds in an outlined italic number, a cyan flash when back), key labels under them;
+  the ofuda and kunai panels between bright blue lines, `ammo | clip`, and a mouse with the fire button in orange.
+- Middle: Overwatch's "+" crosshair instead of Minecraft's (and its attack indicator); the five-segment ofuda counter
+  under it (one segment a volley, spent ones from the right as dim outlines, a white flash on the refill); Swift
+  Step's target as cyan corner brackets in a diamond on the ally, with its key.
+- Minecraft mode keeps Minecraft's HUD plus a small ult meter right of the hotbar and "G: HERO MODE".
+- Chat moves up above the portrait in hero mode (it sat on the health).
+- Fonts: Overwatch's own (Futura No.2 D DemiBold for numbers and labels, Big Noodle Too Oblique for big numbers),
+  read from the player's install into the local pack (`build_asset_pack.py fonts`; a fonts sub-agent found them in
+  the game data: `tools/reference/fonts.md`). The jar's font files only point at Minecraft's font; `.ttf`/`.otf` are
+  now on the build's forbidden-assets list.
+- Shapes (discs, rings, the ofuda segment, the mouse) are drawn at load as smooth masks (HudShapes): original, not
+  from the game.
+
+**Overwatch's controls and menus in hero mode** (owner: "Hitting G toggles between all keybinds. So esc in minecraft
+mode opens minecraft settings. Esc in hero mode opens overwatch settings").
+- Hero mode has its own key set (HeroControls, saved in `config/overcraft-hero-controls.json`): move, jump, crouch,
+  primary/secondary fire, abilities, ult, reload, quick melee, interact, change hero, Minecraft mode. In hero mode
+  Minecraft's gameplay keys are silenced (moving, attack, use, pick, drop, inventory, offhand, sneak, sprint); in
+  Minecraft mode the hero's are. Chat, menus, F-keys and the hotbar's number keys work in both. The scroll wheel no
+  longer changes slots in hero mode (it dropped you out of hero mode).
+- **Defaults are Overwatch's: LMB = Healing Ofuda, RMB = Kunai** (the wiki; the owner's reference streamer had them
+  swapped, and so did Overcraft until now). Swap them in Options if you prefer.
+- New Interact key (F, Overwatch's): doors, chests, buttons and villagers in hero mode, since the fire buttons don't.
+- Esc in hero mode opens Overwatch's menu (big italic items: Resume, Options, Change Hero, Minecraft Menu, Save and
+  Leave); Esc in Minecraft mode opens Minecraft's. Options: tabs (Controls; Video, Sound and Mouse open Minecraft's
+  own screens), the hero's actions by section with the hero's names ("PRIMARY FIRE  HEALING OFUDA"), click a key box
+  then press a key or mouse button (Esc cancels, Delete clears), shared keys in red, Restore Defaults.
+- Minecraft's Controls screen now lists only G (hero mode) and H (change hero) under Overcraft.
+
+Played in the dev client at 1920x1080 through the dev harness (the desktop was locked, so no real mouse; new harness
+commands `press <key>` (a real key event through Minecraft's keyboard handler), `screenclick x y`, `window w h`,
+`tutorial`, `ult <percent>`), screenshots `run/screenshots/hud_v2_*`, `menu_v1`, `options_v2`, `hud_rebound`:
+- HUD at rest, ult 59% (ticks to 7 o'clock), Suzu cooling down (12, orange fill low), ofuda 2/10 (one segment lit,
+  four outlines), health 175/250 (7 pips white, 3 dark), Minecraft mode (small meter, hint). Compared region by
+  region with the owner's screenshots at 2-3x zoom.
+- Keys: W moves 5.5 m/s; E throws Suzu with no inventory; LMB throws ofuda (10 to 4), RMB a kunai (15 to 14); G to
+  Minecraft mode and back, staying put both ways; E in Minecraft mode opens the inventory and throws nothing;
+  crouch; wall climb up an 8-block wall and over.
+- Menus: Esc in hero mode opens the Overwatch menu, Options, rebinding Ability 2 to C (saved; C throws Suzu, E does
+  nothing, the HUD label reads C), Restore Defaults, the Video tab and back, Minecraft Menu (vanilla pause), Change
+  Hero (select screen); Esc in Minecraft mode opens vanilla pause; F opens a chest while RMB at it throws a kunai.
+- Not tried: the real mouse and keyboard, scroll wheel, a second player, a controller, other GUI scales and window
+  shapes than 1920x1080 and 854x480.
+
 ## 2026-10-25
 
 **Kiriko's real model in game** (branch `feature/kiriko`; the model itself stays local, #6). Overwatch build 154088

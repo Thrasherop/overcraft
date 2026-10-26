@@ -9,6 +9,10 @@
 		"AvatarRendererMixin",
 		"LivingEntityRendererMixin",
 		"FirstPersonHandsMixin",
+		"HudCrosshairMixin",
+		"KeyMappingMixin",
+		"MinecraftInvoker",
+		"MouseHandlerMixin",
 		"CreateWorldScreenAccessor"
 	],
 	"injectors": {

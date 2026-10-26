@@ -29,7 +29,7 @@ loom {
 // Overwatch assets are never shipped (CLAUDE.md): the build fails if the jar has a model, mesh or audio file in it,
 // or anything big enough to be one. Placeholders are small PNGs and JSON.
 def forbiddenAssets = ['glb', 'gltf', 'bin', 'fbx', 'blend', 'obj', 'smd', 'dmx', 'mdl', 'vtx', 'vvd', 'phy', 'vtf', 'vmt',
-	'dds', 'tga', 'wem', 'bnk', 'wav', 'ogg', 'mp3', 'owmdl', 'owmat', 'owanim', 'owentity', 'xps', 'pmx']
+	'dds', 'tga', 'wem', 'bnk', 'wav', 'ogg', 'mp3', 'owmdl', 'owmat', 'owanim', 'owentity', 'xps', 'pmx', 'ttf', 'otf']
 tasks.register('checkNoOverwatchAssets') {
 	def jarFile = tasks.named('jar').flatMap { it.archiveFile }
 	inputs.file(jarFile)

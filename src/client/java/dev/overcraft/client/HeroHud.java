@@ -1,187 +1,607 @@
 package dev.overcraft.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Ow;
+import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroControls.Action;
+import dev.overcraft.client.hud.HudShapes;
+import dev.overcraft.client.hud.HudText;
+import dev.overcraft.client.hud.HudText.Align;
+import dev.overcraft.client.hud.HudText.Face;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.net.HeroSyncPayload;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3x2f;
+import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 
+import static dev.overcraft.client.hud.HudDraw.fill;
+import static dev.overcraft.client.hud.HudDraw.gradient;
+import static dev.overcraft.client.hud.HudDraw.image;
+import static dev.overcraft.client.hud.HudDraw.outline;
+
 /**
- * The hero HUD, laid out like Overwatch's: health bottom-left, ult meter bottom-centre, abilities and ammo
- * bottom-right, the Swift Step target over the crosshair. The portrait and icons come from the player's own Overwatch
- * install (HeroArt); without it, shapes and text.
+ * The hero HUD, drawn like Overwatch's (tools/reference/kiriko-reference.md, section 1, measured from gameplay at
+ * 1920x1080): portrait, health and pips bottom-left; the ult meter bottom-centre; ability boxes and the two weapon
+ * panels bottom-right; the crosshair, the ofuda counter under it and the Swift Step target in the middle. Both side
+ * groups curve up toward the centre, as Overwatch's do.
+ *
+ * <p>Everything is laid out in pixels of a 1080-high screen (REF_H) and scaled to the window, so it looks the same at
+ * any GUI scale. Art comes from the player's local asset pack (HeroArt, HudText's fonts); without it, plain shapes
+ * and Minecraft's font stand in. In Minecraft mode only a small ult meter beside the hotbar is left.
  */
 public final class HeroHud {
+	private static final float REF_H = 1080;
+	/** The HUD's curve: y offset = CURVE * (distance from the centre)^2, so slope 2 * CURVE * distance (2.6° at the
+	 * ofuda panel, 4.4° at the kunai's, 3.5° across the pips: OWN measurements in the reference). */
+	private static final float CURVE = 4.7e-5f;
+	/** The reference layout's width: narrower screens (4:3, 5:4) scale the HUD down to fit it across. */
+	private static final float REF_W = 1920;
+
 	private static final int WHITE = 0xFFFFFFFF;
-	private static final int DIM = 0xFF8A93A6;
-	private static final int PANEL = 0x90101828;
-	private static final int ACCENT = 0xFFF0A030;
-	private static final int HEALTH = 0xFFF2F2F2;
-	private static final int HEALTH_LOST = 0x60FFFFFF;
-	private static final int ULT_READY = 0xFF5BD6FF;
+	private static final int TEXT_DIM = 0xFFC8CDD3;
+	private static final int SHADE = 0x73000000;
+	private static final int BOX_READY_TOP = 0xF2F4F4F4;
+	private static final int BOX_READY_BOTTOM = 0xF2D4D4D6;
+	private static final int BOX_CAST_TOP = 0xF2E6876C;
+	private static final int BOX_CAST_BOTTOM = 0xF2D9AFA3;
+	private static final int BOX_COOLDOWN = 0xB3575C59;
+	private static final int COOLDOWN_FILL = 0xE6FF7F2D;
+	private static final int COOLDOWN_EDGE = 0xFFEAD8D7;
+	private static final int FLASH = 0xFFB4FEFF;
+	private static final int FLASH_BORDER = 0xFF2B58DD;
+	private static final int ICON = 0xFF111111;
+	private static final int BLUE = 0xFF2D96DA;
+	private static final int BLUE_GLOW = 0x55153858;
+	private static final int ORANGE = 0xFFF77232;
+	private static final int ULT_TICK = 0xFFF18449;
+	private static final int ULT_TRACK = 0x2EFFFFFF;
+	private static final int ULT_READY_DISC = 0xFFEAEAE9;
+	private static final int ULT_RING_INNER = 0xFF3FCEFD;
+	private static final int ULT_RING_OUTER = 0xFF2C40C5;
+	private static final int AMBER = 0xFFE6AA27;
+	private static final int AMBER_SPENT = 0x73E6AA27;
+	private static final int CYAN = 0xFF29A8E0;
+	private static final int PORTRAIT_BORDER = 0xFF68CCFF;
+	private static final int PORTRAIT_BACK = 0xFF1B2A4A;
+	private static final int DIVIDER = 0xB34FA3A5;
+
+	/** How long an ability box shows coral after it's used, and cyan once it's back (s). */
+	private static final float CAST_TIME = 0.35f;
+	private static final float FLASH_TIME = 0.25f;
+	private static final int ULT_TICKS = 60;
+
+	// state for the flashes and the ult's countdown, kept between frames
+	private static float ability1Seen;
+	private static float ability2Seen;
+	private static long ability1ReadyAt = -1;
+	private static long ability2ReadyAt = -1;
+	private static int ofudaSeen = -1;
+	private static long ofudaRefilledAt = -1;
+	private static long ultStartedAt = -1;
 
 	private HeroHud() {
+	}
+
+	/** GUI units per reference pixel: the 1920x1080 layout fitted to the screen's height, or its width when narrower. */
+	private static float scale(int guiWidth, int guiHeight) {
+		return Math.min(guiHeight / REF_H, guiWidth / REF_W);
 	}
 
 	public static void render(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		Hero hero = ClientHero.hero();
-		if (player == null || hero == null) {
+		if (player == null || hero == null || player.isSpectator()) {
 			return;
 		}
+		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
-		boolean controls = ClientHero.controls();
-		Font font = mc.font;
-		int w = g.guiWidth();
-		int h = g.guiHeight();
-
-		health(g, font, player, hero, 10, h - 34);
-		ult(g, font, s, w / 2, h - 30);
-		if (controls) {
-			abilities(g, font, hero, s, w - 10, h - 34);
-			swiftStepTarget(g, font, player, s, w / 2, h / 2 + 10);
-		} else {
-			Component hint = Component.translatable("overcraft.hud.hero_mode", ClientHero.HERO_MODE.getTranslatedKeyMessage());
-			g.text(font, hint, w - 10 - font.width(hint), h - 14, DIM, true);
-		}
-		if (s.rushed()) {
-			Component rush = Component.translatable("overcraft.hud.kitsune_rush");
-			g.centeredText(font, rush, w / 2, h - 58, ACCENT);
-		}
-	}
-
-	private static void health(GuiGraphicsExtractor g, Font font, LocalPlayer player, Hero hero, int x, int y) {
-		int max = Math.round(Ow.toOw(player.getMaxHealth()));
-		int now = Math.round(Ow.toOw(player.getHealth()));
-		// the hero's portrait first, like Overwatch's (when the local asset pack has it)
-		Identifier portrait = HeroArt.portrait(hero);
-		if (portrait != null) {
-			int size = 30;
-			g.fill(x - 1, y - 13, x + size + 1, y - 13 + size + 2, PANEL);
-			g.blit(portrait, x, y - 12, x + size, y - 12 + size, 0, 1, 0, 1);
-			x += size + 5;
-		}
-		g.text(font, hero.displayName.toUpperCase(Locale.ROOT), x, y - 12, DIM, true);
-		big(g, font, String.valueOf(now), x, y, WHITE);
-		int numberWidth = font.width(String.valueOf(now)) * 2;
-		g.text(font, "/" + max, x + numberWidth + 3, y + 7, DIM, true);
-		// segmented bar: one segment per 25 health, like Overwatch's
-		int segments = Math.max(1, max / 25);
-		int segW = 5;
-		int barY = y + 19;
-		for (int i = 0; i < segments; i++) {
-			int sx = x + i * (segW + 1);
-			double segmentHealth = Math.clamp(now - i * 25, 0, 25) / 25.0;
-			g.fill(sx, barY, sx + segW, barY + 7, HEALTH_LOST);
-			if (segmentHealth > 0) {
-				g.fill(sx, barY + (int) Math.round(7 * (1 - segmentHealth)), sx + segW, barY + 7, HEALTH);
-			}
-		}
-	}
-
-	private static void ult(GuiGraphicsExtractor g, Font font, HeroSyncPayload s, int cx, int y) {
-		int percent = (int) Math.floor(100 * s.ultCharge() / Math.max(1, s.ultCost()));
-		boolean ready = percent >= 100;
-		int size = 22;
-		g.fill(cx - size, y - size / 2, cx + size, y + size / 2 + 4, PANEL);
-		int fillW = (int) Math.round(2 * size * Math.min(1, s.ultCharge() / Math.max(1, s.ultCost())));
-		g.fill(cx - size, y + size / 2 + 2, cx - size + fillW, y + size / 2 + 4, ready ? ULT_READY : ACCENT);
-		g.outline(cx - size, y - size / 2, 2 * size, size + 4, ready ? ULT_READY : DIM);
-		if (s.ultActive()) {
-			g.centeredText(font, Component.translatable("overcraft.hud.ult_active"), cx, y - 4, ACCENT);
-		} else if (ready) {
-			g.centeredText(font, ClientHero.ULTIMATE.getTranslatedKeyMessage(), cx, y - 4, ULT_READY);
-		} else {
-			g.centeredText(font, percent + "%", cx, y - 4, WHITE);
-		}
-	}
-
-	private static void abilities(GuiGraphicsExtractor g, Font font, Hero hero, HeroSyncPayload s, int right, int y) {
-		// ammo, rightmost: kunai big (its icon beside it), ofuda under it
-		String kunai = s.primaryReload() >= 0 ? "--" : String.valueOf(s.primaryAmmo());
-		int kunaiW = font.width(kunai) * 2;
-		big(g, font, kunai, right - kunaiW - 20, y, s.primaryAmmo() == 0 ? ACCENT : WHITE);
-		g.text(font, "/" + KirikoStats.KUNAI_AMMO, right - 18, y + 7, DIM, true);
-		Identifier weapon = HeroArt.ability(hero, "kunai");
-		if (weapon != null) {
-			g.blit(weapon, right - kunaiW - 38, y, right - kunaiW - 24, y + 14, 0, 1, 0, 1);
-		}
-		reloadBar(g, right - 60, y + 18, 60, s.primaryReload());
-		String ofuda = Component.translatable("overcraft.hud.ofuda").getString() + " " + s.secondaryAmmo() + "/" + KirikoStats.OFUDA_AMMO;
-		g.text(font, ofuda, right - font.width(ofuda), y + 22, s.secondaryReload() >= 0 ? DIM : WHITE, true);
-		reloadBar(g, right - 60, y + 31, 60, s.secondaryReload());
-
-		// abilities, to the left of the ammo
-		int box = 22;
-		int x = right - 70 - box - (box + 6);
-		ability(g, font, hero, "protection_suzu", x, y, box, ClientHero.ABILITY_2, s.ability2Cooldown());
-		x -= box + 6;
-		ability(g, font, hero, "swift_step", x, y, box, ClientHero.ABILITY_1, s.ability1Cooldown());
-	}
-
-	/** An ability's box: its icon (or short name), dimmed with the seconds left while cooling down, the key under it. */
-	private static void ability(GuiGraphicsExtractor g, Font font, Hero hero, String ability, int x, int y, int box, KeyMapping key,
-								float cooldown) {
-		boolean ready = cooldown <= 0;
-		g.fill(x, y, x + box, y + box, PANEL);
-		Identifier icon = HeroArt.ability(hero, ability);
-		if (icon != null) {
-			g.blit(icon, x + 2, y + 2, x + box - 2, y + box - 2, 0, 1, 0, 1);
-		} else if (ready) {
-			g.centeredText(font, Component.translatable("overcraft.ability." + ability + ".short"), x + box / 2, y + box / 2 - 4, WHITE);
-		}
-		if (!ready) {
-			if (icon != null) {
-				g.fill(x, y, x + box, y + box, 0xB0101828);
-			}
-			g.centeredText(font, String.valueOf((int) Math.ceil(cooldown)), x + box / 2, y + box / 2 - 4, ACCENT);
-		}
-		g.outline(x, y, box, box, ready ? WHITE : DIM);
-		g.centeredText(font, shortKey(key), x + box / 2, y + box + 3, DIM);
-	}
-
-	/** "Left Shift" -> "SHIFT": fits under a 22-pixel box. */
-	public static String shortKey(KeyMapping key) {
-		String name = key.getTranslatedKeyMessage().getString().trim();
-		int space = name.lastIndexOf(' ');
-		return (space >= 0 ? name.substring(space + 1) : name).toUpperCase(Locale.ROOT);
-	}
-
-	private static void reloadBar(GuiGraphicsExtractor g, int x, int y, int width, float progress) {
-		if (progress < 0) {
+		track(s);
+		if (!ClientHero.controls()) {
+			minecraftMode(g, s, hero);
 			return;
 		}
-		g.fill(x, y, x + width, y + 2, HEALTH_LOST);
-		g.fill(x, y, x + (int) (width * progress), y + 2, ACCENT);
+		float scale = scale(g.guiWidth(), g.guiHeight());
+		float w = g.guiWidth() / scale;
+		float h = g.guiHeight() / scale;
+		g.pose().pushMatrix();
+		g.pose().scale(scale, scale);
+		crosshair(g, w / 2, h / 2);
+		ofudaCounter(g, s, w / 2, h / 2 + 136);
+		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
+		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
+		g.pose().translate(0, h - REF_H);
+		health(g, player, hero);
+		ult(g, hero, s, w / 2, 930);
+		abilities(g, hero, s, w);
+		weapons(g, hero, s, w);
+		if (s.rushed()) {
+			HudText.draw(g, Face.BODY, Component.translatable("overcraft.hud.kitsune_rush").getString(), w / 2, 860, 13,
+				ORANGE, Align.CENTER);
+		}
+		g.pose().popMatrix();
 	}
 
-	private static void swiftStepTarget(GuiGraphicsExtractor g, Font font, LocalPlayer player, HeroSyncPayload s, int cx, int y) {
+	/** Notices cooldowns ending, the ofuda clip refilling and the ult starting, for the flashes and the countdown. */
+	private static void track(HeroSyncPayload s) {
+		long now = Util.getMillis();
+		if (ability1Seen > 0 && s.ability1Cooldown() <= 0) {
+			ability1ReadyAt = now;
+		}
+		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
+			ability2ReadyAt = now;
+		}
+		ability1Seen = s.ability1Cooldown();
+		ability2Seen = s.ability2Cooldown();
+		if (ofudaSeen >= 0 && s.secondaryAmmo() > ofudaSeen && s.secondaryAmmo() == KirikoStats.OFUDA_AMMO) {
+			ofudaRefilledAt = now;
+		}
+		ofudaSeen = s.secondaryAmmo();
+		if (!s.ultActive()) {
+			ultStartedAt = -1;
+		} else if (ultStartedAt < 0) {
+			ultStartedAt = now;
+		}
+	}
+
+	private static float since(long at) {
+		return at < 0 ? Float.MAX_VALUE : (Util.getMillis() - at) / 1000f;
+	}
+
+	// ---- bottom left: portrait, health, pips ----
+
+	private static void health(GuiGraphicsExtractor g, LocalPlayer player, Hero hero) {
+		// the portrait, cut to a shield with a light-blue border
+		Identifier portrait = HudShapes.portrait(hero);
+		float px = 52;
+		float py = 890;
+		float pw = 104;
+		float ph = pw * HudShapes.SHIELD_H / HudShapes.SHIELD_W;
+		image(g, HudShapes.SHIELD, px - 3, py - 3, pw + 6, ph + 6, 0x80000000);
+		image(g, HudShapes.SHIELD, px, py, pw, ph, PORTRAIT_BACK);
+		if (portrait != null) {
+			image(g, portrait, px, py, pw, ph, WHITE);
+		}
+		image(g, HudShapes.SHIELD_BORDER, px, py, pw, ph, PORTRAIT_BORDER);
+
+		// the rest tilts with the HUD's curve: inner (right) end higher
+		float left = 194;
+		g.pose().pushMatrix();
+		curve(g, left, 933, slopeAt(left + 120 - 960));
+		int max = Math.round(Ow.toOw(player.getMaxHealth()));
+		int now = (int) Math.ceil(Ow.toOw(player.getHealth()));
+		// "+" box, then current | max
+		fill(g, left, 899, 44, 24, SHADE);
+		image(g, HudShapes.PLUS, left + 5, 902, 18, 18, WHITE);
+		float x = left + 54;
+		String current = String.valueOf(now);
+		HudText.draw(g, Face.BODY, current, x, 921, 23, WHITE, Align.LEFT);
+		x += HudText.width(Face.BODY, current, 23) + 7;
+		fill(g, x, 898, 2, 24, DIVIDER);
+		HudText.draw(g, Face.BODY, String.valueOf(max), x + 8, 921, 16, TEXT_DIM, Align.LEFT);
+
+		// one pip per 25 health: white while it holds health, a faint dark box when empty
+		int pips = Math.max(1, (int) Math.ceil(max / 25.0));
+		for (int i = 0; i < pips; i++) {
+			float pipX = left + 2 + i * 26;
+			float held = Math.clamp((now - i * 25) / 25f, 0, 1);
+			fill(g, pipX, 933, 22, 30, 0x40000000);
+			if (held > 0) {
+				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips)
+				float shown = held > 0.9f ? 1 : held;
+				fill(g, pipX, 933 + 30 * (1 - shown), 22, 30 * shown, WHITE);
+			}
+		}
+
+		// the player's name plate under the pips: dark, with a glowing blue underline ending in a dot
+		String name = player.getName().getString().toUpperCase(Locale.ROOT);
+		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
+		for (int i = 0; i < 12; i++) {
+			// fades out to the right
+			int alpha = (int) (0x90 * (1 - i / 12f));
+			fill(g, left + 2 + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
+		}
+		HudText.draw(g, Face.BODY, name, left + 14, 993, 14, WHITE, Align.LEFT);
+		fill(g, left + 2, 1004, nameW * 0.7f, 3, BLUE);
+		image(g, HudShapes.GLOW, left + 2 + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
+		g.pose().popMatrix();
+	}
+
+	// ---- bottom centre: the ult meter ----
+
+	private static void ult(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float cx, float cy) {
+		float charge = Math.min(1, s.ultCharge() / Math.max(1, s.ultCost()));
+		boolean ready = charge >= 1 && !s.ultActive();
+		Identifier fox = HeroArt.ability(hero, "kitsune_rush");
+		if (s.ultActive() || ready) {
+			// ready (and running): a white disc with the fox, ringed in glowing blue
+			image(g, HudShapes.GLOW, cx - 80, cy - 80, 160, 160, 0x993355E7);
+			disc(g, cx, cy, 57, ULT_RING_OUTER);
+			disc(g, cx, cy, 53, ULT_RING_INNER);
+			disc(g, cx, cy, 47, ULT_READY_DISC);
+			if (fox != null) {
+				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
+			}
+			if (s.ultActive()) {
+				// running: white ticks count down the rush
+				float left = 1 - since(ultStartedAt) / (float) KirikoStats.RUSH_DURATION;
+				ticks(g, cx, cy, 39, 45, Math.clamp(left, 0, 1), WHITE, 0);
+			}
+		} else {
+			disc(g, cx, cy, 50, 0xB3000000);
+			ring(g, cx, cy, 56, 0x40FFFFFF);
+			ring(g, cx, cy, 34, 0x47FFFFFF);
+			ticks(g, cx, cy, 37, 47, charge, ULT_TICK, ULT_TRACK);
+			int percent = (int) Math.floor(100 * charge);
+			HudText.draw(g, Face.NUMBERS, String.valueOf(percent), cx, cy + 18, 36, WHITE, Align.CENTER);
+		}
+		keyLabel(g, HeroControls.get(Action.ULTIMATE), cx, 1008, ready ? WHITE : 0, ready);
+	}
+
+	/** A ring of radial ticks, clockwise from 12 o'clock: the first fraction lit, the rest in track colour. */
+	private static void ticks(GuiGraphicsExtractor g, float cx, float cy, float r0, float r1, float fraction, int lit, int track) {
+		int litTicks = Math.round(ULT_TICKS * fraction);
+		// a tick a bit over half its spacing wide, at most 2.2
+		float half = Math.min(1.1f, (float) (Math.PI * r1 / ULT_TICKS) * 0.55f);
+		for (int i = 0; i < ULT_TICKS; i++) {
+			int color = i < litTicks ? lit : track;
+			if (color == 0) {
+				continue;
+			}
+			g.pose().pushMatrix();
+			g.pose().translate(cx, cy);
+			g.pose().rotate((float) (2 * Math.PI * (i + 0.5) / ULT_TICKS));
+			fill(g, -half, -r1, 2 * half, r1 - r0, color);
+			g.pose().popMatrix();
+		}
+	}
+
+	// ---- bottom right: abilities and weapons ----
+
+	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		ability(g, hero, w, "swift_step", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+			(float) KirikoStats.SWIFT_STEP_COOLDOWN, ability1ReadyAt);
+		ability(g, hero, w, "protection_suzu", w - 563, 905, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+			(float) KirikoStats.SUZU_COOLDOWN, ability2ReadyAt);
+	}
+
+	/**
+	 * An ability's box. Ready: off-white with the black icon. Just used: coral. Cooling down: dark, an orange fill
+	 * rising as it recharges, the whole seconds left. Back: a short cyan flash. The key under it.
+	 */
+	private static void ability(GuiGraphicsExtractor g, Hero hero, float w, String ability, float x, float y, KeyMapping key,
+								float cooldown, float total, long readyAt) {
+		float size = 64;
+		float cx = x + size / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + size / 2, slopeAt(960 - (w - cx)));
+		Identifier icon = HeroArt.ability(hero, ability);
+		if (cooldown <= 0) {
+			boolean flash = since(readyAt) < FLASH_TIME;
+			if (flash) {
+				fill(g, x - 2, y - 2, size + 4, size + 4, FLASH_BORDER);
+				fill(g, x, y, size, size, FLASH);
+			} else {
+				gradient(g, x, y, size, size, BOX_READY_TOP, BOX_READY_BOTTOM);
+				fill(g, x, y + size + 2, size, 1.5f, 0x99FFFFFF);
+			}
+			iconOrName(g, icon, ability, x, y, size, ICON);
+		} else if (cooldown > total - CAST_TIME) {
+			gradient(g, x, y, size, size, BOX_CAST_TOP, BOX_CAST_BOTTOM);
+			iconOrName(g, icon, ability, x, y, size, ICON);
+		} else {
+			fill(g, x, y, size, size, BOX_COOLDOWN);
+			float done = Math.clamp(1 - cooldown / total, 0, 1);
+			float fillH = size * done;
+			fill(g, x, y + size - fillH, size, fillH, COOLDOWN_FILL);
+			fill(g, x, y + size - fillH - 1.5f, size, 1.5f, COOLDOWN_EDGE);
+			outlined(g, Face.NUMBERS, String.valueOf((int) Math.ceil(cooldown)), cx, y + size / 2 + 17, 34, WHITE);
+		}
+		keyLabel(g, key, cx, y + size + 22, 0, false);
+		g.pose().popMatrix();
+	}
+
+	private static void iconOrName(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float x, float y,
+								   float size, int color) {
+		if (icon != null) {
+			image(g, icon, x + 7, y + 7, size - 14, size - 14, color);
+		} else {
+			String name = Component.translatable("overcraft.ability." + ability + ".short").getString();
+			HudText.draw(g, Face.BODY, name, x + size / 2, y + size / 2 + 6, 12, color, Align.CENTER);
+		}
+	}
+
+	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		// ofuda (primary fire), then kunai (secondary): Overwatch's order. The server's weapon slots are the other way
+		// round (its primary is the kunai), hence the crossed ammo fields.
+		weapon(g, hero, w, "healing_ofuda", w - 486, 919, 171, 74, 42, 42, s.secondaryAmmo(), KirikoStats.OFUDA_AMMO,
+			s.secondaryReload(), HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1016);
+		weapon(g, hero, w, "kunai", w - 307, 932, 251, 78, 109, 36, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
+			s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1033);
+	}
+
+	/**
+	 * A weapon panel: blue lines along its top and bottom, the icon, "ammo | clip" (dimmed while reloading, the
+	 * bottom line filling white with the reload), and under it the mouse with its fire button in orange.
+	 */
+	private static void weapon(GuiGraphicsExtractor g, Hero hero, float w, String weapon, float x, float y, float width, float height,
+							   float iconW, float iconH, int ammo, int clip, float reload, KeyMapping fire, float mouseX,
+							   float mouseY) {
+		g.pose().pushMatrix();
+		float cx = x + width / 2;
+		curve(g, cx, y + height / 2, slopeAt(960 - (w - cx)));
+		fill(g, x, y, width, height, 0x26000000);
+		line(g, x, y, width);
+		line(g, x, y + height - 3, width);
+		if (reload >= 0) {
+			fill(g, x, y + height - 3, width * reload, 3, 0xE6FFFFFF);
+		}
+		float mid = y + height / 2;
+		Identifier icon = HeroArt.ability(hero, weapon);
+		if (icon != null) {
+			image(g, icon, x + 16, mid - iconH / 2, iconW, iconH, WHITE);
+		}
+		int color = reload >= 0 ? TEXT_DIM : WHITE;
+		String current = String.valueOf(ammo);
+		String max = String.valueOf(clip);
+		float right = x + width - 22;
+		float maxW = HudText.width(Face.BODY, max, 22);
+		HudText.draw(g, Face.BODY, max, right, mid + 11, 22, color, Align.RIGHT);
+		fill(g, right - maxW - 9, mid - 14, 2, 28, DIVIDER);
+		HudText.draw(g, Face.BODY, current, right - maxW - 16, mid + 11, 22, color, Align.RIGHT);
+		g.pose().popMatrix();
+		mouse(g, fire, mouseX, mouseY);
+	}
+
+	/** The panels' bright blue line, with a soft glow. */
+	private static void line(GuiGraphicsExtractor g, float x, float y, float width) {
+		fill(g, x, y - 2, width, 7, BLUE_GLOW);
+		fill(g, x, y, width, 3, BLUE);
+	}
+
+	/** Under a weapon panel: the mouse with the fire button in orange, or the key it's bound to. */
+	private static void mouse(GuiGraphicsExtractor g, KeyMapping fire, float cx, float cy) {
+		String key = KeyMappingHelper.getBoundKeyOf(fire).getName();
+		if (key.equals("key.mouse.left") || key.equals("key.mouse.right")) {
+			float mw = 20;
+			float mh = 27;
+			image(g, HudShapes.MOUSE, cx - mw / 2, cy - mh / 2, mw, mh, WHITE);
+			image(g, key.equals("key.mouse.left") ? HudShapes.MOUSE_LEFT : HudShapes.MOUSE_RIGHT, cx - mw / 2, cy - mh / 2, mw, mh,
+				ORANGE);
+		} else {
+			keyLabel(g, fire, cx, cy, 0, false);
+		}
+	}
+
+	// ---- the middle: crosshair, ofuda counter, Swift Step target ----
+
+	/** Overwatch's default: a small white "+" of four ticks around a gap, outlined dark. */
+	private static void crosshair(GuiGraphicsExtractor g, float cx, float cy) {
+		float gap = 4;
+		float len = 7;
+		float t = 2;
+		for (int pass = 0; pass < 2; pass++) {
+			float o = pass == 0 ? 1 : 0;
+			int color = pass == 0 ? 0x99000000 : WHITE;
+			fill(g, cx - t / 2 - o, cy - gap - len - o, t + 2 * o, len + 2 * o, color);
+			fill(g, cx - t / 2 - o, cy + gap - o, t + 2 * o, len + 2 * o, color);
+			fill(g, cx - gap - len - o, cy - t / 2 - o, len + 2 * o, t + 2 * o, color);
+			fill(g, cx + gap - o, cy - t / 2 - o, len + 2 * o, t + 2 * o, color);
+		}
+	}
+
+	/**
+	 * The ofuda counter under the crosshair: five amber "/" segments, one per volley (two ofuda), spent ones from the
+	 * right as dim outlines, all dim while reloading, a white flash when the clip comes back; a thin bracket under it.
+	 */
+	private static void ofudaCounter(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, float cy) {
+		int segments = KirikoStats.OFUDA_AMMO / KirikoStats.OFUDA_PER_THROW;
+		int loaded = s.secondaryReload() >= 0 ? 0 : s.secondaryAmmo() / KirikoStats.OFUDA_PER_THROW;
+		boolean flash = since(ofudaRefilledAt) < FLASH_TIME;
+		float h = 27;
+		float w = h * HudShapes.SEGMENT_W / (HudShapes.SEGMENT_H - 8);
+		float pitch = 29;
+		for (int i = 0; i < segments; i++) {
+			float x = cx + (i - (segments - 1) / 2f) * pitch - w / 2;
+			float y = cy - h / 2 - h * 4 / (HudShapes.SEGMENT_H - 8);
+			float th = h * HudShapes.SEGMENT_H / (HudShapes.SEGMENT_H - 8);
+			if (i < loaded) {
+				image(g, HudShapes.OFUDA_SEGMENT, x, y, w, th, flash ? WHITE : AMBER);
+			} else {
+				image(g, HudShapes.OFUDA_SEGMENT, x, y, w, th, 0x33000000);
+				image(g, HudShapes.OFUDA_SEGMENT_OUTLINE, x, y, w, th, AMBER_SPENT);
+			}
+		}
+		// the bracket: a dot at each end, a short slant down and in, then flat under the bar
+		int bracket = 0x8CC8C8C8;
+		float span = 92;
+		for (int side = -1; side <= 1; side += 2) {
+			float dotX = cx + side * span;
+			float dotY = cy + 6;
+			image(g, HudShapes.DISC, dotX - 3, dotY - 3, 6, 6, bracket);
+			g.pose().pushMatrix();
+			g.pose().translate(dotX, dotY);
+			g.pose().rotate((float) Math.toRadians(side < 0 ? 45 : 135));
+			fill(g, 0, -1, 17, 2, bracket);
+			g.pose().popMatrix();
+			float flatX = dotX - side * 12;
+			float flatEnd = flatX - side * 24;
+			fill(g, Math.min(flatX, flatEnd), dotY + 11, 24, 2, bracket);
+		}
+	}
+
+	/**
+	 * Swift Step's target: four cyan corner brackets in a diamond around the ally it would go to, with its key under
+	 * them, on the ally (not the crosshair).
+	 */
+	private static void swiftStepTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+										float partial) {
 		if (s.ability1Cooldown() > 0) {
 			return;
 		}
 		LivingEntity target = Targeting.allyInView(player, KirikoStats.SWIFT_STEP_RANGE, KirikoStats.SWIFT_STEP_HALF_ANGLE, false);
-		if (target != null) {
-			g.centeredText(font, Component.translatable("overcraft.hud.swift_step_target", target.getDisplayName()), cx, y, ACCENT);
+		if (target == null) {
+			return;
 		}
-	}
-
-	private static void big(GuiGraphicsExtractor g, Font font, String text, int x, int y, int color) {
+		Vec3 at = target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0);
+		float[] screen = project(at, w, h);
+		if (screen == null) {
+			return;
+		}
+		float x = screen[0];
+		float y = screen[1];
+		float half = 48;
+		float arm = 18;
+		float t = 3;
 		g.pose().pushMatrix();
 		g.pose().translate(x, y);
-		g.pose().scale(2f, 2f);
-		g.text(font, text, 0, 0, color, true);
+		g.pose().rotate((float) Math.toRadians(45));
+		for (int corner = 0; corner < 4; corner++) {
+			float sx = (corner & 1) == 0 ? -1 : 1;
+			float sy = (corner & 2) == 0 ? -1 : 1;
+			float ox = sx * half;
+			float oy = sy * half;
+			// the corner's two arms, pointing back along the square's sides
+			fill(g, sx < 0 ? ox : ox - arm, sy < 0 ? oy : oy - t, arm, t, CYAN);
+			fill(g, sx < 0 ? ox : ox - t, sy < 0 ? oy : oy - arm, t, arm, CYAN);
+		}
 		g.pose().popMatrix();
+		keyLabel(g, HeroControls.get(Action.ABILITY_1), x, y + half * 1.42f + 18, CYAN, false);
+	}
+
+	/** World position to HUD position (reference pixels), or null behind the camera. */
+	private static float @Nullable [] project(Vec3 at, float w, float h) {
+		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
+		Vec3 rel = at.subtract(camera.position());
+		Vector3f v = new Vector3f((float) rel.x, (float) rel.y, (float) rel.z);
+		float depth = v.dot(camera.forwardVector());
+		if (depth < 0.1f) {
+			return null;
+		}
+		float tan = (float) Math.tan(Math.toRadians(camera.getFov()) / 2);
+		float aspect = w / h;
+		float nx = -v.dot(camera.leftVector()) / (depth * tan * aspect);
+		float ny = v.dot(camera.upVector()) / (depth * tan);
+		return new float[] {w / 2 * (1 + nx), h / 2 * (1 - ny)};
+	}
+
+	// ---- Minecraft mode ----
+
+	/** Out of hero mode: just a small ult meter right of the hotbar, and how to get back. */
+	private static void minecraftMode(GuiGraphicsExtractor g, HeroSyncPayload s, Hero hero) {
+		int w = g.guiWidth();
+		int h = g.guiHeight();
+		float cx = w / 2f + 91 + 34;
+		float cy = h - 12;
+		float charge = Math.min(1, s.ultCharge() / Math.max(1, s.ultCost()));
+		disc(g, cx, cy, 10.5f, 0x8C000000);
+		ticks(g, cx, cy, 8, 10.5f, charge, ULT_TICK, ULT_TRACK);
+		HudText.draw(g, Face.NUMBERS, String.valueOf((int) Math.floor(100 * charge)), cx, cy + 3.5f,
+			7, WHITE, Align.CENTER);
+		Component hint = Component.translatable("overcraft.hud.hero_mode", ClientHero.HERO_MODE.getTranslatedKeyMessage());
+		HudText.draw(g, Face.SMALL, hint.getString().toUpperCase(Locale.ROOT), cx + 15, cy + 3, 6, TEXT_DIM, Align.LEFT);
+	}
+
+	/**
+	 * How far up Minecraft's chat moves in hero mode, in GUI units: from just above the hotbar (which hero mode hides)
+	 * to above the portrait, so it never covers the health.
+	 */
+	public static float chatLift(int guiWidth, int guiHeight) {
+		float scale = scale(guiWidth, guiHeight);
+		return Math.max(0, (REF_H - 870) * scale - 40);
+	}
+
+	// ---- pieces ----
+
+	/** A key's label in a small outlined box: white on dark, or inverted (solid white, dark letters). */
+	private static void keyLabel(GuiGraphicsExtractor g, KeyMapping key, float cx, float cy, int tint, boolean inverted) {
+		String label = shortKey(key);
+		float cap = 11;
+		float textW = HudText.width(Face.SMALL, label, cap);
+		float bw = Math.max(24, textW + 12);
+		float bh = 22;
+		float x = cx - bw / 2;
+		float y = cy - bh / 2;
+		int edge = tint != 0 ? tint : 0xCCE6EEF0;
+		if (inverted) {
+			fill(g, x, y, bw, bh, edge);
+		} else {
+			fill(g, x, y, bw, bh, SHADE);
+			outline(g, x, y, bw, bh, 1.5f, edge);
+		}
+		HudText.draw(g, Face.SMALL, label, cx, cy + cap / 2, cap, inverted ? 0xFF15181C : edge, Align.CENTER);
+	}
+
+	/** A key's name as Overwatch writes it: LSHIFT, E, Q, SPACE, MOUSE4. */
+	public static String shortKey(KeyMapping key) {
+		InputConstants.Key bound = KeyMappingHelper.getBoundKeyOf(key);
+		String name = bound.getName();
+		if (name.startsWith("key.keyboard.")) {
+			String rest = name.substring("key.keyboard.".length());
+			if (rest.startsWith("left.") || rest.startsWith("right.")) {
+				String side = rest.startsWith("left.") ? "L" : "R";
+				String what = rest.substring(rest.indexOf('.') + 1);
+				what = what.equals("control") ? "ctrl" : what;
+				return (side + what).toUpperCase(Locale.ROOT);
+			}
+			if (rest.length() <= 6 && !rest.contains(".")) {
+				return rest.toUpperCase(Locale.ROOT);
+			}
+		} else if (name.startsWith("key.mouse.")) {
+			String button = name.substring("key.mouse.".length());
+			return switch (button) {
+				case "left" -> "LMB";
+				case "right" -> "RMB";
+				case "middle" -> "MMB";
+				default -> "MOUSE" + button;
+			};
+		}
+		String text = key.getTranslatedKeyMessage().getString().trim();
+		return text.toUpperCase(Locale.ROOT);
+	}
+
+	/** Draws text with a dark outline all round, like the brush stroke behind Overwatch's cooldown numbers. */
+	private static void outlined(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color) {
+		for (int i = 0; i < 8; i++) {
+			double a = Math.PI * 2 * i / 8;
+			HudText.draw(g, face, text, x + (float) Math.cos(a) * 2.5f, baseline + (float) Math.sin(a) * 2.5f, cap, 0xD9000000,
+				Align.CENTER);
+		}
+		HudText.draw(g, face, text, x, baseline, cap, color, Align.CENTER);
+	}
+
+	/** The local slope of the HUD's curve at dx from the centre (16:9 layout), applied around (x, y). */
+	private static float slopeAt(float dx) {
+		return 2 * CURVE * dx;
+	}
+
+	private static void curve(GuiGraphicsExtractor g, float x, float y, float slope) {
+		g.pose().translate(x, y);
+		g.pose().mul(new Matrix3x2f(1, slope, 0, 1, 0, 0));
+		g.pose().translate(-x, -y);
+	}
+
+	private static void disc(GuiGraphicsExtractor g, float cx, float cy, float r, int color) {
+		image(g, HudShapes.DISC, cx - r, cy - r, 2 * r, 2 * r, color);
+	}
+
+	private static void ring(GuiGraphicsExtractor g, float cx, float cy, float r, int color) {
+		image(g, HudShapes.RING, cx - r, cy - r, 2 * r, 2 * r, color);
 	}
 }

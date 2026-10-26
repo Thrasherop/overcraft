@@ -121,6 +121,7 @@ public final class HeroModels {
 
 	private static void register(Map<String, Prepared> prepared) {
 		HeroArt.clear();
+		dev.overcraft.client.hud.HudShapes.clear();
 		TextureManager textures = Minecraft.getInstance().getTextureManager();
 		REGISTERED.forEach(textures::release);
 		REGISTERED.clear();

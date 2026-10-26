@@ -40,12 +40,21 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   most animation bugs.
 - **Reproduce the owner's report first** (stuck on a step only when strafing; Alex in Minecraft mode), then show the
   fix with the same steps.
+- **When the desktop is locked or can't take input**, the harness still types: `press key.keyboard.escape` sends a
+  real key event through Minecraft's KeyboardHandler (Esc pauses, screens get keyPressed), `screenclick x y` clicks
+  the open screen at GUI coordinates. `window 1920 1080` matches the reference screenshots' size; check other shapes
+  too (5:4 and 21:9 found the HUD overlapping itself).
 - Test worlds: summon test mobs with `Tags:["x"]` and select `@e[tag=x]` (superflat villages, SNBT names keep their
   quotes); `/difficulty peaceful` while setting up (a slime killed the test once); gamerules are snake_case in 26.3
   (`send_command_feedback`).
 
 ## Comparing with the real game
 
+- **The owner's screenshots live in the session transcript** (`~/.claude/projects/<project>/<session>.jsonl`):
+  images in user messages, and in `attachment.prompt` for messages queued while working. A short script decodes them
+  to files (scratchpad `owner_imgs3.py`) so they can be cropped and compared, not just remembered.
+- **Lay the HUD out in pixels of the reference screenshot** (1920x1080) and scale to the window; then crop the same
+  region of ours and the reference at 2-3x (scratchpad `crop.ps1`) and compare them side by side.
 - **The owner's gameplay screenshots are the spec.** Read them closely: HUD layout, the ofuda pips under the
   crosshair, which arm throws, how the arms sway. Zoom in, compare side by side with ours.
 - **A reference sub-agent** collects how real gameplay looks (web, the wiki's MediaWiki API) into
@@ -59,3 +68,9 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   scratchpad): names and signatures changed a lot (GuiGraphicsExtractor, RenderPipelines, PoseStack.mulPose takes a
   matrix, knockback takes a damage source, MipmappedTexture exists).
 - Synced Fabric attachments must be registered at mod start, not lazily from an event.
+- 26.3's input codes are SDL's, not GLFW's (A = 4, W = 26, Space = 44, right mouse = 3): always use InputConstants'
+  names, never remembered numbers (a `<= 1` mouse-button check silently failed).
+- Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected at load. Fonts
+  are placed by baseline at 7 units below the draw position at any size, which makes cap-height sizing easy.
+- A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),
+  stay out of the Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.

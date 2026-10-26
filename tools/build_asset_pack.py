@@ -9,6 +9,10 @@
                                                             extract-hero-icons (<dir>/HeroIcons/<Hero>/...), and the role
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
+    py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
+    py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
+                                                            extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
+                                                            (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
 """
@@ -144,6 +148,72 @@ def add_sounds(source):
     print(f"{len(sounds)} sounds -> {out}")
 
 
+# the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
+# Minecraft only reads TrueType outlines, which these two are.
+FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf"}
+FONT_DEFS = {"hud": ("futura_demibold.ttf", 32, 1.5), "hud_small": ("futura_demibold.ttf", 16, 2),
+             "hud_numbers": ("big_noodle.ttf", 32, 2)}
+
+
+def add_fonts(source):
+    """Copies the HUD's fonts into assets/overcraft/font/ and writes their font definitions. The jar's own
+    definitions only point at Minecraft's font; the pack's come first, so these win where they have the letter."""
+    import json
+    write_mcmeta()
+    out = PACK / "assets" / "overcraft" / "font"
+    out.mkdir(parents=True, exist_ok=True)
+    for name, original in FONTS.items():
+        src = Path(source) / original
+        if not src.exists():
+            sys.exit(f"missing {src}")
+        shutil.copyfile(src, out / name)
+    for font, (file, size, oversample) in FONT_DEFS.items():
+        definition = {"providers": [{"type": "ttf", "file": "overcraft:" + file, "size": size, "oversample": oversample}]}
+        (out / (font + ".json")).write_text(json.dumps(definition, indent=1), encoding="utf8")
+    print(f"{len(FONTS)} fonts -> {out}")
+
+
+# the effects' masks (grey-scale; the mod colours them at load, client/effect/EffectArt): pack name -> (hero, ability
+# folder, texture id, frames). Ids from the effects survey, tools/reference/kiriko-effects.md.
+EFFECT_MASKS = {
+    "glow": ("Kiriko", "HealingOfuda", "00000000A7B6", 1),
+    "glow_hot": ("Kiriko", "HealingOfuda", "00000000FFC9", 1),
+    "flower": ("Kiriko", "HealingOfuda", "000000030242", 1),
+    "ribbon": ("Kiriko", "HealingOfuda", "000000030182", 1),
+    "noise": ("Kiriko", "HealingOfuda", "0000000299E8", 1),
+    "band": ("Kiriko", "HealingOfuda", "00000002FF91", 1),
+    "petal": ("Kiriko", "SwiftStep", "00000003267E", 1),
+    "streak": ("Kiriko", "SwiftStep", "00000002E59A", 1),
+    "spark": ("Kiriko", "Kunai", "000000001F35", 4),
+    "glint": ("Kiriko", "Kunai", "000000020065", 1),
+    "ring_line": ("Kiriko", "ProtectionSuzu", "000000003684", 1),
+    "dome_noise": ("Kiriko", "ProtectionSuzu", "0000000306CE", 1),
+    "speed_line": ("Kiriko", "KitsuneRush", "00000002C701", 1),
+    "sparkle": ("Kiriko", "KitsuneRush", "000000003DC7", 1),
+    "smoke": ("Kiriko", "KitsuneRush", "0000000377D5", 48),
+    "dust": ("Kiriko", "WallClimb", "000000000BE5", 1),
+}
+
+
+def add_effects(source):
+    """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png)."""
+    write_mcmeta()
+    out = PACK / "assets" / "overcraft" / "textures" / "effect"
+    out.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for name, (hero, ability, texture, frames) in EFFECT_MASKS.items():
+        for frame in range(frames):
+            suffix = "" if frame == 0 else f"_{frame}"
+            src = Path(source) / hero / ability / "textures" / f"{texture}{suffix}.png"
+            if not src.exists():
+                print(f"missing {name}: {src}")
+                continue
+            dest = out / (name + ("" if frames == 1 else f"_{frame}") + ".png")
+            shutil.copyfile(src, dest)
+            copied += 1
+    print(f"{copied} effect textures -> {out}")
+
+
 def write_mcmeta():
     PACK.mkdir(parents=True, exist_ok=True)
     (PACK / "pack.mcmeta").write_text(
@@ -173,6 +243,10 @@ def main():
         add_ui(sys.argv[2])
     elif cmd == "sounds":
         add_sounds(sys.argv[2])
+    elif cmd == "fonts":
+        add_fonts(sys.argv[2])
+    elif cmd == "effects":
+        add_effects(sys.argv[2])
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

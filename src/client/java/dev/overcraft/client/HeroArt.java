@@ -55,6 +55,11 @@ public final class HeroArt {
 		return present(Overcraft.id("textures/gui/heroes/" + hero.id + "/" + name + ".png"));
 	}
 
+	/** Whether the resource packs have this file (the local pack's fonts, say). */
+	public static boolean has(Identifier id) {
+		return present(id) != null;
+	}
+
 	private static @Nullable Identifier present(Identifier id) {
 		boolean present = PRESENT.computeIfAbsent(id, i -> Minecraft.getInstance().getResourceManager().getResource(i).isPresent());
 		return present ? id : null;

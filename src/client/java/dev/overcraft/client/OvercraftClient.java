@@ -4,6 +4,7 @@ import dev.overcraft.Overcraft;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.client.dev.DevServer;
+import dev.overcraft.client.controls.HeroControls;
 import dev.overcraft.client.model.HeroAnimator;
 import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
@@ -63,11 +64,23 @@ public class OvercraftClient implements ClientModInitializer {
 			VanillaHudElements.INFO_BAR, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
+		// and the chat moves up out of the hero HUD's way (it sits above the hotbar, where the health now is)
+		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, vanilla -> (graphics, delta) -> {
+			boolean lift = ClientHero.controls();
+			if (lift) {
+				graphics.pose().pushMatrix();
+				graphics.pose().translate(0, -HeroHud.chatLift(graphics.guiWidth(), graphics.guiHeight()));
+			}
+			vanilla.extractRenderState(graphics, delta);
+			if (lift) {
+				graphics.pose().popMatrix();
+			}
+		});
 
 		Minecraft mc = Minecraft.getInstance();
 		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
-		OwMovement.jumpHeld = entity -> entity == mc.player && mc.options.keyJump.isDown();
+		OwMovement.jumpHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
 	}
 
 	private static HudElement hiddenInHeroMode(HudElement vanilla) {

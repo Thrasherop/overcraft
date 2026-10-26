@@ -224,12 +224,67 @@ public final class DevServer {
 				ClientPlayNetworking.send(new SelectHeroPayload(arg));
 				out.addProperty("ok", true);
 			}
+			case "press" -> {
+				// a real key press through Minecraft's keyboard handler (Esc pauses, screens get keyPressed): the harness's
+				// way to type when the desktop can't take input. "press key.keyboard.escape"
+				InputConstants.Key key = InputConstants.getKey(arg.trim());
+				long handle = mc.getWindow().handle();
+				net.minecraft.client.input.KeyEvent event = new net.minecraft.client.input.KeyEvent(key.getValue(), 0, 0);
+				mc.keyboardHandler.keyPress(handle, 1, event);
+				mc.keyboardHandler.keyPress(handle, 0, event);
+				out.addProperty("key", key.getName());
+			}
+			case "screenclick" -> {
+				// a click on the open screen at GUI coordinates: "screenclick 120 80 [button]"
+				String[] a = arg.split(" ");
+				int button = a.length > 2 ? Integer.parseInt(a[2]) : InputConstants.MOUSE_BUTTON_LEFT;
+				var event = new net.minecraft.client.input.MouseButtonEvent(Double.parseDouble(a[0]), Double.parseDouble(a[1]),
+					new net.minecraft.client.input.MouseButtonInfo(button, 0));
+				if (mc.gui.screen() != null) {
+					mc.gui.screen().mouseClicked(event, false);
+					if (mc.gui.screen() != null) {
+						mc.gui.screen().mouseReleased(event);
+					}
+				}
+				out.addProperty("screen", mc.gui.screen() == null ? "" : mc.gui.screen().getClass().getSimpleName());
+			}
+			case "window" -> {
+				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)
+				String[] a = arg.split(" ");
+				mc.getWindow().setWindowed(Integer.parseInt(a[0]), Integer.parseInt(a[1]));
+				out.addProperty("ok", true);
+			}
+			case "tutorial" -> {
+				mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
+				out.addProperty("ok", true);
+			}
+			case "ult" -> {
+				// dev only: sets the ult charge (percent) on the integrated server, to see the meter's states
+				double percent = Double.parseDouble(arg);
+				double cost = dev.overcraft.client.ClientHero.sync().ultCost();
+				java.util.UUID id = player.getUUID();
+				var server = mc.getSingleplayerServer();
+				server.execute(() -> {
+					var serverPlayer = server.getPlayerList().getPlayer(id);
+					var state = serverPlayer == null ? null : dev.overcraft.hero.HeroManager.state(serverPlayer);
+					if (state != null) {
+						state.ultCharge = cost * percent / 100;
+					}
+				});
+				out.addProperty("ok", server != null);
+			}
 			default -> out.addProperty("error", "unknown command " + cmd);
 		}
 		return out;
 	}
 
 	private static KeyMapping mapping(Minecraft mc, String name) {
+		// hero mode's keys by their action ("primary_fire", "ability_2"), then Minecraft's
+		for (dev.overcraft.client.controls.HeroControls.Action action : dev.overcraft.client.controls.HeroControls.Action.values()) {
+			if (action.id().equals(name)) {
+				return action.mapping;
+			}
+		}
 		for (KeyMapping key : mc.options.keyMappings) {
 			if (key.getName().equals(name) || key.getName().equals("key." + name) || key.getName().equals("key.overcraft." + name)) {
 				return key;

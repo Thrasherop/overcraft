@@ -2,6 +2,9 @@ package dev.overcraft.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Overcraft;
+import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroControls.Action;
+import dev.overcraft.client.mixin.MinecraftInvoker;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.net.HeroInputPayload;
@@ -14,32 +17,24 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
-
 /**
- * The client's side of the hero: the last state the server sent, the hero keys, and turning mouse and keys into hero
- * controls while hero mode is on (hotbar slot 1). In hero mode, vanilla actions on the same keys (E inventory,
- * Q drop, Shift sneak, attack, use) don't happen; Ctrl crouches instead of sprinting, as in Overwatch.
+ * The client's side of the hero: the last state the server sent, and turning the hero's keys (HeroControls) into
+ * hero input while hero mode is on (hotbar slot 1). Hero mode has its own key set, Overwatch's: G (or the hotbar)
+ * switches between it and Minecraft's.
  */
 public final class ClientHero {
 	public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Overcraft.id("heroes"));
 
-	public static final KeyMapping ABILITY_1 = key("ability_1", InputConstants.KEY_LSHIFT);
-	public static final KeyMapping ABILITY_2 = key("ability_2", InputConstants.KEY_E);
-	public static final KeyMapping ULTIMATE = key("ultimate", InputConstants.KEY_Q);
-	public static final KeyMapping RELOAD = key("reload", InputConstants.KEY_R);
-	/** Overwatch's default quick melee key. */
-	public static final KeyMapping QUICK_MELEE = key("quick_melee", InputConstants.KEY_V);
+	/** Minecraft mode's keys for getting into hero mode and picking a hero (hero mode has its own: HeroControls). */
 	public static final KeyMapping HERO_MODE = key("hero_mode", InputConstants.KEY_G);
 	public static final KeyMapping HERO_SELECT = key("hero_select", InputConstants.KEY_H);
-
-	private static final Set<KeyMapping> HERO_KEYS = Set.of(ABILITY_1, ABILITY_2, ULTIMATE, RELOAD, QUICK_MELEE);
 
 	private static HeroSyncPayload sync = HeroSyncPayload.NONE;
 	private static int lastHeld;
 	/** The Steve-mode slot to go back to when hero mode is toggled off. */
 	private static int steveSlot = 1;
 	private static boolean openSelectOnJoin;
+	private static boolean interacting;
 
 	private ClientHero() {
 	}
@@ -49,7 +44,13 @@ public final class ClientHero {
 	}
 
 	public static void init() {
-		// keys are registered by the static fields above
+		// Minecraft-mode keys are registered by the static fields above; hero mode's come from their own file
+		HeroControls.load();
+	}
+
+	/** The interact key is being handled: Minecraft's right-click may run (MinecraftMixin). */
+	public static boolean interacting() {
+		return interacting;
 	}
 
 	public static void onSync(HeroSyncPayload payload) {
@@ -96,23 +97,34 @@ public final class ClientHero {
 		if (player.getInventory().getSelectedSlot() != HeroManager.HERO_SLOT) {
 			steveSlot = player.getInventory().getSelectedSlot();
 		}
-		while (HERO_SELECT.consumeClick()) {
+		// each mode's own keys switch modes and open the hero select (the other mode's are silenced or drained)
+		boolean heroMode = controls();
+		if (heroMode) {
+			// Minecraft mode's G and H are silenced in hero mode; asking drops their clicks (else they'd fire later)
+			drain(HERO_MODE);
+			drain(HERO_SELECT);
+		}
+		KeyMapping select = heroMode ? HeroControls.get(Action.HERO_SELECT) : HERO_SELECT;
+		KeyMapping toggle = heroMode ? HeroControls.get(Action.MINECRAFT_MODE) : HERO_MODE;
+		while (select.consumeClick()) {
 			if (hero() == null || sync.canChangeHero()) {
 				mc.gui.setScreen(new HeroSelectScreen(false));
 			} else {
 				player.sendOverlayMessage(Component.translatable("overcraft.change_hero.too_far"));
 			}
 		}
-		while (HERO_MODE.consumeClick()) {
+		boolean toggled = false;
+		while (toggle.consumeClick()) {
+			toggled = true;
+		}
+		if (toggled) {
 			toggleHeroMode(player);
 		}
 
 		boolean controls = controls() && mc.gui.screen() == null;
-		if (!controls) {
-			for (KeyMapping key : HERO_KEYS) {
-				while (key.consumeClick()) {
-				}
-			}
+		if (!controls || toggled) {
+			// Minecraft mode (or just switched): the hero keys' clicks must not fire later
+			HeroControls.drainAll();
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -120,22 +132,26 @@ public final class ClientHero {
 			return;
 		}
 
-		// the fire buttons: held, or tapped since last tick
-		boolean primary = drain(mc.options.keyAttack) | mc.options.keyAttack.isDown();
-		boolean secondary = drain(mc.options.keyUse) | mc.options.keyUse.isDown();
-		int held = (primary ? HeroInputPayload.HELD_PRIMARY : 0) | (secondary ? HeroInputPayload.HELD_SECONDARY : 0);
+		// the fire buttons: held, or tapped since last tick. Overwatch's primary fire throws Kiriko's ofuda, its
+		// secondary her kunai; the server's weapon slots are the other way round (primary = kunai).
+		boolean ofuda = drain(HeroControls.get(Action.PRIMARY_FIRE)) | HeroControls.get(Action.PRIMARY_FIRE).isDown();
+		boolean kunai = drain(HeroControls.get(Action.SECONDARY_FIRE)) | HeroControls.get(Action.SECONDARY_FIRE).isDown();
+		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0);
 
 		int pressed = 0;
-		pressed |= drain(ABILITY_1) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
-		pressed |= drain(ABILITY_2) ? HeroInputPayload.PRESS_ABILITY_2 : 0;
-		pressed |= drain(ULTIMATE) ? HeroInputPayload.PRESS_ULTIMATE : 0;
-		pressed |= drain(RELOAD) ? HeroInputPayload.PRESS_RELOAD : 0;
-		pressed |= drain(QUICK_MELEE) ? HeroInputPayload.PRESS_MELEE : 0;
+		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
+		pressed |= drain(HeroControls.get(Action.ABILITY_2)) ? HeroInputPayload.PRESS_ABILITY_2 : 0;
+		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
+		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
+		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
 
-		// vanilla actions bound to the same keys as a hero key don't happen in hero mode (E inventory, Q drop, ...)
-		for (KeyMapping vanilla : mc.options.keyMappings) {
-			if (!HERO_KEYS.contains(vanilla) && sharesKey(vanilla) && vanilla != mc.options.keyShift) {
-				drain(vanilla);
+		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
+		if (drain(HeroControls.get(Action.INTERACT))) {
+			interacting = true;
+			try {
+				((MinecraftInvoker) mc).overcraft$startUseItem();
+			} finally {
+				interacting = false;
 			}
 		}
 
@@ -164,16 +180,6 @@ public final class ClientHero {
 			steveSlot = slot;
 			player.getInventory().setSelectedSlot(HeroManager.HERO_SLOT);
 		}
-	}
-
-	/** A vanilla key mapping on the same key as one of the hero's keys. */
-	public static boolean sharesKey(KeyMapping vanilla) {
-		for (KeyMapping hero : HERO_KEYS) {
-			if (!hero.isUnbound() && hero.same(vanilla)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private static boolean drain(KeyMapping key) {

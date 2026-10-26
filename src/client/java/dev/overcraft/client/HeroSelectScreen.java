@@ -1,5 +1,7 @@
 package dev.overcraft.client;
 
+import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroControls.Action;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.net.SelectHeroPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -238,11 +240,11 @@ public class HeroSelectScreen extends Screen {
 	private static List<Line> kit(Hero hero) {
 		return switch (hero) {
 			case KIRIKO -> List.of(
-				new Line(Component.translatable("overcraft.key.lmb").getString(), "kunai"),
-				new Line(Component.translatable("overcraft.key.rmb").getString(), "healing_ofuda"),
-				new Line(HeroHud.shortKey(ClientHero.ABILITY_1), "swift_step"),
-				new Line(HeroHud.shortKey(ClientHero.ABILITY_2), "protection_suzu"),
-				new Line(HeroHud.shortKey(ClientHero.ULTIMATE), "kitsune_rush"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "healing_ofuda"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "kunai"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "swift_step"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "protection_suzu"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "kitsune_rush"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "wall_climb"));
 			default -> List.of();
 		};
