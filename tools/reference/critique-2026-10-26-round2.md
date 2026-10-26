@@ -43,7 +43,8 @@ button with kunai on the left, and the kit row under the name on the select scre
   glow fainter), 3, 5, 6, 8, 9, 10, 11, 12, 13, 14 (flower; no dome yet), 15, 16, 21, 25, 26, 27 (kill feed).
 - **Found:** 7's sideways leg was a broken key in the breathing clip, fixed for every pose ("Her leg no longer kicks").
 - **Not ours:** 4 (hooked talismans) and 7's high-knee strafe are in Blizzard's own clips (survey renders A3A7, A8F3).
-- **Open:** 2 (paper ofuda in flight), 17 (path slabs' glyphs, in-path streaks), 18 (cleanse reads as a ghost),
+- **Done after:** 2 (the paper faces the viewer, thin trail).
+- **Open:** 17 (path slabs' glyphs, in-path streaks), 18 (cleanse reads as a ghost),
   19 (cloth), 20 (the ofuda flick's fist), 22, 23, 24 (check a reload in a video).
 
 ---

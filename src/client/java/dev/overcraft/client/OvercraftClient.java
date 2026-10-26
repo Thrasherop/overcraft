@@ -76,7 +76,7 @@ public class OvercraftClient implements ClientModInitializer {
 		});
 
 		EntityRendererRegistry.register(OcEntities.KUNAI, ctx -> new ProjectileModelRenderer<>(ctx, "kunai", 1.0f, false));
-		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ProjectileModelRenderer<>(ctx, "ofuda", 0.75f, false));
+		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ProjectileModelRenderer<>(ctx, "ofuda", 0.75f, false, 2, true));
 		EntityRendererRegistry.register(OcEntities.SUZU, ctx -> new ProjectileModelRenderer<>(ctx, "suzu", 1.0f, false));
 		EntityRendererRegistry.register(OcEntities.KITSUNE, KitsuneRenderer::new);
 

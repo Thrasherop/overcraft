@@ -85,17 +85,18 @@ public final class KirikoFx {
 
 	/** In flight: the ribbon behind it and a soft glow on it, teal (gold while homing on an ally). */
 	public static void ofudaFlight(int id, Vec3 at, boolean homing) {
-		// ribbon width and length aren't in the game data: ours, thinner than the talisman, ~1 m long. Homing, the gold
-		// is blended rather than added: added over grass it turned lime (the critique).
+		// a thin ribbon and a small glow, so the paper itself reads (the second critique: comets in big halos, no
+		// paper). Ribbon width and length aren't in the game data: ours. Homing, the gold is blended rather than added:
+		// added over grass it turned lime (the critique)
 		if (homing) {
-			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.14f, 0.06f, 0.75f, true);
+			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.07f, 0.08f, 0.6f, true);
 			Fx.attach("ofuda_glow/" + id, at, () -> {
 				Particle g = Fx.soft("glow", Palette.GOLD);
-				return g == null ? null : g.at(at).life(0.15f).size(0.42f, 0.42f).alpha(0.55f).fade(0.15f, 0.6f);
+				return g == null ? null : g.at(at).life(0.15f).size(0.24f, 0.24f).alpha(0.4f).fade(0.15f, 0.6f);
 			});
 		} else {
-			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.14f, 0.06f, 0.8f);
-			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.32f, 0.15f, 0.4f));
+			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.07f, 0.08f, 0.55f);
+			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.2f, 0.15f, 0.25f));
 		}
 	}
 

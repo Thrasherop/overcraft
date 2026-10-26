@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The ofuda read as paper in flight** (both critiques' #2). The projectile is a flat sheet, and the renderer laid it
+along its flight with its face level: edge-on to the thrower, so only the trail and glow showed. Now it turns its face
+to whoever watches about its line of flight, drawn twice its model's size (ours, about 0.36 m), with a thin ribbon
+(7 cm) and a small glow. Played: talismans summoned standing still, then throws at the ground and onto a villager
+(`pq_sheet`, `pr_2z`: pale cards with a light teal glow; before, cyan comets in halos).
+
 **Her leg no longer kicks out at idle** (a bug the critiques saw three times: "a leg up to shoulder height" in the
 Suzu throw, "one leg sticks straight out sideways" at the Swift Step arrival, and once in a frozen reload frame). Not
 the throws: Overwatch's standing breath (AFDB, as exported) has two broken keys on the right thigh, each turned 180

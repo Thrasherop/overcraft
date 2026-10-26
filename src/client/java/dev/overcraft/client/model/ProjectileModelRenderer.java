@@ -42,12 +42,26 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 
 	private final String model;
 	private final boolean flip;
+	private final float modelScale;
+	private final boolean faceViewer;
 
 	/** {@code flip}: the model's tip points the other way along its long side. */
 	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip) {
+		this(context, model, spriteScale, flip, 1, false);
+	}
+
+	/**
+	 * {@code modelScale}: drawn this much larger than the model. {@code faceViewer}: a flat model (the ofuda's paper)
+	 * turned about its flight to show its face to whoever watches: laid flat along the flight, it was edge-on to the
+	 * thrower and invisible (the second critique: "no paper visible in any frame").
+	 */
+	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip,
+								   float modelScale, boolean faceViewer) {
 		super(context, spriteScale, true);
 		this.model = model;
 		this.flip = flip;
+		this.modelScale = modelScale;
+		this.faceViewer = faceViewer;
 	}
 
 	@Override
@@ -87,6 +101,20 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		// yaw then pitch take +Z onto the flight direction (yRot = atan2(vx, vz), xRot = atan2(vy, horizontal))
 		poseStack.rotateDegrees(Axis.YP, s.yRot);
 		poseStack.rotateDegrees(Axis.XP, -s.xRot);
+		if (faceViewer) {
+			// the viewer's direction in the flight's frame (+Z along the flight): roll so the face (+Y once aligned) looks
+			// at them
+			Vector3f toViewer = new Vector3f((float) (camera.pos.x - state.x), (float) (camera.pos.y - state.y),
+				(float) (camera.pos.z - state.z));
+			new Quaternionf().rotateY((float) Math.toRadians(s.yRot)).rotateX((float) Math.toRadians(-s.xRot)).conjugate()
+				.transform(toViewer);
+			if (toViewer.x * toViewer.x + toViewer.y * toViewer.y > 1.0E-6f) {
+				poseStack.mulPose(new Matrix4f().rotationZ((float) Math.atan2(-toViewer.x, toViewer.y)));
+			}
+		}
+		if (modelScale != 1) {
+			poseStack.scale(modelScale, modelScale, modelScale);
+		}
 		if (flip) {
 			poseStack.rotateDegrees(Axis.YP, 180);
 		}
