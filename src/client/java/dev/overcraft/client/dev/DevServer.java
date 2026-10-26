@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class DevServer {
 	/** 25599, or -Dovercraft.devPort for a second client (gradlew runClient2: 25600). */
+	private static long timingSince = System.nanoTime();
 	public static final int PORT = Integer.getInteger("overcraft.devPort", 25599);
 
 	private DevServer() {
@@ -104,6 +105,7 @@ public final class DevServer {
 			case "state" -> {
 				Screen screen = mc.gui.screen();
 				out.addProperty("screen", screen == null ? "" : screen.getClass().getSimpleName());
+				out.addProperty("fps", mc.getFps());
 				out.addProperty("inWorld", player != null);
 				if (player != null) {
 					out.addProperty("x", player.getX());
@@ -167,6 +169,25 @@ public final class DevServer {
 					list.add(o);
 				}
 				out.add("players", list);
+			}
+			case "timing" -> {
+				// dev only: "timing reset", then "timing": ms per frame spent posing and emitting hero models since
+				if (arg.startsWith("cull ")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.cull = arg.endsWith("on");
+				} else if (arg.startsWith("stride ")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.stride = Integer.parseInt(arg.substring(7));
+				} else if (arg.equals("reset")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.pose = 0;
+					dev.overcraft.client.model.HeroModelRenderer.Timing.emit = 0;
+					timingSince = System.nanoTime();
+				} else {
+					double seconds = (System.nanoTime() - timingSince) / 1e9;
+					int fps = Math.max(1, mc.getFps());
+					double frames = seconds * fps;
+					out.addProperty("fps", fps);
+					out.addProperty("poseMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.pose / 1e6 / frames);
+					out.addProperty("emitMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.emit / 1e6 / frames);
+				}
 			}
 			case "connect" -> {
 				// dev only: join a server or a LAN world ("connect localhost:25565"), as the multiplayer screen does

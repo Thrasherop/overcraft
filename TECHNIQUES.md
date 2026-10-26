@@ -49,6 +49,9 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   them.** The leg kick was blamed on three different clips; it was the idle breathing layer, broken keys every 3 s.
   Bursts of 40+ screenshots across a whole loop catch periodic glitches; then read the clip's keys (glb animation
   channels in Python) for single-frame jumps.
+- **Measure frame rate as part of play** (`state` has `fps`; `timing reset` then `timing` gives our ms a frame;
+  `timing stride N` draws every Nth triangle). Scale the suspect (triangles, effects) and watch the frame time: it shows
+  whether the cost is ours (CPU) or downstream (upload, GPU). Window size changes rule fill rate in or out.
 - **Suspect the test before the mod**: white pixel squares round a healed villager were Minecraft's death poofs from
   the villager the test script had just killed; burning "mobs" on the horizon were zombie horses in daylight.
 - **Crop and enlarge** (`oc_crop.ps1`, nearest-neighbour at 2-6x) at native 1080p to judge HUD edges: a faint box

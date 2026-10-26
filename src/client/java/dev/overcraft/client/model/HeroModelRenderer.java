@@ -37,7 +37,8 @@ import java.util.Set;
  */
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden) {
+	/** {@code cull}: back faces left out before upload (not for the select screen's GUI view, whose camera isn't at the origin). */
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
@@ -95,8 +96,11 @@ public final class HeroModelRenderer {
 		float facing = animator.facing(entity, partialTicks);
 		state.yRot = Mth.wrapDegrees(state.yRot + state.bodyRot - facing);
 		state.bodyRot = facing;
+		long t0 = System.nanoTime();
 		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, state.yRot, state.xRot);
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action())));
+		Timing.pose += System.nanoTime() - t0;
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action()),
+			preview == null));
 	}
 
 	private static float white(LivingEntityRenderState state) {
@@ -118,8 +122,8 @@ public final class HeroModelRenderer {
 		poseStack.translate(0, 0, -draw.climbShift());
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
-		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden());
-		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state));
+		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
+		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state), draw.cull());
 		poseStack.popPose();
 		return true;
 	}
@@ -157,7 +161,7 @@ public final class HeroModelRenderer {
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
 		submitModel(loaded, skin, poseStack, collector, light, overlay);
-		submitGlow(loaded, skin, poseStack, collector, Set.of(), white);
+		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		poseStack.popPose();
 		return true;
 	}
@@ -181,15 +185,25 @@ public final class HeroModelRenderer {
 		return hidden;
 	}
 
+	/** Dev timing: nanoseconds spent posing and emitting hero models since the last report (DevServer "timing"). */
+	public static final class Timing {
+		public static long pose;
+		public static long emit;
+		/** Dev: draw only every this many triangles (1 = all), to see what the vertex count costs. */
+		public static int stride = 1;
+		/** Dev: CPU back-face culling on (compare pictures with it off). */
+		public static boolean cull = true;
+	}
+
 	/** Submits a skinned model's pieces (hero models, Kitsune Rush's fox), held props not in use left out. */
 	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		int light, int overlay) {
-		submitModel(loaded, skin, poseStack, collector, light, overlay, Set.of());
+		submitModel(loaded, skin, poseStack, collector, light, overlay, Set.of(), true);
 	}
 
 	/** ... with the props on these joints hidden. */
 	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
-		int light, int overlay, Set<Integer> hidden) {
+		int light, int overlay, Set<Integer> hidden, boolean cull) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null) {
@@ -199,8 +213,11 @@ public final class HeroModelRenderer {
 			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
 				continue;
 			}
-			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop));
+			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture), (pose, buffer) -> {
+				long t0 = System.nanoTime();
+				emit(piece, skin, pose, buffer, light, overlay, prop, cull);
+				Timing.emit += System.nanoTime() - t0;
+			});
 		}
 	}
 
@@ -217,9 +234,9 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color, true));
 		}
-		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow);
+		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow, true);
 	}
 
 	/**
@@ -227,7 +244,7 @@ public final class HeroModelRenderer {
 	 * Overwatch turns them a glowing white (the second critique: the overlay alone only paled her, a ghost).
 	 */
 	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
-		Set<Integer> hidden, float strength) {
+		Set<Integer> hidden, float strength, boolean cull) {
 		if (strength <= 0) {
 			return;
 		}
@@ -243,7 +260,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color, cull));
 		}
 	}
 
@@ -273,12 +290,12 @@ public final class HeroModelRenderer {
 
 	/** Skins the piece's vertices and writes its triangles (as quads with the last corner doubled). */
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
-							 boolean prop) {
-		emit(piece, skin, pose, buffer, light, overlay, prop, -1);
+							 boolean prop, boolean cull) {
+		emit(piece, skin, pose, buffer, light, overlay, prop, -1, cull);
 	}
 
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
-							 boolean prop, int color) {
+							 boolean prop, int color, boolean cull) {
 		int n = piece.vertexCount();
 		float[] p = new float[n * 3];
 		float[] nm = new float[n * 3];
@@ -317,28 +334,62 @@ public final class HeroModelRenderer {
 		int[] idx = piece.indices();
 		float[] uv = piece.uv();
 		float parked = STOWED_RADIUS * STOWED_RADIUS;
-		for (int t = 0; t + 2 < idx.length; t += 3) {
-			if (prop && near(p, idx[t], parked) && near(p, idx[t + 1], parked) && near(p, idx[t + 2], parked)) {
+		// into the pose's space once per vertex (camera-relative: the camera at the origin), normals too
+		Matrix4f m = pose.pose();
+		Vector3f t = new Vector3f();
+		float[] q = new float[n * 3];
+		float[] qn = new float[n * 3];
+		for (int v = 0; v < n; v++) {
+			m.transformPosition(p[v * 3], p[v * 3 + 1], p[v * 3 + 2], t);
+			q[v * 3] = t.x;
+			q[v * 3 + 1] = t.y;
+			q[v * 3 + 2] = t.z;
+			pose.transformNormal(nm[v * 3], nm[v * 3 + 1], nm[v * 3 + 2], t);
+			qn[v * 3] = t.x;
+			qn[v * 3 + 1] = t.y;
+			qn[v * 3 + 2] = t.z;
+		}
+		for (int t0 = 0; t0 + 2 < idx.length; t0 += 3 * Timing.stride) {
+			int a = idx[t0], b = idx[t0 + 1], c = idx[t0 + 2];
+			if (prop && near(p, a, parked) && near(p, b, parked) && near(p, c, parked)) {
 				continue;
 			}
-			vertex(buffer, pose, p, nm, uv, idx[t], light, overlay, color);
-			vertex(buffer, pose, p, nm, uv, idx[t + 1], light, overlay, color);
-			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay, color);
-			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay, color);
+			if (cull && Timing.cull && facesAway(q, a, b, c)) {
+				continue;
+			}
+			vertex(buffer, q, qn, uv, a, light, overlay, color);
+			vertex(buffer, q, qn, uv, b, light, overlay, color);
+			vertex(buffer, q, qn, uv, c, light, overlay, color);
+			vertex(buffer, q, qn, uv, c, light, overlay, color);
 		}
+	}
+
+	/**
+	 * The triangle faces away from the camera (at the origin): the GPU would cull it anyway (the render types cull back
+	 * faces), so it isn't sent. Halves what goes up each frame: sending her 67k triangles cost 23 ms a frame on an
+	 * integrated GPU (31 FPS in third person against 115 without her), almost all of it the upload, not our CPU work.
+	 */
+	private static boolean facesAway(float[] q, int a, int b, int c) {
+		float ax = q[a * 3], ay = q[a * 3 + 1], az = q[a * 3 + 2];
+		float e1x = q[b * 3] - ax, e1y = q[b * 3 + 1] - ay, e1z = q[b * 3 + 2] - az;
+		float e2x = q[c * 3] - ax, e2y = q[c * 3 + 1] - ay, e2z = q[c * 3 + 2] - az;
+		float nx = e1y * e2z - e1z * e2y;
+		float ny = e1z * e2x - e1x * e2z;
+		float nz = e1x * e2y - e1y * e2x;
+		return nx * ax + ny * ay + nz * az >= 0;
 	}
 
 	private static boolean near(float[] p, int i, float radiusSq) {
 		return p[i * 3] * p[i * 3] + p[i * 3 + 1] * p[i * 3 + 1] + p[i * 3 + 2] * p[i * 3 + 2] < radiusSq;
 	}
 
-	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float[] p, float[] n, float[] uv, int i, int light, int overlay,
-							   int color) {
-		buffer.addVertex(pose, p[i * 3], p[i * 3 + 1], p[i * 3 + 2])
+	/** One corner, already in the pose's space. */
+	private static void vertex(VertexConsumer buffer, float[] q, float[] n, float[] uv, int i, int light, int overlay, int color) {
+		buffer.addVertex(q[i * 3], q[i * 3 + 1], q[i * 3 + 2])
 			.setColor(color)
 			.setUv(uv[i * 2], uv[i * 2 + 1])
 			.setOverlay(overlay)
 			.setLight(light)
-			.setNormal(pose, n[i * 3], n[i * 3 + 1], n[i * 3 + 2]);
+			.setNormal(n[i * 3], n[i * 3 + 1], n[i * 3 + 2]);
 	}
 }
