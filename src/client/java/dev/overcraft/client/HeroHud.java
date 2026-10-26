@@ -3,6 +3,7 @@ package dev.overcraft.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Ow;
 import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.effect.Fx;
 import dev.overcraft.client.controls.HeroControls.Action;
 import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.hud.HudText;
@@ -109,8 +110,8 @@ public final class HeroHud {
 	private static long stepCastAt = -1;
 	/** Swift Step's screen flash: teal at the edges and streaks rushing in, as she steps (the reference, §2). */
 	private static final float STEP_FLASH = 0.45f;
-	/** Below this share of her health the screen's edges glow red (ours: the critique's "about 35%"). */
-	private static final float LOW_HEALTH = 0.35f;
+	/** Below this share of her health the screen's edges go red (the wiki: "~25-30% or lower ... blood appears"). */
+	private static final float LOW_HEALTH = 0.3f;
 	/** Allies' markers show this far (metres: ours, about Overwatch's view of its teammates in a fight). */
 	private static final double ALLY_RANGE = 40;
 	/** Villagers, golems and allays at full health show only this close. */
@@ -152,6 +153,7 @@ public final class HeroHud {
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
 		KillFeedHud.render(g, w - 36, Math.max(36, toastSlots * 32 / scale + 12));
 		crosshair(g, w / 2, h / 2);
+		hitMarker(g, w / 2, h / 2);
 		ofudaCounter(g, s, w / 2, h / 2 + 136);
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
@@ -227,6 +229,46 @@ public final class HeroHud {
 				float travel = Math.clamp(step / STEP_FLASH + random.nextFloat() * 0.2f, 0, 1);
 				streak(g, w, h, angle, 1.05f - 0.45f * travel, false, alpha(0x9AFFF4, 0.75f * k));
 			}
+		}
+	}
+
+	/** The last hit marker: when (the effects' game clock, Fx.now), and what (0 hit, 1 critical, 2 kill). */
+	private static float hitAt = -100;
+	private static int hitKind;
+
+	/** The server says one of our attacks landed (Effects.hitMarker). */
+	public static void hitMarker(int kind) {
+		// a kill outranks the hit that made it, if both arrive together
+		if (Fx.now() - hitAt > 0.05f || kind >= hitKind) {
+			hitKind = kind;
+		}
+		hitAt = Fx.now();
+	}
+
+	/**
+	 * Overwatch's hit marker: four short strokes in an X round the crosshair, flashing on each hit and fading over a
+	 * fifth of a second; red and a little bigger on a critical hit, bigger again on a kill (the shape, sizes and colours
+	 * are ours, after the game's: no reference measures them).
+	 */
+	private static void hitMarker(GuiGraphicsExtractor g, float cx, float cy) {
+		// (a hair below zero when the frame's partial tick is behind the one it arrived on)
+		float t = Math.max(0, Fx.now() - hitAt);
+		float life = hitKind == 2 ? 0.45f : 0.2f;
+		if (t >= life) {
+			return;
+		}
+		float k = 1 - t / life;
+		int color = hitKind == 0 ? 0xFFFFFF : 0xFF3A3A;
+		float inner = hitKind == 2 ? 11 : 8;
+		float len = hitKind == 0 ? 8 : hitKind == 1 ? 10 : 14;
+		float thick = hitKind == 2 ? 3 : 2.2f;
+		for (int i = 0; i < 4; i++) {
+			g.pose().pushMatrix();
+			g.pose().translate(cx, cy);
+			g.pose().rotate((float) Math.toRadians(45 + 90 * i));
+			fill(g, inner, -thick / 2 - 1, len + 2, thick + 2, alpha(0x000000, 0.45f * k));
+			fill(g, inner + 1, -thick / 2, len, thick, alpha(color, k));
+			g.pose().popMatrix();
 		}
 	}
 

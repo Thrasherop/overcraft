@@ -65,6 +65,9 @@ public final class QuickMelee {
 			DamageSource source = hero.damageSources().playerAttack(hero);
 			float dealt = Combat.damage(target, source, DAMAGE);
 			Combat.addUltCharge(hero, dealt);
+			if (dealt > 0) {
+				Effects.hitMarker(hero, target, false);
+			}
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
 			target.knockback(KNOCKBACK, -look.x, -look.z, source, Ow.hp(dealt));
 			hit = true;

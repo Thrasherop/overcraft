@@ -5,6 +5,17 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Hit markers** (missing: no capture had shown a hit). Every kunai and quick melee that deals damage flashes Overwatch's
+X of four strokes round the crosshair for 0.2 s: white on a hit, red on a critical hit, larger and red for 0.45 s on a
+kill. The server tells only the attacker (`Effects.hitMarker`). Shapes and colours are ours, after the game's; no
+reference measures them. On the game clock, so they pause with the game. Played frozen 0.15-0.2 s after each throw
+(`hm4_sheet`, `hm5z_kill`): body, head, kill.
+
+**Low-health edges from 30%**, the wiki's number ("~25-30% or lower ... blood appears around the borders of the
+screen"); it was 35% (ours).
+
+**Played: other screen shapes** (`asp_w`, `asp_pair`): 21:9, 4:3 and 5:4 with the new HUD; nothing overlaps.
+
 **Played: a night fight on Normal** (CLAUDE.md: "a real fight"): three skeletons and three zombies against Kiriko in
 open ground, the harness aiming kunai at the nearest of each, Suzu, ofuda at her feet, a strafe-jump, the ult. She dies
 in the fourth round both times (250 to 0 in about 6 s once both groups reach her; her ult charge climbs from her hits

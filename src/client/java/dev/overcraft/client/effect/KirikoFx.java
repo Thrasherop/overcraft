@@ -69,6 +69,7 @@ public final class KirikoFx {
 			case "kunai_hit_entity" -> kunaiHitEntity(at);
 			case "suzu_burst" -> suzuBurst(at, e.variant() / 10f);
 			case "suzu_cleansed" -> Cleansed.mark(e.entity());
+			case "hit_marker" -> HeroHud.hitMarker(e.variant());
 			case "swift_step_depart" -> swiftStep(at, false);
 			case "swift_step_arrive" -> swiftStep(at, true);
 			case "rush_cast" -> rushCast(at);

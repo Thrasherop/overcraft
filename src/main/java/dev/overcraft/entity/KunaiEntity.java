@@ -62,6 +62,9 @@ public class KunaiEntity extends OwProjectile {
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, dealt);
+			if (owner instanceof net.minecraft.server.level.ServerPlayer thrower && dealt > 0) {
+				Effects.hitMarker(thrower, target, crit);
+			}
 			if (crit) {
 				// the critical hit's confirmation is the thrower's (it plays where they are)
 				if (owner instanceof net.minecraft.server.level.ServerPlayer thrower) {

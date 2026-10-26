@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -23,6 +24,16 @@ public final class Effects {
 
 	public static void play(ServerLevel level, String effect, Vec3 at) {
 		play(level, effect, at, Vec3.ZERO, null, 0);
+	}
+
+	/**
+	 * The thrower's hit marker on their crosshair: 0 a hit, 1 a critical hit, 2 a kill. Sent to them alone (others
+	 * don't see your hit markers).
+	 */
+	public static void hitMarker(ServerPlayer shooter, LivingEntity target, boolean crit) {
+		int kind = !target.isAlive() || target.getHealth() <= 0 ? 2 : crit ? 1 : 0;
+		ServerPlayNetworking.send(shooter, new EffectPayload("hit_marker", target.getX(), target.getY(), target.getZ(), 0, 0, 0,
+			target.getId(), kind));
 	}
 
 	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant) {
