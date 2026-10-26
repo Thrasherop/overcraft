@@ -73,6 +73,7 @@ public final class KitsuneRush {
 		this.fox = owner.position();
 		path.add(fox);
 		foxEntity = new KitsuneEntity(OcEntities.KITSUNE, level);
+		foxEntity.setOwner(owner);
 		foxEntity.snapTo(fox.x, fox.y, fox.z, (float) Math.toDegrees(Math.atan2(-direction.x, direction.z)), 0);
 		level.addFreshEntity(foxEntity);
 	}
@@ -88,7 +89,8 @@ public final class KitsuneRush {
 		}
 		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_RUSH_SUMMON, SoundSource.PLAYERS, 1, 1);
 		HeroSounds.split(owner, OcSounds.KIRIKO_RUSH_CAST, OcSounds.KIRIKO_RUSH_CAST_3P, owner.getEyePosition());
-		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0));
+		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0),
+			owner);
 	}
 
 	public static void tickAll(MinecraftServer server) {
@@ -116,12 +118,12 @@ public final class KitsuneRush {
 		} else if (doneAt < 0) {
 			doneAt = age;
 		} else if (age - doneAt > FOX_FADE_TICKS && !foxEntity.isRemoved()) {
-			Effects.play(level, "rush_end", fox);
+			Effects.play(level, "rush_end", fox, owner);
 			foxEntity.discard();
 		}
 		buffAllies();
 		if (age % RIPPLE_TICKS == 0 && path.size() > 1) {
-			Effects.play(level, "rush_ripple", path.get(owner.getRandom().nextInt(path.size())));
+			Effects.play(level, "rush_ripple", path.get(owner.getRandom().nextInt(path.size())), owner);
 		}
 		return true;
 	}
@@ -154,7 +156,7 @@ public final class KitsuneRush {
 		laid += STEP;
 		if (path.size() % TILE_STEPS == 0) {
 			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
-			Effects.play(level, "rush_tiles", fox, direction, null, (int) Math.round(seconds * 10));
+			Effects.play(level, "rush_tiles", fox, direction, null, (int) Math.round(seconds * 10), owner);
 		}
 	}
 
@@ -170,7 +172,7 @@ public final class KitsuneRush {
 			if (Allies.isSelfOrAlly(owner, entity) && inCorridor(entity.position(), half)) {
 				Combat.rush(entity, until);
 				if (age % ALLY_LINES_TICKS == 0) {
-					Effects.play(level, "rush_ally", entity.position(), direction, entity, 0);
+					Effects.play(level, "rush_ally", entity.position(), direction, entity, 0, owner);
 				}
 			}
 		}
@@ -212,7 +214,7 @@ public final class KitsuneRush {
 			Vec3 across = new Vec3(-direction.z, 0, direction.x).scale(RUSH_WIDTH - 2);
 			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
 			Vec3 gate = path.get(index);
-			Effects.play(level, "rush_gate", gate, across, null, (int) Math.round(seconds * 10));
+			Effects.play(level, "rush_gate", gate, across, null, (int) Math.round(seconds * 10), owner);
 			// each gate its own chime, rising from the first to the sixth
 			SoundEvent chime = OcSounds.KIRIKO_RUSH_GATES[Math.min(gatesPlaced, OcSounds.KIRIKO_RUSH_GATES.length - 1)];
 			level.playSound(null, gate.x, gate.y + 2, gate.z, chime, SoundSource.PLAYERS, 1, 1);

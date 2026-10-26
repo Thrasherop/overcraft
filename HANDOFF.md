@@ -154,6 +154,5 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
    has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
    crosshair (needs Overwatch frames of the throw). Where Swift Step lands on an ally needs a look at a gameplay
    video.
-3. Effects still missing: the enemy-red view (matters only with scoreboard teams). (Suzu's white flash, the rush
-   path's talismans, Swift Step's slash arcs, the reload and the aim lean are in.)
+3. Effects: all of Kiriko's are in, including the enemy-red view with scoreboard teams.
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).

@@ -54,7 +54,8 @@ public class OvercraftClient implements ClientModInitializer {
 					// the puff at her throwing fingers: a little right of and below the eyes, ahead (first person's hand)
 					Vec3 look = hero.getViewVector(1);
 					Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
-					KirikoFx.ofudaHandPuff(hero.getEyePosition().add(look.scale(0.7)).add(right.scale(0.18)).add(0, -0.16, 0));
+					KirikoFx.ofudaHandPuff(hero.getEyePosition().add(look.scale(0.7)).add(right.scale(0.18)).add(0, -0.16, 0),
+						KirikoFx.enemyOf(hero));
 				}
 			}
 		});

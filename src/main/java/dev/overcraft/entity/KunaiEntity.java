@@ -58,7 +58,7 @@ public class KunaiEntity extends OwProjectile {
 		boolean crit = at.y >= target.getEyeY() - HEAD_DEPTH;
 		double damage = KirikoStats.KUNAI_DAMAGE * (crit ? KirikoStats.KUNAI_CRIT : 1);
 		float dealt = Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
-		Effects.play(level, "kunai_hit_entity", at);
+		Effects.play(level, "kunai_hit_entity", at, getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, dealt);
@@ -80,7 +80,7 @@ public class KunaiEntity extends OwProjectile {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
 			Vec3 at = hit.getLocation();
-			Effects.play(level, "kunai_hit_block", at, Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null, 0);
+			Effects.play(level, "kunai_hit_block", at, Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null, 0, getOwner());
 			level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT_BLOCK, SoundSource.PLAYERS, 1, 1);
 			discard();
 		}

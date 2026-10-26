@@ -326,7 +326,9 @@ public final class Fx {
 		return p == null ? null : p.blended();
 	}
 
-	private static @Nullable Particle particle(String mask, Palette palette, boolean soft) {
+	private static @Nullable Particle particle(String mask, Palette palette, boolean softAsked) {
+		// an enemy's red is always blended: added over a bright sky or grass it turned pink-white
+		boolean soft = softAsked || palette == Palette.ENEMY;
 		Identifier[] frames;
 		int hash = mask.indexOf('#');
 		if (hash >= 0) {
@@ -348,7 +350,7 @@ public final class Fx {
 		}
 		Particle p = new Particle();
 		p.frames = frames;
-		p.additive = palette != Palette.NATURAL;
+		p.additive = palette != Palette.NATURAL && !soft;
 		return p;
 	}
 
@@ -365,7 +367,8 @@ public final class Fx {
 
 	/** The same, drawn blended (soft) or added. */
 	public static void trail(int id, Vec3 at, String mask, Palette palette, float width, float duration, float alpha,
-							 boolean soft) {
+							 boolean softAsked) {
+		boolean soft = softAsked || palette == Palette.ENEMY;
 		Trail trail = TRAILS.get(id);
 		if (trail == null) {
 			Identifier texture = EffectArt.get(mask, palette, soft);

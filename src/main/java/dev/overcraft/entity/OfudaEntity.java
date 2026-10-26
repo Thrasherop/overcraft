@@ -91,7 +91,7 @@ public class OfudaEntity extends OwProjectile {
 		if (!(level() instanceof ServerLevel level) || !(hit.getEntity() instanceof LivingEntity ally)) {
 			return;
 		}
-		Effects.play(level, "ofuda_hit_ally", ally.getBoundingBox().getCenter(), Vec3.ZERO, ally, homing() ? 1 : 0);
+		Effects.play(level, "ofuda_hit_ally", ally.getBoundingBox().getCenter(), Vec3.ZERO, ally, homing() ? 1 : 0, getOwner());
 		level.playSound(null, ally.getX(), ally.getY(0.5), ally.getZ(), OcSounds.KIRIKO_OFUDA_HEAL, SoundSource.PLAYERS, 1, 1);
 		float healed = Combat.heal(ally, KirikoStats.OFUDA_HEAL);
 		if (getOwner() instanceof Player owner) {
@@ -114,7 +114,7 @@ public class OfudaEntity extends OwProjectile {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
 			Effects.play(level, "ofuda_hit_block", hit.getLocation(), Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null,
-				homing() ? 1 : 0);
+				homing() ? 1 : 0, getOwner());
 			Vec3 at = hit.getLocation();
 			level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_OFUDA_HIT_BLOCK, SoundSource.PLAYERS, 1, 1);
 			discard();

@@ -217,13 +217,13 @@ public final class Kiriko implements HeroKit {
 			return; // the target died, left or got out of range during the cast
 		}
 		Vec3 from = player.position();
-		Effects.play(level, "swift_step_depart", from);
+		Effects.play(level, "swift_step_depart", from, player);
 		Vec3 arrive = beside(player, target, from);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
-		Effects.play(level, "swift_step_arrive", arrive);
+		Effects.play(level, "swift_step_arrive", arrive, player);
 		level.playSound(null, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 1, 1);
 	}
 

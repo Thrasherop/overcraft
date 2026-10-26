@@ -302,14 +302,16 @@ public final class DevServer {
 				out.addProperty("ok", true);
 			}
 			case "fx" -> {
-				// dev only: plays an effect 3 m in front of the camera: "fx suzu_burst 40", "fx climb_dust"
+				// dev only: plays an effect 3 m in front of the camera: "fx suzu_burst 40", "fx climb_dust", "fx rush_gate 100
+				// enemy" (as an enemy hero's)
 				String[] a = arg.split(" ");
 				net.minecraft.world.phys.Vec3 at = player.getEyePosition().add(player.getViewVector(1).scale(3));
 				int variant = a.length > 1 ? Integer.parseInt(a[1]) : 0;
 				if (a[0].equals("climb_dust")) {
 					dev.overcraft.client.effect.KirikoFx.climbDust(at);
 				} else {
-					dev.overcraft.client.effect.KirikoFx.play(new dev.overcraft.net.EffectPayload(a[0], at.x, at.y, at.z, 0, 1, 0, -1, variant));
+					dev.overcraft.client.effect.KirikoFx.play(new dev.overcraft.net.EffectPayload(a[0], at.x, at.y, at.z, 0, 1, 0, -1, variant,
+					a.length > 2 && a[2].equals("enemy")));
 				}
 				out.addProperty("ok", true);
 			}

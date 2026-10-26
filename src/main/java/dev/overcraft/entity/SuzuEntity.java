@@ -85,12 +85,12 @@ public class SuzuEntity extends OwProjectile {
 			Combat.cleanse(entity);
 			Combat.phase(entity, KirikoStats.SUZU_PHASED);
 			// they glow white for a moment, seen by everyone near
-			Effects.play(level, "suzu_cleansed", entity.position(), Vec3.ZERO, entity, 0);
+			Effects.play(level, "suzu_cleansed", entity.position(), Vec3.ZERO, entity, 0, getOwner());
 		}
 		if (owner instanceof Player player) {
 			Combat.addUltCharge(player, healedTotal);
 		}
-		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10));
+		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10), getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_SUZU_BURST, SoundSource.PLAYERS, 1, 1);
 		discard();
 	}

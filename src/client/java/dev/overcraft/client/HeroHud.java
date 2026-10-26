@@ -719,7 +719,19 @@ public final class HeroHud {
 			// screen, far above their head (the fourth critique); off the top, it's off the screen
 			Vec3 head = at.add(0, ally.getBbHeight() + 0.05, 0);
 			float[] screen = project(head, w, h);
-			if (screen == null || screen[1] < 0) {
+			if (screen == null) {
+				continue;
+			}
+			// the head's top as seen: the highest of its box's top corners on screen (the box's top centre lies behind
+			// the face, and an ally close by got the bar on their forehead, the fifth critique)
+			double half = ally.getBbWidth() / 2;
+			for (int corner = 0; corner < 4; corner++) {
+				float[] c = project(head.add(corner < 2 ? -half : half, 0, corner % 2 == 0 ? -half : half), w, h);
+				if (c != null) {
+					screen[1] = Math.min(screen[1], c[1]);
+				}
+			}
+			if (screen[1] < 0) {
 				continue;
 			}
 			screen[1] -= ALLY_LIFT;

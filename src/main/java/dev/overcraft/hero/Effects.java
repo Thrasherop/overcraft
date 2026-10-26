@@ -23,7 +23,12 @@ public final class Effects {
 	}
 
 	public static void play(ServerLevel level, String effect, Vec3 at) {
-		play(level, effect, at, Vec3.ZERO, null, 0);
+		play(level, effect, at, Vec3.ZERO, null, 0, null);
+	}
+
+	/** An effect made by owner (the hero): its enemies see it in red. */
+	public static void play(ServerLevel level, String effect, Vec3 at, @Nullable Entity owner) {
+		play(level, effect, at, Vec3.ZERO, null, 0, owner);
 	}
 
 	/**
@@ -33,14 +38,20 @@ public final class Effects {
 	public static void hitMarker(ServerPlayer shooter, LivingEntity target, boolean crit) {
 		int kind = !target.isAlive() || target.getHealth() <= 0 ? 2 : crit ? 1 : 0;
 		ServerPlayNetworking.send(shooter, new EffectPayload("hit_marker", target.getX(), target.getY(), target.getZ(), 0, 0, 0,
-			target.getId(), kind));
+			target.getId(), kind, false));
 	}
 
 	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant) {
-		EffectPayload payload = new EffectPayload(effect, at.x, at.y, at.z, (float) direction.x, (float) direction.y,
-			(float) direction.z, entity == null ? -1 : entity.getId(), variant);
+		play(level, effect, at, direction, entity, variant, null);
+	}
+
+	/** The same, made by owner: each player near it gets it in their own team's view of the owner. */
+	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant,
+							@Nullable Entity owner) {
 		for (ServerPlayer player : PlayerLookup.around(level, at, RANGE)) {
-			ServerPlayNetworking.send(player, payload);
+			boolean enemy = owner != null && owner != player && !Allies.wasAlly(player, owner);
+			ServerPlayNetworking.send(player, new EffectPayload(effect, at.x, at.y, at.z, (float) direction.x,
+				(float) direction.y, (float) direction.z, entity == null ? -1 : entity.getId(), variant, enemy));
 		}
 	}
 }

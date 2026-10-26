@@ -5,6 +5,23 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**An enemy Kiriko's effects are red** (HANDOFF's "enemy-red view", Overwatch's rule: you see an enemy's effects in the
+enemy colour). Only with scoreboard teams (players are allies otherwise). The server marks each effect for each player
+who gets it (`EffectPayload.enemy`: the hero who made it is on another team); flights (ofuda, kunai, Suzu, the fox and
+its petals and wake) check the projectile's or fox's owner on the client (the fox now carries its owner). Enemy effects
+are blended, in a red picked on screen: added, the game's red ramp washed out pink-white over sky and grass (first try,
+`en_sheet`). Played with two clients on two teams, the second watching (`en2_sheet`: Suzu's ring, the ofuda puff, the
+Swift Step ring in red; `en3_sheet`: an enemy's rush, red talisman tiles, petals and sparkles, faint red gates, while
+her own view stays cyan). Harness: `fx <effect> [variant] enemy`.
+
+**Round 5 of the critique** (`tools/reference/critique-2026-10-26-round5.md`), first four:
+- The ally bar sat on a close ally's forehead (anchored at the box's top centre, behind the face): it now sits above
+  the highest of the box's top corners on screen (`r5_st`).
+- A kunai's glint spawned half a metre from the camera stretched over the screen as a faint band, outliving the hit
+  (`hm6_head`): no glints within 3 m of the camera (`hm7_head`).
+- Suzu's 5 s ground ring was pale khaki; it's blended in a gold picked on screen (#FFD732) (`r5_suzu`).
+- Swift Step's arrival rings were crisp neon hoops: fainter, fading as they open.
+
 **Dying in hero mode keeps the hero's screen** (found playing a night raid: about 19 zombies from natural spawns
 swarmed her in three rounds). Hero mode required being alive, so at death the HUD flipped to Minecraft's hotbar and
 empty hearts behind "You Died!", and her arms to Minecraft's blocky arm. The HUD and the view model now follow the

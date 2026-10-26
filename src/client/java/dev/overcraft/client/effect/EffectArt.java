@@ -87,7 +87,12 @@ public final class EffectArt {
 	 * over grass (the fourth critique: Overwatch's on-screen gold is about #DCB900 to #A18700). Ours, from those.
 	 */
 	private static final Map<Palette, float[]> SOFT_RAMPS = Map.of(
-		Palette.GOLD, new float[] {0, .60f, .47f, 0, .5f, .85f, .71f, 0, .9f, .91f, .75f, .09f, 1, .96f, .82f, .3f});
+		Palette.GOLD, new float[] {0, .60f, .47f, 0, .5f, .85f, .71f, 0, .9f, .91f, .75f, .09f, 1, .96f, .82f, .3f},
+		// an enemy's effects, always blended (Fx): added, red over sky or grass washed out to pink-white. Ours
+		Palette.ENEMY, new float[] {0, .35f, .03f, .04f, .5f, .69f, .1f, .1f, .9f, .91f, .23f, .2f, 1, 1, .55f, .5f},
+		// Suzu's 5 s ground ring: the game's (3.2, 2.17, 0.1) is a saturated gold, about #FFD732 on screen; from the
+		// ramp's pale top it read khaki over grass (the fifth critique)
+		Palette.SUZU_GOLD, new float[] {0, .62f, .45f, 0, .5f, .9f, .7f, .05f, .9f, 1, .84f, .2f, 1, 1, .9f, .45f});
 
 	private EffectArt() {
 	}

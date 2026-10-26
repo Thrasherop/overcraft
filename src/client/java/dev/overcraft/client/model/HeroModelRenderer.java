@@ -234,8 +234,8 @@ public final class HeroModelRenderer {
 	 * solid it read as a plush toy, the third critique), its texture at this opacity, full bright, with a cyan glow over it.
 	 */
 	public static void submitSpirit(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
-		float opacity, float glow) {
-		int color = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | 0xC8F4FF;
+		float opacity, float glow, int rgb, int glowRgb) {
+		int color = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | rgb;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null) {
@@ -244,7 +244,7 @@ public final class HeroModelRenderer {
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
 				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color, true, false));
 		}
-		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow, true);
+		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow, true, glowRgb);
 	}
 
 	/**
@@ -253,12 +253,18 @@ public final class HeroModelRenderer {
 	 */
 	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float strength, boolean cull) {
+		submitGlow(loaded, skin, poseStack, collector, hidden, strength, cull, 0xCFF8FF);
+	}
+
+	/** The same in this colour. */
+	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float strength, boolean cull, int rgb) {
 		if (strength <= 0) {
 			return;
 		}
 		HudShapes.ensure();
 		// below clipping, so her shape still reads (at full white she was a flat cut-out, the third critique)
-		int color = Math.clamp(Math.round(strength * 0.45f * 255), 0, 255) << 24 | 0xCFF8FF;
+		int color = Math.clamp(Math.round(strength * 0.45f * 255), 0, 255) << 24 | rgb;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			if (piece.image() < 0 || loaded.textures()[piece.image()] == null) {
 				continue;

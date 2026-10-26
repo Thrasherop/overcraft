@@ -28,8 +28,16 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 	private static final double NEAR_START = 1.5;
 	private static final double NEAR_FADE = 3;
 
+	/** The spirit's colour and glow: ice blue, or pale red for an enemy's fox (ours, after the enemy palette). */
+	private static final int SPIRIT = 0xC8F4FF;
+	private static final int GLOW = 0xCFF8FF;
+	private static final int ENEMY_SPIRIT = 0xFFC8C4;
+	private static final int ENEMY_GLOW = 0xFFB0A8;
+
 	public static class State extends EntityRenderState {
 		float yRot;
+		/** An enemy's fox: drawn red (Overwatch shows an enemy's effects in red). */
+		boolean enemy;
 		HeroModels.@Nullable Loaded loaded;
 	}
 
@@ -55,11 +63,12 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 		// it sheds sakura petals as it runs (33 a second, the effects survey), and leaves a glowing wake (ours: at
 		// 20 m/s, low and ice-blue among the gates, the model alone read as nothing, the second critique)
 		Vec3 at = entity.getPosition(partialTicks);
-		KirikoFx.foxPetals(at, Fx.since(entity.getId()), 33);
+		state.enemy = KirikoFx.enemyOf(entity.owner());
+		KirikoFx.foxPetals(at, Fx.since(entity.getId()), 33, state.enemy);
 		// not while it's at the camera: it starts inside Kiriko, and its glow there washed her whole view cyan
 		Vec3 eye = Minecraft.getInstance().gameRenderer.mainCamera().position();
 		if (at.add(0, 0.6 * SCALE, 0).distanceTo(eye) > NEAR_START + NEAR_FADE) {
-			KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0));
+			KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0), state.enemy);
 		}
 	}
 
@@ -84,7 +93,8 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 				+ Math.pow(state.z - camera.pos.z, 2));
 			float near = (float) Math.clamp((distance - NEAR_START) / NEAR_FADE, 0, 1);
 			if (near > 0) {
-				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f * near, 0.5f * near);
+				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f * near, 0.5f * near,
+					state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW);
 			}
 			poseStack.popPose();
 		}

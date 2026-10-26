@@ -80,9 +80,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		Vec3 at = entity.getPosition(partialTicks);
 		float dt = Fx.since(entity.getId());
 		switch (entity) {
-			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing());
-			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt);
-			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt);
+			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing(), KirikoFx.enemyOf(ofuda.getOwner()));
+			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt, KirikoFx.enemyOf(kunai.getOwner()));
+			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			default -> {
 			}
 		}
