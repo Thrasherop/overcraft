@@ -9,6 +9,7 @@ import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.effect.FxRender;
 import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.hero.HeroManager;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.core.Direction;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,9 @@ public final class HeroModelRenderer {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
+	/** Prone (crawling, swimming), how far back along her body she's drawn and how far off the floor (metres: ours). */
+	private static final float PRONE_BACK = 0.95f;
+	private static final float PRONE_LIFT = 0.25f;
 	/** Lying in bed, how far she's lifted so her back rests on the mattress rather than in it (metres: ours). */
 	private static final float SLEEP_LIFT = 0.12f;
 	/** Packed light for full brightness (block and sky light 15). */
@@ -143,6 +147,24 @@ public final class HeroModelRenderer {
 			// the model faces +Z; Minecraft's yaw 0 faces +Z (south) and turns the other way
 			poseStack.rotateDegrees(Axis.YP, -state.bodyRot);
 			poseStack.translate(0, 0, -draw.climbShift());
+			if (state instanceof AvatarRenderState avatar) {
+				// gliding, swimming, crawling: pitched forward about her feet as Minecraft pitches a player
+				// (AvatarRenderer.setupRotations); upright, she crawled standing through a one-high gap, the camera in
+				// her legs, and swam and flew standing (found playing)
+				float pitch = 0;
+				if (avatar.isFallFlying) {
+					pitch = avatar.fallFlyingScale() * (90 + avatar.xRot);
+				} else if (avatar.swimAmount > 0) {
+					pitch = Mth.lerp(avatar.swimAmount, 0, avatar.isInWater ? 90 + avatar.xRot : 90);
+				}
+				if (pitch != 0) {
+					poseStack.rotateDegrees(Axis.XP, pitch);
+					if (avatar.isVisuallySwimming) {
+						// lying over her box, not ahead of it: back along her body, lifted off the floor
+						poseStack.translate(0, -PRONE_BACK, -PRONE_LIFT);
+					}
+				}
+			}
 		}
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);

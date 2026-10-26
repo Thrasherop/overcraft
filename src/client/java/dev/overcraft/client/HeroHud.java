@@ -913,18 +913,31 @@ public final class HeroHud {
 	 * edge, top 59 GUI units up from the bottom), land there.
 	 */
 	public static void airPlace(GuiGraphicsExtractor g) {
+		barPlace(g, 49);
+	}
+
+	/**
+	 * A ridden animal's hearts in hero mode, in the same place as the air bubbles (the hearts sat on the ability boxes,
+	 * found playing on a horse). Vanilla draws them from 39 GUI units up from the bottom, rows going up.
+	 */
+	public static void mountPlace(GuiGraphicsExtractor g) {
+		barPlace(g, 39);
+	}
+
+	/** Moves a vanilla bar drawn right-aligned to the hotbar's right edge, its top fromBottom GUI units up, above the health. */
+	private static void barPlace(GuiGraphicsExtractor g, float fromBottom) {
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		float left = 194;
 		float pipsWidth = 10 * 26.6f - 2.6f;
 		g.pose().scale(scale, scale);
 		curve(g, left, 933, slopeAt(left + 120 - 960));
-		// the bubbles' right end over the last pip, just above the "+" box (vanilla's air line is 10 units lower than the
-		// 59 below assumes when the food bar is hidden: 34 reference px, measured on screen)
-		g.pose().translate(left + 2 + pipsWidth, 830);
+		// the bar's right end over the last pip, its top just above the "+" box (vanilla's air line, with the food bar
+		// hidden, is 49 units up: measured on screen)
+		g.pose().translate(left + 2 + pipsWidth, 864);
 		// vanilla's ten bubbles span 81 units: as wide as the pips
 		float k = pipsWidth / 81;
 		g.pose().scale(k, k);
-		g.pose().translate(-(g.guiWidth() / 2f + 91), -(g.guiHeight() - 59));
+		g.pose().translate(-(g.guiWidth() / 2f + 91), -(g.guiHeight() - fromBottom));
 	}
 
 	/**

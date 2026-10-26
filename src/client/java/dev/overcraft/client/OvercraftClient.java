@@ -102,6 +102,17 @@ public class OvercraftClient implements ClientModInitializer {
 			vanilla.extractRenderState(graphics, delta);
 			graphics.pose().popMatrix();
 		});
+		// and a ridden animal's hearts with them
+		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, vanilla -> (graphics, delta) -> {
+			if (!ClientHero.heroView()) {
+				vanilla.extractRenderState(graphics, delta);
+				return;
+			}
+			graphics.pose().pushMatrix();
+			HeroHud.mountPlace(graphics);
+			vanilla.extractRenderState(graphics, delta);
+			graphics.pose().popMatrix();
+		});
 		// and the chat moves out of the hero HUD's way: as Overwatch's, small text at the left above the health (while
 		// typing, just lifted, so clicks on its lines still land)
 		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, vanilla -> (graphics, delta) -> {

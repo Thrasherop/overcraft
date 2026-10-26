@@ -5,6 +5,17 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Minecraft's other body poses on her model** (found playing; the hero renderer drew her upright through all of them):
+- **Crawling** under a one-high gap: she stood in it, the camera inside her legs (`ps1_sheet`); now prone, along her
+  box (`ps2_crawl`).
+- **Sprint-swimming** (Minecraft mode): now horizontal, swimming away (`sw2_sheet`); hero mode has no sprint, so she
+  wades upright, as in Overwatch.
+- **Elytra gliding**, in both modes: now pitched into the glide, head first (`gl3_sheet`).
+- **Riding** a boat or a horse: crouched (Overwatch has no sitting clip; crouched is the nearest).
+- The pitch and offsets are Minecraft's own (AvatarRenderer.setupRotations), her legs straightened as in bed.
+- **A ridden animal's hearts** sat on the ability boxes in hero mode: they now sit above the health readout, where
+  the air bubbles go (`ps2_sheet`).
+
 **Fixed: asleep in a bed she stood upright on it** (found playing a night in survival). The hero renderer drew her
 at her yaw like any other moment; Minecraft lays a sleeping player flat. She now lies on her back, head on the pillow,
 along the bed's direction (Minecraft's offset), her legs and hips straightened (her idle stance's tilted hips and bent

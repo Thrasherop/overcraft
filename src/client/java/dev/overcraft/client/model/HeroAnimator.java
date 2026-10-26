@@ -216,7 +216,7 @@ public final class HeroAnimator {
 		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
 		boolean asleep = entity.isSleeping();
-		if (asleep) {
+		if (asleep || entity.isFallFlying() || entity.isVisuallySwimming()) {
 			// lying in bed: her idle arms, legs straight (the model's rest pose). Laid flat, the idle stance's bent
 			// forward leg pointed at the sky (found playing)
 			for (int i = 0; i < model.nodeNames.length; i++) {
@@ -338,6 +338,12 @@ public final class HeroAnimator {
 		String next;
 		if (entity.isDeadOrDying()) {
 			next = "death";
+		} else if (entity.isPassenger()) {
+			// riding (a boat, a horse): Overwatch has no sitting clip; crouched is the nearest
+			next = "crouch_idle";
+		} else if (entity.isFallFlying() || entity.isVisuallySwimming()) {
+			// pitched flat by the renderer; legs straightened below
+			next = "idle";
 		} else if (climbing) {
 			next = "climb";
 		} else if (overTheTop) {
