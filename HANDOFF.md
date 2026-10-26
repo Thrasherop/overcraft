@@ -137,6 +137,10 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - Keep TECHNIQUES.md up to date (2026-10-26). Commit only after playing in game.
 - Desktop control: the owner approves computer use at the PC (not from the phone). SteamCMD: never type their
   password or Steam Guard code.
+- Voice lines: which line plays and how often may come from the game data (each line's criteria, weight and
+  cooldown, read offline: tools/reference/kiriko-voice.md), as no public source has them (owner, 2026-10-26, #13).
+  The audio itself stays in the local pack like the models; only the numbers are in the code (Voice.WEIGHTS) and the
+  sound maps.
 
 ## Questions for the owner
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
@@ -149,9 +153,6 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
-- Kiriko's voice lines now use Overwatch's own weights and cooldowns, read from the game data
-  (tools/reference/kiriko-voice.md): CLAUDE.md asks for public sources first, and nothing public gives these. They
-  only shape which line plays and how often (not balance). OK to keep, or prefer our own?
 - On Fire uses the wiki's Overwatch 1 numbers (Blizzard never published Overwatch 2's): 250 points, 5 a second decay,
   damage and healing as the wiki gives them. Tune if it comes too easily or too rarely in Minecraft fights.
 - Minecraft draws its round blob shadow under every entity, heroes too; Overwatch heroes cast body-shaped shadows and
