@@ -99,7 +99,8 @@ public final class HeroModelRenderer {
 	 * pose stack is in view space (looking down -Z). False (Minecraft draws its hand) without the model or out of hero
 	 * mode.
 	 */
-	public static boolean submitFirstPerson(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light) {
+	public static boolean submitFirstPerson(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
+											float swayPitch, float swayYaw) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		Hero hero = ClientHero.hero();
@@ -111,12 +112,17 @@ public final class HeroModelRenderer {
 			return false;
 		}
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
-		Vector3f eye = new Vector3f();
-		Matrix4f[] skin = HeroAnimator.of(player).poseFirstPerson(loaded.model(), player, now, eye);
+		Matrix4f view = new Matrix4f();
+		Matrix4f[] skin = HeroAnimator.of(player).poseFirstPerson(loaded.model(), player, now, view);
 		poseStack.pushPose();
-		// the model faces +Z, the view looks down -Z: turn it round, then put its eye at the camera
+		// the arms lag a little behind the view when turning (Minecraft's hand sway, a bit stronger: Overwatch's arms
+		// swing visibly)
+		poseStack.rotateDegrees(Axis.XP, swayPitch * ARM_SWAY);
+		poseStack.rotateDegrees(Axis.YP, swayYaw * ARM_SWAY);
+		// the camera looks down +Z in the model's space and down -Z in the view's: turn it round, then the model as
+		// its Camera bone sees it
 		poseStack.rotateDegrees(Axis.YP, 180);
-		poseStack.translate(-eye.x, -eye.y, -eye.z);
+		poseStack.mulPose(view);
 		submitModel(loaded, skin, poseStack, collector, light, OverlayTexture.NO_OVERLAY);
 		poseStack.popPose();
 		return true;
@@ -127,69 +133,42 @@ public final class HeroModelRenderer {
 		int light, int overlay) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			if (texture == null || stowed(piece, skin)) {
+			if (texture == null) {
 				continue;
 			}
+			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop));
 		}
 	}
 
 	/**
-	 * A held prop the current clips don't use: Overwatch models carry their weapons (Kiriko's kunai, ofuda, Suzu) as
-	 * small pieces on their own bones, parked at the model's origin (between the feet) unless an animation puts them
-	 * in a hand. Small and still at the origin after skinning = not in use, so not drawn.
+	 * Held props: Overwatch models carry their weapons (Kiriko's three kunai, ofuda, Suzu) as small pieces on their own
+	 * bones, parked at the model's origin (between the feet) unless an animation puts them in a hand. One piece can hold
+	 * several (the three kunai), so a prop piece's triangles still at the origin after skinning aren't drawn.
 	 */
-	private static boolean stowed(SkinnedModel.Piece piece, Matrix4f[] skin) {
-		Prop prop = PROPS.get(piece);
-		if (prop == null) {
-			if (PROPS.containsKey(piece)) {
-				return false;
-			}
-			prop = Prop.of(piece);
-			PROPS.put(piece, prop);
-			if (prop == null) {
-				return false;
-			}
+	private static boolean isProp(SkinnedModel.Piece piece) {
+		float[] pos = piece.pos();
+		Vector3f lo = new Vector3f(Float.MAX_VALUE), hi = new Vector3f(-Float.MAX_VALUE);
+		for (int v = 0; v < piece.vertexCount(); v++) {
+			lo.min(new Vector3f(pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2]));
+			hi.max(new Vector3f(pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2]));
 		}
-		Vector3f at = skin[prop.joint()].transformPosition(new Vector3f(prop.center()));
-		return at.length() < STOWED_RADIUS;
+		Vector3f center = new Vector3f(lo).add(hi).mul(0.5f);
+		return hi.distance(lo) <= PROP_SIZE && center.length() <= STOWED_RADIUS;
 	}
 
-	/** A small piece's rest centre and the joint that moves it most. */
-	private record Prop(Vector3f center, int joint) {
-		static @Nullable Prop of(SkinnedModel.Piece piece) {
-			int n = piece.vertexCount();
-			float[] pos = piece.pos();
-			Vector3f lo = new Vector3f(Float.MAX_VALUE), hi = new Vector3f(-Float.MAX_VALUE);
-			for (int v = 0; v < n; v++) {
-				lo.min(new Vector3f(pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2]));
-				hi.max(new Vector3f(pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2]));
-			}
-			Vector3f center = new Vector3f(lo).add(hi).mul(0.5f);
-			if (hi.distance(lo) > PROP_SIZE || center.length() > STOWED_RADIUS) {
-				return null;
-			}
-			int joint = piece.joint4()[0];
-			float best = -1;
-			for (int k = 0; k < 4; k++) {
-				if (piece.weight4()[k] > best) {
-					best = piece.weight4()[k];
-					joint = piece.joint4()[k];
-				}
-			}
-			return new Prop(center, joint);
-		}
-	}
-
+	/** How much of the view's lag the arms follow (Minecraft's hand uses 0.1: ours, by eye against gameplay footage). */
+	private static final float ARM_SWAY = 0.15f;
 	/** Pieces at most this big (metres, corner to corner) can be held props. */
 	private static final float PROP_SIZE = 0.6f;
-	/** A prop whose centre is within this of the model's origin (metres) is parked, not held. */
+	/** A prop triangle within this of the model's origin (metres) is parked, not held. */
 	private static final float STOWED_RADIUS = 0.3f;
-	private static final Map<SkinnedModel.Piece, @Nullable Prop> PROPS = new IdentityHashMap<>();
+	private static final Map<SkinnedModel.Piece, Boolean> PROPS = new IdentityHashMap<>();
 
 	/** Skins the piece's vertices and writes its triangles (as quads with the last corner doubled). */
-	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay) {
+	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
+							 boolean prop) {
 		int n = piece.vertexCount();
 		float[] p = new float[n * 3];
 		float[] nm = new float[n * 3];
@@ -227,12 +206,20 @@ public final class HeroModelRenderer {
 		}
 		int[] idx = piece.indices();
 		float[] uv = piece.uv();
+		float parked = STOWED_RADIUS * STOWED_RADIUS;
 		for (int t = 0; t + 2 < idx.length; t += 3) {
+			if (prop && near(p, idx[t], parked) && near(p, idx[t + 1], parked) && near(p, idx[t + 2], parked)) {
+				continue;
+			}
 			vertex(buffer, pose, p, nm, uv, idx[t], light, overlay);
 			vertex(buffer, pose, p, nm, uv, idx[t + 1], light, overlay);
 			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay);
 			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay);
 		}
+	}
+
+	private static boolean near(float[] p, int i, float radiusSq) {
+		return p[i * 3] * p[i * 3] + p[i * 3 + 1] * p[i * 3 + 1] + p[i * 3 + 2] * p[i * 3 + 2] < radiusSq;
 	}
 
 	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float[] p, float[] n, float[] uv, int i, int light, int overlay) {

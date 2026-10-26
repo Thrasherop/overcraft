@@ -65,10 +65,16 @@ def main():
         action = blanim.importAction(data, rig, False)
         action.name = f"{folder}_{path.stem}"
         action.use_fake_user = True
+        if folder.startswith("4"):
+            keyed = {b.name: (b.positions.keyframeCount > 0, b.rotations.keyframeCount > 0) for b in data.bones}
+            neutral_unkeyed(rig, action, keyed, data.header.duration)
         report.append({"name": action.name, "folder": folder, "id": path.stem, "frames": data.header.duration,
                        "fps": data.header.fps, "bones": len(data.bones)})
-        # the glTF exporter turns frames into seconds at the scene's rate (Blender's default is 24; Overwatch's 30)
-        bpy.context.scene.render.fps = int(round(data.header.fps))
+        # clips come at 30 or 60 fps; the glTF exporter turns frames into seconds at the one scene rate, so every
+        # clip goes onto a 30 fps timeline
+        if abs(data.header.fps - EXPORT_FPS) > 0.01:
+            retime(action, EXPORT_FPS / data.header.fps)
+    bpy.context.scene.render.fps = EXPORT_FPS
     print(f"OWM_CLIPS {len(report)}")
 
     if "--survey" in flags:
@@ -131,7 +137,7 @@ def survey(rig, meshes, report, out, shots=3, side=False):
         rig.animation_data.action = action
         if hasattr(rig.animation_data, "action_slot") and action.slots:
             rig.animation_data.action_slot = action.slots[0]
-        frames = max(1, int(entry["frames"]))
+        frames = max(1, round(entry["frames"] * EXPORT_FPS / entry["fps"]))  # on the 30 fps timeline
         samples = sorted({0, frames} | set(range(0, frames, max(1, frames // 12))))
 
         def world(names, f):
@@ -170,6 +176,61 @@ def survey(rig, meshes, report, out, shots=3, side=False):
         rig.animation_data.action = None
         print(f"OWM_SURVEY {entry['name']} frames={frames} body={entry['body_move']} feet={entry['feet_travel']} "
               f"hands={entry['hands_travel']}")
+
+
+EXPORT_FPS = 30
+
+
+def neutral_unkeyed(rig, action, keyed, frames):
+    """Additive clips (the 4-* folders) hold deltas, not poses. The glTF exporter writes every bone, filling the ones a
+    clip doesn't key with their rest pose, which as a delta would throw the skeleton apart (a wrist pushed out by the
+    forearm's length): key every channel the clip lacks at a neutral delta instead (no offset, no turn from the
+    parent), so it adds nothing. {@code keyed}: bone name -> (position keyed, rotation keyed)."""
+    import bpy as _bpy
+    _bpy.ops.object.mode_set(mode="POSE")
+    rig.animation_data.action = action
+    if hasattr(rig.animation_data, "action_slot") and action.slots:
+        rig.animation_data.action_slot = action.slots[0]
+    for bone in rig.pose.bones:
+        bone.matrix_basis.identity()
+    _bpy.context.view_layer.update()
+    for bone in rig.pose.bones:
+        has_pos, has_rot = keyed.get(bone.name, (False, False))
+        if (has_pos and has_rot) or bone.parent is None:
+            continue
+        bone.matrix = bone.parent.matrix.copy()
+        loc, rot = bone.location.copy(), bone.rotation_quaternion.copy()
+        bone.matrix_basis.identity()
+        for frame in (0, max(1, int(frames))):
+            if not has_pos:
+                bone.location = loc
+                bone.keyframe_insert("location", frame=frame)
+            if not has_rot:
+                bone.rotation_quaternion = rot
+                bone.keyframe_insert("rotation_quaternion", frame=frame)
+        bone.matrix_basis.identity()
+    rig.animation_data.action = None
+    _bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def fcurves(action):
+    if hasattr(action, "layers") and action.layers:
+        for layer in action.layers:
+            for strip in layer.strips:
+                for bag in strip.channelbags:
+                    yield from bag.fcurves
+    else:
+        yield from action.fcurves
+
+
+def retime(action, scale):
+    """Stretches an action's keys in time (a 60 fps clip onto a 30 fps timeline: scale 0.5)."""
+    for fc in fcurves(action):
+        for k in fc.keyframe_points:
+            k.co.x *= scale
+            k.handle_left.x *= scale
+            k.handle_right.x *= scale
+        fc.update()
 
 
 def gltf_materials():

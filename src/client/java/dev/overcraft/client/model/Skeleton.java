@@ -62,6 +62,28 @@ public final class Skeleton {
 		}
 	}
 
+	/**
+	 * Adds an additive clip (Overwatch's 4-* layers: breathing, sway, walk bob) at {@code time} on top of {@code pose},
+	 * scaled by {@code weight}: its translations add, its rotations turn the bone further in its own frame.
+	 */
+	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight) {
+		if (weight <= 0) {
+			return;
+		}
+		Pose delta = new Pose(pose.t.length);
+		sample(clip, time, delta);
+		Quaternionf none = new Quaternionf();
+		for (SkinnedModel.Channel ch : clip.channels()) {
+			int i = ch.node();
+			switch (ch.path()) {
+				case 'T' -> pose.t[i].add(delta.t[i].x * weight, delta.t[i].y * weight, delta.t[i].z * weight);
+				case 'R' -> pose.r[i].mul(new Quaternionf(none).slerp(delta.r[i], weight)).normalize();
+				default -> {
+				}
+			}
+		}
+	}
+
 	private static float lerp(float[] v, int a, int b, float f, int c) {
 		return v[a + c] + (v[b + c] - v[a + c]) * f;
 	}

@@ -18,7 +18,8 @@ public abstract class FirstPersonHandsMixin {
 	private void overcraft$heroArms(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector,
 									PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState state, CallbackInfo ci) {
 		int light = playerState.avatarRenderState != null ? playerState.avatarRenderState.lightCoords : 0xF000F0;
-		if (HeroModelRenderer.submitFirstPerson(partialTicks, poseStack, collector, light)) {
+		if (HeroModelRenderer.submitFirstPerson(partialTicks, poseStack, collector, light,
+			state.viewXRot - state.xBob, state.viewYRot - state.yBob)) {
 			ci.cancel();
 		}
 	}

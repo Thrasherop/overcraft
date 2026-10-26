@@ -44,16 +44,32 @@
 # attacks and abilities
 # from the animation-data research (tools/clipmaps/kiriko-research.md): abilities come in aim-pitch triples
 # (down / level / up); the level one is used
-0-32_00000000AB96 = throw_suzu            # Suzu throw (AD83 / AB96 / AD82); follow-through AD85 / AB95 / AD84
-0-32_00000000ABBA = swift_step            # Swift Step depart (arrive: ABBB + AEE4)
-0-32_00000000AB91 = throw_kunai
-0-32_00000000AB92 = throw_kunai_2
-# (no throw_ofuda: B104, arms up overhead, made her look up, owner; waiting for the agent's map)
-0-32_00000000ABCF = reload                # (guess)
-0-32_00000000ABF0 = ult_cast              # Kitsune Rush cast (B021 / ABF0 / B01E); end B022 / ABF1 / B01F
+0-32_00000000AB96 = throw_suzu            # Suzu throw (AD83 / AB96 / AD82)
+0-32_00000000AB95 = throw_suzu_end        # its follow-through (AD85 / AB95 / AD84)
+0-32_00000000ABBA = swift_step            # Swift Step depart
+0-32_00000000ABBB = swift_step_end        # ...and arrive (+ AEE4)
+0-32_00000000ABF0 = ult_cast              # Kitsune Rush cast (B021 / ABF0 / B01E)
+0-32_00000000ABF1 = ult_cast_end          # ...end (B022 / ABF1 / B01F)
+0-32_00000000ABCF = equip                 # alias 0x004 (research: probably equip)
+# kunai (alias 0x16F, 4 variants that alternate arms; the owner: "left swing" then "right swing"), each followed by
+# the recovery to the hold (alias 0x40A). AB91, the old throw_kunai, is a recovery: "it just jumps into her".
+0-32_00000000AB5D = throw_kunai_1
+0-32_00000000AB60 = throw_kunai_2
+0-32_00000000AB61 = throw_kunai_3
+0-32_00000000AB62 = throw_kunai_4
+0-32_00000000AB94 = throw_kunai_end
+# ofuda (held RMB): start (0x875) -> throws (0x874) -> hold (0x813: B00B, arms spread, the owner's "hackles up") ->
+# end (0x876)
+0-32_00000000B011 = throw_ofuda_start
+0-32_00000000B00F = throw_ofuda
+0-32_00000000B00B = throw_ofuda_hold
+0-32_00000000B0C9 = throw_ofuda_end
 128-32_00000000AF57 = melee
 128-32_00000000AFB8 = melee_2
 128-32_00000000AFB9 = melee_3
+# additive layers (4-* folders: deltas on top of the pose)
+4-0_00000000AFDB = add_breathe            # standing breathing (loops)
+4-0_0000000060F8 = add_breathe_crouch
 
 # reactions
 0-32_00000000AF3C = death

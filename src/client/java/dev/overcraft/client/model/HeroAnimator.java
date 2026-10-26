@@ -15,12 +15,13 @@ import java.util.Map;
 /**
  * Which clip a hero plays, from what they're doing, and the pose that gives. The base clip follows movement (idle,
  * run and its directions, crouch, crouch-walk, jump, fall, land, wall climb), crossfading over {@link #FADE} seconds;
- * actions (throws, casts) play over the upper body on top. Missing clips fall back (crouch_walk to crouch_idle, ...).
+ * actions (throws, casts: {@link ActionTrack}) play over the upper body on top. Missing clips fall back (crouch_walk
+ * to crouch_idle, ...).
  */
 public final class HeroAnimator {
 	public static final float FADE = 0.15f;
-	/** Seconds an action (throw, cast) takes to swing from the current pose to its clip's first frame. */
-	private static final float ACTION_IN = 0.1f;
+	/** Metres per first-person walk-bob cycle (the research reads Overwatch's as distance-driven, scale 2). */
+	private static final float WALK_CYCLE = 2.0f;
 	/** Ticks a landing plays after a fall at least this fast (blocks per tick). */
 	private static final double HARD_LANDING = 0.4;
 	/**
@@ -47,8 +48,11 @@ public final class HeroAnimator {
 	private float switchedAt = -100;
 	private float lastNow = -1;
 	private float climbShift;
-	private @Nullable String action;
-	private float actionStart;
+	private final ActionTrack actions = new ActionTrack();
+	private final ActionTrack actionsFirstPerson = new ActionTrack();
+	/** Metres walked on the ground (drives the first-person walk bob, as Overwatch's does). */
+	private float walked;
+	private float groundSpeed;
 	private boolean wasOnGround = true;
 	private double fallSpeed;
 	private float landedAt = -100;
@@ -62,11 +66,11 @@ public final class HeroAnimator {
 		return BY_ENTITY.computeIfAbsent(entity.getId(), id -> new HeroAnimator());
 	}
 
-	/** An action happened (from the server): plays over the upper body. */
-	public static void trigger(int entityId, String clip, float now) {
+	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
+	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
-		a.action = clip;
-		a.actionStart = now;
+		a.actions.trigger(action, now);
+		a.actionsFirstPerson.trigger(action, now);
 	}
 
 	/** How far (m) to draw the model back from where it faces this frame: away from the wall it's climbing. */
@@ -80,6 +84,7 @@ public final class HeroAnimator {
 
 	/** The clips playing now (base, and the action on top if any), for the dev harness. */
 	public String playing() {
+		String action = actions.playing();
 		return action == null ? base : base + "+" + action;
 	}
 
@@ -93,11 +98,13 @@ public final class HeroAnimator {
 	}
 
 	/**
-	 * First person: skin matrices for the hero's view model (Overwatch's first-person arms, a model of its own) and,
-	 * in {@code eye}, where its Camera bone is in model space. Same state as the third-person pose (actions, climbing);
-	 * otherwise the first-person idle, a held pose (A3A7 for Kiriko: both hands in front).
+	 * First person: skin matrices for the hero's view model (Overwatch's first-person arms, a model of its own) and, in
+	 * {@code view}, the transform from model space to the camera's (looking down +Z): Overwatch animates the Camera
+	 * bone along with the arms (throws turn and dip it), and the arms are drawn as that camera sees them. The base is
+	 * the first-person idle, a held pose (A3A7 for Kiriko: hands crossed in front) or the climb, with Overwatch's
+	 * breathing and walk-bob layers, then the actions (their own track: first-person clips last differently).
 	 */
-	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Vector3f eye) {
+	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
 		if (tick != lastTick) {
@@ -114,19 +121,26 @@ public final class HeroAnimator {
 		if (baseClip != null) {
 			Skeleton.sample(baseClip, climb ? time(baseClip, basePhase, loops(base)) : 0, pose);
 		}
-		SkinnedModel.Clip actionClip = action == null ? null : clip(model, action);
-		if (actionClip != null) {
-			float t = now - actionStart;
-			float end = ACTION_IN + actionClip.duration() + FADE;
-			if (t <= end) {
-				Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
-				Skeleton.sample(actionClip, Math.clamp(t - ACTION_IN, 0, actionClip.duration()), act);
-				float in = Math.min(1, t / ACTION_IN);
-				Skeleton.blend(pose, act, in * in * (3 - 2 * in) * Math.min(1, (end - t) / FADE), null);
-			}
+		SkinnedModel.Clip breathe = clip(model, "add_breathe");
+		if (breathe != null) {
+			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
+		SkinnedModel.Clip walk = clip(model, "add_walk");
+		if (walk != null && !climb) {
+			// the bob follows the distance walked, one cycle per WALK_CYCLE metres; full strength at running speed
+			float cycle = (walked % WALK_CYCLE) / WALK_CYCLE * walk.duration();
+			Skeleton.addAdditive(walk, cycle, pose, Math.clamp(groundSpeed / 5.5f, 0, 1));
+		}
+		actionsFirstPerson.apply(model, pose, now, null);
 		int camera = UpperBody.eye(model);
-		eye.set(camera >= 0 ? Skeleton.world(model, pose, camera).getTranslation(new Vector3f()) : new Vector3f(0, 1.6f, 0));
+		if (camera >= 0) {
+			// the camera's transform now, with its rest turn taken out (at rest it looks along the model's facing)
+			Matrix4f restRotation = new Matrix4f().rotation(Skeleton.world(model, new Skeleton.Pose(model.nodeNames.length).rest(model), camera)
+				.getUnnormalizedRotation(new Quaternionf()).normalize());
+			view.set(Skeleton.world(model, pose, camera)).mul(restRotation.invert()).invert();
+		} else {
+			view.translation(0, -1.6f, 0);
+		}
 		return Skeleton.skin(model, pose, -1, null);
 	}
 
@@ -166,22 +180,12 @@ public final class HeroAnimator {
 		float climbNow = isClimb(base) ? 1 : 0;
 		float climbBefore = previous != null && isClimb(previous) ? 1 : 0;
 		climbShift = CLIMB_SHIFT * (climbBefore + (climbNow - climbBefore) * fade);
-		SkinnedModel.Clip actionClip = action == null ? null : clip(model, action);
-		if (actionClip != null) {
-			float t = now - actionStart;
-			float end = ACTION_IN + actionClip.duration() + FADE;
-			if (t > end) {
-				action = null;
-			} else {
-				Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
-				// Overwatch's fire and cast clips start at the release (the shot leaves on the click): swing out to
-				// that first frame, then play the clip from it, so the arm is seen going out and not just coming back
-				Skeleton.sample(actionClip, Math.clamp(t - ACTION_IN, 0, actionClip.duration()), act);
-				float in = Math.min(1, t / ACTION_IN);
-				float w = in * in * (3 - 2 * in) * Math.min(1, (end - t) / FADE);
-				Skeleton.blend(pose, act, w, UpperBody.mask(model));
-			}
+		// Overwatch's breathing layer under the stand (standing or crouched)
+		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") ? "add_breathe_crouch" : "add_breathe");
+		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
+			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
+		actions.apply(model, pose, now, UpperBody.mask(model));
 
 		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(headPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
@@ -222,6 +226,10 @@ public final class HeroAnimator {
 		double left = vx * Math.cos(yaw) + vz * Math.sin(yaw);
 		double speed = Math.sqrt(vx * vx + vz * vz);
 		boolean moving = speed > 0.02;
+		groundSpeed = onGround ? (float) speed * 20 : 0;
+		if (onGround) {
+			walked += (float) speed;
+		}
 		boolean crouching = entity.getPose() == Pose.CROUCHING;
 
 		String next;
