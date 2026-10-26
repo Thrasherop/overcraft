@@ -37,6 +37,14 @@ public final class KillFeedHud {
 	private static final float ROW_H = 34;
 	private static final float ROW_GAP = 6;
 	private static final float CAP = 13;
+	/** A portrait's width: cropped hero art about 1.5 times as wide as the row is high (the fifth critique: about 52 px). */
+	private static final float PORTRAIT_W = 52;
+	/** The bright edge on a portrait's inner end, next to the middle (Overwatch's: #30B1DD ally, #AA3F66 enemy). */
+	private static final float EDGE = 4;
+	private static final int ALLY_EDGE = 0x30B1DD;
+	/** Where the face band starts in a hero's 256 px portrait art (ours, read off Kiriko's). */
+	private static final int PORTRAIT_TOP = 30;
+	private static final int ENEMY_EDGE = 0xAA3F66;
 	/** Overwatch's team colours in the feed (the third critique, sampled): teal-blue and crimson. */
 	private static final int ALLY = 0x277CA6;
 	private static final int ENEMY = 0x8B293C;
@@ -159,19 +167,22 @@ public final class KillFeedHud {
 		MobFace mob = portrait == null ? FACES.get(type) : null;
 		PlayerInfo player = portrait == null && mob == null && type.equals("minecraft:player") ? playerInfo(name) : null;
 		boolean hasFace = portrait != null || mob != null || player != null;
-		// names on the outside, portraits on the inside next to the weapon (Overwatch's: NAME [face] > [face] NAME)
+		// names on the outside, portraits on the inside next to the weapon (Overwatch's: NAME [face] > [face] NAME), each
+		// portrait with a bright edge on its inner end, next to the middle
+		int edge = ally ? ALLY_EDGE : ENEMY_EDGE;
 		if (!victim && hasFace) {
-			x -= ROW_H;
+			x -= PORTRAIT_W;
 			portrait(g, portrait, mob, player, x, y, colour, alpha);
+			fill(g, x + PORTRAIT_W - EDGE, y, EDGE, ROW_H, argb(edge, alpha));
 		}
 		x -= plateW;
 		fill(g, x, y, plateW, ROW_H, argb(colour, 0.9f * alpha));
-		// a light edge on the box's inner end
-		fill(g, victim ? x : x + plateW - 3, y, 3, ROW_H, argb(0x8FD6F0, 0.5f * alpha));
-		HudText.draw(g, Face.BODY, text, x + plateW / 2, y + ROW_H / 2 + CAP / 2, CAP, argb(0xFFFFFF, alpha), Align.CENTER);
+		// no shadow on the names (Overwatch's have none)
+		HudText.plain(g, Face.BODY, text, x + plateW / 2, y + ROW_H / 2 + CAP / 2, CAP, argb(0xFFFFFF, alpha), Align.CENTER);
 		if (victim && hasFace) {
-			x -= ROW_H;
+			x -= PORTRAIT_W;
 			portrait(g, portrait, mob, player, x, y, colour, alpha);
+			fill(g, x, y, EDGE, ROW_H, argb(edge, alpha));
 		}
 		return x;
 	}
@@ -179,25 +190,32 @@ public final class KillFeedHud {
 	/** A hero's portrait, else a mob's face, else a player's skin face, in a box of their team's colour. */
 	private static void portrait(GuiGraphicsExtractor g, @Nullable Identifier portrait, @Nullable MobFace mob,
 								 @Nullable PlayerInfo player, float x, float y, int colour, float alpha) {
-		fill(g, x, y, ROW_H, ROW_H, argb(colour, 0.85f * alpha));
+		fill(g, x, y, PORTRAIT_W, ROW_H, argb(colour, 0.85f * alpha));
 		int tint = argb(0xFFFFFF, alpha);
 		if (portrait != null) {
-			image(g, portrait, x + 1, y + 1, ROW_H - 2, ROW_H - 2, tint);
+			// the hero's art cropped to the box's shape: the face band of the square portrait
+			float bandH = 256 * ROW_H / PORTRAIT_W;
+			g.pose().pushMatrix();
+			g.pose().translate(x, y);
+			g.pose().scale(PORTRAIT_W / 256, ROW_H / bandH);
+			g.blit(RenderPipelines.GUI_TEXTURED, portrait, 0, 0, 0, PORTRAIT_TOP, 256, Math.round(bandH), 256, Math.round(bandH),
+				256, 256, tint);
+			g.pose().popMatrix();
 		} else if (mob != null) {
-			// pixel art kept sharp, fitted to the box with a margin, centred (some faces are taller than wide)
+			// pixel art kept sharp, fitted to the row's height with a margin, centred (some faces are taller than wide)
 			float inner = ROW_H - 6;
 			float scale = inner / Math.max(mob.w(), mob.h());
 			float fw = mob.w() * scale;
 			float fh = mob.h() * scale;
 			g.pose().pushMatrix();
-			g.pose().translate(x + (ROW_H - fw) / 2, y + (ROW_H - fh) / 2);
+			g.pose().translate(x + (PORTRAIT_W - fw) / 2, y + (ROW_H - fh) / 2);
 			g.pose().scale(scale, scale);
 			g.blit(RenderPipelines.GUI_TEXTURED, mob.texture(), 0, 0, mob.u(), mob.v(), mob.w(), mob.h(), mob.w(), mob.h(),
 				mob.texW(), mob.texH(), tint);
 			g.pose().popMatrix();
 		} else if (player != null) {
 			g.pose().pushMatrix();
-			g.pose().translate(x + 3, y + 3);
+			g.pose().translate(x + (PORTRAIT_W - (ROW_H - 6)) / 2, y + 3);
 			g.pose().scale((ROW_H - 6) / 8f, (ROW_H - 6) / 8f);
 			PlayerFaceExtractor.extractRenderState(g, player.getSkin(), 0, 0, 8, tint);
 			g.pose().popMatrix();

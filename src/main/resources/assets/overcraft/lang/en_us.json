@@ -146,5 +146,6 @@
 	"overcraft.options.hero.ofuda_cancels_reload": "Healing Ofuda cancels reload",
 	"overcraft.options.hero.ofuda_cancels_reload.about": "On: throwing ofuda interrupts a reload. Off: they can't be thrown while reloading.",
 	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
-	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair."
+	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair.",
+	"overcraft.hud.eliminated": "Eliminated"
 }

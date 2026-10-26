@@ -45,7 +45,9 @@ marked done that still fail in part, and item 8 is what is left of R4 #7.
   clipping: `fx13_sheet`), 5 (fox: smaller fainter glow, low wake, brighter body: `fx13_fp_a`), 6 (gates gone within
   2 m, full from 6 m).
 - **Not changed:** 9 (the seal) and R4 #4 (the throw): Blizzard's own clips; needs frame-matched footage.
-- **Open:** 4 (ribbon ends in the ground), 10 (kill feed portraits), 12 (ELIMINATED caption).
+- **Done later:** 10 (52 px face crops, the inner edge, no name shadow: `feed3`; the kunai glyph kept), 12
+  ("ELIMINATED <name>" for 1.6 s: `elim2`).
+- **Open:** 4 (ribbon ends in the ground).
 
 ## Confirmed fixed (seen in these captures)
 - **Terrain-hit glow (R4 #1):** the impact glows in `fx9_ofuda_d` and `hud7_spent` are soft, with no straight edge.

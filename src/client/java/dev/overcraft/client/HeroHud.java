@@ -159,6 +159,7 @@ public final class HeroHud {
 		KillFeedHud.render(g, w - 36, Math.max(36, toastSlots * 32 / scale + 12));
 		crosshair(g, w / 2, h / 2);
 		hitMarker(g, w / 2, h / 2);
+		eliminatedCaption(g, w / 2, h / 2 + 205);
 		if (HeroOptions.get().ofudaUi) {
 			ofudaCounter(g, s, w / 2, h / 2 + 136);
 		}
@@ -243,8 +244,27 @@ public final class HeroHud {
 	private static float hitAt = -100;
 	private static int hitKind;
 
-	/** The server says one of our attacks landed (Effects.hitMarker). */
-	public static void hitMarker(int kind) {
+	/** The last final blow's caption: whom, and when (the effects' clock). */
+	private static String eliminated = "";
+	private static float eliminatedAt = -100;
+	/** How long "ELIMINATED <name>" shows, and its fade (seconds: ours). */
+	private static final float ELIMINATED_LIFE = 1.6f;
+	private static final float ELIMINATED_FADE = 0.4f;
+
+	/** The server says one of our attacks landed (Effects.hitMarker); on a kill, target is who fell. */
+	public static void hitMarker(int kind, int target) {
+		if (kind == 2) {
+			net.minecraft.world.entity.Entity victim = Minecraft.getInstance().level == null ? null
+				: Minecraft.getInstance().level.getEntity(target);
+			if (victim != null) {
+				eliminated = victim.getName().getString().toUpperCase(Locale.ROOT);
+				eliminatedAt = Fx.now();
+			}
+		}
+		hitMarker(kind);
+	}
+
+	private static void hitMarker(int kind) {
 		// a kill outranks the hit that made it, if both arrive together
 		if (Fx.now() - hitAt > 0.05f || kind >= hitKind) {
 			hitKind = kind;
@@ -257,6 +277,25 @@ public final class HeroHud {
 	 * fifth of a second; red and a little bigger on a critical hit, bigger again on a kill (the shape, sizes and colours
 	 * are ours, after the game's: no reference measures them).
 	 */
+	/**
+	 * Overwatch's final-blow notice under the crosshair, below the ofuda counter: "ELIMINATED" and who, for a moment
+	 * (the fifth critique; its size and place are ours, no reference frame shows one).
+	 */
+	private static void eliminatedCaption(GuiGraphicsExtractor g, float cx, float y) {
+		float t = Math.max(0, Fx.now() - eliminatedAt);
+		if (t >= ELIMINATED_LIFE || eliminated.isEmpty()) {
+			return;
+		}
+		float a = Math.min(1, (ELIMINATED_LIFE - t) / ELIMINATED_FADE);
+		String label = Component.translatable("overcraft.hud.eliminated").getString().toUpperCase(Locale.ROOT) + " ";
+		float cap = 13;
+		float labelW = HudText.width(Face.BODY, label, cap);
+		float total = labelW + HudText.width(Face.BODY, eliminated, cap);
+		float left = cx - total / 2;
+		HudText.draw(g, Face.BODY, label, left, y, cap, alpha(0xFFFFFF, a), Align.LEFT);
+		HudText.draw(g, Face.BODY, eliminated, left + labelW, y, cap, alpha(0xF0505A, a), Align.LEFT);
+	}
+
 	private static void hitMarker(GuiGraphicsExtractor g, float cx, float cy) {
 		// (a hair below zero when the frame's partial tick is behind the one it arrived on)
 		float t = Math.max(0, Fx.now() - hitAt);

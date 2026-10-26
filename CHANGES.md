@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Kill feed rows closer to Overwatch's, and "ELIMINATED" on a final blow** (round 5 #10, #12). Portraits are 52 px
+wide face crops of the hero art (were 34 px squares), with a bright 4 px edge on their inner end next to the middle
+(#30B1DD ally, #AA3F66 enemy); names have no shadow (`feed3`). A final blow shows "ELIMINATED <name>" under the ofuda
+counter for 1.6 s, the name in red (its size and place are ours: no reference frame shows one). Played: a kunai kill
+on a husk (`elim2`; a zombie burned in the daylight first, so no caption: correct, the kill wasn't ours).
+
 **Thrown ofuda are glowing talismans, gold or blue** (owner, this morning: "Two talismans do get thrown with each
 burst. But they arent standing straight up like that. There is a different model; a glowing gold type thing for thrown
 ofuda, or blue when it isnt tracking"). The effects survey agrees: in flight an ofuda is effect 2F93 (no target) or 7E2D
