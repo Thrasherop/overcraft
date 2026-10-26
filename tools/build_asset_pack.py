@@ -122,31 +122,99 @@ def add_ui(source):
             print(f"no {role} icon ({png}): run DataTool dump-ui-textures into {source}/UITextures")
 
 
-def add_sounds(source):
-    """Copies each hero's mapped sounds (tools/soundmaps/<hero>.txt) into assets/overcraft/sounds/ and writes the
-    pack's sounds.json, replacing the jar's vanilla stand-ins with the real recordings."""
-    import json
-    write_mcmeta()
-    sounds = {}
-    out = PACK / "assets" / "overcraft" / "sounds"
+def read_soundmaps():
+    """The sound maps (tools/soundmaps/*.txt): sources {id: [files]} and mixing rules {event: [(source, delay, gain)]}."""
+    sources, rules = {}, {}
     for soundmap in sorted((ROOT / "tools" / "soundmaps").glob("*.txt")):
         for line in soundmap.read_text(encoding="utf8").splitlines():
-            line = line.split("#")[0].strip()
-            if not line:
+            line = line.split("#")[0].strip() if not line.lstrip().startswith("#") else ""
+            if not line or "=" not in line:
                 continue
-            name, _, rel = (s.strip() for s in line.partition("="))
-            src = Path(source) / rel
-            if not src.exists():
-                print(f"missing {name}: {src}")
-                continue
-            dest = out / (name.replace(".", "/") + ".ogg")
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(src, dest)
-            sounds[name] = {"replace": True, "subtitle": "subtitles.overcraft." + name,
-                            "sounds": ["overcraft:" + name.replace(".", "/")]}
-    (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
-    print(f"{len(sounds)} sounds -> {out}")
+            name, _, rest = (x.strip() for x in line.partition("="))
+            if name.startswith("@"):
+                layers = []
+                for part in filter(None, (x.strip() for x in rest.split(" + "))):
+                    gain = 0.0
+                    delay = 0.0
+                    if ":" in part:
+                        part, g = part.rsplit(":", 1)
+                        gain = float(g)
+                    if "@" in part:
+                        part, d = part.split("@", 1)
+                        delay = float(d)
+                    layers.append((part.strip(), delay, gain))
+                rules[name[1:]] = layers
+            else:
+                sources.setdefault(name, []).append(rest)
+    return sources, rules
 
+
+def mix(inputs, out):
+    """Mixes [(file, delay s, gain dB)] into one mono Ogg Vorbis file with ffmpeg; peaks kept under full scale."""
+    cmd = ["ffmpeg", "-y", "-loglevel", "error"]
+    for f, _, _ in inputs:
+        cmd += ["-i", str(f)]
+    chains = []
+    for k, (_, delay, gain) in enumerate(inputs):
+        ms = int(round(delay * 1000))
+        chains.append(f"[{k}:a]aformat=channel_layouts=mono,adelay={ms}:all=1,volume={gain}dB[a{k}]")
+    labels = "".join(f"[a{k}]" for k in range(len(inputs)))
+    chains.append(f"{labels}amix=inputs={len(inputs)}:normalize=0:duration=longest,alimiter=limit=0.89[out]")
+    cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "1", "-c:a", "libvorbis", "-q:a", "5", str(out)]
+    return subprocess.run(cmd, capture_output=True, text=True).returncode == 0
+
+
+def add_sounds(source):
+    """Builds each mapped sound event (tools/soundmaps/*.txt) into assets/overcraft/sounds/ and writes the pack's
+    sounds.json, replacing the jar's vanilla stand-ins with the real recordings. An event with a mixing rule gets one
+    file per variant of its first layer (up to MAX_VARIANTS), its other layers mixed in with ffmpeg; without ffmpeg,
+    only the first layer is copied (no mixing). Events with no rule are their sources' files as they are."""
+    import json
+    import random
+    import shutil as sh
+    write_mcmeta()
+    sources, rules = read_soundmaps()
+    have_ffmpeg = sh.which("ffmpeg") is not None
+    if not have_ffmpeg:
+        print("ffmpeg not found: copying each event's first layer only (no mixing, stereo files stay stereo)")
+    used = {layer for layers in rules.values() for layer, _, _ in layers}
+    events = dict(rules)
+    for name in sources:
+        if name not in used and name not in events:
+            events[name] = [(name, 0.0, 0.0)]
+    out = PACK / "assets" / "overcraft" / "sounds"
+    if out.exists():
+        shutil.rmtree(out)
+    rng = random.Random(1)
+    sounds = {}
+    for event, layers in sorted(events.items()):
+        files = []
+        if layers:
+            first = sources.get(layers[0][0], [])
+            for i, base in enumerate(first[:MAX_VARIANTS]):
+                dest = out / event.replace(".", "/") / f"{i}.ogg"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                picks = [(Path(source) / base, layers[0][1], layers[0][2])]
+                for layer, delay, gain in layers[1:]:
+                    options = sources.get(layer, [])
+                    if options:
+                        picks.append((Path(source) / options[(i + rng.randrange(len(options))) % len(options)], delay, gain))
+                missing = [str(f) for f, _, _ in picks if not f.exists()]
+                if missing:
+                    print(f"missing for {event}: {missing[0]}")
+                    continue
+                if have_ffmpeg and mix(picks, dest):
+                    files.append(f"overcraft:{event.replace('.', '/')}/{i}")
+                elif not have_ffmpeg or picks[0][0].suffix == ".ogg":
+                    shutil.copyfile(picks[0][0], dest)
+                    files.append(f"overcraft:{event.replace('.', '/')}/{i}")
+        sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": files}
+    (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
+    print(f"{len(sounds)} sound events, {sum(len(v['sounds']) for v in sounds.values())} files -> {out}")
+
+
+# variants kept per sound event (Minecraft picks one at random each time)
+MAX_VARIANTS = 8
 
 # the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
 # Minecraft only reads TrueType outlines, which these two are.

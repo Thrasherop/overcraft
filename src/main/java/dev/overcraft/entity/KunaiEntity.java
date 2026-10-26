@@ -3,6 +3,7 @@ package dev.overcraft.entity;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
@@ -62,7 +63,10 @@ public class KunaiEntity extends OwProjectile {
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, dealt);
 			if (crit) {
-				level.playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_KUNAI_HEADSHOT, SoundSource.PLAYERS, 1, 1);
+				// the critical hit's confirmation is the thrower's (it plays where they are)
+				if (owner instanceof net.minecraft.server.level.ServerPlayer thrower) {
+					HeroSounds.toOwner(thrower, OcSounds.KIRIKO_KUNAI_HEADSHOT, thrower.getEyePosition());
+				}
 			}
 		}
 		discard();

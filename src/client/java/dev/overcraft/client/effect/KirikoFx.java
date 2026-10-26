@@ -67,6 +67,7 @@ public final class KirikoFx {
 			case "rush_cast" -> rushCast(at);
 			case "rush_ripple" -> rushRipple(at);
 			case "rush_gate" -> rushGate(at, dir, e.variant() / 10f);
+			case "rush_tiles" -> rushTiles(at, dir, e.variant() / 10f);
 			case "rush_end" -> rushEnd(at);
 			case "rush_ally" -> rushAlly(at, dir);
 			default -> {
@@ -335,6 +336,28 @@ public final class KirikoFx {
 		if (core != null) {
 			Fx.add(core.at(at).axis(along).life(life).size(length * 1.1f, length * 1.1f)
 				.aspect(thickness * 2.5f / length).alpha(0.5f).fade(0.04f, 0.08f));
+		}
+	}
+
+	/**
+	 * Glowing talisman tiles lying on the path, held while the rush lasts (4013/4014: a rounded card 0.56 x 0.29 at size
+	 * 1-2, 11 s; the reference: "teal glyph tiles cover the ground ahead"). Three across the corridor here and there.
+	 */
+	static void rushTiles(Vec3 ground, Vec3 forward, float seconds) {
+		float life = seconds > 0 ? seconds : 8;
+		Vec3 ahead = forward.lengthSqr() < 1.0E-6 ? new Vec3(0, 0, 1) : forward.normalize();
+		Vec3 side = new Vec3(-ahead.z, 0, ahead.x);
+		// a flat particle's long side, turned by r, lies along (sin r, 0, cos r): across the path
+		float across = (float) Math.atan2(side.x, side.z);
+		for (int i = 0; i < 3; i++) {
+			Particle tile = Fx.particle("card", Palette.TEAL);
+			if (tile == null) {
+				return;
+			}
+			float width = range(0.56f, 1.12f);
+			Vec3 at = ground.add(side.scale(range(-4, 4))).add(ahead.scale(range(-0.6f, 0.6f))).add(0, 0.03, 0);
+			Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 0.52f, width * 0.52f).aspect(1 / 0.52f)
+				.spin(across + range(-0.25f, 0.25f), 0).alpha(0.75f).fade(0.03f, 0.06f));
 		}
 	}
 

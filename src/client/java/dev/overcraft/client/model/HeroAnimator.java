@@ -40,8 +40,8 @@ public final class HeroAnimator {
 	 * in front of the feet; a Minecraft player stops 0.3 m short of it, which would put the hands in the blocks.
 	 */
 	public static final float CLIMB_SHIFT = 0.3f;
-	/** Seconds between the climb's dust puffs: about one hand-over-hand reach (ours, from the climb clip). */
-	private static final float CLIMB_DUST_EVERY = 0.35f;
+	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
+	private static final float CLIMB_DUST_EVERY = 0.5f;
 
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
@@ -247,6 +247,10 @@ public final class HeroAnimator {
 		// out of wall while still going up: momentum carries her over the top, with the hop over the edge
 		if (wasClimbing && !climbing && vy > 0 && !entity.horizontalCollision) {
 			climbTopAt = now;
+			entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), OcSounds.KIRIKO_CLIMB_TOP, SoundSource.PLAYERS, 1, 1, false);
+		}
+		if (climbing && !wasClimbing) {
+			entity.level().playLocalSound(entity.getX(), entity.getY() + 1, entity.getZ(), OcSounds.KIRIKO_CLIMB_START, SoundSource.PLAYERS, 1, 1, false);
 		}
 		wasClimbing = climbing;
 		if (climbing && now - dustAt > CLIMB_DUST_EVERY) {

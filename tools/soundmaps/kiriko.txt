@@ -3,3 +3,583 @@
 # Ult cast lines: friendly (no criteria = the default line) and the one enemies hear.
 kiriko.ult.friendly = HeroVoice/Kiriko/Ultimate/00000005EB8B.0B2-Let the Kitsune guide you!.ogg
 kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox spirit, unleash your claws!.ogg
+
+# ===== How each game event is put together (build_asset_pack.py sounds). Minecraft plays one file per sound event, so
+# the layers Overwatch plays together are mixed into one file per variant, at build time:
+#   @<event> = <source>[@<delay s>][:<gain dB>] + <source>...   (layers separated by " + ", spaces included)
+# Every variant of the first source gets a pick of each other source's variants. Sources not used by any rule are
+# events of their own (voice lines). All mixes are made mono (Minecraft only places mono sounds) and kept below full
+# scale (the sound research found hits, melee, climb start and Swift Step's cast clipping by up to +2.7 dB).
+# "1P" events go to Kiriko's own player, "_3p" to everyone else (Overwatch's audiences 1 and 2).
+@kiriko.kunai.throw = kiriko.kunai.throw + kiriko.kunai.throw_b + kiriko.kunai.throw_hand:-4
+@kiriko.kunai.throw_3p = kiriko.kunai.throw_3p + kiriko.kunai.throw_3p_b
+@kiriko.kunai.hit = kiriko.kunai.hit:-4 + kiriko.kunai.hit_sub:-4
+@kiriko.kunai.headshot = kiriko.kunai.headshot + kiriko.kunai.hit:-6
+@kiriko.kunai.reload = kiriko.kunai.reload_1:+6 + kiriko.kunai.reload_2@0.21 + kiriko.kunai.reload_3@0.36 + kiriko.kunai.reload_4@0.57 + kiriko.kunai.reload_5@0.91
+@kiriko.kunai.reload_3p = kiriko.kunai.reload_3@0.16 + kiriko.kunai.reload_4@0.34 + kiriko.kunai.reload_5@1.14
+@kiriko.ofuda.throw = kiriko.ofuda.throw
+@kiriko.ofuda.throw_3p = kiriko.ofuda.throw_3p + kiriko.ofuda.throw_3p_b
+@kiriko.ofuda.heal = kiriko.ofuda.heal:+4 + kiriko.ofuda.heal_snap + kiriko.ofuda.heal_sparkle + kiriko.ofuda.heal_sub
+@kiriko.ofuda.hit_block = kiriko.ofuda.hit_block + kiriko.ofuda.hit_block_snap
+@kiriko.suzu.throw = kiriko.suzu.throw + kiriko.suzu.flight
+@kiriko.suzu.throw_3p = kiriko.suzu.throw_3p + kiriko.suzu.flight
+@kiriko.suzu.burst = kiriko.suzu.burst + kiriko.suzu.burst_shimmer + kiriko.suzu.burst_bell
+@kiriko.swift_step.cast = kiriko.swift_step.cast:-4 + kiriko.swift_step.cast_sub:-4
+@kiriko.swift_step.depart = kiriko.swift_step.depart
+@kiriko.swift_step.arrive = kiriko.swift_step.arrive
+@kiriko.climb.step = kiriko.climb.step:+6
+@kiriko.climb.start = kiriko.climb.start:-4
+@kiriko.climb.top = kiriko.climb.top
+@kiriko.rush.summon = kiriko.rush.summon
+@kiriko.rush.cast = kiriko.rush.cast + kiriko.rush.cast_sub
+@kiriko.rush.cast_3p = kiriko.rush.cast_3p
+@kiriko.rush.gate_1 = kiriko.rush.gate_1
+@kiriko.rush.gate_2 = kiriko.rush.gate_2
+@kiriko.rush.gate_3 = kiriko.rush.gate_3
+@kiriko.rush.gate_4 = kiriko.rush.gate_4
+@kiriko.rush.gate_5 = kiriko.rush.gate_5
+@kiriko.rush.gate_6 = kiriko.rush.gate_6
+@melee.hit = kiriko.melee.hit:-4 + kiriko.melee.hit_sub:-4
+@kiriko.ability.denied = kiriko.ability.denied
+
+# Kiriko's sound sources (Overwatch build 154088), written by the sound research of 2026-10-26.
+# Format as kiriko.txt: <sound id> = <file under E:\Overwatch Archive\extracted\154088\>. Several lines with one id
+# = random variants. Evidence, measurements and what is missing: tools/reference/kiriko-sounds.md.
+# 1P = what Kiriko's own player hears (Overwatch audience 1), 3P = what everyone else hears (audience 2).
+# 'layer' = Overwatch plays these together (a Wwise layer container): play every *_<layer> id of an event at once.
+
+# ===== Kunai (secondary fire)
+# throw, 1P, layer 1 of 2 (bright swish, 0.43-0.64 s, stereo). HIGH: weapon graph 2171 plays effect 7122 right after the kunai WeaponVolley nodes #17/#1335 (projectile lifetime 5 s); bank 763B is audience 1 (owner); Wwise layer container 651735593 = this + throw_b.
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08D4.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08B5.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B09AE.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A14.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08EC.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B09A4.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08A2.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A68.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08F6.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B09FE.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A39.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A0E.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B09AF.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08BA.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B088C.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A2D.03F.ogg
+kiriko.kunai.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A18.03F.ogg
+# throw, 1P, layer 2 of 2 (shorter punch, 0.29-0.39 s, stereo). HIGH: same layer container as kiriko.kunai.throw; play both at once.
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A3B.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08AF.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0992.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A62.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A2C.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0897.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0887.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08A1.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08B9.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08DA.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A6B.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B09B8.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0A44.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B0983.03F.ogg
+kiriko.kunai.throw_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763B.02C/0000002B08C0.03F.ogg
+# throw heard by others, layer 1 of 2 (0.36-0.57 s, stereo, darker than 1P). HIGH: same effect 7122, bank 763C is audience 2, 100 m range.
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A3C.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08A5.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B09B2.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B09BA.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08C6.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A74.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A50.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0893.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08F8.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08AB.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B088B.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B09B1.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08A0.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08EF.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08B8.03F.ogg
+kiriko.kunai.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A02.03F.ogg
+# throw heard by others, layer 2 of 2 (0.20-0.47 s, low thump). HIGH: same layer container as throw_3p.
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A5D.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A70.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A1D.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08DD.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A41.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A35.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B0A12.03F.ogg
+kiriko.kunai.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007122.00D/Sounds/00000000763C.02C/0000002B08DC.03F.ogg
+# 1P arm-swing foley on the 1P throw clips A46E (one arm) / A6DA (other arm), starts at 0.0 s of the clip (0.40-0.57 s, stereo, low). MEDIUM-HIGH: clip AnimationEffects 3F22/4108; each clip's bank is a 2-layer container, this is the longer layer (the short layers 680121427/562042208 are left out).
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B0A61.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B09B9.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B08BD.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B09FD.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B09A2.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B0A00.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B08A9.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B0990.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B0891.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A46E/Sounds/0000000078BE.02C/0000002B08E0.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B08F4.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A11.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A2B.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B08D7.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A55.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0896.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A46.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A73.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B08D3.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B08FF.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A33.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B0A49.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B097E.03F.ogg
+kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A6DA/Sounds/0000000078BD.02C/0000002B08ED.03F.ogg
+# OPTIONAL in-flight hum of the kunai projectile (6.3 s, stereo, LOOP: the Overwatch sound has a stop event; stop it when the kunai lands). MEDIUM: projectile 4103's child effect 3BF2, bank 7CCD (audience 1, 30 m).
+kiriko.kunai.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003BF2.00D/Sounds/000000007CCD.02C/0000002B0A3F.03F.ogg
+# body hit, generic flesh-impact punch layer (8 stereo 0.28-0.30 s). LOW-MEDIUM: kunai contact set 0738, contact type 0 on the default character material -> contact effect 47D0 -> bank 8BCE; only its generic layers are extracted (shared with quick melee). Kiriko's own kunai-hit sound (effect 13B2 -> 4057 -> bank 8DE7, 33 files) and 11 more impact files (2AC663...) are NOT extracted.
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE32F.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE27D.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2E6.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE275.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE338.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE297.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2D4.03F.ogg
+kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2A0.03F.ogg
+# body hit, sub-bass layer (7 mono 0.13-0.31 s, near full scale). MEDIUM: second Play action of bank 8BCE/8BD2 (same files in quick melee); play together with kiriko.kunai.hit (or .headshot).
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC41.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABB7F.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC48.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC2B.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC51.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC22.03F.ogg
+kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC46.03F.ogg
+# critical hit, the layer that only the crit version has (10 deep stereo thumps 0.29-0.63 s, energy under 60 Hz). LOW-MEDIUM: contact type 1 (only Kiriko's kunai and nothing else in her sets has a type-1 entry that differs from type 0) -> contact effect 47D6 -> bank 8BD2 = the type-0 layers + this one. Overwatch's crit 'ding' itself is a global UI sound, not in her data.
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE5C.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE92.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFDEB.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFEB4.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE5D.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFD0A.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE5B.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFD1F.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFCDB.03F.ogg
+kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFDF1.03F.ogg
+# kiriko.kunai.hit_block: NO extracted sound. Kunai contact set 0738, contact type 2, default material 0001 -> contact effect 47DC -> banks 826E/826F
+# (11 files, in Kiriko's impact bank 1758105412), plus 22 per-surface effects (47DD...4FED) - none extracted. Leave the vanilla stand-in.
+# reload step 1 of 5 at 0.00 s (1P clip A810, cloth/hand foley, 9 mono 0.49-0.56 s, quiet: peak -19.5 dB). MEDIUM: alias 0x004 (3P ABCF 1.33 s, 1P A810 1.47 s) in the shared weapon graph is the reload (its length matches KirikoStats.KUNAI_RELOAD 1.3 s and the weapon timing floats 0.36/0.57/0.9 match steps 3-5).
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B19CE.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B1A02.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B19A8.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B1A08.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B19AA.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B186B.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B1A0A.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B19C9.03F.ogg
+kiriko.kunai.reload_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/00000000828F.02C/0000002B19DB.03F.ogg
+# reload step 2 of 5 at 0.21 s (1P only, 9 mono 0.17-0.44 s, bright). MEDIUM: clip A810's AnimationEffect 4163.
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19BD.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19FF.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B1866.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19C8.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B199A.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19DF.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19C0.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B186F.03F.ogg
+kiriko.kunai.reload_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000008290.02C/0000002B19E2.03F.ogg
+# reload step 3 of 5 at 0.36 s 1P (0.16 s in the 3P clip ABCF), 3 stereo 0.22 s, bright swish. MEDIUM: banks 9273 (1P) / 9605 (3P) hold the same three files.
+kiriko.kunai.reload_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009273.02C/0000002B0A06.03F.ogg
+kiriko.kunai.reload_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009273.02C/0000002B09B6.03F.ogg
+kiriko.kunai.reload_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009273.02C/0000002B0A5F.03F.ogg
+# reload step 4 of 5 at 0.57 s 1P (0.34 s 3P), 3 stereo 0.33 s. MEDIUM: banks 9274 / 9606.
+kiriko.kunai.reload_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009274.02C/0000002B08D0.03F.ogg
+kiriko.kunai.reload_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009274.02C/0000002B0A21.03F.ogg
+kiriko.kunai.reload_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009274.02C/0000002B0A6C.03F.ogg
+# reload step 5 of 5 at 0.91 s 1P (1.14 s 3P), 2 stereo 0.40-0.59 s (the closing snap). MEDIUM: banks 9275 / 9607.
+kiriko.kunai.reload_5 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009275.02C/0000002B08FC.03F.ogg
+kiriko.kunai.reload_5 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000A810/Sounds/000000009275.02C/0000002B08DF.03F.ogg
+
+# ===== Healing Ofuda (primary fire)
+# throw, 1P, once per volley (16 stereo 0.93-1.48 s, mid-low, long tail). HIGH: weapon graph 2171 plays effect 409D after WeaponVolley #946, the homing projectile with a 10 s life (= the Ofuda); bank 7891 is audience 1, one random container.
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A43.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08E1.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08AD.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08EE.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08C9.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0889.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A4E.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08F5.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0895.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A10.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A52.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A56.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A60.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08E3.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B08BF.03F.ogg
+kiriko.ofuda.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000409D.00D/Sounds/000000007891.02C/0000002B0A48.03F.ogg
+# throw heard by others, layer 1 of 2 (17 stereo 0.35-0.48 s, low). MEDIUM: bank 78F2/825B (audience 2, 70 m) sits on the 3P Ofuda start clips B011 (alias 0x875) and AD90/AE1B/AE1C (0x16E) at 0.0 s.
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B09FC.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A29.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08FD.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A4F.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A66.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0988.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0892.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A04.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08CB.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B099E.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B088A.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B09FF.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B088D.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A6E.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A17.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A53.03F.ogg
+kiriko.ofuda.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08AE.03F.ogg
+# throw heard by others, layer 2 of 2 (16 mono 0.52-0.87 s, airy). MEDIUM: same layer container as throw_3p.
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A5E.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08E4.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A63.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08D2.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B09B4.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08BC.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A37.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A03.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0982.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B08DE.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A2E.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A4C.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0986.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B09A6.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0985.03F.ogg
+kiriko.ofuda.throw_3p_b = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AE1B/Sounds/0000000078F2.02C/0000002B0A4B.03F.ogg
+# OPTIONAL in-flight flutter of a non-homing (teal) ofuda (7 mono 2.6-3.4 s, very quiet: rms -47 dB; LOOP with a stop event, 30 m). MEDIUM: projectile 34EA's in-flight effect 2F93, bank 770C layer 2; layer 1 = 4 low swells (11279134).
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B0900.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B0987.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B0A0B.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B089B.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B0984.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B0A38.03F.ogg
+kiriko.ofuda.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000002F93.00D/Sounds/00000000770C.02C/0000002B09AD.03F.ogg
+# OPTIONAL in-flight sound of a homing (gold) ofuda (14 mono 2.4-3.5 s, bright and loud: peak -3.5 dB; LOOP). MEDIUM: projectile 3FD0's in-flight effect 7E2D, bank 770D (+ the same 4 low swells).
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A1E.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B08CC.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A58.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B08CF.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A01.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A65.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B09AA.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A25.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B08F1.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B08D5.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B08C2.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A72.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A30.03F.ogg
+kiriko.ofuda.flight_seeking = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000007E2D.00D/Sounds/00000000770D.02C/0000002B0A64.03F.ogg
+# heal hit on an ally, tonal body layer (16 mono 0.56-0.83 s, 330-1400 Hz). MEDIUM: client-only effect 3EC4 in weapon graph 2171, played on the hit target (var 1950, the same target the heal subgraph 2128 runs on) from a game message; its bank 7DF9 is a layer container of 8 parts: this, heal_snap, heal_sparkle, heal_sub and 2 clicks. Kiriko's dedicated heal-impact banks (effects 4004/40C0 -> 770E/8258/78F3) are NOT extracted.
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC68E.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC664.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CD.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66C.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC666.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7B7.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CB.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC693.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CC.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC672.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC694.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66B.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC679.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BA.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC65F.03F.ogg
+kiriko.ofuda.heal = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC692.03F.ogg
+# heal hit, transient layer (20 mono 0.26-0.39 s, instant attack, 5-10 kHz paper snap; ~15 dB louder than the tonal layer). MEDIUM: layer of 3EC4 (bank 7DF9).
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC696.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC667.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC79B.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BB.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CA.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC79C.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BC.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC678.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC67A.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C3.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66A.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC671.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC68C.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66E.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC675.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC716.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C6.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C1.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC691.03F.ogg
+kiriko.ofuda.heal_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC795.03F.ogg
+# heal hit, shimmer tail (in Overwatch these 4 stereo files 0.65-1.8 s ALL play together; as one Minecraft id pick one at random). MEDIUM: single-sound children of 3EC4's layer container.
+kiriko.ofuda.heal_sparkle = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC665.03F.ogg
+kiriko.ofuda.heal_sparkle = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66F.03F.ogg
+kiriko.ofuda.heal_sparkle = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CE.03F.ogg
+kiriko.ofuda.heal_sparkle = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7B4.03F.ogg
+# heal hit, sub thump layer (8 stereo 0.9-1.15 s, under 250 Hz). MEDIUM: random container of 3EC4's layer container.
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7A1.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C2.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BD.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C7.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BF.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC68B.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7A2.03F.ogg
+kiriko.ofuda.heal_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC670.03F.ogg
+# OPTIONAL 'healed' thump on the ally (18 stereo 0.67-0.86 s, low; 0.2 s retrigger guard). MEDIUM: heal subgraph 2128 (run on the healed target, it also says the FC4 heal lines) plays effect 3DA6 0.2 s after the heal; bank 78C0 shares Wwise bank 1758105412 with 3EC4.
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7B2.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC65C.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC690.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC65D.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7C0.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC661.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC677.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7B5.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7C8.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC79F.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7B9.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC668.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC79A.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7C5.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC717.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7BE.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC7C9.03F.ogg
+kiriko.ofuda.heal_thump = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DA6.00D/Sounds/0000000078C0.02C/0000002AC695.03F.ogg
+# hit on terrain, tonal layer (same 16 files as kiriko.ofuda.heal). HIGH: Ofuda contact set 0731, contact type 2 (world), default material 0001 -> contact effect 4534 -> bank 7890 = layer container of this + hit_block_snap (the same contact effect is used for type 0, character hits). Files only extracted under 3EC4.
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC68E.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC664.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CD.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66C.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC666.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7B7.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CB.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC693.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CC.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC672.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC694.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66B.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC679.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BA.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC65F.03F.ogg
+kiriko.ofuda.hit_block = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC692.03F.ogg
+# hit on terrain, snap layer. HIGH: second child of bank 7890's layer container; play with kiriko.ofuda.hit_block.
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC696.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC667.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC79B.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BB.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7CA.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC79C.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7BC.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC678.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC67A.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C3.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66A.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC671.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC68C.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC66E.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC675.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC716.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C6.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC7C1.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC691.03F.ogg
+kiriko.ofuda.hit_block_snap = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003EC4.00D/Sounds/000000007DF9.02C/0000002AC795.03F.ogg
+# kiriko.ofuda.reload: no Ofuda-only reload sound. Kiriko has one reload animation (alias 0x004) in the weapon graph both weapons share;
+# use the kiriko.kunai.reload_* steps. The 1P Ofuda chain clips only carry quiet cloth foley (banks 946E/828F).
+
+# ===== Protection Suzu
+# throw, 1P whoosh layer (3 mono 0.58-0.76 s). HIGH: Suzu graph 30D8 plays effect 3D4C right after WeaponVolley #71 (projectile 3FD3 = the bell); bank 76FF (audience 1) = layer container of this + the bell (kiriko.suzu.flight files).
+kiriko.suzu.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D4C.00D/Sounds/0000000076FF.02C/0000002AF4AB.03F.ogg
+kiriko.suzu.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D4C.00D/Sounds/0000000076FF.02C/0000002AF493.03F.ogg
+kiriko.suzu.throw = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D4C.00D/Sounds/0000000076FF.02C/0000002AF4AA.03F.ogg
+# throw heard by others (2 stereo 0.93-1.1 s, bright jingle, 70 m). HIGH: second bank of effect 3D4C, audience 2.
+kiriko.suzu.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D4C.00D/Sounds/000000003850.02C/0000002AACA7.03F.ogg
+kiriko.suzu.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D4C.00D/Sounds/000000003850.02C/0000002AAC8D.03F.ogg
+# bell jingle from the flying Suzu (2 mono 1.2 s, tonal ~900/3100 Hz; NOT a loop: Overwatch stops the component after 0.40 s of a 6 s effect). HIGH: the Suzu projectile's child entity 4298 carries effect 3E6F, banks 7C3D (1P) / 96F7 (3P) = these 2 files (also layer 1 of the 1P throw).
+kiriko.suzu.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003E6F.00D/Sounds/000000007C3D.02C/0000002AF401.03F.ogg
+kiriko.suzu.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003E6F.00D/Sounds/000000007C3D.02C/0000002AF490.03F.ogg
+# STOPGAP burst boom (4 stereo 1.9-2.3 s, low). LOW-MEDIUM: the real burst (impact effects 360C/3D07 -> banks 76FD 1P / 96F8 3P / BDE2 far, 5 files 2B3253 2B31AE 2B324C 2B3247 2B3255) is NOT extracted; these come from the Protection Suzu souvenir clip C18A, whose effect throws (t=0, with the in-game throw files) and bursts the bell at t=0.6 s (decal + light + these sounds).
+kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF485.03F.ogg
+kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4AD.03F.ogg
+kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF361.03F.ogg
+kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4B5.03F.ogg
+# STOPGAP burst shimmer (1 stereo 1.36 s, 5.6 kHz). LOW-MEDIUM: same souvenir layer container (94D9) as kiriko.suzu.burst.
+kiriko.suzu.burst_shimmer = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4A1.03F.ogg
+# STOPGAP burst bell ring (2 stereo 1.7-2.0 s, tonal 1.1-3 kHz). LOW-MEDIUM: souvenir bank 94DB, played at the souvenir's burst (t=0.6 s).
+kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C8A.03F.ogg
+kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C4A.03F.ogg
+# Allies cleansed: no sound of its own (effect 3398 is a material overlay); Overwatch only adds the FC5 voice line (kiriko.voice.suzu).
+
+# ===== Swift Step
+# cast (the hand sign), 1P (3 stereo 2.3-2.7 s, low, loud: peak +0.8 dB). MEDIUM-HIGH: Swift Step graph 30DB plays effect 3D44 when the depart animation (alias 0x7F8, ABBA/A591, start 0.15 s) starts; bank 76F7 is audience 1. Others hear the depart files instead (bank 76E6 is 3D44's audience-2 bank).
+kiriko.swift_step.cast = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D44.00D/Sounds/0000000076F7.02C/0000002B3245.03F.ogg
+kiriko.swift_step.cast = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D44.00D/Sounds/0000000076F7.02C/0000002B31AD.03F.ogg
+kiriko.swift_step.cast = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D44.00D/Sounds/0000000076F7.02C/0000002B3269.03F.ogg
+# cast, 1P sub layer (1 mono 1.38 s, under 60 Hz). MEDIUM-HIGH: second Play action of bank 76F7; play with kiriko.swift_step.cast.
+kiriko.swift_step.cast_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003D44.00D/Sounds/0000000076F7.02C/0000002B31B4.03F.ogg
+# departure (3 stereo 2.7-2.9 s, low whoosh). HIGH: effect 3CC7 (petals/rings on Kiriko as she leaves), banks DA8E/76E6/DA8C (audience 2, 70 m) all hold these 3 files.
+kiriko.swift_step.depart = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC7.00D/Sounds/00000000DA8E.02C/0000002B0CF4.03F.ogg
+kiriko.swift_step.depart = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC7.00D/Sounds/00000000DA8E.02C/0000002B0D4A.03F.ogg
+kiriko.swift_step.depart = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC7.00D/Sounds/00000000DA8E.02C/0000002B0D04.03F.ogg
+# arrival (3 stereo 2.1-2.2 s, low). HIGH: effect 3CC5, played at the destination, banks DA8D/76E5.
+kiriko.swift_step.arrive = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC5.00D/Sounds/00000000DA8D.02C/0000002B3257.03F.ogg
+kiriko.swift_step.arrive = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC5.00D/Sounds/00000000DA8D.02C/0000002B31B5.03F.ogg
+kiriko.swift_step.arrive = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003CC5.00D/Sounds/00000000DA8D.02C/0000002B3268.03F.ogg
+
+# ===== Wall climb (passive)
+# one hand grab (9 mono 0.34-0.48 s, bright scrape, quiet). HIGH: 1P climb clip AA7E (1.033 s cycle) plays bank 81E4 at 0.267 s and 0.469 s of every cycle (two grabs, then a 0.83 s gap). The 3P climb clip AC1F has no sounds.
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF4A8.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF403.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF4A7.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF489.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF4B4.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF4DF.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF402.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF488.03F.ogg
+kiriko.climb.step = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7E/Sounds/0000000081E4.02C/0000002AF498.03F.ogg
+# start of a climb (4 stereo 0.32-0.39 s, low thump). HIGH: wall-climb graph 30D9 plays effect 289 when the climb state (alias 0xA0) starts; 289 is a low, shared effect id (generic wall-climb sound, likely shared with other climbers). 1P bank 11FA = 3 of these + a short mono tick 2AD7CE.
+kiriko.climb.start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000289.00D/Sounds/0000000011F9.02C/0000002AD7BF.03F.ogg
+kiriko.climb.start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000289.00D/Sounds/0000000011FA.02C/0000002AD7C8.03F.ogg
+kiriko.climb.start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000289.00D/Sounds/0000000011FA.02C/0000002AD7BD.03F.ogg
+kiriko.climb.start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000289.00D/Sounds/0000000011FA.02C/0000002AD80F.03F.ogg
+# hop over the top (7 stereo 0.49-0.71 s). HIGH: 1P climb-top clip AA7C (alias 0x9C) plays bank 81E5 at 0.033 s.
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B1879.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B19C4.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B19F8.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B19E3.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B19DC.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B19C2.03F.ogg
+kiriko.climb.top = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000AA7C/Sounds/0000000081E5.02C/0000002B186D.03F.ogg
+
+# ===== Kitsune Rush (ultimate)
+# fox summon swell (1 stereo 4.5 s, sub-bass, rises 2.0 s to its peak then fades). MEDIUM-HIGH: ult graph 30DA plays effect 4513 at the cast (same wait state as the cast effects), banks 8E57/8E58 (both audiences).
+kiriko.rush.summon = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004513.00D/Sounds/000000008E57.02C/0000002B3266.03F.ogg
+# cast burst, owner (1 stereo 4.7 s: hard onset, ~2.4 s decay). MEDIUM: effect 3DBE (12 s, held during the cast), bank 7E29; its 2nd action adds a sub (kiriko.rush.cast_sub).
+kiriko.rush.cast = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DBE.00D/Sounds/000000007E29.02C/0000002B3261.03F.ogg
+# cast burst, owner sub layer (1 mono 2.6 s, under 60 Hz). MEDIUM.
+kiriko.rush.cast_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DBE.00D/Sounds/000000007E29.02C/0000002B3278.03F.ogg
+# cast burst heard by others (1 stereo 6.0 s, 75 m). MEDIUM: effect 3DBE's other bank 78F1.
+kiriko.rush.cast_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DBE.00D/Sounds/0000000078F1.02C/0000002B3267.03F.ogg
+# corridor ambience bed (in Overwatch these 4 stereo 4-10.8 s beds play TOGETHER and loop until stopped; 2B3279 alone is the closest to a loop: level flat from start to end). MEDIUM: path effect 2E87 (8 s) held by Kitsune graph 33DB, bank 7924 layer 719461219 (+ a stop action).
+kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3279.03F.ogg
+kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B1.03F.ogg
+kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3206.03F.ogg
+kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3248.03F.ogg
+# corridor opening one-shots (4 stereo 2.9-8.3 s, decaying; in Overwatch all 4 play together with the bed). MEDIUM: bank 7924's second layer container 920696300. The nearest thing to a 'fox rushing' sound found: the fox entity 3F54 has no sound of its own.
+kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B3.03F.ogg
+kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3277.03F.ogg
+kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3243.03F.ogg
+kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3250.03F.ogg
+# torii gate 1 chime (2.2 s, lowest partial 1042 Hz). HIGH: gate graph 31EE switches on the gate index to one of six effects 3DC8..3DCE; their pitches rise in that order.
+kiriko.rush.gate_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DC8.00D/Sounds/0000000078F9.02C/0000002B325A.03F.ogg
+# torii gate 2 chime (lowest partial 1242 Hz). HIGH.
+kiriko.rush.gate_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DC9.00D/Sounds/0000000078FE.02C/0000002B324E.03F.ogg
+# torii gate 3 chime (1540 Hz). HIGH.
+kiriko.rush.gate_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DCA.00D/Sounds/000000007900.02C/0000002B326F.03F.ogg
+# torii gate 4 chime (1833 Hz). HIGH.
+kiriko.rush.gate_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DCB.00D/Sounds/0000000078FD.02C/0000002B324F.03F.ogg
+# torii gate 5 chime (2057 Hz). HIGH.
+kiriko.rush.gate_5 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DCD.00D/Sounds/0000000078FF.02C/0000002B325E.03F.ogg
+# torii gate 6 chime (2411 Hz). HIGH.
+kiriko.rush.gate_6 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DCE.00D/Sounds/0000000078FC.02C/0000002B31B2.03F.ogg
+# OPTIONAL gate hum (2 stereo 6.3-8.4 s drones that Overwatch plays together as a LOOP; one instance at a time: the sound has a 16 s retrigger guard). MEDIUM: the gate effect 3C82 (10.67 s) holds bank 78EF. 2B0A3F is also the kunai flight hum.
+kiriko.rush.gate_loop = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003C82.00D/Sounds/0000000078EF.02C/0000002B3249.03F.ogg
+kiriko.rush.gate_loop = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003C82.00D/Sounds/0000000078EF.02C/0000002B0A3F.03F.ogg
+# OPTIONAL floating talisman slab (18 mono 1.6-2.7 s, low). LOW-MEDIUM: slab effects 4013/4014 (set through config vars of graph 33DB), bank 8215, 40 ms retrigger guard.
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B326C.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B31B8.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B327A.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B3244.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B327C.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B324B.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B3246.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B3274.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B326A.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B31A9.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B327D.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B31AF.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B325F.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B31F4.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B31AC.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B326D.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B327F.03F.ogg
+kiriko.rush.slab = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000004013.00D/Sounds/000000008215.02C/0000002B3265.03F.ogg
+# OPTIONAL ring pulse along the path (1 stereo 1.6 s). LOW: client-only effect 40C6 in graph 33DB after three waits; what triggers it (end of the rush?) is not resolved.
+kiriko.rush.pulse = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000040C6.00D/Sounds/000000008242.02C/0000002B327B.03F.ogg
+
+# ===== Quick melee (generic: graph 0043 and these banks are shared by all heroes)
+# kiriko.melee.swing: NO sound found. The melee cast effect 0A2C and the 3P/1P melee clips (AF57/AFB8/AFB9, A529, 0C63) carry no sound.
+# melee hit, punch layer (8 stereo 0.28-0.30 s, peaks above full scale: +2 to +3 dB). MEDIUM: generic melee graph 0043 plays effect 6BD4 after its hit tracking (StateTrackTargets); bank 5D97 = layer [this + 10 deep thumps] + 7 sub hits + 1 tail (2AFEB1).
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2A0.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2D4.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE338.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2E6.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE32F.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE27D.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE275.03F.ogg
+kiriko.melee.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE297.03F.ogg
+# melee hit, sub layer (7 mono). MEDIUM: second Play action of bank 5D97; play with kiriko.melee.hit.
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC41.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABB7F.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC48.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC2B.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC51.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC22.03F.ogg
+kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC46.03F.ogg
+
+# ===== Generic UI (optional)
+# OPTIONAL 'ability not available' click (1 stereo 0.2 s). MEDIUM: effect 0186 is the m_835F4CE6 'denied' effect of the Suzu and Kitsune Rush StateAbility nodes and a client-only effect in the Swift Step graph; generic bank.
+kiriko.ability.denied = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000186.00D/Sounds/000000000FCB.02C/0000002AA253.03F.ogg
+
+# ===== Voice (HeroVoice/Kiriko, English set)
+# Swift Step lines, stimulus FC0 (graph 30DB). HIGH. Left out: lines naming a hero (Mizuki, Genji, Hanzo), target-specific greetings (shoulderpads, tunes, big guy, queen) and two likely seasonal ones (Ho ho hey, Boo!).
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EABB.0B2-I'm here.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6E.0B2-(Japanese)_ I'm here.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EAB9.0B2-I'm with you.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6F.0B2-(Japanese)_ I'm with you.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFD.0B2-(chuckle) Hey.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFE.0B2-What's up.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC7.0B2-I'll be your angel.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA4.0B2-Rolling with you.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA5.0B2-How's the hunt_.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC3.0B2-Howdy.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/0000000627BB.0B2-(Japanese)_ Are you well_.ogg
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000006B568.0B2-Your pocket ninja's here.ogg
+# Protection Suzu lines, stimulus FC5 (graph 30D8). HIGH.
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB97.0B2-Feel better_.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB6A.0B2-(Japanese)_ Cleansed.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB7B.0B2-Cleansed.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE71.0B2-Protecting!.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EF87.0B2-Washed away.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE92.0B2-Purified.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF2.0B2-Kanezaka-jinja protects you.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF1.0B2-Now go get 'em.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF0.0B2-You have no excuses now.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CEF.0B2-You're all good.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CE2.0B2-Hear my bell.ogg
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CDF.0B2-Be purified!.ogg
+# healing lines, stimulus FC4 (heal subgraph 2128, run on the healed ally; the voice node has 0.15 / 4 / 3 parameters: likely a chance and cooldowns, so Overwatch says one only now and then). HIGH. Left out: lines naming Shimada/Mizuki.
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB73.0B2-(Japanese)_ Protection!.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EACA.0B2-Let me balance you out.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAEC.0B2-Restoring balance.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB65.0B2-You take a lot of damage, huh_.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EA5D.0B2-Be healed.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB6D.0B2-(Japanese)_ Healing.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAFA.0B2-Soothing your wounds.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB74.0B2-(Japanese)_ Restoring you.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAD3.0B2-Like a gentle rain.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAC7.0B2-I've got you.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB92.0B2-Carried on the wind.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE97.0B2-The breeze brings relief.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE95.0B2-Feels like sunlight, huh_.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE96.0B2-(Japanese)_ Like komorebi.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE98.0B2-My gift to you.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE99.0B2-Draw strength from nature.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF7F.0B2-Like mending a shadow.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EFEC.0B2-Your wounds run deep.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EFEA.0B2-A brush of summer.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/0000000627B7.0B2-(Japanese)_ You'll be fine.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CEE.0B2-(Japanese)_ Chasing away the evil.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDC.0B2-Under my protection.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDD.0B2-Feels good, huh_.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDE.0B2-(Japanese)_ I'll protect you!.ogg
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000006B554.0B2-Dispelling your curse.ogg

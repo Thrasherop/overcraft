@@ -83,13 +83,42 @@ public final class EffectArt {
 		return CACHE.computeIfAbsent(key, k -> Optional.ofNullable(load(name, palette, k))).orElse(null);
 	}
 
+	/**
+	 * Masks drawn here rather than read from the pack (original shapes): "card", a rounded card with a bright rim and a
+	 * faint face, standing in for the rush path's talisman slabs (the game's mesh 109BC is such a card).
+	 */
+	private static @Nullable NativeImage generated(String name) {
+		if (!name.equals("card")) {
+			return null;
+		}
+		int w = 128;
+		int h = 64;
+		NativeImage image = new NativeImage(w, h, false);
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				// distance inside a rounded box, in pixels
+				float qx = Math.abs(x + 0.5f - w / 2f) - (w / 2f - 14);
+				float qy = Math.abs(y + 0.5f - h / 2f) - (h / 2f - 14);
+				float outside = (float) Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - 10;
+				float inside = -outside;
+				float rim = inside < 0 ? 0 : (float) Math.exp(-Math.pow((inside - 3) / 2.5f, 2));
+				float face = Math.clamp(inside / 4, 0, 1) * 0.35f;
+				int v = Math.round(255 * Math.clamp(Math.max(rim, face), 0, 1));
+				image.setPixel(x, y, 0xFF000000 | v << 16 | v << 8 | v);
+			}
+		}
+		return image;
+	}
+
 	private static @Nullable Identifier load(String name, Palette palette, String key) {
 		Identifier source = Overcraft.id("textures/effect/" + name + ".png");
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.getResourceManager().getResource(source).isEmpty()) {
+		NativeImage made = generated(name);
+		if (made == null && mc.getResourceManager().getResource(source).isEmpty()) {
 			return null;
 		}
-		try (InputStream in = mc.getResourceManager().open(source); NativeImage mask = NativeImage.read(in)) {
+		try (InputStream in = made != null ? null : mc.getResourceManager().open(source);
+			 NativeImage mask = made != null ? made : NativeImage.read(in)) {
 			NativeImage out = new NativeImage(mask.getWidth(), mask.getHeight(), false);
 			float[] c = new float[3];
 			float black = BLACK_POINT.getOrDefault(name, 0f);

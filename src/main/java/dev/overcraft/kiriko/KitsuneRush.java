@@ -5,6 +5,7 @@ import dev.overcraft.entity.KitsuneEntity;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcSounds;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,6 +44,8 @@ public final class KitsuneRush {
 
 	/** Torii gates along the path: six over its 32.2 m (the effects survey: one gate effect per gate sound, six). */
 	private static final int GATES = 6;
+	/** Talisman tiles laid on the path every this many steps (half-metres: ours). */
+	private static final int TILE_STEPS = 3;
 	/** Ground ripples sent along the path, one every this many ticks (the game: 3 + 2 a second). */
 	private static final int RIPPLE_TICKS = 4;
 	/** Speed lines on allies in the corridor, every this many ticks (ours: the game streams 40 a second). */
@@ -84,6 +87,7 @@ public final class KitsuneRush {
 				owner.getX(), owner.getEyeY(), owner.getZ(), ULT_LINE_VOLUME, 1.0f, owner.getRandom().nextLong()));
 		}
 		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_RUSH_SUMMON, SoundSource.PLAYERS, 1, 1);
+		HeroSounds.split(owner, OcSounds.KIRIKO_RUSH_CAST, OcSounds.KIRIKO_RUSH_CAST_3P, owner.getEyePosition());
 		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0));
 	}
 
@@ -148,6 +152,10 @@ public final class KitsuneRush {
 		fox = new Vec3(next.x, feet.getY(), next.z);
 		path.add(fox);
 		laid += STEP;
+		if (path.size() % TILE_STEPS == 0) {
+			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
+			Effects.play(level, "rush_tiles", fox, direction, null, (int) Math.round(seconds * 10));
+		}
 	}
 
 	private boolean free(BlockPos pos) {
@@ -205,7 +213,9 @@ public final class KitsuneRush {
 			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
 			Vec3 gate = path.get(index);
 			Effects.play(level, "rush_gate", gate, across, null, (int) Math.round(seconds * 10));
-			level.playSound(null, gate.x, gate.y + 2, gate.z, OcSounds.KIRIKO_RUSH_GATE, SoundSource.PLAYERS, 1, 1);
+			// each gate its own chime, rising from the first to the sixth
+			SoundEvent chime = OcSounds.KIRIKO_RUSH_GATES[Math.min(gatesPlaced, OcSounds.KIRIKO_RUSH_GATES.length - 1)];
+			level.playSound(null, gate.x, gate.y + 2, gate.z, chime, SoundSource.PLAYERS, 1, 1);
 			gatesPlaced++;
 		}
 	}

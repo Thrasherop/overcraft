@@ -5,6 +5,33 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The game's own sounds** (owner: "it should use actual assets every time there is one in overwatch"). A sound
+sub-agent traced which of Kiriko's effects plays which sound bank in the archived build, which banks are Wwise layer
+containers (several files played at once) and which audience hears each (her own player or everyone else):
+`tools/reference/kiriko-sounds.md`; the sources and how they combine are in `tools/soundmaps/kiriko.txt`.
+- `build_asset_pack.py sounds` mixes the layers Overwatch plays together into one file per variant with ffmpeg (each
+  layer's delay and gain from the map, mono so Minecraft can place it, kept below full scale: the research found hits
+  and Swift Step's cast clipping), up to 8 variants an event: 44 events, 199 files in the local pack. Without ffmpeg it
+  copies the first layer only.
+- Kiriko's own player hears the first-person recordings and everyone else the third-person ones (throws, the kunai
+  reload, Kitsune Rush's cast); the headshot ding only reaches her. Swift Step: she hears her hand sign, the others her
+  departure.
+- New: each of the six torii gates chimes its own note, a "not now" click when Swift Step has no ally in view, the
+  climb's start and its pull over the top, the third-person kunai reload. The ofuda's reload sound is gone: Overwatch
+  has none (one reload for both weapons).
+- Still Minecraft stand-ins (their banks weren't extracted): a kunai hitting a block, the melee swing. Not yet: the
+  looping sounds (kunai and ofuda in flight, the rush's path).
+- Harness: `soundinfo <event>` lists the files behind an event (checked: kunai.throw, kunai.throw_3p, ofuda.heal,
+  rush.gate_3 and voice.swift_step come from the pack).
+- Played with subtitles on (`snd_real2`, `snd_real3`, `snd_real_sheet`): kunai (left button), ofuda (right), Suzu,
+  Swift Step with no ally (the click) and onto a villager ("Kiriko appears", "Kiriko: I'm here"), a reload ("Kiriko
+  reloads kunai"), Kitsune Rush ("Kiriko gathers spirit", "Torii gate rises" six times). No sound errors in the log.
+
+**Kitsune Rush's path is paved with talismans** (the effects research: two tile effects, a rounded card about
+0.56 x 0.29 lying flat for 11 s; the reference video: "teal glyph tiles cover the ground ahead"): three glowing card
+tiles across the corridor every 1.5 m of the fox's path, held while the rush lasts. Played: the rush in third
+person from behind and in first person (`rush_tiles_sheet`).
+
 **The hero HUD rebuilt like Overwatch's** (#8; spec: the owner's gameplay screenshots plus
 `tools/reference/kiriko-reference.md`, a reference sub-agent's measurements from the same video at 1080p).
 - Laid out in pixels of a 1080-high screen and scaled to the window, so it looks the same at any GUI scale; both side

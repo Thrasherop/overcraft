@@ -1,52 +1,51 @@
-# Overcraft: handoff (2026-10-25, updated in the second session)
+# Overcraft: handoff (2026-10-26, after the overnight session)
 
-Read this with CLAUDE.md (the rules) and CHANGES.md (the log). This file is the state of play and the path forward.
-Delete or refresh it once it's out of date.
-
-## Why a new session
-The first session was started by Dispatch (a "scheduled run"): the desktop-control approval card can't appear there,
-so nothing was ever played by hand. **A normal Claude Code session in E:\claude\mods\overcraft fixes that.** When
-asked, approve computer use for the dev client: `C:\Users\ultra\.gradle\jdks\eclipse_adoptium-25-amd64-windows.2\bin\java.exe`
-(its window is "Minecraft* 26.3"; it's only matchable while running, by that exe path). Also allow Steam if the
-Steam console should be driven.
+Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
+TECHNIQUES.md (how the work gets done). This file is the state of play and the path forward.
 
 ## Where things are
-- Repo: https://github.com/Thrasherop/overcraft. `main` has only the scaffold commit. **All work is on `feature/kiriko`**
-  (pushed). Nothing goes to `main` until it's been played in-game (CLAUDE.md). CI (.github/workflows/build.yml) is
-  green on the branch; a push to `main` makes a test pre-release.
-- Uncommitted at handoff time: see "Current work" below (committed as a WIP commit at the end of this session).
-- Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets from the
-  player's install (models/textures/sounds/animations). Labels copied from Lethalcraft.
-- Memory: C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\ (asset safety rules, movement feel).
-- Scheduled task `overcraft-datatool-watch` (daily 10:10): tells when DataTool supports build 154504; disable it once
-  we no longer need it (the 154088 route below may make it moot).
+- Repo: https://github.com/Thrasherop/overcraft. **All work is on `feature/kiriko`.** Session 3's commits are local
+  only (not pushed): `git log origin/feature/kiriko..feature/kiriko`. Nothing goes to `main` until the owner's hand
+  play (CLAUDE.md).
+- Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets, #7 select
+  screen, #8 HUD, #9 animations, #10 Mercy.
+- Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
+- Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
+  `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
 
-## Tech stack (verified)
-- Minecraft 26.3 (installed locally too), Fabric Loader 0.20.1, Fabric API 0.165.0+26.3, Loom 1.19-SNAPSHOT,
-  Gradle 9.8.2. 26.x is unobfuscated (no mappings). Loom needs Gradle on Java 25: gradle/gradle-daemon-jvm.properties
-  makes Gradle download it. System Java is 17.
-- 26.x renames to know: `Identifier` (was ResourceLocation), `GuiGraphicsExtractor` + `extractRenderState` (was
-  GuiGraphics/render), `Screen.extractRenderState/extractBackground`, `mc.gui.setScreen/screen()`, `EntityTypes`,
-  input is SDL3 not GLFW (`InputConstants.KEY_*`, `InputConstants.Type.KEYBOARD`), `KeyMapping.Category`, renderers use
-  render states + `SubmitNodeCollector` (`submitCustomGeometry`), `PoseStack.rotateDegrees(Axis, deg)`.
-- Decompiled sources for lookups: `gradlew genSources`; extracted copies were in the old session's scratchpad
-  (C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\77e872c0-...\scratchpad\mc and \fapi): re-extract
-  if gone (Fabric API sources: download each module's -sources.jar from maven.fabricmc.net).
+## The local asset pack (never committed or shipped)
+Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
+```
+py tools/build_asset_pack.py ui "E:\Overwatch Archive\extracted\154088"        # portraits, cards, icons, role badges
+py tools/build_asset_pack.py sounds "E:\Overwatch Archive\extracted\154088"    # tools/soundmaps/*.txt
+py tools/build_asset_pack.py fonts "E:\Overwatch Archive\extracted\154088\Fonts"
+py tools/build_asset_pack.py effects "E:\Overwatch Archive\extracted\154088\Effects"   # Blender for the torii mesh
+py tools/build_asset_pack.py zip                                                # -> local-assets/overcraft-assets.zip
+```
+Hero models: `tools/owm_survey.py ... --glb --keep=tools/clipmaps/kiriko.txt` (and `_1p`, `kitsune`), as in
+CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install `<.minecraft>/overcraft/overcraft-assets.zip`.
 
-## What's built (feature/kiriko): played through the dev harness (CHANGES.md), not yet with the real mouse
-- Hero select screen on joining a world (Kiriko playable; Lúcio/Sombra/Illari "coming soon"). H re-opens it within
-  5 blocks of your bed/respawn point (or world spawn); the pick on joining is free (owner).
-- Hero mode: G toggles (owner) or hotbar slot 1. Weapon item lives in slot 1; vanilla hotbar/hearts/food/XP hidden,
-  hero HUD shown (health in OW numbers, ammo, cooldowns, ult %).
-- Health: 250 OW = 20 MC (Ow.java). Global regen after 6 s. No fall damage in hero mode.
-- Overwatch movement in hero mode (OwMovement + LivingEntityMixin): 5.5 m/s, 90% back, ~0.1 s accel, jump 5.72 m/s
-  (0.98 m apex, trapezoid integration), gravity 16.7 up / 17.5 down to 30 m/s, Ctrl crouch 3 m/s, no sprint,
-  Shift doesn't sneak (it's Swift Step). Air control value is ours.
-- Kiriko's full kit (Kiriko.java, KirikoStats.java has every number + source): LMB kunai, RMB (hold) ofuda (homing
-  lock), Shift Swift Step, E Protection Suzu, Q Kitsune Rush (particle corridor + buffs), R reload, wall climb, Medic
-  40% self-heal. Projectiles: entity/{Kunai,Ofuda,Suzu}Entity. Allies: players (teams), pets, villagers, golems.
-- Ult charge: 5/s, 1 per damage/heal (OW units), and advancements: task 10% / goal 25% / challenge 50% (owner).
-- Unit tests (gradlew test): units, run speeds, jump apex, fall cap, accel, Suzu flight. All pass.
+## What's built (feature/kiriko), played through the dev harness
+- **Kiriko's kit** (Kiriko.java; KirikoStats.java has every number and its source), Overwatch movement, 250 HP = 20.
+- **Her model** (client/model): Overwatch's model and clips, CPU-skinned; idle/run/crouch/jump/climb/death states,
+  throws and casts layered on top; the first-person view model (`_1p`) with sway, walk bob and breathing; a **cloth
+  simulation** for her coat tails (ClothSim: kept out of her legs); held props shown only when their clip uses them
+  (the Suzu only in its throw).
+- **HUD like Overwatch's** (HeroHud, client/hud): measured from the owner's screenshots, Overwatch's fonts, curved
+  sides; Minecraft mode keeps vanilla's HUD plus a small ult meter.
+- **Controls** (client/controls/HeroControls): hero mode has its own key set; G switches; Esc opens an Overwatch-style
+  menu and options (rebinding); Interact on F.
+- **Hero select** like Overwatch 2026's, her real 3D model in the middle.
+- **Effects** (client/effect): Overwatch's own masks and torii mesh, drawn additively; the server sends EffectPayload
+  events; no Minecraft particles left. First-person screen effects (Swift Step, Kitsune Rush).
+- **Sounds**: 24 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack.
+
+## Dev harness
+`gradlew runClient` (`-Dovercraft.dev=true`); `py tools/dev.py <commands...>` or `. tools/devplay.sh`. Commands:
+state, newworld, openworld, screen, close, respawn, key <mapping or hero action> down|up|tap, look/turn, cmd,
+screenshot, perspective, hero <id>, subtitles on|off, and (session 3) **press <key.keyboard.x>** (a real key event:
+Esc, Enter, F1), **screenclick x y** (GUI coordinates), **window w h**, **tutorial**, **ult <percent>**,
+**fx <effect> [variant]**, **select [bed]**. The desktop can be locked; the harness still plays.
 
 ## Overwatch assets (#6): state and path forward
 Rules (CLAUDE.md): Overwatch closed whenever its files are read; never touch the client; assets live in
@@ -102,51 +101,32 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - UI art: `py tools/build_asset_pack.py ui "E:\Overwatch Archive\extracted\154088"` (from extract-hero-icons) puts
   every hero's portrait/card/full-body art and ability/perk icons in the pack (`HeroArt` reads them).
   `extracted\154088\UITextures` (dump-ui-textures, ~20k files) is for role icons and Overwatch's HUD art.
-- **First person**: Overwatch's first-person animation set isn't in this extraction. All 330 clips are 3rd-person
-  (rendered from the `Camera` bone, the eye sits inside the head; the `4-*` clips are additive layers whose bones
-  collapse when applied alone). DataTool's SkinTheme walks Gameplay3P and names the STUFirstPersonComponent's entity
-  Gameplay1P, but its clips didn't come out. Options: find how DataTool exports them, or "true first person" (her
-  model from the Camera bone with the head hidden, 3rd-person clips).
+- **First person** (solved in session 2): the Gameplay1P entity's clips and model look give the view-model arms
+  (`hero_models/kiriko_1p.glb`, clip map `tools/clipmaps/kiriko_1p.txt`).
+- **Effects, fonts, sounds** (session 3): see "The local asset pack" above; surveys in tools/reference/.
 
-## The hero model in game (feature/kiriko, uncommitted until the owner's real-mouse play)
-Owner wants Kiriko's own animations ("when crouching, Kiri crouches; Steve bends at the waist"), not Minecraft's.
-Files (src/client/java/dev/overcraft/client/model/):
-- `Glb`, `SkinnedModel`, `Skeleton`: .glb reading, rest pose, skin, clips, sampling, blending, skin matrices.
-- `HeroAnimator`: per-entity state machine: idle, 8-direction run and crouch-walk (rate matched to ground speed),
-  jump/fall/land, climb (+0.3 m back from the wall) and climb_top, death; actions (throws, casts) on the upper body
-  from `HeroActionPayload`. Bones by name: Overwatch (`Spine_1`, `Head`) or ValveBiped.
-- `HeroModels`: loads hero_models/<hero>.glb and extras (kitsune.glb); `HeroTexture`: mipmapped, linear filtering.
-- `HeroModelRenderer` (+ AvatarRendererMixin, LivingEntityRendererMixin): draws hero-mode players (and dying heroes)
-  as their model, CPU-skinned; hides held props the current clip doesn't use (parked at the origin).
-- `KitsuneRenderer` + `entity/KitsuneEntity`: Kitsune Rush's fox, moved by `KitsuneRush` along the corridor.
-- Known gaps: name tags/armor layers skipped for hero-model players; no first-person arms (see above); no swim pose;
-  quick melee not in the kit; Sombra is listed as a Support (she's Damage).
+## Owner's decisions so far
+- Fabric. Kiriko first, then Lúcio, Sombra, Illari, then Juno, Sojourn. Mercy added (#10).
+- **LMB kunai, RMB ofuda** (swapped from Overwatch's default on purpose, 2026-10-25). The options screen names them
+  Overwatch's way (primary fire = Healing Ofuda, on RMB).
+- G toggles hero mode and switches key sets (2026-10-26); Esc in hero mode opens Overwatch's menu, in Minecraft mode
+  Minecraft's. H changes hero only near your bed; the pick on join is free.
+- Ult charge also from advancements. Movement and animations must feel like Overwatch, not Steve.
+- Assets from the owner's own install, never shipped; Overwatch never running alongside. Research stops short of the
+  tamper protection and the encryption. The UI, sounds and effects use the game's own assets wherever they exist.
+- Keep TECHNIQUES.md up to date (2026-10-26). Commit only after playing in game.
+- Desktop control: the owner approves computer use at the PC (not from the phone). SteamCMD: never type their
+  password or Steam Guard code.
 
-## Dev harness
-`gradlew runClient` passes `-Dovercraft.dev=true` and the asset pack path. `client/dev/DevServer.java` listens on
-127.0.0.1:25599; `py tools/dev.py <commands...>` (see its docstring). Commands: state (with `anim`, the playing
-clip), newworld <name> [creative|survival], openworld, screen, close, respawn, key <mapping> down|up|tap,
-look/turn, cmd </command>, screenshot <file.png> (-> run/screenshots/), perspective first|back|front, hero <id>.
-Lessons: summon test mobs with `Tags:["x"]` and select `@e[tag=x]` (superflat worlds have villages, and SNBT names
-keep their quotes); a fresh client logs "Hero model" before it's done loading: wait for the title screen; the
-harness can't click, so real hand play still needs desktop control (the owner approves it at the PC).
+## Questions for the owner
+- Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
+- The third-person Suzu throw clip (AB96) has a high kick in it: is that the right clip?
+- First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
+  hand every throw. Kept your observation.
 
-**Next:**
-1. The owner's real-mouse hand play of all of the above (CLAUDE.md), then commit (they asked: only after play).
-2. First person (above). Role icons and HUD art from UITextures (#7, #8). Swim pose. Quick melee.
-3. Merge feature/kiriko -> next -> main only after hand play (CLAUDE.md). Then Lúcio, Sombra, Illari (stats already
-   researched: see CHANGES.md/old research, re-check patch notes), then Juno (#1), Sojourn (#2).
-
-## Owner's decisions so far (all 2026-10-25)
-- Fabric. Kiriko first, then Lúcio, Sombra, Illari, then Juno, Sojourn. Mercy added to the list (#10, session 2).
-- LMB kunai, RMB ofuda (swapped from Overwatch's default on purpose).
-- G toggles hero mode; H changes hero only near your bed; pick on join is free.
-- Ult charge also from advancements. Movement/animations must feel like Overwatch, not Steve.
-- Assets from the owner's own install, never shipped; Overwatch never running alongside; ripped models OK as
-  stopgaps (the owner downloads them; Steam Workshop SFM ports were the clean source; a Patreon link I gave was NSFW:
-  vet links before giving them). Archive each build's install on the WD_BLACK drive (E:\Overwatch Archive\).
-- The UI uses the game's own art too (owner, session 2).
-- Desktop control: the owner uses a normal session so computer use works (approved at the PC; it can't be approved
-  from the phone). SteamCMD logged in by the owner once (`E:\Overwatch Archive\tools\steamcmd\steamcmd.exe +login
-  <user>`, the owner types the password) would let a session download old builds itself with `+login <user>
-  +download_depot 2357570 <depot> <manifest>` (offered, not done). Never type their password or Steam Guard code.
+## Next
+1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
+2. The critique sub-agent's list (tools/reference/critique-2026-10-26.md) and the sound map (soundmaps/kiriko-proposed.txt).
+3. Effects still missing: the enemy-red view, Suzu's white outline on allies, the rush path's talisman slabs, Swift
+   Step's slash arcs. Reload and third-person aim-lean animations.
+4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).

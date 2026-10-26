@@ -16,24 +16,36 @@ public final class OcSounds {
 	/** ...and as enemies hear it: "(Japanese) O fox spirit, unleash your claws!" */
 	public static final SoundEvent KIRIKO_ULT_ENEMY = register("kiriko.ult.enemy");
 
+	// "_3P": what everyone but Kiriko's own player hears (HeroSounds.split)
 	public static final SoundEvent KIRIKO_KUNAI_THROW = register("kiriko.kunai.throw");
+	public static final SoundEvent KIRIKO_KUNAI_THROW_3P = register("kiriko.kunai.throw_3p");
 	public static final SoundEvent KIRIKO_KUNAI_HIT = register("kiriko.kunai.hit");
 	/** The thrower's confirmation of a critical hit. */
 	public static final SoundEvent KIRIKO_KUNAI_HEADSHOT = register("kiriko.kunai.headshot");
 	public static final SoundEvent KIRIKO_KUNAI_HIT_BLOCK = register("kiriko.kunai.hit_block");
 	public static final SoundEvent KIRIKO_KUNAI_RELOAD = register("kiriko.kunai.reload");
+	public static final SoundEvent KIRIKO_KUNAI_RELOAD_3P = register("kiriko.kunai.reload_3p");
 	public static final SoundEvent KIRIKO_OFUDA_THROW = register("kiriko.ofuda.throw");
+	public static final SoundEvent KIRIKO_OFUDA_THROW_3P = register("kiriko.ofuda.throw_3p");
 	public static final SoundEvent KIRIKO_OFUDA_HEAL = register("kiriko.ofuda.heal");
 	public static final SoundEvent KIRIKO_OFUDA_HIT_BLOCK = register("kiriko.ofuda.hit_block");
-	public static final SoundEvent KIRIKO_OFUDA_RELOAD = register("kiriko.ofuda.reload");
 	public static final SoundEvent KIRIKO_SUZU_THROW = register("kiriko.suzu.throw");
+	public static final SoundEvent KIRIKO_SUZU_THROW_3P = register("kiriko.suzu.throw_3p");
 	public static final SoundEvent KIRIKO_SUZU_BURST = register("kiriko.suzu.burst");
 	public static final SoundEvent KIRIKO_SWIFT_STEP_CAST = register("kiriko.swift_step.cast");
 	public static final SoundEvent KIRIKO_SWIFT_STEP_DEPART = register("kiriko.swift_step.depart");
 	public static final SoundEvent KIRIKO_SWIFT_STEP_ARRIVE = register("kiriko.swift_step.arrive");
+	public static final SoundEvent KIRIKO_CLIMB_START = register("kiriko.climb.start");
 	public static final SoundEvent KIRIKO_CLIMB_STEP = register("kiriko.climb.step");
+	public static final SoundEvent KIRIKO_CLIMB_TOP = register("kiriko.climb.top");
 	public static final SoundEvent KIRIKO_RUSH_SUMMON = register("kiriko.rush.summon");
-	public static final SoundEvent KIRIKO_RUSH_GATE = register("kiriko.rush.gate");
+	public static final SoundEvent KIRIKO_RUSH_CAST = register("kiriko.rush.cast");
+	public static final SoundEvent KIRIKO_RUSH_CAST_3P = register("kiriko.rush.cast_3p");
+	/** Each torii gate's chime, rising in pitch from the first to the sixth. */
+	public static final SoundEvent[] KIRIKO_RUSH_GATES = {register("kiriko.rush.gate_1"), register("kiriko.rush.gate_2"),
+		register("kiriko.rush.gate_3"), register("kiriko.rush.gate_4"), register("kiriko.rush.gate_5"), register("kiriko.rush.gate_6")};
+	/** The click when an ability can't be used (Swift Step with no ally in view). */
+	public static final SoundEvent KIRIKO_ABILITY_DENIED = register("kiriko.ability.denied");
 	public static final SoundEvent MELEE_SWING = register("melee.swing");
 	public static final SoundEvent MELEE_HIT = register("melee.hit");
 	public static final SoundEvent KIRIKO_VOICE_SWIFT_STEP = register("kiriko.voice.swift_step");

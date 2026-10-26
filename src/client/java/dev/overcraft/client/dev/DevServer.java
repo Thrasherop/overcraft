@@ -265,6 +265,18 @@ public final class DevServer {
 				mc.gui.setScreen(new dev.overcraft.client.HeroSelectScreen(!arg.equals("bed")));
 				out.addProperty("ok", true);
 			}
+			case "soundinfo" -> {
+				// dev only: which files a sound event resolves to (the local pack's recordings, or the jar's stand-ins)
+				var event = mc.getSoundManager().getSoundEvent(net.minecraft.resources.Identifier.parse(arg));
+				java.util.Set<String> files = new java.util.TreeSet<>();
+				if (event != null) {
+					net.minecraft.util.RandomSource random = net.minecraft.util.RandomSource.create();
+					for (int i = 0; i < 64; i++) {
+						files.add(event.getSound(random).getLocation().toString());
+					}
+				}
+				out.addProperty("files", String.join(", ", files));
+			}
 			case "window" -> {
 				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)
 				String[] a = arg.split(" ");

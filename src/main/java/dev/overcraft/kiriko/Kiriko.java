@@ -8,6 +8,7 @@ import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.hero.Voice;
@@ -132,12 +133,12 @@ public final class Kiriko implements HeroKit {
 	private static void startPrimaryReload(ServerPlayer player, HeroState s) {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
-		sound(player, OcSounds.KIRIKO_KUNAI_RELOAD, 1, 1);
+		HeroSounds.split(player, OcSounds.KIRIKO_KUNAI_RELOAD, OcSounds.KIRIKO_KUNAI_RELOAD_3P, player.position());
 	}
 
+	/** The ofuda refill is silent: Overwatch has no sound of its own for it (one reload animation for both weapons). */
 	private static void startSecondaryReload(ServerPlayer player, HeroState s) {
 		s.secondaryReload = 0;
-		sound(player, OcSounds.KIRIKO_OFUDA_RELOAD, 1, 1);
 	}
 
 	private static void throwKunai(ServerPlayer player) {
@@ -146,7 +147,7 @@ public final class Kiriko implements HeroKit {
 		kunai.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(KUNAI_SPEED));
 		level.addFreshEntity(kunai);
 		Combat.animate(player, "throw_kunai");
-		sound(player, OcSounds.KIRIKO_KUNAI_THROW, 1, 1);
+		HeroSounds.split(player, OcSounds.KIRIKO_KUNAI_THROW, OcSounds.KIRIKO_KUNAI_THROW_3P, player.getEyePosition());
 	}
 
 	private static void throwOfuda(ServerPlayer player) {
@@ -163,7 +164,7 @@ public final class Kiriko implements HeroKit {
 			level.addFreshEntity(ofuda);
 		}
 		Combat.animate(player, "throw_ofuda");
-		sound(player, OcSounds.KIRIKO_OFUDA_THROW, 1, 1);
+		HeroSounds.split(player, OcSounds.KIRIKO_OFUDA_THROW, OcSounds.KIRIKO_OFUDA_THROW_3P, player.getEyePosition());
 	}
 
 	private static void throwSuzu(ServerPlayer player) {
@@ -172,7 +173,7 @@ public final class Kiriko implements HeroKit {
 		suzu.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(SUZU_SPEED));
 		level.addFreshEntity(suzu);
 		Combat.animate(player, "throw_suzu");
-		sound(player, OcSounds.KIRIKO_SUZU_THROW, 1, 1);
+		HeroSounds.split(player, OcSounds.KIRIKO_SUZU_THROW, OcSounds.KIRIKO_SUZU_THROW_3P, player.getEyePosition());
 	}
 
 	private static void startSwiftStep(ServerPlayer player, HeroState s) {
@@ -181,12 +182,15 @@ public final class Kiriko implements HeroKit {
 		}
 		LivingEntity target = Targeting.allyInView(player, SWIFT_STEP_RANGE, SWIFT_STEP_HALF_ANGLE, false);
 		if (target == null) {
-			return; // no ally in view: nothing happens, no cooldown (as in Overwatch)
+			// no ally in view: nothing happens, no cooldown, just the "not now" click (as in Overwatch)
+			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED, player.getEyePosition());
+			return;
 		}
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
 		s.castTarget = target.getUUID();
 		Combat.animate(player, "swift_step");
-		sound(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, 1, 1);
+		// her player hears the hand sign, everyone else her departure (the sound research: audiences 1 and 2)
+		HeroSounds.split(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, OcSounds.KIRIKO_SWIFT_STEP_DEPART, player.position());
 		Voice.maybe(player, s, OcSounds.KIRIKO_VOICE_SWIFT_STEP, 0.6f);
 	}
 
@@ -200,7 +204,6 @@ public final class Kiriko implements HeroKit {
 		}
 		Vec3 from = player.position();
 		Effects.play(level, "swift_step_depart", from);
-		level.playSound(null, from.x, from.y, from.z, OcSounds.KIRIKO_SWIFT_STEP_DEPART, SoundSource.PLAYERS, 1, 1);
 		Vec3 arrive = beside(player, target, from);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
