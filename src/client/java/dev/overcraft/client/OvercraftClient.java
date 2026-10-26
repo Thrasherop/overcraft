@@ -117,7 +117,7 @@ public class OvercraftClient implements ClientModInitializer {
 
 	private static HudElement hiddenInHeroMode(HudElement vanilla) {
 		return (graphics, delta) -> {
-			if (!ClientHero.controls()) {
+			if (!ClientHero.heroView()) {
 				vanilla.extractRenderState(graphics, delta);
 			}
 		};

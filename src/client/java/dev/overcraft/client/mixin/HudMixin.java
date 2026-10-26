@@ -29,7 +29,7 @@ public abstract class HudMixin {
 	/** In hero mode the hero HUD draws Overwatch's crosshair, so Minecraft's (and its attack indicator) steps aside. */
 	@Inject(method = "extractCrosshair", at = @At("HEAD"), cancellable = true)
 	private void overcraft$heroCrosshair(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-		if (ClientHero.controls()) {
+		if (ClientHero.heroView()) {
 			ci.cancel();
 		}
 	}

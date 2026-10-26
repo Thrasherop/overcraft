@@ -144,7 +144,8 @@ public final class HeroModelRenderer {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		Hero hero = ClientHero.hero();
-		if (player == null || hero == null || !ClientHero.controls()) {
+		// heroView, not controls: her arms stay while she dies (Minecraft's blocky arm took their place on the death screen)
+		if (player == null || hero == null || !ClientHero.heroView()) {
 			return false;
 		}
 		HeroModels.Loaded loaded = HeroModels.firstPerson(hero);

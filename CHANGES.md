@@ -5,6 +5,13 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Dying in hero mode keeps the hero's screen** (found playing a night raid: about 19 zombies from natural spawns
+swarmed her in three rounds). Hero mode required being alive, so at death the HUD flipped to Minecraft's hotbar and
+empty hearts behind "You Died!", and her arms to Minecraft's blocky arm. The HUD and the view model now follow the
+hero and slot 1 alone (input still needs her alive): the death screen shows her HUD and arms (`death2_sheet`); dying in
+Minecraft mode still shows Minecraft's (`death_sheet`, right). Also played around tonight's toggle default: G, a slot
+change or a death mid-volley each end the volley, and it doesn't resume.
+
 **Hero-mode chat in the HUD's sans, and out of the health's way while typing** (round 4 #12, and a bug found doing
 it). Not typing: chat lines in Futura at Minecraft's capital height (a new `hud_chat` face; letters it lacks, such as
 Japanese, fall back to Minecraft's font), starting 52 px in, without Minecraft's message-tag bar (`chat1c`, `chat2c`).

@@ -141,6 +141,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
 - While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a
   reload: does Overwatch's HUD do that, or something else (critique round 2, #24)?
+- In Minecraft mode (G) first person shows your own skin's arm, while third person shows Kiriko. Keep it (Minecraft
+  mode is plain Minecraft), or give Minecraft mode a Kiriko-styled arm (her sleeve and glove on Minecraft's arm)?
 - Toggle Healing Ofuda is on by default (Overwatch's default, per the wiki): one RMB press throws until the clip is
   empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one

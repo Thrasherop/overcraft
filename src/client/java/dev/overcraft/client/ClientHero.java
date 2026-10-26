@@ -70,6 +70,16 @@ public final class ClientHero {
 		return sync.heroId().isEmpty() ? null : Hero.byId(sync.heroId());
 	}
 
+	/**
+	 * The screen in hero mode: a hero and hotbar slot 1, alive or not (the HUD's choice; dying flipped it to
+	 * Minecraft's hotbar and hearts behind the death screen).
+	 */
+	public static boolean heroView() {
+		LocalPlayer player = Minecraft.getInstance().player;
+		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
+			&& !player.isSpectator();
+	}
+
 	/** Hero mode: a hero, hotbar slot 1 selected, alive and playing. */
 	public static boolean controls() {
 		LocalPlayer player = Minecraft.getInstance().player;

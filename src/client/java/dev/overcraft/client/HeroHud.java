@@ -143,7 +143,7 @@ public final class HeroHud {
 		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
 		track(s);
-		if (!ClientHero.controls()) {
+		if (!ClientHero.heroView()) {
 			minecraftMode(g, s, hero);
 			return;
 		}
