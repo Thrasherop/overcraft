@@ -2,9 +2,12 @@ package dev.overcraft.client.model;
 
 import dev.overcraft.client.effect.KirikoFx;
 import dev.overcraft.hero.OwMovement;
+import dev.overcraft.registry.OcSounds;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -252,7 +255,10 @@ public final class HeroAnimator {
 			double facing = Math.toRadians(entity.getYRot());
 			// her box touches the wall: just in front of its face (further in, the wall hides the puff)
 			double reach = entity.getBbWidth() / 2 - 0.1;
-			KirikoFx.climbDust(entity.position().add(-Math.sin(facing) * reach, entity.getBbHeight() + 0.1, Math.cos(facing) * reach));
+			Vec3 hands = entity.position().add(-Math.sin(facing) * reach, entity.getBbHeight() + 0.1, Math.cos(facing) * reach);
+			KirikoFx.climbDust(hands);
+			// and its scrape, heard by whoever sees her climb (the climb is moved client-side, so played here)
+			entity.level().playLocalSound(hands.x, hands.y, hands.z, OcSounds.KIRIKO_CLIMB_STEP, SoundSource.PLAYERS, 1, 1, false);
 		}
 		SkinnedModel.Clip top = clip(model, "climb_top");
 		boolean overTheTop = top != null && now - climbTopAt < top.duration();

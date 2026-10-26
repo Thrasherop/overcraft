@@ -10,12 +10,13 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Targeting;
+import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -79,7 +80,7 @@ public final class Kiriko implements HeroKit {
 				s.weaponRecovery += Ow.ticks(KUNAI_RECOVERY);
 				fired = true;
 				if (s.primaryAmmo == 0) {
-					startPrimaryReload(s);
+					startPrimaryReload(player, s);
 				}
 			} else if (s.secondaryHeld && s.secondaryAmmo >= OFUDA_PER_THROW && s.secondaryReload < 0) {
 				if (s.primaryReload >= 0 && !s.primaryAmmoRestored) {
@@ -90,7 +91,7 @@ public final class Kiriko implements HeroKit {
 				s.weaponRecovery += OFUDA_INTERVAL;
 				fired = true;
 				if (s.secondaryAmmo < OFUDA_PER_THROW) {
-					startSecondaryReload(s);
+					startSecondaryReload(player, s);
 				}
 			}
 		}
@@ -98,7 +99,7 @@ public final class Kiriko implements HeroKit {
 			s.weaponRecovery = 0;
 		}
 		if (!s.secondaryHeld && s.secondaryAmmo < OFUDA_AMMO && s.secondaryReload < 0) {
-			startSecondaryReload(s);
+			startSecondaryReload(player, s);
 		}
 	}
 
@@ -109,6 +110,7 @@ public final class Kiriko implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0) {
 			throwSuzu(player);
+			Voice.maybe(player, s, OcSounds.KIRIKO_VOICE_SUZU, 0.5f);
 			s.ability2Cooldown = Ow.ticks(SUZU_COOLDOWN);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
@@ -119,21 +121,23 @@ public final class Kiriko implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			if (s.primaryAmmo < KUNAI_AMMO && s.primaryReload < 0) {
-				startPrimaryReload(s);
+				startPrimaryReload(player, s);
 			}
 			if (s.secondaryAmmo < OFUDA_AMMO && s.secondaryReload < 0) {
-				startSecondaryReload(s);
+				startSecondaryReload(player, s);
 			}
 		}
 	}
 
-	private static void startPrimaryReload(HeroState s) {
+	private static void startPrimaryReload(ServerPlayer player, HeroState s) {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
+		sound(player, OcSounds.KIRIKO_KUNAI_RELOAD, 1, 1);
 	}
 
-	private static void startSecondaryReload(HeroState s) {
+	private static void startSecondaryReload(ServerPlayer player, HeroState s) {
 		s.secondaryReload = 0;
+		sound(player, OcSounds.KIRIKO_OFUDA_RELOAD, 1, 1);
 	}
 
 	private static void throwKunai(ServerPlayer player) {
@@ -142,7 +146,7 @@ public final class Kiriko implements HeroKit {
 		kunai.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(KUNAI_SPEED));
 		level.addFreshEntity(kunai);
 		Combat.animate(player, "throw_kunai");
-		sound(player, SoundEvents.TRIDENT_THROW.value(), 0.5f, 1.7f);
+		sound(player, OcSounds.KIRIKO_KUNAI_THROW, 1, 1);
 	}
 
 	private static void throwOfuda(ServerPlayer player) {
@@ -159,7 +163,7 @@ public final class Kiriko implements HeroKit {
 			level.addFreshEntity(ofuda);
 		}
 		Combat.animate(player, "throw_ofuda");
-		sound(player, SoundEvents.BOOK_PAGE_TURN, 0.5f, 1.6f);
+		sound(player, OcSounds.KIRIKO_OFUDA_THROW, 1, 1);
 	}
 
 	private static void throwSuzu(ServerPlayer player) {
@@ -168,7 +172,7 @@ public final class Kiriko implements HeroKit {
 		suzu.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(SUZU_SPEED));
 		level.addFreshEntity(suzu);
 		Combat.animate(player, "throw_suzu");
-		sound(player, SoundEvents.SNOWBALL_THROW, 0.7f, 1.3f);
+		sound(player, OcSounds.KIRIKO_SUZU_THROW, 1, 1);
 	}
 
 	private static void startSwiftStep(ServerPlayer player, HeroState s) {
@@ -182,7 +186,8 @@ public final class Kiriko implements HeroKit {
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
 		s.castTarget = target.getUUID();
 		Combat.animate(player, "swift_step");
-		sound(player, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0f, 1.5f);
+		sound(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, 1, 1);
+		Voice.maybe(player, s, OcSounds.KIRIKO_VOICE_SWIFT_STEP, 0.6f);
 	}
 
 	private static void finishSwiftStep(ServerPlayer player, HeroState s) {
@@ -195,13 +200,14 @@ public final class Kiriko implements HeroKit {
 		}
 		Vec3 from = player.position();
 		Effects.play(level, "swift_step_depart", from);
+		level.playSound(null, from.x, from.y, from.z, OcSounds.KIRIKO_SWIFT_STEP_DEPART, SoundSource.PLAYERS, 1, 1);
 		Vec3 arrive = beside(player, target, from);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
 		Effects.play(level, "swift_step_arrive", arrive);
-		level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.8f, 1.5f);
+		level.playSound(null, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 1, 1);
 	}
 
 	/**

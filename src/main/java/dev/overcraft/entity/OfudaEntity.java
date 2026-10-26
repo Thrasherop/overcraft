@@ -7,10 +7,12 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -88,6 +90,7 @@ public class OfudaEntity extends OwProjectile {
 			return;
 		}
 		Effects.play(level, "ofuda_hit_ally", ally.getBoundingBox().getCenter(), Vec3.ZERO, ally, homing() ? 1 : 0);
+		level.playSound(null, ally.getX(), ally.getY(0.5), ally.getZ(), OcSounds.KIRIKO_OFUDA_HEAL, SoundSource.PLAYERS, 1, 1);
 		float healed = Combat.heal(ally, KirikoStats.OFUDA_HEAL);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, healed);
@@ -105,6 +108,8 @@ public class OfudaEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level) {
 			Effects.play(level, "ofuda_hit_block", hit.getLocation(), Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null,
 				homing() ? 1 : 0);
+			Vec3 at = hit.getLocation();
+			level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_OFUDA_HIT_BLOCK, SoundSource.PLAYERS, 1, 1);
 			discard();
 		}
 	}

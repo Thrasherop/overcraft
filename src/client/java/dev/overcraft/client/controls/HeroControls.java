@@ -24,7 +24,8 @@ import java.util.Locale;
  * hotbar's number keys work in both.
  *
  * <p>The mappings aren't in Minecraft's Controls screen: they're set on the Overwatch options screen (Esc in hero mode)
- * and saved in config/overcraft-hero-controls.json. Defaults are Overwatch's.
+ * and saved in config/overcraft-hero-controls.json. Defaults are Overwatch's, except the fire buttons: the owner chose
+ * kunai on the left button and ofuda on the right (2026-10-25), the other way round from Overwatch's default.
  */
 public final class HeroControls {
 	private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Overcraft.id("hero_controls"));
@@ -40,8 +41,10 @@ public final class HeroControls {
 		MOVE_RIGHT(Section.MOVEMENT, keyboard(InputConstants.KEY_D)),
 		JUMP(Section.MOVEMENT, keyboard(InputConstants.KEY_SPACE)),
 		CROUCH(Section.MOVEMENT, keyboard(InputConstants.KEY_LCONTROL)),
-		PRIMARY_FIRE(Section.COMBAT, mouse(InputConstants.MOUSE_BUTTON_LEFT)),
-		SECONDARY_FIRE(Section.COMBAT, mouse(InputConstants.MOUSE_BUTTON_RIGHT)),
+		/** Overwatch's primary fire (Kiriko: Healing Ofuda), on the right button by the owner's choice. */
+		PRIMARY_FIRE(Section.COMBAT, mouse(InputConstants.MOUSE_BUTTON_RIGHT)),
+		/** Overwatch's secondary fire (Kiriko: Kunai), on the left button. */
+		SECONDARY_FIRE(Section.COMBAT, mouse(InputConstants.MOUSE_BUTTON_LEFT)),
 		ABILITY_1(Section.COMBAT, keyboard(InputConstants.KEY_LSHIFT)),
 		ABILITY_2(Section.COMBAT, keyboard(InputConstants.KEY_E)),
 		ULTIMATE(Section.COMBAT, keyboard(InputConstants.KEY_Q)),

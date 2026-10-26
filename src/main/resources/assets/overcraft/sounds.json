@@ -1,10 +1,245 @@
 {
 	"kiriko.ult.friendly": {
 		"subtitle": "subtitles.overcraft.kiriko.ult.friendly",
-		"sounds": [{"name": "minecraft:entity.evoker.cast_spell", "type": "event"}]
+		"sounds": [
+			{
+				"name": "minecraft:entity.evoker.cast_spell",
+				"type": "event",
+				"volume": 1,
+				"pitch": 1
+			}
+		]
 	},
 	"kiriko.ult.enemy": {
 		"subtitle": "subtitles.overcraft.kiriko.ult.enemy",
-		"sounds": [{"name": "minecraft:entity.evoker.cast_spell", "type": "event"}]
+		"sounds": [
+			{
+				"name": "minecraft:entity.evoker.cast_spell",
+				"type": "event",
+				"volume": 1,
+				"pitch": 1
+			}
+		]
+	},
+	"kiriko.kunai.throw": {
+		"subtitle": "subtitles.overcraft.kiriko.kunai.throw",
+		"sounds": [
+			{
+				"name": "minecraft:item.trident.throw",
+				"type": "event",
+				"volume": 0.5,
+				"pitch": 1.7
+			}
+		]
+	},
+	"kiriko.kunai.hit": {
+		"subtitle": "subtitles.overcraft.kiriko.kunai.hit",
+		"sounds": [
+			{
+				"name": "minecraft:entity.arrow.hit",
+				"type": "event",
+				"volume": 0.6,
+				"pitch": 1.4
+			}
+		]
+	},
+	"kiriko.kunai.headshot": {
+		"subtitle": "subtitles.overcraft.kiriko.kunai.headshot",
+		"sounds": [
+			{
+				"name": "minecraft:entity.arrow.hit_player",
+				"type": "event",
+				"volume": 0.6,
+				"pitch": 1.6
+			}
+		]
+	},
+	"kiriko.kunai.hit_block": {
+		"subtitle": "subtitles.overcraft.kiriko.kunai.hit_block",
+		"sounds": [
+			{
+				"name": "minecraft:item.trident.hit_ground",
+				"type": "event",
+				"volume": 0.5,
+				"pitch": 1.8
+			}
+		]
+	},
+	"kiriko.kunai.reload": {
+		"subtitle": "subtitles.overcraft.kiriko.kunai.reload",
+		"sounds": [
+			{
+				"name": "minecraft:item.crossbow.loading_end",
+				"type": "event",
+				"volume": 0.4,
+				"pitch": 1.4
+			}
+		]
+	},
+	"kiriko.ofuda.throw": {
+		"subtitle": "subtitles.overcraft.kiriko.ofuda.throw",
+		"sounds": [
+			{
+				"name": "minecraft:item.book.page_turn",
+				"type": "event",
+				"volume": 0.5,
+				"pitch": 1.6
+			}
+		]
+	},
+	"kiriko.ofuda.heal": {
+		"subtitle": "subtitles.overcraft.kiriko.ofuda.heal",
+		"sounds": [
+			{
+				"name": "minecraft:block.amethyst_block.chime",
+				"type": "event",
+				"volume": 0.4,
+				"pitch": 1.8
+			}
+		]
+	},
+	"kiriko.ofuda.hit_block": {
+		"subtitle": "subtitles.overcraft.kiriko.ofuda.hit_block",
+		"sounds": [
+			{
+				"name": "minecraft:item.book.page_turn",
+				"type": "event",
+				"volume": 0.3,
+				"pitch": 2.0
+			}
+		]
+	},
+	"kiriko.ofuda.reload": {
+		"subtitle": "subtitles.overcraft.kiriko.ofuda.reload",
+		"sounds": [
+			{
+				"name": "minecraft:item.book.put",
+				"type": "event",
+				"volume": 0.4,
+				"pitch": 1.4
+			}
+		]
+	},
+	"kiriko.suzu.throw": {
+		"subtitle": "subtitles.overcraft.kiriko.suzu.throw",
+		"sounds": [
+			{
+				"name": "minecraft:entity.snowball.throw",
+				"type": "event",
+				"volume": 0.7,
+				"pitch": 1.3
+			}
+		]
+	},
+	"kiriko.suzu.burst": {
+		"subtitle": "subtitles.overcraft.kiriko.suzu.burst",
+		"sounds": [
+			{
+				"name": "minecraft:block.bell.use",
+				"type": "event",
+				"volume": 0.7,
+				"pitch": 1.8
+			}
+		]
+	},
+	"kiriko.swift_step.cast": {
+		"subtitle": "subtitles.overcraft.kiriko.swift_step.cast",
+		"sounds": [
+			{
+				"name": "minecraft:block.amethyst_block.chime",
+				"type": "event",
+				"volume": 1.0,
+				"pitch": 1.5
+			}
+		]
+	},
+	"kiriko.swift_step.depart": {
+		"subtitle": "subtitles.overcraft.kiriko.swift_step.depart",
+		"sounds": [
+			{
+				"name": "minecraft:entity.enderman.teleport",
+				"type": "event",
+				"volume": 0.4,
+				"pitch": 1.6
+			}
+		]
+	},
+	"kiriko.swift_step.arrive": {
+		"subtitle": "subtitles.overcraft.kiriko.swift_step.arrive",
+		"sounds": [
+			{
+				"name": "minecraft:item.chorus_fruit.teleport",
+				"type": "event",
+				"volume": 0.8,
+				"pitch": 1.5
+			}
+		]
+	},
+	"kiriko.climb.step": {
+		"subtitle": "subtitles.overcraft.kiriko.climb.step",
+		"sounds": [
+			{
+				"name": "minecraft:block.stone.step",
+				"type": "event",
+				"volume": 0.3,
+				"pitch": 1.2
+			}
+		]
+	},
+	"kiriko.rush.summon": {
+		"subtitle": "subtitles.overcraft.kiriko.rush.summon",
+		"sounds": [
+			{
+				"name": "minecraft:entity.fox.screech",
+				"type": "event",
+				"volume": 1.5,
+				"pitch": 0.8
+			}
+		]
+	},
+	"kiriko.rush.gate": {
+		"subtitle": "subtitles.overcraft.kiriko.rush.gate",
+		"sounds": [
+			{
+				"name": "minecraft:block.amethyst_block.resonate",
+				"type": "event",
+				"volume": 0.6,
+				"pitch": 1.2
+			}
+		]
+	},
+	"melee.swing": {
+		"subtitle": "subtitles.overcraft.melee.swing",
+		"sounds": [
+			{
+				"name": "minecraft:entity.player.attack.nodamage",
+				"type": "event",
+				"volume": 0.8,
+				"pitch": 1.1
+			}
+		]
+	},
+	"melee.hit": {
+		"subtitle": "subtitles.overcraft.melee.hit",
+		"sounds": [
+			{
+				"name": "minecraft:entity.player.attack.strong",
+				"type": "event",
+				"volume": 0.8,
+				"pitch": 1.1
+			}
+		]
+	},
+	"kiriko.voice.swift_step": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.swift_step",
+		"sounds": []
+	},
+	"kiriko.voice.suzu": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.suzu",
+		"sounds": []
+	},
+	"kiriko.voice.heal": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.heal",
+		"sounds": []
 	}
 }

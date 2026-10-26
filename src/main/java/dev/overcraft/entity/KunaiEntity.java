@@ -6,8 +6,8 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -58,10 +58,11 @@ public class KunaiEntity extends OwProjectile {
 		double damage = KirikoStats.KUNAI_DAMAGE * (crit ? KirikoStats.KUNAI_CRIT : 1);
 		float dealt = Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
 		Effects.play(level, "kunai_hit_entity", at);
+		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, dealt);
 			if (crit) {
-				level.playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.PLAYERS, 0.6f, 1.6f);
+				level.playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_KUNAI_HEADSHOT, SoundSource.PLAYERS, 1, 1);
 			}
 		}
 		discard();
@@ -73,7 +74,7 @@ public class KunaiEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level) {
 			Vec3 at = hit.getLocation();
 			Effects.play(level, "kunai_hit_block", at, Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null, 0);
-			level.playSound(null, at.x, at.y, at.z, SoundEvents.TRIDENT_HIT_GROUND, SoundSource.PLAYERS, 0.5f, 1.8f);
+			level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT_BLOCK, SoundSource.PLAYERS, 1, 1);
 			discard();
 		}
 	}

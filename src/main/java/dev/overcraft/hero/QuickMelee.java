@@ -1,9 +1,9 @@
 package dev.overcraft.hero;
 
 import dev.overcraft.Ow;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,6 +71,6 @@ public final class QuickMelee {
 		}
 		Combat.animate(hero, CLIPS[hero.getRandom().nextInt(CLIPS.length)]);
 		level.playSound(null, hero.getX(), hero.getY(), hero.getZ(),
-			hit ? SoundEvents.PLAYER_ATTACK_STRONG : SoundEvents.PLAYER_ATTACK_NODAMAGE, SoundSource.PLAYERS, 0.8f, 1.1f);
+			hit ? OcSounds.MELEE_HIT : OcSounds.MELEE_SWING, SoundSource.PLAYERS, 1, 1);
 	}
 }

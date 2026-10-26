@@ -7,8 +7,8 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -89,8 +89,7 @@ public class SuzuEntity extends OwProjectile {
 			Combat.addUltCharge(player, healedTotal);
 		}
 		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10));
-		level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 1.2f, 1.4f);
-		level.playSound(null, at.x, at.y, at.z, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 0.7f, 1.8f);
+		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_SUZU_BURST, SoundSource.PLAYERS, 1, 1);
 		discard();
 	}
 

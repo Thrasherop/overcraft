@@ -13,6 +13,7 @@
 		"KeyMappingMixin",
 		"MinecraftInvoker",
 		"MouseHandlerMixin",
+		"SubtitleOverlayMixin",
 		"CreateWorldScreenAccessor"
 	],
 	"injectors": {

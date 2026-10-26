@@ -62,6 +62,12 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 - **Nitpick sub-agents**: give one our screenshots and the references, ask for every difference, however small
   (owner: "many things you'll see as a nit are a big deal for humans").
 
+## Before changing behaviour
+- **Read HANDOFF.md's "owner's decisions" first.** A default that looks like a mistake may be the owner's choice: the
+  fire buttons (LMB kunai, RMB ofuda) are swapped from Overwatch's on purpose, and were nearly "fixed" back.
+- **Check the wiki before "fixing" a fact from memory**: Sombra looked misfiled as a support, but the wiki has her as
+  one since 2026.
+
 ## Building
 
 - Read Minecraft's decompiled 26.3 sources for every API (`.gradle/loom-cache/.../*-sources.jar`, extracted to the

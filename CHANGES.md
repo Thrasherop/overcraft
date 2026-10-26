@@ -29,6 +29,15 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 - Shapes (discs, rings, the ofuda segment, the mouse) are drawn at load as smooth masks (HudShapes): original, not
   from the game.
 
+**A sound for every moment** (owner: "Sounds should also very much use the real assets"). 22 new sound events:
+kunai throw / hit / headshot / hit on a block / reload, ofuda throw / heal / hit on a block / reload, Suzu throw / burst,
+Swift Step cast / departure / arrival, the wall climb's scrape, Kitsune Rush's summon and each torii gate, quick melee
+swing and hit, and voice lines on Swift Step, Suzu and healing (spaced 3 s apart, by chance). The jar plays vanilla
+stand-ins (the old pitches); the local pack replaces them with the game's recordings (being mapped by a sub-agent; the
+voice lines stay silent until then). Subtitles for each, and the subtitle box moves up in hero mode (it covered the ammo).
+- Played with subtitles on: kunai, ofuda and Suzu throws show "Kunai thrown", "Kunai strikes", "Ofuda thrown",
+  "Kiriko draws ofuda", "Ofuda scatters", "Suzu thrown", "Suzu rings" (`snd_subs*`).
+
 **Hero select like Overwatch's 2026 screen** (#7; spec: the reference's section 6, from the same video at t=500).
 - The hero itself large in the middle: the real 3D model (the player drawn as the previewed hero, following the mouse)
   when the pack has it; otherwise the hero's card art fading out at the knees, or the bust (Sombra and Illari have no card
@@ -99,8 +108,9 @@ mode opens minecraft settings. Esc in hero mode opens overwatch settings").
   Minecraft's gameplay keys are silenced (moving, attack, use, pick, drop, inventory, offhand, sneak, sprint); in
   Minecraft mode the hero's are. Chat, menus, F-keys and the hotbar's number keys work in both. The scroll wheel no
   longer changes slots in hero mode (it dropped you out of hero mode).
-- **Defaults are Overwatch's: LMB = Healing Ofuda, RMB = Kunai** (the wiki; the owner's reference streamer had them
-  swapped, and so did Overcraft until now). Swap them in Options if you prefer.
+- Defaults are Overwatch's keys, with the owner's fire buttons (2026-10-25): **LMB kunai, RMB ofuda**. The options name
+  them Overwatch's way (Primary fire = Healing Ofuda, on RMB; Secondary fire = Kunai, on LMB). For a few hours of this
+  night the defaults were Overwatch's own (LMB ofuda) by mistake; put back before anyone played it.
 - New Interact key (F, Overwatch's): doors, chests, buttons and villagers in hero mode, since the fire buttons don't.
 - Esc in hero mode opens Overwatch's menu (big italic items: Resume, Options, Change Hero, Minecraft Menu, Save and
   Leave); Esc in Minecraft mode opens Minecraft's. Options: tabs (Controls; Video, Sound and Mouse open Minecraft's

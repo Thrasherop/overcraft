@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -84,7 +83,7 @@ public final class KitsuneRush {
 			listener.connection.send(new ClientboundSoundPacket(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(line), SoundSource.PLAYERS,
 				owner.getX(), owner.getEyeY(), owner.getZ(), ULT_LINE_VOLUME, 1.0f, owner.getRandom().nextLong()));
 		}
-		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.FOX_SCREECH, SoundSource.PLAYERS, 1.5f, 0.8f);
+		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_RUSH_SUMMON, SoundSource.PLAYERS, 1, 1);
 		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0));
 	}
 
@@ -204,7 +203,9 @@ public final class KitsuneRush {
 			int index = Math.min(path.size() - 1, (int) Math.round(spacing * (gatesPlaced + 0.5) / STEP));
 			Vec3 across = new Vec3(-direction.z, 0, direction.x).scale(RUSH_WIDTH - 2);
 			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
-			Effects.play(level, "rush_gate", path.get(index), across, null, (int) Math.round(seconds * 10));
+			Vec3 gate = path.get(index);
+			Effects.play(level, "rush_gate", gate, across, null, (int) Math.round(seconds * 10));
+			level.playSound(null, gate.x, gate.y + 2, gate.z, OcSounds.KIRIKO_RUSH_GATE, SoundSource.PLAYERS, 1, 1);
 			gatesPlaced++;
 		}
 	}
