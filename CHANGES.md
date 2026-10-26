@@ -6,6 +6,18 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.3
+Its asset pack must be rebuilt (`py tools/build_asset_pack.py sounds "E:\Overwatch Archive\extracted\154088"`, then
+`zip`). An older pack still works, with a silent Victory.
+- **Victory sounds (#18):** the Ender Dragon's death now plays Overwatch's own. The match announcer says "Victory."
+  (voice set 001D, file A8C8), over the match-end music's victory sting (graph 0D3B, chain B's fallback: 2B0DE6,
+  8.76 s). Both were identified in tools/reference/sounds-round8.md and are now in the sound map. They play in the
+  head, in stereo.
+  - Played: in the End, a dragon at 3 health hovering 14 m away, kunai until it died. `heard` lists
+    `announcer/victory/0` and `music/victory/0`, both in the head, as VICTORY comes up (`r13_victory`). The kill feed
+    shows "ELIMINATED ENDER DRAGON". The pause menu reads "0.3.3 · ASSETS 0.3.3". Not judged: the two sounds'
+    balance against each other (played at Overwatch's file levels).
+
 ### Build 0.3.2
 Same asset pack as 0.3.1.
 - **Movement feels like Overwatch's, not floaty (#31).** Research (tools/reference/movement.md) found the jump
