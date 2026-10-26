@@ -17,7 +17,8 @@
 		"SubtitleOverlayMixin",
 		"CreateWorldScreenAccessor",
 		"ToastManagerAccessor",
-		"ClientPacketListenerMixin"
+		"ClientPacketListenerMixin",
+		"ChatComponentMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

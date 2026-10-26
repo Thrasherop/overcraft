@@ -5,6 +5,11 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Hero-mode chat is bare text** (round 3's #12): no dark panel behind the lines while nobody's typing, as
+Overwatch's; the panel comes back while typing, and Minecraft mode keeps its usual chat (`chat_sheet`). Also seen:
+Suzu's dome is there (an 8 m hemisphere for 0.3 s), but thrown at her own feet she's inside it and it reads as a
+cyan wash over the whole view (`dome_sheet`).
+
 **The critique's third round** (`tools/reference/critique-2026-10-26-round3.md`: 15 items on the newest captures).
 - The volley bar's tiles are rounded rectangles about 25 x 14 px with their long sides rising 40 degrees, as measured at
   12x on Overwatch's frame (the earlier flat-topped shape read as hazard stripes, #7).

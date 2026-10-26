@@ -35,8 +35,8 @@ done or not ours are repeated only where these captures show them still wrong.
 
 ## Status (kept up to date)
 - **Done, 2026-10-26 (CHANGES.md, "The critique's third round"):** 1, 2 (the smoke; the hands still show the seal
-  through the step), 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15.
-- **Open:** 11 (where Swift Step lands: needs a video), 12 (chat panel), the cloth (R2 #19), the Suzu dome (R2 #14),
+  through the step), 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15.
+- **Open:** 11 (where Swift Step lands: needs a video), the cloth (R2 #19), the Suzu dome (R2 #14),
   the Suzu in flight (R1 #37).
 
 ## Confirmed fixed (seen in these captures)
