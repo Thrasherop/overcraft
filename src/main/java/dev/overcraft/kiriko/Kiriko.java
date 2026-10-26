@@ -280,8 +280,11 @@ public final class Kiriko implements HeroKit {
 		float primaryReload = s.primaryReload >= 0 && !s.primaryAmmoRestored
 			? (float) Math.min(1, s.primaryReload / Ow.ticks(KUNAI_RELOAD_AMMO_AT)) : -1;
 		float secondaryReload = s.secondaryReload >= 0 ? (float) Math.min(1, s.secondaryReload / Ow.ticks(OFUDA_RELOAD)) : -1;
+		// during Swift Step's hand seal, the time until it's ready again: the rest of the seal and the whole cooldown, so
+		// the HUD shows the box as just used (coral) from the key press, as Overwatch does (the seventh critique)
+		float step = s.castTicks >= 0 ? (float) (SWIFT_STEP_COOLDOWN + (s.castTicks + 1) / 20.0) : (float) (s.ability1Cooldown / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ULT_COST, s.ultActive > 0,
 			s.primaryAmmo, primaryReload, s.secondaryAmmo, secondaryReload,
-			(float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero);
+			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero);
 	}
 }

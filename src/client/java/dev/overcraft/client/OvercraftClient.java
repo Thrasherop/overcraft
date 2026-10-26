@@ -51,11 +51,18 @@ public class OvercraftClient implements ClientModInitializer {
 			if (context.client().level != null) {
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
 				if (payload.clip().startsWith("throw_ofuda") && context.client().level.getEntity(payload.entityId()) instanceof LivingEntity hero) {
-					// the puff at her throwing fingers: a little right of and below the eyes, ahead (first person's hand)
-					Vec3 look = hero.getViewVector(1);
-					Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
-					KirikoFx.ofudaHandPuff(hero.getEyePosition().add(look.scale(0.7)).add(right.scale(0.18)).add(0, -0.16, 0),
-						KirikoFx.enemyOf(hero));
+					if (hero == context.client().player && ClientHero.heroView() && context.client().options.getCameraType().isFirstPerson()
+						&& HeroModelRenderer.viewFingertipFresh()) {
+						// her own view: at the flicking fingertip of her arms, following it (a world point stayed behind when
+						// the hand moved on, the seventh critique)
+						KirikoFx.ofudaHandPuffInView();
+					} else {
+						// the puff at her throwing fingers: a little right of and below the eyes, ahead
+						Vec3 look = hero.getViewVector(1);
+						Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
+						KirikoFx.ofudaHandPuff(hero.getEyePosition().add(look.scale(0.7)).add(right.scale(0.18)).add(0, -0.16, 0),
+							KirikoFx.enemyOf(hero));
+					}
 				}
 			}
 		});

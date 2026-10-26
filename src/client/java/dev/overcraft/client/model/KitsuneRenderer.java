@@ -97,8 +97,10 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 				// its own glow strong, so the body is the bright thing (the sixth critique: no brighter than the sky)
 				// an enemy's: its blue texture faint under a strong red glow (tinted red, blue went dark and the glow over
 				// it lilac-grey)
+				// an ally's all added light, its ice-blue texture and a white-cyan glow on it, brighter than the sky behind it
+				// (the seventh critique: the fox is the bright thing, about #D8FFFF)
 				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, (state.enemy ? 0.35f : 0.8f) * near,
-					(state.enemy ? 2.1f : 1.6f) * near, state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW);
+					(state.enemy ? 2.1f : 0.7f) * near, state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW, !state.enemy);
 			}
 			poseStack.popPose();
 		}

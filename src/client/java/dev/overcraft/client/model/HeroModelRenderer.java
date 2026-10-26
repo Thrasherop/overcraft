@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Matrix4f;
 import org.joml.Matrix3f;
@@ -175,9 +176,25 @@ public final class HeroModelRenderer {
 	}
 
 	/**
+	 * The first-person ofuda hand's index fingertip from the camera, in the world's axes (the arms are drawn in the
+	 * world's camera-relative space, turned with the view), from the last frame drawn, and when (Util.getMillis).
+	 */
+	private static final Vector3f VIEW_FINGERTIP = new Vector3f();
+	private static long viewFingertipAt = -1;
+
+	public static Vector3f viewFingertip() {
+		return new Vector3f(VIEW_FINGERTIP);
+	}
+
+	/** The arms were drawn just now (not hidden: F1, another view), so the fingertip is where they are. */
+	public static boolean viewFingertipFresh() {
+		return viewFingertipAt >= 0 && Util.getMillis() - viewFingertipAt < 200;
+	}
+
+	/**
 	 * First person in hero mode: the hero's view model (hero_models/<hero>_1p.glb), its Camera bone put at the eye. The
-	 * pose stack is in view space (looking down -Z). False (Minecraft draws its hand) without the model or out of hero
-	 * mode.
+	 * pose stack starts as the inverse of the view's turn (GameRenderer.renderItemInHand): camera-relative, in the
+	 * world's axes. False (Minecraft draws its hand) without the model or out of hero mode.
 	 */
 	public static boolean submitFirstPerson(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 											float swayPitch, float swayYaw) {
@@ -194,7 +211,8 @@ public final class HeroModelRenderer {
 		}
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
 		Matrix4f view = new Matrix4f();
-		Matrix4f[] skin = HeroAnimator.of(player).poseFirstPerson(loaded.model(), player, now, view);
+		HeroAnimator animator = HeroAnimator.of(player);
+		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
 		poseStack.pushPose();
 		// the arms lag a little behind the view when turning (Minecraft's hand sway, a bit stronger: Overwatch's arms
 		// swing visibly)
@@ -204,6 +222,9 @@ public final class HeroModelRenderer {
 		// its Camera bone sees it
 		poseStack.rotateDegrees(Axis.YP, 180);
 		poseStack.mulPose(view);
+		// where her ofuda hand's fingertip is in the view: the throw's puff pops there
+		poseStack.last().pose().transformPosition(animator.fingertip, VIEW_FINGERTIP);
+		viewFingertipAt = Util.getMillis();
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
@@ -284,14 +305,16 @@ public final class HeroModelRenderer {
 	 * solid it read as a plush toy, the third critique), its texture at this opacity, full bright, with a cyan glow over it.
 	 */
 	public static void submitSpirit(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
-		float opacity, float glow, int rgb, int glowRgb) {
+		float opacity, float glow, int rgb, int glowRgb, boolean added) {
 		int color = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | rgb;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null) {
 				continue;
 			}
-			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+			// added: its light and the glow's sum whatever order they're drawn in (blended, it was drawn over its own glow
+			// and hid most of it: a matte blue fox, the seventh critique)
+			collector.submitCustomGeometry(poseStack, added ? FxRender.additive(texture) : RenderTypes.entityTranslucentEmissive(texture),
 				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color, true, false));
 		}
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow, true, glowRgb);

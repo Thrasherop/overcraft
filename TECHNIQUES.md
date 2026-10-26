@@ -126,3 +126,21 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   view model wants a light floor (Overwatch's arms stay readable on night maps).
 - A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),
   stay out of the Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.
+- **Don't compile while the dev client runs.** It loads classes lazily from the build output: a class first used
+  after a recompile is the new one, its neighbours the old, and the game crashed mid-test (`NoSuchFieldError` on a
+  renamed field). Stop the client, then build or `runClient`.
+- 26.3 draws the first-person hands in their own pass (GameRenderer.renderItemInHand): the pose stack starts as the
+  inverse of the view rotation, so a point from the arms' pose is camera-relative in the world's axes, not view space.
+  Log a suspect space at two headings before using it: a point that turns with the view is in world axes.
+- An effect that must sit on the first-person arms (the ofuda puff at a fingertip) follows a point recorded while the
+  arms are drawn (`Fx.Particle.follow`); placed once in the world, it stayed behind as the hand moved on.
+- A full-screen tint that seems to come from the HUD may be world particles at the camera: hide the HUD (F1) and
+  measure again. Kitsune Rush's "mint grade" was eight 0.5-2 m smoke sprites spawned 0.6 m from the eye.
+- A drawn-twice glow (a translucent body, then its added glow) can be hidden by draw order: the body drawn after the
+  glow covered most of it. Make both passes added light, or the order matters.
+- Read the mesh before changing its shading. The talisman's "grey back" was its own layer of triangles (368 on the
+  front, 208 on the back) textured with Blizzard's baked shade (#CDCCCB to #756664 in atlas 31E3B), not a back face lit
+  the wrong way round; a normal flip changed nothing there and, tested as the world's camera in the menu's
+  orthographic, mirrored preview (`scale(s, s, -s)`), turned half her face dark.
+- A flat effect "on the ground" (a ring 8 m across) floats over any slope: lay it in short pieces, each at the top of
+  the first solid block under open space near its point (`KirikoFx.groundY`), none where there's no ground in reach.

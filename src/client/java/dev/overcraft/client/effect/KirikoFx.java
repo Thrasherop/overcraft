@@ -4,11 +4,17 @@ import dev.overcraft.client.effect.EffectArt.Palette;
 import dev.overcraft.client.effect.Fx.Particle;
 import dev.overcraft.client.effect.Fx.Shape;
 import dev.overcraft.net.EffectPayload;
+import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.Skeleton;
 import dev.overcraft.client.model.SkinnedModel;
 import dev.overcraft.client.HeroHud;
 import dev.overcraft.hero.Allies;
+import net.minecraft.client.Camera;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -93,7 +100,14 @@ public final class KirikoFx {
 			case "hit_marker" -> HeroHud.hitMarker(e.variant(), e.entity());
 			case "swift_step_depart" -> swiftStep(at, false);
 			case "swift_step_arrive" -> swiftStep(at, true);
-			case "rush_cast" -> rushCast(at);
+			case "rush_cast" -> {
+				Minecraft mc = Minecraft.getInstance();
+				if (mc.player != null && e.entity() == mc.player.getId() && mc.options.getCameraType().isFirstPerson()) {
+					rushCastOwnView();
+				} else {
+					rushCast(at);
+				}
+			}
 			case "rush_ripple" -> rushRipple(at);
 			case "rush_gate" -> rushGate(at, dir, e.variant() / 10f);
 			case "rush_tiles" -> rushTiles(at, dir, e.variant() / 10f);
@@ -135,7 +149,8 @@ public final class KirikoFx {
 			// 2F93/7E2D: size 0.8 on the 1.5 x 1.3 sheet; the silhouette with its fading tail about 0.75 m (ours, from it)
 			// half a metre (it was 0.75: a pair just thrown filled the sides of the view, the sixth critique), faded out
 			// near the camera since they leave from her hand
-			Particle t = homing ? Fx.soft("talisman_flight#4", p(Palette.GOLD)) : Fx.particle("talisman_flight#4", p(Palette.TEAL));
+			// blended, both: added, the teal pair near the camera summed to pale green over grass (the seventh critique)
+			Particle t = Fx.soft("talisman_flight#4", p(homing ? Palette.GOLD : Palette.TEAL));
 			return t == null ? null : t.loop(8).life(0.2f).size(0.5f, 0.5f).nearFade(2.5f)
 				.alpha(homing ? 0.95f : 0.9f).fade(0.1f, 0.5f);
 		});
@@ -196,6 +211,16 @@ public final class KirikoFx {
 			// short: a slower one stayed in the world after the hand had moved on (the sixth critique)
 			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.12)).life(range(0.12f, 0.18f)).size(size, size * 1.4f)
 				.spin(range(0, Mth.TWO_PI), 0).alpha(0.5f).fade(0.1f, 0.6f).near());
+		}
+	}
+
+	/** The same in her own first-person view: at her arms' flicking fingertip, following it. */
+	public static void ofudaHandPuffInView() {
+		Particle puff = Fx.soft("smoke#48", Palette.GOLD);
+		if (puff != null) {
+			float size = range(0.06f, 0.08f);
+			Fx.add(puff.follow(HeroModelRenderer::viewFingertip).velocity(randomUnit(Fx.RANDOM).scale(0.12)).life(range(0.12f, 0.18f))
+				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.5f).fade(0.1f, 0.6f).near());
 		}
 	}
 
@@ -341,11 +366,50 @@ public final class KirikoFx {
 		// clear of the ground: a camera-facing glow centred on it was cut off flat by the ground (the critique)
 		Fx.add(glow("glow_hot", p(Palette.SUZU_BLUE), at.add(0, 0.75, 0), 1.5f, 0.25f, 0.5f));
 		Fx.add(glow("glow", p(Palette.TEAL), at.add(0, 1.1, 0), 2.4f, 0.4f, 0.3f));
-		// the 5 s ground mark: soft gold, blended (added over grass it was a hard lime line)
-		Particle mark = Fx.soft("ring_line", p(Palette.SUZU_GOLD));
-		if (mark != null) {
-			Fx.add(mark.at(ground.add(0, 0.03, 0)).normal(new Vec3(0, 1, 0)).life(5).size(2 * r, 2 * r).alpha(0.85f).fade(0.03f, 0.15f));
+		// the 5 s ground mark: soft gold, blended (added over grass it was a hard lime line). Laid on the ground in short
+		// pieces, each on the surface under it: one flat ring hung in the air over slopes, through leaves and trunks (the
+		// seventh critique; Overwatch's is a decal, projected onto what's under it). Where nothing is near, none
+		Level level = Minecraft.getInstance().level;
+		int pieces = Math.max(24, Math.round(Mth.TWO_PI * r / RING_PIECE));
+		// each twice its share, so the soft ends overlap into one line (at 1.4 it read as dashes)
+		float length = Mth.TWO_PI * r / pieces * 2;
+		for (int i = 0; i < pieces; i++) {
+			float a = i * Mth.TWO_PI / pieces;
+			double x = at.x + Mth.cos(a) * r;
+			double z = at.z + Mth.sin(a) * r;
+			Double y = level == null ? Double.valueOf(at.y) : groundY(level, x, z, at.y);
+			Particle piece = y == null ? null : Fx.soft("ribbon", p(Palette.SUZU_GOLD));
+			if (piece != null) {
+				// a flat piece's long side, turned by r, lies along (cos r, 0, -sin r) (Fx.emit): along the circle at a
+				// for r = -a - pi/2 (turned by -a, the pieces lay out like spokes)
+				Fx.add(piece.at(new Vec3(x, y + 0.03, z)).normal(new Vec3(0, 1, 0)).life(5).size(length, length)
+					.aspect(RING_WIDTH / length).spin(-a - Mth.HALF_PI, 0).alpha(0.85f).fade(0.03f, 0.15f));
+			}
 		}
+	}
+
+	/** Suzu's ground ring in pieces about this long, this wide (m, ours: its line read 4-6 px wide at 10 m). */
+	private static final float RING_PIECE = 0.5f;
+	private static final float RING_WIDTH = 0.2f;
+
+	/**
+	 * The height of the ground at (x, z) within two blocks of near: the top of the first solid block under open space,
+	 * from above. Null if there's none.
+	 */
+	private static @Nullable Double groundY(Level level, double x, double z, double near) {
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		int bx = Mth.floor(x);
+		int bz = Mth.floor(z);
+		int top = Mth.floor(near) + 2;
+		boolean open = level.getBlockState(pos.set(bx, top + 1, bz)).getCollisionShape(level, pos).isEmpty();
+		for (int y = top; y >= Mth.floor(near) - 2; y--) {
+			VoxelShape shape = level.getBlockState(pos.set(bx, y, bz)).getCollisionShape(level, pos);
+			if (!shape.isEmpty() && open) {
+				return y + shape.max(Direction.Axis.Y);
+			}
+			open = shape.isEmpty();
+		}
+		return null;
 	}
 
 	// ---- Swift Step ----
@@ -455,6 +519,34 @@ public final class KirikoFx {
 		}
 	}
 
+	/**
+	 * The cast in her own first-person view: a cyan burst between the palms (BLZ-KitsuneRush), small and bright. The
+	 * smoke cloud others see at her hands was all round the camera here, and tinted the whole view mint (the seventh
+	 * critique). Sizes ours.
+	 */
+	private static void rushCastOwnView() {
+		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
+		Vector3fc forward = camera.forwardVector();
+		Vector3fc up = camera.upVector();
+		// just under the fingertips of the seal, 0.55 m out
+		Vec3 palms = camera.position().add(forward.x() * 0.55, forward.y() * 0.55, forward.z() * 0.55).add(up.x() * -0.1, up.y() * -0.1, up.z() * -0.1);
+		Particle core = Fx.particle("glow", p(Palette.CYAN));
+		if (core != null) {
+			Fx.add(core.at(palms).life(0.3f).size(0.05f, 0.11f).easeOut().alpha(0.75f).fade(0.05f, 0.6f).near());
+		}
+		Particle halo = Fx.soft("glow", p(Palette.CYAN));
+		if (halo != null) {
+			Fx.add(halo.at(palms).life(0.4f).size(0.1f, 0.2f).easeOut().alpha(0.4f).fade(0.05f, 0.6f).near());
+		}
+		for (int i = 0; i < 2; i++) {
+			Particle ring = Fx.soft("ring_line", p(Palette.CYAN));
+			if (ring != null) {
+				// about a hand's width (twice that at first read as a shield bubble round her hands)
+				Fx.add(ring.at(palms).life(0.25f + i * 0.1f).size(0.03f, 0.1f + i * 0.04f).easeOut().alpha(0.7f).fade(0.05f, 0.6f).near());
+			}
+		}
+	}
+
 	/** A ground ripple along the fox's path (2E87: 2.1 m annulus, 1 s). */
 	static void rushRipple(Vec3 at) {
 		Particle ring = Fx.soft("ring_line", p(Palette.TEAL));
@@ -482,11 +574,8 @@ public final class KirikoFx {
 			// so stronger: at the same strength it all but vanished (the sixth critique)
 			Fx.add(gate.at(base).mesh(torii, side).tint(enemy ? 0xF2B4B0 : 0xCFF6F6).rim(enemy ? 0xE8302C : 0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
 				.alpha(enemy ? 0.9f : 0.55f).fade(0.04f, 0.08f));
-			Particle glow = Fx.particle("glow", p(Palette.TEAL));
-			if (glow != null) {
-				// a faint flash as it rises (it was a bright orb at the path's head, hiding the fox: the second critique)
-				Fx.add(glow.at(base.add(0, width * 0.35, 0)).life(0.4f).size(width * 0.3f, width * 0.6f).easeOut().alpha(0.2f).fade(0.1f, 0.7f));
-			}
+			// no flash as it rises: a glow there read as a sun hanging in each gate, brighter than the fox (the second and
+			// seventh critiques)
 		} else {
 			// without the mesh (no local pack model): its outline, two posts and two beams (ours)
 			for (int s = -1; s <= 1; s += 2) {
@@ -508,7 +597,8 @@ public final class KirikoFx {
 		for (int i = 0; i < 4; i++) {
 			// a glowing cross (EffectArt's soft sparkle: the pack's mask is a flat outlined cross, a sticker drawn as it
 			// is, the fourth critique), twinkling; the survey's 0.43-0.6 m, a little smaller
-			Particle plus = Fx.particle("sparkle_soft", p(Palette.GOLD));
+			// blended: added, gold over grass turned lime and over the sky white (the seventh critique)
+			Particle plus = Fx.soft("sparkle_soft", p(Palette.GOLD));
 			if (plus != null) {
 				float size = range(0.35f, 0.5f);
 				Fx.add(plus.at(base.add(side.scale(range(-1, 1) * half)).add(0, range(1, 4.5f), 0)).life(range(0.9f, 1.2f))
@@ -553,9 +643,10 @@ public final class KirikoFx {
 			float width = range(0.56f, 1.12f);
 			Vec3 at = ground.add(side.scale(range(-4, 4))).add(ahead.scale(range(-0.6f, 0.6f))).add(0, 0.03, 0);
 			if (talisman) {
-				// at 0.85 they clipped to flat cyan over grass (the fifth critique)
+				// at 0.85 they clipped to flat cyan over grass (the fifth critique); at 0.6, blended, their faint parts took
+				// the grass's green (the seventh)
 				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 1.1f, width * 1.1f).aspect(1 / 3f)
-					.spin(across + range(-0.35f, 0.35f), 0).alpha(0.6f).fade(0.03f, 0.06f));
+					.spin(across + range(-0.35f, 0.35f), 0).alpha(0.7f).fade(0.03f, 0.06f));
 			} else {
 				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 0.52f, width * 0.52f).aspect(1 / 0.52f)
 					.spin(across + range(-0.25f, 0.25f), 0).alpha(0.75f).fade(0.03f, 0.06f));

@@ -95,18 +95,21 @@ public final class EffectArt {
 	 */
 	private static final Map<Palette, float[]> SOFT_RAMPS = Map.of(
 		// more orange than the on-screen gold itself: blended at part alpha over green grass it shifts toward olive (the
-		// sixth critique measured hues of 54-62 degrees against Overwatch's 45-50)
-		Palette.GOLD, new float[] {0, .58f, .36f, 0, .5f, .87f, .6f, 0, .9f, .93f, .7f, .08f, 1, .97f, .8f, .3f},
+		// sixth critique measured hues of 54-62 degrees against Overwatch's 45-50), and bright at the faint end too (a
+		// dark one darkened leaves to khaki, the seventh)
+		Palette.GOLD, new float[] {0, .9f, .5f, 0, .5f, .93f, .6f, 0, .9f, .95f, .73f, .08f, 1, .98f, .82f, .3f},
 		// Kiriko's teal and the kunai's cyan, blended (the faint parts of her effects: added over green grass they
 		// summed to mint, the fifth and sixth critiques), leaning blue so that over grass they land near 176 degrees
-		Palette.TEAL, new float[] {0, 0, .42f, .62f, .5f, 0, .6f, .76f, .9f, .12f, .84f, .88f, 1, .62f, .98f, .98f},
+		// (its faint end bluer and brighter again: at part alpha the path tiles still read 158-164, the seventh)
+		Palette.TEAL, new float[] {0, 0, .4f, .72f, .5f, 0, .62f, .86f, .9f, .12f, .86f, .92f, 1, .62f, .98f, .98f},
 		Palette.CYAN, new float[] {0, 0, .5f, .75f, .5f, 0, .7f, .9f, .9f, .3f, .92f, 1, 1, .8f, 1, 1},
 		// an enemy's effects, always blended (Fx): added, red over sky or grass washed out to pink-white. Ours
 		// its dark end read brick brown over grass (the sixth critique): brighter throughout
 		Palette.ENEMY, new float[] {0, .7f, .1f, .12f, .5f, .86f, .18f, .17f, .9f, .95f, .32f, .28f, 1, 1, .6f, .55f},
 		// Suzu's 5 s ground ring: the game's (3.2, 2.17, 0.1) is a saturated gold, about #FFD732 on screen; from the
 		// ramp's pale top it read khaki over grass (the fifth critique)
-		Palette.SUZU_GOLD, new float[] {0, .62f, .45f, 0, .5f, .9f, .7f, .05f, .9f, 1, .84f, .2f, 1, 1, .9f, .45f});
+		// (its faint end bright orange: dark, it read olive over grass, the seventh)
+		Palette.SUZU_GOLD, new float[] {0, .92f, .6f, 0, .5f, .96f, .72f, .04f, .9f, 1, .84f, .2f, 1, 1, .9f, .45f});
 
 	private EffectArt() {
 	}

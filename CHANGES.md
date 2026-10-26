@@ -5,6 +5,37 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Seventh critique round** (`tools/reference/critique-2026-10-26-round7.md`). Each item was reproduced on the old build
+at 1080p, then fixed and played again:
+- **Kitsune Rush in first person no longer turns the view mint.** The cast's smoke cloud spawned around her own camera.
+  Her own view now gets a small cyan burst between the palms; others still see the smoke at her hands. Under the hands
+  the grass keeps its colour (87°, it was 128°).
+- **No glow ball in the gates.** Each gate's rising flash hung in it like a sun, brighter than the fox. Without it the
+  fox showed matte blue: its body was drawn over its own glow. It is now all added light, glowing white-cyan, brighter
+  than the sky.
+- **Colours over grass:**
+  - The unaimed talisman pair is blended, teal in flight (166°; it read pale green, 119°).
+  - The rush's "+" sparkles are blended gold (52-58°; they were lime, 71-74°).
+  - The path tiles are bluer (170-181°).
+  - Faint gold is brighter and more orange.
+- **Protection Suzu's 5 s ring lies on the ground.** It is laid in short pieces, each on the surface under it, over
+  slopes, steps and leaves. Before, one flat circle hung in the air through the trees (`r7l_suzu_*`, `r7n_suzu_*`).
+- **The ofuda throw's golden puff follows the flicking fingertip** in first person. Before, it stayed at a world point
+  right of centre while the hand moved on.
+- **Swift Step's LSHIFT box turns coral from the key press**, through the hand seal, as in Overwatch. Its screen flash
+  now comes with the step, not the press.
+- **Ally health bars:**
+  - Lost health shows as separate empty slots, no longer one dark slab.
+  - A bar that would cross a screen side is hidden, as one off the top already was.
+- **HUD portrait:**
+  - The frame is Overwatch's tall hexagon (a gabled top, the point below), with her hair and the mask's ears over its
+    top edges.
+  - The party box is 30 x 44 with a thin pale digit.
+- **Kitsune Rush at night:** the edge mist is cyan (185-190°), no longer grey fog.
+- **Left as is:** the held talisman's grey back is Blizzard's baked texture, on a separate layer of the paper.
+- **The owner's call:** Minecraft's blob shadow (both in HANDOFF's questions).
+- **Harness:** `state` reports the first-person fingertip (`fingertip`).
+
 **Minecraft's other body poses on her model** (found playing; the hero renderer drew her upright through all of them):
 - **Crawling** under a one-high gap: she stood in it, the camera inside her legs (`ps1_sheet`); now prone, along her
   box (`ps2_crawl`).

@@ -149,10 +149,14 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
+- Minecraft draws its round blob shadow under every entity, heroes too; Overwatch heroes cast body-shaped shadows and
+  no blob (critique round 7, #11). Keep Minecraft's, shrink it to her feet and fainter, or drop it for heroes?
+- The held talismans' blank backs read grey on the select screen (round 7 #6). That is Blizzard's own texture: the
+  back's bottom is baked dark (#756664), where the fingers hold it. Left as it is; say if it should be lightened.
 
 ## Next
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
-2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` to `-round5.md` (each
+2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` to `-round7.md` (each
    has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
    crosshair (needs Overwatch frames of the throw). Swift Step now lands beside the ally (owner, 2026-10-26).
 3. Effects: all of Kiriko's are in, including the enemy-red view with scoreboard teams.

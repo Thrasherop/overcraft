@@ -89,8 +89,9 @@ public final class KitsuneRush {
 		}
 		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_RUSH_SUMMON, SoundSource.PLAYERS, 1, 1);
 		HeroSounds.split(owner, OcSounds.KIRIKO_RUSH_CAST, OcSounds.KIRIKO_RUSH_CAST_3P, owner.getEyePosition());
+		// the caster named, so her own first-person view draws it between her palms instead
 		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0),
-			owner);
+			Vec3.ZERO, owner, 0, owner);
 	}
 
 	public static void tickAll(MinecraftServer server) {

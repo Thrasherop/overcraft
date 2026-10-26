@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * The client's live effects: particles (camera-facing sprites, flat decals and rings, streaks along their motion,
@@ -88,6 +89,11 @@ public final class Fx {
 		boolean near;
 		/** Fades out over this reach from the camera instead of the default (0: the default). */
 		float nearReach;
+		/**
+		 * Drawn at this point from the camera (the world's axes, metres) plus its own drift, so it moves with the camera
+		 * and whatever it follows there (a first-person fingertip).
+		 */
+		@Nullable Supplier<Vector3f> follow;
 		/** A sprite on a surface it hit (that surface's normal): lifted off it so none of it sinks in. */
 		boolean lift;
 		float lx, ly = 1, lz;
@@ -205,6 +211,13 @@ public final class Fx {
 
 		public Particle near() {
 			near = true;
+			return this;
+		}
+
+		/** Follows a point given from the camera (see {@link #follow}); its position becomes a drift from there. */
+		public Particle follow(Supplier<Vector3f> fromCamera) {
+			follow = fromCamera;
+			x = y = z = 0;
 			return this;
 		}
 
@@ -594,6 +607,12 @@ public final class Fx {
 		float cx = (float) (p.x - cam.x);
 		float cy = (float) (p.y - cam.y);
 		float cz = (float) (p.z - cam.z);
+		if (p.follow != null) {
+			Vector3f v = p.follow.get();
+			cx = (float) p.x + v.x;
+			cy = (float) p.y + v.y;
+			cz = (float) p.z + v.z;
+		}
 		if (p.lift && p.shape == Shape.SPRITE) {
 			// a glow where something hit a surface: lifted along the surface's normal just enough that the camera-facing
 			// quad clears it (by r sin of the view's angle to the normal). Centred on the hit, half of it sank into the

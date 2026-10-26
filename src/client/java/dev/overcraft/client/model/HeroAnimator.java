@@ -133,6 +133,9 @@ public final class HeroAnimator {
 	 * the first-person idle, a held pose (A3A7 for Kiriko: hands crossed in front) or the climb, with Overwatch's
 	 * breathing and walk-bob layers, then the actions (their own track: first-person clips last differently).
 	 */
+	/** The ofuda hand's fingertip in the model's space, as last posed by poseFirstPerson. */
+	public final Vector3f fingertip = new Vector3f();
+
 	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
@@ -161,6 +164,10 @@ public final class HeroAnimator {
 			Skeleton.addAdditive(walk, cycle, pose, Math.clamp(groundSpeed / 5.5f, 0, 1));
 		}
 		actionsFirstPerson.apply(model, pose, now, null);
+		int tip = UpperBody.fingertip(model);
+		if (tip >= 0) {
+			Skeleton.world(model, pose, tip).getTranslation(fingertip);
+		}
 		int camera = UpperBody.eye(model);
 		if (camera >= 0) {
 			// the camera's transform now, with its rest turn taken out (at rest it looks along the model's facing)
@@ -456,6 +463,7 @@ public final class HeroAnimator {
 		private static final Map<SkinnedModel, Integer> HEADS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> MOVERS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> EYES = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> FINGERTIPS = new HashMap<>();
 
 		private static int first(SkinnedModel model, String... names) {
 			for (String name : names) {
@@ -510,6 +518,11 @@ public final class HeroAnimator {
 		/** Overwatch's first-person eye: the Camera bone. */
 		static int eye(SkinnedModel model) {
 			return EYES.computeIfAbsent(model, m -> first(m, "Camera"));
+		}
+
+		/** The ofuda hand's index fingertip (the hand on the left of the view: the model's "_R" bones, as drawn there). */
+		static int fingertip(SkinnedModel model) {
+			return FINGERTIPS.computeIfAbsent(model, m -> first(m, "IndexFinger_3_R"));
 		}
 
 		static int head(SkinnedModel model) {

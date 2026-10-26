@@ -131,6 +131,9 @@ public final class DevServer {
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
 					out.addProperty("anim", HeroAnimator.of(player).playing());
+					// where the first-person ofuda fingertip was last drawn, from the camera in the world's axes (the throw
+					// puff pops there)
+					out.addProperty("fingertip", dev.overcraft.client.model.HeroModelRenderer.viewFingertip().toString(java.text.NumberFormat.getInstance(java.util.Locale.ROOT)));
 					out.addProperty("anim1p", HeroAnimator.of(player).playingFirstPerson());
 					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
 					out.addProperty("heroAttached", attached == null ? "" : attached);

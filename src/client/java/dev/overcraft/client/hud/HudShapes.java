@@ -212,9 +212,14 @@ public final class HudShapes {
 		return POPS.get(hero);
 	}
 
-	/** How far the HUD head breaks out above the frame, in the frame's texels (two a pixel), and the band it overlaps. */
+	/**
+	 * How far the HUD head breaks out above the frame's top, in the frame's texels (two a unit), the band below its top
+	 * edges it overlaps, and how far below the top the pop image reaches (down the gable to its corners, and the band).
+	 */
 	public static final int POP_H = 52;
-	public static final int POP_OVERLAP = 10;
+	// deep enough to cover the slanted border (5 units across it is 5.8 down it: at 10, a line of it showed through the mask)
+	public static final int POP_OVERLAP = 14;
+	public static final int POP_BELOW = 2 * Math.round(HudShapes.GABLE_Y) + POP_OVERLAP;
 	private static final Map<Hero, Identifier> POPS = new HashMap<>();
 
 	/**
@@ -246,7 +251,7 @@ public final class HudShapes {
 			float centreX = (x0 + x1 + 1) / 2f;
 			// art pixel for frame texel (x, y): y measured from the frame's top, the hair top at -POP_H
 			NativeImage inside = new NativeImage(w, h, true);
-			NativeImage pop = new NativeImage(w, POP_H + POP_OVERLAP, true);
+			NativeImage pop = new NativeImage(w, POP_H + POP_BELOW, true);
 			for (int y = -POP_H; y < h; y++) {
 				for (int x = 0; x < w; x++) {
 					int sx = Math.round(centreX + (x + 0.5f - w / 2f) / scale);
@@ -255,8 +260,9 @@ public final class HudShapes {
 						continue;
 					}
 					int argb = art.getPixel(sx, sy);
-					if (y < POP_OVERLAP) {
-						// above the frame's top line, and its top band: drawn over the border
+					if (y < 2 * gable(Math.abs(x / 2f - SHIELD_W / 2f)) + POP_OVERLAP) {
+						// above the frame's top edges, and a band below them: drawn over the border (the hair and the mask's
+						// ears break over the gable, as in Overwatch's, the seventh critique)
 						pop.setPixel(x, y + POP_H, argb);
 					}
 					if (y >= 0) {
@@ -444,26 +450,30 @@ public final class HudShapes {
 	}
 
 	/**
-	 * The portrait's shield: a flat top with cut corners, straight sides, and a bottom that narrows to a short flat
-	 * point. Shrunk by inset (the border's inner edge).
+	 * The portrait's frame, a tall hexagon as Overwatch's (the seventh critique, from its frames): straight sides from
+	 * GABLE_Y to V_Y, the top edges rising about 33 degrees to a peak under the head, the bottom ones falling to a point.
+	 * Shrunk by inset (the border's inner edge). (A flat top with cut corners before: it read as a badge.)
 	 */
 	private static float shield(float x, float y, float inset) {
-		float cx = SHIELD_W / 2f;
-		float half = SHIELD_W / 2f - 2 - inset;
-		float top = 2 + inset;
-		float bottom = SHIELD_H - 2 - inset;
-		float dx = Math.abs(x - cx);
-		float d = Math.min(half - dx, y - top);
-		d = Math.min(d, bottom - y);
-		// cut top corners
-		d = Math.min(d, (half + (y - top) - dx - 12) * 0.7071f);
-		// the bottom narrows from 62% of the height to a point, just blunted (Overwatch's frame ends in a V: round 1 #27;
-		// it was flat, a third as wide)
-		float tip = half * 0.06f;
-		float taperStart = top + (bottom - top) * 0.62f;
-		float taperWidth = half - (half - tip) * Math.clamp((y - taperStart) / (bottom - taperStart), 0, 1);
-		float slope = (half - tip) / (bottom - taperStart);
-		d = Math.min(d, (taperWidth - dx) / (float) Math.sqrt(1 + slope * slope));
-		return coverage(d);
+		float half = SHIELD_W / 2f - 2;
+		float dx = Math.abs(x - SHIELD_W / 2f);
+		float d = half - dx;
+		// below the gable's edge
+		float rise = (GABLE_Y - FRAME_TOP) / half;
+		d = Math.min(d, (y - gable(dx)) / (float) Math.sqrt(1 + rise * rise));
+		// above the V's edge
+		float fall = (SHIELD_H - 2 - V_Y) / half;
+		d = Math.min(d, (SHIELD_H - 2 - fall * dx - y) / (float) Math.sqrt(1 + fall * fall));
+		return coverage(d - inset);
+	}
+
+	/** The frame's top in units: its peak at the middle, its side corners at GABLE_Y, its point's start at V_Y. */
+	private static final float FRAME_TOP = 2;
+	private static final float GABLE_Y = 37;
+	private static final float V_Y = 103;
+
+	/** The frame's top edge's height this far from its middle (units). */
+	private static float gable(float dx) {
+		return FRAME_TOP + (GABLE_Y - FRAME_TOP) * Math.min(dx / (SHIELD_W / 2f - 2), 1);
 	}
 }

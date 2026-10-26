@@ -26,6 +26,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -179,10 +180,13 @@ public final class HeroHud {
 	/** Notices cooldowns ending, the ofuda clip refilling and the ult starting, for the flashes and the countdown. */
 	private static void track(HeroSyncPayload s) {
 		long now = Util.getMillis();
-		if (ability1Seen > 0 && s.ability1Cooldown() <= 0) {
+		// Swift Step's hand seal is sent on top of its cooldown (Kiriko.sync): past it, she has stepped. Ready again only
+		// after a cooldown, not after a seal that found no room by the ally (nothing was spent)
+		float stepTotal = (float) KirikoStats.SWIFT_STEP_COOLDOWN;
+		if (ability1Seen > 0 && ability1Seen <= stepTotal && s.ability1Cooldown() <= 0) {
 			ability1ReadyAt = now;
 		}
-		if (ability1Seen <= 0 && s.ability1Cooldown() > 0) {
+		if (ability1Seen > stepTotal && s.ability1Cooldown() > 0 && s.ability1Cooldown() <= stepTotal) {
 			stepCastAt = now;
 		}
 		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
@@ -366,8 +370,11 @@ public final class HeroHud {
 		{
 			float time = Util.getMillis() / 1000f;
 			float pulse = 0.5f + 0.08f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
-			// lighter: at half strength over grass it tinted the whole view mint (the sixth critique)
-			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xD2F4FF, pulse * 0.6f));
+			// lighter: at half strength over grass it tinted the whole view mint (the sixth critique). In the dark, cyan:
+			// the pale one read as grey fog at night (the seventh, #7FE6F5 at the edge)
+			float light = Math.clamp((mc.level.getMaxLocalRawBrightness(mc.player.blockPosition()) / 15f - 0.2f) / 0.6f, 0, 1);
+			int mist = ARGB.srgbLerp(light, 0x7FE6F5, 0xD2F4FF) & 0xFFFFFF;
+			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(mist, pulse * 0.6f));
 			for (int i = 0; i < STREAKS / 2; i++) {
 				float phase = (time * 1.6f + i * 0.37f) % 1;
 				float angle = (i * 2.399963f + (int) (time * 1.6f + i * 0.37f) * 1.7f) % Mth.TWO_PI;
@@ -402,7 +409,8 @@ public final class HeroHud {
 		// the portrait, cut to a shield with a light-blue border
 		Identifier portrait = HudShapes.portrait(hero);
 		float px = 52;
-		float py = 890;
+		// the gable's peak under the head near y 900, the point near 1015 (Overwatch's frame, the seventh critique)
+		float py = 900;
 		float pw = 104;
 		float ph = pw * HudShapes.SHIELD_H / HudShapes.SHIELD_W;
 		image(g, HudShapes.SHIELD, px - 3, py - 3, pw + 6, ph + 6, 0x80000000);
@@ -415,7 +423,7 @@ public final class HeroHud {
 		Identifier pop = HudShapes.portraitPop(hero);
 		if (pop != null) {
 			float texel = pw / (HudShapes.SHIELD_W * 2f);
-			image(g, pop, px, py - HudShapes.POP_H * texel, pw, (HudShapes.POP_H + HudShapes.POP_OVERLAP) * texel, WHITE);
+			image(g, pop, px, py - HudShapes.POP_H * texel, pw, (HudShapes.POP_H + HudShapes.POP_BELOW) * texel, WHITE);
 		}
 
 		// the rest tilts with the HUD's curve: inner (right) end higher
@@ -448,10 +456,11 @@ public final class HeroHud {
 			}
 		}
 
-		// the player's slot in a tall light-blue box (Overwatch's party number, round 1 #28: #41CCFD), then the name
-		// plate: dark, with a glowing blue underline from the box, ending in a dot
-		fill(g, left + 2, 970, 24, 38, 0xFF41CCFD);
-		HudText.draw(g, Face.BODY, "1", left + 14, 995, 13, 0xFF0B2A3A, Align.CENTER);
+		// the player's slot in a tall light-blue box (Overwatch's party number, round 1 #28: #41CCFD; 30 x 44 with a thin
+		// pale digit, the seventh critique), then the name plate: dark, with a glowing blue underline from the box,
+		// ending in a dot
+		fill(g, left - 2, 970, 30, 44, 0xFF41CCFD);
+		HudText.draw(g, Face.SMALL, "1", left + 13, 998, 16, 0xB3A9E5FF, Align.CENTER);
 		float plate = left + 32;
 		String name = player.getName().getString().toUpperCase(Locale.ROOT);
 		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
@@ -461,7 +470,7 @@ public final class HeroHud {
 			fill(g, plate + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
 		}
 		HudText.draw(g, Face.BODY, name, plate + 12, 993, 14, WHITE, Align.LEFT);
-		fill(g, left + 2, 1004, 30 + nameW * 0.7f, 3, BLUE);
+		fill(g, left + 28, 1004, 4 + nameW * 0.7f, 3, BLUE);
 		image(g, HudShapes.GLOW, plate + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
 		g.pose().popMatrix();
 	}
@@ -805,6 +814,12 @@ public final class HeroHud {
 			}
 			screen[1] -= ALLY_LIFT;
 			float size = (float) Math.clamp(1.15 - distance / ALLY_RANGE * 0.5, 0.65, 1);
+			// one that would cross a side of the screen isn't drawn, as one off the top isn't (a long bar ran off the
+			// right edge cut mid-pip, the seventh critique)
+			float barHalf = barWidth(Ow.toOw(ally.getMaxHealth())) / 2 * size;
+			if (screen[0] - barHalf < 0 || screen[0] + barHalf > w) {
+				continue;
+			}
 			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
 			String name = ally instanceof Player || ally.hasCustomName() ? ally.getName().getString().toUpperCase(Locale.ROOT) : null;
 			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name);
@@ -822,21 +837,24 @@ public final class HeroHud {
 		g.pose().scale(size, size);
 		// everything above the bottom: chevron (10), name (14) if any, then the pips
 		g.pose().translate(0, name == null ? -14 : -30);
-		// one pip per 25 health, at most 20 (a golem's 1250 would run off the screen: then each pip holds more)
-		int pips = Math.clamp((int) Math.ceil(max / 25), 1, 20);
+		int pips = allyPips(max);
 		float per = max / pips;
-		// squarer pips, about Overwatch's 10 x 9 at an 11-12 px pitch (the fourth critique: ours were 6 x 10, taller than
-		// wide, 80 px for ten), each with a thin dark edge
-		float pipW = 9;
-		float pipH = 8;
-		float pitch = 11;
-		float left = -(pips * pitch - (pitch - pipW)) / 2;
+		float left = -barWidth(max) / 2;
 		for (int i = 0; i < pips; i++) {
 			float held = Math.clamp((health - i * per) / per, 0, 1);
-			float px = left + i * pitch;
-			fill(g, px - 1, -pipH - 1, pipW + 2, pipH + 2, alpha(0x000000, 0.45f * alpha));
-			if (held > 0) {
-				fill(g, px, -pipH, pipW * (held > 0.9f ? 1 : held), pipH, alpha(0xFFFFFF, alpha));
+			float px = left + i * PIP_PITCH;
+			if (held > 0.9f) {
+				// a thin dark edge, half a pixel each side, so neighbours keep a gap
+				fill(g, px - 0.5f, -PIP_H - 0.5f, PIP_W + 1, PIP_H + 1, alpha(0x000000, 0.45f * alpha));
+				fill(g, px, -PIP_H, PIP_W, PIP_H, alpha(0xFFFFFF, alpha));
+			} else {
+				// an empty slot of its own, dark with a lighter rim (the edges touched: lost health read as one dark slab,
+				// the seventh critique), and what's left of it in white
+				fill(g, px, -PIP_H, PIP_W, PIP_H, alpha(0x000000, 0.45f * alpha));
+				outline(g, px, -PIP_H, PIP_W, PIP_H, 1, alpha(0xFFFFFF, 0.3f * alpha));
+				if (held > 0) {
+					fill(g, px, -PIP_H, PIP_W * held, PIP_H, alpha(0xFFFFFF, alpha));
+				}
 			}
 		}
 		float below = 4;
@@ -846,6 +864,24 @@ public final class HeroHud {
 		}
 		image(g, HudShapes.CHEVRON, -6, below, 12, 10, alpha(0x29A8E0, alpha));
 		g.pose().popMatrix();
+	}
+
+	/**
+	 * Ally pips: squarer, about Overwatch's 10 x 9 at an 11-12 px pitch (the fourth critique: ours were 6 x 10, taller than
+	 * wide, 80 px for ten).
+	 */
+	private static final float PIP_W = 9;
+	private static final float PIP_H = 8;
+	private static final float PIP_PITCH = 11;
+
+	/** One pip per 25 health, at most 20 (a golem's 1250 would run off the screen: then each pip holds more). */
+	private static int allyPips(float max) {
+		return Math.clamp((int) Math.ceil(max / 25), 1, 20);
+	}
+
+	/** An ally bar's width at full size. */
+	private static float barWidth(float max) {
+		return allyPips(max) * PIP_PITCH - (PIP_PITCH - PIP_W);
 	}
 
 	/** World position to HUD position (reference pixels), or null behind the camera. */
