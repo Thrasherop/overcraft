@@ -5,6 +5,45 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The owner's playtest, first batch** (issues #11-#20, from build b480e53; each reproduced in game first, then played
+again on the fix):
+- **#11, reload played the wrong animation** (quick melee in third person, an ofuda throw in first person). The clips
+  we called the reload were a variant of the ofuda throw. Her real reload is a single clip (alias 0x004, which we had
+  called "equip"): a fresh fan of three kunai, drawn and fanned (third person ABCF, 1.33 s; first person A810,
+  1.47 s). Clip maps fixed, and the two models' clips renamed in place (`tools/rename_glb_clips.py`): **the asset zip
+  needs rebuilding** (`py tools/build_asset_pack.py zip`). Played: R in both views (`r8a_rl1_sheet`, `r8a_rl3_sheet`).
+- **#12, hold-mode ofuda looked like they all left at once on release.** Overwatch does refill the ofuda when you
+  stop (the wiki: "automatically reload when they are not in use ... all 10 restored"). But ours played the wrong
+  reload clip (#11), dimmed the whole counter, and blocked a new press until the refill. Now:
+  - the counter keeps the ofuda left;
+  - a new press throws them at once;
+  - the refill has no animation of its own: the volley's end clip shows the new ofuda.
+
+  Played: released at 6, pressed again (6 -> 2), refilled to 10 (`r8a_of_sheet`).
+- **#14, first-person arms:**
+  - 10% bigger on screen.
+  - No Minecraft walking bob: it swung them like Steve's hand (`h14_sheet`). Also dropped: Overwatch's add_walk
+    layer, played as raw deltas, which lifted them about 85 px while moving.
+  - They now drift a little against the movement: 21 px aside strafing, 27 px up falling, within 3 px still while
+    running (`r8a_*`).
+- **#15, projectile sizes:**
+  - Minecraft widens every projectile's hits from 0 to 0.3 m over its first 8 ticks, whatever its size. Ours now hit
+    with their own radius from the first tick.
+  - Kunai 0.195 m (base 0.12 plus Overwatch's 0.075 for projectiles over 50 m/s; the wiki: 0.19), ofuda 0.3, Suzu
+    0.2. Played on a husk 6 m away: 0.15 m outside its box hits, 0.25 m misses.
+  - The thrown ofuda's look is back to the effect data's 0.75 m.
+- **#19, her eyes looked dead:**
+  - Overwatch's eye-shadow shell (a flat near-black texture, faded by the game's shader) was drawn solid over her
+    eyes. It's no longer drawn.
+  - The eyeballs' images have only the iris opaque (the shader adds the white), so the eye white now goes in under
+    them.
+  - Select screen before/after: `eyes_pair2`.
+- **#20, friendly fire:** a new option (Options > HERO > ALL HEROES, off by default). On, your kunai and quick melee
+  hurt allies (players on your team, pets, villagers). Played: kunai at a villager off (20 -> 20) and on (20 ->
+  10.4), quick melee on (10.4 -> 7.2).
+- Still open from the same playtest: #13 (voice lines by event and target hero, On Fire), #16 (Kitsune Rush's
+  in-path loop), #17 (Swift Step's sound), #18 (Victory on killing the Ender Dragon).
+
 **Seventh critique round** (`tools/reference/critique-2026-10-26-round7.md`). Each item was reproduced on the old build
 at 1080p, then fixed and played again:
 - **Kitsune Rush in first person no longer turns the view mint.** The cast's smoke cloud spawned around her own camera.

@@ -20,7 +20,8 @@ public final class OcEntities {
 	public static final EntityType<OfudaEntity> OFUDA = register("ofuda", EntityType.Builder.<OfudaEntity>of(OfudaEntity::new, MobCategory.MISC)
 		.noLootTable().sized((float) KirikoStats.OFUDA_RADIUS * 2, (float) KirikoStats.OFUDA_RADIUS * 2).clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<SuzuEntity> SUZU = register("suzu", EntityType.Builder.<SuzuEntity>of(SuzuEntity::new, MobCategory.MISC)
-		.noLootTable().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
+		.noLootTable().sized((float) KirikoStats.SUZU_PROJECTILE_RADIUS * 2, (float) KirikoStats.SUZU_PROJECTILE_RADIUS * 2)
+		.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

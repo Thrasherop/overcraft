@@ -12,10 +12,13 @@
 0-32_00000000B0E1 = throw_ofuda
 0-36_00000000A8F5 = throw_ofuda_hold
 0-32_00000000A8F6 = throw_ofuda_end
-# reload (0x16E -> 0x812): the ofuda flicked away, then the hands come back crossed as new kunai and ofuda appear
-0-32_00000000A49C = reload_start
-0-32_00000000A49D = reload
-128-32_00000000A810 = equip
+# not the reload (the owner saw an ofuda throw, #11): the ofuda throw's variant (0x16E -> 0x812), the fan flicked
+# forward, then back to the crossed hold
+0-32_00000000A49C = throw_ofuda_alt_start
+0-32_00000000A49D = throw_ofuda_alt
+# the reload (alias 0x004): the hands drop out of view, one comes back turning a fresh fan of three kunai, then the
+# crossed hold as new ofuda appear; 1.47 s (#11)
+128-32_00000000A810 = reload
 0-32_00000000A529 = melee
 128-32_00000000A50A = throw_suzu
 0-32_00000000A84C = throw_suzu_end

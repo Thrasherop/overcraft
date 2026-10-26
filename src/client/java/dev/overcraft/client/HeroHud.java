@@ -698,12 +698,12 @@ public final class HeroHud {
 
 	/**
 	 * The ofuda counter under the crosshair: five amber "/" bars, one per volley (two ofuda), spent ones from the right
-	 * as thin light outlines over a dark fill, all spent while reloading, a white flash when the clip comes back; a thin
-	 * bracket under it.
+	 * as thin light outlines over a dark fill, a white flash when the clip comes back; a thin bracket under it. The
+	 * refill started by letting go keeps the ofuda left showing (all dim, they read as all thrown: #12).
 	 */
 	private static void ofudaCounter(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, float cy) {
 		int segments = KirikoStats.OFUDA_AMMO / KirikoStats.OFUDA_PER_THROW;
-		int loaded = s.secondaryReload() >= 0 ? 0 : s.secondaryAmmo() / KirikoStats.OFUDA_PER_THROW;
+		int loaded = s.secondaryAmmo() / KirikoStats.OFUDA_PER_THROW;
 		boolean flash = since(ofudaRefilledAt) < FLASH_TIME;
 		// the masks are drawn at two texels a pixel
 		float w = HudShapes.SEGMENT_W / 2f;

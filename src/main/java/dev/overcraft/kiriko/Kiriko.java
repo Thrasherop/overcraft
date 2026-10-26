@@ -84,13 +84,16 @@ public final class Kiriko implements HeroKit {
 				if (s.primaryAmmo == 0) {
 					startPrimaryReload(player, s);
 				}
-			} else if (s.secondaryHeld && s.secondaryAmmo >= OFUDA_PER_THROW && s.secondaryReload < 0
+			} else if (s.secondaryHeld && s.secondaryAmmo >= OFUDA_PER_THROW
 				&& (s.primaryReload < 0 || s.primaryAmmoRestored || HeroManager.options(player).ofudaCancelsReload())) {
 				// throwing ofuda interrupts a kunai reload (Overwatch's "Healing Ofuda cancels reload", on by default;
 				// off, the ofuda wait for it)
 				if (s.primaryReload >= 0 && !s.primaryAmmoRestored) {
 					s.primaryReload = -1;
 				}
+				// and the refill they start when let go: the ofuda still in hand are thrown at once (ours: the wiki only
+				// says they reload when not in use; waiting out the refill read as all of them gone, #12)
+				s.secondaryReload = -1;
 				throwOfuda(player);
 				s.secondaryAmmo -= OFUDA_PER_THROW;
 				s.weaponRecovery += OFUDA_INTERVAL;
@@ -142,14 +145,12 @@ public final class Kiriko implements HeroKit {
 	}
 
 	/**
-	 * The ofuda refill is silent: Overwatch has no sound of its own for it. One reload animation serves both weapons:
-	 * played here only when the kunai aren't reloading already.
+	 * The ofuda refill is silent, with no animation of its own: Overwatch has neither (its only reload clip draws
+	 * kunai; the volley's end, throw_ofuda_end, shows the new ofuda appear). Playing the kunai reload here looked like
+	 * the ofuda all thrown at once (#12).
 	 */
 	private static void startSecondaryReload(ServerPlayer player, HeroState s) {
 		s.secondaryReload = 0;
-		if (s.primaryReload < 0) {
-			Combat.animate(player, "reload");
-		}
 	}
 
 	private static void throwKunai(ServerPlayer player) {

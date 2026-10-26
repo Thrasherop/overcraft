@@ -20,7 +20,8 @@
 		"ClientPacketListenerMixin",
 		"ChatComponentMixin",
 		"ChatLinesMixin",
-		"MinecraftModeArmMixin"
+		"MinecraftModeArmMixin",
+		"HandBobMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

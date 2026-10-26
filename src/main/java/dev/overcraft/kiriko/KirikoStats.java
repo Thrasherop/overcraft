@@ -20,7 +20,11 @@ public final class KirikoStats {
 	public static final double KUNAI_RELOAD = 1.3;           // whole animation
 	public static final double KUNAI_RELOAD_AMMO_AT = 0.65;  // ammo comes back here
 	public static final double KUNAI_SPEED = 90;             // m/s
-	public static final double KUNAI_RADIUS = 0.12;          // Dec 2025
+	/**
+	 * The hit radius: base 0.12 (Dec 2025) plus Overwatch's 0.075 for travel-time projectiles over 50 m/s (Mar 2024);
+	 * the wiki's infobox: 0.19. It was 0.12 alone, the base without the modifier (#15).
+	 */
+	public static final double KUNAI_RADIUS = 0.195;
 
 	// Healing Ofuda (RMB here; primary fire in Overwatch)
 	public static final double OFUDA_HEAL = 12;              // Jul 2026
@@ -29,7 +33,7 @@ public final class KirikoStats {
 	public static final double OFUDA_THROWS_PER_SECOND = 7;  // Apr 2026
 	public static final double OFUDA_RELOAD = 0.9;
 	public static final double OFUDA_SPEED = 18;             // Sep 2026
-	public static final double OFUDA_RADIUS = 0.3;
+	public static final double OFUDA_RADIUS = 0.3;           // the wiki's infobox
 	public static final double OFUDA_SEEK_RANGE = 30;        // Sep 2026
 	/** Ours: no source gives the talismans' lifetime. Long enough to cover the seek range at their speed. */
 	public static final double OFUDA_LIFETIME = 2.5;
@@ -51,6 +55,8 @@ public final class KirikoStats {
 	public static final double SUZU_COOLDOWN = 14;           // Nov 2024
 	public static final double SUZU_RADIUS = 4;              // Sep 2026
 	public static final double SUZU_SPEED = 37;
+	/** The thrown Suzu's hit radius (the wiki's infobox). */
+	public static final double SUZU_PROJECTILE_RADIUS = 0.2;
 	public static final double SUZU_HEAL = 80;               // Dec 2023
 	public static final double SUZU_PHASED = 0.5;            // Sep 2026
 	/** Thrown straight up it lands after about 7 s (wiki): g = 2v/t. */

@@ -146,12 +146,12 @@ public final class KirikoFx {
 		Vec3 last = Fx.trailHead(id);
 		Vec3 heading = last == null || last.distanceToSqr(at) < 1.0E-6 ? null : at.subtract(last).normalize();
 		Particle talisman = Fx.attach("ofuda_talisman/" + id, at, () -> {
-			// 2F93/7E2D: size 0.8 on the 1.5 x 1.3 sheet; the silhouette with its fading tail about 0.75 m (ours, from it)
-			// half a metre (it was 0.75: a pair just thrown filled the sides of the view, the sixth critique), faded out
-			// near the camera since they leave from her hand
+			// 2F93/7E2D: size 0.8 on the 1.5 x 1.3 sheet; the silhouette with its fading tail about 0.75 m (ours, from it).
+			// Back to that from half a metre (the owner: projectile sizes should be accurate, #15); the pair just thrown
+			// no longer fills the sides of the view (the sixth critique's reason): it fades out near the camera
 			// blended, both: added, the teal pair near the camera summed to pale green over grass (the seventh critique)
 			Particle t = Fx.soft("talisman_flight#4", p(homing ? Palette.GOLD : Palette.TEAL));
-			return t == null ? null : t.loop(8).life(0.2f).size(0.5f, 0.5f).nearFade(2.5f)
+			return t == null ? null : t.loop(8).life(0.2f).size(0.75f, 0.75f).nearFade(2.5f)
 				.alpha(homing ? 0.95f : 0.9f).fade(0.1f, 0.5f);
 		});
 		if (talisman != null && heading != null) {

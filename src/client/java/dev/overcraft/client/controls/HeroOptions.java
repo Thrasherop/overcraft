@@ -33,6 +33,8 @@ public final class HeroOptions {
 		public boolean ofudaCancelsReload = true;
 		/** Healing Ofuda UI: the ofuda counter under the crosshair. */
 		public boolean ofudaUi = true;
+		/** Friendly fire: your kunai and quick melee hurt your allies too (off: they pass through them, as Overwatch's). */
+		public boolean friendlyFire = false;
 	}
 
 	private static Values values = new Values();
@@ -74,7 +76,7 @@ public final class HeroOptions {
 	public static void send() {
 		if (ClientPlayNetworking.canSend(HeroOptionsPayload.TYPE)) {
 			ClientPlayNetworking.send(new HeroOptionsPayload(values.ofudaSensitivity / 100f, values.swiftStepSensitivity / 100f,
-				values.ofudaCancelsReload));
+				values.ofudaCancelsReload, values.friendlyFire));
 		}
 	}
 

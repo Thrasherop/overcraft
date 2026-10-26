@@ -142,5 +142,17 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   front, 208 on the back) textured with Blizzard's baked shade (#CDCCCB to #756664 in atlas 31E3B), not a back face lit
   the wrong way round; a normal flip changed nothing there and, tested as the world's camera in the menu's
   orthographic, mirrored preview (`scale(s, s, -s)`), turned half her face dark.
+- Minecraft's projectile hits ignore the projectile's size: `ProjectileUtil.computeMargin` widens the target boxes from
+  0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`); test it
+  with a still mob and shots aimed just inside and just outside the radius.
+- Overwatch's shaders do work a glTF export loses. A one-colour texture on a blended piece over the eyes is a shadow
+  the shader fades; an eyeball image with only the iris opaque gets its white from the shader. Check which bones a
+  piece follows and what its texture holds before drawing it as is.
+- Additive clips can carry big offsets, not just motion around zero: add_walk lifted the arms 85 px for as long as
+  she moved. Measure a pose against still, not only how it moves.
+- When a clip "looks wrong" to the owner, re-identify it from the game's own graph (alias chains, which sounds sit
+  on it, length against the stat) and render strips. A whole action can be mislabelled: the "reload" was an ofuda
+  throw, the real reload was filed as "equip". Renaming clips in a .glb doesn't need a Blender re-export
+  (`tools/rename_glb_clips.py`); keep tools/clipmaps in step.
 - A flat effect "on the ground" (a ring 8 m across) floats over any slope: lay it in short pieces, each at the top of
   the first solid block under open space near its point (`KirikoFx.groundY`), none where there's no ground in reach.

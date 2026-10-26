@@ -24,8 +24,6 @@ import java.util.Map;
  */
 public final class HeroAnimator {
 	public static final float FADE = 0.15f;
-	/** Metres per first-person walk-bob cycle (the research reads Overwatch's as distance-driven, scale 2). */
-	private static final float WALK_CYCLE = 2.0f;
 	/** Ticks a landing plays after a fall at least this fast (blocks per tick). */
 	private static final double HARD_LANDING = 0.4;
 	/**
@@ -64,9 +62,6 @@ public final class HeroAnimator {
 	private float climbShift;
 	private final ActionTrack actions = new ActionTrack();
 	private final ActionTrack actionsFirstPerson = new ActionTrack();
-	/** Metres walked on the ground (drives the first-person walk bob, as Overwatch's does). */
-	private float walked;
-	private float groundSpeed;
 	private boolean wasOnGround = true;
 	private double fallSpeed;
 	private float landedAt = -100;
@@ -157,12 +152,9 @@ public final class HeroAnimator {
 		if (breathe != null) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
-		SkinnedModel.Clip walk = clip(model, "add_walk");
-		if (walk != null && !climb) {
-			// the bob follows the distance walked, one cycle per WALK_CYCLE metres; full strength at running speed
-			float cycle = (walked % WALK_CYCLE) / WALK_CYCLE * walk.duration();
-			Skeleton.addAdditive(walk, cycle, pose, Math.clamp(groundSpeed / 5.5f, 0, 1));
-		}
+		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
+		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
+		// movement (HeroModelRenderer.drift, the owner's playtest: #14)
 		actionsFirstPerson.apply(model, pose, now, null);
 		int tip = UpperBody.fingertip(model);
 		if (tip >= 0) {
@@ -336,10 +328,6 @@ public final class HeroAnimator {
 		double left = vx * Math.cos(yaw) + vz * Math.sin(yaw);
 		double speed = Math.sqrt(vx * vx + vz * vz);
 		boolean moving = speed > 0.02;
-		groundSpeed = onGround ? (float) speed * 20 : 0;
-		if (onGround) {
-			walked += (float) speed;
-		}
 		boolean crouching = entity.getPose() == Pose.CROUCHING;
 
 		String next;

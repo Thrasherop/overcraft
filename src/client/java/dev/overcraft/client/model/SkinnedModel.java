@@ -38,6 +38,26 @@ public final class SkinnedModel {
 		}
 	}
 
+	/** Whether most of the piece's vertices follow (by their heaviest joint) a bone whose name contains part. */
+	public boolean mostlyOn(Piece piece, String part) {
+		if (piece.vertexCount() == 0) {
+			return false;
+		}
+		int on = 0;
+		for (int v = 0; v < piece.vertexCount(); v++) {
+			int heaviest = 0;
+			for (int k = 1; k < 4; k++) {
+				if (piece.weight4()[v * 4 + k] > piece.weight4()[v * 4 + heaviest]) {
+					heaviest = k;
+				}
+			}
+			if (nodeNames[joints[piece.joint4()[v * 4 + heaviest]]].contains(part)) {
+				on++;
+			}
+		}
+		return on * 2 > piece.vertexCount();
+	}
+
 	/** One animation track: a node's translation, rotation or scale over time. */
 	public record Channel(int node, char path, float[] times, float[] values, boolean step) {
 	}

@@ -46,7 +46,7 @@ public final class QuickMelee {
 		double cosLimit = Math.cos(Math.toRadians(HALF_ANGLE));
 		boolean hit = false;
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(RANGE + 1))) {
-			if (!Allies.isEnemy(hero, target)) {
+			if (!Allies.canHurt(hero, target)) {
 				continue;
 			}
 			// the nearest point of the body counts, so a melee at the feet or the head reaches

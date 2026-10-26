@@ -56,6 +56,14 @@ public final class Allies {
 			&& !isAlly(hero, other);
 	}
 
+	/**
+	 * Whether the hero's attacks (kunai, quick melee) hurt other: an enemy, or an ally with the hero's friendly fire on
+	 * (a hero option, off by default: Overwatch has none, #20).
+	 */
+	public static boolean canHurt(LivingEntity hero, Entity other) {
+		return isEnemy(hero, other) || hero instanceof Player player && HeroManager.options(player).friendlyFire() && isAlly(hero, other);
+	}
+
 	private static boolean playersAllied(LivingEntity hero, Player other) {
 		if (hero.getTeam() == null && other.getTeam() == null) {
 			return true;

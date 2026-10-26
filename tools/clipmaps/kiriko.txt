@@ -50,7 +50,10 @@
 0-32_00000000ABBB = swift_step_end        # ...and arrive (+ AEE4)
 0-32_00000000ABF0 = ult_cast              # Kitsune Rush cast (B021 / ABF0 / B01E)
 0-32_00000000ABF1 = ult_cast_end          # ...end (B022 / ABF1 / B01F)
-0-32_00000000ABCF = equip                 # alias 0x004 (research: probably equip)
+# the reload (alias 0x004, once thought the equip: Kiriko has no weapon switch): the ofuda go away, the kunai arm
+# draws a fresh fan of three and fans it beside her shoulder, back to the idle; 1.33 s, the kunai reload's 1.3. Found
+# 2026-10-26 after the owner's playtest (#11); renders in local-assets/previews/reload/
+0-32_00000000ABCF = reload
 # kunai (alias 0x16F, 4 variants that alternate arms; the owner: "left swing" then "right swing"), each followed by
 # the recovery to the hold (alias 0x40A). AB91, the old throw_kunai, is a recovery: "it just jumps into her".
 0-32_00000000AB5D = throw_kunai_1
@@ -64,11 +67,10 @@
 0-32_00000000B00F = throw_ofuda
 0-32_00000000B00B = throw_ofuda_hold
 0-32_00000000B0C9 = throw_ofuda_end
-# reload (the research's other start -> middle chain, 0x16E -> 0x812, 0.2 + 0.8 s; checked by eye 2026-10-26: its
-# 1P twins flick the held ofuda away, then the hands come back crossed with fresh kunai and ofuda; here the arms come
-# back in from wide to the hold)
-0-32_00000000AD90 = reload_start
-0-32_00000000AD94 = reload
+# not the reload (it was played as one: the owner saw a quick melee, #11): a variant of the ofuda throw (0x16E ->
+# 0x812, after the same wait and condition as the throw's start, carrying its sound), the fan thrust straight ahead
+0-32_00000000AD90 = throw_ofuda_alt_start
+0-32_00000000AD94 = throw_ofuda_alt
 128-32_00000000AF57 = melee
 128-32_00000000AFB8 = melee_2
 128-32_00000000AFB9 = melee_3

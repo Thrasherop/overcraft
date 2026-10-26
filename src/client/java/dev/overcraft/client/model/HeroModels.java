@@ -27,8 +27,11 @@ import java.util.Optional;
  * (never shipped, see LocalAssetPack). A hero without one keeps the Minecraft player model.
  */
 public final class HeroModels {
-	/** A loaded model and its textures (by image index; null where the image didn't load). */
-	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures) {
+	/**
+	 * A loaded model and its textures (by image index; null where the image didn't load), and which images are one flat
+	 * colour (Overwatch's shader-driven overlays use them: HeroModelRenderer.isEyeShadow).
+	 */
+	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures, boolean[] flat) {
 	}
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
@@ -119,6 +122,39 @@ public final class HeroModels {
 		}
 	}
 
+	/** The white of the eyes, under their iris images (ours: a warm off-white, darkened by the lighting). */
+	private static final int EYE_WHITE = 0xE6DED6;
+
+	/** Lays the image over this colour: opaque throughout, its own pixels kept by their alpha. */
+	private static void underlay(NativeImage image, int rgb) {
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				int argb = image.getPixel(x, y);
+				float a = (argb >>> 24) / 255f;
+				int r = Math.round(((argb >> 16) & 0xFF) * a + ((rgb >> 16) & 0xFF) * (1 - a));
+				int g = Math.round(((argb >> 8) & 0xFF) * a + ((rgb >> 8) & 0xFF) * (1 - a));
+				int b = Math.round((argb & 0xFF) * a + (rgb & 0xFF) * (1 - a));
+				image.setPixel(x, y, 0xFF000000 | r << 16 | g << 8 | b);
+			}
+		}
+	}
+
+	/** A small image of one colour throughout. */
+	private static boolean isFlat(NativeImage image) {
+		if (image.getWidth() * image.getHeight() > 64 * 64) {
+			return false;
+		}
+		int first = image.getPixel(0, 0);
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				if (image.getPixel(x, y) != first) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private static void register(Map<String, Prepared> prepared) {
 		HeroArt.clear();
 		dev.overcraft.client.hud.HudShapes.clear();
@@ -130,11 +166,22 @@ public final class HeroModels {
 		EXTRA_MODELS.clear();
 		prepared.forEach((name, p) -> {
 			Identifier[] ids = new Identifier[p.images().size()];
+			boolean[] flat = new boolean[ids.length];
+			// the eyeballs' images: only the iris is opaque in them, Overwatch's eye shader draws the white around it.
+			// Drawn as they are, the eyes were see-through round the iris (a pale ring of sky, #19): the white goes in
+			// under the iris here
+			for (SkinnedModel.Piece piece : p.model().pieces) {
+				if (piece.image() >= 0 && piece.image() < ids.length && p.images().get(piece.image()) != null
+					&& p.model().mostlyOn(piece, "Eyeball")) {
+					underlay(p.images().get(piece.image()), EYE_WHITE);
+				}
+			}
 			for (int i = 0; i < ids.length; i++) {
 				NativeImage image = p.images().get(i);
 				if (image == null) {
 					continue;
 				}
+				flat[i] = isFlat(image);
 				if (name.equals("projectile_ofuda") && i == 0) {
 					dev.overcraft.client.effect.EffectArt.keepTalisman(image);
 				}
@@ -143,7 +190,7 @@ public final class HeroModels {
 				REGISTERED.add(id);
 				ids[i] = id;
 			}
-			Loaded loaded = new Loaded(p.model(), ids);
+			Loaded loaded = new Loaded(p.model(), ids, flat);
 			Hero hero = Hero.byId(name);
 			if (hero != null) {
 				MODELS.put(hero, loaded);

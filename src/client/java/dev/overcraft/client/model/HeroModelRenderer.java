@@ -12,6 +12,7 @@ import dev.overcraft.hero.HeroManager;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.core.Direction;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -25,9 +26,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
@@ -214,6 +217,12 @@ public final class HeroModelRenderer {
 		HeroAnimator animator = HeroAnimator.of(player);
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
 		poseStack.pushPose();
+		// (the stack acts in view space from here: x right, y up, -z ahead)
+		// a little behind the movement, as Overwatch's arms drift: aside when strafing, up when falling (#14)
+		drift(player, partialTicks);
+		poseStack.translate(driftX, driftY, 0);
+		// 10% bigger on screen than the model's own (the owner's playtest, #14): scaled across the view, not along it
+		poseStack.scale(ARM_SCALE, ARM_SCALE, 1);
 		// the arms lag a little behind the view when turning (Minecraft's hand sway, a bit stronger: Overwatch's arms
 		// swing visibly)
 		poseStack.rotateDegrees(Axis.XP, swayPitch * ARM_SWAY);
@@ -285,7 +294,7 @@ public final class HeroModelRenderer {
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			if (texture == null) {
+			if (texture == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
 			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
@@ -339,7 +348,7 @@ public final class HeroModelRenderer {
 		// below clipping, so her shape still reads (at full white she was a flat cut-out, the third critique)
 		int color = Math.clamp(Math.round(strength * 0.45f * 255), 0, 255) << 24 | rgb;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
-			if (piece.image() < 0 || loaded.textures()[piece.image()] == null) {
+			if (piece.image() < 0 || loaded.textures()[piece.image()] == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
@@ -369,11 +378,55 @@ public final class HeroModelRenderer {
 
 	/** How much of the view's lag the arms follow (Minecraft's hand uses 0.1: ours, by eye against gameplay footage). */
 	private static final float ARM_SWAY = 0.15f;
+	/** The first-person arms' size on screen, against the model's (the owner: "try making them 10% bigger", #14). */
+	private static final float ARM_SCALE = 1.1f;
+	/**
+	 * How far the arms drift behind the movement (metres per m/s, ours), its limit, and how fast it follows (s): about
+	 * 9 mm aside at a 5.5 m/s strafe (1.2 cm moved the arms 42 px: more than "slightly"), up to 2.5 cm falling;
+	 * Overwatch's is subtle (#14).
+	 */
+	private static final float DRIFT_SIDE = 0.0016f;
+	private static final float DRIFT_UP = 0.0015f;
+	private static final float DRIFT_MAX = 0.025f;
+	private static final float DRIFT_TIME = 0.1f;
+	private static float driftX;
+	private static float driftY;
+	private static long driftAt = -1;
+
+	/** Moves the arms' drift toward the player's velocity in view space, against it. */
+	private static void drift(LocalPlayer player, float partialTicks) {
+		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
+		Vec3 v = player.getDeltaMovement().scale(20);
+		Vector3fc left = camera.leftVector();
+		Vector3fc up = camera.upVector();
+		float right = -(float) (v.x * left.x() + v.y * left.y() + v.z * left.z());
+		float rise = (float) (v.x * up.x() + v.y * up.y() + v.z * up.z());
+		float targetX = Math.clamp(-right * DRIFT_SIDE, -DRIFT_MAX, DRIFT_MAX);
+		float targetY = Math.clamp(-rise * DRIFT_UP, -DRIFT_MAX, DRIFT_MAX);
+		long now = Util.getMillis();
+		float dt = driftAt < 0 ? 1 : Math.min(1, (now - driftAt) / 1000f);
+		driftAt = now;
+		float k = 1 - (float) Math.exp(-dt / DRIFT_TIME);
+		driftX += (targetX - driftX) * k;
+		driftY += (targetY - driftY) * k;
+	}
 	/** Pieces at most this big (metres, corner to corner) can be held props. */
 	private static final float PROP_SIZE = 0.6f;
 	/** A prop triangle within this of the model's origin (metres) is parked, not held. */
 	private static final float STOWED_RADIUS = 0.3f;
 	private static final Map<SkinnedModel.Piece, Boolean> PROPS = new IdentityHashMap<>();
+
+	/**
+	 * Overwatch's eye shadow: a shell over the eyes, skinned to the eyelids, in one flat near-black (Kiriko's: 32 x 32 of
+	 * #0E0E0E). The game's shader fades it softly; drawn as it is, it laid black slabs over her eyes ("she looks dead
+	 * inside", the owner's playtest: #19), so it isn't drawn.
+	 */
+	private static boolean isEyeShadow(HeroModels.Loaded loaded, SkinnedModel.Piece piece) {
+		return EYE_SHADOWS.computeIfAbsent(piece, p -> p.image() >= 0 && p.image() < loaded.flat().length && loaded.flat()[p.image()]
+			&& loaded.model().mostlyOn(p, "Lid"));
+	}
+
+	private static final Map<SkinnedModel.Piece, Boolean> EYE_SHADOWS = new IdentityHashMap<>();
 
 	/** Skins the piece's vertices and writes its triangles (as quads with the last corner doubled). */
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,

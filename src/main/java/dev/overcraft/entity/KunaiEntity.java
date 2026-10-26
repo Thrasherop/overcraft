@@ -46,7 +46,7 @@ public class KunaiEntity extends OwProjectile {
 
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		return super.canHitEntity(entity) && getOwner() instanceof LivingEntity owner && Allies.isEnemy(owner, entity);
+		return super.canHitEntity(entity) && getOwner() instanceof LivingEntity owner && Allies.canHurt(owner, entity);
 	}
 
 	@Override

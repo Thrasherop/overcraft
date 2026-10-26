@@ -145,6 +145,9 @@
 	"overcraft.options.hero.auto_climb.about": "On: hold forward while airborne to climb. Off: hold jump and forward facing a wall.",
 	"overcraft.options.hero.ofuda_cancels_reload": "Healing Ofuda cancels reload",
 	"overcraft.options.hero.ofuda_cancels_reload.about": "On: throwing ofuda interrupts a reload. Off: they can't be thrown while reloading.",
+	"overcraft.options.all_heroes": "All heroes",
+	"overcraft.options.hero.friendly_fire": "Friendly fire",
+	"overcraft.options.hero.friendly_fire.about": "On: your kunai and quick melee hurt your allies too (players on your team, your pets, villagers). Off: they pass through them, as in Overwatch.",
 	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
 	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair.",
 	"overcraft.hud.eliminated": "Eliminated"

@@ -61,7 +61,10 @@ public class OverwatchOptionsScreen extends OwScreen {
 						  @Nullable IntSupplier percent, @Nullable IntConsumer setPercent) {
 	}
 
+	/** The first ALL_HEROES options are every hero's (under "ALL HEROES"), the rest the hero's own (under their name). */
+	private static final int ALL_HEROES = 1;
 	private static final List<Option> OPTIONS = List.of(
+		new Option("friendly_fire", () -> HeroOptions.get().friendlyFire, v -> HeroOptions.get().friendlyFire = v, null, null),
 		new Option("ofuda_sensitivity", null, null, () -> HeroOptions.get().ofudaSensitivity,
 			v -> HeroOptions.get().ofudaSensitivity = v),
 		new Option("toggle_ofuda", () -> HeroOptions.get().toggleOfuda, v -> HeroOptions.get().toggleOfuda = v, null, null),
@@ -282,7 +285,7 @@ public class OverwatchOptionsScreen extends OwScreen {
 	// ---- the HERO page ----
 
 	private float optionY(int i) {
-		return TOP + ROW_H + i * ROW_H;
+		return TOP + ROW_H + i * ROW_H + (i >= ALL_HEROES ? ROW_H + 14 : 0);
 	}
 
 	/** Index of the option row at the mouse, or -1. */
@@ -317,7 +320,10 @@ public class OverwatchOptionsScreen extends OwScreen {
 
 	private void heroPage(GuiGraphicsExtractor g, int mouseX, int mouseY) {
 		Hero hero = ClientHero.hero() != null ? ClientHero.hero() : Hero.KIRIKO;
-		HudText.draw(g, Face.BODY, hero.displayName.toUpperCase(Locale.ROOT), LEFT, TOP + 25, 15, ORANGE, Align.LEFT);
+		HudText.draw(g, Face.BODY, Component.translatable("overcraft.options.all_heroes").getString().toUpperCase(Locale.ROOT),
+			LEFT, TOP + 25, 15, ORANGE, Align.LEFT);
+		HudText.draw(g, Face.BODY, hero.displayName.toUpperCase(Locale.ROOT), LEFT, optionY(ALL_HEROES) - ROW_H + 25, 15, ORANGE,
+			Align.LEFT);
 		int hover = optionAt(mouseX, mouseY);
 		for (int i = 0; i < OPTIONS.size(); i++) {
 			Option option = OPTIONS.get(i);
