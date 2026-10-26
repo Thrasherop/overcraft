@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Played: water, a ladder, a boat in hero mode** (CLAUDE.md's untried cases; `env1_sheet`). In a 3-deep pool she
+treads water (the fall pose) and gets out with jump and forward; up a ladder 4.4 m in 2 s; F gets her into a boat,
+crouch (LCtrl) gets her out. Fixed: the boat said "Press Left Shift to dismount", and in hero mode Left Shift is Swift
+Step; it now names the hero's crouch key ("Press Left Control to dismount"), Minecraft mode keeps Left Shift
+(`boat2_sheet`).
+
 **Played: the hero's life cycle** (CLAUDE.md's general play, the parts not covered above; `lf1_sheet`, `lf1_sheet2`).
 H 80 blocks from any bed: "Go back to your bed to change heroes", no screen. H beside a bed set as spawn: the select
 screen ("near your bed: pick a new hero"), Enter keeps Kiriko in hero mode. Esc: the Overwatch menu (sub-role shown);

@@ -16,7 +16,8 @@
 		"MouseHandlerMixin",
 		"SubtitleOverlayMixin",
 		"CreateWorldScreenAccessor",
-		"ToastManagerAccessor"
+		"ToastManagerAccessor",
+		"ClientPacketListenerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
