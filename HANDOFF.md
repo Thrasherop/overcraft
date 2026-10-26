@@ -1,4 +1,4 @@
-# Overcraft: handoff (2026-10-26, after the overnight session)
+# Overcraft: handoff (2026-10-26, during the overnight session)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
 TECHNIQUES.md (how the work gets done). This file is the state of play and the path forward.
@@ -28,24 +28,30 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 ## What's built (feature/kiriko), played through the dev harness
 - **Kiriko's kit** (Kiriko.java; KirikoStats.java has every number and its source), Overwatch movement, 250 HP = 20.
 - **Her model** (client/model): Overwatch's model and clips, CPU-skinned; idle/run/crouch/jump/climb/death states,
-  throws and casts layered on top; the first-person view model (`_1p`) with sway, walk bob and breathing; a **cloth
-  simulation** for her coat tails (ClothSim: kept out of her legs); held props shown only when their clip uses them
-  (the Suzu only in its throw).
-- **HUD like Overwatch's** (HeroHud, client/hud): measured from the owner's screenshots, Overwatch's fonts, curved
-  sides; Minecraft mode keeps vanilla's HUD plus a small ult meter.
+  throws, casts and the reload layered on top, the aim pose sheet (A71F) leaning her with her aim; she faces her aim
+  in third person; the first-person view model (`_1p`) with sway, walk bob and breathing; a **cloth simulation** for
+  her coat tails (ClothSim: kept out of her legs); held props shown only when their clip uses them (the Suzu only in
+  its throw). Clips are mended at load (single broken rotation keys: the breath clip's kicked her leg out).
+- **HUD like Overwatch's** (HeroHud, client/hud): measured from the owner's screenshots and two critique rounds,
+  Overwatch's fonts, curved sides; ally health markers, a kill feed, low-health edges, Overwatch-sized chat; Minecraft
+  mode keeps vanilla's HUD plus a small ult meter.
 - **Controls** (client/controls/HeroControls): hero mode has its own key set; G switches; Esc opens an Overwatch-style
   menu and options (rebinding); Interact on F.
 - **Hero select** like Overwatch 2026's, her real 3D model in the middle.
 - **Effects** (client/effect): Overwatch's own masks and torii mesh, drawn additively; the server sends EffectPayload
   events; no Minecraft particles left. First-person screen effects (Swift Step, Kitsune Rush).
-- **Sounds**: 24 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack.
+- **Sounds**: 44 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack (layers
+  mixed at build time, 1P/3P split by audience).
+- **Multiplayer checked** with a second dev client (`gradlew runClient2`): what an ally sees and hears.
 
 ## Dev harness
 `gradlew runClient` (`-Dovercraft.dev=true`); `py tools/dev.py <commands...>` or `. tools/devplay.sh`. Commands:
 state, newworld, openworld, screen, close, respawn, key <mapping or hero action> down|up|tap, look/turn, cmd,
 screenshot, perspective, hero <id>, subtitles on|off, and (session 3) **press <key.keyboard.x>** (a real key event:
 Esc, Enter, F1), **screenclick x y** (GUI coordinates), **window w h**, **tutorial**, **ult <percent>**,
-**fx <effect> [variant]**, **select [bed]**. The desktop can be locked; the harness still plays.
+**fx <effect> [variant]**, **select [bed]**, **soundinfo <event>**, **connect host:port**, **players**. A second client:
+`gradlew runClient2` (harness port 25600: `OC_DEV_PORT=25600 py tools/dev.py ...`; host with `/publish true 25565`).
+The desktop can be locked; the harness still plays.
 
 ## Overwatch assets (#6): state and path forward
 Rules (CLAUDE.md): Overwatch closed whenever its files are read; never touch the client; assets live in
@@ -120,13 +126,15 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 
 ## Questions for the owner
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
-- The third-person Suzu throw clip (AB96) has a high kick in it: is that the right clip?
+- (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
 
 ## Next
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
-2. The critique sub-agent's list (tools/reference/critique-2026-10-26.md) and the sound map (soundmaps/kiriko-proposed.txt).
+2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` (each has a Status section
+   at the top: done, not ours, open). Biggest open ones: the rush path's in-path effects, the cleanse reading as a
+   ghost, the coat's stiffness, the ofuda flick's fist. A third critique round on fresh captures is worth it.
 3. Effects still missing: the enemy-red view (matters only with scoreboard teams). (Suzu's white flash, the rush
    path's talismans, Swift Step's slash arcs, the reload and the aim lean are in.)
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
