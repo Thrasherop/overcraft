@@ -156,6 +156,12 @@ final class ActionTrack {
 	/** "throw_kunai_#": the next arm's throw, alternating through the model's throw_kunai_1, _2, ... */
 	private String resolve(SkinnedModel model, String name) {
 		if (!name.endsWith("_#")) {
+			// a numbered variant the model doesn't have plays its first: the first-person model has one quick melee
+			// clip, so two melees in three (melee_2, melee_3) showed nothing in first person (#24)
+			int underscore = name.lastIndexOf('_');
+			if (!model.clips.containsKey(name) && underscore > 0 && name.substring(underscore + 1).chars().allMatch(Character::isDigit)) {
+				return name.substring(0, underscore);
+			}
 			return name;
 		}
 		String base = name.substring(0, name.length() - 2);

@@ -1,9 +1,42 @@
 # Overcraft: changes by day
 
 A day-by-day log of development: releases, features, bugs fixed, investigations, and what's waiting on the owner.
-Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues.
+Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
+handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
 ## 2026-10-26
+
+### Build 0.2.0
+The first versioned build (#21). Everything before it in this log was 0.1.0. Its asset pack must be rebuilt
+(`py tools/build_asset_pack.py sounds <extracted>`, then `zip`): an older pack is flagged in chat on joining, and in
+the pause menu.
+- **Versions (#21):**
+  - The pause menu shows the build ("OVERCRAFT 0.2.0") and the asset pack's version, in red when the pack is older
+    than the build needs (`Overcraft.ASSETS_NEEDED`).
+  - `build_asset_pack.py zip` writes the build's version into the pack (`assets/overcraft/asset_pack.json`).
+  - Joining with an old pack says so in chat.
+- **Her own sounds in her head (#17):** Swift Step's sounds were still left behind (bound to her feet, they also came
+  from a direction as she turned). Every sound she makes for herself now plays in her head, with no position, as
+  Overwatch's own sounds do:
+  - the cast, throws, reloads and hit confirmations;
+  - her voice lines and quick melee;
+  - the ult line and the climb.
+
+  Others hear her voice lines following her. Her Swift Step line now plays once she has arrived, not at the key
+  press.
+  - Reproduced: the cast placed at her feet, `at 80.5 -61.0 80.5`.
+  - Played: every own sound "in the head"; the line after the cast, once she was 12 m away.
+- **Quick melee in first person every time (#24):** the server picks one of three melee clips; the first-person model
+  has one. Two melees in three played nothing in first person (6 of 6 in the reproduction). A missing numbered
+  variant now plays the plain clip.
+- **Wall climb hover (#25):** in Creative, a double tap of jump while climbing switched on flight, and our movement
+  under Minecraft's flight damping floated her at vertical speed 0, sinking 0.5 m/s. Hero mode now has no Creative
+  flight; Minecraft mode keeps it.
+- **Protection Suzu blocks knockback too (#27):** phased allies are out of explosions altogether, and take no
+  knockback. A creeper's blast inside Suzu's 0.5 s: no damage, no movement; the same blast without Suzu moved her
+  1.3 m.
+- **`/overcraft reset [players]` and `/overcraft ult [players] [percent]` (#23):** operators only. They ready the
+  cooldowns and refill the ammo, or set the ult charge.
 
 **The owner's playtest, first batch** (issues #11-#20, from build b480e53; each reproduced in game first, then played
 again on the fix):

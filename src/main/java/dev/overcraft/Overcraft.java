@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroWeaponItem;
 import dev.overcraft.hero.KillFeed;
+import dev.overcraft.hero.OvercraftCommand;
 import dev.overcraft.hero.Voice;
 import dev.overcraft.kiriko.KitsuneRush;
 import dev.overcraft.net.EffectPayload;
@@ -14,11 +15,13 @@ import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
+import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
 import dev.overcraft.registry.OcSounds;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -41,6 +44,41 @@ public class Overcraft implements ModInitializer {
 	public static final String MOD_ID = "overcraft";
 	public static final Logger LOG = LoggerFactory.getLogger("Overcraft");
 
+	/**
+	 * The oldest asset pack this build works with (tools/build_asset_pack.py writes the build's version into the zip,
+	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
+	 * added), so an old zip is flagged in game (#21).
+	 */
+	public static final String ASSETS_NEEDED = "0.2.0";
+
+	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
+	public static String version() {
+		return net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer(MOD_ID)
+			.map(mod -> mod.getMetadata().getVersion().getFriendlyString()).orElse("?");
+	}
+
+	/** Compares dotted versions ("0.2.0" against "0.10.1") by their numbers: negative, zero or positive. */
+	public static int compareVersions(String a, String b) {
+		String[] x = a.split("[.-]");
+		String[] y = b.split("[.-]");
+		for (int i = 0; i < Math.max(x.length, y.length); i++) {
+			int p = i < x.length ? parseOr0(x[i]) : 0;
+			int q = i < y.length ? parseOr0(y[i]) : 0;
+			if (p != q) {
+				return Integer.compare(p, q);
+			}
+		}
+		return 0;
+	}
+
+	private static int parseOr0(String s) {
+		try {
+			return Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
@@ -60,6 +98,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			Hero hero = Hero.byId(payload.heroId());
@@ -91,6 +130,7 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {

@@ -75,7 +75,6 @@ public final class QuickMelee {
 		}
 		Combat.animate(hero, CLIPS[hero.getRandom().nextInt(CLIPS.length)]);
 		Voice.say(hero, "melee", 0.8f, false);
-		level.playSound(null, hero.getX(), hero.getY(), hero.getZ(),
-			hit ? OcSounds.MELEE_HIT : OcSounds.MELEE_SWING, SoundSource.PLAYERS, 1, 1);
+		HeroSounds.fromHero(hero, hit ? OcSounds.MELEE_HIT : OcSounds.MELEE_SWING, 1);
 	}
 }

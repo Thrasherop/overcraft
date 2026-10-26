@@ -30,4 +30,13 @@ public abstract class LivingEntityMixin {
 			ci.cancel();
 		}
 	}
+
+	/** Phased (Protection Suzu): no knockback either, as no damage (a creeper's blast pushed her: #27). */
+	@Inject(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V", at = @At("HEAD"), cancellable = true)
+	private void overcraft$phasedKnockback(double power, double xd, double zd, net.minecraft.world.damagesource.DamageSource source,
+										   float damage, boolean comesFromEffect, CallbackInfo ci) {
+		if (dev.overcraft.hero.Combat.isPhased((LivingEntity) (Object) this)) {
+			ci.cancel();
+		}
+	}
 }

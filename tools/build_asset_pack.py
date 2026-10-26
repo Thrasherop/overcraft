@@ -324,6 +324,24 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
+def build_version():
+    """This build's version (gradle.properties)."""
+    for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
+        if line.startswith("version="):
+            return line.split("=", 1)[1].strip()
+    return "0"
+
+
+def write_version():
+    """assets/overcraft/asset_pack.json: the build this pack was made with, which the game checks against the build it
+    runs (Overcraft.ASSETS_NEEDED): an older pack is flagged in game (#21)."""
+    import datetime
+    import json
+    out = PACK / "assets" / "overcraft" / "asset_pack.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"version": build_version(), "built": datetime.date.today().isoformat()}) + "\n", encoding="utf8")
+
+
 def write_mcmeta():
     PACK.mkdir(parents=True, exist_ok=True)
     (PACK / "pack.mcmeta").write_text(
@@ -360,6 +378,7 @@ def main():
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")
+        write_version()
         out = LOCAL / "overcraft-assets.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
             for f in PACK.rglob("*"):

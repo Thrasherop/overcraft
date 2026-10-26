@@ -6,7 +6,8 @@
 		"LivingEntityMixin",
 		"PlayerMixin",
 		"PlayerAdvancementsMixin",
-		"ProjectileUtilMixin"
+		"ProjectileUtilMixin",
+		"EntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

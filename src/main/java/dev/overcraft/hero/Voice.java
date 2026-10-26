@@ -13,6 +13,11 @@ import net.minecraft.sounds.SoundSource;
  * and never two close together (the game spaces them too; the gap here is ours).
  */
 public final class Voice {
+	/**
+	 * How far others hear a hero's lines: Overwatch's voice stimuli reach 25-35 m (the game data,
+	 * tools/reference/kiriko-voice.md); 2 = 32 blocks.
+	 */
+	private static final float VOLUME = 2;
 	/** Ticks between two lines from one hero (ours). */
 	private static final int GAP_TICKS = 60;
 	/** A second enemy kill within this many ticks of the last is a multikill (ours: 4 s; Overwatch gives no number). */
@@ -71,7 +76,7 @@ public final class Voice {
 			return;
 		}
 		state.voiceAt = now;
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), line, SoundSource.PLAYERS, 1.0f, 1.0f);
+		HeroSounds.fromHero(player, line, VOLUME);
 	}
 
 	/**
@@ -175,6 +180,6 @@ public final class Voice {
 			return;
 		}
 		state.voiceAt = now;
-		hero.level().playSound(null, hero.getX(), hero.getEyeY(), hero.getZ(), line, SoundSource.PLAYERS, 1.0f, 1.0f);
+		HeroSounds.fromHero(hero, line, VOLUME);
 	}
 }

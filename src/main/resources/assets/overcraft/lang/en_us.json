@@ -176,5 +176,9 @@
 	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
 	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair.",
 	"overcraft.hud.victory": "Victory",
+	"overcraft.command.reset": "Readied the cooldowns and ammo of %s hero(es)",
+	"overcraft.command.ult": "Set the ult charge of %s hero(es) to %s%%",
+	"overcraft.assets.outdated": "Overcraft's asset pack is from build %s; this build (%s) needs %s or newer. Rebuild it (py tools/build_asset_pack.py zip) and copy it to .minecraft/overcraft/overcraft-assets.zip.",
+	"overcraft.assets.unknown": "Overcraft's asset pack is older than build %s and needs rebuilding (py tools/build_asset_pack.py zip): models, sounds or clips this build uses may be missing.",
 	"overcraft.hud.eliminated": "Eliminated"
 }

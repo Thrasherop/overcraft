@@ -84,7 +84,7 @@ public class KunaiEntity extends OwProjectile {
 			if (crit) {
 				// the critical hit's confirmation is the thrower's (it plays where they are)
 				if (owner instanceof net.minecraft.server.level.ServerPlayer thrower) {
-					HeroSounds.toOwner(thrower, OcSounds.KIRIKO_KUNAI_HEADSHOT, thrower.getEyePosition());
+					HeroSounds.toOwner(thrower, OcSounds.KIRIKO_KUNAI_HEADSHOT);
 				}
 			}
 		}

@@ -157,6 +157,7 @@ public final class HeroModels {
 
 	private static void register(Map<String, Prepared> prepared) {
 		HeroArt.clear();
+		dev.overcraft.client.assets.AssetPackVersion.clear();
 		dev.overcraft.client.hud.HudShapes.clear();
 		dev.overcraft.client.effect.EffectArt.clear();
 		TextureManager textures = Minecraft.getInstance().getTextureManager();
