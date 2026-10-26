@@ -49,6 +49,7 @@ final class ActionTrack {
 			case "throw_suzu" -> start(now, "throw_suzu", "throw_suzu_end");
 			case "swift_step" -> start(now, "swift_step", "swift_step_end");
 			case "ult_cast" -> start(now, "ult_cast", "ult_cast_end");
+			case "reload" -> start(now, "reload_start", "reload");
 			default -> start(now, action);
 		}
 	}

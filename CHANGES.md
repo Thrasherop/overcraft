@@ -5,6 +5,15 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**A reload animation** (HANDOFF's missing list; seen every 15 kunai). The animation research had left one
+start-middle chain unplayed (aliases 0x16E then 0x812, 0.2 s + 0.8 s) and guessed it was the reload; checked by eye
+on the first-person survey renders: A49C flicks the held ofuda away, A49D brings the hands back crossed as fresh kunai
+and ofuda appear. Its third-person twins (AD90, AD94) bring the arms in from wide to the hold. Added to both clip maps,
+both models re-exported from the archived build (Overwatch closed), and played on R, on an empty clip, and when only the
+ofuda run out (one animation for both, as in Overwatch). Played: first person stepped 3 ticks at a time with the game
+frozen (`rl1p_sheet`), third person from the front frozen and in real time (`rl3p_sheet`, `rlrt_sheet`). One frozen
+frame showed a leg raised; real time never did (the frozen stepping, not play).
+
 **Allies' health over their heads** (critique #21; Overwatch shows its teammates' health the same way, white pips
 over a cyan chevron). Players and pets always (40 m), villagers, golems and allays only when hurt or within 8 m (a
 village would otherwise be a wall of bars); one pip per 25 health up to 20 (a golem's 1250 shares them out), smaller

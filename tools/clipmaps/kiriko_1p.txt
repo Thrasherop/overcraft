@@ -12,6 +12,9 @@
 0-32_00000000B0E1 = throw_ofuda
 0-36_00000000A8F5 = throw_ofuda_hold
 0-32_00000000A8F6 = throw_ofuda_end
+# reload (0x16E -> 0x812): the ofuda flicked away, then the hands come back crossed as new kunai and ofuda appear
+0-32_00000000A49C = reload_start
+0-32_00000000A49D = reload
 128-32_00000000A810 = equip
 0-32_00000000A529 = melee
 128-32_00000000A50A = throw_suzu

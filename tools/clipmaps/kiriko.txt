@@ -64,6 +64,11 @@
 0-32_00000000B00F = throw_ofuda
 0-32_00000000B00B = throw_ofuda_hold
 0-32_00000000B0C9 = throw_ofuda_end
+# reload (the research's other start -> middle chain, 0x16E -> 0x812, 0.2 + 0.8 s; checked by eye 2026-10-26: its
+# 1P twins flick the held ofuda away, then the hands come back crossed with fresh kunai and ofuda; here the arms come
+# back in from wide to the hold)
+0-32_00000000AD90 = reload_start
+0-32_00000000AD94 = reload
 128-32_00000000AF57 = melee
 128-32_00000000AFB8 = melee_2
 128-32_00000000AFB9 = melee_3

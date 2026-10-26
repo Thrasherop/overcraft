@@ -133,12 +133,19 @@ public final class Kiriko implements HeroKit {
 	private static void startPrimaryReload(ServerPlayer player, HeroState s) {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
+		Combat.animate(player, "reload");
 		HeroSounds.split(player, OcSounds.KIRIKO_KUNAI_RELOAD, OcSounds.KIRIKO_KUNAI_RELOAD_3P, player.position());
 	}
 
-	/** The ofuda refill is silent: Overwatch has no sound of its own for it (one reload animation for both weapons). */
+	/**
+	 * The ofuda refill is silent: Overwatch has no sound of its own for it. One reload animation serves both weapons:
+	 * played here only when the kunai aren't reloading already.
+	 */
 	private static void startSecondaryReload(ServerPlayer player, HeroState s) {
 		s.secondaryReload = 0;
+		if (s.primaryReload < 0) {
+			Combat.animate(player, "reload");
+		}
 	}
 
 	private static void throwKunai(ServerPlayer player) {
