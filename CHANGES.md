@@ -9,7 +9,8 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 treads water (the fall pose) and gets out with jump and forward; up a ladder 4.4 m in 2 s; F gets her into a boat,
 crouch (LCtrl) gets her out. Fixed: the boat said "Press Left Shift to dismount", and in hero mode Left Shift is Swift
 Step; it now names the hero's crouch key ("Press Left Control to dismount"), Minecraft mode keeps Left Shift
-(`boat2_sheet`).
+(`boat2_sheet`). The Nether (`nether_sheet`): hero mode and the HUD work there; set on fire, she burned (the flames
+over the view), and Suzu at her feet put it out (Fire back to -20 ticks) and healed her to 250.
 
 **Played: the hero's life cycle** (CLAUDE.md's general play, the parts not covered above; `lf1_sheet`, `lf1_sheet2`).
 H 80 blocks from any bed: "Go back to your bed to change heroes", no screen. H beside a bed set as spawn: the select
