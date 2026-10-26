@@ -38,6 +38,13 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   send F5 or two held keys at once; Windows' text-input overlay can block clicks.
 - **Bursts of screenshots** across an animation (0.05-0.3 s apart) and side-by-side sheets: one screenshot hides
   most animation bugs.
+- **Freeze the game for fast effects**: `cmd /tick freeze`, then `cmd /tick step 1` between screenshots. The effects
+  run on the game clock, so they stop with it; a Suzu burst is over before the harness's next screenshot otherwise.
+  The harness's `fx <effect>` plays one effect alone, which tells the effect apart from whatever else is going on.
+- **Suspect the test before the mod**: white pixel squares round a healed villager were Minecraft's death poofs from
+  the villager the test script had just killed; burning "mobs" on the horizon were zombie horses in daylight.
+- **Crop and enlarge** (`oc_crop.ps1`, nearest-neighbour at 2-6x) at native 1080p to judge HUD edges: a faint box
+  round the volley bar only showed against the sky, zoomed.
 - **Reproduce the owner's report first** (stuck on a step only when strafing; Alex in Minecraft mode), then show the
   fix with the same steps.
 - **When the desktop is locked or can't take input**, the harness still types: `press key.keyboard.escape` sends a
@@ -78,5 +85,10 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   names, never remembered numbers (a `<= 1` mouse-button check silently failed).
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected at load. Fonts
   are placed by baseline at 7 units below the draw position at any size, which makes cap-height sizing easy.
+- Minecraft's mipmapper (`MipmapGenerator`, AUTO strategy) treats any texture with transparency as a cutout: it
+  rescales alpha and adds 0.025 to every pixel of the smaller mips. Fine for alpha-tested models; for soft masks drawn
+  blended it shows as faint boxes and swollen glows. Pass `MipmapStrategy.MEAN` for those (`HeroTexture`).
+- Additive light washes out over bright ground (gold over grass turns lime): keep additive for teal/cyan glows, blend
+  warm colours (`Fx.soft`).
 - A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),
   stay out of the Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.
