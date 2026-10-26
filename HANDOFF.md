@@ -40,8 +40,12 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 - **Hero select** like Overwatch 2026's, her real 3D model in the middle.
 - **Effects** (client/effect): Overwatch's own masks and torii mesh, drawn additively; the server sends EffectPayload
   events; no Minecraft particles left. First-person screen effects (Swift Step, Kitsune Rush).
-- **Sounds**: 44 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack (layers
-  mixed at build time, 1P/3P split by audience).
+- **Sounds**: 53 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack (layers
+  mixed at build time, 1P/3P split by audience). **Voice lines** for the game's moments (Voice.say: ult ready, kills,
+  multikill, melee, respawn, select, healing now and then) and her own hurt/death sounds (PlayerMixin).
+- **Combat feedback**: hit markers at the crosshair (white, red crit, kill), a kill feed, ally health markers.
+- **Performance**: her 67k-triangle model is drawn as triangles with back faces of closed pieces culled on the CPU
+  (third person 31 -> 50 FPS on this machine's integrated GPU). Harness `timing` measures it.
 - **Multiplayer checked** with a second dev client (`gradlew runClient2`): what an ally sees and hears.
 
 ## Dev harness
