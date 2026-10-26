@@ -50,15 +50,67 @@ class OwMathTest {
 	}
 
 	@Test
-	void groundAccelerationTakesAboutATenthOfASecond() {
-		Vec3 v = Vec3.ZERO;
-		Vec3 target = new Vec3(Ow.speed(5.5), 0, 0);
-		int ticks = 0;
-		while (!v.equals(target)) {
-			v = OwMovement.approach(v, target, Ow.accel(OwMovement.GROUND_ACCEL));
-			ticks++;
+	void fallSpeedFollowsTheWikiCurve() {
+		// the wiki's measured graph: about 15.8 m/s after 1 s and 24.7 after 2 s (v = 30 tanh(17.5 t / 30))
+		double vy = 0;
+		for (int t = 0; t < 40; t++) {
+			vy = OwMovement.verticalStep(vy, false)[1];
+			if (t == 19) {
+				assertEquals(-15.8, vy * 20, 0.4);
+			}
 		}
-		assertEquals(2, ticks); // 0.1 s
+		assertEquals(-24.7, vy * 20, 0.5);
+	}
+
+	/** Steps of the mover at 60 Hz until {@code done}: the time it took in seconds. */
+	private static double groundTime(Vec3 from, Vec3 wish, java.util.function.Predicate<Vec3> done) {
+		Vec3 v = from;
+		int steps = 0;
+		while (!done.test(v)) {
+			v = OwMovement.groundStep(v, wish, 1.0 / 60);
+			steps++;
+		}
+		return steps / 60.0;
+	}
+
+	@Test
+	void groundResponseIsOverwatchs() {
+		Vec3 run = new Vec3(5.5, 0, 0);
+		// full speed in about 0.05 s, a stop in about 0.08 s, a strafe reversed in about 0.06 s (tools/reference/movement.md)
+		assertEquals(0.05, groundTime(Vec3.ZERO, run, v -> v.x >= 5.5 - 1e-9), 0.02);
+		assertEquals(0.08, groundTime(run, Vec3.ZERO, v -> v.length() == 0), 0.02);
+		assertEquals(0.06, groundTime(run, run.reverse(), v -> v.x <= -5.5 + 1e-9), 0.02);
+		// held at full speed, it stays there: friction and acceleration balance
+		assertEquals(5.5, OwMovement.groundStep(run, run, 1.0 / 60).x, 1e-9);
+	}
+
+	@Test
+	void airControlTurnsAJumpAround() {
+		// holding back right after take-off at a run: back is 4.95 m/s, so 5.5 / (3.5 x 4.95) = 0.32 s, inside one jump (0.67 s)
+		Vec3 v = new Vec3(5.5, 0, 0);
+		Vec3 back = new Vec3(-4.95, 0, 0);
+		int steps = 0;
+		while (v.x > 0) {
+			v = OwMovement.airStep(v, back, 5.5, 1.0 / 60);
+			steps++;
+		}
+		assertEquals(0.32, steps / 60.0, 0.02);
+		// pressing sideways instead of forward turns the jump without slowing it: 90° in about 0.45 s at 5.5 m/s
+		Vec3 turning = new Vec3(5.5, 0, 0);
+		Vec3 side = new Vec3(0, 0, 5.5);
+		steps = 0;
+		while (turning.z < 5.5 - 1e-6) {
+			turning = OwMovement.airStep(turning, side, 5.5, 1.0 / 60);
+			assertEquals(5.5, turning.length(), 1e-6);
+			steps++;
+		}
+		assertEquals(0.45, steps / 60.0, 0.03);
+		// speed above the run speed decays in the air with no input: 3 m/s over goes under 1 in a second
+		Vec3 fast = new Vec3(8.5, 0, 0);
+		for (int i = 0; i < 60; i++) {
+			fast = OwMovement.airStep(fast, Vec3.ZERO, 5.5, 1.0 / 60);
+		}
+		assertEquals(5.5 + 3 * Math.exp(-2), fast.x, 0.1);
 	}
 
 	@Test

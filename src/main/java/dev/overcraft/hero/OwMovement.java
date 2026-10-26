@@ -19,19 +19,32 @@ import java.util.function.Predicate;
  * themselves (the client simulates its own player), so this runs on the client for the local player.
  *
  * Numbers (public sources: the Overwatch wiki's Movement speed page, a Workshop measurement where noted):
- * 5.5 m/s in any direction but straight back (90%) and diagonally back (93.3%), crouch 3 m/s; ground speed reached
- * and lost in about 0.1 s; jump 5.72 m/s up (0.98 m apex); gravity about 16.7 m/s² rising (fits the jump and climb
- * heights) and 17.5 m/s² falling, easing off toward a 30 m/s fall speed; no fall damage.
+ * 5.5 m/s in any direction but straight back (90%) and diagonally back (93.3%), crouch 3 m/s; jump 5.72 m/s up
+ * (0.98 m apex); gravity about 16.7 m/s² rising (fits the jump and climb heights) and 17.5 m/s² falling, easing off
+ * toward a 30 m/s fall speed; no fall damage.
+ *
+ * How speed is gained and lost is Overwatch's own mover (#31): every hero's CharacterMover in the game data (build
+ * 154088, read offline: tools/reference/movement.md) holds a ground friction and stop speed, a ground and an air
+ * acceleration (times the input speed, Quake style), and a decay of air speed above the run speed. Their units are
+ * inferred, and they agree with the public measurements: full speed in about 0.05 s, a stop in about 0.08 s, Lúcio's
+ * 0.6 s slide. It runs three steps a tick (60 Hz), close to Overwatch's 62.5 Hz.
  */
 public final class OwMovement {
 	public static final double RUN_SPEED = 5.5;
 	public static final double BACK_FACTOR = 0.9;
 	public static final double BACK_DIAGONAL_FACTOR = 14.0 / 15.0;
 	public static final double CROUCH_SPEED = 3.0;
-	/** 5.5 m/s in 0.1 s (Workshop measurement). */
-	public static final double GROUND_ACCEL = 55;
-	/** Ours: Overwatch has air control but publishes no number. Steering, not speeding up. */
-	public static final double AIR_ACCEL = 12;
+	/** Ground acceleration per second, times the input speed: 5.5 m/s in 0.05 s (game data mover; Workshop: "almost instant"). */
+	public static final double GROUND_ACCELERATE = 35;
+	/** Ground friction per second, on at least {@link #STOP_SPEED}: a 5.5 m/s run stops in about 0.08 s (game data mover). */
+	public static final double FRICTION = 15;
+	public static final double STOP_SPEED = 4.5;
+	/** Air acceleration per second, times the input speed: about 19 m/s² at a run (game data mover; units inferred). */
+	public static final double AIR_ACCELERATE = 3.5;
+	/** Air speed above the run speed (5.5 m/s, buffs included) decays by this much per second (game data mover). */
+	public static final double AIR_DECAY = 2.0;
+	/** Steps per tick: Overwatch simulates at 62.5 Hz (Derek Mulder, Blizzard); 3 a tick is 60 Hz. */
+	public static final int SUBSTEPS = 3;
 	public static final double JUMP_SPEED = 5.72;
 	public static final double GRAVITY_UP = 16.7;
 	public static final double GRAVITY_DOWN = 17.5;
@@ -95,8 +108,65 @@ public final class OwMovement {
 		if (verticalSpeed > 0) {
 			return GRAVITY_UP;
 		}
-		// eases off linearly toward the terminal speed (fits the wiki's 30 m/s after about 6.4 s)
-		return Math.max(0, GRAVITY_DOWN * (1 + verticalSpeed / TERMINAL_SPEED));
+		// eases off toward the terminal speed: v = 30 tanh(17.5 t / 30) fits the wiki's measured falling graph within 1%
+		double ratio = verticalSpeed / TERMINAL_SPEED;
+		return Math.max(0, GRAVITY_DOWN * (1 - ratio * ratio));
+	}
+
+	/** One step on the ground, velocities in m/s: friction, then acceleration toward {@code wish} (Overwatch's mover). */
+	public static Vec3 groundStep(Vec3 v, Vec3 wish, double dt) {
+		double speed = v.length();
+		if (speed > 0) {
+			double drop = Math.max(speed, STOP_SPEED) * FRICTION * dt;
+			v = v.scale(Math.max(0, speed - drop) / speed);
+		}
+		return accelerate(v, wish, GROUND_ACCELERATE, dt);
+	}
+
+	/**
+	 * One step in the air, m/s. Input within 90° of the velocity turns it toward the input at the air acceleration,
+	 * keeping its speed ("the direction is changing faster but your overall speed isn't being slowed down": Geoff Goodman,
+	 * 2018-01-17), and speeds it up to the input speed; input further round brakes along it. Then speed above
+	 * {@code maxSpeed} decays.
+	 */
+	public static Vec3 airStep(Vec3 v, Vec3 wish, double maxSpeed, double dt) {
+		double wishSpeed = wish.length();
+		if (wishSpeed > 0) {
+			double step = AIR_ACCELERATE * wishSpeed * dt;
+			double speed = v.length();
+			double dot = v.x * wish.x + v.z * wish.z;
+			if (speed < 1.0E-6 || dot < 0) {
+				double keep = Math.max(speed, wishSpeed);
+				v = approach(v, wish, step);
+				if (v.length() > keep) {
+					v = v.normalize().scale(keep);
+				}
+			} else {
+				// a turn at constant speed: the acceleration over the speed is the turn rate
+				double angle = Math.atan2(v.x * wish.z - v.z * wish.x, dot);
+				double turn = Math.copySign(Math.min(Math.abs(angle), step / speed), angle);
+				double newSpeed = speed < wishSpeed ? Math.min(wishSpeed, speed + step) : speed;
+				double cos = Math.cos(turn);
+				double sin = Math.sin(turn);
+				v = new Vec3(v.x * cos - v.z * sin, 0, v.x * sin + v.z * cos).scale(newSpeed / speed);
+			}
+		}
+		double speed = v.length();
+		if (speed > maxSpeed) {
+			v = v.scale((maxSpeed + (speed - maxSpeed) * Math.max(0, 1 - AIR_DECAY * dt)) / speed);
+		}
+		return v;
+	}
+
+	/** Adds speed along {@code wish}'s direction, up to its length, at {@code rate} times its length per second. */
+	private static Vec3 accelerate(Vec3 v, Vec3 wish, double rate, double dt) {
+		double wishSpeed = wish.length();
+		if (wishSpeed <= 0) {
+			return v;
+		}
+		Vec3 dir = wish.scale(1 / wishSpeed);
+		double add = wishSpeed - v.dot(dir);
+		return add <= 0 ? v : v.add(dir.scale(Math.min(rate * wishSpeed * dt, add)));
 	}
 
 	/** Moves {@code current} toward {@code target} by at most {@code step}. */
@@ -118,17 +188,19 @@ public final class OwMovement {
 			double cos = Math.cos(Math.toRadians(entity.getYRot()));
 			wish = new Vec3(dir.x * cos - dir.z * sin, 0, dir.z * cos + dir.x * sin).scale(speed);
 		}
-		Vec3 horizontal = new Vec3(v.x, 0, v.z);
-		if (entity.onGround()) {
-			horizontal = approach(horizontal, wish, Ow.accel(GROUND_ACCEL));
-		} else if (wish != Vec3.ZERO) {
-			// air control: steer toward the input without gaining speed beyond the faster of the two
-			double keep = Math.max(horizontal.length(), wish.length());
-			horizontal = approach(horizontal, wish, Ow.accel(AIR_ACCEL));
-			if (horizontal.length() > keep) {
-				horizontal = horizontal.normalize().scale(keep);
-			}
+		// the mover runs in m/s at 60 Hz; the tick moves by the steps' average and carries the last step's speed
+		Vec3 wishMs = wish.scale(20);
+		Vec3 stepped = new Vec3(v.x, 0, v.z).scale(20);
+		Vec3 travelled = Vec3.ZERO;
+		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
+		boolean grounded = entity.onGround() && v.y <= 0;
+		double maxAirSpeed = RUN_SPEED * speedFactor(entity);
+		for (int i = 0; i < SUBSTEPS; i++) {
+			stepped = grounded ? groundStep(stepped, wishMs, 0.05 / SUBSTEPS) : airStep(stepped, wishMs, maxAirSpeed, 0.05 / SUBSTEPS);
+			travelled = travelled.add(stepped);
 		}
+		Vec3 horizontal = travelled.scale(1.0 / SUBSTEPS / 20);
+		Vec3 end = stepped.scale(1.0 / 20);
 
 		double vy = v.y;
 		double dy = vy;
@@ -147,9 +219,9 @@ public final class OwMovement {
 			ledge(entity, wish);
 		}
 		Vec3 after = entity.getDeltaMovement();
-		// move() zeroes what a wall or the floor stopped (keep that); the vertical speed carried on is the new one
+		// move() zeroes what a wall or the floor stopped (keep that); the speeds carried on are the last step's
 		double carried = after.y == 0 || (entity.onGround() && vy < 0) ? 0 : vy;
-		entity.setDeltaMovement(after.x, carried, after.z);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, carried, after.z == 0 ? 0 : end.z);
 	}
 
 	/**

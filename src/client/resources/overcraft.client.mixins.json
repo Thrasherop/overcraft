@@ -21,7 +21,8 @@
 		"ChatComponentMixin",
 		"ChatLinesMixin",
 		"MinecraftModeArmMixin",
-		"HandBobMixin"
+		"ViewBobMixin",
+		"HeroFovMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

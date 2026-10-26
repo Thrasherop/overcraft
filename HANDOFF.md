@@ -146,6 +146,10 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   sound maps.
 
 ## Questions for the owner
+- Movement (#31) uses Overwatch's own mover numbers from the game data (friction, ground and air acceleration, air
+  decay), read offline like the voice weights, since no public source has them; the code says so next to each, and
+  they agree with the Workshop timings. Say if you'd rather keep movement to public numbers only. Also worth a look in
+  Overwatch: the turn in the air at constant speed (the Workshop script at the end of tools/reference/movement.md).
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
 - While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a

@@ -140,9 +140,10 @@ not), `AbstractClientPlayer.getFieldOfViewModifier`, `Camera.tickFov`, `Player.m
 2. **Camera (M; the owner can confirm Overwatch has neither in seconds).** In hero view, skip `bobView` in
    `GameRenderer.renderLevel` too (the arms already skip it). Return 1.0 from `getFieldOfViewModifier`, so speed
    buffs don't change the FOV. Optionally skip the damage tilt of `bobHurt` too (Overwatch doesn't tilt on hits).
-3. **Air control (M for the field, L for the units).** `AIR_ACCEL` from 12 to **19.25** (3.5 x the input speed),
-   keeping today's model (approach the input velocity and never exceed the faster of current and input speed), which
-   matches Goodman's description. Add: horizontal speed above 5.5 decays at 2.0/s in the air. Optional (L): 0.35/s
+3. **Air control (M for the field, L for the units).** `AIR_ACCEL` from 12 to **19.25** (3.5 x the input speed).
+   Goodman's post rules out today's model (approaching the input velocity dips a 90° turn from 5.5 to 3.9 m/s): input
+   within 90° of the velocity turns it at the air acceleration over the speed, keeping the speed; input further round
+   brakes. (Corrected 2026-10-26 after the post was re-read; built that way.) Add: horizontal speed above 5.5 decays at 2.0/s in the air. Optional (L): 0.35/s
    air drag with no input. Ask the owner to check once in Overwatch (Workshop script below) before tuning further.
 4. **Fall curve (H).** `gravity()` when falling: `GRAVITY_DOWN * (1 - (v/30)²)` in place of `(1 + v/30)`. The
    `fallSpeedTendsToTerminal` test still holds (30 m/s). Rising can stay 16.7 with 5.72 (identical in ticks), or
