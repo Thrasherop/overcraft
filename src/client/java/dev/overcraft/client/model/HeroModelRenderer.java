@@ -213,9 +213,9 @@ public final class HeroModelRenderer {
 			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
 				continue;
 			}
-			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture), (pose, buffer) -> {
+			collector.submitCustomGeometry(poseStack, FxRender.heroCutout(texture), (pose, buffer) -> {
 				long t0 = System.nanoTime();
-				emit(piece, skin, pose, buffer, light, overlay, prop, cull);
+				emit(piece, skin, pose, buffer, light, overlay, prop, -1, cull, true);
 				Timing.emit += System.nanoTime() - t0;
 			});
 		}
@@ -234,7 +234,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color, true));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, color, true, false));
 		}
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), glow, true);
 	}
@@ -260,7 +260,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color, cull));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color, cull, false));
 		}
 	}
 
@@ -291,11 +291,11 @@ public final class HeroModelRenderer {
 	/** Skins the piece's vertices and writes its triangles (as quads with the last corner doubled). */
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
 							 boolean prop, boolean cull) {
-		emit(piece, skin, pose, buffer, light, overlay, prop, -1, cull);
+		emit(piece, skin, pose, buffer, light, overlay, prop, -1, cull, false);
 	}
 
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
-							 boolean prop, int color, boolean cull) {
+							 boolean prop, int color, boolean cull, boolean triangles) {
 		int n = piece.vertexCount();
 		float[] p = new float[n * 3];
 		float[] nm = new float[n * 3];
@@ -361,7 +361,10 @@ public final class HeroModelRenderer {
 			vertex(buffer, q, qn, uv, a, light, overlay, color);
 			vertex(buffer, q, qn, uv, b, light, overlay, color);
 			vertex(buffer, q, qn, uv, c, light, overlay, color);
-			vertex(buffer, q, qn, uv, c, light, overlay, color);
+			if (!triangles) {
+				// a quad's fourth corner, the third again (for render types that draw quads)
+				vertex(buffer, q, qn, uv, c, light, overlay, color);
+			}
 		}
 	}
 

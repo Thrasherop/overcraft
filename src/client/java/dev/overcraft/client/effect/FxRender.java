@@ -42,6 +42,29 @@ public final class FxRender {
 
 	private static final Map<Identifier, RenderType> ADDITIVE_TYPES = new HashMap<>();
 
+	/**
+	 * Minecraft's cutout entity pipeline drawing triangles instead of quads: skinned hero models are triangles, and as
+	 * quads each went up with a corner doubled (a third more vertices: the upload is what their drawing costs).
+	 */
+	private static final RenderPipeline HERO_CUTOUT = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
+		.withLocation(Overcraft.id("pipeline/hero_cutout"))
+		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+		.withShaderDefine("PER_FACE_LIGHTING")
+		.withBindGroupLayout(BindGroupLayouts.SAMPLER1)
+		.withCull(false)
+		.withColorTargetState(ColorTargetState.DEFAULT)
+		.withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+		.build());
+
+	private static final Map<Identifier, RenderType> HERO_TYPES = new HashMap<>();
+
+	/** As RenderTypes.entityCutout, in triangles: hero models (their emit writes three corners a triangle). */
+	public static RenderType heroCutout(Identifier texture) {
+		return HERO_TYPES.computeIfAbsent(texture, t -> RenderType.create("overcraft_hero_cutout",
+			RenderSetup.builder(HERO_CUTOUT).withTexture("Sampler0", t).useLightmap().useOverlay().affectsCrumbling()
+				.setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).createRenderSetup()));
+	}
+
 	private FxRender() {
 	}
 

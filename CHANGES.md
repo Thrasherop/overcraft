@@ -15,7 +15,9 @@ of the 23 ms was moving her 67,500 triangles to the GPU, and frame time scaled w
   sent whole. A first version culled everything, believing Minecraft's cutout entity pipeline culls; it doesn't, and
   her hair showed the sky through it from below (`caw`: caught comparing culling on and off from four angles).
 - Each vertex is put in the camera's space once, not through two allocating calls.
-- Third person 31 -> 46 FPS, first person 70 -> 98 -> 91. Not on the select screen (Minecraft's GUI view of a model has
+- Drawn as triangles through a copy of Minecraft's cutout entity pipeline (`FxRender.heroCutout`), not as quads with a
+  corner doubled: a quarter fewer vertices to send.
+- Third person 31 -> 50 FPS, first person 70 -> 99. Not on the select screen (Minecraft's GUI view of a model has
   no camera at the origin). Checked: the same pictures with culling on and off, from four angles and close on her head
   (`ca_sheet`, `caw2`), first person and the select screen.
 
