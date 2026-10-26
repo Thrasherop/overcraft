@@ -1,5 +1,6 @@
 package dev.overcraft.client.model;
 
+import dev.overcraft.client.effect.KirikoFx;
 import dev.overcraft.hero.OwMovement;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,6 +37,8 @@ public final class HeroAnimator {
 	 * in front of the feet; a Minecraft player stops 0.3 m short of it, which would put the hands in the blocks.
 	 */
 	public static final float CLIMB_SHIFT = 0.3f;
+	/** Seconds between the climb's dust puffs: about one hand-over-hand reach (ours, from the climb clip). */
+	private static final float CLIMB_DUST_EVERY = 0.35f;
 
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
@@ -58,6 +61,7 @@ public final class HeroAnimator {
 	private float landedAt = -100;
 	private int climbTicks;
 	private boolean wasClimbing;
+	private float dustAt = -10;
 	private float climbTopAt = -100;
 	private long lastTick = -1;
 	private float lastSeen;
@@ -218,6 +222,14 @@ public final class HeroAnimator {
 			climbTopAt = now;
 		}
 		wasClimbing = climbing;
+		if (climbing && now - dustAt > CLIMB_DUST_EVERY) {
+			// a puff of dust where her hands grip the wall, each reach (the game's wall-climb effect 289)
+			dustAt = now;
+			double facing = Math.toRadians(entity.getYRot());
+			// her box touches the wall: just in front of its face (further in, the wall hides the puff)
+			double reach = entity.getBbWidth() / 2 - 0.1;
+			KirikoFx.climbDust(entity.position().add(-Math.sin(facing) * reach, entity.getBbHeight() + 0.1, Math.cos(facing) * reach));
+		}
 		SkinnedModel.Clip top = clip(model, "climb_top");
 		boolean overTheTop = top != null && now - climbTopAt < top.duration();
 

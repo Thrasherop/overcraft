@@ -5,11 +5,15 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.client.dev.DevServer;
 import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.effect.Fx;
+import dev.overcraft.client.effect.FxRender;
+import dev.overcraft.client.effect.KirikoFx;
 import dev.overcraft.client.model.HeroAnimator;
 import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.KitsuneRenderer;
 import dev.overcraft.client.model.ProjectileModelRenderer;
+import dev.overcraft.net.EffectPayload;
 import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.registry.OcEntities;
@@ -21,6 +25,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.Identifier;
@@ -28,10 +33,13 @@ import net.minecraft.resources.Identifier;
 public class OvercraftClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		FxRender.init();
 		ClientHero.init();
 		DevServer.startIfEnabled();
 
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
+		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
+		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
@@ -43,6 +51,7 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
+			Fx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

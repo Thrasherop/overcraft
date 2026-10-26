@@ -117,16 +117,32 @@ public final class SkinnedModel {
 			}
 		}
 
-		JsonObject skin = glb.get("skins", 0);
-		JsonArray jointList = skin.getAsJsonArray("joints");
-		int[] joints = new int[jointList.size()];
-		for (int i = 0; i < joints.length; i++) {
-			joints[i] = jointList.get(i).getAsInt();
-		}
-		float[] ibm = glb.floats(skin.get("inverseBindMatrices").getAsInt());
-		Matrix4f[] inverseBind = new Matrix4f[joints.length];
-		for (int i = 0; i < joints.length; i++) {
-			inverseBind[i] = new Matrix4f().set(ibm, i * 16);
+		int[] joints;
+		Matrix4f[] inverseBind;
+		boolean skinned = glb.array("skins").size() > 0;
+		if (skinned) {
+			JsonObject skin = glb.get("skins", 0);
+			JsonArray jointList = skin.getAsJsonArray("joints");
+			joints = new int[jointList.size()];
+			for (int i = 0; i < joints.length; i++) {
+				joints[i] = jointList.get(i).getAsInt();
+			}
+			float[] ibm = glb.floats(skin.get("inverseBindMatrices").getAsInt());
+			inverseBind = new Matrix4f[joints.length];
+			for (int i = 0; i < joints.length; i++) {
+				inverseBind[i] = new Matrix4f().set(ibm, i * 16);
+			}
+		} else {
+			// a static mesh (an effect's, like the torii gate): one joint, the node holding the mesh
+			int meshNode = 0;
+			for (int i = 0; i < nodes.size(); i++) {
+				if (nodes.get(i).getAsJsonObject().has("mesh")) {
+					meshNode = i;
+					break;
+				}
+			}
+			joints = new int[] {meshNode};
+			inverseBind = new Matrix4f[] {new Matrix4f()};
 		}
 		SkinnedModel model = new SkinnedModel(tree, joints, inverseBind);
 
@@ -154,6 +170,11 @@ public final class SkinnedModel {
 				float[] uv = attrs.has("TEXCOORD_0") ? glb.floats(attrs.get("TEXCOORD_0").getAsInt()) : new float[count * 2];
 				int[] joint4 = attrs.has("JOINTS_0") ? glb.ints(attrs.get("JOINTS_0").getAsInt()) : new int[count * 4];
 				float[] weight4 = attrs.has("WEIGHTS_0") ? glb.floats(attrs.get("WEIGHTS_0").getAsInt()) : new float[count * 4];
+				if (!skinned) {
+					for (int v = 0; v < count; v++) {
+						weight4[v * 4] = 1;
+					}
+				}
 				int[] indices = prim.has("indices") ? glb.ints(prim.get("indices").getAsInt()) : sequence(count);
 				int material = prim.has("material") ? prim.get("material").getAsInt() : -1;
 				model.pieces.add(new Piece(pos, normal, uv, joint4, weight4, indices, material >= 0 ? materialImage[material] : -1));

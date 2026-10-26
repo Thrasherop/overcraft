@@ -1,6 +1,8 @@
 package dev.overcraft.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.overcraft.client.effect.Fx;
+import dev.overcraft.client.effect.KirikoFx;
 import com.mojang.math.Axis;
 import dev.overcraft.entity.KitsuneEntity;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -42,6 +44,8 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 		super.extractRenderState(entity, state, partialTicks);
 		state.yRot = entity.getYRot(partialTicks);
 		state.loaded = HeroModels.get("kitsune");
+		// it sheds sakura petals as it runs (33 a second, the effects survey)
+		KirikoFx.foxPetals(entity.getPosition(partialTicks), Fx.since(entity.getId()), 33);
 	}
 
 	@Override

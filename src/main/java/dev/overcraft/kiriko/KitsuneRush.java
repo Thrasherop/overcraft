@@ -2,16 +2,15 @@ package dev.overcraft.kiriko;
 
 import dev.overcraft.Ow;
 import dev.overcraft.entity.KitsuneEntity;
+import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcSounds;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.sounds.SoundEvent;
-import dev.overcraft.hero.Allies;
-import dev.overcraft.hero.Combat;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,9 +42,12 @@ public final class KitsuneRush {
 	/** Ticks the fox stays at the end of its run before vanishing in a puff (ours). */
 	private static final int FOX_FADE_TICKS = 6;
 
-	private static final DustParticleOptions EDGE = new DustParticleOptions(0xFFE0442E, 1.3f);
-	private static final DustParticleOptions FLOOR = new DustParticleOptions(0xFFF6C35B, 0.9f);
-	private static final DustParticleOptions FOX = new DustParticleOptions(0xFFFFF4E0, 1.6f);
+	/** Torii gates along the path: six over its 32.2 m (the effects survey: one gate effect per gate sound, six). */
+	private static final int GATES = 6;
+	/** Ground ripples sent along the path, one every this many ticks (the game: 3 + 2 a second). */
+	private static final int RIPPLE_TICKS = 4;
+	/** Speed lines on allies in the corridor, every this many ticks (ours: the game streams 40 a second). */
+	private static final int ALLY_LINES_TICKS = 3;
 
 	private final ServerPlayer owner;
 	private final ServerLevel level;
@@ -58,6 +60,7 @@ public final class KitsuneRush {
 	/** The fox clients draw (when they have its model): follows {@link #fox}, gone a little after the run ends. */
 	private final KitsuneEntity foxEntity;
 	private int doneAt = -1;
+	private int gatesPlaced;
 
 	private KitsuneRush(ServerPlayer owner) {
 		this.owner = owner;
@@ -82,6 +85,7 @@ public final class KitsuneRush {
 				owner.getX(), owner.getEyeY(), owner.getZ(), ULT_LINE_VOLUME, 1.0f, owner.getRandom().nextLong()));
 		}
 		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.FOX_SCREECH, SoundSource.PLAYERS, 1.5f, 0.8f);
+		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0));
 	}
 
 	public static void tickAll(MinecraftServer server) {
@@ -105,17 +109,16 @@ public final class KitsuneRush {
 				advanceFox();
 			}
 			foxEntity.setPos(fox);
-			level.sendParticles(FOX, fox.x, fox.y + 0.5, fox.z, 8, 0.3, 0.3, 0.3, 0.0);
-			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, fox.x, fox.y + 0.4, fox.z, 4, 0.2, 0.2, 0.2, 0.01);
+			placeGates();
 		} else if (doneAt < 0) {
 			doneAt = age;
 		} else if (age - doneAt > FOX_FADE_TICKS && !foxEntity.isRemoved()) {
-			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, fox.x, fox.y + 0.5, fox.z, 20, 0.4, 0.4, 0.4, 0.05);
+			Effects.play(level, "rush_end", fox);
 			foxEntity.discard();
 		}
 		buffAllies();
-		if (age % 3 == 0) {
-			drawCorridor();
+		if (age % RIPPLE_TICKS == 0 && path.size() > 1) {
+			Effects.play(level, "rush_ripple", path.get(owner.getRandom().nextInt(path.size())));
 		}
 		return true;
 	}
@@ -159,6 +162,9 @@ public final class KitsuneRush {
 		for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
 			if (Allies.isSelfOrAlly(owner, entity) && inCorridor(entity.position(), half)) {
 				Combat.rush(entity, until);
+				if (age % ALLY_LINES_TICKS == 0) {
+					Effects.play(level, "rush_ally", entity.position(), direction, entity, 0);
+				}
 			}
 		}
 	}
@@ -191,32 +197,15 @@ public final class KitsuneRush {
 		return false;
 	}
 
-	private void drawCorridor() {
-		double half = RUSH_WIDTH / 2;
-		Vec3 side = new Vec3(-direction.z, 0, direction.x);
-		for (int i = 0; i < path.size(); i += 4) {
-			Vec3 p = path.get(i).add(0, 0.15, 0);
-			for (int s = -1; s <= 1; s += 2) {
-				Vec3 edge = p.add(side.scale(s * half));
-				level.sendParticles(EDGE, edge.x, edge.y, edge.z, 1, 0.05, 0.05, 0.05, 0);
-			}
-			level.sendParticles(FLOOR, p.x, p.y, p.z, 2, half / 2 * Math.abs(side.x) + 0.2, 0.02, half / 2 * Math.abs(side.z) + 0.2, 0);
-		}
-		// torii gates along the way, every 8 m
-		if (age % 6 == 0) {
-			for (int i = 16; i < path.size(); i += 16) {
-				Vec3 p = path.get(i);
-				for (int s = -1; s <= 1; s += 2) {
-					Vec3 post = p.add(side.scale(s * (half - 1)));
-					for (double y = 0; y <= 4; y += 0.5) {
-						level.sendParticles(EDGE, post.x, post.y + y, post.z, 1, 0.02, 0.02, 0.02, 0);
-					}
-				}
-				for (double w = -half; w <= half; w += 0.5) {
-					Vec3 beam = p.add(side.scale(w));
-					level.sendParticles(EDGE, beam.x, beam.y + 4.2, beam.z, 1, 0.02, 0.02, 0.02, 0);
-				}
-			}
+	/** Each gate rises as the fox passes its place, and stands until the corridor ends (its effect lasts as long). */
+	private void placeGates() {
+		double spacing = RUSH_LENGTH / GATES;
+		while (gatesPlaced < GATES && laid >= spacing * (gatesPlaced + 0.5)) {
+			int index = Math.min(path.size() - 1, (int) Math.round(spacing * (gatesPlaced + 0.5) / STEP));
+			Vec3 across = new Vec3(-direction.z, 0, direction.x).scale(RUSH_WIDTH - 2);
+			double seconds = (Ow.ticks(RUSH_DURATION) - age) / 20.0;
+			Effects.play(level, "rush_gate", path.get(index), across, null, (int) Math.round(seconds * 10));
+			gatesPlaced++;
 		}
 	}
 }

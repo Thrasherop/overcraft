@@ -29,6 +29,33 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 - Shapes (discs, rings, the ofuda segment, the mouse) are drawn at load as smooth masks (HudShapes): original, not
   from the game.
 
+**Real Overwatch effects instead of Minecraft particles** (owner: "I noticed you are still using minecraft assets like
+particle effects for ofuda trails. Thats not how ofuda look in game"). An effects sub-agent read Kiriko's effect files
+from the archived build (their particles, ribbons, meshes, timings, colour ramps: `tools/reference/kiriko-effects.md`;
+DataTool can't export effects, so it parsed them itself); `build_asset_pack.py effects` copies the masks and converts
+the torii gate mesh (new `tools/owm_static.py`) into the local pack.
+- New client effect system (client/effect): camera-facing sprites, flat decals and rings, streaks, a dome, meshes and
+  ribbon trails, drawn additively through a registered pipeline after the world, on the game clock. Masks coloured at
+  load with the game's gradient maps (teal, homing gold, kunai cyan, Suzu blue and gold).
+- The server sends effect events (EffectPayload) instead of particles. Every Minecraft particle the mod used is gone
+  (ofuda dust, kunai crits, Suzu dust/end rods, Swift Step cherry leaves, Kitsune Rush dust and soul fire, the melee
+  sweep).
+- Ofuda: a ribbon and a glow on each talisman, teal or gold when homing; a five-petal flower on the healed ally, a
+  flower decal where it hits the ground. Kunai: cyan ribbon and lens glints; six cyan sparks off a wall. Suzu: ribbon
+  and sparkles; the burst's dome, blue ground wave, flower, flash, and a thin gold ring held 5 s. Swift Step: teal rings,
+  a petal burst, a flash at both ends. Kitsune Rush: teal smoke at the cast, **six glowing torii gates (the game's own
+  mesh) rising as the fox passes**, ground ripples, speed lines on allies, petals from the fox, a puff when it vanishes.
+  Wall climb: dust puffs at the hands.
+- Swift Step now lands beside the ally on Kiriko's side (it put the camera inside the villager's head) when there's room.
+
+Played through the harness (screenshots `run/screenshots/fx2_*`, `fx3_*`, `fx4_*`, `fx5_*`): ofuda homing on a
+villager (gold), ofuda at the ground (teal flowers), kunai into a wall (sparks), Suzu at the ground (dome, wave, gold
+ring), Swift Step to the villager from behind, Kitsune Rush from behind (gates, ripples), wall climb (dust). Fixed on the
+way: glows stacked into a blown-out yellow blob (one glow per projectile now), Suzu's ring lit its whole 8 m disc (rings
+use only their bright edge now), the gates' beams stood upright, the climb dust spawned inside the wall.
+- Not yet: real sounds (being mapped), the effects' enemy-red view, Suzu's white outline on allies, the floating talisman
+  slabs on the rush path, slash arcs at Swift Step's arrival.
+
 **Overwatch's controls and menus in hero mode** (owner: "Hitting G toggles between all keybinds. So esc in minecraft
 mode opens minecraft settings. Esc in hero mode opens overwatch settings").
 - Hero mode has its own key set (HeroControls, saved in `config/overcraft-hero-controls.json`): move, jump, crouch,

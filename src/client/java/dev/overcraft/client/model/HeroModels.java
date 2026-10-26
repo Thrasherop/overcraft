@@ -33,7 +33,7 @@ public final class HeroModels {
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
 	/** Models that aren't heroes (Kitsune Rush's fox), by file name: {@code hero_models/<name>.glb}. */
-	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu");
+	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -122,6 +122,7 @@ public final class HeroModels {
 	private static void register(Map<String, Prepared> prepared) {
 		HeroArt.clear();
 		dev.overcraft.client.hud.HudShapes.clear();
+		dev.overcraft.client.effect.EffectArt.clear();
 		TextureManager textures = Minecraft.getInstance().getTextureManager();
 		REGISTERED.forEach(textures::release);
 		REGISTERED.clear();

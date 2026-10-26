@@ -195,8 +195,13 @@ EFFECT_MASKS = {
 }
 
 
+# the effects' meshes: pack model name -> (hero, ability folder, model id), converted with tools/owm_static.py
+EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D")}
+
+
 def add_effects(source):
-    """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png)."""
+    """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
+    converts their meshes (the torii gate) into hero_models/."""
     write_mcmeta()
     out = PACK / "assets" / "overcraft" / "textures" / "effect"
     out.mkdir(parents=True, exist_ok=True)
@@ -212,6 +217,17 @@ def add_effects(source):
             shutil.copyfile(src, dest)
             copied += 1
     print(f"{copied} effect textures -> {out}")
+    for name, (hero, ability, model) in EFFECT_MODELS.items():
+        src = Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"
+        if not src.exists():
+            print(f"missing {name}: {src}")
+            continue
+        dest = MODELS / f"{name}.glb"
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+               str(src), str(dest)]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+        print("\n".join(report) or result.stderr[-2000:])
 
 
 def write_mcmeta():

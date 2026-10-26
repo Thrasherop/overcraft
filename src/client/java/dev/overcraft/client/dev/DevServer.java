@@ -248,6 +248,18 @@ public final class DevServer {
 				}
 				out.addProperty("screen", mc.gui.screen() == null ? "" : mc.gui.screen().getClass().getSimpleName());
 			}
+			case "fx" -> {
+				// dev only: plays an effect 3 m in front of the camera: "fx suzu_burst 40", "fx climb_dust"
+				String[] a = arg.split(" ");
+				net.minecraft.world.phys.Vec3 at = player.getEyePosition().add(player.getViewVector(1).scale(3));
+				int variant = a.length > 1 ? Integer.parseInt(a[1]) : 0;
+				if (a[0].equals("climb_dust")) {
+					dev.overcraft.client.effect.KirikoFx.climbDust(at);
+				} else {
+					dev.overcraft.client.effect.KirikoFx.play(new dev.overcraft.net.EffectPayload(a[0], at.x, at.y, at.z, 0, 1, 0, -1, variant));
+				}
+				out.addProperty("ok", true);
+			}
 			case "window" -> {
 				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)
 				String[] a = arg.split(" ");

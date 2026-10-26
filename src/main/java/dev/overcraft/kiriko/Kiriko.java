@@ -6,12 +6,12 @@ import dev.overcraft.entity.OfudaEntity;
 import dev.overcraft.entity.SuzuEntity;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import static dev.overcraft.kiriko.KirikoStats.*;
@@ -193,13 +194,32 @@ public final class Kiriko implements HeroKit {
 			return; // the target died, left or got out of range during the cast
 		}
 		Vec3 from = player.position();
-		level.sendParticles(ParticleTypes.CHERRY_LEAVES, from.x, from.y + 1, from.z, 20, 0.3, 0.6, 0.3, 0.02);
-		player.teleportTo(target.getX(), target.getY(), target.getZ());
+		Effects.play(level, "swift_step_depart", from);
+		Vec3 arrive = beside(player, target, from);
+		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
-		level.sendParticles(ParticleTypes.CHERRY_LEAVES, target.getX(), target.getY() + 1, target.getZ(), 20, 0.3, 0.6, 0.3, 0.02);
+		Effects.play(level, "swift_step_arrive", arrive);
 		level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.8f, 1.5f);
+	}
+
+	/**
+	 * Where Swift Step lands: Overwatch puts her on the ally (its heroes overlap softly); in Minecraft that put the
+	 * camera inside their head, so just beside them on the side she came from, when there's room (ours).
+	 */
+	private static Vec3 beside(ServerPlayer player, LivingEntity target, Vec3 from) {
+		Vec3 at = target.position();
+		Vec3 back = new Vec3(from.x - at.x, 0, from.z - at.z);
+		if (back.lengthSqr() > 1.0E-4) {
+			double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + 0.1;
+			Vec3 spot = at.add(back.normalize().scale(gap));
+			AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
+			if (player.level().noCollision(player, box)) {
+				return spot;
+			}
+		}
+		return at;
 	}
 
 	private static void sound(ServerPlayer player, SoundEvent sound, float volume, float pitch) {

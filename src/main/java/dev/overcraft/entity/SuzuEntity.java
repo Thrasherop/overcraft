@@ -3,11 +3,10 @@ package dev.overcraft.entity;
 import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,7 +28,6 @@ import net.minecraft.world.phys.Vec3;
  * behind a wall) are healed, cleansed and phased out (immune to damage) for a moment.
  */
 public class SuzuEntity extends OwProjectile {
-	private static final DustParticleOptions BURST = new DustParticleOptions(0xFFFFE08A, 1.5f);
 
 	public SuzuEntity(EntityType<? extends SuzuEntity> type, Level level) {
 		super(type, level);
@@ -90,8 +88,7 @@ public class SuzuEntity extends OwProjectile {
 		if (owner instanceof Player player) {
 			Combat.addUltCharge(player, healedTotal);
 		}
-		level.sendParticles(BURST, at.x, at.y, at.z, 60, r / 2, r / 4, r / 2, 0.02);
-		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 25, r / 3, r / 4, r / 3, 0.05);
+		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10));
 		level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 1.2f, 1.4f);
 		level.playSound(null, at.x, at.y, at.z, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 0.7f, 1.8f);
 		discard();

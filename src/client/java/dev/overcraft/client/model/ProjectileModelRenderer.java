@@ -2,13 +2,19 @@ package dev.overcraft.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.overcraft.client.effect.Fx;
+import dev.overcraft.client.effect.KirikoFx;
+import dev.overcraft.entity.KunaiEntity;
+import dev.overcraft.entity.OfudaEntity;
 import dev.overcraft.entity.OwProjectile;
+import dev.overcraft.entity.SuzuEntity;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.state.ThrownItemRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -56,6 +62,16 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		s.yRot = entity.getYRot(partialTicks);
 		s.xRot = entity.getXRot(partialTicks);
 		s.loaded = HeroModels.get("projectile_" + model);
+		// the flight effects (trail, glow, sparkles), fed with where it is this frame
+		Vec3 at = entity.getPosition(partialTicks);
+		float dt = Fx.since(entity.getId());
+		switch (entity) {
+			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing());
+			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt);
+			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt);
+			default -> {
+			}
+		}
 	}
 
 	@Override

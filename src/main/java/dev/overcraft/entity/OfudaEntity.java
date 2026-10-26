@@ -3,10 +3,10 @@ package dev.overcraft.entity;
 import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,8 +29,6 @@ import org.jspecify.annotations.Nullable;
  */
 public class OfudaEntity extends OwProjectile {
 	private static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(OfudaEntity.class, EntityDataSerializers.INT);
-	private static final DustParticleOptions LOCKED = new DustParticleOptions(0xFFE8C547, 0.6f);
-	private static final DustParticleOptions UNLOCKED = new DustParticleOptions(0xFF6FC3FF, 0.6f);
 
 	public OfudaEntity(EntityType<? extends OfudaEntity> type, Level level) {
 		super(type, level);
@@ -57,6 +55,11 @@ public class OfudaEntity extends OwProjectile {
 		return Ow.ticks(KirikoStats.OFUDA_LIFETIME);
 	}
 
+	/** Locked on an ally and homing: drawn gold rather than teal. */
+	public boolean homing() {
+		return target() != null;
+	}
+
 	private @Nullable LivingEntity target() {
 		int id = entityData.get(TARGET);
 		return id >= 0 && level().getEntity(id) instanceof LivingEntity living && living.isAlive() ? living : null;
@@ -72,9 +75,6 @@ public class OfudaEntity extends OwProjectile {
 			}
 		}
 		super.tick();
-		if (level().isClientSide()) {
-			level().addParticle(target != null ? LOCKED : UNLOCKED, getX(), getY(), getZ(), 0, 0, 0);
-		}
 	}
 
 	@Override
@@ -84,9 +84,10 @@ public class OfudaEntity extends OwProjectile {
 
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
-		if (!(level() instanceof ServerLevel) || !(hit.getEntity() instanceof LivingEntity ally)) {
+		if (!(level() instanceof ServerLevel level) || !(hit.getEntity() instanceof LivingEntity ally)) {
 			return;
 		}
+		Effects.play(level, "ofuda_hit_ally", ally.getBoundingBox().getCenter(), Vec3.ZERO, ally, homing() ? 1 : 0);
 		float healed = Combat.heal(ally, KirikoStats.OFUDA_HEAL);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, healed);
@@ -101,7 +102,9 @@ public class OfudaEntity extends OwProjectile {
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
-		if (!level().isClientSide()) {
+		if (level() instanceof ServerLevel level) {
+			Effects.play(level, "ofuda_hit_block", hit.getLocation(), Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null,
+				homing() ? 1 : 0);
 			discard();
 		}
 	}

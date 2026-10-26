@@ -1,7 +1,6 @@
 package dev.overcraft.hero;
 
 import dev.overcraft.Ow;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -68,7 +67,6 @@ public final class QuickMelee {
 			Combat.addUltCharge(hero, dealt);
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
 			target.knockback(KNOCKBACK, -look.x, -look.z, source, Ow.hp(dealt));
-			level.sendParticles(ParticleTypes.SWEEP_ATTACK, point.x, point.y, point.z, 1, 0, 0, 0, 0);
 			hit = true;
 		}
 		Combat.animate(hero, CLIPS[hero.getRandom().nextInt(CLIPS.length)]);
