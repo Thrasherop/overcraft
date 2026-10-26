@@ -8,6 +8,8 @@ import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.hud.HudText;
 import dev.overcraft.client.hud.HudText.Align;
 import dev.overcraft.client.hud.HudText.Face;
+import dev.overcraft.client.hud.KillFeedHud;
+import dev.overcraft.client.mixin.ToastManagerAccessor;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Targeting;
@@ -144,6 +146,9 @@ public final class HeroHud {
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
+		// Overwatch's kill feed sits where Minecraft's toasts do: below any showing (32 GUI units a slot)
+		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
+		KillFeedHud.render(g, w - 36, Math.max(36, toastSlots * 32 / scale + 12));
 		crosshair(g, w / 2, h / 2);
 		ofudaCounter(g, s, w / 2, h / 2 + 136);
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));

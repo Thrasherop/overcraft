@@ -4,8 +4,10 @@ import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroWeaponItem;
+import dev.overcraft.hero.KillFeed;
 import dev.overcraft.kiriko.KitsuneRush;
 import dev.overcraft.net.EffectPayload;
+import dev.overcraft.net.KillFeedPayload;
 import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
@@ -49,6 +51,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			Hero hero = Hero.byId(payload.heroId());
@@ -76,6 +79,7 @@ public class Overcraft implements ModInitializer {
 			// Overwatch has no fall damage: none while playing the hero (slot 1)
 			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.controls(player));
 		});
+		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);

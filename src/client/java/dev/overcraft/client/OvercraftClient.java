@@ -9,6 +9,7 @@ import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.client.effect.Fx;
 import dev.overcraft.client.effect.FxRender;
 import dev.overcraft.client.effect.KirikoFx;
+import dev.overcraft.client.hud.KillFeedHud;
 import dev.overcraft.client.model.HeroAnimator;
 import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
@@ -17,6 +18,7 @@ import dev.overcraft.client.model.ProjectileModelRenderer;
 import dev.overcraft.net.EffectPayload;
 import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroSyncPayload;
+import dev.overcraft.net.KillFeedPayload;
 import dev.overcraft.registry.OcEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -42,6 +44,7 @@ public class OvercraftClient implements ClientModInitializer {
 
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
+		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
@@ -62,6 +65,7 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroModelRenderer.clear();
 			Fx.clear();
 			Cleansed.clear();
+			KillFeedHud.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

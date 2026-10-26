@@ -15,7 +15,8 @@
 		"MinecraftInvoker",
 		"MouseHandlerMixin",
 		"SubtitleOverlayMixin",
-		"CreateWorldScreenAccessor"
+		"CreateWorldScreenAccessor",
+		"ToastManagerAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

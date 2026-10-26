@@ -5,6 +5,14 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**A kill feed** (critique #44; Overwatch's, top right). Who killed whom with what, for kills by a player playing a hero
+and every player's death, seen within 64 blocks: names on their side's colour as each player sees it (blue theirs, red
+the other), a hero's portrait beside their name, the weapon's icon between (the kunai's; an arrow for quick melee or a
+mob's hit), this player's own kills framed white; six lines at most, six seconds each. Minecraft's toasts live in the
+same corner: the feed starts below any showing. Played with two clients (`kf2_sheet`, `kf3_z`): Kiriko's kunai kill
+on a zombie and quick melee on a pig (her portrait, framed), a zombie killing the other player ("ZOMBIE > VIEWER", red
+and blue), the feed stepping down under the advancement and recipe toasts.
+
 **She leans with her aim, seen from another player** (HANDOFF's missing third-person aim lean), **and a second dev
 client to check it.**
 - Overwatch's aim pose sheet (A71F, additive) under her: its data turned out to be three rows of 21 frames (aim yaw

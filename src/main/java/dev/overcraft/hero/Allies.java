@@ -31,6 +31,21 @@ public final class Allies {
 			|| other instanceof Allay;
 	}
 
+	/** Whether other is (or, just dead, was) on the hero's side: isAlly without its alive check (the kill feed). */
+	public static boolean wasAlly(LivingEntity hero, Entity other) {
+		if (other == hero || !(other instanceof LivingEntity)) {
+			return false;
+		}
+		if (other instanceof Player player) {
+			return playersAllied(hero, player);
+		}
+		if (other instanceof OwnableEntity ownable && ownable.getOwner() instanceof LivingEntity owner) {
+			return owner == hero || (owner instanceof Player p && playersAllied(hero, p));
+		}
+		return other instanceof AbstractVillager || other instanceof IronGolem || other instanceof SnowGolem
+			|| other instanceof Allay;
+	}
+
 	/** The hero themself or an ally: what support abilities like Protection Suzu affect. */
 	public static boolean isSelfOrAlly(LivingEntity hero, Entity other) {
 		return other == hero || isAlly(hero, other);
