@@ -23,6 +23,17 @@ loom {
 			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
 			vmArg "-Dovercraft.dev=true"
 		}
+		// a second client to see a hero as other players do (join the first's LAN world): its own folder, its own
+		// harness port (OC_DEV_PORT=25600 py tools/dev.py ...) and name
+		client2 {
+			inherit client
+			name "Minecraft Client 2"
+			runDir "run2"
+			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			vmArg "-Dovercraft.dev=true"
+			vmArg "-Dovercraft.devPort=25600"
+			programArgs "--username", "Viewer"
+		}
 	}
 }
 

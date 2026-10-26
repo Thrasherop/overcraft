@@ -41,7 +41,8 @@ import java.util.concurrent.TimeUnit;
  * | hero <id>
  */
 public final class DevServer {
-	public static final int PORT = 25599;
+	/** 25599, or -Dovercraft.devPort for a second client (gradlew runClient2: 25600). */
+	public static final int PORT = Integer.getInteger("overcraft.devPort", 25599);
 
 	private DevServer() {
 	}
@@ -149,6 +150,28 @@ public final class DevServer {
 						((CreateWorldScreenAccessor) create).overcraft$onCreate();
 					}
 				});
+				out.addProperty("ok", true);
+			}
+			case "players" -> {
+				// dev only: the other players this client sees, with the yaws it renders them by
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				for (net.minecraft.world.entity.player.Player other : mc.level.players()) {
+					com.google.gson.JsonObject o = new com.google.gson.JsonObject();
+					o.addProperty("name", other.getName().getString());
+					o.addProperty("yRot", other.getYRot());
+					o.addProperty("yHeadRot", other.getYHeadRot());
+					o.addProperty("yBodyRot", other.yBodyRot);
+					o.addProperty("x", other.getX());
+					o.addProperty("z", other.getZ());
+					list.add(o);
+				}
+				out.add("players", list);
+			}
+			case "connect" -> {
+				// dev only: join a server or a LAN world ("connect localhost:25565"), as the multiplayer screen does
+				net.minecraft.client.gui.screens.ConnectScreen.startConnecting(new net.minecraft.client.gui.screens.TitleScreen(), mc,
+					net.minecraft.client.multiplayer.resolver.ServerAddress.parseString(arg),
+					new net.minecraft.client.multiplayer.ServerData("Dev", arg, net.minecraft.client.multiplayer.ServerData.Type.LAN), false, null);
 				out.addProperty("ok", true);
 			}
 			case "openworld" -> {

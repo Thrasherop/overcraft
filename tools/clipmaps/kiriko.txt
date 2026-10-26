@@ -75,6 +75,9 @@
 # additive layers (4-* folders: deltas on top of the pose)
 4-0_00000000AFDB = add_breathe            # standing breathing (loops)
 4-0_0000000060F8 = add_breathe_crouch
+# the aim pose sheet (research: an AnimationPose2d, 63 frames, sampled by two aim springs; under every stance): frame
+# 31 is the middle of the grid
+4-6_00000000A71F = add_aim
 
 # reactions
 0-32_00000000AF3C = death

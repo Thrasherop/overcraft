@@ -5,6 +5,26 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**She leans with her aim, seen from another player** (HANDOFF's missing third-person aim lean), **and a second dev
+client to check it.**
+- Overwatch's aim pose sheet (A71F, additive) under her: its data turned out to be three rows of 21 frames (aim yaw
+  left, centre, right; each sweeping aim pitch, frame 31 neutral). Her body faces her aim, so only the centre row is
+  used, on her named upper-body bones (its unnamed helper bones swing up to 177 degrees and its legs a little: left
+  alone). The head turns only the pitch the sheet leaves (about 70%), or it bowed too far.
+- Played with a second player: the first try had the row backwards (looking down raised her ofuda hand overhead);
+  flipped, she leans back with the hand up looking up and bends forward looking down (`mpm_sheet`, `mpn_sheet`).
+- `gradlew runClient2` starts a second dev client ("Viewer", its own `run2/` folder and harness port 25600:
+  `OC_DEV_PORT=25600 py tools/dev.py ...`); harness `connect host:port` joins a server or LAN world (open one with
+  `/publish true 25565`), `players` lists the players a client sees with their yaws.
+- Played with Viewer as her ally (`mp1_sheet_v`, `mp1_sheet_k`): Viewer sees and hears her kunai and ofuda ("Ofuda
+  thrown"), is healed from half health to full, sees her Swift Step arrive ("Kiriko appears", "Kiriko vanishes"), her
+  Suzu flash white ("Suzu rings", "Kiriko: Protecting"), and her Kitsune Rush with the friendly line ("Kiriko: Let the
+  Kitsune guide you!"), the gates and tiles; Kiriko sees Viewer's health pips over its name tag. A misreading on the
+  way: from the side her idle looked turned 90 degrees, but her idle is a sideways fighting stance (`players` showed
+  the right yaws; `mpgz_sheet`).
+- Swift Step lands half a metre clear of the ally (it was 0.1 m: her camera was in the other player's face), closer
+  only when there's no room. Played: onto Viewer from 9 m (`mp2_step`).
+
 **A reload animation** (HANDOFF's missing list; seen every 15 kunai). The animation research had left one
 start-middle chain unplayed (aliases 0x16E then 0x812, 0.2 s + 0.8 s) and guessed it was the reload; checked by eye
 on the first-person survey renders: A49C flicks the held ofuda away, A49D brings the hands back crossed as fresh kunai

@@ -3,6 +3,7 @@ package dev.overcraft.client.model;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 /** Posing a {@link SkinnedModel}: sampling clips into local transforms, blending them, and the skin matrices. */
 public final class Skeleton {
@@ -67,6 +68,11 @@ public final class Skeleton {
 	 * scaled by {@code weight}: its translations add, its rotations turn the bone further in its own frame.
 	 */
 	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight) {
+		addAdditive(clip, time, pose, weight, null);
+	}
+
+	/** The same, on the nodes in {@code mask} only (all when null). */
+	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight, boolean @Nullable [] mask) {
 		if (weight <= 0) {
 			return;
 		}
@@ -75,6 +81,9 @@ public final class Skeleton {
 		Quaternionf none = new Quaternionf();
 		for (SkinnedModel.Channel ch : clip.channels()) {
 			int i = ch.node();
+			if (mask != null && !mask[i]) {
+				continue;
+			}
 			switch (ch.path()) {
 				case 'T' -> pose.t[i].add(delta.t[i].x * weight, delta.t[i].y * weight, delta.t[i].z * weight);
 				case 'R' -> pose.r[i].mul(new Quaternionf(none).slerp(delta.r[i], weight)).normalize();

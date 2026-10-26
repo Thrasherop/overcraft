@@ -42,6 +42,14 @@ public final class HeroAnimator {
 	public static final float CLIMB_SHIFT = 0.3f;
 	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
 	private static final float CLIMB_DUST_EVERY = 0.5f;
+	/** The aim sheet's frames per second (its 63 frames are keyed 1/30 s apart in the export). */
+	private static final float AIM_FPS = 30;
+	/** Aim pitch (degrees) at the ends of the sheet's pitch row (ours: Minecraft's whole range). */
+	private static final float AIM_PITCH = 90;
+	/** Which end of the row is looking down: frame 21 tilts the spine one way, 41 the other (checked in game). */
+	private static final float AIM_SIGN = -1;
+	/** How much of the pitch the sheet's spine, neck and head turn at its ends (27-31 of 90 degrees, read from it). */
+	private static final float AIM_SHARE = 0.3f;
 
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
@@ -202,6 +210,17 @@ public final class HeroAnimator {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
+		// Overwatch's aim pose sheet (A71F) on top of everything: her spine, neck and arms follow where she aims up or
+		// down. Its middle row (frames 21-41) runs through the aim's pitch, 31 level; the rows either side are aim yaw,
+		// not needed while her body faces her aim
+		SkinnedModel.Clip aim = clip(model, "add_aim");
+		float lookPitch = headPitch;
+		if (aim != null) {
+			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
+			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
+			// the sheet already tilts the spine, neck and head by about this share of the pitch: the head turns the rest
+			lookPitch = headPitch * (1 - AIM_SHARE);
+		}
 
 		// the cloth the clips leave rigid (coat tails): simulated, kept out of the legs
 		if (clothFor != model) {
@@ -215,7 +234,7 @@ public final class HeroAnimator {
 			cloth.step(model, pose, dt, moved);
 		}
 
-		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(headPitch * Mth.DEG_TO_RAD);
+		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
 	}
 
@@ -402,6 +421,7 @@ public final class HeroAnimator {
 	 */
 	static final class UpperBody {
 		private static final Map<SkinnedModel, boolean[]> MASKS = new HashMap<>();
+		private static final Map<SkinnedModel, boolean[]> AIM_MASKS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> HEADS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> MOVERS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> EYES = new HashMap<>();
@@ -414,6 +434,21 @@ public final class HeroAnimator {
 				}
 			}
 			return -1;
+		}
+
+		/**
+		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands). Its
+		 * unnamed helper bones swing up to 177 degrees and its legs a little: left alone.
+		 */
+		static boolean[] aimMask(SkinnedModel model) {
+			return AIM_MASKS.computeIfAbsent(model, m -> {
+				boolean[] upper = mask(m);
+				boolean[] aim = new boolean[upper.length];
+				for (int i = 0; i < aim.length; i++) {
+					aim[i] = upper[i] && !m.nodeNames[i].startsWith("bone_");
+				}
+				return aim;
+			});
 		}
 
 		static boolean[] mask(SkinnedModel model) {

@@ -228,11 +228,15 @@ public final class Kiriko implements HeroKit {
 		Vec3 at = target.position();
 		Vec3 back = new Vec3(from.x - at.x, 0, from.z - at.z);
 		if (back.lengthSqr() > 1.0E-4) {
-			double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + 0.1;
-			Vec3 spot = at.add(back.normalize().scale(gap));
-			AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
-			if (player.level().noCollision(player, box)) {
-				return spot;
+			// half a metre clear of the ally (ours): a hand's width away put her camera in their face (played with a
+			// second player); closer only when there's no room
+			for (double clear : new double[] {0.5, 0.1}) {
+				double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + clear;
+				Vec3 spot = at.add(back.normalize().scale(gap));
+				AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
+				if (player.level().noCollision(player, box)) {
+					return spot;
+				}
 			}
 		}
 		return at;
