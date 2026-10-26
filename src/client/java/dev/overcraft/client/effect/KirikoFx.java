@@ -424,14 +424,24 @@ public final class KirikoFx {
 		// a flat particle's long side, turned by r, lies along (sin r, 0, cos r): across the path
 		float across = (float) Math.atan2(side.x, side.z);
 		for (int i = 0; i < 3; i++) {
-			Particle tile = Fx.particle("card", Palette.TEAL);
+			// Kiriko's own talisman, glowing teal (cut from the ofuda's texture), lying along the path; else a plain card
+			Particle tile = Fx.particle("talisman", Palette.TEAL);
+			boolean talisman = tile != null;
+			if (tile == null) {
+				tile = Fx.particle("card", Palette.TEAL);
+			}
 			if (tile == null) {
 				return;
 			}
 			float width = range(0.56f, 1.12f);
 			Vec3 at = ground.add(side.scale(range(-4, 4))).add(ahead.scale(range(-0.6f, 0.6f))).add(0, 0.03, 0);
-			Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 0.52f, width * 0.52f).aspect(1 / 0.52f)
-				.spin(across + range(-0.25f, 0.25f), 0).alpha(0.75f).fade(0.03f, 0.06f));
+			if (talisman) {
+				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 1.1f, width * 1.1f).aspect(1 / 3f)
+					.spin(across + range(-0.35f, 0.35f), 0).alpha(0.85f).fade(0.03f, 0.06f));
+			} else {
+				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 0.52f, width * 0.52f).aspect(1 / 0.52f)
+					.spin(across + range(-0.25f, 0.25f), 0).alpha(0.75f).fade(0.03f, 0.06f));
+			}
 		}
 	}
 

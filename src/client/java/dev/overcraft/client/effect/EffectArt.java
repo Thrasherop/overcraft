@@ -69,6 +69,10 @@ public final class EffectArt {
 	}
 
 	private static final Map<String, Optional<Identifier>> CACHE = new HashMap<>();
+	/** The talisman mask cut from the ofuda model's texture (see keepTalisman), or null without the pack. */
+	private static @Nullable NativeImage talisman;
+	/** Where the talisman's face sits in the ofuda model's texture atlas (fractions of its size; read off the atlas). */
+	private static final float TALISMAN_X0 = 0.737f, TALISMAN_X1 = 0.862f, TALISMAN_Y0 = 0.05f, TALISMAN_Y1 = 0.452f;
 	/**
 	 * Masks whose dim parts the game cuts away (its ring meshes use only the bright edge; the soft interior is for
 	 * other uses): brightness below this is black. Without it Suzu's 8 m ground ring was a lit disc.
@@ -98,6 +102,14 @@ public final class EffectArt {
 	 * faint face, standing in for the rush path's talisman slabs (the game's mesh 109BC is such a card).
 	 */
 	private static @Nullable NativeImage generated(String name) {
+		if (name.equals("talisman")) {
+			if (talisman == null) {
+				return null;
+			}
+			NativeImage copy = new NativeImage(talisman.getWidth(), talisman.getHeight(), false);
+			copy.copyFrom(talisman);
+			return copy;
+		}
 		if (!name.equals("card")) {
 			return null;
 		}
@@ -162,6 +174,41 @@ public final class EffectArt {
 
 	private static int srgb(float linear) {
 		return Math.round(255 * (float) Math.pow(Math.clamp(linear, 0, 1), 1 / 2.2));
+	}
+
+	/**
+	 * Keeps a mask of the ofuda's paper talisman (from its model's texture, as it loads: the local pack's) for effects:
+	 * its ink and seal bright, the paper faint, so coloured and added it glows as glyphs on a card (the rush path's
+	 * talisman tiles).
+	 */
+	public static void keepTalisman(NativeImage atlas) {
+		int x0 = Math.round(atlas.getWidth() * TALISMAN_X0);
+		int x1 = Math.round(atlas.getWidth() * TALISMAN_X1);
+		int y0 = Math.round(atlas.getHeight() * TALISMAN_Y0);
+		int y1 = Math.round(atlas.getHeight() * TALISMAN_Y1);
+		int w = 96;
+		int h = 288;
+		NativeImage mask = new NativeImage(w, h, false);
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				int argb = atlas.getPixel(x0 + (x1 - x0) * x / w, y0 + (y1 - y0) * y / h);
+				float r = ((argb >> 16) & 0xFF) / 255f;
+				float g = ((argb >> 8) & 0xFF) / 255f;
+				float b = (argb & 0xFF) / 255f;
+				float lum = 0.3f * r + 0.59f * g + 0.11f * b;
+				float ink = Math.clamp((0.85f - lum) / 0.65f, 0, 1);
+				// a soft rim so the card's edge shows, fading to nothing at the very border
+				float edge = Math.min(Math.min(x, w - 1 - x) / 6f, Math.min(y, h - 1 - y) / 6f);
+				float rim = edge < 1 ? edge : Math.max(0, 1.6f - edge * 0.6f);
+				float v = Math.clamp(Math.max(0.2f + 0.8f * ink, rim * 0.7f), 0, 1) * Math.clamp(edge, 0, 1);
+				int c = Math.round(255 * v);
+				mask.setPixel(x, y, 0xFF000000 | c << 16 | c << 8 | c);
+			}
+		}
+		if (talisman != null) {
+			talisman.close();
+		}
+		talisman = mask;
 	}
 
 	/** Resource packs changed: colour them again when next asked. */

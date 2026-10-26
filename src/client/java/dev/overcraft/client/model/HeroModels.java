@@ -135,6 +135,9 @@ public final class HeroModels {
 				if (image == null) {
 					continue;
 				}
+				if (name.equals("projectile_ofuda") && i == 0) {
+					dev.overcraft.client.effect.EffectArt.keepTalisman(image);
+				}
 				Identifier id = Overcraft.id("hero_models/" + name + "/" + i);
 				textures.register(id, new HeroTexture(id, image));
 				REGISTERED.add(id);

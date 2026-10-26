@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Kitsune Rush's path laid with Kiriko's own talismans** (round 2's #17: "blank glass tiles"). The tiles are now her
+paper talisman, its seal and glyphs glowing teal: cut at load from the ofuda model's texture in the local pack
+(`EffectArt.keepTalisman`; plain cards without the pack). The torii gates fade in over their bottom 0.6 m: their posts
+are open tubes, and their ends showed as rings on the ground. Played: the rush in first person, level and looking down
+(`tal_sheet`, `tal2_z`).
+
 **The ofuda flick no longer shows the redraw fist mid-volley** (round 2's #20). The throw clip (B0E1) is the flick,
 then a fist drawing a fresh fan from the belt; while fire is held only the flick repeats now, the redraw plays when she
 stops. Checked with the harness's new `anim1p` (the first-person action step) while holding fire: the 10 ofuda go in

@@ -254,6 +254,8 @@ public final class Fx {
 	private static final float NEAR_FADE = 1.2f;
 	/** Meshes (the torii gates) fade over a longer reach: they're big, and the critique asked for about 3 m. */
 	private static final float MESH_FADE = 2.7f;
+	/** Meshes fade in over this height above their base (metres: ours). */
+	private static final float MESH_BASE_FADE = 0.6f;
 	private static float lastTime = -1;
 
 	private Fx() {
@@ -572,7 +574,9 @@ public final class Fx {
 				float vy = cy + y;
 				float vz = cz + x * p.sideZ + z * fz;
 				float d = (float) Math.sqrt(vx * vx + vy * vy + vz * vz);
-				int corner = argb(rgb, alpha * Math.clamp((d - NEAR_FADE_START) / MESH_FADE, 0, 1));
+				// and over its bottom MESH_BASE_FADE: the gate's posts are open tubes, their ends showed as rings
+				float base = Math.clamp(y / MESH_BASE_FADE, 0, 1);
+				int corner = argb(rgb, alpha * base * Math.clamp((d - NEAR_FADE_START) / MESH_FADE, 0, 1));
 				vertex(pose, buffer, vx, vy, vz, m[c + 3], m[c + 4], corner);
 			}
 		}
