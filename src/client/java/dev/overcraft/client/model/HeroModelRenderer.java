@@ -116,7 +116,11 @@ public final class HeroModelRenderer {
 		state.yRot = Mth.wrapDegrees(state.yRot + state.bodyRot - facing);
 		state.bodyRot = facing;
 		long t0 = System.nanoTime();
-		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, state.yRot, state.xRot);
+		// in a menu's preview the head looks straight ahead: Minecraft's preview sets the head angles only after this
+		// pose, so it took the player's own pitch in the world (looking down, the head bent over and the back of the
+		// hair opened up: #29, #30)
+		boolean previewing = preview != null && entity == Minecraft.getInstance().player;
+		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
 		Timing.pose += System.nanoTime() - t0;
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action()),
 			preview == null));

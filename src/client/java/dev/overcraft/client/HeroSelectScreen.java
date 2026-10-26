@@ -224,8 +224,10 @@ public class HeroSelectScreen extends OwScreen {
 			int cx = width / 2;
 			HeroModelRenderer.preview(preview);
 			try {
+				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
+				// preview turns toward a point: the box's own centre is straight ahead
 				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, MODEL_DROP,
-					mouseX, mouseY, minecraft.player);
+					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
 			}
