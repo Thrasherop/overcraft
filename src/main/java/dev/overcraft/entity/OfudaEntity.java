@@ -1,5 +1,7 @@
 package dev.overcraft.entity;
 
+import net.minecraft.server.level.ServerPlayer;
+import dev.overcraft.hero.Voice;
 import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
@@ -97,6 +99,11 @@ public class OfudaEntity extends OwProjectile {
 			// Medic: weapon healing also heals Kiriko (no ult charge for that part)
 			if (healed > 0) {
 				Combat.heal(owner, healed * KirikoStats.MEDIC_SELF_HEAL);
+				// now and then a healing line ("Be healed", "Like a gentle rain": the sound research's 0.15 chance; the
+				// 20 s between them is ours)
+				if (owner instanceof ServerPlayer kiriko) {
+					Voice.sayNowAndThen(kiriko, "heal", 0.15f, 400);
+				}
 			}
 		}
 		discard();

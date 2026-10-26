@@ -44,6 +44,27 @@ public final class Voice {
 	}
 
 	/**
+	 * A line said at most once per {@code minTicks} (on top of the usual spacing), by chance when it may: for moments that
+	 * come many times a second (healing: ofuda land about 14 times a second).
+	 */
+	public static void sayNowAndThen(ServerPlayer player, String moment, float chance, int minTicks) {
+		HeroState state = HeroManager.state(player);
+		if (state == null) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		Long last = state.saidAt.get(moment);
+		if (last != null && now - last < minTicks) {
+			return;
+		}
+		long before = state.voiceAt;
+		say(player, moment, chance, true);
+		if (state.voiceAt != before) {
+			state.saidAt.put(moment, now);
+		}
+	}
+
+	/**
 	 * A hero player killed something: an elimination or melee remark, a multikill (within KILL_CHAIN). (Their own pain
 	 * and death cries are their hurt and death sounds: PlayerMixin.)
 	 */

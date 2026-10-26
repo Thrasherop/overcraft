@@ -13,7 +13,10 @@ English first, up to 8 a moment (`tools/soundmaps/kiriko.txt`, picked by a scrip
   get back to it") most respawns; "I'll find my own path" on picking her.
 - Her hurt and death sounds are her own grunts and dying cry instead of Steve's (a Player mixin, on every side; burning,
   drowning and freezing keep Minecraft's), so they show as "Kiriko grunts", "Kiriko cries out".
-- Played with subtitles on (`vo1_sheet`, `vo2_sheet`): melee, ult ready, a kill, hurt, three deaths and respawns.
+- Healing lines now and then ("Be healed", "Like a gentle rain": the sound research's 0.15 chance per heal, at most one
+  every 20 s, ours). The heal event existed but was never played.
+- Played with subtitles on (`vo1_sheet`, `vo2_sheet`, `vo3s`): melee, ult ready, a kill, hurt, three deaths and
+  respawns, healing a hurt villager ("Kiriko: Healing" on the first volley).
 
 **Fixed: the ult's charge was lost on death.** Overwatch keeps it. Reproduced: 1638 points (60%) before dying, 11
 after respawning; now the same before and after (2725 and 2725).

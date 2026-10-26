@@ -39,6 +39,8 @@ public final class HeroState {
 	public long voiceAt = -10000;
 	/** When the hero last killed something (game time): multikills. */
 	public long lastKillAt = -10000;
+	/** When each now-and-then line was last said (Voice.sayNowAndThen). */
+	public final java.util.Map<String, Long> saidAt = new java.util.HashMap<>();
 	/** In (or just out of) a Kitsune Rush corridor this tick. */
 	public boolean rushed;
 	/** May pick a hero now: the pick on joining, or near their bed. */
