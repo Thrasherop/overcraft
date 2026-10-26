@@ -16,15 +16,15 @@ import java.util.Random;
  * first person didn't match. A player skin texture with only the arms painted, at four times Minecraft's resolution
  * (the arm model's UVs are fractions of the texture, so finer texels just add detail), row by row from shoulder to
  * fingers so it fits both the wide and the slim arm. Colours read off her model (ours, after her red jacket, black
- * wristband and fingerless glove).
+ * wristband and red fingerless glove with black knuckle pads).
  */
 public final class HeroArmSkin {
 	private static final int SCALE = 4;
 	private static final int SLEEVE = 0x8F1F2C;
 	private static final int SLEEVE_DARK = 0x6A1520;
 	private static final int BAND = 0x232327;
-	private static final int GLOVE = 0x38383D;
-	private static final int GLOVE_RED = 0x8F1F2C;
+	private static final int GLOVE = 0x9E2331;
+	private static final int KNUCKLES = 0x26262A;
 	private static final int SKIN = 0xE2A886;
 	private static final int SKIN_DARK = 0xB97B5E;
 
@@ -97,8 +97,8 @@ public final class HeroArmSkin {
 			return BAND;
 		}
 		if (row < 10.9f) {
-			// the glove, its red trim along the knuckles
-			return row > 10.5f ? GLOVE_RED : GLOVE;
+			// the glove: red, black pads over the knuckles (the sixth critique: hers is red, not charcoal)
+			return row > 10.1f ? KNUCKLES : GLOVE;
 		}
 		// the fingers: skin, a dark line between each (one texel apart, a quarter of a Minecraft pixel wide)
 		return xIn % SCALE == 0 ? SKIN_DARK : SKIN;

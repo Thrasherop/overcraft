@@ -86,6 +86,8 @@ public final class Fx {
 		boolean removed;
 		/** Meant to be seen up close (a first-person hand's puff): not faded near the camera. */
 		boolean near;
+		/** Fades out over this reach from the camera instead of the default (0: the default). */
+		float nearReach;
 		/** A sprite on a surface it hit (that surface's normal): lifted off it so none of it sinks in. */
 		boolean lift;
 		float lx, ly = 1, lz;
@@ -206,6 +208,12 @@ public final class Fx {
 			return this;
 		}
 
+		/** Gone at the camera, full from this many metres (things thrown from her hand, which start there). */
+		public Particle nearFade(float metres) {
+			nearReach = metres;
+			return this;
+		}
+
 		public Particle blended() {
 			additive = false;
 			return this;
@@ -277,6 +285,8 @@ public final class Fx {
 		final float duration;
 		final float alpha;
 		final boolean soft;
+		/** Fades out over this reach from the camera instead of the default (0: the default). */
+		float nearReach;
 		final ArrayDeque<double[]> points = new ArrayDeque<>();
 		float lastFed;
 
@@ -306,10 +316,11 @@ public final class Fx {
 	/**
 	 * Meshes (the torii gates) are gone within MESH_NEAR of the camera and fade in over the next MESH_FADE: they're big,
 	 * and a post a metre away filled a quarter of the screen with cyan (the fourth critique asked for 1.5 m to 4 m); at
-	 * that, the first gate 2.6 m ahead of the caster framed her whole view like a glass doorframe (the fifth).
+	 * that, the first gate 2.6 m ahead of the caster framed her whole view like a glass doorframe (the fifth), and at 2 m
+	 * to 6 m its edges still did (the sixth).
 	 */
-	private static final float MESH_NEAR = 2;
-	private static final float MESH_FADE = 4;
+	private static final float MESH_NEAR = 3;
+	private static final float MESH_FADE = 5;
 	/** How much of a glow's half size shows (its mask is dark toward the corners): what a lifted glow must clear. */
 	private static final float LIFT_RADIUS = 0.85f;
 	/** Meshes fade in over this height above their base (metres: ours). */
@@ -408,6 +419,17 @@ public final class Fx {
 			trail.points.addLast(new double[] {at.x, at.y, at.z, now});
 		}
 		trail.lastFed = now;
+	}
+
+	/**
+	 * Entity id's trail fades out over this reach from the camera: a ribbon from her hand otherwise spread over the near
+	 * view as broad sheets (the sixth critique's "wings").
+	 */
+	public static void trailNearFade(int id, float metres) {
+		Trail trail = TRAILS.get(id);
+		if (trail != null) {
+			trail.nearReach = metres;
+		}
 	}
 
 	/** The newest point of entity id's trail, or null without one. */
@@ -590,7 +612,7 @@ public final class Fx {
 		if ((p.shape == Shape.SPRITE || p.shape == Shape.STREAK) && !p.near) {
 			// sprites fade out as they reach the camera: one at her own position would otherwise fill the screen
 			float distance = (float) Math.sqrt(cx * cx + cy * cy + cz * cz);
-			float reach = Math.max(NEAR_FADE, p.size() * Math.max(1, p.aspect) * NEAR_FADE_PER_SIZE);
+			float reach = p.nearReach > 0 ? p.nearReach : Math.max(NEAR_FADE, p.size() * Math.max(1, p.aspect) * NEAR_FADE_PER_SIZE);
 			a *= Math.clamp((distance - NEAR_FADE_START) / reach, 0, 1);
 		}
 		if (a <= 0.003f) {
@@ -804,7 +826,9 @@ public final class Fx {
 			side.normalize().mul(trail.width / 2 * (0.25f + 0.75f * life));
 			left[i] = new float[] {rel.x - side.x, rel.y - side.y, rel.z - side.z};
 			rightSide[i] = new float[] {rel.x + side.x, rel.y + side.y, rel.z + side.z};
-			alpha[i] = trail.alpha * life * life * nearFade(rel.length());
+			float near = trail.nearReach > 0 ? Math.clamp((rel.length() - NEAR_FADE_START) / trail.nearReach, 0, 1)
+				: nearFade(rel.length());
+			alpha[i] = trail.alpha * life * life * near;
 		}
 		for (int i = 0; i < n - 1; i++) {
 			// oldest point first in the deque: V 1 at the tail, 0 at the head

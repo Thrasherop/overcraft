@@ -93,10 +93,10 @@ public class OvercraftClient implements ClientModInitializer {
 		// and the chat moves out of the hero HUD's way: as Overwatch's, small text at the left above the health (while
 		// typing, just lifted, so clicks on its lines still land)
 		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, vanilla -> (graphics, delta) -> {
-			boolean lift = ClientHero.controls();
+			boolean lift = ClientHero.heroView();
 			if (lift) {
 				graphics.pose().pushMatrix();
-				if (Minecraft.getInstance().gui.screen() == null) {
+				if (ClientHero.chatQuiet()) {
 					HeroHud.chatPlace(graphics);
 				} else {
 					graphics.pose().translate(0, -HeroHud.chatLift(graphics.guiWidth(), graphics.guiHeight()));

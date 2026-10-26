@@ -94,9 +94,16 @@ public final class EffectArt {
 	 * over grass (the fourth critique: Overwatch's on-screen gold is about #DCB900 to #A18700). Ours, from those.
 	 */
 	private static final Map<Palette, float[]> SOFT_RAMPS = Map.of(
-		Palette.GOLD, new float[] {0, .60f, .47f, 0, .5f, .85f, .71f, 0, .9f, .91f, .75f, .09f, 1, .96f, .82f, .3f},
+		// more orange than the on-screen gold itself: blended at part alpha over green grass it shifts toward olive (the
+		// sixth critique measured hues of 54-62 degrees against Overwatch's 45-50)
+		Palette.GOLD, new float[] {0, .58f, .36f, 0, .5f, .87f, .6f, 0, .9f, .93f, .7f, .08f, 1, .97f, .8f, .3f},
+		// Kiriko's teal and the kunai's cyan, blended (the faint parts of her effects: added over green grass they
+		// summed to mint, the fifth and sixth critiques), leaning blue so that over grass they land near 176 degrees
+		Palette.TEAL, new float[] {0, 0, .42f, .62f, .5f, 0, .6f, .76f, .9f, .12f, .84f, .88f, 1, .62f, .98f, .98f},
+		Palette.CYAN, new float[] {0, 0, .5f, .75f, .5f, 0, .7f, .9f, .9f, .3f, .92f, 1, 1, .8f, 1, 1},
 		// an enemy's effects, always blended (Fx): added, red over sky or grass washed out to pink-white. Ours
-		Palette.ENEMY, new float[] {0, .35f, .03f, .04f, .5f, .69f, .1f, .1f, .9f, .91f, .23f, .2f, 1, 1, .55f, .5f},
+		// its dark end read brick brown over grass (the sixth critique): brighter throughout
+		Palette.ENEMY, new float[] {0, .7f, .1f, .12f, .5f, .86f, .18f, .17f, .9f, .95f, .32f, .28f, 1, 1, .6f, .55f},
 		// Suzu's 5 s ground ring: the game's (3.2, 2.17, 0.1) is a saturated gold, about #FFD732 on screen; from the
 		// ramp's pale top it read khaki over grass (the fifth critique)
 		Palette.SUZU_GOLD, new float[] {0, .62f, .45f, 0, .5f, .9f, .7f, .05f, .9f, 1, .84f, .2f, 1, 1, .9f, .45f});

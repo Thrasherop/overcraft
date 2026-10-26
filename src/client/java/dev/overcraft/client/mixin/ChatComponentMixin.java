@@ -20,7 +20,7 @@ public abstract class ChatComponentMixin {
 	@ModifyVariable(method = "extractRenderState(Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;IILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;)V",
 		at = @At("STORE"), ordinal = 2)
 	private float overcraft$noPanelInHeroMode(float backgroundOpacity) {
-		return ClientHero.controls() && Minecraft.getInstance().gui.screen() == null ? 0 : backgroundOpacity;
+		return ClientHero.chatQuiet() ? 0 : backgroundOpacity;
 	}
 
 	@ModifyVariable(method = "extractRenderState(Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;IILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;)V",

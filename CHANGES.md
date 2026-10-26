@@ -5,6 +5,30 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: her leg kicked out for a moment every 3 seconds, again** (round 6 #3, a Swift Step arrival caught it).
+Overwatch's breath clip has two broken right-thigh keys; the load-time mend caught the one at 0.167 s but not the one
+at 1.967 s, whose neighbours are 23 degrees apart (the mend wanted under 22.5). Now it takes neighbours within 45.
+Reproduced first: idle, the game frozen and stepped a tick at a time through a breath cycle: one tick in 64 with the
+leg kicked up (`br_sheet`, `kick_repro`). After: 66 ticks, none (`bf_sheet`).
+
+**Round 6 of the critique** (`tools/reference/critique-2026-10-26-round6.md`), played after each:
+- **The "wings" on homing ofuda** were the next pair just thrown (toggle throws the whole clip): each 0.75 m talisman
+  a metre from the camera filled the sides of the view. Talismans are 0.5 m and fade in from 2.5 m; their ribbons
+  start on them, about 0.7 m long and 5 cm wide, and fade in from 2.5 m too (`of2_sheet`, `of2az`).
+- **Teal over grass read mint, gold olive**: the faint teal effects (ofuda trails and flowers, healing glows, Swift
+  Step rings, petals and puff, the rush's smoke, rings, tiles and speed lines, the fox's wake) are blended in a
+  blue-leaning teal instead of added; blended gold more orange (`of2cz`, `fx15_sheet`).
+- **The fox**: no separate glow ball over it; its own glow stronger, so the body is the bright thing (`fx15_fp_b`).
+- **The first gate in first person**: gates are gone within 3 m and full from 8 m.
+- **The rush view's mist** tinted the whole screen mint: lighter. The cast's smoke fainter.
+- **Chat behind the death screen** was Minecraft's, crossing the portrait: it's hero chat there too (`dchat`).
+- **An enemy's effects**: tiles and petals red, not brick brown; gates stronger; the fox red, not lilac-grey (with a
+  second client on another team, `en6_sheet`).
+- **Minecraft mode's glove** is red with black knuckle pads, as hers (`glove2z`).
+- **The ofuda throw's puff** is shorter (it stayed in the world after the hand moved on).
+- Not changed: the kunai glyph and in-flight look, the first-person paper in the flicking hand (Blizzard's), chat's
+  typing look (Minecraft's while typing, so clicks land).
+
 **The HUD portrait like Overwatch's** (round 1 #27 and #28, open since): the frame ends in a point, and the portrait is
 Overwatch's own HUD head art (the pack's `head.png`) with her ponytail breaking out over the frame's top, drawn over
 the border (it was the square portrait clipped inside); the Esc menu's portrait too. Left of the name, a tall

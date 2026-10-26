@@ -31,8 +31,8 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 	/** The spirit's colour and glow: ice blue, or pale red for an enemy's fox (ours, after the enemy palette). */
 	private static final int SPIRIT = 0xC8F4FF;
 	private static final int GLOW = 0xCFF8FF;
-	private static final int ENEMY_SPIRIT = 0xFFC8C4;
-	private static final int ENEMY_GLOW = 0xFFB0A8;
+	private static final int ENEMY_SPIRIT = 0xFFB0A8;
+	private static final int ENEMY_GLOW = 0xFF3A30;
 
 	public static class State extends EntityRenderState {
 		float yRot;
@@ -94,8 +94,11 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 				+ Math.pow(state.z - camera.pos.z, 2));
 			float near = (float) Math.clamp((distance - NEAR_START) / NEAR_FADE, 0, 1);
 			if (near > 0) {
-				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.75f * near, 0.75f * near,
-					state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW);
+				// its own glow strong, so the body is the bright thing (the sixth critique: no brighter than the sky)
+				// an enemy's: its blue texture faint under a strong red glow (tinted red, blue went dark and the glow over
+				// it lilac-grey)
+				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, (state.enemy ? 0.35f : 0.8f) * near,
+					(state.enemy ? 2.1f : 1.6f) * near, state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW);
 			}
 			poseStack.popPose();
 		}

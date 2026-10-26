@@ -228,9 +228,11 @@ public final class SkinnedModel {
 
 	/**
 	 * Mends single broken keys in a rotation track (x, y, z, w per key): a key turned more than SPIKE_ANGLE from both
-	 * neighbours while they agree with each other takes their average. Overwatch's standing breath (AFDB, as exported)
-	 * has two such keys on the right thigh, 180 degrees out for one frame, which kicked her leg out sideways every
-	 * 3 seconds at idle (seen under casts, reloads and the Suzu throw). Real motion never turns that far in one frame.
+	 * neighbours while they roughly agree with each other (within half of it) takes their average. Overwatch's standing
+	 * breath (AFDB, as exported) has two such keys on the right thigh, 178 and 168 degrees out for one frame, which
+	 * kicked her leg out every 3 seconds at idle (seen under casts, reloads, the Suzu throw, a Swift Step arrival). The
+	 * second's neighbours are 23 degrees apart, and a stricter agreement (a quarter) left it in: the sixth critique
+	 * caught the kick again. Real motion never turns that far in one frame and back.
 	 */
 	static int dropRotationSpikes(float[] q) {
 		int keys = q.length / 4;
@@ -238,7 +240,7 @@ public final class SkinnedModel {
 		for (int k = 1; k < keys - 1; k++) {
 			float toPrev = angle(q, k, k - 1);
 			float toNext = angle(q, k, k + 1);
-			if (toPrev > SPIKE_ANGLE && toNext > SPIKE_ANGLE && angle(q, k - 1, k + 1) < SPIKE_ANGLE / 4) {
+			if (toPrev > SPIKE_ANGLE && toNext > SPIKE_ANGLE && angle(q, k - 1, k + 1) < SPIKE_ANGLE / 2) {
 				float sign = dot(q, k - 1, k + 1) < 0 ? -1 : 1;
 				float len = 0;
 				for (int c = 0; c < 4; c++) {

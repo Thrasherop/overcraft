@@ -37,6 +37,6 @@ public abstract class ChatLinesMixin {
 	}
 
 	private static boolean heroChat() {
-		return ClientHero.controls() && Minecraft.getInstance().gui.screen() == null;
+		return ClientHero.chatQuiet();
 	}
 }

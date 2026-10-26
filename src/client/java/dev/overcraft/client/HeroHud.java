@@ -347,7 +347,8 @@ public final class HeroHud {
 		{
 			float time = Util.getMillis() / 1000f;
 			float pulse = 0.5f + 0.08f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
-			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xA8F2FF, pulse));
+			// lighter: at half strength over grass it tinted the whole view mint (the sixth critique)
+			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xD2F4FF, pulse * 0.6f));
 			for (int i = 0; i < STREAKS / 2; i++) {
 				float phase = (time * 1.6f + i * 0.37f) % 1;
 				float angle = (i * 2.399963f + (int) (time * 1.6f + i * 0.37f) * 1.7f) % Mth.TWO_PI;

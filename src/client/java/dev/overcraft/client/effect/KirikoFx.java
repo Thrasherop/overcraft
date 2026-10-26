@@ -30,13 +30,6 @@ import java.util.List;
  * survey's unless marked "ours". Played by EffectPayload from the server, or by renderers (trails, the fox's petals).
  */
 public final class KirikoFx {
-	/**
-	 * Petals are tinted toward Kiriko's teal (the survey: "tinted teal-white"): the mask is solid white, and added
-	 * white they read as snowballs. A blue-leaning teal: added over grass, a greener one read as mint (the fifth critique).
-	 */
-	private static final int PETAL_TINT = 0x5ADCF0;
-	/** The petals as an enemy's: pale red (ours, after the enemy palette). */
-	private static final int ENEMY_PETAL_TINT = 0xF08A82;
 	/** Whether the effect being made is an enemy hero's (Overwatch draws an enemy's effects in red). */
 	private static boolean enemy;
 
@@ -46,10 +39,6 @@ public final class KirikoFx {
 	/** The colour as this player sees it: the enemy red for an enemy hero's effect. */
 	private static Palette p(Palette normal) {
 		return enemy ? Palette.ENEMY : normal;
-	}
-
-	private static int petalTint() {
-		return enemy ? ENEMY_PETAL_TINT : PETAL_TINT;
 	}
 
 	/** Whether the effect of this owner (a hero) is an enemy's to this player: on another team (Allies). */
@@ -144,14 +133,16 @@ public final class KirikoFx {
 		Vec3 heading = last == null || last.distanceToSqr(at) < 1.0E-6 ? null : at.subtract(last).normalize();
 		Particle talisman = Fx.attach("ofuda_talisman/" + id, at, () -> {
 			// 2F93/7E2D: size 0.8 on the 1.5 x 1.3 sheet; the silhouette with its fading tail about 0.75 m (ours, from it)
+			// half a metre (it was 0.75: a pair just thrown filled the sides of the view, the sixth critique), faded out
+			// near the camera since they leave from her hand
 			Particle t = homing ? Fx.soft("talisman_flight#4", p(Palette.GOLD)) : Fx.particle("talisman_flight#4", p(Palette.TEAL));
-			return t == null ? null : t.loop(8).life(0.2f).size(0.75f, 0.75f)
+			return t == null ? null : t.loop(8).life(0.2f).size(0.5f, 0.5f).nearFade(2.5f)
 				.alpha(homing ? 0.95f : 0.9f).fade(0.1f, 0.5f);
 		});
 		if (talisman != null && heading != null) {
 			// the head at the ofuda, the tail trailing back
 			talisman.axis(heading);
-			talisman.at(at.subtract(heading.scale(0.3)));
+			talisman.at(at.subtract(heading.scale(0.2)));
 		}
 		// a thin ribbon and a small glow, so the paper itself reads (the second critique: comets in big halos, no
 		// paper). Ribbon width and length aren't in the game data: ours. Homing, the gold is blended rather than added:
@@ -159,33 +150,23 @@ public final class KirikoFx {
 		if (homing) {
 			// blended gold strong enough to stay gold over grass (at 40% it mixed to khaki, the third critique), in a gold
 			// that stays gold when blended (EffectArt's soft ramps: the game ramp's top read as cream, the fourth)
-			// the ribbon starts a little behind the paper: from the paper itself, its head covered the card in solid gold
-			// (the fifth critique: no paper showed)
-			Fx.trail(id, behindInFlight(id, at, PAPER_CLEAR), "ribbon", p(Palette.GOLD), 0.07f, 0.08f, 0.9f, true);
-			// the glow just behind the paper, as seen, so the talisman shows in front of it (it hid the card)
+			// the ribbon from the talisman itself, about 0.7 m long and 5 cm wide (ref1080's gold trails: thin streaks
+			// joined to the paper; ours started 0.9 m back and ran back to her hand, the sixth critique)
+			Fx.trail(id, at, "ribbon", p(Palette.GOLD), 0.05f, 0.04f, 0.85f, true);
 			Vec3 behind = behindFromCamera(at, 0.12);
 			Fx.attach("ofuda_glow/" + id, behind, () -> {
 				Particle g = Fx.soft("glow", p(Palette.GOLD));
-				return g == null ? null : g.at(behind).life(0.15f).size(0.2f, 0.2f).alpha(0.8f).fade(0.15f, 0.6f);
+				return g == null ? null : g.at(behind).life(0.15f).size(0.2f, 0.2f).nearFade(2.5f).alpha(0.8f).fade(0.15f, 0.6f);
 			});
 		} else {
-			// faint, so the white paper reads rather than a cyan core (the third critique)
-			Fx.trail(id, behindInFlight(id, at, PAPER_CLEAR), "ribbon", p(Palette.TEAL), 0.06f, 0.08f, 0.35f);
-			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", p(Palette.TEAL), at, 0.22f, 0.15f, 0.12f));
+			// blended: added teal summed to mint over grass (the fifth and sixth critiques)
+			Fx.trail(id, at, "ribbon", p(Palette.TEAL), 0.05f, 0.04f, 0.5f, true);
+			Fx.attach("ofuda_glow/" + id, at, () -> {
+				Particle g = Fx.soft("glow", p(Palette.TEAL));
+				return g == null ? null : g.at(at).life(0.15f).size(0.22f, 0.22f).nearFade(2.5f).alpha(0.3f).fade(0.15f, 0.6f);
+			});
 		}
-	}
-
-	/** How far behind the ofuda's paper its ribbon starts (metres: about half the card's length, ours). */
-	private static final double PAPER_CLEAR = 0.12;
-
-	/** A point this far behind at along its flight (back toward its trail's newest point). */
-	private static Vec3 behindInFlight(int id, Vec3 at, double distance) {
-		Vec3 last = Fx.trailHead(id);
-		if (last == null) {
-			return at;
-		}
-		Vec3 back = last.subtract(at);
-		return back.lengthSqr() < 1.0E-6 ? last : at.add(back.normalize().scale(distance));
+		Fx.trailNearFade(id, 2.5f);
 	}
 
 	/** A point this far beyond at, seen from the camera. */
@@ -212,8 +193,9 @@ public final class KirikoFx {
 		Particle puff = Fx.soft("smoke#48", p(Palette.GOLD));
 		if (puff != null) {
 			float size = range(0.06f, 0.08f);
-			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.12)).life(range(0.25f, 0.35f)).size(size, size * 1.6f)
-				.spin(range(0, Mth.TWO_PI), 0).alpha(0.6f).fade(0.1f, 0.6f).near());
+			// short: a slower one stayed in the world after the hand had moved on (the sixth critique)
+			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.12)).life(range(0.12f, 0.18f)).size(size, size * 1.4f)
+				.spin(range(0, Mth.TWO_PI), 0).alpha(0.5f).fade(0.1f, 0.6f).near());
 		}
 	}
 
@@ -222,14 +204,14 @@ public final class KirikoFx {
 		// gold blended (it washed out to lime added over grass), the glows kept small: ten ofuda land in a second
 		boolean gold = p == p(Palette.GOLD);
 		for (int i = 0; i < 3; i++) {
-			Particle g = gold ? Fx.soft("glow", p) : Fx.particle("glow", p);
+			Particle g = Fx.soft("glow", p);
 			if (g != null) {
 				float size = range(0.2f, 0.5f);
 				Fx.add(g.at(at).velocity(new Vec3(0, range(0.25f, 0.35f), 0)).life(range(0.08f, 0.4f)).size(size, size * 1.2f)
 					.alpha(gold ? 0.5f : 0.7f).fade(0.1f, 0.7f));
 			}
 		}
-		Particle flower = gold ? Fx.soft("flower", p) : Fx.particle("flower", p);
+		Particle flower = Fx.soft("flower", p);
 		if (flower != null) {
 			Fx.add(flower.at(at).life(0.34f).size(0.32f, 0.5f).easeOut().spin(range(0, Mth.TWO_PI), 1.5f).fade(0.1f, 0.6f));
 		}
@@ -380,7 +362,7 @@ public final class KirikoFx {
 		boolean atCamera = mc.player != null && mc.options.getCameraType().isFirstPerson()
 			&& mc.player.position().distanceToSqr(feet) < 2.25;
 		for (int i = 0; i < 2; i++) {
-			Particle ring = Fx.particle("ring_line", p(Palette.TEAL));
+			Particle ring = Fx.soft("ring_line", p(Palette.TEAL));
 			if (ring != null) {
 				// fainter, fading as they open: at full strength they read as crisp neon hoops (the fifth critique)
 				Fx.add(ring.at(feet.add(0, 0.15 + i * 0.8, 0)).normal(new Vec3(0, 1, 0)).life(range(0.25f, 0.35f)).size(0.4f, 2.8f)
@@ -394,7 +376,7 @@ public final class KirikoFx {
 		}
 		int petals = arrive ? 65 : 39;
 		for (int i = 0; i < petals; i++) {
-			Particle petal = Fx.particle("petal", p(Palette.TEAL));
+			Particle petal = Fx.soft("petal", p(Palette.TEAL));
 			if (petal == null) {
 				break;
 			}
@@ -413,7 +395,7 @@ public final class KirikoFx {
 			}
 			// the petal mask is solid white: tinted teal and narrowed, or they read as round white dots (the critique)
 			Fx.add(petal.at(from).velocity(v).gravity(2.5f).drag(0.15f).life(life)
-				.size(size, size).aspect(0.65f).tint(petalTint()).alpha(0.85f).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
+				.size(size, size).aspect(0.65f).alpha(0.85f).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
 		}
 		// the arcs are for others watching her arrive: round her own camera they swept across the middle of the screen,
 		// over the crosshair (the fourth critique), where the HUD's streaks already rush in from the edges
@@ -421,7 +403,7 @@ public final class KirikoFx {
 			slashArcs(chest);
 		}
 		if (arrive && !atCamera) {
-			Particle puff = Fx.particle("glow", p(Palette.TEAL));
+			Particle puff = Fx.soft("glow", p(Palette.TEAL));
 			if (puff != null) {
 				float size = range(0.6f, 0.8f);
 				Fx.add(puff.at(chest).life(range(0.24f, 0.48f)).size(size, size * 1.6f).easeOut().fade(0.05f, 0.7f));
@@ -452,20 +434,20 @@ public final class KirikoFx {
 	/** The cast (3C5F): teal smoke and rings at her hands. */
 	static void rushCast(Vec3 at) {
 		for (int i = 0; i < 8; i++) {
-			Particle smoke = Fx.particle("smoke#48", p(Palette.TEAL));
+			Particle smoke = Fx.soft("smoke#48", p(Palette.TEAL));
 			if (smoke == null) {
 				break;
 			}
 			float size = range(0.5f, 2);
 			// kept faint: eight of them added on each other clipped the floor under the cast to flat cyan (the fourth
-			// critique)
+			// critique); blended, at 0.45 they were a solid teal cloud beside the first-person view
 			Fx.add(smoke.at(at.add(randomUnit(Fx.RANDOM).scale(0.4))).velocity(randomUnit(Fx.RANDOM).scale(0.6)).life(range(0.4f, 0.5f))
-				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.45f).fade(0.1f, 0.6f));
+				.size(size, size * 1.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.28f).fade(0.1f, 0.6f));
 		}
 		// a few small rings (0F5F at size 1.5, about 0.3 m: the effects survey), not one 3 m ring round her (it read as
 		// a shield bubble, the third critique)
 		for (int i = 0; i < 3; i++) {
-			Particle ring = Fx.particle("ring_line", p(Palette.TEAL));
+			Particle ring = Fx.soft("ring_line", p(Palette.TEAL));
 			if (ring != null) {
 				Fx.add(ring.at(at.add(randomUnit(Fx.RANDOM).scale(0.25))).life(range(0.25f, 0.35f)).size(0.08f, 0.35f).easeOut()
 					.alpha(0.8f).fade(0.05f, 0.6f));
@@ -475,7 +457,7 @@ public final class KirikoFx {
 
 	/** A ground ripple along the fox's path (2E87: 2.1 m annulus, 1 s). */
 	static void rushRipple(Vec3 at) {
-		Particle ring = Fx.particle("ring_line", p(Palette.TEAL));
+		Particle ring = Fx.soft("ring_line", p(Palette.TEAL));
 		if (ring != null) {
 			Fx.add(ring.at(at.add(0, 0.05, 0)).normal(new Vec3(0, 1, 0)).life(1).size(0.6f, 3.7f).easeOut().alpha(0.8f).fade(0.1f, 0.7f));
 		}
@@ -496,9 +478,10 @@ public final class KirikoFx {
 			// the game's gate mesh (1048D) glowing through its noise, as wide as the path less a step each side
 			float width = (float) (2 * half + 1.6);
 			// translucent and white-cyan as the game's (look 12FF1 is white through a ramp): faint pale faces and cyan
-			// edges, not one flat clipped cyan (the fourth critique)
-			Fx.add(gate.at(base).mesh(torii, side).tint(enemy ? 0xF6D4D2 : 0xCFF6F6).rim(enemy ? 0xE03A3A : 0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
-				.alpha(0.55f).fade(0.04f, 0.08f));
+			// edges, not one flat clipped cyan (the fourth critique). An enemy's is blended (added, red washed out pink),
+			// so stronger: at the same strength it all but vanished (the sixth critique)
+			Fx.add(gate.at(base).mesh(torii, side).tint(enemy ? 0xF2B4B0 : 0xCFF6F6).rim(enemy ? 0xE8302C : 0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
+				.alpha(enemy ? 0.9f : 0.55f).fade(0.04f, 0.08f));
 			Particle glow = Fx.particle("glow", p(Palette.TEAL));
 			if (glow != null) {
 				// a faint flash as it rises (it was a bright orb at the path's head, hiding the fox: the second critique)
@@ -513,12 +496,12 @@ public final class KirikoFx {
 			gateBar(base.add(0, 3.7, 0), side, (float) (2 * half), 0.25f, life);
 		}
 		for (int i = 0; i < 7; i++) {
-			Particle petal = Fx.particle("petal", p(Palette.TEAL));
+			Particle petal = Fx.soft("petal", p(Palette.TEAL));
 			if (petal != null) {
 				float size = range(0.05f, 0.09f);
 				Vec3 from = base.add(side.scale(range(-1, 1) * half)).add(0, range(0.5f, 4.4f), 0);
 				Fx.add(petal.at(from).velocity(randomUnit(Fx.RANDOM).scale(range(0.5f, 1.5f))).gravity(0.6f).drag(0.4f)
-					.life(range(1.5f, 3.5f)).size(size, size).aspect(0.65f).tint(petalTint()).alpha(0.85f)
+					.life(range(1.5f, 3.5f)).size(size, size).aspect(0.65f).alpha(0.85f)
 					.spin(range(0, Mth.TWO_PI), range(-5, 5)).fade(0.05f, 0.4f));
 			}
 		}
@@ -559,10 +542,10 @@ public final class KirikoFx {
 		float across = (float) Math.atan2(side.x, side.z);
 		for (int i = 0; i < 3; i++) {
 			// Kiriko's own talisman, glowing teal (cut from the ofuda's texture), lying along the path; else a plain card
-			Particle tile = Fx.particle("talisman", p(Palette.TEAL));
+			Particle tile = Fx.soft("talisman", p(Palette.TEAL));
 			boolean talisman = tile != null;
 			if (tile == null) {
-				tile = Fx.particle("card", p(Palette.TEAL));
+				tile = Fx.soft("card", p(Palette.TEAL));
 			}
 			if (tile == null) {
 				return;
@@ -590,7 +573,7 @@ public final class KirikoFx {
 	static void rushAlly(Vec3 feet, Vec3 forward) {
 		Vec3 back = forward.lengthSqr() < 1.0E-6 ? new Vec3(0, 0, -1) : forward.normalize().scale(-1);
 		for (int i = 0; i < 3; i++) {
-			Particle line = Fx.particle("speed_line", p(Palette.TEAL));
+			Particle line = Fx.soft("speed_line", p(Palette.TEAL));
 			if (line != null) {
 				double a = Fx.RANDOM.nextDouble() * Mth.TWO_PI;
 				Vec3 from = feet.add(Math.cos(a) * 0.7, range(0.2f, 1.8f), Math.sin(a) * 0.7).add(forward.normalize().scale(0.8));
@@ -616,10 +599,8 @@ public final class KirikoFx {
 	}
 
 	private static void foxWake(int id, Vec3 at) {
-		Fx.trail(id, at, "ribbon", p(Palette.CYAN), 0.45f, 0.35f, 0.5f);
-		// the glow on its body, above the wake
-		Vec3 body = at.add(0, 0.7, 0);
-		Fx.attach("fox_glow/" + id, body, () -> glow("glow", p(Palette.CYAN), body, 1.1f, 0.2f, 0.25f));
+		// the glow is on its body now (KitsuneRenderer); a separate glow ball floated over its head (the sixth critique)
+		Fx.trail(id, at, "ribbon", p(Palette.CYAN), 0.45f, 0.35f, 0.5f, true);
 	}
 
 	/** The fox sheds sakura petals as it runs (3E3D: 33 a second). */
@@ -635,13 +616,13 @@ public final class KirikoFx {
 	private static void foxPetals(Vec3 at, float dt, int perSecond) {
 		int n = (int) (perSecond * dt + Fx.RANDOM.nextFloat());
 		for (int i = 0; i < n; i++) {
-			Particle petal = Fx.particle("petal", p(Palette.TEAL));
+			Particle petal = Fx.soft("petal", p(Palette.TEAL));
 			if (petal == null) {
 				return;
 			}
 			float size = range(0.05f, 0.09f);
 			Fx.add(petal.at(at.add(randomUnit(Fx.RANDOM).scale(0.6)).add(0, 0.8, 0)).velocity(randomUnit(Fx.RANDOM).scale(0.8))
-				.gravity(1.2f).drag(0.3f).life(range(0.6f, 0.7f) * 2).size(size, size).aspect(0.65f).tint(petalTint()).alpha(0.85f)
+				.gravity(1.2f).drag(0.3f).life(range(0.6f, 0.7f) * 2).size(size, size).aspect(0.65f).alpha(0.85f)
 				.spin(range(0, Mth.TWO_PI), range(-6, 6)).fade(0.05f, 0.4f));
 		}
 	}

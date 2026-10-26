@@ -14,6 +14,8 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
@@ -78,6 +80,15 @@ public final class ClientHero {
 		LocalPlayer player = Minecraft.getInstance().player;
 		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
 			&& !player.isSpectator();
+	}
+
+	/**
+	 * Hero mode's chat as Overwatch's (small, the HUD font, no panel): in hero view with nobody typing, including behind
+	 * the death screen (there Minecraft's chat crossed the portrait, the sixth critique).
+	 */
+	public static boolean chatQuiet() {
+		Screen screen = Minecraft.getInstance().gui.screen();
+		return heroView() && (screen == null || screen instanceof DeathScreen);
 	}
 
 	/** Hero mode: a hero, hotbar slot 1 selected, alive and playing. */
