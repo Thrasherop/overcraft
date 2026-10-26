@@ -12,8 +12,8 @@ TECHNIQUES.md (how the work gets done). This file is the state of play and the p
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
-- **Latest test bundle for the owner: `run/bundle-2026-10-26c/`** (07ad5cc: jar, rebuilt asset pack, INSTALL.txt;
-  sent as five parts with JOIN.txt). It replaces the 04:44 and 05:29 bundles (the 05:29 jar had the fox cyan wash).
+- **Latest test bundle for the owner: `run/bundle-2026-10-26d/`** (fb8f70e: jar, rebuilt asset pack, INSTALL.txt;
+  sent as five parts with JOIN.txt). It replaces the earlier ones (04:44, 05:29, 07ad5cc).
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
