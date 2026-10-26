@@ -13,7 +13,8 @@ TECHNIQUES.md (how the work gets done). This file is the state of play and the p
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
 - **Latest test bundle for the owner: `run/bundle-2026-10-26d/`** (fb8f70e: jar, rebuilt asset pack, INSTALL.txt;
-  sent as five parts with JOIN.txt). It replaces the earlier ones (04:44, 05:29, 07ad5cc).
+  sent as five parts with JOIN.txt). It replaces the earlier ones (04:44, 05:29, 07ad5cc). Then a newer jar alone,
+  `run/bundle-2026-10-26e/` (17323a0), to drop over it: the pack didn't change.
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:

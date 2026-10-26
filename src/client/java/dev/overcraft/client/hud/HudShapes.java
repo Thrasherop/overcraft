@@ -168,6 +168,10 @@ public final class HudShapes {
 		if (PORTRAITS.containsKey(hero)) {
 			return PORTRAITS.get(hero);
 		}
+		Identifier head = HeroArt.head(hero);
+		if (head != null && cutHead(hero, head)) {
+			return PORTRAITS.get(hero);
+		}
 		Identifier source = HeroArt.portrait(hero);
 		Identifier id = null;
 		if (source != null) {
@@ -202,9 +206,84 @@ public final class HudShapes {
 		return id;
 	}
 
+	/** The part of the hero's HUD head above the frame's top (POP_H texels high, then the frame's top band), or null. */
+	public static @Nullable Identifier portraitPop(Hero hero) {
+		portrait(hero);
+		return POPS.get(hero);
+	}
+
+	/** How far the HUD head breaks out above the frame, in the frame's texels (two a pixel), and the band it overlaps. */
+	public static final int POP_H = 52;
+	public static final int POP_OVERLAP = 10;
+	private static final Map<Hero, Identifier> POPS = new HashMap<>();
+
+	/**
+	 * Cuts Overwatch's HUD head art into the frame (portrait) and the part breaking out over its top (portraitPop): the
+	 * head scaled to about 86% of the frame's width, its hair top POP_H texels above the frame, the shoulders below the
+	 * frame's V clipped (round 1 #27: the head breaks out over the top; ours was clipped inside). False if it can't.
+	 */
+	private static boolean cutHead(Hero hero, Identifier source) {
+		try (InputStream in = Minecraft.getInstance().getResourceManager().open(source);
+			 NativeImage art = NativeImage.read(in)) {
+			// the head's opaque bounds in the art
+			int x0 = art.getWidth(), y0 = art.getHeight(), x1 = -1, y1 = -1;
+			for (int y = 0; y < art.getHeight(); y++) {
+				for (int x = 0; x < art.getWidth(); x++) {
+					if ((art.getPixel(x, y) >>> 24) > 16) {
+						x0 = Math.min(x0, x);
+						y0 = Math.min(y0, y);
+						x1 = Math.max(x1, x);
+						y1 = Math.max(y1, y);
+					}
+				}
+			}
+			if (x1 < 0) {
+				return false;
+			}
+			int w = SHIELD_W * 2;
+			int h = SHIELD_H * 2;
+			float scale = 0.86f * w / (x1 - x0 + 1);
+			float centreX = (x0 + x1 + 1) / 2f;
+			// art pixel for frame texel (x, y): y measured from the frame's top, the hair top at -POP_H
+			NativeImage inside = new NativeImage(w, h, true);
+			NativeImage pop = new NativeImage(w, POP_H + POP_OVERLAP, true);
+			for (int y = -POP_H; y < h; y++) {
+				for (int x = 0; x < w; x++) {
+					int sx = Math.round(centreX + (x + 0.5f - w / 2f) / scale);
+					int sy = Math.round(y0 + (y + POP_H + 0.5f) / scale);
+					if (sx < 0 || sy < 0 || sx >= art.getWidth() || sy >= art.getHeight()) {
+						continue;
+					}
+					int argb = art.getPixel(sx, sy);
+					if (y < POP_OVERLAP) {
+						// above the frame's top line, and its top band: drawn over the border
+						pop.setPixel(x, y + POP_H, argb);
+					}
+					if (y >= 0) {
+						float mask = shield(x / 2f, y / 2f, 3);
+						if (mask > 0) {
+							inside.setPixel(x, y, Math.round(((argb >>> 24) & 0xFF) * mask) << 24 | (argb & 0xFFFFFF));
+						}
+					}
+				}
+			}
+			Identifier id = Overcraft.id("hud/portrait/" + hero.id);
+			Identifier popId = Overcraft.id("hud/portrait_pop/" + hero.id);
+			Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, inside, MipmapStrategy.MEAN));
+			Minecraft.getInstance().getTextureManager().register(popId, new HeroTexture(popId, pop, MipmapStrategy.MEAN));
+			PORTRAITS.put(hero, id);
+			POPS.put(hero, popId);
+			return true;
+		} catch (IOException e) {
+			Overcraft.LOG.warn("Couldn't cut {}'s HUD head: {}", hero.id, e.toString());
+			return false;
+		}
+	}
+
 	/** Resource packs changed: cut the portraits again (the masks stay). */
 	public static void clear() {
 		PORTRAITS.clear();
+		POPS.clear();
 	}
 
 	private interface Mask {
@@ -378,10 +457,12 @@ public final class HudShapes {
 		d = Math.min(d, bottom - y);
 		// cut top corners
 		d = Math.min(d, (half + (y - top) - dx - 12) * 0.7071f);
-		// the bottom narrows from 62% of the height to a flat point a third as wide
+		// the bottom narrows from 62% of the height to a point, just blunted (Overwatch's frame ends in a V: round 1 #27;
+		// it was flat, a third as wide)
+		float tip = half * 0.06f;
 		float taperStart = top + (bottom - top) * 0.62f;
-		float taperWidth = half - (half - half / 3) * Math.clamp((y - taperStart) / (bottom - taperStart), 0, 1);
-		float slope = (half - half / 3) / (bottom - taperStart);
+		float taperWidth = half - (half - tip) * Math.clamp((y - taperStart) / (bottom - taperStart), 0, 1);
+		float slope = (half - tip) / (bottom - taperStart);
 		d = Math.min(d, (taperWidth - dx) / (float) Math.sqrt(1 + slope * slope));
 		return coverage(d);
 	}

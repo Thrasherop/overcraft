@@ -5,6 +5,15 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The HUD portrait like Overwatch's** (round 1 #27 and #28, open since): the frame ends in a point, and the portrait is
+Overwatch's own HUD head art (the pack's `head.png`) with her ponytail breaking out over the frame's top, drawn over
+the border (it was the square portrait clipped inside); the Esc menu's portrait too. Left of the name, a tall
+light-blue "1" box (Overwatch's party slot, #41CCFD) with the underline running from it. Played: `pf_cmp` (against
+`ref_queued_02`), `pf_menu2c`. (The wings and level badge round Overwatch's are rank cosmetics: not ours.)
+
+Also played: wall climb in first and third person (`climb_sheet`: her hands reach up the wall in turn, over the top
+into idle) and quick melee on a husk (two punches, 20 to 13.7 health: Overwatch's 40 each, `melee_sheet`).
+
 **Played: plain Minecraft in Minecraft mode** (survival, Easy; CLAUDE.md's slots 2-9 check after tonight's mixins on
 chat, the HUD, the hands and the death screen): mined stone with a pickaxe (cobblestone 0 to 1), placed planks (8 to
 7), opened a chest, the inventory (its preview shows Kiriko) and a crafting table, ate bread when hungry (food 0 to 5,

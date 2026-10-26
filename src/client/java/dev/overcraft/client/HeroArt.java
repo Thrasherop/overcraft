@@ -26,6 +26,14 @@ public final class HeroArt {
 		return art(hero, "portrait");
 	}
 
+	/**
+	 * Overwatch's HUD head (512 px, the head cut out on a clear ground, its shoulders cut to a V): the one its HUD
+	 * frame shows, hair breaking out over the top.
+	 */
+	public static @Nullable Identifier head(Hero hero) {
+		return art(hero, "head");
+	}
+
 	/** Head and shoulders in a circle (200 x 280). */
 	public static @Nullable Identifier bust(Hero hero) {
 		return art(hero, "bust");

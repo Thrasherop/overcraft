@@ -391,6 +391,12 @@ public final class HeroHud {
 			image(g, portrait, px, py, pw, ph, WHITE);
 		}
 		image(g, HudShapes.SHIELD_BORDER, px, py, pw, ph, PORTRAIT_BORDER);
+		// the hair breaking out over the frame's top (Overwatch's)
+		Identifier pop = HudShapes.portraitPop(hero);
+		if (pop != null) {
+			float texel = pw / (HudShapes.SHIELD_W * 2f);
+			image(g, pop, px, py - HudShapes.POP_H * texel, pw, (HudShapes.POP_H + HudShapes.POP_OVERLAP) * texel, WHITE);
+		}
 
 		// the rest tilts with the HUD's curve: inner (right) end higher
 		float left = 194;
@@ -422,17 +428,21 @@ public final class HeroHud {
 			}
 		}
 
-		// the player's name plate under the pips: dark, with a glowing blue underline ending in a dot
+		// the player's slot in a tall light-blue box (Overwatch's party number, round 1 #28: #41CCFD), then the name
+		// plate: dark, with a glowing blue underline from the box, ending in a dot
+		fill(g, left + 2, 970, 24, 38, 0xFF41CCFD);
+		HudText.draw(g, Face.BODY, "1", left + 14, 995, 13, 0xFF0B2A3A, Align.CENTER);
+		float plate = left + 32;
 		String name = player.getName().getString().toUpperCase(Locale.ROOT);
 		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
 		for (int i = 0; i < 12; i++) {
 			// fades out to the right
 			int alpha = (int) (0x90 * (1 - i / 12f));
-			fill(g, left + 2 + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
+			fill(g, plate + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
 		}
-		HudText.draw(g, Face.BODY, name, left + 14, 993, 14, WHITE, Align.LEFT);
-		fill(g, left + 2, 1004, nameW * 0.7f, 3, BLUE);
-		image(g, HudShapes.GLOW, left + 2 + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
+		HudText.draw(g, Face.BODY, name, plate + 12, 993, 14, WHITE, Align.LEFT);
+		fill(g, left + 2, 1004, 30 + nameW * 0.7f, 3, BLUE);
+		image(g, HudShapes.GLOW, plate + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
 		g.pose().popMatrix();
 	}
 

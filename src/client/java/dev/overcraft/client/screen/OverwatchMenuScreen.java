@@ -160,9 +160,15 @@ public class OverwatchMenuScreen extends OwScreen {
 		float ph = pw * HudShapes.SHIELD_H / HudShapes.SHIELD_W;
 		float textX = x;
 		if (portrait != null) {
-			image(g, HudShapes.SHIELD, x, y + 24, pw, ph, 0xFF1B2A4A);
-			image(g, portrait, x, y + 24, pw, ph, WHITE);
-			image(g, HudShapes.SHIELD_BORDER, x, y + 24, pw, ph, 0xFF68CCFF);
+			image(g, HudShapes.SHIELD, x, y + 32, pw, ph, 0xFF1B2A4A);
+			image(g, portrait, x, y + 32, pw, ph, WHITE);
+			image(g, HudShapes.SHIELD_BORDER, x, y + 32, pw, ph, 0xFF68CCFF);
+			// the hair breaking out over the frame's top, as on the HUD
+			Identifier pop = HudShapes.portraitPop(hero);
+			if (pop != null) {
+				float texel = pw / (HudShapes.SHIELD_W * 2f);
+				image(g, pop, x, y + 32 - HudShapes.POP_H * texel, pw, (HudShapes.POP_H + HudShapes.POP_OVERLAP) * texel, WHITE);
+			}
 			textX = x + pw + 28;
 		}
 		HudText.draw(g, Face.NUMBERS, hero.displayName.toUpperCase(Locale.ROOT), textX, y + 100, 64, WHITE, Align.LEFT);
