@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import org.joml.Matrix4f;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +24,9 @@ import org.jspecify.annotations.Nullable;
 public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRenderer.State> {
 	/** Drawn larger than its model (2.9 m nose to tail, 0.85 m tall): ours, so it stands about her chest high. */
 	private static final float SCALE = 1.4f;
+	/** Within NEAR_START of the camera it isn't drawn; it fades in over the next NEAR_FADE (metres: ours). */
+	private static final double NEAR_START = 1.5;
+	private static final double NEAR_FADE = 3;
 
 	public static class State extends EntityRenderState {
 		float yRot;
@@ -52,7 +56,11 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 		// 20 m/s, low and ice-blue among the gates, the model alone read as nothing, the second critique)
 		Vec3 at = entity.getPosition(partialTicks);
 		KirikoFx.foxPetals(at, Fx.since(entity.getId()), 33);
-		KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0));
+		// not while it's at the camera: it starts inside Kiriko, and its glow there washed her whole view cyan
+		Vec3 eye = Minecraft.getInstance().gameRenderer.mainCamera().position();
+		if (at.add(0, 0.6 * SCALE, 0).distanceTo(eye) > NEAR_START + NEAR_FADE) {
+			KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0));
+		}
 	}
 
 	@Override
@@ -70,7 +78,14 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 			// the model faces +Z, like the heroes'
 			poseStack.rotateDegrees(Axis.YP, -state.yRot);
 			poseStack.scale(SCALE, SCALE, SCALE);
-			HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f, 0.5f);
+			// fading out as it nears the camera: it starts inside Kiriko and runs through whoever stands in its path, and
+			// up close it filled the view with white
+			double distance = Math.sqrt(Math.pow(state.x - camera.pos.x, 2) + Math.pow(state.y + 0.6 * SCALE - camera.pos.y, 2)
+				+ Math.pow(state.z - camera.pos.z, 2));
+			float near = (float) Math.clamp((distance - NEAR_START) / NEAR_FADE, 0, 1);
+			if (near > 0) {
+				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f * near, 0.5f * near);
+			}
 			poseStack.popPose();
 		}
 		super.submit(state, poseStack, collector, camera);

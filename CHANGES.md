@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: Kitsune Rush washed her whole view cyan at the cast** (found looking at fresh first-person captures, after
+the fox got its glow tonight). The fox starts inside Kiriko, so its 2 m glow sat on the camera. The fox fades out within
+4.5 m of the camera and its glow and wake start once it's past that; in front view it no longer passes through the
+camera as a white shape either. Played: the cast in first person (`fox3_sheet` before, `fox4_sheet` after: the fox seen
+running out ahead).
+
 **Hit markers** (missing: no capture had shown a hit). Every kunai and quick melee that deals damage flashes Overwatch's
 X of four strokes round the crosshair for 0.2 s: white on a hit, red on a critical hit, larger and red for 0.45 s on a
 kill. The server tells only the attacker (`Effects.hitMarker`). Shapes and colours are ours, after the game's; no
