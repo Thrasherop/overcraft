@@ -5,6 +5,20 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Swift Step lands beside the ally** (owner: "Swift step should put you beside, yes"; the wiki: "at their side"). She
+landed between the ally and where she came from, facing them, so they filled her screen. Now she lands shoulder to
+shoulder: at the ally's side across the line she came along, her right first, then her left, then (no room either
+side) the side she came from. Played (villager 10 m ahead, Swift Step): x 39.4 beside the villager's 40.5, same z, the
+view ahead clear (`ss_beside_sheet`); a wall on the right: x 41.6, the left; walls on both sides: z 11.4, the near
+side.
+
+**Minecraft mode's first-person arm is Kiriko's** (owner: "Let me see what first person kiri in minecraft mode would
+look like"). With a hero picked her body is Kiriko in third person, but first person showed her own skin's arm. The
+arm now wears a generated Kiriko skin (HeroArmSkin: her red sleeve and raised cuff, black wristband, dark fingerless
+glove with red trim, skin fingers), painted row by row so it fits wide and slim arms, at four times Minecraft's
+resolution, sharp like a skin. Held items draw as Minecraft's. Played: empty hand idle, punching, looking down, at
+night, and G back to hero mode (`mcarm_compare`, `mcarm2_z`). A first try was soft-filtered and striped (`mcarm_z`).
+
 **Kill feed rows closer to Overwatch's, and "ELIMINATED" on a final blow** (round 5 #10, #12). Portraits are 52 px
 wide face crops of the hero art (were 34 px squares), with a bright 4 px edge on their inner end next to the middle
 (#30B1DD ally, #AA3F66 enemy); names have no shadow (`feed3`). A final blow shows "ELIMINATED <name>" under the ofuda

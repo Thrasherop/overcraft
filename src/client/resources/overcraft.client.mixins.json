@@ -19,7 +19,8 @@
 		"ToastManagerAccessor",
 		"ClientPacketListenerMixin",
 		"ChatComponentMixin",
-		"ChatLinesMixin"
+		"ChatLinesMixin",
+		"MinecraftModeArmMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

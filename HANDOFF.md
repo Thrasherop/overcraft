@@ -141,8 +141,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
 - While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a
   reload: does Overwatch's HUD do that, or something else (critique round 2, #24)?
-- In Minecraft mode (G) first person shows your own skin's arm, while third person shows Kiriko. Keep it (Minecraft
-  mode is plain Minecraft), or give Minecraft mode a Kiriko-styled arm (her sleeve and glove on Minecraft's arm)?
+- Minecraft mode's first-person arm is now a Kiriko-styled Minecraft arm (owner asked to see it; screenshots sent
+  2026-10-26). Keep it, change it, or try her real Overwatch arm model there instead?
 - Toggle Healing Ofuda is on by default (Overwatch's default, per the wiki): one RMB press throws until the clip is
   empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
@@ -152,7 +152,6 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
 2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` to `-round5.md` (each
    has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
-   crosshair (needs Overwatch frames of the throw). Where Swift Step lands on an ally needs a look at a gameplay
-   video.
+   crosshair (needs Overwatch frames of the throw). Swift Step now lands beside the ally (owner, 2026-10-26).
 3. Effects: all of Kiriko's are in, including the enemy-red view with scoreboard teams.
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).

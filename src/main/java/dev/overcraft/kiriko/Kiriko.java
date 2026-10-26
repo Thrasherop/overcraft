@@ -228,21 +228,28 @@ public final class Kiriko implements HeroKit {
 	}
 
 	/**
-	 * Where Swift Step lands: Overwatch puts her on the ally (its heroes overlap softly); in Minecraft that put the
-	 * camera inside their head, so just beside them on the side she came from, when there's room (ours).
+	 * Where Swift Step lands: at the ally's side, shoulder to shoulder across the line she came along (the wiki: "at
+	 * their side"; the owner, 2026-10-26: "Swift step should put you beside"), her right first, then her left. Overwatch
+	 * puts her on the ally (its heroes overlap softly), which in Minecraft put the camera inside their head; landing
+	 * between them and where she came from left the ally filling her screen. Failing room at either side, on the side
+	 * she came from, then on them (ours).
 	 */
 	private static Vec3 beside(ServerPlayer player, LivingEntity target, Vec3 from) {
 		Vec3 at = target.position();
 		Vec3 back = new Vec3(from.x - at.x, 0, from.z - at.z);
 		if (back.lengthSqr() > 1.0E-4) {
-			// 0.9 m clear of the ally (ours): a hand's width away put her camera in their face (played with a
-			// second player); closer only when there's no room
-			for (double clear : new double[] {0.9, 0.5, 0.1}) {
-				double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + clear;
-				Vec3 spot = at.add(back.normalize().scale(gap));
-				AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
-				if (player.level().noCollision(player, box)) {
-					return spot;
+			Vec3 toward = back.normalize().scale(-1);
+			// her right, facing the way she came toward them (y up: right = forward x up)
+			Vec3 right = new Vec3(-toward.z, 0, toward.x);
+			for (Vec3 side : new Vec3[] {right, right.scale(-1), back.normalize()}) {
+				// 0.5 m clear of the ally (ours); closer only when there's no room
+				for (double clear : new double[] {0.5, 0.2}) {
+					double gap = (target.getBbWidth() + player.getBbWidth()) / 2 + clear;
+					Vec3 spot = at.add(side.scale(gap));
+					AABB box = player.getDimensions(player.getPose()).makeBoundingBox(spot);
+					if (player.level().noCollision(player, box)) {
+						return spot;
+					}
 				}
 			}
 		}
