@@ -38,6 +38,10 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   send F5 or two held keys at once; Windows' text-input overlay can block clicks.
 - **Bursts of screenshots** across an animation (0.05-0.3 s apart) and side-by-side sheets: one screenshot hides
   most animation bugs.
+- **Step a frozen game a tick at a time to catch a one-frame glitch**: `cmd /tick freeze`, then `cmd /tick step 1` and a
+  screenshot, 60-70 times (one animation cycle), and a thumbnail sheet of them all. The leg kick at the end of the
+  breath clip lasted one tick in 64: random screenshots missed it for hours, the stepped sheet showed it at once.
+  When a fix "comes back", scan the data for every case, not just the one fixed (two broken keys, one mended).
 - **Freeze the game for fast effects**: `cmd /tick freeze`, then `cmd /tick step 1` between screenshots. The effects
   run on the game clock, so they stop with it; a Suzu burst is over before the harness's next screenshot otherwise.
   The harness's `fx <effect>` plays one effect alone, which tells the effect apart from whatever else is going on.
