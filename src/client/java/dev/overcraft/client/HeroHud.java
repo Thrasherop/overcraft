@@ -117,6 +117,8 @@ public final class HeroHud {
 	private static final double ALLY_RANGE = 40;
 	/** Villagers, golems and allays at full health show only this close. */
 	private static final double ALLY_NEAR = 8;
+	/** Where hero-mode chat starts from the left edge, in reference pixels (Minecraft then indents 4 units). */
+	private static final float CHAT_LEFT = 52;
 	/** How far the ally marker's bottom sits above the top of their head, in reference pixels. Ours. */
 	private static final float ALLY_LIFT = 10;
 	private static final int STREAKS = 14;
@@ -511,10 +513,9 @@ public final class HeroHud {
 			fill(g, x, y + h - fillH - 1.5f, size, 1.5f, COOLDOWN_EDGE);
 			// the icon as a faint ghost, a little darker than the box (the third critique: black merged with the splash)
 			iconOrName(g, icon, ability, x, y - 2, size, 0x4D000000);
-			float splashW = 46;
-			float splashH = splashW * HudShapes.SPLASH_H / HudShapes.SPLASH_W;
-			image(g, HudShapes.SPLASH, cx - splashW / 2, y + h / 2 - splashH * 0.43f, splashW, splashH, 0xE6000000);
-			outlined(g, Face.NUMBERS, String.valueOf((int) Math.ceil(cooldown)), cx, y + h / 2 + 15, 31, WHITE);
+			String seconds = String.valueOf((int) Math.ceil(cooldown));
+			brush(g, seconds, cx, y + h / 2 + 15, 31);
+			HudText.plain(g, Face.NUMBERS, seconds, cx, y + h / 2 + 15, 31, WHITE, Align.CENTER);
 		}
 		keyLabel(g, key, cx, base + 98, 0, ready);
 		g.pose().popMatrix();
@@ -816,7 +817,8 @@ public final class HeroHud {
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		// a line is 9 GUI units: make it 18 reference pixels, never larger than Minecraft's own
 		float k = Math.min(1, 18 * scale / 9);
-		g.pose().translate(0, (REF_H - 380) * scale + (g.guiHeight() - REF_H * scale));
+		// in from the edge as Overwatch's (its lines start about 60-90 px in; ours were 8 px in, the fourth critique)
+		g.pose().translate(CHAT_LEFT * scale, (REF_H - 380) * scale + (g.guiHeight() - REF_H * scale));
 		g.pose().scale(k, k);
 		g.pose().translate(0, -(g.guiHeight() - 40));
 	}
@@ -874,13 +876,31 @@ public final class HeroHud {
 	}
 
 	/** Draws text with a thin dark outline all round (a cooldown's seconds, over their ink splash). */
-	private static void outlined(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color) {
-		for (int i = 0; i < 8; i++) {
-			double a = Math.PI * 2 * i / 8;
-			HudText.plain(g, face, text, x + (float) Math.cos(a) * 1.2f, baseline + (float) Math.sin(a) * 1.2f, cap, 0xCC000000,
-				Align.CENTER);
+	/**
+	 * Overwatch's splash behind a cooldown's seconds: a ragged black brush stroke hugging the digits 3-7 px out, with a
+	 * couple of drips (ref1080's "12"; the fourth critique: ours was a round blot behind any number). The digits drawn
+	 * in black round themselves at jittered offsets, the same for the same number (it doesn't flicker).
+	 */
+	private static void brush(GuiGraphicsExtractor g, String text, float x, float baseline, float cap) {
+		java.util.Random random = new java.util.Random(text.hashCode() * 31L + 7);
+		int black = 0xE6000000;
+		for (int ring = 0; ring < 2; ring++) {
+			for (int i = 0; i < 12; i++) {
+				double a = Math.PI * 2 * (i + random.nextFloat() * 0.6f) / 12;
+				float r = (ring == 0 ? 3 : 5) + random.nextFloat() * 2.5f;
+				HudText.plain(g, Face.NUMBERS, text, x + (float) Math.cos(a) * r, baseline + (float) Math.sin(a) * r, cap, black,
+					Align.CENTER);
+			}
 		}
-		HudText.plain(g, face, text, x, baseline, cap, color, Align.CENTER);
+		// drips running down from under the digits
+		float width = HudText.width(Face.NUMBERS, text, cap);
+		for (int i = 0; i < 2; i++) {
+			float dx = x + (i == 0 ? -0.25f : 0.2f) * width + (random.nextFloat() - 0.5f) * 6;
+			float length = 3 + random.nextFloat() * 5;
+			float top = baseline + 2;
+			fill(g, dx - 1.25f, top, 2.5f, length, black);
+			image(g, HudShapes.DISC, dx - 1.9f, top + length - 1.9f, 3.8f, 3.8f, black);
+		}
 	}
 
 	/** The local slope of the HUD's curve at dx from the centre (16:9 layout), applied around (x, y). */

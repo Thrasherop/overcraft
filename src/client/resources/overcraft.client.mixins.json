@@ -18,7 +18,8 @@
 		"CreateWorldScreenAccessor",
 		"ToastManagerAccessor",
 		"ClientPacketListenerMixin",
-		"ChatComponentMixin"
+		"ChatComponentMixin",
+		"ChatLinesMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -54,9 +54,10 @@ old hazard-stripe one. They can't confirm or refute round 3's items. Everything 
   - Also found playing: a 4.6 m gate flash covered the first-person view at the cast; big sprites now fade over a
     reach scaled to their size.
 - **Not reproduced:** 15 (no grey blade in six first-person cast frames, `fx11_sheet`, `fx12_sheet`).
-- **Open:** 4 (the kunai throw's hand over the crosshair: needs Overwatch frames of the throw at the same moment),
-  12 (chat font), 14 (splash shape); 6's white frame on your own kills (kept: R3 left it open, no reference row of
-  your own kill).
+- **Done later:** 12 (chat in the HUD sans, 52 px in, no tag bar: `chat1c`), 14 (a brush stroke round the digits:
+  `br2_all`).
+- **Open:** 4 (the kunai throw's hand over the crosshair: needs Overwatch frames of the throw at the same moment); 6's
+  white frame on your own kills (kept: R3 left it open, no reference row of your own kill).
 
 ## Confirmed fixed (seen in these captures)
 - **Ammo text (R3 #15):**

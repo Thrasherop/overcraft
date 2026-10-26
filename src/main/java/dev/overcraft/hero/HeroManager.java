@@ -53,7 +53,7 @@ public final class HeroManager {
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */
 	public static final AttachmentType<Double> ULT_CHARGE = AttachmentRegistry.create(Overcraft.id("ult_charge"),
-		builder -> builder.persistent(Codec.DOUBLE));
+		builder -> builder.persistent(Codec.DOUBLE).copyOnDeath());
 
 	private static final Identifier HEALTH_MODIFIER = Overcraft.id("hero_health");
 	private static final Map<Hero, HeroKit> KITS = new EnumMap<>(Hero.class);

@@ -220,7 +220,7 @@ MAX_VARIANTS = 8
 # Minecraft only reads TrueType outlines, which these two are.
 FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf"}
 FONT_DEFS = {"hud": ("futura_demibold.ttf", 32, 1.5), "hud_small": ("futura_demibold.ttf", 16, 2),
-             "hud_numbers": ("big_noodle.ttf", 32, 2)}
+             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("futura_demibold.ttf", 10.5, 3)}
 
 
 def add_fonts(source):

@@ -38,10 +38,6 @@ public final class HudShapes {
 	/** Fraction of TICK's width the tick fills, and of its height (the rest is margin). */
 	public static final float TICK_FILL_W = 0.5f;
 	public static final float TICK_FILL_H = 60f / 64;
-	/** A ragged ink splash with drips: behind a cooldown's seconds, as Overwatch's brush stroke. */
-	public static final Identifier SPLASH = Overcraft.id("hud/splash");
-	public static final int SPLASH_W = 128;
-	public static final int SPLASH_H = 116;
 	/** A horizontal band with soft edges (the middle third of its height), for lines that slope without stair steps. */
 	public static final Identifier LINE = Overcraft.id("hud/line");
 	/** A soft horizontal glow, brightest along its middle. */
@@ -117,7 +113,6 @@ public final class HudShapes {
 		register(TRIANGLE, 32, 32, (x, y) -> triangle(x, y, 5, 4, 28, 16, 5, 28));
 		register(TICK, TICK_W, TICK_H, HudShapes::tick);
 		register(TICK_OUTER, TICK_W, TICK_H, (x, y) -> tick(x, y) * Math.clamp(1.15f - y / TICK_H * 1.3f, 0, 1));
-		register(SPLASH, SPLASH_W, SPLASH_H, HudShapes::splash);
 		// a 3 px core and about 2 px of falloff each side, at 9 px drawn (Overwatch's: "5-7 px, bright core, falloff")
 		register(LINE, 8, LINE_H, (x, y) -> {
 			float d = Math.abs(y - LINE_H / 2f);
@@ -303,31 +298,6 @@ public final class HudShapes {
 		float halfW = TICK_W * TICK_FILL_W / 2;
 		float halfH = TICK_H * TICK_FILL_H / 2;
 		return coverage(halfW - Math.abs(x - TICK_W / 2f)) * coverage(halfH - Math.abs(y - TICK_H / 2f));
-	}
-
-	/**
-	 * An ink splash: a blob with a ragged edge, three drips running down from it and a few flecks around (ours, in the
-	 * spirit of Overwatch's brush stroke).
-	 */
-	private static float splash(float x, float y) {
-		float cx = SPLASH_W / 2f;
-		float cy = 50;
-		float dx = x - cx;
-		float dy = (y - cy) * 1.12f;
-		float a = (float) Math.atan2(dy, dx);
-		float radius = 44 + 5 * (float) Math.sin(3 * a + 1) + 3.5f * (float) Math.sin(7 * a + 2)
-			+ 2.2f * (float) Math.sin(13 * a + 0.5f) + 1.4f * (float) Math.sin(23 * a + 4);
-		float blob = coverage(radius - (float) Math.hypot(dx, dy));
-		float drips = Math.max(drip(x, y, cx - 22, 70, 104, 4.5f), Math.max(drip(x, y, cx + 12, 80, 96, 3.5f),
-			drip(x, y, cx + 30, 70, 86, 2.8f)));
-		float flecks = Math.max(circle(x, y, 10, 30, 4), Math.max(circle(x, y, 118, 64, 3.5f), circle(x, y, 112, 16, 3)));
-		return Math.max(blob, Math.max(drips, flecks));
-	}
-
-	/** A drip running down from y0 to y1, ending in a drop a little wider than the run. */
-	private static float drip(float x, float y, float cx, float y0, float y1, float width) {
-		float run = coverage(width / 2 - Math.abs(x - cx)) * coverage(y - y0) * coverage(y1 - y);
-		return Math.max(run, circle(x, y, cx, y1, width * 0.75f));
 	}
 
 	/**

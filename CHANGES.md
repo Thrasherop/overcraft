@@ -5,6 +5,20 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Hero-mode chat in the HUD's sans, and out of the health's way while typing** (round 4 #12, and a bug found doing
+it). Not typing: chat lines in Futura at Minecraft's capital height (a new `hud_chat` face; letters it lacks, such as
+Japanese, fall back to Minecraft's font), starting 52 px in, without Minecraft's message-tag bar (`chat1c`, `chat2c`).
+Typing: Minecraft draws chat from the chat screen, not the HUD, so the hero-mode lift never applied and the bottom
+lines covered the health number (`chat3c`); it's now lifted inside the chat component, which also moves the clicks:
+a suggest-command link clicked on its lifted line filled the input (`chat4c`, `chat5c`).
+
+**The cooldown splash is a brush stroke round the digits** (round 4 #14): the digits' own shape grown 3-7 px in black
+with a ragged edge and two short drips, instead of one round blot behind any number (`br2_all`: ours beside
+Overwatch's "12").
+
+**The saved ult charge also survives a death before a crash**: ult 70%, Save and Leave, rejoin, die, `/save-all`, kill
+the game: on the next start 1957 (the 1911 saved, plus the passive charge).
+
 **Round 4 of the critique** (`tools/reference/critique-2026-10-26-round4.md`, a sub-agent on fresh captures; its Status
 section says what's done). Played in game after each change, before and after:
 - **Ofuda hitting the ground or a wall**: the glow sank half into the surface and ended in a straight line, clipped to

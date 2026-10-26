@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Text in Overwatch's HUD faces: a bold geometric sans (Futura) for health, ammo and key labels, and the tall italic
@@ -19,7 +20,9 @@ public final class HudText {
 	public enum Face {
 		BODY("hud", "futura_demibold.ttf", 32 * 0.667f),
 		SMALL("hud_small", "futura_demibold.ttf", 16 * 0.667f),
-		NUMBERS("hud_numbers", "big_noodle.ttf", 32 * 0.718f);
+		NUMBERS("hud_numbers", "big_noodle.ttf", 32 * 0.718f),
+		/** Chat lines in hero mode (ChatLinesMixin): Futura with Minecraft's capital height, 7. */
+		CHAT("hud_chat", "futura_demibold.ttf", 10.5f * 0.667f);
 
 		final FontDescription font;
 		final String file;
@@ -39,6 +42,11 @@ public final class HudText {
 	}
 
 	public enum Align { LEFT, CENTER, RIGHT }
+
+	/** The chat face's font, or null without the local pack (chat keeps Minecraft's). */
+	public static @Nullable FontDescription chatFont() {
+		return Face.CHAT.real() ? Face.CHAT.font : null;
+	}
 
 	/** Minecraft's own font: capitals 7 units high, the baseline 7 below the top. */
 	private static final float DEFAULT_CAP = 7;

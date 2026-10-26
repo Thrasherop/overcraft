@@ -12,6 +12,8 @@ TECHNIQUES.md (how the work gets done). This file is the state of play and the p
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
+- **Latest test bundle for the owner: `run/bundle-2026-10-26c/`** (07ad5cc: jar, rebuilt asset pack, INSTALL.txt;
+  sent as five parts with JOIN.txt). It replaces the 04:44 and 05:29 bundles (the 05:29 jar had the fox cyan wash).
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
@@ -45,7 +47,10 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 - **Sounds**: 53 sound events (OcSounds), vanilla stand-ins in the jar, the game's recordings via the pack (layers
   mixed at build time, 1P/3P split by audience). **Voice lines** for the game's moments (Voice.say: ult ready, kills,
   multikill, melee, respawn, select, healing now and then) and her own hurt/death sounds (PlayerMixin).
-- **Combat feedback**: hit markers at the crosshair (white, red crit, kill), a kill feed, ally health markers.
+- **Combat feedback**: hit markers at the crosshair (white, red crit, kill), a kill feed (weapon art or a fist or
+  skull glyph; hero portraits, else mob faces from Minecraft's textures or a player's skin), ally health markers.
+- **Hero options** (Options > HERO, HeroOptions): Overwatch's six for Kiriko with Overwatch's defaults. Saved per
+  client; the server gets the three it acts on. The ult's charge is saved when a player leaves.
 - **Performance**: her 67k-triangle model is drawn as triangles with back faces of closed pieces culled on the CPU
   (third person 31 -> 50 FPS on this machine's integrated GPU). Harness `timing` measures it.
 - **Multiplayer checked** with a second dev client (`gradlew runClient2`): what an ally sees and hears.
@@ -143,9 +148,10 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 
 ## Next
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
-2. What's left of the critiques: `tools/reference/critique-2026-10-26.md`, `-round2.md` and `-round3.md` (each has a
-   Status section at the top: done, not ours, checked, open). Very little is open; a fourth round on fresh captures
-   would find the next layer. Where Swift Step lands on an ally needs a look at a gameplay video.
+2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` to `-round5.md` (each
+   has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
+   crosshair (needs Overwatch frames of the throw). Where Swift Step lands on an ally needs a look at a gameplay
+   video.
 3. Effects still missing: the enemy-red view (matters only with scoreboard teams). (Suzu's white flash, the rush
    path's talismans, Swift Step's slash arcs, the reload and the aim lean are in.)
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
