@@ -31,7 +31,7 @@ landed between the ally and where she came from, facing them, so they filled her
 shoulder: at the ally's side across the line she came along, her right first, then her left, then (no room either
 side) the side she came from. Played (villager 10 m ahead, Swift Step): x 39.4 beside the villager's 40.5, same z, the
 view ahead clear (`ss_beside_sheet`); a wall on the right: x 41.6, the left; walls on both sides: z 11.4, the near
-side.
+side. With a second client: onto a player, x 39.4 beside their 40.5, neither view blocked (`mpss_sheet`).
 
 **Minecraft mode's first-person arm is Kiriko's** (owner: "Let me see what first person kiri in minecraft mode would
 look like"). With a hero picked her body is Kiriko in third person, but first person showed her own skin's arm. The
