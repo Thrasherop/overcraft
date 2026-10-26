@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "dev.overcraft.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"LivingEntityMixin",
+		"PlayerMixin",
+		"PlayerAdvancementsMixin",
+		"ProjectileUtilMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

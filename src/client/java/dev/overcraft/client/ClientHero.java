@@ -1,0 +1,238 @@
+package dev.overcraft.client;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import dev.overcraft.Overcraft;
+import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.controls.HeroOptions;
+import dev.overcraft.client.controls.HeroControls.Action;
+import dev.overcraft.client.mixin.MinecraftInvoker;
+import dev.overcraft.hero.Hero;
+import dev.overcraft.hero.HeroManager;
+import dev.overcraft.net.HeroInputPayload;
+import dev.overcraft.net.HeroSyncPayload;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * The client's side of the hero: the last state the server sent, and turning the hero's keys (HeroControls) into
+ * hero input while hero mode is on (hotbar slot 1). Hero mode has its own key set, Overwatch's: G (or the hotbar)
+ * switches between it and Minecraft's.
+ */
+public final class ClientHero {
+	public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Overcraft.id("heroes"));
+
+	/** Minecraft mode's keys for getting into hero mode and picking a hero (hero mode has its own: HeroControls). */
+	public static final KeyMapping HERO_MODE = key("hero_mode", InputConstants.KEY_G);
+	public static final KeyMapping HERO_SELECT = key("hero_select", InputConstants.KEY_H);
+
+	private static HeroSyncPayload sync = HeroSyncPayload.NONE;
+	private static int lastHeld;
+	/** Toggle Healing Ofuda: whether it's on, and whether the ofuda were refilling last tick. */
+	private static boolean ofudaOn;
+	private static boolean wasRefilling;
+	/** The Steve-mode slot to go back to when hero mode is toggled off. */
+	private static int steveSlot = 1;
+	private static boolean openSelectOnJoin;
+	private static boolean interacting;
+
+	private ClientHero() {
+	}
+
+	private static KeyMapping key(String name, int keyCode) {
+		return KeyMappingHelper.registerKeyMapping(new KeyMapping("key.overcraft." + name, InputConstants.Type.KEYBOARD, keyCode, CATEGORY));
+	}
+
+	public static void init() {
+		// Minecraft-mode keys are registered by the static fields above; hero mode's come from their own file
+		HeroControls.load();
+		HeroOptions.load();
+	}
+
+	/** The interact key is being handled: Minecraft's right-click may run (MinecraftMixin). */
+	public static boolean interacting() {
+		return interacting;
+	}
+
+	public static void onSync(HeroSyncPayload payload) {
+		sync = payload;
+	}
+
+	public static HeroSyncPayload sync() {
+		return sync;
+	}
+
+	public static @Nullable Hero hero() {
+		return sync.heroId().isEmpty() ? null : Hero.byId(sync.heroId());
+	}
+
+	/**
+	 * The screen in hero mode: a hero and hotbar slot 1, alive or not (the HUD's choice; dying flipped it to
+	 * Minecraft's hotbar and hearts behind the death screen).
+	 */
+	public static boolean heroView() {
+		LocalPlayer player = Minecraft.getInstance().player;
+		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
+			&& !player.isSpectator();
+	}
+
+	/**
+	 * Hero mode's chat as Overwatch's (small, the HUD font, no panel): in hero view with nobody typing, including behind
+	 * the death screen (there Minecraft's chat crossed the portrait, the sixth critique).
+	 */
+	public static boolean chatQuiet() {
+		Screen screen = Minecraft.getInstance().gui.screen();
+		return heroView() && (screen == null || screen instanceof DeathScreen);
+	}
+
+	/** Hero mode: a hero, hotbar slot 1 selected, alive and playing. */
+	public static boolean controls() {
+		LocalPlayer player = Minecraft.getInstance().player;
+		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
+			&& player.isAlive() && !player.isSpectator();
+	}
+
+	public static void onJoin() {
+		sync = HeroSyncPayload.NONE;
+		lastHeld = 0;
+		ofudaOn = false;
+		HeroOptions.send();
+		openSelectOnJoin = true;
+	}
+
+	public static void onDisconnect() {
+		sync = HeroSyncPayload.NONE;
+		openSelectOnJoin = false;
+	}
+
+	/** Start of each client tick, before Minecraft handles its own keys. */
+	public static void tick(Minecraft mc) {
+		LocalPlayer player = mc.player;
+		if (player == null) {
+			return;
+		}
+		if (openSelectOnJoin && mc.gui.screen() == null && mc.level != null) {
+			openSelectOnJoin = false;
+			mc.gui.setScreen(new HeroSelectScreen(true));
+		}
+
+		if (player.getInventory().getSelectedSlot() != HeroManager.HERO_SLOT) {
+			steveSlot = player.getInventory().getSelectedSlot();
+		}
+		// each mode's own keys switch modes and open the hero select (the other mode's are silenced or drained)
+		boolean heroMode = controls();
+		if (heroMode) {
+			// Minecraft mode's G and H are silenced in hero mode; asking drops their clicks (else they'd fire later)
+			drain(HERO_MODE);
+			drain(HERO_SELECT);
+		}
+		KeyMapping select = heroMode ? HeroControls.get(Action.HERO_SELECT) : HERO_SELECT;
+		KeyMapping toggle = heroMode ? HeroControls.get(Action.MINECRAFT_MODE) : HERO_MODE;
+		while (select.consumeClick()) {
+			if (hero() == null || sync.canChangeHero()) {
+				mc.gui.setScreen(new HeroSelectScreen(false));
+			} else {
+				player.sendOverlayMessage(Component.translatable("overcraft.change_hero.too_far"));
+			}
+		}
+		boolean toggled = false;
+		while (toggle.consumeClick()) {
+			toggled = true;
+		}
+		if (toggled) {
+			toggleHeroMode(player);
+		}
+
+		boolean controls = controls() && mc.gui.screen() == null;
+		if (!controls || toggled) {
+			// Minecraft mode (or just switched): the hero keys' clicks must not fire later
+			HeroControls.drainAll();
+			ofudaOn = false;
+			if (lastHeld != 0) {
+				lastHeld = 0;
+				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
+			}
+			return;
+		}
+
+		// the fire buttons: held, or tapped since last tick. Overwatch's primary fire throws Kiriko's ofuda, its
+		// secondary her kunai; the server's weapon slots are the other way round (primary = kunai).
+		boolean ofudaPressed = drain(HeroControls.get(Action.PRIMARY_FIRE));
+		boolean kunaiPressed = drain(HeroControls.get(Action.SECONDARY_FIRE));
+		boolean kunai = kunaiPressed | HeroControls.get(Action.SECONDARY_FIRE).isDown();
+		boolean ofuda;
+		if (HeroOptions.get().toggleOfuda) {
+			// Overwatch's default: a press starts Healing Ofuda, the next stops it; it also stops when the clip runs out
+			// (its refill starts) or the kunai are thrown
+			boolean refilling = sync.secondaryReload() >= 0;
+			if (ofudaPressed) {
+				ofudaOn = !ofudaOn;
+			}
+			if (refilling && !wasRefilling || kunai) {
+				ofudaOn = false;
+			}
+			wasRefilling = refilling;
+			ofuda = ofudaOn;
+		} else {
+			ofuda = ofudaPressed | HeroControls.get(Action.PRIMARY_FIRE).isDown();
+		}
+		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0);
+
+		int pressed = 0;
+		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
+		pressed |= drain(HeroControls.get(Action.ABILITY_2)) ? HeroInputPayload.PRESS_ABILITY_2 : 0;
+		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
+		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
+		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
+
+		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
+		if (drain(HeroControls.get(Action.INTERACT))) {
+			interacting = true;
+			try {
+				((MinecraftInvoker) mc).overcraft$startUseItem();
+			} finally {
+				interacting = false;
+			}
+		}
+
+		if (held != lastHeld || pressed != 0) {
+			lastHeld = held;
+			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
+		}
+	}
+
+	/** End of each client tick: heroes don't sprint. */
+	public static void endTick(Minecraft mc) {
+		if (mc.player != null && controls() && mc.player.isSprinting()) {
+			mc.player.setSprinting(false);
+		}
+	}
+
+	private static void toggleHeroMode(LocalPlayer player) {
+		if (hero() == null) {
+			player.sendOverlayMessage(Component.translatable("overcraft.hero_mode.no_hero", HERO_SELECT.getTranslatedKeyMessage()));
+			return;
+		}
+		int slot = player.getInventory().getSelectedSlot();
+		if (slot == HeroManager.HERO_SLOT) {
+			player.getInventory().setSelectedSlot(steveSlot);
+		} else {
+			steveSlot = slot;
+			player.getInventory().setSelectedSlot(HeroManager.HERO_SLOT);
+		}
+	}
+
+	private static boolean drain(KeyMapping key) {
+		boolean any = false;
+		while (key.consumeClick()) {
+			any = true;
+		}
+		return any;
+	}
+}

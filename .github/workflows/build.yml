@@ -1,0 +1,85 @@
+# Same two kinds of build as Lethalcraft:
+# - main: every push makes a TEST build: a GitHub pre-release (v<version>-test.<run>, never "latest") with the jar.
+# - production: a human moves a tested build there (merge main -> production); its push makes the real GitHub release
+#   (v<version>, "latest"). No store publishing yet.
+# Other branches and pull requests just build and test, and keep the jar as a workflow artifact.
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # runs Gradle; Gradle itself provisions Java 25 for its daemon (gradle/gradle-daemon-jvm.properties)
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and test
+        run: ./gradlew build --no-configuration-cache
+
+      - name: Package
+        id: package
+        run: |
+          ver=$(sed -n 's/^version=//p' gradle.properties)
+          jar=$(ls build/libs/overcraft-*.jar | grep -v sources | head -1)
+          cp "$jar" "Overcraft-$ver.jar"
+          echo "VER=$ver" >> "$GITHUB_ENV"
+          echo "JAR=Overcraft-$ver.jar" >> "$GITHUB_ENV"
+          # release notes: the newest day in CHANGES.md, then the commit that triggered the build
+          awk '/^## /{n++} n==1{print}' CHANGES.md > notes.md
+          {
+            echo
+            echo "---"
+            echo "Built from \`${GITHUB_SHA::7}\` on \`${GITHUB_REF_NAME}\`: $(git log -1 --format=%s)"
+          } >> notes.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.JAR }}
+          path: ${{ env.JAR }}
+
+      - name: Test build (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${VER}-test.${GITHUB_RUN_NUMBER}"
+          { echo "**Test build.** It becomes a release only once it's moved to the \`production\` branch."; echo; cat notes.md; } > test_notes.md
+          gh release create "$tag" "$JAR" \
+            --target "$GITHUB_SHA" \
+            --title "Overcraft $VER (test build $GITHUB_RUN_NUMBER)" \
+            --notes-file test_notes.md \
+            --prerelease --latest=false
+
+      - name: Release (production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${VER}"
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "Release $tag already exists: not making another."
+            exit 0
+          fi
+          gh release create "$tag" "$JAR" \
+            --target "$GITHUB_SHA" \
+            --title "Overcraft $VER" \
+            --notes-file notes.md \
+            --latest

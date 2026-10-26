@@ -1,0 +1,32 @@
+# Kiriko's first-person view (Gameplay1P entity: same model, look 7A5.119, which textures the arms and hands only).
+# Clips identified by rendering every 1P clip from the Camera bone (tools/owm_fpsurvey.py) and the research's alias
+# chains (kiriko-research.md). Exported with
+#   owm_survey.py <model> <out> --glb --entity=...Gameplay1P.owentity --keep=tools/clipmaps/kiriko_1p.txt
+0-60_00000000A3A7 = idle                  # held base pose: hands crossed in front, kunai and ofuda fan
+# kunai: one arm throws, alternating (alias 0x16F), then the hands come back (0x84E)
+0-32_00000000A46E = throw_kunai_1
+0-32_00000000A6DA = throw_kunai_2
+0-32_00000000A6F8 = throw_kunai_end
+# ofuda (held RMB): start (0x875) -> throws (0x874) -> hold (0x813) -> back to the crossed hold (0x876)
+0-32_00000000B1D6 = throw_ofuda_start
+0-32_00000000B0E1 = throw_ofuda
+0-36_00000000A8F5 = throw_ofuda_hold
+0-32_00000000A8F6 = throw_ofuda_end
+# not the reload (the owner saw an ofuda throw, #11): the ofuda throw's variant (0x16E -> 0x812), the fan flicked
+# forward, then back to the crossed hold
+0-32_00000000A49C = throw_ofuda_alt_start
+0-32_00000000A49D = throw_ofuda_alt
+# the reload (alias 0x004): the hands drop out of view, one comes back turning a fresh fan of three kunai, then the
+# crossed hold as new ofuda appear; 1.47 s (#11)
+128-32_00000000A810 = reload
+0-32_00000000A529 = melee
+128-32_00000000A50A = throw_suzu
+0-32_00000000A84C = throw_suzu_end
+0-32_00000000A591 = swift_step            # the hand sign (owner's screenshot)
+0-32_00000000A9A9 = swift_step_end
+0-32_00000000A5F6 = ult_cast
+0-32_00000000AA7E = climb
+0-36_00000000AA7C = climb_top
+# additive layers: breathing, and the walk bob (time from distance walked)
+4-4_00000000A45D = add_breathe
+4-4_00000000A525 = add_walk

@@ -1,0 +1,87 @@
+# Kiriko (Overwatch build 154088, skin "Overwatch", model 00000000003A.118): which DataTool clip is which.
+# <folder>_<clip id> = the name HeroAnimator plays it under. Found by tools/owm_survey.py (thumbnails, foot slide,
+# pose features), 2026-10-25. Directions measured from the planted foot's slide. "(guess)" = not yet confirmed.
+# Clip ids may change between Overwatch builds: re-check after re-extracting.
+
+# idle (research: kiriko-research.md "Idle recipes"): the stand is A6F0 sampled by a game parameter (turn-in-place
+# progress), held when not turning: HeroAnimator holds it at frame 0. Crouched: AEE7 the same way. Overwatch adds
+# breathing (AFDB / 60F8, additive) and the A71F aim-lean sheet on top: not done yet. Not idles: B00B (arms spread),
+# B033 (airborne), CFF8 (phone emote).
+0-36_00000000A6F0 = idle
+0-36_00000000AEE7 = crouch_idle
+
+# run, 8 directions (17 frames; the clips move ~3.4 m/s, Overwatch runs 5.5)
+0-32_00000000A8C7 = run
+0-36_00000000A9AD = run_forward_right
+0-36_00000000A8F3 = strafe_right
+0-36_00000000A9B0 = run_back_right
+0-36_00000000A8F9 = run_back
+0-36_00000000A9AF = run_back_left
+0-32_00000000A8F4 = strafe_left
+0-32_00000000A9AE = run_forward_left
+
+# crouch-walk, 8 directions (17 frames; 2.7 m/s forward, 1.5 sideways/back)
+0-36_00000000AEEB = crouch_walk
+0-36_00000000AEED = crouch_walk_forward_right
+0-36_00000000AEF0 = crouch_walk_right
+0-36_00000000AEF3 = crouch_walk_back_right
+0-36_00000000AEF2 = crouch_walk_back
+0-36_00000000AEF4 = crouch_walk_back_left
+0-36_00000000AEEF = crouch_walk_left
+0-36_00000000AEEE = crouch_walk_forward_left
+
+# jump / air / land
+0-32_00000000AA37 = jump
+0-32_00000000AA38 = fall                  # in the air: pelvis up 0.4 m, feet tucked (AFCC/AFD0/AFD6/AFEA: variants)
+# (C8A4-C8B3: another crouched 8-direction set, feet on the ground: maybe crouch-walking with ofuda out)
+0-36_00000000AA39 = land
+
+# wall climb (spotted by the owner on a contact sheet; confirmed from the side): hand-over-hand in place, and the hop
+# over the top when the climb ends (body rises 2.6 m in 10 frames)
+0-32_00000000AC1F = climb
+0-32_00000000AC20 = climb_top
+
+# attacks and abilities
+# from the animation-data research (tools/clipmaps/kiriko-research.md): abilities come in aim-pitch triples
+# (down / level / up); the level one is used
+0-32_00000000AB96 = throw_suzu            # Suzu throw (AD83 / AB96 / AD82)
+0-32_00000000AB95 = throw_suzu_end        # its follow-through (AD85 / AB95 / AD84)
+0-32_00000000ABBA = swift_step            # Swift Step depart
+0-32_00000000ABBB = swift_step_end        # ...and arrive (+ AEE4)
+0-32_00000000ABF0 = ult_cast              # Kitsune Rush cast (B021 / ABF0 / B01E)
+0-32_00000000ABF1 = ult_cast_end          # ...end (B022 / ABF1 / B01F)
+# the reload (alias 0x004, once thought the equip: Kiriko has no weapon switch): the ofuda go away, the kunai arm
+# draws a fresh fan of three and fans it beside her shoulder, back to the idle; 1.33 s, the kunai reload's 1.3. Found
+# 2026-10-26 after the owner's playtest (#11); renders in local-assets/previews/reload/
+0-32_00000000ABCF = reload
+# kunai (alias 0x16F, 4 variants that alternate arms; the owner: "left swing" then "right swing"), each followed by
+# the recovery to the hold (alias 0x40A). AB91, the old throw_kunai, is a recovery: "it just jumps into her".
+0-32_00000000AB5D = throw_kunai_1
+0-32_00000000AB60 = throw_kunai_2
+0-32_00000000AB61 = throw_kunai_3
+0-32_00000000AB62 = throw_kunai_4
+0-32_00000000AB94 = throw_kunai_end
+# ofuda (held RMB): start (0x875) -> throws (0x874) -> hold (0x813: B00B, arms spread, the owner's "hackles up") ->
+# end (0x876)
+0-32_00000000B011 = throw_ofuda_start
+0-32_00000000B00F = throw_ofuda
+0-32_00000000B00B = throw_ofuda_hold
+0-32_00000000B0C9 = throw_ofuda_end
+# not the reload (it was played as one: the owner saw a quick melee, #11): a variant of the ofuda throw (0x16E ->
+# 0x812, after the same wait and condition as the throw's start, carrying its sound), the fan thrust straight ahead
+0-32_00000000AD90 = throw_ofuda_alt_start
+0-32_00000000AD94 = throw_ofuda_alt
+128-32_00000000AF57 = melee
+128-32_00000000AFB8 = melee_2
+128-32_00000000AFB9 = melee_3
+# additive layers (4-* folders: deltas on top of the pose)
+4-0_00000000AFDB = add_breathe            # standing breathing (loops)
+4-0_0000000060F8 = add_breathe_crouch
+# the aim pose sheet (research: an AnimationPose2d, 63 frames, sampled by two aim springs; under every stance): frame
+# 31 is the middle of the grid
+4-6_00000000A71F = add_aim
+
+# reactions
+0-32_00000000AF3C = death
+0-36_000000000847 = knockdown
+0-36_000000000849 = knockdown_getup

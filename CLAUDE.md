@@ -9,12 +9,22 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
   if it's running, stop and say so. Don't close it yourself: the owner may be playing.
 - Never attach to, debug, read the memory of, inject into or modify the Overwatch client, Battle.net or their files.
   Reading the install is read-only and offline (Overwatch closed).
+- Research goes as far as it can without dealing with the tamper protection or reverse-engineering the encryption
+  (owner, 2026-10-25): game data through DataTool/TankLib, and static reading of an archived copy of the executable
+  (strings, type names, readable sections) are fine; unpacking or decrypting its protected parts, bypassing
+  anti-tamper, or running it for analysis are not.
 - Numbers (damage, cooldowns, speeds, ranges, ult cost) come from public sources: Blizzard's patch notes first, then
   the Overwatch wiki (read through its MediaWiki API: the HTML is Cloudflare-blocked). Each number in the code says
   where it came from, or that it's ours when no source gives one (see `KirikoStats`). Check the latest patch notes
   before changing a hero: Overwatch rebalances often.
 - Overwatch assets (models, textures, sounds) are never committed or shipped. Like Lethalcraft's approach, they are
   read from the player's own install on their machine; the repo only ever holds original or placeholder assets.
+  They live in `local-assets/` (gitignored) and reach the game as a local resource pack (`LocalAssetPack`): the dev
+  client reads `local-assets/pack/`, a real install `<.minecraft>/overcraft/overcraft-assets.zip`. Build it with
+  `py tools/build_asset_pack.py add <hero> <model file>` (Blender, headless) and `... zip`. `gradlew build` fails if
+  the jar holds any model/mesh/audio file (`checkNoOverwatchAssets`): never weaken that check to get a build through.
+- Until DataTool supports the installed build (#6), the owner may download ripped models as stopgaps (owner,
+  2026-10-25). The owner downloads them, not Claude; they go in `local-assets/raw/` and follow the same rules.
 - Don't put personal info (the owner's email) in request headers or URLs when fetching sources.
 
 ## Heroes: it should feel like Overwatch, not Steve (owner, 2026-10-25)

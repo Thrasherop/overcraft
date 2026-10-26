@@ -15,7 +15,54 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+
+	runs {
+		client {
+			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py
+			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
+			vmArg "-Dovercraft.dev=true"
+			// one name, so one player across launches (a random one each launch was a new player each time: her hero,
+			// ult and pets didn't carry over)
+			programArgs "--username", "Kiriko"
+		}
+		// a second client to see a hero as other players do (join the first's LAN world): its own folder, its own
+		// harness port (OC_DEV_PORT=25600 py tools/dev.py ...) and name
+		client2 {
+			client()
+			name "Minecraft Client 2"
+			runDir "run2"
+			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			vmArg "-Dovercraft.dev=true"
+			vmArg "-Dovercraft.devPort=25600"
+			programArgs "--username", "Viewer"
+		}
+	}
 }
+
+// Overwatch assets are never shipped (CLAUDE.md): the build fails if the jar has a model, mesh or audio file in it,
+// or anything big enough to be one. Placeholders are small PNGs and JSON.
+def forbiddenAssets = ['glb', 'gltf', 'bin', 'fbx', 'blend', 'obj', 'smd', 'dmx', 'mdl', 'vtx', 'vvd', 'phy', 'vtf', 'vmt',
+	'dds', 'tga', 'wem', 'bnk', 'wav', 'ogg', 'mp3', 'owmdl', 'owmat', 'owanim', 'owentity', 'xps', 'pmx', 'ttf', 'otf']
+tasks.register('checkNoOverwatchAssets') {
+	def jarFile = tasks.named('jar').flatMap { it.archiveFile }
+	inputs.file(jarFile)
+	doLast {
+		def bad = []
+		new java.util.zip.ZipFile(jarFile.get().asFile).withCloseable { zip ->
+			zip.entries().each { e ->
+				def ext = e.name.tokenize('.').last().toLowerCase()
+				if (!e.directory && (ext in forbiddenAssets || e.size > 512 * 1024)) {
+					bad << "${e.name} (${e.size} bytes)"
+				}
+			}
+		}
+		if (bad) {
+			throw new GradleException("The jar must not contain Overwatch assets or other large media:\n  " + bad.join("\n  "))
+		}
+	}
+}
+tasks.named('build') { dependsOn 'checkNoOverwatchAssets' }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
