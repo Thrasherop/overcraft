@@ -13,8 +13,8 @@ kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox 
 # "1P" events go to Kiriko's own player, "_3p" to everyone else (Overwatch's audiences 1 and 2).
 @kiriko.kunai.throw = kiriko.kunai.throw + kiriko.kunai.throw_b + kiriko.kunai.throw_hand:-4
 @kiriko.kunai.throw_3p = kiriko.kunai.throw_3p + kiriko.kunai.throw_3p_b
-@kiriko.kunai.hit = kiriko.kunai.hit:-4 + kiriko.kunai.hit_sub:-4
-@kiriko.kunai.headshot = kiriko.kunai.headshot + kiriko.kunai.hit:-6
+@kiriko.kunai.hit = kiriko.kunai.hit_a:-4 + kiriko.kunai.hit_b:-3 + kiriko.kunai.hit_c:-6
+@kiriko.kunai.headshot = kiriko.kunai.headshot + kiriko.kunai.hit_a:-6
 @kiriko.kunai.reload = kiriko.kunai.reload_1:+6 + kiriko.kunai.reload_2@0.21 + kiriko.kunai.reload_3@0.36 + kiriko.kunai.reload_4@0.57 + kiriko.kunai.reload_5@0.91
 @kiriko.kunai.reload_3p = kiriko.kunai.reload_3@0.16 + kiriko.kunai.reload_4@0.34 + kiriko.kunai.reload_5@1.14
 @kiriko.ofuda.throw = kiriko.ofuda.throw
@@ -23,7 +23,7 @@ kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox 
 @kiriko.ofuda.hit_block = kiriko.ofuda.hit_block + kiriko.ofuda.hit_block_snap
 @kiriko.suzu.throw = kiriko.suzu.throw + kiriko.suzu.flight
 @kiriko.suzu.throw_3p = kiriko.suzu.throw_3p + kiriko.suzu.flight
-@kiriko.suzu.burst = kiriko.suzu.burst + kiriko.suzu.burst_shimmer + kiriko.suzu.burst_bell
+@kiriko.suzu.burst = kiriko.suzu.burst_game
 @kiriko.swift_step.cast = kiriko.swift_step.cast:-4 + kiriko.swift_step.cast_sub:-4
 @kiriko.swift_step.depart = kiriko.swift_step.depart
 @kiriko.swift_step.arrive = kiriko.swift_step.arrive
@@ -137,22 +137,22 @@ kiriko.kunai.throw_hand = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000
 # OPTIONAL in-flight hum of the kunai projectile (6.3 s, stereo, LOOP: the Overwatch sound has a stop event; stop it when the kunai lands). MEDIUM: projectile 4103's child effect 3BF2, bank 7CCD (audience 1, 30 m).
 kiriko.kunai.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003BF2.00D/Sounds/000000007CCD.02C/0000002B0A3F.03F.ogg
 # body hit, generic flesh-impact punch layer (8 stereo 0.28-0.30 s). LOW-MEDIUM: kunai contact set 0738, contact type 0 on the default character material -> contact effect 47D0 -> bank 8BCE; only its generic layers are extracted (shared with quick melee). Kiriko's own kunai-hit sound (effect 13B2 -> 4057 -> bank 8DE7, 33 files) and 11 more impact files (2AC663...) are NOT extracted.
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE32F.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE27D.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2E6.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE275.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE338.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE297.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2D4.03F.ogg
-kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2A0.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE32F.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE27D.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2E6.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE275.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE338.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE297.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2D4.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AE2A0.03F.ogg
 # body hit, sub-bass layer (7 mono 0.13-0.31 s, near full scale). MEDIUM: second Play action of bank 8BCE/8BD2 (same files in quick melee); play together with kiriko.kunai.hit (or .headshot).
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC41.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABB7F.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC48.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC2B.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC51.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC22.03F.ogg
-kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC46.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC41.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABB7F.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC48.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC2B.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC51.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC22.03F.ogg
+# (generic, replaced by bank 8DE7 below) kiriko.kunai.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002ABC46.03F.ogg
 # critical hit, the layer that only the crit version has (10 deep stereo thumps 0.29-0.63 s, energy under 60 Hz). LOW-MEDIUM: contact type 1 (only Kiriko's kunai and nothing else in her sets has a type-1 entry that differs from type 0) -> contact effect 47D6 -> bank 8BD2 = the type-0 layers + this one. Overwatch's crit 'ding' itself is a global UI sound, not in her data.
 kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE5C.03F.ogg
 kiriko.kunai.headshot = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006BD4.00D/Sounds/000000005D97.02C/0000002AFE92.03F.ogg
@@ -398,15 +398,15 @@ kiriko.suzu.throw_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3
 kiriko.suzu.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003E6F.00D/Sounds/000000007C3D.02C/0000002AF401.03F.ogg
 kiriko.suzu.flight = Heroes/Kiriko/Skin/Overwatch/Overwatch/Effects/000000003E6F.00D/Sounds/000000007C3D.02C/0000002AF490.03F.ogg
 # STOPGAP burst boom (4 stereo 1.9-2.3 s, low). LOW-MEDIUM: the real burst (impact effects 360C/3D07 -> banks 76FD 1P / 96F8 3P / BDE2 far, 5 files 2B3253 2B31AE 2B324C 2B3247 2B3255) is NOT extracted; these come from the Protection Suzu souvenir clip C18A, whose effect throws (t=0, with the in-game throw files) and bursts the bell at t=0.6 s (decal + light + these sounds).
-kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF485.03F.ogg
-kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4AD.03F.ogg
-kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF361.03F.ogg
-kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4B5.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF485.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4AD.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF361.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4B5.03F.ogg
 # STOPGAP burst shimmer (1 stereo 1.36 s, 5.6 kHz). LOW-MEDIUM: same souvenir layer container (94D9) as kiriko.suzu.burst.
-kiriko.suzu.burst_shimmer = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4A1.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst_shimmer = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094D9.02C/0000002AF4A1.03F.ogg
 # STOPGAP burst bell ring (2 stereo 1.7-2.0 s, tonal 1.1-3 kHz). LOW-MEDIUM: souvenir bank 94DB, played at the souvenir's burst (t=0.6 s).
-kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C8A.03F.ogg
-kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C4A.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C8A.03F.ogg
+# (stopgap, replaced by the real burst below) kiriko.suzu.burst_bell = Heroes/Kiriko/Skin/Overwatch/Overwatch/Models/00000000003A.118/AnimationEffects/00000000C18A/Sounds/0000000094DB.02C/0000002A6C4A.03F.ogg
 # Allies cleansed: no sound of its own (effect 3398 is a material overlay); Overwatch only adds the FC5 voice line (kiriko.voice.suzu).
 
 # ===== Swift Step
@@ -648,3 +648,57 @@ kiriko.voice.melee = HeroVoice/Kiriko/Melee/000000062755.0B2-(shouts).ogg
 kiriko.voice.melee = HeroVoice/Kiriko/Melee/000000062756.0B2-(shouts).ogg
 kiriko.voice.melee = HeroVoice/Kiriko/Melee/0000000642EE.0B2-(shouts).ogg
 kiriko.voice.melee = HeroVoice/Kiriko/Melee/0000000642EF.0B2-(shouts).ogg
+
+# ===== The banks extract-unlocks missed, extracted 2026-10-26 (tools/reference/kiriko-sounds-extra.md).
+# Suzu burst: the real sound (banks 76FD 1P / 96F8 3P / BDE2 far: one random set of the same 5 files). HIGH.
+kiriko.suzu.burst_game = ExtraSounds/Kiriko/SuzuBurst/Sounds/0000000096F8.02C/0000002B31AE.03F.ogg
+kiriko.suzu.burst_game = ExtraSounds/Kiriko/SuzuBurst/Sounds/0000000096F8.02C/0000002B3247.03F.ogg
+kiriko.suzu.burst_game = ExtraSounds/Kiriko/SuzuBurst/Sounds/0000000096F8.02C/0000002B324C.03F.ogg
+kiriko.suzu.burst_game = ExtraSounds/Kiriko/SuzuBurst/Sounds/0000000096F8.02C/0000002B3253.03F.ogg
+kiriko.suzu.burst_game = ExtraSounds/Kiriko/SuzuBurst/Sounds/0000000096F8.02C/0000002B3255.03F.ogg
+# Kunai hit on a target: Kiriko's own impact bank 8DE7, a layer of three random sets played together. HIGH.
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+kiriko.kunai.hit_a = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+kiriko.kunai.hit_b = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+kiriko.kunai.hit_c = ExtraSounds/Kiriko/KunaiHitTarget/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# Kunai on terrain, default material: bank 826E (near; 826F is the same files, far). HIGH.
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC660.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC662.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC669.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC66D.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC674.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC68D.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC68F.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC798.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC79D.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC7A3.03F.ogg
+kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC7CF.03F.ogg

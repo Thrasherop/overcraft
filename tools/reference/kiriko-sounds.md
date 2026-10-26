@@ -335,6 +335,9 @@ long the sound stays within 20 dB of its peak.
 
 ## Not extracted (would need DataTool, offline, if the owner wants them)
 
+**Update 2026-10-26:** all six groups below were extracted afterwards (`kiriko-sounds-extra.md`); the Suzu burst,
+the kunai body hit (8DE7) and the kunai terrain hit (826E) are now mapped in `soundmaps/kiriko.txt`.
+
 The banks are named in the archive; their audio is not in `extracted\154088`:
 
 | Event | Banks (.02C) | Files |

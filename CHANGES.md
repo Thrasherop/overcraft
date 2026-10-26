@@ -5,6 +5,15 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The real Suzu burst and Kiriko's own kunai impacts** (the sound research's biggest gaps). A sound sub-agent extracted
+the banks the first extraction missed, from the archived build, offline and read-only, with DataTool's own conversion
+(`tools/reference/kiriko-sounds-extra.md`; the files stay in the archive's `ExtraSounds\`): 236 files. Now in the
+pack: the Suzu burst's own sound (bank 76FD/96F8, 5 variants; it was a stopgap from a souvenir clip), the kunai's own
+hit on a body (bank 8DE7, three layers mixed; it was a generic flesh hit) and on terrain (826E; it was a Minecraft
+stand-in). Played with subtitles on (`snd2_sheet`, `snd3s_block`): "Kunai hits", "Kunai strikes" on a wall, "Suzu
+rings"; `soundinfo` shows each event backed by the pack. Not used yet: the ofuda heal-hit banks (the current heal mapping
+is medium confidence, the new ones unheard), the probable kunai whiz-by and fox footsteps (labels still guesses).
+
 **Fixed: Kitsune Rush washed her whole view cyan at the cast** (found looking at fresh first-person captures, after
 the fox got its glow tonight). The fox starts inside Kiriko, so its 2 m glow sat on the camera. The fox fades out within
 4.5 m of the camera and its glow and wake start once it's past that; in front view it no longer passes through the
