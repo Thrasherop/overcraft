@@ -13,7 +13,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -61,6 +63,20 @@ public final class Combat {
 		target.hurt(source, Ow.hp(owDamage));
 		target.setInvulnerableTime(0);
 		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
+		return Math.max(0, Ow.toOw(dealt));
+	}
+
+	/**
+	 * The same through one of the Ender Dragon's parts (its head and neck take it all, the rest a quarter plus one:
+	 * Minecraft's rule, EnderDragon.hurt).
+	 */
+	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage) {
+		LivingEntity dragon = part.parentMob;
+		float before = dragon.getHealth() + dragon.getAbsorptionAmount();
+		dragon.setInvulnerableTime(0);
+		part.hurtServer(level, source, Ow.hp(owDamage));
+		dragon.setInvulnerableTime(0);
+		float dealt = before - (dragon.isAlive() ? dragon.getHealth() + dragon.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
 	}
 

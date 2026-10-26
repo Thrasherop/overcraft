@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.phys.Vec3;
 
 /** Kiriko's kunai: fast, no drop, no falloff, 2x on a headshot. Passes through allies. */
@@ -46,18 +47,25 @@ public class KunaiEntity extends OwProjectile {
 
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		return super.canHitEntity(entity) && getOwner() instanceof LivingEntity owner && Allies.canHurt(owner, entity);
+		// the Ender Dragon is hit through its parts (its hitboxes are entities of their own, not living ones: the kunai
+		// went through it, found playing #18)
+		Entity target = entity instanceof EnderDragonPart part ? part.parentMob : entity;
+		return super.canHitEntity(entity) && getOwner() instanceof LivingEntity owner && Allies.canHurt(owner, target);
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
-		if (!(level() instanceof ServerLevel level) || !(hit.getEntity() instanceof LivingEntity target)) {
+		EnderDragonPart part = hit.getEntity() instanceof EnderDragonPart p ? p : null;
+		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
+		if (!(level() instanceof ServerLevel level) || target == null) {
 			return;
 		}
 		Vec3 at = hit.getLocation();
-		boolean crit = at.y >= target.getEyeY() - HEAD_DEPTH;
+		// the dragon's head is its head; anyone else's, the top of their box
+		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
 		double damage = KirikoStats.KUNAI_DAMAGE * (crit ? KirikoStats.KUNAI_CRIT : 1);
-		float dealt = Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage)
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
 		Effects.play(level, "kunai_hit_entity", at, getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {

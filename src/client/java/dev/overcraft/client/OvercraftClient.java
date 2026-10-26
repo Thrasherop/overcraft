@@ -15,6 +15,8 @@ import dev.overcraft.client.model.HeroAnimator;
 import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.KitsuneRenderer;
+import dev.overcraft.client.hud.VictoryHud;
+import dev.overcraft.net.VictoryPayload;
 import dev.overcraft.client.model.ProjectileModelRenderer;
 import dev.overcraft.net.EffectPayload;
 import dev.overcraft.net.HeroActionPayload;
@@ -46,6 +48,7 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
+		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
@@ -76,6 +79,7 @@ public class OvercraftClient implements ClientModInitializer {
 			Cleansed.clear();
 			KillFeedHud.clear();
 			HeroHud.clearMoments();
+			VictoryHud.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -92,6 +96,8 @@ public class OvercraftClient implements ClientModInitializer {
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
+		// over everything else, in either mode
+		HudElementRegistry.addLast(Overcraft.id("victory"), VictoryHud::render);
 		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD
 		for (Identifier id : new Identifier[] {VanillaHudElements.HOTBAR, VanillaHudElements.HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR, VanillaHudElements.FOOD_BAR, VanillaHudElements.EXPERIENCE_LEVEL,

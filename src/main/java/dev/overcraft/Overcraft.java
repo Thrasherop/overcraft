@@ -14,6 +14,7 @@ import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
+import dev.overcraft.net.VictoryPayload;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
 import dev.overcraft.registry.OcSounds;
@@ -28,6 +29,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -55,6 +59,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			Hero hero = Hero.byId(payload.heroId());
@@ -86,6 +91,14 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
+				for (ServerPlayer player : level.players()) {
+					ServerPlayNetworking.send(player, new VictoryPayload());
+				}
+			}
+		});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);

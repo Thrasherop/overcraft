@@ -150,5 +150,6 @@
 	"overcraft.options.hero.friendly_fire.about": "On: your kunai and quick melee hurt your allies too (players on your team, your pets, villagers). Off: they pass through them, as in Overwatch.",
 	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
 	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair.",
+	"overcraft.hud.victory": "Victory",
 	"overcraft.hud.eliminated": "Eliminated"
 }

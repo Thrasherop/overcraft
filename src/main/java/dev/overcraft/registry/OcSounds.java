@@ -65,6 +65,10 @@ public final class OcSounds {
 	private OcSounds() {
 	}
 
+	/** Overwatch's end of a won match: the announcer's "Victory!" and its music (#18). From the local pack only. */
+	public static final SoundEvent ANNOUNCER_VICTORY = register("announcer.victory");
+	public static final SoundEvent MUSIC_VICTORY = register("music.victory");
+
 	private static SoundEvent register(String name) {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));
 	}
