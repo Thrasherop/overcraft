@@ -38,7 +38,6 @@ import dev.overcraft.net.HeroOptionsPayload;
  * controls. Hotbar slot 1 selected = the hero's keys are live; any other slot plays plain Minecraft.
  */
 public final class HeroManager {
-	public static final int HERO_SLOT = 0;
 
 	/**
 	 * The chosen hero, saved with the player and kept through death. Synced to every client: a player looks like
@@ -47,6 +46,15 @@ public final class HeroManager {
 	public static final AttachmentType<String> HERO = AttachmentRegistry.create(Overcraft.id("hero"),
 		builder -> builder.persistent(Codec.STRING).copyOnDeath()
 			.syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.all()));
+
+	/**
+	 * Hero mode on (the hero's controls, movement and HUD) or off (plain Minecraft): switched by the G key alone, saved
+	 * with the player and kept through death, synced so the client agrees after a respawn or a rejoin. It used to be
+	 * "hotbar slot 1 held" (owner, 2026-10-26: "drop the hotbar-based mode selection entirely", #26). Absent: on.
+	 */
+	public static final AttachmentType<Boolean> HERO_MODE = AttachmentRegistry.create(Overcraft.id("hero_mode"),
+		builder -> builder.persistent(Codec.BOOL).copyOnDeath()
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
 	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
@@ -79,10 +87,21 @@ public final class HeroManager {
 		return state == null ? null : state.hero;
 	}
 
-	/** The hero's keys are live: a hero, hotbar slot 1, alive and not a spectator. */
+	/** The hero's keys are live: a hero, hero mode on, alive and not a spectator. */
 	public static boolean controls(Player player) {
-		return hero(player) != null && player.getInventory().getSelectedSlot() == HERO_SLOT && player.isAlive()
-			&& !player.isSpectator();
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator();
+	}
+
+	/** Hero mode is on (on unless switched off with G). */
+	public static boolean heroMode(Player player) {
+		return player.getAttachedOrElse(HERO_MODE, true);
+	}
+
+	/** G: hero mode on or off (only with a hero picked). */
+	public static void setHeroMode(ServerPlayer player, boolean on) {
+		if (hero(player) != null) {
+			player.setAttached(HERO_MODE, on);
+		}
 	}
 
 	/** How close to their bed (respawn point) a player must be to change heroes (owner, 2026-10-25). */
@@ -123,11 +142,13 @@ public final class HeroManager {
 		}
 		applyKit(player, state, true);
 		if (hero != null) {
+			// picking a hero puts you in hero mode
+			player.setAttached(HERO_MODE, true);
 			Voice.say(player, "select", 1, false);
 		}
 	}
 
-	/** Health and the slot-1 weapon; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
+	/** Health; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
 	private static void applyKit(ServerPlayer player, HeroState state, boolean fresh) {
 		AttributeInstance maxHealth = player.getAttribute(Attributes.MAX_HEALTH);
 		if (maxHealth != null) {
@@ -141,7 +162,8 @@ public final class HeroManager {
 		if (player.getHealth() > player.getMaxHealth()) {
 			player.setHealth(player.getMaxHealth());
 		}
-		removeWeapons(player.getInventory(), null);
+		// the hero weapon item that once held slot 1 (hero mode was "slot 1 held" until #26): taken out of old saves
+		removeWeapons(player.getInventory());
 		if (state.hero == null) {
 			return;
 		}
@@ -152,32 +174,12 @@ public final class HeroManager {
 				kit.equip(player, state);
 			}
 		}
-		enforceWeapon(player, state.hero);
 	}
 
-	/** Keeps the hero's weapon in slot 1 (whatever was there moves to a free slot, or is dropped). */
-	private static void enforceWeapon(ServerPlayer player, Hero hero) {
-		Inventory inventory = player.getInventory();
-		ItemStack inSlot = inventory.getItem(HERO_SLOT);
-		if (inSlot.getItem() == OcItems.weapon(hero)) {
-			removeWeapons(inventory, HERO_SLOT);
-			return;
-		}
-		removeWeapons(inventory, null);
-		inSlot = inventory.getItem(HERO_SLOT);
-		if (!inSlot.isEmpty()) {
-			inventory.setItem(HERO_SLOT, ItemStack.EMPTY);
-			if (!inventory.add(inSlot)) {
-				player.drop(inSlot, false, Prediction.SERVER_ONLY);
-			}
-		}
-		inventory.setItem(HERO_SLOT, new ItemStack(OcItems.weapon(hero)));
-	}
-
-	/** Takes every hero weapon out of the inventory except the one in {@code keepSlot}. */
-	private static void removeWeapons(Inventory inventory, @Nullable Integer keepSlot) {
+	/** Takes every hero weapon item out of the inventory. */
+	private static void removeWeapons(Inventory inventory) {
 		for (int i = 0; i < inventory.getContainerSize(); i++) {
-			if ((keepSlot == null || i != keepSlot) && inventory.getItem(i).getItem() instanceof HeroWeaponItem) {
+			if (inventory.getItem(i).getItem() instanceof HeroWeaponItem) {
 				inventory.setItem(i, ItemStack.EMPTY);
 			}
 		}
@@ -270,9 +272,6 @@ public final class HeroManager {
 				tickRules(player, state);
 				if (kit != null) {
 					kit.tick(player, state, controls);
-				}
-				if (server.getTickCount() % 10 == 0) {
-					enforceWeapon(player, state.hero);
 				}
 			}
 			if (kit != null) {

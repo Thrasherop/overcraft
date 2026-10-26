@@ -6,6 +6,23 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.0
+Same asset pack as 0.2.0.
+- **Hero mode by the G key alone (#26, the owner's call).** The hotbar no longer decides it: hero mode is a flag G
+  switches, saved with the player through death and rejoining. Picking a hero turns it on. In hero mode the hotbar
+  keys and scroll do nothing (there's no hotbar there), and the hero weapon item that held slot 1 is gone
+  (removed from old inventories). CLAUDE.md's rule is updated.
+  - Played: picked Kiriko (hero mode on, slot unchanged); G off and on with the real keys; key 4 in Minecraft mode
+    (slot 4, still Minecraft mode); key 7 in hero mode (no change); death and respawn (still hero mode); no weapon
+    item left in the inventory (`r10_pair`).
+- **Kunai ammo returns at 65% of the reload (#28):** 0.845 s, Blizzard's patch note (May 9, 2023), not the wiki
+  infobox's 0.65 s. A throw could cut the reload short 0.2 s too early. Played: a throw 0.7 s into the reload is
+  refused, one at 1.0 s ends the reload's tail (Overwatch's animation cancel). Ofuda still interrupt the reload with
+  "Healing Ofuda cancels reload" on (Overwatch's default).
+- **On a server without Overcraft (#32):** no hero select on joining, no asset-pack message, and G/H do nothing (the
+  rest was already off: such a server never sends a hero). Not yet played on a real vanilla server.
+- **Suzu's ring (#22)** finds the ground up to 8 blocks below the burst (it was 2), for bursts on an ally in the air.
+
 ### Build 0.2.0
 The first versioned build (#21). Everything before it in this log was 0.1.0. Its asset pack must be rebuilt
 (`py tools/build_asset_pack.py sounds <extracted>`, then `zip`): an older pack is flagged in chat on joining, and in

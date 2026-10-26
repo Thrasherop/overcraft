@@ -391,10 +391,15 @@ public final class KirikoFx {
 	/** Suzu's ground ring in pieces about this long, this wide (m, ours: its line read 4-6 px wide at 10 m). */
 	private static final float RING_PIECE = 0.5f;
 	private static final float RING_WIDTH = 0.2f;
+	/**
+	 * How far below a burst its ring still finds the ground (blocks, ours): a Suzu that burst on an ally in the air, or
+	 * high on a throw, left no ring at 2 (#22).
+	 */
+	private static final int GROUND_REACH = 8;
 
 	/**
-	 * The height of the ground at (x, z) within two blocks of near: the top of the first solid block under open space,
-	 * from above. Null if there's none.
+	 * The height of the ground at (x, z) from two blocks above near to GROUND_REACH below it: the top of the first
+	 * solid block under open space, from above. Null if there's none.
 	 */
 	private static @Nullable Double groundY(Level level, double x, double z, double near) {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -402,7 +407,7 @@ public final class KirikoFx {
 		int bz = Mth.floor(z);
 		int top = Mth.floor(near) + 2;
 		boolean open = level.getBlockState(pos.set(bx, top + 1, bz)).getCollisionShape(level, pos).isEmpty();
-		for (int y = top; y >= Mth.floor(near) - 2; y--) {
+		for (int y = top; y >= Mth.floor(near) - GROUND_REACH; y--) {
 			VoxelShape shape = level.getBlockState(pos.set(bx, y, bz)).getCollisionShape(level, pos);
 			if (!shape.isEmpty() && open) {
 				return y + shape.max(Direction.Axis.Y);

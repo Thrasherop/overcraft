@@ -28,9 +28,10 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
 - Don't put personal info (the owner's email) in request headers or URLs when fetching sources.
 
 ## Heroes: it should feel like Overwatch, not Steve (owner, 2026-10-25)
-- With a hero selected and hotbar slot 1 held, movement and controls are Overwatch's: 5.5 m/s with no sprint, near
+- With a hero selected and hero mode on, movement and controls are Overwatch's: 5.5 m/s with no sprint, near
   instant acceleration, Overwatch's jump and gravity, no fall damage, the hero's passives (Kiriko's wall climb).
-  Other slots play plain Minecraft. Health scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
+  The G key alone switches between hero mode and plain Minecraft, not the hotbar (owner, 2026-10-26, #26). Health
+  scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
 - Reimplement mechanics from the numbers and from how they behave in the real game, not by guessing. For
   Minecraft's side, read its decompiled source (`gradlew genSources`; 26.x is unobfuscated, Mojang's own names).
 
@@ -44,20 +45,20 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
 - **Play every new feature by hand, like a player, before any test runs (owner, 2026-10-13).** Scripted tests and unit
   tests are not evidence that a feature works: on Lethalcraft a batch passed both, and the owner found about twenty
   bugs in a few minutes of play. For each new hero or ability: pick it on the select screen, check the HUD (ammo,
-  cooldowns, ult charge) and the item in slot 1, then use every button at real targets: zombies, skeletons, a
+  cooldowns, ult charge), then use every button at real targets: zombies, skeletons, a
   villager or tamed wolf as the ally, on flat ground, on slopes, against walls, in water, at night. Compare the
   timings and numbers with the hero's sources (above) and Minecraft's decompiled code for Minecraft behaviour.
   Ten features take ten times one feature's play time. Write down what was tried, with screenshots.
   Then just play with them, as a player would: a real fight (a night in survival, a skeleton farm, a raid) with the
-  hero, switching slots in and out of hero controls, because that's where a player finds the bugs.
+  hero, switching in and out of hero mode (G), because that's where a player finds the bugs.
 
 ## Hand play: before every merge, and before every release (owner's rule, 2026-10-15)
 The owner, after Lethalcraft's 1.45.x work: "That manual playtesting you did made a MASSIVE difference." It is
 required, not optional:
 - **Before a feature or fix merges** (into `next` or `main`): play that one change by hand in the real game.
 - **Before a version goes to `main`**: a general play of the whole build (not just what changed): join a world,
-  pick each playable hero, fight, heal, die and respawn, switch heroes, leave and rejoin, play in normal survival on
-  slots 2-9 (mine, craft, build, chests) to see plain Minecraft still works, at a player's speed and inventory (not
+  pick each playable hero, fight, heal, die and respawn, switch heroes, leave and rejoin, play in normal survival in
+  Minecraft mode (mine, craft, build, chests) to see plain Minecraft still works, at a player's speed and inventory (not
   god mode the whole time).
 
 What that play looked like when it worked (do at least this, then go a step further each time: one more case, one

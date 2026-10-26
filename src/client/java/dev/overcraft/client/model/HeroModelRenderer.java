@@ -95,7 +95,7 @@ public final class HeroModelRenderer {
 			hero = weapon.hero;
 			LAST_HERO.put(entity.getId(), hero);
 		} else if (chosen != null && Hero.byId(chosen) != null) {
-			// out of hero mode (Minecraft on slots 2-9) a player still looks like their hero (owner)
+			// out of hero mode (Minecraft mode) a player still looks like their hero (owner)
 			hero = Hero.byId(chosen);
 			LAST_HERO.put(entity.getId(), hero);
 		} else if (entity.isDeadOrDying() && LAST_HERO.containsKey(entity.getId())) {

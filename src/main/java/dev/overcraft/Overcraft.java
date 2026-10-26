@@ -12,6 +12,7 @@ import dev.overcraft.net.EffectPayload;
 import dev.overcraft.net.KillFeedPayload;
 import dev.overcraft.net.HeroActionPayload;
 import dev.overcraft.net.HeroInputPayload;
+import dev.overcraft.net.HeroModePayload;
 import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.SelectHeroPayload;
@@ -93,6 +94,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroInputPayload.TYPE, HeroInputPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroOptionsPayload.TYPE, HeroOptionsPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(HeroModePayload.TYPE, HeroModePayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -107,6 +109,8 @@ public class Overcraft implements ModInitializer {
 				HeroManager.syncNone(context.player());
 			}
 		});
+		ServerPlayNetworking.registerGlobalReceiver(HeroModePayload.TYPE,
+			(payload, context) -> HeroManager.setHeroMode(context.player(), payload.on()));
 		ServerPlayNetworking.registerGlobalReceiver(HeroOptionsPayload.TYPE,
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,

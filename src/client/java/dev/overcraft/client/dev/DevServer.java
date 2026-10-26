@@ -352,6 +352,11 @@ public final class DevServer {
 					HEARD.clear();
 				}
 			}
+			case "heromode" -> {
+				// dev only: hero mode on or off, as G does
+				ClientHero.setHeroMode(!arg.equals("off"));
+				out.addProperty("ok", true);
+			}
 			case "soundinfo" -> {
 				// dev only: which files a sound event resolves to (the local pack's recordings, or the jar's stand-ins)
 				var event = mc.getSoundManager().getSoundEvent(net.minecraft.resources.Identifier.parse(arg));
