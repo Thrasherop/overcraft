@@ -49,7 +49,9 @@ section says what's done). Played in game after each change, before and after:
 - **Kill feed**: always a glyph (the weapon's art, else a fist for melee, a skull for the world's doing), a bold ">",
   and faces for mobs (read off Minecraft's own textures: zombie, skeleton, creeper, spider, villager, pig and 20 more)
   and for players without a hero (their skin). Played: a kunai kill on a zombie, a melee kill on a pig, killed by a
-  zombie, killed by the void (`feed1_all`, `feed2_cz`).
+  zombie, killed by the void (`feed1_all`, `feed2_cz`); with a second client, a hero-less player killed by a zombie,
+  seen by Kiriko with their skin's face (`mpf_kz`). (The feed is part of the hero HUD: hero-less players and
+  Minecraft mode don't show it.)
 - Not reproduced: a grey blade at the left edge during the rush cast (six cast frames). Open: the kunai throw's
   hand over the crosshair, the chat font, the cooldown splash's shape.
 
