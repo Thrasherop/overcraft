@@ -64,6 +64,7 @@ public class HeroSelectScreen extends OwScreen {
 		this.onJoin = onJoin;
 		Hero current = ClientHero.hero();
 		this.preview = current != null ? current : Hero.KIRIKO;
+		HeroModelRenderer.restartShowcase();
 	}
 
 	@Override
@@ -138,6 +139,9 @@ public class HeroSelectScreen extends OwScreen {
 			Hero clicked = cardAt(event.x(), event.y());
 			if (clicked != null) {
 				boolean again = clicked == preview;
+				if (preview != clicked) {
+					HeroModelRenderer.restartShowcase();
+				}
 				preview = clicked;
 				if (again || doubleClick) {
 					confirmPick();
@@ -172,6 +176,7 @@ public class HeroSelectScreen extends OwScreen {
 				}
 			}
 			preview = cards.get(Math.floorMod(at + (key == InputConstants.KEY_LEFT ? -1 : 1), cards.size())).hero();
+			HeroModelRenderer.restartShowcase();
 			return true;
 		}
 		return super.keyPressed(event);
@@ -224,8 +229,10 @@ public class HeroSelectScreen extends OwScreen {
 			int cx = width / 2;
 			HeroModelRenderer.preview(preview);
 			try {
+				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
+				// preview turns toward a point: the box's own centre is straight ahead
 				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, MODEL_DROP,
-					mouseX, mouseY, minecraft.player);
+					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
 			}
