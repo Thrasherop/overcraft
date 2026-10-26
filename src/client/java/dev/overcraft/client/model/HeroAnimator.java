@@ -107,6 +107,11 @@ public final class HeroAnimator {
 	}
 
 	/** The clips playing now (base, and the action on top if any), for the dev harness. */
+	/** The first-person view's action step now (dev harness). */
+	public @Nullable String playingFirstPerson() {
+		return actionsFirstPerson.playing();
+	}
+
 	public String playing() {
 		String action = actions.playing();
 		return action == null ? base : base + "+" + action;

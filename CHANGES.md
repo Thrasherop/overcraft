@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The ofuda flick no longer shows the redraw fist mid-volley** (round 2's #20). The throw clip (B0E1) is the flick,
+then a fist drawing a fresh fan from the belt; while fire is held only the flick repeats now, the redraw plays when she
+stops. Checked with the harness's new `anim1p` (the first-person action step) while holding fire: the 10 ofuda go in
+about 0.7 s, mostly during the 0.2 s start clip (B1D6: from the idle fan pose out to the flick), then the reload; the
+critique's "hand at the left edge holding the fan" frames are those two of Blizzard's clips, kept (`ofj_sheet`).
+
 **Played: water, a ladder, a boat in hero mode** (CLAUDE.md's untried cases; `env1_sheet`). In a 3-deep pool she
 treads water (the fall pose) and gets out with jump and forward; up a ladder 4.4 m in 2 s; F gets her into a boat,
 crouch (LCtrl) gets her out. Fixed: the boat said "Press Left Shift to dismount", and in hero mode Left Shift is Swift

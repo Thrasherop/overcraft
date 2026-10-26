@@ -18,6 +18,12 @@ final class ActionTrack {
 	static final float FADE = 0.15f;
 	/** The ofuda throw step keeps looping while throws arrive at least this often (s): Kiriko throws 7 a second. */
 	private static final float CHANNEL_GAP = 0.3f;
+	/**
+	 * The share of the ofuda throw clip that is the flick itself: the rest draws a new fan from the belt (a fist in first
+	 * person, seen in the survey renders of B0E1). Looping the whole clip at 7 throws a second showed that fist mid-volley
+	 * (the second critique); about 0.16 s of its 0.63.
+	 */
+	private static final float FLICK_SHARE = 0.25f;
 
 	private final List<String> steps = new ArrayList<>();
 	private int step = -1;
@@ -97,12 +103,13 @@ final class ActionTrack {
 				continue;
 			}
 			float local = now - stepStart;
+			if (steps.get(step).equals("throw_ofuda") && now < channelUntil && local > clip.duration() * FLICK_SHARE) {
+				// keep throwing: only the flick repeats while fire is held, the redraw of the fan plays when it stops
+				stepStart += clip.duration() * FLICK_SHARE;
+				continue;
+			}
 			if (local <= clip.duration()) {
 				break;
-			}
-			if (steps.get(step).equals("throw_ofuda") && now < channelUntil) {
-				stepStart += clip.duration(); // keep throwing
-				continue;
 			}
 			if (step == steps.size() - 1) {
 				break; // the last step holds its end while fading out
