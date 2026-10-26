@@ -5,6 +5,10 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Played: the coat from the side** (R2 #19 said "rigid boards to the ankles"): a second player watching her run past
+from 5 m, the coat splits at her legs and trails behind as she runs, hanging when she stops (`cs2_sheet`, `cs2z`).
+Left as is.
+
 **Hero-mode chat is bare text** (round 3's #12): no dark panel behind the lines while nobody's typing, as
 Overwatch's; the panel comes back while typing, and Minecraft mode keeps its usual chat (`chat_sheet`). Also seen:
 Suzu's dome is there (an 8 m hemisphere for 0.3 s), but thrown at her own feet she's inside it and it reads as a

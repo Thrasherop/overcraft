@@ -36,8 +36,10 @@ done or not ours are repeated only where these captures show them still wrong.
 ## Status (kept up to date)
 - **Done, 2026-10-26 (CHANGES.md, "The critique's third round"):** 1, 2 (the smoke; the hands still show the seal
   through the step), 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15.
-- **Open:** 11 (where Swift Step lands: needs a video), the cloth (R2 #19), the Suzu dome (R2 #14),
-  the Suzu in flight (R1 #37).
+- **Open:** 11 (where Swift Step lands: needs a video), the Suzu in flight (R1 #37: it is the game's own model).
+- **Checked, left as is:** 2's "no hands mid-step": the owner's own mid-step screenshot shows the hand seal. R2 #19
+  (cloth): seen running past a second player from the side, the coat splits at her legs and trails behind (`cs2z`);
+  "rigid" was read from standing shots. R2 #14: the dome is there (8 m, 0.3 s); from inside it reads as a wash.
 
 ## Confirmed fixed (seen in these captures)
 - **Weapon panels (R2 #11):** the lines are at the same height as Overwatch's.

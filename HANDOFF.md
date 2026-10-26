@@ -134,9 +134,9 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 
 ## Next
 1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
-2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` (each has a Status section
-   at the top: done, not ours, open). Biggest open ones: the rush path's in-path effects, the cleanse reading as a
-   ghost, the coat's stiffness, the ofuda flick's fist. A third critique round on fresh captures is worth it.
+2. What's left of the critiques: `tools/reference/critique-2026-10-26.md`, `-round2.md` and `-round3.md` (each has a
+   Status section at the top: done, not ours, checked, open). Very little is open; a fourth round on fresh captures
+   would find the next layer. Where Swift Step lands on an ally needs a look at a gameplay video.
 3. Effects still missing: the enemy-red view (matters only with scoreboard teams). (Suzu's white flash, the rush
    path's talismans, Swift Step's slash arcs, the reload and the aim lean are in.)
 4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
