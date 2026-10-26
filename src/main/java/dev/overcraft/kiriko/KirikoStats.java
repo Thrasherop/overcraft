@@ -18,7 +18,12 @@ public final class KirikoStats {
 	public static final double KUNAI_RECOVERY = 0.5;         // Nov 2024
 	public static final int KUNAI_AMMO = 15;
 	public static final double KUNAI_RELOAD = 1.3;           // whole animation
-	public static final double KUNAI_RELOAD_AMMO_AT = 0.65;  // ammo comes back here
+	/**
+	 * When the kunai come back during the reload (s): "after 65% of the animation" (May 9, 2023; the reload has been
+	 * 1.3 s throughout), 0.845 s. The wiki infobox's "restores ammo after 0.65 seconds" reads the 65% as seconds; at
+	 * 0.65 s a throw cut the reload short too early (#28).
+	 */
+	public static final double KUNAI_RELOAD_AMMO_AT = 0.65 * KUNAI_RELOAD;
 	public static final double KUNAI_SPEED = 90;             // m/s
 	/**
 	 * The hit radius: base 0.12 (Dec 2025) plus Overwatch's 0.075 for travel-time projectiles over 50 m/s (Mar 2024);

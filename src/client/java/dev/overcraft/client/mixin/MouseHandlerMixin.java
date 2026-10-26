@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * The scroll wheel doesn't change hotbar slots in hero mode: a stray scroll would drop out of hero mode mid-fight
- * (Overwatch's wheel does nothing for most heroes). Screens still scroll.
+ * The scroll wheel doesn't change hotbar slots in hero mode: there's no hotbar there (Overwatch's wheel does nothing
+ * for most heroes). Screens still scroll.
  */
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerMixin {

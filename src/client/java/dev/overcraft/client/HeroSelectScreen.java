@@ -76,6 +76,7 @@ public class HeroSelectScreen extends OwScreen {
 			return;
 		}
 		ClientPlayNetworking.send(new SelectHeroPayload(preview.id));
+		ClientHero.pickedHero();
 		onClose();
 	}
 

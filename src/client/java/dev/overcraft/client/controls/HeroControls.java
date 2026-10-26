@@ -167,6 +167,8 @@ public final class HeroControls {
 		return key == o.keyUp || key == o.keyDown || key == o.keyLeft || key == o.keyRight || key == o.keyJump
 			|| key == o.keyShift || key == o.keySprint || key == o.keyAttack || key == o.keyUse || key == o.keyPickItem
 			|| key == o.keyDrop || key == o.keyInventory || key == o.keySwapOffhand
-			|| key == ClientHero.HERO_MODE || key == ClientHero.HERO_SELECT;
+			|| key == ClientHero.HERO_MODE || key == ClientHero.HERO_SELECT
+			// no hotbar in hero mode: its keys don't change the held slot (they used to switch modes, until #26)
+			|| java.util.Arrays.asList(o.keyHotbarSlots).contains(key);
 	}
 }

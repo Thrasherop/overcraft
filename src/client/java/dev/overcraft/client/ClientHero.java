@@ -1,5 +1,7 @@
 package dev.overcraft.client;
 
+import dev.overcraft.net.SelectHeroPayload;
+import dev.overcraft.net.HeroModePayload;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.Identifier;
@@ -27,8 +29,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The client's side of the hero: the last state the server sent, and turning the hero's keys (HeroControls) into
- * hero input while hero mode is on (hotbar slot 1). Hero mode has its own key set, Overwatch's: G (or the hotbar)
- * switches between it and Minecraft's.
+ * hero input while hero mode is on. Hero mode has its own key set, Overwatch's: G switches between it and Minecraft's
+ * (the hotbar used to: slot 1 was hero mode, until #26).
  */
 public final class ClientHero {
 	public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Overcraft.id("heroes"));
@@ -42,8 +44,11 @@ public final class ClientHero {
 	/** Toggle Healing Ofuda: whether it's on, and whether the ofuda were refilling last tick. */
 	private static boolean ofudaOn;
 	private static boolean wasRefilling;
-	/** The Steve-mode slot to go back to when hero mode is toggled off. */
-	private static int steveSlot = 1;
+	/**
+	 * Hero mode as switched here, until the server's synced flag (HeroManager.HERO_MODE) agrees: G acts at once, not a
+	 * round trip later. Null: the server's flag.
+	 */
+	private static @Nullable Boolean heroModeLocal;
 	private static boolean openSelectOnJoin;
 	private static boolean interacting;
 
@@ -78,13 +83,30 @@ public final class ClientHero {
 	}
 
 	/**
-	 * The screen in hero mode: a hero and hotbar slot 1, alive or not (the HUD's choice; dying flipped it to
-	 * Minecraft's hotbar and hearts behind the death screen).
+	 * The screen in hero mode: a hero and hero mode on, alive or not (the HUD's choice; dying flipped it to Minecraft's
+	 * hotbar and hearts behind the death screen).
 	 */
 	public static boolean heroView() {
 		LocalPlayer player = Minecraft.getInstance().player;
-		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
-			&& !player.isSpectator();
+		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
+	}
+
+	/** Hero mode is switched on (G), whether or not the hero can act right now. */
+	public static boolean heroModeOn() {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null) {
+			return false;
+		}
+		boolean synced = player.getAttachedOrElse(HeroManager.HERO_MODE, true);
+		if (heroModeLocal != null && heroModeLocal == synced) {
+			heroModeLocal = null;
+		}
+		return heroModeLocal != null ? heroModeLocal : synced;
+	}
+
+	/** A hero was just picked (the server puts the player in hero mode). */
+	public static void pickedHero() {
+		heroModeLocal = true;
 	}
 
 	/**
@@ -96,27 +118,41 @@ public final class ClientHero {
 		return heroView() && (screen == null || screen instanceof DeathScreen);
 	}
 
-	/** Hero mode: a hero, hotbar slot 1 selected, alive and playing. */
+	/** Hero mode: a hero, hero mode on, alive and playing. */
 	public static boolean controls() {
 		LocalPlayer player = Minecraft.getInstance().player;
-		return player != null && hero() != null && player.getInventory().getSelectedSlot() == HeroManager.HERO_SLOT
-			&& player.isAlive() && !player.isSpectator();
+		return player != null && hero() != null && heroModeOn() && player.isAlive() && !player.isSpectator();
 	}
 
 	public static void onJoin() {
+		sync = HeroSyncPayload.NONE;
+		lastHeld = 0;
+		ofudaOn = false;
+		heroModeLocal = null;
+		// on a server without Overcraft the mod stays out of sight: no hero select, no messages (#32)
+		if (!serverHasOvercraft()) {
+			openSelectOnJoin = false;
+			return;
+		}
 		Component outdated = dev.overcraft.client.assets.AssetPackVersion.warning();
 		if (outdated != null && Minecraft.getInstance().player != null) {
 			Minecraft.getInstance().player.sendSystemMessage(outdated.copy().withStyle(net.minecraft.ChatFormatting.RED));
 		}
-		sync = HeroSyncPayload.NONE;
-		lastHeld = 0;
-		ofudaOn = false;
 		HeroOptions.send();
 		openSelectOnJoin = true;
 	}
 
+	/**
+	 * The server has Overcraft (it takes our hero picks). A plain server never sends a hero, so the HUD, controls and
+	 * models stay Minecraft's on their own; this keeps the rest quiet there too (#32).
+	 */
+	public static boolean serverHasOvercraft() {
+		return Minecraft.getInstance().player != null && ClientPlayNetworking.canSend(SelectHeroPayload.TYPE);
+	}
+
 	public static void onDisconnect() {
 		sync = HeroSyncPayload.NONE;
+		heroModeLocal = null;
 		openSelectOnJoin = false;
 	}
 
@@ -131,8 +167,11 @@ public final class ClientHero {
 			mc.gui.setScreen(new HeroSelectScreen(true));
 		}
 
-		if (player.getInventory().getSelectedSlot() != HeroManager.HERO_SLOT) {
-			steveSlot = player.getInventory().getSelectedSlot();
+		if (!serverHasOvercraft()) {
+			// a server without Overcraft: G and H do nothing (no "pick a hero", no select screen: #32)
+			drain(HERO_MODE);
+			drain(HERO_SELECT);
+			return;
 		}
 		// each mode's own keys switch modes and open the hero select (the other mode's are silenced or drained)
 		boolean heroMode = controls();
@@ -246,12 +285,14 @@ public final class ClientHero {
 			player.sendOverlayMessage(Component.translatable("overcraft.hero_mode.no_hero", HERO_SELECT.getTranslatedKeyMessage()));
 			return;
 		}
-		int slot = player.getInventory().getSelectedSlot();
-		if (slot == HeroManager.HERO_SLOT) {
-			player.getInventory().setSelectedSlot(steveSlot);
-		} else {
-			steveSlot = slot;
-			player.getInventory().setSelectedSlot(HeroManager.HERO_SLOT);
+		setHeroMode(!heroModeOn());
+	}
+
+	/** Hero mode on or off: here at once, and on the server. */
+	public static void setHeroMode(boolean on) {
+		heroModeLocal = on;
+		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {
+			ClientPlayNetworking.send(new HeroModePayload(on));
 		}
 	}
 
