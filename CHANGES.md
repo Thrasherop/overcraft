@@ -5,6 +5,13 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Allies' health over their heads** (critique #21; Overwatch shows its teammates' health the same way, white pips
+over a cyan chevron). Players and pets always (40 m), villagers, golems and allays only when hurt or within 8 m (a
+village would otherwise be a wall of bars); one pip per 25 health up to 20 (a golem's 1250 shares them out), smaller
+further off, through walls as Overwatch's are, hero mode only. Played (`al1_*`): a villager near and full (shown),
+one far and full (hidden), one far and hurt (half its pips), a tamed wolf 26 m off (4 pips), a hurt golem behind a wall
+(20 pips, 60% lit); from 14 m further back (smaller, the near one gone at full health); in Minecraft mode none.
+
 **Critique, second round: how she stands, low health, Suzu's white flash.**
 - She faces her aim in third person (#10). Minecraft turns a player's body up to 75 degrees toward where they move; on
   top of Overwatch's strafe clip (legs stepping sideways under a body facing forward) that read as a split from the

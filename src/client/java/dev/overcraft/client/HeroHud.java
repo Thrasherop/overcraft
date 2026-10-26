@@ -8,6 +8,7 @@ import dev.overcraft.client.hud.HudShapes;
 import dev.overcraft.client.hud.HudText;
 import dev.overcraft.client.hud.HudText.Align;
 import dev.overcraft.client.hud.HudText.Face;
+import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
@@ -24,6 +25,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3x2f;
 import org.joml.Vector3f;
@@ -106,6 +109,10 @@ public final class HeroHud {
 	private static final float STEP_FLASH = 0.45f;
 	/** Below this share of her health the screen's edges glow red (ours: the critique's "about 35%"). */
 	private static final float LOW_HEALTH = 0.35f;
+	/** Allies' markers show this far (metres: ours, about Overwatch's view of its teammates in a fight). */
+	private static final double ALLY_RANGE = 40;
+	/** Villagers, golems and allays at full health show only this close. */
+	private static final double ALLY_NEAR = 8;
 	private static final int STREAKS = 14;
 
 	private HeroHud() {
@@ -136,6 +143,7 @@ public final class HeroHud {
 		float h = g.guiHeight() / scale;
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
+		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
 		crosshair(g, w / 2, h / 2);
 		ofudaCounter(g, s, w / 2, h / 2 + 136);
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
@@ -590,6 +598,61 @@ public final class HeroHud {
 		}
 		g.pose().popMatrix();
 		keyLabel(g, HeroControls.get(Action.ABILITY_1), x, y + half * 1.42f + 18, CYAN, false);
+	}
+
+	/**
+	 * Allies' health over their heads, as Overwatch shows its teammates' (the critique, from the owner's frames: a cyan
+	 * "v" under a row of white pips, one per 25 health): players and pets always, within ALLY_RANGE; villagers, golems
+	 * and allays only when hurt or close, or a village would be a wall of bars. Smaller further away.
+	 */
+	private static void allyMarkers(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+		Vec3 eye = player.getEyePosition(partial);
+		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(ALLY_RANGE),
+			e -> Allies.isAlly(player, e) && !e.isInvisible())) {
+			Vec3 at = ally.getPosition(partial);
+			double distance = at.distanceTo(eye);
+			boolean always = ally instanceof Player || ally instanceof OwnableEntity;
+			if (distance > ALLY_RANGE || !always && ally.getHealth() >= ally.getMaxHealth() && distance > ALLY_NEAR) {
+				continue;
+			}
+			// over a player's name tag, just over anyone else's head
+			Vec3 head = at.add(0, ally.getBbHeight() + (ally instanceof Player ? 0.75 : 0.3), 0);
+			float[] screen = project(head, w, h);
+			if (screen == null) {
+				continue;
+			}
+			float size = (float) Math.clamp(1.15 - distance / ALLY_RANGE * 0.5, 0.65, 1);
+			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
+			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()));
+		}
+	}
+
+	/** One ally's marker centred on (x, y): pips over a small chevron. */
+	private static void allyMarker(GuiGraphicsExtractor g, float x, float y, float size, float alpha, float health, float max) {
+		g.pose().pushMatrix();
+		g.pose().translate(x, y);
+		g.pose().scale(size, size);
+		// one pip per 25 health, at most 20 (a golem's 1250 would run off the screen: then each pip holds more)
+		int pips = Math.clamp((int) Math.ceil(max / 25), 1, 20);
+		float per = max / pips;
+		float pipW = 6;
+		float pitch = 8;
+		float left = -(pips * pitch - (pitch - pipW)) / 2;
+		for (int i = 0; i < pips; i++) {
+			float held = Math.clamp((health - i * per) / per, 0, 1);
+			float px = left + i * pitch;
+			fill(g, px - 1, -11, pipW + 2, 12, alpha(0x000000, 0.45f * alpha));
+			if (held > 0) {
+				fill(g, px, -10, pipW * (held > 0.9f ? 1 : held), 10, alpha(0xFFFFFF, alpha));
+			}
+		}
+		// the chevron under the pips, pointing down at the ally
+		g.pose().pushMatrix();
+		g.pose().translate(0, 8);
+		g.pose().rotate((float) Math.toRadians(90));
+		image(g, HudShapes.TRIANGLE, -5, -7, 10, 14, alpha(0x29A8E0, alpha));
+		g.pose().popMatrix();
+		g.pose().popMatrix();
 	}
 
 	/** World position to HUD position (reference pixels), or null behind the camera. */
