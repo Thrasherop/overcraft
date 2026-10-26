@@ -42,7 +42,7 @@ import static dev.overcraft.client.hud.HudDraw.outline;
  */
 public class HeroSelectScreen extends OwScreen {
 	/** How far (blocks) the previewed model sits below the middle of its frame: puts her head near the top. */
-	private static final float MODEL_DROP = 0.45f;
+	private static final float MODEL_DROP = 0.18f;
 	private static final float PORTRAIT = 72;
 	private static final float PORTRAIT_GAP = 8;
 	private static final float GROUP_GAP = 48;
@@ -195,6 +195,9 @@ public class HeroSelectScreen extends OwScreen {
 		super.extractRenderState(g, mouseX, mouseY, a);
 		hero(g, mouseX, mouseY);
 		begin(g);
+		// her legs run on behind the roster, fading into its dark band (no hard edge across the coat)
+		gradient(g, 0, 690, refWidth(), 190, 0x00060A10, 0xE6060A10);
+		fill(g, 0, 880, refWidth(), HudDraw.REF_H - 880, 0xE6060A10);
 		float w = refWidth();
 		header(g);
 		nameplate(g, w);
@@ -215,8 +218,8 @@ public class HeroSelectScreen extends OwScreen {
 			// framed as Overwatch frames its heroes: large, from mid-thigh up, the head near the top and the legs cut
 			// off above the roster (the critique: a full body at 55% of the height looked small)
 			int top = (int) (40 * s);
-			int bottom = (int) (800 * s);
-			int size = (int) (700 * s);
+			int bottom = height;
+			int size = (int) (860 * s);
 			int cx = width / 2;
 			HeroModelRenderer.preview(preview);
 			try {

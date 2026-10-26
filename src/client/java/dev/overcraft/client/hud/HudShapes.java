@@ -47,6 +47,18 @@ public final class HudShapes {
 	/** A soft horizontal glow, brightest along its middle. */
 	public static final Identifier LINE_GLOW = Overcraft.id("hud/line_glow");
 	public static final int LINE_H = 24;
+	/** A square with a two-texel clear margin: boxes that stay smooth when the HUD's curve slopes them (see box()). */
+	public static final Identifier SQUARE = Overcraft.id("hud/square");
+	/** The same square fading from solid at the top to clear at the bottom: a vertical gradient's top colour. */
+	public static final Identifier SQUARE_FADE = Overcraft.id("hud/square_fade");
+	public static final int SQUARE_SIZE = 256;
+	public static final int SQUARE_MARGIN = 2;
+	/** A band round a disc (inner radius 37/47 of the outer): the ult meter's tick band. */
+	public static final Identifier BAND_RING = Overcraft.id("hud/band_ring");
+	/** An open "v" (two strokes): the ally marker's chevron. */
+	public static final Identifier CHEVRON = Overcraft.id("hud/chevron");
+	/** Low health's red edges: deepest in the corners, mottled (ours, after Overwatch's smoky edges). */
+	public static final Identifier LOW_HEALTH = Overcraft.id("hud/low_health");
 	public static final Identifier GLOW = Overcraft.id("hud/glow");
 	public static final Identifier OFUDA_SEGMENT = Overcraft.id("hud/ofuda_segment");
 	public static final Identifier OFUDA_SEGMENT_OUTLINE = Overcraft.id("hud/ofuda_segment_outline");
@@ -99,7 +111,17 @@ public final class HudShapes {
 		register(TICK, TICK_W, TICK_H, HudShapes::tick);
 		register(TICK_OUTER, TICK_W, TICK_H, (x, y) -> tick(x, y) * Math.clamp(1.15f - y / TICK_H * 1.3f, 0, 1));
 		register(SPLASH, SPLASH_W, SPLASH_H, HudShapes::splash);
-		register(LINE, 8, LINE_H, (x, y) -> coverage(LINE_H / 6f - Math.abs(y - LINE_H / 2f)));
+		// a 3 px core and about 2 px of falloff each side, at 9 px drawn (Overwatch's: "5-7 px, bright core, falloff")
+		register(LINE, 8, LINE_H, (x, y) -> {
+			float d = Math.abs(y - LINE_H / 2f);
+			return d <= LINE_H / 6f ? 1 : Math.clamp((LINE_H * 0.39f - d) / (LINE_H * 0.39f - LINE_H / 6f), 0, 1) * 0.55f;
+		});
+		register(SQUARE, SQUARE_SIZE, SQUARE_SIZE, (x, y) -> square(x, y));
+		register(SQUARE_FADE, SQUARE_SIZE, SQUARE_SIZE, (x, y) -> square(x, y) * Math.clamp(1 - y / SQUARE_SIZE, 0, 1));
+		register(BAND_RING, SIZE, SIZE, (x, y) -> Math.min(circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 1),
+			1 - circle(x, y, SIZE / 2f, SIZE / 2f, (SIZE / 2f - 1) * 37 / 47)));
+		register(LOW_HEALTH, SIZE, SIZE, HudShapes::lowHealth);
+		register(CHEVRON, 48, 40, (x, y) -> Math.max(stroke(x, y, 6, 8, 24, 32, 3.5f), stroke(x, y, 24, 32, 42, 8, 3.5f)));
 		register(LINE_GLOW, 8, LINE_H, (x, y) -> {
 			float d = (y - LINE_H / 2f) / (LINE_H / 2f);
 			return (float) Math.exp(-d * d * 4) * coverage(LINE_H / 2f - 1 - Math.abs(y - LINE_H / 2f));
@@ -234,6 +256,33 @@ public final class HudShapes {
 		return side < 0 ? -d : d;
 	}
 
+	/** A line from a to b, w thick, with round ends. */
+	private static float stroke(float x, float y, float ax, float ay, float bx, float by, float w) {
+		float dx = bx - ax;
+		float dy = by - ay;
+		float t = Math.clamp(((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy), 0, 1);
+		return coverage(w / 2 - (float) Math.hypot(x - ax - t * dx, y - ay - t * dy));
+	}
+
+	private static float square(float x, float y) {
+		float m = SQUARE_MARGIN;
+		return coverage(Math.min(Math.min(x - m, SQUARE_SIZE - m - x), Math.min(y - m, SQUARE_SIZE - m - y)));
+	}
+
+	/**
+	 * Red at the screen's edges: strongest at the edge, gone 14% of the way in (top and bottom; 10% at the sides),
+	 * heavier in the corners, broken up by soft noise so it reads as smoke rather than a gradient.
+	 */
+	private static float lowHealth(float x, float y) {
+		float u = x / SIZE;
+		float v = y / SIZE;
+		float side = Math.clamp(1 - Math.min(u, 1 - u) / 0.10f, 0, 1);
+		float topBottom = Math.clamp(1 - Math.min(v, 1 - v) / 0.14f, 0, 1);
+		float edge = Math.max(side, topBottom) + side * topBottom * 0.5f;
+		float noise = 0.65f + 0.35f * (float) (Math.sin(u * 37 + Math.sin(v * 23) * 2) * Math.sin(v * 29 + Math.sin(u * 17) * 2));
+		return Math.clamp(edge * edge * noise * 1.2f, 0, 1);
+	}
+
 	/** The tick: half the texture wide, the full height less a margin, its ends squared. */
 	private static float tick(float x, float y) {
 		float halfW = TICK_W * TICK_FILL_W / 2;
@@ -267,16 +316,16 @@ public final class HudShapes {
 	}
 
 	/**
-	 * The ofuda counter's segment: a "/" bar with rounded corners (the critique's measurements of Overwatch's: its short
-	 * top and bottom edges tilt 12 degrees down to the right, its long sides lean 45 degrees; 10 x 30 px edges in a
-	 * 31 x 23 box), here at two texels a pixel. Shrunk by inset (for its outline).
+	 * The ofuda counter's segment: a fat "/" tile with rounded corners, as measured on Overwatch's frames (zoomed): top
+	 * and bottom edges about 16.5 px, rising 5 degrees to the right; sides about 27 px, 13 px across for 24 down (61
+	 * degrees); here at two texels a pixel. Shrunk by inset (for its outline).
 	 */
 	private static float segment(float x, float y, float inset) {
 		// p = u e1 + v e2, e1 along the top edge, e2 down the long side
-		float e1x = (float) Math.cos(Math.toRadians(12));
-		float e1y = (float) Math.sin(Math.toRadians(12));
-		float e2x = -0.7071f;
-		float e2y = 0.7071f;
+		float e1x = (float) Math.cos(Math.toRadians(-5));
+		float e1y = (float) Math.sin(Math.toRadians(-5));
+		float e2x = -0.476f;
+		float e2y = 0.879f;
 		float px = x - SEGMENT_W / 2f;
 		float py = y - SEGMENT_H / 2f;
 		float det = e1x * e2y - e1y * e2x;
@@ -284,8 +333,8 @@ public final class HudShapes {
 		float v = (e1x * py - e1y * px) / det;
 		// in (u, v) distances across an edge shrink by the sine of the corner's angle
 		float squash = Math.abs(det);
-		return coverage(-roundBoxDistance(u, v, 20.8f - 2 * inset / squash, 59 - 2 * inset / squash,
-			Math.max(1, 8 - inset)) * squash);
+		return coverage(-roundBoxDistance(u, v, 33 - 2 * inset / squash, 54.6f - 2 * inset / squash,
+			Math.max(1, 6 - inset)) * squash);
 	}
 
 	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */

@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import org.joml.Matrix4f;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -20,6 +21,9 @@ import org.jspecify.annotations.Nullable;
  * Without the model nothing is drawn here: the rush's particles still show the fox's path.
  */
 public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRenderer.State> {
+	/** Drawn larger than its model (2.9 m nose to tail, 0.85 m tall): ours, so it stands about her chest high. */
+	private static final float SCALE = 1.4f;
+
 	public static class State extends EntityRenderState {
 		float yRot;
 		HeroModels.@Nullable Loaded loaded;
@@ -44,8 +48,11 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 		super.extractRenderState(entity, state, partialTicks);
 		state.yRot = entity.getYRot(partialTicks);
 		state.loaded = HeroModels.get("kitsune");
-		// it sheds sakura petals as it runs (33 a second, the effects survey)
-		KirikoFx.foxPetals(entity.getPosition(partialTicks), Fx.since(entity.getId()), 33);
+		// it sheds sakura petals as it runs (33 a second, the effects survey), and leaves a glowing wake (ours: at
+		// 20 m/s, low and ice-blue among the gates, the model alone read as nothing, the second critique)
+		Vec3 at = entity.getPosition(partialTicks);
+		KirikoFx.foxPetals(at, Fx.since(entity.getId()), 33);
+		KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0));
 	}
 
 	@Override
@@ -62,6 +69,7 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 			poseStack.pushPose();
 			// the model faces +Z, like the heroes'
 			poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			poseStack.scale(SCALE, SCALE, SCALE);
 			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 		}

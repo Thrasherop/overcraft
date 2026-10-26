@@ -87,12 +87,17 @@ public class OvercraftClient implements ClientModInitializer {
 			VanillaHudElements.INFO_BAR, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
-		// and the chat moves up out of the hero HUD's way (it sits above the hotbar, where the health now is)
+		// and the chat moves out of the hero HUD's way: as Overwatch's, small text at the left above the health (while
+		// typing, just lifted, so clicks on its lines still land)
 		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, vanilla -> (graphics, delta) -> {
 			boolean lift = ClientHero.controls();
 			if (lift) {
 				graphics.pose().pushMatrix();
-				graphics.pose().translate(0, -HeroHud.chatLift(graphics.guiWidth(), graphics.guiHeight()));
+				if (Minecraft.getInstance().gui.screen() == null) {
+					HeroHud.chatPlace(graphics);
+				} else {
+					graphics.pose().translate(0, -HeroHud.chatLift(graphics.guiWidth(), graphics.guiHeight()));
+				}
 			}
 			vanilla.extractRenderState(graphics, delta);
 			if (lift) {

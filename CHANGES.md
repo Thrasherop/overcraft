@@ -5,6 +5,40 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Her leg no longer kicks out at idle** (a bug the critiques saw three times: "a leg up to shoulder height" in the
+Suzu throw, "one leg sticks straight out sideways" at the Swift Step arrival, and once in a frozen reload frame). Not
+the throws: Overwatch's standing breath (AFDB, as exported) has two broken keys on the right thigh, each turned 180
+degrees for one frame, so every 3 seconds at idle the leg flung up for about 60 ms, whatever else was playing.
+Reproduced: 40 idle screenshots 0.08 s apart on the old build, frame 16 has the leg straight up beside her head
+(`br_before`). Fix: clips are mended at load, a rotation key turned over 90 degrees from both neighbours that agree
+with each other takes their average (`SkinnedModel.dropRotationSpikes`). After: 80 frames over two loops, no kick
+(`br_after`); the ult cast no longer kicks either.
+
+**The critique's second round** (`tools/reference/critique-2026-10-26-round2.md`: a fresh critique sub-agent's 27
+items on the new captures, measured against the same Overwatch frames).
+- HUD: the volley bar's segments are fat tiles again, as on Overwatch's frames (they had become thin slashes, #3); the
+  ult meter at rest is see-through, only its tick band darkened, no unfilled ticks (#10); the ready halo wider (#26);
+  weapon panels as tall as Overwatch's (lines 61-62 px apart), 16 px between them, mice raised, ammo text 16 px (#11,
+  #15); lines with a soft falloff; ability boxes, underlines and pips drawn as single smooth quads (they stepped in
+  1 px slices where the HUD slopes, #21).
+- Chat in hero mode is Overwatch's size and place: small text at the left above the health, its bottom near y 700
+  (#9); while typing it stays full size.
+- Low health: mottled red edges, deepest in the corners and about 150 px deep, red over the sky (#12).
+- Swift Step's first-person flash: teal only at the edges with 26 streaks rushing in, the centre clear, and only in
+  first person (it tinted the whole frame, also in third person, #5). She lands 0.9 m clear of the ally (#6). The
+  arrival's ring is 1.4 m (a 3.2 m ring read as a shield bubble, #16). Her own arrival's arcs fainter.
+- Ally markers: the name in blue caps under the pips (players and named mobs), an open "v", clear above the head;
+  allies' Minecraft name tags hidden in hero mode (#8).
+- Suzu's flower and the ofuda's ground flowers blended teal at 70% (they were emerald and opaque, #14, #25).
+- Hero select: the model larger, its legs running on behind the roster under a dark band, no hard edge (#13).
+- Kitsune Rush's fox (#1): it was there all along, but low, fast (20 m/s) and behind a bright glow where each gate rose.
+  Drawn 1.4 times its model's size (ours), with a cyan wake and glow; the gates' rising flash much fainter. Played: a
+  fox summoned standing (`foxs_sheet`), the rush from the front (`foxh_sheet`).
+- Not ours: the hooked idle talismans (#4) and the high-knee strafe (#7) are in Blizzard's own clips (the survey's
+  renders of A3A7 and A8F3 show the same).
+- Played (dev harness, 1080p): every HUD state (`hud5_*`), the select screen (`sel4`), Swift Step, low health and
+  allies (`r2_sheet`), chat (`hud5_rest`).
+
 **Swift Step's slash arcs** (HANDOFF's missing effects; the effects research: 7 arcs of the half-cylinder shell 10ADC
 with streak bands, size 3-3.7, 0.24-0.4 s, random rotation). A new effect shape, a curved band round part of a
 cylinder in any orientation, spinning about its axis and fading toward its ends, drawn with the game's band mask:

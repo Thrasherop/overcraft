@@ -207,6 +207,9 @@ public final class SkinnedModel {
 				float[] times = glb.floats(sampler.get("input").getAsInt());
 				float[] values = glb.floats(sampler.get("output").getAsInt());
 				boolean step = sampler.has("interpolation") && "STEP".equals(sampler.get("interpolation").getAsString());
+				if (kind == 'R') {
+					dropRotationSpikes(values);
+				}
 				channels.add(new Channel(target.get("node").getAsInt(), kind, times, values, step));
 				duration = Math.max(duration, times[times.length - 1]);
 			}
@@ -221,5 +224,47 @@ public final class SkinnedModel {
 			out[i] = i;
 		}
 		return out;
+	}
+
+	/**
+	 * Mends single broken keys in a rotation track (x, y, z, w per key): a key turned more than SPIKE_ANGLE from both
+	 * neighbours while they agree with each other takes their average. Overwatch's standing breath (AFDB, as exported)
+	 * has two such keys on the right thigh, 180 degrees out for one frame, which kicked her leg out sideways every
+	 * 3 seconds at idle (seen under casts, reloads and the Suzu throw). Real motion never turns that far in one frame.
+	 */
+	static int dropRotationSpikes(float[] q) {
+		int keys = q.length / 4;
+		int mended = 0;
+		for (int k = 1; k < keys - 1; k++) {
+			float toPrev = angle(q, k, k - 1);
+			float toNext = angle(q, k, k + 1);
+			if (toPrev > SPIKE_ANGLE && toNext > SPIKE_ANGLE && angle(q, k - 1, k + 1) < SPIKE_ANGLE / 4) {
+				float sign = dot(q, k - 1, k + 1) < 0 ? -1 : 1;
+				float len = 0;
+				for (int c = 0; c < 4; c++) {
+					q[k * 4 + c] = (q[(k - 1) * 4 + c] + sign * q[(k + 1) * 4 + c]) / 2;
+					len += q[k * 4 + c] * q[k * 4 + c];
+				}
+				len = (float) Math.sqrt(len);
+				for (int c = 0; c < 4; c++) {
+					q[k * 4 + c] /= len;
+				}
+				mended++;
+			}
+		}
+		return mended;
+	}
+
+	/** Above this (radians) between neighbouring keys a rotation key is taken as broken. */
+	private static final float SPIKE_ANGLE = (float) Math.toRadians(90);
+
+	private static float dot(float[] q, int a, int b) {
+		return q[a * 4] * q[b * 4] + q[a * 4 + 1] * q[b * 4 + 1] + q[a * 4 + 2] * q[b * 4 + 2] + q[a * 4 + 3] * q[b * 4 + 3];
+	}
+
+	/** The angle between two keys' rotations (either sign of a quaternion is the same rotation). */
+	private static float angle(float[] q, int a, int b) {
+		float d = Math.min(1, Math.abs(dot(q, a, b)));
+		return 2 * (float) Math.acos(d);
 	}
 }

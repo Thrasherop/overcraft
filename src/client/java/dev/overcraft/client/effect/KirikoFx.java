@@ -139,10 +139,10 @@ public final class KirikoFx {
 		if (glow != null) {
 			Fx.add(glow.at(at).life(range(0.08f, 0.4f)).size(size, size).alpha(0.55f).fade(0.15f, 0.6f));
 		}
-		Particle decal = gold ? Fx.soft("flower", p) : Fx.particle("flower", p);
+		Particle decal = Fx.soft("flower", p);
 		if (decal != null && normal.lengthSqr() > 0.5) {
 			Fx.add(decal.at(at.add(normal.scale(0.02))).normal(normal).life(0.73f).size(0.45f, 0.5f)
-				.spin(range(0, Mth.TWO_PI), 0).fade(0.05f, 0.6f));
+				.spin(range(0, Mth.TWO_PI), 0).alpha(0.7f).fade(0.05f, 0.9f));
 		}
 	}
 
@@ -217,7 +217,8 @@ public final class KirikoFx {
 		if (wave != null) {
 			Fx.add(wave.at(ground).normal(new Vec3(0, 1, 0)).life(0.25f).size(0.5f, 2 * r).easeOut().fade(0.02f, 0.5f));
 		}
-		Particle flower = Fx.particle("flower", Palette.TEAL);
+		// blended teal: added over grass it turned emerald (the second critique)
+		Particle flower = Fx.soft("flower", Palette.TEAL);
 		if (flower != null) {
 			// the flower mesh at size 2 (the survey): about 2 m across, opening as it fades
 			Fx.add(flower.at(ground.add(0, 0.02, 0)).normal(new Vec3(0, 1, 0)).life(0.5f).size(1.2f, 2.2f).easeOut()
@@ -254,9 +255,10 @@ public final class KirikoFx {
 					.easeOut().fade(0.05f, 0.6f));
 			}
 		}
+		// a small ring (it was 3.2 m across: read as a shield bubble, the second critique)
 		Particle burst = atCamera ? null : Fx.particle("ring_line", Palette.TEAL);
 		if (burst != null) {
-			Fx.add(burst.at(chest).life(0.3f).size(0.3f, 3.2f).easeOut().fade(0.05f, 0.6f));
+			Fx.add(burst.at(chest).life(0.3f).size(0.3f, 1.4f).easeOut().alpha(0.7f).fade(0.05f, 0.6f));
 		}
 		if (!atCamera) {
 			Fx.add(glow("glow_hot", Palette.TEAL, chest, 1.6f, 0.22f, 0.45f));
@@ -311,7 +313,7 @@ public final class KirikoFx {
 			float size = range(3, 3.7f) * 0.5f * (atCamera ? 1.6f : 1);
 			Fx.add(arc.at(chest).arc(turn, range(1.6f, 2.4f)).life(range(0.24f, 0.4f)).size(size * 0.7f, size).easeOut()
 				.aspect(0.12f).spin(range(0, Mth.TWO_PI), range(6, 10) * (Fx.RANDOM.nextBoolean() ? 1 : -1))
-				.alpha(atCamera ? 0.35f : 0.8f).fade(0.05f, 0.6f));
+				.alpha(atCamera ? 0.18f : 0.8f).fade(0.05f, 0.6f));
 		}
 	}
 
@@ -359,7 +361,8 @@ public final class KirikoFx {
 			Fx.add(gate.at(base).mesh(torii, side).size(width * 0.6f, width).easeOut().life(life).alpha(0.45f).fade(0.04f, 0.08f));
 			Particle glow = Fx.particle("glow", Palette.TEAL);
 			if (glow != null) {
-				Fx.add(glow.at(base.add(0, width * 0.35, 0)).life(0.6f).size(width * 0.6f, width * 1.2f).easeOut().alpha(0.5f).fade(0.1f, 0.7f));
+				// a faint flash as it rises (it was a bright orb at the path's head, hiding the fox: the second critique)
+				Fx.add(glow.at(base.add(0, width * 0.35, 0)).life(0.4f).size(width * 0.3f, width * 0.6f).easeOut().alpha(0.2f).fade(0.1f, 0.7f));
 			}
 		} else {
 			// without the mesh (no local pack model): its outline, two posts and two beams (ours)
@@ -443,6 +446,12 @@ public final class KirikoFx {
 					.aspect(0.04f).alpha(0.5f).fade(0.2f, 0.5f));
 			}
 		}
+	}
+
+	/** The fox's wake: a wide cyan ribbon behind it and a soft glow on it (ours, so the fast fox reads). */
+	public static void foxWake(int id, Vec3 at) {
+		Fx.trail(id, at, "ribbon", Palette.CYAN, 0.9f, 0.35f, 0.75f);
+		Fx.attach("fox_glow/" + id, at, () -> glow("glow", Palette.CYAN, at, 2.2f, 0.2f, 0.45f));
 	}
 
 	/** The fox sheds sakura petals as it runs (3E3D: 33 a second). */

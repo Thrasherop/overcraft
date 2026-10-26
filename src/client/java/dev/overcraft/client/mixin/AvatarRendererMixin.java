@@ -1,6 +1,9 @@
 package dev.overcraft.client.mixin;
 
+import dev.overcraft.client.ClientHero;
 import dev.overcraft.client.model.HeroModelRenderer;
+import dev.overcraft.hero.Allies;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Avatar;
@@ -16,5 +19,10 @@ public abstract class AvatarRendererMixin {
 		at = @At("TAIL"))
 	private void overcraft$heroModel(Avatar entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
 		HeroModelRenderer.extract(entity, state, partialTicks);
+		// in hero mode an ally's name is in their marker (HeroHud): no Minecraft name tag over it as well
+		Minecraft mc = Minecraft.getInstance();
+		if (state.nameTag != null && mc.player != null && ClientHero.controls() && Allies.isAlly(mc.player, entity)) {
+			state.nameTag = null;
+		}
 	}
 }

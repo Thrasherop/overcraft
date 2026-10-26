@@ -116,6 +116,8 @@ public final class HeroHud {
 	/** Villagers, golems and allays at full health show only this close. */
 	private static final double ALLY_NEAR = 8;
 	private static final int STREAKS = 14;
+	/** Swift Step's streaks rushing in from the edges (the critique: 20-30). */
+	private static final int STEP_STREAKS = 26;
 
 	private HeroHud() {
 	}
@@ -205,20 +207,23 @@ public final class HeroHud {
 			// glow strong red")
 			float low = 1 - health / LOW_HEALTH;
 			float pulse = 0.06f * (float) Math.sin(Util.getMillis() / 1000f * Mth.TWO_PI * 0.8f);
-			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xB0102A, 0.45f + 0.4f * low + pulse));
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0xC0141E, 0.55f + 0.4f * low + pulse));
 		}
+		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
+		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
 		float step = since(stepCastAt);
-		if (step < STEP_FLASH) {
+		if (firstPerson && step < STEP_FLASH) {
+			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)
 			float k = 1 - step / STEP_FLASH;
-			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x29E0CF, 0.9f * k));
+			image(g, HudShapes.LOW_HEALTH, 0, 0, w, h, alpha(0x29E0CF, 0.6f * k));
 			java.util.Random random = new java.util.Random(stepCastAt);
-			for (int i = 0; i < STREAKS; i++) {
+			for (int i = 0; i < STEP_STREAKS; i++) {
 				float angle = random.nextFloat() * Mth.TWO_PI;
 				float travel = Math.clamp(step / STEP_FLASH + random.nextFloat() * 0.2f, 0, 1);
-				streak(g, w, h, angle, 1.05f - 0.5f * travel, false, alpha(0x9AFFF4, 0.8f * k));
+				streak(g, w, h, angle, 1.05f - 0.45f * travel, false, alpha(0x9AFFF4, 0.75f * k));
 			}
 		}
-		if (s.rushed()) {
+		if (firstPerson && s.rushed()) {
 			float time = Util.getMillis() / 1000f;
 			float pulse = 0.5f + 0.08f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
 			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xA8F2FF, pulse));
@@ -287,12 +292,12 @@ public final class HeroHud {
 		for (int i = 0; i < pips; i++) {
 			float pipX = left + 2 + i * 26.6f;
 			float held = Math.clamp((now - i * 25) / 25f, 0, 1);
-			fill(g, pipX, 933, 24, 30, 0x40000000);
+			box(g, pipX, 933, 24, 30, 0x40000000);
 			if (held > 0) {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				fill(g, pipX, 933, 24 * shown, 30, WHITE);
+				box(g, pipX, 933, 24 * shown, 30, WHITE);
 			}
 		}
 
@@ -319,7 +324,7 @@ public final class HeroHud {
 		if (ready) {
 			// a white disc with the fox in a thick electric-blue ring (darker outside), a soft blue halo, and small
 			// white triangles at 3 and 9 o'clock pointing in
-			image(g, HudShapes.SOFT_DISC, cx - 70, cy - 70, 140, 140, 0xB32C40C5);
+			image(g, HudShapes.SOFT_DISC, cx - 80, cy - 80, 160, 160, 0xE62C40C5);
 			disc(g, cx, cy, 57, ULT_RING_OUTER);
 			disc(g, cx, cy, 55, 0xFF3355E7);
 			disc(g, cx, cy, 53, 0xFF36ACFF);
@@ -337,11 +342,13 @@ public final class HeroHud {
 				g.pose().popMatrix();
 			}
 		} else {
-			// a dark disc, a fine dark outer circle, a brownish inner one, the orange ticks and the charge
-			disc(g, cx, cy, 52, 0xBF000000);
+			// see-through, as Overwatch's (the second critique, measured: the middle barely darker than what's behind,
+			// the tick band about 40% darker): a fine dark outer circle, a brownish inner one, the orange ticks
+			disc(g, cx, cy, 37, 0x1F000000);
+			image(g, HudShapes.BAND_RING, cx - 47, cy - 47, 94, 94, 0x66000000);
 			image(g, HudShapes.RING_THIN, cx - 56, cy - 56, 112, 112, 0xFF4A4F4F);
 			image(g, HudShapes.RING_THIN, cx - 35, cy - 35, 70, 70, 0xB37A3A2A);
-			ticks(g, cx, cy, 37, 47, charge, ULT_TICK_DARK, ULT_TICK, ULT_TRACK);
+			ticks(g, cx, cy, 37, 47, charge, ULT_TICK_DARK, ULT_TICK, 0);
 			int percent = (int) Math.floor(100 * charge);
 			HudText.draw(g, Face.NUMBERS, String.valueOf(percent), cx, cy + 18, 36, WHITE, Align.CENTER);
 		}
@@ -403,22 +410,24 @@ public final class HeroHud {
 			float y = base + 3;
 			float h = 66;
 			if (!ready) {
-				gradient(g, x, y, size, h, BOX_CAST_TOP, BOX_CAST_BOTTOM);
+				box(g, x, y, size, h, BOX_CAST_BOTTOM);
+				boxFade(g, x, y, size, h, BOX_CAST_TOP);
 			} else if (since(readyAt) < FLASH_TIME) {
-				fill(g, x - 2, y - 2, size + 4, h + 4, FLASH_BORDER);
-				fill(g, x, y, size, h, FLASH);
+				box(g, x - 2, y - 2, size + 4, h + 4, FLASH_BORDER);
+				box(g, x, y, size, h, FLASH);
 			} else {
-				gradient(g, x, y, size, h, BOX_READY_TOP, BOX_READY_BOTTOM);
+				box(g, x, y, size, h, BOX_READY_BOTTOM);
+				boxFade(g, x, y, size, h, BOX_READY_TOP);
 			}
-			fill(g, x, y + h + 3, size, 3, 0xE6FFFFFF);
+			image(g, HudShapes.LINE, x, y + h + 4.5f - 4.5f, size, 9, 0xE6FFFFFF);
 			iconOrName(g, icon, ability, x, y + 1, size, ICON);
 		} else {
 			float y = base + 11;
 			float h = 60;
-			fill(g, x, y, size, h, BOX_COOLDOWN);
+			box(g, x, y, size, h, BOX_COOLDOWN);
 			float done = Math.clamp(1 - cooldown / total, 0, 1);
 			float fillH = h * done;
-			fill(g, x, y + h - fillH, size, fillH, COOLDOWN_FILL);
+			box(g, x, y + h - fillH, size, fillH, COOLDOWN_FILL);
 			fill(g, x, y + h - fillH - 1.5f, size, 1.5f, COOLDOWN_EDGE);
 			iconOrName(g, icon, ability, x, y - 2, size, 0xB3101010);
 			float splashW = 46;
@@ -443,10 +452,11 @@ public final class HeroHud {
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
 		// ofuda (primary fire), then kunai (secondary): Overwatch's order. The server's weapon slots are the other way
 		// round (its primary is the kunai), hence the crossed ammo fields.
-		weapon(g, hero, w, "healing_ofuda", w - 486, 919, 171, 74, 42, 42, w - 342, s.secondaryAmmo(),
-			KirikoStats.OFUDA_AMMO, s.secondaryReload(), HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1018);
-		weapon(g, hero, w, "kunai", w - 307, 932, 251, 78, 109, 36, w - 84, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
-			s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1035);
+		// line centres 61-62 px apart, 16 px between the panels, the mice under them (the second critique, measured)
+		weapon(g, hero, w, "healing_ofuda", w - 492, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+			KirikoStats.OFUDA_AMMO, s.secondaryReload(), HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+		weapon(g, hero, w, "kunai", w - 307, 938.5f, 251, 65, 109, 36, w - 84, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
+			s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 	}
 
 	/**
@@ -474,11 +484,11 @@ public final class HeroHud {
 		int color = reload >= 0 ? TEXT_DIM : WHITE;
 		String current = String.valueOf(ammo);
 		String max = String.valueOf(clip);
-		float cap = 18;
+		float cap = 16;
 		float maxW = HudText.width(Face.BODY, max, cap);
 		HudText.draw(g, Face.BODY, max, textRight, mid + cap / 2, cap, color, Align.RIGHT);
-		fill(g, textRight - maxW - 7, mid - 12, 2, 24, DIVIDER);
-		HudText.draw(g, Face.BODY, current, textRight - maxW - 13, mid + cap / 2, cap, color, Align.RIGHT);
+		fill(g, textRight - maxW - 6, mid - 10, 1.5f, 20, DIVIDER);
+		HudText.draw(g, Face.BODY, current, textRight - maxW - 11, mid + cap / 2, cap, color, Align.RIGHT);
 		g.pose().popMatrix();
 		mouse(g, fire, mouseX, mouseY);
 	}
@@ -620,23 +630,30 @@ public final class HeroHud {
 			if (distance > ALLY_RANGE || !always && ally.getHealth() >= ally.getMaxHealth() && distance > ALLY_NEAR) {
 				continue;
 			}
-			// over a player's name tag, just over anyone else's head
-			Vec3 head = at.add(0, ally.getBbHeight() + (ally instanceof Player ? 0.75 : 0.3), 0);
+			// clear above the head (hero mode hides allies' Minecraft name tags: the name is in the marker)
+			Vec3 head = at.add(0, ally.getBbHeight() + 0.35, 0);
 			float[] screen = project(head, w, h);
 			if (screen == null) {
 				continue;
 			}
 			float size = (float) Math.clamp(1.15 - distance / ALLY_RANGE * 0.5, 0.65, 1);
 			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
-			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()));
+			String name = ally instanceof Player || ally.hasCustomName() ? ally.getName().getString().toUpperCase(Locale.ROOT) : null;
+			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name);
 		}
 	}
 
-	/** One ally's marker centred on (x, y): pips over a small chevron. */
-	private static void allyMarker(GuiGraphicsExtractor g, float x, float y, float size, float alpha, float health, float max) {
+	/**
+	 * One ally's marker, its bottom at (x, y): from the top, the pips, the name in blue caps (players and named mobs), a
+	 * small open "v" (Overwatch's, the second critique).
+	 */
+	private static void allyMarker(GuiGraphicsExtractor g, float x, float y, float size, float alpha, float health, float max,
+								   @Nullable String name) {
 		g.pose().pushMatrix();
 		g.pose().translate(x, y);
 		g.pose().scale(size, size);
+		// everything above the bottom: chevron (10), name (14) if any, then the pips
+		g.pose().translate(0, name == null ? -14 : -30);
 		// one pip per 25 health, at most 20 (a golem's 1250 would run off the screen: then each pip holds more)
 		int pips = Math.clamp((int) Math.ceil(max / 25), 1, 20);
 		float per = max / pips;
@@ -651,12 +668,12 @@ public final class HeroHud {
 				fill(g, px, -10, pipW * (held > 0.9f ? 1 : held), 10, alpha(0xFFFFFF, alpha));
 			}
 		}
-		// the chevron under the pips, pointing down at the ally
-		g.pose().pushMatrix();
-		g.pose().translate(0, 8);
-		g.pose().rotate((float) Math.toRadians(90));
-		image(g, HudShapes.TRIANGLE, -5, -7, 10, 14, alpha(0x29A8E0, alpha));
-		g.pose().popMatrix();
+		float below = 4;
+		if (name != null) {
+			HudText.draw(g, Face.SMALL, name, 0, below + 12, 11, alpha(0x5CC6DC, alpha), Align.CENTER);
+			below += 16;
+		}
+		image(g, HudShapes.CHEVRON, -6, below, 12, 10, alpha(0x29A8E0, alpha));
 		g.pose().popMatrix();
 	}
 
@@ -700,6 +717,19 @@ public final class HeroHud {
 	public static float chatLift(int guiWidth, int guiHeight) {
 		float scale = scale(guiWidth, guiHeight);
 		return Math.max(0, (REF_H - 870) * scale - 40);
+	}
+
+	/**
+	 * Hero mode's chat, as Overwatch's (the second critique: text about 18 px tall, at the left, its bottom near y
+	 * 700): Minecraft's chat scaled about its bottom-left corner (40 GUI units up from the screen's bottom).
+	 */
+	public static void chatPlace(GuiGraphicsExtractor g) {
+		float scale = scale(g.guiWidth(), g.guiHeight());
+		// a line is 9 GUI units: make it 18 reference pixels, never larger than Minecraft's own
+		float k = Math.min(1, 18 * scale / 9);
+		g.pose().translate(0, (REF_H - 380) * scale + (g.guiHeight() - REF_H * scale));
+		g.pose().scale(k, k);
+		g.pose().translate(0, -(g.guiHeight() - 40));
 	}
 
 	// ---- pieces ----
@@ -773,6 +803,25 @@ public final class HeroHud {
 		g.pose().translate(x, y);
 		g.pose().mul(new Matrix3x2f(1, slope, 0, 1, 0, 0));
 		g.pose().translate(-x, -y);
+	}
+
+	/**
+	 * A box with smooth edges where the HUD's curve slopes it: a plain fill steps a pixel at a time along a sloped
+	 * edge (the second critique saw the underline in three pieces). The square mask's clear margin sits just outside.
+	 */
+	private static void box(GuiGraphicsExtractor g, float x, float y, float w, float h, int color) {
+		float k = (float) HudShapes.SQUARE_SIZE / (HudShapes.SQUARE_SIZE - 2 * HudShapes.SQUARE_MARGIN);
+		float mx = w * (k - 1) / 2;
+		float my = h * (k - 1) / 2;
+		image(g, HudShapes.SQUARE, x - mx, y - my, w * k, h * k, color);
+	}
+
+	/** box() in a colour fading out downward: over a box, a vertical gradient. */
+	private static void boxFade(GuiGraphicsExtractor g, float x, float y, float w, float h, int color) {
+		float k = (float) HudShapes.SQUARE_SIZE / (HudShapes.SQUARE_SIZE - 2 * HudShapes.SQUARE_MARGIN);
+		float mx = w * (k - 1) / 2;
+		float my = h * (k - 1) / 2;
+		image(g, HudShapes.SQUARE_FADE, x - mx, y - my, w * k, h * k, color);
 	}
 
 	private static void disc(GuiGraphicsExtractor g, float cx, float cy, float r, int color) {
