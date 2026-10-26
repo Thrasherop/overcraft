@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Played: the hero's life cycle** (CLAUDE.md's general play, the parts not covered above; `lf1_sheet`, `lf1_sheet2`).
+H 80 blocks from any bed: "Go back to your bed to change heroes", no screen. H beside a bed set as spawn: the select
+screen ("near your bed: pick a new hero"), Enter keeps Kiriko in hero mode. Esc: the Overwatch menu (sub-role shown);
+Save and Leave goes to the title screen; reopening the world shows the select screen with Kiriko already picked, Enter
+puts her back in hero mode with her HUD.
+
 **Allies feel Kitsune Rush on their own screen** (round 2's #17, in part: the ally "sees nothing"). The rush's
 in-path mist and streaks are their own HUD element, shown to any player the rush is speeding up (the server's speed
 lines on an ally name them), not only to heroes. Found on the way: a player without a hero had no HUD masks made, so the
