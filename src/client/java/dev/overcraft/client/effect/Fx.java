@@ -6,6 +6,8 @@ import dev.overcraft.client.effect.EffectArt.Palette;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -393,6 +395,14 @@ public final class Fx {
 			TRAILS.put(id, trail);
 		}
 		float now = now();
+		// no point inside a block: a projectile's last position is in what it hit, and the ribbon's end there was cut
+		// off by the surface in straight lines (the fifth critique)
+		Level level = Minecraft.getInstance().level;
+		BlockPos block = BlockPos.containing(at.x, at.y, at.z);
+		if (level != null && !level.getBlockState(block).getCollisionShape(level, block).isEmpty()) {
+			trail.lastFed = now;
+			return;
+		}
 		double[] last = trail.points.peekLast();
 		if (last == null || Math.abs(last[0] - at.x) + Math.abs(last[1] - at.y) + Math.abs(last[2] - at.z) > 0.01) {
 			trail.points.addLast(new double[] {at.x, at.y, at.z, now});

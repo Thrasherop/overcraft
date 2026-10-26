@@ -47,7 +47,8 @@ marked done that still fail in part, and item 8 is what is left of R4 #7.
 - **Not changed:** 9 (the seal) and R4 #4 (the throw): Blizzard's own clips; needs frame-matched footage.
 - **Done later:** 10 (52 px face crops, the inner edge, no name shadow: `feed3`; the kunai glyph kept), 12
   ("ELIMINATED <name>" for 1.6 s: `elim2`).
-- **Open:** 4 (ribbon ends in the ground).
+- **Done later:** 4 (no trail points inside blocks: `rib3z`).
+- **Open:** none, besides "Not changed" above.
 
 ## Confirmed fixed (seen in these captures)
 - **Terrain-hit glow (R4 #1):** the impact glows in `fx9_ofuda_d` and `hud7_spent` are soft, with no straight edge.

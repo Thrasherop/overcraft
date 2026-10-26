@@ -5,6 +5,10 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Ribbons no longer end in the ground in straight lines** (round 5 #4): a projectile's last position is inside what it
+hit, and the ribbon's end there was cut off by the surface. Trails skip points inside solid blocks. Played: unaimed
+ofuda thrown at the grass, frozen at three moments (`rib_sheet`, `rib3z`: soft impacts, no edges).
+
 **Swift Step lands beside the ally** (owner: "Swift step should put you beside, yes"; the wiki: "at their side"). She
 landed between the ally and where she came from, facing them, so they filled her screen. Now she lands shoulder to
 shoulder: at the ally's side across the line she came along, her right first, then her left, then (no room either
