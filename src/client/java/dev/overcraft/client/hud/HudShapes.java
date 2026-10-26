@@ -55,6 +55,8 @@ public final class HudShapes {
 	public static final int SQUARE_MARGIN = 2;
 	/** A band round a disc (inner radius 37/47 of the outer): the ult meter's tick band. */
 	public static final Identifier BAND_RING = Overcraft.id("hud/band_ring");
+	/** Solid white: models drawn a second time as pure light (Suzu's cleanse glow). */
+	public static final Identifier WHITE = Overcraft.id("hud/white");
 	/** An open "v" (two strokes): the ally marker's chevron. */
 	public static final Identifier CHEVRON = Overcraft.id("hud/chevron");
 	/** Low health's red edges: deepest in the corners, mottled (ours, after Overwatch's smoky edges). */
@@ -121,6 +123,7 @@ public final class HudShapes {
 		register(BAND_RING, SIZE, SIZE, (x, y) -> Math.min(circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 1),
 			1 - circle(x, y, SIZE / 2f, SIZE / 2f, (SIZE / 2f - 1) * 37 / 47)));
 		register(LOW_HEALTH, SIZE, SIZE, HudShapes::lowHealth);
+		register(WHITE, 16, 16, (x, y) -> 1);
 		register(CHEVRON, 48, 40, (x, y) -> Math.max(stroke(x, y, 6, 8, 24, 32, 3.5f), stroke(x, y, 24, 32, 42, 8, 3.5f)));
 		register(LINE_GLOW, 8, LINE_H, (x, y) -> {
 			float d = (y - LINE_H / 2f) / (LINE_H / 2f);

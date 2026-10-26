@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Suzu's cleanse glows white** (round 2's #18: the overlay alone only paled her, "a ghost"). Hero models are drawn a
+second time as pure white-cyan light while cleansed, fading over 0.65 s (`HeroModelRenderer.submitGlow`); mobs keep
+Minecraft's white overlay. Played: Suzu at her feet from the front (`cg_sheet`: a solid glowing silhouette, then
+fading) and in first person (`cg_1pz`: her arm glows). The paleness the critique saw a moment later is the burst's
+dome lighting the whole view (the sky too), gone within 0.4 s.
+
 **The ofuda read as paper in flight** (both critiques' #2). The projectile is a flat sheet, and the renderer laid it
 along its flight with its face level: edge-on to the thrower, so only the trail and glow showed. Now it turns its face
 to whoever watches about its line of flight, drawn twice its model's size (ours, about 0.36 m), with a thin ribbon

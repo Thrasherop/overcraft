@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.client.ClientHero;
+import dev.overcraft.client.hud.HudShapes;
+import dev.overcraft.client.effect.FxRender;
 import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.hero.HeroManager;
 import net.minecraft.client.Minecraft;
@@ -40,6 +42,8 @@ public final class HeroModelRenderer {
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
 	/** How white an entity flashes (Protection Suzu's cleanse: client/effect/Cleansed). */
+	/** Packed light for full brightness (block and sky light 15). */
+	private static final int FULL_BRIGHT = 0xF000F0;
 	public static final RenderStateDataKey<Float> WHITE = RenderStateDataKey.create(() -> "overcraft:white");
 	/** The hero each entity was last drawn as (by entity id), while it's in hero mode or dying. */
 	private static final Map<Integer, Hero> LAST_HERO = new HashMap<>();
@@ -115,6 +119,7 @@ public final class HeroModelRenderer {
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden());
+		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state));
 		poseStack.popPose();
 		return true;
 	}
@@ -152,6 +157,7 @@ public final class HeroModelRenderer {
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white, false) : OverlayTexture.NO_OVERLAY;
 		submitModel(loaded, skin, poseStack, collector, light, overlay);
+		submitGlow(loaded, skin, poseStack, collector, Set.of(), white);
 		poseStack.popPose();
 		return true;
 	}
@@ -199,6 +205,30 @@ public final class HeroModelRenderer {
 	}
 
 	/**
+	 * The model again as pure added light, white-cyan at this strength (0 to 1): Protection Suzu's cleanse, which in
+	 * Overwatch turns them a glowing white (the second critique: the overlay alone only paled her, a ghost).
+	 */
+	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float strength) {
+		if (strength <= 0) {
+			return;
+		}
+		HudShapes.ensure();
+		int color = Math.clamp(Math.round(strength * 0.8f * 255), 0, 255) << 24 | 0xE6FFFF;
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			if (piece.image() < 0 || loaded.textures()[piece.image()] == null) {
+				continue;
+			}
+			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+				continue;
+			}
+			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color));
+		}
+	}
+
+	/**
 	 * Held props: Overwatch models carry their weapons (Kiriko's three kunai, ofuda, Suzu) as small pieces on their own
 	 * bones, parked at the model's origin (between the feet) unless an animation puts them in a hand. One piece can hold
 	 * several (the three kunai), so a prop piece's triangles still at the origin after skinning aren't drawn.
@@ -225,6 +255,11 @@ public final class HeroModelRenderer {
 	/** Skins the piece's vertices and writes its triangles (as quads with the last corner doubled). */
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
 							 boolean prop) {
+		emit(piece, skin, pose, buffer, light, overlay, prop, -1);
+	}
+
+	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
+							 boolean prop, int color) {
 		int n = piece.vertexCount();
 		float[] p = new float[n * 3];
 		float[] nm = new float[n * 3];
@@ -267,10 +302,10 @@ public final class HeroModelRenderer {
 			if (prop && near(p, idx[t], parked) && near(p, idx[t + 1], parked) && near(p, idx[t + 2], parked)) {
 				continue;
 			}
-			vertex(buffer, pose, p, nm, uv, idx[t], light, overlay);
-			vertex(buffer, pose, p, nm, uv, idx[t + 1], light, overlay);
-			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay);
-			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay);
+			vertex(buffer, pose, p, nm, uv, idx[t], light, overlay, color);
+			vertex(buffer, pose, p, nm, uv, idx[t + 1], light, overlay, color);
+			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay, color);
+			vertex(buffer, pose, p, nm, uv, idx[t + 2], light, overlay, color);
 		}
 	}
 
@@ -278,9 +313,10 @@ public final class HeroModelRenderer {
 		return p[i * 3] * p[i * 3] + p[i * 3 + 1] * p[i * 3 + 1] + p[i * 3 + 2] * p[i * 3 + 2] < radiusSq;
 	}
 
-	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float[] p, float[] n, float[] uv, int i, int light, int overlay) {
+	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float[] p, float[] n, float[] uv, int i, int light, int overlay,
+							   int color) {
 		buffer.addVertex(pose, p[i * 3], p[i * 3 + 1], p[i * 3 + 2])
-			.setColor(-1)
+			.setColor(color)
 			.setUv(uv[i * 2], uv[i * 2 + 1])
 			.setOverlay(overlay)
 			.setLight(light)
