@@ -5,6 +5,32 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Thrown ofuda are glowing talismans, gold or blue** (owner, this morning: "Two talismans do get thrown with each
+burst. But they arent standing straight up like that. There is a different model; a glowing gold type thing for thrown
+ofuda, or blue when it isnt tracking"). The effects survey agrees: in flight an ofuda is effect 2F93 (no target) or 7E2D
+(locked on), a glowing talisman silhouette fluttering through four frames (mask 3A1EE, now in the pack as
+`talisman_flight`), with a ribbon and a glow. Each ofuda draws that silhouette along its flight, head leading, added
+teal or blended gold (and the enemy red); no model. Played (`pj2_sheet`): two gold talismans curving onto a villager,
+two blue ones unaimed.
+
+**Projectile models never drew** (found chasing round 5's "no paper on the ofuda"): the hero renderer hides props
+parked within 0.3 m of a model's origin, and a projectile's model is small and centred there, so every triangle was
+skipped: the kunai and the Suzu bell flew as glows alone. Projectile models now skip that rule (the bell shows in
+flight, `pj2_suzu`). On the way: a card billboard for the ofuda's paper (first two tries in `pj1_sheet`, the paper pair
+from her hand standing upright) was wrong, per the owner, and is gone.
+
+**More of round 5:**
+- Teal read mint over grass (hues 135-162 degrees against Kiriko's 176): the faint ends of the teal and cyan ramps move
+  toward blue, the petals' tint too; the rush's path tiles no longer clip to flat cyan (`fx13_sheet`).
+- The fox was a small dim figure in a 2 m mint glow ball with its wake seen end-on as a white ellipse: its glow is
+  1.1 m and fainter, its wake low on the ground, its body brighter (`fx13_fp_a`: the fox reads).
+- The first gate framed the caster's first-person view like a glass doorframe: gates are gone within 2 m of the camera
+  and full from 6 m (`fx13_fp_a/b`).
+- The ofuda ribbon starts behind the projectile, not on it.
+- Not changed: the Swift Step seal and the kunai throw's hand (Blizzard's own first-person clips; the differences
+  are in which moment was captured, and need frame-matched Overwatch footage), the kill feed portraits and an
+  "ELIMINATED" caption (next).
+
 **An enemy Kiriko's effects are red** (HANDOFF's "enemy-red view", Overwatch's rule: you see an enemy's effects in the
 enemy colour). Only with scoreboard teams (players are allies otherwise). The server marks each effect for each player
 who gets it (`EffectPayload.enemy`: the hero who made it is on another team); flights (ofuda, kunai, Suzu, the fox and

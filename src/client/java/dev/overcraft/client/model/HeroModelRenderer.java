@@ -212,12 +212,22 @@ public final class HeroModelRenderer {
 	/** ... with the props on these joints hidden. */
 	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		int light, int overlay, Set<Integer> hidden, boolean cull) {
+		submitModel(loaded, skin, poseStack, collector, light, overlay, hidden, cull, true);
+	}
+
+	/**
+	 * ... and, with {@code props} false, no hiding of stowed props: a projectile's model is small and centred on its
+	 * origin, so as a hero's prop every triangle counted as parked and none was drawn (the fifth critique: no paper on
+	 * the ofuda; no kunai or Suzu model either).
+	 */
+	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null) {
 				continue;
 			}
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
 				continue;
 			}

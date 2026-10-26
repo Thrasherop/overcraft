@@ -79,6 +79,8 @@ public final class Fx {
 		int rgb = 0xFFFFFF;
 		/** Flipbook frames per second (0: frames spread over the life). */
 		float fps;
+		/** The flipbook loops (at fps, on the effects' clock) instead of stopping on its last frame. */
+		boolean loop;
 		boolean removed;
 		/** Meant to be seen up close (a first-person hand's puff): not faded near the camera. */
 		boolean near;
@@ -207,6 +209,14 @@ public final class Fx {
 			return this;
 		}
 
+		/** Plays its frames round and round at this rate. */
+		public Particle loop(float framesPerSecond) {
+			fps = framesPerSecond;
+			loop = true;
+			twinklePhase = RANDOM.nextFloat();
+			return this;
+		}
+
 		/** Sits on a surface with this normal: lifted off it just enough that no part of it sinks in. */
 		public Particle lift(Vec3 normal) {
 			Vec3 n = normal.lengthSqr() < 1.0E-6 ? new Vec3(0, 1, 0) : normal.normalize();
@@ -250,6 +260,9 @@ public final class Fx {
 			if (frames.length == 1) {
 				return frames[0];
 			}
+			if (loop) {
+				return frames[Math.floorMod((int) (now() * fps + twinklePhase * frames.length), frames.length)];
+			}
 			int i = fps > 0 ? (int) (age * fps) : (int) (age / life * frames.length);
 			return frames[Math.clamp(i, 0, frames.length - 1)];
 		}
@@ -290,10 +303,11 @@ public final class Fx {
 	private static final float NEAR_FADE_PER_SIZE = 1.2f;
 	/**
 	 * Meshes (the torii gates) are gone within MESH_NEAR of the camera and fade in over the next MESH_FADE: they're big,
-	 * and a post a metre away filled a quarter of the screen with cyan (the fourth critique asked for 1.5 m to 4 m).
+	 * and a post a metre away filled a quarter of the screen with cyan (the fourth critique asked for 1.5 m to 4 m); at
+	 * that, the first gate 2.6 m ahead of the caster framed her whole view like a glass doorframe (the fifth).
 	 */
-	private static final float MESH_NEAR = 1.5f;
-	private static final float MESH_FADE = 2.5f;
+	private static final float MESH_NEAR = 2;
+	private static final float MESH_FADE = 4;
 	/** How much of a glow's half size shows (its mask is dark toward the corners): what a lifted glow must clear. */
 	private static final float LIFT_RADIUS = 0.85f;
 	/** Meshes fade in over this height above their base (metres: ours). */
@@ -386,6 +400,13 @@ public final class Fx {
 		trail.lastFed = now;
 	}
 
+	/** The newest point of entity id's trail, or null without one. */
+	public static @Nullable Vec3 trailHead(int id) {
+		Trail trail = TRAILS.get(id);
+		double[] last = trail == null ? null : trail.points.peekLast();
+		return last == null ? null : new Vec3(last[0], last[1], last[2]);
+	}
+
 	/** How far at is from the newest point of entity id's trail (0 without one): whether it's still moving. */
 	public static double trailMoved(int id, Vec3 at) {
 		Trail trail = TRAILS.get(id);
@@ -398,18 +419,19 @@ public final class Fx {
 	 * A particle that follows something (a glow on a projectile): made once, then moved here each frame and kept
 	 * lit; once no longer fed it fades out over the rest of its life.
 	 */
-	public static void attach(String key, Vec3 at, java.util.function.Supplier<@Nullable Particle> make) {
+	public static @Nullable Particle attach(String key, Vec3 at, java.util.function.Supplier<@Nullable Particle> make) {
 		Particle p = ATTACHED.get(key);
 		if (p == null || p.removed) {
 			p = make.get();
 			if (p == null) {
-				return;
+				return null;
 			}
 			ATTACHED.put(key, p);
 			add(p);
 		}
 		p.at(at);
 		p.age = Math.min(p.age, p.life * (1 - p.fadeOut));
+		return p;
 	}
 
 	/** Seconds since this entity's effects last asked (0 the first time): for emitters with a rate per second. */

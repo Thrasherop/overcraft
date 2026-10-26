@@ -32,9 +32,9 @@ import java.util.List;
 public final class KirikoFx {
 	/**
 	 * Petals are tinted toward Kiriko's teal (the survey: "tinted teal-white"): the mask is solid white, and added
-	 * white they read as snowballs.
+	 * white they read as snowballs. A blue-leaning teal: added over grass, a greener one read as mint (the fifth critique).
 	 */
-	private static final int PETAL_TINT = 0x6EF0DA;
+	private static final int PETAL_TINT = 0x5ADCF0;
 	/** The petals as an enemy's: pale red (ours, after the enemy palette). */
 	private static final int ENEMY_PETAL_TINT = 0xF08A82;
 	/** Whether the effect being made is an enemy hero's (Overwatch draws an enemy's effects in red). */
@@ -123,7 +123,12 @@ public final class KirikoFx {
 
 	// ---- Healing Ofuda ----
 
-	/** In flight: the ribbon behind it and a soft glow on it, teal (gold while homing on an ally). */
+	/**
+	 * In flight (effects 2F93 / 7E2D): the talisman as Overwatch draws it, a glowing silhouette fluttering through its
+	 * four frames (mask 3A1EE), its bright head leading along the flight; the ribbon behind it and a soft glow; teal,
+	 * or gold while homing on an ally. (Not the paper model from her hand: the owner, 2026-10-26: "There is a different
+	 * model; a glowing gold type thing for thrown ofuda, or blue when it isnt tracking".)
+	 */
 	public static void ofudaFlight(int id, Vec3 at, boolean homing, boolean enemyOwner) {
 		enemy = enemyOwner;
 		try {
@@ -134,13 +139,29 @@ public final class KirikoFx {
 	}
 
 	private static void ofudaFlight(int id, Vec3 at, boolean homing) {
+		// which way it's flying: from its ribbon's newest point (before this frame's is added)
+		Vec3 last = Fx.trailHead(id);
+		Vec3 heading = last == null || last.distanceToSqr(at) < 1.0E-6 ? null : at.subtract(last).normalize();
+		Particle talisman = Fx.attach("ofuda_talisman/" + id, at, () -> {
+			// 2F93/7E2D: size 0.8 on the 1.5 x 1.3 sheet; the silhouette with its fading tail about 0.75 m (ours, from it)
+			Particle t = homing ? Fx.soft("talisman_flight#4", p(Palette.GOLD)) : Fx.particle("talisman_flight#4", p(Palette.TEAL));
+			return t == null ? null : t.loop(8).life(0.2f).size(0.75f, 0.75f)
+				.alpha(homing ? 0.95f : 0.9f).fade(0.1f, 0.5f);
+		});
+		if (talisman != null && heading != null) {
+			// the head at the ofuda, the tail trailing back
+			talisman.axis(heading);
+			talisman.at(at.subtract(heading.scale(0.3)));
+		}
 		// a thin ribbon and a small glow, so the paper itself reads (the second critique: comets in big halos, no
 		// paper). Ribbon width and length aren't in the game data: ours. Homing, the gold is blended rather than added:
 		// added over grass it turned lime (the critique)
 		if (homing) {
 			// blended gold strong enough to stay gold over grass (at 40% it mixed to khaki, the third critique), in a gold
 			// that stays gold when blended (EffectArt's soft ramps: the game ramp's top read as cream, the fourth)
-			Fx.trail(id, at, "ribbon", p(Palette.GOLD), 0.07f, 0.08f, 0.9f, true);
+			// the ribbon starts a little behind the paper: from the paper itself, its head covered the card in solid gold
+			// (the fifth critique: no paper showed)
+			Fx.trail(id, behindInFlight(id, at, PAPER_CLEAR), "ribbon", p(Palette.GOLD), 0.07f, 0.08f, 0.9f, true);
 			// the glow just behind the paper, as seen, so the talisman shows in front of it (it hid the card)
 			Vec3 behind = behindFromCamera(at, 0.12);
 			Fx.attach("ofuda_glow/" + id, behind, () -> {
@@ -149,9 +170,22 @@ public final class KirikoFx {
 			});
 		} else {
 			// faint, so the white paper reads rather than a cyan core (the third critique)
-			Fx.trail(id, at, "ribbon", p(Palette.TEAL), 0.06f, 0.08f, 0.35f);
+			Fx.trail(id, behindInFlight(id, at, PAPER_CLEAR), "ribbon", p(Palette.TEAL), 0.06f, 0.08f, 0.35f);
 			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", p(Palette.TEAL), at, 0.22f, 0.15f, 0.12f));
 		}
+	}
+
+	/** How far behind the ofuda's paper its ribbon starts (metres: about half the card's length, ours). */
+	private static final double PAPER_CLEAR = 0.12;
+
+	/** A point this far behind at along its flight (back toward its trail's newest point). */
+	private static Vec3 behindInFlight(int id, Vec3 at, double distance) {
+		Vec3 last = Fx.trailHead(id);
+		if (last == null) {
+			return at;
+		}
+		Vec3 back = last.subtract(at);
+		return back.lengthSqr() < 1.0E-6 ? last : at.add(back.normalize().scale(distance));
 	}
 
 	/** A point this far beyond at, seen from the camera. */
@@ -536,8 +570,9 @@ public final class KirikoFx {
 			float width = range(0.56f, 1.12f);
 			Vec3 at = ground.add(side.scale(range(-4, 4))).add(ahead.scale(range(-0.6f, 0.6f))).add(0, 0.03, 0);
 			if (talisman) {
+				// at 0.85 they clipped to flat cyan over grass (the fifth critique)
 				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 1.1f, width * 1.1f).aspect(1 / 3f)
-					.spin(across + range(-0.35f, 0.35f), 0).alpha(0.85f).fade(0.03f, 0.06f));
+					.spin(across + range(-0.35f, 0.35f), 0).alpha(0.6f).fade(0.03f, 0.06f));
 			} else {
 				Fx.add(tile.at(at).normal(new Vec3(0, 1, 0)).life(life).size(width * 0.52f, width * 0.52f).aspect(1 / 0.52f)
 					.spin(across + range(-0.25f, 0.25f), 0).alpha(0.75f).fade(0.03f, 0.06f));
@@ -566,7 +601,11 @@ public final class KirikoFx {
 		}
 	}
 
-	/** The fox's wake: a wide cyan ribbon behind it and a soft glow on it (ours, so the fast fox reads). */
+	/**
+	 * The fox's wake: a cyan ribbon low along the ground behind it and a small soft glow on it (ours, so the fast fox
+	 * reads). At its back it read as a flat white ellipse over a 2 m mint glow ball, the fox small inside it (the fifth
+	 * critique: the fox itself should be the bright thing).
+	 */
 	public static void foxWake(int id, Vec3 at, boolean enemyOwner) {
 		enemy = enemyOwner;
 		try {
@@ -577,8 +616,10 @@ public final class KirikoFx {
 	}
 
 	private static void foxWake(int id, Vec3 at) {
-		Fx.trail(id, at, "ribbon", p(Palette.CYAN), 0.9f, 0.35f, 0.75f);
-		Fx.attach("fox_glow/" + id, at, () -> glow("glow", p(Palette.CYAN), at, 2.2f, 0.2f, 0.45f));
+		Fx.trail(id, at, "ribbon", p(Palette.CYAN), 0.45f, 0.35f, 0.5f);
+		// the glow on its body, above the wake
+		Vec3 body = at.add(0, 0.7, 0);
+		Fx.attach("fox_glow/" + id, body, () -> glow("glow", p(Palette.CYAN), body, 1.1f, 0.2f, 0.25f));
 	}
 
 	/** The fox sheds sakura petals as it runs (3E3D: 33 a second). */

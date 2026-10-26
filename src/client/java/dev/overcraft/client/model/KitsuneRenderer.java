@@ -68,7 +68,8 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 		// not while it's at the camera: it starts inside Kiriko, and its glow there washed her whole view cyan
 		Vec3 eye = Minecraft.getInstance().gameRenderer.mainCamera().position();
 		if (at.add(0, 0.6 * SCALE, 0).distanceTo(eye) > NEAR_START + NEAR_FADE) {
-			KirikoFx.foxWake(entity.getId(), at.add(0, 0.6 * SCALE, 0), state.enemy);
+			// the wake low along the ground, the glow on its body
+			KirikoFx.foxWake(entity.getId(), at.add(0, 0.15, 0), state.enemy);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 				+ Math.pow(state.z - camera.pos.z, 2));
 			float near = (float) Math.clamp((distance - NEAR_START) / NEAR_FADE, 0, 1);
 			if (near > 0) {
-				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.6f * near, 0.5f * near,
+				HeroModelRenderer.submitSpirit(loaded, skin, poseStack, collector, 0.75f * near, 0.75f * near,
 					state.enemy ? ENEMY_SPIRIT : SPIRIT, state.enemy ? ENEMY_GLOW : GLOW);
 			}
 			poseStack.popPose();

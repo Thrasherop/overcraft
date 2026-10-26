@@ -248,6 +248,8 @@ EFFECT_MASKS = {
     "glow_hot": ("Kiriko", "HealingOfuda", "00000000FFC9", 1),
     "flower": ("Kiriko", "HealingOfuda", "000000030242", 1),
     "ribbon": ("Kiriko", "HealingOfuda", "000000030182", 1),
+    # the flying ofuda: four frames of a fluttering talisman silhouette (effects 2F93 / 7E2D, on mesh 10942)
+    "talisman_flight": ("Kiriko", "HealingOfuda", "00000003A1EE", 4),
     "noise": ("Kiriko", "HealingOfuda", "0000000299E8", 1),
     "band": ("Kiriko", "HealingOfuda", "00000002FF91", 1),
     "petal": ("Kiriko", "SwiftStep", "00000003267E", 1),

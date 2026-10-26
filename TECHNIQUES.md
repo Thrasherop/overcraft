@@ -113,6 +113,11 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   along the surface normal by r sin(angle between view and normal) (`Particle.lift`), which clears the surface from any
   angle without floating far off it face on.
 - Near-camera fades must scale with the sprite: a fixed 1.5 m fade let a 4.6 m glow two metres away cover the screen.
+- When something draws nothing, test it alone and still: summon it motionless (summoned before `/tick freeze`, or it
+  never reaches the client), look from several sides. Two "fixes" for a paper that wasn't showing were aimed at the
+  wrong cause; the projectile models had never drawn at all (a prop-hiding rule for hero models matched them).
+- Ask what the real thing looks like before building to a critique's guess: the critic wanted the ofuda's paper card
+  shown; the owner (who plays) said thrown ofuda are glowing gold or blue talismans, and the effects survey agreed.
 - The world's light reaches first-person models: at night Minecraft's lightmap turned the arms near-black purple. A
   view model wants a light floor (Overwatch's arms stay readable on night maps).
 - A second key set: KeyMappings made but not registered with Options still get key events (KeyMapping's own maps),

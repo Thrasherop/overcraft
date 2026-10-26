@@ -28,12 +28,19 @@ public final class EffectArt {
 	 * whiter colour instead.
 	 */
 	public enum Palette {
-		/** Kiriko's teal: most of her effects, as she and her allies see them. */
-		TEAL(0, 0, 0, 0, .25f, 0, .25f, .22f, .5f, 0, .5f, .44f, .82f, 0, 1, .87f, 1, .55f, 1, .97f),
+		/**
+		 * Kiriko's teal: most of her effects, as she and her allies see them. The game's ramp from 0.82 up; its faint end
+		 * (0.25, 0.5: (0, .25, .22), (0, .5, .44)) moved toward blue: added over Minecraft's green grass it summed to
+		 * mint (the fifth critique measured hues of 135-162 degrees against Kiriko's 176). Ours.
+		 */
+		TEAL(0, 0, 0, 0, .25f, 0, .15f, .28f, .5f, 0, .38f, .58f, .82f, 0, 1, .87f, 1, .55f, 1, .97f),
 		/** The homing ofuda's gold. */
 		GOLD(0, 0, 0, 0, .25f, .36f, .24f, 0, .5f, .71f, .49f, 0, .82f, 1, .82f, .3f, 1, 1, .97f, .75f),
-		/** The kunai's and the Kitsune's cyan, white-hot at the top. */
-		CYAN(0, 0, 0, 0, .3f, 0, .51f, .45f, .65f, 0, 1, .87f, 1, 1, 1, 1),
+		/**
+		 * The kunai's and the Kitsune's cyan, white-hot at the top. Its faint end moved toward blue, as TEAL's (game:
+		 * (0, .51, .45) at 0.3, (0, 1, .87) at 0.65).
+		 */
+		CYAN(0, 0, 0, 0, .3f, 0, .42f, .55f, .65f, 0, .95f, 1, 1, 1, 1, 1),
 		/** Suzu's burst ring: (0.1, 2, 3) in the game. */
 		SUZU_BLUE(0, 0, 0, 0, .5f, .017f, .33f, .5f, .85f, .033f, .67f, 1, 1, .5f, .9f, 1),
 		/** Suzu's ground mark: (3.2, 2.17, 0.1). */

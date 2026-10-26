@@ -43,7 +43,7 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 	private final String model;
 	private final boolean flip;
 	private final float modelScale;
-	private final boolean faceViewer;
+	private final boolean effectOnly;
 
 	/** {@code flip}: the model's tip points the other way along its long side. */
 	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip) {
@@ -51,17 +51,17 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 	}
 
 	/**
-	 * {@code modelScale}: drawn this much larger than the model. {@code faceViewer}: a flat model (the ofuda's paper)
-	 * turned about its flight to show its face to whoever watches: laid flat along the flight, it was edge-on to the
-	 * thrower and invisible (the second critique: "no paper visible in any frame").
+	 * {@code modelScale}: drawn this much larger than the model. {@code effectOnly}: with the local pack, no model at all,
+	 * its flight effect is its look (the ofuda: Overwatch draws a thrown one as a glowing talisman, not the paper model
+	 * in her hand).
 	 */
 	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip,
-								   float modelScale, boolean faceViewer) {
+								   float modelScale, boolean effectOnly) {
 		super(context, spriteScale, true);
 		this.model = model;
 		this.flip = flip;
 		this.modelScale = modelScale;
-		this.faceViewer = faceViewer;
+		this.effectOnly = effectOnly;
 	}
 
 	@Override
@@ -96,22 +96,15 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			super.submit(state, poseStack, collector, camera);
 			return;
 		}
+		if (effectOnly) {
+			// drawn by its flight effect alone (KirikoFx)
+			return;
+		}
 		Prepared p = PREPARED.computeIfAbsent(loaded.model(), ProjectileModelRenderer::prepare);
 		poseStack.pushPose();
 		// yaw then pitch take +Z onto the flight direction (yRot = atan2(vx, vz), xRot = atan2(vy, horizontal))
 		poseStack.rotateDegrees(Axis.YP, s.yRot);
 		poseStack.rotateDegrees(Axis.XP, -s.xRot);
-		if (faceViewer) {
-			// the viewer's direction in the flight's frame (+Z along the flight): roll so the face (+Y once aligned) looks
-			// at them
-			Vector3f toViewer = new Vector3f((float) (camera.pos.x - state.x), (float) (camera.pos.y - state.y),
-				(float) (camera.pos.z - state.z));
-			new Quaternionf().rotateY((float) Math.toRadians(s.yRot)).rotateX((float) Math.toRadians(-s.xRot)).conjugate()
-				.transform(toViewer);
-			if (toViewer.x * toViewer.x + toViewer.y * toViewer.y > 1.0E-6f) {
-				poseStack.mulPose(new Matrix4f().rotationZ((float) Math.atan2(-toViewer.x, toViewer.y)));
-			}
-		}
 		if (modelScale != 1) {
 			poseStack.scale(modelScale, modelScale, modelScale);
 		}
@@ -119,12 +112,23 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			poseStack.rotateDegrees(Axis.YP, 180);
 		}
 		poseStack.mulPose(new Matrix4f().rotation(p.align()));
-		HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY);
+		// no back-face culling (a talisman is a thin card seen from either side), and not a hero's stowed prop
+		HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
+			java.util.Set.of(), false, false);
 		poseStack.popPose();
 	}
 
 	private static Prepared prepare(SkinnedModel model) {
-		Matrix4f[] skin = Skeleton.skin(model, new Skeleton.Pose(model.nodeNames.length).rest(model), -1, null);
+		Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		// props sit scaled to nothing in a model's rest pose (the clips that hold them scale them up): a thrown one is
+		// shown at full size. Drawn at rest, every projectile model collapsed to a point and only its glow showed (the
+		// fifth critique: no paper on the ofuda)
+		for (Vector3f scale : rest.s) {
+			if (Math.abs(scale.x) < 1.0E-3f && Math.abs(scale.y) < 1.0E-3f && Math.abs(scale.z) < 1.0E-3f) {
+				scale.set(1);
+			}
+		}
+		Matrix4f[] skin = Skeleton.skin(model, rest, -1, null);
 		Vector3f lo = new Vector3f(Float.MAX_VALUE), hi = new Vector3f(-Float.MAX_VALUE);
 		for (SkinnedModel.Piece piece : model.pieces) {
 			float[] pos = piece.pos();

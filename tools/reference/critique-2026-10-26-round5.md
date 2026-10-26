@@ -40,7 +40,12 @@ marked done that still fail in part, and item 8 is what is left of R4 #7.
   open), 8 (no glints within 3 m of the camera, `hm7_head`; body-hit sparks kept, ours), 11 (gold ring, `r5_suzu`).
 - **Already done before this round's captures:** the chat (R4 #12) and the cooldown splash (R4 #14) in "Earlier items":
   `hud7_*` were taken before those changes.
-- **Open:** 1, 2, 4, 5, 6, 9, 10, 12.
+- **Done later:** 1 (the owner corrected it: a thrown ofuda is a glowing talisman silhouette, gold or blue, not the
+  paper; the paper model never drew anyway, a renderer bug: `pj2_sheet`), 2 (ramps' faint ends toward blue, tiles not
+  clipping: `fx13_sheet`), 5 (fox: smaller fainter glow, low wake, brighter body: `fx13_fp_a`), 6 (gates gone within
+  2 m, full from 6 m).
+- **Not changed:** 9 (the seal) and R4 #4 (the throw): Blizzard's own clips; needs frame-matched footage.
+- **Open:** 4 (ribbon ends in the ground), 10 (kill feed portraits), 12 (ELIMINATED caption).
 
 ## Confirmed fixed (seen in these captures)
 - **Terrain-hit glow (R4 #1):** the impact glows in `fx9_ofuda_d` and `hud7_spent` are soft, with no straight edge.
