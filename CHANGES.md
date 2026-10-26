@@ -5,6 +5,19 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Kiriko speaks for the game's moments** (issue #5): her own recorded lines from the archive's voice categories, the
+unconditional ones (lines whose criteria name a hero or map are left out; "NOT (scripted event)" is the normal case),
+English first, up to 8 a moment (`tools/soundmaps/kiriko.txt`, picked by a script):
+- "My ultimate is ready" the moment the ult fills; a shout on every quick melee; a remark after a melee kill, a taunt
+  after other kills (by chance, spaced out), "Fox in a hen house" on a second kill within 4 s; a respawn line ("Let's
+  get back to it") most respawns; "I'll find my own path" on picking her.
+- Her hurt and death sounds are her own grunts and dying cry instead of Steve's (a Player mixin, on every side; burning,
+  drowning and freezing keep Minecraft's), so they show as "Kiriko grunts", "Kiriko cries out".
+- Played with subtitles on (`vo1_sheet`, `vo2_sheet`): melee, ult ready, a kill, hurt, three deaths and respawns.
+
+**Fixed: the ult's charge was lost on death.** Overwatch keeps it. Reproduced: 1638 points (60%) before dying, 11
+after respawning; now the same before and after (2725 and 2725).
+
 **Played: the coat from the side** (R2 #19 said "rigid boards to the ankles"): a second player watching her run past
 from 5 m, the coat splits at her legs and trails behind as she runs, hanging when she stops (`cs2_sheet`, `cs2z`).
 Left as is.

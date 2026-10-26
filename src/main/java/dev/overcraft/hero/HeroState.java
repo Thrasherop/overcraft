@@ -37,6 +37,8 @@ public final class HeroState {
 	public long lastDamagedTick = -10000;
 	/** When the hero last spoke a voice line (game time), to space them out. */
 	public long voiceAt = -10000;
+	/** When the hero last killed something (game time): multikills. */
+	public long lastKillAt = -10000;
 	/** In (or just out of) a Kitsune Rush corridor this tick. */
 	public boolean rushed;
 	/** May pick a hero now: the pick on joining, or near their bed. */

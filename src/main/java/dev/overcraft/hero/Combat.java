@@ -120,7 +120,12 @@ public final class Combat {
 		if (state == null || state.hero == null || state.ultActive > 0 || points <= 0) {
 			return;
 		}
-		state.ultCharge = Math.min(ultCost(state.hero), state.ultCharge + points);
+		double cost = ultCost(state.hero);
+		boolean wasReady = state.ultCharge >= cost;
+		state.ultCharge = Math.min(cost, state.ultCharge + points);
+		if (!wasReady && state.ultCharge >= cost && hero instanceof ServerPlayer player) {
+			Voice.say(player, "ult_ready", 1, false);
+		}
 	}
 
 	/**

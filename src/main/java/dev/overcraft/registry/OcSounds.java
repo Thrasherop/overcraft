@@ -51,6 +51,16 @@ public final class OcSounds {
 	public static final SoundEvent KIRIKO_VOICE_SWIFT_STEP = register("kiriko.voice.swift_step");
 	public static final SoundEvent KIRIKO_VOICE_SUZU = register("kiriko.voice.suzu");
 	public static final SoundEvent KIRIKO_VOICE_HEAL = register("kiriko.voice.heal");
+	/** Lines for the game's moments (Voice.say looks them up by hero: "<hero>.voice.<moment>"). */
+	public static final SoundEvent KIRIKO_VOICE_ULT_READY = register("kiriko.voice.ult_ready");
+	public static final SoundEvent KIRIKO_VOICE_ELIMINATION = register("kiriko.voice.elimination");
+	public static final SoundEvent KIRIKO_VOICE_MELEE_KILL = register("kiriko.voice.melee_kill");
+	public static final SoundEvent KIRIKO_VOICE_MULTIKILL = register("kiriko.voice.multikill");
+	public static final SoundEvent KIRIKO_VOICE_RESPAWN = register("kiriko.voice.respawn");
+	public static final SoundEvent KIRIKO_VOICE_SELECT = register("kiriko.voice.select");
+	public static final SoundEvent KIRIKO_VOICE_DEATH = register("kiriko.voice.death");
+	public static final SoundEvent KIRIKO_VOICE_PAIN = register("kiriko.voice.pain");
+	public static final SoundEvent KIRIKO_VOICE_MELEE = register("kiriko.voice.melee");
 
 	private OcSounds() {
 	}

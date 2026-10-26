@@ -124,5 +124,14 @@
 	"subtitles.overcraft.kiriko.rush.gate_3": "Torii gate rises",
 	"subtitles.overcraft.kiriko.rush.gate_4": "Torii gate rises",
 	"subtitles.overcraft.kiriko.rush.gate_5": "Torii gate rises",
-	"subtitles.overcraft.kiriko.rush.gate_6": "Torii gate rises"
+	"subtitles.overcraft.kiriko.rush.gate_6": "Torii gate rises",
+	"subtitles.overcraft.kiriko.voice.ult_ready": "Kiriko: My ultimate is ready",
+	"subtitles.overcraft.kiriko.voice.elimination": "Kiriko taunts",
+	"subtitles.overcraft.kiriko.voice.melee_kill": "Kiriko taunts",
+	"subtitles.overcraft.kiriko.voice.multikill": "Kiriko: Fox in a hen house",
+	"subtitles.overcraft.kiriko.voice.respawn": "Kiriko: Let's get back to it",
+	"subtitles.overcraft.kiriko.voice.select": "Kiriko: I'll find my own path",
+	"subtitles.overcraft.kiriko.voice.death": "Kiriko cries out",
+	"subtitles.overcraft.kiriko.voice.pain": "Kiriko grunts",
+	"subtitles.overcraft.kiriko.voice.melee": "Kiriko shouts"
 }

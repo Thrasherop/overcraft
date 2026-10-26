@@ -384,5 +384,41 @@
 				"pitch": 0.6
 			}
 		]
+	},
+	"kiriko.voice.ult_ready": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.ult_ready",
+		"sounds": []
+	},
+	"kiriko.voice.elimination": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.elimination",
+		"sounds": []
+	},
+	"kiriko.voice.melee_kill": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.melee_kill",
+		"sounds": []
+	},
+	"kiriko.voice.multikill": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.multikill",
+		"sounds": []
+	},
+	"kiriko.voice.respawn": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.respawn",
+		"sounds": []
+	},
+	"kiriko.voice.select": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.select",
+		"sounds": []
+	},
+	"kiriko.voice.death": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.death",
+		"sounds": []
+	},
+	"kiriko.voice.pain": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.pain",
+		"sounds": []
+	},
+	"kiriko.voice.melee": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.melee",
+		"sounds": []
 	}
 }

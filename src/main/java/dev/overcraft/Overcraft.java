@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroWeaponItem;
 import dev.overcraft.hero.KillFeed;
+import dev.overcraft.hero.Voice;
 import dev.overcraft.kiriko.KitsuneRush;
 import dev.overcraft.net.EffectPayload;
 import dev.overcraft.net.KillFeedPayload;
@@ -80,6 +81,7 @@ public class Overcraft implements ModInitializer {
 			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.controls(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
+		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);

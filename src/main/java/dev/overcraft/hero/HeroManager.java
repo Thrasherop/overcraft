@@ -114,6 +114,9 @@ public final class HeroManager {
 			player.setAttached(HERO, hero.id);
 		}
 		applyKit(player, state, true);
+		if (hero != null) {
+			Voice.say(player, "select", 1, false);
+		}
 	}
 
 	/** Health and the slot-1 weapon; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
@@ -189,8 +192,12 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			Hero hero = state.hero;
+			// the ult's charge survives dying, as in Overwatch (it was being reset with everything else)
+			double charge = state.ultCharge;
 			state.reset(hero);
+			state.ultCharge = charge;
 			applyKit(player, state, true);
+			Voice.say(player, "respawn", 0.7f, false);
 		}
 	}
 

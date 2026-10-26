@@ -583,3 +583,68 @@ kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDC.0B2-Under my p
 kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDD.0B2-Feels good, huh_.ogg
 kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDE.0B2-(Japanese)_ I'll protect you!.ogg
 kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000006B554.0B2-Dispelling your curse.ogg
+
+# ===== Voice lines by moment (Voice.say): the unconditional lines of each HeroVoice category (lines whose criteria
+# name a hero or map are left out; "NOT (scripted event)" is the normal case). Picked by a script, English first.
+# ult_ready: Ultimate/Ready (3 of 3 unconditional)
+kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EF73.0B2-My ultimate is ready.ogg
+kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EFE0.0B2-The Kitsune is ready to be unleashed.ogg
+kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EFF8.0B2-The Kitsune is ready.ogg
+# elimination: Elimination (36 of 77 unconditional)
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB7D.0B2-Heh, cool.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB80.0B2-Sit down, please.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB8D.0B2-Nice.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB91.0B2-Ouch.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB94.0B2-Take some time off.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB9B.0B2-Underestimated me, ne_.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EE93.0B2-Back off.ogg
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000061A9F.0B2-Find peace.ogg
+# melee_kill: MeleeEnemyKilledRemark (8 of 15 unconditional)
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/00000005EB9E.0B2-Your hand-to-hand needs work.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000061AA3.0B2-That lesson was free.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/0000000627BF.0B2-Look, don't touch.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000062CFC.0B2-It's called personal space.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000064CCB.0B2-Palm read this.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000064CCC.0B2-My divine gift.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000065B8A.0B2-Knocked your lights out.ogg
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000062CFB.0B2-(Japanese)_ Wow, smart of you to get so close.ogg
+# multikill: Multikill (2 of 2 unconditional)
+kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB82.0B2-Fox in a hen house.ogg
+kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB8F.0B2-Now I'm having fun.ogg
+# respawn: Respawn (23 of 28 unconditional)
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB7A.0B2-Let's get back to it.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB86.0B2-I don't give up that easily.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB89.0B2-I licked my wounds. Let's go.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB8C.0B2-The spring flows anew.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB90.0B2-Okay. I learned from that.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB9A.0B2-Time to try again.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF6C.0B2-That was interesting.ogg
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF7B.0B2-Done playing around.ogg
+# select: HeroSelect (2 of 2 unconditional)
+kiriko.voice.select = HeroVoice/Kiriko/HeroSelect/00000005F846.0B2-I'll find my own path.ogg
+kiriko.voice.select = HeroVoice/Kiriko/HeroSelect/000000065B81.0B2-I'll light my own path.ogg
+# death: Death (6 of 6 unconditional)
+kiriko.voice.death = HeroVoice/Kiriko/Death/000000062731.0B2-(dying sounds).ogg
+kiriko.voice.death = HeroVoice/Kiriko/Death/000000062732.0B2-(dying sounds).ogg
+kiriko.voice.death = HeroVoice/Kiriko/Death/000000062733.0B2-(dying sounds).ogg
+kiriko.voice.death = HeroVoice/Kiriko/Death/000000062734.0B2-(dying sounds).ogg
+kiriko.voice.death = HeroVoice/Kiriko/Death/000000062735.0B2-(dying sounds).ogg
+kiriko.voice.death = HeroVoice/Kiriko/Death/00000006274D.0B2-(dying sounds).ogg
+# pain: Pain (19 of 19 unconditional)
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/000000062727.0B2-(grunts).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/000000062728.0B2-(grunts).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/000000062729.0B2-(grunts).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/00000006272A.0B2-(grunts).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/00000006272B.0B2-(grunts).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/00000006272C.0B2-(painful grunt).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/00000006272D.0B2-(painful grunt).ogg
+kiriko.voice.pain = HeroVoice/Kiriko/Pain/00000006272E.0B2-(painful grunt).ogg
+# melee: Melee (9 of 9 unconditional)
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/000000062749.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/00000006274A.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/00000006274B.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/00000006274C.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/000000062755.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/000000062756.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/0000000642EE.0B2-(shouts).ogg
+kiriko.voice.melee = HeroVoice/Kiriko/Melee/0000000642EF.0B2-(shouts).ogg
