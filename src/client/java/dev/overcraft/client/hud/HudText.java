@@ -64,9 +64,20 @@ public final class HudText {
 		return Minecraft.getInstance().font.width(styled(face, text)) * scale(face, cap);
 	}
 
-	/** Draws text with its baseline at y and capitals cap high, aligned on x. */
+	/**
+	 * Draws text with its baseline at y and capitals cap high, aligned on x, over a soft shadow (Overwatch's HUD text:
+	 * clean, with a faint shadow; Minecraft's own is a hard grey copy).
+	 */
 	public static void draw(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color,
 							Align align) {
+		int shadow = Math.round(((color >>> 24) & 0xFF) * 0.4f) << 24;
+		plain(g, face, text, x + 0.8f, baseline + 1.1f, cap, shadow, align);
+		plain(g, face, text, x, baseline, cap, color, align);
+	}
+
+	/** Draws text with no shadow at all. */
+	public static void plain(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color,
+							 Align align) {
 		Font font = Minecraft.getInstance().font;
 		MutableComponent line = styled(face, text);
 		float k = scale(face, cap);
@@ -80,7 +91,7 @@ public final class HudText {
 		g.pose().translate(x, baseline);
 		g.pose().scale(k, k);
 		g.pose().translate(left, -BASELINE);
-		g.text(font, line, 0, 0, color, true);
+		g.text(font, line, 0, 0, color, false);
 		g.pose().popMatrix();
 	}
 }

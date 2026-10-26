@@ -6,6 +6,7 @@ import dev.overcraft.client.HeroArt;
 import dev.overcraft.client.model.HeroTexture;
 import dev.overcraft.hero.Hero;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.MipmapStrategy;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -22,12 +23,38 @@ import java.util.Map;
 public final class HudShapes {
 	public static final Identifier DISC = Overcraft.id("hud/disc");
 	public static final Identifier RING = Overcraft.id("hud/ring");
+	/** A ring a third as thick as RING: the ult meter's fine outer circle. */
+	public static final Identifier RING_THIN = Overcraft.id("hud/ring_thin");
+	/** A disc solid to 70% of its radius, then fading out: halos. */
+	public static final Identifier SOFT_DISC = Overcraft.id("hud/soft_disc");
+	/** A small triangle pointing right (+x). */
+	public static final Identifier TRIANGLE = Overcraft.id("hud/triangle");
+	/** One ult meter tick, pointing up, with clear margins so its edges filter smoothly at any angle. */
+	public static final Identifier TICK = Overcraft.id("hud/tick");
+	/** The same tick fading out toward its bottom: drawn over TICK in a brighter colour, a gradient outward. */
+	public static final Identifier TICK_OUTER = Overcraft.id("hud/tick_outer");
+	public static final int TICK_W = 16;
+	public static final int TICK_H = 64;
+	/** Fraction of TICK's width the tick fills, and of its height (the rest is margin). */
+	public static final float TICK_FILL_W = 0.5f;
+	public static final float TICK_FILL_H = 60f / 64;
+	/** A ragged ink splash with drips: behind a cooldown's seconds, as Overwatch's brush stroke. */
+	public static final Identifier SPLASH = Overcraft.id("hud/splash");
+	public static final int SPLASH_W = 128;
+	public static final int SPLASH_H = 116;
+	/** A horizontal band with soft edges (the middle third of its height), for lines that slope without stair steps. */
+	public static final Identifier LINE = Overcraft.id("hud/line");
+	/** A soft horizontal glow, brightest along its middle. */
+	public static final Identifier LINE_GLOW = Overcraft.id("hud/line_glow");
+	public static final int LINE_H = 24;
 	public static final Identifier GLOW = Overcraft.id("hud/glow");
 	public static final Identifier OFUDA_SEGMENT = Overcraft.id("hud/ofuda_segment");
 	public static final Identifier OFUDA_SEGMENT_OUTLINE = Overcraft.id("hud/ofuda_segment_outline");
 	public static final Identifier MOUSE = Overcraft.id("hud/mouse");
 	public static final Identifier MOUSE_LEFT = Overcraft.id("hud/mouse_left");
 	public static final Identifier MOUSE_RIGHT = Overcraft.id("hud/mouse_right");
+	/** The mouse's body grown a little and without the button split or wheel: drawn dark under it, an outline. */
+	public static final Identifier MOUSE_OUTLINE = Overcraft.id("hud/mouse_outline");
 	public static final Identifier PLUS = Overcraft.id("hud/plus");
 	public static final Identifier SHIELD = Overcraft.id("hud/shield");
 	public static final Identifier SHIELD_BORDER = Overcraft.id("hud/shield_border");
@@ -61,6 +88,22 @@ public final class HudShapes {
 		register(DISC, SIZE, SIZE, (x, y) -> circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 1));
 		register(RING, SIZE, SIZE, (x, y) -> Math.min(circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 1),
 			1 - circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 5)));
+		register(RING_THIN, SIZE, SIZE, (x, y) -> Math.min(circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 1),
+			1 - circle(x, y, SIZE / 2f, SIZE / 2f, SIZE / 2f - 2.6f)));
+		register(SOFT_DISC, SIZE, SIZE, (x, y) -> {
+			float d = (float) Math.hypot(x - SIZE / 2f, y - SIZE / 2f) / (SIZE / 2f);
+			float t = Math.clamp((1 - d) / 0.3f, 0, 1);
+			return t * t * (3 - 2 * t);
+		});
+		register(TRIANGLE, 32, 32, (x, y) -> triangle(x, y, 5, 4, 28, 16, 5, 28));
+		register(TICK, TICK_W, TICK_H, HudShapes::tick);
+		register(TICK_OUTER, TICK_W, TICK_H, (x, y) -> tick(x, y) * Math.clamp(1.15f - y / TICK_H * 1.3f, 0, 1));
+		register(SPLASH, SPLASH_W, SPLASH_H, HudShapes::splash);
+		register(LINE, 8, LINE_H, (x, y) -> coverage(LINE_H / 6f - Math.abs(y - LINE_H / 2f)));
+		register(LINE_GLOW, 8, LINE_H, (x, y) -> {
+			float d = (y - LINE_H / 2f) / (LINE_H / 2f);
+			return (float) Math.exp(-d * d * 4) * coverage(LINE_H / 2f - 1 - Math.abs(y - LINE_H / 2f));
+		});
 		register(GLOW, SIZE, SIZE, (x, y) -> {
 			float d = (float) Math.hypot(x - SIZE / 2f, y - SIZE / 2f) / (SIZE / 2f);
 			return d >= 1 ? 0 : (1 - d) * (1 - d);
@@ -68,8 +111,9 @@ public final class HudShapes {
 		register(OFUDA_SEGMENT, SEGMENT_W, SEGMENT_H, (x, y) -> segment(x, y, 0));
 		register(OFUDA_SEGMENT_OUTLINE, SEGMENT_W, SEGMENT_H, (x, y) -> Math.min(segment(x, y, 0), 1 - segment(x, y, 6)));
 		register(MOUSE, MOUSE_W, MOUSE_H, HudShapes::mouse);
-		register(MOUSE_LEFT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(MOUSE_W / 2f - 1.5f - x) * coverage(26 - y)));
-		register(MOUSE_RIGHT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(x - MOUSE_W / 2f - 1.5f) * coverage(26 - y)));
+		register(MOUSE_OUTLINE, MOUSE_W, MOUSE_H, (x, y) -> mouseBody(x, y, 3));
+		register(MOUSE_LEFT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(MOUSE_W / 2f - 1.5f - x) * coverage(25 - y)));
+		register(MOUSE_RIGHT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(x - MOUSE_W / 2f - 1.5f) * coverage(25 - y)));
 		register(PLUS, SIZE, SIZE, (x, y) -> Math.max(roundBox(x, y, SIZE / 2f, SIZE / 2f, 14, 48, 6),
 			roundBox(x, y, SIZE / 2f, SIZE / 2f, 48, 14, 6)));
 		register(SHIELD, SHIELD_W, SHIELD_H, (x, y) -> shield(x, y, 0));
@@ -121,7 +165,7 @@ public final class HudShapes {
 					}
 				}
 				id = Overcraft.id("hud/portrait/" + hero.id);
-				Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, cut));
+				Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, cut, MipmapStrategy.MEAN));
 			} catch (IOException e) {
 				Overcraft.LOG.warn("Couldn't cut {}'s HUD portrait: {}", hero.id, e.toString());
 			}
@@ -149,7 +193,7 @@ public final class HudShapes {
 				image.setPixel(x, y, (alpha << 24) | 0xFFFFFF);
 			}
 		}
-		Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, image));
+		Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, image, MipmapStrategy.MEAN));
 	}
 
 	/** Coverage from a signed distance (positive inside), antialiased over one pixel. */
@@ -163,31 +207,101 @@ public final class HudShapes {
 
 	/** A box of half-size (hx, hy) with corners rounded by r. */
 	private static float roundBox(float x, float y, float cx, float cy, float hx, float hy, float r) {
-		float qx = Math.abs(x - cx) - hx + r;
-		float qy = Math.abs(y - cy) - hy + r;
-		float outside = (float) Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
-		return coverage(-outside);
+		return coverage(-roundBoxDistance(x - cx, y - cy, 2 * hx, 2 * hy, r));
+	}
+
+	/** Signed distance (positive outside) from a centred box of full size (w, h) with corners rounded by r. */
+	private static float roundBoxDistance(float x, float y, float w, float h, float r) {
+		float qx = Math.abs(x) - w / 2 + r;
+		float qy = Math.abs(y) - h / 2 + r;
+		return (float) Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
+	}
+
+	/** A triangle (corners in any order). */
+	private static float triangle(float x, float y, float ax, float ay, float bx, float by, float cx, float cy) {
+		float d = Math.min(edge(x, y, ax, ay, bx, by, cx, cy), Math.min(edge(x, y, bx, by, cx, cy, ax, ay),
+			edge(x, y, cx, cy, ax, ay, bx, by)));
+		return coverage(d);
+	}
+
+	/** Signed distance from the line through a and b, positive on the side of c. */
+	private static float edge(float x, float y, float ax, float ay, float bx, float by, float cx, float cy) {
+		float nx = ay - by;
+		float ny = bx - ax;
+		float len = (float) Math.hypot(nx, ny);
+		float d = ((x - ax) * nx + (y - ay) * ny) / len;
+		float side = (cx - ax) * nx + (cy - ay) * ny;
+		return side < 0 ? -d : d;
+	}
+
+	/** The tick: half the texture wide, the full height less a margin, its ends squared. */
+	private static float tick(float x, float y) {
+		float halfW = TICK_W * TICK_FILL_W / 2;
+		float halfH = TICK_H * TICK_FILL_H / 2;
+		return coverage(halfW - Math.abs(x - TICK_W / 2f)) * coverage(halfH - Math.abs(y - TICK_H / 2f));
 	}
 
 	/**
-	 * The ofuda counter's segment: a "/" parallelogram with rounded corners, shrunk by inset (for its outline). The
-	 * box is sheared: a box of half-width 18 whose top leans 30 px right of its bottom.
+	 * An ink splash: a blob with a ragged edge, three drips running down from it and a few flecks around (ours, in the
+	 * spirit of Overwatch's brush stroke).
+	 */
+	private static float splash(float x, float y) {
+		float cx = SPLASH_W / 2f;
+		float cy = 50;
+		float dx = x - cx;
+		float dy = (y - cy) * 1.12f;
+		float a = (float) Math.atan2(dy, dx);
+		float radius = 44 + 5 * (float) Math.sin(3 * a + 1) + 3.5f * (float) Math.sin(7 * a + 2)
+			+ 2.2f * (float) Math.sin(13 * a + 0.5f) + 1.4f * (float) Math.sin(23 * a + 4);
+		float blob = coverage(radius - (float) Math.hypot(dx, dy));
+		float drips = Math.max(drip(x, y, cx - 22, 70, 104, 4.5f), Math.max(drip(x, y, cx + 12, 80, 96, 3.5f),
+			drip(x, y, cx + 30, 70, 86, 2.8f)));
+		float flecks = Math.max(circle(x, y, 10, 30, 4), Math.max(circle(x, y, 118, 64, 3.5f), circle(x, y, 112, 16, 3)));
+		return Math.max(blob, Math.max(drips, flecks));
+	}
+
+	/** A drip running down from y0 to y1, ending in a drop a little wider than the run. */
+	private static float drip(float x, float y, float cx, float y0, float y1, float width) {
+		float run = coverage(width / 2 - Math.abs(x - cx)) * coverage(y - y0) * coverage(y1 - y);
+		return Math.max(run, circle(x, y, cx, y1, width * 0.75f));
+	}
+
+	/**
+	 * The ofuda counter's segment: a "/" bar with rounded corners (the critique's measurements of Overwatch's: its short
+	 * top and bottom edges tilt 12 degrees down to the right, its long sides lean 45 degrees; 10 x 30 px edges in a
+	 * 31 x 23 box), here at two texels a pixel. Shrunk by inset (for its outline).
 	 */
 	private static float segment(float x, float y, float inset) {
-		float lean = 30f / (SEGMENT_H - 8);
-		float ux = x - SEGMENT_W / 2f + (y - SEGMENT_H / 2f) * lean;
-		return roundBox(ux, y, 0, SEGMENT_H / 2f, 20 - inset, SEGMENT_H / 2f - 4 - inset, Math.max(2, 7 - inset));
+		// p = u e1 + v e2, e1 along the top edge, e2 down the long side
+		float e1x = (float) Math.cos(Math.toRadians(12));
+		float e1y = (float) Math.sin(Math.toRadians(12));
+		float e2x = -0.7071f;
+		float e2y = 0.7071f;
+		float px = x - SEGMENT_W / 2f;
+		float py = y - SEGMENT_H / 2f;
+		float det = e1x * e2y - e1y * e2x;
+		float u = (px * e2y - py * e2x) / det;
+		float v = (e1x * py - e1y * px) / det;
+		// in (u, v) distances across an edge shrink by the sine of the corner's angle
+		float squash = Math.abs(det);
+		return coverage(-roundBoxDistance(u, v, 20.8f - 2 * inset / squash, 59 - 2 * inset / squash,
+			Math.max(1, 8 - inset)) * squash);
 	}
 
 	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */
 	private static float mouse(float x, float y) {
 		float cx = MOUSE_W / 2f;
-		float body = Math.min(roundBox(x, y, cx, 22, 20, 18, 10), 1);
-		float bottom = circle(x, y, cx, 38, 20);
-		float base = Math.max(body, Math.min(bottom, coverage(y - 22)));
-		float split = coverage(Math.abs(x - cx) - 1.5f) + coverage(y - 26);
-		float wheel = 1 - roundBox(x, y, cx, 15, 3.5f, 7, 3.5f);
-		return Math.min(base, Math.min(Math.min(split, 1), wheel));
+		float split = coverage(Math.abs(x - cx) - 1.5f) + coverage(y - 25);
+		float wheel = 1 - roundBox(x, y, cx, 14, 3.5f, 6.5f, 3.5f);
+		return Math.min(mouseBody(x, y, 0), Math.min(Math.min(split, 1), wheel));
+	}
+
+	/** The mouse's outline shape, grown by grow texels. */
+	private static float mouseBody(float x, float y, float grow) {
+		float cx = MOUSE_W / 2f;
+		float body = roundBox(x, y, cx, 23, 18 + grow, 18 + grow, 10 + grow);
+		float bottom = circle(x, y, cx, 40, 18 + grow);
+		return Math.max(body, Math.min(bottom, coverage(y - 23)));
 	}
 
 	/**

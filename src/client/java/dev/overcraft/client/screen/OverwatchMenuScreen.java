@@ -172,7 +172,11 @@ public class OverwatchMenuScreen extends OwScreen {
 			image(g, role, textX, y + 116, 26, 26, WHITE);
 			roleX += 34;
 		}
-		HudText.draw(g, Face.BODY, Component.translatable("overcraft.role." + hero.role.name().toLowerCase(Locale.ROOT))
-			.getString().toUpperCase(Locale.ROOT), roleX, y + 137, 16, TEXT, Align.LEFT);
+		String roleName = Component.translatable("overcraft.role." + hero.role.name().toLowerCase(Locale.ROOT)).getString()
+			.toUpperCase(Locale.ROOT);
+		HudText.draw(g, Face.BODY, roleName, roleX, y + 137, 16, TEXT, Align.LEFT);
+		// the sub-role after it in orange, as on the hero select screen
+		String sub = Component.translatable("overcraft.subrole." + hero.subRole).getString().toUpperCase(Locale.ROOT);
+		HudText.draw(g, Face.BODY, sub, roleX + HudText.width(Face.BODY, roleName, 16) + 12, y + 137, 16, ORANGE, Align.LEFT);
 	}
 }

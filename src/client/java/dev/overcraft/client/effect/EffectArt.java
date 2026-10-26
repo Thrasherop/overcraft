@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import dev.overcraft.Overcraft;
 import dev.overcraft.client.model.HeroTexture;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.MipmapStrategy;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -79,8 +80,17 @@ public final class EffectArt {
 
 	/** The mask called name (textures/effect/name.png) coloured with the palette, or null without the pack. */
 	public static @Nullable Identifier get(String name, Palette palette) {
-		String key = name + "/" + palette.name().toLowerCase(Locale.ROOT);
-		return CACHE.computeIfAbsent(key, k -> Optional.ofNullable(load(name, palette, k))).orElse(null);
+		return get(name, palette, false);
+	}
+
+	/**
+	 * The same, or (soft) made for blending rather than adding: its brightness becomes alpha and its colour the
+	 * palette's brighter half. Added light washes out over bright ground (gold over grass turned lime, the critique);
+	 * blended, gold stays gold.
+	 */
+	public static @Nullable Identifier get(String name, Palette palette, boolean soft) {
+		String key = name + "/" + palette.name().toLowerCase(Locale.ROOT) + (soft ? "_soft" : "");
+		return CACHE.computeIfAbsent(key, k -> Optional.ofNullable(load(name, palette, soft, k))).orElse(null);
 	}
 
 	/**
@@ -110,7 +120,7 @@ public final class EffectArt {
 		return image;
 	}
 
-	private static @Nullable Identifier load(String name, Palette palette, String key) {
+	private static @Nullable Identifier load(String name, Palette palette, boolean soft, String key) {
 		Identifier source = Overcraft.id("textures/effect/" + name + ".png");
 		Minecraft mc = Minecraft.getInstance();
 		NativeImage made = generated(name);
@@ -126,17 +136,23 @@ public final class EffectArt {
 				for (int x = 0; x < mask.getWidth(); x++) {
 					int argb = mask.getPixel(x, y);
 					if (palette == Palette.NATURAL) {
-						out.setPixel(x, y, argb);
+						// soft: its silhouette in white, to be tinted
+						out.setPixel(x, y, soft ? (argb & 0xFF000000) | 0xFFFFFF : argb);
 						continue;
 					}
 					// the masks are grey (one channel copied to three); their alpha is solid
 					float v = Math.clamp(((((argb >> 16) & 0xFF) / 255f) - black) / (1 - black), 0, 1);
-					palette.colour(v, c);
-					out.setPixel(x, y, 0xFF000000 | srgb(c[0]) << 16 | srgb(c[1]) << 8 | srgb(c[2]));
+					if (soft) {
+						palette.colour(0.6f + 0.4f * v, c);
+						out.setPixel(x, y, Math.round(255 * v) << 24 | srgb(c[0]) << 16 | srgb(c[1]) << 8 | srgb(c[2]));
+					} else {
+						palette.colour(v, c);
+						out.setPixel(x, y, 0xFF000000 | srgb(c[0]) << 16 | srgb(c[1]) << 8 | srgb(c[2]));
+					}
 				}
 			}
 			Identifier id = Overcraft.id("effect/" + key);
-			mc.getTextureManager().register(id, new HeroTexture(id, out));
+			mc.getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
 			return id;
 		} catch (IOException e) {
 			Overcraft.LOG.warn("Effect texture {} didn't load: {}", name, e.toString());

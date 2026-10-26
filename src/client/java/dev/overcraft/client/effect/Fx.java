@@ -213,14 +213,16 @@ public final class Fx {
 		final float width;
 		final float duration;
 		final float alpha;
+		final boolean soft;
 		final ArrayDeque<double[]> points = new ArrayDeque<>();
 		float lastFed;
 
-		Trail(Identifier texture, float width, float duration, float alpha) {
+		Trail(Identifier texture, float width, float duration, float alpha, boolean soft) {
 			this.texture = texture;
 			this.width = width;
 			this.duration = duration;
 			this.alpha = alpha;
+			this.soft = soft;
 		}
 	}
 
@@ -233,6 +235,8 @@ public final class Fx {
 	/** Sprites closer to the camera than this (metres) aren't drawn; they fade in over the next NEAR_FADE. */
 	private static final float NEAR_FADE_START = 0.3f;
 	private static final float NEAR_FADE = 1.2f;
+	/** Meshes (the torii gates) fade over a longer reach: they're big, and the critique asked for about 3 m. */
+	private static final float MESH_FADE = 2.7f;
 	private static float lastTime = -1;
 
 	private Fx() {
@@ -252,6 +256,16 @@ public final class Fx {
 	 * frames: "smoke#48" loads smoke_0 to smoke_47.
 	 */
 	public static @Nullable Particle particle(String mask, Palette palette) {
+		return particle(mask, palette, false);
+	}
+
+	/** A particle drawn blended rather than added, its mask's brightness as alpha (EffectArt's soft colouring). */
+	public static @Nullable Particle soft(String mask, Palette palette) {
+		Particle p = particle(mask, palette, true);
+		return p == null ? null : p.blended();
+	}
+
+	private static @Nullable Particle particle(String mask, Palette palette, boolean soft) {
 		Identifier[] frames;
 		int hash = mask.indexOf('#');
 		if (hash >= 0) {
@@ -259,13 +273,13 @@ public final class Fx {
 			int count = Integer.parseInt(mask.substring(hash + 1));
 			frames = new Identifier[count];
 			for (int i = 0; i < count; i++) {
-				frames[i] = EffectArt.get(base + "_" + i, palette);
+				frames[i] = EffectArt.get(base + "_" + i, palette, soft);
 				if (frames[i] == null) {
 					return null;
 				}
 			}
 		} else {
-			Identifier one = EffectArt.get(mask, palette);
+			Identifier one = EffectArt.get(mask, palette, soft);
 			if (one == null) {
 				return null;
 			}
@@ -285,13 +299,19 @@ public final class Fx {
 
 	/** Feeds a ribbon behind entity id with its position this frame (from its renderer). */
 	public static void trail(int id, Vec3 at, String mask, Palette palette, float width, float duration, float alpha) {
+		trail(id, at, mask, palette, width, duration, alpha, false);
+	}
+
+	/** The same, drawn blended (soft) or added. */
+	public static void trail(int id, Vec3 at, String mask, Palette palette, float width, float duration, float alpha,
+							 boolean soft) {
 		Trail trail = TRAILS.get(id);
 		if (trail == null) {
-			Identifier texture = EffectArt.get(mask, palette);
+			Identifier texture = EffectArt.get(mask, palette, soft);
 			if (texture == null) {
 				return;
 			}
-			trail = new Trail(texture, width, duration, alpha);
+			trail = new Trail(texture, width, duration, alpha, soft);
 			TRAILS.put(id, trail);
 		}
 		float now = now();
@@ -375,7 +395,8 @@ public final class Fx {
 		}
 		for (Trail trail : TRAILS.values()) {
 			if (trail.points.size() >= 2) {
-				context.submitNodeCollector().submitCustomGeometry(poseStack, FxRender.additive(trail.texture),
+				context.submitNodeCollector().submitCustomGeometry(poseStack,
+					trail.soft ? FxRender.blended(trail.texture) : FxRender.additive(trail.texture),
 					(pose, buffer) -> ribbon(trail, pose, buffer, cam, now));
 			}
 		}
@@ -505,13 +526,18 @@ public final class Fx {
 		vertex(pose, buffer, cx - ax.x + ay.x, cy - ax.y + ay.y, cz - ax.z + ay.z, 0, 0, color);
 	}
 
-	/** A mesh's triangles (each sent as a quad with its last corner twice), scaled and turned to its side. */
+	/**
+	 * A mesh's triangles (each sent as a quad with its last corner twice), scaled and turned to its side, each corner
+	 * fading out within MESH_FADE of the camera: walking through a torii gate, its legs filled the screen.
+	 */
 	private static void mesh(Particle p, PoseStack.Pose pose, VertexConsumer buffer, float cx, float cy, float cz, int color) {
 		float[] m = p.mesh;
 		if (m == null) {
 			return;
 		}
 		float s = p.size();
+		float alpha = (color >>> 24) / 255f;
+		int rgb = color & 0xFFFFFF;
 		// X along side, Y up, Z along side x up
 		float fx = -p.sideZ;
 		float fz = p.sideX;
@@ -521,7 +547,12 @@ public final class Fx {
 				float x = m[c] * s;
 				float y = m[c + 1] * s;
 				float z = m[c + 2] * s;
-				vertex(pose, buffer, cx + x * p.sideX + z * fx, cy + y, cz + x * p.sideZ + z * fz, m[c + 3], m[c + 4], color);
+				float vx = cx + x * p.sideX + z * fx;
+				float vy = cy + y;
+				float vz = cz + x * p.sideZ + z * fz;
+				float d = (float) Math.sqrt(vx * vx + vy * vy + vz * vz);
+				int corner = argb(rgb, alpha * Math.clamp((d - NEAR_FADE_START) / MESH_FADE, 0, 1));
+				vertex(pose, buffer, vx, vy, vz, m[c + 3], m[c + 4], corner);
 			}
 		}
 	}

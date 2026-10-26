@@ -7,6 +7,7 @@ import dev.overcraft.net.EffectPayload;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.Skeleton;
 import dev.overcraft.client.model.SkinnedModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -23,8 +24,11 @@ import java.util.List;
  * survey's unless marked "ours". Played by EffectPayload from the server, or by renderers (trails, the fox's petals).
  */
 public final class KirikoFx {
-	/** Petals are tinted toward Kiriko's teal-white (the survey: "tinted teal-white"). */
-	private static final int PETAL_TINT = 0xC8FFF4;
+	/**
+	 * Petals are tinted toward Kiriko's teal (the survey: "tinted teal-white"): the mask is solid white, and added
+	 * white they read as snowballs.
+	 */
+	private static final int PETAL_TINT = 0x6EF0DA;
 
 	private KirikoFx() {
 	}
@@ -79,10 +83,18 @@ public final class KirikoFx {
 
 	/** In flight: the ribbon behind it and a soft glow on it, teal (gold while homing on an ally). */
 	public static void ofudaFlight(int id, Vec3 at, boolean homing) {
-		Palette p = homing ? Palette.GOLD : Palette.TEAL;
-		// ribbon width and length aren't in the game data: ours, a little narrower than the talisman, ~1 m long
-		Fx.trail(id, at, "ribbon", p, 0.2f, 0.06f, 0.9f);
-		Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", p, at, homing ? 0.55f : 0.45f, 0.15f, homing ? 0.5f : 0.4f));
+		// ribbon width and length aren't in the game data: ours, thinner than the talisman, ~1 m long. Homing, the gold
+		// is blended rather than added: added over grass it turned lime (the critique).
+		if (homing) {
+			Fx.trail(id, at, "ribbon", Palette.GOLD, 0.14f, 0.06f, 0.75f, true);
+			Fx.attach("ofuda_glow/" + id, at, () -> {
+				Particle g = Fx.soft("glow", Palette.GOLD);
+				return g == null ? null : g.at(at).life(0.15f).size(0.42f, 0.42f).alpha(0.55f).fade(0.15f, 0.6f);
+			});
+		} else {
+			Fx.trail(id, at, "ribbon", Palette.TEAL, 0.14f, 0.06f, 0.8f);
+			Fx.attach("ofuda_glow/" + id, at, () -> glow("glow", Palette.TEAL, at, 0.32f, 0.15f, 0.4f));
+		}
 	}
 
 	/**
@@ -90,25 +102,27 @@ public final class KirikoFx {
 	 * the fingertips each time"; the hand effect 2074's golden swirl).
 	 */
 	public static void ofudaHandPuff(Vec3 hand) {
-		Particle puff = Fx.particle("smoke#48", Palette.GOLD);
+		Particle puff = Fx.soft("smoke#48", Palette.GOLD);
 		if (puff != null) {
-			float size = range(0.07f, 0.1f);
-			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.15)).life(range(0.25f, 0.35f)).size(size, size * 1.8f)
-				.spin(range(0, Mth.TWO_PI), 0).alpha(0.35f).fade(0.1f, 0.6f).near());
+			float size = range(0.06f, 0.08f);
+			Fx.add(puff.at(hand).velocity(randomUnit(Fx.RANDOM).scale(0.12)).life(range(0.25f, 0.35f)).size(size, size * 1.6f)
+				.spin(range(0, Mth.TWO_PI), 0).alpha(0.6f).fade(0.1f, 0.6f).near());
 		}
 	}
 
 	/** Healing received: a quick flash of soft glows drifting up and a five-petal flower (effects 4004 / 40C0). */
 	static void ofudaHitAlly(Vec3 at, Palette p) {
+		// gold blended (it washed out to lime added over grass), the glows kept small: ten ofuda land in a second
+		boolean gold = p == Palette.GOLD;
 		for (int i = 0; i < 3; i++) {
-			Particle g = Fx.particle("glow", p);
+			Particle g = gold ? Fx.soft("glow", p) : Fx.particle("glow", p);
 			if (g != null) {
-				float size = range(0.2f, 0.8f);
+				float size = range(0.2f, 0.5f);
 				Fx.add(g.at(at).velocity(new Vec3(0, range(0.25f, 0.35f), 0)).life(range(0.08f, 0.4f)).size(size, size * 1.2f)
-					.fade(0.1f, 0.7f));
+					.alpha(gold ? 0.5f : 0.7f).fade(0.1f, 0.7f));
 			}
 		}
-		Particle flower = Fx.particle("flower", p);
+		Particle flower = gold ? Fx.soft("flower", p) : Fx.particle("flower", p);
 		if (flower != null) {
 			Fx.add(flower.at(at).life(0.34f).size(0.32f, 0.5f).easeOut().spin(range(0, Mth.TWO_PI), 1.5f).fade(0.1f, 0.6f));
 		}
@@ -116,9 +130,14 @@ public final class KirikoFx {
 
 	/** On terrain: a soft glow and the flower flat on the surface for 0.73 s (4111 / 3D4A). */
 	static void ofudaHitBlock(Vec3 at, Vec3 normal, Palette p) {
-		float size = range(0.3f, 1.3f);
-		Fx.add(glow("glow", p, at, size, range(0.08f, 0.4f), 0.8f));
-		Particle decal = Fx.particle("flower", p);
+		// the game's glow is 0.3-1.3 m; kept under a metre here, where it read as a haze two blocks wide (the critique)
+		boolean gold = p == Palette.GOLD;
+		float size = range(0.3f, 0.9f);
+		Particle glow = gold ? Fx.soft("glow", p) : Fx.particle("glow", p);
+		if (glow != null) {
+			Fx.add(glow.at(at).life(range(0.08f, 0.4f)).size(size, size).alpha(0.55f).fade(0.15f, 0.6f));
+		}
+		Particle decal = gold ? Fx.soft("flower", p) : Fx.particle("flower", p);
 		if (decal != null && normal.lengthSqr() > 0.5) {
 			Fx.add(decal.at(at.add(normal.scale(0.02))).normal(normal).life(0.73f).size(0.45f, 0.5f)
 				.spin(range(0, Mth.TWO_PI), 0).fade(0.05f, 0.6f));
@@ -202,12 +221,14 @@ public final class KirikoFx {
 			Fx.add(flower.at(ground.add(0, 0.02, 0)).normal(new Vec3(0, 1, 0)).life(0.5f).size(1.2f, 2.2f).easeOut()
 				.spin(range(0, Mth.TWO_PI), 0.5f).alpha(0.7f).fade(0.1f, 0.6f));
 		}
-		// a flash, kept modest: Suzu is often thrown at her own feet, and a big glow there whites out the screen
-		Fx.add(glow("glow_hot", Palette.SUZU_BLUE, at, 1.6f, 0.25f, 0.5f));
-		Fx.add(glow("glow", Palette.TEAL, at, 3f, 0.4f, 0.35f));
-		Particle mark = Fx.particle("ring_line", Palette.SUZU_GOLD);
+		// a flash, kept modest: Suzu is often thrown at her own feet, and a big glow there whites out the screen. Lifted
+		// clear of the ground: a camera-facing glow centred on it was cut off flat by the ground (the critique)
+		Fx.add(glow("glow_hot", Palette.SUZU_BLUE, at.add(0, 0.75, 0), 1.5f, 0.25f, 0.5f));
+		Fx.add(glow("glow", Palette.TEAL, at.add(0, 1.1, 0), 2.4f, 0.4f, 0.3f));
+		// the 5 s ground mark: soft gold, blended (added over grass it was a hard lime line)
+		Particle mark = Fx.soft("ring_line", Palette.SUZU_GOLD);
 		if (mark != null) {
-			Fx.add(mark.at(ground.add(0, 0.03, 0)).normal(new Vec3(0, 1, 0)).life(5).size(2 * r, 2 * r).alpha(0.7f).fade(0.03f, 0.15f));
+			Fx.add(mark.at(ground.add(0, 0.03, 0)).normal(new Vec3(0, 1, 0)).life(5).size(2 * r, 2 * r).alpha(0.85f).fade(0.03f, 0.15f));
 		}
 	}
 
@@ -219,6 +240,11 @@ public final class KirikoFx {
 	 */
 	static void swiftStep(Vec3 feet, boolean arrive) {
 		Vec3 chest = feet.add(0, 1, 0);
+		// her own arrival seen in first person: the flash and puff would sit on the camera, a white disc over the HUD
+		// (the critique); she sees the rings and petals round her instead
+		Minecraft mc = Minecraft.getInstance();
+		boolean atCamera = mc.player != null && mc.options.getCameraType().isFirstPerson()
+			&& mc.player.position().distanceToSqr(feet) < 2.25;
 		for (int i = 0; i < 2; i++) {
 			Particle ring = Fx.particle("ring_line", Palette.TEAL);
 			if (ring != null) {
@@ -226,11 +252,13 @@ public final class KirikoFx {
 					.easeOut().fade(0.05f, 0.6f));
 			}
 		}
-		Particle burst = Fx.particle("ring_line", Palette.TEAL);
+		Particle burst = atCamera ? null : Fx.particle("ring_line", Palette.TEAL);
 		if (burst != null) {
 			Fx.add(burst.at(chest).life(0.3f).size(0.3f, 3.2f).easeOut().fade(0.05f, 0.6f));
 		}
-		Fx.add(glow("glow_hot", Palette.TEAL, chest, 1.6f, 0.22f, 0.45f));
+		if (!atCamera) {
+			Fx.add(glow("glow_hot", Palette.TEAL, chest, 1.6f, 0.22f, 0.45f));
+		}
 		int petals = arrive ? 65 : 39;
 		for (int i = 0; i < petals; i++) {
 			Particle petal = Fx.particle("petal", Palette.TEAL);
@@ -242,10 +270,19 @@ public final class KirikoFx {
 			float speed = arrive ? range(1, 3) : range(2, 3);
 			float size = range(0.045f, 0.08f);
 			Vec3 v = cone(new Vec3(0, 1, 0), Math.toRadians(60)).scale(speed);
-			Fx.add(petal.at(chest.add(randomUnit(Fx.RANDOM).scale(0.3))).velocity(v).gravity(2.5f).drag(0.15f).life(life)
-				.size(size, size).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
+			Vec3 from = chest.add(randomUnit(Fx.RANDOM).scale(0.3));
+			if (atCamera) {
+				// round her feet and flung outward, not up through the camera (they passed it as big blurred discs)
+				double a = Fx.RANDOM.nextDouble() * Mth.TWO_PI;
+				Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
+				from = feet.add(out.scale(range(0.5f, 0.9f))).add(0, 0.2, 0);
+				v = out.scale(range(1, 2)).add(0, range(1, 2.5f), 0);
+			}
+			// the petal mask is solid white: tinted teal and narrowed, or they read as round white dots (the critique)
+			Fx.add(petal.at(from).velocity(v).gravity(2.5f).drag(0.15f).life(life)
+				.size(size, size).aspect(0.65f).tint(PETAL_TINT).alpha(0.85f).spin(range(0, Mth.TWO_PI), range(-8, 8)).fade(0.05f, 0.4f));
 		}
-		if (arrive) {
+		if (arrive && !atCamera) {
 			Particle puff = Fx.particle("glow", Palette.TEAL);
 			if (puff != null) {
 				float size = range(0.6f, 0.8f);
@@ -294,7 +331,8 @@ public final class KirikoFx {
 		if (gate != null) {
 			// the game's gate mesh (1048D) glowing teal through its noise, as wide as the path less a step each side
 			float width = (float) (2 * half + 1.6);
-			Fx.add(gate.at(base).mesh(torii, side).size(width * 0.6f, width).easeOut().life(life).alpha(0.85f).fade(0.04f, 0.08f));
+			// translucent, as the game's white-cyan gates are (the critique: ours were nearly solid cyan)
+			Fx.add(gate.at(base).mesh(torii, side).size(width * 0.6f, width).easeOut().life(life).alpha(0.45f).fade(0.04f, 0.08f));
 			Particle glow = Fx.particle("glow", Palette.TEAL);
 			if (glow != null) {
 				Fx.add(glow.at(base.add(0, width * 0.35, 0)).life(0.6f).size(width * 0.6f, width * 1.2f).easeOut().alpha(0.5f).fade(0.1f, 0.7f));
@@ -313,7 +351,8 @@ public final class KirikoFx {
 				float size = range(0.05f, 0.09f);
 				Vec3 from = base.add(side.scale(range(-1, 1) * half)).add(0, range(0.5f, 4.4f), 0);
 				Fx.add(petal.at(from).velocity(randomUnit(Fx.RANDOM).scale(range(0.5f, 1.5f))).gravity(0.6f).drag(0.4f)
-					.life(range(1.5f, 3.5f)).size(size, size).spin(range(0, Mth.TWO_PI), range(-5, 5)).fade(0.05f, 0.4f));
+					.life(range(1.5f, 3.5f)).size(size, size).aspect(0.65f).tint(PETAL_TINT).alpha(0.85f)
+					.spin(range(0, Mth.TWO_PI), range(-5, 5)).fade(0.05f, 0.4f));
 			}
 		}
 		for (int i = 0; i < 4; i++) {
@@ -392,8 +431,8 @@ public final class KirikoFx {
 			}
 			float size = range(0.05f, 0.09f);
 			Fx.add(petal.at(at.add(randomUnit(Fx.RANDOM).scale(0.6)).add(0, 0.8, 0)).velocity(randomUnit(Fx.RANDOM).scale(0.8))
-				.gravity(1.2f).drag(0.3f).life(range(0.6f, 0.7f) * 2).size(size, size).spin(range(0, Mth.TWO_PI), range(-6, 6))
-				.fade(0.05f, 0.4f));
+				.gravity(1.2f).drag(0.3f).life(range(0.6f, 0.7f) * 2).size(size, size).aspect(0.65f).tint(PETAL_TINT).alpha(0.85f)
+				.spin(range(0, Mth.TWO_PI), range(-6, 6)).fade(0.05f, 0.4f));
 		}
 	}
 
@@ -402,14 +441,14 @@ public final class KirikoFx {
 	/** Three warm dust puffs where she grips the wall (effect 289: tint (0.83, 0.53, 0.17), 1.1 m, 0.35 s). */
 	public static void climbDust(Vec3 at) {
 		for (int i = 0; i < 3; i++) {
-			Particle dust = Fx.particle("dust", Palette.NATURAL);
+			// the puff's shape in the game's warm light dust colour (its own colours, tinted, came out dark brown)
+			Particle dust = Fx.soft("dust", Palette.NATURAL);
 			if (dust == null) {
 				return;
 			}
-			// the puff texture is already dusty; the game's tint warms it further
 			float size = range(1.08f, 1.2f) * 0.6f;
 			Fx.add(dust.at(at.add(randomUnit(Fx.RANDOM).scale(0.2))).velocity(new Vec3(0, range(0.2f, 0.4f), 0)).life(range(0.33f, 0.4f))
-				.size(size * 0.7f, size).spin(range(-Mth.HALF_PI, Mth.HALF_PI), 0).tint(0xEAC9A0).alpha(0.7f).fade(0.1f, 0.6f));
+				.size(size * 0.7f, size).spin(range(-Mth.HALF_PI, Mth.HALF_PI), 0).tint(0xEAC072).alpha(0.6f).fade(0.1f, 0.6f));
 		}
 	}
 

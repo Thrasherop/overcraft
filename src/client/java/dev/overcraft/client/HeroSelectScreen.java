@@ -41,6 +41,8 @@ import static dev.overcraft.client.hud.HudDraw.outline;
  * plain Minecraft).
  */
 public class HeroSelectScreen extends OwScreen {
+	/** How far (blocks) the previewed model sits below the middle of its frame: puts her head near the top. */
+	private static final float MODEL_DROP = 0.45f;
 	private static final float PORTRAIT = 72;
 	private static final float PORTRAIT_GAP = 8;
 	private static final float GROUP_GAP = 48;
@@ -210,14 +212,15 @@ public class HeroSelectScreen extends OwScreen {
 	private void hero(GuiGraphicsExtractor g, int mouseX, int mouseY) {
 		float s = scale();
 		if (HeroModels.get(preview) != null && minecraft.player != null) {
-			// feet just above the roster, the head well below the top: about 70% of the height, as in Overwatch
-			int top = (int) (95 * s);
-			int bottom = (int) (790 * s);
-			int size = (int) ((bottom - top) / 1.95f);
+			// framed as Overwatch frames its heroes: large, from mid-thigh up, the head near the top and the legs cut
+			// off above the roster (the critique: a full body at 55% of the height looked small)
+			int top = (int) (40 * s);
+			int bottom = (int) (800 * s);
+			int size = (int) (700 * s);
 			int cx = width / 2;
 			HeroModelRenderer.preview(preview);
 			try {
-				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, 0.0625f,
+				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, MODEL_DROP,
 					mouseX, mouseY, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);

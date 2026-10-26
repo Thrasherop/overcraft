@@ -5,6 +5,48 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**The critique's list, first round** (`tools/reference/critique-2026-10-26.md`: a critique sub-agent's 46 findings,
+our screenshots measured against Overwatch frames; numbers below are its items).
+- HUD:
+  - No Minecraft block outline in hero mode (#3: it framed the crosshair at every wall climbed).
+  - Cooling down: the icon stays, darkened, behind a ragged ink splash with drips, the seconds thinly outlined (#4).
+  - Ult meter: 80 smooth ticks shading dark to bright orange, the unfilled ring almost bare, a fine dark outer circle, a
+    brownish inner one, the disc 75% dark (#5, #26). Ready: the blue ring in four bands with a soft halo and white
+    triangles at 3 and 9 o'clock (#14). It empties the moment Kitsune Rush starts; the "KITSUNE RUSH" caption is gone
+    (#13).
+  - Ammo text 18 px, anchored clear of the icons (#6). Key labels lower and narrower, filled white under a ready
+    ability (#7). Ready and pressed boxes taller with a white underline, cooling-down boxes shorter and lower (#22).
+  - The panels' sloped lines are smooth (soft-edged textures, not stepped fills), with a visible glow (#23). Bigger mice,
+    white with a dark outline and the button split showing (#24).
+  - The volley bar's segments lean 45 degrees and tilt 12; spent ones are light outlines over a dark fill (#25).
+  - Health number smaller, pips 24 px wide, a partial pip filling from the left (#29). HUD text has a soft shadow
+    instead of Minecraft's hard grey one.
+  - Found on the way: Minecraft's mipmapper treats any texture with transparency as a cutout and adds 2.5% alpha to
+    every pixel of the smaller mips, which drew a faint box round each HUD shape (seen round the volley bar against the
+    sky). HUD and effect masks now average plainly (`HeroTexture` takes a mipmap strategy).
+- Hero select: the model large from mid-thigh up, its legs cut off above the roster (#32); no hotbar, HUD or held hand
+  behind the screen (#34). The Esc menu shows the sub-role too (#42).
+- Effects:
+  - The homing ofuda's gold is blended rather than added (added over grass it turned lime), its glows smaller; the same
+    for its heal flower (#1). The ground hit's glow kept under a metre (#39). New: soft (blended) effect textures and
+    trails (`EffectArt.get(.., soft)`, `Fx.soft`).
+  - Suzu's glows lifted off the ground: a camera-facing glow centred on it was cut off flat (#8). Its 5 s ring soft
+    gold (#38).
+  - Her own Swift Step arrival in first person: no flash or puff on the camera (the white disc by LSHIFT), the petals
+    flung out from her feet (#9). Petals tinted teal and narrowed (they were round white dots, #15).
+  - Torii gates translucent, fading out within about 3 m of the camera, per corner (#12, in part: no fox yet).
+  - Climb dust in the game's light warm colour (#40: it came out dark brown).
+- Not bugs: the white pixel squares round the healed villager in the critique's captures are Minecraft's death poofs
+  from the villager the effects test kills just before (seen again, then checked with the heal effect alone). #41
+  asked for ofuda on the left button: the owner chose the right (HANDOFF). #33 (abilities shown under the name): ours on
+  purpose, Overwatch's details are still behind F1.
+- Played (dev harness, 1920x1080): every HUD state (`hud4_br_sheet`, `hud4_ult_pair`, `hud4_mid_pair`: rest, spent,
+  cast, cooling down, both cooling down, reload, ult ready, rushing); every effect (`fx7_sheet_a/b`); Swift Step and
+  Suzu in first person with the game frozen mid-effect (`p1_sheet`, `p1_burst`); a fresh survival world (`pb1_*`,
+  `pb2_*`): the select screen, joining, a night fight with two zombies on Normal (killed one with kunai, the other
+  killed Kiriko: health read 204, 67, 9, then dead; respawned with the hero HUD back), Suzu at her feet, ofuda, Swift Step, Minecraft
+  mode's HUD and pause menu, the Overwatch menu, a wall up close in both modes (outline only in Minecraft mode).
+
 **The game's own sounds** (owner: "it should use actual assets every time there is one in overwatch"). A sound
 sub-agent traced which of Kiriko's effects plays which sound bank in the archived build, which banks are Wwise layer
 containers (several files played at once) and which audience hears each (her own player or everyone else):
