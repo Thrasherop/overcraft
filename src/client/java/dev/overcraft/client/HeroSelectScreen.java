@@ -64,6 +64,7 @@ public class HeroSelectScreen extends OwScreen {
 		this.onJoin = onJoin;
 		Hero current = ClientHero.hero();
 		this.preview = current != null ? current : Hero.KIRIKO;
+		HeroModelRenderer.restartShowcase();
 	}
 
 	@Override
@@ -138,6 +139,9 @@ public class HeroSelectScreen extends OwScreen {
 			Hero clicked = cardAt(event.x(), event.y());
 			if (clicked != null) {
 				boolean again = clicked == preview;
+				if (preview != clicked) {
+					HeroModelRenderer.restartShowcase();
+				}
 				preview = clicked;
 				if (again || doubleClick) {
 					confirmPick();
@@ -172,6 +176,7 @@ public class HeroSelectScreen extends OwScreen {
 				}
 			}
 			preview = cards.get(Math.floorMod(at + (key == InputConstants.KEY_LEFT ? -1 : 1), cards.size())).hero();
+			HeroModelRenderer.restartShowcase();
 			return true;
 		}
 		return super.keyPressed(event);

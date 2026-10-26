@@ -181,6 +181,26 @@ public final class HeroAnimator {
 		return Skeleton.skin(model, pose, -1, null);
 	}
 
+	/**
+	 * The hero select screen's pose, as Overwatch's (the hero's showcase entity, #29): its intro once, then its hold
+	 * looping (breathing; she looks off past the camera). Null when the model lacks the hold.
+	 */
+	public static Matrix4f @Nullable [] poseShowcase(SkinnedModel model, float sinceOpened) {
+		SkinnedModel.Clip intro = model.clips.get("select_intro");
+		SkinnedModel.Clip hold = model.clips.get("select_hold");
+		if (hold == null || hold.duration() <= 0) {
+			return null;
+		}
+		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		if (intro != null && sinceOpened < intro.duration()) {
+			Skeleton.sample(intro, sinceOpened, pose);
+		} else {
+			float t = sinceOpened - (intro == null ? 0 : intro.duration());
+			Skeleton.sample(hold, t % hold.duration(), pose);
+		}
+		return Skeleton.skin(model, pose, -1, null);
+	}
+
 	/** Skin matrices for the entity this frame. {@code now} in seconds (game time + partial tick). */
 	public Matrix4f[] pose(SkinnedModel model, LivingEntity entity, float now, float netHeadYaw, float headPitch) {
 		lastSeen = now;

@@ -6,6 +6,21 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.1
+Its asset pack must be rebuilt: Kiriko's model gains two clips (re-export her with `tools/owm_survey.py ... --glb
+--keep=tools/clipmaps/kiriko.txt`, copy it to the pack as `hero_models/kiriko.glb`, then `zip`). An older pack still
+works, with her plain standing pose on the select screen.
+- **Hero select pose (#29):** Overwatch's own hero select animation, from her showcase entity in the game data:
+  `B5DE`, the intro (2.43 s), plays once when the screen opens; then `B9E2`, the hold (3.87 s, only breathing), loops.
+  Both are in `tools/clipmaps/kiriko.txt` as `select_intro` and `select_hold`.
+- **She looks straight ahead on the select screen (#30):** not at the mouse, and not tilted by the player's pitch.
+  - Played: opened hero select with H after respawning; screenshots at 0.3, 1.0, 1.8, 2.6, 4.0 and 6.0 s show the
+    intro (kunai raised, hands together) then the hold (ofuda up by her face), with 2.6 s and 6.0 s the same pose
+    (`r12_sel_*`). Closed and reopened: the intro plays again (`r12_reopen_0.3`). Through the pause menu's Change
+    Hero: intro at 0.4 s, hold at 3.4 s (`r12_change_*`). In-game third person keeps her usual stance (`r12_3p`).
+    The pause menu reads "0.3.1 · ASSETS 0.3.1", not flagged (`r12_pause`). Not tried: the select screen on a first
+    join, and switching between two heroes (only Kiriko is playable yet).
+
 ### Build 0.3.0
 Same asset pack as 0.2.0.
 - **Hero mode by the G key alone (#26, the owner's call).** The hotbar no longer decides it: hero mode is a flag G

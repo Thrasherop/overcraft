@@ -79,6 +79,14 @@ public final class HeroModelRenderer {
 		preview = hero;
 	}
 
+	/** When the select screen's showcase started (Util.getMillis): its intro plays from here (#29). */
+	private static long showcaseSince = -1;
+
+	/** The select screen opened, or its hero changed: the showcase intro plays again. */
+	public static void restartShowcase() {
+		showcaseSince = Util.getMillis();
+	}
+
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
 		LAST_HERO.clear();
@@ -120,7 +128,12 @@ public final class HeroModelRenderer {
 		// pose, so it took the player's own pitch in the world (looking down, the head bent over and the back of the
 		// hair opened up: #29, #30)
 		boolean previewing = preview != null && entity == Minecraft.getInstance().player;
-		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
+		// on the select screen, Overwatch's hero select animation when the model has it (#29)
+		Matrix4f[] skin = previewing ? HeroAnimator.poseShowcase(loaded.model(), showcaseSince < 0 ? 1000
+			: (Util.getMillis() - showcaseSince) / 1000f) : null;
+		if (skin == null) {
+			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
+		}
 		Timing.pose += System.nanoTime() - t0;
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action()),
 			preview == null));
