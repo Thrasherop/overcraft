@@ -89,6 +89,7 @@ public class SuzuEntity extends OwProjectile {
 		}
 		if (owner instanceof Player player) {
 			Combat.addUltCharge(player, healedTotal);
+			Combat.addFireForHealing(player, healedTotal);
 		}
 		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10), getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_SUZU_BURST, SoundSource.PLAYERS, 1, 1);

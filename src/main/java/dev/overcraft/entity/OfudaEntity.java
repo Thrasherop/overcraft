@@ -96,13 +96,14 @@ public class OfudaEntity extends OwProjectile {
 		float healed = Combat.heal(ally, KirikoStats.OFUDA_HEAL);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, healed);
+			Combat.addFireForHealing(owner, healed);
 			// Medic: weapon healing also heals Kiriko (no ult charge for that part)
 			if (healed > 0) {
 				Combat.heal(owner, healed * KirikoStats.MEDIC_SELF_HEAL);
 				// now and then a healing line ("Be healed", "Like a gentle rain": the sound research's 0.15 chance; the
 				// 20 s between them is ours)
 				if (owner instanceof ServerPlayer kiriko) {
-					Voice.sayNowAndThen(kiriko, "heal", 0.15f, 400);
+					Voice.sayNowAndThen(kiriko, "heal", 0.15f, 400, Voice.heroOf(ally));
 				}
 			}
 		}

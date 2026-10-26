@@ -37,8 +37,17 @@ public final class HeroState {
 	public long lastDamagedTick = -10000;
 	/** When the hero last spoke a voice line (game time), to space them out. */
 	public long voiceAt = -10000;
-	/** When the hero last killed something (game time): multikills. */
+	/** When the hero last killed an enemy (game time), and how many in a row within the chain: multikills. */
 	public long lastKillAt = -10000;
+	public int killChain;
+	/** No multikill line before this (game time). */
+	public long multikillReadyAt;
+	/** When the hero last landed a critical hit (game time): a kill on that tick was a headshot. */
+	public long critAt = -10000;
+	/** On Fire (Combat.addFire): the score, whether On Fire, and when it may start again (game time). */
+	public double fireScore;
+	public boolean onFire;
+	public long fireReadyAt;
 	/** When each now-and-then line was last said (Voice.sayNowAndThen). */
 	public final java.util.Map<String, Long> saidAt = new java.util.HashMap<>();
 	/** In (or just out of) a Kitsune Rush corridor this tick. */

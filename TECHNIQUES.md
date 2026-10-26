@@ -142,6 +142,14 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   front, 208 on the back) textured with Blizzard's baked shade (#CDCCCB to #756664 in atlas 31E3B), not a back face lit
   the wrong way round; a normal flip changed nothing there and, tested as the world's camera in the menu's
   orthographic, mirrored preview (`scale(s, s, -s)`), turned half her face dark.
+- A hero's own sounds should be bound to them (`ClientboundSoundEntityPacket`, an EntityBoundSoundInstance on the
+  client), not placed at a point: a point sound stays put while they teleport or dash, and fades behind them.
+  In-the-head sounds (Overwatch's 2D ones): a client sound instance with `relative = true` and `Attenuation.NONE`.
+- To check sounds, ask the client what it played: the harness's `heard` lists each sound since the last call, the
+  file picked and its kind (fixed, bound to an entity, in the head). Minecraft re-announces looping sounds to
+  listeners every 10 ticks: repeats in the list aren't restarts.
+- The Ender Dragon is hit through its parts (EnderDragonPart, not a LivingEntity) and only with AI on; a summoned
+  NoAI dragon never places its parts, so nothing can hit it.
 - Minecraft's projectile hits ignore the projectile's size: `ProjectileUtil.computeMargin` widens the target boxes from
   0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`); test it
   with a still mob and shots aimed just inside and just outside the radius.

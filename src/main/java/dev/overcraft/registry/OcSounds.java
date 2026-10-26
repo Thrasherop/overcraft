@@ -61,6 +61,21 @@ public final class OcSounds {
 	public static final SoundEvent KIRIKO_VOICE_DEATH = register("kiriko.voice.death");
 	public static final SoundEvent KIRIKO_VOICE_PAIN = register("kiriko.voice.pain");
 	public static final SoundEvent KIRIKO_VOICE_MELEE = register("kiriko.voice.melee");
+	public static final SoundEvent KIRIKO_VOICE_ON_FIRE = register("kiriko.voice.on_fire");
+	/** Kitsune Rush's corridor, heard by each player in it (RushSound, #16): the opening hits, and the three looping beds. */
+	public static final SoundEvent KIRIKO_RUSH_PATH_START = register("kiriko.rush.path_start");
+	public static final SoundEvent KIRIKO_RUSH_PATH_1 = register("kiriko.rush.path_1");
+	public static final SoundEvent KIRIKO_RUSH_PATH_2 = register("kiriko.rush.path_2");
+	public static final SoundEvent KIRIKO_RUSH_PATH_3 = register("kiriko.rush.path_3");
+	/**
+	 * Kiriko's lines for one ally hero or one kind of kill, "kiriko.voice.<moment>.<condition>" (Voice picks them when
+	 * the condition holds: tools/reference/kiriko-voice.md, #13).
+	 */
+	public static final java.util.List<String> KIRIKO_VOICE_CONDITIONS = java.util.List.of("swift_step.wrecking_ball", "swift_step.widowmaker", "swift_step.sigma", "swift_step.lucio", "swift_step.roadhog", "swift_step.reinhardt", "swift_step.junker_queen", "swift_step.ashe", "swift_step.cassidy", "swift_step.mercy", "swift_step.illari", "swift_step.genji", "swift_step.hanzo", "heal.reaper", "heal.genji", "heal.hanzo", "elimination.headshot", "elimination.in_air");
+
+	static {
+		KIRIKO_VOICE_CONDITIONS.forEach(condition -> register("kiriko.voice." + condition));
+	}
 
 	private OcSounds() {
 	}

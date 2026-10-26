@@ -459,16 +459,22 @@ kiriko.rush.cast = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Ef
 kiriko.rush.cast_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DBE.00D/Sounds/000000007E29.02C/0000002B3278.03F.ogg
 # cast burst heard by others (1 stereo 6.0 s, 75 m). MEDIUM: effect 3DBE's other bank 78F1.
 kiriko.rush.cast_3p = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DBE.00D/Sounds/0000000078F1.02C/0000002B3267.03F.ogg
-# corridor ambience bed (in Overwatch these 4 stereo 4-10.8 s beds play TOGETHER and loop until stopped; 2B3279 alone is the closest to a loop: level flat from start to end). MEDIUM: path effect 2E87 (8 s) held by Kitsune graph 33DB, bank 7924 layer 719461219 (+ a stop action).
-kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3279.03F.ogg
-kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B1.03F.ogg
-kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3206.03F.ogg
-kiriko.rush.path = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3248.03F.ogg
-# corridor opening one-shots (4 stereo 2.9-8.3 s, decaying; in Overwatch all 4 play together with the bed). MEDIUM: bank 7924's second layer container 920696300. The nearest thing to a 'fox rushing' sound found: the fox entity 3F54 has no sound of its own.
-kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B3.03F.ogg
-kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3277.03F.ogg
-kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3243.03F.ogg
-kiriko.rush.path_start = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3250.03F.ogg
+# Kitsune Rush's corridor, heard by each player inside it, in their head (tools/reference/sounds-round8.md, #16): bank
+# 7924. The three beds loop together while inside (each its own event, so each loops cleanly: RushSound plays them at
+# once), pitched as the game plays them (2B3279 x1.79, 2B31B1 x1.05); the opening hits play on entering, with 2B3248
+# at 0.2 s. Gains: the game's net gains, 4 dB down (a quiet bed under a louder start).
+kiriko.rush.bed_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3279.03F.ogg
+kiriko.rush.bed_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B1.03F.ogg
+kiriko.rush.bed_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3206.03F.ogg
+kiriko.rush.bed_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3248.03F.ogg
+kiriko.rush.open_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B31B3.03F.ogg
+kiriko.rush.open_2 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3277.03F.ogg
+kiriko.rush.open_3 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3243.03F.ogg
+kiriko.rush.open_4 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002E87.00D/Sounds/000000007924.02C/0000002B3250.03F.ogg
+@kiriko.rush.path_1 = kiriko.rush.bed_1*1.79:-14
+@kiriko.rush.path_2 = kiriko.rush.bed_2*1.05:+4
+@kiriko.rush.path_3 = kiriko.rush.bed_3:+5
+@kiriko.rush.path_start = kiriko.rush.open_1*1.44:-6 + kiriko.rush.open_2:+1 + kiriko.rush.open_3:-5 + kiriko.rush.open_4@0.03:-2 + kiriko.rush.bed_4@0.2:+6
 # torii gate 1 chime (2.2 s, lowest partial 1042 Hz). HIGH: gate graph 31EE switches on the gate index to one of six effects 3DC8..3DCE; their pitches rise in that order.
 kiriko.rush.gate_1 = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003DC8.00D/Sounds/0000000078F9.02C/0000002B325A.03F.ogg
 # torii gate 2 chime (lowest partial 1242 Hz). HIGH.
@@ -530,99 +536,123 @@ kiriko.melee.hit_sub = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3
 # OPTIONAL 'ability not available' click (1 stereo 0.2 s). MEDIUM: effect 0186 is the m_835F4CE6 'denied' effect of the Suzu and Kitsune Rush StateAbility nodes and a client-only effect in the Swift Step graph; generic bank.
 kiriko.ability.denied = Heroes/Kiriko/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000186.00D/Sounds/000000000FCB.02C/0000002AA253.03F.ogg
 
-# ===== Voice (HeroVoice/Kiriko, English set)
-# Swift Step lines, stimulus FC0 (graph 30DB). HIGH. Left out: lines naming a hero (Mizuki, Genji, Hanzo), target-specific greetings (shoulderpads, tunes, big guy, queen) and two likely seasonal ones (Ho ho hey, Boo!).
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EABB.0B2-I'm here.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6E.0B2-(Japanese)_ I'm here.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EAB9.0B2-I'm with you.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6F.0B2-(Japanese)_ I'm with you.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFD.0B2-(chuckle) Hey.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFE.0B2-What's up.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC7.0B2-I'll be your angel.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA4.0B2-Rolling with you.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA5.0B2-How's the hunt_.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC3.0B2-Howdy.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/0000000627BB.0B2-(Japanese)_ Are you well_.ogg
-kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000006B568.0B2-Your pocket ninja's here.ogg
-# Protection Suzu lines, stimulus FC5 (graph 30D8). HIGH.
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB97.0B2-Feel better_.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB6A.0B2-(Japanese)_ Cleansed.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB7B.0B2-Cleansed.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE71.0B2-Protecting!.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EF87.0B2-Washed away.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE92.0B2-Purified.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF2.0B2-Kanezaka-jinja protects you.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF1.0B2-Now go get 'em.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF0.0B2-You have no excuses now.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CEF.0B2-You're all good.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CE2.0B2-Hear my bell.ogg
-kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CDF.0B2-Be purified!.ogg
-# healing lines, stimulus FC4 (heal subgraph 2128, run on the healed ally; the voice node has 0.15 / 4 / 3 parameters: likely a chance and cooldowns, so Overwatch says one only now and then). HIGH. Left out: lines naming Shimada/Mizuki.
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB73.0B2-(Japanese)_ Protection!.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EACA.0B2-Let me balance you out.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAEC.0B2-Restoring balance.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB65.0B2-You take a lot of damage, huh_.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EA5D.0B2-Be healed.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB6D.0B2-(Japanese)_ Healing.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAFA.0B2-Soothing your wounds.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB74.0B2-(Japanese)_ Restoring you.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAD3.0B2-Like a gentle rain.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAC7.0B2-I've got you.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB92.0B2-Carried on the wind.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE97.0B2-The breeze brings relief.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE95.0B2-Feels like sunlight, huh_.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE96.0B2-(Japanese)_ Like komorebi.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE98.0B2-My gift to you.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE99.0B2-Draw strength from nature.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF7F.0B2-Like mending a shadow.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EFEC.0B2-Your wounds run deep.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EFEA.0B2-A brush of summer.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/0000000627B7.0B2-(Japanese)_ You'll be fine.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CEE.0B2-(Japanese)_ Chasing away the evil.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDC.0B2-Under my protection.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDD.0B2-Feels good, huh_.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDE.0B2-(Japanese)_ I'll protect you!.ogg
-kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000006B554.0B2-Dispelling your curse.ogg
+# ===== Voice (HeroVoice/Kiriko, English set): lines by moment, from tools/reference/kiriko-voice.md (the game data's criteria and weights,
+# 2026-10-26, issue #13). "<moment>" = the generic pool; "<moment>.<hero>" = a line only for that ally hero
+# (Overwatch's "Hero Interaction"), "<moment>.<event>" = only for that kind of kill (headshot, in_air). Voice
+# picks the pool (the generic one, or a matching condition's by its share of the total weight); within a pool
+# Minecraft picks by "| w=" (Overwatch's weight). Left out: lines for skins, maps, seasonal events, NPCs, and
+# 62CFB (weight 0.001). "Now I'm having fun" is a multikill line in the data and on the wiki, not On Fire's.
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EAB9.0B2-I'm with you.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EABB.0B2-I'm here.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6E.0B2-(Japanese)_ I'm here.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EB6F.0B2-(Japanese)_ I'm with you.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFD.0B2-(chuckle) Hey.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/00000005EEFE.0B2-What's up.ogg | w=1
+kiriko.voice.swift_step = HeroVoice/Kiriko/Unknown/FC0.078/0000000627BB.0B2-(Japanese)_ Are you well_.ogg | w=1
+kiriko.voice.swift_step.wrecking_ball = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA4.0B2-Rolling with you.ogg | w=0.1
+kiriko.voice.swift_step.widowmaker = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFA5.0B2-How's the hunt_.ogg | w=0.1
+kiriko.voice.swift_step.sigma = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFAC.0B2-Cute shoulderpads.ogg | w=0.1
+kiriko.voice.swift_step.lucio = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFAE.0B2-Digging the tunes.ogg | w=0.1
+kiriko.voice.swift_step.roadhog = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFBE.0B2-Hey, big guy.ogg | w=0.1
+kiriko.voice.swift_step.reinhardt = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFBE.0B2-Hey, big guy.ogg | w=0.1
+kiriko.voice.swift_step.junker_queen = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC2.0B2-Hey, queen.ogg | w=0.1
+kiriko.voice.swift_step.ashe = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC3.0B2-Howdy.ogg | w=0.1
+kiriko.voice.swift_step.cassidy = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC3.0B2-Howdy.ogg | w=0.1
+kiriko.voice.swift_step.mercy = HeroVoice/Kiriko/Unknown/FC0.078/00000005EFC7.0B2-I'll be your angel.ogg | w=0.1
+kiriko.voice.swift_step.illari = HeroVoice/Kiriko/Unknown/FC0.078/000000069284.0B2-Boo! (laughs).ogg | w=0.1
+kiriko.voice.swift_step.genji = HeroVoice/Kiriko/Unknown/FC0.078/00000006B568.0B2-Your pocket ninja's here.ogg | w=0.3
+kiriko.voice.swift_step.genji = HeroVoice/Kiriko/Unknown/FC0.078/00000006C279.0B2-Got your back, Genji.ogg | w=1
+kiriko.voice.swift_step.hanzo = HeroVoice/Kiriko/Unknown/FC0.078/00000006C27A.0B2-I'm here, Hanzo.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB6A.0B2-(Japanese)_ Cleansed.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB7B.0B2-Cleansed.ogg | w=0.1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EB97.0B2-Feel better_.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE71.0B2-Protecting!.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EE92.0B2-Purified.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/00000005EF87.0B2-Washed away.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CDF.0B2-Be purified!.ogg | w=0.1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CE2.0B2-Hear my bell.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CEF.0B2-You're all good.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF0.0B2-You have no excuses now.ogg | w=0.1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF1.0B2-Now go get 'em.ogg | w=1
+kiriko.voice.suzu = HeroVoice/Kiriko/Unknown/FC5.078/000000062CF2.0B2-Kanezaka-jinja protects you.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EACA.0B2-Let me balance you out.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAD3.0B2-Like a gentle rain.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAEC.0B2-Restoring balance.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAFA.0B2-Soothing your wounds.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB6D.0B2-(Japanese)_ Healing.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB74.0B2-(Japanese)_ Restoring you.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB92.0B2-Carried on the wind.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE96.0B2-(Japanese)_ Like komorebi.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE98.0B2-My gift to you.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE99.0B2-Draw strength from nature.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/0000000627B7.0B2-(Japanese)_ You'll be fine.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDC.0B2-Under my protection.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDD.0B2-Feels good, huh_.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CDE.0B2-(Japanese)_ I'll protect you!.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/000000062CEE.0B2-(Japanese)_ Chasing away the evil.ogg | w=1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EB73.0B2-(Japanese)_ Protection!.ogg | w=0.25
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EA5D.0B2-Be healed.ogg | w=0.1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EAC7.0B2-I've got you.ogg | w=0.1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE95.0B2-Feels like sunlight, huh_.ogg | w=0.1
+kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE97.0B2-The breeze brings relief.ogg | w=0.1
+kiriko.voice.heal.reaper = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF7F.0B2-Like mending a shadow.ogg | w=0.5
+kiriko.voice.heal.genji = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF84.0B2-Be careful, Shimada.ogg | w=0.5
+kiriko.voice.heal.hanzo = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF84.0B2-Be careful, Shimada.ogg | w=0.5
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB6B.0B2-(Japanese)_ Cool.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB6C.0B2-(Japanese)_ Goodbye.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB72.0B2-(Japanese)_ My apologies.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB8D.0B2-Nice.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB94.0B2-Take some time off.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB9B.0B2-Underestimated me, ne_.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EE93.0B2-Back off.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000061A9E.0B2-(Japanese)_ Bye!.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000061A9F.0B2-Find peace.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/0000000627AF.0B2-(Japanese)_ Incredible!.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/0000000627B0.0B2-(Japanese)_ As expected!.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/0000000627B2.0B2-(Japanese)_ Well done!.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/0000000627B3.0B2-(Japanese)_ Ouch!.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/0000000627C8.0B2-I'll pretend I didn't see that.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000062CF7.0B2-How embarrassing.ogg | w=1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB7D.0B2-Heh, cool.ogg | w=0.1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB80.0B2-Sit down, please.ogg | w=0.1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB91.0B2-Ouch.ogg | w=0.1
+kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000062CF6.0B2-You were being rude.ogg | w=0.1
+kiriko.voice.elimination.headshot = HeroVoice/Kiriko/Elimination/00000005EB69.0B2-(chuckle).ogg | w=0.2
+kiriko.voice.elimination.headshot = HeroVoice/Kiriko/Elimination/00000005EB93.0B2-Shouldn't have put your head there.ogg | w=0.2
+kiriko.voice.elimination.headshot = HeroVoice/Kiriko/Elimination/00000005EB98.0B2-That's the spot.ogg | w=0.2
+kiriko.voice.elimination.headshot = HeroVoice/Kiriko/Elimination/00000005EB9D.0B2-And what did we learn_.ogg | w=0.1
+kiriko.voice.elimination.in_air = HeroVoice/Kiriko/Elimination/00000005EB7E.0B2-Did you think you were safe up there_.ogg | w=0.8
+kiriko.voice.elimination.in_air = HeroVoice/Kiriko/Elimination/00000005EB9C.0B2-Welcome back to earth.ogg | w=1
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/00000005EB9E.0B2-Your hand-to-hand needs work.ogg | w=1
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000061AA3.0B2-That lesson was free.ogg | w=1
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000062CFC.0B2-It's called personal space.ogg | w=1
+kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/0000000627BF.0B2-Look, don't touch.ogg | w=0.1
+kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB82.0B2-Fox in a hen house.ogg | w=1
+kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB8F.0B2-Now I'm having fun.ogg | w=1
+kiriko.voice.on_fire = HeroVoice/Kiriko/OnFire/00000005EFCF.0B2-I'm on fire.ogg | w=1
+kiriko.voice.on_fire = HeroVoice/Kiriko/OnFire/00000005EF9C.0B2-The battle ignites me!.ogg | w=0.3
+kiriko.voice.on_fire = HeroVoice/Kiriko/OnFire/00000005EFD0.0B2-Aw, I feel all warm inside.ogg | w=0.3
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB7A.0B2-Let's get back to it.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB86.0B2-I don't give up that easily.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB90.0B2-Okay. I learned from that.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB9A.0B2-Time to try again.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF7B.0B2-Done playing around.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EFF9.0B2-Time to get clever.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000006B560.0B2-Well that was uncalled for.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000006C277.0B2-My path doesn't end here.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000006C278.0B2-That won't shake my faith.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000006C282.0B2-The Fox Spirit is still with me.ogg | w=1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB89.0B2-I licked my wounds. Let's go.ogg | w=0.2
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB8C.0B2-The spring flows anew.ogg | w=0.2
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF6C.0B2-That was interesting.ogg | w=0.1
+kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EFFA.0B2-Eh. We've got this.ogg | w=0.1
+kiriko.voice.select = HeroVoice/Kiriko/HeroSelect/00000005F846.0B2-I'll find my own path.ogg | w=1
 
-# ===== Voice lines by moment (Voice.say): the unconditional lines of each HeroVoice category (lines whose criteria
-# name a hero or map are left out; "NOT (scripted event)" is the normal case). Picked by a script, English first.
+# ===== The other moments' lines (Voice.say), as before: the unconditional lines of their HeroVoice categories.
 # ult_ready: Ultimate/Ready (3 of 3 unconditional)
 kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EF73.0B2-My ultimate is ready.ogg
 kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EFE0.0B2-The Kitsune is ready to be unleashed.ogg
 kiriko.voice.ult_ready = HeroVoice/Kiriko/Ultimate/Ready/00000005EFF8.0B2-The Kitsune is ready.ogg
-# elimination: Elimination (36 of 77 unconditional)
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB7D.0B2-Heh, cool.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB80.0B2-Sit down, please.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB8D.0B2-Nice.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB91.0B2-Ouch.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB94.0B2-Take some time off.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB9B.0B2-Underestimated me, ne_.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EE93.0B2-Back off.ogg
-kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/000000061A9F.0B2-Find peace.ogg
-# melee_kill: MeleeEnemyKilledRemark (8 of 15 unconditional)
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/00000005EB9E.0B2-Your hand-to-hand needs work.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000061AA3.0B2-That lesson was free.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/0000000627BF.0B2-Look, don't touch.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000062CFC.0B2-It's called personal space.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000064CCB.0B2-Palm read this.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000064CCC.0B2-My divine gift.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000065B8A.0B2-Knocked your lights out.ogg
-kiriko.voice.melee_kill = HeroVoice/Kiriko/MeleeEnemyKilledRemark/000000062CFB.0B2-(Japanese)_ Wow, smart of you to get so close.ogg
-# multikill: Multikill (2 of 2 unconditional)
-kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB82.0B2-Fox in a hen house.ogg
-kiriko.voice.multikill = HeroVoice/Kiriko/Multikill/00000005EB8F.0B2-Now I'm having fun.ogg
-# respawn: Respawn (23 of 28 unconditional)
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB7A.0B2-Let's get back to it.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB86.0B2-I don't give up that easily.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB89.0B2-I licked my wounds. Let's go.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB8C.0B2-The spring flows anew.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB90.0B2-Okay. I learned from that.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EB9A.0B2-Time to try again.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF6C.0B2-That was interesting.ogg
-kiriko.voice.respawn = HeroVoice/Kiriko/Respawn/00000005EF7B.0B2-Done playing around.ogg
-# select: HeroSelect (2 of 2 unconditional)
-kiriko.voice.select = HeroVoice/Kiriko/HeroSelect/00000005F846.0B2-I'll find my own path.ogg
-kiriko.voice.select = HeroVoice/Kiriko/HeroSelect/000000065B81.0B2-I'll light my own path.ogg
 # death: Death (6 of 6 unconditional)
 kiriko.voice.death = HeroVoice/Kiriko/Death/000000062731.0B2-(dying sounds).ogg
 kiriko.voice.death = HeroVoice/Kiriko/Death/000000062732.0B2-(dying sounds).ogg

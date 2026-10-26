@@ -1,7 +1,10 @@
 package dev.overcraft.entity;
 
 import dev.overcraft.hero.Allies;
+import dev.overcraft.Ow;
 import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.kiriko.KirikoStats;
@@ -70,6 +73,11 @@ public class KunaiEntity extends OwProjectile {
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
 			Combat.addUltCharge(owner, dealt);
+			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			HeroState state = crit ? HeroManager.state(owner) : null;
+			if (state != null) {
+				state.critAt = level.getGameTime();
+			}
 			if (owner instanceof net.minecraft.server.level.ServerPlayer thrower && dealt > 0) {
 				Effects.hitMarker(thrower, target, crit);
 			}

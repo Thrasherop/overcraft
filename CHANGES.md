@@ -41,8 +41,46 @@ again on the fix):
 - **#20, friendly fire:** a new option (Options > HERO > ALL HEROES, off by default). On, your kunai and quick melee
   hurt allies (players on your team, pets, villagers). Played: kunai at a villager off (20 -> 20) and on (20 ->
   10.4), quick melee on (10.4 -> 7.2).
-- Still open from the same playtest: #13 (voice lines by event and target hero, On Fire), #16 (Kitsune Rush's
-  in-path loop), #17 (Swift Step's sound), #18 (Victory on killing the Ender Dragon).
+
+**The owner's playtest, second batch:**
+- **#18, Victory.** Killing the Ender Dragon shows Overwatch's VICTORY to everyone in the End: big gold letters over a
+  dark band for 5.6 s, from the moment the dragon starts to die. The announcer's line and the music are sound events
+  waiting for the pack (identified in `tools/reference/sounds-round8.md`, not mapped yet).
+  - Found on the way: kunai went straight through the dragon. Its hitboxes are part entities, so the check for what
+    a kunai can hurt refused them. A hit on a part now hurts the dragon through it, and the head counts as a crit.
+  - Played: a dragon at 3 health killed with kunai (`vic_f_sheet`). Note: a NoAI dragon can't be hit by anything
+    (it never places its parts).
+- **#13, voice lines match what's happening:**
+  - "Now I'm having fun" is a multikill line in the game data and on the wiki, not On Fire's. Multikill fired on any
+    two kills of anything within 4 s, on every kill of a chain. Now it fires only on enemies (hostile mobs, enemy
+    players), once per burst (the 2nd kill), at most every 15-20 s (the data's cooldown).
+  - **On Fire** exists now. Points come from damage (100 per victim's full health) and healing (1 per 5 HP), decay
+    5 a second, and catch fire at 250. These are the wiki's numbers; Blizzard never published OW2's. Blizzard's
+    3 s wait before catching fire again is in too. On Fire plays its own lines ("I'm on fire") and sets the HUD
+    portrait alight: an orange border, glow and flames (`r8x_fire_pair`).
+  - **Hero-specific lines** only play for their hero: "Rolling with you" when Swift Stepping to Wrecking Ball,
+    "Howdy" to Ashe or Cassidy, a Reaper healing line... (13 Swift Step heroes, 3 for healing), with Overwatch's
+    weights. Headshot and in-air kills have their own elimination lines.
+  - Skin and seasonal lines are out of the generic pools. Pools are no longer cut to 8 lines (the heal pool has 20),
+    and each line keeps Overwatch's weight (sounds.json `weight`).
+  - From `tools/reference/kiriko-voice.md`: criteria and weights read from the game data, offline.
+  - Played:
+    - three husks killed in a burst: the multikill line on the 2nd, nothing on the 3rd;
+    - a cow: no line;
+    - On Fire reached, with its line and the burning portrait.
+- **#17, Swift Step's sound.**
+  - The hand seal's whoosh (2.7 s) played at the spot she cast from. She teleported away and heard it fade behind
+    her, then the arrival played where she landed.
+  - Now her own sounds follow her (bound to her). She hears the whole whoosh and no arrival: the game plays her only
+    the cast. Others hear the arrival out to Overwatch's 70 m.
+  - Played: the harness's new `heard` command lists her client's sounds: the cast bound to her, then the voice line.
+- **#16, Kitsune Rush's corridor sound.** Each player in the corridor hears it in their head:
+  - the opening hits on entering, and three looping beds at the game's pitch (one 1.79x);
+  - a 0.3 s fade-in, and a 2.5 s fade-out after leaving;
+  - entering again starts it over.
+
+  Played: in, out (silent about 3 s later), back in (the start plays again).
+- The asset zip needs rebuilding for all of this (`py tools/build_asset_pack.py sounds <extracted>` then `zip`).
 
 **Seventh critique round** (`tools/reference/critique-2026-10-26-round7.md`). Each item was reproduced on the old build
 at 1080p, then fixed and played again:

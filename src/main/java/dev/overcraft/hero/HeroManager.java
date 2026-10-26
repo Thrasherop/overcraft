@@ -285,6 +285,7 @@ public final class HeroManager {
 	private static void tickRules(ServerPlayer player, HeroState state) {
 		state.rushed = Combat.isRushed(player);
 		QuickMelee.tick(state);
+		Combat.tickFire(player, state);
 		if (state.ultActive > 0) {
 			state.ultActive--;
 		} else {

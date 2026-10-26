@@ -206,7 +206,8 @@ public final class Kiriko implements HeroKit {
 		Combat.animate(player, "swift_step");
 		// her player hears the hand sign, everyone else her departure (the sound research: audiences 1 and 2)
 		HeroSounds.split(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, OcSounds.KIRIKO_SWIFT_STEP_DEPART, player.position());
-		Voice.maybe(player, s, OcSounds.KIRIKO_VOICE_SWIFT_STEP, 0.6f);
+		// the ally's hero may have a line of their own ("Rolling with you" for Wrecking Ball: #13)
+		Voice.say(player, "swift_step", 0.6f, true, Voice.heroOf(target));
 	}
 
 	private static void finishSwiftStep(ServerPlayer player, HeroState s) {
@@ -231,7 +232,9 @@ public final class Kiriko implements HeroKit {
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
 		Effects.play(level, "swift_step_arrive", arrive, player);
-		level.playSound(null, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 1, 1);
+		// to everyone else, out to Overwatch's 70 m (volume 4.4 = 70 / 16 blocks); not to her: her own cast whoosh, which
+		// follows her, covers the whole step (the game plays her nothing else: #17, sounds-round8.md)
+		level.playSound(player, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 4.4f, 1);
 	}
 
 	/**
@@ -286,6 +289,6 @@ public final class Kiriko implements HeroKit {
 		float step = s.castTicks >= 0 ? (float) (SWIFT_STEP_COOLDOWN + (s.castTicks + 1) / 20.0) : (float) (s.ability1Cooldown / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ULT_COST, s.ultActive > 0,
 			s.primaryAmmo, primaryReload, s.secondaryAmmo, secondaryReload,
-			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero);
+			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire);
 	}
 }

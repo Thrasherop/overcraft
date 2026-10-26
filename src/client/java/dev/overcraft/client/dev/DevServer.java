@@ -48,6 +48,10 @@ public final class DevServer {
 	private DevServer() {
 	}
 
+	/** Sounds heard since the last "heard" command (dev only). */
+	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
+	private static boolean listening;
+
 	public static void startIfEnabled() {
 		if (!Boolean.getBoolean("overcraft.dev")) {
 			return;
@@ -131,6 +135,7 @@ public final class DevServer {
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
 					out.addProperty("anim", HeroAnimator.of(player).playing());
+					out.addProperty("onFire", dev.overcraft.client.ClientHero.sync().onFire());
 					// where the first-person ofuda fingertip was last drawn, from the camera in the world's axes (the throw
 					// puff pops there)
 					out.addProperty("fingertip", dev.overcraft.client.model.HeroModelRenderer.viewFingertip().toString(java.text.NumberFormat.getInstance(java.util.Locale.ROOT)));
@@ -326,6 +331,25 @@ public final class DevServer {
 				// dev only: the hero select screen, as if joined ("select") or at the bed ("select bed")
 				mc.gui.setScreen(new dev.overcraft.client.HeroSelectScreen(!arg.equals("bed")));
 				out.addProperty("ok", true);
+			}
+			case "heard" -> {
+				// dev only: the overcraft sounds the client played since the last "heard" (the first call starts listening):
+				// event -> the file it picked, which shows which voice line played
+				if (!listening) {
+					listening = true;
+					mc.getSoundManager().addListener((sound, events, range) -> {
+						if (sound.getIdentifier().getNamespace().equals("overcraft")) {
+							synchronized (HEARD) {
+								HEARD.add(sound.getIdentifier().getPath() + " -> " + sound.getSound().getLocation().getPath() + " ("
+									+ sound.getClass().getSimpleName() + (sound.isRelative() ? ", in the head" : "") + ")");
+							}
+						}
+					});
+				}
+				synchronized (HEARD) {
+					out.addProperty("heard", String.join(" | ", HEARD));
+					HEARD.clear();
+				}
 			}
 			case "soundinfo" -> {
 				// dev only: which files a sound event resolves to (the local pack's recordings, or the jar's stand-ins)

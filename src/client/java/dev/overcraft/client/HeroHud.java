@@ -350,6 +350,14 @@ public final class HeroHud {
 	}
 
 	/**
+	 * In a Kitsune Rush corridor now: the server marks the players in it every 0.15 s (rush_ally), so this follows the
+	 * corridor itself, about 0.2 s behind as in Overwatch (not the speed buff, which lingers 1 s after leaving).
+	 */
+	public static boolean inRushPath() {
+		return since(inRushAt) < 0.3f;
+	}
+
+	/**
 	 * In Kitsune Rush's path, a white-cyan mist at the screen's edges and light streaks flying past (the reference, §2):
 	 * for every player in it, Kiriko's allies too, not only heroes (the second critique: the ally saw nothing). Its own
 	 * HUD element, drawn whatever HUD the player has.
@@ -413,12 +421,19 @@ public final class HeroHud {
 		float py = 900;
 		float pw = 104;
 		float ph = pw * HudShapes.SHIELD_H / HudShapes.SHIELD_W;
+		boolean onFire = ClientHero.sync().onFire();
+		if (onFire) {
+			image(g, HudShapes.GLOW, px - pw * 0.6f, py - ph * 0.5f, pw * 2.2f, ph * 2, alpha(0xFF6A1A, 0.7f));
+		}
 		image(g, HudShapes.SHIELD, px - 3, py - 3, pw + 6, ph + 6, 0x80000000);
 		image(g, HudShapes.SHIELD, px, py, pw, ph, PORTRAIT_BACK);
 		if (portrait != null) {
 			image(g, portrait, px, py, pw, ph, WHITE);
 		}
-		image(g, HudShapes.SHIELD_BORDER, px, py, pw, ph, PORTRAIT_BORDER);
+		image(g, HudShapes.SHIELD_BORDER, px, py, pw, ph, onFire ? 0xFFFF9A3C : PORTRAIT_BORDER);
+		if (onFire) {
+			flames(g, px, py, pw, ph);
+		}
 		// the hair breaking out over the frame's top (Overwatch's)
 		Identifier pop = HudShapes.portraitPop(hero);
 		if (pop != null) {
@@ -473,6 +488,27 @@ public final class HeroHud {
 		fill(g, left + 28, 1004, 4 + nameW * 0.7f, 3, BLUE);
 		image(g, HudShapes.GLOW, plate + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
 		g.pose().popMatrix();
+	}
+
+	/**
+	 * On Fire: the portrait burns, as Overwatch's does (#13): an orange glow behind it, its border orange, and flames
+	 * licking up its sides and over its top, flickering (ours: Overwatch's is an animated fire texture, not in the pack;
+	 * the first try's flames drifted off above it, too faint to see).
+	 */
+	private static void flames(GuiGraphicsExtractor g, float px, float py, float pw, float ph) {
+		float t = Util.getMillis() / 1000f;
+		for (int i = 0; i < 12; i++) {
+			float phase = (t * (1.6f + (i % 4) * 0.23f) + i * 0.37f) % 1;
+			// along the frame's edge, from low on its sides to its top
+			float along = (i * 0.618f) % 1;
+			float side = along < 0.5f ? -1 : 1;
+			float k = along < 0.5f ? along * 2 : (along - 0.5f) * 2;
+			float x = px + pw / 2 + side * pw * 0.5f * (1 - 0.6f * k) + Mth.sin(t * 5 + i) * 2;
+			float y = py + ph * (0.55f - 0.55f * k) - phase * ph * 0.3f;
+			float size = pw * (0.32f - 0.18f * phase);
+			float fade = Mth.sin(phase * Mth.PI);
+			image(g, HudShapes.GLOW, x - size / 2, y - size * 0.75f, size, size * 1.5f, alpha(phase < 0.4f ? 0xFFD060 : 0xFF6A1A, 0.8f * fade));
+		}
 	}
 
 	// ---- bottom centre: the ult meter ----

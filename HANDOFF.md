@@ -149,6 +149,11 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
 - First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
   hand every throw. Kept your observation.
+- Kiriko's voice lines now use Overwatch's own weights and cooldowns, read from the game data
+  (tools/reference/kiriko-voice.md): CLAUDE.md asks for public sources first, and nothing public gives these. They
+  only shape which line plays and how often (not balance). OK to keep, or prefer our own?
+- On Fire uses the wiki's Overwatch 1 numbers (Blizzard never published Overwatch 2's): 250 points, 5 a second decay,
+  damage and healing as the wiki gives them. Tune if it comes too easily or too rarely in Minecraft fights.
 - Minecraft draws its round blob shadow under every entity, heroes too; Overwatch heroes cast body-shaped shadows and
   no blob (critique round 7, #11). Keep Minecraft's, shrink it to her feet and fainter, or drop it for heroes?
 - The held talismans' blank backs read grey on the select screen (round 7 #6). That is Blizzard's own texture: the

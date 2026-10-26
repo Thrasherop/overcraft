@@ -131,6 +131,48 @@ public final class Combat {
 		return isRushed(hero) ? 1 + dev.overcraft.kiriko.KirikoStats.RUSH_COOLDOWN_RATE : 1;
 	}
 
+	/**
+	 * On Fire (#13): it still exists in Overwatch 2 (back June 13, 2023), but Blizzard never gave its numbers; these
+	 * are the wiki's OW1 ones (the On Fire page: 250 points to catch fire, 5 a second decay, damage worth 100 points
+	 * per victim's full health, healing 1 per 5 HP) and Blizzard's 3 s before it can start again (July 11, 2023).
+	 */
+	public static final double FIRE_AT = 250;
+	public static final double FIRE_MAX = 350;
+	public static final double FIRE_DECAY_PER_SECOND = 5;
+	public static final int FIRE_COOLDOWN_TICKS = 60;
+
+	/** Points toward On Fire for damage dealt (Overwatch HP) to a victim of this max health (Overwatch HP). */
+	public static void addFireForDamage(Player hero, double dealt, double victimMaxHealth) {
+		if (victimMaxHealth > 0) {
+			addFire(hero, dealt / victimMaxHealth * 100);
+		}
+	}
+
+	/** Points toward On Fire for healing done (Overwatch HP). */
+	public static void addFireForHealing(Player hero, double healed) {
+		addFire(hero, healed / 5);
+	}
+
+	private static void addFire(Player hero, double points) {
+		HeroState state = HeroManager.state(hero);
+		if (state != null && state.hero != null && points > 0) {
+			state.fireScore = Math.min(FIRE_MAX, state.fireScore + points);
+		}
+	}
+
+	/** Each tick: the score decays; reaching FIRE_AT sets the hero On Fire (with its line), falling below ends it. */
+	public static void tickFire(ServerPlayer player, HeroState state) {
+		state.fireScore = Math.max(0, state.fireScore - FIRE_DECAY_PER_SECOND / 20);
+		long now = player.level().getGameTime();
+		if (!state.onFire && state.fireScore >= FIRE_AT && now >= state.fireReadyAt) {
+			state.onFire = true;
+			Voice.onFire(player, state);
+		} else if (state.onFire && state.fireScore < FIRE_AT) {
+			state.onFire = false;
+			state.fireReadyAt = now + FIRE_COOLDOWN_TICKS;
+		}
+	}
+
 	public static void addUltCharge(Player hero, double points) {
 		HeroState state = HeroManager.state(hero);
 		if (state == null || state.hero == null || state.ultActive > 0 || points <= 0) {
