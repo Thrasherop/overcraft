@@ -68,6 +68,7 @@ public class OvercraftClient implements ClientModInitializer {
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
+			HeroHud.clearMoments();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

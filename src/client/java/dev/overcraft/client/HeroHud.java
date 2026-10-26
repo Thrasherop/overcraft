@@ -282,7 +282,7 @@ public final class HeroHud {
 	 * (the fifth critique; its size and place are ours, no reference frame shows one).
 	 */
 	private static void eliminatedCaption(GuiGraphicsExtractor g, float cx, float y) {
-		float t = Math.max(0, Fx.now() - eliminatedAt);
+		float t = age(eliminatedAt);
 		if (t >= ELIMINATED_LIFE || eliminated.isEmpty()) {
 			return;
 		}
@@ -296,9 +296,25 @@ public final class HeroHud {
 		HudText.draw(g, Face.BODY, eliminated, left + labelW, y, cap, alpha(0xF0505A, a), Align.LEFT);
 	}
 
+	/**
+	 * Seconds since a moment on the effects' clock: a hair below zero reads as zero (the frame's partial tick can be
+	 * behind the one it arrived on); well below zero it's from another world's clock, and long past. Clamped to zero,
+	 * a kill in one world kept "ELIMINATED PIG" on screen for good in a younger one (found playing).
+	 */
+	private static float age(float at) {
+		float t = Fx.now() - at;
+		return t < -0.5f ? Float.MAX_VALUE : Math.max(0, t);
+	}
+
+	/** World left: no hit marker or final-blow caption carries into the next. */
+	public static void clearMoments() {
+		hitAt = -100;
+		eliminatedAt = -100;
+		eliminated = "";
+	}
+
 	private static void hitMarker(GuiGraphicsExtractor g, float cx, float cy) {
-		// (a hair below zero when the frame's partial tick is behind the one it arrived on)
-		float t = Math.max(0, Fx.now() - hitAt);
+		float t = age(hitAt);
 		float life = hitKind == 2 ? 0.45f : 0.2f;
 		if (t >= life) {
 			return;

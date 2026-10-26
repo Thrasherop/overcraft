@@ -5,6 +5,12 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Fixed: "ELIMINATED <name>" could stay on screen for good** (found in the play pass: "ELIMINATED PIG" over every
+frame in the survival world, minutes after a kill in the test world). The caption and the hit marker time themselves
+on the world's clock; a kill in an older world, read in a younger one, had a negative age, clamped to "just now".
+They're cleared on leaving a world, and an age well below zero reads as long past. Reproduced (`elim_now_c`); after:
+the caption at the kill, gone 2.5 s later, nothing in the next world (`el_fix`).
+
 **Fixed: Swift Step could put her inside blocks** (found in the full play pass below: the tamed wolf was in a hill,
 and she landed in it, suffocating, 250 to 238). With no room beside the ally it fell back to the ally's own spot,
 which fits a wolf but not her. Now: beside, either side, the near side, on them, on top of them, and if she fits
