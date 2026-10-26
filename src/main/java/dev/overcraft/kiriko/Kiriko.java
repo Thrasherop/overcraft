@@ -198,7 +198,7 @@ public final class Kiriko implements HeroKit {
 			SWIFT_STEP_HALF_ANGLE * HeroManager.options(player).swiftStepSensitivity(), false);
 		if (target == null) {
 			// no ally in view: nothing happens, no cooldown, just the "not now" click (as in Overwatch)
-			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED, player.getEyePosition());
+			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED);
 			return;
 		}
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
@@ -206,8 +206,6 @@ public final class Kiriko implements HeroKit {
 		Combat.animate(player, "swift_step");
 		// her player hears the hand sign, everyone else her departure (the sound research: audiences 1 and 2)
 		HeroSounds.split(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, OcSounds.KIRIKO_SWIFT_STEP_DEPART, player.position());
-		// the ally's hero may have a line of their own ("Rolling with you" for Wrecking Ball: #13)
-		Voice.say(player, "swift_step", 0.6f, true, Voice.heroOf(target));
 	}
 
 	private static void finishSwiftStep(ServerPlayer player, HeroState s) {
@@ -223,7 +221,7 @@ public final class Kiriko implements HeroKit {
 		if (arrive == null) {
 			// nowhere she fits by the ally (in a tunnel she can't stand in, half in a wall): she stays, nothing spent
 			// (landing on them anyway put her inside the blocks, suffocating: found playing)
-			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED, player.getEyePosition());
+			HeroSounds.toOwner(player, OcSounds.KIRIKO_ABILITY_DENIED);
 			return;
 		}
 		Effects.play(level, "swift_step_depart", from, player);
@@ -235,6 +233,9 @@ public final class Kiriko implements HeroKit {
 		// to everyone else, out to Overwatch's 70 m (volume 4.4 = 70 / 16 blocks); not to her: her own cast whoosh, which
 		// follows her, covers the whole step (the game plays her nothing else: #17, sounds-round8.md)
 		level.playSound(player, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 4.4f, 1);
+		// her line once she's beside them ("I'm with you" before she got there made no sense: #17); the ally's hero may
+		// have a line of their own ("Rolling with you" for Wrecking Ball: #13)
+		Voice.say(player, "swift_step", 0.6f, true, Voice.heroOf(target));
 	}
 
 	/**
@@ -273,10 +274,6 @@ public final class Kiriko implements HeroKit {
 	/** She can stand at spot: no blocks or solid entities in her box. */
 	private static boolean fits(ServerPlayer player, Vec3 spot) {
 		return player.level().noCollision(player, player.getDimensions(player.getPose()).makeBoundingBox(spot));
-	}
-
-	private static void sound(ServerPlayer player, SoundEvent sound, float volume, float pitch) {
-		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, volume, pitch);
 	}
 
 	@Override

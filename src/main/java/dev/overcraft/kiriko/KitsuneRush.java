@@ -82,12 +82,16 @@ public final class KitsuneRush {
 		ACTIVE.add(new KitsuneRush(owner));
 		// the cast line, as Overwatch plays it: Kiriko and her allies hear "Let the Kitsune guide you!", enemies the
 		// Japanese line. Loud enough to carry across a fight (volume 4 = 64 blocks: ours)
+		HeroSounds.toOwner(owner, OcSounds.KIRIKO_ULT_FRIENDLY);
 		for (ServerPlayer listener : owner.level().players()) {
+			if (listener == owner) {
+				continue;
+			}
 			SoundEvent line = Allies.isSelfOrAlly(owner, listener) ? OcSounds.KIRIKO_ULT_FRIENDLY : OcSounds.KIRIKO_ULT_ENEMY;
 			listener.connection.send(new ClientboundSoundPacket(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(line), SoundSource.PLAYERS,
 				owner.getX(), owner.getEyeY(), owner.getZ(), ULT_LINE_VOLUME, 1.0f, owner.getRandom().nextLong()));
 		}
-		owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), OcSounds.KIRIKO_RUSH_SUMMON, SoundSource.PLAYERS, 1, 1);
+		HeroSounds.split(owner, OcSounds.KIRIKO_RUSH_SUMMON, OcSounds.KIRIKO_RUSH_SUMMON, owner.position());
 		HeroSounds.split(owner, OcSounds.KIRIKO_RUSH_CAST, OcSounds.KIRIKO_RUSH_CAST_3P, owner.getEyePosition());
 		// the caster named, so her own first-person view draws it between her palms instead
 		Effects.play(owner.level(), "rush_cast", owner.getEyePosition().add(owner.getViewVector(1.0f).scale(0.6)).add(0, -0.4, 0),

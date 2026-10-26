@@ -16,6 +16,7 @@ import dev.overcraft.client.model.HeroModelRenderer;
 import dev.overcraft.client.model.HeroModels;
 import dev.overcraft.client.model.KitsuneRenderer;
 import dev.overcraft.client.hud.VictoryHud;
+import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
 import dev.overcraft.client.model.ProjectileModelRenderer;
 import dev.overcraft.net.EffectPayload;
@@ -49,6 +50,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
+		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
+			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {

@@ -341,7 +341,8 @@ public final class DevServer {
 						if (sound.getIdentifier().getNamespace().equals("overcraft")) {
 							synchronized (HEARD) {
 								HEARD.add(sound.getIdentifier().getPath() + " -> " + sound.getSound().getLocation().getPath() + " ("
-									+ sound.getClass().getSimpleName() + (sound.isRelative() ? ", in the head" : "") + ")");
+									+ sound.getClass().getSimpleName() + (sound.isRelative() ? ", in the head"
+									: String.format(java.util.Locale.ROOT, ", at %.1f %.1f %.1f", sound.getX(), sound.getY(), sound.getZ())) + ")");
 							}
 						}
 					});

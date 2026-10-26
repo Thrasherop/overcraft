@@ -87,6 +87,15 @@ public final class HeroAnimator {
 		a.actionsFirstPerson.trigger(action, now);
 	}
 
+	/** A climb sound: in the head for the local player (her own sound, #17), at the spot for anyone else watching. */
+	private static void climbSound(LivingEntity entity, Vec3 at, net.minecraft.sounds.SoundEvent sound) {
+		if (entity == net.minecraft.client.Minecraft.getInstance().player) {
+			dev.overcraft.client.ClientHero.playOwn(sound.location(), 1, 1, entity.getRandom().nextLong());
+		} else {
+			entity.level().playLocalSound(at.x, at.y, at.z, sound, SoundSource.PLAYERS, 1, 1, false);
+		}
+	}
+
 	/** How far (m) to draw the model back from where it faces this frame: away from the wall it's climbing. */
 	public float climbShift() {
 		return climbShift;
@@ -303,10 +312,10 @@ public final class HeroAnimator {
 		// out of wall while still going up: momentum carries her over the top, with the hop over the edge
 		if (wasClimbing && !climbing && vy > 0 && !entity.horizontalCollision) {
 			climbTopAt = now;
-			entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), OcSounds.KIRIKO_CLIMB_TOP, SoundSource.PLAYERS, 1, 1, false);
+			climbSound(entity, entity.position(), OcSounds.KIRIKO_CLIMB_TOP);
 		}
 		if (climbing && !wasClimbing) {
-			entity.level().playLocalSound(entity.getX(), entity.getY() + 1, entity.getZ(), OcSounds.KIRIKO_CLIMB_START, SoundSource.PLAYERS, 1, 1, false);
+			climbSound(entity, entity.position().add(0, 1, 0), OcSounds.KIRIKO_CLIMB_START);
 		}
 		wasClimbing = climbing;
 		if (climbing && now - dustAt > CLIMB_DUST_EVERY) {
@@ -318,7 +327,7 @@ public final class HeroAnimator {
 			Vec3 hands = entity.position().add(-Math.sin(facing) * reach, entity.getBbHeight() + 0.1, Math.cos(facing) * reach);
 			KirikoFx.climbDust(hands);
 			// and its scrape, heard by whoever sees her climb (the climb is moved client-side, so played here)
-			entity.level().playLocalSound(hands.x, hands.y, hands.z, OcSounds.KIRIKO_CLIMB_STEP, SoundSource.PLAYERS, 1, 1, false);
+			climbSound(entity, hands, OcSounds.KIRIKO_CLIMB_STEP);
 		}
 		SkinnedModel.Clip top = clip(model, "climb_top");
 		boolean overTheTop = top != null && now - climbTopAt < top.duration();

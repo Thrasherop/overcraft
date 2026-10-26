@@ -1,5 +1,10 @@
 package dev.overcraft.client;
 
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.Overcraft;
 import dev.overcraft.client.controls.HeroControls;
@@ -99,6 +104,10 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
+		Component outdated = dev.overcraft.client.assets.AssetPackVersion.warning();
+		if (outdated != null && Minecraft.getInstance().player != null) {
+			Minecraft.getInstance().player.sendSystemMessage(outdated.copy().withStyle(net.minecraft.ChatFormatting.RED));
+		}
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -211,6 +220,24 @@ public final class ClientHero {
 	public static void endTick(Minecraft mc) {
 		if (mc.player != null && controls() && mc.player.isSprinting()) {
 			mc.player.setSprinting(false);
+		}
+		// no Creative flight in hero mode: tapping jump twice (letting go and climbing on) switched it on mid-climb, and
+		// our movement under Minecraft's flight damping left her hovering (#25). Minecraft mode keeps it
+		if (mc.player != null && controls() && mc.player.getAbilities().flying && !mc.player.isSpectator()) {
+			mc.player.getAbilities().flying = false;
+			mc.player.onUpdateAbilities();
+		}
+	}
+
+	/**
+	 * One of the hero's own sounds, in their head: no position, no falloff, as Overwatch plays a hero's own sounds
+	 * (OwnSoundPayload, #17). Nothing if no pack has the sound.
+	 */
+	public static void playOwn(Identifier sound, float volume, float pitch, long seed) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.getSoundManager().getSoundEvent(sound) != null) {
+			mc.getSoundManager().play(new SimpleSoundInstance(sound, SoundSource.PLAYERS, volume, pitch, RandomSource.create(seed), false,
+				0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
 		}
 	}
 

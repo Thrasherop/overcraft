@@ -1,5 +1,7 @@
 package dev.overcraft.client.screen;
 
+import dev.overcraft.client.assets.AssetPackVersion;
+import dev.overcraft.Overcraft;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.client.ClientHero;
 import dev.overcraft.client.HeroArt;
@@ -150,8 +152,13 @@ public class OverwatchMenuScreen extends OwScreen {
 		Hero hero = ClientHero.hero();
 		float x = ITEM_X;
 		float y = 150;
-		HudText.draw(g, Face.BODY, Component.translatable("overcraft.menu.title").getString().toUpperCase(Locale.ROOT),
-			x, y, 15, ORANGE, Align.LEFT);
+		String title = Component.translatable("overcraft.menu.title").getString().toUpperCase(Locale.ROOT);
+		HudText.draw(g, Face.BODY, title, x, y, 15, ORANGE, Align.LEFT);
+		// which build this is, and the asset pack's (#21): red when the pack is older than the build needs
+		String pack = AssetPackVersion.get();
+		String build = Overcraft.version() + (AssetPackVersion.installed() ? "  ·  ASSETS " + (pack == null ? "OLD" : pack) : "");
+		HudText.draw(g, Face.BODY, build, x + HudText.width(Face.BODY, title, 15) + 12, y, 12,
+			AssetPackVersion.outdated() ? 0xFFFF6B6B : 0xFFB8C2CC, Align.LEFT);
 		if (hero == null) {
 			return;
 		}
