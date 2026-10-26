@@ -84,6 +84,8 @@ public class SuzuEntity extends OwProjectile {
 			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);
 			Combat.cleanse(entity);
 			Combat.phase(entity, KirikoStats.SUZU_PHASED);
+			// they glow white for a moment, seen by everyone near
+			Effects.play(level, "suzu_cleansed", entity.position(), Vec3.ZERO, entity, 0);
 		}
 		if (owner instanceof Player player) {
 			Combat.addUltCharge(player, healedTotal);

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.client.ClientHero;
+import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.hero.HeroManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -37,6 +39,8 @@ public final class HeroModelRenderer {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
+	/** How white an entity flashes (Protection Suzu's cleanse: client/effect/Cleansed). */
+	public static final RenderStateDataKey<Float> WHITE = RenderStateDataKey.create(() -> "overcraft:white");
 	/** The hero each entity was last drawn as (by entity id), while it's in hero mode or dying. */
 	private static final Map<Integer, Hero> LAST_HERO = new HashMap<>();
 
@@ -83,8 +87,17 @@ public final class HeroModelRenderer {
 		}
 		float now = (entity.level().getGameTime() + partialTicks) / 20f;
 		HeroAnimator animator = HeroAnimator.of(entity);
+		// the body faces her aim (HeroAnimator.facing); the head's turn is then measured from there
+		float facing = animator.facing(entity, partialTicks);
+		state.yRot = Mth.wrapDegrees(state.yRot + state.bodyRot - facing);
+		state.bodyRot = facing;
 		Matrix4f[] skin = animator.pose(loaded.model(), entity, now, state.yRot, state.xRot);
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action())));
+	}
+
+	private static float white(LivingEntityRenderState state) {
+		Float white = state.getData(WHITE);
+		return white == null ? 0 : white;
 	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
@@ -94,7 +107,7 @@ public final class HeroModelRenderer {
 			return false;
 		}
 		int light = state.lightCoords;
-		int overlay = LivingEntityRenderer.getOverlayCoords(state, 0);
+		int overlay = LivingEntityRenderer.getOverlayCoords(state, white(state));
 		poseStack.pushPose();
 		// the model faces +Z; Minecraft's yaw 0 faces +Z (south) and turns the other way
 		poseStack.rotateDegrees(Axis.YP, -state.bodyRot);
@@ -135,7 +148,10 @@ public final class HeroModelRenderer {
 		// its Camera bone sees it
 		poseStack.rotateDegrees(Axis.YP, 180);
 		poseStack.mulPose(view);
-		submitModel(loaded, skin, poseStack, collector, light, OverlayTexture.NO_OVERLAY);
+		// her own arms flash white when her Suzu cleanses her
+		float white = Cleansed.white(player.getId());
+		int overlay = white > 0 ? OverlayTexture.pack(white, false) : OverlayTexture.NO_OVERLAY;
+		submitModel(loaded, skin, poseStack, collector, light, overlay);
 		poseStack.popPose();
 		return true;
 	}

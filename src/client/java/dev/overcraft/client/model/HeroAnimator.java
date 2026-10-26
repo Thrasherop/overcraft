@@ -209,14 +209,27 @@ public final class HeroAnimator {
 			cloth = ClothSim.of(model);
 		}
 		if (cloth != null) {
-			// her motion this frame, turned into the model's frame (the renderer turns the model by -bodyRot)
+			// her motion this frame, turned into the model's frame (the renderer turns the model by -facing)
 			Vector3f moved = new Vector3f((float) tickVx, (float) tickVy, (float) tickVz).mul(20 * dt)
-				.rotateY((float) Math.toRadians(entity.yBodyRot));
+				.rotateY((float) Math.toRadians(facing(entity, 1)));
 			cloth.step(model, pose, dt, moved);
 		}
 
 		Quaternionf look = new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(headPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/**
+	 * The yaw her model is drawn at: where she aims, as Overwatch's heroes always face their aim and step in the
+	 * direction they move with the directional clips. Minecraft turns the body up to 75 degrees toward the movement,
+	 * which on top of a strafe clip read as a split from the side (the critique). On a wall, Minecraft's body yaw (she
+	 * faces the wall while looking about).
+	 */
+	public float facing(LivingEntity entity, float partialTicks) {
+		if (wasClimbing || isClimb(base)) {
+			return Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
+		}
+		return Mth.rotLerp(partialTicks, entity.yHeadRotO, entity.yHeadRot);
 	}
 
 	private void tickState(SkinnedModel model, LivingEntity entity, float now) {
@@ -267,7 +280,7 @@ public final class HeroAnimator {
 		SkinnedModel.Clip top = clip(model, "climb_top");
 		boolean overTheTop = top != null && now - climbTopAt < top.duration();
 
-		double yaw = Math.toRadians(entity.yBodyRot);
+		double yaw = Math.toRadians(facing(entity, 1));
 		double forward = -vx * Math.sin(yaw) + vz * Math.cos(yaw);
 		double left = vx * Math.cos(yaw) + vz * Math.sin(yaw);
 		double speed = Math.sqrt(vx * vx + vz * vz);

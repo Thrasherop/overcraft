@@ -5,6 +5,20 @@ Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/i
 
 ## 2026-10-26
 
+**Critique, second round: how she stands, low health, Suzu's white flash.**
+- She faces her aim in third person (#10). Minecraft turns a player's body up to 75 degrees toward where they move; on
+  top of Overwatch's strafe clip (legs stepping sideways under a body facing forward) that read as a split from the
+  side. Overwatch's heroes face their aim and step in any direction with the directional clips, so her model now turns
+  with her head (on a wall, still the wall). Reproduced first: strafing seen from the front showed her in profile
+  (`st_front`); after, she faces the camera and skips sideways (`st2_sheet`, right, left and back). The Suzu throw's
+  high kick from the critique's capture didn't come back (`st_sheet`, second row): the throw plays on her upper body only.
+- Low on health (under 35%) the screen's edges glow red, stronger the lower, pulsing slowly (#20). Played: 38 of 250
+  (`cl1_lowhp`), gone once healed.
+- Protection Suzu turns whoever it cleanses white for 0.65 s, fading (#36; the effects survey's overlay 03C3): any mob
+  through Minecraft's white overlay (a creeper's flash), the hero model, and her own arms in first person. The server
+  sends each cleansed entity (`suzu_cleansed`). Played: a villager beside her and Kiriko herself, front view
+  (`cl1_suzu_a`..`c`, `cl1z`), and first person (`cl1_suzu1p_a`).
+
 **The critique's list, first round** (`tools/reference/critique-2026-10-26.md`: a critique sub-agent's 46 findings,
 our screenshots measured against Overwatch frames; numbers below are its items).
 - HUD:

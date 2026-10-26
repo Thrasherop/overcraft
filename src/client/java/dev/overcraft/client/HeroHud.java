@@ -104,6 +104,8 @@ public final class HeroHud {
 	private static long stepCastAt = -1;
 	/** Swift Step's screen flash: teal at the edges and streaks rushing in, as she steps (the reference, §2). */
 	private static final float STEP_FLASH = 0.45f;
+	/** Below this share of her health the screen's edges glow red (ours: the critique's "about 35%"). */
+	private static final float LOW_HEALTH = 0.35f;
 	private static final int STREAKS = 14;
 
 	private HeroHud() {
@@ -128,7 +130,7 @@ public final class HeroHud {
 			minecraftMode(g, s, hero);
 			return;
 		}
-		screenEffects(g, s);
+		screenEffects(g, s, player);
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		float w = g.guiWidth() / scale;
 		float h = g.guiHeight() / scale;
@@ -179,11 +181,19 @@ public final class HeroHud {
 
 	/**
 	 * Tints over the whole view (the reference, §2): stepping, the edges flash teal and streaks rush in; in Kitsune
-	 * Rush's path, a white-cyan mist at the edges and light streaks flying past.
+	 * Rush's path, a white-cyan mist at the edges and light streaks flying past. Low on health, the edges glow red.
 	 */
-	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s) {
+	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s, LocalPlayer player) {
 		int w = g.guiWidth();
 		int h = g.guiHeight();
+		float health = player.getHealth() / Math.max(1, player.getMaxHealth());
+		if (health > 0 && health < LOW_HEALTH) {
+			// stronger the lower it gets, pulsing slowly (the critique, from Overwatch at 27 of 225: "the screen edges
+			// glow strong red")
+			float low = 1 - health / LOW_HEALTH;
+			float pulse = 0.06f * (float) Math.sin(Util.getMillis() / 1000f * Mth.TWO_PI * 0.8f);
+			image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0xB0102A, 0.45f + 0.4f * low + pulse));
+		}
 		float step = since(stepCastAt);
 		if (step < STEP_FLASH) {
 			float k = 1 - step / STEP_FLASH;

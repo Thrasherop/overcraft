@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.client.dev.DevServer;
 import dev.overcraft.client.controls.HeroControls;
+import dev.overcraft.client.effect.Cleansed;
 import dev.overcraft.client.effect.Fx;
 import dev.overcraft.client.effect.FxRender;
 import dev.overcraft.client.effect.KirikoFx;
@@ -60,6 +61,7 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
 			Fx.clear();
+			Cleansed.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
