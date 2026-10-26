@@ -63,7 +63,8 @@ screenshot, perspective, hero <id>, subtitles on|off, and (session 3) **press <k
 Esc, Enter, F1), **screenclick x y** (GUI coordinates), **hover x y** (the game's cursor only), **window w h**,
 **tutorial**, **ult <percent>**, **fx <effect> [variant]**, **select [bed]**, **soundinfo <event>**,
 **connect host:port**, **players**. A second client:
-`gradlew runClient2` (harness port 25600: `OC_DEV_PORT=25600 py tools/dev.py ...`; host with `/publish true 25565`).
+`gradlew runClient` plays as "Kiriko" (a fixed name, so the same player across launches),
+`gradlew runClient2` as "Viewer" (harness port 25600: `OC_DEV_PORT=25600 py tools/dev.py ...`; host with `/publish true 25565`).
 The desktop can be locked; the harness still plays.
 
 ## Overwatch assets (#6): state and path forward
