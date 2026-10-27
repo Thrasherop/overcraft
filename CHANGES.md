@@ -4,6 +4,34 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-10-27
+
+### Build 0.3.6 (on next; the owner's night list, Kiriko first)
+- **Suzu: no gold ring on the ground (#22).** The owner: "the golden ring *shouldn't* be in this, since there is not
+  that in ow". The game data has a 5 s gold ring decal (6089) but Overwatch shows none in play; gone. The burst itself
+  stays (the white-blue wave on the ground, the flower, the glow on those it touches).
+  - Before (`suzu_ring_old_1s`, `_3s`): a gold ring round the villager at 1 s and 3 s. After (`suzu_new_*`,
+    `suzu_frames`, frozen and stepped 2 ticks at a time): the burst, then nothing on the ground.
+- **Perks also come passively, a point a second** (the owner: "1 point a second if nothing is being done. But
+  naturally, killing should be much much faster"): a zombie's 250 points are four minutes of it. Played: 20.2 points
+  in 20 s standing still.
+- **Changing teams** (the owner: "a good easy way for players to change teams" and a game rule for non-operators,
+  on by default):
+  - CHANGE TEAM in the Overwatch menu: No team (everyone together), Blue, Red (made on first use, friendly fire off,
+    as in Overwatch) and any other scoreboard team; yours marked. `/overcraft team join <team>` / `leave` too.
+  - `/gamerule overcraft:allow_team_change` (default true): off, only operators may change teams.
+  - `/overcraft`'s other commands are still for operators only.
+  - Played: the menu and picker (`team_menu`, `team_screen`), Red then Blue by menu and command (the scoreboard
+    agrees). A second client (Viewer, not an operator, LAN without commands): joined Blue with the rule on;
+    `/overcraft reset` refused; with the rule off, both the command and the menu refused with the explanation in chat
+    (`viewer_team_refused`).
+- **A wall climb interrupts the kunai reload (#42, the owner).** Reproduced on 0.3.5: 3 kunai, R, a climb 0.1 s later:
+  the ammo came back (12 to 15) partway up the wall, the reload clip playing through the climb. Now the climb stops
+  it (the clip fades out, `reload_cancel`): 12 stay 12; an empty clip starts reloading again at the top (0 to 15
+  0.85 s after).
+- Pings, the communication wheel, voice lines, emotes and sprays: the owner's spec and screenshots are written up in
+  `tools/reference/comms-reference.md` (#3, #4, #5, #40 pings, #41 sprays).
+
 ## 2026-10-26
 
 ### Build 0.3.5

@@ -15,7 +15,9 @@ import java.util.Map;
  * (tools/reference/perks.md):
  * <ul>
  * <li>progress comes from damage dealt and healing given, a point per point, under the ult charge's rules (none during
- * the ultimate; the medic self-heal doesn't count); none passively, unlike the ult;</li>
+ * the ultimate; the medic self-heal doesn't count); Overwatch gives none passively, but a Minecraft world has long
+ * quiet stretches, so a point a second comes anyway (the owner, 2026-10-26: "1 point a second if nothing is being
+ * done. But naturally, killing should be much much faster": a zombie's 250 points are four minutes of it);</li>
  * <li>its rate ramps up from 3 minutes into the match to double at 7;</li>
  * <li>level 2 offers a choice of two minor perks, level 3 of two major perks; a pick is for good;</li>
  * <li>a swap starts the new hero at level 1, and swapping back restores the old hero's level and perks.</li>
@@ -28,6 +30,8 @@ public final class Perks {
 	public static final double RAMP_START = 180;
 	public static final double RAMP_END = 420;
 	public static final double RAMP_MAX = 2;
+	/** Passive progress a second (the owner's, Overwatch has none), not ramped. */
+	public static final double PASSIVE_PER_SECOND = 1;
 
 	private Perks() {
 	}
@@ -67,6 +71,13 @@ public final class Perks {
 			return;
 		}
 		state.perkXp = Math.min(majorXp(state.hero), state.perkXp + points * rate(state.perkTicks / 20.0));
+	}
+
+	/** Each tick of play: the passive point a second, up to the major perk's level. */
+	public static void tick(HeroState state) {
+		if (state.hero != null) {
+			state.perkXp = Math.min(majorXp(state.hero), state.perkXp + PASSIVE_PER_SECOND / 20);
+		}
 	}
 
 	/** The ramp's multiplier this many seconds into the "match". */

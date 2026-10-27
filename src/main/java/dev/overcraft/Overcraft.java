@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.Teams;
 import dev.overcraft.hero.HeroWeaponItem;
 import dev.overcraft.hero.KillFeed;
 import dev.overcraft.hero.OvercraftCommand;
@@ -18,6 +19,7 @@ import dev.overcraft.net.HeroModePayload;
 import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.PickPerkPayload;
+import dev.overcraft.net.TeamPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
@@ -93,12 +95,14 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroInputPayload.TYPE, HeroInputPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroOptionsPayload.TYPE, HeroOptionsPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroModePayload.TYPE, HeroModePayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PickPerkPayload.TYPE, PickPerkPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(TeamPayload.TYPE, TeamPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -119,6 +123,8 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,
 			(payload, context) -> HeroManager.onInput(context.player(), payload));
+		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,
+			(payload, context) -> context.player().sendSystemMessage(Teams.join(context.player(), payload.team())));
 		ServerPlayNetworking.registerGlobalReceiver(PickPerkPayload.TYPE,
 			(payload, context) -> Perks.pick(context.player(), Perk.byIndex(payload.perk())));
 

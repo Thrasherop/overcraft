@@ -15,6 +15,7 @@ public final class HeroState {
 	// input, from the client (cleared whenever slot 1 isn't selected)
 	public boolean primaryHeld;
 	public boolean secondaryHeld;
+	public boolean wallClimbing;
 
 	// weapons
 	public double weaponRecovery;
@@ -71,7 +72,7 @@ public final class HeroState {
 		this.hero = hero;
 		ultCharge = 0;
 		ultActive = 0;
-		primaryHeld = secondaryHeld = false;
+		primaryHeld = secondaryHeld = wallClimbing = false;
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;

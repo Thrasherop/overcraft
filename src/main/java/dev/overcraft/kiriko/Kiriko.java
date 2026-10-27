@@ -52,6 +52,13 @@ public final class Kiriko implements HeroKit {
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 
+		// climbing a wall interrupts the kunai reload (the owner, #42); an empty clip starts again once she's off the wall
+		if (s.wallClimbing && s.primaryReload >= 0) {
+			s.primaryReload = -1;
+			Combat.animate(player, "reload_cancel");
+		} else if (!s.wallClimbing && s.primaryAmmo == 0 && s.primaryReload < 0) {
+			startPrimaryReload(player, s);
+		}
 		if (s.primaryReload >= 0) {
 			s.primaryReload += attack;
 			if (!s.primaryAmmoRestored && s.primaryReload >= Ow.ticks(KUNAI_RELOAD_AMMO_AT)) {
