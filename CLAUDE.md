@@ -34,6 +34,13 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
   Juno's glide) (owner, 2026-10-26, #35).
   The G key alone switches between hero mode and plain Minecraft, not the hotbar (owner, 2026-10-26, #26). Health
   scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
+- **Use the real data whenever possible (owner's rule and requirement, 2026-10-27).** Before implementing, assuming or
+  inferring anything, look for the answer directly in the pulled game data (DataTool/TankLib, offline). Don't
+  reassemble something (an emote's clip chain, a prop's attachment, a timing) by measuring or by eye when the data has
+  it spelled out; measuring is the fallback only when the data has been searched and doesn't hold it. Emote work:
+  `EMOTES.md`. The owner, on the data-driven emote props: "That is SO much higher quality ... Always do that for
+  emotes and animations if at all possible." Anything borrowed or inferred gets checked against a contact the
+  animation must make (`tools/emote_contacts.py`).
 - Reimplement mechanics from the numbers and from how they behave in the real game, not by guessing. For
   Minecraft's side, read its decompiled source (`gradlew genSources`; 26.x is unobfuscated, Mojang's own names).
 

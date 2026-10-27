@@ -36,9 +36,7 @@ public final class HeroModels {
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
 	/** Models that aren't heroes (Kitsune Rush's fox), by file name: {@code hero_models/<name>.glb}. */
-	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii",
-		"prop_donut", "prop_mic", "prop_bubble_tea", "prop_skateboard", "prop_cat", "prop_umbrella",
-		"prop_fox", "prop_pod");
+	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -83,12 +81,20 @@ public final class HeroModels {
 	private static Map<String, Prepared> load(ResourceManager resources) {
 		Map<String, Prepared> out = new HashMap<>();
 		List<String> names = new ArrayList<>(EXTRAS);
+		// the emotes' props, by the ids the emote data names (prop_<model id>)
+		names.addAll(EmoteData.load(resources));
 		for (Hero hero : Hero.values()) {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
 		}
 		for (String name : names) {
-			Optional<Resource> res = resources.getResource(Overcraft.id("hero_models/" + name + ".glb"));
+			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
+			// every resource pack)
+			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
+			Optional<Resource> res = id == null ? Optional.empty() : resources.getResource(id);
+			if (id == null) {
+				Overcraft.LOG.error("Not a valid model name: {}", name);
+			}
 			if (res.isEmpty()) {
 				continue;
 			}

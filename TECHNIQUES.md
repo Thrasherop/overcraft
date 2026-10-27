@@ -256,3 +256,59 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   setter).
 - **Python edits to Java files: cut by marker, then diff.** Twice a slice taken from one marker to the next took a
   neighbouring method with it; `git diff | grep '^-'` before building finds it.
+
+## Reading an emote from the game data (2026-10-27)
+Porting Kiriko's emote props by eye took several rounds of owner corrections: the cat behind her, the board in her
+hand, the donut never eaten, the umbrella stuck to her palm. The game data had every answer. Read it first (owner's
+rule, CLAUDE.md); EMOTES.md has the emote rules, this is how the data was got at.
+- **Each clip says what it spawns.** A clip's header names an animation effect (`teAnimation.Header.Effect`, an 08F),
+  a chunked file read with `TankLib.teChunkedData`. Each `teEffectChunkComponent` (StartTime, Duration, and
+  `Header.Unk`: the hardpoint) comes right before its component:
+  - `teEffectComponentModel` (a model and its own clip);
+  - `teEffectComponentEntity` (an entity: its definition names the model; a `STUProjectileVisualComponent` in it means
+    it's thrown or dropped);
+  - `teEffectComponentVoiceStimulus`, Sound, EntityControl.
+
+  That gives which prop, on which hardpoint, from when to when in which clip. `tools/emote_data.py` reads it all into
+  `assets/overcraft/emotes/<hero>.json`. Ids in effect headers carry type bits (a hardpoint 03C shows as 0xDC0...):
+  mask with `& 0xFFFFFFFFFFFF`.
+- **A model's full hardpoint table is in its STU chunk** (`teModelChunk_STU` -> `STUModel.m_hardPoints`: `m_EDF0511C`
+  the hardpoint id, `m_888BCD8B` the bone, `m_position`, `m_rotation`). DataTool's .owmdl export writes only some of
+  them. Kiriko's model has 39 and no 000A / 000B (the standard weapon hardpoints her emotes use). Lúcio's defines
+  both. Her emotes hang them on the same bone with no offset; Lúcio's offset (180 degrees about X) turned her tea
+  upside down.
+- **Check an offset with a contact the emote must make.** A sip, a bite, a hand on a cat: `tools/emote_contacts.py`
+  measures how near a point on the prop comes to her mouth over the clip, and which way the prop's +Y points.
+  - The tea's straw with Lúcio's offset: never nearer than 0.55 m, upside down. On the bone itself: 3 cm at 7.27 s
+    (her sip), upright.
+  - The donut: 3.3 cm from her mouth at exactly 1.00 s, when the data's window ends. "Gone at 1.0 s" looked early,
+    but that's her popping it in whole.
+
+  Run it before overriding the data on a hunch, and before trusting a frame.
+- **Our exported bones keep Overwatch's own frames.** World rotations from the raw .owmdl and from our glb match to
+  three digits, so data offsets apply to the glb's nodes as they are. Blender's armature does not keep them: its bones
+  point Y down the bone, which showed every hand hardpoint "turned a quarter about X" (a fix by eye was built on that).
+  Never read frames from Blender's armature; read the raw reference pose (`OWModelReader`), or the glb.
+- **Which clips are a prop's.** A clip whose bones are at least 80% hers (the union of her full-body clips' bones) is
+  hers: 91-100%. Props' clips are 8-62% (fox, cat, umbrella, pod, the Whirlwind swirl), even when they share bone ids
+  like the root. Bone count alone misleads: one of her own clips has 295 bones where the rest have 296.
+- **A spawn with no clip of its own takes the prop clip of the same length.** Either as long as its window (starting
+  with it), or as long as her clip (running with it: the pod's intro). Lengths agree to the frame.
+- **Review at exact times, close up.**
+  - Hold the emote at a time with the harness (`emoteat <s>`): sleeps between screenshots drift, and missed the
+    donut's 0.73 s window.
+  - Crop to her (`emote_frames.sh` in the scratchpad, crop 720,180-1200,900): at the full frame the upside-down tea
+    read as "a cup in her hand".
+- **Resource paths must be lower case.** A prop named by its upper-case id (`prop_105FB.glb`) threw out every
+  resource pack at load. Ids are lower-cased into file names, and a bad name now skips just that model
+  (`HeroModels`).
+- **What hides a hero's weapons is in the blend tree, per clip.** Each clip has a `STUAnimGameData_PoseData`
+  (`m_animationID` = the clip id) whose `m_geoSetFlags` are hide masks over time. Each submesh descriptor carries one
+  geoset bit (`m_40`). Kneeling's 1 -> 3 -> 7 matched her putting her weapons away one by one, which checked the
+  mapping.
+- **`gradlew classes` doesn't compile the client source set.** It reported success on client code that didn't
+  compile, three times. Check with `gradlew compileJava compileClientJava`.
+- **Two callers of one per-frame clock starve each other.** Her pose is worked out more than once a frame, and the
+  cloth took dt from the animator's shared `lastNow`: every call after the first got 0 and restarted it, so the coat
+  never moved in emotes. A dev readout (the cloth's lowest point, stuck at its initial MAX_VALUE) found it in one try
+  where screenshots hadn't. Give a simulation its own clock, and treat a repeat at the same time as a redraw.

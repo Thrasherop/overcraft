@@ -10,7 +10,7 @@
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
-    py tools/build_asset_pack.py props <DataTool output dir>  the held emote props (EMOTE_PROPS), from the emote unlocks
+    py tools/build_asset_pack.py props <DataTool output dir>  the emotes' props (as the emote data names them), from the emote unlocks
     py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
@@ -397,61 +397,74 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
-# emote props held in a hand (no animation of their own: her hand's weapon bone carries them): pack name -> (hero,
-# emote folder under Unlocks/Heroes/<Hero>/Emote, model id). Identified by rendering each emote's models
-# (tools/owm_previews.py); the flat cards and cones beside them are effect helpers, left out.
-EMOTE_PROPS = {
-    "prop_donut": ("Kiriko", "Season 17/Donut Break", "000000015C94"),
-    "prop_mic": ("Kiriko", "Achievement/Mic Drop", "00000001A146"),
-    "prop_bubble_tea": ("Kiriko", "Season 18/Skateboard", "00000000863C"),
-    "prop_skateboard": ("Kiriko", "Season 18/Skateboard", "0000000197FB"),
-}
-
-
-# emote props that move by clips of their own (placed at her feet, turned with her): pack name -> (hero, emote folder,
-# model id, {clip in the export: our name}). "intro" plays from the emote's start, "loop" after it (as her own steps:
-# the cat's 4.2 s and 5.4 s against her 4.4 s and 5.4 s).
-ANIMATED_PROPS = {
-    "prop_cat": ("Kiriko", "2026_ Season 3/Friendly Kitty", "00000001CBA0",
-                 {"0-32_00000001A712": "intro", "0-36_00000001A713": "loop"}),
-    "prop_umbrella": ("Kiriko", "Season 15/Rainy Stroll", "0000000181A6",
-                      {"0-36_00000001227E": "intro", "0-60_00000001227F": "loop"}),
-}
-
-
 def add_props(source):
-    """Converts the held emote props into hero_models/ (static meshes, like the torii gate). <source> is the extraction
-    root holding Unlocks/Heroes/<Hero>/Emote."""
+    """Converts every prop the heroes' emote data names (src/main/resources/assets/overcraft/emotes/<hero>.json, from
+    tools/emote_data.py: EMOTES.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
+    ids, as the data names them. <source> is the extraction root holding Unlocks/Heroes/<Hero>/Emote. A prop with no
+    clip of its own is a static mesh (like the torii gate); one with clips is exported with them, staged beside the
+    model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""
+    import json
     write_mcmeta()
-    for name, (hero, emote, model) in EMOTE_PROPS.items():
-        src = Path(source) / "Unlocks" / "Heroes" / hero / "Emote" / emote / "Models" / f"{model}.00C" / f"{model}.owmdl"
-        if not src.exists():
-            print(f"missing {name}: {src}")
-            continue
-        dest = MODELS / f"{name}.glb"
-        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
-               str(src), str(dest)]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
-        print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
-    for name, (hero, emote, model, clips) in ANIMATED_PROPS.items():
-        src = Path(source) / "Unlocks" / "Heroes" / hero / "Emote" / emote / "Models" / f"{model}.00C" / f"{model}.owmdl"
-        if not src.exists():
-            print(f"missing {name}: {src}")
-            continue
-        work = LOCAL / "work" / name
-        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--",
-               str(src), str(work), "--glb"]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        glb = work / f"{model}.glb"
-        if not glb.exists():
-            print(f"{name}: export failed: {result.stderr[-2000:]}")
-            continue
-        dest = MODELS / f"{name}.glb"
-        shutil.copyfile(glb, dest)
-        subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
-                       + [f"{a}={b}" for a, b in clips.items()], check=True)
-        print(f"{name}: {dest} ({len(clips)} clips)")
+    for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
+        hero = json.loads(data.read_text(encoding="utf8"))
+        emotes = Path(source) / "Unlocks" / "Heroes" / hero["hero"].capitalize() / "Emote"
+        props = {}
+        for emote in hero["emotes"].values():
+            for clip in emote["clips"].values():
+                for spawn in clip["spawns"]:
+                    if spawn.get("model"):
+                        clips = props.setdefault(spawn["model"], set())
+                        if spawn.get("clip"):
+                            clips.add(spawn["clip"])
+        for model, clips in sorted(props.items()):
+            name = f"prop_{model.lower()}"  # resource paths must be lower case
+            padded = "%012X" % int(model, 16)
+            found = sorted(emotes.glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{name}: no model {padded} under {emotes}")
+                continue
+            src = found[0]
+            dest = MODELS / f"{name}.glb"
+            if not clips:
+                cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"),
+                       "--", str(src), str(dest)]
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+                print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+                continue
+            work = LOCAL / "work" / name
+            staged = work / "model"
+            if staged.exists():
+                shutil.rmtree(staged)
+            shutil.copytree(src.parent, staged)
+            renames = {}
+            for cid in sorted(clips):
+                cpad = "%012X" % int(cid, 16)
+                where = [p for p in staged.glob(f"Animations/**/{cpad}.owanimclip")]
+                if not where:
+                    for clip_src in emotes.glob(f"*/*/Animations/**/{cpad}.owanimclip"):
+                        # <group>/<emote>/Animations/<folder>/... -> the model's Animations/<folder>/...
+                        target = staged / Path(*clip_src.relative_to(emotes).parts[2:])
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(clip_src, target)
+                        where = [target]
+                        break
+                if not where:
+                    print(f"{name}: no clip {cpad}")
+                    continue
+                folder = where[0].parent.relative_to(staged / "Animations").as_posix().replace("/", "-")
+                renames[f"{folder}_{cpad}"] = cid
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--",
+                   str(staged / src.name), str(work), "--glb", "--only=" + ",".join("%012X" % int(c, 16) for c in clips)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            glb = work / f"{padded}.glb"
+            if not glb.exists():
+                print(f"{name}: export failed: {result.stderr[-2000:]}")
+                continue
+            shutil.copyfile(glb, dest)
+            subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
+                           + [f"{a}={b}" for a, b in renames.items()], check=True)
+            print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
 
 
 def build_version():

@@ -179,12 +179,19 @@ public final class HeroModelRenderer {
 			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
 		}
 		Timing.pose += System.nanoTime() - t0;
-		// an emote with props of its own puts her weapons away (a donut in the hand that held the ofuda)
-		boolean propEmote = !previewing && EmoteProps.holds(animator);
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(),
-			propEmote ? allProps(loaded.model()) : hiddenProps(loaded.model(), animator.action()), preview == null));
+		// her weapons in an emote: as its GeoSetFlags hide them (the data); where the data has none, an emote with props
+		// of its own puts them away (a donut in the hand that held the ofuda)
+		Set<Integer> hidden = hiddenProps(loaded.model(), animator.action());
+		Set<Integer> byEmote = previewing ? null : EmoteProps.hiddenPieces(hero.id, animator, loaded.model());
+		if (byEmote != null) {
+			hidden = new java.util.HashSet<>(hidden);
+			hidden.addAll(byEmote);
+		} else if (!previewing && EmoteProps.holds(hero.id, animator)) {
+			hidden = allProps(loaded.model());
+		}
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null));
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
-		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator, loaded.model(), now));
+		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
 	}
 
 	/**

@@ -39,6 +39,15 @@ public final class ClothSim {
 	 */
 	private static final float OUTWARD = 0.7f;
 	private static final int ITERATIONS = 3;
+	/**
+	 * The ground in model space (her feet's origin), and how far above it the cloth stays (metres, ours): sitting or
+	 * kneeling in an emote, the coat went 0.6-0.7 m under the floor (the emote critique, 2026-10-27).
+	 */
+	private static final float FLOOR = 0.02f;
+	/** Dev only (DevServer "clothfloor"): the floor constraint on (off shows what it fixed). */
+	public static boolean devFloor = true;
+	/** Dev only: the lowest the cloth went in the last step (model space, metres). */
+	public static float devLowest;
 
 	private record Chain(int[] nodes, float[] length) {
 	}
@@ -51,6 +60,12 @@ public final class ClothSim {
 	private final Vector3f[][] pos;
 	private final Vector3f[][] prev;
 	private boolean started;
+	/**
+	 * When it last stepped (seconds): its own clock. Her pose can be worked out more than once a frame, and the
+	 * animator's shared clock gave every call after the first no time, which restarted the cloth from its drape every
+	 * frame in an emote (the coat never fell to the floor: found with DevServer's clothLowest, 2026-10-27).
+	 */
+	private float lastNow = -1;
 
 	private ClothSim(List<Chain> chains, List<Capsule> capsules) {
 		this.chains = chains;
@@ -154,11 +169,21 @@ public final class ClothSim {
 	}
 
 	/**
-	 * One frame: dt seconds, the body having moved by {@code moved} (model space, metres) since the last frame. Sets
-	 * the cloth bones' rotations in the pose.
+	 * One frame at {@code now} (seconds), the body moving at {@code bodyVelocity} (model space, m/s). Sets the cloth bones'
+	 * rotations in the pose. Called again at the same time (the pose drawn twice in a frame), it puts the cloth where it
+	 * already is.
 	 */
-	public void step(SkinnedModel model, Skeleton.Pose pose, float dt, Vector3f moved) {
+	public void step(SkinnedModel model, Skeleton.Pose pose, float now, Vector3f bodyVelocity) {
 		Matrix4f[] world = worlds(model, pose);
+		if (started && now == lastNow) {
+			for (int c = 0; c < chains.size(); c++) {
+				writeBack(model, pose, world, chains.get(c), pos[c]);
+			}
+			return;
+		}
+		float dt = lastNow < 0 ? 0 : Math.clamp(now - lastNow, 0, 0.25f);
+		lastNow = now;
+		Vector3f moved = new Vector3f(bodyVelocity).mul(dt);
 		Vector3f[] capA = new Vector3f[capsules.size()];
 		Vector3f[] capB = new Vector3f[capsules.size()];
 		for (int k = 0; k < capsules.size(); k++) {
@@ -171,6 +196,7 @@ public final class ClothSim {
 		started = true;
 		float keep = (float) Math.pow(KEEP_PER_SECOND, dt);
 		float frames = dt * 60;
+		float lowest = Float.MAX_VALUE;
 		for (int c = 0; c < chains.size(); c++) {
 			Chain chain = chains.get(c);
 			int n = chain.nodes().length;
@@ -205,10 +231,17 @@ public final class ClothSim {
 					for (int k = 0; k < capsules.size(); k++) {
 						pushOut(p[j], capA[k], capB[k], capsules.get(k).radius(), axis);
 					}
+					if (devFloor && p[j].y < FLOOR) {
+						p[j].y = FLOOR;
+					}
 				}
+			}
+			for (int j = 1; j < n; j++) {
+				lowest = Math.min(lowest, p[j].y);
 			}
 			writeBack(model, pose, world, chain, p);
 		}
+		devLowest = lowest;
 	}
 
 	/**

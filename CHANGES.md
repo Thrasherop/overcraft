@@ -7,6 +7,63 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ## 2026-10-27
 
 ### After 0.3.8 (on `feature/kiriko`)
+- **Emote props from the game data (#4; the owner: "WHENEVER POSSIBLE, ALWAYS TRY TO USE THE REAL DATA"):** every
+  prop's placement, timing and motion now comes from Overwatch's own data, with no per-emote code. EMOTES.md has the
+  rules; TECHNIQUES.md has how the data was read.
+  - **What's read:** each of her emote clips names an animation effect listing what it spawns: which prop, on which
+    hardpoint, from when to when in the clip, its own clip, and whether it's thrown. `tools/emote_data.py` (new)
+    writes `assets/overcraft/emotes/kiriko.json`. `EmoteProps` plays it: a prop shows in its window, on its hardpoint
+    (a bone of hers plus the model's offset), playing its clip at her clip's time, and a thrown one falls when its
+    window ends.
+  - **What changed from the version placed by eye (the entry that was here):**
+    - The skateboard rides under her feet. Her clips move the board's hardpoint bone there.
+    - The cat walks in and settles in her lap, with no root-motion shift.
+    - The donut is gone at 1.0 s, as she pops it in her mouth (3.3 cm from it then).
+    - The pod robot flies in to be patted and flies off, with no lift.
+    - The fox plays its outro clip too.
+    - Whirlwind's swirl of ofuda papers is in.
+    - The wrist "quarter turn" was Blender's bone convention, not the data: removed.
+  - **One correction to the data's borrowed hardpoint, checked by contact:** her model lacks the standard weapon
+    hardpoint 000A, and Lúcio's copy (turned 180 degrees) held the bubble tea upside down. On the bone itself, the
+    straw reaches 3 cm from her mouth at her sip, 7.27 s into the ride (`tools/emote_contacts.py`, new).
+  - **The umbrella's hardpoint (02A9) is in no extracted model:** inferred from her clip and labelled so in the data
+    file.
+  - **The pack:** `build_asset_pack.py props` exports every prop the data names, as `hero_models/prop_<id>.glb`.
+    Rebuild the pack's props.
+  - **Harness:** `emoteat <s>` holds every emote at a time, for exact frames; `reload` reloads resources; `state`
+    reports the emote clip playing. The live `prop` placement command is gone.
+  - Played (dev client, a stone platform, every emote held at 0.3/0.7/1.2/2 s, side and back, 3.5/5.5 s:
+    `emote_frames.sh`):
+    - The board under her feet, the cat in her lap under her hands, the umbrella by its handle, the pod patted, the fox
+      hugged, the donut gone at 1.0 s, the mic down beside her.
+    - The tea upside down before the contact check, then upright with the straw in her mouth at 7.27 s.
+    - The owner was sent the before/after.
+- **Her weapons in emotes, from the GeoSetFlags (a critique of all 23 found kunai in her mouth in Laugh, kunai a metre
+  away and an ofuda in the sky in Listen Up and Salty, an ofuda through Cheer's heart-hands):** each clip's
+  GeoSetFlags (her blend tree's per-clip pose data, read by `tools/emote_data.py`) now hide her ofuda, Suzu and kunai
+  when Overwatch does.
+  - Kneeling sheathes the kunai at about 1.6 s.
+  - Laugh's kunai is gone.
+  - Sign: Thanks shows what it is, sign language, without a stray ofuda.
+  - Partial clips (Listen Up, Salty, Mic Drop) play over the pose under them, so the bones they don't drive (her
+    weapons) stay in her hands instead of at her feet.
+  - A weapon piece no wrist holds in a clip with no flags (Listen Up's and Salty's parked ofuda) isn't drawn: ours,
+    until their hand layers are read.
+  - Played: those emotes before and after, frame by frame.
+- **Her coat in emotes:** the coat simulation restarted every frame of an emote (its time came from a clock another
+  pose call had already advanced), so it never fell or folded; it has its own clock now. With it moving, the floor
+  constraint holds it on the floor.
+  - Measured (dev `state` clothLowest, `clothfloor on|off`): Kneeling, Friendly Kitty and Fox Cuddles put the coat
+    0.50, 0.66 and 0.54 m under the floor with the constraint off, and 0.02 m (on it) with it on.
+  - Before the clock fix the reading never moved (no simulation at all).
+- **Pings call out (#40):** her ping lines from the game data, heard by her team.
+  - A ping on a spot: "Over there!"
+  - On an enemy: "Enemy here" (or "Got one here", "Enemy spotted").
+  - A double press's warning: "Heads up!" (or "Watch here", "Keep an eye out"). It cuts the first press's line
+    short.
+  - At most one line a second.
+  - Played with subtitles on (`ping_test`, `ping_warn2`): "Kiriko: Enemy here" on a zombie, "Kiriko: Over there!" on
+    the floor, and a double press showed the red warning and "Kiriko warns". Needs the pack's sounds rebuilt.
 - **Player chat as Overwatch's match chat in hero view (round 8 #5's rest):** "NAME (Hero): text" where Minecraft
   writes "<NAME> text", as callouts already read; plain player chat only (not /say, /me, whispers, team messages), the
   hero when the sender is loaded with one picked. Lines keep the form they arrived in. Played: "Kiriko (Kiriko): Group up
