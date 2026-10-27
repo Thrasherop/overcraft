@@ -6,7 +6,11 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
-### After 0.3.7, second batch (on `feature/kiriko`; the owner's answers of 2026-10-27)
+### Build 0.3.8 (the owner's answers: notable pings, body shadow, her arms in Minecraft mode; the two batches below)
+Both batches since 0.3.7, below. The asset pack is unchanged (0.3.7's works). Play of `next` before the build: at the
+end of this entry.
+
+#### Second batch
 - **Pings on notable things (#40, the owner: "dropped items, villagers, structures (unless you're close/inside
   them), etc."):** a blue ring with the thing's icon and its name under it, the distance over it, your own with
   "CANCEL [key]"; teammates see it too, by name even when too far away to have the thing loaded. Dropped items (their
@@ -89,7 +93,7 @@ Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
 - The real mouse: the game window still can't be brought forward from here (the harness's mouse goes through
   Minecraft's own turnPlayer). The F5 frame seen once last batch: reproduced and fixed (above).
 
-### After 0.3.7 (on `feature/kiriko`)
+#### First batch (hunger, the emote camera, Heroic default)
 - **Hero chat's team channel icon** (round 8 #5's rest, the owner's frame `o2`): a team line (callouts, "Too many
   messages!") starts with a three-person icon in team blue, its text after it; wrapped lines start under the text,
   as Overwatch's do, where Minecraft indented them one space. The icon is ours (`tools/gen_chat_icons.py`, in the
