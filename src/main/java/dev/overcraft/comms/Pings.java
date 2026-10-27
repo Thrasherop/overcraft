@@ -53,24 +53,17 @@ public final class Pings {
 		}
 		PingPayload out = named(player, ping);
 		// the hero calls it out, as Overwatch's do ("your teammates will hear Tracer call out that Reaper's location":
-		// Blizzard's ping article): a deliberate act, as a callout, so not held back by the chatter's spacing; at most a
-		// line a second (ours: a double press is two pings)
+		// Blizzard's ping article), by the game's rules for a ping's line (Voice: they may cut into chatter; the warning's
+		// and the enemy's wait 3 s, and a double press's warning cuts off the first press's "Over there!"); a plain ping's
+		// line at most once a second (ours: its own stimulus has no cooldown, and a press a tick would talk over itself)
 		dev.overcraft.hero.HeroState state = dev.overcraft.hero.HeroManager.state(player);
 		long now = player.level().getGameTime();
 		long last = state == null ? -100 : state.saidAt.getOrDefault("ping", -100L);
 		boolean warning = out.kind() == PingPayload.WARNING;
 		if (out.kind() != PingPayload.CANCEL && state != null && state.hero != null && (warning || now - last >= PING_LINE_TICKS)) {
-			if (warning && now - last < PING_LINE_TICKS) {
-				// a double press: its first press's "Over there!" gives way to the warning (they talked over each other)
-				var stop = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(
-					Overcraft.id(state.hero.id + ".voice.ping"), net.minecraft.sounds.SoundSource.PLAYERS);
-				for (ServerPlayer other : player.level().players()) {
-					other.connection.send(stop);
-				}
-			}
 			String moment = out.kind() == PingPayload.ENEMY ? "ping_enemy" : warning ? "ping_warning" : "ping";
 			state.saidAt.put("ping", now);
-			dev.overcraft.hero.Voice.say(player, moment, 1, false);
+			dev.overcraft.hero.Voice.say(player, moment, 1);
 		}
 		for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
 			if (other.level() == player.level() && (other == player || Allies.isAlly(player, other))) {

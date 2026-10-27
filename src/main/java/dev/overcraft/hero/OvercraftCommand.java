@@ -54,6 +54,15 @@ public final class OvercraftCommand {
 					.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), 3))
 					.then(Commands.argument("level", IntegerArgumentType.integer(1, 3))
 						.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "level")))))));
+		// /giveult [players] [percent]: the same as /overcraft ult, shorter, for testing (the owner, 2026-10-27): yourself,
+		// to full, with no arguments
+		dispatcher.register(Commands.literal("giveult")
+			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.executes(c -> ult(c, List.of(c.getSource().getPlayerOrException()), 100))
+			.then(Commands.argument("players", EntityArgument.players())
+				.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), 100))
+				.then(Commands.argument("percent", IntegerArgumentType.integer(0, 100))
+					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))));
 	}
 
 	private static int team(CommandContext<CommandSourceStack> c, String name) throws CommandSyntaxException {

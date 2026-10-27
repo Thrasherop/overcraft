@@ -9,8 +9,19 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 /**
- * Heroes' voice lines on their abilities ("I'm here!" on Swift Step): heard around the hero, not every time (chance),
- * and never two close together (the game spaces them too; the gap here is ours).
+ * Heroes' voice lines for the game's moments ("I'm here!" on Swift Step, kill lines, callouts), heard around the hero,
+ * by Overwatch's own rules for when a line may play (the owner, 2026-10-27: automatic lines were still landing right
+ * next to each other). Each moment is a voice stimulus in the game data (.078) with a priority, a cooldown range in
+ * seconds and an interrupt mode, read for every moment below (tools/reference/kiriko-voice.md):
+ * <ul>
+ * <li>a moment won't play again until its own cooldown (a random time in its range) has passed: an elimination line
+ * at most every 15 s, healing every 14-17 s, multikill every 15-20 s;</li>
+ * <li>a hero says one line at a time: while one plays, a new one is dropped, unless it is one Overwatch lets
+ * interrupt (the communication wheel's lines and pings) and ranks at least as high; it then cuts the first one off.</li>
+ * </ul>
+ * Neither the data nor Blizzard's notes give a cooldown shared by all lines (searched: the voice categories hold no
+ * times), so there is none here. The game's automatic chatter (kills, healing, abilities, On Fire, respawn) all sits
+ * in one category that can't interrupt.
  */
 public final class Voice {
 	/**
@@ -18,13 +29,51 @@ public final class Voice {
 	 * tools/reference/kiriko-voice.md); 2 = 32 blocks.
 	 */
 	private static final float VOLUME = 2;
-	/** Ticks between two lines from one hero (ours). */
-	private static final int GAP_TICKS = 60;
+	/**
+	 * How long a line holds the hero's voice (ticks, ours): the server doesn't know a line's length, and Overwatch's run
+	 * about 0.5-2.5 s ("Nice" to "The Kitsune is ready to be unleashed").
+	 */
+	private static final int LINE_TICKS = 40;
 	/** A second enemy kill within this many ticks of the last is a multikill (ours: 4 s; Overwatch gives no number). */
 	private static final int KILL_CHAIN = 80;
-	/** Ticks before another multikill line can play: the game data's 15-20 s (tools/reference/kiriko-voice.md, M). */
-	private static final int MULTIKILL_COOLDOWN_MIN = 300;
-	private static final int MULTIKILL_COOLDOWN_MAX = 400;
+
+	/**
+	 * A moment's voice stimulus: its priority, its cooldown range (seconds; the stimulus' unnamed pair m_A73F2EBE /
+	 * m_DD27AC95, read as min and max: M) and whether it may cut into another line (m_interrupt above 0).
+	 */
+	private record Stimulus(int priority, float cooldownMin, float cooldownMax, boolean interrupts) {
+	}
+
+	/** A moment the table doesn't list: plays when the hero is free, no cooldown. */
+	private static final Stimulus OTHER = new Stimulus(50, 0, 0, false);
+
+	/**
+	 * Each moment's stimulus, from the game data (build 154088). The shared moments are every hero's (the same stimulus
+	 * ids); a hero's own moments are keyed "<hero>.<moment>". Ids in the comments.
+	 */
+	private static final java.util.Map<String, Stimulus> STIMULI = java.util.Map.ofEntries(
+		// the game's automatic chatter: category 4, interrupt 0
+		java.util.Map.entry("elimination", new Stimulus(70, 15, 15, false)), // 0008
+		java.util.Map.entry("multikill", new Stimulus(70, 15, 20, false)), // 00C9
+		java.util.Map.entry("melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("on_fire", new Stimulus(60, 2, 5, false)), // 0583
+		java.util.Map.entry("respawn", new Stimulus(40, 15, 15, false)), // 002C
+		java.util.Map.entry("melee", new Stimulus(35, 0.5f, 0.5f, false)), // 0023, the quick melee's shout
+		java.util.Map.entry("select", new Stimulus(100, 1, 1, false)), // 002B
+		// the communication wheel and pings: category 31, interrupt 1
+		java.util.Map.entry("ult_ready", new Stimulus(70, 0, 0, true)), // 02E7
+		java.util.Map.entry("call_ult_charging", new Stimulus(70, 0, 0, true)), // 0574
+		java.util.Map.entry("call_ult_almost", new Stimulus(70, 0, 0, true)), // 05A7
+		java.util.Map.entry("ping", new Stimulus(70, 0, 0, true)), // 11D9
+		java.util.Map.entry("ping_warning", new Stimulus(70, 3, 3, true)), // 11DA
+		java.util.Map.entry("ping_enemy", new Stimulus(70, 3, 3, true)), // 1117
+		// Kiriko's own: category 4, interrupt 0
+		java.util.Map.entry("kiriko.swift_step", new Stimulus(60, 10, 10, false)), // FC0
+		java.util.Map.entry("kiriko.suzu", new Stimulus(60, 10, 10, false)), // FC5
+		java.util.Map.entry("kiriko.heal", new Stimulus(60, 14, 17, false))); // FC4
+
+	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
+	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
 
 	/**
 	 * Overwatch's weights for the pools with conditional lines (the game data's: tools/reference/kiriko-voice.md): the
@@ -56,12 +105,22 @@ public final class Voice {
 	private Voice() {
 	}
 
+	/** The stimulus for a hero's moment: their own, else the shared one, else the wheel's for a callout. */
+	private static Stimulus stimulus(String hero, String moment) {
+		Stimulus own = STIMULI.get(hero + "." + moment);
+		if (own != null) {
+			return own;
+		}
+		return STIMULI.getOrDefault(moment, moment.startsWith("call_") ? CALL : OTHER);
+	}
+
 	/**
-	 * The hero's line for a moment of the game ("ult_ready", "elimination", "death"...: sound events named
-	 * "<hero>.voice.<moment>", the game's own lines through the local pack), heard around them. {@code spaced}: kept
-	 * out of the gap after another line (chatter); unspaced lines (death, the ult) always play.
+	 * The hero's line for a moment of the game ("elimination", "ping", "call_thanks"...: sound events named
+	 * "<hero>.voice.<moment>", the game's own lines through the local pack), heard around them, when Overwatch's rules
+	 * let it play (see the class): its cooldown passed, and the hero free or the line one that may cut in. {@code
+	 * chance}: where Overwatch's graph has a random gate (or ours, where it says so at the call); 1 where it has none.
 	 */
-	public static void say(ServerPlayer player, String moment, float chance, boolean spaced, String... conditions) {
+	public static void say(ServerPlayer player, String moment, float chance, String... conditions) {
 		HeroState state = HeroManager.state(player);
 		if (state == null || state.hero == null) {
 			return;
@@ -72,9 +131,30 @@ public final class Voice {
 			return;
 		}
 		long now = player.level().getGameTime();
-		if (spaced && now - state.voiceAt < GAP_TICKS || player.getRandom().nextFloat() >= chance) {
+		Stimulus stimulus = stimulus(state.hero.id, moment);
+		if (now < state.voiceReadyAt.getOrDefault(moment, Long.MIN_VALUE)) {
 			return;
 		}
+		boolean speaking = now < state.speakingUntil;
+		if (speaking && !(stimulus.interrupts() && stimulus.priority() >= state.speakingPriority)) {
+			return;
+		}
+		if (player.getRandom().nextFloat() >= chance) {
+			return;
+		}
+		if (speaking && state.speakingLine != null) {
+			// cut the line it interrupts off, for everyone who hears it
+			var stop = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(state.speakingLine,
+				net.minecraft.sounds.SoundSource.PLAYERS);
+			for (ServerPlayer other : player.level().players()) {
+				other.connection.send(stop);
+			}
+		}
+		float cooldown = stimulus.cooldownMin() + player.getRandom().nextFloat() * (stimulus.cooldownMax() - stimulus.cooldownMin());
+		state.voiceReadyAt.put(moment, now + Math.round(cooldown * 20));
+		state.speakingUntil = now + LINE_TICKS;
+		state.speakingPriority = stimulus.priority();
+		state.speakingLine = BuiltInRegistries.SOUND_EVENT.getKey(line);
 		state.voiceAt = now;
 		HeroSounds.fromHero(player, line, VOLUME);
 	}
@@ -113,27 +193,6 @@ public final class Voice {
 	}
 
 	/**
-	 * A line said at most once per {@code minTicks} (on top of the usual spacing), by chance when it may: for moments that
-	 * come many times a second (healing: ofuda land about 14 times a second).
-	 */
-	public static void sayNowAndThen(ServerPlayer player, String moment, float chance, int minTicks, String... conditions) {
-		HeroState state = HeroManager.state(player);
-		if (state == null) {
-			return;
-		}
-		long now = player.level().getGameTime();
-		Long last = state.saidAt.get(moment);
-		if (last != null && now - last < minTicks) {
-			return;
-		}
-		long before = state.voiceAt;
-		say(player, moment, chance, true, conditions);
-		if (state.voiceAt != before) {
-			state.saidAt.put(moment, now);
-		}
-	}
-
-	/**
 	 * A hero player killed an enemy (a hostile mob or an enemy player: Overwatch's lines are for enemies, not a cow): a
 	 * multikill line on the burst's second kill (within KILL_CHAIN, once per burst, not again for 15-20 s), else a melee
 	 * remark or an elimination line, a headshot's or a kill in the air's among them. (Their own pain and death cries
@@ -151,35 +210,22 @@ public final class Voice {
 			long now = killer.level().getGameTime();
 			state.killChain = now - state.lastKillAt <= KILL_CHAIN ? state.killChain + 1 : 1;
 			state.lastKillAt = now;
-			if (state.killChain == 2 && now >= state.multikillReadyAt) {
-				state.multikillReadyAt = now + MULTIKILL_COOLDOWN_MIN + killer.getRandom().nextInt(MULTIKILL_COOLDOWN_MAX - MULTIKILL_COOLDOWN_MIN + 1);
-				say(killer, "multikill", 1, false);
+			if (state.killChain == 2 && now >= state.voiceReadyAt.getOrDefault("multikill", Long.MIN_VALUE)) {
+				say(killer, "multikill", 1);
 			} else if (source.getDirectEntity() == killer) {
-				say(killer, "melee_kill", 0.6f, true);
+				// ours: the data has no gate in front of it that could be read
+				say(killer, "melee_kill", 0.6f);
 			} else {
 				boolean headshot = state.critAt == now;
 				boolean inAir = !victim.onGround() && !victim.isInWater() && !victim.onClimbable() && !victim.isPassenger();
-				say(killer, "elimination", 0.35f, true, headshot ? "headshot" : null, inAir ? "in_air" : null);
+				// the kill graph (33B4) tests something like random(0,1) < 0.66 on this path (a guess at its bytecode: L)
+				say(killer, "elimination", 0.66f, headshot ? "headshot" : null, inAir ? "in_air" : null);
 			}
 		}
 	}
 
-	/**
-	 * Going On Fire: Kiriko's On Fire line ("I'm on fire"), unless a line was said this very tick (Overwatch ranks
-	 * kill lines above it: 70 against 60, the game data).
-	 */
+	/** Going On Fire: the hero's On Fire line ("I'm on fire"), by the usual rules (a kill line said this tick wins). */
 	public static void onFire(ServerPlayer player, HeroState state) {
-		if (state.voiceAt != player.level().getGameTime()) {
-			say(player, "on_fire", 1, true);
-		}
-	}
-
-	public static void maybe(ServerPlayer hero, HeroState state, SoundEvent line, float chance) {
-		long now = hero.level().getGameTime();
-		if (now - state.voiceAt < GAP_TICKS || hero.getRandom().nextFloat() >= chance) {
-			return;
-		}
-		state.voiceAt = now;
-		HeroSounds.fromHero(hero, line, VOLUME);
+		say(player, "on_fire", 1);
 	}
 }
