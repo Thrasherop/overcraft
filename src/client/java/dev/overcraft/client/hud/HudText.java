@@ -21,8 +21,11 @@ public final class HudText {
 		BODY("hud", "futura_demibold.ttf", 32 * 0.667f),
 		SMALL("hud_small", "futura_demibold.ttf", 16 * 0.667f),
 		NUMBERS("hud_numbers", "big_noodle.ttf", 32 * 0.718f),
-		/** Chat lines in hero mode (ChatLinesMixin): Futura with Minecraft's capital height, 7. */
-		CHAT("hud_chat", "futura_demibold.ttf", 10.5f * 0.667f);
+		/**
+		 * Chat lines in hero mode (ChatLinesMixin): Overwatch's chat face, BlizzardGlobal-Regular (the eighth critique,
+		 * matched against the owner's frame), sized so its capitals are Overwatch's 15 px on a 22 px line.
+		 */
+		CHAT("hud_chat", "blizzard_global.ttf", 8.4f * 0.729f);
 
 		final FontDescription font;
 		final String file;
@@ -81,8 +84,33 @@ public final class HudText {
 	 */
 	public static void draw(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color,
 							Align align) {
-		int shadow = Math.round(((color >>> 24) & 0xFF) * 0.4f) << 24;
-		plain(g, face, text, x + 0.8f, baseline + 1.1f, cap, shadow, align);
+		// Overwatch's HUD text has no offset shadow (the eighth critique: the old 0.8 px copy doubled dark letters on the
+		// white labels and read as a hard drop shadow on white text). Light text gets a soft even edge, about 30% all
+		// round; dark text none
+		int r = (color >> 16) & 0xFF;
+		int gr = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+		if (0.3 * r + 0.59 * gr + 0.11 * b > 128) {
+			int edge = Math.round(((color >>> 24) & 0xFF) * 0.16f) << 24;
+			float d = Math.max(0.5f, cap / 24f);
+			plain(g, face, text, x - d, baseline, cap, edge, align);
+			plain(g, face, text, x + d, baseline, cap, edge, align);
+			plain(g, face, text, x, baseline - d, cap, edge, align);
+			plain(g, face, text, x, baseline + d, cap, edge, align);
+		}
+		plain(g, face, text, x, baseline, cap, color, align);
+	}
+
+	/**
+	 * Text with an even dark outline all round (the ult meter's number: the eighth critique, Overwatch's #1C2233 at
+	 * about 70%, 1.5 px).
+	 */
+	public static void outlined(GuiGraphicsExtractor g, Face face, String text, float x, float baseline, float cap, int color,
+								int outline, float width, Align align) {
+		for (int i = 0; i < 8; i++) {
+			double a = i * Math.PI / 4;
+			plain(g, face, text, x + (float) Math.cos(a) * width, baseline + (float) Math.sin(a) * width, cap, outline, align);
+		}
 		plain(g, face, text, x, baseline, cap, color, align);
 	}
 

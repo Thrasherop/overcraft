@@ -58,6 +58,7 @@ public class OverwatchMenuScreen extends OwScreen {
 			new Item("change_hero", () -> minecraft.gui.setScreen(new HeroSelectScreen(false)), canChange,
 				canChange ? null : Component.translatable("overcraft.change_hero.too_far")),
 			new Item("change_team", () -> minecraft.gui.setScreen(new TeamScreen(this)), true, null),
+			new Item("voice_lines", () -> minecraft.gui.setScreen(new LoadoutScreen(this)), ClientHero.hero() != null, null),
 			new Item("minecraft_menu", () -> minecraft.gui.setScreen(new PauseScreen(true)), true, null),
 			new Item(minecraft.isLocalServer() ? "save_and_leave" : "leave", this::leave, true, null));
 	}

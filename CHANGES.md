@@ -6,7 +6,52 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
-### Build 0.3.6 (on next; the owner's night list, Kiriko first)
+### Build 0.3.7 (the communication wheel, pings, emotes; Kiriko's HUD to the owner's frames)
+Needs the asset pack rebuilt (`build_asset_pack.py sounds`, `fonts`, and Kiriko's model with her emotes:
+`tools/owm_survey.py ... --glb --keep=tools/clipmaps/kiriko.txt --emotes=<extracted>/Unlocks/Heroes/Kiriko/Emote`,
+after DataTool's `extract-unlocks <out>/Unlocks "Kiriko|voiceline=*"` and `"Kiriko|emote=*"`).
+- **The communication wheel (#3), for every hero** (`dev.overcraft.comms`, `tools/reference/comms-plan.md`, the
+  owner's spec and screenshots in `comms-reference.md`):
+  - Hold T: the view dims, eight callouts round a ring (NO, HELLO, NEED HEALING/HELP, GROUP UP, ULTIMATE STATUS, NEED
+    HELP, SORRY, THANKS), the VOICE LINES / EMOTES tabs at the sides. The mouse moves a pointer, not the view; release
+    T to play the callout under it, nothing from the centre. A quick tap of T: "Good job".
+  - A callout: a team-blue chat line ("Kiriko (Kiriko): I need healing!") to teammates at any distance, and the
+    hero's own line in the world (her set: No, Hello, Healing, Group Up, Assistance Required, Sorry, Thanks; the
+    ult's Charging / Almost Ready / Ready with the charge in chat). Four in 8 s, then "Too many messages!".
+  - In hero mode chat moves to Enter (Overwatch's), T being the wheel's.
+- **Voice lines (#5):** DataTool's voice-line unlocks by name (41 for Kiriko, "Tarot Reading" with all its cards);
+  the wheel's voice page (left click while holding T): the four equipped at the compass points; VOICE LINES in the
+  Overwatch menu equips them (right click: hear one).
+- **Emotes (#4):** her 23 emotes from DataTool's emote unlocks, exported onto her model; the wheel's emote page (right
+  click); the same screen's Emotes tab equips four. The view goes to third person meanwhile. Their props (the bike,
+  the skateboard...) aren't in yet.
+  - How they play is found from the clips' poses (`EmotePlan`): a one-shot (Cheer, Laugh, Heroic, Thanks...) starts
+    and ends in her stance, plays once, and she's back in first person; a dance or a kneel goes in, then loops its
+    loop until she moves or acts. The first try played every clip of an emote in id order, the last looping: that
+    order holds Overwatch's additive layers and the prop's own clips, so after Cheer she sank to the waist with her
+    arms out, for good (found playing on LAN: the second player saw it too).
+- **Heroes get outlines:** a hero pinged as an enemy got the red ring but no red outline (found on LAN: our hero models
+  are custom geometry, which has no outline of its own), and the Glowing effect or a spectator's view didn't outline
+  them either. Their shape now goes into Minecraft's outline pass as vanilla's dragon fireball does.
+- The Emotes tab's hint no longer offers "right click: hear it", and "ISN'T THIS FUN" has its apostrophe back.
+- **Minecraft's locator bar is hidden in hero mode** with the rest of its bars: each other player's dot (a pink or
+  team-coloured square beside the ult meter, found on LAN) came from the info bar's foreground, which Fabric names
+  apart from the bar.
+- **Pings (#40):** the middle button pings the spot under the crosshair (a blue diamond, its distance, your own with
+  a leader line to "CANCEL [key]"); a double click makes it a warning (a red circle); an enemy gets a red ring that
+  follows them with their portrait (a mob: its initial) and name, and a red outline. Teammates see them. Aiming at
+  your own and pressing again takes it down.
+- **Kiriko's HUD to the owner's own Overwatch frames** (critique round 8, `critique-2026-10-27-round8.md`): the health
+  block's position, pips, "+" box, level box and plate; the portrait's glowing border; the weapon panels; the mouse
+  icon; the ult meter's inner ring and number; text without offset shadows; the volley bar; the ability icons.
+  Hero chat in Overwatch's chat face (BlizzardGlobal), wrapping as Overwatch's does. The perk-waiting state is
+  Overwatch's orange "[LALT] SELECT PERK" bar.
+- **#9 closed:** death, deep water, the climb's top, the ability clips all play.
+- Played through the dev harness (captures `wheel_*`, `loadout_*`, `ping_*`, `r8after_*`, `chatwrap2`). Not yet:
+  real mouse and keys, a second player receiving callouts and pings, the first-person hands (round 8 #1: waiting on
+  the owner's screenshot with the default weapons).
+
+### Build 0.3.6 (the owner's night list, Kiriko first)
 - **Suzu: no gold ring on the ground (#22).** The owner: "the golden ring *shouldn't* be in this, since there is not
   that in ow". The game data has a 5 s gold ring decal (6089) but Overwatch shows none in play; gone. The burst itself
   stays (the white-blue wave on the ground, the flower, the glow on those it touches).

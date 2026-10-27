@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -190,9 +191,38 @@ public final class HeroModelRenderer {
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
+		if (state.outlineColor != 0) {
+			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
+		}
 		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state), draw.cull());
 		poseStack.popPose();
 		return true;
+	}
+
+	/**
+	 * Her shape again into Minecraft's outline target, in the outline's colour (a ping on an enemy, #40; the Glowing
+	 * effect; a spectator's view of players). Custom geometry carries no outline of its own, so it's drawn as
+	 * DragonFireballRenderer draws its quad's: a hero pinged as an enemy got the red ring but no outline (found on LAN).
+	 */
+	private static void submitOutline(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, boolean cull, int outlineColor) {
+		int color = 0xFF000000 | outlineColor;
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
+			if (texture == null || isEyeShadow(loaded, piece)) {
+				continue;
+			}
+			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+				continue;
+			}
+			RenderType outline = FxRender.heroCutout(texture).outline().orElse(null);
+			if (outline != null) {
+				// vanilla's outline pipeline draws quads, not the hero pipeline's triangles
+				collector.submitCustomGeometry(poseStack, outline, (pose, buffer) ->
+					emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color, cull, false));
+			}
+		}
 	}
 
 	/**
