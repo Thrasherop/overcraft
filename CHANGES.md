@@ -6,7 +6,15 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
-### After 0.3.8 (on `feature/kiriko`)
+### Build 0.3.9 (emotes and her coat from the game data, ping callouts)
+Everything below since 0.3.8. **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.9):
+- the emote props are now named by their game ids: `py tools/build_asset_pack.py props <DataTool output>`;
+- her ping lines are new: `... sounds <DataTool output>`;
+- then `... zip`.
+
+An older pack still runs, without the props or the ping lines, and is flagged in game. The general play of `next`
+before the build is at the end of this entry.
+
 - **Her coat moves as Overwatch's does: placed by its hand-animated driver bones (the owner: "The cloth simulation is
   super wonky ... I think the cloths are actually animated by hand too"):**
   - **The data:** no clip keys her 278 `cloth_` bones (2, in every clip). Her model's Domino cloth places each one
@@ -101,6 +109,31 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   (`HudFontTextureMixin`). Played: the HUD name and key labels at 10x before and after (`font_before`, `font_after`:
   the edge pixels changed, the stair steps softened); the Options title, tabs and ult icon at 3x (`font_opts`): crisp,
   not blurred. Minecraft's own text is untouched.
+
+#### General play of `next` before 0.3.9 went to `main` (fresh client, fresh survival world "next039", Normal, 1920x1080)
+- **Joined:** Kiriko picked on the select screen (`g9_00_select`, `g9_01_joined`: 250/250, ult 0). The pause menu
+  reads "OVERCRAFT 0.3.9 · ASSETS 0.3.9" (`g9_14_menu`).
+- **Fights and deaths** (`g9_02`-`g9_08`):
+  - A helmeted zombie hit her for 3 health each (37.5 of 250), down to 0. She died to it twice, once off the edge of
+    a floor ("doomed to fall"), and drowned once in Minecraft mode. Each respawn was in hero mode, health full, ult
+    kept.
+  - On a still zombie, kunai took it 20 -> 15.5 -> 11.0 -> 6.5 -> 2.0, then dead on the fifth: 60 damage (4.8), less
+    its armour (2 natural + 2 helmet) by vanilla's formula, 4.49 exactly. Kill feed "KIRIKO > ZOMBIE", ult to 58%.
+  - Two harness traps on the way, not the mod: `tp ... facing` doesn't steer the client's aim (the kunai went at the
+    sky), and `primary_fire` is her ofuda (the right button), her kunai `secondary_fire`.
+- **Healing:** a villager hurt to 8, held ofuda on it: 17.6.
+- **Emote from the wheel:** T held, the right button to its emotes, the mouse up to Fox Cuddles, T released. The
+  camera swung round, she knelt and hugged the fox, and the coat lay as its drivers place it (`g9_10`-`g9_13`).
+- **Save and Leave, rejoin:** the select screen on join ("ESC KEEP HERO"), Esc: Kiriko, hero mode, ult 80% kept
+  (`g9_15`, `g9_16`).
+- **Minecraft mode (G) at a player's pace** (`g9_17`-`g9_32`):
+  - three oak logs mined by hand, picked up;
+  - 12 planks from the inventory's 2x2 grid; a crafting table; placed and opened;
+  - a chest from the 3x3 ring; placed; two eggs put in; closed, reopened: still there;
+  - her own arm held the crafting table; eggs thrown with the use key.
+- **Changing hero mid-game:** a bed placed and used ("Respawn point set"), G to hero mode, H: "NEAR YOUR BED: PICK A
+  NEW HERO, OR ESC TO KEEP YOURS", READY: Kiriko again (`g9_33`-`g9_36`). 74 fps.
+- **Not tried this time:** a second player on LAN (last played for 0.3.8's chat and emote props), the Nether, boats.
 
 ### Build 0.3.8 (the owner's answers: notable pings, body shadow, her arms in Minecraft mode; the two batches below)
 Both batches since 0.3.7, below. The asset pack is unchanged (0.3.7's works). Play of `next` before the build: at the
