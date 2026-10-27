@@ -112,6 +112,11 @@ public final class HeroAnimator {
 		return emote;
 	}
 
+	/** Seconds since the emote started, at this time ((game time + partial) / 20, as poses are). */
+	public float emoteTime(float now) {
+		return Math.max(0, now - emoteStart);
+	}
+
 	/**
 	 * Her hands' weapon bones in her model's space, as last posed in an emote: [0] the "_L" side's (her kunai hand),
 	 * [1] the "_R" side's (her ofuda hand).

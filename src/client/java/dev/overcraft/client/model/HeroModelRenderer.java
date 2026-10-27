@@ -180,11 +180,11 @@ public final class HeroModelRenderer {
 		}
 		Timing.pose += System.nanoTime() - t0;
 		// an emote with props of its own puts her weapons away (a donut in the hand that held the ofuda)
-		boolean propEmote = !previewing && EmoteProps.held(animator) != null;
+		boolean propEmote = !previewing && EmoteProps.holds(animator);
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(),
 			propEmote ? allProps(loaded.model()) : hiddenProps(loaded.model(), animator.action()), preview == null));
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
-		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator));
+		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator, now));
 	}
 
 	/**

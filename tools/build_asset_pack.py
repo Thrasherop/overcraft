@@ -408,6 +408,17 @@ EMOTE_PROPS = {
 }
 
 
+# emote props that move by clips of their own (placed at her feet, turned with her): pack name -> (hero, emote folder,
+# model id, {clip in the export: our name}). "intro" plays from the emote's start, "loop" after it (as her own steps:
+# the cat's 4.2 s and 5.4 s against her 4.4 s and 5.4 s).
+ANIMATED_PROPS = {
+    "prop_cat": ("Kiriko", "2026_ Season 3/Friendly Kitty", "00000001CBA0",
+                 {"0-32_00000001A712": "intro", "0-36_00000001A713": "loop"}),
+    "prop_umbrella": ("Kiriko", "Season 15/Rainy Stroll", "0000000181A6",
+                      {"0-36_00000001227E": "intro", "0-60_00000001227F": "loop"}),
+}
+
+
 def add_props(source):
     """Converts the held emote props into hero_models/ (static meshes, like the torii gate). <source> is the extraction
     root holding Unlocks/Heroes/<Hero>/Emote."""
@@ -423,6 +434,24 @@ def add_props(source):
         result = subprocess.run(cmd, capture_output=True, text=True)
         report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
         print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+    for name, (hero, emote, model, clips) in ANIMATED_PROPS.items():
+        src = Path(source) / "Unlocks" / "Heroes" / hero / "Emote" / emote / "Models" / f"{model}.00C" / f"{model}.owmdl"
+        if not src.exists():
+            print(f"missing {name}: {src}")
+            continue
+        work = LOCAL / "work" / name
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--",
+               str(src), str(work), "--glb"]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        glb = work / f"{model}.glb"
+        if not glb.exists():
+            print(f"{name}: export failed: {result.stderr[-2000:]}")
+            continue
+        dest = MODELS / f"{name}.glb"
+        shutil.copyfile(glb, dest)
+        subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
+                       + [f"{a}={b}" for a, b in clips.items()], check=True)
+        print(f"{name}: {dest} ({len(clips)} clips)")
 
 
 def build_version():

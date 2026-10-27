@@ -340,12 +340,13 @@ public final class DevServer {
 				out.addProperty("swing", java.util.Arrays.toString(dev.overcraft.client.model.HeroAnimator.SWING));
 			}
 			case "prop" -> {
-				// dev only: "prop <emote> <index> rx ry rz tx ty tz [L|R]": an emote prop's place on her hand bone
+				// dev only: "prop <emote> <index> rx ry rz tx ty tz [where]": an emote prop's place (where: 0 feet, 1 kunai
+				// hand, 2 ofuda hand)
 				String[] a = arg.trim().split(" ");
 				var props = dev.overcraft.client.model.EmoteProps.PROPS.get(a[0]);
 				if (props != null && a.length >= 8) {
 					var prop = props.get(Integer.parseInt(a[1]));
-					for (int i = 0; i < 6; i++) {
+					for (int i = 0; i < 7 && i + 2 < a.length; i++) {
 						prop.place()[i] = Float.parseFloat(a[i + 2]);
 					}
 					out.addProperty("place", java.util.Arrays.toString(prop.place()));
