@@ -7,7 +7,6 @@ import java.util.List;
 import net.minecraft.network.chat.FontDescription;
 import dev.overcraft.client.hud.HudText;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -42,7 +41,8 @@ public abstract class ChatComponentMixin {
 		}
 		Component styled = message.content().copy().withStyle(style -> style.withFont(chat));
 		double scale = Minecraft.getInstance().options.chatScale().get();
-		return ComponentRenderUtils.wrapComponents(styled, Mth.floor(HeroHud.CHAT_WRAP / Math.max(0.1, scale)), font);
+		// a team line gets Overwatch's channel icon; wrapped lines start under the text, not one space in
+		return HudText.chatLines(styled, Mth.floor(HeroHud.CHAT_WRAP / Math.max(0.1, scale)), font);
 	}
 
 	@ModifyVariable(method = "extractRenderState(Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;IILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;)V",

@@ -22,13 +22,16 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * What each hero has equipped on the communication wheel's pages: four voice lines (up, right, down, left, as
- * Overwatch's voice page lays them out). A hero's voice lines are listed by the player's local pack
- * (assets/overcraft/voicelines/<hero>.json, from tools/build_asset_pack.py sounds); the choice is saved in
- * config/overcraft-loadout.json. Until chosen, the first four.
+ * What each hero has equipped on the communication wheel's pages: four voice lines and four emotes (up, right, down,
+ * left, as Overwatch's voice page lays them out). A hero's voice lines are listed by the player's local pack
+ * (assets/overcraft/voicelines/<hero>.json, from tools/build_asset_pack.py sounds), its emotes by its model; the choice
+ * is saved in config/overcraft-loadout.json. Until chosen, the first four voice lines, and Heroic alone on the emote
+ * page.
  */
 public final class Loadout {
 	public static final int SLOTS = 4;
+	/** The emote equipped until the player picks: every hero's Heroic (owner, 2026-10-27). */
+	private static final String DEFAULT_EMOTE = "heroic";
 	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("overcraft-loadout.json");
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Map<String, List<String>> VOICE_LINES = new HashMap<>();
@@ -75,9 +78,9 @@ public final class Loadout {
 		return chosen(VOICE_LINES, hero, available(hero));
 	}
 
-	/** The four equipped emotes (up, right, down, left). */
+	/** The four equipped emotes (up, right, down, left); an empty slot is "". */
 	public static List<String> emotes(Hero hero) {
-		return chosen(EMOTES, hero, availableEmotes(hero));
+		return chosen(EMOTES, hero, availableEmotes(hero).contains(DEFAULT_EMOTE) ? List.of(DEFAULT_EMOTE) : List.of());
 	}
 
 	private static List<String> chosen(Map<String, List<String>> saved, Hero hero, List<String> all) {

@@ -28,6 +28,16 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   until a clip puts them in a hand; cloth bones are never keyed (physics in the game).
 - **Archive builds and extractions on E:, read-only, with checksums**, outside any game library, so updates can't
   undo the work (`E:\Overwatch Archive\README.txt`).
+- **An emote's clips aren't a playlist.** Its `Animations/` folder mixes the body's clips (`0/*`), additive or partial
+  layers (`4/*`; `16/*` holds both layers and the long loops) and the prop's own clips (the same ids again under
+  `Models/*/Animations/`), and id order isn't play order (Orion Dance's way in is its second). Chain them by pose
+  instead: compare first and last frames over the core bones (mean 1 - |q.q'|): a one-shot starts and ends in the
+  idle pose, an intro starts there, a loop's first frame is its last, an outro ends there. Joins measure 0.000 to
+  0.007, non-joins 0.013 and up (`EmotePlan`; scratchpad `emoteplan.py` printed the plan of all 23 first).
+- Looking for one of Overwatch's icons in the 21k-texture UI dump: filter by size, alpha share and whiteness, then
+  sheet the survivors with their ids (scratchpad `iconsheet.py`). Matching a 20 px crop from a screenshot by shape
+  doesn't work: at that size every blob scores well. Small UI glyphs may live in atlases; the chat channel icons
+  weren't found as textures (drawn ours instead, `tools/gen_chat_icons.py`).
 
 ## Playing it (CLAUDE.md: play before claiming)
 
@@ -189,3 +199,60 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 - Projectiles pass through blocks with no collision box (buttons, plates): the hit lands on the block behind.
 - Test courses in a superflat world: the player's feet at y -60 stand on blocks at y -61, so a "ground level" stair
   goes at y -60, not on a stone block at -60 (that's a 1-block wall).
+- Fabric splits Minecraft's XP/locator bar in two: `INFO_BAR` (the background) and `INFO_BAR_FOREGROUND` (the XP fill
+  and the locator bar's dot for each other player). Hiding only the first left a coloured square by the ult meter
+  that showed only with a second player on LAN. Test HUD hiding with two players.
+- Custom geometry (`submitCustomGeometry`) gets no outline from the entity's `outlineColor`: submit the mesh again
+  with `renderType.outline()` (vanilla's outline pipeline: quads, position/texture/colour, the outline colour as vertex
+  colour), as `DragonFireballRenderer` does. It lands in the outline phase; the post chain draws only the edge.
+- A mixin that restyles every glyph of a line (the hero chat face) hides glyphs from other fonts as missing boxes.
+  Replace only `FontDescription.DEFAULT`. For icons in text: a bitmap font provider for the glyph, a `space` provider
+  for exact gaps (advance-1 spaces repeated make an indent of any width).
+
+## Harness lessons (2026-10-27)
+- 26.3 numbers mouse buttons from 1: `screenclick x y 1` is a left click, `3` right (`0` falls through to the hotbar
+  check and does nothing). A container slot only takes the click once `hover x y` has put the cursor on it.
+- `look` and an ability in the same tick act on the old aim (the server hasn't had the new rotation): Protection
+  Suzu "failed to heal" twice for this. `look`, `sleep 0.2`, then the key.
+- `/publish false 25565` opens a world to LAN for a second client without commands (`publish false survival 25565`
+  fails to parse).
+- Night in a normal survival world swarms the harness, which reacts a second late: it died three times in ten
+  minutes. Fight one summoned mob at a time (`/gamerule spawn_mobs false`), keep wild nights for the general play.
+- Hunger and saturation regeneration still run in hero mode (#43): read health within a second of a hit, or set
+  `natural_health_regeneration` off, or a hit reads short.
+- Check `git` with `-c safe.directory=E:/claude/mods/overcraft` on this checkout ("dubious ownership"); PowerShell
+  mangles quotes in a here-string commit message: `git commit -F <file>`.
+- `mouse dx dy` used to copy MouseHandler's routing (wheel pointer, else the view) and missed the emote camera the
+  moment it was added: it now hands the movement to Minecraft's own `turnPlayer` (MouseHandlerInvoker), so whatever
+  the redirect does is what the harness tests. Minecraft drops mouse movement while its window isn't active, which
+  the dev window here usually isn't, so the real mouse can't reach it from the desktop tools.
+- Build test floors with the floor first and the air above it second (`fill ~-7 ~-1 ~-7 ~7 ~-1 ~7 stone`, then
+  `fill ~-7 ~ ~-7 ~7 ~5 ~7 air`): clearing first drops the player a tick before the floor goes in, the server and the
+  client disagree on where she stands ("standing on air - force-sending blocks below"), and she falls through. On a
+  jungle canopy that left a hole over the world spawn and a second death on respawn. A flat world avoids it all.
+- A camera of our own (the emote orbit): inject at the TAIL of `Camera.alignWithEntity` and redo what vanilla does
+  for third person with our angles: `setRotation`, `setPosition` at the pivot, `move(-getMaxZoom(distance), 0, 0)`
+  (the block collision comes free). The camera type must still be a detached one, or Minecraft doesn't draw the
+  player's own model; the mouse goes to the orbit through the same `turnPlayer` redirect as the wheel's pointer.
+
+## Lessons (2026-10-27, second batch)
+- **Overwatch's state logic answers timing questions.** The kunai's ammo point came from her weapon graph (statescript
+  0x2171, in `E:\Overwatch Archive\research\kiriko-anim\dump_ss`): find the graph that plays the action's anim alias,
+  then its Wait nodes and the SetVar literals their expressions read (there: 0.65, the "65%" of the patch notes).
+- **Fit by eye with live knobs, not restarts.** For anything placed by eye (a held item's grip, a swing's axis, a
+  size cap), put the numbers in a public static array with a harness command that sets them (`held`, `swing`,
+  `heldmax`), try each axis both ways in one batch of screenshots, then write the winners in as the defaults.
+- **Hide or show by sizes, measured.** `ItemStackRenderState.getModelBoundingBox()` gives an item's box as held (its
+  display transform applied): its thin side tells a tool (across) from a sprite (along the view), and its longest side
+  makes a size cap. A dev readout of the measured numbers found the cap that "didn't work" was working, just too big.
+- **Overlapping flat triangles darken once in two passes:** mark the pixels in the frame's alpha (blend MIN, alpha
+  only), then darken by the mark and reset it (colour times DST_ALPHA). Submit order is honoured across orders
+  (`collector.order(n)`): order 0 first. A depth test alone speckles.
+- **Expensive per-frame geometry gets a coarse copy.** Her shadow from her full 67k-triangle mesh cost 6 ms; vertices
+  merged into 3.5 cm cells once per piece (kept triangles between three cells) look the same and cost 0.45 ms. Measure
+  with the harness's `timing` and `shadows on|off`, alternating, with the inactive-window FPS limit off.
+- **A per-tick fix can lose to the frame.** F5 was undone each client tick, but frames drew between the key and the
+  tick: count the bad frames with a dev counter, show them with the fix off, then fix at the source (Options'
+  setter).
+- **Python edits to Java files: cut by marker, then diff.** Twice a slice taken from one marker to the next took a
+  neighbouring method with it; `git diff | grep '^-'` before building finds it.
