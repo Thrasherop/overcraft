@@ -93,11 +93,15 @@ print("HPJSON " + json.dumps(out))
 '''
 
 
-# Hardpoints no extracted model defines, inferred from the emote clips (labelled; replace when the data shows them).
+# Hardpoints no extracted model defines, inferred from the emote clips, per hero (labelled; replace when the data
+# shows them).
 INFERRED = {
-    # Rainy Stroll's umbrella: the only prop bone her clip keeps at her right hand (about 0.13 m from the wrist)
-    # while the umbrella shows; its own clip holds the handle at its origin with the shaft along +Y
-    "02A9": {"bone": "bone_2BAE", "t": [0, 0, 0], "q": [0, 0, 0, 1], "inferred": "the prop bone her Rainy Stroll clip keeps at her right hand"},
+    "kiriko": {
+        # Rainy Stroll's umbrella: the only prop bone her clip keeps at her right hand (about 0.13 m from the wrist)
+        # while the umbrella shows; its own clip holds the handle at its origin with the shaft along +Y
+        "02A9": {"bone": "bone_2BAE", "t": [0, 0, 0], "q": [0, 0, 0, 1],
+                 "inferred": "the prop bone her Rainy Stroll clip keeps at her right hand"},
+    },
 }
 
 
@@ -314,6 +318,10 @@ def main():
                         match = [i for i, d in others.items() if abs(d - length) < 0.02]
                         if match:
                             spawn["clip"], spawn["clipStart"], spawn["clipBy"] = match[0], begins, "length"
+                            if len(match) > 1:
+                                # more than one prop clip that long: the first is taken, and said so
+                                spawn["clipAmbiguous"] = match
+                                print("ambiguous clip for", name, spawn["model"], match)
                             break
         print(name, {k: [(s["model"], s["hardpoint"], s["start"], s["duration"], s["clip"], s.get("clipStart"))
                          for s in v["spawns"]] for k, v in clips.items() if v["spawns"]})
@@ -327,12 +335,13 @@ def main():
                 if hid in defs:
                     # the bone, not the other model's offset (see above)
                     table[hid] = {"bone": defs[hid]["bone"], "t": [0, 0, 0], "q": [0, 0, 0, 1],
-                                  "borrowed": f"{Path(path).name} hangs it on this bone (its offset {defs[hid]['q']} not taken)"}
+                                  "borrowed": f"{Path(path).name} hangs it on this bone (its offset t {defs[hid]['t']} "
+                                              f"q {defs[hid]['q']} not taken)"}
                     missing.remove(hid)
     # what no model defines: inferred from the clips, and said so (EMOTES.md)
     for hid in list(missing):
-        if hid in INFERRED:
-            table[hid] = INFERRED[hid]
+        if hid in INFERRED.get(hero, {}):
+            table[hid] = INFERRED[hero][hid]
             missing.remove(hid)
     out["hardpoints"] = {k: table[k] for k in sorted(used) if k in table}
     out["unresolvedHardpoints"] = missing

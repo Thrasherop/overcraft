@@ -175,6 +175,13 @@ Open:
   `HELD_OFUDA`, `HELD_MAX`, `HELD_SCALE`, `SPRITE_TURN` in HeroModelRenderer; the harness's `held`, `heldmax`,
   `heldscale` change them live). Odd items (a trident, a spyglass held, banners, modded models) may need their own.
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
+- **Dragon music (#45, after the emotes):** Overwatch has no "about to win" music for one team. Its end-phase music
+  plays for both teams: on 30 s left, and in overtime (an intro, then a loop until it ends;
+  `tools/reference/music-round9.md`). The plan: the overtime cue from 1/3 of the dragon's health, quiet and rising as
+  the health falls, then Victory's stingers, then the POTG cue (5B1F, a candidate to confirm by ear).
+- **Emotes:** the umbrella's hardpoint (02A9) is in no extracted model, so it's inferred from her clip (it looks
+  right). Two shared hand layers (12625, 12638) over Listen Up and Salty aren't read yet; meanwhile a weapon no hand
+  holds isn't drawn there.
 
 Answered (owner, 2026-10-27):
 - Crosshair: Overwatch's default white, no colour option.

@@ -22,8 +22,11 @@ public final class EmoteCamera {
 	private static final float DISTANCE = 2.5f;
 	/** Nearer than this to the point it orbits, it's inside her head: she isn't drawn (her held ofuda filled the view). */
 	private static final float INSIDE = 0.8f;
-	/** It orbits her middle, this share of her eye height up (ours: she fills the middle of the screen). */
-	private static final float PIVOT = 0.6f;
+	/**
+	 * It orbits this share of her eye height up (ours). At 0.6, her middle, her feet were behind the ult meter in every
+	 * emote, and her lap in the sitting ones (the second emote critique); lower, she stands clear of the HUD.
+	 */
+	private static final float PIVOT = 0.4f;
 	/** Its first look at her: from the front, a little from above (degrees; ours). */
 	private static final float START_PITCH = 10;
 	/** How far over and under her the mouse may take it (degrees). */

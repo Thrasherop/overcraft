@@ -2448,7 +2448,7 @@
     0,
     1
    ],
-   "borrowed": "00000000DB3F.owmdl hangs it on this bone (its offset [1.0, 0.0, -0.0, 0.0] not taken)"
+   "borrowed": "00000000DB3F.owmdl hangs it on this bone (its offset t [-0.0, -0.0, 0.0] q [1.0, 0.0, -0.0, 0.0] not taken)"
   },
   "000B": {
    "bone": "Weapon_L",
@@ -2463,7 +2463,7 @@
     0,
     1
    ],
-   "borrowed": "00000000DB3F.owmdl hangs it on this bone (its offset [-0.0, 0.0, -0.0, 1.0] not taken)"
+   "borrowed": "00000000DB3F.owmdl hangs it on this bone (its offset t [0.0, -0.0, 0.0] q [-0.0, 0.0, -0.0, 1.0] not taken)"
   },
   "01B6": {
    "bone": "bone_097F",
