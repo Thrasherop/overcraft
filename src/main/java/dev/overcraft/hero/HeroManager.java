@@ -171,7 +171,7 @@ public final class HeroManager {
 		if (hero != null) {
 			// picking a hero puts you in hero mode
 			player.setAttached(HERO_MODE, true);
-			Voice.say(player, "select", 1, false);
+			Voice.say(player, "select", 1);
 		}
 	}
 
@@ -257,7 +257,7 @@ public final class HeroManager {
 			state.ultCharge = charge;
 			Perks.load(state, perks);
 			applyKit(player, state, true);
-			Voice.say(player, "respawn", 0.7f, false);
+			Voice.say(player, "respawn", 0.7f);
 		}
 	}
 

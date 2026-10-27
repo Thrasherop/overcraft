@@ -109,7 +109,7 @@ public class OfudaEntity extends OwProjectile {
 				// now and then a healing line ("Be healed", "Like a gentle rain": the sound research's 0.15 chance; the
 				// 20 s between them is ours)
 				if (owner instanceof ServerPlayer kiriko) {
-					Voice.sayNowAndThen(kiriko, "heal", 0.15f, 400, Voice.heroOf(ally));
+					Voice.say(kiriko, "heal", 1, Voice.heroOf(ally));
 				}
 			}
 		}

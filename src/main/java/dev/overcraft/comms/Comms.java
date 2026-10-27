@@ -103,7 +103,7 @@ public final class Comms {
 				: Component.translatable("overcraft.callout.ultimate_charge", Math.min(99, percent));
 		}
 		if (state != null && state.hero != null) {
-			Voice.say(player, moment, 1, false);
+			Voice.say(player, moment, 1);
 		}
 		MutableComponent line = Component.empty().append(player.getDisplayName());
 		if (state != null && state.hero != null) {
