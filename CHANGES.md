@@ -93,6 +93,21 @@ Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
 - The real mouse: the game window still can't be brought forward from here (the harness's mouse goes through
   Minecraft's own turnPlayer). The F5 frame seen once last batch: reproduced and fixed (above).
 
+#### General play of `next` before 0.3.8 went to `main` (fresh survival world "next038", normal terrain, 1920x1080)
+- Joined, Kiriko picked from the select screen (`n_00_join`). A helmeted zombie on a stone platform at sea: it hit her
+  once (250 to 200), three kunai killed it, kill feed and ELIMINATED (`n_01f_fight`). (Two earlier zombies by the
+  spawn village were killed by its iron golem and one burned in the sun: moved out to sea for a clean fight.)
+- Healing: a villager hurt to 8, held Healing Ofuda on it: 17.6 (`n_02_heal`).
+- Minecraft mode at a player's pace, empty inventory: punched three oak logs down by hand, picked them up; the
+  inventory's 2x2 grid: 12 planks (`s_03_planks`), a crafting table (`s_04_table`); placed it, opened it, a chest from
+  the 3x3 ring (`s67`); placed the chest, put 3 cobblestone in, closed, reopened: still there, and the block data says
+  so (`s910`); two cobblestone placed stacked (both checked).
+- H by a bed that wasn't hers: "Go back to your bed to change heroes" (`n_03_h`); F on the bed: "Respawn point set";
+  H: the select screen; Kiriko again. Killed: the death screen, Respawn: at her bed, in hero mode, ult kept
+  (`n_07_bedrespawn`).
+- Save and leave, rejoin: the select screen on join as before, Esc: Kiriko, hero mode, ult still full
+  (`n_08_rejoin`). Kitsune Rush: the gates and the path; Protection Suzu: thrown, its cooldown 13 (`n3`).
+
 #### First batch (hunger, the emote camera, Heroic default)
 - **Hero chat's team channel icon** (round 8 #5's rest, the owner's frame `o2`): a team line (callouts, "Too many
   messages!") starts with a three-person icon in team blue, its text after it; wrapped lines start under the text,
