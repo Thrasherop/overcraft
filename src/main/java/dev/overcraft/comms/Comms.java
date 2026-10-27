@@ -1,0 +1,77 @@
+package dev.overcraft.comms;
+
+import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroState;
+import dev.overcraft.hero.Voice;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * The communication wheel's callouts, for any hero (comms-plan.md). A callout is a chat line to the caller's teammates
+ * (Allies: the scoreboard team, or every player when there are no teams) at any distance, and the hero's voice line
+ * in the world around them (Voice), as the owner asked (2026-10-26). Too many in a row and the game says so, as
+ * Overwatch does ("Too many messages! Please wait a few seconds...").
+ */
+public final class Comms {
+	/** Team chat's light blue (the owner's screenshot: Overwatch's team lines, measured about #4FC6F5). */
+	public static final int TEAM_BLUE = 0x4FC6F5;
+	/** At most this many callouts in SPAM_WINDOW ticks (ours: Overwatch gives no numbers). */
+	private static final int SPAM_LIMIT = 4;
+	private static final int SPAM_WINDOW = 160;
+
+	private static final Map<UUID, Deque<Long>> RECENT = new HashMap<>();
+
+	private Comms() {
+	}
+
+	public static void callout(ServerPlayer player, Callout callout) {
+		long now = player.level().getGameTime();
+		Deque<Long> recent = RECENT.computeIfAbsent(player.getUUID(), id -> new ArrayDeque<>());
+		while (!recent.isEmpty() && now - recent.peekFirst() > SPAM_WINDOW) {
+			recent.pollFirst();
+		}
+		if (recent.size() >= SPAM_LIMIT) {
+			player.sendSystemMessage(Component.translatable("overcraft.callout.too_many").withColor(TEAM_BLUE));
+			return;
+		}
+		recent.addLast(now);
+
+		HeroState state = HeroManager.state(player);
+		Component text = Component.translatable("overcraft.callout." + callout.id);
+		String moment = "call_" + callout.id;
+		if (callout == Callout.ULTIMATE_STATUS && state != null && state.hero != null) {
+			// Overwatch's three: charging, almost ready (90%, ours), ready; the chat line gives the charge
+			int percent = (int) Math.floor(100 * state.ultCharge / Combat.ultCost(state.hero));
+			moment = percent >= 100 ? "ult_ready" : percent >= 90 ? "call_ult_almost" : "call_ult_charging";
+			text = percent >= 100 ? Component.translatable("overcraft.callout.ultimate_ready")
+				: Component.translatable("overcraft.callout.ultimate_charge", Math.min(99, percent));
+		}
+		if (state != null && state.hero != null) {
+			Voice.say(player, moment, 1, false);
+		}
+		MutableComponent line = Component.empty().append(player.getDisplayName());
+		if (state != null && state.hero != null) {
+			line.append(" (" + state.hero.displayName + ")");
+		}
+		line.append(": ").append(text);
+		Component message = line.withColor(TEAM_BLUE);
+		for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
+			if (other == player || Allies.isAlly(player, other)) {
+				other.sendSystemMessage(message);
+			}
+		}
+	}
+
+	public static void forget(ServerPlayer player) {
+		RECENT.remove(player.getUUID());
+	}
+}

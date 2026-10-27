@@ -1,6 +1,7 @@
 package dev.overcraft.client;
 
 import dev.overcraft.hero.Perk;
+import dev.overcraft.client.comms.CommsWheel;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.HeroModePayload;
@@ -206,6 +207,7 @@ public final class ClientHero {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			perkMenu = false;
+			CommsWheel.cancel();
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -215,7 +217,7 @@ public final class ClientHero {
 
 		// the perk menu (#36): Left Alt held while a perk waits; the left or right mouse button picks the left or right
 		// perk (Overwatch's, whatever the fire buttons are bound to), and fires nothing meanwhile
-		if (perkMenu(mc)) {
+		if (perkMenu(mc) | CommsWheel.tick(mc)) {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			if (lastHeld != 0) {
@@ -255,6 +257,12 @@ public final class ClientHero {
 		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
 		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
 		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
+
+		// chat on Overwatch's key (Enter): T is the communication wheel's in hero mode
+		if (drain(HeroControls.get(Action.CHAT))) {
+			mc.gui.openChatScreen(net.minecraft.client.gui.components.ChatComponent.ChatMethod.MESSAGE);
+			return;
+		}
 
 		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
 		if (drain(HeroControls.get(Action.INTERACT))) {

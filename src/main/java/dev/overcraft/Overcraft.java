@@ -20,6 +20,9 @@ import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.TeamPayload;
+import dev.overcraft.net.CalloutPayload;
+import dev.overcraft.comms.Callout;
+import dev.overcraft.comms.Comms;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
@@ -103,6 +106,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(HeroModePayload.TYPE, HeroModePayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PickPerkPayload.TYPE, PickPerkPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TeamPayload.TYPE, TeamPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -123,6 +127,12 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,
 			(payload, context) -> HeroManager.onInput(context.player(), payload));
+		ServerPlayNetworking.registerGlobalReceiver(CalloutPayload.TYPE, (payload, context) -> {
+			Callout callout = Callout.byIndex(payload.callout());
+			if (callout != null) {
+				Comms.callout(context.player(), callout);
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,
 			(payload, context) -> context.player().sendSystemMessage(Teams.join(context.player(), payload.team())));
 		ServerPlayNetworking.registerGlobalReceiver(PickPerkPayload.TYPE,
@@ -134,7 +144,10 @@ public class Overcraft implements ModInitializer {
 			HeroManager.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> HeroManager.onLeave(listener.player));
+		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
+			HeroManager.onLeave(listener.player);
+			Comms.forget(listener.player);
+		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> HeroManager.onRespawn(newPlayer));
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {

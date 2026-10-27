@@ -98,8 +98,8 @@ public final class HeroHud {
 	private static final int PORTRAIT_BORDER = 0xFF68CCFF;
 	private static final int PORTRAIT_BACK = 0xFF1B2A4A;
 	private static final int DIVIDER = 0xB34FA3A5;
-	/** A perk waiting to be picked (third-party descriptions: the bar "glows orange", "an orange pop-up"; ours). */
-	private static final int PERK_ORANGE = 0xFFF08A2C;
+	/** A perk waiting to be picked: Overwatch's bar orange (the owner's screenshot, #FC802D undimmed). */
+	private static final int PERK_ORANGE = 0xFFFC802D;
 
 	/** How long an ability box shows coral after it's used, and cyan once it's back (s). */
 	private static final float CAST_TIME = 0.35f;
@@ -178,6 +178,7 @@ public final class HeroHud {
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
+		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
 		health(g, player, hero);
@@ -495,9 +496,15 @@ public final class HeroHud {
 		// The box holds the perk level (#36: Blizzard calls the line under the name a "level bar"; the number at its start
 		// being the level is our reading of it)
 		HeroSyncPayload s = ClientHero.sync();
-		boolean waiting = s.perkReady() > 0;
-		fill(g, left - 2, 970, 30, 44, waiting ? PERK_ORANGE : 0xFF41CCFD);
-		HudText.draw(g, Face.SMALL, String.valueOf(s.perkLevel()), left + 13, 998, 16, waiting ? WHITE : 0xB3A9E5FF, Align.CENTER);
+		if (s.perkReady() > 0) {
+			// a perk waiting: the whole row becomes Overwatch's orange "[LALT] SELECT PERK" bar, from the level box's left
+			// edge to the pips' right end (the owner's screenshot, 2026-10-27)
+			selectPerkBar(g, left - 2, 970, (left + 2 + (pips - 1) * 26.6f + 24) - (left - 2));
+			g.pose().popMatrix();
+			return;
+		}
+		fill(g, left - 2, 970, 30, 44, 0xFF41CCFD);
+		HudText.draw(g, Face.SMALL, String.valueOf(s.perkLevel()), left + 13, 998, 16, 0xB3A9E5FF, Align.CENTER);
 		float plate = left + 32;
 		String name = player.getName().getString().toUpperCase(Locale.ROOT);
 		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
@@ -508,42 +515,36 @@ public final class HeroHud {
 		}
 		HudText.draw(g, Face.BODY, name, plate + 12, 993, 14, WHITE, Align.LEFT);
 		levelBar(g, s, left + 28, 1004, 4 + nameW);
-		if (waiting) {
-			perkReadyTab(g, plate + nameW + 10, 972);
-		}
 		g.pose().popMatrix();
 	}
 
 	/**
+	 * Overwatch's perk-waiting bar (the owner's screenshot, 2026-10-27, measured: 32 px tall, #FC802D undimmed), the
+	 * perk key in a near-black box with orange letters, then "SELECT PERK" in near-black caps, centred.
+	 */
+	private static void selectPerkBar(GuiGraphicsExtractor g, float x, float y, float width) {
+		fill(g, x, y, width, 32, PERK_ORANGE);
+		String key = shortKey(HeroControls.get(Action.PERK_MENU));
+		String label = Component.translatable("overcraft.hud.select_perk").getString().toUpperCase(Locale.ROOT);
+		float cap = 11.5f;
+		float keyW = HudText.width(Face.SMALL, key, 10.5f) + 12;
+		float labelW = HudText.width(Face.BODY, label, cap);
+		float start = x + (width - keyW - 8 - labelW) / 2;
+		fill(g, start, y + 6, keyW, 20, 0xF01C0000);
+		HudText.draw(g, Face.SMALL, key, start + keyW / 2, y + 16 + 5.25f, 10.5f, PERK_ORANGE, Align.CENTER);
+		HudText.draw(g, Face.BODY, label, start + keyW + 8, y + 16 + cap / 2, cap, 0xFF1C0000, Align.LEFT);
+	}
+
+	/**
 	 * The perk level bar along the name plate's foot (#36): blue filling toward the next level with a bright dot at its
-	 * end; full and orange, glowing, while a perk waits to be picked (third-party descriptions: "a blue bar slowly
-	 * filling", "becomes full and glows orange"); full blue once both perks are picked.
+	 * end (third-party descriptions: "a blue bar slowly filling"; the owner's screenshots show it); full once both
+	 * perks are picked. A perk waiting replaces the whole row (selectPerkBar).
 	 */
 	private static void levelBar(GuiGraphicsExtractor g, HeroSyncPayload s, float x, float y, float length) {
 		fill(g, x, y, length, 3, 0x33FFFFFF);
-		if (s.perkReady() > 0) {
-			float pulse = 0.65f + 0.35f * (float) Math.sin(Util.getMillis() / 1000.0 * Math.PI * 2 * 0.8);
-			image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 10, length, 20, alpha(PERK_ORANGE, 0.6f * pulse));
-			fill(g, x, y, length, 3, PERK_ORANGE);
-			image(g, HudShapes.GLOW, x + length - 11, y - 9.5f, 22, 22, alpha(0xFFB15A, pulse));
-			return;
-		}
 		float filled = length * Math.clamp(s.perkProgress(), 0, 1);
 		fill(g, x, y, filled, 3, BLUE);
 		image(g, HudShapes.GLOW, x + filled - 9, y - 8, 18, 18, 0xFF6FD3FF);
-	}
-
-	/** The orange pop-up beside the name while a perk waits (ours: "PERK READY" and the key to hold). */
-	private static void perkReadyTab(GuiGraphicsExtractor g, float x, float y) {
-		String label = Component.translatable("overcraft.hud.perk_ready").getString().toUpperCase(Locale.ROOT);
-		float cap = 11;
-		float textW = HudText.width(Face.SMALL, label, cap);
-		KeyMapping key = HeroControls.get(Action.PERK_MENU);
-		float keyW = Math.max(22, HudText.width(Face.SMALL, shortKey(key), 10.5f) + 8);
-		float w = 12 + textW + 10 + keyW + 6;
-		fill(g, x, y, w, 30, 0xE6E8742A);
-		HudText.draw(g, Face.SMALL, label, x + 12, y + 15 + cap / 2, cap, WHITE, Align.LEFT);
-		keyLabel(g, key, x + 12 + textW + 10 + keyW / 2, y + 15, WHITE, false);
 	}
 
 	/**

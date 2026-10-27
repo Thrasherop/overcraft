@@ -737,3 +737,32 @@ kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.
 kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC79D.03F.ogg
 kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC7A3.03F.ogg
 kiriko.kunai.hit_block = ExtraSounds/Kiriko/KunaiHitTerrain/Sounds/00000000826E.02C/0000002AC7CF.03F.ogg
+
+# ===== Communication wheel callouts (dev.overcraft.comms; tools/reference/comms-plan.md): the hero's own lines by
+# HeroVoice folder. ULTIMATE STATUS uses Charging / AlmostReady here and kiriko.voice.ult_ready when ready.
+kiriko.voice.call_no = HeroVoice/Kiriko/No/00000005EF9A.0B2-No.ogg | w=1
+kiriko.voice.call_no = HeroVoice/Kiriko/No/00000005EF9B.0B2-Nah.ogg | w=1
+kiriko.voice.call_hello = HeroVoice/Kiriko/Hello/00000005EF88.0B2-Hey.ogg | w=1
+kiriko.voice.call_hello = HeroVoice/Kiriko/Hello/00000005EF89.0B2-(Japanese)_ Hi.ogg | w=1
+kiriko.voice.call_hello = HeroVoice/Kiriko/Hello/00000005EFDF.0B2-Hi.ogg | w=1
+kiriko.voice.call_hello = HeroVoice/Kiriko/Hello/000000064286.0B2-Hey there.ogg | w=1
+kiriko.voice.call_hello = HeroVoice/Kiriko/Hello/000000064287.0B2-What's up_.ogg | w=1
+kiriko.voice.call_thanks = HeroVoice/Kiriko/Thanks/00000005EF83.0B2-Thank you.ogg | w=1
+kiriko.voice.call_thanks = HeroVoice/Kiriko/Thanks/00000005EFE9.0B2-Thanks.ogg | w=1
+kiriko.voice.call_thanks = HeroVoice/Kiriko/Thanks/0000000627AE.0B2-(Japanese)_ Thank you.ogg | w=1
+kiriko.voice.call_sorry = HeroVoice/Kiriko/Sorry/00000005EFA1.0B2-Sorry about that.ogg | w=1
+kiriko.voice.call_sorry = HeroVoice/Kiriko/Sorry/00000005EFC0.0B2-Sorry.ogg | w=1
+kiriko.voice.call_sorry = HeroVoice/Kiriko/Sorry/00000005EFF0.0B2-My bad.ogg | w=1
+kiriko.voice.call_group_up = HeroVoice/Kiriko/GroupUp/00000005EFEF.0B2-Group up with me.ogg | w=1
+kiriko.voice.call_group_up = HeroVoice/Kiriko/GroupUp/00000005EFF1.0B2-Group up here.ogg | w=1
+kiriko.voice.call_need_help = HeroVoice/Kiriko/AssistanceRequired/00000005EFA6.0B2-Help me out.ogg | w=1
+kiriko.voice.call_need_help = HeroVoice/Kiriko/AssistanceRequired/00000005EFA7.0B2-I need help!.ogg | w=1
+kiriko.voice.call_need_healing = HeroVoice/Kiriko/Healing/00000005EFA0.0B2-I could use a heal.ogg | w=1
+kiriko.voice.call_need_healing = HeroVoice/Kiriko/Healing/00000005EFCB.0B2-I need healing.ogg | w=1
+kiriko.voice.call_ult_charging = HeroVoice/Kiriko/Ultimate/Charging/00000005EFE3.0B2-Ultimate's charging.ogg | w=1
+kiriko.voice.call_ult_charging = HeroVoice/Kiriko/Ultimate/Charging/00000005EFE6.0B2-My ultimate is charging.ogg | w=1
+kiriko.voice.call_ult_almost = HeroVoice/Kiriko/Ultimate/AlmostReady/00000005EFE1.0B2-My ultimate is almost ready.ogg | w=1
+# GOOD JOB (the wheel key's tap): her set has no such category; ours: her own "Good job!", "Nice", "Well done!"
+kiriko.voice.call_good_job = HeroVoice/Kiriko/TeamKill/000000062D05.0B2-(Japanese)_ Good job!.ogg | w=1
+kiriko.voice.call_good_job = HeroVoice/Kiriko/Elimination/00000005EB8D.0B2-Nice.ogg | w=1
+kiriko.voice.call_good_job = HeroVoice/Kiriko/Elimination/0000000627B2.0B2-(Japanese)_ Well done!.ogg | w=1
