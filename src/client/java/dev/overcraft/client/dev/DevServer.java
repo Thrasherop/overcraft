@@ -275,6 +275,11 @@ public final class DevServer {
 				player.setYHeadRot(yaw);
 				out.addProperty("ok", true);
 			}
+			case "chat" -> {
+				// a chat message as typed in the chat box ("chat hello there"), signed and sent as Minecraft sends it
+				player.connection.sendChat(arg);
+				out.addProperty("ok", true);
+			}
 			case "cmd" -> {
 				player.connection.sendCommand(arg.startsWith("/") ? arg.substring(1) : arg);
 				out.addProperty("ok", true);

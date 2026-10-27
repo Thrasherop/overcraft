@@ -7,6 +7,12 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ## 2026-10-27
 
 ### After 0.3.8 (on `feature/kiriko`)
+- **Player chat as Overwatch's match chat in hero view (round 8 #5's rest):** "NAME (Hero): text" where Minecraft
+  writes "<NAME> text", as callouts already read; plain player chat only (not /say, /me, whispers, team messages), the
+  hero when the sender is loaded with one picked. Lines keep the form they arrived in. Played: "Kiriko (Kiriko): Group up
+  at the gate" in hero mode, "<Kiriko> now in minecraft mode" in Minecraft mode, both kept after switching back
+  (`chatf`); on LAN the second client's message showed as "Viewer (Kiriko): hello from the viewer" on the host
+  (`mpc`), and the Viewer saw the host's Skateboard and Donut Break props (`mpc2`). Harness: `chat <text>`.
 - **Emote props (#4: "the bike, the skateboard... aren't in yet"):** Donut Break and Sweet Treat hold Overwatch's
   donut, Mic Drop the mic, Skateboard the board under one arm and a bubble tea in the other hand, each on her hand's
   weapon bone so her own emote clip moves it; her kunai and ofuda are put away meanwhile. The props are Overwatch's own
