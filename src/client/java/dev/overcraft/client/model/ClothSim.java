@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Cloth that the clips don't move: Overwatch drives its cloth bones (cloth_*) with physics, never with animation, so
- * played from the clips Kiriko's coat tails hang rigid from her hips and her legs pass straight through them (the
- * owner: "kiri's fabric things being clipped into legs"). Here each long chain of cloth bones hanging from the body is
- * simulated every frame, in model space: pinned at its top, pulled back toward its drape at rest (firmly near the
- * waist, loosely at the hem), swinging with gravity and trailing as she moves, kept to its bones' lengths, and pushed
- * out of capsules around the thighs and shins. The result is written back as the cloth bones' rotations.
- *
- * <p>The numbers (stiffness, damping, capsule radii) are ours, tuned by eye: the game's cloth settings aren't in the
- * data we read.
+ * Her cloth (cloth_* bones), which no clip keys directly. Overwatch's own cloth ("Domino": the model's cloth chunk, read
+ * by tools/cloth_data.py) places each cloth bone from driver bones with weights, as skinning places a vertex: her body
+ * and coat bones her clips animate by hand. The owner, 2026-10-27, on our earlier free simulation: "super wonky ... I
+ * think the cloths are actually animated by hand too": they are, through those drivers. With the data (Drivers), that
+ * is what this does. Without it (a model with no cloth data), a fallback: each long chain hanging from the body is
+ * simulated every frame in model space: pinned at its top, pulled back toward its drape at rest, swinging with gravity
+ * and trailing as she moves, kept to its bones' lengths, pushed out of capsules around the thighs and shins, and kept
+ * off the floor (numbers ours, by eye).
  */
 public final class ClothSim {
 	/** Chains shorter than this are left alone (the trouser cuffs at the knees: they ride the shins already). */
@@ -51,6 +50,22 @@ public final class ClothSim {
 
 	private record Chain(int[] nodes, float[] length) {
 	}
+
+	/**
+	 * Overwatch's own cloth (its "Domino" cloth, read by tools/cloth_data.py): a cloth bone placed by up to four driver
+	 * bones with weights, as skinning places a vertex. The drivers are her body (Hips, thighs, knees, feet) and coat
+	 * bones of their own that her clips animate by hand (bone_14CF-14EC, bone_2FD8-2FE0: moving in 48-51 of her emote
+	 * clips and most of her others), so the coat does what each clip's animator made it do.
+	 */
+	public record Drivers(String[] bones, float[] weights) {
+	}
+
+	/** A driven cloth bone: its node, its drivers' nodes and weights, and its rest place in each driver's rest frame. */
+	private record Driven(int node, int[] drivers, float[] weights, Matrix4f[] inDriver) {
+	}
+
+	/** Cloth bones placed by their drivers, parents first; empty when the data has none for this model. */
+	private final List<Driven> driven = new ArrayList<>();
 
 	private record Capsule(int from, int to, float radius) {
 	}
@@ -124,7 +139,32 @@ public final class ClothSim {
 			}
 			chains.add(new Chain(nodes, length));
 		}
-		return chains.isEmpty() ? null : new ClothSim(chains, capsules);
+		ClothSim sim = new ClothSim(chains, capsules);
+		if (model.clothDrivers != null) {
+			// parents before children (model.order), so a driven bone's parent is placed when it is
+			for (int k = 0; k < model.order.length; k++) {
+				int node = model.order[k];
+				Drivers d = model.clothDrivers.get(model.nodeNames[node]);
+				if (d == null) {
+					continue;
+				}
+				int[] drivers = new int[d.bones().length];
+				Matrix4f[] inDriver = new Matrix4f[drivers.length];
+				boolean found = true;
+				for (int i = 0; i < drivers.length; i++) {
+					drivers[i] = index(model, d.bones()[i]);
+					if (drivers[i] < 0) {
+						found = false;
+						break;
+					}
+					inDriver[i] = new Matrix4f(world[drivers[i]]).invert().mul(world[node]);
+				}
+				if (found) {
+					sim.driven.add(new Driven(node, drivers, d.weights(), inDriver));
+				}
+			}
+		}
+		return chains.isEmpty() && sim.driven.isEmpty() ? null : sim;
 	}
 
 	private static boolean isCloth(SkinnedModel model, int node) {
@@ -163,6 +203,38 @@ public final class ClothSim {
 		return m.getTranslation(new Vector3f());
 	}
 
+	/**
+	 * The cloth drivers for a model from the game data (assets/overcraft/cloth/<model>.json: tools/cloth_data.py), or
+	 * null when there are none.
+	 */
+	static java.util.@Nullable Map<String, Drivers> readDrivers(net.minecraft.server.packs.resources.ResourceManager resources,
+		String model) {
+		net.minecraft.resources.Identifier id = net.minecraft.resources.Identifier.tryBuild(dev.overcraft.Overcraft.MOD_ID,
+			"cloth/" + model + ".json");
+		var res = id == null ? java.util.Optional.<net.minecraft.server.packs.resources.Resource>empty() : resources.getResource(id);
+		if (res.isEmpty()) {
+			return null;
+		}
+		try (var in = new java.io.InputStreamReader(res.get().open(), java.nio.charset.StandardCharsets.UTF_8)) {
+			var bones = com.google.gson.JsonParser.parseReader(in).getAsJsonObject().getAsJsonObject("bones");
+			java.util.Map<String, Drivers> out = new java.util.HashMap<>();
+			for (var e : bones.entrySet()) {
+				var list = e.getValue().getAsJsonObject().getAsJsonArray("drivers");
+				String[] names = new String[list.size()];
+				float[] weights = new float[list.size()];
+				for (int i = 0; i < names.length; i++) {
+					names[i] = list.get(i).getAsJsonArray().get(0).getAsString();
+					weights[i] = list.get(i).getAsJsonArray().get(1).getAsFloat();
+				}
+				out.put(e.getKey(), new Drivers(names, weights));
+			}
+			return out;
+		} catch (Exception e) {
+			dev.overcraft.Overcraft.LOG.error("Couldn't read {}'s cloth", model, e);
+			return null;
+		}
+	}
+
 	/** Forget the motion (a new hero, a teleport): the cloth starts again from its drape. */
 	public void reset() {
 		started = false;
@@ -175,6 +247,10 @@ public final class ClothSim {
 	 */
 	public void step(SkinnedModel model, Skeleton.Pose pose, float now, Vector3f bodyVelocity) {
 		Matrix4f[] world = worlds(model, pose);
+		if (!driven.isEmpty()) {
+			drive(model, pose, world);
+			return;
+		}
 		if (started && now == lastNow) {
 			for (int c = 0; c < chains.size(); c++) {
 				writeBack(model, pose, world, chains.get(c), pos[c]);
@@ -240,6 +316,32 @@ public final class ClothSim {
 				lowest = Math.min(lowest, p[j].y);
 			}
 			writeBack(model, pose, world, chain, p);
+		}
+		devLowest = lowest;
+	}
+
+	/**
+	 * Places each driven cloth bone as Overwatch's cloth does: its rest place carried by its drivers, blended by weight
+	 * (as skinning blends a vertex), written back as the bone's local turn and offset.
+	 */
+	private void drive(SkinnedModel model, Skeleton.Pose pose, Matrix4f[] world) {
+		float lowest = Float.MAX_VALUE;
+		for (Driven d : driven) {
+			Matrix4f placed = new Matrix4f().zero();
+			for (int i = 0; i < d.drivers().length; i++) {
+				// weight x (driver now x rest place in the driver's rest frame), summed component-wise
+				placed.fma4x3(new Matrix4f(world[d.drivers()[i]]).mul(d.inDriver()[i]), d.weights()[i]);
+			}
+			Vector3f at = position(placed);
+			Quaternionf turn = placed.getNormalizedRotation(new Quaternionf());
+			int parent = model.parent[d.node()];
+			Matrix4f parentWorld = parent < 0 ? new Matrix4f() : world[parent];
+			Matrix4f local = new Matrix4f(parentWorld).invert().mul(new Matrix4f().translationRotate(at, turn));
+			pose.t[d.node()].set(local.getTranslation(new Vector3f()));
+			pose.r[d.node()].set(local.getNormalizedRotation(new Quaternionf()));
+			world[d.node()] = new Matrix4f(parentWorld).mul(
+				new Matrix4f().translationRotateScale(pose.t[d.node()], pose.r[d.node()], pose.s[d.node()]));
+			lowest = Math.min(lowest, at.y);
 		}
 		devLowest = lowest;
 	}

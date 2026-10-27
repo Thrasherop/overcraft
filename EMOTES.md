@@ -115,11 +115,23 @@ A prop hangs on whatever hardpoint the data names. On Kiriko:
 ### 7b. Look like Overwatch, not like our other effects
 - Draw a prop with its own texture. The fox was first drawn as Kitsune Rush's see-through spirit and came out
   glowing white (owner: "The fox shouldn't be glowing white"). Its texture is the blue kitsune.
-- **Her coat in an emote:** its simulation restarted every frame of an emote and never fell (found with a dev
-  readout of its lowest point). Her pose is worked out more than once a frame, and the cloth took its time from the
-  animator's shared clock, so every call after the first got no time. It keeps its own clock now. With the cloth
-  moving, the floor constraint matters: off, the coat sinks 0.50-0.66 m under the floor kneeling or sitting; on, it
-  lies on it.
+- **Her coat is animated by hand, through driver bones** (the owner, 2026-10-27: "I think the cloths are actually
+  animated by hand too ... Investigate this"; then, on the result: "spot on ... perfect matches").
+  - No clip keys the cloth bones themselves: 2 of her 278 `cloth_` bones, in every clip.
+  - Overwatch's cloth ("Domino": the model's CLTH chunk, which TankLib parses) places each cloth bone from up to
+    four driver bones with weights, as skinning places a vertex. The drivers are her body (Hips, Thigh, Knee, Foot,
+    Arm, Elbow, Spine_3, bone_0054) and 38 coat bones of their own (`bone_14CF`-`14EC`, `bone_2FD8`-`2FE0`) that the
+    clips key by hand: all 38 in Kneeling, Fox Cuddles, Blooming, Choreography, Friendly Kitty and Headbanging; 18-36
+    in most of the rest; none in the partial emotes.
+  - `tools/cloth_data.py` writes `assets/overcraft/cloth/<hero>.json`. `ClothSim` places each cloth bone's rest
+    transform through its drivers. It no longer simulates where the data exists; our free simulation (gravity,
+    stiffness, capsules, floor, all by eye) is only the fallback for a model with no cloth data. It had flung the
+    panels about in every frame.
+  - Not read yet: Domino's own light physics on top (its settings sit in sections TankLib doesn't decode), and its
+    64 top-row points with no bone.
+  - On the way, the free simulation had a clock bug: it restarted every frame of an emote. Her pose is worked out
+    more than once a frame, and it took its time from the animator's shared clock. Found with a dev readout of the
+    coat's lowest point.
 
 ### 8. Review every emote critically, at every angle
 - **Frames at exact times:** hold the emote there with the harness (`emoteat <s>`), at the data's windows. Sleeps
@@ -149,6 +161,10 @@ A prop hangs on whatever hardpoint the data names. On Kiriko:
   how they layer over those emotes. Reading them would replace the 0.3 m "parked" rule.
 - **The camera** orbits at 0.6 of her standing eye height: in every emote her feet are behind the ult meter, and
   sitting or kneeling her lap is too (second critique).
+- **Domino's physics on top:** the cloth chunk's other sections (SectionOffset3-11: constraints, limits, collision?)
+  hold Overwatch's own settings for the light swing around the driven positions. Ours is rigid to the drivers.
+- **Orion Dance's way in** (1AA47) has masks 7,7,7,0, the shape of a way out, so her weapons flash for its last
+  0.1 s. Our pose matching plays it as the way in; the blend-tree chain would settle which it is.
 - **The blend-tree chain** (`m_onFinished`): her clips' order from the data, replacing EmotePlan's pose matching.
 - **Outros** (Fox Cuddles' E79D, Friendly Kitty's 1AB09): played when the emote ends early. Not played yet.
 - **02A9**, the umbrella's hardpoint: in no extracted model. Look for it in other heroes' models when they're

@@ -7,6 +7,22 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ## 2026-10-27
 
 ### After 0.3.8 (on `feature/kiriko`)
+- **Her coat moves as Overwatch's does: placed by its hand-animated driver bones (the owner: "The cloth simulation is
+  super wonky ... I think the cloths are actually animated by hand too"):**
+  - **The data:** no clip keys her 278 `cloth_` bones (2, in every clip). Her model's Domino cloth places each one
+    from up to four driver bones with weights. The drivers are her body and 38 coat bones the clips key by hand
+    (all 38 in Kneeling and Fox Cuddles; most clips, run and strafe included).
+  - **The change:** `tools/cloth_data.py` (new) writes `assets/overcraft/cloth/kiriko.json`. `ClothSim` places each
+    cloth bone's rest transform through its drivers, as skinning places a vertex, instead of our free simulation
+    (now only the fallback for a model with no cloth data).
+  - **Played:**
+    - The owner was sent Kneeling and Fox Cuddles, before and after (front at 0.5-7 s, side, back): "spot on ...
+      perfect matches".
+    - In normal play from the front (`gp_cloth_*`): the coat hangs standing, streams back running, swings wide
+      strafing and hangs in front of her mid-jump, as each clip keys it.
+    - All 23 emotes re-shot (`ef8`).
+  - **Not in yet:** Domino's light physics on top (its settings are in sections not decoded yet). The coat follows
+    its drivers rigidly.
 - **Emote props from the game data (#4; the owner: "WHENEVER POSSIBLE, ALWAYS TRY TO USE THE REAL DATA"):** every
   prop's placement, timing and motion now comes from Overwatch's own data, with no per-emote code. EMOTES.md has the
   rules; TECHNIQUES.md has how the data was read.

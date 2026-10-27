@@ -25,7 +25,8 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 - **Overwatch data quirks learned:** clips are 30 or 60 fps (export onto one timeline); `4-*` folder clips are
   additive deltas (they collapse alone; export neutral keys for unkeyed channels); first-person arms only get
   materials from the Gameplay1P entity's model look; props (kunai x3, ofuda, Suzu) are pieces parked at the origin
-  until a clip puts them in a hand; cloth bones are never keyed (physics in the game).
+  until a clip puts them in a hand. Cloth bones are never keyed, but that does NOT mean physics: they're placed by
+  hand-keyed driver bones (below, "Reading an emote from the game data").
 - **Archive builds and extractions on E:, read-only, with checksums**, outside any game library, so updates can't
   undo the work (`E:\Overwatch Archive\README.txt`).
 - **An emote's clips aren't a playlist.** Its `Animations/` folder mixes the body's clips (`0/*`), additive or partial
@@ -312,3 +313,14 @@ rule, CLAUDE.md); EMOTES.md has the emote rules, this is how the data was got at
   cloth took dt from the animator's shared `lastNow`: every call after the first got 0 and restarted it, so the coat
   never moved in emotes. A dev readout (the cloth's lowest point, stuck at its initial MAX_VALUE) found it in one try
   where screenshots hadn't. Give a simulation its own clock, and treat a repeat at the same time as a redraw.
+- **"Never keyed" isn't "not animated": look for what drives it.** For two days Kiriko's coat was simulated by our own
+  pendulum, because no clip keys her `cloth_` bones. The owner, watching the emotes, guessed they were hand-animated.
+  The model's cloth chunk (Domino) answered it:
+  - each cloth bone is skinned to up to four driver bones;
+  - 38 of those are coat bones that the clips do key, by hand.
+
+  Placing the cloth bones through their drivers gave, in the owner's words, "perfect matches".
+
+  The general lesson: when a bone is never keyed, look in the model for what moves it (cloth chunks, constraints,
+  driver tables) before simulating it ourselves. And measure the skin weights: only 9% of her body mesh's weight was
+  on cloth bones, which pointed at the other bones.

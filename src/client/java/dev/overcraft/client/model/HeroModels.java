@@ -104,6 +104,8 @@ public final class HeroModels {
 				for (byte[] png : model.images) {
 					images.add(readImage(png));
 				}
+				// her cloth's drivers, from the game data (ClothSim)
+				model.clothDrivers = ClothSim.readDrivers(resources, name);
 				out.put(name, new Prepared(model, images));
 				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
 					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
