@@ -33,6 +33,10 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 
 - **The dev harness** (`tools/dev.py`, `tools/devplay.sh`): keys, look, commands, screenshots, `state` with the
   playing clip (`anim`). Sample `state` every tick to see state machines (`climb` 13 ticks -> `climb_top` -> `jump`).
+- **The harness's taps are shorter than a tick**: `key <action>` sets and clears the key within one frame, so code
+  that reads `isDown()` once a tick (the perk menu's picks) never sees it. Hold it: `key <action> down`, a 0.2 s
+  sleep, `key <action> up`. Holding attack doesn't mine unless the window has the mouse (Minecraft's
+  `continueAttack` checks `isMouseGrabbed`).
 - **Real input with desktop control** when the owner approves it at the PC. Computer-use screenshots show the game
   as blank: capture the screen with GDI instead (scratchpad `burst.ps1`, timed bursts for fast animations). Can't
   send F5 or two held keys at once; Windows' text-input overlay can block clicks.

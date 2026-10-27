@@ -73,6 +73,29 @@ public final class KirikoStats {
 	/** Ours (the owner, #35): she lands unhurt from as high as she can climb, 8.3 m (Minecraft's own is 3 blocks). */
 	public static final double SAFE_FALL = CLIMB_SPEED * CLIMB_TIME;
 
+	// Perks (#36): Blizzard's hero page (2026-10-26) and the patch notes (Ready Step 3 s: Oct 14 2025; Foxtrot 4 s:
+	// Feb 10 2026); tools/reference/perks.md
+	/**
+	 * Perk progress for level 2 and level 3: the wiki's infobox (1900 / 4800 since 2026-04-21; Blizzard publishes only
+	 * changes in percent). Whether 4800 counts from the start or after the 1900 isn't said: ours, from the start.
+	 */
+	public static final double PERK_MINOR_XP = 1900;
+	public static final double PERK_MAJOR_XP = 4800;
+	/** Urgent Care: Healing Ofuda seeking an ally below half health fly 50% faster. */
+	public static final double URGENT_CARE_SPEED = 0.5;
+	public static final double URGENT_CARE_BELOW = 0.5;
+	/**
+	 * Fortune Teller: each kunai hit sends 2 Healing Ofuda (one pair, OFUDA_PER_THROW) to an ally in front of her.
+	 * The cone is ours ("in front of you", no angle given): Swift Step's.
+	 */
+	public static final double FORTUNE_TELLER_HALF_ANGLE = SWIFT_STEP_HALF_ANGLE;
+	/** Ready Step: +40% attack and reload speed for 3 s after Swift Step. */
+	public static final double READY_STEP_ATTACK = 0.40;
+	public static final double READY_STEP_TIME = 3;
+	/** Foxtrot: Protection Suzu gives allies +30% movement speed for 4 s. */
+	public static final double FOXTROT_SPEED = 0.30;
+	public static final double FOXTROT_TIME = 4;
+
 	// Kitsune Rush (Q)
 	public static final int ULT_COST = 2725;
 	public static final double RUSH_DURATION = 8;

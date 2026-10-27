@@ -175,4 +175,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
    has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
    crosshair (needs Overwatch frames of the throw). Swift Step now lands beside the ally (owner, 2026-10-26).
 3. Effects: all of Kiriko's are in, including the enemy-red view with scoreboard teams.
-4. Then Lúcio, Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
+4. Then Lúcio (#37), Jetpack Cat (#38), Lifeweaver (#39) in that order (owner, 2026-10-26); after them Sombra, Illari
+   (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
+   - Lúcio: numbers with sources in `tools/reference/lucio.md`; his default skin is extracted (DataTool
+     extract-unlocks, 2026-10-26) to `E:\Overwatch Archive\extractedl088\Heroes\Lúcio`.
+   - Every new hero comes with its four perks (`Perk`, `Perks.minorXp/majorXp`, `tools/reference/perks.md`).

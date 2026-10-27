@@ -43,6 +43,9 @@ public final class HudText {
 
 	public enum Align { LEFT, CENTER, RIGHT }
 
+	/** Hero mode's chat, Overwatch's match chat orange (ours: the HUD's orange, Blizzard gives no number). */
+	public static final net.minecraft.network.chat.TextColor MATCH_CHAT = net.minecraft.network.chat.TextColor.fromRgb(0xF7A54A);
+
 	/** The chat face's font, or null without the local pack (chat keeps Minecraft's). */
 	public static @Nullable FontDescription chatFont() {
 		return Face.CHAT.real() ? Face.CHAT.font : null;

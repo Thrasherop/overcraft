@@ -121,9 +121,17 @@ public final class Combat {
 		return until != null && now(target) < until;
 	}
 
-	/** Rate a hero's weapon recovery and reloads tick at (Kitsune Rush: +50% attack and reload speed). */
+	/**
+	 * Rate a hero's weapon recovery and reloads tick at: Kitsune Rush's +50% attack and reload speed, and Ready Step's
+	 * +40% (#36). Together they add up (ours: no source says how Overwatch stacks them).
+	 */
 	public static double attackRate(LivingEntity hero) {
-		return isRushed(hero) ? 1 + dev.overcraft.kiriko.KirikoStats.RUSH_ATTACK_SPEED : 1;
+		double rate = isRushed(hero) ? 1 + dev.overcraft.kiriko.KirikoStats.RUSH_ATTACK_SPEED : 1;
+		HeroState state = hero instanceof Player player ? HeroManager.state(player) : null;
+		if (state != null && now(hero) < state.attackBuffUntil) {
+			rate += state.attackBuff;
+		}
+		return rate;
 	}
 
 	/** Rate a hero's cooldowns tick at (Kitsune Rush: +100% cooldown recharge). */
@@ -173,6 +181,12 @@ public final class Combat {
 		}
 	}
 
+	/** Damage dealt or healing given (Overwatch points): ult charge and perk progress alike. */
+	public static void credit(Player hero, double points) {
+		addUltCharge(hero, points);
+		Perks.add(hero, points);
+	}
+
 	public static void addUltCharge(Player hero, double points) {
 		HeroState state = HeroManager.state(hero);
 		if (state == null || state.hero == null || state.ultActive > 0 || points <= 0) {
@@ -211,8 +225,33 @@ public final class Combat {
 		};
 	}
 
+	/** A timed attribute buff on an entity (Foxtrot's speed), until a game time. */
+	private record Buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, long until) {
+	}
+
+	private static final Map<String, Buff> buffs = new HashMap<>();
+
+	/**
+	 * Gives an entity a timed attribute buff (a share of its base: 0.3 = +30%), or renews it. Kept on while it lasts and
+	 * taken off after, as Kitsune Rush's are.
+	 */
+	public static void buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, double seconds) {
+		long until = now(entity) + Ow.ticks(seconds);
+		buffs.merge(entity.getUUID() + "/" + id, new Buff(entity, attribute, id, amount, until),
+			(old, fresh) -> fresh.until > old.until ? fresh : old);
+		setModifier(entity, attribute, id, amount);
+	}
+
 	/** Every server tick: Kitsune Rush's attribute buffs on and off, expired entries dropped. */
 	public static void tick(MinecraftServer server) {
+		Iterator<Buff> buffIt = buffs.values().iterator();
+		while (buffIt.hasNext()) {
+			Buff buff = buffIt.next();
+			if (!buff.entity.isAlive() || buff.entity.isRemoved() || now(buff.entity) >= buff.until) {
+				setModifier(buff.entity, buff.attribute, buff.id, 0);
+				buffIt.remove();
+			}
+		}
 		Iterator<Map.Entry<UUID, LivingEntity>> it = rushedEntities.entrySet().iterator();
 		while (it.hasNext()) {
 			LivingEntity entity = it.next().getValue();
@@ -255,5 +294,6 @@ public final class Combat {
 		phasedUntil.clear();
 		rushedUntil.clear();
 		rushedEntities.clear();
+		buffs.clear();
 	}
 }
