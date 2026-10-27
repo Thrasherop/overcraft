@@ -38,5 +38,24 @@ of `refPoseBones` in the Blender add-on's `OWModelReader` over the exported .owm
   - `BoneToDriverMap` (skeleton index -> driver index).
 - A point follows a bone (-1: a top-row anchor) and is placed by its drivers' weighted transforms: see
   [cloth](../animation/cloth.md).
-- **Not decoded yet:** `PositionsOffset`, `SectionOffset3`-`11` (constraints, limits, collision?), which hold the
-  physics Domino runs on top.
+- **The sections TankLib doesn't interpret** (decoded 2026-10-27; decoder and checks in
+  `E:\Overwatch Archive\research\domino-cloth\domino_decode.py`, all 78 checks pass on Kiriko and Lúcio's models).
+  - **Layout:** the chunk's data starts 16 bytes after the tag; every descriptor offset is relative to that. Each
+    section holds the 6 pieces' arrays back to back, 16-byte aligned. Per-vertex arrays are padded to a multiple of 8
+    (dummies).
+  - **Per point:** rest position (Positions, vec4, model space; equals the follower bones' rest to 1.6e-7 m), rest
+    normal (`Ow220_1`), inverse mass (S3; 0 on the anchors, which come first), a rest frame [t, n x t, n] (S6), depth
+    (S7), tether length up the chain (S8) and tether root (S10), frame neighbour (S11). S5 is a per-row weight of
+    unknown meaning.
+  - **Triangles** (S15), and **distance constraints** (S16 pairs, S17 rest lengths) batched by S20-S23 into vertical,
+    horizontal, shear and skip-one bend sets. Each batch is an independent set: graph-coloured Gauss-Seidel, 8 wide.
+  - **Bending triples** (S18 a, b, c; S19 weights from the inverse masses).
+  - **Colliders** (S24, 80 bytes each): tapered capsules along a bone's local X (radii, length), e.g. Spine_3, Thigh,
+    Hips, Arm, Elbow, Knee, Foot.
+  - **Driver bind poses** (S26).
+- **Settings:** the descriptor's `UnknownGuidx81` is a .081 asset (`STU_51B148E0`). It holds `m_dampingFactor`, a
+  gravity vector (likely `m_599AB8D7`), likely an iteration count (2) and four floats that look like the constraint
+  groups' stiffnesses (unproven; the field names are hashed).
+- **What Domino likely runs:** anchors skinned to their drivers; moving points integrate gravity with damping; about 2
+  Gauss-Seidel passes over the distance batches, the bending triples and tethers; collision with the capsules; each
+  cloth bone takes its point's position and a turn rebuilt from its frame.

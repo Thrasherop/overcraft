@@ -23,8 +23,18 @@ Data: `assets/overcraft/cloth/kiriko.json` (tools/cloth_data.py; model 3A.118, f
 - **In normal play:** the coat hangs standing, streams back running, swings wide strafing, and hangs in front of her
   mid-jump.
 
+## Her Domino settings (decoded, [model_data](../game-data/model_data.md#cloth-domino))
+| Pieces | What | Settings asset | Damping | Gravity | Colliders |
+|---|---|---|---|---|---|
+| 0, 1 | back and front waist panels (not mirrors) | 0x3F5 | 1.0 | (0, -8, 0) | Spine_3, Thighs, Hips |
+| 2, 3 | the long side tails (mirrored) | 0x37D | 2.0 | (0, -5, 0) | adds Arms, Elbows, Knees, Feet |
+| 4, 5 | the trouser cuffs (mirrored to 5 mm) | 0x409 | 0.1 | 0 | Feet |
+
+Likely iterations: 2 everywhere.
+
 ## Open
-- Domino's physics on top: rigid to the drivers for now.
+- Domino's physics on top: rigid to the drivers for now. The data to run it is decoded (above); the solver isn't
+  written yet.
 - Overwatch drives cloth points and turns the bones to follow them; we blend whole bone transforms. It looks the same
   so far.
 - The 64 anchor points aren't used.
