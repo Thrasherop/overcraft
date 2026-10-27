@@ -37,6 +37,25 @@ after DataTool's `extract-unlocks <out>/Unlocks "Kiriko|voiceline=*"` and `"Kiri
 - **Minecraft's locator bar is hidden in hero mode** with the rest of its bars: each other player's dot (a pink or
   team-coloured square beside the ult meter, found on LAN) came from the info bar's foreground, which Fabric names
   apart from the bar.
+- **Played on LAN with a second client** (before the fixes above, then again after): callouts reach teammates and
+  not the other team, both ways (Red vs no team, then both teamless); pings and emotes seen by the other player; an
+  enemy ping on a player (ring, portrait, "KIRIKO", now the outline); Cheer, Heroic, Choreography, Orion Dance and
+  Kneeling watched from the other client (`fix_v_*`, `out_*`).
+- **General play of `next` before main** (fresh client, fresh survival world, savanna, Normal; `gp_*`): picked
+  Kiriko on the select screen; at night zombies hit 3 a hit and skeleton arrows 2 to 4, the night swarm killed her
+  twice (death screen, respawn with the kit and ult kept); kunai 60 a hit, quick melee 40 (39 through a zombie's
+  armour), reload 11 to 15; Protection Suzu heals her 80 at her feet and forward (two misses at first were the
+  harness turning the view and throwing in the same tick: the server threw at the old pitch); Healing Ofuda on a
+  hurt villager 10 to 19.6; Swift Step to it (7 s cooldown); Kitsune Rush cast with its torii gates; wall climb up
+  a 7-high wall, cancelling a reload (ammo stayed 10); swimming; a minor perk picked with the click throwing
+  nothing; T tap "Good job", a ping; Save and Leave, rejoin through the select screen. Minecraft mode (G): punched
+  acacia logs and dirt by hand, crafted planks, a crafting table and a chest by clicking the grids, placed them,
+  pillared out of a hole with dirt, stored logs in the chest and found them there on reopening; G back to hero
+  mode; H away from a bed: "Go back to your bed to change heroes".
+  Not tried this time: a tamed wolf as the ally, lava, ladders, boats, the Nether, eating. Seen once and not
+  reproduced: 112 HP lost between leaving a pool and opening the perk menu (no damage message; the same steps
+  again lost nothing). Found: vanilla's saturation regeneration and hunger still run in hero mode with the food bar
+  hidden (#43).
 - **Pings (#40):** the middle button pings the spot under the crosshair (a blue diamond, its distance, your own with
   a leader line to "CANCEL [key]"); a double click makes it a warning (a red circle); an enemy gets a red ring that
   follows them with their portrait (a mob: its initial) and name, and a red outline. Teammates see them. Aiming at
