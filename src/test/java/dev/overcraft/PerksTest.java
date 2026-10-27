@@ -46,6 +46,20 @@ class PerksTest {
 	}
 
 	@Test
+	void passiveGainIsAPointASecond() {
+		HeroState s = new HeroState();
+		s.reset(Hero.KIRIKO);
+		for (int i = 0; i < 20 * 60; i++) {
+			Perks.tick(s);
+		}
+		assertEquals(60, s.perkXp, 1e-6);
+		// it stops at the major perk's level
+		s.perkXp = 4799.99;
+		Perks.tick(s);
+		assertEquals(4800, s.perkXp, 1e-9);
+	}
+
+	@Test
 	void savedProgressComesBack() {
 		HeroState s = new HeroState();
 		s.reset(Hero.KIRIKO);

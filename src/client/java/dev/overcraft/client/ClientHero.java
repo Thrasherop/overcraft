@@ -17,6 +17,7 @@ import dev.overcraft.client.controls.HeroControls.Action;
 import dev.overcraft.client.mixin.MinecraftInvoker;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.OwMovement;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -245,7 +246,8 @@ public final class ClientHero {
 		} else {
 			ofuda = ofudaPressed | HeroControls.get(Action.PRIMARY_FIRE).isDown();
 		}
-		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0);
+		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0)
+			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0);
 
 		int pressed = 0;
 		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;

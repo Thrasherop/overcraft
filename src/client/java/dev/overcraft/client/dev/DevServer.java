@@ -134,6 +134,8 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					out.addProperty("perkLevel", s.perkLevel());
+					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());

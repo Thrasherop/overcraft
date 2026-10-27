@@ -271,6 +271,7 @@ public final class HeroManager {
 		}
 		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
 		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			QuickMelee.use(player, state);
 		}
@@ -293,7 +294,7 @@ public final class HeroManager {
 			HeroKit kit = kit(state.hero);
 			boolean controls = controls(player);
 			if (!controls) {
-				state.primaryHeld = state.secondaryHeld = false;
+				state.primaryHeld = state.secondaryHeld = state.wallClimbing = false;
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
@@ -311,6 +312,7 @@ public final class HeroManager {
 	private static void tickRules(ServerPlayer player, HeroState state) {
 		state.rushed = Combat.isRushed(player);
 		state.perkTicks++;
+		Perks.tick(state);
 		QuickMelee.tick(state);
 		Combat.tickFire(player, state);
 		if (state.ultActive > 0) {
