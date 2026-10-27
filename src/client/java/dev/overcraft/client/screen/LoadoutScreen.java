@@ -22,10 +22,10 @@ import static dev.overcraft.client.hud.HudDraw.fill;
 import static dev.overcraft.client.hud.HudDraw.outline;
 
 /**
- * The Overwatch menu's VOICE LINES: which four of the hero's voice lines are on the communication wheel's voice page
- * (the owner: "a settings menu to choose the ones to equip"). The four slots across the top (up, right, down, left, as
- * the wheel lays them out); every line the local pack has below, in columns. Click a slot, then a line to put it there;
- * right-click a line to hear it. Saved per hero (Loadout).
+ * The Overwatch menu's VOICE LINES: which four of the hero's voice lines and which four emotes are on the communication
+ * wheel's pages (the owner: "a settings menu to choose the ones to equip"), on two tabs. The four slots across the top
+ * (up, right, down, left, as the wheel lays them out); every line or emote below, in columns. Click a slot, then an
+ * entry to put it there; right-click a voice line to hear it. Saved per hero (Loadout).
  */
 public class LoadoutScreen extends OwScreen {
 	private static final float LEFT = 130;
@@ -39,8 +39,11 @@ public class LoadoutScreen extends OwScreen {
 	private static final String[] SLOT_NAMES = {"overcraft.loadout.up", "overcraft.loadout.right", "overcraft.loadout.down",
 		"overcraft.loadout.left"};
 
+	private static final float TABS_TOP = 250;
+
 	private final Screen parent;
 	private int slot;
+	private boolean emotes;
 
 	public LoadoutScreen(Screen parent) {
 		super(Component.translatable("overcraft.loadout.title"));
@@ -67,26 +70,50 @@ public class LoadoutScreen extends OwScreen {
 		}
 		float x = refX(event.x());
 		float y = refY(event.y());
+		for (int t = 0; t < 2; t++) {
+			if (x >= tabX(t) && x < tabX(t) + 200 && y >= TABS_TOP - 30 && y < TABS_TOP + 6) {
+				emotes = t == 1;
+				return true;
+			}
+		}
 		for (int i = 0; i < Loadout.SLOTS; i++) {
 			if (x >= slotX(i) && x < slotX(i) + SLOT_W && y >= SLOTS_TOP && y < SLOTS_TOP + SLOT_H) {
 				slot = i;
 				return true;
 			}
 		}
-		List<String> lines = Loadout.available(hero);
+		List<String> lines = entries(hero);
 		for (int i = 0; i < lines.size(); i++) {
 			if (x >= lineX(i) && x < lineX(i) + COLUMN_W - 20 && y >= lineY(i) && y < lineY(i) + ROW_H - 4) {
 				if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
-					minecraft.getSoundManager().play(SimpleSoundInstance.forUI(
-						SoundEvent.createVariableRangeEvent(Overcraft.id(hero.id + ".voiceline." + lines.get(i))), 1));
+					if (!emotes) {
+						minecraft.getSoundManager().play(SimpleSoundInstance.forUI(
+							SoundEvent.createVariableRangeEvent(Overcraft.id(hero.id + ".voiceline." + lines.get(i))), 1));
+					}
 				} else {
-					Loadout.setVoiceLine(hero, slot, lines.get(i));
+					if (emotes) {
+						Loadout.setEmote(hero, slot, lines.get(i));
+					} else {
+						Loadout.setVoiceLine(hero, slot, lines.get(i));
+					}
 					slot = (slot + 1) % Loadout.SLOTS;
 				}
 				return true;
 			}
 		}
 		return super.mouseClicked(event, doubleClick);
+	}
+
+	private float tabX(int tab) {
+		return LEFT + 420 + tab * 220;
+	}
+
+	private List<String> entries(Hero hero) {
+		return emotes ? Loadout.availableEmotes(hero) : Loadout.available(hero);
+	}
+
+	private String name(Hero hero, String id) {
+		return emotes ? Loadout.emoteName(id) : name(hero, id, true);
 	}
 
 	@Override
@@ -101,9 +128,18 @@ public class LoadoutScreen extends OwScreen {
 		HudText.draw(g, Face.BODY, Component.translatable("overcraft.menu.title").getString().toUpperCase(Locale.ROOT),
 			LEFT, 150, 15, ORANGE, Align.LEFT);
 		HudText.draw(g, Face.NUMBERS, getTitle().getString().toUpperCase(Locale.ROOT), LEFT, 230, 64, WHITE, Align.LEFT);
+		for (int t = 0; t < 2; t++) {
+			boolean on = (t == 1) == emotes;
+			String tab = Component.translatable(t == 0 ? "overcraft.wheel.voice_lines" : "overcraft.wheel.emotes").getString()
+				.toUpperCase(Locale.ROOT);
+			HudText.draw(g, Face.BODY, tab, tabX(t), TABS_TOP, 18, on ? WHITE : TEXT_DIM, Align.LEFT);
+			if (on) {
+				fill(g, tabX(t), TABS_TOP + 6, HudText.width(Face.BODY, tab, 18), 3, ORANGE);
+			}
+		}
 		Hero hero = ClientHero.hero();
 		if (hero != null) {
-			List<String> equipped = Loadout.voiceLines(hero);
+			List<String> equipped = emotes ? Loadout.emotes(hero) : Loadout.voiceLines(hero);
 			for (int i = 0; i < Loadout.SLOTS; i++) {
 				float x = slotX(i);
 				boolean chosen = i == slot;
@@ -113,7 +149,7 @@ public class LoadoutScreen extends OwScreen {
 					x + 12, SLOTS_TOP + 17, 10, chosen ? ORANGE : TEXT_DIM, Align.LEFT);
 				HudText.draw(g, Face.BODY, name(hero, equipped.get(i)), x + 12, SLOTS_TOP + 42, 15, WHITE, Align.LEFT);
 			}
-			List<String> lines = Loadout.available(hero);
+			List<String> lines = entries(hero);
 			float rx = refX(mouseX);
 			float ry = refY(mouseY);
 			for (int i = 0; i < lines.size(); i++) {
@@ -135,7 +171,7 @@ public class LoadoutScreen extends OwScreen {
 		g.pose().popMatrix();
 	}
 
-	private static String name(Hero hero, String id) {
+	private static String name(Hero hero, String id, boolean voiceLine) {
 		return id.isEmpty() ? "-" : Component.translatable("overcraft.voiceline." + hero.id + "." + id).getString().toUpperCase(Locale.ROOT);
 	}
 }

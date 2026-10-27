@@ -85,6 +85,65 @@ public final class HeroAnimator {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
 		a.actions.trigger(action, now);
 		a.actionsFirstPerson.trigger(action, now);
+		// doing anything ends an emote, as in Overwatch
+		a.emote = null;
+	}
+
+	/**
+	 * An emote started (the communication wheel, dev.overcraft.comms): the hero's emote_<id>_1, _2... clips play over the
+	 * whole body in turn, the last one looping, until the hero moves or does something else.
+	 */
+	public static void emote(int entityId, String emote, float now) {
+		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		a.emote = emote;
+		a.emoteStart = now;
+		a.emoteFrom = null;
+	}
+
+	/** An emote is playing (the local player's camera goes to third person meanwhile: ClientHero). */
+	public boolean emoting() {
+		return emote != null;
+	}
+
+	private @Nullable String emote;
+	private float emoteStart;
+	private @Nullable Vec3 emoteFrom;
+	/** How far (m) the hero may drift before an emote ends (ours: Minecraft nudges players a little standing still). */
+	private static final double EMOTE_MOVE = 0.15;
+
+	/** The emote's pose at this moment over the whole body, or false when there's none (or it just ended). */
+	private boolean poseEmote(SkinnedModel model, LivingEntity entity, float now, Skeleton.Pose pose) {
+		if (emote == null) {
+			return false;
+		}
+		if (emoteFrom == null) {
+			emoteFrom = entity.position();
+		} else if (entity.position().distanceToSqr(emoteFrom) > EMOTE_MOVE * EMOTE_MOVE || !entity.isAlive()) {
+			emote = null;
+			return false;
+		}
+		java.util.List<SkinnedModel.Clip> parts = new java.util.ArrayList<>();
+		for (int n = 1; model.clips.containsKey("emote_" + emote + "_" + n); n++) {
+			parts.add(model.clips.get("emote_" + emote + "_" + n));
+		}
+		if (parts.isEmpty()) {
+			emote = null;
+			return false;
+		}
+		float t = Math.max(0, now - emoteStart);
+		for (int i = 0; i < parts.size(); i++) {
+			SkinnedModel.Clip part = parts.get(i);
+			boolean last = i == parts.size() - 1;
+			if (last || t < part.duration()) {
+				Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
+				Skeleton.sample(part, last ? t % Math.max(0.01f, part.duration()) : t, act);
+				// eased in from the movement pose over the first 0.2 s
+				Skeleton.blend(pose, act, Math.clamp((now - emoteStart) / 0.2f, 0, 1), null);
+				return true;
+			}
+			t -= part.duration();
+		}
+		return false;
 	}
 
 	/** A climb sound: in the head for the local player (her own sound, #17), at the spot for anyone else watching. */
@@ -241,6 +300,13 @@ public final class HeroAnimator {
 		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") ? "add_breathe_crouch" : "add_breathe");
 		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
+		}
+		if (poseEmote(model, entity, now, pose)) {
+			int root = UpperBody.mover(model);
+			if (root >= 0) {
+				pose.t[root].set(model.restT[root]);
+			}
+			return Skeleton.skin(model, pose, -1, null);
 		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
 		boolean asleep = entity.isSleeping();

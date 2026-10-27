@@ -166,6 +166,15 @@ public final class ClientHero {
 		if (player == null) {
 			return;
 		}
+		// emoting, the view goes to third person, as Overwatch's does; back to first person when it ends
+		boolean emoting = hero() != null && dev.overcraft.client.model.HeroAnimator.of(player).emoting();
+		if (emoting && !emoteCamera && mc.options.getCameraType().isFirstPerson()) {
+			emoteCamera = true;
+			mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK);
+		} else if (!emoting && emoteCamera) {
+			emoteCamera = false;
+			mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
+		}
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
 		if (view != chatHeroView) {
@@ -264,6 +273,8 @@ public final class ClientHero {
 		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
 		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
 
+		dev.overcraft.client.comms.Pings.tick(mc);
+
 		// chat on Overwatch's key (Enter): T is the communication wheel's in hero mode
 		if (drain(HeroControls.get(Action.CHAT))) {
 			mc.gui.openChatScreen(net.minecraft.client.gui.components.ChatComponent.ChatMethod.MESSAGE);
@@ -287,6 +298,8 @@ public final class ClientHero {
 	}
 
 	private static boolean chatHeroView;
+	/** The camera went to third person for an emote (and comes back when it ends). */
+	private static boolean emoteCamera;
 
 	/** The perk menu is up (HeroHud draws it). */
 	private static boolean perkMenu;

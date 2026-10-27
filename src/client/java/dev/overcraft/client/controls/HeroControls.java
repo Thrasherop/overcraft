@@ -56,6 +56,8 @@ public final class HeroControls {
 		PERK_MENU(Section.INTERFACE, keyboard(InputConstants.KEY_LALT)),
 		/** Hold for the communication wheel, tap for "Good job" (the owner: T, as Overwatch's; dev.overcraft.comms). */
 		COMMS(Section.INTERFACE, keyboard(InputConstants.KEY_T)),
+		/** Ping what the crosshair is on; twice quickly, a warning (Overwatch's PC default: the middle button, #40). */
+		PING(Section.INTERFACE, mouse(InputConstants.MOUSE_BUTTON_MIDDLE)),
 		/** Overwatch's chat key: Enter, since T is the wheel's in hero mode. */
 		CHAT(Section.INTERFACE, keyboard(InputConstants.KEY_RETURN)),
 		HERO_SELECT(Section.INTERFACE, keyboard(InputConstants.KEY_H)),

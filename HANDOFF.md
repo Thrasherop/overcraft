@@ -148,6 +148,13 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   sound maps.
 
 ## Questions for the owner
+- **First-person hands (critique round 8 #1):** your frames put the kunai grip near x 1420 at 1080p, Blizzard's 2022
+  capture near x 1267, ours sits near 1200. Your frames all have a weapon skin. Could you take one Overwatch screenshot
+  of Kiriko at rest with the default weapons, and say your Field of View setting? Then the hands move to match.
+- **A crosshair colour option?** You play with a custom green crosshair (round 8 noticed it): should Overcraft's
+  hero options have Overwatch's crosshair colours?
+- **Ping key:** Overwatch's PC default is the middle mouse button (ours too); your screenshots show "CANCEL P".
+  Rebindable in the Overwatch options either way; say if P should be the default.
 - Movement (#31) uses Overwatch's own mover numbers from the game data (friction, ground and air acceleration, air
   decay), read offline like the voice weights, since no public source has them; the code says so next to each, and
   they agree with the Workshop timings. Say if you'd rather keep movement to public numbers only. Also worth a look in

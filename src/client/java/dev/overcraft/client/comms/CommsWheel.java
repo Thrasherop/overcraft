@@ -102,9 +102,14 @@ public final class CommsWheel {
 					send(callout);
 				}
 			} else if (page == Page.VOICE_LINES) {
-				String line = hoveredLine();
+				String line = hoveredSlot(page);
 				if (line != null && ClientPlayNetworking.canSend(VoiceLinePayload.TYPE)) {
 					ClientPlayNetworking.send(new VoiceLinePayload(line));
+				}
+			} else {
+				String emote = hoveredSlot(page);
+				if (emote != null && ClientPlayNetworking.canSend(dev.overcraft.net.EmotePayload.TYPE)) {
+					ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(emote));
 				}
 			}
 			open = false;
@@ -138,14 +143,15 @@ public final class CommsWheel {
 		return Callout.WHEEL[slice];
 	}
 
-	/** The voice page's line under the pointer: four quarters, up, right, down, left; none in the centre or empty. */
-	private static @Nullable String hoveredLine() {
+	/** A page's slot under the pointer: four quarters, up, right, down, left; none in the centre or empty. */
+	private static @Nullable String hoveredSlot(Page on) {
 		Hero hero = ClientHero.hero();
 		if (hero == null || Math.hypot(pointerX, pointerY) < DEAD) {
 			return null;
 		}
 		double angle = Math.toDegrees(Math.atan2(pointerX, -pointerY));
-		String id = Loadout.voiceLines(hero).get((int) Math.floorMod(Math.round(angle / 90), 4));
+		List<String> slots = on == Page.EMOTES ? Loadout.emotes(hero) : Loadout.voiceLines(hero);
+		String id = slots.get((int) Math.floorMod(Math.round(angle / 90), 4));
 		return id.isEmpty() ? null : id;
 	}
 
@@ -187,11 +193,8 @@ public final class CommsWheel {
 					fill(g, lx - HudText.width(Face.BODY, label, 19) / 2, ly + 14, HudText.width(Face.BODY, label, 19), 3, 0xFFF99E1A);
 				}
 			}
-		} else if (page == Page.VOICE_LINES) {
-			voicePage(g, cx, cy);
 		} else {
-			String note = Component.translatable("overcraft.wheel.emotes").getString().toUpperCase(Locale.ROOT);
-			HudText.draw(g, Face.BODY, note, cx, cy - 130, 18, 0xFFFFFFFF, Align.CENTER);
+			slotPage(g, cx, cy, page);
 		}
 		// the page tabs: a white bar with the mouse button that goes there
 		if (page != Page.VOICE_LINES) {
@@ -208,7 +211,7 @@ public final class CommsWheel {
 	 * The voice page (the owner's screenshot): the four equipped lines at the compass points, each name in white caps in
 	 * a dark box with a light outline, diagonal dividers between them; the one under the pointer brighter.
 	 */
-	private static void voicePage(GuiGraphicsExtractor g, float cx, float cy) {
+	private static void slotPage(GuiGraphicsExtractor g, float cx, float cy, Page on) {
 		Hero hero = ClientHero.hero();
 		if (hero == null) {
 			return;
@@ -219,12 +222,13 @@ public final class CommsWheel {
 				fill(g, cx + (float) Math.sin(between) * r, cy - (float) Math.cos(between) * r, 1.5f, 1.5f, 0x66FFFFFF);
 			}
 		}
-		List<String> lines = Loadout.voiceLines(hero);
-		String over = hoveredLine();
+		List<String> lines = on == Page.EMOTES ? Loadout.emotes(hero) : Loadout.voiceLines(hero);
+		String over = hoveredSlot(on);
 		float[][] at = {{0, -182}, {255, 0}, {0, 182}, {-255, 0}};
 		for (int i = 0; i < 4; i++) {
 			String id = lines.get(i);
-			String name = id.isEmpty() ? "-" : Component.translatable("overcraft.voiceline." + hero.id + "." + id).getString();
+			String name = on == Page.EMOTES ? Loadout.emoteName(id)
+				: id.isEmpty() ? "-" : Component.translatable("overcraft.voiceline." + hero.id + "." + id).getString();
 			name = name.toUpperCase(Locale.ROOT);
 			boolean hot = !id.isEmpty() && id.equals(over);
 			float cap = 15;

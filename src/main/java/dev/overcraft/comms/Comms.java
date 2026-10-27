@@ -66,6 +66,17 @@ public final class Comms {
 		HeroSounds.fromHero(player, SoundEvent.createVariableRangeEvent(sound), 2);
 	}
 
+	/**
+	 * One of the hero's emotes (the wheel's emote page): everyone who can see the hero (and the hero) plays it, as an
+	 * action ("emote:<id>"); it ends on their screens when the hero moves or does anything else (HeroAnimator).
+	 */
+	public static void emote(ServerPlayer player, String id) {
+		HeroState state = HeroManager.state(player);
+		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive()) {
+			dev.overcraft.hero.Combat.animate(player, "emote:" + id);
+		}
+	}
+
 	public static void callout(ServerPlayer player, Callout callout) {
 		if (!allowed(player)) {
 			return;

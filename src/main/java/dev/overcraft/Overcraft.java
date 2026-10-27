@@ -22,6 +22,8 @@ import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.TeamPayload;
 import dev.overcraft.net.CalloutPayload;
 import dev.overcraft.net.VoiceLinePayload;
+import dev.overcraft.net.EmotePayload;
+import dev.overcraft.net.PingPayload;
 import dev.overcraft.comms.Callout;
 import dev.overcraft.comms.Comms;
 import dev.overcraft.net.SelectHeroPayload;
@@ -59,7 +61,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.4";
+	public static final String ASSETS_NEEDED = "0.3.7";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -109,6 +111,9 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(TeamPayload.TYPE, TeamPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(VoiceLinePayload.TYPE, VoiceLinePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(EmotePayload.TYPE, EmotePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -135,6 +140,10 @@ public class Overcraft implements ModInitializer {
 				Comms.callout(context.player(), callout);
 			}
 		});
+		ServerPlayNetworking.registerGlobalReceiver(PingPayload.TYPE,
+			(payload, context) -> dev.overcraft.comms.Pings.ping(context.player(), payload));
+		ServerPlayNetworking.registerGlobalReceiver(EmotePayload.TYPE,
+			(payload, context) -> Comms.emote(context.player(), payload.id()));
 		ServerPlayNetworking.registerGlobalReceiver(VoiceLinePayload.TYPE,
 			(payload, context) -> Comms.voiceLine(context.player(), payload.id()));
 		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,

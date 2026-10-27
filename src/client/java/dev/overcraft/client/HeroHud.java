@@ -181,6 +181,7 @@ public final class HeroHud {
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
+		dev.overcraft.client.comms.Pings.render(g, w, h);
 		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
@@ -1139,7 +1140,7 @@ public final class HeroHud {
 	}
 
 	/** World position to HUD position (reference pixels), or null behind the camera. */
-	private static float @Nullable [] project(Vec3 at, float w, float h) {
+	public static float @Nullable [] project(Vec3 at, float w, float h) {
 		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
 		Vec3 rel = at.subtract(camera.position());
 		Vector3f v = new Vector3f((float) rel.x, (float) rel.y, (float) rel.z);
