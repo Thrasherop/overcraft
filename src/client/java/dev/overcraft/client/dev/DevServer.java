@@ -144,6 +144,9 @@ public final class DevServer {
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
 					out.addProperty("anim", HeroAnimator.of(player).playing());
+					out.addProperty("clothLowest", dev.overcraft.client.model.ClothSim.devLowest);
+					out.addProperty("emoteClip", HeroAnimator.of(player).emoteClip());
+					out.addProperty("emoteClipAt", HeroAnimator.of(player).emoteAt());
 					out.addProperty("emoteCamera", dev.overcraft.client.comms.EmoteCamera.active());
 					out.addProperty("emoteFirstPersonFrames", dev.overcraft.client.comms.EmoteCamera.firstPersonFrames);
 					out.addProperty("food", player.getFoodData().getFoodLevel());
@@ -273,6 +276,33 @@ public final class DevServer {
 				player.setYRot(yaw);
 				player.setXRot(pitch);
 				player.setYHeadRot(yaw);
+				out.addProperty("ok", true);
+			}
+			case "emote" -> {
+				// dev only: "emote <id>": plays one of the hero's emotes as the wheel does (any of them, equipped or not)
+				net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(arg.trim()));
+				out.addProperty("ok", true);
+			}
+			case "clothfloor" -> {
+				// dev only: "clothfloor on|off": the cloth's floor constraint (off shows the coat under the floor it fixed)
+				dev.overcraft.client.model.ClothSim.devFloor = !arg.trim().equals("off");
+				out.addProperty("clothFloor", dev.overcraft.client.model.ClothSim.devFloor);
+			}
+			case "reload" -> {
+				// dev only: reloads the resource packs (F3+T): a regenerated emote data file or pack model without a restart
+				mc.reloadResourcePacks();
+				out.addProperty("ok", true);
+			}
+			case "emoteat" -> {
+				// dev only: "emoteat <seconds>": holds every emote at that time into it, to look at exact frames (the
+				// emote data's prop windows); "emoteat off" lets them play again
+				String a = arg.trim();
+				dev.overcraft.client.model.HeroAnimator.devEmoteAt = a.equals("off") ? -1 : Float.parseFloat(a);
+				out.addProperty("emoteAt", dev.overcraft.client.model.HeroAnimator.devEmoteAt);
+			}
+			case "chat" -> {
+				// a chat message as typed in the chat box ("chat hello there"), signed and sent as Minecraft sends it
+				player.connection.sendChat(arg);
 				out.addProperty("ok", true);
 			}
 			case "cmd" -> {

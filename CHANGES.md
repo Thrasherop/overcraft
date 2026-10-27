@@ -6,6 +6,135 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.9 (emotes and her coat from the game data, ping callouts)
+Everything below since 0.3.8. **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.9):
+- the emote props are now named by their game ids: `py tools/build_asset_pack.py props <DataTool output>`;
+- her ping lines are new: `... sounds <DataTool output>`;
+- then `... zip`.
+
+An older pack still runs, without the props or the ping lines, and is flagged in game. The general play of `next`
+before the build is at the end of this entry.
+
+- **Her coat moves as Overwatch's does: placed by its hand-animated driver bones (the owner: "The cloth simulation is
+  super wonky ... I think the cloths are actually animated by hand too"):**
+  - **The data:** no clip keys her 278 `cloth_` bones (2, in every clip). Her model's Domino cloth places each one
+    from up to four driver bones with weights. The drivers are her body and 38 coat bones the clips key by hand
+    (all 38 in Kneeling and Fox Cuddles; most clips, run and strafe included).
+  - **The change:** `tools/cloth_data.py` (new) writes `assets/overcraft/cloth/kiriko.json`. `ClothSim` places each
+    cloth bone's rest transform through its drivers, as skinning places a vertex, instead of our free simulation
+    (now only the fallback for a model with no cloth data).
+  - **Played:**
+    - The owner was sent Kneeling and Fox Cuddles, before and after (front at 0.5-7 s, side, back): "spot on ...
+      perfect matches".
+    - In normal play from the front (`gp_cloth_*`): the coat hangs standing, streams back running, swings wide
+      strafing and hangs in front of her mid-jump, as each clip keys it.
+    - All 23 emotes re-shot (`ef8`).
+  - **Not in yet:** Domino's light physics on top (its settings are in sections not decoded yet). The coat follows
+    its drivers rigidly.
+- **Emote props from the game data (#4; the owner: "WHENEVER POSSIBLE, ALWAYS TRY TO USE THE REAL DATA"):** every
+  prop's placement, timing and motion now comes from Overwatch's own data, with no per-emote code. EMOTES.md has the
+  rules; TECHNIQUES.md has how the data was read.
+  - **What's read:** each of her emote clips names an animation effect listing what it spawns: which prop, on which
+    hardpoint, from when to when in the clip, its own clip, and whether it's thrown. `tools/emote_data.py` (new)
+    writes `assets/overcraft/emotes/kiriko.json`. `EmoteProps` plays it: a prop shows in its window, on its hardpoint
+    (a bone of hers plus the model's offset), playing its clip at her clip's time, and a thrown one falls when its
+    window ends.
+  - **What changed from the version placed by eye (the entry that was here):**
+    - The skateboard rides under her feet. Her clips move the board's hardpoint bone there.
+    - The cat walks in and settles in her lap, with no root-motion shift.
+    - The donut is gone at 1.0 s, as she pops it in her mouth (3.3 cm from it then).
+    - The pod robot flies in to be patted and flies off, with no lift.
+    - The fox plays its outro clip too.
+    - Whirlwind's swirl of ofuda papers is in.
+    - The wrist "quarter turn" was Blender's bone convention, not the data: removed.
+  - **One correction to the data's borrowed hardpoint, checked by contact:** her model lacks the standard weapon
+    hardpoint 000A, and Lúcio's copy (turned 180 degrees) held the bubble tea upside down. On the bone itself, the
+    straw reaches 3 cm from her mouth at her sip, 7.27 s into the ride (`tools/emote_contacts.py`, new).
+  - **The umbrella's hardpoint (02A9) is in no extracted model:** inferred from her clip and labelled so in the data
+    file.
+  - **The pack:** `build_asset_pack.py props` exports every prop the data names, as `hero_models/prop_<id>.glb`.
+    Rebuild the pack's props.
+  - **Harness:** `emoteat <s>` holds every emote at a time, for exact frames; `reload` reloads resources; `state`
+    reports the emote clip playing. The live `prop` placement command is gone.
+  - Played (dev client, a stone platform, every emote held at 0.3/0.7/1.2/2 s, side and back, 3.5/5.5 s:
+    `emote_frames.sh`):
+    - The board under her feet, the cat in her lap under her hands, the umbrella by its handle, the pod patted, the fox
+      hugged, the donut gone at 1.0 s, the mic down beside her.
+    - The tea upside down before the contact check, then upright with the straw in her mouth at 7.27 s.
+    - The owner was sent the before/after.
+- **Her weapons in emotes, from the GeoSetFlags (a critique of all 23 found kunai in her mouth in Laugh, kunai a metre
+  away and an ofuda in the sky in Listen Up and Salty, an ofuda through Cheer's heart-hands):** each clip's
+  GeoSetFlags (her blend tree's per-clip pose data, read by `tools/emote_data.py`) now hide her ofuda, Suzu and kunai
+  when Overwatch does.
+  - Kneeling sheathes the kunai at about 1.6 s.
+  - Laugh's kunai is gone.
+  - Sign: Thanks shows what it is, sign language, without a stray ofuda.
+  - Partial clips (Listen Up, Salty, Mic Drop) play over the pose under them, so the bones they don't drive (her
+    weapons) stay in her hands instead of at her feet.
+  - A weapon piece no wrist holds in a clip with no flags (Listen Up's and Salty's parked ofuda) isn't drawn: ours,
+    until their hand layers are read.
+  - Played: those emotes before and after, frame by frame.
+- **Her coat in emotes:** the coat simulation restarted every frame of an emote (its time came from a clock another
+  pose call had already advanced), so it never fell or folded; it has its own clock now. With it moving, the floor
+  constraint holds it on the floor.
+  - Measured (dev `state` clothLowest, `clothfloor on|off`): Kneeling, Friendly Kitty and Fox Cuddles put the coat
+    0.50, 0.66 and 0.54 m under the floor with the constraint off, and 0.02 m (on it) with it on.
+  - Before the clock fix the reading never moved (no simulation at all).
+- **Pings call out (#40):** her ping lines from the game data, heard by her team.
+  - A ping on a spot: "Over there!"
+  - On an enemy: "Enemy here" (or "Got one here", "Enemy spotted").
+  - A double press's warning: "Heads up!" (or "Watch here", "Keep an eye out"). It cuts the first press's line
+    short.
+  - At most one line a second.
+  - Played with subtitles on (`ping_test`, `ping_warn2`): "Kiriko: Enemy here" on a zombie, "Kiriko: Over there!" on
+    the floor, and a double press showed the red warning and "Kiriko warns". Needs the pack's sounds rebuilt.
+- **Player chat as Overwatch's match chat in hero view (round 8 #5's rest):** "NAME (Hero): text" where Minecraft
+  writes "<NAME> text", as callouts already read; plain player chat only (not /say, /me, whispers, team messages), the
+  hero when the sender is loaded with one picked. Lines keep the form they arrived in. Played: "Kiriko (Kiriko): Group up
+  at the gate" in hero mode, "<Kiriko> now in minecraft mode" in Minecraft mode, both kept after switching back
+  (`chatf`); on LAN the second client's message showed as "Viewer (Kiriko): hello from the viewer" on the host
+  (`mpc`), and the Viewer saw the host's Skateboard and Donut Break props (`mpc2`). Harness: `chat <text>`.
+- **Emote props (#4: "the bike, the skateboard... aren't in yet"):** Donut Break and Sweet Treat hold Overwatch's
+  donut, Mic Drop the mic, Skateboard the board under one arm and a bubble tea in the other hand, each on her hand's
+  weapon bone so her own emote clip moves it; her kunai and ofuda are put away meanwhile. The props are Overwatch's own
+  models from the player's pack: `py tools/build_asset_pack.py props <DataTool output>` (new; the 0.3.7 pack works,
+  just without props). Found by rendering every emote's models (`tools/owm_previews.py`): ten emotes carry models,
+  these four are held props; the rest are effect cards and cones (Whirlwind, Rainy Stroll's umbrella and Friendly
+  Kitty's cat, which move by clips of their own, are next). Played: all four from the wheel, two moments each (`pe`,
+  `st`, `pr1z`); before the weapons were put away the donut sat beside her ofuda (`pr1z`), and Mic Drop's mic was in
+  the wrong hand at first (`md`).
+- **Smoother HUD text** (round 8 #7's rest, "the jagged glyph edges"): Minecraft samples every font texture nearest,
+  for its pixel font; the HUD draws Overwatch's faces shrunk about 2x from their raster, and nearest sampling left
+  stair steps on their diagonals. The HUD's fonts (`overcraft:hud*` only) are now sampled linearly
+  (`HudFontTextureMixin`). Played: the HUD name and key labels at 10x before and after (`font_before`, `font_after`:
+  the edge pixels changed, the stair steps softened); the Options title, tabs and ult icon at 3x (`font_opts`): crisp,
+  not blurred. Minecraft's own text is untouched.
+
+#### General play of `next` before 0.3.9 went to `main` (fresh client, fresh survival world "next039", Normal, 1920x1080)
+- **Joined:** Kiriko picked on the select screen (`g9_00_select`, `g9_01_joined`: 250/250, ult 0). The pause menu
+  reads "OVERCRAFT 0.3.9 · ASSETS 0.3.9" (`g9_14_menu`).
+- **Fights and deaths** (`g9_02`-`g9_08`):
+  - A helmeted zombie hit her for 3 health each (37.5 of 250), down to 0. She died to it twice, once off the edge of
+    a floor ("doomed to fall"), and drowned once in Minecraft mode. Each respawn was in hero mode, health full, ult
+    kept.
+  - On a still zombie, kunai took it 20 -> 15.5 -> 11.0 -> 6.5 -> 2.0, then dead on the fifth: 60 damage (4.8), less
+    its armour (2 natural + 2 helmet) by vanilla's formula, 4.49 exactly. Kill feed "KIRIKO > ZOMBIE", ult to 58%.
+  - Two harness traps on the way, not the mod: `tp ... facing` doesn't steer the client's aim (the kunai went at the
+    sky), and `primary_fire` is her ofuda (the right button), her kunai `secondary_fire`.
+- **Healing:** a villager hurt to 8, held ofuda on it: 17.6.
+- **Emote from the wheel:** T held, the right button to its emotes, the mouse up to Fox Cuddles, T released. The
+  camera swung round, she knelt and hugged the fox, and the coat lay as its drivers place it (`g9_10`-`g9_13`).
+- **Save and Leave, rejoin:** the select screen on join ("ESC KEEP HERO"), Esc: Kiriko, hero mode, ult 80% kept
+  (`g9_15`, `g9_16`).
+- **Minecraft mode (G) at a player's pace** (`g9_17`-`g9_32`):
+  - three oak logs mined by hand, picked up;
+  - 12 planks from the inventory's 2x2 grid; a crafting table; placed and opened;
+  - a chest from the 3x3 ring; placed; two eggs put in; closed, reopened: still there;
+  - her own arm held the crafting table; eggs thrown with the use key.
+- **Changing hero mid-game:** a bed placed and used ("Respawn point set"), G to hero mode, H: "NEAR YOUR BED: PICK A
+  NEW HERO, OR ESC TO KEEP YOURS", READY: Kiriko again (`g9_33`-`g9_36`). 74 fps.
+- **Not tried this time:** a second player on LAN (last played for 0.3.8's chat and emote props), the Nether, boats.
+
 ### Build 0.3.8 (the owner's answers: notable pings, body shadow, her arms in Minecraft mode; the two batches below)
 Both batches since 0.3.7, below. The asset pack is unchanged (0.3.7's works). Play of `next` before the build: at the
 end of this entry.

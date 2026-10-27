@@ -10,6 +10,7 @@
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
+    py tools/build_asset_pack.py props <DataTool output dir>  the emotes' props (as the emote data names them), from the emote unlocks
     py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
@@ -396,6 +397,76 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
+def add_props(source):
+    """Converts every prop the heroes' emote data names (src/main/resources/assets/overcraft/emotes/<hero>.json, from
+    tools/emote_data.py: techniques/emotes/emote_reproduction.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
+    ids, as the data names them. <source> is the extraction root holding Unlocks/Heroes/<Hero>/Emote. A prop with no
+    clip of its own is a static mesh (like the torii gate); one with clips is exported with them, staged beside the
+    model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""
+    import json
+    write_mcmeta()
+    for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
+        hero = json.loads(data.read_text(encoding="utf8"))
+        emotes = Path(source) / "Unlocks" / "Heroes" / hero["hero"].capitalize() / "Emote"
+        props = {}
+        for emote in hero["emotes"].values():
+            for clip in emote["clips"].values():
+                for spawn in clip["spawns"]:
+                    if spawn.get("model"):
+                        clips = props.setdefault(spawn["model"], set())
+                        if spawn.get("clip"):
+                            clips.add(spawn["clip"])
+        for model, clips in sorted(props.items()):
+            name = f"prop_{model.lower()}"  # resource paths must be lower case
+            padded = "%012X" % int(model, 16)
+            found = sorted(emotes.glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{name}: no model {padded} under {emotes}")
+                continue
+            src = found[0]
+            dest = MODELS / f"{name}.glb"
+            if not clips:
+                cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"),
+                       "--", str(src), str(dest)]
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+                print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+                continue
+            work = LOCAL / "work" / name
+            staged = work / "model"
+            if staged.exists():
+                shutil.rmtree(staged)
+            shutil.copytree(src.parent, staged)
+            renames = {}
+            for cid in sorted(clips):
+                cpad = "%012X" % int(cid, 16)
+                where = [p for p in staged.glob(f"Animations/**/{cpad}.owanimclip")]
+                if not where:
+                    for clip_src in emotes.glob(f"*/*/Animations/**/{cpad}.owanimclip"):
+                        # <group>/<emote>/Animations/<folder>/... -> the model's Animations/<folder>/...
+                        target = staged / Path(*clip_src.relative_to(emotes).parts[2:])
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(clip_src, target)
+                        where = [target]
+                        break
+                if not where:
+                    print(f"{name}: no clip {cpad}")
+                    continue
+                folder = where[0].parent.relative_to(staged / "Animations").as_posix().replace("/", "-")
+                renames[f"{folder}_{cpad}"] = cid
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--",
+                   str(staged / src.name), str(work), "--glb", "--only=" + ",".join("%012X" % int(c, 16) for c in clips)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            glb = work / f"{padded}.glb"
+            if not glb.exists():
+                print(f"{name}: export failed: {result.stderr[-2000:]}")
+                continue
+            shutil.copyfile(glb, dest)
+            subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
+                           + [f"{a}={b}" for a, b in renames.items()], check=True)
+            print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
+
+
 def build_version():
     """This build's version (gradle.properties)."""
     for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
@@ -447,6 +518,8 @@ def main():
         add_fonts(sys.argv[2])
     elif cmd == "effects":
         add_effects(sys.argv[2])
+    elif cmd == "props":
+        add_props(sys.argv[2])
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

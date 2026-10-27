@@ -1,0 +1,45 @@
+# Minecraft 26.3: engine facts that cost time
+
+Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; the sources jar is under
+`.gradle/loom-cache/minecraftMaven/`): names and signatures changed a lot (GuiGraphicsExtractor, RenderPipelines,
+`PoseStack.mulPose` takes a matrix, knockback takes a damage source). Up: [Techniques](../README.md) · drawing:
+[rendering](../rendering/rendering.md) · building: [building](../building/building.md)
+
+## Input
+- **26.3's input codes are SDL's, not GLFW's** (A = 4, W = 26, Space = 44, right mouse = 3): always use
+  InputConstants' names, never remembered numbers (a `<= 1` mouse-button check silently failed).
+- **A second key set:** KeyMappings made but not registered with Options still get key events, stay out of the
+  Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.
+
+## Gameplay
+- **Synced Fabric attachments** must be registered at mod start, not lazily from an event.
+- **Minecraft's projectile hits ignore the projectile's size:** `ProjectileUtil.computeMargin` widens the target boxes
+  from 0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`). Test
+  with a still mob and shots aimed just inside and just outside the radius.
+- **Projectiles pass through blocks with no collision box** (buttons, plates): the hit lands on the block behind.
+- **The Ender Dragon is hit through its parts** (EnderDragonPart, not a LivingEntity), and only with AI on: a summoned
+  NoAI dragon never places its parts.
+- **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
+  26.x's gamerule name.
+- **A per-tick fix can lose to the frame:** F5 was undone each client tick, but frames drew between the key and the
+  tick. Fix it at the source (the Options setter).
+
+## The HUD
+Fabric splits Minecraft's XP/locator bar in two: `INFO_BAR` (the background) and `INFO_BAR_FOREGROUND` (the XP fill and
+the locator bar's dot for each other player). Hiding only the first left a coloured square by the ult meter that
+showed only with a second player on LAN. Test HUD hiding with two players.
+
+## A camera of our own
+(The emote orbit.) Inject at the TAIL of `Camera.alignWithEntity` and redo what vanilla does for third person with our
+angles: `setRotation`, `setPosition` at the pivot, `move(-getMaxZoom(distance), 0, 0)` (the block collision comes
+free). The camera type must still be a detached one, or Minecraft doesn't draw the player's own model. The mouse
+reaches the orbit through the same `turnPlayer` redirect as the wheel's pointer.
+
+## A plain vanilla server
+For "the mod stays invisible" checks (#32):
+1. Copy Loom's `~/.gradle/caches/fabric-loom/26.3/minecraft-server.jar` to a folder outside the repo.
+2. Run it once with the Java 25 Gradle downloaded (`~/.gradle/jdks/...25.../bin/java -jar server.jar --nogui`).
+3. Set `eula=true` (the owner accepted Mojang's EULA for this, 2026-10-26), `online-mode=false` and a port in
+   server.properties.
+4. Add an ops.json with the dev player ("Kiriko"; its offline UUID is the name-based MD5 of "OfflinePlayer:Kiriko").
+5. Join with `dev "connect localhost:<port>"`.

@@ -81,12 +81,20 @@ public final class HeroModels {
 	private static Map<String, Prepared> load(ResourceManager resources) {
 		Map<String, Prepared> out = new HashMap<>();
 		List<String> names = new ArrayList<>(EXTRAS);
+		// the emotes' props, by the ids the emote data names (prop_<model id>)
+		names.addAll(EmoteData.load(resources));
 		for (Hero hero : Hero.values()) {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
 		}
 		for (String name : names) {
-			Optional<Resource> res = resources.getResource(Overcraft.id("hero_models/" + name + ".glb"));
+			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
+			// every resource pack)
+			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
+			Optional<Resource> res = id == null ? Optional.empty() : resources.getResource(id);
+			if (id == null) {
+				Overcraft.LOG.error("Not a valid model name: {}", name);
+			}
 			if (res.isEmpty()) {
 				continue;
 			}
@@ -96,6 +104,8 @@ public final class HeroModels {
 				for (byte[] png : model.images) {
 					images.add(readImage(png));
 				}
+				// her cloth's drivers, from the game data (ClothSim)
+				model.clothDrivers = ClothSim.readDrivers(resources, name);
 				out.put(name, new Prepared(model, images));
 				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
 					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());

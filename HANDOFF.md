@@ -1,7 +1,7 @@
 # Overcraft: handoff (2026-10-27, overnight)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
-TECHNIQUES.md (how the work gets done). This file is the state of play and the path forward.
+techniques/README.md (how the work gets done: a linked graph of notes). This file is the state of play and the path forward.
 
 ## Where things are
 - Repo: https://github.com/Thrasherop/overcraft. Kiriko's work is on `feature/kiriko`, merged into `next`, then
@@ -153,7 +153,7 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - Ult charge also from advancements. Movement and animations must feel like Overwatch, not Steve.
 - Assets from the owner's own install, never shipped; Overwatch never running alongside. Research stops short of the
   tamper protection and the encryption. The UI, sounds and effects use the game's own assets wherever they exist.
-- Keep TECHNIQUES.md up to date (2026-10-26). Commit only after playing in game.
+- Keep techniques/ up to date (2026-10-26; a linked graph since 2026-10-27). Commit only after playing in game.
 - Desktop control: the owner approves computer use at the PC (not from the phone). SteamCMD: never type their
   password or Steam Guard code.
 - Versions (owner, 2026-10-26, #21): every build handed to the owner gets its own version in `gradle.properties`
@@ -175,6 +175,13 @@ Open:
   `HELD_OFUDA`, `HELD_MAX`, `HELD_SCALE`, `SPRITE_TURN` in HeroModelRenderer; the harness's `held`, `heldmax`,
   `heldscale` change them live). Odd items (a trident, a spyglass held, banners, modded models) may need their own.
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
+- **Dragon music (#45, after the emotes):** Overwatch has no "about to win" music for one team. Its end-phase music
+  plays for both teams: on 30 s left, and in overtime (an intro, then a loop until it ends;
+  `tools/reference/music-round9.md`). The plan: the overtime cue from 1/3 of the dragon's health, quiet and rising as
+  the health falls, then Victory's stingers, then the POTG cue (5B1F, a candidate to confirm by ear).
+- **Emotes:** the umbrella's hardpoint (02A9) is in no extracted model, so it's inferred from her clip (it looks
+  right). Two shared hand layers (12625, 12638) over Listen Up and Salty aren't read yet; meanwhile a weapon no hand
+  holds isn't drawn there.
 
 Answered (owner, 2026-10-27):
 - Crosshair: Overwatch's default white, no colour option.
@@ -208,4 +215,4 @@ didn't spend enough time learning and refining Kiriko"). Refactoring for later h
    Soundwave (owner: good); safe fall 8 blocks (owner). Every hero comes with its four perks (`Perk`, `Perks`).
 4. Jetpack Cat (#38). 5. Lifeweaver (#39). Later: Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2),
    Mercy (#10).
-Once Kiriko is refined, update TECHNIQUES.md with what was learned.
+Once Kiriko is refined, update techniques/ with what was learned.

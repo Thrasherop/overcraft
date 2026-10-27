@@ -29,7 +29,9 @@
 		"CameraMixin",
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",
-		"EntityShadowMixin"
+		"EntityShadowMixin",
+		"HudFontTextureMixin",
+		"HeroChatFormatMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
