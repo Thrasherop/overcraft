@@ -275,6 +275,11 @@ public final class DevServer {
 				player.setYHeadRot(yaw);
 				out.addProperty("ok", true);
 			}
+			case "emote" -> {
+				// dev only: "emote <id>": plays one of the hero's emotes as the wheel does (any of them, equipped or not)
+				net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(arg.trim()));
+				out.addProperty("ok", true);
+			}
 			case "chat" -> {
 				// a chat message as typed in the chat box ("chat hello there"), signed and sent as Minecraft sends it
 				player.connection.sendChat(arg);

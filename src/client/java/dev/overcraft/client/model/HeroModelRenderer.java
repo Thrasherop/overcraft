@@ -184,7 +184,7 @@ public final class HeroModelRenderer {
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(),
 			propEmote ? allProps(loaded.model()) : hiddenProps(loaded.model(), animator.action()), preview == null));
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
-		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator, now));
+		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator, loaded.model(), now));
 	}
 
 	/**

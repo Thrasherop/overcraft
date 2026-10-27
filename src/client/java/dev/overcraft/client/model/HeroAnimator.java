@@ -121,7 +121,9 @@ public final class HeroAnimator {
 	 * Her hands' weapon bones in her model's space, as last posed in an emote: [0] the "_L" side's (her kunai hand),
 	 * [1] the "_R" side's (her ofuda hand).
 	 */
-	public final Matrix4f[] emoteHands = {new Matrix4f(), new Matrix4f()};
+	public final Matrix4f[] emoteHands = {new Matrix4f(), new Matrix4f(), new Matrix4f(), new Matrix4f()};
+	/** How far her emote's root motion would have moved her (model space), kept off her: her props move by it instead. */
+	public final Vector3f emoteRootShift = new Vector3f();
 
 	private @Nullable String emote;
 	private float emoteStart;
@@ -399,13 +401,23 @@ public final class HeroAnimator {
 		if (poseEmote(model, entity, now, pose)) {
 			int root = UpperBody.mover(model);
 			if (root >= 0) {
+				// her emote's root motion is kept off (she stays on her spot); what was taken off moves her props
+				// instead, which Overwatch places from the root that doesn't move (Friendly Kitty: she shifts 0.6 m as
+				// she sits, and her cat landed behind her)
+				Matrix4f moved = Skeleton.world(model, pose, root);
 				pose.t[root].set(model.restT[root]);
+				emoteRootShift.set(moved.getTranslation(new Vector3f()).sub(Skeleton.world(model, pose, root).getTranslation(new Vector3f())));
 			}
-			// where her hands hold the emote's props (EmoteProps), as posed
+			// where her hands hold the emote's props (EmoteProps), as posed: the weapon bones and the wrists (Overwatch's
+			// hand hardpoints hang from the wrists)
 			for (int i = 0; i < 2; i++) {
 				int bone = UpperBody.weapon(model, i == 0);
 				if (bone >= 0) {
 					emoteHands[i].set(Skeleton.world(model, pose, bone));
+				}
+				int wrist = UpperBody.wrist(model, i == 0);
+				if (wrist >= 0) {
+					emoteHands[i + 2].set(Skeleton.world(model, pose, wrist));
 				}
 			}
 			return Skeleton.skin(model, pose, -1, null);

@@ -29,8 +29,8 @@ public class KitsuneRenderer extends EntityRenderer<KitsuneEntity, KitsuneRender
 	private static final double NEAR_FADE = 3;
 
 	/** The spirit's colour and glow: ice blue, or pale red for an enemy's fox (ours, after the enemy palette). */
-	private static final int SPIRIT = 0xC8F4FF;
-	private static final int GLOW = 0xCFF8FF;
+	static final int SPIRIT = 0xC8F4FF;
+	static final int GLOW = 0xCFF8FF;
 	private static final int ENEMY_SPIRIT = 0xFFB0A8;
 	private static final int ENEMY_GLOW = 0xFF3A30;
 
