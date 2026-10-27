@@ -10,8 +10,10 @@ How a hero's cloth (coats, capes, scarves, hair ribbons) moves, and how to repro
   cloth bone from up to four **driver bones** with weights, as skinning places a vertex. The drivers are the body
   (hips, thighs, knees, feet, arms) and cloth driver bones of their own, which the clips **key by hand**. Where an
   animator keyed them, the cloth is authored: Kiriko's coat in Kneeling and Fox Cuddles is exact to the pixel.
-- On top of the driven positions, Domino runs light physics (the swing as she runs). Its settings sit in sections of
-  the chunk not decoded yet ([model_data](../game-data/model_data.md#cloth-domino)).
+- On top of the driven positions, Domino runs light physics (the swing as she runs). It's a position-based solver
+  whose every input is in the chunk, now decoded ([model_data](../game-data/model_data.md#cloth-domino)): rest
+  positions, inverse masses, anchors, distance constraints batched for Gauss-Seidel, bending triples, tethers,
+  capsule colliders on bones, and per-piece damping, gravity and (likely) iterations.
 - So per hero and per clip, cloth is **animated** (drivers keyed), **follows the body** (body drivers only), and
   **simulated** around both.
 
