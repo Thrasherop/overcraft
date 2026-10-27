@@ -122,6 +122,8 @@ public final class HeroAnimator {
 	 * [1] the "_R" side's (her ofuda hand).
 	 */
 	public final Matrix4f[] emoteHands = {new Matrix4f(), new Matrix4f(), new Matrix4f(), new Matrix4f()};
+	/** Props she has let go of (EmoteProps' release): where each was when her hand opened, by emote and prop. */
+	public final java.util.Map<String, Matrix4f> released = new java.util.HashMap<>();
 	/** How far her emote's root motion would have moved her (model space), kept off her: her props move by it instead. */
 	public final Vector3f emoteRootShift = new Vector3f();
 

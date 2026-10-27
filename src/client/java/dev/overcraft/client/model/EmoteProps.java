@@ -34,13 +34,15 @@ public final class EmoteProps {
 
 	/**
 	 * A prop in an emote: its model, and its place: turned about X, Y, Z (degrees), moved (metres), then [6] where (FEET,
-	 * KUNAI_HAND, OFUDA_HAND). DevServer's "prop" changes a place live.
+	 * KUNAI_HAND, ...), and [7] when she lets go of it (seconds into the emote; 0: never): from then it falls from where
+	 * it was to the floor (Mic Drop: her hand opens and the mic stayed stuck to her palm). DevServer's "prop" changes a
+	 * place live.
 	 */
 	public record Prop(String model, float[] place) {
 	}
 
 	private static Prop prop(String model, int where) {
-		return new Prop(model, new float[] {0, 0, 0, 0, 0, 0, where});
+		return new Prop(model, new float[] {0, 0, 0, 0, 0, 0, where, 0});
 	}
 
 	/** A prop to draw this frame: where it is (in her model's space) and its pose. */
@@ -54,15 +56,16 @@ public final class EmoteProps {
 
 	/** Each emote's props. */
 	public static final Map<String, List<Prop>> PROPS = Map.of(
-		"donut_break", List.of(prop("prop_donut", OFUDA_HAND)),
-		"sweet_treat", List.of(prop("prop_donut", OFUDA_HAND)),
-		"mic_drop", List.of(prop("prop_mic", KUNAI_HAND)),
-		"skateboard", List.of(prop("prop_skateboard", KUNAI_HAND), prop("prop_bubble_tea", OFUDA_HAND)),
+		"donut_break", List.of(prop("prop_donut", OFUDA_WRIST)),
+		"sweet_treat", List.of(prop("prop_donut", OFUDA_WRIST)),
+		// her hand opens 0.95 s in (frame by frame, ours)
+		"mic_drop", List.of(new Prop("prop_mic", new float[] {0, 0, 0, 0, 0, 0, KUNAI_WRIST, 0.95f})),
+		"skateboard", List.of(prop("prop_skateboard", KUNAI_WRIST), prop("prop_bubble_tea", OFUDA_WRIST)),
 		"friendly_kitty", List.of(prop("prop_cat", FEET)),
 		"rainy_stroll", List.of(prop("prop_umbrella", OFUDA_WRIST)),
 		"fox_cuddles", List.of(prop("prop_fox", FEET)),
 		// its clip holds it low, its legs under the floor and inside her: lifted onto its feet, in front of her (ours)
-		"pod_pet", List.of(new Prop("prop_pod", new float[] {0, 0, 0, 0, 0.25f, 0.6f, FEET})));
+		"pod_pet", List.of(new Prop("prop_pod", new float[] {0, 0, 0, 0, 0.25f, 0.6f, FEET, 0})));
 
 	/** Props drawn as her Kitsune Rush fox is: a see-through glowing spirit, not a solid animal. */
 	private static final Set<String> SPIRITS = Set.of("prop_fox");
@@ -125,6 +128,22 @@ public final class EmoteProps {
 			} else if (loop != null) {
 				float into = t - loopFrom;
 				Skeleton.sample(loop, loop.duration() > 0 ? into % loop.duration() : 0, pose);
+			}
+			float release = prop.place()[7];
+			int slot = props.indexOf(prop);
+			if (release > 0 && t >= release) {
+				// let go: where it was when her hand opened, fallen since (g, ours: Minecraft's falling things are
+				// slower; the floor at her feet)
+				Matrix4f from = animator.released.get(emote + slot);
+				if (from == null) {
+					from = new Matrix4f(at);
+					animator.released.put(emote + slot, from);
+				}
+				float fall = 0.5f * 9.8f * (t - release) * (t - release);
+				float floor = from.m31() - 0.05f;
+				at = new Matrix4f().translation(0, -Math.min(fall, floor), 0).mul(from);
+			} else if (release > 0) {
+				animator.released.put(emote + slot, new Matrix4f(at));
 			}
 			placed.add(new Placed(prop, at, Skeleton.skin(model, pose, -1, null)));
 		}
