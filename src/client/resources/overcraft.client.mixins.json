@@ -25,7 +25,9 @@
 		"ChatFocusedLinesMixin",
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
-		"HeroFovMixin"
+		"HeroFovMixin",
+		"CameraMixin",
+		"MouseHandlerInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1

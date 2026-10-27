@@ -51,6 +51,8 @@ public final class HeroModelRenderer {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
+	/** The camera's inside her (the emote camera's first moments): she isn't drawn, not even as Minecraft's player. */
+	private static final RenderStateDataKey<Boolean> UNSEEN = RenderStateDataKey.create(() -> "overcraft:hero_unseen");
 	/** Prone (crawling, swimming), how far back along her body she's drawn and how far off the floor (metres: ours). */
 	private static final float PRONE_BACK = 0.95f;
 	private static final float PRONE_LIFT = 0.25f;
@@ -96,6 +98,7 @@ public final class HeroModelRenderer {
 	/** While extracting a player's render state: a hero in hero mode with a model gets a {@link Draw}. */
 	public static void extract(LivingEntity entity, LivingEntityRenderState state, float partialTicks) {
 		state.setData(DRAW, null);
+		state.setData(UNSEEN, entity == Minecraft.getInstance().player && dev.overcraft.client.comms.EmoteCamera.inside());
 		Hero hero;
 		String chosen = entity.getAttached(HeroManager.HERO);
 		if (preview != null && entity == Minecraft.getInstance().player) {
@@ -150,6 +153,9 @@ public final class HeroModelRenderer {
 		Draw draw = state.getData(DRAW);
 		if (draw == null || state.isInvisible) {
 			return false;
+		}
+		if (Boolean.TRUE.equals(state.getData(UNSEEN))) {
+			return true;
 		}
 		int light = state.lightCoords;
 		int overlay = LivingEntityRenderer.getOverlayCoords(state, white(state) * 0.6f);

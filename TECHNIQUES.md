@@ -222,3 +222,15 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   `natural_health_regeneration` off, or a hit reads short.
 - Check `git` with `-c safe.directory=E:/claude/mods/overcraft` on this checkout ("dubious ownership"); PowerShell
   mangles quotes in a here-string commit message: `git commit -F <file>`.
+- `mouse dx dy` used to copy MouseHandler's routing (wheel pointer, else the view) and missed the emote camera the
+  moment it was added: it now hands the movement to Minecraft's own `turnPlayer` (MouseHandlerInvoker), so whatever
+  the redirect does is what the harness tests. Minecraft drops mouse movement while its window isn't active, which
+  the dev window here usually isn't, so the real mouse can't reach it from the desktop tools.
+- Build test floors with the floor first and the air above it second (`fill ~-7 ~-1 ~-7 ~7 ~-1 ~7 stone`, then
+  `fill ~-7 ~ ~-7 ~7 ~5 ~7 air`): clearing first drops the player a tick before the floor goes in, the server and the
+  client disagree on where she stands ("standing on air - force-sending blocks below"), and she falls through. On a
+  jungle canopy that left a hole over the world spawn and a second death on respawn. A flat world avoids it all.
+- A camera of our own (the emote orbit): inject at the TAIL of `Camera.alignWithEntity` and redo what vanilla does
+  for third person with our angles: `setRotation`, `setPosition` at the pivot, `move(-getMaxZoom(distance), 0, 0)`
+  (the block collision comes free). The camera type must still be a detached one, or Minecraft doesn't draw the
+  player's own model; the mouse goes to the orbit through the same `turnPlayer` redirect as the wheel's pointer.

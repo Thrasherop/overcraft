@@ -121,6 +121,10 @@ public final class HeroManager {
 	/** G: hero mode on or off (only with a hero picked). */
 	public static void setHeroMode(ServerPlayer player, boolean on) {
 		if (hero(player) != null) {
+			if (on != heroMode(player)) {
+				// switching is doing something: an emote ends, as any action ends one (it kept kneeling in Minecraft mode)
+				dev.overcraft.comms.Comms.endEmote(player);
+			}
 			player.setAttached(HERO_MODE, on);
 		}
 	}

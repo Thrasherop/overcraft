@@ -11,7 +11,8 @@ TECHNIQUES.md (how the work gets done). This file is the state of play and the p
   Lúcio is on `feature/lucio` (work in progress, not merged).
 - Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets, #7 select
   screen, #8 HUD, #9 animations, #10 Mercy, #36 perks, #37 Lúcio, #38 Jetpack Cat, #39 Lifeweaver, #40 pings, #41
-  sprays (later), #42 climb cancels reload, #43 hunger and regeneration under the hidden food bar (owner's call).
+  sprays (later), #42 climb cancels reload, #43 hunger under the hidden food bar (the owner chose: it burns down to 4
+  bars in hero mode; on `feature/kiriko`).
 - Git here: this checkout's ownership confuses git ("dubious ownership"); run it as
   `git -c safe.directory=E:/claude/mods/overcraft ...` (the global safe list wasn't changed).
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
@@ -172,11 +173,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   hero options have Overwatch's crosshair colours?
 - **Ping key:** Overwatch's PC default is the middle mouse button (ours too); your screenshots show "CANCEL P".
   Rebindable in the Overwatch options either way; say if P should be the default.
-- **Emote camera:** while she emotes the view goes to third person behind her (Minecraft's F5 view). Overwatch's, as
-  far as I remember it, swings round in front of the hero so you see the emote from the front: is that right, and
-  should ours do the same?
-- **Default emotes on the wheel:** the first four by name (Blooming, Challenge, Cheer, Choreography). Overwatch gives
-  every hero Heroic, a sit and Laugh: should those be the defaults instead?
+- **"Notable" pings besides enemies (#40):** Overwatch's are health packs, which Minecraft hasn't; dropped items,
+  food or chests could take their place. Also no Overwatch ping sound yet.
 - Movement (#31) uses Overwatch's own mover numbers from the game data (friction, ground and air acceleration, air
   decay), read offline like the voice weights, since no public source has them; the code says so next to each, and
   they agree with the Workshop timings. Say if you'd rather keep movement to public numbers only. Also worth a look in

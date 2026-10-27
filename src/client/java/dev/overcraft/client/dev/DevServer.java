@@ -144,6 +144,9 @@ public final class DevServer {
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
 					out.addProperty("anim", HeroAnimator.of(player).playing());
+					out.addProperty("emoteCamera", dev.overcraft.client.comms.EmoteCamera.active());
+					out.addProperty("food", player.getFoodData().getFoodLevel());
+					out.addProperty("saturation", player.getFoodData().getSaturationLevel());
 					out.addProperty("onFire", dev.overcraft.client.ClientHero.sync().onFire());
 					// where the first-person ofuda fingertip was last drawn, from the camera in the world's axes (the throw
 					// puff pops there)
@@ -426,19 +429,16 @@ public final class DevServer {
 				out.addProperty("files", String.join(", ", files));
 			}
 			case "mouse" -> {
-				// dev only: mouse movement in pixels, scaled as MouseHandler.turnPlayer scales it, to where it goes: the
-				// communication wheel's pointer while it's open (MouseHandlerMixin), else the view. Minecraft itself only
-				// reads the mouse while its window has it, which the harness's window often doesn't
+				// dev only: mouse movement in pixels, handed to Minecraft's own MouseHandler.turnPlayer as if the window had
+				// it (Minecraft only reads the mouse while its window has it, which the harness's window often doesn't): the
+				// communication wheel's pointer while it's open, the emote camera while emoting, else the view
 				String[] a = arg.split(" ");
-				double ss = mc.options.sensitivity().get() * 0.6 + 0.2;
-				double sens = ss * ss * ss * 8.0;
-				double dx = Double.parseDouble(a[0]) * sens;
-				double dy = Double.parseDouble(a[1]) * sens;
-				if (dev.overcraft.client.comms.CommsWheel.open()) {
-					dev.overcraft.client.comms.CommsWheel.move(dx, dy);
-				} else if (player != null) {
-					player.turn(dx, dy);
-				}
+				var mouse = (dev.overcraft.client.mixin.MouseHandlerInvoker) mc.mouseHandler;
+				mouse.overcraft$setAccumulatedDX(Double.parseDouble(a[0]));
+				mouse.overcraft$setAccumulatedDY(Double.parseDouble(a[1]));
+				mouse.overcraft$turnPlayer(0);
+				mouse.overcraft$setAccumulatedDX(0);
+				mouse.overcraft$setAccumulatedDY(0);
 				out.addProperty("ok", true);
 			}
 			case "window" -> {

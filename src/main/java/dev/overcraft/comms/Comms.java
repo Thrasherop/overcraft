@@ -77,6 +77,11 @@ public final class Comms {
 		}
 	}
 
+	/** The hero's emote, if one's playing, ends on every screen ("emote:" with no id): switching modes with G. */
+	public static void endEmote(ServerPlayer player) {
+		dev.overcraft.hero.Combat.animate(player, "emote:");
+	}
+
 	public static void callout(ServerPlayer player, Callout callout) {
 		if (!allowed(player)) {
 			return;

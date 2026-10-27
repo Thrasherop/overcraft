@@ -96,7 +96,8 @@ public final class HeroAnimator {
 	 */
 	public static void emote(int entityId, String emote, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
-		a.emote = emote;
+		// no id: the emote ends (Comms.endEmote)
+		a.emote = emote.isEmpty() ? null : emote;
 		a.emoteStart = now;
 		a.emoteFrom = null;
 	}

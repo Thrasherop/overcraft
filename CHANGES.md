@@ -17,6 +17,47 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   (`chaticon_1080`, `chaticon2_1080`, `chaticon3_1080`); plain orange lines wrap flush, no icon.
 - TECHNIQUES.md: tonight's lessons (emote clip chaining, Fabric's info bar halves, outlines for custom geometry,
   glyph fonts in chat, harness buttons and timing).
+- **Hunger in hero mode (#43, the owner's call 2026-10-27):** it burns as in Minecraft down to 4 of the bar's 10 (8
+  food points) and no further, so a hero never starves under the hidden food bar. A hero already below that (hungry
+  when they switched with G) stays where they are and doesn't starve. Minecraft mode and eating are Minecraft's.
+  Minecraft's own regeneration still runs in hero mode while the bar is 9 or more (fast with saturation), on top of
+  Overwatch's: seen healing between a zombie's hits at full food.
+- **The emote camera orbits (the owner: Overwatch's camera turns freely while emoting):** the view pulls out of her
+  eyes and swings round to her front over half a second (2.5 blocks out, round her middle, from a little above), and
+  the mouse then turns it all round her and over and under her (-60 to 80 degrees), pulled in where a block's in the
+  way as Minecraft's third person is. Her aim, and how everyone sees her, don't move; the emote over, the view is back
+  in her eyes looking where she looked, in the view she had (F5's comes back). She isn't drawn while the camera's still
+  inside her head (her ofuda filled the first frames), and the crosshair and ofuda counter only show in first person,
+  as Minecraft's crosshair (they sat on her belly). Switching modes with G ends an emote on every screen (she knelt on
+  in Minecraft mode, the camera still orbiting). F5 mid-emote can't take the view into first person (it would leave
+  the orbit with nobody drawn in it); the emote over, the view F5 left is back.
+- **Heroic is the only emote equipped by default** (the owner); the other three slots start empty.
+- Harness: `mouse` goes through Minecraft's own `MouseHandler.turnPlayer` (`MouseHandlerInvoker`), so the wheel's
+  pointer, the emote camera and the view turn the real way; `state` gives the emote camera, food and saturation.
+
+Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
+- Emotes, survival jungle: the wheel's emote page shows HEROIC up and three empty slots (`emotecam_01_wheel_default`);
+  Heroic: first person, then her back, her side, her front, no frame inside her (`emotecam2_swing_steps`); the mouse
+  took the camera to her right, her back, under her (`emotecam_sheet_orbit`), her yaw 0 throughout; the emote over,
+  first person at yaw 0 pitch 0 with the crosshair back (`emotecam2_end`, `end_02_centre`). The loadout's Emotes tab:
+  HEROIC and three "-"; Kneeling put on the right slot and saved (`lo_03_emotes`). Kneeling looped 5 s with the camera
+  orbited, then W: first person, she walked along her own facing (`emotecam2_kneel`). From F5: the emote, then F5's
+  view back (`emotecam2_f5`). In a leafy jungle canopy the camera's pulled in to her waist by the leaves in front, as
+  Minecraft's F5 is against a wall: left as is. G while kneeling (`g_01_after_g` before the fix, `g2_01_after_g`
+  after): the emote ends, first person, the mouse turns her again. F5 three times mid-kneel: the orbit view stays at
+  every press (`f5d_sheet`, `f5b_sheet`); once, in a world just made, one frame between presses showed first person
+  with the orbit's angle (`f5mid_sheet`), not seen again in two repeats.
+- Hunger, Normal: Hunger 255 in hero mode took the bar 20 to 8 in 2 s and held it at 8 for 14 s; G to Minecraft mode:
+  on to 0, starving a point every 4 s (20 to 15, timed); G back at 0: no starving for 20 s, Overwatch's regeneration
+  healing to full 6 s after the last hit. Four bread in Minecraft mode: 0 to 20; G and Hunger 255 again: 20 to 8 and
+  held (`hunger_02_ate_minecraft_mode`, `hunger_03_hero_floor_8`).
+- A fight at night on a flat world: kneeling, a zombie walked up and hit her, its knockback ended the emote (camera
+  back); she died to it once doing nothing, respawned, and killed the next with kunai (kill feed and ELIMINATED,
+  `fight4_01_after`). Two earlier deaths were my own: a `/fill` that cleared the blocks under her before the floor
+  went in ("standing on air"), then a respawn over the same hole.
+- Not tried: a second player watching an emote end on G (the end goes out the same way an emote's start does, which
+  was played on LAN), the real mouse (the desktop couldn't bring the game window forward; the harness's `mouse` now
+  goes through Minecraft's own turnPlayer instead), emoting in water or on a slope.
 
 ### Build 0.3.7 (the communication wheel, pings, emotes; Kiriko's HUD to the owner's frames)
 Needs the asset pack rebuilt (`build_asset_pack.py sounds`, `fonts`, and Kiriko's model with her emotes:

@@ -171,10 +171,14 @@ public final class HeroHud {
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
 		float below = Math.max(toastSlots * 32, effectRowsBottom(player));
 		KillFeedHud.render(g, w - 36, Math.max(36, below / scale + 12));
-		crosshair(g, w / 2, h / 2);
+		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes)
+		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
+		if (firstPerson) {
+			crosshair(g, w / 2, h / 2);
+		}
 		hitMarker(g, w / 2, h / 2);
 		eliminatedCaption(g, w / 2, h / 2 + 205);
-		if (HeroOptions.get().ofudaUi) {
+		if (firstPerson && HeroOptions.get().ofudaUi) {
 			ofudaCounter(g, s, w / 2, h / 2 + 136);
 		}
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
