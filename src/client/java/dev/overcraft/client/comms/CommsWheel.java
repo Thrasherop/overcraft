@@ -9,6 +9,10 @@ import dev.overcraft.client.hud.HudText.Align;
 import dev.overcraft.client.hud.HudText.Face;
 import dev.overcraft.comms.Callout;
 import dev.overcraft.net.CalloutPayload;
+import dev.overcraft.net.VoiceLinePayload;
+import dev.overcraft.client.ClientHero;
+import dev.overcraft.hero.Hero;
+import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -20,6 +24,7 @@ import java.util.Locale;
 
 import static dev.overcraft.client.hud.HudDraw.fill;
 import static dev.overcraft.client.hud.HudDraw.image;
+import static dev.overcraft.client.hud.HudDraw.outline;
 
 /**
  * Overwatch 2's communication wheel, for every hero (tools/reference/comms-reference.md, the owner's spec and
@@ -96,6 +101,11 @@ public final class CommsWheel {
 				if (callout != null) {
 					send(callout);
 				}
+			} else if (page == Page.VOICE_LINES) {
+				String line = hoveredLine();
+				if (line != null && ClientPlayNetworking.canSend(VoiceLinePayload.TYPE)) {
+					ClientPlayNetworking.send(new VoiceLinePayload(line));
+				}
 			}
 			open = false;
 		}
@@ -126,6 +136,17 @@ public final class CommsWheel {
 		double angle = Math.toDegrees(Math.atan2(pointerX, -pointerY));
 		int slice = (int) Math.floorMod(Math.round(angle / 45), 8);
 		return Callout.WHEEL[slice];
+	}
+
+	/** The voice page's line under the pointer: four quarters, up, right, down, left; none in the centre or empty. */
+	private static @Nullable String hoveredLine() {
+		Hero hero = ClientHero.hero();
+		if (hero == null || Math.hypot(pointerX, pointerY) < DEAD) {
+			return null;
+		}
+		double angle = Math.toDegrees(Math.atan2(pointerX, -pointerY));
+		String id = Loadout.voiceLines(hero).get((int) Math.floorMod(Math.round(angle / 90), 4));
+		return id.isEmpty() ? null : id;
 	}
 
 	private static void send(Callout callout) {
@@ -166,9 +187,10 @@ public final class CommsWheel {
 					fill(g, lx - HudText.width(Face.BODY, label, 19) / 2, ly + 14, HudText.width(Face.BODY, label, 19), 3, 0xFFF99E1A);
 				}
 			}
+		} else if (page == Page.VOICE_LINES) {
+			voicePage(g, cx, cy);
 		} else {
-			String note = Component.translatable(page == Page.VOICE_LINES ? "overcraft.wheel.voice_lines" : "overcraft.wheel.emotes")
-				.getString().toUpperCase(Locale.ROOT);
+			String note = Component.translatable("overcraft.wheel.emotes").getString().toUpperCase(Locale.ROOT);
 			HudText.draw(g, Face.BODY, note, cx, cy - 130, 18, 0xFFFFFFFF, Align.CENTER);
 		}
 		// the page tabs: a white bar with the mouse button that goes there
@@ -180,6 +202,39 @@ public final class CommsWheel {
 		}
 		// where the pointer is (ours: Overwatch shows only the highlight)
 		image(g, HudShapes.DISC, cx + pointerX - 5, cy + pointerY - 5, 10, 10, 0xCCFFFFFF);
+	}
+
+	/**
+	 * The voice page (the owner's screenshot): the four equipped lines at the compass points, each name in white caps in
+	 * a dark box with a light outline, diagonal dividers between them; the one under the pointer brighter.
+	 */
+	private static void voicePage(GuiGraphicsExtractor g, float cx, float cy) {
+		Hero hero = ClientHero.hero();
+		if (hero == null) {
+			return;
+		}
+		for (int i = 0; i < 4; i++) {
+			double between = Math.toRadians(i * 90 + 45);
+			for (float r = 110; r < 330; r += 4) {
+				fill(g, cx + (float) Math.sin(between) * r, cy - (float) Math.cos(between) * r, 1.5f, 1.5f, 0x66FFFFFF);
+			}
+		}
+		List<String> lines = Loadout.voiceLines(hero);
+		String over = hoveredLine();
+		float[][] at = {{0, -182}, {255, 0}, {0, 182}, {-255, 0}};
+		for (int i = 0; i < 4; i++) {
+			String id = lines.get(i);
+			String name = id.isEmpty() ? "-" : Component.translatable("overcraft.voiceline." + hero.id + "." + id).getString();
+			name = name.toUpperCase(Locale.ROOT);
+			boolean hot = !id.isEmpty() && id.equals(over);
+			float cap = 15;
+			float width = HudText.width(Face.BODY, name, cap) + 28;
+			float x = cx + at[i][0] - width / 2;
+			float y = cy + at[i][1] - 21;
+			fill(g, x, y, width, 42, hot ? 0xE6283846 : 0xCC10161C);
+			outline(g, x, y, width, 42, 1.5f, hot ? 0xFFFFFFFF : 0x99C8D0D8);
+			HudText.draw(g, Face.BODY, name, x + width / 2, y + 21 + cap / 2, cap, 0xFFFFFFFF, Align.CENTER);
+		}
 	}
 
 	private static void tab(GuiGraphicsExtractor g, float edge, float cy, String key, boolean left) {

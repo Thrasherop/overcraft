@@ -21,6 +21,7 @@ import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.TeamPayload;
 import dev.overcraft.net.CalloutPayload;
+import dev.overcraft.net.VoiceLinePayload;
 import dev.overcraft.comms.Callout;
 import dev.overcraft.comms.Comms;
 import dev.overcraft.net.SelectHeroPayload;
@@ -107,6 +108,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(PickPerkPayload.TYPE, PickPerkPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TeamPayload.TYPE, TeamPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(VoiceLinePayload.TYPE, VoiceLinePayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -133,6 +135,8 @@ public class Overcraft implements ModInitializer {
 				Comms.callout(context.player(), callout);
 			}
 		});
+		ServerPlayNetworking.registerGlobalReceiver(VoiceLinePayload.TYPE,
+			(payload, context) -> Comms.voiceLine(context.player(), payload.id()));
 		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,
 			(payload, context) -> context.player().sendSystemMessage(Teams.join(context.player(), payload.team())));
 		ServerPlayNetworking.registerGlobalReceiver(PickPerkPayload.TYPE,
