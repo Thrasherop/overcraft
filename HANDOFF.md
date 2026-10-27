@@ -140,6 +140,8 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - Versions (owner, 2026-10-26, #21): every build handed to the owner gets its own version in `gradle.properties`
   (0.2.0 was the first), its CHANGES.md entry headed "Build <version>". When a build needs the asset pack rebuilt
   (clips renamed, sounds or textures added), raise `Overcraft.ASSETS_NEEDED` to that version too.
+- Mojang's EULA: accepted for a local vanilla test server, to check the mod stays out of sight there (owner,
+  2026-10-26, #32). Only for that: ask again before accepting anything else.
 - Voice lines: which line plays and how often may come from the game data (each line's criteria, weight and
   cooldown, read offline: tools/reference/kiriko-voice.md), as no public source has them (owner, 2026-10-26, #13).
   The audio itself stays in the local pack like the models; only the numbers are in the code (Voice.WEIGHTS) and the
