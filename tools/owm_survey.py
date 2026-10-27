@@ -11,6 +11,9 @@ export everything as one .glb. Works on files extracted from the player's own in
           rename it). Exporting all of a hero's ~330 clips takes Blender's glTF exporter well over half an hour.
 --only=<id>,<id>: just these clips (by clip id), to try things on a few first.
 --shots=<n>: poses per thumbnail strip (default 3).  --side: view from her side instead of the front.
+--emotes=<dir>: also import the hero's emotes from DataTool's extract-unlocks "<Hero>|emote=*" (<dir> =
+          Unlocks/Heroes/<Hero>/Emote): each emote's clips (<group>/<name>/Animations/**) as emote_<name>_<n>, in id
+          order, kept in the .glb alongside --keep's clips. Their props (a bike, a skateboard) are not imported.
 --entity=<file.owentity>: import this entity instead of the bare model (its model look decides which meshes get
           materials: Gameplay1P's gives the first-person arms). Clips still come from <model>'s Animations folder.
 """
@@ -74,6 +77,21 @@ def main():
         # clip goes onto a 30 fps timeline
         if abs(data.header.fps - EXPORT_FPS) > 0.01:
             retime(action, EXPORT_FPS / data.header.fps)
+    emotes = next((a.split("=", 1)[1] for a in args if a.startswith("--emotes=")), None)
+    if emotes:
+        for emote in sorted(d for d in Path(emotes).glob("*/*") if (d / "Animations").is_dir()):
+            name = "".join(c if c.isalnum() else "_" for c in emote.name.lower()).strip("_")
+            for n, path in enumerate(sorted((emote / "Animations").rglob("*.owanimclip")), 1):
+                data = reader.read(str(path))
+                if data is None:
+                    continue
+                action = blanim.importAction(data, rig, False)
+                action.name = f"emote_{name}_{n}"
+                action.use_fake_user = True
+                report.append({"name": action.name, "folder": "emote", "id": path.stem, "frames": data.header.duration,
+                               "fps": data.header.fps, "bones": len(data.bones)})
+                if abs(data.header.fps - EXPORT_FPS) > 0.01:
+                    retime(action, EXPORT_FPS / data.header.fps)
     bpy.context.scene.render.fps = EXPORT_FPS
     print(f"OWM_CLIPS {len(report)}")
 
@@ -94,7 +112,7 @@ def main():
             for action in list(bpy.data.actions):
                 if action.name in names:
                     action.name = names[action.name]
-                else:
+                elif not action.name.startswith("emote_"):
                     bpy.data.actions.remove(action)
             print(f"OWM_KEEP {len(bpy.data.actions)} of {len(report)} clips")
         gltf_materials()

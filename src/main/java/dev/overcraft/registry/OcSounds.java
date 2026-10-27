@@ -62,6 +62,10 @@ public final class OcSounds {
 	public static final SoundEvent KIRIKO_VOICE_PAIN = register("kiriko.voice.pain");
 	public static final SoundEvent KIRIKO_VOICE_MELEE = register("kiriko.voice.melee");
 	public static final SoundEvent KIRIKO_VOICE_ON_FIRE = register("kiriko.voice.on_fire");
+	/** Pings (#40): Overwatch's hero calls out what they ping, heard by their team. */
+	public static final SoundEvent KIRIKO_VOICE_PING = register("kiriko.voice.ping");
+	public static final SoundEvent KIRIKO_VOICE_PING_WARNING = register("kiriko.voice.ping_warning");
+	public static final SoundEvent KIRIKO_VOICE_PING_ENEMY = register("kiriko.voice.ping_enemy");
 	/** Kitsune Rush's corridor, heard by each player in it (RushSound, #16): the opening hits, and the three looping beds. */
 	public static final SoundEvent KIRIKO_RUSH_PATH_START = register("kiriko.rush.path_start");
 	public static final SoundEvent KIRIKO_RUSH_PATH_1 = register("kiriko.rush.path_1");
@@ -88,6 +92,20 @@ public final class OcSounds {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));
 	}
 
+	/**
+	 * Every hero's communication-wheel lines (dev.overcraft.comms): "<hero>.voice.call_<callout>", and the ult status's
+	 * charging and almost-ready pools (its ready one is the hero's ult_ready). Silent until the hero's sounds are in the
+	 * local pack.
+	 */
 	public static void init() {
+		for (dev.overcraft.hero.Hero hero : dev.overcraft.hero.Hero.values()) {
+			for (dev.overcraft.comms.Callout callout : dev.overcraft.comms.Callout.values()) {
+				if (callout != dev.overcraft.comms.Callout.ULTIMATE_STATUS) {
+					register(hero.id + ".voice.call_" + callout.id);
+				}
+			}
+			register(hero.id + ".voice.call_ult_charging");
+			register(hero.id + ".voice.call_ult_almost");
+		}
 	}
 }

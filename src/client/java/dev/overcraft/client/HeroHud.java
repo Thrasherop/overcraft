@@ -82,6 +82,8 @@ public final class HeroHud {
 	private static final int ICON = 0xFF111111;
 	private static final int BLUE = 0xFF2D96DA;
 	private static final int BLUE_GLOW = 0xB30B386A;
+	/** The weapon panels' line (the eighth critique: #49A5EC-#52ADF8 over a dark scene). */
+	private static final int PANEL_LINE = 0xFF4DA8F0;
 	private static final int ULT_TICK = 0xFFF18449;
 	/** The ticks' inner ends, shading to ULT_TICK outward. */
 	private static final int ULT_TICK_DARK = 0xFFC65B1E;
@@ -96,11 +98,12 @@ public final class HeroHud {
 	private static final int MOUSE_BODY = 0xFFF4F4F4;
 	private static final int MOUSE_BUTTON = 0xFFE8632A;
 	private static final int CYAN = 0xFF29A8E0;
-	private static final int PORTRAIT_BORDER = 0xFF68CCFF;
+	/** The portrait's border: a saturated cyan core (the owner's frames: #15D2FF-#2CC5FF; the eighth critique). */
+	private static final int PORTRAIT_BORDER = 0xFF22D0FE;
 	private static final int PORTRAIT_BACK = 0xFF1B2A4A;
 	private static final int DIVIDER = 0xB34FA3A5;
-	/** A perk waiting to be picked (third-party descriptions: the bar "glows orange", "an orange pop-up"; ours). */
-	private static final int PERK_ORANGE = 0xFFF08A2C;
+	/** A perk waiting to be picked: Overwatch's bar orange (the owner's screenshot, #FC802D undimmed). */
+	private static final int PERK_ORANGE = 0xFFFC802D;
 
 	/** How long an ability box shows coral after it's used, and cyan once it's back (s). */
 	private static final float CAST_TIME = 0.35f;
@@ -171,11 +174,15 @@ public final class HeroHud {
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
 		float below = Math.max(toastSlots * 32, effectRowsBottom(player));
 		KillFeedHud.render(g, w - 36, Math.max(36, below / scale + 12));
-		crosshair(g, w / 2, h / 2);
+		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes)
+		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
+		if (firstPerson) {
+			crosshair(g, w / 2, h / 2);
+		}
 		hitMarker(g, w / 2, h / 2);
 		eliminatedCaption(g, w / 2, h / 2 + 205);
 		if (hero == Hero.KIRIKO) {
-			if (HeroOptions.get().ofudaUi) {
+			if (firstPerson && HeroOptions.get().ofudaUi) {
 				ofudaCounter(g, s, w / 2, h / 2 + 136);
 			}
 			swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
@@ -183,6 +190,8 @@ public final class HeroHud {
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
+		dev.overcraft.client.comms.Pings.render(g, w, h);
+		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
 		health(g, player, hero);
@@ -443,19 +452,28 @@ public final class HeroHud {
 	private static void health(GuiGraphicsExtractor g, LocalPlayer player, Hero hero) {
 		// the portrait, cut to a shield with a light-blue border
 		Identifier portrait = HudShapes.portrait(hero);
-		float px = 52;
-		// the gable's peak under the head near y 900, the point near 1015 (Overwatch's frame, the seventh critique)
-		float py = 900;
-		float pw = 104;
+		// the gable's peak under the head near y 902, the point at 1015 (the owner's frames, the eighth critique: 6% larger
+		// than before, so only a few pixels of gable show beside the mask's ears)
+		float pw = 110;
+		float px = 49;
+		float py = 902;
 		float ph = pw * HudShapes.SHIELD_H / HudShapes.SHIELD_W;
 		boolean onFire = ClientHero.sync().onFire();
 		if (onFire) {
 			image(g, HudShapes.GLOW, px - pw * 0.6f, py - ph * 0.5f, pw * 2.2f, ph * 2, alpha(0xFF6A1A, 0.7f));
 		}
-		image(g, HudShapes.SHIELD, px - 3, py - 3, pw + 6, ph + 6, 0x80000000);
 		image(g, HudShapes.SHIELD, px, py, pw, ph, PORTRAIT_BACK);
 		if (portrait != null) {
 			image(g, portrait, px, py, pw, ph, WHITE);
+		}
+		// the border glows (the eighth critique): a saturated cyan core, a soft blue fading out over about 5 px, a deep
+		// blue fading in over 3; no dark edge
+		for (int i = 5; i >= 1; i--) {
+			image(g, HudShapes.SHIELD_BORDER, px - i, py - i, pw + 2 * i, ph + 2 * i,
+				alpha(onFire ? 0xFF9A3C : 0x1B82CA, 0.32f * (1 - i / 6f)));
+		}
+		for (int i = 1; i <= 3; i++) {
+			image(g, HudShapes.SHIELD_BORDER, px + i, py + i, pw - 2 * i, ph - 2 * i, alpha(0x0270BB, 0.45f * (1 - i / 4f)));
 		}
 		image(g, HudShapes.SHIELD_BORDER, px, py, pw, ph, onFire ? 0xFFFF9A3C : PORTRAIT_BORDER);
 		if (onFire) {
@@ -468,33 +486,45 @@ public final class HeroHud {
 			image(g, pop, px, py - HudShapes.POP_H * texel, pw, (HudShapes.POP_H + HudShapes.POP_BELOW) * texel, WHITE);
 		}
 
-		// the rest tilts with the HUD's curve: inner (right) end higher
-		float left = 194;
+		// the rest tilts with the HUD's curve: inner (right) end higher. Its left edge at x 168 (the owner's frames, the
+		// eighth critique: 26 px further left than before)
+		float left = 168;
 		g.pose().pushMatrix();
 		curve(g, left, 933, slopeAt(left + 120 - 960));
 		int max = Math.round(Ow.toOw(player.getMaxHealth()));
 		int now = (int) Math.ceil(Ow.toOw(player.getHealth()));
-		// "+" box, then current | max
-		fill(g, left, 899, 44, 24, SHADE);
-		image(g, HudShapes.PLUS, left + 5, 902, 18, 18, WHITE);
+		// "+" box: at full health a white rounded square with a dark "+" and a dark tail; hurt, all dark with a white "+"
+		// (every full-health frame of the owner's is white, every hurt one dark)
+		if (now >= max) {
+			box(g, left - 2, 899, 26, 26, 0xFFF4F4F4);
+			image(g, HudShapes.PLUS, left + 2, 903, 18, 18, 0xFF222222);
+			box(g, left + 24, 899, 18, 26, SHADE);
+		} else {
+			box(g, left - 2, 899, 44, 26, SHADE);
+			image(g, HudShapes.PLUS, left + 2, 903, 18, 18, WHITE);
+		}
 		float x = left + 54;
 		String current = String.valueOf(now);
-		HudText.draw(g, Face.BODY, current, x, 921, 18.8f, WHITE, Align.LEFT);
+		HudText.draw(g, Face.BODY, current, x, 918, 18.8f, WHITE, Align.LEFT);
 		x += HudText.width(Face.BODY, current, 18.8f) + 7;
-		fill(g, x, 899, 2, 22, DIVIDER);
-		HudText.draw(g, Face.BODY, String.valueOf(max), x + 8, 921, 15, TEXT_DIM, Align.LEFT);
+		fill(g, x, 896, 2, 22, DIVIDER);
+		HudText.draw(g, Face.BODY, String.valueOf(max), x + 8, 918, 15, TEXT_DIM, Align.LEFT);
 
-		// one pip per 25 health: white while it holds health, a faint dark box when empty
+		// one pip per 25 health, white while it holds health, a faint dark box when empty. The row is a fixed length: the
+		// pips narrow as health grows (Overwatch's 10 at a 24.8 pitch, 9 at 27.3: the eighth critique)
 		int pips = Math.max(1, (int) Math.ceil(max / 25.0));
+		float pitch = PIP_ROW / pips;
+		float pipW = pitch - 4;
+		float rowEnd = left + 3 + PIP_ROW - 4;
 		for (int i = 0; i < pips; i++) {
-			float pipX = left + 2 + i * 26.6f;
+			float pipX = left + 3 + i * pitch;
 			float held = Math.clamp((now - i * 25) / 25f, 0, 1);
-			box(g, pipX, 933, 24, 30, 0x40000000);
+			box(g, pipX, 933, pipW, 30, 0x40000000);
 			if (held > 0) {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, 24 * shown, 30, WHITE);
+				box(g, pipX, 933, pipW * shown, 30, WHITE);
 			}
 		}
 
@@ -504,99 +534,134 @@ public final class HeroHud {
 		// The box holds the perk level (#36: Blizzard calls the line under the name a "level bar"; the number at its start
 		// being the level is our reading of it)
 		HeroSyncPayload s = ClientHero.sync();
-		boolean waiting = s.perkReady() > 0;
-		fill(g, left - 2, 970, 30, 44, waiting ? PERK_ORANGE : 0xFF41CCFD);
-		HudText.draw(g, Face.SMALL, String.valueOf(s.perkLevel()), left + 13, 998, 16, waiting ? WHITE : 0xB3A9E5FF, Align.CENTER);
-		float plate = left + 32;
+		if (s.perkReady() > 0) {
+			// a perk waiting: the whole row becomes Overwatch's orange "[LALT] SELECT PERK" bar, from the level box's left
+			// edge to the pips' right end (the owner's screenshot, 2026-10-27)
+			selectPerkBar(g, left - 2, 968, rowEnd - (left - 2));
+			g.pose().popMatrix();
+			return;
+		}
+		// the level box, 31 x 30 in Overwatch's #3AD5FE with a clear white digit, then the plate: a uniform translucent
+		// slab (it darkens what's behind by about a quarter) to the pips' end, the name in light grey (the eighth critique)
+		fill(g, left - 2, 970, 31, 30, 0xFF3AD5FE);
+		HudText.draw(g, Face.BODY, String.valueOf(s.perkLevel()), left + 13.5f, 991.5f, 13, 0xE6FFFFFF, Align.CENTER);
+		float plate = left + 29;
+		fill(g, plate, 968, rowEnd - plate, 32, 0x47000000);
 		String name = player.getName().getString().toUpperCase(Locale.ROOT);
-		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
-		for (int i = 0; i < 12; i++) {
-			// fades out to the right
-			int alpha = (int) (0x90 * (1 - i / 12f));
-			fill(g, plate + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
-		}
-		HudText.draw(g, Face.BODY, name, plate + 12, 993, 14, WHITE, Align.LEFT);
-		levelBar(g, s, left + 28, 1004, 4 + nameW);
-		if (waiting) {
-			perkReadyTab(g, plate + nameW + 10, 972);
-		}
+		HudText.draw(g, Face.BODY, name, plate + 14, 991, 14, 0xFFC9CFD6, Align.LEFT);
+		levelBar(g, s, left - 2, 1000, rowEnd - (left - 2));
 		g.pose().popMatrix();
+	}
+
+	/** The pip row's length, whatever the health (the eighth critique: 10 pips at a 24.8 pitch, 9 at 27.3). */
+	private static final float PIP_ROW = 248;
+
+	/**
+	 * Overwatch's perk-waiting bar (the owner's screenshot, 2026-10-27, measured: 32 px tall, #FC802D undimmed), the
+	 * perk key in a near-black box with orange letters, then "SELECT PERK" in near-black caps, centred.
+	 */
+	private static void selectPerkBar(GuiGraphicsExtractor g, float x, float y, float width) {
+		fill(g, x, y, width, 32, PERK_ORANGE);
+		String key = shortKey(HeroControls.get(Action.PERK_MENU));
+		String label = Component.translatable("overcraft.hud.select_perk").getString().toUpperCase(Locale.ROOT);
+		float cap = 11.5f;
+		float keyW = HudText.width(Face.SMALL, key, 10.5f) + 12;
+		float labelW = HudText.width(Face.BODY, label, cap);
+		float start = x + (width - keyW - 8 - labelW) / 2;
+		fill(g, start, y + 6, keyW, 20, 0xF01C0000);
+		HudText.draw(g, Face.SMALL, key, start + keyW / 2, y + 16 + 5.25f, 10.5f, PERK_ORANGE, Align.CENTER);
+		HudText.draw(g, Face.BODY, label, start + keyW + 8, y + 16 + cap / 2, cap, 0xFF1C0000, Align.LEFT);
 	}
 
 	/**
 	 * The perk level bar along the name plate's foot (#36): blue filling toward the next level with a bright dot at its
-	 * end; full and orange, glowing, while a perk waits to be picked (third-party descriptions: "a blue bar slowly
-	 * filling", "becomes full and glows orange"); full blue once both perks are picked.
+	 * end (third-party descriptions: "a blue bar slowly filling"; the owner's screenshots show it); full once both
+	 * perks are picked. A perk waiting replaces the whole row (selectPerkBar).
 	 */
 	private static void levelBar(GuiGraphicsExtractor g, HeroSyncPayload s, float x, float y, float length) {
-		fill(g, x, y, length, 3, 0x33FFFFFF);
-		if (s.perkReady() > 0) {
-			float pulse = 0.65f + 0.35f * (float) Math.sin(Util.getMillis() / 1000.0 * Math.PI * 2 * 0.8);
-			image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 10, length, 20, alpha(PERK_ORANGE, 0.6f * pulse));
-			fill(g, x, y, length, 3, PERK_ORANGE);
-			image(g, HudShapes.GLOW, x + length - 11, y - 9.5f, 22, 22, alpha(0xFFB15A, pulse));
-			return;
-		}
+		// no track: only the filled part and its glowing end; at no progress just the dot at the box's corner, with a
+		// short bright edge along the box's foot (the owner's frames, the eighth critique)
 		float filled = length * Math.clamp(s.perkProgress(), 0, 1);
-		fill(g, x, y, filled, 3, BLUE);
-		image(g, HudShapes.GLOW, x + filled - 9, y - 8, 18, 18, 0xFF6FD3FF);
-	}
-
-	/** The orange pop-up beside the name while a perk waits (ours: "PERK READY" and the key to hold). */
-	private static void perkReadyTab(GuiGraphicsExtractor g, float x, float y) {
-		String label = Component.translatable("overcraft.hud.perk_ready").getString().toUpperCase(Locale.ROOT);
-		float cap = 11;
-		float textW = HudText.width(Face.SMALL, label, cap);
-		KeyMapping key = HeroControls.get(Action.PERK_MENU);
-		float keyW = Math.max(22, HudText.width(Face.SMALL, shortKey(key), 10.5f) + 8);
-		float w = 12 + textW + 10 + keyW + 6;
-		fill(g, x, y, w, 30, 0xE6E8742A);
-		HudText.draw(g, Face.SMALL, label, x + 12, y + 15 + cap / 2, cap, WHITE, Align.LEFT);
-		keyLabel(g, key, x + 12 + textW + 10 + keyW / 2, y + 15, WHITE, false);
+		fill(g, x, y - 1, Math.max(filled, 18), 2, alpha(0x6FD3FF, 0.85f));
+		if (filled > 0) {
+			fill(g, x, y - 1, filled, 3, BLUE);
+		}
+		image(g, HudShapes.GLOW, x + filled - 9, y - 9, 18, 18, 0xFF6FD3FF);
 	}
 
 	/**
-	 * The perk menu, up while the perk key is held and a perk waits (#36): the tier's two perks side by side, picked
-	 * with the left or right mouse button (Overwatch's: "Hold down Left Alt ..., then use Left/Right click"). The
-	 * layout is ours: Blizzard describes none of it.
+	 * The perk menu, up while the perk key is held and a perk waits (#36), picked with the left or right mouse button
+	 * (Overwatch's: "Hold down Left Alt ..., then use Left/Right click"). Overwatch's layout (the owner's screenshot,
+	 * 2026-10-27, 2000 x 1125, measured and scaled to 1080): the two perks as black discs under the crosshair, about
+	 * 141 px apart on a dark band, an orange bracket arc round each one's outer side and its mouse button under it; each
+	 * perk's name (orange caps) and text (white) in a navy box beside its disc.
 	 */
 	private static void perkMenu(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w, float h) {
 		Perk.Tier tier = s.perkReady() == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR;
 		java.util.List<Perk> choices = Perk.of(hero, tier);
-		float cardW = 330;
-		float cardH = 214;
-		float gap = 40;
-		// above the crosshair's row, clear of the ofuda counter under it
-		float top = h / 2 - cardH - 40;
-		String title = Component.translatable(tier == Perk.Tier.MINOR ? "overcraft.hud.choose_minor" : "overcraft.hud.choose_major")
-			.getString().toUpperCase(Locale.ROOT);
-		HudText.draw(g, Face.BODY, title, w / 2, top - 22, 18, WHITE, Align.CENTER);
-		for (int i = 0; i < choices.size(); i++) {
+		float cy = 754;
+		float r = 50;
+		float apart = 141;
+		// the band the discs sit on
+		fill(g, w / 2 - apart / 2, cy - 28, apart, 56, 0xD9121519);
+		for (int i = 0; i < choices.size() && i < 2; i++) {
 			Perk perk = choices.get(i);
-			float x = i == 0 ? w / 2 - gap / 2 - cardW : w / 2 + gap / 2;
-			fill(g, x, top, cardW, cardH, 0xD90B1520);
-			fill(g, x, top, cardW, 3, PERK_ORANGE);
-			float discX = x + cardW / 2;
-			image(g, HudShapes.DISC, discX - 30, top + 16, 60, 60, 0xF2F4F4F4);
+			boolean left = i == 0;
+			float cx = w / 2 + (left ? -apart / 2 : apart / 2);
+			disc(g, cx, cy, r, 0xF20D0F12);
+			image(g, HudShapes.RING_THIN, cx - r, cy - r, 2 * r, 2 * r, 0x59FFFFFF);
 			Identifier icon = HeroArt.perk(hero, perk.id);
 			if (icon != null) {
-				image(g, icon, discX - 22, top + 24, 44, 44, ICON);
+				image(g, icon, cx - 29, cy - 29, 58, 58, WHITE);
 			}
-			String name = Component.translatable("overcraft.perk." + hero.id + "." + perk.id).getString().toUpperCase(Locale.ROOT);
-			HudText.draw(g, Face.BODY, name, discX, top + 104, 15, WHITE, Align.CENTER);
-			float lineY = top + 128;
-			for (String line : wrap(Component.translatable("overcraft.perk." + hero.id + "." + perk.id + ".desc").getString(),
-				cardW - 40, 10.5f)) {
-				HudText.draw(g, Face.SMALL, line, discX, lineY, 10.5f, TEXT_DIM, Align.CENTER);
-				lineY += 17;
-			}
-			// the mouse button that picks it, at the card's foot
-			float mw = 30;
+			// the orange bracket round the outer side, about 100 degrees of it
+			arc(g, cx, cy, r + 9, 7, left ? 220 : 40, left ? 320 : 140, PERK_ARC);
+			// its mouse button under it, that button orange
+			float mw = 19;
 			float mh = mw * HudShapes.MOUSE_H / HudShapes.MOUSE_W;
-			float my = top + cardH - 30;
-			image(g, HudShapes.MOUSE_OUTLINE, discX - mw / 2, my - mh / 2, mw, mh, 0xB31A1A1A);
-			image(g, HudShapes.MOUSE, discX - mw / 2, my - mh / 2, mw, mh, MOUSE_BODY);
-			image(g, i == 0 ? HudShapes.MOUSE_LEFT : HudShapes.MOUSE_RIGHT, discX - mw / 2, my - mh / 2, mw, mh, MOUSE_BUTTON);
+			float my = 823;
+			image(g, HudShapes.MOUSE_OUTLINE, cx - mw / 2, my - mh / 2, mw, mh, 0xFF111111);
+			image(g, HudShapes.MOUSE, cx - mw / 2, my - mh / 2, mw, mh, MOUSE_BODY);
+			image(g, left ? HudShapes.MOUSE_LEFT : HudShapes.MOUSE_RIGHT, cx - mw / 2, my - mh / 2, mw, mh, MOUSE_BUTTON);
+			// the name and text in a navy box beside it, 154 px out from the middle
+			float boxW = 369;
+			float boxX = left ? w / 2 - 154 - boxW : w / 2 + 154;
+			float boxY = 696;
+			java.util.List<String> lines = wrap(Component.translatable("overcraft.perk." + hero.id + "." + perk.id + ".desc")
+				.getString(), boxW - 40, 13);
+			float boxH = Math.max(118, 52 + lines.size() * 24 + 8);
+			fill(g, boxX, boxY, boxW, boxH, 0xE0172036);
+			String name = Component.translatable("overcraft.perk." + hero.id + "." + perk.id).getString().toUpperCase(Locale.ROOT);
+			HudText.draw(g, Face.BODY, name, boxX + 20, boxY + 28, 12.5f, PERK_TITLE, Align.LEFT);
+			float lineY = boxY + 55;
+			for (String line : lines) {
+				HudText.draw(g, Face.SMALL, line, boxX + 20, lineY, 13, WHITE, Align.LEFT);
+				lineY += 24;
+			}
+		}
+	}
+
+	/** Overwatch's perk menu orange: the brackets round the discs, and the perks' names (the owner's screenshot). */
+	private static final int PERK_ARC = 0xFFF0781E;
+	private static final int PERK_TITLE = 0xFFF5962E;
+
+	/**
+	 * An arc of the circle round (cx, cy), radius r to its middle, thick across, from one angle to another (degrees,
+	 * clockwise from 12 o'clock), as short overlapping soft-edged ticks.
+	 */
+	private static void arc(GuiGraphicsExtractor g, float cx, float cy, float r, float thick, float from, float to, int color) {
+		int segments = Math.max(8, Math.round((to - from) / 2));
+		float step = (to - from) / segments;
+		float len = (float) (2 * Math.PI * r * step / 360) * 1.6f;
+		float quadW = len / HudShapes.TICK_FILL_W;
+		float quadH = thick / HudShapes.TICK_FILL_H;
+		for (int i = 0; i <= segments; i++) {
+			// each tick points along the radius, as thick as the arc and a little longer along it than its step
+			g.pose().pushMatrix();
+			g.pose().translate(cx, cy);
+			g.pose().rotate((float) Math.toRadians(from + i * step));
+			image(g, HudShapes.TICK, -quadW / 2, -r - quadH / 2, quadW, quadH, color);
+			g.pose().popMatrix();
 		}
 	}
 
@@ -699,12 +764,40 @@ public final class HeroHud {
 			disc(g, cx, cy, 37, 0x1F000000);
 			image(g, HudShapes.BAND_RING, cx - 47, cy - 47, 94, 94, 0x66000000);
 			image(g, HudShapes.RING_THIN, cx - 56, cy - 56, 112, 112, 0xFF4A4F4F);
-			image(g, HudShapes.RING_THIN, cx - 35, cy - 35, 70, 70, 0xB37A3A2A);
-			ticks(g, cx, cy, 37, 47, charge, ULT_TICK_DARK, ULT_TICK, 0);
+			innerRing(g, cx, cy);
+			// lit ticks a little see-through, as Overwatch's (about 70%: the eighth critique)
+			ticks(g, cx, cy, 37, 47, charge, alpha(ULT_TICK_DARK, 0.72f), alpha(ULT_TICK, 0.72f), 0);
 			int percent = (int) Math.floor(100 * charge);
-			HudText.draw(g, Face.NUMBERS, String.valueOf(percent), cx, cy + 18, 36, WHITE, Align.CENTER);
+			HudText.outlined(g, Face.NUMBERS, String.valueOf(percent), cx, cy + 18, 36, 0xFFE6E8EE, 0xB31C2233, 1.5f,
+				Align.CENTER);
 		}
 		keyLabel(g, HeroControls.get(Action.ULTIMATE), cx, 1008, 0, ready);
+	}
+
+	/**
+	 * The ult meter's inner ring (the eighth critique, the owner's frames): an orange line about 3 px wide at r 33, half
+	 * see-through, with two short gaps (8°) opposite each other that turn slowly (one turn in 10 s: ours; each frame has
+	 * them somewhere else).
+	 */
+	private static void innerRing(GuiGraphicsExtractor g, float cx, float cy) {
+		int segments = 180;
+		float r = 33;
+		float gap = (Util.getMillis() % 10000) / 10000f * 360;
+		float arc = (float) (2 * Math.PI * r / segments) * 2.2f;
+		float quadW = arc / HudShapes.TICK_FILL_W;
+		float quadH = 3 / HudShapes.TICK_FILL_H;
+		for (int i = 0; i < segments; i++) {
+			float angle = i * 360f / segments;
+			float off = Math.abs(((angle - gap) % 180 + 180) % 180);
+			if (off < 4 || off > 176) {
+				continue;
+			}
+			g.pose().pushMatrix();
+			g.pose().translate(cx, cy);
+			g.pose().rotate((float) Math.toRadians(angle));
+			image(g, HudShapes.TICK, -quadW / 2, -r - quadH / 2, quadW, quadH, 0x80E0703F);
+			g.pose().popMatrix();
+		}
 	}
 
 	/**
@@ -800,8 +893,8 @@ public final class HeroHud {
 				box(g, x, y, size, h, BOX_READY_BOTTOM);
 				boxFade(g, x, y, size, h, BOX_READY_TOP);
 			}
-			image(g, HudShapes.LINE, x, y + h + 4.5f - 4.5f, size, 9, 0xE6FFFFFF);
-			iconOrName(g, icon, ability, x, y + 1, size, ICON);
+			image(g, HudShapes.LINE, x, y + h + 7 + 1 - 3, size, 6, 0xE6FFFFFF);
+			iconOrName(g, icon, ability, x, y + 1, size, 0xE62A2A2C);
 		} else {
 			float y = base + 11;
 			float h = 60;
@@ -838,48 +931,46 @@ public final class HeroHud {
 		if (hero == Hero.LUCIO) {
 			// the Sonic Amplifier on the left button, where Kiriko's kunai panel is
 			weapon(g, hero, w, "sonic_amplifier", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(), LucioStats.AMP_AMMO,
-				s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		// ofuda (primary fire), then kunai (secondary): Overwatch's order. The server's weapon slots are the other way
 		// round (its primary is the kunai), hence the crossed ammo fields.
 		// line centres 61-62 px apart, 16 px between the panels, the mice under them (the second critique, measured)
-		weapon(g, hero, w, "healing_ofuda", w - 492, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
-			KirikoStats.OFUDA_AMMO, s.secondaryReload(), HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
-		weapon(g, hero, w, "kunai", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
-			s.primaryReload(), HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+		weapon(g, hero, w, "healing_ofuda", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+			KirikoStats.OFUDA_AMMO, HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+		weapon(g, hero, w, "kunai", w - 307, 938.5f, 251, 65, 114, 36, w - 81, s.primaryAmmo(), KirikoStats.KUNAI_AMMO,
+			HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 	}
 
 	/**
-	 * A weapon panel: blue lines along its top and bottom, the icon, "ammo | clip" (dimmed while reloading, the
-	 * bottom line filling white with the reload), and under it the mouse with its fire button in orange. The ammo
-	 * ends at textRight (Overwatch's: digits about 19 px tall, 22 px clear of the ofuda's icon).
+	 * A weapon panel: blue lines along its top and bottom, the icon, "ammo | clip", and under it the mouse with its fire
+	 * button in orange; the ammo ends at textRight (Overwatch's: digits about 19 px tall, 22 px clear of the ofuda's
+	 * icon). A reload shows nothing here: the count stays as it was until the ammo is back, the animation being
+	 * Overwatch's only sign of it (the owner, 2026-10-27).
 	 */
 	private static void weapon(GuiGraphicsExtractor g, Hero hero, float w, String weapon, float x, float y, float width, float height,
-							   float iconW, float iconH, float textRight, int ammo, int clip, float reload, KeyMapping fire,
+							   float iconW, float iconH, float textRight, int ammo, int clip, KeyMapping fire,
 							   float mouseX, float mouseY) {
 		g.pose().pushMatrix();
 		float cx = x + width / 2;
 		curve(g, cx, y + height / 2, slopeAt(960 - (w - cx)));
-		fill(g, x, y, width, height, 0x26000000);
-		line(g, x, y, width);
-		line(g, x, y + height - 3, width);
-		if (reload >= 0) {
-			image(g, HudShapes.LINE, x, y + height - 3 + 1.5f - 4.5f, width * reload, 9, 0xF2FFFFFF);
-		}
+		// no fill: inside a panel the scene shows unchanged (the eighth critique)
+		line(g, x, y, width, true);
+		line(g, x, y + height - 3, width, false);
 		float mid = y + height / 2;
 		Identifier icon = HeroArt.ability(hero, weapon);
 		if (icon != null) {
-			image(g, icon, x + 16, mid - iconH / 2, iconW, iconH, WHITE);
+			// the kunai's icon a little further in than the ofuda's card (the eighth critique, the owner's frames)
+			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, WHITE);
 		}
-		int color = reload >= 0 ? TEXT_DIM : WHITE;
 		String current = String.valueOf(ammo);
 		String max = String.valueOf(clip);
 		float cap = 16;
 		float maxW = HudText.width(Face.BODY, max, cap);
-		HudText.draw(g, Face.BODY, max, textRight, mid + cap / 2, cap, color, Align.RIGHT);
+		HudText.draw(g, Face.BODY, max, textRight, mid + cap / 2, cap, WHITE, Align.RIGHT);
 		fill(g, textRight - maxW - 6, mid - 10, 1.5f, 20, DIVIDER);
-		HudText.draw(g, Face.BODY, current, textRight - maxW - 11, mid + cap / 2, cap, color, Align.RIGHT);
+		HudText.draw(g, Face.BODY, current, textRight - maxW - 11, mid + cap / 2, cap, WHITE, Align.RIGHT);
 		g.pose().popMatrix();
 		mouse(g, fire, mouseX, mouseY);
 	}
@@ -888,20 +979,26 @@ public final class HeroHud {
 	 * The panels' bright blue line (3 px), with a soft glow: soft-edged textures rather than fills, which would step
 	 * where the HUD's curve slopes them.
 	 */
-	private static void line(GuiGraphicsExtractor g, float x, float y, float width) {
-		// a 4 px core with a darker 5 px halo (the third critique, measured on Overwatch's)
-		image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 10, width, 20, BLUE_GLOW);
-		image(g, HudShapes.LINE, x, y + 1.5f - 6, width, 12, BLUE);
+	private static void line(GuiGraphicsExtractor g, float x, float y, float width, boolean top) {
+		// a 2.5 px core in Overwatch's lighter blue with a soft glow of about 3 px, each end turning inward in a small
+		// rounded hook (the eighth critique, the owner's frames: the top lines bend down, the bottom ones up)
+		image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 8, width, 16, BLUE_GLOW);
+		image(g, HudShapes.LINE, x, y + 1.5f - 3.75f, width, 7.5f, PANEL_LINE);
+		float hookY = top ? y + 1.5f : y + 1.5f - 4;
+		for (float end : new float[] {x, x + width - 2.5f}) {
+			image(g, HudShapes.LINE, end - 0.6f, hookY, 3.7f, 4, PANEL_LINE);
+		}
 	}
 
 	/** Under a weapon panel: the mouse with the fire button in orange, or the key it's bound to. */
 	private static void mouse(GuiGraphicsExtractor g, KeyMapping fire, float cx, float cy) {
 		String key = KeyMappingHelper.getBoundKeyOf(fire).getName();
 		if (key.equals("key.mouse.left") || key.equals("key.mouse.right")) {
-			// the visible body about 20 x 29 (Overwatch's: white, outlined dark, the bound button orange-red)
-			float mw = 26.7f;
+			// 19 x 27 with its outline (Overwatch's: white, a crisp dark outline and button lines, the bound button
+			// orange-red: the eighth critique)
+			float mw = 19;
 			float mh = mw * HudShapes.MOUSE_H / HudShapes.MOUSE_W;
-			image(g, HudShapes.MOUSE_OUTLINE, cx - mw / 2, cy - mh / 2, mw, mh, 0xB31A1A1A);
+			image(g, HudShapes.MOUSE_OUTLINE, cx - mw / 2, cy - mh / 2, mw, mh, 0xFF111111);
 			image(g, HudShapes.MOUSE, cx - mw / 2, cy - mh / 2, mw, mh, MOUSE_BODY);
 			image(g, key.equals("key.mouse.left") ? HudShapes.MOUSE_LEFT : HudShapes.MOUSE_RIGHT, cx - mw / 2, cy - mh / 2, mw, mh,
 				MOUSE_BUTTON);
@@ -943,28 +1040,35 @@ public final class HeroHud {
 		for (int i = 0; i < segments; i++) {
 			float x = cx + (i - (segments - 1) / 2f) * pitch - w / 2;
 			float y = cy - h / 2;
+			// about 10% smaller than the mask and see-through (the eighth critique: 25 x 20 at the middle row, about 80%)
+			float sw = w * 0.9f;
+			float sh = h * 0.9f;
+			float sx = x + (w - sw) / 2;
+			float sy = y + (h - sh) / 2;
 			if (i < loaded) {
-				image(g, HudShapes.OFUDA_SEGMENT, x, y, w, h, flash ? WHITE : AMBER);
+				image(g, HudShapes.OFUDA_SEGMENT, sx, sy, sw, sh, flash ? WHITE : alpha(AMBER, 0.82f));
 			} else {
-				image(g, HudShapes.OFUDA_SEGMENT, x, y, w, h, SPENT_FILL);
-				image(g, HudShapes.OFUDA_SEGMENT_OUTLINE, x, y, w, h, SPENT_EDGE);
+				image(g, HudShapes.OFUDA_SEGMENT, sx, sy, sw, sh, SPENT_FILL);
+				image(g, HudShapes.OFUDA_SEGMENT_OUTLINE, sx, sy, sw, sh, SPENT_EDGE);
 			}
 		}
-		// the bracket: a dot at each end, a short slant down and in, then flat under the bar
-		int bracket = 0x8CC8C8C8;
+		// the bracket: a 6 px dot at each end, then 5 px out a 1.5 px line slanting 45° down and in to dotY + 19, then
+		// 11 px flat (the eighth critique)
+		int bracket = 0x8CC8D0E0;
 		float span = 92;
 		for (int side = -1; side <= 1; side += 2) {
 			float dotX = cx + side * span;
 			float dotY = cy + 6;
-			image(g, HudShapes.DISC, dotX - 4, dotY - 4, 8, 8, 0xD99A9A9A);
+			image(g, HudShapes.DISC, dotX - 3, dotY - 3, 6, 6, 0xD9C8D0E0);
+			float startX = dotX - side * 3.5f;
+			float startY = dotY + 3.5f;
 			g.pose().pushMatrix();
-			g.pose().translate(dotX, dotY);
+			g.pose().translate(startX, startY);
 			g.pose().rotate((float) Math.toRadians(side < 0 ? 45 : 135));
-			fill(g, 0, -1, 17, 2, bracket);
+			fill(g, 0, -0.75f, 21.2f, 1.5f, bracket);
 			g.pose().popMatrix();
-			float flatX = dotX - side * 12;
-			float flatEnd = flatX - side * 24;
-			fill(g, Math.min(flatX, flatEnd), dotY + 11, 24, 2, bracket);
+			float flatX = startX - side * 15;
+			fill(g, Math.min(flatX, flatX - side * 11), dotY + 19 - 0.75f, 11, 1.5f, bracket);
 		}
 	}
 
@@ -1116,7 +1220,7 @@ public final class HeroHud {
 	}
 
 	/** World position to HUD position (reference pixels), or null behind the camera. */
-	private static float @Nullable [] project(Vec3 at, float w, float h) {
+	public static float @Nullable [] project(Vec3 at, float w, float h) {
 		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
 		Vec3 rel = at.subtract(camera.position());
 		Vector3f v = new Vector3f((float) rel.x, (float) rel.y, (float) rel.z);
@@ -1211,12 +1315,17 @@ public final class HeroHud {
 	 * Hero mode's chat, as Overwatch's (the second critique: text about 18 px tall, at the left, its bottom near y
 	 * 700): Minecraft's chat scaled about its bottom-left corner (40 GUI units up from the screen's bottom).
 	 */
+	/** Hero chat's wrap width in chat units: about 360 reference pixels of text, to x 425 (the eighth critique). */
+	public static final int CHAT_WRAP = 147;
+
 	public static void chatPlace(GuiGraphicsExtractor g) {
 		float scale = scale(g.guiWidth(), g.guiHeight());
-		// a line is 9 GUI units: make it 18 reference pixels, never larger than Minecraft's own
-		float k = Math.min(1, 18 * scale / 9);
-		// in from the edge as Overwatch's (its lines start about 60-90 px in; ours were 8 px in, the fourth critique)
-		g.pose().translate(CHAT_LEFT * scale, (REF_H - 380) * scale + (g.guiHeight() - REF_H * scale));
+		// a line is 9 GUI units: make it 22 reference pixels, Overwatch's line pitch (the eighth critique), never larger
+		// than Minecraft's own
+		float k = Math.min(1, 22 * scale / 9);
+		// in from the edge as Overwatch's (its lines start about 60-90 px in; ours were 8 px in, the fourth critique), the
+		// newest line's baseline at about y 657 (the eighth critique: it sat about 40 px low)
+		g.pose().translate(CHAT_LEFT * scale, (REF_H - 423) * scale + (g.guiHeight() - REF_H * scale));
 		g.pose().scale(k, k);
 		g.pose().translate(0, -(g.guiHeight() - 40));
 	}
@@ -1237,12 +1346,13 @@ public final class HeroHud {
 		float y = cy - bh / 2;
 		int edge = tint != 0 ? tint : 0xCCE6EEF0;
 		if (inverted) {
-			fill(g, x, y, bw, bh, 0xF2EAEAE9);
+			// Overwatch's: #D6D9DD slightly see-through, rounded about 3 px, the letters #343639 (the eighth critique)
+			box(g, x, y, bw, bh, 0xEBD6D9DD);
 		} else {
 			fill(g, x, y, bw, bh, SHADE);
 			outline(g, x, y, bw, bh, 1.5f, edge);
 		}
-		HudText.draw(g, Face.SMALL, label, cx, cy + cap / 2, cap, inverted ? 0xFF111111 : edge, Align.CENTER);
+		HudText.draw(g, Face.SMALL, label, cx, cy + cap / 2, cap, inverted ? 0xFF343639 : edge, Align.CENTER);
 	}
 
 	/** A key's name as Overwatch writes it: LSHIFT, E, Q, SPACE, MOUSE4. */

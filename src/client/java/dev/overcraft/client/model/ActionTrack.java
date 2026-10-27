@@ -33,6 +33,8 @@ final class ActionTrack {
 	private float fadingOutFrom = -1;
 	private int kunaiThrows;
 	private float channelUntil = -1;
+	/** When the playing step was cut short (s), -1 if it wasn't: it holds that frame while fading out. */
+	private float cancelledAt = -1;
 
 	/** An action was triggered (by name, as the server sends them). */
 	void trigger(String action, float now) {
@@ -57,6 +59,12 @@ final class ActionTrack {
 			case "ult_cast" -> start(now, "ult_cast", "ult_cast_end");
 			// one clip (alias 0x004), the kunai's fresh fan (it was an ofuda throw's variant: #11)
 			case "reload" -> start(now, "reload");
+			// a reload cut short (a wall climb, #42): it fades out from where it is
+			case "reload_cancel" -> {
+				if ("reload".equals(current()) && cancelledAt < 0) {
+					cancelledAt = now;
+				}
+			}
 			default -> start(now, action);
 		}
 	}
@@ -65,6 +73,7 @@ final class ActionTrack {
 		steps.clear();
 		steps.addAll(List.of(names));
 		step = 0;
+		cancelledAt = -1;
 		stepStart = now + SWING_IN;
 		fromClip = null;
 		fadingOutFrom = -1;
@@ -125,6 +134,15 @@ final class ActionTrack {
 		}
 		float local = now - stepStart;
 		float weight = 1;
+		if (cancelledAt >= 0) {
+			local = cancelledAt - stepStart;
+			weight = 1 - (now - cancelledAt) / FADE;
+			if (weight <= 0) {
+				step = -1;
+				cancelledAt = -1;
+				return;
+			}
+		}
 		if (step == 0 && local < 0) {
 			// swinging in: ease from the movement pose to the clip's first frame
 			float in = 1 + local / SWING_IN;

@@ -4,6 +4,413 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-10-27
+
+### Build 0.3.10 (voice lines by Overwatch's rules, /giveult)
+The asset pack is unchanged (0.3.9's works).
+- **Voice lines by Overwatch's own rules, for every hero** (the owner: "automatic voice lines right next to each
+  other ... I believe overwatch has a cooldown"):
+  - **The data:** each moment's voice stimulus has its own cooldown range, priority and interrupt mode (5,117 read).
+    Examples: an elimination line at most every 15 s, multikill 15-20 s, healing 14-17 s, Swift Step and Suzu 10 s.
+    The game's automatic chatter can't interrupt; the communication wheel and pings can. There is no cooldown shared
+    by all lines in the data or in Blizzard's notes.
+  - **Now:** a line plays only once its moment's cooldown has passed and the hero isn't still speaking, unless it's
+    a wheel line or a ping, which cuts in.
+  - "Ult ready" is no longer said on its own when the ult fills: in Overwatch it's a wheel line.
+  - Played: the same script before and after (heal, Swift Step, Suzu, four quick kills with the ult at 95%). Before,
+    "ult ready" and the multikill came 0.9 s apart. After, the lines came 3-5 s apart, and none of them on top of
+    another.
+- **`/giveult [players] [percent]`** (op): fills an ult for testing; on its own, yours to 100% (the owner).
+- techniques: Domino cloth's physics sections decoded (model_data, cloth, kiriko_cloth).
+
+#### General play of `next` before 0.3.10 went to `main` (fresh client, fresh survival world "next0310", Normal)
+- **Joined:** Kiriko picked on join. The menu reads "OVERCRAFT 0.3.10 · ASSETS 0.3.9" (`g10_*`).
+- **Fight**, on a floor in the sky at night:
+  - five kunai took a helmeted zombie 20 -> 15.5 -> 11.0 -> 6.5 -> 2.0 -> dead (4.49 a hit through its armour), with
+    the kill feed and "Kiriko taunts";
+  - another zombie hit her 20 -> 17 -> 14 (37.5 each).
+- **Healing:** a villager from 8 to 17.6 under her ofuda ("Kiriko: Healing").
+- **Fox Cuddles from the wheel** (T, the right button, up).
+- **Killed** (`/kill`), respawned in hero mode. **Save and Leave, rejoin:** Kiriko, hero mode, ult kept.
+- **Minecraft mode (G):** three oak logs mined by hand; 12 planks; a crafting table, placed and opened; a chest from
+  it, placed; rotten flesh stored, closed, reopened: still there.
+- **A bed** placed and used; G back to hero mode; H by the bed: "NEAR YOUR BED: PICK A NEW HERO, OR ESC TO KEEP
+  YOURS"; READY: Kiriko. 91 fps.
+- **Not tried this time:** a second player, the Nether, boats.
+
+### Build 0.3.9 (emotes and her coat from the game data, ping callouts)
+Everything below since 0.3.8. **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.9):
+- the emote props are now named by their game ids: `py tools/build_asset_pack.py props <DataTool output>`;
+- her ping lines are new: `... sounds <DataTool output>`;
+- then `... zip`.
+
+An older pack still runs, without the props or the ping lines, and is flagged in game. The general play of `next`
+before the build is at the end of this entry.
+
+- **Her coat moves as Overwatch's does: placed by its hand-animated driver bones (the owner: "The cloth simulation is
+  super wonky ... I think the cloths are actually animated by hand too"):**
+  - **The data:** no clip keys her 278 `cloth_` bones (2, in every clip). Her model's Domino cloth places each one
+    from up to four driver bones with weights. The drivers are her body and 38 coat bones the clips key by hand
+    (all 38 in Kneeling and Fox Cuddles; most clips, run and strafe included).
+  - **The change:** `tools/cloth_data.py` (new) writes `assets/overcraft/cloth/kiriko.json`. `ClothSim` places each
+    cloth bone's rest transform through its drivers, as skinning places a vertex, instead of our free simulation
+    (now only the fallback for a model with no cloth data).
+  - **Played:**
+    - The owner was sent Kneeling and Fox Cuddles, before and after (front at 0.5-7 s, side, back): "spot on ...
+      perfect matches".
+    - In normal play from the front (`gp_cloth_*`): the coat hangs standing, streams back running, swings wide
+      strafing and hangs in front of her mid-jump, as each clip keys it.
+    - All 23 emotes re-shot (`ef8`).
+  - **Not in yet:** Domino's light physics on top (its settings are in sections not decoded yet). The coat follows
+    its drivers rigidly.
+- **Emote props from the game data (#4; the owner: "WHENEVER POSSIBLE, ALWAYS TRY TO USE THE REAL DATA"):** every
+  prop's placement, timing and motion now comes from Overwatch's own data, with no per-emote code. EMOTES.md has the
+  rules; TECHNIQUES.md has how the data was read.
+  - **What's read:** each of her emote clips names an animation effect listing what it spawns: which prop, on which
+    hardpoint, from when to when in the clip, its own clip, and whether it's thrown. `tools/emote_data.py` (new)
+    writes `assets/overcraft/emotes/kiriko.json`. `EmoteProps` plays it: a prop shows in its window, on its hardpoint
+    (a bone of hers plus the model's offset), playing its clip at her clip's time, and a thrown one falls when its
+    window ends.
+  - **What changed from the version placed by eye (the entry that was here):**
+    - The skateboard rides under her feet. Her clips move the board's hardpoint bone there.
+    - The cat walks in and settles in her lap, with no root-motion shift.
+    - The donut is gone at 1.0 s, as she pops it in her mouth (3.3 cm from it then).
+    - The pod robot flies in to be patted and flies off, with no lift.
+    - The fox plays its outro clip too.
+    - Whirlwind's swirl of ofuda papers is in.
+    - The wrist "quarter turn" was Blender's bone convention, not the data: removed.
+  - **One correction to the data's borrowed hardpoint, checked by contact:** her model lacks the standard weapon
+    hardpoint 000A, and Lúcio's copy (turned 180 degrees) held the bubble tea upside down. On the bone itself, the
+    straw reaches 3 cm from her mouth at her sip, 7.27 s into the ride (`tools/emote_contacts.py`, new).
+  - **The umbrella's hardpoint (02A9) is in no extracted model:** inferred from her clip and labelled so in the data
+    file.
+  - **The pack:** `build_asset_pack.py props` exports every prop the data names, as `hero_models/prop_<id>.glb`.
+    Rebuild the pack's props.
+  - **Harness:** `emoteat <s>` holds every emote at a time, for exact frames; `reload` reloads resources; `state`
+    reports the emote clip playing. The live `prop` placement command is gone.
+  - Played (dev client, a stone platform, every emote held at 0.3/0.7/1.2/2 s, side and back, 3.5/5.5 s:
+    `emote_frames.sh`):
+    - The board under her feet, the cat in her lap under her hands, the umbrella by its handle, the pod patted, the fox
+      hugged, the donut gone at 1.0 s, the mic down beside her.
+    - The tea upside down before the contact check, then upright with the straw in her mouth at 7.27 s.
+    - The owner was sent the before/after.
+- **Her weapons in emotes, from the GeoSetFlags (a critique of all 23 found kunai in her mouth in Laugh, kunai a metre
+  away and an ofuda in the sky in Listen Up and Salty, an ofuda through Cheer's heart-hands):** each clip's
+  GeoSetFlags (her blend tree's per-clip pose data, read by `tools/emote_data.py`) now hide her ofuda, Suzu and kunai
+  when Overwatch does.
+  - Kneeling sheathes the kunai at about 1.6 s.
+  - Laugh's kunai is gone.
+  - Sign: Thanks shows what it is, sign language, without a stray ofuda.
+  - Partial clips (Listen Up, Salty, Mic Drop) play over the pose under them, so the bones they don't drive (her
+    weapons) stay in her hands instead of at her feet.
+  - A weapon piece no wrist holds in a clip with no flags (Listen Up's and Salty's parked ofuda) isn't drawn: ours,
+    until their hand layers are read.
+  - Played: those emotes before and after, frame by frame.
+- **Her coat in emotes:** the coat simulation restarted every frame of an emote (its time came from a clock another
+  pose call had already advanced), so it never fell or folded; it has its own clock now. With it moving, the floor
+  constraint holds it on the floor.
+  - Measured (dev `state` clothLowest, `clothfloor on|off`): Kneeling, Friendly Kitty and Fox Cuddles put the coat
+    0.50, 0.66 and 0.54 m under the floor with the constraint off, and 0.02 m (on it) with it on.
+  - Before the clock fix the reading never moved (no simulation at all).
+- **Pings call out (#40):** her ping lines from the game data, heard by her team.
+  - A ping on a spot: "Over there!"
+  - On an enemy: "Enemy here" (or "Got one here", "Enemy spotted").
+  - A double press's warning: "Heads up!" (or "Watch here", "Keep an eye out"). It cuts the first press's line
+    short.
+  - At most one line a second.
+  - Played with subtitles on (`ping_test`, `ping_warn2`): "Kiriko: Enemy here" on a zombie, "Kiriko: Over there!" on
+    the floor, and a double press showed the red warning and "Kiriko warns". Needs the pack's sounds rebuilt.
+- **Player chat as Overwatch's match chat in hero view (round 8 #5's rest):** "NAME (Hero): text" where Minecraft
+  writes "<NAME> text", as callouts already read; plain player chat only (not /say, /me, whispers, team messages), the
+  hero when the sender is loaded with one picked. Lines keep the form they arrived in. Played: "Kiriko (Kiriko): Group up
+  at the gate" in hero mode, "<Kiriko> now in minecraft mode" in Minecraft mode, both kept after switching back
+  (`chatf`); on LAN the second client's message showed as "Viewer (Kiriko): hello from the viewer" on the host
+  (`mpc`), and the Viewer saw the host's Skateboard and Donut Break props (`mpc2`). Harness: `chat <text>`.
+- **Emote props (#4: "the bike, the skateboard... aren't in yet"):** Donut Break and Sweet Treat hold Overwatch's
+  donut, Mic Drop the mic, Skateboard the board under one arm and a bubble tea in the other hand, each on her hand's
+  weapon bone so her own emote clip moves it; her kunai and ofuda are put away meanwhile. The props are Overwatch's own
+  models from the player's pack: `py tools/build_asset_pack.py props <DataTool output>` (new; the 0.3.7 pack works,
+  just without props). Found by rendering every emote's models (`tools/owm_previews.py`): ten emotes carry models,
+  these four are held props; the rest are effect cards and cones (Whirlwind, Rainy Stroll's umbrella and Friendly
+  Kitty's cat, which move by clips of their own, are next). Played: all four from the wheel, two moments each (`pe`,
+  `st`, `pr1z`); before the weapons were put away the donut sat beside her ofuda (`pr1z`), and Mic Drop's mic was in
+  the wrong hand at first (`md`).
+- **Smoother HUD text** (round 8 #7's rest, "the jagged glyph edges"): Minecraft samples every font texture nearest,
+  for its pixel font; the HUD draws Overwatch's faces shrunk about 2x from their raster, and nearest sampling left
+  stair steps on their diagonals. The HUD's fonts (`overcraft:hud*` only) are now sampled linearly
+  (`HudFontTextureMixin`). Played: the HUD name and key labels at 10x before and after (`font_before`, `font_after`:
+  the edge pixels changed, the stair steps softened); the Options title, tabs and ult icon at 3x (`font_opts`): crisp,
+  not blurred. Minecraft's own text is untouched.
+
+#### General play of `next` before 0.3.9 went to `main` (fresh client, fresh survival world "next039", Normal, 1920x1080)
+- **Joined:** Kiriko picked on the select screen (`g9_00_select`, `g9_01_joined`: 250/250, ult 0). The pause menu
+  reads "OVERCRAFT 0.3.9 · ASSETS 0.3.9" (`g9_14_menu`).
+- **Fights and deaths** (`g9_02`-`g9_08`):
+  - A helmeted zombie hit her for 3 health each (37.5 of 250), down to 0. She died to it twice, once off the edge of
+    a floor ("doomed to fall"), and drowned once in Minecraft mode. Each respawn was in hero mode, health full, ult
+    kept.
+  - On a still zombie, kunai took it 20 -> 15.5 -> 11.0 -> 6.5 -> 2.0, then dead on the fifth: 60 damage (4.8), less
+    its armour (2 natural + 2 helmet) by vanilla's formula, 4.49 exactly. Kill feed "KIRIKO > ZOMBIE", ult to 58%.
+  - Two harness traps on the way, not the mod: `tp ... facing` doesn't steer the client's aim (the kunai went at the
+    sky), and `primary_fire` is her ofuda (the right button), her kunai `secondary_fire`.
+- **Healing:** a villager hurt to 8, held ofuda on it: 17.6.
+- **Emote from the wheel:** T held, the right button to its emotes, the mouse up to Fox Cuddles, T released. The
+  camera swung round, she knelt and hugged the fox, and the coat lay as its drivers place it (`g9_10`-`g9_13`).
+- **Save and Leave, rejoin:** the select screen on join ("ESC KEEP HERO"), Esc: Kiriko, hero mode, ult 80% kept
+  (`g9_15`, `g9_16`).
+- **Minecraft mode (G) at a player's pace** (`g9_17`-`g9_32`):
+  - three oak logs mined by hand, picked up;
+  - 12 planks from the inventory's 2x2 grid; a crafting table; placed and opened;
+  - a chest from the 3x3 ring; placed; two eggs put in; closed, reopened: still there;
+  - her own arm held the crafting table; eggs thrown with the use key.
+- **Changing hero mid-game:** a bed placed and used ("Respawn point set"), G to hero mode, H: "NEAR YOUR BED: PICK A
+  NEW HERO, OR ESC TO KEEP YOURS", READY: Kiriko again (`g9_33`-`g9_36`). 74 fps.
+- **Not tried this time:** a second player on LAN (last played for 0.3.8's chat and emote props), the Nether, boats.
+
+### Build 0.3.8 (the owner's answers: notable pings, body shadow, her arms in Minecraft mode; the two batches below)
+Both batches since 0.3.7, below. The asset pack is unchanged (0.3.7's works). Play of `next` before the build: at the
+end of this entry.
+
+#### Second batch
+- **Pings on notable things (#40, the owner: "dropped items, villagers, structures (unless you're close/inside
+  them), etc."):** a blue ring with the thing's icon and its name under it, the distance over it, your own with
+  "CANCEL [key]"; teammates see it too, by name even when too far away to have the thing loaded. Dropped items (their
+  icon and count, followed, gone when picked up), creatures that aren't enemies (villagers by trade, pets, animals,
+  golems, a mob face or spawn egg; followed), vehicles, notable blocks (chests, barrels, shulker boxes, ores,
+  spawners, vaults, portals, beds, workstations, beacons, bells, suspicious sand: the `overcraft:notable_pings` block
+  tag, data-pack extendable), and generated structures seen from outside them (the server knows structures: a spot on
+  or within 2 blocks of a structure's piece, with the pinger more than 24 blocks out of its bounds, is that
+  structure's ping: "VILLAGE" with a bell, "STRONGHOLD" with an eye of ender, every vanilla structure named). Within
+  24 blocks of one, or inside, a spot is a spot. Pinged things get an outline in their ping's colour. Ping reach 120 to
+  256 m; enemies are hostile mobs, enemy players and mobs after a player (a cow is a notable thing, not an enemy). The
+  enemy marker shows the mob's face where there is one (it showed an initial). Picking is a cone round the crosshair,
+  wider for enemies (Overwatch's pings are "more sensitive to heroes than objects", the wiki), capped far away (a
+  village ping took a cow by the house aimed at). Double press 0.4 to 0.35 s (Overwatch's default, the wiki).
+- **Ping key:** Overwatch PC's defaults are middle mouse and G; G is the hero mode key here, so middle mouse,
+  rebindable (Options > Controls > Ping), as it was.
+- **No reload bar (the owner: Overwatch shows only "13|15" until the ammo is back):** the weapon panel's white fill
+  and the dimmed count are gone; the count jumps when the ammo returns. The ammo point is the game data's (her weapon
+  graph 0x2171 waits reload time x 0.65, then the rest of the animation: 0.845 of 1.3 s), matching the patch notes.
+- **Hero mode health:** a full food bar no longer heals a hero on top of Overwatch's own passive healing (the
+  `naturalRegeneration` rule as the hero's food tick reads it).
+- **Her body casts its shadow (the owner's answer to #11):** the sun's (the moon's at night) direction, no lower than
+  40 degrees, straight down out of the sky's light; laid on the ground under her, step by step (a shadow over a ledge
+  stops at its edge), fading as she rises; no blob under her. Drawn once wherever its triangles overlap (two passes:
+  mark, then darken; one pass speckled), from a coarser copy of her mesh: 0.45 ms a frame (84 to 80 FPS here), where
+  her full mesh twice cost 6 ms (84 to 47).
+- **Her arms in Minecraft mode (the owner: "Kiri's actual arms, but have kunai replaced with the block/item she is
+  holding"):** her view model, props put away, the main hand's item gripped in her kunai hand and the off hand's in
+  her ofuda hand (the owner's idea too: a shield, food, a torch there), each as Minecraft's players hold theirs (the
+  third-person grip) on her hand bone, so a swing moves it; no bigger on screen than her kunai (a shield or a block
+  less). A swing (attack, mine, place) turns her arm in a chop toward the crosshair. Eating, drinking, a drawn bow,
+  a raised shield, a map, a loaded crossbow, the spyglass: Minecraft's own animation, her arms back after. A setting,
+  **Options > HERO > Hero arms in Minecraft mode** (on by default), gives Minecraft's arm in her colours instead.
+- **First-person arms 1.1 to 1.4 times their size** (the owner's screenshot at Overwatch's FOV 103, default weapons:
+  the ofuda fingertip, kunai tip and kunai hand all sat about 1.27 times as far from the middle there).
+- **Talisman paper white (the owner: "the same color as the white base of the ofuda texture"):** Blizzard's baked
+  shade taken out of both faces as the model loads (each row's paper brought to the plain paper above the seal; ink,
+  seal and grain kept): the backs read as white paper, not grey slabs. Only on the player's machine, from their pack.
+- **The perk choice in Overwatch's layout** (the owner's screenshot, measured): two black discs under the crosshair on
+  a dark band, an orange bracket round each one's outer side, its mouse button under it, the name in orange and the
+  text in a navy box beside it.
+- **The emote ends on any movement key** (it ended only when she moved: walking into a wall kept her kneeling), for
+  everyone watching; the orbit starts from the side with room (facing a wall, it was squeezed against her face).
+- **F5 can't reach first person during an emote**, now at the source (Options.setCameraType): putting it back each
+  tick left first-person frames between the key and the next tick (counted: 146 frames in 18 presses with the hold
+  off, 0 with it on).
+- **The Options list scrolls** above ESC BACK and RESTORE DEFAULTS (its last rows, CHANGE HERO and MINECRAFT MODE, ran
+  under them at 1080p), with a scrollbar.
+- Harness: `scroll`, `emotef5 on|off`, `shadows on|off`, `swing`, `held`, `heldmax`, `heldscale`; `state` gives the
+  first-person frames counted during emotes; `timing` gives the shadow's share.
+
+Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
+- Pings, creative, a plains village: from 100-142 m a house: "VILLAGE" with the bell (`ping_vil_05`); from inside the
+  village, a house: a plain spot (`ping_in_05`); on a platform: a dropped diamond ("DIAMOND X3", followed), a librarian
+  (her face, "LIBRARIAN"), a zombie (red, its face), a cow ("COW", blue), a chest, diamond ore (`plat_sheet`); double
+  press: the warning; the item killed: its ping gone (`crops2`); pinging my own chest ping again: cancelled
+  (`cancel_sheet`). Rebound to P on the Options screen: P pinged, the label read "CANCEL P" (`crops4`); back to the
+  middle button, saved. A fresh generated world: a real village 96 m off over the water: "VILLAGE" (`hp_04_vping`).
+- LAN, a second client ("Viewer", Kiriko): the host's librarian ping showed on the Viewer's screen (pinned to its
+  edge when facing away, `mp1`; in view, `mp_view_02`); 150 m away, out of the item's tracking range: "DIAMOND" at
+  127 m by name (`mp3`). The host knelt; the Viewer saw the kneel, and on the host's G saw her stand (`emo2`).
+- Emotes: in a sealed pool on the bottom, in one-block water (the Viewer saw it, W ended it), on a stair step (the
+  orbit from the front, `water2`, `water3`, `stair`); facing a wall: the orbit from the side, W into the wall ended it
+  (`wall`). F5 x6 during three emotes, twice: the orbit held every time (counts above).
+- Health: hero mode, full food, 6 damage: held 14 for 4.5 s, then Overwatch's regen to 20 in 3 s; Minecraft mode:
+  15-20 in 2.5 s, as vanilla.
+- Reload: 3 kunai, R: "12|15" white through 0.8 s, "15|15" at 1.05 s, no bar (`rl_crops`).
+- Shadow: morning, noon, afternoon (`shadow1`), at a ledge (stops at the edge), from a stair, at night, under a roof
+  (`sh2b`, `sh_cases`); speckled before the two passes (`shadow_zoom`), even after (`shadow_zoom2`, `sh3z`).
+- Her Minecraft-mode arms: every item tried both hands: sword + shield, torch + bread, bow + apple, stone + torch,
+  pickaxe + planks, steak + totem (`hd`); a pickaxe mining sand and planks placed (`hp_mc`); eating bread and raising a
+  shield: Minecraft's animation, then her arms; the sword's swing frame by frame (`swing2`, `swing3`); the setting off:
+  Minecraft's arm and sword; on again: hers (`set34`), saved.
+- Perks: `/overcraft perks @s 2`, LALT: the new layout (`perk_ours`), LALT + left click took Urgent Care (`perk_picked`).
+- The paper on the select screen, before and after (`sel_paper_before`, `paper_after`).
+- The whole build in a fresh survival world: join, a zombie killed with kunai (kill feed, `hp_02_fight`), Hunger 255:
+  held at 8, a chest opened with F in hero mode and right click in Minecraft mode, killed and respawned in hero mode
+  (`hp_die`), saved and left, rejoined: still Kiriko, ammo kept (`rj`), a skeleton at night (she took arrows, 16 to
+  9.6, and killed it).
+- The real mouse: the game window still can't be brought forward from here (the harness's mouse goes through
+  Minecraft's own turnPlayer). The F5 frame seen once last batch: reproduced and fixed (above).
+
+#### General play of `next` before 0.3.8 went to `main` (fresh survival world "next038", normal terrain, 1920x1080)
+- Joined, Kiriko picked from the select screen (`n_00_join`). A helmeted zombie on a stone platform at sea: it hit her
+  once (250 to 200), three kunai killed it, kill feed and ELIMINATED (`n_01f_fight`). (Two earlier zombies by the
+  spawn village were killed by its iron golem and one burned in the sun: moved out to sea for a clean fight.)
+- Healing: a villager hurt to 8, held Healing Ofuda on it: 17.6 (`n_02_heal`).
+- Minecraft mode at a player's pace, empty inventory: punched three oak logs down by hand, picked them up; the
+  inventory's 2x2 grid: 12 planks (`s_03_planks`), a crafting table (`s_04_table`); placed it, opened it, a chest from
+  the 3x3 ring (`s67`); placed the chest, put 3 cobblestone in, closed, reopened: still there, and the block data says
+  so (`s910`); two cobblestone placed stacked (both checked).
+- H by a bed that wasn't hers: "Go back to your bed to change heroes" (`n_03_h`); F on the bed: "Respawn point set";
+  H: the select screen; Kiriko again. Killed: the death screen, Respawn: at her bed, in hero mode, ult kept
+  (`n_07_bedrespawn`).
+- Save and leave, rejoin: the select screen on join as before, Esc: Kiriko, hero mode, ult still full
+  (`n_08_rejoin`). Kitsune Rush: the gates and the path; Protection Suzu: thrown, its cooldown 13 (`n3`).
+
+#### First batch (hunger, the emote camera, Heroic default)
+- **Hero chat's team channel icon** (round 8 #5's rest, the owner's frame `o2`): a team line (callouts, "Too many
+  messages!") starts with a three-person icon in team blue, its text after it; wrapped lines start under the text,
+  as Overwatch's do, where Minecraft indented them one space. The icon is ours (`tools/gen_chat_icons.py`, in the
+  jar's `font/chat_icons.json`): Overwatch's isn't in the UI texture dump (searched by shape against `o2`).
+  Measured at 1080p against `o2`: the icon 19 px wide (theirs 19), 12 tall (13), 2-3 px right of theirs; the text at
+  x 89-90 (90). The first try drew the icon as boxes: the hero chat face was forced onto every glyph
+  (ChatLinesMixin now replaces only the default font). Played: five T taps and a long `/say` in a fresh world
+  (`chaticon_1080`, `chaticon2_1080`, `chaticon3_1080`); plain orange lines wrap flush, no icon.
+- TECHNIQUES.md: tonight's lessons (emote clip chaining, Fabric's info bar halves, outlines for custom geometry,
+  glyph fonts in chat, harness buttons and timing).
+- **Hunger in hero mode (#43, the owner's call 2026-10-27):** it burns as in Minecraft down to 4 of the bar's 10 (8
+  food points) and no further, so a hero never starves under the hidden food bar. A hero already below that (hungry
+  when they switched with G) stays where they are and doesn't starve. Minecraft mode and eating are Minecraft's.
+  (Minecraft's own regeneration on top: turned off in the batch above.)
+- **The emote camera orbits (the owner: Overwatch's camera turns freely while emoting):** the view pulls out of her
+  eyes and swings round to her front over half a second (2.5 blocks out, round her middle, from a little above), and
+  the mouse then turns it all round her and over and under her (-60 to 80 degrees), pulled in where a block's in the
+  way as Minecraft's third person is. Her aim, and how everyone sees her, don't move; the emote over, the view is back
+  in her eyes looking where she looked, in the view she had (F5's comes back). She isn't drawn while the camera's still
+  inside her head (her ofuda filled the first frames), and the crosshair and ofuda counter only show in first person,
+  as Minecraft's crosshair (they sat on her belly). Switching modes with G ends an emote on every screen (she knelt on
+  in Minecraft mode, the camera still orbiting). F5 mid-emote can't take the view into first person (it would leave
+  the orbit with nobody drawn in it); the emote over, the view F5 left is back.
+- **Heroic is the only emote equipped by default** (the owner); the other three slots start empty.
+- Harness: `mouse` goes through Minecraft's own `MouseHandler.turnPlayer` (`MouseHandlerInvoker`), so the wheel's
+  pointer, the emote camera and the view turn the real way; `state` gives the emote camera, food and saturation.
+
+Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
+- Emotes, survival jungle: the wheel's emote page shows HEROIC up and three empty slots (`emotecam_01_wheel_default`);
+  Heroic: first person, then her back, her side, her front, no frame inside her (`emotecam2_swing_steps`); the mouse
+  took the camera to her right, her back, under her (`emotecam_sheet_orbit`), her yaw 0 throughout; the emote over,
+  first person at yaw 0 pitch 0 with the crosshair back (`emotecam2_end`, `end_02_centre`). The loadout's Emotes tab:
+  HEROIC and three "-"; Kneeling put on the right slot and saved (`lo_03_emotes`). Kneeling looped 5 s with the camera
+  orbited, then W: first person, she walked along her own facing (`emotecam2_kneel`). From F5: the emote, then F5's
+  view back (`emotecam2_f5`). In a leafy jungle canopy the camera's pulled in to her waist by the leaves in front, as
+  Minecraft's F5 is against a wall: left as is. G while kneeling (`g_01_after_g` before the fix, `g2_01_after_g`
+  after): the emote ends, first person, the mouse turns her again. F5 three times mid-kneel: the orbit view stays at
+  every press (`f5d_sheet`, `f5b_sheet`); once, in a world just made, one frame between presses showed first person
+  with the orbit's angle (`f5mid_sheet`), not seen again in two repeats.
+- Hunger, Normal: Hunger 255 in hero mode took the bar 20 to 8 in 2 s and held it at 8 for 14 s; G to Minecraft mode:
+  on to 0, starving a point every 4 s (20 to 15, timed); G back at 0: no starving for 20 s, Overwatch's regeneration
+  healing to full 6 s after the last hit. Four bread in Minecraft mode: 0 to 20; G and Hunger 255 again: 20 to 8 and
+  held (`hunger_02_ate_minecraft_mode`, `hunger_03_hero_floor_8`).
+- A fight at night on a flat world: kneeling, a zombie walked up and hit her, its knockback ended the emote (camera
+  back); she died to it once doing nothing, respawned, and killed the next with kunai (kill feed and ELIMINATED,
+  `fight4_01_after`). Two earlier deaths were my own: a `/fill` that cleared the blocks under her before the floor
+  went in ("standing on air"), then a respawn over the same hole.
+- Not tried: a second player watching an emote end on G (the end goes out the same way an emote's start does, which
+  was played on LAN), the real mouse (the desktop couldn't bring the game window forward; the harness's `mouse` now
+  goes through Minecraft's own turnPlayer instead), emoting in water or on a slope.
+
+### Build 0.3.7 (the communication wheel, pings, emotes; Kiriko's HUD to the owner's frames)
+Needs the asset pack rebuilt (`build_asset_pack.py sounds`, `fonts`, and Kiriko's model with her emotes:
+`tools/owm_survey.py ... --glb --keep=tools/clipmaps/kiriko.txt --emotes=<extracted>/Unlocks/Heroes/Kiriko/Emote`,
+after DataTool's `extract-unlocks <out>/Unlocks "Kiriko|voiceline=*"` and `"Kiriko|emote=*"`).
+- **The communication wheel (#3), for every hero** (`dev.overcraft.comms`, `tools/reference/comms-plan.md`, the
+  owner's spec and screenshots in `comms-reference.md`):
+  - Hold T: the view dims, eight callouts round a ring (NO, HELLO, NEED HEALING/HELP, GROUP UP, ULTIMATE STATUS, NEED
+    HELP, SORRY, THANKS), the VOICE LINES / EMOTES tabs at the sides. The mouse moves a pointer, not the view; release
+    T to play the callout under it, nothing from the centre. A quick tap of T: "Good job".
+  - A callout: a team-blue chat line ("Kiriko (Kiriko): I need healing!") to teammates at any distance, and the
+    hero's own line in the world (her set: No, Hello, Healing, Group Up, Assistance Required, Sorry, Thanks; the
+    ult's Charging / Almost Ready / Ready with the charge in chat). Four in 8 s, then "Too many messages!".
+  - In hero mode chat moves to Enter (Overwatch's), T being the wheel's.
+- **Voice lines (#5):** DataTool's voice-line unlocks by name (41 for Kiriko, "Tarot Reading" with all its cards);
+  the wheel's voice page (left click while holding T): the four equipped at the compass points; VOICE LINES in the
+  Overwatch menu equips them (right click: hear one).
+- **Emotes (#4):** her 23 emotes from DataTool's emote unlocks, exported onto her model; the wheel's emote page (right
+  click); the same screen's Emotes tab equips four. The view goes to third person meanwhile. Their props (the bike,
+  the skateboard...) aren't in yet.
+  - How they play is found from the clips' poses (`EmotePlan`): a one-shot (Cheer, Laugh, Heroic, Thanks...) starts
+    and ends in her stance, plays once, and she's back in first person; a dance or a kneel goes in, then loops its
+    loop until she moves or acts. The first try played every clip of an emote in id order, the last looping: that
+    order holds Overwatch's additive layers and the prop's own clips, so after Cheer she sank to the waist with her
+    arms out, for good (found playing on LAN: the second player saw it too).
+- **Heroes get outlines:** a hero pinged as an enemy got the red ring but no red outline (found on LAN: our hero models
+  are custom geometry, which has no outline of its own), and the Glowing effect or a spectator's view didn't outline
+  them either. Their shape now goes into Minecraft's outline pass as vanilla's dragon fireball does.
+- The Emotes tab's hint no longer offers "right click: hear it", and "ISN'T THIS FUN" has its apostrophe back.
+- **Minecraft's locator bar is hidden in hero mode** with the rest of its bars: each other player's dot (a pink or
+  team-coloured square beside the ult meter, found on LAN) came from the info bar's foreground, which Fabric names
+  apart from the bar.
+- **Played on LAN with a second client** (before the fixes above, then again after): callouts reach teammates and
+  not the other team, both ways (Red vs no team, then both teamless); pings and emotes seen by the other player; an
+  enemy ping on a player (ring, portrait, "KIRIKO", now the outline); Cheer, Heroic, Choreography, Orion Dance and
+  Kneeling watched from the other client (`fix_v_*`, `out_*`).
+- **General play of `next` before main** (fresh client, fresh survival world, savanna, Normal; `gp_*`): picked
+  Kiriko on the select screen; at night zombies hit 3 a hit and skeleton arrows 2 to 4, the night swarm killed her
+  twice (death screen, respawn with the kit and ult kept); kunai 60 a hit, quick melee 40 (39 through a zombie's
+  armour), reload 11 to 15; Protection Suzu heals her 80 at her feet and forward (two misses at first were the
+  harness turning the view and throwing in the same tick: the server threw at the old pitch); Healing Ofuda on a
+  hurt villager 10 to 19.6; Swift Step to it (7 s cooldown); Kitsune Rush cast with its torii gates; wall climb up
+  a 7-high wall, cancelling a reload (ammo stayed 10); swimming; a minor perk picked with the click throwing
+  nothing; T tap "Good job", a ping; Save and Leave, rejoin through the select screen. Minecraft mode (G): punched
+  acacia logs and dirt by hand, crafted planks, a crafting table and a chest by clicking the grids, placed them,
+  pillared out of a hole with dirt, stored logs in the chest and found them there on reopening; G back to hero
+  mode; H away from a bed: "Go back to your bed to change heroes".
+  Not tried this time: a tamed wolf as the ally, lava, ladders, boats, the Nether, eating. Seen once and not
+  reproduced: 112 HP lost between leaving a pool and opening the perk menu (no damage message; the same steps
+  again lost nothing). Found: vanilla's saturation regeneration and hunger still run in hero mode with the food bar
+  hidden (#43).
+- **Pings (#40):** the middle button pings the spot under the crosshair (a blue diamond, its distance, your own with
+  a leader line to "CANCEL [key]"); a double click makes it a warning (a red circle); an enemy gets a red ring that
+  follows them with their portrait (a mob: its initial) and name, and a red outline. Teammates see them. Aiming at
+  your own and pressing again takes it down.
+- **Kiriko's HUD to the owner's own Overwatch frames** (critique round 8, `critique-2026-10-27-round8.md`): the health
+  block's position, pips, "+" box, level box and plate; the portrait's glowing border; the weapon panels; the mouse
+  icon; the ult meter's inner ring and number; text without offset shadows; the volley bar; the ability icons.
+  Hero chat in Overwatch's chat face (BlizzardGlobal), wrapping as Overwatch's does. The perk-waiting state is
+  Overwatch's orange "[LALT] SELECT PERK" bar.
+- **#9 closed:** death, deep water, the climb's top, the ability clips all play.
+- Played through the dev harness (captures `wheel_*`, `loadout_*`, `ping_*`, `r8after_*`, `chatwrap2`). Not yet:
+  real mouse and keys, a second player receiving callouts and pings, the first-person hands (round 8 #1: waiting on
+  the owner's screenshot with the default weapons).
+
+### Build 0.3.6 (the owner's night list, Kiriko first)
+- **Suzu: no gold ring on the ground (#22).** The owner: "the golden ring *shouldn't* be in this, since there is not
+  that in ow". The game data has a 5 s gold ring decal (6089) but Overwatch shows none in play; gone. The burst itself
+  stays (the white-blue wave on the ground, the flower, the glow on those it touches).
+  - Before (`suzu_ring_old_1s`, `_3s`): a gold ring round the villager at 1 s and 3 s. After (`suzu_new_*`,
+    `suzu_frames`, frozen and stepped 2 ticks at a time): the burst, then nothing on the ground.
+- **Perks also come passively, a point a second** (the owner: "1 point a second if nothing is being done. But
+  naturally, killing should be much much faster"): a zombie's 250 points are four minutes of it. Played: 20.2 points
+  in 20 s standing still.
+- **Changing teams** (the owner: "a good easy way for players to change teams" and a game rule for non-operators,
+  on by default):
+  - CHANGE TEAM in the Overwatch menu: No team (everyone together), Blue, Red (made on first use, friendly fire off,
+    as in Overwatch) and any other scoreboard team; yours marked. `/overcraft team join <team>` / `leave` too.
+  - `/gamerule overcraft:allow_team_change` (default true): off, only operators may change teams.
+  - `/overcraft`'s other commands are still for operators only.
+  - Played: the menu and picker (`team_menu`, `team_screen`), Red then Blue by menu and command (the scoreboard
+    agrees). A second client (Viewer, not an operator, LAN without commands): joined Blue with the rule on;
+    `/overcraft reset` refused; with the rule off, both the command and the menu refused with the explanation in chat
+    (`viewer_team_refused`).
+- **A wall climb interrupts the kunai reload (#42, the owner).** Reproduced on 0.3.5: 3 kunai, R, a climb 0.1 s later:
+  the ammo came back (12 to 15) partway up the wall, the reload clip playing through the climb. Now the climb stops
+  it (the clip fades out, `reload_cancel`): 12 stay 12; an empty clip starts reloading again at the top (0 to 15
+  0.85 s after).
+- Pings, the communication wheel, voice lines, emotes and sprays: the owner's spec and screenshots are written up in
+  `tools/reference/comms-reference.md` (#3, #4, #5, #40 pings, #41 sprays).
+
 ## 2026-10-26
 
 ### Build 0.3.5

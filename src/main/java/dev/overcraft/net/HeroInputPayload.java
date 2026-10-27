@@ -14,6 +14,8 @@ public record HeroInputPayload(int held, int pressed) implements CustomPacketPay
 	public static final int HELD_SECONDARY = 2;
 	/** Riding a wall (Lúcio's Wall Ride: the client moves him; the server needs it for Soundwave Rider). */
 	public static final int HELD_WALL_RIDE = 4;
+	/** Climbing a wall (Kiriko: the client moves her; the climb interrupts a reload, #42). */
+	public static final int HELD_WALL_CLIMB = 8;
 
 	public static final int PRESS_ABILITY_1 = 1;
 	public static final int PRESS_ABILITY_2 = 2;

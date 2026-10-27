@@ -134,6 +134,8 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					out.addProperty("perkLevel", s.perkLevel());
+					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
@@ -142,6 +144,13 @@ public final class DevServer {
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
 					out.addProperty("anim", HeroAnimator.of(player).playing());
+					out.addProperty("clothLowest", dev.overcraft.client.model.ClothSim.devLowest);
+					out.addProperty("emoteClip", HeroAnimator.of(player).emoteClip());
+					out.addProperty("emoteClipAt", HeroAnimator.of(player).emoteAt());
+					out.addProperty("emoteCamera", dev.overcraft.client.comms.EmoteCamera.active());
+					out.addProperty("emoteFirstPersonFrames", dev.overcraft.client.comms.EmoteCamera.firstPersonFrames);
+					out.addProperty("food", player.getFoodData().getFoodLevel());
+					out.addProperty("saturation", player.getFoodData().getSaturationLevel());
 					out.addProperty("onFire", dev.overcraft.client.ClientHero.sync().onFire());
 					// where the first-person ofuda fingertip was last drawn, from the camera in the world's axes (the throw
 					// puff pops there)
@@ -198,6 +207,7 @@ public final class DevServer {
 				} else if (arg.equals("reset")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.pose = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.emit = 0;
+					dev.overcraft.client.model.HeroModelRenderer.Timing.shadow = 0;
 					timingSince = System.nanoTime();
 				} else {
 					double seconds = (System.nanoTime() - timingSince) / 1e9;
@@ -206,6 +216,7 @@ public final class DevServer {
 					out.addProperty("fps", fps);
 					out.addProperty("poseMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.pose / 1e6 / frames);
 					out.addProperty("emitMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.emit / 1e6 / frames);
+					out.addProperty("shadowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.shadow / 1e6 / frames);
 				}
 			}
 			case "connect" -> {
@@ -267,6 +278,33 @@ public final class DevServer {
 				player.setYHeadRot(yaw);
 				out.addProperty("ok", true);
 			}
+			case "emote" -> {
+				// dev only: "emote <id>": plays one of the hero's emotes as the wheel does (any of them, equipped or not)
+				net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(arg.trim()));
+				out.addProperty("ok", true);
+			}
+			case "clothfloor" -> {
+				// dev only: "clothfloor on|off": the cloth's floor constraint (off shows the coat under the floor it fixed)
+				dev.overcraft.client.model.ClothSim.devFloor = !arg.trim().equals("off");
+				out.addProperty("clothFloor", dev.overcraft.client.model.ClothSim.devFloor);
+			}
+			case "reload" -> {
+				// dev only: reloads the resource packs (F3+T): a regenerated emote data file or pack model without a restart
+				mc.reloadResourcePacks();
+				out.addProperty("ok", true);
+			}
+			case "emoteat" -> {
+				// dev only: "emoteat <seconds>": holds every emote at that time into it, to look at exact frames (the
+				// emote data's prop windows); "emoteat off" lets them play again
+				String a = arg.trim();
+				dev.overcraft.client.model.HeroAnimator.devEmoteAt = a.equals("off") ? -1 : Float.parseFloat(a);
+				out.addProperty("emoteAt", dev.overcraft.client.model.HeroAnimator.devEmoteAt);
+			}
+			case "chat" -> {
+				// a chat message as typed in the chat box ("chat hello there"), signed and sent as Minecraft sends it
+				player.connection.sendChat(arg);
+				out.addProperty("ok", true);
+			}
 			case "cmd" -> {
 				player.connection.sendCommand(arg.startsWith("/") ? arg.substring(1) : arg);
 				out.addProperty("ok", true);
@@ -317,6 +355,57 @@ public final class DevServer {
 					}
 				}
 				out.addProperty("screen", mc.gui.screen() == null ? "" : mc.gui.screen().getClass().getSimpleName());
+			}
+			case "swing" -> {
+				// dev only: "swing ax ay az degrees [hold]": Minecraft mode's arm swing with her arms (hold: stop it there)
+				String[] a = arg.trim().split(" ");
+				for (int i = 0; i < a.length && i < 5; i++) {
+					dev.overcraft.client.model.HeroAnimator.SWING[i] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("swing", java.util.Arrays.toString(dev.overcraft.client.model.HeroAnimator.SWING));
+			}
+			case "held" -> {
+				// dev only: "held kunai|ofuda rx ry rz tx ty tz lift": how Minecraft mode's held items sit in her fists
+				String[] a = arg.trim().split(" ");
+				float[] held = a[0].equals("ofuda") ? dev.overcraft.client.model.HeroModelRenderer.HELD_OFUDA
+					: dev.overcraft.client.model.HeroModelRenderer.HELD_KUNAI;
+				for (int i = 1; i < a.length && i <= 7; i++) {
+					held[i - 1] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("held", java.util.Arrays.toString(held));
+			}
+			case "heldmax" -> {
+				// "heldmax [kunaiFlat kunaiSolid ofudaFlat ofudaSolid]"
+				String[] a = arg.trim().split(" ");
+				for (int i = 0; i < a.length && i < 4 && !a[i].isEmpty(); i++) {
+					dev.overcraft.client.model.HeroModelRenderer.HELD_MAX[i] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("sizes", dev.overcraft.client.model.HeroModelRenderer.heldSizes.toString());
+			}
+			case "heldscale" -> {
+				// "heldscale kunai ofuda"
+				String[] a = arg.trim().split(" ");
+				for (int i = 0; i < a.length && i < 2 && !a[i].isEmpty(); i++) {
+					dev.overcraft.client.model.HeroModelRenderer.HELD_SCALE[i] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("scale", java.util.Arrays.toString(dev.overcraft.client.model.HeroModelRenderer.HELD_SCALE));
+			}
+			case "shadows" -> {
+				// "shadows on|off": Minecraft's entity shadows option (hers among them), to compare frame times
+				mc.options.entityShadows().set(!arg.trim().equals("off"));
+				out.addProperty("shadows", mc.options.entityShadows().get());
+			}
+			case "emotef5" -> {
+				// "emotef5 on|off": whether F5 is held out of first person during an emote (off shows what it fixes)
+				dev.overcraft.client.comms.EmoteCamera.holdF5 = !arg.trim().equals("off");
+				out.addProperty("holdF5", dev.overcraft.client.comms.EmoteCamera.holdF5);
+			}
+			case "scroll" -> {
+				// the mouse wheel over the open screen at GUI coordinates, as MouseHandler hands it on: "scroll 120 80 -3"
+				String[] a = arg.split(" ");
+				boolean done = mc.gui.screen() != null && mc.gui.screen().mouseScrolled(Double.parseDouble(a[0]),
+					Double.parseDouble(a[1]), 0, Double.parseDouble(a[2]));
+				out.addProperty("ok", done);
 			}
 			case "hover" -> {
 				// puts the game's cursor at GUI coordinates, for hover states, without moving the real mouse: "hover 120 80"
@@ -422,6 +511,19 @@ public final class DevServer {
 					}
 				}
 				out.addProperty("files", String.join(", ", files));
+			}
+			case "mouse" -> {
+				// dev only: mouse movement in pixels, handed to Minecraft's own MouseHandler.turnPlayer as if the window had
+				// it (Minecraft only reads the mouse while its window has it, which the harness's window often doesn't): the
+				// communication wheel's pointer while it's open, the emote camera while emoting, else the view
+				String[] a = arg.split(" ");
+				var mouse = (dev.overcraft.client.mixin.MouseHandlerInvoker) mc.mouseHandler;
+				mouse.overcraft$setAccumulatedDX(Double.parseDouble(a[0]));
+				mouse.overcraft$setAccumulatedDY(Double.parseDouble(a[1]));
+				mouse.overcraft$turnPlayer(0);
+				mouse.overcraft$setAccumulatedDX(0);
+				mouse.overcraft$setAccumulatedDY(0);
+				out.addProperty("ok", true);
 			}
 			case "window" -> {
 				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)

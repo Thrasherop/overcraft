@@ -213,9 +213,9 @@ public final class Combat {
 		} else if (state.ultCharge < cost) {
 			state.ultCharge = Math.min(cost, state.ultCharge + points);
 		}
-		if (!wasReady && state.ultCharge >= cost && hero instanceof ServerPlayer player) {
-			Voice.say(player, "ult_ready", 1, false);
-		}
+		// no line when it fills: Overwatch's "ult ready" lines are the communication wheel's (stimulus 02E7, category 31,
+		// with Thanks and the pings), said when the player asks (Comms); said on filling, it came right after the kill
+		// that filled it
 	}
 
 	/**

@@ -6,6 +6,10 @@ import net.minecraft.client.MouseHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import dev.overcraft.client.comms.CommsWheel;
+import dev.overcraft.client.comms.EmoteCamera;
+import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
@@ -14,6 +18,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerMixin {
+	/**
+	 * While the communication wheel is open, the mouse moves its pointer, not the view (CommsWheel); while the hero
+	 * emotes, it turns the camera round her (EmoteCamera).
+	 */
+	@Redirect(method = "turnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;turn(DD)V"))
+	private void overcraft$wheelPointer(LocalPlayer player, double dx, double dy) {
+		if (CommsWheel.open()) {
+			CommsWheel.move(dx, dy);
+		} else if (EmoteCamera.active()) {
+			EmoteCamera.turn(dx, dy);
+		} else {
+			player.turn(dx, dy);
+		}
+	}
+
 	@Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
 	private void overcraft$noSlotScroll(long handle, double xoffset, double yoffset, CallbackInfo ci) {
 		if (ClientHero.controls() && Minecraft.getInstance().gui.screen() == null) {

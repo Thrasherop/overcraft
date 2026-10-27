@@ -14,6 +14,8 @@
 		"KeyMappingMixin",
 		"MinecraftInvoker",
 		"MouseHandlerMixin",
+		"PingOutlineMixin",
+		"PingOutlineColourMixin",
 		"SubtitleOverlayMixin",
 		"CreateWorldScreenAccessor",
 		"ToastManagerAccessor",
@@ -23,7 +25,13 @@
 		"ChatFocusedLinesMixin",
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
-		"HeroFovMixin"
+		"HeroFovMixin",
+		"CameraMixin",
+		"MouseHandlerInvoker",
+		"OptionsCameraMixin",
+		"EntityShadowMixin",
+		"HudFontTextureMixin",
+		"HeroChatFormatMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

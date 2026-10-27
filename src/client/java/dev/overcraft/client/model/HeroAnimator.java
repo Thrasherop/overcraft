@@ -85,6 +85,185 @@ public final class HeroAnimator {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
 		a.actions.trigger(action, now);
 		a.actionsFirstPerson.trigger(action, now);
+		// doing anything ends an emote, as in Overwatch
+		a.emote = null;
+	}
+
+	/**
+	 * An emote started (the communication wheel, dev.overcraft.comms): the hero's emote_<id>_<n> clips play over the
+	 * whole body as their EmotePlan chains them: a one-shot once, a dance or a kneel looping until the hero moves or does
+	 * something else.
+	 */
+	public static void emote(int entityId, String emote, float now) {
+		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		// no id: the emote ends (Comms.endEmote)
+		a.emote = emote.isEmpty() ? null : emote;
+		a.emoteStart = now;
+		a.emoteFrom = null;
+	}
+
+	/** An emote is playing (the local player's camera goes to third person meanwhile: ClientHero). */
+	public boolean emoting() {
+		return emote != null;
+	}
+
+	/** The emote playing now, or null. */
+	public @Nullable String emote() {
+		return emote;
+	}
+
+	/** Seconds since the emote started, at this time ((game time + partial) / 20, as poses are). */
+	public float emoteTime(float now) {
+		return Math.max(0, now - emoteStart);
+	}
+
+	/** The emote clip playing now (emote_<id>_<n>), or null. */
+	public @Nullable String emoteClip() {
+		return emote == null ? null : emoteClip;
+	}
+
+	/** Seconds into {@link #emoteClip()} (into the loop's current turn for a loop). */
+	public float emoteAt() {
+		return emoteAt;
+	}
+
+	/** {@link #emoteClip()}'s length, seconds. */
+	public float emoteClipLength() {
+		return emoteClipLength;
+	}
+
+	private static final Map<SkinnedModel, Map<String, SkinnedModel.Clip>> DRIVEN = new java.util.WeakHashMap<>();
+
+	/**
+	 * The clip with only the channels it drives. Our export writes every bone into every clip, filling the ones a clip
+	 * doesn't drive with their rest pose (constant): those are left out, so the pose under the clip shows through.
+	 */
+	static SkinnedModel.Clip driven(SkinnedModel model, SkinnedModel.Clip clip) {
+		return DRIVEN.computeIfAbsent(model, m -> new HashMap<>()).computeIfAbsent(clip.name(), name -> {
+			java.util.List<SkinnedModel.Channel> kept = new java.util.ArrayList<>();
+			for (SkinnedModel.Channel ch : clip.channels()) {
+				if (!restFiller(model, ch)) {
+					kept.add(ch);
+				}
+			}
+			return new SkinnedModel.Clip(clip.name(), clip.duration(), kept);
+		});
+	}
+
+	/** Whether every key of the channel is its bone's rest value (to 1e-4; a rotation either sign). */
+	private static boolean restFiller(SkinnedModel model, SkinnedModel.Channel ch) {
+		int node = ch.node();
+		float[] rest = switch (ch.path()) {
+			case 'T' -> new float[] {model.restT[node].x, model.restT[node].y, model.restT[node].z};
+			case 'S' -> new float[] {model.restS[node].x, model.restS[node].y, model.restS[node].z};
+			case 'R' -> new float[] {model.restR[node].x, model.restR[node].y, model.restR[node].z, model.restR[node].w};
+			default -> null;
+		};
+		if (rest == null) {
+			return false;
+		}
+		float[] v = ch.values();
+		for (int i = 0; i + rest.length <= v.length; i += rest.length) {
+			boolean same = true;
+			boolean flipped = ch.path() == 'R';
+			for (int j = 0; j < rest.length; j++) {
+				same &= Math.abs(v[i + j] - rest[j]) <= 1.0E-4f;
+				flipped &= Math.abs(v[i + j] + rest[j]) <= 1.0E-4f;
+			}
+			if (!same && !flipped) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** Her skeleton as last posed in an emote (her props hang on its bones: EmoteProps), or null before any. */
+	public Skeleton.@Nullable Pose emotePose() {
+		return emote == null ? null : emotePose;
+	}
+
+	/** Props that fly off when their time is up (EmoteProps): where each was last shown, by clip and spawn. */
+	public final java.util.Map<String, Matrix4f> released = new java.util.HashMap<>();
+	/** How far her emote's root motion would have moved her (model space), kept off her: her props move by it instead. */
+	public final Vector3f emoteRootShift = new Vector3f();
+	/** Dev only (DevServer "emoteat"): every emote held this many seconds in, or -1 to play. */
+	public static float devEmoteAt = -1;
+	private @Nullable String emoteClip;
+	private float emoteAt;
+	private float emoteClipLength;
+	private Skeleton.@Nullable Pose emotePose;
+
+	private @Nullable String emote;
+	private float emoteStart;
+	private @Nullable Vec3 emoteFrom;
+	/** How far (m) the hero may drift before an emote ends (ours: Minecraft nudges players a little standing still). */
+	private static final double EMOTE_MOVE = 0.15;
+	/** Seconds an emote eases in from the movement pose, and a one-shot back out to it (ours). */
+	private static final float EMOTE_EASE = 0.2f;
+
+	/** The emote's pose at this moment over the whole body, or false when there's none (or it just ended). */
+	private boolean poseEmote(SkinnedModel model, LivingEntity entity, float now, Skeleton.Pose pose) {
+		if (emote == null) {
+			return false;
+		}
+		if (emoteFrom == null) {
+			emoteFrom = entity.position();
+		} else if (entity.position().distanceToSqr(emoteFrom) > EMOTE_MOVE * EMOTE_MOVE || !entity.isAlive()) {
+			emote = null;
+			return false;
+		}
+		EmotePlan plan = EmotePlan.of(model, emote);
+		if (plan == null) {
+			emote = null;
+			return false;
+		}
+		if (devEmoteAt >= 0) {
+			emoteStart = now - devEmoteAt;
+		}
+		float t = Math.max(0, now - emoteStart);
+		// eased in from the movement pose over the first 0.2 s
+		float weight = Math.clamp((now - emoteStart) / EMOTE_EASE, 0, 1);
+		SkinnedModel.Clip clip = plan.steps().getLast();
+		float at = clip.duration();
+		float total = plan.total();
+		if (t < total) {
+			for (SkinnedModel.Clip step : plan.steps()) {
+				if (t < step.duration()) {
+					clip = step;
+					at = t;
+					break;
+				}
+				t -= step.duration();
+			}
+		} else if (plan.loop() != null) {
+			clip = plan.loop();
+			at = (t - total) % Math.max(0.01f, clip.duration());
+		} else if (plan.ends()) {
+			// a one-shot: back to her stance, eased out to the movement pose, and the emote's over (Overwatch's camera
+			// comes back then too)
+			float out = (t - total) / EMOTE_EASE;
+			if (out >= 1) {
+				emote = null;
+				return false;
+			}
+			weight *= 1 - out;
+		}
+		// else it holds its last pose until she moves
+		emoteClip = clip.name();
+		emoteAt = at;
+		emoteClipLength = clip.duration();
+		// over the pose under it: bones the clip doesn't drive keep that pose (Listen Up, Salty and Mic Drop drive 167 to
+		// 223 of her 295 bones; from her rest pose instead, their kunai floated a metre beside her, parked where her
+		// rest pose keeps them)
+		Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length);
+		for (int i = 0; i < model.nodeNames.length; i++) {
+			act.t[i].set(pose.t[i]);
+			act.r[i].set(pose.r[i]);
+			act.s[i].set(pose.s[i]);
+		}
+		Skeleton.sample(driven(model, clip), at, act);
+		Skeleton.blend(pose, act, weight, null);
+		return true;
 	}
 
 	/** A climb sound: in the head for the local player (her own sound, #17), at the spot for anyone else watching. */
@@ -139,6 +318,60 @@ public final class HeroAnimator {
 	 */
 	/** The ofuda hand's fingertip in the model's space, as last posed by poseFirstPerson. */
 	public final Vector3f fingertip = new Vector3f();
+	/**
+	 * Her hands' weapon bones in the model's space, as last posed by poseFirstPerson: where she holds her kunai (on the
+	 * right of the view) and her ofuda (on the left). Minecraft mode puts the held items there (HeroModelRenderer).
+	 */
+	public final Matrix4f kunaiHand = new Matrix4f();
+	public final Matrix4f ofudaHand = new Matrix4f();
+	/**
+	 * Each weapon bone's place in its hand (from the wrist), as last seen with no action playing: her quick melee parks
+	 * the kunai's bone away from the hand, and a held item went with it (vanished mid-swing).
+	 */
+	private final Matrix4f kunaiGrip = new Matrix4f();
+	private final Matrix4f ofudaGrip = new Matrix4f();
+
+	/** Her right-of-view arm turned at the shoulder by these degrees about SWING's axis (her model's space). */
+	private static void swingArm(SkinnedModel model, Skeleton.Pose pose, float degrees) {
+		int arm = UpperBody.arm(model);
+		if (arm < 0) {
+			return;
+		}
+		int parent = model.parent[arm];
+		Quaternionf up = parent >= 0
+			? Skeleton.world(model, pose, parent).getUnnormalizedRotation(new Quaternionf()).normalize() : new Quaternionf();
+		Quaternionf turn = new Quaternionf().fromAxisAngleDeg(new Vector3f(SWING[0], SWING[1], SWING[2]).normalize(), degrees);
+		// the turn in her model's space, as seen from the arm's parent: r' = P^-1 Q P r
+		pose.r[arm].premul(new Quaternionf(up).invert().mul(turn).mul(up));
+	}
+
+	/** A hand's weapon bone as posed: its wrist's, with the bone's place in the hand from when no action played. */
+	private void hand(SkinnedModel model, Skeleton.Pose pose, boolean kunai, Matrix4f grip, Matrix4f out) {
+		int wrist = UpperBody.wrist(model, kunai);
+		int weapon = UpperBody.weapon(model, kunai);
+		if (wrist < 0 || weapon < 0) {
+			return;
+		}
+		Matrix4f wristWorld = Skeleton.world(model, pose, wrist);
+		if (actionsFirstPerson.playing() == null) {
+			grip.set(wristWorld).invert().mul(Skeleton.world(model, pose, weapon));
+		}
+		out.set(wristWorld).mul(grip);
+	}
+
+	/**
+	 * Minecraft mode's swing with her own arms (attacking, mining, placing: 0 to 1 through it, Minecraft's own
+	 * progress), set before each poseFirstPerson. Her clips have no swing of the hand on the right of the view: her quick
+	 * melee and her kunai throws are both the other hand's.
+	 */
+	public float swing;
+	/**
+	 * The swing: her right-of-view arm turned about this axis of her model by this many degrees at its height, on
+	 * Minecraft's swing curve (sin of the square root: quick out, slower back): a chop in across her toward the crosshair.
+	 * DevServer's "swing" sets it, and can hold the swing at one point (its fifth number, 0 for none) to look at it.
+	 * Ours, by eye (tried about each axis both ways: about X the arm went up out of view or down, about Z it rose).
+	 */
+	public static final float[] SWING = {-0.4f, 1, 0, 30, 0};
 
 	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
 		lastSeen = now;
@@ -169,6 +402,11 @@ public final class HeroAnimator {
 		if (tip >= 0) {
 			Skeleton.world(model, pose, tip).getTranslation(fingertip);
 		}
+		if (swing > 0) {
+			swingArm(model, pose, (float) Math.sin(Math.sqrt(swing) * Math.PI) * SWING[3]);
+		}
+		hand(model, pose, true, kunaiGrip, kunaiHand);
+		hand(model, pose, false, ofudaGrip, ofudaHand);
 		int camera = UpperBody.eye(model);
 		if (camera >= 0) {
 			// the camera's transform now, with its rest turn taken out (at rest it looks along the model's facing)
@@ -242,6 +480,29 @@ public final class HeroAnimator {
 		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
+		if (poseEmote(model, entity, now, pose)) {
+			int root = UpperBody.mover(model);
+			if (root >= 0) {
+				// her emote's root motion is kept off (she stays on her spot); what was taken off moves her props
+				// instead, which Overwatch places from the root that doesn't move (Friendly Kitty: she shifts 0.6 m as
+				// she sits, and her cat landed behind her)
+				Matrix4f moved = Skeleton.world(model, pose, root);
+				pose.t[root].set(model.restT[root]);
+				emoteRootShift.set(moved.getTranslation(new Vector3f()).sub(Skeleton.world(model, pose, root).getTranslation(new Vector3f())));
+			}
+			// her props hang on her bones as posed (EmoteProps)
+			if (emotePose == null || emotePose.t.length != model.nodeNames.length) {
+				emotePose = new Skeleton.Pose(model.nodeNames.length);
+			}
+			for (int i = 0; i < model.nodeNames.length; i++) {
+				emotePose.t[i].set(pose.t[i]);
+				emotePose.r[i].set(pose.r[i]);
+				emotePose.s[i].set(pose.s[i]);
+			}
+			// the coat hangs and folds on the floor in an emote too (no emote clip moves the cloth bones)
+			stepCloth(model, entity, pose, now);
+			return Skeleton.skin(model, pose, -1, null);
+		}
 		actions.apply(model, pose, now, UpperBody.mask(model));
 		boolean asleep = entity.isSleeping();
 		if (asleep || entity.isFallFlying() || entity.isVisuallySwimming()) {
@@ -265,21 +526,25 @@ public final class HeroAnimator {
 			lookPitch = headPitch * (1 - AIM_SHARE);
 		}
 
-		// the cloth the clips leave rigid (coat tails): simulated, kept out of the legs
+		stepCloth(model, entity, pose, now);
+
+		Quaternionf look = asleep ? new Quaternionf()
+			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
+		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/** The cloth the clips leave rigid (coat tails): simulated, kept out of the legs and above the floor. */
+	private void stepCloth(SkinnedModel model, LivingEntity entity, Skeleton.Pose pose, float now) {
 		if (clothFor != model) {
 			clothFor = model;
 			cloth = ClothSim.of(model);
 		}
 		if (cloth != null) {
-			// her motion this frame, turned into the model's frame (the renderer turns the model by -facing)
-			Vector3f moved = new Vector3f((float) tickVx, (float) tickVy, (float) tickVz).mul(20 * dt)
+			// her velocity, turned into the model's frame (the renderer turns the model by -facing)
+			Vector3f velocity = new Vector3f((float) tickVx, (float) tickVy, (float) tickVz).mul(20)
 				.rotateY((float) Math.toRadians(facing(entity, 1)));
-			cloth.step(model, pose, dt, moved);
+			cloth.step(model, pose, now, velocity);
 		}
-
-		Quaternionf look = asleep ? new Quaternionf()
-			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
-		return Skeleton.skin(model, pose, UpperBody.head(model), look);
 	}
 
 	/**
@@ -481,6 +746,11 @@ public final class HeroAnimator {
 		private static final Map<SkinnedModel, Integer> MOVERS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> EYES = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> FINGERTIPS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_HANDS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_WRISTS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> ARMS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_WRISTS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_HANDS = new HashMap<>();
 
 		private static int first(SkinnedModel model, String... names) {
 			for (String name : names) {
@@ -540,6 +810,21 @@ public final class HeroAnimator {
 		/** The ofuda hand's index fingertip (the hand on the left of the view: the model's "_R" bones, as drawn there). */
 		static int fingertip(SkinnedModel model) {
 			return FINGERTIPS.computeIfAbsent(model, m -> first(m, "IndexFinger_3_R"));
+		}
+
+		/** The upper arm on the right of the view (the model's "_L" side). */
+		static int arm(SkinnedModel model) {
+			return ARMS.computeIfAbsent(model, m -> first(m, "Arm_L"));
+		}
+
+		/** The kunai hand's wrist (right of the view: the model's "_L" side), or the ofuda hand's. */
+		static int wrist(SkinnedModel model, boolean kunai) {
+			return (kunai ? KUNAI_WRISTS : OFUDA_WRISTS).computeIfAbsent(model, m -> first(m, kunai ? "Wrist_L" : "Wrist_R"));
+		}
+
+		/** The weapon bone of the kunai hand (right of the view: the model's "_L" side), or of the ofuda hand. */
+		static int weapon(SkinnedModel model, boolean kunai) {
+			return (kunai ? KUNAI_HANDS : OFUDA_HANDS).computeIfAbsent(model, m -> first(m, kunai ? "Weapon_L" : "Weapon_R"));
 		}
 
 		static int head(SkinnedModel model) {

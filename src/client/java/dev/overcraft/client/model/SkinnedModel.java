@@ -30,9 +30,12 @@ public final class SkinnedModel {
 	public final List<Piece> pieces = new ArrayList<>();
 	public final List<byte[]> images = new ArrayList<>();
 	public final Map<String, Clip> clips = new HashMap<>();
+	/** Its cloth bones' drivers from the game data (assets/overcraft/cloth/<hero>.json), or null: ClothSim. */
+	public @org.jspecify.annotations.Nullable Map<String, ClothSim.Drivers> clothDrivers;
 
-	/** One mesh primitive: its vertices, skinning, triangles and image. */
-	public record Piece(float[] pos, float[] normal, float[] uv, int[] joint4, float[] weight4, int[] indices, int image) {
+	/** One mesh primitive: its vertices, skinning, triangles and image, and its mesh's name (EmoteData's geosets). */
+	public record Piece(float[] pos, float[] normal, float[] uv, int[] joint4, float[] weight4, int[] indices, int image,
+		String mesh) {
 		public int vertexCount() {
 			return pos.length / 3;
 		}
@@ -181,6 +184,7 @@ public final class SkinnedModel {
 		}
 
 		for (JsonElement m : glb.array("meshes")) {
+			String meshName = m.getAsJsonObject().has("name") ? m.getAsJsonObject().get("name").getAsString() : "";
 			for (JsonElement p : m.getAsJsonObject().getAsJsonArray("primitives")) {
 				JsonObject prim = p.getAsJsonObject();
 				JsonObject attrs = prim.getAsJsonObject("attributes");
@@ -197,7 +201,8 @@ public final class SkinnedModel {
 				}
 				int[] indices = prim.has("indices") ? glb.ints(prim.get("indices").getAsInt()) : sequence(count);
 				int material = prim.has("material") ? prim.get("material").getAsInt() : -1;
-				model.pieces.add(new Piece(pos, normal, uv, joint4, weight4, indices, material >= 0 ? materialImage[material] : -1));
+				model.pieces.add(new Piece(pos, normal, uv, joint4, weight4, indices, material >= 0 ? materialImage[material] : -1,
+					meshName));
 			}
 		}
 

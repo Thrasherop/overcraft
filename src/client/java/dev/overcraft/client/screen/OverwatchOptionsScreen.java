@@ -44,6 +44,11 @@ public class OverwatchOptionsScreen extends OwScreen {
 	private static final float TOP = 228;
 	private static final float ROW_H = 35;
 	private static final float WIDTH = 900;
+	/**
+	 * Where the controls list ends, clear of the footer's buttons: past it the list scrolls, as Overwatch's does (its
+	 * last rows ran under ESC BACK and RESTORE DEFAULTS at 1080p).
+	 */
+	private static final float LIST_BOTTOM = 980;
 
 	private final Screen parent;
 	private @Nullable Action listening;
@@ -62,9 +67,10 @@ public class OverwatchOptionsScreen extends OwScreen {
 	}
 
 	/** The first ALL_HEROES options are every hero's (under "ALL HEROES"), the rest the hero's own (under their name). */
-	private static final int ALL_HEROES = 1;
+	private static final int ALL_HEROES = 2;
 	private static final List<Option> OPTIONS = List.of(
 		new Option("friendly_fire", () -> HeroOptions.get().friendlyFire, v -> HeroOptions.get().friendlyFire = v, null, null),
+		new Option("hero_arms", () -> HeroOptions.get().heroArms, v -> HeroOptions.get().heroArms = v, null, null),
 		new Option("ofuda_sensitivity", null, null, () -> HeroOptions.get().ofudaSensitivity,
 			v -> HeroOptions.get().ofudaSensitivity = v),
 		new Option("toggle_ofuda", () -> HeroOptions.get().toggleOfuda, v -> HeroOptions.get().toggleOfuda = v, null, null),
@@ -80,6 +86,9 @@ public class OverwatchOptionsScreen extends OwScreen {
 
 	private final List<Tab> tabs;
 	private final List<Row> rows = new ArrayList<>();
+	/** How far the controls list is scrolled (reference pixels). */
+	private float scroll;
+	private float listHeight;
 
 	public OverwatchOptionsScreen(Screen parent) {
 		super(Component.translatable("overcraft.options.title"));
@@ -107,6 +116,32 @@ public class OverwatchOptionsScreen extends OwScreen {
 			rows.add(new Row(null, action, y));
 			y += ROW_H;
 		}
+		listHeight = y - TOP;
+		scroll = Math.clamp(scroll, 0, maxScroll());
+	}
+
+	private float maxScroll() {
+		return Math.max(0, listHeight - (LIST_BOTTOM - TOP));
+	}
+
+	/** A row's place on screen, scrolled. */
+	private float rowY(Row row) {
+		return row.y() - scroll;
+	}
+
+	/** Whole rows only: one cut by the list's top or bottom edge isn't drawn (or clickable). */
+	private boolean shown(Row row) {
+		float y = rowY(row);
+		return y >= TOP - 0.5f && y + ROW_H - 4 <= LIST_BOTTOM;
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		if (page == CONTROLS && maxScroll() > 0) {
+			scroll = Math.clamp(scroll - (float) scrollY * ROW_H, 0, maxScroll());
+			return true;
+		}
+		return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 
 	@Override
@@ -120,7 +155,7 @@ public class OverwatchOptionsScreen extends OwScreen {
 		float x = refX(mouseX);
 		float y = refY(mouseY);
 		for (Row row : rows) {
-			if (row.action() != null && y >= row.y() && y < row.y() + ROW_H - 4 && x >= LEFT && x <= LEFT + WIDTH) {
+			if (row.action() != null && shown(row) && y >= rowY(row) && y < rowY(row) + ROW_H - 4 && x >= LEFT && x <= LEFT + WIDTH) {
 				return row.action();
 			}
 		}
@@ -247,23 +282,34 @@ public class OverwatchOptionsScreen extends OwScreen {
 		Action hover = listening == null && page == CONTROLS ? keyBoxAt(mouseX, mouseY) : null;
 		Hero hero = ClientHero.hero();
 		for (Row row : page == CONTROLS ? rows : List.<Row>of()) {
+			if (!shown(row)) {
+				continue;
+			}
+			float rowY = rowY(row);
 			if (row.header() != null) {
 				String name = Component.translatable("overcraft.options.section." + row.header().name().toLowerCase(Locale.ROOT))
 					.getString().toUpperCase(Locale.ROOT);
-				HudText.draw(g, Face.BODY, name, LEFT, row.y() + 25, 15, ORANGE, Align.LEFT);
+				HudText.draw(g, Face.BODY, name, LEFT, rowY + 25, 15, ORANGE, Align.LEFT);
 				continue;
 			}
 			Action action = row.action();
 			boolean live = action == listening;
-			fill(g, LEFT, row.y(), WIDTH, ROW_H - 4, live || action == hover ? ROW_HOVER : ROW);
+			fill(g, LEFT, rowY, WIDTH, ROW_H - 4, live || action == hover ? ROW_HOVER : ROW);
 			String name = Component.translatable("overcraft.controls." + action.id()).getString().toUpperCase(Locale.ROOT);
-			HudText.draw(g, Face.BODY, name, LEFT + 18, row.y() + 21, 15, TEXT, Align.LEFT);
+			HudText.draw(g, Face.BODY, name, LEFT + 18, rowY + 21, 15, TEXT, Align.LEFT);
 			String what = heroAbility(hero, action);
 			if (what != null) {
 				float after = LEFT + 18 + HudText.width(Face.BODY, name, 15) + 16;
-				HudText.draw(g, Face.BODY, what, after, row.y() + 21, 13, TEXT_DIM, Align.LEFT);
+				HudText.draw(g, Face.BODY, what, after, rowY + 21, 13, TEXT_DIM, Align.LEFT);
 			}
-			keyCell(g, action, row.y(), live);
+			keyCell(g, action, rowY, live);
+		}
+		if (page == CONTROLS && maxScroll() > 0) {
+			// the scrollbar, right of the list: a faint track, the thumb the share of the list in view
+			float track = LIST_BOTTOM - TOP;
+			float thumb = track * track / listHeight;
+			fill(g, LEFT + WIDTH + 12, TOP, 4, track, 0x26FFFFFF);
+			fill(g, LEFT + WIDTH + 12, TOP + (track - thumb) * scroll / maxScroll(), 4, thumb, 0x99FFFFFF);
 		}
 
 		// restore defaults, bottom right; Esc back, bottom left

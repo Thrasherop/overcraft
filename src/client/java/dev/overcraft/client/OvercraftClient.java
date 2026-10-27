@@ -53,8 +53,15 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
 			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.PingPayload.TYPE,
+			(payload, context) -> dev.overcraft.client.comms.Pings.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
+				if (payload.clip().startsWith("emote:")) {
+					HeroAnimator.emote(payload.entityId(), payload.clip().substring("emote:".length()),
+						context.client().level.getGameTime() / 20f);
+					return;
+				}
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
 				if (payload.clip().startsWith("throw_ofuda") && context.client().level.getEntity(payload.entityId()) instanceof LivingEntity hero) {
 					if (hero == context.client().player && ClientHero.heroView() && context.client().options.getCameraType().isFirstPerson()
@@ -105,10 +112,12 @@ public class OvercraftClient implements ClientModInitializer {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode
 		HudElementRegistry.addLast(Overcraft.id("victory"), VictoryHud::render);
-		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD
+		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD. The info bar's foreground too: the
+		// experience fill, and the locator bar's dot for each other player (a pink square by the ult meter, found
+		// playing on LAN; the hero HUD marks allies itself)
 		for (Identifier id : new Identifier[] {VanillaHudElements.HOTBAR, VanillaHudElements.HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR, VanillaHudElements.FOOD_BAR, VanillaHudElements.EXPERIENCE_LEVEL,
-			VanillaHudElements.INFO_BAR, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
+			VanillaHudElements.INFO_BAR, VanillaHudElements.INFO_BAR_FOREGROUND, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
 		// the air bubbles join the hero HUD, above the health (HeroHud.airPlace)

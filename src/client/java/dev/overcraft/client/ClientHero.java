@@ -1,6 +1,8 @@
 package dev.overcraft.client;
 
 import dev.overcraft.hero.Perk;
+import dev.overcraft.client.comms.CommsWheel;
+import dev.overcraft.client.comms.EmoteCamera;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.HeroModePayload;
@@ -154,6 +156,7 @@ public final class ClientHero {
 	}
 
 	public static void onDisconnect() {
+		EmoteCamera.stop(Minecraft.getInstance());
 		sync = HeroSyncPayload.NONE;
 		heroModeLocal = null;
 		openSelectOnJoin = false;
@@ -164,6 +167,29 @@ public final class ClientHero {
 		LocalPlayer player = mc.player;
 		if (player == null) {
 			return;
+		}
+		// emoting, the view swings out round her and the mouse orbits it, as Overwatch's does; back when it ends
+		boolean emoting = hero() != null && dev.overcraft.client.model.HeroAnimator.of(player).emoting();
+		net.minecraft.world.entity.player.Input keys = player.input.keyPresses;
+		if (emoting && (keys.forward() || keys.backward() || keys.left() || keys.right() || keys.jump() || keys.shift())) {
+			// a movement key ends an emote, as in Overwatch, even where she can't move (only moving ended one: walking into
+			// a wall she knelt on, the camera squeezed in front of her); the server ends it for everyone watching
+			dev.overcraft.client.model.HeroAnimator.emote(player.getId(), "", (player.level().getGameTime()) / 20f);
+			if (ClientPlayNetworking.canSend(dev.overcraft.net.EmotePayload.TYPE)) {
+				ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(""));
+			}
+			emoting = false;
+		}
+		if (emoting) {
+			EmoteCamera.start(mc, player);
+		} else {
+			EmoteCamera.stop(mc);
+		}
+		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
+		boolean view = heroView();
+		if (view != chatHeroView) {
+			chatHeroView = view;
+			mc.gui.hud.getChat().rescaleChat();
 		}
 		if (openSelectOnJoin && mc.gui.screen() == null && mc.level != null) {
 			openSelectOnJoin = false;
@@ -206,6 +232,7 @@ public final class ClientHero {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			perkMenu = false;
+			CommsWheel.cancel();
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -215,7 +242,7 @@ public final class ClientHero {
 
 		// the perk menu (#36): Left Alt held while a perk waits; the left or right mouse button picks the left or right
 		// perk (Overwatch's, whatever the fire buttons are bound to), and fires nothing meanwhile
-		if (perkMenu(mc)) {
+		if (perkMenu(mc) | CommsWheel.tick(mc)) {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			if (lastHeld != 0) {
@@ -248,7 +275,8 @@ public final class ClientHero {
 		}
 		// for Lúcio the same buttons: the left fires the Sonic Amplifier, the right Soundwave (lucio-plan.md)
 		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0)
-			| (OwMovement.wallRiding(player) != 0 ? HeroInputPayload.HELD_WALL_RIDE : 0);
+			| (OwMovement.wallRiding(player) != 0 ? HeroInputPayload.HELD_WALL_RIDE : 0)
+			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0);
 
 		int pressed = 0;
 		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
@@ -256,6 +284,14 @@ public final class ClientHero {
 		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
 		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
 		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
+
+		dev.overcraft.client.comms.Pings.tick(mc);
+
+		// chat on Overwatch's key (Enter): T is the communication wheel's in hero mode
+		if (drain(HeroControls.get(Action.CHAT))) {
+			mc.gui.openChatScreen(net.minecraft.client.gui.components.ChatComponent.ChatMethod.MESSAGE);
+			return;
+		}
 
 		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
 		if (drain(HeroControls.get(Action.INTERACT))) {
@@ -272,6 +308,8 @@ public final class ClientHero {
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
 		}
 	}
+
+	private static boolean chatHeroView;
 
 	/** The perk menu is up (HeroHud draws it). */
 	private static boolean perkMenu;

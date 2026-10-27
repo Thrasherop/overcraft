@@ -52,6 +52,13 @@ public final class Kiriko implements HeroKit {
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 
+		// climbing a wall interrupts the kunai reload (the owner, #42); an empty clip starts again once she's off the wall
+		if (s.wallClimbing && s.primaryReload >= 0) {
+			s.primaryReload = -1;
+			Combat.animate(player, "reload_cancel");
+		} else if (!s.wallClimbing && s.primaryAmmo == 0 && s.primaryReload < 0) {
+			startPrimaryReload(player, s);
+		}
 		if (s.primaryReload >= 0) {
 			s.primaryReload += attack;
 			if (!s.primaryAmmoRestored && s.primaryReload >= Ow.ticks(KUNAI_RELOAD_AMMO_AT)) {
@@ -120,7 +127,7 @@ public final class Kiriko implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0) {
 			throwSuzu(player);
-			Voice.maybe(player, s, OcSounds.KIRIKO_VOICE_SUZU, 0.5f);
+			Voice.say(player, "suzu", 1);
 			s.ability2Cooldown = Ow.ticks(SUZU_COOLDOWN);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
@@ -261,7 +268,7 @@ public final class Kiriko implements HeroKit {
 		level.playSound(player, arrive.x, arrive.y, arrive.z, OcSounds.KIRIKO_SWIFT_STEP_ARRIVE, SoundSource.PLAYERS, 4.4f, 1);
 		// her line once she's beside them ("I'm with you" before she got there made no sense: #17); the ally's hero may
 		// have a line of their own ("Rolling with you" for Wrecking Ball: #13)
-		Voice.say(player, "swift_step", 0.6f, true, Voice.heroOf(target));
+		Voice.say(player, "swift_step", 1, Voice.heroOf(target));
 	}
 
 	/**

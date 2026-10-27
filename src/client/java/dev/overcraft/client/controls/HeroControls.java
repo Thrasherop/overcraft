@@ -54,6 +54,12 @@ public final class HeroControls {
 		INTERACT(Section.INTERFACE, keyboard(InputConstants.KEY_F)),
 		/** Hold to choose a perk once one is ready, left or right click picking (Overwatch's: Left Alt, #36). */
 		PERK_MENU(Section.INTERFACE, keyboard(InputConstants.KEY_LALT)),
+		/** Hold for the communication wheel, tap for "Good job" (the owner: T, as Overwatch's; dev.overcraft.comms). */
+		COMMS(Section.INTERFACE, keyboard(InputConstants.KEY_T)),
+		/** Ping what the crosshair is on; twice quickly, a warning (Overwatch's PC default: the middle button, #40). */
+		PING(Section.INTERFACE, mouse(InputConstants.MOUSE_BUTTON_MIDDLE)),
+		/** Overwatch's chat key: Enter, since T is the wheel's in hero mode. */
+		CHAT(Section.INTERFACE, keyboard(InputConstants.KEY_RETURN)),
 		HERO_SELECT(Section.INTERFACE, keyboard(InputConstants.KEY_H)),
 		MINECRAFT_MODE(Section.INTERFACE, keyboard(InputConstants.KEY_G));
 
@@ -181,6 +187,8 @@ public final class HeroControls {
 			|| key == o.keyShift || key == o.keySprint || key == o.keyAttack || key == o.keyUse || key == o.keyPickItem
 			|| key == o.keyDrop || key == o.keyInventory || key == o.keySwapOffhand
 			|| key == ClientHero.HERO_MODE || key == ClientHero.HERO_SELECT
+			// Minecraft's chat on the wheel's key (T): the wheel has it in hero mode, chat is on the hero's chat key
+			|| key == o.keyChat && KeyMappingHelper.getBoundKeyOf(key).equals(Action.COMMS.key())
 			// no hotbar in hero mode: its keys don't change the held slot (they used to switch modes, until #26)
 			|| java.util.Arrays.asList(o.keyHotbarSlots).contains(key);
 	}

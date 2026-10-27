@@ -10,6 +10,7 @@
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
+    py tools/build_asset_pack.py props <DataTool output dir>  the emotes' props (as the emote data names them), from the emote unlocks
     py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
@@ -245,8 +246,66 @@ def add_sounds(source):
                     shutil.copyfile(picks[0][0], dest)
                     files.append(entry)
         sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": files}
+    lang = add_voicelines(source, out, sounds)
     (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
+    lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
+    lang_file.parent.mkdir(parents=True, exist_ok=True)
+    lang_file.write_text(json.dumps(lang, indent=1, ensure_ascii=False), encoding="utf8")
     print(f"{len(sounds)} sound events, {sum(len(v['sounds']) for v in sounds.values())} files -> {out}")
+
+
+# heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
+VOICELINE_HEROES = {"kiriko": "Kiriko"}
+
+
+def voice_text(file_name):
+    """The spoken text DataTool puts in a voice file's name ("<id>.0B2-<text>.ogg"; "?" became "_")."""
+    text = file_name.split(".0B2-", 1)[-1].rsplit(".", 1)[0]
+    return text.replace("(Japanese)_ ", "(Japanese) ").replace("_", "?")
+
+
+def add_voicelines(source, out, sounds):
+    """Each hero's collectible voice lines (the communication wheel's voice page): DataTool's extract-unlocks
+    "<Hero>|voiceline=*" puts them under Unlocks/Heroes/<Hero>/VoiceLine/<season>/<unlock name>/<id>.ogg, several files
+    for an unlock with several takes ("Tarot Reading"). One sound event per unlock, "<hero>.voiceline.<slug>", its
+    subtitle the spoken text (the unlock's name when it has several), and assets/overcraft/voicelines/<hero>.json
+    listing them for the game. Returns the pack's lang entries (the unlock names and subtitles)."""
+    import json
+    lang = {}
+    for hero, folder in VOICELINE_HEROES.items():
+        base = Path(source) / "Unlocks" / "Heroes" / folder / "VoiceLine"
+        spoken = {}
+        for f in (Path(source) / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
+            spoken[f.name.split(".", 1)[0]] = voice_text(f.name)
+        if not base.exists():
+            print(f"no voice line unlocks for {hero}: run DataTool extract-unlocks <out>/Unlocks with {folder}|voiceline=*")
+            continue
+        listed = []
+        for unlock in sorted(d for d in base.glob("*/*") if d.is_dir()):
+            name = unlock.name.replace("_", "?")
+            key = slug(name)
+            if key in {e["id"] for e in listed}:
+                continue
+            files = sorted(unlock.glob("*.ogg"))
+            if not files:
+                continue
+            event = f"{hero}.voiceline.{key}"
+            entries = []
+            for i, f in enumerate(files):
+                dest = out / event.replace(".", "/") / f"{i}.ogg"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(f, dest)
+                entries.append(f"overcraft:{event.replace('.', '/')}/{i}")
+            sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": entries}
+            text = spoken.get(files[0].name.split(".", 1)[0], name) if len(files) == 1 else name
+            lang[f"overcraft.voiceline.{hero}.{key}"] = name
+            lang[f"subtitles.overcraft.{event}"] = f"{folder}: {text}"
+            listed.append({"id": key, "group": unlock.parent.name.replace("_", ":")})
+        target = PACK / "assets" / "overcraft" / "voicelines" / f"{hero}.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(listed, indent=1, ensure_ascii=False), encoding="utf8")
+        print(f"{hero}: {len(listed)} voice lines")
+    return lang
 
 
 # variants kept per sound event (Minecraft picks one at random each time)
@@ -254,9 +313,11 @@ MAX_VARIANTS = 8
 
 # the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
 # Minecraft only reads TrueType outlines, which these two are.
-FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf"}
+# Overwatch's chat is BlizzardGlobal-Regular, not the HUD's Futura (the eighth critique, checked against the owner's frame)
+FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf",
+         "blizzard_global.ttf": "BlizzardGlobal-Regular.ttf"}
 FONT_DEFS = {"hud": ("futura_demibold.ttf", 32, 1.5), "hud_small": ("futura_demibold.ttf", 16, 2),
-             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("futura_demibold.ttf", 10.5, 3)}
+             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("blizzard_global.ttf", 8.4, 3.5)}
 
 
 def add_fonts(source):
@@ -336,6 +397,76 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
+def add_props(source):
+    """Converts every prop the heroes' emote data names (src/main/resources/assets/overcraft/emotes/<hero>.json, from
+    tools/emote_data.py: techniques/emotes/emote_reproduction.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
+    ids, as the data names them. <source> is the extraction root holding Unlocks/Heroes/<Hero>/Emote. A prop with no
+    clip of its own is a static mesh (like the torii gate); one with clips is exported with them, staged beside the
+    model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""
+    import json
+    write_mcmeta()
+    for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
+        hero = json.loads(data.read_text(encoding="utf8"))
+        emotes = Path(source) / "Unlocks" / "Heroes" / hero["hero"].capitalize() / "Emote"
+        props = {}
+        for emote in hero["emotes"].values():
+            for clip in emote["clips"].values():
+                for spawn in clip["spawns"]:
+                    if spawn.get("model"):
+                        clips = props.setdefault(spawn["model"], set())
+                        if spawn.get("clip"):
+                            clips.add(spawn["clip"])
+        for model, clips in sorted(props.items()):
+            name = f"prop_{model.lower()}"  # resource paths must be lower case
+            padded = "%012X" % int(model, 16)
+            found = sorted(emotes.glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{name}: no model {padded} under {emotes}")
+                continue
+            src = found[0]
+            dest = MODELS / f"{name}.glb"
+            if not clips:
+                cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"),
+                       "--", str(src), str(dest)]
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+                print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+                continue
+            work = LOCAL / "work" / name
+            staged = work / "model"
+            if staged.exists():
+                shutil.rmtree(staged)
+            shutil.copytree(src.parent, staged)
+            renames = {}
+            for cid in sorted(clips):
+                cpad = "%012X" % int(cid, 16)
+                where = [p for p in staged.glob(f"Animations/**/{cpad}.owanimclip")]
+                if not where:
+                    for clip_src in emotes.glob(f"*/*/Animations/**/{cpad}.owanimclip"):
+                        # <group>/<emote>/Animations/<folder>/... -> the model's Animations/<folder>/...
+                        target = staged / Path(*clip_src.relative_to(emotes).parts[2:])
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(clip_src, target)
+                        where = [target]
+                        break
+                if not where:
+                    print(f"{name}: no clip {cpad}")
+                    continue
+                folder = where[0].parent.relative_to(staged / "Animations").as_posix().replace("/", "-")
+                renames[f"{folder}_{cpad}"] = cid
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--",
+                   str(staged / src.name), str(work), "--glb", "--only=" + ",".join("%012X" % int(c, 16) for c in clips)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            glb = work / f"{padded}.glb"
+            if not glb.exists():
+                print(f"{name}: export failed: {result.stderr[-2000:]}")
+                continue
+            shutil.copyfile(glb, dest)
+            subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
+                           + [f"{a}={b}" for a, b in renames.items()], check=True)
+            print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
+
+
 def build_version():
     """This build's version (gradle.properties)."""
     for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
@@ -387,6 +518,8 @@ def main():
         add_fonts(sys.argv[2])
     elif cmd == "effects":
         add_effects(sys.argv[2])
+    elif cmd == "props":
+        add_props(sys.argv[2])
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

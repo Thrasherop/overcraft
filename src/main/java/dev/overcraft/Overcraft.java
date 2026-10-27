@@ -5,6 +5,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.Teams;
 import dev.overcraft.hero.HeroWeaponItem;
 import dev.overcraft.hero.KillFeed;
 import dev.overcraft.hero.OvercraftCommand;
@@ -18,6 +19,13 @@ import dev.overcraft.net.HeroModePayload;
 import dev.overcraft.net.HeroOptionsPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.net.PickPerkPayload;
+import dev.overcraft.net.TeamPayload;
+import dev.overcraft.net.CalloutPayload;
+import dev.overcraft.net.VoiceLinePayload;
+import dev.overcraft.net.EmotePayload;
+import dev.overcraft.net.PingPayload;
+import dev.overcraft.comms.Callout;
+import dev.overcraft.comms.Comms;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
@@ -53,7 +61,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.4";
+	public static final String ASSETS_NEEDED = "0.3.9";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -93,12 +101,19 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroInputPayload.TYPE, HeroInputPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroOptionsPayload.TYPE, HeroOptionsPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(HeroModePayload.TYPE, HeroModePayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PickPerkPayload.TYPE, PickPerkPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(TeamPayload.TYPE, TeamPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(VoiceLinePayload.TYPE, VoiceLinePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(EmotePayload.TYPE, EmotePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -119,6 +134,20 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,
 			(payload, context) -> HeroManager.onInput(context.player(), payload));
+		ServerPlayNetworking.registerGlobalReceiver(CalloutPayload.TYPE, (payload, context) -> {
+			Callout callout = Callout.byIndex(payload.callout());
+			if (callout != null) {
+				Comms.callout(context.player(), callout);
+			}
+		});
+		ServerPlayNetworking.registerGlobalReceiver(PingPayload.TYPE,
+			(payload, context) -> dev.overcraft.comms.Pings.ping(context.player(), payload));
+		ServerPlayNetworking.registerGlobalReceiver(EmotePayload.TYPE,
+			(payload, context) -> Comms.emote(context.player(), payload.id()));
+		ServerPlayNetworking.registerGlobalReceiver(VoiceLinePayload.TYPE,
+			(payload, context) -> Comms.voiceLine(context.player(), payload.id()));
+		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,
+			(payload, context) -> context.player().sendSystemMessage(Teams.join(context.player(), payload.team())));
 		ServerPlayNetworking.registerGlobalReceiver(PickPerkPayload.TYPE,
 			(payload, context) -> Perks.pick(context.player(), Perk.byIndex(payload.perk())));
 
@@ -128,7 +157,10 @@ public class Overcraft implements ModInitializer {
 			HeroManager.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> HeroManager.onLeave(listener.player));
+		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
+			HeroManager.onLeave(listener.player);
+			Comms.forget(listener.player);
+		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> HeroManager.onRespawn(newPlayer));
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
