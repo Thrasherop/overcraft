@@ -4,6 +4,98 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-10-27
+
+### Build 0.3.7 (the communication wheel, pings, emotes; Kiriko's HUD to the owner's frames)
+Needs the asset pack rebuilt (`build_asset_pack.py sounds`, `fonts`, and Kiriko's model with her emotes:
+`tools/owm_survey.py ... --glb --keep=tools/clipmaps/kiriko.txt --emotes=<extracted>/Unlocks/Heroes/Kiriko/Emote`,
+after DataTool's `extract-unlocks <out>/Unlocks "Kiriko|voiceline=*"` and `"Kiriko|emote=*"`).
+- **The communication wheel (#3), for every hero** (`dev.overcraft.comms`, `tools/reference/comms-plan.md`, the
+  owner's spec and screenshots in `comms-reference.md`):
+  - Hold T: the view dims, eight callouts round a ring (NO, HELLO, NEED HEALING/HELP, GROUP UP, ULTIMATE STATUS, NEED
+    HELP, SORRY, THANKS), the VOICE LINES / EMOTES tabs at the sides. The mouse moves a pointer, not the view; release
+    T to play the callout under it, nothing from the centre. A quick tap of T: "Good job".
+  - A callout: a team-blue chat line ("Kiriko (Kiriko): I need healing!") to teammates at any distance, and the
+    hero's own line in the world (her set: No, Hello, Healing, Group Up, Assistance Required, Sorry, Thanks; the
+    ult's Charging / Almost Ready / Ready with the charge in chat). Four in 8 s, then "Too many messages!".
+  - In hero mode chat moves to Enter (Overwatch's), T being the wheel's.
+- **Voice lines (#5):** DataTool's voice-line unlocks by name (41 for Kiriko, "Tarot Reading" with all its cards);
+  the wheel's voice page (left click while holding T): the four equipped at the compass points; VOICE LINES in the
+  Overwatch menu equips them (right click: hear one).
+- **Emotes (#4):** her 23 emotes from DataTool's emote unlocks, exported onto her model; the wheel's emote page (right
+  click); the same screen's Emotes tab equips four. The view goes to third person meanwhile. Their props (the bike,
+  the skateboard...) aren't in yet.
+  - How they play is found from the clips' poses (`EmotePlan`): a one-shot (Cheer, Laugh, Heroic, Thanks...) starts
+    and ends in her stance, plays once, and she's back in first person; a dance or a kneel goes in, then loops its
+    loop until she moves or acts. The first try played every clip of an emote in id order, the last looping: that
+    order holds Overwatch's additive layers and the prop's own clips, so after Cheer she sank to the waist with her
+    arms out, for good (found playing on LAN: the second player saw it too).
+- **Heroes get outlines:** a hero pinged as an enemy got the red ring but no red outline (found on LAN: our hero models
+  are custom geometry, which has no outline of its own), and the Glowing effect or a spectator's view didn't outline
+  them either. Their shape now goes into Minecraft's outline pass as vanilla's dragon fireball does.
+- The Emotes tab's hint no longer offers "right click: hear it", and "ISN'T THIS FUN" has its apostrophe back.
+- **Minecraft's locator bar is hidden in hero mode** with the rest of its bars: each other player's dot (a pink or
+  team-coloured square beside the ult meter, found on LAN) came from the info bar's foreground, which Fabric names
+  apart from the bar.
+- **Played on LAN with a second client** (before the fixes above, then again after): callouts reach teammates and
+  not the other team, both ways (Red vs no team, then both teamless); pings and emotes seen by the other player; an
+  enemy ping on a player (ring, portrait, "KIRIKO", now the outline); Cheer, Heroic, Choreography, Orion Dance and
+  Kneeling watched from the other client (`fix_v_*`, `out_*`).
+- **General play of `next` before main** (fresh client, fresh survival world, savanna, Normal; `gp_*`): picked
+  Kiriko on the select screen; at night zombies hit 3 a hit and skeleton arrows 2 to 4, the night swarm killed her
+  twice (death screen, respawn with the kit and ult kept); kunai 60 a hit, quick melee 40 (39 through a zombie's
+  armour), reload 11 to 15; Protection Suzu heals her 80 at her feet and forward (two misses at first were the
+  harness turning the view and throwing in the same tick: the server threw at the old pitch); Healing Ofuda on a
+  hurt villager 10 to 19.6; Swift Step to it (7 s cooldown); Kitsune Rush cast with its torii gates; wall climb up
+  a 7-high wall, cancelling a reload (ammo stayed 10); swimming; a minor perk picked with the click throwing
+  nothing; T tap "Good job", a ping; Save and Leave, rejoin through the select screen. Minecraft mode (G): punched
+  acacia logs and dirt by hand, crafted planks, a crafting table and a chest by clicking the grids, placed them,
+  pillared out of a hole with dirt, stored logs in the chest and found them there on reopening; G back to hero
+  mode; H away from a bed: "Go back to your bed to change heroes".
+  Not tried this time: a tamed wolf as the ally, lava, ladders, boats, the Nether, eating. Seen once and not
+  reproduced: 112 HP lost between leaving a pool and opening the perk menu (no damage message; the same steps
+  again lost nothing). Found: vanilla's saturation regeneration and hunger still run in hero mode with the food bar
+  hidden (#43).
+- **Pings (#40):** the middle button pings the spot under the crosshair (a blue diamond, its distance, your own with
+  a leader line to "CANCEL [key]"); a double click makes it a warning (a red circle); an enemy gets a red ring that
+  follows them with their portrait (a mob: its initial) and name, and a red outline. Teammates see them. Aiming at
+  your own and pressing again takes it down.
+- **Kiriko's HUD to the owner's own Overwatch frames** (critique round 8, `critique-2026-10-27-round8.md`): the health
+  block's position, pips, "+" box, level box and plate; the portrait's glowing border; the weapon panels; the mouse
+  icon; the ult meter's inner ring and number; text without offset shadows; the volley bar; the ability icons.
+  Hero chat in Overwatch's chat face (BlizzardGlobal), wrapping as Overwatch's does. The perk-waiting state is
+  Overwatch's orange "[LALT] SELECT PERK" bar.
+- **#9 closed:** death, deep water, the climb's top, the ability clips all play.
+- Played through the dev harness (captures `wheel_*`, `loadout_*`, `ping_*`, `r8after_*`, `chatwrap2`). Not yet:
+  real mouse and keys, a second player receiving callouts and pings, the first-person hands (round 8 #1: waiting on
+  the owner's screenshot with the default weapons).
+
+### Build 0.3.6 (the owner's night list, Kiriko first)
+- **Suzu: no gold ring on the ground (#22).** The owner: "the golden ring *shouldn't* be in this, since there is not
+  that in ow". The game data has a 5 s gold ring decal (6089) but Overwatch shows none in play; gone. The burst itself
+  stays (the white-blue wave on the ground, the flower, the glow on those it touches).
+  - Before (`suzu_ring_old_1s`, `_3s`): a gold ring round the villager at 1 s and 3 s. After (`suzu_new_*`,
+    `suzu_frames`, frozen and stepped 2 ticks at a time): the burst, then nothing on the ground.
+- **Perks also come passively, a point a second** (the owner: "1 point a second if nothing is being done. But
+  naturally, killing should be much much faster"): a zombie's 250 points are four minutes of it. Played: 20.2 points
+  in 20 s standing still.
+- **Changing teams** (the owner: "a good easy way for players to change teams" and a game rule for non-operators,
+  on by default):
+  - CHANGE TEAM in the Overwatch menu: No team (everyone together), Blue, Red (made on first use, friendly fire off,
+    as in Overwatch) and any other scoreboard team; yours marked. `/overcraft team join <team>` / `leave` too.
+  - `/gamerule overcraft:allow_team_change` (default true): off, only operators may change teams.
+  - `/overcraft`'s other commands are still for operators only.
+  - Played: the menu and picker (`team_menu`, `team_screen`), Red then Blue by menu and command (the scoreboard
+    agrees). A second client (Viewer, not an operator, LAN without commands): joined Blue with the rule on;
+    `/overcraft reset` refused; with the rule off, both the command and the menu refused with the explanation in chat
+    (`viewer_team_refused`).
+- **A wall climb interrupts the kunai reload (#42, the owner).** Reproduced on 0.3.5: 3 kunai, R, a climb 0.1 s later:
+  the ammo came back (12 to 15) partway up the wall, the reload clip playing through the climb. Now the climb stops
+  it (the clip fades out, `reload_cancel`): 12 stay 12; an empty clip starts reloading again at the top (0 to 15
+  0.85 s after).
+- Pings, the communication wheel, voice lines, emotes and sprays: the owner's spec and screenshots are written up in
+  `tools/reference/comms-reference.md` (#3, #4, #5, #40 pings, #41 sprays).
+
 ## 2026-10-26
 
 ### Build 0.3.5

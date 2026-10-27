@@ -148,6 +148,18 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   sound maps.
 
 ## Questions for the owner
+- **First-person hands (critique round 8 #1):** your frames put the kunai grip near x 1420 at 1080p, Blizzard's 2022
+  capture near x 1267, ours sits near 1200. Your frames all have a weapon skin. Could you take one Overwatch screenshot
+  of Kiriko at rest with the default weapons, and say your Field of View setting? Then the hands move to match.
+- **A crosshair colour option?** You play with a custom green crosshair (round 8 noticed it): should Overcraft's
+  hero options have Overwatch's crosshair colours?
+- **Ping key:** Overwatch's PC default is the middle mouse button (ours too); your screenshots show "CANCEL P".
+  Rebindable in the Overwatch options either way; say if P should be the default.
+- **Emote camera:** while she emotes the view goes to third person behind her (Minecraft's F5 view). Overwatch's, as
+  far as I remember it, swings round in front of the hero so you see the emote from the front: is that right, and
+  should ours do the same?
+- **Default emotes on the wheel:** the first four by name (Blooming, Challenge, Cheer, Choreography). Overwatch gives
+  every hero Heroic, a sit and Laugh: should those be the defaults instead?
 - Movement (#31) uses Overwatch's own mover numbers from the game data (friction, ground and air acceleration, air
   decay), read offline like the voice weights, since no public source has them; the code says so next to each, and
   they agree with the Workshop timings. Say if you'd rather keep movement to public numbers only. Also worth a look in
@@ -169,14 +181,22 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - The held talismans' blank backs read grey on the select screen (round 7 #6). That is Blizzard's own texture: the
   back's bottom is baked dark (#756664), where the fingers hold it. Left as it is; say if it should be lightened.
 
-## Next
-1. The owner's real-mouse hand play of all this (CLAUDE.md), then push feature/kiriko; merge to next/main after.
-2. What's left of the critiques: `tools/reference/critique-2026-10-26.md` and `-round2.md` to `-round7.md` (each
-   has a Status section: done, not ours, checked, open). Round 4's open item: the kunai throw's hand over the
-   crosshair (needs Overwatch frames of the throw). Swift Step now lands beside the ally (owner, 2026-10-26).
-3. Effects: all of Kiriko's are in, including the enemy-red view with scoreboard teams.
-4. Then Lúcio (#37), Jetpack Cat (#38), Lifeweaver (#39) in that order (owner, 2026-10-26); after them Sombra, Illari
-   (re-check patch notes), Juno (#1), Sojourn (#2), Mercy (#10).
-   - Lúcio: numbers with sources in `tools/reference/lucio.md`; his default skin is extracted (DataTool
-     extract-unlocks, 2026-10-26) to `E:\Overwatch Archive\extractedl088\Heroes\Lúcio`.
-   - Every new hero comes with its four perks (`Perk`, `Perks.minorXp/majorXp`, `tools/reference/perks.md`).
+## Next (the owner's order, 2026-10-26 night)
+Kiriko is the flagship: "basically perfect" before any other hero ("if you're implementing lucio before 4am then you
+didn't spend enough time learning and refining Kiriko"). Refactoring for later heroes is welcome along the way.
+1. **Kiriko up to snuff:** the HUD (#8) and select screen (#7) against Overwatch's, missing animations (#9), Suzu
+   without the gold ring area (#22: Overwatch shows only the white wave over those it touches and the ground), the
+   critiques' open items (`tools/reference/critique-2026-10-26*.md`, each with a Status section), new critique rounds.
+   Perks gain 1 point a second passively (owner); kills stay much faster.
+2. **Voice lines (#5), emotes (#4) and the communication wheel (#3) as their own system**, not Kiriko's, in code too.
+   Look up Overwatch 2's wheels first. Emotes: all of a hero's, with a settings menu to choose the equipped ones.
+   Callouts reach teammates (scoreboard team; every player when there are no teams) at any distance; the voice line
+   plays in the world to everyone nearby. With it: an easy way for players to change teams, and a game rule letting
+   non-operators change teams (default on) (owner, 2026-10-26).
+3. **Lúcio (#37)** (`feature/lucio` has his kit in progress; `tools/reference/lucio-plan.md`, `lucio.md`; his default
+   skin is extracted to `E:\Overwatch Archive\extracted\154088\Heroes\Lúcio`): his animation research runs meanwhile.
+   Build him after 1-2, turning "Kiriko in Minecraft" into "Overwatch heroes in Minecraft". LMB Sonic Amplifier, RMB
+   Soundwave (owner: good); safe fall 8 blocks (owner). Every hero comes with its four perks (`Perk`, `Perks`).
+4. Jetpack Cat (#38). 5. Lifeweaver (#39). Later: Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2),
+   Mercy (#10).
+Once Kiriko is refined, update TECHNIQUES.md with what was learned.

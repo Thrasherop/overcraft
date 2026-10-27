@@ -43,8 +43,6 @@ public final class EffectArt {
 		CYAN(0, 0, 0, 0, .3f, 0, .42f, .55f, .65f, 0, .95f, 1, 1, 1, 1, 1),
 		/** Suzu's burst ring: (0.1, 2, 3) in the game. */
 		SUZU_BLUE(0, 0, 0, 0, .5f, .017f, .33f, .5f, .85f, .033f, .67f, 1, 1, .5f, .9f, 1),
-		/** Suzu's ground mark: (3.2, 2.17, 0.1). */
-		SUZU_GOLD(0, 0, 0, 0, .5f, .5f, .34f, .016f, .85f, 1, .68f, .03f, 1, 1, .9f, .5f),
 		/** As the enemy sees her effects. */
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */
@@ -105,11 +103,7 @@ public final class EffectArt {
 		Palette.CYAN, new float[] {0, 0, .5f, .75f, .5f, 0, .7f, .9f, .9f, .3f, .92f, 1, 1, .8f, 1, 1},
 		// an enemy's effects, always blended (Fx): added, red over sky or grass washed out to pink-white. Ours
 		// its dark end read brick brown over grass (the sixth critique): brighter throughout
-		Palette.ENEMY, new float[] {0, .7f, .1f, .12f, .5f, .86f, .18f, .17f, .9f, .95f, .32f, .28f, 1, 1, .6f, .55f},
-		// Suzu's 5 s ground ring: the game's (3.2, 2.17, 0.1) is a saturated gold, about #FFD732 on screen; from the
-		// ramp's pale top it read khaki over grass (the fifth critique)
-		// (its faint end bright orange: dark, it read olive over grass, the seventh)
-		Palette.SUZU_GOLD, new float[] {0, .92f, .6f, 0, .5f, .96f, .72f, .04f, .9f, 1, .84f, .2f, 1, 1, .9f, .45f});
+		Palette.ENEMY, new float[] {0, .7f, .1f, .12f, .5f, .86f, .18f, .17f, .9f, .95f, .32f, .28f, 1, 1, .6f, .55f});
 
 	private EffectArt() {
 	}

@@ -134,6 +134,8 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					out.addProperty("perkLevel", s.perkLevel());
+					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
@@ -422,6 +424,22 @@ public final class DevServer {
 					}
 				}
 				out.addProperty("files", String.join(", ", files));
+			}
+			case "mouse" -> {
+				// dev only: mouse movement in pixels, scaled as MouseHandler.turnPlayer scales it, to where it goes: the
+				// communication wheel's pointer while it's open (MouseHandlerMixin), else the view. Minecraft itself only
+				// reads the mouse while its window has it, which the harness's window often doesn't
+				String[] a = arg.split(" ");
+				double ss = mc.options.sensitivity().get() * 0.6 + 0.2;
+				double sens = ss * ss * ss * 8.0;
+				double dx = Double.parseDouble(a[0]) * sens;
+				double dy = Double.parseDouble(a[1]) * sens;
+				if (dev.overcraft.client.comms.CommsWheel.open()) {
+					dev.overcraft.client.comms.CommsWheel.move(dx, dy);
+				} else if (player != null) {
+					player.turn(dx, dy);
+				}
+				out.addProperty("ok", true);
 			}
 			case "window" -> {
 				// dev only: a window size for screenshots (a 1920x1080 window matches the HUD reference)

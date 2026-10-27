@@ -86,8 +86,13 @@ public final class HudShapes {
 	public static final int STREAK_H = 128;
 	/** Texture sizes: the masks are drawn at this many pixels and scaled (smoothly, mipmapped) to the HUD's size. */
 	public static final int SIZE = 128;
+	/** Overwatch's mouse icon is 19 x 27 at 1080p (the eighth critique): these texels keep that shape. */
 	public static final int MOUSE_W = 48;
-	public static final int MOUSE_H = 64;
+	public static final int MOUSE_H = 68;
+	/** Where the button row ends and the body begins (texels). */
+	private static final float MOUSE_DIVIDE = 30;
+	/** Half the dark lines' width between the buttons and under them (texels: about 1.5 px at 19 px wide). */
+	private static final float MOUSE_LINE = 1.9f;
 	public static final int SEGMENT_W = 96;
 	public static final int SEGMENT_H = 72;
 	public static final int SHIELD_W = 120;
@@ -145,9 +150,9 @@ public final class HudShapes {
 		register(OFUDA_SEGMENT, SEGMENT_W, SEGMENT_H, (x, y) -> segment(x, y, 0));
 		register(OFUDA_SEGMENT_OUTLINE, SEGMENT_W, SEGMENT_H, (x, y) -> Math.min(segment(x, y, 0), 1 - segment(x, y, 6)));
 		register(MOUSE, MOUSE_W, MOUSE_H, HudShapes::mouse);
-		register(MOUSE_OUTLINE, MOUSE_W, MOUSE_H, (x, y) -> mouseBody(x, y, 3));
-		register(MOUSE_LEFT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(MOUSE_W / 2f - 1.5f - x) * coverage(25 - y)));
-		register(MOUSE_RIGHT, MOUSE_W, MOUSE_H, (x, y) -> Math.min(mouse(x, y), coverage(x - MOUSE_W / 2f - 1.5f) * coverage(25 - y)));
+		register(MOUSE_OUTLINE, MOUSE_W, MOUSE_H, (x, y) -> mouseBody(x, y, 3.5f));
+		register(MOUSE_LEFT, MOUSE_W, MOUSE_H, (x, y) -> mouseButton(x, y, MOUSE_W / 2f - MOUSE_LINE - x));
+		register(MOUSE_RIGHT, MOUSE_W, MOUSE_H, (x, y) -> mouseButton(x, y, x - MOUSE_W / 2f - MOUSE_LINE));
 		register(PLUS, SIZE, SIZE, (x, y) -> Math.max(roundBox(x, y, SIZE / 2f, SIZE / 2f, 14, 48, 6),
 			roundBox(x, y, SIZE / 2f, SIZE / 2f, 48, 14, 6)));
 		register(SHIELD, SHIELD_W, SHIELD_H, (x, y) -> shield(x, y, 0));
@@ -448,20 +453,33 @@ public final class HudShapes {
 		return Math.max(Math.max(ring, ticks), circle(x, y, 32, 32, 5.5f));
 	}
 
-	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */
+	/**
+	 * Overwatch's mouse icon seen from above (the eighth critique): a squarish top with rounded corners, a round bottom,
+	 * the buttons split from each other and from the body by dark lines (gaps here, the dark outline layer showing
+	 * through), and between the buttons a white wheel pill ringed dark.
+	 */
 	private static float mouse(float x, float y) {
 		float cx = MOUSE_W / 2f;
-		float split = coverage(Math.abs(x - cx) - 1.5f) + coverage(y - 25);
-		float wheel = 1 - roundBox(x, y, cx, 14, 3.5f, 6.5f, 3.5f);
-		return Math.min(mouseBody(x, y, 0), Math.min(Math.min(split, 1), wheel));
+		float wheelOuter = roundBox(x, y, cx, 16, 5.5f, 9.5f, 5.5f);
+		float wheelInner = roundBox(x, y, cx, 16, 3.3f, 7.3f, 3.3f);
+		float split = coverage(MOUSE_LINE - Math.abs(x - cx)) * coverage(MOUSE_DIVIDE - y) * (1 - wheelOuter);
+		float divider = coverage(MOUSE_LINE - Math.abs(y - MOUSE_DIVIDE));
+		float ring = Math.min(wheelOuter, 1 - wheelInner);
+		return Math.min(mouseBody(x, y, 0), 1 - Math.max(Math.max(split, divider), ring));
+	}
+
+	/** One button's area: above the divider, its side of the split ({@code side} > 0 inside), clear of the wheel. */
+	private static float mouseButton(float x, float y, float side) {
+		float wheelOuter = roundBox(x, y, MOUSE_W / 2f, 16, 5.5f, 9.5f, 5.5f);
+		return Math.min(Math.min(mouse(x, y), coverage(side)), Math.min(coverage(MOUSE_DIVIDE - MOUSE_LINE - y), 1 - wheelOuter));
 	}
 
 	/** The mouse's outline shape, grown by grow texels. */
 	private static float mouseBody(float x, float y, float grow) {
 		float cx = MOUSE_W / 2f;
-		float body = roundBox(x, y, cx, 23, 18 + grow, 18 + grow, 10 + grow);
-		float bottom = circle(x, y, cx, 40, 18 + grow);
-		return Math.max(body, Math.min(bottom, coverage(y - 23)));
+		float top = roundBox(x, y, cx, 30, 20 + grow, 26 + grow, 8 + grow);
+		float bottom = circle(x, y, cx, 44, 20 + grow);
+		return Math.max(top, Math.min(bottom, coverage(y - 30)));
 	}
 
 	/**

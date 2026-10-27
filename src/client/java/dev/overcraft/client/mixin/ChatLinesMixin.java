@@ -33,7 +33,8 @@ public abstract class ChatLinesMixin {
 		FontDescription font = heroChat() ? HudText.chatFont() : null;
 		return sink -> message.accept((index, style, codePoint) -> {
 			Style styled = style.getColor() == null ? style.withColor(HudText.MATCH_CHAT) : style;
-			return sink.accept(index, font == null ? styled : styled.withFont(font), codePoint);
+			// no drop shadow: Overwatch's chat has none (the eighth critique: Minecraft's hard brown copy read as ours)
+			return sink.accept(index, font == null ? styled : styled.withFont(font).withoutShadow(), codePoint);
 		});
 	}
 

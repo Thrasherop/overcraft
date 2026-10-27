@@ -88,6 +88,20 @@ public final class OcSounds {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));
 	}
 
+	/**
+	 * Every hero's communication-wheel lines (dev.overcraft.comms): "<hero>.voice.call_<callout>", and the ult status's
+	 * charging and almost-ready pools (its ready one is the hero's ult_ready). Silent until the hero's sounds are in the
+	 * local pack.
+	 */
 	public static void init() {
+		for (dev.overcraft.hero.Hero hero : dev.overcraft.hero.Hero.values()) {
+			for (dev.overcraft.comms.Callout callout : dev.overcraft.comms.Callout.values()) {
+				if (callout != dev.overcraft.comms.Callout.ULTIMATE_STATUS) {
+					register(hero.id + ".voice.call_" + callout.id);
+				}
+			}
+			register(hero.id + ".voice.call_ult_charging");
+			register(hero.id + ".voice.call_ult_almost");
+		}
 	}
 }

@@ -245,8 +245,66 @@ def add_sounds(source):
                     shutil.copyfile(picks[0][0], dest)
                     files.append(entry)
         sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": files}
+    lang = add_voicelines(source, out, sounds)
     (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
+    lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
+    lang_file.parent.mkdir(parents=True, exist_ok=True)
+    lang_file.write_text(json.dumps(lang, indent=1, ensure_ascii=False), encoding="utf8")
     print(f"{len(sounds)} sound events, {sum(len(v['sounds']) for v in sounds.values())} files -> {out}")
+
+
+# heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
+VOICELINE_HEROES = {"kiriko": "Kiriko"}
+
+
+def voice_text(file_name):
+    """The spoken text DataTool puts in a voice file's name ("<id>.0B2-<text>.ogg"; "?" became "_")."""
+    text = file_name.split(".0B2-", 1)[-1].rsplit(".", 1)[0]
+    return text.replace("(Japanese)_ ", "(Japanese) ").replace("_", "?")
+
+
+def add_voicelines(source, out, sounds):
+    """Each hero's collectible voice lines (the communication wheel's voice page): DataTool's extract-unlocks
+    "<Hero>|voiceline=*" puts them under Unlocks/Heroes/<Hero>/VoiceLine/<season>/<unlock name>/<id>.ogg, several files
+    for an unlock with several takes ("Tarot Reading"). One sound event per unlock, "<hero>.voiceline.<slug>", its
+    subtitle the spoken text (the unlock's name when it has several), and assets/overcraft/voicelines/<hero>.json
+    listing them for the game. Returns the pack's lang entries (the unlock names and subtitles)."""
+    import json
+    lang = {}
+    for hero, folder in VOICELINE_HEROES.items():
+        base = Path(source) / "Unlocks" / "Heroes" / folder / "VoiceLine"
+        spoken = {}
+        for f in (Path(source) / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
+            spoken[f.name.split(".", 1)[0]] = voice_text(f.name)
+        if not base.exists():
+            print(f"no voice line unlocks for {hero}: run DataTool extract-unlocks <out>/Unlocks with {folder}|voiceline=*")
+            continue
+        listed = []
+        for unlock in sorted(d for d in base.glob("*/*") if d.is_dir()):
+            name = unlock.name.replace("_", "?")
+            key = slug(name)
+            if key in {e["id"] for e in listed}:
+                continue
+            files = sorted(unlock.glob("*.ogg"))
+            if not files:
+                continue
+            event = f"{hero}.voiceline.{key}"
+            entries = []
+            for i, f in enumerate(files):
+                dest = out / event.replace(".", "/") / f"{i}.ogg"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(f, dest)
+                entries.append(f"overcraft:{event.replace('.', '/')}/{i}")
+            sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": entries}
+            text = spoken.get(files[0].name.split(".", 1)[0], name) if len(files) == 1 else name
+            lang[f"overcraft.voiceline.{hero}.{key}"] = name
+            lang[f"subtitles.overcraft.{event}"] = f"{folder}: {text}"
+            listed.append({"id": key, "group": unlock.parent.name.replace("_", ":")})
+        target = PACK / "assets" / "overcraft" / "voicelines" / f"{hero}.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(listed, indent=1, ensure_ascii=False), encoding="utf8")
+        print(f"{hero}: {len(listed)} voice lines")
+    return lang
 
 
 # variants kept per sound event (Minecraft picks one at random each time)
@@ -254,9 +312,11 @@ MAX_VARIANTS = 8
 
 # the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
 # Minecraft only reads TrueType outlines, which these two are.
-FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf"}
+# Overwatch's chat is BlizzardGlobal-Regular, not the HUD's Futura (the eighth critique, checked against the owner's frame)
+FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf",
+         "blizzard_global.ttf": "BlizzardGlobal-Regular.ttf"}
 FONT_DEFS = {"hud": ("futura_demibold.ttf", 32, 1.5), "hud_small": ("futura_demibold.ttf", 16, 2),
-             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("futura_demibold.ttf", 10.5, 3)}
+             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("blizzard_global.ttf", 8.4, 3.5)}
 
 
 def add_fonts(source):

@@ -11,10 +11,6 @@ import dev.overcraft.client.model.SkinnedModel;
 import dev.overcraft.client.HeroHud;
 import dev.overcraft.hero.Allies;
 import net.minecraft.client.Camera;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -340,8 +336,10 @@ public final class KirikoFx {
 	}
 
 	/**
-	 * The burst (360C): a dome flashing outward, a sky-blue wave across the ground, a flower, glows, then a gold ring
-	 * on the ground for 5 s (6089). Sized to the ability's radius (the game's mesh sizes fit its own radius).
+	 * The burst (360C): a dome flashing outward, a sky-blue wave across the ground, a flower, glows. Sized to the
+	 * ability's radius (the game's mesh sizes fit its own radius). The game data also lays a gold ring on the ground for
+	 * 5 s (6089), but Overwatch shows no such ring in play (the owner, #22: "there is not that in ow ... all there is is
+	 * the little white wave"): left out.
 	 */
 	static void suzuBurst(Vec3 at, float radius) {
 		float r = radius > 0 ? radius : 4;
@@ -366,55 +364,6 @@ public final class KirikoFx {
 		// clear of the ground: a camera-facing glow centred on it was cut off flat by the ground (the critique)
 		Fx.add(glow("glow_hot", p(Palette.SUZU_BLUE), at.add(0, 0.75, 0), 1.5f, 0.25f, 0.5f));
 		Fx.add(glow("glow", p(Palette.TEAL), at.add(0, 1.1, 0), 2.4f, 0.4f, 0.3f));
-		// the 5 s ground mark: soft gold, blended (added over grass it was a hard lime line). Laid on the ground in short
-		// pieces, each on the surface under it: one flat ring hung in the air over slopes, through leaves and trunks (the
-		// seventh critique; Overwatch's is a decal, projected onto what's under it). Where nothing is near, none
-		Level level = Minecraft.getInstance().level;
-		int pieces = Math.max(24, Math.round(Mth.TWO_PI * r / RING_PIECE));
-		// each twice its share, so the soft ends overlap into one line (at 1.4 it read as dashes)
-		float length = Mth.TWO_PI * r / pieces * 2;
-		for (int i = 0; i < pieces; i++) {
-			float a = i * Mth.TWO_PI / pieces;
-			double x = at.x + Mth.cos(a) * r;
-			double z = at.z + Mth.sin(a) * r;
-			Double y = level == null ? Double.valueOf(at.y) : groundY(level, x, z, at.y);
-			Particle piece = y == null ? null : Fx.soft("ribbon", p(Palette.SUZU_GOLD));
-			if (piece != null) {
-				// a flat piece's long side, turned by r, lies along (cos r, 0, -sin r) (Fx.emit): along the circle at a
-				// for r = -a - pi/2 (turned by -a, the pieces lay out like spokes)
-				Fx.add(piece.at(new Vec3(x, y + 0.03, z)).normal(new Vec3(0, 1, 0)).life(5).size(length, length)
-					.aspect(RING_WIDTH / length).spin(-a - Mth.HALF_PI, 0).alpha(0.85f).fade(0.03f, 0.15f));
-			}
-		}
-	}
-
-	/** Suzu's ground ring in pieces about this long, this wide (m, ours: its line read 4-6 px wide at 10 m). */
-	private static final float RING_PIECE = 0.5f;
-	private static final float RING_WIDTH = 0.2f;
-	/**
-	 * How far below a burst its ring still finds the ground (blocks, ours): a Suzu that burst on an ally in the air, or
-	 * high on a throw, left no ring at 2 (#22).
-	 */
-	private static final int GROUND_REACH = 8;
-
-	/**
-	 * The height of the ground at (x, z) from two blocks above near to GROUND_REACH below it: the top of the first
-	 * solid block under open space, from above. Null if there's none.
-	 */
-	private static @Nullable Double groundY(Level level, double x, double z, double near) {
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		int bx = Mth.floor(x);
-		int bz = Mth.floor(z);
-		int top = Mth.floor(near) + 2;
-		boolean open = level.getBlockState(pos.set(bx, top + 1, bz)).getCollisionShape(level, pos).isEmpty();
-		for (int y = top; y >= Mth.floor(near) - GROUND_REACH; y--) {
-			VoxelShape shape = level.getBlockState(pos.set(bx, y, bz)).getCollisionShape(level, pos);
-			if (!shape.isEmpty() && open) {
-				return y + shape.max(Direction.Axis.Y);
-			}
-			open = shape.isEmpty();
-		}
-		return null;
 	}
 
 	// ---- Swift Step ----

@@ -1,6 +1,7 @@
 package dev.overcraft.client;
 
 import dev.overcraft.hero.Perk;
+import dev.overcraft.client.comms.CommsWheel;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.HeroModePayload;
@@ -17,6 +18,7 @@ import dev.overcraft.client.controls.HeroControls.Action;
 import dev.overcraft.client.mixin.MinecraftInvoker;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.OwMovement;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -164,6 +166,21 @@ public final class ClientHero {
 		if (player == null) {
 			return;
 		}
+		// emoting, the view goes to third person, as Overwatch's does; back to first person when it ends
+		boolean emoting = hero() != null && dev.overcraft.client.model.HeroAnimator.of(player).emoting();
+		if (emoting && !emoteCamera && mc.options.getCameraType().isFirstPerson()) {
+			emoteCamera = true;
+			mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK);
+		} else if (!emoting && emoteCamera) {
+			emoteCamera = false;
+			mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
+		}
+		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
+		boolean view = heroView();
+		if (view != chatHeroView) {
+			chatHeroView = view;
+			mc.gui.hud.getChat().rescaleChat();
+		}
 		if (openSelectOnJoin && mc.gui.screen() == null && mc.level != null) {
 			openSelectOnJoin = false;
 			mc.gui.setScreen(new HeroSelectScreen(true));
@@ -205,6 +222,7 @@ public final class ClientHero {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			perkMenu = false;
+			CommsWheel.cancel();
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -214,7 +232,7 @@ public final class ClientHero {
 
 		// the perk menu (#36): Left Alt held while a perk waits; the left or right mouse button picks the left or right
 		// perk (Overwatch's, whatever the fire buttons are bound to), and fires nothing meanwhile
-		if (perkMenu(mc)) {
+		if (perkMenu(mc) | CommsWheel.tick(mc)) {
 			HeroControls.drainAll();
 			ofudaOn = false;
 			if (lastHeld != 0) {
@@ -245,7 +263,8 @@ public final class ClientHero {
 		} else {
 			ofuda = ofudaPressed | HeroControls.get(Action.PRIMARY_FIRE).isDown();
 		}
-		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0);
+		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0)
+			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0);
 
 		int pressed = 0;
 		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
@@ -253,6 +272,14 @@ public final class ClientHero {
 		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
 		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
 		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
+
+		dev.overcraft.client.comms.Pings.tick(mc);
+
+		// chat on Overwatch's key (Enter): T is the communication wheel's in hero mode
+		if (drain(HeroControls.get(Action.CHAT))) {
+			mc.gui.openChatScreen(net.minecraft.client.gui.components.ChatComponent.ChatMethod.MESSAGE);
+			return;
+		}
 
 		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
 		if (drain(HeroControls.get(Action.INTERACT))) {
@@ -269,6 +296,10 @@ public final class ClientHero {
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
 		}
 	}
+
+	private static boolean chatHeroView;
+	/** The camera went to third person for an emote (and comes back when it ends). */
+	private static boolean emoteCamera;
 
 	/** The perk menu is up (HeroHud draws it). */
 	private static boolean perkMenu;

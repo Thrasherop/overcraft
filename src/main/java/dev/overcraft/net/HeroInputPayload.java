@@ -12,6 +12,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 public record HeroInputPayload(int held, int pressed) implements CustomPacketPayload {
 	public static final int HELD_PRIMARY = 1;
 	public static final int HELD_SECONDARY = 2;
+	/** Climbing a wall (Kiriko: the client moves her; the climb interrupts a reload, #42). */
+	public static final int HELD_WALL_CLIMB = 8;
 
 	public static final int PRESS_ABILITY_1 = 1;
 	public static final int PRESS_ABILITY_2 = 2;
