@@ -16,8 +16,9 @@ import java.util.List;
 
 /**
  * The operators' command (#23), for testing and for servers: {@code /overcraft reset [players]} readies every
- * cooldown and refills the ammo; {@code /overcraft ult [players] [percent]} sets the ult charge (100% by default).
- * Without players, the one running it.
+ * cooldown and refills the ammo; {@code /overcraft ult [players] [percent]} sets the ult charge (100% by default);
+ * {@code /overcraft perks [players] [level]} sets the perk level (1-3, 3 by default) with no perks picked, so they can
+ * be picked again (#36). Without players, the one running it.
  */
 public final class OvercraftCommand {
 	private OvercraftCommand() {
@@ -35,7 +36,30 @@ public final class OvercraftCommand {
 				.then(Commands.argument("players", EntityArgument.players())
 					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), 100))
 					.then(Commands.argument("percent", IntegerArgumentType.integer(0, 100))
-						.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent")))))));
+						.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))))
+			.then(Commands.literal("perks")
+				.executes(c -> perks(c, List.of(c.getSource().getPlayerOrException()), 3))
+				.then(Commands.argument("players", EntityArgument.players())
+					.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), 3))
+					.then(Commands.argument("level", IntegerArgumentType.integer(1, 3))
+						.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "level")))))));
+	}
+
+	private static int perks(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players, int level) {
+		int done = 0;
+		for (ServerPlayer player : players) {
+			HeroState s = HeroManager.state(player);
+			if (s == null || s.hero == null) {
+				continue;
+			}
+			s.perkXp = level == 1 ? 0 : level == 2 ? Perks.minorXp(s.hero) : Perks.majorXp(s.hero);
+			s.minorPerk = s.majorPerk = null;
+			HeroManager.savePerks(player, s);
+			done++;
+		}
+		int count = done;
+		c.getSource().sendSuccess(() -> Component.translatable("overcraft.command.perks", count, level), true);
+		return done;
 	}
 
 	private static int reset(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) throws CommandSyntaxException {

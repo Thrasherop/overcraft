@@ -33,6 +33,16 @@ public final class HeroState {
 	public @Nullable UUID castTarget;
 	/** Quick melee, every hero's (QuickMelee). */
 	public double meleeCooldown;
+	/** A timed attack and reload speed bonus (Ready Step: 0.4) until a game time. */
+	public double attackBuff;
+	public long attackBuffUntil;
+
+	// perks (#36): progress toward the next perk level, and the ones picked
+	public double perkXp;
+	/** Time played as this hero (ticks): the "match" clock the perk rate ramps up with. */
+	public long perkTicks;
+	public @Nullable Perk minorPerk;
+	public @Nullable Perk majorPerk;
 
 	public long lastDamagedTick = -10000;
 	/** When the hero last spoke a voice line (game time), to space them out. */
@@ -70,5 +80,14 @@ public final class HeroState {
 		meleeCooldown = 0;
 		castTicks = -1;
 		castTarget = null;
+		attackBuff = 0;
+		attackBuffUntil = 0;
+		perkXp = 0;
+		perkTicks = 0;
+		minorPerk = majorPerk = null;
+	}
+
+	public boolean has(Perk perk) {
+		return minorPerk == perk || majorPerk == perk;
 	}
 }

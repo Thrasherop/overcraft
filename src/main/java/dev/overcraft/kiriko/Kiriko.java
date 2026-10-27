@@ -11,6 +11,8 @@ import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroState;
+import dev.overcraft.hero.Perk;
+import dev.overcraft.hero.Perks;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
@@ -163,10 +165,31 @@ public final class Kiriko implements HeroKit {
 	}
 
 	private static void throwOfuda(ServerPlayer player) {
-		ServerLevel level = player.level();
 		// the cone narrows with the player's Healing Ofuda sensitivity (an Overwatch option)
 		LivingEntity target = Targeting.allyInView(player, OFUDA_SEEK_RANGE,
 			OFUDA_LOCK_HALF_ANGLE * HeroManager.options(player).ofudaSensitivity(), true);
+		launchOfuda(player, target);
+		Combat.animate(player, "throw_ofuda");
+		HeroSounds.split(player, OcSounds.KIRIKO_OFUDA_THROW, OcSounds.KIRIKO_OFUDA_THROW_3P, player.getEyePosition());
+	}
+
+	/**
+	 * Fortune Teller (perk): a kunai hit sends two Healing Ofuda to an ally in front of her, on top of her own volleys
+	 * (no ammo spent, no throw of her own).
+	 */
+	public static void fortuneTeller(ServerPlayer player) {
+		if (!HeroManager.hasPerk(player, Perk.KIRIKO_FORTUNE_TELLER)) {
+			return;
+		}
+		LivingEntity target = Targeting.allyInView(player, OFUDA_SEEK_RANGE, FORTUNE_TELLER_HALF_ANGLE, true);
+		if (target != null) {
+			launchOfuda(player, target);
+		}
+	}
+
+	/** One pair of talismans, one from each hand, homing on the target when there is one. */
+	private static void launchOfuda(ServerPlayer player, @Nullable LivingEntity target) {
+		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
 		Vec3 side = look.cross(new Vec3(0, 1, 0));
@@ -177,8 +200,6 @@ public final class Kiriko implements HeroKit {
 			ofuda.launch(eye.add(side.scale(offset)).add(0, -0.1, 0), look, Ow.speed(OFUDA_SPEED));
 			level.addFreshEntity(ofuda);
 		}
-		Combat.animate(player, "throw_ofuda");
-		HeroSounds.split(player, OcSounds.KIRIKO_OFUDA_THROW, OcSounds.KIRIKO_OFUDA_THROW_3P, player.getEyePosition());
 	}
 
 	private static void throwSuzu(ServerPlayer player) {
@@ -229,6 +250,11 @@ public final class Kiriko implements HeroKit {
 		player.resetFallDistance();
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
+		if (s.has(Perk.KIRIKO_READY_STEP)) {
+			// Ready Step (perk): faster throws and reloads for a moment after arriving
+			s.attackBuff = READY_STEP_ATTACK;
+			s.attackBuffUntil = Combat.now(player) + Ow.ticks(READY_STEP_TIME);
+		}
 		Effects.play(level, "swift_step_arrive", arrive, player);
 		// to everyone else, out to Overwatch's 70 m (volume 4.4 = 70 / 16 blocks); not to her: her own cast whoosh, which
 		// follows her, covers the whole step (the game plays her nothing else: #17, sounds-round8.md)
@@ -286,6 +312,7 @@ public final class Kiriko implements HeroKit {
 		float step = s.castTicks >= 0 ? (float) (SWIFT_STEP_COOLDOWN + (s.castTicks + 1) / 20.0) : (float) (s.ability1Cooldown / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ULT_COST, s.ultActive > 0,
 			s.primaryAmmo, primaryReload, s.secondaryAmmo, secondaryReload,
-			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire);
+			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
+			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk));
 	}
 }

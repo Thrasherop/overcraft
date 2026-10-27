@@ -6,6 +6,8 @@ import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.Perk;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
@@ -75,7 +77,11 @@ public class OfudaEntity extends OwProjectile {
 		if (target != null) {
 			Vec3 to = target.getBoundingBox().getCenter().subtract(position());
 			if (to.lengthSqr() > 1.0E-4) {
-				setDeltaMovement(to.normalize().scale(Ow.speed(KirikoStats.OFUDA_SPEED)));
+				// Urgent Care (perk): faster toward an ally below half health
+				boolean urgent = getOwner() instanceof Player owner && HeroManager.hasPerk(owner, Perk.KIRIKO_URGENT_CARE)
+					&& target.getHealth() < target.getMaxHealth() * KirikoStats.URGENT_CARE_BELOW;
+				double speed = KirikoStats.OFUDA_SPEED * (urgent ? 1 + KirikoStats.URGENT_CARE_SPEED : 1);
+				setDeltaMovement(to.normalize().scale(Ow.speed(speed)));
 			}
 		}
 		super.tick();
@@ -95,7 +101,7 @@ public class OfudaEntity extends OwProjectile {
 		level.playSound(null, ally.getX(), ally.getY(0.5), ally.getZ(), OcSounds.KIRIKO_OFUDA_HEAL, SoundSource.PLAYERS, 1, 1);
 		float healed = Combat.heal(ally, KirikoStats.OFUDA_HEAL);
 		if (getOwner() instanceof Player owner) {
-			Combat.addUltCharge(owner, healed);
+			Combat.credit(owner, healed);
 			Combat.addFireForHealing(owner, healed);
 			// Medic: weapon healing also heals Kiriko (no ult charge for that part)
 			if (healed > 0) {

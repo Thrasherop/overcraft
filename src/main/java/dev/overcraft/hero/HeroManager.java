@@ -63,6 +63,13 @@ public final class HeroManager {
 	public static final AttachmentType<Double> ULT_CHARGE = AttachmentRegistry.create(Overcraft.id("ult_charge"),
 		builder -> builder.persistent(Codec.DOUBLE).copyOnDeath());
 
+	/**
+	 * Each hero's perk progress and picks (#36), saved with the player: kept through deaths, sessions and hero swaps
+	 * (swapping back restores them, as in Overwatch). Written on leaving, swapping and picking.
+	 */
+	public static final AttachmentType<Map<String, Perks.Progress>> PERKS = AttachmentRegistry.create(Overcraft.id("perks"),
+		builder -> builder.persistent(Perks.Progress.MAP).copyOnDeath());
+
 	private static final Identifier HEALTH_MODIFIER = Overcraft.id("hero_health");
 	private static final Map<Hero, HeroKit> KITS = new EnumMap<>(Hero.class);
 	private static final Map<UUID, HeroState> STATES = new HashMap<>();
@@ -80,6 +87,12 @@ public final class HeroManager {
 
 	public static @Nullable HeroState state(Player player) {
 		return STATES.get(player.getUUID());
+	}
+
+	/** The player plays this perk's hero and picked the perk (#36). */
+	public static boolean hasPerk(Player player, Perk perk) {
+		HeroState state = STATES.get(player.getUUID());
+		return state != null && state.hero == perk.hero && state.has(perk);
 	}
 
 	public static @Nullable Hero hero(Player player) {
@@ -142,7 +155,9 @@ public final class HeroManager {
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
+		savePerks(player, state);
 		state.reset(hero);
+		loadPerks(player, state);
 		if (hero == null) {
 			player.removeAttached(HERO);
 		} else {
@@ -203,6 +218,7 @@ public final class HeroManager {
 		if (charge != null && state.hero != null) {
 			state.ultCharge = charge;
 		}
+		loadPerks(player, state);
 		applyKit(player, state, true);
 	}
 
@@ -210,6 +226,7 @@ public final class HeroManager {
 		HeroState state = STATES.remove(player.getUUID());
 		if (state != null && state.hero != null) {
 			player.setAttached(ULT_CHARGE, state.ultCharge);
+			savePerks(player, state);
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -229,10 +246,12 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			Hero hero = state.hero;
-			// the ult's charge survives dying, as in Overwatch (it was being reset with everything else)
+			// the ult's charge and the perks survive dying, as in Overwatch (the charge was being reset with everything else)
 			double charge = state.ultCharge;
+			Perks.Progress perks = Perks.save(state);
 			state.reset(hero);
 			state.ultCharge = charge;
+			Perks.load(state, perks);
 			applyKit(player, state, true);
 			Voice.say(player, "respawn", 0.7f, false);
 		}
@@ -291,6 +310,7 @@ public final class HeroManager {
 	/** Rules every hero shares: passive ult charge and the global regeneration. */
 	private static void tickRules(ServerPlayer player, HeroState state) {
 		state.rushed = Combat.isRushed(player);
+		state.perkTicks++;
 		QuickMelee.tick(state);
 		Combat.tickFire(player, state);
 		if (state.ultActive > 0) {
@@ -301,6 +321,20 @@ public final class HeroManager {
 		if (Combat.now(player) - state.lastDamagedTick >= Combat.REGEN_DELAY && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());
 			Combat.heal(player, (Combat.REGEN_FLAT + Combat.REGEN_PERCENT * maxOw) / 20.0);
+		}
+	}
+
+	/** Saves the state's perk progress under its hero (#36). */
+	public static void savePerks(ServerPlayer player, HeroState state) {
+		if (state.hero != null) {
+			player.setAttached(PERKS, Perks.with(player.getAttached(PERKS), state.hero, Perks.save(state)));
+		}
+	}
+
+	private static void loadPerks(ServerPlayer player, HeroState state) {
+		Map<String, Perks.Progress> saved = player.getAttached(PERKS);
+		if (state.hero != null && saved != null) {
+			Perks.load(state, saved.get(state.hero.id));
 		}
 	}
 

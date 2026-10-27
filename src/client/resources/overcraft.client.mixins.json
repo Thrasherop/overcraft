@@ -20,6 +20,7 @@
 		"ClientPacketListenerMixin",
 		"ChatComponentMixin",
 		"ChatLinesMixin",
+		"ChatFocusedLinesMixin",
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
 		"HeroFovMixin"

@@ -52,6 +52,8 @@ public final class HeroControls {
 		QUICK_MELEE(Section.COMBAT, keyboard(InputConstants.KEY_V)),
 		/** Overwatch's interact key: here doors, buttons, chests and villagers, which the fire buttons no longer do. */
 		INTERACT(Section.INTERFACE, keyboard(InputConstants.KEY_F)),
+		/** Hold to choose a perk once one is ready, left or right click picking (Overwatch's: Left Alt, #36). */
+		PERK_MENU(Section.INTERFACE, keyboard(InputConstants.KEY_LALT)),
 		HERO_SELECT(Section.INTERFACE, keyboard(InputConstants.KEY_H)),
 		MINECRAFT_MODE(Section.INTERFACE, keyboard(InputConstants.KEY_G));
 
@@ -87,6 +89,17 @@ public final class HeroControls {
 
 	public static KeyMapping get(Action action) {
 		return action.mapping;
+	}
+
+	/** A hero key bound to this mouse button is down. */
+	public static boolean mouseButtonHeld(int button) {
+		InputConstants.Key mouse = mouse(button);
+		for (Action action : Action.values()) {
+			if (action.key().equals(mouse) && action.mapping.isDown()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Loads the saved keys (once, at start). */
