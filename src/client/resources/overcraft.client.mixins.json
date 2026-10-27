@@ -29,7 +29,8 @@
 		"CameraMixin",
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",
-		"EntityShadowMixin"
+		"EntityShadowMixin",
+		"HudFontTextureMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -6,6 +6,14 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### After 0.3.8 (on `feature/kiriko`)
+- **Smoother HUD text** (round 8 #7's rest, "the jagged glyph edges"): Minecraft samples every font texture nearest,
+  for its pixel font; the HUD draws Overwatch's faces shrunk about 2x from their raster, and nearest sampling left
+  stair steps on their diagonals. The HUD's fonts (`overcraft:hud*` only) are now sampled linearly
+  (`HudFontTextureMixin`). Played: the HUD name and key labels at 10x before and after (`font_before`, `font_after`:
+  the edge pixels changed, the stair steps softened); the Options title, tabs and ult icon at 3x (`font_opts`): crisp,
+  not blurred. Minecraft's own text is untouched.
+
 ### Build 0.3.8 (the owner's answers: notable pings, body shadow, her arms in Minecraft mode; the two batches below)
 Both batches since 0.3.7, below. The asset pack is unchanged (0.3.7's works). Play of `next` before the build: at the
 end of this entry.
