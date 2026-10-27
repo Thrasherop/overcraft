@@ -62,6 +62,10 @@ public final class OcSounds {
 	public static final SoundEvent KIRIKO_VOICE_PAIN = register("kiriko.voice.pain");
 	public static final SoundEvent KIRIKO_VOICE_MELEE = register("kiriko.voice.melee");
 	public static final SoundEvent KIRIKO_VOICE_ON_FIRE = register("kiriko.voice.on_fire");
+	/** Pings (#40): Overwatch's hero calls out what they ping, heard by their team. */
+	public static final SoundEvent KIRIKO_VOICE_PING = register("kiriko.voice.ping");
+	public static final SoundEvent KIRIKO_VOICE_PING_WARNING = register("kiriko.voice.ping_warning");
+	public static final SoundEvent KIRIKO_VOICE_PING_ENEMY = register("kiriko.voice.ping_enemy");
 	/** Kitsune Rush's corridor, heard by each player in it (RushSound, #16): the opening hits, and the three looping beds. */
 	public static final SoundEvent KIRIKO_RUSH_PATH_START = register("kiriko.rush.path_start");
 	public static final SoundEvent KIRIKO_RUSH_PATH_1 = register("kiriko.rush.path_1");

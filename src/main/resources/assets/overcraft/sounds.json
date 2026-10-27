@@ -389,6 +389,18 @@
 		"subtitle": "subtitles.overcraft.kiriko.voice.ult_ready",
 		"sounds": []
 	},
+	"kiriko.voice.ping": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.ping",
+		"sounds": []
+	},
+	"kiriko.voice.ping_warning": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.ping_warning",
+		"sounds": []
+	},
+	"kiriko.voice.ping_enemy": {
+		"subtitle": "subtitles.overcraft.kiriko.voice.ping_enemy",
+		"sounds": []
+	},
 	"kiriko.voice.elimination": {
 		"subtitle": "subtitles.overcraft.kiriko.voice.elimination",
 		"sounds": []

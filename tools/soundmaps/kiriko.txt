@@ -603,6 +603,14 @@ kiriko.voice.heal = HeroVoice/Kiriko/Unknown/FC4.078/00000005EE97.0B2-The breeze
 kiriko.voice.heal.reaper = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF7F.0B2-Like mending a shadow.ogg | w=0.5
 kiriko.voice.heal.genji = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF84.0B2-Be careful, Shimada.ogg | w=0.5
 kiriko.voice.heal.hanzo = HeroVoice/Kiriko/Unknown/FC4.078/00000005EF84.0B2-Be careful, Shimada.ogg | w=0.5
+# pings (#40): the ping wheel's lines in the game data (11D9 "Over there!", 11DA warning, 1117 enemy)
+kiriko.voice.ping = HeroVoice/Kiriko/Unknown/11D9.078/00000006427F.0B2-Over there!.ogg | w=1
+kiriko.voice.ping_warning = HeroVoice/Kiriko/Unknown/11DA.078/000000064280.0B2-Heads up!.ogg | w=1
+kiriko.voice.ping_warning = HeroVoice/Kiriko/Unknown/11DA.078/000000064281.0B2-Watch here.ogg | w=1
+kiriko.voice.ping_warning = HeroVoice/Kiriko/Unknown/11DA.078/000000064282.0B2-Keep an eye out.ogg | w=1
+kiriko.voice.ping_enemy = HeroVoice/Kiriko/Unknown/1117.078/000000062CF3.0B2-Got one here.ogg | w=1
+kiriko.voice.ping_enemy = HeroVoice/Kiriko/Unknown/1117.078/000000062CF4.0B2-Enemy here.ogg | w=1
+kiriko.voice.ping_enemy = HeroVoice/Kiriko/Unknown/1117.078/0000000692E8.0B2-Enemy spotted.ogg | w=1
 kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB6B.0B2-(Japanese)_ Cool.ogg | w=1
 kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB6C.0B2-(Japanese)_ Goodbye.ogg | w=1
 kiriko.voice.elimination = HeroVoice/Kiriko/Elimination/00000005EB72.0B2-(Japanese)_ My apologies.ogg | w=1
