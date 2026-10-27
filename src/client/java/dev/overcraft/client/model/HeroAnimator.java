@@ -90,8 +90,9 @@ public final class HeroAnimator {
 	}
 
 	/**
-	 * An emote started (the communication wheel, dev.overcraft.comms): the hero's emote_<id>_1, _2... clips play over the
-	 * whole body in turn, the last one looping, until the hero moves or does something else.
+	 * An emote started (the communication wheel, dev.overcraft.comms): the hero's emote_<id>_<n> clips play over the
+	 * whole body as their EmotePlan chains them: a one-shot once, a dance or a kneel looping until the hero moves or does
+	 * something else.
 	 */
 	public static void emote(int entityId, String emote, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
@@ -110,6 +111,8 @@ public final class HeroAnimator {
 	private @Nullable Vec3 emoteFrom;
 	/** How far (m) the hero may drift before an emote ends (ours: Minecraft nudges players a little standing still). */
 	private static final double EMOTE_MOVE = 0.15;
+	/** Seconds an emote eases in from the movement pose, and a one-shot back out to it (ours). */
+	private static final float EMOTE_EASE = 0.2f;
 
 	/** The emote's pose at this moment over the whole body, or false when there's none (or it just ended). */
 	private boolean poseEmote(SkinnedModel model, LivingEntity entity, float now, Skeleton.Pose pose) {
@@ -122,28 +125,44 @@ public final class HeroAnimator {
 			emote = null;
 			return false;
 		}
-		java.util.List<SkinnedModel.Clip> parts = new java.util.ArrayList<>();
-		for (int n = 1; model.clips.containsKey("emote_" + emote + "_" + n); n++) {
-			parts.add(model.clips.get("emote_" + emote + "_" + n));
-		}
-		if (parts.isEmpty()) {
+		EmotePlan plan = EmotePlan.of(model, emote);
+		if (plan == null) {
 			emote = null;
 			return false;
 		}
 		float t = Math.max(0, now - emoteStart);
-		for (int i = 0; i < parts.size(); i++) {
-			SkinnedModel.Clip part = parts.get(i);
-			boolean last = i == parts.size() - 1;
-			if (last || t < part.duration()) {
-				Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
-				Skeleton.sample(part, last ? t % Math.max(0.01f, part.duration()) : t, act);
-				// eased in from the movement pose over the first 0.2 s
-				Skeleton.blend(pose, act, Math.clamp((now - emoteStart) / 0.2f, 0, 1), null);
-				return true;
+		// eased in from the movement pose over the first 0.2 s
+		float weight = Math.clamp((now - emoteStart) / EMOTE_EASE, 0, 1);
+		SkinnedModel.Clip clip = plan.steps().getLast();
+		float at = clip.duration();
+		float total = plan.total();
+		if (t < total) {
+			for (SkinnedModel.Clip step : plan.steps()) {
+				if (t < step.duration()) {
+					clip = step;
+					at = t;
+					break;
+				}
+				t -= step.duration();
 			}
-			t -= part.duration();
+		} else if (plan.loop() != null) {
+			clip = plan.loop();
+			at = (t - total) % Math.max(0.01f, clip.duration());
+		} else if (plan.ends()) {
+			// a one-shot: back to her stance, eased out to the movement pose, and the emote's over (Overwatch's camera
+			// comes back then too)
+			float out = (t - total) / EMOTE_EASE;
+			if (out >= 1) {
+				emote = null;
+				return false;
+			}
+			weight *= 1 - out;
 		}
-		return false;
+		// else it holds its last pose until she moves
+		Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		Skeleton.sample(clip, at, act);
+		Skeleton.blend(pose, act, weight, null);
+		return true;
 	}
 
 	/** A climb sound: in the head for the local player (her own sound, #17), at the spot for anyone else watching. */

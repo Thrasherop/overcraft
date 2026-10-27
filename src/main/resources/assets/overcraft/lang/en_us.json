@@ -97,6 +97,8 @@
 	"overcraft.loadout.left": "Left",
 	"overcraft.loadout.none": "No voice lines: they come from your local asset pack (build_asset_pack.py sounds).",
 	"overcraft.loadout.hint": "Pick a slot, then a line. Right click: hear it",
+	"overcraft.loadout.hint_emotes": "Pick a slot, then an emote",
+	"overcraft.loadout.none_emotes": "No emotes: they come with your hero's model in your local asset pack.",
 	"overcraft.team.title": "Change team",
 	"overcraft.team.none": "No team",
 	"overcraft.team.blue": "Blue",

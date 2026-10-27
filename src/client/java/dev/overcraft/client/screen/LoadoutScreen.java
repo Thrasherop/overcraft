@@ -161,13 +161,14 @@ public class LoadoutScreen extends OwScreen {
 				HudText.draw(g, Face.BODY, name(hero, lines.get(i)), x + 12, y + 25, 13, on ? ORANGE : WHITE, Align.LEFT);
 			}
 			if (lines.isEmpty()) {
-				HudText.draw(g, Face.BODY, Component.translatable("overcraft.loadout.none").getString(), LEFT, LIST_TOP + 20, 14,
-					TEXT_DIM, Align.LEFT);
+				HudText.draw(g, Face.BODY, Component.translatable(emotes ? "overcraft.loadout.none_emotes" : "overcraft.loadout.none")
+					.getString(), LEFT, LIST_TOP + 20, 14, TEXT_DIM, Align.LEFT);
 			}
 		}
 		keyBox(g, "ESC", LEFT + 8, 1010, WHITE);
-		HudText.draw(g, Face.BODY, Component.translatable("overcraft.loadout.hint").getString().toUpperCase(Locale.ROOT),
-			LEFT + 40, 1017, 14, TEXT, Align.LEFT);
+		// emotes can't be heard: no right click on their tab
+		HudText.draw(g, Face.BODY, Component.translatable(emotes ? "overcraft.loadout.hint_emotes" : "overcraft.loadout.hint").getString()
+			.toUpperCase(Locale.ROOT), LEFT + 40, 1017, 14, TEXT, Align.LEFT);
 		g.pose().popMatrix();
 	}
 

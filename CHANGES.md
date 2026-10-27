@@ -23,8 +23,20 @@ after DataTool's `extract-unlocks <out>/Unlocks "Kiriko|voiceline=*"` and `"Kiri
   the wheel's voice page (left click while holding T): the four equipped at the compass points; VOICE LINES in the
   Overwatch menu equips them (right click: hear one).
 - **Emotes (#4):** her 23 emotes from DataTool's emote unlocks, exported onto her model; the wheel's emote page (right
-  click); the same screen's Emotes tab equips four. Her clips play in turn, the last looping, until she moves or
-  acts; the view goes to third person meanwhile. Their props (the bike, the skateboard...) aren't in yet.
+  click); the same screen's Emotes tab equips four. The view goes to third person meanwhile. Their props (the bike,
+  the skateboard...) aren't in yet.
+  - How they play is found from the clips' poses (`EmotePlan`): a one-shot (Cheer, Laugh, Heroic, Thanks...) starts
+    and ends in her stance, plays once, and she's back in first person; a dance or a kneel goes in, then loops its
+    loop until she moves or acts. The first try played every clip of an emote in id order, the last looping: that
+    order holds Overwatch's additive layers and the prop's own clips, so after Cheer she sank to the waist with her
+    arms out, for good (found playing on LAN: the second player saw it too).
+- **Heroes get outlines:** a hero pinged as an enemy got the red ring but no red outline (found on LAN: our hero models
+  are custom geometry, which has no outline of its own), and the Glowing effect or a spectator's view didn't outline
+  them either. Their shape now goes into Minecraft's outline pass as vanilla's dragon fireball does.
+- The Emotes tab's hint no longer offers "right click: hear it", and "ISN'T THIS FUN" has its apostrophe back.
+- **Minecraft's locator bar is hidden in hero mode** with the rest of its bars: each other player's dot (a pink or
+  team-coloured square beside the ult meter, found on LAN) came from the info bar's foreground, which Fabric names
+  apart from the bar.
 - **Pings (#40):** the middle button pings the spot under the crosshair (a blue diamond, its distance, your own with
   a leader line to "CANCEL [key]"); a double click makes it a warning (a red circle); an enemy gets a red ring that
   follows them with their portrait (a mob: its initial) and name, and a red outline. Teammates see them. Aiming at

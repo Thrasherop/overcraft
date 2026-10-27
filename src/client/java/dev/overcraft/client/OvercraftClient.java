@@ -110,10 +110,12 @@ public class OvercraftClient implements ClientModInitializer {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode
 		HudElementRegistry.addLast(Overcraft.id("victory"), VictoryHud::render);
-		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD
+		// hero mode replaces Minecraft's hotbar and status bars with the hero's HUD. The info bar's foreground too: the
+		// experience fill, and the locator bar's dot for each other player (a pink square by the ult meter, found
+		// playing on LAN; the hero HUD marks allies itself)
 		for (Identifier id : new Identifier[] {VanillaHudElements.HOTBAR, VanillaHudElements.HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR, VanillaHudElements.FOOD_BAR, VanillaHudElements.EXPERIENCE_LEVEL,
-			VanillaHudElements.INFO_BAR, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
+			VanillaHudElements.INFO_BAR, VanillaHudElements.INFO_BAR_FOREGROUND, VanillaHudElements.HELD_ITEM_TOOLTIP}) {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
 		// the air bubbles join the hero HUD, above the health (HeroHud.airPlace)

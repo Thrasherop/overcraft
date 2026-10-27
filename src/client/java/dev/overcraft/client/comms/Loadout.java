@@ -106,9 +106,12 @@ public final class Loadout {
 		save();
 	}
 
-	/** An emote's name as shown: its id in words ("fox_cuddles" -> "FOX CUDDLES"). */
+	/**
+	 * An emote's name as shown: its id in words ("fox_cuddles" -> "FOX CUDDLES"), an apostrophe back where the folder
+	 * name's became an underscore ("isn_t_this_fun" -> "ISN'T THIS FUN").
+	 */
 	public static String emoteName(String id) {
-		return id.isEmpty() ? "-" : id.replace('_', ' ').toUpperCase(java.util.Locale.ROOT);
+		return id.isEmpty() ? "-" : id.replaceAll("(?<=[a-z])_([ts])(?=_|$)", "'$1").replace('_', ' ').toUpperCase(java.util.Locale.ROOT);
 	}
 
 	private static void load() {
