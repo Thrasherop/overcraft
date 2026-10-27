@@ -6,6 +6,51 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.5
+Works with asset pack 0.3.4 (the perk icons are already in it).
+- **Perks (#36, the owner: "The charge bar for perks aren't working. like it isn't charging").** The blue line under
+  the name is Overwatch's perk level bar; ours was drawn at a fixed length and perks didn't exist. Now Overwatch's
+  perk system (`tools/reference/perks.md` has the sources):
+  - Progress: a point per point of damage dealt or healing given, with the ult charge's limits (none during Kitsune
+    Rush, none for the Medic self-heal), none passively; the rate ramps from 3 minutes of play as the hero to double
+    at 7 (the wiki).
+  - Level 2 at 1900, level 3 at 4800 (the wiki's numbers for Kiriko; from the start, ours).
+  - Hold Left Alt while a perk waits: the two choices, picked with the left or right mouse button (Overwatch's
+    keys; a new "Choose a perk" hero control). A pick is for good; the click that picks fires nothing.
+  - The HUD: the box at the bar's start shows the level; the bar fills blue toward the next level, goes full and
+    orange with a "PERK READY" tab while a perk waits, and a chime plays at each level (ours). Picked perks show as
+    white discs above the weapon panels.
+  - Kept through death, leaving and rejoining, and per hero (swapping back restores them, as in Overwatch).
+  - `/overcraft perks [players] [level]` (operators) sets the level with nothing picked, for testing.
+  - Kiriko's perks: Urgent Care (ofuda 50% faster to allies below half health), Fortune Teller (kunai hits send 2
+    ofuda to an ally in front), Ready Step (Swift Step: +40% attack and reload speed for 3 s), Foxtrot (Suzu: allies
+    +30% speed for 4 s).
+- **Hero-mode chat is orange**, like Overwatch's match chat (the owner). Text with a colour of its own keeps it (red
+  errors); Minecraft mode's chat is unchanged.
+- **Played** (a fresh flat survival world, through the dev harness's input: key presses and mouse buttons through
+  Minecraft's own handlers; screenshots `perk_*`, `chat_*`, `mc_*`, `rejoin_*`):
+  - Reproduced on 0.3.4 first: kunai volleys took the ult charge from 11 to 1263 and the line didn't move
+    (`perk_old_before/after`).
+  - Kiriko picked on the select screen. Husks killed with kunai: the bar at about 40% after 3 (750 of 1900).
+  - A slime killed her mid-run; after the respawn the bar was where it was.
+  - Level 2 by kills: orange bar, "2", PERK READY. Alt showed the minor perks.
+    - The first pick by left click also threw a kunai (13 to 12): the menu closed under the held button, which
+      then fired. Fixed; the next pick (right button) left the ofuda at 10.
+    - The cards sat on the ofuda counter: moved up above the crosshair.
+  - Urgent Care: the first ofuda to a villager at 4 of 20 health flew at 1.348 blocks a tick (27.0 m/s); to one at
+    full health 0.899 (18.0).
+  - Level 3 by kills. Save and Leave, a restarted client, rejoin: level 3, Urgent Care kept, the major perk waiting.
+  - Foxtrot (right click): the villager's speed 0.5 to 0.65, back to 0.5 by 4.8 s; Kiriko's own unchanged.
+  - `/overcraft perks @s 3`, then Fortune Teller and Ready Step through the menu.
+    - Fortune Teller: one kunai on a husk healed the villager behind it from 4 to 5.92 (two ofuda of 12); her ofuda
+      ammo stayed 10.
+    - Ready Step: kunai held 2.5 s threw 6 without a step, 8 right after Swift Step (one per 0.36 s).
+  - G to Minecraft mode: plain HUD, Alt does nothing; placed 2 dirt (8 to 6), placed and opened a chest, opened the
+    inventory; chat there stays white. Hero-mode chat orange, idle and while typing; a red line stays red.
+  - Not tried: real mouse and keys (all of this went through the harness), mining by holding the button (Minecraft
+    only keeps mining while the window has the mouse, which it didn't), crafting, a second player, swapping heroes
+    (only Kiriko is playable), the ramp in play (unit-tested), the chime by ear.
+
 ### Build 0.3.4
 Its asset pack must be rebuilt (`py tools/build_asset_pack.py ui "E:\Overwatch Archive\extracted\154088"`, then
 `zip`) for Overwatch's melee fist in the kill feed. An older pack shows our own fist there instead.

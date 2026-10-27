@@ -54,6 +54,11 @@ public final class HeroArt {
 		return art(hero, "abilities/" + ability);
 	}
 
+	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */
+	public static @Nullable Identifier perk(Hero hero, String perk) {
+		return art(hero, "perks/" + perk);
+	}
+
 	/** One of the kill feed's own icons ("melee": Overwatch's Quick Melee fist), when the local pack has it. */
 	public static @Nullable Identifier killFeed(String name) {
 		return present(Overcraft.id("textures/gui/killfeed/" + name + ".png"));

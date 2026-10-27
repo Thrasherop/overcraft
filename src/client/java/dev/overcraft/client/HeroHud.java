@@ -14,6 +14,7 @@ import dev.overcraft.client.hud.KillFeedHud;
 import dev.overcraft.client.mixin.ToastManagerAccessor;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Hero;
+import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.net.HeroSyncPayload;
@@ -24,6 +25,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -95,6 +98,8 @@ public final class HeroHud {
 	private static final int PORTRAIT_BORDER = 0xFF68CCFF;
 	private static final int PORTRAIT_BACK = 0xFF1B2A4A;
 	private static final int DIVIDER = 0xB34FA3A5;
+	/** A perk waiting to be picked (third-party descriptions: the bar "glows orange", "an orange pop-up"; ours). */
+	private static final int PERK_ORANGE = 0xFFF08A2C;
 
 	/** How long an ability box shows coral after it's used, and cyan once it's back (s). */
 	private static final float CAST_TIME = 0.35f;
@@ -111,6 +116,8 @@ public final class HeroHud {
 	private static long ofudaRefilledAt = -1;
 	private static long ultStartedAt = -1;
 	private static long stepCastAt = -1;
+	/** The perk level last seen, for the level-up chime (0 before the first sync with a hero). */
+	private static int perkLevelSeen;
 	/** Swift Step's screen flash: teal at the edges and streaks rushing in, as she steps (the reference, §2). */
 	private static final float STEP_FLASH = 0.45f;
 	/** Below this share of her health the screen's edges go red (the wiki: "~25-30% or lower ... blood appears"). */
@@ -168,12 +175,16 @@ public final class HeroHud {
 			ofudaCounter(g, s, w / 2, h / 2 + 136);
 		}
 		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
+		if (ClientHero.perkMenuOpen()) {
+			perkMenu(g, hero, s, w, h);
+		}
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
 		health(g, player, hero);
 		ult(g, hero, s, w / 2, 930);
 		abilities(g, hero, s, w);
 		weapons(g, hero, s, w);
+		pickedPerks(g, hero, s, w);
 		g.pose().popMatrix();
 	}
 
@@ -202,6 +213,13 @@ public final class HeroHud {
 			ultStartedAt = -1;
 		} else if (ultStartedAt < 0) {
 			ultStartedAt = now;
+		}
+		// a perk level reached: a chime (ours: Aftermath describes "a subtle chime"; Overwatch's isn't extracted)
+		if (!s.heroId().isEmpty()) {
+			if (perkLevelSeen > 0 && s.perkLevel() > perkLevelSeen) {
+				Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.AMETHYST_BLOCK_CHIME, 1.2f, 1));
+			}
+			perkLevelSeen = s.perkLevel();
 		}
 	}
 
@@ -474,8 +492,12 @@ public final class HeroHud {
 		// the player's slot in a tall light-blue box (Overwatch's party number, round 1 #28: #41CCFD; 30 x 44 with a thin
 		// pale digit, the seventh critique), then the name plate: dark, with a glowing blue underline from the box,
 		// ending in a dot
-		fill(g, left - 2, 970, 30, 44, 0xFF41CCFD);
-		HudText.draw(g, Face.SMALL, "1", left + 13, 998, 16, 0xB3A9E5FF, Align.CENTER);
+		// The box holds the perk level (#36: Blizzard calls the line under the name a "level bar"; the number at its start
+		// being the level is our reading of it)
+		HeroSyncPayload s = ClientHero.sync();
+		boolean waiting = s.perkReady() > 0;
+		fill(g, left - 2, 970, 30, 44, waiting ? PERK_ORANGE : 0xFF41CCFD);
+		HudText.draw(g, Face.SMALL, String.valueOf(s.perkLevel()), left + 13, 998, 16, waiting ? WHITE : 0xB3A9E5FF, Align.CENTER);
 		float plate = left + 32;
 		String name = player.getName().getString().toUpperCase(Locale.ROOT);
 		float nameW = Math.max(120, HudText.width(Face.BODY, name, 14) + 40);
@@ -485,9 +507,134 @@ public final class HeroHud {
 			fill(g, plate + nameW * i / 12, 972, nameW / 12 + 0.5f, 30, alpha << 24 | 0x0B1520);
 		}
 		HudText.draw(g, Face.BODY, name, plate + 12, 993, 14, WHITE, Align.LEFT);
-		fill(g, left + 28, 1004, 4 + nameW * 0.7f, 3, BLUE);
-		image(g, HudShapes.GLOW, plate + nameW * 0.7f - 9, 996, 18, 18, 0xFF6FD3FF);
+		levelBar(g, s, left + 28, 1004, 4 + nameW);
+		if (waiting) {
+			perkReadyTab(g, plate + nameW + 10, 972);
+		}
 		g.pose().popMatrix();
+	}
+
+	/**
+	 * The perk level bar along the name plate's foot (#36): blue filling toward the next level with a bright dot at its
+	 * end; full and orange, glowing, while a perk waits to be picked (third-party descriptions: "a blue bar slowly
+	 * filling", "becomes full and glows orange"); full blue once both perks are picked.
+	 */
+	private static void levelBar(GuiGraphicsExtractor g, HeroSyncPayload s, float x, float y, float length) {
+		fill(g, x, y, length, 3, 0x33FFFFFF);
+		if (s.perkReady() > 0) {
+			float pulse = 0.65f + 0.35f * (float) Math.sin(Util.getMillis() / 1000.0 * Math.PI * 2 * 0.8);
+			image(g, HudShapes.LINE_GLOW, x, y + 1.5f - 10, length, 20, alpha(PERK_ORANGE, 0.6f * pulse));
+			fill(g, x, y, length, 3, PERK_ORANGE);
+			image(g, HudShapes.GLOW, x + length - 11, y - 9.5f, 22, 22, alpha(0xFFB15A, pulse));
+			return;
+		}
+		float filled = length * Math.clamp(s.perkProgress(), 0, 1);
+		fill(g, x, y, filled, 3, BLUE);
+		image(g, HudShapes.GLOW, x + filled - 9, y - 8, 18, 18, 0xFF6FD3FF);
+	}
+
+	/** The orange pop-up beside the name while a perk waits (ours: "PERK READY" and the key to hold). */
+	private static void perkReadyTab(GuiGraphicsExtractor g, float x, float y) {
+		String label = Component.translatable("overcraft.hud.perk_ready").getString().toUpperCase(Locale.ROOT);
+		float cap = 11;
+		float textW = HudText.width(Face.SMALL, label, cap);
+		KeyMapping key = HeroControls.get(Action.PERK_MENU);
+		float keyW = Math.max(22, HudText.width(Face.SMALL, shortKey(key), 10.5f) + 8);
+		float w = 12 + textW + 10 + keyW + 6;
+		fill(g, x, y, w, 30, 0xE6E8742A);
+		HudText.draw(g, Face.SMALL, label, x + 12, y + 15 + cap / 2, cap, WHITE, Align.LEFT);
+		keyLabel(g, key, x + 12 + textW + 10 + keyW / 2, y + 15, WHITE, false);
+	}
+
+	/**
+	 * The perk menu, up while the perk key is held and a perk waits (#36): the tier's two perks side by side, picked
+	 * with the left or right mouse button (Overwatch's: "Hold down Left Alt ..., then use Left/Right click"). The
+	 * layout is ours: Blizzard describes none of it.
+	 */
+	private static void perkMenu(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w, float h) {
+		Perk.Tier tier = s.perkReady() == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR;
+		java.util.List<Perk> choices = Perk.of(hero, tier);
+		float cardW = 330;
+		float cardH = 214;
+		float gap = 40;
+		// above the crosshair's row, clear of the ofuda counter under it
+		float top = h / 2 - cardH - 40;
+		String title = Component.translatable(tier == Perk.Tier.MINOR ? "overcraft.hud.choose_minor" : "overcraft.hud.choose_major")
+			.getString().toUpperCase(Locale.ROOT);
+		HudText.draw(g, Face.BODY, title, w / 2, top - 22, 18, WHITE, Align.CENTER);
+		for (int i = 0; i < choices.size(); i++) {
+			Perk perk = choices.get(i);
+			float x = i == 0 ? w / 2 - gap / 2 - cardW : w / 2 + gap / 2;
+			fill(g, x, top, cardW, cardH, 0xD90B1520);
+			fill(g, x, top, cardW, 3, PERK_ORANGE);
+			float discX = x + cardW / 2;
+			image(g, HudShapes.DISC, discX - 30, top + 16, 60, 60, 0xF2F4F4F4);
+			Identifier icon = HeroArt.perk(hero, perk.id);
+			if (icon != null) {
+				image(g, icon, discX - 22, top + 24, 44, 44, ICON);
+			}
+			String name = Component.translatable("overcraft.perk." + hero.id + "." + perk.id).getString().toUpperCase(Locale.ROOT);
+			HudText.draw(g, Face.BODY, name, discX, top + 104, 15, WHITE, Align.CENTER);
+			float lineY = top + 128;
+			for (String line : wrap(Component.translatable("overcraft.perk." + hero.id + "." + perk.id + ".desc").getString(),
+				cardW - 40, 10.5f)) {
+				HudText.draw(g, Face.SMALL, line, discX, lineY, 10.5f, TEXT_DIM, Align.CENTER);
+				lineY += 17;
+			}
+			// the mouse button that picks it, at the card's foot
+			float mw = 30;
+			float mh = mw * HudShapes.MOUSE_H / HudShapes.MOUSE_W;
+			float my = top + cardH - 30;
+			image(g, HudShapes.MOUSE_OUTLINE, discX - mw / 2, my - mh / 2, mw, mh, 0xB31A1A1A);
+			image(g, HudShapes.MOUSE, discX - mw / 2, my - mh / 2, mw, mh, MOUSE_BODY);
+			image(g, i == 0 ? HudShapes.MOUSE_LEFT : HudShapes.MOUSE_RIGHT, discX - mw / 2, my - mh / 2, mw, mh, MOUSE_BUTTON);
+		}
+	}
+
+	/** Words into lines no wider than {@code width} in the small face. */
+	private static java.util.List<String> wrap(String text, float width, float cap) {
+		java.util.List<String> lines = new java.util.ArrayList<>();
+		StringBuilder line = new StringBuilder();
+		for (String word : text.split(" ")) {
+			String next = line.isEmpty() ? word : line + " " + word;
+			if (!line.isEmpty() && HudText.width(Face.SMALL, next, cap) > width) {
+				lines.add(line.toString());
+				line = new StringBuilder(word);
+			} else {
+				line = new StringBuilder(next);
+			}
+		}
+		if (!line.isEmpty()) {
+			lines.add(line.toString());
+		}
+		return lines;
+	}
+
+	/**
+	 * The picked perks: white discs with the perk's glyph in black, above the weapon panels' right end (the reference
+	 * video: "white discs about 0.025 W with dark glyphs ... y 0.80-0.84"), minor then major.
+	 */
+	private static void pickedPerks(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		Perk[] picked = {Perk.byIndex(s.minorPerk()), Perk.byIndex(s.majorPerk())};
+		float size = 44;
+		float cx = w - 140;
+		float cy = 884;
+		for (Perk perk : picked) {
+			if (perk == null) {
+				continue;
+			}
+			g.pose().pushMatrix();
+			curve(g, cx, cy, slopeAt(960 - (w - cx)));
+			image(g, HudShapes.DISC, cx - size / 2, cy - size / 2, size, size, 0xF2F4F4F4);
+			Identifier icon = HeroArt.perk(hero, perk.id);
+			if (icon != null) {
+				image(g, icon, cx - size * 0.36f, cy - size * 0.36f, size * 0.72f, size * 0.72f, ICON);
+			} else {
+				HudText.draw(g, Face.SMALL, perk.tier == Perk.Tier.MINOR ? "2" : "3", cx, cy + 6, 12, ICON, Align.CENTER);
+			}
+			g.pose().popMatrix();
+			cx += size + 10;
+		}
 	}
 
 	/**

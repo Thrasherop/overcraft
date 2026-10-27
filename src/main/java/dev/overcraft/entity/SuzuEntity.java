@@ -4,6 +4,11 @@ import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.Perk;
+import dev.overcraft.Overcraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import dev.overcraft.kiriko.KirikoStats;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
@@ -30,6 +35,8 @@ import net.minecraft.world.phys.Vec3;
  * behind a wall) are healed, cleansed and phased out (immune to damage) for a moment.
  */
 public class SuzuEntity extends OwProjectile {
+	/** Foxtrot's speed buff on the allies it touches. */
+	private static final Identifier FOXTROT = Overcraft.id("foxtrot_speed");
 
 	public SuzuEntity(EntityType<? extends SuzuEntity> type, Level level) {
 		super(type, level);
@@ -99,11 +106,15 @@ public class SuzuEntity extends OwProjectile {
 			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);
 			Combat.cleanse(entity);
 			Combat.phase(entity, KirikoStats.SUZU_PHASED);
+			// Foxtrot (perk): allies run faster for a while (the game data: allies; Kiriko is left out, ours to check)
+			if (entity != owner && owner instanceof Player kiriko && HeroManager.hasPerk(kiriko, Perk.KIRIKO_FOXTROT)) {
+				Combat.buff(entity, Attributes.MOVEMENT_SPEED, FOXTROT, KirikoStats.FOXTROT_SPEED, KirikoStats.FOXTROT_TIME);
+			}
 			// they glow white for a moment, seen by everyone near
 			Effects.play(level, "suzu_cleansed", entity.position(), Vec3.ZERO, entity, 0, getOwner());
 		}
 		if (owner instanceof Player player) {
-			Combat.addUltCharge(player, healedTotal);
+			Combat.credit(player, healedTotal);
 			Combat.addFireForHealing(player, healedTotal);
 		}
 		Effects.play(level, "suzu_burst", at, Vec3.ZERO, null, (int) Math.round(r * 10), getOwner());

@@ -1,5 +1,7 @@
 package dev.overcraft.client;
 
+import dev.overcraft.hero.Perk;
+import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.HeroModePayload;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -202,6 +204,19 @@ public final class ClientHero {
 			// Minecraft mode (or just switched): the hero keys' clicks must not fire later
 			HeroControls.drainAll();
 			ofudaOn = false;
+			perkMenu = false;
+			if (lastHeld != 0) {
+				lastHeld = 0;
+				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
+			}
+			return;
+		}
+
+		// the perk menu (#36): Left Alt held while a perk waits; the left or right mouse button picks the left or right
+		// perk (Overwatch's, whatever the fire buttons are bound to), and fires nothing meanwhile
+		if (perkMenu(mc)) {
+			HeroControls.drainAll();
+			ofudaOn = false;
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -253,6 +268,46 @@ public final class ClientHero {
 			lastHeld = held;
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
 		}
+	}
+
+	/** The perk menu is up (HeroHud draws it). */
+	private static boolean perkMenu;
+	private static boolean perkLeftWas;
+	private static boolean perkRightWas;
+	/** A pick was sent: no other until the server's answer (game time), so a double click picks once. */
+	private static long perkPickedAt = -100;
+	/** The mouse button that picked a perk is still down. */
+	private static boolean perkClickHeld;
+
+	public static boolean perkMenuOpen() {
+		return perkMenu;
+	}
+
+	/** Runs the perk menu this tick; true while it's up. */
+	private static boolean perkMenu(Minecraft mc) {
+		int tier = sync.perkReady();
+		boolean open = tier > 0 && HeroControls.get(Action.PERK_MENU).isDown() && hero() != null;
+		// the physical buttons, or a hero key bound to them being held (what the dev harness presses)
+		boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
+		boolean right = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
+		if (open && perkMenu && mc.level != null && mc.level.getGameTime() - perkPickedAt > 10) {
+			// a press, not a button already held when the menu came up
+			int side = left && !perkLeftWas ? 0 : right && !perkRightWas ? 1 : -1;
+			java.util.List<Perk> choices = Perk.of(hero(), tier == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR);
+			if (side >= 0 && side < choices.size()) {
+				ClientPlayNetworking.send(new PickPerkPayload(choices.get(side).ordinal()));
+				perkPickedAt = mc.level.getGameTime();
+				perkClickHeld = true;
+			}
+		}
+		perkLeftWas = left;
+		perkRightWas = right;
+		perkMenu = open;
+		// the click that picked fires nothing, even once the menu has closed under it (it threw a kunai: found playing)
+		if (perkClickHeld && !left && !right) {
+			perkClickHeld = false;
+		}
+		return open || perkClickHeld;
 	}
 
 	/** End of each client tick: heroes don't sprint. */

@@ -64,7 +64,7 @@ public final class QuickMelee {
 			}
 			DamageSource source = hero.damageSources().playerAttack(hero);
 			float dealt = Combat.damage(target, source, DAMAGE);
-			Combat.addUltCharge(hero, dealt);
+			Combat.credit(hero, dealt);
 			Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(hero, target, false);
