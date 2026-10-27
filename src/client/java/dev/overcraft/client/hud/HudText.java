@@ -2,13 +2,21 @@ package dev.overcraft.client.hud;
 
 import dev.overcraft.Overcraft;
 import dev.overcraft.client.HeroArt;
+import dev.overcraft.comms.Comms;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.locale.Language;
+import net.minecraft.util.FormattedCharSequence;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Text in Overwatch's HUD faces: a bold geometric sans (Futura) for health, ammo and key labels, and the tall italic
@@ -52,6 +60,37 @@ public final class HudText {
 	/** The chat face's font, or null without the local pack (chat keeps Minecraft's). */
 	public static @Nullable FontDescription chatFont() {
 		return Face.CHAT.real() ? Face.CHAT.font : null;
+	}
+
+	/** Hero chat's channel icon and its spaces (font/chat_icons.json, original art: tools/gen_chat_icons.py). */
+	private static final FontDescription CHAT_ICONS = new FontDescription.Resource(Overcraft.id("chat_icons"));
+	private static final int TEAM_ICON = 0xE000;
+	private static final int SPACE_1 = 0xE001;
+	private static final int ICON_GAP = 0xE002;
+
+	/**
+	 * Hero chat's lines as Overwatch's (the eighth critique, the owner's frame): a team line (a callout, in team blue)
+	 * starts with the team channel icon in its colour and its text after it; a wrapped line starts where the text did
+	 * (Minecraft indents it one space instead). Width in the chat's units.
+	 */
+	public static List<FormattedCharSequence> chatLines(Component message, int width, Font font) {
+		TextColor colour = message.getStyle().getColor();
+		boolean team = colour != null && colour.getValue() == Comms.TEAM_BLUE;
+		Style icons = Style.EMPTY.withFont(CHAT_ICONS).withColor(colour);
+		FormattedCharSequence lead = team ? FormattedCharSequence.composite(
+			FormattedCharSequence.codepoint(TEAM_ICON, icons),
+			FormattedCharSequence.codepoint(ICON_GAP, icons)) : FormattedCharSequence.EMPTY;
+		int indent = font.width(lead);
+		List<FormattedCharSequence> spaces = new ArrayList<>();
+		for (int i = 0; i < indent; i++) {
+			spaces.add(FormattedCharSequence.codepoint(SPACE_1, icons));
+		}
+		net.minecraft.util.FormattedCharSequence hang = net.minecraft.util.FormattedCharSequence.composite(spaces);
+		java.util.List<net.minecraft.util.FormattedCharSequence> lines = new java.util.ArrayList<>();
+		font.getSplitter().splitLines(message, Math.max(1, width - indent), net.minecraft.network.chat.Style.EMPTY, (text, wrapped) ->
+			lines.add(net.minecraft.util.FormattedCharSequence.composite(wrapped ? hang : lead,
+				net.minecraft.locale.Language.getInstance().getVisualOrder(text))));
+		return lines.isEmpty() ? new java.util.ArrayList<>(java.util.List.of(net.minecraft.util.FormattedCharSequence.EMPTY)) : lines;
 	}
 
 	/** Minecraft's own font: capitals 7 units high, the baseline 7 below the top. */

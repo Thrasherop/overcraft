@@ -28,6 +28,16 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   until a clip puts them in a hand; cloth bones are never keyed (physics in the game).
 - **Archive builds and extractions on E:, read-only, with checksums**, outside any game library, so updates can't
   undo the work (`E:\Overwatch Archive\README.txt`).
+- **An emote's clips aren't a playlist.** Its `Animations/` folder mixes the body's clips (`0/*`), additive or partial
+  layers (`4/*`; `16/*` holds both layers and the long loops) and the prop's own clips (the same ids again under
+  `Models/*/Animations/`), and id order isn't play order (Orion Dance's way in is its second). Chain them by pose
+  instead: compare first and last frames over the core bones (mean 1 - |q.q'|): a one-shot starts and ends in the
+  idle pose, an intro starts there, a loop's first frame is its last, an outro ends there. Joins measure 0.000 to
+  0.007, non-joins 0.013 and up (`EmotePlan`; scratchpad `emoteplan.py` printed the plan of all 23 first).
+- Looking for one of Overwatch's icons in the 21k-texture UI dump: filter by size, alpha share and whiteness, then
+  sheet the survivors with their ids (scratchpad `iconsheet.py`). Matching a 20 px crop from a screenshot by shape
+  doesn't work: at that size every blob scores well. Small UI glyphs may live in atlases; the chat channel icons
+  weren't found as textures (drawn ours instead, `tools/gen_chat_icons.py`).
 
 ## Playing it (CLAUDE.md: play before claiming)
 
@@ -189,3 +199,26 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
 - Projectiles pass through blocks with no collision box (buttons, plates): the hit lands on the block behind.
 - Test courses in a superflat world: the player's feet at y -60 stand on blocks at y -61, so a "ground level" stair
   goes at y -60, not on a stone block at -60 (that's a 1-block wall).
+- Fabric splits Minecraft's XP/locator bar in two: `INFO_BAR` (the background) and `INFO_BAR_FOREGROUND` (the XP fill
+  and the locator bar's dot for each other player). Hiding only the first left a coloured square by the ult meter
+  that showed only with a second player on LAN. Test HUD hiding with two players.
+- Custom geometry (`submitCustomGeometry`) gets no outline from the entity's `outlineColor`: submit the mesh again
+  with `renderType.outline()` (vanilla's outline pipeline: quads, position/texture/colour, the outline colour as vertex
+  colour), as `DragonFireballRenderer` does. It lands in the outline phase; the post chain draws only the edge.
+- A mixin that restyles every glyph of a line (the hero chat face) hides glyphs from other fonts as missing boxes.
+  Replace only `FontDescription.DEFAULT`. For icons in text: a bitmap font provider for the glyph, a `space` provider
+  for exact gaps (advance-1 spaces repeated make an indent of any width).
+
+## Harness lessons (2026-10-27)
+- 26.3 numbers mouse buttons from 1: `screenclick x y 1` is a left click, `3` right (`0` falls through to the hotbar
+  check and does nothing). A container slot only takes the click once `hover x y` has put the cursor on it.
+- `look` and an ability in the same tick act on the old aim (the server hasn't had the new rotation): Protection
+  Suzu "failed to heal" twice for this. `look`, `sleep 0.2`, then the key.
+- `/publish false 25565` opens a world to LAN for a second client without commands (`publish false survival 25565`
+  fails to parse).
+- Night in a normal survival world swarms the harness, which reacts a second late: it died three times in ten
+  minutes. Fight one summoned mob at a time (`/gamerule spawn_mobs false`), keep wild nights for the general play.
+- Hunger and saturation regeneration still run in hero mode (#43): read health within a second of a hit, or set
+  `natural_health_regeneration` off, or a hit reads short.
+- Check `git` with `-c safe.directory=E:/claude/mods/overcraft` on this checkout ("dubious ownership"); PowerShell
+  mangles quotes in a here-string commit message: `git commit -F <file>`.

@@ -6,6 +6,18 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### After 0.3.7 (on `feature/kiriko`)
+- **Hero chat's team channel icon** (round 8 #5's rest, the owner's frame `o2`): a team line (callouts, "Too many
+  messages!") starts with a three-person icon in team blue, its text after it; wrapped lines start under the text,
+  as Overwatch's do, where Minecraft indented them one space. The icon is ours (`tools/gen_chat_icons.py`, in the
+  jar's `font/chat_icons.json`): Overwatch's isn't in the UI texture dump (searched by shape against `o2`).
+  Measured at 1080p against `o2`: the icon 19 px wide (theirs 19), 12 tall (13), 2-3 px right of theirs; the text at
+  x 89-90 (90). The first try drew the icon as boxes: the hero chat face was forced onto every glyph
+  (ChatLinesMixin now replaces only the default font). Played: five T taps and a long `/say` in a fresh world
+  (`chaticon_1080`, `chaticon2_1080`, `chaticon3_1080`); plain orange lines wrap flush, no icon.
+- TECHNIQUES.md: tonight's lessons (emote clip chaining, Fabric's info bar halves, outlines for custom geometry,
+  glyph fonts in chat, harness buttons and timing).
+
 ### Build 0.3.7 (the communication wheel, pings, emotes; Kiriko's HUD to the owner's frames)
 Needs the asset pack rebuilt (`build_asset_pack.py sounds`, `fonts`, and Kiriko's model with her emotes:
 `tools/owm_survey.py ... --glb --keep=tools/clipmaps/kiriko.txt --emotes=<extracted>/Unlocks/Heroes/Kiriko/Emote`,
