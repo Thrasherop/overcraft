@@ -35,6 +35,11 @@ public final class HeroOptions {
 		public boolean ofudaUi = true;
 		/** Friendly fire: your kunai and quick melee hurt your allies too (off: they pass through them, as Overwatch's). */
 		public boolean friendlyFire = false;
+		/**
+		 * Minecraft mode's first person: on, the hero's own arms holding Minecraft's items; off, Minecraft's arm in the
+		 * hero's colours (the owner, 2026-10-27: a setting for either).
+		 */
+		public boolean heroArms = true;
 	}
 
 	private static Values values = new Values();

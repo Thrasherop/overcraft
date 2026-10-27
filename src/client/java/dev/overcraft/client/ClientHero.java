@@ -2,6 +2,7 @@ package dev.overcraft.client;
 
 import dev.overcraft.hero.Perk;
 import dev.overcraft.client.comms.CommsWheel;
+import dev.overcraft.client.comms.EmoteCamera;
 import dev.overcraft.net.PickPerkPayload;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.HeroModePayload;
@@ -155,6 +156,7 @@ public final class ClientHero {
 	}
 
 	public static void onDisconnect() {
+		EmoteCamera.stop(Minecraft.getInstance());
 		sync = HeroSyncPayload.NONE;
 		heroModeLocal = null;
 		openSelectOnJoin = false;
@@ -166,14 +168,22 @@ public final class ClientHero {
 		if (player == null) {
 			return;
 		}
-		// emoting, the view goes to third person, as Overwatch's does; back to first person when it ends
+		// emoting, the view swings out round her and the mouse orbits it, as Overwatch's does; back when it ends
 		boolean emoting = hero() != null && dev.overcraft.client.model.HeroAnimator.of(player).emoting();
-		if (emoting && !emoteCamera && mc.options.getCameraType().isFirstPerson()) {
-			emoteCamera = true;
-			mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK);
-		} else if (!emoting && emoteCamera) {
-			emoteCamera = false;
-			mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
+		net.minecraft.world.entity.player.Input keys = player.input.keyPresses;
+		if (emoting && (keys.forward() || keys.backward() || keys.left() || keys.right() || keys.jump() || keys.shift())) {
+			// a movement key ends an emote, as in Overwatch, even where she can't move (only moving ended one: walking into
+			// a wall she knelt on, the camera squeezed in front of her); the server ends it for everyone watching
+			dev.overcraft.client.model.HeroAnimator.emote(player.getId(), "", (player.level().getGameTime()) / 20f);
+			if (ClientPlayNetworking.canSend(dev.overcraft.net.EmotePayload.TYPE)) {
+				ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(""));
+			}
+			emoting = false;
+		}
+		if (emoting) {
+			EmoteCamera.start(mc, player);
+		} else {
+			EmoteCamera.stop(mc);
 		}
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
@@ -298,8 +308,6 @@ public final class ClientHero {
 	}
 
 	private static boolean chatHeroView;
-	/** The camera went to third person for an emote (and comes back when it ends). */
-	private static boolean emoteCamera;
 
 	/** The perk menu is up (HeroHud draws it). */
 	private static boolean perkMenu;

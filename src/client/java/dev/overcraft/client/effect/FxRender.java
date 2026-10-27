@@ -1,7 +1,10 @@
 package dev.overcraft.client.effect;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.api.pipeline.BlendFactor;
 import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.BlendOp;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.CompareOp;
 import com.mojang.renderpearl.api.pipeline.DepthStencilState;
@@ -17,6 +20,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * How effects are drawn: glows added to the scene (Overwatch draws its effects additive: "render additive", the
@@ -58,11 +62,61 @@ public final class FxRender {
 
 	private static final Map<Identifier, RenderType> HERO_TYPES = new HashMap<>();
 
+	/**
+	 * A hero's body shadow (HeroModelRenderer.submitShadow), in two passes over the same flattened triangles, so that
+	 * where they overlap (all of them lie on one plane, many layers deep) the ground darkens once: a depth test alone let
+	 * every few overlapping ones through and the shadow came out speckled. The first marks the shadow's pixels in the
+	 * frame's alpha: the least of 1 - strength there, however many triangles cover it, colour untouched. The second
+	 * darkens each pixel by its mark and sets its alpha back to 1, so the next triangle over it changes nothing.
+	 * Minecraft's entity shadow shader, in triangles, behind solid things, writing no depth.
+	 */
+	private static final RenderPipeline HERO_SHADOW_MARK = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.ENTITY_SHADOW_SNIPPET)
+		.withLocation(Overcraft.id("pipeline/hero_shadow_mark"))
+		.withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+		.withCull(false)
+		.withColorTargetState(new ColorTargetState(Optional.of(new BlendFunction(BlendFactor.ZERO, BlendFactor.ONE, BlendOp.ADD,
+			BlendFactor.ONE, BlendFactor.ONE, BlendOp.MIN)), GpuFormat.RGBA8_UNORM, ColorTargetState.WRITE_ALPHA))
+		.build());
+	private static final RenderPipeline HERO_SHADOW_DARKEN = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.ENTITY_SHADOW_SNIPPET)
+		.withLocation(Overcraft.id("pipeline/hero_shadow_darken"))
+		.withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+		.withCull(false)
+		.withColorTargetState(new ColorTargetState(Optional.of(new BlendFunction(BlendFactor.ZERO, BlendFactor.DST_ALPHA, BlendOp.ADD,
+			BlendFactor.ONE, BlendFactor.ZERO, BlendOp.ADD)), GpuFormat.RGBA8_UNORM, ColorTargetState.WRITE_ALL))
+		.build());
+
+	private static RenderType heroShadowMark;
+	private static RenderType heroShadowDarken;
+
 	/** As RenderTypes.entityCutout, in triangles: hero models (their emit writes three corners a triangle). */
 	public static RenderType heroCutout(Identifier texture) {
 		return HERO_TYPES.computeIfAbsent(texture, t -> RenderType.create("overcraft_hero_cutout",
 			RenderSetup.builder(HERO_CUTOUT).withTexture("Sampler0", t).useLightmap().useOverlay().affectsCrumbling()
 				.setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).createRenderSetup()));
+	}
+
+	/** A hero's body shadow, first pass: its pixels marked (vertex alpha 1 - strength). */
+	public static RenderType heroShadowMark() {
+		if (heroShadowMark == null) {
+			heroShadowMark = shadowType("overcraft_hero_shadow_mark", HERO_SHADOW_MARK);
+		}
+		return heroShadowMark;
+	}
+
+	/** A hero's body shadow, second pass: the marked pixels darkened once (vertex colour white). */
+	public static RenderType heroShadowDarken() {
+		if (heroShadowDarken == null) {
+			heroShadowDarken = shadowType("overcraft_hero_shadow_darken", HERO_SHADOW_DARKEN);
+		}
+		return heroShadowDarken;
+	}
+
+	/** Set up as Minecraft's entity shadow is (nudged toward the camera off the ground it lies on). */
+	private static RenderType shadowType(String name, RenderPipeline pipeline) {
+		return RenderType.create(name, RenderSetup.builder(pipeline)
+			.withTexture("Sampler0", dev.overcraft.client.hud.HudShapes.WHITE).useLightmap().useOverlay()
+			.setLayeringTransform(net.minecraft.client.renderer.rendertype.LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+			.createRenderSetup());
 	}
 
 	private FxRender() {

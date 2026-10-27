@@ -1,0 +1,6 @@
+{
+	"providers": [
+		{"type": "bitmap", "file": "overcraft:font/chat_team.png", "height": 6, "ascent": 6, "chars": [""]},
+		{"type": "space", "advances": {"": 1, "": 2}}
+	]
+}

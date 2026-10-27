@@ -72,9 +72,10 @@ which is what Minecraft has (R2 #22/#23).
   - **5, in part:** hero chat in BlizzardGlobal-Regular (rendered against `owner_2`'s line first: it matches), its
     capitals Overwatch's 15 px, no shadow, a 22 px line pitch, the newest line at about y 650, the owner's orange
     kept; it wraps at x 425 in that face (lines split as they're added, the history split again on a mode switch):
-    "Too many messages! Please wait a few / seconds..." as in `owner_2` (`chatwrap2`). Not yet: the channel icon
-    (our text starts at x 63, Overwatch's at 91 after it), Minecraft's one-space indent on wrapped lines,
-    "Name (Hero): text" for plain chat (callouts already read so).
+    "Too many messages! Please wait a few / seconds..." as in `owner_2` (`chatwrap2`). Since then (`chaticon3_1080`):
+    team lines start with the team channel icon (ours, Overwatch's not found in the dump), text at x 89-90 against
+    90; wrapped lines hang under the text, no one-space indent. Not yet: "Name (Hero): text" for plain chat
+    (callouts already read so), and a channel icon for match chat (not in the owner's frames).
   - **6:** no fill; 2.5 px #4DA8F0 lines with a ~3 px glow and inward hooks at the ends; a 9 px gap (the ofuda panel
     8 px right); the kunai icon 5 px further in and 5 px wider.
   - **7, in part:** no offset shadow (light text gets a soft even edge, dark text none); lit key labels #D6D9DD,

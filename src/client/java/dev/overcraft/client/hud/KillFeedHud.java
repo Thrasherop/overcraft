@@ -2,6 +2,7 @@ package dev.overcraft.client.hud;
 
 import dev.overcraft.client.HeroArt;
 import dev.overcraft.client.hud.HudText.Align;
+import dev.overcraft.client.hud.MobFaces.MobFace;
 import dev.overcraft.client.hud.HudText.Face;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.net.KillFeedPayload;
@@ -18,7 +19,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 import static dev.overcraft.client.hud.HudDraw.fill;
 import static dev.overcraft.client.hud.HudDraw.image;
@@ -51,46 +51,6 @@ public final class KillFeedHud {
 
 	private record Line(KillFeedPayload kill, long at) {
 	}
-
-	/** Where a mob's face is in its texture (the front of its model's head). */
-	private record MobFace(Identifier texture, int u, int v, int w, int h, int texW, int texH) {
-	}
-
-	private static MobFace face(String path, int u, int v, int w, int h, int texW, int texH) {
-		return new MobFace(Identifier.withDefaultNamespace("textures/entity/" + path + ".png"), u, v, w, h, texW, texH);
-	}
-
-	/**
-	 * Faces for the mobs a hero meets most (the fourth critique: a mob had no portrait, where Overwatch always shows
-	 * one), read off each model's head (front face of its texture box); others get none.
-	 */
-	private static final Map<String, MobFace> FACES = Map.ofEntries(
-		Map.entry("minecraft:zombie", face("zombie/zombie", 8, 8, 8, 8, 64, 64)),
-		Map.entry("minecraft:husk", face("zombie/husk", 8, 8, 8, 8, 64, 64)),
-		Map.entry("minecraft:drowned", face("zombie/drowned", 8, 8, 8, 8, 64, 64)),
-		Map.entry("minecraft:zombie_villager", face("zombie_villager/zombie_villager", 8, 8, 8, 10, 64, 64)),
-		Map.entry("minecraft:skeleton", face("skeleton/skeleton", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:stray", face("skeleton/stray", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:wither_skeleton", face("skeleton/wither_skeleton", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:bogged", face("skeleton/bogged", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:creeper", face("creeper/creeper", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:spider", face("spider/spider", 40, 12, 8, 8, 64, 32)),
-		Map.entry("minecraft:cave_spider", face("spider/cave_spider", 40, 12, 8, 8, 64, 32)),
-		Map.entry("minecraft:enderman", face("enderman/enderman", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:villager", face("villager/villager", 8, 8, 8, 10, 64, 64)),
-		Map.entry("minecraft:witch", face("witch/witch", 8, 8, 8, 10, 64, 128)),
-		Map.entry("minecraft:pillager", face("illager/pillager", 8, 8, 8, 10, 64, 64)),
-		Map.entry("minecraft:vindicator", face("illager/vindicator", 8, 8, 8, 10, 64, 64)),
-		Map.entry("minecraft:evoker", face("illager/evoker", 8, 8, 8, 10, 64, 64)),
-		Map.entry("minecraft:piglin", face("piglin/piglin", 8, 8, 10, 8, 64, 64)),
-		Map.entry("minecraft:piglin_brute", face("piglin/piglin_brute", 8, 8, 10, 8, 64, 64)),
-		Map.entry("minecraft:zombified_piglin", face("piglin/zombified_piglin", 8, 8, 10, 8, 64, 64)),
-		Map.entry("minecraft:blaze", face("blaze/blaze", 8, 8, 8, 8, 64, 32)),
-		Map.entry("minecraft:iron_golem", face("iron_golem/iron_golem", 8, 8, 8, 10, 128, 128)),
-		Map.entry("minecraft:pig", face("pig/pig_temperate", 8, 8, 8, 8, 64, 64)),
-		Map.entry("minecraft:cow", face("cow/cow_temperate", 6, 6, 8, 8, 64, 64)),
-		Map.entry("minecraft:sheep", face("sheep/sheep", 8, 8, 6, 6, 64, 32)),
-		Map.entry("minecraft:wolf", face("wolf/wolf", 4, 4, 6, 6, 64, 32)));
 
 	private static final ArrayDeque<Line> LINES = new ArrayDeque<>();
 
@@ -167,7 +127,7 @@ public final class KillFeedHud {
 		Identifier portrait = hero == null ? null : HeroArt.portrait(hero);
 		int colour = ally ? ALLY : ENEMY;
 		// a face where there's no hero: a mob's, or a player's skin
-		MobFace mob = portrait == null ? FACES.get(type) : null;
+		MobFace mob = portrait == null ? MobFaces.get(type) : null;
 		PlayerInfo player = portrait == null && mob == null && type.equals("minecraft:player") ? playerInfo(name) : null;
 		boolean hasFace = portrait != null || mob != null || player != null;
 		// names on the outside, portraits on the inside next to the weapon (Overwatch's: NAME [face] > [face] NAME), each
@@ -205,17 +165,8 @@ public final class KillFeedHud {
 				256, 256, tint);
 			g.pose().popMatrix();
 		} else if (mob != null) {
-			// pixel art kept sharp, fitted to the row's height with a margin, centred (some faces are taller than wide)
-			float inner = ROW_H - 6;
-			float scale = inner / Math.max(mob.w(), mob.h());
-			float fw = mob.w() * scale;
-			float fh = mob.h() * scale;
-			g.pose().pushMatrix();
-			g.pose().translate(x + (PORTRAIT_W - fw) / 2, y + (ROW_H - fh) / 2);
-			g.pose().scale(scale, scale);
-			g.blit(RenderPipelines.GUI_TEXTURED, mob.texture(), 0, 0, mob.u(), mob.v(), mob.w(), mob.h(), mob.w(), mob.h(),
-				mob.texW(), mob.texH(), tint);
-			g.pose().popMatrix();
+			// fitted to the row's height with a margin
+			MobFaces.draw(g, mob, x, y + 3, PORTRAIT_W, ROW_H - 6, tint);
 		} else if (player != null) {
 			g.pose().pushMatrix();
 			g.pose().translate(x + (PORTRAIT_W - (ROW_H - 6)) / 2, y + 3);
