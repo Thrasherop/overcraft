@@ -79,7 +79,17 @@ Same asset pack as 0.2.0.
   refused, one at 1.0 s ends the reload's tail (Overwatch's animation cancel). Ofuda still interrupt the reload with
   "Healing Ofuda cancels reload" on (Overwatch's default).
 - **On a server without Overcraft (#32):** no hero select on joining, no asset-pack message, and G/H do nothing (the
-  rest was already off: such a server never sends a hero). Not yet played on a real vanilla server.
+  rest was already off: such a server never sends a hero).
+  - Played on a real vanilla 26.3 server (local, offline mode, flat; with build 0.3.3). The steps:
+    - Joined: Minecraft's HUD and hand, no hero select, no Overcraft chat (`r14_vanilla_join`).
+    - G and H: nothing happened (`r14_g`, `r14_h`). Esc opened Minecraft's own Game Menu (`r14_esc`). Chat was plain.
+    - Sprint ran at 5.61 m/s with the 9.6 m/s sprint-jump, Minecraft's numbers.
+    - A zombie took her from 20 to 16 health.
+    - /kill: Minecraft's death screen; respawned with no hero select (`r14_respawned`).
+    - Disconnected and rejoined: still plain (`r14_rejoin`).
+    - Then the Overcraft world: hero select on joining, and G switched hero mode off and on.
+    - Logs: the client logged nothing from Overcraft. The server logged no unknown-packet complaints and no kicks.
+  - What still shows: Overcraft's key bindings in Minecraft's Controls screen (any client mod's do).
 - **Suzu's ring (#22)** finds the ground up to 8 blocks below the burst (it was 2), for bursts on an ally in the air.
 
 ### Build 0.2.0

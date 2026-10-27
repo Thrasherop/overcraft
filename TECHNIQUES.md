@@ -170,5 +170,11 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   find the sky's edge in a few screenshots taken a frame apart: a still horizon in every frame means no bob.
 - When a research note recommends a model, re-read its source sentence before building it: the movement note said
   "keep the approach model, it matches Goodman" while Goodman's post says the opposite (speed isn't slowed in a turn).
+- A plain vanilla server for "the mod stays invisible" checks (#32): copy Loom's
+  `~/.gradle/caches/fabric-loom/26.3/minecraft-server.jar` to a folder outside the repo, run it once with the Java 25
+  Gradle downloaded (`~/.gradle/jdks/...25.../bin/java -jar server.jar --nogui`), set `eula=true` (the owner accepted
+  Mojang's EULA for this, 2026-10-26), `online-mode=false` and a port in server.properties, and an ops.json with the
+  dev player ("Kiriko", offline UUID = name-based MD5 of "OfflinePlayer:Kiriko"). Join with `dev "connect
+  localhost:<port>"`; leave through the Game Menu's Disconnect (`screenclick 213 174` at 854x480).
 - Test courses in a superflat world: the player's feet at y -60 stand on blocks at y -61, so a "ground level" stair
   goes at y -60, not on a stone block at -60 (that's a 1-block wall).
