@@ -316,7 +316,7 @@ MAX_VARIANTS = 8
 FONTS = {"futura_demibold.ttf": "FuturaNo2D-DemiBold.ttf", "big_noodle.ttf": "BigNoodleTooOblique.ttf",
          "blizzard_global.ttf": "BlizzardGlobal-Regular.ttf"}
 FONT_DEFS = {"hud": ("futura_demibold.ttf", 32, 1.5), "hud_small": ("futura_demibold.ttf", 16, 2),
-             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("blizzard_global.ttf", 10.5, 3)}
+             "hud_numbers": ("big_noodle.ttf", 32, 2), "hud_chat": ("blizzard_global.ttf", 8.4, 3.5)}
 
 
 def add_fonts(source):

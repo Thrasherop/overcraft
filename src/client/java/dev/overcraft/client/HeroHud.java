@@ -1234,6 +1234,9 @@ public final class HeroHud {
 	 * Hero mode's chat, as Overwatch's (the second critique: text about 18 px tall, at the left, its bottom near y
 	 * 700): Minecraft's chat scaled about its bottom-left corner (40 GUI units up from the screen's bottom).
 	 */
+	/** Hero chat's wrap width in chat units: about 360 reference pixels of text, to x 425 (the eighth critique). */
+	public static final int CHAT_WRAP = 147;
+
 	public static void chatPlace(GuiGraphicsExtractor g) {
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		// a line is 9 GUI units: make it 22 reference pixels, Overwatch's line pitch (the eighth critique), never larger

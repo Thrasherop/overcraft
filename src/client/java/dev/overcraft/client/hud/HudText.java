@@ -23,9 +23,9 @@ public final class HudText {
 		NUMBERS("hud_numbers", "big_noodle.ttf", 32 * 0.718f),
 		/**
 		 * Chat lines in hero mode (ChatLinesMixin): Overwatch's chat face, BlizzardGlobal-Regular (the eighth critique,
-		 * matched against the owner's frame), at Minecraft's capital height.
+		 * matched against the owner's frame), sized so its capitals are Overwatch's 15 px on a 22 px line.
 		 */
-		CHAT("hud_chat", "blizzard_global.ttf", 10.5f * 0.729f);
+		CHAT("hud_chat", "blizzard_global.ttf", 8.4f * 0.729f);
 
 		final FontDescription font;
 		final String file;

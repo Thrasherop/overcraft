@@ -69,10 +69,12 @@ which is what Minecraft has (R2 #22/#23).
   - **3:** the 31 x 30 #3AD5FE level box with a white digit, a uniform 28% plate to the pips' end, the name #C9CFD6;
     the level bar has no track (the fill and its glow only, a dot at zero).
   - **4:** at full health a white rounded "+" square and a dark tail; hurt, all dark.
-  - **5, in part:** hero chat in BlizzardGlobal-Regular (rendered against `owner_2`'s line first: it matches), no
-    shadow, a 22 px line pitch, the newest line at about y 657, the owner's orange kept. Not yet: wrapping at x 425
-    (Minecraft wraps chat at its own width before our font is applied), the channel icon, "Name (Hero): text" for
-    plain chat (callouts already read so).
+  - **5, in part:** hero chat in BlizzardGlobal-Regular (rendered against `owner_2`'s line first: it matches), its
+    capitals Overwatch's 15 px, no shadow, a 22 px line pitch, the newest line at about y 650, the owner's orange
+    kept; it wraps at x 425 in that face (lines split as they're added, the history split again on a mode switch):
+    "Too many messages! Please wait a few / seconds..." as in `owner_2` (`chatwrap2`). Not yet: the channel icon
+    (our text starts at x 63, Overwatch's at 91 after it), Minecraft's one-space indent on wrapped lines,
+    "Name (Hero): text" for plain chat (callouts already read so).
   - **6:** no fill; 2.5 px #4DA8F0 lines with a ~3 px glow and inward hooks at the ends; a 9 px gap (the ofuda panel
     8 px right); the kunai icon 5 px further in and 5 px wider.
   - **7, in part:** no offset shadow (light text gets a soft even edge, dark text none); lit key labels #D6D9DD,

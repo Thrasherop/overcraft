@@ -166,6 +166,12 @@ public final class ClientHero {
 		if (player == null) {
 			return;
 		}
+		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
+		boolean view = heroView();
+		if (view != chatHeroView) {
+			chatHeroView = view;
+			mc.gui.hud.getChat().rescaleChat();
+		}
 		if (openSelectOnJoin && mc.gui.screen() == null && mc.level != null) {
 			openSelectOnJoin = false;
 			mc.gui.setScreen(new HeroSelectScreen(true));
@@ -279,6 +285,8 @@ public final class ClientHero {
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
 		}
 	}
+
+	private static boolean chatHeroView;
 
 	/** The perk menu is up (HeroHud draws it). */
 	private static boolean perkMenu;
