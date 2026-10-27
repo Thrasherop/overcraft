@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * Numbers (public sources: the Overwatch wiki's Movement speed page, a Workshop measurement where noted):
  * 5.5 m/s in any direction but straight back (90%) and diagonally back (93.3%), crouch 3 m/s; jump 5.72 m/s up
  * (0.98 m apex); gravity about 16.7 m/s² rising (fits the jump and climb heights) and 17.5 m/s² falling, easing off
- * toward a 30 m/s fall speed; no fall damage.
+ * toward a 30 m/s fall speed. Falls hurt only from the hero's own safe height (Hero.safeFall, #35).
  *
  * How speed is gained and lost is Overwatch's own mover (#31): every hero's CharacterMover in the game data (build
  * 154088, read offline: tools/reference/movement.md) holds a ground friction and stop speed, a ground and an air

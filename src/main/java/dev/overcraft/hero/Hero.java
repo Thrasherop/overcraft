@@ -22,6 +22,14 @@ public enum Hero {
 	public final boolean playable;
 	public final int color;
 
+	/**
+	 * The fall this hero lands from unhurt in hero mode, in metres (#35): Overwatch has no fall damage, but Minecraft's
+	 * cliffs are taller, so falls hurt from here, as Minecraft's from its 3 blocks. Kiriko: her climb's height.
+	 */
+	public double safeFall() {
+		return this == KIRIKO ? dev.overcraft.kiriko.KirikoStats.SAFE_FALL : 3;
+	}
+
 	Hero(String id, String displayName, Role role, String subRole, int owHealth, boolean playable, int color) {
 		this.id = id;
 		this.displayName = displayName;

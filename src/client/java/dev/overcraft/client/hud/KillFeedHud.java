@@ -130,17 +130,20 @@ public final class KillFeedHud {
 		float left = x;
 		// right to left: the victim, the weapon, the killer
 		x = side(g, kill.victim(), kill.victimHero(), kill.victimType(), kill.victimAlly(), x, y, alpha, true);
-		float iconW = 50;
+		// what it was done with, then a bold white ">" (about 9 x 14 px, a 3 px stroke). Weapon fire shows no icon, an
+		// ability its icon, melee a fist, the world's doing a skull, and a headshot its own mark after them (the owner, #33)
+		java.util.List<Icon> icons = icons(kill);
+		float iconW = 24 + icons.size() * ICON_SLOT + Math.max(0, icons.size() - 1) * 2;
 		x -= iconW;
 		fill(g, x, y, iconW, ROW_H, argb(0x0B1520, 0.7f * alpha));
-		// what it was done with (the hero's weapon art; else a fist for melee, a skull for the world's doing: Overwatch
-		// always shows one, the fourth critique), then a bold white ">" (about 9 x 14 px, a 3 px stroke)
-		Identifier icon = weaponIcon(kill);
-		if (icon != null) {
-			image(g, icon, x + 3, y + 5, iconW - 24, ROW_H - 10, argb(0xFFFFFF, alpha));
-		} else {
-			Identifier glyph = kill.killer().isEmpty() ? HudShapes.SKULL : HudShapes.FIST;
-			image(g, glyph, x + 6, y + 6, ROW_H - 12, ROW_H - 12, argb(0xFFFFFF, alpha));
+		float at = x + 3;
+		for (Icon icon : icons) {
+			if (icon.glyph()) {
+				image(g, icon.id(), at + 2, y + 6, ROW_H - 12, ROW_H - 12, argb(icon.rgb(), alpha));
+			} else {
+				image(g, icon.id(), at, y + 5, ICON_SLOT, ROW_H - 10, argb(icon.rgb(), alpha));
+			}
+			at += ICON_SLOT + 2;
 		}
 		g.pose().pushMatrix();
 		g.pose().translate(x + iconW - 11, y + ROW_H / 2);
@@ -227,12 +230,40 @@ public final class KillFeedHud {
 		return connection == null ? null : connection.getPlayerInfo(name);
 	}
 
-	private static @Nullable Identifier weaponIcon(KillFeedPayload kill) {
-		Hero hero = kill.killerHero().isEmpty() ? null : Hero.byId(kill.killerHero());
-		if (hero == null || kill.weapon().isEmpty() || kill.weapon().equals("melee")) {
-			return null;
+	/** One icon in a row's middle: a hero's ability art, or a square glyph (Overwatch's or ours), and its colour. */
+	private record Icon(Identifier id, boolean glyph, int rgb) {
+		Icon(Identifier id, boolean glyph) {
+			this(id, glyph, 0xFFFFFF);
 		}
-		return HeroArt.ability(hero, kill.weapon());
+	}
+
+	/** The headshot mark's red: the crit hit marker's. */
+	private static final int HEADSHOT_RED = 0xFF3A3A;
+
+	/** The width each icon takes in a row's middle. */
+	private static final float ICON_SLOT = 26;
+
+	/** The icons between the two sides, left to right. */
+	private static java.util.List<Icon> icons(KillFeedPayload kill) {
+		java.util.List<Icon> icons = new java.util.ArrayList<>(2);
+		String weapon = kill.weapon();
+		if (kill.killer().isEmpty()) {
+			icons.add(new Icon(HudShapes.SKULL, true));
+		} else if (weapon.equals("melee") || weapon.isEmpty()) {
+			// Overwatch's Quick Melee fist from the local pack, else ours
+			Identifier fist = HeroArt.killFeed("melee");
+			icons.add(new Icon(fist != null ? fist : HudShapes.FIST, true));
+		} else if (!weapon.equals("weapon")) {
+			Hero hero = kill.killerHero().isEmpty() ? null : Hero.byId(kill.killerHero());
+			Identifier art = hero == null ? null : HeroArt.ability(hero, weapon);
+			if (art != null) {
+				icons.add(new Icon(art, false));
+			}
+		}
+		if (kill.headshot()) {
+			icons.add(new Icon(HudShapes.HEADSHOT, true, HEADSHOT_RED));
+		}
+		return icons;
 	}
 
 	private static int argb(int rgb, float a) {

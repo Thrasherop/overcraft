@@ -70,6 +70,8 @@ public final class KirikoStats {
 	// Wall climb (passive)
 	public static final double CLIMB_SPEED = 8.3;
 	public static final double CLIMB_TIME = 1.0;
+	/** Ours (the owner, #35): she lands unhurt from as high as she can climb, 8.3 m (Minecraft's own is 3 blocks). */
+	public static final double SAFE_FALL = CLIMB_SPEED * CLIMB_TIME;
 
 	// Kitsune Rush (Q)
 	public static final int ULT_COST = 2725;

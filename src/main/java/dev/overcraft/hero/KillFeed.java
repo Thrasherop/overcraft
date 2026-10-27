@@ -34,6 +34,7 @@ public final class KillFeed {
 			return;
 		}
 		String weapon = weapon(source, killer);
+		boolean headshot = source.getDirectEntity() instanceof KunaiEntity kunai && kunai.headshot();
 		String killerName = killer == null ? "" : killer.getDisplayName().getString();
 		String killerHero = heroOf(killer);
 		String victimName = victim.getDisplayName().getString();
@@ -41,15 +42,18 @@ public final class KillFeed {
 		for (ServerPlayer viewer : PlayerLookup.around(level, victim.position(), RANGE)) {
 			boolean killerAlly = killer != null && (killer == viewer || Allies.wasAlly(viewer, killer));
 			boolean victimAlly = victim == viewer || Allies.wasAlly(viewer, victim);
-			ServerPlayNetworking.send(viewer, new KillFeedPayload(killerName, killerHero, typeOf(killer), weapon, victimName,
+			ServerPlayNetworking.send(viewer, new KillFeedPayload(killerName, killerHero, typeOf(killer), weapon, headshot, victimName,
 				victimHero, typeOf(victim), killerAlly, victimAlly, killer == viewer));
 		}
 	}
 
-	/** What the kill was made with, as the feed shows it: the hero's weapon, or nothing in particular. */
+	/**
+	 * What the kill was made with, as the feed shows it: the hero's weapon fire (no icon in Overwatch's feed: the owner,
+	 * #33; Kiriko's kunai are her weapon's secondary fire), melee, an ability (its icon), or nothing in particular.
+	 */
 	private static String weapon(DamageSource source, @Nullable Entity killer) {
 		if (source.getDirectEntity() instanceof KunaiEntity) {
-			return "kunai";
+			return "weapon";
 		}
 		if (killer instanceof Player player && HeroManager.hero(player) != null && source.getDirectEntity() == killer) {
 			return "melee";

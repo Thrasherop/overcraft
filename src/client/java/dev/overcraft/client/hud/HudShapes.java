@@ -60,6 +60,11 @@ public final class HudShapes {
 	/** A fist (the kill feed's melee kill) and a skull (killed by the world: falls, lava). Ours, after Overwatch's. */
 	public static final Identifier FIST = Overcraft.id("hud/fist");
 	public static final Identifier SKULL = Overcraft.id("hud/skull");
+	/**
+	 * The kill feed's headshot mark: Overwatch's is "a small red target" (the wiki's Elimination Feed page), not in the
+	 * UI textures extracted so far (#33). Ours: a ring, four ticks and a dot, drawn red.
+	 */
+	public static final Identifier HEADSHOT = Overcraft.id("hud/headshot");
 	/** Low health's red edges: deepest in the corners, mottled (ours, after Overwatch's smoky edges). */
 	public static final Identifier LOW_HEALTH = Overcraft.id("hud/low_health");
 	public static final Identifier GLOW = Overcraft.id("hud/glow");
@@ -128,6 +133,7 @@ public final class HudShapes {
 		register(CHEVRON_BOLD, 48, 40, (x, y) -> Math.max(stroke(x, y, 8, 9, 24, 31, 7.5f), stroke(x, y, 24, 31, 40, 9, 7.5f)));
 		register(FIST, 64, 64, HudShapes::fist);
 		register(SKULL, 64, 64, HudShapes::skull);
+		register(HEADSHOT, 64, 64, HudShapes::headshot);
 		register(LINE_GLOW, 8, LINE_H, (x, y) -> {
 			float d = (y - LINE_H / 2f) / (LINE_H / 2f);
 			return (float) Math.exp(-d * d * 4) * coverage(LINE_H / 2f - 1 - Math.abs(y - LINE_H / 2f));
@@ -431,6 +437,15 @@ public final class HudShapes {
 			teeth = Math.max(teeth, stroke(x, y, 32 + i * 6, 47, 32 + i * 6, 54, 2.6f));
 		}
 		return Math.min(shape, 1 - Math.max(Math.max(eyes, nose), teeth));
+	}
+
+	/** A target: a ring, four ticks crossing it toward the middle, and a dot in the middle. */
+	private static float headshot(float x, float y) {
+		float r = (float) Math.hypot(x - 32, y - 32);
+		float ring = coverage(3.2f - Math.abs(r - 22));
+		float ticks = Math.max(Math.max(stroke(x, y, 32, 3, 32, 18, 3.4f), stroke(x, y, 32, 46, 32, 61, 3.4f)),
+			Math.max(stroke(x, y, 3, 32, 18, 32, 3.4f), stroke(x, y, 46, 32, 61, 32, 3.4f)));
+		return Math.max(Math.max(ring, ticks), circle(x, y, 32, 32, 5.5f));
 	}
 
 	/** A mouse seen from above: round at the bottom, the buttons on top split by a gap, the wheel a slot. */
