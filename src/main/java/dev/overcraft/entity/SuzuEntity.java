@@ -19,7 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -52,9 +54,22 @@ public class SuzuEntity extends OwProjectile {
 		return Ow.accel(KirikoStats.SUZU_GRAVITY);
 	}
 
+	/**
+	 * Creatures it flies through (its burst finds them); anything else it hits as a thrown thing would (#34): an end
+	 * crystal explodes, a painting breaks, a boat rocks.
+	 */
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		return false;
+		return !(entity instanceof LivingEntity) && !(entity instanceof EnderDragonPart) && super.canHitEntity(entity);
+	}
+
+	@Override
+	protected void onHitEntity(EntityHitResult hit) {
+		if (level() instanceof ServerLevel level) {
+			// no damage, as a snowball's: Suzu hurts nothing
+			hit.getEntity().hurtServer(level, damageSources().thrown(this, getOwner()), 0);
+			burst(hit.getLocation());
+		}
 	}
 
 	@Override

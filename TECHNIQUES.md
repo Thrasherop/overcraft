@@ -176,5 +176,12 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   Mojang's EULA for this, 2026-10-26), `online-mode=false` and a port in server.properties, and an ops.json with the
   dev player ("Kiriko", offline UUID = name-based MD5 of "OfflinePlayer:Kiriko"). Join with `dev "connect
   localhost:<port>"`; leave through the Game Menu's Disconnect (`screenclick 213 174` at 854x480).
+- Damage tests on Peaceful with a full hunger bar heal behind your back (up to about 3 health a second): turn off
+  `natural_health_regeneration` (26.x's name), or every fall or hit reads short. It looked like lost fall distance.
+- A command's result in the log (`execute if ...` -> "Test passed/failed") arrives a moment later: count the lines
+  before running it and wait for a new one, or you read the previous test's answer. Mind timings too: a wooden button
+  pops back out after 1.5 s, a target's signal after 8 ticks.
+- Minecraft's key for Enter is `key.keyboard.enter` (not `.return`); a wrong name is silently ignored.
+- Projectiles pass through blocks with no collision box (buttons, plates): the hit lands on the block behind.
 - Test courses in a superflat world: the player's feet at y -60 stand on blocks at y -61, so a "ground level" stair
   goes at y -60, not on a stone block at -60 (that's a 1-block wall).

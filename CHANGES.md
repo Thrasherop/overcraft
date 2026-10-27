@@ -6,6 +6,56 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-26
 
+### Build 0.3.4
+Its asset pack must be rebuilt (`py tools/build_asset_pack.py ui "E:\Overwatch Archive\extracted\154088"`, then
+`zip`) for Overwatch's melee fist in the kill feed. An older pack shows our own fist there instead.
+- **Kill feed icons (#33, the owner's call):**
+  - Her weapon fire shows no icon, only the ">". (Kiriko's kunai are her weapon's secondary fire in Overwatch; her
+    primary, the ofuda, can't kill.)
+  - Abilities show their icon. Melee shows Overwatch's Quick Melee fist (UI texture `E613`, now in the pack).
+  - A headshot adds a small red target after the icon, in the crit hit marker's red. The wiki's Elimination Feed
+    page describes Overwatch's as "a small red target". It isn't among the UI textures extracted so far, so this
+    one is ours.
+  - A mob's kill still shows a fist, a death with no killer a skull.
+  - Played with tagged husks and real throws: a body-shot kunai kill, a headshot kill, a melee kill, a husk killing
+    her, and /kill (`r15_new3_*`, `r15_new2_*`).
+- **Found on the way:** a killing headshot was marked only after its damage, so the kill feed and Voice's "headshot
+  elimination" line never saw it. The kunai now marks the hit first.
+- **Kunai and Suzu hit things the way arrows do (#34):**
+  - End crystals: the kunai hurts anything that isn't a creature with its damage, so boats and minecarts take damage
+    and paintings break too. Suzu hits them for no damage, as a snowball does, and bursts there.
+  - Both are in Minecraft's impact_projectiles tag now, so they break chorus flowers and decorated pots, as arrows
+    and snowballs do.
+  - Both press wooden buttons. A button has no collision box, so the hit lands on the block behind it; the button
+    in front of the face hit is pressed when the hit point is on it.
+  - Targets, bells and the rest already reacted: both projectiles pass block hits on to Minecraft.
+  - Played, the same lanes before and after the change: an end crystal, a wooden button, a target block, a
+    decorated pot and a chorus flower, each 5.5 m ahead.
+    - Before: nothing happened, except that the kunai powered the target.
+    - After, for both kunai and Suzu: the crystal exploded, the button pressed, the target powered, and the pot and
+      the flower broke.
+    - A stone button stays unpressed by a kunai, as by an arrow.
+  - Not tried: boats, minecarts, item frames, bells.
+- **Fall damage in hero mode again, from the hero's own safe height (#35, the owner's call):**
+  - Kiriko's safe height is her climb height, 8.3 m (Minecraft's is 3 blocks). A fall counts from the highest point
+    reached, so climbing a wall starts it again, as a ladder does.
+  - An ability can make a fall safe: the hook for Winston's leap and Juno's glide later; Kiriko has none.
+  - CLAUDE.md is updated.
+  - Played in a fresh flat world, with natural regeneration off, walking off stone pillars:
+
+    | Fall | Damage expected | Health after |
+    |---|---|---|
+    | Minecraft mode, 10 blocks | 7 (Minecraft's) | 13 |
+    | Hero mode, 8 blocks | none | 20 |
+    | Hero mode, 12 blocks | 3 | 17 |
+    | Hero mode, 20 blocks | 11 | 9 |
+
+    - She caught a wall after a 3.1 m fall and climbed to a top 17.3 m up. She took 8 damage, counted from the top;
+      the two falls added up would have been 12.
+    - Swift Step to a villager after 11.7 m of fall: unhurt (the teleport ends the fall).
+    - 30 m with no catch: she died, as Minecraft's 23-block fall kills Steve.
+  - The old build took no damage from 20 blocks in hero mode.
+
 ### Build 0.3.3
 Its asset pack must be rebuilt (`py tools/build_asset_pack.py sounds "E:\Overwatch Archive\extracted\154088"`, then
 `zip`). An older pack still works, with a silent Victory.

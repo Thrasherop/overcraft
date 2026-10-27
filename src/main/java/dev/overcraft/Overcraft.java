@@ -50,7 +50,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.3";
+	public static final String ASSETS_NEEDED = "0.3.4";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -129,8 +129,9 @@ public class Overcraft implements ModInitializer {
 			if (Combat.isPhased(entity)) {
 				return false;
 			}
-			// Overwatch has no fall damage: none while playing the hero (slot 1)
-			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.controls(player));
+			// a fall in hero mode hurts from the hero's own safe height (LivingEntityMixin), unless an ability lands it (#35)
+			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.controls(player)
+				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);

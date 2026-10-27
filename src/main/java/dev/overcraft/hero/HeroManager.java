@@ -92,6 +92,14 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator();
 	}
 
+	/**
+	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely
+	 * (later: Winston's Jump Pack, Juno's glide; the owner, #35). Kiriko has none: her falls count from her safe height.
+	 */
+	public static boolean fallIsSafe(Player player) {
+		return false;
+	}
+
 	/** Hero mode is on (on unless switched off with G). */
 	public static boolean heroMode(Player player) {
 		return player.getAttachedOrElse(HERO_MODE, true);

@@ -29,7 +29,9 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
 
 ## Heroes: it should feel like Overwatch, not Steve (owner, 2026-10-25)
 - With a hero selected and hero mode on, movement and controls are Overwatch's: 5.5 m/s with no sprint, near
-  instant acceleration, Overwatch's jump and gravity, no fall damage, the hero's passives (Kiriko's wall climb).
+  instant acceleration, Overwatch's jump and gravity, the hero's passives (Kiriko's wall climb). Falls hurt only from
+  the hero's own safe height (Kiriko: her climb height), and not at all when an ability lands them (Winston's leap,
+  Juno's glide) (owner, 2026-10-26, #35).
   The G key alone switches between hero mode and plain Minecraft, not the hotbar (owner, 2026-10-26, #26). Health
   scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
 - Reimplement mechanics from the numbers and from how they behave in the real game, not by guessing. For

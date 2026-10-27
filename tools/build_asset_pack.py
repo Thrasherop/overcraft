@@ -38,6 +38,9 @@ ICON_SIZES = {(512, 512): "head", (80, 80): "silhouette_small", (652, 1080): "fu
 # role badges in DataTool's dump-ui-textures (<dir>/UITextures/UITextureDump/<id>.png), found by eye in build 154088:
 # ids can change between builds
 ROLE_ICONS = {"tank": "000000036FEB", "support": "000000036FEA", "damage": "000000036FE9"}
+# the kill feed's icons in the UI texture dump: Quick Melee's fist (#33; its 88x109 visible area is the wiki's
+# Quick_melee.png). The headshot's "small red target" wasn't found in this dump.
+KILLFEED_ICONS = {"melee": "00000000E613"}
 
 BLENDER_CANDIDATES = [
     Path(r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"),
@@ -120,6 +123,15 @@ def add_ui(source):
             (roles / f"{role}.png.mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
         else:
             print(f"no {role} icon ({png}): run DataTool dump-ui-textures into {source}/UITextures")
+    feed = PACK / "assets" / "overcraft" / "textures" / "gui" / "killfeed"
+    for name, texture in KILLFEED_ICONS.items():
+        png = dump / f"{texture}.png"
+        if png.exists():
+            feed.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(png, feed / f"{name}.png")
+            (feed / f"{name}.png.mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
+        else:
+            print(f"no kill feed {name} icon ({png})")
 
 
 def read_soundmaps():

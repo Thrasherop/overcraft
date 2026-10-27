@@ -54,6 +54,11 @@ public final class HeroArt {
 		return art(hero, "abilities/" + ability);
 	}
 
+	/** One of the kill feed's own icons ("melee": Overwatch's Quick Melee fist), when the local pack has it. */
+	public static @Nullable Identifier killFeed(String name) {
+		return present(Overcraft.id("textures/gui/killfeed/" + name + ".png"));
+	}
+
 	/** A role's badge (tank, damage, support). */
 	public static @Nullable Identifier role(Hero.Role role) {
 		return present(Overcraft.id("textures/gui/roles/" + role.name().toLowerCase(Locale.ROOT) + ".png"));
