@@ -1,14 +1,19 @@
-# Overcraft: handoff (2026-10-26, during the overnight session)
+# Overcraft: handoff (2026-10-27, overnight)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
 TECHNIQUES.md (how the work gets done). This file is the state of play and the path forward.
 
 ## Where things are
-- Repo: https://github.com/Thrasherop/overcraft. **All work is on `feature/kiriko`.** Session 3's commits are local
-  only (not pushed): `git log origin/feature/kiriko..feature/kiriko`. Nothing goes to `main` until the owner's hand
-  play (CLAUDE.md).
+- Repo: https://github.com/Thrasherop/overcraft. Kiriko's work is on `feature/kiriko`, merged into `next`, then
+  `main`. **Build 0.3.7 is on `main` (c67d2e4, 2026-10-27 night)**: the owner let me act as the repo's owner for the
+  night, `next` deeply played by hand first (CHANGES.md 2026-10-27: LAN with a second client, then a general play in
+  a fresh survival world). Its push makes the test build (GitHub pre-release). `production` untouched.
+  Lúcio is on `feature/lucio` (work in progress, not merged).
 - Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets, #7 select
-  screen, #8 HUD, #9 animations, #10 Mercy.
+  screen, #8 HUD, #9 animations, #10 Mercy, #36 perks, #37 Lúcio, #38 Jetpack Cat, #39 Lifeweaver, #40 pings, #41
+  sprays (later), #42 climb cancels reload, #43 hunger and regeneration under the hidden food bar (owner's call).
+- Git here: this checkout's ownership confuses git ("dubious ownership"); run it as
+  `git -c safe.directory=E:/claude/mods/overcraft ...` (the global safe list wasn't changed).
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
@@ -55,6 +60,14 @@ CHANGES.md 2026-10-25. The dev client reads `local-assets/pack/`; a real install
 - **Performance**: her 67k-triangle model is drawn as triangles with back faces of closed pieces culled on the CPU
   (third person 31 -> 50 FPS on this machine's integrated GPU). Harness `timing` measures it.
 - **Multiplayer checked** with a second dev client (`gradlew runClient2`): what an ally sees and hears.
+- **Communication, for every hero** (`dev.overcraft.comms`, client/comms): the wheel on T (callouts, voice lines,
+  emotes pages), voice lines and emotes equipped in the Overwatch menu's VOICE LINES, pings on the middle button
+  (spot, warning, enemy with portrait and red outline). Teams (Blue/Red, `/overcraft team`, the
+  `overcraft:allow_team_change` rule) decide who hears callouts and sees pings.
+- **Emotes** play as their clips chain by pose (`EmotePlan`): a one-shot once (then first person), a dance or a kneel
+  looping until she moves. The pack's emote clips include Overwatch's additive layers and the props' own clips in id
+  order; they're left out by the chaining, not by the exporter.
+- **Perks** (#36): Overwatch's minor/major perks, levels from damage, healing and a slow passive gain; LALT menu.
 
 ## Dev harness
 `gradlew runClient` (`-Dovercraft.dev=true`); `py tools/dev.py <commands...>` or `. tools/devplay.sh`. Commands:
@@ -66,6 +79,10 @@ Esc, Enter, F1), **screenclick x y** (GUI coordinates), **hover x y** (the game'
 `gradlew runClient` plays as "Kiriko" (a fixed name, so the same player across launches),
 `gradlew runClient2` as "Viewer" (harness port 25600: `OC_DEV_PORT=25600 py tools/dev.py ...`; host with `/publish true 25565`).
 The desktop can be locked; the harness still plays.
+Harness lessons (2026-10-27): in 26.3 mouse buttons are numbered from 1 (`screenclick x y 1` left, `3` right); a
+container slot only takes a click once `hover` has put the cursor on it; a `look` and an ability in the same tick
+throw at the old aim (the server hasn't had the new pitch): `look`, `sleep 0.2`, then the key. `/publish false 25565`
+opens a world to LAN without commands for the second player.
 
 ## Overwatch assets (#6): state and path forward
 Rules (CLAUDE.md): Overwatch closed whenever its files are read; never touch the client; assets live in
