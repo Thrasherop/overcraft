@@ -6,6 +6,38 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.10 (voice lines by Overwatch's rules, /giveult)
+The asset pack is unchanged (0.3.9's works).
+- **Voice lines by Overwatch's own rules, for every hero** (the owner: "automatic voice lines right next to each
+  other ... I believe overwatch has a cooldown"):
+  - **The data:** each moment's voice stimulus has its own cooldown range, priority and interrupt mode (5,117 read).
+    Examples: an elimination line at most every 15 s, multikill 15-20 s, healing 14-17 s, Swift Step and Suzu 10 s.
+    The game's automatic chatter can't interrupt; the communication wheel and pings can. There is no cooldown shared
+    by all lines in the data or in Blizzard's notes.
+  - **Now:** a line plays only once its moment's cooldown has passed and the hero isn't still speaking, unless it's
+    a wheel line or a ping, which cuts in.
+  - "Ult ready" is no longer said on its own when the ult fills: in Overwatch it's a wheel line.
+  - Played: the same script before and after (heal, Swift Step, Suzu, four quick kills with the ult at 95%). Before,
+    "ult ready" and the multikill came 0.9 s apart. After, the lines came 3-5 s apart, and none of them on top of
+    another.
+- **`/giveult [players] [percent]`** (op): fills an ult for testing; on its own, yours to 100% (the owner).
+- techniques: Domino cloth's physics sections decoded (model_data, cloth, kiriko_cloth).
+
+#### General play of `next` before 0.3.10 went to `main` (fresh client, fresh survival world "next0310", Normal)
+- **Joined:** Kiriko picked on join. The menu reads "OVERCRAFT 0.3.10 · ASSETS 0.3.9" (`g10_*`).
+- **Fight**, on a floor in the sky at night:
+  - five kunai took a helmeted zombie 20 -> 15.5 -> 11.0 -> 6.5 -> 2.0 -> dead (4.49 a hit through its armour), with
+    the kill feed and "Kiriko taunts";
+  - another zombie hit her 20 -> 17 -> 14 (37.5 each).
+- **Healing:** a villager from 8 to 17.6 under her ofuda ("Kiriko: Healing").
+- **Fox Cuddles from the wheel** (T, the right button, up).
+- **Killed** (`/kill`), respawned in hero mode. **Save and Leave, rejoin:** Kiriko, hero mode, ult kept.
+- **Minecraft mode (G):** three oak logs mined by hand; 12 planks; a crafting table, placed and opened; a chest from
+  it, placed; rotten flesh stored, closed, reopened: still there.
+- **A bed** placed and used; G back to hero mode; H by the bed: "NEAR YOUR BED: PICK A NEW HERO, OR ESC TO KEEP
+  YOURS"; READY: Kiriko. 91 fps.
+- **Not tried this time:** a second player, the Nether, boats.
+
 ### Build 0.3.9 (emotes and her coat from the game data, ping callouts)
 Everything below since 0.3.8. **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.9):
 - the emote props are now named by their game ids: `py tools/build_asset_pack.py props <DataTool output>`;
