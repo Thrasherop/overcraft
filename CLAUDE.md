@@ -9,18 +9,31 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
   if it's running, stop and say so. Don't close it yourself: the owner may be playing.
 - Never attach to, debug, read the memory of, inject into or modify the Overwatch client, Battle.net or their files.
   Reading the install is read-only and offline (Overwatch closed).
+- Research goes as far as it can without dealing with the tamper protection or reverse-engineering the encryption
+  (owner, 2026-10-25): game data through DataTool/TankLib, and static reading of an archived copy of the executable
+  (strings, type names, readable sections) are fine; unpacking or decrypting its protected parts, bypassing
+  anti-tamper, or running it for analysis are not.
 - Numbers (damage, cooldowns, speeds, ranges, ult cost) come from public sources: Blizzard's patch notes first, then
   the Overwatch wiki (read through its MediaWiki API: the HTML is Cloudflare-blocked). Each number in the code says
   where it came from, or that it's ours when no source gives one (see `KirikoStats`). Check the latest patch notes
   before changing a hero: Overwatch rebalances often.
 - Overwatch assets (models, textures, sounds) are never committed or shipped. Like Lethalcraft's approach, they are
   read from the player's own install on their machine; the repo only ever holds original or placeholder assets.
+  They live in `local-assets/` (gitignored) and reach the game as a local resource pack (`LocalAssetPack`): the dev
+  client reads `local-assets/pack/`, a real install `<.minecraft>/overcraft/overcraft-assets.zip`. Build it with
+  `py tools/build_asset_pack.py add <hero> <model file>` (Blender, headless) and `... zip`. `gradlew build` fails if
+  the jar holds any model/mesh/audio file (`checkNoOverwatchAssets`): never weaken that check to get a build through.
+- Until DataTool supports the installed build (#6), the owner may download ripped models as stopgaps (owner,
+  2026-10-25). The owner downloads them, not Claude; they go in `local-assets/raw/` and follow the same rules.
 - Don't put personal info (the owner's email) in request headers or URLs when fetching sources.
 
 ## Heroes: it should feel like Overwatch, not Steve (owner, 2026-10-25)
-- With a hero selected and hotbar slot 1 held, movement and controls are Overwatch's: 5.5 m/s with no sprint, near
-  instant acceleration, Overwatch's jump and gravity, no fall damage, the hero's passives (Kiriko's wall climb).
-  Other slots play plain Minecraft. Health scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
+- With a hero selected and hero mode on, movement and controls are Overwatch's: 5.5 m/s with no sprint, near
+  instant acceleration, Overwatch's jump and gravity, the hero's passives (Kiriko's wall climb). Falls hurt only from
+  the hero's own safe height (Kiriko: her climb height), and not at all when an ability lands them (Winston's leap,
+  Juno's glide) (owner, 2026-10-26, #35).
+  The G key alone switches between hero mode and plain Minecraft, not the hotbar (owner, 2026-10-26, #26). Health
+  scales 250 Overwatch HP = 20 Minecraft health (10 hearts).
 - Reimplement mechanics from the numbers and from how they behave in the real game, not by guessing. For
   Minecraft's side, read its decompiled source (`gradlew genSources`; 26.x is unobfuscated, Mojang's own names).
 
@@ -34,20 +47,20 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
 - **Play every new feature by hand, like a player, before any test runs (owner, 2026-10-13).** Scripted tests and unit
   tests are not evidence that a feature works: on Lethalcraft a batch passed both, and the owner found about twenty
   bugs in a few minutes of play. For each new hero or ability: pick it on the select screen, check the HUD (ammo,
-  cooldowns, ult charge) and the item in slot 1, then use every button at real targets: zombies, skeletons, a
+  cooldowns, ult charge), then use every button at real targets: zombies, skeletons, a
   villager or tamed wolf as the ally, on flat ground, on slopes, against walls, in water, at night. Compare the
   timings and numbers with the hero's sources (above) and Minecraft's decompiled code for Minecraft behaviour.
   Ten features take ten times one feature's play time. Write down what was tried, with screenshots.
   Then just play with them, as a player would: a real fight (a night in survival, a skeleton farm, a raid) with the
-  hero, switching slots in and out of hero controls, because that's where a player finds the bugs.
+  hero, switching in and out of hero mode (G), because that's where a player finds the bugs.
 
 ## Hand play: before every merge, and before every release (owner's rule, 2026-10-15)
 The owner, after Lethalcraft's 1.45.x work: "That manual playtesting you did made a MASSIVE difference." It is
 required, not optional:
 - **Before a feature or fix merges** (into `next` or `main`): play that one change by hand in the real game.
 - **Before a version goes to `main`**: a general play of the whole build (not just what changed): join a world,
-  pick each playable hero, fight, heal, die and respawn, switch heroes, leave and rejoin, play in normal survival on
-  slots 2-9 (mine, craft, build, chests) to see plain Minecraft still works, at a player's speed and inventory (not
+  pick each playable hero, fight, heal, die and respawn, switch heroes, leave and rejoin, play in normal survival in
+  Minecraft mode (mine, craft, build, chests) to see plain Minecraft still works, at a player's speed and inventory (not
   god mode the whole time).
 
 What that play looked like when it worked (do at least this, then go a step further each time: one more case, one

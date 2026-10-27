@@ -1,0 +1,30 @@
+{
+	"required": true,
+	"package": "dev.overcraft.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"KeyboardInputMixin",
+		"MinecraftMixin",
+		"MinecraftPacksMixin",
+		"AvatarRendererMixin",
+		"LivingEntityRendererMixin",
+		"FirstPersonHandsMixin",
+		"HudMixin",
+		"LevelExtractorMixin",
+		"KeyMappingMixin",
+		"MinecraftInvoker",
+		"MouseHandlerMixin",
+		"SubtitleOverlayMixin",
+		"CreateWorldScreenAccessor",
+		"ToastManagerAccessor",
+		"ClientPacketListenerMixin",
+		"ChatComponentMixin",
+		"ChatLinesMixin",
+		"MinecraftModeArmMixin",
+		"ViewBobMixin",
+		"HeroFovMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

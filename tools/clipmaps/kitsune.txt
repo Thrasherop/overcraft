@@ -1,0 +1,5 @@
+# Kitsune Rush's spirit fox (Overwatch build 154088, Kiriko's skin "Overwatch", model 0000000105FB): which clip is
+# which, from side-view strips (tools/owm_survey.py --side). 14-frame gallops: ADFE, B0DB, B0DC (variants), AE68.
+0-32_00000000ADFE = run
+0-32_00000000AAA2 = start                 # (guess) 7 frames, crouched to bounding
+0-36_00000000AE6B = leap                  # (guess) leaps forward and down: the end of the run
