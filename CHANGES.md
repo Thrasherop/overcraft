@@ -7,6 +7,15 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ## 2026-10-27
 
 ### After 0.3.8 (on `feature/kiriko`)
+- **Emote props (#4: "the bike, the skateboard... aren't in yet"):** Donut Break and Sweet Treat hold Overwatch's
+  donut, Mic Drop the mic, Skateboard the board under one arm and a bubble tea in the other hand, each on her hand's
+  weapon bone so her own emote clip moves it; her kunai and ofuda are put away meanwhile. The props are Overwatch's own
+  models from the player's pack: `py tools/build_asset_pack.py props <DataTool output>` (new; the 0.3.7 pack works,
+  just without props). Found by rendering every emote's models (`tools/owm_previews.py`): ten emotes carry models,
+  these four are held props; the rest are effect cards and cones (Whirlwind, Rainy Stroll's umbrella and Friendly
+  Kitty's cat, which move by clips of their own, are next). Played: all four from the wheel, two moments each (`pe`,
+  `st`, `pr1z`); before the weapons were put away the donut sat beside her ofuda (`pr1z`), and Mic Drop's mic was in
+  the wrong hand at first (`md`).
 - **Smoother HUD text** (round 8 #7's rest, "the jagged glyph edges"): Minecraft samples every font texture nearest,
   for its pixel font; the HUD draws Overwatch's faces shrunk about 2x from their raster, and nearest sampling left
   stair steps on their diagonals. The HUD's fonts (`overcraft:hud*` only) are now sampled linearly

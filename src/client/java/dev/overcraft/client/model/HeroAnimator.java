@@ -107,6 +107,17 @@ public final class HeroAnimator {
 		return emote != null;
 	}
 
+	/** The emote playing now, or null. */
+	public @Nullable String emote() {
+		return emote;
+	}
+
+	/**
+	 * Her hands' weapon bones in her model's space, as last posed in an emote: [0] the "_L" side's (her kunai hand),
+	 * [1] the "_R" side's (her ofuda hand).
+	 */
+	public final Matrix4f[] emoteHands = {new Matrix4f(), new Matrix4f()};
+
 	private @Nullable String emote;
 	private float emoteStart;
 	private @Nullable Vec3 emoteFrom;
@@ -384,6 +395,13 @@ public final class HeroAnimator {
 			int root = UpperBody.mover(model);
 			if (root >= 0) {
 				pose.t[root].set(model.restT[root]);
+			}
+			// where her hands hold the emote's props (EmoteProps), as posed
+			for (int i = 0; i < 2; i++) {
+				int bone = UpperBody.weapon(model, i == 0);
+				if (bone >= 0) {
+					emoteHands[i].set(Skeleton.world(model, pose, bone));
+				}
 			}
 			return Skeleton.skin(model, pose, -1, null);
 		}

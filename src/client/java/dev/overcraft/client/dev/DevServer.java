@@ -334,6 +334,18 @@ public final class DevServer {
 				}
 				out.addProperty("swing", java.util.Arrays.toString(dev.overcraft.client.model.HeroAnimator.SWING));
 			}
+			case "prop" -> {
+				// dev only: "prop <emote> <index> rx ry rz tx ty tz [L|R]": an emote prop's place on her hand bone
+				String[] a = arg.trim().split(" ");
+				var props = dev.overcraft.client.model.EmoteProps.PROPS.get(a[0]);
+				if (props != null && a.length >= 8) {
+					var prop = props.get(Integer.parseInt(a[1]));
+					for (int i = 0; i < 6; i++) {
+						prop.place()[i] = Float.parseFloat(a[i + 2]);
+					}
+					out.addProperty("place", java.util.Arrays.toString(prop.place()));
+				}
+			}
 			case "held" -> {
 				// dev only: "held kunai|ofuda rx ry rz tx ty tz lift": how Minecraft mode's held items sit in her fists
 				String[] a = arg.trim().split(" ");

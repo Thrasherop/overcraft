@@ -10,6 +10,7 @@
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
+    py tools/build_asset_pack.py props <DataTool output dir>  the held emote props (EMOTE_PROPS), from the emote unlocks
     py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
@@ -396,6 +397,34 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
+# emote props held in a hand (no animation of their own: her hand's weapon bone carries them): pack name -> (hero,
+# emote folder under Unlocks/Heroes/<Hero>/Emote, model id). Identified by rendering each emote's models
+# (tools/owm_previews.py); the flat cards and cones beside them are effect helpers, left out.
+EMOTE_PROPS = {
+    "prop_donut": ("Kiriko", "Season 17/Donut Break", "000000015C94"),
+    "prop_mic": ("Kiriko", "Achievement/Mic Drop", "00000001A146"),
+    "prop_bubble_tea": ("Kiriko", "Season 18/Skateboard", "00000000863C"),
+    "prop_skateboard": ("Kiriko", "Season 18/Skateboard", "0000000197FB"),
+}
+
+
+def add_props(source):
+    """Converts the held emote props into hero_models/ (static meshes, like the torii gate). <source> is the extraction
+    root holding Unlocks/Heroes/<Hero>/Emote."""
+    write_mcmeta()
+    for name, (hero, emote, model) in EMOTE_PROPS.items():
+        src = Path(source) / "Unlocks" / "Heroes" / hero / "Emote" / emote / "Models" / f"{model}.00C" / f"{model}.owmdl"
+        if not src.exists():
+            print(f"missing {name}: {src}")
+            continue
+        dest = MODELS / f"{name}.glb"
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+               str(src), str(dest)]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+        print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
 def build_version():
     """This build's version (gradle.properties)."""
     for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
@@ -447,6 +476,8 @@ def main():
         add_fonts(sys.argv[2])
     elif cmd == "effects":
         add_effects(sys.argv[2])
+    elif cmd == "props":
+        add_props(sys.argv[2])
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

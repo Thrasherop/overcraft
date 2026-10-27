@@ -179,9 +179,12 @@ public final class HeroModelRenderer {
 			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
 		}
 		Timing.pose += System.nanoTime() - t0;
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hiddenProps(loaded.model(), animator.action()),
-			preview == null));
+		// an emote with props of its own puts her weapons away (a donut in the hand that held the ofuda)
+		boolean propEmote = !previewing && EmoteProps.held(animator) != null;
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(),
+			propEmote ? allProps(loaded.model()) : hiddenProps(loaded.model(), animator.action()), preview == null));
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
+		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(animator));
 	}
 
 	/**
@@ -317,6 +320,10 @@ public final class HeroModelRenderer {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
 		}
 		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state), draw.cull());
+		EmoteProps.Held props = state.getData(EmoteProps.HELD);
+		if (props != null) {
+			EmoteProps.submit(props, poseStack, collector, light, overlay);
+		}
 		Shadow shadow = state.getData(SHADOW);
 		if (shadow != null && bed == null) {
 			// her body's own turn and pose about her feet, then each vertex along the light onto the ground there
