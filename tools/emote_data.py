@@ -1,5 +1,5 @@
 """Reads a hero's emotes from the game data (offline, read-only; Overwatch must be closed) and writes what the mod
-needs to play their props: src/main/resources/assets/overcraft/emotes/<hero>.json. EMOTES.md says why and how.
+needs to play their props: src/main/resources/assets/overcraft/emotes/<hero>.json. techniques/emotes/emote_reproduction.md says why and how.
 
     <research venv python> tools/emote_data.py <hero> <DataTool output dir> <hero model .owmdl> [<hero .glb>]
 
@@ -19,7 +19,7 @@ What it writes, per emote (named as tools/owm_survey.py names them: emote_<slug>
 - an entity spawn that names no clip of its own takes the prop clip in the emote's folder that lasts as long as the
   window (the fox: spawn 0.767 + 3.733 s, clip E921 3.733 s; "clipStart" 0.767, when in her clip it begins) or as her
   whole clip, running with it (the pod: spawn 0.067 + 4.333 s, clip 19C45 4.4 s, her clip 4.4 s; "clipStart" 0).
-  This pairing is the data's lengths agreeing, not a field (EMOTES.md, open);
+  This pairing is the data's lengths agreeing, not a field (techniques/emotes/kiriko_emotes.md, open);
 - each clip's GeoSetFlags timeline ("geosets"), from the emote's blend tree set (unlock 0A5 -> m_emoteBlendTreeSet
   021 -> STUAnimGameData_PoseData, one per clip by m_animationID): masks sampled evenly over the clip (at most 45), a
   bit set hiding that geoset of her model. Kneeling's first clip goes 1 -> 3 -> 7 as she puts her ofuda, Suzu and
@@ -35,7 +35,7 @@ What it writes, per emote (named as tools/owm_survey.py names them: emote_<slug>
   either, read through TankLib) hangs on the bone another model puts it on, with no offset ("borrowed"): Lucio's
   000A is Weapon_R turned 180 degrees about X, and on her that turn held the Skateboard's bubble tea upside down, its
   straw never nearer her mouth than 0.55 m; on the bone itself the straw reaches 3 cm from her mouth 7.27 s into the
-  ride (her sip) and the cup stays upright (tools/emote_contacts.py; EMOTES.md).
+  ride (her sip) and the cup stays upright (tools/emote_contacts.py; techniques/emotes/kiriko_emotes.md).
 """
 import json
 import os
@@ -338,7 +338,7 @@ def main():
                                   "borrowed": f"{Path(path).name} hangs it on this bone (its offset t {defs[hid]['t']} "
                                               f"q {defs[hid]['q']} not taken)"}
                     missing.remove(hid)
-    # what no model defines: inferred from the clips, and said so (EMOTES.md)
+    # what no model defines: inferred from the clips, and said so (techniques/emotes/emote_reproduction.md)
     for hid in list(missing):
         if hid in INFERRED.get(hero, {}):
             table[hid] = INFERRED[hero][hid]

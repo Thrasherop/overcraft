@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * The props an emote shows (#4: "Their props (the bike, the skateboard...) aren't in yet"), all from the game data
- * (EmoteData, EMOTES.md rule 0): in each of her clips, a prop shows on its hardpoint (a bone of hers and an offset)
+ * (EmoteData, techniques/emotes/emote_reproduction.md): in each of her clips, a prop shows on its hardpoint (a bone of hers and an offset)
  * from its start for its duration, playing its own clip where the data names one, and a projectile one (Mic Drop's
  * mic) falls once its time is up. The models are Overwatch's own, from the player's pack (hero_models/prop_<id>.glb:
  * tools/build_asset_pack.py props).
@@ -84,7 +84,7 @@ public final class EmoteProps {
 	/**
 	 * A weapon piece no hand holds: its bone further than this from both wrists (metres, ours). Listen Up's and Salty's
 	 * clips set no geosets and park her ofuda's bones a few metres up; Overwatch layers two hand clips over them
-	 * (12625, 12638) that aren't read yet (EMOTES.md, open), so until then a parked piece isn't drawn.
+	 * (12625, 12638) that aren't read yet (techniques/emotes/kiriko_emotes.md, open), so until then a parked piece isn't drawn.
 	 */
 	private static final float PARKED = 0.3f;
 

@@ -1,7 +1,7 @@
 """Checks a held prop's hardpoint against what the emote does: how near a point on the prop (in the prop's own space)
 comes to the hero's mouth over each clip, and whether the prop's +Y is up then. A contact the emote must make (a sip, a
 bite) tells a right offset from a wrong one. Reads the hero's exported .glb (its clips and bone frames; Overwatch's
-own frames: EMOTES.md); needs numpy.
+own frames: techniques/animation/animation_import.md); needs numpy.
 
     py tools/emote_contacts.py <hero .glb> <bone> <x,y,z on the prop> <qx,qy,qz,qw offset> <clip> [<clip> ...]
 

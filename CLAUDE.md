@@ -38,7 +38,7 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
   inferring anything, look for the answer directly in the pulled game data (DataTool/TankLib, offline). Don't
   reassemble something (an emote's clip chain, a prop's attachment, a timing) by measuring or by eye when the data has
   it spelled out; measuring is the fallback only when the data has been searched and doesn't hold it. Emote work:
-  `EMOTES.md`. The owner, on the data-driven emote props: "That is SO much higher quality ... Always do that for
+  `techniques/emotes/emote_reproduction.md`. The owner, on the data-driven emote props: "That is SO much higher quality ... Always do that for
   emotes and animations if at all possible." Anything borrowed or inferred gets checked against a contact the
   animation must make (`tools/emote_contacts.py`).
 - Reimplement mechanics from the numbers and from how they behave in the real game, not by guessing. For
@@ -83,6 +83,14 @@ more angle, one more combination than the last person tried):
 - **Write down exactly what was done**, in the commit or the issue: each step, what was expected, what was seen, the
   screenshots' names. Someone reading it must be able to repeat it, and must see what was *not* tried.
 - When a step fails, that's the bug: reproduce it, fix it, then play the whole list again, not just the failing step.
+
+## Techniques: a linked graph of what works (owner, 2026-10-27)
+- What's learned about how to build Overcraft lives in `techniques/`. Start at `techniques/README.md` (the map) and
+  follow the links: one folder per subject, a general note on the method, and per-hero notes beside it (e.g.
+  `techniques/emotes/emote_reproduction.md` and `techniques/emotes/kiriko_emotes.md`), each hero with a hub in
+  `techniques/heroes/`.
+- Every note links up to the map and across to what it builds on, like an Obsidian vault, so a future agent can walk
+  it. Add each lesson where it belongs, say where it came from, and link it from the notes that should lead to it.
 
 ## Tracking
 - GitHub issues are the tracker (https://github.com/Thrasherop/overcraft/issues): `bug` (with a severity label or

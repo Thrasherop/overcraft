@@ -399,7 +399,7 @@ def add_effects(source):
 
 def add_props(source):
     """Converts every prop the heroes' emote data names (src/main/resources/assets/overcraft/emotes/<hero>.json, from
-    tools/emote_data.py: EMOTES.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
+    tools/emote_data.py: techniques/emotes/emote_reproduction.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
     ids, as the data names them. <source> is the extraction root holding Unlocks/Heroes/<Hero>/Emote. A prop with no
     clip of its own is a static mesh (like the torii gate); one with clips is exported with them, staged beside the
     model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""

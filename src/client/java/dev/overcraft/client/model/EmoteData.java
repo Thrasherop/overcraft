@@ -24,7 +24,7 @@ import java.util.TreeSet;
 
 /**
  * What a hero's emotes show besides the hero, read from the game data: {@code assets/overcraft/emotes/<hero>.json},
- * written by tools/emote_data.py (EMOTES.md, rule 0). For each of the hero's emote clips (emote_<id>_<n>, as the hero's
+ * written by tools/emote_data.py (techniques/emotes/emote_reproduction.md). For each of the hero's emote clips (emote_<id>_<n>, as the hero's
  * model names them), the props its animation effect spawns: which model, on which hardpoint, from when and for how
  * long in the clip, the prop's own clip and where in her clip it starts, and whether it flies off as a projectile when
  * its time is up (Mic Drop's mic). Each clip's GeoSetFlags too: which of her model's geosets are hidden, sampled evenly
