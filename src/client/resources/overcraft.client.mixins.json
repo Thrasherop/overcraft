@@ -27,7 +27,9 @@
 		"ViewBobMixin",
 		"HeroFovMixin",
 		"CameraMixin",
-		"MouseHandlerInvoker"
+		"MouseHandlerInvoker",
+		"OptionsCameraMixin",
+		"EntityShadowMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

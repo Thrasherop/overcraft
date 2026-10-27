@@ -6,6 +6,89 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### After 0.3.7, second batch (on `feature/kiriko`; the owner's answers of 2026-10-27)
+- **Pings on notable things (#40, the owner: "dropped items, villagers, structures (unless you're close/inside
+  them), etc."):** a blue ring with the thing's icon and its name under it, the distance over it, your own with
+  "CANCEL [key]"; teammates see it too, by name even when too far away to have the thing loaded. Dropped items (their
+  icon and count, followed, gone when picked up), creatures that aren't enemies (villagers by trade, pets, animals,
+  golems, a mob face or spawn egg; followed), vehicles, notable blocks (chests, barrels, shulker boxes, ores,
+  spawners, vaults, portals, beds, workstations, beacons, bells, suspicious sand: the `overcraft:notable_pings` block
+  tag, data-pack extendable), and generated structures seen from outside them (the server knows structures: a spot on
+  or within 2 blocks of a structure's piece, with the pinger more than 24 blocks out of its bounds, is that
+  structure's ping: "VILLAGE" with a bell, "STRONGHOLD" with an eye of ender, every vanilla structure named). Within
+  24 blocks of one, or inside, a spot is a spot. Pinged things get an outline in their ping's colour. Ping reach 120 to
+  256 m; enemies are hostile mobs, enemy players and mobs after a player (a cow is a notable thing, not an enemy). The
+  enemy marker shows the mob's face where there is one (it showed an initial). Picking is a cone round the crosshair,
+  wider for enemies (Overwatch's pings are "more sensitive to heroes than objects", the wiki), capped far away (a
+  village ping took a cow by the house aimed at). Double press 0.4 to 0.35 s (Overwatch's default, the wiki).
+- **Ping key:** Overwatch PC's defaults are middle mouse and G; G is the hero mode key here, so middle mouse,
+  rebindable (Options > Controls > Ping), as it was.
+- **No reload bar (the owner: Overwatch shows only "13|15" until the ammo is back):** the weapon panel's white fill
+  and the dimmed count are gone; the count jumps when the ammo returns. The ammo point is the game data's (her weapon
+  graph 0x2171 waits reload time x 0.65, then the rest of the animation: 0.845 of 1.3 s), matching the patch notes.
+- **Hero mode health:** a full food bar no longer heals a hero on top of Overwatch's own passive healing (the
+  `naturalRegeneration` rule as the hero's food tick reads it).
+- **Her body casts its shadow (the owner's answer to #11):** the sun's (the moon's at night) direction, no lower than
+  40 degrees, straight down out of the sky's light; laid on the ground under her, step by step (a shadow over a ledge
+  stops at its edge), fading as she rises; no blob under her. Drawn once wherever its triangles overlap (two passes:
+  mark, then darken; one pass speckled), from a coarser copy of her mesh: 0.45 ms a frame (84 to 80 FPS here), where
+  her full mesh twice cost 6 ms (84 to 47).
+- **Her arms in Minecraft mode (the owner: "Kiri's actual arms, but have kunai replaced with the block/item she is
+  holding"):** her view model, props put away, the main hand's item gripped in her kunai hand and the off hand's in
+  her ofuda hand (the owner's idea too: a shield, food, a torch there), each as Minecraft's players hold theirs (the
+  third-person grip) on her hand bone, so a swing moves it; no bigger on screen than her kunai (a shield or a block
+  less). A swing (attack, mine, place) turns her arm in a chop toward the crosshair. Eating, drinking, a drawn bow,
+  a raised shield, a map, a loaded crossbow, the spyglass: Minecraft's own animation, her arms back after. A setting,
+  **Options > HERO > Hero arms in Minecraft mode** (on by default), gives Minecraft's arm in her colours instead.
+- **First-person arms 1.1 to 1.4 times their size** (the owner's screenshot at Overwatch's FOV 103, default weapons:
+  the ofuda fingertip, kunai tip and kunai hand all sat about 1.27 times as far from the middle there).
+- **Talisman paper white (the owner: "the same color as the white base of the ofuda texture"):** Blizzard's baked
+  shade taken out of both faces as the model loads (each row's paper brought to the plain paper above the seal; ink,
+  seal and grain kept): the backs read as white paper, not grey slabs. Only on the player's machine, from their pack.
+- **The perk choice in Overwatch's layout** (the owner's screenshot, measured): two black discs under the crosshair on
+  a dark band, an orange bracket round each one's outer side, its mouse button under it, the name in orange and the
+  text in a navy box beside it.
+- **The emote ends on any movement key** (it ended only when she moved: walking into a wall kept her kneeling), for
+  everyone watching; the orbit starts from the side with room (facing a wall, it was squeezed against her face).
+- **F5 can't reach first person during an emote**, now at the source (Options.setCameraType): putting it back each
+  tick left first-person frames between the key and the next tick (counted: 146 frames in 18 presses with the hold
+  off, 0 with it on).
+- **The Options list scrolls** above ESC BACK and RESTORE DEFAULTS (its last rows, CHANGE HERO and MINECRAFT MODE, ran
+  under them at 1080p), with a scrollbar.
+- Harness: `scroll`, `emotef5 on|off`, `shadows on|off`, `swing`, `held`, `heldmax`, `heldscale`; `state` gives the
+  first-person frames counted during emotes; `timing` gives the shadow's share.
+
+Played (fresh worlds, 1920x1080; screenshots in `run/screenshots/`):
+- Pings, creative, a plains village: from 100-142 m a house: "VILLAGE" with the bell (`ping_vil_05`); from inside the
+  village, a house: a plain spot (`ping_in_05`); on a platform: a dropped diamond ("DIAMOND X3", followed), a librarian
+  (her face, "LIBRARIAN"), a zombie (red, its face), a cow ("COW", blue), a chest, diamond ore (`plat_sheet`); double
+  press: the warning; the item killed: its ping gone (`crops2`); pinging my own chest ping again: cancelled
+  (`cancel_sheet`). Rebound to P on the Options screen: P pinged, the label read "CANCEL P" (`crops4`); back to the
+  middle button, saved. A fresh generated world: a real village 96 m off over the water: "VILLAGE" (`hp_04_vping`).
+- LAN, a second client ("Viewer", Kiriko): the host's librarian ping showed on the Viewer's screen (pinned to its
+  edge when facing away, `mp1`; in view, `mp_view_02`); 150 m away, out of the item's tracking range: "DIAMOND" at
+  127 m by name (`mp3`). The host knelt; the Viewer saw the kneel, and on the host's G saw her stand (`emo2`).
+- Emotes: in a sealed pool on the bottom, in one-block water (the Viewer saw it, W ended it), on a stair step (the
+  orbit from the front, `water2`, `water3`, `stair`); facing a wall: the orbit from the side, W into the wall ended it
+  (`wall`). F5 x6 during three emotes, twice: the orbit held every time (counts above).
+- Health: hero mode, full food, 6 damage: held 14 for 4.5 s, then Overwatch's regen to 20 in 3 s; Minecraft mode:
+  15-20 in 2.5 s, as vanilla.
+- Reload: 3 kunai, R: "12|15" white through 0.8 s, "15|15" at 1.05 s, no bar (`rl_crops`).
+- Shadow: morning, noon, afternoon (`shadow1`), at a ledge (stops at the edge), from a stair, at night, under a roof
+  (`sh2b`, `sh_cases`); speckled before the two passes (`shadow_zoom`), even after (`shadow_zoom2`, `sh3z`).
+- Her Minecraft-mode arms: every item tried both hands: sword + shield, torch + bread, bow + apple, stone + torch,
+  pickaxe + planks, steak + totem (`hd`); a pickaxe mining sand and planks placed (`hp_mc`); eating bread and raising a
+  shield: Minecraft's animation, then her arms; the sword's swing frame by frame (`swing2`, `swing3`); the setting off:
+  Minecraft's arm and sword; on again: hers (`set34`), saved.
+- Perks: `/overcraft perks @s 2`, LALT: the new layout (`perk_ours`), LALT + left click took Urgent Care (`perk_picked`).
+- The paper on the select screen, before and after (`sel_paper_before`, `paper_after`).
+- The whole build in a fresh survival world: join, a zombie killed with kunai (kill feed, `hp_02_fight`), Hunger 255:
+  held at 8, a chest opened with F in hero mode and right click in Minecraft mode, killed and respawned in hero mode
+  (`hp_die`), saved and left, rejoined: still Kiriko, ammo kept (`rj`), a skeleton at night (she took arrows, 16 to
+  9.6, and killed it).
+- The real mouse: the game window still can't be brought forward from here (the harness's mouse goes through
+  Minecraft's own turnPlayer). The F5 frame seen once last batch: reproduced and fixed (above).
+
 ### After 0.3.7 (on `feature/kiriko`)
 - **Hero chat's team channel icon** (round 8 #5's rest, the owner's frame `o2`): a team line (callouts, "Too many
   messages!") starts with a three-person icon in team blue, its text after it; wrapped lines start under the text,
@@ -20,8 +103,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 - **Hunger in hero mode (#43, the owner's call 2026-10-27):** it burns as in Minecraft down to 4 of the bar's 10 (8
   food points) and no further, so a hero never starves under the hidden food bar. A hero already below that (hungry
   when they switched with G) stays where they are and doesn't starve. Minecraft mode and eating are Minecraft's.
-  Minecraft's own regeneration still runs in hero mode while the bar is 9 or more (fast with saturation), on top of
-  Overwatch's: seen healing between a zombie's hits at full food.
+  (Minecraft's own regeneration on top: turned off in the batch above.)
 - **The emote camera orbits (the owner: Overwatch's camera turns freely while emoting):** the view pulls out of her
   eyes and swings round to her front over half a second (2.5 blocks out, round her middle, from a little above), and
   the mouse then turns it all round her and over and under her (-60 to 80 degrees), pulled in where a block's in the

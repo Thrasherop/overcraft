@@ -170,6 +170,16 @@ public final class ClientHero {
 		}
 		// emoting, the view swings out round her and the mouse orbits it, as Overwatch's does; back when it ends
 		boolean emoting = hero() != null && dev.overcraft.client.model.HeroAnimator.of(player).emoting();
+		net.minecraft.world.entity.player.Input keys = player.input.keyPresses;
+		if (emoting && (keys.forward() || keys.backward() || keys.left() || keys.right() || keys.jump() || keys.shift())) {
+			// a movement key ends an emote, as in Overwatch, even where she can't move (only moving ended one: walking into
+			// a wall she knelt on, the camera squeezed in front of her); the server ends it for everyone watching
+			dev.overcraft.client.model.HeroAnimator.emote(player.getId(), "", (player.level().getGameTime()) / 20f);
+			if (ClientPlayNetworking.canSend(dev.overcraft.net.EmotePayload.TYPE)) {
+				ClientPlayNetworking.send(new dev.overcraft.net.EmotePayload(""));
+			}
+			emoting = false;
+		}
 		if (emoting) {
 			EmoteCamera.start(mc, player);
 		} else {

@@ -234,3 +234,25 @@ Read with CLAUDE.md (the rules) and HANDOFF.md (the state). Add to it whenever s
   for third person with our angles: `setRotation`, `setPosition` at the pivot, `move(-getMaxZoom(distance), 0, 0)`
   (the block collision comes free). The camera type must still be a detached one, or Minecraft doesn't draw the
   player's own model; the mouse goes to the orbit through the same `turnPlayer` redirect as the wheel's pointer.
+
+## Lessons (2026-10-27, second batch)
+- **Overwatch's state logic answers timing questions.** The kunai's ammo point came from her weapon graph (statescript
+  0x2171, in `E:\Overwatch Archive\research\kiriko-anim\dump_ss`): find the graph that plays the action's anim alias,
+  then its Wait nodes and the SetVar literals their expressions read (there: 0.65, the "65%" of the patch notes).
+- **Fit by eye with live knobs, not restarts.** For anything placed by eye (a held item's grip, a swing's axis, a
+  size cap), put the numbers in a public static array with a harness command that sets them (`held`, `swing`,
+  `heldmax`), try each axis both ways in one batch of screenshots, then write the winners in as the defaults.
+- **Hide or show by sizes, measured.** `ItemStackRenderState.getModelBoundingBox()` gives an item's box as held (its
+  display transform applied): its thin side tells a tool (across) from a sprite (along the view), and its longest side
+  makes a size cap. A dev readout of the measured numbers found the cap that "didn't work" was working, just too big.
+- **Overlapping flat triangles darken once in two passes:** mark the pixels in the frame's alpha (blend MIN, alpha
+  only), then darken by the mark and reset it (colour times DST_ALPHA). Submit order is honoured across orders
+  (`collector.order(n)`): order 0 first. A depth test alone speckles.
+- **Expensive per-frame geometry gets a coarse copy.** Her shadow from her full 67k-triangle mesh cost 6 ms; vertices
+  merged into 3.5 cm cells once per piece (kept triangles between three cells) look the same and cost 0.45 ms. Measure
+  with the harness's `timing` and `shadows on|off`, alternating, with the inactive-window FPS limit off.
+- **A per-tick fix can lose to the frame.** F5 was undone each client tick, but frames drew between the key and the
+  tick: count the bad frames with a dev counter, show them with the fix off, then fix at the source (Options'
+  setter).
+- **Python edits to Java files: cut by marker, then diff.** Twice a slice taken from one marker to the next took a
+  neighbouring method with it; `git diff | grep '^-'` before building finds it.

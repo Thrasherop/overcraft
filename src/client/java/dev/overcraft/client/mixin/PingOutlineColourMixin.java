@@ -7,13 +7,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** A pinged enemy's outline is the ping's red (PingOutlineMixin; the outline takes the entity's team colour). */
+/**
+ * A pinged thing's outline is its ping's colour (PingOutlineMixin; the outline takes the entity's team colour): red on
+ * an enemy, blue on a notable thing.
+ */
 @Mixin(Entity.class)
 public abstract class PingOutlineColourMixin {
 	@Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
-	private void overcraft$pingRed(CallbackInfoReturnable<Integer> cir) {
-		if (Pings.outlined((Entity) (Object) this)) {
-			cir.setReturnValue(Pings.OUTLINE_RED);
+	private void overcraft$pingColour(CallbackInfoReturnable<Integer> cir) {
+		int colour = Pings.outlineColour((Entity) (Object) this);
+		if (colour >= 0) {
+			cir.setReturnValue(colour);
 		}
 	}
 }

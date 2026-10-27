@@ -5,6 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Overwatch's emote camera: while the hero emotes, the view leaves her eyes, swings round to her front, and the mouse
@@ -35,6 +38,10 @@ public final class EmoteCamera {
 	/** The orbit's own look (the mouse turns it; yaw unwrapped so the swing never jumps sides). */
 	private static float yaw, pitch;
 	private static long startedAt;
+	/** Dev only (DevServer's "state"): frames drawn in first person while she emoted. */
+	public static int firstPersonFrames;
+	/** Dev only (DevServer's "emotef5 off"): F5 may reach first person again, to show the hold below is the fix. */
+	public static boolean holdF5 = true;
 
 	private EmoteCamera() {
 	}
@@ -42,20 +49,44 @@ public final class EmoteCamera {
 	/** Her emote started, or goes on: the view leaves first person (any view she was in comes back after). */
 	public static void start(Minecraft mc, LocalPlayer player) {
 		if (active) {
-			// F5 cycling to first person mid-emote would leave the orbit with nobody drawn in it: it stays out
-			if (mc.options.getCameraType().isFirstPerson()) {
-				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-			}
 			return;
 		}
 		active = true;
 		before = mc.options.getCameraType();
 		fromYaw = player.getYRot();
 		fromPitch = player.getXRot();
-		yaw = fromYaw + 180;
 		pitch = START_PITCH;
+		yaw = fromYaw + 180 + roomiestTurn(mc, player);
 		startedAt = Util.getMillis();
 		mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+	}
+
+	/**
+	 * How far round from her front the orbit starts (degrees): her front where there's room for it, else the nearest
+	 * angle with the most (ours: facing a wall, the front view was squeezed against her face).
+	 */
+	private static float roomiestTurn(Minecraft mc, LocalPlayer player) {
+		if (mc.level == null) {
+			return 0;
+		}
+		Vec3 pivot = player.position().add(0, player.getEyeHeight() * PIVOT, 0);
+		float best = 0;
+		double bestRoom = -1;
+		for (float turn : new float[] {0, 30, -30, 60, -60, 90, -90, 120, -120, 150, -150, 180}) {
+			// the camera sits back along its look from the point it orbits
+			Vec3 back = Vec3.directionFromRotation(START_PITCH, player.getYRot() + 180 + turn).scale(-(DISTANCE + 0.3));
+			HitResult hit = mc.level.clip(new ClipContext(pivot, pivot.add(back), ClipContext.Block.VISUAL,
+				ClipContext.Fluid.NONE, player));
+			double room = hit.getType() == HitResult.Type.MISS ? DISTANCE + 0.3 : hit.getLocation().distanceTo(pivot);
+			if (room >= DISTANCE + 0.29) {
+				return turn;
+			}
+			if (room > bestRoom) {
+				bestRoom = room;
+				best = turn;
+			}
+		}
+		return best;
 	}
 
 	/** Her emote ended: back to the view she had. */
@@ -68,6 +99,16 @@ public final class EmoteCamera {
 
 	public static boolean active() {
 		return active;
+	}
+
+	/**
+	 * The view Options.setCameraType is asked for (OptionsMixin): while she emotes, never first person, which would
+	 * leave the orbit with nobody drawn in it and her arms on screen. F5 cycles back, front, first: here back, front,
+	 * back. (Putting it back each client tick was too late: F5 is handled after that tick's start, and the frames before
+	 * the next showed first person.)
+	 */
+	public static CameraType allowed(CameraType type) {
+		return active && holdF5 && type.isFirstPerson() ? CameraType.THIRD_PERSON_BACK : type;
 	}
 
 	/** The mouse while she emotes (MouseHandlerMixin): it turns the orbit, not her. */

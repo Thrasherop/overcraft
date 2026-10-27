@@ -35,6 +35,9 @@ public abstract class CameraMixin {
 		if (!EmoteCamera.active() || entity == null || entity != Minecraft.getInstance().player) {
 			return;
 		}
+		if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+			EmoteCamera.firstPersonFrames++;
+		}
 		float eye = Mth.lerp(partialTicks, eyeHeightOld, eyeHeight);
 		setRotation(EmoteCamera.viewYaw(), EmoteCamera.viewPitch());
 		setPosition(Mth.lerp(partialTicks, entity.xo, entity.getX()),

@@ -12,7 +12,8 @@ TECHNIQUES.md (how the work gets done). This file is the state of play and the p
 - Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets, #7 select
   screen, #8 HUD, #9 animations, #10 Mercy, #36 perks, #37 Lúcio, #38 Jetpack Cat, #39 Lifeweaver, #40 pings, #41
   sprays (later), #42 climb cancels reload, #43 hunger under the hidden food bar (the owner chose: it burns down to 4
-  bars in hero mode; on `feature/kiriko`).
+  bars in hero mode; on `feature/kiriko`). `feature/kiriko` is ahead of `main` by two batches (CHANGES.md "After
+  0.3.7"), each played; not yet through `next`.
 - Git here: this checkout's ownership confuses git ("dubious ownership"); run it as
   `git -c safe.directory=E:/claude/mods/overcraft ...` (the global safe list wasn't changed).
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
@@ -166,35 +167,28 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
   sound maps.
 
 ## Questions for the owner
-- **First-person hands (critique round 8 #1):** your frames put the kunai grip near x 1420 at 1080p, Blizzard's 2022
-  capture near x 1267, ours sits near 1200. Your frames all have a weapon skin. Could you take one Overwatch screenshot
-  of Kiriko at rest with the default weapons, and say your Field of View setting? Then the hands move to match.
-- **A crosshair colour option?** You play with a custom green crosshair (round 8 noticed it): should Overcraft's
-  hero options have Overwatch's crosshair colours?
-- **Ping key:** Overwatch's PC default is the middle mouse button (ours too); your screenshots show "CANCEL P".
-  Rebindable in the Overwatch options either way; say if P should be the default.
-- **"Notable" pings besides enemies (#40):** Overwatch's are health packs, which Minecraft hasn't; dropped items,
-  food or chests could take their place. Also no Overwatch ping sound yet.
-- Movement (#31) uses Overwatch's own mover numbers from the game data (friction, ground and air acceleration, air
-  decay), read offline like the voice weights, since no public source has them; the code says so next to each, and
-  they agree with the Workshop timings. Say if you'd rather keep movement to public numbers only. Also worth a look in
-  Overwatch: the turn in the air at constant speed (the Workshop script at the end of tools/reference/movement.md).
+Open:
+- **First-person hands (critique round 8 #1):** answered with a default-weapon screenshot at FOV 103 (2026-10-27): the
+  arms are now 1.4 times the model's size (were 1.1), matching it. Worth the owner's look in play.
+- **Ping sound:** still a note-block chime; Overwatch's isn't extracted.
+- **Minecraft-mode arms:** each held item's grip and size were fitted by eye to about a dozen items (`HELD_KUNAI`,
+  `HELD_OFUDA`, `HELD_MAX`, `HELD_SCALE`, `SPRITE_TURN` in HeroModelRenderer; the harness's `held`, `heldmax`,
+  `heldscale` change them live). Odd items (a trident, a spyglass held, banners, modded models) may need their own.
 - Sombra's role: the wiki lists her as a support since 2026, so she stays one (an old note here said damage).
+
+Answered (owner, 2026-10-27):
+- Crosshair: Overwatch's default white, no colour option.
+- Ping key: Overwatch's default (middle mouse; its other default, G, is hero mode's key here), rebindable.
+- Notable pings: dropped items, villagers, structures (not from close by or inside), etc. Done (#40).
+- Movement: the game data's mover numbers are right (the owner compared with Overwatch directly; the floatiness was
+  Minecraft's surroundings).
+- Reload: Overwatch shows no bar, only the count until the ammo is back; the ammo point from the game data. Done.
+- Minecraft mode's arm: her real arms holding the item, the off hand's item in the ofuda hand; a setting for
+  Minecraft's arm instead. Done.
+- Toggle Healing Ofuda on by default, kunai throws alternating hands, On Fire's Overwatch 1 numbers: correct as is.
+- Shadow: a body-shaped one. Done.
+- Talisman backs: the paper's white, as its front. Done.
 - (Answered by the data: the "high kick" in the Suzu throw was a broken key in the idle breath clip, now mended.)
-- While reloading, our weapon panel's bottom line fills white with the reload. None of the reference frames shows a
-  reload: does Overwatch's HUD do that, or something else (critique round 2, #24)?
-- Minecraft mode's first-person arm is now a Kiriko-styled Minecraft arm (owner asked to see it; screenshots sent
-  2026-10-26). Keep it, change it, or try her real Overwatch arm model there instead?
-- Toggle Healing Ofuda is on by default (Overwatch's default, per the wiki): one RMB press throws until the clip is
-  empty. If you'd rather hold to throw, it's one click on Options > HERO; or say so and the default changes.
-- First-person kunai throws alternate hands (your screenshots); the reference agent read Blizzard's clips as one
-  hand every throw. Kept your observation.
-- On Fire uses the wiki's Overwatch 1 numbers (Blizzard never published Overwatch 2's): 250 points, 5 a second decay,
-  damage and healing as the wiki gives them. Tune if it comes too easily or too rarely in Minecraft fights.
-- Minecraft draws its round blob shadow under every entity, heroes too; Overwatch heroes cast body-shaped shadows and
-  no blob (critique round 7, #11). Keep Minecraft's, shrink it to her feet and fainter, or drop it for heroes?
-- The held talismans' blank backs read grey on the select screen (round 7 #6). That is Blizzard's own texture: the
-  back's bottom is baked dark (#756664), where the fingers hold it. Left as it is; say if it should be lightened.
 
 ## Next (the owner's order, 2026-10-26 night)
 Kiriko is the flagship: "basically perfect" before any other hero ("if you're implementing lucio before 4am then you

@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 /**
  * Hunger in hero mode (#43): it burns as in Minecraft, down to 4 of the bar's 10 and no further (owner, 2026-10-27), so
  * a hero never starves under the food bar the hero HUD hides. One already below that (hungry when they switched with G)
- * stays where they are, and doesn't starve either. Eating, and Minecraft mode's hunger, are Minecraft's.
+ * stays where they are, and doesn't starve either. Nor does a full bar heal them: Overwatch's own passive healing is the
+ * hero's (Minecraft's on top healed her between a zombie's hits). Eating, and Minecraft mode's hunger, are Minecraft's.
  */
 @Mixin(net.minecraft.world.food.FoodData.class)
 public abstract class FoodDataMixin {
@@ -26,6 +27,12 @@ public abstract class FoodDataMixin {
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(II)I"))
 	private int overcraft$heroHungerFloor(int food, ServerPlayer player) {
 		return HeroManager.controls(player) ? Math.max(food, Math.min(foodLevel, HERO_FOOD_FLOOR)) : food;
+	}
+
+	/** The naturalRegeneration game rule as the tick reads it: off for a hero in hero mode. */
+	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Ljava/lang/Boolean;booleanValue()Z"))
+	private boolean overcraft$noHeroFoodHealing(boolean naturalRegen, ServerPlayer player) {
+		return naturalRegen && !HeroManager.controls(player);
 	}
 
 	@WrapWithCondition(method = "tick", at = @At(value = "INVOKE",

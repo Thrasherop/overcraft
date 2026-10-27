@@ -218,6 +218,60 @@ public final class HeroAnimator {
 	 */
 	/** The ofuda hand's fingertip in the model's space, as last posed by poseFirstPerson. */
 	public final Vector3f fingertip = new Vector3f();
+	/**
+	 * Her hands' weapon bones in the model's space, as last posed by poseFirstPerson: where she holds her kunai (on the
+	 * right of the view) and her ofuda (on the left). Minecraft mode puts the held items there (HeroModelRenderer).
+	 */
+	public final Matrix4f kunaiHand = new Matrix4f();
+	public final Matrix4f ofudaHand = new Matrix4f();
+	/**
+	 * Each weapon bone's place in its hand (from the wrist), as last seen with no action playing: her quick melee parks
+	 * the kunai's bone away from the hand, and a held item went with it (vanished mid-swing).
+	 */
+	private final Matrix4f kunaiGrip = new Matrix4f();
+	private final Matrix4f ofudaGrip = new Matrix4f();
+
+	/** Her right-of-view arm turned at the shoulder by these degrees about SWING's axis (her model's space). */
+	private static void swingArm(SkinnedModel model, Skeleton.Pose pose, float degrees) {
+		int arm = UpperBody.arm(model);
+		if (arm < 0) {
+			return;
+		}
+		int parent = model.parent[arm];
+		Quaternionf up = parent >= 0
+			? Skeleton.world(model, pose, parent).getUnnormalizedRotation(new Quaternionf()).normalize() : new Quaternionf();
+		Quaternionf turn = new Quaternionf().fromAxisAngleDeg(new Vector3f(SWING[0], SWING[1], SWING[2]).normalize(), degrees);
+		// the turn in her model's space, as seen from the arm's parent: r' = P^-1 Q P r
+		pose.r[arm].premul(new Quaternionf(up).invert().mul(turn).mul(up));
+	}
+
+	/** A hand's weapon bone as posed: its wrist's, with the bone's place in the hand from when no action played. */
+	private void hand(SkinnedModel model, Skeleton.Pose pose, boolean kunai, Matrix4f grip, Matrix4f out) {
+		int wrist = UpperBody.wrist(model, kunai);
+		int weapon = UpperBody.weapon(model, kunai);
+		if (wrist < 0 || weapon < 0) {
+			return;
+		}
+		Matrix4f wristWorld = Skeleton.world(model, pose, wrist);
+		if (actionsFirstPerson.playing() == null) {
+			grip.set(wristWorld).invert().mul(Skeleton.world(model, pose, weapon));
+		}
+		out.set(wristWorld).mul(grip);
+	}
+
+	/**
+	 * Minecraft mode's swing with her own arms (attacking, mining, placing: 0 to 1 through it, Minecraft's own
+	 * progress), set before each poseFirstPerson. Her clips have no swing of the hand on the right of the view: her quick
+	 * melee and her kunai throws are both the other hand's.
+	 */
+	public float swing;
+	/**
+	 * The swing: her right-of-view arm turned about this axis of her model by this many degrees at its height, on
+	 * Minecraft's swing curve (sin of the square root: quick out, slower back): a chop in across her toward the crosshair.
+	 * DevServer's "swing" sets it, and can hold the swing at one point (its fifth number, 0 for none) to look at it.
+	 * Ours, by eye (tried about each axis both ways: about X the arm went up out of view or down, about Z it rose).
+	 */
+	public static final float[] SWING = {-0.4f, 1, 0, 30, 0};
 
 	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
 		lastSeen = now;
@@ -248,6 +302,11 @@ public final class HeroAnimator {
 		if (tip >= 0) {
 			Skeleton.world(model, pose, tip).getTranslation(fingertip);
 		}
+		if (swing > 0) {
+			swingArm(model, pose, (float) Math.sin(Math.sqrt(swing) * Math.PI) * SWING[3]);
+		}
+		hand(model, pose, true, kunaiGrip, kunaiHand);
+		hand(model, pose, false, ofudaGrip, ofudaHand);
 		int camera = UpperBody.eye(model);
 		if (camera >= 0) {
 			// the camera's transform now, with its rest turn taken out (at rest it looks along the model's facing)
@@ -567,6 +626,11 @@ public final class HeroAnimator {
 		private static final Map<SkinnedModel, Integer> MOVERS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> EYES = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> FINGERTIPS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_HANDS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_WRISTS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> ARMS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_WRISTS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_HANDS = new HashMap<>();
 
 		private static int first(SkinnedModel model, String... names) {
 			for (String name : names) {
@@ -626,6 +690,21 @@ public final class HeroAnimator {
 		/** The ofuda hand's index fingertip (the hand on the left of the view: the model's "_R" bones, as drawn there). */
 		static int fingertip(SkinnedModel model) {
 			return FINGERTIPS.computeIfAbsent(model, m -> first(m, "IndexFinger_3_R"));
+		}
+
+		/** The upper arm on the right of the view (the model's "_L" side). */
+		static int arm(SkinnedModel model) {
+			return ARMS.computeIfAbsent(model, m -> first(m, "Arm_L"));
+		}
+
+		/** The kunai hand's wrist (right of the view: the model's "_L" side), or the ofuda hand's. */
+		static int wrist(SkinnedModel model, boolean kunai) {
+			return (kunai ? KUNAI_WRISTS : OFUDA_WRISTS).computeIfAbsent(model, m -> first(m, kunai ? "Wrist_L" : "Wrist_R"));
+		}
+
+		/** The weapon bone of the kunai hand (right of the view: the model's "_L" side), or of the ofuda hand. */
+		static int weapon(SkinnedModel model, boolean kunai) {
+			return (kunai ? KUNAI_HANDS : OFUDA_HANDS).computeIfAbsent(model, m -> first(m, kunai ? "Weapon_L" : "Weapon_R"));
 		}
 
 		static int head(SkinnedModel model) {
