@@ -73,9 +73,25 @@ public final class Loadout {
 		return ids;
 	}
 
-	/** The four equipped voice lines (up, right, down, left); an empty slot is "". */
+	/**
+	 * Voice lines shown but not to be picked, by hero: greyed out in the list, with a note on hover (the line's
+	 * "overcraft.loadout.blocked.<hero>.<id>"). Kiriko's "If this is a simulation, I guess I'm a glitch": the owner's
+	 * call (2026-10-27).
+	 */
+	private static final Map<String, java.util.Set<String>> BLOCKED = Map.of("kiriko", java.util.Set.of("i_m_a_glitch"));
+
+	/** Whether a voice line is shown greyed out and can't be equipped. */
+	public static boolean blocked(Hero hero, String id) {
+		return BLOCKED.getOrDefault(hero.id, java.util.Set.of()).contains(id);
+	}
+
+	/** The four equipped voice lines (up, right, down, left); an empty slot is "" (a blocked line equipped before is too). */
 	public static List<String> voiceLines(Hero hero) {
-		return chosen(VOICE_LINES, hero, available(hero));
+		List<String> pickable = new ArrayList<>(available(hero));
+		pickable.removeIf(id -> blocked(hero, id));
+		List<String> chosen = new ArrayList<>(chosen(VOICE_LINES, hero, pickable));
+		chosen.replaceAll(id -> blocked(hero, id) ? "" : id);
+		return chosen;
 	}
 
 	/** The four equipped emotes (up, right, down, left); an empty slot is "". */
@@ -96,6 +112,9 @@ public final class Loadout {
 	}
 
 	public static void setVoiceLine(Hero hero, int slot, String id) {
+		if (blocked(hero, id)) {
+			return;
+		}
 		List<String> chosen = new ArrayList<>(voiceLines(hero));
 		chosen.set(slot, id);
 		VOICE_LINES.put(hero.id, chosen);
