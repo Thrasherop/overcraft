@@ -40,6 +40,8 @@ public class LoadoutScreen extends OwScreen {
 		"overcraft.loadout.left"};
 
 	private static final float TABS_TOP = 250;
+	/** A voice line that can't be picked (Loadout.blocked): greyed out. */
+	private static final int GREYED = 0xFF5E646B;
 
 	private final Screen parent;
 	private int slot;
@@ -85,6 +87,10 @@ public class LoadoutScreen extends OwScreen {
 		List<String> lines = entries(hero);
 		for (int i = 0; i < lines.size(); i++) {
 			if (x >= lineX(i) && x < lineX(i) + COLUMN_W - 20 && y >= lineY(i) && y < lineY(i) + ROW_H - 4) {
+				if (!emotes && Loadout.blocked(hero, lines.get(i))) {
+					// greyed out: no pick, no listen
+					return true;
+				}
 				if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 					if (!emotes) {
 						minecraft.getSoundManager().play(SimpleSoundInstance.forUI(
@@ -152,13 +158,25 @@ public class LoadoutScreen extends OwScreen {
 			List<String> lines = entries(hero);
 			float rx = refX(mouseX);
 			float ry = refY(mouseY);
+			String note = null;
 			for (int i = 0; i < lines.size(); i++) {
 				float x = lineX(i);
 				float y = lineY(i);
 				boolean over = rx >= x && rx < x + COLUMN_W - 20 && ry >= y && ry < y + ROW_H - 4;
 				boolean on = equipped.contains(lines.get(i));
-				fill(g, x, y, COLUMN_W - 20, ROW_H - 4, over ? ROW_HOVER : ROW);
-				HudText.draw(g, Face.BODY, name(hero, lines.get(i)), x + 12, y + 25, 13, on ? ORANGE : WHITE, Align.LEFT);
+				boolean blocked = !emotes && Loadout.blocked(hero, lines.get(i));
+				fill(g, x, y, COLUMN_W - 20, ROW_H - 4, over && !blocked ? ROW_HOVER : ROW);
+				HudText.draw(g, Face.BODY, name(hero, lines.get(i)), x + 12, y + 25, 13, blocked ? GREYED : on ? ORANGE : WHITE, Align.LEFT);
+				if (over && blocked) {
+					note = Component.translatable("overcraft.loadout.blocked." + hero.id + "." + lines.get(i)).getString();
+				}
+			}
+			if (note != null) {
+				// the note by the cursor, as a tooltip
+				float width = HudText.width(Face.BODY, note, 14) + 24;
+				fill(g, rx + 14, ry - 34, width, 32, 0xF010161C);
+				outline(g, rx + 14, ry - 34, width, 32, 1.5f, 0x99C8D0D8);
+				HudText.draw(g, Face.BODY, note, rx + 26, ry - 13, 14, WHITE, Align.LEFT);
 			}
 			if (lines.isEmpty()) {
 				HudText.draw(g, Face.BODY, Component.translatable(emotes ? "overcraft.loadout.none_emotes" : "overcraft.loadout.none")
