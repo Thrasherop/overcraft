@@ -48,6 +48,7 @@ public final class Perks {
 	public static double minorXp(Hero hero) {
 		return switch (hero) {
 			case KIRIKO -> KirikoStats.PERK_MINOR_XP;
+			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -56,6 +57,7 @@ public final class Perks {
 	public static double majorXp(Hero hero) {
 		return switch (hero) {
 			case KIRIKO -> KirikoStats.PERK_MAJOR_XP;
+			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

@@ -10,15 +10,18 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * reloads are 0..1 progress (-1 when not reloading). canChangeHero: near your bed (or no hero yet), H opens the
  * select screen. onFire: the hero is On Fire (Combat.tickFire). Perks (#36): the perk level (1-3), perkProgress 0..1
  * toward the next level (1 at level 3), perkReady the tier waiting to be picked (0 none, 1 minor, 2 major), and the picked
- * minor and major perks (Perk ordinals, -1 for none).
+ * minor and major perks (Perk ordinals, -1 for none). For heroes with more: ability3Cooldown (Lúcio's Soundwave, s),
+ * mode (Lúcio's song: 0 healing, 1 speed), activeLeft (an ability running, s left: Amp It Up) and meter (0..1: Soundwave
+ * Rider's charge).
  */
 public record HeroSyncPayload(String heroId, float ultCharge, int ultCost, boolean ultActive,
 							  int primaryAmmo, float primaryReload, int secondaryAmmo, float secondaryReload,
 							  float ability1Cooldown, float ability2Cooldown, boolean rushed,
 							  boolean canChangeHero, boolean onFire,
-							  int perkLevel, float perkProgress, int perkReady, int minorPerk, int majorPerk) implements CustomPacketPayload {
+							  int perkLevel, float perkProgress, int perkReady, int minorPerk, int majorPerk,
+							  float ability3Cooldown, int mode, float activeLeft, float meter) implements CustomPacketPayload {
 	public static final HeroSyncPayload NONE = new HeroSyncPayload("", 0, 1, false, 0, -1, 0, -1, 0, 0, false, true, false,
-		1, 0, 0, -1, -1);
+		1, 0, 0, -1, -1, 0, 0, 0, 0);
 
 	public static final Type<HeroSyncPayload> TYPE = new Type<>(Overcraft.id("hero_sync"));
 	public static final StreamCodec<FriendlyByteBuf, HeroSyncPayload> CODEC = CustomPacketPayload.codec(
@@ -41,10 +44,15 @@ public record HeroSyncPayload(String heroId, float ultCharge, int ultCost, boole
 			buf.writeByte(p.perkReady);
 			buf.writeByte(p.minorPerk);
 			buf.writeByte(p.majorPerk);
+			buf.writeFloat(p.ability3Cooldown);
+			buf.writeByte(p.mode);
+			buf.writeFloat(p.activeLeft);
+			buf.writeFloat(p.meter);
 		}, buf -> new HeroSyncPayload(buf.readUtf(32), buf.readFloat(), buf.readVarInt(), buf.readBoolean(),
 			buf.readVarInt(), buf.readFloat(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
 			buf.readBoolean(), buf.readBoolean(), buf.readBoolean(),
-			buf.readByte(), buf.readFloat(), buf.readByte(), buf.readByte(), buf.readByte()));
+			buf.readByte(), buf.readFloat(), buf.readByte(), buf.readByte(), buf.readByte(),
+			buf.readFloat(), buf.readByte(), buf.readFloat(), buf.readFloat()));
 
 	@Override
 	public Type<HeroSyncPayload> type() {

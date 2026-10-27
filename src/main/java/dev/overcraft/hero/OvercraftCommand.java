@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import dev.overcraft.kiriko.KirikoStats;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -69,12 +68,14 @@ public final class OvercraftCommand {
 			if (s == null || s.hero == null) {
 				continue;
 			}
-			s.ability1Cooldown = s.ability2Cooldown = 0;
+			s.ability1Cooldown = s.ability2Cooldown = s.ability3Cooldown = 0;
 			s.meleeCooldown = 0;
 			s.weaponRecovery = 0;
-			s.primaryAmmo = KirikoStats.KUNAI_AMMO;
-			s.secondaryAmmo = KirikoStats.OFUDA_AMMO;
 			s.primaryReload = s.secondaryReload = -1;
+			HeroKit kit = HeroManager.kit(s.hero);
+			if (kit != null) {
+				kit.equip(player, s);
+			}
 			done++;
 		}
 		int count = done;

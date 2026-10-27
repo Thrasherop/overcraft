@@ -98,6 +98,8 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.OFUDA, ctx -> new ProjectileModelRenderer<>(ctx, "ofuda", 0.75f, false, 2, true));
 		EntityRendererRegistry.register(OcEntities.SUZU, ctx -> new ProjectileModelRenderer<>(ctx, "suzu", 1.0f, false));
 		EntityRendererRegistry.register(OcEntities.KITSUNE, KitsuneRenderer::new);
+		// Lúcio's sonic rounds: a bright green orb (our own sprite), full bright
+		EntityRendererRegistry.register(OcEntities.SONIC, ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx, 0.6f, true));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -152,6 +154,8 @@ public class OvercraftClient implements ClientModInitializer {
 		Minecraft mc = Minecraft.getInstance();
 		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
+		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
+		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
 		// jump held, or (Overwatch's "Automatically climb walls") just being in the air
 		OwMovement.jumpHeld = entity -> entity == mc.player && (HeroControls.get(HeroControls.Action.JUMP).isDown()
 			|| HeroOptions.get().autoClimb && !entity.onGround());

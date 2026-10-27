@@ -76,6 +76,7 @@ public final class HeroManager {
 
 	static {
 		KITS.put(Hero.KIRIKO, new Kiriko());
+		KITS.put(Hero.LUCIO, new dev.overcraft.lucio.Lucio());
 	}
 
 	private HeroManager() {
@@ -271,6 +272,7 @@ public final class HeroManager {
 		}
 		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
 		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			QuickMelee.use(player, state);
 		}
@@ -316,7 +318,7 @@ public final class HeroManager {
 		if (state.ultActive > 0) {
 			state.ultActive--;
 		} else {
-			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0);
+			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0, true);
 		}
 		if (Combat.now(player) - state.lastDamagedTick >= Combat.REGEN_DELAY && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());

@@ -20,6 +20,8 @@ public final class OcItems {
 	public static final Item KUNAI = register("kunai", Item::new, new Item.Properties());
 	public static final Item OFUDA = register("ofuda", Item::new, new Item.Properties());
 	public static final Item SUZU = register("suzu", Item::new, new Item.Properties());
+	// Lúcio's Sonic Amplifier round in flight (not obtainable)
+	public static final Item SONIC = register("sonic", Item::new, new Item.Properties());
 
 	private OcItems() {
 	}
