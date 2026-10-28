@@ -92,7 +92,9 @@ public final class JetpackCat implements HeroKit {
 	 */
 	public static void keepFlight(ServerPlayer player, @Nullable HeroState s, boolean controls) {
 		boolean cat = s != null && s.hero == Hero.JETPACK_CAT && controls && player.isAlive();
-		if (s != null && !cat) {
+		// Mercy flies in Valkyrie: the same permission (her own kit ends what she does out of play)
+		boolean valkyrie = s != null && s.hero == Hero.MERCY && controls && player.isAlive() && dev.overcraft.mercy.Mercy.flying(s);
+		if (s != null && !cat && s.hero != Hero.MERCY) {
 			if (s.lifelineTarget != null) {
 				endLifeline(player, s, false);
 			}
@@ -102,7 +104,7 @@ public final class JetpackCat implements HeroKit {
 			s.purrTicks = -1;
 		}
 		boolean modeAllows = player.isCreative() || player.isSpectator();
-		boolean want = cat || modeAllows;
+		boolean want = cat || valkyrie || modeAllows;
 		if (player.getAbilities().mayfly != want) {
 			player.getAbilities().mayfly = want;
 			if (!want) {

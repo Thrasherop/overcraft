@@ -157,6 +157,8 @@ public class Overcraft implements ModInitializer {
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
 			HeroManager.tick(server);
+			dev.overcraft.mercy.Boosts.tick(server);
+			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
@@ -206,6 +208,7 @@ public class Overcraft implements ModInitializer {
 			Combat.clear();
 			KitsuneRush.clear();
 			Souls.clear();
+			dev.overcraft.mercy.Boosts.clear();
 		});
 	}
 }

@@ -22,7 +22,11 @@ public enum Perk {
 	JETPACK_CAT_ULTERIOR_MOTIVE(Hero.JETPACK_CAT, Tier.MINOR, "ulterior_motive"),
 	JETPACK_CAT_TRANSPORT_SHIELDING(Hero.JETPACK_CAT, Tier.MINOR, "transport_shielding"),
 	JETPACK_CAT_PURRFECT_FORM(Hero.JETPACK_CAT, Tier.MAJOR, "purrfect_form"),
-	JETPACK_CAT_CLAWS_OUT(Hero.JETPACK_CAT, Tier.MAJOR, "claws_out");
+	JETPACK_CAT_CLAWS_OUT(Hero.JETPACK_CAT, Tier.MAJOR, "claws_out"),
+	MERCY_ANGELIC_RESURRECTION(Hero.MERCY, Tier.MINOR, "angelic_resurrection"),
+	MERCY_WINGED_REACH(Hero.MERCY, Tier.MINOR, "winged_reach"),
+	MERCY_CHAIN_BOOST(Hero.MERCY, Tier.MAJOR, "chain_boost"),
+	MERCY_DOUBLE_DOSE(Hero.MERCY, Tier.MAJOR, "double_dose");
 
 	public enum Tier { MINOR, MAJOR }
 

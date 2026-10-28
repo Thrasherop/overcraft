@@ -76,6 +76,31 @@ public final class HeroState {
 	public @Nullable Integer carried;
 	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
 	public int wallRideTicks;
+	/** Mercy: the blaster out (else the staff), the swap's ticks left, and the blaster's time put away (its self-reload). */
+	public boolean blasterOut;
+	public int swapTicks;
+	public int holsterTicks;
+	/** Mercy: the beam's target (entity id), mode (Mercy.BEAM_*), its ticks out of sight, and the next search's countdown. */
+	public @Nullable Integer beamTarget;
+	public int beamMode;
+	public int beamLost;
+	public int beamSearch;
+	/** Mercy: which fire buttons were held last tick (1 left, 2 right: the one pressed last picks the mode), the chain's targets. */
+	public int beamHeldBefore;
+	public java.util.List<Integer> beamChain = java.util.List.of();
+	/** Mercy: Guardian Angel's target (entity id, or a soul's player id as -2 - index), its phase and ticks, its momentum. */
+	public @Nullable Integer gaTarget;
+	public java.util.@Nullable UUID gaSoul;
+	public int gaPhase;
+	public int gaTicks;
+	public double gaMomentum;
+	/** Mercy: an Angelic Descent or a launch is landing her (no fall damage until she's down). */
+	public boolean softLanding;
+	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
+	public int flashCharges = 1;
+	public int flashCast = -1;
+	/** Mercy: the soul Resurrect is raising. */
+	public java.util.@Nullable UUID resSoul;
 	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */
 	public long songLinesFrom;
 
@@ -125,6 +150,15 @@ public final class HeroState {
 		volleyNext = 0;
 		riderCharge = 0;
 		barrierCast = -1;
+		blasterOut = false;
+		swapTicks = holsterTicks = 0;
+		beamTarget = gaTarget = null;
+		gaSoul = resSoul = null;
+		beamMode = beamLost = beamSearch = gaPhase = gaTicks = 0;
+		gaMomentum = 0;
+		softLanding = false;
+		flashCharges = 1;
+		flashCast = -1;
 		ampFree = false;
 		ampDelay = 0;
 		wallRideTicks = 0;

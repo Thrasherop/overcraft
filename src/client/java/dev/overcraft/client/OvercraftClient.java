@@ -131,6 +131,10 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.PAW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx, "paw", 0.4f,
 			false, 1, true));
 
+		// Mercy's blaster shots: drawn by their flight effect (MercyFx), the item only without the local pack
+		EntityRendererRegistry.register(OcEntities.BLASTER_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"blaster_shot", 0.3f, false, 1, true));
+
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode

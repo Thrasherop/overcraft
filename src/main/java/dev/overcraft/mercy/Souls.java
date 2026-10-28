@@ -121,6 +121,25 @@ public final class Souls {
 		return best;
 	}
 
+	/** Every soul of the hero's allies within range of her and dead less than lifetime seconds, nearest first. */
+	public static java.util.List<Soul> near(ServerPlayer hero, double range, double lifetime) {
+		java.util.List<Soul> found = new java.util.ArrayList<>();
+		long now = hero.level().getGameTime();
+		for (Soul soul : SOULS.values()) {
+			if (soul.level == hero.level().dimension() && now - soul.diedAt <= lifetime * 20 && !PENDING.containsKey(soul.id)
+				&& soul.at.distanceTo(hero.position()) <= range && Allies.wasAlly(hero, soul.body)
+				&& waiting(hero.level().getServer(), soul)) {
+				found.add(soul);
+			}
+		}
+		found.sort(java.util.Comparator.comparingDouble(soul -> soul.at.distanceToSqr(hero.position())));
+		return found;
+	}
+
+	public static @Nullable Soul get(UUID id) {
+		return SOULS.get(id);
+	}
+
 	/** Whether a player's soul is still on the death screen (the same dead player, still connected). */
 	private static boolean waiting(MinecraftServer server, Soul soul) {
 		if (soul.mob != null) {
@@ -158,8 +177,21 @@ public final class Souls {
 		living.hurtTime = 0;
 		living.clearFire();
 		living.setHealth(living.getMaxHealth() * healthFraction);
-		return level.addFreshEntity(living);
+		if (!level.addFreshEntity(living)) {
+			return false;
+		}
+		comeBack(living);
+		return true;
 	}
+
+	/** A resurrected ally can't be hurt for 2.25 s and can't move for the first 1.5 s of it (W; her data's 1BE7). */
+	private static void comeBack(LivingEntity living) {
+		dev.overcraft.hero.Combat.phase(living, MercyStats.RES_INVULNERABLE);
+		dev.overcraft.hero.Combat.buff(living, net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, ROOTED, -1,
+			MercyStats.RES_ROOTED);
+	}
+
+	private static final net.minecraft.resources.Identifier ROOTED = dev.overcraft.Overcraft.id("resurrected");
 
 	/** AFTER_RESPAWN: a resurrected player lands where they fell; anyone else's respawn takes their soul. */
 	public static void onRespawn(ServerPlayer old, ServerPlayer fresh) {
@@ -175,6 +207,7 @@ public final class Souls {
 		Vec3 at = pending.soul.at;
 		fresh.teleportTo(level, at.x, at.y, at.z, Set.of(), old.getYRot(), old.getXRot(), true);
 		fresh.setHealth(fresh.getMaxHealth() * pending.healthFraction);
+		comeBack(fresh);
 	}
 
 	/** Whether this player's respawn is a resurrection (checked before onRespawn takes it). */

@@ -68,10 +68,25 @@ public abstract class LivingEntityMixin {
 		}
 	}
 
+	/**
+	 * A Mercy's damage boost (dev.overcraft.mercy.Boosts): what a boosted attacker deals arrives raised, from any
+	 * weapon, a pet's bite or an arrow they shot (the source's entity is the shooter), before armour and the rest.
+	 */
+	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "hurtServer", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+	private float overcraft$damageBoost(float damage,
+										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
+		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage);
+	}
+
 	/** Jetpack Cat flying takes 40% less knockback (W: her "flight resistance"). */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private double overcraft$flightResistance(double power) {
+		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.MERCY
+			&& HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s && dev.overcraft.mercy.Mercy.flying(s)) {
+			// Mercy in Valkyrie takes half the knockback (W; her data's 0A04B51B -0.5)
+			return power * dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK;
+		}
 		return (Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.JETPACK_CAT
 			? power * dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN : power;
 	}

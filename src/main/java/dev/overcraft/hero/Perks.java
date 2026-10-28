@@ -54,6 +54,7 @@ public final class Perks {
 			case KIRIKO -> KirikoStats.PERK_MINOR_XP;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MINOR_XP;
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MINOR_XP;
+			case MERCY -> dev.overcraft.mercy.MercyStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -64,6 +65,7 @@ public final class Perks {
 			case KIRIKO -> KirikoStats.PERK_MAJOR_XP;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MAJOR_XP;
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MAJOR_XP;
+			case MERCY -> dev.overcraft.mercy.MercyStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

@@ -30,6 +30,11 @@ public final class OcEntities {
 		dev.overcraft.entity.PawEntity::new, MobCategory.MISC).noLootTable().noSave()
 		.sized((float) dev.overcraft.jetpackcat.JetpackCatStats.CENTRE_RADIUS * 2, (float) dev.overcraft.jetpackcat.JetpackCatStats.CENTRE_RADIUS * 2)
 		.clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.BlasterShotEntity> BLASTER_SHOT = register("blaster_shot",
+		EntityType.Builder.<dev.overcraft.entity.BlasterShotEntity>of(dev.overcraft.entity.BlasterShotEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2, (float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

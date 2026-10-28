@@ -122,6 +122,9 @@ public final class OcSounds {
 	 * Jetpack Cat's (tools/soundmaps/jetpack_cat.txt, read from her effects' Wwise events): her own in her head, fire
 	 * and reload also heard by everyone else ("_3p"); the loops are played and stopped by the client (JetpackCatSounds).
 	 */
+	/** Valkyrie's line as allies (and Mercy) hear it, "Heroes never die!", and as enemies do. */
+	public static final SoundEvent MERCY_ULT_FRIENDLY = register("mercy.ult.friendly");
+	public static final SoundEvent MERCY_ULT_ENEMY = register("mercy.ult.enemy");
 	public static final SoundEvent JC_PAW_FIRE = register("jetpack_cat.paw.fire");
 	public static final SoundEvent JC_PAW_FIRE_3P = register("jetpack_cat.paw.fire_3p");
 	public static final SoundEvent JC_PAW_HEAL = register("jetpack_cat.paw.heal");
