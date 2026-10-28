@@ -521,9 +521,9 @@ public final class JetpackCatFx {
 				Vec3 nozzle = at[n];
 				Vec3 axis = down[n];
 				float flicker = 0.85f + 0.15f * Mth.sin(t * 37 + n * 2.1f);
-				flame(id, n, 0, nozzle, axis, 0.143f, 0.187f * flicker, "cat_fade", blue(Palette.CAT_FLAME), 0.55f);
-				flame(id, n, 1, nozzle, axis, 0.143f, 0.187f * (2 - flicker), "cat_fade", gold(Palette.CAT_FLAME_GOLD), 0.7f);
-				flame(id, n, 2, nozzle, axis, 0.0715f, 0.094f, "cat_fade", gold(Palette.CAT_FLAME), flicker);
+				flame(id, n, 0, nozzle, axis, 0.143f, 0.187f * flicker, "cat_soft", blue(Palette.CAT_FLAME), 0.55f, false);
+				flame(id, n, 1, nozzle, axis, 0.143f, 0.187f * (2 - flicker), "cat_soft", gold(Palette.CAT_FLAME_GOLD), 0.8f, true);
+				flame(id, n, 2, nozzle, axis, 0.0715f, 0.094f, "cat_soft", gold(Palette.CAT_FLAME), flicker, false);
 				Vec3 under = nozzle.add(axis.scale(0.13));
 				int sparks = (int) (6 * dt + Fx.RANDOM.nextFloat());
 				for (int i = 0; i < sparks; i++) {
@@ -553,11 +553,15 @@ public final class JetpackCatFx {
 		}
 	}
 
-	/** One layer of a nozzle's flame: a streak from the nozzle along its down axis, kept on it frame by frame. */
+	/**
+	 * One layer of a nozzle's flame: a soft tapered streak from the nozzle along its down axis, kept on it frame by
+	 * frame (the data's open tube 1B580 with scrolled flame noise: ours, a soft dot stretched, as a box-shaped strip
+	 * read as a rectangle). The gold layer is blended: added over bright grass it turned lime (found playing).
+	 */
 	private static void flame(int id, int nozzle, int layer, Vec3 from, Vec3 axis, float width, float length, String mask,
-		Palette palette, float alpha) {
+		Palette palette, float alpha, boolean blended) {
 		Particle p = Fx.attach("jetpack_flame/" + id + "/" + nozzle + "/" + layer, from.add(axis.scale(length / 2)), () -> {
-			Particle f = Fx.particle(mask, palette);
+			Particle f = blended ? Fx.soft(mask, palette) : Fx.particle(mask, palette);
 			return f == null ? null : f.shape(Shape.STREAK).life(0.1f).fade(0.02f, 0.5f).nearFade(0.5f);
 		});
 		if (p != null) {
