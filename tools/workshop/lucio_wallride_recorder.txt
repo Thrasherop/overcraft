@@ -1,0 +1,239 @@
+settings
+{
+	main
+	{
+		Description: "Overcraft: Lucio wall-ride recorder. Logs every tick while you play (Workshop Inspector) and shows the live values. Interact (F) marks a moment."
+	}
+
+	modes
+	{
+		Skirmish
+
+		General
+		{
+			Hero Limit: Off
+			Respawn Time Scalar: 0%
+		}
+	}
+}
+
+variables
+{
+	player:
+		0: wasOnWall
+		1: wasOnGround
+		2: attachTime
+		3: attachPos
+		4: attachVel
+		5: leaveTime
+		6: leaveVel
+		7: tick
+		8: wallNormal
+		9: rideCount
+		10: lastEvent
+		11: marks
+		12: rideStep
+		13: leaveStep
+}
+
+rule("Lucio only")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	actions
+	{
+		Start Forcing Player To Be Hero(Event Player, Hero(Lúcio));
+		Enable Inspector Recording;
+		Event Player.lastEvent = Custom String("ready");
+		Event Player.rideCount = 0;
+		Event Player.marks = 0;
+	}
+}
+
+rule("Live readout")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+	}
+
+	actions
+	{
+		Create HUD Text(Event Player, Custom String("t {0}  wall {1}  ground {2}", Round To Integer(Total Time Elapsed * 100, Down) / 100,
+			Is On Wall(Event Player), Is On Ground(Event Player)), Null, Null, Left, 0, Color(White), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("h {0}  v {1}  alt {2}", Round To Integer(Horizontal Speed Of(Event Player) * 100,
+			Down) / 100, Round To Integer(Vertical Speed Of(Event Player) * 100, Down) / 100, Round To Integer(Altitude Of(Event Player)
+			* 100, Down) / 100), Null, Null, Left, 1, Color(Yellow), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("vel {0}", Velocity Of(Event Player)), Null, Null, Left, 2, Color(Yellow), Color(
+			White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("input {0}  jump {1}  pitch {2}", Throttle Of(Event Player), Is Button Held(
+			Event Player, Button(Jump)), Round To Integer(Vertical Facing Angle Of(Event Player), To Nearest)), Null, Null, Left, 3,
+			Color(Sky Blue), Color(White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("wall normal {0}  rides {1}  marks {2}", Event Player.wallNormal,
+			Event Player.rideCount, Event Player.marks), Null, Null, Left, 4, Color(Sky Blue), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Event Player.lastEvent, Null, Null, Left, 5, Color(Orange), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+	}
+}
+
+rule("Every tick: the wall's normal, then one log line")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+		Is Alive(Event Player) == True;
+	}
+
+	actions
+	{
+		Event Player.tick = Event Player.tick + 1;
+		"The wall: a short ray left and right of her, at chest height (the side that hits)"
+		Event Player.wallNormal = Ray Cast Hit Normal(Position Of(Event Player) + Vector(0, 1, 0), Position Of(Event Player) + Vector(0, 1,
+			0) + World Vector Of(Left, Event Player, Rotation) * 1.5, Null, All Players(All Teams), False);
+		If(Distance Between(Position Of(Event Player) + Vector(0, 1, 0), Ray Cast Hit Position(Position Of(Event Player) + Vector(0, 1,
+			0), Position Of(Event Player) + Vector(0, 1, 0) + World Vector Of(Left, Event Player, Rotation) * 1.5, Null, All Players(
+			All Teams), False)) >= 1.49);
+			Event Player.wallNormal = Ray Cast Hit Normal(Position Of(Event Player) + Vector(0, 1, 0), Position Of(Event Player) + Vector(0,
+				1, 0) + World Vector Of(Right, Event Player, Rotation) * 1.5, Null, All Players(All Teams), False);
+		End;
+		"t | wall ground air | position | velocity | input | jump crouch | facing | wall normal"
+		Log To Inspector(Custom String("T {0} | {1}", Total Time Elapsed, Custom String("{0} {1} {2}", Is On Wall(Event Player),
+			Is On Ground(Event Player), Is In Air(Event Player))));
+		Log To Inspector(Custom String("P {0} | V {1} | I {2}", Position Of(Event Player), Velocity Of(Event Player), Throttle Of(
+			Event Player)));
+		Log To Inspector(Custom String("B {0} {1} | F {2}", Is Button Held(Event Player, Button(Jump)), Is Button Held(Event Player,
+			Button(Crouch)), Custom String("{0} | N {1}", Facing Direction Of(Event Player), Event Player.wallNormal)));
+		Wait(0.016, Ignore Condition);
+		Loop If Condition Is True;
+	}
+}
+
+rule("On a wall: the moment it starts")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Wall(Event Player) == True;
+	}
+
+	actions
+	{
+		Event Player.attachTime = Total Time Elapsed;
+		Event Player.attachPos = Position Of(Event Player);
+		Event Player.attachVel = Velocity Of(Event Player);
+		Event Player.rideCount = Event Player.rideCount + 1;
+		Event Player.lastEvent = Custom String("ATTACH {0} | vel {1} | input {2}", Event Player.rideCount, Event Player.attachVel,
+			Throttle Of(Event Player));
+		Log To Inspector(Custom String("EVENT ATTACH {0} | {1}", Total Time Elapsed, Custom String("vel {0} | pos {1} | face {2}",
+			Velocity Of(Event Player), Position Of(Event Player), Facing Direction Of(Event Player))));
+		"The first 0.4 s of the ride, tick by tick, as a separate block (how the speed and height settle)"
+		For Player Variable(Event Player, rideStep, 0, 25, 1);
+			Log To Inspector(Custom String("RIDE+{0} | V {1} | rise {2}", Total Time Elapsed - Event Player.attachTime, Velocity Of(
+				Event Player), Y Component Of(Position Of(Event Player) - Event Player.attachPos)));
+			Wait(0.016, Ignore Condition);
+		End;
+	}
+}
+
+rule("Off the wall: the moment it ends, then the next 0.6 s")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Wall(Event Player) == False;
+		Event Player.attachTime > Event Player.leaveTime;
+	}
+
+	actions
+	{
+		Event Player.leaveTime = Total Time Elapsed;
+		Event Player.leaveVel = Velocity Of(Event Player);
+		Event Player.lastEvent = Custom String("LEAVE after {0} s | vel {1} | jump held {2}", Round To Integer((Total Time Elapsed
+			- Event Player.attachTime) * 100, Down) / 100, Event Player.leaveVel, Is Button Held(Event Player, Button(Jump)));
+		Log To Inspector(Custom String("EVENT LEAVE {0} | {1}", Total Time Elapsed, Custom String("vel {0} | rose {1} | jump {2}",
+			Velocity Of(Event Player), Y Component Of(Position Of(Event Player) - Event Player.attachPos), Is Button Held(Event Player,
+			Button(Jump)))));
+		For Player Variable(Event Player, leaveStep, 0, 38, 1);
+			Log To Inspector(Custom String("AFTER+{0} | V {1} | wall {2}", Total Time Elapsed - Event Player.leaveTime, Velocity Of(
+				Event Player), Is On Wall(Event Player)));
+			Wait(0.016, Ignore Condition);
+		End;
+	}
+}
+
+rule("Landing")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Ground(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("EVENT LAND {0} | vel {1}", Total Time Elapsed, Velocity Of(Event Player)));
+	}
+}
+
+rule("Interact marks a moment (say what you just did when you send the log)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Interact)) == True;
+	}
+
+	actions
+	{
+		Event Player.marks = Event Player.marks + 1;
+		Event Player.lastEvent = Custom String("MARK {0}", Event Player.marks);
+		Log To Inspector(Custom String("EVENT MARK {0} | {1}", Event Player.marks, Total Time Elapsed));
+		Wait(0.25, Ignore Condition);
+	}
+}
