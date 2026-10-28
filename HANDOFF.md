@@ -19,9 +19,8 @@ techniques/README.md (how the work gets done: a linked graph of notes). This fil
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
-- **Latest test bundle for the owner: `run/bundle-2026-10-26d/`** (fb8f70e: jar, rebuilt asset pack, INSTALL.txt;
-  sent as five parts with JOIN.txt). It replaces the earlier ones (04:44, 05:29, 07ad5cc). Then newer jars alone, to
-  drop over it (the pack didn't change): `run/bundle-2026-10-26e/` (17323a0), `run/bundle-2026-10-26f/` (latest).
+- **Latest test bundle for the owner: `run/bundle-2026-10-27-0312/`** (0.3.12, e493be3: jar, asset pack 0.3.12 with
+  Lúcio's models and sounds, INSTALL.txt; sent as nine 25 MB parts with JOIN.txt). It replaces the earlier bundles.
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
