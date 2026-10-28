@@ -229,6 +229,8 @@ public final class Lucio implements HeroKit {
 			// the cast (effect A46) and its line: "Oh, let's break it down!" for him and allies, the Portuguese one for
 			// enemies (stimuli 025B / 0489: 60 m, volume 4 = 64 blocks)
 			HeroSounds.split(player, OcSounds.LUCIO_BARRIER_CAST, OcSounds.LUCIO_BARRIER_CAST_3P, player.position());
+			// its look (11BF): a ring out across the ground and bands rising round him
+			Effects.play((ServerLevel) player.level(), "sound_barrier_cast", player.position(), player);
 			HeroSounds.ultLine(player, OcSounds.LUCIO_ULT_FRIENDLY, OcSounds.LUCIO_ULT_ENEMY, 4);
 			// the small leap (ours: the wiki gives none): the client moves him, so it's sent as his motion
 			player.setDeltaMovement(player.getDeltaMovement().x, Ow.speed(BARRIER_LEAP), player.getDeltaMovement().z);
@@ -292,7 +294,7 @@ public final class Lucio implements HeroKit {
 		if (rider) {
 			s.riderCharge = 0;
 		}
-		Effects.play(level, "soundwave", eye, look, player, rider ? 1 : 0);
+		Effects.play(level, "soundwave", eye, look, player, rider ? 1 : 0, player);
 		Combat.animate(player, "soundwave");
 		HeroSounds.split(player, OcSounds.LUCIO_SOUNDWAVE, OcSounds.LUCIO_SOUNDWAVE_3P, eye);
 		Voice.say(player, "soundwave", 1);

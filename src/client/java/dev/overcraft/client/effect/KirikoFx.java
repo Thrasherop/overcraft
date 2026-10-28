@@ -115,8 +115,8 @@ public final class KirikoFx {
 					HeroHud.markInRush();
 				}
 			}
-			default -> {
-			}
+			// Lúcio's
+			default -> LucioFx.dispatch(e, enemy);
 		}
 	}
 

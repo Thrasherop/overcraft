@@ -195,6 +195,32 @@ public final class HeroModelRenderer {
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
+		if (hero == Hero.LUCIO && !previewing && entity instanceof net.minecraft.world.entity.player.Player player) {
+			// his song on his skates (LucioFx): from his foot bones as posed, in the world
+			Integer song = player.getAttached(HeroManager.SONG);
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (song != null && pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				net.minecraft.world.phys.Vec3 left = bone(loaded.model(), pose, "Foot_L", base, facing, state.scale);
+				net.minecraft.world.phys.Vec3 right = bone(loaded.model(), pose, "Foot_R", base, facing, state.scale);
+				if (left != null && right != null) {
+					dev.overcraft.client.effect.LucioFx.skates(entity.getId(), left, right, song, now,
+						dev.overcraft.client.effect.KirikoFx.enemyOf(entity));
+				}
+			}
+		}
+	}
+
+	/** Where a bone of the posed model is in the world: turned by her facing and scaled, as submit draws her. */
+	private static net.minecraft.world.phys.@Nullable Vec3 bone(SkinnedModel model, Skeleton.Pose pose, String name,
+		net.minecraft.world.phys.Vec3 base, float facing, float scale) {
+		int node = model.node(name);
+		if (node < 0) {
+			return null;
+		}
+		Vector3f at = Skeleton.world(model, pose, node).getTranslation(new Vector3f()).mul(scale)
+			.rotateY((float) Math.toRadians(-facing));
+		return base.add(at.x, at.y, at.z);
 	}
 
 	private static final RenderStateDataKey<EmoteProps.Placed> WEAPON = RenderStateDataKey.create(() -> "overcraft:hero_weapon");

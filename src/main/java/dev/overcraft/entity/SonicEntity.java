@@ -76,7 +76,7 @@ public class SonicEntity extends OwProjectile {
 		Vec3 at = hit.getLocation();
 		if (target == null) {
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, getOwner()), (float) Ow.hp(LucioStats.AMP_DAMAGE));
-			Effects.play(level, "sonic_hit", at, getOwner());
+			Effects.play(level, "sonic_hit_entity", at, getOwner());
 		// the round's hit (effect 0838)
 		level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.LUCIO_AMP_HIT, net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 			discard();
@@ -97,7 +97,7 @@ public class SonicEntity extends OwProjectile {
 			target.push(push.x, 0, push.z);
 			target.syncVelocity = true;
 		}
-		Effects.play(level, "sonic_hit", at, getOwner());
+		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {
 			Combat.credit(owner, dealt);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
@@ -112,7 +112,9 @@ public class SonicEntity extends OwProjectile {
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
-			Effects.play(level, "sonic_hit", hit.getLocation(), getOwner());
+			// sparks off the face it hit (0AE0)
+			Vec3 normal = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
+			Effects.play(level, "sonic_hit_block", hit.getLocation(), normal, null, 0, getOwner());
 			discard();
 		}
 	}

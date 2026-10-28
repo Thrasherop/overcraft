@@ -371,6 +371,16 @@ EFFECT_MASKS = {
     "sparkle": ("Kiriko", "KitsuneRush", "000000003DC7", 1),
     "smoke": ("Kiriko", "KitsuneRush", "0000000377D5", 48),
     "dust": ("Kiriko", "WallClimb", "000000000BE5", 1),
+    # Lúcio's (tools/reference/lucio-effects.md): the pulse flipbook (a dot opening to a ring: Soundwave's discs, the
+    # hits, the barrier's ground ring), the round's soft glow, a glow disc, the spark, the trails' soft band, the
+    # rings' band and Amp It Up's sparkle (a colour sprite)
+    "lucio_pulse": ("Lucio", "Soundwave", "000000003526", 9),
+    "lucio_glow": ("Lucio", "SonicAmplifier", "0000000210FD", 1),
+    "lucio_soft": ("Lucio", "SonicAmplifier", "0000000004F3", 1),
+    "lucio_spark": ("Lucio", "SonicAmplifier", "0000000029F7", 1),
+    "lucio_trail": ("Lucio", "Crossfade", "000000003A37", 1),
+    "lucio_band": ("Lucio", "SonicAmplifier", "000000003F9D", 1),
+    "lucio_sparkle": ("Lucio", "AmpItUp", "000000000BCD", 1),
 }
 
 
