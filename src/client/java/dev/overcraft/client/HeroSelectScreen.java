@@ -225,7 +225,7 @@ public class HeroSelectScreen extends OwScreen {
 			// off above the roster (the critique: a full body at 55% of the height looked small)
 			int top = (int) (40 * s);
 			int bottom = height;
-			int size = (int) (860 * s);
+			int size = (int) (860 * s * framing(preview));
 			int cx = width / 2;
 			HeroModelRenderer.preview(preview);
 			try {
@@ -437,6 +437,14 @@ public class HeroSelectScreen extends OwScreen {
 			.getString().toUpperCase(Locale.ROOT);
 		HudText.draw(g, Face.BODY, back, w - 90, y + 2, 13, TEXT, Align.RIGHT);
 		keyBox(g, "ESC", w - 90 - HudText.width(Face.BODY, back, 13) - 30, y - 5, WHITE);
+	}
+
+	/**
+	 * How large a hero is drawn against a standing one: Jetpack Cat hovers in a jetpack wider than she's tall, and at a
+	 * standing hero's size her thrusters ran off the top and sides (ours, by eye from a screenshot).
+	 */
+	private static float framing(Hero hero) {
+		return hero == Hero.JETPACK_CAT ? 0.55f : 1;
 	}
 
 	/** One ability of the kit: the key and the ability (its name, description and icon go by this id). */

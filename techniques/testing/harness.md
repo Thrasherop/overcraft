@@ -48,6 +48,11 @@
 - **Toggles toggle:** a second Q cancelled the aim the first started. Know the state before pressing a toggle again.
 - **Aiming at something:** `py -I tools/aim.py <entity type> <height above its feet>` (with `OC_LOG` set to the game's
   log) prints the yaw and pitch from the eyes to the nearest one, for `look`.
+- **Commands run by a dead player find no entities** (`kill @e[...]` says "No entity was found"): clear the world only
+  while alive, and check it worked (`execute as @e run say left`). Leftover skeletons from one test shot the hero in the
+  next, which looked like a respawn at half health (2026-10-28).
+- **Scripted aim lags moving mobs:** `aim.py` reads positions about 0.4 s before the shot, so a strafing skeleton is
+  missed; a scripted night fight measures nothing about a kit. Use still (NoAI) targets for numbers.
 - **Test worlds spawn mobs:** a superflat world has slimes; a hero hovering in place was killed twice mid-test. Turn
   `spawn_mobs` off (26.x's gamerule name) and clear the world before measuring.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
