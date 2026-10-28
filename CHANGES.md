@@ -4,7 +4,41 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-10-27
+## 2026-10-28
+
+### Build 0.3.16 (Jetpack Cat; every hero's damage, knockback and rejoin fixes)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.16): her models (`owm_survey.py --glb --keep=tools/clipmaps/
+jetpack_cat.txt` and `_1p`, with her Gameplay3P / Gameplay1P entities), `ui`, `effects <extraction>
+"E:\Overwatch Archive\research\jetpack_cat\fx"` (her masks are in her research folder) and `sounds`, then `zip`.
+- **Jetpack Cat (#38), the third hero:** pick her on the select screen (or H at your bed).
+  - She always flies: W where you aim, Space up, Crouch down, 5.5 m/s from her data's flight mover; Frenetic Flight on
+    the right button (17.8 m/s, an energy bar on its box: 40/s burnt, 25/s back after 0.75 s).
+  - Biotic Pawjectiles on the left button: 4 paws and a centre shot a volley, healing allies and hurting enemies (24 a
+    body volley, 40 to the head). Lifeline (Shift) tows an ally on a 4 m rope, healing 25/s; a towed player jumps off
+    after 0.6 s; allies let go land unhurt. Purr (E): 30 damage and a push, then 4 pulses of healing waves (300).
+    Catnapper (Q): aim (a target ring), dive, knock down, carry the nearest enemy away for up to 4 s.
+  - Her four perks, her HUD, her flight animations and action layers, her effects and sounds read from the game data
+    (`tools/reference/jetpack_cat-effects.md`, `tools/soundmaps/jetpack_cat.txt`), her voice lines.
+  - Not yet: her emotes, the jetpack's idle flames, her enemy-hit and wall-hit sounds (not extracted). In Minecraft
+    mode's first person she shows Minecraft's arm and item (her paws are on her controls: how she should hold an item is
+    the owner's call).
+- **Fixed for every hero** (found playing her):
+  - Damage after the first hit in half a second was dropped (26.x moved the hurt cooldown to `damageCooldownTime`):
+    **Lúcio's volleys did a quarter of their damage** (22 instead of 88); now all four rounds land.
+  - A mob's hit could throw an airborne hero down at 22 m/s (knockback from a stale server speed).
+  - Joining a world saved on the death screen lost the hero select (no hero after the respawn); it opens again.
+  - The game froze if an action's held clip was one frame long (her first-person Catnapper aim).
+- **Played** (dev client; the harness's keys and mouse path, as the game window sat behind another app): the commits
+  on `feature/jetpack-cat` list every measurement. With a second player (LAN): towed 30 m up and let go (landed 20/20),
+  jumped off the rope (launched), saw her fly and shoot. In the Nether, a boat, water, at night against zombies and
+  skeletons (a scripted fight: it lost, its aim lags moving mobs).
+- **General play before main** (fresh client from `next`, new survival world gp0316 with real terrain, a real night):
+  Kiriko from the select screen on join healed a hurt villager 10 -> 19.6; Lúcio from the hero menu (H at the spawn
+  point) healed it 12.3 -> 18.1 with his song and did 6.7 a volley to a zombie (four rounds); Jetpack Cat from the hero
+  menu flew, shot and Purred the villager to full; /kill and respawn as her; save and leave, rejoin (the select screen,
+  Enter keeps her); Minecraft mode: planks crafted by mouse in the inventory, a chest placed and opened, the planks
+  kept in it (read back: 4 oak planks); drowned in Minecraft mode and respawned as her; G back to hero mode and flight.
+  Not done by hand: breaking a block (holding attack needs the window focused).
 
 ### Build 0.3.15 (Lúcio's movement reworked; his wall-ride sounds under the music)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.15): the sounds (`build_asset_pack.py sounds`) and Lúcio's props

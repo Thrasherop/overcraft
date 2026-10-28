@@ -19,7 +19,7 @@ techniques/README.md (how the work gets done: a linked graph of notes). This fil
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
-- **Latest build for the owner: `run/build-0.3.15/`** (0.3.15, `main` cfc19db, test build 75): Lúcio's movement
+- **Latest build for the owner: `run/build-0.3.16/`** (0.3.16): Jetpack Cat, and the fixes every hero needed. Before it, 0.3.15 (`main` cfc19db, test build 75): Lúcio's movement
   reworked from the data and the Lucio-surf research (`tools/reference/lucio-movement-research.md`), the wall-ride
   sounds 17 dB down. **Waiting on the owner's playtest of it.** Before it: 0.3.14 (emote sounds, Lúcio's emotes,
   effects, voice), 0.3.13.
