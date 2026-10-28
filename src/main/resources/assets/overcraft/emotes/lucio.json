@@ -1395,14 +1395,10 @@
        "hardpoint": "01B6",
        "start": 0.0,
        "duration": 0.1001,
-       "clip": "5678",
+       "clip": "5677",
        "falls": false,
        "clipStart": 0.0,
-       "clipBy": "length",
-       "clipAmbiguous": [
-        "5678",
-        "5677"
-       ]
+       "clipBy": "length"
       }
      ],
      "events": [],
