@@ -103,6 +103,13 @@ public final class OwMovement {
 		int cooldown;
 		/** Ticks on this wall (the wall jump needs a moment on it first). */
 		int ticks;
+		/** Ticks left in which letting go of jump still wall-jumps after a drop-off (0.2 s: Blizzard 2020-11-17). */
+		int jumpWindow;
+		/** The wall he last left (its normal) and where: the same wall needs 2 m before he rides it again. */
+		@Nullable Vec3 lastNormal;
+		@Nullable Vec3 leftAt;
+		/** His height when he got on (the rise eases off above it). */
+		double startY;
 
 		/** The way he's riding, unit length. */
 		Vec3 heading() {
@@ -382,10 +389,22 @@ public final class OwMovement {
 		boolean jump = jumpKeyHeld.test(entity);
 		if (entity.onGround() || entity.isInWater()) {
 			ride.riding = false;
+			ride.jumpWindow = 0;
 			return false;
 		}
-		double rideSpeed = RIDE_SPEED_MS * Math.max(1, speedFactor(entity));
+		// the wall bonus adds to his song's: 5.5 x (1 + 0.25 + 0.30) = 8.53 m/s with Speed Boost (the wiki; Lucio Surf's
+		// workshop code computes 8.53), past the +75% cap
+		double rideSpeed = RUN_SPEED * (Math.max(1, speedFactor(entity)) + dev.overcraft.lucio.LucioStats.WALL_SPEED);
 		if (!ride.riding) {
+			if (ride.jumpWindow > 0) {
+				// off the wall's end with jump still held: letting go within 0.2 s still wall-jumps
+				ride.jumpWindow--;
+				if (!jump) {
+					ride.jumpWindow = 0;
+					wallJump(entity, ride, input);
+					return leave(entity);
+				}
+			}
 			if (!jump || ride.cooldown > 0) {
 				return false;
 			}
@@ -394,11 +413,19 @@ public final class OwMovement {
 			if (normal == null) {
 				return false;
 			}
+			if (ride.lastNormal != null && ride.leftAt != null && normal.equals(ride.lastNormal)
+				&& entity.position().distanceTo(ride.leftAt) < SAME_WALL_GAP) {
+				// the same wall needs about 2 m from where he left it (the Wallriding Academy; Blizzard 2018-05-03)
+				return false;
+			}
 			ride.riding = true;
 			ride.ticks = 0;
+			ride.jumpWindow = 0;
+			ride.startY = entity.getY();
 			ride.normal = normal;
 			ride.axis = new Vec3(-normal.z, 0, normal.x);
-			// his speed along the wall carries on; the way comes from W / S and the camera, else from his motion
+			// his speed along the wall carries on (Blizzard 2018: no loss landing on a wall at an angle), eased toward the
+			// wall speed below; the way comes from W / S and the camera, else from his motion
 			double along = flat.dot(ride.axis);
 			int way = steer(entity, ride, input);
 			if (way == 0) {
@@ -407,14 +434,14 @@ public final class OwMovement {
 			if (way == 0) {
 				way = 1;
 			}
-			ride.speed = way * Math.max(Math.abs(along), rideSpeed);
+			ride.speed = way * Math.abs(along);
 		}
 		ride.ticks++;
 		if (entity.isCrouching()) {
 			// drop off: no jump, his speed along the wall carries on
 			Vec3 off = ride.heading().scale(Math.abs(ride.speed) / 20);
 			entity.setDeltaMovement(off.x, 0, off.z);
-			endRide(ride);
+			endRide(ride, entity);
 			return leave(entity);
 		}
 		if (!jump) {
@@ -423,21 +450,30 @@ public final class OwMovement {
 			// 2026-10-27 it did, and his wall jumps fell straight down off the wall)
 			return leave(entity);
 		}
-		// steering: toward the target speed at his ground acceleration; faster than the ride speed eases off slowly
+		// speed along the wall: toward the wall speed both ways, not at once (the Wallriding Academy: a one-tick touch keeps
+		// nearly all of a chain's speed, and doesn't bring a walk up to wall speed), never above max(entry, wall speed) on a
+		// straight wall (Lucio Surf's code). The rates aren't published: ours, his mover's air acceleration up (about
+		// 25 m/s²) and its friction down (2/s, a 0.35 s half-life). A reversal (W / S, the camera) brakes and comes back
+		// at the same rate up.
 		int way = steer(entity, ride, input);
-		double target = way != 0 ? way * rideSpeed : Math.signum(ride.speed) * Math.max(rideSpeed, Math.abs(ride.speed));
+		int going = ride.speed == 0 ? (way != 0 ? way : 1) : (int) Math.signum(ride.speed);
+		int wanted = way != 0 ? way : going;
 		double dt = 0.05;
-		if (way != 0 && Math.signum(target) == Math.signum(ride.speed) && Math.abs(ride.speed) > rideSpeed) {
-			target = Math.signum(ride.speed) * Math.abs(ride.speed);
-		}
-		double accel = Mover.LUCIO.groundAccelerate() * rideSpeed * dt;
-		ride.speed += Math.clamp(target - ride.speed, -accel, accel);
-		if (Math.abs(ride.speed) > rideSpeed) {
+		double up = WALL_EASE_UP * rideSpeed * dt;
+		if (wanted != going) {
+			// turning round: braking, then the other way
+			ride.speed -= going * Math.min(Math.abs(ride.speed) + up, 2 * up);
+		} else if (Math.abs(ride.speed) < rideSpeed) {
+			ride.speed = going * Math.min(rideSpeed, Math.abs(ride.speed) + up);
+		} else {
 			double over = Math.abs(ride.speed) - rideSpeed;
-			ride.speed = Math.signum(ride.speed) * (rideSpeed + over * Math.max(0, 1 - Mover.LUCIO.airDecay() * dt));
+			ride.speed = going * (rideSpeed + over * Math.max(0, 1 - Mover.LUCIO.friction() * dt));
 		}
 
-		double rise = Ow.speed(dev.overcraft.lucio.LucioStats.WALL_RISE);
+		// he rises gradually, more looking up, less (or sinking) looking down (players; Blizzard 2018 stopped him riding
+		// straight up): no source measures it, so the rates are ours, for the owner to correct
+		double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
+		double rise = Ow.speed(dev.overcraft.lucio.LucioStats.WALL_RISE + dev.overcraft.lucio.LucioStats.WALL_RISE_AIM * pitch);
 		Vec3 move = ride.heading().scale(Math.abs(ride.speed) / 20).subtract(ride.normal.scale(0.01));
 		entity.setDeltaMovement(move.x, rise, move.z);
 		entity.move(MoverType.SELF, entity.getDeltaMovement());
@@ -460,7 +496,9 @@ public final class OwMovement {
 			} else {
 				Vec3 off = ride.heading().scale(Math.abs(ride.speed) / 20);
 				entity.setDeltaMovement(off.x, rise, off.z);
-				endRide(ride);
+				endRide(ride, entity);
+				// off the end with jump held: letting go within 0.2 s still jumps (Blizzard 2020-11-17)
+				ride.jumpWindow = Ow.ticks(WALL_JUMP_WINDOW);
 				return true;
 			}
 		}
@@ -478,9 +516,6 @@ public final class OwMovement {
 		return true;
 	}
 
-	/** The ride speed: run speed +30% (Blizzard, 2019-10-15: 7.15 m/s), in blocks per tick. */
-	private static final double RIDE_SPEED_MS = RUN_SPEED * (1 + dev.overcraft.lucio.LucioStats.WALL_SPEED);
-
 	/** Which way W / S ride him: +1 along the axis, -1 against it, 0 with neither or the camera square on the wall. */
 	private static int steer(LivingEntity entity, Ride ride, Vec3 input) {
 		if (Math.abs(input.z) < 1.0E-3) {
@@ -497,22 +532,46 @@ public final class OwMovement {
 		return Math.abs(along) < 0.1 ? 0 : (int) Math.signum(along);
 	}
 
-	/** The leap off: along the ride with +2.5 m/s, up by where he looks, pushed off the wall. */
+	/**
+	 * The leap off (the wiki; the Wallriding Academy): toward a blend of where he faces and where he's going (a steep
+	 * angle between them costs speed), +2.5 m/s, all of it looking ahead and almost none looking straight up or down;
+	 * up 6.54 m/s looking ahead (6.9 with forward held), 9.12 looking up, 4.12 down; a little push off the wall (ours).
+	 * With no speed along the wall it's a "null jump", as high as looking up.
+	 */
 	private static void wallJump(LivingEntity entity, Ride ride, Vec3 input) {
 		double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
+		boolean still = Math.abs(ride.speed) < 0.5;
 		double ahead = input.z > 0 ? dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_FORWARD : dev.overcraft.lucio.LucioStats.WALL_LEAP_UP;
-		double up = pitch >= 0 ? Mth.lerp(pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
+		double up = still ? dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP
+			: pitch >= 0 ? Mth.lerp(pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
 			: Mth.lerp(-pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_DOWN);
-		Vec3 out = ride.heading().scale(Ow.speed(Math.abs(ride.speed) + dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD))
-			.add(ride.normal.scale(Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_PUSH)));
+		Vec3 motion = ride.heading();
+		Vec3 look = entity.getLookAngle();
+		Vec3 facing = new Vec3(look.x, 0, look.z);
+		facing = facing.lengthSqr() < 1.0E-6 ? motion : facing.normalize();
+		// facing dragged back toward his motion: halfway (ours; the Academy says only "a blend")
+		Vec3 dir = motion.add(facing);
+		dir = dir.lengthSqr() < 1.0E-6 ? motion : dir.normalize();
+		double kept = Math.abs(ride.speed) * Math.max(0, motion.dot(dir));
+		double boost = dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD * (1 - Math.abs(pitch));
+		Vec3 out = dir.scale(Ow.speed(kept + boost)).add(ride.normal.scale(Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_PUSH)));
 		entity.setDeltaMovement(out.x, Ow.speed(up), out.z);
-		endRide(ride);
+		endRide(ride, entity);
 	}
 
-	private static void endRide(Ride ride) {
+	private static void endRide(Ride ride, LivingEntity entity) {
 		ride.riding = false;
 		ride.cooldown = Ow.ticks(dev.overcraft.lucio.LucioStats.WALL_COOLDOWN);
+		ride.lastNormal = ride.normal;
+		ride.leftAt = entity.position();
 	}
+
+	/** About 2 m between leaving a wall and riding the same one again (the Wallriding Academy). */
+	private static final double SAME_WALL_GAP = 2;
+	/** Letting go of jump this long after leaving a wall still wall-jumps (Blizzard 2020-11-17: 0.2 s). */
+	private static final double WALL_JUMP_WINDOW = 0.2;
+	/** How fast his speed rises to wall speed on a wall, times the wall speed per second (ours: his air acceleration). */
+	private static final double WALL_EASE_UP = 3.5;
 
 	/**
 	 * The outward normal of a wall he can get on: within reach beside him and covering his body from the waist to his
