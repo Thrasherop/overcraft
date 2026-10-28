@@ -533,29 +533,30 @@ public final class OwMovement {
 	}
 
 	/**
-	 * The leap off (the wiki; the Wallriding Academy): toward a blend of where he faces and where he's going (a steep
-	 * angle between them costs speed), +2.5 m/s, all of it looking ahead and almost none looking straight up or down;
-	 * up 6.54 m/s looking ahead (6.9 with forward held), 9.12 looking up, 4.12 down; a little push off the wall (ours).
-	 * With no speed along the wall it's a "null jump", as high as looking up.
+	 * The leap off, as his wall-ride graph (0263, the velocity actions #280 / #285 / #290: research\lucio\
+	 * wallride-data.md) does it: a jump 1.15 times his own (5.72 -> 6.58 m/s up) plus 2.5 m/s (game value 212A) along
+	 * where he looks with forward held (in 3D: looking up it's 9.08 up, looking down 4.08: the wiki measured 9.12 and
+	 * 4.12), along the input's direction with another key, along his motion with none (the graph's third vector,
+	 * unidentified: ours). His speed along the wall carries on; nothing pushes him off it.
 	 */
 	private static void wallJump(LivingEntity entity, Ride ride, Vec3 input) {
-		double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
-		boolean still = Math.abs(ride.speed) < 0.5;
-		double ahead = input.z > 0 ? dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_FORWARD : dev.overcraft.lucio.LucioStats.WALL_LEAP_UP;
-		double up = still ? dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP
-			: pitch >= 0 ? Mth.lerp(pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
-			: Mth.lerp(-pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_DOWN);
-		Vec3 motion = ride.heading();
-		Vec3 look = entity.getLookAngle();
-		Vec3 facing = new Vec3(look.x, 0, look.z);
-		facing = facing.lengthSqr() < 1.0E-6 ? motion : facing.normalize();
-		// facing dragged back toward his motion: halfway (ours; the Academy says only "a blend")
-		Vec3 dir = motion.add(facing);
-		dir = dir.lengthSqr() < 1.0E-6 ? motion : dir.normalize();
-		double kept = Math.abs(ride.speed) * Math.max(0, motion.dot(dir));
-		double boost = dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD * (1 - Math.abs(pitch));
-		Vec3 out = dir.scale(Ow.speed(kept + boost)).add(ride.normal.scale(Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_PUSH)));
-		entity.setDeltaMovement(out.x, Ow.speed(up), out.z);
+		Vec3 dir;
+		Vec3 flat = new Vec3(input.x, 0, input.z);
+		if (input.z > 0) {
+			dir = entity.getLookAngle().normalize();
+		} else if (flat.lengthSqr() > 1.0E-7) {
+			// the input in the world, as travel() turns it
+			Vec3 in = flat.normalize();
+			double sin = Math.sin(Math.toRadians(entity.getYRot()));
+			double cos = Math.cos(Math.toRadians(entity.getYRot()));
+			dir = new Vec3(in.x * cos - in.z * sin, 0, in.z * cos + in.x * sin);
+		} else {
+			dir = ride.heading();
+		}
+		Vec3 ridden = ride.heading().scale(Math.abs(ride.speed));
+		Vec3 out = ridden.add(dir.scale(dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD));
+		double up = JUMP_SPEED * dev.overcraft.lucio.LucioStats.WALL_JUMP_SCALE + dir.y * dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD;
+		entity.setDeltaMovement(Ow.speed(out.x), Ow.speed(up), Ow.speed(out.z));
 		endRide(ride, entity);
 	}
 
