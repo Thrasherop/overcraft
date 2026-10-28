@@ -6,10 +6,14 @@ Numbers: `tools/reference/lucio.md` -> `LucioStats`. Branch `feature/lucio` (fro
 - `Skin\Overwatch\Overwatch\Models\00000000DB3F.00C` = Lúcio, third person (59.7k tris, 245 bones, 1.79 m; 172 clips).
 - `00000000DB40` = first-person arms (78 clips). `00000000DBA3` = the Sonic Amplifier. `3E14` lion-dance and `5ED7`
   drum are emote props. Previews: `E:\Overwatch Archive\work\lucio\previews`; clip survey: `...\work\lucio\survey`.
-- To do: clip map (`tools/clipmaps/lucio.txt`: idle, run 8 ways, jump/fall/land, wall ride left/right, shoot,
-  soundwave, crossfade, amp it up, sound barrier, reload, melee, death, select_intro/hold), the 1P arms + gun clip
-  map, `build_asset_pack.py add lucio`, sounds (weapon, abilities, the two songs' music loops) and voice lines
-  (soundmaps), effects (the sonic rounds, the soundwave, the song auras, the barrier).
+- Done 2026-10-27 (techniques/heroes/lucio.md has what was learned): clip maps `tools/clipmaps/lucio.txt`,
+  `lucio_1p.txt`, `lucio_weapon.txt`; the three models exported with `owm_survey.py --glb --keep=...` straight into
+  the pack as `hero_models/lucio.glb`, `lucio_1p.glb`, `lucio_weapon.glb` (not through `build_asset_pack.py add`: the
+  survey's .glb keeps Overwatch's frames); the animator's skating, stop, jump, wall ride, additive layers and actions;
+  the gun on hardpoint 000A (`HeroWeapon`); sounds and lines wired in code (events, voice moments, `LucioMusic`).
+- To do: the sound map `tools/soundmaps/lucio.txt` into the pack (`build_asset_pack.py sounds`) and played by hand;
+  effects (the sonic rounds, Soundwave, the song auras, Amp It Up's rings, the barrier) from `effects.json`; emotes and
+  their props; the wall ride's lean sheets and first-person camera roll.
 
 ## Controls (Overwatch's, with the owner's mouse choice for Kiriko kept)
 - LMB (the action bound to the left button): Sonic Amplifier, held for volleys. RMB: Soundwave. So both heroes attack
