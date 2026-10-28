@@ -35,7 +35,9 @@ public final class HeroWeapon {
 		float now) {
 		Spec spec = SPECS.get(hero);
 		HeroModels.Loaded weapon = HeroModels.weapon(hero);
-		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose() : animator.lastPose();
+		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
+			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
 		if (spec == null || weapon == null || heroPose == null) {
 			return null;
 		}
@@ -50,6 +52,16 @@ public final class HeroWeapon {
 	}
 
 	/** Its own pose: held, its reload and Sound Barrier clips while his play, and its additive layers on top. */
+	/**
+	 * Whether the weapon shows in the hero's emote now: in the hand unless the emote's data puts it away
+	 * (EmoteData.stowed: Lúcio's emotes stow it over windows, Heroic keeps it out); hidden when there's no data.
+	 */
+	public static boolean inEmote(Hero hero, HeroAnimator animator) {
+		EmoteData.Emotes data = EmoteData.of(hero.id);
+		String emote = animator.emote();
+		return data != null && emote != null && !data.stowed(emote, animator.emoteClip(), animator.emoteAt());
+	}
+
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");

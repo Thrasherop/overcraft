@@ -106,6 +106,13 @@ public final class Lucio implements HeroKit {
 			}
 		}
 
+		// an empty clip reloads by itself, once whatever cut its reload short (a melee, Amp It Up, the barrier) is done
+		if (s.reloadHeld > 0) {
+			s.reloadHeld--;
+		}
+		if (controls && s.primaryAmmo == 0 && s.primaryReload < 0 && s.volleyLeft == 0 && s.reloadHeld == 0 && s.barrierCast < 0) {
+			startReload(player, s);
+		}
 		if (s.primaryReload >= 0) {
 			s.primaryReload += attack;
 			if (!s.primaryAmmoRestored && s.primaryReload >= Ow.ticks(AMP_RELOAD_AMMO_AT)) {
@@ -208,16 +215,22 @@ public final class Lucio implements HeroKit {
 			s.ampDelay = Ow.ticks(AMP_UP_DELAY);
 			s.ampFree = false;
 			Combat.animate(player, "amp_it_up");
+			// it takes the weapon from a reload (AMP_UP_LOCK): the ammo stays as it was unless it was already back
+			s.interruptReload(AMP_UP_LOCK);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.barrierCast < 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
 			s.ultCharge = Combat.afterUlt(s.hero, s.ultCharge);
 			s.barrierCast = 0;
 			s.ultActive = Ow.ticks(BARRIER_CAST + BARRIER_TIME);
 			s.volleyLeft = 0;
+			// the cast takes the weapon state too (graph 073A, priorities 0 and 10 over the reload's -10)
+			s.interruptReload(BARRIER_CAST);
 			Combat.animate(player, "sound_barrier");
 			// the cast (effect A46) and its line: "Oh, let's break it down!" for him and allies, the Portuguese one for
 			// enemies (stimuli 025B / 0489: 60 m, volume 4 = 64 blocks)
 			HeroSounds.split(player, OcSounds.LUCIO_BARRIER_CAST, OcSounds.LUCIO_BARRIER_CAST_3P, player.position());
+			// its look (11BF): a ring out across the ground and bands rising round him
+			Effects.play((ServerLevel) player.level(), "sound_barrier_cast", player.position(), player);
 			HeroSounds.ultLine(player, OcSounds.LUCIO_ULT_FRIENDLY, OcSounds.LUCIO_ULT_ENEMY, 4);
 			// the small leap (ours: the wiki gives none): the client moves him, so it's sent as his motion
 			player.setDeltaMovement(player.getDeltaMovement().x, Ow.speed(BARRIER_LEAP), player.getDeltaMovement().z);
@@ -281,7 +294,7 @@ public final class Lucio implements HeroKit {
 		if (rider) {
 			s.riderCharge = 0;
 		}
-		Effects.play(level, "soundwave", eye, look, player, rider ? 1 : 0);
+		Effects.play(level, "soundwave", eye, look, player, rider ? 1 : 0, player);
 		Combat.animate(player, "soundwave");
 		HeroSounds.split(player, OcSounds.LUCIO_SOUNDWAVE, OcSounds.LUCIO_SOUNDWAVE_3P, eye);
 		Voice.say(player, "soundwave", 1);
@@ -317,6 +330,9 @@ public final class Lucio implements HeroKit {
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BARRIER_RADIUS))) {
 			if (Allies.isSelfOrAlly(player, ally) && ally.isAlive() && ally.distanceTo(player) <= BARRIER_RADIUS) {
 				Combat.overhealth(ally, BARRIER_OVERHEALTH, BARRIER_TIME);
+				// its look on each of them while it lasts (0D86, held on their root by graph 073B)
+				Effects.play((ServerLevel) player.level(), "sound_barrier_ally", ally.position(), net.minecraft.world.phys.Vec3.ZERO,
+					ally, Ow.ticks(BARRIER_TIME), player);
 			}
 		}
 		Effects.play(player.level(), "sound_barrier", player.position(), player);

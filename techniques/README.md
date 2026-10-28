@@ -29,7 +29,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Emotes**
   - [emote_reproduction](emotes/emote_reproduction.md): the method, from the data: props, hardpoints, weapons, clip
     chains, the coat, review.
-  - For Kiriko, see [kiriko_emotes](emotes/kiriko_emotes.md).
+  - For Kiriko, see [kiriko_emotes](emotes/kiriko_emotes.md); for Lúcio (a weapon that's an entity of its own),
+    [lucio_emotes](emotes/lucio_emotes.md).
 - **Testing and review**
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
@@ -46,7 +47,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:
 - [kiriko-reference](../tools/reference/kiriko-reference.md), [kiriko-sounds](../tools/reference/kiriko-sounds.md),
-  [kiriko-voice](../tools/reference/kiriko-voice.md), [kiriko-effects](../tools/reference/kiriko-effects.md).
+  [kiriko-voice](../tools/reference/kiriko-voice.md), [kiriko-effects](../tools/reference/kiriko-effects.md),
+  [lucio-effects](../tools/reference/lucio-effects.md).
 - [sounds-round8](../tools/reference/sounds-round8.md), [music-round9](../tools/reference/music-round9.md).
 - [movement](../tools/reference/movement.md), [perks](../tools/reference/perks.md),
   [fonts](../tools/reference/fonts.md), [comms-reference](../tools/reference/comms-reference.md),

@@ -31,6 +31,17 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     burning in the sun die before the kunai land, and the kills aren't the hero's.
 - **A callout isn't chatter:** a plain ping's line is limited to one a second (ours: its stimulus has no cooldown, and
   a press each tick would talk over itself).
+- <a id="emote-sounds"></a>**Emote sounds (#48):** each emote clip's animation effect lists Sound components (a 02C,
+  when it starts, how long it's held, its hardpoint) and VoiceStimulus components (a line and when).
+  - `tools/emote_data.py` writes them per clip; `tools/soundmaps/emotes.txt` builds each 02C as
+    `<hero>.emote.s<id>` (and each line as `v<id>`) from its Wwise Play event, with subtitles (`$<event> = text`).
+  - How each plays comes from the same decode (`research/emote-sounds/sounds.json`): loops restart every loop length
+    while held (a built file can run past its loop: Dance Party's is 8.94 s against 7.934 s); some are cut by their
+    own event; some sound only some plays (chance, every nth); a Wwise state picks the 2D copy for the emoting player
+    and the 3D twin for everyone else ("own" / "others").
+  - `EmoteSounds` (client) follows each emoting hero's clip and time each tick (`EmotePlan.at`, shared with the
+    animator, so a hero off screen still sounds) and starts each one as the clip reaches it.
+  - One shared sound can be in many emotes (944B, a cloth rustle, in seven of Kiriko's).
 - **Music:** the match-end music was traced through the music-director graphs (0D3B, 1B47):
   [sounds-round8](../../tools/reference/sounds-round8.md), [music-round9](../../tools/reference/music-round9.md). Its
   streams are 12-channel Opus and need a stereo downmix.

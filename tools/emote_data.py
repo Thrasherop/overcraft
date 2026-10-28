@@ -10,6 +10,12 @@ Runs under the research environment's Python (pythonnet + TankLib: E:\\Overwatch
 since each clip's animation effect is read through TankLib. Blender reads the models' hardpoint tables.
 
 What it writes, per emote (named as tools/owm_survey.py names them: emote_<slug>_<n>, n in path order):
+- the windows in which a clip puts the hero's own weapon away ("stow": EntityControl components with no clip, Lúcio's
+  Sonic Amplifier, an entity of its own) and, for a control that names a clip, that clip on the entity it spawned;
+- each clip's sounds and voice lines ("events"): each Sound component of its animation effect (a 02C, when it starts in
+  the clip and how long it's held: 0 a one-shot; Killer Beam's whoosh 4.33 s in) and each VoiceStimulus (an 078 and
+  when: Killer Beam's "Killer Beam! ...or whatever" 2.53 s in). The mod plays them as <hero>.emote.s<id> and
+  <hero>.emote.v<id> (tools/soundmaps/emotes.txt);
 - each clip's game id and length, and the spawns in its animation effect (08F): a model or an entity, the hardpoint
   it hangs on (03C id), when it shows (start, duration in the clip) and the prop's own clip if the effect names one;
   an entity's model is resolved from its definition, and a projectile entity (STUProjectileVisualComponent) is
@@ -105,6 +111,36 @@ INFERRED = {
 }
 
 
+# an EntityControl's action byte that puts the hero's own weapon entity away (TankLib names only Show = 1 and PlayAnim =
+# 4). 204 is the only byte on the controls whose windows match GeoSetFlags bit 1 (Lúcio's weapon strap) to a mask sample
+# in every emote that hides his Sonic Amplifier; Listen Up, Salty and Mic Drop carry 254 / 16 / 99 and keep it out
+# (research/lucio/emotes.md). M: the byte isn't decoded.
+STOW = 204
+
+# how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
+# tools/soundmaps/emotes.txt): copied onto each sound event as "loop" (restarted every so many seconds while held),
+# "cut" (stopped after so many seconds by its own event), "chance" / "nth" (sounds only some plays), "audience" (own:
+# only the emoting player hears it, their 2D copy; others: everyone else, the 3D twin) and "fade" (seconds it fades out
+# when stopped)
+EMOTE_SOUNDS = Path("E:/Overwatch Archive/research/emote-sounds/sounds.json")
+# sounds that duplicate another at the same moment: Dance Party's music plays on two buses at once (49D9 and 4A52) and
+# its intro hit twice (49DA and B1B9, the second adding only a duck state); one of each plays (sounds.json notes: M)
+DUPLICATES = {"lucio": {"4A52", "B1B9"}}
+
+# heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControl STOW): their pieces
+# take their geosets one for one from the model's submeshes
+STOWS = {"lucio": True}
+
+# DataTool's folder for a hero whose name isn't our id capitalised
+HERO_FOLDERS = {"lucio": "Lúcio"}
+
+
+def plain(name):
+    """A name without its accents, lower case ("Lúcio" -> "lucio")."""
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFKD", name) if not unicodedata.combining(c)).lower()
+
+
 def slug(name):
     return "".join(c if c.isalnum() else "_" for c in name.lower()).strip("_")
 
@@ -189,6 +225,29 @@ def main():
                         return x
         return None
 
+    skeletons, clip_bone_cache = {}, {}
+
+    def skeleton_ids(model):
+        """A model's skeleton bone ids (16-bit), empty for a model with none."""
+        if model not in skeletons:
+            ids = set()
+            try:
+                for c in chunks_of_file(o.u64(guid(model, 0x00C))):
+                    if c is not None and c.GetType().Name == "teModelChunk_Skeleton":
+                        v = c.GetType().GetField("IDs").GetValue(c)
+                        ids = set(int(x) & 0xFFFF for x in v) if v is not None else set()
+            except Exception:
+                pass
+            skeletons[model] = ids
+        return skeletons[model]
+
+    def clip_bones(cid):
+        """The bone ids (16-bit) a clip animates."""
+        if cid not in clip_bone_cache:
+            stream = o.TH.OpenFile(System.UInt64(o.u64(guid(cid, 0x006))))
+            clip_bone_cache[cid] = set(int(b) & 0xFFFF for b in TankLib.teAnimation(stream).BoneList)
+        return clip_bone_cache[cid]
+
     def walk(node, found):
         if isinstance(node, dict):
             if node.get("$type") == "STUAnimGameData_PoseData" and node.get("m_geoSetFlags"):
@@ -215,7 +274,7 @@ def main():
             for v in node:
                 collect(v)
 
-    collect(next((v for k, v in unlocks.items() if k.lower() == hero), {}))
+    collect(next((v for k, v in unlocks.items() if plain(k) == hero), {}))
     for u in emote_unlocks:
         root = o.instances(o.u64(guid(u["GUID"].split(".")[0], 0x0A5)))[0]
         bts = root.get("m_emoteBlendTreeSet")
@@ -237,6 +296,37 @@ def main():
                     best[key] = max(best.get(key, 0), int(str(d.VerticesToDraw)))
                 for (bit, _), verts in best.items():
                     per[bit] = per.get(bit, 0) + verts
+        if any(c.GetType().Name == "teModelChunk_RenderMesh" for c in chunks_of_file(g) if c is not None) and STOWS.get(hero):
+            # a hero whose weapon is an entity of its own (Lúcio): the .glb's Submesh_<i> is the model's submesh i (the
+            # vertex counts agree one for one), so each piece takes its own geoset. His geoset 1 is the cable on his
+            # weapon arm, weighted to Weapon_R: the masks hide it with the stowed Sonic Amplifier
+            # (research/lucio/emotes.md); else it stretched to wherever the stowed weapon's bone was parked
+            # the model's variants share its index (LOD sets): the one exported is the one whose submesh i has the .glb's
+            # Submesh_i's vertex count (the export splits a few along seams: 4506 -> 4510, never merges)
+            meshes = glb_meshes(hero_glb)
+            by_index = {int(m.group(1)): c for n, (c, _, _) in meshes.items() if (m := re.match(r"Submesh_(\d+)\.", n))}
+
+            def fits(d):
+                return len(d) == len(by_index) and all(
+                    i in by_index and v <= by_index[i] <= v * 1.02 + 2 for i, (_, v) in enumerate(d))
+            descriptors = []
+            want = int(hero_model.parent.name.split(".")[0], 16)
+            for kv in DataTool.Program.TrackedFiles:
+                for x in kv.Value:
+                    if (int(x) & 0xFFFFFFFF) == want and o.name(x).endswith("00C"):
+                        for c in chunks_of_file(x):
+                            if c is not None and c.GetType().Name == "teModelChunk_RenderMesh":
+                                d = [(int(str(m.m_40)), int(str(m.VerticesToDraw)))
+                                     for m in c.GetType().GetField("SubmeshDescriptors").GetValue(c)]
+                                if fits(d):
+                                    descriptors = d
+            for name, (count, size, centre) in meshes.items():
+                m = re.match(r"Submesh_(\d+)\.", name)
+                if m and int(m.group(1)) < len(descriptors):
+                    bit, verts = descriptors[int(m.group(1))]
+                    if bit >= 0:
+                        piece_geosets[name] = bit
+            print("submeshes (geoset, vertices):", descriptors)
         for name, (count, size, centre) in glb_meshes(hero_glb).items():
             if size <= PROP_SIZE and centre <= STOWED_RADIUS:
                 under = [(v, bit) for bit, v in per.items() if v <= count]
@@ -244,7 +334,7 @@ def main():
                     piece_geosets[name] = max(under)[1]
         print("geosets (vertices):", per, "pieces:", piece_geosets)
 
-    emotes_dir = source / "Unlocks" / "Heroes" / hero.capitalize() / "Emote"
+    emotes_dir = source / "Unlocks" / "Heroes" / HERO_FOLDERS.get(hero, hero.capitalize()) / "Emote"
     out = {"hero": hero, "source": "game data via TankLib (tools/emote_data.py)", "emotes": {}, "hardpoints": {},
            "pieceGeosets": piece_geosets}
     used = set()
@@ -260,13 +350,14 @@ def main():
             anim = TankLib.teAnimation(s)
             header = anim.Header
             info = {"id": cid, "duration": round(float(str(header.Duration)), 4), "bones": int(str(header.BoneCount)),
-                    "folder": path.relative_to(emote / "Animations").parts[0], "spawns": [], "events": []}
+                    "folder": path.relative_to(emote / "Animations").parts[0], "spawns": [], "events": [], "stow": []}
             bone_ids[cid] = set(int(b) for b in anim.BoneList)
             clips[f"emote_{name}_{n}"] = info
             fx = header.Effect
             if gid(fx) is None:
                 continue
             last = None
+            controls = []
             for c in chunks_of(fx):
                 kind = c.GetType().Name
                 if kind == "teEffectChunkComponent":
@@ -293,10 +384,38 @@ def main():
                     info["spawns"].append(spawn)
                 elif kind == "teEffectComponentVoiceStimulus":
                     info["events"].append({"voice": gid(fields.get("VoiceStimulus")), "at": start})
+                    continue
+                elif kind == "teEffectComponentEntityControl":
+                    clip = gid(fields.get("Animation"))
+                    action = fields.get("Action")
+                    if clip is not None:
+                        controls.append((clip, start))
+                    elif gid(fields.get("Identifier")) is None and action is not None and int(System.Convert.ToInt32(action)) == STOW:
+                        # no clip and no identifier: the hero's own weapon entity put away over the window
+                        info["stow"].append([start, round(start + dur, 4)])
+                    continue
+                elif kind == "teEffectComponentSound":
+                    # a sound (02C), from start, held for duration (0: a one-shot); the pack's <hero>.emote.s<id> event
+                    # (tools/soundmaps/emotes.txt)
+                    info["events"].append({"sound": gid(fields.get("Sound")), "at": start, "duration": dur, "hardpoint": hp})
+                    continue
                 else:
                     continue
                 if hp:
                     used.add(hp)
+            info["_controls"] = controls
+        for info in clips.values():
+            for clip, start in info.pop("_controls", []):
+                # a control's clip plays on an entity this clip spawned: the one whose skeleton holds the clip's bones
+                # (Lúcio's A Suave Gift spawns F559 and F698 together; its 7-bone B4D9 fits F559's), among those
+                # spawned when the control starts if any (research/lucio/emotes.md: every pair checked that way)
+                spawned = [x for x in info["spawns"] if x.get("entity")]
+                same = [x for x in spawned if abs(x["start"] - start) < 0.02] or spawned
+                if not same:
+                    continue
+                bones = clip_bones(clip)
+                target = max(reversed(same), key=lambda x: len(bones & skeleton_ids(x["model"])) if x["model"] else -1)
+                target["clip"], target["clipStart"], target["clipBy"] = clip, start, "control"
         for c in clips.values():
             if c["id"] in geosets.get(name, {}):
                 c["geosets"] = geosets[name][c["id"]]
@@ -345,6 +464,21 @@ def main():
             missing.remove(hid)
     out["hardpoints"] = {k: table[k] for k in sorted(used) if k in table}
     out["unresolvedHardpoints"] = missing
+    how = json.loads(EMOTE_SOUNDS.read_text(encoding="utf8")).get(hero, {}) if EMOTE_SOUNDS.exists() else {}
+    for emote in out["emotes"].values():
+        for clip in emote["clips"].values():
+            clip["events"] = [e for e in clip["events"] if e.get("sound") not in DUPLICATES.get(hero, set())]
+            for e in clip["events"]:
+                h = how.get(e["sound"]) if e.get("sound") else None
+                if not h:
+                    continue
+                if h.get("loops") and h.get("loop_length"):
+                    e["loop"] = h["loop_length"]
+                for ours, theirs in (("cut", "cut_at"), ("chance", "chance"), ("nth", "every_nth_play"), ("fade", "stop_fade")):
+                    if h.get(theirs):
+                        e[ours] = h[theirs]
+                if h.get("audience") in ("own", "others"):
+                    e["audience"] = h["audience"]
     target = ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes" / f"{hero}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(out, indent=1), encoding="utf8")

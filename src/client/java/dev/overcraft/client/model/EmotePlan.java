@@ -43,6 +43,33 @@ public record EmotePlan(List<SkinnedModel.Clip> steps, SkinnedModel.@Nullable Cl
 		return total;
 	}
 
+	/**
+	 * Where an emote is: the clip playing, the time into it, which play of a clip this is (0 for the first step, counting
+	 * on through the steps and then each turn of the loop) and, once a plan with no loop is over, how long ago it ended.
+	 */
+	public record At(SkinnedModel.Clip clip, float at, int turn, float past) {
+	}
+
+	/** Where the emote is t seconds in. */
+	public At at(float t) {
+		float into = t;
+		int turn = 0;
+		for (SkinnedModel.Clip step : steps) {
+			if (into < step.duration()) {
+				return new At(step, into, turn, 0);
+			}
+			into -= step.duration();
+			turn++;
+		}
+		float past = Math.max(0, t - total());
+		if (loop != null) {
+			float length = Math.max(0.01f, loop.duration());
+			return new At(loop, past % length, steps.size() + (int) (past / length), 0);
+		}
+		// it holds its last pose (or eases out, when it ends in her stance)
+		return new At(steps.getLast(), steps.getLast().duration(), steps.size() - 1, past);
+	}
+
 	/** The plan for model's emote_<id>_<n> clips, or null when it has none. */
 	public static @Nullable EmotePlan of(SkinnedModel model, String id) {
 		return PLANS.computeIfAbsent(model, m -> new HashMap<>()).computeIfAbsent(id, e -> plan(model, e));

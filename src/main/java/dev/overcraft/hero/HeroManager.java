@@ -314,6 +314,12 @@ public final class HeroManager {
 				if (kit != null) {
 					kit.tick(player, state, controls);
 				}
+			} else {
+				Integer song = player.getAttached(SONG);
+				if (song != null && song != 0) {
+					// a hero's tick doesn't run while dead: Lúcio's song ends here (his skates glowed on as he lay dead)
+					player.setAttached(SONG, 0);
+				}
 			}
 			if (kit != null) {
 				ServerPlayNetworking.send(player, kit.sync(state));

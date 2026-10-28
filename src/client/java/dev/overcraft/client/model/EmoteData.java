@@ -31,7 +31,8 @@ import java.util.TreeSet;
  * over the clip (her weapons put away: Laugh hides her kunai, else in her mouth), and which geoset each of her stowed
  * weapon pieces is. And each hardpoint: the bone it hangs on and its offset in that bone's frame (our models keep
  * Overwatch's own bone frames, so the offset applies as it is). Ids only: the models themselves come from the player's
- * pack (hero_models/prop_<model id>.glb: tools/build_asset_pack.py props).
+ * pack (hero_models/prop_<model id>.glb: tools/build_asset_pack.py props). And each clip's sounds and voice lines, with
+ * when they play (EmoteSounds).
  */
 public final class EmoteData {
 	/** A prop shown in one of the hero's clips (times in seconds into that clip). */
@@ -40,6 +41,21 @@ public final class EmoteData {
 		/** Its file in the pack: hero_models/prop_<model id>.glb, lower case (resource paths must be). */
 		public String file() {
 			return "prop_" + model.toLowerCase(java.util.Locale.ROOT);
+		}
+	}
+
+	/**
+	 * A sound or a line in one of the hero's clips (seconds into that clip): a sound (02C id) held for duration (0: a
+	 * one-shot, played out), or a voice line (078 id). The pack names them <hero>.emote.s<id> and <hero>.emote.v<id>
+	 * (tools/soundmaps/emotes.txt). How its Wwise events play it (tools/emote_data.py): restarted every loop seconds
+	 * while held (0: once), stopped cut seconds in (0: never), sounding only some plays (chance, or every nth), heard by
+	 * "own" (only the emoting player), "others" or everyone (null), fading out over fade seconds when stopped.
+	 */
+	public record Event(@Nullable String sound, @Nullable String voice, float at, float duration, float loop, float cut,
+		float chance, int nth, @Nullable String audience, float fade) {
+		/** Its sound event in the pack, overcraft:<hero>.emote.<s|v><id> in lower case. */
+		public String event(String hero) {
+			return hero + ".emote." + (sound != null ? "s" + sound : "v" + voice).toLowerCase(java.util.Locale.ROOT);
 		}
 	}
 
@@ -52,7 +68,37 @@ public final class EmoteData {
 	 * over the clip), her weapon pieces' geosets (mesh name -> bit) and hardpoints (by id).
 	 */
 	public record Emotes(Map<String, Map<String, List<Spawn>>> emotes, Map<String, Map<String, int[]>> geosets,
-		Map<String, Integer> pieceGeosets, Map<String, Hardpoint> hardpoints) {
+		Map<String, Integer> pieceGeosets, Map<String, Hardpoint> hardpoints, Map<String, Map<String, List<Event>>> events,
+		Map<String, Map<String, float[][]>> stows) {
+		/** Whether the hero's weapon is an entity of its own that the emotes put away (Lúcio's: stow windows in the data). */
+		public boolean weaponEntity() {
+			return stows.values().stream().anyMatch(clips -> !clips.isEmpty());
+		}
+
+		/**
+		 * Whether the hero's own weapon entity is put away at this point of the clip (Lúcio's Sonic Amplifier: each emote's
+		 * stow windows, its EntityControls with no clip). Shown when the clip has none (Heroic, Listen Up, Salty).
+		 */
+		public boolean stowed(String emote, @Nullable String clip, float at) {
+			Map<String, float[][]> clips = stows.get(emote);
+			float[][] windows = clips == null || clip == null ? null : clips.get(clip);
+			if (windows != null) {
+				for (float[] w : windows) {
+					if (at >= w[0] && at <= w[1]) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/** The sounds and lines in this clip of this emote (none when it has none). */
+		public List<Event> events(String emote, @Nullable String clip) {
+			Map<String, List<Event>> clips = events.get(emote);
+			List<Event> list = clips == null || clip == null ? null : clips.get(clip);
+			return list == null ? List.of() : list;
+		}
+
 		/**
 		 * The geosets hidden at this point of the clip (a bit per geoset), or -1 when the data has none for it (her weapons
 		 * then stay as her other rules have them).
@@ -118,10 +164,41 @@ public final class EmoteData {
 	private static Emotes parse(JsonObject json) {
 		Map<String, Map<String, List<Spawn>>> emotes = new HashMap<>();
 		Map<String, Map<String, int[]>> geosets = new HashMap<>();
+		Map<String, Map<String, List<Event>>> events = new HashMap<>();
+		Map<String, Map<String, float[][]>> stows = new HashMap<>();
 		for (Map.Entry<String, JsonElement> emote : json.getAsJsonObject("emotes").entrySet()) {
 			Map<String, List<Spawn>> clips = new HashMap<>();
 			Map<String, int[]> masks = new HashMap<>();
+			Map<String, List<Event>> sounds = new HashMap<>();
+			Map<String, float[][]> stowed = new HashMap<>();
 			for (Map.Entry<String, JsonElement> clip : emote.getValue().getAsJsonObject().getAsJsonObject("clips").entrySet()) {
+				List<Event> heard = new ArrayList<>();
+				if (clip.getValue().getAsJsonObject().has("events")) {
+					for (JsonElement e : clip.getValue().getAsJsonObject().getAsJsonArray("events")) {
+						JsonObject o = e.getAsJsonObject();
+						String sound = string(o, "sound");
+						String voice = string(o, "voice");
+						if (sound != null || voice != null) {
+							heard.add(new Event(sound, voice, o.get("at").getAsFloat(), number(o, "duration", 0), number(o, "loop", 0),
+								number(o, "cut", 0), number(o, "chance", 1), (int) number(o, "nth", 0), string(o, "audience"),
+								number(o, "fade", 0)));
+						}
+					}
+				}
+				if (!heard.isEmpty()) {
+					sounds.put(clip.getKey(), List.copyOf(heard));
+				}
+				if (clip.getValue().getAsJsonObject().has("stow")) {
+					var list = clip.getValue().getAsJsonObject().getAsJsonArray("stow");
+					float[][] windows = new float[list.size()][];
+					for (int i = 0; i < windows.length; i++) {
+						var w = list.get(i).getAsJsonArray();
+						windows[i] = new float[] {w.get(0).getAsFloat(), w.get(1).getAsFloat()};
+					}
+					if (windows.length > 0) {
+						stowed.put(clip.getKey(), windows);
+					}
+				}
 				if (clip.getValue().getAsJsonObject().has("geosets")) {
 					var list = clip.getValue().getAsJsonObject().getAsJsonArray("geosets");
 					int[] m = new int[list.size()];
@@ -145,6 +222,8 @@ public final class EmoteData {
 			}
 			emotes.put(emote.getKey(), clips);
 			geosets.put(emote.getKey(), masks);
+			events.put(emote.getKey(), sounds);
+			stows.put(emote.getKey(), stowed);
 		}
 		Map<String, Integer> pieceGeosets = new HashMap<>();
 		if (json.has("pieceGeosets")) {
@@ -161,7 +240,12 @@ public final class EmoteData {
 				new Vector3f(t.get(0).getAsFloat(), t.get(1).getAsFloat(), t.get(2).getAsFloat()),
 				new Quaternionf(q.get(0).getAsFloat(), q.get(1).getAsFloat(), q.get(2).getAsFloat(), q.get(3).getAsFloat()).normalize()));
 		}
-		return new Emotes(emotes, geosets, pieceGeosets, hardpoints);
+		return new Emotes(emotes, geosets, pieceGeosets, hardpoints, events, stows);
+	}
+
+	private static float number(JsonObject o, String key, float otherwise) {
+		JsonElement e = o.get(key);
+		return e == null || e.isJsonNull() ? otherwise : e.getAsFloat();
 	}
 
 	private static @Nullable String string(JsonObject o, String key) {

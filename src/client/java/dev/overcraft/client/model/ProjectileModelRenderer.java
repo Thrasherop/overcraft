@@ -32,6 +32,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		float yRot;
 		float xRot;
 		HeroModels.@Nullable Loaded loaded;
+		/** Its flight effect is its look (Lúcio's round: no model, all glow and rings). */
+		boolean drawnByEffect;
 	}
 
 	/** Per model: its rest skin and the turn that lays its longest side along +Z. */
@@ -83,6 +85,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing(), KirikoFx.enemyOf(ofuda.getOwner()));
 			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt, KirikoFx.enemyOf(kunai.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
+			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
+				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));
 			default -> {
 			}
 		}
@@ -93,7 +97,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		State s = (State) state;
 		HeroModels.Loaded loaded = s.loaded;
 		if (loaded == null) {
-			super.submit(state, poseStack, collector, camera);
+			if (!s.drawnByEffect) {
+				super.submit(state, poseStack, collector, camera);
+			}
 			return;
 		}
 		if (effectOnly) {

@@ -6,6 +6,41 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.14 (emote sounds; Lúcio's emotes, effects and voice lines; his reload with Amp It Up and Crossfade)
+0.3.13 was a check-in build handed to the owner earlier the same day (emote sounds, Lúcio's emotes and reload, without
+his effects and voice lines); 0.3.14 is the release.
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.14): Lúcio's model with his 17 emotes
+(`owm_survey.py --glb --keep=tools/clipmaps/lucio.txt --emotes=...`), his emote props (`build_asset_pack.py props
+<source> lucio`), the emote sounds and lines and his voice lines (`build_asset_pack.py sounds`,
+`tools/soundmaps/emotes.txt`), his effect masks (`build_asset_pack.py effects <source>/Effects`), then `zip`. A
+check-in build of the first part went to the owner earlier the same day.
+- **Emote sounds and lines (#48, the owner: Killer Beam):** each emote clip's sounds and voice lines play when the
+  clip reaches them, as the game data times them (Killer Beam: "Killer Beam! ...or whatever" 2.53 s in, then its
+  whooshes and a cloth rustle). Kiriko's 23 emotes (63 sounds, 15 lines) and Lúcio's 17 (54 sounds, 5 lines), each
+  built from its Wwise events: dance music restarts with its loop, some sounds play only some times, some only the
+  emoting player hears. Nobody has compared them with the game by ear yet.
+- **Lúcio's 17 emotes** on the communication wheel, with their props (the DJ booth, the gift, the ball, the bat, the
+  mic, his instrument). His Sonic Amplifier stays in his hand (Heroic, Listen Up, Salty) or is put away, as each
+  emote's data says. Not yet: the amp that sits on the DJ booth.
+- **Lúcio's reload (follows #47), from the game data:** Amp It Up and Sound Barrier end a reload (the ammo stays
+  unless it was back already); Crossfade doesn't, and no longer replaces the reload's animation. An empty clip reloads
+  by itself after a melee, Amp It Up or the barrier.
+- **Lúcio's ability effects**, from the game data (`tools/reference/lucio-effects.md`): his rounds (a yellow-green
+  glow shedding rings, hits on targets and blocks), Soundwave's rings flying out, his song on his skates (amber trails
+  for Healing Boost, green-cyan for Speed Boost, a column on a swap), Amp It Up's rings and sparkles, the wall ride's
+  sparks, Sound Barrier's ground ring, its slam and the shield's look on each ally, white speed lines on allies under
+  amped Speed Boost. Not drawn: the shield's skin shimmer.
+- **Lúcio's 44 voice lines** on the communication wheel's voice page.
+- His song now ends when he dies (his skates glowed on as he lay dead).
+- **General play before main** (fresh client from `next`, new survival world gp0313, screenshots `gp_*.png`): Kiriko
+  from the select screen on join; a night fight (kunai killed a zombie); her ofuda healed a hurt villager 8 -> 17.6;
+  she died to a skeleton twice and respawned. Lúcio from the hero menu (H at the bed, after setting the respawn point
+  there); his heal song healed the villager 7.6 -> 16.2; his rounds killed a zombie at 12 blocks and one at 1; he died
+  to zombies and respawned. Save and leave, rejoin: the select screen, Kiriko again. Minecraft mode (G): a log broken
+  by hand, 4 planks crafted in the inventory grid by mouse, put in a chest, there after closing and reopening; G back
+  to hero mode. The pause menu read OVERCRAFT 0.3.13 · ASSETS 0.3.13 (before this version bump). Not tried: a second
+  player, the Nether, boats, water.
+
 ### Build 0.3.12 (Lúcio, first playable; a cut-short reload gives no ammo; Suzu cures zombie villagers)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.12): Lúcio's three models (body, first-person arms, his
 Sonic Amplifier, from `owm_survey.py --glb` with `tools/clipmaps/lucio*.txt`, straight into `hero_models/`) and his

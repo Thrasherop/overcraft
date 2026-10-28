@@ -44,7 +44,16 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
   fps, 26E8 at 60) is which view's; his aim sheet 265E's layout (74 frames, unlike Kiriko's 63); the alternate value
   set in his game values (a mode's).
 
+- **Emotes:** [lucio_emotes](../emotes/lucio_emotes.md) (his weapon is an entity: stow windows, geoset 1's cable).
+- **Effects:** [lucio-effects](../../tools/reference/lucio-effects.md), built in `LucioFx`
+  ([rendering](../rendering/rendering.md)).
+- **Reload with abilities (data, graphs 0776 / 0277 / 0266 / 073A):** the reload holds the weapon state (var 33) at
+  priority -10; Amp It Up (0, for 0.7 s) and Sound Barrier take it and end the reload; Crossfade never does.
+  Animation priorities (024 assets): Crossfade -1, the reload 0 (none set), Amp It Up 3.
+- **His song ends on death:** a hero's tick doesn't run while dead, so state synced from it (the song) must be
+  cleared there (`HeroManager`).
+
 ## Still to do
-- His sounds and voice lines (soundmap), the songs' music, his effects (the sonic rounds, Soundwave, the auras, the
-  barrier), emotes.
+- His effects on allies (amped speed lines 4ADD, the barrier's shield 0D86), the wall ride's sparks, the amp on the
+  DJ booth (nested spawns), the wall ride's lean sheets, his collectible voice lines on the wheel.
 - Kiriko could get the same: her own alias 0x006 4-slot set (AFCB-AFD7) is her directional jump, now unused.

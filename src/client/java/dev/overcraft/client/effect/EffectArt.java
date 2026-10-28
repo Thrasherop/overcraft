@@ -43,6 +43,18 @@ public final class EffectArt {
 		CYAN(0, 0, 0, 0, .3f, 0, .42f, .55f, .65f, 0, .95f, 1, 1, 1, 1, 1),
 		/** Suzu's burst ring: (0.1, 2, 3) in the game. */
 		SUZU_BLUE(0, 0, 0, 0, .5f, .017f, .33f, .5f, .85f, .033f, .67f, 1, 1, .5f, .9f, 1),
+		/**
+		 * Lúcio's Healing Boost, amber (colour strip 3F95, tools/reference/lucio-effects.md): #B37401 #FFCD01 #FBF701
+		 * #FAFF62 as linear light.
+		 */
+		HEAL_AMBER(0, 0, 0, 0, .25f, .451f, .175f, 0, .5f, 1, .61f, 0, .82f, .965f, .93f, 0, 1, .956f, 1, .122f),
+		/** Lúcio's Speed Boost, green to cyan (strip 3F94): #01A250 #01E767 #0BFF90 #52D8EA. */
+		SPEED_GREEN(0, 0, 0, 0, .25f, 0, .361f, .08f, .5f, 0, .799f, .136f, .82f, .003f, 1, .279f, 1, .084f, .687f, .823f),
+		/** Lúcio's team green (strips 35BC / 410E: his rounds, Soundwave, the barrier): #5FD900 #7BEB00 #A2FE00 #F2FE5D white. */
+		LUCIO_GREEN(0, 0, 0, 0, .25f, .114f, .694f, 0, .45f, .198f, .831f, 0, .65f, .361f, .991f, 0, .85f, .888f, .991f, .109f,
+			1, 1, 1, 1),
+		/** Lúcio's round's glow (A3F's core): #9EB243 to #E2FF64, no white top (his team green's white stacked to a white ball). */
+		LUCIO_ROUND(0, 0, 0, 0, .5f, .342f, .445f, .056f, 1, .761f, 1, .127f),
 		/** As the enemy sees her effects. */
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */

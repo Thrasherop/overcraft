@@ -38,7 +38,10 @@ Each emote clip names an animation effect (an 08F) listing what it spawns, and w
 - **which hardpoint it hangs on**;
 - **from when and for how long in that clip it shows**: that's its visibility. Nothing scales to zero when a donut is
   eaten; the window ends;
-- **the prop's own clip**, where a model spawn names one.
+- **the prop's own clip**, where a model spawn names one; for an entity, the EntityControl that names a clip
+  (it plays on the entity spawned with it: [lucio_emotes](lucio_emotes.md#props-named-by-the-data));
+- **its sounds and voice lines** (Sound and VoiceStimulus components), with when they start and how long they're held:
+  [sounds](../sound/sounds.md#emote-sounds). The owner, 2026-10-27: "some emotes have sounds to go along with them".
 
 ## 3. Not all props are in hands
 A prop hangs on whatever hardpoint the data names: a weapon bone (a hand), a prop bone the clips move (under her feet
@@ -86,6 +89,10 @@ off her added back (`HeroAnimator.emoteRootShift`).
   rest is left out (`HeroAnimator.driven`).
 - Overwatch layers shared hand clips over some partial emotes. Until those are read, a weapon piece no wrist holds
   isn't drawn there (ours, labelled).
+
+**A weapon that's an entity of its own** (Lúcio's) isn't a geoset: emotes stow it with clip-less EntityControls (byte
+204), and the geoset that goes with it is found by submesh order, not vertex count:
+[lucio_emotes](lucio_emotes.md#his-weapon-is-an-entity-not-a-geoset-the-nuance-that-matters).
 
 ## 8. The coat: sometimes animated, sometimes simulated
 A hero's cloth bones are never keyed in a clip, but that doesn't make the cloth physics. Overwatch's cloth (Domino)
