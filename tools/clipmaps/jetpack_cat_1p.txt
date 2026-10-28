@@ -1,0 +1,14 @@
+# Jetpack Cat, first person (the same model 0586.118 with look 2674: entity Gameplay1P). From the data map (H states).
+0-60_0000000187ED = idle
+4-4_0000000195B6 = add_idle
+4-0_00000001896A = add_fire
+4-0_00000001896B = add_fire_2
+0-32_000000018D45 = reload
+0-32_000000018817 = melee
+0-32_000000018816 = purr
+0-32_000000018818 = ult_aim_start
+0-60_00000001894B = ult_aim
+0-36_000000018819 = ult_aim_end
+0-36_00000001881C = knockdown_start
+0-36_00000001881D = knockdown
+0-36_00000001881E = knockdown_end
