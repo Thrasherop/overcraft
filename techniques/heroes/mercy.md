@@ -30,6 +30,18 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
   wiki's "maximum view angle" wording suggests), what the engine's move leaves her velocity at, Valkyrie's vertical
   speed, the soul's lifetime.
 
+## The second gaps pass (gaps2.md, 2026-10-28)
+- **Guardian Angel's target marker is Swift Step's:** the game's generic ability-target preview (013C.116, 84 graphs use
+  it) on the ally's chest, shown while it's ready and she isn't flying or just launched. Drawn by the same HUD code.
+- **After a launch nothing damps her for 1 s** (F808ACE8 set 0, read as air damping by where else it's set); in
+  Valkyrie 0.5 s, with her speed x2.4444 (22 m/s) and knockback x0.2. A Valkyrie crouch launch rises at 26.5 m/s for
+  0.5 s, 13.3 m: measured in game, the data's number.
+- **Property names from the custom-game settings:** a property the Workshop's settings name (Movement Speed,
+  Movement Gravity, Jump Vertical Speed) pins its meaning; its adds and sets stack as base x set x (1 + adds), checked
+  against the wiki's 2.25 m/s Resurrect in Valkyrie.
+- **The hero select carries its own weapon:** her select entity (3A80) holds the staff on Weapon_R for every clip;
+  Lúcio's puts his amplifier away in his intro and out in his hold. Drawn on the select pose (`HeroWeapon.placeShowcase`).
+
 ## Found playing (2026-10-28)
 - **A flat survival test world spawns slimes,** and their knockback looked exactly like a movement bug (a launch
   killed after one tick, then a backward fling). Set `difficulty peaceful` before measuring movement.

@@ -84,8 +84,10 @@ public abstract class LivingEntityMixin {
 	private double overcraft$flightResistance(double power) {
 		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.MERCY
 			&& HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s && dev.overcraft.mercy.Mercy.flying(s)) {
-			// Mercy in Valkyrie takes half the knockback (W; her data's 0A04B51B -0.5)
-			return power * dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK;
+			// Mercy in Valkyrie takes half the knockback (W; her data's 0A04B51B -0.5), a fifth of that just after a launch
+			// (006E #477: 0A04B51B x0.2)
+			return power * dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK
+				* (s.gaPhase == dev.overcraft.mercy.Mercy.GA_LAUNCHED ? dev.overcraft.mercy.MercyStats.GA_LAUNCH_KNOCKBACK_VALKYRIE : 1);
 		}
 		return (Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.JETPACK_CAT
 			? power * dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN : power;

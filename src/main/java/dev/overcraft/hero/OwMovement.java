@@ -95,6 +95,8 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> valkyrie = entity -> false;
 	/** Mercy's Guardian Angel: where it takes her and how fast (null when she isn't flying to someone). */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
+	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
+	public static Predicate<LivingEntity> undamped = entity -> false;
 	/** Mercy's Angelic Descent: held, her fall is capped. */
 	public static Predicate<LivingEntity> descent = entity -> false;
 
@@ -278,7 +280,8 @@ public final class OwMovement {
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
 		boolean grounded = entity.onGround() && v.y <= 0;
 		Mover mover = OwMovement.mover.apply(entity);
-		double maxAirSpeed = mover.maxAir() * speedFactor(entity);
+		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
+		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
 		for (int i = 0; i < SUBSTEPS; i++) {
 			stepped = grounded ? groundStep(stepped, wishMs, mover, 0.05 / SUBSTEPS)
 				: airStep(stepped, wishMs, maxAirSpeed, mover, 0.05 / SUBSTEPS);
@@ -572,13 +575,16 @@ public final class OwMovement {
 		double accel;
 		double drag;
 		double max;
+		boolean free = valk && undamped.test(entity);
 		if (valk) {
 			// Valkyrie (her graph 10DA's mover: forward, back and strafe 5.5, x1.636 = 9 m/s every way, air acceleration
-			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay)
-			wishSpeed = dev.overcraft.mercy.MercyStats.VALKYRIE_SPEED * factor;
+			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay); in the 0.5 s after a launch her speed is
+			// x2.4444 (22 m/s) and nothing damps it (006E #477)
+			wishSpeed = dev.overcraft.mercy.MercyStats.VALKYRIE_SPEED * factor
+				* (free ? 1 + dev.overcraft.mercy.MercyStats.GA_LAUNCH_SPEED_VALKYRIE : 1);
 			accel = dev.overcraft.mercy.MercyStats.VALKYRIE_AIR_ACCEL;
-			drag = dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;
-			max = wishSpeed;
+			drag = free ? 0 : dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;
+			max = free ? Double.MAX_VALUE : wishSpeed;
 		} else if (boost >= 0) {
 			double bonus = Math.min(0.65, 0.25 + 0.05 * Math.floor(t / 0.04));
 			wishSpeed = (fwd < 0 ? 5.5 : 6.0) * factor * (1 + bonus);
