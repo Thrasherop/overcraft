@@ -19,8 +19,13 @@ techniques/README.md (how the work gets done: a linked graph of notes). This fil
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
-- **Latest test bundle for the owner: `run/bundle-2026-10-27-0312/`** (0.3.12, e493be3: jar, asset pack 0.3.12 with
-  Lúcio's models and sounds, INSTALL.txt; sent as nine 25 MB parts with JOIN.txt). It replaces the earlier bundles.
+- **Latest build for the owner: `run/build-0.3.14/`** (0.3.14, `main` a4437f8, test build 70: jar, asset pack 0.3.14,
+  INSTALL.txt; the owner copies the pack from this machine, the jar was sent in chat). Emote sounds (#48 closed),
+  Lúcio's emotes, effects and voice lines. 0.3.13 (`run/build-0.3.13/`) was a check-in build earlier the same day.
+- **Main checkout on `next`; worktree `E:/claude/mods/overcraft_emotesnd`** (branch `feature/lucio-polish`, merged)
+  holds the same local pack. Research added today: `research\emote-sounds` (each emote sound's Wwise decode,
+  `sounds.json`), `research\lucio` effects (`effects-NOTES.md`), extractions `Effects\Lucio`, `ExtraSounds\*\Emotes`,
+  `Unlocks\Heroes\Lúcio\{Emote,VoiceLine}`.
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
