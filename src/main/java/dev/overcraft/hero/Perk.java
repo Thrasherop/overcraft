@@ -14,7 +14,11 @@ public enum Perk {
 	KIRIKO_URGENT_CARE(Hero.KIRIKO, Tier.MINOR, "urgent_care"),
 	KIRIKO_FORTUNE_TELLER(Hero.KIRIKO, Tier.MINOR, "fortune_teller"),
 	KIRIKO_READY_STEP(Hero.KIRIKO, Tier.MAJOR, "ready_step"),
-	KIRIKO_FOXTROT(Hero.KIRIKO, Tier.MAJOR, "foxtrot");
+	KIRIKO_FOXTROT(Hero.KIRIKO, Tier.MAJOR, "foxtrot"),
+	LUCIO_SOUNDWAVE_RIDER(Hero.LUCIO, Tier.MINOR, "soundwave_rider"),
+	LUCIO_BEAT_DROP(Hero.LUCIO, Tier.MINOR, "beat_drop"),
+	LUCIO_NOISE_VIOLATION(Hero.LUCIO, Tier.MAJOR, "noise_violation"),
+	LUCIO_ACCELERANDO(Hero.LUCIO, Tier.MAJOR, "accelerando");
 
 	public enum Tier { MINOR, MAJOR }
 

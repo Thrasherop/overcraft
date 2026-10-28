@@ -48,7 +48,16 @@ def main():
         bpy.ops.import_mesh.overtools2_entity(filepath=entity)
     else:
         bpy.ops.import_mesh.overtools2_model(directory=str(model.parent) + "/", files=[{"name": model.name}])
-    rig = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    # an entity's child entities come in as rigs of their own (Lúcio's Gameplay1P brings his Sonic Amplifier on its
+    # hardpoint), and with a second rig the glTF exporter wrote no clips at all. The hero's rig is the one with the
+    # most bones; the others go: a weapon is exported from its own model (tools/clipmaps/lucio_weapon.txt)
+    rigs = sorted((o for o in bpy.data.objects if o.type == "ARMATURE"), key=lambda o: len(o.data.bones), reverse=True)
+    rig = rigs[0]
+    for other in rigs[1:]:
+        for o in [o for o in bpy.data.objects if o.type == "MESH" and (o.parent == other or any(
+                m.type == "ARMATURE" and m.object == other for m in o.modifiers))]:
+            bpy.data.objects.remove(o)
+        bpy.data.objects.remove(other)
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
     print(f"OWM_MODEL meshes={len(meshes)} bones={len(rig.data.bones)} "
           f"tris={sum(len(p.vertices) - 2 for o in meshes for p in o.data.polygons)}")

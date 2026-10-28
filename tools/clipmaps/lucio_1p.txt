@@ -1,0 +1,48 @@
+# Lúcio's first-person view (Gameplay1P entity, model 00000000DB40.00C: arms only, look 1880). From the game's own
+# blend trees (set 025A), lucio-map.md. Exported with
+#   owm_survey.py <DB40.owmdl> <out> --glb --entity=...Gameplay1P.owentity --keep=tools/clipmaps/lucio_1p.txt
+0-60_0000000021A1 = idle
+# skating (category 005): a 4-way Strafe (the jump's slot fields: forward, back, left, right), 0.9 s strides on the
+# clock times the speed (df 0x1A); 2CC0 once as he sets off
+0-32_00000000219A = skate_forward
+0-32_00000000240A = skate_back
+0-32_00000000249A = skate_left
+0-32_000000002499 = skate_right
+4-4_000000002CC0 = add_skate_start
+# the jump (alias 0x006): a 0.1 s takeoff, then a 0.533 s rise whose time is a game parameter (df 0x2B), as the third
+# person's
+0-36_0000000021A3 = jump_start
+0-36_0000000021A4 = jump
+# additive layers: breathing (2.13 s), the jump's, the look sway
+4-4_0000000021A6 = add_breathe
+4-4_0000000021A5 = add_jump
+4-28_0000000021AA = add_sway_a
+4-4_0000000021AB = add_sway_b
+4-4_0000000021A9 = add_sway_c
+# Sonic Amplifier: one clip per volley, 23B2 or one of 2D24 / 2D25 / 2D26 at random; 23B3 the 2-frame hold
+4-4_0000000023B2 = add_fire
+4-4_000000002D24 = add_fire_2
+4-4_000000002D25 = add_fire_3
+4-4_000000002D26 = add_fire_4
+4-28_0000000023B3 = add_fire_hold
+0-32_00000000219C = reload
+4-4_000000002D2A = add_soundwave
+0-32_00000000219D = melee
+# Crossfade: one clip per set (see lucio.txt)
+0-4_0000000024B3 = crossfade_speed
+0-4_000000002541 = crossfade_heal
+0-4_000000002511 = amp
+4-4_0000000025E7 = add_amp
+0-32_000000002CD8 = ult_cast
+0-32_000000002CD9 = ult_end
+# wall ride: the loop and a pose sheet that rolls the camera -20..+20 degrees across its 87 frames (the lean)
+0-36_000000002518 = wallride_left
+36-38_000000002519 = add_wallride_left_lean
+0-36_00000000251F = wallride_right
+36-38_00000000251E = add_wallride_right_lean
+4-28_000000002FDF = add_wallride
+# the reload's wall-ride lean sheets (category 155 of df 0x19E)
+36-38_000000002F03 = add_reload_lean_left
+36-38_000000002EF1 = add_reload_lean_right
+# hero select / inspect (alias 0x070)
+0-36_000000003B7A = inspect

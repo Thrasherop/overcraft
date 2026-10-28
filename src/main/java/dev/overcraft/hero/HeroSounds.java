@@ -26,6 +26,22 @@ public final class HeroSounds {
 		hero.level().playSound(hero, at.x, at.y, at.z, others, SoundSource.PLAYERS, 1, 1);
 	}
 
+	/**
+	 * An ultimate's cast line, as Overwatch plays it: the hero and their allies hear {@code friendly}, enemies
+	 * {@code enemy} (Kiriko's Japanese line, Lúcio's Portuguese one), from where the hero is, {@code volume} 16 blocks a unit.
+	 */
+	public static void ultLine(ServerPlayer hero, SoundEvent friendly, SoundEvent enemy, float volume) {
+		toOwner(hero, friendly);
+		for (ServerPlayer listener : hero.level().players()) {
+			if (listener != hero) {
+				SoundEvent line = Allies.isSelfOrAlly(hero, listener) ? friendly : enemy;
+				listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+					BuiltInRegistries.SOUND_EVENT.wrapAsHolder(line), SoundSource.PLAYERS, hero.getX(), hero.getEyeY(), hero.getZ(),
+					volume, 1.0f, hero.getRandom().nextLong()));
+			}
+		}
+	}
+
 	/** Only the hero's own player hears it, in their head (a hit confirmation, "ability not ready"). */
 	public static void toOwner(ServerPlayer hero, SoundEvent sound) {
 		toOwner(hero, sound, 1);

@@ -258,7 +258,7 @@ public final class ClientHero {
 		boolean kunaiPressed = drain(HeroControls.get(Action.SECONDARY_FIRE));
 		boolean kunai = kunaiPressed | HeroControls.get(Action.SECONDARY_FIRE).isDown();
 		boolean ofuda;
-		if (HeroOptions.get().toggleOfuda) {
+		if (HeroOptions.get().toggleOfuda && hero() == Hero.KIRIKO) {
 			// Overwatch's default: a press starts Healing Ofuda, the next stops it; it also stops when the clip runs out
 			// (its refill starts) or the kunai are thrown
 			boolean refilling = sync.secondaryReload() >= 0;
@@ -273,7 +273,9 @@ public final class ClientHero {
 		} else {
 			ofuda = ofudaPressed | HeroControls.get(Action.PRIMARY_FIRE).isDown();
 		}
+		// for Lúcio the same buttons: the left fires the Sonic Amplifier, the right Soundwave (lucio-plan.md)
 		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0)
+			| (OwMovement.wallRiding(player) != 0 ? HeroInputPayload.HELD_WALL_RIDE : 0)
 			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0);
 
 		int pressed = 0;

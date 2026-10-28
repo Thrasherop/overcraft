@@ -1,0 +1,123 @@
+# Lúcio (Overwatch build 154088, skin "Overwatch", model 00000000DB3F.00C: the skin's 245-bone model, not the base
+# 11D7, which has no cloth bones): which DataTool clip is which. <folder>_<clip id> = the name HeroAnimator plays it
+# under. From the game's own blend trees (Gameplay3P set 02BE), read offline 2026-10-27:
+# E:\Overwatch Archive\research\lucio\lucio-map.md and map.json ("states"). Clip ids may change between builds.
+
+# standing still (alias 0x001): 261D, its time sampled from a game parameter (turn-in-place, as Kiriko's A6F0), held
+# when not turning; 26BB the other branch of df 0xB7. 265E the aim sheet (74 frames, additive, on the spine) on top.
+# Lúcio's own: idle fidgets on the clock now and then (alias 80AF80FD: a Random of 2CAF and 2A56; 2CC1 the way out)
+0-36_00000000261D = idle
+0-36_0000000026BB = idle_alt
+4-6_00000000265E = add_aim
+4-4_000000002CAF = add_fidget_1
+4-4_000000002A56 = add_fidget_2
+4-4_000000002CC1 = add_fidget_2_end
+
+# skating (category 005 of df 0x18, alias 0x005; the research map called it "airborne"): an 8-way node (STU_666E2E42)
+# whose slot fields are the ones Kiriko's measured runs fill (m_FAE5598F forward ... m_B6B5D7AB forward-left; her run
+# clips sit under the same category): the directions are the data's. 0.667 s pushes with his feet on the ground (the
+# lowest 0.17 m up, as standing), time from a spring (df 0x1AD); first person, the same category plays its strides on
+# the clock times the speed (df 0x1A)
+0-36_000000002747 = skate
+0-36_00000000284E = skate_forward_right
+0-36_00000000284B = skate_right
+0-36_000000002852 = skate_back_right
+0-36_000000002797 = skate_back
+0-36_000000002851 = skate_back_left
+0-36_00000000284F = skate_left
+0-36_000000002850 = skate_forward_left
+# stopping (alias 0x01B, from skating to standing still): a 4-way Strafe of 0.4 s clips, the pelvis dipping 0.69 ->
+# 0.55 m with the feet braced ahead of it the way he was going
+0-36_000000002AF7 = skate_stop_forward
+0-36_000000002D23 = skate_stop_back
+0-36_000000002D28 = skate_stop_left
+0-36_000000002D27 = skate_stop_right
+
+# crouch-skating (alias 0x055): 8 ways, the same slot fields
+0-36_000000002AB8 = crouch_walk
+0-36_000000002AE0 = crouch_walk_forward_right
+0-36_000000002AE1 = crouch_walk_right
+0-36_000000002AE3 = crouch_walk_back_right
+0-36_000000002AE5 = crouch_walk_back
+0-36_000000002AE4 = crouch_walk_back_left
+0-36_000000002AE2 = crouch_walk_left
+0-36_000000002ADF = crouch_walk_forward_left
+# crouch still (alias 0x056): held like the idle
+0-36_000000002AB9 = crouch_idle
+0-36_000000002ACB = crouch_idle_alt
+
+# the jump (category 006, alias 0x006; the research map called it skating): a 4-slot directional node
+# (STU_CF46F0EB), each slot a takeoff (0.167 s on the clock: the feet leave the ground), then a 0.333 s rise whose time
+# is a game parameter (df 0x2B; the pelvis climbs 1.10 -> 1.43 m with the legs tucked), or a 0.067 s end. The data
+# doesn't name the slots (m_09FE31A5, m_7A2F0A64, m_CDA1FD6A, m_E15BD392, also the stop's and the first-person
+# skating's): measured 2026-10-27 (scratchpad skate_dirs.py, against the 8-way clips whose directions the data gives):
+# forward, back, left, right. The feet trail the way he goes (s1 0.15 m behind the pelvis, s2 0.35 m ahead, s3 0.21 m
+# to his right, s4 0.19 m to his left) and his hips turn as the 8-way clips' do (left +2, right -167 vs forward -88
+# degrees); the stop's feet brace the same way, and Crossfade's skating clips pair s1-s2 and s3-s4
+0-32_000000003071 = jump_forward_start
+0-36_000000003072 = jump_forward
+0-36_000000003073 = jump_forward_end
+0-32_0000000028C9 = jump_back_start
+0-36_0000000028CA = jump_back
+0-36_0000000028CB = jump_back_end
+0-32_000000003077 = jump_left_start
+0-36_000000003078 = jump_left
+0-36_000000003079 = jump_left_end
+0-32_00000000307F = jump_right_start
+0-36_000000003080 = jump_right
+0-36_000000003081 = jump_right_end
+# the other branch (cond t2 i9: not settled which state)
+0-32_00000000289F = jump_alt_start
+0-36_0000000028A0 = jump_alt
+0-36_0000000028A1 = jump_alt_end
+
+# Sonic Amplifier (alias 0x00A, an additive layer at the root): one 0.733 s clip per volley (Random of 2696 x4), and a
+# 2-frame additive under it
+4-4_000000002696 = add_fire
+4-28_000000002697 = add_fire_hold
+# reload (alias 0x004): 1.5 s = reload time / reload speed; 26E7 after it (onFinished)
+0-32_0000000026E6 = reload
+4-4_0000000026E7 = add_reload_end
+# Soundwave (alias 0x16F, additive, 1.0 s)
+4-0_000000002698 = add_soundwave
+# quick melee (alias 0x00D): aim pitch down / level / up, 0.767 s at 60 fps; 29CB its aim sheet
+0-32_0000000029CA = melee_down
+0-32_000000002913 = melee
+0-32_0000000029C8 = melee_up
+4-6_0000000029CB = add_melee_aim
+# Crossfade (0.8 s): two sets, played as the song changes (graph 0266: the song switch #148 on var 1735 plays 0x266 +
+# 0x2F2 entering its true branch, which holds the Speed Boost visual CD2, and 0x28E + 0x2F3 entering the false one,
+# with Healing Boost's CAB). Each: standing (direction IK), skating (category 005: forward/back share one, left/right
+# the other), and an additive
+0-4_0000000029DF = crossfade_speed
+0-4_000000002D4B = crossfade_speed_moving
+0-4_000000002D4D = crossfade_speed_moving_side
+4-4_0000000029E0 = add_crossfade_speed
+0-0_0000000029DD = crossfade_heal
+0-0_000000002D4C = crossfade_heal_moving
+0-0_000000002D4E = crossfade_heal_moving_side
+4-4_0000000029DE = add_crossfade_heal
+# Amp It Up (alias 0x27A, 2.5 s)
+0-36_000000002A81 = amp
+# Sound Barrier: the leap and cast (0x32E, 0.667 s), then the slam (0x32F, 0.833 s)
+0-32_000000002E4F = ult_cast
+0-32_000000002E50 = ult_end
+
+# wall ride (alias 0x357, the side from var 14965): loops on the clock; the lean is a pose sheet (87 frames) on top,
+# and 2FDF an additive. 2915 (category 169) has his feet 0.18 m to his left, on the wall: the left wall; 2914 0.27 m
+# to his right (measured)
+0-36_000000002915 = wallride_left
+36-38_000000002927 = add_wallride_left_lean
+0-36_000000002914 = wallride_right
+36-38_0000000029B3 = add_wallride_right_lean
+4-28_000000002FDF = add_wallride
+
+# knocked down (aliases 0x064 / 0x065 / 0x066: the pelvis lies on the ground in 303D; not a jump)
+0-36_00000000303C = knockdown
+0-44_00000000303D = knockdown_hold
+0-36_00000000303E = knockdown_getup
+
+# hero select (the Showcase entity's tree): the intro, then the hold
+0-32_00000000C1EB = select_intro
+0-36_00000000BC3F = select_hold
+0-32_00000000BC40 = select_alt

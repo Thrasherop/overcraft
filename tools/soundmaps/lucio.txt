@@ -1,0 +1,629 @@
+# Lúcio's sounds: <sound id> = <file under E:\Overwatch Archive\extracted\154088\> (build 154088). Same format as kiriko.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Nothing here has been listened to yet.
+# Read 2026-10-27 offline (Overwatch and Battle.net closed): the Wwise banks' HIRC trees decoded exactly (children from
+# each object's parent id, random / sequence / switch / layer parameters, volume, make-up gain, pitch, delays, the
+# events' actions) and the Init bank's bus volumes (1E818). Research: E:\Overwatch Archive\research\lucio\
+# voice_sounds_effects.md. Ids: 02C sounds (6D20 = 000000006D20.02C), 00D effects, files by their last 6 digits.
+# Gains: Wwise volume + make-up gain summed from each layer up through its mixers and buses (the middle of a random
+# volume range included), so the layers of one rule keep the game's balance; each rule (or song family) then gets one
+# common offset that keeps it below full scale. Pitch: the layer's cents (+ the middle of its random range) as a speed
+# factor (*). Wwise low-pass / high-pass filters are not reproduced. 'own' = what Lúcio's player hears (Overwatch
+# audience 1, non-positional), '_3p' = what everyone else hears at him (audience 2).
+
+# ===== How each game event is put together (rules)
+# Sonic Amplifier, one per volley of 4 (effect 3495 from the weapon graph's volley node 0776#204; sound 6D20, the only
+# sound of 3495, audience 2 / 200 m: there is no own copy, so both ids get the same mix). 6D20's Play event: a layer
+# of [a step sequence of 8 ticks, one per play] + [a random sub thump of 16, no repeat within 4] + [the room tail:
+# a switch on group 3526866566], then a second Play: a random low layer of 4. The switch is NOT the song (HIGH): it is
+# a global switch group (02D 001D, 8 values) that Soundwave, the barrier slam, Kiriko's kunai-hit bank and other banks
+# use too; nothing in Lúcio's banks or graphs sets it (no SetSwitch action, no 04E names its other values), and
+# the sound's own 0C9 0005 sets the default 144697359 (02E 005A). Its cases look like room sizes (M: long 3.8-5 s tails
+# by default, 1.1-1.4 s and 0.4-0.5 s ones, one low-passed, one pitched -560 cents), so the songs do not change the
+# shot and there are no _heal / _speed variants. The default tail is what plays: 3.8-4.95 s files, but only ~1.6 s
+# above -30 dB. Net gains: thump +8, tail +6, low +1, tick -22 (the ticks sit ~30 dB under the thump). Offset -15.
+@lucio.amp.fire = lucio.amp.fire_thump:-7 + lucio.amp.fire_tail:-9 + lucio.amp.fire_low:-14 + lucio.amp.fire_tick:-37
+@lucio.amp.fire_3p = lucio.amp.fire_thump:-7 + lucio.amp.fire_tail:-9 + lucio.amp.fire_low:-14 + lucio.amp.fire_tick:-37
+# The round hitting a target (projectile hit effect 0838): its sub-effect 405B plays 8DE7, the same impact bank as
+# Kiriko's kunai hit (a layer of three random sets, pitched up +510 / +280 / +510 cents plus the middle of their random
+# ranges; kiriko.txt plays them unpitched). Net gains a -12, b -22, c -18.5 (offset +9). 0838 also plays 5D68, the
+# shooter's own copy of the shot family (16-file body 2A930C... and 2A7E14: NOT extracted; its ticks and tails are
+# 6D20's files) and 6D20 itself for everyone else: left out, so this is the hit thump only.
+@lucio.amp.hit = lucio.amp.hit_a*1.507:-3 + lucio.amp.hit_b*1.282:-13 + lucio.amp.hit_c*1.362:-9.5
+# Reload: the 1P reload clip 219C (1.5 s) plays 91EB at 0.001 s, 91EC at 0.200, 91ED at 0.922, 91EE at 1.241; the 3P clip
+# 26E6 (1.5 s) plays 960B at 0.000, 960C at 0.267, 960D at 0.706, 960E at 1.100 (animation effects 0B11 / 1159).
+# 960B-960E hold the same four files as 91EB-91EE. Gains: 91EB's file has +4 dB of its own; offsets +10 (1P), +20 (3P).
+@lucio.amp.reload = lucio.amp.reload_1:+5.5 + lucio.amp.reload_2@0.2:+1.5 + lucio.amp.reload_3@0.922:+1.5 + lucio.amp.reload_4@1.241:+1.5
+@lucio.amp.reload_3p = lucio.amp.reload_1:+1.5 + lucio.amp.reload_2@0.267:+1.5 + lucio.amp.reload_3@0.706:+1.5 + lucio.amp.reload_4@1.1:+1.5
+# Soundwave, own (effect 097A at weapon hardpoint 0006: 5D67, audience 1). 5D67's Play event: a layer of 7 (body,
+# crack @0.09, click @0.02 x1.11, air @0.1, whoosh @0.117 (+0-0.1), a +780-cent tone, a room tail @0.095 on the same
+# switch as the shot), a mono thud 2A9347 on its own bus, and the big room switch 305381647 played with a 200 ms fade-in
+# and then SetVolume -8 dB / SetPitch -800 cents on it (default case: 9 tails x0.63 @0.225 and 7 low-passed tails x0.58
+# @0.215, which run 9-10.5 s at that pitch). Plus the blast (M, as in the research): effect 05AD at hero hardpoint
+# 0077 has sub-effect 4046 = 8DE7, the impact bank of lucio.amp.hit, on the same mixer and bus as this layer; the two
+# start together here (their graph nodes 0776#193 / #215 were not timed). Net gains with the buses: body -2.5,
+# crack -5.5, click -5.5, sub -8, tail -9.5, whoosh -10.5, air -11.5, tone -25, room a -14.5, room b +3.5 (its files are
+# 30 dB quiet), blast -12 / -22 / -18.5. Offset -3.
+@lucio.soundwave = lucio.soundwave.body:-5.5 + lucio.soundwave.crack@0.095:-8.5 + lucio.soundwave.click*1.11@0.02:-8.5 + lucio.soundwave.sub:-11 + lucio.soundwave.tail@0.095:-12.5 + lucio.soundwave.whoosh@0.167:-13.5 + lucio.soundwave.air@0.1:-14.5 + lucio.soundwave.tone*1.569:-28 + lucio.soundwave.room_a*0.627@0.225:-17.5 + lucio.soundwave.room_b*0.578@0.215:+0.5 + lucio.amp.hit_a*1.507:-15 + lucio.amp.hit_b*1.282:-25 + lucio.amp.hit_c*1.362:-21.5
+# Soundwave heard by others (6D1F, 175 m): the same layer minus the room switches and the thud: crack @0.09 (+17), body
+# (+15), click (+12), air (+6), whoosh (+10, -3 random), tone (-4); net with the bus: crack -13.5, body -15.5, click
+# -18.5, whoosh -23.5, air -24.5, tone -36. The blast 8DE7 is heard by everyone (no range), at its own bus level
+# (-12 / -22 / -18.5). Offset +7.
+@lucio.soundwave_3p = lucio.soundwave.body:-8.5 + lucio.soundwave.crack@0.095:-6.5 + lucio.soundwave.click*1.11@0.02:-11.5 + lucio.soundwave.whoosh@0.167:-16.5 + lucio.soundwave.air@0.1:-17.5 + lucio.soundwave.tone*1.569:-29 + lucio.amp.hit_a*1.507:-5 + lucio.amp.hit_b*1.282:-15 + lucio.amp.hit_c*1.362:-11.5
+# Crossfade stings, own (19A2 -> 3783, 19A1 -> 3784): one random file each; 3783 starts 0.25 s late (its container's
+# delay). Same mixers and bus as the own songs below, so one offset (+6) for the whole own-music family: in the data the
+# stings sit ~3-6 dB above the song bars.
+@lucio.crossfade.heal = lucio.crossfade.heal_sting@0.25:-2
+@lucio.crossfade.speed = lucio.crossfade.speed_sting:-3
+# Healing Boost, own (held effect A8F, 09DC). The Play event is a layer: the first bar 2AB3BD (7.5 s) once, then from
+# 7.499 s two independent random containers (continuous, sample-accurate, endless, no immediate repeat) over the same
+# four bars, one at +6 dB and one at -5 dB, so every later bar is a pair. One variant = one such pair: bar A +
+# a random bar B 11 dB under it. BAR LENGTH 7.50 s for every variant (files 7.501-7.516 s; Overwatch starts each bar
+# when the previous file ends). Variants in build order: 2AB3B8 7.501, 2AB461 7.501, 2AB3FA 7.516, 2AB3B1 7.516 s
+# (the B pick can lengthen a mix to 7.516 s). The first bar alone is lucio.song.heal_first below (not registered).
+# The Play event also stops the speed layer 10 ms later with no fade (a hard cut); its Stop event fades over 0.5 s.
+@lucio.song.heal = lucio.song.heal_bar:-5 + lucio.song.heal_bar_b:-16
+# Speed Boost, own (A90, 09DD): the first bar 2AB3C4 (3.75 s), then from 3.751 s a random container of four 3.75 s bars
+# played through twice (loop 2: 8 bars, 30 s) on top of an endless random container of four long bars 4 dB under it;
+# the long bars correlate 0.7-0.84 with the short ones, so they carry the same groove. One variant = a long bar with
+# two random short bars on it (@0 and @3.75): the texture of the first ~34 s after every swap (M: a continuous random
+# container plays its whole list once per loop). BAR LENGTH 7.50 s for every variant (mixes 7.502-7.511 s).
+# Variants in build order: 2AB3B9 7.501, 2AB3C9 7.501, 2AB462 7.505, 2AB392
+# 4.708 s (that long bar is shorter: in Overwatch the next long bar starts 4.708 s after it, off the short bars' grid;
+# here the short bars fill its 7.5 s). After those 8 short bars Overwatch plays the long bars alone, ~7 dB quieter:
+# lucio.song.speed_bed below (not registered).
+@lucio.song.speed = lucio.song.speed_long:-17 + lucio.song.speed_short:-13 + lucio.song.speed_short@3.75:-13
+# Not registered yet (the Java side plays only the ids above); uncomment if it wants the first bar of each song and
+# the speed song's settled bed. Same family offset: heal_first 2AB3BD 7.501 s; speed_first 2AB3C4 3.752 s; speed_bed =
+# the long bars alone, BAR LENGTHS 7.501 / 7.501 / 7.505 / 4.708 s in build order.
+# @lucio.song.heal_first = lucio.song.heal_first_bar:-11.5
+# @lucio.song.speed_first = lucio.song.speed_first_bar:-11
+# @lucio.song.speed_bed = lucio.song.speed_long:-17
+# The songs heard by others (2447 heal / 2446 speed, 50 m). Both Play events start the bars 468 ms late and seek them to
+# a random marker; others never hear Lúcio's own bar pairs. Heal: 2AB40B looping (byte-identical to 2AB3BD), plus one
+# extra pass of 2AB3BD on top at the start (left out). BAR LENGTH 7.501 s, one variant.
+@lucio.song.heal_3p = lucio.song.heal_3p_bar:-3
+# Speed: a SEQUENCE container (not random) of the four short bars looping in this order, 2AB3BE 3.761, 2AB3BF 3.759,
+# 2AB3AF 3.752, 2AB460 3.752 s, so the variant is the whole 15.024 s phrase: BAR LENGTH 15.024 s, one variant
+# (2AB3AB, played twice at the start 2 dB over it, has the same audio as 2AB3BE: left out). 7.5 dB under the heal
+# bar in the data; family offset +22.
+@lucio.song.speed_3p = lucio.song.speed_3p_1:-10.5 + lucio.song.speed_3p_2@3.761:-10.5 + lucio.song.speed_3p_3@7.52:-10.5 + lucio.song.speed_3p_4@11.272:-10.5
+# The swap scratch others hear (0.47-0.69 s): the same 5-file random container in 2447 and 2446, played at the swap with
+# a random 4.4-5.9 s phrase (left out: not a bar); 2.5 dB under the heal bar (2AB3B6 is another 1.5 dB down in the data).
+@lucio.song.scratch_3p = lucio.song.scratch:-5.5
+# Amp It Up (A45, from 0277#147): own 09D9 = a layer of [2AA47B / 2AA476 at -300 cents] + 2B2E00 at +150 cents, -4.5 dB,
+# 0.2 s late. Positional 09D8 (70 m) = 2AA47B at -300 cents (+15) + 2B2E02 (+9). One-shots (no music change found).
+@lucio.amp_it_up = lucio.amp_it_up.drop*0.841:-4 + lucio.amp_it_up.rise*1.091@0.2:-8.5
+@lucio.amp_it_up_3p = lucio.amp_it_up.drop_3p*0.841:-3.5 + lucio.amp_it_up.tone_3p:-9.5
+# Wall ride, own (held effect E12, 241E). The Play event: (1) a start layer, (2) with a 500 ms fade-in the LOOP: a layer of
+# four endless loops of different lengths (2B1E27 3.17 s at +230 cents, 2AC815 / 2AC8F6 2.5-2.7 s, 2AC8CB 5.0 s, 2B1E28
+# 4.76 s), (3) a second start layer on another bus. The Stop event fades the loop over 400 ms and plays the end layer.
+# So start and end are read from the loop's own events (HIGH), not guessed. Loop: 2B1E27 x1.142 dominates (net -4.5
+# dB); 2AC815 / 2AC8F6 x1.09 sit 15.5 dB under it; 2AC8CB and 2B1E28 sit 18 and 25 dB under it and are left out, so
+# the variant is 2.78 s (the second layer ends ~0.3 s early). LOOP LENGTH 2.776 s.
+@lucio.wallride = lucio.wallride.hum*1.142:+0 + lucio.wallride.whir*1.09:-15.5
+# Wall ride heard by others (241D, 50 m): no 2B1E27; 2AC815 / 2AC8F6 x1.09 (twice, @0 and @2.5), 2AC8CB and 2B1E28 x1.035,
+# 7 and 10.5 dB under. LOOP LENGTH 5.0 s (set by 2AC8CB; 2B1E28 ends 0.4 s early).
+@lucio.wallride_3p = lucio.wallride.whir*1.09:+0.5 + lucio.wallride.whir*1.09@2.5:+0.5 + lucio.wallride.bed:-6.5 + lucio.wallride.air*1.035:+11
+# Start (own): 241E's Play-event one-shots: 4 low hits at -730 cents (+0-0.022 s) and a click at -705 cents, plus two
+# random sets at +150 / +220 cents on the other bus. In the data they peak ~16 dB under the loop; offset +20 (Java can
+# turn this event down). The 241D copy (others) plays the same first layer.
+@lucio.wallride.start = lucio.wallride.grip*0.656@0.026:-4 + lucio.wallride.tick*0.666:-5 + lucio.wallride.skid_a*1.091:-4 + lucio.wallride.skid_b*1.136:-2.5
+# End (own): 241E's Stop-event layer: a set at +380 cents and a short set up to 0.1 s late; ~25 dB under the loop in the
+# data, offset +28. The one-shots 2402 (48FD own / 48FE others), 2407 (4902) and 2408 (4903) are NOT used for start / end:
+# graph 0263 plays 2402 on a jump press (button 11) inside the wall-ride state chain (with a pad rumble), and 2407 + 2408
+# together while on the wall once var 14991 is set; which of those is attach or detach is not settled (LOW).
+@lucio.wallride.end = lucio.wallride.release*1.246:+4.5 + lucio.wallride.flick@0.05:+3
+# lucio.wall_jump: NOT extracted. Effect 3FA0 (at hardpoint 0004, 0.25 s after a jump press while riding) plays 268C
+# @0.002, 268D @0.003, 83AF @0.068, 7CBB + 7CB9 @0.134; 3FA1 has no sound. None of their files are in the extraction.
+# Sound Barrier cast (A46 from 073A#210): 09C9 (75 m) = a layer of 2AC1DD (+23) and 2AC1DF (+18); 09D4 (75 m) = one of
+# 2A8D11 / 2A8D14 (+24); 09D5 (no range, non-positional, also sets the four mix-ducking states) = one of the same two
+# (+15), 10 ms late. All three are audience 2 (no own copy), so both ids get all three; 09D5 is what everyone hears
+# anywhere. Net with the buses: 09D5 -3, 09D4 -5.5, 2AC1DD -12.5, 2AC1DF -17.5. Offset +10. Their Stop events (a
+# 4-file release, -730 cents) most likely only run if the sound is cut (M: the STUSounds are fire-and-forget); not used.
+# Not mapped: the ult clips' own sounds, 1P clip 2CD9 (0.83 s) plays 5D69 at 0.067 s and 3P clip 2E50 plays 28DF +
+# 28DD at 0.167 s (extracted under Models\...\AnimationEffects): the Java side can add them to the leap if wanted.
+@lucio.barrier.cast = lucio.barrier.cast_global@0.01:+7 + lucio.barrier.cast_main:+4.5 + lucio.barrier.cast_swell:-2.5 + lucio.barrier.cast_hit:-7.5
+@lucio.barrier.cast_3p = lucio.barrier.cast_global@0.01:+7 + lucio.barrier.cast_main:+4.5 + lucio.barrier.cast_swell:-2.5 + lucio.barrier.cast_hit:-7.5
+# Landing (073A#609 / #610): 44EE -> BD76 = 2ABB91 0.03 s late (no range: everyone); 64ED -> C2BD (200 m) = a random set
+# of 9 mono impacts (+50 cents) and the room switch 305381647 with SetVolume -21 dB (default: 9 tails @0.225, 7
+# low-passed tails x0.92 @0.215). Net: BD76 -8, room b -9.5, impact -23.5, room a -27.5. Offset +5.
+@lucio.barrier.slam = lucio.barrier.slam_impact*1.029:-18.5 + lucio.barrier.slam_boom@0.03:-3 + lucio.barrier.slam_room_a@0.225:-22.5 + lucio.barrier.slam_room_b*0.917@0.215:-4.5
+
+# ===== Sources (layers of the rules above; not events of their own)
+# --- Sonic Amplifier (6D20 under effect 3495)
+# sub thump (16 stereo 0.99-1.29 s, 99% under 300 Hz). HIGH: random container 693373871 (+27 make-up), avoid repeat 4. The build keeps 8.
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A9345.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A934E.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A934A.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92DE.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92F7.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A933F.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A934D.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91A8.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A933A.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A9308.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A9304.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91BD.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92F1.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91BB.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A9340.03F.ogg
+lucio.amp.fire_thump = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92EF.03F.ogg
+# room tail, default switch case (4 stereo 3.8-4.95 s, ~1.6 s above -30 dB). HIGH: switch 830998717 default 144697359 -> 874654552 (hpf 15).
+lucio.amp.fire_tail = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91AB.03F.ogg
+lucio.amp.fire_tail = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A9335.03F.ogg
+lucio.amp.fire_tail = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91A2.03F.ogg
+lucio.amp.fire_tail = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92DD.03F.ogg
+# low layer (4 stereo 0.74-0.79 s). HIGH: the Play event's second action, random container 359812814.
+lucio.amp.fire_low = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92F8.03F.ogg
+lucio.amp.fire_low = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A934F.03F.ogg
+lucio.amp.fire_low = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91B0.03F.ogg
+lucio.amp.fire_low = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92E2.03F.ogg
+# tick (8 mono 0.12-0.25 s, 7-12 kHz). HIGH: sequence container 652657221 in step mode: Overwatch plays them in this
+# order, one per volley; Minecraft picks at random. 2A7E01 and 2A7DEB are another 6 dB down in the data.
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92F9.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A7E01.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91B9.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91BC.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A7DEB.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A92FC.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91A0.03F.ogg
+lucio.amp.fire_tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000003495.00D/Sounds/000000006D20.02C/0000002A91A9.03F.ogg
+# --- Projectile hit (8DE7, extracted only under 05AD's sub-effect 4046; 0838's 405B plays the same sound)
+# 8DE7 layer 1 (10 mono 0.54-0.6 s). HIGH: random container 19863385, +510 cents (+0-400), lpf 16, hpf 21.
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+lucio.amp.hit_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# 8DE7 layer 2 (16 stereo 0.41-0.61 s). HIGH: 413748272, +280 cents (-200..+500), lpf 14, hpf 17.
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+lucio.amp.hit_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# 8DE7 layer 3 (7 stereo 0.49-0.56 s). HIGH: 1057399041, +510 cents (-300..+350), hpf 19.
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+lucio.amp.hit_c = Heroes/Lúcio/Skin/Overwatch/Overwatch/Effects/000000004046.00D/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# --- Reload (1P clip 219C; the 3P clip 26E6's banks 960B-960E hold the same files)
+# reload step 1 (0.23 s). HIGH: 91EB / 960B.
+lucio.amp.reload_1 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Models/00000000DB40.00C/AnimationEffects/00000000219C/Sounds/0000000091EB.02C/0000002A836B.03F.ogg
+# reload step 2 (0.70 s, low). HIGH: 91EC / 960C.
+lucio.amp.reload_2 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Models/00000000DB40.00C/AnimationEffects/00000000219C/Sounds/0000000091EC.02C/0000002A8366.03F.ogg
+# reload step 3 (0.45 s). HIGH: 91ED / 960D.
+lucio.amp.reload_3 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Models/00000000DB40.00C/AnimationEffects/00000000219C/Sounds/0000000091ED.02C/0000002A8360.03F.ogg
+# reload step 4 (0.52 s, the snap). HIGH: 91EE / 960E.
+lucio.amp.reload_4 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Models/00000000DB40.00C/AnimationEffects/00000000219C/Sounds/0000000091EE.02C/0000002A8367.03F.ogg
+# --- Soundwave (5D67 own / 6D1F others, effect 097A)
+# body (9 stereo 0.81-1.11 s). HIGH: 5D67 642924119 / 6D1F 960407337 (+15), pitch +-50.
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91B4.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92D9.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A9312.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92EC.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A9306.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92DA.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92F5.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92F4.03F.ogg
+lucio.soundwave.body = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91B6.03F.ogg
+# crack (5 stereo 0.6-0.67 s). HIGH: 271799576 (+12 own) / 857654482 (+17 others), 0.09 s late.
+lucio.soundwave.crack = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A925B.03F.ogg
+lucio.soundwave.crack = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92EE.03F.ogg
+lucio.soundwave.crack = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A9339.03F.ogg
+lucio.soundwave.crack = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A9346.03F.ogg
+lucio.soundwave.crack = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A930F.03F.ogg
+# click (0.13 s). HIGH: +180 cents, +12, 0.02 s late.
+lucio.soundwave.click = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92FF.03F.ogg
+# air (4 stereo 1.56-1.79 s). HIGH: 839308251 / 476142672 (+6), 0.1 s late.
+lucio.soundwave.air = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91B3.03F.ogg
+lucio.soundwave.air = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91BA.03F.ogg
+lucio.soundwave.air = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91D5.03F.ogg
+lucio.soundwave.air = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91B2.03F.ogg
+# whoosh (1.63 s, quiet). HIGH: +10, random -6..0 dB, 0.117 s + 0-0.1 s late, pitch -200..+250.
+lucio.soundwave.whoosh = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91AA.03F.ogg
+# tone (3 stereo 0.75-0.99 s). HIGH: 178087789 / 615843857, +780 cents.
+lucio.soundwave.tone = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91AF.03F.ogg
+lucio.soundwave.tone = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A930E.03F.ogg
+lucio.soundwave.tone = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A91AD.03F.ogg
+# own room tail, default case (5.3 s). HIGH: switch 200188464 (group 3526866566), 0.095 s late, +8.
+lucio.soundwave.tail = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A92E1.03F.ogg
+# own mono thud (0.89 s). HIGH: 5D67's second Play (vol -8), bus 696369880.
+lucio.soundwave.sub = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A9347.03F.ogg
+# own big room tail a (9 stereo 3.35-3.8 s). HIGH: switch 305381647 default -> 577716776 (+9, 0.1 s + 0-0.25 s),
+# then SetPitch -800 cents (x0.63 with its range).
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B11.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B74.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B7F.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B3D.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B6E.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B77.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B6B.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5ACE.03F.ogg
+lucio.soundwave.room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5AE9.03F.ogg
+# own big room tail b (7 stereo 4.7-6.1 s, quiet files: rms -30 dB). HIGH: 677685491 (+27, -100 cents, lpf 38), then
+# SetPitch -800 (x0.58 with its range). M: SetVolume / SetPitch read as offsets.
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5AD5.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5AC2.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B3E.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B86.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B49.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5AB7.03F.ogg
+lucio.soundwave.room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000097A.00D/Sounds/000000005D67.02C/0000002A5B8D.03F.ogg
+# --- Crossfade stings (19A2 / 19A1)
+# swap to Healing Boost (2 stereo 1.61-1.64 s). HIGH: 3783 random container 911964343 (+9, 0.25 s late).
+lucio.crossfade.heal_sting = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019A2.00D/Sounds/000000003783.02C/0000002AAFA6.03F.ogg
+lucio.crossfade.heal_sting = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019A2.00D/Sounds/000000003783.02C/0000002AAF00.03F.ogg
+# swap to Speed Boost (2 stereo 2.29-2.30 s). HIGH: 3784 random container 799580487 (+8).
+lucio.crossfade.speed_sting = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019A1.00D/Sounds/000000003784.02C/0000002AAEFF.03F.ogg
+lucio.crossfade.speed_sting = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019A1.00D/Sounds/000000003784.02C/0000002AAF28.03F.ogg
+# --- Songs (own 09DC / 09DD, others 2447 / 2446)
+# heal bars, upper layer (+6). HIGH: 09DC random container 77321779, in playlist order.
+lucio.song.heal_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3B8.03F.ogg
+lucio.song.heal_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB461.03F.ogg
+lucio.song.heal_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3FA.03F.ogg
+lucio.song.heal_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3B1.03F.ogg
+# heal bars, lower layer (-5): the same four files. HIGH: 826848206.
+lucio.song.heal_bar_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3B8.03F.ogg
+lucio.song.heal_bar_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB461.03F.ogg
+lucio.song.heal_bar_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3FA.03F.ogg
+lucio.song.heal_bar_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3B1.03F.ogg
+# speed long bars (7.5 s; 2AB392 4.708 s). HIGH: 09DD random container 953357063 (-4), endless.
+lucio.song.speed_long = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3B9.03F.ogg
+lucio.song.speed_long = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3C9.03F.ogg
+lucio.song.speed_long = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB462.03F.ogg
+lucio.song.speed_long = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB392.03F.ogg
+# speed short bars (3.75 s, peaks up to +3.6 dBFS). HIGH: 744762302 (loop 2).
+lucio.song.speed_short = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3BE.03F.ogg
+lucio.song.speed_short = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3BF.03F.ogg
+lucio.song.speed_short = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3AF.03F.ogg
+lucio.song.speed_short = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB460.03F.ogg
+# Not registered yet (see the commented rules):
+# lucio.song.heal_first_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/0000000009DC.02C/0000002AB3BD.03F.ogg
+# lucio.song.speed_first_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/0000000009DD.02C/0000002AB3C4.03F.ogg
+# heal bar heard by others (7.501 s, endless loop). HIGH: 2447 Sound 538482054.
+lucio.song.heal_3p_bar = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB40B.03F.ogg
+# speed phrase bar 1 of 4. HIGH: 2446 sequence container 856181618 (-8).
+lucio.song.speed_3p_1 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/000000002446.02C/0000002AB3BE.03F.ogg
+# speed phrase bar 2 of 4. HIGH.
+lucio.song.speed_3p_2 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/000000002446.02C/0000002AB3BF.03F.ogg
+# speed phrase bar 3 of 4. HIGH.
+lucio.song.speed_3p_3 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/000000002446.02C/0000002AB3AF.03F.ogg
+# speed phrase bar 4 of 4. HIGH.
+lucio.song.speed_3p_4 = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A90.00D/Sounds/000000002446.02C/0000002AB460.03F.ogg
+# swap scratch (5 stereo 0.47-0.69 s). HIGH: 2447 84264680 / 2446 382637925.
+lucio.song.scratch = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB3B2.03F.ogg
+lucio.song.scratch = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB45E.03F.ogg
+lucio.song.scratch = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB465.03F.ogg
+lucio.song.scratch = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB3B6.03F.ogg
+lucio.song.scratch = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A8F.00D/Sounds/000000002447.02C/0000002AB3B0.03F.ogg
+# --- Amp It Up (A45)
+# own (2 stereo 1.73-2.2 s). HIGH: 09D9 401932385, -300 cents (+-75).
+lucio.amp_it_up.drop = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A45.00D/Sounds/0000000009D9.02C/0000002AA47B.03F.ogg
+lucio.amp_it_up.drop = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A45.00D/Sounds/0000000009D9.02C/0000002AA476.03F.ogg
+# own (3.0 s). HIGH: 09D9 Sound 724563906, +150 cents, -3, 0.2 s late.
+lucio.amp_it_up.rise = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A45.00D/Sounds/0000000009D9.02C/0000002B2E00.03F.ogg
+# others (1.73 s). HIGH: 09D8 176490437, -300 cents, +6.
+lucio.amp_it_up.drop_3p = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A45.00D/Sounds/0000000009D8.02C/0000002AA47B.03F.ogg
+# others (1.79 s). HIGH: 09D8 Sound 11592540.
+lucio.amp_it_up.tone_3p = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A45.00D/Sounds/0000000009D8.02C/0000002B2E02.03F.ogg
+# --- Wall ride (E12: 241E own, 241D others)
+# own loop, main layer (3.17 s). HIGH: 241E Sound 429365966, +230 cents, +17, endless.
+lucio.wallride.hum = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002B1E27.03F.ogg
+# loop layer (2.5-2.7 s, mid-low). HIGH: 817437855 / 890123211 (+3, -3..0 dB, 0..+300 cents).
+lucio.wallride.whir = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AC815.03F.ogg
+lucio.wallride.whir = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AC8F6.03F.ogg
+# others' loop layer (5.0 s). HIGH: 241D Sound 107389339 (-4, -3..0 dB, +-150 cents).
+lucio.wallride.bed = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241D.02C/0000002AC8CB.03F.ogg
+# others' loop layer (4.76 s, very quiet file). HIGH: 241D Sound 617862749 (+60 cents, +12).
+lucio.wallride.air = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241D.02C/0000002B1E28.03F.ogg
+# start, low hits (4 stereo 0.5-0.59 s). HIGH: 241E 28463770 (-680 cents, -100..0).
+lucio.wallride.grip = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AC8EA.03F.ogg
+lucio.wallride.grip = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AFC11.03F.ogg
+lucio.wallride.grip = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AC8FF.03F.ogg
+lucio.wallride.grip = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AC8F4.03F.ogg
+# start click (0.23 s). HIGH: 241E Sound 102859924 (-630 cents, -150..0).
+lucio.wallride.tick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AFBED.03F.ogg
+# start, second bus (3 mono 0.32-0.48 s). HIGH: 241E 398881442 (0..+300 cents).
+lucio.wallride.skid_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE5FD.03F.ogg
+lucio.wallride.skid_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE600.03F.ogg
+lucio.wallride.skid_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE5FC.03F.ogg
+# start, second bus (3 mono 0.37-0.5 s). HIGH: 241E 863455431 (0..+440 cents).
+lucio.wallride.skid_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE8A4.03F.ogg
+lucio.wallride.skid_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE606.03F.ogg
+lucio.wallride.skid_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002AE609.03F.ogg
+# end (3 mono 0.48-0.56 s). HIGH: 241E Stop event, 41324423 (+380 cents).
+lucio.wallride.release = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A7294.03F.ogg
+lucio.wallride.release = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A7296.03F.ogg
+lucio.wallride.release = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A7295.03F.ogg
+# end (3 mono 0.15-0.33 s). HIGH: 241E Stop event, 340001403 (0-0.1 s late).
+lucio.wallride.flick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A7298.03F.ogg
+lucio.wallride.flick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A727E.03F.ogg
+lucio.wallride.flick = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000E12.00D/Sounds/00000000241E.02C/0000002A7297.03F.ogg
+# Unused one-shots, kept for when their role is settled (2402 own 48FD, 2407 4902, 2408 4903):
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1E2E.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1E32.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1E26.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1EC6.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1ECE.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1EC7.03F.ogg
+# lucio.wallride.jump_press = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002402.00D/Sounds/0000000048FD.02C/0000002B1ED5.03F.ogg
+# lucio.wallride.ride_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002407.00D/Sounds/000000004902.02C/0000002B1E2F.03F.ogg
+# lucio.wallride.ride_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002407.00D/Sounds/000000004902.02C/0000002B1ED6.03F.ogg
+# lucio.wallride.ride_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002407.00D/Sounds/000000004902.02C/0000002B1E24.03F.ogg
+# lucio.wallride.ride_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002407.00D/Sounds/000000004902.02C/0000002B1E31.03F.ogg
+# lucio.wallride.ride_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002407.00D/Sounds/000000004902.02C/0000002B1ED1.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ED7.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ED3.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1EC8.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ECB.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ECA.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ED2.03F.ogg
+# lucio.wallride.ride_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002408.00D/Sounds/000000004903.02C/0000002B1ECD.03F.ogg
+# --- Sound Barrier (A46 cast; 44EE / 64ED landing)
+# global copy (2 stereo 2.5 s). HIGH: 09D5 442647120 (+15), no range.
+lucio.barrier.cast_global = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009D5.02C/0000002A8D11.03F.ogg
+lucio.barrier.cast_global = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009D5.02C/0000002A8D14.03F.ogg
+# 75 m copy of the same files. HIGH: 09D4 325246701 (+24).
+lucio.barrier.cast_main = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009D4.02C/0000002A8D11.03F.ogg
+lucio.barrier.cast_main = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009D4.02C/0000002A8D14.03F.ogg
+# 09C9 layer part (0.99 s, instant attack). HIGH: Sound in layer 618152126 (+18).
+lucio.barrier.cast_hit = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009C9.02C/0000002AC1DF.03F.ogg
+# 09C9 layer part (2.54 s, 0.32 s attack, quiet file). HIGH: +23.
+lucio.barrier.cast_swell = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000A46.00D/Sounds/0000000009C9.02C/0000002AC1DD.03F.ogg
+# landing impact (9 mono 1.5-2.6 s). HIGH: C2BD 24660925 (+8, hpf 8, -100..+200 cents). The build keeps 8.
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A8103.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A80D8.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A812D.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A8125.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A812E.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A80D7.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A80E4.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A80DB.03F.ogg
+lucio.barrier.slam_impact = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A80DD.03F.ogg
+# landing boom (2.36 s). HIGH: BD76 736874730 (+18, lpf 35, hpf 10), 0.6 s retrigger guard.
+lucio.barrier.slam_boom = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000044EE.00D/Sounds/00000000BD76.02C/0000002ABB91.03F.ogg
+# landing room tail a. HIGH: C2BD switch 305381647 default, then SetVolume -21 dB.
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B11.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B74.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B7F.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B3D.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B6E.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B77.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B6B.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5ACE.03F.ogg
+lucio.barrier.slam_room_a = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5AE9.03F.ogg
+# landing room tail b (low-passed). HIGH: as above, -100 cents (-200..+100).
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5AD5.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5AC2.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B3E.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B86.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B49.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5AB7.03F.ogg
+lucio.barrier.slam_room_b = Heroes/Lúcio/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064ED.00D/Sounds/00000000C2BD.02C/0000002A5B8D.03F.ogg
+
+# ===== Voice (HeroVoice/Lúcio): the voice section generated from the voice research (research\lucio\voice.json,
+# voice_sounds_effects.md section 1), copied as is (the generated file was cp1252: re-encoded to UTF-8, nothing else).
+# Elimination 0008: 24 lines
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/00000004CE6B.0B2-(Brazilian Portuguese)_ I did that!.ogg | w=0.5
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/00000004CE6C.0B2-(Brazilian Portuguese)_ You got it.ogg | w=0.5
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/00000004CE6E.0B2-(Brazilian Portuguese)_ Goodbye!.ogg | w=0.5
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061CDE.0B2-Boom, baby!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061CF1.0B2-Got 'em!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061CF4.0B2-And we're done!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D01.0B2-Whoa, you're going a little too hard!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D0B.0B2-(Brazilian Portuguese)_ Amazing!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D0D.0B2-You don't like this song_.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D0F.0B2-Ha! Mic drop!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D10.0B2-That drop too hard for you_.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D15.0B2-Ooh, that looked painful!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D16.0B2-Beat dropped!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D1C.0B2-(Brazilian Portuguese)_ Marvelous!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D1E.0B2-(Brazilian Portuguese)_ See you later!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D2A.0B2-(laugh) The sound of defeat!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D34.0B2-(Brazilian Portuguese)_ Ow ow ow!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D38.0B2-You got two left feet!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D40.0B2-Not feeling the music_.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D47.0B2-That sounded like it hurt.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D48.0B2-That'll do it!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D49.0B2-Yeah, funky!.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D51.0B2-Guess you weren't feeling it, huh_.ogg | w=1
+lucio.voice.elimination = HeroVoice/Lúcio/Elimination/000000061D57.0B2-This set goes so hard!.ogg | w=1
+# Multikill 00C9: 4 lines
+lucio.voice.multikill = HeroVoice/Lúcio/Multikill/000000061CE7.0B2-Sheesh! That was crazy!.ogg | w=1
+lucio.voice.multikill = HeroVoice/Lúcio/Multikill/000000061D04.0B2-Did you see that_.ogg | w=1
+lucio.voice.multikill = HeroVoice/Lúcio/Multikill/000000061D53.0B2-And the crowd goes wild!.ogg | w=0.5
+lucio.voice.multikill = HeroVoice/Lúcio/Multikill/000000061D61.0B2-What a moment to live for!.ogg | w=1
+# MeleeEnemyKilledRemark: 3 lines
+lucio.voice.melee_kill = HeroVoice/Lúcio/MeleeEnemyKilledRemark/000000061D07.0B2-Whoa, hands off!.ogg | w=1
+lucio.voice.melee_kill = HeroVoice/Lúcio/MeleeEnemyKilledRemark/000000061D4B.0B2-Personal space!.ogg | w=1
+lucio.voice.melee_kill = HeroVoice/Lúcio/MeleeEnemyKilledRemark/000000061D4D.0B2-Too close!.ogg | w=1
+# On Fire 0583: 6 lines
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/0000000216B9.0B2-Is it hot in here or is it just me_.ogg | w=0.3
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/0000000216BB.0B2-Woo! Check this out. I am on fire!.ogg | w=0.8
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/0000000216C2.0B2-Woo! I am on fire!.ogg | w=1
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/000000061D02.0B2-Haha, I'm burnin' up!.ogg | w=1
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/000000061D17.0B2-Ow! These beats are fire!.ogg | w=1
+lucio.voice.on_fire = HeroVoice/Lúcio/OnFire/000000061D29.0B2-I'm turning up the heat!.ogg | w=1
+# Respawn 002C: 10 lines
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/00000000B51C.0B2-Let's take it from the top.ogg | w=0.05
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/00000000B51F.0B2-Back in the mix.ogg | w=0.05
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061CDA.0B2-Time for a remix!.ogg | w=1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061CDB.0B2-You know, it's not always going to be a top hit.ogg | w=1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D18.0B2-Uh, maybe I'll try something different this time.ogg | w=1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D50.0B2-Uh... next track!.ogg | w=1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D54.0B2-Switching tracks.ogg | w=0.9
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D56.0B2-This music stops for no one!.ogg | w=1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D58.0B2-Switching tracks.ogg | w=0.1
+lucio.voice.respawn = HeroVoice/Lúcio/Respawn/000000061D59.0B2-That was just a sound check.ogg | w=1
+# Melee shout 0023: 9 lines
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B54D.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B578.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B583.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B5A2.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B5A6.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/00000000B5C9.0B2-(shouts).ogg | w=0.7
+lucio.voice.melee = HeroVoice/Lúcio/Melee/000000064320.0B2-(shouts).ogg | w=1
+lucio.voice.melee = HeroVoice/Lúcio/Melee/000000064321.0B2-(shouts).ogg | w=1
+lucio.voice.melee = HeroVoice/Lúcio/Melee/000000064322.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 lines
+lucio.voice.select = HeroVoice/Lúcio/HeroSelect/000000061CF5.0B2-We're here to be heard!.ogg | w=1
+# Death 0001: 6 lines
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B559.0B2-(dying sounds).ogg | w=1
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B56F.0B2-(dying sounds).ogg | w=1
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B59F.0B2-(dying sounds).ogg | w=1
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B5B8.0B2-(dying sounds).ogg | w=1
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B5CC.0B2-(dying sounds).ogg | w=1
+lucio.voice.death = HeroVoice/Lúcio/Death/00000000B5DB.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 lines
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B540.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B553.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B557.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B558.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B572.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B584.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5D5.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5F5.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5FA.0B2-(grunts).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B544.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B55C.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B566.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B57D.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5AC.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5B2.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5B4.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5B7.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5C1.0B2-(painful grunt).ogg | w=1
+lucio.voice.pain = HeroVoice/Lúcio/Pain/00000000B5F6.0B2-(painful grunt).ogg | w=1
+# Ultimate/Ready (the wheel line): 2 lines
+lucio.voice.ult_ready = HeroVoice/Lúcio/Ultimate/Ready/00000000B58C.0B2-My ultimate is ready!.ogg | w=1
+lucio.voice.ult_ready = HeroVoice/Lúcio/Ultimate/Ready/0000000216C9.0B2-I'm ready to activate the sound barrier!.ogg | w=1
+# Ultimate/Charging: 1 lines
+lucio.voice.call_ult_charging = HeroVoice/Lúcio/Ultimate/Charging/0000000216CB.0B2-My ultimate is charging.ogg | w=1
+# Ultimate/AlmostReady: 2 lines
+lucio.voice.call_ult_almost = HeroVoice/Lúcio/Ultimate/AlmostReady/0000000216CA.0B2-My ultimate is almost ready!.ogg | w=1
+lucio.voice.call_ult_almost = HeroVoice/Lúcio/Ultimate/AlmostReady/0000000216CC.0B2-My sound barrier is almost ready!.ogg | w=1
+# Hello: 9 lines
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/00000000B563.0B2-Hey.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/00000000B57E.0B2-Hello hello!.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/0000000216C4.0B2-Hi.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/0000000216C5.0B2-Hello.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/00000004CE40.0B2-(Brazilian Portuguese)_ Hey!.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/00000004CE41.0B2-(Brazilian Portuguese)_ Hello!.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/00000004CE48.0B2-(Brazilian Portuguese)_ What's up_.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/000000064207.0B2-What's up!.ogg | w=1
+lucio.voice.call_hello = HeroVoice/Lúcio/Hello/000000064208.0B2-Good to see ya!.ogg | w=1
+# Thanks: 7 lines
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/00000000B58E.0B2-Thanks!.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/0000000216CD.0B2-Thanks!.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/0000000216CE.0B2-Thank you.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/00000004CE3C.0B2-(Brazilian Portuguese)_ Thanks!.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/00000004CE3D.0B2-(Brazilian Portuguese)_ Thank you.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/00000006420E.0B2-Appreciate ya!.ogg | w=1
+lucio.voice.call_thanks = HeroVoice/Lúcio/Thanks/00000006420F.0B2-Hey, thanks!.ogg | w=1
+# Sorry: 2 lines
+lucio.voice.call_sorry = HeroVoice/Lúcio/Sorry/00000002B79B.0B2-Ooh, sorry!.ogg | w=1
+lucio.voice.call_sorry = HeroVoice/Lúcio/Sorry/00000002B7AA.0B2-Oh, my bad.ogg | w=1
+# No: 3 lines
+lucio.voice.call_no = HeroVoice/Lúcio/No/00000000B57C.0B2-Nah!.ogg | w=1
+lucio.voice.call_no = HeroVoice/Lúcio/No/00000000B5D0.0B2-Nah.ogg | w=1
+lucio.voice.call_no = HeroVoice/Lúcio/No/00000004CE3E.0B2-(Brazilian Portuguese)_ No.ogg | w=1
+# GroupUp: 4 lines
+lucio.voice.call_group_up = HeroVoice/Lúcio/GroupUp/00000000B547.0B2-Let's group up here!.ogg | w=1
+lucio.voice.call_group_up = HeroVoice/Lúcio/GroupUp/0000000216B4.0B2-Join me.ogg | w=1
+lucio.voice.call_group_up = HeroVoice/Lúcio/GroupUp/0000000216BA.0B2-Group up!.ogg | w=1
+lucio.voice.call_group_up = HeroVoice/Lúcio/GroupUp/0000000216C3.0B2-Group up with me.ogg | w=1
+# AssistanceRequired: 3 lines
+lucio.voice.call_need_help = HeroVoice/Lúcio/AssistanceRequired/0000000216D0.0B2-I could use some help!.ogg | w=1
+lucio.voice.call_need_help = HeroVoice/Lúcio/AssistanceRequired/0000000216D1.0B2-I need some help here!.ogg | w=1
+lucio.voice.call_need_help = HeroVoice/Lúcio/AssistanceRequired/0000000216D2.0B2-I need help!.ogg | w=1
+# Healing: 3 lines
+lucio.voice.call_need_healing = HeroVoice/Lúcio/Healing/00000000B573.0B2-Someone call a doctor!.ogg | w=1
+lucio.voice.call_need_healing = HeroVoice/Lúcio/Healing/00000000B577.0B2-I need healing!.ogg | w=1
+lucio.voice.call_need_healing = HeroVoice/Lúcio/Healing/000000064209.0B2-Ooh, I need a heal!.ogg | w=1
+# ping 11D9: 1 lines
+lucio.voice.ping = HeroVoice/Lúcio/Unknown/11D9.078/000000064229.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 lines
+lucio.voice.ping_warning = HeroVoice/Lúcio/Unknown/11DA.078/00000006422A.0B2-Heads up!.ogg | w=1
+lucio.voice.ping_warning = HeroVoice/Lúcio/Unknown/11DA.078/00000006422B.0B2-Eyes open!.ogg | w=1
+lucio.voice.ping_warning = HeroVoice/Lúcio/Unknown/11DA.078/00000006422C.0B2-Watch here!.ogg | w=1
+# ping enemy 1117: 3 lines
+lucio.voice.ping_enemy = HeroVoice/Lúcio/Unknown/1117.078/000000061DB7.0B2-I see an enemy!.ogg | w=1
+lucio.voice.ping_enemy = HeroVoice/Lúcio/Unknown/1117.078/000000061DB8.0B2-Enemy spotted!.ogg | w=1
+lucio.voice.ping_enemy = HeroVoice/Lúcio/Unknown/1117.078/000000061DB9.0B2-Enemy here!.ogg | w=1
+# Crossfade to Healing Boost 03B0 (event 1345): 14 lines
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/00000000B4FB.0B2-Heal up!.ogg | w=0.1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/00000000B4FC.0B2-Audio medic.ogg | w=0.1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/00000000B4FE.0B2-Feel the healing beat!.ogg | w=0.1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/0000000216F6.0B2-Healing boost!.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061CEE.0B2-These vibes will heal you.ogg | w=0.3
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061CEF.0B2-Let's get some healing beats going!.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061CF7.0B2-Let's get into a healing rhythm!.ogg | w=0.2
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061CFD.0B2-Let the healing sound wash over you!.ogg | w=0.2
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061CFF.0B2-I think we could use some good vibes.ogg | w=0.2
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061D22.0B2-I feel this in my bones!.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061D42.0B2-This beat will heal you up!.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061D43.0B2-Heal to this beat!.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061D44.0B2-Catch these healing waves.ogg | w=1
+lucio.voice.crossfade_heal = HeroVoice/Lúcio/Unknown/3B0.078/000000061D5E.0B2-How's that for sound therapy_.ogg | w=1
+# Crossfade to Speed Boost 03B1 (event 1346): 14 lines
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/00000000B525.0B2-Time to accelerate!.ogg | w=0.05
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/00000000B529.0B2-Yeah! Let's move it, people!.ogg | w=0.05
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/00000000B52A.0B2-Let's up the tempo!.ogg | w=0.05
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/0000000216B6.0B2-Speed boost!.ogg | w=0.05
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061CF0.0B2-Gotta go quick!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061CF2.0B2-Accelerando!.ogg | w=0.3
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D00.0B2-Pick it up, pick it up!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D03.0B2-Quicken the pace!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D0E.0B2-Aw yeah! Move it!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D11.0B2-Let's do it faster!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D13.0B2-Match this BPM!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D20.0B2-Party time! Let's go!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D26.0B2-Get into this groove!.ogg | w=1
+lucio.voice.crossfade_speed = HeroVoice/Lúcio/Unknown/3B1.078/000000061D45.0B2-Speed it up, everyone!.ogg | w=1
+# Amp It Up 03B2 (event 1344, 0.2 s after the cast): 11 lines
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/00000004CE71.0B2-(Brazilian Portuguese)_ That's what I'm talking about!.ogg | w=0.4
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/00000004CE72.0B2-(Brazilian Portuguese)_ Off the hook!.ogg | w=0.4
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061CDD.0B2-This is my favorite part.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061CE0.0B2-Yeah, I'll turn it up!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D30.0B2-Louder this time!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D4E.0B2-Crank up the gain!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D4F.0B2-Oh, you'll wanna hear this!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D5A.0B2-(laugh) You want that louder_.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D5B.0B2-Amp up this beat!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D5C.0B2-Turn it up, turn it up!.ogg | w=1
+lucio.voice.amp = HeroVoice/Lúcio/Unknown/3B2.078/000000061D5D.0B2-Let's get loud!.ogg | w=1
+# Soundwave 03B3 (event 1347): 3 lines
+lucio.voice.soundwave = HeroVoice/Lúcio/Unknown/3B3.078/000000061CE9.0B2-Back off!.ogg | w=1
+lucio.voice.soundwave = HeroVoice/Lúcio/Unknown/3B3.078/000000061CEB.0B2-Too close!.ogg | w=1
+lucio.voice.soundwave = HeroVoice/Lúcio/Unknown/3B3.078/000000061D4A.0B2-Get lost!.ogg | w=1
+# Wall riding 03B4 (event 1348, after 2.2 s on the wall): 7 lines
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061CE6.0B2-Here we go!.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D05.0B2-(laughs) Yeah!.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D09.0B2-And slide!.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D2B.0B2-Can't beat this feeling.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D2D.0B2-You see this_.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D2E.0B2-Surf's up!.ogg | w=1
+lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D2F.0B2-That's what I'm talking about!.ogg | w=0.2
+# Sound Barrier, allies and himself 025B: 1 lines
+lucio.ult.friendly = HeroVoice/Lúcio/Ultimate/00000000B4C3.0B2-Oh, let's break it down!.ogg | w=1
+# Sound Barrier, enemies 0489: 1 lines
+lucio.ult.enemy = HeroVoice/Lúcio/Ultimate/00000004CE69.0B2-(Brazilian Portuguese)_ Let's show these guys up!.ogg | w=1

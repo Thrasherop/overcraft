@@ -20,6 +20,8 @@ public final class QuickMelee {
 	public static final double DAMAGE = 40;
 	public static final double COOLDOWN = 1.0;
 	public static final double RECOVERY = 0.528;
+	/** The swing's animation: Kiriko's melee clips (AF57 / AFB8 / AFB9) are 0.733 s, Lúcio's (2913 ...) 0.767 s. */
+	public static final double ANIMATION = 0.75;
 	public static final double RANGE = 2.5;
 	/** Ours: how wide in front it reaches (the wiki gives only the range). */
 	public static final double HALF_ANGLE = 45;
@@ -40,6 +42,8 @@ public final class QuickMelee {
 		}
 		s.meleeCooldown = Ow.ticks(COOLDOWN);
 		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(RECOVERY));
+		// the swing cuts a reload short, as its animation replaces the reload's
+		s.interruptReload(ANIMATION);
 		ServerLevel level = hero.level();
 		Vec3 eye = hero.getEyePosition();
 		Vec3 look = hero.getViewVector(1.0f);

@@ -57,6 +57,13 @@ public final class HeroManager {
 			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
 	/**
+	 * Lúcio's song, for every client to play it at him (LucioMusic): 0 none (not Lúcio, not in hero mode, dead), 1 Healing
+	 * Boost, 2 Speed Boost, plus 4 while Amp It Up is on. Not saved: the kit sets it each tick.
+	 */
+	public static final AttachmentType<Integer> SONG = AttachmentRegistry.create(Overcraft.id("song"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */
@@ -76,6 +83,7 @@ public final class HeroManager {
 
 	static {
 		KITS.put(Hero.KIRIKO, new Kiriko());
+		KITS.put(Hero.LUCIO, new dev.overcraft.lucio.Lucio());
 	}
 
 	private HeroManager() {
@@ -275,6 +283,7 @@ public final class HeroManager {
 		}
 		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
 		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			QuickMelee.use(player, state);
@@ -322,7 +331,7 @@ public final class HeroManager {
 		if (state.ultActive > 0) {
 			state.ultActive--;
 		} else {
-			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0);
+			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0, true);
 		}
 		if (Combat.now(player) - state.lastDamagedTick >= Combat.REGEN_DELAY && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());

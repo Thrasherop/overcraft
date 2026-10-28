@@ -65,6 +65,12 @@ final class ActionTrack {
 					cancelledAt = now;
 				}
 			}
+			// Lúcio (lucio-map.md): his volleys and Soundwave are additive layers (HeroAnimator), not clips over the arms;
+			// Amp It Up is one clip, Sound Barrier the leap then the slam
+			case "fire", "soundwave" -> {
+			}
+			case "amp_it_up" -> start(now, "amp");
+			case "sound_barrier" -> start(now, "ult_cast", "ult_end");
 			default -> start(now, action);
 		}
 	}
@@ -158,22 +164,40 @@ final class ActionTrack {
 				return;
 			}
 		}
-		Skeleton.Pose act = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		Skeleton.sample(clip, Math.clamp(local, 0, clip.duration()), act);
+		// over the pose under it: bones the clip doesn't drive keep that pose, as Overwatch's do (techniques: emotes). Played
+		// over the rest pose, Lúcio's Crossfade (a left-hand clip, folder 0-4) dropped his right arm, and the gun on it, to
+		// the bind pose, out of the first-person view
+		Skeleton.Pose act = copy(pose);
+		Skeleton.sample(HeroAnimator.driven(model, clip), Math.clamp(local, 0, clip.duration()), act);
 		// crossfade from the previous step's last frame
 		SkinnedModel.Clip from = fromClip == null ? null : model.clips.get(fromClip);
 		if (from != null && local < FADE && local >= 0) {
-			Skeleton.Pose before = new Skeleton.Pose(model.nodeNames.length).rest(model);
-			Skeleton.sample(from, from.duration(), before);
+			Skeleton.Pose before = copy(pose);
+			Skeleton.sample(HeroAnimator.driven(model, from), from.duration(), before);
 			Skeleton.blend(before, act, local / FADE, null);
 			act = before;
 		}
 		Skeleton.blend(pose, act, weight, mask);
 	}
 
+	private static Skeleton.Pose copy(Skeleton.Pose pose) {
+		Skeleton.Pose out = new Skeleton.Pose(pose.t.length);
+		for (int i = 0; i < pose.t.length; i++) {
+			out.t[i].set(pose.t[i]);
+			out.r[i].set(pose.r[i]);
+			out.s[i].set(pose.s[i]);
+		}
+		return out;
+	}
+
 	/** "throw_kunai_#": the next arm's throw, alternating through the model's throw_kunai_1, _2, ... */
 	private String resolve(SkinnedModel model, String name) {
 		if (!name.endsWith("_#")) {
+			// a skating variant the model doesn't have (Lúcio's first-person Crossfade has one clip): the standing one
+			int moving = name.indexOf("_moving");
+			if (moving > 0 && !model.clips.containsKey(name)) {
+				return name.substring(0, moving);
+			}
 			// a numbered variant the model doesn't have plays its first: the first-person model has one quick melee
 			// clip, so two melees in three (melee_2, melee_3) showed nothing in first person (#24)
 			int underscore = name.lastIndexOf('_');

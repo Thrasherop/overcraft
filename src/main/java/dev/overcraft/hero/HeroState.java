@@ -15,6 +15,7 @@ public final class HeroState {
 	// input, from the client (cleared whenever slot 1 isn't selected)
 	public boolean primaryHeld;
 	public boolean secondaryHeld;
+	public boolean wallRiding;
 	public boolean wallClimbing;
 
 	// weapons
@@ -23,6 +24,8 @@ public final class HeroState {
 	/** Ticks into the reload, -1 when not reloading. */
 	public double primaryReload = -1;
 	public boolean primaryAmmoRestored;
+	/** Ticks before an empty clip may start reloading by itself again (an action that cut the reload short still plays). */
+	public int reloadHeld;
 	public int secondaryAmmo;
 	public double secondaryReload = -1;
 	public boolean secondaryFiredSinceReload;
@@ -37,6 +40,26 @@ public final class HeroState {
 	/** A timed attack and reload speed bonus (Ready Step: 0.4) until a game time. */
 	public double attackBuff;
 	public long attackBuffUntil;
+
+	// Lúcio: the song (false = healing, true = speed), a swap under way (ticks left, -1 none), Amp It Up's ticks left,
+	// Soundwave's cooldown, the volley's rounds still to fire and the time to the next, Soundwave Rider's charge (0..1),
+	// Sound Barrier's cast (ticks in, -1 none)
+	public boolean speedSong;
+	public int songSwap = -1;
+	public int ampUp;
+	public double ability3Cooldown;
+	public int volleyLeft;
+	public double volleyNext;
+	public double riderCharge;
+	public int barrierCast = -1;
+	/** Amp It Up given by Beat Drop: when it ends, no cooldown starts. */
+	public boolean ampFree;
+	/** Amp It Up pressed: ticks until it starts (0 none). */
+	public int ampDelay;
+	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
+	public int wallRideTicks;
+	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */
+	public long songLinesFrom;
 
 	// perks (#36): progress toward the next perk level, and the ones picked
 	public double perkXp;
@@ -75,10 +98,22 @@ public final class HeroState {
 		this.hero = hero;
 		ultCharge = 0;
 		ultActive = 0;
-		primaryHeld = secondaryHeld = wallClimbing = false;
+		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		speedSong = false;
+		songSwap = -1;
+		ampUp = 0;
+		ability3Cooldown = 0;
+		volleyLeft = 0;
+		volleyNext = 0;
+		riderCharge = 0;
+		barrierCast = -1;
+		ampFree = false;
+		ampDelay = 0;
+		wallRideTicks = 0;
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;
+		reloadHeld = 0;
 		secondaryFiredSinceReload = false;
 		ability1Cooldown = ability2Cooldown = 0;
 		meleeCooldown = 0;
@@ -93,5 +128,17 @@ public final class HeroState {
 
 	public boolean has(Perk perk) {
 		return minorPerk == perk || majorPerk == perk;
+	}
+
+	/**
+	 * An action cut the weapon's reload short (a quick melee, an ability: its animation replaces the reload's): the reload
+	 * is over, and the ammo comes back only if it already had (the owner, 2026-10-27: a cancelled reload gave the ammo
+	 * back anyway). An empty clip waits {@code seconds}, the action's own animation, before reloading by itself again.
+	 */
+	public void interruptReload(double seconds) {
+		if (primaryReload >= 0) {
+			primaryReload = -1;
+			reloadHeld = Math.max(reloadHeld, dev.overcraft.Ow.ticks(seconds));
+		}
 	}
 }

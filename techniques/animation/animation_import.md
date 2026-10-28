@@ -13,11 +13,17 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
 - **`4-*` folder clips are additive deltas**: they collapse alone; export neutral keys for unkeyed channels.
 - **Additive clips can carry big offsets, not just motion around zero**: add_walk lifted the arms 85 px for as long
   as she moved. Measure a pose against still, not only how it moves.
+- **Actions play over the pose under them, like emotes:** a clip's undriven bones keep that pose
+  (`HeroAnimator.driven`). Over the rest pose, Lúcio's left-hand Crossfade dropped his right arm and gun out of view.
 - **The exporter writes every bone into every clip.** A bone a clip doesn't drive gets its rest pose, constant:
   partial clips need those channels left out (`HeroAnimator.driven`,
   [emote_reproduction](../emotes/emote_reproduction.md#7-her-own-weapons-the-blend-trees-geosetflags)).
 - First-person arms only get materials from the Gameplay1P entity's model look (`--entity=`).
 - Props (Kiriko's kunai x3, ofuda, Suzu) are model pieces parked at the origin until a clip puts them in a hand.
+- **An entity's child entities come in as rigs of their own** (Lúcio's Gameplay1P brings his gun): with two rigs the
+  glTF exporter wrote no clips at all. `owm_survey.py` keeps the hero's rig (the most bones); a weapon is exported from
+  its own model and hung on its hardpoint in game (`HeroWeapon`, [lucio](../heroes/lucio.md)).
+- **A pure black, opaque colour image is a layer the shader colours** (Lúcio's hair cards): drawn, it's a black slab.
 - **Renaming clips in a .glb doesn't need a re-export** (`tools/rename_glb_clips.py`); keep `tools/clipmaps` in step.
 
 ## Our bones keep Overwatch's frames
@@ -37,6 +43,16 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
   - pose features (wrists above the head, pelvis height) to find climbs and crouches;
   - which clips move the held-prop bones (found the Suzu throw);
   - root bone height (found climb_top's root motion).
+- **Check a state's name against its clips' feet** before building on it: the research map's "airborne" was
+  Lúcio's skating (feet on the ground, 0.17 m, as standing) and its "skating" his jump (the feet 0.7-1 m up); in game
+  he skated half a metre above his shadow. A research agent names states from the graph's shape; one measurement
+  settles it ([lucio](../heroes/lucio.md)).
+- **Directional slots are named by field hash, the same for every hero**: Kiriko's measured runs name the 8-way
+  node's fields (m_FAE5598F forward ... m_B6B5D7AB forward-left) for anyone's 8-way clips; the 4-slot node's fields
+  (m_09FE31A5, m_7A2F0A64, m_CDA1FD6A, m_E15BD392) are forward, back, left, right (measured on Lúcio's jump: feet
+  trailing, hips turning as the 8-way clips' do).
+- **Some clips carry the hero's lift in the pelvis** (Lúcio's jump rise, Sound Barrier's 1.63 m leap): Minecraft
+  moves the player already, so take the lift off the pose, and where the move is ours, match its height to the clip.
 - **When a clip "looks wrong" to the owner, re-identify it from the game's own graph**: alias chains, which sounds
   sit on it, its length against the stat. Render strips. A whole action can be mislabelled: the "reload" was an
   ofuda throw, and the real reload was filed as "equip".

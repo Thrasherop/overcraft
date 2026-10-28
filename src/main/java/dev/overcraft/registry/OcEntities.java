@@ -4,8 +4,10 @@ import dev.overcraft.Overcraft;
 import dev.overcraft.entity.KitsuneEntity;
 import dev.overcraft.entity.KunaiEntity;
 import dev.overcraft.entity.OfudaEntity;
+import dev.overcraft.entity.SonicEntity;
 import dev.overcraft.entity.SuzuEntity;
 import dev.overcraft.kiriko.KirikoStats;
+import dev.overcraft.lucio.LucioStats;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +24,8 @@ public final class OcEntities {
 	public static final EntityType<SuzuEntity> SUZU = register("suzu", EntityType.Builder.<SuzuEntity>of(SuzuEntity::new, MobCategory.MISC)
 		.noLootTable().sized((float) KirikoStats.SUZU_PROJECTILE_RADIUS * 2, (float) KirikoStats.SUZU_PROJECTILE_RADIUS * 2)
 		.clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<SonicEntity> SONIC = register("sonic", EntityType.Builder.<SonicEntity>of(SonicEntity::new, MobCategory.MISC)
+		.noLootTable().sized((float) LucioStats.AMP_RADIUS * 2, (float) LucioStats.AMP_RADIUS * 2).clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

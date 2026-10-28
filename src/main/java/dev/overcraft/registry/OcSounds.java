@@ -81,6 +81,47 @@ public final class OcSounds {
 		KIRIKO_VOICE_CONDITIONS.forEach(condition -> register("kiriko.voice." + condition));
 	}
 
+	// Lúcio (tools/soundmaps/lucio.txt: the game's own, from his effects and their Wwise events). "_3P": what everyone but
+	// his own player hears
+	public static final SoundEvent LUCIO_AMP_FIRE = register("lucio.amp.fire");
+	public static final SoundEvent LUCIO_AMP_FIRE_3P = register("lucio.amp.fire_3p");
+	public static final SoundEvent LUCIO_AMP_HIT = register("lucio.amp.hit");
+	public static final SoundEvent LUCIO_AMP_RELOAD = register("lucio.amp.reload");
+	public static final SoundEvent LUCIO_AMP_RELOAD_3P = register("lucio.amp.reload_3p");
+	public static final SoundEvent LUCIO_SOUNDWAVE = register("lucio.soundwave");
+	public static final SoundEvent LUCIO_SOUNDWAVE_3P = register("lucio.soundwave_3p");
+	/** The song swap's sting, his own (a hard cut to the new song). */
+	public static final SoundEvent LUCIO_CROSSFADE_HEAL = register("lucio.crossfade.heal");
+	public static final SoundEvent LUCIO_CROSSFADE_SPEED = register("lucio.crossfade.speed");
+	/** His songs, a bar at a time (LucioMusic): his own in his head, the others' at him. */
+	public static final SoundEvent LUCIO_SONG_HEAL = register("lucio.song.heal");
+	public static final SoundEvent LUCIO_SONG_SPEED = register("lucio.song.speed");
+	public static final SoundEvent LUCIO_SONG_HEAL_3P = register("lucio.song.heal_3p");
+	public static final SoundEvent LUCIO_SONG_SPEED_3P = register("lucio.song.speed_3p");
+	/** What others hear as his song changes, before the new one comes in. */
+	public static final SoundEvent LUCIO_SONG_SCRATCH_3P = register("lucio.song.scratch_3p");
+	public static final SoundEvent LUCIO_AMP_IT_UP = register("lucio.amp_it_up");
+	public static final SoundEvent LUCIO_AMP_IT_UP_3P = register("lucio.amp_it_up_3p");
+	public static final SoundEvent LUCIO_WALLRIDE = register("lucio.wallride");
+	public static final SoundEvent LUCIO_WALLRIDE_3P = register("lucio.wallride_3p");
+	public static final SoundEvent LUCIO_WALLRIDE_START = register("lucio.wallride.start");
+	public static final SoundEvent LUCIO_WALLRIDE_END = register("lucio.wallride.end");
+	public static final SoundEvent LUCIO_WALL_JUMP = register("lucio.wall_jump");
+	public static final SoundEvent LUCIO_BARRIER_CAST = register("lucio.barrier.cast");
+	public static final SoundEvent LUCIO_BARRIER_CAST_3P = register("lucio.barrier.cast_3p");
+	public static final SoundEvent LUCIO_BARRIER_SLAM = register("lucio.barrier.slam");
+	/** Sound Barrier's line as allies (and Lúcio) hear it, "Oh, let's break it down!", and as enemies do (Portuguese). */
+	public static final SoundEvent LUCIO_ULT_FRIENDLY = register("lucio.ult.friendly");
+	public static final SoundEvent LUCIO_ULT_ENEMY = register("lucio.ult.enemy");
+	/** His lines by moment (Voice.say: "lucio.voice.<moment>"), the game's own pools (lucio.txt's voice section). */
+	public static final java.util.List<String> LUCIO_VOICE = java.util.List.of("elimination", "multikill", "melee_kill",
+		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy",
+		"crossfade_heal", "crossfade_speed", "amp", "soundwave", "wallride");
+
+	static {
+		LUCIO_VOICE.forEach(moment -> register("lucio.voice." + moment));
+	}
+
 	private OcSounds() {
 	}
 
