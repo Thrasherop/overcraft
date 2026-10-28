@@ -57,6 +57,19 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A flat effect "on the ground" floats over any slope:** lay it in short pieces, each at the top of the first solid
   block under open space (`KirikoFx.groundY`).
 
+### Lúcio's effects (2026-10-27)
+- From [lucio-effects](../../tools/reference/lucio-effects.md) (a research agent read the emitters, the ESHT
+  hardpoint tables and the colour strips). His song colour is in small sRGB strips, not the float ramps.
+- His song shows on his skates, not in a ring on the ground: the trails are fed each frame from his posed foot bones
+  in the world (`HeroModelRenderer.bone`).
+- A round with no model is drawn by its flight effect alone (`ProjectileModelRenderer` with effectOnly), its item only
+  without the pack.
+- Look at effects shorter than a screenshot in slow motion (`fxslow 0.08`,
+  [harness](../testing/harness.md)): at real speed Soundwave's 0.3 s blast never made it into a frame. And look from
+  the side: rounds flying along the view stack their rings face-on and read as a glow on the target.
+- Watch the white top of a palette: four rounds' glows stacked to a white ball. A glow gets its own palette without
+  white (the data's own core colour).
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.

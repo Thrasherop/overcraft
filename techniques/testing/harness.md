@@ -16,7 +16,10 @@
     lowest point, fps.
   - `screenshot <file>`, `window 1920 1080`, `perspective first|back|front`, `subtitles on|off`, `heard` (the sounds
     played since the last call).
-- **Emotes:** `emote <id>`, `emoteat <s>|off` (every emote held at that time), `emotef5 on|off`.
+- **Emotes:** `emote <id>`, `emoteat <s>|off` (every emote held at that time), `emotef5 on|off`. The wheel by hand:
+  `key comms down`, `key primary_fire` (right click: the emote page), `mouse 0 -150` (the top slot), `key comms up`.
+- **Effects:** `fxslow <share>` (0.08: about twelve times slower; `fxslow 1` back), and `state` reports `fx`, the
+  live particles.
 - **Cloth and rendering:** `clothfloor on|off`, `timing`, `shadows on|off`, `reload` (resource packs: a regenerated
   data file without a restart).
 - **World:** `newworld`, `openworld`, `cmd <command>`, `respawn`, `chat <text>`, `connect host:port`.
