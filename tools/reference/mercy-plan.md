@@ -8,7 +8,10 @@ live rule set). Branch `feature/mercy`.
 - Flash Heal cast 0.5 s (BZ / W 0.4 s). Resurrect range 5 m (W 5.5; BZ 2017 5).
 - Damage boost 25% and Medic self-heal 40% are the live numbers (BZ); the data holds 0.15 / 0.4 under a shared rule-set
   flag and 0.25 / 0.15 without it: use 25% and 40%.
-- The beam's 1.3 s lose-sight linger is in the data (1BE6) but its reader isn't: use W's 1.3 s.
+- The beam's lose-sight linger: 1.0 s in the data (its lock tracker's field, 1EA7); W says 1.3 s. 1BE6 = 1.3, once read
+  as the linger, is Valkyrie's Guardian Angel launch factor (kit_details.md, 2026-10-28). The data's 1.0 is used.
+- Guardian Angel (kit_details.md): stops 3.7 m short of the ally, doesn't follow them, no time limit or lost-target end,
+  not under 4 m; the launch formula and the 0.35 s window after arriving; momentum full after 1 s (0.68 in Valkyrie).
 - Ult cost isn't in her data: W's 2150.
 
 ## Assets
@@ -64,3 +67,15 @@ live rule set). Branch `feature/mercy`.
 Sounds (a sound map from her banks: beam 0197 / 0198, Guardian Angel 019B, Resurrect 030F, Valkyrie 1FA0, Flash Heal
 64E1), effects (the beams, wings' glow, Resurrect's halo), voice (beam lines 00B9 / 00BA, "Heroes never die!" 08CB),
 emotes (20 extracted).
+
+## Open (2026-10-28)
+- The half-or-whole angle of her cones (GA 30, beam 40, Resurrect 60): read as the angle from the aim (M).
+- What her velocity is when Guardian Angel arrives without a launch (engine side): ours, she stops.
+- Valkyrie: vertical speed (not in the data; ours: the flight's 9 m/s), and GA's post-launch overrides in Valkyrie
+  (786680F6 1.4444, F808ACE8 0: meaning not known). Holding Crouch after a Valkyrie crouch launch brakes it (her
+  crouch sinks her in flight).
+- A x1.15 launch under an unnamed condition (26EF.134); effect 5B82 on a launch above 0.75 momentum (not mapped).
+- The soul's lifetime (not in her graphs; ours 10 s).
+- The staff's own emote clips (1627 / 4DC8 / 852E) aren't exported: it's held in its idle pose in Caduceus, Parasol
+  and Flurry. emote_data.py should read the EntityControls raw (techniques/emotes/mercy_emotes.md).
+- Guardian Angel's target preview (the ready-state tracker, 6 a second) isn't drawn.

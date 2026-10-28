@@ -91,6 +91,8 @@ public final class HeroState {
 	/** Mercy: Guardian Angel's target (entity id, or a soul's player id as -2 - index), its phase and ticks, its momentum. */
 	public @Nullable Integer gaTarget;
 	public java.util.@Nullable UUID gaSoul;
+	/** Where Guardian Angel takes her (fixed as the flight starts). */
+	public net.minecraft.world.phys.@Nullable Vec3 gaTo;
 	public int gaPhase;
 	public int gaTicks;
 	public double gaMomentum;
@@ -154,6 +156,7 @@ public final class HeroState {
 		swapTicks = holsterTicks = 0;
 		beamTarget = gaTarget = null;
 		gaSoul = resSoul = null;
+		gaTo = null;
 		beamMode = beamLost = beamSearch = gaPhase = gaTicks = 0;
 		gaMomentum = 0;
 		softLanding = false;

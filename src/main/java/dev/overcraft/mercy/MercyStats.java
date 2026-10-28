@@ -22,12 +22,20 @@ public final class MercyStats {
 	public static final double BOOST = 0.25;                   // BZ 2026-06-16 (30% -> 25%); D 036A
 	public static final double BEAM_RANGE = 15;                // W; D 1034
 	public static final double BEAM_RANGE_VALKYRIE = 30;       // W "+100%"; D 1036 = 1.0 (M: a +100% range)
-	/** The lock picks within this cone round the crosshair (degrees, the whole cone: D, M meaning). */
+	/**
+	 * The lock picks within this angle of the crosshair (degrees): D 006B, 40 x Beam Sensitivity (default 1.0). The data
+	 * doesn't say whole cone or half; the wiki calls the sensitivity "the maximum view angle for acquiring a target", the
+	 * angle between the aim and the target (M: read as that, for all three of her cones).
+	 */
 	public static final double BEAM_CONE = 40;
 	/** How often the beam looks for a target while it has none (a second: D, M meaning). */
 	public static final double BEAM_SEARCH_PER_SECOND = 12;
-	/** Out of sight or out of range, the beam holds on this long, then breaks; back in sight resets it. */
-	public static final double BEAM_LINGER = 1.3;              // W; D 1BE6 = 1.3 (its reader not found)
+	/**
+	 * Out of sight or out of range, the beam holds on this long, then breaks; back in sight resets it. D 006B #30: its
+	 * lock tracker's m_93AB8C13 = 1EA7 = 1.0 (M meaning: Lúcio's aura uses that field for the wiki's 1 s). The wiki's 1.3
+	 * is not it: 1BE6 = 1.3 is Valkyrie's Guardian Angel launch factor (kit_details.md 4a).
+	 */
+	public static final double BEAM_LINGER = 1.0;
 	/** Valkyrie: the beam branches from its target to every ally this close to it, in its sight. */
 	public static final double CHAIN_RADIUS = 10;              // W; D 1035 (M)
 	/** Medic sub-role: her beam's healing heals her too (no ult charge for that part). */
@@ -38,6 +46,8 @@ public final class MercyStats {
 	public static final double BLASTER_RATE = 5;               // shots a second: W; D 033E
 	public static final int BLASTER_AMMO = 25;                 // BZ 2022-12-06 (20 -> 25); D 033F
 	public static final double BLASTER_RELOAD = 1.4;           // W; D 033D
+	/** The ammo comes back this far into the reload (0.91 s), the reload running on to 1.4 s. D 006D #186: v6884. */
+	public static final double BLASTER_RELOAD_AMMO = 0.65;
 	public static final double BLASTER_SPEED = 50;             // m/s: W; D 033A
 	public static final double BLASTER_SPEED_VALKYRIE = 100;   // W; D 033B (+100%)
 	/** Hit radius: 0.2 (BZ 2024-02-21; D 2A40) plus the 0.075 every projectile gets (BZ 2024-03-12). */
@@ -48,29 +58,55 @@ public final class MercyStats {
 	/** Changing weapons (s). */
 	public static final double SWAP = 0.35;                    // BZ 2022-12-06 (0.5 -> 0.35; W says 0.51)
 
-	// ---- Guardian Angel (Shift) ----
+	// ---- Guardian Angel (Shift): her graph 006E, read node by node in kit_details.md (sections 1-3) ----
 	public static final double GA_RANGE = 30;                  // W; D 1BE0
 	public static final double GA_RANGE_VALKYRIE = 60;         // W; D 1BE1
+	/**
+	 * The pick: the ally (or soul) nearest the crosshair within this angle of it, in sight (D 006E #815: 30 x Guardian
+	 * Angel Sensitivity, default 1.0; the angle from the aim, M: see BEAM_CONE).
+	 */
+	public static final double GA_CONE = 30;
+	/** She won't start toward a target this close (D 006E #814: distance > 4). */
+	public static final double GA_MIN = 4;
+	/** Her beam's target is taken first, with no cone or sight test, out to her range plus this (D #812 / #814). */
+	public static final double GA_BEAM_REACH = 10;
 	public static final double GA_SPEED = 17;                  // m/s: W; D 1B0E
 	public static final double GA_SPEED_VALKYRIE = 25;         // W; D 1B0F
-	/** Jump during the flight launches her the way she looks: 11 m/s with no momentum, 17 with a full meter. */
-	public static final double GA_LAUNCH_MIN = 11;             // D 1BE3 (11 + 6 x momentum); W's 17 is the full meter
-	public static final double GA_LAUNCH_MAX = 17;             // D 1BE4; W
-	/** Jump with back held launches her away from the target, slower. */
-	public static final double GA_LAUNCH_BACK = 0.8;           // BZ 2023-02-07 ("20% slower"); D 2CE3 (M)
-	/** Crouch during the flight launches her straight up (the super jump). */
-	public static final double GA_SUPER_JUMP = 20.4;           // W; D 1BE5 (+0.2: 1.2 x 17, M)
-	public static final double GA_SUPER_JUMP_VALKYRIE = 26.5;  // W
-	/** The meter fills over this much flight (s). Ours: no source gives it (D: v87 rises toward v971, rate not read). */
+	/**
+	 * Where she flies, fixed when the flight starts (D #249 / #253 / #254; the ally isn't followed, H): the ally's
+	 * position (its feet, M) 0.5 m up, pulled back toward her horizontally by 3.7 m less half the height between them, and
+	 * raised by a tenth of the drop when the ally is below her.
+	 */
+	public static final double GA_ABOVE = 0.5;
+	public static final double GA_SHORT = 3.7;
+	public static final double GA_SHORT_PER_HEIGHT = 0.5;
+	public static final double GA_RAISE = 0.1;
+	/** Within this of that point she has arrived (D StateMoveTo #241 m_86EA271E = 1: the field's meaning M). */
+	public static final double GA_ARRIVE = 1;
+	/** Ours: the data has no time limit (H); in Minecraft a wall can stop her short, so a flight gives up after this. */
+	public static final double GA_LIMIT = 4;
+	/** After she arrives, Jump or Crouch still launches for this long (D #939). */
+	public static final double GA_WINDOW = 0.35;
+	/**
+	 * The launches (D #1027): (11 + 6 m) m/s, m the momentum 0-1 (1BE3 11, 1BE4 6), x1.3 in Valkyrie (1BE6), x(1 + 0.2 m)
+	 * for Crouch's straight up, x(1 + 0.2 m |pitch| / 89) for Jump's (1BE5 0.2). Checks: a full-meter jump 17, crouch 20.4
+	 * (W), Valkyrie's crouch 26.52 (W 26.5). A further x1.15 under a condition the data doesn't name (26EF.134) is left out.
+	 */
+	public static final double GA_LAUNCH_MIN = 11;
+	public static final double GA_LAUNCH_MOMENTUM = 6;
+	public static final double GA_LAUNCH_VALKYRIE = 1.3;
+	public static final double GA_LAUNCH_PITCH = 0.2;
+	/** Jump's direction: her look (with its pitch) plus this much up, + 0.1 x momentum, normalized (D #976). */
+	public static final double GA_LAUNCH_UP = 0.5;
+	public static final double GA_LAUNCH_UP_MOMENTUM = 0.1;
+	/** Back held: the look reversed (D #975: s = -1), and this much slower (D 2CE3; BZ 2023-02-07 "20% slower"). */
+	public static final double GA_LAUNCH_BACK = 0.8;
+	/** The meter fills over this much flight, 17/25 of it in Valkyrie (D #912 m_5BEFF040, M a duration). */
 	public static final double GA_MOMENTUM_FILL = 1;
 	/** After a launch, this long before the cooldown starts (it can't be cut short). */
 	public static final double GA_LAUNCH_STATE = 1;            // BZ 2024-02-13 (1.5 -> 1); D 1C20
 	public static final double GA_LAUNCH_STATE_VALKYRIE = 0.5; // D 1C21
 	public static final double GA_COOLDOWN = 1.5;              // BZ 2023-04-11 (2.5 -> 1.5); D 0334
-	/** Within this of the target she has arrived (ours: StateMoveTo's arrival distance isn't read for her). */
-	public static final double GA_ARRIVE = 1.5;
-	/** Ours: a flight gives up after this long (a target behind walls she can't get round). */
-	public static final double GA_LIMIT = 4;
 
 	// ---- Angelic Descent (Jump held in the air) ----
 	public static final double DESCENT_SPEED = 2;              // m/s: W; D 1B18
@@ -79,12 +115,14 @@ public final class MercyStats {
 
 	// ---- Resurrect (E) ----
 	public static final double RES_RANGE = 5;                  // BZ 2017-09-19; D 123D (W says 5.5)
+	/** Her soul tracker picks within this angle of the crosshair (D 00CA #1028 / #1073 / #1153; the angle from the aim, M). */
+	public static final double RES_CONE = 60;
 	public static final double RES_CAST = 1.75;                // BZ 2017-11-16; W; D 0335
 	/** While casting she moves this much slower. */
 	public static final double RES_SLOW = 0.75;                // BZ 2017-11-16; D 1BEC (M)
 	public static final double RES_COOLDOWN = 30;              // W; D 0337
 	/** Further from the soul than this, the cast breaks (the cooldown still starts). */
-	public static final double RES_BREAK = 7;                  // W; D 13EF (M)
+	public static final double RES_BREAK = 7;                  // W; D 00CA #581: 5 + 2 (H; 13EF = 7 has no reader)
 	/** The ally comes back unhurtable this long; they can't move for the first 1.5 s of it. */
 	public static final double RES_INVULNERABLE = 2.25;        // W; D 1BE7
 	public static final double RES_ROOTED = 1.5;               // W
@@ -110,6 +148,11 @@ public final class MercyStats {
 	/** Her flight in Valkyrie, every way (her walk 5.5 x 1.636). */
 	public static final double VALKYRIE_SPEED = 9;             // W; D 1B14 (x1.636)
 	public static final double VALKYRIE_AIR_ACCEL = 8;         // D 10DA#309
+	/**
+	 * With no input she drifts, slowing this much a second (D 10DA #309's mover: air drag m_8895A9C8 0.35, every hero's
+	 * default; the field Jetpack Cat's flight sets to 8). Above her speed it decays at 2/s past 5.5 x 1.636 (the same).
+	 */
+	public static final double VALKYRIE_DRAG = 0.35;
 	/** Knockback she takes in Valkyrie. */
 	public static final double VALKYRIE_KNOCKBACK = 0.5;       // W (-50%); D 0A04B51B -0.5 (M)
 

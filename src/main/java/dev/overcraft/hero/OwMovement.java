@@ -574,10 +574,10 @@ public final class OwMovement {
 		double max;
 		if (valk) {
 			// Valkyrie (her graph 10DA's mover: forward, back and strafe 5.5, x1.636 = 9 m/s every way, air acceleration
-			// 8); with no input she slows at the same rate (ours: the override names no drag)
+			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay)
 			wishSpeed = dev.overcraft.mercy.MercyStats.VALKYRIE_SPEED * factor;
 			accel = dev.overcraft.mercy.MercyStats.VALKYRIE_AIR_ACCEL;
-			drag = 0;
+			drag = dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;
 			max = wishSpeed;
 		} else if (boost >= 0) {
 			double bonus = Math.min(0.65, 0.25 + 0.05 * Math.floor(t / 0.04));
@@ -596,8 +596,8 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		double dt = 0.05 / SUBSTEPS;
 		for (int i = 0; i < SUBSTEPS; i++) {
-			if (valk) {
-				// toward the wish (or a stop) at her acceleration times her speed, a second (Overwatch's rate)
+			if (valk && wants) {
+				// toward the wish at her acceleration times her speed, a second (Overwatch's rate); with none, the drag below
 				v = approach(v, wishDir.scale(wishSpeed), accel * wishSpeed * dt);
 			} else if (wants) {
 				v = accelerate(v, wishDir.scale(wishSpeed), accel, dt);
@@ -628,9 +628,10 @@ public final class OwMovement {
 	}
 
 	/**
-	 * Mercy's Guardian Angel (her graph 006E: a StateMoveTo): straight to the ally at 17 m/s (25 in Valkyrie), no gravity,
-	 * the walls stopping her as any move. Within the arrival distance she holds there until the server ends it. True when
-	 * it moved her.
+	 * Mercy's Guardian Angel (her graph 006E: a StateMoveTo): her position (feet) straight to the point beside the ally at
+	 * 17 m/s (25 in Valkyrie), no gravity, the walls stopping her as any move. Within the arrival distance she holds there
+	 * until the server ends it, her speed spent (ours: the graph sets no velocity at the end, and what the engine's move
+	 * leaves isn't in the data; stopping keeps the last tick's part-step from flinging her on). True when it moved her.
 	 */
 	private static boolean guardianAngel(LivingEntity entity) {
 		Glide g = glide.apply(entity);
@@ -638,11 +639,14 @@ public final class OwMovement {
 			return false;
 		}
 		entity.resetFallDistance();
-		Vec3 to = g.to().subtract(entity.position().add(0, entity.getBbHeight() * 0.5, 0));
+		Vec3 to = g.to().subtract(entity.position());
 		double dist = to.length();
 		Vec3 step = dist <= g.arrive() ? Vec3.ZERO : to.scale(Math.min(Ow.speed(g.speed()), dist - g.arrive()) / dist);
 		entity.setDeltaMovement(step);
 		entity.move(MoverType.SELF, step);
+		if (dist - g.arrive() <= Ow.speed(g.speed())) {
+			entity.setDeltaMovement(Vec3.ZERO);
+		}
 		return true;
 	}
 

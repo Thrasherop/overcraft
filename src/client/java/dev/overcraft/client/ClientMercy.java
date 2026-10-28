@@ -31,6 +31,8 @@ public final class ClientMercy {
 
 	/** The launch she made this Guardian Angel (until the server's flight flag goes): no more gliding. */
 	private static boolean launched;
+	/** Her momentum meter as her client counts it: ticks of this Guardian Angel so far (the synced one lags a tick or two). */
+	private static int flown;
 	private static boolean jumpWas;
 	private static boolean crouchWas;
 	private static int scrolled;
@@ -65,21 +67,15 @@ public final class ClientMercy {
 		return s != null && s.has(Mercy.FLAG_VALKYRIE);
 	}
 
-	/** Guardian Angel's move for the local Mercy: to her ally (followed here) or the soul. */
+	/** Guardian Angel's move for the local Mercy: to the point the server fixed as she set off (beside the ally). */
 	public static OwMovement.@Nullable Glide glide(Entity entity) {
 		State s = local();
-		if (entity != Minecraft.getInstance().player || s == null || !s.has(Mercy.FLAG_GA) || launched) {
-			return null;
-		}
-		Vec3 to = s.gaTo();
-		if (s.gaTarget() >= 0 && entity.level().getEntity(s.gaTarget()) instanceof net.minecraft.world.entity.LivingEntity ally) {
-			to = ally.position().add(0, ally.getBbHeight() * 0.5, 0);
-		}
-		if (to == null) {
+		if (entity != Minecraft.getInstance().player || s == null || !s.has(Mercy.FLAG_GA) || launched || s.gaTo() == null) {
 			return null;
 		}
 		double speed = s.has(Mercy.FLAG_VALKYRIE) ? MercyStats.GA_SPEED_VALKYRIE : MercyStats.GA_SPEED;
-		return new OwMovement.Glide(to, speed, MercyStats.GA_ARRIVE * 0.8);
+		// a little inside the arrival distance, so the server (which sees where her client put her) counts it arrived
+		return new OwMovement.Glide(s.gaTo(), speed, MercyStats.GA_ARRIVE * 0.9);
 	}
 
 	/** Angelic Descent: Jump or Crouch held in the air, not flying. */
@@ -90,15 +86,18 @@ public final class ClientMercy {
 			&& (HeroControls.get(Action.JUMP).isDown() || HeroControls.get(Action.CROUCH).isDown());
 	}
 
-	/** The time Guardian Angel has flown (the momentum meter: the server's, as synced). */
-	private static double momentum() {
-		return ClientHero.sync().meter();
+	/** The momentum meter, 0-1: full after 1 s of Guardian Angel (0.68 s in Valkyrie), counted from her flight's start. */
+	private static double momentum(State s) {
+		double fill = MercyStats.GA_MOMENTUM_FILL * (s.has(Mercy.FLAG_VALKYRIE) ? MercyStats.GA_SPEED / MercyStats.GA_SPEED_VALKYRIE : 1);
+		return Math.min(1, flown / (fill * 20));
 	}
 
 	/**
 	 * Each tick in hero mode: her extra presses for the server (HeroInputPayload.EXTRA_*). A Jump or Crouch press in
-	 * Guardian Angel's flight launches her here at once: Jump the way she looks at 11-17 m/s by the momentum built (back
-	 * held: away from her target, 20% slower), Crouch straight up at 20.4 m/s (26.5 in Valkyrie).
+	 * Guardian Angel's flight, or in the 0.35 s after she arrives, launches her here at once, as her graph 006E does
+	 * (kit_details.md 2): (11 + 6 m) m/s by the momentum m built, x1.3 in Valkyrie. Jump: the way she looks plus
+	 * 0.5 + 0.1 m up, x(1 + 0.2 m |pitch| / 89); back held reverses the look and is 20% slower. Crouch: straight up,
+	 * x(1 + 0.2 m) (20.4 m/s full, 26.5 in Valkyrie). Her velocity is replaced by the launch.
 	 */
 	public static int input(LocalPlayer player) {
 		State s = local();
@@ -123,33 +122,37 @@ public final class ClientMercy {
 			launched = false;
 			return 0;
 		}
-		if (!s.has(Mercy.FLAG_GA)) {
+		if (!s.has(Mercy.FLAG_GA) && !s.has(Mercy.FLAG_GA_WINDOW)) {
 			launched = false;
+			flown = 0;
 		} else if (!launched && (jumpPressed || crouchPressed)) {
-			boolean valkyrie = s.has(Mercy.FLAG_VALKYRIE);
+			double m = momentum(s);
+			double speed = (MercyStats.GA_LAUNCH_MIN + MercyStats.GA_LAUNCH_MOMENTUM * m)
+				* (s.has(Mercy.FLAG_VALKYRIE) ? MercyStats.GA_LAUNCH_VALKYRIE : 1);
+			// move input back (her graph's s = -1): the look reversed, 20% slower, for either launch
+			boolean back = HeroControls.get(Action.MOVE_BACK).isDown() && !HeroControls.get(Action.MOVE_FORWARD).isDown();
+			double sign = back ? -1 : 1;
 			Vec3 v;
 			if (crouchPressed) {
-				v = new Vec3(0, valkyrie ? MercyStats.GA_SUPER_JUMP_VALKYRIE : MercyStats.GA_SUPER_JUMP, 0);
+				v = new Vec3(0, speed * (1 + MercyStats.GA_LAUNCH_PITCH * m), 0);
 				extra |= HeroInputPayload.EXTRA_CROUCH;
 			} else {
-				double speed = MercyStats.GA_LAUNCH_MIN + (MercyStats.GA_LAUNCH_MAX - MercyStats.GA_LAUNCH_MIN) * momentum();
-				Vec3 dir = player.getLookAngle();
-				boolean back = HeroControls.get(Action.MOVE_BACK).isDown();
-				if (back && s.gaTo() != null) {
-					Vec3 away = player.position().subtract(s.gaTo());
-					dir = new Vec3(away.x, 0, away.z).normalize();
-					speed *= MercyStats.GA_LAUNCH_BACK;
-					extra |= HeroInputPayload.EXTRA_BACK;
-				}
-				// ours: at least 15° up, a launch rather than a dive (the data's direction isn't decoded)
-				double flat = Math.sqrt(dir.x * dir.x + dir.z * dir.z);
-				double up = Math.max(dir.y, Math.tan(Math.toRadians(15)) * flat);
-				dir = new Vec3(dir.x, up, dir.z).normalize();
+				Vec3 aim = player.getLookAngle();
+				double pitch = Math.min(89, Math.abs(player.getXRot()));
+				speed *= 1 + MercyStats.GA_LAUNCH_PITCH * m * pitch / 89;
+				Vec3 dir = new Vec3(sign * aim.x, sign * aim.y + MercyStats.GA_LAUNCH_UP + MercyStats.GA_LAUNCH_UP_MOMENTUM * m,
+					sign * aim.z).normalize();
 				v = dir.scale(speed);
 				extra |= HeroInputPayload.EXTRA_JUMP;
 			}
+			if (back) {
+				v = v.scale(MercyStats.GA_LAUNCH_BACK);
+				extra |= HeroInputPayload.EXTRA_BACK;
+			}
 			player.setDeltaMovement(v.scale(1 / 20.0));
 			launched = true;
+		} else if (!launched) {
+			flown++;
 		}
 		return extra;
 	}

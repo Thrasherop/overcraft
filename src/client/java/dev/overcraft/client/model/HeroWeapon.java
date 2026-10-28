@@ -83,7 +83,8 @@ public final class HeroWeapon {
 	public static boolean inEmote(Hero hero, HeroAnimator animator) {
 		EmoteData.Emotes data = EmoteData.of(hero.id);
 		String emote = animator.emote();
-		return data != null && emote != null && !data.stowed(emote, animator.emoteClip(), animator.emoteAt());
+		return data != null && emote != null
+			&& !data.stowed(emote, animator.emoteClip(), animator.emoteAt(), hero == Hero.MERCY && animator.blaster());
 	}
 
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {

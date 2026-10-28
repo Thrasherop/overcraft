@@ -118,10 +118,15 @@ public final class MercyFx {
 	}
 
 	/**
-	 * Her staff's head (its hp 0006, where the beam starts), as posed this frame or the last tick; else (her own first
-	 * person: the view model's staff isn't tracked) ours, a little right of and below her view, ahead of it.
+	 * Her staff's head (its hp 0006, where the beam starts), as posed this frame or the last tick: in her own first person
+	 * the view model's staff as drawn (HeroModelRenderer.viewMuzzle); else ours, a little right of and below her view.
 	 */
 	private static Vec3 staffHead(Minecraft mc, Player mercy, float partial) {
+		org.joml.Vector3f view = mercy == mc.player && mc.options.getCameraType().isFirstPerson()
+			? dev.overcraft.client.model.HeroModelRenderer.viewMuzzle() : null;
+		if (view != null) {
+			return mc.gameRenderer.mainCamera().position().add(view.x, view.y, view.z);
+		}
 		Posed p = posed(mercy);
 		if (p != null && p.staff != null) {
 			return p.staff;

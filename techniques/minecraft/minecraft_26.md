@@ -54,3 +54,8 @@ For "the mod stays invisible" checks (#32):
    server.properties.
 4. Add an ops.json with the dev player ("Kiriko"; its offline UUID is the name-based MD5 of "OfflinePlayer:Kiriko").
 5. Join with `dev "connect localhost:<port>"`.
+
+## A fall is checked after the ground
+A "this landing is safe" flag cleared when the server first sees the player on the ground can be gone by the time
+Minecraft applies that fall's damage (it can come a tick later, from the move packets). Clear the fall distance while
+the flag is up rather than relying on the flag at the damage event (Mercy's landings: [heroes/mercy](../heroes/mercy.md)).

@@ -664,6 +664,14 @@ public final class HeroModelRenderer {
 		return new Vector3f(VIEW_FINGERTIP);
 	}
 
+	/** The first-person weapon's hp 0006 from the camera, in the world's axes, as last drawn (as VIEW_FINGERTIP). */
+	private static final Vector3f VIEW_MUZZLE = new Vector3f();
+	private static long viewMuzzleAt = -1;
+
+	public static @Nullable Vector3f viewMuzzle() {
+		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
+	}
+
 	/** The arms were drawn just now (not hidden: F1, another view), so the fingertip is where they are. */
 	public static boolean viewFingertipFresh() {
 		return viewFingertipAt >= 0 && Util.getMillis() - viewFingertipAt < 200;
@@ -795,6 +803,12 @@ public final class HeroModelRenderer {
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
 		if (weapon != null) {
 			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)
+			Vector3f muzzle = HeroWeapon.muzzle(hero, animator, loaded.model(), true, now);
+			if (muzzle != null) {
+				poseStack.last().pose().transformPosition(muzzle, VIEW_MUZZLE);
+				viewMuzzleAt = Util.getMillis();
+			}
 		}
 		if (minecraft) {
 			// the main hand's item in her kunai hand, the other's in her ofuda hand (the owner's idea too)

@@ -43,14 +43,11 @@ import static dev.overcraft.mercy.MercyStats.*;
 public final class Mercy implements HeroKit {
 	/** The synced state's flags (HeroManager.MERCY [0], and the sync's mode). */
 	public static final int FLAG_BLASTER = 1, FLAG_GA = 2, FLAG_GA_LAUNCH = 4, FLAG_VALKYRIE = 8, FLAG_VALKYRIE_CAST = 16,
-		FLAG_RESURRECT = 32, FLAG_FLASH = 64, FLAG_SWAP = 128;
+		FLAG_RESURRECT = 32, FLAG_FLASH = 64, FLAG_SWAP = 128, FLAG_GA_WINDOW = 256;
 	public static final int BEAM_NONE = 0, BEAM_HEAL = 1, BEAM_BOOST = 2;
-	public static final int GA_NONE = 0, GA_FLY = 1, GA_LAUNCHED = 2;
+	/** Guardian Angel: none, flying, launched (its 1 s state), arrived (the 0.35 s still to launch in). */
+	public static final int GA_NONE = 0, GA_FLY = 1, GA_LAUNCHED = 2, GA_ARRIVED = 3;
 	public static final int ULT_NONE = 0, ULT_CAST = 1, ULT_ON = 2;
-	/** Guardian Angel picks the ally nearest the crosshair within this angle of it (degrees, ours: its sensitivity isn't read). */
-	private static final double GA_AIM = 25;
-	/** Resurrect's soul tracker: a 60° cone round the crosshair (her data's 00CA). */
-	private static final double RES_AIM = 30;
 
 	private static final Identifier RES_SLOW_ID = Overcraft.id("mercy_resurrect");
 
@@ -191,12 +188,14 @@ public final class Mercy implements HeroKit {
 			HeroSounds.split(player, wantBlaster ? OcSounds.MERCY_SWAP_BLASTER : OcSounds.MERCY_SWAP_STAFF,
 				wantBlaster ? OcSounds.MERCY_SWAP_BLASTER_3P : OcSounds.MERCY_SWAP_STAFF_3P, player.getEyePosition());
 		}
-		if (s.gaPhase == GA_FLY && (extra & (HeroInputPayload.EXTRA_JUMP | HeroInputPayload.EXTRA_CROUCH)) != 0) {
+		if ((s.gaPhase == GA_FLY || s.gaPhase == GA_ARRIVED)
+			&& (extra & (HeroInputPayload.EXTRA_JUMP | HeroInputPayload.EXTRA_CROUCH)) != 0) {
 			// a launch: her client has already flung her (OwMovement); here its state, 1 s before the cooldown
 			s.gaPhase = GA_LAUNCHED;
 			s.gaTicks = Ow.ticks(valkyrie(s) ? GA_LAUNCH_STATE_VALKYRIE : GA_LAUNCH_STATE);
 			s.gaTarget = null;
 			s.gaSoul = null;
+			s.gaTo = null;
 			s.softLanding = true;
 			Combat.animate(player, (extra & HeroInputPayload.EXTRA_CROUCH) != 0 ? "ga_launch_up" : "ga_launch");
 			Effects.play(player.level(), "mercy_ga_launch", player.position(), player);
@@ -214,9 +213,11 @@ public final class Mercy implements HeroKit {
 		}
 		if (s.primaryReload >= 0) {
 			s.primaryReload += attack;
-			if (s.primaryReload >= Ow.ticks(BLASTER_RELOAD)) {
-				// her data gives the ammo back at 1.4 s times a fraction it doesn't name (v6884): at the end, ours
+			if (s.primaryReload >= Ow.ticks(BLASTER_RELOAD * BLASTER_RELOAD_AMMO)) {
+				// the ammo is back 0.91 s in (her data's 1.4 x 0.65), the reload running on to 1.4 s
 				s.primaryAmmo = BLASTER_AMMO;
+			}
+			if (s.primaryReload >= Ow.ticks(BLASTER_RELOAD)) {
 				s.primaryReload = -1;
 			}
 		}
@@ -238,16 +239,34 @@ public final class Mercy implements HeroKit {
 		}
 	}
 
-	/** One blaster shot from by her eyes along the aim (the muzzle's flare is drawn at the blaster's hp 0006: MercyFx). */
+	/**
+	 * Where a round leaves from, from her eyes in her look's frame (right, up, ahead, m): her data launches every volley
+	 * from the blaster's hardpoint 0006 (006D #94: m_muzzles = the blaster entity, hp 0006), and her own view's blaster
+	 * (the first-person model, posed) has that hardpoint here, the same at every pitch (measured in game, 2026-10-28).
+	 */
+	private static final double MUZZLE_RIGHT = 0.16, MUZZLE_UP = -0.11, MUZZLE_AHEAD = 0.71;
+
+	/** One blaster shot from the blaster's muzzle toward what her crosshair is on (a wall in the way: from her eyes). */
 	private static void shoot(ServerPlayer player, boolean valkyrie) {
 		ServerLevel level = player.level();
+		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
 		Vec3 side = look.cross(new Vec3(0, 1, 0));
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
-		// ours: a little to her right and below the eyes, where she holds it (where her graph spawns it isn't decoded)
-		Vec3 from = player.getEyePosition().add(side.scale(0.2)).add(0, -0.15, 0);
+		Vec3 up = side.cross(look).normalize();
+		Vec3 from = eye.add(side.scale(MUZZLE_RIGHT)).add(up.scale(MUZZLE_UP)).add(look.scale(MUZZLE_AHEAD));
+		if (!clear(player, eye, from)) {
+			from = eye;
+		}
+		// toward the block the crosshair is on (else 100 m out), so the round meets the crosshair at any distance
+		Vec3 far = eye.add(look.scale(100));
+		Vec3 target = level.clip(new net.minecraft.world.level.ClipContext(eye, far, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, player)).getLocation();
+		if (target.distanceTo(eye) < MUZZLE_AHEAD + 0.5) {
+			target = far;
+		}
 		BlasterShotEntity shot = new BlasterShotEntity(player, level);
-		Vec3 aim = player.getEyePosition().add(look.scale(30)).subtract(from).normalize();
+		Vec3 aim = target.subtract(from).normalize();
 		shot.launch(from, aim, Ow.speed(valkyrie ? BLASTER_SPEED_VALKYRIE : BLASTER_SPEED));
 		level.addFreshEntity(shot);
 	}
@@ -384,7 +403,7 @@ public final class Mercy implements HeroKit {
 				continue;
 			}
 			double angle = angleTo(player, other.getBoundingBox().getCenter());
-			if (angle > BEAM_CONE / 2 || !sees(player, other)) {
+			if (angle > BEAM_CONE || !sees(player, other)) {
 				continue;
 			}
 			// distance weighted 1, the angle 15 x 0.01 a degree (her graph 006B's scoring: M)
@@ -424,32 +443,43 @@ public final class Mercy implements HeroKit {
 		return range * (has(player, Perk.MERCY_WINGED_REACH) ? 1 + WINGED_REACH : 1);
 	}
 
-	/** Where Guardian Angel takes her: the ally's middle, or the soul where it fell; null when it's gone. */
-	public static @Nullable Vec3 gaDestination(ServerPlayer player, HeroState s) {
-		if (s.gaSoul != null) {
-			Souls.Soul soul = Souls.get(s.gaSoul);
-			return soul == null ? null : soul.at.add(0, 0.5, 0);
+	/**
+	 * Where Guardian Angel takes her, worked out once as the flight starts (her graph's #249 / #253 / #254): the target's
+	 * position (feet) 0.5 m up, pulled back toward her horizontally by 3.7 m less half the height between them (so she
+	 * stops beside the ally, not in them), raised by a tenth of the drop when the ally is below. The ally isn't followed.
+	 */
+	private static Vec3 landing(ServerPlayer player, Vec3 target) {
+		Vec3 toTarget = target.subtract(player.position());
+		double dy = toTarget.y;
+		Vec3 at = target.add(0, GA_ABOVE, 0);
+		Vec3 flat = new Vec3(toTarget.x, 0, toTarget.z);
+		if (flat.lengthSqr() > 1.0E-6) {
+			at = at.subtract(flat.normalize().scale(Math.max(0, GA_SHORT - GA_SHORT_PER_HEIGHT * Math.abs(dy))));
 		}
-		Entity target = s.gaTarget == null ? null : player.level().getEntity(s.gaTarget);
-		return target instanceof LivingEntity living && living.isAlive() ? living.position().add(0, living.getBbHeight() * 0.5, 0) : null;
+		return at.add(0, -Math.min(0, GA_RAISE * dy), 0);
 	}
 
 	/**
 	 * Shift: to an ally within 30 m (60 in Valkyrie, +30% with Winged Reach), or a dead ally's soul, flown at 17 m/s (25)
-	 * by her client. The beam's target first (W: "prefer beam target", the default), else the ally or soul nearest the
-	 * crosshair, in sight. Shift again cancels; the cooldown starts when it ends.
+	 * by her client. Her beam's target first (Overwatch's "prefer beam target", on by default), with no cone or sight
+	 * test, out to her range + 10 m; else the ally or soul nearest the crosshair in a 30° cone, in sight. Not toward a
+	 * target within 4 m (her graph's start condition: the press does nothing). Shift again cancels; the cooldown starts
+	 * when it ends.
 	 */
 	private static void startGuardianAngel(ServerPlayer player, HeroState s) {
 		double range = gaRange(player, s);
 		LivingEntity beam = s.beamTarget == null ? null : player.level().getEntity(s.beamTarget) instanceof LivingEntity l ? l : null;
-		if (beam != null && beam.isAlive() && beam.distanceTo(player) <= range && sees(player, beam)) {
-			begin(player, s, beam.getId(), null);
-			return;
+		if (beam != null && beam.isAlive()) {
+			double d = beam.distanceTo(player);
+			if (d > GA_MIN && d < range + GA_BEAM_REACH) {
+				begin(player, s, beam.getId(), null, beam.position());
+				return;
+			}
 		}
 		LivingEntity best = null;
-		double bestAngle = GA_AIM;
+		double bestAngle = GA_CONE;
 		for (LivingEntity other : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(range))) {
-			if (!Allies.isAlly(player, other) || other.distanceTo(player) > range || other.distanceTo(player) < GA_ARRIVE) {
+			if (!Allies.isAlly(player, other) || other.distanceTo(player) > range) {
 				continue;
 			}
 			double angle = angleTo(player, other.getBoundingBox().getCenter());
@@ -468,16 +498,19 @@ public final class Mercy implements HeroKit {
 			}
 		}
 		if (bestSoul != null) {
-			begin(player, s, null, bestSoul.id);
-		} else if (best != null) {
-			begin(player, s, best.getId(), null);
+			if (bestSoul.at.distanceTo(player.position()) > GA_MIN) {
+				begin(player, s, null, bestSoul.id, bestSoul.at);
+			}
+		} else if (best != null && best.distanceTo(player) > GA_MIN) {
+			begin(player, s, best.getId(), null, best.position());
 		}
 	}
 
-	private static void begin(ServerPlayer player, HeroState s, @Nullable Integer target, java.util.@Nullable UUID soul) {
+	private static void begin(ServerPlayer player, HeroState s, @Nullable Integer target, java.util.@Nullable UUID soul, Vec3 at) {
 		s.gaPhase = GA_FLY;
 		s.gaTarget = target;
 		s.gaSoul = soul;
+		s.gaTo = landing(player, at);
 		s.gaTicks = 0;
 		s.gaMomentum = 0;
 		s.softLanding = true;
@@ -491,21 +524,33 @@ public final class Mercy implements HeroKit {
 		s.gaPhase = GA_NONE;
 		s.gaTarget = null;
 		s.gaSoul = null;
+		s.gaTo = null;
 		s.ability1Cooldown = Ow.ticks(GA_COOLDOWN);
 	}
 
 	private static void guardianAngel(ServerPlayer player, HeroState s) {
+		if (s.gaPhase == GA_FLY || s.gaPhase == GA_ARRIVED) {
+			// the momentum meter: 0 to full over 1 s of flight (0.68 s in Valkyrie), still filling in the window after
+			s.gaMomentum = Math.min(1, s.gaMomentum + 1 / (Ow.ticks(GA_MOMENTUM_FILL) * (valkyrie(s) ? GA_SPEED / GA_SPEED_VALKYRIE : 1)));
+		}
 		if (s.gaPhase == GA_FLY) {
 			s.gaTicks++;
-			s.gaMomentum = Math.min(1, s.gaTicks / (double) Ow.ticks(GA_MOMENTUM_FILL));
-			Vec3 to = gaDestination(player, s);
-			if (to == null || s.gaTicks > Ow.ticks(GA_LIMIT) || player.position().add(0, 0.9, 0).distanceTo(to) <= GA_ARRIVE) {
+			// no end for a lost target in her graph: she flies on to the point (ours: the time limit, for walls)
+			if (s.gaTo == null || s.gaTicks > Ow.ticks(GA_LIMIT)) {
 				endGuardianAngel(s);
+			} else if (player.position().distanceTo(s.gaTo) <= GA_ARRIVE + 0.05) {
+				s.gaPhase = GA_ARRIVED;
+				s.gaTicks = Ow.ticks(GA_WINDOW);
 			}
+		} else if (s.gaPhase == GA_ARRIVED && --s.gaTicks <= 0) {
+			endGuardianAngel(s);
 		} else if (s.gaPhase == GA_LAUNCHED && --s.gaTicks <= 0) {
 			endGuardianAngel(s);
 		}
-		if (s.gaPhase != GA_NONE) {
+		// an ability's landing (Guardian Angel's flight and launch, Valkyrie's end) never hurts: the fall doesn't count
+		// until she's down. Minecraft can check the fall a tick after the server sees her on the ground, so clearing
+		// the flag alone let a crouch launch's landing take half her health (found playing): the distance goes too.
+		if (s.gaPhase != GA_NONE || s.softLanding) {
 			player.resetFallDistance();
 		}
 		if (s.softLanding && s.gaPhase == GA_NONE && !flying(s) && player.onGround()) {
@@ -533,7 +578,7 @@ public final class Mercy implements HeroKit {
 
 	private static void startResurrect(ServerPlayer player, HeroState s) {
 		Souls.Soul soul = null;
-		double bestAngle = RES_AIM;
+		double bestAngle = RES_CONE;
 		for (Souls.Soul candidate : Souls.near(player, RES_RANGE, SOUL_TIME)) {
 			double angle = angleTo(player, candidate.at.add(0, 0.5, 0));
 			// close enough, she's on it whatever her aim (ours: a soul at her feet sits far below the crosshair)
@@ -683,7 +728,7 @@ public final class Mercy implements HeroKit {
 	public void press(ServerPlayer player, HeroState s, int pressed) {
 		boolean casting = s.resSoul != null || s.ultPhase == ULT_CAST;
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && !casting) {
-			if (s.gaPhase == GA_FLY) {
+			if (s.gaPhase == GA_FLY || s.gaPhase == GA_ARRIVED) {
 				endGuardianAngel(s);
 			} else if (s.gaPhase == GA_NONE && s.ability1Cooldown <= 0) {
 				startGuardianAngel(player, s);
@@ -714,8 +759,8 @@ public final class Mercy implements HeroKit {
 		List<Integer> state = new ArrayList<>();
 		state.add(flags(s));
 		// Guardian Angel's target: an entity, or a soul (-2) at the point that follows (cm: no body to fly to on clients)
-		Vec3 dest = s.gaPhase == GA_FLY ? gaDestination(player, s) : null;
-		state.add(s.gaPhase != GA_FLY ? -1 : s.gaSoul != null ? -2 : s.gaTarget != null ? s.gaTarget : -1);
+		Vec3 dest = s.gaPhase == GA_FLY ? s.gaTo : null;
+		state.add(dest == null ? -1 : s.gaSoul != null ? -2 : s.gaTarget != null ? s.gaTarget : -1);
 		state.add(dest == null ? 0 : (int) Math.round(dest.x * 100));
 		state.add(dest == null ? 0 : (int) Math.round(dest.y * 100));
 		state.add(dest == null ? 0 : (int) Math.round(dest.z * 100));
@@ -731,6 +776,7 @@ public final class Mercy implements HeroKit {
 
 	private static int flags(HeroState s) {
 		return (s.blasterOut ? FLAG_BLASTER : 0) | (s.gaPhase == GA_FLY ? FLAG_GA : 0) | (s.gaPhase == GA_LAUNCHED ? FLAG_GA_LAUNCH : 0)
+			| (s.gaPhase == GA_ARRIVED ? FLAG_GA_WINDOW : 0)
 			| (s.ultPhase == ULT_ON ? FLAG_VALKYRIE : 0) | (s.ultPhase == ULT_CAST ? FLAG_VALKYRIE_CAST : 0)
 			| (s.resSoul != null ? FLAG_RESURRECT : 0) | (s.flashCast >= 0 ? FLAG_FLASH : 0) | (s.swapTicks > 0 ? FLAG_SWAP : 0);
 	}

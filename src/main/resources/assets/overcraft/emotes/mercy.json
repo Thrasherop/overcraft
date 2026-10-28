@@ -32,7 +32,12 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0333,
+       4.2
+      ]
+     ],
      "geosets": [
       0,
       0,
@@ -78,7 +83,13 @@
       0,
       0
      ],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       4.5
+      ]
+     ]
     },
     "emote_loved_2": {
      "id": "983",
@@ -88,7 +99,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -111,7 +123,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_pod_glide_2": {
      "id": "19D1E",
@@ -121,7 +134,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_pod_glide_3": {
      "id": "19D1F",
@@ -131,7 +145,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_pod_glide_4": {
      "id": "1932B",
@@ -160,7 +175,13 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0667,
+       1.8334
+      ]
+     ]
     },
     "emote_pod_glide_5": {
      "id": "19331",
@@ -170,7 +191,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop"
+     "skeleton": "prop",
+     "stowBlaster": []
     },
     "emote_pod_glide_6": {
      "id": "19332",
@@ -180,7 +202,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop"
+     "skeleton": "prop",
+     "stowBlaster": []
     },
     "emote_pod_glide_7": {
      "id": "19D29",
@@ -202,7 +225,13 @@
      ],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       8.0
+      ]
+     ]
     },
     "emote_pod_glide_8": {
      "id": "13553",
@@ -212,7 +241,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_pod_glide_9": {
      "id": "1B18A",
@@ -231,7 +261,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -244,8 +275,19 @@
      "folder": "0",
      "spawns": [],
      "events": [],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       0.4667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.4667
+      ]
+     ]
     },
     "emote_bunny_hop_2": {
      "id": "19A34",
@@ -261,8 +303,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       0.8
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.8
+      ]
+     ]
     },
     "emote_bunny_hop_3": {
      "id": "9EE",
@@ -272,7 +325,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_bunny_hop_4": {
      "id": "983",
@@ -282,7 +336,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -331,7 +386,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_listen_up_2": {
      "id": "178AD",
@@ -340,8 +396,14 @@
      "folder": "4",
      "spawns": [],
      "events": [],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       0.3
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_listen_up_3": {
      "id": "12625",
@@ -351,7 +413,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_listen_up_4": {
      "id": "12638",
@@ -361,7 +424,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -398,7 +462,12 @@
        "chance": 0.4
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       2.3333
+      ]
+     ],
      "geosets": [
       7,
       7,
@@ -424,7 +493,8 @@
       7,
       7
      ],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_mic_drop_2": {
      "id": "12625",
@@ -434,7 +504,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_mic_drop_3": {
      "id": "12638",
@@ -444,7 +515,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -465,7 +537,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_salty_2": {
      "id": "178AD",
@@ -474,8 +547,14 @@
      "folder": "4",
      "spawns": [],
      "events": [],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       0.3
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_salty_3": {
      "id": "12625",
@@ -485,7 +564,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_salty_4": {
      "id": "12638",
@@ -495,7 +575,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -533,8 +614,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       8.0
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       8.0
+      ]
+     ]
     },
     "emote_hustle_2": {
      "id": "401A",
@@ -556,8 +648,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       0.7667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.7667
+      ]
+     ]
     },
     "emote_hustle_3": {
      "id": "9EE",
@@ -567,7 +670,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_hustle_4": {
      "id": "983",
@@ -577,7 +681,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -597,8 +702,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0001,
+       2.3667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       2.6
+      ]
+     ]
     },
     "emote_applause_2": {
      "id": "983",
@@ -608,7 +724,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -687,7 +804,13 @@
       0,
       0
      ],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       4.5
+      ]
+     ]
     },
     "emote_caduceus_2": {
      "id": "1627",
@@ -697,7 +820,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop"
+     "skeleton": "prop",
+     "stowBlaster": []
     },
     "emote_caduceus_3": {
      "id": "983",
@@ -707,7 +831,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -721,7 +846,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_heroic_2": {
      "id": "9ED",
@@ -731,7 +857,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_heroic_3": {
      "id": "3A7F",
@@ -747,7 +874,12 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       2.2
+      ]
+     ],
      "geosets": [
       0,
       0,
@@ -771,7 +903,13 @@
       0,
       0
      ],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       2.3333
+      ]
+     ]
     },
     "emote_heroic_4": {
      "id": "9F0",
@@ -781,7 +919,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_heroic_5": {
      "id": "989",
@@ -798,7 +937,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_heroic_6": {
      "id": "9EE",
@@ -808,7 +948,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_heroic_7": {
      "id": "983",
@@ -818,7 +959,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -838,8 +980,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       2.5667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       2.7667
+      ]
+     ]
     },
     "emote_no_pulse_2": {
      "id": "983",
@@ -849,7 +1002,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -876,7 +1030,13 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       4.8333
+      ]
+     ]
     },
     "emote_parasol_2": {
      "id": "4DC8",
@@ -886,7 +1046,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop"
+     "skeleton": "prop",
+     "stowBlaster": []
     },
     "emote_parasol_3": {
      "id": "983",
@@ -896,7 +1057,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -916,8 +1078,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       0.4333
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.4333
+      ]
+     ]
     },
     "emote_relax_2": {
      "id": "3BA4",
@@ -933,8 +1106,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.1667,
+       2.2334
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       2.2333
+      ]
+     ]
     },
     "emote_relax_3": {
      "id": "3BA3",
@@ -943,8 +1127,19 @@
      "folder": "0",
      "spawns": [],
      "events": [],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       5.3667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       5.3667
+      ]
+     ]
     },
     "emote_relax_4": {
      "id": "983",
@@ -954,7 +1149,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -978,8 +1174,19 @@
        "at": 0.0
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       2.9667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       3.3
+      ]
+     ]
     },
     "emote_the_best_medicine_2": {
      "id": "983",
@@ -989,7 +1196,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1047,8 +1255,19 @@
        "at": 2.8638
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       4.6667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0667,
+       4.6667
+      ]
+     ]
     },
     "emote_so_tough_2": {
      "id": "983",
@@ -1058,7 +1277,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1079,8 +1299,19 @@
        "audience": "own"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0333,
+       0.5666
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.5667
+      ]
+     ]
     },
     "emote_crazy_choreography_2": {
      "id": "12712",
@@ -1098,8 +1329,19 @@
        "audience": "own"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       7.3667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       7.3667
+      ]
+     ]
     },
     "emote_crazy_choreography_3": {
      "id": "9EE",
@@ -1109,7 +1351,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_crazy_choreography_4": {
      "id": "983",
@@ -1119,7 +1362,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1178,8 +1422,19 @@
        "hardpoint": "0003"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       2.8334
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0667,
+       2.8334
+      ]
+     ]
     },
     "emote_rainy_stroll_2": {
      "id": "12345",
@@ -1214,8 +1469,19 @@
        "at": 1.0667
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       2.2667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       2.2667
+      ]
+     ]
     },
     "emote_rainy_stroll_3": {
      "id": "12349",
@@ -1225,7 +1491,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_rainy_stroll_4": {
      "id": "1234A",
@@ -1235,7 +1502,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_rainy_stroll_5": {
      "id": "9EE",
@@ -1245,7 +1513,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_rainy_stroll_6": {
      "id": "983",
@@ -1255,7 +1524,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1297,8 +1567,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0333,
+       3.2666
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0333,
+       3.2666
+      ]
+     ]
     },
     "emote_lazy_river_2": {
      "id": "15003",
@@ -1330,8 +1611,19 @@
        "hardpoint": "0013"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       7.3
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       7.3
+      ]
+     ]
     },
     "emote_lazy_river_3": {
      "id": "15B75",
@@ -1356,7 +1648,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_lazy_river_4": {
      "id": "15B76",
@@ -1375,7 +1668,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_lazy_river_5": {
      "id": "9EE",
@@ -1385,7 +1679,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_lazy_river_6": {
      "id": "983",
@@ -1395,7 +1690,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1425,8 +1721,19 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0,
+       6.4667
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       6.4667
+      ]
+     ]
     },
     "emote_shuffle_2": {
      "id": "18185",
@@ -1435,8 +1742,19 @@
      "folder": "0",
      "spawns": [],
      "events": [],
-     "stow": [],
-     "skeleton": "hers"
+     "stow": [
+      [
+       0.0667,
+       0.4
+      ]
+     ],
+     "skeleton": "hers",
+     "stowBlaster": [
+      [
+       0.0,
+       0.4
+      ]
+     ]
     },
     "emote_shuffle_3": {
      "id": "3CAD",
@@ -1446,7 +1764,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   },
@@ -1477,7 +1796,8 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     },
     "emote_flurry_2": {
      "id": "852E",
@@ -1487,7 +1807,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop"
+     "skeleton": "prop",
+     "stowBlaster": []
     },
     "emote_flurry_3": {
      "id": "983",
@@ -1497,7 +1818,8 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers"
+     "skeleton": "hers",
+     "stowBlaster": []
     }
    }
   }
