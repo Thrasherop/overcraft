@@ -77,7 +77,11 @@ def png_size(path):
 
 
 def slug(name):
-    return "".join(c if c.isalnum() else "_" for c in name.lower()).strip("_")
+    """A resource-safe id: lower case ASCII letters, digits and underscores, accents folded ("Lúcio-oh's" ->
+    "lucio_oh_s": Minecraft's ids allow no others)."""
+    import unicodedata
+    plain = "".join(c for c in unicodedata.normalize("NFKD", name) if not unicodedata.combining(c))
+    return "".join(c if c.isascii() and c.isalnum() else "_" for c in plain.lower()).strip("_")
 
 
 def add_ui(source):
@@ -267,7 +271,7 @@ def add_sounds(source):
 
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
-VOICELINE_HEROES = {"kiriko": "Kiriko"}
+VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio"}
 
 
 def voice_text(file_name):
