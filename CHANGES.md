@@ -6,6 +6,26 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.15 (Lúcio's movement reworked; his wall-ride sounds under the music)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.15): the sounds (`build_asset_pack.py sounds`) and Lúcio's props
+(`props <source> lucio`), then `zip`.
+- **Lúcio's movement, reworked after the owner's playtest** ("cancer to play": space glued him to every wall, jumping up
+  a block was nearly impossible, W/S didn't steer, corners didn't work). From the game data and a research pass on
+  reimplementations and measurements (`tools/reference/lucio-movement-research.md`):
+  - His own skating mover from the data: a 0.6 s glide to a stop, and air speed kept up to twice his run speed. He had
+    every hero's: stopping dead, and a wall jump's speed gone at once.
+  - He only rides a wall that covers him from waist to head: jumping up a block with space held lands on it.
+  - W rides the way the camera faces along the wall, S the other way, neither keeps going; turning the camera turns
+    him round. He rises slowly, more looking up (ours: no source measures it).
+  - Corners: inside corners turn him onto the next wall, outside corners and pillars wrap him round; a wall that just
+    ends lets him fly on, and letting go within 0.2 s still jumps.
+  - The leap off works (it fell straight down before): +2.5 m/s toward a blend of facing and motion, up 6.54 m/s
+    looking ahead, 9.12 looking up, 4.12 down. Speed on a wall eases to wall speed (7.15 m/s; 8.53 with Speed Boost)
+    from above and below, so brief touches keep a chain's speed. 0.5 s between rides, 2 m before the same wall.
+  - Played on a course (a step, a long wall, an L, a pillar, parallel walls): numbers in the commits.
+- **His wall-ride sounds were the loudest thing in the game** (the owner): 9 dB over his music. Now 8 dB under it.
+- Dance Party's amplifier is placed on the DJ booth as the data says (inside its centre).
+
 ### Build 0.3.14 (emote sounds; Lúcio's emotes, effects and voice lines; his reload with Amp It Up and Crossfade)
 0.3.13 was a check-in build handed to the owner earlier the same day (emote sounds, Lúcio's emotes and reload, without
 his effects and voice lines); 0.3.14 is the release.
