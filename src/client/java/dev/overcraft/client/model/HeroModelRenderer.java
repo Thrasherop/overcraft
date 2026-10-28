@@ -173,8 +173,9 @@ public final class HeroModelRenderer {
 		// hair opened up: #29, #30)
 		boolean previewing = preview != null && entity == Minecraft.getInstance().player;
 		// on the select screen, Overwatch's hero select animation when the model has it (#29)
-		Matrix4f[] skin = previewing ? HeroAnimator.poseShowcase(loaded.model(), showcaseSince < 0 ? 1000
-			: (Util.getMillis() - showcaseSince) / 1000f) : null;
+		float showcaseAt = showcaseSince < 0 ? 1000 : (Util.getMillis() - showcaseSince) / 1000f;
+		Skeleton.Pose showcase = previewing ? HeroAnimator.showcasePose(loaded.model(), showcaseAt) : null;
+		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
 			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
 		}
@@ -194,7 +195,9 @@ public final class HeroModelRenderer {
 		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
-		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
+		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
+			: showcase != null ? HeroWeapon.placeShowcase(hero, loaded.model(), showcase, HeroAnimator.showcaseIntro(loaded.model(), showcaseAt))
+			: null);
 		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
 			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();

@@ -6,12 +6,29 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-28
 
+### Build 0.3.18 (Mercy, a second pass over her data)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.18): her staff's model now carries its three emote clips
+(`tools/clipmaps/mercy_staff.txt`), then `zip`.
+- **Guardian Angel's launch carries:** for 1 s after a launch nothing slows her in the air (0.5 s in Valkyrie, where
+  her speed cap is 22 m/s and knockback a fifth), as her data does. Valkyrie's crouch launch rises at 26.5 m/s for
+  0.5 s (13.3 m up); the Crouch press itself no longer brakes it.
+- **Guardian Angel's target marker:** the cyan brackets Kiriko's Swift Step shows (the same marker in the game's
+  data), on the ally Shift would take her to, while it's ready.
+- **The hero select:** Mercy holds her staff; Lúcio's amplifier is in his hand in his hold (put away in his intro), as
+  the select screens' own data says.
+- **Her staff animates in Caduceus, Parasol and Flurry** (each emote's data plays a clip on it).
+- `tools/emote_data.py` reads the emotes' weapon controls raw (TankLib misreads them): Lúcio's data regenerated
+  identical, Mercy's per weapon.
+- Not yet: the high-momentum launch's extra sound (B26F: found, its loudness not decoded), the staff's own select-screen
+  animation (not extracted).
+
 ### Build 0.3.17 (Mercy; Jetpack Cat's body and her data pass)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.17): Jetpack Cat's models re-exported (her fur's colour, see
 below), Mercy's models (body, first person, staff, blaster, her emote props), `ui`, `effects` (her masks) and
 `sounds`, then `zip`.
 - **Mercy, the fourth hero:** pick her on the select screen (or H at your bed). Her kit was read from her game data
-  graph by graph (`E:\Overwatch Archiveesearch\mercy\kit_details.md`), the numbers from the latest patch notes.
+  graph by graph (`E:\Overwatch Archive
+esearch\mercy\kit_details.md`), the numbers from the latest patch notes.
   - Caduceus Staff: left button heals (55/s), right boosts damage (+25%), locked on within 15 m; it holds 1.0 s out of
     sight (her data; the wiki says 1.3). Caduceus Blaster on 2 / the scroll wheel: 20 a round, 5 a second, 25 rounds,
     reload 1.4 s (the ammo is back at 0.91 s); the rounds leave her blaster's muzzle.

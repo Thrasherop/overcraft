@@ -57,6 +57,32 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * The weapon in the hero select's pose (the showcase entity's own weapon, research\mercy\gaps2.md 4, H): Mercy's
+	 * select entity 3A80 carries her staff on Weapon_R (slot 12A5), out for every clip; Lúcio's amplifier is put away
+	 * in his intro (C1EB) and out in his hold (BC3F). Mercy's staff plays clips of its own there (ACA4 / AE33 / AE31 /
+	 * AE35: not in the extraction yet): ours, its rest pose, as the research says until they're exported. Null when the
+	 * hero has no weapon of its own or it's put away now.
+	 */
+	public static EmoteProps.@Nullable Placed placeShowcase(Hero hero, SkinnedModel heroModel, Skeleton.Pose pose, boolean intro) {
+		Spec spec = SPECS.get(hero);
+		if (spec == null || hero == Hero.LUCIO && intro) {
+			return null;
+		}
+		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get("mercy_staff") : HeroModels.weapon(hero);
+		int bone = heroModel.node(spec.thirdPerson().bone());
+		if (weapon == null || bone < 0) {
+			return null;
+		}
+		Matrix4f at = Skeleton.world(heroModel, pose, bone).rotate(spec.thirdPerson().turn());
+		Skeleton.Pose own = new Skeleton.Pose(weapon.model().nodeNames.length).rest(weapon.model());
+		SkinnedModel.Clip idle = weapon.model().clips.get("idle");
+		if (idle != null && hero != Hero.MERCY) {
+			Skeleton.sample(idle, 0, own);
+		}
+		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
+	}
+
+	/**
 	 * Where the held weapon's muzzle is (its hardpoint 0006: the staff's head, where Mercy's beams start; the blaster's
 	 * barrel), in the hero model's space, or null.
 	 */
@@ -91,7 +117,16 @@ public final class HeroWeapon {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");
 		boolean staff = model.clips.containsKey("holstered");
-		if (idle != null && staff) {
+		EmoteData.WeaponClip played = null;
+		if (staff && a.emoting() && a.emote() != null) {
+			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md)
+			EmoteData.Emotes data = EmoteData.of("mercy");
+			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), "staff");
+		}
+		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
+		if (staffClip != null) {
+			Skeleton.sample(staffClip, Math.min(Math.max(a.emoteAt() - played.start(), 0), staffClip.duration()), pose);
+		} else if (idle != null && staff) {
 			// Mercy's staff: its held loop (84A: the head's rings turning) on the clock
 			Skeleton.sample(idle, now % Math.max(idle.duration(), 1.0E-3f), pose);
 		} else if (idle != null) {

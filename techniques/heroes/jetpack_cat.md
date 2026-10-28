@@ -47,8 +47,26 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - **Sounds** from `tools/soundmaps/jetpack_cat.txt` (29 rules, 30 voice moments): one-shots from the server (fire and
   reload for everyone, the rest hers), loops from her client (`JetpackCatSounds`), voice by moment (`Voice`).
 
-## Still ours or missing
-- The jetpack's idle flames (7064) sit on nozzle hardpoints (0075 / 0077) no bone has been found for: not drawn. Her
-  boost trails start from points of ours beside her.
-- Her enemy-hit and wall-hit sounds aren't extracted.
+## The body that was never drawn (0.3.16, found by the owner)
+- 0.3.16 shipped an empty jetpack with eyes and a tongue: her fur material (shader 0x10D) has its colour texture only
+  in its .owmat, which the exporter doesn't link, so the cat came out colourless and wasn't drawn. Every earlier check
+  looked at the jetpack and the effects, never at whether the cat was there. Fixed in `owm_survey.py` (COLOUR_KEYS);
+  the lesson is in [animation_import](../animation/animation_import.md). **Look at the whole model from every side
+  after any export, and compare with the hero's portrait.**
+
+## The gaps pass (2026-10-28: `E:\Overwatch Archiveesearch\jetpack_cat\gaps.md`)
+- Settled from the data: her four emotes and their props, 12 voice-line unlocks, the nozzle hardpoints (the look 2673's
+  own table: idle flames and boost trails now on them), the paws' hardpoints (000A / 000B), the hit sounds (73A4;
+  centre shot on a block 093B; the paw shots make none on walls), the hit sizes (the wiki's), the rope's snap at 3
+  rope lengths, the detach launch, the select screen's scripted run, her first-person rise and sink layers.
+- Her emotes' "EntityControl 99" is the low byte of slot **7863** (Lúcio's mic): TankLib reads a slot id's low byte as
+  the "action" ([mercy_emotes](../emotes/mercy_emotes.md)).
+
+## Still ours or not in the data
+- **Vertical flight speed:** not in any mover field (the engine's); ours 5.5 m/s, normalised with the other inputs.
+- **Frenetic Flight's top speed:** the data reads two ways (22.5 or 20 m/s); the wiki's measured 17.8 is kept.
+- **After Frenetic Flight:** the data's max air 12 holds while W is held; whether the game falls back to 5.5 is the
+  engine's.
+- The rope node's numbers (stiffness and the rest: unnamed), the Lifeline launch's direction F, two Catnapper fields,
+  which ranged copy of a sound is allies' and which enemies', and the showcase's condition parameters.
 - Carrying a "tank" 30% slower isn't done (Minecraft has no tanks).
