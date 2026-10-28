@@ -24,6 +24,11 @@ public final class LucioFx {
 	private static final Map<Integer, Float> BEAT = new HashMap<>();
 	private static final Map<Integer, Integer> SONG = new HashMap<>();
 	private static final Map<Integer, Float> AMP_RINGS = new HashMap<>();
+	/** Entities under a Sound Barrier's shield: until when (Fx.now()), whether it's an enemy Lúcio's, and since when. */
+	private static final Map<Integer, float[]> SHIELDED = new HashMap<>();
+	private static final Map<Integer, Float> SHIELD_PULSE = new HashMap<>();
+	/** When each Lúcio's wall ride began (its sparks grow over the first 0.67 s). */
+	private static final Map<Integer, Float> WALL_SINCE = new HashMap<>();
 
 	private LucioFx() {
 	}
@@ -67,6 +72,7 @@ public final class LucioFx {
 				case "sonic_hit_block" -> sonicHitBlock(at, dir);
 				case "sound_barrier_cast" -> barrierCast(at);
 				case "sound_barrier" -> barrierSlam(at);
+				case "sound_barrier_ally" -> SHIELDED.put(e.entity(), new float[] {Fx.now() + e.variant() / 20f, enemy ? 1 : 0, Fx.now()});
 				default -> {
 					return false;
 				}
@@ -208,7 +214,7 @@ public final class LucioFx {
 	 *
 	 * @param song 0 none, 1 heal, 2 speed, +4 amped (HeroManager.SONG)
 	 */
-	public static void skates(int id, Vec3 left, Vec3 right, int song, float now, boolean enemyOwner) {
+	public static void skates(int id, Vec3 left, Vec3 right, int song, float now, boolean enemyOwner, boolean wallRiding) {
 		int which = song & 3;
 		Integer was = SONG.put(id, which);
 		if (which == 0) {
@@ -245,6 +251,13 @@ public final class LucioFx {
 				amped(id, left, right, colour, now);
 			} else {
 				AMP_RINGS.remove(id);
+			}
+			float dt = Fx.since(-(id * 8 + 7) - 1);
+			if (wallRiding) {
+				float since = WALL_SINCE.computeIfAbsent(id, k -> now);
+				wallRide(left, right, colour, dt, now - since);
+			} else {
+				WALL_SINCE.remove(id);
 			}
 		} finally {
 			enemy = false;
@@ -328,7 +341,100 @@ public final class LucioFx {
 		}
 	}
 
+	/**
+	 * Each client tick: the shield's look on everyone under it (0D86, held as long as the shield): a band round their
+	 * waist each second (cylinder 2345, about 1 m across) and a faint disc under their feet (F3D, r 1.06 m). The data's
+	 * skin shimmer (a material overlay) isn't drawn: ours, left out. It ends early when a player's overhealth is gone.
+	 */
+	public static void shields(net.minecraft.client.multiplayer.ClientLevel level) {
+		float now = Fx.now();
+		SHIELDED.entrySet().removeIf(e -> {
+			net.minecraft.world.entity.Entity entity = level.getEntity(e.getKey());
+			// a player's overhealth reaches the client (it ends the look when used up), a moment after this effect (half
+			// a second's grace: checked at once, his own ended before his absorption arrived); another entity's isn't
+			// synced (Minecraft sends absorption for players only), so theirs lasts the shield's time
+			if (now > e.getValue()[0] || !(entity instanceof net.minecraft.world.entity.LivingEntity living) || !living.isAlive()
+				|| living instanceof net.minecraft.world.entity.player.Player && now - e.getValue()[2] > 0.5f
+				&& living.getAbsorptionAmount() <= 0) {
+				SHIELD_PULSE.remove(e.getKey());
+				return true;
+			}
+			enemy = e.getValue()[1] > 0;
+			try {
+				float last = SHIELD_PULSE.getOrDefault(e.getKey(), -10f);
+				if (now - last >= 1 || now < last) {
+					SHIELD_PULSE.put(e.getKey(), now);
+					Vec3 feet = living.position();
+					Particle band = Fx.particle("lucio_band", p(Palette.LUCIO_GREEN));
+					if (band != null) {
+						Fx.add(band.at(feet.add(0, living.getBbHeight() * 0.35, 0)).shape(Shape.ARC).arc(new Quaternionf(), Mth.TWO_PI)
+							.life(1).size(Math.max(1.1f, living.getBbWidth() * 1.6f), 1.2f).aspect(0.67f).alpha(0.45f).fade(0.15f, 0.6f));
+					}
+					Particle disc = Fx.particle("lucio_soft", p(Palette.LUCIO_GREEN));
+					if (disc != null) {
+						Fx.add(disc.at(feet.add(0, 0.05, 0)).shape(Shape.FLAT).normal(new Vec3(0, 1, 0)).life(1.38f).size(2.12f, 2.12f)
+							.alpha(0.35f).fade(0.2f, 0.6f));
+					}
+				}
+			} finally {
+				enemy = false;
+			}
+			return false;
+		});
+	}
+
+	/**
+	 * Amped Speed Boost on an ally (4ADD, started by graph 07C7 when the amped speed stack is set): speed lines, about
+	 * 300 tiny white streaks a second flung at 4 m/s from round them (ours: 60 a second, a frame's budget), living
+	 * 0.27-0.37 s, against the way they're moving.
+	 */
+	public static void speedLines(net.minecraft.world.entity.Entity ally, float dt) {
+		int n = (int) (60 * dt + Fx.RANDOM.nextFloat());
+		Vec3 motion = ally.getDeltaMovement().multiply(1, 0, 1);
+		Vec3 back = motion.lengthSqr() < 1.0E-4 ? Vec3.ZERO : motion.normalize().scale(-1);
+		for (int i = 0; i < n; i++) {
+			Particle s = Fx.particle("lucio_spark", Palette.WHITE);
+			if (s == null) {
+				return;
+			}
+			double a = Fx.RANDOM.nextDouble() * Math.PI * 2;
+			double r = ally.getBbWidth() * 0.5 + 0.25;
+			Vec3 at = ally.position().add(Math.cos(a) * r, Fx.RANDOM.nextDouble() * ally.getBbHeight(), Math.sin(a) * r);
+			Vec3 v = (back.lengthSqr() > 0 ? back : new Vec3(Math.cos(a), 0, Math.sin(a))).scale(range(4, 4.2f));
+			Fx.add(s.at(at).velocity(v).shape(Shape.STREAK).life(range(0.27f, 0.37f)).size(0.3f, 0.2f).aspect(0.08f).alpha(0.7f)
+				.nearFade(2).fade(0.05f, 0.6f));
+		}
+	}
+
+	/**
+	 * The wall ride (E12, held for the whole ride): glow dots in the song colour off each skate, 0.2-0.5 m, drifting off
+	 * at up to 1.6 m/s (about 30 a second per skate: ours 25), and the skates' sparks growing from 0.15 to 0.44 m over
+	 * the ride's first 0.67 s.
+	 */
+	private static void wallRide(Vec3 left, Vec3 right, Palette colour, float dt, float ridden) {
+		int n = (int) (25 * dt + Fx.RANDOM.nextFloat());
+		float sparkSize = 0.15f + 0.29f * Math.clamp(ridden / 0.67f, 0, 1);
+		for (Vec3 foot : new Vec3[] {left, right}) {
+			for (int i = 0; i < n; i++) {
+				Particle d = Fx.particle("lucio_soft", colour);
+				if (d != null) {
+					float size = range(0.2f, 0.5f);
+					Fx.add(d.at(foot.add(0, 0.08, 0)).velocity(randomUnit().scale(range(0.13f, 1.66f))).life(range(0.18f, 0.36f))
+						.size(size, size * 0.5f).alpha(0.7f).fade(0.05f, 0.6f));
+				}
+				Particle s = Fx.particle("lucio_spark", colour);
+				if (s != null) {
+					Fx.add(s.at(foot.add(0, 0.05, 0)).velocity(new Vec3(0, 0.56, 0).add(randomUnit().scale(0.3))).life(range(0.18f, 0.31f))
+						.size(sparkSize, sparkSize * 0.4f).spin(range(0, Mth.TWO_PI), 0).fade(0.05f, 0.6f));
+				}
+			}
+		}
+	}
+
 	public static void clear() {
+		SHIELDED.clear();
+		SHIELD_PULSE.clear();
+		WALL_SINCE.clear();
 		BEAT.clear();
 		SONG.clear();
 		AMP_RINGS.clear();

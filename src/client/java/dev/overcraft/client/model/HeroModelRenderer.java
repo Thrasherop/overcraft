@@ -205,7 +205,20 @@ public final class HeroModelRenderer {
 				net.minecraft.world.phys.Vec3 right = bone(loaded.model(), pose, "Foot_R", base, facing, state.scale);
 				if (left != null && right != null) {
 					dev.overcraft.client.effect.LucioFx.skates(entity.getId(), left, right, song, now,
-						dev.overcraft.client.effect.KirikoFx.enemyOf(entity));
+						dev.overcraft.client.effect.KirikoFx.enemyOf(entity), animator.playing().startsWith("wallride"));
+				}
+				if (song == (2 | 4)) {
+					// amped Speed Boost shows on his allies in reach (and him): speed lines (4ADD)
+					float dt = dev.overcraft.client.effect.Fx.since(-(entity.getId() * 8 + 6) - 1);
+					for (LivingEntity ally : entity.level().getEntitiesOfClass(LivingEntity.class,
+						entity.getBoundingBox().inflate(dev.overcraft.lucio.LucioStats.SONG_RADIUS))) {
+						boolean firstPersonSelf = ally == Minecraft.getInstance().player
+							&& Minecraft.getInstance().options.getCameraType().isFirstPerson();
+						if (!firstPersonSelf && dev.overcraft.hero.Allies.isSelfOrAlly(player, ally)
+							&& ally.distanceTo(entity) <= dev.overcraft.lucio.LucioStats.SONG_RADIUS) {
+							dev.overcraft.client.effect.LucioFx.speedLines(ally, dt);
+						}
+					}
 				}
 			}
 		}

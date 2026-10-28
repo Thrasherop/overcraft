@@ -101,6 +101,9 @@ public class OvercraftClient implements ClientModInitializer {
 			RushSound.tick(client);
 			LucioMusic.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
+			if (client.level != null) {
+				dev.overcraft.client.effect.LucioFx.shields(client.level);
+			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}

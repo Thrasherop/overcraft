@@ -330,6 +330,9 @@ public final class Lucio implements HeroKit {
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BARRIER_RADIUS))) {
 			if (Allies.isSelfOrAlly(player, ally) && ally.isAlive() && ally.distanceTo(player) <= BARRIER_RADIUS) {
 				Combat.overhealth(ally, BARRIER_OVERHEALTH, BARRIER_TIME);
+				// its look on each of them while it lasts (0D86, held on their root by graph 073B)
+				Effects.play((ServerLevel) player.level(), "sound_barrier_ally", ally.position(), net.minecraft.world.phys.Vec3.ZERO,
+					ally, Ow.ticks(BARRIER_TIME), player);
 			}
 		}
 		Effects.play(player.level(), "sound_barrier", player.position(), player);
