@@ -83,6 +83,11 @@ public class BlasterShotEntity extends OwProjectile {
 				}
 			}
 			Effects.play(level, "blaster_hit", at, getDeltaMovement(), null, 0, owner);
+			// 01E2: hers to her, the other at the hit for everyone else
+			if (owner instanceof ServerPlayer mercy) {
+				dev.overcraft.hero.HeroSounds.split(mercy, dev.overcraft.registry.OcSounds.MERCY_BLASTER_HIT,
+					dev.overcraft.registry.OcSounds.MERCY_BLASTER_HIT_3P, at);
+			}
 		} else if (target == null) {
 			// not a creature (an end crystal, a boat): hit as an arrow does
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, owner), (float) Ow.hp(MercyStats.BLASTER_DAMAGE));
@@ -96,6 +101,10 @@ public class BlasterShotEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level) {
 			Vec3 normal = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
 			Effects.play(level, "blaster_hit_block", hit.getLocation(), normal, null, 0, getOwner());
+			// contact set 00F7, the default material's pair, at the hit for everyone
+			Vec3 at = hit.getLocation();
+			level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.MERCY_BLASTER_HIT_BLOCK,
+				net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 			discard();
 		}
 	}

@@ -208,6 +208,8 @@ public final class Souls {
 		fresh.teleportTo(level, at.x, at.y, at.z, Set.of(), old.getYRot(), old.getXRot(), true);
 		fresh.setHealth(fresh.getMaxHealth() * pending.healthFraction);
 		comeBack(fresh);
+		// 483F's 95DF, played on the revived ally (M: their own copy)
+		dev.overcraft.hero.HeroSounds.toOwner(fresh, dev.overcraft.registry.OcSounds.MERCY_RES_REVIVED);
 	}
 
 	/** Whether this player's respawn is a resurrection (checked before onRespawn takes it). */

@@ -104,6 +104,21 @@ public final class HeroAnimator {
 	private int wallSide;
 	private float fidgetAt = -100;
 	private @Nullable String fidget;
+	/** Mercy (her synced state, read each tick): she's Mercy, her blaster is out, her beam's mode and since when. */
+	private boolean mercy;
+	private boolean blaster;
+	private int beamMode;
+	private float beamOnSince = -100;
+	private float beamOffAt = -100;
+	private float gaSince = -100;
+	private boolean wasGa;
+	private int descentTicks;
+
+	/** Mercy's blaster is out (her weapon model: HeroWeapon). */
+	public boolean blaster() {
+		return blaster;
+	}
+
 	/** The pose last drawn (third person, first person): the weapon hangs on its bones. */
 	private Skeleton.@Nullable Pose lastPose;
 	private Skeleton.@Nullable Pose lastViewPose;
@@ -133,16 +148,29 @@ public final class HeroAnimator {
 			a.aimingSince = -100;
 		}
 		String clip = action;
+		if (a.mercy) {
+			// her launches are one clip; with the blaster out its clips are the "_blaster" ones where they exist
+			clip = action.equals("ga_launch_up") ? "ga_launch" : action;
+			if (a.blaster && !clip.endsWith("_blaster")) {
+				clip = clip + "_blaster";
+			}
+		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
 		}
-		if (!action.equals("fire") && !action.equals("soundwave")) {
-			// (those two are additive layers only: they don't cut a reload's clip)
-			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land");
+		boolean layerOnly = action.equals("fire") || action.equals("soundwave") || action.equals("fire_blaster")
+			|| action.startsWith("flash_heal") || action.equals("ga_start");
+		if (!layerOnly) {
+			// (those are additive layers or base states only: they don't cut a reload's clip)
+			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land")
+				|| a.mercy && action.startsWith("ult_cast");
+			a.actions.trigger(clip, now);
+			a.actionsFirstPerson.trigger(a.mercy ? clip : action, now);
+		} else if (!a.mercy) {
+			a.actions.trigger(clip, now);
+			a.actionsFirstPerson.trigger(action, now);
 		}
-		a.actions.trigger(clip, now);
-		a.actionsFirstPerson.trigger(action, now);
 		// doing anything ends an emote, as in Overwatch
 		a.emote = null;
 	}
@@ -382,6 +410,36 @@ public final class HeroAnimator {
 		}
 	}
 
+	/**
+	 * Mercy's additive layers (mercy-map.md, alias 0x00A): the staff's beam (its start, its loop while it's on, its end;
+	 * which of its clips are the heal's and which the boost's isn't read, M: the same here), a blaster shot, Flash Heal
+	 * (on foot or flying).
+	 */
+	private void mercyLayers(SkinnedModel model, Skeleton.Pose pose, float now) {
+		if (beamMode != 0) {
+			SkinnedModel.Clip start = clip(model, "add_beam_start");
+			float t = now - beamOnSince;
+			if (start != null && t < start.duration()) {
+				Skeleton.addAdditive(start, t, pose, 1);
+			} else {
+				SkinnedModel.Clip loop = clip(model, "add_beam");
+				if (loop != null) {
+					Skeleton.addAdditive(loop, time(loop, now, true), pose, 1);
+				}
+			}
+		} else {
+			SkinnedModel.Clip end = clip(model, "add_beam_end");
+			float t = now - beamOffAt;
+			if (end != null && t >= 0 && t < end.duration()) {
+				Skeleton.addAdditive(end, t, pose, 1);
+			}
+		}
+		additive(model, pose, "add_fire_blaster", "fire_blaster", now);
+		additive(model, pose, "add_flash_heal", "flash_heal", now);
+		additive(model, pose, clip(model, "add_flash_heal_flying") != null ? "add_flash_heal_flying" : "add_flash_heal",
+			"flash_heal_flying", now);
+	}
+
 	/** Catnapper's aim loop gives up after this long with no word of a dive or a cancel (s, ours). */
 	private static final float AIM_HOLD_LIMIT = 15;
 	/** Frenetic Flight's lean, eased in and out (0-1): her boost, seen as speed above her flight's 5.5 m/s. */
@@ -574,10 +632,13 @@ public final class HeroAnimator {
 		additive(model, pose, fire, "fire", now);
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
-		SkinnedModel.Clip idleLayer = clip(model, "add_idle");
+		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster" : "add_idle");
 		if (idleLayer != null) {
-			// her paws' hover sway (195B6, on the clock)
+			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out
 			Skeleton.addAdditive(idleLayer, time(idleLayer, now, true), pose, 1);
+		}
+		if (mercy) {
+			mercyLayers(model, pose, now);
 		}
 		SkinnedModel.Clip setOff = base.startsWith("skate") && !base.startsWith("skate_stop") ? clip(model, "add_skate_start") : null;
 		if (setOff != null && now - movingSince <= setOff.duration()) {
@@ -615,6 +676,30 @@ public final class HeroAnimator {
 	 */
 	private String viewBase(SkinnedModel model, float now) {
 		String want = "idle";
+		if (mercy) {
+			// her view model (mercy_1p.txt): the third person's state, in the view's few clips
+			if (base.startsWith("ga_start")) {
+				want = "ga_start";
+			} else if (base.startsWith("ga_fly")) {
+				want = "ga_fly";
+			} else if (base.startsWith("fly")) {
+				want = "fly";
+			} else if (base.startsWith("jump")) {
+				want = "jump";
+			} else if (base.startsWith("fall")) {
+				want = "fall";
+			} else if (base.startsWith("crouch_walk")) {
+				want = "crouch_walk";
+			} else if (base.startsWith("crouch")) {
+				want = "crouch_idle";
+			} else if (base.startsWith("run") || base.startsWith("strafe")) {
+				want = "walk";
+			}
+			if (blaster && model.clips.containsKey(want + "_blaster")) {
+				want = want + "_blaster";
+			}
+			return model.clips.containsKey(want) ? want : blaster && model.clips.containsKey("idle_blaster") ? "idle_blaster" : "idle";
+		}
 		if (isClimb(base)) {
 			want = base;
 		} else if (base.startsWith("skate") && !base.startsWith("skate_stop")) {
@@ -734,7 +819,7 @@ public final class HeroAnimator {
 		}
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
-		boolean flier = model.clips.containsKey("fly_forward");
+		boolean flier = model.clips.containsKey("add_bob");
 		additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
 		if (flier) {
 			flierLayers(model, entity, pose, now);
@@ -747,6 +832,9 @@ public final class HeroAnimator {
 			Skeleton.addAdditive(wallLayer, time(wallLayer, now, true), pose, 1);
 		}
 		fidget(model, pose, now);
+		if (mercy) {
+			mercyLayers(model, pose, now);
+		}
 		boolean asleep = entity.isSleeping();
 		if (asleep || entity.isFallFlying() || entity.isVisuallySwimming()) {
 			// lying in bed: her idle arms, legs straight (the model's rest pose). Laid flat, the idle stance's bent
@@ -818,6 +906,23 @@ public final class HeroAnimator {
 		double vx = entity.getX() - entity.xo;
 		double vy = entity.getY() - entity.yo;
 		double vz = entity.getZ() - entity.zo;
+		dev.overcraft.client.ClientMercy.State mercyState = dev.overcraft.client.ClientMercy.state(entity);
+		mercy = mercyState != null;
+		blaster = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_BLASTER);
+		int beamNow = mercy ? mercyState.beamMode() : 0;
+		if (beamNow != 0 && beamMode == 0) {
+			beamOnSince = now;
+		} else if (beamNow == 0 && beamMode != 0) {
+			beamOffAt = now;
+		}
+		beamMode = beamNow;
+		boolean ga = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_GA);
+		if (ga && !wasGa) {
+			gaSince = now;
+		}
+		wasGa = ga;
+		// Angelic Descent, seen from her motion (anyone's view of her): falling at its 2 m/s, not on the ground
+		descentTicks = mercy && !entity.onGround() && vy < -0.07 && vy > -0.125 ? descentTicks + 1 : 0;
 		tickVx = vx;
 		tickVy = vy;
 		tickVz = vz;
@@ -843,7 +948,9 @@ public final class HeroAnimator {
 		wasOnGround = onGround;
 		// climbing: the local player's own climb state; others: going up steadily at about the climb speed
 		boolean climbing = OwMovement.isClimbing(entity);
-		if (!climbing && !onGround && vy > 0.3 && vy < 0.5) {
+		// (only a model that can climb: Mercy rising in Valkyrie goes up at about the climb speed, and played Kiriko's
+		// climb sounds: found playing)
+		if (!climbing && !onGround && vy > 0.3 && vy < 0.5 && model.clips.containsKey("climb")) {
 			climbTicks++;
 		} else {
 			climbTicks = 0;
@@ -898,7 +1005,28 @@ public final class HeroAnimator {
 		} else if (entity.isFallFlying() || entity.isVisuallySwimming()) {
 			// pitched flat by the renderer; legs straightened below
 			next = "idle";
-		} else if (model.clips.containsKey("fly_forward")) {
+		} else if (mercy && mercyState != null && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_GA)) {
+			// Guardian Angel (alias 0x06D): its start (cat 0x82), then the flight's 2D blend by her motion (centre, X+, X-,
+			// Y-: ours from the clip names); a launch is an action clip (ga_launch)
+			SkinnedModel.Clip start = clip(model, "ga_start");
+			if (start != null && now - gaSince < start.duration()) {
+				next = "ga_start";
+			} else {
+				next = switch (direction4(forward, left)) {
+					case "_left" -> "ga_fly_left";
+					case "_right" -> "ga_fly_right";
+					case "_back" -> "ga_fly_back";
+					default -> "ga_fly";
+				};
+			}
+		} else if (mercy && (mercyState != null && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_VALKYRIE)
+			|| descentTicks >= Math.round(dev.overcraft.mercy.MercyStats.DESCENT_POSE * 20))) {
+			// Valkyrie's flight and Angelic Descent (after 0.2 s of it): the 9-point 2D blend (alias 0x02F), its centre
+			// still, its 8 outer points by her motion against her facing (Y+ forward: M)
+			boolean flyingNow = Math.sqrt(vx * vx + vz * vz) * 20 > 0.8;
+			String d = direction(forward, left);
+			next = flyingNow ? "fly" + (d.isEmpty() ? "_forward" : d) : "fly";
+		} else if (model.clips.containsKey("add_bob")) {
 			// Jetpack Cat always flies: the 2D blend's 8 outer points by her motion against her facing, the hover idle
 			// when she's still (its centre); on the ground too (she hovers 0.55 m over it)
 			double speed3 = Math.sqrt(vx * vx + vy * vy + vz * vz) * 20;
@@ -946,6 +1074,10 @@ public final class HeroAnimator {
 			};
 		} else {
 			next = "idle";
+		}
+		if (blaster && model.clips.containsKey(next + "_blaster")) {
+			// Mercy's blaster out: every state has its own clip (her data's category 0x7D on df 0xE4)
+			next = next + "_blaster";
 		}
 		next = resolve(model, next);
 		if (!next.equals(base)) {

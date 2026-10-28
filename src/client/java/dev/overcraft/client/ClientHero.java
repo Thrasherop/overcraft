@@ -319,9 +319,10 @@ public final class ClientHero {
 			}
 		}
 
-		if (held != lastHeld || pressed != 0) {
+		int extra = ClientMercy.input(player);
+		if (held != lastHeld || pressed != 0 || extra != 0) {
 			lastHeld = held;
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed));
+			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));
 		}
 	}
 

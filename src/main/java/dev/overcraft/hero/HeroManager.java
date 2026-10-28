@@ -65,8 +65,8 @@ public final class HeroManager {
 
 	/**
 	 * Mercy's state, for every client to draw and animate her (MercyFx, HeroAnimator): [flags (Mercy.FLAG_*), Guardian
-	 * Angel's target (-1 none), the beam's mode (0 none, 1 heal, 2 boost), its target, then the Valkyrie chain's
-	 * targets]. Absent or empty: not Mercy in play. Not saved: the kit sets it each tick it changes.
+	 * Angel's target (-1 none, -2 a soul), its destination x, y, z in cm, the beam's mode (0 none, 1 heal, 2 boost), its
+	 * target, then the Valkyrie chain's or Chain Boost's targets]. Absent or empty: not Mercy in play. Not saved: the kit sets it each tick it changes.
 	 */
 	public static final AttachmentType<java.util.List<Integer>> MERCY = AttachmentRegistry.create(Overcraft.id("mercy"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));

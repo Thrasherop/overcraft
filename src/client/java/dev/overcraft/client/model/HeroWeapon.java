@@ -25,7 +25,10 @@ public final class HeroWeapon {
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
 	private static final Map<Hero, Spec> SPECS = Map.of(Hero.LUCIO,
-		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())));
+		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
+		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
+		// (research/mercy/models.json)
+		Hero.MERCY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -34,7 +37,9 @@ public final class HeroWeapon {
 	public static EmoteProps.@Nullable Placed place(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
 		Spec spec = SPECS.get(hero);
-		HeroModels.Loaded weapon = HeroModels.weapon(hero);
+		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
+		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
+			: HeroModels.weapon(hero);
 		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
 		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
 			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -49,6 +54,25 @@ public final class HeroWeapon {
 		Matrix4f at = Skeleton.world(heroModel, heroPose, bone).rotate(mount.turn());
 		Skeleton.Pose own = pose(weapon.model(), animator, firstPerson, now);
 		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
+	}
+
+	/**
+	 * Where the held weapon's muzzle is (its hardpoint 0006: the staff's head, where Mercy's beams start; the blaster's
+	 * barrel), in the hero model's space, or null.
+	 */
+	public static org.joml.@Nullable Vector3f muzzle(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now) {
+		EmoteProps.Placed placed = place(hero, animator, heroModel, firstPerson, now);
+		if (placed == null) {
+			return null;
+		}
+		SkinnedModel weapon = placed.loaded().model();
+		int node = weapon.node("hardpoint_0006");
+		if (node < 0) {
+			return null;
+		}
+		Skeleton.Pose own = pose(weapon, animator, firstPerson, now);
+		return new Matrix4f(placed.at()).mul(Skeleton.world(weapon, own, node)).getTranslation(new org.joml.Vector3f());
 	}
 
 	/** Its own pose: held, its reload and Sound Barrier clips while his play, and its additive layers on top. */
@@ -85,6 +109,14 @@ public final class HeroWeapon {
 		}
 		add(model, pose, "add_fire", a.since("fire", now));
 		add(model, pose, "add_soundwave", a.since("soundwave", now));
+		// Mercy's: the blaster's reload and shot (CF0, CDB), the staff's Flash Heal (126E7)
+		SkinnedModel.Clip own = model.clips.get("reload");
+		t = a.since("reload_blaster", now);
+		if (own != null && t >= 0 && t < own.duration()) {
+			Skeleton.sample(own, t, pose);
+		}
+		add(model, pose, "add_fire", a.since("fire_blaster", now));
+		add(model, pose, "add_flash_heal", a.since("flash_heal", now));
 		return pose;
 	}
 

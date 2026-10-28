@@ -61,6 +61,8 @@ public final class Voice {
 		java.util.Map.entry("melee", new Stimulus(35, 0.5f, 0.5f, false)), // 0023, the quick melee's shout
 		java.util.Map.entry("select", new Stimulus(100, 1, 1, false)), // 002B
 		java.util.Map.entry("resurrected", new Stimulus(75, 10, 10, false)), // 005A, a Mercy's Resurrect
+		java.util.Map.entry("death", new Stimulus(90, 2, 5, false)), // 0001 (the Mercy pass: shared, every hero's)
+		java.util.Map.entry("pain", new Stimulus(40, 1, 2.5f, false)), // 0003
 		java.util.Map.entry("damage_boosted", new Stimulus(60, 30, 30, false)), // 00CC, a Mercy's damage boost
 		// the communication wheel and pings: category 31, interrupt 1
 		java.util.Map.entry("ult_ready", new Stimulus(70, 0, 0, true)), // 02E7
@@ -73,6 +75,13 @@ public final class Voice {
 		java.util.Map.entry("kiriko.swift_step", new Stimulus(60, 10, 10, false)), // FC0
 		java.util.Map.entry("kiriko.suzu", new Stimulus(60, 10, 10, false)), // FC5
 		java.util.Map.entry("kiriko.heal", new Stimulus(60, 14, 17, false)), // FC4
+		// Mercy's own (tools/soundmaps/mercy.txt): her beam lines from her staff's graph 006B, the rest by shared criteria
+		java.util.Map.entry("mercy.beam_heal", new Stimulus(50, 10, 15, false)), // 00B9
+		java.util.Map.entry("mercy.beam_boost", new Stimulus(50, 14, 17, false)), // 00BA
+		java.util.Map.entry("mercy.beam_heal_ongoing", new Stimulus(50, 20, 25, false)), // 00BB (M)
+		java.util.Map.entry("mercy.beam_boost_ongoing", new Stimulus(50, 20, 25, false)), // 00BC (M)
+		java.util.Map.entry("mercy.guardian_angel", new Stimulus(50, 20, 25, false)), // 0099 (M)
+		java.util.Map.entry("mercy.resurrect", new Stimulus(95, 0.1f, 0.1f, false)), // 009A (M)
 		// Lúcio's own (research/lucio/voice.json): category 4, interrupt 0; raised by criteria events in his graphs
 		java.util.Map.entry("lucio.crossfade_heal", new Stimulus(50, 15, 20, false)), // 03B0
 		java.util.Map.entry("lucio.crossfade_speed", new Stimulus(50, 10, 20, false)), // 03B1

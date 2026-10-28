@@ -50,6 +50,9 @@ public final class HeroControls {
 		ULTIMATE(Section.COMBAT, keyboard(InputConstants.KEY_Q)),
 		RELOAD(Section.COMBAT, keyboard(InputConstants.KEY_R)),
 		QUICK_MELEE(Section.COMBAT, keyboard(InputConstants.KEY_V)),
+		/** Overwatch's weapon keys (Mercy: the Caduceus Staff, the Caduceus Blaster; the scroll wheel swaps too). */
+		WEAPON_1(Section.COMBAT, keyboard(InputConstants.KEY_1)),
+		WEAPON_2(Section.COMBAT, keyboard(InputConstants.KEY_2)),
 		/** Overwatch's interact key: here doors, buttons, chests and villagers, which the fire buttons no longer do. */
 		INTERACT(Section.INTERFACE, keyboard(InputConstants.KEY_F)),
 		/** Hold to choose a perk once one is ready, left or right click picking (Overwatch's: Left Alt, #36). */

@@ -9,6 +9,8 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroSounds;
+import dev.overcraft.registry.OcSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
@@ -100,9 +102,12 @@ public final class Mercy implements HeroKit {
 			s.primaryReload = -1;
 		}
 
+		int modeBefore = s.beamTarget == null ? BEAM_NONE : s.beamMode;
+		boolean lockedBefore = s.beamTarget != null;
 		if (!controls || !player.isAlive()) {
 			// out of play (dead, Minecraft mode): what she was doing ends; Valkyrie's time runs on
 			endBeam(s);
+			beamSounds(player, s, modeBefore, lockedBefore);
 			if (s.gaPhase != GA_NONE) {
 				endGuardianAngel(s);
 			}
@@ -126,7 +131,36 @@ public final class Mercy implements HeroKit {
 		} else {
 			beam(player, s);
 		}
+		beamSounds(player, s, modeBefore, lockedBefore);
 		publish(player, s);
+	}
+
+	/**
+	 * The beam's sounds as its state changes this tick: the lock and its loss (hers only: no 3p copy in the data), each
+	 * mode's start and end (hers, and everyone else's at her). The loops are the clients' (MercySounds).
+	 */
+	private static void beamSounds(ServerPlayer player, HeroState s, int modeBefore, boolean lockedBefore) {
+		int modeNow = s.beamTarget == null ? BEAM_NONE : s.beamMode;
+		boolean lockedNow = s.beamTarget != null;
+		if (lockedNow && !lockedBefore) {
+			HeroSounds.toOwner(player, OcSounds.MERCY_BEAM_LOCK);
+		} else if (!lockedNow && lockedBefore) {
+			HeroSounds.toOwner(player, OcSounds.MERCY_BEAM_UNLOCK);
+		}
+		if (modeNow == modeBefore) {
+			return;
+		}
+		Vec3 at = player.getEyePosition();
+		if (modeBefore == BEAM_HEAL) {
+			HeroSounds.split(player, OcSounds.MERCY_HEAL_END, OcSounds.MERCY_HEAL_END_3P, at);
+		} else if (modeBefore == BEAM_BOOST) {
+			HeroSounds.split(player, OcSounds.MERCY_BOOST_END, OcSounds.MERCY_BOOST_END_3P, at);
+		}
+		if (modeNow == BEAM_HEAL) {
+			HeroSounds.split(player, OcSounds.MERCY_HEAL_START, OcSounds.MERCY_HEAL_START_3P, at);
+		} else if (modeNow == BEAM_BOOST) {
+			HeroSounds.split(player, OcSounds.MERCY_BOOST_START, OcSounds.MERCY_BOOST_START_3P, at);
+		}
 	}
 
 	// ---- the weapons ----
@@ -154,6 +188,8 @@ public final class Mercy implements HeroKit {
 				s.primaryReload = -1;
 			}
 			Combat.animate(player, wantBlaster ? "draw_blaster" : "draw");
+			HeroSounds.split(player, wantBlaster ? OcSounds.MERCY_SWAP_BLASTER : OcSounds.MERCY_SWAP_STAFF,
+				wantBlaster ? OcSounds.MERCY_SWAP_BLASTER_3P : OcSounds.MERCY_SWAP_STAFF_3P, player.getEyePosition());
 		}
 		if (s.gaPhase == GA_FLY && (extra & (HeroInputPayload.EXTRA_JUMP | HeroInputPayload.EXTRA_CROUCH)) != 0) {
 			// a launch: her client has already flung her (OwMovement); here its state, 1 s before the cooldown
@@ -164,6 +200,7 @@ public final class Mercy implements HeroKit {
 			s.softLanding = true;
 			Combat.animate(player, (extra & HeroInputPayload.EXTRA_CROUCH) != 0 ? "ga_launch_up" : "ga_launch");
 			Effects.play(player.level(), "mercy_ga_launch", player.position(), player);
+			HeroSounds.split(player, OcSounds.MERCY_GA_LAUNCH, OcSounds.MERCY_GA_LAUNCH_3P, player.position());
 		}
 	}
 
@@ -192,6 +229,9 @@ public final class Mercy implements HeroKit {
 			s.weaponRecovery += Ow.ticks(1 / BLASTER_RATE);
 			shoot(player, unlimited);
 			Combat.animate(player, "fire_blaster");
+			// 228D, the shot's own sound slot: one copy, everyone (her too) hears it at her
+			player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), OcSounds.MERCY_BLASTER_FIRE,
+				net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 		}
 		if (s.weaponRecovery < 0) {
 			s.weaponRecovery = 0;
@@ -215,6 +255,7 @@ public final class Mercy implements HeroKit {
 	private static void startReload(ServerPlayer player, HeroState s) {
 		s.primaryReload = 0;
 		Combat.animate(player, "reload_blaster");
+		HeroSounds.split(player, OcSounds.MERCY_RELOAD, OcSounds.MERCY_RELOAD_3P, player.getEyePosition());
 	}
 
 	// ---- Caduceus Staff ----
@@ -442,6 +483,8 @@ public final class Mercy implements HeroKit {
 		s.softLanding = true;
 		Combat.animate(player, "ga_start");
 		Effects.play(player.level(), "mercy_ga_start", player.position(), player);
+		HeroSounds.split(player, OcSounds.MERCY_GA_START, OcSounds.MERCY_GA_START_3P, player.position());
+		Voice.say(player, "guardian_angel", 1);
 	}
 
 	private static void endGuardianAngel(HeroState s) {
@@ -512,6 +555,7 @@ public final class Mercy implements HeroKit {
 		Combat.animate(player, s.blasterOut ? "resurrect_blaster" : "resurrect");
 		Voice.say(player, "resurrect", 1);
 		Effects.play(player.level(), "mercy_resurrect", soul.at, player);
+		HeroSounds.split(player, OcSounds.MERCY_RES_CAST, OcSounds.MERCY_RES_CAST_3P, player.position());
 	}
 
 	private static void resurrect(ServerPlayer player, HeroState s) {
@@ -530,6 +574,7 @@ public final class Mercy implements HeroKit {
 			endResurrect(player, s, done);
 			if (done) {
 				Effects.play(level, "mercy_resurrected", soul.at, player);
+				HeroSounds.toOwner(player, OcSounds.MERCY_RES_DONE);
 			}
 		}
 	}
@@ -579,6 +624,7 @@ public final class Mercy implements HeroKit {
 		s.flashCast = Ow.ticks(FLASH_CAST);
 		Combat.animate(player, flying(s) ? "flash_heal_flying" : "flash_heal");
 		Effects.play(player.level(), "mercy_flash_cast", player.position(), player);
+		HeroSounds.split(player, OcSounds.MERCY_FLASH_CAST, OcSounds.MERCY_FLASH_CAST_3P, player.getEyePosition());
 	}
 
 	/** Flash Heal's cast ends: 60 to the staff's target (50 with Double Dose), doubled when it's below half health. */
@@ -600,7 +646,11 @@ public final class Mercy implements HeroKit {
 			Combat.credit(player, healed);
 			Combat.addFireForHealing(player, healed);
 		}
-		Effects.play(player.level(), "mercy_flash_heal", target.position(), target);
+		// on the ally's chest; the owner is her (her staff head starts its band)
+		Effects.play(player.level(), "mercy_flash_heal", target.position().add(0, target.getBbHeight() * 0.6, 0), player);
+		// 64E1's C2C6, played on the target: everyone hears it there
+		player.level().playSound(null, target.getX(), target.getEyeY(), target.getZ(), OcSounds.MERCY_FLASH_HEAL,
+			net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 	}
 
 	// ---- Valkyrie ----
@@ -617,6 +667,7 @@ public final class Mercy implements HeroKit {
 		dev.overcraft.hero.HeroSounds.ultLine(player, dev.overcraft.registry.OcSounds.MERCY_ULT_FRIENDLY,
 			dev.overcraft.registry.OcSounds.MERCY_ULT_ENEMY, 1);
 		Effects.play(player.level(), "mercy_valkyrie_cast", player.position(), player);
+		HeroSounds.split(player, OcSounds.MERCY_VALKYRIE_CAST, OcSounds.MERCY_VALKYRIE_CAST_3P, player.position());
 	}
 
 	private static void valkyrieTimer(ServerPlayer player, HeroState s) {
@@ -662,7 +713,12 @@ public final class Mercy implements HeroKit {
 	private static void publish(ServerPlayer player, HeroState s) {
 		List<Integer> state = new ArrayList<>();
 		state.add(flags(s));
-		state.add(s.gaPhase == GA_FLY && s.gaTarget != null ? s.gaTarget : -1);
+		// Guardian Angel's target: an entity, or a soul (-2) at the point that follows (cm: no body to fly to on clients)
+		Vec3 dest = s.gaPhase == GA_FLY ? gaDestination(player, s) : null;
+		state.add(s.gaPhase != GA_FLY ? -1 : s.gaSoul != null ? -2 : s.gaTarget != null ? s.gaTarget : -1);
+		state.add(dest == null ? 0 : (int) Math.round(dest.x * 100));
+		state.add(dest == null ? 0 : (int) Math.round(dest.y * 100));
+		state.add(dest == null ? 0 : (int) Math.round(dest.z * 100));
 		state.add(s.beamTarget == null ? BEAM_NONE : s.beamMode);
 		state.add(s.beamTarget == null ? -1 : s.beamTarget);
 		if (s.beamTarget != null) {

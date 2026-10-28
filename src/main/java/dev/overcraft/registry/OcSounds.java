@@ -122,6 +122,69 @@ public final class OcSounds {
 	 * Jetpack Cat's (tools/soundmaps/jetpack_cat.txt, read from her effects' Wwise events): her own in her head, fire
 	 * and reload also heard by everyone else ("_3p"); the loops are played and stopped by the client (JetpackCatSounds).
 	 */
+	/**
+	 * Mercy's (tools/soundmaps/mercy.txt, read from her effects' Wwise events): her own in her head, "_3p" what everyone
+	 * else hears at her; the loops (the beams, Angelic Descent, Valkyrie) are played and stopped by each client
+	 * (MercySounds).
+	 */
+	public static final SoundEvent MERCY_BEAM_LOCK = register("mercy.beam.lock");
+	public static final SoundEvent MERCY_BEAM_UNLOCK = register("mercy.beam.unlock");
+	public static final SoundEvent MERCY_HEAL_START = register("mercy.beam.heal.start");
+	public static final SoundEvent MERCY_HEAL_START_3P = register("mercy.beam.heal.start_3p");
+	public static final SoundEvent MERCY_HEAL_LOOP = register("mercy.beam.heal.loop");
+	public static final SoundEvent MERCY_HEAL_LOOP_3P = register("mercy.beam.heal.loop_3p");
+	public static final SoundEvent MERCY_HEAL_END = register("mercy.beam.heal.end");
+	public static final SoundEvent MERCY_HEAL_END_3P = register("mercy.beam.heal.end_3p");
+	public static final SoundEvent MERCY_BOOST_START = register("mercy.beam.boost.start");
+	public static final SoundEvent MERCY_BOOST_START_3P = register("mercy.beam.boost.start_3p");
+	public static final SoundEvent MERCY_BOOST_LOOP = register("mercy.beam.boost.loop");
+	public static final SoundEvent MERCY_BOOST_LOOP_3P = register("mercy.beam.boost.loop_3p");
+	public static final SoundEvent MERCY_BOOST_END = register("mercy.beam.boost.end");
+	public static final SoundEvent MERCY_BOOST_END_3P = register("mercy.beam.boost.end_3p");
+	public static final SoundEvent MERCY_BLASTER_FIRE = register("mercy.blaster.fire");
+	public static final SoundEvent MERCY_BLASTER_HIT = register("mercy.blaster.hit");
+	public static final SoundEvent MERCY_BLASTER_HIT_3P = register("mercy.blaster.hit_3p");
+	public static final SoundEvent MERCY_BLASTER_HIT_BLOCK = register("mercy.blaster.hit_block");
+	public static final SoundEvent MERCY_RELOAD = register("mercy.blaster.reload");
+	public static final SoundEvent MERCY_RELOAD_3P = register("mercy.blaster.reload_3p");
+	public static final SoundEvent MERCY_SWAP_STAFF = register("mercy.swap.staff");
+	public static final SoundEvent MERCY_SWAP_STAFF_3P = register("mercy.swap.staff_3p");
+	public static final SoundEvent MERCY_SWAP_BLASTER = register("mercy.swap.blaster");
+	public static final SoundEvent MERCY_SWAP_BLASTER_3P = register("mercy.swap.blaster_3p");
+	public static final SoundEvent MERCY_MELEE_STAFF = register("mercy.melee.staff");
+	public static final SoundEvent MERCY_MELEE_STAFF_3P = register("mercy.melee.staff_3p");
+	public static final SoundEvent MERCY_MELEE_BLASTER = register("mercy.melee.blaster");
+	public static final SoundEvent MERCY_MELEE_BLASTER_3P = register("mercy.melee.blaster_3p");
+	public static final SoundEvent MERCY_GA_START = register("mercy.ga.start");
+	public static final SoundEvent MERCY_GA_START_3P = register("mercy.ga.start_3p");
+	public static final SoundEvent MERCY_GA_LAUNCH = register("mercy.ga.launch");
+	public static final SoundEvent MERCY_GA_LAUNCH_3P = register("mercy.ga.launch_3p");
+	public static final SoundEvent MERCY_DESCENT_START = register("mercy.descent.start");
+	public static final SoundEvent MERCY_DESCENT_START_3P = register("mercy.descent.start_3p");
+	public static final SoundEvent MERCY_DESCENT_LOOP = register("mercy.descent.loop");
+	public static final SoundEvent MERCY_DESCENT_LOOP_3P = register("mercy.descent.loop_3p");
+	public static final SoundEvent MERCY_DESCENT_END = register("mercy.descent.end");
+	public static final SoundEvent MERCY_DESCENT_END_3P = register("mercy.descent.end_3p");
+	public static final SoundEvent MERCY_RES_CAST = register("mercy.resurrect.cast");
+	public static final SoundEvent MERCY_RES_CAST_3P = register("mercy.resurrect.cast_3p");
+	public static final SoundEvent MERCY_RES_DONE = register("mercy.resurrect.done");
+	public static final SoundEvent MERCY_RES_REVIVED = register("mercy.resurrect.revived");
+	public static final SoundEvent MERCY_FLASH_CAST = register("mercy.flash_heal.cast");
+	public static final SoundEvent MERCY_FLASH_CAST_3P = register("mercy.flash_heal.cast_3p");
+	public static final SoundEvent MERCY_FLASH_HEAL = register("mercy.flash_heal.heal");
+	public static final SoundEvent MERCY_VALKYRIE_CAST = register("mercy.valkyrie.cast");
+	public static final SoundEvent MERCY_VALKYRIE_CAST_3P = register("mercy.valkyrie.cast_3p");
+	public static final SoundEvent MERCY_VALKYRIE_LOOP = register("mercy.valkyrie.loop");
+	public static final SoundEvent MERCY_VALKYRIE_LOOP_3P = register("mercy.valkyrie.loop_3p");
+	public static final SoundEvent MERCY_VALKYRIE_ENDING = register("mercy.valkyrie.ending");
+	public static final SoundEvent MERCY_VALKYRIE_ENDING_3P = register("mercy.valkyrie.ending_3p");
+	public static final SoundEvent MERCY_VALKYRIE_END = register("mercy.valkyrie.end");
+	public static final SoundEvent MERCY_VALKYRIE_END_3P = register("mercy.valkyrie.end_3p");
+	/** Her lines by moment (Voice.say: "mercy.voice.<moment>"), the game's own pools (mercy.txt's voice section). */
+	public static final java.util.List<String> MERCY_VOICE = java.util.List.of("elimination", "multikill", "melee_kill",
+		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy",
+		"beam_heal", "beam_boost", "beam_heal_ongoing", "beam_boost_ongoing", "guardian_angel", "resurrect",
+		"resurrect_enemy");
 	/** Valkyrie's line as allies (and Mercy) hear it, "Heroes never die!", and as enemies do. */
 	public static final SoundEvent MERCY_ULT_FRIENDLY = register("mercy.ult.friendly");
 	public static final SoundEvent MERCY_ULT_ENEMY = register("mercy.ult.enemy");
@@ -168,6 +231,7 @@ public final class OcSounds {
 	static {
 		LUCIO_VOICE.forEach(moment -> register("lucio.voice." + moment));
 		JETPACK_CAT_VOICE.forEach(moment -> register("jetpack_cat.voice." + moment));
+		MERCY_VOICE.forEach(moment -> register("mercy.voice." + moment));
 	}
 
 	private OcSounds() {

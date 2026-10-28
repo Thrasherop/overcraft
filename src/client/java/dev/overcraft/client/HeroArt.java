@@ -51,7 +51,8 @@ public final class HeroArt {
 
 	/** An ability's icon, by its in-game name's slug ("kunai", "swift_step", ...). */
 	public static @Nullable Identifier ability(Hero hero, String ability) {
-		return art(hero, "abilities/" + ability);
+		// Mercy's staff has one icon for both its beams (her data's loadouts)
+		return art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
 	}
 
 	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */

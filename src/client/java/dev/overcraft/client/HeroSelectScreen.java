@@ -444,7 +444,8 @@ public class HeroSelectScreen extends OwScreen {
 	 * standing hero's size her thrusters ran off the top and sides (ours, by eye from a screenshot).
 	 */
 	private static float framing(Hero hero) {
-		return hero == Hero.JETPACK_CAT ? 0.55f : 1;
+		// Mercy's wings spread 1.7 m and rise over her head (ours, by eye as hers)
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : 1;
 	}
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
@@ -483,6 +484,17 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "purr"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "catnapper"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "jetpack"));
+			// Overwatch's order (her data's loadouts): the staff's two beams (left heals, right boosts: Overwatch's own
+			// layout), the blaster (1 / 2), Guardian Angel, Resurrect, Flash Heal (Reload), Valkyrie, Angelic Descent
+			case MERCY -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "caduceus_staff"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "damage_boost"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.WEAPON_2)), "caduceus_blaster"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "guardian_angel"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "resurrect"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.RELOAD)), "flash_heal"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "valkyrie"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "angelic_descent"));
 			default -> List.of();
 		};
 	}

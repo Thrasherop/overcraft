@@ -195,6 +195,30 @@ public final class HeroModelRenderer {
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
+		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
+			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			Vector3f head = weaponShown && !animator.blaster() ? HeroWeapon.muzzle(hero, animator, loaded.model(), false, now) : null;
+			net.minecraft.world.phys.Vec3 staff = null;
+			if (head != null) {
+				Vector3f p = head.mul(state.scale).rotateY(turn);
+				staff = base.add(p.x, p.y, p.z);
+			}
+			String[] names = dev.overcraft.client.effect.MercyFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length && pose != null; i++) {
+				int node = loaded.model().node("hardpoint_" + names[i]);
+				if (node < 0) {
+					points = new net.minecraft.world.phys.Vec3[0];
+					break;
+				}
+				Vector3f p = Skeleton.world(loaded.model(), pose, node).getTranslation(new Vector3f()).mul(state.scale).rotateY(turn);
+				points[i] = base.add(p.x, p.y, p.z);
+			}
+			dev.overcraft.client.effect.MercyFx.posed(entity, staff, pose == null ? new net.minecraft.world.phys.Vec3[0] : points);
+		}
 		if (hero == Hero.LUCIO && !previewing && entity.isAlive() && entity instanceof net.minecraft.world.entity.player.Player player) {
 			// his song on his skates (LucioFx): from his foot bones as posed, in the world
 			Integer song = player.getAttached(HeroManager.SONG);

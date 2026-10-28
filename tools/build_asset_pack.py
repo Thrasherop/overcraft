@@ -14,7 +14,8 @@
     py tools/build_asset_pack.py effects <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
-                                                            "E:\Overwatch Archiveesearch\jetpack_catx")
+                                                            "E:\Overwatch Archive
+esearch\jetpack_catx")
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
@@ -29,10 +30,10 @@ ROOT = Path(__file__).resolve().parent.parent
 LOCAL = ROOT / "local-assets"
 PACK = LOCAL / "pack"
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn", "jetpack_cat"}
+HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn", "jetpack_cat", "mercy"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
-                "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat"}
+                "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -273,7 +274,7 @@ def add_sounds(source):
 
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
-VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio"}
+VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy"}
 
 
 def voice_text(file_name):
@@ -419,6 +420,38 @@ EFFECT_MASKS = {
     "cat_crack": ("JetpackCat", "Catnapper", "00000006CBB9", 1),
     "cat_crack_glow": ("JetpackCat", "Catnapper", "00000006CA10", 1),
     "cat_puff": ("JetpackCat", "Catnapper", "000000018B18", 1),
+
+    # Mercy's (tools/reference/mercy-effects.md): cloud noise, the beams' wavy streaks, centre line, noise, long
+    # streaks and band, a second noise, the beamed ally's rim (INVERTED: black centre)
+    "mercy_noise": ("Mercy", "CaduceusStaff", "0000000004DB", 1),
+    "mercy_beam_wave": ("Mercy", "CaduceusStaff", "00000002800B", 1),
+    "mercy_beam_core": ("Mercy", "CaduceusStaff", "000000028016", 1),
+    "mercy_beam_noise": ("Mercy", "CaduceusStaff", "000000019167", 1),
+    "mercy_beam_streak": ("Mercy", "CaduceusStaff", "0000000207EC", 1),
+    "mercy_band": ("Mercy", "CaduceusStaff", "000000001344", 1),
+    "mercy_noise_b": ("Mercy", "CaduceusStaff", "000000004A7E", 1),
+    "mercy_rim": ("Mercy", "CaduceusStaff", "000000000D8F", 1),
+    # wing glows: soft ball, yellow wisps (a colour sprite: NATURAL)
+    "mercy_soft": ("Mercy", "AngelicDescent", "00000000139C", 1),
+    "mercy_wisp": ("Mercy", "AngelicDescent", "0000000013CC", 1),
+    # the blaster: hot glow, muzzle flame burst, thin streak, star flare, impact disc (colour sprite)
+    "mercy_glow": ("Mercy", "CaduceusBlaster", "000000000242", 1),
+    "mercy_muzzle": ("Mercy", "CaduceusBlaster", "000000004B47", 1),
+    "mercy_streak": ("Mercy", "CaduceusBlaster", "000000000D89", 1),
+    "mercy_star": ("Mercy", "CaduceusBlaster", "000000011DF2", 1),
+    "mercy_impact": ("Mercy", "CaduceusBlaster", "0000000020AC", 1),
+    # Guardian Angel's trail (dim: max 165)
+    "mercy_trail": ("Mercy", "GuardianAngel", "0000000013F9", 1),
+    # Resurrect: lens streak, the halo ring and the gold teardrop (colour sprites), the plus cross
+    "mercy_lens": ("Mercy", "Resurrect", "00000000CC29", 1),
+    "mercy_halo": ("Mercy", "Resurrect", "000000001411", 1),
+    "mercy_flame": ("Mercy", "Resurrect", "000000001369", 1),
+    "mercy_plus": ("Mercy", "Resurrect", "000000027E5E", 1),
+    # Valkyrie's feathers: soft bar, long spike; the wings' streaky noise; Flash Heal's beam web (1024²)
+    "mercy_feather": ("Mercy", "Valkyrie", "000000011BA6", 1),
+    "mercy_spike": ("Mercy", "Valkyrie", "000000011B97", 1),
+    "mercy_wing_noise": ("Mercy", "Wings", "000000005A7F", 1),
+    "mercy_web": ("Mercy", "FlashHeal", "00000001CB5D", 1),
 }
 
 
