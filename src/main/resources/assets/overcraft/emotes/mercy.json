@@ -38,6 +38,13 @@
        4.2
       ]
      ],
+     "stowBlaster": [
+      [
+       0.0,
+       4.5
+      ]
+     ],
+     "weaponClips": [],
      "geosets": [
       0,
       0,
@@ -83,14 +90,7 @@
       0,
       0
      ],
-     "skeleton": "hers",
-     "stowBlaster": [
-      [
-       0.0,
-       4.5
-      ]
-     ],
-     "weaponClips": []
+     "skeleton": "hers"
     },
     "emote_loved_2": {
      "id": "983",
@@ -100,9 +100,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -125,9 +125,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_2": {
      "id": "19D1E",
@@ -137,9 +137,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_3": {
      "id": "19D1F",
@@ -149,9 +149,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_4": {
      "id": "1932B",
@@ -180,14 +180,14 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0667,
        1.8334
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_5": {
      "id": "19331",
@@ -197,9 +197,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "prop"
     },
     "emote_pod_glide_6": {
      "id": "19332",
@@ -209,9 +209,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "prop"
     },
     "emote_pod_glide_7": {
      "id": "19D29",
@@ -233,14 +233,14 @@
      ],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        8.0
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_8": {
      "id": "13553",
@@ -250,9 +250,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_pod_glide_9": {
      "id": "1B18A",
@@ -271,9 +271,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -292,14 +292,14 @@
        0.4667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.4667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_bunny_hop_2": {
      "id": "19A34",
@@ -321,14 +321,14 @@
        0.8
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.8
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_bunny_hop_3": {
      "id": "9EE",
@@ -338,9 +338,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_bunny_hop_4": {
      "id": "983",
@@ -350,9 +350,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -401,9 +401,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_listen_up_2": {
      "id": "178AD",
@@ -418,9 +418,9 @@
        0.3
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_listen_up_3": {
      "id": "12625",
@@ -430,9 +430,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_listen_up_4": {
      "id": "12638",
@@ -442,9 +442,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -487,6 +487,8 @@
        2.3333
       ]
      ],
+     "stowBlaster": [],
+     "weaponClips": [],
      "geosets": [
       7,
       7,
@@ -512,9 +514,7 @@
       7,
       7
      ],
-     "skeleton": "hers",
-     "stowBlaster": [],
-     "weaponClips": []
+     "skeleton": "hers"
     },
     "emote_mic_drop_2": {
      "id": "12625",
@@ -524,9 +524,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_mic_drop_3": {
      "id": "12638",
@@ -536,9 +536,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -559,9 +559,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_salty_2": {
      "id": "178AD",
@@ -576,9 +576,9 @@
        0.3
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_salty_3": {
      "id": "12625",
@@ -588,9 +588,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_salty_4": {
      "id": "12638",
@@ -600,9 +600,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -646,14 +646,14 @@
        8.0
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        8.0
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_hustle_2": {
      "id": "401A",
@@ -681,14 +681,14 @@
        0.7667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.7667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_hustle_3": {
      "id": "9EE",
@@ -698,9 +698,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_hustle_4": {
      "id": "983",
@@ -710,9 +710,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -738,14 +738,14 @@
        2.3667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        2.6
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_applause_2": {
      "id": "983",
@@ -755,9 +755,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -791,6 +791,20 @@
       }
      ],
      "stow": [],
+     "stowBlaster": [
+      [
+       0.0,
+       4.5
+      ]
+     ],
+     "weaponClips": [
+      {
+       "clip": "emote_caduceus",
+       "weapon": "staff",
+       "start": 0.0,
+       "end": 4.5
+      }
+     ],
      "geosets": [
       0,
       0,
@@ -836,21 +850,7 @@
       0,
       0
      ],
-     "skeleton": "hers",
-     "stowBlaster": [
-      [
-       0.0,
-       4.5
-      ]
-     ],
-     "weaponClips": [
-      {
-       "clip": "emote_caduceus",
-       "weapon": "staff",
-       "start": 0.0,
-       "end": 4.5
-      }
-     ]
+     "skeleton": "hers"
     },
     "emote_caduceus_2": {
      "id": "1627",
@@ -860,9 +860,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "prop"
     },
     "emote_caduceus_3": {
      "id": "983",
@@ -872,9 +872,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -888,9 +888,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_heroic_2": {
      "id": "9ED",
@@ -900,9 +900,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_heroic_3": {
      "id": "3A7F",
@@ -924,6 +924,13 @@
        2.2
       ]
      ],
+     "stowBlaster": [
+      [
+       0.0,
+       2.3333
+      ]
+     ],
+     "weaponClips": [],
      "geosets": [
       0,
       0,
@@ -947,14 +954,7 @@
       0,
       0
      ],
-     "skeleton": "hers",
-     "stowBlaster": [
-      [
-       0.0,
-       2.3333
-      ]
-     ],
-     "weaponClips": []
+     "skeleton": "hers"
     },
     "emote_heroic_4": {
      "id": "9F0",
@@ -964,9 +964,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_heroic_5": {
      "id": "989",
@@ -983,9 +983,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_heroic_6": {
      "id": "9EE",
@@ -995,9 +995,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_heroic_7": {
      "id": "983",
@@ -1007,9 +1007,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1035,14 +1035,14 @@
        2.5667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        2.7667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_no_pulse_2": {
      "id": "983",
@@ -1052,9 +1052,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1081,7 +1081,6 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
@@ -1095,7 +1094,8 @@
        "start": 0.0,
        "end": 4.8333
       }
-     ]
+     ],
+     "skeleton": "hers"
     },
     "emote_parasol_2": {
      "id": "4DC8",
@@ -1105,9 +1105,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "prop"
     },
     "emote_parasol_3": {
      "id": "983",
@@ -1117,9 +1117,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1145,14 +1145,14 @@
        0.4333
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.4333
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_relax_2": {
      "id": "3BA4",
@@ -1174,14 +1174,14 @@
        2.2334
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        2.2333
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_relax_3": {
      "id": "3BA3",
@@ -1196,14 +1196,14 @@
        5.3667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        5.3667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_relax_4": {
      "id": "983",
@@ -1213,9 +1213,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1245,14 +1245,14 @@
        2.9667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        3.3
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_the_best_medicine_2": {
      "id": "983",
@@ -1262,9 +1262,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1328,14 +1328,14 @@
        4.6667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0667,
        4.6667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_so_tough_2": {
      "id": "983",
@@ -1345,9 +1345,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1374,14 +1374,14 @@
        0.5666
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.5667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_crazy_choreography_2": {
      "id": "12712",
@@ -1405,14 +1405,14 @@
        7.3667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        7.3667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_crazy_choreography_3": {
      "id": "9EE",
@@ -1422,9 +1422,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_crazy_choreography_4": {
      "id": "983",
@@ -1434,9 +1434,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1501,14 +1501,14 @@
        2.8334
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0667,
        2.8334
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_rainy_stroll_2": {
      "id": "12345",
@@ -1549,14 +1549,14 @@
        2.2667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        2.2667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_rainy_stroll_3": {
      "id": "12349",
@@ -1566,9 +1566,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_rainy_stroll_4": {
      "id": "1234A",
@@ -1578,9 +1578,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_rainy_stroll_5": {
      "id": "9EE",
@@ -1590,9 +1590,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_rainy_stroll_6": {
      "id": "983",
@@ -1602,9 +1602,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1652,14 +1652,14 @@
        3.2666
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0333,
        3.2666
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_lazy_river_2": {
      "id": "15003",
@@ -1697,14 +1697,14 @@
        7.3
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        7.3
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_lazy_river_3": {
      "id": "15B75",
@@ -1729,9 +1729,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_lazy_river_4": {
      "id": "15B76",
@@ -1750,9 +1750,9 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_lazy_river_5": {
      "id": "9EE",
@@ -1762,9 +1762,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_lazy_river_6": {
      "id": "983",
@@ -1774,9 +1774,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1812,14 +1812,14 @@
        6.4667
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        6.4667
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_shuffle_2": {
      "id": "18185",
@@ -1834,14 +1834,14 @@
        0.4
       ]
      ],
-     "skeleton": "hers",
      "stowBlaster": [
       [
        0.0,
        0.4
       ]
      ],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     },
     "emote_shuffle_3": {
      "id": "3CAD",
@@ -1851,9 +1851,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   },
@@ -1884,7 +1884,6 @@
       }
      ],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
      "weaponClips": [
       {
@@ -1893,7 +1892,8 @@
        "start": 0.0,
        "end": 6.1333
       }
-     ]
+     ],
+     "skeleton": "hers"
     },
     "emote_flurry_2": {
      "id": "852E",
@@ -1903,9 +1903,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "prop",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "prop"
     },
     "emote_flurry_3": {
      "id": "983",
@@ -1915,9 +1915,9 @@
      "spawns": [],
      "events": [],
      "stow": [],
-     "skeleton": "hers",
      "stowBlaster": [],
-     "weaponClips": []
+     "weaponClips": [],
+     "skeleton": "hers"
     }
    }
   }

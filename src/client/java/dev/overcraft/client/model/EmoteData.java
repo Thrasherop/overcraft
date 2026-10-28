@@ -111,7 +111,7 @@ public final class EmoteData {
 
 		/**
 		 * The same for one of two weapons (Mercy: her staff's slot 12A5, else her blaster's 206C; each clip's windows
-		 * for each, tools/emote_weapon_slots.py). A weapon with no window stays out.
+		 * for each, tools/emote_data.py's WEAPON_SLOTS). A weapon with no window stays out.
 		 */
 		public boolean stowed(String emote, @Nullable String clip, float at, boolean blaster) {
 			Map<String, float[][]> clips = (blaster ? stowsBlaster : stows).get(emote);

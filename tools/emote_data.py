@@ -10,8 +10,9 @@ Runs under the research environment's Python (pythonnet + TankLib: E:\\Overwatch
 since each clip's animation effect is read through TankLib. Blender reads the models' hardpoint tables.
 
 What it writes, per emote (named as tools/owm_survey.py names them: emote_<slug>_<n>, n in path order):
-- the windows in which a clip puts the hero's own weapon away ("stow": EntityControl components with no clip, Lúcio's
-  Sonic Amplifier, an entity of its own) and, for a control that names a clip, that clip on the entity it spawned;
+- the windows in which a clip puts the hero's own weapon away ("stow", Mercy's blaster "stowBlaster": EntityControls on
+  the weapon's slot with no clip, WEAPON_SLOTS), the weapon's own clips it plays ("weaponClips": a control on its slot
+  with a clip) and, for any other control that names a clip, that clip on the entity it spawned;
 - each clip's sounds and voice lines ("events"): each Sound component of its animation effect (a 02C, when it starts in
   the clip and how long it's held: 0 a one-shot; Killer Beam's whoosh 4.33 s in) and each VoiceStimulus (an 078 and
   when: Killer Beam's "Killer Beam! ...or whatever" 2.53 s in). The mod plays them as <hero>.emote.s<id> and
@@ -111,11 +112,18 @@ INFERRED = {
 }
 
 
-# an EntityControl's action byte that puts the hero's own weapon entity away (TankLib names only Show = 1 and PlayAnim =
-# 4). 204 is the only byte on the controls whose windows match GeoSetFlags bit 1 (Lúcio's weapon strap) to a mask sample
-# in every emote that hides his Sonic Amplifier; Listen Up, Salty and Mic Drop carry 254 / 16 / 99 and keep it out
-# (research/lucio/emotes.md). M: the byte isn't decoded.
-STOW = 204
+# The EntityControl chunk (ECEC) is read from the effect's raw bytes: TankLib 2.25's structure predates a field, so what
+# it calls the "action" byte is the low byte of the control's identifier (Lúcio's "204" was his weapon slot 12CC). The raw
+# chunk (0x40 bytes): 0x00 the clip (006), 0x08 a second GUID, 0x10 the identifier (01C: the hero's child-entity slot it
+# controls), 0x20 the action in the low 16 bits: 1 with no clip = that entity put away over the window, 4 with a clip =
+# it stays out and plays the clip (research\mercy\emote_weapons.md, 2026-10-28; techniques/emotes/mercy_emotes.md).
+PUT_AWAY, PLAY = 1, 4
+# each hero's weapon slots (the hero entity's STUChildEntityDefinition, m_49F782CE: H) -> the emote data key of its
+# stow windows, its name in "weaponClips" and the clip map naming its clips (a clip it plays must be exported into it)
+WEAPON_SLOTS = {
+    "lucio": {"12CC": ("stow", "amplifier", "lucio_weapon.txt")},
+    "mercy": {"12A5": ("stow", "staff", "mercy_staff.txt"), "206C": ("stowBlaster", "blaster", "mercy_blaster.txt")},
+}
 
 # how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
 # tools/soundmaps/emotes.txt): copied onto each sound event as "loop" (restarted every so many seconds while held),
@@ -127,7 +135,7 @@ EMOTE_SOUNDS = Path("E:/Overwatch Archive/research/emote-sounds/sounds.json")
 # its intro hit twice (49DA and B1B9, the second adding only a duck state); one of each plays (sounds.json notes: M)
 DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
-# heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControl STOW): their pieces
+# heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
 STOWS = {"lucio": True, "mercy": True}
 
@@ -209,6 +217,43 @@ def main():
         data = json.dumps(o.instances(guid(eid, 0x003)))
         model = re.search(r'"m_model": "0*([0-9A-F]+)\.00C"', data)
         return (model.group(1) if model else None), "STUProjectileVisualComponent" in data
+
+    def raw_controls(fx):
+        """The effect's EntityControls in file order (as TankLib lists them), read raw: (identifier, action)."""
+        import struct
+        s = o.TH.OpenFile(System.UInt64(o.u64(fx)))
+        ms = System.IO.MemoryStream()
+        s.CopyTo(ms)
+        s.Dispose()
+        data = bytes(ms.ToArray())
+        out = []
+
+        def walk(pos, end):
+            while pos + 16 <= end:
+                tag = data[pos:pos + 4][::-1].decode("latin1")
+                total, own = struct.unpack_from("<II", data, pos + 4)
+                body = pos + 16
+                if tag == "ECEC" and own >= 0x24:
+                    ident = struct.unpack_from("<Q", data, body + 0x10)[0] & 0xFFFFFFFFFFFF
+                    out.append(("%X" % ident if ident else None, struct.unpack_from("<I", data, body + 0x20)[0] & 0xFFFF))
+                if total > own:
+                    walk(body + own, body + total)
+                pos = body + total
+
+        walk(16, len(data))
+        return out
+
+    def clip_names(clipmap):
+        """Clip id -> our name, from a clip map's "<folder>_<id> = name" lines."""
+        names = {}
+        for line in (ROOT / "tools" / "clipmaps" / clipmap).read_text(encoding="utf-8").splitlines():
+            line = line.split("#", 1)[0].strip()
+            if "=" in line and "_" in line:
+                key, value = (part.strip() for part in line.split("=", 1))
+                names[key.rsplit("_", 1)[1].lstrip("0").upper()] = value
+        return names
+
+    slots = WEAPON_SLOTS.get(hero, {})
 
     def chunks_of_file(g):
         s = o.TH.OpenFile(System.UInt64(int(g)))
@@ -352,6 +397,10 @@ def main():
             header = anim.Header
             info = {"id": cid, "duration": round(float(str(header.Duration)), 4), "bones": int(str(header.BoneCount)),
                     "folder": path.relative_to(emote / "Animations").parts[0], "spawns": [], "events": [], "stow": []}
+            for key, _, _ in slots.values():
+                info[key] = []
+            if slots:
+                info["weaponClips"] = []
             bone_ids[cid] = set(int(b) for b in anim.BoneList)
             clips[f"emote_{name}_{n}"] = info
             fx = header.Effect
@@ -359,6 +408,7 @@ def main():
                 continue
             last = None
             controls = []
+            raw = iter(raw_controls(fx))
             for c in chunks_of(fx):
                 kind = c.GetType().Name
                 if kind == "teEffectChunkComponent":
@@ -388,12 +438,19 @@ def main():
                     continue
                 elif kind == "teEffectComponentEntityControl":
                     clip = gid(fields.get("Animation"))
-                    action = fields.get("Action")
-                    if clip is not None:
+                    ident, action = next(raw, (None, None))
+                    slot = slots.get(ident)
+                    if slot and clip is None and action == PUT_AWAY:
+                        # the hero's own weapon entity put away over the window
+                        info[slot[0]].append([start, round(start + dur, 4)])
+                    elif slot and clip is not None and action == PLAY:
+                        # the weapon stays out and plays its own clip over the window
+                        own = clip_names(slot[2]).get(clip.lstrip("0").upper())
+                        if own is None:
+                            sys.exit(f"{slot[1]} plays clip {clip}: not in tools/clipmaps/{slot[2]} (export it into the model first)")
+                        info["weaponClips"].append({"clip": own, "weapon": slot[1], "start": start, "end": round(start + dur, 4)})
+                    elif clip is not None:
                         controls.append((clip, start))
-                    elif gid(fields.get("Identifier")) is None and action is not None and int(System.Convert.ToInt32(action)) == STOW:
-                        # no clip and no identifier: the hero's own weapon entity put away over the window
-                        info["stow"].append([start, round(start + dur, 4)])
                     continue
                 elif kind == "teEffectComponentSound":
                     # a sound (02C), from start, held for duration (0: a one-shot); the pack's <hero>.emote.s<id> event
