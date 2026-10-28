@@ -29,6 +29,8 @@ final class ActionTrack {
 	private int step = -1;
 	/** When the current step's clip started playing (s). */
 	private float stepStart;
+	/** The playing step's clip length (s), once apply() has resolved it; -1 before. */
+	private float stepLength = -1;
 	private @Nullable String fromClip;
 	private float fadingOutFrom = -1;
 	private int kunaiThrows;
@@ -38,6 +40,13 @@ final class ActionTrack {
 
 	/** An action was triggered (by name, as the server sends them). */
 	void trigger(String action, float now) {
+		Integer wanted = priority(action);
+		Integer playing = priority(current());
+		if (wanted != null && playing != null && wanted < playing && (stepLength < 0 || now - stepStart <= stepLength)) {
+			// a lower-priority clip doesn't cut the one playing: Crossfade during a reload leaves the reload's clip (its
+			// additive layer plays over it: HeroAnimator), and a reload starting during Amp It Up leaves Amp It Up's
+			return;
+		}
 		switch (action) {
 			case "throw_kunai" -> {
 				kunaiThrows++;
@@ -75,7 +84,27 @@ final class ActionTrack {
 		}
 	}
 
+	/**
+	 * An action's animation priority, from the data (each StateAnim's m_priority, a 024 asset): Lúcio's Crossfade 0090 is
+	 * -1, Amp It Up's 008D 3, and his reload sets none (the default, 0). Null for the rest, whose priorities aren't read:
+	 * they cut and are cut as before.
+	 */
+	private static @Nullable Integer priority(@Nullable String action) {
+		if (action == null) {
+			return null;
+		}
+		if (action.startsWith("crossfade")) {
+			return -1;
+		}
+		return switch (action) {
+			case "amp", "amp_it_up" -> 3;
+			case "reload" -> 0;
+			default -> null;
+		};
+	}
+
 	private void start(float now, String... names) {
+		stepLength = -1;
 		steps.clear();
 		steps.addAll(List.of(names));
 		step = 0;
@@ -125,6 +154,7 @@ final class ActionTrack {
 				continue;
 			}
 			if (local <= clip.duration()) {
+				stepLength = clip.duration();
 				break;
 			}
 			if (step == steps.size() - 1) {

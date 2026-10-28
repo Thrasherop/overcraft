@@ -59,6 +59,12 @@ public final class LucioStats {
 	public static final double AMP_UP_TIME = 3;               // wiki; the game data (0510)
 	/** The game data (graph 0277): Amp It Up starts 0.2 s after the press, its animation from the press. */
 	public static final double AMP_UP_DELAY = 0.2;
+	/**
+	 * The game data (graph 0277): from the press, Amp It Up holds the weapon state (var 33) for a 0.7 s wait at priority 0
+	 * (024 asset 0001), over the reload's -10 (0002, graph 0776): it ends a reload in progress. Crossfade (0266) never
+	 * takes that state, so a reload carries on through it.
+	 */
+	public static final double AMP_UP_LOCK = 0.7;
 	public static final double AMP_UP_COOLDOWN = 12;          // wiki: after it ends
 	public static final double AMP_UP_HEAL = 56;              // wiki (2.8x the song)
 	public static final double AMP_UP_SPEED = 0.60;           // Oct 15 2019
