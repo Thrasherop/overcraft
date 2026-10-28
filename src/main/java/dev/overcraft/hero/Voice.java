@@ -76,7 +76,16 @@ public final class Voice {
 		java.util.Map.entry("lucio.crossfade_speed", new Stimulus(50, 10, 20, false)), // 03B1
 		java.util.Map.entry("lucio.amp", new Stimulus(50, 5, 5, false)), // 03B2
 		java.util.Map.entry("lucio.soundwave", new Stimulus(50, 20, 25, false)), // 03B3
-		java.util.Map.entry("lucio.wallride", new Stimulus(45, 10, 15, false))); // 03B4
+		java.util.Map.entry("lucio.wallride", new Stimulus(45, 10, 15, false)), // 03B4
+		// Jetpack Cat's (jetpack_cat.txt's voice section; priorities ours, at Lucio's 50, where the map has none)
+		java.util.Map.entry("jetpack_cat.boost", new Stimulus(50, 5, 5, false)), // 1993
+		java.util.Map.entry("jetpack_cat.reload", new Stimulus(50, 20, 20, false)), // 19B9
+		java.util.Map.entry("jetpack_cat.heal", new Stimulus(60, 20, 20, false)), // 19B8
+		java.util.Map.entry("jetpack_cat.purr", new Stimulus(50, 0, 0, false)), // 19BB
+		java.util.Map.entry("jetpack_cat.purr_end", new Stimulus(50, 0, 0, false)), // 19BA
+		java.util.Map.entry("jetpack_cat.lifeline", new Stimulus(50, 0, 0, false)), // 1994
+		java.util.Map.entry("jetpack_cat.tether_attached", new Stimulus(50, 0, 0, false)), // 19C4
+		java.util.Map.entry("jetpack_cat.tether_end", new Stimulus(95, 0, 0, true))); // 19B6, priority 95
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

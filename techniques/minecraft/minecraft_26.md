@@ -19,6 +19,17 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
 - **Projectiles pass through blocks with no collision box** (buttons, plates): the hit lands on the block behind.
 - **The Ender Dragon is hit through its parts** (EnderDragonPart, not a LivingEntity), and only with AI on: a summoned
   NoAI dragon never places its parts.
+- **The hurt cooldown is `LivingEntity.damageCooldownTime` in 26.x** (public), not `invulnerableTime`, which is now
+  spawn and portal protection. Clearing the old field let every hit after the first in half a second drop: Jetpack
+  Cat's 5-shot volley did 4 to a zombie and full healing to a villager (2026-10-28). `Combat.damage` clears the new one.
+  Test any multi-hit weapon on a mob (not just an ally), one volley at a time, health read before and after.
+- **The server's velocity for a player is stale:** the client moves the player, so `getDeltaMovement()` on a
+  `ServerPlayer` isn't the real motion; `getKnownMovement()` is (what the client reported). Two bugs from it: a rope
+  pulling an ally by her stale speed barely lifted it, and Minecraft's airborne knockback keeps the target's stored
+  vertical speed, so a zombie's hit threw a flying hero down at 22 m/s (`LivingEntityMixin` now starts a hero's
+  knockback from the known movement).
+- **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
+  Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
   26.x's gamerule name.
 - **A per-tick fix can lose to the frame:** F5 was undone each client tick, but frames drew between the key and the

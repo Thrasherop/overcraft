@@ -614,7 +614,10 @@ public final class HeroModelRenderer {
 	 */
 	public static boolean submitMinecraftArms(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 											  float swayPitch, float swayYaw, FirstPersonHandsAndItemsRenderState hands, AvatarRenderState avatar) {
+		// Jetpack Cat's paws are on her controls, with no fist to hold an item: Minecraft's arm and item (her paws put a
+		// pickaxe floating by her left console: found playing; how she should hold one is the owner's call)
 		if (ClientHero.heroView() || !dev.overcraft.client.controls.HeroOptions.get().heroArms || hands.isScoping
+			|| ClientHero.hero() == dev.overcraft.hero.Hero.JETPACK_CAT
 			|| avatar.isUsingItem || ownAnimation(hands.mainHandItem)
 			|| ownAnimation(hands.offHandItem)) {
 			return false;

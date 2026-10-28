@@ -100,9 +100,12 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
 			LucioMusic.tick(client);
+			JetpackCatSounds.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);
+				dev.overcraft.client.effect.JetpackCatFx.aim(client);
+				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
@@ -116,6 +119,9 @@ public class OvercraftClient implements ClientModInitializer {
 		// Lúcio's sonic rounds: a bright green orb (our own sprite), full bright
 		// the round has no model: its flight effect is its look (LucioFx), its item only without the local pack
 		EntityRendererRegistry.register(OcEntities.SONIC, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx, "sonic", 0.6f,
+			false, 1, true));
+		// Jetpack Cat's shots: no model in her data (particles only), so drawn by their flight effect
+		EntityRendererRegistry.register(OcEntities.PAW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx, "paw", 0.4f,
 			false, 1, true));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
@@ -176,6 +182,10 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
+		OwMovement.flight = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT;
+		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
+		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();
+		OwMovement.crouchHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.CROUCH).isDown();
 		// jump held, or (Overwatch's "Automatically climb walls") just being in the air
 		OwMovement.jumpHeld = entity -> entity == mc.player && (HeroControls.get(HeroControls.Action.JUMP).isDown()
 			|| HeroOptions.get().autoClimb && !entity.onGround());

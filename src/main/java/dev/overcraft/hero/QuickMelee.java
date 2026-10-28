@@ -49,6 +49,8 @@ public final class QuickMelee {
 		Vec3 look = hero.getViewVector(1.0f);
 		double cosLimit = Math.cos(Math.toRadians(HALF_ANGLE));
 		boolean hit = false;
+		// Jetpack Cat's Claws Out (major perk): every 6 s the swing wounds and slows
+		boolean claws = s.hero == Hero.JETPACK_CAT && dev.overcraft.jetpackcat.JetpackCat.clawsReady(hero, s);
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(RANGE + 1))) {
 			if (!Allies.canHurt(hero, target)) {
 				continue;
@@ -76,6 +78,12 @@ public final class QuickMelee {
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
 			target.knockback(KNOCKBACK, -look.x, -look.z, source, Ow.hp(dealt));
 			hit = true;
+			if (claws) {
+				dev.overcraft.jetpackcat.JetpackCat.wound(hero, target);
+			}
+		}
+		if (claws && hit) {
+			dev.overcraft.jetpackcat.JetpackCat.clawsUsed(s);
 		}
 		Combat.animate(hero, CLIPS[hero.getRandom().nextInt(CLIPS.length)]);
 		Voice.say(hero, "melee", 0.8f);

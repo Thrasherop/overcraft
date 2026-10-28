@@ -55,6 +55,55 @@ public final class EffectArt {
 			1, 1, 1, 1),
 		/** Lúcio's round's glow (A3F's core): #9EB243 to #E2FF64, no white top (his team green's white stacked to a white ball). */
 		LUCIO_ROUND(0, 0, 0, 0, .5f, .342f, .445f, .056f, 1, .761f, 1, .127f),
+		// Jetpack Cat's (tools/reference/jetpack_cat-effects.md, from her LUT rows: research\jetpack_cat\workx_palettes.txt)
+		/** Jetpack Cat's shot core glow (707A / 7079, LUT 800DA2FE r1): gold to white. */
+		CAT_CORE(0, 0, 0, 0, .25f, 1, .707f, 0, .5f, 1, .887f, 0, .75f, 1, 1, .37f, 1, 1, 1, 1),
+		/** Her paw shot's tube trail (80067279 r5, HDR 4.7): gold to white-hot. */
+		CAT_TRACER(0, 0, 0, 0, .25f, 1, .716f, .088f, .5f, 1, 1, .387f, .75f, 1, 1, .902f, 1, 1, 1, 1),
+		/** Her shots' outer glow (8006FF69 r1): blue to cyan. */
+		CAT_HALO(0, 0, 0, 0, .25f, 0, .221f, 1, .5f, 0, .526f, 1, .75f, 0, .852f, 1, 1, 0, 1, 1),
+		/** Her shots' sparks (800D7AF2 r1): cyan-blue to white to yellow. */
+		CAT_SPARK(0, 0, 0, 0, .25f, 0, .788f, 1, .5f, .389f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 0),
+		/** Her shots' flat trail (8004C26D r8): blue to aqua. */
+		CAT_RIBBON(0, 0, 0, 0, .25f, 0, .19f, 1, .5f, 0, .609f, .928f, .75f, 0, 1, .805f, 1, 0, 1, .55f),
+		/** Centre-shot hit flash, gold (709F, 80031F33 r1, from black). */
+		CAT_STAMP_GOLD(0, 0, 0, 0, .25f, .491f, .265f, 0, .5f, .983f, .53f, 0, .75f, 1, 1, .106f, 1, 1, 1, .352f),
+		/** Centre-shot hit flash, blue (709F, 8000708B r1, from black). */
+		CAT_STAMP_BLUE(0, 0, 0, 0, .25f, 0, .001f, .491f, .5f, 0, .001f, .983f, .75f, 0, .244f, 1, 1, 0, .492f, 1),
+		/** The paw print (709F, 8005126D r4, HDR 3.5): gold to white. */
+		CAT_PAW_PRINT(0, 0, 0, 0, .25f, 1, .735f, .109f, .5f, 1, 1, .385f, .75f, 1, 1, .82f, 1, 1, 1, 1),
+		/** Enemy-hit flash (7077, 8001A030 r5, HDR 6.4): blue to cyan to white. */
+		CAT_FLASH_BLUE(0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 0, 1, 1, 1, 1, 1, 1),
+		/** Heal sparks (7075 / Purr 741D, 800BB7A6 r4, HDR 5): gold to white. */
+		CAT_HEAL_GOLD(0, 0, 0, 0, .25f, 1, 1, .371f, .5f, 1, 1, .709f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		/** Enemy view of her gold parts (800DA2FE r2): red to orange to white. */
+		CAT_ENEMY_HOT(0, 0, 0, 0, .25f, 1, .09f, 0, .5f, 1, .208f, 0, .75f, 1, .585f, .37f, 1, 1, 1, 1),
+		/** Enemy view of her blue parts (8006FF69 r2): red to orange. */
+		CAT_ENEMY_ORANGE(0, 0, 0, 0, .25f, 1, .086f, 0, .5f, 1, .219f, 0, .75f, 1, .363f, 0, 1, 1, .517f, 0),
+		/** Purr's 10 m sphere (70ED, 800E8940 r6, HDR 6.9): blue to cyan to white. */
+		CAT_PURR_BLUE(0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		/** Purr's burst lines and nozzle glows (70ED, 800EB0AE r1, from black): gold to white. */
+		CAT_PURR_GOLD(0, 0, 0, 0, .25f, .667f, .523f, 0, .5f, 1, .835f, .091f, .75f, 1, 1, .933f, 1, 1, 1, 1),
+		/** Purr's 6.4 m pulse ring (70F3, 8001990A r8): blue to cyan. */
+		CAT_PURR_RING(0, 0, 0, 0, .25f, 0, .528f, .974f, .5f, 0, .772f, 1, .75f, 0, 1, 1, 1, 0, 1, 1),
+		/** Lifeline's rope core (72FA, 800367D1 r2, HDR 16): blue to cyan. */
+		CAT_TETHER(0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 0, 1, 1, 1, 0, 1, 1),
+		/** Lifeline's rope as enemies see it (800367D1 r3): red to yellow. */
+		CAT_TETHER_ENEMY(0, 0, 0, 0, .25f, 1, .131f, 0, .5f, 1, .263f, 0, .75f, 1, .629f, 0, 1, 1, 1, 0),
+		/** Lifeline's paw marker decal (7432, 800333C5 r3): blue to cyan. */
+		CAT_MARKER(0, 0, 0, 0, .25f, .001f, .175f, .976f, .5f, 0, .404f, .975f, .75f, 0, .671f, .992f, 1, .072f, 1, .991f),
+		/** Jetpack flame core (7064, 8004B7CE r7, HDR 11): blue to cyan to white. */
+		CAT_FLAME(0, 0, 0, 0, .25f, .731f, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		/** Jetpack outer flame (7064, 800DCB53 r7, from black): gold to pale yellow. */
+		CAT_FLAME_GOLD(0, 0, 0, 0, .25f, 0, 0, 0, .5f, .433f, .256f, 0, .75f, .967f, .571f, 0, 1, .947f, .863f, .13f),
+		/** Frenetic Flight's ribbons (7067, 80048E45 r3): cyan behind a white head (the head is the row's x = 0). */
+		CAT_BOOST(0, 0, 0, 0, .25f, 0, .929f, 1, .5f, 0, .929f, 1, .75f, 0, .929f, 1, 1, 0, .929f, 1),
+		/** Frenetic Flight's ribbons as enemies see them (80048E45 r4): orange. */
+		CAT_BOOST_ENEMY(0, 0, 0, 0, .25f, 1, .347f, 0, .5f, 1, .347f, 0, .75f, 1, .347f, 0, 1, 1, .347f, 0),
+		/** Catnapper's target rings (71B3, 80044C8A r4): cyan to blue. */
+		CAT_NAP_MARKER(0, 0, 0, 0, .25f, 0, .393f, 1, .5f, 0, .067f, 1, .75f, 0, .067f, 1, 1, 0, .067f, 1),
+		/** Catnapper's landing flash (71C2, 8006A53D r0, from black, HDR 7): violet-pink to sky to cyan. */
+		CAT_NAP_IMPACT(0, 0, 0, 0, .25f, .307f, .109f, .744f, .5f, .237f, .218f, 1, .75f, .13f, .614f, 1, 1, .009f, 1, 1),
 		/** As the enemy sees her effects. */
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */
