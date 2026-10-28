@@ -435,6 +435,11 @@ def main():
                     # a prop clip as long as the window (starts with it), else as long as her clip (runs with it)
                     for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
                         match = [i for i, d in others.items() if abs(d - length) < 0.02]
+                        # only clips whose bones the prop's skeleton holds (Dance Party's amplifier on the booth: 5677
+                        # fits its 17 bones, the booth's own 5678 of the same length doesn't)
+                        fitting = [i for i in match if bone_ids[i]
+                                   and {b & 0xFFFF for b in bone_ids[i]} <= skeleton_ids(spawn["model"])]
+                        match = fitting or match
                         if match:
                             spawn["clip"], spawn["clipStart"], spawn["clipBy"] = match[0], begins, "length"
                             if len(match) > 1:

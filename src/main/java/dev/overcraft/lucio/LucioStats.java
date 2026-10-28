@@ -75,12 +75,22 @@ public final class LucioStats {
 	 * 1.35 after the wall jump, of a type whose meaning is hashed: kept to Blizzard's number until that's read.
 	 */
 	public static final double WALL_SPEED = 0.30;
-	/** The leap off: +2.5 m/s along the run, 6.54 m/s up looking ahead (wiki). */
+	/**
+	 * The leap off (his wall-ride graph 0263, research\lucio\wallride-data.md): a jump 1.15 times his own, plus 2.5 m/s
+	 * (game value 212A) along where he looks with forward held, else along the input or his motion. That gives the
+	 * wiki's measured 6.54 m/s up looking ahead, 9.12 looking up and 4.12 looking down.
+	 */
+	public static final double WALL_JUMP_SCALE = 1.15;
 	public static final double WALL_LEAP_FORWARD = 2.5;
-	public static final double WALL_LEAP_UP = 6.54;
-	public static final double WALL_LEAP_UP_LOOKING_UP = 9.12;
-	public static final double WALL_LEAP_UP_LOOKING_DOWN = 4.12;
-	public static final double WALL_COOLDOWN = 0.5;           // wiki
+	/**
+	 * How fast he rises while riding (m/s), and how much more looking straight up (less, to sinking, looking down). The
+	 * owner, 2026-10-27: "wall riding actually does raise you a little bit"; players: a gradual upward angle that follows
+	 * aim; Blizzard 2018-05-03 stopped him riding straight up. Neither the data (graph 0263's mover holds no vertical
+	 * speed) nor any source measures it: ours, for the owner to correct.
+	 */
+	public static final double WALL_RISE = 0.5;
+	public static final double WALL_RISE_AIM = 1.0;
+	public static final double WALL_COOLDOWN = 0.5;           // wiki; the data: game value 1E3F, a 0.5 s wait after any ride
 	/** Ours: how close a wall must be to ride it (no source). */
 	public static final double WALL_REACH = 0.4;
 	/** Ours: no source gives a drift; he holds his height while riding. */

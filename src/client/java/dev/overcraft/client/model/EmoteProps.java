@@ -152,8 +152,42 @@ public final class EmoteProps {
 				Skeleton.sample(ownClip, Math.clamp(at - spawn.clipStart(), 0, ownClip.duration()), own);
 			}
 			placed.add(new Placed(loaded, where, Skeleton.skin(model, own, -1, null)));
+			if (ownClip != null) {
+				inner(data, emote, spawn, model, own, where, at - spawn.clipStart(), placed);
+			}
 		}
 		return placed.isEmpty() ? null : new Held(placed);
+	}
+
+	/**
+	 * What a prop's own clip spawns, on the prop: Dance Party's DJ booth (67A7) plays clips whose effects put his
+	 * amplifier (1635) on the booth's hardpoint 01B6, playing clips of its own. Hung on the prop's bone the hardpoint
+	 * table names, or else on its socket of that id (hardpoint_<id>); one level deep.
+	 */
+	private static void inner(EmoteData.Emotes data, String emote, EmoteData.Spawn outer, SkinnedModel outerModel,
+		Skeleton.Pose outerPose, Matrix4f outerAt, float at, List<Placed> placed) {
+		String clip = data.clipName(emote, outer.clip());
+		for (EmoteData.Spawn spawn : data.spawns(emote, clip)) {
+			HeroModels.Loaded loaded = HeroModels.get(spawn.file());
+			if (loaded == null || at < spawn.start() || at > spawn.start() + spawn.duration()) {
+				continue;
+			}
+			// the hardpoint's bone in the prop's own skeleton (the booth's 01B6 is its bone_097F, which its clips move),
+			// else its socket node (the export's sockets hang still, under a "Sockets" node)
+			EmoteData.Hardpoint hp = spawn.hardpoint() == null ? null : data.hardpoints().get(spawn.hardpoint());
+			int node = hp == null ? -1 : outerModel.node(hp.bone());
+			if (node < 0 && spawn.hardpoint() != null) {
+				node = outerModel.node("hardpoint_" + spawn.hardpoint());
+			}
+			Matrix4f where = node < 0 ? new Matrix4f(outerAt) : new Matrix4f(outerAt).mul(Skeleton.world(outerModel, outerPose, node));
+			SkinnedModel model = loaded.model();
+			Skeleton.Pose own = new Skeleton.Pose(model.nodeNames.length).rest(model);
+			SkinnedModel.Clip ownClip = spawn.clip() == null ? null : model.clips.get(spawn.clip());
+			if (ownClip != null) {
+				Skeleton.sample(ownClip, Math.clamp(at - spawn.clipStart(), 0, ownClip.duration()), own);
+			}
+			placed.add(new Placed(loaded, where, Skeleton.skin(model, own, -1, null)));
+		}
 	}
 
 	/**

@@ -100,19 +100,23 @@
 # So start and end are read from the loop's own events (HIGH), not guessed. Loop: 2B1E27 x1.142 dominates (net -4.5
 # dB); 2AC815 / 2AC8F6 x1.09 sit 15.5 dB under it; 2AC8CB and 2B1E28 sit 18 and 25 dB under it and are left out, so
 # the variant is 2.78 s (the second layer ends ~0.3 s early). LOOP LENGTH 2.776 s.
-@lucio.wallride = lucio.wallride.hum*1.142:+0 + lucio.wallride.whir*1.09:-15.5
+# LEVEL (the owner, 2026-10-27: "the skate sound effects are WAY too loud. They should be background; quieter than the
+# music"): built at offsets that put each rule near full scale, the loop measured -16.8 LUFS against the heal song's
+# -25.7 (9 dB over the music) and the start -17.2. Now 17 dB down: the loop about -34 LUFS, 8 dB under the heal song,
+# 14 under the speed song; start and end 16 and 15 dB down to sit with it.
+@lucio.wallride = lucio.wallride.hum*1.142:-17 + lucio.wallride.whir*1.09:-32.5
 # Wall ride heard by others (241D, 50 m): no 2B1E27; 2AC815 / 2AC8F6 x1.09 (twice, @0 and @2.5), 2AC8CB and 2B1E28 x1.035,
 # 7 and 10.5 dB under. LOOP LENGTH 5.0 s (set by 2AC8CB; 2B1E28 ends 0.4 s early).
-@lucio.wallride_3p = lucio.wallride.whir*1.09:+0.5 + lucio.wallride.whir*1.09@2.5:+0.5 + lucio.wallride.bed:-6.5 + lucio.wallride.air*1.035:+11
+@lucio.wallride_3p = lucio.wallride.whir*1.09:-16.5 + lucio.wallride.whir*1.09@2.5:-16.5 + lucio.wallride.bed:-23.5 + lucio.wallride.air*1.035:-6
 # Start (own): 241E's Play-event one-shots: 4 low hits at -730 cents (+0-0.022 s) and a click at -705 cents, plus two
 # random sets at +150 / +220 cents on the other bus. In the data they peak ~16 dB under the loop; offset +20 (Java can
 # turn this event down). The 241D copy (others) plays the same first layer.
-@lucio.wallride.start = lucio.wallride.grip*0.656@0.026:-4 + lucio.wallride.tick*0.666:-5 + lucio.wallride.skid_a*1.091:-4 + lucio.wallride.skid_b*1.136:-2.5
+@lucio.wallride.start = lucio.wallride.grip*0.656@0.026:-20 + lucio.wallride.tick*0.666:-21 + lucio.wallride.skid_a*1.091:-20 + lucio.wallride.skid_b*1.136:-18.5
 # End (own): 241E's Stop-event layer: a set at +380 cents and a short set up to 0.1 s late; ~25 dB under the loop in the
 # data, offset +28. The one-shots 2402 (48FD own / 48FE others), 2407 (4902) and 2408 (4903) are NOT used for start / end:
 # graph 0263 plays 2402 on a jump press (button 11) inside the wall-ride state chain (with a pad rumble), and 2407 + 2408
 # together while on the wall once var 14991 is set; which of those is attach or detach is not settled (LOW).
-@lucio.wallride.end = lucio.wallride.release*1.246:+4.5 + lucio.wallride.flick@0.05:+3
+@lucio.wallride.end = lucio.wallride.release*1.246:-10.5 + lucio.wallride.flick@0.05:-12
 # lucio.wall_jump: NOT extracted. Effect 3FA0 (at hardpoint 0004, 0.25 s after a jump press while riding) plays 268C
 # @0.002, 268D @0.003, 83AF @0.068, 7CBB + 7CB9 @0.134; 3FA1 has no sound. None of their files are in the extraction.
 # Sound Barrier cast (A46 from 073A#210): 09C9 (75 m) = a layer of 2AC1DD (+23) and 2AC1DF (+18); 09D4 (75 m) = one of

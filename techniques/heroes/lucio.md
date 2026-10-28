@@ -53,6 +53,21 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
 - **His song ends on death:** a hero's tick doesn't run while dead, so state synced from it (the song) must be
   cleared there (`HeroManager`).
 
+- **Movement (rework, 2026-10-27; the owner after playing: "cancer to play"):**
+  - Each hero's CharacterMover differs, and his is in the data (tools/reference/movement.md): acceleration 15,
+    friction 2 (a 0.6 s glide), air speed kept up to twice his run speed. On every hero's mover he stopped dead and a
+    wall jump's speed was gone at once: half of why it felt wrong.
+  - A wall to ride must cover him from the waist to his head. "Any block within reach" glued him to every step he
+    jumped up.
+  - W / S steer along the wall by the camera (the owner); he rises slowly (the owner); corners are walls ahead (turn
+    onto them) or a wall's end with a face round it (wrap round).
+  - A move that sets a new velocity must also move him that tick: the air step after it starts from the velocity it
+    read before (his wall jump fell straight down for days).
+  - Test it on a course (a step, a long wall, an L, a pillar, two parallel walls) with positions polled: speeds and
+    heights come out as numbers.
+  - Copy, don't describe: the owner asked for an implementation to copy (research:
+    tools/reference/lucio-movement-research.md; the wall-ride graph: research\lucio\wallride-data.md).
+
 ## Still to do
 - His effects on allies (amped speed lines 4ADD, the barrier's shield 0D86), the wall ride's sparks, the amp on the
   DJ booth (nested spawns), the wall ride's lean sheets, his collectible voice lines on the wheel.
