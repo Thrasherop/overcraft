@@ -55,6 +55,8 @@ public final class ClientHero {
 	 */
 	private static @Nullable Boolean heroModeLocal;
 	private static boolean openSelectOnJoin;
+	/** The join's hero select was opened and no hero is picked yet. */
+	private static boolean joinSelectShown;
 	private static boolean interacting;
 
 	private ClientHero() {
@@ -160,6 +162,7 @@ public final class ClientHero {
 		sync = HeroSyncPayload.NONE;
 		heroModeLocal = null;
 		openSelectOnJoin = false;
+		joinSelectShown = false;
 	}
 
 	/** Start of each client tick, before Minecraft handles its own keys. */
@@ -193,7 +196,19 @@ public final class ClientHero {
 		}
 		if (openSelectOnJoin && mc.gui.screen() == null && mc.level != null) {
 			openSelectOnJoin = false;
+			joinSelectShown = true;
 			mc.gui.setScreen(new HeroSelectScreen(true));
+		}
+		if (hero() != null) {
+			joinSelectShown = false;
+		} else if (joinSelectShown && mc.gui.screen() instanceof DeathScreen) {
+			// joined dead (the world left on the death screen): the death screen took the join's hero select away before
+			// a pick, and after the respawn there was no hero and no select (found playing): it opens again then
+			joinSelectShown = false;
+			openSelectOnJoin = true;
+		} else if (joinSelectShown && mc.gui.screen() == null && player.isAlive()) {
+			// closed alive with no pick: playing as themselves
+			joinSelectShown = false;
 		}
 
 		if (!serverHasOvercraft()) {
@@ -227,6 +242,7 @@ public final class ClientHero {
 		}
 
 		boolean controls = controls() && mc.gui.screen() == null;
+		tickBoost(controls && !toggled);
 		if (!controls || toggled) {
 			// Minecraft mode (or just switched): the hero keys' clicks must not fire later
 			HeroControls.drainAll();
@@ -349,6 +365,30 @@ public final class ClientHero {
 			perkClickHeld = false;
 		}
 		return open || perkClickHeld;
+	}
+
+	/** Jetpack Cat: ticks into Frenetic Flight as held here (-1 not boosting), counted at once, not a round trip later. */
+	private static int boostTicks = -1;
+
+	public static int boostTicks() {
+		return boostTicks;
+	}
+
+	/**
+	 * Frenetic Flight is held (Overwatch's secondary fire: the right button here) with energy left, and Catnapper isn't
+	 * diving her; the server's energy is the say on when it runs out.
+	 */
+	private static void tickBoost(boolean controls) {
+		// not while the right button picks a perk or an emote (picking a perk burned energy: found playing)
+		boolean on = controls && hero() == Hero.JETPACK_CAT && HeroControls.get(Action.PRIMARY_FIRE).isDown()
+			&& sync.secondaryAmmo() > 0 && !catnapperDriven() && !perkMenu && !perkClickHeld && !CommsWheel.open();
+		boostTicks = on ? boostTicks + 1 : -1;
+	}
+
+	/** Catnapper's windup and dive move her (the server sets her velocity). */
+	public static boolean catnapperDriven() {
+		int phase = sync.mode() & 7;
+		return phase == dev.overcraft.jetpackcat.JetpackCat.ULT_WINDUP || phase == dev.overcraft.jetpackcat.JetpackCat.ULT_DIVE;
 	}
 
 	/** End of each client tick: heroes don't sprint. */

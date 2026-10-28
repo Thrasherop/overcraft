@@ -87,6 +87,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));
+			case dev.overcraft.entity.PawEntity paw -> s.drawnByEffect = dev.overcraft.client.effect.JetpackCatFx.pawFlight(
+				paw.getId(), at, paw.centre(), KirikoFx.enemyOf(paw.getOwner()));
 			default -> {
 			}
 		}

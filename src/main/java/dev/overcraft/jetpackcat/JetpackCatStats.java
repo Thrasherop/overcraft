@@ -82,7 +82,8 @@ public final class JetpackCatStats {
 	public static final int ULT_COST = 2575;                   // W (BZ launch 2400 +7% = 2568: W used)
 	public static final double ULT_RANGE = 25;                 // W
 	public static final double ULT_DIVE_SPEED = 30;            // W
-	public static final double ULT_RADIUS = 6;                 // W
+	/** The landing's reach: 5.5 m in her data (graph 5B7B; the wiki says 6). */
+	public static final double ULT_RADIUS = 5.5;
 	public static final double ULT_DAMAGE = 25;                // W
 	public static final double ULT_KNOCKDOWN = 1.5;            // W
 	public static final double ULT_PUSH = 2.8;                 // W
@@ -91,7 +92,9 @@ public final class JetpackCatStats {
 	public static final double ULT_SELF_HEAL = 30;
 	public static final double ULT_TANK_SLOW = 0.30;
 
-	// Perks (W costs: 2100 / 5200 XP)
+	// Perks: the XP her values graph holds (59DD#4: 2100, then 3100 more; the wiki 2100 / 5200)
+	public static final double PERK_MINOR_XP = 2100;
+	public static final double PERK_MAJOR_XP = 5200;
 	public static final double ULTERIOR_MOTIVE = 0.15;         // BZ Mar 10 2026: healing's share recovered as fuel
 	public static final double TRANSPORT_SHIELD = 50;          // BZ Jun 16 2026
 	public static final double TRANSPORT_SHIELD_TIME = 3;      // BZ Jun 16 2026

@@ -56,6 +56,23 @@ public final class HeroState {
 	public boolean ampFree;
 	/** Amp It Up pressed: ticks until it starts (0 none). */
 	public int ampDelay;
+	/** Jetpack Cat: Frenetic Flight's energy (0-100), ticks since it was last used, ticks boosting. */
+	public double fuel = 100;
+	public int fuelIdle;
+	public int boostTicks;
+	/** Jetpack Cat: ticks until Claws Out empowers her quick melee again. */
+	public double clawsCooldown;
+	/** Jetpack Cat: the paw the next volley leaves from. */
+	public boolean pawSide;
+	/** Jetpack Cat: the ally Lifeline tows (entity id), or null. */
+	public @Nullable Integer lifelineTarget;
+	/** Jetpack Cat: ticks into Purr (-1 none). */
+	public int purrTicks = -1;
+	/** Jetpack Cat: Catnapper's phase (JetpackCat.ULT_*), its timer, its landing spot and the enemy carried. */
+	public int ultPhase;
+	public int ultTimer;
+	public net.minecraft.world.phys.Vec3 ultTarget = net.minecraft.world.phys.Vec3.ZERO;
+	public @Nullable Integer carried;
 	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
 	public int wallRideTicks;
 	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */

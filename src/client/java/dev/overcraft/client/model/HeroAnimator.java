@@ -88,6 +88,10 @@ public final class HeroAnimator {
 	private boolean wholeBody;
 	/** The volley's first-person clip (Overwatch picks one at random per volley). */
 	private int fireVariant;
+	/** Jetpack Cat's paw: the volleys swap paw each time (her add_fire / add_fire_2). */
+	private boolean fireSide;
+	/** Jetpack Cat: Catnapper's aim began (s), or -100 when she isn't aiming (its loop plays until the dive or a cancel). */
+	private float aimingSince = -100;
 	/** When he started skating (first person: a start layer once), stopped (his stop clip), left the ground (his jump). */
 	private float movingSince = -100;
 	private float stoppedAt = -100;
@@ -120,6 +124,13 @@ public final class HeroAnimator {
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
 			a.fireVariant = new int[] {2, 3, 4, 4}[java.util.concurrent.ThreadLocalRandom.current().nextInt(4)];
+			a.fireSide = !a.fireSide;
+		}
+		// Jetpack Cat's aim loops until she dives or lets it go
+		if (action.equals("ult_aim")) {
+			a.aimingSince = now;
+		} else if (action.equals("ult_aim_end") || action.equals("ult_dive")) {
+			a.aimingSince = -100;
 		}
 		String clip = action;
 		if (action.startsWith("crossfade_") && a.wasSkating) {
@@ -128,7 +139,7 @@ public final class HeroAnimator {
 		}
 		if (!action.equals("fire") && !action.equals("soundwave")) {
 			// (those two are additive layers only: they don't cut a reload's clip)
-			a.wholeBody = action.equals("sound_barrier");
+			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land");
 		}
 		a.actions.trigger(clip, now);
 		a.actionsFirstPerson.trigger(action, now);
@@ -336,6 +347,46 @@ public final class HeroAnimator {
 		}
 	}
 
+	/**
+	 * Jetpack Cat's additive layers over her flight (jetpack_cat-map.md): the hover's bob (on the clock), Frenetic
+	 * Flight's lean while boosting, and her actions, which are all layers in the third person (the reload, Purr, the
+	 * quick melee, Catnapper's aim: enter, then its 2-frame hold until she dives or lets go).
+	 */
+	private void flierLayers(SkinnedModel model, LivingEntity entity, Skeleton.Pose pose, float now) {
+		SkinnedModel.Clip bob = clip(model, "add_bob");
+		if (bob != null && (base.equals("idle") || base.startsWith("fly"))) {
+			Skeleton.addAdditive(bob, time(bob, now, true), pose, 1);
+		}
+		SkinnedModel.Clip boost = clip(model, "add_boost");
+		if (boost != null && boostWeight > 0) {
+			Skeleton.addAdditive(boost, time(boost, now, true), pose, boostWeight);
+		}
+		additive(model, pose, "add_reload", "reload", now);
+		additive(model, pose, "add_purr", "purr", now);
+		for (String melee : new String[] {"melee", "melee_2", "melee_3"}) {
+			additive(model, pose, "add_melee", melee, now);
+		}
+		if (now - aimingSince < AIM_HOLD_LIMIT) {
+			SkinnedModel.Clip enter = clip(model, "add_ult_aim_start");
+			float t = now - aimingSince;
+			if (enter != null && t <= enter.duration()) {
+				Skeleton.addAdditive(enter, t, pose, 1);
+			} else {
+				SkinnedModel.Clip hold = clip(model, "add_ult_aim");
+				if (hold != null) {
+					Skeleton.addAdditive(hold, time(hold, now, true), pose, 1);
+				}
+			}
+		} else {
+			additive(model, pose, "add_ult_aim_end", "ult_aim_end", now);
+		}
+	}
+
+	/** Catnapper's aim loop gives up after this long with no word of a dive or a cancel (s, ours). */
+	private static final float AIM_HOLD_LIMIT = 15;
+	/** Frenetic Flight's lean, eased in and out (0-1): her boost, seen as speed above her flight's 5.5 m/s. */
+	private float boostWeight;
+
 	/** Lúcio's idle fidgets (alias 80AF80FD: a Random of 2CAF and 2A56, additive, on the clock), now and then while still. */
 	private void fidget(SkinnedModel model, Skeleton.Pose pose, float now) {
 		if (!base.equals("idle") || actions.playing() != null || !model.clips.containsKey("add_fidget_1")) {
@@ -515,9 +566,19 @@ public final class HeroAnimator {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
 		// Lúcio's additive layers: the volley (one of its clips at random), Soundwave, Amp It Up's
-		additive(model, pose, fireVariant > 1 ? "add_fire_" + fireVariant : "add_fire", "fire", now);
+		String fire = fireVariant > 1 ? "add_fire_" + fireVariant : "add_fire";
+		if (clip(model, fire) == null) {
+			// Jetpack Cat's: one per paw, swapping each volley
+			fire = fireSide ? "add_fire_2" : "add_fire";
+		}
+		additive(model, pose, fire, "fire", now);
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
+		SkinnedModel.Clip idleLayer = clip(model, "add_idle");
+		if (idleLayer != null) {
+			// her paws' hover sway (195B6, on the clock)
+			Skeleton.addAdditive(idleLayer, time(idleLayer, now, true), pose, 1);
+		}
 		SkinnedModel.Clip setOff = base.startsWith("skate") && !base.startsWith("skate_stop") ? clip(model, "add_skate_start") : null;
 		if (setOff != null && now - movingSince <= setOff.duration()) {
 			Skeleton.addAdditive(setOff, now - movingSince, pose, 1);
@@ -673,7 +734,11 @@ public final class HeroAnimator {
 		}
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
-		additive(model, pose, "add_fire", "fire", now);
+		boolean flier = model.clips.containsKey("fly_forward");
+		additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
+		if (flier) {
+			flierLayers(model, entity, pose, now);
+		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
 		additive(model, pose, "add_crossfade_heal", "crossfade_heal", now);
@@ -833,6 +898,19 @@ public final class HeroAnimator {
 		} else if (entity.isFallFlying() || entity.isVisuallySwimming()) {
 			// pitched flat by the renderer; legs straightened below
 			next = "idle";
+		} else if (model.clips.containsKey("fly_forward")) {
+			// Jetpack Cat always flies: the 2D blend's 8 outer points by her motion against her facing, the hover idle
+			// when she's still (its centre); on the ground too (she hovers 0.55 m over it)
+			double speed3 = Math.sqrt(vx * vx + vy * vy + vz * vz) * 20;
+			double yawF = Math.toRadians(facing(entity, 1));
+			double fwdF = -vx * Math.sin(yawF) + vz * Math.cos(yawF);
+			double leftF = vx * Math.cos(yawF) + vz * Math.sin(yawF);
+			boolean flying = Math.sqrt(vx * vx + vz * vz) * 20 > 0.8;
+			String d = direction(fwdF, leftF);
+			next = flying ? "fly" + (d.isEmpty() ? "_forward" : d) : "idle";
+			// her boost's lean follows her speed past the flight's own (ours: the data weights it by its dataflow)
+			float want = (float) Math.clamp((speed3 - 6.5) / 4, 0, 1);
+			boostWeight += (want - boostWeight) * 0.3f;
 		} else if (climbing) {
 			next = "climb";
 		} else if (overTheTop) {

@@ -17,6 +17,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
+import dev.overcraft.jetpackcat.JetpackCatStats;
 import dev.overcraft.lucio.LucioStats;
 import dev.overcraft.net.HeroSyncPayload;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -747,7 +748,11 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ability(hero, hero == Hero.LUCIO ? "sound_barrier" : "kitsune_rush");
+			Identifier fox = HeroArt.ability(hero, switch (hero) {
+				case LUCIO -> "sound_barrier";
+				case JETPACK_CAT -> "catnapper";
+				default -> "kitsune_rush";
+			});
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}
@@ -831,6 +836,20 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.JETPACK_CAT) {
+			// Frenetic Flight (the right button) with its energy along the foot of its box, Lifeline (Shift: marked while
+			// she tows), Purr (E); in Lúcio's three places (ours)
+			ability(g, hero, w, "frenetic_flight", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), 0, 1, -1);
+			energy(g, s.meter(), w - 719, 900, w);
+			ability(g, hero, w, "lifeline", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) JetpackCatStats.LIFELINE_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0) {
+				song(g, false, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "purr", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) JetpackCatStats.PURR_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.LUCIO) {
 			// Soundwave (the right button), Crossfade (Shift: the song playing marked on it), Amp It Up (E: coral while it
 			// runs, then its cooldown), the boxes where Kiriko's two are and one more to their left (ours)
@@ -847,6 +866,21 @@ public final class HeroHud {
 			(float) KirikoStats.SWIFT_STEP_COOLDOWN, ability1ReadyAt);
 		ability(g, hero, w, "protection_suzu", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 			(float) KirikoStats.SUZU_COOLDOWN, ability2ReadyAt);
+	}
+
+	/**
+	 * Frenetic Flight's energy (0-1) on its box: a band along the foot as long as what's left, and the percentage; red
+	 * under 20 (her data's "low energy"), the colours ours.
+	 */
+	private static void energy(GuiGraphicsExtractor g, float energy, float x, float base, float w) {
+		float cx = x + 32;
+		g.pose().pushMatrix();
+		curve(g, cx, base + 36, slopeAt(960 - (w - cx)));
+		int colour = energy < 0.2f ? 0xFFFF4A4A : 0xFFF0A23C;
+		fill(g, x + 4, base + 60, 56, 6, 0x66000000);
+		fill(g, x + 4, base + 60, 56 * Math.clamp(energy, 0, 1), 6, colour);
+		HudText.draw(g, Face.BODY, Math.round(energy * 100) + "%", x + 50, base + 22, 13, colour, Align.CENTER);
+		g.pose().popMatrix();
 	}
 
 	/**
@@ -928,6 +962,12 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.JETPACK_CAT) {
+			// Biotic Pawjectiles on the left button, where Kiriko's kunai panel is
+			weapon(g, hero, w, "biotic_pawjectiles", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				JetpackCatStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.LUCIO) {
 			// the Sonic Amplifier on the left button, where Kiriko's kunai panel is
 			weapon(g, hero, w, "sonic_amplifier", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(), LucioStats.AMP_AMMO,

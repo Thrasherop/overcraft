@@ -461,6 +461,15 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "amp_it_up"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "sound_barrier"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "wall_ride"));
+			// Biotic Pawjectiles (her primary fire, on the left button), Frenetic Flight (the right), Lifeline, Purr,
+			// Catnapper, the Jetpack
+			case JETPACK_CAT -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "biotic_pawjectiles"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "frenetic_flight"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "lifeline"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "purr"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "catnapper"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "jetpack"));
 			default -> List.of();
 		};
 	}

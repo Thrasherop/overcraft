@@ -84,6 +84,7 @@ public final class HeroManager {
 	static {
 		KITS.put(Hero.KIRIKO, new Kiriko());
 		KITS.put(Hero.LUCIO, new dev.overcraft.lucio.Lucio());
+		KITS.put(Hero.JETPACK_CAT, new dev.overcraft.jetpackcat.JetpackCat());
 	}
 
 	private HeroManager() {
@@ -306,6 +307,8 @@ public final class HeroManager {
 			state.canChangeHero = canChangeHero(player, state);
 			HeroKit kit = kit(state.hero);
 			boolean controls = controls(player);
+			// Jetpack Cat's flight needs Minecraft's permission to fly; handed back as soon as she isn't in play
+			dev.overcraft.jetpackcat.JetpackCat.keepFlight(player, state, controls);
 			if (!controls) {
 				state.primaryHeld = state.secondaryHeld = state.wallClimbing = false;
 			}

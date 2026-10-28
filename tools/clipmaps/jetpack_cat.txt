@@ -20,16 +20,17 @@
 # Primary fire (0x00A, additive): one clip per paw.
 4-0_0000000189B6 = add_fire
 4-0_0000000189B7 = add_fire_2
-# Reload (0x004), quick melee (0x062: aim down / level / up), Purr (0x505).
-4-0_000000018883 = reload
-132-0_000000019A96 = melee
-132-0_000000019A98 = melee_down
-132-0_000000019A97 = melee_up
-4-0_00000001887A = purr
+# Reload (0x004), quick melee (0x062: aim down / level / up), Purr (0x505): additive layers over the flight (folders 4 and
+# 132), as are the aim's; HeroAnimator plays them from when the action started.
+4-0_000000018883 = add_reload
+132-0_000000019A96 = add_melee
+132-0_000000019A98 = add_melee_down
+132-0_000000019A97 = add_melee_up
+4-0_00000001887A = add_purr
 # Catnapper: aiming (0x175: enter, loop, exit), the dive (0xAFC: start, flight, landing).
-4-0_000000018C2E = ult_aim_start
-4-28_000000018CF1 = ult_aim
-4-4_000000018CF2 = ult_aim_end
+4-0_000000018C2E = add_ult_aim_start
+4-28_000000018CF1 = add_ult_aim
+4-4_000000018CF2 = add_ult_aim_end
 0-32_000000018DE2 = ult_dive_start
 0-44_000000018DE3 = ult_dive
 0-32_000000018DE4 = ult_land

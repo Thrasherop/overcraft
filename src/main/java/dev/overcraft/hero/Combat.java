@@ -56,12 +56,17 @@ public final class Combat {
 		return entity.level().getGameTime();
 	}
 
-	/** Deals Overwatch damage; Minecraft's hurt cooldown doesn't apply (Overwatch has none). Returns damage dealt (OW). */
+	/**
+	 * Deals Overwatch damage; Minecraft's hurt cooldown doesn't apply (Overwatch has none). Returns damage dealt (OW).
+	 * In 26.x that cooldown is LivingEntity.damageCooldownTime: invulnerableTime is now spawn and portal protection, and
+	 * clearing it let the cooldown drop every hit after the first in half a second (a volley's 5 shots did 4: found
+	 * playing Jetpack Cat).
+	 */
 	public static float damage(LivingEntity target, DamageSource source, double owDamage) {
 		float before = target.getHealth() + target.getAbsorptionAmount();
-		target.setInvulnerableTime(0);
+		target.damageCooldownTime = 0;
 		target.hurt(source, Ow.hp(owDamage));
-		target.setInvulnerableTime(0);
+		target.damageCooldownTime = 0;
 		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
 	}
@@ -73,9 +78,9 @@ public final class Combat {
 	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage) {
 		LivingEntity dragon = part.parentMob;
 		float before = dragon.getHealth() + dragon.getAbsorptionAmount();
-		dragon.setInvulnerableTime(0);
+		dragon.damageCooldownTime = 0;
 		part.hurtServer(level, source, Ow.hp(owDamage));
-		dragon.setInvulnerableTime(0);
+		dragon.damageCooldownTime = 0;
 		float dealt = before - (dragon.isAlive() ? dragon.getHealth() + dragon.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
 	}
@@ -250,6 +255,7 @@ public final class Combat {
 		return switch (hero) {
 			case KIRIKO -> dev.overcraft.kiriko.KirikoStats.ULT_COST;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.ULT_COST;
+			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.ULT_COST;
 			default -> 1;
 		};
 	}

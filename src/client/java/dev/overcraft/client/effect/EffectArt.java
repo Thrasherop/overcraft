@@ -55,6 +55,8 @@ public final class EffectArt {
 			1, 1, 1, 1),
 		/** Lúcio's round's glow (A3F's core): #9EB243 to #E2FF64, no white top (his team green's white stacked to a white ball). */
 		LUCIO_ROUND(0, 0, 0, 0, .5f, .342f, .445f, .056f, 1, .761f, 1, .127f),
+		/** Jetpack Cat's shots, a warm amber (ours, until her effects pass reads her colour strips). */
+		CAT_WARM(0, 0, 0, 0, .3f, .35f, .12f, 0, .65f, .9f, .45f, .1f, 1, 1, .9f, .6f),
 		/** As the enemy sees her effects. */
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */

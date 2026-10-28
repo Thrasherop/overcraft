@@ -26,6 +26,10 @@ public final class OcEntities {
 		.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<SonicEntity> SONIC = register("sonic", EntityType.Builder.<SonicEntity>of(SonicEntity::new, MobCategory.MISC)
 		.noLootTable().sized((float) LucioStats.AMP_RADIUS * 2, (float) LucioStats.AMP_RADIUS * 2).clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.PawEntity> PAW = register("paw", EntityType.Builder.<dev.overcraft.entity.PawEntity>of(
+		dev.overcraft.entity.PawEntity::new, MobCategory.MISC).noLootTable().noSave()
+		.sized((float) dev.overcraft.jetpackcat.JetpackCatStats.CENTRE_RADIUS * 2, (float) dev.overcraft.jetpackcat.JetpackCatStats.CENTRE_RADIUS * 2)
+		.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

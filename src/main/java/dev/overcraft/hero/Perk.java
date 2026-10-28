@@ -18,7 +18,11 @@ public enum Perk {
 	LUCIO_SOUNDWAVE_RIDER(Hero.LUCIO, Tier.MINOR, "soundwave_rider"),
 	LUCIO_BEAT_DROP(Hero.LUCIO, Tier.MINOR, "beat_drop"),
 	LUCIO_NOISE_VIOLATION(Hero.LUCIO, Tier.MAJOR, "noise_violation"),
-	LUCIO_ACCELERANDO(Hero.LUCIO, Tier.MAJOR, "accelerando");
+	LUCIO_ACCELERANDO(Hero.LUCIO, Tier.MAJOR, "accelerando"),
+	JETPACK_CAT_ULTERIOR_MOTIVE(Hero.JETPACK_CAT, Tier.MINOR, "ulterior_motive"),
+	JETPACK_CAT_TRANSPORT_SHIELDING(Hero.JETPACK_CAT, Tier.MINOR, "transport_shielding"),
+	JETPACK_CAT_PURRFECT_FORM(Hero.JETPACK_CAT, Tier.MAJOR, "purrfect_form"),
+	JETPACK_CAT_CLAWS_OUT(Hero.JETPACK_CAT, Tier.MAJOR, "claws_out");
 
 	public enum Tier { MINOR, MAJOR }
 

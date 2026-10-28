@@ -27,6 +27,11 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 	/** Lifetime in ticks. */
 	protected abstract int lifetime();
 
+	/** How far from its centre it hits a creature (m): its box's half width unless it has its own. */
+	public float hitRadius() {
+		return getBbWidth() / 2;
+	}
+
 	protected void expire() {
 		discard();
 	}

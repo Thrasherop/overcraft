@@ -85,6 +85,15 @@ public final class OwMovement {
 
 	private static final Map<LivingEntity, Climb> CLIMBS = new WeakHashMap<>();
 
+	/** Set by the client: this entity flies (Jetpack Cat's jetpack). */
+	public static Predicate<LivingEntity> flight = entity -> false;
+	/** Set by the client: ticks into Frenetic Flight (-1 not boosting). */
+	public static java.util.function.ToIntFunction<LivingEntity> boosting = entity -> -1;
+	/** Set by the client: the server moves her (Catnapper's dive and windup): her own flight stands aside. */
+	public static Predicate<LivingEntity> driven = entity -> false;
+	/** Set by the client: the crouch key is down (flying, it sinks her). */
+	public static Predicate<LivingEntity> crouchHeld = entity -> false;
+
 	/** Set by the client: this entity has Lúcio's Wall Ride. */
 	public static Predicate<LivingEntity> wallRide = entity -> false;
 	/** Set by the client: the jump key itself is down (Wall Ride holds on it, whatever the auto-climb option says). */
@@ -268,6 +277,9 @@ public final class OwMovement {
 		Vec3 horizontal = travelled.scale(1.0 / SUBSTEPS / 20);
 		Vec3 end = stepped.scale(1.0 / 20);
 
+		if (fly(entity, input)) {
+			return;
+		}
 		if (ride(entity, v, input)) {
 			return;
 		}
@@ -506,6 +518,88 @@ public final class OwMovement {
 		entity.setDeltaMovement(keep.x, entity.verticalCollision ? 0 : rise, keep.z);
 		return true;
 	}
+
+	/**
+	 * Jetpack Cat's flight (her jetpack, a held mover override in her data's graph 59DC: air acceleration 9.5, speed
+	 * above 12 m/s decays, drag 8 a second with no input; the "fly" flag: no gravity). W follows her aim (look up to
+	 * climb), S backs off along it (4.95 m/s), A / D strafe, Space rises and Crouch sinks (her data: -1 / 0 / +1; the
+	 * vertical speed isn't a named value: ours, her run speed). Frenetic Flight (graph 59E0): its speed bonus ramps from
+	 * +25% to +65% (+5% every 0.04 s), its first 0.3 s on her burst mover (air acceleration 2, drag 2), then the sustain
+	 * (6 m/s, air acceleration 6, drag 1.25), pushed along the input at 25 m/s² (her data) up to 17.8 m/s (the wiki's
+	 * measured top speed: ours to combine them). True when it moved her.
+	 */
+	private static boolean fly(LivingEntity entity, Vec3 input) {
+		if (!flight.test(entity)) {
+			return false;
+		}
+		entity.resetFallDistance();
+		if (driven.test(entity)) {
+			// Catnapper: the server sets her velocity each tick
+			entity.move(MoverType.SELF, entity.getDeltaMovement());
+			return true;
+		}
+		double factor = speedFactor(entity);
+		Vec3 look = entity.getLookAngle();
+		double yaw = Math.toRadians(entity.getYRot());
+		double fwd = Math.signum(input.z);
+		double strafe = Math.signum(input.x);
+		double vert = (jumpKeyHeld.test(entity) ? 1 : 0) - (crouchHeld.test(entity) ? 1 : 0);
+		Vec3 dir = look.scale(fwd).add(new Vec3(Math.cos(yaw), 0, Math.sin(yaw)).scale(strafe)).add(0, vert, 0);
+		boolean wants = dir.lengthSqr() > 1.0E-6;
+		Vec3 wishDir = wants ? dir.normalize() : Vec3.ZERO;
+		int boost = boosting.applyAsInt(entity);
+		double t = Math.max(0, boost) * 0.05;
+		double wishSpeed;
+		double accel;
+		double drag;
+		double max;
+		if (boost >= 0) {
+			double bonus = Math.min(0.65, 0.25 + 0.05 * Math.floor(t / 0.04));
+			wishSpeed = (fwd < 0 ? 5.5 : 6.0) * factor * (1 + bonus);
+			boolean burst = t < 0.3;
+			accel = burst ? 2 : 6;
+			drag = burst ? 2 : 1.25;
+			max = dev.overcraft.jetpackcat.JetpackCatStats.BOOST_SPEED * factor;
+		} else {
+			wishSpeed = (fwd < 0 ? 4.95 : 5.5) * factor;
+			accel = dev.overcraft.jetpackcat.JetpackCatStats.FLY_ACCELERATE;
+			drag = dev.overcraft.jetpackcat.JetpackCatStats.FLY_DRAG;
+			max = dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX * factor;
+		}
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		Vec3 travelled = Vec3.ZERO;
+		double dt = 0.05 / SUBSTEPS;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			if (wants) {
+				v = accelerate(v, wishDir.scale(wishSpeed), accel, dt);
+			} else {
+				v = v.scale(Math.max(0, 1 - drag * dt));
+			}
+			if (boost >= 0) {
+				// the boost's own push, along the input (else her motion, else her aim)
+				Vec3 push = wants ? wishDir : v.lengthSqr() > 1.0E-4 ? v.normalize() : look;
+				v = v.add(push.scale(BOOST_PUSH * dt));
+			}
+			double speed = v.length();
+			if (speed > max && boost >= 0) {
+				// boosting, its push stops at the top speed (a soft cap let it run on to 29.5 m/s: measured playing)
+				v = v.scale(max / speed);
+			} else if (speed > max) {
+				v = v.scale((max + (speed - max) * Math.max(0, 1 - AIR_DECAY * dt)) / speed);
+			}
+			travelled = travelled.add(v);
+		}
+		Vec3 step = travelled.scale(1.0 / SUBSTEPS / 20);
+		entity.setDeltaMovement(step);
+		entity.move(MoverType.SELF, step);
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+		return true;
+	}
+
+	/** Frenetic Flight's push along the input, m/s² (her data's graph 59E0: 25). */
+	private static final double BOOST_PUSH = 25;
 
 	/** Leaving the wall: this tick's move at the velocity just set, which the next ticks' air steps carry on. */
 	private static boolean leave(LivingEntity entity) {

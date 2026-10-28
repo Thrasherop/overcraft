@@ -43,5 +43,12 @@
 - `/publish false 25565` opens a world to LAN (`publish false survival 25565` fails to parse).
 - **Screen coordinates are GUI units:** at 1920x1080 (scale 4) the hero select's READY is `screenclick 240 244`. At
   854x480, the pause menu's Disconnect is `screenclick 213 174`.
+- **A click that confirms something needs to be held** (`key attack down`, 0.1 s, `up`): the server reads held
+  buttons once a tick, and a tap's down and up can both arrive between two ticks (Catnapper's confirm was missed).
+- **Toggles toggle:** a second Q cancelled the aim the first started. Know the state before pressing a toggle again.
+- **Aiming at something:** `py -I tools/aim.py <entity type> <height above its feet>` (with `OC_LOG` set to the game's
+  log) prints the yaw and pitch from the eyes to the nearest one, for `look`.
+- **Test worlds spawn mobs:** a superflat world has slimes; a hero hovering in place was killed twice mid-test. Turn
+  `spawn_mobs` off (26.x's gamerule name) and clear the world before measuring.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.

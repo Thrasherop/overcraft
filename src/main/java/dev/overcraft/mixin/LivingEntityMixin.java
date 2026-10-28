@@ -58,6 +58,21 @@ public abstract class LivingEntityMixin {
 										   float damage, boolean comesFromEffect, CallbackInfo ci) {
 		if (dev.overcraft.hero.Combat.isPhased((LivingEntity) (Object) this)) {
 			ci.cancel();
+			return;
 		}
+		// a hero's knockback starts from the motion their client reports: Minecraft keeps an airborne target's stored
+		// vertical speed, which for a player moved by their client is stale (a zombie's hit threw a flying Jetpack Cat
+		// down at 22 m/s: found playing)
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && HeroManager.controls(player)) {
+			player.setDeltaMovement(player.getKnownMovement());
+		}
+	}
+
+	/** Jetpack Cat flying takes 40% less knockback (W: her "flight resistance"). */
+	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
+		at = @At("HEAD"), argsOnly = true, ordinal = 0)
+	private double overcraft$flightResistance(double power) {
+		return (Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.JETPACK_CAT
+			? power * dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN : power;
 	}
 }
