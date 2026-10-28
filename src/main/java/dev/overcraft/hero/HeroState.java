@@ -64,8 +64,9 @@ public final class HeroState {
 	public double clawsCooldown;
 	/** Jetpack Cat: the paw the next volley leaves from. */
 	public boolean pawSide;
-	/** Jetpack Cat: the ally Lifeline tows (entity id), or null. */
+	/** Jetpack Cat: the ally Lifeline tows (entity id), or null, and ticks since it attached. */
 	public @Nullable Integer lifelineTarget;
+	public int lifelineTicks;
 	/** Jetpack Cat: ticks into Purr (-1 none). */
 	public int purrTicks = -1;
 	/** Jetpack Cat: Catnapper's phase (JetpackCat.ULT_*), its timer, its landing spot and the enemy carried. */

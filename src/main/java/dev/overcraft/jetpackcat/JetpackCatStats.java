@@ -61,8 +61,10 @@ public final class JetpackCatStats {
 	public static final double LIFELINE_COOLDOWN = 2;          // W
 	public static final double LIFELINE_SPEED = 0.30;          // BZ Aug 11 2026: 40% -> 30%
 	public static final double LIFELINE_HEAL = 25;             // W: a second
-	/** Leaving with Jump launches the ally at 13.2 m/s (W). */
+	/** Leaving with Jump launches the ally at 13.2 m/s (W): her data's 8 ahead and 10.5 up (graph 5A8F, read as M). */
 	public static final double LIFELINE_LAUNCH = 13.2;
+	public static final double LIFELINE_LAUNCH_FORWARD = 8;
+	public static final double LIFELINE_LAUNCH_UP = 10.5;
 
 	// Purr (ability 2)
 	public static final double PURR_COOLDOWN = 12;             // W

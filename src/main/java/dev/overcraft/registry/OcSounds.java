@@ -118,8 +118,53 @@ public final class OcSounds {
 		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy",
 		"crossfade_heal", "crossfade_speed", "amp", "soundwave", "wallride");
 
+	/**
+	 * Jetpack Cat's (tools/soundmaps/jetpack_cat.txt, read from her effects' Wwise events): her own in her head, fire
+	 * and reload also heard by everyone else ("_3p"); the loops are played and stopped by the client (JetpackCatSounds).
+	 */
+	public static final SoundEvent JC_PAW_FIRE = register("jetpack_cat.paw.fire");
+	public static final SoundEvent JC_PAW_FIRE_3P = register("jetpack_cat.paw.fire_3p");
+	public static final SoundEvent JC_PAW_HEAL = register("jetpack_cat.paw.heal");
+	public static final SoundEvent JC_RELOAD = register("jetpack_cat.reload");
+	public static final SoundEvent JC_RELOAD_3P = register("jetpack_cat.reload_3p");
+	public static final SoundEvent JC_HUM = register("jetpack_cat.jetpack.hum");
+	public static final SoundEvent JC_UP = register("jetpack_cat.jetpack.up");
+	public static final SoundEvent JC_DOWN = register("jetpack_cat.jetpack.down");
+	public static final SoundEvent JC_BOOST_START = register("jetpack_cat.boost.start");
+	public static final SoundEvent JC_BOOST_LOOP = register("jetpack_cat.boost.loop");
+	public static final SoundEvent JC_BOOST_END = register("jetpack_cat.boost.end");
+	public static final SoundEvent JC_BOOST_REGEN = register("jetpack_cat.boost.regen");
+	public static final SoundEvent JC_PURR_CAST = register("jetpack_cat.purr.cast");
+	public static final SoundEvent JC_PURR_PULSE = register("jetpack_cat.purr.pulse");
+	public static final SoundEvent JC_PURR_HEAL = register("jetpack_cat.purr.heal");
+	public static final SoundEvent JC_LIFELINE_ATTACH = register("jetpack_cat.lifeline.attach");
+	public static final SoundEvent JC_LIFELINE_LOOP = register("jetpack_cat.lifeline.loop");
+	public static final SoundEvent JC_LIFELINE_DETACH = register("jetpack_cat.lifeline.detach");
+	public static final SoundEvent JC_LIFELINE_ACTIVE = register("jetpack_cat.lifeline.active");
+	public static final SoundEvent JC_LIFELINE_ON = register("jetpack_cat.lifeline.on");
+	public static final SoundEvent JC_ULT_CAST = register("jetpack_cat.ult.cast");
+	public static final SoundEvent JC_ULT_AIM_START = register("jetpack_cat.ult.aim_start");
+	public static final SoundEvent JC_ULT_AIM = register("jetpack_cat.ult.aim");
+	public static final SoundEvent JC_ULT_DIVE = register("jetpack_cat.ult.dive");
+	public static final SoundEvent JC_ULT_DIVE_LOOP = register("jetpack_cat.ult.dive_loop");
+	public static final SoundEvent JC_ULT_IMPACT = register("jetpack_cat.ult.impact");
+	public static final SoundEvent JC_ULT_TETHER_START = register("jetpack_cat.ult.tether_start");
+	public static final SoundEvent JC_ULT_TETHER = register("jetpack_cat.ult.tether");
+	public static final SoundEvent JC_ULT_TETHER_END = register("jetpack_cat.ult.tether_end");
+	public static final SoundEvent JC_ULT_FRIENDLY = register("jetpack_cat.ult.friendly");
+	public static final SoundEvent JC_ULT_ENEMY = register("jetpack_cat.ult.enemy");
+	/**
+	 * Her lines by moment (Voice.say: "jetpack_cat.voice.<moment>"), the game's own pools (the map's voice section). Her
+	 * wheel lines ("call_...") are every hero's, registered in init().
+	 */
+	public static final java.util.List<String> JETPACK_CAT_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready",
+		"ping", "ping_warning", "ping_enemy", "boost", "reload", "heal", "purr", "purr_end", "lifeline", "tether_end",
+		"tether_attached");
+
 	static {
 		LUCIO_VOICE.forEach(moment -> register("lucio.voice." + moment));
+		JETPACK_CAT_VOICE.forEach(moment -> register("jetpack_cat.voice." + moment));
 	}
 
 	private OcSounds() {

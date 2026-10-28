@@ -1,0 +1,1146 @@
+# Jetpack Cat's sounds: <sound id> = <file under E:\Overwatch Archive\extracted\154088\> (build 154088). Same format as
+# lucio.txt / kiriko.txt; build_asset_pack.py sounds copies / mixes them into the local pack. Nothing here has been listened to.
+# Read 2026-10-28 offline (Overwatch and Battle.net closed): her 02C sounds' Wwise banks decoded exactly (ww.py, dump_banks.py,
+# wwfull.py, emote_events.py from research\emote-sounds\scripts: children from each object's parent id, random / sequence /
+# switch / layer parameters, volume, make-up gain, pitch, delays, the events' actions, RTPC curves) and the Init bank's bus
+# volumes (1E818). Research and the scripts' use: E:\Overwatch Archive\research\jetpack_cat\sounds.md. Ids: 02C sounds
+# (FA3A = 00000000FA3A.02C), 00D effects, 006 clips, 08F clip animation effects; graphs 01B with their node numbers.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves read at a fixed point (dB scaling 20*log10(1+y); linear between
+# points, Wwise's curve shapes not reproduced) and SetVolume actions. Unlike lucio.txt, ONE offset per family keeps her
+# sounds' balance with each other (as emotes.txt does), bringing the family's loudest single layer to -1 dBFS (the
+# builder's limiter catches sums): own -0.5 dB (loudest: jetpack_cat.ult.impact), 3p +13 dB (loudest: jetpack_cat.reload_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades and Seek (random
+# start points) are not reproduced. Layers more than 60 dB down at the RTPC point (muted there) are left out, and in
+# loops those 20 dB under the loudest loop.
+# Own vs others (M): in this build every one of her STUSounds has audience field 2 (m_D6EDF627), unlike Lucio's 1 / 2 pairs.
+# Each effect instead holds one copy with no range (m_ACB34EFC -1) on an unattenuated 2D mixer, read as her own player's,
+# and one or two ranged copies on attenuated mixers for everyone else; where there are two ranged copies they differ only
+# in level, filtering or one layer (read as the enemies' and the allies' copy, L which is which). 'own' rules are built
+# from the no-range copy, '_3p' rules from the louder ranged copy.
+
+# ===== How each game event is put together (rules)
+# jetpack_cat.paw.fire: Biotic Pawjectiles volley, own copy: 02C FA3A of effect 7847 (no range: the 2D copy for her
+#  player; H that it has no range and an unattenuated mixer, M that it is hers).
+# Trigger: each volley (every 1/4.5 = 0.222 s while primary is held): weapon graph 5ADB ActionEffect#662 7847, right
+#  after the volley effect #658.
+# Layers: a FA3A 392737492 RanSeq 0.26-0.43 s x17 -20 cents, net -13.5; b FA3A 681837096 RanSeq 1.23-1.58 s x8, net
+#  -19.5; c FA3A 546471485 RanSeq 1.68-2.47 s x8, net -5.5.
+@jetpack_cat.paw.fire = jetpack_cat.paw.fire.a*0.989:-14 + jetpack_cat.paw.fire.b@0.02:-20 + jetpack_cat.paw.fire.c@0.1:-6
+# jetpack_cat.paw.fire_3p: the volley heard by others: 02C FA3D of 7847 (38 m). 7847 also holds FA3C, the same layers
+#  3 dB quieter and high-passed (hpf 25) on the same mixer: one of the two is the enemies' copy and one the allies'
+#  (L: which; the build takes the louder, full-range FA3D).
+# Trigger: the same volley, played at her for everyone else (38 m).
+# Layers: a FA3D 206091490 RanSeq 0.26-0.43 s x17 -20 cents, net -20; b FA3D 821446806 RanSeq 1.23-1.58 s x8, net -26;
+#  c FA3D 12777094 RanSeq 1.68-2.47 s x8, net -12.
+@jetpack_cat.paw.fire_3p = jetpack_cat.paw.fire_3p.a*0.989:-7 + jetpack_cat.paw.fire_3p.b@0.02:-13 + jetpack_cat.paw.fire_3p.c@0.1:+1
+# jetpack_cat.paw.heal: the heal landing on an ally: 02C F421 of effect 739B (no range, the heal bus 1273371158). 739B
+#  also plays F427 (30 m) and 73A1 plays F424 (100 m): the same 9 files 1-2 dB apart, so one rule serves all three (M
+#  which listener each is).
+# Trigger: a paw or centre shot heals an ally: graph 5ADC (heal on an ally) ActionEffect#291 739B at the start of its
+#  heal state, then #338 73A1.
+# Layers: a F421 498590918 RanSeq 0.76-0.79 s x9, net -14.
+@jetpack_cat.paw.heal = jetpack_cat.paw.heal.a:-14.5
+# jetpack_cat.reload: reload, own: the 1P clip 18D45's animation effect 8A98 plays F45B @0.0359, F439 @0.1333, F45C
+#  @0.2667, F43B @0.4667, F43D @0.8, F43F @1.2 (H, hardpoint 00A4); plus effect 292F (02C 51C0, 45 m, no own copy)
+#  when the ammo is refilled: weapon graph 5ADB #496 wait -> #498 -> ActionSetVar#500 (ammo = max) -> ActionEffect#499
+#  (H), at the reload's 80% = 1.0 s (M: the time is the reload numbers', not read from the graph).
+# Trigger: reload start (the 1P reload clip 18D45, 1.267 s; Overwatch's reload is 1.25 s).
+# Layers: a F43D 84368851 RanSeq 0.36-0.37 s x5, net -6.5; b F45B 135146779 RanSeq 0.23 s x4 +100 cents, net -11.5; c
+#  F45C 296087566 RanSeq 0.28-0.33 s x4 +100 cents, net -11.5; d 51C0 924286045 RanSeq 1.11-1.36 s x4 +180 cents, net
+#  -16.5; e F43F 410641706 RanSeq 0.79-0.80 s x4, net -2.5; f F439 220478002 RanSeq 0.44 s x3, net -12.5; g F439
+#  741244781 RanSeq 0.31-0.39 s x3, net -14.5; h F43B 1009405190 RanSeq 0.31 s x3 -200 cents, net -12.5; i F43D
+#  360373155 RanSeq 0.31 s x3, net -12.5; j F43F 574834498 RanSeq 0.36-0.37 s x3, net -12.5.
+@jetpack_cat.reload = jetpack_cat.reload.a@0.9:-7 + jetpack_cat.reload.b*1.059@0.036:-12 + jetpack_cat.reload.c*1.059@0.267:-12 + jetpack_cat.reload.d*1.110@1:-17 + jetpack_cat.reload.e@1.2:-3 + jetpack_cat.reload.f@0.133:-13 + jetpack_cat.reload.g@0.133:-15 + jetpack_cat.reload.h*0.891@0.467:-13 + jetpack_cat.reload.i@0.8:-13 + jetpack_cat.reload.j@1.2:-13
+# jetpack_cat.reload_3p: reload heard by others: the 3P clip 18883's animation effect 8B2F plays F43A @0.0667, F43C
+#  @0.3, F43E @0.7, F440 @1.0024 (H, 45 m each), plus 292F (51C0) at the ammo refill (1.0 s, M).
+# Trigger: the same reload, heard by others (3P clip 18883, 1.2 s).
+# Layers: a 51C0 924286045 RanSeq 1.11-1.36 s x4 +180 cents, net -16.5; b F43A 709921775 RanSeq 0.44 s x3, net -17.5;
+#  c F43C 385411042 RanSeq 0.31 s x3, net -17.5; d F43E 256747353 RanSeq 0.31 s x3, net -17.5; e F440 704736139 RanSeq
+#  0.36-0.37 s x3, net -17.5.
+@jetpack_cat.reload_3p = jetpack_cat.reload_3p.a*1.110@1:-3.5 + jetpack_cat.reload_3p.b@0.067:-4.5 + jetpack_cat.reload_3p.c@0.3:-4.5 + jetpack_cat.reload_3p.d@0.7:-4.5 + jetpack_cat.reload_3p.e@1.002:-4.5
+# jetpack_cat.jetpack.hum: jetpack hum, own copy: 02C EE11 of the held effect 6D22: ten endless loops whose volume and
+#  pitch follow RTPCs (horizontal speed 3898795288 0-10, vertical speed 3965406357 -15..15, inputs 1255829709 /
+#  1661005385 / 1203779878 -1..1, speed multiplier 2418224404, 3818254173). Built at HOVER (all 0, multiplier 1):
+#  three loops sound, seven are silent there (they come in with vertical speed / strafe). The others hear EE12 / EE1F
+#  / F58A (65 m; F58A adds a 500 ms fade-in and a random start point).
+# Trigger: while in hero mode (always flying): graph 59DC holds effect 6D22 while the flight state is on (#11, under
+#  BooleanSwitch#33).
+# Layers: a EE11 94428055 Sound 9.02 s -303 cents, net -39, loops every 10.746 s; b EE11 343788719 Sound 9.12 s -152
+#  cents, net -14.5, loops every 9.956 s; c EE11 533951432 Sound 8.67 s -352 cents, net -6.5, loops every 10.628 s.
+# Left out: EE11 17603882 (-64.5 dB at the RTPC point), EE11 462358683 (-91 dB at the RTPC point), EE11 491280221
+#  (-122.5 dB at the RTPC point), EE11 806556226 (-129.5 dB at the RTPC point), EE11 836103771 (-100 dB at the RTPC
+#  point), EE11 317895294 (-49 dB at the RTPC point), EE11 656098775 (-48 dB at the RTPC point).
+# LOOP LENGTH 10.628 s: play it again every LOOP LENGTH (the built file runs 10.75 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.jetpack.hum = jetpack_cat.jetpack.hum.a*0.839:-39.5 + jetpack_cat.jetpack.hum.b*0.916:-15 + jetpack_cat.jetpack.hum.c*0.816:-7
+# jetpack_cat.jetpack.up: jetpack up thrust, own: 02C F665 of 74BA (others: F668 / F66A, 70 m, the first layer only).
+# Trigger: on pressing up (jump: v10912 = +1): 59DC ActionEffect#110 74BA (trueSubgraph of BooleanSwitch#53).
+# Layers: a F665 687193497 RanSeq 0.39-0.56 s x8 -130 cents, net -13.5; b F665 840971012 RanSeq 0.50-0.56 s x5 -570
+#  cents, net -16.
+@jetpack_cat.jetpack.up = jetpack_cat.jetpack.up.a*0.928:-14 + jetpack_cat.jetpack.up.b*0.719:-16.5
+# jetpack_cat.jetpack.down: jetpack down, own: 02C F666 of 74BB (others: F667 / F669, 70 m).
+# Trigger: on pressing down (crouch: v10912 = -1): 59DC ActionEffect#111 74BB (trueSubgraph of BooleanSwitch#57).
+# Layers: a F666 697770388 RanSeq 0.39-0.52 s x8 -280 cents, net -18.5; b F666 330132061 RanSeq 0.41-0.43 s x4 -100 cents, net -6.
+@jetpack_cat.jetpack.down = jetpack_cat.jetpack.down.a*0.851:-19 + jetpack_cat.jetpack.down.b*0.944:-6.5
+# jetpack_cat.boost.start: boost start, own: 02C F448 of 73C4 (three Play actions) plus the one-shot layers of EC7F's
+#  Play event (72DA's own copy). Others: F449 / F44A (70 m) and EC80 / F42A.
+# Trigger: Frenetic Flight starts (secondary pressed with energy): 59E0 ActionEffect#935 73C4 on BooleanSwitch#29
+#  onTrue; the boost loop's held effect 72DA starts at the same time (StateStack#68, v580 = 1) and its Play event has
+#  one-shot layers too.
+# Layers: a F448 188495878 RanSeq 0.27-0.33 s x5 +194 cents, net -9.5; b EC7F 413016099 RanSeq 0.26-0.32 s x5 +194
+#  cents, net -9.5; c F448 857097529 RanSeq 1.05-1.18 s x4 -400 cents, net -3; d EC7F 599532151 RanSeq 1.09-1.25 s x4
+#  +25 cents, net -7; e F448 864409162 RanSeq 0.33-0.42 s x4 +100 cents, net -8; f EC7F 721039628 Sound 0.20 s, net
+#  -12; g F448 144225075 Sound 0.48 s, net -12.
+@jetpack_cat.boost.start = jetpack_cat.boost.start.a*1.119:-10 + jetpack_cat.boost.start.b*1.119:-10 + jetpack_cat.boost.start.c*0.794:-3.5 + jetpack_cat.boost.start.d*1.015:-7.5 + jetpack_cat.boost.start.e*1.059@0.3:-8.5 + jetpack_cat.boost.start.f@0.06:-12.5 + jetpack_cat.boost.start.g@0.1:-12.5
+# jetpack_cat.boost.loop: boost loop, own: the three endless loops of 02C EC7F (72DA). Their pitch and level follow
+#  RTPC 2985567545 (data flow 05F8, 0-60: read as speed in m/s, M); built at 10 (Frenetic Flight's sustained max air
+#  speed, 59E0#872) with the speed multiplier 2418224404 at 1.45 (the +25..65% ramp's middle). At 0 the loops drop 600
+#  cents.
+# Trigger: while Frenetic Flight is on: 59E0 holds 7067 (#72, the trail) under StateStack#68 (v580 = 1), and 7067
+#  holds 72DA (#933).
+# Layers: a EC7F 220573171 Sound 8.91 s +586 cents, net -22.5, loops every 6.354 s (tiled x2); b EC7F 260963003 Sound
+#  12.93 s +945 cents, net -18.5, loops every 7.490 s; c EC7F 593363431 Sound 3.94 s +2742 cents, net -20, loops every
+#  0.809 s (tiled x10).
+# LOOP LENGTH 7.490 s: play it again every LOOP LENGTH (the built file runs 12.71 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.boost.loop = jetpack_cat.boost.loop.a*1.403:-23 + jetpack_cat.boost.loop.a*1.403@6.354:-23 + jetpack_cat.boost.loop.b*1.726:-19 + jetpack_cat.boost.loop.c*4.874:-20.5 + jetpack_cat.boost.loop.c*4.874@0.809:-20.5 + jetpack_cat.boost.loop.c*4.874@1.619:-20.5 + jetpack_cat.boost.loop.c*4.874@2.428:-20.5 + jetpack_cat.boost.loop.c*4.874@3.237:-20.5 + jetpack_cat.boost.loop.c*4.874@4.046:-20.5 + jetpack_cat.boost.loop.c*4.874@4.856:-20.5 + jetpack_cat.boost.loop.c*4.874@5.665:-20.5 + jetpack_cat.boost.loop.c*4.874@6.474:-20.5 + jetpack_cat.boost.loop.c*4.874@7.283:-20.5
+# jetpack_cat.boost.end: boost end, own: EC7F's Stop event: it stops the loops (200 ms fade) and the start set (500
+#  ms), and plays three one-shot layers (H).
+# Trigger: Frenetic Flight ends (released, or out of energy): the held 72DA stops, which runs EC7F's Stop event.
+# Layers: a EC7F Stop-event 188495878 RanSeq 0.27-0.33 s x5 +194 cents, net -9.5; b EC7F Stop-event 212351489 RanSeq
+#  1.05-1.18 s x4 -100 cents, net -5; c EC7F Stop-event 17429347 Sound 0.44 s, net -18.
+@jetpack_cat.boost.end = jetpack_cat.boost.end.a*1.119:-10 + jetpack_cat.boost.end.b*0.944:-5.5 + jetpack_cat.boost.end.c@0.1:-18.5
+# jetpack_cat.boost.regen: energy regen, own: 02C 1094 of the held effect 05AC (one endless 4.76 s loop at -88 cents,
+#  no range; its Stop fades 500 ms). No 3P copy.
+# Trigger: while Frenetic Flight energy refills: 59E0 holds 05AC (#126) under the energy chase StateChaseVar#28.
+# Layers: a 1094 270449826 Sound 4.76 s -88 cents, net -33, loops every 5.005 s.
+# LOOP LENGTH 5.005 s: play it again every LOOP LENGTH (the built file runs 5.01 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.boost.regen = jetpack_cat.boost.regen.a*0.950:-33.5
+# jetpack_cat.purr.cast: Purr cast, own: 02C F199 of 71D7 (two Play actions) plus the 1P cast clip 18816's F458 @0.1
+#  (effect 8B4C, H). Others: F19A / F19E (45 m, a different file each; L which team hears which).
+# Trigger: Purr cast (ability 2): 5A7E ActionEffect#7 71D7, with the cast anim 0x505 (1P clip 18816).
+# Layers: a F458 718996546 RanSeq 0.31-0.32 s x5 +100 cents, net -7.5; b F199 1056653354 Sound 1.63 s -12 cents, net
+#  0; c F199 513203564 Sound 0.67 s, net -10.
+@jetpack_cat.purr.cast = jetpack_cat.purr.cast.a*1.059@0.1:-8 + jetpack_cat.purr.cast.b*0.993:-0.5 + jetpack_cat.purr.cast.c:-10.5
+# jetpack_cat.purr.pulse: Purr pulse, own: 02C F19B of 71D8 (a random 10, 200 ms fade-in). Others: F19C (one layer) /
+#  F19F (two layers), 45 m.
+# Trigger: each Purr pulse (4 pulses 0.95 s apart): 5A7E ActionEffect#184 70F3 (visual) -> #239 71D8.
+# Layers: a F19B 881022015 RanSeq 0.74-0.81 s x10, net -17.
+@jetpack_cat.purr.pulse = jetpack_cat.purr.pulse.a:-17.5
+# jetpack_cat.purr.heal: Purr heal on an ally: 73B1 plays only 02C F421, the same sound as the Pawjectile heal (H).
+# Trigger: on each ally a pulse heals: graph 5C32 (Purr on each healed target) ActionEffect#337 73B1.
+# Layers: a F421 498590918 RanSeq 0.76-0.79 s x9, net -14.
+@jetpack_cat.purr.heal = jetpack_cat.purr.heal.a:-14.5
+# jetpack_cat.lifeline.attach: Lifeline attach, own: 02C ECAF of 711A plus the one-shot layers of F31D's Play (72E4's
+#  own copy). Others: ECA8 (one layer) / F651 (two layers), 70 m.
+# Trigger: Lifeline latches onto an ally: 5A8F ActionEffect#585 711A; the tow loop's held effect 72E4 starts with it
+#  and its Play event has a one-shot start layer.
+# Layers: a F31D 399093611 RanSeq 0.94-0.97 s x6, net -3; b ECAF 642259931 RanSeq 0.91-0.95 s x3 +100 cents, net +1; c
+#  ECAF 390680401 Sound 1.77 s, net -11; d F31D 636728271 Sound 0.46 s, net -14.
+@jetpack_cat.lifeline.attach = jetpack_cat.lifeline.attach.a:-3.5 + jetpack_cat.lifeline.attach.b*1.059@0.25:+0.5 + jetpack_cat.lifeline.attach.c:-11.5 + jetpack_cat.lifeline.attach.d@0.1:-14.5
+# jetpack_cat.lifeline.loop: tow loop, own: the three endless loops of 02C F31D (72E4). 72E4 also holds 7481 (F31E,
+#  played for the towed entity: M, that ally's own copy), and the rope node #1137 holds 747D (F31F, 70 m: what others
+#  hear). One of the loops is pitched by RTPC 1803918745 (data flow 0CF3, the tether length: written by 5A8F's
+#  DataFlowMapping #1323 / #1367), built at 0.
+# Trigger: while an ally is towed: 5A8F holds 72E4 (#1158 / #1368, on the towed entity v59143).
+# Layers: a F31D 712014551 Sound 7.80 s, net -22, loops every 7.801 s; b F31D 935514832 Sound 7.58 s -251 cents, net
+#  -12.5, loops every 8.757 s.
+# Left out: F31D 421737013 (longer than the loop (18.06 s)).
+# LOOP LENGTH 7.801 s: play it again every LOOP LENGTH (the built file runs 8.76 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.lifeline.loop = jetpack_cat.lifeline.loop.a:-22.5 + jetpack_cat.lifeline.loop.b*0.865:-13
+# jetpack_cat.lifeline.detach: Lifeline detach, own: 02C ECA9 of 7119 plus the one-shot layers of F31D's Stop event.
+#  Others: ECAE / F652 (70 m).
+# Trigger: the tow ends (let go, broken, or toggled off): 5A8F ActionEffect#1136 7119 on the end of StateStack#552;
+#  72E4 stops, which runs F31D's Stop event.
+# Layers: a F31D Stop-event 59320517 RanSeq 1.23-1.37 s x3 +50 cents, net -4; b ECA9 206650100 Sound 0.92 s, net -11;
+#  c F31D Stop-event 930141205 Sound 0.70 s, net -15.
+@jetpack_cat.lifeline.detach = jetpack_cat.lifeline.detach.a*1.029:-4.5 + jetpack_cat.lifeline.detach.b:-11.5 + jetpack_cat.lifeline.detach.c:-15.5
+# jetpack_cat.lifeline.active (EXTRA): Lifeline-on loop, own: 02C ECA5 of 7113 (two continuous random containers with
+#  500 ms gaps plus two endless loops; a random start point). Others: ECAD / F56C (25 m).
+# Trigger: EXTRA (not in the integration list): while Lifeline is toggled on, attached or not: 5A8F BooleanSwitch#1213
+#  (v375 == 1) holds 7113 (#1024) via DataFlowMapping#1215.
+# Layers: a ECA5 156550841 Sound 9.10 s, net -27, loops every 9.103 s; b ECA5 225886112 RanSeq 0.97 s, net +1, loops
+#  every 1.472 s (tiled x7); c ECA5 380889157 Sound 1.42 s +100 cents, net -2, loops every 1.340 s (tiled x7).
+# Left out: ECA5 9575883 (-45 dB at the RTPC point).
+# LOOP LENGTH 9.103 s: play it again every LOOP LENGTH (the built file runs 9.80 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.lifeline.active = jetpack_cat.lifeline.active.a:-27.5 + jetpack_cat.lifeline.active.b:+0.5 + jetpack_cat.lifeline.active.b@1.472:+0.5 + jetpack_cat.lifeline.active.b@2.944:+0.5 + jetpack_cat.lifeline.active.b@4.416:+0.5 + jetpack_cat.lifeline.active.b@5.888:+0.5 + jetpack_cat.lifeline.active.b@7.36:+0.5 + jetpack_cat.lifeline.active.b@8.832:+0.5 + jetpack_cat.lifeline.active.c*1.059:-2.5 + jetpack_cat.lifeline.active.c*1.059@1.34:-2.5 + jetpack_cat.lifeline.active.c*1.059@2.681:-2.5 + jetpack_cat.lifeline.active.c*1.059@4.021:-2.5 + jetpack_cat.lifeline.active.c*1.059@5.361:-2.5 + jetpack_cat.lifeline.active.c*1.059@6.702:-2.5 + jetpack_cat.lifeline.active.c*1.059@8.042:-2.5
+# jetpack_cat.lifeline.on (EXTRA): Lifeline-on cue, own only: 02C F4C1 of 7427 (two short tones).
+# Trigger: EXTRA: Lifeline toggled on: 5A8F ActionEffect#1214 7427 on BooleanSwitch#1213 onTrue.
+# Layers: a F4C1 196280690 Sound 0.67 s -230 cents, net +21; b F4C1 234304617 Sound 0.43 s +150 cents, net +1.
+@jetpack_cat.lifeline.on = jetpack_cat.lifeline.on.a*0.876:+20.5 + jetpack_cat.lifeline.on.b*1.091:+0.5
+# jetpack_cat.ult.cast: Catnapper cast, own: 02C F4E2 of 7435 plus the 1P aim-enter clip 18818's F459 @0.1 (effect
+#  8B4A). Others: F4E3 (two layers) / F4E4 (one), 75 m.
+# Trigger: Catnapper activated: 5B7B BooleanSwitch#55 onTrue plays 7435 with the aim anim 0x175 (#299) and the StateAbility #58.
+# Layers: a F459 491599989 RanSeq 0.20-0.23 s x5 +100 cents, net -4.5; b F4E2 66825020 Sound 0.75 s, net -5; c F4E2
+#  1031904682 Sound 0.30 s, net -1.
+@jetpack_cat.ult.cast = jetpack_cat.ult.cast.a*1.059@0.1:-5 + jetpack_cat.ult.cast.b:-5.5 + jetpack_cat.ult.cast.c@0.15:-1.5
+# jetpack_cat.ult.aim_start (EXTRA): aim start, own: 02C F1E1 of 71F2. Others: F1E2 (75 m).
+# Trigger: EXTRA: the targeting state begins: 5B7B ActionEffect#380 71F2 on BooleanSwitch#110 onBegin (the state that
+#  holds the aim marker).
+# Layers: a F1E1 568766853 Sound 1.13 s, net -5; b F1E1 992832363 Sound 0.58 s, net +5.
+@jetpack_cat.ult.aim_start = jetpack_cat.ult.aim_start.a:-5.5 + jetpack_cat.ult.aim_start.b@0.15:+4.5
+# jetpack_cat.ult.aim: aim loop: 02C F1E3 of 7248, two endless very quiet loops (files peak -38 / -40 dBFS) at 60 m.
+#  It is the only aim loop and has no own copy, so everyone (her too) hears this one.
+# Trigger: while aiming: 7248 is held on the aim-marker cosmetic entity 6DF5 (5B7B StateCosmeticEntity#333, under the
+#  targeting node #102).
+# Layers: a F1E3 62706481 Sound 6.65 s -210 cents, net -8, loops every 7.504 s; b F1E3 226164604 Sound 6.58 s, net +9,
+#  loops every 6.583 s.
+# LOOP LENGTH 6.583 s: play it again every LOOP LENGTH (the built file runs 7.50 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.ult.aim = jetpack_cat.ult.aim.a*0.886:+5 + jetpack_cat.ult.aim.b:+22
+# jetpack_cat.ult.dive: dive, own: 02C F237 of 7249 (a ResetVolume, then two Plays) plus the 1P aim-exit clip 18819's
+#  F45A @0 (effect 8B4B; M that the aim exits at the dive). Others: F238 / F239 (75 m).
+# Trigger: the dive is confirmed: 5B7B BooleanSwitch#172 (trueSubgraph) plays 7249 as the 0.35 s windup (#296 WAIT
+#  v670) starts; the dive (StateMoveTo#95) follows.
+# Layers: a F45A 229494875 RanSeq 0.26-0.32 s x5 +100 cents, net -4.5; b F237 669808258 RanSeq 1.19-1.28 s x4, net -8;
+#  c F237 636599141 Sound 1.48 s, net -18; d F237 635040102 Sound 0.42 s, net -15.
+@jetpack_cat.ult.dive = jetpack_cat.ult.dive.a*1.059:-5 + jetpack_cat.ult.dive.b:-8.5 + jetpack_cat.ult.dive.c:-18.5 + jetpack_cat.ult.dive.d@0.25:-15.5
+# jetpack_cat.ult.dive_loop (EXTRA): dive loop, own: 02C F23A of 724B (four endless loops, random start point; one
+#  more is muted by RTPC). Others: F23B / F23C (60 m).
+# Trigger: EXTRA: from the windup to the landing: 724B held in the same BooleanSwitch#172 trueSubgraph.
+# Layers: a F23A 393691070 Sound 3.07 s, net -5, loops every 3.069 s; b F23A 499664302 Sound 4.11 s +610 cents, net
+#  -5, loops every 2.890 s; c F23A 801750105 Sound 2.91 s +510 cents, net -4, loops every 2.168 s (tiled x2).
+# Left out: F23A 782168189 (-132.5 dB at the RTPC point), F23A 217025821 (longer than the loop (4.90 s)).
+# LOOP LENGTH 3.069 s: play it again every LOOP LENGTH (the built file runs 4.34 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.ult.dive_loop = jetpack_cat.ult.dive_loop.a:-5.5 + jetpack_cat.ult.dive_loop.b*1.422:-5.5 + jetpack_cat.ult.dive_loop.c*1.343:-4.5 + jetpack_cat.ult.dive_loop.c*1.343@2.168:-4.5
+# jetpack_cat.ult.impact: landing, own: 02C F23F of 724C: a boom (+370 cents), the big room switch 305381647 (Lucio's
+#  Soundwave tails; default case) 0.3 s late with SetVolume -10 dB, and a thud @0.14 on bus 696369880. Others: F240 /
+#  F241 (200 m; SetVolume -6 / -10). After it, if the hit passes a target filter, #539 -> #540 plays 7910 (FB16 own /
+#  FB17 75 m, 0.92 s): not included (conditional, L what it marks).
+# Trigger: the landing: 5B7B STUGraphContainer#306 onBegin (after TRACK#305 ends) plays 724C with 71C2 (visual), the
+#  25-damage hit and the 5 m explosion.
+# Layers: a F23F 577716776 RanSeq 3.35-3.80 s x9 -10 cents, net -16.5; b F23F 677685491 RanSeq 4.70-6.09 s x7 -150
+#  cents, net +1.5; c F23F 122843270 Sound 2.15 s +370 cents, net -4; d F23F 843749415 Sound 0.72 s, net -16.
+@jetpack_cat.ult.impact = jetpack_cat.ult.impact.a*0.994@0.525:-17 + jetpack_cat.ult.impact.b*0.917@0.515:+1 + jetpack_cat.ult.impact.c*1.238:-4.5 + jetpack_cat.ult.impact.d@0.14:-16.5
+# jetpack_cat.ult.tether_start (EXTRA): tether start, own: the one-shot layers of 02C F40D's Play (7493's own copy).
+# Trigger: EXTRA: a target is latched after the landing: 5B7B StateStack#343 (v72334 != 0, under BooleanSwitch#301)
+#  starts holding 7493.
+# Layers: a F40D 1039770209 RanSeq 1.24-1.38 s x5, net -2; b F40D 90905537 Sound 0.46 s, net -14.
+@jetpack_cat.ult.tether_start = jetpack_cat.ult.tether_start.a:-2.5 + jetpack_cat.ult.tether_start.b@0.1:-14.5
+# jetpack_cat.ult.tether: tether loop, own: the loops of 02C F40D (7493): two endless loops and a repeating two-click
+#  unit (a continuous container, 500 ms gap). 7493 also holds 7494 (F60F: the same tow-rope files as Lifeline's F31E,
+#  read as the tethered target's own copy, L) and the rope node #391 holds 739E (F41C / F50D, 75 m: what others hear).
+# Trigger: while the target is tethered (up to 4 s): 5B7B StateStack#343 holds 7493 (#458).
+# Layers: a F40D 307006861 Sound 0.12 s, net -17, loops every 1.100 s (tiled x9); b F40D 84423274 Sound 7.80 s +300
+#  cents, net -16, loops every 6.560 s (tiled x2); c F40D 744188070 Sound 9.03 s, net -2, loops every 9.029 s; d F40D
+#  830831520 Sound 0.10 s, net -17, loops every 1.100 s (tiled x8).
+# LOOP LENGTH 9.029 s: play it again every LOOP LENGTH (the built file runs 13.12 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@jetpack_cat.ult.tether = jetpack_cat.ult.tether.a:-17.5 + jetpack_cat.ult.tether.a@1.1:-17.5 + jetpack_cat.ult.tether.a@2.2:-17.5 + jetpack_cat.ult.tether.a@3.3:-17.5 + jetpack_cat.ult.tether.a@4.4:-17.5 + jetpack_cat.ult.tether.a@5.5:-17.5 + jetpack_cat.ult.tether.a@6.6:-17.5 + jetpack_cat.ult.tether.a@7.7:-17.5 + jetpack_cat.ult.tether.a@8.8:-17.5 + jetpack_cat.ult.tether.b*1.189:-16.5 + jetpack_cat.ult.tether.b*1.189@6.56:-16.5 + jetpack_cat.ult.tether.c:-2.5 + jetpack_cat.ult.tether.d@0.5:-17.5 + jetpack_cat.ult.tether.d@1.6:-17.5 + jetpack_cat.ult.tether.d@2.7:-17.5 + jetpack_cat.ult.tether.d@3.8:-17.5 + jetpack_cat.ult.tether.d@4.9:-17.5 + jetpack_cat.ult.tether.d@6:-17.5 + jetpack_cat.ult.tether.d@7.1:-17.5 + jetpack_cat.ult.tether.d@8.2:-17.5
+# jetpack_cat.ult.tether_end (EXTRA): tether end, own: the one-shot layers of F40D's Stop event.
+# Trigger: EXTRA: the tether ends (4 s, or the target is lost): 7493 stops, which runs F40D's Stop event; voice 19B6
+#  'Unlatch tether' plays on the end of StateStack#286.
+# Layers: a F40D Stop-event 625945602 RanSeq 1.23-1.37 s x3 +50 cents, net 0; b F40D Stop-event 262557385 Sound 0.70
+#  s, net -5; c F40D Stop-event 1056703597 Sound 0.35 s, net -14.
+@jetpack_cat.ult.tether_end = jetpack_cat.ult.tether_end.a*1.029:-0.5 + jetpack_cat.ult.tether_end.b:-5.5 + jetpack_cat.ult.tether_end.c@0.12:-14.5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# jetpack_cat.paw.fire.a: FA3A play 392737492 (17 files, 0.260-0.428 s, 2ch); net -13.5 dB, -20 cents, @0.000 s, avoid
+#  repeat 7. H.
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD8.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD0.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDD.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE2.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE1.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDF.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBEB.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCF.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE5.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBC8.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDE.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE6.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCE.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE0.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDA.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE7.03F.ogg
+jetpack_cat.paw.fire.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBC9.03F.ogg
+# jetpack_cat.paw.fire.b: FA3A play 681837096 (8 files, 1.231-1.585 s, 2ch); net -19.5 dB, +0 cents, @0.020 s, avoid repeat 2. H.
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD5.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDB.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD6.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCA.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD3.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCB.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE4.03F.ogg
+jetpack_cat.paw.fire.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD7.03F.ogg
+# jetpack_cat.paw.fire.c: FA3A play 546471485 (8 files, 1.676-2.473 s, 2ch); net -5.5 dB, +0 cents, @0.100 s, avoid repeat 2. H.
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD9.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBDC.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE8.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBEA.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCC.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBCD.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBD4.03F.ogg
+jetpack_cat.paw.fire.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3A.02C/00000034DBE9.03F.ogg
+# jetpack_cat.paw.fire_3p.a: FA3D play 206091490 (17 files, 0.260-0.428 s, 2ch); net -20 dB, -20 cents, @0.000 s,
+#  avoid repeat 7. H.
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD8.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD0.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDD.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE2.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE1.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDF.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBEB.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCF.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE5.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBC8.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDE.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE6.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCE.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE0.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDA.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE7.03F.ogg
+jetpack_cat.paw.fire_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBC9.03F.ogg
+# jetpack_cat.paw.fire_3p.b: FA3D play 821446806 (8 files, 1.231-1.585 s, 2ch); net -26 dB, +0 cents, @0.020 s, avoid repeat 2. H.
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD5.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDB.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD6.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCA.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD3.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCB.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE4.03F.ogg
+jetpack_cat.paw.fire_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD7.03F.ogg
+# jetpack_cat.paw.fire_3p.c: FA3D play 12777094 (8 files, 1.676-2.473 s, 2ch); net -12 dB, +0 cents, @0.100 s, avoid repeat 2. H.
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD9.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBDC.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE8.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBEA.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCC.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBCD.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBD4.03F.ogg
+jetpack_cat.paw.fire_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007847.00D/Sounds/00000000FA3D.02C/00000034DBE9.03F.ogg
+# jetpack_cat.paw.heal.a: F421 play 498590918 (9 files, 0.761-0.793 s, 2ch); net -14 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B27.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2E.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2B.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B29.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B28.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2C.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2A.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2D.03F.ogg
+jetpack_cat.paw.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2F.03F.ogg
+# jetpack_cat.reload.a: F43D play 84368851 (5 files, 0.356-0.372 s, 2ch); net -6.5 dB, +0 cents, @0.900 s. H.
+jetpack_cat.reload.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033CEDC.03F.ogg
+jetpack_cat.reload.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033CEDF.03F.ogg
+jetpack_cat.reload.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033CEDB.03F.ogg
+jetpack_cat.reload.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033CED6.03F.ogg
+jetpack_cat.reload.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033CEDA.03F.ogg
+# jetpack_cat.reload.b: F45B play 135146779 (4 files, 0.228-0.233 s, 1ch); net -11.5 dB, +100 cents, @0.036 s, avoid repeat 3. H.
+jetpack_cat.reload.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45B.02C/00000033C2E1.03F.ogg
+jetpack_cat.reload.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45B.02C/00000033C2CB.03F.ogg
+jetpack_cat.reload.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45B.02C/00000033C2BE.03F.ogg
+jetpack_cat.reload.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45B.02C/00000033C2CF.03F.ogg
+# jetpack_cat.reload.c: F45C play 296087566 (4 files, 0.276-0.329 s, 1ch); net -11.5 dB, +100 cents, @0.267 s, avoid repeat 3. H.
+jetpack_cat.reload.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45C.02C/00000033C2E8.03F.ogg
+jetpack_cat.reload.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45C.02C/00000033C2E2.03F.ogg
+jetpack_cat.reload.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45C.02C/00000033C2D7.03F.ogg
+jetpack_cat.reload.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F45C.02C/00000033C2E3.03F.ogg
+# jetpack_cat.reload.d: 51C0 play 924286045 (4 files, 1.111-1.364 s, 1ch); net -16.5 dB, +180 cents, @1.000 s. H.
+jetpack_cat.reload.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEEF.03F.ogg
+jetpack_cat.reload.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACF24.03F.ogg
+jetpack_cat.reload.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEEC.03F.ogg
+jetpack_cat.reload.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEF5.03F.ogg
+# jetpack_cat.reload.e: F43F play 410641706 (4 files, 0.788-0.804 s, 2ch); net -2.5 dB, +0 cents, @1.200 s. H.
+jetpack_cat.reload.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033CED4.03F.ogg
+jetpack_cat.reload.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033CED8.03F.ogg
+jetpack_cat.reload.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033CED5.03F.ogg
+jetpack_cat.reload.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033CED7.03F.ogg
+# jetpack_cat.reload.f: F439 play 220478002 (3 files, 0.444 s, 2ch); net -12.5 dB, +0 cents, @0.133 s, avoid repeat 2. H.
+jetpack_cat.reload.f = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033BE1B.03F.ogg
+jetpack_cat.reload.f = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033BE1F.03F.ogg
+jetpack_cat.reload.f = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033BE1E.03F.ogg
+# jetpack_cat.reload.g: F439 play 741244781 (3 files, 0.311-0.388 s, 1ch); net -14.5 dB, +0 cents, @0.133 s. H.
+jetpack_cat.reload.g = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033FA4D.03F.ogg
+jetpack_cat.reload.g = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033FA4F.03F.ogg
+jetpack_cat.reload.g = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F439.02C/00000033FA4E.03F.ogg
+# jetpack_cat.reload.h: F43B play 1009405190 (3 files, 0.308-0.311 s, 2ch); net -12.5 dB, -200 cents, @0.467 s, avoid repeat 2. H.
+jetpack_cat.reload.h = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43B.02C/00000033BE17.03F.ogg
+jetpack_cat.reload.h = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43B.02C/00000033BE19.03F.ogg
+jetpack_cat.reload.h = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43B.02C/00000033BE1D.03F.ogg
+# jetpack_cat.reload.i: F43D play 360373155 (3 files, 0.311 s, 2ch); net -12.5 dB, +0 cents, @0.800 s, avoid repeat 2. H.
+jetpack_cat.reload.i = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033BE20.03F.ogg
+jetpack_cat.reload.i = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033BE1C.03F.ogg
+jetpack_cat.reload.i = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43D.02C/00000033BE15.03F.ogg
+# jetpack_cat.reload.j: F43F play 574834498 (3 files, 0.356-0.367 s, 2ch); net -12.5 dB, +0 cents, @1.200 s, avoid repeat 2. H.
+jetpack_cat.reload.j = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033BE18.03F.ogg
+jetpack_cat.reload.j = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033BFB9.03F.ogg
+jetpack_cat.reload.j = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018D45/Sounds/00000000F43F.02C/00000033BE16.03F.ogg
+# jetpack_cat.reload_3p.a: 51C0 play 924286045 (4 files, 1.111-1.364 s, 1ch); net -16.5 dB, +180 cents, @1.000 s. H.
+jetpack_cat.reload_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEEF.03F.ogg
+jetpack_cat.reload_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACF24.03F.ogg
+jetpack_cat.reload_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEEC.03F.ogg
+jetpack_cat.reload_3p.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000292F.00D/Sounds/0000000051C0.02C/0000002ACEF5.03F.ogg
+# jetpack_cat.reload_3p.b: F43A play 709921775 (3 files, 0.444 s, 2ch); net -17.5 dB, +0 cents, @0.067 s, avoid repeat 2. H.
+jetpack_cat.reload_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43A.02C/00000033BE1B.03F.ogg
+jetpack_cat.reload_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43A.02C/00000033BE1F.03F.ogg
+jetpack_cat.reload_3p.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43A.02C/00000033BE1E.03F.ogg
+# jetpack_cat.reload_3p.c: F43C play 385411042 (3 files, 0.308-0.311 s, 2ch); net -17.5 dB, +0 cents, @0.300 s, avoid repeat 2. H.
+jetpack_cat.reload_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43C.02C/00000033BE17.03F.ogg
+jetpack_cat.reload_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43C.02C/00000033BE19.03F.ogg
+jetpack_cat.reload_3p.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43C.02C/00000033BE1D.03F.ogg
+# jetpack_cat.reload_3p.d: F43E play 256747353 (3 files, 0.311 s, 2ch); net -17.5 dB, +0 cents, @0.700 s, avoid repeat 2. H.
+jetpack_cat.reload_3p.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43E.02C/00000033BE20.03F.ogg
+jetpack_cat.reload_3p.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43E.02C/00000033BE1C.03F.ogg
+jetpack_cat.reload_3p.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F43E.02C/00000033BE15.03F.ogg
+# jetpack_cat.reload_3p.e: F440 play 704736139 (3 files, 0.356-0.367 s, 2ch); net -17.5 dB, +0 cents, @1.002 s, avoid repeat 2. H.
+jetpack_cat.reload_3p.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F440.02C/00000033BE18.03F.ogg
+jetpack_cat.reload_3p.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F440.02C/00000033BFB7.03F.ogg
+jetpack_cat.reload_3p.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018883/Sounds/00000000F440.02C/00000033BE16.03F.ogg
+# jetpack_cat.jetpack.hum.a: EE11 play 94428055 (1 file, 9.021 s, 1ch); net -39 dB, -303 cents, @0.000 s, period 10.746 s. H.
+jetpack_cat.jetpack.hum.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006D22.00D/Sounds/00000000EE11.02C/00000033A720.03F.ogg
+# jetpack_cat.jetpack.hum.b: EE11 play 343788719 (1 file, 9.119 s, 2ch); net -14.5 dB, -152 cents, @0.000 s, period 9.956 s. H.
+jetpack_cat.jetpack.hum.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006D22.00D/Sounds/00000000EE11.02C/000000322C74.03F.ogg
+# jetpack_cat.jetpack.hum.c: EE11 play 533951432 (1 file, 8.673 s, 2ch); net -6.5 dB, -352 cents, @0.000 s, period 10.628 s. H.
+jetpack_cat.jetpack.hum.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006D22.00D/Sounds/00000000EE11.02C/000000322C72.03F.ogg
+# jetpack_cat.jetpack.up.a: F665 play 687193497 (8 files, 0.391-0.561 s, 2ch); net -13.5 dB, -130 cents, @0.000 s,
+#  avoid repeat 4. H.
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEBA.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEB9.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEC7.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEC3.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEC5.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEBE.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEC2.03F.ogg
+jetpack_cat.jetpack.up.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEBF.03F.ogg
+# jetpack_cat.jetpack.up.b: F665 play 840971012 (5 files, 0.503-0.564 s, 1ch); net -16 dB, -570 cents, @0.000 s, avoid
+#  repeat 4. H.
+jetpack_cat.jetpack.up.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEDE.03F.ogg
+jetpack_cat.jetpack.up.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEE2.03F.ogg
+jetpack_cat.jetpack.up.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEE1.03F.ogg
+jetpack_cat.jetpack.up.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEDF.03F.ogg
+jetpack_cat.jetpack.up.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BA.00D/Sounds/00000000F665.02C/00000033FEDD.03F.ogg
+# jetpack_cat.jetpack.down.a: F666 play 697770388 (8 files, 0.385-0.521 s, 2ch); net -18.5 dB, -280 cents, @0.000 s,
+#  avoid repeat 2. H.
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEC1.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEBD.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEC8.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEC6.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEBC.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEBB.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEC4.03F.ogg
+jetpack_cat.jetpack.down.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEC0.03F.ogg
+# jetpack_cat.jetpack.down.b: F666 play 330132061 (4 files, 0.409-0.428 s, 1ch); net -6 dB, -100 cents, @0.000 s,
+#  avoid repeat 2. H.
+jetpack_cat.jetpack.down.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEE0.03F.ogg
+jetpack_cat.jetpack.down.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEE4.03F.ogg
+jetpack_cat.jetpack.down.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEDC.03F.ogg
+jetpack_cat.jetpack.down.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000074BB.00D/Sounds/00000000F666.02C/00000033FEE3.03F.ogg
+# jetpack_cat.boost.start.a: F448 play 188495878 (5 files, 0.273-0.332 s, 1ch); net -9.5 dB, +194 cents, @0.000 s,
+#  avoid repeat 3. H.
+jetpack_cat.boost.start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C2CD.03F.ogg
+jetpack_cat.boost.start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C2DF.03F.ogg
+jetpack_cat.boost.start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C2DE.03F.ogg
+jetpack_cat.boost.start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C2CA.03F.ogg
+jetpack_cat.boost.start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C2C7.03F.ogg
+# jetpack_cat.boost.start.b: EC7F play 413016099 (5 files, 0.263-0.319 s, 1ch); net -9.5 dB, +194 cents, @0.000 s,
+#  avoid repeat 3. H.
+jetpack_cat.boost.start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2BD.03F.ogg
+jetpack_cat.boost.start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2D2.03F.ogg
+jetpack_cat.boost.start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2C9.03F.ogg
+jetpack_cat.boost.start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2D5.03F.ogg
+jetpack_cat.boost.start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2DC.03F.ogg
+# jetpack_cat.boost.start.c: F448 play 857097529 (4 files, 1.052-1.177 s, 2ch); net -3 dB, -400 cents, @0.000 s, avoid
+#  repeat 2. H.
+jetpack_cat.boost.start.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033BC08.03F.ogg
+jetpack_cat.boost.start.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033BC09.03F.ogg
+jetpack_cat.boost.start.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033BC06.03F.ogg
+jetpack_cat.boost.start.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033BC07.03F.ogg
+# jetpack_cat.boost.start.d: EC7F play 599532151 (4 files, 1.087-1.249 s, 2ch); net -7 dB, +25 cents, @0.000 s, avoid repeat 2. H.
+jetpack_cat.boost.start.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A9DD.03F.ogg
+jetpack_cat.boost.start.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A9DC.03F.ogg
+jetpack_cat.boost.start.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A9DA.03F.ogg
+jetpack_cat.boost.start.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A9DB.03F.ogg
+# jetpack_cat.boost.start.e: F448 play 864409162 (4 files, 0.327-0.423 s, 1ch); net -8 dB, +100 cents, @0.300 s, avoid
+#  repeat 3. H.
+jetpack_cat.boost.start.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C11C.03F.ogg
+jetpack_cat.boost.start.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C11A.03F.ogg
+jetpack_cat.boost.start.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C11B.03F.ogg
+jetpack_cat.boost.start.e = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033C11D.03F.ogg
+# jetpack_cat.boost.start.f: EC7F play 721039628 (1 file, 0.204 s, 1ch); net -12 dB, +0 cents, @0.060 s. H.
+jetpack_cat.boost.start.f = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/0000002A83C9.03F.ogg
+# jetpack_cat.boost.start.g: F448 play 144225075 (1 file, 0.481 s, 1ch); net -12 dB, +0 cents, @0.100 s. H.
+jetpack_cat.boost.start.g = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000073C4.00D/Sounds/00000000F448.02C/00000033DA05.03F.ogg
+# jetpack_cat.boost.loop.a: EC7F play 220573171 (1 file, 8.913 s, 2ch); net -22.5 dB, +586 cents, @0.000 s, period 6.354 s. H.
+jetpack_cat.boost.loop.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A513.03F.ogg
+# jetpack_cat.boost.loop.b: EC7F play 260963003 (1 file, 12.928 s, 2ch); net -18.5 dB, +945 cents, @0.000 s, period 7.490 s. H.
+jetpack_cat.boost.loop.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033A516.03F.ogg
+# jetpack_cat.boost.loop.c: EC7F play 593363431 (1 file, 3.944 s, 2ch); net -20 dB, +2742 cents, @0.000 s, period 0.809 s. H.
+jetpack_cat.boost.loop.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033B411.03F.ogg
+# jetpack_cat.boost.end.a: EC7F stop 188495878 (5 files, 0.273-0.332 s, 1ch); net -9.5 dB, +194 cents, @0.000 s, avoid
+#  repeat 3. H.
+jetpack_cat.boost.end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2CD.03F.ogg
+jetpack_cat.boost.end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2DF.03F.ogg
+jetpack_cat.boost.end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2DE.03F.ogg
+jetpack_cat.boost.end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2CA.03F.ogg
+jetpack_cat.boost.end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033C2C7.03F.ogg
+# jetpack_cat.boost.end.b: EC7F stop 212351489 (4 files, 1.052-1.177 s, 2ch); net -5 dB, -100 cents, @0.000 s, avoid repeat 2. H.
+jetpack_cat.boost.end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033BC08.03F.ogg
+jetpack_cat.boost.end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033BC09.03F.ogg
+jetpack_cat.boost.end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033BC06.03F.ogg
+jetpack_cat.boost.end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033BC07.03F.ogg
+# jetpack_cat.boost.end.c: EC7F stop 17429347 (1 file, 0.439 s, 1ch); net -18 dB, +0 cents, @0.100 s. H.
+jetpack_cat.boost.end.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072DA.00D/Sounds/00000000EC7F.02C/00000033D8A1.03F.ogg
+# jetpack_cat.boost.regen.a: 1094 play 270449826 (1 file, 4.757 s, 1ch); net -33 dB, -88 cents, @0.000 s, period 5.005 s. H.
+jetpack_cat.boost.regen.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000005AC.00D/Sounds/000000001094.02C/0000002B168E.03F.ogg
+# jetpack_cat.purr.cast.a: F458 play 718996546 (5 files, 0.308-0.321 s, 1ch); net -7.5 dB, +100 cents, @0.100 s, avoid
+#  repeat 3. H.
+jetpack_cat.purr.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018816/Sounds/00000000F458.02C/00000033C2DA.03F.ogg
+jetpack_cat.purr.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018816/Sounds/00000000F458.02C/00000033C2DB.03F.ogg
+jetpack_cat.purr.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018816/Sounds/00000000F458.02C/00000033C2D9.03F.ogg
+jetpack_cat.purr.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018816/Sounds/00000000F458.02C/00000033C2BF.03F.ogg
+jetpack_cat.purr.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018816/Sounds/00000000F458.02C/00000033C2CC.03F.ogg
+# jetpack_cat.purr.cast.b: F199 play 1056653354 (1 file, 1.633 s, 2ch); net 0 dB, -12 cents, @0.000 s. H.
+jetpack_cat.purr.cast.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D7.00D/Sounds/00000000F199.02C/00000033FE51.03F.ogg
+# jetpack_cat.purr.cast.c: F199 play 513203564 (1 file, 0.673 s, 1ch); net -10 dB, +0 cents, @0.000 s. H.
+jetpack_cat.purr.cast.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D7.00D/Sounds/00000000F199.02C/00000033DC04.03F.ogg
+# jetpack_cat.purr.pulse.a: F19B play 881022015 (10 files, 0.740-0.815 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A8F.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A90.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A95.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A94.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A96.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A97.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A92.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A91.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A98.03F.ogg
+jetpack_cat.purr.pulse.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071D8.00D/Sounds/00000000F19B.02C/000000340A93.03F.ogg
+# jetpack_cat.purr.heal.a: F421 play 498590918 (9 files, 0.761-0.793 s, 2ch); net -14 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B27.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2E.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2B.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B29.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B28.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2C.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2A.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2D.03F.ogg
+jetpack_cat.purr.heal.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000739B.00D/Sounds/00000000F421.02C/000000340B2F.03F.ogg
+# jetpack_cat.lifeline.attach.a: F31D play 399093611 (6 files, 0.935-0.969 s, 2ch); net -3 dB, +0 cents, @0.000 s. H.
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340ACE.03F.ogg
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340ACD.03F.ogg
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340AD2.03F.ogg
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340AD0.03F.ogg
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340AD1.03F.ogg
+jetpack_cat.lifeline.attach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/000000340ACF.03F.ogg
+# jetpack_cat.lifeline.attach.b: ECAF play 642259931 (3 files, 0.911-0.953 s, 1ch); net +1 dB, +100 cents, @0.250 s. H.
+jetpack_cat.lifeline.attach.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000711A.00D/Sounds/00000000ECAF.02C/00000033A9E1.03F.ogg
+jetpack_cat.lifeline.attach.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000711A.00D/Sounds/00000000ECAF.02C/00000033A9E3.03F.ogg
+jetpack_cat.lifeline.attach.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000711A.00D/Sounds/00000000ECAF.02C/00000033A9E2.03F.ogg
+# jetpack_cat.lifeline.attach.c: ECAF play 390680401 (1 file, 1.775 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+jetpack_cat.lifeline.attach.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000711A.00D/Sounds/00000000ECAF.02C/000000323CEC.03F.ogg
+# jetpack_cat.lifeline.attach.d: F31D play 636728271 (1 file, 0.457 s, 1ch); net -14 dB, +0 cents, @0.100 s. H.
+jetpack_cat.lifeline.attach.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/0000002AEBC5.03F.ogg
+# jetpack_cat.lifeline.loop.a: F31D play 712014551 (1 file, 7.801 s, 2ch); net -22 dB, +0 cents, @0.000 s, period 7.801 s. H.
+jetpack_cat.lifeline.loop.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033D943.03F.ogg
+# jetpack_cat.lifeline.loop.b: F31D play 935514832 (1 file, 7.575 s, 2ch); net -12.5 dB, -251 cents, @0.000 s, period 8.757 s. H.
+jetpack_cat.lifeline.loop.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033A90F.03F.ogg
+# jetpack_cat.lifeline.detach.a: F31D stop 59320517 (3 files, 1.225-1.369 s, 2ch); net -4 dB, +50 cents, @0.000 s. H.
+jetpack_cat.lifeline.detach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033A9DF.03F.ogg
+jetpack_cat.lifeline.detach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033A9E0.03F.ogg
+jetpack_cat.lifeline.detach.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033A9DE.03F.ogg
+# jetpack_cat.lifeline.detach.b: ECA9 play 206650100 (1 file, 0.916 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+jetpack_cat.lifeline.detach.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007119.00D/Sounds/00000000ECA9.02C/000000323D0D.03F.ogg
+# jetpack_cat.lifeline.detach.c: F31D stop 930141205 (1 file, 0.703 s, 2ch); net -15 dB, +0 cents, @0.000 s. H.
+jetpack_cat.lifeline.detach.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000072E4.00D/Sounds/00000000F31D.02C/00000033D985.03F.ogg
+# jetpack_cat.lifeline.active.a: ECA5 play 156550841 (1 file, 9.103 s, 2ch); net -27 dB, +0 cents, @0.000 s, period 9.103 s. H.
+jetpack_cat.lifeline.active.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007113.00D/Sounds/00000000ECA5.02C/000000340AD3.03F.ogg
+# jetpack_cat.lifeline.active.b: ECA5 play 225886112 (1 file, 0.972 s, 2ch); net +1 dB, +0 cents, @0.000 s, period 1.472 s. H.
+jetpack_cat.lifeline.active.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007113.00D/Sounds/00000000ECA5.02C/00000033A73F.03F.ogg
+# jetpack_cat.lifeline.active.c: ECA5 play 380889157 (1 file, 1.420 s, 2ch); net -2 dB, +100 cents, @0.000 s, period 1.340 s. H.
+jetpack_cat.lifeline.active.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007113.00D/Sounds/00000000ECA5.02C/00000033A740.03F.ogg
+# jetpack_cat.lifeline.on.a: F4C1 play 196280690 (1 file, 0.673 s, 2ch); net +21 dB, -230 cents, @0.000 s. H.
+jetpack_cat.lifeline.on.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007427.00D/Sounds/00000000F4C1.02C/00000033CE06.03F.ogg
+# jetpack_cat.lifeline.on.b: F4C1 play 234304617 (1 file, 0.434 s, 1ch); net +1 dB, +150 cents, @0.000 s. H.
+jetpack_cat.lifeline.on.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007427.00D/Sounds/00000000F4C1.02C/0000003231EB.03F.ogg
+# jetpack_cat.ult.cast.a: F459 play 491599989 (5 files, 0.199-0.228 s, 1ch); net -4.5 dB, +100 cents, @0.100 s, avoid repeat 3. H.
+jetpack_cat.ult.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018818/Sounds/00000000F459.02C/00000033C2D8.03F.ogg
+jetpack_cat.ult.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018818/Sounds/00000000F459.02C/00000033C2BA.03F.ogg
+jetpack_cat.ult.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018818/Sounds/00000000F459.02C/00000033C2BB.03F.ogg
+jetpack_cat.ult.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018818/Sounds/00000000F459.02C/00000033C2E6.03F.ogg
+jetpack_cat.ult.cast.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018818/Sounds/00000000F459.02C/00000033C2DD.03F.ogg
+# jetpack_cat.ult.cast.b: F4E2 play 66825020 (1 file, 0.751 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.cast.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007435.00D/Sounds/00000000F4E2.02C/00000033CFCB.03F.ogg
+# jetpack_cat.ult.cast.c: F4E2 play 1031904682 (1 file, 0.297 s, 1ch); net -1 dB, +0 cents, @0.150 s. H.
+jetpack_cat.ult.cast.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007435.00D/Sounds/00000000F4E2.02C/00000033CFCC.03F.ogg
+# jetpack_cat.ult.aim_start.a: F1E1 play 568766853 (1 file, 1.127 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.aim_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071F2.00D/Sounds/00000000F1E1.02C/000000324D5B.03F.ogg
+# jetpack_cat.ult.aim_start.b: F1E1 play 992832363 (1 file, 0.576 s, 1ch); net +5 dB, +0 cents, @0.150 s. H.
+jetpack_cat.ult.aim_start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000071F2.00D/Sounds/00000000F1E1.02C/00000033CFCA.03F.ogg
+# jetpack_cat.ult.aim.a: F1E3 play 62706481 (1 file, 6.647 s, 1ch); net -8 dB, -210 cents, @0.000 s, period 7.504 s. H.
+jetpack_cat.ult.aim.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007248.00D/Sounds/00000000F1E3.02C/0000003408F0.03F.ogg
+# jetpack_cat.ult.aim.b: F1E3 play 226164604 (1 file, 6.583 s, 1ch); net +9 dB, +0 cents, @0.000 s, period 6.583 s. H.
+jetpack_cat.ult.aim.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007248.00D/Sounds/00000000F1E3.02C/000000324D77.03F.ogg
+# jetpack_cat.ult.dive.a: F45A play 229494875 (5 files, 0.263-0.319 s, 1ch); net -4.5 dB, +100 cents, @0.000 s, avoid repeat 3. H.
+jetpack_cat.ult.dive.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018819/Sounds/00000000F45A.02C/00000033C2C0.03F.ogg
+jetpack_cat.ult.dive.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018819/Sounds/00000000F45A.02C/00000033C2C3.03F.ogg
+jetpack_cat.ult.dive.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018819/Sounds/00000000F45A.02C/00000033C2D3.03F.ogg
+jetpack_cat.ult.dive.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018819/Sounds/00000000F45A.02C/00000033C2E7.03F.ogg
+jetpack_cat.ult.dive.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Models/000000000586.118/AnimationEffects/000000018819/Sounds/00000000F45A.02C/00000033C2BC.03F.ogg
+# jetpack_cat.ult.dive.b: F237 play 669808258 (4 files, 1.191-1.281 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.dive.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/00000033BC0A.03F.ogg
+jetpack_cat.ult.dive.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/00000033BB67.03F.ogg
+jetpack_cat.ult.dive.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/00000033BB64.03F.ogg
+jetpack_cat.ult.dive.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/00000033BB65.03F.ogg
+# jetpack_cat.ult.dive.c: F237 play 636599141 (1 file, 1.479 s, 2ch); net -18 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.dive.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/00000033A5FA.03F.ogg
+# jetpack_cat.ult.dive.d: F237 play 635040102 (1 file, 0.417 s, 1ch); net -15 dB, +0 cents, @0.250 s. H.
+jetpack_cat.ult.dive.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007249.00D/Sounds/00000000F237.02C/000000324DC5.03F.ogg
+# jetpack_cat.ult.dive_loop.a: F23A play 393691070 (1 file, 3.069 s, 2ch); net -5 dB, +0 cents, @0.000 s, period 3.069 s. H.
+jetpack_cat.ult.dive_loop.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724B.00D/Sounds/00000000F23A.02C/00000033A5F8.03F.ogg
+# jetpack_cat.ult.dive_loop.b: F23A play 499664302 (1 file, 4.111 s, 2ch); net -5 dB, +610 cents, @0.000 s, period 2.890 s. H.
+jetpack_cat.ult.dive_loop.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724B.00D/Sounds/00000000F23A.02C/00000032A1C6.03F.ogg
+# jetpack_cat.ult.dive_loop.c: F23A play 801750105 (1 file, 2.911 s, 1ch); net -4 dB, +510 cents, @0.000 s, period 2.168 s. H.
+jetpack_cat.ult.dive_loop.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724B.00D/Sounds/00000000F23A.02C/00000033BB68.03F.ogg
+# jetpack_cat.ult.impact.a: F23F play 577716776 (9 files, 3.353-3.801 s, 2ch); net -16.5 dB, -10 cents, @0.525 s,
+#  avoid repeat 4. H.
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B11.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B74.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B7F.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B3D.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B6E.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B77.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B6B.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5ACE.03F.ogg
+jetpack_cat.ult.impact.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5AE9.03F.ogg
+# jetpack_cat.ult.impact.b: F23F play 677685491 (7 files, 4.697-6.087 s, 2ch); net +1.5 dB, -150 cents, @0.515 s,
+#  avoid repeat 3. H.
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5AD5.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5AC2.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B3E.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B86.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B49.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5AB7.03F.ogg
+jetpack_cat.ult.impact.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/0000002A5B8D.03F.ogg
+# jetpack_cat.ult.impact.c: F23F play 122843270 (1 file, 2.151 s, 2ch); net -4 dB, +370 cents, @0.000 s. H.
+jetpack_cat.ult.impact.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/00000033A5F9.03F.ogg
+# jetpack_cat.ult.impact.d: F23F play 843749415 (1 file, 0.716 s, 1ch); net -16 dB, +0 cents, @0.140 s. H.
+jetpack_cat.ult.impact.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000724C.00D/Sounds/00000000F23F.02C/000000324DCC.03F.ogg
+# jetpack_cat.ult.tether_start.a: F40D play 1039770209 (5 files, 1.241-1.380 s, 2ch); net -2 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.tether_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/000000340B14.03F.ogg
+jetpack_cat.ult.tether_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/000000340B13.03F.ogg
+jetpack_cat.ult.tether_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/000000340B16.03F.ogg
+jetpack_cat.ult.tether_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/000000340B15.03F.ogg
+jetpack_cat.ult.tether_start.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/000000340B12.03F.ogg
+# jetpack_cat.ult.tether_start.b: F40D play 90905537 (1 file, 0.457 s, 1ch); net -14 dB, +0 cents, @0.100 s. H.
+jetpack_cat.ult.tether_start.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/0000002AEBC5.03F.ogg
+# jetpack_cat.ult.tether.a: F40D play 307006861 (1 file, 0.116 s, 1ch); net -17 dB, +0 cents, @0.000 s, period 1.100 s. H.
+jetpack_cat.ult.tether.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033EC69.03F.ogg
+# jetpack_cat.ult.tether.b: F40D play 84423274 (1 file, 7.801 s, 2ch); net -16 dB, +300 cents, @0.000 s, period 6.560 s. H.
+jetpack_cat.ult.tether.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033DE3F.03F.ogg
+# jetpack_cat.ult.tether.c: F40D play 744188070 (1 file, 9.029 s, 2ch); net -2 dB, +0 cents, @0.000 s, period 9.029 s. H.
+jetpack_cat.ult.tether.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033DE3C.03F.ogg
+# jetpack_cat.ult.tether.d: F40D play 830831520 (1 file, 0.100 s, 1ch); net -17 dB, +0 cents, @0.500 s, period 1.100 s. H.
+jetpack_cat.ult.tether.d = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033EC67.03F.ogg
+# jetpack_cat.ult.tether_end.a: F40D stop 625945602 (3 files, 1.225-1.369 s, 2ch); net 0 dB, +50 cents, @0.000 s. H.
+jetpack_cat.ult.tether_end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033A9DF.03F.ogg
+jetpack_cat.ult.tether_end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033A9E0.03F.ogg
+jetpack_cat.ult.tether_end.a = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033A9DE.03F.ogg
+# jetpack_cat.ult.tether_end.b: F40D stop 262557385 (1 file, 0.703 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+jetpack_cat.ult.tether_end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/00000033D985.03F.ogg
+# jetpack_cat.ult.tether_end.c: F40D stop 1056703597 (1 file, 0.353 s, 1ch); net -14 dB, +0 cents, @0.120 s. H.
+jetpack_cat.ult.tether_end.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/0000002AC8C3.03F.ogg
+
+# ===== Not mapped (no extracted files)
+# jetpack_cat.paw.hit: every paw and centre shot's projectile visual (6D19 / 6D1B, STUProjectileVisualComponent
+# m_2170A015, the 'sound only' slot) is effect 73A4: 02C F59B (no range: read as her own hit sound), F599 / F59A (60 m),
+# bank 1E91D. Each is one random container of 11 mono files (avoid repeat 5-6), -3 dB with a -6..0 dB random range,
+# +500 cents (+-100), high-passed (hpf 50); mixer +4 dB make-up (H). None of their files is in the extraction (the
+# skin extraction only writes effects it reaches; Kiriko's kunai hit was missing the same way). The hit effects 7084
+# (world impact / expire), 728B / 728C, 709F (centre shot on a target), 7077, 7075 hold no sound. To build it, extract
+# the banks offline (Overwatch closed) with research\kiriko-sounds\scripts\extract_banks.py into
+# extracted\154088\ExtraSounds\Jetpack Cat (PawHit=F59B,F599,F59A), then uncomment:
+# @jetpack_cat.paw.hit = jetpack_cat.paw.hit.a*1.335:-23
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F120.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F124.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11B.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F123.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11F.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F122.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11D.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F121.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11E.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F125.03F.ogg
+# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11C.03F.ogg
+# (net -22.5 dB before the own offset, +500 cents; the file levels are unknown until extracted, so the offset may need
+# a look.)
+# jetpack_cat.paw.hit_block: the centre shot's contact sets give the surface sounds: its STUContactSetComponent 0245.049
+# (contact type 2 = surfaces, 22 materials; the default material 0001 -> contact effect 3FBA.04A -> 02C 858A + 85C7;
+# types 0 / 1 on 0001 -> 5049 / 504A -> 8BC5) and the visual component's 093B.049 (type 2 on 0001 -> D965 -> 899F + 89A1;
+# types 0 / 1 -> D959 / D95F -> 5D51 + 9050 + 9059; type 4 -> D97C -> 2D1F). The paw shot 6D19 has no contact set. None
+# of these 02C are extracted or decoded (H for the references, read from the 04A bytes; M that type 2 is the surfaces).
+# Not mapped either (in the data, not asked for): the 3P copies of every ability (named in each rule's comment); 246B
+# (59DC #13 / #17: 498A / 498B, 30 m), 5D60 (B8F2, three 7-8 s loops held on 59DC BooleanSwitch#106), 7484 (F593),
+# 0186 (FCB, the shared ability-press click), 7846 (FA3B) and 792B (FB3E) in Purr's graph, 7183 / 5513 (EE96, B161) in
+# Lifeline's, 7910 (FB16 / FB17) after the Catnapper landing, the jetpack's 1P fire-clip foley F45B / F45C (clips
+# 193BB / 193BC), the knock-down clip 1887F's F968, the melee clips' F584 (1P) / F585 (3P).
+
+# ===== Voice (HeroVoice/Jetpack Cat): the voice set 02C4.05F's lines (research\jetpack_cat\voice.json). Her lines
+# name an external 02C meow container instead of one 0B2 line: each container's Play event is a layer of the dialogue
+# slot, a comms-radio layer behind a switch whose default case is empty (its three shared files 2B2C0A / 2B2BF7 / 2B2C61
+# are left out) and a random container of meows: those meows are the line (H). A line's weight is shared by its
+# container's meows (w / count; the builder turns w into Minecraft weights, at least 1). The Swedish jetpack lines
+# (0B2, weight 0.1) are the spoken file; Overwatch plays a meow from their container with them (M), not mixed here.
+# Stimulus numbers: priority, radius m, volume dB, cooldown s (m_A73F2EBE-m_DD27AC95, M).
+# Elimination 0008: 41 files; prio 70, 30 m, +2 dB, cooldown 15-15 s
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF8F.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF97.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF4B.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF43.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF6D.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFB8.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFB5.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DE84.03F.ogg | w=0.125
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF83.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF7B.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF7A.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFA8.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF94.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF4F.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF4E.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF3E.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF72.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF6F.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF6A.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033E009.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033E006.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033E01A.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFCC.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFEA.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFE0.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFD8.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DFD5.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DE98.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DE64.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DE77.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DE83.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF14.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF05.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF35.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DF22.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DECE.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DEC5.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DEE2.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DEFC.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DEFD.03F.ogg | w=0.03
+jetpack_cat.voice.elimination = HeroVoice/Jetpack Cat/Elimination/(cat sounds)/00000033DEE6.03F.ogg | w=0.03
+# Multikill 00C9: 8 files; prio 70, 35 m, +2 dB, cooldown 15-20 s
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DF8F.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DF97.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DF4B.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DF43.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DF6D.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DFB8.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DFB5.03F.ogg | w=0.125
+jetpack_cat.voice.multikill = HeroVoice/Jetpack Cat/Multikill/(cat sounds)/00000033DE84.03F.ogg | w=0.125
+# MeleeEnemyKilledRemark 0032: 8 files; prio 65, 30 m, +2 dB, cooldown 10-14 s
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DF8F.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DF97.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DF4B.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DF43.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DF6D.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DFB8.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DFB5.03F.ogg | w=0.125
+jetpack_cat.voice.melee_kill = HeroVoice/Jetpack Cat/MeleeEnemyKilledRemark/(cat sounds)/00000033DE84.03F.ogg | w=0.125
+# On Fire 0583: 4 files; prio 60, 35 m, +2 dB, cooldown 2-5 s
+jetpack_cat.voice.on_fire = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DF74.03F.ogg | w=0.25
+jetpack_cat.voice.on_fire = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033E00A.03F.ogg | w=0.25
+jetpack_cat.voice.on_fire = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DFB7.03F.ogg | w=0.25
+jetpack_cat.voice.on_fire = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DEB7.03F.ogg | w=0.25
+# Respawn 002C: 7 files; prio 40, 35 m, +0 dB, cooldown 15-15 s; 0006B482 at w 0.1 also plays a meow from F388 with it
+#  (M); 0006B481 at w 0.1 also plays a meow from F388 with it (M); 0006B480 at w 0.1 also plays a meow from F388 with
+#  it (M)
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/(cat sounds)/00000033DEA3.03F.ogg | w=0.25
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/(cat sounds)/00000033DEFF.03F.ogg | w=0.25
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/(cat sounds)/00000033DE96.03F.ogg | w=0.25
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/(cat sounds)/00000033DF29.03F.ogg | w=0.25
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/00000006B482.0B2-(Swedish)_ System online.ogg | w=0.1
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/00000006B481.0B2-(Swedish)_ Start up sequence.ogg | w=0.1
+jetpack_cat.voice.respawn = HeroVoice/Jetpack Cat/Respawn/00000006B480.0B2-(Swedish)_ System repair.ogg | w=0.1
+# Melee shout 0023: 6 files; prio 35, 35 m, +0 dB, cooldown 0.5-0.5 s
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033E059.03F.ogg | w=0.167
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033DFE7.03F.ogg | w=0.167
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033DF0D.03F.ogg | w=0.167
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033DED3.03F.ogg | w=0.167
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033DEF6.03F.ogg | w=0.167
+jetpack_cat.voice.melee = HeroVoice/Jetpack Cat/Melee/(cat sounds)/00000033DEE4.03F.ogg | w=0.167
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, cooldown 1-1 s; 0006AADD at w 1 also plays a meow from EE5D with it (M)
+jetpack_cat.voice.select = HeroVoice/Jetpack Cat/HeroSelect/00000006AADD.0B2-(Swedish)_ Terminal activated.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, cooldown 2-5 s
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DF8E.03F.ogg | w=0.167
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DFA1.03F.ogg | w=0.167
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DF5F.03F.ogg | w=0.167
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DEA0.03F.ogg | w=0.167
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DE54.03F.ogg | w=0.167
+jetpack_cat.voice.death = HeroVoice/Jetpack Cat/Death/(cat sounds)/00000033DED5.03F.ogg | w=0.167
+# Pain 0003 / 0004: 34 files; prio 40, 35 m, -3 dB, cooldown 1-2.5 s
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE4C.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF89.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF42.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF69.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFB2.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033E014.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFBC.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFB9.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFDA.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DEA4.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE71.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF19.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF15.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF06.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DEFB.03F.ogg | w=0.067
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFA2.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF70.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033E00D.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033E025.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033E022.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFCD.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFD1.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DFEB.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE9E.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE9A.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DEB4.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE60.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DE70.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF1D.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF36.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DF39.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DED7.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DED4.03F.ogg | w=0.053
+jetpack_cat.voice.pain = HeroVoice/Jetpack Cat/Pain/(cat sounds)/00000033DECC.03F.ogg | w=0.053
+# Ultimate/Ready 02E7 (the wheel line): 6 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033E01C.03F.ogg | w=0.167
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033DE9B.03F.ogg | w=0.167
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033DE8C.03F.ogg | w=0.167
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033DEB6.03F.ogg | w=0.167
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033DE6F.03F.ogg | w=0.167
+jetpack_cat.voice.ult_ready = HeroVoice/Jetpack Cat/Ultimate/Ready/(cat sounds)/00000033DF1F.03F.ogg | w=0.167
+# Ultimate/Charging 0574: 4 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_ult_charging = HeroVoice/Jetpack Cat/Ultimate/Charging/(cat sounds)/00000033DF71.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_charging = HeroVoice/Jetpack Cat/Ultimate/Charging/(cat sounds)/00000033E008.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_charging = HeroVoice/Jetpack Cat/Ultimate/Charging/(cat sounds)/00000033DF13.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_charging = HeroVoice/Jetpack Cat/Ultimate/Charging/(cat sounds)/00000033DF01.03F.ogg | w=0.25
+# Ultimate/AlmostReady 05A7: 4 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_ult_almost = HeroVoice/Jetpack Cat/Ultimate/AlmostReady/(cat sounds)/00000033DF98.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_almost = HeroVoice/Jetpack Cat/Ultimate/AlmostReady/(cat sounds)/00000033DFC9.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_almost = HeroVoice/Jetpack Cat/Ultimate/AlmostReady/(cat sounds)/00000033DE94.03F.ogg | w=0.25
+jetpack_cat.voice.call_ult_almost = HeroVoice/Jetpack Cat/Ultimate/AlmostReady/(cat sounds)/00000033DEBF.03F.ogg | w=0.25
+# Hello 01CF: 15 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06C.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340820.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033DFAA.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340821.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340822.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340823.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340824.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06D.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06E.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033DE9F.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033DEAA.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/000000340825.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033DE86.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033DF1C.03F.ogg | w=0.067
+jetpack_cat.voice.call_hello = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F072.03F.ogg | w=0.067
+# Thanks 01D0: 7 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033F06C.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033DF73.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033F06D.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033F06E.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033DFE2.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033F072.03F.ogg | w=0.143
+jetpack_cat.voice.call_thanks = HeroVoice/Jetpack Cat/Thanks/(cat sounds)/00000033DEEB.03F.ogg | w=0.143
+# Sorry 05E1: 8 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DF81.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DFA0.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DF48.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DFFE.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DFBD.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DFE9.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DF34.03F.ogg | w=0.125
+jetpack_cat.voice.call_sorry = HeroVoice/Jetpack Cat/Sorry/(cat sounds)/00000033DEE0.03F.ogg | w=0.125
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_no = HeroVoice/Jetpack Cat/No/(cat sounds)/00000033DF40.03F.ogg | w=0.5
+jetpack_cat.voice.call_no = HeroVoice/Jetpack Cat/No/(cat sounds)/00000033DE9D.03F.ogg | w=0.5
+# GroupUp 02C6: 4 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_group_up = HeroVoice/Jetpack Cat/GroupUp/(cat sounds)/00000033DF52.03F.ogg | w=0.25
+jetpack_cat.voice.call_group_up = HeroVoice/Jetpack Cat/GroupUp/(cat sounds)/00000033E018.03F.ogg | w=0.25
+jetpack_cat.voice.call_group_up = HeroVoice/Jetpack Cat/GroupUp/(cat sounds)/00000033DE85.03F.ogg | w=0.25
+jetpack_cat.voice.call_group_up = HeroVoice/Jetpack Cat/GroupUp/(cat sounds)/00000033DED2.03F.ogg | w=0.25
+# AssistanceRequired 0427: 3 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_need_help = HeroVoice/Jetpack Cat/AssistanceRequired/(cat sounds)/00000033DF5E.03F.ogg | w=0.333
+jetpack_cat.voice.call_need_help = HeroVoice/Jetpack Cat/AssistanceRequired/(cat sounds)/00000033E011.03F.ogg | w=0.333
+jetpack_cat.voice.call_need_help = HeroVoice/Jetpack Cat/AssistanceRequired/(cat sounds)/00000033DF25.03F.ogg | w=0.333
+# Healing 0045: 3 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.call_need_healing = HeroVoice/Jetpack Cat/Healing/(cat sounds)/00000033DF5E.03F.ogg | w=0.333
+jetpack_cat.voice.call_need_healing = HeroVoice/Jetpack Cat/Healing/(cat sounds)/00000033E011.03F.ogg | w=0.333
+jetpack_cat.voice.call_need_healing = HeroVoice/Jetpack Cat/Healing/(cat sounds)/00000033DF25.03F.ogg | w=0.333
+# ping 11D9: 5 files; prio 70, 35 m, +0 dB, cooldown 0-0 s
+jetpack_cat.voice.ping = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF76.03F.ogg | w=0.2
+jetpack_cat.voice.ping = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DEA1.03F.ogg | w=0.2
+jetpack_cat.voice.ping = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE4F.03F.ogg | w=0.2
+jetpack_cat.voice.ping = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE72.03F.ogg | w=0.2
+jetpack_cat.voice.ping = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF1B.03F.ogg | w=0.2
+# ping warning 11DA: 5 files; prio 70, 75 m, +3 dB, cooldown 3-3 s
+jetpack_cat.voice.ping_warning = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF76.03F.ogg | w=0.2
+jetpack_cat.voice.ping_warning = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DEA1.03F.ogg | w=0.2
+jetpack_cat.voice.ping_warning = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE4F.03F.ogg | w=0.2
+jetpack_cat.voice.ping_warning = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE72.03F.ogg | w=0.2
+jetpack_cat.voice.ping_warning = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF1B.03F.ogg | w=0.2
+# ping enemy 1117: 10 files; prio 70, 75 m, +3 dB, cooldown 3-3 s
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF76.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/Unknown/1117.078/(cat sounds)/00000033FBD0.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DEA1.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/Unknown/1117.078/(cat sounds)/00000033FBD1.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE4F.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DE72.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/EnemySeen/(cat sounds)/00000033DF1B.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/Unknown/1117.078/(cat sounds)/00000033FBD2.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/Unknown/1117.078/(cat sounds)/00000033FBD3.03F.ogg | w=0.1
+jetpack_cat.voice.ping_enemy = HeroVoice/Jetpack Cat/Unknown/1117.078/(cat sounds)/00000033FBD4.03F.ogg | w=0.1
+# Frenetic Flight 1993 (voice node in 59E0; cd 5 s, 55 m; 19F3 holds the same container with a 45 s cooldown): 10
+#  files; prio 60, 55 m, +5 dB, cooldown 5-5 s
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Yes/(cat sounds)/00000033DFA9.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Yes/(cat sounds)/00000033DF55.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DF67.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033E01B.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Unknown/1993.078/(cat sounds)/00000033DFC7.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Unknown/1993.078/(cat sounds)/00000033DFEE.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Unknown/1993.078/(cat sounds)/00000033DF5B.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DFAE.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DE6B.03F.ogg | w=0.1
+jetpack_cat.voice.boost = HeroVoice/Jetpack Cat/Yes/(cat sounds)/00000033DEF9.03F.ogg | w=0.1
+# reload 19B9 (cd 20 s): 7 files; prio 60, 35 m, +0 dB, cooldown 20-20 s; 0006B475 at w 0.1 also plays a meow from
+#  F2BC with it (M); 0006B476 at w 0.1 also plays a meow from F2BC with it (M); 0006B47B at w 0.1 also plays a meow
+#  from F2BC with it (M)
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DF67.03F.ogg | w=0.75
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033E01B.03F.ogg | w=0.75
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DFAE.03F.ogg | w=0.75
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Incoming/(cat sounds)/00000033DE6B.03F.ogg | w=0.75
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Unknown/19B9.078/00000006B475.0B2-(Swedish)_ Reloading.ogg | w=0.1
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Unknown/19B9.078/00000006B476.0B2-(Swedish)_ Ammunition full.ogg | w=0.1
+jetpack_cat.voice.reload = HeroVoice/Jetpack Cat/Unknown/19B9.078/00000006B47B.0B2-(Swedish)_ Resupply.ogg | w=0.1
+# healing an ally 19B8 (cd 20 s): 11 files; prio 60, 35 m, +0 dB, cooldown 20-20 s; 0006B484 at w 0.1 also plays a
+#  meow from F2BB with it (M); 0006B483 at w 0.1 also plays a meow from F2BB with it (M); 0006B485 at w 0.1 also plays
+#  a meow from F2BB with it (M)
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06C.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06D.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06E.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/GetReady/(cat sounds)/00000033DF24.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/PVE/Unknown/(cat sounds)/00000033DE97.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033DE7B.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/OnMyWay/(cat sounds)/00000033DF38.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Unknown/19B8.078/(cat sounds)/00000033DF07.03F.ogg | w=0.375
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Unknown/19B8.078/00000006B484.0B2-(Swedish)_ Restore.ogg | w=0.1
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Unknown/19B8.078/00000006B483.0B2-(Swedish)_ Health.ogg | w=0.1
+jetpack_cat.voice.heal = HeroVoice/Jetpack Cat/Unknown/19B8.078/00000006B485.0B2-(Swedish)_ Ally heal.ogg | w=0.1
+# Purr 19BB (5A7E VOICE#221; then 19BA when it finishes): 5 files; prio 60, 35 m, +0 dB, cooldown 2-2 s
+jetpack_cat.voice.purr = HeroVoice/Jetpack Cat/Unknown/19BB.078/(cat sounds)/00000033DF7F.03F.ogg | w=0.2
+jetpack_cat.voice.purr = HeroVoice/Jetpack Cat/Unknown/19BB.078/(cat sounds)/00000033DE52.03F.ogg | w=0.2
+jetpack_cat.voice.purr = HeroVoice/Jetpack Cat/Unknown/19BB.078/(cat sounds)/00000033DF87.03F.ogg | w=0.2
+jetpack_cat.voice.purr = HeroVoice/Jetpack Cat/Unknown/19BB.078/(cat sounds)/00000033DE67.03F.ogg | w=0.2
+jetpack_cat.voice.purr = HeroVoice/Jetpack Cat/Unknown/19BB.078/(cat sounds)/00000033DEBE.03F.ogg | w=0.2
+# after the Purr line, 19BA (5A7E VOICE#222 on #221's finish): 7 files; prio 60, 35 m, +0 dB, cooldown 10-2 s
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06C.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Unknown/19BA.078/(cat sounds)/00000033E020.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06D.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Hello/(cat sounds)/00000033F06E.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Unknown/19BA.078/(cat sounds)/00000033DE50.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Unknown/19BA.078/(cat sounds)/00000033DF02.03F.ogg | w=0.143
+jetpack_cat.voice.purr_end = HeroVoice/Jetpack Cat/Unknown/19BA.078/(cat sounds)/00000033DEE1.03F.ogg | w=0.143
+# Lifeline 1994 ('Transport active'; 5A8F VOICE#1071 under the towing switch #1023): 10 files; prio 60, 35 m, +0 dB,
+#  cooldown 2-2 s; 0006AAE8 at w 0.1 also plays a meow from F2B8 with it (M); 0006B486 at w 0.1 also plays a meow from
+#  F2B8 with it (M); 0006B487 at w 0.1 also plays a meow from F2B8 with it (M)
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/00000006AAE8.0B2-(Swedish)_ Transport active.ogg | w=0.1
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DF74.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033E00A.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/(cat sounds)/00000033DFFB.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/(cat sounds)/00000033DFF5.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DFB7.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/OnFire/(cat sounds)/00000033DEB7.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/(cat sounds)/00000033DECB.03F.ogg | w=0.429
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/00000006B486.0B2-(Swedish)_ Accept.ogg | w=0.1
+jetpack_cat.voice.lifeline = HeroVoice/Jetpack Cat/Unknown/1994.078/00000006B487.0B2-(Swedish)_ Accepting ally.ogg | w=0.1
+# Catnapper tether end 19B6 ('Unlatch tether', 5B7B VOICE#417, prio 95, 80 m): 3 files; prio 95, 80 m, +8 dB, cooldown
+#  1-1 s; 0006B47C at w 0.1 also plays a meow from F26B with it (M)
+jetpack_cat.voice.tether_end = HeroVoice/Jetpack Cat/Ultimate/(cat sounds)/00000033DFCA.03F.ogg | w=1
+jetpack_cat.voice.tether_end = HeroVoice/Jetpack Cat/Ultimate/(cat sounds)/00000033DFDF.03F.ogg | w=1
+jetpack_cat.voice.tether_end = HeroVoice/Jetpack Cat/Ultimate/00000006B47C.0B2-(Swedish)_ Unlatch tether.ogg | w=0.1
+# 19C4 ('Tether attached' / 'Tether active'; no graph node found): 2 files; prio 95, 80 m, +8 dB, cooldown 1-1 s;
+#  0006B47A at w 1 (its container 16F3 holds only the radio layer); 0006B478 at w 1 (its container 16F3 holds only the
+#  radio layer)
+jetpack_cat.voice.tether_attached = HeroVoice/Jetpack Cat/Ultimate/00000006B47A.0B2-(Swedish)_ Tether attached.ogg | w=1
+jetpack_cat.voice.tether_attached = HeroVoice/Jetpack Cat/Ultimate/00000006B478.0B2-(Swedish)_ Tether active.ogg | w=1
+# Catnapper line 1988, allies and herself: DataTool subtitles its meow '(friendly ultimate cat sounds)' (H; 198A, 80 m
+#  +8 dB, holds the same meow: not used): 1 files; prio 95, 60 m, +6 dB, cooldown 1-1 s; a line of F825 with criteria
+#  (Nested 2 of 2; Nested 1 of 2; Celebration ?(258A); ScriptedEvent ?(E8CA); ScriptedEvent ?(BB2C)) left out, as
+#  Lucio's conditional lines are
+jetpack_cat.ult.friendly = HeroVoice/Jetpack Cat/Ultimate/(ultimate cat sounds)/00000033FF2A.03F.ogg | w=1
+# Catnapper line 1989, enemies: subtitled '(enemy ultimate cat sounds)' (H): 1 files; prio 95, 80 m, +8 dB, cooldown
+#  1-1 s; a line of F824 with criteria (Nested 2 of 2; Nested 1 of 2; Celebration ?(258A); ScriptedEvent ?(E8CA);
+#  ScriptedEvent ?(BB2C)) left out, as Lucio's conditional lines are
+jetpack_cat.ult.enemy = HeroVoice/Jetpack Cat/Ultimate/(enemy ultimate cat sounds)/00000033FF26.03F.ogg | w=1
+
+# ===== Subtitles (the jar's lang names none of her events)
+$jetpack_cat.paw.fire = Biotic Pawjectiles fire
+$jetpack_cat.paw.fire_3p = Biotic Pawjectiles fire
+$jetpack_cat.paw.heal = Biotic Pawjectile heals
+$jetpack_cat.reload = Pawjectiles reload
+$jetpack_cat.reload_3p = Pawjectiles reload
+$jetpack_cat.jetpack.hum = Jetpack hums
+$jetpack_cat.jetpack.up = Jetpack thrusts up
+$jetpack_cat.jetpack.down = Jetpack thrusts down
+$jetpack_cat.boost.start = Frenetic Flight starts
+$jetpack_cat.boost.loop = Frenetic Flight roars
+$jetpack_cat.boost.end = Frenetic Flight ends
+$jetpack_cat.boost.regen = Frenetic Flight recharges
+$jetpack_cat.purr.cast = Purr
+$jetpack_cat.purr.pulse = Purr pulses
+$jetpack_cat.purr.heal = Purr heals
+$jetpack_cat.lifeline.attach = Lifeline attaches
+$jetpack_cat.lifeline.loop = Lifeline tows
+$jetpack_cat.lifeline.detach = Lifeline detaches
+$jetpack_cat.lifeline.active = Lifeline hums
+$jetpack_cat.lifeline.on = Lifeline on
+$jetpack_cat.ult.cast = Catnapper
+$jetpack_cat.ult.aim_start = Catnapper aims
+$jetpack_cat.ult.aim = Catnapper hums
+$jetpack_cat.ult.dive = Catnapper dives
+$jetpack_cat.ult.dive_loop = Catnapper streaks
+$jetpack_cat.ult.impact = Catnapper lands
+$jetpack_cat.ult.tether_start = Catnapper latches
+$jetpack_cat.ult.tether = Catnapper tethers
+$jetpack_cat.ult.tether_end = Catnapper lets go
+# Voice subtitles: DataTool names most of her lines only '(cat sounds)'; ours describe the moment.
+$jetpack_cat.voice.elimination = Jetpack Cat meows triumphantly
+$jetpack_cat.voice.multikill = Jetpack Cat yowls
+$jetpack_cat.voice.melee_kill = Jetpack Cat hisses
+$jetpack_cat.voice.on_fire = Jetpack Cat purrs proudly
+$jetpack_cat.voice.respawn = Jetpack Cat meows
+$jetpack_cat.voice.melee = Jetpack Cat hisses
+$jetpack_cat.voice.select = Jetpack Cat: (Swedish) Terminal activated
+$jetpack_cat.voice.death = Jetpack Cat yowls
+$jetpack_cat.voice.pain = Jetpack Cat yelps
+$jetpack_cat.voice.ult_ready = Jetpack Cat meows
+$jetpack_cat.voice.call_ult_charging = Jetpack Cat meows
+$jetpack_cat.voice.call_ult_almost = Jetpack Cat meows
+$jetpack_cat.voice.call_hello = Jetpack Cat meows hello
+$jetpack_cat.voice.call_thanks = Jetpack Cat purrs thanks
+$jetpack_cat.voice.call_sorry = Jetpack Cat mews sorry
+$jetpack_cat.voice.call_no = Jetpack Cat hisses no
+$jetpack_cat.voice.call_group_up = Jetpack Cat meows
+$jetpack_cat.voice.call_need_help = Jetpack Cat meows for help
+$jetpack_cat.voice.call_need_healing = Jetpack Cat meows for healing
+$jetpack_cat.voice.ping = Jetpack Cat meows
+$jetpack_cat.voice.ping_warning = Jetpack Cat meows a warning
+$jetpack_cat.voice.ping_enemy = Jetpack Cat hisses at an enemy
+$jetpack_cat.voice.boost = Jetpack Cat meows
+$jetpack_cat.voice.reload = Jetpack Cat meows
+$jetpack_cat.voice.heal = Jetpack Cat meows
+$jetpack_cat.voice.purr = Jetpack Cat purrs
+$jetpack_cat.voice.purr_end = Jetpack Cat purrs
+$jetpack_cat.voice.lifeline = Jetpack Cat meows
+$jetpack_cat.voice.tether_end = Jetpack Cat meows
+$jetpack_cat.voice.tether_attached = Jetpack Cat: (Swedish) Tether attached
+$jetpack_cat.ult.friendly = Jetpack Cat: (friendly ultimate cat sounds)
+$jetpack_cat.ult.enemy = Jetpack Cat: (enemy ultimate cat sounds)
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = her player, in the head; 3p = everyone else, at her; both = one rule for everyone). 'EXTRA' = in the data but
+# not in the integration list. Not built: paw.hit, paw.hit_block (no extracted files; see 'Not mapped').
+#   jetpack_cat.paw.fire             one-shot own  2.57 s; each volley (every 1/4.5 = 0.222 s while primary is held):
+#     weapon graph 5ADB ActionEffect#662 7847, right after the volley effect #658
+#   jetpack_cat.paw.fire_3p          one-shot 3p   2.57 s; the same volley, played at her for everyone else (38 m)
+#   jetpack_cat.paw.heal             one-shot both 0.79 s; a paw or centre shot heals an ally: graph 5ADC (heal on an
+#     ally) ActionEffect#291 739B at the start of its heal state, then #338 73A1
+#   jetpack_cat.reload               one-shot own  2.23 s; reload start (the 1P reload clip 18D45, 1.267 s;
+#     Overwatch's reload is 1.25 s)
+#   jetpack_cat.reload_3p            one-shot 3p   2.23 s; the same reload, heard by others (3P clip 18883, 1.2 s)
+#   jetpack_cat.jetpack.hum          LOOP     own  loop 10.628 s; while in hero mode (always flying): graph 59DC holds
+#     effect 6D22 while the flight state is on (#11, under BooleanSwitch#33)
+#   jetpack_cat.jetpack.up           one-shot own  0.78 s; on pressing up (jump: v10912 = +1): 59DC ActionEffect#110
+#     74BA (trueSubgraph of BooleanSwitch#53)
+#   jetpack_cat.jetpack.down         one-shot own  0.61 s; on pressing down (crouch: v10912 = -1): 59DC
+#     ActionEffect#111 74BB (trueSubgraph of BooleanSwitch#57)
+#   jetpack_cat.boost.start          one-shot own  1.48 s; Frenetic Flight starts (secondary pressed with energy):
+#     59E0 ActionEffect#935 73C4 on BooleanSwitch#29 onTrue; the boost loop's held effect 72DA starts at the same time
+#     (StateStack#68, v580 = 1) and its Play event has one-shot layers too
+#   jetpack_cat.boost.loop           LOOP     own  loop 7.490 s; while Frenetic Flight is on: 59E0 holds 7067 (#72,
+#     the trail) under StateStack#68 (v580 = 1), and 7067 holds 72DA (#933)
+#   jetpack_cat.boost.end            one-shot own  1.25 s; Frenetic Flight ends (released, or out of energy): the held
+#     72DA stops, which runs EC7F's Stop event
+#   jetpack_cat.boost.regen          LOOP     own  loop 5.005 s; while Frenetic Flight energy refills: 59E0 holds 05AC
+#     (#126) under the energy chase StateChaseVar#28
+#   jetpack_cat.purr.cast            one-shot own  1.64 s; Purr cast (ability 2): 5A7E ActionEffect#7 71D7, with the
+#     cast anim 0x505 (1P clip 18816)
+#   jetpack_cat.purr.pulse           one-shot own  0.81 s; each Purr pulse (4 pulses 0.95 s apart): 5A7E
+#     ActionEffect#184 70F3 (visual) -> #239 71D8
+#   jetpack_cat.purr.heal            one-shot both 0.79 s; on each ally a pulse heals: graph 5C32 (Purr on each healed
+#     target) ActionEffect#337 73B1
+#   jetpack_cat.lifeline.attach      one-shot own  1.77 s; Lifeline latches onto an ally: 5A8F ActionEffect#585 711A;
+#     the tow loop's held effect 72E4 starts with it and its Play event has a one-shot start layer
+#   jetpack_cat.lifeline.loop        LOOP     own  loop 7.801 s; while an ally is towed: 5A8F holds 72E4 (#1158 /
+#     #1368, on the towed entity v59143)
+#   jetpack_cat.lifeline.detach      one-shot own  1.33 s; the tow ends (let go, broken, or toggled off): 5A8F
+#     ActionEffect#1136 7119 on the end of StateStack#552; 72E4 stops, which runs F31D's Stop event
+#   jetpack_cat.lifeline.active      LOOP     own  loop 9.103 s; EXTRA (not in the integration list): while Lifeline
+#     is toggled on, attached or not: 5A8F BooleanSwitch#1213 (v375 == 1) holds 7113 (#1024) via DataFlowMapping#1215
+#   jetpack_cat.lifeline.on          one-shot own  0.77 s; EXTRA: Lifeline toggled on: 5A8F ActionEffect#1214 7427 on
+#     BooleanSwitch#1213 onTrue
+#   jetpack_cat.ult.cast             one-shot own  0.75 s; Catnapper activated: 5B7B BooleanSwitch#55 onTrue plays
+#     7435 with the aim anim 0x175 (#299) and the StateAbility #58
+#   jetpack_cat.ult.aim_start        one-shot own  1.13 s; EXTRA: the targeting state begins: 5B7B ActionEffect#380
+#     71F2 on BooleanSwitch#110 onBegin (the state that holds the aim marker)
+#   jetpack_cat.ult.aim              LOOP     both loop 6.583 s; while aiming: 7248 is held on the aim-marker cosmetic
+#     entity 6DF5 (5B7B StateCosmeticEntity#333, under the targeting node #102)
+#   jetpack_cat.ult.dive             one-shot own  1.48 s; the dive is confirmed: 5B7B BooleanSwitch#172
+#     (trueSubgraph) plays 7249 as the 0.35 s windup (#296 WAIT v670) starts; the dive (StateMoveTo#95) follows
+#   jetpack_cat.ult.dive_loop        LOOP     own  loop 3.069 s; EXTRA: from the windup to the landing: 724B held in
+#     the same BooleanSwitch#172 trueSubgraph
+#   jetpack_cat.ult.impact           one-shot own  7.15 s; the landing: 5B7B STUGraphContainer#306 onBegin (after
+#     TRACK#305 ends) plays 724C with 71C2 (visual), the 25-damage hit and the 5 m explosion
+#   jetpack_cat.ult.tether_start     one-shot own  1.38 s; EXTRA: a target is latched after the landing: 5B7B
+#     StateStack#343 (v72334 != 0, under BooleanSwitch#301) starts holding 7493
+#   jetpack_cat.ult.tether           LOOP     own  loop 9.029 s; while the target is tethered (up to 4 s): 5B7B
+#     StateStack#343 holds 7493 (#458)
+#   jetpack_cat.ult.tether_end       one-shot own  1.33 s; EXTRA: the tether ends (4 s, or the target is lost): 7493
+#     stops, which runs F40D's Stop event; voice 19B6 'Unlatch tether' plays on the end of StateStack#286
+#   jetpack_cat.voice.elimination    one-shot both 41 line files; Elimination 0008
+#   jetpack_cat.voice.multikill      one-shot both 8 line files; Multikill 00C9
+#   jetpack_cat.voice.melee_kill     one-shot both 8 line files; MeleeEnemyKilledRemark 0032
+#   jetpack_cat.voice.on_fire        one-shot both 4 line files; On Fire 0583
+#   jetpack_cat.voice.respawn        one-shot both 7 line files; Respawn 002C
+#   jetpack_cat.voice.melee          one-shot both 6 line files; Melee shout 0023
+#   jetpack_cat.voice.select         one-shot both 1 line files; Hero select 002B
+#   jetpack_cat.voice.death          one-shot both 6 line files; Death 0001
+#   jetpack_cat.voice.pain           one-shot both 34 line files; Pain 0003 / 0004
+#   jetpack_cat.voice.ult_ready      one-shot both 6 line files; Ultimate/Ready 02E7 (the wheel line)
+#   jetpack_cat.voice.call_ult_charging one-shot both 4 line files; Ultimate/Charging 0574
+#   jetpack_cat.voice.call_ult_almost one-shot both 4 line files; Ultimate/AlmostReady 05A7
+#   jetpack_cat.voice.call_hello     one-shot both 15 line files; Hello 01CF
+#   jetpack_cat.voice.call_thanks    one-shot both 7 line files; Thanks 01D0
+#   jetpack_cat.voice.call_sorry     one-shot both 8 line files; Sorry 05E1
+#   jetpack_cat.voice.call_no        one-shot both 2 line files; No 01D2
+#   jetpack_cat.voice.call_group_up  one-shot both 4 line files; GroupUp 02C6
+#   jetpack_cat.voice.call_need_help one-shot both 3 line files; AssistanceRequired 0427
+#   jetpack_cat.voice.call_need_healing one-shot both 3 line files; Healing 0045
+#   jetpack_cat.voice.ping           one-shot both 5 line files; ping 11D9
+#   jetpack_cat.voice.ping_warning   one-shot both 5 line files; ping warning 11DA
+#   jetpack_cat.voice.ping_enemy     one-shot both 10 line files; ping enemy 1117
+#   jetpack_cat.voice.boost          one-shot both 10 line files; Frenetic Flight 1993 (voice node in 59E0; cd 5 s, 55
+#     m; 19F3 holds the same container with a 45 s cooldown)
+#   jetpack_cat.voice.reload         one-shot both 7 line files; reload 19B9 (cd 20 s)
+#   jetpack_cat.voice.heal           one-shot both 11 line files; healing an ally 19B8 (cd 20 s)
+#   jetpack_cat.voice.purr           one-shot both 5 line files; Purr 19BB (5A7E VOICE#221; then 19BA when it finishes)
+#   jetpack_cat.voice.purr_end       one-shot both 7 line files; after the Purr line, 19BA (5A7E VOICE#222 on #221's finish)
+#   jetpack_cat.voice.lifeline       one-shot both 10 line files; Lifeline 1994 ('Transport active'; 5A8F VOICE#1071
+#     under the towing switch #1023)
+#   jetpack_cat.voice.tether_end     one-shot both 3 line files; Catnapper tether end 19B6 ('Unlatch tether', 5B7B
+#     VOICE#417, prio 95, 80 m)
+#   jetpack_cat.voice.tether_attached one-shot both 2 line files; 19C4 ('Tether attached' / 'Tether active'; no graph node found)
+#   jetpack_cat.ult.friendly         one-shot both 1 line files; Catnapper line 1988, allies and herself: DataTool
+#     subtitles its meow '(friendly ultimate cat sounds)' (H; 198A, 80 m +8 dB, holds the same meow: not used)
+#   jetpack_cat.ult.enemy            one-shot both 1 line files; Catnapper line 1989, enemies: subtitled '(enemy
+#     ultimate cat sounds)' (H)

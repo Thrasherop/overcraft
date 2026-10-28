@@ -708,5 +708,249 @@
 	"lucio.voice.wallride": {
 		"subtitle": "subtitles.overcraft.lucio.voice.wallride",
 		"sounds": []
+	},
+	"jetpack_cat.paw.fire": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.fire",
+		"sounds": []
+	},
+	"jetpack_cat.paw.fire_3p": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.fire_3p",
+		"sounds": []
+	},
+	"jetpack_cat.paw.heal": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.heal",
+		"sounds": []
+	},
+	"jetpack_cat.reload": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.reload",
+		"sounds": []
+	},
+	"jetpack_cat.reload_3p": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.reload_3p",
+		"sounds": []
+	},
+	"jetpack_cat.jetpack.hum": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.jetpack.hum",
+		"sounds": []
+	},
+	"jetpack_cat.jetpack.up": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.jetpack.up",
+		"sounds": []
+	},
+	"jetpack_cat.jetpack.down": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.jetpack.down",
+		"sounds": []
+	},
+	"jetpack_cat.boost.start": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.boost.start",
+		"sounds": []
+	},
+	"jetpack_cat.boost.loop": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.boost.loop",
+		"sounds": []
+	},
+	"jetpack_cat.boost.end": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.boost.end",
+		"sounds": []
+	},
+	"jetpack_cat.boost.regen": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.boost.regen",
+		"sounds": []
+	},
+	"jetpack_cat.purr.cast": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.purr.cast",
+		"sounds": []
+	},
+	"jetpack_cat.purr.pulse": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.purr.pulse",
+		"sounds": []
+	},
+	"jetpack_cat.purr.heal": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.purr.heal",
+		"sounds": []
+	},
+	"jetpack_cat.lifeline.attach": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.lifeline.attach",
+		"sounds": []
+	},
+	"jetpack_cat.lifeline.loop": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.lifeline.loop",
+		"sounds": []
+	},
+	"jetpack_cat.lifeline.detach": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.lifeline.detach",
+		"sounds": []
+	},
+	"jetpack_cat.lifeline.active": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.lifeline.active",
+		"sounds": []
+	},
+	"jetpack_cat.lifeline.on": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.lifeline.on",
+		"sounds": []
+	},
+	"jetpack_cat.ult.cast": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.cast",
+		"sounds": []
+	},
+	"jetpack_cat.ult.aim_start": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.aim_start",
+		"sounds": []
+	},
+	"jetpack_cat.ult.aim": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.aim",
+		"sounds": []
+	},
+	"jetpack_cat.ult.dive": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.dive",
+		"sounds": []
+	},
+	"jetpack_cat.ult.dive_loop": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.dive_loop",
+		"sounds": []
+	},
+	"jetpack_cat.ult.impact": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.impact",
+		"sounds": []
+	},
+	"jetpack_cat.ult.tether_start": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.tether_start",
+		"sounds": []
+	},
+	"jetpack_cat.ult.tether": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.tether",
+		"sounds": []
+	},
+	"jetpack_cat.ult.tether_end": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.tether_end",
+		"sounds": []
+	},
+	"jetpack_cat.voice.elimination": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.elimination",
+		"sounds": []
+	},
+	"jetpack_cat.voice.multikill": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.multikill",
+		"sounds": []
+	},
+	"jetpack_cat.voice.melee_kill": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.melee_kill",
+		"sounds": []
+	},
+	"jetpack_cat.voice.on_fire": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.on_fire",
+		"sounds": []
+	},
+	"jetpack_cat.voice.respawn": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.respawn",
+		"sounds": []
+	},
+	"jetpack_cat.voice.melee": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.melee",
+		"sounds": []
+	},
+	"jetpack_cat.voice.select": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.select",
+		"sounds": []
+	},
+	"jetpack_cat.voice.death": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.death",
+		"sounds": []
+	},
+	"jetpack_cat.voice.pain": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.pain",
+		"sounds": []
+	},
+	"jetpack_cat.voice.ult_ready": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.ult_ready",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_ult_charging": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_ult_charging",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_ult_almost": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_ult_almost",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_hello": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_hello",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_thanks": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_thanks",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_sorry": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_sorry",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_no": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_no",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_group_up": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_group_up",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_need_help": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_need_help",
+		"sounds": []
+	},
+	"jetpack_cat.voice.call_need_healing": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.call_need_healing",
+		"sounds": []
+	},
+	"jetpack_cat.voice.ping": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.ping",
+		"sounds": []
+	},
+	"jetpack_cat.voice.ping_warning": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.ping_warning",
+		"sounds": []
+	},
+	"jetpack_cat.voice.ping_enemy": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.ping_enemy",
+		"sounds": []
+	},
+	"jetpack_cat.voice.boost": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.boost",
+		"sounds": []
+	},
+	"jetpack_cat.voice.reload": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.reload",
+		"sounds": []
+	},
+	"jetpack_cat.voice.heal": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.heal",
+		"sounds": []
+	},
+	"jetpack_cat.voice.purr": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.purr",
+		"sounds": []
+	},
+	"jetpack_cat.voice.purr_end": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.purr_end",
+		"sounds": []
+	},
+	"jetpack_cat.voice.lifeline": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.lifeline",
+		"sounds": []
+	},
+	"jetpack_cat.voice.tether_end": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.tether_end",
+		"sounds": []
+	},
+	"jetpack_cat.voice.tether_attached": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.voice.tether_attached",
+		"sounds": []
+	},
+	"jetpack_cat.ult.friendly": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.friendly",
+		"sounds": []
+	},
+	"jetpack_cat.ult.enemy": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.ult.enemy",
+		"sounds": []
 	}
 }

@@ -36,8 +36,19 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
   1.5 s knock-down (Slowness and Weakness: no stun in Minecraft), then the nearest enemy hangs under her for up to 4 s,
   its top 1 m below her feet (held at her feet, a zombie hit her the whole carry and killed her).
 
+## Effects and sounds (2026-10-28)
+- **Effects** from `tools/reference/jetpack_cat-effects.md` (a research pass over her 75 effects): `JetpackCatFx`. Her
+  colours are gold and blue/cyan, enemies see red and orange (`CAT_*` palettes). Shots: gold core in a blue halo, gold
+  tracer, blue trail, sparks, a star flare at the paw; the centre shot prints a paw (five quads) on a creature. Purr: a
+  dome bursting to 10 m, gold and blue rings each pulse. The rope: two straight bands (the data has no sag). Catnapper:
+  pulsing target rings and paw lines while aiming, a flash, smoke and glowing cracks on landing.
+- Her masks aren't in the extraction: `build_asset_pack.py effects <extraction> "E:\Overwatch
+  Archive\research\jetpack_cat\fx"` takes them from her research folder.
+- **Sounds** from `tools/soundmaps/jetpack_cat.txt` (29 rules, 30 voice moments): one-shots from the server (fire and
+  reload for everyone, the rest hers), loops from her client (`JetpackCatSounds`), voice by moment (`Voice`).
+
 ## Still ours or missing
-- Her effects are a first look (a warm glow, our colours): the paw flight 6D1E -> 707A, the hits, the Lifeline tether
-  (model 1BAD1, effect 72FA), Purr's rings, Catnapper's aim and dive aren't read yet. No rope is drawn.
-- No sounds or voice yet (the data map lists every 02C).
+- The jetpack's idle flames (7064) sit on nozzle hardpoints (0075 / 0077) no bone has been found for: not drawn. Her
+  boost trails start from points of ours beside her.
+- Her enemy-hit and wall-hit sounds aren't extracted.
 - Carrying a "tank" 30% slower isn't done (Minecraft has no tanks).

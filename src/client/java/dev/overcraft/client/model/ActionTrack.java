@@ -173,11 +173,13 @@ final class ActionTrack {
 				break;
 			}
 			if (step == steps.size() - 1) {
-				if (holdLast) {
-					stepStart += clip.duration();
-					continue;
+				if (holdLast && clip.duration() > 1.0E-3f) {
+					// loops: on to this pass of it (in one step: her first-person aim pose is a single frame, and
+					// stepping by its length never caught up, freezing the game: found playing)
+					stepStart += clip.duration() * (float) Math.floor(local / clip.duration());
+					break;
 				}
-				break; // the last step holds its end while fading out
+				break; // the last step holds its end while fading out (a held pose too)
 			}
 			fromClip = resolve(model, steps.get(step));
 			stepStart += clip.duration();
@@ -203,7 +205,7 @@ final class ActionTrack {
 			float in = 1 + local / SWING_IN;
 			weight = Math.max(0, in * in * (3 - 2 * in));
 		}
-		if (step == steps.size() - 1 && local > clip.duration()) {
+		if (step == steps.size() - 1 && local > clip.duration() && !holdLast) {
 			if (fadingOutFrom < 0) {
 				fadingOutFrom = now;
 			}

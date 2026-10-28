@@ -54,6 +54,13 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
   measure again. Kitsune Rush's "mint grade" was eight smoke sprites spawned 0.6 m from the eye.
 - **A drawn-twice glow (a translucent body, then its added glow) can be hidden by draw order.** Make both passes added
   light, or the order matters.
+- **Check a mask's values before using it by its name** (Jetpack Cat, 2026-10-28): a "faint ring" (52E8) was bright in
+  its corners and dark in the middle (a mask for a mesh, not a quad), and drawn on a quad it made a square; her crater
+  crack (CBB9) is white where there's no crack, a decal meant to be multiplied, which additive and blended particles
+  can't do (a 10 m white square). Print each mask's corner, edge and centre values first (`py tools/maskstat.py <effect texture dir> <names...>`).
+- **A projectile's first frames are at the shooter's eyes in first person,** not at the view model's hand: a muzzle
+  flare there filled the view, and a 0.5 m halo at 1 m was a bright ball beside her paw. Skip the muzzle for your own
+  first-person shots and fade them in over a few metres (`JetpackCatFx.pawFlight`).
 - **A flat effect "on the ground" floats over any slope:** lay it in short pieces, each at the top of the first solid
   block under open space (`KirikoFx.groundY`).
 

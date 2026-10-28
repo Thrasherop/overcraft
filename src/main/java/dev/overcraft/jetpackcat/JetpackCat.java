@@ -14,6 +14,9 @@ import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
+import dev.overcraft.hero.HeroSounds;
+import dev.overcraft.hero.Voice;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -125,7 +128,10 @@ public final class JetpackCat implements HeroKit {
 		if (boosting) {
 			s.fuel = Math.max(0, s.fuel - FUEL_BURN * 100 / 20);
 			s.fuelIdle = 0;
-			s.boostTicks++;
+			if (s.boostTicks++ == 0) {
+				// her Frenetic Flight line (1993: 5 s cooldown); its sounds are her client's (JetpackCatSounds)
+				Voice.say(player, "boost", 1);
+			}
 		} else {
 			s.boostTicks = 0;
 			if (++s.fuelIdle > Ow.ticks(FUEL_DELAY)) {
@@ -167,6 +173,8 @@ public final class JetpackCat implements HeroKit {
 			s.weaponRecovery += Ow.ticks(VOLLEY_TIME);
 			s.pawSide = !s.pawSide;
 			volley(player, s.pawSide);
+			// 7847, one per volley: hers in her head, everyone else's at her (38 m)
+			HeroSounds.split(player, OcSounds.JC_PAW_FIRE, OcSounds.JC_PAW_FIRE_3P, player.getEyePosition());
 			Combat.animate(player, "fire");
 			// firing ends Lifeline (the wiki; her data's 5A8F)
 			if (s.lifelineTarget != null) {
@@ -206,6 +214,8 @@ public final class JetpackCat implements HeroKit {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
 		Combat.animate(player, "reload");
+		HeroSounds.split(player, OcSounds.JC_RELOAD, OcSounds.JC_RELOAD_3P, player.getEyePosition());
+		Voice.say(player, "reload", 1);
 	}
 
 	/**
@@ -335,14 +345,23 @@ public final class JetpackCat implements HeroKit {
 		if (player.tickCount % 4 == 0) {
 			Combat.heal(ally, LIFELINE_HEAL / 5);
 		}
-		// the ally lets go with a jump: a launch along her flight (ours: for players, their jump while towed)
-		if (ally instanceof ServerPlayer towed && !towed.onGround() && towed.getKnownMovement().y > 0.3 && dist < LIFELINE_ROPE) {
+		// a towed player lets go with their jump key, from 0.6 s into the tow (her data), launched along her flight: 8 m/s
+		// ahead and 10.5 up (her data's detach launch; the wiki's 13.2 m/s is the two together). Read from the keys the
+		// client sends: rising faster than her had been the test, and the rope's swing alone let a player go (found
+		// playing with a second player)
+		s.lifelineTicks++;
+		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(0.6)) {
+			Vec3 heading = player.getKnownMovement().multiply(1, 0, 1);
+			heading = heading.lengthSqr() > 1.0E-4 ? heading.normalize() : player.getLookAngle().multiply(1, 0, 1).normalize();
 			endLifeline(player, s, true);
+			towed.setDeltaMovement(heading.scale(Ow.speed(LIFELINE_LAUNCH_FORWARD)).add(0, Ow.speed(LIFELINE_LAUNCH_UP), 0));
+			towed.syncVelocity = true;
 		}
 	}
 
 	private static void startLifeline(ServerPlayer player, HeroState s, LivingEntity ally) {
 		s.lifelineTarget = ally.getId();
+		s.lifelineTicks = 0;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
 			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
@@ -350,6 +369,8 @@ public final class JetpackCat implements HeroKit {
 		}
 		Combat.animate(player, "lifeline");
 		transportShield(player);
+		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_ATTACH);
+		Voice.say(player, "lifeline", 1);
 		// the variant carries her id: every client draws the rope between the two (JetpackCatFx)
 		Effects.play(player.level(), "lifeline_attach", ally.position(), Vec3.ZERO, ally, player.getId(), player);
 	}
@@ -358,6 +379,7 @@ public final class JetpackCat implements HeroKit {
 		boolean was = s.lifelineTarget != null;
 		if (was) {
 			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+			HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
 			if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
 				LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
 			}
@@ -379,6 +401,8 @@ public final class JetpackCat implements HeroKit {
 		Combat.animate(player, "purr");
 		ServerLevel level = player.level();
 		Effects.play(level, "purr", player.position(), player);
+		HeroSounds.toOwner(player, OcSounds.JC_PURR_CAST);
+		Voice.say(player, "purr", 1);
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(PURR_RADIUS))) {
 			double d = e.distanceTo(player);
@@ -393,6 +417,8 @@ public final class JetpackCat implements HeroKit {
 			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0);
 			e.push(push.x, push.y, push.z);
 			e.syncVelocity = true;
+			// a blue-violet flash at its chest (741C)
+			Effects.play(level, "purr_hit", e.position().add(0, e.getBbHeight() * 0.6, 0), player);
 		}
 	}
 
@@ -409,9 +435,17 @@ public final class JetpackCat implements HeroKit {
 				purrWave(player);
 			}
 		}
+		for (int pulse = 1; pulse <= PURR_PULSES.length; pulse++) {
+			if (s.purrTicks == Ow.ticks(PURR_PULSE_GAP * pulse)) {
+				// each pulse's sound (70F3 -> 71D8), once a pulse
+				HeroSounds.toOwner(player, OcSounds.JC_PURR_PULSE);
+			}
+		}
 		if (s.purrTicks >= Math.max(Ow.ticks(PURR_TIME), waves.getLast())) {
 			s.purrTicks = -1;
 			s.ability2Cooldown = Ow.ticks(PURR_COOLDOWN);
+			// 19BA, after the Purr line
+			Voice.say(player, "purr_end", 1);
 		}
 	}
 
@@ -422,6 +456,12 @@ public final class JetpackCat implements HeroKit {
 				continue;
 			}
 			float healed = Combat.heal(e, e == player ? PURR_SELF_HEAL : PURR_HEAL);
+			if (e != player && healed > 0) {
+				// gold sparks and a ring at their chest (741D)
+				Effects.play(level, "purr_heal", e.position().add(0, e.getBbHeight() * 0.6, 0), player);
+				level.playSound(null, e.getX(), e.getY(), e.getZ(), OcSounds.JC_PURR_HEAL, net.minecraft.sounds.SoundSource.PLAYERS,
+					1, 1);
+			}
 			if (e != player) {
 				Combat.credit(player, healed);
 				Combat.addFireForHealing(player, healed);
@@ -460,6 +500,9 @@ public final class JetpackCat implements HeroKit {
 						s.ultTimer = Ow.ticks(0.35);
 						s.ultActive = Ow.ticks(0.35 + DIVE_LIMIT + ULT_CARRY);
 						Combat.animate(player, "ult_dive");
+						HeroSounds.toOwner(player, OcSounds.JC_ULT_DIVE);
+						// her Catnapper line: the friendly meow to her side, the enemy one to theirs (1988 / 1989)
+						HeroSounds.ultLine(player, OcSounds.JC_ULT_FRIENDLY, OcSounds.JC_ULT_ENEMY, 4);
 						Effects.play(player.level(), "catnapper_cast", player.position(), player);
 						if (s.lifelineTarget != null) {
 							endLifeline(player, s, false);
@@ -513,6 +556,7 @@ public final class JetpackCat implements HeroKit {
 		player.syncVelocity = true;
 		Effects.play(level, "catnapper_land", player.position(), player);
 		Combat.animate(player, "ult_land");
+		HeroSounds.toOwner(player, OcSounds.JC_ULT_IMPACT);
 		LivingEntity nearest = null;
 		double nearestD = Double.MAX_VALUE;
 		double radius = ULT_RADIUS;
@@ -541,6 +585,8 @@ public final class JetpackCat implements HeroKit {
 			s.ultPhase = ULT_CARRY;
 			s.ultTimer = Ow.ticks(ULT_CARRY);
 			transportShield(player);
+			HeroSounds.toOwner(player, OcSounds.JC_ULT_TETHER_START);
+			Voice.say(player, "tether_attached", 1);
 			Effects.play(level, "catnapper_tether", nearest.position(), Vec3.ZERO, nearest, player.getId(), player);
 		} else {
 			endUlt(player, s);
@@ -550,6 +596,9 @@ public final class JetpackCat implements HeroKit {
 	private static void endUlt(ServerPlayer player, HeroState s) {
 		if (s.carried != null) {
 			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+			HeroSounds.toOwner(player, OcSounds.JC_ULT_TETHER_END);
+			// 19B6, "Unlatch tether"
+			Voice.say(player, "tether_end", 1);
 		}
 		s.ultPhase = ULT_NONE;
 		s.carried = null;
@@ -582,6 +631,8 @@ public final class JetpackCat implements HeroKit {
 				// the confirming click mustn't also be a shot: a moment before the left button counts
 				s.weaponRecovery = Math.max(s.weaponRecovery, 2);
 				Combat.animate(player, "ult_aim");
+				HeroSounds.toOwner(player, OcSounds.JC_ULT_CAST);
+				HeroSounds.toOwner(player, OcSounds.JC_ULT_AIM_START);
 			}
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && s.primaryAmmo < AMMO && s.primaryReload < 0) {

@@ -100,6 +100,7 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
 			LucioMusic.tick(client);
+			JetpackCatSounds.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);

@@ -30,6 +30,9 @@ public class PawEntity extends OwProjectile {
 	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
 	private static final double HEAD_DEPTH = 0.25;
 
+	/** When each healed creature last heard a shot's heal sound (game time), by entity id. */
+	private static final java.util.Map<Integer, Long> HEAL_SOUNDED = new java.util.HashMap<>();
+
 	private double amount = JetpackCatStats.PAW_DAMAGE;
 	private boolean centre;
 
@@ -110,8 +113,20 @@ public class PawEntity extends OwProjectile {
 				Combat.credit(cat, healed);
 				Combat.addFireForHealing(cat, healed);
 				dev.overcraft.jetpackcat.JetpackCat.healedWithPaws(cat, healed);
+				if (cat instanceof ServerPlayer shooter) {
+					// her healing line now and then (19B8: 20 s cooldown)
+					dev.overcraft.hero.Voice.say(shooter, "heal", 1);
+				}
 			}
-			Effects.play(level, centre ? "paw_heal_centre" : "paw_heal", at, owner);
+			// F421, heard by everyone near the ally: once a tick for them (a volley's five shots played it five times over)
+			if (HEAL_SOUNDED.put(target.getId(), level.getGameTime()) instanceof Long last && last == level.getGameTime()) {
+				// already this tick
+			} else {
+				level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.JC_PAW_HEAL,
+					net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
+			}
+			// the shot's way, to stand the paw print across it
+			Effects.play(level, centre ? "paw_heal_centre" : "paw_heal", at, getDeltaMovement(), null, 0, owner);
 		} else if (target != null && Allies.canHurt(owner, target)) {
 			boolean crit = !centre && (part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH);
 			double damage = amount * (crit ? JetpackCatStats.PAW_CRIT : 1);
@@ -124,7 +139,7 @@ public class PawEntity extends OwProjectile {
 					Effects.hitMarker(shooter, target, crit);
 				}
 			}
-			Effects.play(level, centre ? "paw_hit_centre" : "paw_hit", at, owner);
+			Effects.play(level, centre ? "paw_hit_centre" : "paw_hit", at, getDeltaMovement(), null, 0, owner);
 		} else if (target == null) {
 			// not a creature (an end crystal, a boat): hit as an arrow does
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, owner), (float) Ow.hp(amount));
