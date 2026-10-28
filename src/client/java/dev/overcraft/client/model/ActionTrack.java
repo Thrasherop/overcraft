@@ -29,6 +29,8 @@ final class ActionTrack {
 	private int step = -1;
 	/** When the current step's clip started playing (s). */
 	private float stepStart;
+	/** Amp It Up's clip (2A81, 2.5 s), the longest one that has a priority (see priority()). */
+	private static final float UNSEEN_LENGTH = 2.5f;
 	/** The playing step's clip length (s), once apply() has resolved it; -1 before. */
 	private float stepLength = -1;
 	private @Nullable String fromClip;
@@ -42,7 +44,10 @@ final class ActionTrack {
 	void trigger(String action, float now) {
 		Integer wanted = priority(action);
 		Integer playing = priority(current());
-		if (wanted != null && playing != null && wanted < playing && (stepLength < 0 || now - stepStart <= stepLength)) {
+		// a track not drawn since its clip started (the view model in third person, a hero off screen) doesn't know the
+		// clip's length yet: the longest of these clips (Amp It Up's 2.5 s) bounds it
+		float length = stepLength >= 0 ? stepLength : UNSEEN_LENGTH;
+		if (wanted != null && playing != null && wanted < playing && now - stepStart <= length) {
 			// a lower-priority clip doesn't cut the one playing: Crossfade during a reload leaves the reload's clip (its
 			// additive layer plays over it: HeroAnimator), and a reload starting during Amp It Up leaves Amp It Up's
 			return;
