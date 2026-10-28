@@ -6,6 +6,48 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.12 (Lúcio, first playable; a cut-short reload gives no ammo; Suzu cures zombie villagers)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.12): Lúcio's three models (body, first-person arms, his
+Sonic Amplifier, from `owm_survey.py --glb` with `tools/clipmaps/lucio*.txt`, straight into `hero_models/`) and his
+sounds (`build_asset_pack.py sounds`, `tools/soundmaps/lucio.txt`), then `zip`. An older pack still runs; Lúcio is
+then the Minecraft player model and silent.
+- **Lúcio, first playable (#37)**, from the select screen like Kiriko. His own Overwatch models, animations and gun;
+  his whole kit with the game data's timings; his sounds, songs and lines.
+  - Moving: skating 8 ways, his stop, his 4-way jump, the wall ride (left and right; in first person the hand trails
+    the wall). His death plays his knock-down's fall.
+  - Kit: Sonic Amplifier volleys (4 rounds, 20 ammo), Soundwave (45, a big push), Crossfade (the song changes 0.2 s
+    after the press, 0.25 s cooldown), Amp It Up (starts 0.2 s after the press), Sound Barrier (leaps the height of
+    its own clip, 625 overhealth to allies in 30 m).
+  - Sound: every ability's sound from his Wwise banks (nobody has compared them with the game by ear yet), his songs
+    as bars one after another (his own in his head, others' at him), his lines by the game's moments and cooldowns.
+  - Not in yet: his ability effects (Soundwave, the round hits, the song auras, the barrier) draw nothing; emotes;
+    the wall ride's lean. Crossfade or Amp It Up during a reload plays over its animation while the reload goes on.
+- **A reload cut short gives no ammo (#47, the owner's playtest):** a quick melee, Swift Step, Protection Suzu or
+  Kitsune Rush during a reload ended its animation but the kunai came back at 65% anyway. Now they end the reload;
+  an empty clip reloads by itself once the action has played. Lúcio's melee too.
+- **Protection Suzu cures zombie villagers (#49, the owner):** at once, with Minecraft's own cure (its sound, the
+  villager's thanks, the Zombie Doctor advancement).
+- Actions play over the pose under them, as emotes do: a clip's undriven bones keep it (Lúcio's left-hand
+  Crossfade dropped his gun out of view otherwise). Kiriko's kit was played after this and looks as before.
+- Filed for later: enemy heroes among the night's spawns (#46), emotes' sounds (#48: Killer Beam).
+
+#### General play of `next` before 0.3.12 went to `main` (fresh client, fresh survival world "next0312", Normal)
+- **Kiriko:** joined as her; five kunai at a night zombie (4.49 a hit); a villager healed 8 -> 17.6; Fox Cuddles from
+  the wheel; death to the void and respawn in hero mode; leave and rejoin, ult kept (`g12_*`). A zombie hit her
+  20 -> 17. G to Minecraft mode: three logs mined by hand, planks, a crafting table placed and opened, a chest crafted
+  and placed, an apple stored, closed, reopened: still there (`g12b_22`). The scripted run first slipped on the
+  rotten flesh taking hotbar slot 1 (the script, not the mod).
+- **Lúcio:** picked from the hero menu mid-game; a night fight against two zombies and a skeleton with their AI on
+  (killed the skeleton, `g12_33`; health 18 -> 12.3 from their hits; then a zombie knocked him off the back of the
+  sky arena: "doomed to fall by Zombie"); respawned as Lúcio; the heal song healed a villager 10.6 -> 14.8 in about
+  2.3 s; a reload cut by a melee kept 16, left alone 20; Sound Barrier gave the villager 42.5 overhealth; wall ride
+  on a wall at his left; leave and rejoin as Lúcio (`g12_40`).
+- **Lúcio's sounds** (fresh client, world "lucsound"): the harness's list of what the client played: a volley, Soundwave, the
+  swap sting with his new song and a Crossfade line, the song's bars back to back, Amp It Up with its line, the
+  reload. Switched to Kiriko by her spawn: his song stopped; her kunai, Suzu and Suzu line played.
+- **Reload fix and Suzu cure:** played on their branches (their commits list each step: `rl_*`, `sc_*`).
+- Not tried: a second player, the Nether, boats, water; Lúcio in Minecraft mode beyond switching.
+
 ### Build 0.3.11 (Kiriko's "I'm a glitch" greyed out)
 The asset pack is unchanged (0.3.9's works).
 - **Kiriko's voice line "If this is a simulation, I guess I'm a glitch" is listed greyed out** in the menu's VOICE
