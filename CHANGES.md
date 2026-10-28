@@ -6,6 +6,31 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.11 (Kiriko's "I'm a glitch" greyed out)
+The asset pack is unchanged (0.3.9's works).
+- **Kiriko's voice line "If this is a simulation, I guess I'm a glitch" is listed greyed out** in the menu's VOICE
+  LINES, with "No, bad Ace!" on hover (the owner).
+  - It can't be equipped or heard there.
+  - If it was equipped before, that slot is empty, on the screen and on the wheel.
+  - Played: the list, the hover note, both clicks, and a loadout saved with it in the UP slot (`vl_*`).
+- techniques: when a voice line may play (stimuli, categories, one line at a time).
+
+#### Play before 0.3.11 went to `main`
+The owner, for this build only: "skip the full play just this time if the only change is the disabling that voice
+line". That is the only change since 0.3.10's general play. What ran anyway, on a fresh client and a fresh survival
+world ("next0311"), passed:
+- joined as Kiriko;
+- five kunai killed a zombie (4.49 a hit);
+- a zombie hit her 20 -> 17;
+- a villager healed 8 -> 17.6;
+- Fox Cuddles from the wheel;
+- death and respawn in hero mode; leave and rejoin, ult kept;
+- G to Minecraft mode, three logs mined by hand;
+- H by her bed opened the select screen; READY.
+
+Not done: the crafting and the chest. The script's slots were off because a zombie's rotten flesh took the first
+hotbar slot; it's the script, not the mod (0.3.10's play crafted and stored by hand).
+
 ### Build 0.3.10 (voice lines by Overwatch's rules, /giveult)
 The asset pack is unchanged (0.3.9's works).
 - **Voice lines by Overwatch's own rules, for every hero** (the owner: "automatic voice lines right next to each
