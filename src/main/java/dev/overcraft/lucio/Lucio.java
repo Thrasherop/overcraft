@@ -43,8 +43,12 @@ public final class Lucio implements HeroKit {
 	private static final double SONG_LINE_GATE = 2.5;
 	/** His line after this long on a wall (graph 0263's wait before event 1348). */
 	private static final double WALLRIDE_LINE_AFTER = 2.2;
-	/** The wall ride's loop, played again this often while he rides (ours: the length of its variants, lucio.txt). */
-	private static final int WALLRIDE_LOOP_TICKS = 40;
+	/**
+	 * The wall ride's loop, played again as each turn ends while he rides: his own 2.776 s, the one others hear 5.0 s (the
+	 * decoded banks' loop lengths, tools/soundmaps/lucio.txt).
+	 */
+	private static final int WALLRIDE_LOOP_TICKS = 56;
+	private static final int WALLRIDE_LOOP_3P_TICKS = 100;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -169,7 +173,11 @@ public final class Lucio implements HeroKit {
 				HeroSounds.split(player, OcSounds.LUCIO_WALLRIDE_START, OcSounds.LUCIO_WALLRIDE_START, player.position());
 			}
 			if (s.wallRideTicks % WALLRIDE_LOOP_TICKS == 0) {
-				HeroSounds.split(player, OcSounds.LUCIO_WALLRIDE, OcSounds.LUCIO_WALLRIDE_3P, player.position());
+				HeroSounds.toOwner(player, OcSounds.LUCIO_WALLRIDE);
+			}
+			if (s.wallRideTicks % WALLRIDE_LOOP_3P_TICKS == 0) {
+				player.level().playSound(player, player.getX(), player.getY(), player.getZ(), OcSounds.LUCIO_WALLRIDE_3P,
+					net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 			}
 			if (++s.wallRideTicks == Ow.ticks(WALLRIDE_LINE_AFTER)) {
 				Voice.say(player, "wallride", 1);
