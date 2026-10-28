@@ -39,9 +39,13 @@ public final class JetpackCatStats {
 	/** Spread: the near paws 0.3 degrees off the centre, the far ones 0.9 (W). */
 	public static final double PAW_SPREAD_NEAR = 0.3;
 	public static final double PAW_SPREAD_FAR = 0.9;
-	/** Hit radius against enemies / allies: paws 0.19 / 0.31 m, the centre 0.37 / 0.62 m (W). */
-	public static final double PAW_RADIUS = 0.19;
-	public static final double PAW_RADIUS_ALLY = 0.31;
+	/**
+	 * Hit radius against enemies / allies: her volley graph's base (0.12 paw, 0.25 centre; doubled for allies) plus the
+	 * bonus every hero's shared graph adds (0.075, 0.12): paws 0.195 / 0.315 m, the centre 0.37 / 0.62 m (the wiki's
+	 * 0.19 / 0.31 / 0.37 / 0.62, rounded).
+	 */
+	public static final double PAW_RADIUS = 0.195;
+	public static final double PAW_RADIUS_ALLY = 0.315;
 	public static final double CENTRE_RADIUS = 0.37;
 	public static final double CENTRE_RADIUS_ALLY = 0.62;
 
@@ -57,7 +61,9 @@ public final class JetpackCatStats {
 	// Lifeline (ability 1): a toggle; an ally in reach is towed on a rope
 	public static final double LIFELINE_REACH = 8.5;           // W: a cylinder 8.5 m in radius
 	public static final double LIFELINE_HEIGHT = 15;           // W: and 15 m tall
-	public static final double LIFELINE_ROPE = 4;              // W
+	public static final double LIFELINE_ROPE = 4;              // W; her data's rope length, max(4, 0.2) (graph #1137)
+	/** The rope snaps when she is this many rope lengths from the ally across (her data's #928: M, a horizontal offset). */
+	public static final double LIFELINE_BREAK = 3;
 	public static final double LIFELINE_COOLDOWN = 2;          // W
 	public static final double LIFELINE_SPEED = 0.30;          // BZ Aug 11 2026: 40% -> 30%
 	public static final double LIFELINE_HEAL = 25;             // W: a second

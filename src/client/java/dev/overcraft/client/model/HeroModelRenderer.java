@@ -195,6 +195,15 @@ public final class HeroModelRenderer {
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
+		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
+			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			var points = pose == null ? null : jetpackCatPoints(loaded.model(), pose, entity.getPosition(partialTicks), facing,
+				state.scale);
+			if (points != null) {
+				dev.overcraft.client.effect.JetpackCatFx.jetpack(entity, points[0], points[1]);
+			}
+		}
 		if (hero == Hero.LUCIO && !previewing && entity.isAlive() && entity instanceof net.minecraft.world.entity.player.Player player) {
 			// his song on his skates (LucioFx): from his foot bones as posed, in the world
 			Integer song = player.getAttached(HeroManager.SONG);
@@ -222,6 +231,48 @@ public final class HeroModelRenderer {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Jetpack Cat's points, from her third-person look's own hardpoint table (look 2673's 76 entries, not the model's 24:
+	 * E:\Overwatch Archive\research\jetpack_cat\gaps.md 2, H): the jetpack's nozzles 0075 / 0077 (high, outer) and
+	 * 0078 / 007A (low, inner), then her paws 000A / 000B. Each a bone, an offset in its frame and a turn (x, y, z, w).
+	 */
+	private record Hardpoint(String bone, Vector3f offset, org.joml.Quaternionf turn) {
+	}
+
+	private static final Hardpoint[] JETPACK_CAT_POINTS = {
+		new Hardpoint("bone_0124", new Vector3f(0.1778f, 0, 0.0007f), new org.joml.Quaternionf()),
+		new Hardpoint("bone_0125", new Vector3f(-0.1796f, 0, -0.0004f), new org.joml.Quaternionf(1, 0, 0, 0)),
+		new Hardpoint("bone_0126", new Vector3f(0.08f, 0, -0.1f), new org.joml.Quaternionf(0, -1, 0, 0)),
+		new Hardpoint("bone_0127", new Vector3f(-0.08f, 0, 0.1f), new org.joml.Quaternionf(0, 0, -1, 0)),
+		new Hardpoint("bone_0170", new Vector3f(0, 0, -0.0359f), new org.joml.Quaternionf(1, 0, 0, 0)),
+		new Hardpoint("bone_016F", new Vector3f(0, 0, 0.031f), new org.joml.Quaternionf()),
+	};
+
+	/**
+	 * Her points as posed, in the world, with each one's down axis (the hardpoint's -Y: at rest the nozzles' frames line
+	 * up with the model's, so their flames point down her back), handed to her effects every frame. Null if a bone is
+	 * missing.
+	 */
+	private static net.minecraft.world.phys.Vec3 @Nullable [][] jetpackCatPoints(SkinnedModel model, Skeleton.Pose pose,
+		net.minecraft.world.phys.Vec3 base, float facing, float scale) {
+		net.minecraft.world.phys.Vec3[] at = new net.minecraft.world.phys.Vec3[JETPACK_CAT_POINTS.length];
+		net.minecraft.world.phys.Vec3[] down = new net.minecraft.world.phys.Vec3[JETPACK_CAT_POINTS.length];
+		float turn = (float) Math.toRadians(-facing);
+		for (int i = 0; i < JETPACK_CAT_POINTS.length; i++) {
+			Hardpoint h = JETPACK_CAT_POINTS[i];
+			int node = model.node(h.bone());
+			if (node < 0) {
+				return null;
+			}
+			Matrix4f m = new Matrix4f(Skeleton.world(model, pose, node)).translate(h.offset()).rotate(h.turn());
+			Vector3f p = m.getTranslation(new Vector3f()).mul(scale).rotateY(turn);
+			Vector3f d = m.transformDirection(new Vector3f(0, -1, 0)).normalize().rotateY(turn);
+			at[i] = base.add(p.x, p.y, p.z);
+			down[i] = new net.minecraft.world.phys.Vec3(d.x, d.y, d.z);
+		}
+		return new net.minecraft.world.phys.Vec3[][] {at, down};
 	}
 
 	/** Where a bone of the posed model is in the world: turned by her facing and scaled, as submit draws her. */

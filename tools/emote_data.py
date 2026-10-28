@@ -132,7 +132,7 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 STOWS = {"lucio": True}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
-HERO_FOLDERS = {"lucio": "Lúcio"}
+HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat"}
 
 
 def plain(name):
@@ -274,7 +274,8 @@ def main():
             for v in node:
                 collect(v)
 
-    collect(next((v for k, v in unlocks.items() if plain(k) == hero), {}))
+    # the unlock list names heroes as shown ("Jetpack Cat"): compared as our ids
+    collect(next((v for k, v in unlocks.items() if slug(plain(k)) == hero), {}))
     for u in emote_unlocks:
         root = o.instances(o.u64(guid(u["GUID"].split(".")[0], 0x0A5)))[0]
         bts = root.get("m_emoteBlendTreeSet")

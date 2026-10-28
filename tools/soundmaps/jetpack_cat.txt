@@ -644,34 +644,111 @@ jetpack_cat.ult.tether_end.b = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entit
 # jetpack_cat.ult.tether_end.c: F40D stop 1056703597 (1 file, 0.353 s, 1ch); net -14 dB, +0 cents, @0.120 s. H.
 jetpack_cat.ult.tether_end.c = Heroes/Jetpack Cat/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007493.00D/Sounds/00000000F40D.02C/0000002AC8C3.03F.ogg
 
-# ===== Not mapped (no extracted files)
-# jetpack_cat.paw.hit: every paw and centre shot's projectile visual (6D19 / 6D1B, STUProjectileVisualComponent
-# m_2170A015, the 'sound only' slot) is effect 73A4: 02C F59B (no range: read as her own hit sound), F599 / F59A (60 m),
-# bank 1E91D. Each is one random container of 11 mono files (avoid repeat 5-6), -3 dB with a -6..0 dB random range,
-# +500 cents (+-100), high-passed (hpf 50); mixer +4 dB make-up (H). None of their files is in the extraction (the
-# skin extraction only writes effects it reaches; Kiriko's kunai hit was missing the same way). The hit effects 7084
-# (world impact / expire), 728B / 728C, 709F (centre shot on a target), 7077, 7075 hold no sound. To build it, extract
-# the banks offline (Overwatch closed) with research\kiriko-sounds\scripts\extract_banks.py into
-# extracted\154088\ExtraSounds\Jetpack Cat (PawHit=F59B,F599,F59A), then uncomment:
-# @jetpack_cat.paw.hit = jetpack_cat.paw.hit.a*1.335:-23
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F120.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F124.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11B.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F123.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11F.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F122.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11D.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F121.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11E.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F125.03F.ogg
-# jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11C.03F.ogg
-# (net -22.5 dB before the own offset, +500 cents; the file levels are unknown until extracted, so the offset may need
-# a look.)
-# jetpack_cat.paw.hit_block: the centre shot's contact sets give the surface sounds: its STUContactSetComponent 0245.049
-# (contact type 2 = surfaces, 22 materials; the default material 0001 -> contact effect 3FBA.04A -> 02C 858A + 85C7;
-# types 0 / 1 on 0001 -> 5049 / 504A -> 8BC5) and the visual component's 093B.049 (type 2 on 0001 -> D965 -> 899F + 89A1;
-# types 0 / 1 -> D959 / D95F -> 5D51 + 9050 + 9059; type 4 -> D97C -> 2D1F). The paw shot 6D19 has no contact set. None
-# of these 02C are extracted or decoded (H for the references, read from the 04A bytes; M that type 2 is the surfaces).
+# ===== Hits (added 2026-10-28, the gaps pass: research\jetpack_cat\gaps.md). Extracted offline with Overwatch and
+# Battle.net closed into extractedl088\ExtraSounds\Jetpack Cat (research\kiriko-sounds\scripts\extract_banks.py:
+# PawHit=F59B,F599,F59A HitBlock=899F,89A1, log research\jetpack_cat\logs\extract-jetpack_cat-extra-sounds.log) and decoded
+# with the same scripts as the rules above (ww.py, dump_banks.py, jc_events.py / jc_layers.py through
+# research\jetpack_cat\scripts\sounds\hits.py; inputs in research\jetpack_cat\sounds_hits\). Same family offsets (own -0.5,
+# 3p +13 dB): none of these layers is louder than the families' loudest, so the offsets stand.
+# jetpack_cat.paw.hit: a paw or centre shot hits a target, own copy: effect 73A4 (every shot's STUProjectileVisualComponent
+#  m_2170A015, the 'sound only' slot, of 6D19 paw and 6D1B centre: H) plays 02C F59B (no range, unattenuated: read as her
+#  own player's, M). One random container of 11 mono files, +500 cents, high-passed (hpf 50, not reproduced), bus
+#  919172609 (-20.5 dB), RTPC 559517101 +3.2 dB at 0 (H).
+# Trigger: each paw / centre projectile that hits a creature (73A4 is the projectile's hit slot; the world hit 7084 holds
+#  no sound).
+# Layers: a F59B 1069226628 RanSeq 0.61-1.06 s x11 +500 cents, net -19.5.
+@jetpack_cat.paw.hit = jetpack_cat.paw.hit.a*1.335:-20
+# jetpack_cat.paw.hit_3p: the same hit heard by others: 02C F599 of 73A4 (60 m). 73A4 also holds F59A, identical but for
+#  its avoid-repeat (6 against 5): one is the allies' copy and one the enemies' (L which); the build takes F599.
+# Trigger: the same hit, played at the hit point for everyone else (60 m).
+# Layers: a F599 815285856 RanSeq 0.61-1.06 s x11 +500 cents, net -19.5.
+@jetpack_cat.paw.hit_3p = jetpack_cat.paw.hit_3p.a*1.335:-6.5
+# jetpack_cat.paw.hit_block: the centre shot hits a block: its projectile visual's contact set 093B.049 (m_contactSet of
+#  6D1B's STUProjectileVisualComponent, H), contact type 2 (the surfaces: 23 materials, M), default material 0001 ->
+#  contact effect D965.04A -> 02C 899F (90 m, +500 cents, bus 1315769715 -21 dB) and 89A1 (32 m, bus 3215998635 -25.5
+#  dB): the same 15 mono files, two layers that play together (H: both 02C ids are in D965's bytes). Neither has a
+#  no-range copy, so everyone (her too) hears these at the hit point (built in the 3p family, like ult.aim). The other
+#  22 materials name their own pairs (gaps.md lists them; material 003D shares 0001's). The paw shots (6D19) have no
+#  contact set: their wall hits are silent in the data (H). The entity contact set 0245 (6D1B's STUContactSetComponent,
+#  the one every generic entity and the emote props carry) is left out: its surface sounds 858A / 85C7 are 1.5-3.6 s
+#  stereo object impacts (read as a falling prop's, M).
+# Trigger: a centre shot that hits a block, at the hit point (both layers at once).
+# Layers: a 899F 1051993922 RanSeq 0.16-0.30 s x15 +500 cents, net -14; b 89A1 831707544 RanSeq 0.16-0.30 s x15, net -16.
+@jetpack_cat.paw.hit_block = jetpack_cat.paw.hit_block.a*1.335:-1 + jetpack_cat.paw.hit_block.b:-3
+# jetpack_cat.paw.hit.a: F59B play 1069226628 (11 files, 0.609-1.060 s, 1ch); net -19.5 dB, +500 cents, @0.000 s, avoid
+#  repeat 6. H.
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F120.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F124.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11B.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F123.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11F.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F122.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11D.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F121.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11E.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F125.03F.ogg
+jetpack_cat.paw.hit.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F59B.02C/00000033F11C.03F.ogg
+# jetpack_cat.paw.hit_3p.a: F599 play 815285856 (11 files, 0.609-1.060 s, 1ch); net -19.5 dB, +500 cents, @0.000 s, avoid
+#  repeat 5. H.
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F120.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F124.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F11B.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F123.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F11F.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F122.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F11D.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F121.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F11E.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F125.03F.ogg
+jetpack_cat.paw.hit_3p.a = ExtraSounds/Jetpack Cat/PawHit/Sounds/00000000F599.02C/00000033F11C.03F.ogg
+# jetpack_cat.paw.hit_block.a: 899F play 1051993922 (15 files, 0.159-0.297 s, 1ch); net -14 dB, +500 cents, @0.000 s,
+#  avoid repeat 10. H.
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4D1.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABF96.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABF83.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABFB4.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4DD.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4CD.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABF88.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4CA.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4C5.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4B2.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABF86.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABFB7.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABFA0.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002AC4A9.03F.ogg
+jetpack_cat.paw.hit_block.a = ExtraSounds/Jetpack Cat/HitBlock/Sounds/00000000899F.02C/0000002ABFBE.03F.ogg
+# jetpack_cat.paw.hit_block.b: 89A1 play 831707544 (15 files, 0.159-0.297 s, 1ch); net -16 dB, +0 cents, @0.000 s, avoid
+#  repeat 10. H.
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4D1.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABF96.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABF83.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABFB4.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4DD.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4CD.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABF88.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4CA.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4C5.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4B2.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABF86.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABFB7.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABFA0.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002AC4A9.03F.ogg
+jetpack_cat.paw.hit_block.b = ExtraSounds/Jetpack Cat/HitBlock/Sounds/0000000089A1.02C/0000002ABFBE.03F.ogg
+
+# ===== Not mapped
+# Extracted in the gaps pass but not built (ExtraSounds\Jetpack Cat, decoded in gaps.md): the centre shot on a creature,
+# 093B types 0 / 1 (default material 0001 -> D959 / D95F -> 5D51 no range, 9050 500 m, 9059 12 m: the generic flesh-hit
+# layers, M), 0245 types 0 / 1 (5049 / 504A -> 8BC5, no range), 093B type 4 (D97C -> 2D1F, 30 m, L what type 4 is), and
+# 0245's surfaces (858A / 85C7). Her voice-line unlocks (the communication wheel's voice page) are not in a DataTool
+# VoiceLine folder: each unlock's effect names a stimulus whose line is an external 02C with one meow (gaps.md):
+#   Innocent C26B -> 05A1 -> F62B -> 33F3C2; Inviting C26C -> 05A0 -> F62A -> 33F3CD; Begrudging C26D -> 059A -> F625 ->
+#   33F3BD; Excited C26E -> 05A2 -> F642 -> 33F3BE; Annoyed C26F -> 059C -> F626 -> 33F3C0; Shrugging C270 -> 05A3 -> F6A4
+#   -> 3408F9; Aggressive C271 -> 059F -> F629 -> 33F3D0; Pew Pew C272 -> 059E -> F628 -> 33F3D7; Singing C27C -> 19E7 ->
+#   F62E -> 33F3D6; Questioning C27B -> 19E5 -> F62C -> 33F3B5; Tumbling C118 -> 19D8 -> F67E -> 3402D4; Taunting C28E ->
+#   05A6 -> F623 -> 33F3BB
+#   (each file under HeroVoice/Jetpack Cat/Voicelines/(cat sounds)/ and ExtraSounds/Jetpack Cat/VoiceLines/Sounds/<02C>/;
+#   build_asset_pack.add_voicelines reads only Unlocks/Heroes/<Hero>/VoiceLine, which DataTool leaves empty for her).
 # Not mapped either (in the data, not asked for): the 3P copies of every ability (named in each rule's comment); 246B
 # (59DC #13 / #17: 498A / 498B, 30 m), 5D60 (B8F2, three 7-8 s loops held on 59DC BooleanSwitch#106), 7484 (F593),
 # 0186 (FCB, the shared ability-press click), 7846 (FA3B) and 792B (FB3E) in Purr's graph, 7183 / 5513 (EE96, B161) in
@@ -1049,12 +1126,17 @@ $jetpack_cat.ult.enemy = Jetpack Cat: (enemy ultimate cat sounds)
 
 # ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
 # (own = her player, in the head; 3p = everyone else, at her; both = one rule for everyone). 'EXTRA' = in the data but
-# not in the integration list. Not built: paw.hit, paw.hit_block (no extracted files; see 'Not mapped').
+# not in the integration list. paw.hit / paw.hit_3p / paw.hit_block were added in the gaps pass (2026-10-28).
 #   jetpack_cat.paw.fire             one-shot own  2.57 s; each volley (every 1/4.5 = 0.222 s while primary is held):
 #     weapon graph 5ADB ActionEffect#662 7847, right after the volley effect #658
 #   jetpack_cat.paw.fire_3p          one-shot 3p   2.57 s; the same volley, played at her for everyone else (38 m)
 #   jetpack_cat.paw.heal             one-shot both 0.79 s; a paw or centre shot heals an ally: graph 5ADC (heal on an
 #     ally) ActionEffect#291 739B at the start of its heal state, then #338 73A1
+#   jetpack_cat.paw.hit              one-shot own  0.79 s; a paw or centre shot hits a creature: effect 73A4 (the
+#     projectiles' m_2170A015 hit slot), F59B (gaps pass)
+#   jetpack_cat.paw.hit_3p           one-shot 3p   0.79 s; the same hit, at the hit point for everyone else (F599, 60 m)
+#   jetpack_cat.paw.hit_block        one-shot both 0.30 s; a centre shot hits a block: contact set 093B, type 2, default
+#     material 0001 -> D965 -> 899F + 89A1, at the hit point (the paw shots have no contact set: silent)
 #   jetpack_cat.reload               one-shot own  2.23 s; reload start (the 1P reload clip 18D45, 1.267 s;
 #     Overwatch's reload is 1.25 s)
 #   jetpack_cat.reload_3p            one-shot 3p   2.23 s; the same reload, heard by others (3P clip 18883, 1.2 s)

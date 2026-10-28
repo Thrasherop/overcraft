@@ -14,7 +14,7 @@
     py tools/build_asset_pack.py effects <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
-                                                            "E:\Overwatch Archiveesearch\jetpack_catx")
+                                                            "E:\Overwatch Archive\research\jetpack_catx")
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
@@ -274,6 +274,24 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio"}
+# Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
+# names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
+# -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
+# sounds)"). Groups as DataTool names them for the other heroes: the unlock list's "Base" is "Overwatch".
+VOICELINE_TABLES = {"jetpack_cat": ("Jetpack Cat", {
+    "Innocent": ("Overwatch", "00000033F3C2", "(an innocent meow)"),          # C26B, stimulus 05A1
+    "Inviting": ("Overwatch", "00000033F3CD", "(an inviting meow)"),          # C26C, 05A0
+    "Begrudging": ("Overwatch", "00000033F3BD", "(a begrudging meow)"),       # C26D, 059A
+    "Excited": ("Overwatch", "00000033F3BE", "(an excited meow)"),            # C26E, 05A2
+    "Annoyed": ("Overwatch", "00000033F3C0", "(an annoyed meow)"),            # C26F, 059C
+    "Shrugging": ("Overwatch", "0000003408F9", "(a shrugging meow)"),         # C270, 05A3
+    "Aggressive": ("Overwatch", "00000033F3D0", "(an aggressive meow)"),      # C271, 059F
+    "Pew Pew": ("Overwatch", "00000033F3D7", "(pew pew meows)"),              # C272, 059E
+    "Singing": ("Overwatch", "00000033F3D6", "(singing meows)"),              # C27C, 19E7
+    "Questioning": ("Overwatch", "00000033F3B5", "(a questioning meow)"),     # C27B, 19E5
+    "Tumbling": ("2026: Season 1", "0000003402D4", "(tumbling meows)"),       # C118, 19D8
+    "Taunting": ("Overwatch", "00000033F3BB", "(a taunting meow)"),           # C28E (a level unlock), 05A6
+})}
 
 
 def voice_text(file_name):
@@ -323,6 +341,28 @@ def add_voicelines(source, out, sounds):
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(listed, indent=1, ensure_ascii=False), encoding="utf8")
         print(f"{hero}: {len(listed)} voice lines")
+    for hero, (folder, table) in VOICELINE_TABLES.items():
+        listed = []
+        meows = Path(source) / "HeroVoice" / folder / "Voicelines" / "(cat sounds)"
+        for name, (group, file_id, text) in table.items():
+            f = meows / f"{file_id}.03F.ogg"
+            if not f.exists():
+                print(f"{hero}: no file {f}")
+                continue
+            key = slug(name)
+            event = f"{hero}.voiceline.{key}"
+            dest = out / event.replace(".", "/") / "0.ogg"
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(f, dest)
+            sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event,
+                             "sounds": [f"overcraft:{event.replace('.', '/')}/0"]}
+            lang[f"overcraft.voiceline.{hero}.{key}"] = name
+            lang[f"subtitles.overcraft.{event}"] = f"{folder}: {text}"
+            listed.append({"id": key, "group": group})
+        target = PACK / "assets" / "overcraft" / "voicelines" / f"{hero}.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(listed, indent=1, ensure_ascii=False), encoding="utf8")
+        print(f"{hero}: {len(listed)} voice lines (from the table)")
     return lang
 
 

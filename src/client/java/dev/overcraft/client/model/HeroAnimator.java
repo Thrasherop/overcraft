@@ -386,6 +386,9 @@ public final class HeroAnimator {
 	private static final float AIM_HOLD_LIMIT = 15;
 	/** Frenetic Flight's lean, eased in and out (0-1): her boost, seen as speed above her flight's 5.5 m/s. */
 	private float boostWeight;
+	/** Jetpack Cat's first-person rise (+1) or sink (-1) layer, eased; and when the view was last posed. */
+	private float verticalWeight;
+	private float lastViewNow = -1;
 
 	/** Lúcio's idle fidgets (alias 80AF80FD: a Random of 2CAF and 2A56, additive, on the clock), now and then while still. */
 	private void fidget(SkinnedModel model, Skeleton.Pose pose, float now) {
@@ -579,6 +582,22 @@ public final class HeroAnimator {
 			// her paws' hover sway (195B6, on the clock)
 			Skeleton.addAdditive(idleLayer, time(idleLayer, now, true), pose, 1);
 		}
+		SkinnedModel.Clip upLayer = clip(model, "add_up");
+		SkinnedModel.Clip downLayer = clip(model, "add_down");
+		if (upLayer != null && downLayer != null && entity instanceof net.minecraft.client.player.LocalPlayer local) {
+			// her paws as she rises or sinks (set 3866: a Blend1d of 194EF at +1, 194F0 at -1 on her jetpack's vertical
+			// input, jump +1 and crouch -1, H), eased over 0.1 s (ours: the blend's own easing isn't read)
+			net.minecraft.world.entity.player.Input keys = local.input.keyPresses;
+			float want = (keys.jump() ? 1 : 0) - (keys.shift() ? 1 : 0);
+			float step = lastViewNow < 0 ? 0 : Math.clamp(now - lastViewNow, 0, 0.25f) / 0.1f;
+			verticalWeight += Math.clamp(want - verticalWeight, -step, step);
+			if (verticalWeight > 1.0E-3f) {
+				Skeleton.addAdditive(upLayer, time(upLayer, now, true), pose, verticalWeight);
+			} else if (verticalWeight < -1.0E-3f) {
+				Skeleton.addAdditive(downLayer, time(downLayer, now, true), pose, -verticalWeight);
+			}
+		}
+		lastViewNow = now;
 		SkinnedModel.Clip setOff = base.startsWith("skate") && !base.startsWith("skate_stop") ? clip(model, "add_skate_start") : null;
 		if (setOff != null && now - movingSince <= setOff.duration()) {
 			Skeleton.addAdditive(setOff, now - movingSince, pose, 1);
@@ -639,6 +658,10 @@ public final class HeroAnimator {
 			return null;
 		}
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		if (model.clips.containsKey("select_fidget_1")) {
+			showcaseRun(model, sinceOpened, pose);
+			return Skeleton.skin(model, pose, -1, null);
+		}
 		if (intro != null && sinceOpened < intro.duration()) {
 			Skeleton.sample(intro, sinceOpened, pose);
 		} else {
@@ -646,6 +669,43 @@ public final class HeroAnimator {
 			Skeleton.sample(hold, t % hold.duration(), pose);
 		}
 		return Skeleton.skin(model, pose, -1, null);
+	}
+
+	/**
+	 * Jetpack Cat's showcase (entity 6C20, set 3FBB: E:\Overwatch Archive\research\jetpack_cat\gaps.md 5, H): a scripted
+	 * run of seven clips, each to its end and cut to the next (blend 0), then a weighted pick each time one ends. The
+	 * pick's empty slot (weight 1) is read as her hold (M).
+	 */
+	private static final String[] SHOWCASE_RUN = {"select_intro", "select_hold", "select_fidget_1", "select_fidget_2",
+		"select_fidget_3", "select_hold", "select_fidget_4"};
+	private static final String[] SHOWCASE_PICKS = {"select_fidget_4", "select_fidget_3", "select_hold", "select_fidget_2"};
+	private static final int[] SHOWCASE_WEIGHTS = {5, 3 + 1, 3 + 1, 1};
+
+	/** Samples her showcase at that time (the random picks seeded by their place in line: the same for every frame). */
+	private static void showcaseRun(SkinnedModel model, float t, Skeleton.Pose pose) {
+		int total = java.util.Arrays.stream(SHOWCASE_WEIGHTS).sum();
+		for (int i = 0; i < 10_000; i++) {
+			String name;
+			if (i < SHOWCASE_RUN.length) {
+				name = SHOWCASE_RUN[i];
+			} else {
+				int roll = new java.util.Random(0x6C20L * 31 + i).nextInt(total);
+				int k = 0;
+				while (roll >= SHOWCASE_WEIGHTS[k]) {
+					roll -= SHOWCASE_WEIGHTS[k++];
+				}
+				name = SHOWCASE_PICKS[k];
+			}
+			SkinnedModel.Clip clip = model.clips.get(name);
+			if (clip == null || clip.duration() <= 0) {
+				continue;
+			}
+			if (t < clip.duration()) {
+				Skeleton.sample(clip, t, pose);
+				return;
+			}
+			t -= clip.duration();
+		}
 	}
 
 	/** Skin matrices for the entity this frame. {@code now} in seconds (game time + partial tick). */

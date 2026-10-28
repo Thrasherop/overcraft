@@ -125,6 +125,10 @@ public final class OcSounds {
 	public static final SoundEvent JC_PAW_FIRE = register("jetpack_cat.paw.fire");
 	public static final SoundEvent JC_PAW_FIRE_3P = register("jetpack_cat.paw.fire_3p");
 	public static final SoundEvent JC_PAW_HEAL = register("jetpack_cat.paw.heal");
+	/** A shot hitting a creature (73A4: her copy, everyone else's at the hit), and the centre shot hitting a block (093B). */
+	public static final SoundEvent JC_PAW_HIT = register("jetpack_cat.paw.hit");
+	public static final SoundEvent JC_PAW_HIT_3P = register("jetpack_cat.paw.hit_3p");
+	public static final SoundEvent JC_PAW_HIT_BLOCK = register("jetpack_cat.paw.hit_block");
 	public static final SoundEvent JC_RELOAD = register("jetpack_cat.reload");
 	public static final SoundEvent JC_RELOAD_3P = register("jetpack_cat.reload_3p");
 	public static final SoundEvent JC_HUM = register("jetpack_cat.jetpack.hum");

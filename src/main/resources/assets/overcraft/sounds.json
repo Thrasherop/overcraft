@@ -721,6 +721,18 @@
 		"subtitle": "subtitles.overcraft.jetpack_cat.paw.heal",
 		"sounds": []
 	},
+	"jetpack_cat.paw.hit": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.hit",
+		"sounds": []
+	},
+	"jetpack_cat.paw.hit_3p": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.hit_3p",
+		"sounds": []
+	},
+	"jetpack_cat.paw.hit_block": {
+		"subtitle": "subtitles.overcraft.jetpack_cat.paw.hit_block",
+		"sounds": []
+	},
 	"jetpack_cat.reload": {
 		"subtitle": "subtitles.overcraft.jetpack_cat.reload",
 		"sounds": []
