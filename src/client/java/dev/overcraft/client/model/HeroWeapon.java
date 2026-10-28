@@ -89,7 +89,11 @@ public final class HeroWeapon {
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");
-		if (idle != null) {
+		boolean staff = model.clips.containsKey("holstered");
+		if (idle != null && staff) {
+			// Mercy's staff: its held loop (84A: the head's rings turning) on the clock
+			Skeleton.sample(idle, now % Math.max(idle.duration(), 1.0E-3f), pose);
+		} else if (idle != null) {
 			Skeleton.sample(idle, 0, pose);
 		}
 		// two reloads, 248D at 30 fps and 26E8 at 60 (aliases 80AA8045 / 80AA8050): which view each is for isn't read
@@ -117,6 +121,21 @@ public final class HeroWeapon {
 		}
 		add(model, pose, "add_fire", a.since("fire_blaster", now));
 		add(model, pose, "add_flash_heal", a.since("flash_heal", now));
+		SkinnedModel.Clip beam = model.clips.get("add_beam");
+		if (beam != null && a.mercyBeam() != 0) {
+			Skeleton.addAdditive(beam, now % Math.max(beam.duration(), 1.0E-3f), pose, 1);
+		}
+		if (staff) {
+			// the staff's clips key its root (bone_0001) at a bake from her first-person rig (84A's equals her 1P Weapon_R
+			// to the mm): not applied, the root stays on her Weapon_R (research\mercy\weapon_attach.md, the contacts)
+			int root = model.node("bone_0001");
+			if (root >= 0) {
+				Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
+				pose.t[root].set(rest.t[root]);
+				pose.r[root].set(rest.r[root]);
+				pose.s[root].set(rest.s[root]);
+			}
+		}
 		return pose;
 	}
 

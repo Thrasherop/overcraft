@@ -115,6 +115,11 @@ public final class HeroAnimator {
 	private int descentTicks;
 
 	/** Mercy's blaster is out (her weapon model: HeroWeapon). */
+	/** Mercy's beam mode now (0 none, 1 heal, 2 boost): her staff plays its beam layer meanwhile. */
+	public int mercyBeam() {
+		return beamMode;
+	}
+
 	public boolean blaster() {
 		return blaster;
 	}
