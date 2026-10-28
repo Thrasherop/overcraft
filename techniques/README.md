@@ -41,7 +41,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Minecraft**: [minecraft_26](minecraft/minecraft_26.md). Engine facts that cost time: input codes, projectiles,
   the dragon, the HUD bars, cameras.
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
-- **Heroes**: [kiriko](heroes/kiriko.md), her hub.
+- **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his.
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:

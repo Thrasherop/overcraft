@@ -23,3 +23,6 @@ Everything learned about Kiriko, by subject. She was the flagship: where the met
 - **Weapons as model pieces:** ofuda (geoset 1), Suzu (2), the three kunai (4), parked at her feet until a clip takes
   them. The Suzu is hidden except while she throws it.
 - **The kunai's ammo comes back** at 65% of the reload (statescript 0x2171).
+- **Her states, settled by Lúcio's data:** category 005 is her run (A8C7...), alias 0x006's 4-slot set (AFCB-AFD7)
+  is a directional jump (unused so far: her jump is AA37), aliases 0x64-0x66 a knock-down (AF3C plays as her death).
+  See [lucio](lucio.md).
