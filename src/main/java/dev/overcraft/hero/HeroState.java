@@ -23,6 +23,8 @@ public final class HeroState {
 	/** Ticks into the reload, -1 when not reloading. */
 	public double primaryReload = -1;
 	public boolean primaryAmmoRestored;
+	/** Ticks before an empty clip may start reloading by itself again (an action that cut the reload short still plays). */
+	public int reloadHeld;
 	public int secondaryAmmo;
 	public double secondaryReload = -1;
 	public boolean secondaryFiredSinceReload;
@@ -79,6 +81,7 @@ public final class HeroState {
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;
+		reloadHeld = 0;
 		secondaryFiredSinceReload = false;
 		ability1Cooldown = ability2Cooldown = 0;
 		meleeCooldown = 0;
@@ -93,5 +96,17 @@ public final class HeroState {
 
 	public boolean has(Perk perk) {
 		return minorPerk == perk || majorPerk == perk;
+	}
+
+	/**
+	 * An action cut the weapon's reload short (a quick melee, an ability: its animation replaces the reload's): the reload
+	 * is over, and the ammo comes back only if it already had (the owner, 2026-10-27: a cancelled reload gave the ammo
+	 * back anyway). An empty clip waits {@code seconds}, the action's own animation, before reloading by itself again.
+	 */
+	public void interruptReload(double seconds) {
+		if (primaryReload >= 0) {
+			primaryReload = -1;
+			reloadHeld = Math.max(reloadHeld, dev.overcraft.Ow.ticks(seconds));
+		}
 	}
 }

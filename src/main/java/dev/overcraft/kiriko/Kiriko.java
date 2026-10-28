@@ -38,6 +38,14 @@ public final class Kiriko implements HeroKit {
 	private static final double OFUDA_INTERVAL = 20.0 / OFUDA_THROWS_PER_SECOND;
 	/** Sideways offset of each hand's talisman from the eyes (blocks). */
 	private static final double OFUDA_HAND_OFFSET = 0.25;
+	/**
+	 * How long each ability's animation plays (her clips, the game's own: Swift Step ABBA + ABBB, Suzu AB96 + AB95, the
+	 * Kitsune Rush cast ABF0 + ABF1): an empty clip waits for it before reloading by itself after the ability cut a
+	 * reload short.
+	 */
+	private static final double SWIFT_STEP_ANIMATION = 0.267 + 0.533;
+	private static final double SUZU_THROW_ANIMATION = 0.433 + 0.5;
+	private static final double RUSH_CAST_ANIMATION = 0.933 + 0.267;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -52,11 +60,15 @@ public final class Kiriko implements HeroKit {
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 
-		// climbing a wall interrupts the kunai reload (the owner, #42); an empty clip starts again once she's off the wall
+		// climbing a wall interrupts the kunai reload (the owner, #42); an empty clip starts again once she's off the wall,
+		// and once whatever else cut it short has played out
+		if (s.reloadHeld > 0) {
+			s.reloadHeld--;
+		}
 		if (s.wallClimbing && s.primaryReload >= 0) {
 			s.primaryReload = -1;
 			Combat.animate(player, "reload_cancel");
-		} else if (!s.wallClimbing && s.primaryAmmo == 0 && s.primaryReload < 0) {
+		} else if (!s.wallClimbing && s.primaryAmmo == 0 && s.primaryReload < 0 && s.reloadHeld == 0) {
 			startPrimaryReload(player, s);
 		}
 		if (s.primaryReload >= 0) {
@@ -127,12 +139,14 @@ public final class Kiriko implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0) {
 			throwSuzu(player);
+			s.interruptReload(SUZU_THROW_ANIMATION);
 			Voice.say(player, "suzu", 1);
 			s.ability2Cooldown = Ow.ticks(SUZU_COOLDOWN);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
 			KitsuneRush.start(player);
 			Combat.animate(player, "ult_cast");
+			s.interruptReload(RUSH_CAST_ANIMATION);
 			s.ultCharge = 0;
 			s.ultActive = Ow.ticks(RUSH_DURATION);
 		}
@@ -232,6 +246,7 @@ public final class Kiriko implements HeroKit {
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
 		s.castTarget = target.getUUID();
 		Combat.animate(player, "swift_step");
+		s.interruptReload(SWIFT_STEP_ANIMATION);
 		// her player hears the hand sign, everyone else her departure (the sound research: audiences 1 and 2)
 		HeroSounds.split(player, OcSounds.KIRIKO_SWIFT_STEP_CAST, OcSounds.KIRIKO_SWIFT_STEP_DEPART, player.position());
 	}
