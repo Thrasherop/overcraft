@@ -43,7 +43,11 @@ public final class Lucio implements HeroKit {
 		double attack = Combat.attackRate(player);
 		double cooldown = Combat.cooldownRate(player);
 
-		// Amp It Up runs, then its cooldown starts (the wiki: "starting after the duration ends")
+		// Amp It Up starts 0.2 s after the press (the game data), runs, then its cooldown starts (the wiki: "starting after
+		// the duration ends")
+		if (s.ampDelay > 0 && --s.ampDelay == 0) {
+			s.ampUp = Ow.ticks(AMP_UP_TIME);
+		}
 		if (s.ampUp > 0) {
 			if (--s.ampUp == 0) {
 				if (!s.ampFree) {
@@ -51,14 +55,18 @@ public final class Lucio implements HeroKit {
 				}
 				s.ampFree = false;
 			}
-		} else {
+		} else if (s.ampDelay == 0) {
 			s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 		}
+		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
 		s.ability3Cooldown = Math.max(0, s.ability3Cooldown - cooldown);
 
-		// Crossfade: the song changes once the swap's 0.4 s are up
+		// Crossfade: the song changes once the swap's 0.2 s are up, and his Crossfade animation for the new song plays
+		// (graph 0266: the song switch plays it entering each song)
 		if (s.songSwap >= 0 && --s.songSwap < 0) {
 			s.speedSong = !s.speedSong;
+			s.ability1Cooldown = Ow.ticks(CROSSFADE_COOLDOWN);
+			Combat.animate(player, s.speedSong ? "crossfade_speed" : "crossfade_heal");
 		}
 
 		if (s.primaryReload >= 0) {
@@ -131,12 +139,11 @@ public final class Lucio implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
-		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.songSwap < 0) {
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.songSwap < 0 && s.ability1Cooldown <= 0) {
 			s.songSwap = Ow.ticks(SONG_SWAP);
-			Combat.animate(player, "crossfade");
 		}
-		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ampUp == 0 && s.ability2Cooldown <= 0) {
-			s.ampUp = Ow.ticks(AMP_UP_TIME);
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ampUp == 0 && s.ampDelay == 0 && s.ability2Cooldown <= 0) {
+			s.ampDelay = Ow.ticks(AMP_UP_DELAY);
 			s.ampFree = false;
 			Combat.animate(player, "amp_it_up");
 		}

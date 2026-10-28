@@ -52,6 +52,8 @@ public final class HeroState {
 	public int barrierCast = -1;
 	/** Amp It Up given by Beat Drop: when it ends, no cooldown starts. */
 	public boolean ampFree;
+	/** Amp It Up pressed: ticks until it starts (0 none). */
+	public int ampDelay;
 
 	// perks (#36): progress toward the next perk level, and the ones picked
 	public double perkXp;
@@ -100,6 +102,7 @@ public final class HeroState {
 		riderCharge = 0;
 		barrierCast = -1;
 		ampFree = false;
+		ampDelay = 0;
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;

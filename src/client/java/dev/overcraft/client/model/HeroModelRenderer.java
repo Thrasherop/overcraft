@@ -192,7 +192,11 @@ public final class HeroModelRenderer {
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null));
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
 		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
+		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
+		state.setData(WEAPON, previewing || animator.emoting() ? null : HeroWeapon.place(hero, animator, loaded.model(), false, now));
 	}
+
+	private static final RenderStateDataKey<EmoteProps.Placed> WEAPON = RenderStateDataKey.create(() -> "overcraft:hero_weapon");
 
 	/**
 	 * Where her shadow falls this frame, or null for none (shadows off, invisible, asleep, nothing under her). The light
@@ -330,6 +334,10 @@ public final class HeroModelRenderer {
 		EmoteProps.Held props = state.getData(EmoteProps.HELD);
 		if (props != null) {
 			EmoteProps.submit(props, poseStack, collector, light, overlay);
+		}
+		EmoteProps.Placed weapon = state.getData(WEAPON);
+		if (weapon != null) {
+			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, light, overlay);
 		}
 		Shadow shadow = state.getData(SHADOW);
 		if (shadow != null && bed == null) {
@@ -665,6 +673,11 @@ public final class HeroModelRenderer {
 		int lit = Math.max(light & 0xFFFF, VIEW_MODEL_MIN_LIGHT << 4) | light & 0xFFFF0000;
 		submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
+		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
+		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
+		if (weapon != null) {
+			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+		}
 		if (minecraft) {
 			// the main hand's item in her kunai hand, the other's in her ofuda hand (the owner's idea too)
 			boolean right = avatar.mainArm == net.minecraft.world.entity.HumanoidArm.RIGHT;

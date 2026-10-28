@@ -46,18 +46,29 @@ public final class LucioStats {
 	public static final double SPEED_SONG = 0.25;             // Oct 15 2019: +25%
 	public static final double SONG_RADIUS = 12;              // Aug 9 2018
 	public static final double SONG_LINGER = 1;               // wiki: after leaving the area
-	public static final double SONG_SWAP = 0.4;               // wiki: before the song changes
+	/**
+	 * The game data (graph 0266, build 154088): the song changes 0.2 s after the press (an ally's speed 0.2 s after that:
+	 * the wiki's 0.4 counts both), and Crossfade can't be pressed again for 0.25 s after.
+	 */
+	public static final double SONG_SWAP = 0.2;
+	public static final double CROSSFADE_COOLDOWN = 0.25;
 	/** Ours: the wiki's 0.192 s healing tick, rounded to Minecraft's ticks (4 ticks = 0.2 s). */
 	public static final int SONG_TICKS = 4;
 
 	// Amp It Up (E)
-	public static final double AMP_UP_TIME = 3;               // wiki
+	public static final double AMP_UP_TIME = 3;               // wiki; the game data (0510)
+	/** The game data (graph 0277): Amp It Up starts 0.2 s after the press, its animation from the press. */
+	public static final double AMP_UP_DELAY = 0.2;
 	public static final double AMP_UP_COOLDOWN = 12;          // wiki: after it ends
 	public static final double AMP_UP_HEAL = 56;              // wiki (2.8x the song)
 	public static final double AMP_UP_SPEED = 0.60;           // Oct 15 2019
 
 	// Wall Ride (passive)
-	public static final double WALL_SPEED = 0.30;             // Oct 15 2019: +30% on the wall
+	/**
+	 * Oct 15 2019: +30% on the wall. The game data's wall-ride graph (0263) holds a 1.15 movement modifier while riding and
+	 * 1.35 after the wall jump, of a type whose meaning is hashed: kept to Blizzard's number until that's read.
+	 */
+	public static final double WALL_SPEED = 0.30;
 	/** The leap off: +2.5 m/s along the run, 6.54 m/s up looking ahead (wiki). */
 	public static final double WALL_LEAP_FORWARD = 2.5;
 	public static final double WALL_LEAP_UP = 6.54;
@@ -75,8 +86,12 @@ public final class LucioStats {
 	public static final double BARRIER_TIME = 6;              // Oct 6 2026
 	public static final double BARRIER_RADIUS = 30;           // wiki
 	public static final double BARRIER_CAST = 0.656;          // wiki
-	/** The leap on casting, up (ours: the wiki's "a small leap"; 4.5 m/s at 240% gravity is about 0.25 m). */
-	public static final double BARRIER_LEAP = 4.5;
+	/**
+	 * The leap on casting, up: the cast's own clip (2E4F, the game data) lifts his feet 1.63 m, its top 0.37 s after he
+	 * leaves the ground; 7.4 m/s reaches that height under Overwatch's gravity, its top 0.44 s up. Blizzard's 240% cast
+	 * gravity (below) isn't applied: with it no single speed matches both the clip's height and its time aloft.
+	 */
+	public static final double BARRIER_LEAP = 7.4;
 	public static final double BARRIER_GRAVITY = 2.4;         // Dec 10 2024: 240% while casting
 
 	// Tactician (sub-role, Feb 10 2026): ult charge kept past 100%, up to 125%, gained at -25% above 100%
@@ -84,7 +99,10 @@ public final class LucioStats {
 	public static final double TACTICIAN_RATE = 0.75;
 
 	// Perks (Blizzard's hero page, 2026-10-26)
-	/** Level 2 and 3 (the wiki's infobox; from the start, ours as for Kiriko). */
+	/**
+	 * Level 2 and 3, counted from the start (the wiki's infobox; ours as for Kiriko). The game data's own costs are 2020 then
+	 * 3030 (12A0 / 12A1): 5050 in all.
+	 */
 	public static final double PERK_MINOR_XP = 2020;
 	public static final double PERK_MAJOR_XP = 5050;
 	/** Soundwave Rider: riding a wall charges the next Soundwave, +25% knockback and +50% damage; ~5 s fills it (wiki). */

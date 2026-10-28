@@ -1,0 +1,11 @@
+# Lúcio's Sonic Amplifier (its own entity 0401, model 00000000DBA3.00C, 16 bones), hung on his hardpoint 000A
+# (Weapon_R; turned 180 degrees about X in the third person, as it is in the first). Its own clips, played with his
+# (set 02AA, lucio-map.md).
+0-28_00000000248B = idle
+4-0_00000000257B = add_move
+4-16_000000002546 = add_fire
+0-0_00000000248D = reload
+0-4_0000000026E8 = reload_1p
+4-16_000000002D2C = add_soundwave
+0-0_000000002E66 = ult_cast
+0-0_000000002E67 = ult_end
