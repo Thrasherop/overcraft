@@ -80,6 +80,12 @@ public final class LucioStats {
 	public static final double WALL_LEAP_UP = 6.54;
 	public static final double WALL_LEAP_UP_LOOKING_UP = 9.12;
 	public static final double WALL_LEAP_UP_LOOKING_DOWN = 4.12;
+	/** The leap off holding forward (wiki: 6.9 m/s). */
+	public static final double WALL_LEAP_UP_FORWARD = 6.9;
+	/** Ours: the push off the wall as he leaps (no source gives one). */
+	public static final double WALL_LEAP_PUSH = 2;
+	/** How fast he rises while riding (m/s): the owner, 2026-10-27, "wall riding actually does raise you a little bit". */
+	public static final double WALL_RISE = 0.5;
 	public static final double WALL_COOLDOWN = 0.5;           // wiki
 	/** Ours: how close a wall must be to ride it (no source). */
 	public static final double WALL_REACH = 0.4;

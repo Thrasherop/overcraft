@@ -57,6 +57,27 @@ public final class OwMovement {
 	/** How far below a ledge's top the feet may be for the ledge assist to lift the hero onto it (m, ours). */
 	public static final double LEDGE_REACH = 0.3;
 
+	/**
+	 * A hero's mover (each hero's CharacterMover in the game data: tools/reference/movement.md): ground acceleration
+	 * (times the wish speed), ground friction and stop speed, air acceleration, the decay of air speed above
+	 * {@code maxAir} (m/s at 5.5 m/s run speed, scaled with speed buffs).
+	 */
+	public record Mover(double groundAccelerate, double friction, double stopSpeed, double airAccelerate, double airDecay,
+		double maxAir) {
+		/** Every hero's but the skaters' (game data: m_DAA0618B 35, m_E0A0FE25 15, m_E91D1664 4.5, m_E631BA84 3.5, m_4E03E892 2, m_031FE7EE 5.5). */
+		public static final Mover DEFAULT = new Mover(GROUND_ACCELERATE, FRICTION, STOP_SPEED, AIR_ACCELERATE, AIR_DECAY, RUN_SPEED);
+		/**
+		 * Lúcio's, on skates (the same fields: acceleration 15, friction 2, air decay 0.5, max air 11): full speed in about
+		 * 0.08 s, a 0.6 s glide to a stop, and in the air speed above twice his run speed decays slowly while speed under it
+		 * is kept (the wiki: "air speed doesn't decay below double his ground speed": 11, 13.76 with Speed Boost, 17.6
+		 * amped). Before 2026-10-27 he moved on the default mover: stopping dead and losing a wall jump's speed at once.
+		 */
+		public static final Mover LUCIO = new Mover(15, 2, STOP_SPEED, AIR_ACCELERATE, 0.5, 2 * RUN_SPEED);
+	}
+
+	/** Set by the client: the mover an entity uses (its hero's). */
+	public static java.util.function.Function<LivingEntity, Mover> mover = entity -> Mover.DEFAULT;
+
 	/** Set by the client: this entity moves the Overwatch way (the local player, a hero, slot 1). */
 	public static Predicate<LivingEntity> active = entity -> false;
 	/** Set by the client: this entity has Kiriko's wall climb. */
@@ -75,9 +96,18 @@ public final class OwMovement {
 		boolean riding;
 		/** The wall's outward normal (axis-aligned: Minecraft's walls are). */
 		Vec3 normal = Vec3.ZERO;
-		/** Along the wall, unit length. */
-		Vec3 along = Vec3.ZERO;
+		/** One way along the wall, unit length; the ride's speed {@link #speed} is signed along it. */
+		Vec3 axis = Vec3.ZERO;
+		/** m/s along {@link #axis} (negative: the other way). */
+		double speed;
 		int cooldown;
+		/** Ticks on this wall (the wall jump needs a moment on it first). */
+		int ticks;
+
+		/** The way he's riding, unit length. */
+		Vec3 heading() {
+			return speed < 0 ? axis.scale(-1) : axis;
+		}
 	}
 
 	private static final class Climb {
@@ -134,12 +164,16 @@ public final class OwMovement {
 
 	/** One step on the ground, velocities in m/s: friction, then acceleration toward {@code wish} (Overwatch's mover). */
 	public static Vec3 groundStep(Vec3 v, Vec3 wish, double dt) {
+		return groundStep(v, wish, Mover.DEFAULT, dt);
+	}
+
+	public static Vec3 groundStep(Vec3 v, Vec3 wish, Mover mover, double dt) {
 		double speed = v.length();
 		if (speed > 0) {
-			double drop = Math.max(speed, STOP_SPEED) * FRICTION * dt;
+			double drop = Math.max(speed, mover.stopSpeed()) * mover.friction() * dt;
 			v = v.scale(Math.max(0, speed - drop) / speed);
 		}
-		return accelerate(v, wish, GROUND_ACCELERATE, dt);
+		return accelerate(v, wish, mover.groundAccelerate(), dt);
 	}
 
 	/**
@@ -149,9 +183,13 @@ public final class OwMovement {
 	 * {@code maxSpeed} decays.
 	 */
 	public static Vec3 airStep(Vec3 v, Vec3 wish, double maxSpeed, double dt) {
+		return airStep(v, wish, maxSpeed, Mover.DEFAULT, dt);
+	}
+
+	public static Vec3 airStep(Vec3 v, Vec3 wish, double maxSpeed, Mover mover, double dt) {
 		double wishSpeed = wish.length();
 		if (wishSpeed > 0) {
-			double step = AIR_ACCELERATE * wishSpeed * dt;
+			double step = mover.airAccelerate() * wishSpeed * dt;
 			double speed = v.length();
 			double dot = v.x * wish.x + v.z * wish.z;
 			if (speed < 1.0E-6 || dot < 0) {
@@ -172,7 +210,7 @@ public final class OwMovement {
 		}
 		double speed = v.length();
 		if (speed > maxSpeed) {
-			v = v.scale((maxSpeed + (speed - maxSpeed) * Math.max(0, 1 - AIR_DECAY * dt)) / speed);
+			v = v.scale((maxSpeed + (speed - maxSpeed) * Math.max(0, 1 - mover.airDecay() * dt)) / speed);
 		}
 		return v;
 	}
@@ -213,15 +251,17 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
 		boolean grounded = entity.onGround() && v.y <= 0;
-		double maxAirSpeed = RUN_SPEED * speedFactor(entity);
+		Mover mover = OwMovement.mover.apply(entity);
+		double maxAirSpeed = mover.maxAir() * speedFactor(entity);
 		for (int i = 0; i < SUBSTEPS; i++) {
-			stepped = grounded ? groundStep(stepped, wishMs, 0.05 / SUBSTEPS) : airStep(stepped, wishMs, maxAirSpeed, 0.05 / SUBSTEPS);
+			stepped = grounded ? groundStep(stepped, wishMs, mover, 0.05 / SUBSTEPS)
+				: airStep(stepped, wishMs, maxAirSpeed, mover, 0.05 / SUBSTEPS);
 			travelled = travelled.add(stepped);
 		}
 		Vec3 horizontal = travelled.scale(1.0 / SUBSTEPS / 20);
 		Vec3 end = stepped.scale(1.0 / 20);
 
-		if (ride(entity, v)) {
+		if (ride(entity, v, input)) {
 			return;
 		}
 
@@ -313,13 +353,25 @@ public final class OwMovement {
 	}
 
 	/**
-	 * Lúcio's Wall Ride (tools/reference/lucio.md): in the air, holding jump beside a wall, he rides along it at +30%
-	 * (7.15 m/s, past the buff cap) and holds his height (no source gives a drift). Letting go of jump leaps off: +2.5 m/s
-	 * along the run, 6.54 m/s up looking ahead (9.12 looking up, 4.12 down) and a push off the wall (ours, 2 m/s).
-	 * Crouch drops off without a leap; the wall ending or a block ahead ends the ride. 0.5 s before the next one.
+	 * Lúcio's Wall Ride (tools/reference/lucio.md, tools/reference/lucio-movement-research.md; the owner's playtest,
+	 * 2026-10-27).
+	 * <ul>
+	 * <li>Getting on: in the air, holding jump, beside a wall that covers his body up to his head. A knee-high step
+	 * doesn't count, so jumping up a block with jump held lands on it (the old rule took any block within reach and he
+	 * grabbed every step he jumped up).</li>
+	 * <li>On it: no gravity, rising slowly ({@link dev.overcraft.lucio.LucioStats#WALL_RISE}), at +30% (7.15 m/s, past the
+	 * buff cap). W rides the way the camera faces along the wall, S the other way, neither keeps going: so he can ride
+	 * backwards, and turn round mid-ride by turning the camera (the owner). Faster than that (a chain of wall jumps) the
+	 * speed is kept, easing toward the ride speed as his air speed does.</li>
+	 * <li>Corners: a wall ahead (an inside corner) turns him onto it; the wall's end with a face round it (an outside
+	 * corner, a pillar) wraps him round onto that face. A wall that just ends lets him fly on with his speed.</li>
+	 * <li>Off: letting go of jump leaps off (+2.5 m/s along the ride, 6.54 m/s up looking ahead, 6.9 holding forward,
+	 * 9.12 looking up, 4.12 down, and a push off the wall: ours, 2 m/s); crouch drops off. 0.5 s before the next ride.
+	 * In the air his own mover keeps that speed (Mover.LUCIO).</li>
+	 * </ul>
 	 * True while it moves him this tick.
 	 */
-	private static boolean ride(LivingEntity entity, Vec3 v) {
+	private static boolean ride(LivingEntity entity, Vec3 v, Vec3 input) {
 		if (!wallRide.test(entity)) {
 			return false;
 		}
@@ -332,49 +384,129 @@ public final class OwMovement {
 			ride.riding = false;
 			return false;
 		}
-		Vec3 flat = new Vec3(v.x, 0, v.z);
+		double rideSpeed = RIDE_SPEED_MS * Math.max(1, speedFactor(entity));
 		if (!ride.riding) {
 			if (!jump || ride.cooldown > 0) {
 				return false;
 			}
-			Vec3 normal = wallBeside(entity, flat, null);
+			Vec3 flat = new Vec3(v.x, 0, v.z).scale(20);
+			Vec3 normal = wallToRide(entity, flat);
 			if (normal == null) {
 				return false;
 			}
-			Vec3 along = flat.subtract(normal.scale(flat.dot(normal)));
-			if (along.lengthSqr() < 1.0E-4) {
-				Vec3 look = entity.getLookAngle();
-				along = new Vec3(look.x, 0, look.z).subtract(normal.scale(look.x * normal.x + look.z * normal.z));
-			}
-			if (along.lengthSqr() < 1.0E-4) {
-				return false;
-			}
 			ride.riding = true;
+			ride.ticks = 0;
 			ride.normal = normal;
-			ride.along = along.normalize();
+			ride.axis = new Vec3(-normal.z, 0, normal.x);
+			// his speed along the wall carries on; the way comes from W / S and the camera, else from his motion
+			double along = flat.dot(ride.axis);
+			int way = steer(entity, ride, input);
+			if (way == 0) {
+				way = Math.abs(along) > 0.5 ? (int) Math.signum(along) : cameraWay(entity, ride);
+			}
+			if (way == 0) {
+				way = 1;
+			}
+			ride.speed = way * Math.max(Math.abs(along), rideSpeed);
 		}
-		Vec3 normal = wallBeside(entity, flat, ride.normal);
-		double speed = Ow.speed(RUN_SPEED * (1 + dev.overcraft.lucio.LucioStats.WALL_SPEED)) * Math.max(1, speedFactor(entity));
-		if (!jump && normal != null && !entity.isCrouching()) {
-			// the leap off
-			double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
-			double up = pitch >= 0 ? Mth.lerp(pitch, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
-				: Mth.lerp(-pitch, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_DOWN);
-			Vec3 out = ride.along.scale(speed + Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD)).add(ride.normal.scale(Ow.speed(2)));
-			entity.setDeltaMovement(out.x, Ow.speed(up), out.z);
+		ride.ticks++;
+		if (entity.isCrouching()) {
+			// drop off: no jump, his speed along the wall carries on
+			Vec3 off = ride.heading().scale(Math.abs(ride.speed) / 20);
+			entity.setDeltaMovement(off.x, 0, off.z);
 			endRide(ride);
-			return false;
+			return leave(entity);
 		}
-		if (!jump || normal == null || entity.isCrouching() || entity.horizontalCollision && !touches(entity, ride.normal)) {
-			endRide(ride);
-			return false;
+		if (!jump) {
+			wallJump(entity, ride, input);
+			// moved by the leap this tick: the air step after would start from the speed he had on the wall (until
+			// 2026-10-27 it did, and his wall jumps fell straight down off the wall)
+			return leave(entity);
 		}
-		Vec3 move = ride.along.scale(speed).subtract(ride.normal.scale(0.02));
-		entity.setDeltaMovement(move.x, 0, move.z);
+		// steering: toward the target speed at his ground acceleration; faster than the ride speed eases off slowly
+		int way = steer(entity, ride, input);
+		double target = way != 0 ? way * rideSpeed : Math.signum(ride.speed) * Math.max(rideSpeed, Math.abs(ride.speed));
+		double dt = 0.05;
+		if (way != 0 && Math.signum(target) == Math.signum(ride.speed) && Math.abs(ride.speed) > rideSpeed) {
+			target = Math.signum(ride.speed) * Math.abs(ride.speed);
+		}
+		double accel = Mover.LUCIO.groundAccelerate() * rideSpeed * dt;
+		ride.speed += Math.clamp(target - ride.speed, -accel, accel);
+		if (Math.abs(ride.speed) > rideSpeed) {
+			double over = Math.abs(ride.speed) - rideSpeed;
+			ride.speed = Math.signum(ride.speed) * (rideSpeed + over * Math.max(0, 1 - Mover.LUCIO.airDecay() * dt));
+		}
+
+		double rise = Ow.speed(dev.overcraft.lucio.LucioStats.WALL_RISE);
+		Vec3 move = ride.heading().scale(Math.abs(ride.speed) / 20).subtract(ride.normal.scale(0.01));
+		entity.setDeltaMovement(move.x, rise, move.z);
 		entity.move(MoverType.SELF, entity.getDeltaMovement());
-		entity.setDeltaMovement(move.x, 0, move.z);
 		entity.resetFallDistance();
+
+		if (blockedAhead(entity, ride.heading())) {
+			// an inside corner: the wall ahead becomes the wall, and he rides away from the old one
+			Vec3 old = ride.normal;
+			ride.normal = ride.heading().scale(-1);
+			ride.axis = old;
+			ride.speed = Math.abs(ride.speed);
+		} else if (!touches(entity, ride.normal, 0.5, 1.0)) {
+			// past the wall's end: round the corner if there's a face there, else fly on
+			Vec3 round = ride.heading();
+			Vec3 newHeading = ride.normal.scale(-1);
+			if (cornerFace(entity, round, newHeading)) {
+				ride.normal = round;
+				ride.axis = newHeading;
+				ride.speed = Math.abs(ride.speed);
+			} else {
+				Vec3 off = ride.heading().scale(Math.abs(ride.speed) / 20);
+				entity.setDeltaMovement(off.x, rise, off.z);
+				endRide(ride);
+				return true;
+			}
+		}
+		Vec3 keep = ride.heading().scale(Math.abs(ride.speed) / 20);
+		entity.setDeltaMovement(keep.x, entity.verticalCollision ? 0 : rise, keep.z);
 		return true;
+	}
+
+	/** Leaving the wall: this tick's move at the velocity just set, which the next ticks' air steps carry on. */
+	private static boolean leave(LivingEntity entity) {
+		Vec3 v = entity.getDeltaMovement();
+		entity.move(MoverType.SELF, v);
+		Vec3 after = entity.getDeltaMovement();
+		entity.setDeltaMovement(after.x == 0 ? 0 : v.x, after.y == 0 ? 0 : v.y, after.z == 0 ? 0 : v.z);
+		return true;
+	}
+
+	/** The ride speed: run speed +30% (Blizzard, 2019-10-15: 7.15 m/s), in blocks per tick. */
+	private static final double RIDE_SPEED_MS = RUN_SPEED * (1 + dev.overcraft.lucio.LucioStats.WALL_SPEED);
+
+	/** Which way W / S ride him: +1 along the axis, -1 against it, 0 with neither or the camera square on the wall. */
+	private static int steer(LivingEntity entity, Ride ride, Vec3 input) {
+		if (Math.abs(input.z) < 1.0E-3) {
+			return 0;
+		}
+		int camera = cameraWay(entity, ride);
+		return camera == 0 ? 0 : input.z > 0 ? camera : -camera;
+	}
+
+	/** Which way along the wall the camera faces: +1, -1, or 0 looking square at it (or square away from it). */
+	private static int cameraWay(LivingEntity entity, Ride ride) {
+		Vec3 look = entity.getLookAngle();
+		double along = look.x * ride.axis.x + look.z * ride.axis.z;
+		return Math.abs(along) < 0.1 ? 0 : (int) Math.signum(along);
+	}
+
+	/** The leap off: along the ride with +2.5 m/s, up by where he looks, pushed off the wall. */
+	private static void wallJump(LivingEntity entity, Ride ride, Vec3 input) {
+		double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
+		double ahead = input.z > 0 ? dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_FORWARD : dev.overcraft.lucio.LucioStats.WALL_LEAP_UP;
+		double up = pitch >= 0 ? Mth.lerp(pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
+			: Mth.lerp(-pitch, ahead, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_DOWN);
+		Vec3 out = ride.heading().scale(Ow.speed(Math.abs(ride.speed) + dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD))
+			.add(ride.normal.scale(Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_PUSH)));
+		entity.setDeltaMovement(out.x, Ow.speed(up), out.z);
+		endRide(ride);
 	}
 
 	private static void endRide(Ride ride) {
@@ -383,17 +515,15 @@ public final class OwMovement {
 	}
 
 	/**
-	 * The outward normal of a wall within reach beside the entity: the given one if it's still there, else the side
-	 * most across its run (a wall it's running along, not one it's running into). Null when there's none.
+	 * The outward normal of a wall he can get on: within reach beside him and covering his body from the waist to his
+	 * head (a step at his knees isn't one), the one most along his run (a wall he skims, rather than one he jumps
+	 * square into, wins). Null when there's none.
 	 */
-	private static @Nullable Vec3 wallBeside(LivingEntity entity, Vec3 run, @Nullable Vec3 keep) {
-		if (keep != null) {
-			return touches(entity, keep) ? keep : null;
-		}
+	private static @Nullable Vec3 wallToRide(LivingEntity entity, Vec3 run) {
 		Vec3 best = null;
 		double bestAcross = Double.MAX_VALUE;
 		for (Vec3 normal : new Vec3[] {new Vec3(1, 0, 0), new Vec3(-1, 0, 0), new Vec3(0, 0, 1), new Vec3(0, 0, -1)}) {
-			if (!touches(entity, normal)) {
+			if (!touches(entity, normal, 0.5, 1.0) || !touches(entity, normal, 1.2, 1.7)) {
 				continue;
 			}
 			double across = run.lengthSqr() < 1.0E-6 ? 0 : Math.abs(run.normalize().dot(normal));
@@ -405,10 +535,37 @@ public final class OwMovement {
 		return best;
 	}
 
-	/** A block within reach on the side opposite {@code normal}. */
-	private static boolean touches(LivingEntity entity, Vec3 normal) {
+	/** A block within reach on the side opposite {@code normal}, between these heights above his feet (m). */
+	private static boolean touches(LivingEntity entity, Vec3 normal, double from, double to) {
 		double reach = dev.overcraft.lucio.LucioStats.WALL_REACH;
-		return !entity.level().noCollision(entity, entity.getBoundingBox().move(-normal.x * reach, 0, -normal.z * reach));
+		AABB box = entity.getBoundingBox();
+		AABB band = new AABB(box.minX, box.minY + from, box.minZ, box.maxX, Math.min(box.maxY, box.minY + to), box.maxZ);
+		return !entity.level().noCollision(entity, band.move(-normal.x * reach, 0, -normal.z * reach));
+	}
+
+	/** Any part of his body: kept for the climb and the old callers. */
+	private static boolean touches(LivingEntity entity, Vec3 normal) {
+		return touches(entity, normal, 0, entity.getBbHeight());
+	}
+
+	/** A wall straight ahead of him at his waist (an inside corner). */
+	private static boolean blockedAhead(LivingEntity entity, Vec3 heading) {
+		AABB box = entity.getBoundingBox();
+		AABB band = new AABB(box.minX, box.minY + 0.5, box.minZ, box.maxX, box.minY + 1.0, box.maxZ);
+		return !entity.level().noCollision(entity, band.move(heading.x * 0.1, 0, heading.z * 0.1));
+	}
+
+	/**
+	 * Past a wall's end: whether its last block has a face round the corner to ride on next (heading the new way, that
+	 * face behind him on the side the ride came from). Probed a step on along the new heading, so he wraps round.
+	 */
+	private static boolean cornerFace(LivingEntity entity, Vec3 faceNormal, Vec3 newHeading) {
+		double reach = dev.overcraft.lucio.LucioStats.WALL_REACH;
+		AABB box = entity.getBoundingBox();
+		AABB band = new AABB(box.minX, box.minY + 0.5, box.minZ, box.maxX, box.minY + 1.0, box.maxZ)
+			.move(newHeading.x * box.getXsize(), 0, newHeading.z * box.getXsize());
+		return entity.level().noCollision(entity, band)
+			&& !entity.level().noCollision(entity, band.move(-faceNormal.x * reach, 0, -faceNormal.z * reach));
 	}
 
 	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
@@ -417,8 +574,9 @@ public final class OwMovement {
 		if (ride == null || !ride.riding) {
 			return 0;
 		}
-		// the wall is on the side the normal points away from: right if (along x up) points into it
-		double cross = ride.along.z * ride.normal.x - ride.along.x * ride.normal.z;
+		// the wall is on the side the normal points away from: right if (heading x up) points into it
+		Vec3 heading = ride.heading();
+		double cross = heading.z * ride.normal.x - heading.x * ride.normal.z;
 		return cross > 0 ? 1 : -1;
 	}
 

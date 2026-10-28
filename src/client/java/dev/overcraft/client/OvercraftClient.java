@@ -174,6 +174,7 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
+		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
 		// jump held, or (Overwatch's "Automatically climb walls") just being in the air
 		OwMovement.jumpHeld = entity -> entity == mc.player && (HeroControls.get(HeroControls.Action.JUMP).isDown()
