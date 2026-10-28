@@ -13,6 +13,10 @@ import net.minecraft.world.phys.Vec3;
 public final class JetpackCatFx {
 	/** Whether the effect being made is an enemy hero's (drawn in the enemy red). */
 	private static boolean enemy;
+	/** Each Jetpack Cat towing or carrying someone: her entity id -> theirs, and whether she's an enemy's. */
+	private static final java.util.Map<Integer, int[]> TETHERS = new java.util.HashMap<>();
+	/** The rope's segments: enough for its sag to read as a curve. */
+	private static final int ROPE_SEGMENTS = 8;
 
 	private JetpackCatFx() {
 	}
@@ -30,6 +34,8 @@ public final class JetpackCatFx {
 				case "paw_heal", "paw_hit" -> flash(at, 0.35f);
 				case "paw_heal_centre", "paw_hit_centre" -> flash(at, 0.6f);
 				case "paw_hit_block" -> flash(at, e.variant() == 1 ? 0.4f : 0.25f);
+				case "lifeline_attach", "catnapper_tether" -> TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0});
+				case "tether_end" -> TETHERS.remove(e.variant());
 				default -> {
 					return false;
 				}
@@ -81,6 +87,52 @@ public final class JetpackCatFx {
 			return r == null ? null : r.shape(Fx.Shape.FLAT).normal(new Vec3(0, 1, 0)).life(0.3f).size(size, size).alpha(0.9f)
 				.fade(0.05f, 0.5f);
 		});
+	}
+
+	/**
+	 * Lifeline's rope and Catnapper's tether, each tick: from below her seat to the top of whoever she tows, sagging when
+	 * slack (her rope is 4 m). The game's tether (model 1BAD1, effect 72FA) isn't read yet: a thin warm line, ours.
+	 */
+	public static void tethers(net.minecraft.client.multiplayer.ClientLevel level) {
+		java.util.Iterator<java.util.Map.Entry<Integer, int[]>> it = TETHERS.entrySet().iterator();
+		while (it.hasNext()) {
+			java.util.Map.Entry<Integer, int[]> t = it.next();
+			net.minecraft.world.entity.Entity cat = level.getEntity(t.getKey());
+			net.minecraft.world.entity.Entity towed = level.getEntity(t.getValue()[0]);
+			if (cat == null || towed == null || !cat.isAlive() || !towed.isAlive()) {
+				it.remove();
+				continue;
+			}
+			enemy = t.getValue()[1] == 1;
+			try {
+				rope(t.getKey(), cat.position().add(0, 0.3, 0), towed.position().add(0, towed.getBbHeight(), 0));
+			} finally {
+				enemy = false;
+			}
+		}
+	}
+
+	private static void rope(int id, Vec3 from, Vec3 to) {
+		double length = from.distanceTo(to);
+		double sag = Math.max(0, dev.overcraft.jetpackcat.JetpackCatStats.LIFELINE_ROPE - length) * 0.5;
+		Vec3 last = from;
+		for (int i = 1; i <= ROPE_SEGMENTS; i++) {
+			double t = i / (double) ROPE_SEGMENTS;
+			Vec3 point = from.lerp(to, t).subtract(0, sag * 4 * t * (1 - t), 0);
+			Vec3 piece = point.subtract(last);
+			float len = (float) piece.length();
+			if (len > 1.0E-3f) {
+				Particle seg = Fx.attach("rope/" + id + "/" + i, last.add(piece.scale(0.5)), () -> {
+					Particle r = Fx.particle("glow", p(Palette.CAT_WARM));
+					return r == null ? null : r.shape(Fx.Shape.STREAK).life(0.15f).alpha(0.9f).fade(0.02f, 0.5f);
+				});
+				if (seg != null) {
+					// a camera-facing strip along the piece, 6 cm wide
+					seg.axis(piece).size(len * 1.15f, len * 1.15f).aspect(0.06f / len);
+				}
+			}
+			last = point;
+		}
 	}
 
 	private static void flash(Vec3 at, float size) {

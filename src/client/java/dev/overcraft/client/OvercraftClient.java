@@ -104,6 +104,7 @@ public class OvercraftClient implements ClientModInitializer {
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);
 				dev.overcraft.client.effect.JetpackCatFx.aim(client);
+				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);

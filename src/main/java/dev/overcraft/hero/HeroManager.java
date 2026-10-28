@@ -296,6 +296,7 @@ public final class HeroManager {
 	}
 
 	public static void tick(MinecraftServer server) {
+		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			HeroState state = STATES.get(player.getUUID());
 			if (state == null || state.hero == null) {

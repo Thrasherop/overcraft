@@ -231,7 +231,7 @@ public class HeroSelectScreen extends OwScreen {
 			try {
 				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
 				// preview turns toward a point: the box's own centre is straight ahead
-				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, MODEL_DROP,
+				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview),
 					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
@@ -445,6 +445,11 @@ public class HeroSelectScreen extends OwScreen {
 	 */
 	private static float framing(Hero hero) {
 		return hero == Hero.JETPACK_CAT ? 0.55f : 1;
+	}
+
+	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
+	private static float drop(Hero hero) {
+		return hero == Hero.JETPACK_CAT ? 0.45f : MODEL_DROP;
 	}
 
 	/** One ability of the kit: the key and the ability (its name, description and icon go by this id). */

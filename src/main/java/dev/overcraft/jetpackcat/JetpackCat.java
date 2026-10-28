@@ -94,7 +94,7 @@ public final class JetpackCat implements HeroKit {
 				endLifeline(player, s, false);
 			}
 			if (s.ultPhase != ULT_NONE) {
-				endUlt(s);
+				endUlt(player, s);
 			}
 			s.purrTicks = -1;
 		}
@@ -206,6 +206,25 @@ public final class JetpackCat implements HeroKit {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
 		Combat.animate(player, "reload");
+	}
+
+	/**
+	 * Allies she lets go of land unhurt (Overwatch has no falls; dropped from her rope a villager took fall damage:
+	 * found playing): until they touch ground, or this long (s, ours).
+	 */
+	private static final double LET_GO_GRACE = 10;
+	private static final java.util.Map<LivingEntity, Long> LET_GO = new java.util.WeakHashMap<>();
+
+	/** Every server tick (HeroManager): the let-go allies' falls don't count until they land. */
+	public static void tickLetGo(long now) {
+		LET_GO.entrySet().removeIf(e -> {
+			LivingEntity ally = e.getKey();
+			if (!ally.isAlive() || ally.onGround() || ally.isInWater() || now > e.getValue()) {
+				return true;
+			}
+			ally.resetFallDistance();
+			return false;
+		});
 	}
 
 	// ---- Claws Out (major perk) ----
@@ -331,11 +350,18 @@ public final class JetpackCat implements HeroKit {
 		}
 		Combat.animate(player, "lifeline");
 		transportShield(player);
-		Effects.play(player.level(), "lifeline_attach", ally.position(), Vec3.ZERO, ally, 0, player);
+		// the variant carries her id: every client draws the rope between the two (JetpackCatFx)
+		Effects.play(player.level(), "lifeline_attach", ally.position(), Vec3.ZERO, ally, player.getId(), player);
 	}
 
 	private static void endLifeline(ServerPlayer player, HeroState s, boolean cooldown) {
 		boolean was = s.lifelineTarget != null;
+		if (was) {
+			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+			if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
+				LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
+			}
+		}
 		s.lifelineTarget = null;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
@@ -463,7 +489,7 @@ public final class JetpackCat implements HeroKit {
 			case ULT_CARRY -> {
 				Entity found = s.carried == null ? null : player.level().getEntity(s.carried);
 				if (!(found instanceof LivingEntity enemy) || !enemy.isAlive() || --s.ultTimer <= 0) {
-					endUlt(s);
+					endUlt(player, s);
 					return;
 				}
 				// carried below her on the tether, its top 1 m under her feet (ours: held at her feet, a zombie hit her the
@@ -515,13 +541,16 @@ public final class JetpackCat implements HeroKit {
 			s.ultPhase = ULT_CARRY;
 			s.ultTimer = Ow.ticks(ULT_CARRY);
 			transportShield(player);
-			Effects.play(level, "catnapper_tether", nearest.position(), Vec3.ZERO, nearest, 0, player);
+			Effects.play(level, "catnapper_tether", nearest.position(), Vec3.ZERO, nearest, player.getId(), player);
 		} else {
-			endUlt(s);
+			endUlt(player, s);
 		}
 	}
 
-	private static void endUlt(HeroState s) {
+	private static void endUlt(ServerPlayer player, HeroState s) {
+		if (s.carried != null) {
+			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+		}
 		s.ultPhase = ULT_NONE;
 		s.carried = null;
 		s.ultActive = 0;
@@ -547,7 +576,7 @@ public final class JetpackCat implements HeroKit {
 				s.ultPhase = ULT_NONE;
 				Combat.animate(player, "ult_aim_end");
 			} else if (s.ultPhase == ULT_CARRY) {
-				endUlt(s);
+				endUlt(player, s);
 			} else if (s.ultPhase == ULT_NONE && s.ultCharge >= ULT_COST) {
 				s.ultPhase = ULT_AIM;
 				// the confirming click mustn't also be a shot: a moment before the left button counts
