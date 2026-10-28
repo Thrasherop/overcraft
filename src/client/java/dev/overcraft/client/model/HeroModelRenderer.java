@@ -195,7 +195,7 @@ public final class HeroModelRenderer {
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
-		if (hero == Hero.LUCIO && !previewing && entity instanceof net.minecraft.world.entity.player.Player player) {
+		if (hero == Hero.LUCIO && !previewing && entity.isAlive() && entity instanceof net.minecraft.world.entity.player.Player player) {
 			// his song on his skates (LucioFx): from his foot bones as posed, in the world
 			Integer song = player.getAttached(HeroManager.SONG);
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
