@@ -16,3 +16,9 @@
 4-4_00000000A9D3 = add_layer_2
 4-12_0000000126E7 = add_flash_heal   # 0xA60 (1.0 s)
 4-12_000000012700 = add_flash_heal_2
+# Its emote clips: each emote's EntityControl on the staff's slot 12A5 with action 4 plays one on it (emote data
+# "weaponClips"; E:\Overwatch Archive\research\mercy\emote_weapons.md). 14 bones: its 12 and two of hers (006A / 006B,
+# not in its skeleton), identity root. Taken from the emotes' own folders (Unlocks/Heroes/Mercy/Emote/...).
+0-36_000000001627 = emote_caduceus   # Caduceus 1626: 0-4.5 s, the wings turn 106 degrees
+0-32_000000004DC8 = emote_parasol   # Parasol 47BB: 0-4.833 s, the head opens
+0-44_00000000852E = emote_flurry   # Flurry 8530: 0-6.133 s

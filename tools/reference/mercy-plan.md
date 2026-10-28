@@ -76,6 +76,4 @@ emotes (20 extracted).
   crouch sinks her in flight).
 - A x1.15 launch under an unnamed condition (26EF.134); effect 5B82 on a launch above 0.75 momentum (not mapped).
 - The soul's lifetime (not in her graphs; ours 10 s).
-- The staff's own emote clips (1627 / 4DC8 / 852E) aren't exported: it's held in its idle pose in Caduceus, Parasol
-  and Flurry. emote_data.py should read the EntityControls raw (techniques/emotes/mercy_emotes.md).
 - Guardian Angel's target preview (the ready-state tracker, 6 a second) isn't drawn.

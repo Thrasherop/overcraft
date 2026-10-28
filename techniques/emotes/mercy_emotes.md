@@ -13,15 +13,20 @@ her hub: [heroes/mercy](../heroes/mercy.md) · the hero before her: [lucio_emote
   identifier at 0x10 and the action at 0x20. What TankLib calls the "action" byte is the slot id's low byte. Lúcio's
   "action 204" was his slot 12CC (0xCC), which is why filtering on 204 worked for him and found nothing of hers. Read the
   chunk raw (`research\mercy\scripts\emote_weapons\ecec.py`).
-- Applied with `tools/emote_weapon_slots.py`: `"stow"` holds the staff's windows, `"stowBlaster"` the blaster's;
+- `tools/emote_data.py` reads the controls raw (`raw_controls`) and sorts them by slot (`WEAPON_SLOTS`): `"stow"`
+  holds the staff's windows, `"stowBlaster"` the blaster's, `"weaponClips"` the clips a weapon plays;
   `HeroWeapon.inEmote` uses the one for the weapon she has out.
 - The check that backs "action 1 = put away": inside the windows a held staff would pass through her head and arms
   (up to 1147 vertices); at every window edge her hand is back on it exactly. Heroic 3A7F's window is the one the
   contacts don't support (the grip stays): the data's window is kept.
+- **The staff's own clips** (action 4): exported into `mercy_staff.glb` from the emotes' folders (added to
+  `tools/clipmaps/mercy_staff.txt`; the model re-exported from a working copy of its folder with the three clips copied
+  into its Animations, since owm_survey.py takes clips from the model's own folder), named in the emote data's
+  `"weaponClips"` by the clip map, and played by `HeroWeapon` over their windows in place of the held loop. Seen in
+  Caduceus: the staff's head wings swing out flat at 2.5 s and fold back by 3.7 s.
+- **Checked against Lúcio:** regenerating his emote data with the raw reader (slot 12CC) gave exactly his old stow
+  windows, so "204" was his slot all along and nothing of his changed (2026-10-28).
 
 ## Open
-- The staff's own emote clips (1627 / 4DC8 / 852E) aren't exported yet: in Caduceus, Parasol and Flurry the staff is
-  held in its idle pose (Parasol's head doesn't open).
-- `tools/emote_data.py` should read the controls raw itself (by slot), replacing STOW = 204 and the patch step.
 - Listen Up and Salty: the 0.3 s clip 178AD hides the staff, but when 178AD plays (an additive layer's Sequence in
   tree 058F) isn't decoded.
