@@ -8,7 +8,8 @@
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
 		"EntityMixin",
-		"FoodDataMixin"
+		"FoodDataMixin",
+		"ZombieVillagerInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1

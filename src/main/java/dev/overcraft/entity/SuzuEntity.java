@@ -113,6 +113,16 @@ public class SuzuEntity extends OwProjectile {
 			// they glow white for a moment, seen by everyone near
 			Effects.play(level, "suzu_cleansed", entity.position(), Vec3.ZERO, entity, 0, getOwner());
 		}
+		// a zombie villager is cleansed of its infection (the owner, 2026-10-27): Minecraft's own cure, the golden apple's
+		// (its sound, the villager's thanks and the Zombie Doctor advancement for the thrower), done at once as Suzu's
+		// cleanse is, not over the apple's 3 to 5 minutes
+		for (net.minecraft.world.entity.monster.zombie.ZombieVillager infected : level.getEntitiesOfClass(
+			net.minecraft.world.entity.monster.zombie.ZombieVillager.class, new AABB(at, at).inflate(r))) {
+			if (infected.isAlive() && !infected.isConverting() && touches(infected, at, r) && inSight(level, at, infected)) {
+				((dev.overcraft.mixin.ZombieVillagerInvoker) infected).overcraft$startConverting(owner.getUUID(), 1);
+				Effects.play(level, "suzu_cleansed", infected.position(), Vec3.ZERO, infected, 0, getOwner());
+			}
+		}
 		if (owner instanceof Player player) {
 			Combat.credit(player, healedTotal);
 			Combat.addFireForHealing(player, healedTotal);
