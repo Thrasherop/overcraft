@@ -1,0 +1,1769 @@
+# The heroes' emote sounds: one sound event per 02C sound of an emote clip's animation effect (08F), built the way its
+# Wwise Play event builds it, and one event per voice stimulus (078) of the clips. Same format as kiriko.txt /
+# lucio.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build 154088). The client plays each event at
+# its component's start time while the emote runs (the clip components are in each rule's comment).
+# Read 2026-10-27 offline (Overwatch and Battle.net closed), research: E:\Overwatch Archive\research\emote-sounds\
+# (scripts\: emote_fx.py the clip components, ww.py + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this
+# file; sounds.json what the client needs: loops, lengths, audience). Files extracted with DataTool's own WEM->OGG
+# (extract_banks.py) into ExtraSounds\<Hero>\Emotes\. Nothing here has been listened to: each rule says what the
+# data shows (H read), what is inferred (M) and what is a guess (L).
+# Gains: Wwise volume + make-up gain (the middle of random ranges) summed from each file up through its containers
+# and actor-mixers, plus its output bus chain (Init bank 1E818). Unlike the ability maps, ONE offset per hero is added
+# to every emote rule (not one per rule), so the sounds of an emote keep the game's balance with each other; it brings
+# the loudest single layer to -1 dBFS. Voice lines are copied as extracted (no gain). Pitch: cents (+ the middle of a
+# random range) as a speed factor (*). Low/high-pass filters, random pitch / volume per play, fades and Seek (random
+# start points) are not reproduced; sounds.json lists the loops and cuts for the client.
+# Audience (M): every emote 02C has STUSound audience 2 (3D: the hero's third-person copy, also what the emoting
+# player hears, the camera being third-person). Wwise state group 8E (030 008E, id 3941853002) picks copies: its state
+# 00FC (4014561839) unmutes 2D copies (+90 dB) and mutes their 3D twins (-90 dB) (Listen Up), and leaves Orion Dance's
+# music audible while state 00F5 (411699078) and five others mute it (-99 dB). Read as: 00FC = the emoting player's
+# own view, 00F5 = the other players in a match (00F5 also lifts the footstep mixer +16 dB and the cloth mixer +7 dB,
+# as Overwatch makes others' footsteps loud). So 'own' rules take state 00FC's values, all others 00F5's. Which
+# context each state is, is not in the data read (Wwise states are global, set by the game): M.
+
+# ===== Kiriko: 63 emote sounds (rules), 15 voice stimuli (plain events). Offset +7.0 dB (the loudest layer: 80ED).
+# 80E9 footstep, foot hardpoint 001C (Rainy Stroll). Clip components (clip id @start s [+window s]): rainy_stroll
+# 11FE2@0.267 hp 001C.
+# Play event (02C 80E9, bank 1E499): a: random of 5 (no repeat within 2), 0.33-0.47 s, 1ch, @0.020 s, LPF/HPF 0/12
+# (not reproduced); b: random of 4, 0.30-0.42 s, 1ch, +300 cents, LPF/HPF 0/12 (not reproduced).
+# Play 1055160658 fades in over 35 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.0, b -10.5; the rule adds the hero's offset. Length 0.49
+# s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s80e9 = kiriko.emote.s80e9.a@0.02:0 + kiriko.emote.s80e9.b*1.189:-3.5
+# 80ED footstep, foot hardpoint 001B (Rainy Stroll). Clip components (clip id @start s [+window s]): rainy_stroll
+# 11FE2@0.633 hp 001B.
+# Play event (02C 80ED, bank 1E499): a: random of 7, 0.42-0.72 s, 1ch, +260 cents, LPF/HPF 0/12 (not reproduced); b:
+# random of 5 (no repeat within 2), 0.48-0.55 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 929872935 fades in over 60 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5, b -6.0; the rule adds the hero's offset. Length 0.62
+# s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s80ed = kiriko.emote.s80ed.a*1.162:+0.5 + kiriko.emote.s80ed.b:+1
+# 80EE footstep, foot hardpoint 001C (Rainy Stroll). Clip components (clip id @start s [+window s]): rainy_stroll
+# 11FE2@1.167 hp 001C.
+# Play event (02C 80EE, bank 1E499): a: random of 6, 0.26-0.44 s, 1ch, +65 cents, LPF/HPF 30/12 (not reproduced); b:
+# random of 4 (no repeat within 2), 0.30-0.48 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 299633965 fades in over 25 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5, b -8.0; the rule adds the hero's offset. Length 0.48
+# s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s80ee = kiriko.emote.s80ee.a*1.038:-17.5 + kiriko.emote.s80ee.b:-1
+# 80F3 footstep, foot hardpoint 001B (Rainy Stroll, both clips). Clip components (clip id @start s [+window s]):
+# rainy_stroll 11FE2@2.400 hp 001B; rainy_stroll 11FE3@0.133 hp 001C; rainy_stroll 11FE3@0.667 hp 001B.
+# Play event (02C 80F3, bank 1E499): a: random of 16, 0.23-0.57 s, 1ch, +230 cents, LPF/HPF 0/12 (not reproduced); b:
+# random of 4 (no repeat within 2), 0.36-0.47 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 1025943334 fades in over 20 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.0, b -8.5; the rule adds the hero's offset. Length 0.50
+# s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s80f3 = kiriko.emote.s80f3.a*1.142:-11 + kiriko.emote.s80f3.b:-1.5
+# 93F4 quick bright cloth snap (Kneeling, Donut Break). Clip components (clip id @start s [+window s]): donut_break
+# F327@5.331 hp 0002; kneeling C22A@0.263 hp 0002.
+# Play event (02C 93F4, bank 1E5E0): a: random of 9, 0.17-0.44 s, 1ch, +30 cents, LPF/HPF 20/0 (not reproduced).
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -29.5; the rule adds the hero's offset. Length 0.43 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s93f4 = kiriko.emote.s93f4.a*1.017:-22.5
+# 9426 the ofuda swirl's rising gust (Whirlwind). Clip components (clip id @start s [+window s]): whirlwind
+# C216@0.016+3.849 hp 00A4.
+# Play event (02C 9426, bank 1E4D2): a: one file, 3.42 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -2.5; the rule adds the hero's offset. Length 3.42 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s9426 = kiriko.emote.s9426.a:+4.5
+# 9427 low rumble under the swirl (Whirlwind). Clip components (clip id @start s [+window s]): whirlwind
+# C2E6@0.891+2.976 hp 00A4.
+# Play event (02C 9427, bank 1E4D2): a: random of 4, 1.46-2.68 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 2.68 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9427 = kiriko.emote.s9427.a:-3.5
+# 9428 rising whoosh, from the swirl model's own clip (Whirlwind). Clip components (clip id @start s [+window s]):
+# whirlwind C217@0.512+3.353 hp 0076.
+# Play event (02C 9428, bank 1E4D2): a: one file, 3.52 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 3.52 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9428 = kiriko.emote.s9428.a:+0.5
+# 9429 papers fluttering in the swirl, a bright hiss (Whirlwind). Clip components (clip id @start s [+window s]):
+# whirlwind C2E7@1.115+2.752 hp 0076.
+# Play event (02C 9429, bank 1E4D2): a: random of 6, 3.08-3.34 s, 1ch.
+# Its Stop event fades 0.30 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 3.34 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9429 = kiriko.emote.s9429.a:+0.5
+# 942A papers fluttering as the swirl starts (Whirlwind). Clip components (clip id @start s [+window s]): whirlwind
+# C2E7@0.003+1.311 hp 0076.
+# Play event (02C 942A, bank 1E4D2): a: random of 3, 1.19-2.08 s, 1ch, some files differ by +0/-350/+0 (dB / cents /
+# s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 2.08 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s942a = kiriko.emote.s942a.a:-3.5
+# 9436 papers settling as the swirl ends (Whirlwind). Clip components (clip id @start s [+window s]): whirlwind
+# C2E7@3.467 hp 0076.
+# Play event (02C 9436, bank 1E4D2): a: random of 3, 1.18-1.62 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5; the rule adds the hero's offset. Length 1.62 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9436 = kiriko.emote.s9436.a:+2.5
+# 9437 low wind swirl (Whirlwind). Clip components (clip id @start s [+window s]): whirlwind C2E6@0.003+3.860 hp 00A4.
+# Play event (02C 9437, bank 1E4D2): a: random of 2, 3.32-3.36 s, 1ch, +50 cents, @0.100 s, LPF/HPF 0/24 (not
+# reproduced).
+# Play 168561445 fades in over 150 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +2.5; the rule adds the hero's offset. Length 3.37 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9437 = kiriko.emote.s9437.a*1.029@0.1:+9.5
+# 944B clothes rustle, the body-movement foley shared by 7 emotes (Cheer, Heroic, Kneeling, Laugh, Killer Beam, Donut
+# Break, Blooming). Clip components (clip id @start s [+window s]): blooming 15C36@0.000 hp 00A4; cheer C20A@0.067 hp
+# 0003; donut_break F327@5.301 hp 0003; heroic C5AE@0.320 hp 0003; killer_beam 121C0@6.267 hp 0003; kneeling
+# C167@0.000 hp 0003; kneeling C22A@0.233 hp 0003; laugh C467@0.000 hp 00A4.
+# Play event (02C 944B, bank 1E5E0): a: random of 6, 0.58-0.80 s, 1ch, +130 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.0; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s944b = kiriko.emote.s944b.a*1.078:+3
+# 946B light cloth swish (Kneeling). Clip components (clip id @start s [+window s]): kneeling C167@1.500 hp 0002.
+# Play event (02C 946B, bank 1E5E0): a: random of 3, 0.32-0.40 s, 1ch, +38 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 0.40 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s946b = kiriko.emote.s946b.a*1.022:-17.5
+# 946F foot stomp, hardpoint 0018 (Challenge). Clip components (clip id @start s [+window s]): challenge C086@1.500 hp
+# 0018.
+# Play event (02C 946F, bank 1E4D2): a: one file, 0.49 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 0.49 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s946f = kiriko.emote.s946f.a:-1.5
+# 9470 low whoosh (Challenge). Clip components (clip id @start s [+window s]): challenge C086@0.131+1.794 hp 00A4.
+# Play event (02C 9470, bank 1E4D2): a: one file, 1.33 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 1.33 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9470 = kiriko.emote.s9470.a:-4.5
+# 9471 low whoosh (Challenge, Heroic). Clip components (clip id @start s [+window s]): challenge C086@1.997+1.021 hp
+# 00A4; heroic C5AE@0.000+1.298 hp 00A4.
+# Play event (02C 9471, bank 1E4D2): a: one file, 1.21 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5; the rule adds the hero's offset. Length 1.21 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9471 = kiriko.emote.s9471.a:-10.5
+# 9472 low whoosh with a thump (Challenge, Heroic, Killer Beam). Clip components (clip id @start s [+window s]):
+# challenge C086@3.398+1.297 hp 00A4; heroic C5AE@3.244+0.956 hp 00A4; killer_beam 121C0@5.867+0.966 hp 00A4.
+# Play event (02C 9472, bank 1E4D2): a: one file, 0.76 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5; the rule adds the hero's offset. Length 0.76 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9472 = kiriko.emote.s9472.a:-10.5
+# 9473 low whoosh (Challenge). Clip components (clip id @start s [+window s]): challenge C086@5.967+1.122 hp 00A4.
+# Play event (02C 9473, bank 1E4D2): a: one file, 1.01 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5; the rule adds the hero's offset. Length 1.01 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9473 = kiriko.emote.s9473.a:-6.5
+# 9474 short low thump (Challenge). Clip components (clip id @start s [+window s]): challenge C086@4.733 hp 00A4.
+# Play event (02C 9474, bank 1E4D2): a: one file, 0.48 s, 1ch, +180 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 0.43 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9474 = kiriko.emote.s9474.a*1.110:-0.5
+# 9475 cloth swish, hardpoint 0002 (Challenge). Clip components (clip id @start s [+window s]): challenge
+# C086@0.128+1.339 hp 0002.
+# Play event (02C 9475, bank 1E4D2): a: one file, 1.30 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5; the rule adds the hero's offset. Length 1.30 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9475 = kiriko.emote.s9475.a:-5.5
+# 9476 cloth swish, hardpoint 0002 (Challenge). Clip components (clip id @start s [+window s]): challenge
+# C086@2.179+0.961 hp 0002.
+# Play event (02C 9476, bank 1E4D2): a: one file, 0.75 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9476 = kiriko.emote.s9476.a:-5.5
+# 9477 cloth swish, hardpoint 0002 (Challenge). Clip components (clip id @start s [+window s]): challenge
+# C086@5.992+1.101 hp 0002.
+# Play event (02C 9477, bank 1E4D2): a: one file, 1.21 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5; the rule adds the hero's offset. Length 1.21 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9477 = kiriko.emote.s9477.a:-6.5
+# 9488 kneeling down: a pitched-up whoosh, a thump 0.5 s later and a cloth swish (the files of 9470, 9472 and 9476).
+# Clip components (clip id @start s [+window s]): kneeling C167@0.020+0.695 hp 00A4.
+# Play event (02C 9488, bank 1E4D2): a: one file, 1.33 s, 2ch, +810 cents, LPF/HPF 0/28 (not reproduced); b: one file,
+# 0.76 s, 2ch, @0.500 s; c: one file, 0.75 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5, b -14.5, c -3.5; the rule adds the hero's offset.
+# Length 1.26 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.s9488 = kiriko.emote.s9488.a*1.597:-7.5 + kiriko.emote.s9488.b@0.5:-7.5 + kiriko.emote.s9488.c:+3.5
+# 96EA airy shimmering loop near the end of the swirl (Whirlwind). Clip components (clip id @start s [+window s]):
+# whirlwind C216@2.700+1.167 hp 00A4.
+# Play event (02C 96EA, bank 1E4D2): a: one file, 5.23 s, 1ch, +230 cents, LOOPS (Wwise loop count 0 = endless),
+# LPF/HPF 0/26 (not reproduced).
+# Seek 101219965 to a random ms 0.0-3000.0. Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -33.5; the rule adds the hero's offset. Length 4.58 s, loop
+# 4.578 s. Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s96ea = kiriko.emote.s96ea.a*1.142:-26.5
+# 9939 body thump on the beat (Headbanging). Clip components (clip id @start s [+window s]): headbanging C854@2.967 hp
+# 0003; headbanging C855@0.388 hp 0003.
+# Play event (02C 9939, bank 1E4D2): a: random of 6 (no repeat within 3), 0.49-0.61 s, 1ch, some files differ by
+# -1/+200/+0 +0/-150/+0 +0/+150/+0 +0/+350/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer),
+# LPF/HPF 20/25 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -30.0; the rule adds the hero's offset. Length 0.61 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9939 = kiriko.emote.s9939.a:-23
+# 993A hair / cloth whip as she headbangs (Headbanging). Clip components (clip id @start s [+window s]): headbanging
+# C854@0.772 hp 0003.
+# Play event (02C 993A, bank 1E4D2): a: random of 9, 0.34-0.48 s, 1ch, +212 cents, LPF/HPF 13/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.0; the rule adds the hero's offset. Length 0.42 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s993a = kiriko.emote.s993a.a*1.130:-15
+# 9940 light tap on the beat (Headbanging). Clip components (clip id @start s [+window s]): headbanging C854@0.719 hp
+# 00A4; headbanging C855@0.419 hp 00A4.
+# Play event (02C 9940, bank 1E4D2): a: random of 3 (no repeat within 2), 0.20-0.33 s, 1ch, +350 cents, LPF/HPF 20/35
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.0; the rule adds the hero's offset. Length 0.27 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.s9940 = kiriko.emote.s9940.a*1.224:-7
+# ACE6 soft hand movement while she signs (Sign: Thanks). Clip components (clip id @start s [+window s]): sign_thanks
+# E399@0.867+2.533 hp 00A4.
+# Play event (02C ACE6, bank 1E4D2): a: one file, 2.17 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -1.5; the rule adds the hero's offset. Length 2.17 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sace6 = kiriko.emote.sace6.a:+5.5
+# B039 the fox's happy whine, from the fox's own clip (Fox Cuddles). Clip components (clip id @start s [+window s]):
+# fox_cuddles E921@3.067+0.667 hp 00A4.
+# Play event (02C B039, bank 1E4D2): a: random of 4 (no repeat within 2), 1.21-2.02 s, 2ch, some files differ by
+# -3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5; the rule adds the hero's offset. Length 2.02 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sb039 = kiriko.emote.sb039.a:-14.5
+# B03A the fox nuzzling, a soft rustle (Fox Cuddles). Clip components (clip id @start s [+window s]): fox_cuddles
+# E921@0.733+1.100 hp 00A4.
+# Play event (02C B03A, bank 1E4D2): a: one file, 0.85 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 0.85 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sb03a = kiriko.emote.sb03a.a:-4.5
+# B03B the fox's paw step, hardpoint 001C (Fox Cuddles). Clip components (clip id @start s [+window s]): fox_cuddles
+# E921@0.133 hp 001C.
+# Play event (02C B03B, bank 1E4D2): a: one file, 0.23 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 0.23 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sb03b = kiriko.emote.sb03b.a:-4.5
+# B03C the fox bounding in, a thump (Fox Cuddles). Clip components (clip id @start s [+window s]): fox_cuddles
+# E921@0.000+3.267 hp 00A4.
+# Play event (02C B03C, bank 1E4D2): a: one file, 1.44 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 1.44 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sb03c = kiriko.emote.sb03c.a:-0.5
+# BD88 playful magic flourish (Isn't This Fun?). Clip components (clip id @start s [+window s]): isn_t_this_fun
+# F69F@0.000+3.400 hp 00A4.
+# Play event (02C BD88, bank 1E4D2): a: one file, 2.62 s, 1ch, @0.250 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 2.87 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sbd88 = kiriko.emote.sbd88.a@0.25:+1.5
+# C2CA the umbrella opening, as it appears in her hand (Rainy Stroll). Clip components (clip id @start s [+window s]):
+# rainy_stroll 11FE2@0.467 hp 0003.
+# Play event (02C C2CA, bank 1E4D2): a: one file, 0.18 s, 1ch; b: one file, 0.40 s, 1ch, @0.110 s; c: one file, 1.40
+# s, 1ch, +318 cents, LPF/HPF 0/60 (not reproduced).
+# Play 761879878 fades in over 510 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -15.5, c -23.0; the rule adds the hero's offset.
+# Length 1.17 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sc2ca = kiriko.emote.sc2ca.a:-8.5 + kiriko.emote.sc2ca.b@0.11:-8.5 + kiriko.emote.sc2ca.c*1.202:-16
+# C2E6 umbrella twirl swish (Rainy Stroll). Clip components (clip id @start s [+window s]): rainy_stroll 11FE2@1.400
+# hp 00A4.
+# Play event (02C C2E6, bank 1E4D2): a: random of 2, 0.59-0.67 s, 1ch, -150 cents, LPF/HPF 0/40 (not reproduced); b:
+# one file, 1.40 s, 1ch, @0.150 s, LPF/HPF 0/60 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -23.0; the rule adds the hero's offset. Length
+# 1.55 s. Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sc2e6 = kiriko.emote.sc2e6.a*0.917:-6.5 + kiriko.emote.sc2e6.b@0.15:-16
+# C89E the beam zap (Killer Beam). Clip components (clip id @start s [+window s]): killer_beam 121C0@4.333 hp 00A4.
+# Play event (02C C89E, bank 1E4D2): a: random of 1, 2.51 s, 2ch, +25 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 2.48 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sc89e = kiriko.emote.sc89e.a*1.015:-2.5
+# D926 a bite and chewing, at the mouth hardpoint 0444 (Donut Break, Sweet Treat). Clip components (clip id @start s
+# [+window s]): donut_break F327@0.901+3.462 hp 0444; sweet_treat 1823C@1.667 hp 0444.
+# Play event (02C D926, bank 1E4D2): a: one file, 1.96 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 1.96 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sd926 = kiriko.emote.sd926.a:+1.5
+# DA44 the mic hitting the floor, when it falls at 0.93 s (Mic Drop). Clip components (clip id @start s [+window s]):
+# mic_drop 15C8B@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sda44 = kiriko.emote.sda44.a:-11.5
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop). Clip components (clip id @start s [+window s]): mic_drop
+# 15C8B@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sda4f = kiriko.emote.sda4f.a*1.169@0.01:+6.5
+# DB1D the flowers blooming, a soft swell (Blooming). Clip components (clip id @start s [+window s]): blooming
+# 15C36@0.067+4.967 hp 00A4.
+# Play event (02C DB1D, bank 1E4D2): a: one file, 4.61 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +2.5; the rule adds the hero's offset. Length 4.61 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sdb1d = kiriko.emote.sdb1d.a:+9.5
+# DB9E a push and a short roll of the board (Skateboard). Clip components (clip id @start s [+window s]): skateboard
+# 14D0A@0.033 hp 001C.
+# Play event (02C DB9E, bank 1E79B): a: random of 5, 0.40-0.58 s, 1ch, -45 cents, LPF/HPF 32/0 (not reproduced); b:
+# one file, 4.58 s, 1ch, @0.050 s.
+# Seek 856328497 to a random ms 0.0-3000.0; Stop 856328497 at 0.125 s with a 500 ms fade. Audience field 2 (3D), range
+# 15 m.
+# The built file runs 4.63 s (Wwise stops or trims part of it): the client should stop it at 0.625 s.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.0, b -15.5; the rule adds the hero's offset. Length
+# 0.62 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sdb9e = kiriko.emote.sdb9e.a*0.974:-15 + kiriko.emote.sdb9e.b@0.05:-8.5
+# DB9F slurping the bubble tea (Skateboard: 7.5 s into the ride, the sip). Clip components (clip id @start s [+window
+# s]): skateboard 14D07@7.500+1.500 hp 0013; skateboard 14D09@0.000 hp 0013.
+# Play event (02C DB9F, bank 1E4D2): a: random of 3, 1.51-1.60 s, 1ch.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5; the rule adds the hero's offset. Length 1.60 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sdb9f = kiriko.emote.sdb9f.a:-12.5
+# DBB2 the board rolling (loop, Skateboard). Clip components (clip id @start s [+window s]): skateboard
+# 1AB92@0.000+0.033 hp 00A4.
+# Play event (02C DBB2, bank 1E79B): a: one file, 4.58 s, 1ch, LOOPS (Wwise loop count 0 = endless).
+# Play 1006031153 fades in over 200 ms; Seek 1006031153 to a random fraction 0.0-1.0. Its Stop event fades 0.15 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5; the rule adds the hero's offset. Length 4.58 s, loop
+# 4.576 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sdbb2 = kiriko.emote.sdbb2.a:-15.5
+# DBB3 a push and a short roll of the board (Skateboard). Clip components (clip id @start s [+window s]): skateboard
+# 14DBF@0.333 hp 001C; skateboard 15F36@0.033 hp 001C.
+# Play event (02C DBB3, bank 1E79B): a: random of 5, 0.40-0.58 s, 1ch, -45 cents, LPF/HPF 42/0 (not reproduced); b:
+# one file, 4.58 s, 1ch, -125 cents, @0.075 s.
+# Play 886085850 fades in over 50 ms; Seek 886085850 to a random fraction 0.0-0.0; Seek 712011523 to a random ms
+# 0.0-3000.0; Stop 712011523 at 0.150 s with a 300 ms fade. Audience field 2 (3D), range 15 m.
+# The built file runs 4.99 s (Wwise stops or trims part of it): the client should stop it at 0.592 s.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.0, b -18.5; the rule adds the hero's offset. Length
+# 0.59 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sdbb3 = kiriko.emote.sdbb3.a*0.974:-15 + kiriko.emote.sdbb3.b*0.930@0.075:-11.5
+# DBB4 a push of the board (Skateboard). Clip components (clip id @start s [+window s]): skateboard 14DBF@0.033 hp
+# 001C.
+# Play event (02C DBB4, bank 1E79B): a: random of 5, 0.40-0.58 s, 1ch, -45 cents, LPF/HPF 32/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.0; the rule adds the hero's offset. Length 0.59 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sdbb4 = kiriko.emote.sdbb4.a*0.974:-15
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up). Clip components (clip id
+# @start s [+window s]): listen_up 184F0@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.se548 = kiriko.emote.se548.a:-2.5
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up). Clip components (clip id @start s
+# [+window s]): listen_up 184F0@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.se549 = kiriko.emote.se549.a*0.891:-12.5 + kiriko.emote.se549.b:-12.5
+# E54A the emote's music as everyone else hears it from her: 3D, looped from a random point (Listen Up). Clip
+# components (clip id @start s [+window s]): listen_up 184F0@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.se54a = kiriko.emote.se54a.a:-17.5
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up). Clip components (clip id @start s [+window
+# s]): listen_up 184F0@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.se54b = kiriko.emote.se54b.a:-16.5
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty). Clip components (clip id @start s [+window s]):
+# salty 18C84@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@kiriko.emote.seea6 = kiriko.emote.seea6.a:+2.5 + kiriko.emote.seea6.b@1.45:+2.5 + kiriko.emote.seea6.c@0.03:-11.5 + kiriko.emote.seea6.d*2.378@0.15:+2.5
+# F68C sparkly crinkles at 3.2 s and 4.0 s (Sweet Treat). Clip components (clip id @start s [+window s]): sweet_treat
+# 1823C@0.000+5.433 hp 00A4.
+# Play event (02C F68C, bank 1E4D2): a: one file, 2.06 s, 2ch, @3.200 s; b: one file, 1.04 s, 2ch, @4.030 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5, b -2.5; the rule adds the hero's offset. Length 5.26
+# s. Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sf68c = kiriko.emote.sf68c.a@3.2:+6.5 + kiriko.emote.sf68c.b@4.03:+4.5
+# F695 the pod arriving: its chirps and beeps over its hover hum (Pod Pet). Clip components (clip id @start s [+window
+# s]): pod_pet 18A05@0.000+4.400 hp 00A4.
+# Play event (02C F695, bank 1E4D2): a: one file, 0.39 s, 1ch, @1.500 s; b: one file, 0.69 s, 1ch, @0.330 s; c: one
+# file, 0.97 s, 1ch, @0.450 s; d: one file, 1.52 s, 1ch, @3.000 s; e: one file, 0.55 s, 1ch, @0.730 s; f: one file,
+# 1.34 s, 1ch, @3.100 s; g: one file, 0.31 s, 1ch, @4.200 s; h: one file, 0.48 s, 1ch, @1.000 s, LPF/HPF 5/0 (not
+# reproduced); i: one file, 0.45 s, 1ch, @1.600 s, LPF/HPF 25/0 (not reproduced); j: one file, 0.60 s, 1ch, @2.250 s,
+# LPF/HPF 25/0 (not reproduced); k: one file, 0.21 s, 1ch, @3.100 s, LPF/HPF 25/0 (not reproduced); l: one file, 10.74
+# s, 1ch, @0.600 s; m: one file, 10.74 s, 1ch, @3.700 s; n: one file, 0.91 s, 1ch, +300 cents, @3.000 s, LPF/HPF 0/27
+# (not reproduced); o: one file, 0.45 s, 1ch, @0.900 s, LPF/HPF 0/27 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +0.5, b -0.5, c -0.5, d -1.5, e -3.5, f -0.5, g -2.5, h
+# +2.5, i +1.5, j -5.5, k -5.5, l -5.5, m -5.5, n -22.5, o -28.5; the rule adds the hero's offset. Length 14.44 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sf695 = kiriko.emote.sf695.a@1.5:+7.5 + kiriko.emote.sf695.b@0.33:+6.5 + kiriko.emote.sf695.c@0.45:+6.5 + kiriko.emote.sf695.d@3:+5.5 + kiriko.emote.sf695.e@0.73:+3.5 + kiriko.emote.sf695.f@3.1:+6.5 + kiriko.emote.sf695.g@4.2:+4.5 + kiriko.emote.sf695.h@1:+9.5 + kiriko.emote.sf695.i@1.6:+8.5 + kiriko.emote.sf695.j@2.25:+1.5 + kiriko.emote.sf695.k@3.1:+1.5 + kiriko.emote.sf695.l@0.6:+1.5 + kiriko.emote.sf695.m@3.7:+1.5 + kiriko.emote.sf695.n*1.189@3:-15.5 + kiriko.emote.sf695.o@0.9:-21.5
+# F696 the pod's hover hum (loop, Pod Pet). Clip components (clip id @start s [+window s]): pod_pet 18A06@0.000+8.633
+# hp 00A4.
+# Play event (02C F696, bank 1E4D2): a: one file, 10.74 s, 1ch, LOOPS (Wwise loop count 0 = endless).
+# Play 164091940 fades in over 100 ms; Seek 164091940 to a random fraction 0.0-1.0. Its Stop event fades 0.50 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 10.74 s, loop
+# 10.743 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sf696 = kiriko.emote.sf696.a:-1.5
+# FB31 the cat purring (loop, Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty
+# 1A711@0.000+5.433 hp 00A4.
+# Play event (02C FB31, bank 1E4D2): a: one file, 14.36 s, 1ch, LOOPS (Wwise loop count 0 = endless), LPF/HPF 0/12
+# (not reproduced).
+# Play 176919552 fades in over 300 ms. Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5; the rule adds the hero's offset. Length 14.36 s,
+# loop 14.356 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sfb31 = kiriko.emote.sfb31.a:-10.5
+# FB33 soft rustle of the cat settling (Friendly Kitty). Clip components (clip id @start s [+window s]):
+# friendly_kitty 1A710@0.267 hp 00A4; friendly_kitty 1A711@0.933 hp 00A4.
+# Play event (02C FB33, bank 1E4D2): a: random of 3 (no repeat within 2), 0.52-0.56 s, 1ch, -500 cents, LPF/HPF 33/50
+# (not reproduced).
+# Play 868361702 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sfb33 = kiriko.emote.sfb33.a*0.749:-0.5
+# FB34 the cat's paw step (Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty 1A710@0.467
+# hp 00A4.
+# Play event (02C FB34, bank 1E4D2): a: random of 3 (no repeat within 2), 0.13-0.14 s, 1ch, +150 cents, LPF/HPF 30/65
+# (not reproduced).
+# Play 834093208 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +2.0; the rule adds the hero's offset. Length 0.13 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sfb34 = kiriko.emote.sfb34.a*1.091:+9
+# FB35 the cat's paw step (Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty 1A710@0.267
+# hp 00A4.
+# Play event (02C FB35, bank 1E4D2): a: random of 3 (no repeat within 2), 0.13-0.14 s, 1ch, +850 cents, @0.050 s,
+# LPF/HPF 30/65 (not reproduced).
+# Play 130986529 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -3.0; the rule adds the hero's offset. Length 0.13 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sfb35 = kiriko.emote.sfb35.a*1.634@0.05:+4
+# FB36 the cat's low mew (Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty 1A710@2.433
+# hp 00A4.
+# Play event (02C FB36, bank 1E4D2): a: one file, 1.38 s, 1ch, -300 cents, LPF/HPF 30/40 (not reproduced).
+# Play 600448743 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 1.64 s.
+# Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sfb36 = kiriko.emote.sfb36.a*0.841:-8.5
+# FEC7 the dance music (loop, Orion Dance). Clip components (clip id @start s [+window s]): orion_dance
+# 1AA46@0.000+5.100 hp 00A4.
+# Play event (02C FEC7, bank 1E79B): a: one file, 5.14 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.40 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.0; the rule adds the hero's offset. Length 5.14 s, loop
+# 5.137 s. Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sfec7 = kiriko.emote.sfec7.a:-8
+# FEC8 the music's closing hit (Orion Dance). Clip components (clip id @start s [+window s]): orion_dance 1AA47@0.033
+# hp 00A4.
+# Play event (02C FEC8, bank 1E79B): a: one file, 0.38 s, 2ch.
+# SetState group 2072919291 = 3194910319. Audience field 2 (3D), range 15 m. Heard by: own (group 8E state, see the
+# header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.0; the rule adds the hero's offset. Length 0.38 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sfec8 = kiriko.emote.sfec8.a:-6
+# FEE2 the cat's chirp (Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty 1A710@0.267 hp
+# 00A4.
+# Play event (02C FEE2, bank 1E4D2): a: one file, 0.44 s, 1ch, @0.200 s, LPF/HPF 0/35 (not reproduced); b: one file,
+# 0.35 s, 1ch, +300 cents, LPF/HPF 0/35 (not reproduced); c: one file, 0.53 s, 1ch, @0.260 s, LPF/HPF 0/85 (not
+# reproduced).
+# Play 87719490 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -35.5, b -24.5, c -27.5; the rule adds the hero's offset.
+# Length 0.79 s. Containers / delays / gains H (read); what it is L.
+@kiriko.emote.sfee2 = kiriko.emote.sfee2.a@0.2:-28.5 + kiriko.emote.sfee2.b*1.189:-17.5 + kiriko.emote.sfee2.c@0.26:-20.5
+# FEE3 the cat meowing as it walks up (Friendly Kitty). Clip components (clip id @start s [+window s]): friendly_kitty
+# 1A710@0.133 hp 00A4.
+# Play event (02C FEE3, bank 1E4D2): a: random of 4 (no repeat within 3), 0.58-0.72 s, 1ch.
+# Play 430802260 fades in over 100 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5; the rule adds the hero's offset. Length 0.72 s.
+# Containers / delays / gains H (read); what it is M.
+@kiriko.emote.sfee3 = kiriko.emote.sfee3.a:-5.5
+
+# ----- Kiriko's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+kiriko.emote.s80e9.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002A608F.03F.ogg
+kiriko.emote.s80e9.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002A6098.03F.ogg
+kiriko.emote.s80e9.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002A609C.03F.ogg
+kiriko.emote.s80e9.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002A63A2.03F.ogg
+kiriko.emote.s80e9.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002A6165.03F.ogg
+kiriko.emote.s80e9.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002AE819.03F.ogg
+kiriko.emote.s80e9.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002AE817.03F.ogg
+kiriko.emote.s80e9.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002AE7CD.03F.ogg
+kiriko.emote.s80e9.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080E9.02C/0000002AE818.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE76F.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE828.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE82B.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE786.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE778.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE825.03F.ogg
+kiriko.emote.s80ed.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002AE82F.03F.ogg
+kiriko.emote.s80ed.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002A6386.03F.ogg
+kiriko.emote.s80ed.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002A60C5.03F.ogg
+kiriko.emote.s80ed.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002A63B7.03F.ogg
+kiriko.emote.s80ed.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002A63E4.03F.ogg
+kiriko.emote.s80ed.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080ED.02C/0000002A6128.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE785.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE81F.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE780.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE76D.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE824.03F.ogg
+kiriko.emote.s80ee.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002AE812.03F.ogg
+kiriko.emote.s80ee.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002A6415.03F.ogg
+kiriko.emote.s80ee.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002A6388.03F.ogg
+kiriko.emote.s80ee.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002A6394.03F.ogg
+kiriko.emote.s80ee.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080EE.02C/0000002A6154.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE83B.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE83C.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE788.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE81E.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE833.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE813.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE80F.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE832.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE845.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE783.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE823.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE82E.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE846.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE80C.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE81D.03F.ogg
+kiriko.emote.s80f3.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002AE837.03F.ogg
+kiriko.emote.s80f3.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002A60A5.03F.ogg
+kiriko.emote.s80f3.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002A6280.03F.ogg
+kiriko.emote.s80f3.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002A615B.03F.ogg
+kiriko.emote.s80f3.b = ExtraSounds/Kiriko/Emotes/Sounds/0000000080F3.02C/0000002A6147.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19E2.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19C0.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B186F.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B199A.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19BD.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B1866.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19C8.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19DF.03F.ogg
+kiriko.emote.s93f4.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000093F4.02C/0000002B19FF.03F.ogg
+kiriko.emote.s9426.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009426.02C/0000002AF495.03F.ogg
+kiriko.emote.s9427.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009427.02C/0000002AF49D.03F.ogg
+kiriko.emote.s9427.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009427.02C/0000002AF48F.03F.ogg
+kiriko.emote.s9427.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009427.02C/0000002AF4AF.03F.ogg
+kiriko.emote.s9427.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009427.02C/0000002AF4AE.03F.ogg
+kiriko.emote.s9428.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009428.02C/0000002AF497.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF4A2.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF499.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF48B.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF4BF.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF4BA.03F.ogg
+kiriko.emote.s9429.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009429.02C/0000002AF4A6.03F.ogg
+kiriko.emote.s942a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000942A.02C/0000002AF48D.03F.ogg
+kiriko.emote.s942a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000942A.02C/0000002AF49E.03F.ogg
+kiriko.emote.s942a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000942A.02C/0000002AF494.03F.ogg
+kiriko.emote.s9436.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009436.02C/0000002AF4B2.03F.ogg
+kiriko.emote.s9436.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009436.02C/0000002AF4A0.03F.ogg
+kiriko.emote.s9436.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009436.02C/0000002AF4AC.03F.ogg
+kiriko.emote.s9437.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009437.02C/0000002AF362.03F.ogg
+kiriko.emote.s9437.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009437.02C/0000002AF360.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B19A1.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B199E.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B19D3.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B187D.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B191F.03F.ogg
+kiriko.emote.s944b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000944B.02C/0000002B19D9.03F.ogg
+kiriko.emote.s946b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000946B.02C/0000002B18A0.03F.ogg
+kiriko.emote.s946b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000946B.02C/0000002B187A.03F.ogg
+kiriko.emote.s946b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000946B.02C/0000002B186A.03F.ogg
+kiriko.emote.s946f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000946F.02C/0000002AF48C.03F.ogg
+kiriko.emote.s9470.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009470.02C/0000002AF49A.03F.ogg
+kiriko.emote.s9471.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009471.02C/0000002AF481.03F.ogg
+kiriko.emote.s9472.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009472.02C/0000002AF35F.03F.ogg
+kiriko.emote.s9473.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009473.02C/0000002AF35E.03F.ogg
+kiriko.emote.s9474.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009474.02C/0000002AF4A9.03F.ogg
+kiriko.emote.s9475.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009475.02C/0000002AF49F.03F.ogg
+kiriko.emote.s9476.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009476.02C/0000002AF4B0.03F.ogg
+kiriko.emote.s9477.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009477.02C/0000002AF4A5.03F.ogg
+kiriko.emote.s9488.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009488.02C/0000002AF49A.03F.ogg
+kiriko.emote.s9488.b = ExtraSounds/Kiriko/Emotes/Sounds/000000009488.02C/0000002AF35F.03F.ogg
+kiriko.emote.s9488.c = ExtraSounds/Kiriko/Emotes/Sounds/000000009488.02C/0000002AF4B0.03F.ogg
+kiriko.emote.s96ea.a = ExtraSounds/Kiriko/Emotes/Sounds/0000000096EA.02C/0000002AF4B7.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF4B3.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF487.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF49B.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF384.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF4B1.03F.ogg
+kiriko.emote.s9939.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009939.02C/0000002AF496.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF403.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF498.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF4B4.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF489.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF4A7.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF4DF.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF488.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF402.03F.ogg
+kiriko.emote.s993a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000993A.02C/0000002AF4A8.03F.ogg
+kiriko.emote.s9940.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009940.02C/0000002AF492.03F.ogg
+kiriko.emote.s9940.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009940.02C/0000002AF4BB.03F.ogg
+kiriko.emote.s9940.a = ExtraSounds/Kiriko/Emotes/Sounds/000000009940.02C/0000002AF484.03F.ogg
+kiriko.emote.sace6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000ACE6.02C/0000002AF4BC.03F.ogg
+kiriko.emote.sb039.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B039.02C/0000002AF4B6.03F.ogg
+kiriko.emote.sb039.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B039.02C/0000002AF491.03F.ogg
+kiriko.emote.sb039.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B039.02C/0000002AF482.03F.ogg
+kiriko.emote.sb039.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B039.02C/0000002AF49C.03F.ogg
+kiriko.emote.sb03a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B03A.02C/0000002AF4EC.03F.ogg
+kiriko.emote.sb03b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B03B.02C/0000002AF35D.03F.ogg
+kiriko.emote.sb03c.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000B03C.02C/0000002AF48E.03F.ogg
+kiriko.emote.sbd88.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000BD88.02C/0000002AF4B8.03F.ogg
+kiriko.emote.sc2ca.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4A4.03F.ogg
+kiriko.emote.sc2ca.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4B9.03F.ogg
+kiriko.emote.sc2ca.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4E0.03F.ogg
+kiriko.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A66C0.03F.ogg
+kiriko.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A76EC.03F.ogg
+kiriko.emote.sc2e6.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002AF4E0.03F.ogg
+kiriko.emote.sc89e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C89E.02C/0000002BEF18.03F.ogg
+kiriko.emote.sd926.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000D926.02C/0000002BEF17.03F.ogg
+kiriko.emote.sda44.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+kiriko.emote.sda44.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+kiriko.emote.sda44.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+kiriko.emote.sda44.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+kiriko.emote.sda4f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+kiriko.emote.sdb1d.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB1D.02C/0000003097E8.03F.ogg
+kiriko.emote.sdb9e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BC2.03F.ogg
+kiriko.emote.sdb9e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BC0.03F.ogg
+kiriko.emote.sdb9e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BC5.03F.ogg
+kiriko.emote.sdb9e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BC4.03F.ogg
+kiriko.emote.sdb9e.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BD3.03F.ogg
+kiriko.emote.sdb9e.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9E.02C/000000318BC1.03F.ogg
+kiriko.emote.sdb9f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9F.02C/000000318BBD.03F.ogg
+kiriko.emote.sdb9f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9F.02C/000000318BBE.03F.ogg
+kiriko.emote.sdb9f.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DB9F.02C/000000318BBC.03F.ogg
+kiriko.emote.sdbb2.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB2.02C/000000318E24.03F.ogg
+kiriko.emote.sdbb3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BC2.03F.ogg
+kiriko.emote.sdbb3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BC0.03F.ogg
+kiriko.emote.sdbb3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BC5.03F.ogg
+kiriko.emote.sdbb3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BC4.03F.ogg
+kiriko.emote.sdbb3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BD3.03F.ogg
+kiriko.emote.sdbb3.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB3.02C/000000318BC1.03F.ogg
+kiriko.emote.sdbb4.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB4.02C/000000318BC2.03F.ogg
+kiriko.emote.sdbb4.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB4.02C/000000318BC0.03F.ogg
+kiriko.emote.sdbb4.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB4.02C/000000318BC5.03F.ogg
+kiriko.emote.sdbb4.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB4.02C/000000318BC4.03F.ogg
+kiriko.emote.sdbb4.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB4.02C/000000318BD3.03F.ogg
+kiriko.emote.se548.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+kiriko.emote.se549.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+kiriko.emote.se549.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+kiriko.emote.se549.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+kiriko.emote.se549.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+kiriko.emote.se54a.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+kiriko.emote.se54b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+kiriko.emote.se54b.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+kiriko.emote.seea6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+kiriko.emote.seea6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+kiriko.emote.seea6.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+kiriko.emote.seea6.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+kiriko.emote.seea6.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+kiriko.emote.seea6.d = ExtraSounds/Kiriko/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+kiriko.emote.sf68c.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000F68C.02C/00000034034E.03F.ogg
+kiriko.emote.sf68c.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000F68C.02C/00000034034F.03F.ogg
+kiriko.emote.sf695.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/000000340490.03F.ogg
+kiriko.emote.sf695.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/000000340491.03F.ogg
+kiriko.emote.sf695.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048C.03F.ogg
+kiriko.emote.sf695.d = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/000000340489.03F.ogg
+kiriko.emote.sf695.e = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048F.03F.ogg
+kiriko.emote.sf695.f = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048A.03F.ogg
+kiriko.emote.sf695.g = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048D.03F.ogg
+kiriko.emote.sf695.h = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048B.03F.ogg
+kiriko.emote.sf695.i = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/000000340487.03F.ogg
+kiriko.emote.sf695.j = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/000000340488.03F.ogg
+kiriko.emote.sf695.k = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/00000034048E.03F.ogg
+kiriko.emote.sf695.l = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/0000003404FB.03F.ogg
+kiriko.emote.sf695.m = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/0000003404FB.03F.ogg
+kiriko.emote.sf695.n = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/0000003409CA.03F.ogg
+kiriko.emote.sf695.o = ExtraSounds/Kiriko/Emotes/Sounds/00000000F695.02C/0000003409C9.03F.ogg
+kiriko.emote.sf696.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000F696.02C/0000003404E4.03F.ogg
+kiriko.emote.sfb31.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB31.02C/00000034E351.03F.ogg
+kiriko.emote.sfb33.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB33.02C/00000034E354.03F.ogg
+kiriko.emote.sfb33.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB33.02C/00000034E356.03F.ogg
+kiriko.emote.sfb33.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB33.02C/00000034E355.03F.ogg
+kiriko.emote.sfb34.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB34.02C/00000034E359.03F.ogg
+kiriko.emote.sfb34.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB34.02C/00000034E358.03F.ogg
+kiriko.emote.sfb34.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB34.02C/00000034E35A.03F.ogg
+kiriko.emote.sfb35.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB35.02C/00000034E359.03F.ogg
+kiriko.emote.sfb35.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB35.02C/00000034E358.03F.ogg
+kiriko.emote.sfb35.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB35.02C/00000034E35A.03F.ogg
+kiriko.emote.sfb36.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FB36.02C/00000034E35B.03F.ogg
+kiriko.emote.sfec7.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEC7.02C/0000003511DA.03F.ogg
+kiriko.emote.sfec8.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEC8.02C/0000003511DB.03F.ogg
+kiriko.emote.sfee2.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE2.02C/00000035105D.03F.ogg
+kiriko.emote.sfee2.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE2.02C/00000035105C.03F.ogg
+kiriko.emote.sfee2.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE2.02C/00000035105E.03F.ogg
+kiriko.emote.sfee3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE3.02C/00000034E34A.03F.ogg
+kiriko.emote.sfee3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE3.02C/00000034E34E.03F.ogg
+kiriko.emote.sfee3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE3.02C/00000034E34D.03F.ogg
+kiriko.emote.sfee3.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEE3.02C/00000034E34F.03F.ogg
+
+# ----- Kiriko's emote voice lines: one plain event per voice stimulus (078), every line of it (English and Japanese
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 1934's lone line has weight 0.5 (dtw 0.5) in the voice research: maybe a 50% chance to speak (L).
+# 19F4 (gasps): 1 line(s) 0.41 s; clips pod_pet 18A05@0.567.
+kiriko.emote.v19f4 = HeroVoice/Kiriko/Unknown/19F4.078/00000006BD51.0B2-(gasps).ogg | w=1
+# 19F5 (giggles): 1 line(s) 0.56 s; clips pod_pet 18A05@2.067.
+kiriko.emote.v19f5 = HeroVoice/Kiriko/Unknown/19F5.078/00000006BD52.0B2-(giggles).ogg | w=1
+# 5C3 (cheer): 1 line(s) 1.25 s; clips cheer C20A@3.167.
+kiriko.emote.v5c3 = HeroVoice/Kiriko/Unknown/5C3.078/0000000627CA.0B2-(cheer).ogg | w=1
+# 6A1 (laughs): 1 line(s) 3.85 s; clips laugh C467@0.373, stimulus volume -4 dB.
+kiriko.emote.v6a1 = HeroVoice/Kiriko/Laugh/000000062782.0B2-(laughs).ogg | w=1
+# 186B (happy humming): 4 line(s) 1.93 s, 2.24 s, 2.37 s, 2.25 s; clips rainy_stroll 11FE3@1.700.
+kiriko.emote.v186b = HeroVoice/Kiriko/Unknown/186B.078/0000000698A7.0B2-(happy humming).ogg | w=1
+kiriko.emote.v186b = HeroVoice/Kiriko/Unknown/186B.078/0000000698A8.0B2-(happy humming).ogg | w=1
+kiriko.emote.v186b = HeroVoice/Kiriko/Unknown/186B.078/0000000698A9.0B2-(happy humming).ogg | w=1
+kiriko.emote.v186b = HeroVoice/Kiriko/Unknown/186B.078/0000000698AA.0B2-(happy humming).ogg | w=1
+# 18CD Killer Beam! ...or whatever: 2 line(s) 4.39 s, 4.32 s; clips killer_beam 121C0@2.533.
+kiriko.emote.v18cd = HeroVoice/Kiriko/Unknown/18CD.078/000000069D50.0B2-(Japanese)_ Killer Beam! ...or whatever.ogg | w=1
+kiriko.emote.v18cd = HeroVoice/Kiriko/Unknown/18CD.078/000000069D51.0B2-Killer Beam! ...or whatever.ogg | w=1
+# 1934 (mmm): 1 line(s) 1.36 s; clips donut_break F327@1.300.
+kiriko.emote.v1934 = HeroVoice/Kiriko/Unknown/1934.078/00000006A27D.0B2-(mmm).ogg | w=0.5
+# 1935 (sigh): 2 line(s) 1.29 s, 1.41 s; clips donut_break F327@2.832.
+kiriko.emote.v1935 = HeroVoice/Kiriko/Unknown/1935.078/00000006A27B.0B2-(sigh).ogg | w=1
+kiriko.emote.v1935 = HeroVoice/Kiriko/Unknown/1935.078/00000006A27C.0B2-(sigh).ogg | w=1
+# 131C Yeaaah!: 1 line(s) 1.16 s; clips headbanging C854@2.633.
+kiriko.emote.v131c = HeroVoice/Kiriko/Unknown/131C.078/000000065711.0B2-Yeaaah!.ogg | w=1
+# 1345 (laugh): 1 line(s) 0.58 s; clips headbanging C854@0.531.
+kiriko.emote.v1345 = HeroVoice/Kiriko/Unknown/1345.078/00000006588C.0B2-(laugh).ogg | w=1
+# 132D (beat): 8 line(s) 0.47 s, 0.47 s, 0.45 s, 0.45 s, 0.44 s, 0.43 s, 0.45 s, 0.45 s; clips headbanging C855@0.368.
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/000000065876.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/000000065877.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/000000065878.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/000000065879.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/00000006588D.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/00000006588E.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/00000006588F.0B2-(beat).ogg | w=1
+kiriko.emote.v132d = HeroVoice/Kiriko/Unknown/132D.078/000000065890.0B2-(beat).ogg | w=1
+# 15EA (beat) / (exhaling): 4 line(s) 0.98 s, 0.99 s, 0.99 s, 1.01 s; clips choreography E0BE@3.567.
+kiriko.emote.v15ea = HeroVoice/Kiriko/Unknown/15EA.078/00000006796F.0B2-(beat).ogg | w=1
+kiriko.emote.v15ea = HeroVoice/Kiriko/Unknown/15EA.078/000000067970.0B2-(beat).ogg | w=1
+kiriko.emote.v15ea = HeroVoice/Kiriko/Unknown/15EA.078/000000067971.0B2-(beat).ogg | w=1
+kiriko.emote.v15ea = HeroVoice/Kiriko/Unknown/15EA.078/000000067AFC.0B2-(exhaling).ogg | w=1
+# 15E8 (flex): 2 line(s) 0.48 s, 0.46 s; clips choreography E0BE@2.433.
+kiriko.emote.v15e8 = HeroVoice/Kiriko/Unknown/15E8.078/00000006797A.0B2-(flex).ogg | w=1
+kiriko.emote.v15e8 = HeroVoice/Kiriko/Unknown/15E8.078/00000006797C.0B2-(flex).ogg | w=1
+# 15EB (giggles): 3 line(s) 0.82 s, 0.84 s, 0.82 s; clips choreography E0BE@4.733.
+kiriko.emote.v15eb = HeroVoice/Kiriko/Unknown/15EB.078/00000006797D.0B2-(giggles).ogg | w=1
+kiriko.emote.v15eb = HeroVoice/Kiriko/Unknown/15EB.078/00000006797E.0B2-(giggles).ogg | w=1
+kiriko.emote.v15eb = HeroVoice/Kiriko/Unknown/15EB.078/00000006797F.0B2-(giggles).ogg | w=1
+# 1683 (Japanese) Thank you: 1 line(s) 0.86 s; clips sign_thanks E399@0.937.
+kiriko.emote.v1683 = HeroVoice/Kiriko/Unknown/1683.078/000000067DC4.0B2-(Japanese) Thank you.ogg | w=1
+
+# ----- Kiriko's subtitles
+$kiriko.emote.s80e9 = Kiriko: footstep
+$kiriko.emote.s80ed = Kiriko: footstep
+$kiriko.emote.s80ee = Kiriko: footstep
+$kiriko.emote.s80f3 = Kiriko: footstep
+$kiriko.emote.s93f4 = Kiriko: clothes rustle
+$kiriko.emote.s9426 = Kiriko: whirlwind gust
+$kiriko.emote.s9427 = Kiriko: whirlwind rumble
+$kiriko.emote.s9428 = Kiriko: whirlwind whoosh
+$kiriko.emote.s9429 = Kiriko: papers flutter
+$kiriko.emote.s942a = Kiriko: papers flutter
+$kiriko.emote.s9436 = Kiriko: papers settle
+$kiriko.emote.s9437 = Kiriko: wind swirls
+$kiriko.emote.s944b = Kiriko: clothes rustle
+$kiriko.emote.s946b = Kiriko: clothes rustle
+$kiriko.emote.s946f = Kiriko: stomp
+$kiriko.emote.s9470 = Kiriko: whoosh
+$kiriko.emote.s9471 = Kiriko: whoosh
+$kiriko.emote.s9472 = Kiriko: whoosh
+$kiriko.emote.s9473 = Kiriko: whoosh
+$kiriko.emote.s9474 = Kiriko: thump
+$kiriko.emote.s9475 = Kiriko: clothes swish
+$kiriko.emote.s9476 = Kiriko: clothes swish
+$kiriko.emote.s9477 = Kiriko: clothes swish
+$kiriko.emote.s9488 = Kiriko: kneels
+$kiriko.emote.s96ea = Kiriko: shimmer
+$kiriko.emote.s9939 = Kiriko: thump
+$kiriko.emote.s993a = Kiriko: whoosh
+$kiriko.emote.s9940 = Kiriko: tap
+$kiriko.emote.sace6 = Kiriko: hand movement
+$kiriko.emote.sb039 = Kiriko: fox whines
+$kiriko.emote.sb03a = Kiriko: fox nuzzles
+$kiriko.emote.sb03b = Kiriko: fox steps
+$kiriko.emote.sb03c = Kiriko: fox bounds in
+$kiriko.emote.sbd88 = Kiriko: magic flourish
+$kiriko.emote.sc2ca = Kiriko: umbrella opens
+$kiriko.emote.sc2e6 = Kiriko: umbrella swish
+$kiriko.emote.sc89e = Kiriko: beam zaps
+$kiriko.emote.sd926 = Kiriko: eating
+$kiriko.emote.sda44 = Kiriko: mic drops
+$kiriko.emote.sda4f = Kiriko: mic feedback
+$kiriko.emote.sdb1d = Kiriko: flowers bloom
+$kiriko.emote.sdb9e = Kiriko: skateboard rolls
+$kiriko.emote.sdb9f = Kiriko: slurps tea
+$kiriko.emote.sdbb2 = Kiriko: skateboard rolls
+$kiriko.emote.sdbb3 = Kiriko: skateboard rolls
+$kiriko.emote.sdbb4 = Kiriko: skateboard
+$kiriko.emote.se548 = Kiriko: music plays
+$kiriko.emote.se549 = Kiriko: music plays
+$kiriko.emote.se54a = Kiriko: music plays
+$kiriko.emote.se54b = Kiriko: music plays
+$kiriko.emote.seea6 = Kiriko: salt shakes
+$kiriko.emote.sf68c = Kiriko: sparkles
+$kiriko.emote.sf695 = Kiriko: pod chirps
+$kiriko.emote.sf696 = Kiriko: pod hums
+$kiriko.emote.sfb31 = Kiriko: cat purrs
+$kiriko.emote.sfb33 = Kiriko: cat settles
+$kiriko.emote.sfb34 = Kiriko: cat steps
+$kiriko.emote.sfb35 = Kiriko: cat steps
+$kiriko.emote.sfb36 = Kiriko: cat mews
+$kiriko.emote.sfec7 = Kiriko: music plays
+$kiriko.emote.sfec8 = Kiriko: music ends
+$kiriko.emote.sfee2 = Kiriko: cat chirps
+$kiriko.emote.sfee3 = Kiriko: cat meows
+$kiriko.emote.v19f4 = Kiriko: (gasps)
+$kiriko.emote.v19f5 = Kiriko: (giggles)
+$kiriko.emote.v5c3 = Kiriko: (cheer)
+$kiriko.emote.v6a1 = Kiriko: (laughs)
+$kiriko.emote.v186b = Kiriko: (happy humming)
+$kiriko.emote.v18cd = Kiriko: Killer Beam! ...or whatever
+$kiriko.emote.v1934 = Kiriko: (mmm)
+$kiriko.emote.v1935 = Kiriko: (sigh)
+$kiriko.emote.v131c = Kiriko: Yeaaah!
+$kiriko.emote.v1345 = Kiriko: (laugh)
+$kiriko.emote.v132d = Kiriko: (beat)
+$kiriko.emote.v15ea = Kiriko: (beat) / (exhaling)
+$kiriko.emote.v15e8 = Kiriko: (flex)
+$kiriko.emote.v15eb = Kiriko: (giggles)
+$kiriko.emote.v1683 = Kiriko: (Japanese) Thank you
+
+# ===== Lúcio: 54 emote sounds (rules), 5 voice stimuli (plain events). Offset +4.0 dB (the loudest layer: 3895).
+# 268C skate wheel scuff (Smooth). Clip components (clip id @start s [+window s]): smooth 4222@4.800 hp 00A4.
+# Play event (02C 268C, bank 1E49F): a: random of 3, 0.48-0.56 s, 1ch, +380 cents; b: random of 3, 0.15-0.33 s, 1ch,
+# @0.050 s.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5, b -27.0; the rule adds the hero's offset. Length
+# 0.45 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s268c = lucio.emote.s268c.a*1.245:-21.5 + lucio.emote.s268c.b@0.05:-23
+# 282D skate stop / slide, a bright scrape (Smooth). Clip components (clip id @start s [+window s]): smooth 4222@5.867
+# hp 00A4.
+# Play event (02C 282D, bank 1E49F): a: random of 7 (no repeat within 2), 0.68-0.74 s, 2ch, +50 cents.
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 0.72 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s282d = lucio.emote.s282d.a*1.029:-3.5
+# 2EFA the emote's music, heard from him: 3D (In the Groove). Clip components (clip id @start s [+window s]):
+# in_the_groove 3087@0.000+4.633 hp 00A4.
+# Play event (02C 2EFA, bank 1E749): a: random of 3, 4.45-5.88 s, 2ch; b: random of 3, 0.51-0.65 s, 2ch, -150 cents,
+# some files differ by -1.5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: random of
+# 2, 1.83-4.24 s, 2ch, LPF/HPF 35/0 (not reproduced).
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -31.5, b -19.5, c -31.5; the rule adds the hero's offset.
+# Length 5.88 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.s2efa = lucio.emote.s2efa.a:-27.5 + lucio.emote.s2efa.b*0.917:-15.5 + lucio.emote.s2efa.c:-27.5
+# 2EFB the emote's music, his own copy: 2D, range 0 (In the Groove). Clip components (clip id @start s [+window s]):
+# in_the_groove 3087@0.000+4.633 hp 00A4.
+# Play event (02C 2EFB, bank 1E749): a: random of 3 (no repeat within 2), 4.45-5.88 s, 2ch; b: random of 3 (no repeat
+# within 2), 0.51-0.65 s, 2ch, -150 cents, some files differ by -1.5/+0/+0 (dB / cents / s; not reproduced: one gain,
+# pitch and delay per layer); c: random of 2, 1.83-4.24 s, 2ch, LPF/HPF 35/0 (not reproduced).
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range none. Heard by: own (M: range 0 and a 2D (no
+# spatialization) layer, the files of 2EFA; no state mutes 2EFA for him, so he hears both).
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -10.5, c -22.5; the rule adds the hero's offset.
+# Length 5.88 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.s2efb = lucio.emote.s2efb.a:-18.5 + lucio.emote.s2efb.b*0.917:-6.5 + lucio.emote.s2efb.c:-18.5
+# 372E low landing thump (Heroic, In the Groove, Capoeira, Nah!). Clip components (clip id @start s [+window s]):
+# capoeira 39EE@2.600 hp 0003; heroic 3A88@0.533 hp 00A4; in_the_groove 3087@4.600 hp 00A4; nah 39EF@2.000 hp 00A4.
+# Play event (02C 372E, bank 1E749): a: random of 2, 0.32-0.34 s, 1ch, +100 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.0; the rule adds the hero's offset. Length 0.32 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s372e = lucio.emote.s372e.a*1.059:-14
+# 3731 a quick pitched-up swish and a tick (Nah!). Clip components (clip id @start s [+window s]): nah 39EF@0.000 hp
+# 00A4.
+# Play event (02C 3731, bank 1E749): a: one file, 1.19 s, 1ch, +480 cents; b: one file, 0.14 s, 1ch, +100 cents,
+# @0.310 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.0, b -18.0; the rule adds the hero's offset. Length
+# 0.90 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3731 = lucio.emote.s3731.a*1.320:-15 + lucio.emote.s3731.b*1.059@0.31:-14
+# 3732 short bright tonal blip, pitched far up (Nah!, Smooth). Clip components (clip id @start s [+window s]): nah
+# 39EF@1.300 hp 00A4; smooth 4222@4.733 hp 00A4.
+# Play event (02C 3732, bank 1E749): a: random of 4, 0.25-0.38 s, 1ch, +960 cents, @0.050 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -31.0; the rule adds the hero's offset. Length 0.27 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3732 = lucio.emote.s3732.a*1.741@0.05:-27
+# 37A4 tiny tick of a skate wheel / foot (Capoeira, Smooth). Clip components (clip id @start s [+window s]): capoeira
+# 39EE@0.233 hp 0002; capoeira 39EE@0.733 hp 0003; smooth 4222@5.233 hp 00A4.
+# Play event (02C 37A4, bank 1E749): a: random of 6 (no repeat within 2), 0.07-0.14 s, 1ch, -300 cents, @0.025 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 0.19 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s37a4 = lucio.emote.s37a4.a*0.841@0.025:-11.5
+# 3895 the ball bouncing off his foot (Juggle). Clip components (clip id @start s [+window s]): juggle 3DA1@1.233 hp
+# 01B6.
+# Play event (02C 3895, bank 1E41D): a: random of 5, 0.33-0.52 s, 2ch, +130 cents, @0.050 s; b: random of 5 (no repeat
+# within 3), 0.12-0.20 s, 1ch, -205 cents, LPF/HPF 0/25 (not reproduced); c: one file, 0.47 s, 1ch, -30 cents.
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -40.5, b -2.5, c -20.0; the rule adds the hero's offset.
+# Length 0.54 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.s3895 = lucio.emote.s3895.a*1.078@0.05:-36.5 + lucio.emote.s3895.b*0.888:+1.5 + lucio.emote.s3895.c*0.983:-16
+# 38AD the big kick of the ball, a low boom (Juggle). Clip components (clip id @start s [+window s]): juggle
+# 3DA1@3.833 hp 01B6.
+# Play event (02C 38AD, bank 1E41D): a: random of 6 (no repeat within 3), 0.58-1.08 s, 2ch, +25 cents, @0.018 s; b:
+# random of 4, 0.34-0.42 s, 2ch, -300 cents, @0.070 s; c: random of 4 (no repeat within 2), 0.16-0.25 s, 2ch, +1135
+# cents, @0.003 s.
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0, b -43.5, c -13.0; the rule adds the hero's offset.
+# Length 1.08 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.s38ad = lucio.emote.s38ad.a*1.015@0.018:-7 + lucio.emote.s38ad.b*0.841@0.07:-39.5 + lucio.emote.s38ad.c*1.926@0.003:-9
+# 38AE a light tap of the ball (Juggle). Clip components (clip id @start s [+window s]): juggle 3DA1@0.567 hp 01B6.
+# Play event (02C 38AE, bank 1E41D): a: random of 5 (no repeat within 2), 0.12-0.20 s, 1ch, -530 cents, @0.100 s,
+# LPF/HPF 32/0 (not reproduced).
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0; the rule adds the hero's offset. Length 0.37 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.s38ae = lucio.emote.s38ae.a*0.736@0.1:-2
+# 3ACE knee slaps and skate ticks while he laughs (Knee Slapper). Clip components (clip id @start s [+window s]):
+# knee_slapper 3CA2@0.000+2.633 hp 00A4.
+# Play event (02C 3ACE, bank 1E749): a: random of 6 (no repeat within 2), 0.07-0.14 s, 1ch, -300 cents, @0.421 s; b:
+# random of 6 (no repeat within 2), 0.07-0.14 s, 1ch, -300 cents, @1.114 s; c: random of 6 (no repeat within 2),
+# 0.07-0.14 s, 1ch, -300 cents, @1.576 s; d: random of 5, 0.59-1.04 s, 1ch, +220 cents; e: random of 5, 0.59-1.04 s,
+# 1ch, +220 cents, @1.650 s; f: random of 4, 0.41-0.55 s, 1ch, @0.050 s; g: random of 4, 0.41-0.55 s, 1ch, @1.700 s;
+# h: random of 2, 0.32-0.34 s, 1ch, +100 cents, @0.400 s.
+# Play 517643692 fades in over 750 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -10.5, c -10.5, d -17.5, e -17.5, f -20.5, g
+# -20.5, h -17.0; the rule adds the hero's offset. Length 2.56 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3ace = lucio.emote.s3ace.a*0.841@0.421:-6.5 + lucio.emote.s3ace.b*0.841@1.114:-6.5 + lucio.emote.s3ace.c*0.841@1.576:-6.5 + lucio.emote.s3ace.d*1.136:-13.5 + lucio.emote.s3ace.e*1.136@1.65:-13.5 + lucio.emote.s3ace.f@0.05:-16.5 + lucio.emote.s3ace.g@1.7:-16.5 + lucio.emote.s3ace.h*1.059@0.4:-13
+# 3ACF sitting down to chill: a sequence of skate, cloth and seat sounds (Chilling). Clip components (clip id @start s
+# [+window s]): chilling 3C08@0.000+1.567 hp 00A4.
+# Play event (02C 3ACF, bank 1E749): a: random of 6 (no repeat within 2), 0.07-0.14 s, 1ch, -300 cents, @0.355 s; b:
+# random of 6 (no repeat within 2), 0.12-0.23 s, 2ch, +60 cents, @1.000 s, LPF/HPF 32/0 (not reproduced); c: random of
+# 6 (no repeat within 2), 0.12-0.23 s, 2ch, +60 cents, @1.200 s, LPF/HPF 32/0 (not reproduced); d: random of 4,
+# 0.25-0.38 s, 1ch, +548 cents, @0.230 s; e: random of 4, 0.34-0.42 s, 2ch, +630 cents, @1.000 s, LPF/HPF 33/0 (not
+# reproduced); f: random of 4, 0.34-0.42 s, 2ch, +630 cents, @1.200 s, LPF/HPF 33/0 (not reproduced); g: random of 3,
+# 0.15-0.33 s, 1ch, @0.050 s; h: random of 3, 0.48-0.56 s, 1ch, +380 cents; i: random of 3 (no repeat within 2),
+# 0.50-0.59 s, 2ch, -430 cents, @0.200 s; j: random of 2 (no repeat within 3), 0.67-0.68 s, 1ch, @0.972 s; k: random
+# of 2, 0.32-0.34 s, 1ch, +100 cents, @1.122 s; l: random of 2, 0.35-0.37 s, 2ch, +75 cents, @1.000 s; m: random of 2,
+# 0.35-0.37 s, 2ch, +75 cents, @1.200 s; n: one file, 1.19 s, 1ch, +480 cents, @0.196 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0, b -25.0, c -25.0, d -21.0, e -32.5, f -32.5, g -20.0,
+# h -18.5, i -30.0, j -11.5, k -17.0, l -42.5, m -42.5, n -14.0; the rule adds the hero's offset. Length 1.66 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3acf = lucio.emote.s3acf.a*0.841@0.355:-5 + lucio.emote.s3acf.b*1.035@1:-21 + lucio.emote.s3acf.c*1.035@1.2:-21 + lucio.emote.s3acf.d*1.372@0.23:-17 + lucio.emote.s3acf.e*1.439@1:-28.5 + lucio.emote.s3acf.f*1.439@1.2:-28.5 + lucio.emote.s3acf.g@0.05:-16 + lucio.emote.s3acf.h*1.245:-14.5 + lucio.emote.s3acf.i*0.780@0.2:-26 + lucio.emote.s3acf.j@0.972:-7.5 + lucio.emote.s3acf.k*1.059@1.122:-13 + lucio.emote.s3acf.l*1.044@1:-38.5 + lucio.emote.s3acf.m*1.044@1.2:-38.5 + lucio.emote.s3acf.n*1.320@0.196:-10
+# 3AD2 a long breathy hiss while he chills, hardpoint 0012 (Chilling). Clip components (clip id @start s [+window s]):
+# chilling 3C09@0.000+1.967 hp 0012.
+# Play event (02C 3AD2, bank 1E749): a: random of 1, 3.01 s, 2ch, LOOPS: a continuous container retriggering a new
+# file every 1.88 s (trigger rate; the files overlap).
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5; the rule adds the hero's offset. Length 3.01 s, loop
+# 1.880 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3ad2 = lucio.emote.s3ad2.a:-8.5
+# 3AD3 getting up from chilling: skate and cloth sounds (Chilling). Clip components (clip id @start s [+window s]):
+# chilling 3C0A@0.067+0.300 hp 00A4.
+# Play event (02C 3AD3, bank 1E749): a: random of 3, 0.15-0.33 s, 1ch, @0.100 s; b: random of 3, 0.48-0.56 s, 1ch,
+# +380 cents, @0.050 s; c: one file, 1.19 s, 1ch, +480 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.0, b -18.5, c -14.0; the rule adds the hero's offset.
+# Length 0.90 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3ad3 = lucio.emote.s3ad3.a@0.1:-16 + lucio.emote.s3ad3.b*1.245@0.05:-14.5 + lucio.emote.s3ad3.c*1.320:-10
+# 3F6A skate roll scuffs (Dance Party exit, Smooth). Clip components (clip id @start s [+window s]): dance_party
+# 5676@0.200 hp 00A4; smooth 4222@0.300 hp 00A4.
+# Play event (02C 3F6A, bank 1E749): a: random of 10, 0.18-0.29 s, 1ch, +105 cents; b: random of 9, 0.34-0.57 s, 1ch,
+# +460 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -32.0, b -26.0; the rule adds the hero's offset. Length
+# 0.43 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3f6a = lucio.emote.s3f6a.a*1.063:-28 + lucio.emote.s3f6a.b*1.304:-22
+# 3F6B skating glide loop, layered and pitched (Smooth). Clip components (clip id @start s [+window s]): smooth
+# 4222@6.167+0.967 hp 00A4.
+# Play event (02C 3F6B, bank 1E749): a: random of 2, 2.51-2.68 s, 2ch, +150 cents, LOOPS (Wwise loop count 0 =
+# endless); b: random of 2, 2.50-2.67 s, 2ch, -125 cents, LOOPS (Wwise loop count 0 = endless); c: random of 2,
+# 2.50-2.67 s, 2ch, -1040 cents, LOOPS (Wwise loop count 0 = endless); d: one file, 5.00 s, 2ch, LOOPS (Wwise loop
+# count 0 = endless).
+# Play 818033005 fades in over 250 ms. Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.0, b -42.0, c -33.5, d -35.0; the rule adds the hero's
+# offset. Length 5.00 s, loop 5.000 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s3f6b = lucio.emote.s3f6b.a*1.091:-18 + lucio.emote.s3f6b.b*0.930:-38 + lucio.emote.s3f6b.c*0.548:-29.5 + lucio.emote.s3f6b.d:-31
+# 4006 two quick clicks (Dance Party, Smooth). Clip components (clip id @start s [+window s]): dance_party 566D@4.305
+# hp 00A4; smooth 4222@4.900 hp 00A4.
+# Play event (02C 4006, bank 1E749): a: one file, 0.19 s, 1ch, +170 cents, @0.005 s; b: one file, 0.10 s, 1ch, -25
+# cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.0, b -25.0; the rule adds the hero's offset. Length
+# 0.18 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4006 = lucio.emote.s4006.a*1.103@0.005:-20 + lucio.emote.s4006.b*0.986:-21
+# 49D9 the Dance Party music loop (interactive music, first segment). Clip components (clip id @start s [+window s]):
+# dance_party 566F@0.000+7.933 hp 00A4.
+# Play event (02C 49D9, bank 1E749): b..e: track 79412486, one 1.99 s clip x4 at 0.000, 1.983, 3.967, 5.950 s, -5.0 dB
+# net; f..i: track 404054084, one 1.99 s clip x4 at 0.000, 1.983, 3.967, 5.950 s, -5.0 dB net; j..y: track 584472943,
+# one 0.50 s clip x16 at 0.000, 0.496, 0.992, 1.488, 1.983, 2.479, 2.975, 3.471, 3.967, 4.463, 4.959, 5.455, 5.950,
+# 6.446, 6.942, 7.438 s, -5.0 dB net; z/aa: track 922127591, one 3.97 s clip x2 at 0.000, 3.967 s, -13.0 dB net; a:
+# MusicTrack (random step of 4), 8.94-8.95 s, 2ch.
+# Music sequence (loop 0): segment 1002279338 x2, then segment 279683600 x1; the first segment is built, the others
+# are not reproduced; segment 1002279338: 7.934 s, exit cue at 7.934 s, tempo 120.0; track 820706408 trims 5 clip(s)
+# (begin/end trims up to 0 / 1000 ms: not reproduced); random-step track 820706408: sub-track(s) [1] of several clips
+# left out. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# The built file runs 8.95 s (Wwise stops or trims part of it): the client should stop it at 7.934 s.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.0, b -5.0, c -5.0, d -5.0, e -5.0, f -5.0, g -5.0, h
+# -5.0, i -5.0, j -5.0, k -5.0, l -5.0, m -5.0, n -5.0, o -5.0, p -5.0, q -5.0, r -5.0, s -5.0, t -5.0, u -5.0, v
+# -5.0, w -5.0, x -5.0, y -5.0, z -13.0, aa -13.0; the rule adds the hero's offset. Length 7.93 s, loop 7.934 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.s49d9 = lucio.emote.s49d9.a:-1 + lucio.emote.s49d9.b:-1 + lucio.emote.s49d9.c@1.983:-1 + lucio.emote.s49d9.d@3.967:-1 + lucio.emote.s49d9.e@5.95:-1 + lucio.emote.s49d9.f:-1 + lucio.emote.s49d9.g@1.983:-1 + lucio.emote.s49d9.h@3.967:-1 + lucio.emote.s49d9.i@5.95:-1 + lucio.emote.s49d9.j:-1 + lucio.emote.s49d9.k@0.496:-1 + lucio.emote.s49d9.l@0.992:-1 + lucio.emote.s49d9.m@1.488:-1 + lucio.emote.s49d9.n@1.983:-1 + lucio.emote.s49d9.o@2.479:-1 + lucio.emote.s49d9.p@2.975:-1 + lucio.emote.s49d9.q@3.471:-1 + lucio.emote.s49d9.r@3.967:-1 + lucio.emote.s49d9.s@4.463:-1 + lucio.emote.s49d9.t@4.959:-1 + lucio.emote.s49d9.u@5.455:-1 + lucio.emote.s49d9.v@5.95:-1 + lucio.emote.s49d9.w@6.446:-1 + lucio.emote.s49d9.x@6.942:-1 + lucio.emote.s49d9.y@7.438:-1 + lucio.emote.s49d9.z:-9 + lucio.emote.s49d9.aa@3.967:-9
+# 49DA the Dance Party music's intro hit (interactive music segment). Clip components (clip id @start s [+window s]):
+# dance_party 566D@2.467 hp 00A4.
+# Play event (02C 49DA, bank 1E749): a: track 34844560, one 2.99 s clip  at 0.000 s, -9.0 dB net; b: track 439050290,
+# one 2.99 s clip  at 0.000 s, -9.0 dB net.
+# Segment 860297442: 2.975 s, exit cue at 2.000 s, tempo 120.0. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0, b -9.0; the rule adds the hero's offset. Length 2.99
+# s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.s49da = lucio.emote.s49da.a:-5 + lucio.emote.s49da.b:-5
+# 4A52 the Dance Party music loop, second copy on the emote-music bus. Clip components (clip id @start s [+window s]):
+# dance_party 566F@0.000+7.933 hp 00A4.
+# Play event (02C 4A52, bank 1E749): b..e: track 16795903, one 1.99 s clip x4 at 0.000, 1.983, 3.967, 5.950 s, -6.0 dB
+# net; f..u: track 367023514, one 0.50 s clip x16 at 0.000, 0.496, 0.992, 1.488, 1.983, 2.479, 2.975, 3.471, 3.967,
+# 4.463, 4.959, 5.455, 5.950, 6.446, 6.942, 7.438 s, -6.0 dB net; v..y: track 1018193142, one 1.99 s clip x4 at 0.000,
+# 1.983, 3.967, 5.950 s, -6.0 dB net; z/aa: track 1055076351, one 3.97 s clip x2 at 0.000, 3.967 s, -14.0 dB net; a:
+# MusicTrack (random step of 4), 8.94-8.95 s, 2ch.
+# Music sequence (loop 0): segment 421092248 x2, then segment 926808206 x1; the first segment is built, the others are
+# not reproduced; segment 421092248: 7.934 s, exit cue at 7.934 s, tempo 120.0; track 172803057 trims 5 clip(s)
+# (begin/end trims up to 0 / 1000 ms: not reproduced); random-step track 172803057: sub-track(s) [1] of several clips
+# left out; SetState group 2072919291 = 3194910319. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# The built file runs 8.95 s (Wwise stops or trims part of it): the client should stop it at 7.934 s.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0, b -6.0, c -6.0, d -6.0, e -6.0, f -6.0, g -6.0, h
+# -6.0, i -6.0, j -6.0, k -6.0, l -6.0, m -6.0, n -6.0, o -6.0, p -6.0, q -6.0, r -6.0, s -6.0, t -6.0, u -6.0, v
+# -6.0, w -6.0, x -6.0, y -6.0, z -14.0, aa -14.0; the rule adds the hero's offset. Length 7.93 s, loop 7.934 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.s4a52 = lucio.emote.s4a52.a:-2 + lucio.emote.s4a52.b:-2 + lucio.emote.s4a52.c@1.983:-2 + lucio.emote.s4a52.d@3.967:-2 + lucio.emote.s4a52.e@5.95:-2 + lucio.emote.s4a52.f:-2 + lucio.emote.s4a52.g@0.496:-2 + lucio.emote.s4a52.h@0.992:-2 + lucio.emote.s4a52.i@1.488:-2 + lucio.emote.s4a52.j@1.983:-2 + lucio.emote.s4a52.k@2.479:-2 + lucio.emote.s4a52.l@2.975:-2 + lucio.emote.s4a52.m@3.471:-2 + lucio.emote.s4a52.n@3.967:-2 + lucio.emote.s4a52.o@4.463:-2 + lucio.emote.s4a52.p@4.959:-2 + lucio.emote.s4a52.q@5.455:-2 + lucio.emote.s4a52.r@5.95:-2 + lucio.emote.s4a52.s@6.446:-2 + lucio.emote.s4a52.t@6.942:-2 + lucio.emote.s4a52.u@7.438:-2 + lucio.emote.s4a52.v:-2 + lucio.emote.s4a52.w@1.983:-2 + lucio.emote.s4a52.x@3.967:-2 + lucio.emote.s4a52.y@5.95:-2 + lucio.emote.s4a52.z:-10 + lucio.emote.s4a52.aa@3.967:-10
+# 4A6D a low bass drop / hit (Dance Party). Clip components (clip id @start s [+window s]): dance_party 566D@4.365 hp
+# 00A4; dance_party 566F@7.904 hp 00A4.
+# Play event (02C 4A6D, bank 1E749): a: random of 3, 0.80-0.82 s, 2ch, some files differ by +5/+0/+0 (dB / cents / s;
+# not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 0.82 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4a6d = lucio.emote.s4a6d.a:-11.5
+# 4A6E the Dance Party opener: a loud low riser and hit. Clip components (clip id @start s [+window s]): dance_party
+# 566D@0.373 hp 00A4.
+# Play event (02C 4A6E, bank 1E749): a: one file, 4.07 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 4.07 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4a6e = lucio.emote.s4a6e.a:-7.5
+# 4A6F a low bass swell with a hit (Dance Party). Clip components (clip id @start s [+window s]): dance_party
+# 566F@4.275 hp 00A4.
+# Play event (02C 4A6F, bank 1E749): a: random of 3, 1.96-2.29 s, 2ch; b: random of 2, 0.44-0.47 s, 2ch, @0.150 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -17.5; the rule adds the hero's offset. Length
+# 2.29 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4a6f = lucio.emote.s4a6f.a:-9.5 + lucio.emote.s4a6f.b@0.15:-13.5
+# 4A75 the music winding down at the end (Dance Party exit, Dance-Off). Clip components (clip id @start s [+window
+# s]): dance_off 14E15@4.670 hp 00A4; dance_party 5676@0.000+0.333 hp 00A4.
+# Play event (02C 4A75, bank 1E749): a: one file, 1.94 s, 2ch, @0.060 s; b: random of 1, 2.36 s, 2ch; c: one file,
+# 0.98 s, 2ch, @0.060 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -19.5, c -11.5; the rule adds the hero's offset.
+# Length 2.36 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4a75 = lucio.emote.s4a75.a@0.06:-9.5 + lucio.emote.s4a75.b:-15.5 + lucio.emote.s4a75.c@0.06:-7.5
+# 4A77 a tonal swell, 1 in 4 plays (Dance Party). Clip components (clip id @start s [+window s]): dance_party
+# 566F@2.115 hp 00A4.
+# Play event (02C 4A77, bank 1E749): a: random of 1 + 3 silences, 2.00 s, 2ch.
+# A sequence: sounds on every 4th play. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 2.00 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4a77 = lucio.emote.s4a77.a:-6.5
+# 4C11 whooshing kicks of the capoeira moves (Capoeira). Clip components (clip id @start s [+window s]): capoeira
+# 39EE@0.011+2.949 hp 00A4.
+# Play event (02C 4C11, bank 1E749): a: random of 3 (no repeat within 2), 2.63-3.01 s, 2ch, @0.250 s, some files
+# differ by -1/+0/+0 +9/+0/-0.25 (dB / cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 20 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 3.26 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s4c11 = lucio.emote.s4c11.a@0.25:-5.5
+# 8394 gift wrapping rustle (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift B4A1@0.567 hp
+# 00A4.
+# Play event (02C 8394, bank 1E749): a: random of 4, 0.61-0.67 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -33.5; the rule adds the hero's offset. Length 0.67 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s8394 = lucio.emote.s8394.a:-29.5
+# 8398 gift box handling (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift B4A1@2.867 hp
+# 00A4.
+# Play event (02C 8398, bank 1E749): a: random of 5, 0.61-0.85 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5; the rule adds the hero's offset. Length 0.85 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s8398 = lucio.emote.s8398.a:-21.5
+# 8399 pulling out the gift: cloth and paper (A Suave Gift). Clip components (clip id @start s [+window s]):
+# a_suave_gift B4A1@0.133 hp 00A4.
+# Play event (02C 8399, bank 1E749): a: random of 5, 0.59-1.04 s, 1ch, +220 cents; b: random of 4, 0.41-0.55 s, 1ch,
+# @0.050 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -25.5; the rule adds the hero's offset. Length
+# 0.91 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s8399 = lucio.emote.s8399.a*1.136:-18.5 + lucio.emote.s8399.b@0.05:-21.5
+# 839A a long paper unwrap / tear (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift
+# B4A1@2.933+3.342 hp 00A4.
+# Play event (02C 839A, bank 1E749): a: one file, 2.61 s, 1ch, @0.050 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 2.66 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s839a = lucio.emote.s839a.a@0.05:-3.5
+# 839B a soft low thud of the box (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift
+# B4A1@0.167 hp 00A4.
+# Play event (02C 839B, bank 1E749): a: random of 3 (no repeat within 2), 0.50-0.59 s, 2ch, -430 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.0; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s839b = lucio.emote.s839b.a*0.780:-24
+# 839D skate scuff (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift B4A1@5.733 hp 00A4.
+# Play event (02C 839D, bank 1E749): a: random of 3, 0.15-0.33 s, 1ch, @0.050 s; b: random of 3, 0.48-0.56 s, 1ch,
+# +380 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.0, b -19.5; the rule adds the hero's offset. Length
+# 0.45 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s839d = lucio.emote.s839d.a@0.05:-17 + lucio.emote.s839d.b*1.245:-15.5
+# 839E a low thump (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift B4A1@7.522 hp 00A4.
+# Play event (02C 839E, bank 1E749): a: one file, 0.34 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5; the rule adds the hero's offset. Length 0.34 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.s839e = lucio.emote.s839e.a:-21.5
+# 83A0 bright crinkles and ticks (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift
+# B4A1@7.311 hp 00A4.
+# Play event (02C 83A0, bank 1E749): a: random of 6 (no repeat within 2), 0.12-0.23 s, 2ch, +60 cents, LPF/HPF 32/0
+# (not reproduced); b: random of 4, 0.34-0.42 s, 2ch, +630 cents, LPF/HPF 33/0 (not reproduced); c: random of 2,
+# 0.35-0.37 s, 2ch, +75 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.0, b -30.5, c -40.5; the rule adds the hero's offset.
+# Length 0.35 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s83a0 = lucio.emote.s83a0.a*1.035:-19 + lucio.emote.s83a0.b*1.439:-26.5 + lucio.emote.s83a0.c*1.044:-36.5
+# 83A1 gift box handling (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift B4A1@0.633 hp
+# 00A4.
+# Play event (02C 83A1, bank 1E749): a: random of 2, 0.61-0.67 s, 1ch, @0.050 s; b: one file, 0.63 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5, b -18.5; the rule adds the hero's offset. Length
+# 0.71 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s83a1 = lucio.emote.s83a1.a@0.05:-17.5 + lucio.emote.s83a1.b:-14.5
+# 83D7 a sparkle tone and a whoosh (A Suave Gift). Clip components (clip id @start s [+window s]): a_suave_gift
+# B4A1@6.186+1.415 hp 00A4.
+# Play event (02C 83D7, bank 1E749): a: one file, 0.34 s, 1ch; b: one file, 1.06 s, 1ch, -150 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -5.5; the rule adds the hero's offset. Length 1.15
+# s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s83d7 = lucio.emote.s83d7.a:-14.5 + lucio.emote.s83d7.b*0.917:-1.5
+# 9552 skate stomps and squeaks of the dance-off, foot hardpoint 001C (Dance-Off). Clip components (clip id @start s
+# [+window s]): dance_off 14E15@3.702 hp 001C.
+# Play event (02C 9552, bank 1E749): a: random of 6, 0.21-0.41 s, 2ch, -1090 cents, LPF/HPF 0/44 (not reproduced); b:
+# random of 6 (no repeat within 2), 0.42-0.70 s, 2ch, -255 cents, @0.200 s, some files differ by -13.5/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); c: random of 3, 0.67-1.09 s, 2ch, +580 cents,
+# @0.300 s, LPF/HPF 0/43 (not reproduced); d: one file, 0.70 s, 2ch; e: random of 1, 0.82 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.0, b -27.0, c -25.5, d -30.0, e -27.5; the rule adds
+# the hero's offset. Length 1.08 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.s9552 = lucio.emote.s9552.a*0.533:-23 + lucio.emote.s9552.b*0.863@0.2:-23 + lucio.emote.s9552.c*1.398@0.3:-21.5 + lucio.emote.s9552.d:-26 + lucio.emote.s9552.e:-23.5
+# A0B5 foot slide of the moonwalk, foot hardpoint 001C (Moonwalk). Clip components (clip id @start s [+window s]):
+# moonwalk CED5@0.433+1.011 hp 001C.
+# Play event (02C A0B5, bank 1E749): a: random of 3 (no repeat within 2), 0.76-0.90 s, 1ch, -50 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.0; the rule adds the hero's offset. Length 0.92 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.sa0b5 = lucio.emote.sa0b5.a*0.972:-15
+# A0BE a bright scuff (Moonwalk). Clip components (clip id @start s [+window s]): moonwalk CED6@1.733+0.800 hp 0002.
+# Play event (02C A0BE, bank 1E749): a: one file, 0.58 s, 1ch, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 0.58 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.sa0be = lucio.emote.sa0be.a:-5.5
+# A0C2 the long squeaky glide of the moonwalk, hardpoint 0012 (Moonwalk). Clip components (clip id @start s [+window
+# s]): moonwalk CED6@0.000+4.267 hp 0012.
+# Play event (02C A0C2, bank 1E749): a: random of 3, 8.21-8.23 s, 1ch, -80 cents, LOOPS: a continuous container,
+# endless, the next file when one ends, LPF/HPF 0/42 (not reproduced).
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 8.62 s, loop
+# 8.620 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.sa0c2 = lucio.emote.sa0c2.a*0.955:-2.5
+# A0C3 a squeaky glide, hardpoint 0012 (Moonwalk). Clip components (clip id @start s [+window s]): moonwalk
+# CED5@1.200+2.133 hp 0012.
+# Play event (02C A0C3, bank 1E749): a: one file, 2.08 s, 1ch, -80 cents, LPF/HPF 0/42 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 2.18 s.
+# Containers / delays / gains H (read); what it is L.
+@lucio.emote.sa0c3 = lucio.emote.sa0c3.a*0.955:-2.5
+# A0CC a low whoosh and a thump (Moonwalk). Clip components (clip id @start s [+window s]): moonwalk CED5@1.066+0.906
+# hp 00A4.
+# Play event (02C A0CC, bank 1E749): a: one file, 1.90 s, 2ch, @0.250 s; b: one file, 1.35 s, 2ch, +275 cents, LPF/HPF
+# 0/16 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5, b -11.5; the rule adds the hero's offset. Length
+# 2.15 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.sa0cc = lucio.emote.sa0cc.a@0.25:-20.5 + lucio.emote.sa0cc.b*1.172:-7.5
+# A447 tuning his amp: a slow rising tone (Tuning). Clip components (clip id @start s [+window s]): tuning
+# D71F@0.267+8.033 hp 00A4.
+# Play event (02C A447, bank 1E749): a: one file, 7.59 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 7.59 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.sa447 = lucio.emote.sa447.a:-1.5
+# B1B9 the Dance Party music's intro hit again (the same segment as 49DA, plus the music-duck state). Clip components
+# (clip id @start s [+window s]): dance_party 566D@2.467 hp 00A4.
+# Play event (02C B1B9, bank 1E749): a: track 34844560, one 2.99 s clip  at 0.000 s, -9.0 dB net; b: track 439050290,
+# one 2.99 s clip  at 0.000 s, -9.0 dB net.
+# Segment 860297442: 2.975 s, exit cue at 2.000 s, tempo 120.0; SetState group 2072919291 = 3194910319. Audience field
+# 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0, b -9.0; the rule adds the hero's offset. Length 2.99
+# s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.sb1b9 = lucio.emote.sb1b9.a:-5 + lucio.emote.sb1b9.b:-5
+# DA44 the mic hitting the floor (Mic Drop, the shared emote). Clip components (clip id @start s [+window s]):
+# mic_drop 15C7C@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.sda44 = lucio.emote.sda44.a:-14.5
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C7C@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.sda4f = lucio.emote.sda4f.a*1.169@0.01:+3.5
+# E548 the emote's music, his own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 18504@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.se548 = lucio.emote.se548.a:-5.5
+# E549 the music's second layer, his own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 18504@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.se549 = lucio.emote.se549.a*0.891:-15.5 + lucio.emote.se549.b:-15.5
+# E54A the emote's music as everyone else hears it from him: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18504@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@lucio.emote.se54a = lucio.emote.se54a.a:-20.5
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18504@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@lucio.emote.se54b = lucio.emote.se54b.a:-19.5
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C9D@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.seea6 = lucio.emote.seea6.a:-0.5 + lucio.emote.seea6.b@1.45:-0.5 + lucio.emote.seea6.c@0.03:-14.5 + lucio.emote.seea6.d*2.378@0.15:-0.5
+# F473 the big swing: a whoosh with a crack (Big Swing). Clip components (clip id @start s [+window s]): big_swing
+# 187C1@1.169+1.931 hp 00A4.
+# Play event (02C F473, bank 1E749): a: one file, 2.45 s, 2ch, @0.058 s; b: one file, 0.03 s, 2ch, @0.031 s; c: one
+# file, 0.15 s, 2ch; d: one file, 1.42 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -13.5, c -14.5, d -19.5; the rule adds the hero's
+# offset. Length 2.51 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.sf473 = lucio.emote.sf473.a@0.058:-15.5 + lucio.emote.sf473.b@0.031:-9.5 + lucio.emote.sf473.c:-10.5 + lucio.emote.sf473.d:-15.5
+# F477 winding up the swing: two short swishes (Big Swing). Clip components (clip id @start s [+window s]): big_swing
+# 187C1@0.200+2.900 hp 00A4.
+# Play event (02C F477, bank 1E749): a: one file, 0.27 s, 2ch; b: one file, 0.24 s, 2ch, @0.520 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -26.5; the rule adds the hero's offset. Length
+# 0.76 s. Containers / delays / gains H (read); what it is L.
+@lucio.emote.sf477 = lucio.emote.sf477.a:-18.5 + lucio.emote.sf477.b@0.52:-22.5
+
+# ----- Lúcio's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+lucio.emote.s268c.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A7294.03F.ogg
+lucio.emote.s268c.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A7296.03F.ogg
+lucio.emote.s268c.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A7295.03F.ogg
+lucio.emote.s268c.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A7298.03F.ogg
+lucio.emote.s268c.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A727E.03F.ogg
+lucio.emote.s268c.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000268C.02C/0000002A7297.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE60D.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE60A.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE604.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE607.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE611.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE608.03F.ogg
+lucio.emote.s282d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000282D.02C/0000002AE60B.03F.ogg
+lucio.emote.s2efa.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB45F.03F.ogg
+lucio.emote.s2efa.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB3B4.03F.ogg
+lucio.emote.s2efa.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AC833.03F.ogg
+lucio.emote.s2efa.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB45E.03F.ogg
+lucio.emote.s2efa.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AC8D9.03F.ogg
+lucio.emote.s2efa.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB3B6.03F.ogg
+lucio.emote.s2efa.c = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB3C8.03F.ogg
+lucio.emote.s2efa.c = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFA.02C/0000002AB463.03F.ogg
+lucio.emote.s2efb.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB45F.03F.ogg
+lucio.emote.s2efb.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB3B4.03F.ogg
+lucio.emote.s2efb.a = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AC833.03F.ogg
+lucio.emote.s2efb.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB45E.03F.ogg
+lucio.emote.s2efb.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AC8D9.03F.ogg
+lucio.emote.s2efb.b = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB3B6.03F.ogg
+lucio.emote.s2efb.c = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB3C8.03F.ogg
+lucio.emote.s2efb.c = ExtraSounds/Lúcio/Emotes/Sounds/000000002EFB.02C/0000002AB463.03F.ogg
+lucio.emote.s372e.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000372E.02C/0000002AC84A.03F.ogg
+lucio.emote.s372e.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000372E.02C/0000002AC88E.03F.ogg
+lucio.emote.s3731.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003731.02C/0000002AC908.03F.ogg
+lucio.emote.s3731.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003731.02C/0000002AC829.03F.ogg
+lucio.emote.s3732.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003732.02C/0000002AC8F7.03F.ogg
+lucio.emote.s3732.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003732.02C/0000002AC8FC.03F.ogg
+lucio.emote.s3732.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003732.02C/0000002AC8CD.03F.ogg
+lucio.emote.s3732.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003732.02C/0000002AC8ED.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A6803.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A66B0.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A66E2.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A66BB.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A7916.03F.ogg
+lucio.emote.s37a4.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000037A4.02C/0000002A66AB.03F.ogg
+lucio.emote.s3895.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002AFBEB.03F.ogg
+lucio.emote.s3895.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002AFC34.03F.ogg
+lucio.emote.s3895.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002AFC0F.03F.ogg
+lucio.emote.s3895.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002AFC31.03F.ogg
+lucio.emote.s3895.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002AFBEC.03F.ogg
+lucio.emote.s3895.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002A6A72.03F.ogg
+lucio.emote.s3895.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002ACD08.03F.ogg
+lucio.emote.s3895.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002ACD83.03F.ogg
+lucio.emote.s3895.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002ACD86.03F.ogg
+lucio.emote.s3895.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002ACD19.03F.ogg
+lucio.emote.s3895.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003895.02C/0000002B033E.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B0339.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B038C.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B0392.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B0393.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B0395.03F.ogg
+lucio.emote.s38ad.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002B039D.03F.ogg
+lucio.emote.s38ad.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002AC8D1.03F.ogg
+lucio.emote.s38ad.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002AC8DF.03F.ogg
+lucio.emote.s38ad.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002AC907.03F.ogg
+lucio.emote.s38ad.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002AC837.03F.ogg
+lucio.emote.s38ad.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002A74E9.03F.ogg
+lucio.emote.s38ad.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002A7440.03F.ogg
+lucio.emote.s38ad.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002ABD3D.03F.ogg
+lucio.emote.s38ad.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AD.02C/0000002A7491.03F.ogg
+lucio.emote.s38ae.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AE.02C/0000002A6A72.03F.ogg
+lucio.emote.s38ae.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AE.02C/0000002ACD08.03F.ogg
+lucio.emote.s38ae.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AE.02C/0000002ACD83.03F.ogg
+lucio.emote.s38ae.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AE.02C/0000002ACD86.03F.ogg
+lucio.emote.s38ae.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000038AE.02C/0000002ACD19.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A6803.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66B0.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66E2.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66BB.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A7916.03F.ogg
+lucio.emote.s3ace.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66AB.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A6803.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66B0.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66E2.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66BB.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A7916.03F.ogg
+lucio.emote.s3ace.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66AB.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A6803.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66B0.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66E2.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66BB.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A7916.03F.ogg
+lucio.emote.s3ace.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002A66AB.03F.ogg
+lucio.emote.s3ace.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8F8.03F.ogg
+lucio.emote.s3ace.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC84B.03F.ogg
+lucio.emote.s3ace.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8FE.03F.ogg
+lucio.emote.s3ace.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC824.03F.ogg
+lucio.emote.s3ace.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8F1.03F.ogg
+lucio.emote.s3ace.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8F8.03F.ogg
+lucio.emote.s3ace.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC84B.03F.ogg
+lucio.emote.s3ace.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8FE.03F.ogg
+lucio.emote.s3ace.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC824.03F.ogg
+lucio.emote.s3ace.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8F1.03F.ogg
+lucio.emote.s3ace.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8AB.03F.ogg
+lucio.emote.s3ace.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC84C.03F.ogg
+lucio.emote.s3ace.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC83E.03F.ogg
+lucio.emote.s3ace.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC836.03F.ogg
+lucio.emote.s3ace.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC8AB.03F.ogg
+lucio.emote.s3ace.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC84C.03F.ogg
+lucio.emote.s3ace.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC83E.03F.ogg
+lucio.emote.s3ace.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC836.03F.ogg
+lucio.emote.s3ace.h = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC84A.03F.ogg
+lucio.emote.s3ace.h = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACE.02C/0000002AC88E.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A6803.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A66B0.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A66E2.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A66BB.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7916.03F.ogg
+lucio.emote.s3acf.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A66AB.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC81F.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC840.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8F2.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC819.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC839.03F.ogg
+lucio.emote.s3acf.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC81D.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC81F.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC840.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8F2.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC819.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC839.03F.ogg
+lucio.emote.s3acf.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC81D.03F.ogg
+lucio.emote.s3acf.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8F7.03F.ogg
+lucio.emote.s3acf.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8FC.03F.ogg
+lucio.emote.s3acf.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8CD.03F.ogg
+lucio.emote.s3acf.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8ED.03F.ogg
+lucio.emote.s3acf.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8D1.03F.ogg
+lucio.emote.s3acf.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8DF.03F.ogg
+lucio.emote.s3acf.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC907.03F.ogg
+lucio.emote.s3acf.e = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC837.03F.ogg
+lucio.emote.s3acf.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8D1.03F.ogg
+lucio.emote.s3acf.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8DF.03F.ogg
+lucio.emote.s3acf.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC907.03F.ogg
+lucio.emote.s3acf.f = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC837.03F.ogg
+lucio.emote.s3acf.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7298.03F.ogg
+lucio.emote.s3acf.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A727E.03F.ogg
+lucio.emote.s3acf.g = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7297.03F.ogg
+lucio.emote.s3acf.h = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7294.03F.ogg
+lucio.emote.s3acf.h = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7296.03F.ogg
+lucio.emote.s3acf.h = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002A7295.03F.ogg
+lucio.emote.s3acf.i = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8EA.03F.ogg
+lucio.emote.s3acf.i = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8FF.03F.ogg
+lucio.emote.s3acf.i = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8F4.03F.ogg
+lucio.emote.s3acf.j = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC8F3.03F.ogg
+lucio.emote.s3acf.j = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC84F.03F.ogg
+lucio.emote.s3acf.k = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC84A.03F.ogg
+lucio.emote.s3acf.k = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC88E.03F.ogg
+lucio.emote.s3acf.l = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC83F.03F.ogg
+lucio.emote.s3acf.l = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC905.03F.ogg
+lucio.emote.s3acf.m = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC83F.03F.ogg
+lucio.emote.s3acf.m = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC905.03F.ogg
+lucio.emote.s3acf.n = ExtraSounds/Lúcio/Emotes/Sounds/000000003ACF.02C/0000002AC908.03F.ogg
+lucio.emote.s3ad2.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD2.02C/0000002AC8D7.03F.ogg
+lucio.emote.s3ad3.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A7298.03F.ogg
+lucio.emote.s3ad3.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A727E.03F.ogg
+lucio.emote.s3ad3.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A7297.03F.ogg
+lucio.emote.s3ad3.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A7294.03F.ogg
+lucio.emote.s3ad3.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A7296.03F.ogg
+lucio.emote.s3ad3.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002A7295.03F.ogg
+lucio.emote.s3ad3.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003AD3.02C/0000002AC908.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC906.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8CE.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8CA.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8D5.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC901.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8DB.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC842.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC847.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC843.03F.ogg
+lucio.emote.s3f6a.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8E8.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC903.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8CC.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC83D.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8E3.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC902.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8E5.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC900.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC848.03F.ogg
+lucio.emote.s3f6a.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6A.02C/0000002AC8E0.03F.ogg
+lucio.emote.s3f6b.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC815.03F.ogg
+lucio.emote.s3f6b.a = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8F6.03F.ogg
+lucio.emote.s3f6b.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8FA.03F.ogg
+lucio.emote.s3f6b.b = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8D2.03F.ogg
+lucio.emote.s3f6b.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8FA.03F.ogg
+lucio.emote.s3f6b.c = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8D2.03F.ogg
+lucio.emote.s3f6b.d = ExtraSounds/Lúcio/Emotes/Sounds/000000003F6B.02C/0000002AC8CB.03F.ogg
+lucio.emote.s4006.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004006.02C/0000002AC870.03F.ogg
+lucio.emote.s4006.b = ExtraSounds/Lúcio/Emotes/Sounds/000000004006.02C/0000002AC8E6.03F.ogg
+lucio.emote.s49d9.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8F9.03F.ogg
+lucio.emote.s49d9.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC841.03F.ogg
+lucio.emote.s49d9.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8CF.03F.ogg
+lucio.emote.s49d9.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC832.03F.ogg
+lucio.emote.s49d9.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC832.03F.ogg
+lucio.emote.s49d9.d = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC832.03F.ogg
+lucio.emote.s49d9.e = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC832.03F.ogg
+lucio.emote.s49d9.f = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8D0.03F.ogg
+lucio.emote.s49d9.g = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8D0.03F.ogg
+lucio.emote.s49d9.h = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8D0.03F.ogg
+lucio.emote.s49d9.i = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8D0.03F.ogg
+lucio.emote.s49d9.j = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.k = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.l = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.m = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.n = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.o = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.p = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.q = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.r = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.s = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.t = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.u = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.v = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.w = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.x = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.y = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8E4.03F.ogg
+lucio.emote.s49d9.z = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8EF.03F.ogg
+lucio.emote.s49d9.aa = ExtraSounds/Lúcio/Emotes/Sounds/0000000049D9.02C/0000002AC8EF.03F.ogg
+lucio.emote.s49da.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000049DA.02C/0000002AC84D.03F.ogg
+lucio.emote.s49da.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000049DA.02C/0000002AC82B.03F.ogg
+lucio.emote.s4a52.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8F9.03F.ogg
+lucio.emote.s4a52.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC841.03F.ogg
+lucio.emote.s4a52.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8CF.03F.ogg
+lucio.emote.s4a52.b = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8D0.03F.ogg
+lucio.emote.s4a52.c = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8D0.03F.ogg
+lucio.emote.s4a52.d = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8D0.03F.ogg
+lucio.emote.s4a52.e = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8D0.03F.ogg
+lucio.emote.s4a52.f = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.g = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.h = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.i = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.j = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.k = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.l = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.m = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.n = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.o = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.p = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.q = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.r = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.s = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.t = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.u = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8E4.03F.ogg
+lucio.emote.s4a52.v = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC832.03F.ogg
+lucio.emote.s4a52.w = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC832.03F.ogg
+lucio.emote.s4a52.x = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC832.03F.ogg
+lucio.emote.s4a52.y = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC832.03F.ogg
+lucio.emote.s4a52.z = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8EF.03F.ogg
+lucio.emote.s4a52.aa = ExtraSounds/Lúcio/Emotes/Sounds/000000004A52.02C/0000002AC8EF.03F.ogg
+lucio.emote.s4a6d.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6D.02C/0000002AC84E.03F.ogg
+lucio.emote.s4a6d.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6D.02C/0000002AC826.03F.ogg
+lucio.emote.s4a6d.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6D.02C/0000002AC8DE.03F.ogg
+lucio.emote.s4a6e.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6E.02C/0000002AC81A.03F.ogg
+lucio.emote.s4a6f.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6F.02C/0000002AC83C.03F.ogg
+lucio.emote.s4a6f.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6F.02C/0000002AC845.03F.ogg
+lucio.emote.s4a6f.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6F.02C/0000002AC816.03F.ogg
+lucio.emote.s4a6f.b = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6F.02C/0000002AC8E2.03F.ogg
+lucio.emote.s4a6f.b = ExtraSounds/Lúcio/Emotes/Sounds/000000004A6F.02C/0000002AC82D.03F.ogg
+lucio.emote.s4a75.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A75.02C/0000002AC823.03F.ogg
+lucio.emote.s4a75.b = ExtraSounds/Lúcio/Emotes/Sounds/000000004A75.02C/0000002AC81B.03F.ogg
+lucio.emote.s4a75.c = ExtraSounds/Lúcio/Emotes/Sounds/000000004A75.02C/0000002AC822.03F.ogg
+lucio.emote.s4a77.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004A77.02C/0000002AC81E.03F.ogg
+lucio.emote.s4c11.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004C11.02C/0000002AC81C.03F.ogg
+lucio.emote.s4c11.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004C11.02C/0000002AC812.03F.ogg
+lucio.emote.s4c11.a = ExtraSounds/Lúcio/Emotes/Sounds/000000004C11.02C/0000002AC828.03F.ogg
+lucio.emote.s8394.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008394.02C/0000002A92B9.03F.ogg
+lucio.emote.s8394.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008394.02C/0000002A92C0.03F.ogg
+lucio.emote.s8394.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008394.02C/0000002A926F.03F.ogg
+lucio.emote.s8394.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008394.02C/0000002A9278.03F.ogg
+lucio.emote.s8398.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008398.02C/0000002A925D.03F.ogg
+lucio.emote.s8398.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008398.02C/0000002A928E.03F.ogg
+lucio.emote.s8398.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008398.02C/0000002A92D5.03F.ogg
+lucio.emote.s8398.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008398.02C/0000002A9298.03F.ogg
+lucio.emote.s8398.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008398.02C/0000002A9288.03F.ogg
+lucio.emote.s8399.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC8F8.03F.ogg
+lucio.emote.s8399.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC84B.03F.ogg
+lucio.emote.s8399.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC8FE.03F.ogg
+lucio.emote.s8399.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC824.03F.ogg
+lucio.emote.s8399.a = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC8F1.03F.ogg
+lucio.emote.s8399.b = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC8AB.03F.ogg
+lucio.emote.s8399.b = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC84C.03F.ogg
+lucio.emote.s8399.b = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC83E.03F.ogg
+lucio.emote.s8399.b = ExtraSounds/Lúcio/Emotes/Sounds/000000008399.02C/0000002AC836.03F.ogg
+lucio.emote.s839a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839A.02C/0000002AC846.03F.ogg
+lucio.emote.s839b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839B.02C/0000002AC8EA.03F.ogg
+lucio.emote.s839b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839B.02C/0000002AC8FF.03F.ogg
+lucio.emote.s839b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839B.02C/0000002AC8F4.03F.ogg
+lucio.emote.s839d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A7298.03F.ogg
+lucio.emote.s839d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A727E.03F.ogg
+lucio.emote.s839d.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A7297.03F.ogg
+lucio.emote.s839d.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A7294.03F.ogg
+lucio.emote.s839d.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A7296.03F.ogg
+lucio.emote.s839d.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000839D.02C/0000002A7295.03F.ogg
+lucio.emote.s839e.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000839E.02C/0000002AC88E.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC81F.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC840.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC8F2.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC819.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC839.03F.ogg
+lucio.emote.s83a0.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC81D.03F.ogg
+lucio.emote.s83a0.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC8D1.03F.ogg
+lucio.emote.s83a0.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC8DF.03F.ogg
+lucio.emote.s83a0.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC907.03F.ogg
+lucio.emote.s83a0.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC837.03F.ogg
+lucio.emote.s83a0.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC83F.03F.ogg
+lucio.emote.s83a0.c = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A0.02C/0000002AC905.03F.ogg
+lucio.emote.s83a1.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A1.02C/0000002A92B9.03F.ogg
+lucio.emote.s83a1.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A1.02C/0000002A92C0.03F.ogg
+lucio.emote.s83a1.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083A1.02C/0000002A926F.03F.ogg
+lucio.emote.s83d7.a = ExtraSounds/Lúcio/Emotes/Sounds/0000000083D7.02C/0000002AC82F.03F.ogg
+lucio.emote.s83d7.b = ExtraSounds/Lúcio/Emotes/Sounds/0000000083D7.02C/0000002AC821.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8DD.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC904.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8D4.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8E7.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8EB.03F.ogg
+lucio.emote.s9552.a = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC835.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8EC.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8EE.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8FB.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8FD.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8F0.03F.ogg
+lucio.emote.s9552.b = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8D3.03F.ogg
+lucio.emote.s9552.c = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC849.03F.ogg
+lucio.emote.s9552.c = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8DA.03F.ogg
+lucio.emote.s9552.c = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC83A.03F.ogg
+lucio.emote.s9552.d = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC8D3.03F.ogg
+lucio.emote.s9552.e = ExtraSounds/Lúcio/Emotes/Sounds/000000009552.02C/0000002AC83B.03F.ogg
+lucio.emote.sa0b5.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0B5.02C/0000002AC82E.03F.ogg
+lucio.emote.sa0b5.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0B5.02C/0000002AC820.03F.ogg
+lucio.emote.sa0b5.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0B5.02C/0000002AC818.03F.ogg
+lucio.emote.sa0be.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0BE.02C/0000002AC831.03F.ogg
+lucio.emote.sa0c2.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0C2.02C/0000002AC814.03F.ogg
+lucio.emote.sa0c2.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0C2.02C/0000002AC817.03F.ogg
+lucio.emote.sa0c2.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0C2.02C/0000002AC830.03F.ogg
+lucio.emote.sa0c3.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0C3.02C/0000002AC813.03F.ogg
+lucio.emote.sa0cc.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0CC.02C/0000002AC88D.03F.ogg
+lucio.emote.sa0cc.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000A0CC.02C/0000002AC86F.03F.ogg
+lucio.emote.sa447.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000A447.02C/0000002AC8E9.03F.ogg
+lucio.emote.sb1b9.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000B1B9.02C/0000002AC84D.03F.ogg
+lucio.emote.sb1b9.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000B1B9.02C/0000002AC82B.03F.ogg
+lucio.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+lucio.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+lucio.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+lucio.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+lucio.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+lucio.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+lucio.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+lucio.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+lucio.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+lucio.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+lucio.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+lucio.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+lucio.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+lucio.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+lucio.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+lucio.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+lucio.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+lucio.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+lucio.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+lucio.emote.sf473.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000F473.02C/00000033C511.03F.ogg
+lucio.emote.sf473.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000F473.02C/00000033C512.03F.ogg
+lucio.emote.sf473.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000F473.02C/00000033C577.03F.ogg
+lucio.emote.sf473.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000F473.02C/00000033C513.03F.ogg
+lucio.emote.sf477.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000F477.02C/00000033C58B.03F.ogg
+lucio.emote.sf477.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000F477.02C/00000033C58A.03F.ogg
+
+# ----- Lúcio's emote voice lines: one plain event per voice stimulus (078), every line of it (English and Japanese
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# A8A (laughs) Keep up with this! / Drop the beat! / I'm in the groove / The beat goes on!: 4 line(s) 1.96 s, 0.84 s, 0.89 s, 1.29 s; clips dance_party 566D@1.218, dance_party 566F@2.745, radius 15 m.
+lucio.emote.va8a = HeroVoice/Lúcio/Unknown/A8A.078/00000000B5DC.0B2-(laughs) Keep up with this!.ogg | w=1
+lucio.emote.va8a = HeroVoice/Lúcio/Unknown/A8A.078/0000000216B3.0B2-Drop the beat!.ogg | w=1
+lucio.emote.va8a = HeroVoice/Lúcio/Unknown/A8A.078/0000000216E3.0B2-I'm in the groove.ogg | w=1
+lucio.emote.va8a = HeroVoice/Lúcio/Unknown/A8A.078/0000000216E7.0B2-The beat goes on!.ogg | w=1
+# A8D Oh yeah!: 1 line(s) 1.10 s; clips dance_party 5676@0.155, radius 15 m.
+lucio.emote.va8d = HeroVoice/Lúcio/Unknown/A8D.078/00000000B542.0B2-Oh yeah!.ogg | w=1
+# 54 (grunts): 3 line(s) 0.29 s, 0.22 s, 0.33 s; clips heroic 3A88@0.333, smooth 4221@0.000, smooth 4222@1.900, stimulus volume -9 dB, radius 20 m.
+lucio.emote.v54 = HeroVoice/Lúcio/Jumping/00000000B5A1.0B2-(grunts).ogg | w=1
+lucio.emote.v54 = HeroVoice/Lúcio/Jumping/00000000B5BC.0B2-(grunts).ogg | w=1
+lucio.emote.v54 = HeroVoice/Lúcio/Jumping/00000000B609.0B2-(grunts).ogg | w=1
+# 6A1 (laughs): 1 line(s) 2.50 s; clips knee_slapper 3CA2@0.033, stimulus volume -4 dB.
+lucio.emote.v6a1 = HeroVoice/Lúcio/Laugh/00000002EB96.0B2-(laughs).ogg | w=1
+# 1111 Oh, yeah!: 3 line(s) 1.11 s, 1.00 s, 1.20 s; clips a_suave_gift B4A1@1.628.
+lucio.emote.v1111 = HeroVoice/Lúcio/Unknown/1111.078/000000061215.0B2-Oh, yeah!.ogg | w=1
+lucio.emote.v1111 = HeroVoice/Lúcio/Unknown/1111.078/000000061216.0B2-Oh yeah!.ogg | w=1
+lucio.emote.v1111 = HeroVoice/Lúcio/Unknown/1111.078/000000061217.0B2-Oh, yeah!.ogg | w=1
+
+# ----- Lúcio's subtitles
+$lucio.emote.s268c = Lúcio: skates scuff
+$lucio.emote.s282d = Lúcio: skates slide
+$lucio.emote.s2efa = Lúcio: music plays
+$lucio.emote.s2efb = Lúcio: music plays
+$lucio.emote.s372e = Lúcio: thump
+$lucio.emote.s3731 = Lúcio: swish
+$lucio.emote.s3732 = Lúcio: blip
+$lucio.emote.s37a4 = Lúcio: tick
+$lucio.emote.s3895 = Lúcio: ball bounces
+$lucio.emote.s38ad = Lúcio: ball kicked
+$lucio.emote.s38ae = Lúcio: ball tapped
+$lucio.emote.s3ace = Lúcio: slaps knee
+$lucio.emote.s3acf = Lúcio: sits down
+$lucio.emote.s3ad2 = Lúcio: hiss
+$lucio.emote.s3ad3 = Lúcio: gets up
+$lucio.emote.s3f6a = Lúcio: skates roll
+$lucio.emote.s3f6b = Lúcio: skates glide
+$lucio.emote.s4006 = Lúcio: clicks
+$lucio.emote.s49d9 = Lúcio: music plays
+$lucio.emote.s49da = Lúcio: music plays
+$lucio.emote.s4a52 = Lúcio: music plays
+$lucio.emote.s4a6d = Lúcio: bass hit
+$lucio.emote.s4a6e = Lúcio: music starts
+$lucio.emote.s4a6f = Lúcio: bass swells
+$lucio.emote.s4a75 = Lúcio: music ends
+$lucio.emote.s4a77 = Lúcio: swell
+$lucio.emote.s4c11 = Lúcio: whoosh
+$lucio.emote.s8394 = Lúcio: paper rustles
+$lucio.emote.s8398 = Lúcio: box handled
+$lucio.emote.s8399 = Lúcio: rustle
+$lucio.emote.s839a = Lúcio: paper tears
+$lucio.emote.s839b = Lúcio: thud
+$lucio.emote.s839d = Lúcio: skates scuff
+$lucio.emote.s839e = Lúcio: thump
+$lucio.emote.s83a0 = Lúcio: crinkles
+$lucio.emote.s83a1 = Lúcio: box handled
+$lucio.emote.s83d7 = Lúcio: sparkle
+$lucio.emote.s9552 = Lúcio: skates stomp
+$lucio.emote.sa0b5 = Lúcio: foot slides
+$lucio.emote.sa0be = Lúcio: scuff
+$lucio.emote.sa0c2 = Lúcio: skates squeak
+$lucio.emote.sa0c3 = Lúcio: skates squeak
+$lucio.emote.sa0cc = Lúcio: whoosh
+$lucio.emote.sa447 = Lúcio: amp tunes
+$lucio.emote.sb1b9 = Lúcio: music plays
+$lucio.emote.sda44 = Lúcio: mic drops
+$lucio.emote.sda4f = Lúcio: mic feedback
+$lucio.emote.se548 = Lúcio: music plays
+$lucio.emote.se549 = Lúcio: music plays
+$lucio.emote.se54a = Lúcio: music plays
+$lucio.emote.se54b = Lúcio: music plays
+$lucio.emote.seea6 = Lúcio: salt shakes
+$lucio.emote.sf473 = Lúcio: swings
+$lucio.emote.sf477 = Lúcio: swish
+$lucio.emote.va8a = Lúcio: (laughs) Keep up with this! / Drop the beat! / I'm in the groove / The beat goes on!
+$lucio.emote.va8d = Lúcio: Oh yeah!
+$lucio.emote.v54 = Lúcio: (grunts)
+$lucio.emote.v6a1 = Lúcio: (laughs)
+$lucio.emote.v1111 = Lúcio: Oh, yeah!

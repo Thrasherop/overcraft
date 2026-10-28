@@ -46,10 +46,13 @@ public final class EmoteData {
 
 	/**
 	 * A sound or a line in one of the hero's clips (seconds into that clip): a sound (02C id) held for duration (0: a
-	 * one-shot, played out), looping meanwhile when its Wwise container loops, or a voice line (078 id). The pack
-	 * names them <hero>.emote.s<id> and <hero>.emote.v<id> (tools/soundmaps/emotes.txt).
+	 * one-shot, played out), or a voice line (078 id). The pack names them <hero>.emote.s<id> and <hero>.emote.v<id>
+	 * (tools/soundmaps/emotes.txt). How its Wwise events play it (tools/emote_data.py): restarted every loop seconds
+	 * while held (0: once), stopped cut seconds in (0: never), sounding only some plays (chance, or every nth), heard by
+	 * "own" (only the emoting player), "others" or everyone (null), fading out over fade seconds when stopped.
 	 */
-	public record Event(@Nullable String sound, @Nullable String voice, float at, float duration, boolean loops) {
+	public record Event(@Nullable String sound, @Nullable String voice, float at, float duration, float loop, float cut,
+		float chance, int nth, @Nullable String audience, float fade) {
 		/** Its sound event in the pack, overcraft:<hero>.emote.<s|v><id> in lower case. */
 		public String event(String hero) {
 			return hero + ".emote." + (sound != null ? "s" + sound : "v" + voice).toLowerCase(java.util.Locale.ROOT);
@@ -176,8 +179,9 @@ public final class EmoteData {
 						String sound = string(o, "sound");
 						String voice = string(o, "voice");
 						if (sound != null || voice != null) {
-							heard.add(new Event(sound, voice, o.get("at").getAsFloat(), o.has("duration") ? o.get("duration").getAsFloat() : 0,
-								o.has("loops") && o.get("loops").getAsBoolean()));
+							heard.add(new Event(sound, voice, o.get("at").getAsFloat(), number(o, "duration", 0), number(o, "loop", 0),
+								number(o, "cut", 0), number(o, "chance", 1), (int) number(o, "nth", 0), string(o, "audience"),
+								number(o, "fade", 0)));
 						}
 					}
 				}
@@ -237,6 +241,11 @@ public final class EmoteData {
 				new Quaternionf(q.get(0).getAsFloat(), q.get(1).getAsFloat(), q.get(2).getAsFloat(), q.get(3).getAsFloat()).normalize()));
 		}
 		return new Emotes(emotes, geosets, pieceGeosets, hardpoints, events, stows);
+	}
+
+	private static float number(JsonObject o, String key, float otherwise) {
+		JsonElement e = o.get(key);
+		return e == null || e.isJsonNull() ? otherwise : e.getAsFloat();
 	}
 
 	private static @Nullable String string(JsonObject o, String key) {

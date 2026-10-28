@@ -29,8 +29,10 @@ import java.util.Set;
  * The sounds and lines of the emotes, as Overwatch plays them (#48): each emote clip's animation effect names its
  * sounds and voice lines and when in the clip they start (EmoteData, from tools/emote_data.py). Each one plays at its
  * time as the clip reaches it, at the emoting hero and heard around them (Killer Beam's "Killer Beam! ...or whatever"
- * 2.53 s in, its whoosh at 4.33 s). A sound held for a window (a dance's music bed, the length of its clip) stops when
- * the window ends, its clip plays again or the emote ends; a one-shot plays out.
+ * 2.53 s in, its whoosh at 4.33 s), as its Wwise events have it: a held sound (a dance's music, the length of its
+ * clip) restarts every loop while its window lasts and stops (fading) when the window ends, its clip plays again or
+ * the emote ends; a one-shot plays out unless its event cuts it; some sound only some plays; some only the emoting
+ * player hears (their own 2D copy), some only everyone else.
  */
 public final class EmoteSounds {
 	/** One player's emote, as last heard. */
@@ -48,16 +50,36 @@ public final class EmoteSounds {
 		}
 
 		void stop() {
-			held.forEach(h -> h.sound().end());
+			held.forEach(Held::end);
 			held.clear();
 		}
 	}
 
-	/** A sound held for its window: until this time into the clip, on this play of it. */
-	private record Held(Sound sound, int turn, float until) {
+	/** A sound held for its window: until this time into the clip, on this play of it; restarted from next on a loop. */
+	private static final class Held {
+		/** Its passes still playing (a loop's new pass starts over the old one's tail). */
+		final List<Sound> sounds = new ArrayList<>();
+		final EmoteData.Event event;
+		final int turn;
+		final float until;
+		float next;
+
+		Held(Sound sound, EmoteData.Event event, int turn) {
+			this.sounds.add(sound);
+			this.event = event;
+			this.turn = turn;
+			this.until = event.at() + event.duration();
+			this.next = event.loop() > 0 ? event.at() + event.loop() : Float.MAX_VALUE;
+		}
+
+		void end() {
+			sounds.forEach(Sound::end);
+		}
 	}
 
 	private static final Map<Integer, Track> TRACKS = new HashMap<>();
+	/** How many times each "every nth play" sound has come up (Lúcio's 4A77: every 4th). */
+	private static final Map<String, Integer> PLAYS = new HashMap<>();
 
 	private EmoteSounds() {
 	}
@@ -94,23 +116,31 @@ public final class EmoteSounds {
 				track = new Track(emote, animator.emoteStart());
 				TRACKS.put(player.getId(), track);
 			}
+			boolean own = player == mc.player;
 			EmotePlan.At at = plan.at(animator.emoteTime(now));
 			if (at.turn() != track.turn) {
 				// the rest of the clip before (a tick can pass its end), then the new one from its start
 				if (track.clip != null && at.turn() > track.turn) {
-					play(mc, player, hero, data, track, track.clip, track.turn, track.at, track.clip.duration());
+					play(mc, player, own, hero, data, track, track.clip, track.turn, track.at, track.clip.duration());
 				}
-				play(mc, player, hero, data, track, at.clip(), at.turn(), -1, at.at());
+				play(mc, player, own, hero, data, track, at.clip(), at.turn(), -1, at.at());
 			} else {
-				play(mc, player, hero, data, track, at.clip(), at.turn(), track.at, at.at());
+				play(mc, player, own, hero, data, track, at.clip(), at.turn(), track.at, at.at());
 			}
-			track.held.removeIf(h -> {
-				if (h.turn() != at.turn() || at.at() >= h.until() || h.sound().isStopped()) {
-					h.sound().end();
-					return true;
+			for (Held h : List.copyOf(track.held)) {
+				if (h.turn != at.turn() || at.at() >= h.until) {
+					h.end();
+					track.held.remove(h);
+				} else if (at.at() >= h.next) {
+					// a loop goes round again: a new pass over the old one's tail, as Wwise's do
+					Sound again = start(mc, player, hero, h.event);
+					if (again != null) {
+						h.sounds.removeIf(Sound::isStopped);
+						h.sounds.add(again);
+					}
+					h.next += h.event.loop();
 				}
-				return false;
-			});
+			}
 			track.turn = at.turn();
 			track.clip = at.clip();
 			track.at = at.at();
@@ -125,23 +155,41 @@ public final class EmoteSounds {
 	}
 
 	/** Plays the clip's sounds that start after from and by to (seconds into it). */
-	private static void play(Minecraft mc, Player player, Hero hero, EmoteData.Emotes data, Track track,
+	private static void play(Minecraft mc, Player player, boolean own, Hero hero, EmoteData.Emotes data, Track track,
 		SkinnedModel.Clip clip, int turn, float from, float to) {
 		for (EmoteData.Event e : data.events(track.emote, clip.name())) {
-			if (e.at() <= from || e.at() > to) {
+			if (e.at() <= from || e.at() > to || !heardHere(e, own) || !thisPlay(hero, e)) {
 				continue;
 			}
-			Identifier id = Overcraft.id(e.event(hero.id));
-			if (mc.getSoundManager().getSoundEvent(id) == null) {
-				// not in the player's pack (built before #48, or a sound it couldn't make)
-				continue;
-			}
-			Sound sound = new Sound(SoundEvent.createVariableRangeEvent(id), player, e.loops());
-			mc.getSoundManager().play(sound);
-			if (e.duration() > 0) {
-				track.held.add(new Held(sound, turn, e.at() + e.duration()));
+			Sound sound = start(mc, player, hero, e);
+			if (sound != null && e.duration() > 0) {
+				track.held.add(new Held(sound, e, turn));
 			}
 		}
+	}
+
+	/** Whether this client hears it: an "own" sound only the emoting player, an "others" one everyone else. */
+	private static boolean heardHere(EmoteData.Event e, boolean own) {
+		return e.audience() == null || e.audience().equals("own") == own;
+	}
+
+	/** Whether this play of it sounds (some sound only every nth play, or by chance). */
+	private static boolean thisPlay(Hero hero, EmoteData.Event e) {
+		if (e.nth() > 1) {
+			return PLAYS.merge(e.event(hero.id), 1, Integer::sum) % e.nth() == 1;
+		}
+		return e.chance() >= 1 || java.util.concurrent.ThreadLocalRandom.current().nextFloat() < e.chance();
+	}
+
+	private static @Nullable Sound start(Minecraft mc, Player player, Hero hero, EmoteData.Event e) {
+		Identifier id = Overcraft.id(e.event(hero.id));
+		if (mc.getSoundManager().getSoundEvent(id) == null) {
+			// not in the player's pack (built before #48, or a sound it couldn't make)
+			return null;
+		}
+		Sound sound = new Sound(SoundEvent.createVariableRangeEvent(id), player, Math.round(e.cut() * 20), Math.round(e.fade() * 20));
+		mc.getSoundManager().play(sound);
+		return sound;
 	}
 
 	public static void clear() {
@@ -149,14 +197,19 @@ public final class EmoteSounds {
 		TRACKS.clear();
 	}
 
-	/** An emote's sound at the hero, following them; looping when its Wwise container does, until ended. */
+	/** An emote's sound at the hero, following them; cut after cutTicks (0 never), fading over fadeTicks when ended. */
 	private static final class Sound extends AbstractTickableSoundInstance {
 		private final Entity hero;
+		private final int cutTicks;
+		private final int fadeTicks;
+		private int age;
+		private int fading = -1;
 
-		Sound(SoundEvent event, Entity hero, boolean loops) {
+		Sound(SoundEvent event, Entity hero, int cutTicks, int fadeTicks) {
 			super(event, SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
 			this.hero = hero;
-			looping = loops;
+			this.cutTicks = cutTicks;
+			this.fadeTicks = fadeTicks;
 			x = hero.getX();
 			y = hero.getY();
 			z = hero.getZ();
@@ -164,17 +217,30 @@ public final class EmoteSounds {
 
 		@Override
 		public void tick() {
-			if (hero.isRemoved()) {
+			age++;
+			if (hero.isRemoved() || cutTicks > 0 && age >= cutTicks) {
 				stop();
 				return;
+			}
+			if (fading >= 0) {
+				if (++fading >= fadeTicks) {
+					stop();
+					return;
+				}
+				volume = 1 - (float) fading / fadeTicks;
 			}
 			x = hero.getX();
 			y = hero.getY();
 			z = hero.getZ();
 		}
 
+		/** Its window is over: it fades out (its event's stop fade), or stops now. */
 		void end() {
-			stop();
+			if (fadeTicks > 0) {
+				fading = Math.max(fading, 0);
+			} else {
+				stop();
+			}
 		}
 	}
 }

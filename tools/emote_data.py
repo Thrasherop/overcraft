@@ -117,6 +117,16 @@ INFERRED = {
 # (research/lucio/emotes.md). M: the byte isn't decoded.
 STOW = 204
 
+# how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
+# tools/soundmaps/emotes.txt): copied onto each sound event as "loop" (restarted every so many seconds while held),
+# "cut" (stopped after so many seconds by its own event), "chance" / "nth" (sounds only some plays), "audience" (own:
+# only the emoting player hears it, their 2D copy; others: everyone else, the 3D twin) and "fade" (seconds it fades out
+# when stopped)
+EMOTE_SOUNDS = Path("E:/Overwatch Archive/research/emote-sounds/sounds.json")
+# sounds that duplicate another at the same moment: Dance Party's music plays on two buses at once (49D9 and 4A52) and
+# its intro hit twice (49DA and B1B9, the second adding only a duck state); one of each plays (sounds.json notes: M)
+DUPLICATES = {"lucio": {"4A52", "B1B9"}}
+
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControl STOW): their pieces
 # take their geosets one for one from the model's submeshes
 STOWS = {"lucio": True}
@@ -454,6 +464,21 @@ def main():
             missing.remove(hid)
     out["hardpoints"] = {k: table[k] for k in sorted(used) if k in table}
     out["unresolvedHardpoints"] = missing
+    how = json.loads(EMOTE_SOUNDS.read_text(encoding="utf8")).get(hero, {}) if EMOTE_SOUNDS.exists() else {}
+    for emote in out["emotes"].values():
+        for clip in emote["clips"].values():
+            clip["events"] = [e for e in clip["events"] if e.get("sound") not in DUPLICATES.get(hero, set())]
+            for e in clip["events"]:
+                h = how.get(e["sound"]) if e.get("sound") else None
+                if not h:
+                    continue
+                if h.get("loops") and h.get("loop_length"):
+                    e["loop"] = h["loop_length"]
+                for ours, theirs in (("cut", "cut_at"), ("chance", "chance"), ("nth", "every_nth_play"), ("fade", "stop_fade")):
+                    if h.get(theirs):
+                        e[ours] = h[theirs]
+                if h.get("audience") in ("own", "others"):
+                    e["audience"] = h["audience"]
     target = ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes" / f"{hero}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(out, indent=1), encoding="utf8")
