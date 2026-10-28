@@ -92,6 +92,10 @@ public final class HeroModels {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
 			names.add(hero.id + "_weapon");
+			if (hero == Hero.MERCY) {
+				names.add("mercy_staff");
+				names.add("mercy_blaster");
+			}
 		}
 		for (String name : names) {
 			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out

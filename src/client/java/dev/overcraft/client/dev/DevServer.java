@@ -156,6 +156,16 @@ public final class DevServer {
 					// where the first-person ofuda fingertip was last drawn, from the camera in the world's axes (the throw
 					// puff pops there)
 					out.addProperty("fingertip", dev.overcraft.client.model.HeroModelRenderer.viewFingertip().toString(java.text.NumberFormat.getInstance(java.util.Locale.ROOT)));
+					// the first-person weapon's hp 0006 as last drawn, in her look's frame: right, up, ahead (m)
+					org.joml.Vector3f muzzle = dev.overcraft.client.model.HeroModelRenderer.viewMuzzle();
+					if (muzzle != null) {
+						net.minecraft.world.phys.Vec3 look = player.getViewVector(1);
+						net.minecraft.world.phys.Vec3 right = look.cross(new net.minecraft.world.phys.Vec3(0, 1, 0)).normalize();
+						net.minecraft.world.phys.Vec3 up = right.cross(look).normalize();
+						net.minecraft.world.phys.Vec3 m = new net.minecraft.world.phys.Vec3(muzzle.x, muzzle.y, muzzle.z);
+						out.addProperty("muzzle", String.format(java.util.Locale.ROOT, "%.3f %.3f %.3f pitch %.1f",
+							m.dot(right), m.dot(up), m.dot(look), player.getXRot()));
+					}
 					out.addProperty("anim1p", HeroAnimator.of(player).playingFirstPerson());
 					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
 					out.addProperty("heroAttached", attached == null ? "" : attached);

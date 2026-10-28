@@ -36,6 +36,8 @@ public abstract class MouseHandlerMixin {
 	@Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
 	private void overcraft$noSlotScroll(long handle, double xoffset, double yoffset, CallbackInfo ci) {
 		if (ClientHero.controls() && Minecraft.getInstance().gui.screen() == null) {
+			// Mercy's weapon swap is on the wheel (Overwatch's)
+			dev.overcraft.client.ClientMercy.scroll(yoffset);
 			ci.cancel();
 		}
 	}

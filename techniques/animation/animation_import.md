@@ -27,6 +27,13 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
   glTF exporter wrote no clips at all. `owm_survey.py` keeps the hero's rig (the most bones); a weapon is exported from
   its own model and hung on its hardpoint in game (`HeroWeapon`, [lucio](../heroes/lucio.md)).
 - **A pure black, opaque colour image is a layer the shader colours** (Lúcio's hair cards): drawn, it's a black slab.
+- **"OWM_MATERIAL ...: no colour texture" is a missing body, not a warning.** The add-on only links the colour
+  textures its shader metadata knows: Jetpack Cat's fur (shader 0x10D, material 15E60) came out with only its normal and
+  PBR maps, so her whole cat body exported colourless and wasn't drawn; she shipped in 0.3.16 as an empty jetpack with
+  eyes and a tongue (the owner: "there was never a cat"). `owm_survey.py`'s `COLOUR_KEYS` maps such shaders to the
+  colour texture's type key, read from the material's own .owmat (15E60: 86DAAC6B = her tabby albedo 6F76A). After
+  every export, read its OWM_MATERIAL lines and look at the model from every side; a material with only a mask or no
+  textures (an eye overlay, a glow card) is fine, one with Normal and PBR but no colour is a body part.
 - **Renaming clips in a .glb doesn't need a re-export** (`tools/rename_glb_clips.py`); keep `tools/clipmaps` in step.
 
 ## Our bones keep Overwatch's frames

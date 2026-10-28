@@ -6,6 +6,35 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-28
 
+### Build 0.3.17 (Mercy; Jetpack Cat's body and her data pass)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.17): Jetpack Cat's models re-exported (her fur's colour, see
+below), Mercy's models (body, first person, staff, blaster, her emote props), `ui`, `effects` (her masks) and
+`sounds`, then `zip`.
+- **Mercy, the fourth hero:** pick her on the select screen (or H at your bed). Her kit was read from her game data
+  graph by graph (`E:\Overwatch Archiveesearch\mercy\kit_details.md`), the numbers from the latest patch notes.
+  - Caduceus Staff: left button heals (55/s), right boosts damage (+25%), locked on within 15 m; it holds 1.0 s out of
+    sight (her data; the wiki says 1.3). Caduceus Blaster on 2 / the scroll wheel: 20 a round, 5 a second, 25 rounds,
+    reload 1.4 s (the ammo is back at 0.91 s); the rounds leave her blaster's muzzle.
+  - Guardian Angel (Shift): flies to the ally nearest the crosshair (or her beam's target first) at 17 m/s and stops
+    beside them, 3.7 m short, as her data does; Jump launches the way you look, Crouch straight up (20.4 m/s with a
+    full second of flight), back + Jump away and slower; Jump or Crouch still work for 0.35 s after arriving. Not
+    toward an ally within 4 m.
+  - Angelic Descent (hold Space or Crouch in the air), Resurrect (E, 5 m, 1.75 s), Flash Heal (R, on the ally your
+    beam holds), Valkyrie (Q: 15 s of flight at 9 m/s, chained beams, unlimited blaster ammo, 25 m/s Guardian Angel,
+    a 26.5 m/s super jump). Her perks, HUD, effects, sounds, voice lines and 20 emotes (with their props and sounds;
+    her staff and blaster put away or kept per emote, as each clip's data says).
+  - An ability's landing (a Guardian Angel launch, Valkyrie ending high up) never hurts her: it did (half her health,
+    or death from Valkyrie's end), found playing.
+  - Not yet (open, in `tools/reference/mercy-plan.md`): the staff's own animations in Caduceus, Parasol and Flurry;
+    Guardian Angel's target preview; a few values the data doesn't hold (which way her targeting cones are measured,
+    Valkyrie's vertical speed). Valkyrie drifts when you let go, per her data's air drag: tell me if it feels wrong.
+- **Jetpack Cat:**
+  - **Her cat is drawn.** 0.3.16 showed an empty jetpack with eyes and a tongue: her fur's colour texture wasn't
+    linked by the model exporter, so the whole cat came out colourless and invisible. (Thanks for spotting it.)
+  - Her emotes (Heroic, Salty, Listen Up, Mic Drop: props and sounds), her voice lines, the jetpack's idle flames and
+    Frenetic Flight's trails on her own nozzles, the volley's flare at her paw, her shots' hit sounds, the data's hit
+    sizes, Lifeline's rope snapping at 3 rope lengths, her select-screen showcase, her first-person rise and sink.
+
 ### Build 0.3.16 (Jetpack Cat; every hero's damage, knockback and rejoin fixes)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.16): her models (`owm_survey.py --glb --keep=tools/clipmaps/
 jetpack_cat.txt` and `_1p`, with her Gameplay3P / Gameplay1P entities), `ui`, `effects <extraction>

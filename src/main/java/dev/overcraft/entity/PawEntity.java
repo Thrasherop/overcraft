@@ -32,6 +32,8 @@ public class PawEntity extends OwProjectile {
 
 	/** When each healed creature last heard a shot's heal sound (game time), by entity id. */
 	private static final java.util.Map<Integer, Long> HEAL_SOUNDED = new java.util.HashMap<>();
+	/** The same for the hit sound. */
+	private static final java.util.Map<Integer, Long> HIT_SOUNDED = new java.util.HashMap<>();
 
 	private double amount = JetpackCatStats.PAW_DAMAGE;
 	private boolean centre;
@@ -46,14 +48,14 @@ public class PawEntity extends OwProjectile {
 		this.amount = centre ? JetpackCatStats.CENTRE_DAMAGE : JetpackCatStats.PAW_DAMAGE;
 	}
 
-	/** Against enemies: paw 0.19 m, centre 0.37 m (W); the box is the centre's. */
+	/** Against enemies: paw 0.195 m, centre 0.37 m (her data); the box is the centre's. */
 	@Override
 	public float hitRadius() {
 		return (float) (centre ? JetpackCatStats.CENTRE_RADIUS : JetpackCatStats.PAW_RADIUS);
 	}
 
 	/**
-	 * Allies are hit from further (paw 0.31 m, centre 0.62 m: W; her data doubles them): before its move, a sweep along
+	 * Allies are hit from further (paw 0.315 m, centre 0.62 m: her data doubles the base): before its move, a sweep along
 	 * it for an ally within that reach, short of any block in the way.
 	 */
 	@Override
@@ -107,6 +109,9 @@ public class PawEntity extends OwProjectile {
 		EnderDragonPart part = hit.getEntity() instanceof EnderDragonPart p ? p : null;
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		Vec3 at = hit.getLocation();
+		if (target != null) {
+			hitSound(level, owner, target, at);
+		}
 		if (target != null && Allies.isAlly(owner, target)) {
 			float healed = Combat.heal(target, amount);
 			if (owner instanceof Player cat && healed > 0) {
@@ -147,10 +152,33 @@ public class PawEntity extends OwProjectile {
 		discard();
 	}
 
+	/**
+	 * A shot hitting a creature, ally or enemy (73A4, the projectile's hit slot): her own copy to her, the other at the
+	 * hit for everyone else; once a tick for each creature, as the heal (five shots at once played it five times over).
+	 */
+	private static void hitSound(ServerLevel level, LivingEntity owner, LivingEntity target, Vec3 at) {
+		if (HIT_SOUNDED.put(target.getId(), level.getGameTime()) instanceof Long last && last == level.getGameTime()) {
+			return;
+		}
+		if (owner instanceof ServerPlayer cat) {
+			dev.overcraft.hero.HeroSounds.split(cat, dev.overcraft.registry.OcSounds.JC_PAW_HIT,
+				dev.overcraft.registry.OcSounds.JC_PAW_HIT_3P, at);
+		} else {
+			level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.JC_PAW_HIT_3P,
+				net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
+		}
+	}
+
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
+			if (centre) {
+				// the centre shot's contact set 093B, heard by everyone at the hit (the paws have none: silent in the data)
+				Vec3 at = hit.getLocation();
+				level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.JC_PAW_HIT_BLOCK,
+					net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
+			}
 			Vec3 normal = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
 			Effects.play(level, "paw_hit_block", hit.getLocation(), normal, null, centre ? 1 : 0, getOwner());
 			discard();

@@ -115,10 +115,10 @@ public final class KirikoFx {
 					HeroHud.markInRush();
 				}
 			}
-			// Lúcio's, then Jetpack Cat's
+			// Lúcio's, then Jetpack Cat's, then Mercy's
 			default -> {
-				if (!LucioFx.dispatch(e, enemy)) {
-					JetpackCatFx.dispatch(e, enemy);
+				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy)) {
+					MercyFx.dispatch(e, enemy);
 				}
 			}
 		}

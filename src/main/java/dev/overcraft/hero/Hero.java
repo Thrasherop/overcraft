@@ -9,6 +9,7 @@ public enum Hero {
 	LUCIO("lucio", "Lúcio", Role.SUPPORT, "tactician", dev.overcraft.lucio.LucioStats.HEALTH, true, 0xFF7CC242),
 	JETPACK_CAT("jetpack_cat", "Jetpack Cat", Role.SUPPORT, "tactician", dev.overcraft.jetpackcat.JetpackCatStats.HEALTH, true,
 		0xFFF08A3C),
+	MERCY("mercy", "Mercy", Role.SUPPORT, "medic", dev.overcraft.mercy.MercyStats.HEALTH, true, 0xFFFDF9D7),
 	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", 225, false, 0xFF8A4FD8),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 

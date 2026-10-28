@@ -55,6 +55,15 @@ The kunai's ammo point came from her weapon graph (statescript 0x2171, in
 nodes and the SetVar literals their expressions read. There it was 0.65, the "65%" of the patch notes. The match
 music was found the same way (graph 0D3B: [music-round9](../../tools/reference/music-round9.md)).
 
+**TankLib leaves expression operands unmapped** (raw fields like EDD5CEE2), so a node's expression reads as opcodes with
+holes. For Mercy (2026-10-28) a raw STU v2 reader and a small decompiler that resolve the operands and follow the
+branches turned her whole kit into formulas with node ids: `E:\Overwatch Archiveesearch\mercy\scripts\kit\`
+(stuv2.py, operands.py, decomp.py), outputs in `work_kit\`. The hero-settings file (0126) names the options and their
+defaults (Mercy's "prefer beam target", "crouch activates Angelic Descent"), which tells you which branch is the
+default game. **A value that matches a public number isn't identified until its reader is found:** her 1BE6 = 1.3
+matched the wiki's 1.3 s beam linger and was Valkyrie's launch factor
+([heroes/mercy](../heroes/mercy.md#what-her-graphs-said-that-the-wiki-didnt-kit_detailsmd-2026-10-28)).
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent

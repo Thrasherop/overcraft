@@ -50,8 +50,17 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
+		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ResurrectPayload.TYPE, (payload, context) -> {
+			if (context.player() != null && context.player().isDeadOrDying()) {
+				context.player().respawn();
+				context.client().gui.setScreen(null);
+			}
+		});
 		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
 			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
+		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.PingPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.comms.Pings.receive(payload));
@@ -101,9 +110,11 @@ public class OvercraftClient implements ClientModInitializer {
 			RushSound.tick(client);
 			LucioMusic.tick(client);
 			JetpackCatSounds.tick(client);
+			MercySounds.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);
+				dev.overcraft.client.effect.MercyFx.tick(client.level);
 				dev.overcraft.client.effect.JetpackCatFx.aim(client);
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 			}
@@ -123,6 +134,10 @@ public class OvercraftClient implements ClientModInitializer {
 		// Jetpack Cat's shots: no model in her data (particles only), so drawn by their flight effect
 		EntityRendererRegistry.register(OcEntities.PAW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx, "paw", 0.4f,
 			false, 1, true));
+
+		// Mercy's blaster shots: drawn by their flight effect (MercyFx), the item only without the local pack
+		EntityRendererRegistry.register(OcEntities.BLASTER_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"blaster_shot", 0.3f, false, 1, true));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -182,7 +197,11 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
-		OwMovement.flight = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT;
+		OwMovement.flight = entity -> entity == mc.player && (ClientHero.hero() == Hero.JETPACK_CAT
+			|| ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity));
+		OwMovement.valkyrie = entity -> entity == mc.player && ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity);
+		OwMovement.glide = ClientMercy::glide;
+		OwMovement.descent = ClientMercy::descent;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();
 		OwMovement.crouchHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.CROUCH).isDown();

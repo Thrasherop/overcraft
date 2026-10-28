@@ -256,6 +256,7 @@ public final class Combat {
 			case KIRIKO -> dev.overcraft.kiriko.KirikoStats.ULT_COST;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.ULT_COST;
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.ULT_COST;
+			case MERCY -> dev.overcraft.mercy.MercyStats.ULT_COST;
 			default -> 1;
 		};
 	}

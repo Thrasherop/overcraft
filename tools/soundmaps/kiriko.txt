@@ -774,3 +774,12 @@ kiriko.voice.call_ult_almost = HeroVoice/Kiriko/Ultimate/AlmostReady/00000005EFE
 kiriko.voice.call_good_job = HeroVoice/Kiriko/TeamKill/000000062D05.0B2-(Japanese)_ Good job!.ogg | w=1
 kiriko.voice.call_good_job = HeroVoice/Kiriko/Elimination/00000005EB8D.0B2-Nice.ogg | w=1
 kiriko.voice.call_good_job = HeroVoice/Kiriko/Elimination/0000000627B2.0B2-(Japanese)_ Well done!.ogg | w=1
+
+# Resurrected (005A, prio 75, 10 s) and DamageBoosted (00CC, prio 60, 30 s): what a Mercy's Resurrect and damage
+# boost make the hero say (the voice research's stimuli; every line weight 1).
+kiriko.voice.resurrected = HeroVoice/Kiriko/Resurrected/00000005EF6D.0B2-Hey, thanks.ogg | w=1
+kiriko.voice.resurrected = HeroVoice/Kiriko/Resurrected/00000005EFFD.0B2-Look at that. I'm back.ogg | w=1
+kiriko.voice.damage_boosted = HeroVoice/Kiriko/DamageBoosted/00000005EF92.0B2-Thanks for the boost.ogg | w=1
+kiriko.voice.damage_boosted = HeroVoice/Kiriko/DamageBoosted/00000005EF94.0B2-Powered up. Nice.ogg | w=1
+kiriko.voice.damage_boosted = HeroVoice/Kiriko/DamageBoosted/00000005EFD9.0B2-My senses are sharpened.ogg | w=1
+kiriko.voice.damage_boosted = HeroVoice/Kiriko/DamageBoosted/00000005EFDA.0B2-This might hurt more than usual.ogg | w=1

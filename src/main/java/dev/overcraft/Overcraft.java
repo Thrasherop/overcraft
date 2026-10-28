@@ -29,6 +29,7 @@ import dev.overcraft.comms.Comms;
 import dev.overcraft.net.SelectHeroPayload;
 import dev.overcraft.net.OwnSoundPayload;
 import dev.overcraft.net.VictoryPayload;
+import dev.overcraft.mercy.Souls;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.registry.OcItems;
 import dev.overcraft.registry.OcSounds;
@@ -61,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.16";
+	public static final String ASSETS_NEEDED = "0.3.17";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -119,6 +120,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
@@ -155,13 +157,20 @@ public class Overcraft implements ModInitializer {
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
 			HeroManager.tick(server);
+			dev.overcraft.mercy.Boosts.tick(server);
+			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);
 		});
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> HeroManager.onRespawn(newPlayer));
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			boolean resurrected = Souls.resurrecting(newPlayer);
+			HeroManager.onRespawn(newPlayer, resurrected);
+			// a Mercy's Resurrect puts them back where they fell, with its health (after the kit, which sets the health)
+			Souls.onRespawn(oldPlayer, newPlayer);
+		});
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (Combat.isPhased(entity)) {
@@ -173,6 +182,7 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -197,6 +207,8 @@ public class Overcraft implements ModInitializer {
 			HeroManager.clear();
 			Combat.clear();
 			KitsuneRush.clear();
+			Souls.clear();
+			dev.overcraft.mercy.Boosts.clear();
 		});
 	}
 }

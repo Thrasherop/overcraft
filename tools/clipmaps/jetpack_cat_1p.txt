@@ -1,6 +1,10 @@
 # Jetpack Cat, first person (the same model 0586.118 with look 2674: entity Gameplay1P). From the data map (H states).
 0-60_0000000187ED = idle
 4-4_0000000195B6 = add_idle
+# Up / down (added 2026-10-28, research\jetpack_cat\gaps.md): 2-frame additive poses on a Blend1d driven by df 0C9C, the
+# jetpack's vertical input (graph 59DC: v10912 = +1 jump / 0 / -1 crouch): 194EF at +1, 194F0 at -1 (set 3866, H).
+4-28_0000000194EF = add_up
+4-28_0000000194F0 = add_down
 4-0_00000001896A = add_fire
 4-0_00000001896B = add_fire_2
 0-32_000000018D45 = reload
