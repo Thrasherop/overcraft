@@ -14,6 +14,9 @@ Data: `assets/overcraft/emotes/lucio.json` (tools/emote_data.py, build 154088). 
   (Heroic: on his shoulder).
 - Listen Up, Salty and Mic Drop carry controls with other bytes (254 / 16 / 99). Taking every clip-less control as a
   stow put the gun away in Listen Up, which the research said keeps it: filter on 204.
+  - (2026-10-28, from Mercy's emotes) "204" is not an action: it's the low byte of his weapon's slot id **12CC**, which
+    TankLib's outdated structure reads as the action. His other "bytes" are other slots (1CFE, 12210, 7863: the mic).
+    The filter happened to be right: [mercy_emotes](mercy_emotes.md).
 - The gun's place in an emote is the emote's pose (`animator.emotePose()`), as the props'. Taken from the last
   gameplay pose, it hung where his hand was before the emote.
 - **Geoset 1 goes with it:** a cable on his weapon arm, weighted to Weapon_R. The masks hide it with the gun. Not

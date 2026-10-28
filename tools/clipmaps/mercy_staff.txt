@@ -1,0 +1,18 @@
+# Mercy's Caduceus Staff (its own entity 185F, skin model 00000000DA56.00C, 12 bones), hung on her hardpoint 000A (Weapon_R) in
+# both views; its beam / muzzle hardpoint is 0006 (0, -0.007, 0.383) on its Pelvis bone. Its own clips (set 0071, E:\Overwatch Archive\research\mercy\mercy-map.md).
+0-36_00000000084A = idle   # alias 0x002 (2.0 s): held, its head turning; its bone_0001 key is a bake from the 1P rig, not applied (E:\Overwatch Archive\research\mercy\weapon_attach.md)
+0-28_000000000ABD = holstered   # when the blaster is out (df 0xE4 cat 0x7D)
+4-36_000000000B5E = add_beam   # beam state machine (1.0 s): M heal
+4-36_000000000B85 = add_beam_2   # 1.0 s: M boost
+4-36_000000000B5B = add_beam_short   # 0.5 s
+4-36_000000000B84 = add_beam_short_2   # 0.5 s
+4-36_000000000B5C = add_beam_start   # transition 0.467 s
+4-36_000000000B5A = add_beam_start_2
+4-36_000000000B5F = add_beam_end   # 0.5 s
+4-36_000000000B5D = add_beam_end_2
+4-36_000000000B9F = add_beam_swap   # heal -> boost (0.533 s): M
+4-36_000000000BA2 = add_beam_swap_2   # boost -> heal: M
+4-12_00000000A9F1 = add_layer   # additive layer 1.0 s (L)
+4-4_00000000A9D3 = add_layer_2
+4-12_0000000126E7 = add_flash_heal   # 0xA60 (1.0 s)
+4-12_000000012700 = add_flash_heal_2

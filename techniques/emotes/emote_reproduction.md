@@ -90,9 +90,11 @@ off her added back (`HeroAnimator.emoteRootShift`).
 - Overwatch layers shared hand clips over some partial emotes. Until those are read, a weapon piece no wrist holds
   isn't drawn there (ours, labelled).
 
-**A weapon that's an entity of its own** (Lúcio's) isn't a geoset: emotes stow it with clip-less EntityControls (byte
-204), and the geoset that goes with it is found by submesh order, not vertex count:
-[lucio_emotes](lucio_emotes.md#his-weapon-is-an-entity-not-a-geoset-the-nuance-that-matters).
+**A weapon that's an entity of its own** (Lúcio's, Mercy's two) isn't a geoset: emotes stow it with clip-less
+EntityControls naming its child-entity slot, and the geoset that goes with it is found by submesh order, not vertex
+count: [lucio_emotes](lucio_emotes.md#his-weapon-is-an-entity-not-a-geoset-the-nuance-that-matters). TankLib reads
+the control's slot id as an "action" byte (its structure predates a field); read the chunk raw and match the slot:
+[mercy_emotes](mercy_emotes.md#two-weapons-each-an-entity-per-slot-stow-windows-2026-10-28).
 
 ## 8. The coat: sometimes animated, sometimes simulated
 A hero's cloth bones are never keyed in a clip, but that doesn't make the cloth physics. Overwatch's cloth (Domino)

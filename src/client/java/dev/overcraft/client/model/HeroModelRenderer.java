@@ -195,6 +195,30 @@ public final class HeroModelRenderer {
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
+		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
+			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			Vector3f head = weaponShown && !animator.blaster() ? HeroWeapon.muzzle(hero, animator, loaded.model(), false, now) : null;
+			net.minecraft.world.phys.Vec3 staff = null;
+			if (head != null) {
+				Vector3f p = head.mul(state.scale).rotateY(turn);
+				staff = base.add(p.x, p.y, p.z);
+			}
+			String[] names = dev.overcraft.client.effect.MercyFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length && pose != null; i++) {
+				int node = loaded.model().node("hardpoint_" + names[i]);
+				if (node < 0) {
+					points = new net.minecraft.world.phys.Vec3[0];
+					break;
+				}
+				Vector3f p = Skeleton.world(loaded.model(), pose, node).getTranslation(new Vector3f()).mul(state.scale).rotateY(turn);
+				points[i] = base.add(p.x, p.y, p.z);
+			}
+			dev.overcraft.client.effect.MercyFx.posed(entity, staff, pose == null ? new net.minecraft.world.phys.Vec3[0] : points);
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -640,6 +664,14 @@ public final class HeroModelRenderer {
 		return new Vector3f(VIEW_FINGERTIP);
 	}
 
+	/** The first-person weapon's hp 0006 from the camera, in the world's axes, as last drawn (as VIEW_FINGERTIP). */
+	private static final Vector3f VIEW_MUZZLE = new Vector3f();
+	private static long viewMuzzleAt = -1;
+
+	public static @Nullable Vector3f viewMuzzle() {
+		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
+	}
+
 	/** The arms were drawn just now (not hidden: F1, another view), so the fingertip is where they are. */
 	public static boolean viewFingertipFresh() {
 		return viewFingertipAt >= 0 && Util.getMillis() - viewFingertipAt < 200;
@@ -771,6 +803,12 @@ public final class HeroModelRenderer {
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
 		if (weapon != null) {
 			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)
+			Vector3f muzzle = HeroWeapon.muzzle(hero, animator, loaded.model(), true, now);
+			if (muzzle != null) {
+				poseStack.last().pose().transformPosition(muzzle, VIEW_MUZZLE);
+				viewMuzzleAt = Util.getMillis();
+			}
 		}
 		if (minecraft) {
 			// the main hand's item in her kunai hand, the other's in her ofuda hand (the owner's idea too)

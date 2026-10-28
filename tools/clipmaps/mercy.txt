@@ -1,0 +1,134 @@
+# Mercy, third person (skin model 00000000DBEA.00C, look of entity Gameplay3P 00E4; set 0068). <folder>_<clip id> = our name.
+# From the game data map (E:\Overwatch Archive\research\mercy\mercy-map.md, build 154088): states, aliases, blend points and timings read there (H).
+# Every state has a staff and a blaster variant, picked by dataflow 0xE4 (category 0x7D = the blaster, the default branch
+# = the staff: M, from the 0.133 s shot vs the 0.5-1 s beam loops). Staff names are plain, blaster ones end _blaster.
+# 8-way slots named by the slot fields Kiriko's measured runs fill (techniques/animation/animation_import.md); 2D points
+# by the blend's X / Y (Y+ = forward: M).
+# Idle (alias 0x001): a stand picked by a state machine (df 0xB7), with additive layers; 0x008 is a held pose (df 0x8A).
+0-36_000000000985 = idle   # 0x001 staff (801A0084)
+0-36_0000000009F0 = idle_2   # 0x001 staff, second stand
+4-6_000000000983 = add_idle   # 0x001 staff additive 1.37 s
+4-6_000000000BAB = add_idle_2   # 0x001 staff additive 0.67 s
+4-0_000000000989 = add_breathe   # 0x001 additive 2.97 s, both weapons
+0-36_000000000A15 = idle_blaster   # 0x001 blaster (801A0095)
+0-36_000000000A16 = idle_blaster_2
+4-2_000000000A14 = add_idle_blaster   # 0.67 s
+4-2_000000000C85 = add_idle_blaster_2   # 0.67 s
+0-60_0000000011D4 = pose_held   # 0x008, df 0x8A cat 4 (2.0 s): M, a held / frozen pose
+# Run (alias 0x005), 0.667 s loops.
+0-32_000000000993 = run   # staff 801A0085
+0-32_0000000009A5 = run_forward_right
+0-32_0000000009A7 = strafe_right
+0-32_0000000009A8 = run_back_right
+0-32_0000000009A4 = run_back
+0-32_0000000009AA = run_back_left
+0-32_0000000009A9 = strafe_left
+0-32_0000000009A6 = run_forward_left
+0-32_000000000A1E = run_blaster   # blaster 801A0086
+0-32_000000000A1F = run_forward_right_blaster
+0-32_000000000A1D = strafe_right_blaster
+0-32_000000000A22 = run_back_right_blaster
+0-32_000000000A21 = run_back_blaster
+0-32_000000000A23 = run_back_left_blaster
+0-32_000000000A24 = strafe_left_blaster
+0-32_000000000A20 = run_forward_left_blaster
+# Crouch (0x055 move, 0.533 s; 0x056 still).
+0-36_00000000834B = crouch_walk   # staff 801A01E9
+0-36_0000000083E5 = crouch_walk_forward_right
+0-36_00000000834E = crouch_walk_right
+0-36_0000000083E3 = crouch_walk_back_right
+0-36_000000008366 = crouch_walk_back
+0-36_0000000083F0 = crouch_walk_back_left
+0-36_00000000834F = crouch_walk_left
+0-36_0000000083E4 = crouch_walk_forward_left
+0-36_000000008408 = crouch_walk_blaster   # blaster 0x055
+0-36_0000000084BE = crouch_walk_forward_right_blaster
+0-36_0000000084BD = crouch_walk_right_blaster
+0-36_0000000084C1 = crouch_walk_back_right_blaster
+0-36_0000000084C0 = crouch_walk_back_blaster
+0-36_0000000084C2 = crouch_walk_back_left_blaster
+0-36_0000000084C3 = crouch_walk_left_blaster
+0-36_0000000084BF = crouch_walk_forward_left_blaster
+0-36_00000000833F = crouch_idle   # 0x056 (0.733 s)
+# Jump (0x006): takeoff, then the rise (time from df 0x2B).
+0-32_0000000009EB = jump   # staff 801A00C4 (0.167 s)
+0-32_0000000009EC = fall   # staff (0.433 s, time df 0x2B)
+0-32_0000000009ED = jump_2   # staff (0.1 s)
+0-32_000000000ABF = jump_blaster   # blaster 801A00C3
+0-32_000000000AC0 = fall_blaster
+0-32_000000000AC1 = jump_2_blaster
+# Landing poses (0x174 / 0x1C8, 60 fps, 4-way 2D): M, played by the shared landing graph 02C5.
+0-60_000000002288 = land   # staff centre
+0-60_0000000013DA = land_forward   # Y+
+0-60_0000000013DB = land_right   # X+
+0-60_0000000013D9 = land_back   # Y-
+0-60_0000000013D8 = land_left   # X-
+0-60_000000002289 = land_blaster   # blaster centre
+# Primary fire (0x00A, additive): the staff's beam clips (M: which is heal / boost / start / stop), the blaster's shot.
+4-4_000000000B97 = add_beam_start   # 0.5 s
+4-4_000000000B98 = add_beam   # 1.0 s loop
+4-4_000000000BA7 = add_beam_2   # 0.5 s
+4-4_000000000BA8 = add_beam_3   # 0.567 s
+4-4_000000000B99 = add_beam_end   # 0.5 s
+4-4_000000000BA9 = add_beam_end_2   # 0.433 s
+4-4_000000000C84 = add_fire_blaster   # 0.133 s a shot
+# Reload (0x004, blaster: 1.4 s by the graph), quick melee (0x00D, 0.76 s by graph 0043; pitch down / level / up: M).
+0-32_000000000DC4 = reload_blaster   # 1.7 s clip played over the 1.4 s reload
+0-32_000000000BC8 = melee   # staff 801A008E (1.1 s)
+0-32_000000000DF1 = melee_down
+0-32_000000000DF0 = melee_up
+0-32_000000000CCD = melee_blaster   # blaster 801A008D (1.0 s)
+0-32_000000000DF4 = melee_down_blaster
+0-32_000000000DF3 = melee_up_blaster
+# Guardian Angel (0x06D): df 0xC3 picks the phase: cat 0x82 start, cat 0x6E second phase, default the flight (2D for the staff).
+0-32_00000000AB25 = ga_start   # staff cat 0x82 (0.567 s)
+0-32_000000000B69 = ga_start_2   # staff cat 0x82 (0.133 s)
+0-32_000000000B67 = ga_launch   # staff cat 0x6E (0.333 s): M
+0-32_000000000B68 = ga_fly   # staff flight centre (0.6 s)
+0-32_00000000AB21 = ga_fly_right   # X+
+0-32_00000000AB23 = ga_fly_left   # X-
+0-32_00000000AB1C = ga_fly_back   # Y-
+0-32_000000000B82 = ga_start_blaster   # blaster cat 0x82 (0.1 s)
+0-32_000000000B80 = ga_launch_blaster   # cat 0x6E (0.333 s)
+0-32_000000000B81 = ga_fly_blaster   # default (0.6 s)
+# Flight (0x02F): Valkyrie (10DA, category 0x8D) and Angelic Descent's glide (0071, after 0.2 s). 9-point 2D blend on
+# df 0x235 (X) / 0x236 (Y), 2.0 s loops whose time is df 0xA3.
+0-32_000000000B41 = fly   # staff centre
+0-32_000000000B29 = fly_forward   # Y+
+0-32_000000000B2A = fly_forward_right   # X+Y+
+0-32_000000000B28 = fly_right   # X+
+0-32_000000000B2D = fly_back_right   # X+Y-
+0-32_000000000B2C = fly_back   # Y-
+0-32_000000000B2E = fly_back_left   # X-Y-
+0-32_000000000B2F = fly_left   # X-
+0-32_000000000B2B = fly_forward_left   # X-Y+
+0-32_000000000B77 = fly_blaster   # blaster centre
+0-32_000000000B79 = fly_forward_blaster
+0-32_000000000B7A = fly_forward_right_blaster
+0-32_000000000B78 = fly_right_blaster
+0-32_000000000B7D = fly_back_right_blaster
+0-32_000000000B7C = fly_back_blaster
+0-32_000000000B7E = fly_back_left_blaster
+0-32_000000000B7F = fly_left_blaster
+0-32_000000000B7B = fly_forward_left_blaster
+# Valkyrie cast (0x1B8, 0.75 s after a 0.5 s wait), Resurrect (0x06C, 1.75 s cast: the clip plays over 2.0 s), Flash Heal (0xA60).
+0-32_000000004A17 = ult_cast   # staff 801A012A (1.5 s; 4A72 / 4A71 the pitch variants: M)
+0-32_000000004A16 = ult_cast_blaster   # blaster 801A0129
+# not in the extraction (read in the data only): 4-28_000000004A5F = add_ult_cast   # 0.333 s additive
+0-32_000000004DAF = resurrect   # staff 801A00A1 (2.267 s)
+0-32_000000004DB0 = resurrect_blaster   # blaster 801A00A0
+4-0_0000000126EB = add_flash_heal   # 1.0 s additive (on foot)
+4-32_000000012728 = add_flash_heal_flying   # in flight (df 0xE5 cat 0x8D: M)
+# Knocked down (0x064 / 0x065 / 0x066, shared graph 224E): her death plays it, as Kiriko's and Jetpack Cat's.
+0-36_000000003BD4 = knockdown_start   # staff
+0-44_000000003BD5 = knockdown
+0-36_000000003BD6 = knockdown_end
+0-36_000000007C67 = knockdown_start_blaster
+0-44_000000007C68 = knockdown_blaster
+0-36_000000007C69 = knockdown_end_blaster
+0-32_00000000187D = hit_react   # 0x070 / 0x14E (0.767 s): M, stun / hit reaction
+# Hero select showcase (entity 3A80, set 0C87, alias 0xA0E): a sequence, the intro then the fidgets; the hold is ours.
+# not in the extraction (read in the data only): 0-32_00000000ACA3 = select_intro   # 3.33 s
+0-32_00000000AE32 = select_hold   # 3.9 s, the first after the intro
+0-32_00000000AE30 = select_fidget
+0-32_00000000AE34 = select_fidget_2

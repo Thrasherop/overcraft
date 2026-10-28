@@ -1,0 +1,6 @@
+# Mercy's Caduceus Blaster (its own entity 025E, skin model 00000000DA57.00C, 10 bones), hung on her hardpoint 000A (Weapon_R);
+# muzzle hardpoint 0006 (0, 0.095, 0.254). Its own clips (set 0078, E:\Overwatch Archive\research\mercy\mercy-map.md).
+0-28_000000000ABD = idle   # alias 0x002 base (0.133 s)
+4-4_000000000CF0 = reload   # 1.4 s, time from df 0x66
+4-0_000000000CDB = add_fire   # alias 0x035 (0.5 s, random of 4)
+4-28_000000000AA7 = add_layer   # 0.033 s additive (df 0x32)

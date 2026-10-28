@@ -751,6 +751,7 @@ public final class HeroHud {
 			Identifier fox = HeroArt.ability(hero, switch (hero) {
 				case LUCIO -> "sound_barrier";
 				case JETPACK_CAT -> "catnapper";
+				case MERCY -> "valkyrie";
 				default -> "kitsune_rush";
 			});
 			if (fox != null) {
@@ -836,6 +837,21 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.MERCY) {
+			// Guardian Angel (Shift), Resurrect (E), Flash Heal (R: its charges in the corner with Double Dose), in Lúcio's
+			// three places (ours)
+			ability(g, hero, w, "guardian_angel", w - 719, 900, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.mercy.MercyStats.GA_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "resurrect", w - 641, 903, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.mercy.MercyStats.RES_COOLDOWN, ability2ReadyAt);
+			float flash = s.secondaryAmmo() > 0 ? 0 : s.ability3Cooldown();
+			ability(g, hero, w, "flash_heal", w - 563, 906, HeroControls.get(Action.RELOAD), flash,
+				(float) dev.overcraft.mercy.MercyStats.FLASH_COOLDOWN, ability3ReadyAt);
+			if (s.secondaryAmmo() > 1 || s.secondaryAmmo() == 1 && s.ability3Cooldown() > 0) {
+				charges(g, s.secondaryAmmo(), w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.JETPACK_CAT) {
 			// Frenetic Flight (the right button) with its energy along the foot of its box, Lifeline (Shift: marked while
 			// she tows), Purr (E); in Lúcio's three places (ours)
@@ -880,6 +896,15 @@ public final class HeroHud {
 		fill(g, x + 4, base + 60, 56, 6, 0x66000000);
 		fill(g, x + 4, base + 60, 56 * Math.clamp(energy, 0, 1), 6, colour);
 		HudText.draw(g, Face.BODY, Math.round(energy * 100) + "%", x + 50, base + 22, 13, colour, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
+	/** Charges left on an ability's box (Flash Heal with Double Dose): the count in its corner (ours). */
+	private static void charges(GuiGraphicsExtractor g, int count, float x, float base, float w) {
+		float cx = x + 32;
+		g.pose().pushMatrix();
+		curve(g, cx, base + 36, slopeAt(960 - (w - cx)));
+		HudText.draw(g, Face.BODY, String.valueOf(count), x + 54, base + 22, 13, 0xFFF2D43A, Align.CENTER);
 		g.pose().popMatrix();
 	}
 
@@ -962,6 +987,14 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.MERCY) {
+			// the weapon she holds, where Kiriko's kunai panel is: the staff (no ammo) or the blaster's rounds
+			boolean blaster = (s.mode() & dev.overcraft.mercy.Mercy.FLAG_BLASTER) != 0;
+			weapon(g, hero, w, blaster ? "caduceus_blaster" : "caduceus_staff", w - 307, 938.5f, 251, 65, 109, 36, w - 81,
+				blaster ? s.primaryAmmo() : -1, blaster ? dev.overcraft.mercy.MercyStats.BLASTER_AMMO : -1,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.JETPACK_CAT) {
 			// Biotic Pawjectiles on the left button, where Kiriko's kunai panel is
 			weapon(g, hero, w, "biotic_pawjectiles", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
@@ -1004,13 +1037,16 @@ public final class HeroHud {
 			// the kunai's icon a little further in than the ofuda's card (the eighth critique, the owner's frames)
 			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, WHITE);
 		}
-		String current = String.valueOf(ammo);
-		String max = String.valueOf(clip);
-		float cap = 16;
-		float maxW = HudText.width(Face.BODY, max, cap);
-		HudText.draw(g, Face.BODY, max, textRight, mid + cap / 2, cap, WHITE, Align.RIGHT);
-		fill(g, textRight - maxW - 6, mid - 10, 1.5f, 20, DIVIDER);
-		HudText.draw(g, Face.BODY, current, textRight - maxW - 11, mid + cap / 2, cap, WHITE, Align.RIGHT);
+		if (clip > 0) {
+			// a weapon with no ammo (Mercy's staff) shows none
+			String current = String.valueOf(ammo);
+			String max = String.valueOf(clip);
+			float cap = 16;
+			float maxW = HudText.width(Face.BODY, max, cap);
+			HudText.draw(g, Face.BODY, max, textRight, mid + cap / 2, cap, WHITE, Align.RIGHT);
+			fill(g, textRight - maxW - 6, mid - 10, 1.5f, 20, DIVIDER);
+			HudText.draw(g, Face.BODY, current, textRight - maxW - 11, mid + cap / 2, cap, WHITE, Align.RIGHT);
+		}
 		g.pose().popMatrix();
 		mouse(g, fire, mouseX, mouseY);
 	}

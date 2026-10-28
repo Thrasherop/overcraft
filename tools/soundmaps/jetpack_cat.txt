@@ -1226,3 +1226,22 @@ $jetpack_cat.ult.enemy = Jetpack Cat: (enemy ultimate cat sounds)
 #     subtitles its meow '(friendly ultimate cat sounds)' (H; 198A, 80 m +8 dB, holds the same meow: not used)
 #   jetpack_cat.ult.enemy            one-shot both 1 line files; Catnapper line 1989, enemies: subtitled '(enemy
 #     ultimate cat sounds)' (H)
+
+# Resurrected (005A, prio 75, 10 s) and DamageBoosted (00CC, prio 60, 30 s): what a Mercy's Resurrect and damage
+# boost make her say. As her other lines: the meows share their line's weight 1, the Swedish line 0.1.
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033DEEB.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033DF73.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033DFE2.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033F06C.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033F06D.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033F06E.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/(cat sounds)/00000033F072.03F.ogg | w=0.1429
+jetpack_cat.voice.resurrected = HeroVoice/Jetpack Cat/Resurrected/00000006B47F.0B2-(Swedish)_ Restarting.ogg | w=0.1
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033DE57.03F.ogg | w=0.2
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033DE7B.03F.ogg | w=0.2
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033DED6.03F.ogg | w=0.2
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033DF3A.03F.ogg | w=0.2
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/(cat sounds)/00000033E00E.03F.ogg | w=0.2
+jetpack_cat.voice.damage_boosted = HeroVoice/Jetpack Cat/DamageBoosted/00000006B47E.0B2-(Swedish)_ System overdrive.ogg | w=0.1
+$jetpack_cat.voice.resurrected = Jetpack Cat meows, back on her paws
+$jetpack_cat.voice.damage_boosted = Jetpack Cat purrs, powered up

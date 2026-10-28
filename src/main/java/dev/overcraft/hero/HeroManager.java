@@ -64,6 +64,14 @@ public final class HeroManager {
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
 	/**
+	 * Mercy's state, for every client to draw and animate her (MercyFx, HeroAnimator): [flags (Mercy.FLAG_*), Guardian
+	 * Angel's target (-1 none, -2 a soul), its destination x, y, z in cm, the beam's mode (0 none, 1 heal, 2 boost), its
+	 * target, then the Valkyrie chain's or Chain Boost's targets]. Absent or empty: not Mercy in play. Not saved: the kit sets it each tick it changes.
+	 */
+	public static final AttachmentType<java.util.List<Integer>> MERCY = AttachmentRegistry.create(Overcraft.id("mercy"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
+
+	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */
@@ -85,6 +93,7 @@ public final class HeroManager {
 		KITS.put(Hero.KIRIKO, new Kiriko());
 		KITS.put(Hero.LUCIO, new dev.overcraft.lucio.Lucio());
 		KITS.put(Hero.JETPACK_CAT, new dev.overcraft.jetpackcat.JetpackCat());
+		KITS.put(Hero.MERCY, new dev.overcraft.mercy.Mercy());
 	}
 
 	private HeroManager() {
@@ -119,7 +128,9 @@ public final class HeroManager {
 	 * (later: Winston's Jump Pack, Juno's glide; the owner, #35). Kiriko has none: her falls count from her safe height.
 	 */
 	public static boolean fallIsSafe(Player player) {
-		return false;
+		HeroState state = STATES.get(player.getUUID());
+		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself)
+		return state != null && state.hero == Hero.MERCY && state.softLanding;
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -169,6 +180,9 @@ public final class HeroManager {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
 		savePerks(player, state);
+		if (state.hero == Hero.MERCY) {
+			dev.overcraft.mercy.Mercy.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -255,7 +269,8 @@ public final class HeroManager {
 		return OPTIONS.getOrDefault(player.getUUID(), HeroOptionsPayload.DEFAULTS);
 	}
 
-	public static void onRespawn(ServerPlayer player) {
+	/** After a respawn; resurrected: a Mercy brought them back (dev.overcraft.mercy.Souls), and they say so. */
+	public static void onRespawn(ServerPlayer player, boolean resurrected) {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			Hero hero = state.hero;
@@ -266,7 +281,7 @@ public final class HeroManager {
 			state.ultCharge = charge;
 			Perks.load(state, perks);
 			applyKit(player, state, true);
-			Voice.say(player, "respawn", 0.7f);
+			Voice.say(player, resurrected ? "resurrected" : "respawn", resurrected ? 1 : 0.7f);
 		}
 	}
 
@@ -292,6 +307,9 @@ public final class HeroManager {
 		HeroKit kit = kit(state.hero);
 		if (kit != null && input.pressed() != 0) {
 			kit.press(player, state, input.pressed());
+		}
+		if (state.hero == Hero.MERCY && input.extra() != 0) {
+			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());
 		}
 	}
 
@@ -343,7 +361,10 @@ public final class HeroManager {
 		} else {
 			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0, true);
 		}
-		if (Combat.now(player) - state.lastDamagedTick >= Combat.REGEN_DELAY && player.getHealth() < player.getMaxHealth()) {
+		// Mercy's Swift Recovery starts it sooner; in Valkyrie it never stops (BZ 2023-04-11)
+		int regenDelay = state.hero == Hero.MERCY ? dev.overcraft.mercy.MercyStats.REGEN_DELAY : Combat.REGEN_DELAY;
+		boolean always = state.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.valkyrie(state);
+		if ((always || Combat.now(player) - state.lastDamagedTick >= regenDelay) && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());
 			Combat.heal(player, (Combat.REGEN_FLAT + Combat.REGEN_PERCENT * maxOw) / 20.0);
 		}

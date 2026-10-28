@@ -30,7 +30,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [emote_reproduction](emotes/emote_reproduction.md): the method, from the data: props, hardpoints, weapons, clip
     chains, the coat, review.
   - For Kiriko, see [kiriko_emotes](emotes/kiriko_emotes.md); for Lúcio (a weapon that's an entity of its own),
-    [lucio_emotes](emotes/lucio_emotes.md).
+    [lucio_emotes](emotes/lucio_emotes.md); for Mercy (two weapon entities, controls read raw by slot),
+    [mercy_emotes](emotes/mercy_emotes.md).
 - **Testing and review**
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
@@ -43,7 +44,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   the dragon, the HUD bars, cameras.
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
-  [jetpack_cat](heroes/jetpack_cat.md), hers.
+  [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:

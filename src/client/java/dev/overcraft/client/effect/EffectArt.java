@@ -86,6 +86,54 @@ public final class EffectArt {
 		CAT_PURR_GOLD(0, 0, 0, 0, .25f, .667f, .523f, 0, .5f, 1, .835f, .091f, .75f, 1, 1, .933f, 1, 1, 1, 1),
 		/** Purr's 6.4 m pulse ring (70F3, 8001990A r8): blue to cyan. */
 		CAT_PURR_RING(0, 0, 0, 0, .25f, 0, .528f, .974f, .5f, 0, .772f, 1, .75f, 0, 1, 1, 1, 0, 1, 1),
+		// Mercy's (tools/reference/mercy-effects.md, the game's LUT rows)
+		/** Mercy's heal beam 186F C14 (0.4 m ribbon; 8003A285 r3, HDR 10): gold to pale yellow. */
+		MERCY_HEAL_BEAM(0, 0, 0, 0, .25f, 1, 1, .068f, .5f, 1, 1, .139f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		/** The same normalised by its peak: keeps the gold (use this for the beam). */
+		MERCY_HEAL_BEAM_N(0, 0, 0, 0, .25f, .192f, .148f, .007f, .5f, .32f, .263f, .014f, .75f, .611f, .554f, .209f, 1, 1, .913f, .361f),
+		/** Heal beam 186F C10/C12/C16 (0.2 / 0.1 / 0.2 m; 8006E3CC r3, HDR 5). */
+		MERCY_HEAL_BEAM_SOFT(0, 0, 0, 0, .25f, .984f, .695f, .028f, .5f, 1, 1, .08f, .75f, 1, 1, .981f, 1, 1, 1, 1),
+		MERCY_HEAL_BEAM_SOFT_N(0, 0, 0, 0, .25f, .197f, .139f, .006f, .5f, .358f, .295f, .016f, .75f, .576f, .523f, .196f, 1, 1, .913f, .361f),
+		/** Boost beam 1870 C8/C12 (0.15 m; 8000D0E4 r3, HDR 10): blue to sky. */
+		MERCY_BOOST_BEAM(0, 0, 0, 0, .25f, .266f, 1, 1, .5f, .476f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		MERCY_BOOST_BEAM_N(0, 0, 0, 0, .25f, .027f, .16f, 1, .5f, .048f, .301f, 1, .75f, .192f, .445f, 1, 1, .342f, .59f, 1),
+		/** Boost beam 1870 C10 (0.5 m glow; 8000F404 r3, HDR 15): deep blue to sky. */
+		MERCY_BOOST_BEAM_GLOW(0, 0, 0, 0, .25f, .193f, 1, 1, .5f, .382f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		MERCY_BOOST_BEAM_GLOW_N(0, 0, 0, 0, .25f, .013f, .081f, .301f, .5f, .025f, .161f, .535f, .75f, .181f, .373f, .766f, 1, .342f, .59f, 1),
+		/** The staff head while boosting (0197 C18, 800FDFB8 r7, HDR 15): blue to pale cyan. */
+		MERCY_STAFF_BLUE(0, 0, 0, 0, .25f, .125f, .752f, 1, .5f, .245f, 1, 1, .75f, .509f, 1, 1, 1, 1, 1, 1),
+		MERCY_STAFF_BLUE_N(0, 0, 0, 0, .25f, .008f, .05f, .301f, .5f, .016f, .1f, .535f, .75f, .034f, .214f, .766f, 1, .342f, .59f, 1),
+		/** The boosted ally's flash (0100 C8, 80080D4D r1, HDR 3): deep blue to sky. */
+		MERCY_BOOSTED(0, 0, 0, 0, .25f, .037f, .222f, 1, .5f, .096f, .608f, 1, .75f, .517f, 1, 1, 1, 1, 1, 1),
+		/** Her blaster round (01E1 C21, 80023619 r5): orange to pale yellow. */
+		MERCY_SHOT(0, 0, 0, 0, .25f, 1, .695f, 0, .5f, 1, .866f, .032f, .75f, 1, .912f, .207f, 1, 1, .982f, .533f),
+		/** Her round as enemies see it (01E1 C27, 800DCC79 r5): dark red to orange. */
+		MERCY_SHOT_ENEMY(0, 0, 0, 0, .25f, .469f, 0, 0, .5f, .766f, 0, 0, .75f, 1, .055f, .012f, 1, 1, .258f, .054f),
+		/** Guardian Angel's trail (colour strip 20D0 times the trail's tint (3.26, 3.26, 1.02), clamped). */
+		MERCY_GA_TRAIL_T(0, .236f, .032f, .01f, .25f, .855f, .069f, .001f, .5f, 1, .009f, 0, .75f, 1, .868f, 0, 1, 1, 1, 1),
+		/** Wing glows (GA 17E9 / Angelic Descent 019C, 800B92F6 r4): yellow to pale yellow. */
+		MERCY_WING_GLOW(0, 0, 0, 0, .25f, 1, 1, .092f, .5f, 1, 1, .174f, .75f, 1, 1, .255f, 1, 1, 1, .337f),
+		/** Wing motes at rest (0301, 80074C3E r5, HDR 3): black to gold to white. */
+		MERCY_WING_GOLD(0, 0, 0, 0, .25f, .269f, .163f, .001f, .5f, .551f, .338f, .007f, .75f, 1, 1, .397f, 1, 1, 1, 1),
+		MERCY_WING_GOLD_N(0, 0, 0, 0, .25f, .09f, .054f, 0, .5f, .184f, .113f, .002f, .75f, .517f, .417f, .132f, 1, 1, .913f, .392f),
+		/** Valkyrie's feathers (40CD C19, 8009E3E3 r8, x1.6 in game): gold to pale yellow. */
+		MERCY_VALK(0, 0, 0, 0, .25f, 1, .781f, .019f, .5f, 1, .911f, .038f, .75f, 1, 1, .143f, 1, 1, 1, .451f),
+		/** Valkyrie's feathers as enemies see them (40CD C23, 800FA2A3 r8, x2.5): dark red to orange. */
+		MERCY_VALK_ENEMY(0, 0, 0, 0, .25f, .405f, 0, 0, .5f, .552f, 0, 0, .75f, .794f, .124f, 0, 1, 1, .533f, .013f),
+		/** Valkyrie's sparks (1F7B C26, 80060C6F r5): gold to pale yellow. */
+		MERCY_VALK_SPARK(0, 0, 0, 0, .25f, 1, .724f, .015f, .5f, 1, .799f, .148f, .75f, 1, .873f, .279f, 1, 1, .947f, .412f),
+		/** Valkyrie's sparks, enemy row (80060C6F r6): red to orange. */
+		MERCY_VALK_SPARK_ENEMY(0, 0, 0, 0, .25f, 1, .076f, 0, .5f, 1, .152f, 0, .75f, 1, .227f, 0, 1, 1, .624f, .08f),
+		/** Resurrect's burst sparks (632D C24, 800948DD r1, x5.4): orange to white. */
+		MERCY_RES_SPARK(0, 0, 0, 0, .25f, 1, .495f, 0, .5f, 1, .72f, 0, .75f, 1, .829f, .106f, 1, 1, 1, 1),
+		/** Resurrect's glow on the dead ally (2106 C29, 800B7236 r0, x4): black to yellow to white. */
+		MERCY_RES_HALO(0, 0, 0, 0, .25f, .485f, .448f, 0, .5f, .971f, .895f, 0, .75f, 1, .959f, .403f, 1, 1, 1, .838f),
+		/** The same as enemies see it (2106 C35, 80052D9B r0): black to red to peach. */
+		MERCY_RES_HALO_ENEMY(0, 0, 0, 0, .25f, .485f, 0, 0, .5f, .971f, 0, 0, .75f, 1, .262f, .09f, 1, 1, .545f, .188f),
+		/** The revived ally's rising crosses (019E C7, 800CBECB r2, HDR 5): orange to yellow to white. */
+		MERCY_PLUS(0, 0, 0, 0, .25f, 1, .689f, .101f, .5f, 1, .767f, .136f, .75f, 1, .843f, .17f, 1, 1, 1, 1),
+		/** Flash Heal's beam (75A7 C4, 8008E467 r4, HDR 30), normalised: brown-gold to pale yellow. */
+		MERCY_FLASH_N(0, .021f, .011f, 0, .25f, .122f, .091f, .005f, .5f, .222f, .171f, .01f, .75f, .504f, .472f, .264f, 1, 1, .947f, .552f),
 		/** Lifeline's rope core (72FA, 800367D1 r2, HDR 16): blue to cyan. */
 		CAT_TETHER(0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 0, 1, 1, 1, 0, 1, 1),
 		/** Lifeline's rope as enemies see it (800367D1 r3): red to yellow. */

@@ -1,0 +1,1284 @@
+# Mercy's sounds: <sound id> = <file under E:\Overwatch Archive\extracted\154088\> (build 154088). Same format as
+# jetpack_cat.txt / lucio.txt; build_asset_pack.py sounds copies / mixes them into the local pack. Nothing here has been
+# listened to. Read 2026-10-28 offline (Overwatch and Battle.net checked closed before every archive read and DataTool
+# run): her 02C sounds' Wwise banks decoded exactly (ww.py, dump_banks.py, emote_events.py / wwfull.py from
+# research\emote-sounds\scripts: children from each object's parent id, random / sequence / switch / layer parameters,
+# volume, make-up gain, pitch, delays, the events' actions, RTPC curves) and the Init bank's bus volumes (1E818). Scripts:
+# E:\Overwatch Archive\research\mercy\scripts\sounds\ (mercy_gen.py writes this file); their data (decode, bank dump,
+# measurements, the timed effect / clip reads fx_timed.json, contact sets, voice lines): research\mercy\sounds\. Files:
+# the skin extraction (Heroes\Mercy) where it holds them; the rest extracted for this map into ExtraSounds\Mercy
+# (manifest.json there). Ids: 02C sounds (12B1 = 0000000012B1.02C), 00D effects, 006 clips, 08F clip animation effects,
+# 049 contact sets; graphs 01B with their node numbers. Confidence: H read in the data, M inferred, L guess.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves read at 0 (dB scaling 20*log10(1+y); linear between
+# points) and SetVolume actions. As in jetpack_cat.txt, ONE offset per family keeps her sounds' balance with each other,
+# bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches sums): own +3 dB (loudest:
+# mercy.melee.staff), 3p +8 dB (loudest: mercy.flash_heal.cast_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek (random start
+# points) and Wwise states (a -20 dB / lpf 25 'muffled' state on most of her mixers, group 177926770) are not reproduced.
+# Layers more than 60 dB down are left out, and in loops those 20 dB under the loudest loop. A loop's LOOP LENGTH is
+# its longest bed within 6 dB of the loudest layer (Jetpack Cat's map took the loudest layer's own length); shorter
+# layers are tiled across it and beds more than 15 % longer are left out. RTPCs are read at 0 except where a rule says.
+# Own vs others: unlike Jetpack Cat's, some of her STUSounds carry audience 1 (m_D6EDF627: the beams 12B1 / 12B0, the
+# lock 165F / 165D, GA's 5DEE, the hit 5DEC), the others 2. Each effect holds one copy with no range (m_ACB34EFC -1) on an
+# unattenuated mixer, read as her own player's (M; H for those with audience 1), and one or two ranged copies for
+# everyone else; where there are two they differ only in level or one layer and their STU fields are identical (read
+# as the allies' and the enemies' copy, or the beam target's, L which). 'own' rules are built from the no-range copy,
+# '_3p' rules from the louder ranged copy.
+
+# ===== How each game event is put together (rules)
+# mercy.beam.lock: target lock, own only: 02C 165F of effects 19CD and 7430 (one file, 1.07 s; no ranged copy, H). M
+#  that #258 is the lock itself (its condition is the beam target var v468).
+# Trigger: the beam latches onto a target (either mode): 006B StateBooleanSwitch#258 (the target v468 passes its ally
+#  filter) onBegin -> #1451 (v689, the beam mode) -> ActionEffect#352 19CD (true) or #1450 7430 (false): both play 02C
+#  165F.
+# Layers: a 165F 336560181 Sound 1.07 s, net -19.5.
+@mercy.beam.lock = mercy.beam.lock.a@0.1:-16.5
+# mercy.beam.unlock: target lost, own only: 02C 165D of effect 19CE (one file, 0.59 s; no ranged copy, H).
+# Trigger: the beam loses its target (let go, out of range or sight, the target dead): the end of 006B
+#  StateBooleanSwitch#258 -> ActionEffect#353 19CE.
+# Layers: a 165D 4591192 Sound 0.59 s, net -19.5.
+@mercy.beam.unlock = mercy.beam.unlock.a:-16.5
+# mercy.beam.heal.start: heal beam start, own: the one-shot layers of 02C 12B1's Play (0197's no-range copy, audience 1: hers, H).
+# Trigger: the healing beam starts (primary held with a target): 006B #1215 (trueSubgraph) holds 0197 on the staff's
+#  hardpoint 0006 (#991); its Play event's one-shot layer.
+# Layers: a 12B1 930779122 Sound 0.59 s, net -18.
+@mercy.beam.heal.start = mercy.beam.heal.start.a:-15
+# mercy.beam.heal.loop: heal beam loop, own: the endless loops of 02C 12B1 (two Play actions: three beds 6.6-9.8 s and
+#  two pitched 0.83 s hums).
+# Trigger: while the healing beam is on a target: 006B #1215 holds 0197 (#991).
+# Layers: a 12B1 505577452 Sound 6.63 s, net -24, loops every 6.635 s (tiled x2); b 12B1 156606901 Sound 9.31 s, net
+#  -18, loops every 9.315 s; c 12B1 593287519 Sound 9.79 s, net -13, loops every 9.785 s; d 12B1 276333494 Sound 0.83
+#  s +721 cents, net -30.5, loops every 0.548 s (tiled x17); e 12B1 555706051 Sound 0.83 s -279 cents, net -27, loops
+#  every 0.976 s (tiled x10).
+# LOOP LENGTH 9.315 s: play it again every LOOP LENGTH (the built file runs 13.27 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.beam.heal.loop = mercy.beam.heal.loop.a:-21 + mercy.beam.heal.loop.a@6.635:-21 + mercy.beam.heal.loop.b:-15 + mercy.beam.heal.loop.c:-10 + mercy.beam.heal.loop.d*1.517:-27.5 + mercy.beam.heal.loop.d*1.517@0.548:-27.5 + mercy.beam.heal.loop.d*1.517@1.096:-27.5 + mercy.beam.heal.loop.d*1.517@1.644:-27.5 + mercy.beam.heal.loop.d*1.517@2.192:-27.5 + mercy.beam.heal.loop.d*1.517@2.74:-27.5 + mercy.beam.heal.loop.d*1.517@3.288:-27.5 + mercy.beam.heal.loop.d*1.517@3.836:-27.5 + mercy.beam.heal.loop.d*1.517@4.384:-27.5 + mercy.beam.heal.loop.d*1.517@4.931:-27.5 + mercy.beam.heal.loop.d*1.517@5.479:-27.5 + mercy.beam.heal.loop.d*1.517@6.027:-27.5 + mercy.beam.heal.loop.d*1.517@6.575:-27.5 + mercy.beam.heal.loop.d*1.517@7.123:-27.5 + mercy.beam.heal.loop.d*1.517@7.671:-27.5 + mercy.beam.heal.loop.d*1.517@8.219:-27.5 + mercy.beam.heal.loop.d*1.517@8.767:-27.5 + mercy.beam.heal.loop.e*0.851:-24 + mercy.beam.heal.loop.e*0.851@0.976:-24 + mercy.beam.heal.loop.e*0.851@1.953:-24 + mercy.beam.heal.loop.e*0.851@2.929:-24 + mercy.beam.heal.loop.e*0.851@3.905:-24 + mercy.beam.heal.loop.e*0.851@4.882:-24 + mercy.beam.heal.loop.e*0.851@5.858:-24 + mercy.beam.heal.loop.e*0.851@6.834:-24 + mercy.beam.heal.loop.e*0.851@7.811:-24 + mercy.beam.heal.loop.e*0.851@8.787:-24
+# mercy.beam.heal.end: heal beam end, own: 12B1's Stop event: it fades the loops (1 s / 0.5 s) and plays one 0.39 s one-shot (H).
+# Trigger: the healing beam stops (released, target lost, swapped to boost or the blaster): 0197 stops, which runs
+#  12B1's Stop event.
+# Layers: a 12B1 Stop-event 376285404 RanSeq 0.39 s +300 cents, net -37.5.
+@mercy.beam.heal.end = mercy.beam.heal.end.a*1.189:-34.5
+# mercy.beam.heal.start_3p: heal beam start heard by others: 02C 12B7 of 0197 (200 m). 0197 also holds 2941 (200 m:
+#  the same three beds 14 dB quieter, a 0.48 s start and a +430 cents 0.82 s one-shot): one of the two is the beam
+#  target's or the allies' copy and one the enemies' (L which; the build takes the louder 12B7, as Jetpack Cat's map
+#  does).
+# Trigger: the same start, played at her for everyone else (200 m).
+# Layers: a 12B7 415125360 Sound 0.64 s, net -11.
+@mercy.beam.heal.start_3p = mercy.beam.heal.start_3p.a:-3
+# mercy.beam.heal.loop_3p: heal beam loop heard by others: the loops of 02C 12B7 (see heal.start_3p for 2941).
+# Trigger: while the healing beam is on, at her for everyone else (200 m).
+# Layers: a 12B7 422770254 Sound 6.63 s, net -15, loops every 6.635 s (tiled x2); b 12B7 74974582 Sound 9.79 s, net
+#  -3, loops every 9.785 s; c 12B7 837806713 Sound 9.31 s, net -11, loops every 9.315 s.
+# LOOP LENGTH 9.315 s: play it again every LOOP LENGTH (the built file runs 13.27 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.beam.heal.loop_3p = mercy.beam.heal.loop_3p.a:-7 + mercy.beam.heal.loop_3p.a@6.635:-7 + mercy.beam.heal.loop_3p.b:+5 + mercy.beam.heal.loop_3p.c:-3
+# mercy.beam.heal.end_3p: heal beam end heard by others: 12B7's Stop event (fades, one 0.66 s one-shot).
+# Trigger: the healing beam stops, at her for everyone else.
+# Layers: a 12B7 Stop-event 961622001 Sound 0.66 s, net -35.
+@mercy.beam.heal.end_3p = mercy.beam.heal.end_3p.a:-27
+# mercy.beam.boost.start: boost beam start, own: the one-shot layer of 02C 12B0's Play events (0198's no-range copy,
+#  audience 1, H).
+# Trigger: the damage-boost beam starts (secondary held with a target): 006B #1213 (trueSubgraph) holds 0198 on
+#  hardpoint 0006 (#994); its Play events' one-shot layer.
+# Layers: a 12B0 620680717 Sound 0.82 s, net -38.5.
+@mercy.beam.boost.start = mercy.beam.boost.start.a:-35.5
+# mercy.beam.boost.loop: boost beam loop, own: the loops of 02C 12B0 (four beds 7.3-9.2 s, a 1.1 s hum, a 5.4 s bed
+#  and a continuous random container of 7 short sparkles with 200 ms gaps; 200 / 300 ms fade-ins and a random start
+#  point (Seek 0-100 %), not reproduced). RTPC 3208894424 (df 09B5, set to 1 by 006B #1302 under #1304, a condition on
+#  v32781 and 02FB.06C: L what) picks the variant: at 0 (built) the four beds sound and the sparkles and 5.4 s bed are
+#  muted; at 1 the reverse.
+# Trigger: while the boost beam is on a target: 006B #1213 holds 0198 (#994).
+# Layers: a 12B0 102535274 Sound 7.32 s, net -8.5, loops every 7.317 s (tiled x2); b 12B0 186299075 Sound 7.96 s -50
+#  cents, net -17.5, loops every 8.198 s; c 12B0 544797270 Sound 9.23 s, net -14.5, loops every 9.231 s; d 12B0
+#  1005590462 Sound 7.92 s +199 cents, net -17, loops every 7.063 s (tiled x2); e 12B0 649224055 Sound 1.11 s -650
+#  cents, net -29.5, loops every 1.613 s (tiled x6).
+# Left out: 12B0 390721421 (-113 dB), 12B0 713648184 (-120.5 dB).
+# LOOP LENGTH 9.231 s: play it again every LOOP LENGTH (the built file runs 14.63 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.beam.boost.loop = mercy.beam.boost.loop.a:-5.5 + mercy.beam.boost.loop.a@7.317:-5.5 + mercy.beam.boost.loop.b*0.972:-14.5 + mercy.beam.boost.loop.c:-11.5 + mercy.beam.boost.loop.d*1.122:-14 + mercy.beam.boost.loop.d*1.122@7.063:-14 + mercy.beam.boost.loop.e*0.687:-26.5 + mercy.beam.boost.loop.e*0.687@1.613:-26.5 + mercy.beam.boost.loop.e*0.687@3.226:-26.5 + mercy.beam.boost.loop.e*0.687@4.839:-26.5 + mercy.beam.boost.loop.e*0.687@6.451:-26.5 + mercy.beam.boost.loop.e*0.687@8.064:-26.5
+# mercy.beam.boost.end: boost beam end, own: 12B0's Stop event (fades 2 s / 0.5 s, one 0.39 s one-shot, the heal beam's file).
+# Trigger: the boost beam stops: 0198 stops, which runs 12B0's Stop event.
+# Layers: a 12B0 Stop-event 644510124 Sound 0.39 s, net -38.5.
+@mercy.beam.boost.end = mercy.beam.boost.end.a:-35.5
+# mercy.beam.boost.start_3p: boost beam start heard by others: 02C 12B6 of 0198 (40 m). 0198 also holds 2945 (40 m,
+#  the same layers 6 dB quieter): one is the target's or allies' copy and one the enemies' (L which; the louder 12B6
+#  is built).
+# Trigger: the same start, at her for everyone else (40 m).
+# Layers: a 12B6 31621820 Sound 0.82 s, net -42.5.
+@mercy.beam.boost.start_3p = mercy.beam.boost.start_3p.a:-34.5
+# mercy.beam.boost.loop_3p: boost beam loop heard by others: the loops of 02C 12B6 (300 ms fade-in not reproduced).
+# Trigger: while the boost beam is on, at her for everyone else (40 m).
+# Layers: a 12B6 460145792 Sound 7.62 s, net -19.5, loops every 7.619 s (tiled x2); b 12B6 534659969 Sound 9.23 s, net
+#  -20, loops every 9.231 s; c 12B6 874707667 Sound 7.96 s -50 cents, net -23, loops every 8.198 s; d 12B6 940459473
+#  Sound 7.92 s +199 cents, net -23, loops every 7.063 s (tiled x2).
+# Left out: 12B6 171499860 (-54.5 dB), 12B6 430242107 (-53.5 dB), 12B6 603925826 (longer than the loop (18.94 s)).
+# LOOP LENGTH 9.231 s: play it again every LOOP LENGTH (the built file runs 15.24 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.beam.boost.loop_3p = mercy.beam.boost.loop_3p.a:-11.5 + mercy.beam.boost.loop_3p.a@7.619:-11.5 + mercy.beam.boost.loop_3p.b:-12 + mercy.beam.boost.loop_3p.c*0.972:-15 + mercy.beam.boost.loop_3p.d*1.122:-15 + mercy.beam.boost.loop_3p.d*1.122@7.063:-15
+# mercy.beam.boost.end_3p: boost beam end heard by others: 12B6's Stop event.
+# Trigger: the boost beam stops, at her for everyone else.
+# Layers: a 12B6 Stop-event 399079382 Sound 0.39 s, net -47.5.
+@mercy.beam.boost.end_3p = mercy.beam.boost.end_3p.a:-39.5
+# mercy.blaster.fire: blaster shot: 02C 228D of effect 0F03 (60 m; 8F0B is the same two containers, one of each team's
+#  copies, L which). M that this slot is the shot: the blaster graph plays no fire effect and its fire clips (C84,
+#  AA7-AAC) have no animation effect, so 0F03 is the only per-shot sound; it has no no-range copy, so she hears this
+#  one too.
+# Trigger: each shot (5 a second: the volley nodes 006D #94 / #544 / #549 / #554 spawn projectile 0158): its
+#  STUProjectileVisualComponent's m_2170A015 'sound only' effect 0F03, at the muzzle as the shot leaves.
+# Layers: a 228D 100331536 RanSeq 0.33-0.35 s x4 +850 cents, net -10; b 228D 1012089900 RanSeq 0.45-0.57 s x4 +1300
+#  cents, net -17.5.
+@mercy.blaster.fire = mercy.blaster.fire.a*1.634:-2 + mercy.blaster.fire.b*2.119:-9.5
+# mercy.blaster.hit: hit on a target, own: 02C 5DEC (no range, audience 1: the shooter's hit confirmation; a switch on
+#  group 3526866566 picks one of 8 cases, the default built) plus 4010's 8DE7 (no range).
+# Trigger: a shot hits a character: 0158's m_A18274A3 effect 01E2 (the 'on a target' slot, as Jetpack Cat's 6D1B),
+#  with its sub-effect 4010.
+# Layers: a 8DE7 413748272 RanSeq 0.41-0.61 s x16 +430 cents, net -22; b 5DEC 638945211 RanSeq 1.26-1.39 s x12, net
+#  -8; c 8DE7 19863385 RanSeq 0.54-0.60 s x10 +710 cents, net -12; d 8DE7 1057399041 RanSeq 0.49-0.56 s x7 +535 cents,
+#  net -18.5; e 5DEC 844656038 RanSeq 2.77-3.06 s x7 +262 cents, net -24.5; f 5DEC 47801574 RanSeq 0.13-0.14 s x5 +162
+#  cents, net -24; g 5DEC 446419380 RanSeq 0.20-0.21 s x2, net -18.5; h 5DEC 587631719 RanSeq 0.22 s, net -13.
+@mercy.blaster.hit = mercy.blaster.hit.a*1.282@0.002:-19 + mercy.blaster.hit.b@0.04:-5 + mercy.blaster.hit.c*1.507@0.002:-9 + mercy.blaster.hit.d*1.362@0.002:-15.5 + mercy.blaster.hit.e*1.163@0.06:-21.5 + mercy.blaster.hit.f*1.098@0.16:-21 + mercy.blaster.hit.g:-15.5 + mercy.blaster.hit.h@0.03:-10
+# mercy.blaster.hit_3p: hit on a target heard by others: 02C 6D21 of 01E2 (200 m; the same switch, default case). Its
+#  own-state (group 3941853002 state 4014561839) +9 dB is not applied.
+# Trigger: the same hit, at the target for everyone else (200 m).
+# Layers: a 6D21 531431832 RanSeq 1.26-1.39 s x12, net -10; b 6D21 219283292 RanSeq 2.77-3.06 s x7 +412 cents, net
+#  -30; c 6D21 876016138 RanSeq 0.13-0.14 s x5 +312 cents, net -29.5; d 6D21 72755703 RanSeq 0.20-0.21 s x2, net -20.
+@mercy.blaster.hit_3p = mercy.blaster.hit_3p.a:-2 + mercy.blaster.hit_3p.b*1.269@0.02:-22 + mercy.blaster.hit_3p.c*1.197@0.12:-21.5 + mercy.blaster.hit_3p.d:-12
+# mercy.blaster.hit_block: hit on the world: 02C 899F (90 m) + 89A1 (32 m), the same 15 mono files (Jetpack Cat's
+#  centre shot uses the same pair, H). The other 22 materials have their own pairs (contacts.json); no own copy:
+#  everyone hears it at the hit.
+# Trigger: a shot hits a block (the world): the projectile's contact set 00F7, contact type 2, default material 0001
+#  -> contact effect 0754 -> 899F + 89A1 (both play), at the hit point.
+# Layers: a 899F 1051993922 RanSeq 0.16-0.30 s x15 +500 cents, net -14; b 89A1 831707544 RanSeq 0.16-0.30 s x15, net -16.
+@mercy.blaster.hit_block = mercy.blaster.hit_block.a*1.335:-6 + mercy.blaster.hit_block.b:-8
+# mercy.blaster.reload: reload, own: the 3P clip DC4's animation effect 0223 plays the no-range 91F9 @0.0674, 91FA
+#  @0.3276, 91FB @0.4732, 91FC @0.9879 (clip time; H) and the ranged 9618-961B at the same times; the 1P clip AB6 has
+#  no animation effect, so these no-range copies are hers (M). Built at the clip times x 1.4/1.7 (M: the clip is
+#  played over the reload's 1.4 s). Plus 670A's C6A6 (no range, no ranged copy) at 1.4 s: the ammo refill (H).
+# Trigger: reload start (R, or an empty clip; 1.4 s): 006D#141 plays the reload anim 0x004 (3P clip DC4, 1.7 s, over
+#  1.4 s); #197 WAIT 1.4 -> ActionEffect#571 670A when the ammo is back.
+# Layers: a 91F9 90828693 Sound 0.22 s, net -8.5; b 91FA 131009103 Sound 0.15 s, net -11.5; c 91FB 870198468 Sound
+#  0.50 s, net -8.5; d 91FC 833089172 Sound 0.58 s, net -8.5; e C6A6 495840148 Sound 0.50 s, net -19.5.
+@mercy.blaster.reload = mercy.blaster.reload.a@0.056:-5.5 + mercy.blaster.reload.b@0.27:-8.5 + mercy.blaster.reload.c@0.39:-5.5 + mercy.blaster.reload.d@0.814:-5.5 + mercy.blaster.reload.e@1.4:-16.5
+# mercy.blaster.reload_3p: reload heard by others: DC4's 9618 @0.0667, 9619 @0.3274, 961A @0.4726, 961B @0.9871 (45 m
+#  each, H), times x 1.4/1.7 (M). The refill click has no ranged copy (H).
+# Trigger: the same reload, at her for everyone else (45 m).
+# Layers: a 9618 205060356 Sound 0.22 s, net -16.5; b 9619 690117418 Sound 0.15 s, net -19.5; c 961A 1005855328 Sound
+#  0.50 s, net -16.5; d 961B 102348552 Sound 0.58 s, net -16.5.
+@mercy.blaster.reload_3p = mercy.blaster.reload_3p.a@0.055:-8.5 + mercy.blaster.reload_3p.b@0.27:-11.5 + mercy.blaster.reload_3p.c@0.389:-8.5 + mercy.blaster.reload_3p.d@0.813:-8.5
+# mercy.swap.staff: swap to the staff, own: 02C 18AE of 0B8B (no range). Others: 2175 (45 m), also played by the 3P
+#  swap clips D7CF / ECB5 @0.2333 (effect 52A7).
+# Trigger: the staff comes out (swap to it, and when she spawns with it): 006B StateCosmeticEntity#2 (the staff entity
+#  00EB on hardpoints 000A / 000B) onBegin -> ActionEffect#245 0B8B.
+# Layers: a 18AE 780016402 Sound 0.86 s +600 cents, net -26; b 18AE 327155479 Sound 0.84 s, net -55.
+@mercy.swap.staff = mercy.swap.staff.a*1.414:-23 + mercy.swap.staff.b@0.25:-52
+# mercy.swap.staff_3p: swap to the staff heard by others: 02C 2175 of 0B8B (45 m); the 3P swap clips D7CF / ECB5 play
+#  it again at 0.2333 s (L whether both are heard; the build plays it once).
+# Trigger: the same swap, at her for everyone else (45 m).
+# Layers: a 2175 58093875 Sound 0.86 s +600 cents, net -34.
+# Left out: 2175 891478208 (-62.5 dB).
+@mercy.swap.staff_3p = mercy.swap.staff_3p.a*1.414:-26
+# mercy.swap.blaster: swap to the blaster, own: 02C 18AD of 0B8C (no range). Others: 2176 (45 m), also on the 3P swap
+#  clips D7D0 / ECB3 @0.2333 (52A8).
+# Trigger: the blaster comes out: 006D StateCosmeticEntity#73 (the blaster entity 025E) onBegin -> ActionEffect#183 0B8C.
+# Layers: a 18AD 248501844 Sound 0.90 s +600 cents, net -22.5; b 18AD 729133694 Sound 0.84 s +1200 cents, net -37.5.
+@mercy.swap.blaster = mercy.swap.blaster.a*1.414:-19.5 + mercy.swap.blaster.b*2.000@0.25:-34.5
+# mercy.swap.blaster_3p: swap to the blaster heard by others: 02C 2176 of 0B8C (45 m).
+# Trigger: the same swap, at her for everyone else (45 m).
+# Layers: a 2176 966965815 Sound 0.90 s +600 cents, net -30.5; b 2176 349022040 Sound 0.84 s +1200 cents, net -45.5.
+@mercy.swap.blaster_3p = mercy.swap.blaster_3p.a*1.414:-22.5 + mercy.swap.blaster_3p.b*2.000@0.25:-37.5
+# mercy.melee.staff: staff melee swing, own: 02C 1838 (no range, 7 files, +300 cents) of the 1P clip 86D (H). The hit
+#  is the shared melee.hit (kiriko.txt: effect 6BD4 / 02C 5D97, in her extraction too).
+# Trigger: quick melee with the staff out (shared graph 0043 plays the melee anim 0x00D): the 1P clip 86D's animation
+#  effect 07F9 @0.
+# Layers: a 1838 307094701 RanSeq 0.70-0.94 s x7 +300 cents, net -3.5.
+@mercy.melee.staff = mercy.melee.staff.a*1.189:-0.5
+# mercy.melee.staff_3p: staff melee heard by others: 02C 1837 (30 m) of BC8 / DF1 (DF0, the third staff clip, plays
+#  1835; M which clip is which weapon's, from the map's staff / blaster sets).
+# Trigger: the same swing, at her for everyone else: the 3P clips BC8 / DF1's effects 03B2 / 03B4 @0.
+# Layers: a 1837 430583062 RanSeq 0.89 s x7, net -16.5.
+@mercy.melee.staff_3p = mercy.melee.staff_3p.a@0.1:-8.5
+# mercy.melee.blaster: blaster melee swing, own: 02C 1836 (no range, 3 files) of the 1P clip AB3 (H).
+# Trigger: quick melee with the blaster out: the 1P clip AB3's animation effect 07FB @0.
+# Layers: a 1836 407796445 RanSeq 0.61-0.64 s x3, net -12.5.
+@mercy.melee.blaster = mercy.melee.blaster.a:-9.5
+# mercy.melee.blaster_3p: blaster melee heard by others: 02C 1835 (30 m) of CCD / DF3 / DF4.
+# Trigger: the same swing, at her for everyone else: the 3P clips CCD / DF3 / DF4's effects 01F1 / 0229 / 022A @0.
+# Layers: a 1835 27769508 RanSeq 0.84-0.86 s x7, net -18.5.
+@mercy.melee.blaster_3p = mercy.melee.blaster_3p.a@0.1:-10.5
+# mercy.ga.start: GA start, own: 02C 5DEE of 019B (no range, audience 1): all its layers are one-shots (H): a random
+#  0.21-0.36 s (-600 cents), a 1.5 s and a 2.87 s (+600 cents) whoosh @0.15 and a 0.39 s thump @0.2; plus the start
+#  clip B67's 17FA (no range; the same Wwise event as Angelic Descent's 5DED wing whoosh) @0.2333 (M that it is heard
+#  by her). In Valkyrie 019B is swapped for 1FAF (5DEE + 4365, 75 m).
+# Trigger: Guardian Angel starts (ability 1 with a target): 006E StateMoveTo#241 begins; #337 (not Valkyrie, v842)
+#  holds 019B (#255), and the start anim (#265, cat 0x6E, 0.33 s: 3P clip B67 / B80) plays 17FA at 0.2333 s.
+# Layers: a 5DEE 1014011499 RanSeq 0.21-0.36 s x3 -600 cents, net -22; b 5DEE 870316481 Sound 1.50 s, net -10; c 5DEE
+#  1035697442 Sound 2.87 s +600 cents, net -38; d 5DEE 407357796 Sound 0.39 s, net -14; e 17FA 769083566 Sound 1.90 s,
+#  net -15.
+@mercy.ga.start = mercy.ga.start.a*0.707:-19 + mercy.ga.start.b@0.15:-7 + mercy.ga.start.c*1.414@0.15:-35 + mercy.ga.start.d@0.2:-11 + mercy.ga.start.e@0.233:-12
+# mercy.ga.start_3p: GA start heard by others: 02C 12A6 of 019B (70 m). 019B also holds 1817 (70 m, the same files 1-2
+#  dB apart, the random layer 0.15 s later; L which team hears which: the louder 12A6 is built).
+# Trigger: the same start, at her for everyone else (70 m).
+# Layers: a 12A6 1063689072 RanSeq 0.21-0.36 s x3, net -40; b 12A6 372315391 Sound 1.50 s, net -25; c 12A6 417124665
+#  Sound 1.90 s, net -24; d 12A6 702839647 Sound 2.87 s +600 cents, net -53.
+@mercy.ga.start_3p = mercy.ga.start_3p.a:-32 + mercy.ga.start_3p.b@0.15:-17 + mercy.ga.start_3p.c@0.15:-16 + mercy.ga.start_3p.d*1.414@0.15:-45
+# mercy.ga.launch: GA launch, own: 019B's 02C 5DEE played again (H for the wiring, M that #1183 is the launch: it
+#  holds the launch overrides and follows the jump / crouch buttons).
+# Trigger: the launch out of Guardian Angel (jump x4F81E1BD #470, or crouch xB0EA7E79 #1028, during the flight; a ray
+#  check #1174 first: on a hit, 0186 'denied' #1171): the 0.35 s launch state #1183 holds 019B again (#1185 under
+#  #1178 / #1188; 1FAF in Valkyrie) with the anim 0x877.
+# Layers: a 5DEE 1014011499 RanSeq 0.21-0.36 s x3 -600 cents, net -22; b 5DEE 870316481 Sound 1.50 s, net -10; c 5DEE
+#  1035697442 Sound 2.87 s +600 cents, net -38; d 5DEE 407357796 Sound 0.39 s, net -14.
+@mercy.ga.launch = mercy.ga.launch.a*0.707:-19 + mercy.ga.launch.b@0.15:-7 + mercy.ga.launch.c*1.414@0.15:-35 + mercy.ga.launch.d@0.2:-11
+# mercy.ga.launch_3p: GA launch heard by others: 019B's 12A6 again.
+# Trigger: the same launch, at her for everyone else (70 m).
+# Layers: a 12A6 1063689072 RanSeq 0.21-0.36 s x3, net -40; b 12A6 372315391 Sound 1.50 s, net -25; c 12A6 417124665
+#  Sound 1.90 s, net -24; d 12A6 702839647 Sound 2.87 s +600 cents, net -53.
+@mercy.ga.launch_3p = mercy.ga.launch_3p.a:-32 + mercy.ga.launch_3p.b@0.15:-17 + mercy.ga.launch_3p.c@0.15:-16 + mercy.ga.launch_3p.d*1.414@0.15:-45
+# mercy.descent.start: descent start, own: 02C 5DED of 02F5 (no range: a 1.9 s wing whoosh, GA's 17FA, and a 0.5 s
+#  thump) plus the one-shot layer of 019C's 12AA Play (3.96 s). Others: 1815 / 1816 (70 m) and C7CF (20 m, on the own
+#  bus: L whose).
+# Trigger: Angelic Descent starts (jump held while falling): 0071 ActionEffect#166 02F5, and the held descent effect
+#  019C (#138) starts with it.
+# Layers: a 5DED 769083566 Sound 1.90 s, net -15; b 5DED 408408341 Sound 0.50 s, net -25; c 12AA 991362249 Sound 3.96 s, net -37.
+@mercy.descent.start = mercy.descent.start.a:-12 + mercy.descent.start.b:-22 + mercy.descent.start.c:-34
+# mercy.descent.loop: descent loop, own: the three endless loops of 02C 12AA (019C; 7.1-8.7 s).
+# Trigger: while descending: 0071 holds 019C (#138).
+# Layers: a 12AA 373283813 Sound 7.12 s, net -34, loops every 7.120 s (tiled x2); b 12AA 811766111 Sound 8.72 s, net
+#  -23, loops every 8.719 s; c 12AA 917956789 Sound 8.63 s, net -35, loops every 8.632 s.
+# LOOP LENGTH 8.719 s: play it again every LOOP LENGTH (the built file runs 14.24 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.descent.loop = mercy.descent.loop.a:-31 + mercy.descent.loop.a@7.12:-31 + mercy.descent.loop.b:-20 + mercy.descent.loop.c:-32
+# mercy.descent.end: descent end, own: 12AA's Stop event: the loops fade over 1 s and one 1.06 s one-shot plays (H).
+# Trigger: the descent ends (landed, or jump released): 019C stops, which runs 12AA's Stop event.
+# Layers: a 12AA Stop-event 467250059 Sound 1.06 s, net -28.
+@mercy.descent.end = mercy.descent.end.a:-25
+# mercy.descent.start_3p: descent start heard by others: 02C 1815 of 02F5 (70 m; 1816 is the same file 12 dB quieter,
+#  L which team).
+# Trigger: the same start, at her for everyone else (70 m).
+# Layers: a 1815 1037216872 Sound 1.90 s, net -29.
+@mercy.descent.start_3p = mercy.descent.start_3p.a:-21
+# mercy.descent.loop_3p: descent loop heard by others: the loops of 02C 1819 (019C; its Play waits 0.3 s and fades in
+#  over 200 ms; 17BD is the same set 3 dB quieter).
+# Trigger: while descending, at her for everyone else (70 m).
+# Layers: a 1819 25595638 Sound 8.72 s, net -44, loops every 8.719 s.
+# Left out: 1819 349248575 (-61 dB).
+# LOOP LENGTH 8.719 s: play it again every LOOP LENGTH (the built file runs 8.72 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.descent.loop_3p = mercy.descent.loop_3p.a:-36
+# mercy.descent.end_3p: descent end heard by others: 1819's Stop event.
+# Trigger: the descent ends, at her for everyone else.
+# Layers: a 1819 Stop-event 68472191 Sound 1.06 s, net -42.
+@mercy.descent.end_3p = mercy.descent.end_3p.a:-34
+# mercy.resurrect.cast: resurrect cast, own: 02C 5DF1 of 030F (no range): a 4.24 s swell and a 0.64 s thump @0.18.
+#  Overwatch stops both with a 1 s fade when the cast ends (1.75 s): the built file runs 4.24 s, so stop it at the
+#  cast's end + 1 s (H for the Stop event).
+# Trigger: Resurrect's cast (ability 2 on a dead ally within 5 m; 1.75 s): 00CA StateChaseVar#617 (to v38091 = 1.75 s)
+#  onBegin -> #1068 / #1276 -> 030F held (#635).
+# Layers: a 5DF1 248341785 Sound 4.24 s, net -16; b 5DF1 764829235 Sound 0.64 s, net -26.
+@mercy.resurrect.cast = mercy.resurrect.cast.a:-13 + mercy.resurrect.cast.b@0.18:-23
+# mercy.resurrect.cast_3p: resurrect cast heard by others: 02C 1818 of 030F (70 m; 12A4 is the same file 6 dB quieter,
+#  L which team).
+# Trigger: the same cast, at her for everyone else (70 m).
+# Layers: a 1818 450134754 Sound 4.24 s, net -15.5.
+@mercy.resurrect.cast_3p = mercy.resurrect.cast_3p.a:-7.5
+# mercy.resurrect.done: resurrect done, own: 02C 95DE of 483D (no range; a random 2: 0.89 / 1.19 s) (H).
+# Trigger: the ally is brought back (the cast's end, the target still valid): #617 onFinished -> #1163 ->
+#  ActionSendGameMessage#261 (085D, with the target) -> #1089 -> ActionEffect#1096 483D.
+# Layers: a 95DE 420266385 RanSeq 0.89-1.19 s x2, net -4.
+@mercy.resurrect.done = mercy.resurrect.done.a:-1
+# mercy.resurrect.revived: what the revived ally hears: 02C 95DF of 483F (no range, a random 2: 0.99 / 1.62 s), played
+#  on the target entity (H), read as that ally's own copy (M). Their spoken line is their hero's own 'resurrected'
+#  (stimulus 005A).
+# Trigger: the same moment, on the revived ally: ActionEffect#1097 483F is played on the target (m_3E3E203A = v536,
+#  the resurrect target).
+# Layers: a 95DF 774615174 RanSeq 0.99-1.62 s x2, net -14.5.
+@mercy.resurrect.revived = mercy.resurrect.revived.a:-11.5
+# mercy.flash_heal.cast: flash heal cast, own: 02C C40D of 65EA (no range: 1.02 s and 1.28 s @0.3).
+# Trigger: Flash Heal cast (Reload, 0.5 s): 5D59 ActionEffect#560 65EA (M: at the cast with the anim 0xA60 #572; its
+#  plug was not found).
+# Layers: a C40D 148007914 Sound 1.02 s, net -15.5; b C40D 187828628 Sound 1.28 s, net -11.5.
+@mercy.flash_heal.cast = mercy.flash_heal.cast.a:-12.5 + mercy.flash_heal.cast.b@0.3:-8.5
+# mercy.flash_heal.cast_3p: flash heal cast heard by others: 02C C40E of 65EA (40 m; the second layer 0.25 s late).
+# Trigger: the same cast, at her for everyone else (40 m).
+# Layers: a C40E 367650980 Sound 1.02 s, net -11.5; b C40E 94984086 Sound 1.28 s, net -7.5.
+@mercy.flash_heal.cast_3p = mercy.flash_heal.cast_3p.a:-3.5 + mercy.flash_heal.cast_3p.b@0.25:+0.5
+# mercy.flash_heal.heal: flash heal landing: 02C C2C6 of 64E1 (no range, one 1.8 s file, H). 64E1 also plays C2C9 /
+#  C420 (40 m): the same file 3.5 / 8.5 dB quieter, so one rule serves all (M which listener each is).
+# Trigger: the heal lands (after the 0.5 s cast, the target still valid): 5D59 #571 WAIT v670 -> #569 ->
+#  StateModifyHealth#570 (60, x2 below half) onBegin -> #567 onBegin -> ActionEffect#565 64E1, played on the target
+#  (m_3E3E203A = v536).
+# Layers: a C2C6 50376066 Sound 1.80 s, net -7.5.
+@mercy.flash_heal.heal = mercy.flash_heal.heal.a:-4.5
+# mercy.valkyrie.cast: Valkyrie cast, own: 02C 5DF0 of 1FA0 (no range: 4.38 s and 2.39 s swells, a 0.35 s thump).
+# Trigger: Valkyrie activated (ability 3): 10DA StateChaseVar#211 (the 15 s) starts; ActionEffect#195 1FA0 plays with
+#  the 0.5 s wait and the cast anim 0x1B8 (#157 / #158).
+# Layers: a 5DF0 392964878 Sound 4.38 s, net -11; b 5DF0 768580585 Sound 2.38 s, net -11; c 5DF0 83739537 Sound 0.35 s, net -15.
+@mercy.valkyrie.cast = mercy.valkyrie.cast.a:-8 + mercy.valkyrie.cast.b:-8 + mercy.valkyrie.cast.c:-12
+# mercy.valkyrie.cast_3p: Valkyrie cast heard by others: 02C 4359 of 1FA0 (75 m).
+# Trigger: the same cast, at her for everyone else (75 m).
+# Layers: a 4359 852812498 Sound 4.39 s, net -22; b 4359 885167641 Sound 2.36 s, net -15.
+@mercy.valkyrie.cast_3p = mercy.valkyrie.cast_3p.a:-14 + mercy.valkyrie.cast_3p.b:-7
+# mercy.valkyrie.loop: Valkyrie flight loop, own: the endless loops of 02C 4358 (1F7B: 9.7, 4.8, 8.5 s beds and a
+#  13.25 s 4-channel bed). Its Play also holds a one-shot 12 s in (valkyrie.ending). A skin swaps 1F7B for 602B (BC99
+#  / BC9A, not extracted); in Valkyrie GA's held 40CD (#480) plays the same 4358 / 435A.
+# Trigger: while Valkyrie is on (15 s): #211 -> BooleanSwitch#479 (falseSubgraph) -> #518 (false: the default skin,
+#  0A2E.134) holds 1F7B (#182).
+# Layers: a 4358 90787658 Sound 9.66 s, net -11, loops every 9.656 s (tiled x2); b 4358 871525364 Sound 4.78 s, net
+#  -8, loops every 4.775 s (tiled x3); c 4358 963887159 Sound 8.46 s, net -7, loops every 8.463 s (tiled x2); d 4358
+#  454030842 Sound 13.25 s, net -22, loops every 13.253 s.
+# LOOP LENGTH 13.253 s: play it again every LOOP LENGTH (the built file runs 19.31 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.valkyrie.loop = mercy.valkyrie.loop.a:-8 + mercy.valkyrie.loop.a@9.656:-8 + mercy.valkyrie.loop.b:-5 + mercy.valkyrie.loop.b@4.775:-5 + mercy.valkyrie.loop.b@9.55:-5 + mercy.valkyrie.loop.c:-4 + mercy.valkyrie.loop.c@8.463:-4 + mercy.valkyrie.loop.d:-19
+# mercy.valkyrie.ending: Valkyrie ending warning, own: 4358's one-shot layer (3.83 s), which Overwatch delays 12.0 s
+#  from the start (H for the delay, M that it marks the last 3 s); built without the delay: play it 12 s after the
+#  cast.
+# Trigger: 3 s before Valkyrie ends: 4358's Play waits 12.0 s (its own delay) after the loop starts.
+# Layers: a 4358 858531394 Sound 3.83 s, net -17.
+@mercy.valkyrie.ending = mercy.valkyrie.ending.a:-14
+# mercy.valkyrie.end: Valkyrie end, own: 4358's Stop event: the loops fade (0.5-2 s), one 1.06 s one-shot (Angelic
+#  Descent's end file).
+# Trigger: Valkyrie ends (15 s, or she dies): 1F7B stops, which runs 4358's Stop event.
+# Layers: a 4358 Stop-event 625274630 Sound 1.06 s, net -13.
+@mercy.valkyrie.end = mercy.valkyrie.end.a:-10
+# mercy.valkyrie.loop_3p: Valkyrie loop heard by others: the loops of 02C 435A (75 m; 14.4 / 15.1 s beds instead of
+#  the 13.25 s quad one).
+# Trigger: while Valkyrie is on, at her for everyone else (75 m).
+# Layers: a 435A 119450418 Sound 4.78 s, net -8, loops every 4.775 s (tiled x4); b 435A 826270606 Sound 14.44 s, net
+#  -14, loops every 14.439 s; c 435A 575753827 Sound 15.12 s, net -6, loops every 15.119 s; d 435A 127336983 Sound
+#  8.46 s, net -14, loops every 8.463 s (tiled x2).
+# LOOP LENGTH 15.119 s: play it again every LOOP LENGTH (the built file runs 19.10 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@mercy.valkyrie.loop_3p = mercy.valkyrie.loop_3p.a:0 + mercy.valkyrie.loop_3p.a@4.775:0 + mercy.valkyrie.loop_3p.a@9.55:0 + mercy.valkyrie.loop_3p.a@14.325:0 + mercy.valkyrie.loop_3p.b:-6 + mercy.valkyrie.loop_3p.c:+2 + mercy.valkyrie.loop_3p.d:-6 + mercy.valkyrie.loop_3p.d@8.463:-6
+# mercy.valkyrie.ending_3p: Valkyrie ending heard by others: 435A's one-shot at 12.0 s, built without the delay.
+# Trigger: 3 s before Valkyrie ends, at her for everyone else.
+# Layers: a 435A 925657187 Sound 3.83 s, net -18.
+@mercy.valkyrie.ending_3p = mercy.valkyrie.ending_3p.a:-10
+# mercy.valkyrie.end_3p: Valkyrie end heard by others: 435A's Stop event.
+# Trigger: Valkyrie ends, at her for everyone else.
+# Layers: a 435A Stop-event 737583170 Sound 1.06 s, net -17.
+@mercy.valkyrie.end_3p = mercy.valkyrie.end_3p.a:-9
+# mercy.footstep: footstep, own: 02C 187A (no range, 10 mono files 0.16-0.24 s; type 17 uses the same pair). H that
+#  0084 is her entity's contact set (STUContactSetComponent of 00E4; Lucio's and Kiriko's heroes have their own); M
+#  that type 10 is the footstep (Kiriko's fox's set holds only types 10 / 11); L walk vs run (type 11 is 187B / 189B,
+#  8 / 6 files). Other materials have their own pairs (contacts.json).
+# Trigger: each footstep on the ground (engine side: the hero's contact set 0084, contact type 10, the default
+#  material 0001 -> contact effect 0439).
+# Layers: a 187A 953332554 RanSeq 0.16-0.24 s x10, net -21.5.
+@mercy.footstep = mercy.footstep.a:-18.5
+# mercy.footstep_3p: footstep heard by others: 02C 189C (50 m, the same 10 files).
+# Trigger: the same step, at her for everyone else (50 m).
+# Layers: a 189C 994888914 RanSeq 0.16-0.24 s x10, net -13.
+@mercy.footstep_3p = mercy.footstep_3p.a:-5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# mercy.beam.lock.a: 165F play 336560181 (1 file, 1.068 s, 2ch); net -19.5 dB, +0 cents, @0.100 s. H.
+mercy.beam.lock.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019CD.00D/Sounds/00000000165F.02C/0000002A797D.03F.ogg
+# mercy.beam.unlock.a: 165D play 4591192 (1 file, 0.591 s, 2ch); net -19.5 dB, +0 cents, @0.000 s. H.
+mercy.beam.unlock.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019CE.00D/Sounds/00000000165D.02C/0000002A905D.03F.ogg
+# mercy.beam.heal.start.a: 12B1 play 930779122 (1 file, 0.591 s, 2ch); net -18 dB, +0 cents, @0.000 s. H.
+mercy.beam.heal.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002B1321.03F.ogg
+# mercy.beam.heal.loop.a: 12B1 play 505577452 (1 file, 6.635 s, 2ch); net -24 dB, +0 cents, @0.000 s, period 6.635 s. H.
+mercy.beam.heal.loop.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002AD6CE.03F.ogg
+# mercy.beam.heal.loop.b: 12B1 play 156606901 (1 file, 9.315 s, 2ch); net -18 dB, +0 cents, @0.000 s, period 9.315 s. H.
+mercy.beam.heal.loop.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002A6FB6.03F.ogg
+# mercy.beam.heal.loop.c: 12B1 play 593287519 (1 file, 9.785 s, 2ch); net -13 dB, +0 cents, @0.000 s, period 9.785 s. H.
+mercy.beam.heal.loop.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002A6FB4.03F.ogg
+# mercy.beam.heal.loop.d: 12B1 play 276333494 (1 file, 0.831 s, 1ch); net -30.5 dB, +721 cents, @0.000 s, period 0.548 s. H.
+mercy.beam.heal.loop.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002A9053.03F.ogg
+# mercy.beam.heal.loop.e: 12B1 play 555706051 (1 file, 0.831 s, 1ch); net -27 dB, -279 cents, @0.000 s, period 0.976 s. H.
+mercy.beam.heal.loop.e = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002A9053.03F.ogg
+# mercy.beam.heal.end.a: 12B1 stop 376285404 (1 file, 0.388 s, 1ch); net -37.5 dB, +300 cents, @0.000 s. H.
+mercy.beam.heal.end.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B1.02C/0000002A71C3.03F.ogg
+# mercy.beam.heal.start_3p.a: 12B7 play 415125360 (1 file, 0.644 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+mercy.beam.heal.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B7.02C/0000002B1305.03F.ogg
+# mercy.beam.heal.loop_3p.a: 12B7 play 422770254 (1 file, 6.635 s, 2ch); net -15 dB, +0 cents, @0.000 s, period 6.635 s. H.
+mercy.beam.heal.loop_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B7.02C/0000002AD6CE.03F.ogg
+# mercy.beam.heal.loop_3p.b: 12B7 play 74974582 (1 file, 9.785 s, 2ch); net -3 dB, +0 cents, @0.000 s, period 9.785 s. H.
+mercy.beam.heal.loop_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B7.02C/0000002A6FB4.03F.ogg
+# mercy.beam.heal.loop_3p.c: 12B7 play 837806713 (1 file, 9.315 s, 2ch); net -11 dB, +0 cents, @0.000 s, period 9.315 s. H.
+mercy.beam.heal.loop_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B7.02C/0000002A6FB6.03F.ogg
+# mercy.beam.heal.end_3p.a: 12B7 stop 961622001 (1 file, 0.663 s, 2ch); net -35 dB, +0 cents, @0.000 s. H.
+mercy.beam.heal.end_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000197.00D/Sounds/0000000012B7.02C/0000002B1306.03F.ogg
+# mercy.beam.boost.start.a: 12B0 play 620680717 (1 file, 0.820 s, 2ch); net -38.5 dB, +0 cents, @0.000 s. H.
+mercy.beam.boost.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A7095.03F.ogg
+# mercy.beam.boost.loop.a: 12B0 play 102535274 (1 file, 7.317 s, 2ch); net -8.5 dB, +0 cents, @0.000 s, period 7.317 s. H.
+mercy.beam.boost.loop.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A903E.03F.ogg
+# mercy.beam.boost.loop.b: 12B0 play 186299075 (1 file, 7.965 s, 2ch); net -17.5 dB, -50 cents, @0.000 s, period 8.198 s. H.
+mercy.beam.boost.loop.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A89B1.03F.ogg
+# mercy.beam.boost.loop.c: 12B0 play 544797270 (1 file, 9.231 s, 2ch); net -14.5 dB, +0 cents, @0.000 s, period 9.231 s. H.
+mercy.beam.boost.loop.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A9048.03F.ogg
+# mercy.beam.boost.loop.d: 12B0 play 1005590462 (1 file, 7.923 s, 2ch); net -17 dB, +199 cents, @0.000 s, period 7.063 s. H.
+mercy.beam.boost.loop.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A5D42.03F.ogg
+# mercy.beam.boost.loop.e: 12B0 play 649224055 (1 file, 1.108 s, 1ch); net -29.5 dB, -650 cents, @0.000 s, period 1.613 s. H.
+mercy.beam.boost.loop.e = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A9061.03F.ogg
+# mercy.beam.boost.end.a: 12B0 stop 644510124 (1 file, 0.388 s, 1ch); net -38.5 dB, +0 cents, @0.000 s. H.
+mercy.beam.boost.end.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B0.02C/0000002A71C3.03F.ogg
+# mercy.beam.boost.start_3p.a: 12B6 play 31621820 (1 file, 0.820 s, 2ch); net -42.5 dB, +0 cents, @0.000 s. H.
+mercy.beam.boost.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A7095.03F.ogg
+# mercy.beam.boost.loop_3p.a: 12B6 play 460145792 (1 file, 7.619 s, 2ch); net -19.5 dB, +0 cents, @0.000 s, period 7.619 s. H.
+mercy.beam.boost.loop_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A5D4A.03F.ogg
+# mercy.beam.boost.loop_3p.b: 12B6 play 534659969 (1 file, 9.231 s, 2ch); net -20 dB, +0 cents, @0.000 s, period 9.231 s. H.
+mercy.beam.boost.loop_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A9048.03F.ogg
+# mercy.beam.boost.loop_3p.c: 12B6 play 874707667 (1 file, 7.965 s, 2ch); net -23 dB, -50 cents, @0.000 s, period 8.198 s. H.
+mercy.beam.boost.loop_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A89B1.03F.ogg
+# mercy.beam.boost.loop_3p.d: 12B6 play 940459473 (1 file, 7.923 s, 2ch); net -23 dB, +199 cents, @0.000 s, period 7.063 s. H.
+mercy.beam.boost.loop_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A5D42.03F.ogg
+# mercy.beam.boost.end_3p.a: 12B6 stop 399079382 (1 file, 0.388 s, 1ch); net -47.5 dB, +0 cents, @0.000 s. H.
+mercy.beam.boost.end_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000198.00D/Sounds/0000000012B6.02C/0000002A71C3.03F.ogg
+# mercy.blaster.fire.a: 228D play 100331536 (4 files, 0.332-0.351 s, 2ch); net -10 dB, +850 cents, @0.000 s. H.
+mercy.blaster.fire.a = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A6874.03F.ogg
+mercy.blaster.fire.a = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A687A.03F.ogg
+mercy.blaster.fire.a = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A68BC.03F.ogg
+mercy.blaster.fire.a = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A6867.03F.ogg
+# mercy.blaster.fire.b: 228D play 1012089900 (4 files, 0.447-0.567 s, 1ch); net -17.5 dB, +1300 cents, @0.000 s. H.
+mercy.blaster.fire.b = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A686B.03F.ogg
+mercy.blaster.fire.b = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A68C0.03F.ogg
+mercy.blaster.fire.b = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A6865.03F.ogg
+mercy.blaster.fire.b = ExtraSounds/Mercy/BlasterShot/Sounds/00000000228D.02C/0000002A6866.03F.ogg
+# mercy.blaster.hit.a: 8DE7 play 413748272 (16 files, 0.407-0.607 s, 2ch); net -22 dB, +430 cents, @0.002 s. H.
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+mercy.blaster.hit.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# mercy.blaster.hit.b: 5DEC play 638945211 (12 files, 1.263-1.391 s, 2ch); net -8 dB, +0 cents, @0.040 s. H.
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A696D.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6960.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6974.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6970.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6963.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6990.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6A21.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6A36.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6964.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6978.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A698D.03F.ogg
+mercy.blaster.hit.b = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6976.03F.ogg
+# mercy.blaster.hit.c: 8DE7 play 19863385 (10 files, 0.537-0.599 s, 1ch); net -12 dB, +710 cents, @0.002 s. H.
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+mercy.blaster.hit.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# mercy.blaster.hit.d: 8DE7 play 1057399041 (7 files, 0.487-0.559 s, 2ch); net -18.5 dB, +535 cents, @0.002 s. H.
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+mercy.blaster.hit.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# mercy.blaster.hit.e: 5DEC play 844656038 (7 files, 2.767-3.065 s, 2ch); net -24.5 dB, +262 cents, @0.060 s, avoid repeat 3. H.
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A5E69.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A641E.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6288.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A62AB.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6344.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A62C0.03F.ogg
+mercy.blaster.hit.e = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A5DCA.03F.ogg
+# mercy.blaster.hit.f: 5DEC play 47801574 (5 files, 0.132-0.135 s, 2ch); net -24 dB, +162 cents, @0.160 s. H.
+mercy.blaster.hit.f = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A5E00.03F.ogg
+mercy.blaster.hit.f = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A62AA.03F.ogg
+mercy.blaster.hit.f = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A62E7.03F.ogg
+mercy.blaster.hit.f = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6294.03F.ogg
+mercy.blaster.hit.f = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A5E83.03F.ogg
+# mercy.blaster.hit.g: 5DEC play 446419380 (2 files, 0.201-0.209 s, 1ch); net -18.5 dB, +0 cents, @0.000 s. H.
+mercy.blaster.hit.g = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A69D4.03F.ogg
+mercy.blaster.hit.g = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6A18.03F.ogg
+# mercy.blaster.hit.h: 5DEC play 587631719 (1 file, 0.223 s, 1ch); net -13 dB, +0 cents, @0.030 s. H.
+mercy.blaster.hit.h = ExtraSounds/Mercy/BlasterHitTarget/Sounds/000000005DEC.02C/0000002A6A14.03F.ogg
+# mercy.blaster.hit_3p.a: 6D21 play 531431832 (12 files, 1.263-1.391 s, 2ch); net -10 dB, +0 cents, @0.000 s. H.
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A696D.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6960.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6974.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6970.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6963.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6990.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6A21.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6A36.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6964.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6978.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A698D.03F.ogg
+mercy.blaster.hit_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6976.03F.ogg
+# mercy.blaster.hit_3p.b: 6D21 play 219283292 (7 files, 2.767-3.065 s, 2ch); net -30 dB, +412 cents, @0.020 s, avoid repeat 3. H.
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A5E69.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A641E.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6288.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A62AB.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6344.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A62C0.03F.ogg
+mercy.blaster.hit_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A5DCA.03F.ogg
+# mercy.blaster.hit_3p.c: 6D21 play 876016138 (5 files, 0.132-0.135 s, 2ch); net -29.5 dB, +312 cents, @0.120 s. H.
+mercy.blaster.hit_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A5E00.03F.ogg
+mercy.blaster.hit_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A62AA.03F.ogg
+mercy.blaster.hit_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A62E7.03F.ogg
+mercy.blaster.hit_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6294.03F.ogg
+mercy.blaster.hit_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A5E83.03F.ogg
+# mercy.blaster.hit_3p.d: 6D21 play 72755703 (2 files, 0.201-0.209 s, 1ch); net -20 dB, +0 cents, @0.000 s. H.
+mercy.blaster.hit_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A69D4.03F.ogg
+mercy.blaster.hit_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B8.00D/Sounds/000000006D21.02C/0000002A6A18.03F.ogg
+# mercy.blaster.hit_block.a: 899F play 1051993922 (15 files, 0.159-0.297 s, 1ch); net -14 dB, +500 cents, @0.000 s,
+#  avoid repeat 10. H.
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4D1.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABF96.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABF83.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABFB4.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4DD.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4CD.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABF88.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4CA.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4C5.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4B2.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABF86.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABFB7.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABFA0.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002AC4A9.03F.ogg
+mercy.blaster.hit_block.a = ExtraSounds/Mercy/HitBlock/Sounds/00000000899F.02C/0000002ABFBE.03F.ogg
+# mercy.blaster.hit_block.b: 89A1 play 831707544 (15 files, 0.159-0.297 s, 1ch); net -16 dB, +0 cents, @0.000 s, avoid
+#  repeat 10. H.
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4D1.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABF96.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABF83.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABFB4.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4DD.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4CD.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABF88.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4CA.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4C5.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4B2.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABF86.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABFB7.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABFA0.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002AC4A9.03F.ogg
+mercy.blaster.hit_block.b = ExtraSounds/Mercy/HitBlock/Sounds/0000000089A1.02C/0000002ABFBE.03F.ogg
+# mercy.blaster.reload.a: 91F9 play 90828693 (1 file, 0.221 s, 1ch); net -8.5 dB, +0 cents, @0.056 s. H.
+mercy.blaster.reload.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/0000000091F9.02C/0000002B1C73.03F.ogg
+# mercy.blaster.reload.b: 91FA play 131009103 (1 file, 0.152 s, 1ch); net -11.5 dB, +0 cents, @0.270 s. H.
+mercy.blaster.reload.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/0000000091FA.02C/0000002B1C26.03F.ogg
+# mercy.blaster.reload.c: 91FB play 870198468 (1 file, 0.504 s, 1ch); net -8.5 dB, +0 cents, @0.390 s. H.
+mercy.blaster.reload.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/0000000091FB.02C/0000002B1C6C.03F.ogg
+# mercy.blaster.reload.d: 91FC play 833089172 (1 file, 0.577 s, 1ch); net -8.5 dB, +0 cents, @0.814 s. H.
+mercy.blaster.reload.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/0000000091FC.02C/0000002B1C72.03F.ogg
+# mercy.blaster.reload.e: C6A6 play 495840148 (1 file, 0.497 s, 1ch); net -19.5 dB, +0 cents, @1.400 s. H.
+mercy.blaster.reload.e = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000670A.00D/Sounds/00000000C6A6.02C/0000002BF053.03F.ogg
+# mercy.blaster.reload_3p.a: 9618 play 205060356 (1 file, 0.221 s, 1ch); net -16.5 dB, +0 cents, @0.055 s. H.
+mercy.blaster.reload_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/000000009618.02C/0000002B1C73.03F.ogg
+# mercy.blaster.reload_3p.b: 9619 play 690117418 (1 file, 0.152 s, 1ch); net -19.5 dB, +0 cents, @0.270 s. H.
+mercy.blaster.reload_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/000000009619.02C/0000002B1C26.03F.ogg
+# mercy.blaster.reload_3p.c: 961A play 1005855328 (1 file, 0.504 s, 1ch); net -16.5 dB, +0 cents, @0.389 s. H.
+mercy.blaster.reload_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/00000000961A.02C/0000002B1C6C.03F.ogg
+# mercy.blaster.reload_3p.d: 961B play 102348552 (1 file, 0.577 s, 1ch); net -16.5 dB, +0 cents, @0.813 s. H.
+mercy.blaster.reload_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000DC4/Sounds/00000000961B.02C/0000002B1C72.03F.ogg
+# mercy.swap.staff.a: 18AE play 780016402 (1 file, 0.860 s, 1ch); net -26 dB, +600 cents, @0.000 s. H.
+mercy.swap.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8B.00D/Sounds/0000000018AE.02C/0000002A71A7.03F.ogg
+# mercy.swap.staff.b: 18AE play 327155479 (1 file, 0.836 s, 1ch); net -55 dB, +0 cents, @0.250 s. H.
+mercy.swap.staff.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8B.00D/Sounds/0000000018AE.02C/0000002A708B.03F.ogg
+# mercy.swap.staff_3p.a: 2175 play 58093875 (1 file, 0.860 s, 1ch); net -34 dB, +600 cents, @0.000 s. H.
+mercy.swap.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8B.00D/Sounds/000000002175.02C/0000002A71A7.03F.ogg
+# mercy.swap.blaster.a: 18AD play 248501844 (1 file, 0.897 s, 1ch); net -22.5 dB, +600 cents, @0.000 s. H.
+mercy.swap.blaster.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8C.00D/Sounds/0000000018AD.02C/0000002A741E.03F.ogg
+# mercy.swap.blaster.b: 18AD play 729133694 (1 file, 0.836 s, 1ch); net -37.5 dB, +1200 cents, @0.250 s. H.
+mercy.swap.blaster.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8C.00D/Sounds/0000000018AD.02C/0000002A708B.03F.ogg
+# mercy.swap.blaster_3p.a: 2176 play 966965815 (1 file, 0.897 s, 1ch); net -30.5 dB, +600 cents, @0.000 s. H.
+mercy.swap.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8C.00D/Sounds/000000002176.02C/0000002A741E.03F.ogg
+# mercy.swap.blaster_3p.b: 2176 play 349022040 (1 file, 0.836 s, 1ch); net -45.5 dB, +1200 cents, @0.250 s. H.
+mercy.swap.blaster_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000B8C.00D/Sounds/000000002176.02C/0000002A708B.03F.ogg
+# mercy.melee.staff.a: 1838 play 307094701 (7 files, 0.703-0.940 s, 2ch); net -3.5 dB, +300 cents, @0.000 s. H.
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A94B5.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A9458.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A9468.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A9467.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A945E.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A94B6.03F.ogg
+mercy.melee.staff.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/00000000086D/Sounds/000000001838.02C/0000002A94B8.03F.ogg
+# mercy.melee.staff_3p.a: 1837 play 430583062 (7 files, 0.887-0.892 s, 2ch); net -16.5 dB, +0 cents, @0.100 s. H.
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A9469.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A94AF.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A945C.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A9460.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A94B1.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A9466.03F.ogg
+mercy.melee.staff_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000BC8/Sounds/000000001837.02C/0000002A94C9.03F.ogg
+# mercy.melee.blaster.a: 1836 play 407796445 (3 files, 0.612-0.641 s, 1ch); net -12.5 dB, +0 cents, @0.000 s. H.
+mercy.melee.blaster.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/000000000AB3/Sounds/000000001836.02C/0000002A948D.03F.ogg
+mercy.melee.blaster.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/000000000AB3/Sounds/000000001836.02C/0000002A94B9.03F.ogg
+mercy.melee.blaster.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEB.00C/AnimationEffects/000000000AB3/Sounds/000000001836.02C/0000002A946A.03F.ogg
+# mercy.melee.blaster_3p.a: 1835 play 27769508 (7 files, 0.839-0.860 s, 2ch); net -18.5 dB, +0 cents, @0.100 s. H.
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A948C.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A945F.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A94B4.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A94B3.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A94B7.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A94BB.03F.ogg
+mercy.melee.blaster_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000CCD/Sounds/000000001835.02C/0000002A94AE.03F.ogg
+# mercy.ga.start.a: 5DEE play 1014011499 (3 files, 0.209-0.361 s, 2ch); net -22 dB, -600 cents, @0.000 s. H.
+mercy.ga.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6B04.03F.ogg
+mercy.ga.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AD1.03F.ogg
+mercy.ga.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AFC.03F.ogg
+# mercy.ga.start.b: 5DEE play 870316481 (1 file, 1.497 s, 2ch); net -10 dB, +0 cents, @0.150 s. H.
+mercy.ga.start.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AF7.03F.ogg
+# mercy.ga.start.c: 5DEE play 1035697442 (1 file, 2.873 s, 2ch); net -38 dB, +600 cents, @0.150 s. H.
+mercy.ga.start.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6ACF.03F.ogg
+# mercy.ga.start.d: 5DEE play 407357796 (1 file, 0.393 s, 1ch); net -14 dB, +0 cents, @0.200 s. H.
+mercy.ga.start.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AD7.03F.ogg
+# mercy.ga.start.e: 17FA play 769083566 (1 file, 1.895 s, 2ch); net -15 dB, +0 cents, @0.233 s. H.
+mercy.ga.start.e = Heroes/Mercy/Skin/Overwatch/Overwatch/Models/00000000DBEA.00C/AnimationEffects/000000000B67/Sounds/0000000017FA.02C/0000002A6AFD.03F.ogg
+# mercy.ga.start_3p.a: 12A6 play 1063689072 (3 files, 0.209-0.361 s, 2ch); net -40 dB, +0 cents, @0.000 s. H.
+mercy.ga.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6B04.03F.ogg
+mercy.ga.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AD1.03F.ogg
+mercy.ga.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AFC.03F.ogg
+# mercy.ga.start_3p.b: 12A6 play 372315391 (1 file, 1.497 s, 2ch); net -25 dB, +0 cents, @0.150 s. H.
+mercy.ga.start_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AF7.03F.ogg
+# mercy.ga.start_3p.c: 12A6 play 417124665 (1 file, 1.895 s, 2ch); net -24 dB, +0 cents, @0.150 s. H.
+mercy.ga.start_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AFD.03F.ogg
+# mercy.ga.start_3p.d: 12A6 play 702839647 (1 file, 2.873 s, 2ch); net -53 dB, +600 cents, @0.150 s. H.
+mercy.ga.start_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6ACF.03F.ogg
+# mercy.ga.launch.a: 5DEE play 1014011499 (3 files, 0.209-0.361 s, 2ch); net -22 dB, -600 cents, @0.000 s. H.
+mercy.ga.launch.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6B04.03F.ogg
+mercy.ga.launch.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AD1.03F.ogg
+mercy.ga.launch.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AFC.03F.ogg
+# mercy.ga.launch.b: 5DEE play 870316481 (1 file, 1.497 s, 2ch); net -10 dB, +0 cents, @0.150 s. H.
+mercy.ga.launch.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AF7.03F.ogg
+# mercy.ga.launch.c: 5DEE play 1035697442 (1 file, 2.873 s, 2ch); net -38 dB, +600 cents, @0.150 s. H.
+mercy.ga.launch.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6ACF.03F.ogg
+# mercy.ga.launch.d: 5DEE play 407357796 (1 file, 0.393 s, 1ch); net -14 dB, +0 cents, @0.200 s. H.
+mercy.ga.launch.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/000000005DEE.02C/0000002A6AD7.03F.ogg
+# mercy.ga.launch_3p.a: 12A6 play 1063689072 (3 files, 0.209-0.361 s, 2ch); net -40 dB, +0 cents, @0.000 s. H.
+mercy.ga.launch_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6B04.03F.ogg
+mercy.ga.launch_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AD1.03F.ogg
+mercy.ga.launch_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AFC.03F.ogg
+# mercy.ga.launch_3p.b: 12A6 play 372315391 (1 file, 1.497 s, 2ch); net -25 dB, +0 cents, @0.150 s. H.
+mercy.ga.launch_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AF7.03F.ogg
+# mercy.ga.launch_3p.c: 12A6 play 417124665 (1 file, 1.895 s, 2ch); net -24 dB, +0 cents, @0.150 s. H.
+mercy.ga.launch_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6AFD.03F.ogg
+# mercy.ga.launch_3p.d: 12A6 play 702839647 (1 file, 2.873 s, 2ch); net -53 dB, +600 cents, @0.150 s. H.
+mercy.ga.launch_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019B.00D/Sounds/0000000012A6.02C/0000002A6ACF.03F.ogg
+# mercy.descent.start.a: 5DED play 769083566 (1 file, 1.895 s, 2ch); net -15 dB, +0 cents, @0.000 s. H.
+mercy.descent.start.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000002F5.00D/Sounds/000000005DED.02C/0000002A6AFD.03F.ogg
+# mercy.descent.start.b: 5DED play 408408341 (1 file, 0.500 s, 1ch); net -25 dB, +0 cents, @0.000 s. H.
+mercy.descent.start.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000002F5.00D/Sounds/000000005DED.02C/0000002B06AC.03F.ogg
+# mercy.descent.start.c: 12AA play 991362249 (1 file, 3.961 s, 2ch); net -37 dB, +0 cents, @0.000 s. H.
+mercy.descent.start.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/0000000012AA.02C/0000002B06AB.03F.ogg
+# mercy.descent.loop.a: 12AA play 373283813 (1 file, 7.120 s, 2ch); net -34 dB, +0 cents, @0.000 s, period 7.120 s. H.
+mercy.descent.loop.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/0000000012AA.02C/0000002B06A7.03F.ogg
+# mercy.descent.loop.b: 12AA play 811766111 (1 file, 8.719 s, 2ch); net -23 dB, +0 cents, @0.000 s, period 8.719 s. H.
+mercy.descent.loop.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/0000000012AA.02C/0000002B06A2.03F.ogg
+# mercy.descent.loop.c: 12AA play 917956789 (1 file, 8.632 s, 2ch); net -35 dB, +0 cents, @0.000 s, period 8.632 s. H.
+mercy.descent.loop.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/0000000012AA.02C/0000002B06A4.03F.ogg
+# mercy.descent.end.a: 12AA stop 467250059 (1 file, 1.060 s, 2ch); net -28 dB, +0 cents, @0.000 s. H.
+mercy.descent.end.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/0000000012AA.02C/0000002A71DA.03F.ogg
+# mercy.descent.start_3p.a: 1815 play 1037216872 (1 file, 1.895 s, 2ch); net -29 dB, +0 cents, @0.000 s. H.
+mercy.descent.start_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000002F5.00D/Sounds/000000001815.02C/0000002A6AFD.03F.ogg
+# mercy.descent.loop_3p.a: 1819 play 25595638 (1 file, 8.719 s, 2ch); net -44 dB, +0 cents, @0.000 s, period 8.719 s. H.
+mercy.descent.loop_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/000000001819.02C/0000002B06A2.03F.ogg
+# mercy.descent.end_3p.a: 1819 stop 68472191 (1 file, 1.060 s, 2ch); net -42 dB, +0 cents, @0.000 s. H.
+mercy.descent.end_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000019C.00D/Sounds/000000001819.02C/0000002A71DA.03F.ogg
+# mercy.resurrect.cast.a: 5DF1 play 248341785 (1 file, 4.241 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+mercy.resurrect.cast.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000030F.00D/Sounds/000000005DF1.02C/0000002B04A4.03F.ogg
+# mercy.resurrect.cast.b: 5DF1 play 764829235 (1 file, 0.636 s, 1ch); net -26 dB, +0 cents, @0.180 s. H.
+mercy.resurrect.cast.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000030F.00D/Sounds/000000005DF1.02C/0000002B04AB.03F.ogg
+# mercy.resurrect.cast_3p.a: 1818 play 450134754 (1 file, 4.239 s, 2ch); net -15.5 dB, +0 cents, @0.000 s. H.
+mercy.resurrect.cast_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000030F.00D/Sounds/000000001818.02C/0000002B04D3.03F.ogg
+# mercy.resurrect.done.a: 95DE play 420266385 (2 files, 0.892-1.193 s, 2ch); net -4 dB, +0 cents, @0.000 s. H.
+mercy.resurrect.done.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000483D.00D/Sounds/0000000095DE.02C/000000356603.03F.ogg
+mercy.resurrect.done.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000483D.00D/Sounds/0000000095DE.02C/000000356604.03F.ogg
+# mercy.resurrect.revived.a: 95DF play 774615174 (2 files, 0.988-1.617 s, 2ch); net -14.5 dB, +0 cents, @0.000 s. H.
+mercy.resurrect.revived.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000483F.00D/Sounds/0000000095DF.02C/000000356602.03F.ogg
+mercy.resurrect.revived.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000483F.00D/Sounds/0000000095DF.02C/000000356605.03F.ogg
+# mercy.flash_heal.cast.a: C40D play 148007914 (1 file, 1.020 s, 2ch); net -15.5 dB, +0 cents, @0.000 s. H.
+mercy.flash_heal.cast.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000065EA.00D/Sounds/00000000C40D.02C/00000034BBCB.03F.ogg
+# mercy.flash_heal.cast.b: C40D play 187828628 (1 file, 1.279 s, 2ch); net -11.5 dB, +0 cents, @0.300 s. H.
+mercy.flash_heal.cast.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000065EA.00D/Sounds/00000000C40D.02C/00000034BBCC.03F.ogg
+# mercy.flash_heal.cast_3p.a: C40E play 367650980 (1 file, 1.020 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+mercy.flash_heal.cast_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000065EA.00D/Sounds/00000000C40E.02C/00000034BBCB.03F.ogg
+# mercy.flash_heal.cast_3p.b: C40E play 94984086 (1 file, 1.279 s, 2ch); net -7.5 dB, +0 cents, @0.250 s. H.
+mercy.flash_heal.cast_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000065EA.00D/Sounds/00000000C40E.02C/00000034BBCC.03F.ogg
+# mercy.flash_heal.heal.a: C2C6 play 50376066 (1 file, 1.796 s, 1ch); net -7.5 dB, +0 cents, @0.000 s. H.
+mercy.flash_heal.heal.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000064E1.00D/Sounds/00000000C2C6.02C/0000002A9031.03F.ogg
+# mercy.valkyrie.cast.a: 5DF0 play 392964878 (1 file, 4.383 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.cast.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FA0.00D/Sounds/000000005DF0.02C/0000002AB521.03F.ogg
+# mercy.valkyrie.cast.b: 5DF0 play 768580585 (1 file, 2.385 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.cast.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FA0.00D/Sounds/000000005DF0.02C/0000002AB515.03F.ogg
+# mercy.valkyrie.cast.c: 5DF0 play 83739537 (1 file, 0.351 s, 1ch); net -15 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.cast.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FA0.00D/Sounds/000000005DF0.02C/0000002AB51E.03F.ogg
+# mercy.valkyrie.cast_3p.a: 4359 play 852812498 (1 file, 4.388 s, 2ch); net -22 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.cast_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FA0.00D/Sounds/000000004359.02C/0000002AB50C.03F.ogg
+# mercy.valkyrie.cast_3p.b: 4359 play 885167641 (1 file, 2.364 s, 2ch); net -15 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.cast_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FA0.00D/Sounds/000000004359.02C/0000002AB518.03F.ogg
+# mercy.valkyrie.loop.a: 4358 play 90787658 (1 file, 9.656 s, 2ch); net -11 dB, +0 cents, @0.000 s, period 9.656 s. H.
+mercy.valkyrie.loop.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002AB516.03F.ogg
+# mercy.valkyrie.loop.b: 4358 play 871525364 (1 file, 4.775 s, 2ch); net -8 dB, +0 cents, @0.000 s, period 4.775 s. H.
+mercy.valkyrie.loop.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002AB50F.03F.ogg
+# mercy.valkyrie.loop.c: 4358 play 963887159 (1 file, 8.463 s, 2ch); net -7 dB, +0 cents, @0.000 s, period 8.463 s. H.
+mercy.valkyrie.loop.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002AB519.03F.ogg
+# mercy.valkyrie.loop.d: 4358 play 454030842 (1 file, 13.253 s, 4ch); net -22 dB, +0 cents, @0.000 s, period 13.253 s. H.
+mercy.valkyrie.loop.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002AB51C.03F.ogg
+# mercy.valkyrie.ending.a: 4358 play 858531394 (1 file, 3.831 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.ending.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002AB543.03F.ogg
+# mercy.valkyrie.end.a: 4358 stop 625274630 (1 file, 1.060 s, 2ch); net -13 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.end.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/000000004358.02C/0000002A71DA.03F.ogg
+# mercy.valkyrie.loop_3p.a: 435A play 119450418 (1 file, 4.775 s, 2ch); net -8 dB, +0 cents, @0.000 s, period 4.775 s. H.
+mercy.valkyrie.loop_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002AB50F.03F.ogg
+# mercy.valkyrie.loop_3p.b: 435A play 826270606 (1 file, 14.439 s, 2ch); net -14 dB, +0 cents, @0.000 s, period 14.439 s. H.
+mercy.valkyrie.loop_3p.b = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002AB523.03F.ogg
+# mercy.valkyrie.loop_3p.c: 435A play 575753827 (1 file, 15.119 s, 2ch); net -6 dB, +0 cents, @0.000 s, period 15.119 s. H.
+mercy.valkyrie.loop_3p.c = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002AB520.03F.ogg
+# mercy.valkyrie.loop_3p.d: 435A play 127336983 (1 file, 8.463 s, 2ch); net -14 dB, +0 cents, @0.000 s, period 8.463 s. H.
+mercy.valkyrie.loop_3p.d = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002AB519.03F.ogg
+# mercy.valkyrie.ending_3p.a: 435A play 925657187 (1 file, 3.831 s, 2ch); net -18 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.ending_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002AB543.03F.ogg
+# mercy.valkyrie.end_3p.a: 435A stop 737583170 (1 file, 1.060 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+mercy.valkyrie.end_3p.a = Heroes/Mercy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001F7B.00D/Sounds/00000000435A.02C/0000002A71DA.03F.ogg
+# mercy.footstep.a: 187A play 953332554 (10 files, 0.159-0.241 s, 1ch); net -21.5 dB, +0 cents, @0.000 s, avoid repeat 12. H.
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC517.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC501.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC51F.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC4E6.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC503.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC51C.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC4F9.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC4FB.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC518.03F.ogg
+mercy.footstep.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000187A.02C/0000002AC516.03F.ogg
+# mercy.footstep_3p.a: 189C play 994888914 (10 files, 0.159-0.241 s, 1ch); net -13 dB, +0 cents, @0.000 s, avoid repeat 12. H.
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC517.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC501.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC51F.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC4E6.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC503.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC51C.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC4F9.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC4FB.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC518.03F.ogg
+mercy.footstep_3p.a = ExtraSounds/Mercy/Footsteps/Sounds/00000000189C.02C/0000002AC516.03F.ogg
+
+# ===== Not mapped (in the data, not asked for, or no reading of when they play)
+# Guardian Angel has no flight loop (H): 019B's Play events are all one-shots, and its longest layer (2.87 s at
+# +600 cents = 2.0 s) outlasts a full 30 m flight at 17 m/s (1.76 s); 17E9 / 689F / 6BC3, held during and after the
+# flight, have no sound. 098A (02C 20EA, no range, a random 3 of 0.93-1.08 s) plays on 006E #1152 (false) whose
+# input was not found (L when). 0186 (02C FCB, the shared 'ability not available' click; kiriko.ability.denied) on
+# GA's / Resurrect's / Valkyrie's StateAbility nodes and GA's failed launch ray (#1171). 5F58 (BB32) + 009B (FCF), no
+# graph input found, in GA's and Flash Heal's graphs (L: the cooldown-ready cue).
+# The blaster: the contact set 00F7's type 0 / 1 (character hits: default material 0001 -> 5D53 no range + 8F2F
+# 500 m + 905C 12 m; extracted, ExtraSounds\Mercy\HitCharacter) and type 4 (2356, 30 m; the staff's set 0461 type 4:
+# 2357); 37D6 (65E9 / 65EB), 60BE (BDAE) and the Delayed Discharge volley are Stadium branches; 3490 has no sound.
+# The staff's 3704 (1610) / 36AD (1059) belong to UX presenters (#1315 / #1316: L, interface feedback); 0242 / 0243 /
+# 0249 / 024A have no sound; 5A67 is Stadium's Judgement.
+# Angelic Descent: C7CF / C7D0 (20 m copies of the start / loop on the own bus 1185350703: L whose); 377D (6588, a 2 s
+# effect on 0071's self-heal StateModifyHealth #515; not extracted).
+# Resurrect: the dead ally's soul marker (cosmetic entity 014F, 00CA #1123: 0178 = 02C 1665, 20 m 5 s loop, and 5C3C =
+# B3F9, 10 m loops; the shared graph 01C7 #1366 / #1367 holds the same two on dead players), 5B87 (B31D-B31F, a Stadium
+# power), the Stadium 768C-7692 effects; Angelic Resurrection's 64AF (C27B / C280).
+# Valkyrie: 602B (BC99 / BC9A), a skin's flight loop (#518 true; not extracted); 40CD in GA's Valkyrie state plays the
+# same 4358 / 435A; 68D6 has no sound. Flash Heal: 642D / 75A6 / 75A7 (charge pips, no sound).
+# Her other contact types on 0084 (default material 0001; own / 50 m): 9 = 187C / 189D (12), 11 = 187B / 189B, 12 =
+# 187D / 189E (5, the loudest), 13 = 1D29 / 1D31, 14 = 187F / 18A0, 15 = 1880 / 18A1, 16 = 76F3 / 76F4, 17 = type 10's
+# pair, 4 = 1173 (44 m, the knock-down's body-fall files): jumps / landings / slides by their counts and lengths (L which
+# is which), all extracted in ExtraSounds\Mercy\Footsteps. The knock-down clips' 92EC (3BD4 / 7C67 @0.4333), 92F5
+# (847, 44 m) and 930F (1P 957 @0.4667); the idle clip 989's breath 36F9 (12 m @0.4); emote / intro clip sounds.
+
+# ===== Voice (HeroVoice/Mercy): the voice set 0017.05F's lines by moment (research\mercy\sounds\voice_lines.json,
+# from mercy_voice.py: each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's
+# extract-hero-voice --subtitles-with-sounds). Her lines are spoken 0B2 files (each line's external 02C 16F3 is the
+# shared dialogue slot, not a sound of its own). w = the line's weight (the builder turns it into Minecraft weights).
+# Lines with criteria are left out, as Lucio's and Jetpack Cat's are (Overwatch Classic only, hero interactions, skins,
+# scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', which every effort sound carries and is
+# treated as always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt,
+# cooldown s (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Elimination 0008: 15 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 8 Overwatch Classic only,
+#  4 a hero interaction, 2 a scripted condition (Headshot(9227)), 1 a scripted condition (UsingUltimate(A5B5))
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/00000000A530.0B2-It had to be done.ogg | w=0.1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/00000000A533.0B2-Flatlined.ogg | w=0.1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/00000000B104.0B2-Vital signs negative.ogg | w=0.1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/00000001FF65.0B2-Regrettable... but necessary.ogg | w=0.1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FEF.0B2-Lie down.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF0.0B2-Anyone know first aid_.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF1.0B2-(German)_ Bless you.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF3.0B2-If only you'd had more support.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF5.0B2-That's one cure for foolishness.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF6.0B2-If only I'd been on your side.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF7.0B2-(German)_ You need medical attention.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF8.0B2-Were you expecting a remedy_.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FF9.0B2-You didn't think that through, did you_.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FFB.0B2-I should have a word with your medic.ogg | w=1
+mercy.voice.elimination = HeroVoice/Mercy/Elimination/000000061FFC.0B2-(German)_ Patient was a lost cause.ogg | w=1
+# Multikill 00C9: 2 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 1 a scripted condition
+#  (UltAssist_Nano(A5FD), UsingUltimate(A5B5))
+mercy.voice.multikill = HeroVoice/Mercy/Multikill/000000061FA3.0B2-(laugh) That, I did not expect!.ogg | w=1
+mercy.voice.multikill = HeroVoice/Mercy/Multikill/000000061FA4.0B2-(chuckle) I never thought this would happen!.ogg | w=1
+# MeleeEnemyKilledRemark 0032: 5 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 1 Overwatch
+#  Classic only, 1 a scripted condition (?(A6FE))
+mercy.voice.melee_kill = HeroVoice/Mercy/MeleeEnemyKilledRemark/00000000A52F.0B2-You might not want to tell your friends about that.ogg | w=0.1
+mercy.voice.melee_kill = HeroVoice/Mercy/MeleeEnemyKilledRemark/00000000A535.0B2-Say ahh!.ogg | w=0.1
+mercy.voice.melee_kill = HeroVoice/Mercy/MeleeEnemyKilledRemark/00000006201F.0B2-Ha! I could've examined you from back there.ogg | w=0.5
+mercy.voice.melee_kill = HeroVoice/Mercy/MeleeEnemyKilledRemark/000000062020.0B2-Get back!.ogg | w=1
+mercy.voice.melee_kill = HeroVoice/Mercy/MeleeEnemyKilledRemark/000000062021.0B2-Taking a closer look.ogg | w=1
+# On Fire 0583: 4 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 2 Overwatch Classic only
+mercy.voice.on_fire = HeroVoice/Mercy/OnFire/00000001FF95.0B2-I'm on fire.ogg | w=1
+mercy.voice.on_fire = HeroVoice/Mercy/OnFire/000000062072.0B2-I am fully focused!.ogg | w=1
+mercy.voice.on_fire = HeroVoice/Mercy/OnFire/000000062073.0B2-My duty is being done!.ogg | w=1
+mercy.voice.on_fire = HeroVoice/Mercy/OnFire/000000062074.0B2-I'm at the height of my performance!.ogg | w=1
+# Respawn 002C: 12 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 7 Overwatch Classic only
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/00000000A517.0B2-Now, where am I needed_.ogg | w=0.1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/00000000A54E.0B2-The wonders of modern medicine.ogg | w=0.1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000029494.0B2-(German)_ Someone always interrupts my work.ogg | w=0.05
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/00000002ED23.0B2-I must go where I am needed.ogg | w=0.05
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062000.0B2-I'd better be more careful.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062001.0B2-(German)_ Time for a new plan.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062002.0B2-I must return to my post.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062003.0B2-(German)_ I'd better hurry back.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062004.0B2-Making a full recovery.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062005.0B2-My skills are still needed.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062006.0B2-Medical technology is truly extraordinary!.ogg | w=1
+mercy.voice.respawn = HeroVoice/Mercy/Respawn/000000062007.0B2-Healthy body, healthy mind.ogg | w=1
+# Melee shout 0023: 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4EC.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4EB.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4EA.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4E9.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4E0.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/00000000A4DF.0B2-(shouts).ogg | w=0.7
+mercy.voice.melee = HeroVoice/Mercy/Melee/000000063C0D.0B2-(shouts).ogg | w=1
+mercy.voice.melee = HeroVoice/Mercy/Melee/000000063C0E.0B2-(shouts).ogg | w=1
+mercy.voice.melee = HeroVoice/Mercy/Melee/000000063C0F.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+mercy.voice.select = HeroVoice/Mercy/HeroSelect/00000006204F.0B2-Don't worry, I'll be right behind you.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A505.0B2-(dying sounds).ogg | w=1
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A504.0B2-(dying sounds).ogg | w=1
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A503.0B2-(dying sounds).ogg | w=1
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A502.0B2-(dying sounds).ogg | w=1
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A501.0B2-(dying sounds).ogg | w=1
+mercy.voice.death = HeroVoice/Mercy/Death/00000000A4E8.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50F.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50E.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50D.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A506.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50C.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E7.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E6.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4DE.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A500.0B2-(grunts).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50B.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A50A.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A509.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A508.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A507.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E5.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E4.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E3.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E2.0B2-(painful grunt).ogg | w=1
+mercy.voice.pain = HeroVoice/Mercy/Pain/00000000A4E1.0B2-(painful grunt).ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a
+#  game-mode condition
+mercy.voice.ult_ready = HeroVoice/Mercy/Ultimate/Ready/00000000B0FB.0B2-My ultimate is ready.ogg | w=1
+# Ultimate/Charging 0574: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_ult_charging = HeroVoice/Mercy/Ultimate/Charging/00000001FFA9.0B2-My ultimate is charging.ogg | w=1
+mercy.voice.call_ult_charging = HeroVoice/Mercy/Ultimate/Charging/00000004BC3E.0B2-Valkyrie is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a game-mode condition
+mercy.voice.call_ult_almost = HeroVoice/Mercy/Ultimate/AlmostReady/00000001FFAA.0B2-My ultimate is almost ready.ogg | w=1
+# Hello 01CF: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_hello = HeroVoice/Mercy/Hello/00000000B127.0B2-Hello.ogg | w=1
+mercy.voice.call_hello = HeroVoice/Mercy/Hello/00000001FF9A.0B2-Greetings.ogg | w=1
+mercy.voice.call_hello = HeroVoice/Mercy/Hello/00000001FF9B.0B2-Hello there.ogg | w=1
+mercy.voice.call_hello = HeroVoice/Mercy/Hello/000000043A61.0B2-(German)_ Hello.ogg | w=1
+mercy.voice.call_hello = HeroVoice/Mercy/Hello/000000063A6B.0B2-(German)_ Hello.ogg | w=1
+# Thanks 01D0: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/00000000B122.0B2-Thank you.ogg | w=1
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/00000001FFAC.0B2-Thanks.ogg | w=1
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/00000001FFAB.0B2-My thanks.ogg | w=1
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/0000000293A1.0B2-(German)_ Thank you.ogg | w=1
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/000000063A72.0B2-(German)_ Thank you.ogg | w=1
+mercy.voice.call_thanks = HeroVoice/Mercy/Thanks/000000063A73.0B2-(German)_ Many thanks.ogg | w=1
+# Sorry 05E1: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_sorry = HeroVoice/Mercy/Sorry/00000002A8A3.0B2-(German)_ Sorry.ogg | w=1
+mercy.voice.call_sorry = HeroVoice/Mercy/Sorry/00000002A8A4.0B2-(German)_ I'm sorry.ogg | w=1
+mercy.voice.call_sorry = HeroVoice/Mercy/Sorry/00000002A8A5.0B2-(German)_ Apologies.ogg | w=1
+mercy.voice.call_sorry = HeroVoice/Mercy/Sorry/00000002A8B2.0B2-My mistake.ogg | w=1
+mercy.voice.call_sorry = HeroVoice/Mercy/Sorry/00000002A8BD.0B2-Sorry.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_no = HeroVoice/Mercy/No/00000000B0F9.0B2-No.ogg | w=1
+mercy.voice.call_no = HeroVoice/Mercy/No/0000000293B8.0B2-(German)_ No.ogg | w=1
+# GroupUp 02C6: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/00000000B124.0B2-Form up.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/00000000B128.0B2-Group up.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/00000001FF8B.0B2-Group up here.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/00000001FF8A.0B2-Group up with me.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/00000001FF89.0B2-Join me.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/000000063A69.0B2-Join together.ogg | w=1
+mercy.voice.call_group_up = HeroVoice/Mercy/GroupUp/000000063A6A.0B2-Group up here.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_need_help = HeroVoice/Mercy/AssistanceRequired/00000001FFAF.0B2-I could use a hand!.ogg | w=1
+mercy.voice.call_need_help = HeroVoice/Mercy/AssistanceRequired/00000001FFAE.0B2-I need help!.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.call_need_healing = HeroVoice/Mercy/Healing/00000000A4A4.0B2-I require medical attention.ogg | w=1
+mercy.voice.call_need_healing = HeroVoice/Mercy/Healing/00000000A552.0B2-I need healing.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+mercy.voice.ping = HeroVoice/Mercy/Unknown/11D9.078/000000063AA3.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+mercy.voice.ping_warning = HeroVoice/Mercy/Unknown/11DA.078/000000063AA4.0B2-Watch here.ogg | w=1
+mercy.voice.ping_warning = HeroVoice/Mercy/Unknown/11DA.078/000000063AA5.0B2-Keep an eye out!.ogg | w=1
+mercy.voice.ping_warning = HeroVoice/Mercy/Unknown/11DA.078/000000063AA6.0B2-Heads up!.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+mercy.voice.ping_enemy = HeroVoice/Mercy/Unknown/1117.078/000000062C7F.0B2-Enemy over here!.ogg | w=1
+mercy.voice.ping_enemy = HeroVoice/Mercy/Unknown/1117.078/000000062C80.0B2-There's one!.ogg | w=1
+mercy.voice.ping_enemy = HeroVoice/Mercy/Unknown/1117.078/000000062C7B.0B2-I see an enemy!.ogg | w=1
+# Resurrected 005A (what she says when another Mercy brings her back): 3 files; prio 75, 35 m, +0 dB, interrupt 0,
+#  cooldown 10-10 s
+mercy.voice.resurrected = HeroVoice/Mercy/Resurrected/00000000B112.0B2-We could all use a helping hand some time.ogg | w=1
+mercy.voice.resurrected = HeroVoice/Mercy/Resurrected/00000000B0E4.0B2-So that's what it feels like!.ogg | w=1
+mercy.voice.resurrected = HeroVoice/Mercy/Resurrected/00000000B0CC.0B2-Now this is a role reversal.ogg | w=1
+# DamageBoosted 00CC (what she says when another Mercy boosts her): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+mercy.voice.damage_boosted = HeroVoice/Mercy/DamageBoosted/00000000A528.0B2-I feel... powerful!.ogg | w=1
+mercy.voice.damage_boosted = HeroVoice/Mercy/DamageBoosted/00000000A529.0B2-Thank you!.ogg | w=1
+mercy.voice.damage_boosted = HeroVoice/Mercy/DamageBoosted/00000000A52A.0B2-Ah, so that's how it feels!.ogg | w=1
+# healing beam 00B9 (006B VOICE#1269 as the heal beam connects; node cooldown 0.2 s, 10-12 s waits #1007, chase #1283
+#  15 s): 20 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 10-15 s; left out: 17 a hero interaction, 6 Overwatch
+#  Classic only, 5 a scripted condition (HealingBeamConnectionLowHealth(A966)), 3 a scripted condition
+#  (HealingBeamConnected(A2EA)), 1 a scripted condition (InAir(A776)), 1 a scripted condition (UltAssist_Nano(A5FD)),
+#  1 a scripted condition (UltShutdown_InfrasightActive(B9B5))
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/0000000293AE.0B2-(German)_ I'm taking care of you.ogg | w=0.2
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/0000000293A3.0B2-(German)_ Mercy on call.ogg | w=0.2
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/0000000293AA.0B2-(German)_ Healing stream engaged.ogg | w=0.2
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FB6.0B2-You'll be fine now.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FB8.0B2-This will help you.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FBA.0B2-Need some assistance_.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FBB.0B2-I can fix that.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FE5.0B2-Here to assist.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FE6.0B2-I'm here to help.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FEC.0B2-This will just take a moment.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000061FED.0B2-Activating healing stream!.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/00000006202D.0B2-Let me take a look.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/00000006202E.0B2-Let me fix you up.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062030.0B2-I'll make sure that doesn't scar.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062031.0B2-Let me see what I can do.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062032.0B2-I'll have you in top condition.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062036.0B2-Not to worry, I'll patch you up.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/00000006203F.0B2-Healing stream connected!.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062042.0B2-Let me tend to that.ogg | w=1
+mercy.voice.beam_heal = HeroVoice/Mercy/Unknown/B9.078/000000062044.0B2-Improving your vitals!.ogg | w=1
+# damage boost beam 00BA (006B VOICE#1270 as the boost beam connects; chase #1290 15 s): 11 files; prio 50, 35 m, +0
+#  dB, interrupt 0, cooldown 14-17 s; left out: 6 Overwatch Classic only, 5 a hero interaction
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000061FD1.0B2-Boosting your damage.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000061FD2.0B2-Enhancing your strength.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000061FD3.0B2-I am empowering you.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000061FD5.0B2-Damage intensified.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000061FD6.0B2-Bolstering you!.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000062047.0B2-Heightening your capabilities!.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000062048.0B2-Ha! Feel stronger_.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/000000062049.0B2-Feeling more powerful_.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/00000006204A.0B2-Supplying damage increase!.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/00000006204B.0B2-Amplifying your power!.ogg | w=1
+mercy.voice.beam_boost = HeroVoice/Mercy/Unknown/BA.078/00000006204C.0B2-Be uplifted!.ogg | w=1
+# healing beam still on 00BB ('Treatment ongoing'; no graph node in hers: shared criteria 056A, M that it is the held
+#  heal beam): 4 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-25 s; left out: 4 Overwatch Classic only, 1 a
+#  hero interaction
+mercy.voice.beam_heal_ongoing = HeroVoice/Mercy/Unknown/BB.078/000000061FDF.0B2-Topping you up.ogg | w=1
+mercy.voice.beam_heal_ongoing = HeroVoice/Mercy/Unknown/BB.078/000000061FE0.0B2-Feeling better yet_.ogg | w=1
+mercy.voice.beam_heal_ongoing = HeroVoice/Mercy/Unknown/BB.078/000000061FE1.0B2-Treatment ongoing.ogg | w=1
+mercy.voice.beam_heal_ongoing = HeroVoice/Mercy/Unknown/BB.078/000000061FE2.0B2-Still watching over you.ogg | w=1
+# boost beam still on 00BC ('Maintaining damage boost'; shared criteria 0563, M): 4 files; prio 50, 35 m, +0 dB,
+#  interrupt 0, cooldown 20-25 s; left out: 4 Overwatch Classic only
+mercy.voice.beam_boost_ongoing = HeroVoice/Mercy/Unknown/BC.078/000000061FD7.0B2-Continuing damage increase!.ogg | w=1
+mercy.voice.beam_boost_ongoing = HeroVoice/Mercy/Unknown/BC.078/000000061FDB.0B2-Sustaining augmentation.ogg | w=1
+mercy.voice.beam_boost_ongoing = HeroVoice/Mercy/Unknown/BC.078/000000061FDD.0B2-Maintaining damage boost.ogg | w=1
+mercy.voice.beam_boost_ongoing = HeroVoice/Mercy/Unknown/BC.078/000000061FDE.0B2-Still boosting you.ogg | w=1
+# Guardian Angel 0099 ('Angel at your shoulder!', 'You called?'; shared criteria 0566, M that it is the GA flight): 7
+#  files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-25 s; left out: 6 Overwatch Classic only
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FB9.0B2-You called_.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FBD.0B2-I am here to support.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FBF.0B2-Here to help.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FCE.0B2-(German)_ At your side!.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FCF.0B2-Checking in.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FD0.0B2-Right by you!.ogg | w=1
+mercy.voice.guardian_angel = HeroVoice/Mercy/Unknown/99.078/000000061FE3.0B2-Angel at your shoulder!.ogg | w=0.5
+# Resurrect, allies and herself 009A ('Not on my watch!', 'Helping you up!'; prio 95, 60 m; shared criteria 056B; M
+#  which listener, by Valkyrie's pair: the German lines are the enemies'): 7 files; prio 95, 60 m, +2 dB, interrupt 0,
+#  cooldown 0.1-0.1 s; left out: 4 Overwatch Classic only, 1 a hero interaction
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000043A5F.0B2-Let's get you back in the fight!.ogg | w=0.1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FB7.0B2-Come on, get up.ogg | w=1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FC0.0B2-Helping you up!.ogg | w=1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FC1.0B2-There is much for you to do!.ogg | w=1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FC2.0B2-I will not let you fall!.ogg | w=1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FC3.0B2-Our work is not done!.ogg | w=1
+mercy.voice.resurrect = HeroVoice/Mercy/Unknown/9A.078/000000061FC5.0B2-Not on my watch!.ogg | w=1
+# Resurrect, enemies 0486 (German: 'You will not fall!'; prio 95, 60 m; shared criteria 190E; M): 4 files; prio 95, 60
+#  m, +2 dB, interrupt 0, cooldown 0.1-0.1 s; left out: 2 OnMap, 1 a scripted condition (UsingUltimate(A5B5))
+mercy.voice.resurrect_enemy = HeroVoice/Mercy/Unknown/486.078/000000043A64.0B2-(German)_ Your guardian angel has arrived!.ogg | w=0.1
+mercy.voice.resurrect_enemy = HeroVoice/Mercy/Unknown/486.078/000000043A68.0B2-(German)_ The battle is not over!.ogg | w=0.1
+mercy.voice.resurrect_enemy = HeroVoice/Mercy/Unknown/486.078/000000064ABF.0B2-(German)_ Your duty is not done!.ogg | w=1
+mercy.voice.resurrect_enemy = HeroVoice/Mercy/Unknown/486.078/000000064BD1.0B2-(German)_ You will not fall!.ogg | w=1
+# Valkyrie line, allies and herself 08CB ('Heroes never die!'; 10DA STU_37D754C8#530 key F1AB, the key Lucio's 025B
+#  and Jetpack Cat's 1988 friendly lines sit on, H): 1 files; prio 95, 150 m, +6 dB, interrupt 0, cooldown 1-1 s; left
+#  out: 2 a skin / celebration
+mercy.ult.friendly = HeroVoice/Mercy/Ultimate/00000000A4B7.0B2-Heroes never die!.ogg | w=1
+# Valkyrie line, enemies 08CA ('(German) Heroes never die!'; #530 key F1AA, Lucio's 0489 / Jetpack Cat's 1989 enemy
+#  key, H): 1 files; prio 95, 150 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+mercy.ult.enemy = HeroVoice/Mercy/Ultimate/0000000293B6.0B2-(German)_ Heroes never die!.ogg | w=1
+
+# ===== Subtitles (the jar's lang names none of her events)
+$mercy.beam.lock = Caduceus Staff locks on
+$mercy.beam.unlock = Caduceus Staff lets go
+$mercy.beam.heal.start = Healing beam connects
+$mercy.beam.heal.loop = Healing beam hums
+$mercy.beam.heal.end = Healing beam stops
+$mercy.beam.heal.start_3p = Healing beam connects
+$mercy.beam.heal.loop_3p = Healing beam hums
+$mercy.beam.heal.end_3p = Healing beam stops
+$mercy.beam.boost.start = Damage boost connects
+$mercy.beam.boost.loop = Damage boost hums
+$mercy.beam.boost.end = Damage boost stops
+$mercy.beam.boost.start_3p = Damage boost connects
+$mercy.beam.boost.loop_3p = Damage boost hums
+$mercy.beam.boost.end_3p = Damage boost stops
+$mercy.blaster.fire = Caduceus Blaster fires
+$mercy.blaster.hit = Blaster shot hits
+$mercy.blaster.hit_3p = Blaster shot hits
+$mercy.blaster.hit_block = Blaster shot hits a wall
+$mercy.blaster.reload = Caduceus Blaster reloads
+$mercy.blaster.reload_3p = Caduceus Blaster reloads
+$mercy.swap.staff = Mercy draws the Caduceus Staff
+$mercy.swap.staff_3p = Mercy draws the Caduceus Staff
+$mercy.swap.blaster = Mercy draws the Caduceus Blaster
+$mercy.swap.blaster_3p = Mercy draws the Caduceus Blaster
+$mercy.melee.staff = Mercy swings the staff
+$mercy.melee.staff_3p = Mercy swings the staff
+$mercy.melee.blaster = Mercy swings the blaster
+$mercy.melee.blaster_3p = Mercy swings the blaster
+$mercy.ga.start = Guardian Angel
+$mercy.ga.start_3p = Guardian Angel
+$mercy.ga.launch = Guardian Angel launches
+$mercy.ga.launch_3p = Guardian Angel launches
+$mercy.descent.start = Angelic Descent
+$mercy.descent.loop = Angelic Descent glides
+$mercy.descent.end = Angelic Descent ends
+$mercy.descent.start_3p = Angelic Descent
+$mercy.descent.loop_3p = Angelic Descent glides
+$mercy.descent.end_3p = Angelic Descent ends
+$mercy.resurrect.cast = Mercy resurrects
+$mercy.resurrect.cast_3p = Mercy resurrects
+$mercy.resurrect.done = Resurrect succeeds
+$mercy.resurrect.revived = You were resurrected
+$mercy.flash_heal.cast = Flash Heal
+$mercy.flash_heal.cast_3p = Flash Heal
+$mercy.flash_heal.heal = Flash Heal heals
+$mercy.valkyrie.cast = Valkyrie
+$mercy.valkyrie.cast_3p = Valkyrie
+$mercy.valkyrie.loop = Valkyrie hums
+$mercy.valkyrie.ending = Valkyrie is ending
+$mercy.valkyrie.end = Valkyrie ends
+$mercy.valkyrie.loop_3p = Valkyrie hums
+$mercy.valkyrie.ending_3p = Valkyrie is ending
+$mercy.valkyrie.end_3p = Valkyrie ends
+$mercy.footstep = Footsteps
+$mercy.footstep_3p = Footsteps
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$mercy.voice.elimination = Mercy gloats
+$mercy.voice.multikill = Mercy marvels at a multikill
+$mercy.voice.melee_kill = Mercy quips
+$mercy.voice.on_fire = Mercy is on fire
+$mercy.voice.respawn = Mercy returns
+$mercy.voice.melee = Mercy shouts
+$mercy.voice.select = Mercy: Don't worry, I'll be right behind you
+$mercy.voice.death = Mercy dies
+$mercy.voice.pain = Mercy grunts
+$mercy.voice.ult_ready = Mercy: My ultimate is ready
+$mercy.voice.call_ult_charging = Mercy: My ultimate is charging
+$mercy.voice.call_ult_almost = Mercy: My ultimate is almost ready
+$mercy.voice.call_hello = Mercy: Hello
+$mercy.voice.call_thanks = Mercy: Thank you
+$mercy.voice.call_sorry = Mercy: Sorry
+$mercy.voice.call_no = Mercy: No
+$mercy.voice.call_group_up = Mercy: Group up
+$mercy.voice.call_need_help = Mercy: I need help
+$mercy.voice.call_need_healing = Mercy: I need healing
+$mercy.voice.ping = Mercy: Over there!
+$mercy.voice.ping_warning = Mercy: Heads up!
+$mercy.voice.ping_enemy = Mercy: Enemy spotted
+$mercy.voice.resurrected = Mercy is back on her feet
+$mercy.voice.damage_boosted = Mercy feels powerful
+$mercy.voice.beam_heal = Mercy heals you
+$mercy.voice.beam_boost = Mercy boosts your damage
+$mercy.voice.beam_heal_ongoing = Mercy keeps healing
+$mercy.voice.beam_boost_ongoing = Mercy keeps boosting
+$mercy.voice.guardian_angel = Mercy flies to you
+$mercy.voice.resurrect = Mercy: Not on my watch!
+$mercy.voice.resurrect_enemy = Mercy: (German) You will not fall!
+$mercy.ult.friendly = Mercy: Heroes never die!
+$mercy.ult.enemy = Mercy: (German) Heroes never die!
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = her player, in the head; 3p = everyone else, at her; both = one rule for everyone). 'EXTRA' = in the data but
+# not in the integration list. Not built: see 'Not mapped'.
+#   mercy.beam.lock                  one-shot own  1.17 s; the beam latches onto a target (either mode): 006B
+#     StateBooleanSwitch#258 (the target v468 passes its ally filter) onBegin -> #1451 (v689, the beam mode) ->
+#     ActionEffect#352 19CD (true) or #1450 7430 (false): both play 02C 165F
+#   mercy.beam.unlock                one-shot own  0.59 s; the beam loses its target (let go, out of range or sight,
+#     the target dead): the end of 006B StateBooleanSwitch#258 -> ActionEffect#353 19CE
+#   mercy.beam.heal.start            one-shot own  0.59 s; the healing beam starts (primary held with a target): 006B
+#     #1215 (trueSubgraph) holds 0197 on the staff's hardpoint 0006 (#991); its Play event's one-shot layer
+#   mercy.beam.heal.loop             LOOP     own  loop 9.315 s; while the healing beam is on a target: 006B #1215
+#     holds 0197 (#991)
+#   mercy.beam.heal.end              one-shot own  0.33 s; the healing beam stops (released, target lost, swapped to
+#     boost or the blaster): 0197 stops, which runs 12B1's Stop event
+#   mercy.beam.heal.start_3p         one-shot 3p   0.64 s; the same start, played at her for everyone else (200 m)
+#   mercy.beam.heal.loop_3p          LOOP     3p   loop 9.315 s; while the healing beam is on, at her for everyone else (200 m)
+#   mercy.beam.heal.end_3p           one-shot 3p   0.66 s; the healing beam stops, at her for everyone else
+#   mercy.beam.boost.start           one-shot own  0.82 s; the damage-boost beam starts (secondary held with a
+#     target): 006B #1213 (trueSubgraph) holds 0198 on hardpoint 0006 (#994); its Play events' one-shot layer
+#   mercy.beam.boost.loop            LOOP     own  loop 9.231 s; while the boost beam is on a target: 006B #1213 holds 0198 (#994)
+#   mercy.beam.boost.end             one-shot own  0.39 s; the boost beam stops: 0198 stops, which runs 12B0's Stop event
+#   mercy.beam.boost.start_3p        one-shot 3p   0.82 s; the same start, at her for everyone else (40 m)
+#   mercy.beam.boost.loop_3p         LOOP     3p   loop 9.231 s; while the boost beam is on, at her for everyone else (40 m)
+#   mercy.beam.boost.end_3p          one-shot 3p   0.39 s; the boost beam stops, at her for everyone else
+#   mercy.blaster.fire               one-shot both 0.27 s; each shot (5 a second: the volley nodes 006D #94 / #544 /
+#     #549 / #554 spawn projectile 0158): its STUProjectileVisualComponent's m_2170A015 'sound only' effect 0F03, at
+#     the muzzle as the shot leaves
+#   mercy.blaster.hit                one-shot own  2.69 s; a shot hits a character: 0158's m_A18274A3 effect 01E2 (the
+#     'on a target' slot, as Jetpack Cat's 6D1B), with its sub-effect 4010
+#   mercy.blaster.hit_3p             one-shot 3p   2.44 s; the same hit, at the target for everyone else (200 m)
+#   mercy.blaster.hit_block          one-shot both 0.30 s; a shot hits a block (the world): the projectile's contact
+#     set 00F7, contact type 2, default material 0001 -> contact effect 0754 -> 899F + 89A1 (both play), at the hit
+#     point
+#   mercy.blaster.reload             one-shot own  1.90 s; reload start (R, or an empty clip; 1.4 s): 006D#141 plays
+#     the reload anim 0x004 (3P clip DC4, 1.7 s, over 1.4 s); #197 WAIT 1.4 -> ActionEffect#571 670A when the ammo is
+#     back
+#   mercy.blaster.reload_3p          one-shot 3p   1.39 s; the same reload, at her for everyone else (45 m)
+#   mercy.swap.staff                 one-shot own  1.09 s; the staff comes out (swap to it, and when she spawns with
+#     it): 006B StateCosmeticEntity#2 (the staff entity 00EB on hardpoints 000A / 000B) onBegin -> ActionEffect#245
+#     0B8B
+#   mercy.swap.staff_3p              one-shot 3p   0.61 s; the same swap, at her for everyone else (45 m)
+#   mercy.swap.blaster               one-shot own  0.67 s; the blaster comes out: 006D StateCosmeticEntity#73 (the
+#     blaster entity 025E) onBegin -> ActionEffect#183 0B8C
+#   mercy.swap.blaster_3p            one-shot 3p   0.67 s; the same swap, at her for everyone else (45 m)
+#   mercy.melee.staff                one-shot own  0.79 s; quick melee with the staff out (shared graph 0043 plays the
+#     melee anim 0x00D): the 1P clip 86D's animation effect 07F9 @0
+#   mercy.melee.staff_3p             one-shot 3p   0.99 s; the same swing, at her for everyone else: the 3P clips BC8
+#     / DF1's effects 03B2 / 03B4 @0
+#   mercy.melee.blaster              one-shot own  0.64 s; quick melee with the blaster out: the 1P clip AB3's
+#     animation effect 07FB @0
+#   mercy.melee.blaster_3p           one-shot 3p   0.96 s; the same swing, at her for everyone else: the 3P clips CCD
+#     / DF3 / DF4's effects 01F1 / 0229 / 022A @0
+#   mercy.ga.start                   one-shot own  2.18 s; Guardian Angel starts (ability 1 with a target): 006E
+#     StateMoveTo#241 begins; #337 (not Valkyrie, v842) holds 019B (#255), and the start anim (#265, cat 0x6E, 0.33 s:
+#     3P clip B67 / B80) plays 17FA at 0.2333 s
+#   mercy.ga.start_3p                one-shot 3p   2.18 s; the same start, at her for everyone else (70 m)
+#   mercy.ga.launch                  one-shot own  2.18 s; the launch out of Guardian Angel (jump x4F81E1BD #470, or
+#     crouch xB0EA7E79 #1028, during the flight; a ray check #1174 first: on a hit, 0186 'denied' #1171): the 0.35 s
+#     launch state #1183 holds 019B again (#1185 under #1178 / #1188; 1FAF in Valkyrie) with the anim 0x877
+#   mercy.ga.launch_3p               one-shot 3p   2.18 s; the same launch, at her for everyone else (70 m)
+#   mercy.descent.start              one-shot own  3.96 s; Angelic Descent starts (jump held while falling): 0071
+#     ActionEffect#166 02F5, and the held descent effect 019C (#138) starts with it
+#   mercy.descent.loop               LOOP     own  loop 8.719 s; while descending: 0071 holds 019C (#138)
+#   mercy.descent.end                one-shot own  1.06 s; the descent ends (landed, or jump released): 019C stops,
+#     which runs 12AA's Stop event
+#   mercy.descent.start_3p           one-shot 3p   1.90 s; the same start, at her for everyone else (70 m)
+#   mercy.descent.loop_3p            LOOP     3p   loop 8.719 s; while descending, at her for everyone else (70 m)
+#   mercy.descent.end_3p             one-shot 3p   1.06 s; the descent ends, at her for everyone else
+#   mercy.resurrect.cast             one-shot own  4.24 s; Resurrect's cast (ability 2 on a dead ally within 5 m; 1.75
+#     s): 00CA StateChaseVar#617 (to v38091 = 1.75 s) onBegin -> #1068 / #1276 -> 030F held (#635)
+#   mercy.resurrect.cast_3p          one-shot 3p   4.24 s; the same cast, at her for everyone else (70 m)
+#   mercy.resurrect.done             one-shot own  1.19 s; the ally is brought back (the cast's end, the target still
+#     valid): #617 onFinished -> #1163 -> ActionSendGameMessage#261 (085D, with the target) -> #1089 ->
+#     ActionEffect#1096 483D
+#   mercy.resurrect.revived          one-shot own  1.62 s; the same moment, on the revived ally: ActionEffect#1097
+#     483F is played on the target (m_3E3E203A = v536, the resurrect target)
+#   mercy.flash_heal.cast            one-shot own  1.58 s; Flash Heal cast (Reload, 0.5 s): 5D59 ActionEffect#560 65EA
+#     (M: at the cast with the anim 0xA60 #572; its plug was not found)
+#   mercy.flash_heal.cast_3p         one-shot 3p   1.53 s; the same cast, at her for everyone else (40 m)
+#   mercy.flash_heal.heal            one-shot both 1.80 s; the heal lands (after the 0.5 s cast, the target still
+#     valid): 5D59 #571 WAIT v670 -> #569 -> StateModifyHealth#570 (60, x2 below half) onBegin -> #567 onBegin ->
+#     ActionEffect#565 64E1, played on the target (m_3E3E203A = v536)
+#   mercy.valkyrie.cast              one-shot own  4.38 s; Valkyrie activated (ability 3): 10DA StateChaseVar#211 (the
+#     15 s) starts; ActionEffect#195 1FA0 plays with the 0.5 s wait and the cast anim 0x1B8 (#157 / #158)
+#   mercy.valkyrie.cast_3p           one-shot 3p   4.39 s; the same cast, at her for everyone else (75 m)
+#   mercy.valkyrie.loop              LOOP     own  loop 13.253 s; while Valkyrie is on (15 s): #211 ->
+#     BooleanSwitch#479 (falseSubgraph) -> #518 (false: the default skin, 0A2E.134) holds 1F7B (#182)
+#   mercy.valkyrie.ending            one-shot own  3.83 s; 3 s before Valkyrie ends: 4358's Play waits 12.0 s (its own
+#     delay) after the loop starts
+#   mercy.valkyrie.end               one-shot own  1.06 s; Valkyrie ends (15 s, or she dies): 1F7B stops, which runs
+#     4358's Stop event
+#   mercy.valkyrie.loop_3p           LOOP     3p   loop 15.119 s; while Valkyrie is on, at her for everyone else (75 m)
+#   mercy.valkyrie.ending_3p         one-shot 3p   3.83 s; 3 s before Valkyrie ends, at her for everyone else
+#   mercy.valkyrie.end_3p            one-shot 3p   1.06 s; Valkyrie ends, at her for everyone else
+#   mercy.footstep                   one-shot own  0.24 s; each footstep on the ground (engine side: the hero's
+#     contact set 0084, contact type 10, the default material 0001 -> contact effect 0439)
+#   mercy.footstep_3p                one-shot 3p   0.24 s; the same step, at her for everyone else (50 m)
+#   mercy.voice.elimination          one-shot both 15 line files; Elimination 0008
+#   mercy.voice.multikill            one-shot both 2 line files; Multikill 00C9
+#   mercy.voice.melee_kill           one-shot both 5 line files; MeleeEnemyKilledRemark 0032
+#   mercy.voice.on_fire              one-shot both 4 line files; On Fire 0583
+#   mercy.voice.respawn              one-shot both 12 line files; Respawn 002C
+#   mercy.voice.melee                one-shot both 9 line files; Melee shout 0023
+#   mercy.voice.select               one-shot both 1 line files; Hero select 002B
+#   mercy.voice.death                one-shot both 6 line files; Death 0001
+#   mercy.voice.pain                 one-shot both 19 line files; Pain 0003 / 0004
+#   mercy.voice.ult_ready            one-shot both 1 line files; Ultimate/Ready 02E7 (the wheel line)
+#   mercy.voice.call_ult_charging    one-shot both 2 line files; Ultimate/Charging 0574
+#   mercy.voice.call_ult_almost      one-shot both 1 line files; Ultimate/AlmostReady 05A7
+#   mercy.voice.call_hello           one-shot both 5 line files; Hello 01CF
+#   mercy.voice.call_thanks          one-shot both 6 line files; Thanks 01D0
+#   mercy.voice.call_sorry           one-shot both 5 line files; Sorry 05E1
+#   mercy.voice.call_no              one-shot both 2 line files; No 01D2
+#   mercy.voice.call_group_up        one-shot both 7 line files; GroupUp 02C6
+#   mercy.voice.call_need_help       one-shot both 2 line files; AssistanceRequired 0427
+#   mercy.voice.call_need_healing    one-shot both 2 line files; Healing 0045
+#   mercy.voice.ping                 one-shot both 1 line files; ping 11D9
+#   mercy.voice.ping_warning         one-shot both 3 line files; ping warning 11DA
+#   mercy.voice.ping_enemy           one-shot both 3 line files; ping enemy 1117
+#   mercy.voice.resurrected          one-shot both 3 line files; Resurrected 005A (what she says when another Mercy
+#     brings her back)
+#   mercy.voice.damage_boosted       one-shot both 3 line files; DamageBoosted 00CC (what she says when another Mercy boosts her)
+#   mercy.voice.beam_heal            one-shot both 20 line files; healing beam 00B9 (006B VOICE#1269 as the heal beam
+#     connects; node cooldown 0.2 s, 10-12 s waits #1007, chase #1283 15 s)
+#   mercy.voice.beam_boost           one-shot both 11 line files; damage boost beam 00BA (006B VOICE#1270 as the boost
+#     beam connects; chase #1290 15 s)
+#   mercy.voice.beam_heal_ongoing    one-shot both 4 line files; healing beam still on 00BB ('Treatment ongoing'; no
+#     graph node in hers: shared criteria 056A, M that it is the held heal beam)
+#   mercy.voice.beam_boost_ongoing   one-shot both 4 line files; boost beam still on 00BC ('Maintaining damage boost';
+#     shared criteria 0563, M)
+#   mercy.voice.guardian_angel       one-shot both 7 line files; Guardian Angel 0099 ('Angel at your shoulder!', 'You
+#     called?'; shared criteria 0566, M that it is the GA flight)
+#   mercy.voice.resurrect            one-shot both 7 line files; Resurrect, allies and herself 009A ('Not on my
+#     watch!', 'Helping you up!'; prio 95, 60 m; shared criteria 056B; M which listener, by Valkyrie's pair: the
+#     German lines are the enemies')
+#   mercy.voice.resurrect_enemy      one-shot both 4 line files; Resurrect, enemies 0486 (German: 'You will not
+#     fall!'; prio 95, 60 m; shared criteria 190E; M)
+#   mercy.ult.friendly               one-shot both 1 line files; Valkyrie line, allies and herself 08CB ('Heroes never
+#     die!'; 10DA STU_37D754C8#530 key F1AB, the key Lucio's 025B and Jetpack Cat's 1988 friendly lines sit on, H)
+#   mercy.ult.enemy                  one-shot both 1 line files; Valkyrie line, enemies 08CA ('(German) Heroes never
+#     die!'; #530 key F1AA, Lucio's 0489 / Jetpack Cat's 1989 enemy key, H)
+# Voice.java stimuli for her own moments (Stimulus(priority, cooldownMin, cooldownMax, interrupts), key 'mercy.<moment>'):
+#   java.util.Map.entry("mercy.beam_heal", new Stimulus(50, 10, 15, false)), // 00B9, 35 m, +0 dB
+#   java.util.Map.entry("mercy.beam_boost", new Stimulus(50, 14, 17, false)), // 00BA, 35 m, +0 dB
+#   java.util.Map.entry("mercy.beam_heal_ongoing", new Stimulus(50, 20, 25, false)), // 00BB, 35 m, +0 dB
+#   java.util.Map.entry("mercy.beam_boost_ongoing", new Stimulus(50, 20, 25, false)), // 00BC, 35 m, +0 dB
+#   java.util.Map.entry("mercy.guardian_angel", new Stimulus(50, 20, 25, false)), // 0099, 35 m, +0 dB
+#   java.util.Map.entry("mercy.resurrect", new Stimulus(95, 0.1f, 0.1f, false)), // 009A, 60 m, +2 dB
+#   java.util.Map.entry("mercy.resurrect_enemy", new Stimulus(95, 0.1f, 0.1f, false)), // 0486, 60 m, +2 dB
+#   (mercy.ult.friendly, played by HeroSounds.ultLine, not Voice: 08CB prio 95, 150 m, +6 dB, cooldown 1 s)
+#   (mercy.ult.enemy, played by HeroSounds.ultLine, not Voice: 08CA prio 95, 150 m, +8 dB, cooldown 1 s)
+# The shared moments use the shared stimuli (the .078 are global), and Voice.java's shared table already holds their
+# numbers (checked against hers: elimination, multikill, melee_kill, on_fire, respawn, melee, select, ult_ready, the
+# wheel lines, the pings, resurrected, damage_boosted all match). Not in that table (they fall to its default 50, 0 s):
+#   java.util.Map.entry("death", new Stimulus(90, 2, 5, false)), // 0001, 60 m, +2 dB
+#   java.util.Map.entry("pain", new Stimulus(40, 1, 2.5f, false)), // 0003, 35 m, -3 dB (0004, the other pain pool: 40, 0.5-1 s)
+# beam_heal: the stimulus' own 10-15 s cooldown; the graph also waits 10-12 s (#1007) and holds a 15 s chase (#1283).

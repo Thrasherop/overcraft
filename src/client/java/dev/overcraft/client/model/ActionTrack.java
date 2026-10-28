@@ -94,6 +94,8 @@ final class ActionTrack {
 				holdLast = true;
 			}
 			case "ult_dive" -> start(now, "ult_dive_start", "ult_dive");
+			// Mercy: Valkyrie's cast is one clip (alias 0x1B8), as are Resurrect and Guardian Angel's launch
+			case "ult_cast_blaster" -> start(now, "ult_cast_blaster");
 			default -> start(now, action);
 		}
 	}
