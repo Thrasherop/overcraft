@@ -19,12 +19,18 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
     him round. He rises slowly, more looking up (ours: no source measures it).
   - Corners: inside corners turn him onto the next wall, outside corners and pillars wrap him round; a wall that just
     ends lets him fly on, and letting go within 0.2 s still jumps.
-  - The leap off works (it fell straight down before): +2.5 m/s toward a blend of facing and motion, up 6.54 m/s
-    looking ahead, 9.12 looking up, 4.12 down. Speed on a wall eases to wall speed (7.15 m/s; 8.53 with Speed Boost)
+  - The leap off works (it fell straight down before), as his wall-ride graph has it: a jump 1.15 times his own (6.58
+    m/s up) plus 2.5 m/s along where he looks with W held (the wiki's 6.54 / 9.12 / 4.12 up looking ahead / up / down). Speed on a wall eases to wall speed (7.15 m/s; 8.53 with Speed Boost)
     from above and below, so brief touches keep a chain's speed. 0.5 s between rides, 2 m before the same wall.
   - Played on a course (a step, a long wall, an L, a pillar, parallel walls): numbers in the commits.
 - **His wall-ride sounds were the loudest thing in the game** (the owner): 9 dB over his music. Now 8 dB under it.
 - Dance Party's amplifier is placed on the DJ booth as the data says (inside its centre).
+- **General play before main** (fresh client from `next`, new survival world gp0315): Kiriko from the select screen
+  on join killed a summoned zombie at night (Monster Hunter) and healed a hurt villager 8 -> 17.6; /kill and respawn;
+  Lúcio from the hero menu at a bed healed it 10.6 -> 18.3 and rode the arena wall (7.15 m/s, rising) and leapt off
+  it; save and leave, rejoin (the select screen); Kiriko died to a skeleton in the night and respawned; Minecraft mode:
+  a log broken by hand, planks crafted by mouse, kept in a chest; G back to hero mode. The data's wall jump came after
+  this play and was played on its own (commit 8b1dcc1). Not tried: a second player, the Nether, boats, water.
 
 ### Build 0.3.14 (emote sounds; Lúcio's emotes, effects and voice lines; his reload with Amp It Up and Crossfade)
 0.3.13 was a check-in build handed to the owner earlier the same day (emote sounds, Lúcio's emotes and reload, without
