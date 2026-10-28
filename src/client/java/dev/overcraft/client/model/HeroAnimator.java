@@ -739,9 +739,10 @@ public final class HeroAnimator {
 
 	/**
 	 * The hero select screen's pose, as Overwatch's (the hero's showcase entity, #29): its intro once, then its hold
-	 * looping (breathing; she looks off past the camera). Null when the model lacks the hold.
+	 * looping (breathing; she looks off past the camera). Null when the model lacks the hold. The weapon hangs on this
+	 * pose (HeroWeapon.placeShowcase).
 	 */
-	public static Matrix4f @Nullable [] poseShowcase(SkinnedModel model, float sinceOpened) {
+	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened) {
 		SkinnedModel.Clip intro = model.clips.get("select_intro");
 		SkinnedModel.Clip hold = model.clips.get("select_hold");
 		if (hold == null || hold.duration() <= 0) {
@@ -750,15 +751,21 @@ public final class HeroAnimator {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		if (model.clips.containsKey("select_fidget_1")) {
 			showcaseRun(model, sinceOpened, pose);
-			return Skeleton.skin(model, pose, -1, null);
+			return pose;
 		}
-		if (intro != null && sinceOpened < intro.duration()) {
+		if (showcaseIntro(model, sinceOpened)) {
 			Skeleton.sample(intro, sinceOpened, pose);
 		} else {
 			float t = sinceOpened - (intro == null ? 0 : intro.duration());
 			Skeleton.sample(hold, t % hold.duration(), pose);
 		}
-		return Skeleton.skin(model, pose, -1, null);
+		return pose;
+	}
+
+	/** The showcase is in its intro (before the hold loops). */
+	public static boolean showcaseIntro(SkinnedModel model, float sinceOpened) {
+		SkinnedModel.Clip intro = model.clips.get("select_intro");
+		return intro != null && !model.clips.containsKey("select_fidget_1") && sinceOpened < intro.duration();
 	}
 
 	/**

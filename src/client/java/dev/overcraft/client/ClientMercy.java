@@ -33,6 +33,11 @@ public final class ClientMercy {
 	private static boolean launched;
 	/** Her momentum meter as her client counts it: ticks of this Guardian Angel so far (the synced one lags a tick or two). */
 	private static int flown;
+	/** When she last launched (game time), and whether in Valkyrie: the window after it in which nothing damps her. */
+	private static long launchedAt = Long.MIN_VALUE;
+	private static boolean launchedInValkyrie;
+	/** The key that launched her, until it's let go: it doesn't also steer her flight (Valkyrie's Crouch sinks her). */
+	private static @Nullable Action launchKey;
 	private static boolean jumpWas;
 	private static boolean crouchWas;
 	private static int scrolled;
@@ -78,6 +83,24 @@ public final class ClientMercy {
 		return new OwMovement.Glide(s.gaTo(), speed, MercyStats.GA_ARRIVE * 0.9);
 	}
 
+	/** Just after her launch: 1 s (0.5 s in Valkyrie) with her air damping off (her graph 006E #485 / #475). */
+	public static boolean undamped(Entity entity) {
+		if (entity != Minecraft.getInstance().player || local() == null) {
+			return false;
+		}
+		double window = launchedInValkyrie ? MercyStats.GA_LAUNCH_STATE_VALKYRIE : MercyStats.GA_LAUNCH_STATE;
+		return entity.level().getGameTime() - launchedAt < window * 20;
+	}
+
+	/**
+	 * The key is still held from pressing it to launch. Ours: in Valkyrie, Crouch held sinks her, and the tick of a crouch
+	 * launch's press braked the 26.5 m/s launch by a third; her data leaves input free in the launch window but says
+	 * nothing of the press itself, and the launch reaching its 26.5 m/s (about 13 m up) needs the press not to count.
+	 */
+	public static boolean heldForLaunch(Action key) {
+		return launchKey == key;
+	}
+
 	/** Angelic Descent: Jump or Crouch held in the air, not flying. */
 	public static boolean descent(Entity entity) {
 		State s = local();
@@ -108,6 +131,9 @@ public final class ClientMercy {
 		jumpWas = jump;
 		crouchWas = crouch;
 		int extra = 0;
+		if (launchKey != null && !HeroControls.get(launchKey).isDown()) {
+			launchKey = null;
+		}
 		while (HeroControls.get(Action.WEAPON_1).consumeClick()) {
 			extra |= HeroInputPayload.EXTRA_STAFF;
 		}
@@ -151,6 +177,9 @@ public final class ClientMercy {
 			}
 			player.setDeltaMovement(v.scale(1 / 20.0));
 			launched = true;
+			launchedAt = player.level().getGameTime();
+			launchedInValkyrie = s.has(Mercy.FLAG_VALKYRIE);
+			launchKey = crouchPressed ? Action.CROUCH : Action.JUMP;
 		} else if (!launched) {
 			flown++;
 		}

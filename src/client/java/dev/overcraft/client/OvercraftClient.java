@@ -196,15 +196,18 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
-		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown();
+		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown()
+			&& !ClientMercy.heldForLaunch(HeroControls.Action.JUMP);
 		OwMovement.flight = entity -> entity == mc.player && (ClientHero.hero() == Hero.JETPACK_CAT
 			|| ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity));
 		OwMovement.valkyrie = entity -> entity == mc.player && ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity);
 		OwMovement.glide = ClientMercy::glide;
 		OwMovement.descent = ClientMercy::descent;
+		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();
-		OwMovement.crouchHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.CROUCH).isDown();
+		OwMovement.crouchHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.CROUCH).isDown()
+			&& !ClientMercy.heldForLaunch(HeroControls.Action.CROUCH);
 		// jump held, or (Overwatch's "Automatically climb walls") just being in the air
 		OwMovement.jumpHeld = entity -> entity == mc.player && (HeroControls.get(HeroControls.Action.JUMP).isDown()
 			|| HeroOptions.get().autoClimb && !entity.onGround());

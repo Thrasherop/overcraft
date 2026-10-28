@@ -103,9 +103,18 @@ public final class MercyStats {
 	public static final double GA_LAUNCH_BACK = 0.8;
 	/** The meter fills over this much flight, 17/25 of it in Valkyrie (D #912 m_5BEFF040, M a duration). */
 	public static final double GA_MOMENTUM_FILL = 1;
-	/** After a launch, this long before the cooldown starts (it can't be cut short). */
+	/**
+	 * After a launch, this long before the cooldown starts (it can't be cut short). Through it her air damping is off
+	 * (D 006E #487: property F808ACE8 set 0, read as air speed damping, M): the launch carries undiminished.
+	 */
 	public static final double GA_LAUNCH_STATE = 1;            // BZ 2024-02-13 (1.5 -> 1); D 1C20
 	public static final double GA_LAUNCH_STATE_VALKYRIE = 0.5; // D 1C21
+	/**
+	 * In Valkyrie's 0.5 s after a launch her speed gets +1.4444 (D 006E #477, an add on the movement speed: 5.5 x 1.636 x
+	 * 2.4444 = 22 m/s, gaps2.md 3) and her knockback x0.2 on top of Valkyrie's -50%.
+	 */
+	public static final double GA_LAUNCH_SPEED_VALKYRIE = 1.4444;
+	public static final double GA_LAUNCH_KNOCKBACK_VALKYRIE = 0.2;
 	public static final double GA_COOLDOWN = 1.5;              // BZ 2023-04-11 (2.5 -> 1.5); D 0334
 
 	// ---- Angelic Descent (Jump held in the air) ----

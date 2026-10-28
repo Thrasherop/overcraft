@@ -17,6 +17,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
+import dev.overcraft.mercy.MercyStats;
 import dev.overcraft.jetpackcat.JetpackCatStats;
 import dev.overcraft.lucio.LucioStats;
 import dev.overcraft.net.HeroSyncPayload;
@@ -187,6 +188,8 @@ public final class HeroHud {
 				ofudaCounter(g, s, w / 2, h / 2 + 136);
 			}
 			swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
+		} else if (hero == Hero.MERCY) {
+			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		}
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
@@ -1162,7 +1165,54 @@ public final class HeroHud {
 		if (target == null) {
 			return;
 		}
-		Vec3 at = target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0);
+		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+	}
+
+	/**
+	 * Guardian Angel's target, as her graph previews it (006E #834 / #295: E:\Overwatch Archive\research\mercy\gaps2.md 1):
+	 * the same generic ability-target marker as Swift Step's (013C.116, on the ally's chest, hardpoint 0001), shown while
+	 * it's off cooldown and she isn't flying or just launched, on the ally it would take her to: her beam's target first
+	 * (more than 4 m away and within her range + 10 m), else the ally nearest the crosshair within 30 degrees and her range,
+	 * in sight, more than 4 m away. Souls aren't marked (ours: the client doesn't know them).
+	 */
+	private static void guardianAngelTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+											float partial) {
+		ClientMercy.State m = ClientMercy.state(player);
+		if (s.ability1Cooldown() > 0 || m == null || m.has(dev.overcraft.mercy.Mercy.FLAG_GA)
+			|| m.has(dev.overcraft.mercy.Mercy.FLAG_GA_LAUNCH) || m.has(dev.overcraft.mercy.Mercy.FLAG_GA_WINDOW)) {
+			return;
+		}
+		double range = m.has(dev.overcraft.mercy.Mercy.FLAG_VALKYRIE) ? MercyStats.GA_RANGE_VALKYRIE : MercyStats.GA_RANGE;
+		LivingEntity target = null;
+		if (m.beamTarget() >= 0 && player.level().getEntity(m.beamTarget()) instanceof LivingEntity beamed && beamed.isAlive()) {
+			double d = beamed.distanceTo(player);
+			target = d > MercyStats.GA_MIN && d < range + MercyStats.GA_BEAM_REACH ? beamed : null;
+		}
+		if (target == null) {
+			// the server's pick (Mercy.startGuardianAngel): the smallest angle from the aim to the ally's middle, in sight
+			Vec3 eye = player.getEyePosition(partial);
+			Vec3 look = player.getViewVector(partial);
+			double best = MercyStats.GA_CONE;
+			for (LivingEntity other : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(range),
+				e -> dev.overcraft.hero.Allies.isAlly(player, e) && e.distanceTo(player) <= range)) {
+				Vec3 to = other.getBoundingBox().getCenter().subtract(eye);
+				double angle = to.lengthSqr() < 1.0E-6 ? 0 : Math.toDegrees(Math.acos(Math.clamp(look.dot(to.normalize()), -1, 1)));
+				if (angle < best && player.hasLineOfSight(other)) {
+					target = other;
+					best = angle;
+				}
+			}
+			if (target != null && target.distanceTo(player) <= MercyStats.GA_MIN) {
+				target = null;
+			}
+		}
+		if (target != null) {
+			targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+		}
+	}
+
+	/** Overwatch's ability-target marker (013C.116): cyan corner brackets in a diamond on the point, Ability 1's key under. */
+	private static void targetMarker(GuiGraphicsExtractor g, Vec3 at, float w, float h) {
 		float[] screen = project(at, w, h);
 		if (screen == null) {
 			return;
