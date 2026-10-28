@@ -90,7 +90,7 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			case dev.overcraft.entity.BlasterShotEntity shot -> s.drawnByEffect = dev.overcraft.client.effect.MercyFx.shotFlight(
 				shot.getId(), at, shot.getOwner());
 			case dev.overcraft.entity.PawEntity paw -> s.drawnByEffect = dev.overcraft.client.effect.JetpackCatFx.pawFlight(
-				paw.getId(), at, paw.getDeltaMovement(), paw.centre(), KirikoFx.enemyOf(paw.getOwner()),
+				paw.getId(), at, paw.getDeltaMovement(), paw.centre(), paw.getOwner(), KirikoFx.enemyOf(paw.getOwner()),
 				paw.getOwner() == net.minecraft.client.Minecraft.getInstance().player
 					&& net.minecraft.client.Minecraft.getInstance().options.getCameraType().isFirstPerson());
 			default -> {

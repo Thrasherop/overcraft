@@ -42,3 +42,10 @@
 # fidgets 19C8F, 1A016, 1A017, 1A0E8): played as the hold, as Kiriko's and Lucio's clip after their intro.
 0-32_00000001937D = select_intro
 0-32_00000001A015 = select_hold
+# The rest of the showcase (added 2026-10-28, research\jetpack_cat\gaps.md; set 3FBB's default branch, template 0163
+# Sequence#102, H): 1937D, 1A015, 19C8F, 1A016, 1A017, 1A015, 1A0E8 in that order, each to its end with no blend, then
+# a weighted random pick each time one ends (Random#4: 1A0E8 5, 1A017 3 + 1, 1A015 3, 1A016 1, an empty slot 1).
+0-32_000000019C8F = select_fidget_1
+0-32_00000001A016 = select_fidget_2
+0-32_00000001A017 = select_fidget_3
+0-32_00000001A0E8 = select_fidget_4

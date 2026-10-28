@@ -50,7 +50,7 @@ public final class JetpackCat implements HeroKit {
 	public static final int ULT_NONE = 0, ULT_AIM = 1, ULT_WINDUP = 2, ULT_DIVE = 3, ULT_CARRY = 4;
 	/** The sync's mode bit for Lifeline towing. */
 	public static final int MODE_TOWING = 8;
-	/** Ours: the dive gives up after this long in the air (the data's StateMoveTo has no timeout read). */
+	/** The dive gives up after this long (her graph 5B7B: a StateWait timing out at 1.5 s inside the move, H). */
 	private static final double DIVE_LIMIT = 1.5;
 	/** Purr's waves inside a pulse: the k-th gap is 0.25 / (1 + 0.1 k) s (her graph 5A7E's wait #196, read as M). */
 	private static double purrWaveGap(int k) {
@@ -195,7 +195,8 @@ public final class JetpackCat implements HeroKit {
 		Vec3 side = look.cross(new Vec3(0, 1, 0));
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 up = side.cross(look).normalize();
-		// from her paw: a little to that side and below the eyes (ours: the muzzle hardpoint isn't read)
+		// a little to that paw's side and below the eyes (ours: where her graph spawns the shots isn't decoded); the flare
+		// is drawn at her posed paw, hardpoints 000A / 000B (JetpackCatFx)
 		Vec3 from = player.getEyePosition().add(side.scale(right ? 0.25 : -0.25)).add(0, -0.25, 0);
 		double near = Math.toRadians(PAW_SPREAD_NEAR);
 		double far = Math.toRadians(PAW_SPREAD_FAR);
@@ -331,7 +332,9 @@ public final class JetpackCat implements HeroKit {
 			return;
 		}
 		Entity found = player.level().getEntity(s.lifelineTarget);
-		if (!(found instanceof LivingEntity ally) || !ally.isAlive() || ally.distanceTo(player) > LIFELINE_REACH * 2) {
+		Vec3 apart = found == null ? Vec3.ZERO : player.position().subtract(found.position());
+		if (!(found instanceof LivingEntity ally) || !ally.isAlive()
+			|| apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK) {
 			endLifeline(player, s, true);
 			return;
 		}
@@ -537,8 +540,9 @@ public final class JetpackCat implements HeroKit {
 					endUlt(player, s);
 					return;
 				}
-				// carried below her on the tether, its top 1 m under her feet (ours: held at her feet, a zombie hit her the
-				// whole carry and killed her, found playing)
+				// carried below her on the tether, its top 1 m under her feet. Ours: her data reels the rope in to 0.5 m from
+				// a point 1 m behind her hips (graph 5B7B #209, hardpoint 0283: M), but held that close (at her feet) a
+				// zombie hit her the whole carry and killed her (found playing)
 				Vec3 hold = player.position().add(0, -enemy.getBbHeight() - 1.0, 0);
 				enemy.setDeltaMovement(hold.subtract(enemy.position()).scale(0.5).add(player.getKnownMovement()));
 				enemy.syncVelocity = true;

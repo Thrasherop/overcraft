@@ -33,6 +33,8 @@ def main():
     args = sys.argv[sys.argv.index("--") + 1:]
     flags = {a for a in args if a.startswith("--")}
     model, out = Path(args[0]), Path(args[1])
+    global MATERIALS_DIR
+    MATERIALS_DIR = model.parent / "Materials"
     out.mkdir(parents=True, exist_ok=True)
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -260,6 +262,56 @@ def retime(action, scale):
         fc.update()
 
 
+# Shaders whose colour texture the add-on doesn't link (its metadata lacks the shader's albedo input), with the
+# texture type key that holds it, read from the materials' .owmat: Jetpack Cat's fur, shader 0x10D (material 15E60:
+# 86DAAC6B is her orange tabby albedo 6F76A beside the PBR 20AF06CE and normal 169615AA every material has). Without
+# it her whole body exported with no colour and wasn't drawn (the owner, 2026-10-28: "there was never a cat").
+COLOUR_KEYS = {0x10D: 0x86DAAC6B}
+
+
+def owmat_textures(path):
+    """A material .owmat (type 0): its shader and [(texture path, type key)] (the add-on's OWMATFormat 3.0)."""
+    import struct
+    data = Path(path).read_bytes()
+    pos = 8
+    count, _statics, shader = struct.unpack_from("<QQI", data, pos)
+    pos += 20
+    textures = []
+    for _ in range(count):
+        b1 = data[pos]
+        pos += 1
+        n = b1 % 128
+        if b1 > 128:
+            n += data[pos] * 128
+            pos += 1
+        name = data[pos:pos + n].decode("utf8")
+        pos += n
+        (key,) = struct.unpack_from("<I", data, pos)
+        pos += 4
+        textures.append((name, key))
+    return shader, textures
+
+
+def colour_from_owmat(mat, materials_dir):
+    """The colour image for a material the add-on left without one, from its own .owmat (COLOUR_KEYS), or None."""
+    owmat = materials_dir / f"{mat.name.split('.')[0]}.owmat"
+    if not owmat.exists():
+        return None
+    shader, textures = owmat_textures(owmat)
+    key = COLOUR_KEYS.get(shader)
+    path = next((t for t, k in textures if k == key), None)
+    if path is None:
+        return None
+    image = bpy.data.images.load(str((owmat.parent / path.replace("\\", "/")).resolve()))
+    node = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    node.image = image
+    print(f"OWM_MATERIAL {mat.name}: colour from its .owmat (shader {shader:X}, key {key:08X}): {Path(path).name}")
+    return node
+
+
+MATERIALS_DIR = None
+
+
 def gltf_materials():
     """The add-on builds Overwatch shader groups, which glTF can't carry: rebuild each material as a Principled BSDF
     from the image feeding the group's colour input (and its alpha, for cut-out cloth and hair)."""
@@ -276,6 +328,8 @@ def gltf_materials():
                 color = link.from_node
             elif alpha is None and "alpha" in socket:
                 alpha = link.from_node
+        if color is None and MATERIALS_DIR is not None:
+            color = colour_from_owmat(mat, MATERIALS_DIR)
         if color is None:
             print(f"OWM_MATERIAL {mat.name}: no colour texture (inputs: "
                   f"{sorted({l.to_socket.name for l in links if l.to_node.type == 'GROUP'})})")

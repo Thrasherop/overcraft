@@ -6,6 +6,7 @@ import dev.overcraft.client.effect.Fx.Shape;
 import dev.overcraft.net.EffectPayload;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,21 @@ public final class JetpackCatFx {
 	/** Above this speed (m/s) she's boosting: her flight tops out at 12, Frenetic Flight at 17.8 (ours). */
 	private static final double BOOST_SEEN = 12.5;
 	private static final Vec3 UP = new Vec3(0, 1, 0);
+	/**
+	 * Each Jetpack Cat's points as last drawn (HeroModelRenderer, from her look's hardpoint table): nozzles 0075, 0077,
+	 * 0078, 007A, paws 000A, 000B, each with its down axis, and the game time they were posed at.
+	 */
+	private record Posed(Vec3[] at, Vec3[] down, long tick) {
+	}
+
+	private static final Map<Integer, Posed> POSED = new HashMap<>();
+	private static final int HIGH_LEFT = 0, HIGH_RIGHT = 1, LOW_LEFT = 2, LOW_RIGHT = 3;
+
+	/** Her points posed this frame or the last tick, or null (in her own first person: the 1P look has no nozzles). */
+	private static @Nullable Posed posed(net.minecraft.world.entity.Entity cat) {
+		Posed p = POSED.get(cat.getId());
+		return p == null || cat.level().getGameTime() - p.tick > 1 ? null : p;
+	}
 
 	private JetpackCatFx() {
 	}
@@ -117,7 +133,8 @@ public final class JetpackCatFx {
 	 * 0.12 s) and sparks left behind (20 a second, 0.055-0.118 s). Its first frame flares at the paw (728B / 728C). False
 	 * without the pack.
 	 */
-	public static boolean pawFlight(int id, Vec3 at, Vec3 velocity, boolean centre, boolean enemyOwner, boolean ownView) {
+	public static boolean pawFlight(int id, Vec3 at, Vec3 velocity, boolean centre,
+		net.minecraft.world.entity.@Nullable Entity owner, boolean enemyOwner, boolean ownView) {
 		enemy = enemyOwner;
 		try {
 			boolean first = Fx.trailHead(id) == null;
@@ -153,12 +170,25 @@ public final class JetpackCatFx {
 			// her own shots start at her eyes in first person, not at the view model's paw: a flare there covered the
 			// whole view (found playing)
 			if (first && !ownView) {
-				muzzle(at, velocity, centre);
+				muzzle(paw(owner, at), velocity, centre);
 			}
 			return true;
 		} finally {
 			enemy = false;
 		}
+	}
+
+	/**
+	 * The paw a shot left from: of her posed paws (hardpoints 000A / 000B, as drawn), the one nearer the shot (the server
+	 * swaps paws each volley and doesn't say which); where she isn't drawn, the shot's own first point.
+	 */
+	private static Vec3 paw(net.minecraft.world.entity.@Nullable Entity owner, Vec3 shot) {
+		Posed posed = owner == null ? null : posed(owner);
+		if (posed == null) {
+			return shot;
+		}
+		Vec3 a = posed.at[4], b = posed.at[5];
+		return a.distanceToSqr(shot) <= b.distanceToSqr(shot) ? a : b;
 	}
 
 	/** At the paw (728B / 728C): a 0.8 m star flare for 0.25 s; the centre shot adds a gold and a blue ring along it. */
@@ -432,8 +462,8 @@ public final class JetpackCatFx {
 
 	/**
 	 * Frenetic Flight (7067), for every Jetpack Cat moving faster than her flight can: two cyan ribbon trails from each
-	 * side of her jetpack, 0.073 and 0.173 m wide, white at the head, 0.2-0.32 s long. The data's points (hardpoints
-	 * 0078 / 007A) aren't on a bone we've resolved: ours, 0.5 m to each side and 0.3 m behind.
+	 * side of her jetpack, 0.073 and 0.173 m wide, white at the head, 0.2-0.32 s long, from her low nozzles 0078 / 007A
+	 * as posed (where she isn't drawn, as in her own first person: ours, 0.5 m to each side and 0.3 m behind).
 	 */
 	private static void boostTrails(net.minecraft.client.multiplayer.ClientLevel level) {
 		java.util.Set<Integer> seen = new java.util.HashSet<>();
@@ -454,8 +484,10 @@ public final class JetpackCatFx {
 				Vec3 side = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
 				Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
 				Palette palette = enemy ? Palette.CAT_BOOST_ENEMY : Palette.CAT_BOOST;
+				Posed posed = posed(player);
 				for (int s = -1; s <= 1; s += 2) {
-					Vec3 nozzle = now.add(0, 0.7, 0).add(side.scale(0.5 * s)).add(back.scale(0.3));
+					Vec3 nozzle = posed != null ? posed.at[s < 0 ? LOW_LEFT : LOW_RIGHT]
+						: now.add(0, 0.7, 0).add(side.scale(0.5 * s)).add(back.scale(0.3));
 					int trail = 1_000_000 + id * 4 + (s < 0 ? 0 : 2);
 					Fx.trail(trail, nozzle, "cat_trail", palette, 0.073f, 0.2f, 0.9f);
 					Fx.trail(trail + 1, nozzle, "cat_trail", palette, 0.173f, 0.32f, 0.6f);
@@ -465,6 +497,76 @@ public final class JetpackCatFx {
 			}
 		}
 		LAST_AT.keySet().retainAll(seen);
+	}
+
+	/**
+	 * Her jetpack, every frame she's drawn (HeroModelRenderer hands in her points as posed): the idle flames (7064, "always
+	 * while flying") on the high nozzles 0075 / 0077. Each is the data's open tube (0.13 m wide, 0.17 m long) in three
+	 * layers: a blue one and a gold one at 1.1 times, a white-hot core at 0.55, flickering; a 0.08 m glow on each low nozzle
+	 * (0078 / 007A); gold sparks falling from 0.13 m under the nozzle (the data's 50 a second of 0.011 m dots drawn as 6 a
+	 * second of 0.03 m: ours, so they show at Minecraft's distances); an exhaust ring (0.2 m) 4 times a second drifting
+	 * down. Her heat haze isn't drawn. Out of hero mode she walks: no flames.
+	 */
+	public static void jetpack(net.minecraft.world.entity.LivingEntity cat, Vec3[] at, Vec3[] down) {
+		POSED.put(cat.getId(), new Posed(at, down, cat.level().getGameTime()));
+		if (Boolean.FALSE.equals(cat.getAttached(dev.overcraft.hero.HeroManager.HERO_MODE))) {
+			return;
+		}
+		enemy = KirikoFx.enemyOf(cat);
+		try {
+			int id = cat.getId();
+			float dt = Fx.since(-(id * 8 + 7) - 1);
+			float t = Fx.now();
+			for (int n = HIGH_LEFT; n <= HIGH_RIGHT; n++) {
+				Vec3 nozzle = at[n];
+				Vec3 axis = down[n];
+				float flicker = 0.85f + 0.15f * Mth.sin(t * 37 + n * 2.1f);
+				flame(id, n, 0, nozzle, axis, 0.143f, 0.187f * flicker, "cat_soft", blue(Palette.CAT_FLAME), 0.55f, false);
+				flame(id, n, 1, nozzle, axis, 0.143f, 0.187f * (2 - flicker), "cat_soft", gold(Palette.CAT_FLAME_GOLD), 0.8f, true);
+				flame(id, n, 2, nozzle, axis, 0.0715f, 0.094f, "cat_soft", gold(Palette.CAT_FLAME), flicker, false);
+				Vec3 under = nozzle.add(axis.scale(0.13));
+				int sparks = (int) (6 * dt + Fx.RANDOM.nextFloat());
+				for (int i = 0; i < sparks; i++) {
+					Particle spark = Fx.particle("cat_soft", gold(Palette.CAT_FLAME_GOLD));
+					if (spark != null) {
+						Fx.add(spark.at(under).velocity(axis.scale(1).add(randomUnit().scale(0.3))).life(range(0.07f, 0.25f))
+							.size(0.03f, 0.01f).nearFade(0.5f).fade(0.02f, 0.6f));
+					}
+				}
+				if (Fx.RANDOM.nextFloat() < 4 * dt) {
+					Particle ring = Fx.particle("cat_ring", blue(Palette.CAT_FLAME));
+					if (ring != null) {
+						Fx.add(ring.at(under).shape(Shape.FLAT).normal(axis).velocity(axis.scale(0.12)).life(0.35f)
+							.size(0.2f, 0.4f).alpha(0.5f).easeOut().nearFade(0.5f).fade(0.05f, 0.6f));
+					}
+				}
+			}
+			for (int n = LOW_LEFT; n <= LOW_RIGHT; n++) {
+				Vec3 glowAt = at[n];
+				Fx.attach("jetpack_glow/" + id + "/" + n, glowAt, () -> {
+					Particle g = Fx.particle("cat_soft", blue(Palette.CAT_FLAME));
+					return g == null ? null : g.life(0.1f).size(0.08f, 0.08f).alpha(0.8f).nearFade(0.5f).fade(0.02f, 0.5f);
+				});
+			}
+		} finally {
+			enemy = false;
+		}
+	}
+
+	/**
+	 * One layer of a nozzle's flame: a soft tapered streak from the nozzle along its down axis, kept on it frame by
+	 * frame (the data's open tube 1B580 with scrolled flame noise: ours, a soft dot stretched, as a box-shaped strip
+	 * read as a rectangle). The gold layer is blended: added over bright grass it turned lime (found playing).
+	 */
+	private static void flame(int id, int nozzle, int layer, Vec3 from, Vec3 axis, float width, float length, String mask,
+		Palette palette, float alpha, boolean blended) {
+		Particle p = Fx.attach("jetpack_flame/" + id + "/" + nozzle + "/" + layer, from.add(axis.scale(length / 2)), () -> {
+			Particle f = blended ? Fx.soft(mask, palette) : Fx.particle(mask, palette);
+			return f == null ? null : f.shape(Shape.STREAK).life(0.1f).fade(0.02f, 0.5f).nearFade(0.5f);
+		});
+		if (p != null) {
+			p.axis(axis).size(length, length).aspect(width / length).alpha(alpha);
+		}
 	}
 
 	// ---- Catnapper ----
