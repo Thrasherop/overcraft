@@ -1,12 +1,14 @@
 # The heroes' emote sounds: one sound event per 02C sound of an emote clip's animation effect (08F), built the way its
 # Wwise Play event builds it, and one event per voice stimulus (078) of the clips. Same format as kiriko.txt /
-# lucio.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build 154088). The client plays each event at
-# its component's start time while the emote runs (the clip components are in each rule's comment).
-# Read 2026-10-27 offline (Overwatch and Battle.net closed), research: E:\Overwatch Archive\research\emote-sounds\
-# (scripts\: emote_fx.py the clip components, ww.py + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this
-# file; sounds.json what the client needs: loops, lengths, audience). Files extracted with DataTool's own WEM->OGG
-# (extract_banks.py) into ExtraSounds\<Hero>\Emotes\. Nothing here has been listened to: each rule says what the
-# data shows (H read), what is inferred (M) and what is a guess (L).
+# lucio.txt / mercy.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build 154088). The client plays each
+# event at its component's start time while the emote runs (the clip components are in each rule's comment).
+# Read offline (Overwatch and Battle.net closed), Kiriko and Lúcio 2026-10-27, Mercy 2026-10-28; research:
+# E:\Overwatch Archive\research\emote-sounds\ (scripts\: emote_fx.py the clip components, ww.py + wwfull.py the Wwise
+# trees, emote_events.py / gen_emotes.py this file; sounds.json what the client needs: loops, lengths, audience).
+# Files extracted with DataTool's own WEM->OGG (extract_banks.py) into ExtraSounds\<Hero>\Emotes\; a sound shared with
+# an earlier hero's emotes is read from that hero's folder (Mercy's Listen Up, Mic Drop and Salty ones from Lúcio's,
+# her Rainy Stroll and Pod ones from Kiriko's). Nothing here has been listened to: each rule says what the data shows
+# (H read), what is inferred (M) and what is a guess (L).
 # Gains: Wwise volume + make-up gain (the middle of random ranges) summed from each file up through its containers
 # and actor-mixers, plus its output bus chain (Init bank 1E818). Unlike the ability maps, ONE offset per hero is added
 # to every emote rule (not one per rule), so the sounds of an emote keep the game's balance with each other; it brings
@@ -1767,3 +1769,1201 @@ $lucio.emote.va8d = Lúcio: Oh yeah!
 $lucio.emote.v54 = Lúcio: (grunts)
 $lucio.emote.v6a1 = Lúcio: (laughs)
 $lucio.emote.v1111 = Lúcio: Oh, yeah!
+
+# ===== Mercy: 52 emote sounds (rules), 8 voice stimuli (plain events). Offset +6.5 dB (the loudest layer: C440).
+# Her own 41 02Cs (banks 1E712, 1E77A, 1E69A, 1E70E and the shared emote bank 1E79B; ExtraSounds/Mercy/Emotes) are
+# one-shots but for Lazy River's water DB6A and Crazy Choreography's music C440 (loops), mostly on the emote mixer
+# 749934277 (state 00FC +2 dB) at 15 m; Rainy Stroll's footsteps (1C8F, 37FB, 6FD6, 6FD8) are on the footstep mixer at
+# 50 m and use her own footstep banks' files, Heroic's 36F9 is on the cloth mixer (12 m), Lazy River's 1A2C has a
+# mixer and bank of its own (no range) (H). Listen Up's, Mic Drop's and Salty's are the shared achievement-emote 02Cs
+# (bank 1E79B: the same Wwise trees as Lúcio's, H), so these rules point at the files of Lúcio's extraction
+# (ExtraSounds/Lúcio/Emotes), as Jetpack Cat's do; Rainy Stroll's umbrella (C2CA, C2E6) and Pod Glide's hum and board
+# roll (F696, DBB2) are the 02Cs of Kiriko's Rainy Stroll, Pod Pet and Skateboard, read from Kiriko's extraction
+# (ExtraSounds/Kiriko/Emotes); all under her event names. D5C6, D5C7 and D5C8 play nothing (no action, no file: H):
+# their rules are empty so that every event her emote data names has one. D907's RanSeq 815834711 has no child (H):
+# left out. Not reproduced: a random container's loop count 2 (4652's 652569363 and C2E6's 228185727 play their pick
+# twice in a row), and C440's sequence order (its rule picks one of the three takes; Wwise starts at the first each
+# play). Voice: 8 VoiceStimulus components (H), every line of each stimulus with its weight from
+# research/mercy/sounds/voice_lines.json (all 1.0). Clip components read from her emote json with emote_fx.py.
+# 1A2C a bright noisy splash: nine 0.3-0.6 s takes with 65-93% of their energy above 8 kHz, pitched +380 cents, and a
+# faint 2.3 s high hiss under it (-43 dB net); at hardpoint 0013, 0.07 s into Lazy River and 6.77 s into its 7.3 s
+# second clip. Bank 1E70E, a mixer of its own (116160574), no range (-1). Clip components (clip id @start s [+window
+# s]): lazy_river 15002@0.067 hp 0013; lazy_river 15003@6.767 hp 0013.
+# Play event (02C 1A2C, bank 1E70E): a: random of 9, 0.33-0.63 s, 1ch, +380 cents, LPF/HPF 47/0 (not reproduced); b:
+# one file, 2.32 s, 2ch, +625 cents, LPF/HPF 5/0 (not reproduced).
+# Audience field 2 (3D), range none.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.0, b -43.0; the rule adds the hero's offset. Length 1.62
+# s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s1a2c = mercy.emote.s1a2c.a*1.245:+2.5 + mercy.emote.s1a2c.b*1.435:-36.5
+# 1C8F a footstep, at foot hardpoints 001B / 001C: the footstep mixer 571818699 (as Kiriko's Rainy Stroll steps), its
+# 12-file layer the files of her own footstep banks 187C / 189D (H) (Rainy Stroll, both clips). Clip components (clip
+# id @start s [+window s]): rainy_stroll 12344@2.433 hp 001B; rainy_stroll 12345@0.167 hp 001C; rainy_stroll
+# 12345@0.700 hp 001B.
+# Play event (02C 1C8F, bank 1E77A): a: random of 12 (no repeat within 10), 0.14-0.26 s, 1ch, -100 cents, LPF/HPF 0/40
+# (not reproduced); b: random of 4 (no repeat within 2), 0.46-0.48 s, 1ch, @0.020 s, LPF/HPF 0/12 (not reproduced).
+# Play 322561580 fades in over 30 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5, b -18.0; the rule adds the hero's offset. Length 0.50
+# s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s1c8f = mercy.emote.s1c8f.a*0.944:-3 + mercy.emote.s1c8f.b@0.02:-11.5
+# 2E4F the staff's flourish: a whoosh, the low swell 2A6AFD, a 1.4 s low-and-bright sweep and the shimmer at once, a
+# low hit and a bright crack at 1.2 s, a second whoosh at 1.5-1.75 s; its Stop event ends every layer with a 0.2 s
+# fade (Caduceus, from 2.3 s). Clip components (clip id @start s [+window s]): caduceus 1626@2.300+2.200 hp 00A4.
+# Play event (02C 2E4F, bank 1E712): a: one file, 1.90 s, 2ch; b: one file, 4.12 s, 2ch, +600 cents; c: one file, 1.37
+# s, 2ch; d: one file, 1.06 s, 2ch, +300 cents, @1.200 s; e: one file, 0.84 s, 1ch, @1.750 s; f: one file, 0.86 s,
+# 1ch, +600 cents, @1.500 s; g: one file, 0.82 s, 2ch; h: one file, 0.39 s, 1ch, +300 cents, @1.200 s.
+# Its Stop event fades 0.20 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -41.5, c -16.5, d -30.5, e -54.0, f -25.0, g
+# -28.5, h -37.5; the rule adds the hero's offset. Length 2.92 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s2e4f = mercy.emote.s2e4f.a:-13 + mercy.emote.s2e4f.b*1.414:-35 + mercy.emote.s2e4f.c:-10 + mercy.emote.s2e4f.d*1.189@1.2:-24 + mercy.emote.s2e4f.e@1.75:-47.5 + mercy.emote.s2e4f.f*1.414@1.5:-18.5 + mercy.emote.s2e4f.g:-22 + mercy.emote.s2e4f.h*1.189@1.2:-31
+# 2E52 a 1.9 s whirr: two 2-channel layers, one low-mid (111-173 Hz partials) whose level rises and falls about every
+# 0.2 s, one a faint tone near 9.2 kHz, as she twirls the staff (Caduceus, the whole clip). Clip components (clip id
+# @start s [+window s]): caduceus 1626@0.000+4.500 hp 00A4.
+# Play event (02C 2E52, bank 1E712): a: one file, 1.83 s, 2ch, LPF/HPF 0/20 (not reproduced); b: one file, 1.89 s,
+# 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -16.5; the rule adds the hero's offset. Length
+# 1.89 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s2e52 = mercy.emote.s2e52.a:-4 + mercy.emote.s2e52.b:-10
+# 36F9 a soft cloth rustle: ten 0.17-0.33 s bright hisses at -500 cents on the cloth mixer 43599842 (Kiriko's clothes
+# rustle 944B's; 00F5 / 00FC +7 dB); in her breathing idle clip 989 at 0.4 s, hardpoint 0010 (Heroic). Her ability
+# sound map reads it as a breath: the mixer says cloth. Clip components (clip id @start s [+window s]): heroic
+# 989@0.400 hp 0010.
+# Play event (02C 36F9, bank 1E69A): a: random of 10 (no repeat within 10), 0.17-0.33 s, 1ch, -500 cents.
+# Audience field 2 (3D), range 12 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5; the rule adds the hero's offset. Length 0.45 s.
+# Containers / delays / gains H (read); what it is M.
+@mercy.emote.s36f9 = mercy.emote.s36f9.a*0.749:-19
+# 36FE her Heroic pose: a cloth hiss at 0.25 s, the low swell 2A6AFD and the shimmer from 0.4 s, low thumps at 0.2 s
+# and 1.8-1.9 s (one a file of Kiriko's umbrella swish C2E6), whooshes at 1.8-2.05 s (Heroic, clip 3A7F). Clip
+# components (clip id @start s [+window s]): heroic 3A7F@0.000+2.333 hp 00A4.
+# Play event (02C 36FE, bank 1E712): a: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -200 cents, @0.250 s; b:
+# one file, 1.90 s, 2ch, @0.400 s; c: one file, 0.86 s, 1ch, +600 cents, @1.800 s; d: one file, 0.84 s, 1ch, @2.050 s;
+# e: one file, 4.12 s, 2ch, +600 cents, @0.400 s; f: one file, 1.06 s, 2ch, +300 cents, @1.800 s; g: one file, 0.63 s,
+# 1ch, +300 cents, @0.200 s, LPF/HPF 0/20 (not reproduced); h: one file, 0.59 s, 1ch, +300 cents, @1.900 s, LPF/HPF
+# 0/38 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -25.5, c -36.0, d -65.0, e -52.5, f -36.5, g
+# -31.5, h -25.5; the rule adds the hero's offset. Length 3.32 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s36fe = mercy.emote.s36fe.a*0.891@0.25:-7 + mercy.emote.s36fe.b@0.4:-19 + mercy.emote.s36fe.c*1.414@1.8:-29.5 + mercy.emote.s36fe.d@2.05:-58.5 + mercy.emote.s36fe.e*1.414@0.4:-46 + mercy.emote.s36fe.f*1.189@1.8:-30 + mercy.emote.s36fe.g*1.189@0.2:-25 + mercy.emote.s36fe.h*1.189@1.9:-19
+# 3704 applause: six claps 0.15-0.2 s apart from 0.67 s to 1.47 s (eight layers of the five slap files at +975 cents,
+# three stacked on the first), over cloth rustles, two 1-3 s mid-band swells, low thumps at 1.7 s, whooshes and the
+# shimmer (Applause). Clip components (clip id @start s [+window s]): applause 39F1@0.000+2.600 hp 00A4.
+# Play event (02C 3704, bank 1E712): a: random of 12 (no repeat within 3), 0.99-3.04 s, 1ch, +500 cents, @0.035 s; b:
+# random of 12 (no repeat within 3), 0.99-3.04 s, 1ch, +500 cents, @0.035 s; c: random of 9, 0.59-0.72 s, 1ch, +610
+# cents; d: random of 5, 1.02-1.27 s, 1ch, +1210 cents, @1.700 s; e: random of 5 (no repeat within 2), 0.07-0.14 s,
+# 1ch, +975 cents, @1.320 s, LPF/HPF 0/54 (not reproduced); f: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch,
+# +975 cents, @0.670 s, LPF/HPF 0/54 (not reproduced); g: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975
+# cents, @1.470 s, LPF/HPF 0/54 (not reproduced); h: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents,
+# @0.670 s, LPF/HPF 0/54 (not reproduced); i: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @1.020
+# s, LPF/HPF 0/54 (not reproduced); j: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @1.170 s,
+# LPF/HPF 0/54 (not reproduced); k: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @0.870 s, LPF/HPF
+# 0/54 (not reproduced); l: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @0.670 s, LPF/HPF 0/54
+# (not reproduced); m: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -600 cents, @0.700 s; n: random of 2 (no
+# repeat within 10), 0.20-0.21 s, 1ch, -600 cents, @2.000 s, LPF/HPF 0/25 (not reproduced); o: random of 2 (no repeat
+# within 10), 0.20-0.21 s, 1ch, -200 cents, @0.200 s, LPF/HPF 0/25 (not reproduced); p: one file, 0.52 s, 2ch, @0.700
+# s, LPF/HPF 0/35 (not reproduced); q: one file, 4.12 s, 2ch, +900 cents, @0.700 s; r: one file, 0.86 s, 1ch, +600
+# cents, @1.800 s; s: one file, 0.84 s, 1ch, @2.050 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -49.5, b -49.5, c -37.5, d -35.5, e -25.5, f -25.5, g
+# -31.5, h -25.5, i -25.5, j -25.5, k -25.5, l -25.5, m -13.5, n -22.5, o -13.5, p -31.5, q -46.5, r -36.0, s -65.0;
+# the rule adds the hero's offset. Length 3.15 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s3704 = mercy.emote.s3704.a*1.335@0.035:-43 + mercy.emote.s3704.b*1.335@0.035:-43 + mercy.emote.s3704.c*1.422:-31 + mercy.emote.s3704.d*2.012@1.7:-29 + mercy.emote.s3704.e*1.756@1.32:-19 + mercy.emote.s3704.f*1.756@0.67:-19 + mercy.emote.s3704.g*1.756@1.47:-25 + mercy.emote.s3704.h*1.756@0.67:-19 + mercy.emote.s3704.i*1.756@1.02:-19 + mercy.emote.s3704.j*1.756@1.17:-19 + mercy.emote.s3704.k*1.756@0.87:-19 + mercy.emote.s3704.l*1.756@0.67:-19 + mercy.emote.s3704.m*0.707@0.7:-7 + mercy.emote.s3704.n*0.707@2:-16 + mercy.emote.s3704.o*0.891@0.2:-7 + mercy.emote.s3704.p@0.7:-25 + mercy.emote.s3704.q*1.682@0.7:-40 + mercy.emote.s3704.r*1.414@1.8:-29.5 + mercy.emote.s3704.s@2.05:-58.5
+# 3709 a layered movement sound: her own footstep files (those of her footstep banks 18A0 / 1D31 / 76F4: H) at 0.1,
+# 1.4 and 2.5 s, low thumps, whooshes, the sub thump, the shimmer and four mid-band swells. Its Layer 223758712 holds
+# a near copy of itself (Layer 152753521), so most parts sound twice, as Wwise plays both (H) (No Pulse). Clip
+# components (clip id @start s [+window s]): no_pulse 39F2@0.000+2.767 hp 00A4.
+# Play event (02C 3709, bank 1E712): a: random of 12, 0.04-0.11 s, 1ch, -60 cents, @0.108 s; b: random of 12,
+# 0.04-0.11 s, 1ch, -60 cents, @1.407 s; c: random of 12, 0.04-0.11 s, 1ch, -60 cents, @2.507 s; d: random of 10 (no
+# repeat within 3), 0.99-3.04 s, 1ch, +1200 cents, @1.300 s; e: random of 10 (no repeat within 3), 0.99-3.04 s, 1ch,
+# +1200 cents, LPF/HPF 0/38 (not reproduced); f: random of 10 (no repeat within 3), 0.99-3.04 s, 1ch, +1200 cents,
+# @1.300 s; g: random of 10 (no repeat within 3), 0.99-3.04 s, 1ch, +1200 cents, LPF/HPF 0/38 (not reproduced); h:
+# random of 9, 0.20-0.25 s, 1ch, @0.075 s, LPF/HPF 17/0 (not reproduced); i: random of 9, 0.20-0.25 s, 1ch, @1.375 s,
+# LPF/HPF 17/0 (not reproduced); j: random of 9, 0.20-0.25 s, 1ch, @2.475 s, LPF/HPF 17/0 (not reproduced); k: random
+# of 5, 0.68-0.86 s, 1ch, +730 cents; l: random of 5, 0.68-0.86 s, 1ch, +730 cents, @1.500 s; m: random of 5,
+# 0.68-0.86 s, 1ch, +730 cents; n: random of 5, 0.68-0.86 s, 1ch, +730 cents, @1.500 s; o: random of 2 (no repeat
+# within 10), 0.20-0.21 s, 1ch, -600 cents, @1.450 s; p: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -200
+# cents, @2.200 s, LPF/HPF 0/25 (not reproduced); q: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, @0.100 s,
+# LPF/HPF 0/25 (not reproduced); r: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -600 cents, @1.450 s; s:
+# random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -200 cents, @2.200 s, LPF/HPF 0/25 (not reproduced); t: random
+# of 2 (no repeat within 10), 0.20-0.21 s, 1ch, @0.100 s, LPF/HPF 0/25 (not reproduced); u: one file, 4.12 s, 2ch,
+# +900 cents, @1.500 s; v: one file, 0.84 s, 1ch, @2.450 s; w: one file, 0.86 s, 1ch, +600 cents, @2.200 s; x: one
+# file, 4.12 s, 2ch, +900 cents, @1.500 s; y: one file, 0.52 s, 2ch, +200 cents, @1.600 s, LPF/HPF 0/35 (not
+# reproduced); z: one file, 0.52 s, 2ch, +200 cents, @1.600 s, LPF/HPF 0/35 (not reproduced); aa: one file, 0.86 s,
+# 1ch, +600 cents, @2.200 s; ab: one file, 0.84 s, 1ch, @2.450 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.5, b -31.5, c -21.5, d -34.5, e -34.5, f -34.5, g
+# -34.5, h -28.5, i -31.5, j -21.5, k -34.5, l -34.5, m -34.5, n -34.5, o -19.5, p -25.5, q -22.5, r -19.5, s -25.5, t
+# -22.5, u -52.5, v -69.5, w -40.5, x -52.5, y -37.5, z -37.5, aa -40.5, ab -69.5; the rule adds the hero's offset.
+# Length 3.95 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3709 = mercy.emote.s3709.a*0.966@0.108:-22 + mercy.emote.s3709.b*0.966@1.407:-25 + mercy.emote.s3709.c*0.966@2.507:-15 + mercy.emote.s3709.d*2.000@1.3:-28 + mercy.emote.s3709.e*2.000:-28 + mercy.emote.s3709.f*2.000@1.3:-28 + mercy.emote.s3709.g*2.000:-28 + mercy.emote.s3709.h@0.075:-22 + mercy.emote.s3709.i@1.375:-25 + mercy.emote.s3709.j@2.475:-15 + mercy.emote.s3709.k*1.524:-28 + mercy.emote.s3709.l*1.524@1.5:-28 + mercy.emote.s3709.m*1.524:-28 + mercy.emote.s3709.n*1.524@1.5:-28 + mercy.emote.s3709.o*0.707@1.45:-13 + mercy.emote.s3709.p*0.891@2.2:-19 + mercy.emote.s3709.q@0.1:-16 + mercy.emote.s3709.r*0.707@1.45:-13 + mercy.emote.s3709.s*0.891@2.2:-19 + mercy.emote.s3709.t@0.1:-16 + mercy.emote.s3709.u*1.682@1.5:-46 + mercy.emote.s3709.v@2.45:-63 + mercy.emote.s3709.w*1.414@2.2:-34 + mercy.emote.s3709.x*1.682@1.5:-46 + mercy.emote.s3709.y*1.122@1.6:-31 + mercy.emote.s3709.z*1.122@1.6:-31 + mercy.emote.s3709.aa*1.414@2.2:-34 + mercy.emote.s3709.ab@2.45:-63
+# 37FB a footstep, foot hardpoint 001C: the footstep mixer 571818699; 21 of its 25 files are her footstep banks' 18A0
+# / 1D31 / 76F4 (H) (Rainy Stroll, the first step at 0.43 s). Clip components (clip id @start s [+window s]):
+# rainy_stroll 12344@0.433 hp 001C.
+# Play event (02C 37FB, bank 1E77A): a: random of 12, 0.04-0.11 s, 1ch, -860 cents, @0.080 s, LPF/HPF 0/40 (not
+# reproduced); b: random of 9, 0.20-0.25 s, 1ch, -420 cents, @0.015 s, LPF/HPF 17/40 (not reproduced); c: random of 4
+# (no repeat within 2), 0.33-0.47 s, 1ch, @0.015 s, LPF/HPF 0/12 (not reproduced).
+# Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -8.5, c -7.0; the rule adds the hero's offset.
+# Length 0.48 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s37fb = mercy.emote.s37fb.a*0.609@0.08:-9 + mercy.emote.s37fb.b*0.785@0.015:-2 + mercy.emote.s37fb.c@0.015:-0.5
+# 3AC7 sitting down: a body-fall thud at 1.37 s (2A70A2, a file of her footstep bank 1173, the knock-down's body fall
+# in her ability map: H), low thumps at 0 and 1.03 s, the sub thump at 1.49 s and the low swell at 0.2 s (Relax, clip
+# 3BA4). Clip components (clip id @start s [+window s]): relax 3BA4@0.000+2.233 hp 00A4.
+# Play event (02C 3AC7, bank 1E712): a: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -600 cents, @1.510 s,
+# LPF/HPF 28/0 (not reproduced); b: random of 2, 0.73-0.80 s, 1ch, +730 cents; c: random of 2, 0.65 s, 1ch, -430
+# cents, @1.030 s; d: one file, 1.90 s, 2ch, @0.200 s, LPF/HPF 20/0 (not reproduced); e: one file, 0.52 s, 2ch, -350
+# cents, @1.490 s; f: random of 1 (no repeat within 3), 0.46 s, 1ch, @1.370 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5, b -14.5, c -33.5, d -31.5, e -40.5, f -30.5; the
+# rule adds the hero's offset. Length 2.12 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s3ac7 = mercy.emote.s3ac7.a*0.707@1.51:-6 + mercy.emote.s3ac7.b*1.524:-8 + mercy.emote.s3ac7.c*0.780@1.03:-27 + mercy.emote.s3ac7.d@0.2:-25 + mercy.emote.s3ac7.e*0.817@1.49:-34 + mercy.emote.s3ac7.f@1.37:-24
+# 3AC8 a cloth rustle and a whoosh as Relax starts (clip 3BA2). Clip components (clip id @start s [+window s]): relax
+# 3BA2@0.067+0.367 hp 00A4.
+# Play event (02C 3AC8, bank 1E712): a: random of 5, 0.59-0.72 s, 1ch, +610 cents; b: one file, 0.84 s, 1ch, -250
+# cents, @0.350 s; c: one file, 0.86 s, 1ch, +350 cents, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5, b -54.5, c -25.5; the rule adds the hero's offset.
+# Length 1.32 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3ac8 = mercy.emote.s3ac8.a*1.422:-17 + mercy.emote.s3ac8.b*0.866@0.35:-48 + mercy.emote.s3ac8.c*1.224@0.1:-19
+# 3ACD cloth rustles, a slap at 0.35 s (the slap files), a cloth hiss, a low thump at 1.32 s and a whoosh at 2.6-2.85
+# s while she laughs (her laugh 6A1 starts with it) (The Best Medicine). Clip components (clip id @start s [+window
+# s]): the_best_medicine 3BA5@0.000+3.300 hp 00A4.
+# Play event (02C 3ACD, bank 1E712): a: random of 5, 0.59-0.72 s, 1ch, +610 cents; b: random of 5 (no repeat within
+# 2), 0.07-0.14 s, 1ch, +455 cents, @0.350 s; c: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, -600 cents,
+# @0.196 s, LPF/HPF 25/0 (not reproduced); d: random of 2, 0.65 s, 1ch, +610 cents, @1.320 s; e: one file, 0.84 s,
+# 1ch, -250 cents, @2.850 s; f: one file, 0.86 s, 1ch, +350 cents, @2.600 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.0, b -10.5, c -15.5, d -25.5, e -54.5, f -25.5; the
+# rule adds the hero's offset. Length 3.82 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3acd = mercy.emote.s3acd.a*1.422:-17.5 + mercy.emote.s3acd.b*1.301@0.35:-4 + mercy.emote.s3acd.c*0.707@0.196:-9 + mercy.emote.s3acd.d*1.422@1.32:-19 + mercy.emote.s3acd.e*0.866@2.85:-48 + mercy.emote.s3acd.f*1.224@2.6:-19
+# 3F9D a short tonal blip (1.7-2.1 kHz partials) with the sub thump and a 3 s shimmer (Hustle, 4.33 s). Clip
+# components (clip id @start s [+window s]): hustle 3FFA@4.333 hp 00A4.
+# Play event (02C 3F9D, bank 1E712): a: one file, 0.61 s, 2ch, +200 cents; b: one file, 0.52 s, 2ch, +230 cents,
+# @0.200 s, LPF/HPF 0/14 (not reproduced); c: one file, 3.02 s, 2ch, +450 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -36.5, c -49.5; the rule adds the hero's offset.
+# Length 2.33 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3f9d = mercy.emote.s3f9d.a*1.122:-12 + mercy.emote.s3f9d.b*1.142@0.2:-30 + mercy.emote.s3f9d.c*1.297:-43
+# 3F9E a low hit (2A707A, also So Tough's D904) with a 2.1 s low swell and a bright noise (Hustle, 6.4 s, its end).
+# Clip components (clip id @start s [+window s]): hustle 3FFA@6.400 hp 00A4.
+# Play event (02C 3F9E, bank 1E712): a: one file, 0.51 s, 2ch, @0.320 s, LPF/HPF 0/19 (not reproduced); b: one file,
+# 0.61 s, 2ch; c: one file, 2.08 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -35.5, b -27.5, c -29.5; the rule adds the hero's offset.
+# Length 2.08 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3f9e = mercy.emote.s3f9e.a@0.32:-29 + mercy.emote.s3f9e.b:-21 + mercy.emote.s3f9e.c:-23
+# 3F9F a clap: two layers of the five slap files (Applause's claps) 0.02 s apart (Hustle, 3.97 s, and its 0.77 s clip
+# 401A at 0.5 s). Clip components (clip id @start s [+window s]): hustle 3FFA@3.967 hp 00A4; hustle 401A@0.500 hp
+# 00A4.
+# Play event (02C 3F9F, bank 1E712): a: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +755 cents, LPF/HPF 0/47
+# (not reproduced); b: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @0.020 s, LPF/HPF 0/40 (not
+# reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.0, b -12.0; the rule adds the hero's offset. Length
+# 0.10 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s3f9f = mercy.emote.s3f9f.a*1.547:-5.5 + mercy.emote.s3f9f.b*1.756@0.02:-5.5
+# 3FA0 a low stomp: twelve 0.4-0.9 s low thumps (86-99% of their energy under 300 Hz) with a cloth hiss and a faint
+# mid-band scuff, range 18 m (Hustle, as it starts and in clip 401A). Clip components (clip id @start s [+window s]):
+# hustle 3FFA@0.200 hp 00A4; hustle 401A@0.000 hp 00A4.
+# Play event (02C 3FA0, bank 1E712): a: random of 12 (no repeat within 11), 0.41-0.91 s, 1ch, -150 cents, some files
+# differ by -4/+0/+0 +4/+0/+0 +5/+0/+0 +6/+0/+0 +10/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 0/24 (not reproduced); b: random of 9 (no repeat within 10), 0.17-0.33 s, 1ch, -50 cents, @0.100
+# s; c: random of 9 (no repeat within 5), 0.26-0.49 s, 1ch, +630 cents, LPF/HPF 19/0 (not reproduced).
+# Audience field 2 (3D), range 18 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -42.5, b -35.5, c -55.0; the rule adds the hero's offset.
+# Length 0.99 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.s3fa0 = mercy.emote.s3fa0.a*0.917:-36 + mercy.emote.s3fa0.b*0.972@0.1:-29 + mercy.emote.s3fa0.c*1.439:-48.5
+# 4652 the parasol opening and twirling: low tonal pops (five 0.2 s takes, played twice: loop count 2) at 0.3 s, low
+# thumps at 0, 0.5 and 3.4 s, a 2.8 s mid-band tone (813-1684 Hz partials) from 1.3 s, a tonal blip at 3.6 s,
+# whooshes, hisses and the shimmer (Parasol, the whole clip; the prop clip 4DC8 has no sound). Clip components (clip
+# id @start s [+window s]): parasol 47BB@0.000+4.833 hp 00A4.
+# Play event (02C 4652, bank 1E712): a: random of 7, 0.52-0.70 s, 1ch, +730 cents, @0.500 s, LPF/HPF 0/30 (not
+# reproduced); b: random of 7, 0.52-0.70 s, 1ch, +900 cents, LPF/HPF 0/20 (not reproduced); c: random of 7, 0.52-0.70
+# s, 1ch, +730 cents, @3.400 s; d: random of 5, 0.21-0.24 s, 1ch, @0.300 s, LPF/HPF 0/40 (not reproduced); e: random
+# of 2 (no repeat within 10), 0.20-0.21 s, 1ch, +900 cents, @2.000 s; f: random of 2 (no repeat within 10), 0.20-0.21
+# s, 1ch, +1200 cents, @1.400 s; g: one file, 0.84 s, 1ch, @0.700 s; h: one file, 0.58 s, 2ch, -250 cents, @3.600 s,
+# LPF/HPF 0/25 (not reproduced); i: one file, 2.84 s, 2ch, @1.300 s; j: one file, 0.86 s, 1ch, +300 cents, @0.350 s;
+# k: one file, 4.12 s, 2ch, @1.000 s; l: one file, 2.12 s, 2ch, +150 cents, @1.500 s, LPF/HPF 0/70 (not reproduced);
+# m: one file, 0.86 s, 1ch, @4.000 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.0, b -34.0, c -27.0, d -24.0, e -19.5, f -19.5, g
+# -31.5, h -10.5, i -31.5, j -19.5, k -52.5, l -2.5, m -19.5; the rule adds the hero's offset. Length 5.12 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.s4652 = mercy.emote.s4652.a*1.524@0.5:-20.5 + mercy.emote.s4652.b*1.682:-27.5 + mercy.emote.s4652.c*1.524@3.4:-20.5 + mercy.emote.s4652.d@0.3:-17.5 + mercy.emote.s4652.e*1.682@2:-13 + mercy.emote.s4652.f*2.000@1.4:-13 + mercy.emote.s4652.g@0.7:-25 + mercy.emote.s4652.h*0.866@3.6:-4 + mercy.emote.s4652.i@1.3:-25 + mercy.emote.s4652.j*1.189@0.35:-13 + mercy.emote.s4652.k@1:-46 + mercy.emote.s4652.l*1.091@1.5:+4 + mercy.emote.s4652.m@4:-13
+# 6563 a 6 s low gust: one 2-channel file, 84% of it under 300 Hz, swelling over 0.5 s, steady, then fading (Flurry,
+# 0.13 s). Clip components (clip id @start s [+window s]): flurry 8530@0.133+6.000 hp 00A4.
+# Play event (02C 6563, bank 1E712): a: one file, 5.96 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5; the rule adds the hero's offset. Length 5.96 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.s6563 = mercy.emote.s6563.a:-7
+# 6FD6 a footstep, foot hardpoint 001C: the footstep mixer 571818699; 21 of its files are her footstep banks' 18A0 /
+# 1D31 / 76F4, the other four Kiriko's Rainy Stroll step 80EE's (H) (Rainy Stroll, 1.3 s). Clip components (clip id
+# @start s [+window s]): rainy_stroll 12344@1.300 hp 001C.
+# Play event (02C 6FD6, bank 1E77A): a: random of 12, 0.04-0.11 s, 1ch, -60 cents, @0.007 s, LPF/HPF 0/40 (not
+# reproduced); b: random of 9, 0.20-0.25 s, 1ch, LPF/HPF 17/40 (not reproduced); c: random of 4 (no repeat within 2),
+# 0.30-0.48 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 1014732818 fades in over 40 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5, b -8.5, c -8.0; the rule adds the hero's offset.
+# Length 0.48 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s6fd6 = mercy.emote.s6fd6.a*0.966@0.007:-2 + mercy.emote.s6fd6.b:-2 + mercy.emote.s6fd6.c:-1.5
+# 6FD8 a footstep, foot hardpoint 001B: the footstep mixer 571818699; 7 of its 12 files are her footstep banks' 1880 /
+# 18A1 (H) (Rainy Stroll, 0.63 s). Clip components (clip id @start s [+window s]): rainy_stroll 12344@0.633 hp 001B.
+# Play event (02C 6FD8, bank 1E77A): a: random of 7 (no repeat within 6), 0.15-0.20 s, 1ch, LPF/HPF 0/40 (not
+# reproduced); b: random of 5 (no repeat within 2), 0.33-0.47 s, 1ch, @0.045 s, LPF/HPF 0/12 (not reproduced).
+# Play 359135179 fades in over 200 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5, b -8.5; the rule adds the hero's offset. Length 0.52
+# s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.s6fd8 = mercy.emote.s6fd8.a:-5 + mercy.emote.s6fd8.b@0.045:-2
+# C2CA the umbrella opening, as it appears in her hand (Kiriko's umbrella prop 181A6, from 0.63 s on her hardpoint
+# 000A; Rainy Stroll, the 02C Kiriko's uses). Clip components (clip id @start s [+window s]): rainy_stroll 12344@0.567
+# hp 0003.
+# Play event (02C C2CA, bank 1E4D2): a: one file, 0.18 s, 1ch; b: one file, 0.40 s, 1ch, @0.110 s; c: one file, 1.40
+# s, 1ch, +318 cents, LPF/HPF 0/60 (not reproduced).
+# Play 761879878 fades in over 510 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -15.5, c -23.0; the rule adds the hero's offset.
+# Length 1.17 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.sc2ca = mercy.emote.sc2ca.a:-9 + mercy.emote.sc2ca.b@0.11:-9 + mercy.emote.sc2ca.c*1.202:-16.5
+# C2E6 umbrella twirl swish (Rainy Stroll, the 02C Kiriko's uses). Clip components (clip id @start s [+window s]):
+# rainy_stroll 12344@1.400 hp 00A4.
+# Play event (02C C2E6, bank 1E4D2): a: random of 2, 0.59-0.67 s, 1ch, -150 cents, LPF/HPF 0/40 (not reproduced); b:
+# one file, 1.40 s, 1ch, @0.150 s, LPF/HPF 0/60 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -23.0; the rule adds the hero's offset. Length
+# 1.55 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sc2e6 = mercy.emote.sc2e6.a*0.917:-7 + mercy.emote.sc2e6.b@0.15:-16.5
+# C440 the dance music, her own copy: a continuous sequence (endless) of three 14.78 s takes whose playlist restarts
+# at the first each play (bits 0x1a, read as Wwise's reset-at-each-play: M), so the 7.37 s clip hears the first take's
+# opening (2BF2AD); on Kiriko's Orion Dance actor-mixer 919306447 with the same 8E states, and the same SetState
+# 2072919291 on play / stop (Crazy Choreography). Clip components (clip id @start s [+window s]): crazy_choreography
+# 12712@0.000+7.367 hp 00A4.
+# Play event (02C C440, bank 1E79B): a: random of 3, 14.78 s, 2ch, @0.074 s, LOOPS: a continuous container, endless,
+# the next file when one ends.
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E as Kiriko's Orion Dance FEC7: 00FC +2 dB, 00F5 and five others -99 dB; see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 14.85 s,
+# loop 14.851 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.sc440 = mercy.emote.sc440.a@0.074:-4
+# C441 the music's 0.53 s pickup, her own copy, in the 0.57 s lead-in clip 12711 (Crazy Choreography; the same mixer
+# and states as C440). Clip components (clip id @start s [+window s]): crazy_choreography 12711@0.000+0.567 hp 00A4.
+# Play event (02C C441, bank 1E79B): a: one file, 0.53 s, 2ch, @0.075 s.
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E as Kiriko's Orion Dance FEC8: 00FC +2 dB, 00F5 and five others -99 dB; see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 0.61 s.
+# Containers / delays / gains H (read); what it is M.
+@mercy.emote.sc441 = mercy.emote.sc441.a@0.075:-4
+# D5C6 an empty sound: its Play event 3728208352 holds no action and its STUSound no file, range 0 (H). It shares
+# Parasol's whole-clip window with 4652; by the pattern of the range-0 own copies (E549, Lúcio's 2EFB) maybe an own 2D
+# copy left empty (L). Clip components (clip id @start s [+window s]): parasol 47BB@0.000+4.833 hp 00A4.
+# Play event (02C D5C6, bank 1E712): no action, and the STUSound lists no file: nothing plays (H). The rule is empty
+# (an event with no sound, no subtitle). Audience field 2 (3D), range none.
+@mercy.emote.sd5c6 =
+# D5C7 an empty sound: its Play event 721350826 holds no action and its STUSound no file, range 0 (H). It shares
+# Caduceus's whole-clip window with 2E52 (as D5C6 with Parasol's 4652: L). Clip components (clip id @start s [+window
+# s]): caduceus 1626@0.000+4.500 hp 00A4.
+# Play event (02C D5C7, bank 1E712): no action, and the STUSound lists no file: nothing plays (H). The rule is empty
+# (an event with no sound, no subtitle). Audience field 2 (3D), range none.
+@mercy.emote.sd5c7 =
+# D5C8 an empty sound: its Play event 2216499687 holds no action and its STUSound no file, range 0 (H). It shares
+# Flurry's window with 6563 (as D5C6 with Parasol's 4652: L). Clip components (clip id @start s [+window s]): flurry
+# 8530@0.133+6.000 hp 00A4.
+# Play event (02C D5C8, bank 1E712): no action, and the STUSound lists no file: nothing plays (H). The rule is empty
+# (an event with no sound, no subtitle). Audience field 2 (3D), range none.
+@mercy.emote.sd5c8 =
+# D903 the low 1.9 s swell 2A6AFD (So Tough, 1.0 s). Clip components (clip id @start s [+window s]): so_tough
+# 1476D@0.997 hp 00A4.
+# Play event (02C D903, bank 1E712): a: one file, 1.90 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 1.90 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd903 = mercy.emote.sd903.a:-17
+# D904 a low hit (2A707A, also Hustle's 3F9E) and a slap at 0.35 s (the slap files) (So Tough, 2.8 s). Clip components
+# (clip id @start s [+window s]): so_tough 1476D@2.799 hp 00A4.
+# Play event (02C D904, bank 1E712): a: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +925 cents, @0.350 s,
+# LPF/HPF 0/7 (not reproduced); b: one file, 0.51 s, 2ch, LPF/HPF 0/19 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -31.5; the rule adds the hero's offset. Length
+# 0.51 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd904 = mercy.emote.sd904.a*1.706@0.35:-7 + mercy.emote.sd904.b:-25
+# D906 a whoosh: the whoosh pair at +350 / -250 cents (So Tough, 4.36 s). Clip components (clip id @start s [+window
+# s]): so_tough 1476D@4.360 hp 00A4.
+# Play event (02C D906, bank 1E712): a: one file, 0.84 s, 1ch, -250 cents, @0.250 s; b: one file, 0.86 s, 1ch, +350
+# cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -54.5, b -25.5; the rule adds the hero's offset. Length
+# 1.22 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd906 = mercy.emote.sd906.a*0.866@0.25:-48 + mercy.emote.sd906.b*1.224:-19
+# D907 movement foley under the whole emote: cloth rustles at 1.0 and 3.9 s, low thumps at 0.1, 2.8 and 4.35 s (So
+# Tough). Clip components (clip id @start s [+window s]): so_tough 1476D@0.000+5.000 hp 00A4.
+# Play event (02C D907, bank 1E712): a: random of 5, 0.59-0.72 s, 1ch, +500 cents, @3.900 s, LPF/HPF 0/50 (not
+# reproduced); b: random of 5, 0.59-0.72 s, 1ch, +200 cents, @1.000 s, LPF/HPF 0/35 (not reproduced); c: random of 2,
+# 0.65 s, 1ch, @0.100 s; d: random of 2, 0.65 s, 1ch, @4.350 s, LPF/HPF 0/45 (not reproduced); e: random of 2,
+# 0.73-0.80 s, 1ch, @2.800 s, LPF/HPF 0/35 (not reproduced); RanSeq 815834711 holds no child: left out (it plays
+# nothing).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.5, b -21.5, c -25.5, d -22.5, e -16.5; the rule adds
+# the hero's offset. Length 5.00 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd907 = mercy.emote.sd907.a*1.335@3.9:-21 + mercy.emote.sd907.b*1.122@1:-15 + mercy.emote.sd907.c@0.1:-19 + mercy.emote.sd907.d@4.35:-16 + mercy.emote.sd907.e@2.8:-10
+# D908 a faint short tick: one 0.2 s file whose own peak is -48 dBFS, at +600 cents (So Tough, 1.6 s). Clip components
+# (clip id @start s [+window s]): so_tough 1476D@1.603 hp 00A4.
+# Play event (02C D908, bank 1E712): a: one file, 0.20 s, 1ch, +600 cents, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +6.5; the rule adds the hero's offset. Length 0.14 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd908 = mercy.emote.sd908.a*1.414:+13
+# D909 a faint short tick: one 0.24 s file whose own peak is -43 dBFS, at +900 cents (So Tough, 1.8 s). Clip
+# components (clip id @start s [+window s]): so_tough 1476D@1.802 hp 00A4.
+# Play event (02C D909, bank 1E712): a: one file, 0.24 s, 1ch, +900 cents, LPF/HPF 0/60 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +6.5; the rule adds the hero's offset. Length 0.14 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sd909 = mercy.emote.sd909.a*1.682:+13
+# DA44 the mic hitting the floor (Mic Drop, the shared emote). It plays at 0.93 s, where her mic window (the shared
+# mic prop 1A146 on her hardpoint 000B, 0-0.93 s) ends. Clip components (clip id @start s [+window s]): mic_drop
+# 15C95@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@mercy.emote.sda44 = mercy.emote.sda44.a:-12
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C95@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@mercy.emote.sda4f = mercy.emote.sda4f.a*1.169@0.01:+6
+# DB69 a splash: three 0.55-0.67 s takes with a sharp attack, half their energy under 300 Hz and a third to a half
+# above 8 kHz, from the float's own clip 15B75 (her prop 19525 on hardpoint 01B6) as it lands (Lazy River). Clip
+# components (clip id @start s [+window s]): lazy_river 15B75@0.000+2.600 hp 00A4.
+# Play event (02C DB69, bank 1E79B): a: random of 3, 0.55-0.67 s, 1ch, -25 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 0.68 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sdb69 = mercy.emote.sdb69.a*0.986:-9
+# DB6A the water under the float: a 3.6 s low loop (90% under 300 Hz, steady), started at a random point and faded in,
+# at the float's hardpoint 0076 through both of its clips (Lazy River). Clip components (clip id @start s [+window
+# s]): lazy_river 15B75@0.100+2.500 hp 0076; lazy_river 15B76@0.000+7.300 hp 0076.
+# Play event (02C DB6A, bank 1E79B): a: one file, 3.64 s, 1ch, LOOPS (Wwise loop count 0 = endless), LPF/HPF 15/25
+# (not reproduced).
+# Play 343579371 fades in over 500 ms; Seek 343579371 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.5; the rule adds the hero's offset. Length 3.64 s, loop
+# 3.643 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sdb6a = mercy.emote.sdb6a.a:-21
+# DB70 a short low tonal bump: three 0.19-0.25 s takes with 140-280 Hz partials, as she settles on the float (Lazy
+# River, 0.57 s). Clip components (clip id @start s [+window s]): lazy_river 15002@0.567 hp 00A4.
+# Play event (02C DB70, bank 1E79B): a: random of 3, 0.18-0.25 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -26.5; the rule adds the hero's offset. Length 0.25 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sdb70 = mercy.emote.sdb70.a:-20
+# DBB2 the board rolling (loop): Kiriko's Skateboard 02C, here held for the 0.033 s clip 1B18A only, as Kiriko's is in
+# her Skateboard's 0.033 s clip 1AB92 (Pod Glide). Clip components (clip id @start s [+window s]): pod_glide
+# 1B18A@0.000+0.033 hp 00A4.
+# Play event (02C DBB2, bank 1E79B): a: one file, 4.58 s, 1ch, LOOPS (Wwise loop count 0 = endless).
+# Play 1006031153 fades in over 200 ms; Seek 1006031153 to a random fraction 0.0-1.0. Its Stop event fades 0.15 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5; the rule adds the hero's offset. Length 4.58 s, loop
+# 4.576 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.sdbb2 = mercy.emote.sdbb2.a:-16
+# DD7A the closing pose: hisses, low thumps (seven takes at +900 cents) and a 3.2 s low swell from 1.0 s with the sub
+# thump and the shimmer (Shuffle, 4.33 s, with her 'Yoohoo!' 1966). Clip components (clip id @start s [+window s]):
+# shuffle 18184@4.333+2.133 hp 00A4.
+# Play event (02C DD7A, bank 1E712): a: random of 7, 0.52-0.70 s, 1ch, +900 cents, LPF/HPF 0/20 (not reproduced); b:
+# random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, @0.100 s; c: random of 2 (no repeat within 10), 0.20-0.21 s,
+# 1ch, +900 cents; d: random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, +110 cents, @1.000 s; e: random of 2 (no
+# repeat within 10), 0.20-0.21 s, 1ch, +1200 cents, @0.050 s; f: one file, 4.12 s, 2ch, @0.800 s; g: one file, 3.17 s,
+# 2ch, @1.000 s; h: one file, 0.52 s, 2ch, @1.020 s, LPF/HPF 0/36 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.5, b -17.5, c -10.5, d -16.5, e -12.5, f -50.5, g
+# -23.5, h -32.5; the rule adds the hero's offset. Length 4.92 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sdd7a = mercy.emote.sdd7a.a*1.682:-21 + mercy.emote.sdd7a.b@0.1:-11 + mercy.emote.sdd7a.c*1.682:-4 + mercy.emote.sdd7a.d*1.066@1:-10 + mercy.emote.sdd7a.e*2.000@0.05:-6 + mercy.emote.sdd7a.f@0.8:-44 + mercy.emote.sdd7a.g@1:-17 + mercy.emote.sdd7a.h@1.02:-26
+# E23F a low pop: two 0.2 s tonal takes pitched down 1775 cents (to about 125-170 Hz) and a 0.6 s tonal tick at +410
+# cents (Shuffle, 4.6 s). Clip components (clip id @start s [+window s]): shuffle 18184@4.600 hp 00A4.
+# Play event (02C E23F, bank 1E79B): a: random of 2 (no repeat within 2), 0.18-0.21 s, 1ch, -1775 cents, @0.200 s,
+# LPF/HPF 0/55 (not reproduced); b: random of 1 (no repeat within 2), 0.60 s, 1ch, +410 cents, @0.280 s, LPF/HPF 0/55
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +3.5, b -13.5; the rule adds the hero's offset. Length 0.78
+# s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.se23f = mercy.emote.se23f.a*0.359@0.2:+10 + mercy.emote.se23f.b*1.267@0.28:-7
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 18514@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.se548 = mercy.emote.se548.a:-3
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 18514@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.se549 = mercy.emote.se549.a*0.891:-13 + mercy.emote.se549.b:-13
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18514@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.se54a = mercy.emote.se54a.a:-18
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18514@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@mercy.emote.se54b = mercy.emote.se54b.a:-17
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C82@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.seea6 = mercy.emote.seea6.a:+2 + mercy.emote.seea6.b@1.45:+2 + mercy.emote.seea6.c@0.03:-12 + mercy.emote.seea6.d*2.378@0.15:+2
+# F49C a bright chiming shimmer at her mouth (hardpoint 0444): one 2.98 s file, its energy at 2-8 kHz with partials
+# near 4.5, 6.6 and 7.0 kHz, held 0.6-4.5 s (Loved). Clip components (clip id @start s [+window s]): loved
+# 1810F@0.600+3.900 hp 0444.
+# Play event (02C F49C, bank 1E712): a: one file, 2.98 s, 2ch, @0.080 s.
+# Its Stop event fades 0.20 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -16.5; the rule adds the hero's offset. Length 3.06 s.
+# Containers / delays / gains H (read); what it is L.
+@mercy.emote.sf49c = mercy.emote.sf49c.a@0.08:-10
+# F49D a 3.2 s low swell with the sub thump and the shimmer (Loved, 2.17 s). Clip components (clip id @start s
+# [+window s]): loved 1810F@2.167+1.567 hp 00A4.
+# Play event (02C F49D, bank 1E712): a: one file, 0.52 s, 2ch, @0.220 s, LPF/HPF 0/36 (not reproduced); b: one file,
+# 4.12 s, 2ch; c: one file, 3.17 s, 2ch, @0.200 s.
+# Its Stop event fades 0.30 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -30.5, b -48.5, c -21.5; the rule adds the hero's offset.
+# Length 4.12 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sf49d = mercy.emote.sf49d.a@0.22:-24 + mercy.emote.sf49d.b:-42 + mercy.emote.sf49d.c@0.2:-15
+# F49E a soft whoosh with a low thud: two hisses and seven low thump takes at +900 cents (Loved, 3.6 s). Clip
+# components (clip id @start s [+window s]): loved 1810F@3.600 hp 00A4.
+# Play event (02C F49E, bank 1E712): a: random of 7, 0.52-0.70 s, 1ch, +900 cents, LPF/HPF 0/40 (not reproduced); b:
+# random of 2 (no repeat within 10), 0.20-0.21 s, 1ch, +110 cents; c: random of 2 (no repeat within 10), 0.20-0.21 s,
+# 1ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.5, b -16.5, c -17.5; the rule adds the hero's offset.
+# Length 0.42 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sf49e = mercy.emote.sf49e.a*1.682:-21 + mercy.emote.sf49e.b*1.066:-10 + mercy.emote.sf49e.c@0.1:-11
+# F696 the pod's hover hum (loop): Kiriko's Pod Pet 02C; the pod is Kiriko's prop 1B7DD (Pod Glide). Clip components
+# (clip id @start s [+window s]): pod_glide 1932C@0.000+8.000 hp 00A4.
+# Play event (02C F696, bank 1E4D2): a: one file, 10.74 s, 1ch, LOOPS (Wwise loop count 0 = endless).
+# Play 164091940 fades in over 100 ms; Seek 164091940 to a random fraction 0.0-1.0. Its Stop event fades 0.50 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 10.74 s, loop
+# 10.743 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.sf696 = mercy.emote.sf696.a:-2
+# F69A the pod arriving: high tonal chirps (5-10 kHz) and low bumps over a hover hum; her own 02C, two of whose seven
+# files (the 10.7 s hum 3404FB at 0.45 s, and 3409CA) are in Kiriko's Pod Pet arrival F695 (H); the pod 1B7DD appears
+# at 0.33 s (Pod Glide). Clip components (clip id @start s [+window s]): pod_glide 1932B@0.000+1.833 hp 00A4.
+# Play event (02C F69A, bank 1E712): a: one file, 0.62 s, 1ch, @0.200 s; b: one file, 0.59 s, 1ch, +300 cents, @0.300
+# s; c: one file, 0.48 s, 1ch, @1.300 s, LPF/HPF 25/0 (not reproduced); d: one file, 10.74 s, 1ch, @0.450 s; e: one
+# file, 0.64 s, 1ch, @0.750 s; f: one file, 0.91 s, 1ch, +500 cents, @0.100 s; g: one file, 0.46 s, 1ch, @0.850 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5, b -0.5, c -2.5, d -5.5, e -0.5, f -15.5, g -23.5; the
+# rule adds the hero's offset. Length 11.19 s. Containers / delays / gains H (read); what it is M.
+@mercy.emote.sf69a = mercy.emote.sf69a.a@0.2:+6 + mercy.emote.sf69a.b*1.189@0.3:+6 + mercy.emote.sf69a.c@1.3:+4 + mercy.emote.sf69a.d@0.45:+1 + mercy.emote.sf69a.e@0.75:+6 + mercy.emote.sf69a.f*1.335@0.1:-9 + mercy.emote.sf69a.g@0.85:-17
+# F869 a noisy airy puff: two layers of 0.7-1.25 s takes, flat-spectrum noise mostly above 4 kHz, decaying, pitched
+# +405 to +530 cents (Bunny Hop, 0.17 s into the hop). Clip components (clip id @start s [+window s]): bunny_hop
+# 19A34@0.167 hp 00A4.
+# Play event (02C F869, bank 1E712): a: random of 9 (no repeat within 6), 0.69-1.15 s, 1ch, +530 cents; b: random of 7
+# (no repeat within 4), 0.78-1.25 s, 1ch, +530 cents, @0.015 s, some files differ by +0/-125/+0 (dB / cents / s; not
+# reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.0, b -22.5; the rule adds the hero's offset. Length
+# 0.94 s. Containers / delays / gains H (read); what it is L.
+@mercy.emote.sf869 = mercy.emote.sf869.a*1.358:-8.5 + mercy.emote.sf869.b*1.358@0.015:-16
+
+# ----- Mercy's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A736E.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A70CA.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A70CC.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A70D1.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A736D.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A7374.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A7373.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A7220.03F.ogg
+mercy.emote.s1a2c.a = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A7221.03F.ogg
+mercy.emote.s1a2c.b = ExtraSounds/Mercy/Emotes/Sounds/000000001A2C.02C/0000002A7371.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC4ED.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC44E.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC4FE.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC4F4.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC42F.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC4E7.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC44B.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC42E.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC450.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC44F.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC462.03F.ogg
+mercy.emote.s1c8f.a = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002AC451.03F.ogg
+mercy.emote.s1c8f.b = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002A5E8A.03F.ogg
+mercy.emote.s1c8f.b = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002A5E81.03F.ogg
+mercy.emote.s1c8f.b = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002A5E85.03F.ogg
+mercy.emote.s1c8f.b = ExtraSounds/Mercy/Emotes/Sounds/000000001C8F.02C/0000002A5E8E.03F.ogg
+mercy.emote.s2e4f.a = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A6AFD.03F.ogg
+mercy.emote.s2e4f.b = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A7072.03F.ogg
+mercy.emote.s2e4f.c = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A71BB.03F.ogg
+mercy.emote.s2e4f.d = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A71DA.03F.ogg
+mercy.emote.s2e4f.e = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A708B.03F.ogg
+mercy.emote.s2e4f.f = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A71A7.03F.ogg
+mercy.emote.s2e4f.g = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A7095.03F.ogg
+mercy.emote.s2e4f.h = ExtraSounds/Mercy/Emotes/Sounds/000000002E4F.02C/0000002A71C3.03F.ogg
+mercy.emote.s2e52.a = ExtraSounds/Mercy/Emotes/Sounds/000000002E52.02C/0000002A7204.03F.ogg
+mercy.emote.s2e52.b = ExtraSounds/Mercy/Emotes/Sounds/000000002E52.02C/0000002A71C5.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71CD.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71D3.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71C8.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71D7.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71AA.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A9464.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A7093.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71C9.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A94AD.03F.ogg
+mercy.emote.s36f9.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036F9.02C/0000002A71D0.03F.ogg
+mercy.emote.s36fe.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A7093.03F.ogg
+mercy.emote.s36fe.a = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A71C9.03F.ogg
+mercy.emote.s36fe.b = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A6AFD.03F.ogg
+mercy.emote.s36fe.c = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A71A7.03F.ogg
+mercy.emote.s36fe.d = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A708B.03F.ogg
+mercy.emote.s36fe.e = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A7072.03F.ogg
+mercy.emote.s36fe.f = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A71DA.03F.ogg
+mercy.emote.s36fe.g = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A6813.03F.ogg
+mercy.emote.s36fe.h = ExtraSounds/Mercy/Emotes/Sounds/0000000036FE.02C/0000002A66C0.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71DF.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A707E.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71A9.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71CA.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A707D.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71DB.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71D1.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7082.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A70A4.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7088.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71AE.03F.ogg
+mercy.emote.s3704.a = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71D8.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71DF.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A707E.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71A9.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71CA.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A707D.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71DB.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71D1.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7082.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A70A4.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7088.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71AE.03F.ogg
+mercy.emote.s3704.b = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71D8.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7089.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A706F.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71D5.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A706D.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7047.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A70A8.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71C7.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7073.03F.ogg
+mercy.emote.s3704.c = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A709B.03F.ogg
+mercy.emote.s3704.d = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66C6.03F.ogg
+mercy.emote.s3704.d = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6800.03F.ogg
+mercy.emote.s3704.d = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6763.03F.ogg
+mercy.emote.s3704.d = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6806.03F.ogg
+mercy.emote.s3704.d = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6809.03F.ogg
+mercy.emote.s3704.e = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.e = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.e = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.e = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.e = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.f = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.f = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.f = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.f = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.f = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.g = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.g = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.g = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.g = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.g = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.h = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.h = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.h = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.h = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.h = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.i = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.i = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.i = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.i = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.i = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.j = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.j = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.j = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.j = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.j = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.k = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.k = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.k = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.k = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.k = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.l = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A6803.03F.ogg
+mercy.emote.s3704.l = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66B0.03F.ogg
+mercy.emote.s3704.l = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66E2.03F.ogg
+mercy.emote.s3704.l = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66BB.03F.ogg
+mercy.emote.s3704.l = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A66AB.03F.ogg
+mercy.emote.s3704.m = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7093.03F.ogg
+mercy.emote.s3704.m = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71C9.03F.ogg
+mercy.emote.s3704.n = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7093.03F.ogg
+mercy.emote.s3704.n = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71C9.03F.ogg
+mercy.emote.s3704.o = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7093.03F.ogg
+mercy.emote.s3704.o = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71C9.03F.ogg
+mercy.emote.s3704.p = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7079.03F.ogg
+mercy.emote.s3704.q = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A7072.03F.ogg
+mercy.emote.s3704.r = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A71A7.03F.ogg
+mercy.emote.s3704.s = ExtraSounds/Mercy/Emotes/Sounds/000000003704.02C/0000002A708B.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A0.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7092.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706E.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7078.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708E.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707F.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709E.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707B.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A2.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A5.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708C.03F.ogg
+mercy.emote.s3709.a = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C6.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A0.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7092.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706E.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7078.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708E.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707F.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709E.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707B.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A2.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A5.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708C.03F.ogg
+mercy.emote.s3709.b = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C6.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A0.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7092.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706E.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7078.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708E.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707F.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709E.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707B.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A2.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A5.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708C.03F.ogg
+mercy.emote.s3709.c = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C6.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DF.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707E.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A9.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CA.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DB.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D1.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A4.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7088.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71AE.03F.ogg
+mercy.emote.s3709.d = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D8.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DF.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707E.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A9.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CA.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DB.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D1.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A4.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7088.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71AE.03F.ogg
+mercy.emote.s3709.e = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D8.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DF.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707E.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A9.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CA.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DB.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D1.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A4.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7088.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71AE.03F.ogg
+mercy.emote.s3709.f = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D8.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DF.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707E.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A9.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CA.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71DB.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D1.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A70A4.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7088.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71AE.03F.ogg
+mercy.emote.s3709.g = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71D8.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709F.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7046.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7087.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7080.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7099.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709C.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7069.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7094.03F.ogg
+mercy.emote.s3709.h = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7048.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709F.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7046.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7087.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7080.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7099.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709C.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7069.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7094.03F.ogg
+mercy.emote.s3709.i = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7048.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709F.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7046.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7087.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7080.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7099.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A709C.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7069.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7094.03F.ogg
+mercy.emote.s3709.j = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7048.03F.ogg
+mercy.emote.s3709.k = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706B.03F.ogg
+mercy.emote.s3709.k = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707C.03F.ogg
+mercy.emote.s3709.k = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CB.03F.ogg
+mercy.emote.s3709.k = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7075.03F.ogg
+mercy.emote.s3709.k = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A66C1.03F.ogg
+mercy.emote.s3709.l = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706B.03F.ogg
+mercy.emote.s3709.l = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707C.03F.ogg
+mercy.emote.s3709.l = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CB.03F.ogg
+mercy.emote.s3709.l = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7075.03F.ogg
+mercy.emote.s3709.l = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A66C1.03F.ogg
+mercy.emote.s3709.m = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706B.03F.ogg
+mercy.emote.s3709.m = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707C.03F.ogg
+mercy.emote.s3709.m = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CB.03F.ogg
+mercy.emote.s3709.m = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7075.03F.ogg
+mercy.emote.s3709.m = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A66C1.03F.ogg
+mercy.emote.s3709.n = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A706B.03F.ogg
+mercy.emote.s3709.n = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A707C.03F.ogg
+mercy.emote.s3709.n = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71CB.03F.ogg
+mercy.emote.s3709.n = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7075.03F.ogg
+mercy.emote.s3709.n = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A66C1.03F.ogg
+mercy.emote.s3709.o = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.o = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.p = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.p = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.q = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.q = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.r = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.r = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.s = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.s = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.t = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7093.03F.ogg
+mercy.emote.s3709.t = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71C9.03F.ogg
+mercy.emote.s3709.u = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7072.03F.ogg
+mercy.emote.s3709.v = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708B.03F.ogg
+mercy.emote.s3709.w = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A7.03F.ogg
+mercy.emote.s3709.x = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7072.03F.ogg
+mercy.emote.s3709.y = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7079.03F.ogg
+mercy.emote.s3709.z = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A7079.03F.ogg
+mercy.emote.s3709.aa = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A71A7.03F.ogg
+mercy.emote.s3709.ab = ExtraSounds/Mercy/Emotes/Sounds/000000003709.02C/0000002A708B.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A70A0.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7092.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A706E.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7078.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A708E.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A707F.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A709E.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A707B.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A71A2.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A70A5.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A708C.03F.ogg
+mercy.emote.s37fb.a = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A71C6.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A709F.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7046.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7087.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7080.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7099.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A709C.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7069.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7094.03F.ogg
+mercy.emote.s37fb.b = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A7048.03F.ogg
+mercy.emote.s37fb.c = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A6454.03F.ogg
+mercy.emote.s37fb.c = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A6392.03F.ogg
+mercy.emote.s37fb.c = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A60F9.03F.ogg
+mercy.emote.s37fb.c = ExtraSounds/Mercy/Emotes/Sounds/0000000037FB.02C/0000002A639F.03F.ogg
+mercy.emote.s3ac7.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A7093.03F.ogg
+mercy.emote.s3ac7.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A71C9.03F.ogg
+mercy.emote.s3ac7.b = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A707C.03F.ogg
+mercy.emote.s3ac7.b = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A7075.03F.ogg
+mercy.emote.s3ac7.c = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A66BF.03F.ogg
+mercy.emote.s3ac7.c = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A66B3.03F.ogg
+mercy.emote.s3ac7.d = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A6AFD.03F.ogg
+mercy.emote.s3ac7.e = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A7079.03F.ogg
+mercy.emote.s3ac7.f = ExtraSounds/Mercy/Emotes/Sounds/000000003AC7.02C/0000002A70A2.03F.ogg
+mercy.emote.s3ac8.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A7089.03F.ogg
+mercy.emote.s3ac8.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A706F.03F.ogg
+mercy.emote.s3ac8.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A71D5.03F.ogg
+mercy.emote.s3ac8.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A706D.03F.ogg
+mercy.emote.s3ac8.a = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A7047.03F.ogg
+mercy.emote.s3ac8.b = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A708B.03F.ogg
+mercy.emote.s3ac8.c = ExtraSounds/Mercy/Emotes/Sounds/000000003AC8.02C/0000002A71A7.03F.ogg
+mercy.emote.s3acd.a = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A7089.03F.ogg
+mercy.emote.s3acd.a = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A706F.03F.ogg
+mercy.emote.s3acd.a = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A71D5.03F.ogg
+mercy.emote.s3acd.a = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A706D.03F.ogg
+mercy.emote.s3acd.a = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A7047.03F.ogg
+mercy.emote.s3acd.b = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A6803.03F.ogg
+mercy.emote.s3acd.b = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66B0.03F.ogg
+mercy.emote.s3acd.b = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66E2.03F.ogg
+mercy.emote.s3acd.b = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66BB.03F.ogg
+mercy.emote.s3acd.b = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66AB.03F.ogg
+mercy.emote.s3acd.c = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A7093.03F.ogg
+mercy.emote.s3acd.c = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A71C9.03F.ogg
+mercy.emote.s3acd.d = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66BF.03F.ogg
+mercy.emote.s3acd.d = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A66B3.03F.ogg
+mercy.emote.s3acd.e = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A708B.03F.ogg
+mercy.emote.s3acd.f = ExtraSounds/Mercy/Emotes/Sounds/000000003ACD.02C/0000002A71A7.03F.ogg
+mercy.emote.s3f9d.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9D.02C/0000002A71CF.03F.ogg
+mercy.emote.s3f9d.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9D.02C/0000002A7079.03F.ogg
+mercy.emote.s3f9d.c = ExtraSounds/Mercy/Emotes/Sounds/000000003F9D.02C/0000002A7086.03F.ogg
+mercy.emote.s3f9e.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9E.02C/0000002A707A.03F.ogg
+mercy.emote.s3f9e.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9E.02C/0000002A71A6.03F.ogg
+mercy.emote.s3f9e.c = ExtraSounds/Mercy/Emotes/Sounds/000000003F9E.02C/0000002A71BE.03F.ogg
+mercy.emote.s3f9f.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A6803.03F.ogg
+mercy.emote.s3f9f.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66B0.03F.ogg
+mercy.emote.s3f9f.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66E2.03F.ogg
+mercy.emote.s3f9f.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66BB.03F.ogg
+mercy.emote.s3f9f.a = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66AB.03F.ogg
+mercy.emote.s3f9f.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A6803.03F.ogg
+mercy.emote.s3f9f.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66B0.03F.ogg
+mercy.emote.s3f9f.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66E2.03F.ogg
+mercy.emote.s3f9f.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66BB.03F.ogg
+mercy.emote.s3f9f.b = ExtraSounds/Mercy/Emotes/Sounds/000000003F9F.02C/0000002A66AB.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7058.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7057.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71D4.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A70A9.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A705A.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71AB.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7105.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7050.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7056.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7059.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71B2.03F.ogg
+mercy.emote.s3fa0.a = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A704F.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71CD.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71D3.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71C8.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71D7.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71AA.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7085.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7093.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71C9.03F.ogg
+mercy.emote.s3fa0.b = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A71D0.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A73E7.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A733F.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7324.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7355.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A73E6.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A7329.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A733C.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A734D.03F.ogg
+mercy.emote.s3fa0.c = ExtraSounds/Mercy/Emotes/Sounds/000000003FA0.02C/0000002A734B.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70BA.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C0.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7115.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C5.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70F8.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7119.03F.ogg
+mercy.emote.s4652.a = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7103.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70BA.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C0.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7115.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C5.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70F8.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7119.03F.ogg
+mercy.emote.s4652.b = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7103.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70BA.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C0.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7115.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70C5.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A70F8.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7119.03F.ogg
+mercy.emote.s4652.c = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7103.03F.ogg
+mercy.emote.s4652.d = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A6F8C.03F.ogg
+mercy.emote.s4652.d = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A6F89.03F.ogg
+mercy.emote.s4652.d = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A6F87.03F.ogg
+mercy.emote.s4652.d = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A6F8A.03F.ogg
+mercy.emote.s4652.d = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A6E39.03F.ogg
+mercy.emote.s4652.e = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7093.03F.ogg
+mercy.emote.s4652.e = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71C9.03F.ogg
+mercy.emote.s4652.f = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7093.03F.ogg
+mercy.emote.s4652.f = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71C9.03F.ogg
+mercy.emote.s4652.g = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A708B.03F.ogg
+mercy.emote.s4652.h = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71B9.03F.ogg
+mercy.emote.s4652.i = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7205.03F.ogg
+mercy.emote.s4652.j = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71A7.03F.ogg
+mercy.emote.s4652.k = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A7072.03F.ogg
+mercy.emote.s4652.l = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71BC.03F.ogg
+mercy.emote.s4652.m = ExtraSounds/Mercy/Emotes/Sounds/000000004652.02C/0000002A71A7.03F.ogg
+mercy.emote.s6563.a = ExtraSounds/Mercy/Emotes/Sounds/000000006563.02C/0000002A71C2.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A70A0.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7092.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A706E.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7078.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A708E.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A707F.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A709E.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A707B.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A71A2.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A70A5.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A708C.03F.ogg
+mercy.emote.s6fd6.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A71C6.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A709F.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7046.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7087.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7080.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7099.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A709C.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7069.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7094.03F.ogg
+mercy.emote.s6fd6.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A7048.03F.ogg
+mercy.emote.s6fd6.c = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A6415.03F.ogg
+mercy.emote.s6fd6.c = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A6388.03F.ogg
+mercy.emote.s6fd6.c = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A6394.03F.ogg
+mercy.emote.s6fd6.c = ExtraSounds/Mercy/Emotes/Sounds/000000006FD6.02C/0000002A6154.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC51B.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC4F7.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC4A6.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC51A.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC515.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC4EE.03F.ogg
+mercy.emote.s6fd8.a = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002AC4EC.03F.ogg
+mercy.emote.s6fd8.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002A63BE.03F.ogg
+mercy.emote.s6fd8.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002A60FD.03F.ogg
+mercy.emote.s6fd8.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002A6410.03F.ogg
+mercy.emote.s6fd8.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002A6116.03F.ogg
+mercy.emote.s6fd8.b = ExtraSounds/Mercy/Emotes/Sounds/000000006FD8.02C/0000002A609F.03F.ogg
+mercy.emote.sc2ca.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4A4.03F.ogg
+mercy.emote.sc2ca.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4B9.03F.ogg
+mercy.emote.sc2ca.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4E0.03F.ogg
+mercy.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A66C0.03F.ogg
+mercy.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A76EC.03F.ogg
+mercy.emote.sc2e6.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002AF4E0.03F.ogg
+mercy.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2AD.03F.ogg
+mercy.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2CB.03F.ogg
+mercy.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2CC.03F.ogg
+mercy.emote.sc441.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C441.02C/0000002BF293.03F.ogg
+mercy.emote.sd903.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D903.02C/0000002A6AFD.03F.ogg
+mercy.emote.sd904.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A6803.03F.ogg
+mercy.emote.sd904.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A66B0.03F.ogg
+mercy.emote.sd904.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A66E2.03F.ogg
+mercy.emote.sd904.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A66BB.03F.ogg
+mercy.emote.sd904.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A66AB.03F.ogg
+mercy.emote.sd904.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D904.02C/0000002A707A.03F.ogg
+mercy.emote.sd906.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D906.02C/0000002A708B.03F.ogg
+mercy.emote.sd906.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D906.02C/0000002A71A7.03F.ogg
+mercy.emote.sd907.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A7089.03F.ogg
+mercy.emote.sd907.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A706F.03F.ogg
+mercy.emote.sd907.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A71D5.03F.ogg
+mercy.emote.sd907.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A706D.03F.ogg
+mercy.emote.sd907.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A7047.03F.ogg
+mercy.emote.sd907.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A7089.03F.ogg
+mercy.emote.sd907.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A706F.03F.ogg
+mercy.emote.sd907.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A71D5.03F.ogg
+mercy.emote.sd907.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A706D.03F.ogg
+mercy.emote.sd907.b = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A7047.03F.ogg
+mercy.emote.sd907.c = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A66BF.03F.ogg
+mercy.emote.sd907.c = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A66B3.03F.ogg
+mercy.emote.sd907.d = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A66BF.03F.ogg
+mercy.emote.sd907.d = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A66B3.03F.ogg
+mercy.emote.sd907.e = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A707C.03F.ogg
+mercy.emote.sd907.e = ExtraSounds/Mercy/Emotes/Sounds/00000000D907.02C/0000002A7075.03F.ogg
+mercy.emote.sd908.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D908.02C/0000002A6F0B.03F.ogg
+mercy.emote.sd909.a = ExtraSounds/Mercy/Emotes/Sounds/00000000D909.02C/0000002A6E58.03F.ogg
+mercy.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+mercy.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+mercy.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+mercy.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+mercy.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+mercy.emote.sdb69.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB69.02C/000000318B16.03F.ogg
+mercy.emote.sdb69.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB69.02C/000000318B17.03F.ogg
+mercy.emote.sdb69.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB69.02C/000000318B14.03F.ogg
+mercy.emote.sdb6a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB6A.02C/0000002A914F.03F.ogg
+mercy.emote.sdb70.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB70.02C/000000318B15.03F.ogg
+mercy.emote.sdb70.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB70.02C/000000318B18.03F.ogg
+mercy.emote.sdb70.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DB70.02C/000000318B1A.03F.ogg
+mercy.emote.sdbb2.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000DBB2.02C/000000318E24.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A70BA.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A70C0.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7115.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A70C5.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A70F8.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7119.03F.ogg
+mercy.emote.sdd7a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7103.03F.ogg
+mercy.emote.sdd7a.b = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7093.03F.ogg
+mercy.emote.sdd7a.b = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A71C9.03F.ogg
+mercy.emote.sdd7a.c = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7093.03F.ogg
+mercy.emote.sdd7a.c = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A71C9.03F.ogg
+mercy.emote.sdd7a.d = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7093.03F.ogg
+mercy.emote.sdd7a.d = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A71C9.03F.ogg
+mercy.emote.sdd7a.e = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7093.03F.ogg
+mercy.emote.sdd7a.e = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A71C9.03F.ogg
+mercy.emote.sdd7a.f = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7072.03F.ogg
+mercy.emote.sdd7a.g = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002B23D9.03F.ogg
+mercy.emote.sdd7a.h = ExtraSounds/Mercy/Emotes/Sounds/00000000DD7A.02C/0000002A7079.03F.ogg
+mercy.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE3.03F.ogg
+mercy.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE4.03F.ogg
+mercy.emote.se23f.b = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE6.03F.ogg
+mercy.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+mercy.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+mercy.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+mercy.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+mercy.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+mercy.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+mercy.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+mercy.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+mercy.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+mercy.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+mercy.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+mercy.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+mercy.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+mercy.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+mercy.emote.sf49c.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49C.02C/00000033C8CD.03F.ogg
+mercy.emote.sf49d.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49D.02C/0000002A7079.03F.ogg
+mercy.emote.sf49d.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F49D.02C/0000002A7072.03F.ogg
+mercy.emote.sf49d.c = ExtraSounds/Mercy/Emotes/Sounds/00000000F49D.02C/0000002B23D9.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A70BA.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A70C0.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A7115.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A70C5.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A70F8.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A7119.03F.ogg
+mercy.emote.sf49e.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A7103.03F.ogg
+mercy.emote.sf49e.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A7093.03F.ogg
+mercy.emote.sf49e.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A71C9.03F.ogg
+mercy.emote.sf49e.c = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A7093.03F.ogg
+mercy.emote.sf49e.c = ExtraSounds/Mercy/Emotes/Sounds/00000000F49E.02C/0000002A71C9.03F.ogg
+mercy.emote.sf696.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000F696.02C/0000003404E4.03F.ogg
+mercy.emote.sf69a.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003407DB.03F.ogg
+mercy.emote.sf69a.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003407EF.03F.ogg
+mercy.emote.sf69a.c = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003407DA.03F.ogg
+mercy.emote.sf69a.d = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003404FB.03F.ogg
+mercy.emote.sf69a.e = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003407F0.03F.ogg
+mercy.emote.sf69a.f = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003409CA.03F.ogg
+mercy.emote.sf69a.g = ExtraSounds/Mercy/Emotes/Sounds/00000000F69A.02C/0000003409C8.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CF9.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D67.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8C95.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D70.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CE0.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D6D.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CEF.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D44.03F.ogg
+mercy.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A9246.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CDD.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D5B.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CE6.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D5F.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A923D.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A91E7.03F.ogg
+mercy.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CA1.03F.ogg
+
+# ----- Mercy's emote voice lines: one plain event per voice stimulus (078), every line of it (English and German
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 6A1 (laughs): 1 line(s) 2.42 s; clips the_best_medicine 3BA5@0.000, stimulus volume -4 dB.
+mercy.emote.v6a1 = HeroVoice/Mercy/Laugh/00000002EB58.0B2-(laughs).ogg | w=1
+# EF1 (laugh): 2 line(s) 1.02 s, 1.28 s; clips flurry 8530@4.500, stimulus volume -4 dB.
+mercy.emote.vef1 = HeroVoice/Mercy/Unknown/EF1.078/00000005C65B.0B2-(laugh).ogg | w=1
+mercy.emote.vef1 = HeroVoice/Mercy/Unknown/EF1.078/00000005C65C.0B2-(laugh).ogg | w=1
+# 186B (happy humming): 4 line(s) 1.76 s, 1.13 s, 1.42 s, 1.43 s; clips rainy_stroll 12345@1.067.
+mercy.emote.v186b = HeroVoice/Mercy/Unknown/186B.078/000000069916.0B2-(happy humming).ogg | w=1
+mercy.emote.v186b = HeroVoice/Mercy/Unknown/186B.078/000000069917.0B2-(happy humming).ogg | w=1
+mercy.emote.v186b = HeroVoice/Mercy/Unknown/186B.078/000000069918.0B2-(happy humming).ogg | w=1
+mercy.emote.v186b = HeroVoice/Mercy/Unknown/186B.078/000000069919.0B2-(happy humming).ogg | w=1
+# 192F (aggravation): 2 line(s) 1.31 s, 1.08 s; clips so_tough 1476D@0.769.
+mercy.emote.v192f = HeroVoice/Mercy/Unknown/192F.078/00000006A234.0B2-(aggravation).ogg | w=1
+mercy.emote.v192f = HeroVoice/Mercy/Unknown/192F.078/00000006A235.0B2-(aggravation).ogg | w=1
+# 1930 (laugh): 2 line(s) 1.60 s, 1.54 s; clips so_tough 1476D@2.864.
+mercy.emote.v1930 = HeroVoice/Mercy/Unknown/1930.078/00000006A236.0B2-(laugh).ogg | w=1
+mercy.emote.v1930 = HeroVoice/Mercy/Unknown/1930.078/00000006A237.0B2-(laugh).ogg | w=1
+# 1954 (relaxed sigh): 2 line(s) 1.50 s, 1.94 s; clips lazy_river 15002@0.533.
+mercy.emote.v1954 = HeroVoice/Mercy/Unknown/1954.078/00000006A565.0B2-(relaxed sigh).ogg | w=1
+mercy.emote.v1954 = HeroVoice/Mercy/Unknown/1954.078/00000006A566.0B2-(relaxed sigh).ogg | w=1
+# 1955 (contented sigh): 2 line(s) 0.93 s, 1.07 s; clips lazy_river 15003@1.167.
+mercy.emote.v1955 = HeroVoice/Mercy/Unknown/1955.078/00000006A563.0B2-(contented sigh).ogg | w=1
+mercy.emote.v1955 = HeroVoice/Mercy/Unknown/1955.078/00000006A564.0B2-(contented sigh).ogg | w=1
+# 1966 Yoohoo! / Yeah! / Woohoo! / (German) Super good: 4 line(s) 1.36 s, 1.36 s, 1.36 s, 1.36 s; clips shuffle 18184@4.391.
+mercy.emote.v1966 = HeroVoice/Mercy/Unknown/1966.078/00000006A6C0.0B2-Woohoo!.ogg | w=1
+mercy.emote.v1966 = HeroVoice/Mercy/Unknown/1966.078/00000006A6C1.0B2-Yeah!.ogg | w=1
+mercy.emote.v1966 = HeroVoice/Mercy/Unknown/1966.078/00000006A6C2.0B2-Yoohoo!.ogg | w=1
+mercy.emote.v1966 = HeroVoice/Mercy/Unknown/1966.078/00000006A6C4.0B2-(German)_ Super Good.ogg | w=1
+
+# ----- Mercy's subtitles
+$mercy.emote.s1a2c = Mercy: water splashes
+$mercy.emote.s1c8f = Mercy: footstep
+$mercy.emote.s2e4f = Mercy: staff flourish
+$mercy.emote.s2e52 = Mercy: staff whirs
+$mercy.emote.s36f9 = Mercy: clothes rustle
+$mercy.emote.s36fe = Mercy: whoosh
+$mercy.emote.s3704 = Mercy: claps
+$mercy.emote.s3709 = Mercy: movement
+$mercy.emote.s37fb = Mercy: footstep
+$mercy.emote.s3ac7 = Mercy: sits down
+$mercy.emote.s3ac8 = Mercy: clothes rustle
+$mercy.emote.s3acd = Mercy: slaps knee
+$mercy.emote.s3f9d = Mercy: shimmer
+$mercy.emote.s3f9e = Mercy: thump
+$mercy.emote.s3f9f = Mercy: claps
+$mercy.emote.s3fa0 = Mercy: stomp
+$mercy.emote.s4652 = Mercy: parasol twirls
+$mercy.emote.s6563 = Mercy: wind swirls
+$mercy.emote.s6fd6 = Mercy: footstep
+$mercy.emote.s6fd8 = Mercy: footstep
+$mercy.emote.sc2ca = Mercy: umbrella opens
+$mercy.emote.sc2e6 = Mercy: umbrella swish
+$mercy.emote.sc440 = Mercy: music plays
+$mercy.emote.sc441 = Mercy: music starts
+$mercy.emote.sd903 = Mercy: whoosh
+$mercy.emote.sd904 = Mercy: thump
+$mercy.emote.sd906 = Mercy: whoosh
+$mercy.emote.sd907 = Mercy: clothes rustle
+$mercy.emote.sd908 = Mercy: tick
+$mercy.emote.sd909 = Mercy: tick
+$mercy.emote.sda44 = Mercy: mic drops
+$mercy.emote.sda4f = Mercy: mic feedback
+$mercy.emote.sdb69 = Mercy: water splashes
+$mercy.emote.sdb6a = Mercy: water flows
+$mercy.emote.sdb70 = Mercy: float squeaks
+$mercy.emote.sdbb2 = Mercy: skateboard rolls
+$mercy.emote.sdd7a = Mercy: whoosh
+$mercy.emote.se23f = Mercy: pop
+$mercy.emote.se548 = Mercy: music plays
+$mercy.emote.se549 = Mercy: music plays
+$mercy.emote.se54a = Mercy: music plays
+$mercy.emote.se54b = Mercy: music plays
+$mercy.emote.seea6 = Mercy: salt shakes
+$mercy.emote.sf49c = Mercy: sparkles
+$mercy.emote.sf49d = Mercy: swell
+$mercy.emote.sf49e = Mercy: whoosh
+$mercy.emote.sf696 = Mercy: pod hums
+$mercy.emote.sf69a = Mercy: pod chirps
+$mercy.emote.sf869 = Mercy: puff
+$mercy.emote.v6a1 = Mercy: (laughs)
+$mercy.emote.vef1 = Mercy: (laugh)
+$mercy.emote.v186b = Mercy: (happy humming)
+$mercy.emote.v192f = Mercy: (aggravation)
+$mercy.emote.v1930 = Mercy: (laugh)
+$mercy.emote.v1954 = Mercy: (relaxed sigh)
+$mercy.emote.v1955 = Mercy: (contented sigh)
+$mercy.emote.v1966 = Mercy: Yoohoo! / Yeah! / Woohoo! / (German) Super good

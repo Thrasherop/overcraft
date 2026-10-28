@@ -15,13 +15,15 @@
        "sound": "F49C",
        "at": 0.6,
        "duration": 3.9,
-       "hardpoint": "0444"
+       "hardpoint": "0444",
+       "fade": 0.2
       },
       {
        "sound": "F49D",
        "at": 2.1667,
        "duration": 1.5667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 0.3
       },
       {
        "sound": "F49E",
@@ -103,7 +105,9 @@
        "sound": "F696",
        "at": 0.0,
        "duration": 8.0,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 10.743,
+       "fade": 0.5
       }
      ],
      "stow": [],
@@ -221,7 +225,9 @@
        "sound": "DBB2",
        "at": 0.0,
        "duration": 0.0333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 4.576,
+       "fade": 0.15
       }
      ],
      "stow": [],
@@ -293,25 +299,35 @@
        "sound": "E548",
        "at": 0.0,
        "duration": 3.4667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 11.395,
+       "fade": 1.5,
+       "audience": "own"
       },
       {
        "sound": "E549",
        "at": 0.1116,
        "duration": 3.355,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "own"
       },
       {
        "sound": "E54A",
        "at": 0.0,
        "duration": 3.4667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 4.117,
+       "fade": 1.0,
+       "audience": "others"
       },
       {
        "sound": "E54B",
        "at": 0.1119,
        "duration": 3.3548,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "others"
       }
      ],
      "stow": [],
@@ -378,7 +394,8 @@
        "sound": "DA4F",
        "at": 0.101,
        "duration": 2.0667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "chance": 0.4
       }
      ],
      "stow": [],
@@ -614,7 +631,8 @@
        "sound": "2E4F",
        "at": 2.3,
        "duration": 2.2,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 0.2
       },
       {
        "sound": "D5C7",
@@ -1057,7 +1075,8 @@
        "sound": "C441",
        "at": 0.0,
        "duration": 0.5667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "audience": "own"
       }
      ],
      "stow": [],
@@ -1074,7 +1093,9 @@
        "sound": "C440",
        "at": 0.0,
        "duration": 7.3667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 14.851,
+       "audience": "own"
       }
      ],
      "stow": [],
@@ -1329,7 +1350,9 @@
        "sound": "DB6A",
        "at": 0.1,
        "duration": 2.5,
-       "hardpoint": "0076"
+       "hardpoint": "0076",
+       "loop": 3.643,
+       "fade": 1.0
       }
      ],
      "stow": [],
@@ -1346,7 +1369,9 @@
        "sound": "DB6A",
        "at": 0.0,
        "duration": 7.3,
-       "hardpoint": "0076"
+       "hardpoint": "0076",
+       "loop": 3.643,
+       "fade": 1.0
       }
      ],
      "stow": [],
