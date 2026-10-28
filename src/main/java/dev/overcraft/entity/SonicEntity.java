@@ -77,6 +77,8 @@ public class SonicEntity extends OwProjectile {
 		if (target == null) {
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, getOwner()), (float) Ow.hp(LucioStats.AMP_DAMAGE));
 			Effects.play(level, "sonic_hit", at, getOwner());
+		// the round's hit (effect 0838)
+		level.playSound(null, at.x, at.y, at.z, dev.overcraft.registry.OcSounds.LUCIO_AMP_HIT, net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
 			discard();
 			return;
 		}

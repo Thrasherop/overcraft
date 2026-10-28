@@ -57,6 +57,13 @@ public final class HeroManager {
 			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
 	/**
+	 * Lúcio's song, for every client to play it at him (LucioMusic): 0 none (not Lúcio, not in hero mode, dead), 1 Healing
+	 * Boost, 2 Speed Boost, plus 4 while Amp It Up is on. Not saved: the kit sets it each tick.
+	 */
+	public static final AttachmentType<Integer> SONG = AttachmentRegistry.create(Overcraft.id("song"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */

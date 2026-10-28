@@ -532,5 +532,181 @@
 	"kiriko.rush.path_3": {
 		"subtitle": "subtitles.overcraft.kiriko.rush.path_3",
 		"sounds": []
+	},
+	"lucio.amp.fire": {
+		"subtitle": "subtitles.overcraft.lucio.amp.fire",
+		"sounds": []
+	},
+	"lucio.amp.fire_3p": {
+		"subtitle": "subtitles.overcraft.lucio.amp.fire_3p",
+		"sounds": []
+	},
+	"lucio.amp.hit": {
+		"subtitle": "subtitles.overcraft.lucio.amp.hit",
+		"sounds": []
+	},
+	"lucio.amp.reload": {
+		"subtitle": "subtitles.overcraft.lucio.amp.reload",
+		"sounds": []
+	},
+	"lucio.amp.reload_3p": {
+		"subtitle": "subtitles.overcraft.lucio.amp.reload_3p",
+		"sounds": []
+	},
+	"lucio.soundwave": {
+		"subtitle": "subtitles.overcraft.lucio.soundwave",
+		"sounds": []
+	},
+	"lucio.soundwave_3p": {
+		"subtitle": "subtitles.overcraft.lucio.soundwave_3p",
+		"sounds": []
+	},
+	"lucio.crossfade.heal": {
+		"subtitle": "subtitles.overcraft.lucio.crossfade.heal",
+		"sounds": []
+	},
+	"lucio.crossfade.speed": {
+		"subtitle": "subtitles.overcraft.lucio.crossfade.speed",
+		"sounds": []
+	},
+	"lucio.song.heal": {
+		"subtitle": "subtitles.overcraft.lucio.song.heal",
+		"sounds": []
+	},
+	"lucio.song.speed": {
+		"subtitle": "subtitles.overcraft.lucio.song.speed",
+		"sounds": []
+	},
+	"lucio.song.heal_3p": {
+		"subtitle": "subtitles.overcraft.lucio.song.heal_3p",
+		"sounds": []
+	},
+	"lucio.song.speed_3p": {
+		"subtitle": "subtitles.overcraft.lucio.song.speed_3p",
+		"sounds": []
+	},
+	"lucio.song.scratch_3p": {
+		"subtitle": "subtitles.overcraft.lucio.song.scratch_3p",
+		"sounds": []
+	},
+	"lucio.amp_it_up": {
+		"subtitle": "subtitles.overcraft.lucio.amp_it_up",
+		"sounds": []
+	},
+	"lucio.amp_it_up_3p": {
+		"subtitle": "subtitles.overcraft.lucio.amp_it_up_3p",
+		"sounds": []
+	},
+	"lucio.wallride": {
+		"subtitle": "subtitles.overcraft.lucio.wallride",
+		"sounds": []
+	},
+	"lucio.wallride_3p": {
+		"subtitle": "subtitles.overcraft.lucio.wallride_3p",
+		"sounds": []
+	},
+	"lucio.wallride.start": {
+		"subtitle": "subtitles.overcraft.lucio.wallride.start",
+		"sounds": []
+	},
+	"lucio.wallride.end": {
+		"subtitle": "subtitles.overcraft.lucio.wallride.end",
+		"sounds": []
+	},
+	"lucio.wall_jump": {
+		"subtitle": "subtitles.overcraft.lucio.wall_jump",
+		"sounds": []
+	},
+	"lucio.barrier.cast": {
+		"subtitle": "subtitles.overcraft.lucio.barrier.cast",
+		"sounds": []
+	},
+	"lucio.barrier.cast_3p": {
+		"subtitle": "subtitles.overcraft.lucio.barrier.cast_3p",
+		"sounds": []
+	},
+	"lucio.barrier.slam": {
+		"subtitle": "subtitles.overcraft.lucio.barrier.slam",
+		"sounds": []
+	},
+	"lucio.ult.friendly": {
+		"subtitle": "subtitles.overcraft.lucio.ult.friendly",
+		"sounds": []
+	},
+	"lucio.ult.enemy": {
+		"subtitle": "subtitles.overcraft.lucio.ult.enemy",
+		"sounds": []
+	},
+	"lucio.voice.elimination": {
+		"subtitle": "subtitles.overcraft.lucio.voice.elimination",
+		"sounds": []
+	},
+	"lucio.voice.multikill": {
+		"subtitle": "subtitles.overcraft.lucio.voice.multikill",
+		"sounds": []
+	},
+	"lucio.voice.melee_kill": {
+		"subtitle": "subtitles.overcraft.lucio.voice.melee_kill",
+		"sounds": []
+	},
+	"lucio.voice.on_fire": {
+		"subtitle": "subtitles.overcraft.lucio.voice.on_fire",
+		"sounds": []
+	},
+	"lucio.voice.respawn": {
+		"subtitle": "subtitles.overcraft.lucio.voice.respawn",
+		"sounds": []
+	},
+	"lucio.voice.melee": {
+		"subtitle": "subtitles.overcraft.lucio.voice.melee",
+		"sounds": []
+	},
+	"lucio.voice.select": {
+		"subtitle": "subtitles.overcraft.lucio.voice.select",
+		"sounds": []
+	},
+	"lucio.voice.death": {
+		"subtitle": "subtitles.overcraft.lucio.voice.death",
+		"sounds": []
+	},
+	"lucio.voice.pain": {
+		"subtitle": "subtitles.overcraft.lucio.voice.pain",
+		"sounds": []
+	},
+	"lucio.voice.ult_ready": {
+		"subtitle": "subtitles.overcraft.lucio.voice.ult_ready",
+		"sounds": []
+	},
+	"lucio.voice.ping": {
+		"subtitle": "subtitles.overcraft.lucio.voice.ping",
+		"sounds": []
+	},
+	"lucio.voice.ping_warning": {
+		"subtitle": "subtitles.overcraft.lucio.voice.ping_warning",
+		"sounds": []
+	},
+	"lucio.voice.ping_enemy": {
+		"subtitle": "subtitles.overcraft.lucio.voice.ping_enemy",
+		"sounds": []
+	},
+	"lucio.voice.crossfade_heal": {
+		"subtitle": "subtitles.overcraft.lucio.voice.crossfade_heal",
+		"sounds": []
+	},
+	"lucio.voice.crossfade_speed": {
+		"subtitle": "subtitles.overcraft.lucio.voice.crossfade_speed",
+		"sounds": []
+	},
+	"lucio.voice.amp": {
+		"subtitle": "subtitles.overcraft.lucio.voice.amp",
+		"sounds": []
+	},
+	"lucio.voice.soundwave": {
+		"subtitle": "subtitles.overcraft.lucio.voice.soundwave",
+		"sounds": []
+	},
+	"lucio.voice.wallride": {
+		"subtitle": "subtitles.overcraft.lucio.voice.wallride",
+		"sounds": []
 	}
 }

@@ -54,6 +54,10 @@ public final class HeroState {
 	public boolean ampFree;
 	/** Amp It Up pressed: ticks until it starts (0 none). */
 	public int ampDelay;
+	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
+	public int wallRideTicks;
+	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */
+	public long songLinesFrom;
 
 	// perks (#36): progress toward the next perk level, and the ones picked
 	public double perkXp;
@@ -103,6 +107,7 @@ public final class HeroState {
 		barrierCast = -1;
 		ampFree = false;
 		ampDelay = 0;
+		wallRideTicks = 0;
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;

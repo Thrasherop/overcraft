@@ -70,7 +70,13 @@ public final class Voice {
 		// Kiriko's own: category 4, interrupt 0
 		java.util.Map.entry("kiriko.swift_step", new Stimulus(60, 10, 10, false)), // FC0
 		java.util.Map.entry("kiriko.suzu", new Stimulus(60, 10, 10, false)), // FC5
-		java.util.Map.entry("kiriko.heal", new Stimulus(60, 14, 17, false))); // FC4
+		java.util.Map.entry("kiriko.heal", new Stimulus(60, 14, 17, false)), // FC4
+		// Lúcio's own (research/lucio/voice.json): category 4, interrupt 0; raised by criteria events in his graphs
+		java.util.Map.entry("lucio.crossfade_heal", new Stimulus(50, 15, 20, false)), // 03B0
+		java.util.Map.entry("lucio.crossfade_speed", new Stimulus(50, 10, 20, false)), // 03B1
+		java.util.Map.entry("lucio.amp", new Stimulus(50, 5, 5, false)), // 03B2
+		java.util.Map.entry("lucio.soundwave", new Stimulus(50, 20, 25, false)), // 03B3
+		java.util.Map.entry("lucio.wallride", new Stimulus(45, 10, 15, false))); // 03B4
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

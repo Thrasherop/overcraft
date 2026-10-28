@@ -91,11 +91,13 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroHud.clearMoments();
 			VictoryHud.clear();
 			RushSound.clear();
+			LucioMusic.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
+			LucioMusic.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}

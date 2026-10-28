@@ -8,6 +8,9 @@ import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroSounds;
+import dev.overcraft.hero.Voice;
+import dev.overcraft.registry.OcSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
@@ -33,9 +36,29 @@ import static dev.overcraft.lucio.LucioStats.*;
 public final class Lucio implements HeroKit {
 	private static final Identifier SPEED_SONG_BUFF = Overcraft.id("lucio_speed_song");
 
+	/**
+	 * His song lines wait this long after he's picked or spawns (the game's: the swap's criteria event is gated for 2.5 s
+	 * after a game message, voice_sounds_effects.md).
+	 */
+	private static final double SONG_LINE_GATE = 2.5;
+	/** His line after this long on a wall (graph 0263's wait before event 1348). */
+	private static final double WALLRIDE_LINE_AFTER = 2.2;
+	/** The wall ride's loop, played again this often while he rides (ours: the length of its variants, lucio.txt). */
+	private static final int WALLRIDE_LOOP_TICKS = 40;
+
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
 		s.primaryAmmo = AMP_AMMO;
+		s.songLinesFrom = player.level().getGameTime() + Ow.ticks(SONG_LINE_GATE);
+	}
+
+	/** His song for every client (LucioMusic): none outside hero mode or dead, else heal 1 / speed 2, +4 amped. */
+	private static void syncSong(ServerPlayer player, HeroState s, boolean controls) {
+		int song = !controls || !player.isAlive() ? 0 : (s.speedSong ? 2 : 1) | (s.ampUp > 0 ? 4 : 0);
+		Integer had = player.getAttached(dev.overcraft.hero.HeroManager.SONG);
+		if (had == null || had != song) {
+			player.setAttached(dev.overcraft.hero.HeroManager.SONG, song);
+		}
 	}
 
 	@Override
@@ -47,6 +70,9 @@ public final class Lucio implements HeroKit {
 		// the duration ends")
 		if (s.ampDelay > 0 && --s.ampDelay == 0) {
 			s.ampUp = Ow.ticks(AMP_UP_TIME);
+			// its sound (effect A45) and his line (03B2, event 1344), as it starts
+			HeroSounds.split(player, OcSounds.LUCIO_AMP_IT_UP, OcSounds.LUCIO_AMP_IT_UP_3P, player.position());
+			Voice.say(player, "amp", 1);
 		}
 		if (s.ampUp > 0) {
 			if (--s.ampUp == 0) {
@@ -67,6 +93,13 @@ public final class Lucio implements HeroKit {
 			s.speedSong = !s.speedSong;
 			s.ability1Cooldown = Ow.ticks(CROSSFADE_COOLDOWN);
 			Combat.animate(player, s.speedSong ? "crossfade_speed" : "crossfade_heal");
+			// his own song cuts over with a sting; others hear a scratch before the new song comes in (LucioMusic)
+			HeroSounds.toOwner(player, s.speedSong ? OcSounds.LUCIO_CROSSFADE_SPEED : OcSounds.LUCIO_CROSSFADE_HEAL);
+			player.level().playSound(player, player.getX(), player.getY(), player.getZ(), OcSounds.LUCIO_SONG_SCRATCH_3P,
+				net.minecraft.sounds.SoundSource.PLAYERS, 1, 1);
+			if (player.level().getGameTime() >= s.songLinesFrom) {
+				Voice.say(player, s.speedSong ? "crossfade_speed" : "crossfade_heal", 1);
+			}
 		}
 
 		if (s.primaryReload >= 0) {
@@ -89,6 +122,8 @@ public final class Lucio implements HeroKit {
 			s.volleyNext = 0;
 			s.weaponRecovery = Ow.ticks(AMP_VOLLEY_TIME);
 			Combat.animate(player, "fire");
+			// one sound per volley (effect 3495, played by the weapon graph's volley node)
+			HeroSounds.split(player, OcSounds.LUCIO_AMP_FIRE, OcSounds.LUCIO_AMP_FIRE_3P, player.getEyePosition());
 		}
 		if (s.volleyLeft > 0) {
 			s.volleyNext -= attack;
@@ -126,6 +161,23 @@ public final class Lucio implements HeroKit {
 		if (player.tickCount % SONG_TICKS == 0) {
 			songs(player, s);
 		}
+		syncSong(player, s, controls);
+
+		// Wall Ride's sound while he rides, and his line once he's been on the wall 2.2 s
+		if (s.wallRiding) {
+			if (s.wallRideTicks == 0) {
+				HeroSounds.split(player, OcSounds.LUCIO_WALLRIDE_START, OcSounds.LUCIO_WALLRIDE_START, player.position());
+			}
+			if (s.wallRideTicks % WALLRIDE_LOOP_TICKS == 0) {
+				HeroSounds.split(player, OcSounds.LUCIO_WALLRIDE, OcSounds.LUCIO_WALLRIDE_3P, player.position());
+			}
+			if (++s.wallRideTicks == Ow.ticks(WALLRIDE_LINE_AFTER)) {
+				Voice.say(player, "wallride", 1);
+			}
+		} else if (s.wallRideTicks > 0) {
+			s.wallRideTicks = 0;
+			HeroSounds.split(player, OcSounds.LUCIO_WALLRIDE_END, OcSounds.LUCIO_WALLRIDE_END, player.position());
+		}
 
 		// Sound Barrier: once the leap lands (and at least the cast's 0.656 s), the overhealth goes out
 		if (s.barrierCast >= 0) {
@@ -133,6 +185,8 @@ public final class Lucio implements HeroKit {
 			if (s.barrierCast >= Ow.ticks(BARRIER_CAST) && player.onGround() || s.barrierCast > Ow.ticks(3)) {
 				s.barrierCast = -1;
 				barrier(player, s);
+				// the slam (effects 44EE, 64ED), heard by all
+				HeroSounds.split(player, OcSounds.LUCIO_BARRIER_SLAM, OcSounds.LUCIO_BARRIER_SLAM, player.position());
 			}
 		}
 	}
@@ -153,6 +207,10 @@ public final class Lucio implements HeroKit {
 			s.ultActive = Ow.ticks(BARRIER_CAST + BARRIER_TIME);
 			s.volleyLeft = 0;
 			Combat.animate(player, "sound_barrier");
+			// the cast (effect A46) and its line: "Oh, let's break it down!" for him and allies, the Portuguese one for
+			// enemies (stimuli 025B / 0489: 60 m, volume 4 = 64 blocks)
+			HeroSounds.split(player, OcSounds.LUCIO_BARRIER_CAST, OcSounds.LUCIO_BARRIER_CAST_3P, player.position());
+			HeroSounds.ultLine(player, OcSounds.LUCIO_ULT_FRIENDLY, OcSounds.LUCIO_ULT_ENEMY, 4);
 			// the small leap (ours: the wiki gives none): the client moves him, so it's sent as his motion
 			player.setDeltaMovement(player.getDeltaMovement().x, Ow.speed(BARRIER_LEAP), player.getDeltaMovement().z);
 			player.syncVelocity = true;
@@ -166,6 +224,7 @@ public final class Lucio implements HeroKit {
 		s.primaryReload = 0;
 		s.primaryAmmoRestored = false;
 		Combat.animate(player, "reload");
+		HeroSounds.split(player, OcSounds.LUCIO_AMP_RELOAD, OcSounds.LUCIO_AMP_RELOAD_3P, player.position());
 	}
 
 	private static void fire(ServerPlayer player) {
@@ -216,6 +275,8 @@ public final class Lucio implements HeroKit {
 		}
 		Effects.play(level, "soundwave", eye, look, player, rider ? 1 : 0);
 		Combat.animate(player, "soundwave");
+		HeroSounds.split(player, OcSounds.LUCIO_SOUNDWAVE, OcSounds.LUCIO_SOUNDWAVE_3P, eye);
+		Voice.say(player, "soundwave", 1);
 	}
 
 	/**
