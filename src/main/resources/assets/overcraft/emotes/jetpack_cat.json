@@ -15,25 +15,35 @@
        "sound": "E548",
        "at": 0.0,
        "duration": 3.6667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 11.395,
+       "fade": 1.5,
+       "audience": "own"
       },
       {
        "sound": "E54A",
        "at": 0.0,
        "duration": 3.6667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 4.117,
+       "fade": 1.0,
+       "audience": "others"
       },
       {
        "sound": "E549",
        "at": 0.1116,
        "duration": 3.355,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "own"
       },
       {
        "sound": "E54B",
        "at": 0.1119,
        "duration": 3.3548,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "others"
       },
       {
        "sound": "F683",
@@ -82,7 +92,8 @@
        "sound": "DA4F",
        "at": 0.101,
        "duration": 2.0667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "chance": 0.4
       },
       {
        "sound": "DA44",
