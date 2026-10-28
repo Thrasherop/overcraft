@@ -631,3 +631,12 @@ lucio.voice.wallride = HeroVoice/Lúcio/Unknown/3B4.078/000000061D2F.0B2-That's 
 lucio.ult.friendly = HeroVoice/Lúcio/Ultimate/00000000B4C3.0B2-Oh, let's break it down!.ogg | w=1
 # Sound Barrier, enemies 0489: 1 lines
 lucio.ult.enemy = HeroVoice/Lúcio/Ultimate/00000004CE69.0B2-(Brazilian Portuguese)_ Let's show these guys up!.ogg | w=1
+
+# Resurrected (005A, prio 75, 10 s) and DamageBoosted (00CC, prio 60, 30 s): what a Mercy's Resurrect and damage
+# boost make the hero say (the voice research's stimuli; every line weight 1).
+lucio.voice.resurrected = HeroVoice/Lúcio/Resurrected/00000000B522.0B2-I'm too young to die!.ogg | w=1
+lucio.voice.damage_boosted = HeroVoice/Lúcio/DamageBoosted/00000000B4BE.0B2-(laughs) Now that's more like it!.ogg | w=1
+lucio.voice.damage_boosted = HeroVoice/Lúcio/DamageBoosted/00000000B4BF.0B2-Get hyped!.ogg | w=1
+lucio.voice.damage_boosted = HeroVoice/Lúcio/DamageBoosted/00000000B4C0.0B2-Thanks!.ogg | w=1
+lucio.voice.damage_boosted = HeroVoice/Lúcio/DamageBoosted/00000000B4C1.0B2-Nothing's going to stop me!.ogg | w=1
+lucio.voice.damage_boosted = HeroVoice/Lúcio/DamageBoosted/00000000B58B.0B2-We're on the same wavelength.ogg | w=1

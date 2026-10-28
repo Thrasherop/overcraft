@@ -255,7 +255,8 @@ public final class HeroManager {
 		return OPTIONS.getOrDefault(player.getUUID(), HeroOptionsPayload.DEFAULTS);
 	}
 
-	public static void onRespawn(ServerPlayer player) {
+	/** After a respawn; resurrected: a Mercy brought them back (dev.overcraft.mercy.Souls), and they say so. */
+	public static void onRespawn(ServerPlayer player, boolean resurrected) {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			Hero hero = state.hero;
@@ -266,7 +267,7 @@ public final class HeroManager {
 			state.ultCharge = charge;
 			Perks.load(state, perks);
 			applyKit(player, state, true);
-			Voice.say(player, "respawn", 0.7f);
+			Voice.say(player, resurrected ? "resurrected" : "respawn", resurrected ? 1 : 0.7f);
 		}
 	}
 

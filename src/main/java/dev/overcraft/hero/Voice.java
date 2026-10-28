@@ -60,6 +60,8 @@ public final class Voice {
 		java.util.Map.entry("respawn", new Stimulus(40, 15, 15, false)), // 002C
 		java.util.Map.entry("melee", new Stimulus(35, 0.5f, 0.5f, false)), // 0023, the quick melee's shout
 		java.util.Map.entry("select", new Stimulus(100, 1, 1, false)), // 002B
+		java.util.Map.entry("resurrected", new Stimulus(75, 10, 10, false)), // 005A, a Mercy's Resurrect
+		java.util.Map.entry("damage_boosted", new Stimulus(60, 30, 30, false)), // 00CC, a Mercy's damage boost
 		// the communication wheel and pings: category 31, interrupt 1
 		java.util.Map.entry("ult_ready", new Stimulus(70, 0, 0, true)), // 02E7
 		java.util.Map.entry("call_ult_charging", new Stimulus(70, 0, 0, true)), // 0574

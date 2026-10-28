@@ -50,6 +50,13 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
+		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ResurrectPayload.TYPE, (payload, context) -> {
+			if (context.player() != null && context.player().isDeadOrDying()) {
+				context.player().respawn();
+				context.client().gui.setScreen(null);
+			}
+		});
 		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
 			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);

@@ -192,6 +192,9 @@ public final class OcSounds {
 			}
 			register(hero.id + ".voice.call_ult_charging");
 			register(hero.id + ".voice.call_ult_almost");
+			// what every hero says when a Mercy resurrects or damage boosts them (stimuli 005A, 00CC)
+			register(hero.id + ".voice.resurrected");
+			register(hero.id + ".voice.damage_boosted");
 		}
 	}
 }
