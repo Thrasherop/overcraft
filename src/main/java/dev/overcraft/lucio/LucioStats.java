@@ -80,6 +80,17 @@ public final class LucioStats {
 	public static final double WALL_LEAP_UP = 6.54;
 	public static final double WALL_LEAP_UP_LOOKING_UP = 9.12;
 	public static final double WALL_LEAP_UP_LOOKING_DOWN = 4.12;
+	/** The leap off holding forward (wiki: 6.9 m/s). */
+	public static final double WALL_LEAP_UP_FORWARD = 6.9;
+	/** Ours: the push off the wall as he leaps (no source gives one; the leap's direction already blends in his facing). */
+	public static final double WALL_LEAP_PUSH = 1;
+	/**
+	 * How fast he rises while riding (m/s), and how much more looking straight up (less, to sinking, looking down). The
+	 * owner, 2026-10-27: "wall riding actually does raise you a little bit"; players: a gradual upward angle that follows
+	 * aim; Blizzard 2018-05-03 stopped him riding straight up. No source measures it: ours, for the owner to correct.
+	 */
+	public static final double WALL_RISE = 0.5;
+	public static final double WALL_RISE_AIM = 1.0;
 	public static final double WALL_COOLDOWN = 0.5;           // wiki
 	/** Ours: how close a wall must be to ride it (no source). */
 	public static final double WALL_REACH = 0.4;
