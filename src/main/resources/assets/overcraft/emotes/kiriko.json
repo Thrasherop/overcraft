@@ -18,11 +18,17 @@
        "duration": 4.3333,
        "clip": "19C45",
        "falls": false,
-       "clipStart": 0.0,
-       "clipBy": "length"
+       "clipStart": 0.0667,
+       "clipBy": "control"
       }
      ],
      "events": [
+      {
+       "sound": "F695",
+       "at": 0.0,
+       "duration": 4.4,
+       "hardpoint": "00A4"
+      },
       {
        "voice": "19F4",
        "at": 0.5667
@@ -32,6 +38,7 @@
        "at": 2.0667
       }
      ],
+     "stow": [],
      "geosets": [
       15,
       15,
@@ -87,6 +94,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_pod_pet_3": {
@@ -104,10 +112,18 @@
        "clip": "19C46",
        "falls": false,
        "clipStart": 0.0,
-       "clipBy": "length"
+       "clipBy": "control"
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "F696",
+       "at": 0.0,
+       "duration": 8.6333,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       15,
       15,
@@ -164,6 +180,7 @@
      "folder": "16",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_pod_pet_5": {
@@ -173,6 +190,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -194,7 +212,21 @@
        "clipStart": null
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "D926",
+       "at": 1.6667,
+       "duration": 0.0,
+       "hardpoint": "0444"
+      },
+      {
+       "sound": "F68C",
+       "at": 0.0,
+       "duration": 5.4333,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -251,6 +283,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -272,7 +305,45 @@
        "clipStart": 0.1667
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "FB34",
+       "at": 0.4667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FEE3",
+       "at": 0.1333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FB33",
+       "at": 0.2667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FB35",
+       "at": 0.2667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FB36",
+       "at": 2.4333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FEE2",
+       "at": 0.2667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       15,
       15,
@@ -335,7 +406,21 @@
        "clipStart": 0.0
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "FB31",
+       "at": 0.0,
+       "duration": 5.4333,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "FB33",
+       "at": 0.9333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       15,
       15,
@@ -392,6 +477,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_friendly_kitty_4": {
@@ -401,6 +487,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "geosets": [
       15,
       15,
@@ -421,6 +508,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_friendly_kitty_6": {
@@ -430,6 +518,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -442,7 +531,15 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "FEC7",
+       "at": 0.0,
+       "duration": 5.1,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -498,7 +595,15 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "FEC8",
+       "at": 0.0333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -514,6 +619,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -526,7 +632,33 @@
      "bones": 167,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "E548",
+       "at": 0.0,
+       "duration": 3.4667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E549",
+       "at": 0.1116,
+       "duration": 3.355,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E54A",
+       "at": 0.0,
+       "duration": 3.4667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E54B",
+       "at": 0.1119,
+       "duration": 3.3548,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_listen_up_2": {
@@ -536,6 +668,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_listen_up_3": {
@@ -545,6 +678,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_listen_up_4": {
@@ -554,6 +688,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -576,7 +711,21 @@
        "falls": true
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DA44",
+       "at": 0.9333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "DA4F",
+       "at": 0.101,
+       "duration": 2.0667,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -611,6 +760,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_mic_drop_3": {
@@ -620,6 +770,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -632,7 +783,15 @@
      "bones": 208,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "EEA6",
+       "at": 0.0256,
+       "duration": 2.3411,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_salty_2": {
@@ -642,6 +801,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_salty_3": {
@@ -651,6 +811,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_salty_4": {
@@ -660,6 +821,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -681,7 +843,21 @@
        "clipStart": 0.0
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "9426",
+       "at": 0.0162,
+       "duration": 3.8485,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "96EA",
+       "at": 2.7,
+       "duration": 1.1667,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -730,7 +906,15 @@
      "bones": 26,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "9428",
+       "at": 0.512,
+       "duration": 3.3528,
+       "hardpoint": "0076"
+      }
+     ],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_whirlwind_3": {
@@ -748,7 +932,21 @@
        "clipStart": 0.0
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "9427",
+       "at": 0.8909,
+       "duration": 2.9757,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9437",
+       "at": 0.0029,
+       "duration": 3.86,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       1,
       1,
@@ -797,7 +995,27 @@
      "bones": 26,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "942A",
+       "at": 0.0029,
+       "duration": 1.3108,
+       "hardpoint": "0076"
+      },
+      {
+       "sound": "9429",
+       "at": 1.1145,
+       "duration": 2.7522,
+       "hardpoint": "0076"
+      },
+      {
+       "sound": "9436",
+       "at": 3.4667,
+       "duration": 0.0,
+       "hardpoint": "0076"
+      }
+     ],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_whirlwind_5": {
@@ -807,6 +1025,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -819,7 +1038,63 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "9470",
+       "at": 0.1312,
+       "duration": 1.7943,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9471",
+       "at": 1.9972,
+       "duration": 1.0206,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9472",
+       "at": 3.3976,
+       "duration": 1.2972,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9473",
+       "at": 5.9674,
+       "duration": 1.1221,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "946F",
+       "at": 1.5,
+       "duration": 0.0,
+       "hardpoint": "0018"
+      },
+      {
+       "sound": "9475",
+       "at": 0.1277,
+       "duration": 1.3392,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "9476",
+       "at": 2.1793,
+       "duration": 0.9611,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "9477",
+       "at": 5.9919,
+       "duration": 1.1011,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "9474",
+       "at": 4.7333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       1,
       1,
@@ -876,6 +1151,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -892,8 +1168,15 @@
       {
        "voice": "5C3",
        "at": 3.1667
+      },
+      {
+       "sound": "944B",
+       "at": 0.0667,
+       "duration": 0.0,
+       "hardpoint": "0003"
       }
      ],
+     "stow": [],
      "geosets": [
       0,
       7,
@@ -950,6 +1233,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -963,6 +1247,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_heroic_2": {
@@ -971,7 +1256,27 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "944B",
+       "at": 0.3204,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "9471",
+       "at": 0.0,
+       "duration": 1.298,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9472",
+       "at": 3.2441,
+       "duration": 0.9559,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       1,
       1,
@@ -1023,6 +1328,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_heroic_4": {
@@ -1032,6 +1338,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_heroic_5": {
@@ -1041,6 +1348,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1053,7 +1361,27 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "944B",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "946B",
+       "at": 1.4995,
+       "duration": 0.0,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "9488",
+       "at": 0.0198,
+       "duration": 0.6946,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       1,
       1,
@@ -1094,7 +1422,21 @@
      "bones": 209,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "944B",
+       "at": 0.2333,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "93F4",
+       "at": 0.2632,
+       "duration": 0.0,
+       "hardpoint": "0002"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1111,6 +1453,7 @@
      "folder": "16",
      "spawns": [],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1172,10 +1515,17 @@
      "spawns": [],
      "events": [
       {
+       "sound": "944B",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
        "voice": "6A1",
        "at": 0.3733
       }
      ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1232,6 +1582,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1244,7 +1595,15 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "BD88",
+       "at": 0.0,
+       "duration": 3.4,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -1290,6 +1649,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1311,7 +1671,45 @@
        "clipStart": 0.6333
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "C2CA",
+       "at": 0.4667,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "80E9",
+       "at": 0.2667,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "80EE",
+       "at": 1.1667,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "80ED",
+       "at": 0.6333,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "80F3",
+       "at": 2.4,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "C2E6",
+       "at": 1.4,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       0,
       7,
@@ -1361,10 +1759,23 @@
      ],
      "events": [
       {
+       "sound": "80F3",
+       "at": 0.6667,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "80F3",
+       "at": 0.1333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
        "voice": "186B",
        "at": 1.7
       }
      ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1410,6 +1821,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_rainy_stroll_4": {
@@ -1419,6 +1831,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_rainy_stroll_5": {
@@ -1428,6 +1841,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1442,10 +1856,29 @@
      "spawns": [],
      "events": [
       {
+       "sound": "C89E",
+       "at": 4.3333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
        "voice": "18CD",
        "at": 2.5333
+      },
+      {
+       "sound": "9472",
+       "at": 5.8667,
+       "duration": 0.9657,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "944B",
+       "at": 6.2667,
+       "duration": 0.0,
+       "hardpoint": "0003"
       }
      ],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -1502,6 +1935,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1525,14 +1959,33 @@
      ],
      "events": [
       {
+       "sound": "944B",
+       "at": 5.3008,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "93F4",
+       "at": 5.3306,
+       "duration": 0.0,
+       "hardpoint": "0002"
+      },
+      {
        "voice": "1934",
        "at": 1.3
       },
       {
        "voice": "1935",
        "at": 2.8317
+      },
+      {
+       "sound": "D926",
+       "at": 0.9007,
+       "duration": 3.4621,
+       "hardpoint": "0444"
       }
      ],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -1589,6 +2042,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1601,7 +2055,21 @@
      "bones": 295,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "DB1D",
+       "at": 0.0667,
+       "duration": 4.9667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "944B",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "geosets": [
       0,
       7,
@@ -1658,6 +2126,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1688,7 +2157,21 @@
        "falls": false
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DBB4",
+       "at": 0.0333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "DBB3",
+       "at": 0.3333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1727,7 +2210,15 @@
        "falls": false
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DB9E",
+       "at": 0.0333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      }
+     ],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_skateboard_3": {
@@ -1755,6 +2246,7 @@
       }
      ],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -1788,6 +2280,7 @@
       }
      ],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_skateboard_5": {
@@ -1814,7 +2307,15 @@
        "falls": false
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DBB3",
+       "at": 0.0333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7
      ],
@@ -1845,6 +2346,7 @@
       }
      ],
      "events": [],
+     "stow": [],
      "geosets": [
       7
      ],
@@ -1874,7 +2376,15 @@
        "falls": false
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DB9F",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0013"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7
      ],
@@ -1904,7 +2414,15 @@
        "falls": false
       }
      ],
-     "events": [],
+     "events": [
+      {
+       "sound": "DB9F",
+       "at": 7.5,
+       "duration": 1.5,
+       "hardpoint": "0013"
+      }
+     ],
+     "stow": [],
      "geosets": [
       7
      ],
@@ -1916,7 +2434,15 @@
      "bones": 2,
      "folder": "4",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "DBB2",
+       "at": 0.0,
+       "duration": 0.0333,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_skateboard_10": {
@@ -1926,6 +2452,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     },
     "emote_skateboard_11": {
@@ -1953,6 +2480,7 @@
       }
      ],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -1971,10 +2499,29 @@
        "at": 2.6333
       },
       {
+       "sound": "993A",
+       "at": 0.7721,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "9940",
+       "at": 0.7193,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "9939",
+       "at": 2.9667,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
        "voice": "1345",
        "at": 0.5307
       }
      ],
+     "stow": [],
      "geosets": [
       0,
       7,
@@ -2023,10 +2570,23 @@
      "spawns": [],
      "events": [
       {
+       "sound": "9939",
+       "at": 0.3878,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "9940",
+       "at": 0.4186,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
        "voice": "132D",
        "at": 0.3683
       }
      ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2059,6 +2619,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2078,6 +2639,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2108,6 +2670,7 @@
        "at": 4.7333
       }
      ],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2164,6 +2727,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -2178,10 +2742,17 @@
      "spawns": [],
      "events": [
       {
+       "sound": "ACE6",
+       "at": 0.8667,
+       "duration": 2.5333,
+       "hardpoint": "00A4"
+      },
+      {
        "voice": "1683",
        "at": 0.937
       }
      ],
+     "stow": [],
      "geosets": [
       0,
       7,
@@ -2234,6 +2805,7 @@
      "folder": "4",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "hers"
     }
    }
@@ -2255,10 +2827,11 @@
        "clip": "E921",
        "falls": false,
        "clipStart": 0.7667,
-       "clipBy": "length"
+       "clipBy": "control"
       }
      ],
      "events": [],
+     "stow": [],
      "geosets": [
       0,
       0,
@@ -2323,10 +2896,11 @@
        "clip": "E91F",
        "falls": false,
        "clipStart": 0.0,
-       "clipBy": "length"
+       "clipBy": "control"
       }
      ],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2343,6 +2917,7 @@
      "folder": "0",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_fox_cuddles_4": {
@@ -2351,7 +2926,33 @@
      "bones": 141,
      "folder": "0",
      "spawns": [],
-     "events": [],
+     "events": [
+      {
+       "sound": "B03C",
+       "at": 0.0,
+       "duration": 3.2667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "B03B",
+       "at": 0.1333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "B03A",
+       "at": 0.7333,
+       "duration": 1.1,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "B039",
+       "at": 3.0667,
+       "duration": 0.6667,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
      "skeleton": "prop"
     },
     "emote_fox_cuddles_5": {
@@ -2369,10 +2970,11 @@
        "clip": "E920",
        "falls": false,
        "clipStart": 0.0,
-       "clipBy": "length"
+       "clipBy": "control"
       }
      ],
      "events": [],
+     "stow": [],
      "geosets": [
       7,
       7,
@@ -2429,6 +3031,7 @@
      "folder": "16",
      "spawns": [],
      "events": [],
+     "stow": [],
      "skeleton": "prop"
     }
    }

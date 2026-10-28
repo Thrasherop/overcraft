@@ -193,7 +193,8 @@ public final class HeroModelRenderer {
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
 		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
-		state.setData(WEAPON, previewing || animator.emoting() ? null : HeroWeapon.place(hero, animator, loaded.model(), false, now));
+		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
+		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now) : null);
 	}
 
 	private static final RenderStateDataKey<EmoteProps.Placed> WEAPON = RenderStateDataKey.create(() -> "overcraft:hero_weapon");
@@ -366,7 +367,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			ShadowMesh mesh = SHADOW_MESHES.computeIfAbsent(piece, HeroModelRenderer::shadowMesh);
@@ -526,7 +527,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			RenderType outline = FxRender.heroCutout(texture).outline().orElse(null);
@@ -807,7 +808,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, FxRender.heroCutout(texture), (pose, buffer) -> {
@@ -861,7 +862,7 @@ public final class HeroModelRenderer {
 				continue;
 			}
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-			if (prop && !hidden.isEmpty() && piece.vertexCount() > 0 && hidden.contains(piece.joint4()[0])) {
+			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
@@ -874,6 +875,20 @@ public final class HeroModelRenderer {
 	 * bones, parked at the model's origin (between the feet) unless an animation puts them in a hand. One piece can hold
 	 * several (the three kunai), so a prop piece's triangles still at the origin after skinning aren't drawn.
 	 */
+	/** Added to a piece's index in a hidden set: that piece itself is put away (EmoteProps.hiddenPieces). */
+	public static final int PIECE = 1 << 20;
+
+	/**
+	 * Whether a piece isn't drawn now: a held prop by its bone (her kunai, ofuda, Suzu), or any piece by itself (a geoset
+	 * an emote hides that isn't a held prop: Lúcio's weapon cable, PIECE + its index).
+	 */
+	private static boolean hiddenNow(SkinnedModel model, SkinnedModel.Piece piece, Set<Integer> hidden, boolean prop) {
+		if (hidden.isEmpty() || piece.vertexCount() == 0) {
+			return false;
+		}
+		return prop && hidden.contains(piece.joint4()[0]) || hidden.contains(PIECE + model.pieces.indexOf(piece));
+	}
+
 	private static boolean isProp(SkinnedModel.Piece piece) {
 		float[] pos = piece.pos();
 		Vector3f lo = new Vector3f(Float.MAX_VALUE), hi = new Vector3f(-Float.MAX_VALUE);

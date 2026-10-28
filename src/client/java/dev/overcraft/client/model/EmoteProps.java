@@ -74,8 +74,15 @@ public final class EmoteProps {
 			if (bit == null || piece.vertexCount() == 0) {
 				continue;
 			}
-			if (mask >= 0 ? (mask & bit) != 0 : parked(heroModel, pose, heroModel.joints[piece.joint4()[0]])) {
+			// no mask now: a hero whose weapon is an entity of its own (Lúcio) puts its pieces away with it (the stow
+			// windows); one whose weapons are her own pieces (Kiriko) by whether a hand holds them
+			boolean away = mask >= 0 ? (mask & bit) != 0
+				: data.weaponEntity() ? data.stowed(emote, animator.emoteClip(), animator.emoteAt())
+				: parked(heroModel, pose, heroModel.joints[piece.joint4()[0]]);
+			if (away) {
 				hidden.add(piece.joint4()[0]);
+				// the piece itself too, for one that isn't a held prop (Lúcio's weapon cable, geoset 1, along his arm)
+				hidden.add(HeroModelRenderer.PIECE + heroModel.pieces.indexOf(piece));
 			}
 		}
 		return hidden;

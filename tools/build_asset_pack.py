@@ -10,7 +10,7 @@
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
-    py tools/build_asset_pack.py props <DataTool output dir>  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
     py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
@@ -135,16 +135,25 @@ def add_ui(source):
             print(f"no kill feed {name} icon ({png})")
 
 
+# the sound maps' own subtitles: event -> text (read_soundmaps)
+SUBTITLES = {}
+
+
 def read_soundmaps():
     """The sound maps (tools/soundmaps/*.txt): sources {id: [files]}, mixing rules {event: [(source, delay, gain)]} and
-    weights {(id, file): Overwatch's weight} (a source line's "| w=<weight>")."""
+    weights {(id, file): Overwatch's weight} (a source line's "| w=<weight>"). A "$<event> = <text>" line is the event's
+    subtitle, for events the jar's lang doesn't name (the emotes' sounds and lines: SUBTITLES)."""
     sources, rules, weights = {}, {}, {}
+    SUBTITLES.clear()
     for soundmap in sorted((ROOT / "tools" / "soundmaps").glob("*.txt")):
         for line in soundmap.read_text(encoding="utf8").splitlines():
             line = line.split("#")[0].strip() if not line.lstrip().startswith("#") else ""
             if not line or "=" not in line:
                 continue
             name, _, rest = (x.strip() for x in line.partition("="))
+            if name.startswith("$"):
+                SUBTITLES[name[1:]] = rest
+                continue
             if name.startswith("@"):
                 layers = []
                 for part in filter(None, (x.strip() for x in rest.split(" + "))):
@@ -247,6 +256,9 @@ def add_sounds(source):
                     files.append(entry)
         sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": files}
     lang = add_voicelines(source, out, sounds)
+    for event, text in SUBTITLES.items():
+        if event in sounds:
+            lang[f"subtitles.overcraft.{event}"] = text
     (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
     lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
     lang_file.parent.mkdir(parents=True, exist_ok=True)
@@ -397,7 +409,11 @@ def add_effects(source):
         print("\n".join(report) or result.stderr[-2000:])
 
 
-def add_props(source):
+# DataTool's folder for a hero whose name isn't our id capitalised (as tools/emote_data.py's)
+HERO_FOLDERS = {"lucio": "Lúcio"}
+
+
+def add_props(source, only=None):
     """Converts every prop the heroes' emote data names (src/main/resources/assets/overcraft/emotes/<hero>.json, from
     tools/emote_data.py: techniques/emotes/emote_reproduction.md) into hero_models/prop_<model id, lower case>.glb, with the prop's own clips named by their
     ids, as the data names them. <source> is the extraction root holding Unlocks/Heroes/<Hero>/Emote. A prop with no
@@ -407,7 +423,10 @@ def add_props(source):
     write_mcmeta()
     for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
         hero = json.loads(data.read_text(encoding="utf8"))
-        emotes = Path(source) / "Unlocks" / "Heroes" / hero["hero"].capitalize() / "Emote"
+        if only and hero["hero"] != only:
+            # props <source> <hero>: just that hero's
+            continue
+        emotes = Path(source) / "Unlocks" / "Heroes" / HERO_FOLDERS.get(hero["hero"], hero["hero"].capitalize()) / "Emote"
         props = {}
         for emote in hero["emotes"].values():
             for clip in emote["clips"].values():
@@ -519,7 +538,7 @@ def main():
     elif cmd == "effects":
         add_effects(sys.argv[2])
     elif cmd == "props":
-        add_props(sys.argv[2])
+        add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

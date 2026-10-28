@@ -108,6 +108,11 @@ public final class HeroAnimator {
 		return BY_ENTITY.computeIfAbsent(entity.getId(), id -> new HeroAnimator());
 	}
 
+	/** The entity's animator, or null when it has none yet. */
+	public static @Nullable HeroAnimator existing(int entityId) {
+		return BY_ENTITY.get(entityId);
+	}
+
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
@@ -152,6 +157,11 @@ public final class HeroAnimator {
 	/** The emote playing now, or null. */
 	public @Nullable String emote() {
 		return emote;
+	}
+
+	/** When the emote started (game time / 20): a new start of the same emote has a new one. */
+	public float emoteStart() {
+		return emoteStart;
 	}
 
 	/** Seconds since the emote started, at this time ((game time + partial) / 20, as poses are). */
@@ -265,32 +275,20 @@ public final class HeroAnimator {
 		float t = Math.max(0, now - emoteStart);
 		// eased in from the movement pose over the first 0.2 s
 		float weight = Math.clamp((now - emoteStart) / EMOTE_EASE, 0, 1);
-		SkinnedModel.Clip clip = plan.steps().getLast();
-		float at = clip.duration();
-		float total = plan.total();
-		if (t < total) {
-			for (SkinnedModel.Clip step : plan.steps()) {
-				if (t < step.duration()) {
-					clip = step;
-					at = t;
-					break;
-				}
-				t -= step.duration();
-			}
-		} else if (plan.loop() != null) {
-			clip = plan.loop();
-			at = (t - total) % Math.max(0.01f, clip.duration());
-		} else if (plan.ends()) {
+		EmotePlan.At step = plan.at(t);
+		SkinnedModel.Clip clip = step.clip();
+		float at = step.at();
+		if (step.past() > 0 && plan.ends()) {
 			// a one-shot: back to her stance, eased out to the movement pose, and the emote's over (Overwatch's camera
 			// comes back then too)
-			float out = (t - total) / EMOTE_EASE;
+			float out = step.past() / EMOTE_EASE;
 			if (out >= 1) {
 				emote = null;
 				return false;
 			}
 			weight *= 1 - out;
 		}
-		// else it holds its last pose until she moves
+		// else a plan with no loop holds its last pose until she moves
 		emoteClip = clip.name();
 		emoteAt = at;
 		emoteClipLength = clip.duration();
