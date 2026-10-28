@@ -53,6 +53,7 @@ public final class Perks {
 		return switch (hero) {
 			case KIRIKO -> KirikoStats.PERK_MINOR_XP;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MINOR_XP;
+			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -62,6 +63,7 @@ public final class Perks {
 		return switch (hero) {
 			case KIRIKO -> KirikoStats.PERK_MAJOR_XP;
 			case LUCIO -> dev.overcraft.lucio.LucioStats.PERK_MAJOR_XP;
+			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

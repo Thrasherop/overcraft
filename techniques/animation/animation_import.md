@@ -10,7 +10,10 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
   - `--keep=<clip map>` picks and renames clips (all ~330 take the glTF exporter more than 30 minutes).
   - `--emotes=<dir>` adds the hero's emotes as `emote_<slug>_<n>`.
 - **Clips are 30 or 60 fps**: export them onto one timeline.
-- **`4-*` folder clips are additive deltas**: they collapse alone; export neutral keys for unkeyed channels.
+- **`4-*` folder clips are additive deltas**: they collapse alone; export neutral keys for unkeyed channels. `132-*`
+  are additive too (Jetpack Cat's quick melee). Name them `add_*` in the clip map and play them as layers: a hover
+  hero's third-person actions (her reload, Purr, melee, Catnapper's aim) are all additive over the flight blend, and
+  played as whole clips they would have replaced her pose.
 - **Additive clips can carry big offsets, not just motion around zero**: add_walk lifted the arms 85 px for as long
   as she moved. Measure a pose against still, not only how it moves.
 - **Actions play over the pose under them, like emotes:** a clip's undriven bones keep that pose

@@ -7,6 +7,8 @@ public enum Hero {
 	// roles and sub-roles: the wiki's infoboxes, 2026-10-26 (Sombra is a support since 2026)
 	KIRIKO("kiriko", "Kiriko", Role.SUPPORT, "medic", 250, true, 0xFFE9A23B),
 	LUCIO("lucio", "Lúcio", Role.SUPPORT, "tactician", dev.overcraft.lucio.LucioStats.HEALTH, true, 0xFF7CC242),
+	JETPACK_CAT("jetpack_cat", "Jetpack Cat", Role.SUPPORT, "tactician", dev.overcraft.jetpackcat.JetpackCatStats.HEALTH, true,
+		0xFFF08A3C),
 	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", 225, false, 0xFF8A4FD8),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 

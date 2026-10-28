@@ -18,7 +18,7 @@ public abstract class ProjectileUtilMixin {
 	@Inject(method = "computeMargin", at = @At("HEAD"), cancellable = true)
 	private static void overcraft$ownRadius(Entity source, CallbackInfoReturnable<Float> cir) {
 		if (source instanceof OwProjectile projectile) {
-			cir.setReturnValue(projectile.getBbWidth() / 2);
+			cir.setReturnValue(projectile.hitRadius());
 		}
 	}
 }

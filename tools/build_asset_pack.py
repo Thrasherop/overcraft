@@ -11,8 +11,10 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
-    py tools/build_asset_pack.py effects <dir>             the ability effects' texture masks, from the effects
-                                                            extraction (<dir>/Kiriko/<Ability>/textures/<id>.png)
+    py tools/build_asset_pack.py effects <dir> [<dir>...]  the ability effects' texture masks, from the effects
+                                                            extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
+                                                            mask from the first folder that has it (Jetpack Cat's are in
+                                                            "E:\Overwatch Archiveesearch\jetpack_catx")
                                                             (FuturaNo2D-DemiBold.ttf, BigNoodleTooOblique.ttf)
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
@@ -27,10 +29,10 @@ ROOT = Path(__file__).resolve().parent.parent
 LOCAL = ROOT / "local-assets"
 PACK = LOCAL / "pack"
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn"}
+HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn", "jetpack_cat"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
-                "sojourn": "Sojourn"}
+                "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -385,6 +387,38 @@ EFFECT_MASKS = {
     "lucio_trail": ("Lucio", "Crossfade", "000000003A37", 1),
     "lucio_band": ("Lucio", "SonicAmplifier", "000000003F9D", 1),
     "lucio_sparkle": ("Lucio", "AmpItUp", "000000000BCD", 1),
+    # Jetpack Cat's (tools/reference/jetpack_cat-effects.md): soft dot, star flare, ring, spark streak, cloud and
+    # noise, the 4-frame burst, fade strip, the healing swirl and dot (colour sprites), soft ring
+    "cat_soft": ("JetpackCat", "Pawjectiles", "000000004C09", 1),
+    "cat_flare": ("JetpackCat", "Pawjectiles", "00000000DA5B", 1),
+    "cat_ring": ("JetpackCat", "Pawjectiles", "000000003203", 1),
+    "cat_streak": ("JetpackCat", "Pawjectiles", "0000000183A7", 1),
+    "cat_cloud": ("JetpackCat", "Pawjectiles", "000000018E48", 1),
+    "cat_noise": ("JetpackCat", "Pawjectiles", "0000000299E1", 1),
+    "cat_burst": ("JetpackCat", "Pawjectiles", "00000001917E", 4),
+    "cat_fade": ("JetpackCat", "Pawjectiles", "0000000007A9", 1),
+    "cat_heal_swirl": ("JetpackCat", "Pawjectiles", "000000001268", 1),
+    "cat_heal_dot": ("JetpackCat", "Pawjectiles", "00000000126A", 1),
+    "cat_halo_ring": ("JetpackCat", "Pawjectiles", "0000000052E8", 1),
+    # Purr: the burst-line streak, a soft ball, the range wall's fade strip
+    "cat_purr_streak": ("JetpackCat", "Purr", "00000001D047", 1),
+    "cat_soft_ball": ("JetpackCat", "Purr", "000000039115", 1),
+    "cat_band": ("JetpackCat", "Purr", "000000001C7A", 1),
+    # Lifeline: the paw-in-crosshair marker (left half: mirror it), four-point star, hex grid, speed lines, rope core
+    "cat_paw_marker": ("JetpackCat", "Lifeline", "000000070542", 1),
+    "cat_star": ("JetpackCat", "Lifeline", "00000000F55D", 1),
+    "cat_hex": ("JetpackCat", "Lifeline", "000000018F9B", 1),
+    "cat_speed_line": ("JetpackCat", "Lifeline", "00000000E99F", 3),
+    "cat_rope": ("JetpackCat", "Lifeline", "0000000018A1", 1),
+    # Frenetic Flight and the jetpack: nozzle hot dot, trail strip, spark blobs
+    "cat_glow_dot": ("JetpackCat", "FreneticFlight", "00000000A17F", 1),
+    "cat_trail": ("JetpackCat", "FreneticFlight", "0000000219FA", 1),
+    "cat_blob": ("JetpackCat", "FreneticFlight", "000000018BC2", 4),
+    # Catnapper: the aim star, crater cracks (dark and glowing), the impact puff
+    "cat_sparkle": ("JetpackCat", "Catnapper", "00000000F7A7", 1),
+    "cat_crack": ("JetpackCat", "Catnapper", "00000006CBB9", 1),
+    "cat_crack_glow": ("JetpackCat", "Catnapper", "00000006CA10", 1),
+    "cat_puff": ("JetpackCat", "Catnapper", "000000018B18", 1),
 }
 
 
@@ -392,9 +426,10 @@ EFFECT_MASKS = {
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D")}
 
 
-def add_effects(source):
+def add_effects(*sources):
     """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
-    converts their meshes (the torii gate) into hero_models/."""
+    converts their meshes (the torii gate) into hero_models/. Each from the first source folder that has it: Jetpack
+    Cat's research pass wrote hers outside the read-only extraction (research\jetpack_catx)."""
     write_mcmeta()
     out = PACK / "assets" / "overcraft" / "textures" / "effect"
     out.mkdir(parents=True, exist_ok=True)
@@ -402,7 +437,9 @@ def add_effects(source):
     for name, (hero, ability, texture, frames) in EFFECT_MASKS.items():
         for frame in range(frames):
             suffix = "" if frame == 0 else f"_{frame}"
-            src = Path(source) / hero / ability / "textures" / f"{texture}{suffix}.png"
+            src = next((Path(source) / hero / ability / "textures" / f"{texture}{suffix}.png" for source in sources
+                        if (Path(source) / hero / ability / "textures" / f"{texture}{suffix}.png").exists()),
+                       Path(sources[0]) / hero / ability / "textures" / f"{texture}{suffix}.png")
             if not src.exists():
                 print(f"missing {name}: {src}")
                 continue
@@ -411,7 +448,10 @@ def add_effects(source):
             copied += 1
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():
-        src = Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"
+        src = next((Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"
+                    for source in sources
+                    if (Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl").exists()),
+                   Path(sources[0]) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl")
         if not src.exists():
             print(f"missing {name}: {src}")
             continue
@@ -421,10 +461,6 @@ def add_effects(source):
         result = subprocess.run(cmd, capture_output=True, text=True)
         report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
         print("\n".join(report) or result.stderr[-2000:])
-
-
-# DataTool's folder for a hero whose name isn't our id capitalised (as tools/emote_data.py's)
-HERO_FOLDERS = {"lucio": "Lúcio"}
 
 
 def add_props(source, only=None):
@@ -550,7 +586,7 @@ def main():
     elif cmd == "fonts":
         add_fonts(sys.argv[2])
     elif cmd == "effects":
-        add_effects(sys.argv[2])
+        add_effects(*sys.argv[2:])
     elif cmd == "props":
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "zip":

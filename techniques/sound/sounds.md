@@ -42,6 +42,17 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - `EmoteSounds` (client) follows each emoting hero's clip and time each tick (`EmotePlan.at`, shared with the
     animator, so a hero off screen still sounds) and starts each one as the clip reaches it.
   - One shared sound can be in many emotes (944B, a cloth rustle, in seven of Kiriko's).
+- **Which copy is the hero's own** (Jetpack Cat, 2026-10-28; `tools/soundmaps/jetpack_cat.txt`, research in
+  `research\jetpack_cat\sounds.md`): Lúcio's sounds came in pairs marked audience 1 (his) and 2 (others), but every one
+  of hers is audience 2. Read the copy with no range as hers and the ranged copies as everyone else's (inferred); where
+  there are two ranged copies they look like an ally and an enemy copy.
+- **Loops from the data have a loop length, not a file length:** their layers differ in length, so the map states each
+  rule's LOOP LENGTH and some built files run past it. `JetpackCatSounds` (client) starts each loop again when its file
+  ends, and stops it as the state ends (hum, boost, refill, tow, aim, dive, tether).
+- **Volume curves:** her hum and boost loop follow speed curves in the data; they're built at one point of the curve
+  (hover; 10 m/s), read as straight lines.
+- **Not every sound is extracted:** her enemy-hit and wall-hit sounds (73A4; the centre shot's contact sets) were never
+  extracted, so they're left out until an extraction pass adds them to the archive.
 - **Music:** the match-end music was traced through the music-director graphs (0D3B, 1B47):
   [sounds-round8](../../tools/reference/sounds-round8.md), [music-round9](../../tools/reference/music-round9.md). Its
   streams are 12-channel Opus and need a stereo downmix.

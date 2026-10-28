@@ -39,6 +39,8 @@ final class ActionTrack {
 	private float channelUntil = -1;
 	/** When the playing step was cut short (s), -1 if it wasn't: it holds that frame while fading out. */
 	private float cancelledAt = -1;
+	/** The last step loops until another action (Jetpack Cat's Catnapper aim, held until she dives or lets go). */
+	private boolean holdLast;
 
 	/** An action was triggered (by name, as the server sends them). */
 	void trigger(String action, float now) {
@@ -85,6 +87,13 @@ final class ActionTrack {
 			}
 			case "amp_it_up" -> start(now, "amp");
 			case "sound_barrier" -> start(now, "ult_cast", "ult_end");
+			// Jetpack Cat (jetpack_cat-map.md): Catnapper's aim (0x175: enter, then held), its exit, the dive (0xAFC).
+			// In the third person her aim's clips are additive layers (HeroAnimator): these steps find nothing there
+			case "ult_aim" -> {
+				start(now, "ult_aim_start", "ult_aim");
+				holdLast = true;
+			}
+			case "ult_dive" -> start(now, "ult_dive_start", "ult_dive");
 			default -> start(now, action);
 		}
 	}
@@ -110,6 +119,7 @@ final class ActionTrack {
 
 	private void start(float now, String... names) {
 		stepLength = -1;
+		holdLast = false;
 		steps.clear();
 		steps.addAll(List.of(names));
 		step = 0;
@@ -163,7 +173,13 @@ final class ActionTrack {
 				break;
 			}
 			if (step == steps.size() - 1) {
-				break; // the last step holds its end while fading out
+				if (holdLast && clip.duration() > 1.0E-3f) {
+					// loops: on to this pass of it (in one step: her first-person aim pose is a single frame, and
+					// stepping by its length never caught up, freezing the game: found playing)
+					stepStart += clip.duration() * (float) Math.floor(local / clip.duration());
+					break;
+				}
+				break; // the last step holds its end while fading out (a held pose too)
 			}
 			fromClip = resolve(model, steps.get(step));
 			stepStart += clip.duration();
@@ -189,7 +205,7 @@ final class ActionTrack {
 			float in = 1 + local / SWING_IN;
 			weight = Math.max(0, in * in * (3 - 2 * in));
 		}
-		if (step == steps.size() - 1 && local > clip.duration()) {
+		if (step == steps.size() - 1 && local > clip.duration() && !holdLast) {
 			if (fadingOutFrom < 0) {
 				fadingOutFrom = now;
 			}

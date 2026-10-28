@@ -1,4 +1,4 @@
-# Overcraft: handoff (2026-10-27, overnight)
+# Overcraft: handoff (2026-10-28, overnight)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
 techniques/README.md (how the work gets done: a linked graph of notes). This file is the state of play and the path forward.
@@ -19,11 +19,17 @@ techniques/README.md (how the work gets done: a linked graph of notes). This fil
 - Memory: `C:\Users\ultra\.claude\projects\E--claude-mods-overcraft\memory\`.
 - Overwatch archive (read-only, checksummed): `E:\Overwatch Archive\` (README.txt). Research notes there:
   `research\kiriko-anim` (animation map), `research\kiriko-effects`, `research\fonts`, `research\kiriko-sounds`.
-- **Latest build for the owner: `run/build-0.3.14/`** (0.3.14, `main` a4437f8, test build 70: jar, asset pack 0.3.14,
-  INSTALL.txt; the owner copies the pack from this machine, the jar was sent in chat). Emote sounds (#48 closed),
-  Lúcio's emotes, effects and voice lines. 0.3.13 (`run/build-0.3.13/`) was a check-in build earlier the same day.
-- **Main checkout on `next`; worktree `E:/claude/mods/overcraft_emotesnd`** (branch `feature/lucio-polish`, merged)
-  holds the same local pack. Research added today: `research\emote-sounds` (each emote sound's Wwise decode,
+- **Latest build for the owner: `run/build-0.3.16/`** (0.3.16): Jetpack Cat, and the fixes every hero needed. Before it, 0.3.15 (`main` cfc19db, test build 75): Lúcio's movement
+  reworked from the data and the Lucio-surf research (`tools/reference/lucio-movement-research.md`), the wall-ride
+  sounds 17 dB down. **Waiting on the owner's playtest of it.** Before it: 0.3.14 (emote sounds, Lúcio's emotes,
+  effects, voice), 0.3.13.
+- **Jetpack Cat (#38) in progress on `feature/jetpack-cat`** in the worktree `E:/claude/mods/overcraft_emotesnd`
+  (which holds its own local pack, with her models). Her kit, flight, HUD, animation and perks are played and
+  committed (19849b4); her sounds and effects are being read from the data (`tools/soundmaps/jetpack_cat.txt`,
+  `tools/reference/jetpack_cat-effects.md`). Her hub: `techniques/heroes/jetpack_cat.md`. The same branch fixes bugs
+  every hero had: the hurt cooldown (26.x's `damageCooldownTime`: Lúcio's volleys did a quarter of their damage),
+  airborne knockback from a stale server speed, and joining a world while dead.
+- **Main checkout on `next`.** Research added today: `research\emote-sounds` (each emote sound's Wwise decode,
   `sounds.json`), `research\lucio` effects (`effects-NOTES.md`), extractions `Effects\Lucio`, `ExtraSounds\*\Emotes`,
   `Unlocks\Heroes\Lúcio\{Emote,VoiceLine}`.
 
