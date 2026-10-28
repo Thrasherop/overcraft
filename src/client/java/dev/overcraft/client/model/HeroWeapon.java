@@ -91,7 +91,16 @@ public final class HeroWeapon {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");
 		boolean staff = model.clips.containsKey("holstered");
-		if (idle != null && staff) {
+		EmoteData.WeaponClip played = null;
+		if (staff && a.emoting() && a.emote() != null) {
+			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md)
+			EmoteData.Emotes data = EmoteData.of("mercy");
+			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), "staff");
+		}
+		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
+		if (staffClip != null) {
+			Skeleton.sample(staffClip, Math.min(Math.max(a.emoteAt() - played.start(), 0), staffClip.duration()), pose);
+		} else if (idle != null && staff) {
 			// Mercy's staff: its held loop (84A: the head's rings turning) on the clock
 			Skeleton.sample(idle, now % Math.max(idle.duration(), 1.0E-3f), pose);
 		} else if (idle != null) {

@@ -19,9 +19,13 @@ her hub: [heroes/mercy](../heroes/mercy.md) · the hero before her: [lucio_emote
   (up to 1147 vertices); at every window edge her hand is back on it exactly. Heroic 3A7F's window is the one the
   contacts don't support (the grip stays): the data's window is kept.
 
+- **The staff's own clips** (action 4): exported into `mercy_staff.glb` from the emotes' folders (added to
+  `tools/clipmaps/mercy_staff.txt`; the model re-exported from a working copy of its folder with the three clips copied
+  into its Animations, since owm_survey.py takes clips from the model's own folder), written to the emote data as
+  `"weaponClips"` and played by `HeroWeapon` over their windows in place of the held loop. Seen in Caduceus: the
+  staff's head wings swing out flat at 2.5 s and fold back by 3.7 s.
+
 ## Open
-- The staff's own emote clips (1627 / 4DC8 / 852E) aren't exported yet: in Caduceus, Parasol and Flurry the staff is
-  held in its idle pose (Parasol's head doesn't open).
 - `tools/emote_data.py` should read the controls raw itself (by slot), replacing STOW = 204 and the patch step.
 - Listen Up and Salty: the 0.3 s clip 178AD hides the staff, but when 178AD plays (an additive layer's Sequence in
   tree 058F) isn't decoded.
