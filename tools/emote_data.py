@@ -129,7 +129,7 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControl STOW): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True}
+STOWS = {"lucio": True, "mercy": True}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
 HERO_FOLDERS = {"lucio": "Lúcio"}
