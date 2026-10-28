@@ -12,6 +12,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 public record HeroInputPayload(int held, int pressed) implements CustomPacketPayload {
 	public static final int HELD_PRIMARY = 1;
 	public static final int HELD_SECONDARY = 2;
+	/** Riding a wall (Lúcio's Wall Ride: the client moves him; the server needs it for Soundwave Rider). */
+	public static final int HELD_WALL_RIDE = 4;
 	/** Climbing a wall (Kiriko: the client moves her; the climb interrupts a reload, #42). */
 	public static final int HELD_WALL_CLIMB = 8;
 

@@ -54,6 +54,11 @@ public final class HeroModels {
 		return EXTRA_MODELS.get(hero.id + "_1p");
 	}
 
+	/** The hero's weapon when it's a model of its own (hero_models/<hero>_weapon.glb: Lúcio's Sonic Amplifier), or null. */
+	public static @Nullable Loaded weapon(Hero hero) {
+		return EXTRA_MODELS.get(hero.id + "_weapon");
+	}
+
 	/** A model that isn't a hero's (see {@link #EXTRAS}). */
 	public static @Nullable Loaded get(String name) {
 		return EXTRA_MODELS.get(name);
@@ -86,6 +91,7 @@ public final class HeroModels {
 		for (Hero hero : Hero.values()) {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
+			names.add(hero.id + "_weapon");
 		}
 		for (String name : names) {
 			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
@@ -230,6 +236,18 @@ public final class HeroModels {
 		return out;
 	}
 
+	/** Every pixel black and opaque. */
+	private static boolean isBlack(NativeImage image) {
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				if (image.getPixel(x, y) != 0xFF000000) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	/** A small image of one colour throughout. */
 	private static boolean isFlat(NativeImage image) {
 		if (image.getWidth() * image.getHeight() > 64 * 64) {
@@ -275,7 +293,10 @@ public final class HeroModels {
 			}
 			for (int i = 0; i < ids.length; i++) {
 				NativeImage image = p.images().get(i);
-				if (image == null) {
+				if (image == null || isBlack(image)) {
+					// a pure black, opaque image is a layer Overwatch's shader colours: Lúcio's dreads' hair cards (material
+					// 8052, a grey strand gradient its hair shader tints, exported black) stood off his head as a black
+					// crown. Not drawn, as Kiriko's eye shadows aren't
 					continue;
 				}
 				flat[i] = isFlat(image);

@@ -335,6 +335,6 @@ public final class Kiriko implements HeroKit {
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ULT_COST, s.ultActive > 0,
 			s.primaryAmmo, primaryReload, s.secondaryAmmo, secondaryReload,
 			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
-			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk));
+			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}
 }

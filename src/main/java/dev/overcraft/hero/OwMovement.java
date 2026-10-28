@@ -3,12 +3,15 @@ package dev.overcraft.hero;
 import dev.overcraft.Ow;
 import dev.overcraft.kiriko.KirikoStats;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -60,6 +63,22 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> wallClimb = entity -> false;
 
 	private static final Map<LivingEntity, Climb> CLIMBS = new WeakHashMap<>();
+
+	/** Set by the client: this entity has Lúcio's Wall Ride. */
+	public static Predicate<LivingEntity> wallRide = entity -> false;
+	/** Set by the client: the jump key itself is down (Wall Ride holds on it, whatever the auto-climb option says). */
+	public static Predicate<LivingEntity> jumpKeyHeld = entity -> false;
+
+	private static final Map<LivingEntity, Ride> RIDES = new WeakHashMap<>();
+
+	private static final class Ride {
+		boolean riding;
+		/** The wall's outward normal (axis-aligned: Minecraft's walls are). */
+		Vec3 normal = Vec3.ZERO;
+		/** Along the wall, unit length. */
+		Vec3 along = Vec3.ZERO;
+		int cooldown;
+	}
 
 	private static final class Climb {
 		int ticks;
@@ -202,6 +221,10 @@ public final class OwMovement {
 		Vec3 horizontal = travelled.scale(1.0 / SUBSTEPS / 20);
 		Vec3 end = stepped.scale(1.0 / 20);
 
+		if (ride(entity, v)) {
+			return;
+		}
+
 		double vy = v.y;
 		double dy = vy;
 		if (climb(entity, input)) {
@@ -287,6 +310,116 @@ public final class OwMovement {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Lúcio's Wall Ride (tools/reference/lucio.md): in the air, holding jump beside a wall, he rides along it at +30%
+	 * (7.15 m/s, past the buff cap) and holds his height (no source gives a drift). Letting go of jump leaps off: +2.5 m/s
+	 * along the run, 6.54 m/s up looking ahead (9.12 looking up, 4.12 down) and a push off the wall (ours, 2 m/s).
+	 * Crouch drops off without a leap; the wall ending or a block ahead ends the ride. 0.5 s before the next one.
+	 * True while it moves him this tick.
+	 */
+	private static boolean ride(LivingEntity entity, Vec3 v) {
+		if (!wallRide.test(entity)) {
+			return false;
+		}
+		Ride ride = RIDES.computeIfAbsent(entity, e -> new Ride());
+		if (ride.cooldown > 0) {
+			ride.cooldown--;
+		}
+		boolean jump = jumpKeyHeld.test(entity);
+		if (entity.onGround() || entity.isInWater()) {
+			ride.riding = false;
+			return false;
+		}
+		Vec3 flat = new Vec3(v.x, 0, v.z);
+		if (!ride.riding) {
+			if (!jump || ride.cooldown > 0) {
+				return false;
+			}
+			Vec3 normal = wallBeside(entity, flat, null);
+			if (normal == null) {
+				return false;
+			}
+			Vec3 along = flat.subtract(normal.scale(flat.dot(normal)));
+			if (along.lengthSqr() < 1.0E-4) {
+				Vec3 look = entity.getLookAngle();
+				along = new Vec3(look.x, 0, look.z).subtract(normal.scale(look.x * normal.x + look.z * normal.z));
+			}
+			if (along.lengthSqr() < 1.0E-4) {
+				return false;
+			}
+			ride.riding = true;
+			ride.normal = normal;
+			ride.along = along.normalize();
+		}
+		Vec3 normal = wallBeside(entity, flat, ride.normal);
+		double speed = Ow.speed(RUN_SPEED * (1 + dev.overcraft.lucio.LucioStats.WALL_SPEED)) * Math.max(1, speedFactor(entity));
+		if (!jump && normal != null && !entity.isCrouching()) {
+			// the leap off
+			double pitch = Math.clamp(-entity.getXRot() / 90.0, -1, 1);
+			double up = pitch >= 0 ? Mth.lerp(pitch, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_UP)
+				: Mth.lerp(-pitch, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP, dev.overcraft.lucio.LucioStats.WALL_LEAP_UP_LOOKING_DOWN);
+			Vec3 out = ride.along.scale(speed + Ow.speed(dev.overcraft.lucio.LucioStats.WALL_LEAP_FORWARD)).add(ride.normal.scale(Ow.speed(2)));
+			entity.setDeltaMovement(out.x, Ow.speed(up), out.z);
+			endRide(ride);
+			return false;
+		}
+		if (!jump || normal == null || entity.isCrouching() || entity.horizontalCollision && !touches(entity, ride.normal)) {
+			endRide(ride);
+			return false;
+		}
+		Vec3 move = ride.along.scale(speed).subtract(ride.normal.scale(0.02));
+		entity.setDeltaMovement(move.x, 0, move.z);
+		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		entity.setDeltaMovement(move.x, 0, move.z);
+		entity.resetFallDistance();
+		return true;
+	}
+
+	private static void endRide(Ride ride) {
+		ride.riding = false;
+		ride.cooldown = Ow.ticks(dev.overcraft.lucio.LucioStats.WALL_COOLDOWN);
+	}
+
+	/**
+	 * The outward normal of a wall within reach beside the entity: the given one if it's still there, else the side
+	 * most across its run (a wall it's running along, not one it's running into). Null when there's none.
+	 */
+	private static @Nullable Vec3 wallBeside(LivingEntity entity, Vec3 run, @Nullable Vec3 keep) {
+		if (keep != null) {
+			return touches(entity, keep) ? keep : null;
+		}
+		Vec3 best = null;
+		double bestAcross = Double.MAX_VALUE;
+		for (Vec3 normal : new Vec3[] {new Vec3(1, 0, 0), new Vec3(-1, 0, 0), new Vec3(0, 0, 1), new Vec3(0, 0, -1)}) {
+			if (!touches(entity, normal)) {
+				continue;
+			}
+			double across = run.lengthSqr() < 1.0E-6 ? 0 : Math.abs(run.normalize().dot(normal));
+			if (across < bestAcross) {
+				best = normal;
+				bestAcross = across;
+			}
+		}
+		return best;
+	}
+
+	/** A block within reach on the side opposite {@code normal}. */
+	private static boolean touches(LivingEntity entity, Vec3 normal) {
+		double reach = dev.overcraft.lucio.LucioStats.WALL_REACH;
+		return !entity.level().noCollision(entity, entity.getBoundingBox().move(-normal.x * reach, 0, -normal.z * reach));
+	}
+
+	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
+	public static int wallRiding(LivingEntity entity) {
+		Ride ride = RIDES.get(entity);
+		if (ride == null || !ride.riding) {
+			return 0;
+		}
+		// the wall is on the side the normal points away from: right if (along x up) points into it
+		double cross = ride.along.z * ride.normal.x - ride.along.x * ride.normal.z;
+		return cross > 0 ? 1 : -1;
 	}
 
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */

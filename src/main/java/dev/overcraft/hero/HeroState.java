@@ -15,6 +15,7 @@ public final class HeroState {
 	// input, from the client (cleared whenever slot 1 isn't selected)
 	public boolean primaryHeld;
 	public boolean secondaryHeld;
+	public boolean wallRiding;
 	public boolean wallClimbing;
 
 	// weapons
@@ -39,6 +40,26 @@ public final class HeroState {
 	/** A timed attack and reload speed bonus (Ready Step: 0.4) until a game time. */
 	public double attackBuff;
 	public long attackBuffUntil;
+
+	// Lúcio: the song (false = healing, true = speed), a swap under way (ticks left, -1 none), Amp It Up's ticks left,
+	// Soundwave's cooldown, the volley's rounds still to fire and the time to the next, Soundwave Rider's charge (0..1),
+	// Sound Barrier's cast (ticks in, -1 none)
+	public boolean speedSong;
+	public int songSwap = -1;
+	public int ampUp;
+	public double ability3Cooldown;
+	public int volleyLeft;
+	public double volleyNext;
+	public double riderCharge;
+	public int barrierCast = -1;
+	/** Amp It Up given by Beat Drop: when it ends, no cooldown starts. */
+	public boolean ampFree;
+	/** Amp It Up pressed: ticks until it starts (0 none). */
+	public int ampDelay;
+	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
+	public int wallRideTicks;
+	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */
+	public long songLinesFrom;
 
 	// perks (#36): progress toward the next perk level, and the ones picked
 	public double perkXp;
@@ -77,7 +98,18 @@ public final class HeroState {
 		this.hero = hero;
 		ultCharge = 0;
 		ultActive = 0;
-		primaryHeld = secondaryHeld = wallClimbing = false;
+		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		speedSong = false;
+		songSwap = -1;
+		ampUp = 0;
+		ability3Cooldown = 0;
+		volleyLeft = 0;
+		volleyNext = 0;
+		riderCharge = 0;
+		barrierCast = -1;
+		ampFree = false;
+		ampDelay = 0;
+		wallRideTicks = 0;
 		weaponRecovery = 0;
 		primaryReload = secondaryReload = -1;
 		primaryAmmoRestored = false;

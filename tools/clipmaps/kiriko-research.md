@@ -94,11 +94,11 @@ dataflow is unbound in the data. "Aim pitch" is a guess.
 | **Standing idle** | **A6F0** (alt **A804**) sampled at a parameter-driven time, NOT looped (see the recipes above), + AFDB breathing loop + A71F aim pose sheet | held pose **A3A7** + A45D breathing | high for the mechanism |
 | **Crouch idle** | **AEE7** / **AEE8**, sampled the same way, + 60F8 breathing | AB7F + AC79 | high for the mechanism |
 | Crouch walk, 8 directions | AEEB AEED AEF0 AEF3 AEF2 AEF4 AEEF AEEE | A520 / B1D0 (additive) | high (the owner confirmed 3P by eye) |
-| Standing move, 4 directions (start, loop, alt) | AFCB/AFCC/AFCD, AFE9/AFEA/AFEB, AFCF/AFD0/AFD1, AFD7/AFD6/AFD5 | walk bob A524 → A525 (rate driven by speed) | high for structure. Which Strafe slot is fwd/back/left/right isn't named |
+| Standing move, 4 directions (start, loop, alt) | AFCB/AFCC/AFCD, AFE9/AFEA/AFEB, AFCF/AFD0/AFD1, AFD7/AFD6/AFD5 | walk bob A524 → A525 (rate driven by speed) | high for structure. Which Strafe slot is fwd/back/left/right isn't named. **Lúcio's data (2026-10-27): this alias 0x006 node, under category 006, is the jump** (takeoff, rise, end; his lift the feet 0.7-1 m); its slots are forward, back, left, right (measured on his) |
 | Stop (standing) | AA37 → AA38 / AA39 | | medium |
 | Airborne stance | B033 | | high (owner confirmed) |
-| Jump / fall loop / land | candidates AF3C (alias 0x64), AF33 (0x65, the only loop), AF32 (0x66) | ABEB / ABED / ABEE | low: no dumped graph plays these aliases |
-| Unknown 8-direction set (ground category 005) | A8C7 A9AD A8F3 A9B0 A8F9 A9AF A8F4 A9AE + A9B4 A9B5 A9B6 A9B8, additives AFC4 B1EB AFC6 B1EC AFC9 B1ED AFC8 B1EE AA1D | | low (maybe landing or take-off by direction) |
+| Jump / fall loop / land | candidates AF3C (alias 0x64), AF33 (0x65, the only loop), AF32 (0x66) | ABEB / ABED / ABEE | low: no dumped graph plays these aliases. **Lúcio's 0x64-0x66 are a knock-down** (his pelvis lies on the ground in 0x65): not a jump; AF3C plays as her death |
+| Unknown 8-direction set (ground category 005) | A8C7 A9AD A8F3 A9B0 A8F9 A9AF A8F4 A9AE + A9B4 A9B5 A9B6 A9B8, additives AFC4 B1EB AFC6 B1EC AFC9 B1ED AFC8 B1EE AA1D | | **her run**: category 005 is moving on the ground (Lúcio's skating sits there too; these are the run clips `kiriko.txt` measured) |
 | Wall climb | AC1F (alias 0xA0, graph 30D9) | AA7E (+AA94) | high |
 | Wall-climb hop over the top | AC20 (0x9C) | AA7C | high |
 | Melee | AFB8 / AF57 / AFB9 (pitch down/level/up, 0.733 s, alias 0x0D, generic graph 0043) | A529 (+0C63 5687 3B4x) | high |

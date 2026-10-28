@@ -17,6 +17,7 @@ import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Targeting;
 import dev.overcraft.kiriko.KirikoStats;
+import dev.overcraft.lucio.LucioStats;
 import dev.overcraft.net.HeroSyncPayload;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.Camera;
@@ -115,6 +116,8 @@ public final class HeroHud {
 	private static float ability2Seen;
 	private static long ability1ReadyAt = -1;
 	private static long ability2ReadyAt = -1;
+	private static long ability3ReadyAt = -1;
+	private static float ability3Seen;
 	private static int ofudaSeen = -1;
 	private static long ofudaRefilledAt = -1;
 	private static long ultStartedAt = -1;
@@ -178,10 +181,12 @@ public final class HeroHud {
 		}
 		hitMarker(g, w / 2, h / 2);
 		eliminatedCaption(g, w / 2, h / 2 + 205);
-		if (firstPerson && HeroOptions.get().ofudaUi) {
-			ofudaCounter(g, s, w / 2, h / 2 + 136);
+		if (hero == Hero.KIRIKO) {
+			if (firstPerson && HeroOptions.get().ofudaUi) {
+				ofudaCounter(g, s, w / 2, h / 2 + 136);
+			}
+			swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		}
-		swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
@@ -212,8 +217,12 @@ public final class HeroHud {
 		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
 			ability2ReadyAt = now;
 		}
+		if (ability3Seen > 0 && s.ability3Cooldown() <= 0) {
+			ability3ReadyAt = now;
+		}
 		ability1Seen = s.ability1Cooldown();
 		ability2Seen = s.ability2Cooldown();
+		ability3Seen = s.ability3Cooldown();
 		if (ofudaSeen >= 0 && s.secondaryAmmo() > ofudaSeen && s.secondaryAmmo() == KirikoStats.OFUDA_AMMO) {
 			ofudaRefilledAt = now;
 		}
@@ -738,7 +747,7 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ability(hero, "kitsune_rush");
+			Identifier fox = HeroArt.ability(hero, hero == Hero.LUCIO ? "sound_barrier" : "kitsune_rush");
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}
@@ -822,10 +831,39 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.LUCIO) {
+			// Soundwave (the right button), Crossfade (Shift: the song playing marked on it), Amp It Up (E: coral while it
+			// runs, then its cooldown), the boxes where Kiriko's two are and one more to their left (ours)
+			ability(g, hero, w, "soundwave", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), s.ability3Cooldown(),
+				(float) LucioStats.WAVE_COOLDOWN, ability3ReadyAt);
+			ability(g, hero, w, "crossfade", w - 641, 903, HeroControls.get(Action.ABILITY_1), 0, 1, -1);
+			song(g, s.mode() == 1, s.ability1Cooldown() > 0, w - 641, 903, w);
+			float amp = s.activeLeft() > 0 ? (float) LucioStats.AMP_UP_COOLDOWN : s.ability2Cooldown();
+			ability(g, hero, w, "amp_it_up", w - 563, 906, HeroControls.get(Action.ABILITY_2), amp,
+				(float) LucioStats.AMP_UP_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		ability(g, hero, w, "swift_step", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
 			(float) KirikoStats.SWIFT_STEP_COOLDOWN, ability1ReadyAt);
 		ability(g, hero, w, "protection_suzu", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 			(float) KirikoStats.SUZU_COOLDOWN, ability2ReadyAt);
+	}
+
+	/**
+	 * Lúcio's song on the Crossfade box: a band along its foot, Overwatch's colours for the two (healing yellow, speed
+	 * green: ours from the songs' auras), and "+" or "»" in its corner; it blinks during the 0.4 s swap.
+	 */
+	private static void song(GuiGraphicsExtractor g, boolean speed, boolean swapping, float x, float base, float w) {
+		if (swapping && (Util.getMillis() / 100) % 2 == 0) {
+			return;
+		}
+		float cx = x + 32;
+		g.pose().pushMatrix();
+		curve(g, cx, base + 36, slopeAt(960 - (w - cx)));
+		int colour = speed ? 0xFF6FD23C : 0xFFF2D43A;
+		fill(g, x + 4, base + 60, 56, 6, colour);
+		HudText.draw(g, Face.BODY, speed ? "»" : "+", x + 54, base + 22, 13, colour, Align.CENTER);
+		g.pose().popMatrix();
 	}
 
 	/**
@@ -871,7 +909,11 @@ public final class HeroHud {
 			brush(g, seconds, cx, y + h / 2 + 15, 31);
 			HudText.plain(g, Face.NUMBERS, seconds, cx, y + h / 2 + 15, 31, WHITE, Align.CENTER);
 		}
-		keyLabel(g, key, cx, base + 98, 0, ready);
+		if (KeyMappingHelper.getBoundKeyOf(key).getType() == InputConstants.Type.MOUSE) {
+			mouse(g, key, cx, base + 98);
+		} else {
+			keyLabel(g, key, cx, base + 98, 0, ready);
+		}
 		g.pose().popMatrix();
 	}
 
@@ -886,6 +928,12 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.LUCIO) {
+			// the Sonic Amplifier on the left button, where Kiriko's kunai panel is
+			weapon(g, hero, w, "sonic_amplifier", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(), LucioStats.AMP_AMMO,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		// ofuda (primary fire), then kunai (secondary): Overwatch's order. The server's weapon slots are the other way
 		// round (its primary is the kunai), hence the crossed ammo fields.
 		// line centres 61-62 px apart, 16 px between the panels, the mice under them (the second critique, measured)

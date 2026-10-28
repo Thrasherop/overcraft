@@ -452,6 +452,15 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "protection_suzu"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "kitsune_rush"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "wall_climb"));
+			// Overwatch's order: the Sonic Amplifier (its primary fire, on the left button as Kiriko's kunai), Soundwave
+			// (the right), the abilities, the ultimate, the passive
+			case LUCIO -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "sonic_amplifier"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "soundwave"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "crossfade"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "amp_it_up"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "sound_barrier"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "wall_ride"));
 			default -> List.of();
 		};
 	}

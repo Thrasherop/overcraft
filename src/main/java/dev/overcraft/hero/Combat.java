@@ -131,6 +131,10 @@ public final class Combat {
 		if (state != null && now(hero) < state.attackBuffUntil) {
 			rate += state.attackBuff;
 		}
+		// Accelerando (Lúcio's perk): +15% with the speed song, tripled during Amp It Up
+		if (state != null && state.speedSong && hero instanceof Player player && HeroManager.hasPerk(player, Perk.LUCIO_ACCELERANDO)) {
+			rate += dev.overcraft.lucio.LucioStats.ACCELERANDO * (state.ampUp > 0 ? 3 : 1);
+		}
 		return rate;
 	}
 
@@ -188,13 +192,27 @@ public final class Combat {
 	}
 
 	public static void addUltCharge(Player hero, double points) {
+		addUltCharge(hero, points, false);
+	}
+
+	/**
+	 * Ult charge. A Tactician (Lúcio) keeps charging past 100%, to 125%, at 75% of the rate above 100% (Feb 10 2026);
+	 * passive charge stops at 100% (the wiki).
+	 */
+	public static void addUltCharge(Player hero, double points, boolean passive) {
 		HeroState state = HeroManager.state(hero);
 		if (state == null || state.hero == null || state.ultActive > 0 || points <= 0) {
 			return;
 		}
 		double cost = ultCost(state.hero);
 		boolean wasReady = state.ultCharge >= cost;
-		state.ultCharge = Math.min(cost, state.ultCharge + points);
+		if (tactician(state.hero) && !passive) {
+			double below = Math.max(0, Math.min(points, cost - state.ultCharge));
+			double above = (points - below) * dev.overcraft.lucio.LucioStats.TACTICIAN_RATE;
+			state.ultCharge = Math.min(cost * dev.overcraft.lucio.LucioStats.TACTICIAN_CAP, state.ultCharge + below + above);
+		} else if (state.ultCharge < cost) {
+			state.ultCharge = Math.min(cost, state.ultCharge + points);
+		}
 		// no line when it fills: Overwatch's "ult ready" lines are the communication wheel's (stimulus 02E7, category 31,
 		// with Thanks and the pings), said when the player asks (Comms); said on filling, it came right after the kill
 		// that filled it
@@ -218,11 +236,73 @@ public final class Combat {
 		addUltCharge(player, share * ultCost(hero));
 	}
 
+	/** Overwatch's Tactician sub-role (Lúcio): ult charge kept past 100% and after casting. */
+	public static boolean tactician(Hero hero) {
+		return hero.subRole.equals("tactician");
+	}
+
+	/** What's left of the ult charge after casting: nothing, or a Tactician's excess. */
+	public static double afterUlt(Hero hero, double charge) {
+		return tactician(hero) ? Math.max(0, charge - ultCost(hero)) : 0;
+	}
+
 	public static int ultCost(Hero hero) {
 		return switch (hero) {
 			case KIRIKO -> dev.overcraft.kiriko.KirikoStats.ULT_COST;
+			case LUCIO -> dev.overcraft.lucio.LucioStats.ULT_COST;
 			default -> 1;
 		};
+	}
+
+	/** Overhealth given (Sound Barrier), decaying: what's left of it (Minecraft health), the decay a tick, the end. */
+	private record Overhealth(LivingEntity entity, double perTick, long until) {
+	}
+
+	private static final Map<UUID, Overhealth> overhealth = new HashMap<>();
+	private static final Map<UUID, Double> overhealthLeft = new HashMap<>();
+	private static final Identifier OVERHEALTH = Overcraft.id("overhealth");
+
+	/**
+	 * Gives temporary overhealth (Overwatch points) that decays to nothing over {@code seconds}, as Minecraft
+	 * absorption (golden hearts): Sound Barrier's. A new one replaces what's left of an old one.
+	 */
+	public static void overhealth(LivingEntity entity, double owAmount, double seconds) {
+		double amount = Ow.hp(owAmount);
+		clearOverhealth(entity);
+		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
+		if (max != null) {
+			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+		}
+		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
+		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds)));
+		overhealthLeft.put(entity.getUUID(), amount);
+	}
+
+	private static void clearOverhealth(LivingEntity entity) {
+		Double left = overhealthLeft.remove(entity.getUUID());
+		overhealth.remove(entity.getUUID());
+		if (left != null) {
+			entity.setAbsorptionAmount((float) Math.max(0, entity.getAbsorptionAmount() - left));
+		}
+		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
+		if (max != null) {
+			max.removeModifier(OVERHEALTH);
+		}
+	}
+
+	private static void tickOverhealth() {
+		for (Overhealth o : new ArrayList<>(overhealth.values())) {
+			UUID id = o.entity.getUUID();
+			double left = Math.min(overhealthLeft.getOrDefault(id, 0.0), o.entity.getAbsorptionAmount());
+			if (!o.entity.isAlive() || o.entity.isRemoved() || now(o.entity) >= o.until || left <= 0) {
+				overhealthLeft.put(id, left);
+				clearOverhealth(o.entity);
+				continue;
+			}
+			double decay = Math.min(o.perTick, left);
+			o.entity.setAbsorptionAmount((float) (o.entity.getAbsorptionAmount() - decay));
+			overhealthLeft.put(id, left - decay);
+		}
 	}
 
 	/** A timed attribute buff on an entity (Foxtrot's speed), until a game time. */
@@ -244,6 +324,7 @@ public final class Combat {
 
 	/** Every server tick: Kitsune Rush's attribute buffs on and off, expired entries dropped. */
 	public static void tick(MinecraftServer server) {
+		tickOverhealth();
 		Iterator<Buff> buffIt = buffs.values().iterator();
 		while (buffIt.hasNext()) {
 			Buff buff = buffIt.next();
@@ -295,5 +376,7 @@ public final class Combat {
 		rushedUntil.clear();
 		rushedEntities.clear();
 		buffs.clear();
+		overhealth.clear();
+		overhealthLeft.clear();
 	}
 }

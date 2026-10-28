@@ -34,6 +34,13 @@ public final class HeroAnimator {
 	private static final double RUN_CLIP_SPEED = 3.4;
 	private static final double CROUCH_CLIP_SPEED = 2.7;
 	/**
+	 * Lúcio's skating strides play on the clock times his speed (first person: df 0x1A, lucio-map.md). Which speed is 1x
+	 * isn't read from the data: ours, Overwatch's 5.5 m/s, so the strides quicken with Speed Boost.
+	 */
+	private static final double SKATE_CLIP_SPEED = 5.5;
+	/** Lúcio's idle fidgets (additive, on the clock): one now and then, ours how often (the data: a Random, entered on a condition). */
+	private static final float FIDGET_EVERY = 6;
+	/**
 	 * How far (m) the model moves back from the wall while climbing: Overwatch climbs pressed to the wall, hands 0.6 m
 	 * in front of the feet; a Minecraft player stops 0.3 m short of it, which would put the hands in the blocks.
 	 */
@@ -75,6 +82,27 @@ public final class HeroAnimator {
 	private float climbTopAt = -100;
 	private long lastTick = -1;
 	private float lastSeen;
+	/** When each action last started (s): the additive layers (Lúcio's volleys, Soundwave) and the weapon's own clips. */
+	private final Map<String, Float> actionAt = new HashMap<>();
+	/** The last action was a whole-body one (Lúcio's Sound Barrier: he leaps), not the upper body's. */
+	private boolean wholeBody;
+	/** The volley's first-person clip (Overwatch picks one at random per volley). */
+	private int fireVariant;
+	/** When he started skating (first person: a start layer once), stopped (his stop clip), left the ground (his jump). */
+	private float movingSince = -100;
+	private float stoppedAt = -100;
+	private float airborneSince = -100;
+	private boolean wasSkating;
+	/** Which of 4 ways he skated last, and was going when he left the ground ("_forward", ...: his 4-way clips). */
+	private String skateDirection = "_forward";
+	private String jumpDirection = "_forward";
+	/** The wall a wall ride is on: 1 his right, -1 his left, 0 none. */
+	private int wallSide;
+	private float fidgetAt = -100;
+	private @Nullable String fidget;
+	/** The pose last drawn (third person, first person): the weapon hangs on its bones. */
+	private Skeleton.@Nullable Pose lastPose;
+	private Skeleton.@Nullable Pose lastViewPose;
 
 	public static HeroAnimator of(LivingEntity entity) {
 		return BY_ENTITY.computeIfAbsent(entity.getId(), id -> new HeroAnimator());
@@ -83,7 +111,21 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
-		a.actions.trigger(action, now);
+		a.actionAt.put(action, now);
+		if (action.equals("fire")) {
+			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
+			a.fireVariant = new int[] {2, 3, 4, 4}[java.util.concurrent.ThreadLocalRandom.current().nextInt(4)];
+		}
+		String clip = action;
+		if (action.startsWith("crossfade_") && a.wasSkating) {
+			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
+			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
+		}
+		if (!action.equals("fire") && !action.equals("soundwave")) {
+			// (those two are additive layers only: they don't cut a reload's clip)
+			a.wholeBody = action.equals("sound_barrier");
+		}
+		a.actions.trigger(clip, now);
 		a.actionsFirstPerson.trigger(action, now);
 		// doing anything ends an emote, as in Overwatch
 		a.emote = null;
@@ -266,6 +308,69 @@ public final class HeroAnimator {
 		return true;
 	}
 
+	/** His feet's lowest bone standing (Lúcio's idle: 0.16 m, measured from the clip). */
+	private static final float FOOT_HEIGHT = 0.16f;
+
+	/** The lower foot bone's height in the model's space as posed. */
+	private static float lowestFoot(SkinnedModel model, Skeleton.Pose pose) {
+		float lowest = Float.MAX_VALUE;
+		for (String foot : new String[] {"Foot_L", "Foot_R"}) {
+			int bone = model.node(foot);
+			if (bone >= 0) {
+				lowest = Math.min(lowest, Skeleton.world(model, pose, bone).m31());
+			}
+		}
+		return lowest == Float.MAX_VALUE ? FOOT_HEIGHT : lowest;
+	}
+
+	/** Seconds since the action last started, or a long time when it never has. */
+	public float since(String action, float now) {
+		Float at = actionAt.get(action);
+		return at == null ? 1000 : now - at;
+	}
+
+	/** An action's additive clip, played once from when the action started (nothing when the model lacks it). */
+	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
+		SkinnedModel.Clip clip = clip(model, clipName);
+		float t = since(action, now);
+		if (clip != null && t >= 0 && t <= clip.duration()) {
+			Skeleton.addAdditive(clip, t, pose, 1);
+		}
+	}
+
+	/** Lúcio's idle fidgets (alias 80AF80FD: a Random of 2CAF and 2A56, additive, on the clock), now and then while still. */
+	private void fidget(SkinnedModel model, Skeleton.Pose pose, float now) {
+		if (!base.equals("idle") || actions.playing() != null || !model.clips.containsKey("add_fidget_1")) {
+			fidgetAt = now;
+			fidget = null;
+			return;
+		}
+		if (fidget == null && now - fidgetAt > FIDGET_EVERY) {
+			fidget = java.util.concurrent.ThreadLocalRandom.current().nextBoolean() ? "add_fidget_1" : "add_fidget_2";
+			fidgetAt = now;
+		}
+		SkinnedModel.Clip clip = fidget == null ? null : clip(model, fidget);
+		if (clip == null) {
+			return;
+		}
+		if (now - fidgetAt > clip.duration()) {
+			fidget = null;
+			fidgetAt = now;
+			return;
+		}
+		Skeleton.addAdditive(clip, now - fidgetAt, pose, 1);
+	}
+
+	/** The third-person pose last drawn (Lúcio's gun hangs on its bones: HeroWeapon), or null before any. */
+	public Skeleton.@Nullable Pose lastPose() {
+		return emote == null ? lastPose : null;
+	}
+
+	/** The first-person pose last drawn, or null before any. */
+	public Skeleton.@Nullable Pose lastViewPose() {
+		return lastViewPose;
+	}
+
 	/** A climb sound: in the head for the local player (her own sound, #17), at the spot for anyone else watching. */
 	private static void climbSound(LivingEntity entity, Vec3 at, net.minecraft.sounds.SoundEvent sound) {
 		if (entity == net.minecraft.client.Minecraft.getInstance().player) {
@@ -385,14 +490,39 @@ public final class HeroAnimator {
 		basePhase += dt * rate;
 
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		boolean climb = isClimb(base) && model.clips.containsKey(base);
-		SkinnedModel.Clip baseClip = clip(model, climb ? base : "idle");
+		String viewBase = viewBase(model, now);
+		SkinnedModel.Clip baseClip = clip(model, viewBase);
 		if (baseClip != null) {
-			Skeleton.sample(baseClip, climb ? time(baseClip, basePhase, loops(base)) : 0, pose);
+			float t;
+			if (isClimb(viewBase)) {
+				t = time(baseClip, basePhase, loops(base));
+			} else if (viewBase.startsWith("skate")) {
+				// his strides: on the clock times his speed, as the third person's
+				t = time(baseClip, basePhase, true);
+			} else if (viewBase.equals("jump_start")) {
+				t = Math.min(now - airborneSince, baseClip.duration());
+			} else if (viewBase.equals("jump")) {
+				// the rise, held at its end until he lands
+				SkinnedModel.Clip start = clip(model, "jump_start");
+				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
+			} else if (viewBase.equals("idle")) {
+				t = 0;
+			} else {
+				t = time(baseClip, now, true);
+			}
+			Skeleton.sample(baseClip, t, pose);
 		}
 		SkinnedModel.Clip breathe = clip(model, "add_breathe");
 		if (breathe != null) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
+		}
+		// Lúcio's additive layers: the volley (one of its clips at random), Soundwave, Amp It Up's
+		additive(model, pose, fireVariant > 1 ? "add_fire_" + fireVariant : "add_fire", "fire", now);
+		additive(model, pose, "add_soundwave", "soundwave", now);
+		additive(model, pose, "add_amp", "amp_it_up", now);
+		SkinnedModel.Clip setOff = base.startsWith("skate") && !base.startsWith("skate_stop") ? clip(model, "add_skate_start") : null;
+		if (setOff != null && now - movingSince <= setOff.duration()) {
+			Skeleton.addAdditive(setOff, now - movingSince, pose, 1);
 		}
 		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
 		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
@@ -407,6 +537,7 @@ public final class HeroAnimator {
 		}
 		hand(model, pose, true, kunaiGrip, kunaiHand);
 		hand(model, pose, false, ofudaGrip, ofudaHand);
+		lastViewPose = pose;
 		int camera = UpperBody.eye(model);
 		if (camera >= 0) {
 			// the camera's transform now, with its rest turn taken out (at rest it looks along the model's facing)
@@ -417,6 +548,25 @@ public final class HeroAnimator {
 			view.translation(0, -1.6f, 0);
 		}
 		return Skeleton.skin(model, pose, -1, null);
+	}
+
+	/**
+	 * The first-person base clip for what the third person plays: the climb, Lúcio's skating stride (its start first),
+	 * his air (4 ways in first person), his wall ride; else the held idle.
+	 */
+	private String viewBase(SkinnedModel model, float now) {
+		String want = "idle";
+		if (isClimb(base)) {
+			want = base;
+		} else if (base.startsWith("skate") && !base.startsWith("skate_stop")) {
+			want = "skate" + skateDirection;
+		} else if (base.startsWith("jump")) {
+			SkinnedModel.Clip start = clip(model, "jump_start");
+			want = start != null && now - airborneSince < start.duration() ? "jump_start" : "jump";
+		} else if (base.startsWith("wallride")) {
+			want = base;
+		}
+		return model.clips.containsKey(want) ? want : "idle";
 	}
 
 	/**
@@ -472,6 +622,16 @@ public final class HeroAnimator {
 		if (mover >= 0) {
 			pose.t[mover].set(model.restT[mover]);
 		}
+		// Lúcio's jump clips raise his pelvis 0.56 m through the takeoff and the rise (measured: the feet leave the ground
+		// in the clip), a lift Minecraft gives him already: his pelvis stays at the takeoff's first height, so the legs tuck
+		// under him instead of the whole of him floating above where he is
+		int pelvis = base.startsWith("jump_") ? model.node("Pelvis") : -1;
+		SkinnedModel.Clip takeoff = pelvis >= 0 ? clip(model, "jump_forward_start") : null;
+		if (takeoff != null) {
+			Skeleton.Pose first = new Skeleton.Pose(model.nodeNames.length).rest(model);
+			Skeleton.sample(takeoff, 0, first);
+			pose.t[pelvis].y = first.t[pelvis].y;
+		}
 		float climbNow = isClimb(base) ? 1 : 0;
 		float climbBefore = previous != null && isClimb(previous) ? 1 : 0;
 		climbShift = CLIMB_SHIFT * (climbBefore + (climbNow - climbBefore) * fade);
@@ -503,7 +663,27 @@ public final class HeroAnimator {
 			stepCloth(model, entity, pose, now);
 			return Skeleton.skin(model, pose, -1, null);
 		}
-		actions.apply(model, pose, now, UpperBody.mask(model));
+		actions.apply(model, pose, now, wholeBody ? null : UpperBody.mask(model));
+		if (wholeBody && actions.playing() != null) {
+			// Sound Barrier's clips carry its leap (his feet rise 1.63 m): the server leaps him that high, so the clip's own
+			// lift comes off the pose, as his jump's does, and his feet stay where he is
+			int hips = model.node("Pelvis");
+			float lift = lowestFoot(model, pose) - FOOT_HEIGHT;
+			if (hips >= 0 && lift > 0) {
+				pose.t[hips].y -= lift;
+			}
+		}
+		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
+		// the wall ride's, and his idle fidgets now and then
+		additive(model, pose, "add_fire", "fire", now);
+		additive(model, pose, "add_soundwave", "soundwave", now);
+		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
+		additive(model, pose, "add_crossfade_heal", "crossfade_heal", now);
+		SkinnedModel.Clip wallLayer = base.startsWith("wallride") ? clip(model, "add_wallride") : null;
+		if (wallLayer != null) {
+			Skeleton.addAdditive(wallLayer, time(wallLayer, now, true), pose, 1);
+		}
+		fidget(model, pose, now);
 		boolean asleep = entity.isSleeping();
 		if (asleep || entity.isFallFlying() || entity.isVisuallySwimming()) {
 			// lying in bed: her idle arms, legs straight (the model's rest pose). Laid flat, the idle stance's bent
@@ -519,7 +699,8 @@ public final class HeroAnimator {
 		// not needed while her body faces her aim
 		SkinnedModel.Clip aim = asleep ? null : clip(model, "add_aim");
 		float lookPitch = asleep ? 0 : headPitch;
-		if (aim != null) {
+		// (Kiriko's sheet: 63 frames. Lúcio's 265E has 74 laid out otherwise, not read yet: his head turns the whole pitch)
+		if (aim != null && Math.round(aim.duration() * AIM_FPS) == 62) {
 			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
 			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
 			// the sheet already tilts the spine, neck and head by about this share of the pitch: the head turns the rest
@@ -527,6 +708,7 @@ public final class HeroAnimator {
 		}
 
 		stepCloth(model, entity, pose, now);
+		lastPose = pose;
 
 		Quaternionf look = asleep ? new Quaternionf()
 			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
@@ -577,14 +759,24 @@ public final class HeroAnimator {
 		tickVy = vy;
 		tickVz = vz;
 		boolean onGround = entity.onGround();
+		// Lúcio's model: skating, his stop, his 4-way jump and the wall ride in place of the run, jump and fall
+		boolean skates = model.clips.containsKey("skate_stop_forward");
+		double yawNow = Math.toRadians(facing(entity, 1));
 		if (!onGround) {
 			fallSpeed = Math.max(fallSpeed, -vy);
+			if (wasOnGround) {
+				airborneSince = now;
+				// his jump goes the way he was going (standing still: forward)
+				jumpDirection = Math.sqrt(vx * vx + vz * vz) > 0.02
+					? direction4(-vx * Math.sin(yawNow) + vz * Math.cos(yawNow), vx * Math.cos(yawNow) + vz * Math.sin(yawNow)) : "_forward";
+			}
 		} else if (!wasOnGround) {
 			if (fallSpeed >= HARD_LANDING) {
 				landedAt = now;
 			}
 			fallSpeed = 0;
 		}
+		wallSide = OwMovement.wallRiding(entity);
 		wasOnGround = onGround;
 		// climbing: the local player's own climb state; others: going up steadily at about the climb speed
 		boolean climbing = OwMovement.isClimbing(entity);
@@ -623,6 +815,16 @@ public final class HeroAnimator {
 		double speed = Math.sqrt(vx * vx + vz * vz);
 		boolean moving = speed > 0.02;
 		boolean crouching = entity.getPose() == Pose.CROUCHING;
+		boolean skating = moving && onGround && !crouching;
+		if (skating && !wasSkating) {
+			movingSince = now;
+		} else if (!skating && wasSkating && onGround && !crouching) {
+			stoppedAt = now;
+		}
+		if (skating) {
+			skateDirection = direction4(forward, left);
+		}
+		wasSkating = skating;
 
 		String next;
 		if (entity.isDeadOrDying()) {
@@ -637,15 +839,28 @@ public final class HeroAnimator {
 			next = "climb";
 		} else if (overTheTop) {
 			next = "climb_top";
+		} else if (skates && wallSide != 0) {
+			next = wallSide > 0 ? "wallride_right" : "wallride_left";
 		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";
+		} else if (!onGround && skates) {
+			// his jump (alias 0x006): the takeoff, then the rise, held till he lands (lucio-map.md read these as skating)
+			SkinnedModel.Clip start = clip(model, "jump" + jumpDirection + "_start");
+			next = start != null && now - airborneSince < start.duration() ? "jump" + jumpDirection + "_start" : "jump" + jumpDirection;
 		} else if (!onGround) {
 			next = vy > 0 ? "jump" : "fall";
+		} else if (skates && !moving && !crouching && clip(model, "skate_stop" + skateDirection) != null
+			&& now - stoppedAt < clip(model, "skate_stop" + skateDirection).duration()) {
+			// stopping: the brace from skating to standing (alias 0x01B)
+			next = "skate_stop" + skateDirection;
 		} else if (now - landedAt < 0.2f) {
 			next = "land";
 		} else if (crouching) {
 			next = moving ? "crouch_walk" + direction(forward, left) : "crouch_idle";
+		} else if (moving && skates) {
+			// skating, 8 ways (the research map called these clips airborne: their feet are on the ground)
+			next = "skate" + direction(forward, left);
 		} else if (moving) {
 			next = switch (direction(forward, left)) {
 				case "_left" -> "strafe_left";
@@ -665,7 +880,10 @@ public final class HeroAnimator {
 			basePhase = 0;
 		}
 		double metresPerSecond = speed * 20;
-		if (base.startsWith("run") || base.startsWith("strafe")) {
+		if (base.startsWith("skate") && !base.startsWith("skate_stop")) {
+			// the strides on the clock times his speed
+			rate = (float) Math.clamp(metresPerSecond / SKATE_CLIP_SPEED, 0.2, 3);
+		} else if (base.startsWith("run") || base.startsWith("strafe")) {
 			rate = (float) Math.clamp(metresPerSecond / RUN_CLIP_SPEED, 0.5, 2);
 		} else if (base.startsWith("crouch_walk")) {
 			// standing still crouched with no crouch idle clip: the crouch-walk's pose, held
@@ -694,8 +912,20 @@ public final class HeroAnimator {
 		};
 	}
 
+	/** Which of 4 directions (Lúcio's skating and landing slots): "_forward", "_left", "_back", "_right". */
+	private static String direction4(double forward, double left) {
+		int sector = Math.floorMod((int) Math.round(Math.atan2(left, forward) / (Math.PI / 2)), 4);
+		return switch (sector) {
+			case 1 -> "_left";
+			case 2 -> "_back";
+			case 3 -> "_right";
+			default -> "_forward";
+		};
+	}
+
 	private static boolean loops(String clip) {
-		return !(clip.equals("jump") || clip.equals("land") || clip.equals("climb_top") || clip.equals("death"));
+		return !(clip.startsWith("jump") || clip.equals("land") || clip.equals("climb_top") || clip.equals("death")
+			|| clip.startsWith("skate_stop") || clip.startsWith("knockdown"));
 	}
 
 	private static float time(SkinnedModel.Clip clip, float t, boolean loop) {
@@ -724,7 +954,11 @@ public final class HeroAnimator {
 				case "crouch_idle" -> "crouch_walk"; // held still (see the rate below)
 				case "run_back", "strafe_left", "strafe_right" -> "run";
 				case "land", "jump" -> "fall";
-				case "climb", "fall", "run" -> "idle";
+				// Lúcio has no fall clip: his jump's rise
+				case "fall" -> model.clips.containsKey("jump_forward") ? "jump_forward" : "idle";
+				// nor a death: Overwatch ragdolls its heroes, and his knock-down's fall is the nearest of his own clips
+				case "death" -> model.clips.containsKey("knockdown") ? "knockdown" : null;
+				case "climb", "run" -> "idle";
 				default -> null;
 			};
 			if (fallback == null) {
