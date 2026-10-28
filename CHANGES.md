@@ -6,6 +6,23 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
+### Build 0.3.13 (a check-in build: emote sounds, Lúcio's emotes, his reload with Amp It Up and Crossfade)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.13): Lúcio's model with his 17 emotes
+(`owm_survey.py --glb --keep=tools/clipmaps/lucio.txt --emotes=...`), his emote props (`build_asset_pack.py props
+<source> lucio`), the emote sounds and lines (`build_asset_pack.py sounds`, `tools/soundmaps/emotes.txt`), then `zip`.
+- **Emote sounds and lines (#48, the owner: Killer Beam):** each emote clip's sounds and voice lines play when the
+  clip reaches them, as the game data times them (Killer Beam: "Killer Beam! ...or whatever" 2.53 s in, then its
+  whooshes and a cloth rustle). Kiriko's 23 emotes (63 sounds, 15 lines) and Lúcio's 17 (54 sounds, 5 lines), each
+  built from its Wwise events: dance music restarts with its loop, some sounds play only some times, some only the
+  emoting player hears. Nobody has compared them with the game by ear yet.
+- **Lúcio's 17 emotes** on the communication wheel, with their props (the DJ booth, the gift, the ball, the bat, the
+  mic, his instrument). His Sonic Amplifier stays in his hand (Heroic, Listen Up, Salty) or is put away, as each
+  emote's data says. Not yet: the amp that sits on the DJ booth.
+- **Lúcio's reload (follows #47), from the game data:** Amp It Up and Sound Barrier end a reload (the ammo stays
+  unless it was back already); Crossfade doesn't, and no longer replaces the reload's animation. An empty clip reloads
+  by itself after a melee, Amp It Up or the barrier.
+- Not in yet: Lúcio's ability effects (researched: `tools/reference/lucio-effects.md`; being built).
+
 ### Build 0.3.12 (Lúcio, first playable; a cut-short reload gives no ammo; Suzu cures zombie villagers)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.12): Lúcio's three models (body, first-person arms, his
 Sonic Amplifier, from `owm_survey.py --glb` with `tools/clipmaps/lucio*.txt`, straight into `hero_models/`) and his

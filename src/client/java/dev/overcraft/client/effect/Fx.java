@@ -394,6 +394,14 @@ public final class Fx {
 		return p;
 	}
 
+	/** Dev only (DevServer "fxslow"): particles age and move at this share of real time, to look at short effects. */
+	public static float devSlow = 1;
+
+	/** How many particles are alive (the dev harness's state). */
+	public static int count() {
+		return PARTICLES.size();
+	}
+
 	public static void add(@Nullable Particle p) {
 		if (p != null && PARTICLES.size() < MAX_PARTICLES) {
 			PARTICLES.add(p);
@@ -506,7 +514,7 @@ public final class Fx {
 		float now = now();
 		float dt = lastTime < 0 ? 0 : Math.clamp(now - lastTime, 0, 0.25f);
 		lastTime = now;
-		simulate(dt);
+		simulate(dt * devSlow);
 
 		Camera camera = mc.gameRenderer.mainCamera();
 		Vec3 cam = camera.position();

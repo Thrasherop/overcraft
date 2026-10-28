@@ -117,6 +117,7 @@ public final class DevServer {
 				Screen screen = mc.gui.screen();
 				out.addProperty("screen", screen == null ? "" : screen.getClass().getSimpleName());
 				out.addProperty("fps", mc.getFps());
+				out.addProperty("fx", dev.overcraft.client.effect.Fx.count());
 				out.addProperty("inWorld", player != null);
 				if (player != null) {
 					out.addProperty("x", player.getX());
@@ -292,6 +293,12 @@ public final class DevServer {
 				// dev only: reloads the resource packs (F3+T): a regenerated emote data file or pack model without a restart
 				mc.reloadResourcePacks();
 				out.addProperty("ok", true);
+			}
+			case "fxslow" -> {
+				// dev only: "fxslow <share>": effects play at that share of real time (0.1: ten times slower), to look at
+				// effects shorter than a screenshot takes; "fxslow 1" for real time
+				dev.overcraft.client.effect.Fx.devSlow = Float.parseFloat(arg.trim());
+				out.addProperty("fxslow", dev.overcraft.client.effect.Fx.devSlow);
 			}
 			case "emoteat" -> {
 				// dev only: "emoteat <seconds>": holds every emote at that time into it, to look at exact frames (the

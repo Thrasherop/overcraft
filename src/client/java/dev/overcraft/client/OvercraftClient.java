@@ -92,12 +92,15 @@ public class OvercraftClient implements ClientModInitializer {
 			VictoryHud.clear();
 			RushSound.clear();
 			LucioMusic.clear();
+			dev.overcraft.client.comms.EmoteSounds.clear();
+			dev.overcraft.client.effect.LucioFx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
 			LucioMusic.tick(client);
+			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -108,7 +111,9 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.SUZU, ctx -> new ProjectileModelRenderer<>(ctx, "suzu", 1.0f, false));
 		EntityRendererRegistry.register(OcEntities.KITSUNE, KitsuneRenderer::new);
 		// Lúcio's sonic rounds: a bright green orb (our own sprite), full bright
-		EntityRendererRegistry.register(OcEntities.SONIC, ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx, 0.6f, true));
+		// the round has no model: its flight effect is its look (LucioFx), its item only without the local pack
+		EntityRendererRegistry.register(OcEntities.SONIC, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx, "sonic", 0.6f,
+			false, 1, true));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
