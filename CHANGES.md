@@ -6,8 +6,10 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-27
 
-### Build 0.3.13 (emote sounds; Lúcio's emotes, effects and voice lines; his reload with Amp It Up and Crossfade)
-**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.13): Lúcio's model with his 17 emotes
+### Build 0.3.14 (emote sounds; Lúcio's emotes, effects and voice lines; his reload with Amp It Up and Crossfade)
+0.3.13 was a check-in build handed to the owner earlier the same day (emote sounds, Lúcio's emotes and reload, without
+his effects and voice lines); 0.3.14 is the release.
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.14): Lúcio's model with his 17 emotes
 (`owm_survey.py --glb --keep=tools/clipmaps/lucio.txt --emotes=...`), his emote props (`build_asset_pack.py props
 <source> lucio`), the emote sounds and lines and his voice lines (`build_asset_pack.py sounds`,
 `tools/soundmaps/emotes.txt`), his effect masks (`build_asset_pack.py effects <source>/Effects`), then `zip`. A
@@ -30,6 +32,14 @@ check-in build of the first part went to the owner earlier the same day.
   amped Speed Boost. Not drawn: the shield's skin shimmer.
 - **Lúcio's 44 voice lines** on the communication wheel's voice page.
 - His song now ends when he dies (his skates glowed on as he lay dead).
+- **General play before main** (fresh client from `next`, new survival world gp0313, screenshots `gp_*.png`): Kiriko
+  from the select screen on join; a night fight (kunai killed a zombie); her ofuda healed a hurt villager 8 -> 17.6;
+  she died to a skeleton twice and respawned. Lúcio from the hero menu (H at the bed, after setting the respawn point
+  there); his heal song healed the villager 7.6 -> 16.2; his rounds killed a zombie at 12 blocks and one at 1; he died
+  to zombies and respawned. Save and leave, rejoin: the select screen, Kiriko again. Minecraft mode (G): a log broken
+  by hand, 4 planks crafted in the inventory grid by mouse, put in a chest, there after closing and reopening; G back
+  to hero mode. The pause menu read OVERCRAFT 0.3.13 · ASSETS 0.3.13 (before this version bump). Not tried: a second
+  player, the Nether, boats, water.
 
 ### Build 0.3.12 (Lúcio, first playable; a cut-short reload gives no ammo; Suzu cures zombie villagers)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.12): Lúcio's three models (body, first-person arms, his
