@@ -450,6 +450,14 @@ EFFECT_MASKS = {
     "cat_hex": ("JetpackCat", "Lifeline", "000000018F9B", 1),
     "cat_speed_line": ("JetpackCat", "Lifeline", "00000000E99F", 3),
     "cat_rope": ("JetpackCat", "Lifeline", "0000000018A1", 1),
+    # her second assets pass (research\jetpack_cat\assets2.md): the rope's braid (71B0) and glow strips, the hook cone's
+    # and the rings' masks (FX2 = research\jetpack_cat\assets2\fx)
+    "cat_rope_braid": ("JetpackCat", "Lifeline", "00000006E132", 1),
+    "cat_glow_noise": ("JetpackCat", "Lifeline", "000000019167", 1),
+    "cat_strip": ("JetpackCat", "Lifeline", "000000001344", 1),
+    "cat_cone_noise": ("JetpackCat", "Lifeline", "00000002C41F", 1),
+    "cat_cone_line": ("JetpackCat", "Lifeline", "000000016E9D", 1),
+    "cat_ring_line": ("JetpackCat", "Lifeline", "0000000299E3", 1),
     # Frenetic Flight and the jetpack: nozzle hot dot, trail strip, spark blobs
     "cat_glow_dot": ("JetpackCat", "FreneticFlight", "00000000A17F", 1),
     "cat_trail": ("JetpackCat", "FreneticFlight", "0000000219FA", 1),
@@ -495,13 +503,29 @@ EFFECT_MASKS = {
 
 
 # the effects' meshes: pack model name -> (hero, ability folder, model id), converted with tools/owm_static.py
-EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D")}
+# masks the game draws mirrored across their right edge into the whole icon (Lifeline's ground marker 7432: the left
+# half of a paw in a crosshair, research\jetpack_cat\assets2.md): <name>_full.png, twice as wide
+MIRRORED = {"cat_paw_marker"}
+# masks the game multiplies on one mesh, baked into one (the particle draws a single mask): <name>.png = the product of
+# the listed masks, each stretched over the same UVs. Lifeline's rings (7490, research\jetpack_cat\assets2.md): the
+# 299E3 noise times the 1C7A strip, which across the torus's tube (its V) lights the outer rim and fades top and bottom
+PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band")}
+
+EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
+                 # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
+                 # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
+                 "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
+                 "cat_cone": ("JetpackCat", "Lifeline", "00000001B972"),
+                 "cat_half_ring": ("JetpackCat", "Lifeline", "000000014874"),
+                 "cat_sphere": ("JetpackCat", "Purr", "000000001385"),
+                 "cat_purr_torus": ("JetpackCat", "Purr", "00000001BD54"),
+                 "cat_purr_wall": ("JetpackCat", "Purr", "000000019181")}
 
 
 def add_effects(*sources):
     """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
     converts their meshes (the torii gate) into hero_models/. Each from the first source folder that has it: Jetpack
-    Cat's research pass wrote hers outside the read-only extraction (research\jetpack_catx)."""
+    Cat's research pass wrote hers outside the read-only extraction (research\jetpack_cat\fx)."""
     write_mcmeta()
     out = PACK / "assets" / "overcraft" / "textures" / "effect"
     out.mkdir(parents=True, exist_ok=True)
@@ -517,6 +541,23 @@ def add_effects(*sources):
                 continue
             dest = out / (name + ("" if frames == 1 else f"_{frame}") + ".png")
             shutil.copyfile(src, dest)
+            copied += 1
+            if name in MIRRORED:
+                from PIL import Image, ImageOps
+                half = Image.open(dest)
+                whole = Image.new(half.mode, (half.width * 2, half.height))
+                whole.paste(half, (0, 0))
+                whole.paste(ImageOps.mirror(half), (half.width, 0))
+                whole.save(out / f"{name}_full.png")
+    for name, parts in PRODUCTS.items():
+        if all((out / f"{part}.png").exists() for part in parts):
+            from PIL import Image, ImageChops
+            masks = [Image.open(out / f"{part}.png").convert("L") for part in parts]
+            size = (max(m.width for m in masks), max(m.height for m in masks))
+            product = masks[0].resize(size, Image.BILINEAR)
+            for mask in masks[1:]:
+                product = ImageChops.multiply(product, mask.resize(size, Image.BILINEAR))
+            product.save(out / f"{name}.png")
             copied += 1
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():

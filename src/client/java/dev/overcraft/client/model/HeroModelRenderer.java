@@ -263,7 +263,8 @@ public final class HeroModelRenderer {
 	/**
 	 * Jetpack Cat's points, from her third-person look's own hardpoint table (look 2673's 76 entries, not the model's 24:
 	 * E:\Overwatch Archive\research\jetpack_cat\gaps.md 2, H): the jetpack's nozzles 0075 / 0077 (high, outer) and
-	 * 0078 / 007A (low, inner), then her paws 000A / 000B. Each a bone, an offset in its frame and a turn (x, y, z, w).
+	 * 0078 / 007A (low, inner), then her paws 000A / 000B, then her jetpack arm's tip 0283 (bone 3E67, where Lifeline's
+	 * hook hangs and its rope starts: assets2.md 2). Each a bone, an offset in its frame and a turn (x, y, z, w).
 	 */
 	private record Hardpoint(String bone, Vector3f offset, org.joml.Quaternionf turn) {
 	}
@@ -275,6 +276,7 @@ public final class HeroModelRenderer {
 		new Hardpoint("bone_0127", new Vector3f(-0.08f, 0, 0.1f), new org.joml.Quaternionf(0, 0, -1, 0)),
 		new Hardpoint("bone_0170", new Vector3f(0, 0, -0.0359f), new org.joml.Quaternionf(1, 0, 0, 0)),
 		new Hardpoint("bone_016F", new Vector3f(0, 0, 0.031f), new org.joml.Quaternionf()),
+		new Hardpoint("bone_3E67", new Vector3f(), new org.joml.Quaternionf()),
 	};
 
 	/**

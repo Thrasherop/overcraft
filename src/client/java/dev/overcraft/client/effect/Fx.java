@@ -13,6 +13,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import dev.overcraft.client.model.Skeleton;
+import dev.overcraft.client.model.SkinnedModel;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
@@ -400,6 +403,18 @@ public final class Fx {
 	/** How many particles are alive (the dev harness's state). */
 	public static int count() {
 		return PARTICLES.size();
+	}
+
+	/** Dev only (DevServer "fxnear"): the live particles within r of at, one line each. */
+	public static List<String> near(Vec3 at, double r) {
+		List<String> out = new ArrayList<>();
+		for (Particle p : PARTICLES) {
+			if (at.distanceToSqr(p.x, p.y, p.z) <= r * r) {
+				out.add(String.format(java.util.Locale.ROOT, "%s %s at %.2f %.2f %.2f age %.2f/%.2f size %.2f alpha %.2f",
+					p.frame().getPath(), p.shape, p.x, p.y, p.z, p.age, p.life, p.size(), p.opacity()));
+			}
+		}
+		return out;
 	}
 
 	public static void add(@Nullable Particle p) {
@@ -868,5 +883,61 @@ public final class Fx {
 			vertex(pose, buffer, rightSide[i + 1][0], rightSide[i + 1][1], rightSide[i + 1][2], 1, v1, c1);
 			vertex(pose, buffer, left[i + 1][0], left[i + 1][1], left[i + 1][2], 0, v1, c1);
 		}
+	}
+
+	private static final java.util.Map<String, float[]> MESHES = new java.util.HashMap<>();
+	private static final java.util.Map<String, SkinnedModel> MESHES_FROM = new java.util.HashMap<>();
+
+	/**
+	 * An effect mesh from the local pack (hero_models/<name>.glb: build_asset_pack.py's EFFECT_MODELS, the game's own
+	 * effect models: Kiriko's torii gate, Jetpack Cat's rings and cone), as triangles one metre wide; null without.
+	 */
+	public static float @Nullable [] mesh(String name) {
+		dev.overcraft.client.model.HeroModels.Loaded loaded = dev.overcraft.client.model.HeroModels.get(name);
+		if (loaded == null) {
+			return null;
+		}
+		if (loaded.model() != MESHES_FROM.get(name)) {
+			MESHES_FROM.put(name, loaded.model());
+			MESHES.put(name, triangles(loaded.model()));
+		}
+		return MESHES.get(name);
+	}
+
+	/**
+	 * A static model's triangles (x, y, z, u, v per corner), turned so its wider horizontal side is X, centred on X and
+	 * Z, standing on y = 0 and scaled to one metre wide.
+	 */
+	private static float[] triangles(SkinnedModel model) {
+		Matrix4f[] skin = Skeleton.skin(model, new Skeleton.Pose(model.nodeNames.length).rest(model), -1, null);
+		List<float[]> corners = new ArrayList<>();
+		Vector3f lo = new Vector3f(Float.MAX_VALUE);
+		Vector3f hi = new Vector3f(-Float.MAX_VALUE);
+		for (SkinnedModel.Piece piece : model.pieces) {
+			float[] pos = piece.pos();
+			int[] idx = piece.indices();
+			for (int i : idx) {
+				Vector3f at = skin[piece.joint4()[i * 4]].transformPosition(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2], new Vector3f());
+				lo.min(at);
+				hi.max(at);
+				corners.add(new float[] {at.x, at.y, at.z, piece.uv()[i * 2], piece.uv()[i * 2 + 1]});
+			}
+		}
+		boolean turn = hi.z - lo.z > hi.x - lo.x;
+		float width = Math.max(hi.x - lo.x, hi.z - lo.z);
+		float cx = (lo.x + hi.x) / 2;
+		float cz = (lo.z + hi.z) / 2;
+		float[] out = new float[corners.size() * 5];
+		for (int i = 0; i < corners.size(); i++) {
+			float[] c = corners.get(i);
+			float x = c[0] - cx;
+			float z = c[2] - cz;
+			out[i * 5] = (turn ? z : x) / width;
+			out[i * 5 + 1] = (c[1] - lo.y) / width;
+			out[i * 5 + 2] = (turn ? -x : z) / width;
+			out[i * 5 + 3] = c[3];
+			out[i * 5 + 4] = c[4];
+		}
+		return out;
 	}
 }

@@ -55,7 +55,7 @@ public final class EffectArt {
 			1, 1, 1, 1),
 		/** Lúcio's round's glow (A3F's core): #9EB243 to #E2FF64, no white top (his team green's white stacked to a white ball). */
 		LUCIO_ROUND(0, 0, 0, 0, .5f, .342f, .445f, .056f, 1, .761f, 1, .127f),
-		// Jetpack Cat's (tools/reference/jetpack_cat-effects.md, from her LUT rows: research\jetpack_cat\workx_palettes.txt)
+		// Jetpack Cat's (tools/reference/jetpack_cat-effects.md, from her LUT rows: research\jetpack_cat\work\fx_palettes.txt)
 		/** Jetpack Cat's shot core glow (707A / 7079, LUT 800DA2FE r1): gold to white. */
 		CAT_CORE(0, 0, 0, 0, .25f, 1, .707f, 0, .5f, 1, .887f, 0, .75f, 1, 1, .37f, 1, 1, 1, 1),
 		/** Her paw shot's tube trail (80067279 r5, HDR 4.7): gold to white-hot. */
@@ -138,6 +138,8 @@ public final class EffectArt {
 		CAT_TETHER(0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 0, 1, 1, 1, 0, 1, 1),
 		/** Lifeline's rope as enemies see it (800367D1 r3): red to yellow. */
 		CAT_TETHER_ENEMY(0, 0, 0, 0, .25f, 1, .131f, 0, .5f, 1, .263f, 0, .75f, 1, .629f, 0, 1, 1, 1, 0),
+		/** Lifeline's hook glow (6EA2 / 71B1 cone, r3): #7FA8FF to white. */
+		CAT_HOOK(0, 0, 0, 0, .25f, .25f, .33f, .5f, .5f, .5f, .66f, 1, .75f, .75f, .83f, 1, 1, 1, 1, 1),
 		/** Lifeline's paw marker decal (7432, 800333C5 r3): blue to cyan. */
 		CAT_MARKER(0, 0, 0, 0, .25f, .001f, .175f, .976f, .5f, 0, .404f, .975f, .75f, 0, .671f, .992f, 1, .072f, 1, .991f),
 		/** Jetpack flame core (7064, 8004B7CE r7, HDR 11): blue to cyan to white. */
@@ -292,6 +294,18 @@ public final class EffectArt {
 		return image;
 	}
 
+	/** Whether no pixel is see-through: a grey mask, its shape in its grey (the masks), not an image with a cut-out. */
+	private static boolean solidAlpha(NativeImage image) {
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				if (image.getPixel(x, y) >>> 24 != 0xFF) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private static @Nullable Identifier load(String name, Palette palette, boolean soft, String key) {
 		Identifier source = Overcraft.id("textures/effect/" + name + ".png");
 		Minecraft mc = Minecraft.getInstance();
@@ -304,12 +318,15 @@ public final class EffectArt {
 			NativeImage out = new NativeImage(mask.getWidth(), mask.getHeight(), false);
 			float[] c = new float[3];
 			float black = BLACK_POINT.getOrDefault(name, 0f);
+			boolean greyMask = palette == Palette.NATURAL && soft && solidAlpha(mask);
 			for (int y = 0; y < mask.getHeight(); y++) {
 				for (int x = 0; x < mask.getWidth(); x++) {
 					int argb = mask.getPixel(x, y);
 					if (palette == Palette.NATURAL) {
-						// soft: its silhouette in white, to be tinted
-						out.setPixel(x, y, soft ? (argb & 0xFF000000) | 0xFFFFFF : argb);
+						// soft: its silhouette in white, to be tinted. A grey mask (solid alpha: the smoke) is its own silhouette,
+						// its grey the alpha; drawn by its alpha alone it was a white square (Catnapper's landing, found playing)
+						int silhouette = greyMask ? (argb >> 16) & 0xFF : argb >>> 24;
+						out.setPixel(x, y, soft ? silhouette << 24 | 0xFFFFFF : argb);
 						continue;
 					}
 					// the masks are grey (one channel copied to three); their alpha is solid

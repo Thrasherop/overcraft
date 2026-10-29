@@ -5,9 +5,6 @@ import dev.overcraft.client.effect.Fx.Particle;
 import dev.overcraft.client.effect.Fx.Shape;
 import dev.overcraft.net.EffectPayload;
 import dev.overcraft.client.model.HeroModelRenderer;
-import dev.overcraft.client.model.HeroModels;
-import dev.overcraft.client.model.Skeleton;
-import dev.overcraft.client.model.SkinnedModel;
 import dev.overcraft.client.HeroHud;
 import dev.overcraft.hero.Allies;
 import net.minecraft.client.Camera;
@@ -18,14 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Kiriko's effects, rebuilt from Overwatch's own (tools/reference/kiriko-effects.md: which textures, sizes, lifetimes,
@@ -521,7 +515,7 @@ public final class KirikoFx {
 		float life = seconds > 0 ? seconds : 10.67f;
 		Vec3 side = across.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : across.normalize();
 		double half = across.length() / 2;
-		float[] torii = toriiMesh();
+		float[] torii = Fx.mesh("torii");
 		// an enemy's blended, so its red holds over the sky (added, it washed out pink)
 		Particle gate = torii == null ? null : enemy ? Fx.soft("dome_noise", Palette.WHITE) : Fx.particle("dome_noise", Palette.WHITE);
 		if (gate != null) {
@@ -690,59 +684,6 @@ public final class KirikoFx {
 			Fx.add(dust.at(at.add(randomUnit(Fx.RANDOM).scale(0.2))).velocity(new Vec3(0, range(0.2f, 0.4f), 0)).life(range(0.33f, 0.4f))
 				.size(size * 0.7f, size).spin(range(-Mth.HALF_PI, Mth.HALF_PI), 0).tint(0xEAC072).alpha(0.6f).fade(0.1f, 0.6f));
 		}
-	}
-
-	private static float @Nullable [] torii;
-	private static @Nullable SkinnedModel toriiFrom;
-
-	/** The torii gate mesh from the local pack (hero_models/torii.glb), as triangles one metre wide; null without. */
-	private static float @Nullable [] toriiMesh() {
-		HeroModels.Loaded loaded = HeroModels.get("torii");
-		if (loaded == null) {
-			return null;
-		}
-		if (loaded.model() != toriiFrom) {
-			toriiFrom = loaded.model();
-			torii = triangles(loaded.model());
-		}
-		return torii;
-	}
-
-	/**
-	 * A static model's triangles (x, y, z, u, v per corner), turned so its wider horizontal side is X, centred on X and
-	 * Z, standing on y = 0 and scaled to one metre wide.
-	 */
-	private static float[] triangles(SkinnedModel model) {
-		Matrix4f[] skin = Skeleton.skin(model, new Skeleton.Pose(model.nodeNames.length).rest(model), -1, null);
-		List<float[]> corners = new ArrayList<>();
-		Vector3f lo = new Vector3f(Float.MAX_VALUE);
-		Vector3f hi = new Vector3f(-Float.MAX_VALUE);
-		for (SkinnedModel.Piece piece : model.pieces) {
-			float[] pos = piece.pos();
-			int[] idx = piece.indices();
-			for (int i : idx) {
-				Vector3f at = skin[piece.joint4()[i * 4]].transformPosition(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2], new Vector3f());
-				lo.min(at);
-				hi.max(at);
-				corners.add(new float[] {at.x, at.y, at.z, piece.uv()[i * 2], piece.uv()[i * 2 + 1]});
-			}
-		}
-		boolean turn = hi.z - lo.z > hi.x - lo.x;
-		float width = Math.max(hi.x - lo.x, hi.z - lo.z);
-		float cx = (lo.x + hi.x) / 2;
-		float cz = (lo.z + hi.z) / 2;
-		float[] out = new float[corners.size() * 5];
-		for (int i = 0; i < corners.size(); i++) {
-			float[] c = corners.get(i);
-			float x = c[0] - cx;
-			float z = c[2] - cz;
-			out[i * 5] = (turn ? z : x) / width;
-			out[i * 5 + 1] = (c[1] - lo.y) / width;
-			out[i * 5 + 2] = (turn ? -x : z) / width;
-			out[i * 5 + 3] = c[3];
-			out[i * 5 + 4] = c[4];
-		}
-		return out;
 	}
 
 	private static Particle glow(String mask, Palette p, Vec3 at, float size, float life, float alpha) {

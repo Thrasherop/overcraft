@@ -59,7 +59,21 @@ public final class JetpackCatStats {
 	public static final double FUEL_CARRY_FACTOR = 1 / 3.0;    // BZ Jun 16 2026: 3x slower
 
 	// Lifeline (ability 1): a toggle; an ally in reach is towed on a rope
-	public static final double LIFELINE_REACH = 8.5;           // W: a cylinder 8.5 m in radius
+	public static final double LIFELINE_REACH = 8.5;           // W: a cylinder 8.5 m in radius; D 5A8F #1215 (v11861)
+	/**
+	 * The cylinder's span on her: from this far below her feet to LIFELINE_HEIGHT above that (1.25 m above her), sight
+	 * checked from this high on her (D 5A8F #1215: v1165 15 m, offset (0, -13.75, 0), sight from her root + 0.75; read
+	 * as the cylinder's base, M). research\jetpack_cat\assets2.md 1.
+	 */
+	public static final double LIFELINE_BELOW = 13.75;
+	public static final double LIFELINE_SIGHT = 0.75;
+	/** An ally let go isn't taken again for this long (s): D v74583 -> v52054. */
+	public static final double LIFELINE_LOCKOUT = 2;
+	/** She can switch it off from this long after switching it on, and not within LIFELINE_HOLD of a catch (D #1057). */
+	public static final double LIFELINE_OFF_AFTER = 0.6;
+	public static final double LIFELINE_HOLD = 0.5;
+	/** The rope's distance break waits this long after a catch (D). */
+	public static final double LIFELINE_BREAK_GRACE = 0.2;
 	public static final double LIFELINE_HEIGHT = 15;           // W: and 15 m tall
 	public static final double LIFELINE_ROPE = 4;              // W; her data's rope length, max(4, 0.2) (graph #1137)
 	/** The rope snaps when she is this many rope lengths from the ally across (her data's #928: M, a horizontal offset). */
