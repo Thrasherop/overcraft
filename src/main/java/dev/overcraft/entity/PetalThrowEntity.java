@@ -26,12 +26,15 @@ import net.minecraft.world.phys.Vec3;
 /**
  * What Lifeweaver throws from his left wrist (his model 126CC): Petal Platform's seed (entity 450F, 50 m/s) or Sow the
  * Seed's (6F4C, 25 m/s), both with gravity 9.8. It deploys only on the ground: a wall or a ceiling turns it back (W "it
- * bounces"; how much is ours: half its speed), creatures don't stop it.
+ * bounces"; how much is ours), creatures don't stop it.
  */
 public class PetalThrowEntity extends OwProjectile {
 	private static final EntityDataAccessor<Boolean> SEED = SynchedEntityData.defineId(PetalThrowEntity.class, EntityDataSerializers.BOOLEAN);
-	/** A bounce keeps this much of the speed (ours: the data's bounce block isn't read, L). */
-	private static final double BOUNCE = 0.5;
+	/**
+	 * A bounce keeps this much of the speed (ours: the data's bounce block isn't read, L). Half sent a platform thrown
+	 * at a wall 6 m ahead 18.7 m back past him (found playing): it drops off the wall instead, about 1.5 m out.
+	 */
+	private static final double BOUNCE = 0.15;
 
 	public PetalThrowEntity(EntityType<? extends PetalThrowEntity> type, Level level) {
 		super(type, level);

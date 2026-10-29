@@ -143,6 +143,12 @@ public final class ClientLifeweaver {
 			return null;
 		}
 		long t = entity.level().getGameTime() - gripAt;
+		// their Jump lets go from 0.65 s (D 21EE), here at once: waiting for the server's word took 0.4 s more (found
+		// playing with a second player); the server ends it too, seeing the same Jump
+		if (t >= dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_JUMP_CANCEL) && mc.player.input.keyPresses.jump()) {
+			gripTo = null;
+			return null;
+		}
 		int moving = (int) (t - dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_PULL_FROM));
 		if (moving <= 0) {
 			return new OwMovement.Glide(entity.position(), 0, 0);

@@ -24,6 +24,27 @@ and the first with shields. Up: [Techniques](../README.md) · the method:
   28.875 m/s), the Blossom's passive charge (5.175 s), Life Grip's far pull, the seed's 3 m pickup. A thorn-to-blossom
   bonus in his graphs is in no public source: left out until the owner says.
 
+## Building him (2026-10-29: what the first pass learned)
+- **Read the notes first:** [animation_import](../animation/animation_import.md) already said `4-*` clips are additive
+  and named `add_*`; his clip maps missed it, and thorn fire, the dash and landings collapsed his model onto the camera
+  until renamed (`tools/rename_glb_clips.py`, no re-export). His third-person Thorn Volley locomotion clips are upper-body
+  overrides (their legs don't move): played over the base run with the upper-body mask (`HeroAnimator.lifeweaverLayers`).
+- **The props' clips are bound in the alias tables** (`workliases_0FCC.txt` platform, `aliases_0FFC.txt` tree: alias,
+  then the graph node that plays it), which the clip map's "L" guesses predate. Read those, not the guesses.
+- **A moving platform in Minecraft** (`PetalPlatformEntity`): its height is a function of its synced phase on both
+  sides (no position packets: they made it stutter); it pushes riders as Shulker does (`MoverType.SHULKER`); a player
+  collides with it on their own client only (the server's copy runs a tick or two ahead while it moves, rose into the
+  player and refused the client's lifted position); phase time never below 0 (a client behind took its rider into the
+  ground); riders stay on the ground while carried (else they slid off); riders' landings are guarded until they've
+  been in the air off it and landed (the edge tick counts as "on the ground"), and the guard is ticked server-wide (a
+  platform gone mid-fall would drop it). Floating on it, a player's "above ground" count is reset (the server's kick).
+- **Shields** (`hero/Shields`): every health change passes `setHealth`, so a loss comes off the shields first and a
+  gain stops under them; their own regeneration bypasses it.
+- **Movement hooks go before the mover reads velocity:** the dash's end speed was overwritten by the step already
+  computed from the dash's speed (`OwMovement.travel`: the dash hook is first now).
+- **A player pulled by Life Grip moves on their own client** (`GripPayload`, `ClientLifeweaver.grip`), held still for
+  the 0.35 s vine; their Jump lets go on their client at once (waiting for the server's word took 0.4 s).
+
 ## Open
 The plan's "Open" list: the platform's collision and its riders, the tree's canopy, his fall-damage height, and what
 ends the platform when he dies.
