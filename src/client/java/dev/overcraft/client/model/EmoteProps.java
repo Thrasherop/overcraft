@@ -32,6 +32,12 @@ public final class EmoteProps {
 	private static final float FALL = 9.8f;
 	/** It rests this far above her feet's level once down (ours). */
 	private static final float FLOOR = 0.05f;
+	/**
+	 * How a let-go prop lands (ours: the owner, #58, "its own object that bounces a bit and falls"): the share of its
+	 * speed down it keeps going back up, of its speed along the floor at each bounce, its tumble (radians a second,
+	 * halved each bounce), the speed down below which it stops bouncing, and the friction on the floor (a second).
+	 */
+	private static final float BOUNCE = 0.35f, SLIDE = 0.7f, TUMBLE = 5f, REST = 0.6f, FRICTION = 4f;
 
 	private EmoteProps() {
 	}
@@ -135,13 +141,18 @@ public final class EmoteProps {
 					continue;
 				}
 				if (spawn.falls()) {
-					animator.released.put(key, new Matrix4f(where));
+					// its speed from frame to frame (a new emote starts it again), carried off when it's let go
+					HeroAnimator.Released last = animator.released.get(key);
+					Vector3f velocity = new Vector3f();
+					if (last != null && at > last.time() + 0.005f && at - last.time() < 0.25f) {
+						velocity = where.getTranslation(new Vector3f()).sub(last.at().getTranslation(new Vector3f()))
+							.div(at - last.time());
+					}
+					animator.released.put(key, new HeroAnimator.Released(new Matrix4f(where), velocity, at));
 				}
 			} else if (spawn.falls() && animator.released.get(key) != null) {
-				// let go when its time is up: from where it was then, fallen since, down to her feet's level
-				Matrix4f from = animator.released.get(key);
-				float fall = 0.5f * FALL * (at - end) * (at - end);
-				where = new Matrix4f().translation(0, -Math.min(fall, from.m31() - FLOOR), 0).mul(from);
+				// let go when its time is up: thrown on from where it was, falling, bouncing on her feet's level
+				where = fallen(animator.released.get(key), at - end);
 			} else {
 				continue;
 			}
@@ -157,6 +168,49 @@ public final class EmoteProps {
 			}
 		}
 		return placed.isEmpty() ? null : new Held(placed);
+	}
+
+	/**
+	 * Where a let-go prop is t seconds after its release, worked out from the release each frame (the same answer every
+	 * frame for the same t): its last speed carried on, gravity, bounces on her feet's level that lose speed, sliding to
+	 * a stop, tumbling about the level axis across its path.
+	 */
+	private static Matrix4f fallen(HeroAnimator.Released released, float t) {
+		Vector3f p = released.at().getTranslation(new Vector3f());
+		Vector3f v = new Vector3f(released.velocity());
+		float spin = TUMBLE;
+		float angle = 0;
+		float dt = 1 / 120f;
+		for (float s = 0; s < t; s += dt) {
+			float h = Math.min(dt, t - s);
+			boolean resting = p.y <= FLOOR && v.y == 0;
+			if (!resting) {
+				v.y -= FALL * h;
+			}
+			p.fma(h, v);
+			angle += spin * h;
+			if (p.y < FLOOR) {
+				p.y = FLOOR;
+				if (v.y < -REST) {
+					v.set(v.x * SLIDE, -v.y * BOUNCE, v.z * SLIDE);
+					spin *= 0.5f;
+				} else {
+					v.y = 0;
+				}
+			}
+			if (p.y <= FLOOR && v.y == 0) {
+				float keep = Math.max(0, 1 - FRICTION * h);
+				v.mul(keep, 1, keep);
+				spin *= keep;
+			}
+		}
+		Vector3f axis = new Vector3f(released.velocity().z, 0, -released.velocity().x);
+		if (axis.lengthSquared() < 1.0E-6f) {
+			axis.set(1, 0, 0);
+		}
+		axis.normalize();
+		Matrix4f turn = new Matrix4f(released.at()).setTranslation(0, 0, 0);
+		return new Matrix4f().translation(p).rotate(angle, axis).mul(turn);
 	}
 
 	/**
