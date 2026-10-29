@@ -436,7 +436,10 @@ public final class HeroAnimator {
 	/**
 	 * Lifeweaver's layers over his base (third person): with Thorn Volley out its clip for the state over the upper body
 	 * (its run, strafe and crouch clips are upper-body overrides: their legs don't move), firing its own stand; charging a
-	 * blossom standing, the charging stand; aiming the tree, its aim loop. Then the volley's layer.
+	 * blossom standing, the charging stand; aiming the tree, its aim loop. Then the volley's layer. His other third-person
+	 * 4-* clips (the firing loop's layer CF24, the landings, the dash's end) aren't deltas from rest as our layers expect:
+	 * their keyed bones swing 90-180 degrees and their first frames aren't neutral (a clavicle at 50); laid on as deltas
+	 * they threw him back with his arm up and a leg kicked out (found playing). Left out until their blend is read.
 	 */
 	private void lifeweaverLayers(SkinnedModel model, Skeleton.Pose pose, float now) {
 		String over = null;
@@ -454,19 +457,7 @@ public final class HeroAnimator {
 			Skeleton.sample(clip, time(clip, now, true), upper);
 			Skeleton.blend(pose, upper, 1, UpperBody.mask(model));
 		}
-		if (thornFiring) {
-			SkinnedModel.Clip firing = clip(model, "add_firing_thorn");
-			if (firing != null) {
-				Skeleton.addAdditive(firing, time(firing, now, true), pose, 1);
-			}
-		}
 		additive(model, pose, "add_fire_thorn", "fire_thorn", now);
-		landing(model, pose, now, Math.abs(tickVx) + Math.abs(tickVz) > 0.05 ? "add_land_forward" : "add_land");
-		SkinnedModel.Clip dashEnd = clip(model, "add_dash_end");
-		float sinceDash = since("dash", now);
-		if (dashEnd != null && sinceDash >= 0.25f && sinceDash - 0.25f < dashEnd.duration()) {
-			Skeleton.addAdditive(dashEnd, sinceDash - 0.25f, pose, 1);
-		}
 	}
 
 	/** His landing: an additive layer from the moment he lands (lifeweaver.txt's 4-* land clips), over whatever he does. */

@@ -872,6 +872,11 @@ public final class HeroHud {
 			// in the air), in Lúcio's three places (ours)
 			ability(g, hero, w, "petal_platform", w - 719, 900, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
 				(float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_COOLDOWN, ability1ReadyAt);
+			// his platform up: its raised time left in the box's corner (D 368D's HUD fraction 0B75: v215 / v567)
+			float raised = platformRaisedLeft();
+			if (raised >= 0) {
+				charges(g, (int) Math.ceil(raised), w - 719, 900, w);
+			}
 			ability(g, hero, w, "life_grip", w - 641, 903, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 				(float) dev.overcraft.lifeweaver.LifeweaverStats.GRIP_COOLDOWN, ability2ReadyAt);
 			ability(g, hero, w, "rejuvenating_dash", w - 563, 906, HeroControls.get(Action.JUMP), s.ability3Cooldown(),
@@ -938,6 +943,21 @@ public final class HeroHud {
 		fill(g, x + 4, base + 60, 56 * Math.clamp(energy, 0, 1), 6, colour);
 		HudText.draw(g, Face.BODY, Math.round(energy * 100) + "%", x + 50, base + 22, 13, colour, Align.CENTER);
 		g.pose().popMatrix();
+	}
+
+	/** The local Lifeweaver's platform's raised time left (s) while it's rising or up, else -1. */
+	private static float platformRaisedLeft() {
+		var mc = net.minecraft.client.Minecraft.getInstance();
+		if (mc.level == null || mc.player == null) {
+			return -1;
+		}
+		for (var e : mc.level.entitiesForRendering()) {
+			if (e instanceof dev.overcraft.entity.PetalPlatformEntity p && p.ownerId() == mc.player.getId()
+				&& (p.phase() == dev.overcraft.entity.PetalPlatformEntity.RISING || p.phase() == dev.overcraft.entity.PetalPlatformEntity.RAISED)) {
+				return p.raisedLeft();
+			}
+		}
+		return -1;
 	}
 
 	/**
