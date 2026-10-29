@@ -34,6 +34,8 @@ public final class HeroState {
 	public double ability1Cooldown;
 	public double ability2Cooldown;
 	public int castTicks = -1;
+	/** Ana's Sleep Dart cast, ticks into it (-1 none). */
+	public int sleepCast = -1;
 	public @Nullable UUID castTarget;
 	/** Quick melee, every hero's (QuickMelee). */
 	public double meleeCooldown;
@@ -221,6 +223,7 @@ public final class HeroState {
 		ability1Cooldown = ability2Cooldown = 0;
 		meleeCooldown = 0;
 		castTicks = -1;
+		sleepCast = -1;
 		castTarget = null;
 		attackBuff = 0;
 		attackBuffUntil = 0;

@@ -49,6 +49,7 @@ public final class Ana implements HeroKit {
 		s.weaponRecovery = 0;
 		s.scope = 0;
 		s.castTicks = -1;
+		s.sleepCast = -1;
 		publish(player, s);
 	}
 
@@ -69,13 +70,15 @@ public final class Ana implements HeroKit {
 		boolean live = controls && player.isAlive();
 		if (!live) {
 			s.castTicks = -1;
+			s.sleepCast = -1;
 		} else {
 			grenadeCast(player, s);
+			sleepCast(player, s);
 		}
 		// Take Aim: held, with rounds and no reload; let go, a reload or the clip empty takes it down (0B94 #135 / #91 /
 		// #189). The shot's recovery pauses while it moves (#63 / #172)
 		// (an ability's cast takes the rifle: no scope during it, ours for the grenade)
-		boolean wantScope = live && s.secondaryHeld && s.primaryAmmo > 0 && s.primaryReload < 0 && s.castTicks < 0;
+		boolean wantScope = live && s.secondaryHeld && s.primaryAmmo > 0 && s.primaryReload < 0 && !casting(s);
 		double was = s.scope;
 		s.scope = wantScope ? Math.min(1, s.scope + 1 / (SCOPE_IN * 20)) : Math.max(0, s.scope - 1 / (SCOPE_OUT * 20));
 		slow(player, live && s.scope >= 1);
@@ -91,7 +94,7 @@ public final class Ana implements HeroKit {
 			startReload(player, s);
 		}
 		// no shot at all while scoping in or out (#143 / #475)
-		boolean steady = (s.scope == 0 || s.scope >= 1) && s.castTicks < 0;
+		boolean steady = (s.scope == 0 || s.scope >= 1) && !casting(s);
 		if (s.primaryHeld && steady && s.primaryReload < 0 && s.weaponRecovery <= 0 && s.primaryAmmo > 0) {
 			fire(player, s);
 		}
@@ -128,8 +131,47 @@ public final class Ana implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			startReload(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
+			startSleepDart(player, s);
+		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
 			startGrenade(player, s);
+		}
+	}
+
+	/** Casting an ability (the grenade's throw, the Sleep Dart's): the rifle is down. */
+	private static boolean casting(HeroState s) {
+		return s.castTicks >= 0 || s.sleepCast >= 0;
+	}
+
+	// ---- Sleep Dart (Shift: 0BDD) ----
+
+	/**
+	 * Shift: a 1.0 s cast (the pistol in her right hand), the dart leaving 0.3 s in, the 14 s cooldown from the cast's end,
+	 * not from the hit (0BDD #107 / #109 / #87).
+	 */
+	private static void startSleepDart(ServerPlayer player, HeroState s) {
+		if (s.ability1Cooldown > 0 || casting(s)) {
+			return;
+		}
+		s.sleepCast = 0;
+		s.ability1Cooldown = Ow.ticks(SLEEP_COOLDOWN + SLEEP_CAST);
+		Combat.animate(player, "cast_sleep");
+	}
+
+	private static void sleepCast(ServerPlayer player, HeroState s) {
+		if (s.sleepCast < 0) {
+			return;
+		}
+		if (s.sleepCast == Ow.ticks(SLEEP_FIRE_AT)) {
+			ServerLevel level = player.level();
+			Vec3 from = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+			dev.overcraft.entity.SleepDartEntity dart = new dev.overcraft.entity.SleepDartEntity(player, level);
+			dart.launch(from, aimPoint(player).subtract(from), Ow.speed(SLEEP_DART_SPEED));
+			level.addFreshEntity(dart);
+		}
+		if (++s.sleepCast >= Ow.ticks(SLEEP_CAST)) {
+			s.sleepCast = -1;
 		}
 	}
 
@@ -137,7 +179,7 @@ public final class Ana implements HeroKit {
 
 	/** E: a 0.7 s throw, the grenade leaving 0.1 s in from her left wrist, the 12 s cooldown from the throw's end. */
 	private static void startGrenade(ServerPlayer player, HeroState s) {
-		if (s.ability2Cooldown > 0 || s.castTicks >= 0) {
+		if (s.ability2Cooldown > 0 || casting(s)) {
 			return;
 		}
 		s.castTicks = 0;

@@ -107,6 +107,10 @@ public final class HeroModels {
 				names.add("mercy_staff");
 				names.add("mercy_blaster");
 			}
+			if (hero == Hero.ANA) {
+				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
+				names.add("ana_pistol");
+			}
 		}
 		for (String name : names) {
 			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out

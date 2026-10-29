@@ -60,6 +60,27 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * A second model held for a moment: Ana's Sleep Dart pistol (1175E, entity 15CA), out from the cast's start until
+	 * 0.7 s (0BDD #105 / #116) on her hardpoint 0143 (1P) / 00A6 (3P), both Weapon_R with no offset or turn (research/ana
+	 * models.json). Its own clip (3DC2) isn't in the extract: its rest pose. Null otherwise.
+	 */
+	public static EmoteProps.@Nullable Placed sidearm(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now) {
+		if (hero != Hero.ANA || animator.emoting()) {
+			return null;
+		}
+		float t = animator.since("cast_sleep", now);
+		HeroModels.Loaded pistol = HeroModels.get("ana_pistol");
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose() : animator.lastPose();
+		int bone = heroModel.node("Weapon_R");
+		if (t < 0 || t >= dev.overcraft.ana.AnaStats.SLEEP_PISTOL_GONE || pistol == null || heroPose == null || bone < 0) {
+			return null;
+		}
+		Skeleton.Pose own = new Skeleton.Pose(pistol.model().nodeNames.length).rest(pistol.model());
+		return new EmoteProps.Placed(pistol, Skeleton.world(heroModel, heroPose, bone), Skeleton.skin(pistol.model(), own, -1, null));
+	}
+
+	/**
 	 * The weapon in the hero select's pose (the showcase entity's own weapon, research\mercy\gaps2.md 4, H): Mercy's
 	 * select entity 3A80 carries her staff on Weapon_R (slot 12A5), out for every clip; Lúcio's amplifier is put away
 	 * in his intro (C1EB) and out in his hold (BC3F). Mercy's staff plays clips of its own there (ACA4 / AE33 / AE31 /

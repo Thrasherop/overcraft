@@ -1,0 +1,78 @@
+package dev.overcraft.entity;
+
+import dev.overcraft.Ow;
+import dev.overcraft.ana.AnaStats;
+import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.Sleep;
+import dev.overcraft.registry.OcEntities;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+
+/**
+ * Ana's Sleep Dart (her graph 0BDD, projectile 15E8): 60 m/s, straight, 0.2 m, gone after 20 s. Its projectile has no
+ * target filter of its own (H), so the engine's team rule stands: it flies through allies and stops on enemies (M).
+ * The one it hits takes 5 and sleeps 5 s (Sleep).
+ */
+public class SleepDartEntity extends OwProjectile {
+	public SleepDartEntity(EntityType<? extends SleepDartEntity> type, Level level) {
+		super(type, level);
+	}
+
+	public SleepDartEntity(LivingEntity owner, Level level) {
+		super(OcEntities.SLEEP_DART, owner, level, new ItemStack(Items.TIPPED_ARROW));
+	}
+
+	@Override
+	public float hitRadius() {
+		return (float) AnaStats.SLEEP_DART_RADIUS;
+	}
+
+	@Override
+	protected Item getDefaultItem() {
+		return Items.TIPPED_ARROW;
+	}
+
+	@Override
+	protected int lifetime() {
+		return Ow.ticks(AnaStats.SLEEP_DART_LIFETIME);
+	}
+
+	@Override
+	protected boolean canHitEntity(Entity entity) {
+		return super.canHitEntity(entity) && entity != getOwner()
+			&& !(getOwner() instanceof LivingEntity owner && entity instanceof LivingEntity living && Allies.isAlly(owner, living));
+	}
+
+	@Override
+	protected void onHitEntity(EntityHitResult hit) {
+		if (!(level() instanceof ServerLevel level) || !(getOwner() instanceof ServerPlayer owner)) {
+			discard();
+			return;
+		}
+		EnderDragonPart part = hit.getEntity() instanceof EnderDragonPart p ? p : null;
+		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
+		if (target != null && Allies.canHurt(owner, target)) {
+			// its 5 first, then the sleep: the dart's own hit doesn't wake it
+			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE);
+			Combat.credit(owner, dealt);
+			if (dealt > 0) {
+				Effects.hitMarker(owner, target, false);
+			}
+			if (target.isAlive()) {
+				Sleep.put(target, AnaStats.SLEEP_TIME);
+			}
+		}
+		discard();
+	}
+}

@@ -48,6 +48,7 @@ public final class AnaStats {
 	public static final double SLEEP_COOLDOWN = 14;            // BZ 2022-12-06 (15 -> 14); D 0F77
 	/** The cast: the pistol drawn, the dart leaving at 0.3 s, the cooldown starting at its end (1.0 s). */
 	public static final double SLEEP_CAST = 1.0, SLEEP_FIRE_AT = 0.3;   // D 0BDD #107 / #109 / #87
+	public static final double SLEEP_PISTOL_GONE = 0.7;        // D 0BDD #105 (out at 0) / #116 (gone)
 	public static final double SLEEP_DAMAGE = 5;               // W; D 0F22
 	public static final double SLEEP_DART_SPEED = 60;          // W; D 0F0E
 	public static final double SLEEP_DART_RADIUS = 0.2;        // W; D 0F0D

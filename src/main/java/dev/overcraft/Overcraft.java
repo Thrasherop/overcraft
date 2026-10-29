@@ -206,6 +206,10 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
 			}
+			if (damage > 0) {
+				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
+				dev.overcraft.hero.Sleep.onDamaged(entity);
+			}
 		});
 		// a hero's weapon never lies about in the world (dropped on death, thrown out of the inventory)
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {

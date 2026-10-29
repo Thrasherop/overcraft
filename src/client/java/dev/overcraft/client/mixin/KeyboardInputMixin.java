@@ -20,6 +20,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class KeyboardInputMixin extends ClientInput {
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void overcraft$heroKeys(CallbackInfo ci) {
+		var player = net.minecraft.client.Minecraft.getInstance().player;
+		if (player != null && Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))) {
+			// asleep (Ana's Sleep Dart: dev.overcraft.hero.Sleep): no moving, no jumping, hero or not
+			this.keyPresses = Input.EMPTY;
+			this.moveVector = Vec2.ZERO;
+			return;
+		}
 		if (!ClientHero.controls()) {
 			return;
 		}

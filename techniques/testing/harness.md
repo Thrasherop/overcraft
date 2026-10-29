@@ -90,3 +90,8 @@
   entities) too. Use both for a projectile's flight, and `fx <effect> [variant] [enemy]` to play one moment 3 m ahead.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.
+- **Two clients (2026-10-29):** wait for the second client's title screen before `connect` (connecting while its
+  resources load crashed it). After `openworld`, click READY only once the world has loaded: clicked during the loading
+  screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A
+  rejoining client shows its select screen too. Keep the second client's fire pointed away from the hero under test:
+  Kiriko's kunai killed Ana mid-test, and `resistance` doesn't stop Overcraft's damage.

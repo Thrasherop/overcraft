@@ -78,6 +78,10 @@ public final class HeroManager {
 	public static final AttachmentType<java.util.List<Integer>> LIFEWEAVER = AttachmentRegistry.create(Overcraft.id("lifeweaver"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
+	/** Asleep (Sleep): set on a sleeping player, for their client to hold them still. */
+	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
 	/**
 	 * Ana's state, for every client to draw and animate her (HeroAnimator, her zoom): [flags (Ana.FLAG_*), how far scoped
 	 * in (%)]. Absent: not Ana in play.
@@ -136,7 +140,7 @@ public final class HeroManager {
 
 	/** The hero's keys are live: a hero, hero mode on, alive and not a spectator. */
 	public static boolean controls(Player player) {
-		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator();
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !Sleep.asleep(player);
 	}
 
 	/**
@@ -325,13 +329,18 @@ public final class HeroManager {
 
 	public static void onInput(ServerPlayer player, HeroInputPayload input) {
 		HeroState state = STATES.get(player.getUUID());
-		if (state == null || state.hero == null || !controls(player)) {
+		if (state == null || state.hero == null) {
 			return;
 		}
+		// the buttons held are kept even while the keys aren't live (asleep: Ana's Sleep Dart), so a button held through it
+		// fires again as it ends, as Overwatch's do; the client only sends them as they change (found playing)
 		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
 		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
+		if (!controls(player)) {
+			return;
+		}
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
@@ -355,6 +364,7 @@ public final class HeroManager {
 		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.ana.Ana.tickDoses();
+		Sleep.tick(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		dev.overcraft.comms.Comms.tick();
@@ -371,7 +381,8 @@ public final class HeroManager {
 			boolean controls = controls(player);
 			// Jetpack Cat's flight needs Minecraft's permission to fly; handed back as soon as she isn't in play
 			dev.overcraft.jetpackcat.JetpackCat.keepFlight(player, state, controls);
-			if (!controls) {
+			if (!controls && !Sleep.asleep(player)) {
+				// (asleep, they're kept: a button held through the sleep fires again as it ends)
 				state.primaryHeld = state.secondaryHeld = state.wallClimbing = false;
 			}
 			if (player.isAlive()) {

@@ -57,3 +57,22 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
 - **Superflat test worlds:** kill every slime (`/kill @e[type=minecraft:slime]`, no distance) before precise tests. They
   pushed her off her spot, so her aim missed the target, and they hurt her. `spawn_monsters false` stops new ones only.
 - **`/publish false 25565`** opens the world to the second client in 26.3; `/publish false survival 25565` is rejected.
+
+## Building her (2026-10-29: step 5, Sleep Dart)
+- **Sleep is its own shared system** (`hero/Sleep.java`, the data's crowd-control graph 224E): a mob's AI is switched off
+  and its target cleared (both restored on waking), a player gets the synced `ASLEEP` attachment: their client zeroes
+  movement (`KeyboardInputMixin`) and the server ignores their hero's keys (`HeroManager.controls`). Damage wakes only
+  after 0.5 s asleep (earlier hits are dropped, not saved) and the waking takes 0.5 s. Played: a walking zombie stopped
+  about 5 s; a hit 0.3 s in was ignored, one at 2.4 s woke it 0.5 s later.
+- **Held buttons survive the sleep:** a player holding fire through it fires again on waking, as in Overwatch. The
+  server first dropped held buttons whenever the keys weren't live (that's for G leaving hero mode), so a sleeper woke
+  idle. Now `onInput` records held buttons before the controls check, and `tick` clears them only when not asleep.
+  Played against a second client holding forward and fire: frozen at one spot with its ammo unchanged for about 5 s,
+  then walking and firing again with no new press.
+- **The pistol is a second held model** (`HeroWeapon.sidearm`): model 1175E on her hardpoint 0143 (1P) / 00A6 (3P), both
+  Weapon_R with no offset or turn in the models' own tables, out from the cast's start until 0.7 s (0BDD #105 / #116).
+  Its own clip 3DC2 isn't in the extract: it holds its rest pose. Without it the cast showed a bare fist at the screen's
+  edge. Played: 1P it comes up aimed at the crosshair for the 0.3 s shot, kicks up, and is gone by 0.7 s; 3P the same
+  from the front.
+- **A new model in the pack loads only if `HeroModels` lists it:** `ana_pistol.glb` sat in the pack unused until it was
+  added to the names loaded for Ana. The log line `Hero model <name>: ...` at start is the check.
