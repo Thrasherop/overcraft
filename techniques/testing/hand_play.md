@@ -55,6 +55,14 @@ with its PID (found as for killing it). `open_application` and SDL's raise didn'
 clicking the taskbar needs a separate grant. Then `hold_key` reaches the game; read the result with `dev state` and the
 game's own screenshots. Mouse moves can't turn the view: SDL reads raw mouse input and the tool only places the
 cursor. Turning with the real mouse still needs the owner.
+- `hold_key` holds one key per call: no W with Space. Find a test one key can do (Lúcio's wall ride: Space held
+  beside the wall, so he catches it square on and sets off at 0.3 s), and play the combinations through dev keys.
+- After the owner types in Claude, Claude's window keeps the keyboard: `AppActivate` the game again before each key.
+- "Textinputhost is in front" kept refusing keys even after `AppActivate` returned True, until the owner clicked the
+  game by hand. The owner suspects the desktop tool's own front-window check rather than a real overlay; ask them to
+  click the game rather than granting textinputhost.exe.
+- Check the screen is clear before a key run (`dev state`'s "screen"): a menu (OverwatchMenuScreen) was open once
+  and swallowed the first try.
 
 ## Test worlds
 - **Summon test mobs** with `Tags:["x"]` and select `@e[tag=x]`.
