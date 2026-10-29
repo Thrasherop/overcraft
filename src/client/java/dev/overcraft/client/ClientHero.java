@@ -328,7 +328,7 @@ public final class ClientHero {
 			}
 		}
 
-		int extra = ClientMercy.input(player);
+		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player);
 		if (held != lastHeld || pressed != 0 || extra != 0) {
 			lastHeld = held;
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));

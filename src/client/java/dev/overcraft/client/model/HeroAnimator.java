@@ -107,6 +107,18 @@ public final class HeroAnimator {
 	/** Mercy (her synced state, read each tick): she's Mercy, her blaster is out, her beam's mode and since when. */
 	private boolean mercy;
 	private boolean blaster;
+	/**
+	 * Lifeweaver in play (ClientLifeweaver.state): Thorn Volley in hand, a blossom charging (and its charge), the thorns
+	 * firing, the tree aimed.
+	 */
+	private boolean lifeweaver;
+	private boolean thorns;
+	private boolean bloomCharging;
+	private float bloomCharge;
+	private boolean thornFiring;
+	private boolean treeAim;
+	/** The way the body faced last tick (degrees): the dash's pose is picked against it. */
+	private float lastFacing;
 	private int beamMode;
 	private float beamOnSince = -100;
 	private float beamOffAt = -100;
@@ -160,19 +172,24 @@ public final class HeroAnimator {
 				clip = clip + "_blaster";
 			}
 		}
+		String viewClip = a.mercy ? clip : action;
+		if (a.lifeweaver) {
+			clip = a.lifeweaverAction(action);
+			viewClip = a.lifeweaverViewAction(action);
+		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
 		}
 		boolean layerOnly = action.equals("fire") || action.equals("soundwave") || action.equals("fire_blaster")
-			|| action.startsWith("flash_heal") || action.equals("ga_start");
+			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
 			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land")
 				|| a.mercy && action.startsWith("ult_cast");
 			a.actions.trigger(clip, now);
-			a.actionsFirstPerson.trigger(a.mercy ? clip : action, now);
-		} else if (!a.mercy) {
+			a.actionsFirstPerson.trigger(viewClip, now);
+		} else if (!a.mercy && !a.lifeweaver) {
 			a.actions.trigger(clip, now);
 			a.actionsFirstPerson.trigger(action, now);
 		}
@@ -378,6 +395,104 @@ public final class HeroAnimator {
 	}
 
 	/** An action's additive clip, played once from when the action started (nothing when the model lacks it). */
+	/**
+	 * Lifeweaver's third-person clip for an action (lifeweaver.txt): his release on the move is its own clip, Life Grip
+	 * with Thorn Volley out too; the dash by the way he's going (its 2D blend's poses: D 36A2 df 0x08 / 0x07, nearest).
+	 */
+	private String lifeweaverAction(String action) {
+		return switch (action) {
+			case "release" -> Math.abs(tickVx) + Math.abs(tickVz) > 0.05 ? "release_moving" : "release";
+			case "reload_thorn_after_fire" -> "reload_thorn";
+			case "grip" -> thorns ? "grip_thorn" : "grip";
+			case "melee_2", "melee_3" -> "melee";
+			case "dash" -> "dash" + dashWay();
+			default -> action;
+		};
+	}
+
+	/** The same for his first-person model (lifeweaver_1p.txt): the "_thorn" clip where Thorn Volley has its own. */
+	private String lifeweaverViewAction(String action) {
+		return switch (action) {
+			case "release" -> "bloom_chain";
+			case "melee", "melee_2", "melee_3" -> thorns ? "melee_thorn" : "melee";
+			case "throw_blossom" -> "throw";
+			case "tree_cast", "tree_aim_start" -> thorns ? action + "_thorn" : action;
+			default -> action;
+		};
+	}
+
+	/** Which of the dash's eight poses: the way he moved last tick against his facing ("" ahead). */
+	private String dashWay() {
+		double yaw = Math.toRadians(lastFacing);
+		double forward = -tickVx * Math.sin(yaw) + tickVz * Math.cos(yaw);
+		double left = tickVx * Math.cos(yaw) + tickVz * Math.sin(yaw);
+		if (forward * forward + left * left < 1.0E-4) {
+			return "";
+		}
+		int octant = Math.floorMod((int) Math.round(Math.atan2(left, forward) / (Math.PI / 4)), 8);
+		return new String[] {"", "_forward_left", "_left", "_back_left", "_back", "_back_right", "_right", "_forward_right"}[octant];
+	}
+
+	/**
+	 * Lifeweaver's layers over his base (third person): with Thorn Volley out its clip for the state over the upper body
+	 * (its run, strafe and crouch clips are upper-body overrides: their legs don't move), firing its own stand; charging a
+	 * blossom standing, the charging stand; aiming the tree, its aim loop. Then the volley's layer. His other third-person
+	 * 4-* clips (the firing loop's layer CF24, the landings, the dash's end) aren't deltas from rest as our layers expect:
+	 * their keyed bones swing 90-180 degrees and their first frames aren't neutral (a clavicle at 50); laid on as deltas
+	 * they threw him back with his arm up and a leg kicked out (found playing). Left out until their blend is read.
+	 */
+	private void lifeweaverLayers(SkinnedModel model, Skeleton.Pose pose, float now) {
+		String over = null;
+		boolean standing = base.equals("idle") || base.equals("idle_2");
+		if (treeAim) {
+			over = "tree_aim";
+		} else if (thorns) {
+			over = thornFiring && standing ? "idle_firing_thorn" : base + "_thorn";
+		} else if (bloomCharging && standing) {
+			over = "idle_charging";
+		}
+		SkinnedModel.Clip clip = over == null ? null : clip(model, over);
+		if (clip != null) {
+			Skeleton.Pose upper = new Skeleton.Pose(model.nodeNames.length).rest(model);
+			Skeleton.sample(clip, time(clip, now, true), upper);
+			Skeleton.blend(pose, upper, 1, UpperBody.mask(model));
+		}
+		additive(model, pose, "add_fire_thorn", "fire_thorn", now);
+	}
+
+	/** His landing: an additive layer from the moment he lands (lifeweaver.txt's 4-* land clips), over whatever he does. */
+	private void landing(SkinnedModel model, Skeleton.Pose pose, float now, String name) {
+		SkinnedModel.Clip land = clip(model, name);
+		float t = now - landedAt;
+		if (land != null && t >= 0 && t < land.duration()) {
+			Skeleton.addAdditive(land, t, pose, 1);
+		}
+	}
+
+	/**
+	 * Lifeweaver's first person over its base: the flower blooming in his hand as the blossom charges (his hand's state
+	 * machine 0x16E: the bloom's time is the charge, df 0xC9), held full at the end; the volley's layer.
+	 */
+	private void lifeweaverView(SkinnedModel model, Skeleton.Pose pose, float now) {
+		if (bloomCharging) {
+			SkinnedModel.Clip bloom = clip(model, "bloom");
+			if (bloom != null) {
+				Skeleton.sample(bloom, bloom.duration() * Math.clamp(bloomCharge, 0, 1), pose);
+			}
+		}
+		// the volley's layers (his 1P fire state 0x00A is additive: its start, its loop while held, its end), the dash's
+		// (one of four poses: their directions aren't in the data, L: the first), his landing
+		if (thornFiring) {
+			SkinnedModel.Clip firing = clip(model, "add_firing_thorn");
+			if (firing != null) {
+				Skeleton.addAdditive(firing, time(firing, now, true), pose, 1);
+			}
+		}
+		additive(model, pose, "add_fire_thorn", "fire_thorn", now);
+		additive(model, pose, thorns ? "add_dash_thorn" : "add_dash", "dash", now);
+		landing(model, pose, now, thorns ? "add_land_thorn" : "add_land");
+	}
+
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
@@ -646,7 +761,11 @@ public final class HeroAnimator {
 		additive(model, pose, fire, "fire", now);
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
-		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster" : "add_idle");
+		if (lifeweaver) {
+			lifeweaverView(model, pose, now);
+		}
+		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster"
+			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn" : "add_idle");
 		if (idleLayer != null) {
 			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out
 			Skeleton.addAdditive(idleLayer, time(idleLayer, now, true), pose, 1);
@@ -706,6 +825,23 @@ public final class HeroAnimator {
 	 */
 	private String viewBase(SkinnedModel model, float now) {
 		String want = "idle";
+		if (lifeweaver) {
+			// his view model (lifeweaver_1p.txt): idle, walk, the jump's rise and fall; firing, the volley's loop; the
+			// tree's aim loop; each with Thorn Volley's own where it has one
+			if (treeAim) {
+				want = "tree_aim";
+			} else if (base.startsWith("jump")) {
+				want = "jump";
+			} else if (base.startsWith("fall")) {
+				want = "fall";
+			} else if (base.startsWith("run") || base.startsWith("strafe") || base.startsWith("crouch_walk")) {
+				want = "walk";
+			}
+			if (thorns && model.clips.containsKey(want + "_thorn")) {
+				want = want + "_thorn";
+			}
+			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
+		}
 		if (mercy) {
 			// her view model (mercy_1p.txt): the third person's state, in the view's few clips
 			if (base.startsWith("ga_start")) {
@@ -885,6 +1021,9 @@ public final class HeroAnimator {
 			stepCloth(model, entity, pose, now);
 			return Skeleton.skin(model, pose, -1, null);
 		}
+		if (lifeweaver) {
+			lifeweaverLayers(model, pose, now);
+		}
 		actions.apply(model, pose, now, wholeBody ? null : UpperBody.mask(model));
 		if (wholeBody && actions.playing() != null) {
 			// Sound Barrier's clips carry its leap (his feet rise 1.63 m): the server leaps him that high, so the clip's own
@@ -987,6 +1126,13 @@ public final class HeroAnimator {
 		dev.overcraft.client.ClientMercy.State mercyState = dev.overcraft.client.ClientMercy.state(entity);
 		mercy = mercyState != null;
 		blaster = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_BLASTER);
+		dev.overcraft.client.ClientLifeweaver.State lw = dev.overcraft.client.ClientLifeweaver.state(entity);
+		lifeweaver = lw != null;
+		thorns = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_THORNS);
+		bloomCharging = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_CHARGING) && !thorns;
+		bloomCharge = lifeweaver ? lw.charge() : 0;
+		thornFiring = thorns && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_FIRING);
+		treeAim = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_TREE_AIM);
 		int beamNow = mercy ? mercyState.beamMode() : 0;
 		if (beamNow != 0 && beamMode == 0) {
 			beamOnSince = now;
@@ -1007,7 +1153,8 @@ public final class HeroAnimator {
 		boolean onGround = entity.onGround();
 		// Lúcio's model: skating, his stop, his 4-way jump and the wall ride in place of the run, jump and fall
 		boolean skates = model.clips.containsKey("skate_stop_forward");
-		double yawNow = Math.toRadians(facing(entity, 1));
+		lastFacing = facing(entity, 1);
+		double yawNow = Math.toRadians(lastFacing);
 		if (!onGround) {
 			fallSpeed = Math.max(fallSpeed, -vy);
 			if (wasOnGround) {
@@ -1136,7 +1283,8 @@ public final class HeroAnimator {
 			&& now - stoppedAt < clip(model, "skate_stop" + skateDirection).duration()) {
 			// stopping: the brace from skating to standing (alias 0x01B)
 			next = "skate_stop" + skateDirection;
-		} else if (now - landedAt < 0.2f) {
+		} else if (now - landedAt < 0.2f && !lifeweaver) {
+			// (Lifeweaver's landing is an additive layer: lifeweaverLayers)
 			next = "land";
 		} else if (crouching) {
 			next = moving ? "crouch_walk" + direction(forward, left) : "crouch_idle";

@@ -26,7 +26,11 @@ public enum Perk {
 	MERCY_ANGELIC_RESURRECTION(Hero.MERCY, Tier.MINOR, "angelic_resurrection"),
 	MERCY_WINGED_REACH(Hero.MERCY, Tier.MINOR, "winged_reach"),
 	MERCY_CHAIN_BOOST(Hero.MERCY, Tier.MAJOR, "chain_boost"),
-	MERCY_DOUBLE_DOSE(Hero.MERCY, Tier.MAJOR, "double_dose");
+	MERCY_DOUBLE_DOSE(Hero.MERCY, Tier.MAJOR, "double_dose"),
+	LIFEWEAVER_PETAL_PROTECTION(Hero.LIFEWEAVER, Tier.MINOR, "petal_protection"),
+	LIFEWEAVER_DASHING_ESCAPE(Hero.LIFEWEAVER, Tier.MINOR, "dashing_escape"),
+	LIFEWEAVER_SUPERBLOOM(Hero.LIFEWEAVER, Tier.MAJOR, "superbloom"),
+	LIFEWEAVER_SOW_THE_SEED(Hero.LIFEWEAVER, Tier.MAJOR, "sow_the_seed");
 
 	public enum Tier { MINOR, MAJOR }
 

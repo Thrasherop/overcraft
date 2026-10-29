@@ -35,6 +35,36 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2, (float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	// Lifeweaver's: Healing Blossom and Thorn Volley; the thrown platform and seed; the platform, the seed on the ground and
+	// the tree (none saved: they're his while he's here)
+	public static final EntityType<dev.overcraft.entity.BlossomEntity> BLOSSOM = register("blossom",
+		EntityType.Builder.<dev.overcraft.entity.BlossomEntity>of(dev.overcraft.entity.BlossomEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.BLOSSOM_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.BLOSSOM_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.ThornEntity> THORN = register("thorn",
+		EntityType.Builder.<dev.overcraft.entity.ThornEntity>of(dev.overcraft.entity.ThornEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.THORN_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.THORN_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.PetalThrowEntity> PETAL_THROW = register("petal_throw",
+		EntityType.Builder.<dev.overcraft.entity.PetalThrowEntity>of(dev.overcraft.entity.PetalThrowEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_THROW_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_THROW_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.PetalPlatformEntity> PETAL_PLATFORM = register("petal_platform",
+		EntityType.Builder.<dev.overcraft.entity.PetalPlatformEntity>of(dev.overcraft.entity.PetalPlatformEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_THICKNESS)
+			.clientTrackingRange(10).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.SeedEntity> SEED = register("seed",
+		EntityType.Builder.<dev.overcraft.entity.SeedEntity>of(dev.overcraft.entity.SeedEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(2));
+	public static final EntityType<dev.overcraft.entity.TreeOfLifeEntity> TREE_OF_LIFE = register("tree_of_life",
+		EntityType.Builder.<dev.overcraft.entity.TreeOfLifeEntity>of(dev.overcraft.entity.TreeOfLifeEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.TRUNK_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.TRUNK_HEIGHT)
+			.clientTrackingRange(10).updateInterval(2));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

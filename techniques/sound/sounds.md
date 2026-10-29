@@ -56,3 +56,18 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
 - **Music:** the match-end music was traced through the music-director graphs (0D3B, 1B47):
   [sounds-round8](../../tools/reference/sounds-round8.md), [music-round9](../../tools/reference/music-round9.md). Its
   streams are 12-channel Opus and need a stereo downmix.
+- **Ranges come through the volume** (Lifeweaver, 2026-10-29): `sounds.json` sets none, and a volume over 1 only
+  widens Minecraft's 16 blocks without making it louder. `HeroSounds.split(..., metres)` and `HeroSounds.at(...)` pass
+  the game copy's range as metres / 16; client loops do the same (`LifeweaverSounds.on`).
+- **Team copies:** where an effect has an ally and an enemy copy (his platform's landing, the grip's cast, the tree's
+  hum and pulses, the ult line), `HeroSounds.at(level, friendly, enemy, hero, at, metres, except...)` picks per
+  listener. Check them from a second client on another team (`/overcraft team join red` on it).
+- **Charge-scaled sounds come in bins:** the game pitches the blossom's release, throw and heal by the charge
+  (an RTPC); the map builds three bins (21C6 #954's: 0.3, 0.9) and `OcSounds.byCharge` picks one.
+- **Some voice moments are every hero's:** `OcSounds.init()` registers each hero's wheel lines, `resurrected` and
+  `damage_boosted`. Listing them again in a hero's own list crashed the game at start (a duplicate registry key).
+- **Check both ends of every sound:** his own `heard` on the host, the "_3p" copies and the ally's own (gripped,
+  healed by the tree, the seed taken) on `runClient2` (`OC_DEV_PORT=25600`). A second listener caught nothing wrong
+  that the first had missed, but it is the only way to see the others' copies at all.
+- **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
+  (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

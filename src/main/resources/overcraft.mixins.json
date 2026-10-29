@@ -9,7 +9,8 @@
 		"ProjectileUtilMixin",
 		"EntityMixin",
 		"FoodDataMixin",
-		"ZombieVillagerInvoker"
+		"ZombieVillagerInvoker",
+		"ServerGamePacketListenerAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

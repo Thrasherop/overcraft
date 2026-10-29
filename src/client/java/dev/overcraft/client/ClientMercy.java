@@ -66,6 +66,13 @@ public final class ClientMercy {
 		}
 	}
 
+	/** ... and Lifeweaver's other weapon (the same weapon-swap press: HeroInputPayload.EXTRA_SWAP). */
+	public static void scrollLifeweaver(double amount) {
+		if (ClientHero.hero() == Hero.LIFEWEAVER && amount != 0) {
+			scrolled++;
+		}
+	}
+
 	/** Valkyrie's flight is on (after its cast). */
 	public static boolean valkyrie(Entity entity) {
 		State s = entity == Minecraft.getInstance().player ? local() : state(entity);
