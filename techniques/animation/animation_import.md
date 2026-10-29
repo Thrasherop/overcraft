@@ -34,6 +34,12 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
   colour texture's type key, read from the material's own .owmat (15E60: 86DAAC6B = her tabby albedo 6F76A). After
   every export, read its OWM_MATERIAL lines and look at the model from every side; a material with only a mask or no
   textures (an eye overlay, a glow card) is fine, one with Normal and PBR but no colour is a body part.
+- **A colour linked to the engine's blank texture is no colour either** (2026-10-29, the owner: "LW's petals on his back
+  aren't pink correctly"). Lifeweaver's back petals (shader 0x26, material C971) came out white: the add-on linked
+  `000A` (a blank) to a colour input, so no OWM_MATERIAL warning showed. `owm_survey.py` now treats `BLANK_TEXTURES` as
+  unlinked and takes the shader's `COLOUR_KEYS` slot (0x26: 58FF5009, the petal art 3EE14). To find a slot, render the
+  material's textures side by side (shader, keys and paths from the .owmat) and pick the one that is the part's own art.
+  After an export, list each material's base-colour image in the .glb: a lone `00000000000A` is a part with no colour.
 - **Renaming clips in a .glb doesn't need a re-export** (`tools/rename_glb_clips.py`); keep `tools/clipmaps` in step.
 
 ## Our bones keep Overwatch's frames

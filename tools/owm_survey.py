@@ -266,7 +266,13 @@ def retime(action, scale):
 # texture type key that holds it, read from the materials' .owmat: Jetpack Cat's fur, shader 0x10D (material 15E60:
 # 86DAAC6B is her orange tabby albedo 6F76A beside the PBR 20AF06CE and normal 169615AA every material has). Without
 # it her whole body exported with no colour and wasn't drawn (the owner, 2026-10-28: "there was never a cat").
-COLOUR_KEYS = {0x10D: 0x86DAAC6B}
+# Lifeweaver's back petals, shader 0x26 (material C971): the add-on links the engine's blank 000A to a colour input and
+# his petals exported white; 58FF5009 is their own art (3EE14, a pink petal beside its cut-out CA8ECF6A, his gradient ramp
+# 5118206D and normal 0DB044E6), read from the slots' images by eye (the owner, 2026-10-29: "LW's petals on his back
+# aren't pink correctly").
+COLOUR_KEYS = {0x10D: 0x86DAAC6B, 0x26: 0x58FF5009}
+# The engine's blank textures: linked as a colour, they mean the add-on didn't find the material's own.
+BLANK_TEXTURES = {"00000000000A"}
 
 
 def owmat_textures(path):
@@ -328,8 +334,9 @@ def gltf_materials():
                 color = link.from_node
             elif alpha is None and "alpha" in socket:
                 alpha = link.from_node
-        if color is None and MATERIALS_DIR is not None:
-            color = colour_from_owmat(mat, MATERIALS_DIR)
+        blank = color is not None and color.image is not None and Path(color.image.name).stem.split(".")[0] in BLANK_TEXTURES
+        if (color is None or blank) and MATERIALS_DIR is not None:
+            color = colour_from_owmat(mat, MATERIALS_DIR) or color
         if color is None:
             print(f"OWM_MATERIAL {mat.name}: no colour texture (inputs: "
                   f"{sorted({l.to_socket.name for l in links if l.to_node.type == 'GROUP'})})")
