@@ -82,10 +82,15 @@ public class ThornEntity extends OwProjectile {
 						Effects.hitMarker(shooter, target, crit);
 					}
 					// Superbloom: enough thorns in one enemy burst
-					Lifeweaver.thornHit(shooter, target);
+					Lifeweaver.thornHit(shooter, target, this);
 				}
 			}
 			Effects.play(level, "lifeweaver_thorn_hit", at, getDeltaMovement(), null, 0, owner);
+			if (owner instanceof ServerPlayer thrower) {
+				// the shooter's confirmation in his head (8DE7), the contact for those near the target (905C, 12 m)
+				dev.overcraft.hero.HeroSounds.split(thrower, dev.overcraft.registry.OcSounds.LW_THORN_HIT,
+					dev.overcraft.registry.OcSounds.LW_THORN_HIT_3P, at, 12);
+			}
 		} else if (target == null) {
 			// not a creature (an end crystal, a boat): hit as an arrow does
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, owner), (float) Ow.hp(LifeweaverStats.THORN_DAMAGE));
@@ -99,6 +104,7 @@ public class ThornEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level) {
 			Vec3 normal = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
 			Effects.play(level, "lifeweaver_thorn_hit_block", hit.getLocation(), normal, null, 0, getOwner());
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.LW_THORN_HIT_BLOCK, hit.getLocation(), 90);
 			discard();
 		}
 	}

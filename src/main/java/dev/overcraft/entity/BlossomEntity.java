@@ -137,6 +137,9 @@ public class BlossomEntity extends OwProjectile {
 			// its look scales with the charge (472A reads it: 014E)
 			dev.overcraft.hero.Effects.play(level, "lifeweaver_blossom_heal", chest(target), Vec3.ZERO, target,
 				Math.round(charge() * 100), owner);
+			// his confirmation (4C37's 9DB2, in his head: M), pitched by the charge
+			dev.overcraft.hero.HeroSounds.toOwner(owner, dev.overcraft.registry.OcSounds.byCharge(dev.overcraft.registry.OcSounds.LW_BLOSSOM_HEAL,
+				charge()));
 		}
 		discard();
 	}

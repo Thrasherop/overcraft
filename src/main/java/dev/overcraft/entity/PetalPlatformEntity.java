@@ -4,10 +4,12 @@ import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.lifeweaver.LifeweaverStats;
 import dev.overcraft.registry.OcEntities;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -60,6 +62,8 @@ public class PetalPlatformEntity extends Entity {
 	private @Nullable UUID ownerId;
 	private double health = PLATFORM_HEALTH;
 	private int raisedLeft = Ow.ticks(PLATFORM_RAISED_TIME);
+	/** Ticks to the next last-seconds warning tick. */
+	private int warnIn;
 	private int empty;
 	private final Map<Integer, Integer> standing = new HashMap<>();
 	/**
@@ -89,6 +93,8 @@ public class PetalPlatformEntity extends Entity {
 		entityData.set(TO_Y, (float) at.y);
 		entityData.set(PHASE_AT, level.getGameTime());
 		Effects.play(level, "lifeweaver_platform_deploy", at, owner);
+		// 421A: his side's copy and the enemies' (A089, L which is whose)
+		HeroSounds.at(level, OcSounds.LW_PLATFORM_DEPLOY, OcSounds.LW_PLATFORM_DEPLOY_ENEMY, owner, at, 70);
 	}
 
 	@Override
@@ -309,11 +315,20 @@ public class PetalPlatformEntity extends Entity {
 				if (t >= moveTicks()) {
 					setPhase(RAISED, entityData.get(TO_Y), entityData.get(TO_Y));
 					Effects.play(level, "lifeweaver_platform_top", position(), owner);
+					// the rise's end (96D3's Stop) and the raised petals' start (4989 x5)
+					HeroSounds.at(level, OcSounds.LW_PLATFORM_RISE_END, position(), 40);
+					HeroSounds.at(level, OcSounds.LW_PLATFORM_RAISED, position(), 40);
 				}
 			}
 			case RAISED -> {
 				raisedLeft--;
 				entityData.set(LEFT, Math.max(0, raisedLeft));
+				// the last 5 s: a tick every 0.5 s, quickening to 0.02 s at the end (48F1: 96D2 by the time left, H)
+				if (raisedLeft > 0 && raisedLeft <= Ow.ticks(PLATFORM_WARNING_FROM) && --warnIn <= 0) {
+					HeroSounds.at(level, OcSounds.LW_PLATFORM_WARNING, position(), 20);
+					double left = raisedLeft / 20.0;
+					warnIn = Math.max(1, (int) Math.round((0.5 - 0.481 * (1 - left / PLATFORM_WARNING_FROM)) * 20));
+				}
 				if (raisedLeft <= 0) {
 					destroy();
 					return;
@@ -324,12 +339,14 @@ public class PetalPlatformEntity extends Entity {
 					raisedLeft = Math.max(raisedLeft, Ow.ticks(PLATFORM_EMPTY));
 					entityData.set(LEFT, raisedLeft);
 					setPhase(DESCENDING, (float) getY(), entityData.get(GROUND_Y));
+					HeroSounds.at(level, OcSounds.LW_PLATFORM_DESCEND, position(), 40);
 					empty = 0;
 				}
 			}
 			case DESCENDING -> {
 				if (t >= moveTicks()) {
 					setPhase(ARMED, entityData.get(GROUND_Y), entityData.get(GROUND_Y));
+					HeroSounds.at(level, OcSounds.LW_PLATFORM_LANDED, position(), 40);
 					standing.clear();
 				}
 			}
@@ -381,6 +398,7 @@ public class PetalPlatformEntity extends Entity {
 		setPhase(RISING, (float) getY(), (float) top);
 		standing.clear();
 		Effects.play(level, "lifeweaver_platform_rise", position(), owner);
+		HeroSounds.at(level, OcSounds.LW_PLATFORM_RISE, position(), 40);
 		if (riders().stream().anyMatch(e -> e != owner && e instanceof ServerPlayer)) {
 			dev.overcraft.hero.Voice.say(owner, "platform_used", 1);
 		}
@@ -441,6 +459,7 @@ public class PetalPlatformEntity extends Entity {
 	public void destroy() {
 		if (!isRemoved() && level() instanceof ServerLevel level) {
 			Effects.play(level, "lifeweaver_platform_destroyed", position().add(0, 0.2, 0), null);
+			HeroSounds.at(level, OcSounds.LW_PLATFORM_DESTROYED, position(), 70);
 		}
 		discard();
 	}

@@ -5,10 +5,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Shields (Lifeweaver's 50: the first hero with them). In Overwatch they're the top of the health bar: damage takes
- * overhealth, then shields, then health, and healing fills health only; shields come back by themselves 3 s after the
- * last damage, at 30 a second (W Hit points). Here they're the top {@link Hero#shields()} of the hero's Minecraft health
+ * overhealth, then shields, then health; healing fills health first, then shields (health, armor and shields are all
+ * recoverable); and shields come back by themselves 3 s after the last damage, at 30 a second (W Hit points). Ours had
+ * healing stop under them: a dash's heal after a hit on his shields alone healed nothing (found playing). Here they're the top {@link Hero#shields()} of the hero's Minecraft health
  * (Lifeweaver's 250 = 20: the top 4), with what's left of them kept in {@link HeroState#shield}: every change to the
- * health (LivingEntityMixin, setHealth) takes a loss off them first and stops a gain at the health under them.
+ * health (LivingEntityMixin, setHealth) takes a loss off them first, and a gain fills the health under them, then them.
  * Overhealth (absorption) is Minecraft's and goes before either. They hold whatever the mode (G): the hero's health
  * does.
  */
@@ -35,9 +36,24 @@ public final class Shields {
 			s.shield = Math.max(0, s.shield - Ow.toOw(old - health));
 			return health;
 		}
-		// a gain heals the health under the shields, never the shields themselves
-		float cap = player.getMaxHealth() - Ow.hp(s.hero.shields() - s.shield);
-		return health > old ? Math.max(old, Math.min(health, cap)) : health;
+		if (health <= old) {
+			return health;
+		}
+		// a gain heals the health under the shields first, then the shields
+		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - s.hero.shields(), s.hero.shields(),
+			Ow.toOw(Math.min(health, player.getMaxHealth()) - old));
+		s.shield += split[1];
+		return old + Ow.hp(split[0] + split[1]);
+	}
+
+	/**
+	 * How a heal of {@code gain} splits (Overwatch points): {health, shields}, the health under the shields first up to
+	 * {@code healthMax}, then the shields up to {@code shieldMax}.
+	 */
+	public static double[] heal(double health, double shield, double healthMax, double shieldMax, double gain) {
+		double toHealth = Math.max(0, Math.min(gain, healthMax - health));
+		double toShield = Math.max(0, Math.min(gain - toHealth, shieldMax - shield));
+		return new double[] {toHealth, toShield};
 	}
 
 	/** Each tick (HeroManager): the shields regenerate 3 s after the last damage. */

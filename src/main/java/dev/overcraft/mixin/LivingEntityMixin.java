@@ -93,7 +93,7 @@ public abstract class LivingEntityMixin {
 
 	/**
 	 * Shields (dev.overcraft.hero.Shields): every change to a shielded hero's health passes here. A loss comes off the
-	 * shields first; a gain heals the health under them only.
+	 * shields first; a gain heals the health under them, then them.
 	 */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "setHealth", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private float overcraft$shields(float health) {

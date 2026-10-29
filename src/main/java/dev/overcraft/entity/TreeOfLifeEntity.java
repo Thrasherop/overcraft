@@ -69,6 +69,8 @@ public class TreeOfLifeEntity extends Entity {
 		entityData.set(ROOM, (float) room);
 		entityData.set(GROWTH, room < TRUNK_HEIGHT ? GROW_ENCLOSED : nearWall(level, root) ? GROW_LEANING : GROW);
 		Effects.play(level, "lifeweaver_tree_spawn", root, owner);
+		dev.overcraft.hero.HeroSounds.split(owner, dev.overcraft.registry.OcSounds.LW_TREE_SPAWN,
+			dev.overcraft.registry.OcSounds.LW_TREE_SPAWN_3P, root, 75);
 	}
 
 	/** The free height over its root, up to the trunk's height and a bit (ours: one ray; the data surveys several). */
@@ -136,6 +138,9 @@ public class TreeOfLifeEntity extends Entity {
 		return false;
 	}
 
+	/** Its wither's sound: the ending message (1F66) at 13.33 s, its clip's 9DC4 0.5667 s in (H for the clip time). */
+	private static final double WITHER_SOUND_AT = 13.33 + 0.5667;
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -153,6 +158,9 @@ public class TreeOfLifeEntity extends Entity {
 			end();
 			return;
 		}
+		if (t == Ow.ticks(WITHER_SOUND_AT)) {
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.LW_TREE_WITHER, root(), 75);
+		}
 		// the sprout at once, then a pulse every 1.75 s (1.75 ... 14.0 s): each a 0.35 s window whose reach grows 2.5 ->
 		// 12 m over its first 0.25 s, everyone in it healed once (D 36AA #534 / #365 / #367)
 		int every = Ow.ticks(TREE_PULSE_EVERY);
@@ -164,6 +172,10 @@ public class TreeOfLifeEntity extends Entity {
 				reached.clear();
 				if (pulse > 0) {
 					Effects.play(level, "lifeweaver_tree_pulse", root(), Vec3.ZERO, this, pulse, owner);
+					// pulses 1-6 one sound, the 7th and the 8th their own (4C96 / 4C97 / 4C98, M); the enemies' copy (A098)
+					var sound = pulse >= TREE_PULSES ? dev.overcraft.registry.OcSounds.LW_TREE_PULSE_8
+						: pulse == TREE_PULSES - 1 ? dev.overcraft.registry.OcSounds.LW_TREE_PULSE_7 : dev.overcraft.registry.OcSounds.LW_TREE_PULSE;
+					dev.overcraft.hero.HeroSounds.at(level, sound, dev.overcraft.registry.OcSounds.LW_TREE_PULSE_ENEMY, owner, root(), 75);
 				}
 			}
 			double reach = 2.5 + (TREE_RADIUS - 2.5) * Math.min(1, into / (double) Ow.ticks(0.25));
@@ -194,6 +206,14 @@ public class TreeOfLifeEntity extends Entity {
 				Combat.overhealthPool(e, over, TREE_OVERHEALTH_MAX, TREE_OVERHEALTH_HOLD, TREE_OVERHEALTH_DECAY);
 			}
 			Effects.play(level, "lifeweaver_tree_heal", e.getBoundingBox().getCenter(), Vec3.ZERO, e, 0, owner);
+			// a pulse's only if it healed them (#539): theirs in their head, the others' at them (40 m)
+			if (!pulse || missing > 0) {
+				ServerPlayer healed = e instanceof ServerPlayer p ? p : null;
+				if (healed != null) {
+					dev.overcraft.hero.HeroSounds.toOwner(healed, dev.overcraft.registry.OcSounds.LW_TREE_HEAL);
+				}
+				dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.LW_TREE_HEAL_3P, e.getBoundingBox().getCenter(), 40, healed);
+			}
 		}
 	}
 
@@ -229,6 +249,7 @@ public class TreeOfLifeEntity extends Entity {
 		}
 		if (level() instanceof ServerLevel level) {
 			Effects.play(level, "lifeweaver_tree_end", root().add(0, 3, 0), null);
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.LW_TREE_DEATH, root().add(0, 3, 0), 75);
 			ServerPlayer owner = ownerId == null ? null : level.getServer().getPlayerList().getPlayer(ownerId);
 			if (owner != null) {
 				Lifeweaver.treeEnded(owner, this);

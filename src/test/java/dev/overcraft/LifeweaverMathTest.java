@@ -4,10 +4,22 @@ import dev.overcraft.lifeweaver.LifeGrip;
 import dev.overcraft.lifeweaver.LifeweaverStats;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Lifeweaver's numbers as his data and the patch notes give them (lifeweaver-map.md, tools/reference/lifeweaver.md). */
 class LifeweaverMathTest {
+	@Test
+	void healingFillsHealthThenShields() {
+		// W Hit points: health, armor and shields are recoverable, health replenished first
+		// a hit on his shields alone (250 -> 200), then the dash's 55: all 50 back to the shields
+		assertArrayEquals(new double[] {0, 50}, dev.overcraft.hero.Shields.heal(200, 0, 200, 50, 55), 1e-9);
+		// 100 damage (150 health, no shields), then 55: 50 to health, 5 to the shields
+		assertArrayEquals(new double[] {50, 5}, dev.overcraft.hero.Shields.heal(150, 0, 200, 50, 55), 1e-9);
+		// shields back by themselves first (150 + 50), then 75: health only
+		assertArrayEquals(new double[] {50, 0}, dev.overcraft.hero.Shields.heal(150, 50, 200, 50, 75), 1e-9);
+	}
+
 	@Test
 	void healthAndShields() {
 		// 200 + 50 shields = 250 Overwatch health = 10 hearts; the shields are the top 4

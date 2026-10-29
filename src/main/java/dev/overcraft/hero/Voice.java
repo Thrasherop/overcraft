@@ -96,7 +96,16 @@ public final class Voice {
 		java.util.Map.entry("jetpack_cat.purr_end", new Stimulus(50, 0, 0, false)), // 19BA
 		java.util.Map.entry("jetpack_cat.lifeline", new Stimulus(50, 0, 0, false)), // 1994
 		java.util.Map.entry("jetpack_cat.tether_attached", new Stimulus(50, 0, 0, false)), // 19C4
-		java.util.Map.entry("jetpack_cat.tether_end", new Stimulus(95, 0, 0, true))); // 19B6, priority 95
+		java.util.Map.entry("jetpack_cat.tether_end", new Stimulus(95, 0, 0, true)), // 19B6, priority 95
+		// Lifeweaver's own (tools/soundmaps/lifeweaver.txt): from his graphs, the rest by shared criteria
+		java.util.Map.entry("lifeweaver.heal", new Stimulus(60, 20, 25, false)), // 135A
+		// 176B's own cooldown is 0, but 21C6 holds it behind a 15 s wait (#1401 / #1403)
+		java.util.Map.entry("lifeweaver.reload", new Stimulus(60, 15, 15, false)), // 176B
+		java.util.Map.entry("lifeweaver.platform", new Stimulus(60, 10, 10, false)), // 11F4
+		java.util.Map.entry("lifeweaver.platform_used", new Stimulus(60, 10, 10, false)), // 13D5
+		java.util.Map.entry("lifeweaver.dash", new Stimulus(60, 20, 25, false)), // 1200
+		java.util.Map.entry("lifeweaver.grip", new Stimulus(60, 2, 2, false)), // 11FF
+		java.util.Map.entry("lifeweaver.tree_end", new Stimulus(50, 20, 20, true))); // 135B
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

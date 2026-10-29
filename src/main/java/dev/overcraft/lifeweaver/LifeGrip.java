@@ -36,6 +36,8 @@ public final class LifeGrip {
 	/** Allies a pull let go, not yet landed: their fall doesn't count (the owner's rule for ability landings, #35). */
 	private static final Map<UUID, LivingEntity> LANDING = new HashMap<>();
 	private static final Map<UUID, Integer> CLOSE = new HashMap<>();
+	/** When each pull's vine reaches its ally (game time): its landing's sounds and his line. */
+	private static final Map<UUID, Long> LANDS = new HashMap<>();
 
 	private LifeGrip() {
 	}
@@ -84,8 +86,28 @@ public final class LifeGrip {
 		ally.needsSync = true;
 		if (ally instanceof ServerPlayer player) {
 			ServerPlayNetworking.send(player, new GripPayload(true, to.x, to.y, to.z, far));
+			// gripped: theirs in their head (318E's 9C3B)
+			dev.overcraft.hero.HeroSounds.toOwner(player, dev.overcraft.registry.OcSounds.LW_GRIP_ALLY);
 		}
+		// the vine grows from the point to them at 88 m/s, and lands (48FE)
+		LANDS.put(ally.getUUID(), caster.level().getGameTime()
+			+ Math.max(1, Math.round(ally.getBoundingBox().getCenter().distanceTo(to) / LifeweaverStats.GRIP_VINE_SPEED * 20)));
 		Effects.play(caster.level(), "lifeweaver_grip", to, Vec3.ZERO, ally, 0, caster);
+	}
+
+	/**
+	 * The vine reached the ally (48FE): his own in his head, the ally's in theirs, the others' at the ally (70 m); then
+	 * his line (11FF, 21EE #459).
+	 */
+	private static void landed(Pull p) {
+		ServerPlayer allyPlayer = p.ally instanceof ServerPlayer player ? player : null;
+		dev.overcraft.hero.HeroSounds.toOwner(p.caster, dev.overcraft.registry.OcSounds.LW_GRIP_LAND);
+		if (allyPlayer != null) {
+			dev.overcraft.hero.HeroSounds.toOwner(allyPlayer, dev.overcraft.registry.OcSounds.LW_GRIP_LAND_ALLY);
+		}
+		dev.overcraft.hero.HeroSounds.at((net.minecraft.server.level.ServerLevel) p.ally.level(), dev.overcraft.registry.OcSounds.LW_GRIP_LAND_3P,
+			p.ally.getBoundingBox().getCenter(), 70, p.caster, allyPlayer);
+		dev.overcraft.hero.Voice.say(p.caster, "grip", 1);
 	}
 
 	/** The pull's speed (m/s), this long (ticks) after it started moving the ally. */
@@ -103,6 +125,11 @@ public final class LifeGrip {
 	public static void tick(MinecraftServer server) {
 		for (Pull p : new ArrayList<>(PULLS.values())) {
 			LivingEntity ally = p.ally;
+			Long land = LANDS.get(ally.getUUID());
+			if (land != null && ally.level().getGameTime() >= land) {
+				LANDS.remove(ally.getUUID());
+				landed(p);
+			}
 			long t = ally.level().getGameTime() - p.startedAt;
 			int moving = (int) (t - Ow.ticks(GRIP_PULL_FROM));
 			boolean jumped = ally instanceof ServerPlayer player && t >= Ow.ticks(GRIP_JUMP_CANCEL) && player.getLastClientInput().jump();

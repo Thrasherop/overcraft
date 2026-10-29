@@ -783,6 +783,17 @@ public final class LifeweaverFx {
 		}
 	}
 
+	/** Where each drawn vine starts (its point), by ally id: its loop's sound (LifeweaverSounds). */
+	public static Map<Integer, Vec3> vines() {
+		Map<Integer, Vec3> out = new java.util.HashMap<>();
+		VINES.forEach((id, v) -> {
+			if (v.drawn) {
+				out.put(id, v.to);
+			}
+		});
+		return out;
+	}
+
 	/** World left: nothing carries over. */
 	public static void clear() {
 		VINES.clear();

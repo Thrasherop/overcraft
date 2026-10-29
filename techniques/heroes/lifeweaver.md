@@ -39,7 +39,9 @@ and the first with shields. Up: [Techniques](../README.md) · the method:
   been in the air off it and landed (the edge tick counts as "on the ground"), and the guard is ticked server-wide (a
   platform gone mid-fall would drop it). Floating on it, a player's "above ground" count is reset (the server's kick).
 - **Shields** (`hero/Shields`): every health change passes `setHealth`, so a loss comes off the shields first and a
-  gain stops under them; their own regeneration bypasses it.
+  gain fills the health under them, then them; their own regeneration bypasses it. The first version stopped healing
+  under them, from a misreading: the wiki's Hit points page says shields are recoverable HP, health filled first. A
+  dash's heal after a hit on his shields alone healed nothing (2026-10-29, found while checking his sounds).
 - **Movement hooks go before the mover reads velocity:** the dash's end speed was overwritten by the step already
   computed from the dash's speed (`OwMovement.travel`: the dash hook is first now).
 - **A player pulled by Life Grip moves on their own client** (`GripPayload`, `ClientLifeweaver.grip`), held still for

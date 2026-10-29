@@ -94,6 +94,8 @@ public final class LifeweaverStats {
 	/** Its time raised in all (counted only while raised, never refilled). */
 	public static final double PLATFORM_RAISED_TIME = 12;      // BZ 2024-08-20 (10 -> 12); D 1C87
 	/** No one on it this long: it comes back down, its time left raised to at least this. */
+	/** The raised platform's warning ticks over its last this many seconds (368D #660: v215 <= 5). */
+	public static final double PLATFORM_WARNING_FROM = 5;      // D 368D
 	public static final double PLATFORM_EMPTY = 2;             // BZ 2024-08-20; D 368D
 	/** Standing on it this long sets it off (0.05 s from 0.475 s after landing). */
 	public static final double PLATFORM_TRIGGER = 0.15;        // D 368D #135
@@ -160,6 +162,10 @@ public final class LifeweaverStats {
 	public static final double TREE_CAST = 0.99;               // D 36A4 (anim 0x8EE)
 	/** The tree spawns (and the charge goes) this far into the cast. */
 	public static final double TREE_SPAWN_AT = 0.15;           // D 36A4
+	/** Life Grip's vine grows at this (m/s): its sound of landing on the ally then (3110 on 21EE#316). */
+	public static final double GRIP_VINE_SPEED = 88;            // D 3110 (tools/reference/lifeweaver-effects.md)
+	/** His quick melee's foley, this far into the swing (s): the clips' sound keys. */
+	public static final double MELEE_SOUND_AT = 0.6;            // D 1P C775 / C5B7, 3P D5A5 / D5A3 / D5A4
 	public static final double TREE_TIME = 15;                 // W (BZ 2025-03-18 via W); D 1CC1
 	/** Q destroys it from this long after it spawns. */
 	public static final double TREE_DESTROY_FROM = 0.5;        // D 36A4

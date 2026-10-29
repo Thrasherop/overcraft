@@ -84,6 +84,10 @@ public class SeedEntity extends Entity {
 				Combat.overhealthPool(e, SEED_OVERHEALTH, SEED_OVERHEALTH, SEED_BUFF_TIME, SEED_OVERHEALTH_DECAY);
 				Combat.buff(e, Attributes.MOVEMENT_SPEED, SPEED_ID, SEED_SPEED_BONUS, SEED_BUFF_TIME);
 				Effects.play(level, "lifeweaver_seed_taken", e.position(), Vec3.ZERO, e, 0, owner);
+				if (e instanceof ServerPlayer taker) {
+					// the taker's own (73FC's F472, in their head: M)
+					dev.overcraft.hero.HeroSounds.toOwner(taker, dev.overcraft.registry.OcSounds.LW_SEED_PICKUP);
+				}
 				discard();
 				return;
 			}

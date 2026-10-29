@@ -12,11 +12,13 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.Hero;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
+import dev.overcraft.registry.OcSounds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -99,7 +101,12 @@ public final class Lifeweaver implements HeroKit {
 		}
 		// the charge fills by itself, slower, whenever it isn't being held (in hand or put away: D 1C5A)
 		if (!(s.charging && s.primaryHeld && !s.thornsOut && controls)) {
+			double was = s.bloomCharge;
 			s.bloomCharge = Math.min(1, s.bloomCharge + 1 / (CHARGE_TIME * CHARGE_PASSIVE * 20));
+			if (was < 1 && s.bloomCharge >= 1 && controls && !s.thornsOut) {
+				// full by itself (21C6 #1416 -> 48F6, M: the passive charge's)
+				HeroSounds.toOwner(player, OcSounds.LW_BLOSSOM_FULL);
+			}
 		}
 		s.airTicks = player.onGround() ? 0 : s.airTicks + 1;
 		reloads(player, s, attack);
@@ -131,6 +138,7 @@ public final class Lifeweaver implements HeroKit {
 			} else if (secondaryPressed) {
 				s.treeAiming = false;
 				Effects.play(player.level(), "lifeweaver_tree_cancel", player.position(), player);
+				HeroSounds.toOwner(player, OcSounds.LW_TREE_CANCEL);
 			}
 			s.bloomTarget = null;
 		} else if (s.treeCast < 0 && s.gripCast < 0) {
@@ -190,6 +198,9 @@ public final class Lifeweaver implements HeroKit {
 		s.bloomTarget = null;
 		s.weaponRecovery = 0;
 		Combat.animate(player, thorns ? "draw_thorn" : "draw");
+		// his own only (9C54 / 9C55: no copy for others)
+		HeroSounds.toOwner(player, thorns ? OcSounds.LW_SWAP_THORNS : OcSounds.LW_SWAP_BLOSSOM);
+		VOLLEYING.remove(player.getUUID());
 	}
 
 	/**
@@ -233,17 +244,28 @@ public final class Lifeweaver implements HeroKit {
 		if (s.thornsOut) {
 			s.secondaryReload = 0;
 			Combat.animate(player, s.secondaryFiredSinceReload ? "reload_thorn_after_fire" : "reload_thorn");
+			HeroSounds.split(player, OcSounds.LW_THORN_RELOAD, OcSounds.LW_THORN_RELOAD_3P, player.getEyePosition(), 45);
 		} else {
 			// a reload resets the charge (W: a manual one; the drawn blossom goes back)
 			if (s.charging) {
 				s.primaryAmmo = Math.min(BLOSSOM_AMMO, s.primaryAmmo + 1);
+				chargeEnd(player, s.bloomCharge);
 			}
 			s.charging = false;
 			s.bloomCharge = 0;
 			s.primaryReload = 0;
 			Combat.animate(player, "reload");
+			HeroSounds.split(player, OcSounds.LW_BLOSSOM_RELOAD, OcSounds.LW_BLOSSOM_RELOAD_3P, player.getEyePosition(), 45);
 		}
 		s.secondaryFiredSinceReload = false;
+		VOLLEYING.remove(player.getUUID());
+		dev.overcraft.hero.Voice.say(player, "reload", 1);
+	}
+
+	/** The charge's hum ends (9682's / 9DB7's Stop event), pitched by the charge it ended at: a release or a reload. */
+	private static void chargeEnd(ServerPlayer player, double charge) {
+		HeroSounds.split(player, OcSounds.byCharge(OcSounds.LW_CHARGE_END, charge), OcSounds.byCharge(OcSounds.LW_CHARGE_END_3P, charge),
+			player.getEyePosition(), 45);
 	}
 
 	/**
@@ -262,6 +284,7 @@ public final class Lifeweaver implements HeroKit {
 			s.charging = true;
 			s.holsterTicks = 0;
 			Combat.animate(player, "charge");
+			HeroSounds.split(player, OcSounds.LW_CHARGE_START, OcSounds.LW_CHARGE_START_3P, player.getEyePosition(), 45);
 		}
 		if (!s.charging) {
 			s.bloomTarget = null;
@@ -269,7 +292,12 @@ public final class Lifeweaver implements HeroKit {
 		}
 		if (s.primaryHeld) {
 			// held: the active rate, sped up as his weapons are (Kitsune Rush's attack speed: D 1C54's weapon-speed var)
+			double was = s.bloomCharge;
 			s.bloomCharge = Math.min(1, s.bloomCharge + attack / (CHARGE_TIME * 20));
+			if (was < 1 && s.bloomCharge >= 1) {
+				// full (21C6 #778 -> 48F6)
+				HeroSounds.toOwner(player, OcSounds.LW_BLOSSOM_FULL);
+			}
 			track(player, s);
 		} else if (released) {
 			throwBlossom(player, s);
@@ -363,6 +391,7 @@ public final class Lifeweaver implements HeroKit {
 		s.bloomTarget = null;
 		s.bloomRecovery = Ow.ticks(BLOSSOM_RECOVERY);
 		s.holsterTicks = 0;
+		chargeEnd(player, charge);
 		if (target == null || !target.isAlive()) {
 			// no ally: the blossom is lost (D: effect 30E6)
 			Combat.animate(player, "release");
@@ -376,6 +405,7 @@ public final class Lifeweaver implements HeroKit {
 		level.addFreshEntity(blossom);
 		Combat.animate(player, "release");
 		Effects.play(level, "lifeweaver_blossom_throw", from, Vec3.ZERO, player, (int) Math.round(charge * 100), player);
+		HeroSounds.split(player, OcSounds.byCharge(OcSounds.LW_BLOSSOM_THROW, charge), OcSounds.LW_BLOSSOM_THROW_3P, from, 45);
 	}
 
 	/**
@@ -425,6 +455,7 @@ public final class Lifeweaver implements HeroKit {
 		HEALS.clear();
 		HEALS.addAll(next);
 		tickBlooms();
+		tickLater();
 	}
 
 	/**
@@ -446,7 +477,15 @@ public final class Lifeweaver implements HeroKit {
 			volley(player, SPREAD_A_MAX * t, SPREAD_B_MIN + (SPREAD_B_MAX - SPREAD_B_MIN) * t);
 			s.thornSpread = Math.min(SPREAD_VOLLEYS, s.thornSpread + 1);
 			Combat.animate(player, "fire_thorn");
+			// the firing sound once a volley (its containers retrigger every 0.09 s), its start with the first (4A9E)
+			if (VOLLEYING.add(player.getUUID())) {
+				HeroSounds.split(player, OcSounds.LW_THORN_FIRE_START, OcSounds.LW_THORN_FIRE_START_3P, player.getEyePosition(), 100);
+			}
+			HeroSounds.split(player, OcSounds.LW_THORN_FIRE, OcSounds.LW_THORN_FIRE_3P, player.getEyePosition(), 100);
 			firing = true;
+		}
+		if (!s.secondaryHeld || s.secondaryAmmo < THORN_AMMO_PER_VOLLEY) {
+			VOLLEYING.remove(player.getUUID());
 		}
 		if (!firing && !s.secondaryHeld) {
 			s.thornSpread = Math.max(0, s.thornSpread - SPREAD_DECAY / 20);
@@ -466,6 +505,8 @@ public final class Lifeweaver implements HeroKit {
 			level.addFreshEntity(thorn);
 		}
 		Effects.play(level, "lifeweaver_thorn_fire", from, aim, player, 0, player);
+		// each thorn's shot (4C47), everyone him too: ours one for the pair, which leave together
+		HeroSounds.at(level, OcSounds.LW_THORN_SHOT, from, 60);
 	}
 
 	/** A direction within {@code degrees} of the aim, evenly over the cone's disc. */
@@ -481,13 +522,19 @@ public final class Lifeweaver implements HeroKit {
 		return aim.add(side.scale(r * Math.cos(a))).add(up.scale(r * Math.sin(a))).normalize();
 	}
 
+	/** Who is firing Thorn Volley now (since their last volley's start): the first volley's start sound. */
+	private static final java.util.Set<UUID> VOLLEYING = new java.util.HashSet<>();
+
 	// ---- Superbloom (major perk) ----
 
 	/** Thorn hits per enemy (game times), for Superbloom. */
 	private static final Map<UUID, List<Long>> BLOOMS = new HashMap<>();
 
-	/** A thorn hit an enemy (ThornEntity): with Superbloom, 16 in 2.5 s burst for 40. */
-	public static void thornHit(ServerPlayer player, LivingEntity target) {
+	/**
+	 * A thorn hit an enemy (ThornEntity): with Superbloom, 16 in 2.5 s burst for 40, dealt as that thorn's (as his own
+	 * blow, a kill by it was taken for a melee kill and his melee line played: found playing).
+	 */
+	public static void thornHit(ServerPlayer player, LivingEntity target, Entity thorn) {
 		if (!has(player, Perk.LIFEWEAVER_SUPERBLOOM)) {
 			return;
 		}
@@ -497,13 +544,16 @@ public final class Lifeweaver implements HeroKit {
 		hits.add(now);
 		if (hits.size() >= SUPERBLOOM_THORNS) {
 			hits.clear();
-			float dealt = Combat.damage(target, player.damageSources().playerAttack(player), SUPERBLOOM_DAMAGE);
+			float dealt = Combat.damage(target, player.damageSources().thrown(thorn, player), SUPERBLOOM_DAMAGE);
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
 			}
 			Effects.play(player.level(), "lifeweaver_superbloom", target.getBoundingBox().getCenter(), Vec3.ZERO, target, 0, player);
+			// 653C: his in his head (M), and at the target for those near it (12 m)
+			HeroSounds.toOwner(player, OcSounds.LW_SUPERBLOOM);
+			HeroSounds.at(player.level(), OcSounds.LW_SUPERBLOOM_3P, target.getBoundingBox().getCenter(), 12, player);
 		}
 	}
 
@@ -546,6 +596,7 @@ public final class Lifeweaver implements HeroKit {
 		s.ability1Cooldown = Ow.ticks(PLATFORM_COOLDOWN + PLATFORM_COOLDOWN_FROM);
 		s.abilityLock = Ow.ticks(PLATFORM_LOCK);
 		Combat.animate(player, "throw");
+		HeroSounds.split(player, OcSounds.LW_PLATFORM_THROW, OcSounds.LW_PLATFORM_THROW_3P, player.getEyePosition(), 70);
 		dev.overcraft.hero.Voice.say(player, "platform", 1);
 	}
 
@@ -602,12 +653,16 @@ public final class Lifeweaver implements HeroKit {
 		s.softLanding = true;
 		Combat.animate(player, "dash");
 		Effects.play(player.level(), "lifeweaver_dash", player.position(), Vec3.ZERO, player, 0, player);
+		HeroSounds.split(player, OcSounds.LW_DASH, OcSounds.LW_DASH_3P, player.position(), 50);
 		dev.overcraft.hero.Voice.say(player, "dash", 0.6f);
 	}
 
 	private static void dash(ServerPlayer player, HeroState s) {
 		if (s.dashTicks >= 0) {
-			Combat.heal(player, DASH_HEAL / Ow.ticks(DASH_TIME));
+			// over its 5 ticks (it counts 5 -> 0: a heal on the last too gave 66 of the 55, found playing)
+			if (s.dashTicks > 0) {
+				Combat.heal(player, DASH_HEAL / Ow.ticks(DASH_TIME));
+			}
 			if (--s.dashTicks < 0) {
 				s.ability3Cooldown = Ow.ticks(DASH_COOLDOWN);
 			}
@@ -643,7 +698,9 @@ public final class Lifeweaver implements HeroKit {
 		s.interruptReload(GRIP_CAST);
 		LifeGrip.start(player, target);
 		Combat.animate(player, "grip");
-		dev.overcraft.hero.Voice.say(player, "grip", 1);
+		// the cast (3111): his own in his head; at him, his side's copy and the enemies' (A096, L which is whose)
+		HeroSounds.toOwner(player, OcSounds.LW_GRIP_CAST);
+		HeroSounds.at(player.level(), OcSounds.LW_GRIP_CAST_3P, OcSounds.LW_GRIP_CAST_ENEMY, player, player.position(), 70, player);
 	}
 
 	private static void lifeGrip(ServerPlayer player, HeroState s) {
@@ -704,7 +761,8 @@ public final class Lifeweaver implements HeroKit {
 			TreeOfLifeEntity tree = new TreeOfLifeEntity(player.level(), player, s.treeAt);
 			player.level().addFreshEntity(tree);
 			s.treeId = tree.getId();
-			dev.overcraft.hero.Voice.say(player, "ultimate", 1);
+			// the ult's line, allies' and enemies' (11FD / 11FE), as the other heroes' casts
+			HeroSounds.ultLine(player, OcSounds.LW_ULT_FRIENDLY, OcSounds.LW_ULT_ENEMY, 4);
 		}
 		if (s.treeCast >= Ow.ticks(TREE_CAST)) {
 			s.treeCast = -1;
@@ -737,6 +795,31 @@ public final class Lifeweaver implements HeroKit {
 		seed.launch(from, player.getViewVector(1.0f), Ow.speed(SEED_SPEED));
 		level.addFreshEntity(seed);
 		Combat.animate(player, "throw_blossom");
+		HeroSounds.split(player, OcSounds.LW_SEED_THROW, OcSounds.LW_SEED_THROW_3P, from, 70);
+	}
+
+	/** Sounds due a little later: his quick melee's body foley, 0.6 s into the swing (its clips' 9ECE / A08A, H). */
+	private record Later(ServerPlayer player, long at, net.minecraft.sounds.SoundEvent own, net.minecraft.sounds.SoundEvent others) {
+	}
+
+	private static final List<Later> LATER = new ArrayList<>();
+
+	/** Quick melee swung (QuickMelee): his foley follows. */
+	public static void meleeSwung(ServerPlayer player) {
+		LATER.add(new Later(player, player.level().getGameTime() + Ow.ticks(MELEE_SOUND_AT), OcSounds.LW_MELEE, OcSounds.LW_MELEE_3P));
+	}
+
+	private static void tickLater() {
+		LATER.removeIf(l -> {
+			if (l.player.isRemoved()) {
+				return true;
+			}
+			if (l.player.level().getGameTime() < l.at) {
+				return false;
+			}
+			HeroSounds.split(l.player, l.own, l.others, l.player.position(), 45);
+			return true;
+		});
 	}
 
 	@Override
@@ -761,8 +844,10 @@ public final class Lifeweaver implements HeroKit {
 			} else if (s.treeAiming) {
 				// ours: Q again stops aiming, as the right button does
 				s.treeAiming = false;
+				HeroSounds.toOwner(player, OcSounds.LW_TREE_CANCEL);
 			} else if (s.ultCharge >= ULT_COST) {
 				s.treeAiming = true;
+				HeroSounds.toOwner(player, OcSounds.LW_TREE_AIM);
 				s.charging = false;
 				s.bloomTarget = null;
 			}
