@@ -154,6 +154,56 @@ public final class EffectArt {
 		CAT_NAP_MARKER(0, 0, 0, 0, .25f, 0, .393f, 1, .5f, 0, .067f, 1, .75f, 0, .067f, 1, 1, 0, .067f, 1),
 		/** Catnapper's landing flash (71C2, 8006A53D r0, from black, HDR 7): violet-pink to sky to cyan. */
 		CAT_NAP_IMPACT(0, 0, 0, 0, .25f, .307f, .109f, .744f, .5f, .237f, .218f, 1, .75f, .13f, .614f, 1, 1, .009f, 1, 1),
+		// Lifeweaver's (tools/reference/lifeweaver-effects.md "Palettes", generated from his LUT rows)
+		/** His hex sparkles 3EB7D (8005B0D22D52 r0, HDR 5): magenta-pink to white. */
+		LW_PINK(0, 0, 0, 0, .25f, 1, .343f, 1, .5f, 1, .83f, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		LW_PINK_N(0, 0, 0, 0, .25f, .345f, .069f, .225f, .5f, .443f, .166f, .33f, .75f, .575f, .286f, .466f, 1, 1, 1, 1),
+		/** The same, as enemies see them (r1): black to red to white. */
+		LW_PINK_ENEMY_N(0, 0, 0, 0, .25f, .158f, .028f, .028f, .5f, .316f, .056f, .056f, .75f, .474f, .089f, .089f, 1, 1, .999f, .999f),
+		/** Gold hex sparkles (800CF57A9184 r0, HDR 5): the blossom's side. */
+		LW_GOLD(0, 0, 0, 0, .25f, 1, .951f, .125f, .5f, 1, 1, .321f, .75f, 1, 1, .567f, 1, 1, 1, 1),
+		LW_GOLD_N(0, 0, 0, 0, .25f, .347f, .19f, .025f, .5f, .466f, .34f, .064f, .75f, .605f, .508f, .113f, 1, 1, 1, 1),
+		/** The charging blossom's glows 0242 (30DE C33 / C37): pale gold, amber. */
+		LW_BLOSSOM_GLOW(0, 0, 0, 0, .25f, 1, .755f, .242f, .5f, 1, .831f, .384f, .75f, 1, .906f, .523f, 1, 1, .982f, .665f),
+		LW_BLOSSOM_AMBER(0, 0, 0, 0, .25f, .919f, .497f, .068f, .5f, .935f, .642f, .136f, .75f, .949f, .785f, .203f, 1, .964f, .93f, .27f),
+		/** Petals 3FD63 (8007F2189D11 r3, HDR 4; the row falls: bright at mask 0). */
+		LW_PETAL_N(0, 0, 0, 0, .25f, .831f, .588f, .253f, .5f, .661f, .469f, .202f, .75f, .537f, .38f, .164f, 1, .5f, .354f, .152f),
+		/** The petals' over-life tint (800A664BB547 r0, 12BB): cream to pink to crimson; use by age, not by mask. */
+		LW_PETAL_AGE_N(0, 0, 0, 0, .25f, .778f, .464f, .572f, .5f, .642f, .189f, .572f, .75f, .581f, .045f, .278f, 1, .572f, 0, .021f),
+		/** Life Grip's vine 3110 (80072BB6FABB r3, HDR 20): lilac-pink to white. */
+		LW_VINE_N(0, 0, 0, 0, .25f, .189f, .096f, .152f, .5f, .201f, .097f, .11f, .75f, .418f, .315f, .298f, 1, 1, 1, 1),
+		/** The vine's coil 12262 (800B8E14B83B r3, HDR 5): magenta to white. */
+		LW_VINE_COIL_N(0, 0, 0, 0, .25f, .347f, .067f, .33f, .5f, .545f, .134f, .511f, .75f, .787f, .271f, .721f, 1, 1, .999f, .999f),
+		/** The blossom's flight trail 30D0 C25 (80098E9C7FFE r3, HDR 10): black to gold to white. */
+		LW_BLOSSOM_TRAIL(0, 0, 0, 0, .25f, .898f, .585f, 0, .5f, 1, 1, .132f, .75f, 1, 1, .876f, 1, 1, 1, 1),
+		LW_BLOSSOM_TRAIL_N(0, 0, 0, 0, .25f, .09f, .059f, 0, .5f, .168f, .126f, .013f, .75f, .337f, .327f, .088f, 1, 1, 1, 1),
+		/** Gold ring flashes 2E8AF (800C725A38EE r0, HDR 2): heal, fire, tree heal, seed pickup. */
+		LW_HEAL_RING_N(0, 0, 0, 0, .25f, .835f, .459f, .06f, .5f, .918f, .651f, .12f, .75f, 1, .84f, .184f, 1, 1, 1, 1),
+		/** The tree's sprout / pulse sphere shells (800EF2EBAB76 r9, HDR 9.7): black to gold to pale yellow. */
+		LW_TREE_WAVE_N(0, .003f, 0, .006f, .25f, .036f, .028f, .001f, .5f, .343f, .271f, .002f, .75f, .735f, .613f, .051f, 1, 1, .946f, .429f),
+		LW_TREE_WAVE_ENEMY_N(0, .003f, 0, .006f, .25f, .036f, .002f, .001f, .5f, .343f, .023f, .002f, .75f, .735f, .139f, .051f, 1, 1, .728f, .429f),
+		/** The pulse's ground ring (8004D4075AFE r3, HDR 2) and the flower-band wall (8001794386A1 r3, HDR 2). */
+		LW_TREE_RING_N(0, 0, 0, 0, .25f, .452f, .398f, .079f, .5f, .5f, .459f, .217f, .75f, .56f, .537f, .401f, 1, 1, 1, 1),
+		LW_TREE_WALL_N(0, 0, 0, 0, .25f, .167f, .159f, .046f, .5f, .297f, .285f, .092f, .75f, .464f, .447f, .149f, 1, 1, 1, 1),
+		/** The thorn 122CA (8001A48833A6 r2, HDR 30): purple-magenta to white. */
+		LW_THORN_N(0, 0, 0, 0, .25f, .115f, .01f, .122f, .5f, .185f, .058f, .192f, .75f, .469f, .264f, .478f, 1, 1, 1, 1),
+		LW_THORN_ENEMY_N(0, 0, 0, 0, .25f, .1f, 0, 0, .5f, .128f, 0, 0, .75f, .394f, 0, 0, 1, 1, .999f, .999f),
+		/** The thorn's tracer (8003062BE28B r3, HDR 12; falls: white at 0 to black at 1, reversed by age, M). */
+		LW_THORN_TRAIL_N(0, 0, 0, 0, .25f, .749f, .158f, .643f, .5f, .418f, .056f, .368f, .75f, .162f, 0, .149f, 1, 0, 0, 0),
+		/** The thorn's muzzle flash (80082222A07E r0) and hit burst (8009F205934A r0). */
+		LW_THORN_FLASH(0, 0, 0, 0, .25f, 1, .058f, .588f, .5f, 1, .191f, .712f, .75f, .981f, .381f, .826f, 1, .939f, .61f, 1),
+		LW_THORN_HIT(0, 0, 0, 0, .25f, .273f, .067f, .362f, .5f, .567f, .238f, .237f, .75f, .862f, .617f, .115f, 1, .991f, 1, 0),
+		/** The platform's throw and rise trails (800EA70DA27E r2, HDR 5): pink to white; enemy r3. */
+		LW_PLATFORM_TRAIL_N(0, 0, 0, 0, .25f, .391f, .086f, .347f, .5f, .398f, .087f, .353f, .75f, .469f, .103f, .416f, 1, 1, .687f, .956f),
+		LW_PLATFORM_TRAIL_ENEMY_N(0, 0, 0, 0, .25f, .391f, .012f, .012f, .5f, .398f, .013f, .013f, .75f, .469f, .015f, .015f, 1, 1, .687f, .687f),
+		/** The platform's bloom outline 122DA (8008CBB37314 r2, HDR 5): mauve to white. */
+		LW_PLATFORM_FLOWER_N(0, 0, 0, 0, .25f, .067f, .032f, .055f, .5f, .16f, .076f, .133f, .75f, .387f, .183f, .322f, 1, 1, 1, 1),
+		/** The raised platform's petal-tip glow (8009496E3E46 r0) and cup (8003C2A25A98 r5; enemy r6). */
+		LW_PETAL_GLOW(0, 0, 0, 0, .25f, .828f, .127f, .676f, .5f, .824f, .221f, .707f, .75f, .823f, .318f, .741f, 1, .831f, .405f, .778f),
+		LW_PETAL_CUP(0, 0, 0, 0, .25f, .684f, .167f, .588f, .5f, .77f, .334f, .709f, .75f, .856f, .498f, .828f, 1, 1, 1, 1),
+		LW_PETAL_CUP_ENEMY(0, 0, 0, 0, .25f, .684f, .167f, .167f, .5f, .77f, .334f, .334f, .75f, .856f, .498f, .498f, 1, 1, 1, 1),
+		/** The dash ribbons (800955CE7D8A r2, HDR 3, falls): white to cream gold (L which row). */
+		LW_DASH_N(0, 0, 0, 0, .25f, .888f, .572f, .312f, .5f, .79f, .509f, .278f, .75f, .704f, .454f, .248f, 1, .667f, .43f, .234f),
 		/** As the enemy sees her effects. */
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */
@@ -193,10 +243,15 @@ public final class EffectArt {
 	 * Masks whose dim parts the game cuts away (its ring meshes use only the bright edge; the soft interior is for
 	 * other uses): brightness below this is black. Without it Suzu's 8 m ground ring was a lit disc.
 	 */
-	private static final Map<String, Float> BLACK_POINT = Map.of("ring_line", 0.45f,
+	private static final Map<String, Float> BLACK_POINT = Map.ofEntries(Map.entry("ring_line", 0.45f),
 		// the kunai's lens glint: its faint halo, gamma-encoded and added, read as a teal sphere round each hit (the
 		// fourth critique); the streak itself is brighter than this
-		"glint", 0.12f);
+		Map.entry("glint", 0.12f),
+		// Lifeweaver's: a compression floor of 1-15 (of 255) over a fifth to a third of each, gamma-encoded and added, lit
+		// the whole quad: the platform's 5 m bloom burst and Superbloom's flash as grainy squares, the big sparkles as
+		// soft squares (found playing)
+		Map.entry("lw_burst", 0.06f), Map.entry("lw_sparkle", 0.06f), Map.entry("lw_star", 0.06f), Map.entry("lw_swirl", 0.04f),
+		Map.entry("lw_hit_0", 0.05f), Map.entry("lw_hit_1", 0.05f), Map.entry("lw_hit_2", 0.05f), Map.entry("lw_hit_3", 0.05f));
 	/**
 	 * Blended ("soft") colours given directly in sRGB, brightness stop then red, green, blue (0-1), for palettes whose
 	 * game ramp runs too pale to blend: soft gold took the ramp's top, near-white cream, and read as cream-khaki comets

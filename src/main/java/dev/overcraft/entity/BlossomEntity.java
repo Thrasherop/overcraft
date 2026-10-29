@@ -134,7 +134,9 @@ public class BlossomEntity extends OwProjectile {
 	private void arrive(LivingEntity target) {
 		if (level() instanceof ServerLevel level && getOwner() instanceof ServerPlayer owner) {
 			Lifeweaver.blossomHeals(owner, target, heal, healOver, charge());
-			dev.overcraft.hero.Effects.play(level, "lifeweaver_blossom_heal", chest(target), Vec3.ZERO, target, 0, owner);
+			// its look scales with the charge (472A reads it: 014E)
+			dev.overcraft.hero.Effects.play(level, "lifeweaver_blossom_heal", chest(target), Vec3.ZERO, target,
+				Math.round(charge() * 100), owner);
 		}
 		discard();
 	}

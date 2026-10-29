@@ -63,6 +63,7 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
 		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.PingPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.comms.Pings.receive(payload));
@@ -97,6 +98,7 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
 			ClientLifeweaver.clear();
+			dev.overcraft.client.effect.LifeweaverFx.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -142,12 +144,13 @@ public class OvercraftClient implements ClientModInitializer {
 		// Mercy's blaster shots: drawn by their flight effect (MercyFx), the item only without the local pack
 		EntityRendererRegistry.register(OcEntities.BLASTER_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"blaster_shot", 0.3f, false, 1, true));
-		// Lifeweaver's: the blossom and the thorns have no model in his data (effects only); the thrown platform and seed
-		// are his model 126CC; the platform, the seed on the ground and the tree their own models with their clips
+		// Lifeweaver's: the blossom and the thorns have no model in his data, their flight effects are their look
+		// (LifeweaverFx: the item only without the local pack); the thrown platform and seed are his model 126CC; the
+		// platform, the seed on the ground and the tree their own models with their clips
 		EntityRendererRegistry.register(OcEntities.BLOSSOM, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
-			"blossom", 0.6f, false, 1, false));
+			"blossom", 0.6f, false, 1, true));
 		EntityRendererRegistry.register(OcEntities.THORN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
-			"thorn", 0.3f, false, 1, false));
+			"thorn", 0.3f, false, 1, true));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"lifeweaver_seed", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);

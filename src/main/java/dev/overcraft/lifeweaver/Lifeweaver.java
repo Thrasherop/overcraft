@@ -79,6 +79,10 @@ public final class Lifeweaver implements HeroKit {
 		s.ability3Cooldown = Math.max(0, s.ability3Cooldown - cooldown);
 		s.seedCooldown = Math.max(0, s.seedCooldown - cooldown);
 		s.abilityLock = Math.max(0, s.abilityLock - 1);
+		// his platform gone by itself (its raised time out, felled, lost in flight): it isn't his any more
+		if (s.platformId != null && !(platform(player, s) instanceof Entity out && out.isAlive())) {
+			s.platformId = null;
+		}
 		if (s.swapTicks > 0) {
 			s.swapTicks--;
 		}
@@ -597,7 +601,7 @@ public final class Lifeweaver implements HeroKit {
 		s.dashTicks = Ow.ticks(DASH_TIME);
 		s.softLanding = true;
 		Combat.animate(player, "dash");
-		Effects.play(player.level(), "lifeweaver_dash", player.position(), player);
+		Effects.play(player.level(), "lifeweaver_dash", player.position(), Vec3.ZERO, player, 0, player);
 		dev.overcraft.hero.Voice.say(player, "dash", 0.6f);
 	}
 

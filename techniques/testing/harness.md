@@ -80,5 +80,13 @@
   still hurts (`cmd /tp @s ~ ~12 ~`) as the control.
 - **Placed things stay:** a Petal Platform lies on the ground until used, and his key pressed again destroys it rather
   than throwing a new one. Before a throw, know whether one is out (`data get entity @e[type=...]`).
+- **A `tap` can fall between client ticks** (2026-10-29): jump read as held at tick time never saw a tap, so neither
+  the jump nor Lifeweaver's dash happened. Hold keys the game reads as held for a tick or two (`key jump down`,
+  `sleep 0.1`, `key jump up`).
+- **Real time passes between your batches:** reading screenshots between two `dev.py` calls takes tens of seconds.
+  A 12 s cooldown "dropping to 0 in seconds" and a platform "vanishing" were only that time passing (its 12 s raised
+  time ran out). Log a timeline inside one call (a loop of `state` reads) before calling something a bug.
+- **Effects too quick to see:** `fxslow 0.2` slows the effects only; `cmd /tick rate 4` slows the game (projectiles,
+  entities) too. Use both for a projectile's flight, and `fx <effect> [variant] [enemy]` to play one moment 3 m ahead.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.

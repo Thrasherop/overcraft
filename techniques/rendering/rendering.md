@@ -78,6 +78,21 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
   alpha; a texture with a real cut-out (Kiriko's climb dust) keeps its own.
 - **A flat effect "on the ground" floats over any slope:** lay it in short pieces, each at the top of the first solid
   block under open space (`KirikoFx.groundY`).
+- **A compressed mask's floor lights the whole quad** (Lifeweaver, 2026-10-29): his burst, star, sparkle and hit masks
+  read 1-15 of 255 over a fifth to a third of their area. Gamma-encoded and added, that floor drew the platform's 5 m
+  bloom and Superbloom's flash as grainy squares. Look at the histogram's low end, not only the border, and give such
+  masks a black point (`EffectArt.BLACK_POINT`: 0.04-0.06 was enough).
+- **Many additive copies of a pale colour on one spot sum to white:** thirty pink leaf shards bursting from one point
+  were a white cloud. Blend (`Fx.soft`) anything spawned densely in a light colour.
+- **Match a ribbon's mask to its kind:** the data's tube ribbons (075D) are soft across, dark at both sides, as a tube
+  seen from the side; a wispy mask that stays bright to its sides (his 2FCA7, made for the cross ribbons 07F5) drew
+  his platform's 0.95 m rise trails as grainy rectangles. Tubes take a soft band (`LifeweaverFx.TUBE`).
+- **A sphere round the camera must be mostly dark:** the tree's wave shell drawn with its bokeh mask alone (grey all
+  over) tinted the whole view white-gold from inside it. The data multiplies three masks (bokeh x vertical fade x
+  wisps); baked into one (`PRODUCTS` `lw_tree_wave`) it reads as a faint shell.
+- **A projectile with no model draws its item sprite** (`ProjectileModelRenderer`) unless its case in
+  `extractRenderState` sets `drawnByEffect`: feed the flight effect from there each frame (positions per frame, counts
+  per second by dt), and return false without the local pack so the sprite still stands in.
 
 ### Lúcio's effects (2026-10-27)
 - From [lucio-effects](../../tools/reference/lucio-effects.md) (a research agent read the emitters, the ESHT

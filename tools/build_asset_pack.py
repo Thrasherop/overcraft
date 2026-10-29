@@ -556,6 +556,34 @@ EFFECT_MASKS = {
     "mercy_spike": ("Mercy", "Valkyrie", "000000011B97", 1),
     "mercy_wing_noise": ("Mercy", "Wings", "000000005A7F", 1),
     "mercy_web": ("Mercy", "FlashHeal", "00000001CB5D", 1),
+    # Lifeweaver's (tools/reference/lifeweaver-effects.md; pass his research fx folder, research/lifeweaver/fx, as a
+    # source): his hex sparkle, the petal, the vine's wisps and line, a thin ring, a star flare, a soft glow and disc, a
+    # radial burst, a swirl ring, the leaf-flame wisp, the rainbow ring (a colour sprite)
+    "lw_sparkle": ("Lifeweaver", "LifeGrip", "00000003EB7D", 1),
+    "lw_petal": ("Lifeweaver", "LifeGrip", "00000003FD63", 1),
+    "lw_wisp": ("Lifeweaver", "LifeGrip", "00000002FCA7", 1),
+    "lw_vine_line": ("Lifeweaver", "LifeGrip", "00000002BE79", 1),
+    "lw_ring": ("Lifeweaver", "LifeGrip", "00000002E8AF", 1),
+    "lw_star": ("Lifeweaver", "LifeGrip", "00000000E221", 1),
+    "lw_glow": ("Lifeweaver", "HealingBlossom", "00000000A7B6", 1),
+    "lw_disc": ("Lifeweaver", "HealingBlossom", "00000000122C", 1),
+    "lw_burst": ("Lifeweaver", "HealingBlossom", "000000037C36", 1),
+    "lw_swirl": ("Lifeweaver", "HealingBlossom", "000000030E12", 1),
+    "lw_leaf_flame": ("Lifeweaver", "HealingBlossom", "000000039C48", 1),
+    "lw_prism": ("Lifeweaver", "HealingBlossom", "0000000017D8", 1),
+    # the tree: flower-band wall, lens streak, upward cone, leaf flipbook, bokeh noise, vertical fade
+    "lw_flower_band": ("Lifeweaver", "TreeOfLife", "000000040484", 1),
+    "lw_lens": ("Lifeweaver", "TreeOfLife", "0000000023C0", 1),
+    "lw_beam_cone": ("Lifeweaver", "TreeOfLife", "00000002D278", 1),
+    "lw_leaf": ("Lifeweaver", "TreeOfLife", "00000003AC78", 4),
+    "lw_bokeh": ("Lifeweaver", "TreeOfLife", "0000000187EB", 1),
+    "lw_fade_v": ("Lifeweaver", "TreeOfLife", "00000003E4E5", 1),
+    # thorns: the muzzle flame (2 frames), the hit burst (4 frames), the crystal grid (a mesh texture); the dash's plus
+    # (a colour sprite: NATURAL)
+    "lw_thorn_flame": ("Lifeweaver", "ThornVolley", "0000000014F9", 2),
+    "lw_hit": ("Lifeweaver", "ThornVolley", "00000002F3C9", 4),
+    "lw_crystal": ("Lifeweaver", "ThornVolley", "00000002A413", 1),
+    "lw_plus": ("Lifeweaver", "RejuvenatingDash", "000000000BCD", 1),
 }
 
 
@@ -569,7 +597,10 @@ MIRRORED = {"cat_paw_marker"}
 PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
             "cat_tracer": ("cat_cloud", "cat_fade"),
-            "cat_trail_ribbon": ("cat_noise", "cat_fade")}
+            "cat_trail_ribbon": ("cat_noise", "cat_fade"),
+            # the Tree of Life's wave shell (47E2, tools/reference/lifeweaver-effects.md): bokeh 187EB x vertical fade
+            # 3E4E5 x wisps 2FCA7. The bokeh alone is grey all over: on the sphere round him it tinted the whole view
+            "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -579,7 +610,14 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "cat_half_ring": ("JetpackCat", "Lifeline", "000000014874"),
                  "cat_sphere": ("JetpackCat", "Purr", "000000001385"),
                  "cat_purr_torus": ("JetpackCat", "Purr", "00000001BD54"),
-                 "cat_purr_wall": ("JetpackCat", "Purr", "000000019181")}
+                 "cat_purr_wall": ("JetpackCat", "Purr", "000000019181"),
+                 # Lifeweaver's (tools/reference/lifeweaver-effects.md "Meshes"): the thorn, the platform's bloom outline,
+                 # the vine's coil (the tree's growth vine too), Life Grip's bud on the ally and the flower at its point
+                 "lw_thorn": ("Lifeweaver", "ThornVolley", "0000000122CA"),
+                 "lw_flower_ring": ("Lifeweaver", "PetalPlatform", "0000000122DA"),
+                 "lw_vine_coil": ("Lifeweaver", "LifeGrip", "000000012262"),
+                 "lw_bud": ("Lifeweaver", "LifeGrip", "000000011D57"),
+                 "lw_flower": ("Lifeweaver", "LifeGrip", "000000011D6E")}
 
 
 def add_effects(*sources):
