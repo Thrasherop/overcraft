@@ -342,6 +342,7 @@ public final class HeroManager {
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
+		dev.overcraft.comms.Comms.tick();
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			HeroState state = STATES.get(player.getUUID());
 			if (state == null || state.hero == null) {

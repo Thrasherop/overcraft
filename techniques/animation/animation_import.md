@@ -75,3 +75,13 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
 - **Glitches that come "at random"** may be a layer under everything: the leg kick was the idle breathing clip's
   broken keys. Read a clip's keys (glb animation channels in Python) for single-frame jumps, and scan the data for
   every case, not just the one fixed ([hand_play](../testing/hand_play.md)).
+- **New clips without a full re-export** (2026-10-29, the Hello wave): `owm_survey.py --glb --clips-only --keep=<map>`
+  writes the rig and the kept clips with no meshes (a few hundred KB, a minute or two). Put it in the pack as
+  `hero_models/<hero>_clips.glb` or `<hero>_1p_clips.glb`; `HeroModels.mergeClips` adds its clips to the hero's model, each
+  channel moved to the model's bone of the same name. It works because both files come from the same game model. A full
+  re-export of a hero takes 15-25 minutes, and Kiriko's and Lúcio's also re-import their emotes. Check the names: list
+  the clips file's nodes against the model's, with none missing (Lúcio's 305 all matched).
+- **Gestures live under numbered aliases a text search misses.** The Hello wave is alias 0x1EE (a pose over the upper
+  body) with 0x2DE (the same wave, additive) beside it, which the clip maps had as "Others (L meaning)". The callout graph
+  0686 runs graph 0341, which plays them (research\hello_gesture\hello_gesture.md). STU references are stored mangled, so
+  searching raw bytes for a GUID misses them: use the research's structured scanner (`stuscan.py`).
