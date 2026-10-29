@@ -147,7 +147,9 @@ public final class MercyFx {
 		if (to.distanceTo(from) < 0.2) {
 			return;
 		}
-		String key = "mercy_beam/" + id + "/" + branch + "/";
+		// the mode in the key: the bands are kept frame by frame by their key, and with heal and boost sharing
+		// "core_a" / "core_b" a switch to boost kept heal's gold cores (#51)
+		String key = "mercy_beam/" + id + "/" + branch + (heal ? "/heal/" : "/boost/");
 		if (heal) {
 			band(key + "wave", from, to, "mercy_beam_wave", Palette.MERCY_HEAL_BEAM_N, 0.4f, 1);
 			band(key + "core_a", from, to, "mercy_beam_core", Palette.MERCY_HEAL_BEAM_SOFT_N, 0.2f, 1);

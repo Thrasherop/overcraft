@@ -85,8 +85,11 @@ public final class MercyStats {
 	public static final double GA_ARRIVE = 1;
 	/** Ours: the data has no time limit (H); in Minecraft a wall can stop her short, so a flight gives up after this. */
 	public static final double GA_LIMIT = 4;
-	/** After she arrives, Jump or Crouch still launches for this long (D #939). */
-	public static final double GA_WINDOW = 0.35;
+	/**
+	 * After she arrives, Jump or Crouch still launches for this long. Her data's is 0.35 s (#939); ours 0.6 s, more
+	 * forgiving (the owner, #57: "the timings for guardian angel ... should be more forgiving").
+	 */
+	public static final double GA_WINDOW = 0.6;
 	/**
 	 * The launches (D #1027): (11 + 6 m) m/s, m the momentum 0-1 (1BE3 11, 1BE4 6), x1.3 in Valkyrie (1BE6), x(1 + 0.2 m)
 	 * for Crouch's straight up, x(1 + 0.2 m |pitch| / 89) for Jump's (1BE5 0.2). Checks: a full-meter jump 17, crouch 20.4
@@ -101,8 +104,12 @@ public final class MercyStats {
 	public static final double GA_LAUNCH_UP_MOMENTUM = 0.1;
 	/** Back held: the look reversed (D #975: s = -1), and this much slower (D 2CE3; BZ 2023-02-07 "20% slower"). */
 	public static final double GA_LAUNCH_BACK = 0.8;
-	/** The meter fills over this much flight, 17/25 of it in Valkyrie (D #912 m_5BEFF040, M a duration). */
-	public static final double GA_MOMENTUM_FILL = 1;
+	/**
+	 * The meter fills over this much flight, 17/25 of it in Valkyrie. Her data's is 1 s (#912 m_5BEFF040, M a
+	 * duration); ours 0.6 s, so a launch partway through a short flight is near full ("a more precise space gives more
+	 * of a boost": the owner, #57).
+	 */
+	public static final double GA_MOMENTUM_FILL = 0.6;
 	/**
 	 * After a launch, this long before the cooldown starts (it can't be cut short). Through it her air damping is off
 	 * (D 006E #487: property F808ACE8 set 0, read as air speed damping, M): the launch carries undiminished.
