@@ -6,6 +6,60 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-29
 
+### Build 0.3.22 (Lifeweaver)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.22): his models (`owm_survey.py --glb --entity=...
+--keep=tools/clipmaps/lifeweaver[_1p|_platform|_tree].txt` into `hero_models/`, the seed 126CC as `lifeweaver_seed` and
+`projectile_lifeweaver_seed`), his icons (`ui`), his effects' masks and meshes (`effects`), his sounds and voice
+(`sounds`), then `zip`.
+- **Lifeweaver, the fifth hero** (#39), from his game data and the public numbers (`LifeweaverStats`, each number with
+  its source):
+  - **Shields, the mod's first:** his top 50 of 250 are shields. Damage takes them first; healing fills his health,
+    then them; and they come back by themselves 3 s after the last hit at 30 a second. Blue pips after his health; "200 health, 50 shields" on the
+    select screen.
+  - **Healing Blossom** (left button): hold to charge (1.15 s, and slowly by itself even put away), let go to send it to
+    the ally you aim at; 10 to 90 health by the charge. It homes in and passes through walls. His flower blooms in his
+    hand as it charges, from his data. A ring marks the ally while you charge.
+  - **Thorn Volley** (right button): 11 volleys a second of two thorns, 6 each. The right button swaps to it, the left
+    back; 1 / 2 and the scroll wheel too. A reload refills both; the one put away refills in 2 s.
+  - **Petal Platform** (Shift): a lift. Step on it and it rises 9 m in under a second, carrying whoever is on it; 12 s up
+    in all, down again after 2 s with no one on it; a jump off it while it rises goes higher. Its time up shows on the
+    Shift box. Shift again takes it away. Stepping off the top doesn't hurt.
+  - **Rejuvenating Dash** (Jump in the air): about 8 m along your keys, healing 55.
+  - **Life Grip** (E): pulls an ally (a player, a pet, a villager) to just in front of you, healed 75, cleansed and
+    protected on the way; their Jump lets go.
+  - **Tree of Life** (Q, then the left button where the ring shows; the right cancels): heals allies around it 150 as it
+    sprouts and 90 every 1.75 s, half the overheal as overhealth (up to 100). Q again fells it.
+  - **Perks:** Petal Protection, Dashing Escape, Superbloom, Sow the Seed (quick melee with the Blossom out).
+- **His sounds and voice, from his effects' Wwise events** (`tools/soundmaps/lifeweaver.txt`):
+  - Every moment of his kit: the blossom's charge hum (higher and softer the less it charged), its throw and heal; the
+    thorns' firing and hits; the platform's throw, landing, armed hum, rise, raised hum, last-5-seconds ticking,
+    descent and breaking; the dash; Life Grip's cast, vine and landing (the gripped ally hears their own); the tree's
+    aim, sprout, hum, eight pulses, healing, withering and end; Superbloom and Sow the Seed.
+  - His own in his head, everyone else's from him or the prop, each as far as the game's copy reaches.
+  - His voice lines for his abilities and the shared moments, and the Tree of Life's line (allies' and enemies').
+- **His effects, from his data** (`tools/reference/lifeweaver-effects.md`): the blossom's gold flight and heal burst,
+  the thorns' streaks and hits, Superbloom's flash, the platform's egg trail, bloom, armed swirl, rise trails, raised
+  glows and breaking into petals, the dash's sash ribbons, Life Grip's vine, bud and flower, and the tree's aim rings,
+  sprout, pulses and glow. Found playing and fixed: the blossom and thorns flew as blocky item sprites; the platform's
+  bloom and Superbloom drew grainy squares; the platform broke into a white cloud; its rise trails were rectangles;
+  inside the tree's wave the view went white-gold.
+- Found checking his sounds: healing never reached his shields (the wiki's Hit points page says shields take healing,
+  health first); the dash healed 66 instead of 55 (one tick too many); a Superbloom kill played his melee-kill line.
+  All fixed and checked in game: 50 damage then a dash, 16 -> 20; 100 damage then a dash, 12 -> 16.4.
+- Found playing him (two clients, a night fight, the select screen, rejoining, deaths, G and H): the select screen drew
+  him too big; first person filled with his own body when firing (additive clips used as poses); the platform rose
+  without its rider, then fought its rider's client, then let riders slide off; stepping off the raised platform hurt
+  (75 in survival); the dash carried him 12 m; a gripped player's Jump answered 0.4 s late; a platform thrown at a wall
+  bounced 18.7 m back; firing threw his third-person model back with a leg kicked out. All fixed and played again.
+- Not yet: Minecraft mode's held item sits at his fingertips; the platform's walkable size and the tree's canopy
+  collision are ours (the owner's call, lifeweaver-plan.md "Open").
+- Played before the merge (two clients, survival and creative, day and night): every ability and perk with its
+  effects and sounds, from both players' side and from another team; a night fight with zombies and skeletons (he
+  died twice and came back as Lifeweaver with his ult charge); G to Minecraft mode, a block broken by hand, G back;
+  Save and Leave, rejoin: hero, ult charge and perks kept, his platform gone. Not reproduced: in the first fight's
+  first volley no thorns left his hand; five tries at the same moment (straight down, the crosshair on a zombie,
+  being hit, the swap from the blossom, at night) all fired.
+
 ### Build 0.3.21 (Jetpack Cat's own assets; Lúcio's song indicator and Sound Barrier)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.21): two new masks for Jetpack Cat's shot trails (`effects`)
 and Lúcio's song icons, cut from his ability icons (`ui`), then `zip`.
