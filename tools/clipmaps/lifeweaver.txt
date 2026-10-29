@@ -1,0 +1,139 @@
+# Lifeweaver, third person (model 00BB.118 export: look 0472.119 of entity Gameplay3P 35AF; set 0F4C).
+# <folder>_<clip id> = our name. From the research clip map (E:\Overwatch Archive\research\lifeweaver\work\clipmap.md
+# and clipmap.json, build 154088): states, aliases and categories read there (H unless noted). Which weapon is out is
+# dataflow 0xE4 (7F = Healing Blossom, the plain names; 7D = Thorn Volley, names ending _thorn).
+# Idle (alias 0x001): the Blossom stands (df 0xB7), charging (df 0x583 cat 1A5), Thorn Volley (df 0xE4 cat 7D) and firing (cat B8).
+0-36_00000000CBEA = idle   # 1.7 s
+0-36_00000000CBE4 = idle_2   # 1.7 s
+4-6_00000000CBE5 = add_idle   # additive 1.37 s, 1.37 s
+4-0_00000000D275 = add_breathe   # additive 1.83 s, 1.83 s
+0-36_00000000CF48 = idle_charging   # Blossom charging, 0.9 s
+0-36_00000000CF49 = idle_charging_2   # 0.9 s
+4-6_00000000D5C6 = add_charging   # additive 1.37 s, 1.37 s
+0-36_00000000CC63 = idle_thorn   # 1.37 s
+0-36_00000000CC62 = idle_thorn_2   # 1.37 s
+4-6_00000000CC64 = add_idle_thorn   # additive, 1.37 s
+0-36_00000000CF1A = idle_firing_thorn   # Thorn Volley firing, 0.9 s
+0-36_00000000CF1B = idle_firing_thorn_2   # 0.9 s
+4-6_00000000CF24 = add_firing_thorn   # additive, 1.37 s
+# Run 8-way (alias 0x005), 0.667 s; Thorn Volley adds an upper-body override per direction.
+0-36_00000000C7C9 = run   # F, 0.667 s
+0-36_00000000C7D0 = run_forward_right   # FR, 0.667 s
+0-36_00000000C7D2 = strafe_right   # R, 0.667 s
+0-36_00000000C7E5 = run_back_right   # BR, 0.667 s
+0-36_00000000C7E4 = run_back   # B, 0.667 s
+0-36_00000000C7E6 = run_back_left   # BL, 0.667 s
+0-36_00000000C7D3 = strafe_left   # L, 0.667 s
+0-36_00000000C7D1 = run_forward_left   # FL, 0.667 s
+0-4_00000000CF2B = run_thorn   # override F, 0.667 s
+0-4_00000000C872 = run_forward_right_thorn   # 0.667 s
+0-4_00000000C871 = strafe_right_thorn   # 0.667 s
+0-4_00000000C875 = run_back_right_thorn   # 0.667 s
+0-4_00000000C877 = run_back_thorn   # 0.667 s
+0-4_00000000C876 = run_back_left_thorn   # 0.667 s
+0-4_00000000C870 = strafe_left_thorn   # 0.667 s
+0-4_00000000C873 = run_forward_left_thorn   # 0.667 s
+# Crouch idle (0x056) and walk 8-way (0x055); Thorn Volley overrides.
+0-32_00000000C30F = crouch_idle   # 0.8 s
+0-36_00000000C310 = crouch_idle_2   # 0.8 s
+4-2_00000000C311 = add_crouch_idle   # additive, 1.37 s
+0-0_00000000C37E = crouch_idle_thorn   # override, 0.8 s
+0-4_00000000C37F = crouch_idle_thorn_2   # 0.8 s
+4-14_00000000C380 = add_crouch_idle_thorn   # 1.37 s
+0-32_00000000C320 = crouch_walk   # F, 0.8 s
+0-32_00000000C321 = crouch_walk_forward_right   # 0.8 s
+0-32_00000000C324 = crouch_walk_right   # 0.833 s
+0-36_00000000C326 = crouch_walk_back_right   # 0.833 s
+0-36_00000000C325 = crouch_walk_back   # 0.8 s
+0-36_00000000C327 = crouch_walk_back_left   # 0.833 s
+0-32_00000000C323 = crouch_walk_left   # 0.833 s
+0-32_00000000C322 = crouch_walk_forward_left   # 0.8 s
+0-4_00000000C3BF = crouch_walk_thorn   # override F, 0.8 s
+0-4_00000000C3BD = crouch_walk_forward_right_thorn   # 0.8 s
+0-4_00000000C3BC = crouch_walk_right_thorn   # 0.8 s
+0-4_00000000C3C0 = crouch_walk_back_right_thorn   # 0.8 s
+0-4_00000000C3C2 = crouch_walk_back_thorn   # 0.8 s
+0-4_00000000C3C1 = crouch_walk_back_left_thorn   # 0.8 s
+0-4_00000000C3BB = crouch_walk_left_thorn   # 0.8 s
+0-4_00000000C3BE = crouch_walk_forward_left_thorn   # 0.8 s
+# Jump (0x006): standing take-off, air (df 0x2B), short; moving forward; land (onFinished slot 1, slot 2 forward).
+0-36_00000000CBE6 = jump   # standing take-off, 0.2 s
+0-32_00000000CBE7 = fall   # standing, in the air (df 0x2B), 0.367 s
+0-36_00000000CBE8 = jump_2   # standing, short, 0.167 s
+0-36_00000000C328 = jump_forward_start   # moving F take-off, 0.2 s
+0-36_00000000C329 = jump_forward   # moving F in the air, 0.433 s
+0-36_00000000C32A = jump_forward_2   # moving F short, 0.1 s
+4-4_00000000CBE9 = add_land   # slot 1, 0.567 s
+4-36_00000000C32B = add_land_forward   # slot 2, 0.567 s
+# Healing Blossom: charge (0x067 cat 11F, 1.167 s, pitch -1 / 0 / +1), full (loop), release (0x666), reload (0x004).
+0-32_00000000CF3F = charge   # pitch 0, 1.17 s
+0-32_00000000CF47 = charge_down   # pitch -1, 1.17 s
+0-32_00000000CF42 = charge_up   # pitch +1, 1.17 s
+0-36_00000000CF40 = charge_full   # 2.0 s loop, 2 s
+128-32_00000000CF41 = release   # pitch 0, 1.433 s, 1.43 s
+128-32_00000000CF46 = release_down   # 1.43 s
+128-32_00000000CF43 = release_up   # 1.43 s
+4-0_00000000D059 = add_release_end   # onFinished, pitch 0, 1.27 s
+4-0_00000000D108 = add_release_end_down   # 1.27 s
+4-0_00000000D109 = add_release_end_up   # 1.27 s
+128-0_00000000CBA3 = release_moving   # moving, pitch 0, 1.53 s
+128-0_00000000CCBE = release_moving_down   # 1.53 s
+128-0_00000000CCB4 = release_moving_up   # 1.53 s
+0-32_00000000CF50 = reload   # 1.5 s, time df 0x66, 1.5 s
+# Thorn Volley: first shot (0x16F cat 6E), the firing hold and its fire layer, after firing (cat 1F8), reload.
+0-32_00000000CEBC = fire_thorn   # first shot, pitch 0, 0.167 s
+0-32_00000000CF28 = fire_thorn_down   # 0.167 s
+0-32_00000000CF25 = fire_thorn_up   # 0.167 s
+0-60_00000000CEBD = firing_thorn   # hold, 0.0333 s
+4-6_00000000D83F = add_firing_thorn_2   # additive 1.37 s, 1.37 s
+4-0_00000000D400 = add_fire_thorn   # additive 0.533 s, 0.533 s
+4-4_00000000D401 = add_firing_end_thorn   # onFinished, 0.467 s
+0-60_00000000D60D = after_fire_thorn   # hold, 0.0333 s
+4-6_00000000D840 = add_after_fire_thorn   # additive 1.37 s, 1.37 s
+4-0_00000000D639 = add_after_fire_end_thorn   # 0.333 s
+0-32_00000000C477 = reload_thorn   # 1.5 s, time df 0x66, 1.5 s
+# Quick melee (0x00D), the throw (Petal Platform and Sow the Seed: 0x8E1; the Blossom adds an upper override).
+128-32_00000000D5A3 = melee   # pitch 0, 0.733 s
+128-32_00000000D5A5 = melee_down   # 0.733 s
+128-32_00000000D5A4 = melee_up   # 0.733 s
+0-32_00000000D0EC = throw   # pitch 0, 0.6 s, 0.6 s
+0-32_00000000D0EB = throw_down   # 0.6 s
+0-32_00000000D0EA = throw_up   # 0.6 s
+0-4_00000000D0D5 = throw_blossom   # upper override, 0.6 s
+# Rejuvenating Dash: a 2D blend on the keys (df 0x08 X, df 0x07 Y); Thorn Volley overrides; its end.
+0-60_00000000C35D = dash   # Y+ forward, 0.0333 s
+0-60_00000000C35E = dash_forward_right   # 0.0333 s
+0-60_00000000C360 = dash_right   # X+, 0.0333 s
+0-60_00000000C363 = dash_back_right   # 0.0333 s
+0-60_00000000C362 = dash_back   # Y-, 0.0333 s
+0-60_00000000C364 = dash_back_left   # 0.0333 s
+0-60_00000000C361 = dash_left   # X-, 0.0333 s
+0-60_00000000C35F = dash_forward_left   # 0.0333 s
+0-28_00000000D175 = dash_thorn   # override, forward and sides, 0.0333 s
+0-28_00000000D17B = dash_back_thorn   # override, back, 0.0333 s
+4-4_00000000D546 = add_dash_end   # onFinished, 0.433 s
+# Life Grip (the cast, pitch -1 / 0 / +1; Thorn Volley adds an upper override).
+0-32_00000000CF78 = grip   # pitch 0, 1.03 s
+0-32_00000000CF84 = grip_down   # 1.03 s
+0-32_00000000CF83 = grip_up   # 1.03 s
+0-4_00000000D003 = grip_thorn   # override 1.033 s, 1.03 s
+# Tree of Life: aim start, aim loop, cast (pitch -1 / 0 / +1).
+0-32_00000000C4F3 = tree_aim_start   # pitch 0, 0.7 s
+0-32_00000000C4FF = tree_aim_start_down   # 0.7 s
+0-32_00000000C4FC = tree_aim_start_up   # 0.7 s
+0-36_00000000C4F4 = tree_aim   # 1.667 s loop, 1.67 s
+0-32_00000000C4F5 = tree_cast   # pitch 0, 1 s
+0-32_00000000C501 = tree_cast_down   # 1 s
+0-32_00000000C4FA = tree_cast_up   # 1 s
+# Knock-down (0x064 / 0x065 / 0x066), hit stun, a held pose.
+0-32_00000000CC1B = knockdown_start   # 0.733 s, 0.733 s
+0-60_00000000CC1C = knockdown   # held, 0.0333 s
+0-32_00000000CC1D = knockdown_end   # 1.33 s
+0-32_00000000CC36 = knockdown_end_thorn   # 1.33 s
+0-36_00000000CC32 = hit_react   # 0.5 s, 0.5 s
+0-36_00000000D26E = pose_held   # 2.0 s, 2 s
+# The hero select (showcase): intro, then the 60 fps loops in turn.
+16-32_00000000CAC8 = select_intro   # 8.767 s, 8.77 s
+16-32_00000000D341 = select_hold   # 9.567 s, 60 fps, 9.57 s
+16-32_00000000D3A1 = select_fidget   # 9.57 s
+16-32_00000000D343 = select_fidget_2   # 9.57 s

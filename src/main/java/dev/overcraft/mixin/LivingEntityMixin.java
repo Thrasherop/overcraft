@@ -32,8 +32,21 @@ public abstract class LivingEntityMixin {
 		LivingEntity self = (LivingEntity) (Object) this;
 		if (OwMovement.handles(self)) {
 			Vec3 v = self.getDeltaMovement();
-			self.setDeltaMovement(v.x, Math.max(Ow.speed(OwMovement.JUMP_SPEED), v.y), v.z);
+			// off a rising Petal Platform the jump is 6 m/s stronger (dev.overcraft.entity.PetalPlatformEntity)
+			double bonus = dev.overcraft.entity.PetalPlatformEntity.jumpBonus(self);
+			self.setDeltaMovement(v.x, Math.max(Ow.speed(OwMovement.JUMP_SPEED + bonus), v.y), v.z);
 			ci.cancel();
+		}
+	}
+
+	/** Minecraft's own jump off a rising Petal Platform: 6 m/s stronger too. */
+	@Inject(method = "jumpFromGround", at = @At("TAIL"))
+	private void overcraft$platformJump(CallbackInfo ci) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		double bonus = dev.overcraft.entity.PetalPlatformEntity.jumpBonus(self);
+		if (bonus > 0) {
+			Vec3 v = self.getDeltaMovement();
+			self.setDeltaMovement(v.x, v.y + Ow.speed(bonus), v.z);
 		}
 	}
 
@@ -76,6 +89,16 @@ public abstract class LivingEntityMixin {
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
 		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage);
+	}
+
+	/**
+	 * Shields (dev.overcraft.hero.Shields): every change to a shielded hero's health passes here. A loss comes off the
+	 * shields first; a gain heals the health under them only.
+	 */
+	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "setHealth", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+	private float overcraft$shields(float health) {
+		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player
+			? dev.overcraft.hero.Shields.onSetHealth(player, health) : health;
 	}
 
 	/** Jetpack Cat flying takes 40% less knockback (W: her "flight resistance"). */

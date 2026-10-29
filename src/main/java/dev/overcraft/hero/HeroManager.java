@@ -72,6 +72,13 @@ public final class HeroManager {
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
 	/**
+	 * Lifeweaver's state, for every client to draw and animate him (LifeweaverFx, HeroAnimator): [flags (Lifeweaver.FLAG_*),
+	 * Healing Blossom's charge (%), its target (-1 none), Life Grip's ally (-1 none)]. Absent: not Lifeweaver in play.
+	 */
+	public static final AttachmentType<java.util.List<Integer>> LIFEWEAVER = AttachmentRegistry.create(Overcraft.id("lifeweaver"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
+
+	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */
@@ -94,6 +101,7 @@ public final class HeroManager {
 		KITS.put(Hero.LUCIO, new dev.overcraft.lucio.Lucio());
 		KITS.put(Hero.JETPACK_CAT, new dev.overcraft.jetpackcat.JetpackCat());
 		KITS.put(Hero.MERCY, new dev.overcraft.mercy.Mercy());
+		KITS.put(Hero.LIFEWEAVER, new dev.overcraft.lifeweaver.Lifeweaver());
 	}
 
 	private HeroManager() {
@@ -129,8 +137,9 @@ public final class HeroManager {
 	 */
 	public static boolean fallIsSafe(Player player) {
 		HeroState state = STATES.get(player.getUUID());
-		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself)
-		return state != null && state.hero == Hero.MERCY && state.softLanding;
+		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
+		// Lifeweaver: Rejuvenating Dash lands him
+		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER) && state.softLanding;
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -183,6 +192,9 @@ public final class HeroManager {
 		if (state.hero == Hero.MERCY) {
 			dev.overcraft.mercy.Mercy.clear(player, state);
 		}
+		if (state.hero == Hero.LIFEWEAVER) {
+			dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -219,6 +231,7 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		if (fresh) {
+			state.shield = state.hero.shields();
 			player.setHealth(player.getMaxHealth());
 			if (kit != null) {
 				kit.equip(player, state);
@@ -254,6 +267,10 @@ public final class HeroManager {
 		if (state != null && state.hero != null) {
 			player.setAttached(ULT_CHARGE, state.ultCharge);
 			savePerks(player, state);
+			if (state.hero == Hero.LIFEWEAVER) {
+				// his platform and tree leave with him
+				dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
+			}
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -302,7 +319,11 @@ public final class HeroManager {
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
-			QuickMelee.use(player, state);
+			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
+				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
+			} else {
+				QuickMelee.use(player, state);
+			}
 		}
 		HeroKit kit = kit(state.hero);
 		if (kit != null && input.pressed() != 0) {
@@ -311,10 +332,16 @@ public final class HeroManager {
 		if (state.hero == Hero.MERCY && input.extra() != 0) {
 			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
+			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
+		}
 	}
 
 	public static void tick(MinecraftServer server) {
 		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
+		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
+		dev.overcraft.lifeweaver.LifeGrip.tick(server);
+		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			HeroState state = STATES.get(player.getUUID());
 			if (state == null || state.hero == null) {
@@ -344,7 +371,7 @@ public final class HeroManager {
 				}
 			}
 			if (kit != null) {
-				ServerPlayNetworking.send(player, kit.sync(state));
+				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
 			}
 		}
 	}
@@ -368,6 +395,7 @@ public final class HeroManager {
 			double maxOw = Ow.toOw(player.getMaxHealth());
 			Combat.heal(player, (Combat.REGEN_FLAT + Combat.REGEN_PERCENT * maxOw) / 20.0);
 		}
+		Shields.tick(player, state);
 	}
 
 	/** Saves the state's perk progress under its hero (#36). */

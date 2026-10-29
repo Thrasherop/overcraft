@@ -529,15 +529,23 @@ public final class HeroHud {
 		float pitch = PIP_ROW / pips;
 		float pipW = pitch - 4;
 		float rowEnd = left + 3 + PIP_ROW - 4;
+		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
+		// its own empty pips): the health part is what's left without the shields
+		int shieldMax = hero.shields();
+		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
+		int healthMax = max - shieldMax;
+		float healthNow = Math.max(0, now - shield);
 		for (int i = 0; i < pips; i++) {
 			float pipX = left + 3 + i * pitch;
-			float held = Math.clamp((now - i * 25) / 25f, 0, 1);
+			boolean shieldPip = shieldMax > 0 && i * 25 >= healthMax && i * 25 < max;
+			float held = shieldPip ? Math.clamp((healthMax + shield - i * 25) / 25f, 0, 1)
+				: Math.clamp((Math.min(healthNow, healthMax) - i * 25) / 25f, 0, 1);
 			box(g, pipX, 933, pipW, 30, 0x40000000);
 			if (held > 0) {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, WHITE);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -573,6 +581,8 @@ public final class HeroHud {
 
 	/** Overhealth's pips (ours: Overwatch draws it green). */
 	private static final int OVERHEALTH = 0xFF7CE86A;
+	/** Shields' pips (ours, by eye: Overwatch draws them light blue). */
+	private static final int SHIELD = 0xFF8FD6FF;
 
 	/** The pip row's length, whatever the health (the eighth critique: 10 pips at a 24.8 pitch, 9 at 27.3). */
 	private static final float PIP_ROW = 248;
@@ -857,6 +867,17 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.LIFEWEAVER) {
+			// Petal Platform (Shift: its raised time left on it while he has one), Life Grip (E), Rejuvenating Dash (Jump
+			// in the air), in Lúcio's three places (ours)
+			ability(g, hero, w, "petal_platform", w - 719, 900, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "life_grip", w - 641, 903, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.lifeweaver.LifeweaverStats.GRIP_COOLDOWN, ability2ReadyAt);
+			ability(g, hero, w, "rejuvenating_dash", w - 563, 906, HeroControls.get(Action.JUMP), s.ability3Cooldown(),
+				(float) dev.overcraft.lifeweaver.LifeweaverStats.DASH_COOLDOWN, ability3ReadyAt);
+			return;
+		}
 		if (hero == Hero.MERCY) {
 			// Guardian Angel (Shift), Resurrect (E), Flash Heal (R: its charges in the corner with Double Dose), in Lúcio's
 			// three places (ours)
@@ -916,6 +937,19 @@ public final class HeroHud {
 		fill(g, x + 4, base + 60, 56, 6, 0x66000000);
 		fill(g, x + 4, base + 60, 56 * Math.clamp(energy, 0, 1), 6, colour);
 		HudText.draw(g, Face.BODY, Math.round(energy * 100) + "%", x + 50, base + 22, 13, colour, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
+	/**
+	 * Healing Blossom's charge (0-1) along the foot of its panel: pink, brighter while he holds it (ours: Overwatch shows
+	 * the charge on the flower and the hand, not the HUD).
+	 */
+	private static void bloomCharge(GuiGraphicsExtractor g, float charge, boolean held, float x, float y, float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		fill(g, x + 8, y + 58, width - 16, 4, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(charge, 0, 1), 4, held ? 0xFFFF8FC8 : 0xB3F3A7C8);
 		g.pose().popMatrix();
 	}
 
@@ -1007,6 +1041,16 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.LIFEWEAVER) {
+			// his two weapons in Kiriko's two places: Healing Blossom on the left button (its charge along the panel's
+			// foot), Thorn Volley on the right
+			weapon(g, hero, w, "healing_blossom", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.primaryAmmo(),
+				dev.overcraft.lifeweaver.LifeweaverStats.BLOSSOM_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 355, 1009);
+			bloomCharge(g, s.meter(), (s.mode() & dev.overcraft.lifeweaver.Lifeweaver.FLAG_CHARGING) != 0, w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "thorn_volley", w - 307, 938.5f, 251, 65, 114, 36, w - 81, s.secondaryAmmo(),
+				dev.overcraft.lifeweaver.LifeweaverStats.THORN_AMMO, HeroControls.get(Action.PRIMARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.MERCY) {
 			// the weapon she holds, where Kiriko's kunai panel is: the staff (no ammo) or the blaster's rounds
 			boolean blaster = (s.mode() & dev.overcraft.mercy.Mercy.FLAG_BLASTER) != 0;

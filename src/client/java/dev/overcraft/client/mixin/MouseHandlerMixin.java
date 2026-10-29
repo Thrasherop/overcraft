@@ -38,6 +38,7 @@ public abstract class MouseHandlerMixin {
 		if (ClientHero.controls() && Minecraft.getInstance().gui.screen() == null) {
 			// Mercy's weapon swap is on the wheel (Overwatch's)
 			dev.overcraft.client.ClientMercy.scroll(yoffset);
+			dev.overcraft.client.ClientMercy.scrollLifeweaver(yoffset);
 			ci.cancel();
 		}
 	}

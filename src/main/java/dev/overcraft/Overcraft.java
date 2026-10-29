@@ -122,6 +122,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
@@ -218,6 +219,7 @@ public class Overcraft implements ModInitializer {
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();
+			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}
 }

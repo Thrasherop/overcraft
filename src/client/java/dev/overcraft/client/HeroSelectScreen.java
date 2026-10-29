@@ -282,8 +282,11 @@ public class HeroSelectScreen extends OwScreen {
 			float roleW = HudText.width(Face.BODY, role, 20);
 			image(g, badge, roleRight - roleW - 34, 191, 26, 26, WHITE);
 		}
-		HudText.draw(g, Face.BODY, Component.translatable("overcraft.select.health", preview.owHealth).getString().toUpperCase(Locale.ROOT),
-			right, 245, 14, TEXT_DIM, Align.RIGHT);
+		// with shields (Lifeweaver's), both: Overwatch's hero info counts them apart
+		Component health = preview.shields() > 0
+			? Component.translatable("overcraft.select.health_shields", preview.owHealth - preview.shields(), preview.shields())
+			: Component.translatable("overcraft.select.health", preview.owHealth);
+		HudText.draw(g, Face.BODY, health.getString().toUpperCase(Locale.ROOT), right, 245, 14, TEXT_DIM, Align.RIGHT);
 	}
 
 	/**
@@ -444,8 +447,9 @@ public class HeroSelectScreen extends OwScreen {
 	 * standing hero's size her thrusters ran off the top and sides (ours, by eye from a screenshot).
 	 */
 	private static float framing(Hero hero) {
-		// Mercy's wings spread 1.7 m and rise over her head (ours, by eye as hers)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : 1;
+		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
+		// (ours, by eye as hers)
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER ? 0.72f : 1;
 	}
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
@@ -495,6 +499,15 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.RELOAD)), "flash_heal"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "valkyrie"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "angelic_descent"));
+			// Overwatch's order (his data's loadouts): Healing Blossom (the left button), Thorn Volley (the right), Petal
+			// Platform, Life Grip, Rejuvenating Dash (Jump in the air), Tree of Life; no passive (Parting Gift's gone)
+			case LIFEWEAVER -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "healing_blossom"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "thorn_volley"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "petal_platform"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "life_grip"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.JUMP)), "rejuvenating_dash"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "tree_of_life"));
 			default -> List.of();
 		};
 	}

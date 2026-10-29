@@ -51,6 +51,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
+			ClientLifeweaver.onGrip(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ResurrectPayload.TYPE, (payload, context) -> {
 			if (context.player() != null && context.player().isDeadOrDying()) {
 				context.player().respawn();
@@ -94,6 +96,7 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
+			ClientLifeweaver.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -117,6 +120,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.MercyFx.tick(client.level);
 				dev.overcraft.client.effect.JetpackCatFx.aim(client);
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
+				dev.overcraft.client.effect.LifeweaverFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
@@ -138,6 +142,17 @@ public class OvercraftClient implements ClientModInitializer {
 		// Mercy's blaster shots: drawn by their flight effect (MercyFx), the item only without the local pack
 		EntityRendererRegistry.register(OcEntities.BLASTER_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"blaster_shot", 0.3f, false, 1, true));
+		// Lifeweaver's: the blossom and the thorns have no model in his data (effects only); the thrown platform and seed
+		// are his model 126CC; the platform, the seed on the ground and the tree their own models with their clips
+		EntityRendererRegistry.register(OcEntities.BLOSSOM, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"blossom", 0.6f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.THORN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"thorn", 0.3f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"lifeweaver_seed", 0.5f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
+		EntityRendererRegistry.register(OcEntities.SEED, dev.overcraft.client.model.LifeweaverPropRenderer::seed);
+		EntityRendererRegistry.register(OcEntities.TREE_OF_LIFE, dev.overcraft.client.model.LifeweaverPropRenderer::tree);
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -192,7 +207,8 @@ public class OvercraftClient implements ClientModInitializer {
 		});
 
 		Minecraft mc = Minecraft.getInstance();
-		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
+		// a Life Grip moves whoever it has, hero or not (their own client: ClientLifeweaver.grip)
+		OwMovement.active = entity -> entity == mc.player && (ClientHero.controls() || ClientLifeweaver.gripped());
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
@@ -203,7 +219,11 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.flight = entity -> entity == mc.player && (ClientHero.hero() == Hero.JETPACK_CAT
 			|| ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity));
 		OwMovement.valkyrie = entity -> entity == mc.player && ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity);
-		OwMovement.glide = ClientMercy::glide;
+		OwMovement.glide = entity -> {
+			OwMovement.Glide grip = ClientLifeweaver.grip(entity);
+			return grip != null ? grip : ClientMercy.glide(entity);
+		};
+		OwMovement.dash = ClientLifeweaver::dash;
 		OwMovement.descent = ClientMercy::descent;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;

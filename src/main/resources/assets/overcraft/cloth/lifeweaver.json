@@ -1,0 +1,3281 @@
+{
+ "hero": "lifeweaver",
+ "source": "game data via TankLib (tools/cloth_data.py): the model's Domino cloth",
+ "bones": {
+  "cloth_01BB": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48617
+    ],
+    [
+     "bone_05D9",
+     0.51383
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01BC": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.77535
+    ],
+    [
+     "bone_05D9",
+     0.22465
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01C3": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.4864
+    ],
+    [
+     "bone_05D9",
+     0.5136
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01CA": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.4864
+    ],
+    [
+     "bone_05D9",
+     0.5136
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01DE": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48623
+    ],
+    [
+     "bone_05D9",
+     0.51377
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01DF": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.77402
+    ],
+    [
+     "bone_05D9",
+     0.22598
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01E6": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48623
+    ],
+    [
+     "bone_05D9",
+     0.51377
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01E7": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.77402
+    ],
+    [
+     "bone_05D9",
+     0.22598
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01B8": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48694
+    ],
+    [
+     "bone_05D9",
+     0.51306
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01B9": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48694
+    ],
+    [
+     "bone_05D9",
+     0.51306
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01BD": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00181
+    ],
+    [
+     "bone_0083",
+     0.99819
+    ]
+   ],
+   "up": "cloth_01BC"
+  },
+  "cloth_01C4": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.77228
+    ],
+    [
+     "bone_05D9",
+     0.22772
+    ]
+   ],
+   "up": "cloth_01C3"
+  },
+  "cloth_01CB": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.77228
+    ],
+    [
+     "bone_05D9",
+     0.22772
+    ]
+   ],
+   "up": "cloth_01CA"
+  },
+  "cloth_01D1": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48666
+    ],
+    [
+     "bone_05D9",
+     0.51334
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01D7": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.48666
+    ],
+    [
+     "bone_05D9",
+     0.51334
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01E0": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00183
+    ],
+    [
+     "bone_0083",
+     0.99817
+    ]
+   ],
+   "up": "cloth_01DF"
+  },
+  "cloth_01E8": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00183
+    ],
+    [
+     "bone_0083",
+     0.99817
+    ]
+   ],
+   "up": "cloth_01E7"
+  },
+  "cloth_01B6": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.76272
+    ],
+    [
+     "bone_05D9",
+     0.23728
+    ]
+   ],
+   "up": "cloth_01B8"
+  },
+  "cloth_01B7": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.76272
+    ],
+    [
+     "bone_05D9",
+     0.23728
+    ]
+   ],
+   "up": "cloth_01B9"
+  },
+  "cloth_01BE": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08117
+    ],
+    [
+     "bone_0083",
+     0.91883
+    ]
+   ],
+   "up": "cloth_01BD"
+  },
+  "cloth_01C5": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00189
+    ],
+    [
+     "bone_0083",
+     0.99811
+    ]
+   ],
+   "up": "cloth_01C4"
+  },
+  "cloth_01CC": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00189
+    ],
+    [
+     "bone_0083",
+     0.99811
+    ]
+   ],
+   "up": "cloth_01CB"
+  },
+  "cloth_01D2": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.76727
+    ],
+    [
+     "bone_05D9",
+     0.23273
+    ]
+   ],
+   "up": "cloth_01D1"
+  },
+  "cloth_01D8": {
+   "drivers": [
+    [
+     "bone_0083",
+     0.76727
+    ],
+    [
+     "bone_05D9",
+     0.23273
+    ]
+   ],
+   "up": "cloth_01D7"
+  },
+  "cloth_01E1": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08155
+    ],
+    [
+     "bone_0083",
+     0.91845
+    ]
+   ],
+   "up": "cloth_01E0"
+  },
+  "cloth_01E9": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08155
+    ],
+    [
+     "bone_0083",
+     0.91845
+    ]
+   ],
+   "up": "cloth_01E8"
+  },
+  "cloth_01B4": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00371
+    ],
+    [
+     "bone_0083",
+     0.99629
+    ]
+   ],
+   "up": "cloth_01B6"
+  },
+  "cloth_01B5": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00371
+    ],
+    [
+     "bone_0083",
+     0.99629
+    ]
+   ],
+   "up": "cloth_01B7"
+  },
+  "cloth_01BF": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01BE"
+  },
+  "cloth_01C6": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08261
+    ],
+    [
+     "bone_0083",
+     0.91739
+    ]
+   ],
+   "up": "cloth_01C5"
+  },
+  "cloth_01CD": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08261
+    ],
+    [
+     "bone_0083",
+     0.91739
+    ]
+   ],
+   "up": "cloth_01CC"
+  },
+  "cloth_01D3": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00193
+    ],
+    [
+     "bone_0083",
+     0.99807
+    ]
+   ],
+   "up": "cloth_01D2"
+  },
+  "cloth_01DA": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.00193
+    ],
+    [
+     "bone_0083",
+     0.99807
+    ]
+   ],
+   "up": "cloth_01D8"
+  },
+  "cloth_01E3": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01E1"
+  },
+  "cloth_01EA": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01E9"
+  },
+  "cloth_01B2": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.11204
+    ],
+    [
+     "bone_0083",
+     0.88796
+    ]
+   ],
+   "up": "cloth_01B4"
+  },
+  "cloth_01B3": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.11204
+    ],
+    [
+     "bone_0083",
+     0.88796
+    ]
+   ],
+   "up": "cloth_01B5"
+  },
+  "cloth_01C0": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01BF"
+  },
+  "cloth_01C7": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01C6"
+  },
+  "cloth_01CE": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01CD"
+  },
+  "cloth_01D4": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08422
+    ],
+    [
+     "bone_0083",
+     0.91578
+    ]
+   ],
+   "up": "cloth_01D3"
+  },
+  "cloth_01DB": {
+   "drivers": [
+    [
+     "bone_0084",
+     0.08422
+    ],
+    [
+     "bone_0083",
+     0.91578
+    ]
+   ],
+   "up": "cloth_01DA"
+  },
+  "cloth_01E4": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01E3"
+  },
+  "cloth_01EC": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01EA"
+  },
+  "cloth_01C1": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01C0"
+  },
+  "cloth_01C8": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01C7"
+  },
+  "cloth_01CF": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01CE"
+  },
+  "cloth_01D5": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01D4"
+  },
+  "cloth_01DC": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01DB"
+  },
+  "cloth_01E5": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01E4"
+  },
+  "cloth_01ED": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01EC"
+  },
+  "cloth_01D6": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01D5"
+  },
+  "cloth_01DD": {
+   "drivers": [
+    [
+     "bone_0084",
+     1.0
+    ]
+   ],
+   "up": "cloth_01DC"
+  },
+  "cloth_01F0": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01F1": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01F4": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01F6": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01F9": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.32176
+    ],
+    [
+     "bone_14D3",
+     0.20407
+    ],
+    [
+     "bone_14D0",
+     0.47417
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01FA": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.32185
+    ],
+    [
+     "bone_14D3",
+     0.20403
+    ],
+    [
+     "bone_14D0",
+     0.47412
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0208": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.26482
+    ],
+    [
+     "bone_14D3",
+     0.25617
+    ],
+    [
+     "bone_14D0",
+     0.47901
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01EE": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": "cloth_01F0"
+  },
+  "cloth_01EF": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": "cloth_01F1"
+  },
+  "cloth_01F3": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": "cloth_01F4"
+  },
+  "cloth_01F5": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     1.0
+    ]
+   ],
+   "up": "cloth_01F6"
+  },
+  "cloth_01FB": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.10551
+    ],
+    [
+     "bone_14D6",
+     0.09788
+    ],
+    [
+     "bone_14D3",
+     0.5225
+    ],
+    [
+     "bone_14D0",
+     0.27411
+    ]
+   ],
+   "up": "cloth_01F9"
+  },
+  "cloth_01FC": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.10557
+    ],
+    [
+     "bone_14D6",
+     0.09792
+    ],
+    [
+     "bone_14D3",
+     0.52243
+    ],
+    [
+     "bone_14D0",
+     0.27408
+    ]
+   ],
+   "up": "cloth_01FA"
+  },
+  "cloth_0209": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.10831
+    ],
+    [
+     "bone_14D6",
+     0.05456
+    ],
+    [
+     "bone_14D3",
+     0.52146
+    ],
+    [
+     "bone_14D0",
+     0.31567
+    ]
+   ],
+   "up": "cloth_0208"
+  },
+  "cloth_01FD": {
+   "drivers": [
+    [
+     "bone_14D6",
+     0.3039
+    ],
+    [
+     "bone_14D3",
+     0.58668
+    ],
+    [
+     "bone_14D0",
+     0.10942
+    ]
+   ],
+   "up": "cloth_01FB"
+  },
+  "cloth_01FE": {
+   "drivers": [
+    [
+     "bone_14D6",
+     0.30389
+    ],
+    [
+     "bone_14D3",
+     0.58663
+    ],
+    [
+     "bone_14D0",
+     0.10948
+    ]
+   ],
+   "up": "cloth_01FC"
+  },
+  "cloth_020A": {
+   "drivers": [
+    [
+     "bone_14D6",
+     0.35273
+    ],
+    [
+     "bone_14D3",
+     0.58608
+    ],
+    [
+     "bone_14D0",
+     0.06119
+    ]
+   ],
+   "up": "cloth_0209"
+  },
+  "cloth_0200": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.11667
+    ],
+    [
+     "bone_14D6",
+     0.57477
+    ],
+    [
+     "bone_14D3",
+     0.30855
+    ]
+   ],
+   "up": "cloth_01FD"
+  },
+  "cloth_0201": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.11673
+    ],
+    [
+     "bone_14D6",
+     0.57473
+    ],
+    [
+     "bone_14D3",
+     0.30853
+    ]
+   ],
+   "up": "cloth_01FE"
+  },
+  "cloth_020B": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.06739
+    ],
+    [
+     "bone_14D6",
+     0.57523
+    ],
+    [
+     "bone_14D3",
+     0.35738
+    ]
+   ],
+   "up": "cloth_020A"
+  },
+  "cloth_0202": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.30592
+    ],
+    [
+     "bone_14D6",
+     0.57741
+    ],
+    [
+     "bone_14D3",
+     0.11668
+    ]
+   ],
+   "up": "cloth_0200"
+  },
+  "cloth_0203": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.3059
+    ],
+    [
+     "bone_14D6",
+     0.57737
+    ],
+    [
+     "bone_14D3",
+     0.11673
+    ]
+   ],
+   "up": "cloth_0201"
+  },
+  "cloth_020C": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.0
+    ],
+    [
+     "bone_14D9",
+     0.3556
+    ],
+    [
+     "bone_14D6",
+     0.57701
+    ],
+    [
+     "bone_14D3",
+     0.06739
+    ]
+   ],
+   "up": "cloth_020B"
+  },
+  "cloth_0204": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.69015
+    ],
+    [
+     "bone_14D6",
+     0.30985
+    ]
+   ],
+   "up": "cloth_0202"
+  },
+  "cloth_0205": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.69017
+    ],
+    [
+     "bone_14D6",
+     0.30983
+    ]
+   ],
+   "up": "cloth_0203"
+  },
+  "cloth_020D": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.64047
+    ],
+    [
+     "bone_14D6",
+     0.35953
+    ]
+   ],
+   "up": "cloth_020C"
+  },
+  "cloth_0206": {
+   "drivers": [
+    [
+     "Spine_2_Twist",
+     0.0
+    ],
+    [
+     "bone_14D9",
+     0.8767
+    ],
+    [
+     "bone_14D6",
+     0.1233
+    ]
+   ],
+   "up": "cloth_0205"
+  },
+  "cloth_020E": {
+   "drivers": [
+    [
+     "bone_14D9",
+     0.92672
+    ],
+    [
+     "bone_14D6",
+     0.07328
+    ]
+   ],
+   "up": "cloth_020D"
+  },
+  "cloth_01F7": {
+   "drivers": [
+    [
+     "bone_14D9",
+     1.0
+    ]
+   ],
+   "up": "cloth_0206"
+  },
+  "cloth_020F": {
+   "drivers": [
+    [
+     "bone_14D9",
+     1.0
+    ]
+   ],
+   "up": "cloth_020E"
+  },
+  "cloth_0211": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0217": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0212": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0211"
+  },
+  "cloth_0218": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0217"
+  },
+  "cloth_021F": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.8559
+    ],
+    [
+     "bone_0012",
+     0.1441
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0225": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.84459
+    ],
+    [
+     "bone_0012",
+     0.15541
+    ]
+   ],
+   "up": null
+  },
+  "cloth_022B": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.84351
+    ],
+    [
+     "bone_0012",
+     0.15649
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0213": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0212"
+  },
+  "cloth_0219": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0218"
+  },
+  "cloth_021C": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.94584
+    ],
+    [
+     "bone_0012",
+     0.05416
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0220": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.97274
+    ],
+    [
+     "bone_0012",
+     0.02726
+    ]
+   ],
+   "up": "cloth_021F"
+  },
+  "cloth_0226": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.97102
+    ],
+    [
+     "bone_0012",
+     0.02898
+    ]
+   ],
+   "up": "cloth_0225"
+  },
+  "cloth_022C": {
+   "drivers": [
+    [
+     "bone_0085",
+     0.96577
+    ],
+    [
+     "bone_0012",
+     0.03423
+    ]
+   ],
+   "up": "cloth_022B"
+  },
+  "cloth_0214": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0213"
+  },
+  "cloth_021A": {
+   "drivers": [
+    [
+     "Head",
+     1.0
+    ]
+   ],
+   "up": "cloth_0219"
+  },
+  "cloth_021D": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_021C"
+  },
+  "cloth_0221": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0220"
+  },
+  "cloth_0227": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0226"
+  },
+  "cloth_022D": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_022C"
+  },
+  "cloth_0222": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0221"
+  },
+  "cloth_0228": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0227"
+  },
+  "cloth_022E": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_022D"
+  },
+  "cloth_0223": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0222"
+  },
+  "cloth_0229": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_0228"
+  },
+  "cloth_022F": {
+   "drivers": [
+    [
+     "bone_0085",
+     1.0
+    ]
+   ],
+   "up": "cloth_022E"
+  },
+  "cloth_019D": {
+   "drivers": [
+    [
+     "bone_0087",
+     0.676
+    ],
+    [
+     "bone_05D9",
+     0.324
+    ]
+   ],
+   "up": null
+  },
+  "cloth_019E": {
+   "drivers": [
+    [
+     "bone_0087",
+     0.676
+    ],
+    [
+     "bone_05D9",
+     0.324
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01A6": {
+   "drivers": [
+    [
+     "bone_0087",
+     0.761
+    ],
+    [
+     "bone_05D9",
+     0.239
+    ]
+   ],
+   "up": null
+  },
+  "cloth_01AC": {
+   "drivers": [
+    [
+     "bone_0087",
+     0.761
+    ],
+    [
+     "bone_05D9",
+     0.239
+    ]
+   ],
+   "up": null
+  },
+  "cloth_019F": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.315
+    ],
+    [
+     "bone_0087",
+     0.685
+    ]
+   ],
+   "up": "cloth_019D"
+  },
+  "cloth_01A0": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.315
+    ],
+    [
+     "bone_0087",
+     0.685
+    ]
+   ],
+   "up": "cloth_019E"
+  },
+  "cloth_01A7": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.232
+    ],
+    [
+     "bone_0087",
+     0.768
+    ]
+   ],
+   "up": "cloth_01A6"
+  },
+  "cloth_01AD": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.232
+    ],
+    [
+     "bone_0087",
+     0.768
+    ]
+   ],
+   "up": "cloth_01AC"
+  },
+  "cloth_01A1": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.677
+    ],
+    [
+     "bone_0087",
+     0.323
+    ]
+   ],
+   "up": "cloth_019F"
+  },
+  "cloth_01A2": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.677
+    ],
+    [
+     "bone_0087",
+     0.323
+    ]
+   ],
+   "up": "cloth_01A0"
+  },
+  "cloth_01A8": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.764
+    ],
+    [
+     "bone_0087",
+     0.236
+    ]
+   ],
+   "up": "cloth_01A7"
+  },
+  "cloth_01AE": {
+   "drivers": [
+    [
+     "bone_0088",
+     0.764
+    ],
+    [
+     "bone_0087",
+     0.236
+    ]
+   ],
+   "up": "cloth_01AD"
+  },
+  "cloth_01A4": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01A1"
+  },
+  "cloth_01A5": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01A2"
+  },
+  "cloth_01A9": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01A8"
+  },
+  "cloth_01AF": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01AE"
+  },
+  "cloth_019B": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01A5"
+  },
+  "cloth_01AA": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01A9"
+  },
+  "cloth_01B0": {
+   "drivers": [
+    [
+     "bone_0088",
+     1.0
+    ]
+   ],
+   "up": "cloth_01AF"
+  },
+  "cloth_0240": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.4904
+    ],
+    [
+     "Spine_2_Twist",
+     0.05184
+    ],
+    [
+     "Spine_1_Twist",
+     0.01512
+    ],
+    [
+     "bone_0054",
+     0.44264
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0241": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.40265
+    ],
+    [
+     "bone_0158",
+     0.092
+    ],
+    [
+     "Spine_2_Twist",
+     0.05381
+    ],
+    [
+     "bone_0054",
+     0.45155
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0242": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.3137
+    ],
+    [
+     "bone_0158",
+     0.17916
+    ],
+    [
+     "Spine_2_Twist",
+     0.05066
+    ],
+    [
+     "bone_0054",
+     0.45648
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0243": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.21121
+    ],
+    [
+     "bone_0158",
+     0.27925
+    ],
+    [
+     "Spine_2_Twist",
+     0.04031
+    ],
+    [
+     "bone_0054",
+     0.46923
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0244": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.10979
+    ],
+    [
+     "bone_0158",
+     0.3792
+    ],
+    [
+     "Spine_2_Twist",
+     0.02127
+    ],
+    [
+     "bone_0054",
+     0.48974
+    ]
+   ],
+   "up": null
+  },
+  "cloth_015C": {
+   "drivers": [
+    [
+     "bone_0158",
+     0.48591
+    ],
+    [
+     "Spine_2_Twist",
+     0.02607
+    ],
+    [
+     "Spine_1_Twist",
+     0.04356
+    ],
+    [
+     "bone_0054",
+     0.44446
+    ]
+   ],
+   "up": null
+  },
+  "cloth_015D": {
+   "drivers": [
+    [
+     "bone_0158",
+     0.48742
+    ],
+    [
+     "Spine_2_Twist",
+     0.00437
+    ],
+    [
+     "Spine_1_Twist",
+     0.07429
+    ],
+    [
+     "bone_0054",
+     0.43391
+    ]
+   ],
+   "up": null
+  },
+  "cloth_015E": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.11135
+    ],
+    [
+     "bone_0158",
+     0.3783
+    ],
+    [
+     "Spine_1_Twist",
+     0.07331
+    ],
+    [
+     "bone_0054",
+     0.43704
+    ]
+   ],
+   "up": null
+  },
+  "cloth_015F": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.22969
+    ],
+    [
+     "bone_0158",
+     0.26212
+    ],
+    [
+     "Spine_1_Twist",
+     0.07371
+    ],
+    [
+     "bone_0054",
+     0.43448
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0160": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.3661
+    ],
+    [
+     "bone_0158",
+     0.13522
+    ],
+    [
+     "Spine_1_Twist",
+     0.04555
+    ],
+    [
+     "bone_0054",
+     0.45312
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0161": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.05038
+    ],
+    [
+     "bone_00C5",
+     0.42002
+    ],
+    [
+     "bone_0158",
+     0.05038
+    ],
+    [
+     "bone_0054",
+     0.47921
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0162": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.135
+    ],
+    [
+     "bone_00C5",
+     0.3655
+    ],
+    [
+     "Spine_1_Twist",
+     0.04509
+    ],
+    [
+     "bone_0054",
+     0.4544
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0163": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.26212
+    ],
+    [
+     "bone_00C5",
+     0.22969
+    ],
+    [
+     "Spine_1_Twist",
+     0.07374
+    ],
+    [
+     "bone_0054",
+     0.43445
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0164": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.37831
+    ],
+    [
+     "bone_00C5",
+     0.11135
+    ],
+    [
+     "Spine_1_Twist",
+     0.07298
+    ],
+    [
+     "bone_0054",
+     0.43736
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0165": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.48742
+    ],
+    [
+     "Spine_2_Twist",
+     0.00466
+    ],
+    [
+     "Spine_1_Twist",
+     0.07209
+    ],
+    [
+     "bone_0054",
+     0.43582
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0167": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.48591
+    ],
+    [
+     "Spine_2_Twist",
+     0.02729
+    ],
+    [
+     "Spine_1_Twist",
+     0.04399
+    ],
+    [
+     "bone_0054",
+     0.44282
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0168": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.3793
+    ],
+    [
+     "bone_2C79",
+     0.10982
+    ],
+    [
+     "Spine_2_Twist",
+     0.02235
+    ],
+    [
+     "bone_0054",
+     0.48853
+    ]
+   ],
+   "up": null
+  },
+  "cloth_0169": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.2793
+    ],
+    [
+     "bone_2C79",
+     0.21125
+    ],
+    [
+     "Spine_2_Twist",
+     0.04164
+    ],
+    [
+     "bone_0054",
+     0.46781
+    ]
+   ],
+   "up": null
+  },
+  "cloth_016A": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.17913
+    ],
+    [
+     "bone_2C79",
+     0.31366
+    ],
+    [
+     "Spine_2_Twist",
+     0.05072
+    ],
+    [
+     "bone_0054",
+     0.45649
+    ]
+   ],
+   "up": null
+  },
+  "cloth_016B": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.09198
+    ],
+    [
+     "bone_2C79",
+     0.40257
+    ],
+    [
+     "Spine_2_Twist",
+     0.05411
+    ],
+    [
+     "bone_0054",
+     0.45134
+    ]
+   ],
+   "up": null
+  },
+  "cloth_016C": {
+   "drivers": [
+    [
+     "bone_2C79",
+     0.4904
+    ],
+    [
+     "Spine_2_Twist",
+     0.05452
+    ],
+    [
+     "Spine_1_Twist",
+     0.0152
+    ],
+    [
+     "bone_0054",
+     0.43987
+    ]
+   ],
+   "up": null
+  },
+  "cloth_016D": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.84686
+    ],
+    [
+     "bone_0158",
+     0.0
+    ],
+    [
+     "bone_0054",
+     0.15314
+    ]
+   ],
+   "up": "cloth_0240"
+  },
+  "cloth_016E": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.72887
+    ],
+    [
+     "bone_0158",
+     0.16204
+    ],
+    [
+     "bone_0054",
+     0.10909
+    ]
+   ],
+   "up": "cloth_0241"
+  },
+  "cloth_016F": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.56919
+    ],
+    [
+     "bone_0158",
+     0.3183
+    ],
+    [
+     "bone_0054",
+     0.11251
+    ]
+   ],
+   "up": "cloth_0242"
+  },
+  "cloth_0170": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.38398
+    ],
+    [
+     "bone_0158",
+     0.49869
+    ],
+    [
+     "bone_0054",
+     0.11733
+    ]
+   ],
+   "up": "cloth_0243"
+  },
+  "cloth_0172": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.19966
+    ],
+    [
+     "bone_0158",
+     0.68072
+    ],
+    [
+     "bone_0054",
+     0.11962
+    ]
+   ],
+   "up": "cloth_0244"
+  },
+  "cloth_0173": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.0
+    ],
+    [
+     "bone_0158",
+     0.87765
+    ],
+    [
+     "bone_0054",
+     0.12235
+    ]
+   ],
+   "up": "cloth_015C"
+  },
+  "cloth_0174": {
+   "drivers": [
+    [
+     "bone_0158",
+     0.87414
+    ],
+    [
+     "bone_0054",
+     0.12586
+    ]
+   ],
+   "up": "cloth_015D"
+  },
+  "cloth_0175": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.19328
+    ],
+    [
+     "bone_0158",
+     0.67506
+    ],
+    [
+     "bone_0054",
+     0.13166
+    ]
+   ],
+   "up": "cloth_015E"
+  },
+  "cloth_0176": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.40161
+    ],
+    [
+     "bone_0158",
+     0.46127
+    ],
+    [
+     "bone_0054",
+     0.13712
+    ]
+   ],
+   "up": "cloth_015F"
+  },
+  "cloth_0177": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.62388
+    ],
+    [
+     "bone_0158",
+     0.23427
+    ],
+    [
+     "bone_0054",
+     0.14185
+    ]
+   ],
+   "up": "cloth_0160"
+  },
+  "cloth_0178": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.07919
+    ],
+    [
+     "bone_00C5",
+     0.69829
+    ],
+    [
+     "bone_0158",
+     0.07919
+    ],
+    [
+     "bone_0054",
+     0.14332
+    ]
+   ],
+   "up": "cloth_0161"
+  },
+  "cloth_0179": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.23427
+    ],
+    [
+     "bone_00C5",
+     0.62388
+    ],
+    [
+     "bone_0054",
+     0.14185
+    ]
+   ],
+   "up": "cloth_0162"
+  },
+  "cloth_017A": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.46127
+    ],
+    [
+     "bone_00C5",
+     0.40161
+    ],
+    [
+     "bone_0054",
+     0.13712
+    ]
+   ],
+   "up": "cloth_0163"
+  },
+  "cloth_017B": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.67506
+    ],
+    [
+     "bone_00C5",
+     0.19328
+    ],
+    [
+     "bone_0054",
+     0.13166
+    ]
+   ],
+   "up": "cloth_0164"
+  },
+  "cloth_017D": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.87414
+    ],
+    [
+     "bone_0054",
+     0.12586
+    ]
+   ],
+   "up": "cloth_0165"
+  },
+  "cloth_017E": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.87765
+    ],
+    [
+     "bone_0054",
+     0.12235
+    ]
+   ],
+   "up": "cloth_0167"
+  },
+  "cloth_017F": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.68072
+    ],
+    [
+     "bone_2C79",
+     0.19966
+    ],
+    [
+     "bone_0054",
+     0.11962
+    ]
+   ],
+   "up": "cloth_0168"
+  },
+  "cloth_0180": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.49869
+    ],
+    [
+     "bone_2C79",
+     0.38398
+    ],
+    [
+     "bone_0054",
+     0.11733
+    ]
+   ],
+   "up": "cloth_0169"
+  },
+  "cloth_0181": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.3183
+    ],
+    [
+     "bone_2C79",
+     0.56919
+    ],
+    [
+     "bone_0054",
+     0.11251
+    ]
+   ],
+   "up": "cloth_016A"
+  },
+  "cloth_0182": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.16204
+    ],
+    [
+     "bone_2C79",
+     0.72887
+    ],
+    [
+     "bone_0054",
+     0.10909
+    ]
+   ],
+   "up": "cloth_016B"
+  },
+  "cloth_0183": {
+   "drivers": [
+    [
+     "bone_2C79",
+     0.84686
+    ],
+    [
+     "bone_0054",
+     0.15314
+    ]
+   ],
+   "up": "cloth_016C"
+  },
+  "cloth_0184": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     1.0
+    ]
+   ],
+   "up": "cloth_016D"
+  },
+  "cloth_0185": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.82372
+    ],
+    [
+     "bone_0158",
+     0.17628
+    ]
+   ],
+   "up": "cloth_016E"
+  },
+  "cloth_0186": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.64919
+    ],
+    [
+     "bone_0158",
+     0.35081
+    ]
+   ],
+   "up": "cloth_016F"
+  },
+  "cloth_0188": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.44441
+    ],
+    [
+     "bone_0158",
+     0.55559
+    ]
+   ],
+   "up": "cloth_0170"
+  },
+  "cloth_0189": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.23315
+    ],
+    [
+     "bone_0158",
+     0.76685
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0172"
+  },
+  "cloth_018A": {
+   "drivers": [
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_0173"
+  },
+  "cloth_018B": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.0
+    ],
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_0174"
+  },
+  "cloth_018C": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.21353
+    ],
+    [
+     "bone_0158",
+     0.78647
+    ]
+   ],
+   "up": "cloth_0175"
+  },
+  "cloth_018D": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.45663
+    ],
+    [
+     "bone_0158",
+     0.54337
+    ]
+   ],
+   "up": "cloth_0176"
+  },
+  "cloth_018E": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.72587
+    ],
+    [
+     "bone_0158",
+     0.27413
+    ]
+   ],
+   "up": "cloth_0177"
+  },
+  "cloth_018F": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.09531
+    ],
+    [
+     "bone_00C5",
+     0.80938
+    ],
+    [
+     "bone_0158",
+     0.09531
+    ]
+   ],
+   "up": "cloth_0178"
+  },
+  "cloth_0190": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.27413
+    ],
+    [
+     "bone_00C5",
+     0.72587
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0179"
+  },
+  "cloth_0191": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.54337
+    ],
+    [
+     "bone_00C5",
+     0.45663
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_017A"
+  },
+  "cloth_0193": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.78647
+    ],
+    [
+     "bone_00C5",
+     0.21353
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_017B"
+  },
+  "cloth_0194": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_017D"
+  },
+  "cloth_0195": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_017E"
+  },
+  "cloth_0196": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.76685
+    ],
+    [
+     "bone_2C79",
+     0.23315
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_017F"
+  },
+  "cloth_0197": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.55559
+    ],
+    [
+     "bone_2C79",
+     0.44441
+    ]
+   ],
+   "up": "cloth_0180"
+  },
+  "cloth_0198": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.35081
+    ],
+    [
+     "bone_2C79",
+     0.64919
+    ]
+   ],
+   "up": "cloth_0181"
+  },
+  "cloth_0199": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.17628
+    ],
+    [
+     "bone_2C79",
+     0.82372
+    ]
+   ],
+   "up": "cloth_0182"
+  },
+  "cloth_019A": {
+   "drivers": [
+    [
+     "bone_2C79",
+     1.0
+    ]
+   ],
+   "up": "cloth_0183"
+  },
+  "cloth_0239": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     1.0
+    ],
+    [
+     "bone_0158",
+     0.0
+    ]
+   ],
+   "up": "cloth_0184"
+  },
+  "cloth_023A": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.83296
+    ],
+    [
+     "bone_0158",
+     0.16704
+    ]
+   ],
+   "up": "cloth_0185"
+  },
+  "cloth_023B": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.66354
+    ],
+    [
+     "bone_0158",
+     0.33646
+    ]
+   ],
+   "up": "cloth_0186"
+  },
+  "cloth_023C": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.46297
+    ],
+    [
+     "bone_0158",
+     0.53703
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0188"
+  },
+  "cloth_023D": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.24915
+    ],
+    [
+     "bone_0158",
+     0.75085
+    ]
+   ],
+   "up": "cloth_0189"
+  },
+  "cloth_023E": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.0
+    ],
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_018A"
+  },
+  "cloth_023F": {
+   "drivers": [
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_018B"
+  },
+  "cloth_015A": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.18285
+    ],
+    [
+     "bone_0158",
+     0.81715
+    ]
+   ],
+   "up": "cloth_018C"
+  },
+  "cloth_015B": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.45021
+    ],
+    [
+     "bone_0158",
+     0.54979
+    ]
+   ],
+   "up": "cloth_018D"
+  },
+  "cloth_0166": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.72151
+    ],
+    [
+     "bone_0158",
+     0.27849
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_018E"
+  },
+  "cloth_0156": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.10089
+    ],
+    [
+     "bone_00C5",
+     0.79823
+    ],
+    [
+     "bone_0158",
+     0.10089
+    ]
+   ],
+   "up": "cloth_018F"
+  },
+  "cloth_0157": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.27849
+    ],
+    [
+     "bone_00C5",
+     0.72151
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0190"
+  },
+  "cloth_0158": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.54979
+    ],
+    [
+     "bone_00C5",
+     0.45021
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0191"
+  },
+  "cloth_0159": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.81715
+    ],
+    [
+     "bone_00C5",
+     0.18285
+    ]
+   ],
+   "up": "cloth_0193"
+  },
+  "cloth_0232": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_0194"
+  },
+  "cloth_0233": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_0195"
+  },
+  "cloth_0234": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.74998
+    ],
+    [
+     "bone_2C79",
+     0.25002
+    ]
+   ],
+   "up": "cloth_0196"
+  },
+  "cloth_0235": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.53723
+    ],
+    [
+     "bone_2C79",
+     0.46277
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0197"
+  },
+  "cloth_0236": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.33744
+    ],
+    [
+     "bone_2C79",
+     0.66256
+    ]
+   ],
+   "up": "cloth_0198"
+  },
+  "cloth_0237": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.16806
+    ],
+    [
+     "bone_2C79",
+     0.83194
+    ]
+   ],
+   "up": "cloth_0199"
+  },
+  "cloth_0238": {
+   "drivers": [
+    [
+     "bone_2C79",
+     1.0
+    ]
+   ],
+   "up": "cloth_019A"
+  },
+  "cloth_01B1": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     1.0
+    ],
+    [
+     "bone_0158",
+     0.0
+    ]
+   ],
+   "up": "cloth_0239"
+  },
+  "cloth_022A": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.84457
+    ],
+    [
+     "bone_0158",
+     0.15543
+    ]
+   ],
+   "up": "cloth_023A"
+  },
+  "cloth_01BA": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.68889
+    ],
+    [
+     "bone_0158",
+     0.31111
+    ]
+   ],
+   "up": "cloth_023B"
+  },
+  "cloth_01C2": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.49528
+    ],
+    [
+     "bone_0158",
+     0.50472
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_023C"
+  },
+  "cloth_01C9": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.29271
+    ],
+    [
+     "bone_0158",
+     0.70729
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_023D"
+  },
+  "cloth_01D0": {
+   "drivers": [
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_023E"
+  },
+  "cloth_01D9": {
+   "drivers": [
+    [
+     "bone_0158",
+     1.0
+    ]
+   ],
+   "up": "cloth_023F"
+  },
+  "cloth_01E2": {
+   "drivers": [
+    [
+     "bone_00C5",
+     0.1046
+    ],
+    [
+     "bone_0158",
+     0.8954
+    ]
+   ],
+   "up": "cloth_015A"
+  },
+  "cloth_0171": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.8954
+    ],
+    [
+     "bone_00C5",
+     0.1046
+    ]
+   ],
+   "up": "cloth_0159"
+  },
+  "cloth_017C": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_0232"
+  },
+  "cloth_0187": {
+   "drivers": [
+    [
+     "bone_0159",
+     1.0
+    ]
+   ],
+   "up": "cloth_0233"
+  },
+  "cloth_0192": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.70729
+    ],
+    [
+     "bone_2C79",
+     0.29271
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0234"
+  },
+  "cloth_019C": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.50487
+    ],
+    [
+     "bone_2C79",
+     0.49513
+    ]
+   ],
+   "up": "cloth_0235"
+  },
+  "cloth_01A3": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.31173
+    ],
+    [
+     "bone_2C79",
+     0.68827
+    ]
+   ],
+   "up": "cloth_0236"
+  },
+  "cloth_021B": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.15605
+    ],
+    [
+     "bone_2C79",
+     0.84395
+    ]
+   ],
+   "up": "cloth_0237"
+  },
+  "cloth_01AB": {
+   "drivers": [
+    [
+     "bone_2C79",
+     1.0
+    ]
+   ],
+   "up": "cloth_0238"
+  },
+  "cloth_0207": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     1.0
+    ],
+    [
+     "bone_0158",
+     0.0
+    ]
+   ],
+   "up": "cloth_01B1"
+  },
+  "cloth_0230": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.86363
+    ],
+    [
+     "bone_0158",
+     0.13637
+    ]
+   ],
+   "up": "cloth_022A"
+  },
+  "cloth_0210": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.72907
+    ],
+    [
+     "bone_0158",
+     0.27093
+    ]
+   ],
+   "up": "cloth_01BA"
+  },
+  "cloth_0215": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.5432
+    ],
+    [
+     "bone_0158",
+     0.4568
+    ]
+   ],
+   "up": "cloth_01C2"
+  },
+  "cloth_0216": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.41239
+    ],
+    [
+     "bone_0158",
+     0.58761
+    ]
+   ],
+   "up": "cloth_01C9"
+  },
+  "cloth_01EB": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.58761
+    ],
+    [
+     "bone_2C79",
+     0.41239
+    ]
+   ],
+   "up": "cloth_0192"
+  },
+  "cloth_01F2": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.4568
+    ],
+    [
+     "bone_2C79",
+     0.5432
+    ]
+   ],
+   "up": "cloth_019C"
+  },
+  "cloth_01F8": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.27093
+    ],
+    [
+     "bone_2C79",
+     0.72907
+    ]
+   ],
+   "up": "cloth_01A3"
+  },
+  "cloth_021E": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.13637
+    ],
+    [
+     "bone_2C79",
+     0.86363
+    ]
+   ],
+   "up": "cloth_021B"
+  },
+  "cloth_01FF": {
+   "drivers": [
+    [
+     "bone_2C79",
+     1.0
+    ]
+   ],
+   "up": "cloth_01AB"
+  },
+  "cloth_0153": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     1.0
+    ],
+    [
+     "bone_0158",
+     0.0
+    ]
+   ],
+   "up": "cloth_0207"
+  },
+  "cloth_0231": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.88828
+    ],
+    [
+     "bone_0158",
+     0.11172
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_0230"
+  },
+  "cloth_0152": {
+   "drivers": [
+    [
+     "bone_2C7B",
+     0.8091
+    ],
+    [
+     "bone_0158",
+     0.1909
+    ]
+   ],
+   "up": "cloth_0210"
+  },
+  "cloth_0155": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.1909
+    ],
+    [
+     "bone_2C79",
+     0.8091
+    ]
+   ],
+   "up": "cloth_01F8"
+  },
+  "cloth_0224": {
+   "drivers": [
+    [
+     "bone_0159",
+     0.11172
+    ],
+    [
+     "bone_2C79",
+     0.88828
+    ],
+    [
+     "bone_0054",
+     0.0
+    ]
+   ],
+   "up": "cloth_021E"
+  },
+  "cloth_0154": {
+   "drivers": [
+    [
+     "bone_2C79",
+     1.0
+    ]
+   ],
+   "up": "cloth_01FF"
+  }
+ }
+}

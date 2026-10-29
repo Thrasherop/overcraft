@@ -111,6 +111,10 @@ public final class Combat {
 	}
 
 	public static boolean isPhased(LivingEntity target) {
+		// Life Grip's pull protects its ally the same way: no damage, no knockback (W)
+		if (dev.overcraft.lifeweaver.LifeGrip.gripped(target)) {
+			return true;
+		}
 		Long until = phasedUntil.get(target.getUUID());
 		return until != null && now(target) < until;
 	}
@@ -257,12 +261,16 @@ public final class Combat {
 			case LUCIO -> dev.overcraft.lucio.LucioStats.ULT_COST;
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.ULT_COST;
 			case MERCY -> dev.overcraft.mercy.MercyStats.ULT_COST;
+			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.ULT_COST;
 			default -> 1;
 		};
 	}
 
-	/** Overhealth given (Sound Barrier), decaying: what's left of it (Minecraft health), the decay a tick, the end. */
-	private record Overhealth(LivingEntity entity, double perTick, long until) {
+	/**
+	 * Overhealth given (Sound Barrier), decaying: what's left of it (Minecraft health), the decay a tick from holdUntil
+	 * (Tree of Life's and Sow the Seed's hold a while first), the end.
+	 */
+	private record Overhealth(LivingEntity entity, double perTick, long until, long holdUntil) {
 	}
 
 	private static final Map<UUID, Overhealth> overhealth = new HashMap<>();
@@ -281,7 +289,30 @@ public final class Combat {
 			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
-		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds)));
+		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds), now(entity)));
+		overhealthLeft.put(entity.getUUID(), amount);
+	}
+
+	/**
+	 * Adds overhealth to a pool (Overwatch points) that holds {@code hold} s, then goes {@code decay} a second: Tree of
+	 * Life's (each pulse adds to it, up to its max, and starts the hold again) and Sow the Seed's. What's left of an
+	 * earlier pool joins it (one pool an entity: ours).
+	 */
+	public static void overhealthPool(LivingEntity entity, double owAdd, double owMax, double hold, double decay) {
+		double left = Math.min(overhealthLeft.getOrDefault(entity.getUUID(), 0.0), entity.getAbsorptionAmount());
+		double amount = Math.min(Math.max(Ow.hp(owMax), left), left + Ow.hp(owAdd));
+		if (amount <= 0) {
+			return;
+		}
+		clearOverhealth(entity);
+		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
+		if (max != null) {
+			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+		}
+		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
+		long holdUntil = now(entity) + Ow.ticks(hold);
+		double perTick = Ow.hp(decay) / 20;
+		overhealth.put(entity.getUUID(), new Overhealth(entity, perTick, holdUntil + (long) Math.ceil(amount / perTick) + 1, holdUntil));
 		overhealthLeft.put(entity.getUUID(), amount);
 	}
 
@@ -304,6 +335,9 @@ public final class Combat {
 			if (!o.entity.isAlive() || o.entity.isRemoved() || now(o.entity) >= o.until || left <= 0) {
 				overhealthLeft.put(id, left);
 				clearOverhealth(o.entity);
+				continue;
+			}
+			if (now(o.entity) < o.holdUntil) {
 				continue;
 			}
 			double decay = Math.min(o.perTick, left);
