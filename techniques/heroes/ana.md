@@ -24,3 +24,14 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   rifle too. Not yet identified.
 - **Her hip glint material AC4A** has shader 0x26 (Lifeweaver's petals' shader) with another blank (000B) in the colour
   slot: a 2 cm highlight, not art.
+
+## Building her (2026-10-29: step 2, the Biotic Rifle unscoped)
+- **Two hit radii on one projectile:** the base class gives every entity one margin (`ProjectileUtilMixin`). Her dart
+  takes enemies by Minecraft's own hit test at 0.15 m (its `hitRadius`), and hurt allies by its own sweep each tick at
+  0.3 m (`AnaDartEntity.hurtAllyAhead`). Full-health allies and Ana herself are skipped, so it flies through them.
+- **Heal and damage over 0.5 s** (`Ana.dose`, ticked from `HeroManager`). Split into ten ticks, Minecraft armor takes a
+  little more than from one hit: a zombie (2 armor) loses 5.59 of the 6, not 5.9. The mod lets Minecraft armor count
+  against heroes' damage everywhere; this is the same rule, made a little stronger by the split.
+- **Test spots near a village lie:** a zombie summoned 10 m ahead stood half inside a house wall and suffocated, and
+  looked like the dart killing it in one shot. Test on open ground away from buildings, and read the target's health
+  before firing.

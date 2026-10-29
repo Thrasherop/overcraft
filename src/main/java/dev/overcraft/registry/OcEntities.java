@@ -47,6 +47,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.THORN_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.THORN_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Ana's unscoped Biotic Rifle dart (15B7): its box is its enemy radius, 0.15 m (the ally one is its own sweep). */
+	public static final EntityType<dev.overcraft.entity.AnaDartEntity> ANA_DART = register("ana_dart",
+		EntityType.Builder.<dev.overcraft.entity.AnaDartEntity>of(dev.overcraft.entity.AnaDartEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.ana.AnaStats.DART_RADIUS_ENEMY * 2, (float) dev.overcraft.ana.AnaStats.DART_RADIUS_ENEMY * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<dev.overcraft.entity.PetalThrowEntity> PETAL_THROW = register("petal_throw",
 		EntityType.Builder.<dev.overcraft.entity.PetalThrowEntity>of(dev.overcraft.entity.PetalThrowEntity::new, MobCategory.MISC)
 			.noLootTable().noSave()

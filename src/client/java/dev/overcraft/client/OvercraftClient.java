@@ -152,6 +152,9 @@ public class OvercraftClient implements ClientModInitializer {
 			"blossom", 0.6f, false, 1, true));
 		EntityRendererRegistry.register(OcEntities.THORN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"thorn", 0.3f, false, 1, true));
+		// Ana's dart: its model 11741 isn't exported yet: the item stands in (her effects are a later step)
+		EntityRendererRegistry.register(OcEntities.ANA_DART, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"ana_dart", 0.3f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"lifeweaver_seed", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
