@@ -193,6 +193,12 @@ public final class HeroAnimator {
 			a.actions.trigger(clip, now);
 			a.actionsFirstPerson.trigger(action, now);
 		}
+		if (layerOnly && !action.startsWith("flash_heal") && !action.equals("ga_start")) {
+			// either fire button cuts Hello's wave (its graph 0341's PRIMARY / SECONDARY exits: research\hello_gesture); the
+			// shots that are clips over the arms replace it anyway
+			a.actions.cancel("hello", now);
+			a.actionsFirstPerson.cancel("hello", now);
+		}
 		// doing anything ends an emote, as in Overwatch
 		a.emote = null;
 	}
@@ -403,7 +409,7 @@ public final class HeroAnimator {
 		return switch (action) {
 			case "release" -> Math.abs(tickVx) + Math.abs(tickVz) > 0.05 ? "release_moving" : "release";
 			case "reload_thorn_after_fire" -> "reload_thorn";
-			case "grip" -> thorns ? "grip_thorn" : "grip";
+			case "grip", "hello" -> thorns ? action + "_thorn" : action;
 			case "melee_2", "melee_3" -> "melee";
 			case "dash" -> "dash" + dashWay();
 			default -> action;
@@ -416,7 +422,7 @@ public final class HeroAnimator {
 			case "release" -> "bloom_chain";
 			case "melee", "melee_2", "melee_3" -> thorns ? "melee_thorn" : "melee";
 			case "throw_blossom" -> "throw";
-			case "tree_cast", "tree_aim_start" -> thorns ? action + "_thorn" : action;
+			case "tree_cast", "tree_aim_start", "hello" -> thorns ? action + "_thorn" : action;
 			default -> action;
 		};
 	}

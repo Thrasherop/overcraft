@@ -10,6 +10,8 @@ export everything as one .glb. Works on files extracted from the player's own in
 --keep=<file>: only these clips in the .glb (one <folder>_<clip id> per line, optionally "= our name" after it, to
           rename it). Exporting all of a hero's ~330 clips takes Blender's glTF exporter well over half an hour.
 --only=<id>,<id>: just these clips (by clip id), to try things on a few first.
+--clips-only: the rig and the kept clips, no meshes: a small <out dir>/<model>.glb that HeroModels merges into the hero's
+          model by bone name (hero_models/<hero>_clips.glb, <hero>_1p_clips.glb), so new clips need no full re-export.
 --shots=<n>: poses per thumbnail strip (default 3).  --side: view from her side instead of the front.
 --emotes=<dir>: also import the hero's emotes from DataTool's extract-unlocks "<Hero>|emote=*" (<dir> =
           Unlocks/Heroes/<Hero>/Emote): each emote's clips (<group>/<name>/Animations/**) as emote_<name>_<n>, in id
@@ -133,6 +135,9 @@ def main():
         # and anything not on the skeleton (the add-on's shader library leaves an Icosphere behind)
         for o in [o for o in bpy.data.objects if o.type == "MESH" and (o.parent is None or o.parent.type != "ARMATURE")]:
             bpy.data.objects.remove(o)
+        if "--clips-only" in flags:
+            for o in [o for o in bpy.data.objects if o.type == "MESH"]:
+                bpy.data.objects.remove(o)
         glb = out / (model.stem + ".glb")
         bpy.ops.export_scene.gltf(filepath=str(glb), export_format="GLB", export_yup=True, export_skins=True,
                                   export_animations=True, export_animation_mode="ACTIONS", export_apply=False,
