@@ -10,6 +10,8 @@ export everything as one .glb. Works on files extracted from the player's own in
 --keep=<file>: only these clips in the .glb (one <folder>_<clip id> per line, optionally "= our name" after it, to
           rename it). Exporting all of a hero's ~330 clips takes Blender's glTF exporter well over half an hour.
 --only=<id>,<id>: just these clips (by clip id), to try things on a few first.
+--clips-only: the rig and the kept clips, no meshes: a small <out dir>/<model>.glb that HeroModels merges into the hero's
+          model by bone name (hero_models/<hero>_clips.glb, <hero>_1p_clips.glb), so new clips need no full re-export.
 --shots=<n>: poses per thumbnail strip (default 3).  --side: view from her side instead of the front.
 --emotes=<dir>: also import the hero's emotes from DataTool's extract-unlocks "<Hero>|emote=*" (<dir> =
           Unlocks/Heroes/<Hero>/Emote): each emote's clips (<group>/<name>/Animations/**) as emote_<name>_<n>, in id
@@ -133,6 +135,9 @@ def main():
         # and anything not on the skeleton (the add-on's shader library leaves an Icosphere behind)
         for o in [o for o in bpy.data.objects if o.type == "MESH" and (o.parent is None or o.parent.type != "ARMATURE")]:
             bpy.data.objects.remove(o)
+        if "--clips-only" in flags:
+            for o in [o for o in bpy.data.objects if o.type == "MESH"]:
+                bpy.data.objects.remove(o)
         glb = out / (model.stem + ".glb")
         bpy.ops.export_scene.gltf(filepath=str(glb), export_format="GLB", export_yup=True, export_skins=True,
                                   export_animations=True, export_animation_mode="ACTIONS", export_apply=False,
@@ -266,7 +271,13 @@ def retime(action, scale):
 # texture type key that holds it, read from the materials' .owmat: Jetpack Cat's fur, shader 0x10D (material 15E60:
 # 86DAAC6B is her orange tabby albedo 6F76A beside the PBR 20AF06CE and normal 169615AA every material has). Without
 # it her whole body exported with no colour and wasn't drawn (the owner, 2026-10-28: "there was never a cat").
-COLOUR_KEYS = {0x10D: 0x86DAAC6B}
+# Lifeweaver's back petals, shader 0x26 (material C971): the add-on links the engine's blank 000A to a colour input and
+# his petals exported white; 58FF5009 is their own art (3EE14, a pink petal beside its cut-out CA8ECF6A, his gradient ramp
+# 5118206D and normal 0DB044E6), read from the slots' images by eye (the owner, 2026-10-29: "LW's petals on his back
+# aren't pink correctly").
+COLOUR_KEYS = {0x10D: 0x86DAAC6B, 0x26: 0x58FF5009}
+# The engine's blank textures: linked as a colour, they mean the add-on didn't find the material's own.
+BLANK_TEXTURES = {"00000000000A"}
 
 
 def owmat_textures(path):
@@ -328,8 +339,9 @@ def gltf_materials():
                 color = link.from_node
             elif alpha is None and "alpha" in socket:
                 alpha = link.from_node
-        if color is None and MATERIALS_DIR is not None:
-            color = colour_from_owmat(mat, MATERIALS_DIR)
+        blank = color is not None and color.image is not None and Path(color.image.name).stem.split(".")[0] in BLANK_TEXTURES
+        if (color is None or blank) and MATERIALS_DIR is not None:
+            color = colour_from_owmat(mat, MATERIALS_DIR) or color
         if color is None:
             print(f"OWM_MATERIAL {mat.name}: no colour texture (inputs: "
                   f"{sorted({l.to_socket.name for l in links if l.to_node.type == 'GROUP'})})")

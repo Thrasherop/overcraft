@@ -6,6 +6,28 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-29
 
+### Build 0.3.23 (Hello waves; Lifeweaver's back petals)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.23):
+- Lifeweaver's model again, with the fixed exporter.
+- Each hero's wave clips, exported with `owm_survey.py --glb --clips-only --keep=tools/clipmaps/<hero>_clips.txt` and
+  `<hero>_1p_clips.txt` into `hero_models/<hero>_clips.glb` and `<hero>_1p_clips.glb`.
+- Then `zip`.
+
+- **Hello waves, from the game data** (the owner: "hello animations aren't in the game. They should be"):
+  - the communication wheel's Hello plays each hero's own gesture, in third and first person, and its voice line 0.3 s
+    later, as the game does;
+  - Lúcio waves, Mercy waves with her staff or her blaster out, Kiriko brings two fingers to her brow, Jetpack Cat
+    lifts a paw, Lifeweaver puts his palms together and raises them;
+  - firing cuts it short.
+  - The game plays it through the callout's own graph under a numbered animation id that earlier passes had filed as
+    "meaning unknown".
+- **Lifeweaver's back petals in their own pink** (the owner: "LW's petals on his back aren't pink correctly"). They were
+  plain white: the exporter took the engine's blank texture as their colour instead of their own art.
+- New clips no longer need a whole model re-exported: a hero's extra clips go in a small file of their own, merged into
+  the model by bone name.
+- Not reproduced, from 0.3.22: Jetpack Cat's Purr sphere tints the whole view for about a second when you're inside it.
+  Left as it is.
+
 ### Build 0.3.22 (Lifeweaver)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.22): his models (`owm_survey.py --glb --entity=...
 --keep=tools/clipmaps/lifeweaver[_1p|_platform|_tree].txt` into `hero_models/`, the seed 126CC as `lifeweaver_seed` and
