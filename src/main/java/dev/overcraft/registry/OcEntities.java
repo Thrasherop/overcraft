@@ -53,6 +53,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.ana.AnaStats.DART_RADIUS_ENEMY * 2, (float) dev.overcraft.ana.AnaStats.DART_RADIUS_ENEMY * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Ana's Biotic Grenade (0B97): its box its contact radius, 0.275 m. */
+	public static final EntityType<dev.overcraft.entity.BioticGrenadeEntity> BIOTIC_GRENADE = register("biotic_grenade",
+		EntityType.Builder.<dev.overcraft.entity.BioticGrenadeEntity>of(dev.overcraft.entity.BioticGrenadeEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.ana.AnaStats.GRENADE_RADIUS_CONTACT * 2, (float) dev.overcraft.ana.AnaStats.GRENADE_RADIUS_CONTACT * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<dev.overcraft.entity.PetalThrowEntity> PETAL_THROW = register("petal_throw",
 		EntityType.Builder.<dev.overcraft.entity.PetalThrowEntity>of(dev.overcraft.entity.PetalThrowEntity::new, MobCategory.MISC)
 			.noLootTable().noSave()

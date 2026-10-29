@@ -46,6 +46,9 @@ public final class Combat {
 	private static final Identifier RUSH_ATTACK = Overcraft.id("kitsune_rush_attack");
 
 	private static final Map<UUID, Long> phasedUntil = new HashMap<>();
+	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
+	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
+	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
 	private static final Map<UUID, LivingEntity> rushedEntities = new HashMap<>();
 
@@ -85,11 +88,42 @@ public final class Combat {
 		return Math.max(0, Ow.toOw(dealt));
 	}
 
-	/** Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. */
+	/**
+	 * Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. Ana's Biotic
+	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one. Minecraft's own healing (food,
+	 * potions) doesn't pass here and isn't scaled (ours: the owner's open question, ana-plan.md).
+	 */
 	public static float heal(LivingEntity target, double owHeal) {
+		double scale = antiHealed(target) ? 0 : healBoosted(target) ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		if (scale <= 0) {
+			return 0;
+		}
 		float before = target.getHealth();
-		target.heal(Ow.hp(owHeal));
+		target.heal(Ow.hp(owHeal * scale));
 		return Ow.toOw(target.getHealth() - before);
+	}
+
+	/** Healing received +50% for {@code seconds} (an ally in Biotic Grenade's burst), not on an anti-healed one. */
+	public static void boostHealing(LivingEntity target, double seconds) {
+		if (!antiHealed(target)) {
+			healBoostUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
+		}
+	}
+
+	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. */
+	public static void antiHeal(LivingEntity target, double seconds) {
+		antiHealUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
+		healBoostUntil.remove(target.getUUID());
+	}
+
+	public static boolean healBoosted(LivingEntity target) {
+		Long until = healBoostUntil.get(target.getUUID());
+		return until != null && now(target) < until;
+	}
+
+	public static boolean antiHealed(LivingEntity target) {
+		Long until = antiHealUntil.get(target.getUUID());
+		return until != null && now(target) < until;
 	}
 
 	/** Removes what Protection Suzu cleanses: harmful effects, burning, freezing. */

@@ -48,6 +48,7 @@ public final class Ana implements HeroKit {
 		s.primaryReload = -1;
 		s.weaponRecovery = 0;
 		s.scope = 0;
+		s.castTicks = -1;
 		publish(player, s);
 	}
 
@@ -62,10 +63,19 @@ public final class Ana implements HeroKit {
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
 		double attack = Combat.attackRate(player);
 		reload(s, attack);
+		double cooldown = Combat.cooldownRate(player);
+		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 		boolean live = controls && player.isAlive();
+		if (!live) {
+			s.castTicks = -1;
+		} else {
+			grenadeCast(player, s);
+		}
 		// Take Aim: held, with rounds and no reload; let go, a reload or the clip empty takes it down (0B94 #135 / #91 /
 		// #189). The shot's recovery pauses while it moves (#63 / #172)
-		boolean wantScope = live && s.secondaryHeld && s.primaryAmmo > 0 && s.primaryReload < 0;
+		// (an ability's cast takes the rifle: no scope during it, ours for the grenade)
+		boolean wantScope = live && s.secondaryHeld && s.primaryAmmo > 0 && s.primaryReload < 0 && s.castTicks < 0;
 		double was = s.scope;
 		s.scope = wantScope ? Math.min(1, s.scope + 1 / (SCOPE_IN * 20)) : Math.max(0, s.scope - 1 / (SCOPE_OUT * 20));
 		slow(player, live && s.scope >= 1);
@@ -81,7 +91,7 @@ public final class Ana implements HeroKit {
 			startReload(player, s);
 		}
 		// no shot at all while scoping in or out (#143 / #475)
-		boolean steady = s.scope == 0 || s.scope >= 1;
+		boolean steady = (s.scope == 0 || s.scope >= 1) && s.castTicks < 0;
 		if (s.primaryHeld && steady && s.primaryReload < 0 && s.weaponRecovery <= 0 && s.primaryAmmo > 0) {
 			fire(player, s);
 		}
@@ -118,6 +128,80 @@ public final class Ana implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			startReload(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
+			startGrenade(player, s);
+		}
+	}
+
+	// ---- Biotic Grenade (E: 0B97, its bursts 0B99 / 0C72) ----
+
+	/** E: a 0.7 s throw, the grenade leaving 0.1 s in from her left wrist, the 12 s cooldown from the throw's end. */
+	private static void startGrenade(ServerPlayer player, HeroState s) {
+		if (s.ability2Cooldown > 0 || s.castTicks >= 0) {
+			return;
+		}
+		s.castTicks = 0;
+		s.ability2Cooldown = Ow.ticks(GRENADE_COOLDOWN + GRENADE_CAST);
+		Combat.animate(player, "throw_grenade");
+	}
+
+	/** Each tick: the throw's moment. */
+	private static void grenadeCast(ServerPlayer player, HeroState s) {
+		if (s.castTicks < 0) {
+			return;
+		}
+		if (s.castTicks == Ow.ticks(GRENADE_THROW_AT)) {
+			ServerLevel level = player.level();
+			Vec3 from = fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD);
+			dev.overcraft.entity.BioticGrenadeEntity grenade = new dev.overcraft.entity.BioticGrenadeEntity(player, level);
+			grenade.launch(from, player.getViewVector(1.0f), Ow.speed(GRENADE_SPEED));
+			level.addFreshEntity(grenade);
+		}
+		if (++s.castTicks >= Ow.ticks(GRENADE_CAST)) {
+			s.castTicks = -1;
+		}
+	}
+
+	/** Her left wrist (hp 0002), from her eyes in her look's frame: ours until measured on her model. */
+	private static final double WRIST_RIGHT = -0.25, WRIST_UP = -0.2, WRIST_AHEAD = 0.45;
+
+	/**
+	 * The burst: everyone within 4 m of it (no falloff: D 119B) and in sight of it (its sight profile 0019, L: ours by a
+	 * ray to the centre or the eyes). Allies, Ana too, are healed 90 and their healing raised 50% for 3 s (its own heal
+	 * isn't raised); enemies take 90 and can't be healed for 3 s.
+	 */
+	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade) {
+		DamageSource source = owner.damageSources().thrown(grenade, owner);
+		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(GRENADE_RADIUS + 2))) {
+			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)) {
+				continue;
+			}
+			if (Allies.isSelfOrAlly(owner, e)) {
+				float healed = Combat.heal(e, GRENADE_HEAL);
+				if (healed > 0) {
+					Combat.credit(owner, healed);
+					Combat.addFireForHealing(owner, healed);
+				}
+				Combat.boostHealing(e, GRENADE_EFFECT_TIME);
+			} else if (Allies.canHurt(owner, e)) {
+				float dealt = Combat.damage(e, source, GRENADE_DAMAGE);
+				Combat.credit(owner, dealt);
+				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+				if (dealt > 0) {
+					Effects.hitMarker(owner, e, false);
+				}
+				Combat.antiHeal(e, GRENADE_EFFECT_TIME);
+			}
+		}
+	}
+
+	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
+		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
+			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static void fire(ServerPlayer player, HeroState s) {

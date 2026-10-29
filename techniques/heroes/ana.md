@@ -47,3 +47,13 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
 - **Zoom and sensitivity live on the client:** `ClientAna` scales the FOV toward 30 degrees with the synced scope and the
   mouse turn to 30% fully scoped (`HeroFovMixin`, `MouseHandlerMixin`), in first person only.
 - **No scope overlay yet:** its texture isn't extracted (her effects step).
+
+## Building her (2026-10-29: step 4, Biotic Grenade)
+- **Healing modifiers live in `Combat.heal`,** so every hero's healing is boosted or blocked (Ana's grenade affects all
+  healing in Overwatch), and Minecraft's own (food, potions) isn't: the owner's open question, defaulted.
+- **Shields regenerating isn't healing:** an anti-healed Lifeweaver still regains his shields 3 s after the hit (they set
+  health directly). A gain right after a test can be that: log health every 0.2 s through a test to tell a heal's steps
+  from the shields' steady 30 a second.
+- **Superflat test worlds:** kill every slime (`/kill @e[type=minecraft:slime]`, no distance) before precise tests. They
+  pushed her off her spot, so her aim missed the target, and they hurt her. `spawn_monsters false` stops new ones only.
+- **`/publish false 25565`** opens the world to the second client in 26.3; `/publish false survival 25565` is rejected.
