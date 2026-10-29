@@ -278,8 +278,14 @@ public final class HeroAnimator {
 		return emote == null ? null : emotePose;
 	}
 
-	/** Props that fly off when their time is up (EmoteProps): where each was last shown, by clip and spawn. */
-	public final java.util.Map<String, Matrix4f> released = new java.util.HashMap<>();
+	/**
+	 * Props that fly off when their time is up (EmoteProps): where each was last shown, how fast it was moving then
+	 * (model space, m/s) and when (the emote clip's time), by clip and spawn.
+	 */
+	public record Released(Matrix4f at, Vector3f velocity, float time) {
+	}
+
+	public final java.util.Map<String, Released> released = new java.util.HashMap<>();
 	/** How far her emote's root motion would have moved her (model space), kept off her: her props move by it instead. */
 	public final Vector3f emoteRootShift = new Vector3f();
 	/** Dev only (DevServer "emoteat"): every emote held this many seconds in, or -1 to play. */

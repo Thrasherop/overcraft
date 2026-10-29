@@ -615,7 +615,7 @@ public final class Mercy implements HeroKit {
 		}
 		if (--s.castTicks <= 0) {
 			ServerLevel level = player.level().getServer().getLevel(soul.level);
-			boolean done = level != null && Souls.resurrect(level, soul, 1);
+			boolean done = level != null && Souls.resurrect(level, soul, 1, player);
 			endResurrect(player, s, done);
 			if (done) {
 				Effects.play(level, "mercy_resurrected", soul.at, player);

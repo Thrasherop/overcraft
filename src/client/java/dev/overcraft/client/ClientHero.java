@@ -159,6 +159,7 @@ public final class ClientHero {
 
 	public static void onDisconnect() {
 		EmoteCamera.stop(Minecraft.getInstance());
+		AbilityCamera.update(Minecraft.getInstance(), false);
 		sync = HeroSyncPayload.NONE;
 		heroModeLocal = null;
 		openSelectOnJoin = false;
@@ -188,6 +189,10 @@ public final class ClientHero {
 		} else {
 			EmoteCamera.stop(mc);
 		}
+		// Jetpack Cat towing an ally on Lifeline, or in Catnapper from its aim to the end of the carry: seen from behind
+		int mode = sync.mode();
+		AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
+			&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
 		if (view != chatHeroView) {

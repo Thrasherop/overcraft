@@ -151,9 +151,10 @@ public final class Souls {
 
 	/**
 	 * Brings the soul back where it fell with that share of its health. A mob is made again at once; a player is told
-	 * to respawn, and onRespawn puts them there. True when it worked.
+	 * to respawn, and onRespawn puts them there. A villager brought back by a player thanks them as one cured of being a
+	 * zombie does (the owner, #52: Minecraft's own cure event, the same discounts). True when it worked.
 	 */
-	public static boolean resurrect(ServerLevel level, Soul soul, float healthFraction) {
+	public static boolean resurrect(ServerLevel level, Soul soul, float healthFraction, @Nullable ServerPlayer by) {
 		SOULS.remove(soul.id);
 		if (soul.mob == null) {
 			if (!(soul.body instanceof ServerPlayer player) || !waiting(level.getServer(), soul)) {
@@ -181,6 +182,9 @@ public final class Souls {
 			return false;
 		}
 		comeBack(living);
+		if (by != null && living instanceof net.minecraft.world.entity.npc.villager.Villager villager) {
+			level.onReputationEvent(net.minecraft.world.entity.ai.village.ReputationEventType.ZOMBIE_VILLAGER_CURED, by, villager);
+		}
 		return true;
 	}
 

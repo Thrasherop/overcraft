@@ -30,3 +30,15 @@ Gradle, code edits and git on this checkout. Up: [Techniques](../README.md) · e
 - Use `git -c safe.directory=E:/claude/mods/overcraft` ("dubious ownership").
 - Commit messages go in from a file or a quoted heredoc (`git commit -F -`); PowerShell mangles quotes in a here-string.
 - Commit only after playing it in game; reference issues (`Fixes #N`).
+
+## Asset packs across worktrees (0.3.17's missing cat, 2026-10-28)
+- Each worktree has its own `local-assets/pack`. Merging code branches doesn't merge packs. 0.3.17 and 0.3.18 shipped
+  Jetpack Cat's colourless pre-fix models and none of her data pass's sounds (emotes, paw hits, voice lines): the pack
+  was assembled by copying one worktree's pack over another's, and the copy (robocopy's default, which also copies
+  OLDER files) put the old models back. The owner found it playing (#50).
+- Before zipping a release: compare the packs by content, take each file from the worktree that last exported it,
+  and rebuild what's generated from merged sources (`build_asset_pack.py sounds`, which rebuilds every hero's sounds
+  and sounds.json from tools/soundmaps). Then open the zip and check the files that changed (a model's colour textures,
+  the sound events' count).
+- And look at the result: a "the cat is visible" check that saw only eyes and a tongue in an empty jetpack passed
+  it. Look at the whole model, from every side, against the hero's portrait.

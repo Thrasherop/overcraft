@@ -59,3 +59,9 @@ For "the mod stays invisible" checks (#32):
 A "this landing is safe" flag cleared when the server first sees the player on the ground can be gone by the time
 Minecraft applies that fall's damage (it can come a tick later, from the move packets). Clear the fall distance while
 the flag is up rather than relying on the flag at the damage event (Mercy's landings: [heroes/mercy](../heroes/mercy.md)).
+
+## A ledge assist must also carry the hero over
+Lifting a hero who presses into a ledge in the air (OwMovement.ledge) isn't enough: the ledge's face has already
+zeroed the speed into it, so she falls back past the edge and is lifted again every tick, hanging there (#56). Lift,
+step her over the edge, and give back the speed the face took. Measured on a 1-block step: every running jump from
+0.05 s on gets over it.

@@ -54,8 +54,12 @@ public final class OwMovement {
 	public static final double TERMINAL_SPEED = 30;
 	/** Buffs add up to at most +75% (wiki). */
 	public static final double MAX_SPEED_BONUS = 0.75;
-	/** How far below a ledge's top the feet may be for the ledge assist to lift the hero onto it (m, ours). */
-	public static final double LEDGE_REACH = 0.3;
+	/**
+	 * How far below a ledge's top the feet may be for the ledge assist to lift the hero onto it (m, ours). 0.6 (it was
+	 * 0.3) so a running jump onto a 1-block step needn't be timed: the owner, #56, "fluid with minecraft's 1 meter
+	 * blocks". Measured on a 1-block step at 5.5 m/s: at 0.3 any jump from more than 1.6 m out left the hero at its foot.
+	 */
+	public static final double LEDGE_REACH = 0.6;
 
 	/**
 	 * A hero's mover (each hero's CharacterMover in the game data: tools/reference/movement.md): ground acceleration
@@ -318,8 +322,11 @@ public final class OwMovement {
 
 		entity.setDeltaMovement(horizontal.x, dy, horizontal.z);
 		entity.move(MoverType.SELF, entity.getDeltaMovement());
-		if (!entity.onGround() && entity.horizontalCollision && wish != Vec3.ZERO) {
-			ledge(entity, wish);
+		if (!entity.onGround() && entity.horizontalCollision && wish != Vec3.ZERO && ledge(entity, wish)) {
+			// up onto it: the speed the ledge's face took away comes back, and she stops falling (#56: lifted but stopped,
+			// she fell back past the edge and was lifted again every tick, hanging there until the key was let go)
+			entity.setDeltaMovement(end.x, Math.max(0, dy), end.z);
+			return;
 		}
 		Vec3 after = entity.getDeltaMovement();
 		// move() zeroes what a wall or the floor stopped (keep that); the speeds carried on are the last step's
@@ -330,21 +337,23 @@ public final class OwMovement {
 	/**
 	 * Ledge assist (ours): Overwatch's jump peaks at 0.98 m, just short of a Minecraft block, and Minecraft only steps up
 	 * 0.6 m on landing. In the air, pushing into a ledge whose top is at most {@link #LEDGE_REACH} above the feet lifts
-	 * the hero onto it, from any direction (running, strafing, backing up), as a 1-block step should allow.
+	 * the hero onto it, from any direction (running, strafing, backing up), as a 1-block step should allow, and over its
+	 * edge. True when it did.
 	 */
-	private static void ledge(LivingEntity entity, Vec3 wish) {
+	private static boolean ledge(LivingEntity entity, Vec3 wish) {
 		Vec3 push = wish.normalize().scale(0.1);
 		AABB box = entity.getBoundingBox();
 		if (entity.level().noCollision(entity, box.move(push.x, 0, push.z))) {
-			return; // brushing along a wall, not pushing into a ledge
+			return false; // brushing along a wall, not pushing into a ledge
 		}
 		for (double lift = 0.05; lift <= LEDGE_REACH + 1.0E-6; lift += 0.05) {
 			AABB raised = box.move(0, lift, 0);
 			if (entity.level().noCollision(entity, raised) && entity.level().noCollision(entity, raised.move(push.x, 0, push.z))) {
-				entity.setPos(entity.getX(), entity.getY() + lift, entity.getZ());
-				return;
+				entity.setPos(entity.getX() + push.x, entity.getY() + lift, entity.getZ() + push.z);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/**
