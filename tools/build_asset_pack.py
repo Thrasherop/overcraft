@@ -509,7 +509,10 @@ MIRRORED = {"cat_paw_marker"}
 # masks the game multiplies on one mesh, baked into one (the particle draws a single mask): <name>.png = the product of
 # the listed masks, each stretched over the same UVs. Lifeline's rings (7490, research\jetpack_cat\assets2.md): the
 # 299E3 noise times the 1C7A strip, which across the torus's tube (its V) lights the outer rim and fades top and bottom
-PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band")}
+PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
+            # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
+            "cat_tracer": ("cat_cloud", "cat_fade"),
+            "cat_trail_ribbon": ("cat_noise", "cat_fade")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
