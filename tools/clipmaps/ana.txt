@@ -209,3 +209,6 @@
 # 199B8, 1A147, 0-37_EF4D (L: intros or highlights), 4-0_8534, 8539, 4-32_D13D, 4-6_FCF.
 # Not in the extraction: the Heroic emote 3C3B (alias 0x45C, in the emote extract); the intro list 3CEC, 3C3C, 86ED, 4804,
 # 3C03, DFA1, EB6F, F69A; 42EA's 19EA5-1A129; 0EC0's BF7C / BF7D.
+# Hello's wave (research\hello_gesture\hello_gesture.md): the callout graph 0686 runs graph 0341, whose StateAnim #31
+# plays alias 0x1EE over the upper body (0x2DE, its additive twin 3D94, beside it: not used)
+0-36_000000003D93 = hello   # 1.0 s (H)

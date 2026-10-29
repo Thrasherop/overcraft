@@ -64,3 +64,5 @@
 # 4-20_3B43 / 3B44 / 3B45); 0x0C8 (02C5 #63) 4-4_C4F + 4-4_73-76 / E9-EC / F2-F5, 4-6_F6; 0x467 (02C5 #282) 4-4_3B8B
 # (2.67 s); 0x1EE 0-36_3D88; 0x2DE 4-4_3B9F; 0x033 0-4_4B2; 0x726 4-4_8498; 0x6D1 0-36_8A22; 0x6D2 0-36_8A23; another hero
 # entity's (66FA) 0x165 0-32_1C59 > 4-0_1C58; in none of her sets, 4-28_395B.
+# Hello's wave: the 1P set binds the same alias 0x1EE (research\hello_gesture: M that it plays)
+0-36_000000003D88 = hello

@@ -164,10 +164,12 @@ public final class HeroWeapon {
 		if (beam != null && a.mercyBeam() != 0) {
 			Skeleton.addAdditive(beam, now % Math.max(beam.duration(), 1.0E-3f), pose, 1);
 		}
-		if (staff) {
+		int root = model.node("bone_0001");
+		if (staff || root >= 0 && bakedRoot(model, root)) {
 			// the staff's clips key its root (bone_0001) at a bake from her first-person rig (84A's equals her 1P Weapon_R
-			// to the mm): not applied, the root stays on her Weapon_R (research\mercy\weapon_attach.md, the contacts)
-			int root = model.node("bone_0001");
+			// to the mm): not applied, the root stays on her Weapon_R (research\mercy\weapon_attach.md, the contacts).
+			// Ana's rifle the same: its idle 3C59 keys the root 1.44 m up, as if from her feet, while her own clips already
+			// carry its hardpoint (00C9 = bone_0606) to her hands; applied, it hung 1.4 m over her head (found playing)
 			if (root >= 0) {
 				Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
 				pose.t[root].set(rest.t[root]);
@@ -176,6 +178,18 @@ public final class HeroWeapon {
 			}
 		}
 		return pose;
+	}
+
+	/** The weapon's idle carries its root half a metre or more from rest: keyed in the hero's space, not the hardpoint's. */
+	private static boolean bakedRoot(SkinnedModel model, int root) {
+		SkinnedModel.Clip idle = model.clips.get("idle");
+		if (idle == null) {
+			return false;
+		}
+		Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		Skeleton.sample(idle, 0, at);
+		return at.t[root].distance(rest.t[root]) >= 0.5f;
 	}
 
 	private static void add(SkinnedModel model, Skeleton.Pose pose, String name, float t) {
