@@ -1,0 +1,263 @@
+settings
+{
+	main
+	{
+		Description: "Overcraft: Jetpack Cat flight recorder. Logs every tick of every player (Workshop Inspector), each line tagged with the player's slot (S0, S1...). Interact (F) marks a moment."
+	}
+
+	modes
+	{
+		Skirmish
+
+		General
+		{
+			Hero Limit: Off
+			Respawn Time Scalar: 0%
+		}
+	}
+}
+
+variables
+{
+	player:
+		0: tick
+		1: lastEvent
+		2: marks
+		3: boostTime
+		4: boostCount
+		5: startPos
+}
+
+rule("Jetpack Cat only")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	actions
+	{
+		Start Forcing Player To Be Hero(Event Player, Hero(Jetpack Cat));
+		Enable Inspector Recording;
+		Event Player.lastEvent = Custom String("ready");
+		Event Player.marks = 0;
+		Event Player.boostCount = 0;
+	}
+}
+
+rule("Live readout (your slot number is S, at the top)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+	}
+
+	actions
+	{
+		Create HUD Text(Event Player, Custom String("S{0}  t {1}  {2}", Slot Of(Event Player), Round To Integer(Total Time Elapsed * 100,
+			Down) / 100, Custom String("ground {0}  air {1}", Is On Ground(Event Player), Is In Air(Event Player))), Null, Null, Left, 0,
+			Color(White), Color(White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("h {0}  v {1}  speed {2}", Round To Integer(Horizontal Speed Of(Event Player) * 100,
+			Down) / 100, Round To Integer(Vertical Speed Of(Event Player) * 100, Down) / 100, Round To Integer(Speed Of(Event Player)
+			* 100, Down) / 100), Null, Null, Left, 1, Color(Yellow), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("vel {0}  alt {1}", Velocity Of(Event Player), Round To Integer(Altitude Of(
+			Event Player) * 100, Down) / 100), Null, Null, Left, 2, Color(Yellow), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("input {0}  pitch {1}  {2}", Throttle Of(Event Player), Round To Integer(
+			Vertical Facing Angle Of(Event Player), To Nearest), Custom String("jump {0}  crouch {1}", Is Button Held(Event Player,
+			Button(Jump)), Is Button Held(Event Player, Button(Crouch)))), Null, Null, Left, 3, Color(Sky Blue), Color(White), Color(
+			White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("boost {0}  energy {1}  {2}", Is Button Held(Event Player, Button(Secondary Fire)),
+			Ability Resource(Event Player, Button(Secondary Fire)), Custom String("lifeline {0}  ult {1}  marks {2}", Is Using Ability 1(
+			Event Player), Is Using Ultimate(Event Player), Event Player.marks)), Null, Null, Left, 4, Color(Green), Color(White),
+			Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Event Player.lastEvent, Null, Null, Left, 5, Color(Orange), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+	}
+}
+
+rule("Every tick: four log lines")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+		Is Alive(Event Player) == True;
+	}
+
+	actions
+	{
+		Event Player.tick = Event Player.tick + 1;
+		"S slot | T time | ground air | altitude"
+		Log To Inspector(Custom String("S{0} T {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String("{0} {1} | alt {2}",
+			Is On Ground(Event Player), Is In Air(Event Player), Altitude Of(Event Player))));
+		"S slot | P position | V velocity | I move input"
+		Log To Inspector(Custom String("S{0} P {1} | {2}", Slot Of(Event Player), Position Of(Event Player), Custom String("V {0} | I {1}",
+			Velocity Of(Event Player), Throttle Of(Event Player))));
+		"S slot | B jump crouch | F facing (the look, pitch included)"
+		Log To Inspector(Custom String("S{0} B {1} | F {2}", Slot Of(Event Player), Custom String("{0} {1}", Is Button Held(Event Player,
+			Button(Jump)), Is Button Held(Event Player, Button(Crouch))), Facing Direction Of(Event Player)));
+		"S slot | A primary, secondary (Frenetic Flight) held, its energy | using ability 1 (Lifeline), ability 2 (Purr), ultimate"
+		Log To Inspector(Custom String("S{0} A {1} | {2}", Slot Of(Event Player), Custom String("{0} {1} | E {2}", Is Button Held(
+			Event Player, Button(Primary Fire)), Is Button Held(Event Player, Button(Secondary Fire)), Ability Resource(Event Player,
+			Button(Secondary Fire))), Custom String("U {0} {1} {2}", Is Using Ability 1(Event Player), Is Using Ability 2(Event Player),
+			Is Using Ultimate(Event Player))));
+		Wait(0.016, Ignore Condition);
+		Loop If Condition Is True;
+	}
+}
+
+rule("Frenetic Flight held: a bookmark")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Secondary Fire)) == True;
+	}
+
+	actions
+	{
+		Event Player.boostCount = Event Player.boostCount + 1;
+		Event Player.boostTime = Total Time Elapsed;
+		Event Player.startPos = Position Of(Event Player);
+		Event Player.lastEvent = Custom String("BOOST {0} | speed {1}", Event Player.boostCount, Speed Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT BOOST {1} | {2}", Slot Of(Event Player), Event Player.boostCount, Custom String(
+			"t {0} | vel {1} | energy {2}", Total Time Elapsed, Velocity Of(Event Player), Ability Resource(Event Player, Button(
+			Secondary Fire)))));
+	}
+}
+
+rule("Frenetic Flight let go: a bookmark")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Secondary Fire)) == False;
+		Event Player.boostTime > 0;
+	}
+
+	actions
+	{
+		Event Player.lastEvent = Custom String("BOOST END after {0} s | speed {1}", Round To Integer((Total Time Elapsed
+			- Event Player.boostTime) * 100, Down) / 100, Speed Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT BOOST END {1} | {2}", Slot Of(Event Player), Event Player.boostCount, Custom String(
+			"t {0} | held {1} s | {2}", Total Time Elapsed, Total Time Elapsed - Event Player.boostTime, Custom String(
+			"vel {0} | moved {1} | energy {2}", Velocity Of(Event Player), Distance Between(Position Of(Event Player),
+			Event Player.startPos), Ability Resource(Event Player, Button(Secondary Fire))))));
+		Event Player.boostTime = 0;
+	}
+}
+
+rule("Lifeline: a bookmark when it starts and ends")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Ability 1)) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT LIFELINE PRESS | t {1} | using {2}", Slot Of(Event Player), Total Time Elapsed,
+			Is Using Ability 1(Event Player)));
+	}
+}
+
+rule("Catnapper: a bookmark")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ultimate(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT ULT | t {1} | pos {2}", Slot Of(Event Player), Total Time Elapsed, Position Of(
+			Event Player)));
+	}
+}
+
+rule("Landing")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Ground(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT LAND | t {1} | vel {2}", Slot Of(Event Player), Total Time Elapsed, Velocity Of(
+			Event Player)));
+	}
+}
+
+rule("Interact marks a moment (say what you just did, and your S number, when you send the log)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Interact)) == True;
+	}
+
+	actions
+	{
+		Event Player.marks = Event Player.marks + 1;
+		Event Player.lastEvent = Custom String("MARK {0}", Event Player.marks);
+		Log To Inspector(Custom String("S{0} EVENT MARK {1} | t {2}", Slot Of(Event Player), Event Player.marks, Total Time Elapsed));
+		Wait(0.25, Ignore Condition);
+	}
+}

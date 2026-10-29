@@ -56,3 +56,28 @@ ability 1 / ability 2 (Amp It Up) / ultimate, and how many times Crossfade has b
 started on**: the Workshop can't read the song, so it's worked out from that and the Crossfade count (also bookmarked:
 `EVENT CROSSFADE`, `EVENT AMP`, `EVENT ULT`). Bookmark lines (`S0 EVENT ATTACH`, `LEAVE`, `LAND`, `MARK` and the abilities') mark each ride's start and end; they
 never wait, so a quick jump from wall to wall still gets its own pair.
+
+## jetpack_cat_flight_recorder.txt: Jetpack Cat's flight, tick by tick (#60)
+
+The owner, playing 0.3.18: "Movement is a little bit funky ... you should probably make a script to dial things in."
+Her mover's numbers are in the data, but how the engine flies them (her up and down speed, the boost's real top speed,
+how she slows) isn't. Set up the same way as the Lúcio script (paste, log file option on, host if playing together;
+every line is tagged with the slot, S0, S1...). It forces Jetpack Cat.
+
+### What to fly
+Each a few times, pressing **Interact (F)** after one you want me to look at:
+- Hover still for 2 s, then hold W for 2 s and let go (her top speed, how fast she gets there, how fast she stops).
+  The same with S, A, D, and W looking 45 degrees up and 45 degrees down.
+- Hold Space for 2 s, then Ctrl for 2 s (her up and down speed), from a hover; and Space + W together.
+- Frenetic Flight (right button) from a hover, held until the energy runs out; held 0.3 s; held 1 s then let go with W
+  still held, and with nothing held (the speed after the boost).
+- A turn: full speed one way, then hold the opposite key (how she brakes and turns).
+- Lifeline on an ally (if someone joins) and Catnapper, once each.
+
+### What the log has
+Four lines per player per tick: `S0 T` time, on ground / in air, altitude; `S0 P` position, velocity, move input;
+`S0 B` jump and crouch held, facing (the look, pitch included); `S0 A` primary and secondary (Frenetic Flight) held,
+the boost's energy (`Ability Resource` of the secondary: if it shows 0 all the time, say so), and Lifeline / Purr /
+Catnapper in use. Bookmarks: `EVENT BOOST` / `BOOST END` (with how long it was held, the distance and the energy left),
+`LIFELINE PRESS`, `ULT`, `LAND`, `MARK`. Send the newest file from `Documents\Overwatch\Workshop\` once Overwatch is
+closed.
