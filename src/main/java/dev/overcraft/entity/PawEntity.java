@@ -6,6 +6,9 @@ import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.jetpackcat.JetpackCatStats;
 import dev.overcraft.registry.OcEntities;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +38,12 @@ public class PawEntity extends OwProjectile {
 	/** The same for the hit sound. */
 	private static final java.util.Map<Integer, Long> HIT_SOUNDED = new java.util.HashMap<>();
 
+	/**
+	 * The centre shot, synced: a plain field stayed false on the clients, so the centre shot always looked like a paw
+	 * shot there (its core, trails and muzzle rings: found playing, 0.3.20).
+	 */
+	private static final EntityDataAccessor<Boolean> CENTRE = SynchedEntityData.defineId(PawEntity.class, EntityDataSerializers.BOOLEAN);
+
 	private double amount = JetpackCatStats.PAW_DAMAGE;
 	private boolean centre;
 
@@ -46,6 +55,13 @@ public class PawEntity extends OwProjectile {
 		super(OcEntities.PAW, owner, level, new ItemStack(Items.SNOWBALL));
 		this.centre = centre;
 		this.amount = centre ? JetpackCatStats.CENTRE_DAMAGE : JetpackCatStats.PAW_DAMAGE;
+		entityData.set(CENTRE, centre);
+	}
+
+	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(CENTRE, false);
 	}
 
 	/** Against enemies: paw 0.195 m, centre 0.37 m (her data); the box is the centre's. */
@@ -91,7 +107,7 @@ public class PawEntity extends OwProjectile {
 	}
 
 	public boolean centre() {
-		return centre;
+		return centre || entityData.get(CENTRE);
 	}
 
 	@Override

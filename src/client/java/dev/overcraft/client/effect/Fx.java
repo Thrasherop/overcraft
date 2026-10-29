@@ -78,7 +78,10 @@ public final class Fx {
 		float axisX, axisY = 1, axisZ;
 		/** A mesh's triangles: x, y, z, u, v per corner, in metres at size 1 (see Fx.Mesh). */
 		float @Nullable [] mesh;
-		float sideX = 1, sideZ;
+		float sideX = 1, sideY, sideZ;
+		/** A mesh's Y axis (straight up unless tilted), and whether its bottom fades out (fadeBase). */
+		float upX, upY = 1, upZ;
+		boolean baseFade;
 		/** An arc's orientation (its cylinder axis is this turn of +Y) and how much of the circle it covers (radians). */
 		@Nullable Quaternionf arcTurn;
 		float arcSpan;
@@ -160,6 +163,34 @@ public final class Fx {
 			Vec3 s = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : new Vec3(side.x, 0, side.z).normalize();
 			sideX = (float) s.x;
 			sideZ = (float) s.z;
+			return this;
+		}
+
+		/**
+		 * Draws this mesh tilted: its Y axis along up, its X axis along side (made square to up). The mesh stands on its
+		 * Y = 0, so the point it's at is its base along up.
+		 */
+		public Particle mesh(float[] triangles, Vec3 side, Vec3 up) {
+			shape = Shape.MESH;
+			mesh = triangles;
+			Vec3 u = up.lengthSqr() < 1.0E-6 ? new Vec3(0, 1, 0) : up.normalize();
+			Vec3 s = side.subtract(u.scale(side.dot(u)));
+			if (s.lengthSqr() < 1.0E-6) {
+				s = Math.abs(u.y) < 0.9 ? new Vec3(0, 1, 0).cross(u) : new Vec3(1, 0, 0).cross(u);
+			}
+			s = s.normalize();
+			upX = (float) u.x;
+			upY = (float) u.y;
+			upZ = (float) u.z;
+			sideX = (float) s.x;
+			sideY = (float) s.y;
+			sideZ = (float) s.z;
+			return this;
+		}
+
+		/** Fades the mesh's bottom out over MESH_BASE_FADE: open tubes (the torii's posts) otherwise end in rings. */
+		public Particle fadeBase() {
+			baseFade = true;
 			return this;
 		}
 
@@ -735,9 +766,10 @@ public final class Fx {
 		float s = p.size();
 		float alpha = (color >>> 24) / 255f;
 		int rgb = color & 0xFFFFFF;
-		// X along side, Y up, Z along side x up
-		float fx = -p.sideZ;
-		float fz = p.sideX;
+		// X along side, Y along up, Z along side x up
+		float fx = p.sideY * p.upZ - p.sideZ * p.upY;
+		float fy = p.sideZ * p.upX - p.sideX * p.upZ;
+		float fz = p.sideX * p.upY - p.sideY * p.upX;
 		float[] corners = new float[9];
 		for (int i = 0; i + 14 < m.length; i += 15) {
 			for (int k = 0; k < 3; k++) {
@@ -745,9 +777,9 @@ public final class Fx {
 				float x = m[c] * s;
 				float y = m[c + 1] * s;
 				float z = m[c + 2] * s;
-				corners[k * 3] = cx + x * p.sideX + z * fx;
-				corners[k * 3 + 1] = cy + y;
-				corners[k * 3 + 2] = cz + x * p.sideZ + z * fz;
+				corners[k * 3] = cx + x * p.sideX + y * p.upX + z * fx;
+				corners[k * 3 + 1] = cy + x * p.sideY + y * p.upY + z * fy;
+				corners[k * 3 + 2] = cz + x * p.sideZ + y * p.upZ + z * fz;
 			}
 			int faceRgb = rgb;
 			float faceAlpha = alpha;
@@ -772,7 +804,7 @@ public final class Fx {
 				float y = m[i + c * 5 + 1] * s;
 				float d = (float) Math.sqrt(vx * vx + vy * vy + vz * vz);
 				// and over its bottom MESH_BASE_FADE: the gate's posts are open tubes, their ends showed as rings
-				float base = Math.clamp(y / MESH_BASE_FADE, 0, 1);
+				float base = p.baseFade ? Math.clamp(y / MESH_BASE_FADE, 0, 1) : 1;
 				int corner = argb(faceRgb, faceAlpha * base * Math.clamp((d - MESH_NEAR) / MESH_FADE, 0, 1));
 				vertex(pose, buffer, vx, vy, vz, m[i + c * 5 + 3], m[i + c * 5 + 4], corner);
 			}

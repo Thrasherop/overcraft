@@ -524,7 +524,7 @@ public final class KirikoFx {
 			// translucent and white-cyan as the game's (look 12FF1 is white through a ramp): faint pale faces and cyan
 			// edges, not one flat clipped cyan (the fourth critique). An enemy's is blended (added, red washed out pink),
 			// so stronger: at the same strength it all but vanished (the sixth critique)
-			Fx.add(gate.at(base).mesh(torii, side).tint(enemy ? 0xF2B4B0 : 0xCFF6F6).rim(enemy ? 0xE8302C : 0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
+			Fx.add(gate.at(base).mesh(torii, side).fadeBase().tint(enemy ? 0xF2B4B0 : 0xCFF6F6).rim(enemy ? 0xE8302C : 0x2FD8E0).size(width * 0.6f, width).easeOut().life(life)
 				.alpha(enemy ? 0.9f : 0.55f).fade(0.04f, 0.08f));
 			// no flash as it rises: a glow there read as a sun hanging in each gate, brighter than the fox (the second and
 			// seventh critiques)

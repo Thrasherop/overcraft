@@ -491,7 +491,7 @@ public final class JetpackCat implements HeroKit {
 		s.purrTicks = 0;
 		Combat.animate(player, "purr");
 		ServerLevel level = player.level();
-		Effects.play(level, "purr", player.position(), player);
+		Effects.play(level, "purr", player.position(), Vec3.ZERO, player, player.getId(), player);
 		HeroSounds.toOwner(player, OcSounds.JC_PURR_CAST);
 		Voice.say(player, "purr", 1);
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)

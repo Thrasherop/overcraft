@@ -123,6 +123,9 @@ public final class HeroHud {
 	private static int ofudaSeen = -1;
 	private static long ofudaRefilledAt = -1;
 	private static long ultStartedAt = -1;
+	/** Lúcio's song as the indicator last showed it, and when it changed (the circles slide over SONG_SLIDE). */
+	private static boolean songSpeedShown;
+	private static long songChangedAt = -1;
 	private static long stepCastAt = -1;
 	/** The perk level last seen, for the level-up chime (0 before the first sync with a hero). */
 	private static int perkLevelSeen;
@@ -190,6 +193,8 @@ public final class HeroHud {
 			swiftStepTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		} else if (hero == Hero.MERCY) {
 			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
+		} else if (hero == Hero.LUCIO && firstPerson) {
+			songIndicator(g, s, w / 2, h / 2 + SONG_BELOW);
 		}
 		lifelinePrompt(g, player, w, h);
 		if (ClientHero.perkMenuOpen()) {
@@ -1114,6 +1119,107 @@ public final class HeroHud {
 			fill(g, cx + gap - o, cy - t / 2 - o, len + 2 * o, t + 2 * o, color);
 		}
 	}
+
+	/**
+	 * Lúcio's song under the crosshair (#61; the layout is ours, measured at 1920 x 1080 from the owner's screenshots of
+	 * the live game, 2026-10-28: the game's own isn't in the data): a circle each side, the heal song's plus on the left,
+	 * the speed song's chevrons on the right (cut from his ability icons, HeroArt.songGlyph). The song playing is a
+	 * white disc in its colour, 200 px out, a wave running from it in toward the centre; the other a dim ring 106 px out
+	 * with a short straight line in; both lines end in a dot 35 px from the centre. Amp It Up adds a dashed arc round the
+	 * outer side of the lit one. Crossfading slides them over SONG_SLIDE.
+	 */
+	private static void songIndicator(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, float cy) {
+		boolean speed = s.mode() == 1;
+		if (speed != songSpeedShown) {
+			songSpeedShown = speed;
+			songChangedAt = Util.getMillis();
+		}
+		float t = Math.clamp(since(songChangedAt) / SONG_SLIDE, 0, 1);
+		float ease = t * t * (3 - 2 * t);
+		boolean amped = s.activeLeft() > 0;
+		for (int side = -1; side <= 1; side += 2) {
+			boolean isSpeed = side > 0;
+			boolean on = isSpeed == speed;
+			float out = on ? Mth.lerp(ease, SONG_NEAR, SONG_FAR) : Mth.lerp(ease, SONG_FAR, SONG_NEAR);
+			float x = cx + side * out;
+			int colour = isSpeed ? SONG_SPEED : SONG_HEAL;
+			int dim = isSpeed ? SONG_SPEED_DIM : SONG_HEAL_DIM;
+			float edge = x - side * SONG_RADIUS;
+			float dotX = cx + side * SONG_DOT;
+			if (on) {
+				songWave(g, edge, dotX, cy, colour);
+			} else {
+				// 2 px and brighter than the ring: at 1.5 px and the ring's alpha it vanished at small windows (found playing)
+				fill(g, Math.min(edge, dotX), cy - 1, Math.abs(edge - dotX), 2, dim | 0xCC000000);
+			}
+			image(g, HudShapes.DISC, dotX - 3, cy - 3, 6, 6, on ? colour : dim);
+			float r = SONG_RADIUS;
+			if (on) {
+				image(g, HudShapes.GLOW, x - r * 1.6f, cy - r * 1.6f, r * 3.2f, r * 3.2f, alpha(colour, 0.55f));
+				image(g, HudShapes.DISC, x - r, cy - r, r * 2, r * 2, 0xFFF4F4F4);
+				image(g, HudShapes.RING, x - r - 1, cy - r - 1, r * 2 + 2, r * 2 + 2, colour);
+				if (amped) {
+					songAmpArc(g, x, cy, side, colour);
+				}
+			} else {
+				image(g, HudShapes.DISC, x - r, cy - r, r * 2, r * 2, 0x33101418);
+				image(g, HudShapes.RING_THIN, x - r, cy - r, r * 2, r * 2, dim);
+			}
+			int glyphColour = on ? 0xFF33363C : 0xB4D2D4D8;
+			Identifier glyph = HeroArt.songGlyph(isSpeed);
+			if (glyph != null) {
+				image(g, glyph, x - r * 0.62f, cy - r * 0.62f, r * 1.24f, r * 1.24f, glyphColour);
+			} else if (isSpeed) {
+				image(g, HudShapes.CHEVRON_BOLD, x - 13, cy - 9, 18, 18, glyphColour);
+				image(g, HudShapes.CHEVRON_BOLD, x - 3, cy - 9, 18, 18, glyphColour);
+			} else {
+				fill(g, x - 3, cy - 11, 6, 22, glyphColour);
+				fill(g, x - 11, cy - 3, 22, 6, glyphColour);
+			}
+		}
+	}
+
+	/** The playing song's wave, from its circle in to the dot: three strands running inward, calmer near the centre. */
+	private static void songWave(GuiGraphicsExtractor g, float from, float to, float cy, int colour) {
+		float length = Math.abs(to - from);
+		float dir = Math.signum(to - from);
+		float time = Util.getMillis() / 1000f;
+		for (int strand = 0; strand < 3; strand++) {
+			float phase = strand * 2.1f;
+			float height = 3.5f + strand * 1.5f;
+			for (float d = 0; d <= length; d += 2) {
+				float u = d / length;
+				float y = cy + (float) Math.sin(d * 0.11f + time * 9 + phase) * height * (1 - u * 0.75f);
+				image(g, HudShapes.DISC, from + dir * d - 1.7f, y - 1.7f, 3.4f, 3.4f, alpha(colour, 0.9f - u * 0.4f));
+			}
+		}
+	}
+
+	/** Amp It Up round the playing song's circle: five dashes on its outer side. */
+	private static void songAmpArc(GuiGraphicsExtractor g, float x, float cy, int side, int colour) {
+		float r = SONG_RADIUS + 10;
+		double centre = side > 0 ? 0 : Math.PI;
+		for (int i = -2; i <= 2; i++) {
+			double a = centre + Math.toRadians(i * 22);
+			g.pose().pushMatrix();
+			g.pose().translate((float) (x + Math.cos(a) * r), (float) (cy + Math.sin(a) * r));
+			g.pose().rotate((float) (a + Math.PI / 2));
+			fill(g, -6, -1.5f, 12, 3, colour);
+			g.pose().popMatrix();
+		}
+	}
+
+	private static final float SONG_BELOW = 191;
+	private static final float SONG_NEAR = 106;
+	private static final float SONG_FAR = 200;
+	private static final float SONG_DOT = 35;
+	private static final float SONG_RADIUS = 30;
+	private static final float SONG_SLIDE = 0.2f;
+	/** Lúcio's songs: the heal song gold, the speed song green (as they read in the owner's screenshots), and dimmed. */
+	private static final int SONG_HEAL = 0xFFF5D226;
+	private static final int SONG_SPEED = 0xFF52E24A;
+	private static final int SONG_HEAL_DIM = 0x99B49B5C;
+	private static final int SONG_SPEED_DIM = 0x995E9C6A;
 
 	/**
 	 * The ofuda counter under the crosshair: five amber "/" bars, one per volley (two ofuda), spent ones from the right

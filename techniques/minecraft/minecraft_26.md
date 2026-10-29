@@ -54,6 +54,17 @@ is left alone. Mind which point the server aims from: still the eyes, so the cam
 
 26.3's window is SDL3 (`org.lwjgl.sdl.SDLVideo`, `Window.handle()`), not GLFW: LWJGL's GLFW isn't on the classpath.
 
+## What reaches the other clients (2026-10-29)
+- **A plain field on an entity stays on the server.** Jetpack Cat's centre shot kept "centre" in a field; every
+  client built it from the spawn packet as a paw shot, so its look never showed (since she was added). Anything a
+  client draws from goes in `SynchedEntityData` (`PawEntity.CENTRE`, as `OfudaEntity.TARGET`).
+- **A shot's velocity arrives a frame after the shot:** its first client frame has zero motion. Anything drawn on
+  that frame from the motion (a muzzle facing along the shot) needs another source (her aim).
+- **A state sent only as events misses whoever wasn't watching.** Jetpack Cat's Lifeline was announced on and off;
+  a player who joined, respawned or came into range never heard of it (no prompt, no rope). On Fabric's
+  `EntityTrackingEvents.START_TRACKING`, send that player the current state (`JetpackCat.showState`). It fires
+  before the entity's own packets; send ids, not looked-up entities.
+
 ## A plain vanilla server
 For "the mod stays invisible" checks (#32):
 1. Copy Loom's `~/.gradle/caches/fabric-loom/26.3/minecraft-server.jar` to a folder outside the repo.

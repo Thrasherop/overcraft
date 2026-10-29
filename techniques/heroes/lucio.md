@@ -71,6 +71,9 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
     "more forgiving", #57).
   - Confirmed: the wall speeds (8.53 boosted, 10.45 amped), 30 m/s² up to it, +2.5 m/s along the look, the 0.5 s
     cooldown, the 0.2 s late jump, the ground jump.
+  - Sound Barrier (2026-10-29): 1.07 m up, its top 0.34 s after the cast (ours had been 7.4 m/s, 1.6 m, fitted to the
+    cast clip's feet: a clip moves the model, not the hero), then Blizzard's 240% gravity from the cast's end
+    (0.656 s) until he lands: about 40 m/s² in the recording. Amp It Up: 3.18 s (0.2 cast + 3), 8.80 m/s running.
   - A move that sets a new velocity must also move him that tick: the air step after it starts from the velocity it
     read before (his wall jump fell straight down for days).
   - Test it on a course (a step, a long wall, an L, a pillar, two parallel walls) with positions polled: speeds and

@@ -24,6 +24,8 @@ public final class JetpackCatFx {
 	private static final Map<Integer, int[]> TETHERS = new HashMap<>();
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
 	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
+	/** Jetpack Cats in Purr: her id -> when it ends (client seconds), for her range wall (70F9). */
+	private static final Map<Integer, Float> PURRING = new HashMap<>();
 	/** Catnapper's aim rings still alive, and the ult phase last seen: a cancelled aim takes its rings with it. */
 	private static final java.util.List<Particle> AIM_RINGS = new java.util.ArrayList<>();
 	private static int aimPhase;
@@ -130,7 +132,12 @@ public final class JetpackCatFx {
 					allyHit(at);
 				}
 				case "paw_hit_block" -> wallHit(at, dir);
-				case "purr" -> purrCast(at);
+				case "purr" -> {
+					purrCast(at);
+					if (!enemy) {
+						PURRING.put(e.variant(), Fx.now() + (float) dev.overcraft.jetpackcat.JetpackCatStats.PURR_TIME);
+					}
+				}
 				case "purr_wave" -> purrPulse(at);
 				case "purr_heal" -> allyHit(at);
 				case "purr_hit" -> enemyHit(at, 1);
@@ -193,8 +200,9 @@ public final class JetpackCatFx {
 				Particle h = Fx.particle("cat_soft", blue(Palette.CAT_HALO));
 				return h == null ? null : h.life(0.2f).size(halo, halo).alpha(0.8f).nearFade(near).fade(0.02f, 0.5f);
 			});
-			Fx.trail(id, at, "cat_fade", gold(Palette.CAT_TRACER), centre ? 0.2f : 0.084f, centre ? 0.1f : 0.07f, 0.9f);
-			Fx.trail(-id - 1, at, "cat_fade", blue(Palette.CAT_RIBBON), centre ? 0.35f : 0.15f, 0.12f, 0.5f);
+			// the data's mask pairs, baked (build_asset_pack PRODUCTS): the tracer 18E48 x 7A9, the ribbon 299E1 x 7A9
+			Fx.trail(id, at, "cat_tracer", gold(Palette.CAT_TRACER), centre ? 0.2f : 0.084f, centre ? 0.1f : 0.07f, 0.9f);
+			Fx.trail(-id - 1, at, "cat_trail_ribbon", blue(Palette.CAT_RIBBON), centre ? 0.35f : 0.15f, 0.12f, 0.5f);
 			Fx.trailNearFade(id, near + 0.5f);
 			Fx.trailNearFade(-id - 1, near + 0.5f);
 			int sparks = (int) (20 * Fx.since(id) + Fx.RANDOM.nextFloat());
@@ -209,7 +217,10 @@ public final class JetpackCatFx {
 			// her own shots start at her eyes in first person, not at the view model's paw: a flare there covered the
 			// whole view (found playing)
 			if (first && !ownView) {
-				muzzle(paw(owner, at), velocity, centre);
+				// a shot's velocity reaches the client a frame late: on its first frame it's still zero, and the centre
+				// shot's rings never showed (found playing); her aim is the shot's way then
+				Vec3 way = velocity.lengthSqr() > 1.0E-6 || owner == null ? velocity : owner.getLookAngle();
+				muzzle(paw(owner, at), way, centre);
 			}
 			return true;
 		} finally {
@@ -240,12 +251,20 @@ public final class JetpackCatFx {
 			return;
 		}
 		Vec3 axis = velocity.normalize();
-		float[][] rings = {{1.0f, 0}, {1.3f, 1}};
+		// two fat tori (15A26) at the data's sizes 0.4 and 0.5 (1.38 and 1.73 m across), facing along the shot, centred
+		// 0.25 m ahead (ours: grown from 60%)
+		float[] torus = Fx.mesh("cat_torus");
+		if (torus == null) {
+			return;
+		}
+		float[][] rings = {{1.38f, 0}, {1.73f, 1}};
 		for (float[] ring : rings) {
-			Particle r = Fx.particle("cat_ring", ring[1] == 0 ? gold(Palette.CAT_CORE) : blue(Palette.CAT_HALO));
+			Particle r = Fx.particle("cat_band", ring[1] == 0 ? gold(Palette.CAT_CORE) : blue(Palette.CAT_HALO));
 			if (r != null) {
-				Fx.add(r.at(at.add(axis.scale(0.25))).shape(Shape.FLAT).normal(axis).life(0.3f).size(ring[0] * 0.6f, ring[0])
-					.easeOut().nearFade(1).fade(0.02f, 0.6f));
+				// the torus stands on its base: back half its thickness (0.245 of its width) to centre it
+				Vec3 mid = at.add(axis.scale(0.25 - 0.1225 * ring[0]));
+				Fx.add(r.at(mid).mesh(torus, new Vec3(axis.z, 0, -axis.x), axis).life(0.3f).size(ring[0] * 0.6f, ring[0])
+					.easeOut().fade(0.02f, 0.6f));
 			}
 		}
 	}
@@ -368,13 +387,25 @@ public final class JetpackCatFx {
 	 */
 	private static void purrCast(Vec3 feet) {
 		Vec3 centre = feet.subtract(0, 1.45, 0);
-		Particle range = Fx.particle("cat_noise", blue(Palette.CAT_PURR_BLUE));
-		if (range != null) {
-			Fx.add(range.at(centre).shape(Shape.DOME).life(0.45f).size(4, 19.8f).alpha(0.35f).easeOut().fade(0.02f, 0.7f));
-		}
-		Particle shock = Fx.particle("cat_noise", blue(Palette.CAT_FLASH_BLUE));
-		if (shock != null) {
-			Fx.add(shock.at(centre).shape(Shape.DOME).life(0.45f).size(3, 16.6f).alpha(0.25f).easeOut().fade(0.02f, 0.7f));
+		// her spheres (1385) at 20.0 and 16.6 (19.6 and 16.3 m across), rim-lit noise (19167); without the mesh, the dome
+		float[] sphere = Fx.mesh("cat_sphere");
+		// (alpha: ours, halved from the dome's: she's always inside the spheres, and at the dome's the whole view went
+		// cyan)
+		float[][] shells = {{19.6f, 0.18f, 4, 0}, {16.3f, 0.12f, 3, 1}};
+		for (float[] shell : shells) {
+			Particle p = Fx.particle(sphere != null ? "cat_glow_noise" : "cat_noise",
+				blue(shell[3] == 0 ? Palette.CAT_PURR_BLUE : Palette.CAT_FLASH_BLUE));
+			if (p == null) {
+				continue;
+			}
+			if (sphere != null) {
+				// standing on its base: down by half its height to centre it
+				Fx.add(p.at(centre.subtract(0, shell[0] * 0.51, 0)).mesh(sphere, new Vec3(1, 0, 0)).life(0.45f)
+					.size(shell[2], shell[0]).alpha(shell[1]).easeOut().fade(0.02f, 0.7f));
+			} else {
+				Fx.add(p.at(centre).shape(Shape.DOME).life(0.45f).size(shell[2], shell[0]).alpha(shell[1]).easeOut()
+					.fade(0.02f, 0.7f));
+			}
 		}
 		Particle body = Fx.particle("cat_soft", blue(Palette.CAT_PURR_BLUE));
 		if (body != null) {
@@ -400,13 +431,22 @@ public final class JetpackCatFx {
 		if (flash != null) {
 			Fx.add(flash.at(feet.add(0, 0.6, 0)).life(0.6f).size(1, 0.6f).alpha(0.7f).nearFade(1.5f).fade(0.02f, 0.7f));
 		}
-		Particle small = Fx.particle("cat_ring", gold(Palette.CAT_PURR_GOLD));
-		if (small != null) {
-			Fx.add(small.at(middle).shape(Shape.FLAT).normal(UP).life(0.3f).size(1.6f, 2.2f).easeOut().fade(0.01f, 0.6f));
-		}
-		Particle big = Fx.particle("cat_ring", blue(Palette.CAT_PURR_RING));
-		if (big != null) {
-			Fx.add(big.at(middle).shape(Shape.FLAT).normal(UP).life(0.33f).size(2, 12.8f).easeOut().fade(0.01f, 0.6f));
+		// her rings (torus 1BD54, stored standing like a wheel: laid flat) at the data's 1.6 and 9 (2.3 and 12.8 m across)
+		float[] torus = Fx.mesh("cat_purr_torus");
+		float[][] rings = {{1.6f, 2.27f, 0.3f, 0}, {2, 12.8f, 0.33f, 1}};
+		for (float[] ring : rings) {
+			Particle p = Fx.particle("cat_ring", ring[3] == 0 ? gold(Palette.CAT_PURR_GOLD) : blue(Palette.CAT_PURR_RING));
+			if (p == null) {
+				continue;
+			}
+			if (torus != null) {
+				// its axis (Z) up: Y along -Z of the world; centred by going back half its size along that
+				Vec3 tilt = new Vec3(0, 0, -1);
+				Fx.add(p.at(middle.subtract(tilt.scale(ring[1] / 2))).mesh(torus, new Vec3(1, 0, 0), tilt).life(ring[2])
+					.size(ring[0], ring[1]).easeOut().fade(0.01f, 0.6f));
+			} else {
+				Fx.add(p.at(middle).shape(Shape.FLAT).normal(UP).life(ring[2]).size(ring[0], ring[1]).easeOut().fade(0.01f, 0.6f));
+			}
 		}
 	}
 
@@ -448,11 +488,13 @@ public final class JetpackCatFx {
 			enemy = t.getValue()[1] == 1;
 			try {
 				rope(t.getKey(), armTip(cat), hook(towed), t.getValue()[2] == 1);
+				hookGlow(t.getKey(), towed);
 			} finally {
 				enemy = false;
 			}
 		}
 		seekers(level);
+		purrWalls(level);
 		boostTrails(level);
 	}
 
@@ -492,6 +534,83 @@ public final class JetpackCatFx {
 		}
 		ball("rope/end_a/" + id, from);
 		ball("rope/end_b/" + id, to);
+	}
+
+	/**
+	 * At the hook over the one she tows or carries (71B1, held on the hook at its origin 0282): a cone (1B972, size 1.48:
+	 * 0.36 m) turned over (pointing up) 0.36 m below it (the data's 3 a second for 1 s, as one held), and cyan bubbles (DBF) rising 1.6-1.8 m/s from about
+	 * their middle, 5 a second for 0.8 s (ours: the data's 0.88 m bubbles as 0.25 m soft glows); and around them
+	 * two half-ring bands (7454: 14874, 2 m), cyan to white.
+	 */
+	private static void hookGlow(int catId, net.minecraft.world.entity.Entity towed) {
+		Vec3 hook = hook(towed);
+		float[] cone = Fx.mesh("cat_cone");
+		if (cone != null) {
+			// held on the hook (spawned free, they were left behind as she towed: found playing); the cone is stored
+			// pointing down and turned over, so it points up at the hook from under it
+			Particle c = Fx.attach("hook_cone/" + catId, hook.subtract(0, 0.36, 0), () -> {
+				Particle p = Fx.particle("cat_cone_noise", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HOOK);
+				return p == null ? null : p.mesh(cone, new Vec3(1, 0, 0), new Vec3(0, -1, 0)).life(0.3f).size(0.36f, 0.36f)
+					.alpha(0.8f).fade(0.1f, 0.5f);
+			});
+			if (c != null) {
+				c.at(hook.subtract(0, 0.36, 0));
+			}
+		}
+		if (Fx.RANDOM.nextFloat() < 5 / 20f) {
+			Particle b = Fx.particle("cat_soft", blue(enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HALO));
+			if (b != null) {
+				Vec3 from = towed.position().add(randomUnit().multiply(0.4, 0, 0.4)).add(0, towed.getBbHeight() * 0.4, 0);
+				Fx.add(b.at(from).velocity(new Vec3(0, range(1.6f, 1.8f), 0)).life(0.8f).size(0.25f, 0.1f).alpha(0.6f)
+					.nearFade(1).fade(0.1f, 0.6f));
+			}
+		}
+		float[] arc = Fx.mesh("cat_half_ring");
+		if (arc != null) {
+			for (int i = 0; i < 2; i++) {
+				int side = i;
+				Particle a = Fx.attach("hook_arc/" + catId + "/" + i, towed.position(), () -> {
+					Particle p = Fx.particle("cat_band", blue(enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HALO));
+					return p == null ? null : p.mesh(arc, side == 0 ? new Vec3(1, 0, 0) : new Vec3(0, 0, 1)).life(0.35f)
+						.size(2, 2).alpha(0.6f).fade(0.05f, 0.5f);
+				});
+				if (a != null) {
+					a.at(towed.position());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Purr's range (70F9), held on her while it lasts, seen by her side: an open cylinder (19181) at size 20, 9.8 m out
+	 * and 20 m tall, centred 6 m below her, gold to white, lit by the 1C7A strip up its height. (The game hides it with
+	 * a hero setting, "Hide Purr Range Ring": not yet here.)
+	 */
+	private static void purrWalls(net.minecraft.client.multiplayer.ClientLevel level) {
+		float now = Fx.now();
+		java.util.Iterator<Map.Entry<Integer, Float>> it = PURRING.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Integer, Float> e = it.next();
+			net.minecraft.world.entity.Entity cat = level.getEntity(e.getKey());
+			if (cat == null || !cat.isAlive() || now > e.getValue()) {
+				it.remove();
+				continue;
+			}
+			float[] wall = Fx.mesh("cat_purr_wall");
+			if (wall == null) {
+				continue;
+			}
+			// standing on its base: 6 m below her, then half its 20 m height further down
+			Vec3 base = cat.position().subtract(0, 6 + 10, 0);
+			Particle w = Fx.attach("purr_wall/" + e.getKey(), base, () -> {
+				Particle p = Fx.particle("cat_band", gold(Palette.CAT_PURR_GOLD));
+				return p == null ? null : p.mesh(wall, new Vec3(1, 0, 0)).life(0.3f).size(19.6f, 19.6f).alpha(0.35f)
+					.fade(0.1f, 0.5f);
+			});
+			if (w != null) {
+				w.at(base);
+			}
+		}
 	}
 
 	/** A straight band along piece from from, kept frame to frame by its key. */
