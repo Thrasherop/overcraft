@@ -59,8 +59,18 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
     wall jump's speed was gone at once: half of why it felt wrong.
   - A wall to ride must cover him from the waist to his head. "Any block within reach" glued him to every step he
     jumped up.
-  - W / S steer along the wall by the camera (the owner); he rises slowly (the owner); corners are walls ahead (turn
-    onto them) or a wall's end with a face round it (wrap round).
+  - Corners are walls ahead (turn onto them) or a wall's end with a face round it (wrap round), at full speed.
+- **The wall ride, measured (the owner's Workshop recording, 2026-10-28: tools/reference/lucio-wallride-log.md, how
+  in [workshop_recordings](../game-data/workshop_recordings.md)):** four of our guesses were wrong.
+  - He rises fast, not slowly: 2.72 m/s for 0.3 s, 3.0 until 0.43 s, then fading at 2 a second, about 2.7 m in all,
+    wherever he looks (ours had been 0.5 m/s, more looking up).
+  - The way he rides is set once (his run, or the keys and camera if he hit the wall square on) and kept: looking
+    round or holding S doesn't turn him; he jumps off and back on (ours had let W / S and the camera steer).
+  - Faster than wall speed is held 0.3 s, then braked at 20 m/s²; the wall jump peaks 1.41 m above the release (ours
+    1.30, then 1.77 once a leave tick without gravity showed); he gets on from about 1 m out (ours 0.7: the owner's
+    "more forgiving", #57).
+  - Confirmed: the wall speeds (8.53 boosted, 10.45 amped), 30 m/s² up to it, +2.5 m/s along the look, the 0.5 s
+    cooldown, the 0.2 s late jump, the ground jump.
   - A move that sets a new velocity must also move him that tick: the air step after it starts from the velocity it
     read before (his wall jump fell straight down for days).
   - Test it on a course (a step, a long wall, an L, a pillar, two parallel walls) with positions polled: speeds and

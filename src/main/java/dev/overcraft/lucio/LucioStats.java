@@ -76,25 +76,42 @@ public final class LucioStats {
 	 */
 	public static final double WALL_SPEED = 0.30;
 	/**
-	 * The leap off (his wall-ride graph 0263, research\lucio\wallride-data.md): a jump 1.15 times his own, plus 2.5 m/s
-	 * (game value 212A) along where he looks with forward held, else along the input or his motion. That gives the
-	 * wiki's measured 6.54 m/s up looking ahead, 9.12 looking up and 4.12 looking down.
+	 * The leap off (his wall-ride graph 0263, research\lucio\wallride-data.md): 6.9 m/s up, the graph's 1.15 times his
+	 * 6 m/s jump (the owner's Workshop recording, 2026-10-28, tools/reference/lucio-wallride-log.md: 6.90 at the launch
+	 * looking level, peaking 1.41 m above it), plus 2.5 m/s (game value 212A) along where he looks with forward held,
+	 * along the keys with another, along his motion with none.
 	 */
-	public static final double WALL_JUMP_SCALE = 1.15;
+	public static final double WALL_JUMP_SPEED = 6.9;
 	public static final double WALL_LEAP_FORWARD = 2.5;
 	/**
-	 * How fast he rises while riding (m/s), and how much more looking straight up (less, to sinking, looking down). The
-	 * owner, 2026-10-27: "wall riding actually does raise you a little bit"; players: a gradual upward angle that follows
-	 * aim; Blizzard 2018-05-03 stopped him riding straight up. Neither the data (graph 0263's mover holds no vertical
-	 * speed) nor any source measures it: ours, for the owner to correct.
+	 * How he rises on the wall (the recording, 151 rides): no gravity; for his first 0.3 s at least 2.72 m/s (arriving
+	 * faster, gravity slows him to it), 3.0 m/s until 0.43 s, then that fading at 2 a second. About 2.7 m in all, and
+	 * the same wherever he looks (until 2026-10-28 ours: 0.5 m/s, more looking up).
 	 */
-	public static final double WALL_RISE = 0.5;
-	public static final double WALL_RISE_AIM = 1.0;
+	public static final double WALL_LIFT = 2.72;
+	public static final double WALL_LIFT_PEAK = 3.0;
+	public static final double WALL_LIFT_TIME = 0.30;
+	public static final double WALL_LIFT_PEAK_END = 0.43;
+	public static final double WALL_LIFT_FADE = 2.0;
+	/**
+	 * Speed along the wall (the recording): up to the wall speed at 30 m/s² (6.87 to 8.53 in 0.06 s); from a stall (he
+	 * came square on) at 80 m/s² once the ride starts properly at 0.3 s; above it (a chain of wall jumps) kept for the
+	 * first 0.3 s, then braked at 20 m/s².
+	 */
+	public static final double WALL_ACCEL = 30;
+	public static final double WALL_STALL_ACCEL = 80;
+	public static final double WALL_BRAKE = 20;
+	/** Slower than this along the wall when he gets on, he's square on: the way waits for the ride proper (ours). */
+	public static final double WALL_STALL_SPEED = 1.0;
 	public static final double WALL_COOLDOWN = 0.5;           // wiki; the data: game value 1E3F, a 0.5 s wait after any ride
-	/** Ours: how close a wall must be to ride it (no source). */
-	public static final double WALL_REACH = 0.4;
-	/** Ours: no source gives a drift; he holds his height while riding. */
-	public static final double WALL_DRIFT = 0;
+	/**
+	 * How close a wall must be to ride it, past Minecraft's player box: he gets on within about 1 m of his middle (the
+	 * recording at chest height on the attach tick: median 0.84 m, 1.06 at the 90th percentile; until 2026-10-28 ours,
+	 * 0.4: the owner, #57, "more forgiving"), then rides close (0.5-0.6 m), pulled in at {@link #WALL_PULL}.
+	 */
+	public static final double WALL_REACH = 0.7;
+	/** How fast he's drawn in to the wall he got on (m/s; the recording: 0.84 to 0.51 m in 0.19 s). */
+	public static final double WALL_PULL = 1.7;
 
 	// Sound Barrier (Q)
 	public static final int ULT_COST = 2900;                  // wiki

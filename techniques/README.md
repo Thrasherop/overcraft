@@ -21,6 +21,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [reading_game_data](game-data/reading_game_data.md): DataTool and TankLib offline, safely; ids; effects;
     statescript; research agents; the archive.
   - [model_data](game-data/model_data.md): inside a model: hardpoints, geosets, skeleton order, the cloth chunk.
+  - [workshop_recordings](game-data/workshop_recordings.md): measuring movement in the real game with a Workshop
+    script, when no source has the numbers (Lúcio's wall ride).
 - **Animation**
   - [animation_import](animation/animation_import.md): getting clips out and into the game; frames; additive and
     partial clips; finding the right clip.
