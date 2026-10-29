@@ -164,6 +164,12 @@ public class Overcraft implements ModInitializer {
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
+		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
+			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
+				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
+			}
+		});
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);

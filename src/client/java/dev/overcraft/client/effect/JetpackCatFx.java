@@ -146,6 +146,10 @@ public final class JetpackCatFx {
 				}
 				case "tether_end" -> TETHERS.remove(e.variant());
 				case "lifeline_on" -> SEEKING.put(e.variant(), enemy);
+				// the same states, quietly, for a player who has just started to see her (JetpackCat.showState)
+				case "lifeline_state" -> SEEKING.put(e.variant(), enemy);
+				case "tether_state" -> TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 0});
+				case "carry_state" -> TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 1});
 				case "lifeline_off" -> SEEKING.remove(e.variant());
 				case "catnapper_cast" -> {
 				}
