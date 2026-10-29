@@ -85,3 +85,9 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - A mixin that restyles every glyph of a line hides glyphs from other fonts as missing boxes: replace only
   `FontDescription.DEFAULT`. For icons in text, use a bitmap font provider for the glyph and a `space` provider for
   exact gaps.
+
+## Overwatch's HUD head art shares one frame
+Every hero's 512 px HUD head (HeroIcons, "head") is painted on the same frame template: the V's tip on row 412,
+centred on column 273.5, the same edges for every hero. Map that template to the HUD's frame once, for all of them;
+fitting each by its own outline (width, top of the hair) moved heroes whose outline differs (Jetpack Cat's ears: about
+80 texels too high, #54). `HudShapes.cutHead`.
