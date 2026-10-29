@@ -4,6 +4,24 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-10-29
+
+### Build 0.3.21 (Jetpack Cat's own assets; Lúcio's song indicator and Sound Barrier)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.21): two new masks for Jetpack Cat's shot trails (`effects`)
+and Lúcio's song icons, cut from his ability icons (`ui`), then `zip`.
+- **Jetpack Cat on her own assets** (#59):
+  - Her shot trails use the masks her data pairs.
+  - Each volley's centre shot shows two tori at her paw. It had never looked like a centre shot on any client: the
+    server didn't tell clients which shot it was (found playing).
+  - Purr: her spheres flash, her tori pulse flat, and its gold range wall (9.8 m out) is new.
+  - Lifeline's hook: a cone held under it, bubbles rising, and arcs round the one she tows.
+- **Lúcio's song under the crosshair** (#61), as the owner's screenshots show it:
+  - The song playing lights up 200 px out with a wave running in; the other sits dim closer in.
+  - Amp It Up adds a dashed arc.
+  - The plus and chevrons are his own (cut from his ability icons); the rest is drawn, measured from the screenshots.
+- **Sound Barrier, as the Workshop recording measured it:** a 1.07 m hop (it was 1.6 m), then Blizzard's 240%
+  gravity from the cast's end until he lands.
+
 ## 2026-10-28
 
 ### Build 0.3.20 (Jetpack Cat's Lifeline; Lúcio's wall ride, measured)
