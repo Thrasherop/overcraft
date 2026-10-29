@@ -69,6 +69,24 @@
 - **Scripted aim lags moving mobs:** `aim.py` reads positions about 0.4 s before the shot, so a strafing skeleton is
   missed; a scripted night fight measures nothing about a kit. Use still (NoAI) targets for numbers.
 - **Test worlds spawn mobs:** a superflat world has slimes; a hero hovering in place was killed twice mid-test. Turn
-  `spawn_mobs` off (26.x's gamerule name) and clear the world before measuring.
+  spawning off and clear the world before measuring. In 26.3 the rule needs its namespace from a command:
+  `cmd /gamerule minecraft:spawn_monsters false` (plain `spawn_mobs` was refused, "Incorrect argument"; 2026-10-29).
+- **`respawn` only on the death screen:** on a living player it swaps in a new local player the server never made.
+  The old one froze mid-fall, took no input (an ability press did nothing) and its model vanished; the log says
+  "Received attachment change for unknown target". Check `health` is 0 first; else leave the world and rejoin
+  (Lifeweaver, 2026-10-29).
+- **Fall damage needs survival:** a world made in creative is creative again on reopening unless set; a "fixed" fall
+  read 20 -> 20 in creative and proved nothing. Set `cmd /gamemode survival` in the same batch and check a plain fall
+  still hurts (`cmd /tp @s ~ ~12 ~`) as the control.
+- **Placed things stay:** a Petal Platform lies on the ground until used, and his key pressed again destroys it rather
+  than throwing a new one. Before a throw, know whether one is out (`data get entity @e[type=...]`).
+- **A `tap` can fall between client ticks** (2026-10-29): jump read as held at tick time never saw a tap, so neither
+  the jump nor Lifeweaver's dash happened. Hold keys the game reads as held for a tick or two (`key jump down`,
+  `sleep 0.1`, `key jump up`).
+- **Real time passes between your batches:** reading screenshots between two `dev.py` calls takes tens of seconds.
+  A 12 s cooldown "dropping to 0 in seconds" and a platform "vanishing" were only that time passing (its 12 s raised
+  time ran out). Log a timeline inside one call (a loop of `state` reads) before calling something a bug.
+- **Effects too quick to see:** `fxslow 0.2` slows the effects only; `cmd /tick rate 4` slows the game (projectiles,
+  entities) too. Use both for a projectile's flight, and `fx <effect> [variant] [enemy]` to play one moment 3 m ahead.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.

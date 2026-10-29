@@ -232,10 +232,109 @@ public final class OcSounds {
 		"ping", "ping_warning", "ping_enemy", "boost", "reload", "heal", "purr", "purr_end", "lifeline", "tether_end",
 		"tether_attached");
 
+	/**
+	 * Lifeweaver's (tools/soundmaps/lifeweaver.txt, read from his effects' Wwise events): his own in his head, "_3p" what
+	 * everyone else hears from him or the prop; the charge-scaled ones in three bins by the charge, [low, mid, full]
+	 * (21C6 #954's: c <= 0.3, <= 0.9, above).
+	 */
+	public static final SoundEvent LW_CHARGE_START = register("lifeweaver.blossom.charge.start");
+	public static final SoundEvent LW_CHARGE_START_3P = register("lifeweaver.blossom.charge.start_3p");
+	public static final SoundEvent LW_CHARGE_LOOP = register("lifeweaver.blossom.charge.loop");
+	public static final SoundEvent LW_CHARGE_LOOP_3P = register("lifeweaver.blossom.charge.loop_3p");
+	public static final SoundEvent[] LW_CHARGE_END = {register("lifeweaver.blossom.charge.end_low"),
+		register("lifeweaver.blossom.charge.end_mid"), register("lifeweaver.blossom.charge.end")};
+	public static final SoundEvent[] LW_CHARGE_END_3P = {register("lifeweaver.blossom.charge.end_low_3p"),
+		register("lifeweaver.blossom.charge.end_mid_3p"), register("lifeweaver.blossom.charge.end_3p")};
+	public static final SoundEvent LW_BLOSSOM_FULL = register("lifeweaver.blossom.full");
+	public static final SoundEvent[] LW_BLOSSOM_THROW = {register("lifeweaver.blossom.throw_low"),
+		register("lifeweaver.blossom.throw_mid"), register("lifeweaver.blossom.throw")};
+	public static final SoundEvent LW_BLOSSOM_THROW_3P = register("lifeweaver.blossom.throw_3p");
+	public static final SoundEvent[] LW_BLOSSOM_HEAL = {register("lifeweaver.blossom.heal_low"),
+		register("lifeweaver.blossom.heal_mid"), register("lifeweaver.blossom.heal")};
+	public static final SoundEvent LW_BLOSSOM_RELOAD = register("lifeweaver.blossom.reload");
+	public static final SoundEvent LW_BLOSSOM_RELOAD_3P = register("lifeweaver.blossom.reload_3p");
+	public static final SoundEvent LW_THORN_FIRE = register("lifeweaver.thorn.fire");
+	public static final SoundEvent LW_THORN_FIRE_3P = register("lifeweaver.thorn.fire_3p");
+	public static final SoundEvent LW_THORN_FIRE_START = register("lifeweaver.thorn.fire_start");
+	public static final SoundEvent LW_THORN_FIRE_START_3P = register("lifeweaver.thorn.fire_start_3p");
+	public static final SoundEvent LW_THORN_SHOT = register("lifeweaver.thorn.shot");
+	public static final SoundEvent LW_THORN_HIT = register("lifeweaver.thorn.hit");
+	public static final SoundEvent LW_THORN_HIT_3P = register("lifeweaver.thorn.hit_3p");
+	public static final SoundEvent LW_THORN_HIT_BLOCK = register("lifeweaver.thorn.hit_block");
+	public static final SoundEvent LW_THORN_RELOAD = register("lifeweaver.thorn.reload");
+	public static final SoundEvent LW_THORN_RELOAD_3P = register("lifeweaver.thorn.reload_3p");
+	public static final SoundEvent LW_SWAP_THORNS = register("lifeweaver.swap.thorns");
+	public static final SoundEvent LW_SWAP_BLOSSOM = register("lifeweaver.swap.blossom");
+	public static final SoundEvent LW_MELEE = register("lifeweaver.melee");
+	public static final SoundEvent LW_MELEE_3P = register("lifeweaver.melee_3p");
+	public static final SoundEvent LW_PLATFORM_THROW = register("lifeweaver.platform.throw");
+	public static final SoundEvent LW_PLATFORM_THROW_3P = register("lifeweaver.platform.throw_3p");
+	public static final SoundEvent LW_PLATFORM_FLIGHT = register("lifeweaver.platform.flight");
+	public static final SoundEvent LW_PLATFORM_DEPLOY = register("lifeweaver.platform.deploy");
+	public static final SoundEvent LW_PLATFORM_DEPLOY_ENEMY = register("lifeweaver.platform.deploy_enemy");
+	public static final SoundEvent LW_PLATFORM_ARMED = register("lifeweaver.platform.armed");
+	public static final SoundEvent LW_PLATFORM_RISE = register("lifeweaver.platform.rise");
+	public static final SoundEvent LW_PLATFORM_RISE_LOOP = register("lifeweaver.platform.rise.loop");
+	public static final SoundEvent LW_PLATFORM_RISE_END = register("lifeweaver.platform.rise.end");
+	public static final SoundEvent LW_PLATFORM_RAISED = register("lifeweaver.platform.raised");
+	public static final SoundEvent LW_PLATFORM_RAISED_LOOP = register("lifeweaver.platform.raised.loop");
+	public static final SoundEvent LW_PLATFORM_WARNING = register("lifeweaver.platform.warning");
+	public static final SoundEvent LW_PLATFORM_DESCEND = register("lifeweaver.platform.descend");
+	public static final SoundEvent LW_PLATFORM_LANDED = register("lifeweaver.platform.landed");
+	public static final SoundEvent LW_PLATFORM_DESTROYED = register("lifeweaver.platform.destroyed");
+	public static final SoundEvent LW_DASH = register("lifeweaver.dash");
+	public static final SoundEvent LW_DASH_3P = register("lifeweaver.dash_3p");
+	public static final SoundEvent LW_DASH_HEAL = register("lifeweaver.dash.heal");
+	public static final SoundEvent LW_GRIP_CAST = register("lifeweaver.grip.cast");
+	public static final SoundEvent LW_GRIP_CAST_3P = register("lifeweaver.grip.cast_3p");
+	public static final SoundEvent LW_GRIP_CAST_ENEMY = register("lifeweaver.grip.cast_enemy");
+	public static final SoundEvent LW_GRIP_VINE = register("lifeweaver.grip.vine");
+	public static final SoundEvent LW_GRIP_LAND = register("lifeweaver.grip.land");
+	public static final SoundEvent LW_GRIP_LAND_3P = register("lifeweaver.grip.land_3p");
+	public static final SoundEvent LW_GRIP_LAND_ALLY = register("lifeweaver.grip.land_ally");
+	public static final SoundEvent LW_GRIP_ALLY = register("lifeweaver.grip.ally");
+	public static final SoundEvent LW_TREE_AIM = register("lifeweaver.tree.aim");
+	public static final SoundEvent LW_TREE_PREVIEW = register("lifeweaver.tree.preview");
+	public static final SoundEvent LW_TREE_CANCEL = register("lifeweaver.tree.cancel");
+	public static final SoundEvent LW_TREE_SPAWN = register("lifeweaver.tree.spawn");
+	public static final SoundEvent LW_TREE_SPAWN_3P = register("lifeweaver.tree.spawn_3p");
+	public static final SoundEvent LW_TREE_LOOP = register("lifeweaver.tree.loop");
+	public static final SoundEvent LW_TREE_LOOP_3P = register("lifeweaver.tree.loop_3p");
+	public static final SoundEvent LW_TREE_LOOP_ENEMY = register("lifeweaver.tree.loop_enemy");
+	public static final SoundEvent LW_TREE_PULSE = register("lifeweaver.tree.pulse");
+	public static final SoundEvent LW_TREE_PULSE_7 = register("lifeweaver.tree.pulse_7");
+	public static final SoundEvent LW_TREE_PULSE_8 = register("lifeweaver.tree.pulse_8");
+	public static final SoundEvent LW_TREE_PULSE_ENEMY = register("lifeweaver.tree.pulse_enemy");
+	public static final SoundEvent LW_TREE_HEAL = register("lifeweaver.tree.heal");
+	public static final SoundEvent LW_TREE_HEAL_3P = register("lifeweaver.tree.heal_3p");
+	public static final SoundEvent LW_TREE_WITHER = register("lifeweaver.tree.wither");
+	public static final SoundEvent LW_TREE_DEATH = register("lifeweaver.tree.death");
+	public static final SoundEvent LW_SUPERBLOOM = register("lifeweaver.superbloom");
+	public static final SoundEvent LW_SUPERBLOOM_3P = register("lifeweaver.superbloom_3p");
+	public static final SoundEvent LW_SEED_THROW = register("lifeweaver.seed.throw");
+	public static final SoundEvent LW_SEED_THROW_3P = register("lifeweaver.seed.throw_3p");
+	public static final SoundEvent LW_SEED_PICKUP = register("lifeweaver.seed.pickup");
+	/** The Tree of Life's line as allies (and he) hear it, and as enemies do. */
+	public static final SoundEvent LW_ULT_FRIENDLY = register("lifeweaver.ult.friendly");
+	public static final SoundEvent LW_ULT_ENEMY = register("lifeweaver.ult.enemy");
+	/**
+	 * His lines by moment (Voice.say: "lifeweaver.voice.<moment>"), the game's own pools (the map's voice section). His
+	 * wheel lines, "resurrected" and "damage_boosted" are every hero's, registered in init().
+	 */
+	public static final java.util.List<String> LIFEWEAVER_VOICE = java.util.List.of("elimination", "multikill",
+		"melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning",
+		"ping_enemy", "heal", "reload", "platform", "platform_used", "dash", "grip", "tree_end");
+
+	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
+	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
+		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
+	}
+
 	static {
 		LUCIO_VOICE.forEach(moment -> register("lucio.voice." + moment));
 		JETPACK_CAT_VOICE.forEach(moment -> register("jetpack_cat.voice." + moment));
 		MERCY_VOICE.forEach(moment -> register("mercy.voice." + moment));
+		LIFEWEAVER_VOICE.forEach(moment -> register("lifeweaver.voice." + moment));
 	}
 
 	private OcSounds() {

@@ -27,6 +27,46 @@ public final class HeroSounds {
 	}
 
 	/**
+	 * The same, others hearing it out to {@code metres} (the game's range for that copy: a volume over 1 only widens
+	 * Minecraft's 16 blocks, it doesn't make it louder).
+	 */
+	public static void split(ServerPlayer hero, SoundEvent own, SoundEvent others, Vec3 at, double metres) {
+		toOwner(hero, own);
+		at(hero.level(), others, others, null, at, metres, hero);
+	}
+
+	/** A sound at a point for everyone in reach but {@code except}, heard out to {@code metres}. */
+	public static void at(net.minecraft.server.level.ServerLevel level, SoundEvent sound, Vec3 at, double metres,
+						  net.minecraft.world.entity.player.Player... except) {
+		at(level, sound, sound, null, at, metres, except);
+	}
+
+	/**
+	 * The same with one copy for {@code hero}'s side (the hero too) and another for their enemies, as Overwatch's team
+	 * views do (Lifeweaver's platform and tree); {@code hero} null: everyone hears {@code friendly}.
+	 */
+	public static void at(net.minecraft.server.level.ServerLevel level, SoundEvent friendly, SoundEvent enemy,
+						  @org.jspecify.annotations.Nullable ServerPlayer hero, Vec3 at, double metres,
+						  net.minecraft.world.entity.player.Player... except) {
+		float volume = (float) Math.max(1, metres / 16);
+		long seed = level.getRandom().nextLong();
+		listeners:
+		for (ServerPlayer listener : level.players()) {
+			for (net.minecraft.world.entity.player.Player skip : except) {
+				if (listener == skip) {
+					continue listeners;
+				}
+			}
+			if (listener.distanceToSqr(at) > (metres + 8) * (metres + 8)) {
+				continue;
+			}
+			SoundEvent sound = hero == null || Allies.isSelfOrAlly(hero, listener) ? friendly : enemy;
+			listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+				BuiltInRegistries.SOUND_EVENT.wrapAsHolder(sound), SoundSource.PLAYERS, at.x, at.y, at.z, volume, 1.0f, seed));
+		}
+	}
+
+	/**
 	 * An ultimate's cast line, as Overwatch plays it: the hero and their allies hear {@code friendly}, enemies
 	 * {@code enemy} (Kiriko's Japanese line, Lúcio's Portuguese one), from where the hero is, {@code volume} 16 blocks a unit.
 	 */

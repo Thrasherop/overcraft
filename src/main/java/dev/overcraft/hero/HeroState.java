@@ -106,6 +106,39 @@ public final class HeroState {
 	public int flashCast = -1;
 	/** Mercy: the soul Resurrect is raising. */
 	public java.util.@Nullable UUID resSoul;
+	/**
+	 * Lifeweaver: Thorn Volley in hand (else Healing Blossom; the swap and the holstered refill use swapTicks and
+	 * holsterTicks), the blossom's charge (0-1) and whether it's being charged (the blossom already spent), the ally it's
+	 * aimed at and the ticks since it left the cone, the throw's recovery, and the thorns' spread (volleys).
+	 */
+	public boolean thornsOut;
+	public double bloomCharge;
+	public boolean charging;
+	public @Nullable Integer bloomTarget;
+	public int bloomLinger;
+	public double bloomRecovery;
+	public double thornSpread;
+	/** Lifeweaver: his Petal Platform (entity id, thrown or deployed), the throw's ticks to go (-1 none), when it was thrown. */
+	public @Nullable Integer platformId;
+	public int platformThrow = -1;
+	public long platformAt;
+	/** Lifeweaver: the lock Life Grip and Petal Platform share (ticks left). */
+	public int abilityLock;
+	/** Lifeweaver: ticks airborne (the dash waits 0.1 s), and the dash's ticks left (-1 none). */
+	public int airTicks;
+	public int dashTicks = -1;
+	/** Lifeweaver: Life Grip's cast (ticks left, -1 none) and its ally. */
+	public int gripCast = -1;
+	public @Nullable Integer gripTarget;
+	/** Lifeweaver: Tree of Life aimed (Q), its cast (ticks in, -1 none), where it goes, the tree (entity id). */
+	public boolean treeAiming;
+	public int treeCast = -1;
+	public net.minecraft.world.phys.@Nullable Vec3 treeAt;
+	public @Nullable Integer treeId;
+	/** Lifeweaver: Sow the Seed's cooldown (ticks). */
+	public double seedCooldown;
+	/** Fire buttons last tick (Lifeweaver: a fresh press of either confirms or cancels the tree's aim). */
+	public boolean primaryWas, secondaryWas;
 	/** Game time before which his song lines stay quiet (2.5 s after he's picked or spawns: the game's gate). */
 	public long songLinesFrom;
 
@@ -117,6 +150,8 @@ public final class HeroState {
 	public @Nullable Perk majorPerk;
 
 	public long lastDamagedTick = -10000;
+	/** Shields left (Overwatch points: the top of the health, dev.overcraft.hero.Shields). */
+	public double shield;
 	/** When the hero last spoke a voice line (game time). */
 	public long voiceAt = -10000;
 	/** Voice (Voice.say): each moment's next time it may play, and the line now playing (until when, how high it ranks). */
@@ -144,6 +179,7 @@ public final class HeroState {
 
 	public void reset(@Nullable Hero hero) {
 		this.hero = hero;
+		shield = hero == null ? 0 : hero.shields();
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
@@ -157,6 +193,13 @@ public final class HeroState {
 		barrierCast = -1;
 		blasterOut = false;
 		swapTicks = holsterTicks = 0;
+		thornsOut = charging = treeAiming = false;
+		bloomCharge = bloomRecovery = thornSpread = seedCooldown = 0;
+		bloomTarget = platformId = gripTarget = treeId = null;
+		bloomLinger = abilityLock = airTicks = 0;
+		platformThrow = dashTicks = gripCast = treeCast = -1;
+		treeAt = null;
+		primaryWas = secondaryWas = false;
 		beamTarget = gaTarget = null;
 		gaSoul = resSoul = null;
 		gaTo = null;

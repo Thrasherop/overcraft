@@ -10,6 +10,8 @@ public enum Hero {
 	JETPACK_CAT("jetpack_cat", "Jetpack Cat", Role.SUPPORT, "tactician", dev.overcraft.jetpackcat.JetpackCatStats.HEALTH, true,
 		0xFFF08A3C),
 	MERCY("mercy", "Mercy", Role.SUPPORT, "medic", dev.overcraft.mercy.MercyStats.HEALTH, true, 0xFFFDF9D7),
+	LIFEWEAVER("lifeweaver", "Lifeweaver", Role.SUPPORT, "medic",
+		dev.overcraft.lifeweaver.LifeweaverStats.HEALTH + dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS, true, 0xFFF3A7C8),
 	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", 225, false, 0xFF8A4FD8),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 
@@ -20,6 +22,7 @@ public enum Hero {
 	public final Role role;
 	/** Overwatch's sub-role ("medic"): a translation key's last part, overcraft.subrole.<id>. */
 	public final String subRole;
+	/** Health and shields together (Lifeweaver: 200 + 50). */
 	public final int owHealth;
 	/** False: on the select screen but not playable yet. */
 	public final boolean playable;
@@ -31,6 +34,11 @@ public enum Hero {
 	 */
 	public double safeFall() {
 		return this == KIRIKO ? dev.overcraft.kiriko.KirikoStats.SAFE_FALL : 3;
+	}
+
+	/** Shields: the top of owHealth, regenerating by themselves, never healed (Hit points: dev.overcraft.hero.Shields). */
+	public int shields() {
+		return this == LIFEWEAVER ? dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS : 0;
 	}
 
 	Hero(String id, String displayName, Role role, String subRole, int owHealth, boolean playable, int color) {

@@ -89,6 +89,11 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));
 			case dev.overcraft.entity.BlasterShotEntity shot -> s.drawnByEffect = dev.overcraft.client.effect.MercyFx.shotFlight(
 				shot.getId(), at, shot.getOwner());
+			// Lifeweaver's: the blossom and the thorns are their effects; the thrown egg its model and a trail
+			case dev.overcraft.entity.BlossomEntity blossom -> s.drawnByEffect = dev.overcraft.client.effect.LifeweaverFx.blossomFlight(
+				blossom, at, dt);
+			case dev.overcraft.entity.ThornEntity thorn -> s.drawnByEffect = dev.overcraft.client.effect.LifeweaverFx.thornFlight(thorn, at);
+			case dev.overcraft.entity.PetalThrowEntity egg -> dev.overcraft.client.effect.LifeweaverFx.eggFlight(egg, at, dt);
 			case dev.overcraft.entity.PawEntity paw -> s.drawnByEffect = dev.overcraft.client.effect.JetpackCatFx.pawFlight(
 				paw.getId(), at, paw.getDeltaMovement(), paw.centre(), paw.getOwner(), KirikoFx.enemyOf(paw.getOwner()),
 				paw.getOwner() == net.minecraft.client.Minecraft.getInstance().player

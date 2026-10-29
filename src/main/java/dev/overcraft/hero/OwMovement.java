@@ -99,6 +99,8 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> valkyrie = entity -> false;
 	/** Mercy's Guardian Angel: where it takes her and how fast (null when she isn't flying to someone). */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
+	/** Lifeweaver's Rejuvenating Dash: its move this tick (blocks a tick: level, no gravity), or null when not dashing. */
+	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Vec3> dash = entity -> null;
 	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
 	public static Predicate<LivingEntity> undamped = entity -> false;
 	/** Mercy's Angelic Descent: held, her fall is capped. */
@@ -276,6 +278,15 @@ public final class OwMovement {
 
 	/** Replaces {@code LivingEntity.travelInAir}. {@code input}: x strafe, z forward, as Minecraft passes it. */
 	public static void travel(LivingEntity entity, Vec3 input) {
+		// Lifeweaver's dash first: its last tick sets the speed he leaves it with, which the steps below then start from
+		// (asked after them, its cap never applied: 12 m from a standing jump, found playing)
+		Vec3 dashing = dash.apply(entity);
+		if (dashing != null) {
+			entity.resetFallDistance();
+			entity.setDeltaMovement(dashing);
+			entity.move(MoverType.SELF, dashing);
+			return;
+		}
 		Vec3 v = entity.getDeltaMovement();
 		Vec3 flat = new Vec3(input.x, 0, input.z);
 		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity);

@@ -1,0 +1,9 @@
+# Lifeweaver's Petal Platform (model 12D32, entity 4504, set 0FCC), the clips its graph 368D plays: the alias table
+# E:\Overwatch Archive\research\lifeweaver\work\aliases_0FCC.txt (alias, then the node that plays it). <folder>_<clip id> = name.
+0-32_00000000C933 = unfold   # 0x451 #343: as it lands, then
+16-44_00000000C934 = idle   # 0x4D7 #340: the loop while it waits (13.03 s)
+0-40_00000000C935 = rise   # 0x005 #341: over the rise (d / 10 s)
+16-44_00000000CB48 = raised   # 0x001 #342: the loop at the top (13.03 s)
+0-40_00000000DA90 = descend   # 0x58B #649: over the descent (and a hacked fall, #446)
+0-40_00000000F735 = land   # 0xA1F #663: 7/30 s at the bottom
+0-44_00000000C937 = pose   # 0x008 (no node of 368D plays it)

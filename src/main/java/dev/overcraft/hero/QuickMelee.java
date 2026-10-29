@@ -88,5 +88,8 @@ public final class QuickMelee {
 		Combat.animate(hero, CLIPS[hero.getRandom().nextInt(CLIPS.length)]);
 		Voice.say(hero, "melee", 0.8f);
 		HeroSounds.fromHero(hero, hit ? OcSounds.MELEE_HIT : OcSounds.MELEE_SWING, 1);
+		if (s.hero == Hero.LIFEWEAVER) {
+			dev.overcraft.lifeweaver.Lifeweaver.meleeSwung(hero);
+		}
 	}
 }

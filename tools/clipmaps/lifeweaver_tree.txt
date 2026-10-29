@@ -1,0 +1,13 @@
+# Lifeweaver's Tree of Life (model 1267E, entity 4525, set 0FFC), the clips its graph 36AA plays: the alias table
+# E:\Overwatch Archive\research\lifeweaver\work\aliases_0FFC.txt (alias, then the node that plays it). <folder>_<clip id> = name.
+0-32_00000000CB03 = grow   # 0x8E2 #384: the growth in the open (1.93 s)
+0-32_00000000CB56 = grow_leaning   # 0x92F #382: the growth by a wall
+0-32_00000000CAF8 = grow_enclosed   # 0x925 #385: under a low ceiling (7/30 s), then
+0-32_00000000CAF9 = grow_enclosed_2   # 0x926 #383: played as far as the room allows (11/30 x (h / 5 + 0.06) s)
+4-0_00000000CAFA = add_grow_enclosed   # 0x927 #397: additive, 19/30 s
+4-4_00000000D1CE = add_pulse   # 0x967 #406: additive, on pulses 1-7 (not enclosed)
+0-60_00000000CBEF = end   # 0x93C #398: 1.67 s before its end
+0-60_00000000D1DC = end_leaning   # 0x968 #412
+4-0_00000000D74B = add_end   # 0x983 #467: additive with the end
+0-36_00000000D948 = idle   # 0xA0E (the set's default)
+4-4_00000000D1CF = add_idle   # 0xA0E's layer (6.67 s)
