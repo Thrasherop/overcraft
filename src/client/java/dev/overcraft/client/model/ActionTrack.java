@@ -100,6 +100,14 @@ final class ActionTrack {
 		}
 	}
 
+	/** The playing action fades out from where it is if its name starts with {@code prefix} (Hello's wave, cut by firing). */
+	void cancel(String prefix, float now) {
+		String current = current();
+		if (current != null && current.startsWith(prefix) && cancelledAt < 0) {
+			cancelledAt = now;
+		}
+	}
+
 	/**
 	 * An action's animation priority, from the data (each StateAnim's m_priority, a 024 asset): Lúcio's Crossfade 0090 is
 	 * -1, Amp It Up's 008D 3, and his reload sets none (the default, 0). Null for the rest, whose priorities aren't read:

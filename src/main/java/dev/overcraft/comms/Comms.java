@@ -26,6 +26,17 @@ import java.util.UUID;
  * Overwatch does ("Too many messages! Please wait a few seconds...").
  */
 public final class Comms {
+	/**
+	 * Hello's wave (research\hello_gesture\hello_gesture.md, build 154088): the callout graph 0686 runs the gesture graph
+	 * 0341 at once (its animation 0.05 s in) and, 0.3 s on, the voice line (#69's wait, then the criteria node 0AEB that
+	 * Hello's stimulus 01CF reads). Goodbye waves too; our wheel has no Goodbye.
+	 */
+	private static final double HELLO_VOICE_AFTER = 0.3;
+	/** Voice lines waiting their moment: the player, the moment, the server tick to say it at. */
+	private record Pending(ServerPlayer player, String moment, long at) {
+	}
+
+	private static final java.util.List<Pending> PENDING = new java.util.ArrayList<>();
 	/** Team chat's light blue (the owner's screenshot: Overwatch's team lines, measured about #4FC6F5). */
 	public static final int TEAM_BLUE = 0x4FC6F5;
 	/** At most this many callouts in SPAM_WINDOW ticks (ours: Overwatch gives no numbers). */
@@ -87,6 +98,20 @@ public final class Comms {
 		dev.overcraft.hero.Combat.animate(player, "emote:");
 	}
 
+	/** Each server tick (HeroManager): the voice lines whose moment has come. */
+	public static void tick() {
+		PENDING.removeIf(p -> {
+			if (p.player.isRemoved()) {
+				return true;
+			}
+			if (p.player.level().getGameTime() < p.at) {
+				return false;
+			}
+			Voice.say(p.player, p.moment, 1);
+			return true;
+		});
+	}
+
 	public static void callout(ServerPlayer player, Callout callout) {
 		if (!allowed(player)) {
 			return;
@@ -103,7 +128,13 @@ public final class Comms {
 				: Component.translatable("overcraft.callout.ultimate_charge", Math.min(99, percent));
 		}
 		if (state != null && state.hero != null) {
-			Voice.say(player, moment, 1);
+			if (callout == Callout.HELLO) {
+				// the wave now, the line 0.3 s on
+				Combat.animate(player, "hello");
+				PENDING.add(new Pending(player, moment, player.level().getGameTime() + dev.overcraft.Ow.ticks(HELLO_VOICE_AFTER)));
+			} else {
+				Voice.say(player, moment, 1);
+			}
 		}
 		MutableComponent line = Component.empty().append(player.getDisplayName());
 		if (state != null && state.hero != null) {

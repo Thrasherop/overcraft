@@ -34,6 +34,12 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
   colour texture's type key, read from the material's own .owmat (15E60: 86DAAC6B = her tabby albedo 6F76A). After
   every export, read its OWM_MATERIAL lines and look at the model from every side; a material with only a mask or no
   textures (an eye overlay, a glow card) is fine, one with Normal and PBR but no colour is a body part.
+- **A colour linked to the engine's blank texture is no colour either** (2026-10-29, the owner: "LW's petals on his back
+  aren't pink correctly"). Lifeweaver's back petals (shader 0x26, material C971) came out white: the add-on linked
+  `000A` (a blank) to a colour input, so no OWM_MATERIAL warning showed. `owm_survey.py` now treats `BLANK_TEXTURES` as
+  unlinked and takes the shader's `COLOUR_KEYS` slot (0x26: 58FF5009, the petal art 3EE14). To find a slot, render the
+  material's textures side by side (shader, keys and paths from the .owmat) and pick the one that is the part's own art.
+  After an export, list each material's base-colour image in the .glb: a lone `00000000000A` is a part with no colour.
 - **Renaming clips in a .glb doesn't need a re-export** (`tools/rename_glb_clips.py`); keep `tools/clipmaps` in step.
 
 ## Our bones keep Overwatch's frames
@@ -69,3 +75,13 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
 - **Glitches that come "at random"** may be a layer under everything: the leg kick was the idle breathing clip's
   broken keys. Read a clip's keys (glb animation channels in Python) for single-frame jumps, and scan the data for
   every case, not just the one fixed ([hand_play](../testing/hand_play.md)).
+- **New clips without a full re-export** (2026-10-29, the Hello wave): `owm_survey.py --glb --clips-only --keep=<map>`
+  writes the rig and the kept clips with no meshes (a few hundred KB, a minute or two). Put it in the pack as
+  `hero_models/<hero>_clips.glb` or `<hero>_1p_clips.glb`; `HeroModels.mergeClips` adds its clips to the hero's model, each
+  channel moved to the model's bone of the same name. It works because both files come from the same game model. A full
+  re-export of a hero takes 15-25 minutes, and Kiriko's and Lúcio's also re-import their emotes. Check the names: list
+  the clips file's nodes against the model's, with none missing (Lúcio's 305 all matched).
+- **Gestures live under numbered aliases a text search misses.** The Hello wave is alias 0x1EE (a pose over the upper
+  body) with 0x2DE (the same wave, additive) beside it, which the clip maps had as "Others (L meaning)". The callout graph
+  0686 runs graph 0341, which plays them (research\hello_gesture\hello_gesture.md). STU references are stored mangled, so
+  searching raw bytes for a GUID misses them: use the research's structured scanner (`stuscan.py`).

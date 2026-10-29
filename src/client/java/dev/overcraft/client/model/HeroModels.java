@@ -100,6 +100,9 @@ public final class HeroModels {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
 			names.add(hero.id + "_weapon");
+			// clips exported apart from the model (owm_survey.py --clips-only: the Hello wave), merged in below
+			names.add(hero.id + "_clips");
+			names.add(hero.id + "_1p_clips");
 			if (hero == Hero.MERCY) {
 				names.add("mercy_staff");
 				names.add("mercy_blaster");
@@ -131,7 +134,36 @@ public final class HeroModels {
 				Overcraft.LOG.error("Couldn't load the {} model", name, e);
 			}
 		}
+		for (Hero hero : Hero.values()) {
+			mergeClips(out, hero.id + "_clips", hero.id);
+			mergeClips(out, hero.id + "_1p_clips", hero.id + "_1p");
+		}
 		return out;
+	}
+
+	/**
+	 * A clips-only file's clips (the rig, no meshes) added to its hero's model, each channel moved to the model's bone of
+	 * the same name: the files are exported from the same game model, so the names match (a channel with none is dropped).
+	 */
+	private static void mergeClips(Map<String, Prepared> out, String from, String into) {
+		Prepared clips = out.remove(from);
+		Prepared model = out.get(into);
+		if (clips == null || model == null) {
+			return;
+		}
+		int added = 0;
+		for (SkinnedModel.Clip clip : clips.model().clips.values()) {
+			List<SkinnedModel.Channel> channels = new ArrayList<>();
+			for (SkinnedModel.Channel c : clip.channels()) {
+				int node = model.model().node(clips.model().nodeNames[c.node()]);
+				if (node >= 0) {
+					channels.add(new SkinnedModel.Channel(node, c.path(), c.times(), c.values(), c.step()));
+				}
+			}
+			model.model().clips.putIfAbsent(clip.name(), new SkinnedModel.Clip(clip.name(), clip.duration(), channels));
+			added++;
+		}
+		Overcraft.LOG.info("Hero model {}: {} clips added from {} {}", into, added, from, clips.model().clips.keySet());
 	}
 
 	private static @Nullable NativeImage readImage(byte[] png) {
