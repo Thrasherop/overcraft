@@ -22,8 +22,7 @@ techniques/README.md (how the work gets done: a linked graph of notes). This fil
 - **Latest build for the owner: `run/build-0.3.18/`** (0.3.18, 2026-10-28 16:45): Mercy's second data pass (launch
   windows, Guardian Angel's target marker, the select screens' weapons, her staff's emote clips). Before it:
   `run/build-0.3.17/` (0.3.17, `main` d1b78c5, 2026-10-28 15:07): Mercy, the fourth hero
-  (her kit read from her statescript graphs: `E:\Overwatch Archive
-esearch\mercy\kit_details.md`; her hub is
+  (her kit read from her statescript graphs: `E:\Overwatch Archive\research\mercy\kit_details.md`; her hub is
   `techniques/heroes/mercy.md`, her open items `tools/reference/mercy-plan.md`), and Jetpack Cat's cat finally drawn.
   **For the owner's playtest tonight; Mercy isn't signed off.** The Lúcio wall-ride recorder for the Workshop is in
   `tools/workshop/`.

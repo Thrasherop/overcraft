@@ -43,8 +43,7 @@ the pack: her fur-coloured models, her emote sounds, paw hit sounds and voice li
 below), Mercy's models (body, first person, staff, blaster, her emote props), `ui`, `effects` (her masks) and
 `sounds`, then `zip`.
 - **Mercy, the fourth hero:** pick her on the select screen (or H at your bed). Her kit was read from her game data
-  graph by graph (`E:\Overwatch Archive
-esearch\mercy\kit_details.md`), the numbers from the latest patch notes.
+  graph by graph (`E:\Overwatch Archive\research\mercy\kit_details.md`), the numbers from the latest patch notes.
   - Caduceus Staff: left button heals (55/s), right boosts damage (+25%), locked on within 15 m; it holds 1.0 s out of
     sight (her data; the wiki says 1.3). Caduceus Blaster on 2 / the scroll wheel: 20 a round, 5 a second, 25 rounds,
     reload 1.4 s (the ammo is back at 0.91 s); the rounds leave her blaster's muzzle.
