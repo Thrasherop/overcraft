@@ -112,6 +112,8 @@ public final class OwMovement {
 
 	/** Set by the client: this entity has Lúcio's Wall Ride. */
 	public static Predicate<LivingEntity> wallRide = entity -> false;
+	/** Set by the client: the hero's gravity now, times Overwatch's (Lúcio's slam after Sound Barrier's cast: 2.4). */
+	public static java.util.function.ToDoubleFunction<LivingEntity> gravityScale = entity -> 1;
 	/** Set by the client: the jump key itself is down (Wall Ride holds on it, whatever the auto-climb option says). */
 	public static Predicate<LivingEntity> jumpKeyHeld = entity -> false;
 
@@ -317,7 +319,7 @@ public final class OwMovement {
 			vy = dy = Ow.speed(KirikoStats.CLIMB_SPEED);
 		} else {
 			// on the ground too: the small push down is what keeps Minecraft's onGround true
-			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING));
+			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity));
 			dy = step[0];
 			vy = step[1];
 			if (descent.test(entity) && vy < -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED)) {
@@ -369,7 +371,12 @@ public final class OwMovement {
 	 * about 15% short).
 	 */
 	public static double[] verticalStep(double vy, boolean slowFalling) {
-		double g = gravity(vy * 20);
+		return verticalStep(vy, slowFalling, 1);
+	}
+
+	/** The same, gravity times scale. */
+	public static double[] verticalStep(double vy, boolean slowFalling, double scale) {
+		double g = gravity(vy * 20) * scale;
 		if (slowFalling && vy <= 0) {
 			g = Math.min(g, 0.01 * 400);
 		}
