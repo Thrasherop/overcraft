@@ -92,3 +92,23 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   "primary_fire" to shoot only scoped her. Look at `"key"` in the reply before trusting a run.
 - **A wolf summoned with `Owner` is tame but has 8 health** (a tamed wolf's 40 comes from taming): a 20 hit killed it.
   NoAI zombies still burn in daylight, which shows in health read seconds apart.
+
+## Building her (2026-10-29: step 7, perks)
+- **Local Anesthetic** (`ana/Anesthetic`): the dart bursts where it hits (a creature or a block); 0.15 s later every enemy
+  within 4 m in sight takes 45 in 30 ticks over 3 s and is slowed 40% easing to 20%. Its damage runs inside
+  `Sleep.quietly`, so it never wakes a sleeper. Played: a walking zombie darted slept its full 5 s through the ticks
+  (5 + 45 taken); one 1.5 m away took 45, its speed 0.142 -> 0.181 over the 3 s then 0.23; one 5.5 m away nothing.
+- **A changing buff amount never applied:** `Combat.setModifier` only added a modifier that wasn't there, so the slow
+  stayed at 40%. It now replaces one whose amount differs. That also fixed Lucio's Amp It Up on the speed song: the
+  amped +60% never replaced the +25% already on (played after the fix: 0.125 -> 0.16 -> 0.125).
+- **Speed Serum:** `Combat.buff` +30%, Ana from the cast to the boost's end, the target for its 8 s. Played: her speed
+  0.13 then 0.10, a 1 s run 7.46 m against 5.61 after; a villager 0.5 -> 0.65 -> 0.5.
+- **Biotic Bounce:** the first burst bounces it (off a block mirrored and slowed, off a creature up: how far is ours, no
+  source has it) and its next contact bursts for 60 with the same 4 m and 3 s. Played: a zombie 20 -> 12.92 -> 8.19.
+- **Headhunter:** x2 when the hit point is in the top of the target's box (0.25 m under the eyes and up, as Kiriko's
+  kunai), darts and scoped shots alike, enemies only. Played: body 5.59, head 11.33, the same scoped.
+- **Picking perks in the harness:** `cmd /overcraft perks`, then hold `perk_menu` and press `secondary_fire` (left
+  choice) or `primary_fire` (right). The state doesn't list the picks: check them by their effects. Heroes switch only
+  at the spawn point (`hero <id>` elsewhere is ignored).
+- **Not reproduced:** once, a dart missed a zombie walking straight at her (no sleep, no damage); the same setup run again
+  hit, and later runs did too.

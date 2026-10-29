@@ -63,7 +63,7 @@ public class AnaDartEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level && getOwner() instanceof ServerPlayer owner && isAlive()) {
 			LivingEntity ally = hurtAllyAhead(owner);
 			if (ally != null) {
-				Ana.dose(owner, ally, true, this);
+				Ana.dose(owner, ally, true, this, position());
 				discard();
 				return;
 			}
@@ -100,7 +100,7 @@ public class AnaDartEntity extends OwProjectile {
 		EnderDragonPart part = hit.getEntity() instanceof EnderDragonPart p ? p : null;
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
-			Ana.dose(owner, target, false, this);
+			Ana.dose(owner, target, false, this, hit.getLocation());
 		} else if (target == null) {
 			// not a creature (an end crystal, a boat): hit as an arrow does
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, owner), (float) Ow.hp(AnaStats.RIFLE_DAMAGE));

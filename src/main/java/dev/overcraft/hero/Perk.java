@@ -30,7 +30,11 @@ public enum Perk {
 	LIFEWEAVER_PETAL_PROTECTION(Hero.LIFEWEAVER, Tier.MINOR, "petal_protection"),
 	LIFEWEAVER_DASHING_ESCAPE(Hero.LIFEWEAVER, Tier.MINOR, "dashing_escape"),
 	LIFEWEAVER_SUPERBLOOM(Hero.LIFEWEAVER, Tier.MAJOR, "superbloom"),
-	LIFEWEAVER_SOW_THE_SEED(Hero.LIFEWEAVER, Tier.MAJOR, "sow_the_seed");
+	LIFEWEAVER_SOW_THE_SEED(Hero.LIFEWEAVER, Tier.MAJOR, "sow_the_seed"),
+	ANA_LOCAL_ANESTHETIC(Hero.ANA, Tier.MINOR, "local_anesthetic"),
+	ANA_SPEED_SERUM(Hero.ANA, Tier.MINOR, "speed_serum"),
+	ANA_BIOTIC_BOUNCE(Hero.ANA, Tier.MAJOR, "biotic_bounce"),
+	ANA_HEADHUNTER(Hero.ANA, Tier.MAJOR, "headhunter");
 
 	public enum Tier { MINOR, MAJOR }
 

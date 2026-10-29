@@ -49,10 +49,23 @@ public final class Sleep {
 		}
 	}
 
+	/** Damage dealt inside {@link #quietly} doesn't wake anyone (Local Anesthetic's ticks). */
+	private static int quiet;
+
+	/** Runs damage that never wakes a sleeper (Ana's Local Anesthetic: D; W). */
+	public static float quietly(java.util.function.Supplier<Float> damage) {
+		quiet++;
+		try {
+			return damage.get();
+		} finally {
+			quiet--;
+		}
+	}
+
 	/** It took damage (Overcraft's AFTER_DAMAGE): after 0.5 s asleep it wakes, 0.5 s later. */
 	public static void onDamaged(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
-		if (s == null || s.waking) {
+		if (s == null || s.waking || quiet > 0) {
 			return;
 		}
 		long now = entity.level().getGameTime();

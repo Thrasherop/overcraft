@@ -73,6 +73,22 @@ public class SleepDartEntity extends OwProjectile {
 				Sleep.put(target, AnaStats.SLEEP_TIME);
 			}
 		}
+		anesthetic(level, owner, hit.getLocation());
 		discard();
+	}
+
+	@Override
+	protected void onHitBlock(net.minecraft.world.phys.BlockHitResult hit) {
+		if (level() instanceof ServerLevel level && getOwner() instanceof ServerPlayer owner) {
+			anesthetic(level, owner, hit.getLocation());
+		}
+		super.onHitBlock(hit);
+	}
+
+	/** Local Anesthetic (minor): the dart bursts where it hits, a creature or a block (D 0BDD #297). */
+	private static void anesthetic(ServerLevel level, ServerPlayer owner, net.minecraft.world.phys.Vec3 at) {
+		if (dev.overcraft.hero.HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_LOCAL_ANESTHETIC)) {
+			dev.overcraft.ana.Anesthetic.burst(level, owner, at);
+		}
 	}
 }

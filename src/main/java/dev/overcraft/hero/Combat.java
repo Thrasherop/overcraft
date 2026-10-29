@@ -432,9 +432,13 @@ public final class Combat {
 		if (instance == null) {
 			return;
 		}
+		AttributeModifier current = instance.getModifier(id);
 		if (amount == 0) {
 			instance.removeModifier(id);
-		} else if (!instance.hasModifier(id)) {
+		} else if (current == null || current.amount() != amount) {
+			// a changed amount replaces it (Local Anesthetic's slow eases from 40% to 20%: it stayed at 40% when only
+			// a missing one was added)
+			instance.removeModifier(id);
 			instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 	}

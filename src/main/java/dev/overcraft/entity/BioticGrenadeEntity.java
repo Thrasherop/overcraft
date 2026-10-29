@@ -52,8 +52,7 @@ public class BioticGrenadeEntity extends OwProjectile {
 	}
 
 	/** Not her, and not an ally at full health (it passes them). */
-	@Override
-	protected boolean canHitEntity(Entity entity) {
+	private boolean canHit(Entity entity) {
 		if (!super.canHitEntity(entity) || entity == getOwner()) {
 			return false;
 		}
@@ -61,23 +60,69 @@ public class BioticGrenadeEntity extends OwProjectile {
 			&& living.getHealth() >= living.getMaxHealth());
 	}
 
+	/** Biotic Bounce: it has burst once and bounced (its second burst is the perk's 60). */
+	private boolean bounced;
+	/** Ticks left in which it can't hit a creature again: a bounce off one would land on it at once. */
+	private int noHit;
+
+	@Override
+	public void tick() {
+		if (noHit > 0) {
+			noHit--;
+		}
+		super.tick();
+	}
+
+	@Override
+	protected boolean canHitEntity(Entity entity) {
+		return noHit <= 0 && canHit(entity);
+	}
+
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
-		burst();
+		burst(null);
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
-		burst();
+		burst(hit);
 	}
 
-	private void burst() {
-		if (level() instanceof ServerLevel level && isAlive()) {
-			if (getOwner() instanceof ServerPlayer owner) {
+	/**
+	 * Bursts where it is. With Biotic Bounce (major) the first burst sends it on (D 0B97 #176 turns the bounce on; how far
+	 * isn't in any source, ours: AnaStats.BOUNCE_KEEP / BOUNCE_UP) and the next contact bursts again for 60.
+	 */
+	private void burst(@org.jspecify.annotations.Nullable BlockHitResult block) {
+		if (!(level() instanceof ServerLevel level) || !isAlive()) {
+			return;
+		}
+		ServerPlayer owner = getOwner() instanceof ServerPlayer p ? p : null;
+		if (owner != null) {
+			if (bounced) {
+				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST);
+			} else {
 				Ana.grenadeBurst(level, owner, position(), this);
 			}
-			discard();
 		}
+		if (bounced || owner == null || !dev.overcraft.hero.HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_BIOTIC_BOUNCE)) {
+			discard();
+			return;
+		}
+		bounced = true;
+		noHit = 4;
+		net.minecraft.world.phys.Vec3 v = getDeltaMovement();
+		if (block != null) {
+			// off a block: mirrored across its face, slowed
+			net.minecraft.core.Direction face = block.getDirection();
+			net.minecraft.world.phys.Vec3 n = new net.minecraft.world.phys.Vec3(face.getStepX(), face.getStepY(), face.getStepZ());
+			v = v.subtract(n.scale(2 * v.dot(n))).scale(AnaStats.BOUNCE_KEEP);
+			// out of the block it hit, so it doesn't hit it again at once
+			setPos(block.getLocation().add(n.scale(hitRadius() + 0.01)));
+		} else {
+			// off a creature: up
+			v = new net.minecraft.world.phys.Vec3(v.x * AnaStats.BOUNCE_KEEP, Ow.speed(AnaStats.BOUNCE_UP), v.z * AnaStats.BOUNCE_KEEP);
+		}
+		setDeltaMovement(v);
 	}
 }

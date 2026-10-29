@@ -98,12 +98,15 @@ public final class AnaStats {
 	public static final double PERK_MINOR_XP = 2025, PERK_MAJOR_XP = 5060;   // D 4BE4 #55 (12B2, + 1291)
 	/** Local Anesthetic (minor): the sleep dart bursts, 45 over 3 s in 30 ticks to enemies within 4 m, slowing them. */
 	public static final double ANESTHETIC_DAMAGE = 45, ANESTHETIC_TIME = 3, ANESTHETIC_RADIUS = 4;   // BZ 2026-10-06; D 6123
+	public static final int ANESTHETIC_TICKS = 30;             // D 6123 #374 / #372
 	/** Its slow: 40% easing to 20% over the 3 s (D 6123 #380: M; W says 50%: the data used). */
 	public static final double ANESTHETIC_SLOW_FROM = 0.4, ANESTHETIC_SLOW_TO = 0.2;
 	/** Speed Serum (minor): Nano Boost speeds Ana and her target. */
 	public static final double SPEED_SERUM = 0.3;              // BZ 2026-06-16 (40 -> 30%); D 51F0 #401
 	/** Biotic Bounce (major): the grenade bounces and bursts again for this. */
 	public static final double BOUNCE_BURST = 60;              // BZ 2025-08-26 (25 -> 60); D 1549
+	/** How it bounces (no source gives it: ours): its speed kept off a block, reflected; straight up off a creature. */
+	public static final double BOUNCE_KEEP = 0.45, BOUNCE_UP = 5;
 	/** Headhunter (major): the rifle's head hits deal this much more, scoped and unscoped. */
 	public static final double HEADHUNTER = 2;                 // BZ 2025-10-14 (1.5x -> 2x); D 0B95 #269
 }
