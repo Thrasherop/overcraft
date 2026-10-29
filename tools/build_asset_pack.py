@@ -139,6 +139,63 @@ def add_ui(source):
             (feed / f"{name}.png.mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
         else:
             print(f"no kill feed {name} icon ({png})")
+    song = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes" / "lucio" / "song"
+    for name, (texture, box) in SONG_GLYPHS.items():
+        png = dump / f"{texture}.png"
+        if png.exists():
+            song.mkdir(parents=True, exist_ok=True)
+            glyph_crop(png, box, song / f"{name}.png")
+            (song / f"{name}.png.mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
+        else:
+            print(f"no Lucio {name} song icon ({png})")
+
+
+# Lúcio's song indicator under the crosshair (#61): the UI dump has no art of its own for it (a search of all 21,567
+# textures, 2026-10-29); its icons are the glyphs inside his Healing Boost (3C5D) and Speed Boost (3C5C) icons: the
+# pieces lying wholly inside each box (x0, y0, x1, y1), the rest of the icon masked out
+SONG_GLYPHS = {"heal": ("000000003C5D", (43, 47, 83, 89)), "speed": ("000000003C5C", (42, 50, 89, 87))}
+
+
+def glyph_crop(png, box, out):
+    """The connected pieces of png's mask lying wholly inside box, their soft edges kept, as a 64 x 64 white mask."""
+    from PIL import Image
+    im = Image.open(png).convert("RGBA")
+    mask = im.split()[3] if im.getextrema()[3][0] < 255 else im.convert("L")
+    w, h = mask.size
+    px = mask.load()
+    x0, y0, x1, y1 = box
+    seen = set()
+    keep = set()
+    for y in range(h):
+        for x in range(w):
+            if (x, y) in seen or px[x, y] < 64:
+                continue
+            piece = []
+            stack = [(x, y)]
+            seen.add((x, y))
+            while stack:
+                cx, cy = stack.pop()
+                piece.append((cx, cy))
+                for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                    if 0 <= nx < w and 0 <= ny < h and (nx, ny) not in seen and px[nx, ny] >= 64:
+                        seen.add((nx, ny))
+                        stack.append((nx, ny))
+            xs = [p[0] for p in piece]
+            ys = [p[1] for p in piece]
+            if min(xs) >= x0 and max(xs) < x1 and min(ys) >= y0 and max(ys) < y1:
+                keep.update(piece)
+    # their soft edges: a pixel's neighbours
+    edge = {(x + dx, y + dy) for x, y in keep for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
+    side = max(x1 - x0, y1 - y0) + 8
+    glyph = Image.new("L", (side, side), 0)
+    gp = glyph.load()
+    ox = (side - (x1 - x0)) // 2 - x0
+    oy = (side - (y1 - y0)) // 2 - y0
+    for x, y in edge:
+        if 0 <= x < w and 0 <= y < h and 0 <= x + ox < side and 0 <= y + oy < side:
+            gp[x + ox, y + oy] = px[x, y]
+    white = Image.new("L", (side, side), 255)
+    Image.merge("RGBA", (white, white, white, glyph)).resize((64, 64), Image.LANCZOS).save(out)
 
 
 # the sound maps' own subtitles: event -> text (read_soundmaps)

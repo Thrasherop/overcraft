@@ -55,6 +55,11 @@ public final class HeroArt {
 		return art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
 	}
 
+	/** Lúcio's song icon under the crosshair (#61): the heal song's plus or the speed song's chevrons, white on clear. */
+	public static @Nullable Identifier songGlyph(boolean speed) {
+		return art(Hero.LUCIO, "song/" + (speed ? "speed" : "heal"));
+	}
+
 	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */
 	public static @Nullable Identifier perk(Hero hero, String perk) {
 		return art(hero, "perks/" + perk);
