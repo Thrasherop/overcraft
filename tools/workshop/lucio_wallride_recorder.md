@@ -56,4 +56,4 @@ screen. Note what each MARK was.
   `CROSSFADE`, `AMP`, `ULT`.
 
 The on-screen readout shows the same live: slot, time, wall / ground, speeds, height, velocity, input, jump, pitch, the
-wall's normal and distance, rides, marks, Crossfades, Amp, ult and the last event.
+wall's normal and distance, rides, marks, Crossfades, Amp, ult and the last event. The jump on the input line is live; the one in the last event (LEAVE ... jump on leaving) is the moment he left the wall and stays until the next event (the owner, 2026-10-28: it read as stuck).
