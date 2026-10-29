@@ -364,6 +364,27 @@ public final class JetpackCat implements HeroKit {
 		return s.lifelineOnTicks >= Ow.ticks(LIFELINE_OFF_AFTER) && (s.lifelineTarget == null || s.lifelineTicks >= Ow.ticks(LIFELINE_HOLD));
 	}
 
+	/**
+	 * A player has just started to see her (joined, respawned, came into range): her Lifeline switched on and whoever
+	 * she tows or carries, which other players otherwise hear of only as they change (found playing with two players:
+	 * an ally who respawned under her got no Lifeline prompt until she switched it off and on).
+	 */
+	public static void showState(ServerPlayer cat, ServerPlayer viewer) {
+		HeroState s = HeroManager.state(cat);
+		if (s == null || s.hero != Hero.JETPACK_CAT) {
+			return;
+		}
+		if (s.lifelineOn) {
+			Effects.send(viewer, "lifeline_state", cat.position(), null, cat.getId(), cat);
+		}
+		boolean carrying = s.ultPhase == ULT_CARRY && s.carried != null;
+		Integer towed = s.lifelineTarget != null ? s.lifelineTarget : carrying ? s.carried : null;
+		Entity on = towed == null ? null : cat.level().getEntity(towed);
+		if (on != null) {
+			Effects.send(viewer, s.lifelineTarget != null ? "tether_state" : "carry_state", on.position(), on, cat.getId(), cat);
+		}
+	}
+
 	private static void lifelineOn(ServerPlayer player, HeroState s) {
 		s.lifelineOn = true;
 		s.lifelineOnTicks = 0;
