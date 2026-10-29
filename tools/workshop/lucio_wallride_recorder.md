@@ -9,8 +9,12 @@ buttons). Nothing touches Overwatch's files or memory.
 2. In Overwatch: **Play → Custom Game → Create → Settings**, then the **paste** button (the clipboard icon at the top
    right of the settings screen). It sets Skirmish, no hero limit, instant respawns, and forces Lúcio.
    If Overwatch says a line doesn't parse, tell me which: the script hasn't been run yet.
-3. **Options → Gameplay → General: turn on Workshop Inspector Log File** (if your build has it). Everything the script
-   logs then goes to a text file in `Documents\Overwatch\Workshop\`.
+3. **Before creating the game: Options → Gameplay → General**, in the Workshop part of the list, turn on **both**
+   **Workshop Inspector** and **Workshop Inspector Log File** (the log file stays empty with only one of them on).
+   The host's game then writes everything the script logs to `Documents\Overwatch\Workshop\Log-<date>-<time>.txt`,
+   live as you play. Moving to spectator and back starts a new file.
+   To check it's logging: open the Workshop Inspector in the game (the same settings list has a button for it).
+   Lines starting S0, S1... should be scrolling there. If it's empty, the script isn't running: say so.
 4. Start the game on a map with long walls (Ilios Ruins, Lijiang Night Market, Oasis City Center).
 
 ## Playing together
@@ -32,7 +36,11 @@ screen. Note what each MARK was.
 - **Note which song you started on** (the Workshop can't read it; Crossfade presses are counted).
 
 ## Send back
-- The newest file from `Documents\Overwatch\Workshop\`.
+- The newest `Log-....txt` files from `Documents\Overwatch\Workshop\` on the host's PC (all of them from the
+  session, if spectating split it). If your Documents folder is synced by OneDrive, the folder is
+  `OneDrive\Documents\Overwatch\Workshop\` instead. Not in either? With Overwatch closed, this lists the newest
+  Workshop logs anywhere in your user folder (PowerShell):
+  `Get-ChildItem $env:USERPROFILE -Recurse -Filter 'Log-*.txt' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 5 FullName, LastWriteTime`
 - What each MARK was, with its S number, and the song each player started on.
 - Tell me when Overwatch is closed: nothing of mine runs or reads anything while it's open.
 - No log file option? Screenshots of the left-side readout during a ride, or a short screen recording of it.
@@ -48,4 +56,4 @@ screen. Note what each MARK was.
   `CROSSFADE`, `AMP`, `ULT`.
 
 The on-screen readout shows the same live: slot, time, wall / ground, speeds, height, velocity, input, jump, pitch, the
-wall's normal and distance, rides, marks, Crossfades, Amp, ult and the last event.
+wall's normal and distance, rides, marks, Crossfades, Amp, ult and the last event. The jump on the input line is live; the one in the last event (LEAVE ... jump on leaving) is the moment he left the wall and stays until the next event (the owner, 2026-10-28: it read as stuck).

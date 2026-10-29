@@ -198,7 +198,7 @@ rule("Off the wall: a bookmark (no waits)")
 	{
 		Event Player.leaveTime = Total Time Elapsed;
 		Event Player.leaveVel = Velocity Of(Event Player);
-		Event Player.lastEvent = Custom String("LEAVE after {0} s | vel {1} | jump held {2}", Round To Integer((Total Time Elapsed
+		Event Player.lastEvent = Custom String("LEAVE after {0} s | vel {1} | jump on leaving {2}", Round To Integer((Total Time Elapsed
 			- Event Player.attachTime) * 100, Down) / 100, Event Player.leaveVel, Is Button Held(Event Player, Button(Jump)));
 		Log To Inspector(Custom String("S{0} EVENT LEAVE {1} | {2}", Slot Of(Event Player), Event Player.rideCount, Custom String(
 			"t {0} | rode {1} s | {2}", Total Time Elapsed, Total Time Elapsed - Event Player.attachTime, Custom String(

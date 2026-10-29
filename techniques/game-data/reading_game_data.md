@@ -57,7 +57,7 @@ music was found the same way (graph 0D3B: [music-round9](../../tools/reference/m
 
 **TankLib leaves expression operands unmapped** (raw fields like EDD5CEE2), so a node's expression reads as opcodes with
 holes. For Mercy (2026-10-28) a raw STU v2 reader and a small decompiler that resolve the operands and follow the
-branches turned her whole kit into formulas with node ids: `E:\Overwatch Archiveesearch\mercy\scripts\kit\`
+branches turned her whole kit into formulas with node ids: `E:\Overwatch Archive\research\mercy\scripts\kit\`
 (stuv2.py, operands.py, decomp.py), outputs in `work_kit\`. The hero-settings file (0126) names the options and their
 defaults (Mercy's "prefer beam target", "crouch activates Angelic Descent"), which tells you which branch is the
 default game. **A value that matches a public number isn't identified until its reader is found:** her 1BE6 = 1.3

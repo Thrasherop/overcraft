@@ -41,6 +41,17 @@ public final class Effects {
 			target.getId(), kind, false));
 	}
 
+	/**
+	 * An effect for one player alone, in their team's view of owner: a state they missed because they couldn't see it
+	 * as it began (they joined, respawned or came into range).
+	 */
+	public static void send(ServerPlayer player, String effect, Vec3 at, @Nullable Entity entity, int variant,
+							@Nullable Entity owner) {
+		boolean enemy = owner != null && owner != player && !Allies.wasAlly(player, owner);
+		ServerPlayNetworking.send(player, new EffectPayload(effect, at.x, at.y, at.z, 0, 0, 0, entity == null ? -1 : entity.getId(),
+			variant, enemy));
+	}
+
 	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant) {
 		play(level, effect, at, direction, entity, variant, null);
 	}

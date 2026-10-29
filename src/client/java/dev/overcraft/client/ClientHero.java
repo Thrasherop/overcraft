@@ -189,10 +189,10 @@ public final class ClientHero {
 		} else {
 			EmoteCamera.stop(mc);
 		}
-		// Jetpack Cat towing an ally on Lifeline, or in Catnapper from its aim to the end of the carry: seen from behind
+		// Jetpack Cat with Lifeline on (towing or seeking), or in Catnapper from its aim to the end of the carry: from behind
 		int mode = sync.mode();
 		AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
-			&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
+			&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
 		if (view != chatHeroView) {
@@ -314,8 +314,12 @@ public final class ClientHero {
 			return;
 		}
 
-		// interact: Minecraft's right-click (doors, buttons, chests, villagers), which the fire buttons don't do
-		if (drain(HeroControls.get(Action.INTERACT))) {
+		// interact: a Jetpack Cat's Lifeline offered (its prompt), else Minecraft's right-click (doors, buttons, chests,
+		// villagers), which the fire buttons don't do
+		int offer = dev.overcraft.client.effect.JetpackCatFx.lifelineOffer(player);
+		if (offer >= 0 && drain(HeroControls.get(Action.INTERACT))) {
+			ClientPlayNetworking.send(new dev.overcraft.net.LifelineGrabPayload(offer));
+		} else if (drain(HeroControls.get(Action.INTERACT))) {
 			interacting = true;
 			try {
 				((MinecraftInvoker) mc).overcraft$startUseItem();

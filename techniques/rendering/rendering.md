@@ -25,6 +25,9 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
   Submit order is honoured across orders (`collector.order(n)`). A depth test alone speckles.
 - **Custom geometry gets no outline from the entity's `outlineColor`:** submit the mesh again with
   `renderType.outline()`, as `DragonFireballRenderer` does.
+- **An effect mesh loads only if `HeroModels.EXTRAS` names it** (2026-10-28). Jetpack Cat's torus and cone were in
+  the pack, `Fx.mesh` returned null, and her rings and arm glow simply never drew. When an effect mesh draws nothing,
+  check the list before the effect.
 - **Held items, sized by measurement:** `ItemStackRenderState.getModelBoundingBox()` gives an item's box as held. Its
   thin side tells a tool (across) from a sprite (along the view), and its longest side makes a size cap.
 
@@ -61,6 +64,13 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A projectile's first frames are at the shooter's eyes in first person,** not at the view model's hand: a muzzle
   flare there filled the view, and a 0.5 m halo at 1 m was a bright ball beside her paw. Skip the muzzle for your own
   first-person shots and fade them in over a few metres (`JetpackCatFx.pawFlight`).
+- **Masks the game multiplies on one mesh can be baked into one** when they share its UVs (`build_asset_pack.py`
+  PRODUCTS; a particle draws one mask). Read the mesh's UVs first. On her ring torus (15A26) U runs round the ring and
+  V round the tube, so the 1C7A strip (bright in the middle of V) lights the outer rim. The 299E3 noise alone filled
+  the whole fat tube, and seven rings read as one solid disc (2026-10-28).
+- **A soft `NATURAL` particle takes its shape from the mask's alpha.** A grey mask (solid alpha, its shape in its
+  grey: the smoke) drew as white squares in Catnapper's landing. `EffectArt` now uses a solid-alpha mask's grey as its
+  alpha; a texture with a real cut-out (Kiriko's climb dust) keeps its own.
 - **A flat effect "on the ground" floats over any slope:** lay it in short pieces, each at the top of the first solid
   block under open space (`KirikoFx.groundY`).
 

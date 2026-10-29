@@ -6,6 +6,33 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-28
 
+### Build 0.3.20 (Jetpack Cat's Lifeline; Lúcio's wall ride, measured)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.20): Jetpack Cat's effect meshes (her rings and her arm's
+cone) and masks are new (`effects`, then `zip`).
+- **Jetpack Cat's Lifeline, as her graph runs it** (#55): Shift switches it on and it seeks. A paw marker on the ground
+  under her, rings opening on it and a glow at her arm's tip (her own assets, #59 in part). Allied mobs are caught by
+  themselves; a player takes it with Interact (an "F LIFELINE" prompt). +30% speed while on, a 2 s cooldown, and the
+  rope runs from her arm to just over the ally's head. A player who joins, respawns or comes into range sees it too
+  (found playing with two players).
+- **Third person for her abilities shows what she aims at:** Minecraft's camera sits on her line of sight, so
+  Catnapper's marker was always behind her head. While Lifeline or Catnapper holds the view, it rises 1 m and looks at
+  the point she aims at. Catnapper's aim (rings, ground glows, lines from her paws) comes from her data, and
+  cancelling takes it away at once. Her landing's smoke drew as white squares; it's soft now.
+- **Lúcio's wall ride, as the owner's Workshop recording measured it** (151 rides, `tools/reference/lucio-wallride-log.md`;
+  #57):
+  - He rises fast and levels off about 2.7 m up, wherever he looks.
+  - He keeps the way he got on: look anywhere, and jump off and back on to turn.
+  - Extra speed from a chain of wall jumps holds 0.3 s, then brakes to the wall speed.
+  - The leap peaks 1.41 m up.
+  - He gets on from about 1 m away (more forgiving).
+  - Crouching off or riding off the end keeps his upward speed.
+  - Corners at full speed, and 1-block steps from any jump timing.
+- **Workshop recorders:** the instructions say where the log file goes (both Workshop Inspector settings; a Documents
+  folder synced by OneDrive), and the leave event's jump reads "jump on leaving" (it read as a stuck "jump held").
+- New issues: #61 (Lúcio's song indicator under the crosshair) and the next heroes, one each (Lifeweaver #39, Ana
+  #63, Sombra #64, Brigitte #65, Juno #1, Sojourn #2, Sigma #68, D.Va #69, Pharah #70, Tracer #71, Cassidy #72,
+  Junkrat #73).
+
 ### Build 0.3.19 (the owner's 0.3.18 playtest)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.19): 0.3.17 and 0.3.18 shipped Jetpack Cat's old models and
 none of her data pass's sounds (#50: the pack was assembled from two worktrees and the older files won). Fixed in
@@ -43,8 +70,7 @@ the pack: her fur-coloured models, her emote sounds, paw hit sounds and voice li
 below), Mercy's models (body, first person, staff, blaster, her emote props), `ui`, `effects` (her masks) and
 `sounds`, then `zip`.
 - **Mercy, the fourth hero:** pick her on the select screen (or H at your bed). Her kit was read from her game data
-  graph by graph (`E:\Overwatch Archive
-esearch\mercy\kit_details.md`), the numbers from the latest patch notes.
+  graph by graph (`E:\Overwatch Archive\research\mercy\kit_details.md`), the numbers from the latest patch notes.
   - Caduceus Staff: left button heals (55/s), right boosts damage (+25%), locked on within 15 m; it holds 1.0 s out of
     sight (her data; the wiki says 1.3). Caduceus Blaster on 2 / the scroll wheel: 20 a round, 5 a second, 25 rounds,
     reload 1.4 s (the ammo is back at 0.91 s); the rounds leave her blaster's muzzle.

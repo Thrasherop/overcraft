@@ -46,6 +46,14 @@ angles: `setRotation`, `setPosition` at the pivot, `move(-getMaxZoom(distance), 
 free). The camera type must still be a detached one, or Minecraft doesn't draw the player's own model. The mouse
 reaches the orbit through the same `turnPlayer` redirect as the wheel's pointer.
 
+**Aiming from third person** (2026-10-28). Minecraft's third-person camera sits on the player's line of sight, so the
+point they aim at is always behind their own head: Catnapper's marker was drawn and never seen. While an ability holds
+the view (`AbilityCamera`), the camera rises 1 m in its own up off that line (cut short under a ceiling), backs off as
+vanilla does, then turns to the point the line meets. The target shows above the head, under the crosshair; plain F5
+is left alone. Mind which point the server aims from: still the eyes, so the camera has to look at the eyes' point.
+
+26.3's window is SDL3 (`org.lwjgl.sdl.SDLVideo`, `Window.handle()`), not GLFW: LWJGL's GLFW isn't on the classpath.
+
 ## A plain vanilla server
 For "the mod stays invisible" checks (#32):
 1. Copy Loom's `~/.gradle/caches/fabric-loom/26.3/minecraft-server.jar` to a folder outside the repo.

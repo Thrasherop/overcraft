@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.19";
+	public static final String ASSETS_NEEDED = "0.3.20";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -113,6 +113,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(VoiceLinePayload.TYPE, VoiceLinePayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EmotePayload.TYPE, EmotePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.LifelineGrabPayload.TYPE, dev.overcraft.net.LifelineGrabPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
@@ -146,6 +147,8 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> dev.overcraft.comms.Pings.ping(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(EmotePayload.TYPE,
 			(payload, context) -> Comms.emote(context.player(), payload.id()));
+		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.LifelineGrabPayload.TYPE,
+			(payload, context) -> dev.overcraft.jetpackcat.JetpackCat.grab(context.player(), payload.cat()));
 		ServerPlayNetworking.registerGlobalReceiver(VoiceLinePayload.TYPE,
 			(payload, context) -> Comms.voiceLine(context.player(), payload.id()));
 		ServerPlayNetworking.registerGlobalReceiver(TeamPayload.TYPE,
@@ -161,6 +164,12 @@ public class Overcraft implements ModInitializer {
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
+		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
+			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
+				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
+			}
+		});
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);

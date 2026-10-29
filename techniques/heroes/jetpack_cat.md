@@ -40,12 +40,27 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - **Effects** from `tools/reference/jetpack_cat-effects.md` (a research pass over her 75 effects): `JetpackCatFx`. Her
   colours are gold and blue/cyan, enemies see red and orange (`CAT_*` palettes). Shots: gold core in a blue halo, gold
   tracer, blue trail, sparks, a star flare at the paw; the centre shot prints a paw (five quads) on a creature. Purr: a
-  dome bursting to 10 m, gold and blue rings each pulse. The rope: two straight bands (the data has no sag). Catnapper:
-  pulsing target rings and paw lines while aiming, a flash, smoke and glowing cracks on landing.
+  dome bursting to 10 m, gold and blue rings each pulse. The rope, Lifeline's markers and Catnapper's aim come from her own data now (below).
+  Catnapper's landing: a flash, smoke and glowing cracks.
 - Her masks aren't in the extraction: `build_asset_pack.py effects <extraction> "E:\Overwatch
   Archive\research\jetpack_cat\fx"` takes them from her research folder.
 - **Sounds** from `tools/soundmaps/jetpack_cat.txt` (29 rules, 30 voice moments): one-shots from the server (fire and
   reload for everyone, the rest hers), loops from her client (`JetpackCatSounds`), voice by moment (`Voice`).
+
+## Lifeline and Catnapper from her data (2026-10-28, #55 / #59)
+From `research/jetpack_cat/assets2.md` (the owner: "use less custom assets more of cat's actual assets"):
+- **The rope** (71B0; Catnapper's 71C4 adds a 0.32 m strip): a braided cable (6E132) over two glows, a ball at each
+  end, from her arm's tip (bone 3E67: `HeroModelRenderer`'s hardpoint 6) to her hook 2.2 m over the ally's feet (just
+  over a mob's head). It flashes as it latches (72FA).
+- **Seeking:** the paw marker under her (7432, the data's half icon mirrored whole by the pack builder), rings opening
+  on it (7490: torus 15A26, noise times strip), the cone glow at her arm (6EA2, mesh 1B972).
+- **Catnapper's aim:** rings (71B3: the strip alone), two ground glows (4C09), lines from her paws (71AF). A cancel
+  takes the rings with it; after a confirm they stay to mark the landing.
+- **The view:** in third person her own head hid the aim; the lifted ability view is in
+  [minecraft_26](../minecraft/minecraft_26.md#a-camera-of-our-own). The data gives no camera placement for it (her
+  flight graph's v479, 3.5 or 6.75, may be a camera distance: L).
+- Still ours: the rings' growth (the data's 0 to 5 curve, L), the cone's place under the arm, leaving the 18E48 cloud
+  off the aim rings. Her projectiles are still to move to her own assets (#59).
 
 ## The body that was never drawn (0.3.16, found by the owner)
 - 0.3.16 shipped an empty jetpack with eyes and a tongue: her fur material (shader 0x10D) has its colour texture only
@@ -54,7 +69,7 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
   the lesson is in [animation_import](../animation/animation_import.md). **Look at the whole model from every side
   after any export, and compare with the hero's portrait.**
 
-## The gaps pass (2026-10-28: `E:\Overwatch Archiveesearch\jetpack_cat\gaps.md`)
+## The gaps pass (2026-10-28: `E:\Overwatch Archive\research\jetpack_cat\gaps.md`)
 - Settled from the data: her four emotes and their props, 12 voice-line unlocks, the nozzle hardpoints (the look 2673's
   own table: idle flames and boost trails now on them), the paws' hardpoints (000A / 000B), the hit sounds (73A4;
   centre shot on a block 093B; the paw shots make none on walls), the hit sizes (the wiki's), the rope's snap at 3

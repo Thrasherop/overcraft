@@ -35,8 +35,12 @@ public final class HeroModels {
 	}
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
-	/** Models that aren't heroes (Kitsune Rush's fox), by file name: {@code hero_models/<name>.glb}. */
-	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii");
+	/**
+	 * Models that aren't heroes (Kitsune Rush's fox), by file name: {@code hero_models/<name>.glb}. Effect meshes (the
+	 * torii, Jetpack Cat's rings and cones: Fx.mesh) load only from this list.
+	 */
+	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii",
+		"cat_torus", "cat_cone");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

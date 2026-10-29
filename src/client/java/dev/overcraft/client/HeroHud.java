@@ -191,6 +191,7 @@ public final class HeroHud {
 		} else if (hero == Hero.MERCY) {
 			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		}
+		lifelinePrompt(g, player, w, h);
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
@@ -1177,6 +1178,20 @@ public final class HeroHud {
 			return;
 		}
 		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+	}
+
+	/**
+	 * An ally Jetpack Cat's Lifeline in reach: Overwatch's prompt on the ally (her graph 5A8F, 3A94 #1253: Interact,
+	 * "Lifeline"), under the crosshair; Interact takes it (ClientHero, LifelineGrabPayload). Its look is ours.
+	 */
+	private static void lifelinePrompt(GuiGraphicsExtractor g, LocalPlayer player, float w, float h) {
+		if (dev.overcraft.client.effect.JetpackCatFx.lifelineOffer(player) < 0) {
+			return;
+		}
+		float y = h / 2 + 150;
+		float textW = HudText.width(Face.BODY, "LIFELINE", 18);
+		keyLabel(g, HeroControls.get(Action.INTERACT), w / 2 - textW / 2 - 22, y, WHITE, false);
+		HudText.draw(g, Face.BODY, "LIFELINE", w / 2 - textW / 2 + 4, y + 7, 18, WHITE, Align.LEFT);
 	}
 
 	/**

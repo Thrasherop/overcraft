@@ -19,10 +19,14 @@
 - **Emotes:** `emote <id>`, `emoteat <s>|off` (every emote held at that time), `emotef5 on|off`. The wheel by hand:
   `key comms down`, `key primary_fire` (right click: the emote page), `mouse 0 -150` (the top slot), `key comms up`.
 - **Effects:** `fxslow <share>` (0.08: about twelve times slower; `fxslow 1` back), and `state` reports `fx`, the
-  live particles.
+  live particles. `fxnear [x y z] r` lists the live ones near a point (texture, shape, age, size, alpha): the
+  quickest way to tell "never spawned" from "spawned and not seen" (2026-10-28: Catnapper's rings were never spawned,
+  its glows were spawned and hidden behind her head).
 - **Cloth and rendering:** `clothfloor on|off`, `timing`, `shadows on|off`, `reload` (resource packs: a regenerated
   data file without a restart).
 - **World:** `newworld`, `openworld`, `cmd <command>`, `respawn`, `chat <text>`, `connect host:port`.
+- **Window:** `window 1280 720`; `focus` restores and raises it (SDL), though Windows may still keep it behind (see
+  [hand_play](hand_play.md#real-input)).
 - **Live knobs for anything placed by eye:** `held`, `heldmax`, `heldscale`, `swing`. Put the numbers in a public
   static array with a command that sets them, try each axis both ways in one batch of screenshots, then write the
   winners in as the defaults.
@@ -45,12 +49,18 @@
   854x480, the pause menu's Disconnect is `screenclick 213 174`.
 - **A click that confirms something needs to be held** (`key attack down`, 0.1 s, `up`): the server reads held
   buttons once a tick, and a tap's down and up can both arrive between two ticks (Catnapper's confirm was missed).
+- **`secondary_fire` is the left button:** the action names follow Kiriko (her secondary, the kunai, is on the left).
+  For Jetpack Cat and Lucio the left button is the primary fire, so `key secondary_fire` confirmed a Catnapper meant
+  to be cancelled (2026-10-28). Q cancels it.
 - **Toggles toggle:** a second Q cancelled the aim the first started. Know the state before pressing a toggle again.
 - **Aiming at something:** `py -I tools/aim.py <entity type> <height above its feet>` (with `OC_LOG` set to the game's
   log) prints the yaw and pitch from the eyes to the nearest one, for `look`.
 - **Commands run by a dead player find no entities** (`kill @e[...]` says "No entity was found"): clear the world only
   while alive, and check it worked (`execute as @e run say left`). Leftover skeletons from one test shot the hero in the
   next, which looked like a respawn at half health (2026-10-28).
+- **NoAI mobs can't be moved at all:** a towed NoAI villager stayed put while the rope said towing. Tow and carry
+  tests need mobs with AI, and those walk: a zombie walked under her and out of Catnapper's 5.5 m reach. Move the mob
+  onto the mark in the same batch as the confirm.
 - **Scripted aim lags moving mobs:** `aim.py` reads positions about 0.4 s before the shot, so a strafing skeleton is
   missed; a scripted night fight measures nothing about a kit. Use still (NoAI) targets for numbers.
 - **Test worlds spawn mobs:** a superflat world has slimes; a hero hovering in place was killed twice mid-test. Turn
