@@ -6,6 +6,22 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-10-28
 
+### Build 0.3.19 (the owner's 0.3.18 playtest)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.19): 0.3.17 and 0.3.18 shipped Jetpack Cat's old models and
+none of her data pass's sounds (#50: the pack was assembled from two worktrees and the older files won). Fixed in
+the pack: her fur-coloured models, her emote sounds, paw hit sounds and voice lines (every hero's sounds rebuilt).
+- **Jetpack Cat** is visible again, in first and third person and on the select screen (#50); her HUD portrait sits in
+  its frame (#54: every hero's HUD head now uses the art's own frame); third person while towing with Lifeline and
+  through Catnapper (#55, part: switching Lifeline on with nobody attached comes with its rework).
+- **Every hero:** running jumps onto 1-block ledges don't need timing (#56): a hero who met a ledge on the way down
+  hung at its edge; now she's carried over it, from 0.6 m below its top.
+- **Mercy:** the damage boost beam is blue (#51); a resurrected villager gives the discounts of a cure (#52); Guardian
+  Angel's launches are more forgiving (#57: 0.6 s after arriving, full momentum after 0.6 s of flight).
+- **Lúcio:** Sound Barrier's overhealth shows in the hero HUD, in the number and as green pips (#53).
+- **Mic Drop:** the released mic falls, bounces and tumbles (#58).
+- Workshop recorders for Lúcio's wall ride and Jetpack Cat's flight (#60), each with its instructions
+  (`tools/workshop/`).
+
 ### Build 0.3.18 (Mercy, a second pass over her data)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.18): her staff's model now carries its three emote clips
 (`tools/clipmaps/mercy_staff.txt`), then `zip`.
