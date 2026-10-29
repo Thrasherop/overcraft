@@ -120,12 +120,14 @@ public final class LucioStats {
 	public static final double BARRIER_RADIUS = 30;           // wiki
 	public static final double BARRIER_CAST = 0.656;          // wiki
 	/**
-	 * The leap on casting, up: the cast's own clip (2E4F, the game data) lifts his feet 1.63 m, its top 0.37 s after he
-	 * leaves the ground; 7.4 m/s reaches that height under Overwatch's gravity, its top 0.44 s up. Blizzard's 240% cast
-	 * gravity (below) isn't applied: with it no single speed matches both the clip's height and its time aloft.
+	 * The leap on casting, up, and the slam: the owner's Workshop recording (2026-10-28, cast in the air after a wall
+	 * jump; tools/reference/lucio-wallride-log.md) rises 1.07 m, its top 0.34 s after the cast (6.0 m/s here; until
+	 * 2026-10-29 ours was 7.4, fitted to the cast clip's feet, 1.6 m), his speed along kept; from the cast's end
+	 * (0.656 s) he falls at about 40 m/s² until he lands: Blizzard's 240% gravity (Dec 10 2024), which the recording
+	 * shows starting with the cast's end.
 	 */
-	public static final double BARRIER_LEAP = 7.4;
-	public static final double BARRIER_GRAVITY = 2.4;         // Dec 10 2024: 240% while casting
+	public static final double BARRIER_LEAP = 6.0;
+	public static final double BARRIER_GRAVITY = 2.4;
 
 	// Tactician (sub-role, Feb 10 2026): ult charge kept past 100%, up to 125%, gained at -25% above 100%
 	public static final double TACTICIAN_CAP = 1.25;

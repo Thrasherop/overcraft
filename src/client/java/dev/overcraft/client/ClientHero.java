@@ -402,7 +402,27 @@ public final class ClientHero {
 	}
 
 	/** End of each client tick: heroes don't sprint. */
+	/** Sound Barrier on this client: when its cast began (game ticks, -1 none), and whether he has landed since. */
+	private static long barrierStart = -1;
+	private static boolean barrierLanded;
+
+	/** His slam: from Sound Barrier's cast end until he lands, his gravity is 240% (LucioStats.BARRIER_GRAVITY). */
+	public static boolean barrierSlam(Minecraft mc) {
+		return barrierStart >= 0 && !barrierLanded && mc.level != null
+			&& mc.level.getGameTime() - barrierStart >= Math.round(dev.overcraft.lucio.LucioStats.BARRIER_CAST * 20);
+	}
+
 	public static void endTick(Minecraft mc) {
+		if (hero() == Hero.LUCIO && sync.ultActive() && mc.level != null && mc.player != null) {
+			if (barrierStart < 0) {
+				barrierStart = mc.level.getGameTime();
+				barrierLanded = false;
+			} else if (mc.player.onGround() && mc.level.getGameTime() - barrierStart > 2) {
+				barrierLanded = true;
+			}
+		} else {
+			barrierStart = -1;
+		}
 		if (mc.player != null && controls() && mc.player.isSprinting()) {
 			mc.player.setSprinting(false);
 		}

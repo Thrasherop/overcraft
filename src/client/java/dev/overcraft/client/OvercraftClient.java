@@ -195,6 +195,8 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.active = entity -> entity == mc.player && ClientHero.controls();
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
+		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
+			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown()
 			&& !ClientMercy.heldForLaunch(HeroControls.Action.JUMP);
