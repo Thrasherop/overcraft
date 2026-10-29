@@ -50,6 +50,8 @@ public final class JetpackCat implements HeroKit {
 	public static final int ULT_NONE = 0, ULT_AIM = 1, ULT_WINDUP = 2, ULT_DIVE = 3, ULT_CARRY = 4;
 	/** The sync's mode bit for Lifeline towing. */
 	public static final int MODE_TOWING = 8;
+	/** Lifeline is switched on (seeking or towing). */
+	public static final int MODE_LIFELINE = 16;
 	/** The dive gives up after this long (her graph 5B7B: a StateWait timing out at 1.5 s inside the move, H). */
 	private static final double DIVE_LIMIT = 1.5;
 	/** Purr's waves inside a pulse: the k-th gap is 0.25 / (1 + 0.1 k) s (her graph 5A7E's wait #196, read as M). */
@@ -81,7 +83,7 @@ public final class JetpackCat implements HeroKit {
 		s.fuel = 100;
 		s.ultPhase = ULT_NONE;
 		s.purrTicks = -1;
-		endLifeline(player, s, false);
+		lifelineOff(player, s, false);
 	}
 
 	/**
@@ -95,8 +97,8 @@ public final class JetpackCat implements HeroKit {
 		// Mercy flies in Valkyrie: the same permission (her own kit ends what she does out of play)
 		boolean valkyrie = s != null && s.hero == Hero.MERCY && controls && player.isAlive() && dev.overcraft.mercy.Mercy.flying(s);
 		if (s != null && !cat && s.hero != Hero.MERCY) {
-			if (s.lifelineTarget != null) {
-				endLifeline(player, s, false);
+			if (s.lifelineOn) {
+				lifelineOff(player, s, false);
 			}
 			if (s.ultPhase != ULT_NONE) {
 				endUlt(player, s);
@@ -178,9 +180,9 @@ public final class JetpackCat implements HeroKit {
 			// 7847, one per volley: hers in her head, everyone else's at her (38 m)
 			HeroSounds.split(player, OcSounds.JC_PAW_FIRE, OcSounds.JC_PAW_FIRE_3P, player.getEyePosition());
 			Combat.animate(player, "fire");
-			// firing ends Lifeline (the wiki; her data's 5A8F)
-			if (s.lifelineTarget != null) {
-				endLifeline(player, s, true);
+			// firing switches Lifeline off (her data's 5A8F: primary fire, as Shift, once it may)
+			if (s.lifelineOn && lifelineMayStop(s)) {
+				lifelineOff(player, s, true);
 			}
 		}
 		if (s.weaponRecovery < 0) {
@@ -297,45 +299,119 @@ public final class JetpackCat implements HeroKit {
 		}
 	}
 
-	// ---- Lifeline ----
+	// ---- Lifeline: her graph 5A8F (E:\Overwatch Archive\research\jetpack_cat\assets2.md 1) ----
+	//
+	// A toggle. On (Shift, off cooldown), she flies 30% faster and seeks without end: a player ally in her cylinder
+	// opts in with Interact (her data: a "Lifeline" prompt on them; LifelineGrabPayload), a mob ally is caught at once,
+	// the nearest (ours: a mob can't press a key). Towed, the ally can jump off (from 0.6 s) or be dragged too far; let
+	// go either way, they can't be caught again for 2 s and she seeks on. Shift or primary fire switches it off (from
+	// 0.6 s after switching it on, and not within 0.5 s of a catch); its 2 s cooldown runs from then.
 
-	/** The ally she looks at within reach, else the nearest one (allies opt in in Overwatch: ours, they're taken). */
-	private static @Nullable LivingEntity lifelineTarget(ServerPlayer player) {
-		AABB box = player.getBoundingBox().inflate(LIFELINE_REACH, LIFELINE_HEIGHT / 2, LIFELINE_REACH);
+	private static final java.util.Map<LivingEntity, Long> LOCKED_OUT = new java.util.WeakHashMap<>();
+
+	/** This ally is in her Lifeline's cylinder, in her sight, not on another rope, not just let go. */
+	public static boolean lifelineReaches(ServerPlayer cat, LivingEntity ally) {
+		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger()) {
+			return false;
+		}
+		Long until = LOCKED_OUT.get(ally);
+		if (until != null && cat.level().getGameTime() < until) {
+			return false;
+		}
+		Vec3 to = ally.position().subtract(cat.position());
+		if (to.horizontalDistance() > LIFELINE_REACH || to.y < -LIFELINE_BELOW || to.y > LIFELINE_HEIGHT - LIFELINE_BELOW) {
+			return false;
+		}
+		for (ServerPlayer other : cat.level().getServer().getPlayerList().getPlayers()) {
+			HeroState o = HeroManager.state(other);
+			if (o != null && other != cat && o.lifelineTarget != null && o.lifelineTarget == ally.getId()) {
+				return false;
+			}
+		}
+		Vec3 from = cat.position().add(0, LIFELINE_SIGHT, 0);
+		return cat.level().clip(new net.minecraft.world.level.ClipContext(from, ally.getBoundingBox().getCenter(),
+			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, cat))
+			.getType() == net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
+	/** The nearest mob ally in reach (players opt in themselves). */
+	private static @Nullable LivingEntity lifelineMob(ServerPlayer player) {
+		AABB box = player.getBoundingBox().inflate(LIFELINE_REACH, LIFELINE_HEIGHT, LIFELINE_REACH);
 		LivingEntity best = null;
-		double bestScore = Double.MAX_VALUE;
-		Vec3 eye = player.getEyePosition();
-		Vec3 look = player.getViewVector(1.0f);
+		double bestD = Double.MAX_VALUE;
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, box)) {
-			if (e == player || !e.isAlive() || !Allies.isAlly(player, e)) {
-				continue;
-			}
-			Vec3 to = e.getBoundingBox().getCenter().subtract(eye);
-			double flat = Math.sqrt(to.x * to.x + to.z * to.z);
-			if (flat > LIFELINE_REACH) {
-				continue;
-			}
-			// aimed at counts most: the angle off the reticle, then the distance
-			double angle = Math.acos(Math.clamp(to.normalize().dot(look), -1, 1));
-			double score = angle * 10 + to.length();
-			if (score < bestScore) {
+			double d = e.distanceToSqr(player);
+			if (!(e instanceof Player) && d < bestD && lifelineReaches(player, e)) {
 				best = e;
-				bestScore = score;
+				bestD = d;
 			}
 		}
 		return best;
 	}
 
-	/** While towing: the ally on a 4 m rope behind her, healed 25 a second; her +30% speed. */
+	/** A player ally pressed Interact on her Lifeline's prompt (LifelineGrabPayload): caught, if she's still seeking. */
+	public static void grab(ServerPlayer ally, int catId) {
+		if (!(ally.level().getEntity(catId) instanceof ServerPlayer cat)) {
+			return;
+		}
+		HeroState s = HeroManager.state(cat);
+		if (s != null && s.hero == Hero.JETPACK_CAT && s.lifelineOn && s.lifelineTarget == null && lifelineReaches(cat, ally)) {
+			startLifeline(cat, s, ally);
+		}
+	}
+
+	private static boolean lifelineMayStop(HeroState s) {
+		return s.lifelineOnTicks >= Ow.ticks(LIFELINE_OFF_AFTER) && (s.lifelineTarget == null || s.lifelineTicks >= Ow.ticks(LIFELINE_HOLD));
+	}
+
+	private static void lifelineOn(ServerPlayer player, HeroState s) {
+		s.lifelineOn = true;
+		s.lifelineOnTicks = 0;
+		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
+				AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+		}
+		Combat.animate(player, "lifeline");
+		// every client shows her seeking (JetpackCatFx: the marker under her, the hook's glow) and offers the prompt
+		Effects.play(player.level(), "lifeline_on", player.position(), Vec3.ZERO, null, player.getId(), player);
+	}
+
+	/** Switched off (or out of play: no cooldown): any ally let go, the speed gone. */
+	private static void lifelineOff(ServerPlayer player, HeroState s, boolean cooldown) {
+		boolean was = s.lifelineOn;
+		release(player, s);
+		s.lifelineOn = false;
+		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(LIFELINE_SPEED_BUFF);
+		}
+		if (was) {
+			Effects.play(player.level(), "lifeline_off", player.position(), Vec3.ZERO, null, player.getId(), player);
+			if (cooldown) {
+				s.ability1Cooldown = Ow.ticks(LIFELINE_COOLDOWN);
+			}
+		}
+	}
+
+	/** Each tick while it's on: seek, or tow. */
 	private static void lifeline(ServerPlayer player, HeroState s) {
+		if (!s.lifelineOn) {
+			return;
+		}
+		s.lifelineOnTicks++;
 		if (s.lifelineTarget == null) {
+			LivingEntity mob = lifelineMob(player);
+			if (mob != null) {
+				startLifeline(player, s, mob);
+			}
 			return;
 		}
 		Entity found = player.level().getEntity(s.lifelineTarget);
 		Vec3 apart = found == null ? Vec3.ZERO : player.position().subtract(found.position());
 		if (!(found instanceof LivingEntity ally) || !ally.isAlive()
-			|| apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK) {
-			endLifeline(player, s, true);
+			|| s.lifelineTicks >= Ow.ticks(LIFELINE_BREAK_GRACE) && apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK) {
+			release(player, s);
 			return;
 		}
 		Vec3 to = player.position().subtract(ally.position());
@@ -358,7 +434,7 @@ public final class JetpackCat implements HeroKit {
 		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(0.6)) {
 			Vec3 heading = player.getKnownMovement().multiply(1, 0, 1);
 			heading = heading.lengthSqr() > 1.0E-4 ? heading.normalize() : player.getLookAngle().multiply(1, 0, 1).normalize();
-			endLifeline(player, s, true);
+			release(player, s);
 			towed.setDeltaMovement(heading.scale(Ow.speed(LIFELINE_LAUNCH_FORWARD)).add(0, Ow.speed(LIFELINE_LAUNCH_UP), 0));
 			towed.syncVelocity = true;
 		}
@@ -367,12 +443,6 @@ public final class JetpackCat implements HeroKit {
 	private static void startLifeline(ServerPlayer player, HeroState s, LivingEntity ally) {
 		s.lifelineTarget = ally.getId();
 		s.lifelineTicks = 0;
-		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (speed != null) {
-			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
-				AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-		}
-		Combat.animate(player, "lifeline");
 		transportShield(player);
 		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_ATTACH);
 		Voice.say(player, "lifeline", 1);
@@ -380,23 +450,18 @@ public final class JetpackCat implements HeroKit {
 		Effects.play(player.level(), "lifeline_attach", ally.position(), Vec3.ZERO, ally, player.getId(), player);
 	}
 
-	private static void endLifeline(ServerPlayer player, HeroState s, boolean cooldown) {
-		boolean was = s.lifelineTarget != null;
-		if (was) {
-			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
-			HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
-			if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
-				LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
-			}
+	/** The towed ally let go (Lifeline stays as it was): they land unhurt and can't be caught again for 2 s. */
+	private static void release(ServerPlayer player, HeroState s) {
+		if (s.lifelineTarget == null) {
+			return;
+		}
+		Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
+		if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
+			LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
+			LOCKED_OUT.put(ally, player.level().getGameTime() + Ow.ticks(LIFELINE_LOCKOUT));
 		}
 		s.lifelineTarget = null;
-		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (speed != null) {
-			speed.removeModifier(LIFELINE_SPEED_BUFF);
-		}
-		if (was && cooldown) {
-			s.ability1Cooldown = Ow.ticks(LIFELINE_COOLDOWN);
-		}
 	}
 
 	// ---- Purr ----
@@ -509,8 +574,8 @@ public final class JetpackCat implements HeroKit {
 						// her Catnapper line: the friendly meow to her side, the enemy one to theirs (1988 / 1989)
 						HeroSounds.ultLine(player, OcSounds.JC_ULT_FRIENDLY, OcSounds.JC_ULT_ENEMY, 4);
 						Effects.play(player.level(), "catnapper_cast", player.position(), player);
-						if (s.lifelineTarget != null) {
-							endLifeline(player, s, false);
+						if (s.lifelineOn) {
+							lifelineOff(player, s, false);
 						}
 					}
 				}
@@ -614,13 +679,10 @@ public final class JetpackCat implements HeroKit {
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.ultPhase == ULT_NONE) {
-			if (s.lifelineTarget != null) {
-				endLifeline(player, s, true);
-			} else if (s.ability1Cooldown <= 0) {
-				LivingEntity ally = lifelineTarget(player);
-				if (ally != null) {
-					startLifeline(player, s, ally);
-				}
+			if (!s.lifelineOn && s.ability1Cooldown <= 0) {
+				lifelineOn(player, s);
+			} else if (s.lifelineOn && lifelineMayStop(s)) {
+				lifelineOff(player, s, true);
 			}
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.purrTicks < 0 && s.ability2Cooldown <= 0) {
@@ -650,7 +712,7 @@ public final class JetpackCat implements HeroKit {
 	public HeroSyncPayload sync(HeroState s) {
 		float reload = s.primaryReload >= 0 && !s.primaryAmmoRestored
 			? (float) Math.min(1, s.primaryReload / Ow.ticks(RELOAD * 0.8)) : -1;
-		int mode = s.ultPhase | (s.lifelineTarget != null ? MODE_TOWING : 0);
+		int mode = s.ultPhase | (s.lifelineTarget != null ? MODE_TOWING : 0) | (s.lifelineOn ? MODE_LIFELINE : 0);
 		float left = s.purrTicks >= 0 ? (float) (PURR_TIME - s.purrTicks / 20.0) : s.ultPhase == ULT_CARRY ? s.ultTimer / 20f : 0;
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ULT_COST, s.ultPhase != ULT_NONE,
 			s.primaryAmmo, reload, (int) Math.round(s.fuel), -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),

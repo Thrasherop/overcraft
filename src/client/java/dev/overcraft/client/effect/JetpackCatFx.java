@@ -22,6 +22,34 @@ public final class JetpackCatFx {
 	private static boolean enemy;
 	/** Each Jetpack Cat towing or carrying someone: her entity id -> {theirs, 1 if she's an enemy's}. */
 	private static final Map<Integer, int[]> TETHERS = new HashMap<>();
+	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
+	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
+
+	/**
+	 * The Jetpack Cat whose Lifeline the local player could take now (Interact: LifelineGrabPayload), or -1: an ally's,
+	 * on and towing nobody, with the player in its cylinder (the server checks again: sight, the lock-out).
+	 */
+	public static int lifelineOffer(net.minecraft.client.player.LocalPlayer player) {
+		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
+			if (e.getValue() || TETHERS.containsKey(e.getKey()) || e.getKey() == player.getId()) {
+				continue;
+			}
+			if (player.level().getEntity(e.getKey()) instanceof net.minecraft.world.entity.LivingEntity cat && cat.isAlive()) {
+				Vec3 to = player.position().subtract(cat.position());
+				double below = dev.overcraft.jetpackcat.JetpackCatStats.LIFELINE_BELOW;
+				if (to.horizontalDistance() <= dev.overcraft.jetpackcat.JetpackCatStats.LIFELINE_REACH && to.y >= -below
+					&& to.y <= dev.overcraft.jetpackcat.JetpackCatStats.LIFELINE_HEIGHT - below) {
+					return e.getKey();
+				}
+			}
+		}
+		return -1;
+	}
+
+	/** Jetpack Cats with Lifeline on and towing nobody (their seeking marker and hook glow: seekers). */
+	public static boolean seeking(int cat) {
+		return SEEKING.containsKey(cat) && !TETHERS.containsKey(cat);
+	}
 	/** Each Jetpack Cat's position last tick, for her speed (the boost trails). */
 	private static final Map<Integer, Vec3> LAST_AT = new HashMap<>();
 	/** Above this speed (m/s) she's boosting: her flight tops out at 12, Frenetic Flight at 17.8 (ours). */
@@ -112,6 +140,8 @@ public final class JetpackCatFx {
 					tetherStart(at);
 				}
 				case "tether_end" -> TETHERS.remove(e.variant());
+				case "lifeline_on" -> SEEKING.put(e.variant(), enemy);
+				case "lifeline_off" -> SEEKING.remove(e.variant());
 				case "catnapper_cast" -> {
 				}
 				case "catnapper_land" -> landing(at);
