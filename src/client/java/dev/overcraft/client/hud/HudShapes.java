@@ -234,9 +234,18 @@ public final class HudShapes {
 	private static final Map<Hero, Identifier> POPS = new HashMap<>();
 
 	/**
-	 * Cuts Overwatch's HUD head art into the frame (portrait) and the part breaking out over its top (portraitPop): the
-	 * head scaled to about 86% of the frame's width, its hair top POP_H texels above the frame, the shoulders below the
-	 * frame's V clipped (round 1 #27: the head breaks out over the top; ours was clipped inside). False if it can't.
+	 * Every hero's HUD head art (512 px) is drawn on the same frame: its V's tip on row 412, centred on column 273.5, its
+	 * edges on the same columns for Kiriko, Lúcio, Mercy and Jetpack Cat (measured 2026-10-28). So one mapping places them
+	 * all: art pixels to frame texels at SCALE, the tip at TIP_AT texels down the frame. Its values are Kiriko's fit as
+	 * tuned by the critiques (the head about 86% of the frame's width, her hair top 52 texels above it). Fitting each by
+	 * its own outline instead (its width, its top) put Jetpack Cat, whose top is her ears, 80 texels too high (#54).
+	 */
+	private static final float ART_TIP_Y = 412, ART_CENTRE_X = 273.5f, SCALE = 1.042f, TIP_AT = 299;
+
+	/**
+	 * Cuts Overwatch's HUD head art into the frame (portrait) and the part breaking out over its top (portraitPop), on
+	 * the art's own frame (above), the shoulders below the frame's V clipped (round 1 #27: the head breaks out over the
+	 * top; ours was clipped inside). False if it can't.
 	 */
 	private static boolean cutHead(Hero hero, Identifier source) {
 		try (InputStream in = Minecraft.getInstance().getResourceManager().open(source);
@@ -258,15 +267,13 @@ public final class HudShapes {
 			}
 			int w = SHIELD_W * 2;
 			int h = SHIELD_H * 2;
-			float scale = 0.86f * w / (x1 - x0 + 1);
-			float centreX = (x0 + x1 + 1) / 2f;
-			// art pixel for frame texel (x, y): y measured from the frame's top, the hair top at -POP_H
+			// art pixel for frame texel (x, y): y measured from the frame's top, the art's frame tip at TIP_AT
 			NativeImage inside = new NativeImage(w, h, true);
 			NativeImage pop = new NativeImage(w, POP_H + POP_BELOW, true);
 			for (int y = -POP_H; y < h; y++) {
 				for (int x = 0; x < w; x++) {
-					int sx = Math.round(centreX + (x + 0.5f - w / 2f) / scale);
-					int sy = Math.round(y0 + (y + POP_H + 0.5f) / scale);
+					int sx = Math.round(ART_CENTRE_X + (x + 0.5f - w / 2f) / SCALE);
+					int sy = Math.round(ART_TIP_Y + (y + 0.5f - TIP_AT) / SCALE);
 					if (sx < 0 || sy < 0 || sx >= art.getWidth() || sy >= art.getHeight()) {
 						continue;
 					}
