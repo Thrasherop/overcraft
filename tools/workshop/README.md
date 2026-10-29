@@ -19,6 +19,12 @@ the speed settles, what a jump off does, how corners chain) is in the transition
 3. Start the game and pick a map with long walls (Ilios Ruins, Lijiang Night Market, Oasis City Center, Watchpoint
    practice range walls).
 
+### Playing together
+Everyone in the game is forced to Lúcio and logged. Every log line starts with the player's slot (**S0**, **S1**...),
+shown at the top left of each player's own readout: note who was which. Host the game yourself, with the log file
+option on, and have the others join: the log file is written on the host's machine (I'm not sure a joining player's
+is). With several players the log grows quickly (three lines a tick each), so keep sessions to a few minutes.
+
 ### What to play
 Each a few times, pressing **Interact (F)** right after one you want me to look at (it logs a numbered MARK and
 shows it on screen; tell me what MARK 3 was):
@@ -31,14 +37,19 @@ shows it on screen; tell me what MARK 3 was):
 - The step: a one-step ledge under the wall (what our Minecraft blocks make everywhere).
 
 ### Sending it back
-- The log file from `Documents\Overwatch\Workshop\` (the newest), and which MARK was which.
+- The log file from `Documents\Overwatch\Workshop\` (the newest), and which MARK was which (with its S number).
 - **Tell me when Overwatch is closed** before I read anything: the rule is that nothing of ours runs or looks while
   it's open.
 - If the log file option isn't there: screenshots of the left-side readout during a ride, or a short screen
   recording (OBS) of the readout while riding.
 
 ### What the readout shows
-`t` time, `wall` / `ground` (Is On Wall, Is On Ground), `h` / `v` horizontal and vertical speed (m/s), `alt` height
-above the ground, `vel` the velocity vector, `input` (the move keys as a vector), `jump` held, `pitch`, the wall's
-normal, the count of rides and marks, and the last event (ATTACH, LEAVE, LAND, MARK). The log has one line set per
-tick (62.5 a second), plus the first 0.4 s of each ride and the 0.6 s after leaving a wall in detail.
+`S` your slot, `t` time, `wall` / `ground` (Is On Wall, Is On Ground), `h` / `v` horizontal and vertical speed (m/s),
+`alt` height above the ground, `vel` the velocity vector, `input` (the move keys as a vector), `jump` held, `pitch`, the
+nearest wall's normal and distance (eight level rays round you at chest height, 1.5 m; distance 9 = no wall), the
+count of rides and marks, and the last event (ATTACH, LEAVE, LAND, MARK).
+
+The log has three lines per player per tick (62.5 a second), every line tagged with the slot: `S0 T` time and the
+wall / ground / air flags, `S0 P` position, velocity and move input, `S0 B` jump and crouch held, facing, the wall's
+normal and distance. Bookmark lines (`S0 EVENT ATTACH`, `LEAVE`, `LAND`, `MARK`) mark each ride's start and end; they
+never wait, so a quick jump from wall to wall still gets its own pair.
