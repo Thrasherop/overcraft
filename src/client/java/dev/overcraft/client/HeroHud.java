@@ -497,6 +497,9 @@ public final class HeroHud {
 		curve(g, left, 933, slopeAt(left + 120 - 960));
 		int max = Math.round(Ow.toOw(player.getMaxHealth()));
 		int now = (int) Math.ceil(Ow.toOw(player.getHealth()));
+		// overhealth (Sound Barrier's, any absorption: Combat.overhealth) counts in the number and gets pips of its own
+		// after the health, as Overwatch's does (#53: it gave overhealth the HUD never showed)
+		int over = (int) Math.floor(Ow.toOw(player.getAbsorptionAmount()));
 		// "+" box: at full health a white rounded square with a dark "+" and a dark tail; hurt, all dark with a white "+"
 		// (every full-health frame of the owner's is white, every hurt one dark)
 		if (now >= max) {
@@ -508,7 +511,7 @@ public final class HeroHud {
 			image(g, HudShapes.PLUS, left + 2, 903, 18, 18, WHITE);
 		}
 		float x = left + 54;
-		String current = String.valueOf(now);
+		String current = String.valueOf(now + over);
 		HudText.draw(g, Face.BODY, current, x, 918, 18.8f, WHITE, Align.LEFT);
 		x += HudText.width(Face.BODY, current, 18.8f) + 7;
 		fill(g, x, 896, 2, 22, DIVIDER);
@@ -516,7 +519,7 @@ public final class HeroHud {
 
 		// one pip per 25 health, white while it holds health, a faint dark box when empty. The row is a fixed length: the
 		// pips narrow as health grows (Overwatch's 10 at a 24.8 pitch, 9 at 27.3: the eighth critique)
-		int pips = Math.max(1, (int) Math.ceil(max / 25.0));
+		int pips = Math.max(1, (int) Math.ceil((max + over) / 25.0));
 		float pitch = PIP_ROW / pips;
 		float pipW = pitch - 4;
 		float rowEnd = left + 3 + PIP_ROW - 4;
@@ -529,6 +532,11 @@ public final class HeroHud {
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
 				box(g, pipX, 933, pipW * shown, 30, WHITE);
+			}
+			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
+			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
+			if (overTo > overFrom) {
+				box(g, pipX + pipW * overFrom, 933, pipW * (overTo - overFrom), 30, OVERHEALTH);
 			}
 		}
 
@@ -556,6 +564,9 @@ public final class HeroHud {
 		levelBar(g, s, left - 2, 1000, rowEnd - (left - 2));
 		g.pose().popMatrix();
 	}
+
+	/** Overhealth's pips (ours: Overwatch draws it green). */
+	private static final int OVERHEALTH = 0xFF7CE86A;
 
 	/** The pip row's length, whatever the health (the eighth critique: 10 pips at a 24.8 pitch, 9 at 27.3). */
 	private static final float PIP_ROW = 248;
