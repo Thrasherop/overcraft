@@ -102,6 +102,7 @@ public final class HeroManager {
 		KITS.put(Hero.JETPACK_CAT, new dev.overcraft.jetpackcat.JetpackCat());
 		KITS.put(Hero.MERCY, new dev.overcraft.mercy.Mercy());
 		KITS.put(Hero.LIFEWEAVER, new dev.overcraft.lifeweaver.Lifeweaver());
+		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
 	}
 
 	private HeroManager() {

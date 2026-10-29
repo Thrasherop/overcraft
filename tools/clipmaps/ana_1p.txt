@@ -1,0 +1,66 @@
+# Ana, first person (skin model 000000010561.00C, entity Gameplay1P 1425: a model of its own; set 05F9). <folder>_<clip id>
+# = our name. From her data map (E:\Overwatch Archive\research\ana\work\clipmap.md / clipmap.json, build 154088) and the
+# resolved set (research\ana\resolved\0000000005F9.021.json / .flat.json); H unless noted. One weapon. Scoped (df 0xE5
+# cat 0x81, as ana.txt) plays the scope's raise (alias 0x019) then its hold (0x087); unscoped plays 0x086. The rifle is its
+# own model (ana_rifle.txt). "Measured" = bone places from research\ana\scripts\pose_ana.py on the .smd rest pose: the
+# camera bone 007D, her wrists 004A / 002C, the rifle bone 0606.
+
+# Unscoped (alias 0x086): a state machine; state 1 is the stand or the walk (alias 0x009, by df 0x18), state 0 the air
+# (817E404F, below)
+0-60_000000003B96 = idle   # df 0x18 cat 9, a 0.167 s held pose on the clock
+0-36_000000003B9D = walk   # df 0x18 cat 5, 0.6 s, on the clock times df 0x1A / 5.5 (her speed against 5.5 m/s)
+# The air: 817E404F has the jump trees' layout (a take-off on the clock, then a clip timed by df 0x2B, the jump's air
+# parameter in her 3P and in Lifeweaver's and Lúcio's sets), node for node as the scoped jump 817E4086 and the reload's
+# airborne layer 817E4091. 3B93 starts on the idle's pose to the mm and dips 1.3 cm (measured). The research read the pair
+# as the scope-out (M); no clip of it starts from the scope's pose, so: the jump (M).
+0-36_000000003B93 = jump   # take-off, 0.233 s on the clock
+0-36_000000003B94 = fall   # in the air, time df 0x2B, 0.433 s
+# 0x009's layers, and 0x086's over everything unscoped (the reload and Nano carry copies of 0x086's)
+4-6_000000003B9E = add_move_lean   # a pose sheet on df 0x08 / 0x07 (the movement keys, as Lifeweaver's dash reads them: M), 6 frames
+4-6_000000003B85 = add_look_sway   # a pose sheet on a spring of df 0x24: L, the rifle's sway as she turns
+4-4_000000003B86 = add_sway   # additive under it, its time from a spring (df 0x96 / 0x8BE), 1.0 s: L
+4-4_000000003B87 = add_idle   # 2.1 s on the clock over every unscoped state, 21 bones, not the camera (measured): M, as Mercy's 2.1 s add_idle
+4-4_000000003B95 = add_land   # the scoped tree's transition out of the jump category (0 > 4, 2, 1, 3), and 0x086's layer transition 0 > 1: M, 0.4 s
+4-28_000000003B88 = add_layer   # a 4-state layer machine's state 0, 0.2 s, moves nothing (measured): L
+4-4_000000003B89 = add_layer_in   # its transition 1 / 3 > 0, 0.3 s, camera and arms: L
+4-4_000000003B8A = add_layer_out   # its transition 0 / 2 > 1, 0.3 s: L
+
+# Take Aim: the raise (alias 0x019 state 0), its frame from df 0x6D through a stiff spring (60): M, the scope's progress.
+# Measured: from the idle's pose to the rifle at her eye (0606 at -0.02, 1.48, -0.02 by frame 5). Then the hold (0x087: every
+# df 0x18 category, the jump's too, plays it): her arms and rifle parked 1.5 m behind the camera, out of view (measured).
+0-36_000000003B84 = scope_in   # 0.167 s, frame from df 0x6D
+0-60_000000003B92 = idle_scoped   # the hold, 2 frames (walking it plays on the clock x df 0x1A / 5.5, crouched / 3.0)
+# No scope-out clip: 3B84 is in 0x019 only. If the scoped category holds while df 0x6D falls, 3B84 runs back down (not read:
+# L); else the df 0xE5 switch's blend.
+
+# Biotic Rifle's shot: the additive layer weighted df 0x102 (817E4099 > 817E405F, rate 1.2): state 0, and a random of it in
+# state 2; state 1 its own (which state is the scoped shot isn't read: L)
+4-4_000000003B8D = add_fire   # states 0 / 2, 1.267 s
+4-4_000000003C9A = add_fire_alt   # state 1, 1.267 s (not add_fire_2: the first person plays add_fire_2 .. _4 at random, Lúcio's)
+# Reload (0B94 #33): 0x004 with the clip empty, 0x084 with ammo left; time df 0x19B. Each carries a copy of 0x086's layers
+0-36_000000003B99 = reload   # 0x004, 1.5 s
+0-36_000000003C98 = reload_ammo_left   # 0x084, 1.5 s
+4-4_000000003D58 = add_jump   # the air over the reload and Nano casts (their copy of 0x086's state 0): take-off, 0.233 s on the clock
+4-4_000000003D5A = add_fall   # then time df 0x2B, 0.433 s
+
+# Abilities and quick melee, each timed by df 0x19C (the action's progress)
+0-36_000000003BBC = cast_sleep   # Sleep Dart (0x47B), 1.0 s; the pistol in her right hand (effect 1CDD plays its clip 3DC2: not in the extract)
+0-32_000000003BCB = throw_grenade   # Biotic Grenade (0x479), 0.867 s, from her left wrist
+0-32_000000003BDB = cast_nano   # Nano Boost (0x175), 0.767 s
+4-4_000000003D61 = add_walk   # walking during Nano's cast (df 0x18 cat 5, on the clock x df 0x1A / 5.5), 0.6 s
+0-36_000000003B98 = melee   # quick melee (0x00D), 0.8 s
+
+# Knocked down (0x064 / 0x065 / 0x066, graph 224E) and hit stun (0x070): additive in first person, as Lifeweaver's
+4-4_000000003BFA = add_knockdown_start   # 0x064, 1.0 s
+4-4_000000003BFB = add_knockdown   # 0x065, 0.667 s
+4-4_000000003BFC = add_knockdown_end   # 0x066, 1.0 s
+0-36_000000003BF9 = hit_react   # 0x070, 1.0 s
+# 0x1DE / 0x1DF / 0x1E0: shared clips (ana.txt's knockdown_alt): L
+4-4_000000000957 = add_knockdown_alt_start   # 0x1DE, 1.0 s
+4-4_000000000959 = add_knockdown_alt   # 0x1DF, 0.667 s
+4-4_000000000958 = add_knockdown_alt_end   # 0x1E0, 1.0 s
+
+# Not mapped (in the extraction; meaning not read, L): quick melee's generic layer 0x140 (4-20_C63, 4-4_5687, 4-4_3B47,
+# 4-20_3B43 / 3B44 / 3B45); 0x0C8 (02C5 #63) 4-4_C4F + 4-4_73-76 / E9-EC / F2-F5, 4-6_F6; 0x467 (02C5 #282) 4-4_3B8B
+# (2.67 s); 0x1EE 0-36_3D88; 0x2DE 4-4_3B9F; 0x033 0-4_4B2; 0x726 4-4_8498; 0x6D1 0-36_8A22; 0x6D2 0-36_8A23; another hero
+# entity's (66FA) 0x165 0-32_1C59 > 4-0_1C58; in none of her sets, 4-28_395B.

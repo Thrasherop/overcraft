@@ -12,8 +12,8 @@ public enum Hero {
 	MERCY("mercy", "Mercy", Role.SUPPORT, "medic", dev.overcraft.mercy.MercyStats.HEALTH, true, 0xFFFDF9D7),
 	LIFEWEAVER("lifeweaver", "Lifeweaver", Role.SUPPORT, "medic",
 		dev.overcraft.lifeweaver.LifeweaverStats.HEALTH + dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS, true, 0xFFF3A7C8),
-	// her kit is being built (#63): on the select screen as "soon" until it's whole
-	ANA("ana", "Ana", Role.SUPPORT, "tactician", dev.overcraft.ana.AnaStats.HEALTH, false, 0xFF7E9CC2),
+	// her kit is being built (#63), step by step on her branch: playable there, not merged until it's whole
+	ANA("ana", "Ana", Role.SUPPORT, "tactician", dev.overcraft.ana.AnaStats.HEALTH, true, 0xFF7E9CC2),
 	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", 225, false, 0xFF8A4FD8),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 

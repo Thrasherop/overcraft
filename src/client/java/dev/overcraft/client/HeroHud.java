@@ -867,6 +867,14 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.ANA) {
+			// Sleep Dart (Shift) and Biotic Grenade (E), in Kiriko's two places (ours)
+			ability(g, hero, w, "sleep_dart", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.ana.AnaStats.SLEEP_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "biotic_grenade", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.ana.AnaStats.GRENADE_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.LIFEWEAVER) {
 			// Petal Platform (Shift: its raised time left on it while he has one), Life Grip (E), Rejuvenating Dash (Jump
 			// in the air), in Lúcio's three places (ours)
@@ -1061,6 +1069,12 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.ANA) {
+			// the Biotic Rifle on the left button, where Kiriko's kunai panel is (Take Aim, the right button, has no rounds)
+			weapon(g, hero, w, "biotic_rifle", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.ana.AnaStats.RIFLE_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.LIFEWEAVER) {
 			// his two weapons in Kiriko's two places: Healing Blossom on the left button (its charge along the panel's
 			// foot), Thorn Volley on the right

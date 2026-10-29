@@ -1,0 +1,14 @@
+# Ana's Biotic Rifle (its own entity 159C, skin model 000000010B96.00C, 20 bones), hung on her hardpoint 00C9 in both views;
+# muzzle hardpoint 0006 (0.9 m ahead of 00C9 at rest). Its own clips (set 05FC; E:\Overwatch Archive\research\ana\work\
+# clipmap.md, build 154088). Each alias is a two-state machine, state 0 for the first person and state 1 for the third (H:
+# each reload is timed by its view's own reload dataflow, 0x19B as her 1P reloads 3B99 / 3C98, 0x66 as her 3P 3CE3 / 3CA0;
+# the fire layers' lengths match each view's, 1.267 / 0.8 s). State 1 has no held pose of its own: only the fire layer.
+0-60_000000003C59 = idle   # alias 0xA0E state 0 (df 0x18 default): a 1.0 s held pose of all 20 bones, on the clock
+4-20_000000003CEB = add_fire   # the shot, 3P (state 1: its state 0 and the random of it in state 2), 0.8 s, 4 bones (the bolt / dart: M)
+4-32_000000003C9B = add_fire_alt_1p   # the 1P side's state 1 (her ana_1p add_fire_alt 3C9A's), 1.267 s
+0-4_000000003CE4 = reload   # 0x004 (the clip empty), 3P, 1.5 s, time df 0x66
+0-4_000000003D87 = reload_ammo_left   # 0x084 (ammo left), 3P, 1.5 s, time df 0x66
+0-32_000000003C99 = reload_ammo_left_1p   # 0x084, 1P, 1.5 s, time df 0x19B
+# not in the extraction (read in the data only): 4-32_000000003C55 = add_fire_1p (the 1P side's state 0 and its random state
+# 2, 1.267 s); 0-32_000000003C5A = reload_1p (0x004, 1P, 1.5 s, time df 0x19B)
+# In the extraction but in none of her sets (L): 4-32_00000001A414 (1.267 s, 9 bones: 3C9B's shape), 0-32_00000001A425 (1.5 s, 22 bones)

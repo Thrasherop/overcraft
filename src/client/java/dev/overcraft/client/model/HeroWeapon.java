@@ -28,7 +28,10 @@ public final class HeroWeapon {
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
-		Hero.MERCY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.MERCY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Ana's Biotic Rifle, entity 159C on her hardpoint 00C9 = bone_0606, no offset or turn in both her models' tables
+		// (research/ana/models.json)
+		Hero.ANA, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
 
 	private HeroWeapon() {
 	}

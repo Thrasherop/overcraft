@@ -1,0 +1,211 @@
+# Ana, third person (skin model 000000010562.00C, look of entity Gameplay3P 1424; set 05F5). <folder>_<clip id> = our name.
+# From her game data map (E:\Overwatch Archive\research\ana\work\clipmap.md and clipmap.json, build 154088) and the resolved
+# set it was read from (research\ana\resolved\0000000005F5.021.json / .flat.json): states, aliases, blend points, timings
+# (H unless noted). One weapon (no df 0xE4 switch). Every state has an unscoped and a scoped (Take Aim) variant, picked by
+# df 0xE5: category 0x81 = scoped (M in the research; the scoped run's own slot speeds, 1.925 m/s = 5.5 x 0.35, Take Aim's
+# 65% slow, make it H). Unscoped names are plain, scoped ones end _scoped. 8-way slots named by the slot fields Kiriko's
+# measured runs fill; 4-slot nodes (m_09FE31A5 / m_7A2F0A64 / m_CDA1FD6A / m_E15BD392) as forward / back / left / right,
+# measured on Lúcio's jump (techniques/animation/animation_import.md: M here). Pitch triples are 1D blends at -1 / 0 / +1:
+# 0 plain, -1 _down, +1 _up (Lifeweaver's reading; the sign is L). 4-* folders are additive deltas: add_*.
+# "Measured" = bone places from research\ana\scripts\pose_ana.py on the .smd rest pose (2026-10-29).
+
+# Standing still (alias 0x001 in 0x085, tree 000B, as Kiriko's: a root IK toward df 0xB6, then df 0xB7 cat 0x68 picks one
+# stand, its time from df 0xB5, else the other, its time from df 0xB8: turn-in-place sheets, not on the clock). HeroAnimator
+# holds a stand at frame 0, so the plain name is the stand whose frame 0 is the neutral pose (measured: bones 003A / 0606 /
+# 0011 at frame 0 equal the reload's first frame to the mm; the other stand ends there and starts turned 120 degrees).
+0-32_000000003C2A = idle   # df 0xB7 default (time df 0xB8), 0.9 s; frame 0 neutral (measured)
+0-32_000000003C2B = idle_2   # df 0xB7 cat 0x68 (time df 0xB5), 0.9 s; its last frame neutral
+0-32_000000003C5D = idle_scoped   # scoped, df 0xB7 default (df 0xB8), 0.9 s; frame 0 neutral (rifle bone 0606 ahead: measured)
+0-32_000000003C5E = idle_scoped_2   # scoped, cat 0x68 (df 0xB5), 0.9 s
+4-4_000000003C44 = add_breathe   # additive 3.47 s on the clock, under every still stand (standing, crouched, scoped): M breathing (moves 43 bones, 0.12-1.53 m)
+# The stand's pose sheet (AnimationPose2d / STU_B391A063, two drivers) on bones 0003-0005, weighted by df 0xB5, as Kiriko's
+# A71F (M: an aim sheet). 84 frames, not Kiriko's 63: HeroAnimator's add_aim reading (63 frames) leaves it off (as Lúcio's).
+# The same sheet leans the run's back slots, rides the stop and the standing reload (weight df 0x66).
+4-2_000000003B7D = add_aim   # 2.77 s (84 frames)
+4-2_000000003B81 = add_aim_scoped   # the scoped stand's and scoped run's, 3.5 s (106 frames)
+
+# Run 8-way (df 0x18 cat 5, 817D411C), 0.6 s, time from a spring on df 0x1AD (as Lúcio's skating); the node's slot speeds
+# 5.5 m/s (4.95 for BR / B / BL). The same eight again as an override weighted df 0x14. Its additive leans are pose sheets
+# per direction (as add_aim: M).
+0-36_000000003B71 = run   # F
+0-36_000000003BD3 = run_forward_right   # FR
+0-36_000000003BC9 = strafe_right   # R
+0-36_000000003BCE = run_back_right   # BR
+0-36_000000003BCA = run_back   # B
+0-36_000000003BCD = run_back_left   # BL
+0-36_000000003BC8 = strafe_left   # L
+0-36_000000003BCF = run_forward_left   # FL
+4-6_000000003BD7 = add_aim_run   # sheet on F / FR / FL, 0.667 s (21 frames): M
+4-6_000000003BFF = add_aim_run_right   # on R (BR / B / BL use add_aim)
+4-6_000000003BFE = add_aim_run_left   # on L
+4-6_000000003BF8 = add_run_sway   # sheet on springs of df 0x24 / 0x25, 1.0 s, 10 bones at 1.07-1.53 m: L
+4-12_000000003B6C = add_run   # additive 0.8 s weighted df 0x271, 20 bones at 0.58-1.21 m: L
+# Turning on the run: the 8-way's transitions F > B, B > F, R > L, L > R (slot indices read in the node's F, FR, R ... order: M), 0.467 s
+0-32_000000003BF5 = run_forward_to_back
+0-32_000000003BF6 = run_back_to_forward
+0-32_000000003BD8 = run_right_to_left
+0-32_000000003BD9 = run_left_to_right
+# Stopping: df 0x18's transition run > still (817D4118: a 4-slot Strafe under a direction IK, as Lúcio's skate_stop), + add_aim
+0-32_000000003C01 = run_stop_forward   # m_09FE31A5, 0.767 s
+0-32_000000003C05 = run_stop_back   # m_7A2F0A64, 0.733 s
+0-32_000000003C06 = run_stop_left   # m_CDA1FD6A, 0.733 s
+0-32_000000003C07 = run_stop_right   # m_E15BD392, 0.733 s
+# Scoped run 8-way (817D4161), 1.0 s, time df 0x1AD; slot speeds 1.925 m/s (1.7325 back) = 5.5 / 4.95 x 0.35; + add_aim_scoped
+0-32_000000003D78 = run_scoped   # F
+0-32_000000003D85 = run_forward_right_scoped   # FR
+0-32_000000003D80 = strafe_right_scoped   # R
+0-32_000000003D81 = run_back_right_scoped   # BR
+0-32_000000003D7D = run_back_scoped   # B
+0-32_000000003D83 = run_back_left_scoped   # BL
+0-32_000000003D82 = strafe_left_scoped   # L
+0-32_000000003D84 = run_forward_left_scoped   # FL
+4-20_000000003D79 = add_run_end_scoped   # the scoped run's onFinished slots 1 / 0x3D, 0.3 s, 3 bones: L
+
+# Crouched still (df 0x18 cat 0x66): the stand's tree again (cat 0x68 time df 0xB5, else df 0xB8)
+0-32_000000003C20 = crouch_idle   # df 0xB7 cat 0x68, 0.733 s; frame 0 neutral (equals the crouched reload's last frame: measured)
+0-32_000000003C31 = crouch_idle_2   # default, 0.733 s; its last frame neutral
+4-6_000000003C2D = add_aim_crouch   # its pose sheet (bones 0003-0005, weight df 0xB5), 1.37 s; also under the crouched reload
+0-32_000000003C9C = crouch_idle_scoped   # scoped, cat 0x68, 0.733 s; frame 0 neutral (measured)
+0-32_000000003C9D = crouch_idle_scoped_2   # scoped, default
+4-6_000000003C9E = add_aim_crouch_scoped   # 1.37 s
+# Crouch walk 8-way (df 0x18 cat 0x65, 817D41F2), 0.533 s, time df 0x1AD; slot speeds 3.0 m/s; + an override copy (df 0x14)
+0-32_000000003C22 = crouch_walk   # F
+0-32_000000003C49 = crouch_walk_forward_right   # FR
+0-32_000000003C46 = crouch_walk_right   # R
+0-32_000000003C5C = crouch_walk_back_right   # BR
+0-32_000000003C48 = crouch_walk_back   # B
+0-32_000000003C5B = crouch_walk_back_left   # BL
+0-32_000000003C45 = crouch_walk_left   # L
+0-32_000000003C4A = crouch_walk_forward_left   # FL
+4-6_000000003C42 = add_aim_crouch_walk   # sheet on all 8, 0.2 s
+# Scoped crouch walk (817D415D), 0.533 s, 3.0 m/s
+0-32_000000003C6E = crouch_walk_scoped   # F
+0-32_000000003C71 = crouch_walk_forward_right_scoped   # FR
+0-32_000000003C6F = crouch_walk_right_scoped   # R
+0-32_000000003C73 = crouch_walk_back_right_scoped   # BR
+0-32_000000003C75 = crouch_walk_back_scoped   # B
+0-32_000000003C74 = crouch_walk_back_left_scoped   # BL
+0-32_000000003C70 = crouch_walk_left_scoped   # L
+0-32_000000003C72 = crouch_walk_forward_left_scoped   # FL
+4-6_000000003C79 = add_aim_crouch_walk_scoped   # 0.2 s
+
+# Jump (df 0x18 cat 6, alias 0x006; trees 817D417C (crouched, df 0x18 cat 0x1ED) and 817D411F hold the same clips): standing,
+# a take-off on the clock, then a short step on the clock or the air (its time df 0x2B, as Lifeweaver's and Lúcio's);
+# moving, the 4-slot node, whose forward slot plays the standing clips. The take-off raises the pelvis (bone 0002) from
+# 0.55 to 1.34 m, held 1.30-1.35 m in the air (the stand's is 0.83: measured): Minecraft lifts her already. The four slots'
+# clips are nearly alike at the pelvis and feet (measured). + a pose sheet weighted df 0x653.
+0-32_000000003B6D = jump   # take-off, standing and the forward slot (m_09FE31A5), 0.2 s
+0-32_000000003B6E = fall   # in the air, time df 0x2B, 0.367 s
+0-32_000000003B6F = jump_2   # the short step after the take-off (the other child of the air's state machine), 0.1 s
+0-32_000000003C17 = jump_back   # m_7A2F0A64 take-off, 0.167 s
+0-32_000000003C18 = fall_back   # 0.333 s
+0-32_000000003C19 = jump_back_2   # 0.067 s
+0-32_000000003C0F = jump_left   # m_CDA1FD6A take-off, 0.2 s
+0-32_000000003C10 = fall_left   # 0.367 s
+0-32_000000003C11 = jump_left_2   # 0.1 s
+0-32_000000003C13 = jump_right   # m_E15BD392 take-off, 0.2 s
+0-32_000000003C14 = fall_right   # 0.367 s
+0-32_000000003C15 = jump_right_2   # 0.1 s
+4-6_000000003C1E = add_aim_jump   # the jump's sheet, 0.667 s; also on 0x174 / 0x1C8
+# Scoped jump (817D416A): no take-off clip (its take-off slots are bound empty), the short step, then the air (df 0x2B)
+0-32_000000003CF3 = jump_2_scoped   # standing and forward, 0.1 s
+0-32_000000003CF2 = fall_scoped   # 0.367 s
+0-32_000000003CEF = jump_back_2_scoped   # 0.1 s
+0-32_000000003CFA = fall_back_scoped   # 0.367 s
+0-32_000000003CF6 = jump_left_2_scoped   # 0.1 s
+0-32_000000003CF8 = fall_left_scoped   # 0.333 s
+0-32_000000003CED = jump_right_2_scoped   # 0.1 s
+0-32_000000003CFC = fall_right_scoped   # 0.367 s
+4-2_000000003CF9 = add_aim_jump_scoped   # 0.667 s
+# Landing: the jump trees' onFinished slot animations, all additive (no plain land clip in her data; the slot ids' meaning isn't read: L)
+4-4_000000003B70 = add_land   # unscoped slots 1-5, 8, 9 (and 0x174's nine), 0.633 s
+4-0_000000003C1A = add_land_2   # unscoped slots 6-7, 0.6 s
+4-4_000000003CF4 = add_land_scoped   # the scoped jump's slot 0x3D, 0.6 s
+# The standing tree's onFinished slots (2 / 3 / 9, 4, 5-7, 8), 0.833 s additives: Kiriko's research reads hers as hit
+# reactions by direction (L)
+4-4_000000003B7B = add_idle_react   # slots 2, 3, 9
+4-4_000000003C02 = add_idle_react_2   # slot 4
+4-4_000000003C0D = add_idle_react_3   # slots 5-7
+4-4_000000003C0C = add_idle_react_4   # slot 8
+
+# Her face: an override weighted df 0xFA (written 1.0 by the stands' track overrides; 817D40C4), unscoped and scoped (df 0xE5):
+# a 2-frame start, an in, a loop. These move only bones at 1.51-1.58 m at rest, her face (measured): an expression (M);
+# what the scoped one does (her aiming eye?) isn't read (L).
+0-28_000000003C6D = face_start   # 2 frames, moves nothing (measured)
+0-0_000000003C6C = face_in   # unscoped, 1.0 s
+0-0_000000003C1F = face   # unscoped loop, 3.47 s (also over the preview emote set 0639)
+0-0_000000003C6B = face_in_scoped   # 0.5 s
+0-8_000000003C56 = face_scoped   # scoped loop, 2.77 s
+
+# Biotic Rifle (graph 0B94): the shot is an additive layer weighted df 0x102 (817D4132) above the scoped split, so both modes
+# use it: state 0, and a random of the same clip in state 2 (no StateAnim plays it: M that it is the shot; 0.8 s = her 0.8 s
+# recovery; rate 1.2)
+4-4_000000003C3F = add_fire   # 0.8 s
+# Reload (0B94 #33: alias 0x004 with the clip empty, 0x084 with ammo left: the same clips here), time df 0x66
+0-32_000000003CE3 = reload   # standing, 1.5 s (+ add_aim)
+0-32_000000003CA0 = reload_crouch   # crouched (df 0x18 cat 0x1ED), 1.5 s (+ add_aim_crouch)
+# Sleep Dart (0BDD #115, alias 0x47B): draw, shot and holster in one clip, the pistol in her right hand (contacts in
+# clipmap.md); time df 0x2F. Its effect 1D4B plays the pistol's own clip 3DC2 (an EntityControl, 0.9 s; not in the extract)
+0-32_000000003C2C = cast_sleep   # pitch 0, 0.9 s
+0-32_000000003C35 = cast_sleep_down   # pitch -1
+0-32_000000003C36 = cast_sleep_up   # pitch +1
+# Biotic Grenade (0B97 #89, alias 0x479): thrown from her left wrist (hp 0002); time df 0x2F
+0-32_000000003BBD = throw_grenade   # pitch 0, 0.833 s
+0-32_000000003C39 = throw_grenade_down   # pitch -1
+0-32_000000003C38 = throw_grenade_up   # pitch +1
+4-38_000000001028 = add_aim_throw   # the dart's and the grenade's sheet on Spine_3 / 0004 / 0005, driven by df 0xB6 (Kiriko's aim pitch: M), 0.2 s
+# Nano Boost (0B9E #141, alias 0x175): the syringe from her left forearm (hp 0078); time df 0x2F
+0-32_000000003BBF = cast_nano   # pitch 0, 0.8 s
+0-32_000000003CEA = cast_nano_down   # pitch -1
+0-32_000000003CE9 = cast_nano_up   # pitch +1
+# Quick melee (0043 #117, alias 0x00D), 0.8 s at 60 fps; time df 0x2F
+0-32_000000003BC3 = melee   # pitch 0
+0-32_000000003C1C = melee_down   # pitch -1
+0-32_000000003C1B = melee_up   # pitch +1
+
+# Knocked down (0x064 / 0x065 / 0x066, shared graph 224E; time df 0x1C0): her death plays it, and so does being asleep (no
+# sleep alias of her own: M fall / held / get up)
+0-32_000000003C93 = knockdown_start   # 0x064, 1.0 s
+0-60_000000003C92 = knockdown   # 0x065, held (group 60), 0.333 s
+0-32_000000003C94 = knockdown_end   # 0x066, 1.333 s
+# 0x1DE / 0x1DF / 0x1E0, the same tree (00E4) as 0x064-0x066: shared clips, another start / held / end (Kiriko's map took
+# 847 / 849 for her knockdown and get-up): L
+0-36_000000000847 = knockdown_alt_start   # 0x1DE, 1.0 s
+0-60_000000000848 = knockdown_alt   # 0x1DF, held, 1.0 s
+0-36_000000000849 = knockdown_alt_end   # 0x1E0, 1.267 s
+0-36_000000003C76 = hit_react   # 0x070 (0B1F #356, 224E #60), 0.433 s, time df 0x2E
+0-32_00000000187D = hit_react_2   # 0x14E, a shared clip (Mercy's hit_react), 0.767 s: L
+0-60_000000003C96 = pose_held   # 0x008 (base alias 0x002, df 0x8A cat 4), 2.0 s, moves nothing (measured): L
+# Pulled / knocked (alias 0x174: the shared graph 02C5 #226, and Life Grip's 21EE #156 plays it on the ally it pulls, df 0174
+# = her facing against the pull: research\lifeweaver\work_kit\kit_grip_tree.md; M): 2-frame poses on a 2D blend (df 0x235 X,
+# df 0x236 Y; which way is forward isn't read: Mercy's map took Y+, Lifeweaver's Y-), + add_aim_jump; in the air it plays the
+# jump (0x006). 0x1C8 (no graph found) has the same, a scoped set, and 1BD5.
+0-60_000000003C7D = pulled   # (0, 0)
+0-60_000000003C87 = pulled_y_plus   # (0, +1)
+0-60_000000003C86 = pulled_y_minus   # (0, -1)
+0-60_000000003C88 = pulled_x_plus   # (+1, 0)
+0-60_000000003C89 = pulled_x_minus   # (-1, 0)
+0-60_000000003C8D = pulled_scoped   # 0x1C8 scoped (0, 0)
+0-60_000000003C90 = pulled_y_plus_scoped   # (0, +1)
+0-60_000000003C8F = pulled_y_minus_scoped   # (0, -1)
+0-60_000000003C8E = pulled_x_plus_scoped   # (+1, 0)
+0-60_000000003C91 = pulled_x_minus_scoped   # (-1, 0)
+4-4_000000001BD5 = add_pulled   # 0x1C8's additive, 1.2 s: L
+
+# Hero select (showcase entity 3A7E, set 0C85, alias 0x002): a sequence, the intro then four clips in turn, then a random of
+# them (6 slots: BC6E / BC6F / BC70 / BC6D / BC70 / BC6E); the teacup on her hp 000A, the rifle on 00C9. The hold is the
+# first after the intro (ours, as Mercy's).
+16-32_00000000BACC = select_intro   # 8.67 s
+0-36_00000000BC6F = select_hold   # 5.0 s
+0-36_00000000BC6E = select_fidget   # 7.6 s
+0-36_00000000BC70 = select_fidget_2   # 6.67 s
+0-36_00000000BC6D = select_fidget_3   # 2.43 s
+
+# Not mapped (in the extraction; their meaning isn't read, L): 0x43C (02C5 #277) 4-0_3C4B (3.53 s); 0x1EE 0-36_3D93 (1.0 s);
+# 0x2DE 4-4_3D94 (1.0 s); 0x13B 0-36_1139 + 4-6_113A / 4-6_FD0; the base alias's 2-frame layer 4-4_27AD / 4-4_27AE; the
+# generic crouch fallbacks outside her tree (0x056 0-32_998, 0x055 0-32_999..9A0); another hero entity's (66FA) 0xA33
+# (F81A ...) and 0xA87 (12E07 ...); the hero file's set 0F27 (0x688 ... 8531-8543, 37; L a mode's carry set); and in none of
+# her sets: 0-36_3BFD, 3C1D, 3C21, 3C47, 3CA7, 3CE5, C999 (1.9-7.6 s), 0-32_C998, E80D, F9D4, 143D3, 18638, 186FA, 186FC,
+# 199B8, 1A147, 0-37_EF4D (L: intros or highlights), 4-0_8534, 8539, 4-32_D13D, 4-6_FCF.
+# Not in the extraction: the Heroic emote 3C3B (alias 0x45C, in the emote extract); the intro list 3CEC, 3C3C, 86ED, 4804,
+# 3C03, DFA1, EB6F, F69A; 42EA's 19EA5-1A129; 0EC0's BF7C / BF7D.
