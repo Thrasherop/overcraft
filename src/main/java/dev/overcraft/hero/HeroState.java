@@ -113,6 +113,8 @@ public final class HeroState {
 	 */
 	public boolean thornsOut;
 	public double bloomCharge;
+	/** Ana's Take Aim: how far scoped in, 0 (out) to 1 (fully scoped). */
+	public double scope;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;
@@ -194,7 +196,7 @@ public final class HeroState {
 		blasterOut = false;
 		swapTicks = holsterTicks = 0;
 		thornsOut = charging = treeAiming = false;
-		bloomCharge = bloomRecovery = thornSpread = seedCooldown = 0;
+		bloomCharge = bloomRecovery = thornSpread = seedCooldown = scope = 0;
 		bloomTarget = platformId = gripTarget = treeId = null;
 		bloomLinger = abilityLock = airTicks = 0;
 		platformThrow = dashTicks = gripCast = treeCast = -1;

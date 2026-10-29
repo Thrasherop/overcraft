@@ -35,3 +35,15 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
 - **Test spots near a village lie:** a zombie summoned 10 m ahead stood half inside a house wall and suffocated, and
   looked like the dart killing it in one shot. Test on open ground away from buildings, and read the target's health
   before firing.
+
+## Building her (2026-10-29: step 3, Take Aim)
+- **Slowed movement never reached its speed** (every hero, not only hers). The mover's friction works on at least
+  `STOP_SPEED` (4.5 m/s), and acceleration is 35 x the wish speed. At a 65% slow the acceleration can't beat the floor's
+  friction, so a scoped walk settled at 35 x 1.925 / 60 = 1.12 m/s instead of the wiki's 1.925. `Mover.slowed(factor)`
+  scales the floor with the speed factor; `OwMathTest.slowedRunReachesItsSlowedSpeed` covers it. Read speeds from the
+  velocity (`vz` x 20), not from positions between harness calls: their timing is loose.
+- **Her scoped stands are turn-in-place sheets too** (3C5D / 3C9C, like her plain ones): on the clock they turned her
+  120 degrees away. The animator holds `idle_scoped` / `crouch_idle_scoped` at frame 0 as it does `idle`.
+- **Zoom and sensitivity live on the client:** `ClientAna` scales the FOV toward 30 degrees with the synced scope and the
+  mouse turn to 30% fully scoped (`HeroFovMixin`, `MouseHandlerMixin`), in first person only.
+- **No scope overlay yet:** its texture isn't extracted (her effects step).

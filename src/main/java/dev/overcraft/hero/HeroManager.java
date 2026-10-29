@@ -79,6 +79,13 @@ public final class HeroManager {
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
 	/**
+	 * Ana's state, for every client to draw and animate her (HeroAnimator, her zoom): [flags (Ana.FLAG_*), how far scoped
+	 * in (%)]. Absent: not Ana in play.
+	 */
+	public static final AttachmentType<java.util.List<Integer>> ANA = AttachmentRegistry.create(Overcraft.id("ana"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
+
+	/**
 	 * The ult's charge, saved with the player when they leave: leaving and rejoining kept the hero but lost a nearly
 	 * full ult (found playing). Overwatch has no rejoining mid-match; a Minecraft world is played over many sessions.
 	 */
@@ -196,6 +203,9 @@ public final class HeroManager {
 		if (state.hero == Hero.LIFEWEAVER) {
 			dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
 		}
+		if (state.hero == Hero.ANA) {
+			dev.overcraft.ana.Ana.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -271,6 +281,9 @@ public final class HeroManager {
 			if (state.hero == Hero.LIFEWEAVER) {
 				// his platform and tree leave with him
 				dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
+			}
+			if (state.hero == Hero.ANA) {
+				dev.overcraft.ana.Ana.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());

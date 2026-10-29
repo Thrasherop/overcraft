@@ -77,6 +77,15 @@ public final class OwMovement {
 		 * amped). Before 2026-10-27 he moved on the default mover: stopping dead and losing a wall jump's speed at once.
 		 */
 		public static final Mover LUCIO = new Mover(15, 2, STOP_SPEED, AIR_ACCELERATE, 0.5, 2 * RUN_SPEED);
+
+		/**
+		 * The same under a slow (factor below 1): the friction's stop-speed floor scaled with it. Unscaled, a slowed run's
+		 * acceleration (35 x its wish speed) never beat the 4.5 m/s floor's friction, and it settled at 35 x wish / 60 per
+		 * step: Ana's scope (-65%) walked 1.13 m/s, not the 1.925 the wiki measures (found playing, 2026-10-29).
+		 */
+		public Mover slowed(double factor) {
+			return factor >= 1 ? this : new Mover(groundAccelerate, friction, stopSpeed * factor, airAccelerate, airDecay, maxAir);
+		}
 	}
 
 	/** Set by the client: the mover an entity uses (its hero's). */
@@ -303,7 +312,7 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
 		boolean grounded = entity.onGround() && v.y <= 0;
-		Mover mover = OwMovement.mover.apply(entity);
+		Mover mover = OwMovement.mover.apply(entity).slowed(speedFactor(entity));
 		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
 		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
 		for (int i = 0; i < SUBSTEPS; i++) {
