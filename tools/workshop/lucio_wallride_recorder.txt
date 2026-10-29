@@ -37,6 +37,7 @@ variables
 		14: rayEnd
 		15: rayHit
 		16: wallDist
+		17: crossfades
 }
 
 rule("Lucio only")
@@ -55,6 +56,7 @@ rule("Lucio only")
 		Event Player.lastEvent = Custom String("ready");
 		Event Player.rideCount = 0;
 		Event Player.marks = 0;
+		Event Player.crossfades = 0;
 	}
 }
 
@@ -90,6 +92,9 @@ rule("Live readout (your slot number is S, at the top)")
 			Event Player.wallDist * 100, Down) / 100, Custom String("rides {0}  marks {1}", Event Player.rideCount, Event Player.marks)),
 			Null, Null, Left, 4, Color(Sky Blue), Color(White), Color(White), Visible To and String, Default Visibility);
 		Create HUD Text(Event Player, Event Player.lastEvent, Null, Null, Left, 5, Color(Orange), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("crossfades {0}  amp {1}  ult {2}", Event Player.crossfades, Is Using Ability 2(
+			Event Player), Is Using Ultimate(Event Player)), Null, Null, Left, 6, Color(Green), Color(White), Color(White),
 			Visible To and String, Default Visibility);
 	}
 }
@@ -136,6 +141,11 @@ rule("Every tick: the nearest wall around her, then three log lines")
 		Log To Inspector(Custom String("S{0} B {1} | {2}", Slot Of(Event Player), Custom String("{0} {1}", Is Button Held(Event Player,
 			Button(Jump)), Is Button Held(Event Player, Button(Crouch))), Custom String("F {0} | N {1} | D {2}", Facing Direction Of(
 			Event Player), Event Player.wallNormal, Event Player.wallDist)));
+		"S slot | A primary secondary crouching | using ability 1, ability 2 (Amp It Up), ultimate | crossfades so far"
+		Log To Inspector(Custom String("S{0} A {1} | {2}", Slot Of(Event Player), Custom String("{0} {1} {2}", Is Button Held(
+			Event Player, Button(Primary Fire)), Is Button Held(Event Player, Button(Secondary Fire)), Is Crouching(Event Player)),
+			Custom String("U {0} | X {1}", Custom String("{0} {1} {2}", Is Using Ability 1(Event Player), Is Using Ability 2(
+			Event Player), Is Using Ultimate(Event Player)), Event Player.crossfades)));
 		Wait(0.016, Ignore Condition);
 		Loop If Condition Is True;
 	}
@@ -194,6 +204,68 @@ rule("Off the wall: a bookmark (no waits)")
 			"t {0} | rode {1} s | {2}", Total Time Elapsed, Total Time Elapsed - Event Player.attachTime, Custom String(
 			"vel {0} | rose {1} | jump {2}", Velocity Of(Event Player), Y Component Of(Position Of(Event Player)
 			- Event Player.attachPos), Is Button Held(Event Player, Button(Jump))))));
+	}
+}
+
+rule("Crossfade (Ability 1): a bookmark and a count (say which song you started on)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Ability 1)) == True;
+	}
+
+	actions
+	{
+		Event Player.crossfades = Event Player.crossfades + 1;
+		Log To Inspector(Custom String("S{0} EVENT CROSSFADE {1} | t {2}", Slot Of(Event Player), Event Player.crossfades,
+			Total Time Elapsed));
+	}
+}
+
+rule("Amp It Up (Ability 2): a bookmark when it starts")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ability 2(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT AMP | t {1}", Slot Of(Event Player), Total Time Elapsed));
+	}
+}
+
+rule("Sound Barrier (Ultimate): a bookmark when it starts")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ultimate(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT ULT | t {1}", Slot Of(Event Player), Total Time Elapsed));
 	}
 }
 

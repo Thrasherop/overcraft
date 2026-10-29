@@ -49,7 +49,10 @@ shows it on screen; tell me what MARK 3 was):
 nearest wall's normal and distance (eight level rays round you at chest height, 1.5 m; distance 9 = no wall), the
 count of rides and marks, and the last event (ATTACH, LEAVE, LAND, MARK).
 
-The log has three lines per player per tick (62.5 a second), every line tagged with the slot: `S0 T` time and the
-wall / ground / air flags, `S0 P` position, velocity and move input, `S0 B` jump and crouch held, facing, the wall's
-normal and distance. Bookmark lines (`S0 EVENT ATTACH`, `LEAVE`, `LAND`, `MARK`) mark each ride's start and end; they
+The log has four lines per player per tick (62.5 a second), every line tagged with the slot: `S0 T` time and the
+wall / ground / air flags, `S0 P` position, velocity and move input, `S0 B` jump and crouch held, facing (the look
+direction, pitch included), the wall's normal and distance, `S0 A` primary / secondary fire held, crouching, using
+ability 1 / ability 2 (Amp It Up) / ultimate, and how many times Crossfade has been pressed. **Tell me which song you
+started on**: the Workshop can't read the song, so it's worked out from that and the Crossfade count (also bookmarked:
+`EVENT CROSSFADE`, `EVENT AMP`, `EVENT ULT`). Bookmark lines (`S0 EVENT ATTACH`, `LEAVE`, `LAND`, `MARK` and the abilities') mark each ride's start and end; they
 never wait, so a quick jump from wall to wall still gets its own pair.
