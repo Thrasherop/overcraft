@@ -76,3 +76,19 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   from the front.
 - **A new model in the pack loads only if `HeroModels` lists it:** `ana_pistol.glb` sat in the pack unused until it was
   added to the names loaded for Ana. The log line `Hero model <name>: ...` at start is the check.
+
+## Building her (2026-10-29: step 6, Nano Boost)
+- **Her ult cost was missing from `Combat.ultCost`** (its `default -> 1`): her charge stopped at 1 point until Nano was
+  built. A new hero needs its case there, or the HUD's meter (from the sync's own cost) never fills.
+- **The buff is `ana/Nano`:** +50% damage dealt added into Mercy's boost as one sum (`Boosts.damageFactor`; Mercy is still
+  credited only her own share) and half damage taken (the same `hurtServer` hook in `LivingEntityMixin`, on the victim).
+  It ends at 8 s or when the target dies; Ana's death doesn't end it. Played: a wolf boosted took 1 from a 2 hit, a hit
+  "by" it took 5.92 from a zombie (6 less armour) and 3.94 after the 8 s; a villager, a teammate player and herself the
+  same; Ana killed mid-boost, the teammate still took 2 from a 4 hit.
+- **The pick:** `Targeting.allyInView(..., allowed)` skips allies already boosted; none in view, herself (the owner's
+  default); both boosted, nothing is spent. Played in that order with three Q presses at a boosted wolf.
+- **Tactician:** healing while full raised her charge 2300 -> 2412.5 (150 healed x 0.75), and Q left 112.5 of it.
+- **Harness keys:** `secondary_fire` is the left mouse button and `primary_fire` the right (Ana's scope): holding
+  "primary_fire" to shoot only scoped her. Look at `"key"` in the reply before trusting a run.
+- **A wolf summoned with `Owner` is tame but has 8 health** (a tamed wolf's 40 comes from taming): a 20 hit killed it.
+  NoAI zombies still burn in daylight, which shows in health read seconds apart.

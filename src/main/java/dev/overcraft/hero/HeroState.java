@@ -36,6 +36,9 @@ public final class HeroState {
 	public int castTicks = -1;
 	/** Ana's Sleep Dart cast, ticks into it (-1 none). */
 	public int sleepCast = -1;
+	/** Ana's Nano Boost cast, ticks into it (-1 none), and the entity id it's for. */
+	public int nanoCast = -1;
+	public int nanoTarget = -1;
 	public @Nullable UUID castTarget;
 	/** Quick melee, every hero's (QuickMelee). */
 	public double meleeCooldown;
@@ -224,6 +227,8 @@ public final class HeroState {
 		meleeCooldown = 0;
 		castTicks = -1;
 		sleepCast = -1;
+		nanoCast = -1;
+		nanoTarget = -1;
 		castTarget = null;
 		attackBuff = 0;
 		attackBuffUntil = 0;

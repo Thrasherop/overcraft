@@ -296,6 +296,8 @@ public final class Combat {
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.ULT_COST;
 			case MERCY -> dev.overcraft.mercy.MercyStats.ULT_COST;
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.ULT_COST;
+			// (missing until Nano Boost: her charge stopped at 1 point)
+			case ANA -> (int) dev.overcraft.ana.AnaStats.ULT_COST;
 			default -> 1;
 		};
 	}

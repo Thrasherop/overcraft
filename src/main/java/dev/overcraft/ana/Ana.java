@@ -50,6 +50,7 @@ public final class Ana implements HeroKit {
 		s.scope = 0;
 		s.castTicks = -1;
 		s.sleepCast = -1;
+		s.nanoCast = -1;
 		publish(player, s);
 	}
 
@@ -71,9 +72,11 @@ public final class Ana implements HeroKit {
 		if (!live) {
 			s.castTicks = -1;
 			s.sleepCast = -1;
+			s.nanoCast = -1;
 		} else {
 			grenadeCast(player, s);
 			sleepCast(player, s);
+			nanoCast(player, s);
 		}
 		// Take Aim: held, with rounds and no reload; let go, a reload or the clip empty takes it down (0B94 #135 / #91 /
 		// #189). The shot's recovery pauses while it moves (#63 / #172)
@@ -137,11 +140,59 @@ public final class Ana implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
 			startGrenade(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0) {
+			startNano(player, s);
+		}
 	}
 
-	/** Casting an ability (the grenade's throw, the Sleep Dart's): the rifle is down. */
+	/** Casting an ability (the grenade's throw, the Sleep Dart's, Nano Boost's): the rifle is down. */
 	private static boolean casting(HeroState s) {
-		return s.castTicks >= 0 || s.sleepCast >= 0;
+		return s.castTicks >= 0 || s.sleepCast >= 0 || s.nanoCast >= 0;
+	}
+
+	// ---- Nano Boost (Q: 0B9E) ----
+
+	/**
+	 * Q with the charge full: the ally nearest her crosshair within 40 m and 10 degrees, in sight, not already boosted
+	 * (Targeting); with none, herself unless she's boosted already (the data nanos her only when her team is just her;
+	 * Minecraft's allies are pets and villagers, so they come first: the owner's default). No target, nothing spent. The
+	 * charge goes as the cast starts (a Tactician's excess stays: Combat.afterUlt), the boost lands 0.13 s in, the cast
+	 * lasts 0.75 s (0B9E #176 / #175). The Requires Target Confirmation option isn't in the mod: its default, off.
+	 */
+	private static void startNano(ServerPlayer player, HeroState s) {
+		if (s.ultCharge < ULT_COST || casting(s)) {
+			return;
+		}
+		LivingEntity target = dev.overcraft.hero.Targeting.allyInView(player, NANO_RANGE, NANO_CONE, true, e -> !Nano.boosted(e));
+		if (target == null && !Nano.boosted(player)) {
+			target = player;
+		}
+		if (target == null) {
+			return;
+		}
+		s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.ANA, s.ultCharge);
+		s.nanoCast = 0;
+		s.nanoTarget = target.getId();
+		Combat.animate(player, "cast_nano");
+	}
+
+	/**
+	 * Each tick of the cast: 0.13 s in, the target is healed 250 and boosted for 8 s (Nano), whatever the syringe does on
+	 * the way (a visual). An ultimate's own healing builds no ult charge (W): not credited.
+	 */
+	private static void nanoCast(ServerPlayer player, HeroState s) {
+		if (s.nanoCast < 0) {
+			return;
+		}
+		if (s.nanoCast == Ow.ticks(NANO_START) && player.level().getEntity(s.nanoTarget) instanceof LivingEntity target
+			&& target.isAlive()) {
+			Combat.heal(target, NANO_HEAL);
+			Nano.boost(target, player.getUUID());
+		}
+		if (++s.nanoCast >= Ow.ticks(NANO_CAST)) {
+			s.nanoCast = -1;
+			s.nanoTarget = -1;
+		}
 	}
 
 	// ---- Sleep Dart (Shift: 0BDD) ----
@@ -399,7 +450,7 @@ public final class Ana implements HeroKit {
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
 		float reload = s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(RIFLE_RELOAD)) : -1;
-		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, false,
+		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, s.nanoCast >= 0,
 			s.primaryAmmo, reload, 0, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, flags(s), 0, (float) s.scope);
