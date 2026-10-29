@@ -23,6 +23,10 @@ Gradle, code edits and git on this checkout. Up: [Techniques](../README.md) · e
   to the next took a neighbouring method with it. Check `git diff | grep '^-'` before building.
 - **Bash heredocs with quotes or backslashes break:** a Windows path in a Python string (`\u...`) or a quote in a
   heredoc. Write the edit script with the Write tool, use forward slashes, and use raw strings for code.
+- **Escapes in Windows paths become control characters:** `\a`, `\f`, `\r` and `\000` in comment paths passed through a
+  heredoc-fed Python string came out as a bell, a form feed, a carriage return and a NUL, in six files (found
+  2026-10-28; git then took mercy-plan.md for binary). Scan after such edits: any byte below 32 but tab, or a CR not
+  followed by LF.
 - **JOML:** `Matrix4f.scale(s)` is a scale transform, not a scalar multiply. For weighted sums of matrices (skinning),
   use `fma4x3`.
 

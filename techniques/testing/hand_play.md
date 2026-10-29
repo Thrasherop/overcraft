@@ -50,6 +50,12 @@ With desktop control, when the owner approves it at the PC. Computer-use screens
 the screen with GDI instead (scratchpad `burst.ps1`, timed bursts for fast animations). It can't send F5 or two held
 keys at once, and Windows' text-input overlay can block clicks.
 
+To bring the dev client forward for real keys (2026-10-28): `(New-Object -ComObject WScript.Shell).AppActivate(<pid>)`
+with its PID (found as for killing it). `open_application` and SDL's raise didn't get past Windows' focus lock, and
+clicking the taskbar needs a separate grant. Then `hold_key` reaches the game; read the result with `dev state` and the
+game's own screenshots. Mouse moves can't turn the view: SDL reads raw mouse input and the tool only places the
+cursor. Turning with the real mouse still needs the owner.
+
 ## Test worlds
 - **Summon test mobs** with `Tags:["x"]` and select `@e[tag=x]`.
 - **While setting up,** use `/difficulty peaceful` (a slime killed the test once). Gamerules are snake_case in 26.3
