@@ -58,6 +58,11 @@
 - **Commands run by a dead player find no entities** (`kill @e[...]` says "No entity was found"): clear the world only
   while alive, and check it worked (`execute as @e run say left`). Leftover skeletons from one test shot the hero in the
   next, which looked like a respawn at half health (2026-10-28).
+- **One connection at a time:** a script holding the harness socket open makes any other `dev` call (`tools/aim.py`)
+  wait for its 40 s timeout. Do everything over the one connection (2026-10-29: a night fight stalled while
+  zombies killed both players).
+- **"At a bed" means the respawn point:** H in hero mode opens the select only near it, and a bed placed with
+  `/setblock` isn't one until used. `/spawnpoint @s <bed>` stands in for clicking it.
 - **NoAI mobs can't be moved at all:** a towed NoAI villager stayed put while the rope said towing. Tow and carry
   tests need mobs with AI, and those walk: a zombie walked under her and out of Catnapper's 5.5 m reach. Move the mob
   onto the mark in the same batch as the confirm.

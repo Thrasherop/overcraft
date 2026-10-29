@@ -64,6 +64,11 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A projectile's first frames are at the shooter's eyes in first person,** not at the view model's hand: a muzzle
   flare there filled the view, and a 0.5 m halo at 1 m was a bright ball beside her paw. Skip the muzzle for your own
   first-person shots and fade them in over a few metres (`JetpackCatFx.pawFlight`).
+- **Effect meshes can tilt** (`Particle.mesh(triangles, side, up)`): a mesh's Y axis goes along up, and it stands on its
+  base along up, so centre it by going back half its height. Her muzzle tori face along the shot; Purr's torus is
+  stored standing like a wheel and is laid flat; the hook's cone is turned over, as the data does (2026-10-29).
+- **The bottom fade of meshes is opt-in** (`fadeBase()`): it was on for every mesh and hid the lower 0.6 m of small
+  ones (a 0.36 m cone, a muzzle torus). Only the torii's open posts need it.
 - **Masks the game multiplies on one mesh can be baked into one** when they share its UVs (`build_asset_pack.py`
   PRODUCTS; a particle draws one mask). Read the mesh's UVs first. On her ring torus (15A26) U runs round the ring and
   V round the tube, so the 1C7A strip (bright in the middle of V) lights the outer rim. The 299E3 noise alone filled
