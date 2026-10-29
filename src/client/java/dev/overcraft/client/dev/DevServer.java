@@ -135,6 +135,10 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					// the hero's state bits (Jetpack Cat: the ult phase in the low 3, 8 towing, 16 Lifeline on)
+					out.addProperty("mode", s.mode());
+					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
+					out.addProperty("aimSeen", aim == null ? "" : aim.toString());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
@@ -446,6 +450,16 @@ public final class DevServer {
 				}
 				out.addProperty("ok", true);
 			}
+			case "fxnear" -> {
+				// dev only: the live particles within r of a point: "fxnear 5.1 -59.9 0.5 3", or of the player: "fxnear 3"
+				String[] a = arg.split(" ");
+				net.minecraft.world.phys.Vec3 at = a.length >= 3 ? new net.minecraft.world.phys.Vec3(Double.parseDouble(a[0]),
+					Double.parseDouble(a[1]), Double.parseDouble(a[2])) : player.position();
+				double r = Double.parseDouble(a[a.length >= 4 ? 3 : 0]);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				dev.overcraft.client.effect.Fx.near(at, r).forEach(list::add);
+				out.add("fx", list);
+			}
 			case "select" -> {
 				// dev only: the hero select screen, as if joined ("select") or at the bed ("select bed")
 				mc.gui.setScreen(new dev.overcraft.client.HeroSelectScreen(!arg.equals("bed")));
@@ -540,6 +554,14 @@ public final class DevServer {
 				mouse.overcraft$turnPlayer(0);
 				mouse.overcraft$setAccumulatedDX(0);
 				mouse.overcraft$setAccumulatedDY(0);
+				out.addProperty("ok", true);
+			}
+			case "focus" -> {
+				// dev only: brings the game's window back from the taskbar and in front, for play with the real mouse and keys
+				long handle = mc.getWindow().handle();
+				org.lwjgl.sdl.SDLVideo.SDL_RestoreWindow(handle);
+				org.lwjgl.sdl.SDLVideo.SDL_ShowWindow(handle);
+				org.lwjgl.sdl.SDLVideo.SDL_RaiseWindow(handle);
 				out.addProperty("ok", true);
 			}
 			case "window" -> {

@@ -9,6 +9,14 @@ import net.minecraft.client.Minecraft;
  * the player had when it ends; meanwhile F5 skips first person, as EmoteCamera does.
  */
 public final class AbilityCamera {
+	/**
+	 * How far the view rises off her line of sight, in its own up (ours: the data gives no placement for these views).
+	 * Minecraft's third person sits on that line, so what she aims at (Catnapper's marker) was always behind her head.
+	 */
+	public static final float LIFT = 1;
+	/** How far her line of sight is followed for the point the lifted view turns to (ours). */
+	public static final double AIM_REACH = 64;
+
 	private static boolean active;
 	private static CameraType before = CameraType.FIRST_PERSON;
 
@@ -27,6 +35,11 @@ public final class AbilityCamera {
 			active = false;
 			mc.options.setCameraType(before);
 		}
+	}
+
+	/** Whether such an ability holds the view now. */
+	public static boolean active() {
+		return active;
 	}
 
 	/** The view Options.setCameraType is asked for (OptionsCameraMixin): never first person while one runs. */
