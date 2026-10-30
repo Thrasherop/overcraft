@@ -1,0 +1,698 @@
+settings
+{
+	main
+	{
+		Description: "Overcraft: movement recorder for every hero. Logs every tick of every player (Workshop Inspector), each line tagged with the player's slot (S0, S1...) and hero. F marks a moment; Crouch+F an ally bot; Melee+F removes bots; Reload+F fills your ult."
+	}
+
+	modes
+	{
+		Skirmish
+
+		General
+		{
+			Hero Limit: Off
+			Respawn Time Scalar: 0%
+		}
+	}
+}
+
+variables
+{
+	player:
+		0: tick
+		1: attachTime
+		2: attachPos
+		3: leaveTime
+		4: wallNormal
+		5: wallDist
+		6: ray
+		7: rayStart
+		8: rayEnd
+		9: rayHit
+		10: rideCount
+		11: marks
+		12: lastEvent
+		13: hero
+		14: ab1Presses
+		15: ab1Start
+		16: ab1End
+		17: ab2Start
+		18: ab2End
+		19: ultStart
+		20: ultEnd
+		21: takeoffTime
+		22: takeoffPos
+		23: landTime
+}
+
+rule("Start: recording on, counters at zero")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Enable Inspector Recording;
+		Event Player.lastEvent = Custom String("ready");
+		Event Player.rideCount = 0;
+		Event Player.marks = 0;
+		Event Player.ab1Presses = 0;
+	}
+}
+
+rule("Live readout (your slot number is S, at the top)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Create HUD Text(Event Player, Custom String("S{0}  {1}  t {2}", Slot Of(Event Player), Hero Of(Event Player), Round To Integer(
+			Total Time Elapsed * 100, Down) / 100), Null, Null, Left, 0, Color(White), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("wall {0}  ground {1}  air {2}", Is On Wall(Event Player), Is On Ground(Event Player),
+			Is In Air(Event Player)), Null, Null, Left, 1, Color(White), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("h {0}  v {1}  alt {2}", Round To Integer(Horizontal Speed Of(Event Player) * 100,
+			Down) / 100, Round To Integer(Vertical Speed Of(Event Player) * 100, Down) / 100, Round To Integer(Altitude Of(Event Player)
+			* 100, Down) / 100), Null, Null, Left, 2, Color(Yellow), Color(White), Color(White), Visible To and String,
+			Default Visibility);
+		Create HUD Text(Event Player, Custom String("vel {0}", Velocity Of(Event Player)), Null, Null, Left, 3, Color(Yellow), Color(
+			White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("input {0}  jump {1}  {2}", Throttle Of(Event Player), Is Button Held(Event Player,
+			Button(Jump)), Custom String("crouch {0}  pitch {1}", Is Button Held(Event Player, Button(Crouch)), Round To Integer(
+			Vertical Facing Angle Of(Event Player), To Nearest))), Null, Null, Left, 4, Color(Sky Blue), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("using: shift {0}  e {1}  ult {2}", Is Using Ability 1(Event Player),
+			Is Using Ability 2(Event Player), Is Using Ultimate(Event Player)), Null, Null, Left, 5, Color(Green), Color(White), Color(
+			White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("resource: jump {0}  rmb {1}  shift {2}", Ability Resource(Event Player, Button(
+			Jump)), Ability Resource(Event Player, Button(Secondary Fire)), Ability Resource(Event Player, Button(Ability 1))), Null,
+			Null, Left, 6, Color(Green), Color(White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("wall normal {0}  dist {1}  {2}", Event Player.wallNormal, Round To Integer(
+			Event Player.wallDist * 100, Down) / 100, Custom String("rides {0}  marks {1}", Event Player.rideCount, Event Player.marks)),
+			Null, Null, Left, 7, Color(Sky Blue), Color(White), Color(White), Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Event Player.lastEvent, Null, Null, Left, 8, Color(Orange), Color(White), Color(White),
+			Visible To and String, Default Visibility);
+	}
+}
+
+rule("Every tick: the nearest wall around them, then six log lines")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+		Is Alive(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.tick = Event Player.tick + 1;
+		"The wall: eight level rays at chest height, every 45 degrees round them (not tied to where they look), 1.5 m each; the nearest hit wins"
+		Event Player.rayStart = Position Of(Event Player) + Vector(0, 1, 0);
+		Event Player.wallDist = 9;
+		Event Player.wallNormal = Vector(0, 0, 0);
+		For Player Variable(Event Player, ray, 0, 8, 1);
+			Event Player.rayEnd = Event Player.rayStart + Direction From Angles(Event Player.ray * 45, 0) * 1.5;
+			Event Player.rayHit = Ray Cast Hit Position(Event Player.rayStart, Event Player.rayEnd, Null, All Players(All Teams), False);
+			If(Distance Between(Event Player.rayStart, Event Player.rayHit) < 1.49 && Distance Between(Event Player.rayStart,
+				Event Player.rayHit) < Event Player.wallDist);
+				Event Player.wallDist = Distance Between(Event Player.rayStart, Event Player.rayHit);
+				Event Player.wallNormal = Ray Cast Hit Normal(Event Player.rayStart, Event Player.rayEnd, Null, All Players(All Teams),
+					False);
+			End;
+		End;
+		"S slot | T time | wall ground air | hero"
+		Log To Inspector(Custom String("S{0} T {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String("{0} {1} {2}",
+			Is On Wall(Event Player), Is On Ground(Event Player), Custom String("{0} | {1}", Is In Air(Event Player), Hero Of(
+			Event Player)))));
+		"S slot | P position | V velocity | I move input"
+		Log To Inspector(Custom String("S{0} P {1} | {2}", Slot Of(Event Player), Position Of(Event Player), Custom String("V {0} | I {1}",
+			Velocity Of(Event Player), Throttle Of(Event Player))));
+		"S slot | B jump crouch held | F facing | N wall normal | D wall distance (9: no wall within 1.5 m)"
+		Log To Inspector(Custom String("S{0} B {1} | {2}", Slot Of(Event Player), Custom String("{0} {1}", Is Button Held(Event Player,
+			Button(Jump)), Is Button Held(Event Player, Button(Crouch))), Custom String("F {0} | N {1} | D {2}", Facing Direction Of(
+			Event Player), Event Player.wallNormal, Event Player.wallDist)));
+		"S slot | A primary secondary held, crouching | U using ability 1, ability 2, ultimate | X ability 1 presses so far"
+		Log To Inspector(Custom String("S{0} A {1} | {2}", Slot Of(Event Player), Custom String("{0} {1} {2}", Is Button Held(
+			Event Player, Button(Primary Fire)), Is Button Held(Event Player, Button(Secondary Fire)), Is Crouching(Event Player)),
+			Custom String("U {0} | X {1}", Custom String("{0} {1} {2}", Is Using Ability 1(Event Player), Is Using Ability 2(
+			Event Player), Is Using Ultimate(Event Player)), Event Player.ab1Presses)));
+		"S slot | K ability 1, ability 2, ultimate held | melee, reload held | R resource of jump, primary, secondary"
+		Log To Inspector(Custom String("S{0} K {1} | {2}", Slot Of(Event Player), Custom String("{0} {1} {2}", Is Button Held(
+			Event Player, Button(Ability 1)), Is Button Held(Event Player, Button(Ability 2)), Is Button Held(Event Player, Button(
+			Ultimate))), Custom String("{0} {1} | R {2}", Is Button Held(Event Player, Button(Melee)), Is Button Held(Event Player, Button(
+			Reload)), Custom String("{0} {1} {2}", Ability Resource(Event Player, Button(Jump)), Ability Resource(Event Player, Button(
+			Primary Fire)), Ability Resource(Event Player, Button(Secondary Fire))))));
+		"S slot | C resource of ability 1, ability 2 | Q charges of ability 1, ability 2 | CD cooldowns of ability 1, ability 2"
+		Log To Inspector(Custom String("S{0} C {1} | {2}", Slot Of(Event Player), Custom String("{0} {1}", Ability Resource(Event Player,
+			Button(Ability 1)), Ability Resource(Event Player, Button(Ability 2))), Custom String("Q {0} | CD {1}", Custom String(
+			"{0} {1}", Ability Charge(Event Player, Button(Ability 1)), Ability Charge(Event Player, Button(Ability 2))), Custom String(
+			"{0} {1}", Ability Cooldown(Event Player, Button(Ability 1)), Ability Cooldown(Event Player, Button(Ability 2))))));
+		Wait(0.016, Ignore Condition);
+		Loop If Condition Is True;
+	}
+}
+
+rule("Hero picked or changed: a bookmark")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Has Spawned(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+		Hero Of(Event Player) != Event Player.hero;
+	}
+
+	actions
+	{
+		Event Player.hero = Hero Of(Event Player);
+		Event Player.lastEvent = Custom String("HERO {0}", Hero Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT HERO | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Hero Of(Event Player)));
+	}
+}
+
+rule("On a wall (climbing or riding): a bookmark (no waits, so a quick next wall still gets its own)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Wall(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.attachTime = Total Time Elapsed;
+		Event Player.attachPos = Position Of(Event Player);
+		Event Player.rideCount = Event Player.rideCount + 1;
+		Event Player.lastEvent = Custom String("ATTACH {0} | vel {1} | input {2}", Event Player.rideCount, Velocity Of(Event Player),
+			Throttle Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT ATTACH {1} | {2}", Slot Of(Event Player), Event Player.rideCount, Custom String(
+			"t {0} | vel {1} | {2}", Total Time Elapsed, Velocity Of(Event Player), Custom String("pos {0} | face {1} | N {2}",
+			Position Of(Event Player), Facing Direction Of(Event Player), Event Player.wallNormal))));
+	}
+}
+
+rule("Off the wall: a bookmark (no waits)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Wall(Event Player) == False;
+		Event Player.attachTime > Event Player.leaveTime;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.leaveTime = Total Time Elapsed;
+		Event Player.lastEvent = Custom String("LEAVE after {0} s | vel {1} | jump {2}", Round To Integer((Total Time Elapsed
+			- Event Player.attachTime) * 100, Down) / 100, Velocity Of(Event Player), Is Button Held(Event Player, Button(Jump)));
+		Log To Inspector(Custom String("S{0} EVENT LEAVE {1} | {2}", Slot Of(Event Player), Event Player.rideCount, Custom String(
+			"t {0} | rode {1} s | {2}", Total Time Elapsed, Total Time Elapsed - Event Player.attachTime, Custom String(
+			"vel {0} | rose {1} | jump {2}", Velocity Of(Event Player), Y Component Of(Position Of(Event Player)
+			- Event Player.attachPos), Is Button Held(Event Player, Button(Jump))))));
+	}
+}
+
+rule("Leaving the ground (a jump, a launch, walking off): a bookmark")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Ground(Event Player) == False;
+		Is Alive(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.takeoffTime = Total Time Elapsed;
+		Event Player.takeoffPos = Position Of(Event Player);
+		Log To Inspector(Custom String("S{0} EVENT TAKEOFF | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String(
+			"vel {0} | jump {1} | crouch {2}", Velocity Of(Event Player), Is Button Held(Event Player, Button(Jump)), Is Button Held(
+			Event Player, Button(Crouch)))));
+	}
+}
+
+rule("Landing: a bookmark with the air time and the height from where they left the ground")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is On Ground(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.landTime = Total Time Elapsed;
+		Log To Inspector(Custom String("S{0} EVENT LAND | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String(
+			"vel {0} | air {1} s | drop {2}", Velocity Of(Event Player), Total Time Elapsed - Event Player.takeoffTime, Y Component Of(
+			Event Player.takeoffPos - Position Of(Event Player)))));
+	}
+}
+
+rule("Jump pressed")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Jump)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT PRESS JUMP | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String(
+			"vel {0} | ground {1} | using {2}", Velocity Of(Event Player), Is On Ground(Event Player), Custom String("{0} {1} {2}",
+			Is Using Ability 1(Event Player), Is Using Ability 2(Event Player), Is Using Ultimate(Event Player)))));
+	}
+}
+
+rule("Jump released")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Jump)) == False;
+		Is Dummy Bot(Event Player) == False;
+		Has Spawned(Event Player) == True;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT RELEASE JUMP | t {1} | vel {2}", Slot Of(Event Player), Total Time Elapsed,
+			Velocity Of(Event Player)));
+	}
+}
+
+rule("Crouch pressed")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Crouch)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT PRESS CROUCH | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("vel {0} | ground {1} | using {2}", Velocity Of(Event Player), Is On Ground(Event Player), Custom String(
+			"{0} {1} {2}", Is Using Ability 1(Event Player), Is Using Ability 2(Event Player), Is Using Ultimate(Event Player)))));
+	}
+}
+
+rule("Ability 1 pressed (Shift)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Ability 1)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ab1Presses = Event Player.ab1Presses + 1;
+		Log To Inspector(Custom String("S{0} EVENT PRESS ABILITY1 {1} | {2}", Slot Of(Event Player), Event Player.ab1Presses,
+			Custom String("t {0} | vel {1} | cooldown {2}", Total Time Elapsed, Velocity Of(Event Player), Ability Cooldown(Event Player,
+			Button(Ability 1)))));
+	}
+}
+
+rule("Ability 2 pressed (E)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Ability 2)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT PRESS ABILITY2 | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("vel {0} | cooldown {1}", Velocity Of(Event Player), Ability Cooldown(Event Player, Button(Ability 2)))));
+	}
+}
+
+rule("Ultimate pressed (Q)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Ultimate)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Log To Inspector(Custom String("S{0} EVENT PRESS ULTIMATE | t {1} | vel {2}", Slot Of(Event Player), Total Time Elapsed,
+			Velocity Of(Event Player)));
+	}
+}
+
+rule("Ability 1 in use: start")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ability 1(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ab1Start = Total Time Elapsed;
+		Event Player.lastEvent = Custom String("SHIFT START | vel {0}", Velocity Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT ABILITY1 START | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("vel {0} | pos {1}", Velocity Of(Event Player), Position Of(Event Player))));
+	}
+}
+
+rule("Ability 1 in use: end")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ability 1(Event Player) == False;
+		Event Player.ab1Start > Event Player.ab1End;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ab1End = Total Time Elapsed;
+		Event Player.lastEvent = Custom String("SHIFT END after {0} s | vel {1}", Round To Integer((Total Time Elapsed
+			- Event Player.ab1Start) * 100, Down) / 100, Velocity Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT ABILITY1 END | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("lasted {0} | vel {1} | pos {2}", Total Time Elapsed - Event Player.ab1Start, Velocity Of(Event Player),
+			Position Of(Event Player))));
+	}
+}
+
+rule("Ability 2 in use: start")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ability 2(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ab2Start = Total Time Elapsed;
+		Log To Inspector(Custom String("S{0} EVENT ABILITY2 START | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("vel {0} | pos {1}", Velocity Of(Event Player), Position Of(Event Player))));
+	}
+}
+
+rule("Ability 2 in use: end")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ability 2(Event Player) == False;
+		Event Player.ab2Start > Event Player.ab2End;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ab2End = Total Time Elapsed;
+		Log To Inspector(Custom String("S{0} EVENT ABILITY2 END | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed,
+			Custom String("lasted {0} | vel {1} | pos {2}", Total Time Elapsed - Event Player.ab2Start, Velocity Of(Event Player),
+			Position Of(Event Player))));
+	}
+}
+
+rule("Ultimate in use: start")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ultimate(Event Player) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ultStart = Total Time Elapsed;
+		Log To Inspector(Custom String("S{0} EVENT ULT START | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String(
+			"vel {0} | pos {1}", Velocity Of(Event Player), Position Of(Event Player))));
+	}
+}
+
+rule("Ultimate in use: end")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Using Ultimate(Event Player) == False;
+		Event Player.ultStart > Event Player.ultEnd;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.ultEnd = Total Time Elapsed;
+		Log To Inspector(Custom String("S{0} EVENT ULT END | t {1} | {2}", Slot Of(Event Player), Total Time Elapsed, Custom String(
+			"lasted {0} | vel {1} | pos {2}", Total Time Elapsed - Event Player.ultStart, Velocity Of(Event Player), Position Of(
+			Event Player))));
+	}
+}
+
+rule("F marks a moment (hold nothing else; say what you just did, and your S number, when you send the log)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Interact)) == True;
+		Is Button Held(Event Player, Button(Crouch)) == False;
+		Is Button Held(Event Player, Button(Melee)) == False;
+		Is Button Held(Event Player, Button(Reload)) == False;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Event Player.marks = Event Player.marks + 1;
+		Event Player.lastEvent = Custom String("MARK {0}", Event Player.marks);
+		Log To Inspector(Custom String("S{0} EVENT MARK {1} | t {2}", Slot Of(Event Player), Event Player.marks, Total Time Elapsed));
+		Wait(0.25, Ignore Condition);
+	}
+}
+
+rule("Hold Crouch, press F: an ally bot (Ana) standing where you are, for Guardian Angel, Swift Step and the like")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Crouch)) == True;
+		Is Button Held(Event Player, Button(Interact)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Create Dummy Bot(Hero(Ana), Team Of(Event Player), -1, Position Of(Event Player), Facing Direction Of(Event Player));
+		Event Player.lastEvent = Custom String("ALLY BOT at {0}", Position Of(Event Player));
+		Log To Inspector(Custom String("S{0} EVENT BOT | t {1} | pos {2}", Slot Of(Event Player), Total Time Elapsed, Position Of(
+			Event Player)));
+		Wait(0.5, Ignore Condition);
+	}
+}
+
+rule("Hold Melee, press F: remove every bot")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Melee)) == True;
+		Is Button Held(Event Player, Button(Interact)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Destroy All Dummy Bots;
+		Event Player.lastEvent = Custom String("bots removed");
+		Log To Inspector(Custom String("S{0} EVENT BOTS GONE | t {1}", Slot Of(Event Player), Total Time Elapsed));
+	}
+}
+
+rule("Hold Reload, press F: your ultimate full")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Button(Reload)) == True;
+		Is Button Held(Event Player, Button(Interact)) == True;
+		Is Dummy Bot(Event Player) == False;
+	}
+
+	actions
+	{
+		Set Ultimate Charge(Event Player, 100);
+		Event Player.lastEvent = Custom String("ult full");
+		Log To Inspector(Custom String("S{0} EVENT ULT FILL | t {1}", Slot Of(Event Player), Total Time Elapsed));
+	}
+}
