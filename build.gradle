@@ -18,8 +18,10 @@ loom {
 
 	runs {
 		client {
-			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py
-			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py. A worktree can use
+			// another checkout's (OC_ASSET_PACK=<that checkout>/local-assets/pack): E: is exFAT, which has no links, and
+			// a copy of the pack is 3.7 GB
+			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
 			vmArg "-Dovercraft.dev=true"
 			// one name, so one player across launches (a random one each launch was a new player each time: her hero,
@@ -32,7 +34,7 @@ loom {
 			client()
 			name "Minecraft Client 2"
 			runDir "run2"
-			vmArg "-Dovercraft.assetPack=${file('local-assets/pack').absolutePath}"
+			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			vmArg "-Dovercraft.dev=true"
 			vmArg "-Dovercraft.devPort=25600"
 			programArgs "--username", "Viewer"
