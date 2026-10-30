@@ -40,6 +40,12 @@ public final class ClientMercy {
 	private static @Nullable Action launchKey;
 	private static boolean jumpWas;
 	private static boolean crouchWas;
+	private static boolean shiftWas;
+	/** When she last pressed Shift outside a flight (game time): a launch press from then counts once she's flying. */
+	private static long askedAt = Long.MIN_VALUE;
+	/** A Jump or Crouch pressed after that Shift, before her flight showed (MercyStats.GA_EARLY), and when. */
+	private static @Nullable Action early;
+	private static long earlyAt;
 	private static int scrolled;
 
 	private ClientMercy() {
@@ -137,6 +143,9 @@ public final class ClientMercy {
 		boolean crouchPressed = crouch && !crouchWas;
 		jumpWas = jump;
 		crouchWas = crouch;
+		boolean shift = HeroControls.get(Action.ABILITY_1).isDown();
+		boolean shiftPressed = shift && !shiftWas;
+		shiftWas = shift;
 		int extra = 0;
 		if (launchKey != null && !HeroControls.get(launchKey).isDown()) {
 			launchKey = null;
@@ -155,7 +164,26 @@ public final class ClientMercy {
 			launched = false;
 			return 0;
 		}
-		if (!s.has(Mercy.FLAG_GA) && !s.has(Mercy.FLAG_GA_WINDOW)) {
+		long now = player.level().getGameTime();
+		int earlyTicks = dev.overcraft.Ow.ticks(MercyStats.GA_EARLY);
+		boolean flying = s.has(Mercy.FLAG_GA) || s.has(Mercy.FLAG_GA_WINDOW);
+		if (!flying) {
+			// the Shift that asks for a flight, then a launch press before the flight shows: kept for it (GA_EARLY)
+			if (shiftPressed) {
+				askedAt = now;
+				early = null;
+			}
+			if ((jumpPressed || crouchPressed) && now - askedAt <= earlyTicks) {
+				early = crouchPressed ? Action.CROUCH : Action.JUMP;
+				earlyAt = now;
+			}
+		} else if (!launched && early != null && now - earlyAt <= earlyTicks && s.has(Mercy.FLAG_GA)) {
+			// her flight showed: the press made while it was on its way launches now
+			jumpPressed = early == Action.JUMP;
+			crouchPressed = early == Action.CROUCH;
+			early = null;
+		}
+		if (!flying) {
 			launched = false;
 			flown = 0;
 		} else if (!launched && (jumpPressed || crouchPressed)) {
@@ -187,6 +215,7 @@ public final class ClientMercy {
 			launchedAt = player.level().getGameTime();
 			launchedInValkyrie = s.has(Mercy.FLAG_VALKYRIE);
 			launchKey = crouchPressed ? Action.CROUCH : Action.JUMP;
+			early = null;
 		} else if (!launched) {
 			flown++;
 		}
