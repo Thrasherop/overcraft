@@ -773,8 +773,12 @@ public final class HeroAnimator {
 		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster"
 			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn" : "add_idle");
 		if (idleLayer != null) {
-			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out
-			Skeleton.addAdditive(idleLayer, time(idleLayer, now, true), pose, 1);
+			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out. Lifeweaver's blossom
+			// stand (C6C8, 0.167 s) is timed by its state machine's dataflows (df 0xB5 / 0xB8, research clipmap.md), not
+			// the clock, as his base idle is: held, as that is. Looped, it shook his hand 9 cm six times a second (the
+			// owner, 0.3.24); his Thorn Volley one (D2D9, 2.4 s) is a real loop
+			boolean held = lifeweaver && !thorns;
+			Skeleton.addAdditive(idleLayer, held ? 0 : time(idleLayer, now, true), pose, 1);
 		}
 		if (mercy) {
 			mercyLayers(model, pose, now);
