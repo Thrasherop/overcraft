@@ -114,10 +114,13 @@ rule("Live readout (your slot number is S, at the top)")
 			Null, Null, Left, 7, Color(Sky Blue), Color(White), Color(White), Visible To and String, Default Visibility);
 		Create HUD Text(Event Player, Event Player.lastEvent, Null, Null, Left, 8, Color(Orange), Color(White), Color(White),
 			Visible To and String, Default Visibility);
+		Create HUD Text(Event Player, Custom String("ult {0}%  alt form {1}  health {2}", Round To Integer(Ultimate Charge Percent(
+			Event Player), Down), Is In Alternate Form(Event Player), Round To Integer(Health(Event Player), Down)), Null, Null, Left, 9,
+			Color(Green), Color(White), Color(White), Visible To and String, Default Visibility);
 	}
 }
 
-rule("Every tick: the nearest wall around them, then six log lines")
+rule("Every tick: the nearest wall around them, then seven log lines")
 {
 	event
 	{
@@ -177,6 +180,13 @@ rule("Every tick: the nearest wall around them, then six log lines")
 			Button(Ability 1)), Ability Resource(Event Player, Button(Ability 2))), Custom String("Q {0} | CD {1}", Custom String(
 			"{0} {1}", Ability Charge(Event Player, Button(Ability 1)), Ability Charge(Event Player, Button(Ability 2))), Custom String(
 			"{0} {1}", Ability Cooldown(Event Player, Button(Ability 1)), Ability Cooldown(Event Player, Button(Ability 2))))));
+		"S slot | X ultimate charge %, alternate form (D.Va's pilot) | W firing primary, secondary | H health, max | ST stunned, asleep, knocked down, hacked, phased out"
+		Log To Inspector(Custom String("S{0} X {1} | {2}", Slot Of(Event Player), Custom String("{0} {1}", Ultimate Charge Percent(
+			Event Player), Is In Alternate Form(Event Player)), Custom String("W {0} | H {1} | {2}", Custom String("{0} {1}",
+			Is Firing Primary(Event Player), Is Firing Secondary(Event Player)), Custom String("{0} {1}", Health(Event Player),
+			Max Health(Event Player)), Custom String("ST {0} {1} {2}", Has Status(Event Player, Stunned), Has Status(Event Player,
+			Asleep), Custom String("{0} {1} {2}", Has Status(Event Player, Knocked Down), Has Status(Event Player, Hacked), Has Status(
+			Event Player, Phased Out))))));
 		Wait(0.016, Ignore Condition);
 		Loop If Condition Is True;
 	}

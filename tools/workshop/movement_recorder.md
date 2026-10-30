@@ -4,7 +4,8 @@ Goes with `movement_recorder.txt`. One script for all the heroes: play any of th
 tick of every player is logged with their hero, so one session covers as many heroes as you have time for. It's a
 Workshop script: it only reads what any Workshop script can (positions, speeds, buttons). Nothing touches Overwatch's
 files or memory. It's built from the Lúcio wall-ride recorder's parts (which ran fine), plus a few values that one didn't
-use (`Ability Charge`, `Ability Cooldown`, `Hero Of`, dummy bots): if Overwatch rejects a line, tell me which.
+use (`Ability Charge`, `Ability Cooldown`, `Hero Of`, `Ultimate Charge Percent`, `Is In Alternate Form`,
+`Is Firing Primary`, `Health`, `Has Status`, dummy bots): if Overwatch rejects a line, tell me which.
 
 ## Set it up
 1. Open `movement_recorder.txt` and copy all of it.
@@ -56,6 +57,12 @@ For every hero, a minute of the basics first, then their own moves. Press F afte
 - **Cassidy:** Combat Roll every direction.
 - **Junkrat:** Concussion Mine jumps (one and two).
 
+## What it can't see
+The Workshop has no value for some heroes' own state: Lúcio's song (say which you started on; Shift presses are
+counted), who Guardian Angel or Swift Step went to (the bot you made is the only ally, so it's that one), Mercy's
+staff or blaster (say when you switch). Each hero's abilities still show through Shift / E / Q in use, their meters,
+charges and cooldowns.
+
 ## Playing together
 Everyone in the game is logged. Each line starts with the player's slot (**S0**, **S1**...), shown at the top left of
 the readout: **note who was which slot**. The bots aren't logged. Keep a file to a few minutes per player (about 375
@@ -76,6 +83,8 @@ lines a second each): a new file every so often (spectator and back) is fine.
 - `S0 A`: primary and secondary fire held, crouching; ability 1, ability 2 and ultimate in use; ability 1 presses so far.
 - `S0 K`: ability 1, ability 2, ultimate, melee and reload held; the resource meters of Jump, primary and secondary.
 - `S0 C`: the resource meters of ability 1 and 2; their charges; their cooldowns.
+- `S0 X`: ultimate charge %; alternate form (D.Va out of her mech); actually firing primary and secondary (not just held);
+  health and max health; statuses: stunned, asleep, knocked down, hacked, phased out.
 - Bookmarks: `HERO`, `ATTACH` / `LEAVE` (walls), `TAKEOFF` / `LAND` (with air time and drop), `PRESS JUMP` / `RELEASE
   JUMP`, `PRESS CROUCH`, `PRESS ABILITY1` / `ABILITY2` / `ULTIMATE`, `ABILITY1` / `ABILITY2` / `ULT` `START` and `END`
   (with how long), `MARK`, `BOT`, `BOTS GONE`, `ULT FILL`.

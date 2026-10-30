@@ -13,6 +13,7 @@ RE_A = re.compile(r'S(\d+) A (\w+) (\w+) (\w+) \| U (\w+) (\w+) (\w+) \| X (\d+)
 RE_HERO = re.compile(r'S\d+ T [-\d.]+ \| \w+ \w+ \w+ \| (.+)$')
 RE_K = re.compile(r'S(\d+) K (\w+) (\w+) (\w+) \| (\w+) (\w+) \| R ' + NUM + r' ' + NUM + r' ' + NUM)
 RE_C = re.compile(r'S(\d+) C ' + NUM + r' ' + NUM + r' \| Q ' + NUM + r' ' + NUM + r' \| CD ' + NUM + r' ' + NUM)
+RE_X = re.compile(r'S(\d+) X ' + NUM + r' (\w+) \| W (\w+) (\w+) \| H ' + NUM + r' ' + NUM + r' \| ST (\w+) (\w+) (\w+) (\w+) (\w+)')
 RE_EV = re.compile(r'S(\d+) EVENT ([A-Z][A-Z0-9 ]*?)(?: (\d+))? \| (.*)')
 
 
@@ -76,6 +77,13 @@ for line in open(sys.argv[1], encoding='utf8', errors='replace'):
         cur['res_ab1'], cur['res_ab2'] = float(m.group(2)), float(m.group(3))
         cur['charge_ab1'], cur['charge_ab2'] = float(m.group(4)), float(m.group(5))
         cur['cd_ab1'], cur['cd_ab2'] = float(m.group(6)), float(m.group(7))
+        continue
+    m = RE_X.match(body)
+    if m:
+        cur['ult_pct'], cur['alt_form'] = float(m.group(2)), truth(m.group(3))
+        cur['firing1'], cur['firing2'] = truth(m.group(4)), truth(m.group(5))
+        cur['health'], cur['max_health'] = float(m.group(6)), float(m.group(7))
+        cur['stunned'], cur['asleep'], cur['knocked'], cur['hacked'], cur['phased'] = (truth(m.group(i)) for i in range(8, 13))
         continue
     m = RE_EV.match(body)
     if m:
