@@ -92,3 +92,10 @@ lines a second each): a new file every so often (spectator and back) is fine.
 The readout on the left shows the same live: slot, hero, time; wall / ground / air; speeds and height; velocity; input,
 Jump, Crouch, pitch; abilities in use; resource meters; the wall; rides and marks; the last event. Everything on it is
 live except the last-event line, which holds until the next event.
+
+## Reading it
+`py -I tools/workshop/analysis/parse_log.py <log> --csv <dir> --sqlite` writes `ticks.csv` (one row per player per
+tick, vectors split into x / y / z, a horizontal speed, and each hero's named columns from
+`tools/workshop/analysis/heroes.py`: Tracer's `blinks_left`, Lúcio's `crossfades`, D.Va's `pilot`...) and `events.csv`,
+streamed (a long session uses a few MB), and loads both into `log.sqlite` for queries. `heroes.py` is the table of
+what each hero's keys are and which channel holds what; entries marked `?` are guesses to check against the first log.
