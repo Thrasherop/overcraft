@@ -102,6 +102,15 @@ public final class HeroWeapon {
 		SkinnedModel.Clip idle = weapon.model().clips.get("idle");
 		if (idle != null && hero != Hero.MERCY) {
 			Skeleton.sample(idle, 0, own);
+			// Ana's rifle: its idle keys the root 1.44 m up, as in play (pose below); kept, the select screen drew it out of
+			// sight over her head and her hands held nothing (the owner, 0.3.24)
+			int root = weapon.model().node("bone_0001");
+			if (root >= 0 && bakedRoot(weapon.model(), root)) {
+				Skeleton.Pose rest = new Skeleton.Pose(weapon.model().nodeNames.length).rest(weapon.model());
+				own.t[root].set(rest.t[root]);
+				own.r[root].set(rest.r[root]);
+				own.s[root].set(rest.s[root]);
+			}
 		}
 		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
 	}
