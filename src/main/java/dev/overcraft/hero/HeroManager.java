@@ -363,7 +363,7 @@ public final class HeroManager {
 	public static void tick(MinecraftServer server) {
 		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
-		dev.overcraft.ana.Ana.tickDoses();
+		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();

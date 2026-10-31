@@ -120,6 +120,8 @@ public final class HeroState {
 	public double bloomCharge;
 	/** Ana's Take Aim: how far scoped in, 0 (out) to 1 (fully scoped). */
 	public double scope;
+	/** Whether Take Aim was wanted last tick: its in and out sounds play as that changes. */
+	public boolean scopeWanted;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

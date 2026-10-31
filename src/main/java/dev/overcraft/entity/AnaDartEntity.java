@@ -92,6 +92,20 @@ public class AnaDartEntity extends OwProjectile {
 	}
 
 	@Override
+	protected void onHitBlock(net.minecraft.world.phys.BlockHitResult hit) {
+		if (level() instanceof ServerLevel level) {
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.ANA_HIT_BLOCK, hit.getLocation(), 32);
+			dev.overcraft.hero.Effects.play(level, "ana_hit_block", hit.getLocation(),
+				net.minecraft.world.phys.Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null, 0, getOwner());
+		}
+		super.onHitBlock(hit);
+		// it ends on the world (its hit effect is a mark on the face): left alive it hit the ground again every tick
+		if (!level().isClientSide()) {
+			discard();
+		}
+	}
+
+	@Override
 	protected void onHitEntity(EntityHitResult hit) {
 		if (!(level() instanceof ServerLevel level) || !(getOwner() instanceof ServerPlayer owner)) {
 			discard();

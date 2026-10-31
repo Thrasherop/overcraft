@@ -1,7 +1,16 @@
 package dev.overcraft.ana;
 
 import dev.overcraft.Ow;
+import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.HeroSounds;
+import dev.overcraft.registry.OcSounds;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.Nullable;
@@ -53,7 +62,51 @@ public final class Nano {
 	}
 
 	public static void tick(MinecraftServer server) {
-		NANOED.values().removeIf(n -> !n.entity.isAlive() || n.entity.isRemoved() || n.entity.level().getGameTime() >= n.until);
+		NANOED.values().removeIf(n -> {
+			boolean over = !n.entity.isAlive() || n.entity.isRemoved() || n.entity.level().getGameTime() >= n.until;
+			if (over) {
+				ended(n, server.getPlayerList().getPlayer(n.ana));
+			}
+			return over;
+		});
+	}
+
+	/**
+	 * The boost's bed (5FAA) on the ally for everyone else, following them: their side's copy or the enemies' (the
+	 * boosted player's own is in their head: Ana.nanoCast). Its files run the boost's length, so it plays once.
+	 */
+	public static void loopOn(LivingEntity target, ServerPlayer ana) {
+		for (ServerPlayer listener : ((ServerLevel) target.level()).players()) {
+			boolean friendly = Allies.isSelfOrAlly(ana, listener);
+			double metres = friendly ? 100 : 60;
+			if (listener == target || listener.distanceTo(target) > metres + 8) {
+				continue;
+			}
+			listener.connection.send(new ClientboundSoundEntityPacket(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(
+				friendly ? OcSounds.ANA_NANO_LOOP_3P : OcSounds.ANA_NANO_LOOP_ENEMY), SoundSource.PLAYERS, target,
+				(float) (metres / 16), 1, target.getRandom().nextLong()));
+		}
+	}
+
+	/** The boost ended (its 8 s, or the ally died): its end (38E6 / 3857's Stop events), and the beds stop. */
+	private static void ended(Nanoed n, @Nullable ServerPlayer ana) {
+		if (!(n.entity.level() instanceof ServerLevel level)) {
+			return;
+		}
+		for (ServerPlayer listener : level.players()) {
+			if (listener.distanceTo(n.entity) > 108) {
+				continue;
+			}
+			for (var loop : new net.minecraft.sounds.SoundEvent[] {OcSounds.ANA_NANO_LOOP, OcSounds.ANA_NANO_LOOP_3P, OcSounds.ANA_NANO_LOOP_ENEMY}) {
+				listener.connection.send(new ClientboundStopSoundPacket(loop.location(), SoundSource.PLAYERS));
+			}
+		}
+		dev.overcraft.hero.Effects.play(level, "ana_nano_end", n.entity.position(), net.minecraft.world.phys.Vec3.ZERO, n.entity, 0, ana);
+		if (n.entity instanceof ServerPlayer boosted) {
+			HeroSounds.toOwner(boosted, OcSounds.ANA_NANO_END);
+		}
+		HeroSounds.at(level, OcSounds.ANA_NANO_END_3P, OcSounds.ANA_NANO_END_ENEMY, ana, n.entity.getBoundingBox().getCenter(), 100,
+			n.entity instanceof ServerPlayer boosted ? boosted : null);
 	}
 
 	public static void clear() {

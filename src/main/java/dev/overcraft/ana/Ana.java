@@ -7,9 +7,13 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.HeroKit;
 import dev.overcraft.hero.HeroManager;
+import dev.overcraft.hero.HeroSounds;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.Voice;
+import dev.overcraft.registry.OcSounds;
+import net.minecraft.sounds.SoundEvent;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import net.minecraft.server.level.ServerLevel;
@@ -85,6 +89,15 @@ public final class Ana implements HeroKit {
 		boolean wantScope = live && s.secondaryHeld && s.primaryAmmo > 0 && s.primaryReload < 0 && !casting(s);
 		double was = s.scope;
 		s.scope = wantScope ? Math.min(1, s.scope + 1 / (SCOPE_IN * 20)) : Math.max(0, s.scope - 1 / (SCOPE_OUT * 20));
+		// scoping in (1A2F) as it starts to rise, out (1A30) as it starts to fall
+		if (wantScope != s.scopeWanted && s.scope != was) {
+			if (wantScope) {
+				HeroSounds.split(player, OcSounds.ANA_SCOPE_IN, OcSounds.ANA_SCOPE_IN_3P, player.getEyePosition(), 30);
+			} else {
+				HeroSounds.split(player, OcSounds.ANA_SCOPE_OUT, OcSounds.ANA_SCOPE_OUT_3P, player.getEyePosition(), 30);
+			}
+		}
+		s.scopeWanted = wantScope;
 		slow(player, live && s.scope >= 1);
 		if (!live) {
 			publish(player, s);
@@ -175,10 +188,36 @@ public final class Ana implements HeroKit {
 		s.nanoCast = 0;
 		s.nanoTarget = target.getId();
 		Combat.animate(player, "cast_nano");
+		HeroSounds.split(player, OcSounds.ANA_NANO_CAST, OcSounds.ANA_NANO_CAST_3P, player.getEyePosition(), 75);
+		nanoLines(player, target);
 		if (HeroManager.hasPerk(player, dev.overcraft.hero.Perk.ANA_SPEED_SERUM)) {
 			// Speed Serum (minor): +30% for her from the cast to the boost's end (D 51F0 #401 / 0B9F #317: M)
 			Combat.buff(player, Attributes.MOVEMENT_SPEED, SPEED_SERUM_ID, SPEED_SERUM, NANO_START + NANO_TIME);
 		}
+	}
+
+	/**
+	 * Her Nano Boost lines as the cast starts (545C's listener keys, ana.txt's voice section): her own (1836, M: read as
+	 * hers) to her, one to the boosted ally (0678, L which listener group), "Nano boost administered!" (05F6) to the rest of
+	 * her side and her Arabic line (05F7) to enemies, from her, out to 80 m.
+	 */
+	private static void nanoLines(ServerPlayer ana, LivingEntity target) {
+		HeroSounds.toOwner(ana, line("ana.voice.ultimate"));
+		float volume = 80 / 16f;
+		for (ServerPlayer listener : ana.level().players()) {
+			if (listener == ana || listener.distanceTo(ana) > 88) {
+				continue;
+			}
+			SoundEvent sound = listener == target ? line("ana.voice.nano_cast")
+				: Allies.isSelfOrAlly(ana, listener) ? OcSounds.ANA_ULT_FRIENDLY : OcSounds.ANA_ULT_ENEMY;
+			listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+				net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(sound), net.minecraft.sounds.SoundSource.PLAYERS,
+				ana.getX(), ana.getEyeY(), ana.getZ(), volume, 1, ana.getRandom().nextLong()));
+		}
+	}
+
+	private static SoundEvent line(String name) {
+		return net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(dev.overcraft.Overcraft.id(name));
 	}
 
 	/**
@@ -193,6 +232,26 @@ public final class Ana implements HeroKit {
 			&& target.isAlive()) {
 			Combat.heal(target, NANO_HEAL);
 			Nano.boost(target, player.getUUID());
+			// the boost on the ally (5FA8, its bed 5FAA as long as the boost): theirs, their side's, the enemies'
+			if (target instanceof ServerPlayer boosted) {
+				HeroSounds.toOwner(boosted, OcSounds.ANA_NANO_START);
+				HeroSounds.toOwner(boosted, OcSounds.ANA_NANO_LOOP);
+			}
+			Vec3 at = target.getBoundingBox().getCenter();
+			ServerPlayer except = target instanceof ServerPlayer p ? p : null;
+			HeroSounds.at(player.level(), OcSounds.ANA_NANO_START_3P, OcSounds.ANA_NANO_START_ENEMY, player, at, 100, except);
+			Nano.loopOn(target, player);
+			Effects.play(player.level(), "ana_nano_beam", fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD),
+				target.getBoundingBox().getCenter().subtract(fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD)), null, 0, player);
+			Effects.play(player.level(), "ana_nano", at, Vec3.ZERO, target, Ow.ticks(NANO_TIME), player);
+			// what the boosted hero says, 1.4 s in (0B9F #227 -> #226)
+			if (target instanceof ServerPlayer boosted) {
+				later(player.level(), NANO_LINE_AT, () -> {
+					if (Nano.boosted(boosted)) {
+						Voice.say(boosted, "nano_boosted", 1);
+					}
+				});
+			}
 			if (HeroManager.hasPerk(player, dev.overcraft.hero.Perk.ANA_SPEED_SERUM)) {
 				Combat.buff(target, Attributes.MOVEMENT_SPEED, SPEED_SERUM_ID, SPEED_SERUM, NANO_TIME);
 			}
@@ -216,6 +275,8 @@ public final class Ana implements HeroKit {
 		s.sleepCast = 0;
 		s.ability1Cooldown = Ow.ticks(SLEEP_COOLDOWN + SLEEP_CAST);
 		Combat.animate(player, "cast_sleep");
+		// 1A00's layers start 0.30-0.42 s in, at the shot: built into the files
+		HeroSounds.split(player, OcSounds.ANA_SLEEP_CAST, OcSounds.ANA_SLEEP_CAST_3P, player.getEyePosition(), 100);
 	}
 
 	private static void sleepCast(ServerPlayer player, HeroState s) {
@@ -228,6 +289,7 @@ public final class Ana implements HeroKit {
 			dev.overcraft.entity.SleepDartEntity dart = new dev.overcraft.entity.SleepDartEntity(player, level);
 			dart.launch(from, aimPoint(player).subtract(from), Ow.speed(SLEEP_DART_SPEED));
 			level.addFreshEntity(dart);
+			HeroSounds.at(level, OcSounds.ANA_SLEEP_DART_SHOT, from, 60);
 		}
 		if (++s.sleepCast >= Ow.ticks(SLEEP_CAST)) {
 			s.sleepCast = -1;
@@ -257,6 +319,7 @@ public final class Ana implements HeroKit {
 			dev.overcraft.entity.BioticGrenadeEntity grenade = new dev.overcraft.entity.BioticGrenadeEntity(player, level);
 			grenade.launch(from, player.getViewVector(1.0f), Ow.speed(GRENADE_SPEED));
 			level.addFreshEntity(grenade);
+			HeroSounds.split(player, OcSounds.ANA_GRENADE_THROW, OcSounds.ANA_GRENADE_THROW_3P, player.getEyePosition(), 80);
 		}
 		if (++s.castTicks >= Ow.ticks(GRENADE_CAST)) {
 			s.castTicks = -1;
@@ -278,6 +341,11 @@ public final class Ana implements HeroKit {
 	/** A burst of {@code heal} / {@code damage}: the throw's (90), or Biotic Bounce's second (60) with the same 4 m and 3 s. */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage) {
 		DamageSource source = owner.damageSources().thrown(grenade, owner);
+		// the burst (384F): hers in her head, everyone else's at it
+		HeroSounds.toOwner(owner, OcSounds.ANA_GRENADE_BURST);
+		HeroSounds.at(level, OcSounds.ANA_GRENADE_BURST_3P, at, 150, owner);
+		Effects.play(level, "ana_grenade_burst", at, Vec3.ZERO, null, heal < GRENADE_HEAL ? 1 : 0, owner);
+		boolean healedAny = false, hurtAny = false;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(GRENADE_RADIUS + 2))) {
 			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)) {
 				continue;
@@ -287,17 +355,34 @@ public final class Ana implements HeroKit {
 				if (healed > 0) {
 					Combat.credit(owner, healed);
 					Combat.addFireForHealing(owner, healed);
+					healedAny = true;
 				}
 				Combat.boostHealing(e, GRENADE_EFFECT_TIME);
+				Effects.play(level, "ana_boosted", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+				if (e == owner) {
+					HeroSounds.toOwner(owner, OcSounds.ANA_GRENADE_BOOST);
+				} else {
+					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
+				}
 			} else if (Allies.canHurt(owner, e)) {
 				float dealt = Combat.damage(e, source, damage);
 				Combat.credit(owner, dealt);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 				if (dealt > 0) {
 					Effects.hitMarker(owner, e, false);
+					hurtAny = true;
 				}
 				Combat.antiHeal(e, GRENADE_EFFECT_TIME);
+				Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+				onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
 			}
+		}
+		// her lines: 0.1 s after a heal (0B99 #232), 0.2 s after damage (0C72 #231)
+		if (healedAny) {
+			later(level, GRENADE_HEAL_LINE_AT, () -> Voice.say(owner, "grenade_heal", 1));
+		}
+		if (hurtAny) {
+			later(level, GRENADE_DAMAGE_LINE_AT, () -> Voice.say(owner, "grenade_damage", 1));
 		}
 	}
 
@@ -314,12 +399,21 @@ public final class Ana implements HeroKit {
 		s.primaryAmmo--;
 		s.weaponRecovery += Ow.ticks(RIFLE_RECOVERY);
 		Combat.animate(player, "fire");
+		ServerLevel level = player.level();
+		// the rifle's cycling after each shot, from its fire layer clips (3842 / 389F)
+		HeroSounds.split(player, OcSounds.ANA_BOLT, OcSounds.ANA_BOLT_3P, player.getEyePosition(), 45);
 		if (s.scope >= 1) {
+			HeroSounds.split(player, OcSounds.ANA_SCOPED_FIRE, OcSounds.ANA_SCOPED_FIRE_3P, player.getEyePosition(), 100);
+			HeroSounds.at(level, OcSounds.ANA_SCOPED_SHOT, player.getEyePosition(), 60);
+			Effects.play(level, "ana_fire", fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), player.getViewVector(1.0f), player, 0,
+				player);
 			hitscan(player);
 			return;
 		}
-		ServerLevel level = player.level();
 		Vec3 from = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+		HeroSounds.split(player, OcSounds.ANA_FIRE, OcSounds.ANA_FIRE_3P, player.getEyePosition(), 100);
+		HeroSounds.at(level, OcSounds.ANA_DART_SHOT, from, 60);
+		Effects.play(level, "ana_fire", from, player.getViewVector(1.0f), player, 0, player);
 		AnaDartEntity dart = new AnaDartEntity(player, level);
 		dart.launch(from, aimPoint(player).subtract(from), Ow.speed(DART_SPEED));
 		level.addFreshEntity(dart);
@@ -333,7 +427,8 @@ public final class Ana implements HeroKit {
 	private static void hitscan(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(SCOPED_RANGE));
-		Vec3 block = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		var blockHit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		Vec3 block = blockHit.getLocation();
 		LivingEntity best = null;
 		boolean heal = false;
 		double bestDist = eye.distanceToSqr(block);
@@ -356,7 +451,21 @@ public final class Ana implements HeroKit {
 		if (best != null) {
 			Vec3 at = best.getBoundingBox().inflate(heal ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY).clip(eye, block).orElse(best.getEyePosition());
 			dose(player, best, heal, null, at);
+			tracer(player, at);
+		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
+			HeroSounds.at(player.level(), OcSounds.ANA_HIT_BLOCK, block, 32);
+			Effects.play(player.level(), "ana_hit_block", block, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null, 0,
+				player);
+			tracer(player, block);
+		} else {
+			tracer(player, end);
 		}
+	}
+
+	/** The scoped shot's tracer (1A80), from her muzzle to where it went. */
+	private static void tracer(ServerPlayer player, Vec3 to) {
+		Vec3 from = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+		Effects.play(player.level(), "ana_tracer", from, to.subtract(from), null, 0, player);
 	}
 
 	/** R (not with a full clip or mid-reload), or the clip empty: 1.5 s, the clip full at 0.6 s (0B94 #33 / #72). */
@@ -366,6 +475,13 @@ public final class Ana implements HeroKit {
 		}
 		s.primaryReload = 0;
 		Combat.animate(player, "reload");
+		// from an empty clip, or with rounds left (her two reload clips' sets)
+		if (s.primaryAmmo == 0) {
+			HeroSounds.split(player, OcSounds.ANA_RELOAD, OcSounds.ANA_RELOAD_3P, player.position(), 30);
+		} else {
+			HeroSounds.split(player, OcSounds.ANA_RELOAD_PARTIAL, OcSounds.ANA_RELOAD_PARTIAL_3P, player.position(), 30);
+		}
+		Voice.say(player, "reload", 1);
 	}
 
 	private static void reload(HeroState s, double attack) {
@@ -424,6 +540,21 @@ public final class Ana implements HeroKit {
 		int ticks = Math.max(1, Ow.ticks(RIFLE_OVER));
 		double amount = heal ? RIFLE_HEAL : RIFLE_DAMAGE * (crit ? HEADHUNTER : 1);
 		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks));
+		HeroSounds.toOwner(owner, OcSounds.ANA_HIT);
+		// where it struck, on the side facing her: at their centre the burst was hidden inside their body (found playing)
+		Effects.play((ServerLevel) target.level(), heal ? "ana_heal_hit" : "ana_harm_hit", at, Vec3.ZERO, null, 0, owner);
+		if (heal) {
+			HeroSounds.toOwner(owner, OcSounds.ANA_HEAL);
+			onTarget(owner, target, OcSounds.ANA_HEAL_ALLY, OcSounds.ANA_HEAL_3P, 80);
+			// as the dart's heal starts (0B95 #217)
+			Voice.say(owner, "heal_dart", 1);
+		} else {
+			HeroSounds.toOwner(owner, OcSounds.ANA_DAMAGE);
+			if (crit) {
+				HeroSounds.toOwner(owner, OcSounds.ANA_HEADSHOT);
+			}
+			onTarget(owner, target, OcSounds.ANA_DAMAGE_TARGET, OcSounds.ANA_DAMAGE_3P, 80);
+		}
 		if (!heal) {
 			if (crit) {
 				HeroState state = HeroManager.state(owner);
@@ -437,8 +568,38 @@ public final class Ana implements HeroKit {
 
 	private static final double HEAD_DEPTH = 0.25;
 
+	/**
+	 * What one of her shots or abilities does to {@code target} sounds twice: {@code own} in its head (a player: the healed
+	 * ally, the hit enemy, the sleeper), {@code others} at it for everyone else but Ana (who hears her own) out to
+	 * {@code metres}.
+	 */
+	public static void onTarget(ServerPlayer ana, LivingEntity target, SoundEvent own, SoundEvent others, double metres) {
+		if (target instanceof ServerPlayer player && player != ana) {
+			HeroSounds.toOwner(player, own);
+		}
+		HeroSounds.at((ServerLevel) target.level(), others, target.getBoundingBox().getCenter(), metres, ana,
+			target instanceof ServerPlayer player ? player : ana);
+	}
+
+	/** Moments due a little later (her lines after a heal, a sleep, a boost: the graphs' waits). */
+	private record Later(long at, Runnable run) {
+	}
+
+	private static final List<Later> LATER = new ArrayList<>();
+
+	public static void later(ServerLevel level, double seconds, Runnable run) {
+		LATER.add(new Later(level.getGameTime() + Ow.ticks(seconds), run));
+	}
+
 	/** Every server tick (HeroManager): the doses in flight land their share. */
-	public static void tickDoses() {
+	public static void tickDoses(net.minecraft.server.MinecraftServer server) {
+		long now = server.overworld().getGameTime();
+		new ArrayList<>(LATER).forEach(l -> {
+			if (now >= l.at) {
+				LATER.remove(l);
+				l.run.run();
+			}
+		});
 		List<Dose> next = new ArrayList<>();
 		for (Dose d : DOSES) {
 			if (!d.target.isAlive() || d.target.isRemoved()) {

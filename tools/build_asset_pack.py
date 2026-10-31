@@ -585,6 +585,44 @@ EFFECT_MASKS = {
     "lw_hit": ("Lifeweaver", "ThornVolley", "00000002F3C9", 4),
     "lw_crystal": ("Lifeweaver", "ThornVolley", "00000002A413", 1),
     "lw_plus": ("Lifeweaver", "RejuvenatingDash", "000000000BCD", 1),
+    # Ana's (tools/reference/ana-effects.md): the sleep's Z, the rifle's muzzle double flame, its hit splash and sparkle
+    # (flipbooks), the star decal, the heal burst, the tracer's line and length fade, the drip blob
+    "ana_z": ("Ana", "SleepDart", "0000000098DA", 1),
+    "ana_muzzle_flame": ("Ana", "BioticRifle", "00000002BDEF", 1),
+    "ana_splash": ("Ana", "BioticRifle", "000000008FE3", 10),
+    "ana_sparkle": ("Ana", "BioticRifle", "000000064B91", 12),
+    "ana_star_decal": ("Ana", "BioticRifle", "000000004C0C", 1),
+    "ana_burst": ("Ana", "BioticRifle", "00000004B64D", 1),
+    "ana_beam_line": ("Ana", "BioticRifle", "000000000B35", 1),
+    "ana_fade_v": ("Ana", "BioticRifle", "00000002A063", 1),
+    "ana_blob": ("Ana", "BioticRifle", "000000001F56", 2),
+    # the grenade: the splatter (3 frames), the tendril, the trail line; the boost / anti-heal icon parts (inverted:
+    # frame, framed plus, slash) and the victim's screen vignette and ring (inverted / screen: HUD use)
+    "ana_splat": ("Ana", "BioticGrenade", "00000002B697", 3),
+    "ana_tendril": ("Ana", "BioticGrenade", "00000002BECA", 1),
+    "ana_tube_line": ("Ana", "BioticGrenade", "00000001EF26", 1),
+    "ana_frame": ("Ana", "BioticGrenade", "000000027E5D", 1),
+    "ana_plus_cut": ("Ana", "BioticGrenade", "00000003A0DE", 1),
+    "ana_slash": ("Ana", "BioticGrenade", "0000000391F2", 1),
+    "ana_vignette": ("Ana", "BioticGrenade", "0000000005D0", 1),
+    "ana_ring": ("Ana", "BioticGrenade", "000000006429", 1),
+    # the sleep dart: its ribbon band, the hit's star flare and star burst, the drowsy puff (4 frames), Local
+    # Anesthetic's swirl (2 frames) and cracks
+    "ana_dart_band": ("Ana", "SleepDart", "00000001887E", 1),
+    "ana_star": ("Ana", "SleepDart", "000000003737", 1),
+    "ana_star_burst": ("Ana", "SleepDart", "000000003B80", 1),
+    "ana_puff": ("Ana", "SleepDart", "000000005429", 4),
+    "ana_swirl": ("Ana", "SleepDart", "000000039B71", 2),
+    "ana_cracks": ("Ana", "SleepDart", "00000000FFDC", 1),
+    # Nano Boost: the flame tongue (4 frames), the lens streak, the beam's lines, the launch smoke (a colour sprite:
+    # NATURAL), the vertical streak
+    "ana_flame": ("Ana", "NanoBoost", "000000007ADD", 4),
+    "ana_lens": ("Ana", "NanoBoost", "000000005E9E", 1),
+    "ana_nano_core": ("Ana", "NanoBoost", "000000009ACC", 1),
+    "ana_nano_line": ("Ana", "NanoBoost", "000000000965", 1),
+    "ana_nano_edge": ("Ana", "NanoBoost", "000000000510", 1),
+    "ana_smoke": ("Ana", "NanoBoost", "0000000009EF", 4),
+    "ana_streak_v": ("Ana", "NanoBoost", "00000000384F", 1),
 }
 
 
@@ -601,7 +639,9 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "cat_trail_ribbon": ("cat_noise", "cat_fade"),
             # the Tree of Life's wave shell (47E2, tools/reference/lifeweaver-effects.md): bokeh 187EB x vertical fade
             # 3E4E5 x wisps 2FCA7. The bokeh alone is grey all over: on the sphere round him it tinted the whole view
-            "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp")}
+            "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp"),
+            # Ana's scoped tracer (1A80, tools/reference/ana-effects.md): its line 0B35 x its length fade 2A063
+            "ana_tracer": ("ana_beam_line", "ana_fade_v")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -618,7 +658,13 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "lw_flower_ring": ("Lifeweaver", "PetalPlatform", "0000000122DA"),
                  "lw_vine_coil": ("Lifeweaver", "LifeGrip", "000000012262"),
                  "lw_bud": ("Lifeweaver", "LifeGrip", "000000011D57"),
-                 "lw_flower": ("Lifeweaver", "LifeGrip", "000000011D6E")}
+                 "lw_flower": ("Lifeweaver", "LifeGrip", "000000011D6E"),
+                 # Ana's (tools/reference/ana-effects.md): the boost / anti-heal plus (0.072 m wide, flat, centred), the
+                 # enemy hit's lens disc (1.988 m wide, 0.386 tall, base 0.177 below its centre point), Local
+                 # Anesthetic's flattened sphere (0.97 wide, 0.588 tall, centred: lower by 0.294 x size)
+                 "ana_plus": ("Ana", "BioticGrenade", "00000000E0AA"),
+                 "ana_lens_disc": ("Ana", "BioticRifle", "00000000C943"),
+                 "ana_shell": ("Ana", "SleepDart", "000000015CAE")}
 
 
 def add_effects(*sources):

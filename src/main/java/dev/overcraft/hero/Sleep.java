@@ -40,6 +40,13 @@ public final class Sleep {
 		Sleeper old = SLEEPERS.get(entity.getUUID());
 		boolean hadNoAi = old != null ? old.hadNoAi : entity instanceof Mob mob && mob.isNoAi();
 		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false));
+		if (old == null) {
+			// the sleep's bed (1A1F, as long as the sleep): the sleeper's own, everyone else's at it (45 m)
+			sound(entity, dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET, dev.overcraft.registry.OcSounds.ANA_SLEEP);
+		}
+		if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			Effects.play(level, "ana_asleep", entity.position(), Vec3.ZERO, entity, Ow.ticks(seconds), null);
+		}
 		if (entity instanceof Mob mob) {
 			mob.setNoAi(true);
 			mob.setTarget(null);
@@ -47,6 +54,18 @@ public final class Sleep {
 		if (entity instanceof ServerPlayer player) {
 			player.setAttached(HeroManager.ASLEEP, true);
 		}
+	}
+
+	/** {@code own} in the sleeper's head (a player), {@code others} at it for everyone else, out to 45 m (3866). */
+	private static void sound(LivingEntity entity, net.minecraft.sounds.SoundEvent own, net.minecraft.sounds.SoundEvent others) {
+		if (!(entity.level() instanceof net.minecraft.server.level.ServerLevel level)) {
+			return;
+		}
+		ServerPlayer player = entity instanceof ServerPlayer p ? p : null;
+		if (player != null) {
+			HeroSounds.toOwner(player, own);
+		}
+		HeroSounds.at(level, others, entity.getBoundingBox().getCenter(), 45, player);
 	}
 
 	/** Damage dealt inside {@link #quietly} doesn't wake anyone (Local Anesthetic's ticks). */
@@ -89,6 +108,22 @@ public final class Sleep {
 
 	private static void wake(Sleeper s) {
 		SLEEPERS.remove(s.entity.getUUID());
+		if (s.entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			// 1A1F stops: its Stop events cut the bed and play the waking
+			for (ServerPlayer listener : level.players()) {
+				if (listener.distanceTo(s.entity) <= 53) {
+					for (var bed : new net.minecraft.sounds.SoundEvent[] {dev.overcraft.registry.OcSounds.ANA_SLEEP,
+						dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET}) {
+						listener.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(bed.location(),
+							net.minecraft.sounds.SoundSource.PLAYERS));
+					}
+				}
+			}
+			if (s.entity.isAlive()) {
+				sound(s.entity, dev.overcraft.registry.OcSounds.ANA_WAKE_TARGET, dev.overcraft.registry.OcSounds.ANA_WAKE);
+			}
+			Effects.play(level, "ana_wake", s.entity.position(), Vec3.ZERO, s.entity, 0, null);
+		}
 		if (s.entity instanceof Mob mob) {
 			mob.setNoAi(s.hadNoAi);
 		}

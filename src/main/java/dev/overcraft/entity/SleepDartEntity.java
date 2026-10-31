@@ -71,7 +71,16 @@ public class SleepDartEntity extends OwProjectile {
 			}
 			if (target.isAlive()) {
 				Sleep.put(target, AnaStats.SLEEP_TIME);
+				// her line about the sleeper, 0.5 s into the sleep (224E #424)
+				dev.overcraft.ana.Ana.later(level, AnaStats.SLEEP_LINE_AT, () -> {
+					if (Sleep.asleep(target)) {
+						dev.overcraft.hero.Voice.say(owner, "sleep", 1);
+					}
+				});
 			}
+			dev.overcraft.hero.HeroSounds.toOwner(owner, dev.overcraft.registry.OcSounds.ANA_SLEEP_DART_HIT);
+			dev.overcraft.hero.Effects.play(level, "ana_sleep_hit", hit.getLocation(), net.minecraft.world.phys.Vec3.ZERO, null, 0,
+				owner);
 		}
 		anesthetic(level, owner, hit.getLocation());
 		discard();
@@ -82,7 +91,16 @@ public class SleepDartEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level && getOwner() instanceof ServerPlayer owner) {
 			anesthetic(level, owner, hit.getLocation());
 		}
+		if (level() instanceof ServerLevel level) {
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.ANA_HIT_BLOCK, hit.getLocation(), 32);
+			dev.overcraft.hero.Effects.play(level, "ana_sleep_hit_block", hit.getLocation(),
+				net.minecraft.world.phys.Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()), null, 0, getOwner());
+		}
 		super.onHitBlock(hit);
+		// it ends on the world: left alive it hit the ground again every tick (and Local Anesthetic burst each time)
+		if (!level().isClientSide()) {
+			discard();
+		}
 	}
 
 	/** Local Anesthetic (minor): the dart bursts where it hits, a creature or a block (D 0BDD #297). */

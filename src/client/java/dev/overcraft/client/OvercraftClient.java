@@ -99,6 +99,7 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroModelRenderer.clear();
 			ClientLifeweaver.clear();
 			dev.overcraft.client.effect.LifeweaverFx.clear();
+			dev.overcraft.client.effect.AnaFx.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -117,6 +118,7 @@ public class OvercraftClient implements ClientModInitializer {
 			JetpackCatSounds.tick(client);
 			MercySounds.tick(client);
 			LifeweaverSounds.tick(client);
+			AnaSounds.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);
@@ -124,6 +126,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.JetpackCatFx.aim(client);
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
+				dev.overcraft.client.effect.AnaFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);

@@ -46,6 +46,9 @@ public final class Anesthetic {
 	/** Her Sleep Dart hit something (a creature or a block) at {@code at}. */
 	public static void burst(ServerLevel level, ServerPlayer ana, Vec3 at) {
 		BURSTS.add(new Burst(level, ana, at, level.getGameTime() + Ow.ticks(SEARCH_DELAY)));
+		// the dart's burst (7E5F's 104AC / 104AE: everyone in earshot, 90 m)
+		dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC, at, 90);
+		dev.overcraft.hero.Effects.play(level, "ana_anesthetic", at, ana);
 	}
 
 	public static void tick(MinecraftServer server) {
@@ -59,6 +62,9 @@ public final class Anesthetic {
 				if (e.isAlive() && Allies.canHurt(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)) {
 					// a second burst on the same one starts its 3 s over (ours)
 					DOSED.put(e.getUUID(), new Dosed(e, b.ana, b.level.getGameTime()));
+					// numbed (7E60 / 7E70 on the enemy): theirs, and at them for everyone else
+					Ana.onTarget(b.ana, e, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT,
+						dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P, 45);
 				}
 			}
 		}

@@ -109,4 +109,9 @@ public final class AnaStats {
 	public static final double BOUNCE_KEEP = 0.45, BOUNCE_UP = 5;
 	/** Headhunter (major): the rifle's head hits deal this much more, scoped and unscoped. */
 	public static final double HEADHUNTER = 2;                 // BZ 2025-10-14 (1.5x -> 2x); D 0B95 #269
+	/** Her lines' waits (ana.txt's voice section): the grenade's heal and damage lines, the sleep's, the boosted hero's. */
+	public static final double GRENADE_HEAL_LINE_AT = 0.1;     // D 0B99 #232
+	public static final double GRENADE_DAMAGE_LINE_AT = 0.2;   // D 0C72 #231
+	public static final double SLEEP_LINE_AT = 0.5;            // D 224E #424
+	public static final double NANO_LINE_AT = 1.4;             // D 0B9F #227
 }

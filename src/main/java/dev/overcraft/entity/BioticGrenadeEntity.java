@@ -86,6 +86,10 @@ public class BioticGrenadeEntity extends OwProjectile {
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
+		if (level() instanceof ServerLevel level) {
+			// its contact set 0751 on stone (892E + 8930: the other materials' pairs aren't extracted)
+			dev.overcraft.hero.HeroSounds.at(level, dev.overcraft.registry.OcSounds.ANA_GRENADE_IMPACT, hit.getLocation(), 90);
+		}
 		burst(hit);
 	}
 

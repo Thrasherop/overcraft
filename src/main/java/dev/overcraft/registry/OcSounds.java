@@ -325,6 +325,81 @@ public final class OcSounds {
 		"melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning",
 		"ping_enemy", "heal", "reload", "platform", "platform_used", "dash", "grip", "tree_end");
 
+	/**
+	 * Ana's (tools/soundmaps/ana.txt, read from her effects' and clips' Wwise events): her own in her head, "_3p" what
+	 * everyone else hears from her, the dart's target or the ally; "_target" / "_ally" what the one hit, slept or boosted
+	 * hears; "_enemy" the boost's other team copy.
+	 */
+	public static final SoundEvent ANA_FIRE = register("ana.rifle.fire");
+	public static final SoundEvent ANA_FIRE_3P = register("ana.rifle.fire_3p");
+	public static final SoundEvent ANA_BOLT = register("ana.rifle.bolt");
+	public static final SoundEvent ANA_BOLT_3P = register("ana.rifle.bolt_3p");
+	public static final SoundEvent ANA_DART_SHOT = register("ana.rifle.dart.shot");
+	public static final SoundEvent ANA_DART_FLIGHT = register("ana.rifle.dart.flight");
+	public static final SoundEvent ANA_SCOPED_FIRE = register("ana.rifle.scoped.fire");
+	public static final SoundEvent ANA_SCOPED_FIRE_3P = register("ana.rifle.scoped.fire_3p");
+	public static final SoundEvent ANA_SCOPED_SHOT = register("ana.rifle.scoped.shot");
+	public static final SoundEvent ANA_HIT = register("ana.rifle.hit");
+	public static final SoundEvent ANA_HEAL = register("ana.rifle.heal");
+	public static final SoundEvent ANA_HEAL_ALLY = register("ana.rifle.heal_ally");
+	public static final SoundEvent ANA_HEAL_3P = register("ana.rifle.heal_3p");
+	public static final SoundEvent ANA_DAMAGE = register("ana.rifle.damage");
+	public static final SoundEvent ANA_DAMAGE_TARGET = register("ana.rifle.damage_target");
+	public static final SoundEvent ANA_DAMAGE_3P = register("ana.rifle.damage_3p");
+	public static final SoundEvent ANA_HEADSHOT = register("ana.rifle.headshot");
+	public static final SoundEvent ANA_HIT_BLOCK = register("ana.rifle.hit_block");
+	public static final SoundEvent ANA_SCOPE_IN = register("ana.scope.in");
+	public static final SoundEvent ANA_SCOPE_IN_3P = register("ana.scope.in_3p");
+	public static final SoundEvent ANA_SCOPE_LOOP = register("ana.scope.loop");
+	public static final SoundEvent ANA_SCOPE_OUT = register("ana.scope.out");
+	public static final SoundEvent ANA_SCOPE_OUT_3P = register("ana.scope.out_3p");
+	public static final SoundEvent ANA_RELOAD = register("ana.reload");
+	public static final SoundEvent ANA_RELOAD_3P = register("ana.reload_3p");
+	public static final SoundEvent ANA_RELOAD_PARTIAL = register("ana.reload_partial");
+	public static final SoundEvent ANA_RELOAD_PARTIAL_3P = register("ana.reload_partial_3p");
+	public static final SoundEvent ANA_SLEEP_CAST = register("ana.sleep.cast");
+	public static final SoundEvent ANA_SLEEP_CAST_3P = register("ana.sleep.cast_3p");
+	public static final SoundEvent ANA_SLEEP_DART_SHOT = register("ana.sleep.dart.shot");
+	public static final SoundEvent ANA_SLEEP_DART_HIT = register("ana.sleep.dart.hit");
+	public static final SoundEvent ANA_SLEEP = register("ana.sleep");
+	public static final SoundEvent ANA_SLEEP_TARGET = register("ana.sleep_target");
+	public static final SoundEvent ANA_WAKE = register("ana.sleep.wake");
+	public static final SoundEvent ANA_WAKE_TARGET = register("ana.sleep.wake_target");
+	public static final SoundEvent ANA_GRENADE_THROW = register("ana.grenade.throw");
+	public static final SoundEvent ANA_GRENADE_THROW_3P = register("ana.grenade.throw_3p");
+	public static final SoundEvent ANA_GRENADE_BURST = register("ana.grenade.burst");
+	public static final SoundEvent ANA_GRENADE_BURST_3P = register("ana.grenade.burst_3p");
+	public static final SoundEvent ANA_GRENADE_IMPACT = register("ana.grenade.impact");
+	public static final SoundEvent ANA_GRENADE_BOOST = register("ana.grenade.boost");
+	public static final SoundEvent ANA_GRENADE_BOOST_3P = register("ana.grenade.boost_3p");
+	public static final SoundEvent ANA_GRENADE_ANTIHEAL = register("ana.grenade.antiheal");
+	public static final SoundEvent ANA_GRENADE_ANTIHEAL_3P = register("ana.grenade.antiheal_3p");
+	public static final SoundEvent ANA_NANO_CAST = register("ana.nano.cast");
+	public static final SoundEvent ANA_NANO_CAST_3P = register("ana.nano.cast_3p");
+	public static final SoundEvent ANA_NANO_START = register("ana.nano.start");
+	public static final SoundEvent ANA_NANO_START_3P = register("ana.nano.start_3p");
+	public static final SoundEvent ANA_NANO_START_ENEMY = register("ana.nano.start_enemy");
+	public static final SoundEvent ANA_NANO_LOOP = register("ana.nano.loop");
+	public static final SoundEvent ANA_NANO_LOOP_3P = register("ana.nano.loop_3p");
+	public static final SoundEvent ANA_NANO_LOOP_ENEMY = register("ana.nano.loop_enemy");
+	public static final SoundEvent ANA_NANO_END = register("ana.nano.end");
+	public static final SoundEvent ANA_NANO_END_3P = register("ana.nano.end_3p");
+	public static final SoundEvent ANA_NANO_END_ENEMY = register("ana.nano.end_enemy");
+	public static final SoundEvent ANA_MELEE = register("ana.melee");
+	public static final SoundEvent ANA_MELEE_3P = register("ana.melee_3p");
+	public static final SoundEvent ANA_ANESTHETIC = register("ana.perk.anesthetic");
+	public static final SoundEvent ANA_ANESTHETIC_DOT = register("ana.perk.anesthetic.dot");
+	public static final SoundEvent ANA_ANESTHETIC_DOT_3P = register("ana.perk.anesthetic.dot_3p");
+	public static final SoundEvent ANA_ULT_FRIENDLY = register("ana.ult.friendly");
+	public static final SoundEvent ANA_ULT_ENEMY = register("ana.ult.enemy");
+	/**
+	 * Her lines by moment (Voice.say: "ana.voice.<moment>"), the game's own pools (the map's voice section). Her wheel
+	 * lines, "resurrected", "damage_boosted" and "nano_boosted" are every hero's, registered in init().
+	 */
+	public static final java.util.List<String> ANA_VOICE = java.util.List.of("elimination", "multikill", "melee_kill",
+		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy",
+		"heal_dart", "reload", "sleep", "grenade_heal", "grenade_damage", "ping_slept", "ultimate", "nano_cast");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -335,6 +410,7 @@ public final class OcSounds {
 		JETPACK_CAT_VOICE.forEach(moment -> register("jetpack_cat.voice." + moment));
 		MERCY_VOICE.forEach(moment -> register("mercy.voice." + moment));
 		LIFEWEAVER_VOICE.forEach(moment -> register("lifeweaver.voice." + moment));
+		ANA_VOICE.forEach(moment -> register("ana.voice." + moment));
 	}
 
 	private OcSounds() {
@@ -365,6 +441,8 @@ public final class OcSounds {
 			// what every hero says when a Mercy resurrects or damage boosts them (stimuli 005A, 00CC)
 			register(hero.id + ".voice.resurrected");
 			register(hero.id + ".voice.damage_boosted");
+			// and when an Ana's Nano Boost lands on them, 1.4 s in (05E2: 0B9F #227 -> #226)
+			register(hero.id + ".voice.nano_boosted");
 		}
 	}
 }
