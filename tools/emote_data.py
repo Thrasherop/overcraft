@@ -123,6 +123,8 @@ PUT_AWAY, PLAY = 1, 4
 WEAPON_SLOTS = {
     "lucio": {"12CC": ("stow", "amplifier", "lucio_weapon.txt")},
     "mercy": {"12A5": ("stow", "staff", "mercy_staff.txt"), "206C": ("stowBlaster", "blaster", "mercy_blaster.txt")},
+    # Ana's rifle 159C hangs in slot 1EC3 on 00C9 (her hero entity 1424's children: researchna\work\ents_ana_out.txt)
+    "ana": {"1EC3": ("stow", "rifle", "ana_rifle.txt")},
 }
 
 # how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
@@ -137,7 +139,17 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True}
+
+# props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
+# EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
+# 1424's children, researchna\work\ents_ana_out.txt / assets.md): the teacup 1611 (model 372A) on 00C9, the teabag
+# 1610 (373A) on 000B, the saucer 1609 (3730) on 00A5. Tea Time plays 3D76 on the teacup and 3D77 on the teabag,
+# Protector 3D0F on the saucer
+# the blend tree of a hero's gallery preview idle, which an emote set used as the preview set also holds (Ana's Heroic)
+PREVIEW_TREE = "5C6"
+
+CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
 HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat"}
@@ -305,6 +317,7 @@ def main():
 
     # each emote's GeoSetFlags timelines, by clip id: unlock (by name) -> blend tree set -> pose data
     geosets = {}
+    previews = {}
     unlocks = json.loads(UNLOCKS.read_text(encoding="utf8"))
     emote_unlocks = []
 
@@ -324,10 +337,24 @@ def main():
     for u in emote_unlocks:
         root = o.instances(o.u64(guid(u["GUID"].split(".")[0], 0x0A5)))[0]
         bts = root.get("m_emoteBlendTreeSet")
+        if bts and os.environ.get("EMOTE_UNLOCK"):
+            # the emote's blend tree set, whole, for reading what plays when (EMOTE_UNLOCK=<dir>)
+            dump = Path(os.environ["EMOTE_UNLOCK"]) / f"{hero}_{slug(u['Name'])}_set.json"
+            dump.write_text(json.dumps(o.instances(o.u64(guid(bts.split(".")[0], 0x021))), default=str, indent=1), encoding="utf8")
         if bts:
             found = {}
-            walk(o.instances(o.u64(guid(bts.split(".")[0], 0x021))), found)
+            tree_set = o.instances(o.u64(guid(bts.split(".")[0], 0x021)))
+            walk(tree_set, found)
             geosets[slug(u["Name"])] = found
+            # clips that are only in the set's gallery preview tree (05C6: the hero gallery's idle, Ana's Heroic set 0639 is
+            # also her preview set, researchna\workssets.md): not the emote's, never played by it
+            in_tree = {}
+            for item in (tree_set[0] if isinstance(tree_set, list) else tree_set).get("m_blendTreeItems") or []:
+                tree = (item.get("m_C0214513") or "").split(".")[0].lstrip("0").upper()
+                for c in ((item.get("m_F6E6D4B1") or {}).get("m_5AD927D3") or []):
+                    if c:
+                        in_tree.setdefault(c.split(".")[0].lstrip("0").upper(), set()).add(tree)
+            previews[slug(u["Name"])] = {c for c, trees in in_tree.items() if trees == {PREVIEW_TREE}}
 
     # which geoset bit each stowed piece of our .glb is (see above)
     piece_geosets = {}
@@ -439,6 +466,9 @@ def main():
                 elif kind == "teEffectComponentEntityControl":
                     clip = gid(fields.get("Animation"))
                     ident, action = next(raw, (None, None))
+                    if os.environ.get("EMOTE_CONTROLS"):
+                        # every control, for finding a new hero's weapon slots (WEAPON_SLOTS)
+                        print("control", f"emote_{name}_{n}", ident, action, clip, start, dur)
                     slot = slots.get(ident)
                     if slot and clip is None and action == PUT_AWAY:
                         # the hero's own weapon entity put away over the window
@@ -449,6 +479,13 @@ def main():
                         if own is None:
                             sys.exit(f"{slot[1]} plays clip {clip}: not in tools/clipmaps/{slot[2]} (export it into the model first)")
                         info["weaponClips"].append({"clip": own, "weapon": slot[1], "start": start, "end": round(start + dur, 4)})
+                    elif ident in CHILD_PROPS.get(hero, {}) and clip is not None and action == PLAY:
+                        # a prop that is a child of the hero entity itself, shown and playing its clip over the window
+                        # (Ana's teacup, teabag and saucer: no 08F spawns them)
+                        model, child_hp = CHILD_PROPS[hero][ident]
+                        info["spawns"].append({"model": model, "hardpoint": child_hp, "start": start, "duration": dur,
+                                               "clip": clip, "clipStart": start, "child": ident})
+                        used.add(child_hp)
                     elif clip is not None:
                         controls.append((clip, start))
                     continue
@@ -471,10 +508,17 @@ def main():
                 same = [x for x in spawned if abs(x["start"] - start) < 0.02] or spawned
                 if not same:
                     continue
+                # one control per entity: Yut Nori spawns four sticks together, each with a clip of its own (640C-640F);
+                # matched among those not yet given one, all four clips landed on the same stick
+                # (only among copies of one model: the earlier heroes' pairs, two different entities, keep their matching)
+                if len(same) > 1 and len({x["model"] for x in same}) == 1:
+                    same = [x for x in same if x.get("clipBy") != "control"] or same
                 bones = clip_bones(clip)
                 target = max(reversed(same), key=lambda x: len(bones & skeleton_ids(x["model"])) if x["model"] else -1)
                 target["clip"], target["clipStart"], target["clipBy"] = clip, start, "control"
         for c in clips.values():
+            if c["id"] in previews.get(name, set()):
+                c["preview"] = True
             if c["id"] in geosets.get(name, {}):
                 c["geosets"] = geosets[name][c["id"]]
         out["emotes"][name] = {"clips": clips}

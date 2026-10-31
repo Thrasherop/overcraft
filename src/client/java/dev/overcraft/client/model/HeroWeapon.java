@@ -54,6 +54,10 @@ public final class HeroWeapon {
 		if (bone < 0) {
 			return null;
 		}
+		if (!firstPerson && animator.emoting() && heroPose == animator.emotePose()) {
+			// the carrier's chain as the emote's data has it (EmoteProps.atRestUndriven: Ana's rifle in Listen Up)
+			heroPose = EmoteProps.atRestUndriven(heroModel, heroPose, bone, animator.emoteClip());
+		}
 		Matrix4f at = Skeleton.world(heroModel, heroPose, bone).rotate(mount.turn());
 		Skeleton.Pose own = pose(weapon.model(), animator, firstPerson, now);
 		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));

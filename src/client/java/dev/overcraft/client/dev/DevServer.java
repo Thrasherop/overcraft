@@ -385,6 +385,36 @@ public final class DevServer {
 				}
 				out.addProperty("swing", java.util.Arrays.toString(dev.overcraft.client.model.HeroAnimator.SWING));
 			}
+			case "props" -> {
+				// dev only: "props [bone ...]": each emote prop placed now (its model, place and axes in her model's space)
+				// and these bones of her posed emote skeleton, to check against the data (tools/emote_bones.py)
+				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
+				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				if (loaded != null) {
+					var held = dev.overcraft.client.model.EmoteProps.held(hero.id, animator, loaded.model());
+					for (var placed : held == null ? java.util.List.<dev.overcraft.client.model.EmoteProps.Placed>of() : held.props()) {
+						org.joml.Matrix4f m = placed.at();
+						list.add(String.format(java.util.Locale.ROOT, "%s at %s +X %s +Y %s +Z %s",
+							placed.loaded().model().nodeNames[placed.loaded().model().nodeNames.length - 1],
+							m.getTranslation(new org.joml.Vector3f()), m.getColumn(0, new org.joml.Vector3f()),
+							m.getColumn(1, new org.joml.Vector3f()), m.getColumn(2, new org.joml.Vector3f())));
+					}
+					var pose = animator.emotePose();
+					for (String bone : arg.trim().isEmpty() ? new String[0] : arg.trim().split(" ")) {
+						int node = loaded.model().node(bone);
+						if (pose != null && node >= 0) {
+							org.joml.Matrix4f m = dev.overcraft.client.model.Skeleton.world(loaded.model(), pose, node);
+							list.add(String.format(java.util.Locale.ROOT, "%s at %s +Y %s +Z %s", bone, m.getTranslation(new org.joml.Vector3f()),
+								m.getColumn(1, new org.joml.Vector3f()), m.getColumn(2, new org.joml.Vector3f())));
+						}
+					}
+				}
+				out.add("props", list);
+				out.addProperty("clip", animator.emoteClip());
+				out.addProperty("at", animator.emoteAt());
+			}
 			case "held" -> {
 				// dev only: "held kunai|ofuda rx ry rz tx ty tz lift": how Minecraft mode's held items sit in her fists
 				String[] a = arg.trim().split(" ");

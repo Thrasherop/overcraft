@@ -81,9 +81,18 @@ public record EmotePlan(List<SkinnedModel.Clip> steps, SkinnedModel.@Nullable Cl
 	private static @Nullable EmotePlan plan(SkinnedModel model, String id) {
 		List<SkinnedModel.Clip> clips = new ArrayList<>();
 		// numbered in id order, with gaps where a clip didn't import
+		String hero = null;
+		for (dev.overcraft.hero.Hero h : dev.overcraft.hero.Hero.values()) {
+			HeroModels.Loaded loaded = HeroModels.get(h);
+			if (loaded != null && loaded.model() == model) {
+				hero = h.id;
+			}
+		}
 		for (int n = 1; n <= 32; n++) {
 			SkinnedModel.Clip clip = model.clips.get("emote_" + id + "_" + n);
-			if (clip != null) {
+			// (not the clips the emote never plays: Ana's Heroic folder holds her gallery idle's, which start in her
+			// stance and were taken for the emote, a 0.9 s twitch)
+			if (clip != null && (hero == null || !EmoteData.preview(hero, clip.name()))) {
 				clips.add(clip);
 			}
 		}

@@ -748,6 +748,10 @@ def add_props(source, only=None):
             padded = "%012X" % int(model, 16)
             found = sorted(emotes.glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
             if not found:
+                # a prop that is a child of the hero entity (Ana's teacup): in the hero's own skin folder
+                found = sorted((Path(source) / "Heroes" / emotes.parent.name / "Skin").glob(
+                    f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
                 print(f"{name}: no model {padded} under {emotes}")
                 continue
             src = found[0]

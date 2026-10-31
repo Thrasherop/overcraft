@@ -112,3 +112,4 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   at the spawn point (`hero <id>` elsewhere is ignored).
 - **Not reproduced:** once, a dart missed a zombie walking straight at her (no sleep, no damage); the same setup run again
   hit, and later runs did too.
+- Emotes: [ana_emotes](../emotes/ana_emotes.md).

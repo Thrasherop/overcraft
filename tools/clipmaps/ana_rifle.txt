@@ -12,3 +12,8 @@
 # not in the extraction (read in the data only): 4-32_000000003C55 = add_fire_1p (the 1P side's state 0 and its random state
 # 2, 1.267 s); 0-32_000000003C5A = reload_1p (0x004, 1P, 1.5 s, time df 0x19B)
 # In the extraction but in none of her sets (L): 4-32_00000001A414 (1.267 s, 9 bones: 3C9B's shape), 0-32_00000001A425 (1.5 s, 22 bones)
+# Tea Time (the emote's EntityControls on her rifle's slot 1EC3, action 4: tools/emote_data.py): going away over 0-0.067 s
+# playing 3D7E, put away until 3.3 s, back playing 3E90 (0.233 s), both clips of all 20 bones (H). Exported from a working copy of the model's folder with the clip
+# copied in from the emote's (owm_survey.py takes clips from the model's own folder), as Mercy's staff clips were.
+0-16_000000003E90 = emote_tea_time_return
+0-28_000000003D7E = emote_tea_time_away
