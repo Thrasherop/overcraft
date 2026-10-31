@@ -28,6 +28,12 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **An effect mesh loads only if `HeroModels.EXTRAS` names it** (2026-10-28). Jetpack Cat's torus and cone were in
   the pack, `Fx.mesh` returned null, and her rings and arm glow simply never drew. When an effect mesh draws nothing,
   check the list before the effect.
+- **`Fx.mesh` hands back every effect mesh one metre wide, standing on y = 0** (2026-10-31). The size you give it is
+  the mesh's width in metres, and the point you give it is its base, not its centre. So an effect's size of 1 means the
+  mesh's real width (read it from the .glb's bounds), and an offset to its centre (the effect's offset track) means
+  lowering the base by half its height. Life Grip's bud was drawn at 1 m with its base on the ally's feet: a ball round
+  their legs (the owner: "too small and centers on the feet"). Data: 1.96 m wide, centred 1.005 m up
+  ([Lifeweaver](../heroes/lifeweaver.md)).
 - **Held items, sized by measurement:** `ItemStackRenderState.getModelBoundingBox()` gives an item's box as held. Its
   thin side tells a tool (across) from a sprite (along the view), and its longest side makes a size cap.
 
