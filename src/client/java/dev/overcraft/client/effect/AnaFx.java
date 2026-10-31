@@ -33,6 +33,7 @@ public final class AnaFx {
 	private static final Map<Integer, Held> BOOSTED = new HashMap<>();
 	private static final Map<Integer, Held> ANTI_HEALED = new HashMap<>();
 	private static final Map<Integer, Held> NANOED = new HashMap<>();
+	private static final Map<Integer, Held> NUMBED = new HashMap<>();
 
 	private AnaFx() {
 	}
@@ -94,6 +95,7 @@ public final class AnaFx {
 		held(mc, BOOSTED, now, AnaFx::boosted);
 		held(mc, ANTI_HEALED, now, AnaFx::antiHealed);
 		held(mc, NANOED, now, AnaFx::nanoed);
+		held(mc, NUMBED, now, AnaFx::numbed);
 	}
 
 	private interface Draw {
@@ -153,7 +155,7 @@ public final class AnaFx {
 		if (Fx.RANDOM.nextFloat() >= 4.5f / 20) {
 			return;
 		}
-		Particle plus = Fx.particle("mercy_plus", h.enemy ? Palette.ANA_ANTIHEAL : Palette.ENEMY);
+		Particle plus = Fx.particle("mercy_plus", or(h.enemy, Palette.ANA_ANTIHEAL));
 		if (plus != null) {
 			Vec3 at = e.position().add(range(-0.4f, 0.4f), e.getBbHeight() + range(0, 0.3f), range(-0.4f, 0.4f));
 			Fx.add(plus.at(at).velocity(new Vec3(0, -0.3f, 0)).life(1).size(0.14f, 0.1f).spin(range(0, 6.28f), 1).fade(0.1f, 0.5f)
@@ -196,6 +198,27 @@ public final class AnaFx {
 		}
 	}
 
+	/** Numbed by Local Anesthetic (3D2F, its 3 s): cyan wisps drawn in toward them, and vertical streaks. */
+	private static void numbed(LivingEntity e, Held h, float now) {
+		Vec3 chest = e.position().add(0, e.getBbHeight() * 0.55, 0);
+		if (Fx.RANDOM.nextFloat() < 0.6f) {
+			Particle wisp = Fx.particle("mercy_wisp", or(h.enemy, Palette.ANA_LA_WISP_N));
+			if (wisp != null) {
+				Vec3 from = chest.add(randomUnit().scale(0.8));
+				Fx.add(wisp.at(from).velocity(chest.subtract(from).scale(1.6)).life(0.5f).size(0.35f, 0.15f).fade(0.1f, 0.5f)
+					.nearFade(0.6f));
+			}
+		}
+		if (Fx.RANDOM.nextFloat() < 0.4f) {
+			Particle streak = Fx.particle("ana_streak_v", or(h.enemy, Palette.ANA_LA_DROP));
+			if (streak != null) {
+				Vec3 side = randomUnit().multiply(1, 0, 1).normalize().scale(e.getBbWidth() * 0.6);
+				Fx.add(streak.at(e.position().add(side.x, range(0, e.getBbHeight()), side.z)).shape(Shape.STREAK)
+					.velocity(new Vec3(0, -1.2f, 0)).life(0.4f).size(0.4f, 0.3f).aspect(0.08f).fade(0.05f, 0.5f).nearFade(0.6f));
+			}
+		}
+	}
+
 	// ---- her moments (EffectPayload) ----
 
 	/** Her effects from the server; false for others' names. */
@@ -221,6 +244,7 @@ public final class AnaFx {
 			case "ana_anti_healed" -> ANTI_HEALED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
 			case "ana_nano" -> NANOED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
 			case "ana_nano_end" -> NANOED.remove(e.entity());
+			case "ana_numbed" -> NUMBED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
 			default -> {
 				return false;
 			}
@@ -407,5 +431,6 @@ public final class AnaFx {
 		BOOSTED.clear();
 		ANTI_HEALED.clear();
 		NANOED.clear();
+		NUMBED.clear();
 	}
 }

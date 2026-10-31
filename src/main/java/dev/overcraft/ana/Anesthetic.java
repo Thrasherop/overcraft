@@ -62,9 +62,16 @@ public final class Anesthetic {
 				if (e.isAlive() && Allies.canHurt(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)) {
 					// a second burst on the same one starts its 3 s over (ours)
 					DOSED.put(e.getUUID(), new Dosed(e, b.ana, b.level.getGameTime()));
-					// numbed (7E60 / 7E70 on the enemy): theirs, and at them for everyone else
-					Ana.onTarget(b.ana, e, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT,
-						dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P, 45);
+					// numbed (7E60 / 7E70 on the enemy): theirs, and at them for everyone else, Ana too (she has no copy of
+					// her own: left out, she heard nothing of it, found playing)
+					ServerPlayer numbed = e instanceof ServerPlayer p ? p : null;
+					if (numbed != null) {
+						dev.overcraft.hero.HeroSounds.toOwner(numbed, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT);
+					}
+					dev.overcraft.hero.HeroSounds.at(b.level, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P,
+						e.getBoundingBox().getCenter(), 45, numbed);
+					dev.overcraft.hero.Effects.play(b.level, "ana_numbed", e.position(), Vec3.ZERO, e,
+						Ow.ticks(AnaStats.ANESTHETIC_TIME), b.ana);
 				}
 			}
 		}
