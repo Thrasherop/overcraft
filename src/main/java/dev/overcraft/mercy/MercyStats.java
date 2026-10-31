@@ -91,6 +91,13 @@ public final class MercyStats {
 	 */
 	public static final double GA_WINDOW = 0.6;
 	/**
+	 * Before: a Jump or Crouch pressed from her Shift press until her flight shows still launches once it does, up to this
+	 * long. Ours: her data has no early press (graph 006E takes them in the flight and for 0.35 s after, #939); in
+	 * Overwatch her flight starts on her own screen at the press, ours when the server's flag arrives a tick or two
+	 * later, and a press in that gap was lost (the owner, 0.3.24: "it also needs it before too").
+	 */
+	public static final double GA_EARLY = 0.3;
+	/**
 	 * The launches (D #1027): (11 + 6 m) m/s, m the momentum 0-1 (1BE3 11, 1BE4 6), x1.3 in Valkyrie (1BE6), x(1 + 0.2 m)
 	 * for Crouch's straight up, x(1 + 0.2 m |pitch| / 89) for Jump's (1BE5 0.2). Checks: a full-meter jump 17, crouch 20.4
 	 * (W), Valkyrie's crouch 26.52 (W 26.5). A further x1.15 under a condition the data doesn't name (26EF.134) is left out.
