@@ -208,8 +208,9 @@ flares (E221) 0.76 m, life 1 s (orange-gold #7F1A09 -> #FFE0A6, HDR 4.9) and 50 
 - At the landing point: a 13 cm pink bud and a 30 cm five-petal flower lying flat (meshes 11D6D / 11D6E, or a flat
   `lw_petal` star of five quads, ours) that pop open over 0.3 s; at 0.56 s a few pink rings (`lw_ring`) and sparkles.
 - On the pulled ally: green-yellow speed lines (`cat_speed_line`) streaming backward, 3-5 a tick.
-- While protected (the 0.75 s lock and the pull): the ally inside a translucent pink bud (mesh 11D57 at size 1-2, ours:
-  1.2 m tall in Minecraft scale for a 1.8 m player) and a whirl of cream-to-pink petals (`lw_petal`, LW_PETAL x
+- While protected (the 0.75 s lock and the pull): the ally inside a translucent pink bud (mesh 11D57 at size 1:
+  1.96 m wide, centred 1.005 m above the ally's root, turned 180°; 5FD, which would grow it to 2, is never set by 21EE.
+  Until 2026-10-31 it was drawn about 1 m wide standing on their feet, the owner: "too small and centers on the feet") and a whirl of cream-to-pink petals (`lw_petal`, LW_PETAL x
   LW_PETAL_AGE) thrown off their chest at 5 m/s, 2-4 a tick, plus pink sparkle streaks.
 
 ## Healing Blossom
