@@ -46,6 +46,9 @@ public final class Combat {
 	private static final Identifier RUSH_ATTACK = Overcraft.id("kitsune_rush_attack");
 
 	private static final Map<UUID, Long> phasedUntil = new HashMap<>();
+	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
+	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
+	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
 	private static final Map<UUID, LivingEntity> rushedEntities = new HashMap<>();
 
@@ -85,11 +88,42 @@ public final class Combat {
 		return Math.max(0, Ow.toOw(dealt));
 	}
 
-	/** Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. */
+	/**
+	 * Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. Ana's Biotic
+	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one. Minecraft's own healing (food,
+	 * potions) doesn't pass here and isn't scaled (ours: the owner's open question, ana-plan.md).
+	 */
 	public static float heal(LivingEntity target, double owHeal) {
+		double scale = antiHealed(target) ? 0 : healBoosted(target) ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		if (scale <= 0) {
+			return 0;
+		}
 		float before = target.getHealth();
-		target.heal(Ow.hp(owHeal));
+		target.heal(Ow.hp(owHeal * scale));
 		return Ow.toOw(target.getHealth() - before);
+	}
+
+	/** Healing received +50% for {@code seconds} (an ally in Biotic Grenade's burst), not on an anti-healed one. */
+	public static void boostHealing(LivingEntity target, double seconds) {
+		if (!antiHealed(target)) {
+			healBoostUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
+		}
+	}
+
+	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. */
+	public static void antiHeal(LivingEntity target, double seconds) {
+		antiHealUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
+		healBoostUntil.remove(target.getUUID());
+	}
+
+	public static boolean healBoosted(LivingEntity target) {
+		Long until = healBoostUntil.get(target.getUUID());
+		return until != null && now(target) < until;
+	}
+
+	public static boolean antiHealed(LivingEntity target) {
+		Long until = antiHealUntil.get(target.getUUID());
+		return until != null && now(target) < until;
 	}
 
 	/** Removes what Protection Suzu cleanses: harmful effects, burning, freezing. */
@@ -262,6 +296,8 @@ public final class Combat {
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.ULT_COST;
 			case MERCY -> dev.overcraft.mercy.MercyStats.ULT_COST;
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.ULT_COST;
+			// (missing until Nano Boost: her charge stopped at 1 point)
+			case ANA -> (int) dev.overcraft.ana.AnaStats.ULT_COST;
 			default -> 1;
 		};
 	}
@@ -396,9 +432,13 @@ public final class Combat {
 		if (instance == null) {
 			return;
 		}
+		AttributeModifier current = instance.getModifier(id);
 		if (amount == 0) {
 			instance.removeModifier(id);
-		} else if (!instance.hasModifier(id)) {
+		} else if (current == null || current.amount() != amount) {
+			// a changed amount replaces it (Local Anesthetic's slow eases from 40% to 20%: it stayed at 40% when only
+			// a missing one was added)
+			instance.removeModifier(id);
 			instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 	}

@@ -86,6 +86,15 @@ public final class OwMovement {
 		public Mover stopAt(double runSpeed) {
 			return new Mover(groundAccelerate, friction, runSpeed, airAccelerate, airDecay, maxAir);
 		}
+
+		/**
+		 * The same under a slow (factor below 1): the friction's stop-speed floor scaled with it. Unscaled, a slowed run's
+		 * acceleration (35 x its wish speed) never beat the 4.5 m/s floor's friction, and it settled at 35 x wish / 60 per
+		 * step: Ana's scope (-65%) walked 1.13 m/s, not the 1.925 the wiki measures (found playing, 2026-10-29).
+		 */
+		public Mover slowed(double factor) {
+			return factor >= 1 ? this : new Mover(groundAccelerate, friction, stopSpeed * factor, airAccelerate, airDecay, maxAir);
+		}
 	}
 
 	/** Set by the client: the mover an entity uses (its hero's). */
@@ -313,10 +322,9 @@ public final class OwMovement {
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
 		boolean grounded = entity.onGround() && v.y <= 0;
 		Mover mover = OwMovement.mover.apply(entity);
-		if (Mover.LUCIO.equals(mover)) {
-			// his floor follows his run speed: 5.5, 6.875 on Speed Boost, more amped
-			mover = mover.stopAt(RUN_SPEED * speedFactor(entity));
-		}
+		// Lúcio's floor follows his run speed (5.5, 6.875 on Speed Boost, more amped, less slowed); everyone else's is
+		// scaled under a slow
+		mover = Mover.LUCIO.equals(mover) ? mover.stopAt(RUN_SPEED * speedFactor(entity)) : mover.slowed(speedFactor(entity));
 		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
 		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
 		for (int i = 0; i < SUBSTEPS; i++) {

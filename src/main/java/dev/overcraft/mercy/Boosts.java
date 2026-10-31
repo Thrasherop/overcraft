@@ -31,8 +31,15 @@ public final class Boosts {
 		BOOSTS.remove(entity.getUUID());
 	}
 
-	/** The factor on the damage this attacker deals now (1 with no boost). */
+	/**
+	 * The factor on the damage this attacker deals now (1 with no boost): a Mercy's and an Ana's Nano Boost add into one
+	 * sum (+30% and +50% make +80%: the data adds damage modifiers into a sum, ana-plan.md, M).
+	 */
 	public static double damageFactor(@Nullable Entity attacker) {
+		return mercyFactor(attacker) + dev.overcraft.ana.Nano.dealtBonus(attacker);
+	}
+
+	private static double mercyFactor(@Nullable Entity attacker) {
 		if (attacker == null) {
 			return 1;
 		}
@@ -53,7 +60,8 @@ public final class Boosts {
 		UUID by = boostedBy(attacker);
 		net.minecraft.server.level.ServerPlayer mercy = by == null ? null : attacker.level().getServer().getPlayerList().getPlayer(by);
 		if (mercy != null) {
-			dev.overcraft.hero.Combat.credit(mercy, dev.overcraft.Ow.toOw(raised - damage));
+			// her share of what was added, not Nano's
+			dev.overcraft.hero.Combat.credit(mercy, dev.overcraft.Ow.toOw((float) (damage * (mercyFactor(attacker) - 1))));
 		}
 		return raised;
 	}

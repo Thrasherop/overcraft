@@ -28,5 +28,6 @@ her hub: [heroes/mercy](../heroes/mercy.md) · the hero before her: [lucio_emote
   windows, so "204" was his slot all along and nothing of his changed (2026-10-28).
 
 ## Open
-- Listen Up and Salty: the 0.3 s clip 178AD hides the staff, but when 178AD plays (an additive layer's Sequence in
-  tree 058F) isn't decoded.
+- Listen Up and Salty: 178AD hides the staff over the whole emote, decoded with Ana (2026-10-31:
+  [ana_emotes](ana_emotes.md#listen-up-and-salty-put-the-weapon-away-for-the-whole-emote-tree-058f)); her emote data
+  needs regenerating to apply it.

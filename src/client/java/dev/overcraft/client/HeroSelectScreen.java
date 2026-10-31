@@ -449,7 +449,8 @@ public class HeroSelectScreen extends OwScreen {
 	private static float framing(Hero hero) {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER ? 0.72f : 1;
+		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA ? 0.72f : 1;
 	}
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
@@ -508,6 +509,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "life_grip"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.JUMP)), "rejuvenating_dash"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "tree_of_life"));
+			// her data's loadouts in order: the Biotic Rifle (the left button), Take Aim (the right), Sleep Dart, Biotic
+			// Grenade, Nano Boost; no passive of her own (Tactician is the sub-role's)
+			case ANA -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "biotic_rifle"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "take_aim"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "sleep_dart"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "biotic_grenade"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "nano_boost"));
 			default -> List.of();
 		};
 	}

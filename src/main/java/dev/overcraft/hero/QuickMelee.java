@@ -91,5 +91,9 @@ public final class QuickMelee {
 		if (s.hero == Hero.LIFEWEAVER) {
 			dev.overcraft.lifeweaver.Lifeweaver.meleeSwung(hero);
 		}
+		if (s.hero == Hero.ANA) {
+			// her swing's foley from her melee clips (39BC at 0.4 s, built into the files)
+			HeroSounds.split(hero, OcSounds.ANA_MELEE, OcSounds.ANA_MELEE_3P, hero.position(), 30);
+		}
 	}
 }

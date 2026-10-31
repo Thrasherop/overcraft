@@ -56,6 +56,7 @@ public final class Perks {
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MINOR_XP;
 			case MERCY -> dev.overcraft.mercy.MercyStats.PERK_MINOR_XP;
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.PERK_MINOR_XP;
+			case ANA -> dev.overcraft.ana.AnaStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -68,6 +69,7 @@ public final class Perks {
 			case JETPACK_CAT -> dev.overcraft.jetpackcat.JetpackCatStats.PERK_MAJOR_XP;
 			case MERCY -> dev.overcraft.mercy.MercyStats.PERK_MAJOR_XP;
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.PERK_MAJOR_XP;
+			case ANA -> dev.overcraft.ana.AnaStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

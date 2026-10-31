@@ -151,4 +151,20 @@ class OwMathTest {
 		} while (y > 0);
 		assertEquals(7.0, ticks / 20.0, 0.1);
 	}
+
+	@Test
+	void slowedRunReachesItsSlowedSpeed() {
+		// Ana's Take Aim, -65%: 5.5 x 0.35 = 1.925 m/s (W Movement speed); run 1 s of 60 Hz steps from a stand
+		double factor = 0.35;
+		dev.overcraft.hero.OwMovement.Mover mover = dev.overcraft.hero.OwMovement.Mover.DEFAULT.slowed(factor);
+		net.minecraft.world.phys.Vec3 v = net.minecraft.world.phys.Vec3.ZERO;
+		net.minecraft.world.phys.Vec3 wish = new net.minecraft.world.phys.Vec3(0, 0, 5.5 * factor);
+		for (int i = 0; i < 60; i++) {
+			v = dev.overcraft.hero.OwMovement.groundStep(v, wish, mover, 1 / 60.0);
+		}
+		org.junit.jupiter.api.Assertions.assertEquals(1.925, v.length(), 0.02);
+		// unslowed the mover is as it was
+		org.junit.jupiter.api.Assertions.assertSame(dev.overcraft.hero.OwMovement.Mover.DEFAULT,
+			dev.overcraft.hero.OwMovement.Mover.DEFAULT.slowed(1));
+	}
 }

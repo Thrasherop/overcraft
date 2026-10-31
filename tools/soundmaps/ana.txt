@@ -1,0 +1,1759 @@
+# Ana's sounds: <sound id> = <file under E:\Overwatch Archive\extracted\154088\> (build 154088). Same format as
+# lifeweaver.txt / mercy.txt; build_asset_pack.py sounds copies / mixes them into the local pack. Nothing here has been
+# listened to. Read 2026-10-31 offline (Overwatch and Battle.net checked closed before every archive read and DataTool
+# run): her 02C sounds' Wwise banks decoded exactly (ww.py, dump_banks.py, emote_events.py / wwfull.py from
+# research\emote-sounds\scripts: children from each object's parent id, random / sequence / switch / layer parameters,
+# volume, make-up gain, pitch, delays, the events' actions, RTPC curves), the Init bank's bus volumes and game parameter
+# defaults (1E818, stmg.py). Scripts: E:\Overwatch Archive\research\ana\scripts\sounds\ (ana_gen.py writes this file;
+# Lifeweaver's pipeline retargeted, his scripts unchanged); their data (decode ana_ww.json, bank dump, measurements, the
+# projectile effects fx_proj.json, contact sets, voice lines, the RTPC defaults): research\ana\sounds\. Effect and clip
+# timings: research\ana\work\fx_sounds_timed.json; graph nodes: research\ana\work_kit / work_voice decompiles (fx_nodes.py).
+# Files: her skin and voice extraction are in research\ana\extract, not under the build root, so those paths reach it
+# through ../../research/ana/extract/ (ana_gen.py --canonical writes Heroes/Ana/... and HeroVoice/Ana/... for when that
+# extraction is put under extracted\154088); the 46 banks it lacked were extracted for this map into ExtraSounds\Ana
+# (extract_banks.py, DataTool's own sound export; manifest.json there: the darts' shot / contact / hit sounds, the sleep,
+# the grenade's boost / anti-heal / contact, the boost on the nano'd ally, Local Anesthetic). Ids: 02C sounds (5DDA =
+# 000000005DDA.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs 01B with their node
+# numbers. Confidence: H read in the data, M inferred, L guess.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list) unless a rule says;
+# modulators: an LFO at its middle, a time modulator at its start on one-shots and at its end on loops. As in
+# lifeweaver.txt, ONE offset per family keeps her sounds' balance with each other, bringing the family's loudest single
+# layer to -1 dBFS (the builder's limiter catches sums): own -0.5 dB (loudest: ana.rifle.damage), 3p +1 dB (loudest:
+#  ana.nano.start_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek (random start
+# points), Wwise states (the -20 dB / lpf 25 'muffled' state on most mixers, group 177926770, and the others) and the
+# voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB under the
+# loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are tiled
+# across it and beds more than 15 % longer are left out.
+# Own vs others: unlike Lifeweaver's, several of Ana's STUSounds carry audience 1 (5DDA, 5DD9, 386B, 38E7, 386A, 39B1,
+# 3842, 5DD7, 3851, 384F, 3882, 5DDC), each its effect's no-range copy (but 384F): read as the player's own (H by
+# Lucio's pairs, where audience 1 was his and 2 the others'). The other no-range copies (audience 2) are read as the
+# player the effect plays on (M, Mercy's and Lifeweaver's reading): 'own' is Ana, or the healed / damaged / slept /
+# boosted target where a rule says ('the ally's own', 'the enemy's own'). Ranged copies are everyone else's ('3p');
+# where an effect holds two with identical containers they are read as the allies' and the enemies' copy (L which): the
+# louder is built, the other noted, or built as an EXTRA '_enemy' rule when its files differ. Projectile and contact
+# sounds with no own copy are built once for everyone ('both'). Ranges come through the volume (sounds.md).
+
+# ===== How each game event is put together (rules)
+# ana.rifle.fire: shot, own: 02C 5DDA of 19FE (no range, audience 1: hers, H; a random 11 of 1.12-1.33 s, a 0.33 s
+#  crack at +200 cents, two 0.14 s clicks (one at -800 cents 0.13 s late) and a random 3 of 2.8-3.1 s tails 55 ms
+#  late). Its Switch 866081953 (group 3526866566) is built at its default case.
+# Trigger: each unscoped shot (primary; one 0.8 s recovery each): 0B94 volley #17 -> ActionEffect #179 / #549 19FE
+#  (the switch #547 picks one of the two, the same effect) on the rifle's muzzle hp 0006.
+# Layers: a 5DDA 716163500 RanSeq 1.12-1.33 s x11, net -6.5; b 5DDA 87721567 RanSeq 2.82-3.12 s x3, net -25.5; c 5DDA
+#  265013206 Sound 0.33 s +200 cents, net -22; d 5DDA 850274885 Sound 0.14 s, net -19.5; e 5DDA 34105638 RanSeq 0.14 s
+#  -800 cents, net -17.5.
+@ana.rifle.fire = ana.rifle.fire.a:-7 + ana.rifle.fire.b@0.055:-26 + ana.rifle.fire.c*1.122:-22.5 + ana.rifle.fire.d:-20 + ana.rifle.fire.e*0.630@0.13:-18
+# ana.rifle.fire_3p: shot heard by others: 02C 6D0C of 19FE (100 m: two random 6 of 1.0-1.33 s, the 0.14 s click, the
+#  tails). 19FE's third copy BC90 is the same containers and files (H): the other team's copy, built once (L which).
+# Trigger: the same shot, at her for everyone else (100 m).
+# Layers: a 6D0C 493979466 RanSeq 1.13-1.33 s x6, net -23.5; b 6D0C 173758215 RanSeq 1.00-1.29 s x6, net -22.5; c 6D0C
+#  871496320 RanSeq 2.82-3.12 s x3, net -36.5; d 6D0C 104259887 Sound 0.14 s, net -28.5.
+@ana.rifle.fire_3p = ana.rifle.fire_3p.a@0.03:-22.5 + ana.rifle.fire_3p.b@0.04:-21.5 + ana.rifle.fire_3p.c@0.055:-35.5 + ana.rifle.fire_3p.d:-27.5
+# ana.rifle.bolt: rifle cycling, own: 02C 39AF (0.68 s), 39B1 (0.46 s, audience 1) and 3842 (a random 8 of 0.40 s,
+#  audience 1), no range, at their clip times (H). 3C9A (the layer's state 1, effect 1D73: 397F @0.3333) is left out
+#  (L which state is scoped).
+# Trigger: after each shot: her 1P fire layer (anim layer weighted df 0x102 on alias 0xA0E, state 0) plays clip 3B8D
+#  (1.267 s), whose animation effect 1CF4 plays 39AF @0.4667, 39B1 @0.5333, 3842 @0.6667 (H); M that the layer plays
+#  once per shot (the next shot at 0.8 s cuts it after its last sound).
+# Layers: a 3842 766225709 RanSeq 0.40-0.41 s x8, net -7.5; b 39AF 720159587 Sound 0.68 s, net -10.5; c 39B1 749264005
+#  Sound 0.46 s, net -20.5.
+@ana.rifle.bolt = ana.rifle.bolt.a@0.667:-8 + ana.rifle.bolt.b@0.467:-11 + ana.rifle.bolt.c@0.533:-21
+# ana.rifle.bolt_3p: rifle cycling heard by others: 02C 389F (45 m: the same random 8 of 0.40 s as 3842).
+# Trigger: the same, at her for everyone else: the 3P fire layer clip 3C3F (0.8 s, effect 1D78) plays 389F at 0 (H).
+# Layers: a 389F 767046542 RanSeq 0.40-0.41 s x8, net -20.5.
+@ana.rifle.bolt_3p = ana.rifle.bolt_3p.a:-19.5
+# ana.rifle.dart.shot: dart shot: 02C 8F08 of 1A07 (60 m: a random 14 of 0.27-0.44 s at +700 cents). 1A07's other copy
+#  3846 is the same set 1 dB quieter (the other team's, L which; the louder built). No no-range copy: everyone, her
+#  too, hears it (M). Not in her extraction (ExtraSounds\Ana\DartShot).
+# Trigger: each unscoped dart as it leaves the muzzle: the dart 15B7's STUProjectileVisualComponent m_2170A015 'sound
+#  only' effect 1A07 (Lifeweaver's thorn-shot slot).
+# Layers: a 8F08 1017208929 RanSeq 0.27-0.44 s x14 +700 cents, net -11.
+@ana.rifle.dart.shot = ana.rifle.dart.shot.a*1.498:-10
+# ana.rifle.dart.flight: dart flight loop: 02C 3847 of 19F7 (12 m: two endless Sounds, 0.75 s at +140 cents and 0.40 s
+#  at +500, raised +1100 / +1800 cents by RTPC 2673857941 read at its default 0 (L what drives it: the dart's speed or
+#  distance), 100 ms fade-in; its Stop only stops them): a whine near the dart's path. 19F7 lists the 02C twice (two
+#  copies at once, built once: M).
+# Trigger: while an unscoped dart flies (125 m/s, at most 5 s): its child entity 15B8 holds effect 19F7 (two Sound
+#  components, 1 s, on hp 00A4).
+# Layers: a 3847 692962268 Sound 0.75 s +1241 cents, net +1.5, loops every 0.366 s; b 3847 988862434 Sound 0.40 s
+#  +2316 cents, net -7.5, loops every 0.105 s (tiled x4).
+# LOOP LENGTH 0.366 s: play it again every LOOP LENGTH (the built file runs 0.42 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.rifle.dart.flight = ana.rifle.dart.flight.a*2.048:+2.5 + ana.rifle.dart.flight.b*3.811:-6.5 + ana.rifle.dart.flight.b*3.811@0.105:-6.5 + ana.rifle.dart.flight.b*3.811@0.21:-6.5 + ana.rifle.dart.flight.b*3.811@0.315:-6.5
+# ana.rifle.scoped.fire: scoped shot, own: 02C 5DD9 of 1A92 (no range, audience 1: a 0.37 s crack, a random 8 of
+#  1.30-1.46 s, a random 5 at -100 cents, clicks, the tails).
+# Trigger: each scoped shot (fully scoped, v169 >= 1): 0B94 volley #167 -> ActionEffect #145 / #546 1A92 (switch #545)
+#  on the muzzle hp 0006.
+# Layers: a 5DD9 750696290 RanSeq 1.30-1.46 s x8, net -4.5; b 5DD9 372856393 RanSeq 0.92-1.18 s x5 -100 cents, net
+#  -15.5; c 5DD9 529697778 RanSeq 2.82-3.12 s x3 -100 cents, net -17.5; d 5DD9 199595203 Sound 0.37 s, net -8; e 5DD9
+#  209585503 Sound 0.14 s -100 cents, net -10.5; f 5DD9 310596790 RanSeq 0.14 s -900 cents, net -11.5.
+@ana.rifle.scoped.fire = ana.rifle.scoped.fire.a@0.03:-5 + ana.rifle.scoped.fire.b*0.944@0.05:-16 + ana.rifle.scoped.fire.c*0.944@0.055:-18 + ana.rifle.scoped.fire.d:-8.5 + ana.rifle.scoped.fire.e*0.944:-11 + ana.rifle.scoped.fire.f*0.595@0.125:-12
+# ana.rifle.scoped.fire_3p: scoped shot heard by others: 02C 6D0D of 1A92 (100 m); its twin BC91 is the same
+#  containers (the other team's, L which).
+# Trigger: the same shot, at her for everyone else (100 m).
+# Layers: a 6D0D 574056361 RanSeq 1.01-1.68 s x6 -100 cents, net -20.5; b 6D0D 322279029 RanSeq 1.00-1.29 s x6 -100
+#  cents, net -21.5; c 6D0D 615502400 RanSeq 2.82-3.12 s x3 +200 cents, net -29.5; d 6D0D 145239858 Sound 0.14 s -100
+#  cents, net -20.5; e 6D0D 424040335 RanSeq 0.14 s -900 cents, net -26.5.
+@ana.rifle.scoped.fire_3p = ana.rifle.scoped.fire_3p.a*0.944@0.03:-19.5 + ana.rifle.scoped.fire_3p.b*0.944@0.04:-20.5 + ana.rifle.scoped.fire_3p.c*1.122@0.06:-28.5 + ana.rifle.scoped.fire_3p.d*0.944:-19.5 + ana.rifle.scoped.fire_3p.e*0.595@0.125:-25.5
+# ana.rifle.scoped.shot: scoped shot trail: 02C 3984 of 1A8C (60 m: a random 30 of 0.73-1.09 s at +400 cents, a random
+#  14 at -675, a random 4 and a random 6). Its twin 3986 is 5 dB quieter (the other team's, L which). M that it sounds
+#  along the shot (1615 has no speed: hitscan). Not in her extraction (ExtraSounds\Ana\DartShot).
+# Trigger: each scoped shot: the hitscan entity 1615's m_2170A015 'sound only' effect 1A8C, as it is made.
+# Layers: a 3984 862116995 RanSeq 0.73-1.09 s x30 +400 cents, net -20.5; b 3984 98274741 RanSeq 0.21-0.30 s x14 -675
+#  cents, net -7; c 3984 763314743 RanSeq 0.17-0.62 s x6 +50 cents, net -25.5; d 3984 416829734 RanSeq 0.62-1.20 s x4
+#  +100 cents, net -17.5.
+@ana.rifle.scoped.shot = ana.rifle.scoped.shot.a*1.260:-19.5 + ana.rifle.scoped.shot.b*0.677@0.025:-6 + ana.rifle.scoped.shot.c*1.029@0.03:-24.5 + ana.rifle.scoped.shot.d*1.059@0.025:-16.5
+# ana.rifle.hit: dart hit, own: 02C 8DE7 (no range, on the weapon bus: the shooter's confirmation, the crack
+#  Lifeweaver's thorn hit and Kiriko's kunai use; M that it is hers): random sets at +710 / +430 / +535 cents.
+# Trigger: a dart hits a character, ally or enemy: 15B7's m_A18274A3 'on a target' effect 19F8, whose sub-effect 4010
+#  plays 8DE7; the scoped 1615 carries 1A80 -> 4010 as it is made (at the hit, M).
+# Layers: a 8DE7 413748272 RanSeq 0.41-0.61 s x16 +430 cents, net -22; b 8DE7 19863385 RanSeq 0.54-0.60 s x10 +710
+#  cents, net -12; c 8DE7 1057399041 RanSeq 0.49-0.56 s x7 +535 cents, net -18.5.
+@ana.rifle.hit = ana.rifle.hit.a*1.282@0.002:-22.5 + ana.rifle.hit.b*1.507@0.002:-12.5 + ana.rifle.hit.c*1.362@0.002:-19
+# ana.rifle.heal: heal confirm, Ana's own: 02C 38EE of 1A88 (no range: a 1.07 s chime at +1600 cents and a random 4 of
+#  0.42-0.52 s 50 ms late). H that 1A88 plays on Ana.
+# Trigger: a dart heals an ally (the hit filter passes only hurt allies): 0B95 runs on the ally; its ally branch #204
+#  -> StateWait #200 (0.6 s) holds 1A18 (#207) whose begin plays #211 1A14 on the ally and #228 1A88 on Ana (v40).
+# Layers: a 38EE 816272978 RanSeq 0.42-0.52 s x4, net +1; b 38EE 507061262 Sound 1.07 s +1600 cents, net -17.
+@ana.rifle.heal = ana.rifle.heal.a@0.05:+0.5 + ana.rifle.heal.b*2.520:-17.5
+# ana.rifle.heal_ally: healed, the ally's own: 02C 3804 of 1A14 (no range: a random 8 of 0.32-0.50 s at +200 cents,
+#  the 1.07 s chime at +1200 cents 0.17 s late, a random 4 0.12 s late). M that the no-range copy is the ally's: 1A14
+#  plays on them. Not in her extraction (ExtraSounds\Ana\DartHit).
+# Trigger: the same heal, what the healed ally hears: #211 1A14 on the ally (self of 0B95).
+# Layers: a 3804 195217028 RanSeq 0.32-0.50 s x8 +200 cents, net -1.5; b 3804 695167773 RanSeq 0.42-0.52 s x4, net +1;
+#  c 3804 390866168 Sound 1.07 s +1200 cents, net -14.
+@ana.rifle.heal_ally = ana.rifle.heal_ally.a*1.122:-2 + ana.rifle.heal_ally.b@0.12:+0.5 + ana.rifle.heal_ally.c*2.000@0.17:-14.5
+# ana.rifle.heal_3p: heal heard by others: 02C 3803 of 1A18 (80 m: a random 4 at +300 cents and the chime at +1250, 21
+#  dB under the ally's own).
+# Trigger: the same heal, at the ally for everyone else: #207 holds 1A18 on the ally's hp 0001 (80 m).
+# Layers: a 3803 147130098 RanSeq 0.31-0.52 s x4 +300 cents, net -21.5; b 3803 455309568 Sound 1.07 s +1250 cents, net -36.5.
+@ana.rifle.heal_3p = ana.rifle.heal_3p.a*1.189@0.12:-20.5 + ana.rifle.heal_3p.b*2.059@0.1:-35.5
+# ana.rifle.damage: damage confirm, Ana's own: 02C 38ED of 1A89 (no range: a random 4 of 0.47-0.68 s at -200 cents). H
+#  that 1A89 plays on Ana.
+# Trigger: a dart damages an enemy (75 over 0.5 s): 0B95's enemy branch #253 (false) -> #238 1A89 on Ana (v40), #239
+#  holds 1A37 on the enemy, whose begin holds #201 19FC on its hp 0001.
+# Layers: a 38ED 530014357 RanSeq 0.47-0.68 s x4 -200 cents, net -2.
+@ana.rifle.damage = ana.rifle.damage.a*0.891:-2.5
+# ana.rifle.damage_target: damaged, the enemy's own: 02C 387C of 1A37 (no range: twelve random 5 of 0.07-0.10 s ticks
+#  at 0.3, 0.5 ... 2.5 s, the same 5 files). Local Anesthetic's 3 s damage (6123 #383) plays the same effect, M that
+#  the ticks are paced for it: the rifle's 0.5 s damage hears the first ones.
+# Trigger: the same damage, what the enemy hears: #239 1A37 on the enemy (self); stop it when the effect ends (387C's
+#  Stop event stops its containers, H).
+# Layers: a 387C 764197883 RanSeq 0.07-0.10 s x5, net 0; b 387C 894434555 RanSeq 0.07-0.10 s x5, net 0; c 387C
+#  754029725 RanSeq 0.07-0.10 s x5, net 0; d 387C 721217935 RanSeq 0.07-0.10 s x5, net 0; e 387C 410585818 RanSeq
+#  0.07-0.10 s x5, net 0; f 387C 984516459 RanSeq 0.07-0.10 s x5, net 0; g 387C 636610498 RanSeq 0.07-0.10 s x5, net
+#  0; h 387C 991297499 RanSeq 0.07-0.10 s x5, net 0; i 387C 592280948 RanSeq 0.07-0.10 s x5, net 0; j 387C 42883529
+#  RanSeq 0.07-0.10 s x5, net 0; k 387C 349210405 RanSeq 0.07-0.10 s x5, net 0; l 387C 168335872 RanSeq 0.07-0.10 s
+#  x5, net 0.
+@ana.rifle.damage_target = ana.rifle.damage_target.a@0.3:-0.5 + ana.rifle.damage_target.b@0.5:-0.5 + ana.rifle.damage_target.c@0.7:-0.5 + ana.rifle.damage_target.d@0.9:-0.5 + ana.rifle.damage_target.e@1.1:-0.5 + ana.rifle.damage_target.f@1.3:-0.5 + ana.rifle.damage_target.g@1.5:-0.5 + ana.rifle.damage_target.h@1.7:-0.5 + ana.rifle.damage_target.i@1.9:-0.5 + ana.rifle.damage_target.j@2.1:-0.5 + ana.rifle.damage_target.k@2.3:-0.5 + ana.rifle.damage_target.l@2.5:-0.5
+# ana.rifle.damage_target.loop (EXTRA): damaged bed, the enemy's own: 387C's endless 8.71 s Sound (-4 dB).
+# Trigger: EXTRA: while 1A37 is held on the enemy (with damage_target).
+# Layers: a 387C 159774545 Sound 8.71 s, net -4, loops every 8.712 s.
+# LOOP LENGTH 8.712 s: play it again every LOOP LENGTH (the built file runs 8.71 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.rifle.damage_target.loop = ana.rifle.damage_target.loop.a:-4.5
+# ana.rifle.damage_3p: damage heard by others: 02C 388D of 19FC (80 m: a random 4 of 0.47-0.68 s at +300 cents, a
+#  random 3 and a random 5 at +525, 30-50 ms late).
+# Trigger: the same damage, at the enemy for everyone else: #201 holds 19FC on the enemy's hp 0001 (80 m).
+# Layers: a 388D 167513911 RanSeq 0.20-0.24 s x5 +525 cents, net -32; b 388D 509453964 RanSeq 0.47-0.68 s x4 +300
+#  cents, net -23; c 388D 451059327 RanSeq 0.21-0.30 s x3, net -24.5.
+@ana.rifle.damage_3p = ana.rifle.damage_3p.a*1.354@0.05:-31 + ana.rifle.damage_3p.b*1.189@0.05:-22 + ana.rifle.damage_3p.c@0.03:-23.5
+# ana.rifle.headshot: Headhunter critical, Ana's own: 02C 10110 of 7C77 (no range: a 0.28 s file 75 ms late and a
+#  random 7 at +250 cents 85 ms late). M that it is hers (no range, on the shooter's side of 0B95's damage). Not in
+#  her extraction (ExtraSounds\Ana\DartHit).
+# Trigger: Headhunter (major perk 2599): a dart that hits an enemy's head deals x2: 0B95 #279 (true) -> ActionEffect #281 7C77.
+# Layers: a 10110 370698263 RanSeq 0.27-0.40 s x7 +250 cents, net -4; b 10110 345077404 Sound 0.28 s, net -3.
+@ana.rifle.headshot = ana.rifle.headshot.a*1.155@0.085:-4.5 + ana.rifle.headshot.b@0.075:-3
+# ana.rifle.hit_block: dart hit on the world: 02C 39B4 (90 m) + 39B5 (32 m), the same random 8 of 0.12-0.18 s (H). The
+#  other 22 materials have their own pairs (contacts.json). Not in her extraction (ExtraSounds\Ana\DartContact).
+# Trigger: a dart (unscoped, scoped or Sleep Dart: all three name contact set 0583) hits a block: contact type 2,
+#  default material 0001 -> contact effect 1E58 -> 39B4 + 39B5 (both play), at the hit point.
+# Layers: a 39B4 587582701 RanSeq 0.12-0.18 s x8, net -16; b 39B5 341337855 RanSeq 0.12-0.18 s x8, net -24.
+@ana.rifle.hit_block = ana.rifle.hit_block.a:-15 + ana.rifle.hit_block.b:-23
+# ana.scope.in: scope in, own: 02C 386B of 1A2F (no range, audience 1: a 0.53 s file) and 1A87's 38E7 one-shots (no
+#  range, audience 1: a 1.62 s file and a 1.09 s file at -40 cents 0.24 s late).
+# Trigger: Take Aim starts (secondary held; 0.25 s to scope in): 0B94 StateDataFlowMapping #81 onBegin -> ActionEffect
+#  #156 1A2F, and #82 (true) holds 1A87 (#178) from then until she unscopes.
+# Layers: a 386B 964514452 Sound 0.53 s, net -14.5; b 38E7 12710646 Sound 1.62 s, net -22.5; c 38E7 183375593 Sound
+#  1.09 s -40 cents, net -13.5.
+@ana.scope.in = ana.scope.in.a:-15 + ana.scope.in.b:-23 + ana.scope.in.c*0.977@0.24:-14
+# ana.scope.in_3p: scope in heard by others: 02C 39BF of 1A2F (30 m: the same 0.53 s file and a 0.59 s one). 1A87 has
+#  no ranged copy (H): no one else hears the scoped loop.
+# Trigger: the same, at her for everyone else (30 m).
+# Layers: a 39BF 622328795 Sound 0.53 s, net -23.5; b 39BF 678126154 Sound 0.59 s, net -29.5.
+@ana.scope.in_3p = ana.scope.in_3p.a:-22.5 + ana.scope.in_3p.b:-28.5
+# ana.scope.loop: scoped loop, own: 38E7's endless 8.27 s Sound (no range; -24 dB: a quiet bed).
+# Trigger: while scoped: #178 holds 1A87 until she unscopes (release, reload, an empty clip, an ability, death).
+# Layers: a 38E7 606731340 Sound 8.27 s, net -24, loops every 8.269 s.
+# LOOP LENGTH 8.269 s: play it again every LOOP LENGTH (the built file runs 8.27 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.scope.loop = ana.scope.loop.a:-24.5
+# ana.scope.out: scope out, own: 02C 386A of 1A30 (no range, audience 1: a 0.51 s file) and 38E7's Stop-event 0.46 s file.
+# Trigger: Take Aim ends (0.167 s to scope out): StateDataFlowMapping #77 onBegin -> ActionEffect #157 1A30; 1A87
+#  stops, which runs 38E7's Stop event (it stops the loop and the one-shots and plays one file).
+# Layers: a 386A 422655336 Sound 0.51 s, net -16.5; b 38E7 Stop-event 306803049 Sound 0.46 s, net -22.5.
+@ana.scope.out = ana.scope.out.a:-17 + ana.scope.out.b:-23
+# ana.scope.out_3p: scope out heard by others: 02C 39C1 of 1A30 (30 m: the same 0.51 s file).
+# Trigger: the same, at her for everyone else (30 m).
+# Layers: a 39C1 522671212 Sound 0.51 s, net -24.5.
+@ana.scope.out_3p = ana.scope.out_3p.a:-23.5
+# ana.reload: reload from empty, own: 1CF5 plays 38EB @0 (a 1.26 s file 0.24 s late), 9190 @0.0036, 9191 @0.2118, 9192
+#  @0.5036, 9193 @1.0333 (random 2 each) and 39B1 @1.0333 (no range, H; the clip's length is the reload's 1.5 s).
+# Trigger: reload (R with the clip not full, or automatic at 0 rounds; 1.5 s, the clip refilled at 0.6 s): 0B94 #33
+#  plays anim 0x004 (the clip empty): the 1P clip 3B99 (1.5 s), effect 1CF5.
+# Layers: a 9190 787295892 RanSeq 0.29-0.30 s x2, net -6.5; b 9191 529009290 RanSeq 0.23 s x2, net -5.5; c 9192
+#  160521054 RanSeq 0.58-0.60 s x2, net -5.5; d 9193 886558392 RanSeq 0.52 s x2, net -5.5; e 38EB 1055385495 Sound
+#  1.26 s, net -10.5; f 39B1 749264005 Sound 0.46 s, net -20.5.
+@ana.reload = ana.reload.a@0.004:-7 + ana.reload.b@0.212:-6 + ana.reload.c@0.504:-6 + ana.reload.d@1.033:-6 + ana.reload.e@0.24:-11 + ana.reload.f@1.033:-21
+# ana.reload_partial: reload with rounds left, own: 1D86 plays the same files at slightly other times, plus 39B6 @0 (a
+#  random 4 of 0.20-0.26 s and a 0.40 s file, 0.45 s late: the round left in the chamber, M).
+# Trigger: reload (R with the clip not full, or automatic at 0 rounds; 1.5 s, the clip refilled at 0.6 s): 0B94 #33
+#  plays anim 0x084 (rounds left): the 1P clip 3C98 (1.5 s), effect 1D86.
+# Layers: a 39B6 11296380 RanSeq 0.20-0.26 s x4 +225 cents, net -11; b 9190 787295892 RanSeq 0.29-0.30 s x2, net -6.5;
+#  c 9191 529009290 RanSeq 0.23 s x2, net -5.5; d 9192 160521054 RanSeq 0.58-0.60 s x2, net -5.5; e 9193 886558392
+#  RanSeq 0.52 s x2, net -5.5; f 38EB 1055385495 Sound 1.26 s, net -10.5; g 39B6 511207214 Sound 0.40 s +45 cents, net
+#  -11; h 39B1 749264005 Sound 0.46 s, net -20.5.
+@ana.reload_partial = ana.reload_partial.a*1.139@0.45:-11.5 + ana.reload_partial.b@0.004:-7 + ana.reload_partial.c@0.187:-6 + ana.reload_partial.d@0.5:-6 + ana.reload_partial.e@1.028:-6 + ana.reload_partial.f@0.24:-11 + ana.reload_partial.g*1.026@0.45:-11.5 + ana.reload_partial.h@1.033:-21
+# ana.reload_3p: reload heard by others: 39A2 @0 (30 m: 38EB's file) and 95E2 @0, 95E3 @0.3333, 95E4 @0.5667, 95E5
+#  @0.9523 (no range in their STUSound, read as everyone in earshot, M; 12 dB under her own copies).
+# Trigger: the same reload, at her for everyone else: the 3P clip 3CE3 (standing; 3CA0 crouched, the same effect
+#  sounds), effect 1D40 / 1D82.
+# Layers: a 95E2 860297799 RanSeq 0.29-0.30 s x2, net -18.5; b 95E3 16708121 RanSeq 0.23 s x2, net -17.5; c 95E4
+#  985845691 RanSeq 0.58-0.60 s x2, net -17.5; d 95E5 455574944 RanSeq 0.52 s x2, net -17.5; e 39A2 797866047 Sound
+#  1.26 s, net -23.5.
+@ana.reload_3p = ana.reload_3p.a:-17.5 + ana.reload_3p.b@0.333:-16.5 + ana.reload_3p.c@0.567:-16.5 + ana.reload_3p.d@0.952:-16.5 + ana.reload_3p.e@0.24:-22.5
+# ana.reload_partial_3p: reload with rounds left heard by others: reload_3p plus 39B7 (45 m: 39B6's files) at 1.0667 s (H).
+# Trigger: the reload with rounds left, at her for everyone else: 3CE3's sounds and the rifle's 3P-side clip 3D87
+#  (alias 0x084), effect 1D72: 39B7 @1.0667.
+# Layers: a 39B7 22386332 RanSeq 0.20-0.26 s x4 +300 cents, net -23.5; b 95E2 860297799 RanSeq 0.29-0.30 s x2, net
+#  -18.5; c 95E3 16708121 RanSeq 0.23 s x2, net -17.5; d 95E4 985845691 RanSeq 0.58-0.60 s x2, net -17.5; e 95E5
+#  455574944 RanSeq 0.52 s x2, net -17.5; f 39A2 797866047 Sound 1.26 s, net -23.5; g 39B7 822600612 Sound 0.40 s, net
+#  -24.5.
+@ana.reload_partial_3p = ana.reload_partial_3p.a*1.189@1.067:-22.5 + ana.reload_partial_3p.b:-17.5 + ana.reload_partial_3p.c@0.333:-16.5 + ana.reload_partial_3p.d@0.567:-16.5 + ana.reload_partial_3p.e@0.952:-16.5 + ana.reload_partial_3p.f@0.24:-22.5 + ana.reload_partial_3p.g@1.067:-23.5
+# ana.sleep.cast: cast, own: 02C 5DD7 of 1A00 (no range, audience 1: its layers start 0.30-0.42 s in, at the shot: a
+#  1.08 s and a 0.46 s file, a 0.58 s file at +230 cents, a 2.24 s tail) and the clip's 38EA (no range: the pistol
+#  drawn, a 1.22 s file 0.1 s late).
+# Trigger: Sleep Dart cast (ability 1; a 1.0 s cast, the dart fires at 0.3 s): 0BDD StateWait #107 onBegin ->
+#  ActionEffect #114 1A00, with the 1P clip 3BBC (anim 0x47B, effect 1CDD: 38EA @0).
+# Layers: a 38EA 950934416 Sound 1.22 s, net -4.5; b 5DD7 428205633 RanSeq 2.24 s, net -28.5; c 5DD7 574706984 RanSeq
+#  0.46 s, net +3.5; d 5DD7 744874757 RanSeq 1.08 s, net -1.5; e 5DD7 166244467 Sound 0.58 s +230 cents, net -12.
+@ana.sleep.cast = ana.sleep.cast.a@0.1:-5 + ana.sleep.cast.b@0.3:-29 + ana.sleep.cast.c@0.3:+3 + ana.sleep.cast.d@0.32:-2 + ana.sleep.cast.e*1.142@0.42:-12.5
+# ana.sleep.cast_3p: cast heard by others: 02C 96F3 of 1A00 (100 m: 5DD7's files, the tail 27 dB down) and 39A3 (30 m:
+#  a 0.48 s file). 1A00's third copy 6D0B is the same set 5 dB quieter (the other team's, L which).
+# Trigger: the same cast, at her for everyone else: 1A00's ranged copy and the 3P clip 3C2C (3C35 / 3C36 by pitch,
+#  effect 1D4B: 39A3 @0.0333).
+# Layers: a 39A3 790054004 Sound 0.48 s, net -17.5; b 96F3 586830119 RanSeq 2.24 s, net -27.5; c 96F3 382674230 RanSeq
+#  0.46 s, net +4.5; d 96F3 896909796 RanSeq 1.08 s, net +0.5.
+@ana.sleep.cast_3p = ana.sleep.cast_3p.a@0.133:-16.5 + ana.sleep.cast_3p.b@0.3:-26.5 + ana.sleep.cast_3p.c@0.3:+5.5 + ana.sleep.cast_3p.d@0.32:+1.5
+# ana.sleep.dart.shot: sleep dart shot: 02C 8F05 of 1A8D (60 m: a random 14 of 0.31-0.47 s at -450 cents and a random
+#  4 of 0.43-0.74 s). Its twin 3987 is 1 dB quieter (the other team's, L). Not in her extraction
+#  (ExtraSounds\Ana\DartShot). 15E8's child 1614 (effect 1A7D) has no sound: the sleep dart has no flight loop (H).
+# Trigger: the sleep dart leaves the pistol (t = 0.3 s, volley #108): the dart 15E8's m_2170A015 'sound only' effect 1A8D.
+# Layers: a 8F05 104384494 RanSeq 0.31-0.47 s x14 -450 cents, net -15; b 8F05 950686179 RanSeq 0.43-0.74 s x4, net -10.
+@ana.sleep.dart.shot = ana.sleep.dart.shot.a*0.771:-14 + ana.sleep.dart.shot.b:-9
+# ana.sleep.dart.hit: sleep dart hit, own: 02C 8DE7 (no range: the shooter's confirmation, M), as rifle.hit.
+# Trigger: the sleep dart hits a character: 15E8's m_A18274A3 'on a target' effect 1A7B, whose sub-effect 4010 plays
+#  8DE7 (the same crack as rifle.hit); on a block, rifle.hit_block (the same contact set 0583).
+# Layers: a 8DE7 413748272 RanSeq 0.41-0.61 s x16 +430 cents, net -22; b 8DE7 19863385 RanSeq 0.54-0.60 s x10 +710
+#  cents, net -12; c 8DE7 1057399041 RanSeq 0.49-0.56 s x7 +535 cents, net -18.5.
+@ana.sleep.dart.hit = ana.sleep.dart.hit.a*1.282@0.002:-22.5 + ana.sleep.dart.hit.b*1.507@0.002:-12.5 + ana.sleep.dart.hit.c*1.362@0.002:-19
+# ana.sleep: asleep, heard by others: 02C 3866 of 1A1F (45 m: one 4.75 s file). Not in her extraction (ExtraSounds\Ana\Sleep).
+# Trigger: the target falls asleep: 0BDE #337 runs the shared sleep 224E on it with Ana's overrides (5 s, 3.5 s on
+#  tanks); 0BDE StateChaseVar #251 (the sleep timer) holds 1A1F (#279) on the sleeper until it wakes or the time runs
+#  out.
+# Layers: a 3866 986567770 Sound 4.75 s, net -14.5.
+@ana.sleep = ana.sleep.a:-13.5
+# ana.sleep_target: asleep, the sleeper's own: 02C 5DDB of 1A1F (no range: the same 4.75 s file and a 0.24 s hit). M
+#  that the no-range copy is the sleeper's.
+# Trigger: the same sleep, what the sleeper hears (1A1F on self).
+# Layers: a 5DDB 199034041 Sound 4.75 s, net -11; b 5DDB 170714940 Sound 0.24 s, net -14.
+@ana.sleep_target = ana.sleep_target.a:-11.5 + ana.sleep_target.b:-14.5
+# ana.sleep.wake: waking, heard by others: 3866's Stop event: one 0.95 s file (and stops the 4.75 s one).
+# Trigger: the sleeper wakes (damage after the first 0.5 s, then 0.5 s later; or the time runs out): 1A1F stops, which
+#  runs 3866's Stop event.
+# Layers: a 3866 Stop-event 191330804 Sound 0.95 s, net -12.5.
+@ana.sleep.wake = ana.sleep.wake.a:-11.5
+# ana.sleep.wake_target: waking, the sleeper's own: 5DDB's Stop event: the same 0.95 s file.
+# Trigger: the same waking, what the sleeper hears.
+# Layers: a 5DDB Stop-event 173857976 Sound 0.95 s, net -11.
+@ana.sleep.wake_target = ana.sleep.wake_target.a:-11.5
+# ana.grenade.throw: throw, own: 02C 3851 of 19FF (no range, audience 1: a random 2 of 0.93-1.10 s) and the clip's
+#  38E9 (no range: a 0.97 s file).
+# Trigger: Biotic Grenade thrown (ability 2; the volley about 2 ticks into the 0.7 s state): 0B97 StateWeaponVolley
+#  #21 onBegin -> ActionEffect #93 19FF, #196 6FC5 and #68 19FA (no sound), with the 1P clip 3BCB (anim 0x479, effect
+#  1CEC: 38E9 @0).
+# Layers: a 3851 109028734 RanSeq 0.93-1.10 s x2, net -0.5; b 38E9 960241551 Sound 0.97 s, net -4.5.
+@ana.grenade.throw = ana.grenade.throw.a:-1 + ana.grenade.throw.b:-5
+# ana.grenade.throw_3p: throw heard by others: 02C 3850 of 19FF (70 m: 3851's files 6 dB down), E4EF of 6FC5 (80 m: a
+#  random 2 of 1.00-1.04 s 0.1 s late; 6FC5 has no no-range copy: others only, H) and 39A0 (30 m: the 0.97 s file).
+# Trigger: the same throw, at her for everyone else: 19FF's ranged copy, 6FC5, and the 3P clip 3BBD (3C39 / 3C38 by
+#  pitch, effect 1D01: 39A0 @0.0667).
+# Layers: a 3850 741431067 RanSeq 0.93-1.10 s x2, net -6; b E4EF 116707690 RanSeq 1.00-1.04 s x2, net -11; c 39A0
+#  22314046 Sound 0.97 s, net -17.5.
+@ana.grenade.throw_3p = ana.grenade.throw_3p.a:-5 + ana.grenade.throw_3p.b@0.1:-10 + ana.grenade.throw_3p.c@0.067:-16.5
+# ana.grenade.burst: burst, Ana's own: 02C 384F of 1874 (150 m, audience 1: one 1.55 s file at +0.5 dB). Read as hers
+#  by its audience 1 (H, as Lucio's pairs) though it has a range: build it at the burst point (M). The grenade's
+#  m_45FA9F53 effect 647D plays the same three 02C (M: the projectile's own burst slot; play one of the two).
+# Trigger: the grenade bursts (on contact): 5791 StateModifyHealth #39 (the 4 m burst, 90 heal / 90 damage) onFinished
+#  -> ActionEffect #38 1874 at the burst point.
+# Layers: a 384F 710659429 Sound 1.55 s, net +0.5.
+@ana.grenade.burst = ana.grenade.burst.a:0
+# ana.grenade.burst_3p: burst heard by others: 02C 384E of 1874 (150 m, audience 2: the same file 16 dB under hers);
+#  its twin 387A is the same (the other team's, L which).
+# Trigger: the same burst, for everyone else (150 m).
+# Layers: a 384E 594574903 Sound 1.55 s, net -15.5.
+@ana.grenade.burst_3p = ana.grenade.burst_3p.a:-14.5
+# ana.grenade.impact: grenade contact: 02C 892E (90 m: a random 12 of 0.81-1.47 s at +272 cents and a random 5 of
+#  1.52-2.83 s at +612) + 8930 (32 m: the random 5). M that it sounds as it bursts on a block without the perk; the
+#  other 21 materials have their own pairs. Not in her extraction (ExtraSounds\Ana\GrenadeContact).
+# Trigger: EXTRA: the grenade touches a block: its contact set 0751, contact type 2, default material 0001 -> contact
+#  effect 4D8B -> 892E + 8930 (both play); with Biotic Bounce (major perk 254D) the grenade bounces on the world first
+#  (0B97 #176 turns the bounce block on, M).
+# Layers: a 892E 456338952 RanSeq 0.81-1.47 s x12 +272 cents, net +1; b 8930 965771991 RanSeq 1.52-2.83 s x5 +612
+#  cents, net -23; c 892E 880499833 RanSeq 1.52-2.83 s x5 +612 cents, net -16.
+@ana.grenade.impact = ana.grenade.impact.a*1.170@0.085:+2 + ana.grenade.impact.b*1.424:-22 + ana.grenade.impact.c*1.424@0.035:-15
+# ana.grenade.boost: healing boost, the ally's own: 02C 3882 of 5485 (no range, audience 1: a 0.97 s file and a 5.82 s
+#  bed, 50 ms late). Not in her extraction (ExtraSounds\Ana\Grenade).
+# Trigger: an ally in the burst (Ana included): 0C71 #252 -> 0B99 heals 90 and gives +50% healing received for 3 s,
+#  StateStack #318 holding 5485 (#274) on the ally; stop it at the 3 s.
+# Layers: a 3882 38498112 Sound 0.97 s, net -3; b 3882 18600507 Sound 5.82 s, net -10.
+@ana.grenade.boost = ana.grenade.boost.a@0.05:-3.5 + ana.grenade.boost.b@0.05:-10.5
+# ana.grenade.boost_3p: healing boost heard by others: 02C 3881 (45 m: a 5.05 s bed) and B729 (45 m: a 0.80 s file),
+#  both components of 5485 (M that both play: different files and banks, not twins).
+# Trigger: the same boost, at the ally for everyone else (45 m).
+# Layers: a 3881 534664897 Sound 5.05 s, net -14.5; b B729 246051492 Sound 0.80 s, net -11.
+@ana.grenade.boost_3p = ana.grenade.boost_3p.a:-13.5 + ana.grenade.boost_3p.b:-10
+# ana.grenade.antiheal: anti-heal, the enemy's own: 02C 5DDC of 19F4 (no range, audience 1: a 5.11 s and a 5.04 s bed
+#  and a 0.36 s hit 0.2 s late). Not in her extraction (ExtraSounds\Ana\Grenade).
+# Trigger: an enemy in the burst: 0C71 -> 0C72 deals 90 and blocks its healing for 3 s, StateCombatModFilter #262
+#  holding 19F4 (#227) on the enemy; stop it at the end.
+# Layers: a 5DDC 358859197 Sound 5.11 s, net -2; b 5DDC 982141029 Sound 5.04 s, net -5; c 5DDC 82425998 Sound 0.36 s, net -12.
+@ana.grenade.antiheal = ana.grenade.antiheal.a:-2.5 + ana.grenade.antiheal.b:-5.5 + ana.grenade.antiheal.c@0.2:-12.5
+# ana.grenade.antiheal_3p: anti-heal heard by others: 02C 387F of 19F4 (45 m: a 1.87 s file and a 5.12 s bed at -350
+#  cents 18 dB under it).
+# Trigger: the same anti-heal, at the enemy for everyone else (45 m).
+# Layers: a 387F 579354176 Sound 1.87 s, net -17.5; b 387F 770867143 Sound 5.12 s -350 cents, net -35.5.
+@ana.grenade.antiheal_3p = ana.grenade.antiheal_3p.a:-16.5 + ana.grenade.antiheal_3p.b*0.817:-34.5
+# ana.nano.cast: cast, own: the clip's 39AD (no range: a 1.11 s file) at 0 and 02C 5DD6 of 1A12 (no range: a random 2
+#  of 1.67-1.74 s, a 0.65 s, a 0.22 s and a 0.56 s file 0.11 s late) at 0.13 s (H).
+# Trigger: Nano Boost cast (ultimate, on the ally in the 10-degree, 40 m cone; on herself in a game of one): 0B9E
+#  StateWait #176 onBegin plays anim 0x175 (#141; the 1P clip 3BDB, effect 1CFA: 39AD @0), onFinished (0.13 s: the
+#  boost starts) -> ActionEffect #147 1A12 on Ana.
+# Layers: a 5DD6 201145199 RanSeq 1.67-1.74 s x2, net -1; b 39AD 1009626870 Sound 1.11 s, net -4.5; c 5DD6 898339153
+#  Sound 0.22 s, net -5; d 5DD6 550993300 Sound 0.65 s, net -13; e 5DD6 397744562 Sound 0.56 s, net -11.
+@ana.nano.cast = ana.nano.cast.a@0.13:-1.5 + ana.nano.cast.b:-5 + ana.nano.cast.c@0.13:-5.5 + ana.nano.cast.d@0.13:-13.5 + ana.nano.cast.e@0.24:-11.5
+# ana.nano.cast_3p: cast heard by others: 39A0 (30 m: the 0.97 s file the grenade throw's clip plays too) and 02C 3856
+#  of 1A12 (75 m: 5DD6's files 8-10 dB down).
+# Trigger: the same cast, at her for everyone else: the 3P clip 3BBF (3CEA / 3CE9 by pitch, effect 1CFF: 39A0 @0.0667)
+#  and 1A12's ranged copy.
+# Layers: a 3856 1045236699 RanSeq 1.67-1.74 s x2, net -9; b 39A0 22314046 Sound 0.97 s, net -17.5; c 3856 772801731
+#  Sound 0.22 s, net -15; d 3856 567598054 Sound 0.56 s, net -21.
+@ana.nano.cast_3p = ana.nano.cast_3p.a@0.13:-8 + ana.nano.cast_3p.b@0.067:-16.5 + ana.nano.cast_3p.c@0.13:-14 + ana.nano.cast_3p.d@0.24:-20
+# ana.nano.start: boosted, the ally's own: 02C BBFB of 5FA8 (no range: a 2.32 s and a 0.95 s file) and 5FAA's 5DD8
+#  one-shot (no range: an 8.51 s bed that runs the boost's length). M that the no-range copies are the boosted
+#  player's: 0B9F runs on them. Not in her extraction (ExtraSounds\Ana\Nano).
+# Trigger: the boost starts on the ally (0.13 s into the cast; 8 s: 0B9F on the target, State #249): ActionEffect #296
+#  5FA8 and #295 holds 5FAA on the target (self).
+# Layers: a BBFB 515861278 Sound 2.32 s, net -7; b BBFB 558479351 Sound 0.95 s, net -20; c 5DD8 70662122 Sound 8.51 s, net -7.
+@ana.nano.start = ana.nano.start.a:-7.5 + ana.nano.start.b:-20.5 + ana.nano.start.c:-7.5
+# ana.nano.start_3p: boosted, heard by others: 02C BBFC of 5FA8 (100 m: a 1.51 s file at +150 cents and a 0.97 s one
+#  at +212) and 3857's one-shot (100 m: an 8.34 s bed). 5FA8's third copy BBFD (60 m, one 1.51 s file) pairs with
+#  5FAA's 60 m 38E6 (see start_enemy): read as the two teams' copies (L which), matched by range (M).
+# Trigger: the same start, at the ally for everyone else (100 m).
+# Layers: a BBFC 468354322 Sound 1.51 s +150 cents, net -12.5; b BBFC 1057904630 Sound 0.97 s +212 cents, net -0.5; c
+#  3857 247469364 Sound 8.34 s, net -5.5.
+@ana.nano.start_3p = ana.nano.start_3p.a*1.091:-11.5 + ana.nano.start_3p.b*1.130:+0.5 + ana.nano.start_3p.c:-4.5
+# ana.nano.start_enemy (EXTRA): boosted, the other ranged copy: 02C BBFD of 5FA8 (60 m: the 1.51 s file).
+# Trigger: EXTRA: the same start, 5FA8's other ranged copy (60 m).
+# Layers: a BBFD 685482647 Sound 1.51 s, net -13.5.
+@ana.nano.start_enemy = ana.nano.start_enemy.a:-12.5
+# ana.nano.loop: boosted loop, the ally's own: 5DD8's endless 8.06 s Sound (+1 dB, 0.3 s late).
+# Trigger: while boosted (8 s): #295 holds 5FAA on the ally.
+# Layers: a 5DD8 522539665 Sound 8.06 s, net +1, loops every 8.063 s.
+# LOOP LENGTH 8.063 s: play it again every LOOP LENGTH (the built file runs 8.06 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.nano.loop = ana.nano.loop.a:+0.5
+# ana.nano.loop_3p: boosted loop heard by others: 3857's endless 8.84 s Sound at +150 cents.
+# Trigger: while boosted, at the ally for everyone else (100 m).
+# Layers: a 3857 855782835 Sound 8.84 s +150 cents, net -12.5, loops every 8.106 s.
+# LOOP LENGTH 8.106 s: play it again every LOOP LENGTH (the built file runs 8.11 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.nano.loop_3p = ana.nano.loop_3p.a*1.091:-11.5
+# ana.nano.loop_enemy (EXTRA): boosted loop, the other ranged copy: 02C 38E6 (60 m: endless 8.06 s and 8.84 s Sounds).
+# Trigger: EXTRA: the same loop, 5FAA's other ranged copy (60 m).
+# Layers: a 38E6 1015104482 Sound 8.84 s, net -13.5, loops every 8.840 s; b 38E6 886245956 Sound 8.06 s, net -10.5,
+#  loops every 8.063 s.
+# LOOP LENGTH 8.840 s: play it again every LOOP LENGTH (the built file runs 8.84 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@ana.nano.loop_enemy = ana.nano.loop_enemy.a:-12.5 + ana.nano.loop_enemy.b@0.075:-9.5
+# ana.nano.end: boost end, the ally's own: 5DD8's Stop event (one 0.94 s file; it stops the loop and the bed).
+# Trigger: the boost ends (its 8 s, the ally dying, the status removed): 5FAA stops, which runs the Stop event.
+# Layers: a 5DD8 Stop-event 112496284 Sound 0.94 s, net -8.
+@ana.nano.end = ana.nano.end.a:-8.5
+# ana.nano.end_3p: boost end heard by others: 3857's Stop event (a 0.57 s file).
+# Trigger: the same end, at the ally for everyone else.
+# Layers: a 3857 Stop-event 150999438 Sound 0.57 s, net -12.5.
+@ana.nano.end_3p = ana.nano.end_3p.a:-11.5
+# ana.nano.end_enemy (EXTRA): boost end, the other ranged copy: 38E6's Stop event (a 0.94 s file).
+# Trigger: EXTRA: the same end, 38E6's Stop event.
+# Layers: a 38E6 Stop-event 1045936945 Sound 0.94 s, net -22.5.
+@ana.nano.end_enemy = ana.nano.end_enemy.a:-21.5
+# ana.melee: quick melee, own: 02C 39AF (no range: a 0.68 s file, the one her rifle cycling plays too) at 0.3333 s
+#  (H). The hit is the shared melee hit 6BD4 (0043 #409: 02C 5D97), not Ana's.
+# Trigger: quick melee (shared graph 0043 #117 plays anim 0x00D): the 1P clip 3B98 (0.8 s, effect 1CF8) plays 39AF at 0.3333 s.
+# Layers: a 39AF 720159587 Sound 0.68 s, net -10.5.
+@ana.melee = ana.melee.a@0.333:-11
+# ana.melee_3p: quick melee heard by others: 02C 39BC (30 m: a 0.53 s file) at 0.4 s (H).
+# Trigger: the same swing, at her for everyone else: the 3P clips 3BC3 / 3C1C / 3C1B (effect 1CFE) play 39BC at 0.4 s.
+# Layers: a 39BC 827600554 Sound 0.53 s, net +3.5.
+@ana.melee_3p = ana.melee_3p.a@0.4:+4.5
+# ana.perk.anesthetic: anesthetic dart: 02C 104AA (90 m: 0.16 / 0.19 s files and a 1.14 s at +990 cents, a 0.99 s) and
+#  104AC (175 m: five random sets of 1.5-3.0 s, 80-200 ms late). 7DBF's other two, 104AB (90 m) / 104AD (70 m), are
+#  the same containers (the other team's, L which). L which moment the two slots are (Lifeweaver's m_AED73588 played
+#  as the projectile is made); M that all of 7DBF sounds once. Not in her extraction
+#  (ExtraSounds\Ana\LocalAnesthetic).
+# Trigger: Local Anesthetic (minor perk): the sleep dart becomes 7773, whose m_AED73588 and m_BF7914D4 both name
+#  effect 7DBF (four Sound components at 0-5 ms).
+# Layers: a 104AC 273761142 RanSeq 1.73-2.27 s x6 -38 cents, net -17; b 104AC 138405694 RanSeq 2.39-2.87 s x5 -25
+#  cents, net -11.5; c 104AC 949351994 RanSeq 2.50-3.03 s x4 -150 cents, net -23.5; d 104AC 529636373 RanSeq 1.50-1.82
+#  s x3, net -12; e 104AC 521712470 RanSeq 2.15-3.05 s x3 -50 cents, net -7; f 104AA 557278071 Sound 0.19 s +38 cents,
+#  net -5.5; g 104AA 546883156 Sound 0.16 s, net -10.5; h 104AA 564262684 RanSeq 1.14 s +990 cents, net -13; i 104AA
+#  675672140 RanSeq 0.99 s -25 cents, net -12.5.
+@ana.perk.anesthetic = ana.perk.anesthetic.a*0.978@0.08:-16 + ana.perk.anesthetic.b*0.986@0.2:-10.5 + ana.perk.anesthetic.c*0.917@0.08:-22.5 + ana.perk.anesthetic.d@0.08:-11 + ana.perk.anesthetic.e*0.972@0.14:-6 + ana.perk.anesthetic.f*1.022:-4.5 + ana.perk.anesthetic.g@0.03:-9.5 + ana.perk.anesthetic.h*1.772@0.09:-12 + ana.perk.anesthetic.i*0.986@0.1:-11.5
+# ana.perk.anesthetic.dot: anesthetized, the enemy's own: 02C 104CE of 7E60 (no range: a 4.14 s bed). M that it is the
+#  affected's: 7E60 plays on them.
+# Trigger: an enemy within 4 m of the slept target (0.15 s after the dart's damage, 51F0 #482 -> 6123 for 3 s: 45
+#  damage, a slow): 6123 #387 holds 7E60 on it (self); it also plays rifle.damage_target / damage_3p (19FC / 1A37,
+#  #382 / #383).
+# Layers: a 104CE 915029181 Sound 4.14 s, net -5.
+@ana.perk.anesthetic.dot = ana.perk.anesthetic.dot.a:-5.5
+# ana.perk.anesthetic.dot_3p: anesthetized, heard by others: 02C 104B0 of 7E70 (150 m: a 4.97 s bed; its twin 104CA,
+#  45 m, is the same file 14 dB down) and 387F of 7E60 (45 m: the anti-heal's files).
+# Trigger: the same, for everyone else: 6123 #386 holds 7E70 (on v71256, linked to the target) and 7E60's ranged copy.
+# Layers: a 104B0 52918160 Sound 4.97 s, net -6; b 387F 579354176 Sound 1.87 s, net -17.5; c 387F 770867143 Sound 5.12
+#  s -350 cents, net -35.5.
+@ana.perk.anesthetic.dot_3p = ana.perk.anesthetic.dot_3p.a:-5 + ana.perk.anesthetic.dot_3p.b:-16.5 + ana.perk.anesthetic.dot_3p.c*0.817:-34.5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# ana.rifle.fire.a: 5DDA play 716163500 (11 files, 1.116-1.332 s, 2ch); net -6.5 dB, +0 cents, @0.000 s. H.
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C98.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5995.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5BD5.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5976.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C22.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5989.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A59AB.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5CA3.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C27.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C21.03F.ogg
+ana.rifle.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C0B.03F.ogg
+# ana.rifle.fire.b: 5DDA play 87721567 (3 files, 2.817-3.121 s, 2ch); net -25.5 dB, +0 cents, @0.055 s, avoid repeat 3. H.
+ana.rifle.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5BE9.03F.ogg
+ana.rifle.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5943.03F.ogg
+ana.rifle.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5951.03F.ogg
+# ana.rifle.fire.c: 5DDA play 265013206 (1 file, 0.329 s, 1ch); net -22 dB, +200 cents, @0.000 s. H.
+ana.rifle.fire.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5941.03F.ogg
+# ana.rifle.fire.d: 5DDA play 850274885 (1 file, 0.140 s, 1ch); net -19.5 dB, +0 cents, @0.000 s. H.
+ana.rifle.fire.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5BC8.03F.ogg
+# ana.rifle.fire.e: 5DDA play 34105638 (1 file, 0.140 s, 2ch); net -17.5 dB, -800 cents, @0.130 s. H.
+ana.rifle.fire.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000005DDA.02C/0000002A5C89.03F.ogg
+# ana.rifle.fire_3p.a: 6D0C play 493979466 (6 files, 1.132-1.327 s, 2ch); net -23.5 dB, +0 cents, @0.030 s, avoid repeat 3. H.
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5BCA.03F.ogg
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5950.03F.ogg
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5990.03F.ogg
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5AAF.03F.ogg
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5971.03F.ogg
+ana.rifle.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5974.03F.ogg
+# ana.rifle.fire_3p.b: 6D0C play 173758215 (6 files, 1.001-1.287 s, 2ch); net -22.5 dB, +0 cents, @0.040 s, avoid repeat 2. H.
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5C9C.03F.ogg
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A59A9.03F.ogg
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5958.03F.ogg
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5C9E.03F.ogg
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5C6E.03F.ogg
+ana.rifle.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5C31.03F.ogg
+# ana.rifle.fire_3p.c: 6D0C play 871496320 (3 files, 2.817-3.121 s, 2ch); net -36.5 dB, +0 cents, @0.055 s, avoid repeat 3. H.
+ana.rifle.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5BE9.03F.ogg
+ana.rifle.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5943.03F.ogg
+ana.rifle.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5951.03F.ogg
+# ana.rifle.fire_3p.d: 6D0C play 104259887 (1 file, 0.140 s, 1ch); net -28.5 dB, +0 cents, @0.000 s. H.
+ana.rifle.fire_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FE.00D/Sounds/000000006D0C.02C/0000002A5BC8.03F.ogg
+# ana.rifle.bolt.a: 3842 play 766225709 (8 files, 0.399-0.415 s, 1ch); net -7.5 dB, +0 cents, @0.667 s, avoid repeat 6. H.
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA4EE.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA525.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA4F7.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA55A.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA506.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA559.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA4F5.03F.ogg
+ana.rifle.bolt.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/000000003842.02C/0000002AA54D.03F.ogg
+# ana.rifle.bolt.b: 39AF play 720159587 (1 file, 0.676 s, 2ch); net -10.5 dB, +0 cents, @0.467 s. H.
+ana.rifle.bolt.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/0000000039AF.02C/0000002AA4FF.03F.ogg
+# ana.rifle.bolt.c: 39B1 play 749264005 (1 file, 0.460 s, 2ch); net -20.5 dB, +0 cents, @0.533 s. H.
+ana.rifle.bolt.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/0000000039B1.02C/0000002AA54F.03F.ogg
+# ana.rifle.bolt_3p.a: 389F play 767046542 (8 files, 0.399-0.415 s, 1ch); net -20.5 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA4EE.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA525.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA4F7.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA55A.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA506.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA559.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA4F5.03F.ogg
+ana.rifle.bolt_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C3F/Sounds/00000000389F.02C/0000002AA54D.03F.ogg
+# ana.rifle.dart.shot.a: 8F08 play 1017208929 (14 files, 0.273-0.439 s, 1ch); net -11 dB, +700 cents, @0.000 s, avoid repeat 3. H.
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EB7.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EB9.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EB4.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EBA.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8ED3.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EB3.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EE8.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8E7D.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EBD.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8E85.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EB6.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8E92.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EE6.03F.ogg
+ana.rifle.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F08.02C/0000002A8EBF.03F.ogg
+# ana.rifle.dart.flight.a: 3847 play 692962268 (1 file, 0.749 s, 1ch); net +1.5 dB, +1241 cents, @0.000 s, period 0.366 s. H.
+ana.rifle.dart.flight.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/0000000019F7.00D/Sounds/000000003847.02C/0000002A8EE0.03F.ogg
+# ana.rifle.dart.flight.b: 3847 play 988862434 (1 file, 0.400 s, 1ch); net -7.5 dB, +2316 cents, @0.000 s, period 0.105 s. H.
+ana.rifle.dart.flight.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/0000000019F7.00D/Sounds/000000003847.02C/0000002A8EED.03F.ogg
+# ana.rifle.scoped.fire.a: 5DD9 play 750696290 (8 files, 1.297-1.455 s, 2ch); net -4.5 dB, +0 cents, @0.030 s. H.
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5984.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5BFB.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A59AC.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5C50.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5969.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5B08.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5AFA.03F.ogg
+ana.rifle.scoped.fire.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A59B5.03F.ogg
+# ana.rifle.scoped.fire.b: 5DD9 play 372856393 (5 files, 0.921-1.183 s, 2ch); net -15.5 dB, -100 cents, @0.050 s. H.
+ana.rifle.scoped.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5AB0.03F.ogg
+ana.rifle.scoped.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A596E.03F.ogg
+ana.rifle.scoped.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5AF9.03F.ogg
+ana.rifle.scoped.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5BE4.03F.ogg
+ana.rifle.scoped.fire.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5BE3.03F.ogg
+# ana.rifle.scoped.fire.c: 5DD9 play 529697778 (3 files, 2.817-3.121 s, 2ch); net -17.5 dB, -100 cents, @0.055 s,
+#  avoid repeat 3. H.
+ana.rifle.scoped.fire.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5BE9.03F.ogg
+ana.rifle.scoped.fire.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5943.03F.ogg
+ana.rifle.scoped.fire.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5951.03F.ogg
+# ana.rifle.scoped.fire.d: 5DD9 play 199595203 (1 file, 0.372 s, 1ch); net -8 dB, +0 cents, @0.000 s. H.
+ana.rifle.scoped.fire.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5954.03F.ogg
+# ana.rifle.scoped.fire.e: 5DD9 play 209585503 (1 file, 0.140 s, 1ch); net -10.5 dB, -100 cents, @0.000 s. H.
+ana.rifle.scoped.fire.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5BC8.03F.ogg
+# ana.rifle.scoped.fire.f: 5DD9 play 310596790 (1 file, 0.140 s, 2ch); net -11.5 dB, -900 cents, @0.125 s. H.
+ana.rifle.scoped.fire.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000005DD9.02C/0000002A5C89.03F.ogg
+# ana.rifle.scoped.fire_3p.a: 6D0D play 574056361 (6 files, 1.007-1.679 s, 2ch); net -20.5 dB, -100 cents, @0.030 s,
+#  avoid repeat 3. H.
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BFA.03F.ogg
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A597F.03F.ogg
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BFD.03F.ogg
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BB9.03F.ogg
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BB5.03F.ogg
+ana.rifle.scoped.fire_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C5F.03F.ogg
+# ana.rifle.scoped.fire_3p.b: 6D0D play 322279029 (6 files, 1.001-1.287 s, 2ch); net -21.5 dB, -100 cents, @0.040 s,
+#  avoid repeat 2. H.
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A59A9.03F.ogg
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C9E.03F.ogg
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5958.03F.ogg
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C9C.03F.ogg
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C6E.03F.ogg
+ana.rifle.scoped.fire_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C31.03F.ogg
+# ana.rifle.scoped.fire_3p.c: 6D0D play 615502400 (3 files, 2.817-3.121 s, 2ch); net -29.5 dB, +200 cents, @0.060 s,
+#  avoid repeat 3. H.
+ana.rifle.scoped.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BE9.03F.ogg
+ana.rifle.scoped.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5951.03F.ogg
+ana.rifle.scoped.fire_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5943.03F.ogg
+# ana.rifle.scoped.fire_3p.d: 6D0D play 145239858 (1 file, 0.140 s, 1ch); net -20.5 dB, -100 cents, @0.000 s. H.
+ana.rifle.scoped.fire_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5BC8.03F.ogg
+# ana.rifle.scoped.fire_3p.e: 6D0D play 424040335 (1 file, 0.140 s, 2ch); net -26.5 dB, -900 cents, @0.125 s. H.
+ana.rifle.scoped.fire_3p.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A92.00D/Sounds/000000006D0D.02C/0000002A5C89.03F.ogg
+# ana.rifle.scoped.shot.a: 3984 play 862116995 (30 files, 0.735-1.095 s, 1ch); net -20.5 dB, +400 cents, @0.000 s,
+#  avoid repeat 10. H.
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E8E.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E8F.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E75.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EAE.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EDF.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EDC.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EE1.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED1.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E76.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E7E.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E84.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E80.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E82.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED0.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E7A.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED9.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E88.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EA9.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E89.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED4.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E87.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E77.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E8D.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EB0.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E91.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EAB.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E78.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EA7.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E79.03F.ogg
+ana.rifle.scoped.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E7F.03F.ogg
+# ana.rifle.scoped.shot.b: 3984 play 98274741 (14 files, 0.209-0.300 s, 1ch); net -7 dB, -675 cents, @0.025 s, avoid repeat 10. H.
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ECF.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED2.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EE5.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E7B.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E83.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E90.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EA8.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED7.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EDA.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED6.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E86.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EEC.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED8.03F.ogg
+ana.rifle.scoped.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ED5.03F.ogg
+# ana.rifle.scoped.shot.c: 3984 play 763314743 (6 files, 0.174-0.620 s, 1ch); net -25.5 dB, +50 cents, @0.030 s. H.
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E8B.03F.ogg
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E8C.03F.ogg
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EDD.03F.ogg
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EAD.03F.ogg
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EAA.03F.ogg
+ana.rifle.scoped.shot.c = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8E81.03F.ogg
+# ana.rifle.scoped.shot.d: 3984 play 416829734 (4 files, 0.617-1.204 s, 2ch); net -17.5 dB, +100 cents, @0.025 s,
+#  avoid repeat 4. H.
+ana.rifle.scoped.shot.d = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EB2.03F.ogg
+ana.rifle.scoped.shot.d = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EAF.03F.ogg
+ana.rifle.scoped.shot.d = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8EE2.03F.ogg
+ana.rifle.scoped.shot.d = ExtraSounds/Ana/DartShot/Sounds/000000003984.02C/0000002A8ECD.03F.ogg
+# ana.rifle.hit.a: 8DE7 play 413748272 (16 files, 0.407-0.607 s, 2ch); net -22 dB, +430 cents, @0.002 s. H.
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+ana.rifle.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# ana.rifle.hit.b: 8DE7 play 19863385 (10 files, 0.537-0.599 s, 1ch); net -12 dB, +710 cents, @0.002 s. H.
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+ana.rifle.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# ana.rifle.hit.c: 8DE7 play 1057399041 (7 files, 0.487-0.559 s, 2ch); net -18.5 dB, +535 cents, @0.002 s. H.
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+ana.rifle.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# ana.rifle.heal.a: 38EE play 816272978 (4 files, 0.420-0.521 s, 2ch); net +1 dB, +0 cents, @0.050 s, avoid repeat 3. H.
+ana.rifle.heal.a = ExtraSounds/Ana/DartHit/Sounds/0000000038EE.02C/0000002AFBF4.03F.ogg
+ana.rifle.heal.a = ExtraSounds/Ana/DartHit/Sounds/0000000038EE.02C/0000002AFBFF.03F.ogg
+ana.rifle.heal.a = ExtraSounds/Ana/DartHit/Sounds/0000000038EE.02C/0000002AFC05.03F.ogg
+ana.rifle.heal.a = ExtraSounds/Ana/DartHit/Sounds/0000000038EE.02C/0000002AFCAA.03F.ogg
+# ana.rifle.heal.b: 38EE play 507061262 (1 file, 1.068 s, 2ch); net -17 dB, +1600 cents, @0.000 s. H.
+ana.rifle.heal.b = ExtraSounds/Ana/DartHit/Sounds/0000000038EE.02C/0000002A797D.03F.ogg
+# ana.rifle.heal_ally.a: 3804 play 195217028 (8 files, 0.315-0.496 s, 1ch); net -1.5 dB, +200 cents, @0.000 s. H.
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC0B.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC0E.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFBFD.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC00.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC09.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC07.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFBF2.03F.ogg
+ana.rifle.heal_ally.a = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFBFC.03F.ogg
+# ana.rifle.heal_ally.b: 3804 play 695167773 (4 files, 0.420-0.521 s, 2ch); net +1 dB, +0 cents, @0.120 s, avoid repeat 3. H.
+ana.rifle.heal_ally.b = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFBF4.03F.ogg
+ana.rifle.heal_ally.b = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFBFF.03F.ogg
+ana.rifle.heal_ally.b = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFC05.03F.ogg
+ana.rifle.heal_ally.b = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002AFCAA.03F.ogg
+# ana.rifle.heal_ally.c: 3804 play 390866168 (1 file, 1.068 s, 2ch); net -14 dB, +1200 cents, @0.170 s. H.
+ana.rifle.heal_ally.c = ExtraSounds/Ana/DartHit/Sounds/000000003804.02C/0000002A797D.03F.ogg
+# ana.rifle.heal_3p.a: 3803 play 147130098 (4 files, 0.308-0.524 s, 2ch); net -21.5 dB, +300 cents, @0.120 s, avoid repeat 3. H.
+ana.rifle.heal_3p.a = ExtraSounds/Ana/DartHit/Sounds/000000003803.02C/0000002AFC02.03F.ogg
+ana.rifle.heal_3p.a = ExtraSounds/Ana/DartHit/Sounds/000000003803.02C/0000002AFBF8.03F.ogg
+ana.rifle.heal_3p.a = ExtraSounds/Ana/DartHit/Sounds/000000003803.02C/0000002AFBF5.03F.ogg
+ana.rifle.heal_3p.a = ExtraSounds/Ana/DartHit/Sounds/000000003803.02C/0000002AFC06.03F.ogg
+# ana.rifle.heal_3p.b: 3803 play 455309568 (1 file, 1.068 s, 2ch); net -36.5 dB, +1250 cents, @0.100 s. H.
+ana.rifle.heal_3p.b = ExtraSounds/Ana/DartHit/Sounds/000000003803.02C/0000002A797D.03F.ogg
+# ana.rifle.damage.a: 38ED play 530014357 (4 files, 0.465-0.681 s, 2ch); net -2 dB, -200 cents, @0.000 s, avoid repeat 3. H.
+ana.rifle.damage.a = ExtraSounds/Ana/DartHit/Sounds/0000000038ED.02C/0000002AFBF3.03F.ogg
+ana.rifle.damage.a = ExtraSounds/Ana/DartHit/Sounds/0000000038ED.02C/0000002AFBFE.03F.ogg
+ana.rifle.damage.a = ExtraSounds/Ana/DartHit/Sounds/0000000038ED.02C/0000002AFBFA.03F.ogg
+ana.rifle.damage.a = ExtraSounds/Ana/DartHit/Sounds/0000000038ED.02C/0000002AFC01.03F.ogg
+# ana.rifle.damage_target.a: 387C play 764197883 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @0.300 s, avoid repeat 3. H.
+ana.rifle.damage_target.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.b: 387C play 894434555 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @0.500 s. H.
+ana.rifle.damage_target.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.c: 387C play 754029725 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @0.700 s. H.
+ana.rifle.damage_target.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.d: 387C play 721217935 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @0.900 s. H.
+ana.rifle.damage_target.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.e: 387C play 410585818 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @1.100 s. H.
+ana.rifle.damage_target.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.f: 387C play 984516459 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @1.300 s, avoid repeat 3. H.
+ana.rifle.damage_target.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.g: 387C play 636610498 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @1.500 s, avoid repeat 3. H.
+ana.rifle.damage_target.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.h: 387C play 991297499 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @1.700 s, avoid repeat 3. H.
+ana.rifle.damage_target.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.i: 387C play 592280948 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @1.900 s, avoid repeat 3. H.
+ana.rifle.damage_target.i = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.i = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.i = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.i = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.i = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.j: 387C play 42883529 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @2.100 s, avoid repeat 3. H.
+ana.rifle.damage_target.j = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.j = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.j = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.j = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.j = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.k: 387C play 349210405 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @2.300 s, avoid repeat 3. H.
+ana.rifle.damage_target.k = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.k = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.k = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.k = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.k = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.l: 387C play 168335872 (5 files, 0.072-0.100 s, 2ch); net 0 dB, +0 cents, @2.500 s, avoid repeat 3. H.
+ana.rifle.damage_target.l = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75A.03F.ogg
+ana.rifle.damage_target.l = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF76B.03F.ogg
+ana.rifle.damage_target.l = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF759.03F.ogg
+ana.rifle.damage_target.l = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF756.03F.ogg
+ana.rifle.damage_target.l = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF755.03F.ogg
+# ana.rifle.damage_target.loop.a: 387C play 159774545 (1 file, 8.712 s, 2ch); net -4 dB, +0 cents, @0.000 s, period 8.712 s. H.
+ana.rifle.damage_target.loop.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A37.00D/Sounds/00000000387C.02C/0000002AF75F.03F.ogg
+# ana.rifle.damage_3p.a: 388D play 167513911 (5 files, 0.201-0.244 s, 1ch); net -32 dB, +525 cents, @0.050 s, avoid repeat 6. H.
+ana.rifle.damage_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A6230.03F.ogg
+ana.rifle.damage_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A6229.03F.ogg
+ana.rifle.damage_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A622C.03F.ogg
+ana.rifle.damage_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A622B.03F.ogg
+ana.rifle.damage_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A622A.03F.ogg
+# ana.rifle.damage_3p.b: 388D play 509453964 (4 files, 0.465-0.681 s, 2ch); net -23 dB, +300 cents, @0.050 s, avoid repeat 3. H.
+ana.rifle.damage_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002AFBF3.03F.ogg
+ana.rifle.damage_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002AFBFE.03F.ogg
+ana.rifle.damage_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002AFBFA.03F.ogg
+ana.rifle.damage_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002AFC01.03F.ogg
+# ana.rifle.damage_3p.c: 388D play 451059327 (3 files, 0.209-0.297 s, 1ch); net -24.5 dB, +0 cents, @0.030 s, avoid repeat 4. H.
+ana.rifle.damage_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A64ED.03F.ogg
+ana.rifle.damage_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A67C8.03F.ogg
+ana.rifle.damage_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FC.00D/Sounds/00000000388D.02C/0000002A6505.03F.ogg
+# ana.rifle.headshot.a: 10110 play 370698263 (7 files, 0.271-0.399 s, 2ch); net -4 dB, +250 cents, @0.085 s, avoid repeat 5. H.
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAAD1.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAB3B.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAB3A.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAB36.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAB32.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAADF.03F.ogg
+ana.rifle.headshot.a = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/0000002AAADC.03F.ogg
+# ana.rifle.headshot.b: 10110 play 345077404 (1 file, 0.276 s, 2ch); net -3 dB, +0 cents, @0.075 s. H.
+ana.rifle.headshot.b = ExtraSounds/Ana/DartHit/Sounds/000000010110.02C/00000035447F.03F.ogg
+# ana.rifle.hit_block.a: 39B4 play 587582701 (8 files, 0.119-0.180 s, 2ch); net -16 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFC4F.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFC4E.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFBF9.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFC3E.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFCA9.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFC50.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFCA8.03F.ogg
+ana.rifle.hit_block.a = ExtraSounds/Ana/DartContact/Sounds/0000000039B4.02C/0000002AFBF6.03F.ogg
+# ana.rifle.hit_block.b: 39B5 play 341337855 (8 files, 0.119-0.180 s, 2ch); net -24 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFC4F.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFC4E.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFBF9.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFC3E.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFCA9.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFC50.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFCA8.03F.ogg
+ana.rifle.hit_block.b = ExtraSounds/Ana/DartContact/Sounds/0000000039B5.02C/0000002AFBF6.03F.ogg
+# ana.scope.in.a: 386B play 964514452 (1 file, 0.529 s, 1ch); net -14.5 dB, +0 cents, @0.000 s. H.
+ana.scope.in.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A2F.00D/Sounds/00000000386B.02C/0000002AA550.03F.ogg
+# ana.scope.in.b: 38E7 play 12710646 (1 file, 1.620 s, 2ch); net -22.5 dB, +0 cents, @0.000 s. H.
+ana.scope.in.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A87.00D/Sounds/0000000038E7.02C/0000002A5C84.03F.ogg
+# ana.scope.in.c: 38E7 play 183375593 (1 file, 1.087 s, 2ch); net -13.5 dB, -40 cents, @0.240 s. H.
+ana.scope.in.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A87.00D/Sounds/0000000038E7.02C/0000002A5C4B.03F.ogg
+# ana.scope.in_3p.a: 39BF play 622328795 (1 file, 0.529 s, 1ch); net -23.5 dB, +0 cents, @0.000 s. H.
+ana.scope.in_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A2F.00D/Sounds/0000000039BF.02C/0000002AA550.03F.ogg
+# ana.scope.in_3p.b: 39BF play 678126154 (1 file, 0.588 s, 2ch); net -29.5 dB, +0 cents, @0.000 s. H.
+ana.scope.in_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A2F.00D/Sounds/0000000039BF.02C/0000002AA501.03F.ogg
+# ana.scope.loop.a: 38E7 play 606731340 (1 file, 8.269 s, 2ch); net -24 dB, +0 cents, @0.000 s, period 8.269 s. H.
+ana.scope.loop.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A87.00D/Sounds/0000000038E7.02C/0000002A5BB6.03F.ogg
+# ana.scope.out.a: 386A play 422655336 (1 file, 0.513 s, 1ch); net -16.5 dB, +0 cents, @0.000 s. H.
+ana.scope.out.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A30.00D/Sounds/00000000386A.02C/0000002AA563.03F.ogg
+# ana.scope.out.b: 38E7 stop 306803049 (1 file, 0.455 s, 2ch); net -22.5 dB, +0 cents, @0.000 s. H.
+ana.scope.out.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A87.00D/Sounds/0000000038E7.02C/0000002A5BC7.03F.ogg
+# ana.scope.out_3p.a: 39C1 play 522671212 (1 file, 0.513 s, 1ch); net -24.5 dB, +0 cents, @0.000 s. H.
+ana.scope.out_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A30.00D/Sounds/0000000039C1.02C/0000002AA563.03F.ogg
+# ana.reload.a: 9190 play 787295892 (2 files, 0.287-0.303 s, 1ch); net -6.5 dB, +0 cents, @0.004 s. H.
+ana.reload.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009190.02C/0000002AA54E.03F.ogg
+ana.reload.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009190.02C/0000002AA556.03F.ogg
+# ana.reload.b: 9191 play 529009290 (2 files, 0.225-0.233 s, 1ch); net -5.5 dB, +0 cents, @0.212 s. H.
+ana.reload.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009191.02C/0000002AA52C.03F.ogg
+ana.reload.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009191.02C/0000002AA4FE.03F.ogg
+# ana.reload.c: 9192 play 160521054 (2 files, 0.585-0.599 s, 1ch); net -5.5 dB, +0 cents, @0.504 s. H.
+ana.reload.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009192.02C/0000002AA530.03F.ogg
+ana.reload.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009192.02C/0000002AA555.03F.ogg
+# ana.reload.d: 9193 play 886558392 (2 files, 0.519-0.524 s, 1ch); net -5.5 dB, +0 cents, @1.033 s. H.
+ana.reload.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009193.02C/0000002AA557.03F.ogg
+ana.reload.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009193.02C/0000002AA547.03F.ogg
+# ana.reload.e: 38EB play 1055385495 (1 file, 1.260 s, 2ch); net -10.5 dB, +0 cents, @0.240 s. H.
+ana.reload.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/0000000038EB.02C/0000002AA52D.03F.ogg
+# ana.reload.f: 39B1 play 749264005 (1 file, 0.460 s, 2ch); net -20.5 dB, +0 cents, @1.033 s. H.
+ana.reload.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/0000000039B1.02C/0000002AA54F.03F.ogg
+# ana.reload_partial.a: 39B6 play 11296380 (4 files, 0.204-0.260 s, 1ch); net -11 dB, +225 cents, @0.450 s, avoid repeat 3. H.
+ana.reload_partial.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003C98/Sounds/0000000039B6.02C/0000002AA500.03F.ogg
+ana.reload_partial.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003C98/Sounds/0000000039B6.02C/0000002AA4F3.03F.ogg
+ana.reload_partial.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003C98/Sounds/0000000039B6.02C/0000002AA504.03F.ogg
+ana.reload_partial.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003C98/Sounds/0000000039B6.02C/0000002AA4F8.03F.ogg
+# ana.reload_partial.b: 9190 play 787295892 (2 files, 0.287-0.303 s, 1ch); net -6.5 dB, +0 cents, @0.004 s. H.
+ana.reload_partial.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009190.02C/0000002AA54E.03F.ogg
+ana.reload_partial.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009190.02C/0000002AA556.03F.ogg
+# ana.reload_partial.c: 9191 play 529009290 (2 files, 0.225-0.233 s, 1ch); net -5.5 dB, +0 cents, @0.187 s. H.
+ana.reload_partial.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009191.02C/0000002AA52C.03F.ogg
+ana.reload_partial.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009191.02C/0000002AA4FE.03F.ogg
+# ana.reload_partial.d: 9192 play 160521054 (2 files, 0.585-0.599 s, 1ch); net -5.5 dB, +0 cents, @0.500 s. H.
+ana.reload_partial.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009192.02C/0000002AA530.03F.ogg
+ana.reload_partial.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009192.02C/0000002AA555.03F.ogg
+# ana.reload_partial.e: 9193 play 886558392 (2 files, 0.519-0.524 s, 1ch); net -5.5 dB, +0 cents, @1.028 s. H.
+ana.reload_partial.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009193.02C/0000002AA557.03F.ogg
+ana.reload_partial.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/000000009193.02C/0000002AA547.03F.ogg
+# ana.reload_partial.f: 38EB play 1055385495 (1 file, 1.260 s, 2ch); net -10.5 dB, +0 cents, @0.240 s. H.
+ana.reload_partial.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B99/Sounds/0000000038EB.02C/0000002AA52D.03F.ogg
+# ana.reload_partial.g: 39B6 play 511207214 (1 file, 0.396 s, 1ch); net -11 dB, +45 cents, @0.450 s. H.
+ana.reload_partial.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003C98/Sounds/0000000039B6.02C/0000002AA4F6.03F.ogg
+# ana.reload_partial.h: 39B1 play 749264005 (1 file, 0.460 s, 2ch); net -20.5 dB, +0 cents, @1.033 s. H.
+ana.reload_partial.h = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/0000000039B1.02C/0000002AA54F.03F.ogg
+# ana.reload_3p.a: 95E2 play 860297799 (2 files, 0.287-0.303 s, 1ch); net -18.5 dB, +0 cents, @0.000 s. H.
+ana.reload_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E2.02C/0000002AA54E.03F.ogg
+ana.reload_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E2.02C/0000002AA556.03F.ogg
+# ana.reload_3p.b: 95E3 play 16708121 (2 files, 0.225-0.233 s, 1ch); net -17.5 dB, +0 cents, @0.333 s. H.
+ana.reload_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E3.02C/0000002AA52C.03F.ogg
+ana.reload_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E3.02C/0000002AA4FE.03F.ogg
+# ana.reload_3p.c: 95E4 play 985845691 (2 files, 0.585-0.599 s, 1ch); net -17.5 dB, +0 cents, @0.567 s. H.
+ana.reload_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E4.02C/0000002AA530.03F.ogg
+ana.reload_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E4.02C/0000002AA555.03F.ogg
+# ana.reload_3p.d: 95E5 play 455574944 (2 files, 0.519-0.524 s, 1ch); net -17.5 dB, +0 cents, @0.952 s. H.
+ana.reload_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E5.02C/0000002AA557.03F.ogg
+ana.reload_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E5.02C/0000002AA547.03F.ogg
+# ana.reload_3p.e: 39A2 play 797866047 (1 file, 1.260 s, 2ch); net -23.5 dB, +0 cents, @0.240 s. H.
+ana.reload_3p.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000039A2.02C/0000002AA52D.03F.ogg
+# ana.reload_partial_3p.a: 39B7 play 22386332 (4 files, 0.204-0.260 s, 1ch); net -23.5 dB, +300 cents, @1.067 s, avoid
+#  repeat 3. H.
+ana.reload_partial_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010B96.00C/AnimationEffects/000000003D87/Sounds/0000000039B7.02C/0000002AA500.03F.ogg
+ana.reload_partial_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010B96.00C/AnimationEffects/000000003D87/Sounds/0000000039B7.02C/0000002AA4F3.03F.ogg
+ana.reload_partial_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010B96.00C/AnimationEffects/000000003D87/Sounds/0000000039B7.02C/0000002AA504.03F.ogg
+ana.reload_partial_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010B96.00C/AnimationEffects/000000003D87/Sounds/0000000039B7.02C/0000002AA4F8.03F.ogg
+# ana.reload_partial_3p.b: 95E2 play 860297799 (2 files, 0.287-0.303 s, 1ch); net -18.5 dB, +0 cents, @0.000 s. H.
+ana.reload_partial_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E2.02C/0000002AA54E.03F.ogg
+ana.reload_partial_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E2.02C/0000002AA556.03F.ogg
+# ana.reload_partial_3p.c: 95E3 play 16708121 (2 files, 0.225-0.233 s, 1ch); net -17.5 dB, +0 cents, @0.333 s. H.
+ana.reload_partial_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E3.02C/0000002AA52C.03F.ogg
+ana.reload_partial_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E3.02C/0000002AA4FE.03F.ogg
+# ana.reload_partial_3p.d: 95E4 play 985845691 (2 files, 0.585-0.599 s, 1ch); net -17.5 dB, +0 cents, @0.567 s. H.
+ana.reload_partial_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E4.02C/0000002AA530.03F.ogg
+ana.reload_partial_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E4.02C/0000002AA555.03F.ogg
+# ana.reload_partial_3p.e: 95E5 play 455574944 (2 files, 0.519-0.524 s, 1ch); net -17.5 dB, +0 cents, @0.952 s. H.
+ana.reload_partial_3p.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E5.02C/0000002AA557.03F.ogg
+ana.reload_partial_3p.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000095E5.02C/0000002AA547.03F.ogg
+# ana.reload_partial_3p.f: 39A2 play 797866047 (1 file, 1.260 s, 2ch); net -23.5 dB, +0 cents, @0.240 s. H.
+ana.reload_partial_3p.f = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003CA0/Sounds/0000000039A2.02C/0000002AA52D.03F.ogg
+# ana.reload_partial_3p.g: 39B7 play 822600612 (1 file, 0.396 s, 1ch); net -24.5 dB, +0 cents, @1.067 s. H.
+ana.reload_partial_3p.g = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010B96.00C/AnimationEffects/000000003D87/Sounds/0000000039B7.02C/0000002AA4F6.03F.ogg
+# ana.sleep.cast.a: 38EA play 950934416 (1 file, 1.223 s, 2ch); net -4.5 dB, +0 cents, @0.100 s. H.
+ana.sleep.cast.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003BBC/Sounds/0000000038EA.02C/0000002AA55C.03F.ogg
+# ana.sleep.cast.b: 5DD7 play 428205633 (1 file, 2.239 s, 2ch); net -28.5 dB, +0 cents, @0.300 s, avoid repeat 3. H.
+ana.sleep.cast.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/000000005DD7.02C/0000002AABF8.03F.ogg
+# ana.sleep.cast.c: 5DD7 play 574706984 (1 file, 0.457 s, 2ch); net +3.5 dB, +0 cents, @0.300 s. H.
+ana.sleep.cast.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/000000005DD7.02C/0000002AAC93.03F.ogg
+# ana.sleep.cast.d: 5DD7 play 744874757 (1 file, 1.081 s, 2ch); net -1.5 dB, +0 cents, @0.320 s. H.
+ana.sleep.cast.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/000000005DD7.02C/0000002AABDE.03F.ogg
+# ana.sleep.cast.e: 5DD7 play 166244467 (1 file, 0.585 s, 1ch); net -12 dB, +230 cents, @0.420 s. H.
+ana.sleep.cast.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/000000005DD7.02C/0000002AAC90.03F.ogg
+# ana.sleep.cast_3p.a: 39A3 play 790054004 (1 file, 0.484 s, 1ch); net -17.5 dB, +0 cents, @0.133 s. H.
+ana.sleep.cast_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003C2C/Sounds/0000000039A3.02C/0000002AA528.03F.ogg
+# ana.sleep.cast_3p.b: 96F3 play 586830119 (1 file, 2.239 s, 2ch); net -27.5 dB, +0 cents, @0.300 s, avoid repeat 3. H.
+ana.sleep.cast_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/0000000096F3.02C/0000002AABF8.03F.ogg
+# ana.sleep.cast_3p.c: 96F3 play 382674230 (1 file, 0.457 s, 2ch); net +4.5 dB, +0 cents, @0.300 s. H.
+ana.sleep.cast_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/0000000096F3.02C/0000002AAC93.03F.ogg
+# ana.sleep.cast_3p.d: 96F3 play 896909796 (1 file, 1.081 s, 2ch); net +0.5 dB, +0 cents, @0.320 s. H.
+ana.sleep.cast_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A00.00D/Sounds/0000000096F3.02C/0000002AABDE.03F.ogg
+# ana.sleep.dart.shot.a: 8F05 play 104384494 (14 files, 0.313-0.468 s, 1ch); net -15 dB, -450 cents, @0.000 s, avoid repeat 3. H.
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EE3.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EAC.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EEA.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EBC.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EE4.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8E8A.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EBE.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EB8.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EDB.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EB1.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8E7C.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EE9.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EB5.03F.ogg
+ana.sleep.dart.shot.a = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EE7.03F.ogg
+# ana.sleep.dart.shot.b: 8F05 play 950686179 (4 files, 0.431-0.740 s, 1ch); net -10 dB, +0 cents, @0.000 s. H.
+ana.sleep.dart.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8E74.03F.ogg
+ana.sleep.dart.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EEB.03F.ogg
+ana.sleep.dart.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8EBB.03F.ogg
+ana.sleep.dart.shot.b = ExtraSounds/Ana/DartShot/Sounds/000000008F05.02C/0000002A8ECE.03F.ogg
+# ana.sleep.dart.hit.a: 8DE7 play 413748272 (16 files, 0.407-0.607 s, 2ch); net -22 dB, +430 cents, @0.002 s. H.
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+ana.sleep.dart.hit.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# ana.sleep.dart.hit.b: 8DE7 play 19863385 (10 files, 0.537-0.599 s, 1ch); net -12 dB, +710 cents, @0.002 s. H.
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+ana.sleep.dart.hit.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# ana.sleep.dart.hit.c: 8DE7 play 1057399041 (7 files, 0.487-0.559 s, 2ch); net -18.5 dB, +535 cents, @0.002 s. H.
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+ana.sleep.dart.hit.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000004010.00D/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# ana.sleep.a: 3866 play 986567770 (1 file, 4.745 s, 2ch); net -14.5 dB, +0 cents, @0.000 s. H.
+ana.sleep.a = ExtraSounds/Ana/Sleep/Sounds/000000003866.02C/0000002AD6EB.03F.ogg
+# ana.sleep_target.a: 5DDB play 199034041 (1 file, 4.745 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+ana.sleep_target.a = ExtraSounds/Ana/Sleep/Sounds/000000005DDB.02C/0000002AD6EB.03F.ogg
+# ana.sleep_target.b: 5DDB play 170714940 (1 file, 0.244 s, 1ch); net -14 dB, +0 cents, @0.000 s. H.
+ana.sleep_target.b = ExtraSounds/Ana/Sleep/Sounds/000000005DDB.02C/0000002AF758.03F.ogg
+# ana.sleep.wake.a: 3866 stop 191330804 (1 file, 0.951 s, 2ch); net -12.5 dB, +0 cents, @0.000 s. H.
+ana.sleep.wake.a = ExtraSounds/Ana/Sleep/Sounds/000000003866.02C/0000002AD76B.03F.ogg
+# ana.sleep.wake_target.a: 5DDB stop 173857976 (1 file, 0.951 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+ana.sleep.wake_target.a = ExtraSounds/Ana/Sleep/Sounds/000000005DDB.02C/0000002AD76B.03F.ogg
+# ana.grenade.throw.a: 3851 play 109028734 (2 files, 0.929-1.105 s, 2ch); net -0.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.throw.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FF.00D/Sounds/000000003851.02C/0000002AAC8D.03F.ogg
+ana.grenade.throw.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FF.00D/Sounds/000000003851.02C/0000002AACA7.03F.ogg
+# ana.grenade.throw.b: 38E9 play 960241551 (1 file, 0.972 s, 2ch); net -4.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.throw.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003BCB/Sounds/0000000038E9.02C/0000002AA54B.03F.ogg
+# ana.grenade.throw_3p.a: 3850 play 741431067 (2 files, 0.929-1.105 s, 2ch); net -6 dB, +0 cents, @0.000 s. H.
+ana.grenade.throw_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FF.00D/Sounds/000000003850.02C/0000002AAC8D.03F.ogg
+ana.grenade.throw_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000019FF.00D/Sounds/000000003850.02C/0000002AACA7.03F.ogg
+# ana.grenade.throw_3p.b: E4EF play 116707690 (2 files, 0.999-1.041 s, 1ch); net -11 dB, +0 cents, @0.100 s. H.
+ana.grenade.throw_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006FC5.00D/Sounds/00000000E4EF.02C/00000031DCD4.03F.ogg
+ana.grenade.throw_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006FC5.00D/Sounds/00000000E4EF.02C/00000031DCD5.03F.ogg
+# ana.grenade.throw_3p.c: 39A0 play 22314046 (1 file, 0.972 s, 2ch); net -17.5 dB, +0 cents, @0.067 s. H.
+ana.grenade.throw_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003BBD/Sounds/0000000039A0.02C/0000002AA54B.03F.ogg
+# ana.grenade.burst.a: 384F play 710659429 (1 file, 1.548 s, 2ch); net +0.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.burst.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000001874.00D/Sounds/00000000384F.02C/0000002AABE7.03F.ogg
+# ana.grenade.burst_3p.a: 384E play 594574903 (1 file, 1.548 s, 2ch); net -15.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.burst_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Effects/000000001874.00D/Sounds/00000000384E.02C/0000002AABE7.03F.ogg
+# ana.grenade.impact.a: 892E play 456338952 (12 files, 0.812-1.468 s, 1ch); net +1 dB, +272 cents, @0.085 s. H.
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8C9D.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8CFC.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8D66.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8D56.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8CA8.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A91EF.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8D47.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8D63.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A91E5.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A924A.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A9245.03F.ogg
+ana.grenade.impact.a = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8CA9.03F.ogg
+# ana.grenade.impact.b: 8930 play 965771991 (5 files, 1.524-2.831 s, 2ch); net -23 dB, +612 cents, @0.000 s, avoid repeat 2. H.
+ana.grenade.impact.b = ExtraSounds/Ana/GrenadeContact/Sounds/000000008930.02C/0000002A8C92.03F.ogg
+ana.grenade.impact.b = ExtraSounds/Ana/GrenadeContact/Sounds/000000008930.02C/0000002A91FA.03F.ogg
+ana.grenade.impact.b = ExtraSounds/Ana/GrenadeContact/Sounds/000000008930.02C/0000002A920E.03F.ogg
+ana.grenade.impact.b = ExtraSounds/Ana/GrenadeContact/Sounds/000000008930.02C/0000002A91E4.03F.ogg
+ana.grenade.impact.b = ExtraSounds/Ana/GrenadeContact/Sounds/000000008930.02C/0000002A91F8.03F.ogg
+# ana.grenade.impact.c: 892E play 880499833 (5 files, 1.524-2.831 s, 2ch); net -16 dB, +612 cents, @0.035 s, avoid repeat 2. H.
+ana.grenade.impact.c = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A8C92.03F.ogg
+ana.grenade.impact.c = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A91FA.03F.ogg
+ana.grenade.impact.c = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A920E.03F.ogg
+ana.grenade.impact.c = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A91E4.03F.ogg
+ana.grenade.impact.c = ExtraSounds/Ana/GrenadeContact/Sounds/00000000892E.02C/0000002A91F8.03F.ogg
+# ana.grenade.boost.a: 3882 play 38498112 (1 file, 0.972 s, 2ch); net -3 dB, +0 cents, @0.050 s. H.
+ana.grenade.boost.a = ExtraSounds/Ana/Grenade/Sounds/000000003882.02C/0000002AD6FE.03F.ogg
+# ana.grenade.boost.b: 3882 play 18600507 (1 file, 5.817 s, 4ch); net -10 dB, +0 cents, @0.050 s. H.
+ana.grenade.boost.b = ExtraSounds/Ana/Grenade/Sounds/000000003882.02C/0000002AD6E5.03F.ogg
+# ana.grenade.boost_3p.a: 3881 play 534664897 (1 file, 5.047 s, 2ch); net -14.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.boost_3p.a = ExtraSounds/Ana/Grenade/Sounds/000000003881.02C/0000002AF75E.03F.ogg
+# ana.grenade.boost_3p.b: B729 play 246051492 (1 file, 0.804 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+ana.grenade.boost_3p.b = ExtraSounds/Ana/Grenade/Sounds/00000000B729.02C/0000002AABF6.03F.ogg
+# ana.grenade.antiheal.a: 5DDC play 358859197 (1 file, 5.108 s, 4ch); net -2 dB, +0 cents, @0.000 s. H.
+ana.grenade.antiheal.a = ExtraSounds/Ana/Grenade/Sounds/000000005DDC.02C/0000002AD774.03F.ogg
+# ana.grenade.antiheal.b: 5DDC play 982141029 (1 file, 5.044 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+ana.grenade.antiheal.b = ExtraSounds/Ana/Grenade/Sounds/000000005DDC.02C/0000002AD713.03F.ogg
+# ana.grenade.antiheal.c: 5DDC play 82425998 (1 file, 0.356 s, 1ch); net -12 dB, +0 cents, @0.200 s. H.
+ana.grenade.antiheal.c = ExtraSounds/Ana/Grenade/Sounds/000000005DDC.02C/0000002AF75D.03F.ogg
+# ana.grenade.antiheal_3p.a: 387F play 579354176 (1 file, 1.871 s, 2ch); net -17.5 dB, +0 cents, @0.000 s. H.
+ana.grenade.antiheal_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E60.00D/Sounds/00000000387F.02C/0000002AF757.03F.ogg
+# ana.grenade.antiheal_3p.b: 387F play 770867143 (1 file, 5.121 s, 2ch); net -35.5 dB, -350 cents, @0.000 s. H.
+ana.grenade.antiheal_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E60.00D/Sounds/00000000387F.02C/0000002AF75B.03F.ogg
+# ana.nano.cast.a: 5DD6 play 201145199 (2 files, 1.665-1.737 s, 2ch); net -1 dB, +0 cents, @0.130 s, avoid repeat 3. H.
+ana.nano.cast.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000005DD6.02C/0000002A5B8F.03F.ogg
+ana.nano.cast.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000005DD6.02C/0000002A5B46.03F.ogg
+# ana.nano.cast.b: 39AD play 1009626870 (1 file, 1.111 s, 2ch); net -4.5 dB, +0 cents, @0.000 s. H.
+ana.nano.cast.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003BDB/Sounds/0000000039AD.02C/0000002AA558.03F.ogg
+# ana.nano.cast.c: 5DD6 play 898339153 (1 file, 0.219 s, 2ch); net -5 dB, +0 cents, @0.130 s. H.
+ana.nano.cast.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000005DD6.02C/0000002A5BA0.03F.ogg
+# ana.nano.cast.d: 5DD6 play 550993300 (1 file, 0.649 s, 1ch); net -13 dB, +0 cents, @0.130 s. H.
+ana.nano.cast.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000005DD6.02C/0000002AABEA.03F.ogg
+# ana.nano.cast.e: 5DD6 play 397744562 (1 file, 0.564 s, 2ch); net -11 dB, +0 cents, @0.240 s. H.
+ana.nano.cast.e = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000005DD6.02C/0000002A5B30.03F.ogg
+# ana.nano.cast_3p.a: 3856 play 1045236699 (2 files, 1.665-1.737 s, 2ch); net -9 dB, +0 cents, @0.130 s, avoid repeat 3. H.
+ana.nano.cast_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000003856.02C/0000002A5B8F.03F.ogg
+ana.nano.cast_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000003856.02C/0000002A5B46.03F.ogg
+# ana.nano.cast_3p.b: 39A0 play 22314046 (1 file, 0.972 s, 2ch); net -17.5 dB, +0 cents, @0.067 s. H.
+ana.nano.cast_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003BBD/Sounds/0000000039A0.02C/0000002AA54B.03F.ogg
+# ana.nano.cast_3p.c: 3856 play 772801731 (1 file, 0.219 s, 2ch); net -15 dB, +0 cents, @0.130 s. H.
+ana.nano.cast_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000003856.02C/0000002A5BA0.03F.ogg
+# ana.nano.cast_3p.d: 3856 play 567598054 (1 file, 0.564 s, 2ch); net -21 dB, +0 cents, @0.240 s. H.
+ana.nano.cast_3p.d = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001A12.00D/Sounds/000000003856.02C/0000002A5B30.03F.ogg
+# ana.nano.start.a: BBFB play 515861278 (1 file, 2.319 s, 2ch); net -7 dB, +0 cents, @0.000 s. H.
+ana.nano.start.a = ExtraSounds/Ana/Nano/Sounds/00000000BBFB.02C/0000002A7D03.03F.ogg
+# ana.nano.start.b: BBFB play 558479351 (1 file, 0.951 s, 1ch); net -20 dB, +0 cents, @0.000 s. H.
+ana.nano.start.b = ExtraSounds/Ana/Nano/Sounds/00000000BBFB.02C/0000002A7D05.03F.ogg
+# ana.nano.start.c: 5DD8 play 70662122 (1 file, 8.508 s, 2ch); net -7 dB, +0 cents, @0.000 s. H.
+ana.nano.start.c = ExtraSounds/Ana/Nano/Sounds/000000005DD8.02C/0000002A7D02.03F.ogg
+# ana.nano.start_3p.a: BBFC play 468354322 (1 file, 1.508 s, 2ch); net -12.5 dB, +150 cents, @0.000 s. H.
+ana.nano.start_3p.a = ExtraSounds/Ana/Nano/Sounds/00000000BBFC.02C/0000002A7D04.03F.ogg
+# ana.nano.start_3p.b: BBFC play 1057904630 (1 file, 0.975 s, 1ch); net -0.5 dB, +212 cents, @0.000 s. H.
+ana.nano.start_3p.b = ExtraSounds/Ana/Nano/Sounds/00000000BBFC.02C/0000002A7D00.03F.ogg
+# ana.nano.start_3p.c: 3857 play 247469364 (1 file, 8.335 s, 2ch); net -5.5 dB, +0 cents, @0.000 s. H.
+ana.nano.start_3p.c = ExtraSounds/Ana/Nano/Sounds/000000003857.02C/0000002A7D07.03F.ogg
+# ana.nano.start_enemy.a: BBFD play 685482647 (1 file, 1.508 s, 2ch); net -13.5 dB, +0 cents, @0.000 s. H.
+ana.nano.start_enemy.a = ExtraSounds/Ana/Nano/Sounds/00000000BBFD.02C/0000002A7D04.03F.ogg
+# ana.nano.loop.a: 5DD8 play 522539665 (1 file, 8.063 s, 2ch); net +1 dB, +0 cents, @0.000 s, period 8.063 s. H.
+ana.nano.loop.a = ExtraSounds/Ana/Nano/Sounds/000000005DD8.02C/0000002A7D08.03F.ogg
+# ana.nano.loop_3p.a: 3857 play 855782835 (1 file, 8.840 s, 2ch); net -12.5 dB, +150 cents, @0.000 s, period 8.106 s. H.
+ana.nano.loop_3p.a = ExtraSounds/Ana/Nano/Sounds/000000003857.02C/0000002A7D06.03F.ogg
+# ana.nano.loop_enemy.a: 38E6 play 1015104482 (1 file, 8.840 s, 2ch); net -13.5 dB, +0 cents, @0.000 s, period 8.840 s. H.
+ana.nano.loop_enemy.a = ExtraSounds/Ana/Nano/Sounds/0000000038E6.02C/0000002A7D06.03F.ogg
+# ana.nano.loop_enemy.b: 38E6 play 886245956 (1 file, 8.063 s, 2ch); net -10.5 dB, +0 cents, @0.075 s, period 8.063 s. H.
+ana.nano.loop_enemy.b = ExtraSounds/Ana/Nano/Sounds/0000000038E6.02C/0000002A7D08.03F.ogg
+# ana.nano.end.a: 5DD8 stop 112496284 (1 file, 0.937 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+ana.nano.end.a = ExtraSounds/Ana/Nano/Sounds/000000005DD8.02C/0000002A5B70.03F.ogg
+# ana.nano.end_3p.a: 3857 stop 150999438 (1 file, 0.569 s, 2ch); net -12.5 dB, +0 cents, @0.000 s. H.
+ana.nano.end_3p.a = ExtraSounds/Ana/Nano/Sounds/000000003857.02C/0000002A7D09.03F.ogg
+# ana.nano.end_enemy.a: 38E6 stop 1045936945 (1 file, 0.937 s, 2ch); net -22.5 dB, +0 cents, @0.000 s. H.
+ana.nano.end_enemy.a = ExtraSounds/Ana/Nano/Sounds/0000000038E6.02C/0000002A5B70.03F.ogg
+# ana.melee.a: 39AF play 720159587 (1 file, 0.676 s, 2ch); net -10.5 dB, +0 cents, @0.333 s. H.
+ana.melee.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010561.00C/AnimationEffects/000000003B8D/Sounds/0000000039AF.02C/0000002AA4FF.03F.ogg
+# ana.melee_3p.a: 39BC play 827600554 (1 file, 0.529 s, 2ch); net +3.5 dB, +0 cents, @0.400 s. H.
+ana.melee_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Models/000000010562.00C/AnimationEffects/000000003BC3/Sounds/0000000039BC.02C/00000031A87C.03F.ogg
+# ana.perk.anesthetic.a: 104AC play 273761142 (6 files, 1.732-2.273 s, 2ch); net -17 dB, -38 cents, @0.080 s, avoid repeat 2. H.
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E94.03F.ogg
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E8B.03F.ogg
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E8F.03F.ogg
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E91.03F.ogg
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E92.03F.ogg
+ana.perk.anesthetic.a = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000358E8A.03F.ogg
+# ana.perk.anesthetic.b: 104AC play 138405694 (5 files, 2.388-2.873 s, 2ch); net -11.5 dB, -25 cents, @0.200 s, avoid repeat 2. H.
+ana.perk.anesthetic.b = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359926.03F.ogg
+ana.perk.anesthetic.b = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359923.03F.ogg
+ana.perk.anesthetic.b = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991C.03F.ogg
+ana.perk.anesthetic.b = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359925.03F.ogg
+ana.perk.anesthetic.b = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359928.03F.ogg
+# ana.perk.anesthetic.c: 104AC play 949351994 (4 files, 2.500-3.033 s, 2ch); net -23.5 dB, -150 cents, @0.080 s. H.
+ana.perk.anesthetic.c = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359927.03F.ogg
+ana.perk.anesthetic.c = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359922.03F.ogg
+ana.perk.anesthetic.c = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359924.03F.ogg
+ana.perk.anesthetic.c = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991D.03F.ogg
+# ana.perk.anesthetic.d: 104AC play 529636373 (3 files, 1.503-1.825 s, 2ch); net -12 dB, +0 cents, @0.080 s. H.
+ana.perk.anesthetic.d = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991F.03F.ogg
+ana.perk.anesthetic.d = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359921.03F.ogg
+ana.perk.anesthetic.d = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991B.03F.ogg
+# ana.perk.anesthetic.e: 104AC play 521712470 (3 files, 2.151-3.047 s, 2ch); net -7 dB, -50 cents, @0.140 s. H.
+ana.perk.anesthetic.e = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/000000359920.03F.ogg
+ana.perk.anesthetic.e = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991A.03F.ogg
+ana.perk.anesthetic.e = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AC.02C/00000035991E.03F.ogg
+# ana.perk.anesthetic.f: 104AA play 557278071 (1 file, 0.192 s, 2ch); net -5.5 dB, +38 cents, @0.000 s. H.
+ana.perk.anesthetic.f = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AA.02C/00000035809E.03F.ogg
+# ana.perk.anesthetic.g: 104AA play 546883156 (1 file, 0.161 s, 2ch); net -10.5 dB, +0 cents, @0.030 s. H.
+ana.perk.anesthetic.g = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AA.02C/0000002AFC4E.03F.ogg
+# ana.perk.anesthetic.h: 104AA play 564262684 (1 file, 1.140 s, 2ch); net -13 dB, +990 cents, @0.090 s. H.
+ana.perk.anesthetic.h = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AA.02C/000000358091.03F.ogg
+# ana.perk.anesthetic.i: 104AA play 675672140 (1 file, 0.988 s, 2ch); net -12.5 dB, -25 cents, @0.100 s. H.
+ana.perk.anesthetic.i = ExtraSounds/Ana/LocalAnesthetic/Sounds/0000000104AA.02C/000000358093.03F.ogg
+# ana.perk.anesthetic.dot.a: 104CE play 915029181 (1 file, 4.137 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+ana.perk.anesthetic.dot.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E60.00D/Sounds/0000000104CE.02C/000000357F03.03F.ogg
+# ana.perk.anesthetic.dot_3p.a: 104B0 play 52918160 (1 file, 4.975 s, 2ch); net -6 dB, +0 cents, @0.000 s. H.
+ana.perk.anesthetic.dot_3p.a = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E70.00D/Sounds/0000000104B0.02C/000000357EF6.03F.ogg
+# ana.perk.anesthetic.dot_3p.b: 387F play 579354176 (1 file, 1.871 s, 2ch); net -17.5 dB, +0 cents, @0.000 s. H.
+ana.perk.anesthetic.dot_3p.b = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E60.00D/Sounds/00000000387F.02C/0000002AF757.03F.ogg
+# ana.perk.anesthetic.dot_3p.c: 387F play 770867143 (1 file, 5.121 s, 2ch); net -35.5 dB, -350 cents, @0.000 s. H.
+ana.perk.anesthetic.dot_3p.c = ../../research/ana/extract/Heroes/Ana/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000007E60.00D/Sounds/00000000387F.02C/0000002AF75B.03F.ogg
+
+# ===== Not mapped (in the data, not asked for, no sound, or no reading of when they play)
+# No sound component (H, fx_sounds_timed.json / fx_proj.json): the grenade's 19FA, 19F5 (heal boost particles), 1A58
+# (sleep particles), Nano's 1A16 / 1A5B / 7A23 (glows by viewer), the syringe 15E9, Local Anesthetic's 3D2F, Sleep Dart's
+# 5335, the darts' 1A78 / 1A79 / 1A95 / 1A7C, the grenade's child 15BC (19FB) and the sleep dart's child 1614 (1A7D);
+# the perk graphs 5016 / 51F0 (Speed Serum, Biotic Bounce: no sound of their own, H; Groggy 254C read by no node). No
+# wake effect: 0BDE #231 sends 065D at the wake (the sleeper says its own Knockdown 00B6, M); sleep.wake is 1A1F's Stop.
+# Stadium / variant branches (L): 0B9E #468 708A (E96F no range / E971 75 m, 1.98 s) and 0B9F #320 7089 (E96E / E970, 4.09
+# s), played when 27A5.134 holds (Falconer, ana-map); 1A9A (1834, 25 m) instead of 1A89 on targets with status 003A
+# (0B95 #237); 541F (a perk copy of 0B95, the same effects).
+# The darts' contact set 0583 on characters: types 0 / 1, default material 0001 -> 4475 (8BCA, no range: the containers
+# of the shared melee hit 5D97; L whose ears), 0015 -> 1833 (100 m) / 1834 (25 m) / 8BCA, 008E / 008D -> 5D64 / 5D65, 1B36
+# (100 m) / 1B37, 1B33 / 1B34 (40 m), 8BC9 / 8BCC (no range), 00EC -> 8BCB: L which materials (shields, armour?) and
+# whose ears; extracted to ExtraSounds\Ana\DartContact, not built. The other 22 world materials of 0583 and 21 of 0751.
+# The sleeper's own clips (an Ana asleep): 0x064 3C93 / 3C94 (effects 1D6C / 1D6D: 92EE, 44 m) and the 1P 3BFA (48DE:
+# 9316); 224E's case [2] effect 67BF (4221 / 4222) is another status's (0E34), not Ana's sleep (H).
+# Shared, not Ana's (other maps or OcSounds): 0186 = 02C 0FCB 'ability not available' (0B97 #84 / #223, 0BDD #84 / #314,
+# 0B9E #92 / #140 / #335: a Nano with no target in the cone); the shared melee hit 6BD4 (5D97); 004B's ult effects 483D
+# (95DE), 483F (95DF), 7ADC (FF72 @0.2667), 7ADD (FF71); 0B9E #298 0206 (1610) / #300 00EE (60A9) on the shared messages
+# 0042 / 02CC; 01C7 / 01CA / 01CF / 0033 / 0B1F / 2E59 / 391E effects (health, statuses).
+# Clip sounds left out (fx_sounds_timed.json): the fire layer's state-1 clip 3C9A (1D73: 397F @0.3333), the showcase /
+# intro / emote / highlight clips (1D07, 1D32, 1D3D, 1D4D, 1D75, 1D83, 1D84, 1D85, 4635, 466C, 466D, 47A3, 47A4, 4F6B, 52B4,
+# 5737, 5ECE, 64A3, 7511, 8616, 8ADE, 8AE0, 00EE.08F, 012C.08F), the 3P clip 3C1D (1D31: 38EC). Her footsteps (hero
+# 1424's contact sets 0581 / 0582) were not read.
+# The heal-over-time beds 0B95 #242 1A43 (388B, on Ana) and #245 1A36 (387B, on the ally), held by State #282 for the
+# dart's 0.5 s heal: endless 6.8-8.0 s Sounds 28-35 dB down (a -1600 cents one would loop every 18 s): too faint and too
+# short-lived to build (M).
+# Voice not mapped: 0688 'I think justice could use a little nap' (a slept Pharah, 1FEB, 224E #213), 0679 'Incoming!' /
+# 'Highly effective' (no graph or effect names it, L), the hero-interaction sleep and kill lines (left out above).
+
+# ===== Voice (HeroVoice/Ana): the voice set 012A.05F's lines by moment (research\ana\sounds\voice_lines.json,
+# from ana_voice.py: each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice
+# --subtitles-with-sounds, in research\ana\extract). Her lines are spoken 0B2 files (each line's external 02C 16F3 is
+# the shared dialogue slot, not a sound of its own). w = the line's weight (the builder turns it into Minecraft
+# weights). Lines with criteria are left out, as Mercy's, Lucio's, Jetpack Cat's and Lifeweaver's are (hero
+# interactions, skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E',
+# which every effort sound carries and is treated as always true (kiriko-voice.md). Stimulus numbers (the .078):
+# priority, radius m, volume dB, interrupt, cooldown s (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table
+# takes priority, cooldown and interrupt. Sleep Dart's cast, the grenade's throw and Take Aim have no line (H).
+# Elimination 0008: 13 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 22 a hero interaction, 6
+#  Overwatch Classic only, 2 a scripted condition (LongDistance(A809)), 1 a scripted condition (EnemyInAir(9268)), 1 a
+#  scripted condition (UltAssist_Nano(A5FD)), 1 a scripted condition (Shutdown_Resurrected(AF43))
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002B8D7.0B2-Hostile down.ogg | w=0.05
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002B8D6.0B2-Enemy down.ogg | w=0.05
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002B8E2.0B2-Justice delivered.ogg | w=0.1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002B8DD.0B2-Experience always wins in the end.ogg | w=0.02
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002BC51.0B2-Age and beauty, I have you on both.ogg | w=0.1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000002BC64.0B2-(Arabic)_ Target eliminated.ogg | w=0.05
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F493.0B2-No wonder I can't retire.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F494.0B2-(Arabic)_ Another one falls.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F496.0B2-What's one more kill_.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F497.0B2-Kill confirmed.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F489.0B2-Tango down.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F48A.0B2-I'm no easy mark.ogg | w=1
+ana.voice.elimination = ../../research/ana/extract/HeroVoice/Ana/Elimination/00000005F48B.0B2-Not the first. Not the last.ogg | w=1
+# Multikill 00C9: 3 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s
+ana.voice.multikill = ../../research/ana/extract/HeroVoice/Ana/Multikill/00000005F499.0B2-You'll need more than that to bring me down.ogg | w=1
+ana.voice.multikill = ../../research/ana/extract/HeroVoice/Ana/Multikill/00000005F49A.0B2-Underestimate me at your own peril.ogg | w=1
+ana.voice.multikill = ../../research/ana/extract/HeroVoice/Ana/Multikill/00000005F49B.0B2-Anyone else_.ogg | w=1
+# MeleeEnemyKilledRemark 0032: 3 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 3 Overwatch
+#  Classic only, 1 a hero interaction
+ana.voice.melee_kill = ../../research/ana/extract/HeroVoice/Ana/MeleeEnemyKilledRemark/00000005F498.0B2-You're joking.ogg | w=1
+ana.voice.melee_kill = ../../research/ana/extract/HeroVoice/Ana/MeleeEnemyKilledRemark/000000062F0C.0B2-I'm still a threat up close.ogg | w=1
+ana.voice.melee_kill = ../../research/ana/extract/HeroVoice/Ana/MeleeEnemyKilledRemark/000000062F0D.0B2-(Arabic)_ Weak.ogg | w=1
+# On Fire 0583: 3 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only
+ana.voice.on_fire = ../../research/ana/extract/HeroVoice/Ana/OnFire/000000062F21.0B2-I am unbreakable!.ogg | w=1
+ana.voice.on_fire = ../../research/ana/extract/HeroVoice/Ana/OnFire/000000062F22.0B2-The Eye of Horus watches over you!.ogg | w=1
+ana.voice.on_fire = ../../research/ana/extract/HeroVoice/Ana/OnFire/000000062F23.0B2-(Arabic)_ I'm on fire!.ogg | w=1
+# Respawn 002C: 8 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 11 Overwatch Classic only
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B4.0B2-(Sigh) One of these days I'll end up in Fiji.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B5.0B2-(Arabic)_ There is still work to be done.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B6.0B2-I won't give in.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B7.0B2-I still have some fight in me.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B8.0B2-You'll have to try harder than that.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4B9.0B2-This is not the end.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4BA.0B2-I'm not finished.ogg | w=1
+ana.voice.respawn = ../../research/ana/extract/HeroVoice/Ana/Respawn/00000005F4BB.0B2-I go out on my terms.ogg | w=1
+# Melee shout 0023 (the melee effect 0A2C's VoiceStimulus, 0043 #144): 9 files; prio 35, 35 m, +0 dB, interrupt 0,
+#  cooldown 0.5-0.5 s
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CE.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CF.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D0.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D3.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CD.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D1.0B2-(shouts).ogg | w=0.7
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064897.0B2-(shouts).ogg | w=1
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064899.0B2-(shouts).ogg | w=1
+ana.voice.melee = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064898.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only, 1
+#  a map (OnMap)
+ana.voice.select = ../../research/ana/extract/HeroVoice/Ana/HeroSelect/00000005F4AF.0B2-I will not leave a broken world behind.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C832.0B2-(dying sounds).ogg | w=1
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C833.0B2-(dying sounds).ogg | w=1
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C834.0B2-(dying sounds).ogg | w=1
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C835.0B2-(dying sounds).ogg | w=1
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C836.0B2-(dying sounds).ogg | w=1
+ana.voice.death = ../../research/ana/extract/HeroVoice/Ana/Death/00000002C837.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BA.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7C1.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BB.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BC.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7B8.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BD.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BE.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7BF.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7C0.0B2-(grunts).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7C2.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7D5.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7E6.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7D6.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7E9.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7EE.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7EA.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7EB.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7EC.0B2-(painful grunt).ogg | w=1
+ana.voice.pain = ../../research/ana/extract/HeroVoice/Ana/Pain/00000002C7ED.0B2-(painful grunt).ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a map (OnMap)
+ana.voice.ult_ready = ../../research/ana/extract/HeroVoice/Ana/Ultimate/Ready/00000002BC21.0B2-My ultimate is ready!.ogg | w=1
+ana.voice.ult_ready = ../../research/ana/extract/HeroVoice/Ana/Ultimate/Ready/00000002BC22.0B2-Nano boost is ready to deploy!.ogg | w=1
+# Ultimate/Charging 0574: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a map (OnMap)
+ana.voice.call_ult_charging = ../../research/ana/extract/HeroVoice/Ana/Ultimate/Charging/00000002BC20.0B2-My ultimate is charging.ogg | w=1
+ana.voice.call_ult_charging = ../../research/ana/extract/HeroVoice/Ana/Ultimate/Charging/00000002BC1F.0B2-Nano boost is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a map (OnMap)
+ana.voice.call_ult_almost = ../../research/ana/extract/HeroVoice/Ana/Ultimate/AlmostReady/00000002BC1D.0B2-My ultimate is almost ready.ogg | w=1
+ana.voice.call_ult_almost = ../../research/ana/extract/HeroVoice/Ana/Ultimate/AlmostReady/00000002BC1E.0B2-Nano boost almost ready.ogg | w=1
+# Hello 01CF: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/00000002BC3E.0B2-(Arabic)_ Hello.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/00000002BC1A.0B2-Hello.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/00000002BC34.0B2-Hello there.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/00000002BC00.0B2-(Arabic)_ Hello.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/00000002BC35.0B2-(Arabic)_ Hello.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/000000064114.0B2-(Arabic)_ Hello.ogg | w=1
+ana.voice.call_hello = ../../research/ana/extract/HeroVoice/Ana/Hello/000000064115.0B2-(Arabic)_ Hello.ogg | w=1
+# Thanks 01D0: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a map (OnMap)
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000002BC30.0B2-Thank you.ogg | w=1
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000002BC1B.0B2-Thanks.ogg | w=1
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000002BC1C.0B2-(Arabic)_ Thanks.ogg | w=1
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000002BC31.0B2-(Arabic)_ Thank you.ogg | w=1
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000006411A.0B2-(Arabic)_ Thank you.ogg | w=1
+ana.voice.call_thanks = ../../research/ana/extract/HeroVoice/Ana/Thanks/00000006411B.0B2-Thank you.ogg | w=1
+# Sorry 05E1: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_sorry = ../../research/ana/extract/HeroVoice/Ana/Sorry/00000002B8CE.0B2-(Arabic)_ Sorry.ogg | w=1
+ana.voice.call_sorry = ../../research/ana/extract/HeroVoice/Ana/Sorry/00000002B8CF.0B2-(Arabic)_ Sorry.ogg | w=1
+ana.voice.call_sorry = ../../research/ana/extract/HeroVoice/Ana/Sorry/00000002C7DC.0B2-Sorry.ogg | w=1
+ana.voice.call_sorry = ../../research/ana/extract/HeroVoice/Ana/Sorry/00000002C7DE.0B2-My apologies.ogg | w=1
+# No 01D2: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_no = ../../research/ana/extract/HeroVoice/Ana/No/00000002BC38.0B2-No.ogg | w=1
+ana.voice.call_no = ../../research/ana/extract/HeroVoice/Ana/No/00000002BC39.0B2-Negative.ogg | w=1
+ana.voice.call_no = ../../research/ana/extract/HeroVoice/Ana/No/00000002C7E3.0B2-(Arabic)_ No.ogg | w=1
+# GroupUp 02C6: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_group_up = ../../research/ana/extract/HeroVoice/Ana/GroupUp/00000002BC0B.0B2-Group up with me!.ogg | w=1
+ana.voice.call_group_up = ../../research/ana/extract/HeroVoice/Ana/GroupUp/00000002BC19.0B2-Group up at my position.ogg | w=1
+ana.voice.call_group_up = ../../research/ana/extract/HeroVoice/Ana/GroupUp/00000002BBFC.0B2-Rendezvous at my position.ogg | w=1
+ana.voice.call_group_up = ../../research/ana/extract/HeroVoice/Ana/GroupUp/000000064112.0B2-Group up with me!.ogg | w=1
+ana.voice.call_group_up = ../../research/ana/extract/HeroVoice/Ana/GroupUp/000000064113.0B2-Come to my position.ogg | w=1
+# AssistanceRequired 0427: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_need_help = ../../research/ana/extract/HeroVoice/Ana/AssistanceRequired/00000002BC3C.0B2-I need assistance!.ogg | w=1
+ana.voice.call_need_help = ../../research/ana/extract/HeroVoice/Ana/AssistanceRequired/00000002BC3D.0B2-Help me!.ogg | w=1
+ana.voice.call_need_help = ../../research/ana/extract/HeroVoice/Ana/AssistanceRequired/00000002EDDB.0B2-I need help!.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.call_need_healing = ../../research/ana/extract/HeroVoice/Ana/Healing/00000002BC4A.0B2-I need healing!.ogg | w=1
+ana.voice.call_need_healing = ../../research/ana/extract/HeroVoice/Ana/Healing/00000002BC40.0B2-Need healing.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ana.voice.ping = ../../research/ana/extract/HeroVoice/Ana/Unknown/11D9.078/000000064108.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+ana.voice.ping_warning = ../../research/ana/extract/HeroVoice/Ana/Unknown/11DA.078/000000064109.0B2-Watch here.ogg | w=1
+ana.voice.ping_warning = ../../research/ana/extract/HeroVoice/Ana/Unknown/11DA.078/00000006410A.0B2-Careful.ogg | w=1
+ana.voice.ping_warning = ../../research/ana/extract/HeroVoice/Ana/Unknown/11DA.078/00000006410B.0B2-Keep an eye out.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+ana.voice.ping_enemy = ../../research/ana/extract/HeroVoice/Ana/Unknown/1117.078/000000062527.0B2-Targeting hostile.ogg | w=1
+ana.voice.ping_enemy = ../../research/ana/extract/HeroVoice/Ana/Unknown/1117.078/000000062528.0B2-Enemy in sight!.ogg | w=1
+ana.voice.ping_enemy = ../../research/ana/extract/HeroVoice/Ana/Unknown/1117.078/000000062529.0B2-Eyes on a target!.ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown
+#  10-10 s; left out: 1 a hero interaction
+ana.voice.resurrected = ../../research/ana/extract/HeroVoice/Ana/Resurrected/00000002BC17.0B2-Back again.ogg | w=1
+ana.voice.resurrected = ../../research/ana/extract/HeroVoice/Ana/Resurrected/00000002BC0E.0B2-I am in your debt.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 6 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002BC77.0B2-You won't regret it.ogg | w=1
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002BC78.0B2-I remember this feeling.ogg | w=1
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002BC79.0B2-Correct choice.ogg | w=1
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002BC75.0B2-I'm feeling young again.ogg | w=1
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002BC76.0B2-I'll make quick work of them.ogg | w=1
+ana.voice.damage_boosted = ../../research/ana/extract/HeroVoice/Ana/DamageBoosted/00000002C7FE.0B2-(Arabic)_ Now to defeat my enemies!.ogg | w=0.2
+# NanoBoosted 05E2 (what she says when boosted: 0B9F #227 waits 1.4 s, then #226 raises 1F03 on the target itself; her
+#  own self-nano in a game of one too): 2 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 2
+#  Overwatch Classic only
+ana.voice.nano_boosted = ../../research/ana/extract/HeroVoice/Ana/NanoBoosted/000000062F1F.0B2-Now it's my turn.ogg | w=1
+ana.voice.nano_boosted = ../../research/ana/extract/HeroVoice/Ana/NanoBoosted/000000062F20.0B2-(Arabic)_ Challenge me!.ogg | w=1
+# HealingDart 05F1 (0B95 #217 raises 1F00 on Ana in the ally branch, as the dart's heal starts): 12 files; prio 50, 35
+#  m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 6 Overwatch Classic only, 2 a scripted condition
+#  (HealedAlly(AABA)), 2 a gender test (type 16), 2 a hero interaction, 1 a map (OnMap)
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000002EDC6.0B2-You're covered!.ogg | w=0.1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A9.0B2-Enough whining. You're fine.ogg | w=0.5
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A3.0B2-I've got you.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A4.0B2-I have you. Keep fighting.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A5.0B2-I'll keep you up.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A6.0B2-I won't let you fall.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4A8.0B2-Don't fret. I see you.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4AA.0B2-Taking care of you.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4AB.0B2-Stand up straight.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4AC.0B2-Healing you.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4AD.0B2-I'm here. Keep fighting.ogg | w=1
+ana.voice.heal_dart = ../../research/ana/extract/HeroVoice/Ana/HealingDart/00000005F4AE.0B2-Covering you.ogg | w=1
+# reload 0E2C (0B94 #302 / #303 at the reload's start, per team list behind a 15 s wait #305 / #307): 11 files; prio
+#  60, 60 m, +0 dB, interrupt 0, cooldown 0-0 s
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5D9.0B2-Out of ammo.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DA.0B2-Need to reload.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DB.0B2-Reloading. I can’t heal right now.ogg | w=0.05
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DC.0B2-I need to reload.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DD.0B2-Hold on. I’m reloading.ogg | w=0.05
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DE.0B2-Reloading.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5DF.0B2-Need a moment to reload.ogg | w=0.05
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5E0.0B2-Hold on. Reloading.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5E1.0B2-Let me reload. Just a moment.ogg | w=0.05
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5E2.0B2-I'm reloading.ogg | w=1
+ana.voice.reload = ../../research/ana/extract/HeroVoice/Ana/Unknown/E2C.078/00000005F5E3.0B2-Wait for me to reload.ogg | w=0.05
+# Sleep 05F5 (224E #424 waits 0.5 s into the sleep, #211 raises 1EFE on Ana about the sleeper): 9 files; prio 60, 35
+#  m, +2 dB, interrupt 0, cooldown 2-2 s; left out: 7 Overwatch Classic only, 7 a hero interaction, 3 a scripted
+#  condition (?(A70E)), 2 a map (OnMap)
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4BF.0B2-Nodding off_.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C0.0B2-(Arabic)_ Bedtime.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C1.0B2-Rest up.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C2.0B2-Sweet dreams.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C3.0B2-Sleep tight.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C4.0B2-Am I boring you_.ogg | w=0.1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C5.0B2-Hush, now.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4C6.0B2-Close your eyes.ogg | w=1
+ana.voice.sleep = ../../research/ana/extract/HeroVoice/Ana/Sleep/00000005F4BC.0B2-Getting drowsy_.ogg | w=1
+# BioticGrenade/Heal 05F3 (0B99 #232 waits 0.1 s after the heal, #230 raises 1EFF on Ana): 6 files; prio 70, 35 m, +0
+#  dB, interrupt 0, cooldown 2-2 s; left out: 5 Overwatch Classic only, 1 a map (OnMap)
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F481.0B2-You need this.ogg | w=1
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F482.0B2-Healing fortified.ogg | w=1
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F485.0B2-Helping you out!.ogg | w=1
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F47F.0B2-This will cut the pain.ogg | w=1
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F480.0B2-Take this!.ogg | w=1
+ana.voice.grenade_heal = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Heal/00000005F47E.0B2-(Arabic)_ You're covered!.ogg | w=1
+# BioticGrenade/Damage 05F4 (0C72 #231 waits 0.2 s after the damage, #229 raises 1F01 on Ana): 4 files; prio 60, 35 m,
+#  +0 dB, interrupt 0, cooldown 2-2 s; left out: 4 Overwatch Classic only, 2 a map (OnMap)
+ana.voice.grenade_damage = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Damage/00000005F479.0B2-Salt for your wounds.ogg | w=1
+ana.voice.grenade_damage = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Damage/00000005F47A.0B2-(Arabic)_ That looks painful.ogg | w=1
+ana.voice.grenade_damage = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Damage/00000005F47B.0B2-That must sting.ogg | w=1
+ana.voice.grenade_damage = ../../research/ana/extract/HeroVoice/Ana/BioticGrenade/Damage/00000005F47C.0B2-No recovering.ogg | w=1
+# ping 'I slept a target!' 11EA (category 0031, the ping lines' category, M; no graph says it: a ping on a slept
+#  enemy, L): 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+ana.voice.ping_slept = ../../research/ana/extract/HeroVoice/Ana/Unknown/11EA.078/000000063CD6.0B2-I've slept one!.ogg | w=1
+ana.voice.ping_slept = ../../research/ana/extract/HeroVoice/Ana/Unknown/11EA.078/000000063CD5.0B2-I slept a target!.ogg | w=1
+ana.voice.ping_slept = ../../research/ana/extract/HeroVoice/Ana/Unknown/11EA.078/000000063CD4.0B2-Enemy slept here!.ogg | w=1
+# Nano Boost cast 1836 (0B9E #451 -> shared 545C key F1AC, the key Lifeweaver's own 184F sits on: M a third listener
+#  group, read as her own): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a map (OnMap), 1 a
+#  skin / celebration
+ana.voice.ultimate = ../../research/ana/extract/HeroVoice/Ana/Ultimate/00000006975D.0B2-You're powered up! Get in there!.ogg | w=1
+# Nano Boost cast 0678 (545C key 10011, said first (#9), one tick before the others; its lines speak to the boosted
+#  ally: L which listener group, read as the boosted ally's): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1
+#  s; left out: 1 a map (OnMap), 1 a skin / celebration
+ana.voice.nano_cast = ../../research/ana/extract/HeroVoice/Ana/Ultimate/00000002B8CD.0B2-You're powered up! Get in there!.ogg | w=1
+# Nano Boost line, allies and herself 05F6 ('Nano boost administered!'; 545C key F1AB, the key Mercy's 08CB, Lucio's
+#  025B and Lifeweaver's 11FD friendly lines sit on, H): 1 files; prio 95, 80 m, +6 dB, interrupt 0, cooldown 1-1 s;
+#  left out: 1 a map (OnMap)
+ana.ult.friendly = ../../research/ana/extract/HeroVoice/Ana/Ultimate/00000002B8FA.0B2-Nano boost administered!.ogg | w=1
+# Nano Boost line, enemies 05F7 ('(Arabic) Unleash your inner strength!'; 545C key F1AA, the enemy key, H); 02EDDF
+#  kept: its only criterion is a type16 'gender 3' test (the gendered pair's neutral line, L: the hearer's or the
+#  boosted hero's gender; read as the default): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out:
+#  1 a hero interaction, 1 a skin / celebration
+ana.ult.enemy = ../../research/ana/extract/HeroVoice/Ana/Ultimate/00000002EDDF.0B2-(Arabic)_ Unleash your inner strength!.ogg | w=1
+
+# ===== Every hero's NanoBoosted line (05E2): the boosted ally says its own 1.4 s into the boost (0B9F #227 -> #226
+# raises 1F03 on the target). The stimulus is global (prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s, the same in
+# Mercy's and Lifeweaver's sets, H). One event per playable hero, '<hero>.voice.nano_boosted' (no other map defines
+# them); Ana's own is ana.voice.nano_boosted above. Same criteria rule as above.
+# kiriko's NanoBoosted 05E2 (DataTool's export HeroVoice/Kiriko/NanoBoosted and its criteria / weight sidecars, M: no
+#  decoded voice set read): 4 files
+kiriko.voice.nano_boosted = HeroVoice/Kiriko/NanoBoosted/00000005EFB2.0B2-Thanks for the power-up.ogg | w=1
+kiriko.voice.nano_boosted = HeroVoice/Kiriko/NanoBoosted/00000005EFB3.0B2-Can't stop me now.ogg | w=1
+kiriko.voice.nano_boosted = HeroVoice/Kiriko/NanoBoosted/00000005EFB9.0B2-I'm unstoppable.ogg | w=1
+kiriko.voice.nano_boosted = HeroVoice/Kiriko/NanoBoosted/000000064CDE.0B2-The stars have aligned!.ogg | w=1
+# lucio's NanoBoosted 05E2 (DataTool's export HeroVoice/Lúcio/NanoBoosted and its criteria / weight sidecars, M: no
+#  decoded voice set read): 8 files
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/00000002B79C.0B2-I am unstoppable!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/00000002B79D.0B2-Oh, there's no stopping me now!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/000000036CD7.0B2-Boost-i-oooo!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/000000061D3C.0B2-Time for the collab of the century!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/000000061D3E.0B2-Can't stop me now!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/000000061D62.0B2-I am in the zone!.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/0000000654E0.0B2-Who wants a trip to Hades_.ogg | w=1
+lucio.voice.nano_boosted = HeroVoice/Lúcio/NanoBoosted/0000000654F2.0B2-No brakes on the H-Train!.ogg | w=1
+# jetpack_cat's NanoBoosted 05E2 (DataTool's export HeroVoice/Jetpack Cat/NanoBoosted and its criteria / weight
+#  sidecars, M: no decoded voice set read): 3 files
+jetpack_cat.voice.nano_boosted = HeroVoice/Jetpack Cat/NanoBoosted/(cat sounds)/00000033DE51.03F.ogg | w=1
+jetpack_cat.voice.nano_boosted = HeroVoice/Jetpack Cat/NanoBoosted/(cat sounds)/00000033DF1E.03F.ogg | w=1
+jetpack_cat.voice.nano_boosted = HeroVoice/Jetpack Cat/NanoBoosted/(cat sounds)/00000033DF66.03F.ogg | w=1
+# mercy's NanoBoosted 05E2 (their voice set's lines, mercy\sounds\voice_lines.json): 3 files; left out: 2 Overwatch Classic only
+mercy.voice.nano_boosted = HeroVoice/Mercy/NanoBoosted/00000002A8A0.0B2-I feel unstoppable!.ogg | w=1
+mercy.voice.nano_boosted = HeroVoice/Mercy/NanoBoosted/000000062075.0B2-No one can stop me!.ogg | w=1
+mercy.voice.nano_boosted = HeroVoice/Mercy/NanoBoosted/000000062076.0B2-I feel the power!.ogg | w=1
+# lifeweaver's NanoBoosted 05E2 (their voice set's lines, lifeweaver\sounds\voice_lines.json): 2 files; left out: 1 a
+#  skin / celebration
+lifeweaver.voice.nano_boosted = ../../research/lifeweaver/extract/HeroVoice/Lifeweaver/NanoBoosted/0000000661EB.0B2-Life unbridled!.ogg | w=1
+lifeweaver.voice.nano_boosted = ../../research/lifeweaver/extract/HeroVoice/Lifeweaver/NanoBoosted/0000000661EC.0B2-Now this is a development!.ogg | w=1
+
+# ===== Subtitles (the jar's lang names none of her events)
+$ana.rifle.fire = Biotic Rifle fires
+$ana.rifle.fire_3p = Biotic Rifle fires
+$ana.rifle.bolt = Biotic Rifle cycles
+$ana.rifle.bolt_3p = Biotic Rifle cycles
+$ana.rifle.dart.shot = Biotic dart flies
+$ana.rifle.dart.flight = Biotic dart whines
+$ana.rifle.scoped.fire = Biotic Rifle fires (scoped)
+$ana.rifle.scoped.fire_3p = Biotic Rifle fires (scoped)
+$ana.rifle.scoped.shot = Biotic Rifle shot
+$ana.rifle.hit = Biotic dart hits
+$ana.rifle.heal = Biotic dart heals
+$ana.rifle.heal_ally = You are healed
+$ana.rifle.heal_3p = Biotic dart heals
+$ana.rifle.damage = Biotic dart hurts
+$ana.rifle.damage_target = Biotic dart hurts you
+$ana.rifle.damage_target.loop = Biotic dart hurts you
+$ana.rifle.damage_3p = Biotic dart hurts
+$ana.rifle.headshot = Headhunter critical
+$ana.rifle.hit_block = Biotic dart hits a wall
+$ana.scope.in = Ana scopes in
+$ana.scope.in_3p = Ana scopes in
+$ana.scope.loop = Ana holds her aim
+$ana.scope.out = Ana lowers her aim
+$ana.scope.out_3p = Ana lowers her aim
+$ana.reload = Biotic Rifle reloads
+$ana.reload_partial = Biotic Rifle reloads
+$ana.reload_3p = Biotic Rifle reloads
+$ana.reload_partial_3p = Biotic Rifle reloads
+$ana.sleep.cast = Sleep Dart fires
+$ana.sleep.cast_3p = Sleep Dart fires
+$ana.sleep.dart.shot = Sleep Dart flies
+$ana.sleep.dart.hit = Sleep Dart hits
+$ana.sleep = Target falls asleep
+$ana.sleep_target = You fall asleep
+$ana.sleep.wake = Target wakes
+$ana.sleep.wake_target = You wake up
+$ana.grenade.throw = Biotic Grenade thrown
+$ana.grenade.throw_3p = Biotic Grenade thrown
+$ana.grenade.burst = Biotic Grenade bursts
+$ana.grenade.burst_3p = Biotic Grenade bursts
+$ana.grenade.impact = Biotic Grenade hits
+$ana.grenade.boost = Healing boosted
+$ana.grenade.boost_3p = Healing boosted
+$ana.grenade.antiheal = Healing blocked
+$ana.grenade.antiheal_3p = Healing blocked
+$ana.nano.cast = Nano Boost
+$ana.nano.cast_3p = Nano Boost
+$ana.nano.start = Nano boosted
+$ana.nano.start_3p = Nano boosted
+$ana.nano.start_enemy = Nano boosted
+$ana.nano.loop = Nano boosted
+$ana.nano.loop_3p = Nano boosted
+$ana.nano.loop_enemy = Nano boosted
+$ana.nano.end = Nano Boost fades
+$ana.nano.end_3p = Nano Boost fades
+$ana.nano.end_enemy = Nano Boost fades
+$ana.melee = Ana swings
+$ana.melee_3p = Ana swings
+$ana.perk.anesthetic = Local Anesthetic
+$ana.perk.anesthetic.dot = Local Anesthetic
+$ana.perk.anesthetic.dot_3p = Local Anesthetic
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$ana.voice.elimination = Ana gloats
+$ana.voice.multikill = Ana marvels at a multikill
+$ana.voice.melee_kill = Ana quips
+$ana.voice.on_fire = Ana is on fire
+$ana.voice.respawn = Ana returns
+$ana.voice.melee = Ana shouts
+$ana.voice.select = Ana: I will not leave a broken world behind
+$ana.voice.death = Ana dies
+$ana.voice.pain = Ana grunts
+$ana.voice.ult_ready = Ana: My ultimate is ready!
+$ana.voice.call_ult_charging = Ana: My ultimate is charging
+$ana.voice.call_ult_almost = Ana: My ultimate is almost ready
+$ana.voice.call_hello = Ana: Hello
+$ana.voice.call_thanks = Ana: Thank you
+$ana.voice.call_sorry = Ana: Sorry
+$ana.voice.call_no = Ana: No
+$ana.voice.call_group_up = Ana: Group up with me!
+$ana.voice.call_need_help = Ana: I need assistance!
+$ana.voice.call_need_healing = Ana: I need healing!
+$ana.voice.ping = Ana: Over there!
+$ana.voice.ping_warning = Ana: Watch here
+$ana.voice.ping_enemy = Ana: Targeting hostile
+$ana.voice.resurrected = Ana is back on her feet
+$ana.voice.damage_boosted = Ana feels powerful
+$ana.voice.nano_boosted = Ana: Now it's my turn
+$ana.voice.heal_dart = Ana: I've got you
+$ana.voice.reload = Ana: Reloading
+$ana.voice.sleep = Ana: Sweet dreams
+$ana.voice.grenade_heal = Ana: Take this!
+$ana.voice.grenade_damage = Ana: Salt for your wounds
+$ana.voice.ping_slept = Ana: I slept a target!
+$ana.voice.ultimate = Ana: You're powered up! Get in there!
+$ana.voice.nano_cast = Ana: You're powered up! Get in there!
+$ana.ult.friendly = Ana: Nano boost administered!
+$ana.ult.enemy = Ana: (Arabic) Unleash your inner strength!
+$kiriko.voice.nano_boosted = Kiriko feels unstoppable
+$lucio.voice.nano_boosted = Lúcio feels unstoppable
+$jetpack_cat.voice.nano_boosted = Jetpack Cat feels unstoppable
+$mercy.voice.nano_boosted = Mercy feels unstoppable
+$lifeweaver.voice.nano_boosted = Lifeweaver feels unstoppable
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: Ana, or the target where the rule says; 3p = everyone else, at her
+# / the target / the hit point; both = one rule for everyone). 'EXTRA' = in the data but not needed for the kit's
+# moments. Not built: see 'Not mapped'.
+#   ana.rifle.fire                     one-shot own  3.18 s; each unscoped shot (primary; one 0.8 s recovery each):
+#     0B94 volley #17 -> ActionEffect #179 / #549 19FE (the switch #547 picks one of the two, the same effect) on the
+#     rifle's muzzle hp 0006
+#   ana.rifle.fire_3p                  one-shot 3p   3.18 s; the same shot, at her for everyone else (100 m)
+#   ana.rifle.bolt                     one-shot own  1.14 s; after each shot: her 1P fire layer (anim layer weighted
+#     df 0x102 on alias 0xA0E, state 0) plays clip 3B8D (1.267 s), whose animation effect 1CF4 plays 39AF @0.4667,
+#     39B1 @0.5333, 3842 @0.6667 (H); M that the layer plays once per shot (the next shot at 0.8 s cuts it after its
+#     last sound)
+#   ana.rifle.bolt_3p                  one-shot 3p   0.41 s; the same, at her for everyone else: the 3P fire layer
+#     clip 3C3F (0.8 s, effect 1D78) plays 389F at 0 (H)
+#   ana.rifle.dart.shot                one-shot both 0.29 s; each unscoped dart as it leaves the muzzle: the dart
+#     15B7's STUProjectileVisualComponent m_2170A015 'sound only' effect 1A07 (Lifeweaver's thorn-shot slot)
+#   ana.rifle.dart.flight              LOOP     both loop 0.366 s; while an unscoped dart flies (125 m/s, at most 5
+#     s): its child entity 15B8 holds effect 19F7 (two Sound components, 1 s, on hp 00A4)
+#   ana.rifle.scoped.fire              one-shot own  3.36 s; each scoped shot (fully scoped, v169 >= 1): 0B94 volley
+#     #167 -> ActionEffect #145 / #546 1A92 (switch #545) on the muzzle hp 0006
+#   ana.rifle.scoped.fire_3p           one-shot 3p   2.84 s; the same shot, at her for everyone else (100 m)
+#   ana.rifle.scoped.shot              one-shot both 1.16 s; each scoped shot: the hitscan entity 1615's m_2170A015
+#     'sound only' effect 1A8C, as it is made
+#   ana.rifle.hit                      one-shot own  0.48 s; a dart hits a character, ally or enemy: 15B7's m_A18274A3
+#     'on a target' effect 19F8, whose sub-effect 4010 plays 8DE7; the scoped 1615 carries 1A80 -> 4010 as it is made
+#     (at the hit, M)
+#   ana.rifle.heal                     one-shot own  0.57 s; a dart heals an ally (the hit filter passes only hurt
+#     allies): 0B95 runs on the ally; its ally branch #204 -> StateWait #200 (0.6 s) holds 1A18 (#207) whose begin
+#     plays #211 1A14 on the ally and #228 1A88 on Ana (v40)
+#   ana.rifle.heal_ally                one-shot own  0.70 s; the same heal, what the healed ally hears: #211 1A14 on
+#     the ally (self of 0B95)
+#   ana.rifle.heal_3p                  one-shot 3p   0.62 s; the same heal, at the ally for everyone else: #207 holds
+#     1A18 on the ally's hp 0001 (80 m)
+#   ana.rifle.damage                   one-shot own  0.76 s; a dart damages an enemy (75 over 0.5 s): 0B95's enemy
+#     branch #253 (false) -> #238 1A89 on Ana (v40), #239 holds 1A37 on the enemy, whose begin holds #201 19FC on its
+#     hp 0001
+#   ana.rifle.damage_target            one-shot own  2.60 s; the same damage, what the enemy hears: #239 1A37 on the
+#     enemy (self); stop it when the effect ends (387C's Stop event stops its containers, H)
+#   ana.rifle.damage_target.loop (EXTRA) LOOP     own  loop 8.712 s; EXTRA: while 1A37 is held on the enemy (with damage_target)
+#   ana.rifle.damage_3p                one-shot 3p   0.62 s; the same damage, at the enemy for everyone else: #201
+#     holds 19FC on the enemy's hp 0001 (80 m)
+#   ana.rifle.headshot                 one-shot own  0.43 s; Headhunter (major perk 2599): a dart that hits an enemy's
+#     head deals x2: 0B95 #279 (true) -> ActionEffect #281 7C77
+#   ana.rifle.hit_block                one-shot both 0.18 s; a dart (unscoped, scoped or Sleep Dart: all three name
+#     contact set 0583) hits a block: contact type 2, default material 0001 -> contact effect 1E58 -> 39B4 + 39B5
+#     (both play), at the hit point
+#   ana.scope.in                       one-shot own  1.62 s; Take Aim starts (secondary held; 0.25 s to scope in):
+#     0B94 StateDataFlowMapping #81 onBegin -> ActionEffect #156 1A2F, and #82 (true) holds 1A87 (#178) from then
+#     until she unscopes
+#   ana.scope.in_3p                    one-shot 3p   0.59 s; the same, at her for everyone else (30 m)
+#   ana.scope.loop                     LOOP     own  loop 8.269 s; while scoped: #178 holds 1A87 until she unscopes
+#     (release, reload, an empty clip, an ability, death)
+#   ana.scope.out                      one-shot own  0.51 s; Take Aim ends (0.167 s to scope out):
+#     StateDataFlowMapping #77 onBegin -> ActionEffect #157 1A30; 1A87 stops, which runs 38E7's Stop event (it stops
+#     the loop and the one-shots and plays one file)
+#   ana.scope.out_3p                   one-shot 3p   0.51 s; the same, at her for everyone else (30 m)
+#   ana.reload                         one-shot own  1.56 s; reload (R with the clip not full, or automatic at 0
+#     rounds; 1.5 s, the clip refilled at 0.6 s): 0B94 #33 plays anim 0x004 (the clip empty): the 1P clip 3B99 (1.5
+#     s), effect 1CF5
+#   ana.reload_partial                 one-shot own  1.55 s; reload (R with the clip not full, or automatic at 0
+#     rounds; 1.5 s, the clip refilled at 0.6 s): 0B94 #33 plays anim 0x084 (rounds left): the 1P clip 3C98 (1.5 s),
+#     effect 1D86
+#   ana.reload_3p                      one-shot 3p   1.50 s; the same reload, at her for everyone else: the 3P clip
+#     3CE3 (standing; 3CA0 crouched, the same effect sounds), effect 1D40 / 1D82
+#   ana.reload_partial_3p              one-shot 3p   1.50 s; the reload with rounds left, at her for everyone else:
+#     3CE3's sounds and the rifle's 3P-side clip 3D87 (alias 0x084), effect 1D72: 39B7 @1.0667
+#   ana.sleep.cast                     one-shot own  2.54 s; Sleep Dart cast (ability 1; a 1.0 s cast, the dart fires
+#     at 0.3 s): 0BDD StateWait #107 onBegin -> ActionEffect #114 1A00, with the 1P clip 3BBC (anim 0x47B, effect
+#     1CDD: 38EA @0)
+#   ana.sleep.cast_3p                  one-shot 3p   2.54 s; the same cast, at her for everyone else: 1A00's ranged
+#     copy and the 3P clip 3C2C (3C35 / 3C36 by pitch, effect 1D4B: 39A3 @0.0333)
+#   ana.sleep.dart.shot                one-shot both 0.74 s; the sleep dart leaves the pistol (t = 0.3 s, volley
+#     #108): the dart 15E8's m_2170A015 'sound only' effect 1A8D
+#   ana.sleep.dart.hit                 one-shot own  0.48 s; the sleep dart hits a character: 15E8's m_A18274A3 'on a
+#     target' effect 1A7B, whose sub-effect 4010 plays 8DE7 (the same crack as rifle.hit); on a block, rifle.hit_block
+#     (the same contact set 0583)
+#   ana.sleep                          one-shot 3p   4.75 s; the target falls asleep: 0BDE #337 runs the shared sleep
+#     224E on it with Ana's overrides (5 s, 3.5 s on tanks); 0BDE StateChaseVar #251 (the sleep timer) holds 1A1F
+#     (#279) on the sleeper until it wakes or the time runs out
+#   ana.sleep_target                   one-shot own  4.75 s; the same sleep, what the sleeper hears (1A1F on self)
+#   ana.sleep.wake                     one-shot 3p   0.95 s; the sleeper wakes (damage after the first 0.5 s, then 0.5
+#     s later; or the time runs out): 1A1F stops, which runs 3866's Stop event
+#   ana.sleep.wake_target              one-shot own  0.95 s; the same waking, what the sleeper hears
+#   ana.grenade.throw                  one-shot own  1.10 s; Biotic Grenade thrown (ability 2; the volley about 2
+#     ticks into the 0.7 s state): 0B97 StateWeaponVolley #21 onBegin -> ActionEffect #93 19FF, #196 6FC5 and #68 19FA
+#     (no sound), with the 1P clip 3BCB (anim 0x479, effect 1CEC: 38E9 @0)
+#   ana.grenade.throw_3p               one-shot 3p   1.14 s; the same throw, at her for everyone else: 19FF's ranged
+#     copy, 6FC5, and the 3P clip 3BBD (3C39 / 3C38 by pitch, effect 1D01: 39A0 @0.0667)
+#   ana.grenade.burst                  one-shot own  1.55 s; the grenade bursts (on contact): 5791 StateModifyHealth
+#     #39 (the 4 m burst, 90 heal / 90 damage) onFinished -> ActionEffect #38 1874 at the burst point
+#   ana.grenade.burst_3p               one-shot 3p   1.55 s; the same burst, for everyone else (150 m)
+#   ana.grenade.impact                 one-shot both 2.02 s; EXTRA: the grenade touches a block: its contact set 0751,
+#     contact type 2, default material 0001 -> contact effect 4D8B -> 892E + 8930 (both play); with Biotic Bounce
+#     (major perk 254D) the grenade bounces on the world first (0B97 #176 turns the bounce block on, M)
+#   ana.grenade.boost                  one-shot own  5.87 s; an ally in the burst (Ana included): 0C71 #252 -> 0B99
+#     heals 90 and gives +50% healing received for 3 s, StateStack #318 holding 5485 (#274) on the ally; stop it at
+#     the 3 s
+#   ana.grenade.boost_3p               one-shot 3p   5.05 s; the same boost, at the ally for everyone else (45 m)
+#   ana.grenade.antiheal               one-shot own  5.11 s; an enemy in the burst: 0C71 -> 0C72 deals 90 and blocks
+#     its healing for 3 s, StateCombatModFilter #262 holding 19F4 (#227) on the enemy; stop it at the end
+#   ana.grenade.antiheal_3p            one-shot 3p   6.27 s; the same anti-heal, at the enemy for everyone else (45 m)
+#   ana.nano.cast                      one-shot own  1.87 s; Nano Boost cast (ultimate, on the ally in the 10-degree,
+#     40 m cone; on herself in a game of one): 0B9E StateWait #176 onBegin plays anim 0x175 (#141; the 1P clip 3BDB,
+#     effect 1CFA: 39AD @0), onFinished (0.13 s: the boost starts) -> ActionEffect #147 1A12 on Ana
+#   ana.nano.cast_3p                   one-shot 3p   1.87 s; the same cast, at her for everyone else: the 3P clip 3BBF
+#     (3CEA / 3CE9 by pitch, effect 1CFF: 39A0 @0.0667) and 1A12's ranged copy
+#   ana.nano.start                     one-shot own  8.51 s; the boost starts on the ally (0.13 s into the cast; 8 s:
+#     0B9F on the target, State #249): ActionEffect #296 5FA8 and #295 holds 5FAA on the target (self)
+#   ana.nano.start_3p                  one-shot 3p   8.34 s; the same start, at the ally for everyone else (100 m)
+#   ana.nano.start_enemy (EXTRA)       one-shot 3p   1.51 s; EXTRA: the same start, 5FA8's other ranged copy (60 m)
+#   ana.nano.loop                      LOOP     own  loop 8.063 s; while boosted (8 s): #295 holds 5FAA on the ally
+#   ana.nano.loop_3p                   LOOP     3p   loop 8.106 s; while boosted, at the ally for everyone else (100 m)
+#   ana.nano.loop_enemy (EXTRA)        LOOP     3p   loop 8.840 s; EXTRA: the same loop, 5FAA's other ranged copy (60 m)
+#   ana.nano.end                       one-shot own  0.94 s; the boost ends (its 8 s, the ally dying, the status
+#     removed): 5FAA stops, which runs the Stop event
+#   ana.nano.end_3p                    one-shot 3p   0.57 s; the same end, at the ally for everyone else
+#   ana.nano.end_enemy (EXTRA)         one-shot 3p   0.94 s; EXTRA: the same end, 38E6's Stop event
+#   ana.melee                          one-shot own  1.01 s; quick melee (shared graph 0043 #117 plays anim 0x00D):
+#     the 1P clip 3B98 (0.8 s, effect 1CF8) plays 39AF at 0.3333 s
+#   ana.melee_3p                       one-shot 3p   0.93 s; the same swing, at her for everyone else: the 3P clips
+#     3BC3 / 3C1C / 3C1B (effect 1CFE) play 39BC at 0.4 s
+#   ana.perk.anesthetic                one-shot both 3.39 s; Local Anesthetic (minor perk): the sleep dart becomes
+#     7773, whose m_AED73588 and m_BF7914D4 both name effect 7DBF (four Sound components at 0-5 ms)
+#   ana.perk.anesthetic.dot            one-shot own  4.14 s; an enemy within 4 m of the slept target (0.15 s after the
+#     dart's damage, 51F0 #482 -> 6123 for 3 s: 45 damage, a slow): 6123 #387 holds 7E60 on it (self); it also plays
+#     rifle.damage_target / damage_3p (19FC / 1A37, #382 / #383)
+#   ana.perk.anesthetic.dot_3p         one-shot 3p   6.27 s; the same, for everyone else: 6123 #386 holds 7E70 (on
+#     v71256, linked to the target) and 7E60's ranged copy
+#   ana.voice.elimination              one-shot both 13 line files; Elimination 0008
+#   ana.voice.multikill                one-shot both 3 line files; Multikill 00C9
+#   ana.voice.melee_kill               one-shot both 3 line files; MeleeEnemyKilledRemark 0032
+#   ana.voice.on_fire                  one-shot both 3 line files; On Fire 0583
+#   ana.voice.respawn                  one-shot both 8 line files; Respawn 002C
+#   ana.voice.melee                    one-shot both 9 line files; Melee shout 0023 (the melee effect 0A2C's
+#     VoiceStimulus, 0043 #144)
+#   ana.voice.select                   one-shot both 1 line files; Hero select 002B
+#   ana.voice.death                    one-shot both 6 line files; Death 0001
+#   ana.voice.pain                     one-shot both 19 line files; Pain 0003 / 0004
+#   ana.voice.ult_ready                one-shot both 2 line files; Ultimate/Ready 02E7 (the wheel line)
+#   ana.voice.call_ult_charging        one-shot both 2 line files; Ultimate/Charging 0574
+#   ana.voice.call_ult_almost          one-shot both 2 line files; Ultimate/AlmostReady 05A7
+#   ana.voice.call_hello               one-shot both 7 line files; Hello 01CF
+#   ana.voice.call_thanks              one-shot both 6 line files; Thanks 01D0
+#   ana.voice.call_sorry               one-shot both 4 line files; Sorry 05E1
+#   ana.voice.call_no                  one-shot both 3 line files; No 01D2
+#   ana.voice.call_group_up            one-shot both 5 line files; GroupUp 02C6
+#   ana.voice.call_need_help           one-shot both 3 line files; AssistanceRequired 0427
+#   ana.voice.call_need_healing        one-shot both 2 line files; Healing 0045
+#   ana.voice.ping                     one-shot both 1 line files; ping 11D9
+#   ana.voice.ping_warning             one-shot both 3 line files; ping warning 11DA
+#   ana.voice.ping_enemy               one-shot both 3 line files; ping enemy 1117
+#   ana.voice.resurrected              one-shot both 2 line files; Resurrected 005A (what she says when a Mercy brings her back)
+#   ana.voice.damage_boosted           one-shot both 6 line files; DamageBoosted 00CC (what she says when a Mercy boosts her)
+#   ana.voice.nano_boosted             one-shot both 2 line files; NanoBoosted 05E2 (what she says when boosted: 0B9F
+#     #227 waits 1.4 s, then #226 raises 1F03 on the target itself; her own self-nano in a game of one too)
+#   ana.voice.heal_dart                one-shot both 12 line files; HealingDart 05F1 (0B95 #217 raises 1F00 on Ana in
+#     the ally branch, as the dart's heal starts)
+#   ana.voice.reload                   one-shot both 11 line files; reload 0E2C (0B94 #302 / #303 at the reload's
+#     start, per team list behind a 15 s wait #305 / #307)
+#   ana.voice.sleep                    one-shot both 9 line files; Sleep 05F5 (224E #424 waits 0.5 s into the sleep,
+#     #211 raises 1EFE on Ana about the sleeper)
+#   ana.voice.grenade_heal             one-shot both 6 line files; BioticGrenade/Heal 05F3 (0B99 #232 waits 0.1 s
+#     after the heal, #230 raises 1EFF on Ana)
+#   ana.voice.grenade_damage           one-shot both 4 line files; BioticGrenade/Damage 05F4 (0C72 #231 waits 0.2 s
+#     after the damage, #229 raises 1F01 on Ana)
+#   ana.voice.ping_slept               one-shot both 3 line files; ping 'I slept a target!' 11EA (category 0031, the
+#     ping lines' category, M; no graph says it: a ping on a slept enemy, L)
+#   ana.voice.ultimate                 one-shot both 1 line files; Nano Boost cast 1836 (0B9E #451 -> shared 545C key
+#     F1AC, the key Lifeweaver's own 184F sits on: M a third listener group, read as her own)
+#   ana.voice.nano_cast                one-shot both 1 line files; Nano Boost cast 0678 (545C key 10011, said first
+#     (#9), one tick before the others; its lines speak to the boosted ally: L which listener group, read as the
+#     boosted ally's)
+#   ana.ult.friendly                   one-shot both 1 line files; Nano Boost line, allies and herself 05F6 ('Nano
+#     boost administered!'; 545C key F1AB, the key Mercy's 08CB, Lucio's 025B and Lifeweaver's 11FD friendly lines sit
+#     on, H)
+#   ana.ult.enemy                      one-shot both 1 line files; Nano Boost line, enemies 05F7 ('(Arabic) Unleash
+#     your inner strength!'; 545C key F1AA, the enemy key, H); 02EDDF kept: its only criterion is a type16 'gender 3'
+#     test (the gendered pair's neutral line, L: the hearer's or the boosted hero's gender; read as the default)
+#   kiriko.voice.nano_boosted          one-shot both 4 line files; the boosted kiriko's own line, 1.4 s into the boost
+#   lucio.voice.nano_boosted           one-shot both 8 line files; the boosted lucio's own line, 1.4 s into the boost
+#   jetpack_cat.voice.nano_boosted     one-shot both 3 line files; the boosted jetpack_cat's own line, 1.4 s into the boost
+#   mercy.voice.nano_boosted           one-shot both 3 line files; the boosted mercy's own line, 1.4 s into the boost
+#   lifeweaver.voice.nano_boosted      one-shot both 2 line files; the boosted lifeweaver's own line, 1.4 s into the boost
+# Voice.java stimuli for her own moments (Stimulus(priority, cooldownMin, cooldownMax, interrupts), key 'ana.<moment>'):
+#   java.util.Map.entry("ana.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2, 80 m, +3 dB
+#   java.util.Map.entry("ana.heal_dart", new Stimulus(50, 10, 10, false)), // 05F1, 35 m, +0 dB
+#   java.util.Map.entry("ana.reload", new Stimulus(60, 0, 0, false)), // 0E2C, 60 m, +0 dB
+#   java.util.Map.entry("ana.sleep", new Stimulus(60, 2, 2, false)), // 05F5, 35 m, +2 dB
+#   java.util.Map.entry("ana.grenade_heal", new Stimulus(70, 2, 2, false)), // 05F3, 35 m, +0 dB
+#   java.util.Map.entry("ana.grenade_damage", new Stimulus(60, 2, 2, false)), // 05F4, 35 m, +0 dB
+#   java.util.Map.entry("ana.ping_slept", new Stimulus(70, 3, 3, true)), // 11EA, 75 m, +3 dB
+#   java.util.Map.entry("ana.ultimate", new Stimulus(95, 1, 1, false)), // 1836, 80 m, +8 dB
+#   java.util.Map.entry("ana.nano_cast", new Stimulus(95, 1, 1, false)), // 0678, 80 m, +8 dB
+#   (ana.ult.friendly, played by HeroSounds.ultLine, not Voice: 05F6 prio 95, 80 m, +6 dB, cooldown 1 s)
+#   (ana.ult.enemy, played by HeroSounds.ultLine, not Voice: 05F7 prio 95, 80 m, +8 dB, cooldown 1 s)
+# The shared moments use the shared stimuli (the .078 are global) and Voice.java's shared table already holds their
+# numbers. 'nano_boosted' (05E2: prio 95, cooldown 2 s, interrupts) is new to every hero: like damage_boosted, it
+# belongs in OcSounds.init()'s every-hero list, keyed '<hero>.voice.nano_boosted' (the six events here).
+# 0E2C's own cooldown is 0 but 0B94 holds it behind a 15 s wait per team (#305 / #307); the nano cast says 0678 ->
+# 05F6 -> 1836 -> 05F7 one tick apart (545C #9 / #3 / #4 / #1): with ultLine playing 05F6 / 05F7, 'ultimate' (1836) and
+# 'nano_cast' (0678) would add a second line (they share 0678's text): pick one; a self-nano says none (0B9E #290, H).

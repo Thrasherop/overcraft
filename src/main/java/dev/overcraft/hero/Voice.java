@@ -105,7 +105,19 @@ public final class Voice {
 		java.util.Map.entry("lifeweaver.platform_used", new Stimulus(60, 10, 10, false)), // 13D5
 		java.util.Map.entry("lifeweaver.dash", new Stimulus(60, 20, 25, false)), // 1200
 		java.util.Map.entry("lifeweaver.grip", new Stimulus(60, 2, 2, false)), // 11FF
-		java.util.Map.entry("lifeweaver.tree_end", new Stimulus(50, 20, 20, true))); // 135B
+		java.util.Map.entry("lifeweaver.tree_end", new Stimulus(50, 20, 20, true)), // 135B
+		// what every hero says as an Ana's Nano Boost lands on them: global, interrupting (the same in every voice set)
+		java.util.Map.entry("nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		// Ana's own (tools/soundmaps/ana.txt): from her graphs
+		java.util.Map.entry("ana.heal_dart", new Stimulus(50, 10, 10, false)), // 05F1
+		// 0E2C's own cooldown is 0, but 0B94 holds it behind a 15 s wait (#305 / #307), as Lifeweaver's 176B
+		java.util.Map.entry("ana.reload", new Stimulus(60, 15, 15, false)), // 0E2C
+		java.util.Map.entry("ana.sleep", new Stimulus(60, 2, 2, false)), // 05F5
+		java.util.Map.entry("ana.grenade_heal", new Stimulus(70, 2, 2, false)), // 05F3
+		java.util.Map.entry("ana.grenade_damage", new Stimulus(60, 2, 2, false)), // 05F4
+		java.util.Map.entry("ana.ping_slept", new Stimulus(70, 3, 3, true)), // 11EA
+		java.util.Map.entry("ana.ultimate", new Stimulus(95, 1, 1, false)), // 1836
+		java.util.Map.entry("ana.nano_cast", new Stimulus(95, 1, 1, false))); // 0678
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

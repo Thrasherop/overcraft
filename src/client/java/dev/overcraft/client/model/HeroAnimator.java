@@ -113,6 +113,11 @@ public final class HeroAnimator {
 	 */
 	private boolean lifeweaver;
 	private boolean thorns;
+	/** Ana (her clip maps: ana.txt, ana_1p.txt), and Take Aim's scope up: her "_scoped" clips where she has them. */
+	private boolean ana;
+	private boolean scoped;
+	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
+	private float scopeIn;
 	private boolean bloomCharging;
 	private float bloomCharge;
 	private boolean thornFiring;
@@ -749,6 +754,8 @@ public final class HeroAnimator {
 				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
 			} else if (viewBase.equals("idle")) {
 				t = 0;
+			} else if (viewBase.equals("scope_in")) {
+				t = scopeIn * baseClip.duration();
 			} else {
 				t = time(baseClip, now, true);
 			}
@@ -761,8 +768,8 @@ public final class HeroAnimator {
 		// Lúcio's additive layers: the volley (one of its clips at random), Soundwave, Amp It Up's
 		String fire = fireVariant > 1 ? "add_fire_" + fireVariant : "add_fire";
 		if (clip(model, fire) == null) {
-			// Jetpack Cat's: one per paw, swapping each volley
-			fire = fireSide ? "add_fire_2" : "add_fire";
+			// Jetpack Cat's: one per paw, swapping each volley (one only, Ana's: that one each shot)
+			fire = fireSide && clip(model, "add_fire_2") != null ? "add_fire_2" : "add_fire";
 		}
 		additive(model, pose, fire, "fire", now);
 		additive(model, pose, "add_soundwave", "soundwave", now);
@@ -851,6 +858,24 @@ public final class HeroAnimator {
 				want = want + "_thorn";
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
+		}
+		if (ana) {
+			// her view model (ana_1p.txt): idle, one walk for every direction, the jump's rise and fall; scoped, the held
+			// scope pose (3B92: its arms out of view)
+			if (base.startsWith("jump")) {
+				want = "jump";
+			} else if (base.startsWith("fall")) {
+				want = "fall";
+			} else if (base.startsWith("run") || base.startsWith("strafe") || base.startsWith("crouch_walk")) {
+				want = "walk";
+			}
+			if (scopeIn >= 1) {
+				want = "idle_scoped";
+			} else if (scopeIn > 0) {
+				// raising or lowering: the raise clip at the scope's own place (3B84, timed by df 0x6D)
+				want = "scope_in";
+			}
+			return model.clips.containsKey(want) ? want : "idle";
 		}
 		if (mercy) {
 			// her view model (mercy_1p.txt): the third person's state, in the view's few clips
@@ -1004,7 +1029,9 @@ public final class HeroAnimator {
 		float climbBefore = previous != null && isClimb(previous) ? 1 : 0;
 		climbShift = CLIMB_SHIFT * (climbBefore + (climbNow - climbBefore) * fade);
 		// Overwatch's breathing layer under the stand (standing or crouched)
-		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") ? "add_breathe_crouch" : "add_breathe");
+		// crouched, its own breathing where there's one (Ana's data uses the standing one crouched too: 3C44)
+		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") && clip(model, "add_breathe_crouch") != null
+			? "add_breathe_crouch" : "add_breathe");
 		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
@@ -1136,6 +1163,11 @@ public final class HeroAnimator {
 		dev.overcraft.client.ClientMercy.State mercyState = dev.overcraft.client.ClientMercy.state(entity);
 		mercy = mercyState != null;
 		blaster = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_BLASTER);
+		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
+		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
+		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
+		scopeIn = ana && anaState != null ? anaState.scope() : 0;
 		dev.overcraft.client.ClientLifeweaver.State lw = dev.overcraft.client.ClientLifeweaver.state(entity);
 		lifeweaver = lw != null;
 		thorns = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_THORNS);
@@ -1315,6 +1347,14 @@ public final class HeroAnimator {
 			// Mercy's blaster out: every state has its own clip (her data's category 0x7D on df 0xE4)
 			next = next + "_blaster";
 		}
+		if (scoped) {
+			// Ana's Take Aim: her scoped stands, runs and crouches (df 0xE5 cat 0x81; the switch cross-fades); a scoped jump
+			// has no take-off of its own, its second clip instead (ana.txt)
+			String want = next.equals("jump") ? "jump_2" : next;
+			if (model.clips.containsKey(want + "_scoped")) {
+				next = want + "_scoped";
+			}
+		}
 		next = resolve(model, next);
 		if (!next.equals(base)) {
 			previous = base;
@@ -1332,9 +1372,10 @@ public final class HeroAnimator {
 		} else if (base.startsWith("crouch_walk")) {
 			// standing still crouched with no crouch idle clip: the crouch-walk's pose, held
 			rate = moving ? (float) Math.clamp(metresPerSecond / CROUCH_CLIP_SPEED, 0.5, 2) : 0;
-		} else if (base.equals("idle") || base.equals("crouch_idle")) {
+		} else if (base.equals("idle") || base.equals("crouch_idle") || base.equals("idle_scoped") || base.equals("crouch_idle_scoped")) {
 			// Overwatch doesn't play its stand clips on the clock: their frame follows a game parameter (turn-in-place
-			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md)
+			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md). Ana's scoped
+			// stands are the same sheets (3C5D / 3C9C): on the clock they turned her 120 degrees away (found playing)
 			rate = 0;
 		} else {
 			rate = 1;

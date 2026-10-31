@@ -208,6 +208,54 @@ public final class EffectArt {
 		ENEMY(0, 0, 0, 0, .25f, .25f, .05f, .05f, .5f, .5f, .1f, .1f, .85f, 1, .21f, .21f, 1, 1, .6f, .6f),
 		/** The mask as it is. */
 		WHITE(0, 0, 0, 0, 1, 1, 1, 1),
+		// Ana's (tools/reference/ana-effects.md "Palettes", generated from her colour rows)
+		/** Her rifle's muzzle bulb 963D (800F41F7 r5, HDR 2): gold to white. */
+		ANA_MUZZLE(0, 0, 0, 0, .25f, 1, .658f, 0, .5f, 1, 1, 0, .75f, 1, 1, .156f, 1, 1, 1, 1),
+		ANA_MUZZLE_N(0, 0, 0, 0, .25f, .579f, .329f, 0, .5f, .751f, .519f, 0, .75f, .874f, .715f, .078f, 1, 1, .89f, .659f),
+		/** The unscoped shot's trail: strip 9414 (sampled) x the gold tint (5, 3.99, 1.66), normalised. */
+		ANA_SHOT_TRAIL(0, 0, 0, 0, .25f, .956f, .487f, .077f, .5f, .973f, .631f, .098f, .75f, .956f, .695f, .115f, 1, .973f, .735f, .223f),
+		/** The scoped tracer (80008917 r4, HDR 2): gold to cream. */
+		ANA_TRACER(0, 0, 0, 0, .25f, 1, .767f, .037f, .5f, 1, 1, .217f, .75f, 1, 1, .643f, 1, 1, 1, 1),
+		ANA_TRACER_N(0, 0, 0, 0, .25f, .576f, .383f, .018f, .5f, .75f, .535f, .108f, .75f, .924f, .74f, .322f, 1, 1, .896f, .571f),
+		/** The ally hit's burst 4B64D (800AB80B r1, HDR 2.8), glow 4C09 and sparks (800342A1 r1): pale gold, amber. */
+		ANA_HEAL_BURST_N(0, 0, 0, 0, .25f, .549f, .405f, .15f, .5f, .694f, .567f, .214f, .75f, .846f, .739f, .283f, 1, 1, .913f, .352f),
+		ANA_HEAL_GLOW(0, 0, 0, 0, .25f, 1, .635f, .123f, .5f, 1, .736f, .198f, .75f, 1, .837f, .272f, 1, 1, .939f, .347f),
+		/** The enemy hit's lens discs (8009CD1E r4, HDR 10) and bubbles (800025BA r3): purple, violet. */
+		ANA_HARM_N(0, 0, 0, 0, .25f, .059f, .004f, .254f, .5f, .114f, .008f, .466f, .75f, .301f, .021f, .732f, 1, .497f, .036f, 1),
+		ANA_HARM_BUBBLE(0, 0, 0, 0, .25f, .211f, 0, .64f, .5f, .285f, 0, .825f, .75f, .363f, .004f, 1, 1, .552f, .117f, 1),
+		/** The shot's impact sparkle 64B91 (800C00E6 r4, HDR 7, falls) and the world decals (800E8A1D / 8007CA88 r2). */
+		ANA_IMPACT_N(0, 0, 0, 0, .25f, .296f, .048f, .446f, .5f, .094f, .001f, .428f, .75f, .027f, .006f, .079f, 1, .027f, .006f, .079f),
+		ANA_DECAL_GOLD_N(0, 0, 0, 0, .25f, 1, .65f, .233f, .5f, .985f, .644f, .23f, .75f, .562f, .368f, .137f, 1, .132f, .087f, .042f),
+		/** The grenade's trail (8006AB57 r4): black to violet to gold. */
+		ANA_GRENADE_TRAIL(0, 0, 0, 0, .25f, .363f, 0, .628f, .5f, .586f, .047f, .911f, .75f, .607f, .152f, .71f, 1, .913f, .723f, .059f),
+		/** The burst's gold dome (80079014 r5), violet-yellow shell (8000C715 r2), splashes (8009749B / 80029CEC r4). */
+		ANA_BURST_DOME(0, 0, 0, 0, .25f, .504f, .294f, 0, .5f, .759f, .504f, .091f, .75f, .878f, .666f, .227f, 1, 1, .831f, .366f),
+		ANA_BURST_SHELL(0, 0, 0, 0, .25f, .114f, .009f, .199f, .5f, .228f, .018f, .398f, .75f, .34f, .026f, .594f, 1, .982f, .783f, .019f),
+		ANA_SPLASH_N(0, 0, 0, 0, .25f, .268f, 0, .517f, .5f, .269f, 0, .519f, .75f, .269f, 0, .521f, 1, .702f, .275f, .984f),
+		ANA_SPLASH_GOLD_N(0, 0, 0, 0, .25f, .333f, .17f, 0, .5f, .333f, .17f, 0, .75f, .333f, .17f, 0, 1, .999f, .745f, .242f),
+		/** The burst's droplets (80085D4D r1, HDR 10 / 800280E0 r1), splat decal (80024EDE r1, HDR 10), glow (800F4D2E r0). */
+		ANA_DROP_GOLD_N(0, 0, 0, 0, .25f, .425f, .26f, 0, .5f, .708f, .457f, 0, .75f, .852f, .611f, 0, 1, 1, .768f, 0),
+		ANA_DROP_PURPLE(0, 0, 0, 0, .25f, .346f, 0, .614f, .5f, .417f, 0, .743f, .75f, .487f, 0, .871f, 1, .558f, 0, 1),
+		ANA_BURST_DECAL(0, 0, 0, 0, .25f, .609f, .053f, .906f, .5f, .793f, .328f, .465f, .75f, .956f, .584f, .091f, 1, 1, 1, 1),
+		ANA_BURST_GLOW(0, 0, 0, 0, .25f, .577f, 0, 1, .5f, .693f, .4f, .708f, .75f, .845f, .786f, .34f, 1, 1, .847f, .006f),
+		/** The heal boost's plus (80091108 r4) and the anti-heal's broken plus (800533DC r1, falls). */
+		ANA_BOOST_PLUS(0, 0, 0, 0, .25f, 1, .845f, .341f, .5f, 1, .887f, .396f, .75f, 1, .928f, .45f, 1, 1, 1, 1),
+		ANA_ANTIHEAL(0, 0, 0, 0, .25f, .434f, .035f, .821f, .5f, .423f, .071f, .737f, .75f, .413f, .106f, .655f, 1, .402f, .141f, .571f),
+		/** The sleep dart's glow (80034914 r1, HDR 10), the Zs over life (80053871 r3, 12BB, HDR 1.3), the sleep sparks over life (800277D9 r0, HDR 5.7, falls). */
+		ANA_SLEEP_GLOW_N(0, 0, 0, 0, .25f, .006f, .045f, .202f, .5f, .01f, .068f, .304f, .75f, .02f, .139f, .621f, 1, .032f, .223f, 1),
+		ANA_SLEEP_Z(0, 0, 0, 0, .25f, .325f, .233f, .32f, .5f, .651f, .466f, .64f, .75f, .971f, .695f, .955f, 1, 1, .928f, 1),
+		ANA_SLEEP_SPARK(0, 0, 0, 0, .25f, 1, 1, .38f, .5f, 1, .783f, .293f, .75f, 1, .447f, .148f, 1, 1, 0, 0),
+		/** Local Anesthetic's dome (8008512C r0), gas (800861DA r7), drops (8005EE9F r3), the numbed wisps (800747DE r1, HDR 2). */
+		ANA_LA_DOME(0, 0, 0, 0, .25f, .051f, .024f, .552f, .5f, .172f, .359f, .856f, .75f, .174f, .693f, .994f, 1, .019f, .982f, .982f),
+		ANA_LA_GAS(0, 0, 0, 0, .25f, .068f, .182f, .643f, .5f, .13f, .371f, .879f, .75f, .36f, .677f, 1, 1, .637f, .921f, 1),
+		ANA_LA_DROP(0, 0, 0, 0, .25f, .03f, .167f, .347f, .5f, .094f, .437f, .763f, .75f, .172f, .672f, .934f, 1, .242f, .863f, 1),
+		ANA_LA_WISP_N(0, 0, 0, 0, .25f, .038f, .46f, .703f, .5f, .001f, .118f, .929f, .75f, .002f, .076f, .555f, 1, .042f, .063f, .135f),
+		/** Nano Boost: the ally's shells (8000CCD7 r4, Mercy's boost blue), flames (80007283 r5, HDR 6), sparks (800DAD00 r1), the beam (80049B54 r2, HDR 3), the launch puffs over life (800AE47A r0). */
+		ANA_NANO_BLUE(0, 0, 0, 0, .25f, .026f, .156f, 1, .5f, .046f, .293f, 1, .75f, .187f, .44f, 1, 1, .342f, .59f, 1),
+		ANA_NANO_FLAME_N(0, 0, 0, 0, .25f, .005f, .031f, .191f, .5f, .013f, .085f, .281f, .75f, .087f, .2f, .447f, 1, .342f, .591f, 1),
+		ANA_NANO_BEAM(0, 0, 0, 0, .25f, .116f, .186f, 1, .5f, .266f, .427f, 1, .75f, .513f, .821f, 1, 1, 1, 1, 1),
+		ANA_NANO_BEAM_N(0, 0, 0, 0, .25f, .039f, .062f, .348f, .5f, .089f, .142f, .399f, .75f, .171f, .274f, .515f, 1, .443f, .71f, 1),
+		ANA_NANO_MUZZLE(0, 0, 0, 0, .25f, .537f, .181f, 0, .5f, .733f, .362f, 0, .75f, .893f, .601f, 0, 1, 1, .941f, 0),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 

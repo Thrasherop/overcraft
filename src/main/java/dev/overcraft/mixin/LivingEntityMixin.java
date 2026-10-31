@@ -82,13 +82,14 @@ public abstract class LivingEntityMixin {
 	}
 
 	/**
-	 * A Mercy's damage boost (dev.overcraft.mercy.Boosts): what a boosted attacker deals arrives raised, from any
-	 * weapon, a pet's bite or an arrow they shot (the source's entity is the shooter), before armour and the rest.
+	 * A Mercy's damage boost and Ana's Nano Boost (dev.overcraft.mercy.Boosts): what a boosted attacker deals arrives
+	 * raised, from any weapon, a pet's bite or an arrow they shot (the source's entity is the shooter), before armour and
+	 * the rest; a Nano-boosted victim takes half (dev.overcraft.ana.Nano), before shields take it.
 	 */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "hurtServer", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
-		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage);
+		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this);
 	}
 
 	/**

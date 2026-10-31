@@ -258,7 +258,58 @@ public final class EmoteProps {
 		if (bone < 0) {
 			return null;
 		}
-		return Skeleton.world(heroModel, pose, bone).translate(hp.t()).rotate(hp.q());
+		return Skeleton.world(heroModel, atRestUndriven(heroModel, pose, bone, animator.emoteClip()), bone).translate(hp.t()).rotate(hp.q());
+	}
+
+	/**
+	 * The pose with the links of a carrying bone's chain back at rest where the emote's clip doesn't drive them: from the
+	 * bone up to the first bone above it the clip drives (her hand, her pelvis). Her body keeps the pose under the emote
+	 * where the clip is silent (HeroAnimator.poseEmote: Kiriko's kunai), but what a prop or weapon hangs from is keyed
+	 * relative to these links, as at rest in the data:
+	 * - Ana's teabag (000B, bone_002E under bone_002D under Weapon_L) kept her rifle grip's place from her idle, 0.2 m off
+	 *   her hand and floating; at rest it hangs from her fingers into the cup (found playing Tea Time);
+	 * - her rifle's carrier bone_0606 (keyed) under bone_0605 (not) under her pelvis: in Listen Up and Salty bone_0605 kept
+	 *   her idle's pose and the rifle floated 0.35 m off her hand (the owner); at rest the carrier is in her hand every
+	 *   frame, to the millimetre (tools/emote_bones.py);
+	 * - her mic in Mic Drop (000B again): on her left hand, to the millimetre, for the 0.93 s she holds it (her idle had it
+	 *   0.13 m off), as Mercy's data pass found it (research\mercy\emote_weapons.md: "on 000B (Weapon_L)").
+	 * Not for a bone that is the hand itself (Weapon_R / Weapon_L: Lúcio's amplifier, Mercy's staff, Kiriko's tea): the
+	 * hand's chain is the clip's to pose, and those were checked in play as they are.
+	 */
+	private static final Set<String> HANDS = Set.of("Weapon_R", "Weapon_L");
+
+	static Skeleton.Pose atRestUndriven(SkinnedModel model, Skeleton.Pose pose, int bone, @Nullable String clipName) {
+		SkinnedModel.Clip clip = clipName == null ? null : model.clips.get(clipName);
+		if (clip == null || HANDS.contains(model.nodeNames[bone])) {
+			return pose;
+		}
+		java.util.Set<Integer> driven = new java.util.HashSet<>();
+		// (the channels it really drives: the export writes every bone at rest into every clip)
+		for (SkinnedModel.Channel ch : HeroAnimator.driven(model, clip).channels()) {
+			driven.add(ch.node());
+		}
+		Skeleton.Pose out = null;
+		for (int node = bone; node >= 0; node = model.parent[node]) {
+			if (driven.contains(node)) {
+				if (node == bone) {
+					// the carrying bone itself is keyed: its own links above it still count
+					continue;
+				}
+				break;
+			}
+			if (out == null) {
+				out = new Skeleton.Pose(model.nodeNames.length);
+				for (int i = 0; i < model.nodeNames.length; i++) {
+					out.t[i].set(pose.t[i]);
+					out.r[i].set(pose.r[i]);
+					out.s[i].set(pose.s[i]);
+				}
+			}
+			out.t[node].set(model.restT[node]);
+			out.r[node].set(model.restR[node]);
+			out.s[node].set(model.restS[node]);
+		}
+		return out == null ? pose : out;
 	}
 
 	/** Draws the props, the pose stack in her model's space (as her own mesh is drawn). */
