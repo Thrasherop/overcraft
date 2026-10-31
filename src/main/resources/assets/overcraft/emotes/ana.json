@@ -46,8 +46,14 @@
        "audience": "others"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       3.4667
+      ]
+     ],
      "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
      "skeleton": "hers"
     },
     "emote_listen_up_2": {
@@ -197,8 +203,14 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       2.3667
+      ]
+     ],
      "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
      "skeleton": "hers"
     },
     "emote_salty_2": {

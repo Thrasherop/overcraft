@@ -48,7 +48,19 @@ What Ana's 16 emotes taught (2026-10-31). Up: [Techniques](../README.md) · the 
 - `emote_data.py` marks clips found only in tree 05C6 items `"preview"`; `EmotePlan` leaves them out. Kiriko's, Lúcio's
   and Jetpack Cat's emote data predate the mark (regenerate to apply it).
 
+## Listen Up and Salty put the weapon away for the whole emote (tree 058F)
+- Decoded 2026-10-31 (`E:\Overwatch Archiveesearch\emote-trees	ree_058F.md`): the tree's parameter indices count
+  from 1, so 178AD (clip #3, 0 bones, 0.3 s) is not in the Sequence Mercy's note put it in: it plays as its own Animation
+  node on the top state machine's additive layer, with no weight, driver or condition (H).
+- 178AD is Mic Drop's put-away block (the same 38 slot identifiers with action 1) moved into a clip of its own; Mic Drop
+  uses the same tree with clip #3 empty because its main clip carries the block over its whole length. Lúcio's 185DE is
+  the same pairing for his 12CC (H). Mercy's hands in Listen Up and Salty never come near her staff's grip (12-41 cm).
+- So the window covers the whole emote. **M:** whether node 58 holds past 178AD's 0.3 s isn't read (its time
+  controller has no loop flag). `emote_data.py` (`CARRIER_TREE`) gives the main clip a stow window over its whole length,
+  marked `"stowBy"` with the M.
+- Seen: Ana's rifle away through Listen Up and Salty, back in her hands after.
+
 ## Open
-- Listen Up and Salty's 178AD (every hero's weapon slots put away for its 0.3 s, inside tree 058F): when it plays
-  ([mercy_emotes](mercy_emotes.md#open)).
+- Mercy's and Lúcio's emote data predate this rule (regenerate them to put their weapons away in these two emotes);
+  Kiriko's and Lifeweaver's weapon slots aren't in 178AD at all (research note, "Per hero").
 - Nothing listened to in her emote sounds' builds (the map: `tools/soundmaps/emotes.txt`, Ana's section).

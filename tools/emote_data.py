@@ -148,6 +148,8 @@ STOWS = {"lucio": True, "mercy": True, "ana": True}
 # Protector 3D0F on the saucer
 # the blend tree of a hero's gallery preview idle, which an emote set used as the preview set also holds (Ana's Heroic)
 PREVIEW_TREE = "5C6"
+# the shared emotes' tree (Listen Up, Salty, Mic Drop) whose clip #3 puts the hero's weapon away over the whole emote
+CARRIER_TREE = "58F"
 
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
@@ -318,6 +320,7 @@ def main():
     # each emote's GeoSetFlags timelines, by clip id: unlock (by name) -> blend tree set -> pose data
     geosets = {}
     previews = {}
+    carriers = {}
     unlocks = json.loads(UNLOCKS.read_text(encoding="utf8"))
     emote_unlocks = []
 
@@ -355,6 +358,19 @@ def main():
                     if c:
                         in_tree.setdefault(c.split(".")[0].lstrip("0").upper(), set()).add(tree)
             previews[slug(u["Name"])] = {c for c, trees in in_tree.items() if trees == {PREVIEW_TREE}}
+            # the shared emotes' tree 058F: its clip #3 (Listen Up and Salty: 178AD, Lucio's 185DE, 0 bones) plays on a layer
+            # over the whole emote with no weight, driver or condition, and carries the weapon put-away block Mic Drop's
+            # own clip has over its whole length: its windows cover the emote's main clip whole (M: whether that layer holds
+            # past the clip's 0.3 s isn't read; research\emote-trees	ree_058F.md)
+            root_set = tree_set[0] if isinstance(tree_set, list) else tree_set
+            items = root_set.get("m_blendTreeItems") or []
+            layer = [item for item in items if (item.get("m_C0214513") or "").split(".")[0].lstrip("0").upper() == CARRIER_TREE]
+            if layer:
+                listed = (layer[0].get("m_F6E6D4B1") or {}).get("m_5AD927D3") or []
+                carrier = listed[2].split(".")[0].lstrip("0").upper() if len(listed) > 2 and listed[2] else None
+                mains = [((item.get("m_F6E6D4B1") or {}).get("m_5AD927D3") or [None])[0] for item in items if item not in layer]
+                if carrier:
+                    carriers[slug(u["Name"])] = (carrier, {m.split(".")[0].lstrip("0").upper() for m in mains if m})
 
     # which geoset bit each stowed piece of our .glb is (see above)
     piece_geosets = {}
@@ -516,6 +532,16 @@ def main():
                 bones = clip_bones(clip)
                 target = max(reversed(same), key=lambda x: len(bones & skeleton_ids(x["model"])) if x["model"] else -1)
                 target["clip"], target["clipStart"], target["clipBy"] = clip, start, "control"
+        if name in carriers:
+            carrier, mains = carriers[name]
+            held = next((c for c in clips.values() if c["id"] == carrier), None)
+            for c in clips.values():
+                if held is not None and c["id"] in mains:
+                    for key, _, _ in slots.values():
+                        if held.get(key):
+                            # the layer's put-away over the whole main clip (see CARRIER_TREE)
+                            c[key] = [[0.0, c["duration"]]]
+                            c["stowBy"] = f"{carrier} on tree {CARRIER_TREE}'s layer (M)"
         for c in clips.values():
             if c["id"] in previews.get(name, set()):
                 c["preview"] = True
