@@ -49,7 +49,7 @@ What Ana's 16 emotes taught (2026-10-31). Up: [Techniques](../README.md) · the 
   and Jetpack Cat's emote data predate the mark (regenerate to apply it).
 
 ## Listen Up and Salty put the weapon away for the whole emote (tree 058F)
-- Decoded 2026-10-31 (`E:\Overwatch Archiveesearch\emote-trees	ree_058F.md`): the tree's parameter indices count
+- Decoded 2026-10-31 (`E:\Overwatch Archive\research\emote-trees\tree_058F.md`): the tree's parameter indices count
   from 1, so 178AD (clip #3, 0 bones, 0.3 s) is not in the Sequence Mercy's note put it in: it plays as its own Animation
   node on the top state machine's additive layer, with no weight, driver or condition (H).
 - 178AD is Mic Drop's put-away block (the same 38 slot identifiers with action 1) moved into a clip of its own; Mic Drop
