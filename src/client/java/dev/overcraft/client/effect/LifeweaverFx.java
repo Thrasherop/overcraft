@@ -43,6 +43,12 @@ public final class LifeweaverFx {
 	 * cross ribbons (07F5: the blossom's trail, the vine) keep their wisps, as in the data.
 	 */
 	private static final String TUBE = "mercy_band";
+	/**
+	 * Life Grip's bud (41E9: mesh 11D57 at size 1, its 5FD scale input never set by his grip graph 21EE): the mesh's widest
+	 * side (1.96 m, from its bounds) and its centre's height above the ally's root (the effect's offset track, 1.005 m).
+	 * Before 2026-10-31 it was about 1 m wide and stood on their feet (the owner: "too small and centers on the feet").
+	 */
+	private static final float BUD_WIDTH = 1.96f, BUD_CENTRE = 1.005f;
 
 	/** A vine: Life Grip's, from the point in front of him to the ally (3110 on 21EE#316), since when. */
 	private record Vine(int ally, Vec3 to, float start, boolean drawn) {
@@ -58,6 +64,15 @@ public final class LifeweaverFx {
 	private static final List<Later> LATER = new ArrayList<>();
 
 	private LifeweaverFx() {
+	}
+
+	/** An Fx mesh's height per metre of width (Fx.mesh: one metre wide, standing on y = 0). */
+	private static float meshHeight(float[] mesh) {
+		float top = 0;
+		for (int i = 1; i < mesh.length; i += 5) {
+			top = Math.max(top, mesh[i]);
+		}
+		return top;
 	}
 
 	private static float range(float a, float b) {
@@ -431,13 +446,22 @@ public final class LifeweaverFx {
 			Vec3 chest = ally.position().add(0, ally.getBbHeight() * 0.6, 0);
 			if (!ownFirstPerson(ally)) {
 				float[] bud = Fx.mesh("lw_bud");
+				// turned 180° about up from the ally's facing (41E9's rotation track: 0, pi, 0)
+				Vec3 facing = Vec3.directionFromRotation(0, living.yBodyRot);
+				Vec3 side = new Vec3(facing.z, 0, -facing.x);
 				Particle shell = Fx.attach("lw_bud/" + v.ally, ally.position(), () -> {
 					Particle b = Fx.particle(bud != null ? "lw_glow" : "lw_ring", Palette.LW_VINE_COIL_N);
-					return b == null ? null : (bud != null ? b.mesh(bud, new Vec3(1, 0, 0)) : b).life(0.3f).alpha(0.3f).fade(0.1f, 0.5f);
+					return b == null ? null : (bud != null ? b.mesh(bud, side) : b).life(0.3f).alpha(0.3f).fade(0.1f, 0.5f);
 				});
 				if (shell != null) {
-					float s = ally.getBbHeight() / 1.96f * 1.05f;
-					shell.size(s, s).at(ally.position());
+					if (bud != null) {
+						// 41E9: the mesh at its own size, centred 1.005 m above the ally's root, so it closes round the whole body
+						float tall = meshHeight(bud) * BUD_WIDTH;
+						shell.size(BUD_WIDTH, BUD_WIDTH).at(ally.position().add(0, BUD_CENTRE - tall / 2, 0));
+					} else {
+						float s = ally.getBbHeight() * 1.05f;
+						shell.size(s, s).at(ally.position().add(0, ally.getBbHeight() * 0.5, 0));
+					}
 				}
 			}
 			petals(chest, 2, 3, 5, 0.06f, 0.17f, 0.5f);
