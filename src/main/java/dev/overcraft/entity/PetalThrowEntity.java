@@ -111,11 +111,15 @@ public class PetalThrowEntity extends OwProjectile {
 		discard();
 	}
 
-	/** The platform opens where it landed, if there's room 2 m above (D 2219); else it's gone, the cooldown almost over. */
+	/**
+	 * The platform opens where it landed if a cast 2 m straight up from there is clear (D 2219: "casts 2 m up"); else it's
+	 * gone, the cooldown almost over. The cast is as thin as the throw (0.15 m, 2A3D; the cast's own shape isn't read: ours).
+	 * A box as wide as the platform (1.9 m) was blocked by any block within a metre of where it landed, so thrown down by
+	 * a step or a wall it never opened (the owner, 0.3.24).
+	 */
 	private void deploy(ServerLevel level, ServerPlayer owner, Vec3 at) {
-		double r = LifeweaverStats.PLATFORM_RADIUS;
-		AABB room = new AABB(at.x - r * 0.5, at.y + 0.05, at.z - r * 0.5, at.x + r * 0.5, at.y + LifeweaverStats.PLATFORM_CLEARANCE,
-			at.z + r * 0.5);
+		double r = LifeweaverStats.PLATFORM_THROW_RADIUS;
+		AABB room = new AABB(at.x - r, at.y + 0.05, at.z - r, at.x + r, at.y + LifeweaverStats.PLATFORM_CLEARANCE, at.z + r);
 		if (!level.noCollision(room)) {
 			Effects.play(level, "lifeweaver_platform_blocked", at, owner);
 			Lifeweaver.blocked(owner);
