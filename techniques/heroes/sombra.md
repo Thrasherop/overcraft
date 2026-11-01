@@ -153,4 +153,19 @@ Played (dev client and a second client on LAN, flat world `fx1`; Sombra on red, 
 - Stealth as the enemy Ana sees it: hidden at 8 m (three frames over 2.4 s), see-through within 4 m (3 m and 3.3 m).
 - Hotfix on the allied Ana at 8 m: 10 -> 17.5 at once, 19.9 a second later, then 20.
 
+## Her sounds wired (step 8, 2026-11-01)
+- The map is `tools/soundmaps/sombra.txt` ([sounds](../sound/sounds.md#sombra-sounds)); `SombraSounds` plays her events
+  (registered from `OcSounds.SOMBRA_SOUNDS` / `SOMBRA_VOICE`), and `Voice` has her stimuli.
+- **Her pistol's fire is a stream** (5DCC re-triggers 20 times a second until a Stop): one shot's worth per shot,
+  the 2.5-3 s tail (`pistol.fire_end`) once when the burst ends (`HeroState.sombraFiring`, 2 ticks without a shot), else
+  60 tails would pile up (M: the map's reading).
+- Loops are stopped when their state ends (stealth's on its end; the zone's at 3 s; Hotfix's channel on a cancel).
+
+Played (dev client, fresh world `snd1`; then a second client as an enemy Ana; the harness's `heard`): her side heard
+pistol fire / shot / hit / fire_end; reload; Hotfix cast, channel, end, heal and her "hotfix" line; Cyberspace cast,
+shot, zone and zone end; EMP cast, pulse, "EMP activated!", the hit and the zombie's hacked sound; the throw, depart,
+arrive, stealth start / loop / end and her "translocate" and "uncloak" lines; a Hotfix charge back. The enemy Ana heard
+the `_3p` copies, the Spanish ult line and `hacked` in her own head, and not the stealth loop. Not built in the data:
+`voice.resurrected` (her set has none).
+
 - Emotes: [sombra_emotes](../emotes/sombra_emotes.md).

@@ -72,6 +72,11 @@ public final class Sombra implements HeroKit {
 		}
 		Stealth.tick(player, s);
 		Conspirator.tick(player, s);
+		if (s.sombraFiring && player.level().getGameTime() - s.lastShotAt > 2) {
+			// the burst over (released, empty, an ability): the stream's tail once
+			s.sombraFiring = false;
+			SombraSounds.split(player, "pistol.fire_end", player.getEyePosition(), 200);
+		}
 		// an ability's landing never hurts (the owner's rule, #35): the teleport's fall doesn't count until she's down
 		if (s.softLanding) {
 			player.resetFallDistance();
@@ -132,6 +137,9 @@ public final class Sombra implements HeroKit {
 		s.empCast = 0;
 		Combat.animate(player, "ult_cast");
 		Effects.play(player.level(), "sombra_emp_cast", player.position(), Vec3.ZERO, player, 0, player);
+		// her cast, and her lines: "EMP activated!" to her side, the Spanish one to her enemies (069A, 0699)
+		SombraSounds.own(player, "emp.cast");
+		dev.overcraft.hero.HeroSounds.ultLine(player, SombraSounds.of("ult.friendly"), SombraSounds.of("ult.enemy"), 5);
 		Stealth.end(player, s);
 	}
 
@@ -159,6 +167,10 @@ public final class Sombra implements HeroKit {
 		DamageSource source = Cyberspace.zoneSource(player);
 		boolean lifeHack = HeroManager.hasPerk(player, Perk.SOMBRA_LIFE_HACK);
 		Effects.play(level, "sombra_emp", player.position(), Vec3.ZERO, player, 0, player);
+		SombraSounds.split(player, "emp.pulse", player.getEyePosition(), 75);
+		if (lifeHack) {
+			SombraSounds.split(player, "perk.life_hack", player.getEyePosition(), 45);
+		}
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, reach, e -> e.isAlive() && e != player)) {
 			if (nearest(e, eye).distanceTo(eye) > EMP_RADIUS || !inSight(player, e)) {
 				continue;
@@ -169,6 +181,7 @@ public final class Sombra implements HeroKit {
 				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 				Effects.hitMarker(player, e, false);
 				Hack.creature(e, HACK_SILENCE, player);
+				SombraSounds.at(level, "emp.hit", e.getEyePosition(), 45);
 				if (e instanceof ServerPlayer enemy && HeroManager.state(enemy) instanceof HeroState es && es.hero == dev.overcraft.hero.Hero.SOMBRA) {
 					// a hacked Sombra's stealth ends too (0B1F's interrupt, M)
 					Stealth.end(enemy, es);
@@ -245,6 +258,7 @@ public final class Sombra implements HeroKit {
 		s.castTicks = 0;
 		s.ability1Cooldown = Ow.ticks(CYBER_COOLDOWN + CYBER_CAST);
 		Combat.animate(player, "throw_cyberspace");
+		SombraSounds.split(player, "cyberspace.cast", player.getEyePosition(), 70);
 		Stealth.end(player, s);
 	}
 
@@ -256,6 +270,7 @@ public final class Sombra implements HeroKit {
 			ServerLevel level = player.level();
 			Vec3 from = fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD);
 			Effects.play(level, "sombra_cyber_launch", from, Vec3.ZERO, player, 0, player);
+			SombraSounds.at(level, "cyberspace.shot", from, 45);
 			dev.overcraft.entity.CyberspaceEntity shot = new dev.overcraft.entity.CyberspaceEntity(player, level);
 			shot.launch(from, aimPoint(player).subtract(from), Ow.speed(CYBER_SPEED));
 			level.addFreshEntity(shot);
@@ -296,6 +311,7 @@ public final class Sombra implements HeroKit {
 		level.addFreshEntity(thrown);
 		s.beaconId = thrown.getId();
 		Combat.animate(player, "throw");
+		SombraSounds.split(player, "translocator.throw", player.getEyePosition(), 35);
 	}
 
 	/** Her left wrist (hp 0002), from her eyes in her look's frame: ours until measured on her model (Ana's numbers). */
@@ -331,9 +347,16 @@ public final class Sombra implements HeroKit {
 		}
 		// where she left and where she lands (1A76, 5FE0), then stealth's fade starting on her (1AD9)
 		Effects.play(level, "sombra_teleport", player.position(), Vec3.ZERO, player, 0, player);
+		SombraSounds.own(player, "translocator.depart");
+		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.depart_3p"), player.position(), 45, player);
+		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.dest_3p"), to, 45, player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
 		Effects.play(level, "sombra_stealth", to, Vec3.ZERO, player, 0, player);
+		SombraSounds.at(level, "translocator.arrive", to, 45);
+		SombraSounds.split(player, "stealth.start", to, 30);
+		SombraSounds.own(player, "stealth.loop");
+		dev.overcraft.hero.Voice.say(player, "translocate", 1);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
 		s.softLanding = true;
@@ -373,6 +396,7 @@ public final class Sombra implements HeroKit {
 		s.hotfixRecharge -= Combat.cooldownRate(player);
 		if (s.hotfixRecharge <= 0) {
 			s.hotfixCharges++;
+			SombraSounds.own(player, "hotfix.recharge");
 			s.hotfixRecharge = s.hotfixCharges < HOTFIX_CHARGES ? Ow.ticks(HOTFIX_RECHARGE) : -1;
 		}
 	}
@@ -410,21 +434,29 @@ public final class Sombra implements HeroKit {
 			if (!s.secondaryHeld || target == null || !target.isAlive() || target.distanceTo(player) > HOTFIX_RANGE + 1) {
 				s.hotfixChannel = -1;
 				s.hotfixTarget = null;
+				SombraSounds.stop(player.level(), "hotfix.channel", "hotfix.channel_3p", "hack.channel", "hack.channel_3p");
 				return;
 			}
 			if (++s.hotfixChannel >= Ow.ticks(HOTFIX_CAST)) {
 				s.hotfixChannel = -1;
 				s.hotfixTarget = null;
 				s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(HOTFIX_RECOVERY));
+				SombraSounds.split(player, "hotfix.end", player.getEyePosition(), 70);
 				if (target instanceof LivingEntity ally) {
 					s.hotfixCharges--;
 					HotfixHeal.start(player, ally);
+					dev.overcraft.hero.Voice.say(player, "hotfix", 1);
 				} else {
+					dev.overcraft.hero.Voice.say(player, "hack", 1);
 					// hacking an enemy deployable: no charge spent, then 6 s before she can hack again (614C)
 					Hack.deployable(target, player);
 					s.hackLockoutUntil = player.level().getGameTime() + Ow.ticks(HOTFIX_HACK_LOCKOUT);
 					if (HeroManager.hasPerk(player, Perk.SOMBRA_DATA_PACKET)) {
+						int had = s.hotfixCharges;
 						dataPacket(s);
+						if (s.hotfixCharges > had) {
+							SombraSounds.own(player, "hotfix.data_packet");
+						}
 					}
 				}
 			}
@@ -443,6 +475,10 @@ public final class Sombra implements HeroKit {
 		}
 		s.hotfixTarget = target.getId();
 		s.hotfixChannel = 0;
+		boolean hack = !(target instanceof LivingEntity);
+		SombraSounds.split(player, "hotfix.cast", player.getEyePosition(), 70);
+		SombraSounds.own(player, hack ? "hack.channel" : "hotfix.channel");
+		SombraSounds.at(player.level(), hack ? "hack.channel_3p" : "hotfix.channel_3p", player.getEyePosition(), 50);
 		// its strands from her left forearm to them over the channel (7C6E.. to an ally, 1AC7.. to a hacked object)
 		Effects.play(player.level(), "sombra_strands", player.position(), Vec3.ZERO, target,
 			player.getId() * 2 + (target instanceof LivingEntity ? 0 : 1), player);
@@ -463,6 +499,9 @@ public final class Sombra implements HeroKit {
 		// a shot ends stealth (420C)
 		Stealth.end(player, s);
 		s.lastShotAt = now;
+		// each shot one shot's worth of the stream (5DCC); its tail once the burst ends (tick: fire_end)
+		SombraSounds.split(player, "pistol.fire", player.getEyePosition(), 200);
+		s.sombraFiring = true;
 		double spread = PISTOL_SPREAD_MAX * Math.min(1, s.burstShots / PISTOL_SPREAD_SHOTS);
 		s.burstShots++;
 		Combat.animate(player, "fire");
@@ -499,11 +538,14 @@ public final class Sombra implements HeroKit {
 		Vec3 muzzle = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Vec3 stop = best != null ? bestAt : block;
 		Effects.play(level, "sombra_fire", muzzle, player.getViewVector(1.0f), player, 0, player);
+		SombraSounds.at(level, "pistol.shot", muzzle, 60);
 		Effects.play(level, "sombra_tracer", muzzle, stop.subtract(muzzle), player, 0, player);
 		if (best != null) {
 			Effects.play(level, "sombra_hit", bestAt, Vec3.ZERO, best, 0, player);
+			SombraSounds.own(player, "pistol.hit");
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
 			Effects.play(level, "sombra_hit_block", block, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null, 0, player);
+			SombraSounds.at(level, "pistol.hit_block", block, 32);
 		}
 		if (best == null) {
 			return;
@@ -555,6 +597,8 @@ public final class Sombra implements HeroKit {
 		}
 		s.primaryReload = 0;
 		Combat.animate(player, "reload");
+		// the reload's sounds are spread over its 1.2 s in the file (sombra.txt)
+		SombraSounds.split(player, "reload", player.position(), 45);
 	}
 
 	private static void reload(HeroState s, double attack) {

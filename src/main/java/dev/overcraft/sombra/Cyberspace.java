@@ -33,6 +33,8 @@ public final class Cyberspace {
 	}
 
 	private static final List<Zone> ZONES = new ArrayList<>();
+	/** Its closing sound 2.2 s in, 0.8 s before the end (sombra.txt, cyberspace.zone.end: M). */
+	private static final double ZONE_END_SOUND_AT = 2.2;
 	/** Who is weakened until when (game time). */
 	private static final Map<UUID, Long> WEAKENED = new HashMap<>();
 
@@ -44,6 +46,7 @@ public final class Cyberspace {
 		Zone zone = new Zone(level, sombra, at, now, now + Ow.ticks(ZONE_TIME));
 		ZONES.add(zone);
 		Effects.play(level, "sombra_cyberspace", at, Vec3.ZERO, null, Ow.ticks(ZONE_TIME), sombra);
+		SombraSounds.at(level, "cyberspace.zone", at, 60);
 		apply(zone, ZONE_DAMAGE_NOW, ZONE_HEAL_NOW);
 	}
 
@@ -95,7 +98,11 @@ public final class Cyberspace {
 
 	public static void tick(MinecraftServer server) {
 		ZONES.removeIf(z -> {
+			if (z.level.getGameTime() - z.opened == Ow.ticks(ZONE_END_SOUND_AT)) {
+				SombraSounds.at(z.level, "cyberspace.zone.end", z.at, 60);
+			}
 			if (z.level.getGameTime() >= z.until || z.sombra.isRemoved()) {
+				SombraSounds.stop(z.level, "cyberspace.zone");
 				return true;
 			}
 			apply(z, ZONE_DAMAGE_RATE / 20, ZONE_HEAL_RATE / 20);

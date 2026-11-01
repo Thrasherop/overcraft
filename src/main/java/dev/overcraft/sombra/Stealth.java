@@ -86,6 +86,13 @@ public final class Stealth {
 			// a mob still on her (a melee goal keeps its target without looking again) loses her, every half second
 			dropTargets(player);
 		}
+		if (s.sombraStealthed && !on) {
+			// it ended (its time, or broken): her loop off, its end heard, her line as she fades back in (06E7)
+			SombraSounds.stop(player.level(), "stealth.loop");
+			SombraSounds.split(player, "stealth.end", player.position(), 30);
+			dev.overcraft.hero.Voice.say(player, "uncloak", 1);
+		}
+		s.sombraStealthed = on;
 		boolean potion = player.hasEffect(net.minecraft.world.effect.MobEffects.INVISIBILITY);
 		if (player.isInvisible() != (hidden || potion)) {
 			player.setInvisible(hidden || potion);

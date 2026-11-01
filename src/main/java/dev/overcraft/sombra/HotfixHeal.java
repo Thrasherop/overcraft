@@ -28,6 +28,14 @@ public final class HotfixHeal {
 		double[] healed = {0};
 		HEALS.add(new Heal(sombra, ally, ally.level().getGameTime() + Ow.ticks(HOTFIX_HEAL_TIME), healed));
 		give(sombra, ally, healed, HOTFIX_HEAL_NOW);
+		// it lands: heard by her and by the ally in their heads, and by everyone else at the ally
+		SombraSounds.own(sombra, "hotfix.heal");
+		ServerPlayer allyPlayer = ally instanceof ServerPlayer p && p != sombra ? p : sombra;
+		if (allyPlayer != sombra) {
+			SombraSounds.own(allyPlayer, "hotfix.heal");
+		}
+		dev.overcraft.hero.HeroSounds.at((net.minecraft.server.level.ServerLevel) ally.level(), SombraSounds.of("hotfix.heal_3p"),
+			ally.position(), 45, sombra, allyPlayer);
 		// its look on them while it heals (6570)
 		dev.overcraft.hero.Effects.play((net.minecraft.server.level.ServerLevel) ally.level(), "sombra_hotfixed", ally.position(),
 			net.minecraft.world.phys.Vec3.ZERO, ally, Ow.ticks(HOTFIX_HEAL_TIME), sombra);

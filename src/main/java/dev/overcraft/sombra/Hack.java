@@ -44,6 +44,13 @@ public final class Hack {
 		if (target.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			dev.overcraft.hero.Effects.play(level, "sombra_hacked", target.position(), net.minecraft.world.phys.Vec3.ZERO, target,
 				Ow.ticks(silence), by);
+			// the hacked one hears it in their head, everyone else at them
+			if (target instanceof net.minecraft.server.level.ServerPlayer p) {
+				SombraSounds.own(p, "hacked");
+				dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("hacked_3p"), target.getEyePosition(), 45, p);
+			} else {
+				SombraSounds.at(level, "hacked_3p", target.getEyePosition(), 45);
+			}
 			dev.overcraft.hero.Effects.play(level, "sombra_revealed", target.position(), net.minecraft.world.phys.Vec3.ZERO, target,
 				Ow.ticks(HACK_REVEAL), by);
 		}
@@ -65,6 +72,7 @@ public final class Hack {
 		if (deployable.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			dev.overcraft.hero.Effects.play(level, "sombra_hacked_thing", deployable.position(), net.minecraft.world.phys.Vec3.ZERO,
 				deployable, Ow.ticks(HACK_DEPLOYABLE), by);
+			SombraSounds.at(level, "hack.object_3p", deployable.position(), 45);
 		}
 		DEPLOYABLES.merge(deployable.getUUID(), deployable.level().getGameTime() + Ow.ticks(HACK_DEPLOYABLE), Math::max);
 	}

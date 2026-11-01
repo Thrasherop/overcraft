@@ -142,6 +142,8 @@ public final class HeroState {
 	public long hackLockoutUntil = -1;
 	/** Sombra: the enemy players last sent to her as having their ultimate ready (Conspirator). */
 	public int[] conspiracy = new int[0];
+	/** Sombra: her pistol burst under way (its tail when it ends); stealth on last tick (its end sounds). */
+	public boolean sombraFiring, sombraStealthed;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;
