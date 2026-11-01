@@ -43,12 +43,15 @@ public final class Brigitte implements HeroKit {
 		s.rallyTicks = 0;
 		s.whipTicks = -1;
 		s.repairRecharge = -1;
+		s.rallyCast = -1;
+		s.shockwaveIn = -1;
 	}
 
 	/** Leaving her (another hero, leaving the world): the barrier down, its slow off. */
 	public static void clear(ServerPlayer player, HeroState s) {
 		Barrier.clear(player, s);
 		s.bashTicks = -1;
+		endRally(player, s);
 	}
 
 	@Override
@@ -57,6 +60,8 @@ public final class Brigitte implements HeroKit {
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		recharge(s, rate);
+		rally(player, s);
+		shockwave(player, s);
 		whip(player, s);
 		swing(player, s);
 		bash(player, s);
@@ -109,6 +114,11 @@ public final class Brigitte implements HeroKit {
 				target.needsSync = true;
 				Combat.animate(player, "shield_bash_hit");
 				Inspire.trigger(player, s, true, INSPIRE_TIME);
+				if (s.rallyTicks > 0) {
+					// in Rally the bash stuns, and a shockwave follows (12BE: 1340, #878)
+					dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
+					s.shockwaveIn = Ow.ticks(RALLY_SHOCKWAVE_AT);
+				}
 				end(player, s);
 				return;
 			}
@@ -158,6 +168,114 @@ public final class Brigitte implements HeroKit {
 		}
 		if ((pressed & dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_2) != 0) {
 			repairPack(player, s);
+		}
+		if ((pressed & dev.overcraft.net.HeroInputPayload.PRESS_ULTIMATE) != 0) {
+			startRally(player, s);
+		}
+	}
+
+	// ---- Rally (12BE, 12C1 on each ally) ----
+
+	private static final net.minecraft.resources.Identifier RALLY_FAST = dev.overcraft.Overcraft.id("brigitte_rally");
+	private static final net.minecraft.resources.Identifier RALLY_HEALTH = dev.overcraft.Overcraft.id("brigitte_rally_armor");
+
+	/**
+	 * Q with the charge full: spent at the press (12BE #152), a 0.7 s cast, then 10 s: her armor +100 (her health's top grows
+	 * by it), 15% faster, her barrier 750 and refilled (and 1.2x: Barrier), both cooldowns reset, her bash stunning; every
+	 * 0.5 s overhealth for her and her allies within 8 m.
+	 */
+	private static void startRally(ServerPlayer player, HeroState s) {
+		if (s.ultCharge < ULT_COST || s.rallyTicks > 0 || s.rallyCast >= 0 || s.bashTicks >= 0) {
+			return;
+		}
+		s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.BRIGITTE, s.ultCharge);
+		s.ultActive = Ow.ticks(RALLY_CAST + RALLY_TIME);
+		s.rallyCast = 0;
+		Combat.animate(player, "ult_start");
+	}
+
+	private static void rally(ServerPlayer player, HeroState s) {
+		if (s.rallyCast >= 0 && ++s.rallyCast >= Ow.ticks(RALLY_CAST)) {
+			s.rallyCast = -1;
+			s.rallyTicks = Ow.ticks(RALLY_TIME);
+			s.ability2Cooldown = 0;
+			s.barrierBrokenUntil = -1;
+			s.barrierHealth = BARRIER_HEALTH_RALLY;
+			s.extraArmor = RALLY_ARMOR;
+			var max = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+			if (max != null) {
+				max.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_HEALTH,
+					Ow.hp(RALLY_ARMOR), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+			}
+			// her armor is the layer at the top of her health (Shields): the 100 goes on as armor
+			dev.overcraft.hero.Shields.grant(player, s, RALLY_ARMOR);
+			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_FAST, RALLY_SPEED,
+					net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			}
+		}
+		if (s.rallyTicks <= 0) {
+			return;
+		}
+		if ((Ow.ticks(RALLY_TIME) - s.rallyTicks) % Ow.ticks(RALLY_PULSE) == 0) {
+			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_RADIUS),
+				e -> e.isAlive() && Allies.isSelfOrAlly(player, e) && e.distanceTo(player) <= RALLY_RADIUS
+					&& (e == player || player.hasLineOfSight(e)))) {
+				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
+				Combat.overhealthPool(e, RALLY_OVERHEALTH, RALLY_OVERHEALTH_MAX, RALLY_OVERHEALTH_TIME, 1000);
+			}
+		}
+		if (--s.rallyTicks <= 0) {
+			endRally(player, s);
+			Combat.animate(player, "ult_stop");
+		}
+	}
+
+	/** Rally over (its time, her death, another hero): her armor and speed back, the barrier back to 300 at most. */
+	private static void endRally(ServerPlayer player, HeroState s) {
+		s.rallyTicks = 0;
+		s.rallyCast = -1;
+		if (s.extraArmor > 0) {
+			s.extraArmor = 0;
+			s.shield = Math.min(s.shield, s.hero == null ? 0 : s.hero.layer());
+		}
+		s.barrierHealth = Math.min(s.barrierHealth, BARRIER_HEALTH);
+		var max = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+		if (max != null) {
+			max.removeModifier(RALLY_HEALTH);
+			if (player.getHealth() > player.getMaxHealth()) {
+				player.setHealth(player.getMaxHealth());
+			}
+		}
+		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(RALLY_FAST);
+		}
+	}
+
+	/** Her bash's shockwave in Rally, 0.15 s after its hit: up to 10 enemies within 8 m ahead, 70, a push and the stun. */
+	private static void shockwave(ServerPlayer player, HeroState s) {
+		if (s.shockwaveIn < 0 || s.shockwaveIn-- > 0) {
+			return;
+		}
+		Vec3 ahead = flat(player);
+		int hit = 0;
+		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
+			e -> e.isAlive() && Allies.canHurt(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS)) {
+			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
+			if (hit >= RALLY_SHOCKWAVE_TARGETS || to.lengthSqr() > 0.25 && to.normalize().dot(ahead) < 0) {
+				continue;
+			}
+			hit++;
+			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE);
+			Combat.credit(player, dealt);
+			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
+			Effects.hitMarker(player, e, false);
+			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
+			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3);
+			e.needsSync = true;
+			dev.overcraft.hero.Sleep.stun(e, RALLY_STUN);
 		}
 	}
 

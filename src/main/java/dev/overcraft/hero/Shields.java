@@ -29,9 +29,10 @@ public final class Shields {
 	/** The health a shielded hero's setHealth may really set. */
 	public static float onSetHealth(ServerPlayer player, float health) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.hero.layer() == 0 || regenerating) {
+		if (s == null || s.hero == null || s.hero.layer() + s.extraArmor == 0 || regenerating) {
 			return health;
 		}
+		double layer = s.hero.layer() + s.extraArmor;
 		float old = player.getHealth();
 		if (health < old) {
 			// a loss comes off the top: the shields first
@@ -42,7 +43,7 @@ public final class Shields {
 			return health;
 		}
 		// a gain heals the health under the shields first, then the shields
-		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - s.hero.layer(), s.hero.layer(),
+		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - layer, layer,
 			Ow.toOw(Math.min(health, player.getMaxHealth()) - old));
 		s.shield += split[1];
 		return old + Ow.hp(split[0] + split[1]);
@@ -73,6 +74,17 @@ public final class Shields {
 		}
 		double ow = Ow.toOw(damage);
 		return Ow.hp(ow - Math.min(ARMOR_FLAT, ow * ARMOR_CAP));
+	}
+
+	/** Adds this much (Overwatch points) to the top layer as armor, her health growing with it (Rally's +100). */
+	public static void grant(ServerPlayer player, HeroState s, double ow) {
+		s.shield += ow;
+		regenerating = true;
+		try {
+			player.setHealth(player.getHealth() + Ow.hp(ow));
+		} finally {
+			regenerating = false;
+		}
 	}
 
 	/** Each tick (HeroManager): the shields regenerate 3 s after the last damage. */

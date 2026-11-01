@@ -93,6 +93,20 @@ public final class BrigitteStats {
 	/** Who it hits: one enemy within this reach ahead of her, in this cone (D #501: radius 2.48, ~35 degrees, L). */
 	public static final double BASH_REACH = 2.5, BASH_CONE = 35;
 
+	// ---- Rally (Q: 12BE on her, 12C1 on each ally) ----
+	/** A 0.7 s cast lock, then 10 s (D #88, 0B13; W). */
+	public static final double RALLY_CAST = 0.7, RALLY_TIME = 10;
+	/** Her armor +100 and her speed +15% while it lasts (D #204 / #148, M the speed: not on the panel; W). */
+	public static final double RALLY_ARMOR = 100, RALLY_SPEED = 0.15;
+	/** Every 0.5 s, her and her allies within 8 m in sight get 15 overhealth, up to 100, each lasting 30 s (D #158, 1342,
+	 * 1341; W). */
+	public static final double RALLY_PULSE = 0.5, RALLY_RADIUS = 8, RALLY_OVERHEALTH = 15, RALLY_OVERHEALTH_MAX = 100,
+		RALLY_OVERHEALTH_TIME = 30;
+	/** Shield Bash in Rally: a 0.75 s stun, and 0.15 s after its hit a shockwave 8 m round hitting up to 10 enemies with the
+	 * bash's 70, push and stun (D 1340, #878 / #877: M the shockwave's shape). */
+	public static final double RALLY_STUN = 0.75, RALLY_SHOCKWAVE_AT = 0.15, RALLY_SHOCKWAVE_RADIUS = 8;
+	public static final int RALLY_SHOCKWAVE_TARGETS = 10;
+
 	// ---- Perks (the live list D 0063.177) ----
 	public static final double PERK_MINOR_XP = 2035, PERK_MAJOR_XP = 2035 + 3055;   // D (her values); W 2035 / 5090
 }

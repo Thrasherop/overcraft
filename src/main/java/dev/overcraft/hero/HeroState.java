@@ -157,6 +157,9 @@ public final class HeroState {
 	public int bashTicks = -1, rallyTicks;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
 	public int whipTicks = -1, whipBackAt;
+	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */
+	public int rallyCast = -1, shockwaveIn = -1;
+	public double extraArmor;
 	public double whipOut, repairRecharge = -1;
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 whipFrom, whipDir;
 	public boolean charging;

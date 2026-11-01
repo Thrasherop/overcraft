@@ -533,7 +533,7 @@ public final class HeroHud {
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
 		// armor (Brigitte's) the same way, in Overwatch's armor yellow
-		int shieldMax = hero.layer();
+		int shieldMax = hero.layer() + (hero.armor() > 0 ? Math.max(0, max - hero.owHealth) : 0);
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);

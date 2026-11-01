@@ -111,3 +111,17 @@ Played (step 5, dev client, survival, flat world `shield1`, every mob killed fir
 - Repair Pack at a villager 12 m ahead at 4 health: 6.8 at 0.4 s, 12.2 at 1.2 s, 14.0 (25 + 100); a villager to her side
   untouched; she isn't healed herself. Three packs (3 -> 0), a fourth press with none: nothing; back one at a time 5 s apart
   (1 at 5 s, 2 at 10 s, 3 at 15 s).
+
+## What step 6 (Rally) taught
+- **Rally's +100 armor grows her health's top:** a max-health modifier of 8 and 100 more in her armor layer
+  (`HeroState.extraArmor`, `Shields.grant`); at the end both go and her health is clamped. The HUD counts anything over a
+  hero-with-armor's base as armor (yellow).
+- **A stun is Sleep's lock without the sleep:** `Sleep.stun` holds a mob still (NoAI) and locks a player's hero keys for
+  0.75 s, damage doesn't end it, and none of the sleep's Zs or sounds play.
+- **Overhealth pieces outlive Rally:** each 15 lasts 30 s (ours: one pool held 30 s from the last piece).
+
+Played (step 6, dev client, survival, flat world `shield1`, every mob killed first): Q at 100%: ult 2700 -> 0; 1.5 s in her
+health 28 / 28 (350: 100 armor on top), the barrier 750; her overhealth 30 and the villager's 3 m away 45 at 1.5 s, both 100
+at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a husk: 70 and stunned (NoAI 1b for its
+0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
+300, the villager's overhealth kept.
