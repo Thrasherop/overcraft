@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.25";
+	public static final String ASSETS_NEEDED = "0.3.26";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -120,6 +120,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ConspiratorPayload.TYPE, dev.overcraft.net.ConspiratorPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
@@ -164,6 +165,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
 			dev.overcraft.ana.Anesthetic.tick(server);
+			dev.overcraft.sombra.HotfixHeal.tick(server);
+			dev.overcraft.sombra.Cyberspace.tick(server);
+			dev.overcraft.sombra.Hack.tick(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -218,6 +222,10 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof ItemEntity item && item.getItem().getItem() instanceof HeroWeaponItem) {
 				entity.discard();
 			}
+			// a mob hacked by EMP launches nothing for its 3 s (Hack: the arrow, the potion, the fireball, the fangs)
+			if (dev.overcraft.sombra.Hack.launchedBySilenced(entity)) {
+				entity.discard();
+			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
@@ -227,6 +235,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.mercy.Boosts.clear();
 			dev.overcraft.ana.Nano.clear();
 			dev.overcraft.ana.Anesthetic.clear();
+			dev.overcraft.sombra.HotfixHeal.clear();
+			dev.overcraft.sombra.Cyberspace.clear();
+			dev.overcraft.sombra.Hack.clear();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

@@ -1,0 +1,1781 @@
+{
+ "hero": "sombra",
+ "source": "game data via TankLib (tools/emote_data.py)",
+ "emotes": {
+  "rainy_stroll": {
+   "clips": {
+    "emote_rainy_stroll_1": {
+     "id": "19552",
+     "duration": 2.8333,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "181A6",
+       "hardpoint": "01B6",
+       "start": 0.6333,
+       "duration": 2.2,
+       "clip": "19553",
+       "clipStart": 0.6333
+      }
+     ],
+     "events": [
+      {
+       "sound": "741D",
+       "at": 0.4333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "744F",
+       "at": 1.1667,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "7437",
+       "at": 0.7333,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "C2E6",
+       "at": 1.4,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "C2CA",
+       "at": 0.4667,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       2.8333
+      ]
+     ],
+     "weaponClips": [],
+     "geosets": [
+      0,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "skeleton": "hers"
+    },
+    "emote_rainy_stroll_2": {
+     "id": "19553",
+     "duration": 2.3333,
+     "bones": 11,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_rainy_stroll_3": {
+     "id": "19554",
+     "duration": 3.4,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "181A6",
+       "hardpoint": "01B6",
+       "start": 0.0,
+       "duration": 3.4,
+       "clip": "19555",
+       "clipStart": 0.0
+      }
+     ],
+     "events": [
+      {
+       "sound": "7437",
+       "at": 0.8667,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "7437",
+       "at": 0.3333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "voice": "186B",
+       "at": 1.7
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       3.4
+      ]
+     ],
+     "weaponClips": [],
+     "geosets": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "skeleton": "hers"
+    },
+    "emote_rainy_stroll_4": {
+     "id": "19555",
+     "duration": 3.4,
+     "bones": 11,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_rainy_stroll_5": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "listen_up": {
+   "clips": {
+    "emote_listen_up_1": {
+     "id": "18505",
+     "duration": 3.4667,
+     "bones": 170,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "E548",
+       "at": 0.0,
+       "duration": 3.4667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E549",
+       "at": 0.1116,
+       "duration": 3.355,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E54A",
+       "at": 0.0,
+       "duration": 3.4667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "E54B",
+       "at": 0.1119,
+       "duration": 3.3548,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       3.4667
+      ]
+     ],
+     "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
+     "skeleton": "hers"
+    },
+    "emote_listen_up_2": {
+     "id": "178AD",
+     "duration": 0.3,
+     "bones": 0,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.0,
+       0.3
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_listen_up_3": {
+     "id": "12625",
+     "duration": 0.3333,
+     "bones": 125,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_listen_up_4": {
+     "id": "12638",
+     "duration": 0.3333,
+     "bones": 43,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "mic_drop": {
+   "clips": {
+    "emote_mic_drop_1": {
+     "id": "15C81",
+     "duration": 2.3333,
+     "bones": 226,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "1A146",
+       "entity": "6A10",
+       "hardpoint": "000B",
+       "start": 0.0,
+       "duration": 0.9333,
+       "clip": null,
+       "falls": true
+      }
+     ],
+     "events": [
+      {
+       "sound": "DA44",
+       "at": 0.9333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "DA4F",
+       "at": 0.101,
+       "duration": 2.0667,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       2.3333
+      ]
+     ],
+     "weaponClips": [],
+     "geosets": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "skeleton": "hers"
+    },
+    "emote_mic_drop_2": {
+     "id": "12625",
+     "duration": 0.3333,
+     "bones": 125,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_mic_drop_3": {
+     "id": "12638",
+     "duration": 0.3333,
+     "bones": 43,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "salty": {
+   "clips": {
+    "emote_salty_1": {
+     "id": "18C97",
+     "duration": 2.3667,
+     "bones": 226,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "EEA6",
+       "at": 0.0256,
+       "duration": 2.3411,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       2.3667
+      ]
+     ],
+     "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
+     "skeleton": "hers"
+    },
+    "emote_salty_2": {
+     "id": "178AD",
+     "duration": 0.3,
+     "bones": 0,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.0,
+       0.3
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_salty_3": {
+     "id": "12625",
+     "duration": 0.3333,
+     "bones": 125,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_salty_4": {
+     "id": "12638",
+     "duration": 0.3333,
+     "bones": 43,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "dance": {
+   "clips": {
+    "emote_dance_1": {
+     "id": "44C0",
+     "duration": 0.6667,
+     "bones": 228,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3BEC",
+       "at": 0.2,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BFF",
+       "at": 0.5333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3FBC",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.2667,
+       0.6667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_dance_2": {
+     "id": "44C1",
+     "duration": 8.4333,
+     "bones": 228,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3BFF",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BEC",
+       "at": 3.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "B1BC",
+       "at": 0.0,
+       "duration": 8.4333,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       8.4333
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_dance_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "groove": {
+   "clips": {
+    "emote_groove_1": {
+     "id": "A53F",
+     "duration": 0.6333,
+     "bones": 237,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.2,
+       0.6333
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_groove_2": {
+     "id": "A540",
+     "duration": 5.0667,
+     "bones": 237,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.0,
+       5.0667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_groove_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "amused": {
+   "clips": {
+    "emote_amused_1": {
+     "id": "402E",
+     "duration": 5.3333,
+     "bones": 228,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "3CDA",
+       "hardpoint": "0004",
+       "start": 0.4333,
+       "duration": 3.4667,
+       "clip": null,
+       "clipStart": null
+      }
+     ],
+     "events": [
+      {
+       "sound": "3C2A",
+       "at": 0.0333,
+       "duration": 5.0333,
+       "hardpoint": "00A4"
+      },
+      {
+       "voice": "766",
+       "at": 3.1851
+      },
+      {
+       "voice": "2C8",
+       "at": 4.107
+      }
+     ],
+     "stow": [
+      [
+       0.0333,
+       4.9666
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_amused_2": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "boop": {
+   "clips": {
+    "emote_boop_1": {
+     "id": "4541",
+     "duration": 3.1,
+     "bones": 237,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3FB2",
+       "at": 0.0,
+       "duration": 3.1,
+       "hardpoint": "00A4"
+      },
+      {
+       "voice": "6A1",
+       "at": 0.0
+      },
+      {
+       "voice": "766",
+       "at": 1.7333
+      }
+     ],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_boop_2": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "heroic": {
+   "clips": {
+    "emote_heroic_1": {
+     "id": "3E6F",
+     "duration": 0.1333,
+     "bones": 80,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "preview": true,
+     "skeleton": "hers"
+    },
+    "emote_heroic_2": {
+     "id": "3CC0",
+     "duration": 0.0333,
+     "bones": 134,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "preview": true,
+     "skeleton": "hers"
+    },
+    "emote_heroic_3": {
+     "id": "3CD3",
+     "duration": 0.8333,
+     "bones": 134,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "preview": true,
+     "skeleton": "hers"
+    },
+    "emote_heroic_4": {
+     "id": "4004",
+     "duration": 3.2,
+     "bones": 228,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3BA3",
+       "at": 0.1,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BA4",
+       "at": 0.6667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BE2",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BE1",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3FBC",
+       "at": 2.7667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       3.2
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_heroic_5": {
+     "id": "37",
+     "duration": 3.0,
+     "bones": 36,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "preview": true,
+     "skeleton": "hers"
+    },
+    "emote_heroic_6": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "preview": true,
+     "skeleton": "hers"
+    },
+    "emote_heroic_7": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "hold_on": {
+   "clips": {
+    "emote_hold_on_1": {
+     "id": "4019",
+     "duration": 3.7333,
+     "bones": 228,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3BDE",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "3BE8",
+       "at": 0.0,
+       "duration": 3.5333,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BE9",
+       "at": 0.0,
+       "duration": 3.5333,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BDD",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "3C2D",
+       "at": 0.0,
+       "duration": 3.5333,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       3.3
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_hold_on_2": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "marioneta": {
+   "clips": {
+    "emote_marioneta_1": {
+     "id": "492A",
+     "duration": 5.2667,
+     "bones": 237,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "4F4B",
+       "hardpoint": "0004",
+       "start": 1.1667,
+       "duration": 3.1667,
+       "clip": "492B",
+       "clipStart": 1.1667
+      }
+     ],
+     "events": [
+      {
+       "sound": "4658",
+       "at": 0.0,
+       "duration": 5.2667,
+       "hardpoint": "00A4"
+      },
+      {
+       "voice": "974",
+       "at": 3.7693
+      },
+      {
+       "voice": "766",
+       "at": 1.8
+      }
+     ],
+     "stow": [
+      [
+       0.2667,
+       5.0
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_marioneta_2": {
+     "id": "492B",
+     "duration": 4.1,
+     "bones": 30,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_marioneta_3": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "masterpiece": {
+   "clips": {
+    "emote_masterpiece_1": {
+     "id": "4011",
+     "duration": 5.0,
+     "bones": 224,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "3CF7",
+       "hardpoint": "0004",
+       "start": 0.7667,
+       "duration": 3.9,
+       "clip": null,
+       "clipStart": null
+      }
+     ],
+     "events": [
+      {
+       "sound": "3BEB",
+       "at": 0.0333,
+       "duration": 4.6667,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "3BEA",
+       "at": 0.0333,
+       "duration": 4.6667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3BDD",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0003"
+      },
+      {
+       "sound": "3BDE",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "0002"
+      },
+      {
+       "sound": "3C29",
+       "at": 0.0333,
+       "duration": 4.7,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "sit": {
+   "clips": {
+    "emote_sit_1": {
+     "id": "4526",
+     "duration": 2.3333,
+     "bones": 62,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_sit_2": {
+     "id": "452D",
+     "duration": 0.4,
+     "bones": 62,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_sit_3": {
+     "id": "44AA",
+     "duration": 2.3333,
+     "bones": 245,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3FA9",
+       "at": 0.0333,
+       "duration": 2.3,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0333,
+       2.3333
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_sit_4": {
+     "id": "452C",
+     "duration": 0.4,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "3FAC",
+       "at": 0.0,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       0.4
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_sit_5": {
+     "id": "4504",
+     "duration": 9.4667,
+     "bones": 62,
+     "folder": "16",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_sit_6": {
+     "id": "4501",
+     "duration": 9.4667,
+     "bones": 253,
+     "folder": "16",
+     "spawns": [
+      {
+       "model": "49BB",
+       "hardpoint": "0004",
+       "start": 0.0,
+       "duration": 6.5333,
+       "clip": null,
+       "clipStart": null
+      }
+     ],
+     "events": [
+      {
+       "sound": "3FB1",
+       "at": 0.0,
+       "duration": 6.5667,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3FAB",
+       "at": 0.1333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "3FAA",
+       "at": 0.0,
+       "duration": 9.4,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       9.4667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "dance_off": {
+   "clips": {
+    "emote_dance_off_1": {
+     "id": "14FC7",
+     "duration": 4.8,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "DBE5",
+       "at": 2.6333,
+       "duration": 1.5369,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0333,
+       4.8
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_dance_off_2": {
+     "id": "15FA3",
+     "duration": 7.8667,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.0,
+       7.8667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_dance_off_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "shuffle": {
+   "clips": {
+    "emote_shuffle_1": {
+     "id": "17FD4",
+     "duration": 0.4333,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.0667,
+       0.4334
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_shuffle_2": {
+     "id": "17FD5",
+     "duration": 6.4667,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "voice": "1969",
+       "at": 4.4
+      },
+      {
+       "sound": "E23F",
+       "at": 4.6,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       6.4667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_shuffle_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "browsing": {
+   "clips": {
+    "emote_browsing_1": {
+     "id": "B3A7",
+     "duration": 8.8667,
+     "bones": 62,
+     "folder": "16",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_browsing_2": {
+     "id": "B3A6",
+     "duration": 8.8667,
+     "bones": 237,
+     "folder": "16",
+     "spawns": [
+      {
+       "model": "389D",
+       "hardpoint": "01B6",
+       "start": 0.0,
+       "duration": 8.8667,
+       "clip": "B3A7",
+       "clipStart": 0.0
+      },
+      {
+       "model": "1024E",
+       "hardpoint": "0004",
+       "start": 0.0,
+       "duration": 8.8667,
+       "clip": "B9A7",
+       "clipStart": 0.0
+      }
+     ],
+     "events": [
+      {
+       "sound": "9DDD",
+       "at": 0.0294,
+       "duration": 8.8373,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.5333,
+       8.8666
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_browsing_3": {
+     "id": "B9A7",
+     "duration": 8.8667,
+     "bones": 9,
+     "folder": "16",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    }
+   }
+  },
+  "pet_slicer": {
+   "clips": {
+    "emote_pet_slicer_1": {
+     "id": "E019",
+     "duration": 7.1667,
+     "bones": 62,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_pet_slicer_2": {
+     "id": "DBFB",
+     "duration": 7.1667,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "138DC",
+       "hardpoint": "01B6",
+       "start": 0.0667,
+       "duration": 7.0,
+       "clip": "DC9C",
+       "clipStart": 0.0667
+      },
+      {
+       "model": "389D",
+       "hardpoint": "01C5",
+       "start": 0.0,
+       "duration": 7.1667,
+       "clip": "E019",
+       "clipStart": 0.0
+      }
+     ],
+     "events": [
+      {
+       "sound": "A6CA",
+       "at": 0.8,
+       "duration": 0.0,
+       "hardpoint": "0021"
+      },
+      {
+       "sound": "A6CB",
+       "at": 1.1,
+       "duration": 0.0,
+       "hardpoint": "0021"
+      },
+      {
+       "sound": "A6CC",
+       "at": 1.9667,
+       "duration": 0.0,
+       "hardpoint": "0021"
+      },
+      {
+       "sound": "A6CE",
+       "at": 5.0333,
+       "duration": 0.0,
+       "hardpoint": "0021"
+      },
+      {
+       "voice": "154B",
+       "at": 4.4667
+      },
+      {
+       "voice": "154C",
+       "at": 3.8667
+      }
+     ],
+     "stow": [
+      [
+       0.5603,
+       6.6901
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_pet_slicer_3": {
+     "id": "DC9C",
+     "duration": 7.0333,
+     "bones": 46,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "A6C6",
+       "at": 1.0333,
+       "duration": 0.0,
+       "hardpoint": "001C"
+      },
+      {
+       "sound": "A6C6",
+       "at": 2.0,
+       "duration": 0.0,
+       "hardpoint": "001B"
+      },
+      {
+       "sound": "A6C7",
+       "at": 0.0667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A6C8",
+       "at": 2.4667,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A6C9",
+       "at": 3.8333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A6C4",
+       "at": 2.6,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A6C5",
+       "at": 5.2,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A6D1",
+       "at": 1.8,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      },
+      {
+       "sound": "A7CA",
+       "at": 6.5,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_pet_slicer_4": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "choreography": {
+   "clips": {
+    "emote_choreography_1": {
+     "id": "E0B8",
+     "duration": 0.6667,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [
+      [
+       0.1667,
+       0.6667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_choreography_2": {
+     "id": "E0BA",
+     "duration": 10.4667,
+     "bones": 246,
+     "folder": "16",
+     "spawns": [],
+     "events": [
+      {
+       "voice": "15ED",
+       "at": 0.3333
+      },
+      {
+       "voice": "15EC",
+       "at": 3.5927
+      },
+      {
+       "voice": "15EE",
+       "at": 2.2333
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       10.4667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_choreography_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "ed_s_saunter": {
+   "clips": {
+    "emote_ed_s_saunter_1": {
+     "id": "E797",
+     "duration": 1.5667,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "B03E",
+       "at": 0.3333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       1.5667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_ed_s_saunter_2": {
+     "id": "E798",
+     "duration": 2.9333,
+     "bones": 246,
+     "folder": "0",
+     "spawns": [],
+     "events": [
+      {
+       "sound": "B03E",
+       "at": 0.0333,
+       "duration": 0.0,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.0,
+       2.9333
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_ed_s_saunter_3": {
+     "id": "3CAD",
+     "duration": 0.4,
+     "bones": 88,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  },
+  "regifted": {
+   "clips": {
+    "emote_regifted_1": {
+     "id": "7CD4",
+     "duration": 4.9333,
+     "bones": 62,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_regifted_2": {
+     "id": "7C82",
+     "duration": 8.5,
+     "bones": 237,
+     "folder": "0",
+     "spawns": [
+      {
+       "model": "389D",
+       "entity": "1B2F",
+       "hardpoint": "01B6",
+       "start": 3.5667,
+       "duration": 3.1667,
+       "clip": "7CD4",
+       "falls": false,
+       "clipStart": 3.5667,
+       "clipBy": "control"
+      },
+      {
+       "model": "E221",
+       "entity": "377D",
+       "hardpoint": "000A",
+       "start": 0.4,
+       "duration": 2.1284,
+       "clip": "7C83",
+       "falls": false,
+       "clipStart": 0.0,
+       "clipBy": "length"
+      },
+      {
+       "model": "E222",
+       "entity": "377E",
+       "hardpoint": "000A",
+       "start": 0.4,
+       "duration": 0.5333,
+       "clip": "7C83",
+       "falls": false,
+       "clipStart": 0.0,
+       "clipBy": "length"
+      },
+      {
+       "model": "3CC5",
+       "entity": "17BD",
+       "hardpoint": "000B",
+       "start": 1.5,
+       "duration": 6.0,
+       "clip": "7C83",
+       "falls": false,
+       "clipStart": 0.0,
+       "clipBy": "length"
+      },
+      {
+       "model": "3CC4",
+       "entity": "17BE",
+       "hardpoint": "0004",
+       "start": 1.5,
+       "duration": 6.0,
+       "clip": "7CB2",
+       "falls": false,
+       "clipStart": 1.5,
+       "clipBy": "control"
+      }
+     ],
+     "events": [
+      {
+       "sound": "5CDA",
+       "at": 0.0,
+       "duration": 8.5,
+       "hardpoint": "00A4"
+      }
+     ],
+     "stow": [
+      [
+       0.4,
+       7.6667
+      ]
+     ],
+     "weaponClips": [],
+     "skeleton": "hers"
+    },
+    "emote_regifted_3": {
+     "id": "7C84",
+     "duration": 7.0,
+     "bones": 8,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_regifted_4": {
+     "id": "7C83",
+     "duration": 8.5,
+     "bones": 4,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_regifted_5": {
+     "id": "7CB2",
+     "duration": 7.0,
+     "bones": 8,
+     "folder": "0",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "prop"
+    },
+    "emote_regifted_6": {
+     "id": "3CD5",
+     "duration": 1.3667,
+     "bones": 64,
+     "folder": "4",
+     "spawns": [],
+     "events": [],
+     "stow": [],
+     "weaponClips": [],
+     "skeleton": "hers"
+    }
+   }
+  }
+ },
+ "hardpoints": {
+  "0004": {
+   "bone": "bone_0001",
+   "t": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "q": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "000A": {
+   "bone": "Weapon_R",
+   "t": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "q": [
+    0.0,
+    -0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "000B": {
+   "bone": "Weapon_L",
+   "t": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "q": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "01B6": {
+   "bone": "bone_097F",
+   "t": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "q": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "01C5": {
+   "bone": "bone_0984",
+   "t": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "q": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  }
+ },
+ "pieceGeosets": {},
+ "unresolvedHardpoints": []
+}

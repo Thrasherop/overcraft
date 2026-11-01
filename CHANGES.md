@@ -4,6 +4,37 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-01
+
+### Build 0.3.26 (Sombra, the seventh hero)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.26): Sombra's emote clips (`owm_survey.py --glb --clips-only
+--keep=tools/clipmaps/sombra_clips.txt --emotes=...` into `sombra_clips.glb`), her emote props (`props <extraction>
+sombra`: the holograms and her tablet now export as light), her effects' masks and meshes (`effects`), her sounds,
+voice and emote sounds (`sounds`), then `zip`. `build_asset_pack.py` takes `OC_ASSET_PACK` to build into another
+worktree's pack.
+- **Sombra, the seventh hero** (#64), the Support since Blizzard's 2026-10-06 rework, from her game data and the public
+  numbers (`SombraStats`, each number with its source):
+  - **Machine Pistol** (left button): hitscan, 20 shots a second, 60 to a clip, falloff from 20 m, head hits x2.
+  - **Hotfix** (right button, held): after a 0.5 s channel, an ally in your crosshair is healed 65 at once and 25 a
+    second up to 175; 2 charges. Aimed at an enemy Lifeweaver's platform or tree, it hacks it for 10 s (no charge).
+  - **Cyberspace** (Shift): a projectile opening a 5 m zone for 3 s: enemies inside take damage and deal 50% less,
+    allies are healed.
+  - **Translocator** (E): a beacon that teleports her by itself on touching terrain or 12.25 m out, then 6.5 s of
+    stealth (+60% speed; enemies within 4 m see her; mobs lose her).
+  - **EMP** (Q): 20% of current health to every enemy within 15 m in sight, and hacks them: their abilities locked 3 s
+    (a mob's special moves stop: arrows, fuses, fireballs), revealed 8 s.
+  - **Conspirator:** an icon over each enemy player whose ultimate is ready. **Perks:** Life Hack, CTRL ALT ESC, Data
+    Packet, Cybersecurity.
+- **Her sounds and voice from her Wwise events** (`tools/soundmaps/sombra.txt`, 108 events), **her effects from her
+  data** (`tools/reference/sombra-effects.md`), **her 20 emotes from the data** with their props (umbrella, mic,
+  puppet, pet robot, presents, her hologram tablet and screens).
+- **Changing heroes after a death with no bed:** Minecraft respawns you up to 10 blocks from the world spawn, and the
+  hero menu said "go back to your bed" where you stood. Where you respawned now counts as your spawn room too.
+- **The ready ultimate's icon** showed a blank disc for Ana, Lifeweaver and Sombra (Kiriko's fox was the fallback).
+- Found playing her and fixed: the first Translocator was the Community Crafted mode's (E again to teleport, a 15 s
+  beacon); a teleport straight up hurt her on landing; Regifted played her tablet's clip and stood still; the emote
+  holograms were solid grey; effect palettes drew whole squares.
+
 ## 2026-10-31
 
 ### Build 0.3.25 (Ana; Life Grip's bud; Mercy's, Lúcio's and Lifeweaver's 0.3.24 fixes)

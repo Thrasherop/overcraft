@@ -8,6 +8,7 @@
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
 		"EntityMixin",
+		"TargetingConditionsMixin",
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor"

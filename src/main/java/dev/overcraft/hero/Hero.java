@@ -14,7 +14,7 @@ public enum Hero {
 		dev.overcraft.lifeweaver.LifeweaverStats.HEALTH + dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS, true, 0xFFF3A7C8),
 	// her kit is being built (#63), step by step on her branch: playable there, not merged until it's whole
 	ANA("ana", "Ana", Role.SUPPORT, "tactician", dev.overcraft.ana.AnaStats.HEALTH, true, 0xFF7E9CC2),
-	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", 225, false, 0xFF8A4FD8),
+	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", dev.overcraft.sombra.SombraStats.HEALTH, true, 0xFF8A4FD8),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }

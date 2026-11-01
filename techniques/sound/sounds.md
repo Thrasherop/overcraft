@@ -69,5 +69,22 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
 - **Check both ends of every sound:** his own `heard` on the host, the "_3p" copies and the ally's own (gripped,
   healed by the tree, the seed taken) on `runClient2` (`OC_DEV_PORT=25600`). A second listener caught nothing wrong
   that the first had missed, but it is the only way to see the others' copies at all.
+- <a id="sombra-sounds"></a>**Sombra's map (2026-11-01; `tools/soundmaps/sombra.txt`, scripts and data in
+  `research\sombra\scripts\sounds\` and `research\sombra\sounds\`; hub: [sombra](../heroes/sombra.md)):**
+  - **An automatic weapon's sound is a self-repeating stream.** Her pistol's 02C (5DCC, 680F) holds continuous random
+    containers in trigger-rate mode paced by the fire-rate parameter 4066808683 (0.05 s at its default 100 = 20 a
+    second): one Play keeps re-triggering until the Stop event breaks it (its tail rings out, a click plays). Built as one
+    trigger of each container for the game to play per shot, the 2.5-3 s tail apart (`pistol.fire_end`), else 60 tails pile up.
+  - **Audience 1 can carry a range:** the beacon's hum (3B20) and its landing (3B85) are hers (audience 1) but ranged,
+    because they sound at the beacon, not in her head.
+  - **Some Play targets exist nowhere:** Hotfix's 10552 / 1042B Play four objects that are in none of the build's 1148 banks
+    (`find_object.py`): those layers don't exist; don't hunt for them.
+  - **A hero's voice set can lack a shared moment:** hers has no Resurrected (005A) and no reload (0E2C) stimulus, so
+    `sombra.voice.resurrected` stays empty. Check `voice_lines.json` before promising a line.
+  - **Graph voice nodes are only half the story:** Translocator/Use (0698) and Uncloak (06E7) are raised through their
+    criteria's scripted events (2061 from 0C19 #147, 2263 from 420C #16); grep the decompiles for the event id. A
+    stimulus whose event no graph raises (StealthActivate 069D, 205B) is the old kit's: leave it out.
+  - **Building into the dev client's pack from another worktree:** `OC_ASSET_PACK=<pack> py tools/build_asset_pack.py sounds
+    <root>`; the step rebuilds every map of the worktree it runs from, so that worktree's maps must be current.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
   (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

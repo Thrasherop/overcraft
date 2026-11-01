@@ -400,6 +400,30 @@ public final class OcSounds {
 		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy",
 		"heal_dart", "reload", "sleep", "grenade_heal", "grenade_damage", "ping_slept", "ultimate", "nano_cast");
 
+	/**
+	 * Sombra's (tools/soundmaps/sombra.txt): her sounds by name ("sombra." + name, played through
+	 * dev.overcraft.sombra.SombraSounds) and her lines by moment (Voice.say: "sombra.voice.<moment>"; her wheel lines,
+	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init(); her set has no "resurrected").
+	 */
+	public static final java.util.List<String> SOMBRA_SOUNDS = java.util.List.of("pistol.fire", "pistol.fire_3p",
+		"pistol.fire_end", "pistol.fire_end_3p", "pistol.shot", "pistol.hit", "pistol.hit_block", "pistol.draw",
+		"pistol.draw_3p", "reload", "reload_3p", "hotfix.target.loop", "hotfix.target.end", "hotfix.cast", "hotfix.cast_3p",
+		"hotfix.channel", "hotfix.channel_ally", "hotfix.channel_3p", "hack.channel", "hack.channel_3p", "hack.channel_enemy",
+		"hotfix.end", "hotfix.end_3p", "hotfix.heal", "hotfix.heal_3p", "hotfix.heal.loop_3p", "hotfix.heal.end",
+		"hotfix.recharge", "hotfix.data_packet", "hacked", "hacked_3p", "hacked.loop", "hacked.loop_3p", "hacked.hero_3p",
+		"hacked.end_3p", "hack.object_3p", "hack.object.loop_3p", "hack.object.end_3p", "cyberspace.cast",
+		"cyberspace.cast_3p", "cyberspace.shot", "cyberspace.flight", "cyberspace.hit_block", "cyberspace.zone",
+		"cyberspace.zone_enemy", "cyberspace.zone_far", "cyberspace.zone.end", "cyberspace.weakened",
+		"cyberspace.weakened.loop", "cyberspace.weakened_3p", "cyberspace.weakened.loop_3p", "translocator.throw",
+		"translocator.throw_3p", "translocator.beacon", "translocator.beacon.loop", "translocator.beacon.loop_3p",
+		"translocator.land", "translocator.depart", "translocator.depart_3p", "translocator.dest_3p", "translocator.arrive",
+		"stealth.start", "stealth.start_3p", "stealth.loop", "stealth.end", "stealth.end_3p", "stealth.detected",
+		"stealth.detected_3p", "emp.cast", "emp.pulse", "emp.pulse_3p", "emp.hit", "perk.life_hack", "perk.life_hack_3p",
+		"ult.friendly", "ult.enemy");
+	public static final java.util.List<String> SOMBRA_VOICE = java.util.List.of("elimination", "multikill", "melee_kill",
+		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy", "hotfix",
+		"hack", "cyberspace_hit", "cyberspace_kill", "translocate", "uncloak", "ultimate");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -411,6 +435,8 @@ public final class OcSounds {
 		MERCY_VOICE.forEach(moment -> register("mercy.voice." + moment));
 		LIFEWEAVER_VOICE.forEach(moment -> register("lifeweaver.voice." + moment));
 		ANA_VOICE.forEach(moment -> register("ana.voice." + moment));
+		SOMBRA_SOUNDS.forEach(name -> register("sombra." + name));
+		SOMBRA_VOICE.forEach(moment -> register("sombra.voice." + moment));
 	}
 
 	private OcSounds() {

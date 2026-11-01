@@ -117,7 +117,16 @@ public final class Voice {
 		java.util.Map.entry("ana.grenade_damage", new Stimulus(60, 2, 2, false)), // 05F4
 		java.util.Map.entry("ana.ping_slept", new Stimulus(70, 3, 3, true)), // 11EA
 		java.util.Map.entry("ana.ultimate", new Stimulus(95, 1, 1, false)), // 1836
-		java.util.Map.entry("ana.nano_cast", new Stimulus(95, 1, 1, false))); // 0678
+		java.util.Map.entry("ana.nano_cast", new Stimulus(95, 1, 1, false)), // 0678
+		// Sombra's (tools/soundmaps/sombra.txt, the voice section)
+		java.util.Map.entry("sombra.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("sombra.hotfix", new Stimulus(60, 8, 12, false)), // 1A8F
+		java.util.Map.entry("sombra.hack", new Stimulus(60, 4.5f, 4.5f, false)), // 068A
+		java.util.Map.entry("sombra.cyberspace_hit", new Stimulus(60, 20, 20, false)), // 1591
+		java.util.Map.entry("sombra.cyberspace_kill", new Stimulus(70, 15, 15, false)), // 1593
+		java.util.Map.entry("sombra.translocate", new Stimulus(60, 15, 15, false)), // 0698
+		java.util.Map.entry("sombra.uncloak", new Stimulus(80, 10, 10, false)), // 06E7
+		java.util.Map.entry("sombra.ultimate", new Stimulus(95, 1, 1, false))); // 1860
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

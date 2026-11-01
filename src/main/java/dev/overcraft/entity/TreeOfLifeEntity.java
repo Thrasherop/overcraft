@@ -167,7 +167,8 @@ public class TreeOfLifeEntity extends Entity {
 		int window = Ow.ticks(0.35);
 		int pulse = t / every;
 		int into = t % every;
-		if (pulse <= TREE_PULSES && into < window) {
+		// hacked (EMP, Hotfix): no pulses for its 10 s
+		if (pulse <= TREE_PULSES && into < window && !dev.overcraft.sombra.Hack.hacked(this)) {
 			if (into == 0) {
 				reached.clear();
 				if (pulse > 0) {

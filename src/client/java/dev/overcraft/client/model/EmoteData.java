@@ -164,7 +164,8 @@ public final class EmoteData {
 	private static volatile Map<String, Emotes> heroes = Map.of();
 	/**
 	 * Clips in a hero's emote folders that the emote never plays ("<hero>/<clip name>"): those only in the set's gallery
-	 * preview tree (tools/emote_data.py "preview": Ana's Heroic set is also her hero gallery's, with its idle clips).
+	 * preview tree (tools/emote_data.py "preview": Ana's Heroic set is also her hero gallery's, with its idle clips), and
+	 * those it marks as a prop's ("skeleton": "prop").
 	 */
 	private static volatile Set<String> previews = Set.of();
 
@@ -200,7 +201,10 @@ public final class EmoteData {
 				for (Map.Entry<String, JsonElement> emote : json.getAsJsonObject("emotes").entrySet()) {
 					for (Map.Entry<String, JsonElement> clip : emote.getValue().getAsJsonObject().getAsJsonObject("clips").entrySet()) {
 						JsonElement flag = clip.getValue().getAsJsonObject().get("preview");
-						if (flag != null && flag.getAsBoolean()) {
+						JsonElement skeleton = clip.getValue().getAsJsonObject().get("skeleton");
+						// a prop's own clip isn't hers either: Regifted's 7CD4 (her hologram tablet's) starts in her
+						// stance, and the planner played it as the whole emote, never reaching her 8.5 s clip
+						if (flag != null && flag.getAsBoolean() || skeleton != null && skeleton.getAsString().equals("prop")) {
 							preview.add(hero.id + "/" + clip.getKey());
 						}
 					}

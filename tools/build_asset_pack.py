@@ -19,6 +19,7 @@
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
 """
+import os
 import shutil
 import subprocess
 import sys
@@ -26,8 +27,9 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-LOCAL = ROOT / "local-assets"
-PACK = LOCAL / "pack"
+# OC_ASSET_PACK (as gradlew runClient takes it) builds into another worktree's pack, e.g. the one the dev client loads
+PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
+LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
 HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver"}
 # DataTool's folder for each hero (its in-game name)
@@ -623,6 +625,63 @@ EFFECT_MASKS = {
     "ana_nano_edge": ("Ana", "NanoBoost", "000000000510", 1),
     "ana_smoke": ("Ana", "NanoBoost", "0000000009EF", 4),
     "ana_streak_v": ("Ana", "NanoBoost", "00000000384F", 1),
+    # Sombra's (tools/reference/sombra-effects.md; pass her research fx folder, research/sombra/fx, as a source). The
+    # hack: the skull icon (filled, outline, and Hotfix's skull with a plus), the code-rain streak / digit column / dot
+    # column, glyph flipbook (4), scanlines, vertical streak, the digital-rain wall and circuit-board textures
+    "sombra_skull": ("Sombra", "Hack", "00000000AB9D", 1),
+    "sombra_skull_outline": ("Sombra", "Hack", "00000001EDB3", 1),
+    "sombra_skull_heal": ("Sombra", "Hotfix", "00000004B0C1", 1),
+    "sombra_code_rain": ("Sombra", "Hack", "000000009F81", 1),
+    "sombra_code_column": ("Sombra", "Hack", "00000000A4ED", 1),
+    "sombra_code_dots": ("Sombra", "Hack", "00000000A4EC", 1),
+    "sombra_glyphs": ("Sombra", "Cyberspace", "000000009F80", 4),
+    "sombra_scanlines": ("Sombra", "Hack", "0000000010A3", 1),
+    "sombra_streak_v": ("Sombra", "Cyberspace", "000000009BDF", 1),
+    "sombra_code_wall": ("Sombra", "Cyberspace", "00000000A512", 1),
+    "sombra_circuit": ("Sombra", "Cyberspace", "00000000AD57", 1),
+    "sombra_circuit_disc": ("Sombra", "Cyberspace", "00000007B847", 1),
+    "sombra_circuit_arms": ("Sombra", "EMP", "00000000A064", 1),
+    "sombra_circuit_arms_small": ("Sombra", "Cyberspace", "000000068C88", 1),
+    # pixel bars (13 / 10 frames), the EMP's "skyline" bars (14) and band (10), the Hotfix strand's pixel blocks, noise
+    "sombra_pixel_bars": ("Sombra", "Hotfix", "00000000A66D", 13),
+    "sombra_pixel_bars_b": ("Sombra", "Translocator", "00000000A629", 10),
+    "sombra_skyline": ("Sombra", "EMP", "00000000A5B6", 14),
+    "sombra_emp_band": ("Sombra", "EMP", "000000004FE0", 10),
+    "sombra_ribbon_pixels": ("Sombra", "Hotfix", "00000002B731", 1),
+    "sombra_pixels": ("Sombra", "Hotfix", "000000005D4E", 1),
+    # the Machine Pistol: muzzle flame (6) and spike (2), the tracer's line and edge, the shared bullet impact's star
+    # (2), spark (4: a colour sprite, NATURAL) and burst decal
+    "sombra_muzzle_flame": ("Sombra", "MachinePistol", "00000000A25E", 6),
+    "sombra_muzzle_spike": ("Sombra", "MachinePistol", "00000000A25F", 2),
+    "sombra_tracer_line": ("Sombra", "MachinePistol", "000000000510", 1),
+    "sombra_tracer_edge": ("Sombra", "MachinePistol", "00000000050C", 1),
+    "sombra_impact_star": ("Sombra", "MachinePistol", "000000001BEC", 2),
+    "sombra_impact_spark": ("Sombra", "MachinePistol", "000000001BE6", 4),
+    "sombra_impact_burst": ("Sombra", "MachinePistol", "00000000220A", 1),
+    # Cyberspace: the weakened arrow and chevron glow, grid, slashes, square frames, soft square, inverted diamond, the
+    # trail band, thin line, ring burst, plus, the cube's glow, the zone's soft and tall rain and hex noise
+    "sombra_arrow": ("Sombra", "Cyberspace", "0000000066E4", 1),
+    "sombra_chevron_glow": ("Sombra", "Cyberspace", "000000027D0D", 1),
+    "sombra_grid": ("Sombra", "Cyberspace", "00000002E4FB", 1),
+    "sombra_slashes": ("Sombra", "Cyberspace", "0000000369A3", 1),
+    "sombra_frame": ("Sombra", "Cyberspace", "00000001F343", 1),
+    "sombra_frame_soft": ("Sombra", "Cyberspace", "0000000183FB", 1),
+    "sombra_soft_square": ("Sombra", "Cyberspace", "00000000530F", 1),
+    "sombra_diamond": ("Sombra", "Cyberspace", "0000000433DB", 1),
+    "sombra_trail_band": ("Sombra", "Cyberspace", "00000000DC90", 1),
+    "sombra_line_thin": ("Sombra", "Cyberspace", "00000001484C", 1),
+    "sombra_ring_burst": ("Sombra", "Cyberspace", "0000000017E1", 1),
+    "sombra_plus": ("Sombra", "Cyberspace", "000000003DC7", 1),
+    "sombra_cube_glow": ("Sombra", "Cyberspace", "000000043075", 1),
+    "sombra_rain_soft": ("Sombra", "Cyberspace", "00000003FEEE", 1),
+    "sombra_rain_tall": ("Sombra", "Cyberspace", "00000000A4C0", 1),
+    "sombra_hex_noise": ("Sombra", "Cyberspace", "0000000299E9", 1),
+    # the Translocator and stealth: the beacon's light beam, smoke streak, the stealth dissolve wipe (6), the detection
+    # ring's band of squares
+    "sombra_beam_v": ("Sombra", "Translocator", "00000000138F", 1),
+    "sombra_smoke": ("Sombra", "Translocator", "000000003E28", 1),
+    "sombra_dissolve": ("Sombra", "Translocator", "00000000A7BF", 6),
+    "sombra_square_band": ("Sombra", "Translocator", "000000043D04", 1),
 }
 
 
@@ -641,7 +700,9 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # 3E4E5 x wisps 2FCA7. The bokeh alone is grey all over: on the sphere round him it tinted the whole view
             "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp"),
             # Ana's scoped tracer (1A80, tools/reference/ana-effects.md): its line 0B35 x its length fade 2A063
-            "ana_tracer": ("ana_beam_line", "ana_fade_v")}
+            "ana_tracer": ("ana_beam_line", "ana_fade_v"),
+            # Sombra's pistol tracer (1998, tools/reference/sombra-effects.md): its line 510 x its edge 50C
+            "sombra_tracer": ("sombra_tracer_line", "sombra_tracer_edge")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -664,7 +725,20 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Anesthetic's flattened sphere (0.97 wide, 0.588 tall, centred: lower by 0.294 x size)
                  "ana_plus": ("Ana", "BioticGrenade", "00000000E0AA"),
                  "ana_lens_disc": ("Ana", "BioticRifle", "00000000C943"),
-                 "ana_shell": ("Ana", "SleepDart", "000000015CAE")}
+                 "ana_shell": ("Ana", "SleepDart", "000000015CAE"),
+                 # Sombra's (tools/reference/sombra-effects.md "Meshes"): the hack's curved code panel, the six-square
+                 # flower, EMP's barrel band and arc, Cyberspace's hourglass tube, chevron and data cube, the flat ring,
+                 # the open bowl and the detection ring's open cylinder
+                 "sombra_panel_arc": ("Sombra", "Hack", "000000003BD6"),
+                 "sombra_square_flower": ("Sombra", "EMP", "000000003A16"),
+                 "sombra_band": ("Sombra", "EMP", "000000003BC3"),
+                 "sombra_arc": ("Sombra", "EMP", "0000000039F8"),
+                 "sombra_hourglass": ("Sombra", "Cyberspace", "00000001A988"),
+                 "sombra_chevron": ("Sombra", "Cyberspace", "00000000DFDC"),
+                 "sombra_cube": ("Sombra", "Cyberspace", "000000013EE4"),
+                 "sombra_ring": ("Sombra", "EMP", "0000000011C1"),
+                 "sombra_bowl": ("Sombra", "EMP", "0000000011C3"),
+                 "sombra_cylinder": ("Sombra", "Translocator", "00000000129B")}
 
 
 def add_effects(*sources):
@@ -766,7 +840,8 @@ def add_props(source, only=None):
             work = LOCAL / "work" / name
             staged = work / "model"
             if staged.exists():
-                shutil.rmtree(staged)
+                # (the copy keeps the archive's read-only flags)
+                shutil.rmtree(staged, onerror=lambda f, path, _e: (os.chmod(path, 0o666), f(path)))
             shutil.copytree(src.parent, staged)
             renames = {}
             for cid in sorted(clips):

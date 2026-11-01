@@ -200,6 +200,7 @@ public final class HeroHud {
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
+		dev.overcraft.client.hud.ConspiratorHud.render(g, player, hero, w, h);
 		dev.overcraft.client.comms.Pings.render(g, w, h);
 		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
@@ -778,12 +779,7 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ability(hero, switch (hero) {
-				case LUCIO -> "sound_barrier";
-				case JETPACK_CAT -> "catnapper";
-				case MERCY -> "valkyrie";
-				default -> "kitsune_rush";
-			});
+			Identifier fox = HeroArt.ultimate(hero);
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}
@@ -867,6 +863,14 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SOMBRA) {
+			// Cyberspace (Shift) and Translocator (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
+			ability(g, hero, w, "cyberspace", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.sombra.SombraStats.CYBER_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "translocator", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.sombra.SombraStats.TRANSLOCATOR_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.ANA) {
 			// Sleep Dart (Shift) and Biotic Grenade (E), in Kiriko's two places (ours)
 			ability(g, hero, w, "sleep_dart", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1069,6 +1073,14 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SOMBRA) {
+			// Hotfix's charges (the right button) where Kiriko's ofuda panel is, the Machine Pistol (the left) where her kunai are
+			weapon(g, hero, w, "hotfix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+				dev.overcraft.sombra.SombraStats.HOTFIX_CHARGES, HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			weapon(g, hero, w, "machine_pistol", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.sombra.SombraStats.PISTOL_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.ANA) {
 			// the Biotic Rifle on the left button, where Kiriko's kunai panel is (Take Aim, the right button, has no rounds)
 			weapon(g, hero, w, "biotic_rifle", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),

@@ -31,6 +31,18 @@ public abstract class EntityMixin {
 		}
 	}
 
+	/**
+	 * A stealthed Sombra (Minecraft-invisible) is seen see-through by her own side and by an enemy within 4 m in sight
+	 * (Stealth.seenBy); hidden from everyone else.
+	 */
+	@Inject(method = "isInvisibleTo", at = @At("HEAD"), cancellable = true)
+	private void overcraft$stealthSeen(Player player, CallbackInfoReturnable<Boolean> cir) {
+		Boolean seen = dev.overcraft.sombra.Stealth.seenBy((Entity) (Object) this, player);
+		if (seen != null) {
+			cir.setReturnValue(!seen);
+		}
+	}
+
 	@Inject(method = "ignoreExplosion", at = @At("HEAD"), cancellable = true)
 	private void overcraft$phasedOutOfBlasts(Explosion explosion, CallbackInfoReturnable<Boolean> cir) {
 		if ((Object) this instanceof LivingEntity living && Combat.isPhased(living)) {

@@ -298,6 +298,7 @@ public final class Combat {
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.ULT_COST;
 			// (missing until Nano Boost: her charge stopped at 1 point)
 			case ANA -> (int) dev.overcraft.ana.AnaStats.ULT_COST;
+			case SOMBRA -> (int) dev.overcraft.sombra.SombraStats.ULT_COST;
 			default -> 1;
 		};
 	}

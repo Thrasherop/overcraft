@@ -65,6 +65,14 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.ana.AnaStats.GRENADE_RADIUS_CONTACT * 2, (float) dev.overcraft.ana.AnaStats.GRENADE_RADIUS_CONTACT * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Sombra's Translocator beacon (1575): thin (0.01 m in the data; ours a little more, to be shot). */
+	public static final EntityType<dev.overcraft.entity.TranslocatorEntity> TRANSLOCATOR = register("translocator",
+		EntityType.Builder.<dev.overcraft.entity.TranslocatorEntity>of(dev.overcraft.entity.TranslocatorEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.2f, 0.2f).clientTrackingRange(10).updateInterval(1));
+	/** Sombra's Cyberspace (7763): 0.3 m. */
+	public static final EntityType<dev.overcraft.entity.CyberspaceEntity> CYBERSPACE = register("cyberspace",
+		EntityType.Builder.<dev.overcraft.entity.CyberspaceEntity>of(dev.overcraft.entity.CyberspaceEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.6f, 0.6f).clientTrackingRange(10).updateInterval(1));
 	public static final EntityType<dev.overcraft.entity.PetalThrowEntity> PETAL_THROW = register("petal_throw",
 		EntityType.Builder.<dev.overcraft.entity.PetalThrowEntity>of(dev.overcraft.entity.PetalThrowEntity::new, MobCategory.MISC)
 			.noLootTable().noSave()

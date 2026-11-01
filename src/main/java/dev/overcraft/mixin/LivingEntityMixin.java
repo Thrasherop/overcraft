@@ -89,7 +89,9 @@ public abstract class LivingEntityMixin {
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "hurtServer", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
-		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this);
+		// a weakened attacker (Sombra's Cyberspace) deals half
+		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
+			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
 	}
 
 	/**

@@ -256,6 +256,109 @@ public final class EffectArt {
 		ANA_NANO_BEAM(0, 0, 0, 0, .25f, .116f, .186f, 1, .5f, .266f, .427f, 1, .75f, .513f, .821f, 1, 1, 1, 1, 1),
 		ANA_NANO_BEAM_N(0, 0, 0, 0, .25f, .039f, .062f, .348f, .5f, .089f, .142f, .399f, .75f, .171f, .274f, .515f, 1, .443f, .71f, 1),
 		ANA_NANO_MUZZLE(0, 0, 0, 0, .25f, .537f, .181f, 0, .5f, .733f, .362f, 0, .75f, .893f, .601f, 0, 1, 1, .941f, 0),
+		// ---- Sombra (tools/reference/sombra-effects.md; research\sombra\workx_palettes.txt): her team's rows, the enemies' _ENEMY twins ----
+		/** Cyberspace's trail ribbon (502E C25): violet to pink, HDR 5 (800B665E3BD4 r3, peak 5.00; game hex #B800FF #FF51FF #FF71FF #FF96FF #FFB7FF). */
+		SOMBRA_CYBER_TRAIL(0, 0, 0, 0, .25f, 1, .082f, 1, .5f, 1, .165f, 1, .75f, 1, .306f, 1, 1, 1, .476f, 1),
+		SOMBRA_CYBER_TRAIL_N(0, 0, 0, 0, .25f, .236f, .016f, .42f, .5f, .377f, .033f, .559f, .75f, .606f, .061f, .763f, 1, .879f, .095f, 1),
+		/** the trail's twin row: red-orange to pale yellow, HDR 5 (800B665E3BD4 r4, peak 5.00; game hex #FF1200 #FF8051 #FFAE71 #FFE596 #FFFFB7). */
+		SOMBRA_CYBER_TRAIL_ENEMY(0, 0, 0, 0, .25f, 1, .215f, .082f, .5f, 1, .423f, .165f, .75f, 1, .781f, .306f, 1, 1, 1, .476f),
+		SOMBRA_CYBER_TRAIL_ENEMY_N(0, 0, 0, 0, .25f, .42f, .043f, .016f, .5f, .559f, .085f, .033f, .75f, .763f, .156f, .061f, 1, 1, .242f, .095f),
+		/** the flying data cube 13EE4 (502E C28): violet to pale pink (8008C0FCC358 r1, peak 1.00; game hex #1E061E #B30CD4 #E475FA #F1B8FD #FEE5FF). */
+		SOMBRA_CYBER_CUBE(0, .013f, .002f, .013f, .25f, .45f, .004f, .658f, .5f, .773f, .178f, .96f, .75f, .881f, .478f, .98f, 1, .991f, .783f, 1),
+		/** the cube's twin row: rust to white (8008C0FCC358 r2, peak 1.00; game hex #1E0606 #A84513 #DA694B #FA9E90 #FAFAFF). */
+		SOMBRA_CYBER_CUBE_ENEMY(0, .013f, .002f, .002f, .25f, .39f, .06f, .007f, .5f, .703f, .142f, .07f, .75f, .956f, .344f, .281f, 1, .956f, .956f, 1),
+		/** the zone's 11.8 m sphere 1385 (7C7E C72): purple, peak 0.76 (800462B4FD6C r3, peak 0.76; game hex #9D0CA6 #AE0FB8 #BD11C7 #CA13D5 #D615E2). */
+		SOMBRA_CYBER_SPHERE(0, 0, 0, 0, .25f, .422f, .005f, .477f, .5f, .506f, .005f, .572f, .75f, .589f, .006f, .666f, 1, .674f, .007f, .762f),
+		/** the sphere's twin row: dim brown-red, peak 0.16 (800462B4FD6C r4, peak 0.16; game hex #511A15 #5A1E18 #63211C #6A251E #712721). */
+		SOMBRA_CYBER_SPHERE_ENEMY(0, 0, 0, 0, .25f, .103f, .013f, .009f, .5f, .123f, .015f, .011f, .75f, .144f, .018f, .013f, 1, .165f, .021f, .015f),
+		/** the zone's code streaks 9BDF (7C7E C38): brown to gold, HDR 5 (800F2B087BEC r7, peak 5.03; game hex #DC6000 #FFC622 #FFFF45 #FFFF5B #FFFFFF). */
+		SOMBRA_CYBER_GOLD(0, 0, 0, 0, .25f, 1, .565f, .016f, .5f, 1, 1, .06f, .75f, 1, 1, .104f, 1, 1, 1, 1),
+		SOMBRA_CYBER_GOLD_N(0, 0, 0, 0, .25f, .275f, .112f, .003f, .5f, .574f, .35f, .012f, .75f, .868f, .583f, .021f, 1, .994f, .818f, .273f),
+		/** the streaks' twin row: brown to orange, HDR 5 (800F2B087BEC r8, peak 5.03; game hex #DC1500 #FF6F22 #FFC845 #FFFE5B #FFFFFF). */
+		SOMBRA_CYBER_ORANGE(0, 0, 0, 0, .25f, 1, .159f, .016f, .5f, 1, .58f, .06f, .75f, 1, .993f, .104f, 1, 1, 1, 1),
+		SOMBRA_CYBER_ORANGE_N(0, 0, 0, 0, .25f, .275f, .032f, .003f, .5f, .574f, .115f, .012f, .75f, .868f, .197f, .021f, 1, .994f, .549f, .273f),
+		/** the zone's circuit sphere D72C (7C7E C58): dark gold to cream, HDR 2.7 (80050EECEE60 r9, peak 2.71; game hex #412600 #D29100 #FFC325 #FFED7D #FFFFE0). */
+		SOMBRA_CYBER_CIRCUIT(0, 0, 0, 0, .25f, .646f, .282f, 0, .5f, 1, .545f, .018f, .75f, 1, .85f, .204f, 1, 1, 1, .743f),
+		SOMBRA_CYBER_CIRCUIT_N(0, .02f, .007f, 0, .25f, .239f, .104f, 0, .5f, .441f, .201f, .007f, .75f, .524f, .314f, .075f, 1, 1, .745f, .275f),
+		/** the circuit sphere's twin row: plum to orange, HDR 3.8 (80050EECEE60 r10, peak 3.79; game hex #7E0068 #A00085 #FF7383 #FFB96E #FFF200). */
+		SOMBRA_CYBER_CIRCUIT_ENEMY(0, 0, 0, 0, .25f, .352f, 0, .234f, .5f, 1, .172f, .228f, .75f, 1, .483f, .155f, 1, 1, .888f, 0),
+		SOMBRA_CYBER_CIRCUIT_ENEMY_N(0, 0, 0, 0, .25f, .093f, 0, .062f, .5f, .285f, .046f, .06f, .75f, .606f, .128f, .041f, 1, 1, .235f, 0),
+		/** the zone's rising plus 3DC7 (7C7E C74): gold to pale yellow, HDR 3 (8001FA6F94F5 r2, peak 3.00; game hex #DE9A00 #FFDB21 #FFFF93 #FFFFB5 #FFFFFF). */
+		SOMBRA_CYBER_PLUS(0, 0, 0, 0, .25f, 1, .71f, .015f, .5f, 1, 1, .29f, .75f, 1, 1, .464f, 1, 1, 1, 1),
+		SOMBRA_CYBER_PLUS_N(0, 0, 0, 0, .25f, .351f, .237f, .005f, .5f, .408f, .337f, .097f, .75f, .527f, .458f, .155f, 1, 1, .913f, .351f),
+		/** the zone's ground decal 7B847 (7C7E C65): violet to cream, HDR 3 (800032683E86 r4, peak 3.00; game hex #340048 #D28965 #FFFFD8 #FFFFFF #FFFFFF). */
+		SOMBRA_CYBER_DECAL(0, 0, 0, 0, .25f, .644f, .249f, .13f, .5f, 1, 1, .685f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		SOMBRA_CYBER_DECAL_N(0, .011f, 0, .022f, .25f, .215f, .083f, .043f, .5f, .457f, .383f, .229f, .75f, .973f, .909f, .619f, 1, 1, .964f, .679f),
+		/** the burst's flare A76F (7CDB C17): violet to pink, HDR 3 (8008CA52628C r1, peak 3.00; game hex #50007D #D500FF #FF5AFF #FFB1FF #FFE5FF). */
+		SOMBRA_CYBER_BURST(0, 0, 0, 0, .25f, .668f, 0, 1, .5f, 1, .103f, 1, .75f, 1, .438f, 1, 1, 1, .787f, 1),
+		SOMBRA_CYBER_BURST_N(0, 0, 0, 0, .25f, .223f, 0, .353f, .5f, .543f, .034f, .754f, .75f, .818f, .146f, .939f, 1, 1, .262f, .973f),
+		/** the burst flare's twin row: rust to salmon, HDR 4.4 (8008CA52628C r2, peak 4.43; game hex #000000 #DE6B46 #FF9462 #FFC986 #FFFFD7). */
+		SOMBRA_CYBER_BURST_ENEMY(0, 0, 0, 0, .25f, .732f, .148f, .06f, .5f, 1, .298f, .121f, .75f, 1, .586f, .239f, 1, 1, 1, .677f),
+		SOMBRA_CYBER_BURST_ENEMY_N(0, 0, 0, 0, .25f, .165f, .033f, .014f, .5f, .332f, .067f, .027f, .75f, .654f, .132f, .054f, 1, 1, .227f, .153f),
+		/** the weakened enemy's arrows 66E4 (7AE1 C14): violet to pink, HDR 3 (80051C68041B r2, peak 3.00; game hex #8E00E2 #A933D0 #CF55A9 #FF777E #FFFDFF). */
+		SOMBRA_WEAKENED(0, 0, 0, 0, .25f, .399f, .033f, .628f, .5f, .623f, .092f, .397f, .75f, 1, .184f, .21f, 1, 1, .983f, 1),
+		SOMBRA_WEAKENED_N(0, 0, 0, 0, .25f, .133f, .011f, .209f, .5f, .208f, .031f, .132f, .75f, .347f, .061f, .07f, 1, 1, .328f, .366f),
+		/** the arrows' other row: dark red to salmon, HDR 3 (80051C68041B r4, peak 3.00; game hex #8E0200 #AB0900 #F75035 #FF8B61 #FFB17D). */
+		SOMBRA_WEAKENED_ALT(0, 0, 0, 0, .25f, .406f, .003f, 0, .5f, .926f, .081f, .036f, .75f, 1, .26f, .12f, 1, 1, .441f, .205f),
+		SOMBRA_WEAKENED_ALT_N(0, 0, 0, 0, .25f, .136f, .001f, 0, .5f, .309f, .027f, .012f, .75f, .652f, .087f, .04f, 1, 1, .147f, .068f),
+		/** the weakened enemy's falling chevrons DFDC (7AE1 C24): black to pink (80017FEBBB59 r3, peak 1.00; game hex #000000 #AF334F #DB667F #F7839D #FF92AD). */
+		SOMBRA_WEAKENED_CHEVRON(0, 0, 0, 0, .25f, .426f, .033f, .078f, .5f, .706f, .134f, .214f, .75f, .93f, .227f, .339f, 1, 1, .286f, .415f),
+		/** Hotfix's strands to an ally (7C6E C9): brown-gold to cream, HDR 3.9 (8006FB0C3C19 r3, peak 3.89; game hex #DE9A19 #E59F1A #FFD256 #FFFFA1 #FFFFFF). */
+		SOMBRA_HOTFIX_STRAND(0, 0, 0, 0, .25f, .785f, .347f, .011f, .5f, 1, .648f, .094f, .75f, 1, 1, .356f, 1, 1, 1, 1),
+		SOMBRA_HOTFIX_STRAND_N(0, 0, 0, 0, .25f, .202f, .089f, .003f, .5f, .269f, .166f, .024f, .75f, .448f, .396f, .092f, 1, 1, .965f, .564f),
+		/** the strands' twin (7C6E C13): brown-red to peach, HDR 3.9 (8005C557A361 r2, peak 3.89; game hex #DE4119 #E5431A #FF7C56 #FFD09E #FFFFFF). */
+		SOMBRA_HOTFIX_STRAND_ENEMY(0, 0, 0, 0, .25f, .785f, .057f, .011f, .5f, 1, .203f, .094f, .75f, 1, .631f, .342f, 1, 1, 1, 1),
+		SOMBRA_HOTFIX_STRAND_ENEMY_N(0, 0, 0, 0, .25f, .202f, .015f, .003f, .5f, .269f, .052f, .024f, .75f, .438f, .162f, .088f, 1, 1, .723f, .564f),
+		/** Hotfix's strands to a hacked object (1B32 C21): indigo to lilac, HDR 3.9 (800C55D7C70A r3, peak 3.89; game hex #5719DE #5A1AE5 #9656FF #F7A1FF #FFFFFF). */
+		SOMBRA_HACK_STRAND(0, 0, 0, 0, .25f, .102f, .011f, .785f, .5f, .305f, .094f, 1, .75f, .933f, .356f, 1, 1, 1, 1, 1),
+		SOMBRA_HACK_STRAND_N(0, 0, 0, 0, .25f, .026f, .003f, .202f, .5f, .078f, .024f, .269f, .75f, .24f, .092f, .448f, 1, .855f, .564f, 1),
+		/** the hack strands' twin (1B32 C23): dark red to pink, HDR 3.9 (800B4A29B50C r3, peak 3.89; game hex #DE1919 #E51A1A #FF5D56 #FFA99D #FFFFFF). */
+		SOMBRA_HACK_STRAND_ENEMY(0, 0, 0, 0, .25f, .785f, .011f, .011f, .5f, 1, .109f, .094f, .75f, 1, .396f, .336f, 1, 1, 1, 1),
+		SOMBRA_HACK_STRAND_ENEMY_N(0, 0, 0, 0, .25f, .202f, .003f, .003f, .5f, .269f, .028f, .024f, .75f, .434f, .102f, .086f, 1, 1, .521f, .462f),
+		/** the healed ally's code wall A512 (6570 C29): brown to gold, HDR 5 (8003744D4E14 r7, peak 5.03; game hex #DC6000 #FFC622 #FFFF45 #FFFF5B #FFFFFF). */
+		SOMBRA_HOTFIX_HEAL(0, 0, 0, 0, .25f, 1, .565f, .016f, .5f, 1, 1, .06f, .75f, 1, 1, .104f, 1, 1, 1, 1),
+		SOMBRA_HOTFIX_HEAL_N(0, 0, 0, 0, .25f, .275f, .112f, .003f, .5f, .574f, .35f, .012f, .75f, .868f, .583f, .021f, 1, .994f, .818f, .273f),
+		/** the code wall's twin row: brown to orange, HDR 5 (8003744D4E14 r8, peak 5.03; game hex #DC1500 #FF6F22 #FFC845 #FFFE5B #FFFFFF). */
+		SOMBRA_HOTFIX_HEAL_ENEMY(0, 0, 0, 0, .25f, 1, .159f, .016f, .5f, 1, .58f, .06f, .75f, 1, .993f, .104f, 1, 1, 1, 1),
+		SOMBRA_HOTFIX_HEAL_ENEMY_N(0, 0, 0, 0, .25f, .275f, .032f, .003f, .5f, .574f, .115f, .012f, .75f, .868f, .197f, .021f, 1, .994f, .549f, .273f),
+		/** the healed ally's body glow A7B6 (6570 C37): amber to gold, HDR 4 (80087210BF0E r1, peak 4.00; game hex #000000 #F69419 #FFD70C #FFFF5F #FFFFA6). */
+		SOMBRA_HOTFIX_GLOW(0, 0, 0, 0, .25f, .923f, .296f, .01f, .5f, 1, .68f, .004f, .75f, 1, 1, .114f, 1, 1, 1, .381f),
+		SOMBRA_HOTFIX_GLOW_N(0, 0, 0, 0, .25f, .231f, .074f, .002f, .5f, .409f, .17f, .001f, .75f, .659f, .328f, .028f, 1, 1, .565f, .095f),
+		/** the beacon's ribbons (1B0F C8): indigo to violet to white, HDR 2.45 (800265C1ADAE r3, peak 2.45; game hex #100033 #FF0BFF #FFBEFF #FFFFFF #FFFFFF). */
+		SOMBRA_BEACON_TRAIL(0, 0, 0, 0, .25f, .996f, .003f, 1, .5f, 1, .518f, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		SOMBRA_BEACON_TRAIL_N(0, .002f, 0, .014f, .25f, .406f, .001f, .764f, .5f, .633f, .211f, 1, .75f, .775f, .512f, 1, 1, .904f, .921f, 1),
+		/** the beacon ribbons' twin row: brown to orange-red to white (800048EE6A61 r4, peak 2.45; game hex #331000 #FF480B #FFCFBE #FFFFFF #FFFFFF). */
+		SOMBRA_BEACON_TRAIL_ENEMY(0, 0, 0, 0, .25f, 1, .065f, .003f, .5f, 1, .623f, .518f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		SOMBRA_BEACON_TRAIL_ENEMY_N(0, .014f, .002f, 0, .25f, .764f, .027f, .001f, .5f, 1, .254f, .211f, .75f, 1, .569f, .512f, 1, .904f, .921f, 1),
+		/** the teleport's flare 29F7 (1A76 / 5FE0 C17): indigo to violet to white (800FCD048FF0 r1, peak 1.00; game hex #310063 #DB2AF8 #E89EFF #EFD8FF #FFFFFF). */
+		SOMBRA_TELEPORT(0, 0, 0, 0, .25f, .707f, .023f, .935f, .5f, .808f, .344f, 1, .75f, .859f, .685f, 1, 1, 1, 1, 1),
+		/** the teleport flare's twin row: indigo to coral to white (800FCD048FF0 r2, peak 1.00; game hex #310063 #F75033 #FFA79E #FFDBD8 #FFFFFF). */
+		SOMBRA_TELEPORT_ENEMY(0, 0, 0, 0, .25f, .928f, .08f, .033f, .5f, 1, .387f, .344f, .75f, 1, .708f, .685f, 1, 1, 1, 1),
+		/** her body flash at the teleport (1B1E / 3683 material): lilac to purple, HDR 12.6, falls (800C31BA6BBA r1, peak 12.63, falls; game hex #FFFFFF #FFFFFF #FFE1FF #FF9CFF #FF00FF). */
+		SOMBRA_TELEPORT_BODY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .751f, 1, .75f, 1, .331f, 1, 1, 1, 0, 1),
+		SOMBRA_TELEPORT_BODY_N(0, 0, 0, 0, .25f, .594f, .116f, .86f, .5f, .487f, .059f, .719f, .75f, .354f, .026f, .536f, 1, .208f, 0, .317f),
+		/** the body flash's twin row: coral to brown, HDR 12.5, falls (800C31BA6BBA r2, peak 12.54, falls; game hex #FFFFFA #FFFFA3 #FFF573 #FFDA49 #FFBF01). */
+		SOMBRA_TELEPORT_BODY_ENEMY(0, 0, 0, 0, .25f, 1, 1, .366f, .5f, 1, .912f, .172f, .75f, 1, .699f, .067f, 1, 1, .522f, 0),
+		SOMBRA_TELEPORT_BODY_ENEMY_N(0, 0, 0, 0, .25f, .855f, .097f, .029f, .5f, .712f, .073f, .014f, .75f, .533f, .056f, .005f, 1, .335f, .042f, 0),
+		/** the stealth detection ring 129B (4DD9 C3): black to violet to white, HDR 20 (800561F03EEF r3, peak 19.98; game hex #1F0335 #E509FF #FF0DFF #FF05FF #FFFFFF). */
+		SOMBRA_DETECT_RING(0, 0, 0, 0, .25f, .782f, .003f, 1, .5f, 1, .004f, 1, .75f, 1, .002f, 1, 1, 1, 1, 1),
+		SOMBRA_DETECT_RING_N(0, .001f, 0, .002f, .25f, .039f, 0, .138f, .5f, .08f, 0, .286f, .75f, .185f, 0, .661f, 1, 1, 1, 1),
+		/** 256F's glow streaks 242 (C23): violet to white (800C48520539 r1, peak 1.00; game hex #C300FF #913EFF #9C8DFF #D5D0FF #FFFFFF). */
+		SOMBRA_BEACON_LAND(0, 0, 0, 0, .25f, .282f, .049f, 1, .5f, .332f, .266f, 1, .75f, .663f, .63f, 1, 1, 1, 1, 1),
+		/** Her team's strip A06C: the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_PURPLE(0, 0, 0, 0, .1f, .171f, 0, .22f, .325f, .191f, .012f, .462f, .55f, .227f, .058f, .863f, .775f, .296f, .168f, .973f, 1, 1, 1, 1),
+		/** Her team's strip A06B: the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_PURPLE_DARK(0, 0, 0, 0, .1f, 0, 0, 0, .325f, .162f, 0, .15f, .55f, .309f, .016f, .638f, .775f, .209f, .231f, 1, 1, .991f, .991f, 1),
+		/** Their twin, strip ADD0: the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_ENEMY_RED(0, 0, 0, 0, .1f, .319f, 0, 0, .325f, .651f, 0, 0, .55f, .956f, .074f, 0, .775f, 1, .402f, 0, 1, 1, 1, 1),
+		/** The hacked skull's strip A720 (#651B84 > #BDAAFF; the middle ours): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_SKULL(0, 0, 0, 0, .1f, .13f, .011f, .231f, .55f, .27f, .125f, .539f, 1, .509f, .402f, 1),
+		/** The pistol's muzzle strip A260, magenta to gold: the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_MUZZLE(0, 0, 0, 0, .1f, .558f, 0, .73f, .325f, .839f, .117f, .156f, .55f, 1, .584f, .025f, .775f, 1, 1, .109f, 1, 1, 1, 1),
+		/** The pistol's tracer 1998, warm orange #FF6236 (normalised; the ends ours): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_TRACER(0, 0, 0, 0, .1f, 0, 0, 0, .55f, 1, .122f, .037f, 1, 1, .644f, .479f),
+		/** Her heals' gold LUT row (Hotfix's healed ally, Cyberspace's allies): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
+		SOMBRA_HEAL_GOLD(0, 0, 0, 0, .1f, .141f, .023f, 0, .325f, .27f, .109f, .003f, .55f, .571f, .347f, .012f, .775f, .871f, .584f, .02f, 1, .991f, .815f, .275f),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 
