@@ -41,10 +41,16 @@ public final class RepairPack {
 
 	public static void launch(ServerPlayer brigitte, LivingEntity ally) {
 		FLYING.add(new Flying(brigitte, ally, brigitte.level().getGameTime()));
+		// in flight (218D): from her left wrist (hp 0002) to the ally's hips at its speed, drawn by her clients
+		dev.overcraft.hero.Effects.play(brigitte.level(), "brigitte_pack", brigitte.getEyePosition().add(0, -0.5, 0),
+			net.minecraft.world.phys.Vec3.ZERO, ally, 0, brigitte);
 	}
 
 	private static void land(ServerPlayer brigitte, LivingEntity ally) {
 		give(brigitte, ally, REPAIR_HEAL_NOW);
+		// the arrival at the ally's hips (2F2E) and its heal over time (2074, the 2 s)
+		dev.overcraft.hero.Effects.play(brigitte.level(), "brigitte_pack_arrive", ally.position(), net.minecraft.world.phys.Vec3.ZERO, ally,
+			Ow.ticks(REPAIR_TIME), brigitte);
 		long now = ally.level().getGameTime();
 		for (Heal h : HEALS) {
 			if (h.ally == ally) {

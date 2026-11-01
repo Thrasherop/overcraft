@@ -729,6 +729,11 @@ public final class HeroAnimator {
 	/** The ofuda hand's fingertip in the model's space, as last posed by poseFirstPerson. */
 	public final Vector3f fingertip = new Vector3f();
 	/**
+	 * Brigitte: her Whip Shot's flying head in the space of the model being drawn (set by the renderer from BrigitteFx before
+	 * HeroWeapon.extras; null when no whip is out), and her flail's chain ends as extras last placed them (null: seated).
+	 */
+	public @org.jspecify.annotations.Nullable Vector3f whipHead, chainFrom, chainTo;
+	/**
 	 * Her hands' weapon bones in the model's space, as last posed by poseFirstPerson: where she holds her kunai (on the
 	 * right of the view) and her ofuda (on the left). Minecraft mode puts the held items there (HeroModelRenderer).
 	 */
@@ -1569,13 +1574,21 @@ public final class HeroAnimator {
 			});
 		}
 
+		/**
+		 * Bones off the pelvis that her actions still move: Brigitte's flail-head chain (bone_0605 < Pelvis, bone_0606 = her
+		 * hp 0257 where the flung head is drawn; bone_100E, the swing pivots bone_12E2 = hp 0079 and bone_12E6 = hp 0267:
+		 * research/brigitte/work/assets.md). Her swing clips carry 0606 4.7-4.9 m out; under the spine-only mask they never
+		 * moved and the head stayed at her hip (found playing).
+		 */
+		private static final java.util.Set<String> ACTION_CHAINS = java.util.Set.of("bone_0605", "bone_100E", "bone_12E2", "bone_12E6");
+
 		static boolean[] mask(SkinnedModel model) {
 			return MASKS.computeIfAbsent(model, m -> {
 				boolean[] mask = new boolean[m.nodeNames.length];
 				int spine = first(m, "Spine_1", "ValveBiped.Bip01_Spine");
 				for (int i = 0; i < mask.length; i++) {
 					for (int p = i; p >= 0; p = m.parent[p]) {
-						if (p == spine) {
+						if (p == spine || ACTION_CHAINS.contains(m.nodeNames[p])) {
 							mask[i] = true;
 							break;
 						}

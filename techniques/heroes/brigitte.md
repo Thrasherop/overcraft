@@ -13,6 +13,9 @@ Survivor (BZ 2026-02-10). Up: [Techniques](../README.md) · the method:
 - **Her effects:** [brigitte-effects](../../tools/reference/brigitte-effects.md) (each moment's recipe, the barrier field's
   look, palettes `BRIGITTE_*`, pack masks `brigitte_*`); the lesson (her visuals are clip effects, not graph effects):
   [reading_game_data](../game-data/reading_game_data.md#where-a-melee-heros-effects-live-brigittes-pass-2026-11-01).
+- **Her sounds and voice:** `tools/soundmaps/brigitte.txt` (every event, its trigger, own / 3p, the Voice.java stimulus
+  lines) and her section of `tools/soundmaps/emotes.txt`; the lessons (hit sounds in contact sets, effects hidden in
+  expressions, charge-picked copies): [sounds](../sound/sounds.md#brigitte-sounds).
 - **The plan:** `tools/reference/brigitte-plan.md` (what maps onto the mod: armor and a barrier are new; the order).
 - **Clip maps:** `tools/clipmaps/brigitte.txt` (3P), `brigitte_1p.txt`, `brigitte_flail.txt` (the handle, exported as
   `hero_models/brigitte_weapon.glb`), `brigitte_flail_head.txt`, `brigitte_shield.txt`.
@@ -138,3 +141,37 @@ Each perk against its control, picked through the perk menu (Alt held, a click),
 - **Inspiring Strike:** a bash hit: the villager 4 -> 8.56 at once (57), her speed 7.1 m/s for the next second (x1.3); without
   it 5.2 at 0.3 s rising over 4 s, 5.46 m/s.
 - **Whiplash:** Whip Shot at a live husk 6 m ahead with a wall 2.5 m behind it: 20 -> 9.6 (70 + 60); without it 14.4 (70).
+
+## What step 8 (effects) taught
+- **Her flung flail head is a bone of her body, not of the flail** (assets.md): in third person the head is drawn at her
+  hp 0257 = `bone_0606` (< 0605 < Pelvis), which her swing clips carry 4.7-4.9 m out; the flail's own 3P clips keep its
+  socket still. In first person it's the other way round: the flail's `_1p` clips fling its socket (`swing_1p` 4 m at
+  0.2 s). The action layer played only under `Spine_1`, so her pelvis-hung chain bones (0605 / 0606 / 100E / 12E2 /
+  12E6) never moved and the head stayed at her hip: `HeroAnimator.UpperBody.ACTION_CHAINS` (found playing; measured with
+  the dev `weapon` command: the head at 2.4 / 4.4 / 4.9 / 4.7 / 3.5 m through a swing). Whip Shot's head goes 20 m, past
+  its clip's 5: BrigitteFx flies it along the server's path (`brigitte_whip` / `brigitte_whip_back`).
+- **Check a texture's kind before giving it a palette.** Her dust and smoke puffs are grey with the shape in the alpha; her
+  heal swirl and dots, the stun halo and stars, the shards are coloured: through a palette by brightness they drew squares.
+  `Palette.NATURAL` (with `tint` for the dust). A quick per-pixel look (grey or not, alpha used or not) tells which.
+- **A LUT read by raw brightness can wash a field:** the barrier's row 0 starts at a dim red, so the frame mask's dark-grey
+  ground turned the whole field pink. Ours: the masks through her sky-blue energy row (M).
+- **The swing arc is a U-shaped band 1.4 m tall,** fixed on her pelvis pivot `bone_12E2` (hp 0079), which doesn't turn
+  through the swing (measured): the arc stands still in front of her while its masks flow.
+
+Played (step 8, dev client, flat world `brigemo`, effects slowed with `fxslow` for the frames): the swing from behind
+(fx_swing_back1-3.png: the arc, the head out on its chain, dust and sparks where the 6 m point meets the ground); the
+barrier front and first person (fx_bar3_front.png, fx_bar3_1p.png: pale blue, cyan edges); Whip Shot at a husk 12 m
+ahead (fx_whip_a-c.png: the chain out, the rocket sparks); a bash on a husk (fx_bash_a/b.png: jets, the shield imprint,
+8 streaks); Repair Pack at a villager 10 m ahead (fx_pack_a-c.png: the core and sparks in flight, the arrival's dome,
+glow and lens, the heal swirl and dots); Rally (fx_rally_a-c.png: the burst over her flail, the dome, ring, armour shell,
+decals; the villager's gold glow) and its bash's stun (fx_stun2.png: the halo over the husk). Each moment's particles
+listed with `fxnear`. The white pixel clouds in some frames are Minecraft's own death puffs from killed test mobs.
+
+## What step 9 (emotes) taught
+- **Her pieces are three slots of her hero entity:** the flail 3572, the hand shield 3816 (24C5 on Weapon_L) and the
+  seated head 33C0; the folded shield 339E (1B25 on 01D8) no emote touches. A weapon clip may live only in an emote's
+  folder: `owm_survey.py --clips-from` (Cheer's 5265 on the flail).
+- **A second stow key needs the loader to read it:** `EmoteData` now keeps every `stow*` key's windows; a `stow*` key that
+  isn't windows (Lúcio's `stowBy` note) broke every hero's data until skipped (found playing: the flail missing in Cheer).
+- **An emote hides a piece by parking its bone:** Flail Tricks puts 0F74 over 80 m away; the folded shield isn't drawn then.
+- **Her shield's rest pose is already folded** (its bones 0.58 x 0.91 m, the deploy clip's first frame).

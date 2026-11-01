@@ -104,6 +104,11 @@ public final class Barrier {
 				s.barrierUp = false;
 				s.barrierDownSince = level.getGameTime();
 				dev.overcraft.hero.Combat.animate(brig, "shield_lower");
+				// 268C at the barrier: its outline's flash, hexes and shards
+				float yaw = brig.getYRot() * (float) (Math.PI / 180);
+				Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+				dev.overcraft.hero.Effects.play(level, "brigitte_barrier_break", brig.position().add(facing.scale(BARRIER_AHEAD)).add(0, 1.2, 0),
+					facing, brig, s.rallyTicks > 0 ? 1 : 0, brig);
 			}
 			damage = (float) Ow.hp(ow - took);
 			if (damage <= 0) {

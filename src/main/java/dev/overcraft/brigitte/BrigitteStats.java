@@ -83,6 +83,8 @@ public final class BrigitteStats {
 	public static final double BARRIER_WIDTH = 1.51, BARRIER_HEIGHT = 2.64, BARRIER_WIDTH_RALLY = 3.75, BARRIER_HEIGHT_RALLY = 2.35;
 	/** How far ahead of her it stands (ours: on her left hand's bone 002C in the data, about there). */
 	public static final double BARRIER_AHEAD = 0.9;
+	/** Rally's pulse (219D) starts this long into the cast (12BE #81: after 0.5 s, H). */
+	public static final double RALLY_PULSE_AT = 0.5;
 
 	// ---- Shield Bash (0EE3 #495) ----
 	/** A 0.3 s dash at 4x her speed (D #495 StateWait 0.3, 1C9C 4.0: about 6.6 m, M). */

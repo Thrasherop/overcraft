@@ -100,6 +100,7 @@ public final class Brigitte implements HeroKit {
 		s.bashTicks = 0;
 		s.bashHit = false;
 		Combat.animate(player, "shield_bash");
+		Effects.play(player.level(), "brigitte_bash", player.position(), flat(player), player, 0, player);
 		// Survivor (01C7, tag 1173): a movement ability starts the regeneration at once
 		s.lastDamagedTick = Math.min(s.lastDamagedTick, Combat.now(player) - Combat.REGEN_DELAY);
 	}
@@ -121,6 +122,9 @@ public final class Brigitte implements HeroKit {
 				target.push(push.x, push.y, push.z);
 				target.needsSync = true;
 				Combat.animate(player, "shield_bash_hit");
+				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
+				Effects.play(player.level(), "brigitte_bash_hit", player.position().add(flat(player).scale(0.6)).add(0, 1.2, 0), flat(player),
+					player, 0, player);
 				if (HeroManager.hasPerk(player, Perk.BRIGITTE_INSPIRING_STRIKE)) {
 					Inspire.strike(player, s);
 				} else {
@@ -128,7 +132,7 @@ public final class Brigitte implements HeroKit {
 				}
 				if (s.rallyTicks > 0) {
 					// in Rally the bash stuns, and a shockwave follows (12BE: 1340, #878)
-					dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
+					stun(player, target);
 					s.shockwaveIn = Ow.ticks(RALLY_SHOCKWAVE_AT);
 				}
 				end(player, s);
@@ -215,9 +219,13 @@ public final class Brigitte implements HeroKit {
 		s.ultActive = Ow.ticks(RALLY_CAST + RALLY_TIME);
 		s.rallyCast = 0;
 		Combat.animate(player, "ult_start");
+		Effects.play(player.level(), "brigitte_rally", player.position(), flat(player), player, 0, player);
 	}
 
 	private static void rally(ServerPlayer player, HeroState s) {
+		if (s.rallyCast >= 0 && s.rallyCast + 1 == Ow.ticks(RALLY_PULSE_AT)) {
+			Effects.play(player.level(), "brigitte_rally_pulse", player.position(), flat(player), player, 0, player);
+		}
 		if (s.rallyCast >= 0 && ++s.rallyCast >= Ow.ticks(RALLY_CAST)) {
 			s.rallyCast = -1;
 			s.rallyTicks = Ow.ticks(RALLY_TIME);
@@ -247,6 +255,7 @@ public final class Brigitte implements HeroKit {
 					&& (e == player || player.hasLineOfSight(e)))) {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
 				Combat.overhealthPool(e, RALLY_OVERHEALTH, RALLY_OVERHEALTH_MAX, RALLY_OVERHEALTH_TIME, 1000);
+				Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
 			}
 		}
 		if (--s.rallyTicks <= 0) {
@@ -298,8 +307,14 @@ public final class Brigitte implements HeroKit {
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
 			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3);
 			e.needsSync = true;
-			dev.overcraft.hero.Sleep.stun(e, RALLY_STUN);
+			stun(player, e);
 		}
+	}
+
+	/** Rally's stun (Sleep.stun) and its halo over the target's head (220D, for the stun's time). */
+	private static void stun(ServerPlayer player, LivingEntity target) {
+		dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
+		Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);
 	}
 
 	// ---- Whip Shot (1259) ----
@@ -328,6 +343,7 @@ public final class Brigitte implements HeroKit {
 			s.whipFrom = player.getEyePosition();
 			s.whipDir = player.getViewVector(1.0f);
 			s.whipOut = 0;
+			Effects.play(player.level(), "brigitte_whip", s.whipFrom, s.whipDir, player, 0, player);
 		}
 		if (s.whipOut >= 0 && s.whipFrom != null && s.whipDir != null) {
 			double step = Ow.speed(WHIP_SPEED);
@@ -357,13 +373,13 @@ public final class Brigitte implements HeroKit {
 				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME),
 					HeroManager.hasPerk(player, Perk.BRIGITTE_WHIPLASH) ? player : null));
 				Inspire.trigger(player, s, true, INSPIRE_TIME * (HeroManager.hasPerk(player, Perk.BRIGITTE_MORALE_BOOST) ? MORALE_BOOST : 1));
-				back(player, s, "whip_return");
+				back(player, s, "whip_return", a.add(s.whipDir.scale(Math.sqrt(best))));
 			} else if (block.getType() != HitResult.Type.MISS) {
-				back(player, s, "whip_return_blocked");
+				back(player, s, "whip_return_blocked", block.getLocation());
 			} else {
 				s.whipOut += reach;
 				if (s.whipOut >= WHIP_RANGE - 1.0E-6) {
-					back(player, s, "whip_return_miss");
+					back(player, s, "whip_return_miss", s.whipFrom.add(s.whipDir.scale(WHIP_RANGE)));
 				}
 			}
 		}
@@ -420,11 +436,12 @@ public final class Brigitte implements HeroKit {
 		});
 	}
 
-	/** The flail starts back: no more hits; the cooldown when it's in her hand (0.3 s). */
-	private static void back(ServerPlayer player, HeroState s, String clip) {
+	/** The flail starts back from where its head is: no more hits; the cooldown when it's in her hand (0.3 s). */
+	private static void back(ServerPlayer player, HeroState s, String clip, Vec3 head) {
 		s.whipOut = -2;
 		s.whipBackAt = s.whipTicks + Ow.ticks(WHIP_RETURN);
 		Combat.animate(player, clip);
+		Effects.play(player.level(), "brigitte_whip_back", head, Vec3.ZERO, player, Ow.ticks(WHIP_RETURN), player);
 	}
 
 	// ---- Repair Pack (0EDD) ----
@@ -473,6 +490,7 @@ public final class Brigitte implements HeroKit {
 		s.flailSwing = 0;
 		s.flailHit.clear();
 		Combat.animate(player, s.flailCombo % 2 == 0 ? "swing" : "swing_2");
+		Effects.play(player.level(), "brigitte_swing", player.position(), flat(player), player, s.flailCombo % 2, player);
 	}
 
 	/** Each tick of a swing: the sweep from 0.2 s to 0.4 s, then the rest of its 0.6 s. */

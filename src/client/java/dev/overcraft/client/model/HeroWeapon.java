@@ -107,13 +107,33 @@ public final class HeroWeapon {
 			EmoteProps.Placed flail = animator.emoting() && !inEmote(hero, animator) ? null
 				: place(hero, animator, heroModel, firstPerson, now);
 			HeroModels.Loaded head = HeroModels.get("brigitte_flail_head");
+			animator.chainFrom = null;
+			animator.chainTo = null;
 			if (flail != null && head != null) {
 				SkinnedModel handle = flail.loaded().model();
+				Skeleton.Pose handlePose = pose(handle, animator, firstPerson, now);
 				int socket = handle.node("bone_0FCD");
+				int start = handle.node("bone_0596");
 				if (socket >= 0) {
-					Matrix4f at = new Matrix4f(flail.at()).mul(Skeleton.world(handle, pose(handle, animator, firstPerson, now), socket));
+					Matrix4f seated = new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, socket));
+					Matrix4f at = seated;
+					Matrix4f flung = firstPerson || animator.emoting() ? null : flungHead(animator, heroModel, now);
+					if (animator.whipHead != null) {
+						// Whip Shot's head, flown where the server sent it (1259 #640: the graph moves it, 20 m; its clips reach 5)
+						at = new Matrix4f(seated).setTranslation(animator.whipHead);
+					} else if (flung != null) {
+						at = flung;
+					}
 					// Cheer plays the head's own clip (525F on slot 33C0)
 					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), emoteClipPose(head.model(), animator, "head"), -1, null)));
+					// the chain (216C / 22CF: the handle's hp 0076 = bone_0596 to the head) while the head is off its socket
+					org.joml.Vector3f from = start < 0 ? seated.getTranslation(new org.joml.Vector3f())
+						: new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, start)).getTranslation(new org.joml.Vector3f());
+					org.joml.Vector3f to = at.getTranslation(new org.joml.Vector3f());
+					if (to.distance(from) > CHAIN_SHOWN) {
+						animator.chainFrom = from;
+						animator.chainTo = to;
+					}
 				}
 			}
 			EmoteProps.Placed hand = firstPerson ? null : handShield(animator, heroModel);
@@ -196,6 +216,33 @@ public final class HeroWeapon {
 		return pose;
 	}
 
+	/** The head this far (metres) from the handle's chain start is off its socket: the chain shows. */
+	private static final float CHAIN_SHOWN = 0.5f;
+
+	/**
+	 * Her flung flail head in third person: drawn at her hp 0257 = bone_0606 while the flail is out (1248 #640 at v432),
+	 * which her swing clips carry 4.7-4.9 m out (swing at 0.25-0.35 s); seated (null) when the swing has it back at her
+	 * pelvis or no swing plays.
+	 */
+	private static @Nullable Matrix4f flungHead(HeroAnimator a, SkinnedModel heroModel, float now) {
+		Skeleton.Pose pose = a.lastPose();
+		int bone = heroModel.node("bone_0606");
+		boolean swinging = a.since("swing", now) < SWING_OUT || a.since("swing_2", now) < SWING_OUT;
+		if (!swinging || pose == null || bone < 0) {
+			return null;
+		}
+		Matrix4f at = Skeleton.world(heroModel, pose, bone);
+		org.joml.Vector3f p = at.getTranslation(new org.joml.Vector3f());
+		// out on its chain: further from her body's axis than a hand reaches (at rest 0606 hangs 0.73 m off it, at her hip)
+		return (float) Math.hypot(p.x, p.z) > FLUNG ? at : null;
+	}
+
+	/** Metres from her body's axis beyond which bone_0606 has the head out on its chain. */
+	private static final float FLUNG = 1.2f;
+
+	/** A swing's whole clip (0.6 s: BrigitteStats.FLAIL_*). */
+	private static final float SWING_OUT = 0.6f;
+
 	/** A bone further than this from her feet (metres) is parked out of sight by the clip, not carried. */
 	private static final float PARKED = 5;
 
@@ -272,6 +319,9 @@ public final class HeroWeapon {
 			&& !data.stowed(emote, animator.emoteClip(), animator.emoteAt(), hero == Hero.MERCY && animator.blaster());
 	}
 
+	/** Her swings and whips as the server names them (Combat.animate), whose flail clips play on the handle. */
+	private static final String[] FLAIL_ACTIONS = {"swing", "swing_2", "whip", "whip_return", "whip_return_blocked", "whip_return_miss"};
+
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");
@@ -292,6 +342,24 @@ public final class HeroWeapon {
 			Skeleton.sample(idle, now % Math.max(idle.duration(), 1.0E-3f), pose);
 		} else if (idle != null) {
 			Skeleton.sample(idle, 0, pose);
+		}
+		if (flail && staffClip == null) {
+			// her flail's own clip of the newest swing or whip (brigitte_flail.txt): in first person they fling the head's
+			// socket out on its chain (swing_1p 4 m at 0.2 s); the third-person ones keep it seated (her body's bone_0606 carries
+			// the flung head there: flungHead)
+			String newest = null;
+			float best = Float.MAX_VALUE;
+			for (String action : FLAIL_ACTIONS) {
+				float since = a.since(action, now);
+				SkinnedModel.Clip c = model.clips.get(firstPerson ? action + "_1p" : action);
+				if (c != null && since >= 0 && since < c.duration() && since < best) {
+					best = since;
+					newest = action;
+				}
+			}
+			if (newest != null) {
+				Skeleton.sample(model.clips.get(firstPerson ? newest + "_1p" : newest), best, pose);
+			}
 		}
 		// two reloads, 248D at 30 fps and 26E8 at 60 (aliases 80AA8045 / 80AA8050): which view each is for isn't read
 		// (ours: the 60 fps one in first person, where it's seen up close)

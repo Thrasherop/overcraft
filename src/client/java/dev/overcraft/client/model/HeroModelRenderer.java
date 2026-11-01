@@ -201,9 +201,22 @@ public final class HeroModelRenderer {
 			// her showcase entity holds the flail in her hand all the same (3A90: 23D4 on 000A, brigitte assets.md)
 			: previewing ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
 			: null);
+		// Brigitte's whip head where BrigitteFx flies it, brought into her model's space (her feet, her facing, her scale)
+		net.minecraft.world.phys.Vec3 feet = entity.getPosition(partialTicks);
+		float turnY = (float) Math.toRadians(-facing);
+		net.minecraft.world.phys.Vec3 whip = hero == Hero.BRIGITTE && !previewing
+			? dev.overcraft.client.effect.BrigitteFx.whipHead(entity.getId(), entity.getEyePosition(partialTicks)) : null;
+		animator.whipHead = whip == null ? null
+			: new Vector3f((float) (whip.x - feet.x), (float) (whip.y - feet.y), (float) (whip.z - feet.z)).rotateY(-turnY).div(state.scale);
 		// the extras decide for themselves in an emote (Brigitte's folded shield stays when the flail is put away)
 		state.setData(SIDEARM, !previewing || showcase == null
 			? new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), false, now)) : null);
+		if (hero == Hero.BRIGITTE && !previewing && animator.chainFrom != null && animator.chainTo != null) {
+			// the flail's chain, from the handle to the flung head, in the world (BrigitteFx draws it)
+			Vector3f a = new Vector3f(animator.chainFrom).mul(state.scale).rotateY(turnY);
+			Vector3f b = new Vector3f(animator.chainTo).mul(state.scale).rotateY(turnY);
+			dev.overcraft.client.effect.BrigitteFx.chain(entity, feet.add(a.x, a.y, a.z), feet.add(b.x, b.y, b.z));
+		}
 		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
 			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -841,9 +854,20 @@ public final class HeroModelRenderer {
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
+		net.minecraft.world.phys.Vec3 cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
+		net.minecraft.world.phys.Vec3 whip = hero == Hero.BRIGITTE && !minecraft
+			? dev.overcraft.client.effect.BrigitteFx.whipHead(player.getId(), player.getEyePosition(partialTicks)) : null;
+		// her whip head in the view's own frame (the pose stack is camera-relative, in the world's axes, turned with the view)
+		animator.whipHead = whip == null ? null : new Matrix4f(poseStack.last().pose()).invert()
+			.transformPosition(new Vector3f((float) (whip.x - cam.x), (float) (whip.y - cam.y), (float) (whip.z - cam.z)));
 		if (!minecraft) {
 			EmoteProps.submit(new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), true, now)), poseStack, collector,
 				lit, overlay);
+			if (hero == Hero.BRIGITTE && animator.chainFrom != null && animator.chainTo != null) {
+				Vector3f a = poseStack.last().pose().transformPosition(new Vector3f(animator.chainFrom));
+				Vector3f b = poseStack.last().pose().transformPosition(new Vector3f(animator.chainTo));
+				dev.overcraft.client.effect.BrigitteFx.chain(player, cam.add(a.x, a.y, a.z), cam.add(b.x, b.y, b.z));
+			}
 		}
 		if (weapon != null) {
 			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);

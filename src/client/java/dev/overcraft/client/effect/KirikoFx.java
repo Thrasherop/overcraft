@@ -113,9 +113,7 @@ public final class KirikoFx {
 			default -> {
 				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy) && !MercyFx.dispatch(e, enemy)
 					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy) && !SombraFx.dispatch(e, enemy)) {
-					if (e.effect().equals("brigitte_bash_end")) {
-						dev.overcraft.client.ClientBrigitte.ended(e.entity());
-					}
+					BrigitteFx.dispatch(e, enemy);
 				}
 			}
 		}

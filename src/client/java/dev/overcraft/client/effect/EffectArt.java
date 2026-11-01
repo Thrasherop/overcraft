@@ -359,6 +359,159 @@ public final class EffectArt {
 		SOMBRA_TRACER(0, 0, 0, 0, .1f, 0, 0, 0, .55f, 1, .122f, .037f, 1, 1, .644f, .479f),
 		/** Her heals' gold LUT row (Hotfix's healed ally, Cyberspace's allies): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
 		SOMBRA_HEAL_GOLD(0, 0, 0, 0, .1f, .141f, .023f, 0, .325f, .27f, .109f, .003f, .55f, .571f, .347f, .012f, .775f, .871f, .584f, .02f, 1, .991f, .815f, .275f),
+		// Brigitte's (tools/reference/brigitte-effects.md, researchrigitte\workx_palettes.txt)
+		/** the flail swing arc 5F3F (3P clip 4E9E effect 26EB C17): black, amber, tan, sky blue, HDR 2 (800A3EC1BF96 r6, peak 2.00; game hex #000000 #FDBC0E #FFE7AE #8DD5FF #CAFFFF). */
+		BRIGITTE_SWING(0, 0, 0, 0, .25f, .983f, .5f, .004f, .5f, 1, .802f, .425f, .75f, .266f, .663f, 1, 1, .592f, 1, 1),
+		BRIGITTE_SWING_N(0, 0, 0, 0, .25f, .491f, .25f, .002f, .5f, .664f, .401f, .213f, .75f, .133f, .331f, .876f, 1, .296f, .708f, 1),
+		/** the swing arc's twin (26EB C15): black, red, orange, pale gold, HDR 2 (80061D37D65D r6, peak 2.00; game hex #000000 #FD210E #FF6327 #FFB146 #FFFFCA). */
+		BRIGITTE_SWING_ENEMY(0, 0, 0, 0, .25f, .983f, .015f, .004f, .5f, 1, .126f, .02f, .75f, 1, .441f, .061f, 1, 1, 1, .592f),
+		BRIGITTE_SWING_ENEMY_N(0, 0, 0, 0, .25f, .491f, .008f, .002f, .5f, .866f, .063f, .01f, .75f, .979f, .221f, .031f, 1, 1, .679f, .296f),
+		/** the 1P swing arc 5D48 (clip 4F53 effect 2624 C9): the same gold-to-blue row (800D213EBF90 r7, peak 2.00; game hex #000000 #FDBC0E #FFE7AE #8DD5FF #CAFFFF). */
+		BRIGITTE_SWING_1P(0, 0, 0, 0, .25f, .983f, .5f, .004f, .5f, 1, .802f, .425f, .75f, .266f, .663f, 1, 1, .592f, 1, 1),
+		BRIGITTE_SWING_1P_N(0, 0, 0, 0, .25f, .491f, .25f, .002f, .5f, .664f, .401f, .213f, .75f, .133f, .331f, .876f, 1, .296f, .708f, 1),
+		/** the 3P chain ribbon 13DB9 (216C / 22CF C2): olive to pale yellow, HDR 10 (8007A4D04894 r1, peak 9.99; game hex #814300 #BD9C00 #FFFF06 #FFFFFF #FFFFFF). */
+		BRIGITTE_CHAIN(0, 0, 0, 0, .25f, .507f, .334f, 0, .5f, 1, 1, .002f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_CHAIN_N(0, 0, 0, 0, .25f, .051f, .033f, 0, .5f, .172f, .137f, 0, .75f, .624f, .573f, .186f, 1, .983f, 1, .738f),
+		/** the chain ribbon's twin row: dark red to pink-white, HDR 10 (8007A4D04894 r0, peak 9.99; game hex #810000 #E30000 #FF5948 #FFFFDD #FFFFFF). */
+		BRIGITTE_CHAIN_ENEMY(0, 0, 0, 0, .25f, .768f, 0, 0, .5f, 1, .1f, .064f, .75f, 1, 1, .72f, 1, 1, 1, 1),
+		BRIGITTE_CHAIN_ENEMY_N(0, 0, 0, 0, .25f, .077f, 0, 0, .5f, .135f, .01f, .006f, .75f, .343f, .112f, .072f, 1, 1, .738f, .738f),
+		/** the energy chain 33C1 / 33C2 and 1P swing ribbon (29D41 x 19167): navy to cyan, HDR 3.5 (800134B6C381 r4, peak 3.50; game hex #0E4585 #8023F5 #25C9FF #3CFFFF #FFFFFF). */
+		BRIGITTE_ENERGY_BLUE(0, 0, 0, 0, .25f, .216f, .017f, .914f, .5f, .019f, .581f, 1, .75f, .046f, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_ENERGY_BLUE_N(0, 0, 0, 0, .25f, .062f, .005f, .261f, .5f, .005f, .166f, .41f, .75f, .013f, .48f, .628f, 1, .361f, .965f, 1),
+		/** the energy chain's other row: brown to gold to cream, HDR 3.5 (800134B6C381 r6, peak 3.50; game hex #7A150C #F6951F #FF8E25 #FFC539 #FFFFFF). */
+		BRIGITTE_ENERGY_GOLD(0, 0, 0, 0, .25f, .919f, .302f, .013f, .5f, 1, .271f, .019f, .75f, 1, .56f, .041f, 1, 1, 1, 1),
+		BRIGITTE_ENERGY_GOLD_N(0, 0, 0, 0, .25f, .263f, .086f, .004f, .5f, .41f, .077f, .005f, .75f, .59f, .16f, .012f, 1, 1, .815f, .361f),
+		/** the swing's ground hit 220B dust 14D1C (C9 / C11 tint row): red to gold, HDR 1.5 (80046EF0C935 r0, peak 1.46; game hex #FF0000 #FF8300 #FFB300 #FFD600 #FFF400). */
+		BRIGITTE_GROUND_DUST(0, 0, 0, 0, .25f, 1, .227f, 0, .5f, 1, .453f, 0, .75f, 1, .676f, 0, 1, 1, .902f, 0),
+		BRIGITTE_GROUND_DUST_N(0, 0, 0, 0, .25f, .763f, .155f, 0, .5f, .843f, .31f, 0, .75f, .92f, .463f, 0, 1, 1, .618f, 0),
+		/** the whip head's sparks 4C09 (clip 5276 effect 2770 C19): red-orange to cream (800FD0A96386 r7, peak 1.00; game hex #F72C00 #FB9A20 #FFCE30 #FFE47B #FFF7A4). */
+		BRIGITTE_WHIP_SPARK(0, 0, 0, 0, .25f, .964f, .322f, .015f, .5f, .999f, .62f, .029f, .75f, 1, .774f, .198f, 1, 1, .93f, .371f),
+		/** the whip sparks' twin (2770 C23): red-orange to peach (800BEB9E3BB8 r7, peak 1.00; game hex #F72C00 #FB5E20 #FF7B30 #FFB07B #FFD7A4). */
+		BRIGITTE_WHIP_SPARK_ALT(0, 0, 0, 0, .25f, .964f, .111f, .015f, .5f, .999f, .197f, .029f, .75f, 1, .435f, .198f, 1, 1, .679f, .371f),
+		/** the whip head's smoke DFCB (2770 C38): grey-brown to cream, HDR 1.3 (800112076AB5 r4, peak 1.31; game hex #6C635D #A4988F #D8CDC1 #FEF5E5 #FFFFFF). */
+		BRIGITTE_WHIP_SMOKE(0, 0, 0, 0, .25f, .372f, .312f, .276f, .5f, .685f, .614f, .531f, .75f, .993f, .911f, .782f, 1, 1, 1, 1),
+		BRIGITTE_WHIP_SMOKE_N(0, 0, 0, 0, .25f, .285f, .239f, .212f, .5f, .525f, .47f, .407f, .75f, .761f, .697f, .599f, 1, 1, .928f, .794f),
+		/** the barrier field material 5B2C (look 13917) LUT row 0: (dim red at 0) navy, blue, cyan; alpha 0.08 -> 1 (800E79730886 r0, peak 0.93; game hex #AD1E2F #852549 #353C75 #1785BF #17E0F7). */
+		BRIGITTE_BARRIER(0, 0, 0, 0, .25f, .233f, .018f, .066f, .5f, .036f, .045f, .178f, .75f, .008f, .233f, .519f, 1, .008f, .745f, .93f),
+		/** the field's row 1: dark red, red, orange, white (800E79730886 r1, peak 1.00; game hex #4E1F1E #B42E09 #F33900 #FFA200 #FFFEFF). */
+		BRIGITTE_BARRIER_ENEMY(0, 0, 0, 0, .25f, .459f, .027f, .003f, .5f, .898f, .041f, 0, .75f, 1, .362f, 0, 1, 1, .991f, 1),
+		/** the break's shield silhouette 5DF1 (268C C45): cream to blue, HDR 4, falls (800D2E31E3D1 r2, peak 4.00, falls; game hex #FFFFFF #FFFFFF #C4FFFF #88F7FF #59DFFF). */
+		BRIGITTE_BREAK_SHIELD(0, 0, 0, 0, .25f, 1, 1, 1, .5f, .551f, 1, 1, .75f, .245f, .934f, 1, 1, .101f, .738f, 1),
+		BRIGITTE_BREAK_SHIELD_N(0, 0, 0, 0, .25f, .274f, .469f, .977f, .5f, .138f, .337f, 1, .75f, .061f, .233f, 1, 1, .025f, .184f, 1),
+		/** the silhouette's twin (C51): cream to red, HDR 4, falls (80094DD0A453 r2, peak 4.00, falls; game hex #FFFFFF #FFFFFF #FFCCC4 #FF8C88 #FF5959). */
+		BRIGITTE_BREAK_SHIELD_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .605f, .551f, .75f, 1, .262f, .245f, 1, 1, .101f, .101f),
+		BRIGITTE_BREAK_SHIELD_ENEMY_N(0, 0, 0, 0, .25f, 1, .283f, .251f, .5f, 1, .151f, .138f, .75f, 1, .066f, .061f, 1, 1, .025f, .025f),
+		/** the break's glow 17C0 on 5DF1 (C47): periwinkle to cyan, HDR 5 (8005E0AB817E r0, peak 5.00, falls; game hex #FFFFFF #BFF5FF #4CFFFF #83FFFF #94FFFF). */
+		BRIGITTE_BREAK_GLOW(0, 0, 0, 0, .25f, .524f, .912f, 1, .5f, .072f, 1, 1, .75f, .226f, 1, 1, 1, .297f, 1, 1),
+		BRIGITTE_BREAK_GLOW_N(0, 0, 0, 0, .25f, .105f, .182f, .729f, .5f, .014f, .241f, .62f, .75f, .045f, .525f, .695f, 1, .059f, .658f, .73f),
+		/** the glow's twin (C53): salmon to orange, HDR 5 (8001358106BB r0, peak 5.00, falls; game hex #FFFFFF #FFBFBF #FFA34C #FFFF83 #FFFF94). */
+		BRIGITTE_BREAK_GLOW_ENEMY(0, 0, 0, 0, .25f, 1, .524f, .524f, .5f, 1, .365f, .072f, .75f, 1, 1, .226f, 1, 1, 1, .297f),
+		BRIGITTE_BREAK_GLOW_ENEMY_N(0, 0, 0, 0, .25f, .729f, .105f, .105f, .5f, .62f, .073f, .014f, .75f, .695f, .228f, .045f, 1, .73f, .3f, .059f),
+		/** the break's flying hexes 2B0E / 2B10 (C43): black, blue, black, HDR 2.8 (800EFBD692D3 r0, peak 2.83; game hex #000000 #00D2FF #00A4FF #0059AB #000000). */
+		BRIGITTE_BREAK_HEX(0, 0, 0, 0, .25f, 0, .643f, 1, .5f, 0, .369f, 1, .75f, 0, .1f, .405f, 1, 0, 0, 0),
+		BRIGITTE_BREAK_HEX_N(0, 0, 0, 0, .25f, 0, .227f, .921f, .5f, 0, .13f, .529f, .75f, 0, .035f, .143f, 1, 0, 0, 0),
+		/** the hexes' twin (C55): black, red, black, HDR 3.5 (8001D049C744 r0, peak 3.45; game hex #000000 #FF0000 #FF0000 #BA0000 #000000). */
+		BRIGITTE_BREAK_HEX_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, .493f, 0, 0, 1, 0, 0, 0),
+		BRIGITTE_BREAK_HEX_ENEMY_N(0, 0, 0, 0, .25f, .921f, 0, 0, .5f, .529f, 0, 0, .75f, .143f, 0, 0, 1, 0, 0, 0),
+		/** the bash's flashes 4C09 at hp 0075 / 0077 (clip 5073 effect 26A8 C19): black, gold, white (800A250B7916 r2, peak 1.00; game hex #000000 #D8A92C #FFD144 #FFE596 #FFFFFF). */
+		BRIGITTE_BASH_FLASH(0, 0, 0, 0, .25f, .687f, .397f, .025f, .5f, 1, .64f, .058f, .75f, 1, .785f, .307f, 1, 1, 1, 1),
+		/** the bash's forward sparks (26A8 C21): red-orange to pale yellow (80017A3FA6B7 r7, peak 1.00; game hex #F72C00 #FA861A #FDB328 #FFD54F #FFF7A4). */
+		BRIGITTE_BASH_SPARK(0, 0, 0, 0, .25f, .955f, .237f, .011f, .5f, .98f, .45f, .021f, .75f, 1, .667f, .078f, 1, 1, .93f, .371f),
+		/** the dash's speed lines E99F (2207 C24): sky blue to grey, HDR 5, falls (800A2B3AA445 r3, peak 5.00, falls; game hex #48FFFF #40FFFF #E6FFFF #FFFFFF #FFFFFF). */
+		BRIGITTE_BASH_SPEED(0, 0, 0, 0, .25f, .052f, 1, 1, .5f, .792f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_BASH_SPEED_N(0, 0, 0, 0, .25f, .01f, .325f, .799f, .5f, .159f, .335f, .6f, .75f, .278f, .367f, .5f, 1, .4f, .4f, .4f),
+		/** the speed lines' twin (2207 C32): red to grey, HDR 5, falls (80080E2A8D89 r3, peak 5.00; game hex #FF9A9A #FF8B8B #FFF4F4 #FFFFFF #FFFFFF). */
+		BRIGITTE_BASH_SPEED_ENEMY(0, 0, 0, 0, .25f, 1, .259f, .259f, .5f, 1, .908f, .908f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_BASH_SPEED_ENEMY_N(0, 0, 0, 0, .25f, .799f, .052f, .052f, .5f, .6f, .182f, .182f, .75f, .5f, .29f, .29f, 1, .4f, .4f, .4f),
+		/** the dash ribbon 18F81 (2207 C21): black, magenta, violet, blue (L: a colour row) (800B53313A9C r1, peak 1.00; game hex #000000 #E10063 #A00099 #5600D4 #0000FF). */
+		BRIGITTE_BASH_RIBBON(0, 0, 0, 0, .25f, .756f, 0, .126f, .5f, .352f, 0, .319f, .75f, .094f, 0, .657f, 1, 0, 0, 1),
+		/** the bash hit's shield imprint 5DF1 (2206 C27): blue, HDR 12 (8003EBE35744 r6, peak 12.00, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFFF #FFFFFF). */
+		BRIGITTE_BASH_SHIELD(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_BASH_SHIELD_N(0, 0, 0, 0, .25f, .143f, .398f, .916f, .5f, .13f, .361f, .832f, .75f, .117f, .326f, .75f, 1, .104f, .289f, .667f),
+		/** the imprint's twin (2206 C35): red, HDR 12 (800EB2F3E6F3 r6, peak 12.00, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFFF #FFFFFF). */
+		BRIGITTE_BASH_SHIELD_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		BRIGITTE_BASH_SHIELD_ENEMY_N(0, 0, 0, 0, .25f, .916f, .143f, .143f, .5f, .832f, .13f, .13f, .75f, .75f, .117f, .117f, 1, .667f, .104f, .104f),
+		/** the imprint's edge 15111 (2206 C29): pale blue to navy, HDR 16, falls (800C02263F45 r3, peak 16.00, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFFF #3EDDFF). */
+		BRIGITTE_BASH_EDGE(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, .048f, .727f, 1),
+		BRIGITTE_BASH_EDGE_N(0, 0, 0, 0, .25f, .531f, .685f, .9f, .5f, .353f, .501f, .8f, .75f, .178f, .275f, .502f, 1, .003f, .045f, .188f),
+		/** the edge's twin (2206 C37): pale red to dark red, HDR 16, falls (8003B4B67361 r3, peak 16.00, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFFF #FF3E3E). */
+		BRIGITTE_BASH_EDGE_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, .048f, .048f),
+		BRIGITTE_BASH_EDGE_ENEMY_N(0, 0, 0, 0, .25f, .9f, .531f, .531f, .5f, .8f, .353f, .353f, .75f, .502f, .178f, .178f, 1, .188f, .003f, .003f),
+		/** the bash hit's streaks 14F9 on B18 (2206 C25): orange to white (80069396B3CB r3, peak 1.00; game hex #FF7D00 #FFCB3A #FFF962 #FFFCC5 #FFFFFF). */
+		BRIGITTE_BASH_STREAK(0, 0, 0, 0, .25f, 1, .595f, .042f, .5f, 1, .95f, .123f, .75f, 1, .975f, .558f, 1, 1, 1, 1),
+		/** the stun halo 247C on DE0 (220D C12 / C14): dim gold, peak 0.21 (800650C8E74A r0, peak 0.21; game hex #6B5300 #6B7252 #6B7F63 #6B7251 #6B5300). */
+		BRIGITTE_STUN_HALO(0, 0, 0, 0, .25f, .147f, .17f, .084f, .5f, .147f, .211f, .125f, .75f, .147f, .169f, .082f, 1, .147f, .087f, 0),
+		/** Inspire's ground ring 296B (2182 C4): yellow to cream (800F84A796FC r6, peak 1.00; game hex #FFF45D #FFF271 #FFF394 #FFF7B6 #FFFAD1). */
+		BRIGITTE_INSPIRE(0, 0, 0, 0, .25f, 1, .886f, .166f, .5f, 1, .897f, .296f, .75f, 1, .927f, .469f, 1, 1, .956f, .637f),
+		/** the ring's other row: cream, olive to dark olive, HDR 20, falls (800F84A796FC r7, peak 20.00, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFDB #FFF5B6). */
+		BRIGITTE_INSPIRE_RISE(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, .709f, 1, 1, .913f, .468f),
+		BRIGITTE_INSPIRE_RISE_N(0, 0, 0, 0, .25f, .176f, .161f, .082f, .5f, .114f, .104f, .053f, .75f, .076f, .069f, .035f, 1, .05f, .046f, .023f),
+		/** the pack's trail ribbon 18B18 x 44F7 (218D C13): olive to gold to pale yellow, HDR 6 (80023C1B3EE2 r3, peak 6.00; game hex #827400 #F0B526 #FFFA2B #FFFF27 #FFFFFF). */
+		BRIGITTE_PACK_RIBBON(0, 0, 0, 0, .25f, .875f, .462f, .02f, .5f, 1, .954f, .024f, .75f, 1, 1, .02f, 1, 1, 1, 1),
+		BRIGITTE_PACK_RIBBON_N(0, 0, 0, 0, .25f, .146f, .077f, .003f, .5f, .264f, .159f, .004f, .75f, .542f, .378f, .003f, 1, 1, .872f, .178f),
+		/** the trail's other row: brown-red to orange to cream, HDR 10 (80023C1B3EE2 r4, peak 9.99; game hex #CA351A #FF6310 #FF8600 #FFFF00 #FFFFFF). */
+		BRIGITTE_PACK_RIBBON_HOT(0, 0, 0, 0, .25f, 1, .124f, .005f, .5f, 1, .237f, 0, .75f, 1, 1, 0, 1, 1, 1, 1),
+		BRIGITTE_PACK_RIBBON_HOT_N(0, 0, 0, 0, .25f, .189f, .012f, .001f, .5f, .316f, .024f, 0, .75f, .636f, .187f, 0, 1, 1, .808f, .655f),
+		/** the pack's wide ribbon 18B18 x 18E48 (218D C17): gold to pale yellow, HDR 3 (800E37F7CCCB r2, peak 3.00; game hex #FFFF00 #FFFF00 #FFFF00 #FFFF00 #FFFFC1). */
+		BRIGITTE_PACK_TRAIL(0, 0, 0, 0, .25f, 1, 1, 0, .5f, 1, 1, 0, .75f, 1, 1, 0, 1, 1, 1, .533f),
+		BRIGITTE_PACK_TRAIL_N(0, 0, 0, 0, .25f, .827f, .611f, 0, .5f, .894f, .676f, 0, .75f, .92f, .707f, 0, 1, 1, .872f, .178f),
+		/** the pack's core glow A7B6 (218D C12): olive to cream, HDR 6 (8005CCE53193 r0, peak 6.00; game hex #C5B70D #E1D212 #FFEF17 #FFFF79 #FFFFFF). */
+		BRIGITTE_PACK_CORE(0, 0, 0, 0, .25f, .756f, .645f, .006f, .5f, 1, .867f, .009f, .75f, 1, 1, .192f, 1, 1, 1, 1),
+		BRIGITTE_PACK_CORE_N(0, 0, 0, 0, .25f, .126f, .108f, .001f, .5f, .169f, .145f, .001f, .75f, .284f, .24f, .032f, 1, 1, .939f, .611f),
+		/** the pack's lens streak 23C0 (218D C21): black, gold, cream (8005822073E7 r2, peak 1.00; game hex #000000 #FFC21E #FFE23B #FFF39D #FFFDE5). */
+		BRIGITTE_PACK_LENS(0, 0, 0, 0, .25f, 1, .542f, .013f, .5f, 1, .76f, .043f, .75f, 1, .894f, .338f, 1, 1, .982f, .783f),
+		/** the arrival's lens 23C0 (2F2E C8): gold to cream (800D212EA4B1 r2, peak 1.00; game hex #BC8E0D #FFC21E #FFE23B #FFF39D #FFFDE5). */
+		BRIGITTE_PACK_ARRIVE(0, 0, 0, 0, .25f, 1, .542f, .013f, .5f, 1, .76f, .043f, .75f, 1, .894f, .338f, 1, 1, .982f, .783f),
+		/** the arrival's dome flash 5F08 (2F2E C10): cream, yellow, orange, HDR 5 (8009A5973C9E r6, peak 5.00, falls; game hex #FFFFFF #FFFF05 #FFFF19 #FFFF24 #FFFF2D). */
+		BRIGITTE_PACK_DOME(0, 0, 0, 0, .25f, 1, 1, .002f, .5f, 1, 1, .01f, .75f, 1, 1, .018f, 1, 1, 1, .026f),
+		BRIGITTE_PACK_DOME_N(0, 0, 0, 0, .25f, .871f, .644f, 0, .5f, .914f, .496f, .002f, .75f, .956f, .352f, .004f, 1, 1, .205f, .005f),
+		/** the arrival's glow 174D8 (2F2E C12): olive to cream, HDR 6 (80078AB6C344 r1, peak 6.00; game hex #C5B70D #E1D212 #FFEF17 #FFFF79 #FFFFFF). */
+		BRIGITTE_PACK_HEAL_GLOW(0, 0, 0, 0, .25f, .756f, .645f, .006f, .5f, 1, .867f, .009f, .75f, 1, 1, .192f, 1, 1, 1, 1),
+		BRIGITTE_PACK_HEAL_GLOW_N(0, 0, 0, 0, .25f, .126f, .108f, .001f, .5f, .169f, .145f, .001f, .75f, .284f, .24f, .032f, 1, 1, .939f, .611f),
+		/** Rally's dome flash 5F08 (219D C100 / C102): sky blue to gold, HDR 2 (8004E14B20FF r5, peak 2.00, falls; game hex #98F8FF #EEE3FF #FFCC1E #FFCC19 #FFCC19). */
+		BRIGITTE_RALLY_DOME(0, 0, 0, 0, .25f, .856f, .769f, 1, .5f, 1, .602f, .013f, .75f, 1, .601f, .01f, 1, 1, .601f, .01f),
+		BRIGITTE_RALLY_DOME_N(0, 0, 0, 0, .25f, .428f, .384f, .503f, .5f, .7f, .301f, .006f, .75f, .701f, .301f, .005f, 1, .701f, .301f, .005f),
+		/** the dome's twin (219D C98): peach to red, HDR 2 (800F92902535 r5, peak 2.00, falls; game hex #FFFFD0 #FFA366 #FF8456 #FF5941 #FF3232). */
+		BRIGITTE_RALLY_DOME_ENEMY(0, 0, 0, 0, .25f, 1, .365f, .132f, .5f, 1, .232f, .092f, .75f, 1, .1f, .052f, 1, 1, .032f, .032f),
+		BRIGITTE_RALLY_DOME_ENEMY_N(0, 0, 0, 0, .25f, .997f, .183f, .066f, .5f, .872f, .116f, .046f, .75f, .75f, .05f, .026f, 1, .686f, .016f, .016f),
+		/** Rally's dome layers 4DB (219D C120 / C126, 50B0 C84): yellow to dark gold, HDR 5, falls (800C27AA37F7 r6, peak 5.00, falls; game hex #FFFF00 #FFFF00 #FFFF00 #FFFF00 #FFE400). */
+		BRIGITTE_RALLY_GOLD(0, 0, 0, 0, .25f, 1, 1, 0, .5f, 1, 1, 0, .75f, 1, 1, 0, 1, 1, .779f, 0),
+		BRIGITTE_RALLY_GOLD_N(0, 0, 0, 0, .25f, .874f, .343f, 0, .5f, .713f, .28f, 0, .75f, .553f, .219f, 0, 1, .391f, .156f, 0),
+		/** the layers' twin (50B0 C89): orange to dark red, HDR 5, falls (8009EC364E69 r6, peak 5.00, falls; game hex #FFF000 #FF3000 #FF2600 #FF1900 #FF0000). */
+		BRIGITTE_RALLY_GOLD_ENEMY(0, 0, 0, 0, .25f, 1, .03f, 0, .5f, 1, .02f, 0, .75f, 1, .01f, 0, 1, 1, 0, 0),
+		BRIGITTE_RALLY_GOLD_ENEMY_N(0, 0, 0, 0, .25f, .874f, .006f, 0, .5f, .713f, .004f, 0, .75f, .553f, .002f, 0, 1, .391f, 0, 0),
+		/** Rally's armour pattern 144E5 x 14486 on the dome (219D C104): black, gold, black, peak 0.5 (800102BC6092 r0, peak 0.50; game hex #000000 #BB9400 #9D7D00 #5F4900 #010000). */
+		BRIGITTE_RALLY_ARMOR(0, 0, 0, 0, .25f, .494f, .297f, 0, .5f, .338f, .205f, 0, .75f, .113f, .068f, 0, 1, 0, 0, 0),
+		/** the pattern's twin row: red, HDR 3.5 (800102BC6092 r4, peak 3.50; game hex #FF4646 #FF4646 #FF4646 #FF4646 #FF5252). */
+		BRIGITTE_RALLY_ARMOR_ENEMY(0, 0, 0, 0, .25f, 1, .06f, .06f, .5f, 1, .06f, .06f, .75f, 1, .06f, .06f, 1, 1, .085f, .085f),
+		BRIGITTE_RALLY_ARMOR_ENEMY_N(0, 0, 0, 0, .25f, .714f, .017f, .017f, .5f, .714f, .017f, .017f, .75f, .714f, .017f, .017f, 1, 1, .024f, .024f),
+		/** Rally's bokeh 187EB x 1DC68 (219D / 50B0 C78): orange to amber (800238C77258 r3, peak 1.00; game hex #D28500 #D28500 #D28500 #D58700 #FFA200). */
+		BRIGITTE_RALLY_BUBBLES(0, 0, 0, 0, .25f, .644f, .234f, 0, .5f, .644f, .234f, 0, .75f, .663f, .241f, 0, 1, 1, .361f, 0),
+		/** the bokeh's twin (50B0 C82): red, HDR 3.5 (80090572CD42 r3, peak 3.50; game hex #FF4646 #FF4646 #FF4646 #FF4646 #FF5252). */
+		BRIGITTE_RALLY_BUBBLES_ENEMY(0, 0, 0, 0, .25f, 1, .06f, .06f, .5f, 1, .06f, .06f, .75f, 1, .06f, .06f, 1, 1, .085f, .085f),
+		BRIGITTE_RALLY_BUBBLES_ENEMY_N(0, 0, 0, 0, .25f, .714f, .017f, .017f, .5f, .714f, .017f, .017f, .75f, .714f, .017f, .017f, 1, 1, .024f, .024f),
+		/** the flail head's flare 2F4F0 (50B0 C66 / C68): brown-gold to white, HDR 2 (800B19CA4E19 r1, peak 2.00; game hex #9A6826 #C88A32 #F3AA3E #FFD14B #FFFFFF). */
+		BRIGITTE_RALLY_FLARE(0, 0, 0, 0, .25f, .579f, .256f, .032f, .5f, .894f, .401f, .048f, .75f, 1, .637f, .071f, 1, 1, 1, 1),
+		BRIGITTE_RALLY_FLARE_N(0, 0, 0, 0, .25f, .289f, .128f, .016f, .5f, .447f, .201f, .024f, .75f, .624f, .319f, .036f, 1, 1, 1, 1),
+		/** the flare's twin (50B0 C70): dark red to pink-white, HDR 3 (800D0C985867 r1, peak 3.00; game hex #9A2626 #CB4B33 #FF6A42 #FF995A #FFFFFF). */
+		BRIGITTE_RALLY_FLARE_ENEMY(0, 0, 0, 0, .25f, .595f, .07f, .033f, .5f, 1, .144f, .054f, .75f, 1, .32f, .102f, 1, 1, 1, 1),
+		BRIGITTE_RALLY_FLARE_ENEMY_N(0, 0, 0, 0, .25f, .198f, .023f, .011f, .5f, .336f, .048f, .018f, .75f, .58f, .107f, .034f, 1, 1, .351f, .351f),
+		/** the flail head's lens streak 23C0 (50B0 C60 / C62): brown-gold to white (800BCA09D3B4 r1, peak 1.00; game hex #9A6826 #C08530 #DE9B38 #F6B140 #FFFFFF). */
+		BRIGITTE_RALLY_LENS(0, 0, 0, 0, .25f, .528f, .233f, .029f, .5f, .733f, .328f, .04f, .75f, .923f, .441f, .051f, 1, 1, 1, 1),
+		/** the lens's twin (50B0 C64): dark red to pink (80097E0E434B r1, peak 1.00; game hex #9A2626 #C04130 #DE5338 #F66340 #FFA0A0). */
+		BRIGITTE_RALLY_LENS_ENEMY(0, 0, 0, 0, .25f, .528f, .053f, .029f, .5f, .733f, .086f, .04f, .75f, .923f, .124f, .051f, 1, 1, .351f, .351f),
+		/** the ally's body glow (21DE material C4 / C5): black, brown, amber, gold, HDR 2 (8001131C7DEA r1, peak 2.00; game hex #000000 #A65B00 #FE8D00 #FFDD38 #FFFF86). */
+		BRIGITTE_RALLY_ALLY(0, 0, 0, 0, .25f, .383f, .103f, 0, .5f, .99f, .268f, 0, .75f, 1, .723f, .04f, 1, 1, 1, .239f),
+		BRIGITTE_RALLY_ALLY_N(0, 0, 0, 0, .25f, .191f, .052f, 0, .5f, .495f, .134f, 0, .75f, .803f, .361f, .02f, 1, 1, .814f, .119f),
+		/** the body glow's other row: black, dark red, red, orange, HDR 2 (8001131C7DEA r2, peak 2.00; game hex #000000 #960000 #FF0000 #FF5200 #FF7D00). */
+		BRIGITTE_RALLY_ALLY_ENEMY(0, 0, 0, 0, .25f, .304f, 0, 0, .5f, 1, 0, 0, .75f, 1, .085f, 0, 1, 1, .204f, 0),
+		BRIGITTE_RALLY_ALLY_ENEMY_N(0, 0, 0, 0, .25f, .152f, 0, 0, .5f, .504f, 0, 0, .75f, .848f, .042f, 0, 1, 1, .102f, 0),
+		/** Rally's ground decals 14D09 / 14C71 (220E C1 / C2): gold to amber, HDR 1.25 (800D56B43898 r5, peak 1.25, falls; game hex #FFCD0B #FFC006 #FFB300 #FFAF00 #FFAB00). */
+		BRIGITTE_RALLY_DECAL(0, 0, 0, 0, .25f, 1, .53f, .002f, .5f, 1, .451f, 0, .75f, 1, .428f, 0, 1, 1, .406f, 0),
+		BRIGITTE_RALLY_DECAL_N(0, 0, 0, 0, .25f, .901f, .425f, .001f, .5f, .999f, .361f, 0, .75f, .952f, .343f, 0, 1, .905f, .325f, 0),
+		/** the decal's twin (220E C0): orange to red, HDR 1.5 (80055B2E2BA0 r5, peak 1.50; game hex #E18108 #EB5307 #F55E0B #FF4B0B #FF300F). */
+		BRIGITTE_RALLY_DECAL_ENEMY(0, 0, 0, 0, .25f, .834f, .086f, .002f, .5f, .917f, .111f, .003f, .75f, 1, .071f, .003f, 1, 1, .029f, .005f),
+		BRIGITTE_RALLY_DECAL_ENEMY_N(0, 0, 0, 0, .25f, .556f, .057f, .001f, .5f, .612f, .074f, .002f, .75f, .667f, .047f, .002f, 1, 1, .019f, .003f),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 
