@@ -78,7 +78,7 @@ public final class HeroManager {
 	public static final AttachmentType<java.util.List<Integer>> LIFEWEAVER = AttachmentRegistry.create(Overcraft.id("lifeweaver"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
-	/** Asleep (Sleep): set on a sleeping player, for their client to hold them still. */
+	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 

@@ -61,7 +61,7 @@ public final class Sleep {
 
 	/**
 	 * A stun (Brigitte's Shield Bash in Rally, 224E with type 6BBE: 0.75 s): held as a sleeper is (a mob still, a player's
-	 * hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
+	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
 	 */
 	public static void stun(LivingEntity entity, double seconds) {
 		long now = entity.level().getGameTime();
@@ -73,6 +73,10 @@ public final class Sleep {
 		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false, true));
 		if (entity instanceof Mob mob) {
 			mob.setNoAi(true);
+		}
+		if (entity instanceof ServerPlayer player) {
+			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
+			player.setAttached(HeroManager.ASLEEP, true);
 		}
 	}
 
@@ -131,6 +135,10 @@ public final class Sleep {
 		if (s.stun) {
 			if (s.entity instanceof Mob mob) {
 				mob.setNoAi(s.hadNoAi);
+			}
+			if (s.entity instanceof ServerPlayer player) {
+				// (left set, a stunned player stayed frozen for good: found playing, two clients)
+				player.removeAttached(HeroManager.ASLEEP);
 			}
 			return;
 		}
