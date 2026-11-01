@@ -106,3 +106,19 @@ Played (step 1, dev client, creative): picked from the select screen (her model,
 first person (the pistol in her right hand, the HUD with 60 rounds and her two abilities) and third person front and back
 (the pistol by her shoulder), running, jumping, crouching; Hello from the communication wheel (her left hand waves in first
 person; the third-person wave).
+
+## Her sounds and voice read (2026-11-01)
+- **The map:** `tools/soundmaps/sombra.txt` (each event's 02C, effect, graph node and confidence; the live kit only), built
+  by `E:\Overwatch Archive\research\sombra\scripts\sounds\sombra_gen.py` (Ana's pipeline, retargeted). What it taught:
+  [sounds](../sound/sounds.md#sombra-sounds) (the pistol's self-repeating stream, ranged audience-1 copies, missing
+  voice moments).
+
+## Her effects read (2026-11-01)
+- **What they're made of:** `tools/reference/sombra-effects.md` (each moment: renderers, meshes, textures by id, colours,
+  sizes, lifetimes, hardpoints, and a "rebuild in Minecraft" recipe); the files in `E:\Overwatch Archive\research\sombra\fx`
+  and `work\fx_*`, the scripts in `research\sombra\scripts\fx\` (Ana's, retargeted). Masks and meshes are in the dev pack
+  as `sombra_*` (`tools/build_asset_pack.py` EFFECT_MASKS / EFFECT_MODELS).
+- **Her colour is in the strips:** purple (A06C / A06B) for her team, red-orange (ADD0 / ADCF) for enemies (M), gold for
+  her heals (Hotfix, Cyberspace's allied side). The lessons it taught (over-life size rows, strip twins, per-target
+  branches): [reading_game_data](../game-data/reading_game_data.md#ability-effects-what-sets-their-size-and-colour-sombras-pass-2026-11-01).
+- Emotes: [sombra_emotes](../emotes/sombra_emotes.md).

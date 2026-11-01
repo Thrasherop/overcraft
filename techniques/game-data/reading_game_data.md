@@ -64,6 +64,23 @@ default game. **A value that matches a public number isn't identified until its 
 matched the wiki's 1.3 s beam linger and was Valkyrie's launch factor
 ([heroes/mercy](../heroes/mercy.md#what-her-graphs-said-that-the-wiki-didnt-kit_detailsmd-2026-10-28)).
 
+## Ability effects: what sets their size and colour (Sombra's pass, 2026-11-01)
+From [sombra-effects](../../tools/reference/sombra-effects.md), read with Ana's scripts (`research\sombra\scripts\fx\`):
+- **A big effect can be a small mesh with an over-life size row.** EMP's 15 m pulse spawns its band and spheres at size
+  2.05; a 12BB LUT row multiplies them x1 -> x6.95 -> x14.5 -> x15 over life (30 m across in a quarter of its life). No
+  radius comes from the graph. Before scaling a shape by the ability's range, read the renderer's 12BB rows
+  (`fx_digest.txt`, the `.../12BB ... MAP` lines): the size curve may already be there.
+- **Team twins can live in the colour strip, not the LUT.** Most of her renderers come in pairs identical but for a
+  256 x 8 BC1 / BC7 strip (purple A06C / red-orange ADD0); the LUT rows are white masks or tints. Sample the strips
+  (`fx_sombra_strips.py`) before reading a renderer as colourless.
+- **An effect played on targets sits in the branch that runs per target.** Cyberspace's weakened look is in the zone
+  graph's per-target branch (condition and targets `self` = each tracked enemy), next to the -50% it applies. Look for the
+  effect node beside the status the ability applies, not at the ability's start.
+- **One ability, two looks, split by graph state.** Hotfix's State #2197 plays gold strands (the heal on an ally) and
+  #2198 purple ones (the hack of a pack or deployable): when an effect family comes in near-identical copies, check which
+  state plays each before calling them twins.
+- **Truncated ids on the contact sheets:** the sheets print the last four hex digits; `E4FB` is `2E4FB`. Glob by suffix.
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent

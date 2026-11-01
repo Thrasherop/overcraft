@@ -966,6 +966,14 @@ public final class HeroModelRenderer {
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
+			if (piece.mesh().startsWith("holo_") || piece.mesh().startsWith("holoc_")) {
+				// a hologram (tools/owm_static.py): its light mask added in the tint, lit by itself, seen from both sides; a
+				// screen (holoc_, tools/owm_survey.py SCREENS: her tablet) is its own colours, added untinted
+				int tint = piece.mesh().startsWith("holoc_") ? 0xFFFFFFFF : HOLOGRAM;
+				collector.submitCustomGeometry(poseStack, FxRender.additive(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, tint, false, false));
+				continue;
+			}
 			collector.submitCustomGeometry(poseStack, FxRender.heroCutout(texture), (pose, buffer) -> {
 				long t0 = System.nanoTime();
 				emit(piece, skin, pose, buffer, light, overlay, prop, -1, cull, true);
@@ -973,6 +981,9 @@ public final class HeroModelRenderer {
 			});
 		}
 	}
+
+	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
+	private static final int HOLOGRAM = 0xFF8344EF;
 
 	/**
 	 * A spirit: the model see-through and glowing (Kitsune Rush's fox: Overwatch's is a translucent ice-blue spirit; drawn

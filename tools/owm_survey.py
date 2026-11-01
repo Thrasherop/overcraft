@@ -278,6 +278,12 @@ def retime(action, scale):
 COLOUR_KEYS = {0x10D: 0x86DAAC6B, 0x26: 0x58FF5009}
 # The engine's blank textures: linked as a colour, they mean the add-on didn't find the material's own.
 BLANK_TEXTURES = {"00000000000A"}
+# Screens drawn as their own light (the mod's "holoc_" meshes: added, untinted), by material, with the colour key the add-on
+# misses: Sombra's hologram tablet 389D (material 38EC, shader 0x26): the add-on linked its glow ADC4 as colour and its
+# opacity ADC3 as alpha, and drawn as a cut-out it was a few dark specks. Its colour 9FE9 (58FF5009) is a dark purple panel
+# that drawn as light all but vanished (played); its glow layer ADC4 (0403F89A, strength 2.0) is the lit lilac screen
+# (tools/reference/sombra-effects.md, "Her tablet": H keys, M which is the glow)
+SCREENS = {"0000000038EC": 0x0403F89A}
 
 
 def owmat_textures(path):
@@ -303,13 +309,14 @@ def owmat_textures(path):
     return shader, textures
 
 
-def colour_from_owmat(mat, materials_dir):
-    """The colour image for a material the add-on left without one, from its own .owmat (COLOUR_KEYS), or None."""
+def colour_from_owmat(mat, materials_dir, key=None):
+    """The colour image for a material the add-on left without one, from its own .owmat (COLOUR_KEYS, or this key), or
+    None."""
     owmat = materials_dir / f"{mat.name.split('.')[0]}.owmat"
     if not owmat.exists():
         return None
     shader, textures = owmat_textures(owmat)
-    key = COLOUR_KEYS.get(shader)
+    key = key or COLOUR_KEYS.get(shader)
     path = next((t for t, k in textures if k == key), None)
     if path is None:
         return None
@@ -340,8 +347,14 @@ def gltf_materials():
             elif alpha is None and "alpha" in socket:
                 alpha = link.from_node
         blank = color is not None and color.image is not None and Path(color.image.name).stem.split(".")[0] in BLANK_TEXTURES
-        if (color is None or blank) and MATERIALS_DIR is not None:
-            color = colour_from_owmat(mat, MATERIALS_DIR) or color
+        screen = mat.name.split(".")[0] in SCREENS
+        if (color is None or blank or screen) and MATERIALS_DIR is not None:
+            color = colour_from_owmat(mat, MATERIALS_DIR, SCREENS.get(mat.name.split(".")[0])) or color
+        if screen:
+            alpha = None
+            for o in bpy.data.objects:
+                if o.type == "MESH" and mat.name in [m.name for m in o.data.materials if m]:
+                    o.data.name = "holoc_" + o.data.name
         if color is None:
             print(f"OWM_MATERIAL {mat.name}: no colour texture (inputs: "
                   f"{sorted({l.to_socket.name for l in links if l.to_node.type == 'GROUP'})})")
