@@ -144,6 +144,28 @@ public final class HeroState {
 	public int[] conspiracy = new int[0];
 	/** Sombra: her pistol burst under way (its tail when it ends); stealth on last tick (its end sounds). */
 	public boolean sombraFiring, sombraStealthed;
+	/** Brigitte: her flail's swing (ticks into it, -1 none), which side it's on (0 forehand, 1 backhand), whom it hit. */
+	public int flailSwing = -1, flailCombo;
+	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
+	/** Brigitte: when the flail may start Inspire again (game time). */
+	public long inspireReadyAt = -1;
+	/** Brigitte: her barrier up, its health (OW), when it went down / when it can go up again; Shield Bash's dash (ticks
+	 * into it, -1 none) and whether it has hit; Rally's ticks left; the left button's last state (the bash's press). */
+	public boolean barrierUp, bashHit, leftWas;
+	public double barrierHealth;
+	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
+	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
+	public int whipTicks = -1, whipBackAt;
+	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */
+	public int rallyCast = -1, shockwaveIn = -1;
+	/** Brigitte: when Inspiring Strike's speed ends (game time, -1 none). */
+	public long strikeFastUntil = -1;
+	/** Brigitte: which of her barrier's low calls (50 %, 25 %) this raise has made (0, 1, 2). */
+	public int barrierLowCalled;
+	public double extraArmor;
+	public double whipOut, repairRecharge = -1;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 whipFrom, whipDir;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;
@@ -213,7 +235,7 @@ public final class HeroState {
 
 	public void reset(@Nullable Hero hero) {
 		this.hero = hero;
-		shield = hero == null ? 0 : hero.shields();
+		shield = hero == null ? 0 : hero.layer();
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;

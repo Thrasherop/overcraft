@@ -128,6 +128,12 @@ WEAPON_SLOTS = {
     # Sombra's Machine Pistol 1221 hangs in slot 209F on 000A (research/sombra/work/assets.md: "slot var 209F"); her
     # emotes put it away there (EMOTE_CONTROLS=1: 28 action-1 controls on 209F, no clip played on it)
     "sombra": {"209F": ("stow", "pistol", "sombra_weapon.txt")},
+    # Brigitte's hero entity 1B1B (research/brigitte/work/ents_brigitte_out.txt): the flail 2282 in slot 3572 on 000A, the
+    # hand shield 24C5 in 3816 on 000B, the folded shield 1B25 in 339E on 01D8 (no emote touches it), and the flail's
+    # seated head 2378 in 33C0 on the handle's 0254. EMOTE_CONTROLS=1: 3572 put away 20 times and 5265 played (Cheer);
+    # 3816 put away 14 times, 52F0 (Cheer) and 5108 (Recalibrate) played; 33C0 plays 525F (Cheer)
+    "brigitte": {"3572": ("stow", "flail", "brigitte_flail.txt"), "3816": ("stowShield", "shield", "brigitte_shield.txt"),
+                 "33C0": ("stowHead", "head", "brigitte_flail_head.txt")},
 }
 
 # how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
@@ -142,7 +148,7 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True}
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity

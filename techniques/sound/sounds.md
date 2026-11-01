@@ -108,5 +108,30 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     stimulus whose event no graph raises (StealthActivate 069D, 205B) is the old kit's: leave it out.
   - **Building into the dev client's pack from another worktree:** `OC_ASSET_PACK=<pack> py tools/build_asset_pack.py sounds
     <root>`; the step rebuilds every map of the worktree it runs from, so that worktree's maps must be current.
+- <a id="brigitte-sounds"></a>**Brigitte's map (2026-11-01; `tools/soundmaps/brigitte.txt`, scripts and data in
+  `research\brigitte\scripts\sounds\` (Sombra's pipeline, `brigitte_gen.py` writes the map) and `research\brigitte\sounds\`;
+  hub: [brigitte](../heroes/brigitte.md); kit ids: `tools/reference/brigitte-map.md`):**
+  - **A melee or projectile's hit sounds live in its contact set, not in an effect.** Her flail's sets 061B / 061D (the
+    swing's `STU_23A00A53` nodes) and Whip Shot's 0620 hold them: contact type 0 = characters (a no-range copy, read as
+    hers, plus two ranged copies with the same files), type 2 = the world (two different files, both play), material
+    0015 = a barrier. 0015 points at the same 1833 / 1834 pair in Sombra's 05A7: it is the shared barrier impact, so a
+    barrier's "being hit" sound is the attacker's, and her barrier pet (0EE4) has none of its own. Grep the decompiles
+    for `m_contactSet`; the hero entity's or a prop's own set (the flail head 2283's 0089) may be a different one.
+  - **Effects can hide in expressions.** The shield-up effect is `{[!Rally] 21B6; [Rally] 6F8D}` in one field (0EE3 #545):
+    `fx_graph`'s whole-value match misses it, so its sounds never reached `fx_sounds_timed.json`. Grep the decompiles for
+    `.00D` inside expressions and read those effects on their own (`fx_timed.py`, `sounds\fx_proj.json`).
+  - **A counter can pick the copy.** The Repair Pack's launch (2EC3 / 4 / 5), recharge (2EC6 / 7 / 8) and landing are
+    `ActionSwitch`es on the charges v11: built as `throw_3 / _2 / _1` and `recharge_1 / _2 / _3` (the landings all hold
+    the same two 02Cs, so one rule).
+  - **A big make-up gain can be a filter's answer.** Whip Shot's hit 87F2 has one container at +23 dB make-up behind a
+    low-pass 18 / high-pass 22; the builder doesn't filter, so built as is it sat 16 dB above everything else and pulled
+    the whole own family 17 dB down. Left out (the rule says why). Before trusting a family offset, look at what sets it.
+  - **A prop's own state machine can carry the sound.** The Rally shield's deploy / fold clanks (A095 / A097) are on the
+    shield model's transition clips D5C4 (2 -> 0) / D5C5 (0 -> 2) in set 060A, not on her clips or graphs.
+  - **Audience 1 on a 3P clip:** Whip Shot's catch 6347 is audience 1 with no range but only on her 3P return clips
+    (51CA / 51EB / 5056 / 51EC); built once for everyone (M).
+  - **Her emote sounds** (`emotes.txt`, Brigitte's section; `research\brigitte\scripts\emote_sounds\`): as Sombra's, but her
+    Taunt's 4790 is a random container of three Layer takes, which the shared `emote_events.py` stops on. Patched at
+    import (`brigitte_patch.py`: the first take is built) so the shared generator still runs unedited.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
   (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

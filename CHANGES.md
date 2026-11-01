@@ -6,6 +6,33 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-01
 
+### Build 0.3.27 (Brigitte, the eighth hero)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.27): Brigitte's models (`tools/clipmaps/brigitte*.txt`: her
+body, first-person arms, flail, flail head and shield; the flail, head and shield with their emote clips through
+`owm_survey.py --clips-from=<her Emote folder>`), her emote clips (`--glb --clips-only
+--keep=tools/clipmaps/brigitte_clips.txt --emotes=...` into `brigitte_clips.glb`), her emote props (`props
+<extraction> brigitte`), her effects' masks and meshes (`effects`), her sounds, voice and emote sounds (`sounds`),
+then `zip`.
+- **Brigitte, the eighth hero** (#65), Support, from her game data and the public numbers (`BrigitteStats`, each number
+  with its source): 175 health and 75 armor (armor takes 7 off each hit, at most half).
+  - **Rocket Flail** (left button, and her quick melee): a 6 m sweep, 45 to every enemy in it, forehand and backhand
+    in turn; its head flies out on its chain as in Overwatch.
+  - **Barrier Shield** (right button, held): a 300 barrier ahead of her (her and allies behind it take nothing from
+    the front, blasts included), 30% slower while up, back from 2 s after it's lowered; broken, 5 s down.
+  - **Shield Bash** (left button with the shield up): a 0.3 s dash, 70 and a push to the first enemy reached.
+  - **Whip Shot** (Shift): the flail head flung 20 m, 70 and a hard push. **Repair Pack** (E): 3 charges, an ally in
+    your aim healed 25 at once and 50 a second for 2 s, a charge back every 5 s.
+  - **Inspire:** her hits heal her and her allies within 20 m 12 at once and 45 over 4 s.
+  - **Rally** (Q): 10 s of +100 armor, 15% speed and a 750 barrier half as wide again; overhealth for allies within
+    8 m; her bash stuns for 0.75 s and sends out a shockwave.
+  - **Perks:** Combat Medic, Morale Boost, Inspiring Strike, Whiplash.
+- **Her sounds and voice** (`tools/soundmaps/brigitte.txt`, 111 events), **her effects from her data**
+  (`tools/reference/brigitte-effects.md`: the swing arc, the barrier's field, the bash's jets, Rally's dome and more),
+  **her 16 emotes from the data** with their props (Mic Drop's mic, Katt the cat, Recalibrate's tool) and the flail,
+  head and shield playing their own emote clips.
+- **Fixed:** a stunned player (Rally's bash) could walk; now they're held still for the stun and let go after it. Any
+  hero's emote data could carry a second weapon's put-away windows only for Mercy; any key now.
+
 ### Build 0.3.26 (Sombra, the seventh hero)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.26): Sombra's emote clips (`owm_survey.py --glb --clips-only
 --keep=tools/clipmaps/sombra_clips.txt --emotes=...` into `sombra_clips.glb`), her emote props (`props <extraction>

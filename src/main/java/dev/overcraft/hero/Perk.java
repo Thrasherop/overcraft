@@ -39,7 +39,12 @@ public enum Perk {
 	SOMBRA_LIFE_HACK(Hero.SOMBRA, Tier.MINOR, "life_hack"),
 	SOMBRA_CTRL_ALT_ESC(Hero.SOMBRA, Tier.MINOR, "ctrl_alt_esc"),
 	SOMBRA_DATA_PACKET(Hero.SOMBRA, Tier.MAJOR, "data_packet"),
-	SOMBRA_CYBERSECURITY(Hero.SOMBRA, Tier.MAJOR, "cybersecurity");
+	SOMBRA_CYBERSECURITY(Hero.SOMBRA, Tier.MAJOR, "cybersecurity"),
+	// Brigitte's, the live list's order (D 0063.177)
+	BRIGITTE_COMBAT_MEDIC(Hero.BRIGITTE, Tier.MINOR, "combat_medic"),
+	BRIGITTE_MORALE_BOOST(Hero.BRIGITTE, Tier.MINOR, "morale_boost"),
+	BRIGITTE_INSPIRING_STRIKE(Hero.BRIGITTE, Tier.MAJOR, "inspiring_strike"),
+	BRIGITTE_WHIPLASH(Hero.BRIGITTE, Tier.MAJOR, "whiplash");
 
 	public enum Tier { MINOR, MAJOR }
 

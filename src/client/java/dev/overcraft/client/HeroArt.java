@@ -65,6 +65,7 @@ public final class HeroArt {
 			case LIFEWEAVER -> "tree_of_life";
 			case ANA -> "nano_boost";
 			case SOMBRA -> "emp";
+			case BRIGITTE -> "rally";
 			case ILLARI -> "captive_sun";
 		});
 	}

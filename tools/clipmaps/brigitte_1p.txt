@@ -1,0 +1,50 @@
+# Brigitte, first person (skin model 000000010C11.00C, entity Gameplay1P 1B1C: a model of its own, 104 bones; set 0802).
+# From research\brigitte\work\clipmap.md (build 154088), written by research\brigitte\scripts\clipmaps_brigitte.py; H unless noted.
+# The Rocket Flail is its own model (brigitte_flail.txt, head brigitte_flail_head.txt), on hardpoint 000A (Weapon_R) in both views.
+# Base (alias 0xA0E > selector child 4 > df 0x18): one held pose for standing, running and crouch-walking (4FB6), its own crouch
+# stand and jump; motion comes from the additive layer (sm[2]) and the df 0x18 machine's transitions. No shield variant in 1P (H: no
+# df 0xE5 anywhere in set 0802; the barrier pet 2284 is what she sees). 1P categories ride on df 0x1A0 (3P: df 0xC4), as Sombra's.
+0-60_000000004FB6 = idle   # 0.133 s; df 0x18 default, cat 5 (run) and cat 0x65 (crouch walk): 0.133 s held
+0-36_000000004FA5 = crouch_idle   # 0.0667 s; df 0x18 cat 0x66, 3 frames
+0-36_000000004FA2 = jump   # 0.333 s; df 0x18 cat 6 -> 0x006 sm[0] seq[0]: take-off 0.333 s
+0-36_000000004FA3 = fall   # 0.333 s; seq[1] and sm[1]: the air, 0.333 s
+0-32_000000004FA1 = land   # 0.767 s; the df 0x18 transition 0 > 4, 2, 1, 3 (out of the jump), 0.767 s (p0): M
+4-4_00000000504C = add_bob   # 0.833 s; the add layer under run and crouch walk (her 1P walk = idle + this), 0.833 s
+4-4_000000004FEB = add_idle   # 2 s; the add layer under the stand and crouch stand, 2.0 s
+4-4_000000004FA4 = add_move_start   # 0.333 s; add-layer transition 4, 3 > 2, 1: L
+4-4_000000004FA6 = add_move_stop   # 0.333 s; add-layer transition 2, 1 > 4, 3: L
+4-6_000000004FB4 = add_aim   # 0.167 s; alias 0x0A2 (under df 0x102's layer): a 2D pose sheet on df 7 / 8: L
+4-6_000000004FB5 = add_aim_2   # 0.467 s; its layer, a 2D sheet on df 0x24 / 0x25: L
+4-4_000000004FB3 = add_sway   # 1 s; its layer, 1.0 s at 60 fps: L
+# Rocket Flail (1248, alias 0x071 by df 0x1A0; no pitch triple in 1P). Same nodes and timings as brigitte.txt (H).
+0-32_000000004F54 = swing_windup   # 0.1 s; cat 0x6E, 0.1 s at 60 fps
+0-36_00000000504E = swing_windup_3   # 0.133 s; df 0x1A0 default[7] (cat 0x22A has no child here, so it lands on the default: M)
+0-32_000000004F53 = swing   # 0.467 s; cat 0x6F forehand, 0.467 s
+0-32_000000004F52 = swing_2   # 0.467 s; cat 0x70 backhand, 0.467 s
+0-36_000000004F3A = swing_link   # 0.267 s; cat 0x71, 0.267 s: L role
+0-36_000000004FB2 = swing_link_2   # 0.167 s; cat 0xA1, 0.167 s: L role
+0-32_000000004F37 = swing_end   # 0.667 s; cat 0x72 = alias 0x112, 0.667 s
+0-36_000000004F55 = swing_end_2   # 0.6 s; cat 0x73 = alias 0x113, 0.6 s
+# Whip Shot (1259, alias 0x02B by df 0x1A0): a two-state machine (conditions t22 i6 / t2 i7 undecoded: L), cats as brigitte.txt plus 0x82
+0-32_000000004F56 = whip   # 0.5 s; sm[0] cat 0x6E, 0.5 s
+0-32_00000000503E = whip_return   # 1.17 s; sm[0] / sm[1] cat 0x6A, and sm[0] cat 0x82 (L), 1.17 s
+0-32_00000000513D = whip_return_blocked   # 0.8 s; cat 0xC9, 0.8 s
+0-32_000000005169 = whip_return_miss   # 1.27 s; cat 0x141 (and sm[1] cat 0x82), 1.27 s
+0-32_000000005040 = whip_return_close   # 0.733 s; sm[0] cat 0x106, 0.733 s
+0-32_000000005032 = whip_2   # 0.5 s; sm[1] cat 0x6E, 0.5 s
+0-32_0000000050F6 = whip_return_close_2   # 0.767 s; sm[1] cat 0x106, 0.767 s
+4-6_0000000050BD = add_whip   # 1.07 s; the 2D additive sheet under both (df 0xBF / 0xC0): L
+# Abilities (graph and alias as brigitte.txt)
+0-32_000000004F5A = throw   # 0.967 s; Repair Pack 0x505 (0EDD #386), 0.967 s; also 0x4AA's sm[1]
+0-32_000000005119 = throw_2   # 0.467 s; 0x4AA sm[0] (0EDD #403, the follow-up 1.0 s: L which state), 0.467 s
+0-32_000000004FD9 = ult_cast   # 1.33 s; Rally 0x1B8 (12BE #97), 1.33 s
+0-36_000000005010 = stunned   # 1 s; 0x070, 1.0 s
+0-36_00000000511C = hello   # 1.43 s; 0x1EE, 1.43 s
+4-4_00000000511E = add_hello   # 1.43 s; 0x2DE
+# Shared
+4-4_000000000957 = knockdown_start   # 1 s; 0x064 / 0x1DE (shared clip)
+4-4_000000000959 = knockdown   # 0.667 s; 0x065 / 0x1DF
+4-4_000000000958 = knockdown_end   # 1 s; 0x066 / 0x1E0
+# Not mapped (L): 0x726 8496; 0x6D1 88C8; 0x6D2 88C9; 0x467 51ED / 3D38 (random, by the shared 02C5 #282); the generic quick-melee
+# layer 0x140 (C63, 5687, 3B47, 3B43-3B45) and 0x0C8 (C4F, F2-F6, 73-76, E9-EC); the flail's 820082 02 layer (the same generics).
+# Not in her 1P set (H): the barrier raise / lower / bash (0x1B6, 0x1B7, 0x568, 0x571), the draw 0x0A9, the Rally end 0x101.

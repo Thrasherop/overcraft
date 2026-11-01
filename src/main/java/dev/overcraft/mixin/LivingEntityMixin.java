@@ -90,8 +90,41 @@ public abstract class LivingEntityMixin {
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
 		// a weakened attacker (Sombra's Cyberspace) deals half
-		return dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
+		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
 			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
+		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce)
+		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player
+			? dev.overcraft.hero.Shields.armorReduce(player, boosted) : boosted;
+	}
+
+	/**
+	 * A Brigitte's barrier between the hit and them (dev.overcraft.brigitte.Barrier) takes it before anything else. All of
+	 * it: no hit at all (absorbed with 0 damage left, Minecraft still knocked her 3 m back and let the next arrow past her:
+	 * found playing), and a projectile stops at it. Part: the rest lands as a hit of its own.
+	 */
+	@Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+	private void overcraft$barrier(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
+								   float damage, CallbackInfoReturnable<Boolean> cir) {
+		if (dev.overcraft.brigitte.Barrier.passing) {
+			return;
+		}
+		float left = dev.overcraft.brigitte.Barrier.absorb((LivingEntity) (Object) this, source, damage);
+		if (left >= damage) {
+			return;
+		}
+		if (left <= 0) {
+			if (source.getDirectEntity() instanceof net.minecraft.world.entity.projectile.Projectile projectile) {
+				projectile.discard();
+			}
+			cir.setReturnValue(false);
+			return;
+		}
+		dev.overcraft.brigitte.Barrier.passing = true;
+		try {
+			cir.setReturnValue(((LivingEntity) (Object) this).hurtServer(level, source, left));
+		} finally {
+			dev.overcraft.brigitte.Barrier.passing = false;
+		}
 	}
 
 	/**

@@ -424,6 +424,30 @@ public final class OcSounds {
 		"on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping", "ping_warning", "ping_enemy", "hotfix",
 		"hack", "cyberspace_hit", "cyberspace_kill", "translocate", "uncloak", "ultimate");
 
+	/**
+	 * Brigitte's (tools/soundmaps/brigitte.txt): her sounds by name ("brigitte." + name, played through
+	 * dev.overcraft.brigitte.BrigitteSounds) and her lines by moment (Voice.say: "brigitte.voice.<moment>"; her wheel lines,
+	 * "resurrected", "damage_boosted" and "nano_boosted" are every hero's, registered in init()).
+	 */
+	public static final java.util.List<String> BRIGITTE_SOUNDS = java.util.List.of(
+		"barrier.break", "barrier.break_3p", "barrier.hold.loop", "barrier.hold.loop_3p", "barrier.low", "barrier.low_3p",
+		"barrier.lower", "barrier.lower_3p", "barrier.raise", "barrier.raise_3p", "barrier.rally.loop",
+		"barrier.rally.loop_3p", "barrier.rally_lower", "barrier.rally_lower_3p", "barrier.rally_raise",
+		"barrier.rally_raise_3p", "bash.dash", "bash.dash_3p", "flail.backhand", "flail.backhand_3p", "flail.forehand",
+		"flail.forehand_3p", "flail.hit", "flail.hit_3p", "flail.hit_block", "flail.impact", "flail.impact_3p",
+		"flail.release", "flail.release_3p", "hit_barrier", "inspire.heal", "inspire.heal.loop", "inspire.heal_3p",
+		"inspire.link.loop", "inspire.pulse", "inspire.pulse_3p", "perk.inspiring_strike", "perk.inspiring_strike_3p",
+		"perk.whiplash", "perk.whiplash_3p", "rally.cast", "rally.cast_3p", "rally.end_3p", "rally.ending",
+		"rally.ending_3p", "rally.loop", "rally.loop_3p", "rally.overhealth", "repair.cast", "repair.heal.end",
+		"repair.heal.loop", "repair.heal.start", "repair.land", "repair.land_3p", "repair.recharge_1", "repair.recharge_2",
+		"repair.recharge_3", "repair.throw_1", "repair.throw_2", "repair.throw_3", "stun", "stun.end", "stun.end_3p",
+		"stun_3p", "ult.enemy", "ult.friendly", "whip.catch", "whip.hit", "whip.hit_3p", "whip.hit_block", "whip.return",
+		"whip.return_3p", "whip.throw", "whip.throw_3p");
+	public static final java.util.List<String> BRIGITTE_VOICE = java.util.List.of(
+		"elimination", "multikill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "barrier_raise", "bash", "bash_hit", "flail", "whip_hit", "repair_pack",
+		"repair_empty", "inspire", "barrier_damaged", "barrier_low", "barrier_broken", "ultimate");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -437,6 +461,8 @@ public final class OcSounds {
 		ANA_VOICE.forEach(moment -> register("ana.voice." + moment));
 		SOMBRA_SOUNDS.forEach(name -> register("sombra." + name));
 		SOMBRA_VOICE.forEach(moment -> register("sombra.voice." + moment));
+		BRIGITTE_SOUNDS.forEach(name -> register("brigitte." + name));
+		BRIGITTE_VOICE.forEach(moment -> register("brigitte.voice." + moment));
 	}
 
 	private OcSounds() {

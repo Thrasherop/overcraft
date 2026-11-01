@@ -126,7 +126,21 @@ public final class Voice {
 		java.util.Map.entry("sombra.cyberspace_kill", new Stimulus(70, 15, 15, false)), // 1593
 		java.util.Map.entry("sombra.translocate", new Stimulus(60, 15, 15, false)), // 0698
 		java.util.Map.entry("sombra.uncloak", new Stimulus(80, 10, 10, false)), // 06E7
-		java.util.Map.entry("sombra.ultimate", new Stimulus(95, 1, 1, false))); // 1860
+		java.util.Map.entry("sombra.ultimate", new Stimulus(95, 1, 1, false)), // 1860
+		// Brigitte's (tools/soundmaps/brigitte.txt, the voice section)
+		java.util.Map.entry("brigitte.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("brigitte.barrier_raise", new Stimulus(60, 30, 30, false)), // 0945
+		java.util.Map.entry("brigitte.bash", new Stimulus(60, 10, 10, false)), // 094A
+		java.util.Map.entry("brigitte.bash_hit", new Stimulus(50, 10, 10, false)), // 09C2
+		java.util.Map.entry("brigitte.flail", new Stimulus(60, 5, 5, false)), // 094B
+		java.util.Map.entry("brigitte.whip_hit", new Stimulus(60, 20, 20, false)), // 0A03
+		java.util.Map.entry("brigitte.repair_pack", new Stimulus(60, 8, 12, false)), // 0948
+		java.util.Map.entry("brigitte.repair_empty", new Stimulus(60, 5, 10, false)), // 15A6
+		java.util.Map.entry("brigitte.inspire", new Stimulus(60, 20, 40, false)), // 09BE
+		java.util.Map.entry("brigitte.barrier_damaged", new Stimulus(60, 40, 60, false)), // 09BF
+		java.util.Map.entry("brigitte.barrier_low", new Stimulus(70, 20, 40, false)), // 09C0
+		java.util.Map.entry("brigitte.barrier_broken", new Stimulus(60, 20, 20, false)), // 09C1
+		java.util.Map.entry("brigitte.ultimate", new Stimulus(95, 1, 1, false))); // 183A
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

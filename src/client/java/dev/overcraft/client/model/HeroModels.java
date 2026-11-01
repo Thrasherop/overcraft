@@ -46,7 +46,11 @@ public final class HeroModels {
 		// his effects' meshes (LifeweaverFx): the platform's bloom outline, Life Grip's bud and its point's flower
 		"lw_flower_ring", "lw_bud", "lw_flower",
 		// Sombra's Translocator beacon (model 10518)
-		"sombra_beacon");
+		"sombra_beacon",
+		// Brigitte's effects' meshes (BrigitteFx): the swing arcs, the shield's outline, the half dome, the band, Inspire's
+		// ring, the shard, the whip head's ring, Rally's ground ring
+		"brigitte_swing_arc", "brigitte_swing_arc_back", "brigitte_shield_plate", "brigitte_dome", "brigitte_band", "brigitte_ring",
+		"brigitte_shard", "brigitte_whip_ring", "brigitte_rally_ring");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -112,6 +116,11 @@ public final class HeroModels {
 			if (hero == Hero.ANA) {
 				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
 				names.add("ana_pistol");
+			}
+			if (hero == Hero.BRIGITTE) {
+				// her flail's head and her shield (HeroWeapon.extras; the barrier itself later)
+				names.add("brigitte_flail_head");
+				names.add("brigitte_shield");
 			}
 		}
 		for (String name : names) {

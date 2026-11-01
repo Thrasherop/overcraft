@@ -299,6 +299,7 @@ public final class Combat {
 			// (missing until Nano Boost: her charge stopped at 1 point)
 			case ANA -> (int) dev.overcraft.ana.AnaStats.ULT_COST;
 			case SOMBRA -> (int) dev.overcraft.sombra.SombraStats.ULT_COST;
+			case BRIGITTE -> (int) dev.overcraft.brigitte.BrigitteStats.ULT_COST;
 			default -> 1;
 		};
 	}

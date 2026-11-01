@@ -121,6 +121,13 @@ public final class HeroAnimator {
 	private boolean ana;
 	/** Sombra (sombra.txt, sombra_1p.txt): her view model has Ana's shape of clips (idle, one walk, jump, fall). */
 	private boolean sombra;
+	/** Brigitte (brigitte_1p.txt): idle, jump, fall and land; no walk clip of her own (the idle while she moves). */
+	private boolean brigitte;
+
+	/** Brigitte's shield up: raised more lately than lowered (her actions "shield_raise" / "shield_lower"). */
+	public boolean shieldUp(float now) {
+		return brigitte && since("shield_raise", now) < since("shield_lower", now);
+	}
 	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
 	private boolean stealthed;
 	private boolean scoped;
@@ -722,6 +729,11 @@ public final class HeroAnimator {
 	/** The ofuda hand's fingertip in the model's space, as last posed by poseFirstPerson. */
 	public final Vector3f fingertip = new Vector3f();
 	/**
+	 * Brigitte: her Whip Shot's flying head in the space of the model being drawn (set by the renderer from BrigitteFx before
+	 * HeroWeapon.extras; null when no whip is out), and her flail's chain ends as extras last placed them (null: seated).
+	 */
+	public @org.jspecify.annotations.Nullable Vector3f whipHead, chainFrom, chainTo;
+	/**
 	 * Her hands' weapon bones in the model's space, as last posed by poseFirstPerson: where she holds her kunai (on the
 	 * right of the view) and her ofuda (on the left). Minecraft mode puts the held items there (HeroModelRenderer).
 	 */
@@ -912,7 +924,7 @@ public final class HeroAnimator {
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
 		}
-		if (ana || sombra) {
+		if (ana || sombra || brigitte) {
 			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
 			// scope pose (3B92: its arms out of view)
 			if (base.startsWith("jump")) {
@@ -1221,6 +1233,7 @@ public final class HeroAnimator {
 		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		stealthed = sombra && entity.isInvisible();
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
@@ -1400,6 +1413,10 @@ public final class HeroAnimator {
 		} else {
 			next = "idle";
 		}
+		if (brigitte && shieldUp(lastNow) && model.clips.containsKey(next + "_shield")) {
+			// her shield-up set (df 0xE5 cat 0xCA on her blend trees: brigitte.txt)
+			next = next + "_shield";
+		}
 		if (stealthed && model.clips.containsKey(next + "_stealth")) {
 			// her stealthed set (graph 420C's category 0x1EE on her blend trees: sombra.txt)
 			next = next + "_stealth";
@@ -1557,13 +1574,21 @@ public final class HeroAnimator {
 			});
 		}
 
+		/**
+		 * Bones off the pelvis that her actions still move: Brigitte's flail-head chain (bone_0605 < Pelvis, bone_0606 = her
+		 * hp 0257 where the flung head is drawn; bone_100E, the swing pivots bone_12E2 = hp 0079 and bone_12E6 = hp 0267:
+		 * research/brigitte/work/assets.md). Her swing clips carry 0606 4.7-4.9 m out; under the spine-only mask they never
+		 * moved and the head stayed at her hip (found playing).
+		 */
+		private static final java.util.Set<String> ACTION_CHAINS = java.util.Set.of("bone_0605", "bone_100E", "bone_12E2", "bone_12E6");
+
 		static boolean[] mask(SkinnedModel model) {
 			return MASKS.computeIfAbsent(model, m -> {
 				boolean[] mask = new boolean[m.nodeNames.length];
 				int spine = first(m, "Spine_1", "ValveBiped.Bip01_Spine");
 				for (int i = 0; i < mask.length; i++) {
 					for (int p = i; p >= 0; p = m.parent[p]) {
-						if (p == spine) {
+						if (p == spine || ACTION_CHAINS.contains(m.nodeNames[p])) {
 							mask[i] = true;
 							break;
 						}

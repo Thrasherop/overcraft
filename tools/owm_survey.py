@@ -16,6 +16,8 @@ export everything as one .glb. Works on files extracted from the player's own in
 --emotes=<dir>: also import the hero's emotes from DataTool's extract-unlocks "<Hero>|emote=*" (<dir> =
           Unlocks/Heroes/<Hero>/Emote): each emote's clips (<group>/<name>/Animations/**) as emote_<name>_<n>, in id
           order, kept in the .glb alongside --keep's clips. Their props (a bike, a skateboard) are not imported.
+--clips-from=<dir>: also the clips under <dir> (any depth) that --keep names as "emote_<clip id>": a prop's or weapon's
+          clips that live only in an emote's folder (Brigitte's Cheer plays 5265 on her flail: Unlocks/.../Cheer/Animations).
 --entity=<file.owentity>: import this entity instead of the bare model (its model look decides which meshes get
           materials: Gameplay1P's gives the first-person arms). Clips still come from <model>'s Animations folder.
 """
@@ -105,6 +107,26 @@ def main():
                                "fps": data.header.fps, "bones": len(data.bones)})
                 if abs(data.header.fps - EXPORT_FPS) > 0.01:
                     retime(action, EXPORT_FPS / data.header.fps)
+    extra = next((a.split("=", 1)[1] for a in args if a.startswith("--clips-from=")), None)
+    keep_file = next((a.split("=", 1)[1] for a in args if a.startswith("--keep=")), None)
+    if extra and keep_file:
+        wanted = {line.split("#", 1)[0].split("=", 1)[0].strip() for line in Path(keep_file).read_text(encoding="utf8").splitlines()}
+        done = set()
+        for path in sorted(Path(extra).rglob("*.owanimclip")):
+            name = f"emote_{path.stem}"
+            if name not in wanted or name in done:
+                continue
+            data = reader.read(str(path))
+            if data is None:
+                continue
+            done.add(name)
+            action = blanim.importAction(data, rig, False)
+            action.name = name
+            action.use_fake_user = True
+            report.append({"name": action.name, "folder": "emote", "id": path.stem, "frames": data.header.duration,
+                           "fps": data.header.fps, "bones": len(data.bones)})
+            if abs(data.header.fps - EXPORT_FPS) > 0.01:
+                retime(action, EXPORT_FPS / data.header.fps)
     bpy.context.scene.render.fps = EXPORT_FPS
     print(f"OWM_CLIPS {len(report)}")
 

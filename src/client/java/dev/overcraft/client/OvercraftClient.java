@@ -103,6 +103,8 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.LifeweaverFx.clear();
 			dev.overcraft.client.effect.AnaFx.clear();
 			dev.overcraft.client.effect.SombraFx.clear();
+			dev.overcraft.client.effect.BrigitteFx.clear();
+			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -132,6 +134,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
 				dev.overcraft.client.effect.AnaFx.tick(client);
 				dev.overcraft.client.effect.SombraFx.tick(client);
+				dev.overcraft.client.effect.BrigitteFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
@@ -246,7 +249,11 @@ public class OvercraftClient implements ClientModInitializer {
 			OwMovement.Glide grip = ClientLifeweaver.grip(entity);
 			return grip != null ? grip : ClientMercy.glide(entity);
 		};
-		OwMovement.dash = ClientLifeweaver::dash;
+		// Lifeweaver's dash, else Brigitte's Shield Bash
+		OwMovement.dash = entity -> {
+			net.minecraft.world.phys.Vec3 lw = ClientLifeweaver.dash(entity);
+			return lw != null ? lw : ClientBrigitte.bash(entity);
+		};
 		OwMovement.descent = ClientMercy::descent;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;

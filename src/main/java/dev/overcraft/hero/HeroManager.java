@@ -78,7 +78,7 @@ public final class HeroManager {
 	public static final AttachmentType<java.util.List<Integer>> LIFEWEAVER = AttachmentRegistry.create(Overcraft.id("lifeweaver"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
-	/** Asleep (Sleep): set on a sleeping player, for their client to hold them still. */
+	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
@@ -115,6 +115,7 @@ public final class HeroManager {
 		KITS.put(Hero.LIFEWEAVER, new dev.overcraft.lifeweaver.Lifeweaver());
 		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
+		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 	}
 
 	private HeroManager() {
@@ -237,6 +238,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOMBRA) {
 			dev.overcraft.sombra.Sombra.clear(player, state);
 		}
+		if (state.hero == Hero.BRIGITTE) {
+			dev.overcraft.brigitte.Brigitte.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -273,7 +277,7 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		if (fresh) {
-			state.shield = state.hero.shields();
+			state.shield = state.hero.layer();
 			player.setHealth(player.getMaxHealth());
 			if (kit != null) {
 				kit.equip(player, state);
@@ -318,6 +322,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.SOMBRA) {
 				dev.overcraft.sombra.Sombra.clear(player, state);
+			}
+			if (state.hero == Hero.BRIGITTE) {
+				dev.overcraft.brigitte.Brigitte.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());
@@ -380,6 +387,9 @@ public final class HeroManager {
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
+			} else if (state.hero == Hero.BRIGITTE) {
+				// her quick melee is the flail's swing (1248 #267)
+				dev.overcraft.brigitte.Brigitte.melee(player, state);
 			} else {
 				QuickMelee.use(player, state);
 				if (state.hero == Hero.SOMBRA) {

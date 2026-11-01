@@ -34,7 +34,10 @@ public final class HeroWeapon {
 		Hero.ANA, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
 		// Sombra's Machine Pistol, entity 1221 on her hardpoint 000A = Weapon_R, no offset or turn in both her models' tables
 		// (research/sombra/work/assets.md)
-		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Brigitte's Rocket Flail handle, entity 2282 on her hardpoint 000A = Weapon_R, no offset in both views
+		// (research/brigitte/work/assets.md); hero_models/brigitte_weapon.glb
+		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -71,7 +74,7 @@ public final class HeroWeapon {
 	 * 0.7 s (0BDD #105 / #116) on her hardpoint 0143 (1P) / 00A6 (3P), both Weapon_R with no offset or turn (research/ana
 	 * models.json). Its own clip (3DC2) isn't in the extract: its rest pose. Null otherwise.
 	 */
-	public static EmoteProps.@Nullable Placed sidearm(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+	private static EmoteProps.@Nullable Placed sidearm(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
 		if (hero != Hero.ANA || animator.emoting()) {
 			return null;
@@ -85,6 +88,169 @@ public final class HeroWeapon {
 		}
 		Skeleton.Pose own = new Skeleton.Pose(pistol.model().nodeNames.length).rest(pistol.model());
 		return new EmoteProps.Placed(pistol, Skeleton.world(heroModel, heroPose, bone), Skeleton.skin(pistol.model(), own, -1, null));
+	}
+
+	/**
+	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
+	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
+	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
+	 */
+	public static java.util.List<EmoteProps.Placed> extras(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now) {
+		java.util.List<EmoteProps.Placed> out = new java.util.ArrayList<>();
+		EmoteProps.Placed pistol = sidearm(hero, animator, heroModel, firstPerson, now);
+		if (pistol != null) {
+			out.add(pistol);
+		}
+		if (hero == Hero.BRIGITTE) {
+			// in an emote the flail and its head go with the stow windows (slot 3572); the folded shield (339E) no emote touches
+			EmoteProps.Placed flail = animator.emoting() && !inEmote(hero, animator) ? null
+				: place(hero, animator, heroModel, firstPerson, now);
+			HeroModels.Loaded head = HeroModels.get("brigitte_flail_head");
+			animator.chainFrom = null;
+			animator.chainTo = null;
+			if (flail != null && head != null) {
+				SkinnedModel handle = flail.loaded().model();
+				Skeleton.Pose handlePose = pose(handle, animator, firstPerson, now);
+				int socket = handle.node("bone_0FCD");
+				int start = handle.node("bone_0596");
+				if (socket >= 0) {
+					Matrix4f seated = new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, socket));
+					Matrix4f at = seated;
+					Matrix4f flung = firstPerson || animator.emoting() ? null : flungHead(animator, heroModel, now);
+					if (animator.whipHead != null) {
+						// Whip Shot's head, flown where the server sent it (1259 #640: the graph moves it, 20 m; its clips reach 5)
+						at = new Matrix4f(seated).setTranslation(animator.whipHead);
+					} else if (flung != null) {
+						at = flung;
+					}
+					// Cheer plays the head's own clip (525F on slot 33C0)
+					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), emoteClipPose(head.model(), animator, "head"), -1, null)));
+					// the chain (216C / 22CF: the handle's hp 0076 = bone_0596 to the head) while the head is off its socket
+					org.joml.Vector3f from = start < 0 ? seated.getTranslation(new org.joml.Vector3f())
+						: new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, start)).getTranslation(new org.joml.Vector3f());
+					org.joml.Vector3f to = at.getTranslation(new org.joml.Vector3f());
+					if (to.distance(from) > CHAIN_SHOWN) {
+						animator.chainFrom = from;
+						animator.chainTo = to;
+					}
+				}
+			}
+			EmoteProps.Placed hand = firstPerson ? null : handShield(animator, heroModel);
+			if (hand != null) {
+				out.add(hand);
+			}
+			HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
+			EmoteProps.Placed barrier = firstPerson ? null : barrierShown(animator, now);
+			if (barrier != null) {
+				out.add(barrier);
+			} else if (shield != null && animator.shieldUp(now)) {
+				// up in first person: drawn in the view's own frame (HeroModelRenderer.submitArms)
+			} else {
+				Skeleton.Pose heroPose = firstPerson ? null : animator.emoting() && animator.emotePose() != null ? animator.emotePose()
+					: animator.lastPose();
+				int back = heroModel.node("bone_0F74");
+				Matrix4f folded = heroPose == null || back < 0 ? null : Skeleton.world(heroModel, heroPose, back);
+				// at rest it is folded (its bones as the deploy clip's first frame: 0.58 x 0.91 m, against 1.4 x 2.55 m open);
+				// an emote that hides it parks its bone far off (Flail Tricks: 0F74 over 80 m away), as Kiriko's parked pieces
+				if (folded != null && shield != null && folded.getTranslation(new org.joml.Vector3f()).length() < PARKED) {
+					out.add(new EmoteProps.Placed(shield, folded, Skeleton.skin(shield.model(), rest(shield.model()), -1, null)));
+				}
+			}
+		}
+		return out;
+	}
+
+	/**
+	 * Her barrier when it's up, in her model's space (her feet the origin, her facing ahead): the shield unfolded (its deploy
+	 * clip, then its held idle_up: brigitte_shield.txt), upright, square to her facing, 0.9 m ahead, from the ground up,
+	 * where dev.overcraft.brigitte.Barrier takes hits. Null when it's down.
+	 */
+	public static EmoteProps.@Nullable Placed barrierShown(HeroAnimator animator, float now) {
+		HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
+		if (shield == null || !animator.shieldUp(now)) {
+			return null;
+		}
+		Skeleton.Pose own = rest(shield.model());
+		float t = animator.since("shield_raise", now);
+		SkinnedModel.Clip deploy = shield.model().clips.get("deploy");
+		SkinnedModel.Clip held = shield.model().clips.get("idle_up");
+		if (deploy != null && t < deploy.duration()) {
+			Skeleton.sample(deploy, t, own);
+		} else if (held != null) {
+			Skeleton.sample(held, t % Math.max(held.duration(), 1.0E-3f), own);
+		}
+		Matrix4f at = new Matrix4f().translate(0, (float) BARRIER_BASE, (float) dev.overcraft.brigitte.BrigitteStats.BARRIER_AHEAD);
+		return new EmoteProps.Placed(shield, at, Skeleton.skin(shield.model(), own, -1, null));
+	}
+
+	/**
+	 * Her hand shield (24C5 on hardpoint 000B = Weapon_L, slot 3816, no offset: assets.md) in an emote that plays its own
+	 * clip and doesn't put it away there (Cheer's 52F0 from 3.3 s; Recalibrate's 5108 is put away all through): the data's
+	 * windows (tools/emote_data.py). Out of emotes it shows only as the barrier. Null otherwise.
+	 */
+	private static EmoteProps.@Nullable Placed handShield(HeroAnimator animator, SkinnedModel heroModel) {
+		EmoteData.Emotes data = EmoteData.of("brigitte");
+		HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
+		String emote = animator.emote();
+		Skeleton.Pose heroPose = animator.emotePose();
+		int bone = heroModel.node("Weapon_L");
+		if (!animator.emoting() || data == null || emote == null || shield == null || heroPose == null || bone < 0
+			|| data.weaponClip(emote, animator.emoteClip(), animator.emoteAt(), "shield") == null
+			|| data.stowed(emote, animator.emoteClip(), animator.emoteAt(), "stowShield")) {
+			return null;
+		}
+		return new EmoteProps.Placed(shield, Skeleton.world(heroModel, heroPose, bone),
+			Skeleton.skin(shield.model(), emoteClipPose(shield.model(), animator, "shield"), -1, null));
+	}
+
+	/** A piece of hers posed by the clip the emote's data plays on it now (by its weapon name), else at rest. */
+	private static Skeleton.Pose emoteClipPose(SkinnedModel model, HeroAnimator a, String weapon) {
+		Skeleton.Pose pose = rest(model);
+		EmoteData.Emotes data = a.emoting() && a.emote() != null ? EmoteData.of("brigitte") : null;
+		EmoteData.WeaponClip played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), weapon);
+		SkinnedModel.Clip clip = played == null ? null : model.clips.get(played.clip());
+		if (clip != null) {
+			Skeleton.sample(clip, Math.min(Math.max(a.emoteAt() - played.start(), 0), clip.duration()), pose);
+		}
+		return pose;
+	}
+
+	/** The head this far (metres) from the handle's chain start is off its socket: the chain shows. */
+	private static final float CHAIN_SHOWN = 0.5f;
+
+	/**
+	 * Her flung flail head in third person: drawn at her hp 0257 = bone_0606 while the flail is out (1248 #640 at v432),
+	 * which her swing clips carry 4.7-4.9 m out (swing at 0.25-0.35 s); seated (null) when the swing has it back at her
+	 * pelvis or no swing plays.
+	 */
+	private static @Nullable Matrix4f flungHead(HeroAnimator a, SkinnedModel heroModel, float now) {
+		Skeleton.Pose pose = a.lastPose();
+		int bone = heroModel.node("bone_0606");
+		boolean swinging = a.since("swing", now) < SWING_OUT || a.since("swing_2", now) < SWING_OUT;
+		if (!swinging || pose == null || bone < 0) {
+			return null;
+		}
+		Matrix4f at = Skeleton.world(heroModel, pose, bone);
+		org.joml.Vector3f p = at.getTranslation(new org.joml.Vector3f());
+		// out on its chain: further from her body's axis than a hand reaches (at rest 0606 hangs 0.73 m off it, at her hip)
+		return (float) Math.hypot(p.x, p.z) > FLUNG ? at : null;
+	}
+
+	/** Metres from her body's axis beyond which bone_0606 has the head out on its chain. */
+	private static final float FLUNG = 1.2f;
+
+	/** A swing's whole clip (0.6 s: BrigitteStats.FLAIL_*). */
+	private static final float SWING_OUT = 0.6f;
+
+	/** A bone further than this from her feet (metres) is parked out of sight by the clip, not carried. */
+	private static final float PARKED = 5;
+
+	/** The deployed shield's origin above her feet: its lowest point (-1.51 m on the mesh) just under the ground. */
+	private static final double BARRIER_BASE = 1.31;
+
+	private static Skeleton.Pose rest(SkinnedModel model) {
+		return new Skeleton.Pose(model.nodeNames.length).rest(model);
 	}
 
 	/**
@@ -153,15 +319,20 @@ public final class HeroWeapon {
 			&& !data.stowed(emote, animator.emoteClip(), animator.emoteAt(), hero == Hero.MERCY && animator.blaster());
 	}
 
+	/** Her swings and whips as the server names them (Combat.animate), whose flail clips play on the handle. */
+	private static final String[] FLAIL_ACTIONS = {"swing", "swing_2", "whip", "whip_return", "whip_return_blocked", "whip_return_miss"};
+
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 		SkinnedModel.Clip idle = model.clips.get("idle");
 		boolean staff = model.clips.containsKey("holstered");
 		EmoteData.WeaponClip played = null;
-		if (staff && a.emoting() && a.emote() != null) {
-			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md)
-			EmoteData.Emotes data = EmoteData.of("mercy");
-			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), "staff");
+		boolean flail = model.clips.containsKey("whip_return_blocked");
+		if ((staff || flail) && a.emoting() && a.emote() != null) {
+			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md),
+			// or Brigitte's flail's (Cheer's 5265 on slot 3572)
+			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : "brigitte");
+			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), staff ? "staff" : "flail");
 		}
 		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
 		if (staffClip != null) {
@@ -171,6 +342,24 @@ public final class HeroWeapon {
 			Skeleton.sample(idle, now % Math.max(idle.duration(), 1.0E-3f), pose);
 		} else if (idle != null) {
 			Skeleton.sample(idle, 0, pose);
+		}
+		if (flail && staffClip == null) {
+			// her flail's own clip of the newest swing or whip (brigitte_flail.txt): in first person they fling the head's
+			// socket out on its chain (swing_1p 4 m at 0.2 s); the third-person ones keep it seated (her body's bone_0606 carries
+			// the flung head there: flungHead)
+			String newest = null;
+			float best = Float.MAX_VALUE;
+			for (String action : FLAIL_ACTIONS) {
+				float since = a.since(action, now);
+				SkinnedModel.Clip c = model.clips.get(firstPerson ? action + "_1p" : action);
+				if (c != null && since >= 0 && since < c.duration() && since < best) {
+					best = since;
+					newest = action;
+				}
+			}
+			if (newest != null) {
+				Skeleton.sample(model.clips.get(firstPerson ? newest + "_1p" : newest), best, pose);
+			}
 		}
 		// two reloads, 248D at 30 fps and 26E8 at 60 (aliases 80AA8045 / 80AA8050): which view each is for isn't read
 		// (ours: the 60 fps one in first person, where it's seen up close)

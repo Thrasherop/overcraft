@@ -532,7 +532,8 @@ public final class HeroHud {
 		float rowEnd = left + 3 + PIP_ROW - 4;
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
-		int shieldMax = hero.shields();
+		// armor (Brigitte's) the same way, in Overwatch's armor yellow
+		int shieldMax = hero.layer() + (hero.armor() > 0 ? Math.max(0, max - hero.owHealth) : 0);
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);
@@ -546,7 +547,7 @@ public final class HeroHud {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, shieldPip ? SHIELD : WHITE);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor() > 0 ? ARMOR : SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -584,6 +585,8 @@ public final class HeroHud {
 	private static final int OVERHEALTH = 0xFF7CE86A;
 	/** Shields' pips (ours, by eye: Overwatch draws them light blue). */
 	private static final int SHIELD = 0xFF8FD6FF;
+	/** Armor's pips: Overwatch's yellow (ours, by eye from its HUD). */
+	private static final int ARMOR = 0xFFF7C43A;
 
 	/** The pip row's length, whatever the health (the eighth critique: 10 pips at a 24.8 pitch, 9 at 27.3). */
 	private static final float PIP_ROW = 248;
@@ -863,6 +866,15 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.BRIGITTE) {
+			// Whip Shot (Shift) and Repair Pack (E: its charges are the weapon panel's), her data's ABILITY 1 / 2, in
+			// Kiriko's two places (ours)
+			ability(g, hero, w, "whip_shot", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.brigitte.BrigitteStats.WHIP_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "shield_bash", w - 563, 906, HeroControls.get(Action.SECONDARY_FIRE), s.ability2Cooldown(),
+				(float) dev.overcraft.brigitte.BrigitteStats.BASH_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.SOMBRA) {
 			// Cyberspace (Shift) and Translocator (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "cyberspace", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1073,6 +1085,15 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.BRIGITTE) {
+			// Repair Pack's charges (E) where Kiriko's ofuda panel is, the Rocket Flail (the left button, no rounds) where her
+			// kunai are
+			weapon(g, hero, w, "repair_pack", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+				dev.overcraft.brigitte.BrigitteStats.REPAIR_CHARGES, HeroControls.get(Action.ABILITY_2), w - 355, 1009);
+			weapon(g, hero, w, "rocket_flail", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SOMBRA) {
 			// Hotfix's charges (the right button) where Kiriko's ofuda panel is, the Machine Pistol (the left) where her kunai are
 			weapon(g, hero, w, "hotfix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),

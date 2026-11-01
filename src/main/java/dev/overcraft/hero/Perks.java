@@ -58,6 +58,7 @@ public final class Perks {
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.PERK_MINOR_XP;
 			case ANA -> dev.overcraft.ana.AnaStats.PERK_MINOR_XP;
 			case SOMBRA -> dev.overcraft.sombra.SombraStats.PERK_MINOR_XP;
+			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -72,6 +73,7 @@ public final class Perks {
 			case LIFEWEAVER -> dev.overcraft.lifeweaver.LifeweaverStats.PERK_MAJOR_XP;
 			case ANA -> dev.overcraft.ana.AnaStats.PERK_MAJOR_XP;
 			case SOMBRA -> dev.overcraft.sombra.SombraStats.PERK_MAJOR_XP;
+			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

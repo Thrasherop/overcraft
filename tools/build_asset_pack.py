@@ -31,11 +31,11 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
-                "ana": "Ana"}
+                "ana": "Ana", "brigitte": "Brigitte"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -682,6 +682,64 @@ EFFECT_MASKS = {
     "sombra_smoke": ("Sombra", "Translocator", "000000003E28", 1),
     "sombra_dissolve": ("Sombra", "Translocator", "00000000A7BF", 6),
     "sombra_square_band": ("Sombra", "Translocator", "000000043D04", 1),
+    # Brigitte's (tools/reference/brigitte-effects.md; research\brigitte\fx). The flail: the swing arc's streak (2 frames)
+    # and its edge line, the 3P chain band, the ground hit's dust (2 frames, a colour sprite with alpha), the spark
+    # streak, the energy chain's squares
+    "brigitte_swing_streak": ("Brigitte", "RocketFlail", "000000014E13", 2),
+    "brigitte_swing_edge": ("Brigitte", "RocketFlail", "000000014E79", 1),
+    "brigitte_chain_band": ("Brigitte", "RocketFlail", "000000013DB9", 1),
+    "brigitte_dust": ("Brigitte", "RocketFlail", "000000014D1C", 2),
+    "brigitte_spark_streak": ("Brigitte", "RocketFlail", "000000000DA0", 2),
+    "brigitte_energy_squares": ("Brigitte", "RocketFlail", "000000029D41", 1),
+    # Whip Shot's head: the flash ring on mesh 47D9, the 32-frame smoke
+    "brigitte_whip_flash": ("Brigitte", "WhipShot", "0000000153AF", 1),
+    "brigitte_smoke": ("Brigitte", "WhipShot", "00000001DFCB", 32),
+    # the barrier field (material 5B2C of look 13917, copied from the 1064F export): its frame / edge mask, hex lines,
+    # the 16-frame hex flicker and the sweep line; the break: hex outline and solid hex, blue / orange shards (colour
+    # sprites, 4 frames), 10-frame chips, the shield-shaped glow
+    "brigitte_barrier_frame": ("Brigitte", "BarrierShield", "000000014D13", 1),
+    "brigitte_barrier_hex": ("Brigitte", "BarrierShield", "00000000116E", 1),
+    "brigitte_barrier_flicker": ("Brigitte", "BarrierShield", "0000000010A7", 16),
+    "brigitte_barrier_sweep": ("Brigitte", "BarrierShield", "0000000010D8", 1),
+    "brigitte_hex_outline": ("Brigitte", "BarrierShield", "000000002B0E", 1),
+    "brigitte_hex": ("Brigitte", "BarrierShield", "000000002B10", 1),
+    "brigitte_shard_blue": ("Brigitte", "BarrierShield", "000000001F36", 4),
+    "brigitte_shard_orange": ("Brigitte", "BarrierShield", "000000001F37", 4),
+    "brigitte_chip": ("Brigitte", "BarrierShield", "000000005DB2", 10),
+    "brigitte_shield_glow": ("Brigitte", "BarrierShield", "0000000017C0", 1),
+    # Shield Bash and the stun: the shield's front frame, its soft shape and glow, the hex pattern, spark arcs (2),
+    # debris and smoke (colour sprites, 4 frames each), the stun's halo band and star (colour), a thin vertical line
+    "brigitte_shield_front": ("Brigitte", "ShieldBash", "000000015111", 1),
+    "brigitte_shield_soft": ("Brigitte", "ShieldBash", "000000015262", 1),
+    "brigitte_shield_shape": ("Brigitte", "ShieldBash", "0000000153F9", 1),
+    "brigitte_hex_pattern": ("Brigitte", "ShieldBash", "0000000010A2", 1),
+    "brigitte_spark_arcs": ("Brigitte", "ShieldBash", "000000015455", 2),
+    "brigitte_debris": ("Brigitte", "ShieldBash", "0000000018A2", 4),
+    "brigitte_smoke_puff": ("Brigitte", "ShieldBash", "0000000009EF", 4),
+    "brigitte_stun_halo": ("Brigitte", "ShieldBash", "00000000247C", 1),
+    "brigitte_stun_star": ("Brigitte", "ShieldBash", "00000000248B", 1),
+    "brigitte_line_v": ("Brigitte", "ShieldBash", "000000015438", 1),
+    "brigitte_noise_fine": ("Brigitte", "ShieldBash", "0000000004D4", 1),
+    # Inspire's rising wisps (on the ring mesh 296B)
+    "brigitte_inspire_wisps": ("Brigitte", "Inspire", "00000001535B", 1),
+    # Rally: the armour pattern's two layers, the starburst flare, ground decal disc and ring, the fresnel circle, a soft
+    # square and blobs, two clouds
+    "brigitte_rally_armor_a": ("Brigitte", "Rally", "0000000144E5", 1),
+    "brigitte_rally_armor_b": ("Brigitte", "Rally", "000000014486", 1),
+    "brigitte_flare_star": ("Brigitte", "Rally", "00000002F4F0", 1),
+    "brigitte_rally_disc": ("Brigitte", "Rally", "000000014C71", 1),
+    "brigitte_rally_decal_ring": ("Brigitte", "Rally", "000000014D09", 1),
+    "brigitte_fresnel": ("Brigitte", "Rally", "000000018400", 1),
+    "brigitte_soft_square": ("Brigitte", "Rally", "00000001DC68", 1),
+    "brigitte_soft_blob": ("Brigitte", "Rally", "000000018F00", 1),
+    "brigitte_cloud_a": ("Brigitte", "Rally", "00000002C977", 1),
+    "brigitte_cloud_b": ("Brigitte", "Rally", "00000002C978", 1),
+    # Repair Pack: the heal swirl and dot (colour sprites), the trail's flame wisps, a soft spot and blob
+    "brigitte_heal_swirl": ("Brigitte", "RepairPack", "000000001268", 1),
+    "brigitte_heal_dot": ("Brigitte", "RepairPack", "00000000126A", 1),
+    "brigitte_flame_wisps": ("Brigitte", "RepairPack", "0000000044F7", 1),
+    "brigitte_soft_spot": ("Brigitte", "RepairPack", "000000018B18", 1),
+    "brigitte_soft_blob_b": ("Brigitte", "RepairPack", "0000000174D8", 1),
 }
 
 
@@ -702,7 +760,12 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # Ana's scoped tracer (1A80, tools/reference/ana-effects.md): its line 0B35 x its length fade 2A063
             "ana_tracer": ("ana_beam_line", "ana_fade_v"),
             # Sombra's pistol tracer (1998, tools/reference/sombra-effects.md): its line 510 x its edge 50C
-            "sombra_tracer": ("sombra_tracer_line", "sombra_tracer_edge")}
+            "sombra_tracer": ("sombra_tracer_line", "sombra_tracer_edge"),
+            # Brigitte's (tools/reference/brigitte-effects.md): the swing arc's streak 14E13 x edge line 14E79 (26EB),
+            # Rally's armour pattern 144E5 x 14486 (219D C104), the pack trail's spot 18B18 x flame wisps 44F7 (218D C13)
+            "brigitte_swing_band": ("brigitte_swing_streak_0", "brigitte_swing_edge"),
+            "brigitte_rally_armor": ("brigitte_rally_armor_a", "brigitte_rally_armor_b"),
+            "brigitte_pack_trail": ("brigitte_soft_spot", "brigitte_flame_wisps")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -738,7 +801,20 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "sombra_cube": ("Sombra", "Cyberspace", "000000013EE4"),
                  "sombra_ring": ("Sombra", "EMP", "0000000011C1"),
                  "sombra_bowl": ("Sombra", "EMP", "0000000011C3"),
-                 "sombra_cylinder": ("Sombra", "Translocator", "00000000129B")}
+                 "sombra_cylinder": ("Sombra", "Translocator", "00000000129B"),
+                 # Brigitte's (tools/reference/brigitte-effects.md "Meshes"): the flail's swing arcs (forehand 5F3F,
+                 # backhand 5F42: a 6.5 m horseshoe band), the shield-shaped plate 5DF1 (the bash imprint, the break),
+                 # the half dome 5F08 (Rally, the pack's arrival), the open band DE0 (the stun halo), Inspire's flat ring
+                 # 296B, the shard B18, the whip head's ring 47D9 and Rally's flat ring 5BEE
+                 "brigitte_swing_arc": ("Brigitte", "RocketFlail", "000000005F3F"),
+                 "brigitte_swing_arc_back": ("Brigitte", "RocketFlail", "000000005F42"),
+                 "brigitte_shield_plate": ("Brigitte", "ShieldBash", "000000005DF1"),
+                 "brigitte_dome": ("Brigitte", "Rally", "000000005F08"),
+                 "brigitte_band": ("Brigitte", "ShieldBash", "000000000DE0"),
+                 "brigitte_ring": ("Brigitte", "Inspire", "00000000296B"),
+                 "brigitte_shard": ("Brigitte", "ShieldBash", "000000000B18"),
+                 "brigitte_whip_ring": ("Brigitte", "WhipShot", "0000000047D9"),
+                 "brigitte_rally_ring": ("Brigitte", "Rally", "000000005BEE")}
 
 
 def add_effects(*sources):

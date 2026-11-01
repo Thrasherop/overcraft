@@ -25,7 +25,10 @@ public final class Sleep {
 	}
 
 	/** One sleeper: since and until when (game time), whether its AI was already off, waking from a hit. */
-	private record Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking) {
+	private record Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking, boolean stun) {
+		Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking) {
+			this(entity, since, until, hadNoAi, waking, false);
+		}
 	}
 
 	private static final Map<UUID, Sleeper> SLEEPERS = new HashMap<>();
@@ -52,6 +55,27 @@ public final class Sleep {
 			mob.setTarget(null);
 		}
 		if (entity instanceof ServerPlayer player) {
+			player.setAttached(HeroManager.ASLEEP, true);
+		}
+	}
+
+	/**
+	 * A stun (Brigitte's Shield Bash in Rally, 224E with type 6BBE: 0.75 s): held as a sleeper is (a mob still, a player's
+	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
+	 */
+	public static void stun(LivingEntity entity, double seconds) {
+		long now = entity.level().getGameTime();
+		Sleeper old = SLEEPERS.get(entity.getUUID());
+		if (old != null && !old.stun) {
+			return;
+		}
+		boolean hadNoAi = old != null ? old.hadNoAi : entity instanceof Mob mob && mob.isNoAi();
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false, true));
+		if (entity instanceof Mob mob) {
+			mob.setNoAi(true);
+		}
+		if (entity instanceof ServerPlayer player) {
+			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
 		}
 	}
@@ -84,7 +108,7 @@ public final class Sleep {
 	/** It took damage (Overcraft's AFTER_DAMAGE): after 0.5 s asleep it wakes, 0.5 s later. */
 	public static void onDamaged(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
-		if (s == null || s.waking || quiet > 0) {
+		if (s == null || s.waking || s.stun || quiet > 0) {
 			return;
 		}
 		long now = entity.level().getGameTime();
@@ -108,6 +132,16 @@ public final class Sleep {
 
 	private static void wake(Sleeper s) {
 		SLEEPERS.remove(s.entity.getUUID());
+		if (s.stun) {
+			if (s.entity instanceof Mob mob) {
+				mob.setNoAi(s.hadNoAi);
+			}
+			if (s.entity instanceof ServerPlayer player) {
+				// (left set, a stunned player stayed frozen for good: found playing, two clients)
+				player.removeAttached(HeroManager.ASLEEP);
+			}
+			return;
+		}
 		if (s.entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			// 1A1F stops: its Stop events cut the bed and play the waking
 			for (ServerPlayer listener : level.players()) {
