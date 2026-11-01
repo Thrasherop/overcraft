@@ -1,0 +1,18 @@
+# Brigitte's shield (skin model 00000001064F.00C, 21 bones): the Barrier Field pet 2284 (look 13917 in the skin, the barrier) and
+# the hand copy 24C5 on her 000B (Weapon_L, var 3816; 0EE4 #240 shows it on bone 002C) share set 060A; the folded one 1B25 on her
+# 01D8 (bone_0F74, var 339E) has no set (only tree 0235.020, no clip bound: H). Hardpoints 0001 / 01DF bone_0AC4 (Shield Throw's
+# muzzle, 0EE3 #985), 01DE bone_0AC5, 007B / 007D (+-0.284, 0.364, -0.106) (L).
+# From research\brigitte\work\clipmap.md (build 154088), written by research\brigitte\scripts\clipmaps_brigitte.py.
+# Set 060A (the barrier pet 2284 and the hand copy 24C5): alias 0xA0E is a state machine on the owner's df 0xE5 (0EE4 #314 puts the
+# category on the pet, H): [0] cat 0x1E1 = up in Rally, [1] cat 0xCA = up, [2] default = down (no clip: the rest pose, L whether that
+# is folded). Each change has its own transition clip (H edges).
+0-28_000000005118 = idle_up   # 0.3 s; [1] cat 0xCA, 0.3 s loop
+0-28_00000000D591 = idle_up_rally   # 0.0333 s; [0] cat 0x1E1, 2 frames held
+0-0_000000004FF3 = deploy   # 0.2 s; transition [2] > [1], 0.2 s
+0-0_000000005024 = fold   # 0.2 s; [1] > [2], 0.2 s
+0-0_00000000D5C4 = deploy_rally   # 0.167 s; [2] > [0], 0.167 s
+0-0_00000000D5C5 = fold_rally   # 0.167 s; [0] > [2], 0.167 s
+0-0_00000000D711 = grow_rally   # 0.167 s; [1] > [0], 0.167 s (Rally starts with the shield up: 1.2 x size, 0EE3 #873)
+0-0_00000000D712 = shrink_rally   # 0.2 s; [0] > [1], 0.2 s
+0-16_0000000050B3 = bash_hit   # 0.433 s; 0x571 (0EE3 #657 message 07C8 -> 0EE4 #219 / #220), default, 0.433 s
+0-16_00000000D705 = bash_hit_rally   # 0.1 s; 0x571 cat 0x1E1, 0.1 s

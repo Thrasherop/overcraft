@@ -1,0 +1,232 @@
+# Brigitte, third person (skin model 000000010C10.00C, entity Gameplay3P 1B1B; set 0800). <prio>-<group>_<clip id> = our name.
+# From her data map (E:\Overwatch Archive\research\brigitte\work\clipmap.md / clipmap.json, build 154088), written by
+# research\brigitte\scripts\clipmaps_brigitte.py; H unless noted. One weapon (no df 0xE4 switch). Shield-up variants end _shield.
+# 8-way slots by the slot fields (F FAE5598F ... as Kiriko's) and confirmed on her feet (stepdir_brigitte.py); pitch triples 1D at
+# -1 / 0 / +1: 0 plain, -1 _down, +1 _up (sign L). 4-* folders are additive deltas: add_*.
+# Standing still (alias 0x001 under 0x085's selectors, df 0x18 default[4]): two turn-in-place stands picked by df 0xB7 (cat 0x68 /
+# default), both start at root yaw 0 (rootyaw_brigitte.py: 4E89 turns to -120, 4E88 to +120, H); pelvis key 1.0 m (H).
+# df 0xE5 cat 0xCA = Barrier Shield up (graph 0EE3 #476 stacks category 0x00CA on v1273, 0x01E1 in Rally: H); its variants end _shield.
+0-32_000000004E89 = idle   # 1 s; df 0xB7 default, frame 0 neutral (H)
+0-32_000000004E88 = idle_2   # 1 s; df 0xB7 cat 0x68 (H)
+4-6_000000004E77 = add_aim   # 0.667 s; the stand's pose sheet on bones 0003-0005 weighted df 0xB5 (sel[0] and the 1D at 1.0); also under the whip, Rally and the lower (M as Ana's)
+4-4_000000004E8A = add_breathe   # 1.93 s; additive 1.93 s under the stand and the crouch (sm[0]): M breathing
+0-36_000000004FE7 = idle_shield   # 1 s; shield up, df 0xB7 default (rootyaw -120, pelvis 0.789 m: H)
+0-36_000000004FE5 = idle_shield_2   # 1 s; shield up, cat 0x68 (rootyaw +120: H)
+4-6_000000004FEF = add_aim_shield   # 0.9 s; the shield stand's sheet (df 0xB5); also under the raise 0x1B6, the shield jump and Rally (H clip, M role)
+4-4_00000000506B = add_breathe_shield   # 1.6 s; shield up, sm[0] additive 1.6 s: M
+# Run 8-way (df 0x18 cat 5 -> alias 0x005), slot speeds 5.5 (F, FR, R, L, FL) / 4.95 (BR, B, BL) m/s (bound floats, H); the same eight
+# as an override weighted df 0x14; directions measured from the planted foot (stepdir_brigitte.py: +1 / -44 / -76 / -133 / -178 / +137
+# / +91 / +46 deg, H).
+0-36_000000004E78 = run   # 0.8 s; F; 0.8 s
+0-36_000000004E79 = run_forward_right   # 0.8 s; FR
+0-36_000000004E7A = strafe_right   # 0.8 s; R
+0-36_000000004E7B = run_back_right   # 0.8 s; BR
+0-36_000000004E7C = run_back   # 0.8 s; B
+0-36_000000004E7D = run_back_left   # 0.8 s; BL
+0-36_000000004E7E = strafe_left   # 0.8 s; L
+0-36_000000004E7F = run_forward_left   # 0.8 s; FL
+4-6_000000004E80 = add_aim_run   # 0.2 s; F; each slot's own pose sheet: M
+4-6_000000004E81 = add_aim_run_forward_right   # 0.2 s; FR
+4-6_000000004E82 = add_aim_run_right   # 0.2 s; R
+4-6_000000004E83 = add_aim_run_back_right   # 0.2 s; BR
+4-6_000000004E84 = add_aim_run_back   # 0.2 s; B
+4-6_000000004E85 = add_aim_run_back_left   # 0.2 s; BL
+4-6_000000004E86 = add_aim_run_left   # 0.2 s; L
+4-6_000000004E87 = add_aim_run_forward_left   # 0.2 s; FL
+0-36_00000000591F = add_run_turn   # 0.367 s; the run machine's transition 2 > 6 (p0, 0.367 s): L a direction change
+0-36_000000005929 = add_run_turn_2   # 0.367 s; its transition 6 > 2: L
+# Stop (df 0x18 transition 3 > 4 = run > still, H; 4-slot under a ToTargetDirectionIK + Strafe, s0-s3 = F / B / L / R as Ana's: M)
+0-32_000000005253 = run_stop   # 0.5 s; s0, 0.5 s
+0-32_000000005254 = run_stop_back   # 0.5 s; s1
+0-32_000000005256 = run_stop_left   # 0.5 s; s2
+0-32_000000005255 = run_stop_right   # 0.5 s; s3
+0-36_00000000507B = run_stop_shield   # 0.4 s; shield up, s0 and s1 (one clip), 0.4 s
+0-36_000000005082 = run_stop_left_shield   # 0.4 s; s2
+0-36_000000005081 = run_stop_right_shield   # 0.4 s; s3
+# Walking behind the shield (df 0x18 cat 5, df 0xE5 cat 0xCA -> alias 0x072): slot speeds 3.85 / 3.46 m/s = 5.5 / 4.95 x 0.7 (bound
+# floats, H: Barrier Shield's 30 % self slow, 1CB6 0.3); directions measured (+0 / -40 / -87 / -142 / +178 / +138 / +94 / +40 deg, H).
+0-32_000000004FD1 = run_shield   # 0.8 s; F; 0.8 s
+0-32_000000005054 = run_forward_right_shield   # 0.8 s; FR
+0-36_000000005061 = strafe_right_shield   # 0.8 s; R
+0-36_00000000505E = run_back_right_shield   # 0.8 s; BR
+0-36_00000000505B = run_back_shield   # 0.8 s; B
+0-36_00000000505D = run_back_left_shield   # 0.8 s; BL
+0-36_000000005060 = strafe_left_shield   # 0.8 s; L
+0-32_000000005055 = run_forward_left_shield   # 0.8 s; FL
+4-6_000000005051 = add_aim_run_shield   # 0.333 s; F; 0.333 s sheets
+4-6_000000005090 = add_aim_run_shield_forward_right   # 0.333 s; FR
+4-6_00000000509A = add_aim_run_shield_right   # 0.333 s; R
+4-6_000000005096 = add_aim_run_shield_back_right   # 0.333 s; BR
+4-6_00000000508F = add_aim_run_shield_back   # 0.333 s; B
+4-6_000000005097 = add_aim_run_shield_back_left   # 0.333 s; BL
+4-6_00000000509B = add_aim_run_shield_left   # 0.333 s; L
+4-6_000000005091 = add_aim_run_shield_forward_left   # 0.333 s; FL
+# Crouch (df 0x18 cat 0x66 -> alias 0x056, cat 0x65 -> alias 0x055): no shield variant (H: no df 0xE5 under either). Crouch walk
+# slot speeds 3.0 m/s all eight (H); directions measured (+2 / -38 / -85 / -138 / -178 / +142 / +94 / +42 deg, H). Pelvis 0.633 m.
+0-32_000000004E9B = crouch_idle   # 1 s; df 0xB7 default (rootyaw -120)
+0-32_000000004E9A = crouch_idle_2   # 1 s; cat 0x68 (+120)
+4-6_000000004E9C = add_aim_crouch   # 0.667 s; its sheet (df 0xB5)
+0-32_000000004E8B = crouch_walk   # 0.833 s; F; 0.833 s; + the same as override (df 0x14)
+0-32_000000004E8C = crouch_walk_forward_right   # 0.833 s; FR
+0-36_000000004E8D = crouch_walk_right   # 0.833 s; R
+0-32_000000004E8E = crouch_walk_back_right   # 0.833 s; BR
+0-32_000000004E8F = crouch_walk_back   # 0.833 s; B
+0-32_000000004E90 = crouch_walk_back_left   # 0.833 s; BL
+0-36_000000004E91 = crouch_walk_left   # 0.833 s; L
+0-32_000000004E92 = crouch_walk_forward_left   # 0.833 s; FL
+4-6_000000004E93 = add_aim_crouch_walk   # 0.2 s; F; 0.2 s sheets
+4-6_000000005234 = add_aim_crouch_walk_forward_right   # 0.2 s; FR
+4-6_000000004E95 = add_aim_crouch_walk_right   # 0.2 s; R
+4-6_000000004E96 = add_aim_crouch_walk_back_right   # 0.2 s; BR
+4-6_000000004E97 = add_aim_crouch_walk_back   # 0.2 s; B
+4-6_000000004E98 = add_aim_crouch_walk_back_left   # 0.2 s; BL
+4-6_000000004E99 = add_aim_crouch_walk_left   # 0.2 s; L
+4-6_000000004E94 = add_aim_crouch_walk_forward_left   # 0.2 s; FL
+# Jump (df 0x18 cat 6 -> alias 0x006): selector child 0 an 8-way (moving: M), child 1 one set (standing: M); each a take-off ->
+# a 2-frame step -> the air (0.5 s, the game-data list, H). Landing = the jump's onFinished slots 1-9 (additive, H; slot meaning L).
+0-32_000000004E74 = jump   # 0.0667 s; standing take-off, 0.067 s
+0-32_000000004E76 = jump_2   # 0.0333 s; the 2-frame step
+0-32_000000004E75 = fall   # 0.5 s; standing air, 0.5 s
+4-6_000000005026 = add_aim_jump   # 0.2 s; its take-off sheet
+0-32_00000000502F = jump_forward   # 0.1 s; F; moving take-off 0.1 s (slots by field: H)
+0-32_0000000061F1 = jump_forward_right   # 0.1 s; FR
+0-32_0000000057C7 = jump_right   # 0.1 s; R
+0-32_0000000061F5 = jump_back_right   # 0.1 s; BR
+0-32_000000005038 = jump_back   # 0.1 s; B
+0-32_0000000061F9 = jump_back_left   # 0.1 s; BL
+0-32_0000000057CA = jump_left   # 0.1 s; L
+0-32_0000000061ED = jump_forward_left   # 0.1 s; FL
+0-32_00000000502D = jump_2_forward   # 0.0333 s; F; 2 frames
+0-32_0000000061F3 = jump_2_forward_right   # 0.0333 s; FR
+0-32_0000000057C9 = jump_2_right   # 0.0333 s; R
+0-32_0000000061F7 = jump_2_back_right   # 0.0333 s; BR
+0-32_00000000503A = jump_2_back   # 0.0333 s; B
+0-32_0000000061FB = jump_2_back_left   # 0.0333 s; BL
+0-32_0000000057CC = jump_2_left   # 0.0333 s; L
+0-32_0000000061EF = jump_2_forward_left   # 0.0333 s; FL
+0-32_00000000502E = fall_forward   # 0.5 s; F; 0.5 s air (game data [0]-[7], 4E75 is [8])
+0-32_0000000061F2 = fall_forward_right   # 0.5 s; FR
+0-32_0000000057C8 = fall_right   # 0.5 s; R
+0-32_0000000061F6 = fall_back_right   # 0.5 s; BR
+0-32_000000005039 = fall_back   # 0.5 s; B
+0-32_0000000061FA = fall_back_left   # 0.5 s; BL
+0-32_0000000057CB = fall_left   # 0.5 s; L
+0-32_0000000061EE = fall_forward_left   # 0.5 s; FL
+4-0_000000004E72 = add_land   # 0.533 s; onFinished slot 1 (also the preview set's tr[0>3]): M landing
+4-0_00000000502C = add_land_2   # 0.533 s; slot 2
+4-0_0000000061F4 = add_land_3   # 0.533 s; slot 3
+4-0_00000000503F = add_land_4   # 0.533 s; slot 4
+4-0_0000000061F8 = add_land_5   # 0.533 s; slots 5 and 7
+4-0_000000005037 = add_land_6   # 0.533 s; slot 6
+4-0_00000000503D = add_land_8   # 0.533 s; slot 8
+4-0_0000000061F0 = add_land_9   # 0.533 s; slot 9
+0-36_000000005044 = jump_shield   # 0.0667 s; shield up (alias 0x07B): take-off 0.067 s
+0-36_000000005046 = jump_2_shield   # 0.0667 s; 2 frames
+0-36_000000005045 = fall_shield   # 0.533 s; 0.533 s (game data)
+4-4_000000005047 = add_land_shield   # 0.567 s; its onFinished slots 1-9
+# Rocket Flail (graph 1248, alias 0x071 by df 0xC4 category; pitch triple 1D on df 0x14 at -1 / 0 / +1: 0 plain, -1 _down, +1 _up,
+# sign L). Quick melee is the same swing (1248 #267 -> v34620, no 0043 on her: H). Combo index v59 0, 1, 2, 1, 2 ... (H): windup
+# #557 cat 0x6E (v59 0) or #609 cat 0x22A (v59 2), 0.15 s; forehand #560 cat 0x6F over 0.45 s (v59 0 / 2), backhand #561 cat 0x70 over
+# 0.4 s (v59 1). #560 begins #593 (cat 0xA1) and ends into #559 (cat 0x71); #561 begins #559 and ends into #593, both over 0.4 s (H
+# edges; what 0x71 / 0xA1 show: L). Released: 0x112 (v702 3, 0.7 s) / 0x113 (v702 4, 0.63 s) = cat 0x72 / 0x73's clips (H).
+0-32_000000004E9D = swing_windup   # 0.1 s; cat 0x6E, 0.1 s
+0-32_000000005008 = swing_windup_down   # 0.1 s; -1
+0-32_000000004EA4 = swing_windup_up   # 0.1 s; +1
+0-36_00000000507E = swing_windup_3   # 0.1 s; cat 0x22A (the third and later forehands' windup), 0.1 s
+0-36_0000000050C0 = swing_windup_3_down   # 0.1 s; -1
+0-36_0000000050B2 = swing_windup_3_up   # 0.1 s; +1
+0-32_000000004E9E = swing   # 0.6 s; cat 0x6F forehand, 0.6 s
+0-32_00000000500B = swing_down   # 0.6 s; -1
+0-32_000000004EA5 = swing_up   # 0.6 s; +1
+0-32_000000004E9F = swing_2   # 0.6 s; cat 0x70 backhand, 0.6 s
+0-32_00000000500E = swing_2_down   # 0.6 s; -1
+0-32_000000004EA6 = swing_2_up   # 0.6 s; +1
+0-32_000000004EA2 = swing_link   # 0.5 s; cat 0x71 (after a forehand / with a backhand), 0.5 s: L role
+0-32_000000005009 = swing_link_down   # 0.5 s; -1
+0-32_000000004EA9 = swing_link_up   # 0.5 s; +1
+0-32_000000004EA3 = swing_link_2   # 0.5 s; cat 0xA1 (with a forehand / after a backhand), 0.5 s: L role
+0-32_00000000500C = swing_link_2_down   # 0.5 s; -1
+0-32_000000004EAA = swing_link_2_up   # 0.5 s; +1
+0-32_000000004EA0 = swing_end   # 0.267 s; cat 0x72 = alias 0x112 (1248 #588, after a forehand: M), 0.267 s
+0-32_00000000500A = swing_end_down   # 0.267 s; -1
+0-32_000000004EA7 = swing_end_up   # 0.267 s; +1
+0-36_000000004EA1 = swing_end_2   # 0.267 s; cat 0x73 = alias 0x113 (#591, after a backhand: M)
+0-36_00000000500D = swing_end_2_down   # 0.267 s; -1
+0-36_000000004EA8 = swing_end_2_up   # 0.267 s; +1
+# Whip Shot (graph 1259, alias 0x02B by df 0xC4): launch #711 cat 0x6E; returns by case (kit_whip_repair_rally 1b): enemy hit >= 5 m
+# #835 cat 0x6A, blocked / wall #702 cat 0xC9, nothing hit #703 cat 0x141, anything < 5 m #701 cat 0x106 (sub-alias 0x58D). The graph
+# plays them over its own times (0.5 / 0.583 / 0.4 / 0.625 / 0.4 s), so the clips are time-scaled (H values).
+0-32_000000004F30 = whip   # 0.5 s; cat 0x6E launch, 0.5 s
+0-32_0000000051CA = whip_return   # 1 s; cat 0x6A, enemy hit, 1.0 s
+0-32_000000005056 = whip_return_blocked   # 0.8 s; cat 0xC9, blocked / wall, 0.8 s
+0-32_0000000051EB = whip_return_miss   # 1.17 s; cat 0x141, nothing hit, 1.17 s
+0-32_0000000051EC = whip_return_close   # 1.13 s; cat 0x106 via 0x58D, < 5 m, 1.13 s (+ add_aim weighted df 0x2F)
+4-6_000000005058 = add_whip   # 0.667 s; an additive over the whole alias weighted df 0x170 (add_aim weighted df 0x16F beside it): L
+# Barrier Shield (graph 0EE3): raise #471 alias 0x1B6 over 0.23 s, lower #474 alias 0x1B7 over 0.27 s after 0.1 s (H)
+0-36_000000004FF2 = shield_raise   # 0.233 s; 0x1B6, 0.233 s (+ add_aim_shield weighted df 0x2F)
+4-4_0000000050A2 = add_shield_raise_end   # 0.167 s; 0x1B6's onFinished slot 0x3D: L
+0-36_000000005067 = shield_lower   # 0.267 s; 0x1B7, 0.267 s (+ add_aim)
+4-4_0000000050A4 = add_shield_lower_end   # 0.167 s; 0x1B7's onFinished slot 0x3D: L
+# Shield Bash (0EE3 #649 alias 0x568 over 0.2 s; #652 alias 0x571 0.2 s, played 0.1 s in when a target was hit: H), under two IKs
+0-36_000000005073 = shield_bash   # 0.2 s; 0x568, 0.2 s
+4-4_000000005074 = add_shield_bash_end   # 0.433 s; 0x568's onFinished slot 1: L
+4-4_000000005079 = add_shield_bash_end_2   # 0.467 s; its slot 2: L
+0-36_0000000050AE = shield_bash_hit   # 0.433 s; 0x571, 0.433 s
+# Repair Pack (0EDD #386 alias 0x505 over 0.57 s, then #403 alias 0x4AA 1.0 s: no 0x4AA in this set, H). Pitch triple 1D (sign L).
+0-32_000000005062 = throw   # 0.667 s; 0x505 pitch 0, 0.667 s
+0-32_000000005063 = throw_down   # 0.667 s; -1
+0-32_000000005064 = throw_up   # 0.633 s; +1, 0.633 s
+4-38_000000001028 = add_throw   # 0.2 s; additive on bones 0005 / 0004 (Spine_3 / Spine_2): L
+# Rally (graph 12BE): cast #97 alias 0x1B8 over 1.2 s, end #114 alias 0x101 over 0.27 s (H); its onFinished #102 alias 0x0A9 has no
+# clip in her sets (H). While it runs (df 0x583 cat 0x8E = Rally, 12BE v6569 = category 0x008E: H) an override layer holds a pose.
+0-32_000000004FE3 = ult_cast   # 1.2 s; 0x1B8, 1.2 s at 60 fps (+ add_aim weighted df 0x2F)
+0-32_000000005237 = ult_cast_shield   # 1.2 s; 0x1B8 shield up, 1.2 s (+ add_aim_shield)
+4-4_000000004FE4 = add_ult_end   # 0.267 s; 0x101 additive, 0.267 s
+4-4_0000000052CA = add_ult_end_shield   # 0.267 s; 0x101 shield up
+0-32_00000000535A = ult_start   # 1.2 s; the base's override layer: transition none > Rally, 1.2 s (M: entering)
+0-60_000000004FE2 = ult_hold   # 0.133 s; the layer in Rally, held 0.133 s pose (185 bones: M upper body)
+0-60_0000000052CC = ult_hold_shield   # 0.167 s; the same, shield up
+0-36_00000000535B = ult_stop   # 0.267 s; transition Rally > none, 0.267 s
+# Draw (0015 #34 alias 0x0A9, 0.5 s): no clip in her sets (H).
+# Status: stunned (alias 0x070: 224E #60 and 0B1F #356, H), knocked down 0x064-0x066 (224E: her death plays it as Ana's: M), pulled 2D
+# (0x174 by the shared 02C5 #226 / 0x1C8 by none, on df 0x235 X / 0x236 Y; Ana's reading: L)
+0-36_0000000070C3 = stunned   # 0.467 s; 0x070, 0.467 s (the stun graph times it v215 - 0.2)
+0-32_000000004ED7 = knockdown_start   # 1 s; 0x064, 1.0 s
+0-60_000000004ED8 = knockdown   # 0.167 s; 0x065, 0.167 s
+0-32_000000004ED9 = knockdown_end   # 1.57 s; 0x066, 1.57 s
+0-36_000000000847 = knockdown_start_alt   # 1 s; 0x1DE (shared clip)
+0-60_000000000848 = knockdown_alt   # 1 s; 0x1DF
+0-36_000000000849 = knockdown_end_alt   # 1.27 s; 0x1E0
+0-60_000000004ED6 = pulled   # 0.167 s; 2D (0, 0), 0.167 s
+0-60_000000004ED2 = pulled_s   # 0.167 s; (0, -1)
+0-60_000000004ED3 = pulled_e   # 0.167 s; (+1, 0)
+0-60_000000004ED4 = pulled_n   # 0.167 s; (0, +1)
+0-60_000000004ED5 = pulled_w   # 0.167 s; (-1, 0)
+0-36_000000004ED1 = pulled_shield   # 0.167 s; shield up (0, 0)
+0-36_000000004ECD = pulled_s_shield   # 0.167 s; (0, -1)
+0-36_000000004ECE = pulled_e_shield   # 0.167 s; (+1, 0)
+0-36_000000004ECF = pulled_n_shield   # 0.167 s; (0, +1)
+0-36_000000004ED0 = pulled_w_shield   # 0.167 s; (-1, 0)
+4-4_000000001BD5 = add_pulled   # 1.2 s; 0x1C8's additive (shared clip, 1.2 s): L
+0-32_00000000187D = add_hit   # 0.767 s; 0x14E override (shared clip): L
+0-36_000000004EEB = pose_held   # 1.83 s; alias 0x008 under df 0x8A cat 4, 1.83 s: L
+# Hello's wave (0x1EE, as Ana's: research\hello_gesture), pitch triple, and its additive twin 0x2DE
+0-32_0000000052D4 = hello   # 1.43 s; pitch 0, 1.43 s
+0-32_0000000065DD = hello_down   # 1.43 s; -1
+0-32_0000000065DC = hello_up   # 1.43 s; +1
+4-0_0000000052D6 = add_hello   # 1.43 s; 0x2DE additive
+# Showcase (entity 3A90, set 0C97, alias 0x1B4): C06C (2.6 s) -> C07D -> C0B8 -> C07D -> C07D, then a 2-way random C07D / C0B8 + add
+# C0B9 (H paths); only C0B9 was extracted.
+# not in the extraction (not extracted; read in the data only): C06C = select_intro   # 2.6 s; seq[0], 2.6 s
+# not in the extraction (not extracted; read in the data only): C07D = select_hold   # 5.67 s; seq[1] / [3] / [4], 5.67 s
+# not in the extraction (not extracted; read in the data only): C0B8 = select_fidget_1   # 5.67 s; seq[2] and rand[1], 5.67 s
+4-12_00000000C0B9 = add_select   # 0.8 s; the random part's additive, 0.8 s
+# Preview emote (entities 2344 / 490E, set 08AD): alias 0x4A0 sel[1] -> 0x45C 527B (4.67 s, M: the Heroic emote, as Ana's 0x45C)
+# not in the extraction (not extracted; read in the data only): 527B = emote_preview   # 4.67 s; 0x45C, 4.67 s
+4-28_00000000ACD0 = add_emote_preview   # 0.0333 s; 0x45C's 2-frame additive layer: L
+# Not mapped (in the extraction, meaning not read: L): the special-pose override df 0xFA (alias 820000D0: 520E / 5213 sm, 511D 6.67 s);
+# the base's 2-frame layer 27AD / 27AE; 0x13B 5296 (0.833 s); 0x43C 52D0 (4.03 s additive, by the shared graph 02C5 #277);
+# the hero file's sets 0EF3 (0x477 C0CE / C0CF, not extracted: M souvenir as Sombra's) and 0F3D (a mode-specific locomotion 8329-833B,
+# 0x687 8330 + 8331, 0x68C 832F, D549 / D54A, 0x982 D7D3 + D54B: L); 4303 (0xB33 19F63-19F65, 0xB1E 1A062, 0xB1D 1A129: not extracted);
+# the intro (entity 2346, set 08AC empty; its own clips 50E7, 12680, 1A292 are not extracted); the hero's m_3CFE2624 C0E2 /
+# m_6BEC6706 C1DE (not extracted).

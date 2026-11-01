@@ -1,0 +1,33 @@
+# Brigitte's Rocket Flail head (entities 2283 / 2378 / 488B, skin model 000000010647.00C, 23 bones; set 088C), on the
+# handle's 0254; flung by 1248 #640 / 1259 (drawn at v432: 3P hp 0257, 1P the child's 0254, while the flail is out). Its hardpoints:
+# 0004 bone_0001 (0, -0.2, 0) = the chain beam's end, 00A4 Pelvis (0, 0.172, 0) = contact sparks (1248 #737 ...), 0262 (L).
+# From research\brigitte\work\clipmap.md (build 154088), written by research\brigitte\scripts\clipmaps_brigitte.py.
+# Two-state machines as brigitte_flail.txt (sm[0] 1P on df 0x1A0, sm[1] 3P on df 0xC4: M). In 3P the head keeps 4FCE except the
+# forehand / backhand / ends (sm[1] cats 0x6E, 0x71, 0xA1 and default all bind 4FCE: H).
+0-60_000000004FCE = idle   # 0.133 s; 0xA0E both views, and 3P cats 0x6E / 0x71 / 0xA1, 0.133 s
+0-60_000000004FC8 = swing_windup_1p   # 0.1 s; sm[0] cat 0x6E, 0.1 s at 60 fps
+0-36_000000005050 = swing_windup_3_1p   # 0.133 s; sm[0] default[7]
+0-56_000000004FCB = swing_1p   # 0.467 s; cat 0x6F, 0.467 s at 60 fps
+0-36_000000004FCC = swing_2_1p   # 0.467 s; cat 0x70
+0-36_000000004FC7 = swing_link_1p   # 0.133 s; cat 0x71
+0-36_000000004FC6 = swing_link_2_1p   # 0.1 s; cat 0xA1
+0-36_000000004FC9 = swing_end_1p   # 0.667 s; cat 0x72 and 0x112 sm[0]
+0-36_000000004FCA = swing_end_2_1p   # 0.6 s; cat 0x73 and 0x113 sm[0]
+0-44_00000000501D = swing   # 0.6 s; sm[1] cat 0x6F, 0.6 s (the same clip id as the flail's: extracted in both folders)
+0-44_00000000501E = swing_2   # 0.6 s; cat 0x70
+0-44_00000000501F = swing_end   # 0.7 s; cat 0x72 and 0x112 sm[1]
+0-44_000000005020 = swing_end_2   # 0.533 s; cat 0x73 and 0x113 sm[1]
+0-36_000000004FD0 = whip_1p   # 0.5 s; 0x02B 1P sm[0] cat 0x6E
+0-32_0000000050FE = whip_2_1p   # 0.5 s; 1P sm[1] cat 0x6E
+0-32_000000005042 = whip_return_1p   # 1.17 s; 1P cat 0x6A / 0x82
+0-36_000000005168 = whip_return_miss_1p   # 1.27 s; 1P cat 0x141
+0-32_000000005076 = whip_return_close_1p   # 0.733 s; 1P sm[0] cat 0x106
+0-40_0000000050CA = whip_return_close_2_1p   # 0.767 s; 1P sm[1] cat 0x106
+0-32_00000000513C = whip_return_blocked_1p   # 0.8 s; 1P cat 0xC9
+0-44_000000005276 = whip   # 0.5 s; 3P cat 0x6E, 0.5 s
+0-44_000000005277 = whip_return_miss   # 1.17 s; 3P cats 0x141 / 0x82 / 0xC9 (one clip), 1.17 s
+0-44_000000005278 = whip_return_close   # 0.8 s; 3P cat 0x106, 0.8 s
+0-32_0000000052B1 = whip_return   # 1 s; 3P cat 0x6A, 1.0 s
+0-36_000000004FDB = ult_cast_1p   # 1.33 s; 0x1B8 sm[0], 1.33 s
+0-36_0000000050B0 = ult_cast   # 1.2 s; 0x1B8 sm[1], 1.2 s
+0-36_000000005012 = stunned   # 1 s; 0x070, 1.0 s
