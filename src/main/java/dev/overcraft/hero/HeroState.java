@@ -122,6 +122,9 @@ public final class HeroState {
 	public double scope;
 	/** Whether Take Aim was wanted last tick: its in and out sounds play as that changes. */
 	public boolean scopeWanted;
+	/** Sombra's Machine Pistol: shots in the current burst (its spread grows with them), and when the last one left. */
+	public int burstShots;
+	public long lastShotAt = -10000;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

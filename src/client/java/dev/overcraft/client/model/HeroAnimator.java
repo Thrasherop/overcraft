@@ -90,6 +90,10 @@ public final class HeroAnimator {
 	private int fireVariant;
 	/** Jetpack Cat's paw: the volleys swap paw each time (her add_fire / add_fire_2). */
 	private boolean fireSide;
+	/** When the current burst of shots began (a held, automatic weapon: Sombra's pistol), seconds. */
+	private float burstStart = -100;
+	/** A burst lasts while shots come this close together (ours: her 20 a second, with a tick to spare). */
+	private static final float BURST_GAP = 0.12f;
 	/** Jetpack Cat: Catnapper's aim began (s), or -100 when she isn't aiming (its loop plays until the dive or a cancel). */
 	private float aimingSince = -100;
 	/** When he started skating (first person: a start layer once), stopped (his stop clip), left the ground (his jump). */
@@ -159,6 +163,9 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("fire") && a.since("fire", now) > BURST_GAP) {
+			a.burstStart = now;
+		}
 		a.actionAt.put(action, now);
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
@@ -506,6 +513,40 @@ public final class HeroAnimator {
 		landing(model, pose, now, thorns ? "add_land_thorn" : "add_land");
 	}
 
+	/**
+	 * An automatic weapon's fire layer as the data plays it (Sombra's: a state machine of the start (seq[0]), the hold
+	 * (seq[1], with the per-shot layer add_fire under it), and the end on its way out: sombra.txt, sombra_1p.txt), from the
+	 * burst's first shot to its last. False for a model without one (every other hero: their kick per shot).
+	 */
+	private boolean burst(SkinnedModel model, Skeleton.Pose pose, float now) {
+		SkinnedModel.Clip start = clip(model, "add_fire_start");
+		SkinnedModel.Clip hold = clip(model, "add_fire_hold");
+		if (start == null || hold == null) {
+			return false;
+		}
+		float sinceShot = since("fire", now);
+		if (sinceShot <= BURST_GAP) {
+			float t = now - burstStart;
+			if (t < start.duration()) {
+				Skeleton.addAdditive(start, t, pose, 1);
+			} else {
+				float held = (t - start.duration()) % Math.max(hold.duration(), 1.0E-3f);
+				Skeleton.addAdditive(hold, held, pose, 1);
+				SkinnedModel.Clip shot = clip(model, "add_fire");
+				if (shot != null) {
+					Skeleton.addAdditive(shot, held % Math.max(shot.duration(), 1.0E-3f), pose, 1);
+				}
+			}
+		} else {
+			SkinnedModel.Clip end = clip(model, "add_fire_end");
+			float t = sinceShot - BURST_GAP;
+			if (end != null && t <= end.duration()) {
+				Skeleton.addAdditive(end, t, pose, 1);
+			}
+		}
+		return true;
+	}
+
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
@@ -773,7 +814,9 @@ public final class HeroAnimator {
 			// Jetpack Cat's: one per paw, swapping each volley (one only, Ana's: that one each shot)
 			fire = fireSide && clip(model, "add_fire_2") != null ? "add_fire_2" : "add_fire";
 		}
-		additive(model, pose, fire, "fire", now);
+		if (!burst(model, pose, now)) {
+			additive(model, pose, fire, "fire", now);
+		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
 		if (lifeweaver) {
@@ -1076,7 +1119,9 @@ public final class HeroAnimator {
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
 		boolean flier = model.clips.containsKey("add_bob");
-		additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
+		if (!burst(model, pose, now)) {
+			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
+		}
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}

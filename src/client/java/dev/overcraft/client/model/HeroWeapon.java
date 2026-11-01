@@ -217,17 +217,29 @@ public final class HeroWeapon {
 		return pose;
 	}
 
-	/** The weapon's idle carries its root half a metre or more from rest: keyed in the hero's space, not the hardpoint's. */
+	/**
+	 * One of the weapon's own (not additive) clips carries its root half a metre or more from rest: keyed in the hero's space,
+	 * not the hardpoint's. Ana's rifle's idle (1.44 m up); Sombra's pistol has no idle, but its third-person reload 3E60 keys
+	 * the root 1.2 m up and 0.56 m ahead: applied, the pistol flew over her head through every reload (found playing).
+	 */
 	private static boolean bakedRoot(SkinnedModel model, int root) {
-		SkinnedModel.Clip idle = model.clips.get("idle");
-		if (idle == null) {
+		return BAKED.computeIfAbsent(model, m -> {
+			Skeleton.Pose rest = new Skeleton.Pose(m.nodeNames.length).rest(m);
+			for (SkinnedModel.Clip clip : m.clips.values()) {
+				if (clip.name().startsWith("add_")) {
+					continue;
+				}
+				Skeleton.Pose at = new Skeleton.Pose(m.nodeNames.length).rest(m);
+				Skeleton.sample(clip, 0, at);
+				if (at.t[root].distance(rest.t[root]) >= 0.5f) {
+					return true;
+				}
+			}
 			return false;
-		}
-		Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		Skeleton.sample(idle, 0, at);
-		return at.t[root].distance(rest.t[root]) >= 0.5f;
+		});
 	}
+
+	private static final java.util.Map<SkinnedModel, Boolean> BAKED = new java.util.WeakHashMap<>();
 
 	private static void add(SkinnedModel model, Skeleton.Pose pose, String name, float t) {
 		SkinnedModel.Clip clip = model.clips.get(name);
