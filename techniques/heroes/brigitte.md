@@ -10,6 +10,9 @@ Survivor (BZ 2026-02-10). Up: [Techniques](../README.md) · the method:
   are the live ones.
 - **The data map:** `tools/reference/brigitte-map.md` (her kit from her graphs, node by node, H / M / L); the detail in
   `E:\Overwatch Archive\research\brigitte\` (`work_kit\`, `work\assets.md`, `work\clipmap.md`, `extract\`, build 154088).
+- **Her effects:** [brigitte-effects](../../tools/reference/brigitte-effects.md) (each moment's recipe, the barrier field's
+  look, palettes `BRIGITTE_*`, pack masks `brigitte_*`); the lesson (her visuals are clip effects, not graph effects):
+  [reading_game_data](../game-data/reading_game_data.md#where-a-melee-heros-effects-live-brigittes-pass-2026-11-01).
 - **The plan:** `tools/reference/brigitte-plan.md` (what maps onto the mod: armor and a barrier are new; the order).
 - **Clip maps:** `tools/clipmaps/brigitte.txt` (3P), `brigitte_1p.txt`, `brigitte_flail.txt` (the handle, exported as
   `hero_models/brigitte_weapon.glb`), `brigitte_flail_head.txt`, `brigitte_shield.txt`.

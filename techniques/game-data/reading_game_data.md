@@ -81,6 +81,26 @@ From [sombra-effects](../../tools/reference/sombra-effects.md), read with Ana's 
   state plays each before calling them twins.
 - **Truncated ids on the contact sheets:** the sheets print the last four hex digits; `E4FB` is `2E4FB`. Glob by suffix.
 
+## Where a melee hero's effects live (Brigitte's pass, 2026-11-01)
+From [brigitte-effects](../../tools/reference/brigitte-effects.md) (scripts `research\brigitte\scripts\fx\fx_brigitte_*`):
+- **Most of her ability graphs' effects are sounds only.** Of 72 effects her graphs and entities name, the flail swing, Rally's start,
+  Inspire on allies, the barrier raise and the whip launch are all sound banks. **The visuals are the clips' animation
+  effects** (08F): the swing arc is clip 4E9E's effect 26EB, the bash flash clip 5073's 26A8, Rally's flail-head burst
+  clip 50B0's 27F1. `resolved\clipinfo.json` already lists each clip's `effect`: add them to the extract list as
+  `N(id, "08F")` (the decoder and extractor take them like 00D). Check the clips before saying "no effect".
+- **Contact sets (.049) are impact sounds.** The flail / whip / bash contact sets (061B, 061D, 0620, 075A) map surface
+  materials (03A) to .04A entries whose only refs are sounds (.02C). Hit visuals on creatures come from the shared damage
+  system, not the hero (no hero-owned hit effect was found).
+- **A barrier is a look, not an effect.** Her barrier field is the shield model 1064F drawn with look 13917, whose
+  submesh material 5B2C (shader 0x32) holds the hex masks and a 3-row float LUT: row 0 blue (her team), row 1 red-orange
+  (enemies). Map submeshes to materials by the look's .owmat keys and the .owmdl submesh names
+  (`fx_brigitte_submeshes.py`); dump a look material's LUT with `fx_brigitte_lut.py`.
+- **1P and 3P can play different effects from one node pair.** Her chain and the whip use a gold / blue energy ribbon
+  under `v28985` and a plain chain ribbon otherwise; the 1P swing clip uses only the gold-to-blue row. When the same
+  slot has two looks under a graph input variable, check whether it's the view (M for her: `v28985`).
+- **PowerShell `Get-Content -Raw | Set-Content -Encoding utf8` corrupts UTF-8 files** (reads them as ANSI, writes a
+  BOM): `build_asset_pack.py`'s "Lúcio" came out double-encoded. Edit repo files with the Edit tool or Python.
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent
