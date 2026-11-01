@@ -207,6 +207,9 @@ public final class HeroState {
 	public boolean canChangeHero;
 	/** The free pick on joining the world hasn't been used yet. */
 	public boolean freePick;
+	/** Where (and in which dimension) the player last respawned: their spawn room too (HeroManager.nearRespawn). */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 respawnedAt;
+	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> respawnedIn;
 
 	public void reset(@Nullable Hero hero) {
 		this.hero = hero;

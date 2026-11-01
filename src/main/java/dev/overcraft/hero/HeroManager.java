@@ -180,8 +180,17 @@ public final class HeroManager {
 		return state.freePick || state.hero == null || nearRespawn(player);
 	}
 
-	/** Near the player's bed or respawn anchor, or the world spawn when they have none. */
+	/**
+	 * Near the player's bed or respawn anchor, or the world spawn when they have none, or where they last respawned: with
+	 * no bed Minecraft puts them anywhere up to the spawn radius (10 blocks) from the world spawn, and the select said "go
+	 * back to your bed" where they stood (found playing, 0.3.26).
+	 */
 	private static boolean nearRespawn(ServerPlayer player) {
+		HeroState state = STATES.get(player.getUUID());
+		if (state != null && state.respawnedAt != null && state.respawnedIn == player.level().dimension()
+			&& player.position().distanceTo(state.respawnedAt) <= CHANGE_HERO_RANGE + 0.5) {
+			return true;
+		}
 		ServerPlayer.RespawnConfig config = player.getRespawnConfig();
 		GlobalPos pos = config != null ? config.respawnData().globalPos() : player.level().getRespawnData().globalPos();
 		return pos.dimension() == player.level().dimension()
@@ -323,6 +332,8 @@ public final class HeroManager {
 			state.reset(hero);
 			state.ultCharge = charge;
 			Perks.load(state, perks);
+			state.respawnedAt = player.position();
+			state.respawnedIn = player.level().dimension();
 			applyKit(player, state, true);
 			Voice.say(player, resurrected ? "resurrected" : "respawn", resurrected ? 1 : 0.7f);
 		}
