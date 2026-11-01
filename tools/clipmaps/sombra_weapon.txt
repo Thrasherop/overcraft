@@ -1,0 +1,13 @@
+# Sombra's Machine Pistol (entity 1221, skin model 00000000ECA1.00C, 17 bones), on her hardpoint 000A (Weapon_R, no offset)
+# in both views; muzzle hardpoint 0006 (bone_009F, (0, 0.098, 0.236) in its space); magazine 1637 (model EE06) on its 01B5.
+# From research\sombra\work\clipmap.md (build 154088), written by research\sombra\scripts\clipmaps_sombra.py.
+# Its set 0607 binds no held pose (alias 0x002 empty, H): between actions it keeps the rest pose. Each alias is a two-state machine,
+# sm[0] the first person, sm[1] the third (M, as Ana's rifle: the reload lengths match each view's, 1.367 / 1.5 s).
+4-0_000000003DD5 = add_fire_start   # 0.0333 s; the fire layer (8181C011) seq[0], both views, 1 frame
+4-0_000000003DD6 = add_fire   # 0.767 s; seq[1]'s layer weighted df 0x6C, 0.767 s
+4-4_000000003DD7 = add_fire_end   # 0.467 s; transition 0 / 1 > 2, 0.467 s
+0-36_000000003E60 = reload   # 1.5 s; 0x004 sm[1] (3P), 1.5 s
+0-4_000000003DDB = reload_1p   # 1.37 s; 0x004 sm[0] (1P), 1.367 s
+0-12_000000004032 = melee   # 0.8 s; 0x00D sm[0] only, 0.8 s: L which view
+0-0_000000004033 = ult_cast   # 0.567 s; EMP 0x175, 0.567 s
+4-12_000000004060 = add_ult_cast_end   # 0.467 s; its onFinished slot 0x3D

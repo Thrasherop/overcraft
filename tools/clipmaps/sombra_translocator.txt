@@ -1,0 +1,8 @@
+# Sombra's Translocator beacon (entity 1575, skin model 000000010518.00C, 11 bones; set 0623).
+# From research\sombra\work\clipmap.md (build 154088), written by research\sombra\scripts\clipmaps_sombra.py.
+# Its set 0623, alias 0x002: a two-state machine of 1-frame poses (H). Measured (pose_sombra.py): in 3F93 / 3F94 the three legs
+# (bones 0089 / 0069 / 008A ...) point up along the body; in 3F92 they lie flat, splayed out: sm[0] = closed (in flight),
+# sm[1] = deployed (M). The in-hand copy (entity 16E8 on her 000B, no set) keeps the rest pose.
+0-60_000000003F93 = closed_start   # 0.0333 s; sm[0] seq[0]
+0-60_000000003F94 = closed   # 0.0333 s; sm[0] seq[1]
+0-60_000000003F92 = deployed   # 0.0333 s; sm[1]

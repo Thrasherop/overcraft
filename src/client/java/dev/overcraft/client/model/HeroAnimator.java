@@ -115,6 +115,8 @@ public final class HeroAnimator {
 	private boolean thorns;
 	/** Ana (her clip maps: ana.txt, ana_1p.txt), and Take Aim's scope up: her "_scoped" clips where she has them. */
 	private boolean ana;
+	/** Sombra (sombra.txt, sombra_1p.txt): her view model has Ana's shape of clips (idle, one walk, jump, fall). */
+	private boolean sombra;
 	private boolean scoped;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
 	private float scopeIn;
@@ -859,8 +861,8 @@ public final class HeroAnimator {
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
 		}
-		if (ana) {
-			// her view model (ana_1p.txt): idle, one walk for every direction, the jump's rise and fall; scoped, the held
+		if (ana || sombra) {
+			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
 			// scope pose (3B92: its arms out of view)
 			if (base.startsWith("jump")) {
 				want = "jump";
@@ -1165,6 +1167,7 @@ public final class HeroAnimator {
 		blaster = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_BLASTER);
 		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;

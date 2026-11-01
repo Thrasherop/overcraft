@@ -1,0 +1,151 @@
+# Sombra, third person (skin model 00000000F376.00C, entity Gameplay3P 121C; set 0604). <prio>-<group>_<clip id> = our name.
+# From her data map (E:\Overwatch Archive\research\sombra\work\clipmap.md / clipmap.json, build 154088), written by
+# research\sombra\scripts\clipmaps_sombra.py; H unless noted. One weapon (no df 0xE4 switch). Stealthed variants end _stealth.
+# 8-way slots by the slot fields (F FAE5598F ... as Kiriko's) and confirmed on her feet (stepdir_sombra.py); pitch triples 1D at
+# -1 / 0 / +1: 0 plain, -1 _down, +1 _up (sign L). 4-* folders are additive deltas: add_*.
+# Standing still (alias 0x001 in the base alias 0x002, via 0x085's selectors as Ana's): two turn-in-place stands picked by df 0xB7
+# (cat 0x68 / default), each on its own time df; both start at root yaw 0 (rootyaw_sombra.py: 3CD4 turns to -120, 3CD3 to +120).
+# df 0xE5 cat 0x1EE = Stealth (graph 420C stacks category 0x1EE on v1273; its run's slot speeds are 9.625 m/s = 5.5 x 1.75: H).
+0-32_000000003CD4 = idle   # 0.833 s; df 0xB7 default, frame 0 neutral (H)
+0-32_000000003CD3 = idle_2   # 0.833 s; df 0xB7 cat 0x68 (H)
+4-6_000000003CD5 = add_aim   # 1.37 s; the stand's pose sheet on bones 0003-0005 weighted df 0xB5 (sel[0]); also under the reload (weight df 0x66) and 0x487: M as Ana's
+4-6_000000003CD6 = add_aim_2   # 0.667 s; the same sheet's sel[1] (a 1D blend at 1.0): L
+4-0_000000000037 = add_breathe   # 3 s; additive 3.0 s on the clock under every still stand (stealthed and crouched too), a shared clip id: M breathing
+0-32_000000003F46 = idle_stealth   # 0.833 s; stealthed, df 0xB7 default (H)
+0-32_000000003F41 = idle_stealth_2   # 0.833 s; stealthed, cat 0x68 (H)
+4-6_000000003F45 = add_aim_stealth   # 0.667 s; stealthed stand's sheet (H clip, M role)
+# Run 8-way (df 0x18 cat 5 -> alias 0x005, 818100BB), slot speeds 5.5 (F, FR, R, FL, L) / 5.132 (BR, BL) / 4.95 (B) m/s (H); the
+# same eight as an override weighted df 0x14; slot directions measured from the planted foot (stepdir_sombra.py: H).
+0-32_000000003CC7 = run   # 0.667 s; F
+0-32_000000003CC8 = run_forward_right   # 0.667 s; FR
+0-32_000000003CC9 = strafe_right   # 0.667 s; R
+0-32_000000003CCA = run_back_right   # 0.667 s; BR
+0-32_000000003CCB = run_back   # 0.667 s; B
+0-32_000000003CCC = run_back_left   # 0.667 s; BL
+0-32_000000003CCD = strafe_left   # 0.667 s; L
+0-32_000000003CCE = run_forward_left   # 0.667 s; FL
+4-6_000000003CC1 = add_aim_run   # 0.2 s; the F slot's pose sheet (each slot has its own: M)
+4-6_000000003CCF = add_aim_run_forward_right   # 0.2 s; FR
+4-6_000000003CC2 = add_aim_run_right   # 0.2 s; R
+4-6_000000003CD0 = add_aim_run_back_right   # 0.2 s; BR
+4-6_000000003CC3 = add_aim_run_back   # 0.2 s; B
+4-6_000000003CD1 = add_aim_run_back_left   # 0.2 s; BL
+4-6_000000003CC4 = add_aim_run_left   # 0.2 s; L
+4-6_000000003CD2 = add_aim_run_forward_left   # 0.2 s; FL
+4-4_000000003CC6 = add_run_end   # 0.267 s; the run's onFinished slot 1 (prio 2): M the stop
+# Stealthed run (818100BF), slot speeds 9.625 / 8.6625 m/s = 5.5 / 4.95 x 1.75 (H: Stealth's speed bonus)
+0-32_000000003ED5 = run_stealth   # 0.467 s; F
+0-32_000000003EFB = run_forward_right_stealth   # 0.467 s; FR
+0-32_000000003EEB = strafe_right_stealth   # 0.467 s; R
+0-32_000000003F02 = run_back_right_stealth   # 0.467 s; BR
+0-32_000000003EFE = run_back_stealth   # 0.467 s; B
+0-32_000000003F03 = run_back_left_stealth   # 0.467 s; BL
+0-32_000000003EFC = strafe_left_stealth   # 0.467 s; L
+0-32_000000003EFD = run_forward_left_stealth   # 0.467 s; FL
+4-6_000000003F05 = add_aim_run_stealth   # 0.2 s; one sheet on all eight (H)
+4-0_000000001A09 = add_run_end_stealth   # 0.267 s; its onFinished slot 1: M
+# Crouch (df 0x18 cat 0x66 -> alias 0x056; cat 0x65 -> alias 0x055). 0x055's 8-way is bound through game data (3FD1..3FD3, index 0-7);
+# directions measured (stepdir_sombra.py, H). Its other branch (m_3C82DF27) picks the stealthed stand (0x07F) or the run (0x005): when, L.
+0-32_000000003FB0 = crouch_idle   # 0.7 s; df 0xB7 cat 0x68, frame 0 neutral (rootyaw: 0 -> 120)
+0-32_000000003FB3 = crouch_idle_2   # 0.7 s; default, ends neutral
+4-6_000000003FB1 = add_aim_crouch   # 1.37 s; sm[0] sheet, 1.37 s
+4-6_000000003FB2 = add_aim_crouch_2   # 1.37 s; sm[1] (1D at 1.0): L
+0-32_000000003FD1 = crouch_walk   # 0.533 s; F (game data [0])
+0-32_000000003FD2 = crouch_walk_forward_right   # 0.533 s; FR [1]
+0-32_000000003FD0 = crouch_walk_right   # 0.533 s; R [2]
+0-32_000000003FD5 = crouch_walk_back_right   # 0.533 s; BR [3]
+0-32_000000003FD4 = crouch_walk_back   # 0.533 s; B [4]
+0-32_000000003FD6 = crouch_walk_back_left   # 0.533 s; BL [5]
+0-32_000000003FD7 = crouch_walk_left   # 0.533 s; L [6]
+0-32_000000003FD3 = crouch_walk_forward_left   # 0.533 s; FL [7]
+4-4_000000003F29 = add_crouch_stealth   # 0.667 s; the stealthed crouch's additive (0x07F's layer): L
+# Jump (df 0x18 cat 6 -> alias 0x006): 4 slots all bound to the same clips (H), take-off -> a 2-frame step -> the air (time df 0x2B as Ana's: M)
+0-32_000000003CB6 = jump   # 0.1 s; take-off, 0.1 s
+0-32_000000003CC0 = jump_2   # 0.0333 s; the 2-frame step
+0-32_000000003CBB = fall   # 0.5 s; in the air (game data), 0.5 s
+4-6_000000003CC5 = add_aim_jump   # 0.2 s; weighted df 0x653; also over the 2D pulled poses
+4-0_000000003CAD = add_land   # 0.4 s; the jump's onFinished slots 1-9 (H clip, M landing)
+0-32_000000003F5E = jump_stealth   # 0.1 s; stealthed take-off
+0-32_000000003F5C = jump_2_stealth   # 0.0333 s; -
+0-32_000000003F5D = fall_stealth   # 0.5 s; 0.5 s
+4-6_000000003F67 = add_aim_jump_stealth   # 0.2 s; -
+4-0_000000003F5B = add_land_stealth   # 0.4 s; its onFinished slots 1-9
+# Machine Pistol fire: the base tree's additive layer 818100D5 (a state machine: state 0 a sequence, then a transition out), the
+# same shape as the weapon's own fire layer (sombra_weapon.txt) and the first person's; the held part's own layer is weighted
+# df 0x6C, a dataflow the weapon graph B1B names (H nodes; M that it is the fire: no StateAnim plays it, 0B1B plays only the reload).
+4-4_000000003E33 = add_fire_start   # 0.133 s; seq[0], 0.133 s
+4-28_000000003E32 = add_fire_hold   # 0.5 s; seq[1], 0.5 s, time from a driver (mode 5)
+4-4_000000003CD7 = add_fire   # 0.5 s; seq[1]'s layer weighted df 0x6C, 0.5 s: M the per-shot kick
+4-4_000000003E35 = add_fire_end   # 0.133 s; the machine's transition 0 / 1 > 2, 0.133 s
+# Reload (0B1B #141, alias 0x004, time v581 / v32187)
+0-32_000000003CD8 = reload   # 1.5 s; 1.5 s, + add_aim weighted df 0x66 (H)
+4-4_000000003E58 = add_reload_end   # 0.2 s; onFinished slot 0x0E, 0.2 s: L
+# Quick melee (0043 #117, alias 0x00D): pitch triple (1D at -1 / 0 / +1, Ana's reading: sign L)
+0-32_000000003CDA = melee   # 0.8 s; pitch 0, 0.8 s
+0-32_000000003CDB = melee_down   # 0.8 s; -1
+0-32_000000003CD9 = melee_up   # 0.8 s; +1
+# Translocator throw (0C19 #38, alias 0x0F4, blend 12/30 s)
+0-32_000000003DAF = throw   # 0.8 s; pitch 0, 0.8 s
+0-32_000000003EC8 = throw_down   # 0.8 s; -1
+0-32_000000003EC0 = throw_up   # 0.8 s; +1
+# Cyberspace (610E #1769, alias 0x998; df 0x18 cat 9 standing and moving bind the same three)
+128-32_00000000DBAF = throw_cyberspace   # 0.433 s; pitch 0, 0.433 s
+128-32_00000000DBE0 = throw_cyberspace_down   # 0.433 s; -1
+128-32_00000000DBDF = throw_cyberspace_up   # 0.433 s; +1
+4-4_00000000DBB1 = add_throw_cyberspace_end   # 0.267 s; onFinished slot 0x83: L
+4-4_00000000DBE8 = add_throw_cyberspace_end_2   # 0.267 s; slot 0x82: L
+4-4_00000000DBE9 = add_throw_cyberspace_end_3   # 0.267 s; slot 0x84: L
+# EMP (0B31 #183, alias 0x175, priority 0x91), under two ToTargetDirectionIK
+0-32_000000003E80 = ult_cast   # 0.5 s; 0.5 s (H)
+# Hack / Hotfix (graph 614C, alias 0x47D; categories 0x82, 0x94, 0x1F1 on its StateAnims #423 / #420 / #419, #1280; 614C
+# also stacks category 0x1F0 on v1273, which df 0xE5 reads below). Category meanings: L.
+0-32_000000003EA7 = hack_cat82   # 0.5 s; df 0xC4 cat 0x82 or 0x94, pitch 0, 0.5 s
+0-32_000000003EB0 = hack_cat82_down   # 0.5 s; -1
+0-32_000000003EAD = hack_cat82_up   # 0.5 s; +1
+0-60_000000003F0F = hack_idle   # 0.2 s; default branch, standing (df 0x18 cat 9), both df 0xB7 stands, 0.2 s
+4-6_000000003F74 = add_aim_hack   # 1.37 s; its sheet, 1.37 s
+0-60_000000003F27 = hack_walk   # 0.2 s; moving: 4-slot s0 (m_09FE31A5, forward as Ana's: M)
+0-60_000000003F2A = hack_walk_back   # 0.2 s; s1 (M)
+0-60_000000003F2D = hack_walk_left   # 0.2 s; s2 (M)
+0-60_000000003F2E = hack_walk_right   # 0.2 s; s3 (M)
+4-6_000000003F2F = add_aim_hack_walk   # 0.2 s; s0 / s1 sheet
+4-6_000000003F31 = add_aim_hack_walk_left   # 0.2 s; s2
+4-6_000000003F30 = add_aim_hack_walk_right   # 0.2 s; s3
+# the moving branch's layer is 3F29 again (add_crouch_stealth)
+4-0_000000003EA5 = add_hack_start   # 0.5 s; upper layer, df 0xE5 default: seq[0], 0.5 s
+4-0_000000003F24 = add_hack   # 2 s; seq[1]'s layer weighted df 0x4A2 (614C names 04A2), 2.0 s
+4-0_000000003F80 = add_hacking_start   # 0.2 s; df 0xE5 cat 0x1F0 (614C's stack): seq[0], 0.2 s; M hacking, as the hologram animates only there
+4-4_000000003F81 = add_hacking   # 1.27 s; its layer weighted df 0x4A2, 1.27 s
+# Stealth (graph 420C: StateAnims #868 alias 0x486, #869 alias 0x487 priority 0xDD; which one enters: L)
+0-32_000000003F49 = stealth_486   # 1 s; alias 0x486, 1.0 s, under direction IK
+0-36_000000003F5A = stealth_487   # 1 s; alias 0x487, 1.0 s, + add_aim (df 0x2F)
+# Pulled / knocked 2D (0x174 by a shared graph, 0x1C8 by none; Ana's reading: L), on df 0x235 X / 0x236 Y
+0-60_000000003FFE = pulled   # 0.167 s; (0, 0)
+0-60_000000004000 = pulled_y_minus   # 0.167 s; (0, -1)
+0-60_000000004001 = pulled_y_plus   # 0.167 s; (0, +1)
+0-60_000000003FFF = pulled_x_plus   # 0.167 s; (+1, 0)
+0-60_000000004002 = pulled_x_minus   # 0.167 s; (-1, 0)
+4-4_000000001BD5 = add_pulled   # 1.2 s; 0x1C8's additive, shared: L
+# Knocked down (0x064 / 0x065 / 0x066, the shared status graphs; her death plays it as Ana's) and the alt set 0x1DE-0x1E0 (shared clips)
+0-32_0000000045E3 = knockdown_start   # 1 s; 0x064
+0-60_0000000045E4 = knockdown   # 0.933 s; 0x065, held (group 60)
+0-32_0000000045E5 = knockdown_end   # 1.3 s; 0x066
+0-36_000000000847 = knockdown_alt_start   # 1 s; 0x1DE
+0-60_000000000848 = knockdown_alt   # 1 s; 0x1DF, held
+0-36_000000000849 = knockdown_alt_end   # 1.27 s; 0x1E0
+0-32_00000000187D = hit_react   # 0.767 s; 0x070 has no clip of hers: the stand + this shared override via 0x14E (H)
+0-60_000000003E5A = pose_held   # 2 s; df 0x8A cat 4 (0x002's first branch), 2.0 s: L
+# Hello's wave (0x1EE, as Ana's: research\hello_gesture) and its additive twin 0x2DE
+0-36_000000003FF1 = hello   # 1 s; 1.0 s (H)
+4-0_000000003FF2 = add_hello   # 1 s; 0x2DE, not used: L
+# Showcase (entity 3A8C, set 0C93): the intro, then the three in sequence, then a 5-way random
+0-33_00000000BBFE = select_intro   # 5.33 s; -
+0-32_00000000BF95 = select_hold   # 3.33 s; -
+0-32_00000000BF94 = select_fidget   # 3.33 s; -
+0-32_00000000BF96 = select_fidget_2   # 6.67 s; -
+# Preview emote (entity 1770 / 480C, set 067A): alias 0x45C (M: the Heroic emote, as Ana's 0x45C)
+0-32_000000004004 = emote_preview   # 3.2 s; 3.2 s, + add_aim (df 0x2E)
+# Not mapped (in the extraction, meaning not read: L): the special-pose override df 0xFA (81810128: 3F3E / 3F39 / 3E6F + the
+# random adds 3FDF / 380B / 380F); the base's 2-frame layer 27AD / 27AE; 0x43C 3E39 (2.6 s); 0x13B 1139 + 113A / FD0; the 0x174
+# onFinished generics B92 / BC6 / C41 / BD6 / C5C; the hero file's sets DF4 (0x477 B288 / B289) and F36 (a mode-specific locomotion:
+# 8384, 837D-838B, 8383, CFB1 / CFB2, D7D1); the intro (entity 1220, set C19: no clips of its own).

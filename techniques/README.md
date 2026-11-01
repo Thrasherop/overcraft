@@ -48,7 +48,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
-  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth: research done, her models in).
+  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh: research done, her models in).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:

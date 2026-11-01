@@ -52,7 +52,7 @@ public final class SombraStats {
 	/** A hacked health pack (ours: a Minecraft stand-in, see the plan) and a deployable. */
 	public static final double HACK_PACK = 30, HACK_DEPLOYABLE = 10;   // D 0B1F; W (pack)
 
-	// ---- Cyberspace (ability 2) ----
+	// ---- Cyberspace (ability 1: Shift; D 610E ABILITY 1) ----
 	/** A 0.45 s cast, the projectile leaving 0.1 s in; the cooldown starts at the cast's end. */
 	public static final double CYBER_CAST = 0.45, CYBER_FIRE_AT = 0.1;   // D 610E
 	/** BZ 2026-10-13 (12 -> 13 s), after the data build (D 6102: 12). */
@@ -70,7 +70,7 @@ public final class SombraStats {
 	/** How long it lasts after leaving the zone: enemies (D 0.25 s; W 0.5 s: the data used), allies. */
 	public static final double ZONE_LINGER_ENEMY = 0.25, ZONE_LINGER_ALLY = 0.75;
 
-	// ---- Translocator (ability 1) ----
+	// ---- Translocator (ability 2: E to throw, E again to teleport; D 0C19 ABILITY 2) ----
 	/** The beacon: this fast, under this gravity (M), lasting this long, with this much health. */
 	public static final double BEACON_SPEED = 72, BEACON_GRAVITY = 20, BEACON_LIFETIME = 15, BEACON_HEALTH = 5;   // D 0C1A
 	/** It can be used this long after the throw (D, M; W 0.17 s). */
