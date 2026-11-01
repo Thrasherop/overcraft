@@ -3,15 +3,16 @@
 # lucio.txt / mercy.txt / jetpack_cat.txt / ana.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build
 # 154088). The client plays each event at its component's start time while the emote runs (the clip components are
 # in each rule's comment). Read offline (Overwatch and Battle.net closed), Kiriko and Lúcio 2026-10-27, Mercy and
-# Jetpack Cat 2026-10-28, Ana 2026-10-31, Sombra 2026-11-01; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\:
+# Jetpack Cat 2026-10-28, Ana 2026-10-31, Sombra and Brigitte 2026-11-01; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\:
 # emote_fx.py the clip components, ww.py + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this file,
 # <hero>_what.py each hero's descriptions; sounds.json what the client needs: loops, lengths, audience). Files
 # extracted with DataTool's own WEM->OGG (extract_banks.py) into ExtraSounds\<Hero>\Emotes\; a sound shared with an
 # earlier hero's emotes is read from that hero's folder (Mercy's and Ana's Listen Up, Mic Drop and Salty ones from
 # Lúcio's, Mercy's Rainy Stroll and Pod ones from Kiriko's; Jetpack Cat's Listen Up and Mic Drop ones from Lúcio's;
 # Sombra's Listen Up, Mic Drop and Salty ones from Lúcio's, her Rainy Stroll umbrella from Kiriko's, her Shuffle pop
-# from Mercy's; Sombra's descriptions: research\sombra\scripts\emote_sounds\, gen_sombra.py running gen_emotes.py
-# unedited). Ana's and Sombra's voice lines are read from their voice extractions in research\<hero>\extract
+# from Mercy's; Brigitte's Listen Up, Mic Drop and Salty ones from Lúcio's; Sombra's and Brigitte's descriptions:
+# research\<hero>\scripts\emote_sounds\, gen_<hero>.py running gen_emotes.py unedited (Brigitte's with an import-time
+# patch for a random container of layers, brigitte_patch.py). Ana's, Sombra's and Brigitte's voice lines are read from their voice extractions in research\<hero>\extract
 # (../../research/<hero>/extract/, as ana.txt / sombra.txt read them). Nothing here has been listened to: each rule
 # says what the data shows (H read), what is inferred (M) and what is a guess (L).
 # Gains: Wwise volume + make-up gain (the middle of random ranges) summed from each file up through its containers
@@ -4770,3 +4771,641 @@ $sombra.emote.v15ed = Sombra: (beat)
 $sombra.emote.v15ee = Sombra: (flex)
 $sombra.emote.v186b = Sombra: (happy humming)
 $sombra.emote.v1969 = Sombra: HaHa! / Woo!
+
+# ===== Brigitte: 31 emote sounds (rules), 4 voice stimuli (plain events). Offset +4.5 dB (the loudest layer: B08B).
+# Her own 24 02Cs (bank 1E6BA; ExtraSounds/Brigitte/Emotes) are layered one-shots, most of them from one kit of foley
+# takes (low armour thumps, mid cloth / armour swishes: see each rule), at 15 m but Recalibrate's 478F at 60 m (H).
+# Listen Up's, Mic Drop's and Salty's are the shared achievement-emote 02Cs (bank 1E79B: the same Wwise trees as
+# Lucio's, H), so these rules point at the files of Lucio's extraction. Taunt's 4790 picks one of three layered takes
+# per play; the first is built (brigitte_patch.py, L). Voice: 4 VoiceStimulus components of 4 stimuli (H): Hilarious's
+# laugh 6A1 (-4 dB) and Choreography's three efforts 15E4 (beat), 15E5 (flex), 15E6 (cheer) (0 dB, 35 m); her voice
+# extraction is in research/brigitte/extract, not under the build root, so those paths go through
+# ../../research/brigitte/extract/ as brigitte.txt's do. Clip components read from her emote json with emote_fx.py.
+# 478A Heroic's pose foley: low armour thumps (four takes 95-100% under 300 Hz) at 0.1, 1.1, 1.7-1.8 and 4.3 s with
+# the shared cloth / armour swishes and a pitched-up clink set (+400 / +1000 / +1300 cents) at 0.6 s. Clip components
+# (clip id @start s [+window s]): heroic 527B@0.000+4.633 hp 00A4.
+# Play event (02C 478A, bank 1E6BA): a: random of 6 (no repeat within 4), 0.75-0.86 s, 1ch, @1.100 s; b: random of 6
+# (no repeat within 5), 0.37-0.42 s, 1ch, @0.100 s; c: random of 4 (no repeat within 3), 0.39-0.42 s, 2ch, @1.800 s;
+# d: random of 4 (no repeat within 3), 0.45-0.56 s, 1ch, @4.300 s; e: random of 3, 0.42-0.84 s, 2ch, +400 cents,
+# @0.600 s, some files differ by +0/+600/+0 +0/+900/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per
+# layer), LPF/HPF 0/60 (not reproduced); f: random of 3 (no repeat within 5), 0.49-0.51 s, 2ch, +300 cents, @1.700 s,
+# LPF/HPF 0/25 (not reproduced); g: random of 2, 0.33 s, 1ch, -600 cents, @1.700 s, LPF/HPF 35/0 (not reproduced); h:
+# one file, 0.72 s, 1ch, @1.100 s; i: one file, 0.34 s, 1ch, @1.750 s; j: one file, 0.10 s, 1ch, @1.700 s; k: one
+# file, 0.27 s, 1ch, -100 cents, @1.700 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5, b -23.5, c -6.5, d -7.5, e -23.5, f -32.0, g -30.0,
+# h -11.0, i -15.5, j -6.5, k -12.5; the rule adds the hero's offset. Length 4.86 s. Containers / delays / gains H
+# (read); what it is L.
+@brigitte.emote.s478a = brigitte.emote.s478a.a@1.1:-19 + brigitte.emote.s478a.b@0.1:-19 + brigitte.emote.s478a.c@1.8:-2 + brigitte.emote.s478a.d@4.3:-3 + brigitte.emote.s478a.e*1.260@0.6:-19 + brigitte.emote.s478a.f*1.189@1.7:-27.5 + brigitte.emote.s478a.g*0.707@1.7:-25.5 + brigitte.emote.s478a.h@1.1:-6.5 + brigitte.emote.s478a.i@1.75:-11 + brigitte.emote.s478a.j@1.7:-2 + brigitte.emote.s478a.k*0.944@1.7:-8
+# 478F Recalibrate's long foley over the whole 6.8 s clip: 29 layers of armour thumps, tool clicks and bright ticks
+# (eight takes over 6 kHz) from 0 to 6.6 s, read as her tinkering with the flail / armour. Clip components (clip id
+# @start s [+window s]): recalibrate 5103@0.000+6.833 hp 00A4.
+# Play event (02C 478F, bank 1E6BA): a: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @4.600 s; b:
+# random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @2.900 s; c: random of 6 (no repeat within 5),
+# 0.37-0.42 s, 1ch, +300 cents, @4.100 s; d: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @3.600 s;
+# e: random of 6 (no repeat within 4), 0.75-0.86 s, 1ch, @2.200 s; f: random of 5 (no repeat within 2), 0.41-0.71 s,
+# 1ch, +888 cents, @4.290 s; g: random of 5, 0.18-0.24 s, 1ch, +162 cents, @4.300 s; h: random of 4 (no repeat within
+# 3), 0.39-0.42 s, 2ch, @1.300 s; i: random of 4 (no repeat within 3), 0.45-0.56 s, 1ch, -300 cents, @5.900 s; j:
+# random of 4, 0.72 s, 2ch, +300 cents, @4.000 s; k: random of 3, 0.54-0.64 s, 2ch, +450 cents, @0.200 s, LPF/HPF 0/35
+# (not reproduced); l: random of 3, 0.70-0.72 s, 1ch, +25 cents, @0.200 s, LPF/HPF 0/25 (not reproduced); m: random of
+# 3, 0.83-0.84 s, 2ch, +600 cents, @4.200 s, LPF/HPF 0/10 (not reproduced); n: random of 2, 0.90-1.14 s, 2ch, +25
+# cents, @0.100 s, some files differ by -1.5/+0/+0 +1.5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and
+# delay per layer), LPF/HPF 0/25 (not reproduced); o: one file, 0.24 s, 1ch, @4.100 s; p: one file, 0.35 s, 1ch,
+# @2.600 s; q: one file, 0.22 s, 1ch, @4.100 s; r: one file, 0.19 s, 1ch, @2.900 s; s: one file, 0.30 s, 1ch, @3.500
+# s; t: one file, 0.22 s, 1ch, @3.400 s; u: one file, 0.50 s, 1ch, +150 cents, @4.300 s; v: one file, 0.18 s, 1ch,
+# +150 cents, @3.700 s; w: one file, 0.20 s, 1ch, +150 cents, @3.000 s; x: one file, 0.33 s, 1ch, +450 cents, @4.300
+# s; y: one file, 0.17 s, 1ch, +150 cents, @3.100 s; z: one file, 0.49 s, 2ch, @0.300 s; aa: one file, 2.46 s, 2ch,
+# +600 cents, LPF/HPF 0/50 (not reproduced); ab: one file, 0.55 s, 2ch, +600 cents; ac: one file, 0.41 s, 1ch, @3.500
+# s.
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -17.5, c -18.5, d -17.5, e -19.5, f -24.5, g
+# -11.5, h -6.5, i -2.5, j -17.5, k -9.5, l -28.5, m -30.5, n -21.0, o -12.5, p -9.5, q -9.5, r -12.5, s -9.5, t
+# -12.5, u -22.0, v -22.0, w -23.5, x -22.0, y -22.0, z -8.5, aa -27.5, ab -17.5, ac -8.5; the rule adds the hero's
+# offset. Length 6.57 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s478f = brigitte.emote.s478f.a*1.189@4.6:-14 + brigitte.emote.s478f.b*1.189@2.9:-13 + brigitte.emote.s478f.c*1.189@4.1:-14 + brigitte.emote.s478f.d*1.189@3.6:-13 + brigitte.emote.s478f.e@2.2:-15 + brigitte.emote.s478f.f*1.670@4.29:-20 + brigitte.emote.s478f.g*1.098@4.3:-7 + brigitte.emote.s478f.h@1.3:-2 + brigitte.emote.s478f.i*0.841@5.9:+2 + brigitte.emote.s478f.j*1.189@4:-13 + brigitte.emote.s478f.k*1.297@0.2:-5 + brigitte.emote.s478f.l*1.015@0.2:-24 + brigitte.emote.s478f.m*1.414@4.2:-26 + brigitte.emote.s478f.n*1.015@0.1:-16.5 + brigitte.emote.s478f.o@4.1:-8 + brigitte.emote.s478f.p@2.6:-5 + brigitte.emote.s478f.q@4.1:-5 + brigitte.emote.s478f.r@2.9:-8 + brigitte.emote.s478f.s@3.5:-5 + brigitte.emote.s478f.t@3.4:-8 + brigitte.emote.s478f.u*1.091@4.3:-17.5 + brigitte.emote.s478f.v*1.091@3.7:-17.5 + brigitte.emote.s478f.w*1.091@3:-19 + brigitte.emote.s478f.x*1.297@4.3:-17.5 + brigitte.emote.s478f.y*1.091@3.1:-17.5 + brigitte.emote.s478f.z@0.3:-4 + brigitte.emote.s478f.aa*1.414:-23 + brigitte.emote.s478f.ab*1.414:-13 + brigitte.emote.s478f.ac@3.5:-4
+# 4790 Taunt's movement takes: three files at 0, 2.0 and 3.4 s (one of three random layered takes; the first built),
+# quiet mid / high cloth and armour rustles. Clip components (clip id @start s [+window s]): taunt 518F@0.000+4.600 hp
+# 00A4.
+# Play event (02C 4790, bank 1E6BA): a: one file, 0.87 s, 1ch, @3.400 s; b: one file, 1.42 s, 1ch; c: one file, 0.94
+# s, 1ch, @2.000 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +1.5, b +1.5, c +1.5; the rule adds the hero's offset.
+# Length 4.27 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s4790 = brigitte.emote.s4790.a@3.4:+6 + brigitte.emote.s4790.b:+6 + brigitte.emote.s4790.c@2:+6
+# 47BD Cheer's foley: nine layers of the shared cloth / armour swishes over 0-4.1 s. Clip components (clip id @start s
+# [+window s]): cheer 525B@0.000+4.133 hp 00A4.
+# Play event (02C 47BD, bank 1E6BA): a: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, @0.300 s; b: random of 6
+# (no repeat within 5), 0.37-0.42 s, 1ch; c: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, @3.200 s; d: random
+# of 4 (no repeat within 3), 0.45-0.56 s, 1ch, @3.500 s; e: random of 3 (no repeat within 4), 0.30-0.34 s, 1ch, @1.000
+# s; f: one file, 0.18 s, 1ch, @1.000 s; g: one file, 0.40 s, 1ch, @1.000 s; h: one file, 0.67 s, 1ch, @1.400 s; i:
+# one file, 1.88 s, 1ch, @0.150 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -21.5, c -18.5, d -7.5, e -12.5, f +11.5, g -0.5,
+# h -0.5, i -3.5; the rule adds the hero's offset. Length 4.06 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47bd = brigitte.emote.s47bd.a@0.3:-11 + brigitte.emote.s47bd.b:-17 + brigitte.emote.s47bd.c@3.2:-14 + brigitte.emote.s47bd.d@3.5:-3 + brigitte.emote.s47bd.e@1:-8 + brigitte.emote.s47bd.f@1:+16 + brigitte.emote.s47bd.g@1:+4 + brigitte.emote.s47bd.h@1.4:+4 + brigitte.emote.s47bd.i@0.15:+1
+# 47BE one 1.68 s movement take as Hilarious starts (mid / high). Clip components (clip id @start s [+window s]):
+# hilarious 5236@0.000+2.200 hp 00A4.
+# Play event (02C 47BE, bank 1E6BA): a: one file, 1.68 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 1.68 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47be = brigitte.emote.s47be.a:-19
+# 47BF one 0.74 s movement take 3.93 s into Hilarious. Clip components (clip id @start s [+window s]): hilarious
+# 5236@3.933+0.933 hp 00A4.
+# Play event (02C 47BF, bank 1E6BA): a: one file, 0.74 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 0.74 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47bf = brigitte.emote.s47bf.a:-19
+# 47C0 one 0.75 s take at her hand (hardpoint 0003) 2.67 s into Hilarious. Clip components (clip id @start s [+window
+# s]): hilarious 5236@2.667+0.900 hp 0003.
+# Play event (02C 47C0, bank 1E6BA): a: one file, 0.75 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -31.5; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47c0 = brigitte.emote.s47c0.a:-27
+# 47F8 Kneel's going-down foley: eight layers (thumps and swishes of the shared kit) from 0.3 to 2.3 s. Clip
+# components (clip id @start s [+window s]): kneel 52F1@0.000+2.533 hp 00A4.
+# Play event (02C 47F8, bank 1E6BA): a: random of 6 (no repeat within 4), 0.75-0.86 s, 1ch, @1.000 s; b: random of 6
+# (no repeat within 5), 0.37-0.42 s, 1ch, @0.300 s; c: random of 6 (no repeat within 4), 0.51-0.79 s, 1ch, @1.500 s;
+# d: random of 2, 0.33 s, 1ch, -600 cents, @1.700 s; e: one file, 0.34 s, 1ch, @1.600 s; f: one file, 0.33 s, 1ch,
+# +400 cents, @1.600 s; g: one file, 0.50 s, 1ch, +100 cents, @1.600 s; h: one file, 0.17 s, 1ch, +100 cents, @1.600
+# s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5, b -17.5, c -16.5, d -37.0, e -16.5, f -21.0, g
+# -21.0, h -21.0; the rule adds the hero's offset. Length 2.29 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47f8 = brigitte.emote.s47f8.a@1:-16 + brigitte.emote.s47f8.b@0.3:-13 + brigitte.emote.s47f8.c@1.5:-12 + brigitte.emote.s47f8.d*0.707@1.7:-32.5 + brigitte.emote.s47f8.e@1.6:-12 + brigitte.emote.s47f8.f*1.260@1.6:-16.5 + brigitte.emote.s47f8.g*1.059@1.6:-16.5 + brigitte.emote.s47f8.h*1.059@1.6:-16.5
+# 47F9 Kneel's held part: three layers of the shared swishes from 0.3 to 5.2 s over the 7 s kneel. Clip components
+# (clip id @start s [+window s]): kneel 52F2@0.000+7.033 hp 00A4.
+# Play event (02C 47F9, bank 1E6BA): a: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @0.300 s,
+# LPF/HPF 0/50 (not reproduced); b: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @4.800 s, LPF/HPF
+# 0/60 (not reproduced); c: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch, +300 cents, @2.400 s, LPF/HPF 0/60
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5, b -23.5, c -27.5; the rule adds the hero's offset.
+# Length 5.15 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47f9 = brigitte.emote.s47f9.a*1.189@0.3:-16 + brigitte.emote.s47f9.b*1.189@4.8:-19 + brigitte.emote.s47f9.c*1.189@2.4:-23
+# 47FA Kneel's start: two layers of the shared swishes in the first 0.66 s. Clip components (clip id @start s [+window
+# s]): kneel 5314@0.000+0.367 hp 00A4.
+# Play event (02C 47FA, bank 1E6BA): a: random of 6 (no repeat within 4), 0.35-0.48 s, 1ch; b: random of 4 (no repeat
+# within 3), 0.45-0.56 s, 1ch, -300 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5, b -5.5; the rule adds the hero's offset. Length 0.67
+# s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s47fa = brigitte.emote.s47fa.a:-19 + brigitte.emote.s47fa.b*0.841:-1
+# 492D a short tap (0.1 s, mostly 300 Hz-2 kHz) 2.06 s into Dance. Clip components (clip id @start s [+window s]):
+# dance 54E5@2.064 hp 00A4.
+# Play event (02C 492D, bank 1E6BA): a: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +755 cents, LPF/HPF 0/47
+# (not reproduced); b: random of 5 (no repeat within 2), 0.07-0.14 s, 1ch, +975 cents, @0.020 s, LPF/HPF 0/40 (not
+# reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.0, b -19.0; the rule adds the hero's offset. Length
+# 0.10 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s492d = brigitte.emote.s492d.a*1.547:-14.5 + brigitte.emote.s492d.b*1.756@0.02:-14.5
+# 492E a 0.27 s tap 0.15 s into Dance. Clip components (clip id @start s [+window s]): dance 54E5@0.146 hp 00A4.
+# Play event (02C 492E, bank 1E6BA): a: random of 3, 0.20-0.27 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 0.27 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s492e = brigitte.emote.s492e.a:-5
+# 492F a 0.28 s tap 1.95 s into Dance. Clip components (clip id @start s [+window s]): dance 54E5@1.951 hp 00A4.
+# Play event (02C 492F, bank 1E6BA): a: random of 3, 0.22-0.28 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 0.28 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s492f = brigitte.emote.s492f.a:-5
+# 5E73 Katt's foley: four layers of the shared kit over 0-9.1 s (the cat emote). Clip components (clip id @start s
+# [+window s]): katt 805B@0.025+8.877 hp 00A4.
+# Play event (02C 5E73, bank 1E6BA): a: random of 4 (no repeat within 3), 0.45-0.56 s, 1ch, @8.500 s; b: random of 4
+# (no repeat within 3), 0.39-0.42 s, 2ch, @0.050 s; c: one file, 8.38 s, 1ch, @0.180 s; d: one file, 8.76 s, 1ch,
+# @0.130 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +2.5, b -0.5, c -7.5, d -13.5; the rule adds the hero's
+# offset. Length 9.06 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.s5e73 = brigitte.emote.s5e73.a@8.5:+7 + brigitte.emote.s5e73.b@0.05:+4 + brigitte.emote.s5e73.c@0.18:-3 + brigitte.emote.s5e73.d@0.13:-9
+# A09A a low thump (89% under 300 Hz, 0.2-1.5 s) as Guard Duty starts. Clip components (clip id @start s [+window s]):
+# guard_duty CED3@0.001+1.964 hp 00A4.
+# Play event (02C A09A, bank 1E6BA): a: one file, 1.28 s, 1ch, @0.200 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -16.5; the rule adds the hero's offset. Length 1.48 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sa09a = brigitte.emote.sa09a.a@0.2:-12
+# A09B a short step / tap (0.26 s) at 0.63 s and 1.97 s of Guard Duty. Clip components (clip id @start s [+window s]):
+# guard_duty CED3@1.967 hp 00A4; guard_duty CED4@0.633 hp 00A4.
+# Play event (02C A09B, bank 1E6BA): a: random of 2, 0.25-0.26 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.0; the rule adds the hero's offset. Length 0.26 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sa09b = brigitte.emote.sa09b.a:-20.5
+# A09C a low stomp (91% under 300 Hz) at 1.13 s and 2.43 s of Guard Duty. Clip components (clip id @start s [+window
+# s]): guard_duty CED3@2.433 hp 00A4; guard_duty CED4@1.130 hp 00A4.
+# Play event (02C A09C, bank 1E6BA): a: random of 2, 0.36-0.42 s, 1ch, @0.200 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.0; the rule adds the hero's offset. Length 0.62 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sa09c = brigitte.emote.sa09c.a@0.2:-14.5
+# B087 Flail Tricks' long bed: two files over 0.1-9.8 s (mid / high), read as the flail whirling. Clip components
+# (clip id @start s [+window s]): flail_tricks CF96@0.033+9.067 hp 00A4.
+# Play event (02C B087, bank 1E6BA): a: one file, 7.30 s, 1ch, @0.800 s, LPF/HPF 0/30 (not reproduced); b: one file,
+# 9.68 s, 1ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -11.5; the rule adds the hero's offset. Length
+# 9.78 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sb087 = brigitte.emote.sb087.a@0.8:-14 + brigitte.emote.sb087.b@0.1:-7
+# B088 the catch at the end of Flail Tricks (8.43 s): two layers of the shared swishes. Clip components (clip id
+# @start s [+window s]): flail_tricks CF96@8.434+0.666 hp 00A4.
+# Play event (02C B088, bank 1E6BA): a: random of 6 (no repeat within 5), 0.37-0.42 s, 1ch; b: random of 4 (no repeat
+# within 3), 0.45-0.56 s, 1ch, @0.300 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5, b -14.5; the rule adds the hero's offset. Length
+# 0.86 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sb088 = brigitte.emote.sb088.a:-10 + brigitte.emote.sb088.b@0.3:-10
+# B08B one 0.76 s take 6.73 s into Flail Tricks (75% 300 Hz-2 kHz). Clip components (clip id @start s [+window s]):
+# flail_tricks CF96@6.730+2.336 hp 00A4.
+# Play event (02C B08B, bank 1E6BA): a: one file, 0.76 s, 1ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -3.5; the rule adds the hero's offset. Length 0.86 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sb08b = brigitte.emote.sb08b.a@0.1:+1
+# BFD8 a 2.66 s low boom (94% under 300 Hz) as Power Flail starts. Clip components (clip id @start s [+window s]):
+# power_flail A175@0.021+3.985 hp 00A4.
+# Play event (02C BFD8, bank 1E6BA): a: one file, 2.66 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +2.5; the rule adds the hero's offset. Length 2.66 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sbfd8 = brigitte.emote.sbfd8.a:+7
+# BFDB one 9.68 s file held over Dance (66% 300 Hz-2 kHz, 30% under 300 Hz): read as the dance's music. Clip
+# components (clip id @start s [+window s]): dance 54E5@0.037+9.294 hp 00A4.
+# Play event (02C BFDB, bank 1E6BA): a: one file, 9.68 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -119.5; the rule adds the hero's offset. Length 9.68 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sbfdb = brigitte.emote.sbfdb.a:-115
+# BFE6 one 4.78 s file over Choreography (70% 300 Hz-2 kHz): read as its music. Clip components (clip id @start s
+# [+window s]): choreography E0B6@0.100+5.036 hp 00A4.
+# Play event (02C BFE6, bank 1E6BA): a: one file, 4.78 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -119.5; the rule adds the hero's offset. Length 4.78 s.
+# Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sbfe6 = brigitte.emote.sbfe6.a:-115
+# DA44 the mic hitting the floor (Mic Drop, the shared emote), at 0.93 s. Clip components (clip id @start s [+window
+# s]): mic_drop 15C86@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@brigitte.emote.sda44 = brigitte.emote.sda44.a:-14
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C86@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@brigitte.emote.sda4f = brigitte.emote.sda4f.a*1.169@0.01:+4
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 184FD@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@brigitte.emote.se548 = brigitte.emote.se548.a:-5
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 184FD@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@brigitte.emote.se549 = brigitte.emote.se549.a*0.891:-15 + brigitte.emote.se549.b:-15
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 184FD@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@brigitte.emote.se54a = brigitte.emote.se54a.a:-20
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 184FD@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@brigitte.emote.se54b = brigitte.emote.se54b.a:-19
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C9A@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.seea6 = brigitte.emote.seea6.a:0 + brigitte.emote.seea6.b@1.45:0 + brigitte.emote.seea6.c@0.03:-14 + brigitte.emote.seea6.d*2.378@0.15:0
+# F85E a hop landing at her foot (hardpoint 001C) 0.1 s into Bunny Hop: two layers, 63% over 6 kHz. Clip components
+# (clip id @start s [+window s]): bunny_hop 19A41@0.100 hp 001C.
+# Play event (02C F85E, bank 1E6BA): a: random of 9 (no repeat within 6), 0.69-1.15 s, 1ch, +530 cents; b: random of 7
+# (no repeat within 4), 0.78-1.25 s, 1ch, +530 cents, @0.015 s, some files differ by +0/-125/+0 (dB / cents / s; not
+# reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.0, b -22.5; the rule adds the hero's offset. Length
+# 0.94 s. Containers / delays / gains H (read); what it is L.
+@brigitte.emote.sf85e = brigitte.emote.sf85e.a*1.358:-10.5 + brigitte.emote.sf85e.b*1.358@0.015:-18
+
+# ----- Brigitte's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EB8.03F.ogg
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EE7.03F.ogg
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EF8.03F.ogg
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6F1A.03F.ogg
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6F2D.03F.ogg
+brigitte.emote.s478a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6ECC.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69AD.03F.ogg
+brigitte.emote.s478a.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s478a.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EE3.03F.ogg
+brigitte.emote.s478a.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69A1.03F.ogg
+brigitte.emote.s478a.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6F23.03F.ogg
+brigitte.emote.s478a.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EC0.03F.ogg
+brigitte.emote.s478a.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EF2.03F.ogg
+brigitte.emote.s478a.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EDE.03F.ogg
+brigitte.emote.s478a.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6F00.03F.ogg
+brigitte.emote.s478a.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EEB.03F.ogg
+brigitte.emote.s478a.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69A8.03F.ogg
+brigitte.emote.s478a.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69A4.03F.ogg
+brigitte.emote.s478a.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EDD.03F.ogg
+brigitte.emote.s478a.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EEF.03F.ogg
+brigitte.emote.s478a.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EDC.03F.ogg
+brigitte.emote.s478a.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A699A.03F.ogg
+brigitte.emote.s478a.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69B4.03F.ogg
+brigitte.emote.s478a.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EE8.03F.ogg
+brigitte.emote.s478a.h = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A69A7.03F.ogg
+brigitte.emote.s478a.i = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6F2B.03F.ogg
+brigitte.emote.s478a.j = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EEA.03F.ogg
+brigitte.emote.s478a.k = ExtraSounds/Brigitte/Emotes/Sounds/00000000478A.02C/0000002A6EBB.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AD.03F.ogg
+brigitte.emote.s478f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AD.03F.ogg
+brigitte.emote.s478f.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AD.03F.ogg
+brigitte.emote.s478f.c = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AD.03F.ogg
+brigitte.emote.s478f.d = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EB8.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE7.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EF8.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F1A.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F2D.03F.ogg
+brigitte.emote.s478f.e = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ECC.03F.ogg
+brigitte.emote.s478f.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC7.03F.ogg
+brigitte.emote.s478f.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE6.03F.ogg
+brigitte.emote.s478f.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EB7.03F.ogg
+brigitte.emote.s478f.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F17.03F.ogg
+brigitte.emote.s478f.f = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F2F.03F.ogg
+brigitte.emote.s478f.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EDB.03F.ogg
+brigitte.emote.s478f.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F20.03F.ogg
+brigitte.emote.s478f.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F30.03F.ogg
+brigitte.emote.s478f.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6C45.03F.ogg
+brigitte.emote.s478f.g = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED5.03F.ogg
+brigitte.emote.s478f.h = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE3.03F.ogg
+brigitte.emote.s478f.h = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69A1.03F.ogg
+brigitte.emote.s478f.h = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F23.03F.ogg
+brigitte.emote.s478f.h = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC0.03F.ogg
+brigitte.emote.s478f.i = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EF2.03F.ogg
+brigitte.emote.s478f.i = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EDE.03F.ogg
+brigitte.emote.s478f.i = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F00.03F.ogg
+brigitte.emote.s478f.i = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EEB.03F.ogg
+brigitte.emote.s478f.j = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC5.03F.ogg
+brigitte.emote.s478f.j = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC5.03F.ogg
+brigitte.emote.s478f.j = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC5.03F.ogg
+brigitte.emote.s478f.j = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC5.03F.ogg
+brigitte.emote.s478f.k = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A699E.03F.ogg
+brigitte.emote.s478f.k = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AA.03F.ogg
+brigitte.emote.s478f.k = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69B3.03F.ogg
+brigitte.emote.s478f.l = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EF0.03F.ogg
+brigitte.emote.s478f.l = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F16.03F.ogg
+brigitte.emote.s478f.l = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE9.03F.ogg
+brigitte.emote.s478f.m = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AB.03F.ogg
+brigitte.emote.s478f.m = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC4.03F.ogg
+brigitte.emote.s478f.m = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A69AC.03F.ogg
+brigitte.emote.s478f.n = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EF4.03F.ogg
+brigitte.emote.s478f.n = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6B60.03F.ogg
+brigitte.emote.s478f.o = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F28.03F.ogg
+brigitte.emote.s478f.p = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC9.03F.ogg
+brigitte.emote.s478f.q = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6E74.03F.ogg
+brigitte.emote.s478f.r = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBE.03F.ogg
+brigitte.emote.s478f.s = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F24.03F.ogg
+brigitte.emote.s478f.t = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F2E.03F.ogg
+brigitte.emote.s478f.u = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F1B.03F.ogg
+brigitte.emote.s478f.v = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EC6.03F.ogg
+brigitte.emote.s478f.w = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EE1.03F.ogg
+brigitte.emote.s478f.x = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED9.03F.ogg
+brigitte.emote.s478f.y = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6ED6.03F.ogg
+brigitte.emote.s478f.z = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6E73.03F.ogg
+brigitte.emote.s478f.aa = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6EBC.03F.ogg
+brigitte.emote.s478f.ab = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F1F.03F.ogg
+brigitte.emote.s478f.ac = ExtraSounds/Brigitte/Emotes/Sounds/00000000478F.02C/0000002A6F1E.03F.ogg
+brigitte.emote.s4790.a = ExtraSounds/Brigitte/Emotes/Sounds/000000004790.02C/0000002A6ED0.03F.ogg
+brigitte.emote.s4790.b = ExtraSounds/Brigitte/Emotes/Sounds/000000004790.02C/0000002A6EB6.03F.ogg
+brigitte.emote.s4790.c = ExtraSounds/Brigitte/Emotes/Sounds/000000004790.02C/0000002A6F0C.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47bd.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47bd.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47bd.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47bd.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EF2.03F.ogg
+brigitte.emote.s47bd.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EDE.03F.ogg
+brigitte.emote.s47bd.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6F00.03F.ogg
+brigitte.emote.s47bd.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EEB.03F.ogg
+brigitte.emote.s47bd.e = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6EF1.03F.ogg
+brigitte.emote.s47bd.e = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6ECA.03F.ogg
+brigitte.emote.s47bd.e = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6F06.03F.ogg
+brigitte.emote.s47bd.f = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6E6C.03F.ogg
+brigitte.emote.s47bd.g = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6ED1.03F.ogg
+brigitte.emote.s47bd.h = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A6F04.03F.ogg
+brigitte.emote.s47bd.i = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BD.02C/0000002A69A0.03F.ogg
+brigitte.emote.s47be.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BE.02C/0000002A6F0E.03F.ogg
+brigitte.emote.s47bf.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047BF.02C/0000002A6E66.03F.ogg
+brigitte.emote.s47c0.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047C0.02C/0000002A6E55.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EB8.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EE7.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EF8.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F1A.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F2D.03F.ogg
+brigitte.emote.s47f8.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6ECC.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47f8.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F15.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F10.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EFC.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F2C.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6E67.03F.ogg
+brigitte.emote.s47f8.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6E5B.03F.ogg
+brigitte.emote.s47f8.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A69B4.03F.ogg
+brigitte.emote.s47f8.d = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6EE8.03F.ogg
+brigitte.emote.s47f8.e = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F2B.03F.ogg
+brigitte.emote.s47f8.f = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6ED9.03F.ogg
+brigitte.emote.s47f8.g = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6F1B.03F.ogg
+brigitte.emote.s47f8.h = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F8.02C/0000002A6ED6.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47f9.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47f9.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EE2.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EBD.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC8.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6EC1.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A69AD.03F.ogg
+brigitte.emote.s47f9.c = ExtraSounds/Brigitte/Emotes/Sounds/0000000047F9.02C/0000002A6ED4.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6F22.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6F21.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6F29.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6ED3.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6ECE.03F.ogg
+brigitte.emote.s47fa.a = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6F1D.03F.ogg
+brigitte.emote.s47fa.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6EF2.03F.ogg
+brigitte.emote.s47fa.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6EDE.03F.ogg
+brigitte.emote.s47fa.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6F00.03F.ogg
+brigitte.emote.s47fa.b = ExtraSounds/Brigitte/Emotes/Sounds/0000000047FA.02C/0000002A6EEB.03F.ogg
+brigitte.emote.s492d.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A6803.03F.ogg
+brigitte.emote.s492d.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66B0.03F.ogg
+brigitte.emote.s492d.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66E2.03F.ogg
+brigitte.emote.s492d.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66BB.03F.ogg
+brigitte.emote.s492d.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66AB.03F.ogg
+brigitte.emote.s492d.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A6803.03F.ogg
+brigitte.emote.s492d.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66B0.03F.ogg
+brigitte.emote.s492d.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66E2.03F.ogg
+brigitte.emote.s492d.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66BB.03F.ogg
+brigitte.emote.s492d.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000492D.02C/0000002A66AB.03F.ogg
+brigitte.emote.s492e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492E.02C/0000002A6F0B.03F.ogg
+brigitte.emote.s492e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492E.02C/0000002A6E58.03F.ogg
+brigitte.emote.s492e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492E.02C/0000002A6E65.03F.ogg
+brigitte.emote.s492f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492F.02C/0000002A6F19.03F.ogg
+brigitte.emote.s492f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492F.02C/0000002A6E3E.03F.ogg
+brigitte.emote.s492f.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000492F.02C/0000002A6EBA.03F.ogg
+brigitte.emote.s5e73.a = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6EF2.03F.ogg
+brigitte.emote.s5e73.a = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6EDE.03F.ogg
+brigitte.emote.s5e73.a = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6F00.03F.ogg
+brigitte.emote.s5e73.a = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6EEB.03F.ogg
+brigitte.emote.s5e73.b = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6EE3.03F.ogg
+brigitte.emote.s5e73.b = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A69A1.03F.ogg
+brigitte.emote.s5e73.b = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6F23.03F.ogg
+brigitte.emote.s5e73.b = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6EC0.03F.ogg
+brigitte.emote.s5e73.c = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6E5A.03F.ogg
+brigitte.emote.s5e73.d = ExtraSounds/Brigitte/Emotes/Sounds/000000005E73.02C/0000002A6E61.03F.ogg
+brigitte.emote.sa09a.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000A09A.02C/0000002A6E62.03F.ogg
+brigitte.emote.sa09b.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000A09B.02C/0000002A6F08.03F.ogg
+brigitte.emote.sa09b.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000A09B.02C/0000002A6E5D.03F.ogg
+brigitte.emote.sa09c.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000A09C.02C/0000002A6E6A.03F.ogg
+brigitte.emote.sa09c.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000A09C.02C/0000002A6E3D.03F.ogg
+brigitte.emote.sb087.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B087.02C/0000002A6ECB.03F.ogg
+brigitte.emote.sb087.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000B087.02C/0000002A6F18.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EE2.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EBD.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EC8.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EC1.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A69AD.03F.ogg
+brigitte.emote.sb088.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6ED4.03F.ogg
+brigitte.emote.sb088.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EF2.03F.ogg
+brigitte.emote.sb088.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EDE.03F.ogg
+brigitte.emote.sb088.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6F00.03F.ogg
+brigitte.emote.sb088.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000B088.02C/0000002A6EEB.03F.ogg
+brigitte.emote.sb08b.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000B08B.02C/0000002A6F0A.03F.ogg
+brigitte.emote.sbfd8.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000BFD8.02C/0000002A6EED.03F.ogg
+brigitte.emote.sbfdb.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000BFDB.02C/0000002A6F1C.03F.ogg
+brigitte.emote.sbfe6.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000BFE6.02C/0000002A6EFA.03F.ogg
+brigitte.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+brigitte.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+brigitte.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+brigitte.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+brigitte.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+brigitte.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+brigitte.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+brigitte.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+brigitte.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+brigitte.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+brigitte.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+brigitte.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+brigitte.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+brigitte.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+brigitte.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+brigitte.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+brigitte.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+brigitte.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+brigitte.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CF9.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D67.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8C95.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D70.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CE0.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D6D.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CEF.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D44.03F.ogg
+brigitte.emote.sf85e.a = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A9246.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CDD.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D5B.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CE6.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8D5F.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A923D.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A91E7.03F.ogg
+brigitte.emote.sf85e.b = ExtraSounds/Brigitte/Emotes/Sounds/00000000F85E.02C/0000002A8CA1.03F.ogg
+
+# ----- Brigitte's emote voice lines: one plain event per voice stimulus (078), every line of it (English, the one language extracted,
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 6A1 (laughs): 1 line(s) 1.98 s; clips hilarious 5236@0.067, stimulus volume -4 dB.
+brigitte.emote.v6a1 = ../../research/brigitte/extract/HeroVoice/Brigitte/Laugh/00000004BAFD.0B2-(laughs).ogg | w=1
+# 15E4 (beat): 12 line(s) 0.54 s, 0.47 s, 0.47 s, 0.47 s, 0.53 s, 0.26 s, 0.46 s, 0.33 s, 0.44 s, 0.40 s, 0.33 s, 0.46 s; clips choreography E0B6@0.633.
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/00000006796A.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/00000006796B.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/00000006796C.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/00000006796D.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/00000006796E.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AE7.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AE8.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AE9.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AEA.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AEB.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AEC.0B2-(beat).ogg | w=1
+brigitte.emote.v15e4 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E4.078/000000067AED.0B2-(beat).ogg | w=1
+# 15E5 (flex): 3 line(s) 0.31 s, 0.61 s, 0.31 s; clips choreography E0B6@2.433.
+brigitte.emote.v15e5 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E5.078/000000067964.0B2-(flex).ogg | w=1
+brigitte.emote.v15e5 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E5.078/000000067965.0B2-(flex).ogg | w=1
+brigitte.emote.v15e5 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E5.078/000000067967.0B2-(flex).ogg | w=1
+# 15E6 (cheer): 10 line(s) 1.06 s, 0.83 s, 1.12 s, 0.76 s, 1.30 s, 1.56 s, 1.05 s, 0.96 s, 0.66 s, 1.02 s; clips choreography E0B6@3.600.
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067960.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067961.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067962.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE0.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE1.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE2.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE3.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE4.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE5.0B2-(cheer).ogg | w=1
+brigitte.emote.v15e6 = ../../research/brigitte/extract/HeroVoice/Brigitte/Unknown/15E6.078/000000067AE6.0B2-(cheer).ogg | w=1
+
+# ----- Brigitte's subtitles
+$brigitte.emote.s478a = Brigitte: armor clanks
+$brigitte.emote.s478f = Brigitte: tinkering
+$brigitte.emote.s4790 = Brigitte: armor rustles
+$brigitte.emote.s47bd = Brigitte: armor rustles
+$brigitte.emote.s47be = Brigitte: armor rustles
+$brigitte.emote.s47bf = Brigitte: armor rustles
+$brigitte.emote.s47c0 = Brigitte: hand slap
+$brigitte.emote.s47f8 = Brigitte: kneels
+$brigitte.emote.s47f9 = Brigitte: armor rustles
+$brigitte.emote.s47fa = Brigitte: armor rustles
+$brigitte.emote.s492d = Brigitte: tap
+$brigitte.emote.s492e = Brigitte: tap
+$brigitte.emote.s492f = Brigitte: tap
+$brigitte.emote.s5e73 = Brigitte: armor rustles
+$brigitte.emote.sa09a = Brigitte: stomp
+$brigitte.emote.sa09b = Brigitte: step
+$brigitte.emote.sa09c = Brigitte: stomp
+$brigitte.emote.sb087 = Brigitte: flail whirls
+$brigitte.emote.sb088 = Brigitte: flail caught
+$brigitte.emote.sb08b = Brigitte: flail clanks
+$brigitte.emote.sbfd8 = Brigitte: boom
+$brigitte.emote.sbfdb = Brigitte: music plays
+$brigitte.emote.sbfe6 = Brigitte: music plays
+$brigitte.emote.sda44 = Brigitte: mic drops
+$brigitte.emote.sda4f = Brigitte: mic feedback
+$brigitte.emote.se548 = Brigitte: music plays
+$brigitte.emote.se549 = Brigitte: music plays
+$brigitte.emote.se54a = Brigitte: music plays
+$brigitte.emote.se54b = Brigitte: music plays
+$brigitte.emote.seea6 = Brigitte: salt shakes
+$brigitte.emote.sf85e = Brigitte: hop
+$brigitte.emote.v6a1 = Brigitte: (laughs)
+$brigitte.emote.v15e4 = Brigitte: (beat)
+$brigitte.emote.v15e5 = Brigitte: (flex)
+$brigitte.emote.v15e6 = Brigitte: (cheer)

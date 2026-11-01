@@ -48,6 +48,11 @@ public final class RepairPack {
 
 	private static void land(ServerPlayer brigitte, LivingEntity ally) {
 		give(brigitte, ally, REPAIR_HEAL_NOW);
+		BrigitteSounds.on(ally, "repair.land", 40);
+		if (ally instanceof ServerPlayer healed) {
+			BrigitteSounds.own(healed, "repair.heal.start");
+			BrigitteSounds.own(healed, "repair.heal.loop");
+		}
 		// the arrival at the ally's hips (2F2E) and its heal over time (2074, the 2 s)
 		dev.overcraft.hero.Effects.play(brigitte.level(), "brigitte_pack_arrive", ally.position(), net.minecraft.world.phys.Vec3.ZERO, ally,
 			Ow.ticks(REPAIR_TIME), brigitte);
@@ -83,6 +88,11 @@ public final class RepairPack {
 		});
 		HEALS.removeIf(h -> {
 			if (!h.ally.isAlive() || h.ally.isRemoved() || h.ally.level().getGameTime() >= h.until) {
+				if (h.ally instanceof ServerPlayer healed) {
+					healed.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(
+						dev.overcraft.Overcraft.id("brigitte.repair.heal.loop"), net.minecraft.sounds.SoundSource.PLAYERS));
+					BrigitteSounds.own(healed, "repair.heal.end");
+				}
 				return true;
 			}
 			give(h.brigitte, h.ally, REPAIR_HEAL_RATE / 20);

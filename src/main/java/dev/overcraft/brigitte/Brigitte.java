@@ -60,7 +60,7 @@ public final class Brigitte implements HeroKit {
 		double rate = dev.overcraft.hero.Combat.cooldownRate(player);
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
-		recharge(s, rate);
+		recharge(player, s, rate);
 		if (s.strikeFastUntil >= 0 && player.level().getGameTime() >= s.strikeFastUntil) {
 			s.strikeFastUntil = -1;
 			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
@@ -75,6 +75,10 @@ public final class Brigitte implements HeroKit {
 		bash(player, s);
 		Barrier.tick(player, s, controls);
 		boolean pressed = s.primaryHeld && !s.leftWas;
+		if (!s.primaryHeld && s.leftWas && !s.barrierUp && player.isAlive()) {
+			// the flail put up as the left button is let go (223A)
+			BrigitteSounds.split(player, "flail.release", player.getEyePosition(), 30);
+		}
 		s.leftWas = s.primaryHeld;
 		if (!controls || !player.isAlive()) {
 			return;
@@ -101,6 +105,8 @@ public final class Brigitte implements HeroKit {
 		s.bashHit = false;
 		Combat.animate(player, "shield_bash");
 		Effects.play(player.level(), "brigitte_bash", player.position(), flat(player), player, 0, player);
+		BrigitteSounds.split(player, "bash.dash", player.getEyePosition(), 70);
+		dev.overcraft.hero.Voice.say(player, "bash", 1);
 		// Survivor (01C7, tag 1173): a movement ability starts the regeneration at once
 		s.lastDamagedTick = Math.min(s.lastDamagedTick, Combat.now(player) - Combat.REGEN_DELAY);
 	}
@@ -125,7 +131,9 @@ public final class Brigitte implements HeroKit {
 				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
 				Effects.play(player.level(), "brigitte_bash_hit", player.position().add(flat(player).scale(0.6)).add(0, 1.2, 0), flat(player),
 					player, 0, player);
+				dev.overcraft.hero.Voice.say(player, "bash_hit", 1);
 				if (HeroManager.hasPerk(player, Perk.BRIGITTE_INSPIRING_STRIKE)) {
+					BrigitteSounds.split(player, "perk.inspiring_strike", player.getEyePosition(), 45);
 					Inspire.strike(player, s);
 				} else {
 					Inspire.trigger(player, s, true, INSPIRE_TIME);
@@ -220,6 +228,8 @@ public final class Brigitte implements HeroKit {
 		s.rallyCast = 0;
 		Combat.animate(player, "ult_start");
 		Effects.play(player.level(), "brigitte_rally", player.position(), flat(player), player, 0, player);
+		BrigitteSounds.split(player, "rally.cast", player.getEyePosition(), 75);
+		dev.overcraft.hero.HeroSounds.ultLine(player, BrigitteSounds.of("ult.friendly"), BrigitteSounds.of("ult.enemy"), 5);
 	}
 
 	private static void rally(ServerPlayer player, HeroState s) {
@@ -230,6 +240,7 @@ public final class Brigitte implements HeroKit {
 			s.rallyCast = -1;
 			s.rallyTicks = Ow.ticks(RALLY_TIME);
 			s.ability2Cooldown = 0;
+			BrigitteSounds.split(player, "rally.loop", player.getEyePosition(), 75);
 			s.barrierBrokenUntil = -1;
 			s.barrierHealth = BARRIER_HEALTH_RALLY;
 			s.extraArmor = RALLY_ARMOR;
@@ -256,9 +267,16 @@ public final class Brigitte implements HeroKit {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
 				Combat.overhealthPool(e, RALLY_OVERHEALTH, RALLY_OVERHEALTH_MAX, RALLY_OVERHEALTH_TIME, 1000);
 				Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
+				if (e instanceof ServerPlayer ally && ally != player) {
+					BrigitteSounds.own(ally, "rally.overhealth");
+				}
 			}
 		}
+		if (s.rallyTicks == Ow.ticks(RALLY_ENDING)) {
+			BrigitteSounds.split(player, "rally.ending", player.getEyePosition(), 75);
+		}
 		if (--s.rallyTicks <= 0) {
+			BrigitteSounds.others(player, "rally.end_3p", player.getEyePosition(), 75);
 			endRally(player, s);
 			Combat.animate(player, "ult_stop");
 		}
@@ -266,6 +284,9 @@ public final class Brigitte implements HeroKit {
 
 	/** Rally over (its time, her death, another hero): her armor and speed back, the barrier back to 300 at most. */
 	private static void endRally(ServerPlayer player, HeroState s) {
+		if (s.rallyTicks > 0 || s.rallyCast >= 0) {
+			BrigitteSounds.stop(player.level(), "rally.loop", "rally.loop_3p", "rally.ending", "rally.ending_3p");
+		}
 		s.rallyTicks = 0;
 		s.rallyCast = -1;
 		if (s.extraArmor > 0) {
@@ -314,6 +335,7 @@ public final class Brigitte implements HeroKit {
 	/** Rally's stun (Sleep.stun) and its halo over the target's head (220D, for the stun's time). */
 	private static void stun(ServerPlayer player, LivingEntity target) {
 		dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
+		BrigitteSounds.on(target, "stun", 30);
 		Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);
 	}
 
@@ -327,6 +349,7 @@ public final class Brigitte implements HeroKit {
 		s.whipTicks = 0;
 		s.whipOut = -1;
 		Combat.animate(player, "whip");
+		BrigitteSounds.split(player, "whip.throw", player.getEyePosition(), 70);
 	}
 
 	/**
@@ -367,6 +390,10 @@ public final class Brigitte implements HeroKit {
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
 				Effects.hitMarker(player, hit, false);
+				BrigitteSounds.split(player, "whip.hit", hit.getEyePosition(), 60);
+				if (hit instanceof net.minecraft.world.entity.player.Player) {
+					dev.overcraft.hero.Voice.say(player, "whip_hit", 1);
+				}
 				Vec3 level = new Vec3(s.whipDir.x, 0, s.whipDir.z);
 				Vec3 push = (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK)))
 					.add(0, Ow.speed(WHIP_LIFT), 0);
@@ -375,6 +402,7 @@ public final class Brigitte implements HeroKit {
 				Inspire.trigger(player, s, true, INSPIRE_TIME * (HeroManager.hasPerk(player, Perk.BRIGITTE_MORALE_BOOST) ? MORALE_BOOST : 1));
 				back(player, s, "whip_return", a.add(s.whipDir.scale(Math.sqrt(best))));
 			} else if (block.getType() != HitResult.Type.MISS) {
+				BrigitteSounds.at(player.level(), "whip.hit_block", block.getLocation(), 90);
 				back(player, s, "whip_return_blocked", block.getLocation());
 			} else {
 				s.whipOut += reach;
@@ -384,6 +412,7 @@ public final class Brigitte implements HeroKit {
 			}
 		}
 		if (s.whipOut == -2 && t >= s.whipBackAt) {
+			BrigitteSounds.own(player, "whip.catch");
 			s.whipTicks = -1;
 			s.ability1Cooldown = Ow.ticks(WHIP_COOLDOWN);
 		}
@@ -419,6 +448,7 @@ public final class Brigitte implements HeroKit {
 				Combat.credit(p.whiplash, dealt);
 				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
 				Effects.hitMarker(p.whiplash, p.target, false);
+				BrigitteSounds.split(p.whiplash, "perk.whiplash", p.target.getEyePosition(), 45);
 				p.whiplash = null;
 				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
@@ -441,6 +471,7 @@ public final class Brigitte implements HeroKit {
 		s.whipOut = -2;
 		s.whipBackAt = s.whipTicks + Ow.ticks(WHIP_RETURN);
 		Combat.animate(player, clip);
+		BrigitteSounds.split(player, "whip.return", player.getEyePosition(), 70);
 		Effects.play(player.level(), "brigitte_whip_back", head, Vec3.ZERO, player, Ow.ticks(WHIP_RETURN), player);
 	}
 
@@ -448,13 +479,21 @@ public final class Brigitte implements HeroKit {
 
 	/** E: a charge to the ally nearest her aim (10 degrees, 25 m, in sight, not herself). */
 	private static void repairPack(ServerPlayer player, HeroState s) {
-		if (s.secondaryAmmo <= 0 || s.bashTicks >= 0) {
+		if (s.bashTicks >= 0) {
+			return;
+		}
+		if (s.secondaryAmmo <= 0) {
+			dev.overcraft.hero.Voice.say(player, "repair_empty", 1);
 			return;
 		}
 		LivingEntity ally = dev.overcraft.hero.Targeting.allyInView(player, REPAIR_RANGE, REPAIR_CONE, true);
 		if (ally == null) {
 			return;
 		}
+		// the launch by the charges held as it goes (2EC3-2EC5), her arm's foley; others hear nothing of it (no ranged copy)
+		BrigitteSounds.own(player, "repair.throw_" + Math.min(3, (int) s.secondaryAmmo));
+		BrigitteSounds.own(player, "repair.cast");
+		dev.overcraft.hero.Voice.say(player, "repair_pack", 1);
 		s.secondaryAmmo--;
 		RepairPack.launch(player, ally);
 		Combat.animate(player, "throw");
@@ -462,6 +501,10 @@ public final class Brigitte implements HeroKit {
 
 	/** One charge back every 5 s while she has fewer than three (133A), at the cooldown rate. */
 	private static void recharge(HeroState s, double rate) {
+		recharge(null, s, rate);
+	}
+
+	private static void recharge(@org.jspecify.annotations.Nullable ServerPlayer owner, HeroState s, double rate) {
 		if (s.secondaryAmmo >= REPAIR_CHARGES) {
 			s.repairRecharge = -1;
 			return;
@@ -472,6 +515,9 @@ public final class Brigitte implements HeroKit {
 		s.repairRecharge -= rate;
 		if (s.repairRecharge <= 0) {
 			s.secondaryAmmo++;
+			if (owner != null) {
+				BrigitteSounds.own(owner, "repair.recharge_" + Math.min(3, (int) s.secondaryAmmo));
+			}
 			s.repairRecharge = s.secondaryAmmo < REPAIR_CHARGES ? Ow.ticks(REPAIR_RECHARGE) : -1;
 		}
 	}
@@ -491,6 +537,10 @@ public final class Brigitte implements HeroKit {
 		s.flailHit.clear();
 		Combat.animate(player, s.flailCombo % 2 == 0 ? "swing" : "swing_2");
 		Effects.play(player.level(), "brigitte_swing", player.position(), flat(player), player, s.flailCombo % 2, player);
+		BrigitteSounds.split(player, s.flailCombo % 2 == 0 ? "flail.forehand" : "flail.backhand", player.getEyePosition(), 60);
+		if (s.flailCombo % 2 == 1) {
+			dev.overcraft.hero.Voice.say(player, "flail", 1);
+		}
 	}
 
 	/** Each tick of a swing: the sweep from 0.2 s to 0.4 s, then the rest of its 0.6 s. */
@@ -545,6 +595,8 @@ public final class Brigitte implements HeroKit {
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
+				BrigitteSounds.split(player, "flail.impact", target.getEyePosition(), 60);
+				BrigitteSounds.split(player, "flail.hit", target.getEyePosition(), 60);
 				Inspire.trigger(player, s, false, INSPIRE_TIME);
 				if (HeroManager.hasPerk(player, Perk.BRIGITTE_COMBAT_MEDIC) && s.repairRecharge > 0) {
 					// Combat Medic: the running recharge 0.75 s shorter (floor 0: the charge comes on the next tick)

@@ -161,6 +161,8 @@ public final class HeroState {
 	public int rallyCast = -1, shockwaveIn = -1;
 	/** Brigitte: when Inspiring Strike's speed ends (game time, -1 none). */
 	public long strikeFastUntil = -1;
+	/** Brigitte: which of her barrier's low calls (50 %, 25 %) this raise has made (0, 1, 2). */
+	public int barrierLowCalled;
 	public double extraArmor;
 	public double whipOut, repairRecharge = -1;
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 whipFrom, whipDir;

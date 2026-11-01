@@ -42,10 +42,17 @@ public final class Barrier {
 		if (want && !s.barrierUp) {
 			s.barrierUp = true;
 			dev.overcraft.hero.Combat.animate(player, "shield_raise");
+			boolean rally = s.rallyTicks > 0;
+			// in Rally its own raise and loop (6F8D, 2.083 s) replace the plain one's
+			BrigitteSounds.split(player, rally ? "barrier.rally_raise" : "barrier.raise", player.getEyePosition(), rally ? 75 : 40);
+			BrigitteSounds.split(player, rally ? "barrier.rally.loop" : "barrier.hold.loop", player.getEyePosition(), rally ? 75 : 40);
+			s.barrierLowCalled = s.barrierHealth / maxHealth(s) <= 0.25 ? 2 : s.barrierHealth / maxHealth(s) <= 0.5 ? 1 : 0;
+			dev.overcraft.hero.Voice.say(player, "barrier_raise", 1);
 		} else if (!want && s.barrierUp && s.bashTicks < 0) {
 			s.barrierUp = false;
 			s.barrierDownSince = now;
 			dev.overcraft.hero.Combat.animate(player, "shield_lower");
+			lowered(player, s);
 		}
 		// (broken too: it refills through its 5 s lockout, from 2 s after: 0EE4 #208 has no other condition)
 		if (!s.barrierUp && now - s.barrierDownSince >= Ow.ticks(BARRIER_REGEN_DELAY)) {
@@ -61,12 +68,26 @@ public final class Barrier {
 		}
 	}
 
+	/** Its lower sound, its loops stopped. */
+	private static void lowered(ServerPlayer player, HeroState s) {
+		stopLoops(player);
+		BrigitteSounds.split(player, s.rallyTicks > 0 ? "barrier.rally_lower" : "barrier.lower", player.getEyePosition(),
+			s.rallyTicks > 0 ? 75 : 40);
+	}
+
+	private static void stopLoops(ServerPlayer player) {
+		BrigitteSounds.stop(player.level(), "barrier.hold.loop", "barrier.hold.loop_3p", "barrier.rally.loop", "barrier.rally.loop_3p");
+	}
+
 	public static double maxHealth(HeroState s) {
 		return s.rallyTicks > 0 ? BARRIER_HEALTH_RALLY : BARRIER_HEALTH;
 	}
 
 	/** Leaving her (another hero, dying): down, its slow off. */
 	public static void clear(ServerPlayer player, HeroState s) {
+		if (s.barrierUp) {
+			stopLoops(player);
+		}
 		s.barrierUp = false;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
@@ -95,7 +116,18 @@ public final class Barrier {
 			}
 			double ow = Ow.toOw(damage);
 			double took = Math.min(ow, s.barrierHealth);
+			double before = s.barrierHealth / maxHealth(s);
 			s.barrierHealth -= took;
+			double after = s.barrierHealth / maxHealth(s);
+			// a hit on it (her flail's barrier contact 0015, M: anything hitting her barrier), and its calls
+			BrigitteSounds.at(level, "hit_barrier", to.add(from.subtract(to).normalize().scale(1)), 100);
+			dev.overcraft.hero.Voice.say(brig, "barrier_damaged", 1);
+			if (after > 0 && (after <= 0.5 && s.barrierLowCalled < 1 || after <= 0.25 && s.barrierLowCalled < 2)) {
+				// below 50 %, then 25 % (0540)
+				s.barrierLowCalled = after <= 0.25 ? 2 : 1;
+				BrigitteSounds.split(brig, "barrier.low", brig.getEyePosition(), 40);
+				dev.overcraft.hero.Voice.say(brig, "barrier_low", 1);
+			}
 			// 2% of what it absorbs is charge for her ult (0EE4 #149, M)
 			dev.overcraft.hero.Combat.addUltCharge(brig, took * BARRIER_ULT_SHARE, false);
 			if (s.barrierHealth <= 0) {
@@ -104,6 +136,9 @@ public final class Barrier {
 				s.barrierUp = false;
 				s.barrierDownSince = level.getGameTime();
 				dev.overcraft.hero.Combat.animate(brig, "shield_lower");
+				stopLoops(brig);
+				BrigitteSounds.split(brig, "barrier.break", brig.getEyePosition(), 40);
+				dev.overcraft.hero.Voice.say(brig, "barrier_broken", 1);
 				// 268C at the barrier: its outline's flash, hexes and shards
 				float yaw = brig.getYRot() * (float) (Math.PI / 180);
 				Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));

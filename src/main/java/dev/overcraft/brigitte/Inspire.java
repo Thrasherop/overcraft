@@ -51,6 +51,9 @@ public final class Inspire {
 		for (LivingEntity e : brigitte.level().getEntitiesOfClass(LivingEntity.class, brigitte.getBoundingBox().inflate(INSPIRE_RADIUS),
 			e -> e.isAlive() && Allies.isSelfOrAlly(brigitte, e) && e.distanceTo(brigitte) <= INSPIRE_RADIUS)) {
 			HEALS.removeIf(h -> h.ally == e);
+			if (e != brigitte && e.getHealth() < e.getMaxHealth()) {
+				BrigitteSounds.on(e, "inspire.heal", 60);
+			}
 			give(brigitte, e, INSPIRE_HEAL_NOW);
 			HEALS.add(new Heal(brigitte, e, now + Ow.ticks(seconds), INSPIRE_HEAL_OVER_TIME / Ow.ticks(INSPIRE_TIME)));
 		}
@@ -58,6 +61,7 @@ public final class Inspire {
 
 	/** Its ring round her waist (2182 at her + 1 m); nothing on the allies (their effects are sounds). */
 	private static void pulse(ServerPlayer brigitte) {
+		BrigitteSounds.split(brigitte, "inspire.pulse", brigitte.getEyePosition(), 70);
 		dev.overcraft.hero.Effects.play(brigitte.level(), "brigitte_inspire", brigitte.position(), net.minecraft.world.phys.Vec3.ZERO,
 			brigitte, 0, brigitte);
 	}

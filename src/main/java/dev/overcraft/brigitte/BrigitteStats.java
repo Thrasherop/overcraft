@@ -85,6 +85,8 @@ public final class BrigitteStats {
 	public static final double BARRIER_AHEAD = 0.9;
 	/** Rally's pulse (219D) starts this long into the cast (12BE #81: after 0.5 s, H). */
 	public static final double RALLY_PULSE_AT = 0.5;
+	/** Rally's last seconds, when its ending sound plays (5420: the last 3 s, H). */
+	public static final double RALLY_ENDING = 3;
 
 	// ---- Shield Bash (0EE3 #495) ----
 	/** A 0.3 s dash at 4x her speed (D #495 StateWait 0.3, 1C9C 4.0: about 6.6 m, M). */
