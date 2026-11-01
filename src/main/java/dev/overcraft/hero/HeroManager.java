@@ -175,7 +175,10 @@ public final class HeroManager {
 	/** How close to their bed (respawn point) a player must be to change heroes (owner, 2026-10-25). */
 	public static final double CHANGE_HERO_RANGE = 5;
 
-	/** Changing heroes: the free pick on joining, no hero yet, or within 5 blocks of their bed (like a spawn room). */
+	/**
+	 * Changing heroes: the free pick on joining, no hero yet, or within 5 blocks of their bed (like a spawn room); with no
+	 * bed, of the world spawn's area.
+	 */
 	public static boolean canChangeHero(ServerPlayer player, HeroState state) {
 		return state.freePick || state.hero == null || nearRespawn(player);
 	}
@@ -192,7 +195,17 @@ public final class HeroManager {
 			return true;
 		}
 		ServerPlayer.RespawnConfig config = player.getRespawnConfig();
-		GlobalPos pos = config != null ? config.respawnData().globalPos() : player.level().getRespawnData().globalPos();
+		if (config == null) {
+			// no bed: Minecraft spawns them anywhere in a square respawn_radius (10) around the world spawn
+			// (PlayerSpawnFinder), first join or death alike, so that whole square is the spawn room, and 5 blocks round it
+			GlobalPos world = player.level().getRespawnData().globalPos();
+			int radius = Math.max(0, player.level().getGameRules().get(net.minecraft.world.level.gamerules.GameRules.RESPAWN_RADIUS));
+			Vec3 to = player.position().subtract(Vec3.atBottomCenterOf(world.pos()));
+			double reach = radius + CHANGE_HERO_RANGE + 0.5;
+			return world.dimension() == player.level().dimension() && Math.abs(to.x) <= reach && Math.abs(to.z) <= reach
+				&& Math.abs(to.y) <= CHANGE_HERO_RANGE + 16;
+		}
+		GlobalPos pos = config.respawnData().globalPos();
 		return pos.dimension() == player.level().dimension()
 			&& player.position().distanceTo(Vec3.atCenterOf(pos.pos())) <= CHANGE_HERO_RANGE + 0.5;
 	}
