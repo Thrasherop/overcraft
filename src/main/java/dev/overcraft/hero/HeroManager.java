@@ -211,6 +211,9 @@ public final class HeroManager {
 		if (state.hero == Hero.ANA) {
 			dev.overcraft.ana.Ana.clear(player, state);
 		}
+		if (state.hero == Hero.SOMBRA) {
+			dev.overcraft.sombra.Sombra.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -290,6 +293,9 @@ public final class HeroManager {
 			if (state.hero == Hero.ANA) {
 				dev.overcraft.ana.Ana.clear(player, state);
 			}
+			if (state.hero == Hero.SOMBRA) {
+				dev.overcraft.sombra.Sombra.clear(player, state);
+			}
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -325,6 +331,10 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			state.lastDamagedTick = Combat.now(player);
+			if (state.hero == Hero.SOMBRA && player instanceof ServerPlayer sombra) {
+				// damage doesn't end her stealth: it shows her for 1.3 s (420C)
+				dev.overcraft.sombra.Stealth.reveal(sombra, state, 1.3);
+			}
 		}
 	}
 
@@ -347,6 +357,10 @@ public final class HeroManager {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
 			} else {
 				QuickMelee.use(player, state);
+				if (state.hero == Hero.SOMBRA) {
+					// quick melee ends her stealth (420C)
+					dev.overcraft.sombra.Stealth.end(player, state);
+				}
 			}
 		}
 		HeroKit kit = kit(state.hero);

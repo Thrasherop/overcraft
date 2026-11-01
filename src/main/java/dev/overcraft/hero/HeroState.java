@@ -131,6 +131,13 @@ public final class HeroState {
 	public int hotfixChannel = -1;
 	public @org.jspecify.annotations.Nullable Integer hotfixTarget;
 	public boolean hotfixHeld;
+	/**
+	 * Sombra's Translocator: her beacon (its entity id, null none), the teleport under way (ticks in, -1 none), and stealth:
+	 * when it began (her landing, game time), when it ends, and a brief reveal (taking damage, Hotfix).
+	 */
+	public @org.jspecify.annotations.Nullable Integer beaconId;
+	public int teleportTicks = -1;
+	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

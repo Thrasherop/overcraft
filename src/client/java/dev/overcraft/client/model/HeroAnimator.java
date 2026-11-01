@@ -121,6 +121,8 @@ public final class HeroAnimator {
 	private boolean ana;
 	/** Sombra (sombra.txt, sombra_1p.txt): her view model has Ana's shape of clips (idle, one walk, jump, fall). */
 	private boolean sombra;
+	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
+	private boolean stealthed;
 	private boolean scoped;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
 	private float scopeIn;
@@ -1219,6 +1221,7 @@ public final class HeroAnimator {
 		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		stealthed = sombra && entity.isInvisible();
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
@@ -1396,6 +1399,10 @@ public final class HeroAnimator {
 			};
 		} else {
 			next = "idle";
+		}
+		if (stealthed && model.clips.containsKey(next + "_stealth")) {
+			// her stealthed set (graph 420C's category 0x1EE on her blend trees: sombra.txt)
+			next = next + "_stealth";
 		}
 		if (blaster && model.clips.containsKey(next + "_blaster")) {
 			// Mercy's blaster out: every state has its own clip (her data's category 0x7D on df 0xE4)

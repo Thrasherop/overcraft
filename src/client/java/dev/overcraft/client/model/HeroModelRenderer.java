@@ -398,12 +398,18 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
+	/** How much of a stealthed hero shows to those who see her (ours). */
+	private static final float SEE_THROUGH = 0.25f;
+
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
 	public static boolean submit(LivingEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
 		Draw draw = state.getData(DRAW);
-		if (draw == null || state.isInvisible) {
-			return false;
+		if (draw == null || state.isInvisibleToPlayer) {
+			// (hidden from this viewer: nothing of ours, as Minecraft draws nothing of an invisible player)
+			return draw != null;
 		}
+		// invisible but seen (a stealthed Sombra by her own side, or an enemy within 4 m: Stealth.seenBy): see-through
+		boolean seeThrough = state.isInvisible;
 		if (Boolean.TRUE.equals(state.getData(UNSEEN))) {
 			return true;
 		}
@@ -448,6 +454,12 @@ public final class HeroModelRenderer {
 		}
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
+		if (seeThrough) {
+			// Overwatch's stealthed Sombra to those who see her: a faint purple shimmer of her (ours: 25%, her colour)
+			submitSpirit(draw.loaded(), draw.skin(), poseStack, collector, SEE_THROUGH, 0, 0xB89BFF, 0xB89BFF, false);
+			poseStack.popPose();
+			return true;
+		}
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
 		if (state.outlineColor != 0) {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);

@@ -44,7 +44,9 @@ public final class HeroModels {
 		// Lifeweaver's: his Petal Platform, his Tree of Life, and his seed (model 126CC: thrown, and Sow the Seed's on the ground)
 		"lifeweaver_platform", "lifeweaver_tree", "lifeweaver_seed", "projectile_lifeweaver_seed",
 		// his effects' meshes (LifeweaverFx): the platform's bloom outline, Life Grip's bud and its point's flower
-		"lw_flower_ring", "lw_bud", "lw_flower");
+		"lw_flower_ring", "lw_bud", "lw_flower",
+		// Sombra's Translocator beacon (model 10518)
+		"sombra_beacon");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

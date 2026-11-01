@@ -1,6 +1,7 @@
 package dev.overcraft.sombra;
 
 import dev.overcraft.Ow;
+import dev.overcraft.entity.TranslocatorEntity;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
@@ -41,6 +42,19 @@ public final class Sombra implements HeroKit {
 		s.hotfixRecharge = -1;
 		s.hotfixChannel = -1;
 		s.hotfixTarget = null;
+		s.beaconId = null;
+		s.teleportTicks = -1;
+		s.stealthFrom = s.stealthUntil = s.revealedUntil = -1;
+	}
+
+	/** Leaving Sombra (another hero, leaving the world): her beacon goes, stealth and its speed end. */
+	public static void clear(ServerPlayer player, HeroState s) {
+		if (s.beaconId != null && player.level().getEntity(s.beaconId) instanceof TranslocatorEntity beacon) {
+			beacon.discard();
+		}
+		s.beaconId = null;
+		s.teleportTicks = -1;
+		Stealth.clear(player, s);
 	}
 
 	@Override
@@ -49,6 +63,18 @@ public final class Sombra implements HeroKit {
 		reload(s, attack);
 		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
 		recharge(player, s);
+		double cooldown = Combat.cooldownRate(player);
+		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
+		if (!player.isAlive()) {
+			Stealth.clear(player, s);
+			s.teleportTicks = -1;
+		}
+		Stealth.tick(player, s);
+		if (s.teleportTicks >= 0) {
+			teleporting(player, s);
+			return;
+		}
 		if (!controls || !player.isAlive()) {
 			s.hotfixChannel = -1;
 			s.hotfixTarget = null;
@@ -70,9 +96,97 @@ public final class Sombra implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
+		if (s.teleportTicks >= 0) {
+			return;
+		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			startReload(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
+			translocator(player, s);
+		}
+	}
+
+	// ---- Translocator (0C19, the beacon 0C1A) and stealth (420C) ----
+
+	/**
+	 * E: throws the beacon from her left wrist (hp 0002) with the cooldown ready; E again, once it's 0.17 s out, teleports
+	 * her to it (its 7.5 s cooldown 1 s after landing). A beacon gone unused (its 15 s, shot down) starts the cooldown.
+	 */
+	private static void translocator(ServerPlayer player, HeroState s) {
+		ServerLevel level = player.level();
+		TranslocatorEntity beacon = s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive() ? b : null;
+		if (beacon != null) {
+			if (beacon.tickCount >= Ow.ticks(BEACON_READY)) {
+				s.teleportTicks = 0;
+				Combat.animate(player, "translocate");
+			}
+			return;
+		}
+		if (s.ability2Cooldown > 0) {
+			return;
+		}
+		Vec3 from = fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD);
+		TranslocatorEntity thrown = new TranslocatorEntity(player, level);
+		thrown.launch(from, player.getViewVector(1.0f), Ow.speed(BEACON_SPEED));
+		level.addFreshEntity(thrown);
+		s.beaconId = thrown.getId();
+		Combat.animate(player, "throw");
+	}
+
+	/** Her left wrist (hp 0002), from her eyes in her look's frame: ours until measured on her model (Ana's numbers). */
+	private static final double WRIST_RIGHT = -0.25, WRIST_UP = -0.2, WRIST_AHEAD = 0.45;
+
+	/** A beacon gone without a teleport (its 15 s, or shot down): the cooldown from now (ours: when it starts then isn't read). */
+	public static void beaconGone(ServerPlayer player, TranslocatorEntity beacon) {
+		HeroState s = HeroManager.state(player);
+		if (s != null && s.beaconId != null && s.beaconId == beacon.getId()) {
+			s.beaconId = null;
+			s.teleportTicks = -1;
+			s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN);
+		}
+	}
+
+	/** The 0.4 s move: protected and without her keys, then she's at the beacon, 0.5 m above it, and stealth starts. */
+	private static void teleporting(ServerPlayer player, HeroState s) {
+		ServerLevel level = player.level();
+		Combat.phase(player, 0.1);
+		TranslocatorEntity beacon = s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive() ? b : null;
+		if (beacon == null) {
+			s.teleportTicks = -1;
+			return;
+		}
+		if (++s.teleportTicks < Ow.ticks(TELEPORT_TIME)) {
+			return;
+		}
+		s.teleportTicks = -1;
+		// on a wall she stands in front of it, on a ceiling under it (ours: Minecraft's box is wider than her capsule)
+		Vec3 face = beacon.face();
+		double half = player.getBbWidth() / 2 + 0.05;
+		Vec3 to = beacon.position().add(face.x * half, face.y < 0 ? -player.getBbHeight() : TELEPORT_UP, face.z * half);
+		// still in something solid: up a little at a time (ours)
+		for (int i = 0; i < 8 && !level.noCollision(player, player.getDimensions(player.getPose()).makeBoundingBox(to)); i++) {
+			to = to.add(0, 0.25, 0);
+		}
+		beacon.discard();
+		s.beaconId = null;
+		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
+		player.resetFallDistance();
+		player.setDeltaMovement(Vec3.ZERO);
+		s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN + TRANSLOCATOR_COOLDOWN_DELAY);
+		Stealth.start(player, s);
+	}
+
+	/** From her eyes in her look's frame (right, up, ahead, m), clipped to her eyes if a block is in the way. */
+	static Vec3 fromEyes(ServerPlayer player, double right, double up, double ahead) {
+		Vec3 eye = player.getEyePosition();
+		Vec3 look = player.getViewVector(1.0f);
+		Vec3 side = look.cross(new Vec3(0, 1, 0));
+		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
+		Vec3 upv = side.cross(look).normalize();
+		Vec3 at = eye.add(side.scale(right)).add(upv.scale(up)).add(look.scale(ahead));
+		return player.level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
+			== HitResult.Type.MISS ? at : eye;
 	}
 
 	// ---- Hotfix (614C, its heal 60FB) ----
@@ -126,6 +240,8 @@ public final class Sombra implements HeroKit {
 		}
 		s.hotfixTarget = target.getId();
 		s.hotfixChannel = 0;
+		// Hotfix in stealth reveals her without ending it (BZ 2026-10-06; ours: for its channel and recovery)
+		Stealth.reveal(player, s, HOTFIX_CAST + HOTFIX_RECOVERY);
 		Combat.animate(player, "hotfix");
 	}
 
@@ -138,6 +254,8 @@ public final class Sombra implements HeroKit {
 		}
 		s.primaryAmmo--;
 		s.weaponRecovery += 20 / PISTOL_RATE;
+		// a shot ends stealth (420C)
+		Stealth.end(player, s);
 		s.lastShotAt = now;
 		double spread = PISTOL_SPREAD_MAX * Math.min(1, s.burstShots / PISTOL_SPREAD_SHOTS);
 		s.burstShots++;
