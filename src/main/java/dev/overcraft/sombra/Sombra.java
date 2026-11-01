@@ -45,6 +45,7 @@ public final class Sombra implements HeroKit {
 		s.beaconId = null;
 		s.teleportTicks = -1;
 		s.stealthFrom = s.stealthUntil = s.revealedUntil = -1;
+		s.castTicks = -1;
 	}
 
 	/** Leaving Sombra (another hero, leaving the world): her beacon goes, stealth and its speed end. */
@@ -81,12 +82,13 @@ public final class Sombra implements HeroKit {
 			s.hotfixHeld = false;
 			return;
 		}
+		cyberspaceCast(player, s);
 		hotfix(player, s);
 		// the clip empty: its reload starts by itself
 		if (s.primaryAmmo == 0 && s.primaryReload < 0) {
 			startReload(player, s);
 		}
-		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0 && s.hotfixChannel < 0) {
+		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0 && s.hotfixChannel < 0 && s.castTicks < 0) {
 			// as many shots as the rate allows this tick (20 a second at 20 ticks: one each tick)
 			while (s.weaponRecovery <= 0 && s.primaryAmmo > 0) {
 				fire(player, s);
@@ -105,6 +107,46 @@ public final class Sombra implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
 			translocator(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
+			startCyberspace(player, s);
+		}
+	}
+
+	// ---- Cyberspace (Shift: 610E, the zone 6102) ----
+
+	/** Shift: a 0.45 s cast, the projectile leaving at 0.1 s from her left wrist; the cooldown from the cast's end. */
+	private static void startCyberspace(ServerPlayer player, HeroState s) {
+		if (s.ability1Cooldown > 0 || s.castTicks >= 0) {
+			return;
+		}
+		s.castTicks = 0;
+		s.ability1Cooldown = Ow.ticks(CYBER_COOLDOWN + CYBER_CAST);
+		Combat.animate(player, "throw_cyberspace");
+		Stealth.end(player, s);
+	}
+
+	private static void cyberspaceCast(ServerPlayer player, HeroState s) {
+		if (s.castTicks < 0) {
+			return;
+		}
+		if (s.castTicks == Ow.ticks(CYBER_FIRE_AT)) {
+			ServerLevel level = player.level();
+			Vec3 from = fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD);
+			dev.overcraft.entity.CyberspaceEntity shot = new dev.overcraft.entity.CyberspaceEntity(player, level);
+			shot.launch(from, aimPoint(player).subtract(from), Ow.speed(CYBER_SPEED));
+			level.addFreshEntity(shot);
+		}
+		if (++s.castTicks >= Ow.ticks(CYBER_CAST)) {
+			s.castTicks = -1;
+		}
+	}
+
+	/** What her crosshair is on (a block, else 100 m out): the projectile flies there from her wrist. */
+	static Vec3 aimPoint(ServerPlayer player) {
+		Vec3 eye = player.getEyePosition();
+		Vec3 far = eye.add(player.getViewVector(1.0f).scale(100));
+		Vec3 hit = player.level().clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		return hit.distanceTo(eye) < 1 ? far : hit;
 	}
 
 	// ---- Translocator (0C19, the beacon 0C1A) and stealth (420C) ----

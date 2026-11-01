@@ -164,6 +164,8 @@ public class OvercraftClient implements ClientModInitializer {
 			"biotic_grenade", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.TRANSLOCATOR, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"sombra_beacon", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.CYBERSPACE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"sombra_cyberspace", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"lifeweaver_seed", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
