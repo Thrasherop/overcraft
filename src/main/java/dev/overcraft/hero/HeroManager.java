@@ -114,6 +114,7 @@ public final class HeroManager {
 		KITS.put(Hero.MERCY, new dev.overcraft.mercy.Mercy());
 		KITS.put(Hero.LIFEWEAVER, new dev.overcraft.lifeweaver.Lifeweaver());
 		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
+		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 	}
 
 	private HeroManager() {
@@ -150,8 +151,9 @@ public final class HeroManager {
 	public static boolean fallIsSafe(Player player) {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
-		// Lifeweaver: Rejuvenating Dash lands him
-		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER) && state.softLanding;
+		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
+		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
+			&& state.softLanding;
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -173,15 +175,37 @@ public final class HeroManager {
 	/** How close to their bed (respawn point) a player must be to change heroes (owner, 2026-10-25). */
 	public static final double CHANGE_HERO_RANGE = 5;
 
-	/** Changing heroes: the free pick on joining, no hero yet, or within 5 blocks of their bed (like a spawn room). */
+	/**
+	 * Changing heroes: the free pick on joining, no hero yet, or within 5 blocks of their bed (like a spawn room); with no
+	 * bed, of the world spawn's area.
+	 */
 	public static boolean canChangeHero(ServerPlayer player, HeroState state) {
 		return state.freePick || state.hero == null || nearRespawn(player);
 	}
 
-	/** Near the player's bed or respawn anchor, or the world spawn when they have none. */
+	/**
+	 * Near the player's bed or respawn anchor, or the world spawn when they have none, or where they last respawned: with
+	 * no bed Minecraft puts them anywhere up to the spawn radius (10 blocks) from the world spawn, and the select said "go
+	 * back to your bed" where they stood (found playing, 0.3.26).
+	 */
 	private static boolean nearRespawn(ServerPlayer player) {
+		HeroState state = STATES.get(player.getUUID());
+		if (state != null && state.respawnedAt != null && state.respawnedIn == player.level().dimension()
+			&& player.position().distanceTo(state.respawnedAt) <= CHANGE_HERO_RANGE + 0.5) {
+			return true;
+		}
 		ServerPlayer.RespawnConfig config = player.getRespawnConfig();
-		GlobalPos pos = config != null ? config.respawnData().globalPos() : player.level().getRespawnData().globalPos();
+		if (config == null) {
+			// no bed: Minecraft spawns them anywhere in a square respawn_radius (10) around the world spawn
+			// (PlayerSpawnFinder), first join or death alike, so that whole square is the spawn room, and 5 blocks round it
+			GlobalPos world = player.level().getRespawnData().globalPos();
+			int radius = Math.max(0, player.level().getGameRules().get(net.minecraft.world.level.gamerules.GameRules.RESPAWN_RADIUS));
+			Vec3 to = player.position().subtract(Vec3.atBottomCenterOf(world.pos()));
+			double reach = radius + CHANGE_HERO_RANGE + 0.5;
+			return world.dimension() == player.level().dimension() && Math.abs(to.x) <= reach && Math.abs(to.z) <= reach
+				&& Math.abs(to.y) <= CHANGE_HERO_RANGE + 16;
+		}
+		GlobalPos pos = config.respawnData().globalPos();
 		return pos.dimension() == player.level().dimension()
 			&& player.position().distanceTo(Vec3.atCenterOf(pos.pos())) <= CHANGE_HERO_RANGE + 0.5;
 	}
@@ -209,6 +233,9 @@ public final class HeroManager {
 		}
 		if (state.hero == Hero.ANA) {
 			dev.overcraft.ana.Ana.clear(player, state);
+		}
+		if (state.hero == Hero.SOMBRA) {
+			dev.overcraft.sombra.Sombra.clear(player, state);
 		}
 		state.reset(hero);
 		loadPerks(player, state);
@@ -289,6 +316,9 @@ public final class HeroManager {
 			if (state.hero == Hero.ANA) {
 				dev.overcraft.ana.Ana.clear(player, state);
 			}
+			if (state.hero == Hero.SOMBRA) {
+				dev.overcraft.sombra.Sombra.clear(player, state);
+			}
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -315,6 +345,8 @@ public final class HeroManager {
 			state.reset(hero);
 			state.ultCharge = charge;
 			Perks.load(state, perks);
+			state.respawnedAt = player.position();
+			state.respawnedIn = player.level().dimension();
 			applyKit(player, state, true);
 			Voice.say(player, resurrected ? "resurrected" : "respawn", resurrected ? 1 : 0.7f);
 		}
@@ -324,6 +356,10 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null) {
 			state.lastDamagedTick = Combat.now(player);
+			if (state.hero == Hero.SOMBRA && player instanceof ServerPlayer sombra) {
+				// damage doesn't end her stealth: it shows her for 1.3 s (420C)
+				dev.overcraft.sombra.Stealth.reveal(sombra, state, 1.3);
+			}
 		}
 	}
 
@@ -346,11 +382,20 @@ public final class HeroManager {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
 			} else {
 				QuickMelee.use(player, state);
+				if (state.hero == Hero.SOMBRA) {
+					// quick melee ends her stealth (420C)
+					dev.overcraft.sombra.Stealth.end(player, state);
+				}
 			}
 		}
 		HeroKit kit = kit(state.hero);
-		if (kit != null && input.pressed() != 0) {
-			kit.press(player, state, input.pressed());
+		int pressed = input.pressed();
+		if (dev.overcraft.sombra.Hack.silenced(player)) {
+			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
+			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);
+		}
+		if (kit != null && pressed != 0) {
+			kit.press(player, state, pressed);
 		}
 		if (state.hero == Hero.MERCY && input.extra() != 0) {
 			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());

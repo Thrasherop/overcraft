@@ -1,0 +1,72 @@
+# Sombra, first person (skin model 00000000F5B6.00C, entity Gameplay1P 121D: a model of its own, 91 bones; set 0605).
+# From research\sombra\work\clipmap.md (build 154088), written by research\sombra\scripts\clipmaps_sombra.py; H unless noted.
+# The Machine Pistol is its own model (sombra_weapon.txt), on hardpoint 000A (Weapon_R) in both views.
+# Base (alias 0xA0E > selector child 4); df 0xE5 cat 0x1EE = stealthed (H, as sombra.txt)
+0-60_000000003D44 = idle   # 0.133 s; df 0x18 default, 0.133 s held
+0-36_000000003D51 = walk   # 0.667 s; df 0x18 cat 5 and cat 0x65 (crouch walk), 0.667 s
+0-60_000000003D35 = crouch_idle   # 0.0667 s; df 0x18 cat 0x66, 3 frames
+0-36_000000003D40 = jump   # 0.167 s; df 0x18 cat 6 -> alias 0x006: take-off, 0.167 s
+0-32_000000003D41 = fall   # 0.4 s; the air, 0.4 s
+4-4_000000003D34 = add_idle   # 2.13 s; additive 2.13 s under the stand / crouch (and stealthed)
+4-4_000000003D42 = add_land   # 0.333 s; the df 0x18 machine's transition 0 > 4, 2, 1, 3 (out of the jump), as Ana's add_land: M
+4-4_000000003D36 = add_move_start   # 0.3 s; transition 4, 3 > 2, 1: L
+4-4_000000003D37 = add_move_stop   # 0.3 s; transition 2, 1 > 4, 3: L
+0-32_000000003D8C = walk_stealth   # 0.667 s; stealthed walk, 4-slot s0 and s1 (forward / back: M)
+0-32_000000003DE2 = walk_stealth_left   # 0.667 s; s2 (M)
+0-32_000000003DE4 = walk_stealth_right   # 0.667 s; s3 (M)
+0-60_000000003EBA = idle_stealth   # 0.0333 s; stealthed still, 2 frames
+0-32_000000003E91 = add_stealth_move_start   # 0.333 s; its transition 0 > 1: L
+0-32_000000003E92 = add_stealth_move_stop   # 0.167 s; 1 > 0: L
+0-32_000000003D98 = jump_stealth   # 0.167 s; stealthed air (818141D2) df 0x18 default: take-off
+0-32_000000003D99 = fall_stealth   # 0.4 s; 0.4 s
+0-32_000000003EC1 = jump_stealth_2   # 0.167 s; df 0x18 cat 0x15: L
+0-32_000000003EC2 = fall_stealth_2   # 0.4 s; cat 0x15: L
+4-4_00000000B1CB = add_idle_stealth   # 2.13 s; 2.13 s
+4-0_000000003D9A = add_stealth_layer   # 0.367 s; the stealthed layer's transition 0 > 1: L
+# Machine Pistol fire (alias 0x00A over the base, the same shape as the 3P and weapon layers: M fire)
+4-0_000000003DCE = add_fire_start   # 0.0333 s; seq[0], 1 frame
+4-28_000000003D3A = add_fire_hold   # 0.0333 s; seq[1], 1 frame (group 28)
+4-0_000000003DCF = add_fire   # 0.767 s; seq[1]'s layer weighted df 0x6C, 0.767 s
+4-0_000000003DD0 = add_fire_end   # 0.467 s; transition 0 / 1 > 2, 0.467 s
+# Abilities (graph and alias as sombra.txt)
+0-32_000000003D4A = reload   # 1.37 s; 0x004, 1.367 s
+4-4_000000003D50 = add_walk   # 0.667 s; walking during the reload (and 0x0ED / 0x10F), 0.667 s
+4-0_000000003D4B = add_reload_end   # 0.233 s; onFinished slot 0x3D: L
+0-32_000000003D48 = melee   # 0.767 s; 0x00D, 0.767 s
+4-4_000000003D47 = add_melee_end   # 0.233 s; onFinished slot 0x3D (conditional): L
+0-36_000000003D95 = throw   # 0.333 s; Translocator, 0x0F4, 0.333 s at 60 fps
+0-32_000000003E5B = translocate   # 0.4 s; 0x007 (0C19 #145, time var 8349), 0.4 s: M the teleport (no 3P clip)
+4-4_000000003E5C = add_translocate_end   # 0.4 s; its onFinished
+128-32_00000000DB42 = throw_cyberspace   # 0.667 s; Cyberspace, 0x997 (610E #1720), 0.667 s
+4-0_00000000DB68 = add_throw_cyberspace_end   # 0.167 s; its onFinished
+0-32_000000003E61 = ult_cast   # 0.433 s; EMP, 0x175, 0.433 s
+4-0_000000003E62 = add_ult_cast_end   # 0.433 s; its onFinished
+# Hack (0x47D -> 0x48B, by df 0x1A0: categories as 3P's dfC4)
+0-32_000000003E22 = hack_start   # 0.167 s; default: seq[0], 0.167 s (the raise)
+0-36_00000001B379 = hacking   # 0.5 s; seq[1] df 0xE5 cat 0x1F0, 0.5 s (M: hacking, as sombra.txt)
+0-36_000000003EC9 = hack_idle   # 1.17 s; seq[1] default: the hold set 0x087, still, 1.17 s
+0-36_000000003ECA = hack_walk   # 0.667 s; walking, 0.667 s
+0-36_000000003EE3 = hack_jump   # 0.167 s; 0x087's jump: take-off
+0-36_000000003EE4 = hack_fall   # 0.4 s; 0.4 s
+4-4_000000003EE5 = add_hack_land   # 0.367 s; transition out of the jump
+4-6_000000003DA0 = add_hack   # 0.467 s; df 0x1A0's layer, 0.467 s
+0-32_000000003E23 = hack_cat82   # 0.567 s; cat 0x82, 0.567 s
+0-32_000000003E50 = hack_cat94   # 0.567 s; cat 0x94, 0.567 s
+0-32_000000004006 = hack_cat1f1   # 0.8 s; cat 0x1F1, 0.8 s
+0-32_00000000B1CC = hack_start_stealth   # 0.167 s; stealthed raise
+0-36_00000000B1A1 = hack_cat82_stealth   # 0.567 s; stealthed, still (both 0x82 / 0x94)
+0-32_00000000B1CA = hack_cat82_stealth_walk   # 0.5 s; stealthed, moving
+# Stealth (420C: 0x486 / 0x487, as sombra.txt: which one enters is L)
+0-32_00000001B253 = stealth_486   # 0.9 s; 0.9 s
+4-0_00000001B255 = add_stealth_486_end   # 0.5 s; its onFinished
+0-32_000000003EB9 = stealth_487   # 1 s; 1.0 s
+# Shared
+4-4_000000000957 = add_knockdown_start   # 1 s; 0x064 (and 0x1DE)
+4-4_000000000959 = add_knockdown   # 0.667 s; 0x065 (and 0x1DF)
+4-4_000000000958 = add_knockdown_end   # 1 s; 0x066 (and 0x1E0)
+0-36_000000003B73 = hit_react   # 1 s; 0x070, a shared clip
+0-4_000000003F3C = hello   # 1 s; 0x1EE (H)
+4-4_000000003F3B = add_hello   # 1 s; 0x2DE
+# Not mapped (L): 0x467 3D39 / 3D38 (random); 0x148 3E7B (+ 3E7C) and 0x147 / 0x0ED / 0x10F 3DAA, 3DA8 > 3DA9 by df 0xC4 (+ 3E77;
+# L: a draw / holster); 0x726 3E22 / 846C; 0x6D1 8A60; 0x6D2 8A61; the top layer 818141AF 3D52 > 3D32 > 3D33; the generic quick-melee
+# layer 0x140 (C63, 5687, 3B47, 3B43-3B45) and 0x0C8 (C4F, F2-F6, 73-76, E9-EC).

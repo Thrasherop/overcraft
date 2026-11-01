@@ -34,7 +34,12 @@ public enum Perk {
 	ANA_LOCAL_ANESTHETIC(Hero.ANA, Tier.MINOR, "local_anesthetic"),
 	ANA_SPEED_SERUM(Hero.ANA, Tier.MINOR, "speed_serum"),
 	ANA_BIOTIC_BOUNCE(Hero.ANA, Tier.MAJOR, "biotic_bounce"),
-	ANA_HEADHUNTER(Hero.ANA, Tier.MAJOR, "headhunter");
+	ANA_HEADHUNTER(Hero.ANA, Tier.MAJOR, "headhunter"),
+	// Sombra's, the live list's order (D 005B.177)
+	SOMBRA_LIFE_HACK(Hero.SOMBRA, Tier.MINOR, "life_hack"),
+	SOMBRA_CTRL_ALT_ESC(Hero.SOMBRA, Tier.MINOR, "ctrl_alt_esc"),
+	SOMBRA_DATA_PACKET(Hero.SOMBRA, Tier.MAJOR, "data_packet"),
+	SOMBRA_CYBERSECURITY(Hero.SOMBRA, Tier.MAJOR, "cybersecurity");
 
 	public enum Tier { MINOR, MAJOR }
 

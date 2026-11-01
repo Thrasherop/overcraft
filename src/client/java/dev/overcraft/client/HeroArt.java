@@ -55,6 +55,20 @@ public final class HeroArt {
 		return art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
 	}
 
+	/** The hero's ultimate's icon (the ready ult on the HUD, Sombra's Conspirator marker). */
+	public static @Nullable Identifier ultimate(Hero hero) {
+		return ability(hero, switch (hero) {
+			case KIRIKO -> "kitsune_rush";
+			case LUCIO -> "sound_barrier";
+			case JETPACK_CAT -> "catnapper";
+			case MERCY -> "valkyrie";
+			case LIFEWEAVER -> "tree_of_life";
+			case ANA -> "nano_boost";
+			case SOMBRA -> "emp";
+			case ILLARI -> "captive_sun";
+		});
+	}
+
 	/** Lúcio's song icon under the crosshair (#61): the heal song's plus or the speed song's chevrons, white on clear. */
 	public static @Nullable Identifier songGlyph(boolean speed) {
 		return art(Hero.LUCIO, "song/" + (speed ? "speed" : "heal"));

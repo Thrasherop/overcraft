@@ -90,6 +90,10 @@ public final class HeroAnimator {
 	private int fireVariant;
 	/** Jetpack Cat's paw: the volleys swap paw each time (her add_fire / add_fire_2). */
 	private boolean fireSide;
+	/** When the current burst of shots began (a held, automatic weapon: Sombra's pistol), seconds. */
+	private float burstStart = -100;
+	/** A burst lasts while shots come this close together (ours: her 20 a second, with a tick to spare). */
+	private static final float BURST_GAP = 0.12f;
 	/** Jetpack Cat: Catnapper's aim began (s), or -100 when she isn't aiming (its loop plays until the dive or a cancel). */
 	private float aimingSince = -100;
 	/** When he started skating (first person: a start layer once), stopped (his stop clip), left the ground (his jump). */
@@ -115,6 +119,10 @@ public final class HeroAnimator {
 	private boolean thorns;
 	/** Ana (her clip maps: ana.txt, ana_1p.txt), and Take Aim's scope up: her "_scoped" clips where she has them. */
 	private boolean ana;
+	/** Sombra (sombra.txt, sombra_1p.txt): her view model has Ana's shape of clips (idle, one walk, jump, fall). */
+	private boolean sombra;
+	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
+	private boolean stealthed;
 	private boolean scoped;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
 	private float scopeIn;
@@ -157,6 +165,9 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("fire") && a.since("fire", now) > BURST_GAP) {
+			a.burstStart = now;
+		}
 		a.actionAt.put(action, now);
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
@@ -181,6 +192,12 @@ public final class HeroAnimator {
 		if (a.lifeweaver) {
 			clip = a.lifeweaverAction(action);
 			viewClip = a.lifeweaverViewAction(action);
+		}
+		if (a.sombra && action.equals("hotfix")) {
+			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
+			// (sombra_1p.txt hack_start)
+			clip = "hack_cat82";
+			viewClip = "hack_start";
 		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
@@ -504,6 +521,40 @@ public final class HeroAnimator {
 		landing(model, pose, now, thorns ? "add_land_thorn" : "add_land");
 	}
 
+	/**
+	 * An automatic weapon's fire layer as the data plays it (Sombra's: a state machine of the start (seq[0]), the hold
+	 * (seq[1], with the per-shot layer add_fire under it), and the end on its way out: sombra.txt, sombra_1p.txt), from the
+	 * burst's first shot to its last. False for a model without one (every other hero: their kick per shot).
+	 */
+	private boolean burst(SkinnedModel model, Skeleton.Pose pose, float now) {
+		SkinnedModel.Clip start = clip(model, "add_fire_start");
+		SkinnedModel.Clip hold = clip(model, "add_fire_hold");
+		if (start == null || hold == null) {
+			return false;
+		}
+		float sinceShot = since("fire", now);
+		if (sinceShot <= BURST_GAP) {
+			float t = now - burstStart;
+			if (t < start.duration()) {
+				Skeleton.addAdditive(start, t, pose, 1);
+			} else {
+				float held = (t - start.duration()) % Math.max(hold.duration(), 1.0E-3f);
+				Skeleton.addAdditive(hold, held, pose, 1);
+				SkinnedModel.Clip shot = clip(model, "add_fire");
+				if (shot != null) {
+					Skeleton.addAdditive(shot, held % Math.max(shot.duration(), 1.0E-3f), pose, 1);
+				}
+			}
+		} else {
+			SkinnedModel.Clip end = clip(model, "add_fire_end");
+			float t = sinceShot - BURST_GAP;
+			if (end != null && t <= end.duration()) {
+				Skeleton.addAdditive(end, t, pose, 1);
+			}
+		}
+		return true;
+	}
+
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
@@ -771,7 +822,9 @@ public final class HeroAnimator {
 			// Jetpack Cat's: one per paw, swapping each volley (one only, Ana's: that one each shot)
 			fire = fireSide && clip(model, "add_fire_2") != null ? "add_fire_2" : "add_fire";
 		}
-		additive(model, pose, fire, "fire", now);
+		if (!burst(model, pose, now)) {
+			additive(model, pose, fire, "fire", now);
+		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
 		if (lifeweaver) {
@@ -859,8 +912,8 @@ public final class HeroAnimator {
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
 		}
-		if (ana) {
-			// her view model (ana_1p.txt): idle, one walk for every direction, the jump's rise and fall; scoped, the held
+		if (ana || sombra) {
+			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
 			// scope pose (3B92: its arms out of view)
 			if (base.startsWith("jump")) {
 				want = "jump";
@@ -1074,7 +1127,9 @@ public final class HeroAnimator {
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
 		boolean flier = model.clips.containsKey("add_bob");
-		additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
+		if (!burst(model, pose, now)) {
+			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
+		}
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}
@@ -1165,6 +1220,8 @@ public final class HeroAnimator {
 		blaster = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_BLASTER);
 		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		stealthed = sombra && entity.isInvisible();
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
@@ -1342,6 +1399,10 @@ public final class HeroAnimator {
 			};
 		} else {
 			next = "idle";
+		}
+		if (stealthed && model.clips.containsKey(next + "_stealth")) {
+			// her stealthed set (graph 420C's category 0x1EE on her blend trees: sombra.txt)
+			next = next + "_stealth";
 		}
 		if (blaster && model.clips.containsKey(next + "_blaster")) {
 			// Mercy's blaster out: every state has its own clip (her data's category 0x7D on df 0xE4)

@@ -1,7 +1,24 @@
-# Overcraft: handoff (2026-10-28, afternoon)
+# Overcraft: handoff (2026-10-31, evening; older sections below from 2026-10-28)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first: 2026-10-26 lists every step played) and
 techniques/README.md (how the work gets done: a linked graph of notes). This file is the state of play and the path forward.
+
+## Now (2026-10-31)
+- **Build 0.3.25 on `main`** (261d27c, test build), asset pack 0.3.25: Ana (#63), the sixth hero, with her kit, sounds,
+  effects, perks and 16 emotes; Life Grip's bud (#74, closed); Mercy's early Guardian Angel press and Lúcio's ground
+  stop (#57); Lifeweaver's platform by a wall. General play done before main (CHANGES.md 2026-10-31). #63 and #57 wait
+  on the owner's playtest.
+- The built pack is in `E:\claude\mods\overcraft_ana\local-assets\` (pack/ and overcraft-assets.zip); the main
+  checkout's dev client uses it with `OC_ASSET_PACK=E:/claude/mods/overcraft_ana/local-assets/pack`.
+- Next in the owner's order: Sombra (#64; confirm her role first), Brigitte (#65), Juno (#1), Sojourn (#2), Sigma (#68),
+  D.Va (#69), Pharah (#70), Tracer (#71), Cassidy (#72), Junkrat (#73).
+- Open: regenerate Kiriko's, Lúcio's, Mercy's and Jetpack Cat's emote data (`tools/emote_data.py`) to apply the gallery
+  preview and Listen Up / Salty rules (`techniques/emotes/ana_emotes.md`); Amp It Up's amped ground stop to measure
+  now that the speed-buff fix is on main.
+- Git here: `export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0='*'` before git / gh (the
+  checkout's ownership confuses git; the global list isn't changed). `main` is checked out in `overcraft_emotesnd`.
+- The owner (2026-10-31), on emote props: "the data will tell you what props are active at different times, when to
+  show props, what hardpoints they attach to, etc. No guesswork please."
 
 ## Where things are
 - Repo: https://github.com/Thrasherop/overcraft. Kiriko's work is on `feature/kiriko`, merged into `next`, then

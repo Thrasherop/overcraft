@@ -33,10 +33,60 @@ def main():
         if mat.use_nodes:
             images = [n.image.name for n in mat.node_tree.nodes if n.type == "TEX_IMAGE" and n.image]
             print(f"OWM_MATERIAL {mat.name}: images {images}")
+    holograms(model.parent / "Materials")
     plain_materials()
     bpy.ops.export_scene.gltf(filepath=str(out), export_format="GLB", export_yup=True, export_skins=False,
                               export_animations=False, export_apply=True, export_image_format="AUTO")
     print(f"OWM_GLB {out} {out.stat().st_size // 1024} KB")
+
+
+# Overwatch's hologram shader (Sombra's emote screens: Amused 3CDA, Masterpiece 3CF7, Sit 49BB): grey light masks the
+# shader tints and adds; its colour slot holds the engine's grey swatch 10A3, which drawn plain made a solid grey dome
+HOLOGRAM_SHADERS = {0x32}
+
+
+def owmat_shader(path):
+    """A material .owmat's shader id and its textures' file stems (the add-on's OWMATFormat 3.0, as owm_survey.py)."""
+    import struct
+    data = path.read_bytes()
+    count, _statics, shader = struct.unpack_from("<QQI", data, 8)
+    pos, stems = 28, []
+    for _ in range(count):
+        b1 = data[pos]
+        pos += 1
+        n = b1 % 128
+        if b1 > 128:
+            n += data[pos] * 128
+            pos += 1
+        stems.append(Path(data[pos:pos + n].decode("utf8").replace("\\", "/")).stem)
+        pos += n + 4
+    return shader, stems
+
+
+def holograms(materials_dir):
+    """A hologram material gets its light mask as its only image: of its textures, the flipbook with the most frames
+    (<id>.png, <id>_1.png ...: the crowd B2AF of 6, the bars A5B6 of 14, the glyphs B34B of 4; M, the slot keys differ
+    between them), and its meshes are named holo_*, which the mod draws as tinted added light (HeroModelRenderer)."""
+    for mat in bpy.data.materials:
+        owmat = materials_dir / f"{mat.name.split('.')[0]}.owmat"
+        if not mat.use_nodes or not owmat.exists():
+            continue
+        shader, stems = owmat_shader(owmat)
+        if shader not in HOLOGRAM_SHADERS:
+            continue
+        textures = owmat.parent.parent / "Textures"
+        best = max(stems, key=lambda t: len(list(textures.glob(f"{t}_*.png"))), default=None)
+        if best is None or not (textures / f"{best}.png").exists():
+            continue
+        nodes = mat.node_tree.nodes
+        for n in [n for n in nodes if n.type == "TEX_IMAGE"]:
+            nodes.remove(n)
+        node = nodes.new("ShaderNodeTexImage")
+        node.image = bpy.data.images.load(str(textures / f"{best}.png"))
+        print(f"OWM_HOLOGRAM {mat.name}: shader {shader:X}, light mask {best}")
+        for o in bpy.data.objects:
+            if o.type == "MESH" and mat.name in [m.name for m in o.data.materials if m]:
+                o.data.name = "holo_" + o.data.name
 
 
 def plain_materials():

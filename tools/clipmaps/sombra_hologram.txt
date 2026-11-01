@@ -1,0 +1,17 @@
+# Sombra's hologram prop (entity 16B0, model 00000000389D.00C, 62 bones, no skin swap) on her hardpoint 0010 (bone_0109 on
+# Spine_3, (0, 1.318, -0.003) at rest); visible in 3P (flag 1), hidden in 1P (flag 0): what it shows on screen is L.
+# From research\sombra\work\clipmap.md (build 154088), written by research\sombra\scripts\clipmaps_sombra.py.
+# Its set 0732: the idle loop, and the hack (0x47D) by df 0x1A0 like the 1P's, and by df 0x9EE (cat 0x2BC / 0x2BB / default:
+# the target kind? L) while df 0xE5 cat 0x1F0. Measured (pose_sombra.py): 3E63 grows the ring of bones 0069-006F out from the
+# centre in 3 frames; 3F51 holds them still; CFF5 pulls two in and out (H places, L meaning).
+0-20_000000003F51 = idle   # 2.33 s; alias 0x002 (and 0xA0E both views, and the hack's default seq[1]), 2.33 s loop
+0-16_000000003E63 = hack_start   # 0.2 s; 0x47D default seq[0], 0.2 s
+0-16_00000001B470 = hacking   # 0.5 s; seq[1] cat 0x1F0, df 0x9EE default, 0.5 s
+0-16_00000000CFF5 = hacking_2bc   # 1.33 s; df 0x9EE cat 0x2BC, 1.33 s
+0-0_00000000CFAF = hacking_2bb   # 0.767 s; df 0x9EE cat 0x2BB, 0.767 s
+0-28_000000003E65 = hack_cat82   # 0.567 s; cat 0x82, 0.567 s
+0-16_00000000400A = hack_cat1f1   # 0.8 s; cat 0x1F1, 0.8 s
+0-0_000000004526 = select_6e   # 2.33 s; 0x476 df 0xC3 cat 0x6E: L
+0-0_00000000452D = select_82   # 0.4 s; 0x476 cat 0x82: L
+16-0_000000004504 = select_default   # 9.47 s; 0x476 default, 9.47 s: L
+0-16_00000000D0C0 = alias_950   # 1.43 s; 0x950, 1.43 s: L

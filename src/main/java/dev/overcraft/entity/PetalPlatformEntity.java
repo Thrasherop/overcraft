@@ -307,7 +307,8 @@ public class PetalPlatformEntity extends Entity {
 				}
 				standing.clear();
 				standing.putAll(now);
-				if (go) {
+				// hacked (EMP, Hotfix): it doesn't rise for its 10 s
+				if (go && !dev.overcraft.sombra.Hack.hacked(this)) {
 					rise(level, owner);
 				}
 			}

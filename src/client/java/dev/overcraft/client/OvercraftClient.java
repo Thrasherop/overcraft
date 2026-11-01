@@ -49,6 +49,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
+			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
@@ -100,9 +102,11 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientLifeweaver.clear();
 			dev.overcraft.client.effect.LifeweaverFx.clear();
 			dev.overcraft.client.effect.AnaFx.clear();
+			dev.overcraft.client.effect.SombraFx.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
+			dev.overcraft.client.hud.ConspiratorHud.clear();
 			HeroHud.clearMoments();
 			VictoryHud.clear();
 			RushSound.clear();
@@ -127,6 +131,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
 				dev.overcraft.client.effect.AnaFx.tick(client);
+				dev.overcraft.client.effect.SombraFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
@@ -162,6 +167,10 @@ public class OvercraftClient implements ClientModInitializer {
 			"sleep_dart", 0.3f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.BIOTIC_GRENADE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"biotic_grenade", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.TRANSLOCATOR, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"sombra_beacon", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.CYBERSPACE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"sombra_cyberspace", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"lifeweaver_seed", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);

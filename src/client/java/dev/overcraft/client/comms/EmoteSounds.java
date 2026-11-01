@@ -64,12 +64,13 @@ public final class EmoteSounds {
 		final float until;
 		float next;
 
-		Held(Sound sound, EmoteData.Event event, int turn) {
+		/** offset: where in her clip the event's own clip starts (a prop's: its spawn's clipStart; hers: 0). */
+		Held(Sound sound, EmoteData.Event event, int turn, float offset) {
 			this.sounds.add(sound);
 			this.event = event;
 			this.turn = turn;
-			this.until = event.at() + event.duration();
-			this.next = event.loop() > 0 ? event.at() + event.loop() : Float.MAX_VALUE;
+			this.until = offset + event.at() + event.duration();
+			this.next = event.loop() > 0 ? offset + event.at() + event.loop() : Float.MAX_VALUE;
 		}
 
 		void end() {
@@ -157,13 +158,28 @@ public final class EmoteSounds {
 	/** Plays the clip's sounds that start after from and by to (seconds into it). */
 	private static void play(Minecraft mc, Player player, boolean own, Hero hero, EmoteData.Emotes data, Track track,
 		SkinnedModel.Clip clip, int turn, float from, float to) {
-		for (EmoteData.Event e : data.events(track.emote, clip.name())) {
-			if (e.at() <= from || e.at() > to || !heardHere(e, own) || !thisPlay(hero, e)) {
+		playEvents(mc, player, own, hero, data.events(track.emote, clip.name()), track, turn, from, to, 0);
+		// the clips of the props it spawns: each runs on her clip's time from where it starts (clipStart, as the animator
+		// samples it), and its sounds with it (Sombra's Pet Slicer pet DC9C, Kiriko's fox E921: never heard before)
+		for (EmoteData.Spawn spawn : data.spawns(track.emote, clip.name())) {
+			String propClip = data.clipName(track.emote, spawn.clip());
+			if (propClip != null && !propClip.equals(clip.name())) {
+				playEvents(mc, player, own, hero, data.events(track.emote, propClip), track, turn, from, to, spawn.clipStart());
+			}
+		}
+	}
+
+	/** The events (seconds into a clip that starts {@code offset} into hers) after from and by to (seconds into hers). */
+	private static void playEvents(Minecraft mc, Player player, boolean own, Hero hero, List<EmoteData.Event> events, Track track,
+		int turn, float from, float to, float offset) {
+		for (EmoteData.Event e : events) {
+			float at = e.at() + offset;
+			if (at <= from || at > to || !heardHere(e, own) || !thisPlay(hero, e)) {
 				continue;
 			}
 			Sound sound = start(mc, player, hero, e);
 			if (sound != null && e.duration() > 0) {
-				track.held.add(new Held(sound, e, turn));
+				track.held.add(new Held(sound, e, turn, offset));
 			}
 		}
 	}

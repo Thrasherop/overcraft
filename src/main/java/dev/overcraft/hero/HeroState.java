@@ -122,6 +122,28 @@ public final class HeroState {
 	public double scope;
 	/** Whether Take Aim was wanted last tick: its in and out sounds play as that changes. */
 	public boolean scopeWanted;
+	/** Sombra's Machine Pistol: shots in the current burst (its spread grows with them), and when the last one left. */
+	public int burstShots;
+	public long lastShotAt = -10000;
+	/** Sombra's Hotfix: charges left, ticks until the next comes back (-1: none recharging), the channel (ticks in, -1 none). */
+	public int hotfixCharges;
+	public double hotfixRecharge = -1;
+	public int hotfixChannel = -1;
+	public @org.jspecify.annotations.Nullable Integer hotfixTarget;
+	public boolean hotfixHeld;
+	/**
+	 * Sombra's Translocator: her beacon in flight (its entity id, null none), and stealth:
+	 * when it began (her landing, game time), when it ends, and a brief reveal (taking damage, Hotfix).
+	 */
+	public @org.jspecify.annotations.Nullable Integer beaconId;
+	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
+	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
+	public int empCast = -1;
+	public long hackLockoutUntil = -1;
+	/** Sombra: the enemy players last sent to her as having their ultimate ready (Conspirator). */
+	public int[] conspiracy = new int[0];
+	/** Sombra: her pistol burst under way (its tail when it ends); stealth on last tick (its end sounds). */
+	public boolean sombraFiring, sombraStealthed;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;
@@ -185,6 +207,9 @@ public final class HeroState {
 	public boolean canChangeHero;
 	/** The free pick on joining the world hasn't been used yet. */
 	public boolean freePick;
+	/** Where (and in which dimension) the player last respawned: their spawn room too (HeroManager.nearRespawn). */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 respawnedAt;
+	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> respawnedIn;
 
 	public void reset(@Nullable Hero hero) {
 		this.hero = hero;
@@ -230,6 +255,7 @@ public final class HeroState {
 		castTicks = -1;
 		sleepCast = -1;
 		nanoCast = -1;
+		empCast = -1;
 		nanoTarget = -1;
 		castTarget = null;
 		attackBuff = 0;

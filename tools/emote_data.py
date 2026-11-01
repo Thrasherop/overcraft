@@ -123,8 +123,11 @@ PUT_AWAY, PLAY = 1, 4
 WEAPON_SLOTS = {
     "lucio": {"12CC": ("stow", "amplifier", "lucio_weapon.txt")},
     "mercy": {"12A5": ("stow", "staff", "mercy_staff.txt"), "206C": ("stowBlaster", "blaster", "mercy_blaster.txt")},
-    # Ana's rifle 159C hangs in slot 1EC3 on 00C9 (her hero entity 1424's children: researchna\work\ents_ana_out.txt)
+    # Ana's rifle 159C hangs in slot 1EC3 on 00C9 (her hero entity 1424's children: research/ana/work/ents_ana_out.txt)
     "ana": {"1EC3": ("stow", "rifle", "ana_rifle.txt")},
+    # Sombra's Machine Pistol 1221 hangs in slot 209F on 000A (research/sombra/work/assets.md: "slot var 209F"); her
+    # emotes put it away there (EMOTE_CONTROLS=1: 28 action-1 controls on 209F, no clip played on it)
+    "sombra": {"209F": ("stow", "pistol", "sombra_weapon.txt")},
 }
 
 # how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
@@ -139,11 +142,11 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True, "ana": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True}
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
-# 1424's children, researchna\work\ents_ana_out.txt / assets.md): the teacup 1611 (model 372A) on 00C9, the teabag
+# 1424's children, research/ana/work/ents_ana_out.txt / assets.md): the teacup 1611 (model 372A) on 00C9, the teabag
 # 1610 (373A) on 000B, the saucer 1609 (3730) on 00A5. Tea Time plays 3D76 on the teacup and 3D77 on the teabag,
 # Protector 3D0F on the saucer
 # the blend tree of a hero's gallery preview idle, which an emote set used as the preview set also holds (Ana's Heroic)
@@ -350,7 +353,7 @@ def main():
             walk(tree_set, found)
             geosets[slug(u["Name"])] = found
             # clips that are only in the set's gallery preview tree (05C6: the hero gallery's idle, Ana's Heroic set 0639 is
-            # also her preview set, researchna\workssets.md): not the emote's, never played by it
+            # also her preview set, research/ana/work/assets.md): not the emote's, never played by it
             in_tree = {}
             for item in (tree_set[0] if isinstance(tree_set, list) else tree_set).get("m_blendTreeItems") or []:
                 tree = (item.get("m_C0214513") or "").split(".")[0].lstrip("0").upper()
@@ -361,7 +364,7 @@ def main():
             # the shared emotes' tree 058F: its clip #3 (Listen Up and Salty: 178AD, Lucio's 185DE, 0 bones) plays on a layer
             # over the whole emote with no weight, driver or condition, and carries the weapon put-away block Mic Drop's
             # own clip has over its whole length: its windows cover the emote's main clip whole (M: whether that layer holds
-            # past the clip's 0.3 s isn't read; research\emote-trees	ree_058F.md)
+            # past the clip's 0.3 s isn't read; research/emote-trees/tree_058F.md)
             root_set = tree_set[0] if isinstance(tree_set, list) else tree_set
             items = root_set.get("m_blendTreeItems") or []
             layer = [item for item in items if (item.get("m_C0214513") or "").split(".")[0].lstrip("0").upper() == CARRIER_TREE]
