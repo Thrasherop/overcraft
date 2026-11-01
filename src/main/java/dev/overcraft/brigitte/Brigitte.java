@@ -41,6 +41,8 @@ public final class Brigitte implements HeroKit {
 		s.barrierBrokenUntil = -1;
 		s.bashTicks = -1;
 		s.rallyTicks = 0;
+		s.whipTicks = -1;
+		s.repairRecharge = -1;
 	}
 
 	/** Leaving her (another hero, leaving the world): the barrier down, its slow off. */
@@ -51,7 +53,11 @@ public final class Brigitte implements HeroKit {
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
-		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - dev.overcraft.hero.Combat.cooldownRate(player));
+		double rate = dev.overcraft.hero.Combat.cooldownRate(player);
+		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
+		recharge(s, rate);
+		whip(player, s);
 		swing(player, s);
 		bash(player, s);
 		Barrier.tick(player, s, controls);
@@ -147,6 +153,149 @@ public final class Brigitte implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
+		if ((pressed & dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_1) != 0) {
+			startWhip(player, s);
+		}
+		if ((pressed & dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_2) != 0) {
+			repairPack(player, s);
+		}
+	}
+
+	// ---- Whip Shot (1259) ----
+
+	/** Shift: not mid-bash, not while it's out (allowed with the shield up: #902, M). */
+	private static void startWhip(ServerPlayer player, HeroState s) {
+		if (s.ability1Cooldown > 0 || s.whipTicks >= 0 || s.bashTicks >= 0) {
+			return;
+		}
+		s.whipTicks = 0;
+		s.whipOut = -1;
+		Combat.animate(player, "whip");
+	}
+
+	/**
+	 * 0.2 s, then the head flies straight from her eyes along her aim at 80 m/s; the first enemy within 0.5 m of its path
+	 * before a block takes 70 and is pushed along her level aim at 25 m/s and 2 up; it comes back 0.3 s (none on the way back),
+	 * and the 4 s cooldown starts then.
+	 */
+	private static void whip(ServerPlayer player, HeroState s) {
+		if (s.whipTicks < 0) {
+			return;
+		}
+		int t = s.whipTicks++;
+		if (t == Ow.ticks(WHIP_WINDUP)) {
+			s.whipFrom = player.getEyePosition();
+			s.whipDir = player.getViewVector(1.0f);
+			s.whipOut = 0;
+		}
+		if (s.whipOut >= 0 && s.whipFrom != null && s.whipDir != null) {
+			double step = Ow.speed(WHIP_SPEED);
+			Vec3 a = s.whipFrom.add(s.whipDir.scale(s.whipOut));
+			double reach = Math.min(step, WHIP_RANGE - s.whipOut);
+			Vec3 b = a.add(s.whipDir.scale(reach));
+			HitResult block = player.level().clip(new ClipContext(a, b, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+			Vec3 end = block.getType() == HitResult.Type.MISS ? b : block.getLocation();
+			LivingEntity hit = null;
+			double best = Double.MAX_VALUE;
+			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, new AABB(a, end).inflate(WHIP_RADIUS + 1),
+				e -> e.isAlive() && Allies.canHurt(player, e))) {
+				java.util.Optional<Vec3> at = e.getBoundingBox().inflate(WHIP_RADIUS).clip(a, end);
+				if (at.isPresent() && at.get().distanceToSqr(a) < best) {
+					hit = e;
+					best = at.get().distanceToSqr(a);
+				}
+			}
+			if (hit != null) {
+				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE);
+				Combat.credit(player, dealt);
+				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
+				Effects.hitMarker(player, hit, false);
+				Vec3 level = new Vec3(s.whipDir.x, 0, s.whipDir.z);
+				Vec3 push = (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK)))
+					.add(0, Ow.speed(WHIP_LIFT), 0);
+				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME)));
+				Inspire.trigger(player, s, true, INSPIRE_TIME);
+				back(player, s, "whip_return");
+			} else if (block.getType() != HitResult.Type.MISS) {
+				back(player, s, "whip_return_blocked");
+			} else {
+				s.whipOut += reach;
+				if (s.whipOut >= WHIP_RANGE - 1.0E-6) {
+					back(player, s, "whip_return_miss");
+				}
+			}
+		}
+		if (s.whipOut == -2 && t >= s.whipBackAt) {
+			s.whipTicks = -1;
+			s.ability1Cooldown = Ow.ticks(WHIP_COOLDOWN);
+		}
+	}
+
+	/** Whip Shot's push, held a few ticks (WHIP_PUSH_TIME). */
+	private static final class Push {
+		final LivingEntity target;
+		final Vec3 velocity;
+		int left;
+
+		Push(LivingEntity target, Vec3 velocity, int left) {
+			this.target = target;
+			this.velocity = velocity;
+			this.left = left;
+		}
+	}
+
+	private static final java.util.List<Push> PUSHED = new java.util.ArrayList<>();
+
+	public static void tickPushes() {
+		PUSHED.removeIf(p -> {
+			if (p.left-- <= 0 || !p.target.isAlive() || p.target.isRemoved()) {
+				return true;
+			}
+			Vec3 v = p.target.getDeltaMovement();
+			// level speed held, its first lift once (Minecraft's gravity brings them down)
+			p.target.setDeltaMovement(p.velocity.x, p.left == Ow.ticks(WHIP_PUSH_TIME) - 1 ? p.velocity.y : v.y, p.velocity.z);
+			p.target.needsSync = true;
+			return false;
+		});
+	}
+
+	/** The flail starts back: no more hits; the cooldown when it's in her hand (0.3 s). */
+	private static void back(ServerPlayer player, HeroState s, String clip) {
+		s.whipOut = -2;
+		s.whipBackAt = s.whipTicks + Ow.ticks(WHIP_RETURN);
+		Combat.animate(player, clip);
+	}
+
+	// ---- Repair Pack (0EDD) ----
+
+	/** E: a charge to the ally nearest her aim (10 degrees, 25 m, in sight, not herself). */
+	private static void repairPack(ServerPlayer player, HeroState s) {
+		if (s.secondaryAmmo <= 0 || s.bashTicks >= 0) {
+			return;
+		}
+		LivingEntity ally = dev.overcraft.hero.Targeting.allyInView(player, REPAIR_RANGE, REPAIR_CONE, true);
+		if (ally == null) {
+			return;
+		}
+		s.secondaryAmmo--;
+		RepairPack.launch(player, ally);
+		Combat.animate(player, "throw");
+	}
+
+	/** One charge back every 5 s while she has fewer than three (133A), at the cooldown rate. */
+	private static void recharge(HeroState s, double rate) {
+		if (s.secondaryAmmo >= REPAIR_CHARGES) {
+			s.repairRecharge = -1;
+			return;
+		}
+		if (s.repairRecharge < 0) {
+			s.repairRecharge = Ow.ticks(REPAIR_RECHARGE);
+		}
+		s.repairRecharge -= rate;
+		if (s.repairRecharge <= 0) {
+			s.secondaryAmmo++;
+			s.repairRecharge = s.secondaryAmmo < REPAIR_CHARGES ? Ow.ticks(REPAIR_RECHARGE) : -1;
+		}
 	}
 
 	/** Her quick melee is the flail's swing (1248 #267: no shared quick melee on her). */

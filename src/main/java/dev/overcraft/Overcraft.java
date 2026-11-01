@@ -169,6 +169,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Cyberspace.tick(server);
 			dev.overcraft.sombra.Hack.tick(server);
 			dev.overcraft.brigitte.Inspire.tick(server);
+			dev.overcraft.brigitte.RepairPack.tick(server);
+			dev.overcraft.brigitte.Brigitte.tickPushes();
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -240,6 +242,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Cyberspace.clear();
 			dev.overcraft.sombra.Hack.clear();
 			dev.overcraft.brigitte.Inspire.clear();
+			dev.overcraft.brigitte.RepairPack.clear();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

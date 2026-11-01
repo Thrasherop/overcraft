@@ -155,6 +155,10 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
+	public int whipTicks = -1, whipBackAt;
+	public double whipOut, repairRecharge = -1;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 whipFrom, whipDir;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

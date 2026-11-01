@@ -93,3 +93,21 @@ Played (step 4, dev client, survival, flat world `shield1`, every mob killed fir
 - Shield Bash at a NoAI zombie 4 m ahead: she stopped on it, 70 to it, 5 s cooldown; a press on cooldown: nothing; into open
   air: 5.3 m; at a live husk: 70 and pushed 2.8 m.
 - Seen: the unfolded frame before her in third person (front) and first person.
+
+## What step 5 (Whip Shot, Repair Pack) taught
+- **Whip Shot** is stepped on the server along a straight line from her eyes (80 m/s, 4 m a tick), the first enemy within
+  0.5 m of it before a block taking 70; it comes back 0.3 s and its cooldown runs from then.
+- **One push loses to Minecraft's ground friction:** a single 25 m/s push moved a husk 1.9 m (Overwatch's: about 8 m). The
+  push is held 0.25 s now (`WHIP_PUSH_TIME`, ours): 4-7.6 m.
+- **NoAI mobs don't move by velocity:** a push test on one shows nothing; use live mobs.
+- **The harness's `key <ability>` must be a tap** (a click counted), not `down` / `up`: held, an ability press never reaches
+  the server.
+- **Repair Pack** has no projectile entity yet: its flight is its time (distance / 55 m/s, homing on the ally); its look
+  comes with her effects.
+
+Played (step 5, dev client, survival, flat world `shield1`, every mob killed first):
+- Whip Shot at a husk 10 m ahead: 70, and pushed (1.9 m before the fix; 5.7 m after); at 4 m: 7.6 m; at a skeleton 8 m: 4 m;
+  at a husk 24 m ahead (past 20): nothing; behind a stone wall: nothing; a second press at once: on cooldown.
+- Repair Pack at a villager 12 m ahead at 4 health: 6.8 at 0.4 s, 12.2 at 1.2 s, 14.0 (25 + 100); a villager to her side
+  untouched; she isn't healed herself. Three packs (3 -> 0), a fourth press with none: nothing; back one at a time 5 s apart
+  (1 at 5 s, 2 at 10 s, 3 at 15 s).

@@ -40,11 +40,31 @@ public final class BrigitteStats {
 	public static final double INSPIRE_COOLDOWN = 1.25;
 
 	// ---- Cooldowns the HUD shows (each ability's step fills in the rest) ----
-	/** Whip Shot (ABILITY 1), from the flail's return (D 1259). */
-	public static final double WHIP_COOLDOWN = 4;              // D 1259; W
-	/** Repair Pack (ABILITY 2): 3 charges, each back 5 s after (D 0EDD; W). */
+	// ---- Whip Shot (Shift: 1259) ----
+	/** Its cooldown, from the flail's return (D 133C; #1033 -> #688). */
+	public static final double WHIP_COOLDOWN = 4;              // D 133C; W
+	public static final double WHIP_DAMAGE = 70;               // D 0B38; W
+	/** 0.2 s, then a straight shot at 80 m/s to 20 m, 0.5 m round, one target, no gravity (D #593, 2B27, 133D, 2B26). */
+	public static final double WHIP_WINDUP = 0.2, WHIP_SPEED = 80, WHIP_RANGE = 20, WHIP_RADIUS = 0.5;
+	/** The push: her level aim at the launch x 25 m/s, and 2 m/s up (D 133E; #638, H: along her aim, not away from her). */
+	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 2;
+	/** How long its push is held (ours: one 25 m/s push moved a husk 1.9 m against Minecraft's ground friction; held
+	 * 0.25 s it carries them about Overwatch's 8 m: brigitte.md). */
+	public static final double WHIP_PUSH_TIME = 0.25;
+	/** The flail's way back: 0.3 s from a hit, a wall or the end of its reach (D 002B's returns, ours the shorter 0.175 s
+	 * under 5 m left out). */
+	public static final double WHIP_RETURN = 0.3;
+
+	// ---- Repair Pack (E: 0EDD on her, 0EE1 on the ally) ----
+	/** 3 charges, each back 5 s after the last, one at a time (D 133B / 133A; W). */
 	public static final int REPAIR_CHARGES = 3;
 	public static final double REPAIR_RECHARGE = 5;
+	/** An ally within 25 m and 10 degrees of her aim, in sight, never herself (D 1CB5, #391; W). */
+	public static final double REPAIR_RANGE = 25, REPAIR_CONE = 10;
+	/** It flies at 55 m/s, homing (D v6368). */
+	public static final double REPAIR_SPEED = 55;
+	/** 25 at once, then 100 over 2 s (D 1337, 1338 x 1339; W); another pack on them: 2 s more and another 25 (#466). */
+	public static final double REPAIR_HEAL_NOW = 25, REPAIR_TIME = 2, REPAIR_HEAL_RATE = 50, REPAIR_EXTEND = 2;
 	/** Shield Bash, from the dash's end (D 0EE3; W). */
 	public static final double BASH_COOLDOWN = 5;
 
