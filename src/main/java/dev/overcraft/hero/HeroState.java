@@ -144,6 +144,11 @@ public final class HeroState {
 	public int[] conspiracy = new int[0];
 	/** Sombra: her pistol burst under way (its tail when it ends); stealth on last tick (its end sounds). */
 	public boolean sombraFiring, sombraStealthed;
+	/** Brigitte: her flail's swing (ticks into it, -1 none), which side it's on (0 forehand, 1 backhand), whom it hit. */
+	public int flailSwing = -1, flailCombo;
+	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
+	/** Brigitte: when the flail may start Inspire again (game time). */
+	public long inspireReadyAt = -1;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

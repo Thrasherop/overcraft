@@ -381,6 +381,9 @@ public final class HeroManager {
 		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
 			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
+			} else if (state.hero == Hero.BRIGITTE) {
+				// her quick melee is the flail's swing (1248 #267)
+				dev.overcraft.brigitte.Brigitte.melee(player, state);
 			} else {
 				QuickMelee.use(player, state);
 				if (state.hero == Hero.SOMBRA) {

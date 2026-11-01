@@ -18,6 +18,27 @@ public final class BrigitteStats {
 	/** Rally's cost (D 0AE1; W 2700: BZ gives only percentages). */
 	public static final double ULT_COST = 2700;
 
+	// ---- Rocket Flail (the left button held; also her quick melee: 1248) ----
+	public static final double FLAIL_DAMAGE = 45;              // D 0B36 (1248 #780); W
+	/** Its reach (D 113A x her scale, #805; W 6 m). */
+	public static final double FLAIL_RANGE = 6;
+	/** A swing: 0.2 s to the hit, then 0.4 s (D v670 / v567): one every 0.6 s. */
+	public static final double FLAIL_WINDUP = 0.2, FLAIL_RECOVERY = 0.4;
+	/** The hit sweeps from 0.2 s to 0.4 s into the swing (1248 #679-#81, M on the chain). */
+	public static final double FLAIL_SWEEP = 0.2;
+	/** The sweep's arc, eased (yaw -17.5 + 35 t^2; the backhand mirrored: 1248 #715 / #717, H expressions). */
+	public static final double FLAIL_ARC = 35;
+	/** How far above or below her aim the sweep reaches (ours: the data's radius operand isn't read, L). */
+	public static final double FLAIL_PITCH = 30;
+
+	// ---- Inspire (12D8 -> 11B9) ----
+	public static final double INSPIRE_HEAL_NOW = 12;          // D 2A2C; BZ 2026-07-14; W
+	public static final double INSPIRE_HEAL_OVER_TIME = 45;    // D 0B24; BZ 2026-07-14; W
+	public static final double INSPIRE_TIME = 4;               // D 1344; W
+	public static final double INSPIRE_RADIUS = 20;            // D 1345; W
+	/** The flail can start it at most this often (D 2ABF; W). */
+	public static final double INSPIRE_COOLDOWN = 1.25;
+
 	// ---- Cooldowns the HUD shows (each ability's step fills in the rest) ----
 	/** Whip Shot (ABILITY 1), from the flail's return (D 1259). */
 	public static final double WHIP_COOLDOWN = 4;              // D 1259; W

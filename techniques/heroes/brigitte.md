@@ -46,3 +46,18 @@ every 50 ms): a zombie's 37.5 hits landed as 30.5, 30.5, 30.5 (armor 75 -> 44.5 
 skeleton's arrows 62.5 and 50 as 55.5 and 43; `/damage 12` (150) as 143. HUD: seven white and three yellow pips at full;
 after a heal to 158, the health pips filled and the armor's stayed empty; full again, yellow back. The select screen says
 "175 health, 75 armor". Lifeweaver after the change: a hit of 37.5 in full, his shields back from 3 s at 30 a second.
+
+## What step 3 (Rocket Flail, Inspire) taught
+- **The flail is a sweep, not a ray:** each tick of the hit window (0.2-0.4 s) widens the arc covered (-17.5 + 35 t^2
+  degrees, the backhand mirrored), and every enemy within 6 m (nearest point of its box) whose side is in the arc, in
+  sight, takes 45 once per swing. Her quick melee starts the same swing. Magic damage: Overwatch's flail pushes no one.
+- **An iron golem is an ally** in the mod (`Allies`): a flail test on one did nothing, rightly; use a ravager for a big
+  target.
+- **Open for step 8:** the flail's head flies out on its chain in a swing (entity 2283 flung, chain beam 216C / 33C1); the
+  swing clips play on her, not yet on the head.
+
+Played (step 3, dev client, survival, flat world `flail1`, every mob killed first, NoAI targets; health read with `data
+get`): one swing at a zombie 4 m ahead: 45; one swing at three zombies in the arc (4-5 m): 45 each, a zombie at 7.5 m and
+one 90 degrees to her side untouched; the button held 3 s on a ravager: 225 (five swings, one per 0.6 s); a zombie behind
+a stone wall: untouched; the quick-melee key: 45. Inspire from one swing: a villager 10 m off at 10 health gained 57
+(12 at once, 45 over 4 s), one 25 m off nothing, she healed herself too. First-person and third-person swings looked at.
