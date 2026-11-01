@@ -16,3 +16,6 @@
 0-0_00000000D712 = shrink_rally   # 0.2 s; [0] > [1], 0.2 s
 0-16_0000000050B3 = bash_hit   # 0.433 s; 0x571 (0EE3 #657 message 07C8 -> 0EE4 #219 / #220), default, 0.433 s
 0-16_00000000D705 = bash_hit_rally   # 0.1 s; 0x571 cat 0x1E1, 0.1 s
+# emote clips the data plays on the hand shield (slot 3816, entity 24C5 on Weapon_L), from the emote folders (--clips-from)
+emote_0000000052F0 = emote_cheer   # Cheer: 0-4.133 s
+emote_000000005108 = emote_recalibrate   # Recalibrate: 0-6.833 s

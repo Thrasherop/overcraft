@@ -36,3 +36,5 @@
 0-36_00000000509C = shield_raise   # 0.433 s; 0x1B6, 0.433 s
 0-60_000000004FDA = ult_cast_1p   # 1.33 s; 0x1B8 sm[0], 1.33 s (3P plays the idle poses: sm[1] 4FCD / 50A0)
 0-60_000000005011 = stunned   # 1 s; 0x070, 1.0 s
+# emote clips the data plays on the flail (slot 3572: tools/emote_data.py WEAPON_SLOTS), from the emote folders (--clips-from)
+emote_000000005265 = emote_cheer   # Cheer: 0-4.133 s on the handle

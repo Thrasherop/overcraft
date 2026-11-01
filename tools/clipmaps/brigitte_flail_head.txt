@@ -31,3 +31,5 @@
 0-36_000000004FDB = ult_cast_1p   # 1.33 s; 0x1B8 sm[0], 1.33 s
 0-36_0000000050B0 = ult_cast   # 1.2 s; 0x1B8 sm[1], 1.2 s
 0-36_000000005012 = stunned   # 1 s; 0x070, 1.0 s
+# emote clips the data plays on the seated head (slot 33C0), from the emote folders (--clips-from)
+emote_00000000525F = emote_cheer   # Cheer: 0-4.133 s

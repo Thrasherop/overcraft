@@ -201,7 +201,8 @@ public final class HeroModelRenderer {
 			// her showcase entity holds the flail in her hand all the same (3A90: 23D4 on 000A, brigitte assets.md)
 			: previewing ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
 			: null);
-		state.setData(SIDEARM, weaponShown || previewing && showcase == null
+		// the extras decide for themselves in an emote (Brigitte's folded shield stays when the flail is put away)
+		state.setData(SIDEARM, !previewing || showcase == null
 			? new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), false, now)) : null);
 		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
 			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world

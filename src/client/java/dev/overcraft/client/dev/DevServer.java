@@ -415,6 +415,29 @@ public final class DevServer {
 				out.addProperty("clip", animator.emoteClip());
 				out.addProperty("at", animator.emoteAt());
 			}
+			case "weapon" -> {
+				// dev only: the hero's own weapon and extras placed now (each model's last node, place in her model's space),
+				// and whether the emote has the weapon out
+				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
+				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				if (loaded != null) {
+					float now = player.level().getGameTime() / 20f;
+					var weapon = dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
+					java.util.List<dev.overcraft.client.model.EmoteProps.Placed> all = new java.util.ArrayList<>();
+					if (weapon != null) {
+						all.add(weapon);
+					}
+					all.addAll(dev.overcraft.client.model.HeroWeapon.extras(hero, animator, loaded.model(), false, now));
+					for (var placed : all) {
+						list.add(placed.loaded().model().nodeNames[placed.loaded().model().nodeNames.length - 1] + " at "
+							+ placed.at().getTranslation(new org.joml.Vector3f()));
+					}
+					out.addProperty("out", !animator.emoting() || dev.overcraft.client.model.HeroWeapon.inEmote(hero, animator));
+				}
+				out.add("placed", list);
+			}
 			case "held" -> {
 				// dev only: "held kunai|ofuda rx ry rz tx ty tz lift": how Minecraft mode's held items sit in her fists
 				String[] a = arg.trim().split(" ");

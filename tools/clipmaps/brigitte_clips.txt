@@ -1,0 +1,3 @@
+# Brigitte, third person's extra clips (owm_survey.py --clips-only), merged into hero_models/brigitte.glb by bone name (HeroModels).
+# Her emotes come with --emotes (emote_<name>_<n>, in id order: techniques/emotes/emote_reproduction.md); no other clips
+# here yet.
