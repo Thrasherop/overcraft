@@ -3,15 +3,17 @@
 # lucio.txt / mercy.txt / jetpack_cat.txt / ana.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build
 # 154088). The client plays each event at its component's start time while the emote runs (the clip components are
 # in each rule's comment). Read offline (Overwatch and Battle.net closed), Kiriko and Lúcio 2026-10-27, Mercy and
-# Jetpack Cat 2026-10-28, Ana 2026-10-31; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\:
+# Jetpack Cat 2026-10-28, Ana 2026-10-31, Sombra 2026-11-01; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\:
 # emote_fx.py the clip components, ww.py + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this file,
 # <hero>_what.py each hero's descriptions; sounds.json what the client needs: loops, lengths, audience). Files
 # extracted with DataTool's own WEM->OGG (extract_banks.py) into ExtraSounds\<Hero>\Emotes\; a sound shared with an
 # earlier hero's emotes is read from that hero's folder (Mercy's and Ana's Listen Up, Mic Drop and Salty ones from
-# Lúcio's, Mercy's Rainy Stroll and Pod ones from Kiriko's; Jetpack Cat's Listen Up and Mic Drop ones from Lúcio's).
-# Ana's voice lines are read from her voice extraction in research\ana\extract (../../research/ana/extract/, as
-# ana.txt reads it). Nothing here has been listened to: each rule says what the data shows (H read), what is
-# inferred (M) and what is a guess (L).
+# Lúcio's, Mercy's Rainy Stroll and Pod ones from Kiriko's; Jetpack Cat's Listen Up and Mic Drop ones from Lúcio's;
+# Sombra's Listen Up, Mic Drop and Salty ones from Lúcio's, her Rainy Stroll umbrella from Kiriko's, her Shuffle pop
+# from Mercy's; Sombra's descriptions: research\sombra\scripts\emote_sounds\, gen_sombra.py running gen_emotes.py
+# unedited). Ana's and Sombra's voice lines are read from their voice extractions in research\<hero>\extract
+# (../../research/<hero>/extract/, as ana.txt / sombra.txt read them). Nothing here has been listened to: each rule
+# says what the data shows (H read), what is inferred (M) and what is a guess (L).
 # Gains: Wwise volume + make-up gain (the middle of random ranges) summed from each file up through its containers
 # and actor-mixers, plus its output bus chain (Init bank 1E818). Unlike the ability maps, ONE offset per hero is added
 # to every emote rule (not one per rule), so the sounds of an emote keep the game's balance with each other; it brings
@@ -3661,3 +3663,1110 @@ $ana.emote.v1754 = Ana: (exertion)
 $ana.emote.v1755 = Ana: (exertion)
 $ana.emote.v1757 = Ana: (exertion)
 $ana.emote.v1758 = Ana: (exertion)
+
+# ===== Sombra: 53 emote sounds (rules), 11 voice stimuli (plain events). Offset +8.5 dB (the loudest layer: 741D).
+# Her own 43 02Cs (banks 1E631, 1E451, 1E49C, 1E40D; ExtraSounds/Sombra/Emotes) are mostly layered one-shots built
+# from one kit of short foley files at fixed delays (high swishes, low thumps, bright taps: see each rule), under the
+# emote mixer 749934277 at 15 m; Dance's cloth rustles 3BEC / 3BFF (cloth mixer 43599842) at 30 m, Rainy Stroll's
+# footsteps (footstep mixer 571818699) at 50 m, Heroic's swishes 3BA3 / 3BA4 with no range set, the pet's A6C8 at 24 m
+# (H). Listen Up's, Mic Drop's and Salty's are the shared achievement-emote 02Cs (bank 1E79B: the same Wwise trees as
+# Lúcio's, H), so these rules point at the files of Lúcio's extraction; Rainy Stroll's umbrella (C2CA, C2E6) at
+# Kiriko's, Shuffle's E23F at Mercy's. B1BC, held over the whole Dance loop, plays a Wwise Silence source and lists no
+# file (H): its rule is empty so that every event her emote data names has one. Nine of Pet Slicer's sounds
+# (A6C4-A6C9, A6D1, A7CA) are on the robot pet's own clip DC9C (a prop clip, "skeleton": "prop"), not on hers (DBFB).
+# Not reproduced: 3FB1's Stop event also Plays a 0.9 s file (2A8C7A), read as the equaliser hologram switching off;
+# filters (most kit takes have a 25% LPF). Voice: 13 VoiceStimulus components of 11 stimuli (H); her voice extraction
+# is in research/sombra/extract, not under the build root, so those paths go through ../../research/sombra/extract/ as
+# sombra.txt's do. Each stimulus's own lines from research/sombra/sounds/voice_lines.json (all weight 1, 0 dB, 35 m,
+# but Laugh 6A1 -4 dB and the Boop! line 766 at 60 m). 766 "Boop!" is said in Amused (3.19 s), Boop (1.73 s) and
+# Marioneta (1.8 s). Clip components read from her emote json with emote_fx.py.
+# 3BA3 a high swish: one of the ten high-swish takes (all above 6 kHz), 0.1 s into Heroic's pose clip. Clip components
+# (clip id @start s [+window s]): heroic 4004@0.100 hp 00A4.
+# Play event (02C 3BA3, bank 1E49C): a: random of 10, 0.10-0.43 s, 2ch.
+# Audience field 2 (3D), range none.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0; the rule adds the hero's offset. Length 0.43 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3ba3 = sombra.emote.s3ba3.a:-2.5
+# 3BA4 a high swish: one of the five other high-swish takes, 0.67 s into Heroic's pose clip. Clip components (clip id
+# @start s [+window s]): heroic 4004@0.667 hp 00A4.
+# Play event (02C 3BA4, bank 1E49C): a: random of 5, 0.20-0.29 s, 2ch, some files differ by -5/+0/+0 -1/+0/+0 +2/+0/+0
+# +3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range none.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0; the rule adds the hero's offset. Length 0.29 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3ba4 = sombra.emote.s3ba4.a:+2.5
+# 3BDD a hand swish at hardpoint 0003 as the emote starts: one of the five high-swish takes (Hold On, Masterpiece).
+# Clip components (clip id @start s [+window s]): hold_on 4019@0.000 hp 0003; masterpiece 4011@0.000 hp 0003.
+# Play event (02C 3BDD, bank 1E631): a: random of 5, 0.20-0.29 s, 2ch, some files differ by -5/+0/+0 -1/+0/+0 +2/+0/+0
+# +3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer), LPF/HPF 25/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5; the rule adds the hero's offset. Length 0.29 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3bdd = sombra.emote.s3bdd.a:-12
+# 3BDE a hand swish at hardpoint 0002 as the emote starts: one of the ten high-swish takes (Hold On, Masterpiece).
+# Clip components (clip id @start s [+window s]): hold_on 4019@0.000 hp 0002; masterpiece 4011@0.000 hp 0002.
+# Play event (02C 3BDE, bank 1E631): a: random of 10, 0.10-0.43 s, 2ch, LPF/HPF 25/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5; the rule adds the hero's offset. Length 0.43 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3bde = sombra.emote.s3bde.a:-17
+# 3BE1 her Heroic movement: six low thumps of the kit at 0-2.5 s, two pitched up 600 cents. Clip components (clip id
+# @start s [+window s]): heroic 4004@0.000 hp 00A4.
+# Play event (02C 3BE1, bank 1E631): a: one file, 0.37 s, 2ch, @2.500 s; b: one file, 0.33 s, 2ch; c: one file, 0.37
+# s, 2ch, +150 cents, @0.800 s; d: one file, 0.57 s, 2ch, @2.500 s; e: one file, 0.35 s, 2ch, +600 cents, @0.700 s,
+# LPF/HPF 0/48 (not reproduced); f: one file, 0.20 s, 2ch, +600 cents, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5, b -17.5, c -20.5, d -14.5, e -26.5, f -30.5; the
+# rule adds the hero's offset. Length 3.07 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3be1 = sombra.emote.s3be1.a@2.5:-9 + sombra.emote.s3be1.b:-9 + sombra.emote.s3be1.c*1.091@0.8:-12 + sombra.emote.s3be1.d@2.5:-6 + sombra.emote.s3be1.e*1.414@0.7:-18 + sombra.emote.s3be1.f*1.414@0.1:-22
+# 3BE2 her Heroic taps: a bright tap and two low takes at 0-0.3 s. Clip components (clip id @start s [+window s]):
+# heroic 4004@0.000 hp 00A4.
+# Play event (02C 3BE2, bank 1E631): a: one file, 0.50 s, 1ch, @0.300 s; b: one file, 0.47 s, 1ch, -150 cents, @0.200
+# s, LPF/HPF 0/39 (not reproduced); c: one file, 0.38 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5, b -15.5, c -19.5; the rule adds the hero's offset.
+# Length 0.80 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3be2 = sombra.emote.s3be2.a@0.3:-15 + sombra.emote.s3be2.b*0.917@0.2:-7 + sombra.emote.s3be2.c:-11
+# 3BE8 her Hold On movement: five low thumps of the kit at 0.1-3.2 s (held 3.53 s). Clip components (clip id @start s
+# [+window s]): hold_on 4019@0.000+3.533 hp 00A4.
+# Play event (02C 3BE8, bank 1E631): a: one file, 0.31 s, 2ch, @3.200 s; b: one file, 0.37 s, 2ch, +150 cents, @2.100
+# s; c: one file, 0.27 s, 2ch, +400 cents, @0.500 s; d: one file, 0.28 s, 2ch, +600 cents, @1.100 s, LPF/HPF 0/45 (not
+# reproduced); e: one file, 0.33 s, 2ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -19.5, c -19.5, d -21.5, e -19.5; the rule adds
+# the hero's offset. Length 3.51 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3be8 = sombra.emote.s3be8.a@3.2:-5 + sombra.emote.s3be8.b*1.091@2.1:-11 + sombra.emote.s3be8.c*1.260@0.5:-11 + sombra.emote.s3be8.d*1.414@1.1:-13 + sombra.emote.s3be8.e@0.1:-11
+# 3BE9 her Hold On taps: the four bright taps, two at the start and two at 3.1-3.2 s (held 3.53 s). Clip components
+# (clip id @start s [+window s]): hold_on 4019@0.000+3.533 hp 00A4.
+# Play event (02C 3BE9, bank 1E631): a: one file, 0.32 s, 1ch; b: one file, 0.50 s, 1ch, @3.200 s; c: one file, 0.74
+# s, 1ch, @3.100 s; d: one file, 0.34 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.5, b -28.5, c -28.5, d -28.5; the rule adds the hero's
+# offset. Length 3.84 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3be9 = sombra.emote.s3be9.a:-20 + sombra.emote.s3be9.b@3.2:-20 + sombra.emote.s3be9.c@3.1:-20 + sombra.emote.s3be9.d:-20
+# 3BEA her Masterpiece movement: twelve low thumps of the kit at 0.1-4.8 s, its Stop (0.15 s fade) ending it with the
+# window at 4.7 s. Clip components (clip id @start s [+window s]): masterpiece 4011@0.033+4.667 hp 00A4.
+# Play event (02C 3BEA, bank 1E631): a: one file, 0.28 s, 2ch, +600 cents, @2.100 s, LPF/HPF 0/45 (not reproduced); b:
+# one file, 0.31 s, 2ch, @4.700 s; c: one file, 0.33 s, 2ch, @0.100 s; d: one file, 0.27 s, 2ch, +400 cents, @1.000 s;
+# e: one file, 0.37 s, 2ch, @2.900 s; f: one file, 0.46 s, 2ch, @4.100 s; g: one file, 0.21 s, 2ch, +150 cents, @3.100
+# s; h: one file, 0.20 s, 2ch, +150 cents, @0.100 s; i: one file, 0.15 s, 2ch, +150 cents, @4.300 s; j: one file, 0.57
+# s, 2ch, +350 cents, @4.800 s; k: one file, 0.21 s, 2ch, +150 cents, @2.000 s; l: one file, 0.17 s, 2ch, +450 cents,
+# @0.900 s.
+# Its Stop event fades 0.15 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5, b -15.5, c -17.5, d -24.5, e -15.5, f -17.5, g
+# -30.5, h -32.5, i -35.5, j -20.5, k -35.5, l -32.5; the rule adds the hero's offset. Length 5.26 s. Containers /
+# delays / gains H (read); what it is L.
+@sombra.emote.s3bea = sombra.emote.s3bea.a*1.414@2.1:-17 + sombra.emote.s3bea.b@4.7:-7 + sombra.emote.s3bea.c@0.1:-9 + sombra.emote.s3bea.d*1.260@1:-16 + sombra.emote.s3bea.e@2.9:-7 + sombra.emote.s3bea.f@4.1:-9 + sombra.emote.s3bea.g*1.091@3.1:-22 + sombra.emote.s3bea.h*1.091@0.1:-24 + sombra.emote.s3bea.i*1.091@4.3:-27 + sombra.emote.s3bea.j*1.224@4.8:-12 + sombra.emote.s3bea.k*1.091@2:-27 + sombra.emote.s3bea.l*1.297@0.9:-24
+# 3BEB her Masterpiece taps: the four bright taps, at the start and at 4.5-4.6 s, stopped with the window. Clip
+# components (clip id @start s [+window s]): masterpiece 4011@0.033+4.667 hp 0003.
+# Play event (02C 3BEB, bank 1E631): a: one file, 0.50 s, 1ch, @4.600 s; b: one file, 0.34 s, 1ch; c: one file, 0.32
+# s, 1ch; d: one file, 0.74 s, 1ch, @4.500 s.
+# Its Stop event fades 0.15 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5, b -24.5, c -24.5, d -21.5; the rule adds the hero's
+# offset. Length 5.24 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3beb = sombra.emote.s3beb.a@4.6:-13 + sombra.emote.s3beb.b:-16 + sombra.emote.s3beb.c:-16 + sombra.emote.s3beb.d@4.5:-13
+# 3BEC clothes rustle on the cloth mixer 43599842: the 17 cloth rustles Ana's 3901 / 3956 use (+850 cents) over three
+# 0.4-0.6 s low takes (Dance: 0.2 s into its start clip, 3.0 s into its loop). Clip components (clip id @start s
+# [+window s]): dance 44C0@0.200 hp 00A4; dance 44C1@3.000 hp 00A4.
+# Play event (02C 3BEC, bank 1E451): a: random of 17 (no repeat within 3), 0.12-0.56 s, 1ch, +850 cents, @0.070 s; b:
+# random of 3 (no repeat within 3), 0.38-0.59 s, 1ch, LPF/HPF 0/25 (not reproduced).
+# Play 188081983 fades in over 250 ms. Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -12.5; the rule adds the hero's offset. Length
+# 0.59 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s3bec = sombra.emote.s3bec.a*1.634@0.07:-2 + sombra.emote.s3bec.b:-4
+# 3BFF clothes rustle on the cloth mixer: the same 17 cloth rustles (+830 cents) and twelve 0.2-0.3 s takes (Dance:
+# 0.53 s into its start clip, at the start of its loop). Clip components (clip id @start s [+window s]): dance
+# 44C0@0.533 hp 00A4; dance 44C1@0.000 hp 00A4.
+# Play event (02C 3BFF, bank 1E451): a: random of 17 (no repeat within 3), 0.12-0.56 s, 1ch, +830 cents, @0.010 s,
+# LPF/HPF 0/20 (not reproduced); b: random of 12 (no repeat within 3), 0.18-0.29 s, 1ch, -20 cents, @0.010 s, LPF/HPF
+# 0/8 (not reproduced).
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -26.5, b -16.0; the rule adds the hero's offset. Length
+# 0.35 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s3bff = sombra.emote.s3bff.a*1.615@0.01:-18 + sombra.emote.s3bff.b*0.989@0.01:-7.5
+# 3C29 Masterpiece's screen: a 4.3 s mid-range tonal file (77% 300-2000 Hz, partials 728-1091 Hz) from 0.8 s and a 3.8
+# s low + high file from 1.0 s while her crowd screen 3CF7 is out (0.77-4.67 s), with high swishes at 0.7 and 4.1 s.
+# Clip components (clip id @start s [+window s]): masterpiece 4011@0.033+4.700 hp 00A4.
+# Play event (02C 3C29, bank 1E631): a: one file, 0.74 s, 2ch, @4.100 s; b: one file, 1.09 s, 2ch, @0.700 s; c: one
+# file, 3.81 s, 2ch, @1.000 s; d: one file, 4.29 s, 2ch, @0.800 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -10.5, c -6.5, d -3.5; the rule adds the hero's
+# offset. Length 5.09 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3c29 = sombra.emote.s3c29.a@4.1:-2 + sombra.emote.s3c29.b@0.7:-2 + sombra.emote.s3c29.c@1:+2 + sombra.emote.s3c29.d@0.8:+5
+# 3C2A her Amused movement: the kit's low thumps and bright taps over 0-4.8 s and three longer files (1.2 s at 0.35 s,
+# 1.8 s at 1.35 s, 0.8 s at 3.1 s) while her glyph dome 3CDA is out (0.43-3.9 s). Clip components (clip id @start s
+# [+window s]): amused 402E@0.033+5.033 hp 00A4.
+# Play event (02C 3C2A, bank 1E631): a: one file, 0.50 s, 1ch, @4.600 s; b: one file, 0.32 s, 1ch; c: one file, 0.74
+# s, 1ch, @4.400 s; d: one file, 0.28 s, 2ch, +600 cents, @1.200 s, LPF/HPF 0/45 (not reproduced); e: one file, 0.27
+# s, 2ch, +400 cents; f: one file, 0.33 s, 2ch, +300 cents, @0.600 s; g: one file, 0.37 s, 2ch, @4.800 s; h: one file,
+# 0.31 s, 2ch, +600 cents, @3.200 s; i: one file, 1.83 s, 2ch, @1.350 s; j: one file, 0.83 s, 2ch, @3.100 s; k: one
+# file, 1.23 s, 2ch, @0.350 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.5, b -28.5, c -28.5, d -21.5, e -19.5, f -19.5, g
+# -19.5, h -19.5, i -11.5, j -8.5, k -5.5; the rule adds the hero's offset. Length 5.17 s. Containers / delays / gains
+# H (read); what it is L.
+@sombra.emote.s3c2a = sombra.emote.s3c2a.a@4.6:-20 + sombra.emote.s3c2a.b:-20 + sombra.emote.s3c2a.c@4.4:-20 + sombra.emote.s3c2a.d*1.414@1.2:-13 + sombra.emote.s3c2a.e*1.260:-11 + sombra.emote.s3c2a.f*1.189@0.6:-11 + sombra.emote.s3c2a.g@4.8:-11 + sombra.emote.s3c2a.h*1.414@3.2:-11 + sombra.emote.s3c2a.i@1.35:-3 + sombra.emote.s3c2a.j@3.1:0 + sombra.emote.s3c2a.k@0.35:+3
+# 3C2D Hold On's bright sounds: a 2.2 s high file (69% above 6 kHz) from 0.5 s and three short bright takes (0.15-0.8
+# s, 2.9-7.4 kHz partials) at 0, 0.35 and 2.9 s. Clip components (clip id @start s [+window s]): hold_on
+# 4019@0.000+3.533 hp 00A4.
+# Play event (02C 3C2D, bank 1E631): a: one file, 0.80 s, 2ch; b: one file, 2.20 s, 2ch, -150 cents, @0.500 s; c: one
+# file, 0.15 s, 2ch, @0.350 s; d: one file, 0.18 s, 2ch, @2.900 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -12.5, c -20.5, d -21.5; the rule adds the hero's
+# offset. Length 3.08 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3c2d = sombra.emote.s3c2d.a:-10 + sombra.emote.s3c2d.b*0.917@0.5:-4 + sombra.emote.s3c2d.c@0.35:-12 + sombra.emote.s3c2d.d@2.9:-13
+# 3FA9 a 2.4 s high shimmer (85% above 6 kHz, a 10.9 kHz tone) from 0.2 s in Sit's sit-down clip 44AA. Clip components
+# (clip id @start s [+window s]): sit 44AA@0.033+2.300 hp 00A4.
+# Play event (02C 3FA9, bank 1E631): a: one file, 2.38 s, 2ch, @0.200 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 2.58 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3fa9 = sombra.emote.s3fa9.a@0.2:-10
+# 3FAA three high airy takes (87-96% above 6 kHz) at 5.2, 6.5 and 7.75 s of Sit's 9.47 s seated clip, as her equaliser
+# hologram 49BB goes (its window ends at 6.53 s). Clip components (clip id @start s [+window s]): sit 4501@0.000+9.400
+# hp 00A4.
+# Play event (02C 3FAA, bank 1E631): a: one file, 0.61 s, 2ch, @7.750 s; b: one file, 1.30 s, 2ch, @5.200 s; c: one
+# file, 0.85 s, 2ch, @6.500 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0, b -12.0, c -12.0; the rule adds the hero's offset.
+# Length 8.36 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3faa = sombra.emote.s3faa.a@7.75:+2.5 + sombra.emote.s3faa.b@5.2:-3.5 + sombra.emote.s3faa.c@6.5:-3.5
+# 3FAB a 0.8 s high chime (three takes, 85% above 6 kHz with 400 / 1000 Hz partials) 0.13 s into Sit's seated clip, as
+# her equaliser hologram 49BB appears. Clip components (clip id @start s [+window s]): sit 4501@0.133 hp 00A4.
+# Play event (02C 3FAB, bank 1E631): a: random of 3 (no repeat within 2), 0.79-0.82 s, 2ch, +20 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.0; the rule adds the hero's offset. Length 0.81 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3fab = sombra.emote.s3fab.a*1.012:-3.5
+# 3FAC the four bright taps at 0-0.6 s of Sit's 0.4 s settle clip 452C. Clip components (clip id @start s [+window
+# s]): sit 452C@0.000 hp 00A4.
+# Play event (02C 3FAC, bank 1E631): a: one file, 0.74 s, 1ch, @0.600 s; b: one file, 0.34 s, 1ch; c: one file, 0.32
+# s, 1ch; d: one file, 0.50 s, 1ch, @0.500 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5, b -24.5, c -24.5, d -21.5; the rule adds the hero's
+# offset. Length 1.34 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3fac = sombra.emote.s3fac.a@0.6:-13 + sombra.emote.s3fac.b:-16 + sombra.emote.s3fac.c:-16 + sombra.emote.s3fac.d@0.5:-13
+# 3FB1 her equaliser hologram's hum while it's out: a 6.7 s quiet high hiss (98% above 6 kHz, its Sound looping) and a
+# 1.1 s low swell at the start, a low 0.44 s tick at 6.0 s (Sit's seated clip, held 6.57 s; the hologram 49BB is out
+# 0-6.53 s). Its Stop event also Plays a 0.9 s file (2A8C7A, +900 cents): not reproduced. Clip components (clip id
+# @start s [+window s]): sit 4501@0.000+6.567 hp 00A4.
+# Play event (02C 3FB1, bank 1E631): a: one file, 6.70 s, 2ch, LOOPS (Wwise loop count 0 = endless); b: one file, 1.09
+# s, 2ch, LPF/HPF 0/55 (not reproduced); c: one file, 0.44 s, 2ch, -450 cents, @6.000 s.
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -10.5, c -15.5; the rule adds the hero's offset.
+# Length 6.70 s, loop 6.703 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s3fb1 = sombra.emote.s3fb1.a:-7 + sombra.emote.s3fb1.b:-2 + sombra.emote.s3fb1.c*0.771@6:-7
+# 3FB2 her Boop movement: fourteen layers of the kit (high swishes, low thumps, bright taps) over 0-3.2 s. Clip
+# components (clip id @start s [+window s]): boop 4541@0.000+3.100 hp 00A4.
+# Play event (02C 3FB2, bank 1E631): a: random of 10, 0.10-0.43 s, 2ch, @1.400 s, LPF/HPF 25/0 (not reproduced); b:
+# random of 10, 0.10-0.43 s, 2ch, @1.800 s, LPF/HPF 25/0 (not reproduced); c: random of 5, 0.20-0.29 s, 2ch, @0.300 s,
+# some files differ by -5/+0/+0 -1/+0/+0 +2/+0/+0 +3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 25/0 (not reproduced); d: random of 5, 0.20-0.29 s, 2ch, @1.000 s, some files differ by -5/+0/+0
+# -1/+0/+0 +2/+0/+0 +3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer), LPF/HPF 25/0 (not
+# reproduced); e: one file, 0.34 s, 1ch; f: one file, 0.32 s, 1ch; g: one file, 0.50 s, 1ch, @2.400 s; h: one file,
+# 0.74 s, 1ch, @2.500 s; i: one file, 0.28 s, 2ch, +600 cents, @1.100 s, LPF/HPF 0/45 (not reproduced); j: one file,
+# 0.27 s, 2ch, +400 cents; k: one file, 0.37 s, 2ch, -300 cents, @2.200 s; l: one file, 0.33 s, 2ch, +300 cents,
+# @0.300 s; m: one file, 0.31 s, 2ch, +600 cents, @1.600 s, LPF/HPF 0/30 (not reproduced); n: one file, 0.33 s, 2ch,
+# @1.700 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -22.5, c -20.5, d -23.5, e -25.5, f -25.5, g
+# -25.5, h -25.5, i -14.5, j -16.5, k -16.5, l -20.5, m -19.5, n -5.5; the rule adds the hero's offset. Length 3.24 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3fb2 = sombra.emote.s3fb2.a@1.4:-14 + sombra.emote.s3fb2.b@1.8:-14 + sombra.emote.s3fb2.c@0.3:-12 + sombra.emote.s3fb2.d@1:-15 + sombra.emote.s3fb2.e:-17 + sombra.emote.s3fb2.f:-17 + sombra.emote.s3fb2.g@2.4:-17 + sombra.emote.s3fb2.h@2.5:-17 + sombra.emote.s3fb2.i*1.414@1.1:-6 + sombra.emote.s3fb2.j*1.260:-8 + sombra.emote.s3fb2.k*0.841@2.2:-8 + sombra.emote.s3fb2.l*1.189@0.3:-12 + sombra.emote.s3fb2.m*1.414@1.6:-11 + sombra.emote.s3fb2.n@1.7:+3
+# 3FBC two bright taps (0.23 s, 0.34 s) (Dance's start clip at 0 s; Heroic at 2.77 s). Clip components (clip id @start
+# s [+window s]): dance 44C0@0.000 hp 00A4; heroic 4004@2.767 hp 00A4.
+# Play event (02C 3FBC, bank 1E631): a: one file, 0.23 s, 1ch, @0.100 s; b: one file, 0.34 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -16.5, b -16.5; the rule adds the hero's offset. Length
+# 0.34 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s3fbc = sombra.emote.s3fbc.a@0.1:-8 + sombra.emote.s3fbc.b:-8
+# 4658 her Marioneta performance: 29 layers over 0-5.2 s, the kit's swishes, thumps and taps, high swishes at 0.8 and
+# 4.0 s, and from 1.85 s to 3.5 s six random sets of five short 1-channel takes (2A6F8C ...) pitched up 200-450 cents
+# while her puppet 4F4B dances (1.17-4.33 s). Clip components (clip id @start s [+window s]): marioneta
+# 492A@0.000+5.267 hp 00A4.
+# Play event (02C 4658, bank 1E631): a: random of 10, 0.10-0.43 s, 2ch, @1.400 s, LPF/HPF 25/0 (not reproduced); b:
+# random of 10, 0.10-0.43 s, 2ch, @2.300 s, LPF/HPF 25/0 (not reproduced); c: random of 5, 0.21-0.24 s, 1ch, +400
+# cents, @2.300 s, LPF/HPF 0/60 (not reproduced); d: random of 5, 0.21-0.24 s, 1ch, +200 cents, @2.600 s, LPF/HPF 0/60
+# (not reproduced); e: random of 5, 0.21-0.24 s, 1ch, +300 cents, @3.500 s, LPF/HPF 0/60 (not reproduced); f: random
+# of 5, 0.21-0.24 s, 1ch, +450 cents, @3.200 s, LPF/HPF 0/60 (not reproduced); g: random of 5, 0.21-0.24 s, 1ch, +250
+# cents, @1.850 s, LPF/HPF 0/50 (not reproduced); h: random of 5, 0.21-0.24 s, 1ch, +300 cents, @2.900 s, LPF/HPF 0/60
+# (not reproduced); i: random of 5, 0.20-0.29 s, 2ch, @1.000 s, some files differ by -5/+0/+0 -1/+0/+0 +2/+0/+0
+# +3/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer), LPF/HPF 25/0 (not reproduced); j:
+# random of 5, 0.20-0.29 s, 2ch, @0.400 s, some files differ by -5/+0/+0 -1/+0/+0 +2/+0/+0 +3/+0/+0 (dB / cents / s;
+# not reproduced: one gain, pitch and delay per layer), LPF/HPF 25/0 (not reproduced); k: one file, 0.13 s, 2ch,
+# @0.800 s; l: one file, 0.33 s, 2ch, @1.550 s; m: one file, 0.16 s, 2ch, @0.200 s; n: one file, 0.14 s, 2ch, @0.400
+# s; o: one file, 0.12 s, 2ch, @0.600 s; p: one file, 1.09 s, 2ch, +300 cents, @0.800 s; q: one file, 0.74 s, 2ch,
+# +300 cents, @4.000 s; r: one file, 0.44 s, 2ch, @4.300 s; s: one file, 0.31 s, 2ch, @4.000 s; t: one file, 0.33 s,
+# 2ch, +300 cents, @0.900 s; u: one file, 0.37 s, 2ch, @2.900 s; v: one file, 0.46 s, 2ch, @4.100 s; w: one file, 0.27
+# s, 2ch, +400 cents, @0.100 s, LPF/HPF 0/50 (not reproduced); x: one file, 0.28 s, 2ch, +600 cents, @1.500 s, LPF/HPF
+# 0/45 (not reproduced); y: one file, 0.34 s, 1ch, @1.000 s; z: one file, 0.74 s, 1ch, @4.500 s; aa: one file, 0.32 s,
+# 1ch, @1.000 s; ab: one file, 0.50 s, 1ch, @4.600 s; ac: one file, 2.20 s, 1ch, @1.700 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -22.5, c -31.5, d -31.5, e -28.5, f -30.5, g
+# -25.5, h -28.5, i -20.5, j -20.5, k -16.5, l -4.5, m -16.5, n -16.5, o -16.5, p -9.5, q -6.5, r -10.5, s -15.5, t
+# -15.5, u -15.5, v -15.5, w -15.5, x -15.5, y -19.5, z -16.5, aa -19.5, ab -16.5, ac -10.5; the rule adds the hero's
+# offset. Length 5.24 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s4658 = sombra.emote.s4658.a@1.4:-14 + sombra.emote.s4658.b@2.3:-14 + sombra.emote.s4658.c*1.260@2.3:-23 + sombra.emote.s4658.d*1.122@2.6:-23 + sombra.emote.s4658.e*1.189@3.5:-20 + sombra.emote.s4658.f*1.297@3.2:-22 + sombra.emote.s4658.g*1.155@1.85:-17 + sombra.emote.s4658.h*1.189@2.9:-20 + sombra.emote.s4658.i@1:-12 + sombra.emote.s4658.j@0.4:-12 + sombra.emote.s4658.k@0.8:-8 + sombra.emote.s4658.l@1.55:+4 + sombra.emote.s4658.m@0.2:-8 + sombra.emote.s4658.n@0.4:-8 + sombra.emote.s4658.o@0.6:-8 + sombra.emote.s4658.p*1.189@0.8:-1 + sombra.emote.s4658.q*1.189@4:+2 + sombra.emote.s4658.r@4.3:-2 + sombra.emote.s4658.s@4:-7 + sombra.emote.s4658.t*1.189@0.9:-7 + sombra.emote.s4658.u@2.9:-7 + sombra.emote.s4658.v@4.1:-7 + sombra.emote.s4658.w*1.260@0.1:-7 + sombra.emote.s4658.x*1.414@1.5:-7 + sombra.emote.s4658.y@1:-11 + sombra.emote.s4658.z@4.5:-8 + sombra.emote.s4658.aa@1:-11 + sombra.emote.s4658.ab@4.6:-8 + sombra.emote.s4658.ac@1.7:-2
+# 5CDA Regifted's foley: one 8.2 s broadband file over the whole clip in bursts with silent gaps between them, as the
+# presents and the toy come and go. Clip components (clip id @start s [+window s]): regifted 7C82@0.000+8.500 hp 00A4.
+# Play event (02C 5CDA, bank 1E631): a: one file, 8.17 s, 2ch, @0.010 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 8.18 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.s5cda = sombra.emote.s5cda.a@0.01:-2
+# 741D a footstep, foot hardpoint 001C, on the footstep mixer 571818699 (Rainy Stroll, 0.43 s). Clip components (clip
+# id @start s [+window s]): rainy_stroll 19552@0.433 hp 001C.
+# Play event (02C 741D, bank 1E40D): a: random of 12, 0.29-0.44 s, 1ch, +400 cents, LPF/HPF 0/43 (not reproduced); b:
+# random of 5 (no repeat within 2), 0.33-0.47 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 892671500 fades in over 35 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0, b -7.0; the rule adds the hero's offset. Length 0.47
+# s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s741d = sombra.emote.s741d.a*1.260:+2.5 + sombra.emote.s741d.b:+1.5
+# 7437 a footstep, foot hardpoints 001B / 001C (Rainy Stroll: three in its two walking clips). Clip components (clip
+# id @start s [+window s]): rainy_stroll 19552@0.733 hp 001B; rainy_stroll 19554@0.333 hp 001C; rainy_stroll
+# 19554@0.867 hp 001B.
+# Play event (02C 7437, bank 1E40D): a: random of 7, 0.31-0.51 s, 1ch, +1120 cents, LPF/HPF 14/47 (not reproduced); b:
+# random of 6 (no repeat within 5), 0.26-0.41 s, 1ch, +690 cents, LPF/HPF 6/39 (not reproduced); c: random of 4 (no
+# repeat within 2), 0.36-0.47 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 58311764 fades in over 45 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0, b -7.5, c -8.5; the rule adds the hero's offset.
+# Length 0.47 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s7437 = sombra.emote.s7437.a*1.910:-0.5 + sombra.emote.s7437.b*1.490:+1 + sombra.emote.s7437.c:0
+# 744F a footstep, foot hardpoint 001C, brighter (+1500 cents, 88% 300-6000 Hz) (Rainy Stroll, 1.17 s). Clip
+# components (clip id @start s [+window s]): rainy_stroll 19552@1.167 hp 001C.
+# Play event (02C 744F, bank 1E40D): a: random of 6 (no repeat within 5), 0.24-0.42 s, 1ch, +1500 cents, @0.003 s,
+# some files differ by -2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer), LPF/HPF 0/16
+# (not reproduced); b: random of 4 (no repeat within 2), 0.30-0.48 s, 1ch, LPF/HPF 0/12 (not reproduced).
+# Play 781990077 fades in over 35 ms. Audience field 2 (3D), range 50 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +5.5, b -8.0; the rule adds the hero's offset. Length 0.48
+# s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.s744f = sombra.emote.s744f.a*2.378@0.003:+14 + sombra.emote.s744f.b:+0.5
+# 9DDD Browsing's sounds while her tablet 389D is out: a 7.0 s and a 6.8 s high file (89-95% above 6 kHz) over the
+# clip, read as the tablet's screen, with taps and a low take at 0-0.9 s and two more at 8.4-8.5 s. Clip components
+# (clip id @start s [+window s]): browsing B3A6@0.029+8.837 hp 00A4.
+# Play event (02C 9DDD, bank 1E631): a: one file, 7.03 s, 2ch, @0.800 s, LPF/HPF 18/0 (not reproduced); b: one file,
+# 6.75 s, 1ch, @0.900 s, LPF/HPF 18/0 (not reproduced); c: one file, 0.47 s, 1ch, -150 cents, @0.200 s, LPF/HPF 18/39
+# (not reproduced); d: one file, 0.50 s, 1ch, @0.300 s, LPF/HPF 18/0 (not reproduced); e: one file, 0.38 s, 1ch,
+# LPF/HPF 18/0 (not reproduced); f: one file, 0.34 s, 1ch, @8.400 s, LPF/HPF 18/0 (not reproduced); g: one file, 0.23
+# s, 1ch, @8.500 s, LPF/HPF 18/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -10.5, c -18.5, d -26.5, e -22.5, f -19.5, g
+# -19.5; the rule adds the hero's offset. Length 8.74 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.s9ddd = sombra.emote.s9ddd.a@0.8:-2 + sombra.emote.s9ddd.b@0.9:-2 + sombra.emote.s9ddd.c*0.917@0.2:-10 + sombra.emote.s9ddd.d@0.3:-18 + sombra.emote.s9ddd.e:-14 + sombra.emote.s9ddd.f@8.4:-11 + sombra.emote.s9ddd.g@8.5:-11
+# A6C4 the robot pet: a tonal mid chirp (two 0.5 s takes, 83% 300-2000 Hz, partials 578-1107 Hz), from the pet's own
+# clip DC9C at 2.6 s (Pet Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@2.600 hp 00A4.
+# Play event (02C A6C4, bank 1E631): a: random of 2, 0.52-0.76 s, 1ch, @0.031 s, some files differ by -2/+0/+0.031
+# +2/+0/-0.031 (dB / cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 0.79 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6c4 = sombra.emote.sa6c4.a@0.031:0
+# A6C5 the robot pet: a 0.7-0.9 s tonal chirp (three takes, partials 848-944 Hz or 2.34 kHz) at 5.2 s of its clip (Pet
+# Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@5.200 hp 00A4.
+# Play event (02C A6C5, bank 1E631): a: random of 3, 0.67-0.88 s, 1ch, some files differ by +3/+0/+0 (dB / cents / s;
+# not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0; the rule adds the hero's offset. Length 0.88 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6c5 = sombra.emote.sa6c5.a:-0.5
+# A6C6 the robot pet's steps: twelve and sixteen short takes in two layers (+650 / +300 cents), at its foot hardpoints
+# 001C (1.03 s) and 001B (2.0 s) of its clip (Pet Slicer). Clip components (clip id @start s [+window s]): pet_slicer
+# DC9C@1.033 hp 001C; pet_slicer DC9C@2.000 hp 001B.
+# Play event (02C A6C6, bank 1E631): a: random of 16, 0.17-0.40 s, 1ch, +300 cents, @0.030 s, LPF/HPF 20/45 (not
+# reproduced); b: random of 12, 0.14-0.25 s, 1ch, +650 cents, LPF/HPF 20/25 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -32.0, b -6.0; the rule adds the hero's offset. Length 0.36
+# s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.sa6c6 = sombra.emote.sa6c6.a*1.189@0.03:-23.5 + sombra.emote.sa6c6.b*1.456:+2.5
+# A6C7 the robot pet's movement: four and sixteen short mid takes (0.18-0.4 s, 40-60% 300-2000 Hz) 0.07 s into its
+# clip (Pet Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@0.067 hp 00A4.
+# Play event (02C A6C7, bank 1E631): a: random of 16, 0.17-0.40 s, 1ch, @0.070 s, LPF/HPF 9/30 (not reproduced); b:
+# random of 4 (no repeat within 3), 0.18-0.25 s, 1ch, LPF/HPF 29/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -26.0, b -0.5; the rule adds the hero's offset. Length 0.47
+# s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6c7 = sombra.emote.sa6c7.a@0.07:-17.5 + sombra.emote.sa6c7.b:+8
+# A6C8 the robot pet's big move: five layers of 4-21 short takes over 0-0.8 s, the widest range of her emote sounds
+# (24 m) (Pet Slicer, 2.47 s of the pet's clip). Clip components (clip id @start s [+window s]): pet_slicer DC9C@2.467
+# hp 00A4.
+# Play event (02C A6C8, bank 1E631): a: random of 21, 0.06-0.29 s, 1ch, +60 cents, @0.080 s; b: random of 16,
+# 0.17-0.40 s, 1ch, +200 cents, @0.450 s, LPF/HPF 20/30 (not reproduced); c: random of 12, 0.14-0.25 s, 1ch, +400
+# cents, @0.350 s, LPF/HPF 20/10 (not reproduced); d: random of 6, 0.35-0.50 s, 2ch, -50 cents, some files differ by
+# -2/+0/+0 -1.5/+0/+0 +1.5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); e: random of 4
+# (no repeat within 4), 0.84-0.91 s, 1ch, +575 cents, @0.100 s.
+# Audience field 2 (3D), range 24 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5, b -31.0, c -8.5, d -26.5, e -18.5; the rule adds the
+# hero's offset. Length 0.80 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6c8 = sombra.emote.sa6c8.a*1.035@0.08:-9 + sombra.emote.sa6c8.b*1.122@0.45:-22.5 + sombra.emote.sa6c8.c*1.260@0.35:0 + sombra.emote.sa6c8.d*0.972:-18 + sombra.emote.sa6c8.e*1.394@0.1:-10
+# A6C9 the robot pet: a bright clank (two layers of four 0.6-0.7 s takes, 50% 2-6 kHz) at 3.83 s of its clip (Pet
+# Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@3.833 hp 00A4.
+# Play event (02C A6C9, bank 1E631): a: random of 4 (no repeat within 2), 0.61-0.73 s, 1ch, -150 cents, @0.200 s; b:
+# random of 4 (no repeat within 2), 0.40-0.61 s, 1ch, +50 cents, @0.150 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.5, b -29.0; the rule adds the hero's offset. Length
+# 1.00 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6c9 = sombra.emote.sa6c9.a*0.917@0.2:-20 + sombra.emote.sa6c9.b*1.029@0.15:-20.5
+# A6CA Pet Slicer, Sombra's own clip, hardpoint 0021: three takes at 0-0.18 s, one 0.63 s with a 10.9 kHz tone (0.8
+# s). Clip components (clip id @start s [+window s]): pet_slicer DBFB@0.800 hp 0021.
+# Play event (02C A6CA, bank 1E631): a: one file, 0.37 s, 2ch; b: one file, 0.89 s, 2ch, @0.180 s; c: one file, 0.63
+# s, 2ch, @0.080 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.0, b -13.0, c -8.0; the rule adds the hero's offset.
+# Length 1.07 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6ca = sombra.emote.sa6ca.a:+0.5 + sombra.emote.sa6ca.b@0.18:-4.5 + sombra.emote.sa6ca.c@0.08:+0.5
+# A6CB four short bright ticks (0.12-0.16 s, 98% above 6 kHz) played in sequence, one per play (Pet Slicer, her clip,
+# hardpoint 0021, 1.1 s); the same files tick in Marioneta. Clip components (clip id @start s [+window s]): pet_slicer
+# DBFB@1.100 hp 0021.
+# Play event (02C A6CB, bank 1E631): a: random of 4, 0.12-0.16 s, 2ch, +150 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0; the rule adds the hero's offset. Length 0.15 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6cb = sombra.emote.sa6cb.a*1.091:-2.5
+# A6CC a loud low 0.85 s take (peak -1 dBFS, 82% under 300 Hz) and a tick (Pet Slicer, her clip, hardpoint 0021, 1.97
+# s). Clip components (clip id @start s [+window s]): pet_slicer DBFB@1.967 hp 0021.
+# Play event (02C A6CC, bank 1E631): a: one file, 0.14 s, 2ch; b: one file, 0.85 s, 1ch, @0.050 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.0, b -17.0; the rule adds the hero's offset. Length
+# 0.90 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6cc = sombra.emote.sa6cc.a:-1.5 + sombra.emote.sa6cc.b@0.05:-8.5
+# A6CE five punchy bright takes (0.27-0.73 s, 58-82% 2-6 kHz), four pitched down 180-375 cents (Pet Slicer, her clip,
+# hardpoint 0021, 5.03 s); shares a file with the pet's clank A6C9. Clip components (clip id @start s [+window s]):
+# pet_slicer DBFB@5.033 hp 0021.
+# Play event (02C A6CE, bank 1E631): a: one file, 0.40 s, 1ch, -275 cents, @0.180 s; b: one file, 0.27 s, 1ch, -375
+# cents, @0.250 s; c: one file, 0.58 s, 1ch, -180 cents; d: one file, 0.73 s, 1ch, @0.250 s; e: one file, 0.51 s, 1ch,
+# -375 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -30.5, b -16.0, c -30.5, d -44.0, e -13.5; the rule adds
+# the hero's offset. Length 0.98 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6ce = sombra.emote.sa6ce.a*0.853@0.18:-22 + sombra.emote.sa6ce.b*0.805@0.25:-7.5 + sombra.emote.sa6ce.c*0.901:-22 + sombra.emote.sa6ce.d@0.25:-35.5 + sombra.emote.sa6ce.e*0.805:-5
+# A6D1 the robot pet: a 0.4-0.5 s tonal chirp (two takes, 88-95% 300-2000 Hz, 516-537 or 1070-1091 Hz) at 1.8 s of its
+# clip (Pet Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@1.800 hp 00A4.
+# Play event (02C A6D1, bank 1E631): a: random of 2, 0.41-0.48 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 0.48 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa6d1 = sombra.emote.sa6d1.a:+1
+# A7CA the robot pet: a 0.9-1.0 s bright noisy sound (three takes, 43-55% above 6 kHz) at 6.5 s of its clip, near its
+# end (Pet Slicer). Clip components (clip id @start s [+window s]): pet_slicer DC9C@6.500 hp 00A4.
+# Play event (02C A7CA, bank 1E631): a: random of 3, 0.91-0.99 s, 1ch, some files differ by +2/+0/+0 (dB / cents / s;
+# not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5; the rule adds the hero's offset. Length 0.99 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sa7ca = sombra.emote.sa7ca.a:-12
+# B03E a heavy step: three loud 0.5-0.7 s low takes (peaks -1 to -3.5 dBFS, 68-90% under 300 Hz) (Ed's Saunter, 0.33 s
+# into its first clip and 0.03 s into its loop). Clip components (clip id @start s [+window s]): ed_s_saunter
+# E797@0.333 hp 00A4; ed_s_saunter E798@0.033 hp 00A4.
+# Play event (02C B03E, bank 1E631): a: random of 3, 0.53-0.69 s, 2ch, LPF/HPF 0/32 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -27.0; the rule adds the hero's offset. Length 0.69 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sb03e = sombra.emote.sb03e.a:-18.5
+# B1BC the Dance's held sound (all 8.43 s of its loop clip): its Play event plays a Wwise Silence source and the
+# STUSound lists no file: nothing plays (H). It is in the shared emote bank 1E79B, next to Lúcio's Dance Party B1B9.
+# No music for this dance is in her emote data. Clip components (clip id @start s [+window s]): dance 44C1@0.000+8.433
+# hp 00A4.
+# Play event (02C B1BC, bank 1E79B): Play 354681404: a Wwise Silence source (its only action), and the STUSound lists
+# no file: nothing plays (H). The rule is empty (an event with no sound, no subtitle). Audience field 2 (3D), range 15
+# m.
+@sombra.emote.sb1bc =
+# C2CA the umbrella opening, as it appears in her hand (Kiriko's umbrella prop 181A6, from 0.63 s on hardpoint 01B6;
+# Rainy Stroll, the 02C Kiriko's uses). Clip components (clip id @start s [+window s]): rainy_stroll 19552@0.467 hp
+# 0003.
+# Play event (02C C2CA, bank 1E4D2): a: one file, 0.18 s, 1ch; b: one file, 0.40 s, 1ch, @0.110 s; c: one file, 1.40
+# s, 1ch, +318 cents, LPF/HPF 0/60 (not reproduced).
+# Play 761879878 fades in over 510 ms. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -15.5, c -23.0; the rule adds the hero's offset.
+# Length 1.17 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.sc2ca = sombra.emote.sc2ca.a:-7 + sombra.emote.sc2ca.b@0.11:-7 + sombra.emote.sc2ca.c*1.202:-14.5
+# C2E6 umbrella twirl swish (Rainy Stroll, the 02C Kiriko's uses). Clip components (clip id @start s [+window s]):
+# rainy_stroll 19552@1.400 hp 00A4.
+# Play event (02C C2E6, bank 1E4D2): a: random of 2, 0.59-0.67 s, 1ch, -150 cents, LPF/HPF 0/40 (not reproduced); b:
+# one file, 1.40 s, 1ch, @0.150 s, LPF/HPF 0/60 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -23.0; the rule adds the hero's offset. Length
+# 1.55 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.sc2e6 = sombra.emote.sc2e6.a*0.917:-5 + sombra.emote.sc2e6.b@0.15:-14.5
+# DA44 the mic hitting the floor (Mic Drop, the shared emote), at 0.93 s. Clip components (clip id @start s [+window
+# s]): mic_drop 15C81@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@sombra.emote.sda44 = sombra.emote.sda44.a:-10
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C81@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@sombra.emote.sda4f = sombra.emote.sda4f.a*1.169@0.01:+8
+# DBE5 one 1.77 s file at 2.63 s of Dance-Off's first clip (held 1.54 s): a loud low hit (peak -2.6 dBFS) with a high
+# ring (11.4 kHz). Clip components (clip id @start s [+window s]): dance_off 14FC7@2.633+1.537 hp 00A4.
+# Play event (02C DBE5, bank 1E631): a: one file, 1.77 s, 2ch, LPF/HPF 15/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 1.77 s.
+# Containers / delays / gains H (read); what it is L.
+@sombra.emote.sdbe5 = sombra.emote.sdbe5.a:-7
+# E23F a low pop: two 0.2 s tonal takes pitched down 1775 cents and a 0.6 s tonal tick at +410 cents (Shuffle, 4.6 s
+# of its loop; the 02C Mercy's Shuffle uses). Clip components (clip id @start s [+window s]): shuffle 17FD5@4.600 hp
+# 00A4.
+# Play event (02C E23F, bank 1E79B): a: random of 2 (no repeat within 2), 0.18-0.21 s, 1ch, -1775 cents, @0.200 s,
+# LPF/HPF 0/55 (not reproduced); b: random of 1 (no repeat within 2), 0.60 s, 1ch, +410 cents, @0.280 s, LPF/HPF 0/55
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +3.5, b -13.5; the rule adds the hero's offset. Length 0.78
+# s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.se23f = sombra.emote.se23f.a*0.359@0.2:+12 + sombra.emote.se23f.b*1.267@0.28:-5
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 18505@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.se548 = sombra.emote.se548.a:-1
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 18505@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.se549 = sombra.emote.se549.a*0.891:-11 + sombra.emote.se549.b:-11
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18505@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@sombra.emote.se54a = sombra.emote.se54a.a:-16
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18505@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@sombra.emote.se54b = sombra.emote.se54b.a:-15
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C97@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@sombra.emote.seea6 = sombra.emote.seea6.a:+4 + sombra.emote.seea6.b@1.45:+4 + sombra.emote.seea6.c@0.03:-10 + sombra.emote.seea6.d*2.378@0.15:+4
+
+# ----- Sombra's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C32.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C22.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C03.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C27.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C13.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C19.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C35.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8EC7.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8C1E.03F.ogg
+sombra.emote.s3ba3.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA3.02C/0000002A8EC0.03F.ogg
+sombra.emote.s3ba4.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA4.02C/0000002A8C0E.03F.ogg
+sombra.emote.s3ba4.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA4.02C/0000002A8C26.03F.ogg
+sombra.emote.s3ba4.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA4.02C/0000002A8C04.03F.ogg
+sombra.emote.s3ba4.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA4.02C/0000002A8C11.03F.ogg
+sombra.emote.s3ba4.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BA4.02C/0000002A8C08.03F.ogg
+sombra.emote.s3bdd.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDD.02C/0000002A8C0E.03F.ogg
+sombra.emote.s3bdd.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDD.02C/0000002A8C26.03F.ogg
+sombra.emote.s3bdd.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDD.02C/0000002A8C04.03F.ogg
+sombra.emote.s3bdd.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDD.02C/0000002A8C11.03F.ogg
+sombra.emote.s3bdd.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDD.02C/0000002A8C08.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C32.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C22.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C03.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C27.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C13.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C19.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C35.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8EC7.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8C1E.03F.ogg
+sombra.emote.s3bde.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BDE.02C/0000002A8EC0.03F.ogg
+sombra.emote.s3be1.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8C1D.03F.ogg
+sombra.emote.s3be1.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8ECA.03F.ogg
+sombra.emote.s3be1.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8C12.03F.ogg
+sombra.emote.s3be1.d = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8C28.03F.ogg
+sombra.emote.s3be1.e = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8EC1.03F.ogg
+sombra.emote.s3be1.f = ExtraSounds/Sombra/Emotes/Sounds/000000003BE1.02C/0000002A8C64.03F.ogg
+sombra.emote.s3be2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BE2.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3be2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BE2.02C/0000002A8C68.03F.ogg
+sombra.emote.s3be2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BE2.02C/0000002A8C33.03F.ogg
+sombra.emote.s3be8.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BE8.02C/0000002A8C3B.03F.ogg
+sombra.emote.s3be8.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BE8.02C/0000002A8C12.03F.ogg
+sombra.emote.s3be8.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BE8.02C/0000002A8C23.03F.ogg
+sombra.emote.s3be8.d = ExtraSounds/Sombra/Emotes/Sounds/000000003BE8.02C/0000002A8C20.03F.ogg
+sombra.emote.s3be8.e = ExtraSounds/Sombra/Emotes/Sounds/000000003BE8.02C/0000002A8ECA.03F.ogg
+sombra.emote.s3be9.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BE9.02C/0000002A8C21.03F.ogg
+sombra.emote.s3be9.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BE9.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3be9.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BE9.02C/0000002A8EC2.03F.ogg
+sombra.emote.s3be9.d = ExtraSounds/Sombra/Emotes/Sounds/000000003BE9.02C/0000002A8C24.03F.ogg
+sombra.emote.s3bea.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C20.03F.ogg
+sombra.emote.s3bea.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C3B.03F.ogg
+sombra.emote.s3bea.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8ECA.03F.ogg
+sombra.emote.s3bea.d = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C23.03F.ogg
+sombra.emote.s3bea.e = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C12.03F.ogg
+sombra.emote.s3bea.f = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C1B.03F.ogg
+sombra.emote.s3bea.g = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C38.03F.ogg
+sombra.emote.s3bea.h = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C64.03F.ogg
+sombra.emote.s3bea.i = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C65.03F.ogg
+sombra.emote.s3bea.j = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C28.03F.ogg
+sombra.emote.s3bea.k = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C0F.03F.ogg
+sombra.emote.s3bea.l = ExtraSounds/Sombra/Emotes/Sounds/000000003BEA.02C/0000002A8C5C.03F.ogg
+sombra.emote.s3beb.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEB.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3beb.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BEB.02C/0000002A8C24.03F.ogg
+sombra.emote.s3beb.c = ExtraSounds/Sombra/Emotes/Sounds/000000003BEB.02C/0000002A8C21.03F.ogg
+sombra.emote.s3beb.d = ExtraSounds/Sombra/Emotes/Sounds/000000003BEB.02C/0000002A8EC2.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC003.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC027.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC02A.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A7531.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC02B.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC007.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A757A.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC033.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A7530.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A7533.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC030.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A7532.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A7536.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC034.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AC028.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A75F7.03F.ogg
+sombra.emote.s3bec.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002A758B.03F.ogg
+sombra.emote.s3bec.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AE873.03F.ogg
+sombra.emote.s3bec.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AE876.03F.ogg
+sombra.emote.s3bec.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BEC.02C/0000002AE878.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC02B.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC030.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC033.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A7530.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A758B.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC007.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A7533.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A757A.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A75F7.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A7536.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A7532.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC034.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC028.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002A7531.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC02A.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC027.03F.ogg
+sombra.emote.s3bff.a = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC003.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC004.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC013.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC01D.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC00A.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC020.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC021.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC036.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC035.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC031.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC01F.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC02D.03F.ogg
+sombra.emote.s3bff.b = ExtraSounds/Sombra/Emotes/Sounds/000000003BFF.02C/0000002AC015.03F.ogg
+sombra.emote.s3c29.a = ExtraSounds/Sombra/Emotes/Sounds/000000003C29.02C/0000002A8BA9.03F.ogg
+sombra.emote.s3c29.b = ExtraSounds/Sombra/Emotes/Sounds/000000003C29.02C/0000002A8BAA.03F.ogg
+sombra.emote.s3c29.c = ExtraSounds/Sombra/Emotes/Sounds/000000003C29.02C/0000002A8C15.03F.ogg
+sombra.emote.s3c29.d = ExtraSounds/Sombra/Emotes/Sounds/000000003C29.02C/0000002A8C5E.03F.ogg
+sombra.emote.s3c2a.a = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3c2a.b = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C21.03F.ogg
+sombra.emote.s3c2a.c = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8EC2.03F.ogg
+sombra.emote.s3c2a.d = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C20.03F.ogg
+sombra.emote.s3c2a.e = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C23.03F.ogg
+sombra.emote.s3c2a.f = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8ECA.03F.ogg
+sombra.emote.s3c2a.g = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C12.03F.ogg
+sombra.emote.s3c2a.h = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C3B.03F.ogg
+sombra.emote.s3c2a.i = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8C5D.03F.ogg
+sombra.emote.s3c2a.j = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8BB3.03F.ogg
+sombra.emote.s3c2a.k = ExtraSounds/Sombra/Emotes/Sounds/000000003C2A.02C/0000002A8BF0.03F.ogg
+sombra.emote.s3c2d.a = ExtraSounds/Sombra/Emotes/Sounds/000000003C2D.02C/0000002A8ECC.03F.ogg
+sombra.emote.s3c2d.b = ExtraSounds/Sombra/Emotes/Sounds/000000003C2D.02C/0000002A8C2A.03F.ogg
+sombra.emote.s3c2d.c = ExtraSounds/Sombra/Emotes/Sounds/000000003C2D.02C/0000002A8BAF.03F.ogg
+sombra.emote.s3c2d.d = ExtraSounds/Sombra/Emotes/Sounds/000000003C2D.02C/0000002A8C70.03F.ogg
+sombra.emote.s3fa9.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FA9.02C/0000002A8C47.03F.ogg
+sombra.emote.s3faa.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FAA.02C/0000002A8C3F.03F.ogg
+sombra.emote.s3faa.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FAA.02C/0000002A8BB5.03F.ogg
+sombra.emote.s3faa.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FAA.02C/0000002A8C63.03F.ogg
+sombra.emote.s3fab.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FAB.02C/0000002A8BB0.03F.ogg
+sombra.emote.s3fab.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FAB.02C/0000002A8BAC.03F.ogg
+sombra.emote.s3fab.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FAB.02C/0000002A8C7C.03F.ogg
+sombra.emote.s3fac.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FAC.02C/0000002A8EC2.03F.ogg
+sombra.emote.s3fac.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FAC.02C/0000002A8C24.03F.ogg
+sombra.emote.s3fac.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FAC.02C/0000002A8C21.03F.ogg
+sombra.emote.s3fac.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FAC.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3fb1.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB1.02C/0000002A8C0A.03F.ogg
+sombra.emote.s3fb1.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB1.02C/0000002A8C1F.03F.ogg
+sombra.emote.s3fb1.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB1.02C/0000002A8C72.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C32.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C22.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C03.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C27.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C13.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C19.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C35.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC7.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C1E.03F.ogg
+sombra.emote.s3fb2.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC0.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C32.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C22.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C03.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C27.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C13.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C19.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C35.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC7.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C1E.03F.ogg
+sombra.emote.s3fb2.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC0.03F.ogg
+sombra.emote.s3fb2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C0E.03F.ogg
+sombra.emote.s3fb2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C26.03F.ogg
+sombra.emote.s3fb2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C04.03F.ogg
+sombra.emote.s3fb2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C11.03F.ogg
+sombra.emote.s3fb2.c = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C08.03F.ogg
+sombra.emote.s3fb2.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C0E.03F.ogg
+sombra.emote.s3fb2.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C26.03F.ogg
+sombra.emote.s3fb2.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C04.03F.ogg
+sombra.emote.s3fb2.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C11.03F.ogg
+sombra.emote.s3fb2.d = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C08.03F.ogg
+sombra.emote.s3fb2.e = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C24.03F.ogg
+sombra.emote.s3fb2.f = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C21.03F.ogg
+sombra.emote.s3fb2.g = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC4.03F.ogg
+sombra.emote.s3fb2.h = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC2.03F.ogg
+sombra.emote.s3fb2.i = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C20.03F.ogg
+sombra.emote.s3fb2.j = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C23.03F.ogg
+sombra.emote.s3fb2.k = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C12.03F.ogg
+sombra.emote.s3fb2.l = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8ECA.03F.ogg
+sombra.emote.s3fb2.m = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8C3B.03F.ogg
+sombra.emote.s3fb2.n = ExtraSounds/Sombra/Emotes/Sounds/000000003FB2.02C/0000002A8EC3.03F.ogg
+sombra.emote.s3fbc.a = ExtraSounds/Sombra/Emotes/Sounds/000000003FBC.02C/0000002A8C6C.03F.ogg
+sombra.emote.s3fbc.b = ExtraSounds/Sombra/Emotes/Sounds/000000003FBC.02C/0000002A8C24.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C32.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C22.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C03.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C27.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C13.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C19.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C35.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC7.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C1E.03F.ogg
+sombra.emote.s4658.a = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC0.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C32.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C22.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C03.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C27.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C13.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C19.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C35.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC7.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C1E.03F.ogg
+sombra.emote.s4658.b = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC0.03F.ogg
+sombra.emote.s4658.c = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.c = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.c = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.c = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.c = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.d = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.d = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.d = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.d = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.d = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.e = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.e = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.e = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.e = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.e = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.f = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.f = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.f = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.f = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.f = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.g = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.g = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.g = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.g = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.g = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.h = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8C.03F.ogg
+sombra.emote.s4658.h = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F89.03F.ogg
+sombra.emote.s4658.h = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F87.03F.ogg
+sombra.emote.s4658.h = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6F8A.03F.ogg
+sombra.emote.s4658.h = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A6E39.03F.ogg
+sombra.emote.s4658.i = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C0E.03F.ogg
+sombra.emote.s4658.i = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C26.03F.ogg
+sombra.emote.s4658.i = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C04.03F.ogg
+sombra.emote.s4658.i = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C11.03F.ogg
+sombra.emote.s4658.i = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C08.03F.ogg
+sombra.emote.s4658.j = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C0E.03F.ogg
+sombra.emote.s4658.j = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C26.03F.ogg
+sombra.emote.s4658.j = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C04.03F.ogg
+sombra.emote.s4658.j = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C11.03F.ogg
+sombra.emote.s4658.j = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C08.03F.ogg
+sombra.emote.s4658.k = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8D78.03F.ogg
+sombra.emote.s4658.l = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC3.03F.ogg
+sombra.emote.s4658.m = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C18.03F.ogg
+sombra.emote.s4658.n = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C29.03F.ogg
+sombra.emote.s4658.o = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C0C.03F.ogg
+sombra.emote.s4658.p = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8BAA.03F.ogg
+sombra.emote.s4658.q = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8BA9.03F.ogg
+sombra.emote.s4658.r = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C72.03F.ogg
+sombra.emote.s4658.s = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C3B.03F.ogg
+sombra.emote.s4658.t = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8ECA.03F.ogg
+sombra.emote.s4658.u = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C12.03F.ogg
+sombra.emote.s4658.v = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C1B.03F.ogg
+sombra.emote.s4658.w = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C23.03F.ogg
+sombra.emote.s4658.x = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C20.03F.ogg
+sombra.emote.s4658.y = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C24.03F.ogg
+sombra.emote.s4658.z = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC2.03F.ogg
+sombra.emote.s4658.aa = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C21.03F.ogg
+sombra.emote.s4658.ab = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8EC4.03F.ogg
+sombra.emote.s4658.ac = ExtraSounds/Sombra/Emotes/Sounds/000000004658.02C/0000002A8C58.03F.ogg
+sombra.emote.s5cda.a = ExtraSounds/Sombra/Emotes/Sounds/000000005CDA.02C/0000002A8BA7.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A704E.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7055.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7100.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A70EC.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7101.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A70E9.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7054.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A70FF.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A70AA.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7052.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A70EF.03F.ogg
+sombra.emote.s741d.a = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A7109.03F.ogg
+sombra.emote.s741d.b = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A608F.03F.ogg
+sombra.emote.s741d.b = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A6098.03F.ogg
+sombra.emote.s741d.b = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A609C.03F.ogg
+sombra.emote.s741d.b = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A63A2.03F.ogg
+sombra.emote.s741d.b = ExtraSounds/Sombra/Emotes/Sounds/00000000741D.02C/0000002A6165.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5EF.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5E8.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5F3.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5EA.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5E9.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5EE.03F.ogg
+sombra.emote.s7437.a = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5ED.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5F4.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5F0.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE618.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5EB.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5EC.03F.ogg
+sombra.emote.s7437.b = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002AE5F2.03F.ogg
+sombra.emote.s7437.c = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002A60A5.03F.ogg
+sombra.emote.s7437.c = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002A6280.03F.ogg
+sombra.emote.s7437.c = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002A615B.03F.ogg
+sombra.emote.s7437.c = ExtraSounds/Sombra/Emotes/Sounds/000000007437.02C/0000002A6147.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4C1.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4BE.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4C0.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4BD.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4BF.03F.ogg
+sombra.emote.s744f.a = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/00000031B4AA.03F.ogg
+sombra.emote.s744f.b = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/0000002A6415.03F.ogg
+sombra.emote.s744f.b = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/0000002A6388.03F.ogg
+sombra.emote.s744f.b = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/0000002A6394.03F.ogg
+sombra.emote.s744f.b = ExtraSounds/Sombra/Emotes/Sounds/00000000744F.02C/0000002A6154.03F.ogg
+sombra.emote.s9ddd.a = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8C59.03F.ogg
+sombra.emote.s9ddd.b = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/00000035402A.03F.ogg
+sombra.emote.s9ddd.c = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8C68.03F.ogg
+sombra.emote.s9ddd.d = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8EC4.03F.ogg
+sombra.emote.s9ddd.e = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8C33.03F.ogg
+sombra.emote.s9ddd.f = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8C24.03F.ogg
+sombra.emote.s9ddd.g = ExtraSounds/Sombra/Emotes/Sounds/000000009DDD.02C/0000002A8C6C.03F.ogg
+sombra.emote.sa6c4.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C4.02C/0000002A8C78.03F.ogg
+sombra.emote.sa6c4.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C4.02C/0000002A8C0D.03F.ogg
+sombra.emote.sa6c5.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C5.02C/0000002A8C5B.03F.ogg
+sombra.emote.sa6c5.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C5.02C/0000002A8C16.03F.ogg
+sombra.emote.sa6c5.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C5.02C/0000002A8BAB.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8BA5.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C77.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C4F.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C4D.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C54.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C4C.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C53.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C4A.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C6B.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C02.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8BA8.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8EC5.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C2C.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C7B.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8D77.03F.ogg
+sombra.emote.sa6c6.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C44.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8BB6.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C45.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8BB4.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C1A.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C3E.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C2D.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C42.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C48.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8EC9.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C41.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C73.03F.ogg
+sombra.emote.sa6c6.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C6.02C/0000002A8C71.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8BA5.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C77.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C4F.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C4D.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C54.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C4C.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C53.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C4A.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C6B.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C02.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8BA8.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8EC5.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C2C.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C7B.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8D77.03F.ogg
+sombra.emote.sa6c7.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C44.03F.ogg
+sombra.emote.sa6c7.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C1A.03F.ogg
+sombra.emote.sa6c7.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C3E.03F.ogg
+sombra.emote.sa6c7.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C2D.03F.ogg
+sombra.emote.sa6c7.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C7.02C/0000002A8C42.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C3C.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C69.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C05.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8ECB.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C36.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C31.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C34.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C30.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C17.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C14.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C10.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C09.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C37.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C66.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8EC6.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C25.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C06.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8EC8.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C07.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C2B.03F.ogg
+sombra.emote.sa6c8.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C7D.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8BA5.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C77.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C4F.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C4D.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C54.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C4C.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C53.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C4A.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C6B.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C02.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8BA8.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8EC5.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C2C.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C7B.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8D77.03F.ogg
+sombra.emote.sa6c8.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C44.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8BB6.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C45.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8BB4.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C1A.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C3E.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C2D.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C42.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C48.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8EC9.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C41.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C73.03F.ogg
+sombra.emote.sa6c8.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C71.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C2F.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C1C.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C40.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8D79.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C60.03F.ogg
+sombra.emote.sa6c8.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C61.03F.ogg
+sombra.emote.sa6c8.e = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C5F.03F.ogg
+sombra.emote.sa6c8.e = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C62.03F.ogg
+sombra.emote.sa6c8.e = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C6D.03F.ogg
+sombra.emote.sa6c8.e = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C8.02C/0000002A8C39.03F.ogg
+sombra.emote.sa6c9.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C56.03F.ogg
+sombra.emote.sa6c9.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C76.03F.ogg
+sombra.emote.sa6c9.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C0B.03F.ogg
+sombra.emote.sa6c9.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C6A.03F.ogg
+sombra.emote.sa6c9.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C79.03F.ogg
+sombra.emote.sa6c9.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C55.03F.ogg
+sombra.emote.sa6c9.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C49.03F.ogg
+sombra.emote.sa6c9.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6C9.02C/0000002A8C50.03F.ogg
+sombra.emote.sa6ca.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CA.02C/0000002A8C51.03F.ogg
+sombra.emote.sa6ca.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CA.02C/0000002A8C57.03F.ogg
+sombra.emote.sa6ca.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CA.02C/0000002A8C6E.03F.ogg
+sombra.emote.sa6cb.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CB.02C/0000002A8C18.03F.ogg
+sombra.emote.sa6cb.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CB.02C/0000002A8C29.03F.ogg
+sombra.emote.sa6cb.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CB.02C/0000002A8C0C.03F.ogg
+sombra.emote.sa6cb.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CB.02C/0000002A8D78.03F.ogg
+sombra.emote.sa6cc.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CC.02C/0000002A8C29.03F.ogg
+sombra.emote.sa6cc.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CC.02C/0000002A8C75.03F.ogg
+sombra.emote.sa6ce.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CE.02C/0000002A8C50.03F.ogg
+sombra.emote.sa6ce.b = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CE.02C/0000002A8C43.03F.ogg
+sombra.emote.sa6ce.c = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CE.02C/0000002A8C79.03F.ogg
+sombra.emote.sa6ce.d = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CE.02C/0000002A8C56.03F.ogg
+sombra.emote.sa6ce.e = ExtraSounds/Sombra/Emotes/Sounds/00000000A6CE.02C/0000002A8C3D.03F.ogg
+sombra.emote.sa6d1.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6D1.02C/0000002A8BB1.03F.ogg
+sombra.emote.sa6d1.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A6D1.02C/0000002A8C46.03F.ogg
+sombra.emote.sa7ca.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A7CA.02C/0000002A8C6F.03F.ogg
+sombra.emote.sa7ca.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A7CA.02C/0000002A8BAE.03F.ogg
+sombra.emote.sa7ca.a = ExtraSounds/Sombra/Emotes/Sounds/00000000A7CA.02C/0000002A8C01.03F.ogg
+sombra.emote.sb03e.a = ExtraSounds/Sombra/Emotes/Sounds/00000000B03E.02C/0000002A8BB2.03F.ogg
+sombra.emote.sb03e.a = ExtraSounds/Sombra/Emotes/Sounds/00000000B03E.02C/0000002A8C67.03F.ogg
+sombra.emote.sb03e.a = ExtraSounds/Sombra/Emotes/Sounds/00000000B03E.02C/0000002A8C2E.03F.ogg
+sombra.emote.sc2ca.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4A4.03F.ogg
+sombra.emote.sc2ca.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4B9.03F.ogg
+sombra.emote.sc2ca.c = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2CA.02C/0000002AF4E0.03F.ogg
+sombra.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A66C0.03F.ogg
+sombra.emote.sc2e6.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002A76EC.03F.ogg
+sombra.emote.sc2e6.b = ExtraSounds/Kiriko/Emotes/Sounds/00000000C2E6.02C/0000002AF4E0.03F.ogg
+sombra.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+sombra.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+sombra.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+sombra.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+sombra.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+sombra.emote.sdbe5.a = ExtraSounds/Sombra/Emotes/Sounds/00000000DBE5.02C/0000003190C1.03F.ogg
+sombra.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE3.03F.ogg
+sombra.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE4.03F.ogg
+sombra.emote.se23f.b = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE6.03F.ogg
+sombra.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+sombra.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sombra.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sombra.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sombra.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sombra.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+sombra.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+sombra.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+sombra.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sombra.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sombra.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sombra.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sombra.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+sombra.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+
+# ----- Sombra's emote voice lines: one plain event per voice stimulus (078), every line of it (English, the one language extracted,
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 2C8 (laughs): 2 line(s) 1.28 s, 0.93 s; clips amused 402E@4.107.
+sombra.emote.v2c8 = ../../research/sombra/extract/HeroVoice/Sombra/Laugh/000000032753.0B2-(laughs).ogg | w=1
+sombra.emote.v2c8 = ../../research/sombra/extract/HeroVoice/Sombra/Laugh/0000000327DD.0B2-(laughs).ogg | w=1
+# 6A1 (laughs): 1 line(s) 1.36 s; clips boop 4541@0.000, stimulus volume -4 dB.
+sombra.emote.v6a1 = ../../research/sombra/extract/HeroVoice/Sombra/Laugh/000000032781.0B2-(laughs).ogg | w=1
+# 766 Boop!: 1 line(s) 0.34 s; clips amused 402E@3.185, boop 4541@1.733, marioneta 492A@1.800, radius 60 m.
+sombra.emote.v766 = ../../research/sombra/extract/HeroVoice/Sombra/Voicelines/000000034203.0B2-Boop.ogg | w=1
+# 974 (laughs): 1 line(s) 1.68 s; clips marioneta 492A@3.769.
+sombra.emote.v974 = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/974.078/000000049A36.0B2-(laughs).ogg | w=1
+# 154B (quick kiss): 1 line(s) 0.43 s; clips pet_slicer DBFB@4.467.
+sombra.emote.v154b = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/154B.078/00000006726D.0B2-(quick kiss).ogg | w=1
+# 154C (quick giggle): 2 line(s) 0.21 s, 0.31 s; clips pet_slicer DBFB@3.867.
+sombra.emote.v154c = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/154C.078/00000006726E.0B2-(quick giggle).ogg | w=1
+sombra.emote.v154c = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/154C.078/00000006726F.0B2-(quick giggle).ogg | w=1
+# 15EC (cheer): 7 line(s) 1.27 s, 0.96 s, 0.93 s, 1.28 s, 1.51 s, 0.72 s, 0.89 s; clips choreography E0BA@3.593.
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/00000006798B.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B01.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B02.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B03.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B04.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B05.0B2-(cheer).ogg | w=1
+sombra.emote.v15ec = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EC.078/000000067B06.0B2-(cheer).ogg | w=1
+# 15ED (beat): 5 line(s) 0.51 s, 0.52 s, 0.52 s, 0.51 s, 0.52 s; clips choreography E0BA@0.333.
+sombra.emote.v15ed = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15ED.078/000000067993.0B2-(beat).ogg | w=1
+sombra.emote.v15ed = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15ED.078/000000067994.0B2-(beat).ogg | w=1
+sombra.emote.v15ed = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15ED.078/000000067995.0B2-(beat).ogg | w=1
+sombra.emote.v15ed = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15ED.078/000000067996.0B2-(beat).ogg | w=1
+sombra.emote.v15ed = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15ED.078/000000067997.0B2-(beat).ogg | w=1
+# 15EE (flex): 6 line(s) 0.91 s, 0.60 s, 0.92 s, 0.91 s, 0.61 s, 0.62 s; clips choreography E0BA@2.233.
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/00000006798D.0B2-(flex).ogg | w=1
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/00000006798E.0B2-(flex).ogg | w=1
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/00000006798F.0B2-(flex).ogg | w=1
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/000000067990.0B2-(flex).ogg | w=1
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/000000067991.0B2-(flex).ogg | w=1
+sombra.emote.v15ee = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/15EE.078/000000067992.0B2-(flex).ogg | w=1
+# 186B (happy humming): 4 line(s) 1.16 s, 1.11 s, 1.59 s, 1.32 s; clips rainy_stroll 19554@1.700.
+sombra.emote.v186b = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/186B.078/00000006BE6B.0B2-(happy humming).ogg | w=1
+sombra.emote.v186b = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/186B.078/00000006BE6C.0B2-(happy humming).ogg | w=1
+sombra.emote.v186b = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/186B.078/00000006BE6D.0B2-(happy humming).ogg | w=1
+sombra.emote.v186b = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/186B.078/00000006BE6E.0B2-(happy humming).ogg | w=1
+# 1969 HaHa! / Woo!: 3 line(s) 0.80 s, 0.81 s, 0.93 s; clips shuffle 17FD5@4.400.
+sombra.emote.v1969 = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/1969.078/00000006A6CB.0B2-HaHA!.ogg | w=1
+sombra.emote.v1969 = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/1969.078/00000006A6CC.0B2-HaHa!.ogg | w=1
+sombra.emote.v1969 = ../../research/sombra/extract/HeroVoice/Sombra/Unknown/1969.078/00000006A6CD.0B2-Woo!.ogg | w=1
+
+# ----- Sombra's subtitles
+$sombra.emote.s3ba3 = Sombra: swish
+$sombra.emote.s3ba4 = Sombra: swish
+$sombra.emote.s3bdd = Sombra: swish
+$sombra.emote.s3bde = Sombra: swish
+$sombra.emote.s3be1 = Sombra: movement
+$sombra.emote.s3be2 = Sombra: taps
+$sombra.emote.s3be8 = Sombra: movement
+$sombra.emote.s3be9 = Sombra: taps
+$sombra.emote.s3bea = Sombra: movement
+$sombra.emote.s3beb = Sombra: taps
+$sombra.emote.s3bec = Sombra: clothes rustle
+$sombra.emote.s3bff = Sombra: clothes rustle
+$sombra.emote.s3c29 = Sombra: screen hums
+$sombra.emote.s3c2a = Sombra: movement
+$sombra.emote.s3c2d = Sombra: bright chimes
+$sombra.emote.s3fa9 = Sombra: shimmer
+$sombra.emote.s3faa = Sombra: shimmer
+$sombra.emote.s3fab = Sombra: chime
+$sombra.emote.s3fac = Sombra: taps
+$sombra.emote.s3fb1 = Sombra: hologram hums
+$sombra.emote.s3fb2 = Sombra: movement
+$sombra.emote.s3fbc = Sombra: taps
+$sombra.emote.s4658 = Sombra: puppet plays
+$sombra.emote.s5cda = Sombra: presents rustle
+$sombra.emote.s741d = Sombra: footstep
+$sombra.emote.s7437 = Sombra: footstep
+$sombra.emote.s744f = Sombra: footstep
+$sombra.emote.s9ddd = Sombra: tablet hums
+$sombra.emote.sa6c4 = Sombra: pet chirps
+$sombra.emote.sa6c5 = Sombra: pet chirps
+$sombra.emote.sa6c6 = Sombra: pet steps
+$sombra.emote.sa6c7 = Sombra: pet whirs
+$sombra.emote.sa6c8 = Sombra: pet clatters
+$sombra.emote.sa6c9 = Sombra: pet clanks
+$sombra.emote.sa6ca = Sombra: beeps
+$sombra.emote.sa6cb = Sombra: tick
+$sombra.emote.sa6cc = Sombra: thump
+$sombra.emote.sa6ce = Sombra: clanks
+$sombra.emote.sa6d1 = Sombra: pet chirps
+$sombra.emote.sa7ca = Sombra: pet whirs
+$sombra.emote.sb03e = Sombra: stomp
+$sombra.emote.sc2ca = Sombra: umbrella opens
+$sombra.emote.sc2e6 = Sombra: umbrella swish
+$sombra.emote.sda44 = Sombra: mic drops
+$sombra.emote.sda4f = Sombra: mic feedback
+$sombra.emote.sdbe5 = Sombra: hit
+$sombra.emote.se23f = Sombra: pop
+$sombra.emote.se548 = Sombra: music plays
+$sombra.emote.se549 = Sombra: music plays
+$sombra.emote.se54a = Sombra: music plays
+$sombra.emote.se54b = Sombra: music plays
+$sombra.emote.seea6 = Sombra: salt shakes
+$sombra.emote.v2c8 = Sombra: (laughs)
+$sombra.emote.v6a1 = Sombra: (laughs)
+$sombra.emote.v766 = Sombra: Boop!
+$sombra.emote.v974 = Sombra: (laughs)
+$sombra.emote.v154b = Sombra: (quick kiss)
+$sombra.emote.v154c = Sombra: (quick giggle)
+$sombra.emote.v15ec = Sombra: (cheer)
+$sombra.emote.v15ed = Sombra: (beat)
+$sombra.emote.v15ee = Sombra: (flex)
+$sombra.emote.v186b = Sombra: (happy humming)
+$sombra.emote.v1969 = Sombra: HaHa! / Woo!
