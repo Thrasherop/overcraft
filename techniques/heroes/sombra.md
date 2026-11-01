@@ -168,4 +168,22 @@ arrive, stealth start / loop / end and her "translocate" and "uncloak" lines; a 
 the `_3p` copies, the Spanish ult line and `hacked` in her own head, and not the stealth loop. Not built in the data:
 `voice.resurrected` (her set has none).
 
+## The 0.3.26 general play (2026-11-01)
+Dev client, a fresh normal-terrain survival world `gp0326`, at a player's inventory (no god mode):
+- **Minecraft mode** (Escape on the select): two dirt blocks mined by hand and picked up; four logs into planks in the
+  inventory grid; a chest placed, opened, the logs moved in with the mouse.
+- **G with no hero** says to press H; **H at spawn** opened the select.
+- **Every hero picked there in turn** (Kiriko, Lúcio, Jetpack Cat, Mercy, Lifeweaver, Ana, Sombra), each one's left
+  button on a zombie 6 m off (each took damage; Lifeweaver's killed it; third-person screenshots `gp_<hero>.png`).
+- **Death and respawn:** killed 25 m away, back at a random point near the world spawn with Jetpack Cat kept. **Found:**
+  H there said "go back to your bed" (11 m from the world spawn point, no bed): fixed, the respawn point counts too.
+- **Leave and rejoin:** the free pick on the select with Jetpack Cat and her charge kept.
+- **The Nether as Sombra:** through a portal; her pistol killed a blaze; EMP took a piglin brute 50 -> 40 and a blaze
+  20 -> 16, both hacked; Cyberspace's zone drawn; a teleport worked (cooldown 7 s after).
+- **A night fight** (two zombies, a skeleton with a bow, a creeper): standing still she lost it in 11 s (two zombies'
+  hits, 3 each, Minecraft's normal numbers); teleporting away when hurt, she won it with her stealth and regeneration and
+  EMP charged by the fight. **Harness lessons:** aim from her eyes (`anchored eyes`), not her feet (over a zombie's
+  head); a creeper's crater swallowed every shot until she moved out of it.
+- A second player was played earlier the same day (hacked Ana, stealth seen, Hotfix on a player, the tree hacked).
+
 - Emotes: [sombra_emotes](../emotes/sombra_emotes.md).
