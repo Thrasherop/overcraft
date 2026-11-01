@@ -175,3 +175,24 @@ listed with `fxnear`. The white pixel clouds in some frames are Minecraft's own 
   isn't windows (Lúcio's `stowBy` note) broke every hero's data until skipped (found playing: the flail missing in Cheer).
 - **An emote hides a piece by parking its bone:** Flail Tricks puts 0F74 over 80 m away; the folded shield isn't drawn then.
 - **Her shield's rest pose is already folded** (its bones 0.58 x 0.91 m, the deploy clip's first frame).
+
+## Step 10 (two players, a night, the general play)
+Two dev clients (host "Kiriko" as Brigitte, `runClient2` "Viewer" joining over LAN: `cmd publish true 25565`, then
+`connect localhost:25565`; a joined player starts in the world's game mode and isn't op):
+- **Allies (no teams):** Repair Pack on Viewer 16 -> full by 1.2 s (the landing, heal start / loop / end in their head);
+  Inspire 10 -> 14.83 (57, plus Kiriko's own support regeneration); Rally's overhealth on them 75 by 3 s; they hear the
+  friendly Rally line.
+- **Enemies (teams red / blue):** Whip Shot 70 (20 -> 14.4), pushed 5.9 m, her whip-hit line; Viewer's bow (Minecraft
+  mode) into her barrier 300 -> 127 with her health untouched, with it down 20 -> 11.56; the enemy Rally line. **Found:**
+  Rally's stun let a player walk (only their hero keys were locked): `Sleep.stun` now sets the asleep attachment their
+  client holds them still by, and its end clears it (the first fix forgot that and froze them for good). After: held
+  still through the stun, walking from 0.62 s.
+- **A night in survival** with mobs spawning (zombies, bow skeletons, a spider, a creeper, a husk) and Viewer beside her:
+  the flail, the barrier against the skeletons, packs to Viewer when hurt (6.2 -> 13.8), G out to Minecraft mode and back
+  mid-fight, Rally once charged; she died twice and Viewer once (a scripted fighter, not a player's tactics), each
+  respawn back in hero mode.
+- **The general play:** each of the eight heroes picked from the hero menu (H) mid-game and fired at a 200-health zombie
+  (each did damage; Mercy with her blaster on 2); a death and respawn as Brigitte (full health, her kit); Minecraft mode
+  (stone mined with a pickaxe, a chest placed and opened, the inventory); Save and Leave from the pause menu, rejoin,
+  the select screen, Brigitte picked again with her barrier and packs full.
+- Not tried: a second player as Brigitte; the Nether; water and lava; boats.
