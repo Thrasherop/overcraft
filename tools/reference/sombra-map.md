@@ -60,6 +60,11 @@ v52253 off**, **Disable Translocator Camera Lock v52940 on**, vibrations incl. a
   **5 m, 3 s**, sight-checked: **enemies 40 on opening + 25/s, weakened -50% damage and healing dealt** (floor -50%, M on the
   channels), linger **0.25 s**; **allies 40 + 30/s**, linger **0.75 s**. The projectile payload holds 50 damage (L: a direct
   hit?). **Cooldown 12 s from the cast's end.**
+- **Not the live Translocator (found 2026-10-31):** the reading below (E again to teleport, 15 s, 5 HP, cooldown 1 s
+  after landing) matches the **Community Crafted** mode's beacon (BZ 2026-06-30), not the live one. Live (BZ 2026-10-06
+  12.25 m; W): it takes her by itself on its first terrain contact or 0.17 s out (12.25 m along its path), can't be
+  damaged, the cooldown from the teleport, 0.4 s phased after. `SombraStats` follows BZ / W; the speed, gravity and the
+  0.5 m lift are kept from here.
 - **Translocator** (0C19, 0C1A; H unless said): ABILITY 2 throws the beacon in a **0.6 s** state: **72 m/s, gravity field 20**
   (M), **15 s** lifetime, 0.01 m, from hp 0002, sticks (M), **5 HP** (destroyable), usable after **0.17 s** (M). ABILITY 2
   again: a **0.4 s** protected move (invulnerable / no input, M) to **beacon + 0.5 m up**, not during EMP's cast. On arrival:

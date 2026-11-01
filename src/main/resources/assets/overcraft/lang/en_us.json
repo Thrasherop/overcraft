@@ -201,7 +201,7 @@
 	"overcraft.ability.cyberspace.desc": "Launch a projectile that opens a zone: it weakens enemies inside and heals allies.",
 	"overcraft.ability.translocator": "Translocator",
 	"overcraft.ability.translocator.short": "TRANSLOC",
-	"overcraft.ability.translocator.desc": "Throw a beacon, press again to teleport to it, then go stealthed for a while.",
+	"overcraft.ability.translocator.desc": "Throw a beacon and teleport to it. Become stealthed for a short duration after teleporting.",
 	"overcraft.ability.emp": "EMP",
 	"overcraft.ability.emp.short": "ULT",
 	"overcraft.ability.emp.desc": "Hurt every enemy around you by a share of their health, hack them and break barriers.",

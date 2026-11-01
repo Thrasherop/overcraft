@@ -151,8 +151,9 @@ public final class HeroManager {
 	public static boolean fallIsSafe(Player player) {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
-		// Lifeweaver: Rejuvenating Dash lands him
-		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER) && state.softLanding;
+		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
+		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
+			&& state.softLanding;
 	}
 
 	/** Hero mode is on (on unless switched off with G). */

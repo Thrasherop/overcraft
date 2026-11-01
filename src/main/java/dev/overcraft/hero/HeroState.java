@@ -132,11 +132,10 @@ public final class HeroState {
 	public @org.jspecify.annotations.Nullable Integer hotfixTarget;
 	public boolean hotfixHeld;
 	/**
-	 * Sombra's Translocator: her beacon (its entity id, null none), the teleport under way (ticks in, -1 none), and stealth:
+	 * Sombra's Translocator: her beacon in flight (its entity id, null none), and stealth:
 	 * when it began (her landing, game time), when it ends, and a brief reveal (taking damage, Hotfix).
 	 */
 	public @org.jspecify.annotations.Nullable Integer beaconId;
-	public int teleportTicks = -1;
 	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
 	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
 	public int empCast = -1;

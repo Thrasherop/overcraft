@@ -24,6 +24,31 @@ since her 2026-10-06 rework (Tactician). Up: [Techniques](../README.md) · the m
 - **Two research agents shared one scripts folder** and overwrote seven of each other's copies (the same code, paths
   differing): give parallel research passes separate folders.
 
+## The Translocator rebuilt (2026-10-31): the data map read a mode's version
+- **Check a data reading of a mechanic against the patch notes and the wiki before building it.** The map's Translocator
+  (E again to teleport, a beacon lasting 15 s with 5 health) was built and played in step 5, but the live one, in both
+  BZ 2026-10-06 and the wiki, teleports her by itself on touching terrain or 0.17 s out (12.25 m), can't be damaged,
+  and starts its cooldown at the teleport. What the map read matches the Community Crafted mode's beacon (BZ 2026-06-30),
+  which the same build holds. `sombra.md` (the public notes) had it right all along; the map won because it was "the data".
+  When they disagree on how something works, the live patch notes decide, and the map line gets a note
+  (`sombra-map.md`, Translocator).
+- **What she doesn't do any more** (the owner, 2026-10-31): her Hack ability is gone since the rework (BZ: being locked
+  out was "jarring, frustrating"; Weaken replaced it). **EMP still hacks** (the owner confirmed), and Hotfix hacks only
+  health packs and enemy deployables.
+- **An ability that can leave her high in the air needs the soft landing** (#35): a throw straight up stops 12.25 m
+  along its path, and the fall took 11 of her 18 health until the teleport set `softLanding` (cleared on the ground,
+  from a few ticks after the arrival: the ground she left still counts right after a teleport).
+- **The Workshop movement recorder** (`tools/workshop/movement_recorder.txt`, [workshop_recordings](../game-data/workshop_recordings.md))
+  has a Sombra section (Translocator thrown and used; walking and jumping in stealth). No Sombra log exists yet; one
+  would measure the beacon's arc (our gravity 20 is the data's, M) and her stealth speed.
+
+Played (dev client, survival, fresh world `tl1`, then `tl2` for the fix): a level throw on open ground took her 12.7 m
+(12.25 along the path from her wrist, 0.45 m ahead) in under 0.2 s with no second press, 0.5 m above the beacon's spot,
+then she dropped to the ground unhurt; the cooldown 7.5 s from the teleport. At a stone wall 6 m off: in front of its face,
+stealthed (see-through in F5). Thrown at the ground: there, 1.1 m ahead. Straight up: 14.6 m up, then the fall: 11 health
+lost on the old build, none on the fix; an ordinary 8 m fall afterwards still took 5 (past the 3 m). Through a zombie 4.5 m
+ahead: the full 12.25 m.
+
 ## What step 6 (EMP, hacked) taught
 - **A stale dev client answers the harness.** Stopping `gradlew runClient`'s task left the old game's Java process
   running; the new client couldn't bind the dev port (`DevServer stopped ... BindException` in its log) and every harness
@@ -43,7 +68,7 @@ charge 3100 -> 0. Live mobs: a skeleton with a bow: its arrow during the 3 s rem
 3 s flew; a creeper hacked 0.6 s into its fuse: alive for 5 s, then the fuse again and the explosion. Tactician: EMP at 120%
 left 620; the charge didn't move for the first seconds after the cast and rose again by ~7 s. First-person (her hand cast)
 and third-person (the cast pose) clips. Not played yet: a hacked player (needs the second client: step 10), Hotfix and EMP on
-an enemy Lifeweaver's platform / tree or another Sombra's beacon (step 10), EMP ending her stealth (the same `Stealth.end`
+an enemy Lifeweaver's platform or tree (step 10; a Sombra's beacon flies 0.17 s and can't be touched, so it isn't one), EMP ending her stealth (the same `Stealth.end`
 Cyberspace uses, played in step 5), Life Hack (step 7).
 
 Played (step 1, dev client, creative): picked from the select screen (her model, pistol, kit row, 225 health); in play,

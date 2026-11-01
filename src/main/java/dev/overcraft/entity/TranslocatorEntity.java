@@ -1,7 +1,6 @@
 package dev.overcraft.entity;
 
 import dev.overcraft.Ow;
-import dev.overcraft.hero.Allies;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.sombra.SombraStats;
 import net.minecraft.server.level.ServerLevel;
@@ -18,14 +17,16 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 /**
- * Sombra's Translocator beacon (entity 1575, graph 0C1A): thrown at 72 m/s under a gravity of 20 (M), it sticks where it
- * lands (M) and lasts 15 s; enemies can shoot it, 5 health (D). She teleports to it with E again (Sombra.teleport).
+ * Sombra's Translocator beacon (entity 1575, graph 0C1A): thrown at 72 m/s under a gravity of 20 (M), it takes her (Sombra.arrive)
+ * on its first touch of terrain or 12.25 m along its path, wherever it is then (BZ 2026-10-06; W). It passes through creatures
+ * and can't be damaged (W).
  */
 public class TranslocatorEntity extends OwProjectile {
-	private boolean stuck;
-	/** The face it stuck to, outward (none in flight). */
+	/** The face it touched, outward (none when it stopped in the air). */
 	private net.minecraft.world.phys.Vec3 face = net.minecraft.world.phys.Vec3.ZERO;
-	private double health = SombraStats.BEACON_HEALTH;
+	/** How far it has come along its path, and where this tick's move started. */
+	private double travelled;
+	private net.minecraft.world.phys.Vec3 tickStart = net.minecraft.world.phys.Vec3.ZERO;
 
 	public TranslocatorEntity(EntityType<? extends TranslocatorEntity> type, Level level) {
 		super(type, level);
@@ -40,25 +41,34 @@ public class TranslocatorEntity extends OwProjectile {
 		return Items.ENDER_EYE;
 	}
 
+	/** It takes her within 0.17 s: a second at most is only a safety. */
 	@Override
 	protected int lifetime() {
-		return Ow.ticks(SombraStats.BEACON_LIFETIME);
+		return 20;
 	}
 
 	@Override
 	protected double getDefaultGravity() {
-		return stuck ? 0 : Ow.accel(SombraStats.BEACON_GRAVITY);
+		return Ow.accel(SombraStats.BEACON_GRAVITY);
 	}
 
 	@Override
 	public void tick() {
-		if (stuck) {
-			setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
-		}
+		tickStart = position();
 		super.tick();
+		if (level().isClientSide() || !isAlive()) {
+			return;
+		}
+		net.minecraft.world.phys.Vec3 moved = position().subtract(tickStart);
+		travelled += moved.length();
+		if (travelled >= SombraStats.BEACON_RANGE && moved.lengthSqr() > 0) {
+			// its range reached inside this tick's move: back to the exact point on the path
+			setPos(position().subtract(moved.normalize().scale(travelled - SombraStats.BEACON_RANGE)));
+			arrive();
+		}
 	}
 
-	/** It flies through creatures (its throw only stops on the world, M). */
+	/** It flies through creatures (W: no collision with heroes or deployables). */
 	@Override
 	protected boolean canHitEntity(Entity entity) {
 		return false;
@@ -71,35 +81,36 @@ public class TranslocatorEntity extends OwProjectile {
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
-		// sticks where it lands, a hair off the face (M: 0C1A's stick fields aren't read)
-		stuck = true;
-		face = net.minecraft.world.phys.Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
-		setPos(hit.getLocation().add(face.scale(0.08)));
-		setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
-		setNoGravity(true);
+		if (level().isClientSide() || !isAlive()) {
+			return;
+		}
+		net.minecraft.world.phys.Vec3 path = hit.getLocation().subtract(tickStart);
+		if (travelled + path.length() > SombraStats.BEACON_RANGE && path.lengthSqr() > 0) {
+			// the wall lies past its range: it stops in the air before it
+			setPos(tickStart.add(path.normalize().scale(SombraStats.BEACON_RANGE - travelled)));
+		} else {
+			// a hair off the face it touched
+			face = net.minecraft.world.phys.Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
+			setPos(hit.getLocation().add(face.scale(0.08)));
+		}
+		arrive();
 	}
 
 	public net.minecraft.world.phys.Vec3 face() {
 		return face;
 	}
 
-	@Override
-	public boolean isPickable() {
-		return true;
+	private void arrive() {
+		if (getOwner() instanceof ServerPlayer owner) {
+			dev.overcraft.sombra.Sombra.arrive(owner, this);
+		}
+		discard();
 	}
 
-	/** An enemy's hit takes its 5 health (in Overwatch units); her own side's doesn't. */
+	/** It can't be damaged (W). */
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		Entity attacker = source.getEntity();
-		if (getOwner() instanceof ServerPlayer owner && attacker instanceof LivingEntity living && !Allies.canHurt(living, owner)) {
-			return false;
-		}
-		health -= Ow.toOw(amount);
-		if (health <= 0) {
-			expire();
-		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -108,5 +119,14 @@ public class TranslocatorEntity extends OwProjectile {
 			dev.overcraft.sombra.Sombra.beaconGone(owner, this);
 		}
 		discard();
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		// out of the world or unloaded: she gets her cooldown back (W: a death plane refunds it)
+		if (reason != RemovalReason.DISCARDED && getOwner() instanceof ServerPlayer owner) {
+			dev.overcraft.sombra.Sombra.beaconGone(owner, this);
+		}
+		super.remove(reason);
 	}
 }

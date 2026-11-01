@@ -70,15 +70,15 @@ public final class SombraStats {
 	/** How long it lasts after leaving the zone: enemies (D 0.25 s; W 0.5 s: the data used), allies. */
 	public static final double ZONE_LINGER_ENEMY = 0.25, ZONE_LINGER_ALLY = 0.75;
 
-	// ---- Translocator (ability 2: E to throw, E again to teleport; D 0C19 ABILITY 2) ----
-	/** The beacon: this fast, under this gravity (M), lasting this long, with this much health. */
-	public static final double BEACON_SPEED = 72, BEACON_GRAVITY = 20, BEACON_LIFETIME = 15, BEACON_HEALTH = 5;   // D 0C1A
-	/** It can be used this long after the throw (D, M; W 0.17 s). */
-	public static final double BEACON_READY = 0.17;
-	/** The teleport: protected over this long, to the beacon and this far above it. */
-	public static final double TELEPORT_TIME = 0.4, TELEPORT_UP = 0.5;   // D 0C19
-	/** The cooldown starts this long after landing (D 0C19). */
-	public static final double TRANSLOCATOR_COOLDOWN = 7.5, TRANSLOCATOR_COOLDOWN_DELAY = 1;   // D; BZ; W
+	// ---- Translocator (ability 2: E; D 0C19 ABILITY 2) ----
+	/** The beacon: this fast (BZ 2023-10-10; W), under this gravity (D 0C1A, M: W gives no number). */
+	public static final double BEACON_SPEED = 72, BEACON_GRAVITY = 20;
+	/** It takes her on its first touch of terrain, or this far along its path (BZ 2026-10-06; W: 0.17 s at 72 m/s). */
+	public static final double BEACON_RANGE = 12.25;
+	/** She lands this far above it (D 0C19), phased out this long (W). */
+	public static final double TELEPORT_UP = 0.5, TELEPORT_PHASED = 0.4;
+	/** From the teleport (BZ 2026-10-06 6 -> 7.5; W "begins upon teleporting"). */
+	public static final double TRANSLOCATOR_COOLDOWN = 7.5;
 
 	// ---- Stealth (after every teleport: D 420C; no longer an ability of its own) ----
 	public static final double STEALTH_FADE_IN = 0.75, STEALTH_TIME = 6.5, STEALTH_FADE_OUT = 0.3;   // D 420C; BZ

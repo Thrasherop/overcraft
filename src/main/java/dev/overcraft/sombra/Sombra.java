@@ -43,7 +43,6 @@ public final class Sombra implements HeroKit {
 		s.hotfixChannel = -1;
 		s.hotfixTarget = null;
 		s.beaconId = null;
-		s.teleportTicks = -1;
 		s.stealthFrom = s.stealthUntil = s.revealedUntil = -1;
 		s.castTicks = -1;
 	}
@@ -54,7 +53,6 @@ public final class Sombra implements HeroKit {
 			beacon.discard();
 		}
 		s.beaconId = null;
-		s.teleportTicks = -1;
 		Stealth.clear(player, s);
 	}
 
@@ -69,12 +67,15 @@ public final class Sombra implements HeroKit {
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - cooldown);
 		if (!player.isAlive()) {
 			Stealth.clear(player, s);
-			s.teleportTicks = -1;
 		}
 		Stealth.tick(player, s);
-		if (s.teleportTicks >= 0) {
-			teleporting(player, s);
-			return;
+		// an ability's landing never hurts (the owner's rule, #35): the teleport's fall doesn't count until she's down
+		if (s.softLanding) {
+			player.resetFallDistance();
+			// (from a few ticks after the arrival, stealthFrom: the ground she left still counts just after the teleport)
+			if (player.onGround() && player.level().getGameTime() > s.stealthFrom + 4) {
+				s.softLanding = false;
+			}
 		}
 		if (!controls || !player.isAlive()) {
 			s.hotfixChannel = -1;
@@ -99,9 +100,6 @@ public final class Sombra implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
-		if (s.teleportTicks >= 0) {
-			return;
-		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			startReload(player, s);
 		}
@@ -220,15 +218,14 @@ public final class Sombra implements HeroKit {
 		return false;
 	}
 
-	/** What EMP and Hotfix hack: Lifeweaver's platform and tree, a Sombra's beacon. */
+	/** What EMP and Hotfix hack: Lifeweaver's platform and tree (a Sombra's beacon flies 0.17 s and can't be touched: W). */
 	private static boolean deployable(net.minecraft.world.entity.Entity e) {
-		return e instanceof TranslocatorEntity || e instanceof dev.overcraft.entity.PetalPlatformEntity
+		return e instanceof dev.overcraft.entity.PetalPlatformEntity
 			|| e instanceof dev.overcraft.entity.TreeOfLifeEntity;
 	}
 
 	private static boolean enemyDeployable(ServerPlayer player, net.minecraft.world.entity.Entity d) {
-		net.minecraft.world.entity.Entity owner = d instanceof TranslocatorEntity t ? t.getOwner()
-			: d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
+		net.minecraft.world.entity.Entity owner = d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
 			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId()) : null;
 		return owner instanceof LivingEntity living && living != player && Allies.canHurt(player, living);
 	}
@@ -273,20 +270,17 @@ public final class Sombra implements HeroKit {
 	// ---- Translocator (0C19, the beacon 0C1A) and stealth (420C) ----
 
 	/**
-	 * E: throws the beacon from her left wrist (hp 0002) with the cooldown ready; E again, once it's 0.17 s out, teleports
-	 * her to it (its 7.5 s cooldown 1 s after landing). A beacon gone unused (its 15 s, shot down) starts the cooldown.
+	 * E: throws the beacon from her left wrist (hp 0002) with the cooldown ready. It takes her by itself (no second press):
+	 * on its first touch of terrain, or 12.25 m along its path (0.17 s at 72 m/s) wherever it is (BZ 2026-10-06; W). While
+	 * it flies, E does nothing. (The E-again beacon with 15 s and 5 health read from the data matches the Community
+	 * Crafted mode's, not the live game.)
 	 */
 	private static void translocator(ServerPlayer player, HeroState s) {
 		ServerLevel level = player.level();
-		TranslocatorEntity beacon = s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive() ? b : null;
-		if (beacon != null) {
-			// not during EMP's cast (0B31); a hacked beacon takes no one for its 10 s
-			if (beacon.tickCount >= Ow.ticks(BEACON_READY) && s.empCast < 0 && !Hack.hacked(beacon)) {
-				s.teleportTicks = 0;
-				Combat.animate(player, "translocate");
-			}
+		if (s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive()) {
 			return;
 		}
+		s.beaconId = null;
 		if (s.ability2Cooldown > 0) {
 			return;
 		}
@@ -301,29 +295,26 @@ public final class Sombra implements HeroKit {
 	/** Her left wrist (hp 0002), from her eyes in her look's frame: ours until measured on her model (Ana's numbers). */
 	private static final double WRIST_RIGHT = -0.25, WRIST_UP = -0.2, WRIST_AHEAD = 0.45;
 
-	/** A beacon gone without a teleport (its 15 s, or shot down): the cooldown from now (ours: when it starts then isn't read). */
+	/** A beacon gone without taking her (out of the world, she left Sombra): nothing spent (W: a death plane refunds it). */
 	public static void beaconGone(ServerPlayer player, TranslocatorEntity beacon) {
 		HeroState s = HeroManager.state(player);
 		if (s != null && s.beaconId != null && s.beaconId == beacon.getId()) {
 			s.beaconId = null;
-			s.teleportTicks = -1;
-			s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN);
 		}
 	}
 
-	/** The 0.4 s move: protected and without her keys, then she's at the beacon, 0.5 m above it, and stealth starts. */
-	private static void teleporting(ServerPlayer player, HeroState s) {
+	/**
+	 * The beacon takes her: she's there at once, 0.5 m above it (D 0C19), phased out 0.4 s (W), the 7.5 s cooldown from now
+	 * (BZ; W), stealth starting (420C).
+	 */
+	public static void arrive(ServerPlayer player, TranslocatorEntity beacon) {
+		HeroState s = HeroManager.state(player);
+		if (s == null || s.hero != dev.overcraft.hero.Hero.SOMBRA || s.beaconId == null || s.beaconId != beacon.getId()
+			|| !player.isAlive() || player.level() != beacon.level()) {
+			return;
+		}
 		ServerLevel level = player.level();
-		Combat.phase(player, 0.1);
-		TranslocatorEntity beacon = s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive() ? b : null;
-		if (beacon == null) {
-			s.teleportTicks = -1;
-			return;
-		}
-		if (++s.teleportTicks < Ow.ticks(TELEPORT_TIME)) {
-			return;
-		}
-		s.teleportTicks = -1;
+		s.beaconId = null;
 		// on a wall she stands in front of it, on a ceiling under it (ours: Minecraft's box is wider than her capsule)
 		Vec3 face = beacon.face();
 		double half = player.getBbWidth() / 2 + 0.05;
@@ -332,12 +323,13 @@ public final class Sombra implements HeroKit {
 		for (int i = 0; i < 8 && !level.noCollision(player, player.getDimensions(player.getPose()).makeBoundingBox(to)); i++) {
 			to = to.add(0, 0.25, 0);
 		}
-		beacon.discard();
-		s.beaconId = null;
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
-		s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN + TRANSLOCATOR_COOLDOWN_DELAY);
+		s.softLanding = true;
+		Combat.phase(player, TELEPORT_PHASED);
+		s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN);
+		Combat.animate(player, "translocate");
 		Stealth.start(player, s);
 	}
 

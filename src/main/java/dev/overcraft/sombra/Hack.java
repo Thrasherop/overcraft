@@ -36,14 +36,15 @@ public final class Hack {
 	/** A creature hacked: silenced this long, revealed 8 s. */
 	public static void creature(LivingEntity target, double silence) {
 		long now = target.level().getGameTime();
-		SILENCED.merge(target.getUUID(), now + Ow.ticks(silence), Math::max);		target.addEffect(new MobEffectInstance(MobEffects.GLOWING, Ow.ticks(HACK_REVEAL), 0, false, false));
+		SILENCED.merge(target.getUUID(), now + Ow.ticks(silence), Math::max);
+		target.addEffect(new MobEffectInstance(MobEffects.GLOWING, Ow.ticks(HACK_REVEAL), 0, false, false));
 		if (target instanceof Creeper creeper) {
 			creeper.setSwellDir(-1);
 			CREEPERS.add(creeper);
 		}
 	}
 
-	/** An enemy deployable (Lifeweaver's platform or tree, another Sombra's beacon) hacked: it stops working 10 s. */
+	/** An enemy deployable (Lifeweaver's platform or tree) hacked: it stops working 10 s. */
 	public static void deployable(Entity deployable) {
 		DEPLOYABLES.merge(deployable.getUUID(), deployable.level().getGameTime() + Ow.ticks(HACK_DEPLOYABLE), Math::max);
 	}
