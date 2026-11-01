@@ -1078,7 +1078,9 @@ public final class HeroHud {
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
 		if (hero == Hero.SOMBRA) {
-			// the Machine Pistol on the left button, where Kiriko's kunai panel is (Hotfix, the right button, has charges)
+			// Hotfix's charges (the right button) where Kiriko's ofuda panel is, the Machine Pistol (the left) where her kunai are
+			weapon(g, hero, w, "hotfix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+				dev.overcraft.sombra.SombraStats.HOTFIX_CHARGES, HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
 			weapon(g, hero, w, "machine_pistol", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sombra.SombraStats.PISTOL_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;

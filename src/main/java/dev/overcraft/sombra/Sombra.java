@@ -37,6 +37,10 @@ public final class Sombra implements HeroKit {
 		s.primaryReload = -1;
 		s.weaponRecovery = 0;
 		s.burstShots = 0;
+		s.hotfixCharges = HOTFIX_CHARGES;
+		s.hotfixRecharge = -1;
+		s.hotfixChannel = -1;
+		s.hotfixTarget = null;
 	}
 
 	@Override
@@ -44,14 +48,19 @@ public final class Sombra implements HeroKit {
 		double attack = Combat.attackRate(player);
 		reload(s, attack);
 		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
+		recharge(player, s);
 		if (!controls || !player.isAlive()) {
+			s.hotfixChannel = -1;
+			s.hotfixTarget = null;
+			s.hotfixHeld = false;
 			return;
 		}
+		hotfix(player, s);
 		// the clip empty: its reload starts by itself
 		if (s.primaryAmmo == 0 && s.primaryReload < 0) {
 			startReload(player, s);
 		}
-		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0) {
+		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0 && s.hotfixChannel < 0) {
 			// as many shots as the rate allows this tick (20 a second at 20 ticks: one each tick)
 			while (s.weaponRecovery <= 0 && s.primaryAmmo > 0) {
 				fire(player, s);
@@ -64,6 +73,60 @@ public final class Sombra implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			startReload(player, s);
 		}
+	}
+
+	// ---- Hotfix (614C, its heal 60FB) ----
+
+	/** One charge back every 8 s while she has fewer than two (2A57 / 2ADA), at the cooldown rate. */
+	private static void recharge(ServerPlayer player, HeroState s) {
+		if (s.hotfixCharges >= HOTFIX_CHARGES) {
+			s.hotfixRecharge = -1;
+			return;
+		}
+		if (s.hotfixRecharge < 0) {
+			s.hotfixRecharge = Ow.ticks(HOTFIX_RECHARGE);
+		}
+		s.hotfixRecharge -= Combat.cooldownRate(player);
+		if (s.hotfixRecharge <= 0) {
+			s.hotfixCharges++;
+			s.hotfixRecharge = s.hotfixCharges < HOTFIX_CHARGES ? Ow.ticks(HOTFIX_RECHARGE) : -1;
+		}
+	}
+
+	/**
+	 * The right button, held (the data's default; letting go cancels): the ally nearest her crosshair within 17 m and 10
+	 * degrees, in sight, is locked; after a 0.5 s channel still held, a charge is spent and they're healed (HotfixHeal).
+	 * Then 0.3 s of recovery before the next. No ally in view: nothing happens, nothing spent.
+	 */
+	private static void hotfix(ServerPlayer player, HeroState s) {
+		boolean pressed = s.secondaryHeld && !s.hotfixHeld;
+		s.hotfixHeld = s.secondaryHeld;
+		if (s.hotfixChannel >= 0) {
+			LivingEntity target = s.hotfixTarget == null ? null : player.level().getEntity(s.hotfixTarget) instanceof LivingEntity l ? l : null;
+			if (!s.secondaryHeld || target == null || !target.isAlive() || target.distanceTo(player) > HOTFIX_RANGE + 1) {
+				s.hotfixChannel = -1;
+				s.hotfixTarget = null;
+				return;
+			}
+			if (++s.hotfixChannel >= Ow.ticks(HOTFIX_CAST)) {
+				s.hotfixChannel = -1;
+				s.hotfixTarget = null;
+				s.hotfixCharges--;
+				s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(HOTFIX_RECOVERY));
+				HotfixHeal.start(player, target);
+			}
+			return;
+		}
+		if (!pressed || s.hotfixCharges <= 0 || s.weaponRecovery > 0 || s.primaryReload >= 0) {
+			return;
+		}
+		LivingEntity target = dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true);
+		if (target == null) {
+			return;
+		}
+		s.hotfixTarget = target.getId();
+		s.hotfixChannel = 0;
+		Combat.animate(player, "hotfix");
 	}
 
 	// ---- Machine Pistol (0B1B) ----
@@ -173,7 +236,8 @@ public final class Sombra implements HeroKit {
 	public HeroSyncPayload sync(HeroState s) {
 		float reload = s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(PISTOL_RELOAD)) : -1;
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, false,
-			s.primaryAmmo, reload, 0, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
+			s.primaryAmmo, reload, s.hotfixCharges, s.hotfixRecharge < 0 ? -1 : (float) (1 - s.hotfixRecharge / Ow.ticks(HOTFIX_RECHARGE)),
+			(float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}

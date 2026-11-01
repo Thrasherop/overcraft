@@ -125,6 +125,12 @@ public final class HeroState {
 	/** Sombra's Machine Pistol: shots in the current burst (its spread grows with them), and when the last one left. */
 	public int burstShots;
 	public long lastShotAt = -10000;
+	/** Sombra's Hotfix: charges left, ticks until the next comes back (-1: none recharging), the channel (ticks in, -1 none). */
+	public int hotfixCharges;
+	public double hotfixRecharge = -1;
+	public int hotfixChannel = -1;
+	public @org.jspecify.annotations.Nullable Integer hotfixTarget;
+	public boolean hotfixHeld;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

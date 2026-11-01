@@ -164,6 +164,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
 			dev.overcraft.ana.Anesthetic.tick(server);
+			dev.overcraft.sombra.HotfixHeal.tick(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -227,6 +228,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.mercy.Boosts.clear();
 			dev.overcraft.ana.Nano.clear();
 			dev.overcraft.ana.Anesthetic.clear();
+			dev.overcraft.sombra.HotfixHeal.clear();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

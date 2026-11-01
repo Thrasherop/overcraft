@@ -1,0 +1,65 @@
+package dev.overcraft.sombra;
+
+import dev.overcraft.Ow;
+import dev.overcraft.hero.Combat;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static dev.overcraft.sombra.SombraStats.*;
+
+/**
+ * Hotfix on an ally (its heal graph 60FB): 65 at once, then 25 a second, until 175 healed or 12 s (or their death). A
+ * new Hotfix on the same ally starts its own (ours: 60FB's stacking rule isn't read; each heals on its own).
+ */
+public final class HotfixHeal {
+	private record Heal(ServerPlayer sombra, LivingEntity ally, long until, double[] healed) {
+	}
+
+	private static final List<Heal> HEALS = new ArrayList<>();
+
+	private HotfixHeal() {
+	}
+
+	public static void start(ServerPlayer sombra, LivingEntity ally) {
+		double[] healed = {0};
+		HEALS.add(new Heal(sombra, ally, ally.level().getGameTime() + Ow.ticks(HOTFIX_HEAL_TIME), healed));
+		give(sombra, ally, healed, HOTFIX_HEAL_NOW);
+	}
+
+	/** Heals up to {@code amount}, never past the 175 in all; counts what it gave. */
+	private static void give(ServerPlayer sombra, LivingEntity ally, double[] healed, double amount) {
+		double left = HOTFIX_HEAL_TOTAL - healed[0];
+		if (left <= 0) {
+			return;
+		}
+		float done = Combat.heal(ally, Math.min(amount, left));
+		healed[0] += done;
+		if (done > 0) {
+			Combat.credit(sombra, done);
+			Combat.addFireForHealing(sombra, done);
+		}
+	}
+
+	public static void tick(MinecraftServer server) {
+		HEALS.removeIf(h -> {
+			if (!h.ally.isAlive() || h.ally.isRemoved() || h.ally.level().getGameTime() >= h.until || h.healed[0] >= HOTFIX_HEAL_TOTAL) {
+				return true;
+			}
+			give(h.sombra, h.ally, h.healed, HOTFIX_HEAL_RATE / 20);
+			return false;
+		});
+	}
+
+	/** Whether this ally has a Hotfix on them now (its effects). */
+	public static boolean on(LivingEntity ally) {
+		return HEALS.stream().anyMatch(h -> h.ally == ally);
+	}
+
+	public static void clear() {
+		HEALS.clear();
+	}
+}

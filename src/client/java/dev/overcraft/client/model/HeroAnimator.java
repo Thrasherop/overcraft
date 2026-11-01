@@ -191,6 +191,12 @@ public final class HeroAnimator {
 			clip = a.lifeweaverAction(action);
 			viewClip = a.lifeweaverViewAction(action);
 		}
+		if (a.sombra && action.equals("hotfix")) {
+			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
+			// (sombra_1p.txt hack_start)
+			clip = "hack_cat82";
+			viewClip = "hack_start";
+		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
