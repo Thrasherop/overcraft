@@ -125,3 +125,13 @@ health 28 / 28 (350: 100 armor on top), the barrier 750; her overhealth 30 and t
 at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a husk: 70 and stunned (NoAI 1b for its
 0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
 300, the villager's overhealth kept.
+
+## Step 7 (perks)
+Each perk against its control, picked through the perk menu (Alt held, a click), dev client, flat world `perksb`:
+- **Combat Medic:** a pack thrown (recharge running), then one swing at three ravagers: the charge back after 2.2 s, against
+  4.4 s with Morale Boost instead (3 x 0.75 off the 5 s).
+- **Morale Boost:** Whip Shot at a husk, a villager 6 m away at 4 health: 5.6 at 1 s, 8.6 at 4 s, 10.6 at 6 s, 11.3 (12 + 78.75
+  over 7 s); without it 8.6 at 4 s and no more (12 + 45).
+- **Inspiring Strike:** a bash hit: the villager 4 -> 8.56 at once (57), her speed 7.1 m/s for the next second (x1.3); without
+  it 5.2 at 0.3 s rising over 4 s, 5.46 m/s.
+- **Whiplash:** Whip Shot at a live husk 6 m ahead with a wall 2.5 m behind it: 20 -> 9.6 (70 + 60); without it 14.4 (70).

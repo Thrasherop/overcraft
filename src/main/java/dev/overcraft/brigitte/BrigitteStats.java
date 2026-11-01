@@ -109,4 +109,12 @@ public final class BrigitteStats {
 
 	// ---- Perks (the live list D 0063.177) ----
 	public static final double PERK_MINOR_XP = 2035, PERK_MAJOR_XP = 2035 + 3055;   // D (her values); W 2035 / 5090
+	/** Combat Medic (minor): each enemy her flail damages takes this off Repair Pack's recharge (51F2 #466, 2623 0.75). */
+	public static final double COMBAT_MEDIC = 0.75;
+	/** Morale Boost (minor): Inspire from Whip Shot lasts this much longer, healing as much more (11B9 #440: 7 s, 78.75). */
+	public static final double MORALE_BOOST = 1.75;
+	/** Inspiring Strike (major): +30% speed for 2 s after the bash; a bash hit heals 57 at once in 20 m (51F2 #455, #459). */
+	public static final double INSPIRING_STRIKE_SPEED = 0.3, INSPIRING_STRIKE_TIME = 2, INSPIRING_STRIKE_HEAL = 57;
+	/** Whiplash (major): a whipped enemy meeting a wall within 0.5 s takes 60 (1259 #997, 551F #526; BZ 2026-06-16 60). */
+	public static final double WHIPLASH_DAMAGE = 60, WHIPLASH_TIME = 0.5;
 }

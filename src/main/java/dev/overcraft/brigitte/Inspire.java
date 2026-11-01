@@ -28,6 +28,17 @@ public final class Inspire {
 	private Inspire() {
 	}
 
+	/**
+	 * Inspiring Strike's version (51F2 #459, 12D8 #469): her and her allies within 20 m healed 57 at once, no heal over time.
+	 */
+	public static void strike(ServerPlayer brigitte, HeroState s) {
+		s.inspireReadyAt = brigitte.level().getGameTime() + Ow.ticks(INSPIRE_COOLDOWN);
+		for (LivingEntity e : brigitte.level().getEntitiesOfClass(LivingEntity.class, brigitte.getBoundingBox().inflate(INSPIRE_RADIUS),
+			e -> e.isAlive() && Allies.isSelfOrAlly(brigitte, e) && e.distanceTo(brigitte) <= INSPIRE_RADIUS)) {
+			give(brigitte, e, INSPIRING_STRIKE_HEAL);
+		}
+	}
+
 	/** An enemy hit by her flail (gated by the 1.25 s), or by Whip Shot or Shield Bash ({@code always}). */
 	public static void trigger(ServerPlayer brigitte, HeroState s, boolean always, double seconds) {
 		long now = brigitte.level().getGameTime();

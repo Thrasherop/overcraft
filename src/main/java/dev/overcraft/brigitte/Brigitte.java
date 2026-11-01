@@ -5,6 +5,7 @@ import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroKit;
+import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
@@ -60,6 +61,13 @@ public final class Brigitte implements HeroKit {
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		recharge(s, rate);
+		if (s.strikeFastUntil >= 0 && player.level().getGameTime() >= s.strikeFastUntil) {
+			s.strikeFastUntil = -1;
+			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.removeModifier(STRIKE_FAST);
+			}
+		}
 		rally(player, s);
 		shockwave(player, s);
 		whip(player, s);
@@ -113,7 +121,11 @@ public final class Brigitte implements HeroKit {
 				target.push(push.x, push.y, push.z);
 				target.needsSync = true;
 				Combat.animate(player, "shield_bash_hit");
-				Inspire.trigger(player, s, true, INSPIRE_TIME);
+				if (HeroManager.hasPerk(player, Perk.BRIGITTE_INSPIRING_STRIKE)) {
+					Inspire.strike(player, s);
+				} else {
+					Inspire.trigger(player, s, true, INSPIRE_TIME);
+				}
 				if (s.rallyTicks > 0) {
 					// in Rally the bash stuns, and a shockwave follows (12BE: 1340, #878)
 					dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
@@ -128,9 +140,20 @@ public final class Brigitte implements HeroKit {
 		}
 	}
 
+	private static final net.minecraft.resources.Identifier STRIKE_FAST = dev.overcraft.Overcraft.id("brigitte_inspiring_strike");
+
 	private static void end(ServerPlayer player, HeroState s) {
 		s.bashTicks = -1;
 		s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);
+		if (HeroManager.hasPerk(player, Perk.BRIGITTE_INSPIRING_STRIKE)) {
+			// Inspiring Strike: 30% faster for 2 s after the dash (51F2 #455 / #456)
+			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(STRIKE_FAST,
+					INSPIRING_STRIKE_SPEED, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			}
+			s.strikeFastUntil = player.level().getGameTime() + Ow.ticks(INSPIRING_STRIKE_TIME);
+		}
 		// her client stops moving her now (a hit or a wall ends it early)
 		Effects.play(player.level(), "brigitte_bash_end", player.position(), Vec3.ZERO, player, 0, player);
 	}
@@ -331,8 +354,9 @@ public final class Brigitte implements HeroKit {
 				Vec3 level = new Vec3(s.whipDir.x, 0, s.whipDir.z);
 				Vec3 push = (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK)))
 					.add(0, Ow.speed(WHIP_LIFT), 0);
-				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME)));
-				Inspire.trigger(player, s, true, INSPIRE_TIME);
+				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME),
+					HeroManager.hasPerk(player, Perk.BRIGITTE_WHIPLASH) ? player : null));
+				Inspire.trigger(player, s, true, INSPIRE_TIME * (HeroManager.hasPerk(player, Perk.BRIGITTE_MORALE_BOOST) ? MORALE_BOOST : 1));
 				back(player, s, "whip_return");
 			} else if (block.getType() != HitResult.Type.MISS) {
 				back(player, s, "whip_return_blocked");
@@ -354,11 +378,15 @@ public final class Brigitte implements HeroKit {
 		final LivingEntity target;
 		final Vec3 velocity;
 		int left;
+		/** Whiplash's Brigitte (the perk), for 0.5 s from the hit; null without it or once it's dealt. */
+		@org.jspecify.annotations.Nullable ServerPlayer whiplash;
+		int whiplashLeft = Ow.ticks(WHIPLASH_TIME);
 
-		Push(LivingEntity target, Vec3 velocity, int left) {
+		Push(LivingEntity target, Vec3 velocity, int left, @org.jspecify.annotations.Nullable ServerPlayer whiplash) {
 			this.target = target;
 			this.velocity = velocity;
 			this.left = left;
+			this.whiplash = whiplash;
 		}
 	}
 
@@ -366,8 +394,23 @@ public final class Brigitte implements HeroKit {
 
 	public static void tickPushes() {
 		PUSHED.removeIf(p -> {
-			if (p.left-- <= 0 || !p.target.isAlive() || p.target.isRemoved()) {
+			if (!p.target.isAlive() || p.target.isRemoved()) {
 				return true;
+			}
+			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
+				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
+				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE);
+				Combat.credit(p.whiplash, dealt);
+				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
+				Effects.hitMarker(p.whiplash, p.target, false);
+				p.whiplash = null;
+				p.left = 0;
+				p.target.setDeltaMovement(Vec3.ZERO);
+				p.target.needsSync = true;
+				return true;
+			}
+			if (p.left-- <= 0) {
+				return p.whiplash == null || p.whiplashLeft <= 0;
 			}
 			Vec3 v = p.target.getDeltaMovement();
 			// level speed held, its first lift once (Minecraft's gravity brings them down)
@@ -485,6 +528,10 @@ public final class Brigitte implements HeroKit {
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
 				Inspire.trigger(player, s, false, INSPIRE_TIME);
+				if (HeroManager.hasPerk(player, Perk.BRIGITTE_COMBAT_MEDIC) && s.repairRecharge > 0) {
+					// Combat Medic: the running recharge 0.75 s shorter (floor 0: the charge comes on the next tick)
+					s.repairRecharge = Math.max(0, s.repairRecharge - Ow.ticks(COMBAT_MEDIC));
+				}
 			}
 		}
 	}

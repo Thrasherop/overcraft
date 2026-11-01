@@ -159,6 +159,8 @@ public final class HeroState {
 	public int whipTicks = -1, whipBackAt;
 	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */
 	public int rallyCast = -1, shockwaveIn = -1;
+	/** Brigitte: when Inspiring Strike's speed ends (game time, -1 none). */
+	public long strikeFastUntil = -1;
 	public double extraArmor;
 	public double whipOut, repairRecharge = -1;
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 whipFrom, whipDir;
