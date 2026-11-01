@@ -197,8 +197,12 @@ public final class HeroModelRenderer {
 		boolean weaponShown = !previewing && (!animator.emoting() || HeroWeapon.inEmote(hero, animator));
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
 			: showcase != null ? HeroWeapon.placeShowcase(hero, loaded.model(), showcase, HeroAnimator.showcaseIntro(loaded.model(), showcaseAt))
+			// no showcase clips in the pack (Brigitte's C06C / C07D / C0B8 aren't extracted): she stands in her idle, and
+			// her showcase entity holds the flail in her hand all the same (3A90: 23D4 on 000A, brigitte assets.md)
+			: previewing ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
 			: null);
-		state.setData(SIDEARM, weaponShown ? HeroWeapon.sidearm(hero, animator, loaded.model(), false, now) : null);
+		state.setData(SIDEARM, weaponShown || previewing && showcase == null
+			? new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), false, now)) : null);
 		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
 			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -318,7 +322,7 @@ public final class HeroModelRenderer {
 	}
 
 	private static final RenderStateDataKey<EmoteProps.Placed> WEAPON = RenderStateDataKey.create(() -> "overcraft:hero_weapon");
-	private static final RenderStateDataKey<EmoteProps.Placed> SIDEARM = RenderStateDataKey.create(() -> "overcraft:hero_sidearm");
+	private static final RenderStateDataKey<EmoteProps.Held> SIDEARM = RenderStateDataKey.create(() -> "overcraft:hero_sidearm");
 
 	/**
 	 * Where her shadow falls this frame, or null for none (shadows off, invisible, asleep, nothing under her). The light
@@ -469,10 +473,13 @@ public final class HeroModelRenderer {
 		if (props != null) {
 			EmoteProps.submit(props, poseStack, collector, light, overlay);
 		}
-		for (EmoteProps.Placed weapon : new EmoteProps.Placed[] {state.getData(WEAPON), state.getData(SIDEARM)}) {
-			if (weapon != null) {
-				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, light, overlay);
-			}
+		EmoteProps.Placed held = state.getData(WEAPON);
+		if (held != null) {
+			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(held)), poseStack, collector, light, overlay);
+		}
+		EmoteProps.Held extras = state.getData(SIDEARM);
+		if (extras != null && !extras.props().isEmpty()) {
+			EmoteProps.submit(extras, poseStack, collector, light, overlay);
 		}
 		Shadow shadow = state.getData(SHADOW);
 		if (shadow != null && bed == null) {
@@ -821,9 +828,9 @@ public final class HeroModelRenderer {
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
-		EmoteProps.Placed sidearm = minecraft ? null : HeroWeapon.sidearm(hero, animator, loaded.model(), true, now);
-		if (sidearm != null) {
-			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(sidearm)), poseStack, collector, lit, overlay);
+		if (!minecraft) {
+			EmoteProps.submit(new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), true, now)), poseStack, collector,
+				lit, overlay);
 		}
 		if (weapon != null) {
 			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);

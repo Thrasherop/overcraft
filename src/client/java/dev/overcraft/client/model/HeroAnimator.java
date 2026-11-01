@@ -121,6 +121,8 @@ public final class HeroAnimator {
 	private boolean ana;
 	/** Sombra (sombra.txt, sombra_1p.txt): her view model has Ana's shape of clips (idle, one walk, jump, fall). */
 	private boolean sombra;
+	/** Brigitte (brigitte_1p.txt): idle, jump, fall and land; no walk clip of her own (the idle while she moves). */
+	private boolean brigitte;
 	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
 	private boolean stealthed;
 	private boolean scoped;
@@ -912,7 +914,7 @@ public final class HeroAnimator {
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
 		}
-		if (ana || sombra) {
+		if (ana || sombra || brigitte) {
 			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
 			// scope pose (3B92: its arms out of view)
 			if (base.startsWith("jump")) {
@@ -1221,6 +1223,7 @@ public final class HeroAnimator {
 		// Ana: known by the hero the player plays (synced to every client); Take Aim's scope from her state
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		stealthed = sombra && entity.isInvisible();
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;

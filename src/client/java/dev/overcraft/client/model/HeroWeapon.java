@@ -34,7 +34,10 @@ public final class HeroWeapon {
 		Hero.ANA, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
 		// Sombra's Machine Pistol, entity 1221 on her hardpoint 000A = Weapon_R, no offset or turn in both her models' tables
 		// (research/sombra/work/assets.md)
-		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Brigitte's Rocket Flail handle, entity 2282 on her hardpoint 000A = Weapon_R, no offset in both views
+		// (research/brigitte/work/assets.md); hero_models/brigitte_weapon.glb
+		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -71,7 +74,7 @@ public final class HeroWeapon {
 	 * 0.7 s (0BDD #105 / #116) on her hardpoint 0143 (1P) / 00A6 (3P), both Weapon_R with no offset or turn (research/ana
 	 * models.json). Its own clip (3DC2) isn't in the extract: its rest pose. Null otherwise.
 	 */
-	public static EmoteProps.@Nullable Placed sidearm(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+	private static EmoteProps.@Nullable Placed sidearm(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
 		if (hero != Hero.ANA || animator.emoting()) {
 			return null;
@@ -85,6 +88,45 @@ public final class HeroWeapon {
 		}
 		Skeleton.Pose own = new Skeleton.Pose(pistol.model().nodeNames.length).rest(pistol.model());
 		return new EmoteProps.Placed(pistol, Skeleton.world(heroModel, heroPose, bone), Skeleton.skin(pistol.model(), own, -1, null));
+	}
+
+	/**
+	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
+	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
+	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
+	 */
+	public static java.util.List<EmoteProps.Placed> extras(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now) {
+		java.util.List<EmoteProps.Placed> out = new java.util.ArrayList<>();
+		EmoteProps.Placed pistol = sidearm(hero, animator, heroModel, firstPerson, now);
+		if (pistol != null) {
+			out.add(pistol);
+		}
+		if (hero == Hero.BRIGITTE) {
+			EmoteProps.Placed flail = place(hero, animator, heroModel, firstPerson, now);
+			HeroModels.Loaded head = HeroModels.get("brigitte_flail_head");
+			if (flail != null && head != null) {
+				SkinnedModel handle = flail.loaded().model();
+				int socket = handle.node("bone_0FCD");
+				if (socket >= 0) {
+					Matrix4f at = new Matrix4f(flail.at()).mul(Skeleton.world(handle, pose(handle, animator, firstPerson, now), socket));
+					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), rest(head.model()), -1, null)));
+				}
+			}
+			Skeleton.Pose heroPose = firstPerson ? null : animator.emoting() && animator.emotePose() != null ? animator.emotePose()
+				: animator.lastPose();
+			HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
+			int back = heroModel.node("bone_0F74");
+			if (heroPose != null && shield != null && back >= 0) {
+				out.add(new EmoteProps.Placed(shield, Skeleton.world(heroModel, heroPose, back),
+					Skeleton.skin(shield.model(), rest(shield.model()), -1, null)));
+			}
+		}
+		return out;
+	}
+
+	private static Skeleton.Pose rest(SkinnedModel model) {
+		return new Skeleton.Pose(model.nodeNames.length).rest(model);
 	}
 
 	/**

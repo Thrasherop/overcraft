@@ -115,6 +115,7 @@ public final class HeroManager {
 		KITS.put(Hero.LIFEWEAVER, new dev.overcraft.lifeweaver.Lifeweaver());
 		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
+		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 	}
 
 	private HeroManager() {

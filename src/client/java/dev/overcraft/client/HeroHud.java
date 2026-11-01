@@ -863,6 +863,15 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.BRIGITTE) {
+			// Whip Shot (Shift) and Repair Pack (E: its charges are the weapon panel's), her data's ABILITY 1 / 2, in
+			// Kiriko's two places (ours)
+			ability(g, hero, w, "whip_shot", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.brigitte.BrigitteStats.WHIP_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "shield_bash", w - 563, 906, HeroControls.get(Action.SECONDARY_FIRE), s.ability2Cooldown(),
+				(float) dev.overcraft.brigitte.BrigitteStats.BASH_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.SOMBRA) {
 			// Cyberspace (Shift) and Translocator (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "cyberspace", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1073,6 +1082,15 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.BRIGITTE) {
+			// Repair Pack's charges (E) where Kiriko's ofuda panel is, the Rocket Flail (the left button, no rounds) where her
+			// kunai are
+			weapon(g, hero, w, "repair_pack", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),
+				dev.overcraft.brigitte.BrigitteStats.REPAIR_CHARGES, HeroControls.get(Action.ABILITY_2), w - 355, 1009);
+			weapon(g, hero, w, "rocket_flail", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SOMBRA) {
 			// Hotfix's charges (the right button) where Kiriko's ofuda panel is, the Machine Pistol (the left) where her kunai are
 			weapon(g, hero, w, "hotfix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.secondaryAmmo(),

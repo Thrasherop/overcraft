@@ -15,6 +15,9 @@ public enum Hero {
 	// her kit is being built (#63), step by step on her branch: playable there, not merged until it's whole
 	ANA("ana", "Ana", Role.SUPPORT, "tactician", dev.overcraft.ana.AnaStats.HEALTH, true, 0xFF7E9CC2),
 	SOMBRA("sombra", "Sombra", Role.SUPPORT, "tactician", dev.overcraft.sombra.SombraStats.HEALTH, true, 0xFF8A4FD8),
+	// her kit is being built (#65), step by step on her branch: playable there, not merged until it's whole
+	BRIGITTE("brigitte", "Brigitte", Role.SUPPORT, "survivor",
+		dev.overcraft.brigitte.BrigitteStats.HEALTH + dev.overcraft.brigitte.BrigitteStats.ARMOR, true, 0xFFC7432E),
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }

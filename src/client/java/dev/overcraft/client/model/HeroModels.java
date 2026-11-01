@@ -113,6 +113,11 @@ public final class HeroModels {
 				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
 				names.add("ana_pistol");
 			}
+			if (hero == Hero.BRIGITTE) {
+				// her flail's head and her shield (HeroWeapon.extras; the barrier itself later)
+				names.add("brigitte_flail_head");
+				names.add("brigitte_shield");
+			}
 		}
 		for (String name : names) {
 			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
