@@ -61,3 +61,35 @@ get`): one swing at a zombie 4 m ahead: 45; one swing at three zombies in the ar
 one 90 degrees to her side untouched; the button held 3 s on a ravager: 225 (five swings, one per 0.6 s); a zombie behind
 a stone wall: untouched; the quick-melee key: 45. Inspire from one swing: a villager 10 m off at 10 health gained 57
 (12 at once, 45 over 4 s), one 25 m off nothing, she healed herself too. First-person and third-person swings looked at.
+
+## What step 4 (Barrier Shield, Shield Bash) taught
+- **The barrier is her state, not an entity:** a rectangle 0.9 m ahead, square to her facing, 1.51 x 2.64 m (the deployed
+  shield mesh measured: no number in any graph). A hit on her or her ally crosses it when the way from its source to them
+  passes through: a projectile's way in (6 m back along its flight), a blast's centre, an attacker's eyes.
+- **A fully stopped hit must not happen at all:** with its damage cut to 0 at `hurtServer`'s head, Minecraft still knocked
+  her 3 m back, and the next arrow reached the villager behind her. Now a cancellable hook takes it first: all of it, no
+  hit and the projectile gone; part of it, the rest lands as its own hit (`Barrier.passing` stops it counting twice).
+- **TNT is a blast with a direct entity and no attacker:** it went through until any non-creature hit with a source
+  position counted as a blast.
+- **Explosions push apart from their damage** (`ServerExplosion.hurtEntities`: `pushFromExplosion`, and a player's push
+  sent to their client through `hitPlayers`): `ServerExplosionMixin` zeroes both behind an up barrier.
+- **Broken, it refills through its lockout** (from 2 s after, at 85/s: 0EE4 has no other condition): it first came back
+  up with 5 health.
+- **Shown where it blocks:** hung on her hand's bone it stood along her arm over her head; drawn at the rectangle instead,
+  upright, the frame unfolding (its deploy clip then idle_up). In first person drawn in the camera's frame, ahead.
+- **Shield Bash on her client** (as Lifeweaver's dash, `OwMovement.dash` now asks both): 0.3 s at 22 m/s; the server ends
+  it early on a hit ("brigitte_bash_end"). Measured 5.3 m on open ground (D reading about 6.6 m, M; W 8.5 m).
+
+Played (step 4, dev client, survival, flat world `shield1`, every mob killed first, the barrier refilled between cases):
+- Arrows from a skeleton 12 m ahead, shield up: absorbed (300 -> 257), no knockback; down: hit (43 after armor) and
+  pushed back; from behind with it up: hit (earlier run). An allied villager behind her: untouched over 9 s (two arrows
+  absorbed).
+- A zombie walking up: its hits into the barrier (37.5 each); once it walked round to her side, its hits reached her.
+- A creeper's blast 3 m ahead: absorbed whole (300 -> 98), no push after the fix (4 m before it); down: 202 to her.
+- Two TNT ahead: through it before the fix; after, the barrier broke and the rest killed her (beyond 300).
+- `/damage 30 explosion at` 3 m ahead (375): the barrier 300 -> 0 and broken, 68 to her (75 less armor); held after: down
+  for 5 s while refilling (56, 145, 234), up at 5 s with 255.
+- Speed: 5.48 m/s down, 3.89 up (30% slower: 3.85).
+- Shield Bash at a NoAI zombie 4 m ahead: she stopped on it, 70 to it, 5 s cooldown; a press on cooldown: nothing; into open
+  air: 5.3 m; at a live husk: 70 and pushed 2.8 m.
+- Seen: the unfolded frame before her in third person (front) and first person.

@@ -123,6 +123,11 @@ public final class HeroAnimator {
 	private boolean sombra;
 	/** Brigitte (brigitte_1p.txt): idle, jump, fall and land; no walk clip of her own (the idle while she moves). */
 	private boolean brigitte;
+
+	/** Brigitte's shield up: raised more lately than lowered (her actions "shield_raise" / "shield_lower"). */
+	public boolean shieldUp(float now) {
+		return brigitte && since("shield_raise", now) < since("shield_lower", now);
+	}
 	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
 	private boolean stealthed;
 	private boolean scoped;
@@ -1402,6 +1407,10 @@ public final class HeroAnimator {
 			};
 		} else {
 			next = "idle";
+		}
+		if (brigitte && shieldUp(lastNow) && model.clips.containsKey(next + "_shield")) {
+			// her shield-up set (df 0xE5 cat 0xCA on her blend trees: brigitte.txt)
+			next = next + "_shield";
 		}
 		if (stealthed && model.clips.containsKey(next + "_stealth")) {
 			// her stealthed set (graph 420C's category 0x1EE on her blend trees: sombra.txt)

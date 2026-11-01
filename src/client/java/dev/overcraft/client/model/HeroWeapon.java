@@ -113,17 +113,50 @@ public final class HeroWeapon {
 					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), rest(head.model()), -1, null)));
 				}
 			}
-			Skeleton.Pose heroPose = firstPerson ? null : animator.emoting() && animator.emotePose() != null ? animator.emotePose()
-				: animator.lastPose();
 			HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
-			int back = heroModel.node("bone_0F74");
-			if (heroPose != null && shield != null && back >= 0) {
-				out.add(new EmoteProps.Placed(shield, Skeleton.world(heroModel, heroPose, back),
-					Skeleton.skin(shield.model(), rest(shield.model()), -1, null)));
+			EmoteProps.Placed barrier = firstPerson ? null : barrierShown(animator, now);
+			if (barrier != null) {
+				out.add(barrier);
+			} else if (shield != null && animator.shieldUp(now)) {
+				// up in first person: drawn in the view's own frame (HeroModelRenderer.submitArms)
+			} else {
+				Skeleton.Pose heroPose = firstPerson ? null : animator.emoting() && animator.emotePose() != null ? animator.emotePose()
+					: animator.lastPose();
+				int back = heroModel.node("bone_0F74");
+				if (heroPose != null && shield != null && back >= 0) {
+					out.add(new EmoteProps.Placed(shield, Skeleton.world(heroModel, heroPose, back),
+						Skeleton.skin(shield.model(), rest(shield.model()), -1, null)));
+				}
 			}
 		}
 		return out;
 	}
+
+	/**
+	 * Her barrier when it's up, in her model's space (her feet the origin, her facing ahead): the shield unfolded (its deploy
+	 * clip, then its held idle_up: brigitte_shield.txt), upright, square to her facing, 0.9 m ahead, from the ground up,
+	 * where dev.overcraft.brigitte.Barrier takes hits. Null when it's down.
+	 */
+	public static EmoteProps.@Nullable Placed barrierShown(HeroAnimator animator, float now) {
+		HeroModels.Loaded shield = HeroModels.get("brigitte_shield");
+		if (shield == null || !animator.shieldUp(now)) {
+			return null;
+		}
+		Skeleton.Pose own = rest(shield.model());
+		float t = animator.since("shield_raise", now);
+		SkinnedModel.Clip deploy = shield.model().clips.get("deploy");
+		SkinnedModel.Clip held = shield.model().clips.get("idle_up");
+		if (deploy != null && t < deploy.duration()) {
+			Skeleton.sample(deploy, t, own);
+		} else if (held != null) {
+			Skeleton.sample(held, t % Math.max(held.duration(), 1.0E-3f), own);
+		}
+		Matrix4f at = new Matrix4f().translate(0, (float) BARRIER_BASE, (float) dev.overcraft.brigitte.BrigitteStats.BARRIER_AHEAD);
+		return new EmoteProps.Placed(shield, at, Skeleton.skin(shield.model(), own, -1, null));
+	}
+
+	/** The deployed shield's origin above her feet: its lowest point (-1.51 m on the mesh) just under the ground. */
+	private static final double BARRIER_BASE = 1.31;
 
 	private static Skeleton.Pose rest(SkinnedModel model) {
 		return new Skeleton.Pose(model.nodeNames.length).rest(model);

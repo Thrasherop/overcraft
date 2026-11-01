@@ -11,7 +11,8 @@
 		"TargetingConditionsMixin",
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
-		"ServerGamePacketListenerAccessor"
+		"ServerGamePacketListenerAccessor",
+		"ServerExplosionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -47,8 +47,31 @@ public final class BrigitteStats {
 	public static final double REPAIR_RECHARGE = 5;
 	/** Shield Bash, from the dash's end (D 0EE3; W). */
 	public static final double BASH_COOLDOWN = 5;
-	/** Barrier Shield's health (BZ 2026-04-14 300; D 2284). */
-	public static final double BARRIER_HEALTH = 300;
+
+	// ---- Barrier Shield (0EE3 on her, 0EE4 on the barrier pet 2284) ----
+	/** Its health (BZ 2026-04-14 300; D 0EEF), 750 in Rally (D; W). */
+	public static final double BARRIER_HEALTH = 300, BARRIER_HEALTH_RALLY = 750;
+	/** Down, it comes back from 2 s at 85 a second (D 0EF0 / 0EF1; W). */
+	public static final double BARRIER_REGEN_DELAY = 2, BARRIER_REGEN = 85;
+	/** Broken: this long before it can go up again (D 1136; W). */
+	public static final double BARRIER_BROKEN = 5;
+	/** Up, she's this much slower (D v23184 0.3; her shield-walk clips are 0.7 x her run). */
+	public static final double BARRIER_SLOW = 0.3;
+	/** 2% of what it takes is ult charge for her (0EE4 #149, M). */
+	public static final double BARRIER_ULT_SHARE = 0.02;
+	/** Its size: the deployed shield mesh 1064F (idle_up 1.51 x 2.64 m; Rally's idle_up_rally 3.75 x 2.35 m), measured. */
+	public static final double BARRIER_WIDTH = 1.51, BARRIER_HEIGHT = 2.64, BARRIER_WIDTH_RALLY = 3.75, BARRIER_HEIGHT_RALLY = 2.35;
+	/** How far ahead of her it stands (ours: on her left hand's bone 002C in the data, about there). */
+	public static final double BARRIER_AHEAD = 0.9;
+
+	// ---- Shield Bash (0EE3 #495) ----
+	/** A 0.3 s dash at 4x her speed (D #495 StateWait 0.3, 1C9C 4.0: about 6.6 m, M). */
+	public static final double BASH_TIME = 0.3, BASH_SPEED = 5.5 * 4;
+	public static final double BASH_DAMAGE = 70;               // D 0B20; W
+	/** Its knockback (D 0B21 6 m/s). */
+	public static final double BASH_KNOCKBACK = 6;
+	/** Who it hits: one enemy within this reach ahead of her, in this cone (D #501: radius 2.48, ~35 degrees, L). */
+	public static final double BASH_REACH = 2.5, BASH_CONE = 35;
 
 	// ---- Perks (the live list D 0063.177) ----
 	public static final double PERK_MINOR_XP = 2035, PERK_MAJOR_XP = 2035 + 3055;   // D (her values); W 2035 / 5090

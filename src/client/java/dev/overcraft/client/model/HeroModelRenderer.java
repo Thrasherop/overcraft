@@ -802,6 +802,18 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
+		if (hero == Hero.BRIGITTE && !minecraft) {
+			// her barrier up, as her side sees it: square to her view, 0.9 m ahead, from about her feet up (HeroWeapon)
+			EmoteProps.Placed barrier = HeroWeapon.barrierShown(animator, now);
+			if (barrier != null) {
+				poseStack.pushPose();
+				poseStack.rotateDegrees(Axis.YP, 180);
+				poseStack.translate(0, -player.getEyeHeight(), 0);
+				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(barrier)), poseStack, collector,
+					Math.max(light & 0xFFFF, VIEW_MODEL_MIN_LIGHT << 4) | light & 0xFFFF0000, OverlayTexture.NO_OVERLAY);
+				poseStack.popPose();
+			}
+		}
 		poseStack.pushPose();
 		// (the stack acts in view space from here: x right, y up, -z ahead)
 		// a little behind the movement, as Overwatch's arms drift: aside when strafing, up when falling (#14)

@@ -112,8 +112,10 @@ public final class KirikoFx {
 			// Lúcio's, then Jetpack Cat's, then Mercy's, then Lifeweaver's, then Ana's, then Sombra's
 			default -> {
 				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy) && !MercyFx.dispatch(e, enemy)
-					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy)) {
-					SombraFx.dispatch(e, enemy);
+					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy) && !SombraFx.dispatch(e, enemy)) {
+					if (e.effect().equals("brigitte_bash_end")) {
+						dev.overcraft.client.ClientBrigitte.ended(e.entity());
+					}
 				}
 			}
 		}

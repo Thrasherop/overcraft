@@ -36,14 +36,113 @@ public final class Brigitte implements HeroKit {
 		s.flailSwing = -1;
 		s.flailCombo = 0;
 		s.flailHit.clear();
+		s.barrierUp = false;
+		s.barrierHealth = BARRIER_HEALTH;
+		s.barrierBrokenUntil = -1;
+		s.bashTicks = -1;
+		s.rallyTicks = 0;
+	}
+
+	/** Leaving her (another hero, leaving the world): the barrier down, its slow off. */
+	public static void clear(ServerPlayer player, HeroState s) {
+		Barrier.clear(player, s);
+		s.bashTicks = -1;
 	}
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - dev.overcraft.hero.Combat.cooldownRate(player));
 		swing(player, s);
-		if (controls && player.isAlive() && s.primaryHeld && s.flailSwing < 0) {
+		bash(player, s);
+		Barrier.tick(player, s, controls);
+		boolean pressed = s.primaryHeld && !s.leftWas;
+		s.leftWas = s.primaryHeld;
+		if (!controls || !player.isAlive()) {
+			return;
+		}
+		if (s.barrierUp) {
+			// the shield up: the left button bashes, the flail is still (0EE3 #670 / #681)
+			if (pressed && s.bashTicks < 0 && s.ability2Cooldown <= 0) {
+				startBash(player, s);
+			}
+		} else if (s.primaryHeld && s.flailSwing < 0) {
 			startSwing(player, s);
 		}
+	}
+
+	// ---- Shield Bash (0EE3 #495) ----
+
+	/**
+	 * The left button with the shield up: 0.3 s forward at 4x her speed (her client moves her: ClientBrigitte), the first
+	 * enemy reached taking 70 and a 6 m/s push, Inspire whatever its cooldown, Survivor's regeneration at once (message
+	 * 26FD); it stops on a hit; its 5 s cooldown from its end (#504). No stun outside Rally.
+	 */
+	private static void startBash(ServerPlayer player, HeroState s) {
+		s.bashTicks = 0;
+		s.bashHit = false;
+		Combat.animate(player, "shield_bash");
+		// Survivor (01C7, tag 1173): a movement ability starts the regeneration at once
+		s.lastDamagedTick = Math.min(s.lastDamagedTick, Combat.now(player) - Combat.REGEN_DELAY);
+	}
+
+	private static void bash(ServerPlayer player, HeroState s) {
+		if (s.bashTicks < 0) {
+			return;
+		}
+		int t = s.bashTicks++;
+		if (!s.bashHit && player.isAlive()) {
+			LivingEntity target = bashTarget(player);
+			if (target != null) {
+				s.bashHit = true;
+				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE);
+				Combat.credit(player, dealt);
+				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+				Effects.hitMarker(player, target, false);
+				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0);
+				target.push(push.x, push.y, push.z);
+				target.needsSync = true;
+				Combat.animate(player, "shield_bash_hit");
+				Inspire.trigger(player, s, true, INSPIRE_TIME);
+				end(player, s);
+				return;
+			}
+		}
+		if (t + 1 >= Ow.ticks(BASH_TIME) || player.horizontalCollision && t > 0) {
+			end(player, s);
+		}
+	}
+
+	private static void end(ServerPlayer player, HeroState s) {
+		s.bashTicks = -1;
+		s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);
+		// her client stops moving her now (a hit or a wall ends it early)
+		Effects.play(player.level(), "brigitte_bash_end", player.position(), Vec3.ZERO, player, 0, player);
+	}
+
+	/** The first enemy within 2.5 m ahead of her, in a 35 degree cone, in sight (#501, L shape). */
+	private static @org.jspecify.annotations.Nullable LivingEntity bashTarget(ServerPlayer player) {
+		Vec3 eye = player.getEyePosition();
+		Vec3 ahead = flat(player);
+		LivingEntity best = null;
+		double bestDist = Double.MAX_VALUE;
+		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BASH_REACH + 1),
+			e -> e.isAlive() && Allies.canHurt(player, e))) {
+			AABB box = e.getBoundingBox();
+			Vec3 near = new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
+			Vec3 to = new Vec3(box.getCenter().x - eye.x, 0, box.getCenter().z - eye.z);
+			double dist = near.distanceTo(eye);
+			double angle = Math.toDegrees(Math.acos(Math.clamp(to.normalize().dot(ahead), -1, 1)));
+			if (dist <= BASH_REACH && (angle <= BASH_CONE || dist < 1) && dist < bestDist) {
+				best = e;
+				bestDist = dist;
+			}
+		}
+		return best;
+	}
+
+	private static Vec3 flat(ServerPlayer player) {
+		float yaw = player.getYRot() * (float) (Math.PI / 180);
+		return new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
 	}
 
 	@Override
@@ -132,7 +231,8 @@ public final class Brigitte implements HeroKit {
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, false,
-			0, -1, s.secondaryAmmo, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
+			(int) Math.ceil(s.barrierHealth), -1, s.secondaryAmmo, -1, (float) (s.ability1Cooldown / 20.0),
+			(float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}

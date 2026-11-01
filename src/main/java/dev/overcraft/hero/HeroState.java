@@ -149,6 +149,12 @@ public final class HeroState {
 	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
 	/** Brigitte: when the flail may start Inspire again (game time). */
 	public long inspireReadyAt = -1;
+	/** Brigitte: her barrier up, its health (OW), when it went down / when it can go up again; Shield Bash's dash (ticks
+	 * into it, -1 none) and whether it has hit; Rally's ticks left; the left button's last state (the bash's press). */
+	public boolean barrierUp, bashHit, leftWas;
+	public double barrierHealth;
+	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
+	public int bashTicks = -1, rallyTicks;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

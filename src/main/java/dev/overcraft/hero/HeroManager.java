@@ -238,6 +238,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOMBRA) {
 			dev.overcraft.sombra.Sombra.clear(player, state);
 		}
+		if (state.hero == Hero.BRIGITTE) {
+			dev.overcraft.brigitte.Brigitte.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -319,6 +322,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.SOMBRA) {
 				dev.overcraft.sombra.Sombra.clear(player, state);
+			}
+			if (state.hero == Hero.BRIGITTE) {
+				dev.overcraft.brigitte.Brigitte.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());
