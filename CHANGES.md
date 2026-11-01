@@ -28,8 +28,12 @@ worktree's pack.
 - **Her sounds and voice from her Wwise events** (`tools/soundmaps/sombra.txt`, 108 events), **her effects from her
   data** (`tools/reference/sombra-effects.md`), **her 20 emotes from the data** with their props (umbrella, mic,
   puppet, pet robot, presents, her hologram tablet and screens).
-- **Changing heroes after a death with no bed:** Minecraft respawns you up to 10 blocks from the world spawn, and the
-  hero menu said "go back to your bed" where you stood. Where you respawned now counts as your spawn room too.
+- **Changing heroes with no bed:** Minecraft spawns you anywhere within its spawn radius (10 blocks) of the world spawn,
+  on joining or after a death, and the hero menu said "go back to your bed" where you stood. That whole area (and 5
+  blocks round it) is the spawn room now; where you last respawned counts too.
+- **Emote props' own sounds** now play: Sombra's Pet Slicer pet, Kiriko's Fox Cuddles fox and Whirlwind were silent.
+- **Kiriko's, Lúcio's, Mercy's and Jetpack Cat's emotes** follow two rules Ana's brought: Listen Up and Salty put
+  Lúcio's amplifier and Mercy's staff away for the whole emote, and gallery-preview clips are left out.
 - **The ready ultimate's icon** showed a blank disc for Ana, Lifeweaver and Sombra (Kiriko's fox was the fallback).
 - Found playing her and fixed: the first Translocator was the Community Crafted mode's (E again to teleport, a 15 s
   beacon); a teleport straight up hurt her on landing; Regifted played her tablet's clip and stood still; the emote

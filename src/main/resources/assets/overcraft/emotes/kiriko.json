@@ -1270,6 +1270,7 @@
      "spawns": [],
      "events": [],
      "stow": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_2": {
@@ -1351,6 +1352,7 @@
      "spawns": [],
      "events": [],
      "stow": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_4": {
@@ -1361,6 +1363,7 @@
      "spawns": [],
      "events": [],
      "stow": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_5": {

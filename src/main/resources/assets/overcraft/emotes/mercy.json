@@ -400,9 +400,15 @@
        "audience": "others"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       3.4667
+      ]
+     ],
      "stowBlaster": [],
      "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
      "skeleton": "hers"
     },
     "emote_listen_up_2": {
@@ -558,9 +564,15 @@
        "hardpoint": "00A4"
       }
      ],
-     "stow": [],
+     "stow": [
+      [
+       0.0,
+       2.3667
+      ]
+     ],
      "stowBlaster": [],
      "weaponClips": [],
+     "stowBy": "178AD on tree 58F's layer (M)",
      "skeleton": "hers"
     },
     "emote_salty_2": {
@@ -890,6 +902,7 @@
      "stow": [],
      "stowBlaster": [],
      "weaponClips": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_2": {
@@ -902,6 +915,7 @@
      "stow": [],
      "stowBlaster": [],
      "weaponClips": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_3": {
@@ -966,6 +980,7 @@
      "stow": [],
      "stowBlaster": [],
      "weaponClips": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_5": {
@@ -985,6 +1000,7 @@
      "stow": [],
      "stowBlaster": [],
      "weaponClips": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_6": {
@@ -997,6 +1013,7 @@
      "stow": [],
      "stowBlaster": [],
      "weaponClips": [],
+     "preview": true,
      "skeleton": "hers"
     },
     "emote_heroic_7": {
