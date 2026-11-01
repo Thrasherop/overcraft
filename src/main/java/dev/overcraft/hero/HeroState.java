@@ -213,7 +213,7 @@ public final class HeroState {
 
 	public void reset(@Nullable Hero hero) {
 		this.hero = hero;
-		shield = hero == null ? 0 : hero.shields();
+		shield = hero == null ? 0 : hero.layer();
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;

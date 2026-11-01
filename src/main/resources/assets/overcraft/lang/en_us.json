@@ -29,6 +29,7 @@
 	"overcraft.select.soon": "SOON",
 	"overcraft.select.health": "%s health",
 	"overcraft.select.health_shields": "%s health, %s shields",
+	"overcraft.select.health_armor": "%s health, %s armor",
 	"overcraft.role.tank": "Tank",
 	"overcraft.role.damage": "Damage",
 	"overcraft.role.support": "Support",

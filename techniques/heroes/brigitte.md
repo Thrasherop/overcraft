@@ -30,3 +30,19 @@ Survivor, 250 health", her seven kit icons; after the fix the flail in her hand 
 person (the flail in her right hand, Repair Pack's 3 charges, Whip Shot and Shield Bash icons), third person front and
 back (the flail and its head, the shield folded on her back), running, jumping, crouching. Lucio's and Jetpack Cat's
 select screens unchanged. Screenshots b_*.png, sel_*.png, not committed.
+
+## What step 2 (armor) taught
+- **Armor is a layer like shields** (`Hero.layer()`, kept in `HeroState.shield`): hits come off it first, heals fill the
+  health under it first; it never regenerates; a hit while any armor is left is 7 smaller, at most halved
+  (`Shields.armorReduce`, in the damage mixin after the boosts). Ours: the whole hit is reduced where Overwatch reduces only
+  the part landing on armor (M); beams and damage over time aren't told apart yet.
+- **A fresh flat survival world has mobs from generation** (205 killed, slimes among them): `spawn_mobs false` stops new
+  ones only. A slime's unseen hits looked like a bug in the armor until `kill @e[type=!player]` ran first.
+- **Adding a hero shifts the select screen's portrait row** (9 portraits now: Kiriko 142 ... Brigitte 266 in GUI
+  coordinates at 854x480): the harness clicks for each hero moved.
+
+Played (step 2, dev client, survival, flat world `armor1`, natural regeneration off, every mob killed first; health polled
+every 50 ms): a zombie's 37.5 hits landed as 30.5, 30.5, 30.5 (armor 75 -> 44.5 -> 14 -> 0), then 37.5, 37.5; a
+skeleton's arrows 62.5 and 50 as 55.5 and 43; `/damage 12` (150) as 143. HUD: seven white and three yellow pips at full;
+after a heal to 158, the health pips filled and the armor's stayed empty; full again, yellow back. The select screen says
+"175 health, 75 armor". Lifeweaver after the change: a hit of 37.5 in full, his shields back from 3 s at 30 a second.

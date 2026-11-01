@@ -274,7 +274,7 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		if (fresh) {
-			state.shield = state.hero.shields();
+			state.shield = state.hero.layer();
 			player.setHealth(player.getMaxHealth());
 			if (kit != null) {
 				kit.equip(player, state);

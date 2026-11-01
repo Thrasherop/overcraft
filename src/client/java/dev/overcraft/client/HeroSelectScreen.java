@@ -285,6 +285,8 @@ public class HeroSelectScreen extends OwScreen {
 		// with shields (Lifeweaver's), both: Overwatch's hero info counts them apart
 		Component health = preview.shields() > 0
 			? Component.translatable("overcraft.select.health_shields", preview.owHealth - preview.shields(), preview.shields())
+			: preview.armor() > 0
+			? Component.translatable("overcraft.select.health_armor", preview.owHealth - preview.armor(), preview.armor())
 			: Component.translatable("overcraft.select.health", preview.owHealth);
 		HudText.draw(g, Face.BODY, health.getString().toUpperCase(Locale.ROOT), right, 245, 14, TEXT_DIM, Align.RIGHT);
 	}

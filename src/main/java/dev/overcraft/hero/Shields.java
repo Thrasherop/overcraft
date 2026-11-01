@@ -4,7 +4,9 @@ import dev.overcraft.Ow;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * Shields (Lifeweaver's 50: the first hero with them). In Overwatch they're the top of the health bar: damage takes
+ * Shields (Lifeweaver's 50: the first hero with them), and armor (Brigitte's 75) the same way: {@link Hero#layer()}, kept in
+ * {@link HeroState#shield}; armor never comes back by itself, and takes each hit 7 smaller, at most halved (armorReduce).
+ * In Overwatch they're the top of the health bar: damage takes
  * overhealth, then shields, then health; healing fills health first, then shields (health, armor and shields are all
  * recoverable); and shields come back by themselves 3 s after the last damage, at 30 a second (W Hit points). Ours had
  * healing stop under them: a dash's heal after a hit on his shields alone healed nothing (found playing). Here they're the top {@link Hero#shields()} of the hero's Minecraft health
@@ -27,7 +29,7 @@ public final class Shields {
 	/** The health a shielded hero's setHealth may really set. */
 	public static float onSetHealth(ServerPlayer player, float health) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.hero.shields() == 0 || regenerating) {
+		if (s == null || s.hero == null || s.hero.layer() == 0 || regenerating) {
 			return health;
 		}
 		float old = player.getHealth();
@@ -40,7 +42,7 @@ public final class Shields {
 			return health;
 		}
 		// a gain heals the health under the shields first, then the shields
-		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - s.hero.shields(), s.hero.shields(),
+		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - s.hero.layer(), s.hero.layer(),
 			Ow.toOw(Math.min(health, player.getMaxHealth()) - old));
 		s.shield += split[1];
 		return old + Ow.hp(split[0] + split[1]);
@@ -54,6 +56,23 @@ public final class Shields {
 		double toHealth = Math.max(0, Math.min(gain, healthMax - health));
 		double toShield = Math.max(0, Math.min(gain - toHealth, shieldMax - shield));
 		return new double[] {toHealth, toShield};
+	}
+
+	/** Armor takes a hit this much smaller: 7 (Overwatch points), at most half of it (W Hit points: Armor; BZ 2024-09-17). */
+	public static final double ARMOR_FLAT = 7;
+	public static final double ARMOR_CAP = 0.5;
+
+	/**
+	 * A hit (Minecraft health) on a hero with armor left: 7 smaller, at most halved (ours: the whole hit, where Overwatch reduces
+	 * only the part that lands on the armor, M; beams' -30% and damage over time not told apart yet).
+	 */
+	public static float armorReduce(ServerPlayer player, float damage) {
+		HeroState s = HeroManager.state(player);
+		if (s == null || s.hero == null || s.hero.armor() == 0 || s.shield <= 0 || damage <= 0) {
+			return damage;
+		}
+		double ow = Ow.toOw(damage);
+		return Ow.hp(ow - Math.min(ARMOR_FLAT, ow * ARMOR_CAP));
 	}
 
 	/** Each tick (HeroManager): the shields regenerate 3 s after the last damage. */

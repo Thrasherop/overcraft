@@ -46,6 +46,19 @@ public enum Hero {
 		return this == LIFEWEAVER ? dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS : 0;
 	}
 
+	/**
+	 * Armor: the top of owHealth like shields (no hero has both), healed after the health under it, but never back by itself,
+	 * and each hit on it is 7 smaller, at most halved (W Hit points: Armor; BZ 2024-09-17). Brigitte's 75.
+	 */
+	public int armor() {
+		return this == BRIGITTE ? dev.overcraft.brigitte.BrigitteStats.ARMOR : 0;
+	}
+
+	/** The top layer of owHealth: shields or armor. */
+	public int layer() {
+		return shields() + armor();
+	}
+
 	Hero(String id, String displayName, Role role, String subRole, int owHealth, boolean playable, int color) {
 		this.id = id;
 		this.displayName = displayName;

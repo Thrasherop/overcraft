@@ -532,7 +532,8 @@ public final class HeroHud {
 		float rowEnd = left + 3 + PIP_ROW - 4;
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
-		int shieldMax = hero.shields();
+		// armor (Brigitte's) the same way, in Overwatch's armor yellow
+		int shieldMax = hero.layer();
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);
@@ -546,7 +547,7 @@ public final class HeroHud {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, shieldPip ? SHIELD : WHITE);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor() > 0 ? ARMOR : SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -584,6 +585,8 @@ public final class HeroHud {
 	private static final int OVERHEALTH = 0xFF7CE86A;
 	/** Shields' pips (ours, by eye: Overwatch draws them light blue). */
 	private static final int SHIELD = 0xFF8FD6FF;
+	/** Armor's pips: Overwatch's yellow (ours, by eye from its HUD). */
+	private static final int ARMOR = 0xFFF7C43A;
 
 	/** The pip row's length, whatever the health (the eighth critique: 10 pips at a 24.8 pitch, 9 at 27.3). */
 	private static final float PIP_ROW = 248;
