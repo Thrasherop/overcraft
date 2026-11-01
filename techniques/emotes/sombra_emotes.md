@@ -38,3 +38,11 @@ screenshots `em_<id>_a/b/c.png`): all 20 (Rainy Stroll's umbrella in her hand; L
 Groove; Amused's glyphs; Boop; Heroic; Hold On; Marioneta's puppet; Masterpiece's screen; Sit's equaliser; Dance-Off;
 Shuffle; Browsing's tablet at her hand; Pet Slicer's robot pet; Choreography; Ed's Saunter; Regifted's presents and toy);
 jumping ends each. Not looked at yet: their sounds (with step 8's sound pass) and first person.
+
+## Sounds
+Mapped from the data 2026-11-01, not yet heard in game: [sounds](../sound/sounds.md#sombra-emote-sounds) (53 02Cs, 11
+voice stimuli; `tools/soundmaps/emotes.txt`, Sombra's section). Pet Slicer's robot pet sounds sit on the pet's own clip,
+which `EmoteSounds` never played; it now plays each spawned prop's clip's events on her clip's time from the spawn's
+`clipStart` (as the animator samples the prop). Heard in game (`heard`, 2026-11-01): Rainy Stroll, Amused, Boop, Sit,
+Pet Slicer (the pet's A6C4-A6D1 too), Choreography, Shuffle; Groove has none in the data. The same fix brought
+Kiriko's Fox Cuddles (B039-B03C, the fox's clip E921) and Whirlwind's prop sounds (9428, 9429, 942A).

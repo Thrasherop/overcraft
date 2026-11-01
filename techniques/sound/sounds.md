@@ -42,6 +42,28 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - `EmoteSounds` (client) follows each emoting hero's clip and time each tick (`EmotePlan.at`, shared with the
     animator, so a hero off screen still sounds) and starts each one as the clip reaches it.
   - One shared sound can be in many emotes (944B, a cloth rustle, in seven of Kiriko's).
+  - <a id="sombra-emote-sounds"></a>**Sombra's (2026-11-01; `emotes.txt`, Sombra's section; scripts
+    `research\sombra\scripts\emote_sounds\`):** 53 02Cs and 11 voice stimuli over 19 of her 20 emotes (Groove has
+    none; Choreography only its three lines). How it was run, every step offline:
+    `emote_fx.py` on `emotes/sombra.json` -> `ww.py` on its 02Cs -> her `dump_banks.py` / `extract_banks.py` (43 own
+    banks into `ExtraSounds\Sombra\Emotes`) -> `measure_emotes.py` (shared ones as `Lúcio:` / `Kiriko:` / `Mercy:<02C>`)
+    -> `sombra_what.py` -> `gen_sombra.py` -> `apply_emote_sounds.py sombra <repo>` -> `build_asset_pack.py sounds`.
+    - **Run the shared generator without editing it:** `gen_sombra.py` imports `gen_emotes.py` from
+      `research\emote-sounds\scripts`, adds her `HERO` and calls its `main(["--hero", ...])`; her data files sit beside
+      the other heroes' in `research\emote-sounds\` (where `emote_events.py` looks for them).
+    - **An emote's foley can be a kit:** most of her own 02Cs are Layer containers of the same short files (ten high
+      swishes, low thumps, four bright taps) at fixed delays; Marioneta's 4658 is 29 layers. Each file's delay and gain
+      differ inside a layer; the builder keeps one per layer, so read the rule's "some files differ" note.
+    - **Cloth rustles cross heroes:** her Dance's 3BEC / 3BFF use the same 17 cloth-rustle files as Ana's 3901 / 3956
+      (by 03F id), on the shared cloth mixer 43599842.
+    - **A Stop event can Play:** Sit's 3FB1 (the equaliser hologram's hum, its window the hologram's) has a Stop event
+      that stops the looping hiss and Plays a 0.9 s file (2A8C7A). The builder reads only Stops there, so that closing
+      sound isn't made (open).
+    - **Sounds on a prop's clip:** nine of Pet Slicer's 02Cs (A6C4-A6C9, A6D1, A7CA) are on the robot pet's clip DC9C,
+      a `"skeleton": "prop"` clip. `EmoteSounds` plays the events of the hero's plan clips only (`data.events(emote,
+      clip)` for `EmotePlan.at`'s clip), so by reading the code these never play; the same holds for Kiriko's fox
+      (E921) and whirlwind (C217, C2E7) sounds. Not checked in game (open).
+    - A Silence source again: Dance's held B1BC (bank 1E79B) lists no file, like Ana's F8A7: an empty rule.
 - **Which copy is the hero's own** (Jetpack Cat, 2026-10-28; `tools/soundmaps/jetpack_cat.txt`, research in
   `research\jetpack_cat\sounds.md`): Lúcio's sounds came in pairs marked audience 1 (his) and 2 (others), but every one
   of hers is audience 2. Read the copy with no range as hers and the ranged copies as everyone else's (inferred); where
