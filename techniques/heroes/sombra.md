@@ -49,6 +49,37 @@ stealthed (see-through in F5). Thrown at the ground: there, 1.1 m ahead. Straigh
 lost on the old build, none on the fix; an ordinary 8 m fall afterwards still took 5 (past the 3 m). Through a zombie 4.5 m
 ahead: the full 12.25 m.
 
+## What step 7 (perks, Conspirator) taught
+- **A per-hero switch with a `default` hides missing heroes.** The HUD's ready ult picked its icon with
+  `default -> "kitsune_rush"`, so Ana's, Lifeweaver's and Sombra's ready ult showed a blank white disc (Kiriko's file isn't
+  in their folders). One exhaustive switch now names each hero's ultimate (`HeroArt.ultimate`), and the compiler flags
+  the next hero left out. Look for other `default ->` branches over `Hero` when adding a hero.
+- **Data Packet without health packs:** the data counts any hack of a non-ally (FBC: health pack or deployable), so in
+  Minecraft it's her hacks of enemy deployables (Lifeweaver's platform and tree); the cut carries over into the next charge
+  (`Sombra.dataPacket`, `DataPacketTest`).
+- **Conspirator isn't in her graphs** (the engine's or the UI's), so it's ours from BZ / W: the server sends her the enemy
+  players whose ult is ready twice a second, and her HUD draws their ult's icon over their heads, through walls.
+- **The harness's `key primary_fire` is the right mouse button** (Hotfix, the perk menu's right side); `secondary_fire` is
+  the left one (her pistol). A `key ... tap` is shorter than a tick: the perk menu needs `down`, a short sleep, `up`.
+- **`/overcraft perks <player> <level>` clears the picks:** set the level once, then pick through the menu.
+- **A Lifeweaver platform thrown at someone's feet lifts them** (correct): throw it away from both players to test a hack.
+
+Played (step 7, dev client and a second client on LAN, survival, fresh world `perks2`; Sombra on team red, Lifeweaver
+("Viewer") on blue; the perks picked through the perk menu, Alt held and a click):
+- **CTRL ALT ESC:** 18 -> 7 health, teleport: 7.68 at 0.6 s, 9.38, 11.08 (1.7 a second = 21.25 HP/s, at once). Teleporting
+  at 13 (above half): no regen in the next 2 s. At 7 with no teleport: none for 6 s, then it starts.
+- **Data Packet:** Hotfix on a villager (2 -> 1 charge), then a hack of the enemy's platform 12 m off at once: the charge
+  back ~4 s after the Hotfix. The same with Cybersecurity instead: ~8 s. The hacked platform didn't lift Lifeweaver standing
+  on it for its 10 s, then rose 9 m with him.
+- **Life Hack:** villager at 8, Sombra at 14 of 18; EMP: villager 15 at 1.2 s, 19.1 at 3.2 s, then 20; Sombra to 18.
+- **Cybersecurity:** Cyberspace at a villager at 6 (below half): 13.7 at 0.7 s, then +1.2 per 0.5 s above half. Without
+  the perk: 5.6 -> 10.1 at 0.7 s.
+- **Conspirator:** enemy Lifeweaver at 99%: nothing; at 100%: the Tree of Life icon over their head (`consp_big.png`); at 40%:
+  gone; the same player on her team at 100%: no marker (their ally bar instead); back on blue: shown; behind a stone wall:
+  shown; the enemy's G (Minecraft mode): gone, G again: back; her own G hides it with her HUD.
+- **The ready-ult icon:** reproduced on the old build (Sombra's ready ult a blank disc); the fix: EMP's icon in it, and
+  Lifeweaver's tree in the second client's.
+
 ## What step 6 (EMP, hacked) taught
 - **A stale dev client answers the harness.** Stopping `gradlew runClient`'s task left the old game's Java process
   running; the new client couldn't bind the dev port (`DevServer stopped ... BindException` in its log) and every harness

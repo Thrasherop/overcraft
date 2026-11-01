@@ -140,6 +140,8 @@ public final class HeroState {
 	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
 	public int empCast = -1;
 	public long hackLockoutUntil = -1;
+	/** Sombra: the enemy players last sent to her as having their ultimate ready (Conspirator). */
+	public int[] conspiracy = new int[0];
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;

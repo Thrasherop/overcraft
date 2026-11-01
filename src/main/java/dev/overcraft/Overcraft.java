@@ -120,6 +120,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ConspiratorPayload.TYPE, dev.overcraft.net.ConspiratorPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);

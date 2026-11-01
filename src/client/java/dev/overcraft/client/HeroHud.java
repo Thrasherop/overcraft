@@ -200,6 +200,7 @@ public final class HeroHud {
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
+		dev.overcraft.client.hud.ConspiratorHud.render(g, player, hero, w, h);
 		dev.overcraft.client.comms.Pings.render(g, w, h);
 		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
@@ -778,12 +779,7 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ability(hero, switch (hero) {
-				case LUCIO -> "sound_barrier";
-				case JETPACK_CAT -> "catnapper";
-				case MERCY -> "valkyrie";
-				default -> "kitsune_rush";
-			});
+			Identifier fox = HeroArt.ultimate(hero);
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}

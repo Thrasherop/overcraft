@@ -26,10 +26,11 @@ import net.minecraft.world.phys.Vec3;
 import static dev.overcraft.sombra.SombraStats.*;
 
 /**
- * Sombra's kit (tools/reference/sombra-plan.md "Order"), built step by step, each played before the next. Now: the
- * Machine Pistol (her weapon graph 0B1B): hitscan, 20 shots a second while the left button is held, 60 to a clip, a 1.2 s
- * reload (the clip full at 0.48 s), automatic at 0 and on R; damage falling off from 20 m to 35 m; the spread growing from 0
- * to 2 degrees over 10 shots and back to 0 after 0.5 s without firing; head hits x2. Her abilities come next.
+ * Sombra's kit (tools/reference/sombra-plan.md "Order"), built step by step, each played before the next: the Machine
+ * Pistol (her weapon graph 0B1B): hitscan, 20 shots a second while the left button is held, 60 to a clip, a 1.2 s reload
+ * (the clip full at 0.48 s), automatic at 0 and on R; damage falling off from 20 m to 35 m; the spread growing from 0 to 2
+ * degrees over 10 shots and back to 0 after 0.5 s without firing; head hits x2. Hotfix (right button), Cyberspace (Shift),
+ * the Translocator (E), EMP (Q) and her four perks below.
  */
 public final class Sombra implements HeroKit {
 	@Override
@@ -54,6 +55,7 @@ public final class Sombra implements HeroKit {
 		}
 		s.beaconId = null;
 		Stealth.clear(player, s);
+		Conspirator.clear(player, s);
 	}
 
 	@Override
@@ -69,6 +71,7 @@ public final class Sombra implements HeroKit {
 			Stealth.clear(player, s);
 		}
 		Stealth.tick(player, s);
+		Conspirator.tick(player, s);
 		// an ability's landing never hurts (the owner's rule, #35): the teleport's fall doesn't count until she's down
 		if (s.softLanding) {
 			player.resetFallDistance();
@@ -331,6 +334,10 @@ public final class Sombra implements HeroKit {
 		s.ability2Cooldown = Ow.ticks(TRANSLOCATOR_COOLDOWN);
 		Combat.animate(player, "translocate");
 		Stealth.start(player, s);
+		// CTRL ALT ESC: a teleport below half health starts the regeneration at once (BA5; BZ; W)
+		if (HeroManager.hasPerk(player, Perk.SOMBRA_CTRL_ALT_ESC) && player.getHealth() < player.getMaxHealth() * CTRL_ALT_ESC_BELOW) {
+			s.lastDamagedTick = Math.min(s.lastDamagedTick, Combat.now(player) - Combat.REGEN_DELAY);
+		}
 	}
 
 	/** From her eyes in her look's frame (right, up, ahead, m), clipped to her eyes if a block is in the way. */
@@ -364,6 +371,26 @@ public final class Sombra implements HeroKit {
 	}
 
 	/**
+	 * Data Packet: a hack of a non-ally takes 4 s off the recharge, the rest carried into the next charge (FBC). Ours: her
+	 * hacks here are enemy deployables only (Minecraft has no health packs: sombra-plan.md).
+	 */
+	static void dataPacket(HeroState s) {
+		double cut = Ow.ticks(DATA_PACKET);
+		while (cut > 0 && s.hotfixCharges < HOTFIX_CHARGES) {
+			if (s.hotfixRecharge < 0) {
+				s.hotfixRecharge = Ow.ticks(HOTFIX_RECHARGE);
+			}
+			double take = Math.min(cut, s.hotfixRecharge);
+			s.hotfixRecharge -= take;
+			cut -= take;
+			if (s.hotfixRecharge <= 0) {
+				s.hotfixCharges++;
+				s.hotfixRecharge = s.hotfixCharges < HOTFIX_CHARGES ? Ow.ticks(HOTFIX_RECHARGE) : -1;
+			}
+		}
+	}
+
+	/**
 	 * The right button, held (the data's default; letting go cancels): the ally nearest her crosshair within 17 m and 10
 	 * degrees, in sight, is locked; after a 0.5 s channel still held, a charge is spent and they're healed (HotfixHeal).
 	 * Then 0.3 s of recovery before the next. No ally in view: nothing happens, nothing spent.
@@ -389,6 +416,9 @@ public final class Sombra implements HeroKit {
 					// hacking an enemy deployable: no charge spent, then 6 s before she can hack again (614C)
 					Hack.deployable(target);
 					s.hackLockoutUntil = player.level().getGameTime() + Ow.ticks(HOTFIX_HACK_LOCKOUT);
+					if (HeroManager.hasPerk(player, Perk.SOMBRA_DATA_PACKET)) {
+						dataPacket(s);
+					}
 				}
 			}
 			return;

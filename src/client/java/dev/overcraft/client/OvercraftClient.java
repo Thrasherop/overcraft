@@ -49,6 +49,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
+			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
@@ -103,6 +105,7 @@ public class OvercraftClient implements ClientModInitializer {
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
+			dev.overcraft.client.hud.ConspiratorHud.clear();
 			HeroHud.clearMoments();
 			VictoryHud.clear();
 			RushSound.clear();
