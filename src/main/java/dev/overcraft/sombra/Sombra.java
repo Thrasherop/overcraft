@@ -83,12 +83,13 @@ public final class Sombra implements HeroKit {
 			return;
 		}
 		cyberspaceCast(player, s);
+		empCast(player, s);
 		hotfix(player, s);
 		// the clip empty: its reload starts by itself
 		if (s.primaryAmmo == 0 && s.primaryReload < 0) {
 			startReload(player, s);
 		}
-		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0 && s.hotfixChannel < 0 && s.castTicks < 0) {
+		if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0 && s.hotfixChannel < 0 && s.castTicks < 0 && s.empCast < 0) {
 			// as many shots as the rate allows this tick (20 a second at 20 ticks: one each tick)
 			while (s.weaponRecovery <= 0 && s.primaryAmmo > 0) {
 				fire(player, s);
@@ -110,6 +111,126 @@ public final class Sombra implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			startCyberspace(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0) {
+			startEmp(player, s);
+		}
+	}
+
+	// ---- EMP (Q: 0B31, each target 0B32, the status 0B1F) ----
+
+	/**
+	 * Q with the charge full: spent at the press (a Tactician's excess stays: Combat.afterUlt); a 0.65 s cast, the pulse
+	 * 0.35 s in; no teleport during it (press returns while casting). Her charge stays still until 5 s after the cast (v842).
+	 */
+	private static void startEmp(ServerPlayer player, HeroState s) {
+		if (s.ultCharge < ULT_COST || s.empCast >= 0 || s.castTicks >= 0 || s.hotfixChannel >= 0) {
+			return;
+		}
+		s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.SOMBRA, s.ultCharge);
+		s.ultActive = Ow.ticks(EMP_CAST + EMP_NO_CHARGE);
+		s.empCast = 0;
+		Combat.animate(player, "ult_cast");
+		Stealth.end(player, s);
+	}
+
+	private static void empCast(ServerPlayer player, HeroState s) {
+		if (s.empCast < 0) {
+			return;
+		}
+		if (s.empCast == Ow.ticks(EMP_PULSE_AT)) {
+			pulse(player);
+		}
+		if (++s.empCast >= Ow.ticks(EMP_CAST)) {
+			s.empCast = -1;
+		}
+	}
+
+	/**
+	 * The pulse: every enemy within 15 m of her, in sight (terrain blocks it), takes 20% of its current health (no crit, through
+	 * armour: magic) and is hacked (Hack); enemy deployables in reach are hacked 10 s. Life Hack: Hotfix on every ally within
+	 * 15 m, her too (0B31 #294 / #372).
+	 */
+	private static void pulse(ServerPlayer player) {
+		ServerLevel level = player.level();
+		Vec3 eye = player.getEyePosition();
+		AABB reach = player.getBoundingBox().inflate(EMP_RADIUS);
+		DamageSource source = Cyberspace.zoneSource(player);
+		boolean lifeHack = HeroManager.hasPerk(player, Perk.SOMBRA_LIFE_HACK);
+		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, reach, e -> e.isAlive() && e != player)) {
+			if (nearest(e, eye).distanceTo(eye) > EMP_RADIUS || !inSight(player, e)) {
+				continue;
+			}
+			if (Allies.canHurt(player, e)) {
+				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()));
+				Combat.credit(player, dealt);
+				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
+				Effects.hitMarker(player, e, false);
+				Hack.creature(e, HACK_SILENCE);
+				if (e instanceof ServerPlayer enemy && HeroManager.state(enemy) instanceof HeroState es && es.hero == dev.overcraft.hero.Hero.SOMBRA) {
+					// a hacked Sombra's stealth ends too (0B1F's interrupt, M)
+					Stealth.end(enemy, es);
+				}
+			} else if (lifeHack && Allies.isAlly(player, e) && e.distanceTo(player) <= LIFE_HACK_RADIUS) {
+				HotfixHeal.start(player, e);
+			}
+		}
+		if (lifeHack) {
+			HotfixHeal.start(player, player);
+		}
+		for (net.minecraft.world.entity.Entity d : level.getEntities(player, reach, Sombra::deployable)) {
+			if (enemyDeployable(player, d) && nearest(d, eye).distanceTo(eye) <= EMP_RADIUS) {
+				Hack.deployable(d);
+			}
+		}
+	}
+
+	/** Hotfix's other target: the enemy deployable nearest her crosshair within 17 m and 10 degrees, in sight, not hacked. */
+	private static net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity deployableInView(ServerPlayer player) {
+		Vec3 eye = player.getEyePosition();
+		Vec3 look = player.getViewVector(1.0f);
+		net.minecraft.world.entity.Entity best = null;
+		double bestAngle = HOTFIX_CONE;
+		for (net.minecraft.world.entity.Entity d : player.level().getEntities(player, player.getBoundingBox().inflate(HOTFIX_RANGE), Sombra::deployable)) {
+			Vec3 to = d.getBoundingBox().getCenter().subtract(eye);
+			double angle = Math.toDegrees(Math.acos(Math.clamp(to.normalize().dot(look), -1, 1)));
+			if (to.length() > HOTFIX_RANGE || angle > bestAngle || !enemyDeployable(player, d) || Hack.hacked(d)
+				|| player.level().clip(new ClipContext(eye, eye.add(to), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+				continue;
+			}
+			best = d;
+			bestAngle = angle;
+		}
+		return best;
+	}
+
+	/** The point of its box nearest her eyes (a big mob, the dragon, is in reach by its edge). */
+	private static Vec3 nearest(net.minecraft.world.entity.Entity e, Vec3 eye) {
+		AABB box = e.getBoundingBox();
+		return new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
+	}
+
+	/** Sight to any of its hit points (0B31: several; ours its eyes, middle and feet), blocks in the way. */
+	private static boolean inSight(ServerPlayer player, LivingEntity e) {
+		Vec3 eye = player.getEyePosition();
+		for (Vec3 to : new Vec3[] {e.getEyePosition(), e.getBoundingBox().getCenter(), e.position().add(0, 0.1, 0)}) {
+			if (player.level().clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** What EMP and Hotfix hack: Lifeweaver's platform and tree, a Sombra's beacon. */
+	private static boolean deployable(net.minecraft.world.entity.Entity e) {
+		return e instanceof TranslocatorEntity || e instanceof dev.overcraft.entity.PetalPlatformEntity
+			|| e instanceof dev.overcraft.entity.TreeOfLifeEntity;
+	}
+
+	private static boolean enemyDeployable(ServerPlayer player, net.minecraft.world.entity.Entity d) {
+		net.minecraft.world.entity.Entity owner = d instanceof TranslocatorEntity t ? t.getOwner()
+			: d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
+			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId()) : null;
+		return owner instanceof LivingEntity living && living != player && Allies.canHurt(player, living);
 	}
 
 	// ---- Cyberspace (Shift: 610E, the zone 6102) ----
@@ -159,7 +280,8 @@ public final class Sombra implements HeroKit {
 		ServerLevel level = player.level();
 		TranslocatorEntity beacon = s.beaconId != null && level.getEntity(s.beaconId) instanceof TranslocatorEntity b && b.isAlive() ? b : null;
 		if (beacon != null) {
-			if (beacon.tickCount >= Ow.ticks(BEACON_READY)) {
+			// not during EMP's cast (0B31); a hacked beacon takes no one for its 10 s
+			if (beacon.tickCount >= Ow.ticks(BEACON_READY) && s.empCast < 0 && !Hack.hacked(beacon)) {
 				s.teleportTicks = 0;
 				Combat.animate(player, "translocate");
 			}
@@ -258,7 +380,7 @@ public final class Sombra implements HeroKit {
 		boolean pressed = s.secondaryHeld && !s.hotfixHeld;
 		s.hotfixHeld = s.secondaryHeld;
 		if (s.hotfixChannel >= 0) {
-			LivingEntity target = s.hotfixTarget == null ? null : player.level().getEntity(s.hotfixTarget) instanceof LivingEntity l ? l : null;
+			net.minecraft.world.entity.Entity target = s.hotfixTarget == null ? null : player.level().getEntity(s.hotfixTarget);
 			if (!s.secondaryHeld || target == null || !target.isAlive() || target.distanceTo(player) > HOTFIX_RANGE + 1) {
 				s.hotfixChannel = -1;
 				s.hotfixTarget = null;
@@ -267,16 +389,26 @@ public final class Sombra implements HeroKit {
 			if (++s.hotfixChannel >= Ow.ticks(HOTFIX_CAST)) {
 				s.hotfixChannel = -1;
 				s.hotfixTarget = null;
-				s.hotfixCharges--;
 				s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(HOTFIX_RECOVERY));
-				HotfixHeal.start(player, target);
+				if (target instanceof LivingEntity ally) {
+					s.hotfixCharges--;
+					HotfixHeal.start(player, ally);
+				} else {
+					// hacking an enemy deployable: no charge spent, then 6 s before she can hack again (614C)
+					Hack.deployable(target);
+					s.hackLockoutUntil = player.level().getGameTime() + Ow.ticks(HOTFIX_HACK_LOCKOUT);
+				}
 			}
 			return;
 		}
-		if (!pressed || s.hotfixCharges <= 0 || s.weaponRecovery > 0 || s.primaryReload >= 0) {
+		if (!pressed || s.weaponRecovery > 0 || s.primaryReload >= 0) {
 			return;
 		}
-		LivingEntity target = dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true);
+		net.minecraft.world.entity.Entity target = s.hotfixCharges > 0
+			? dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true) : null;
+		if (target == null && player.level().getGameTime() >= s.hackLockoutUntil) {
+			target = deployableInView(player);
+		}
 		if (target == null) {
 			return;
 		}

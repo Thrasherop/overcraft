@@ -83,7 +83,7 @@ public final class Cyberspace {
 	 * arrow type every one of its 20 ticks a second knocked the enemy away from her, and a zombie inside never reached her
 	 * (found playing).
 	 */
-	private static net.minecraft.world.damagesource.DamageSource zoneSource(ServerPlayer sombra) {
+	static net.minecraft.world.damagesource.DamageSource zoneSource(ServerPlayer sombra) {
 		return new net.minecraft.world.damagesource.DamageSource(sombra.level().registryAccess()
 			.lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
 			.getOrThrow(net.minecraft.world.damagesource.DamageTypes.MAGIC), null, sombra);

@@ -93,6 +93,8 @@ public final class SombraStats {
 	public static final double EMP_CAST = 0.65, EMP_PULSE_AT = 0.35, EMP_RADIUS = 15;   // D 0B31; W
 	/** Enemies take this share of their current health and are hacked. */
 	public static final double EMP_SHARE = 0.2;                // D 0B32; W
+	/** Her charge stays still this long after the cast (v842: D 0B31, M; W "5 s after using EMP"). */
+	public static final double EMP_NO_CHARGE = 5;
 
 	// ---- Perks (the live list D 005B.177) ----
 	public static final double PERK_MINOR_XP = 2375, PERK_MAJOR_XP = 2375 + 3335;   // D 3918; W 2375 / 5710

@@ -364,8 +364,13 @@ public final class HeroManager {
 			}
 		}
 		HeroKit kit = kit(state.hero);
-		if (kit != null && input.pressed() != 0) {
-			kit.press(player, state, input.pressed());
+		int pressed = input.pressed();
+		if (dev.overcraft.sombra.Hack.silenced(player)) {
+			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
+			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);
+		}
+		if (kit != null && pressed != 0) {
+			kit.press(player, state, pressed);
 		}
 		if (state.hero == Hero.MERCY && input.extra() != 0) {
 			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());

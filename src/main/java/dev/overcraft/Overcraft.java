@@ -166,6 +166,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.ana.Anesthetic.tick(server);
 			dev.overcraft.sombra.HotfixHeal.tick(server);
 			dev.overcraft.sombra.Cyberspace.tick(server);
+			dev.overcraft.sombra.Hack.tick(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -220,6 +221,10 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof ItemEntity item && item.getItem().getItem() instanceof HeroWeaponItem) {
 				entity.discard();
 			}
+			// a mob hacked by EMP launches nothing for its 3 s (Hack: the arrow, the potion, the fireball, the fangs)
+			if (dev.overcraft.sombra.Hack.launchedBySilenced(entity)) {
+				entity.discard();
+			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
@@ -231,6 +236,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.ana.Anesthetic.clear();
 			dev.overcraft.sombra.HotfixHeal.clear();
 			dev.overcraft.sombra.Cyberspace.clear();
+			dev.overcraft.sombra.Hack.clear();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}
