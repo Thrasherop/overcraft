@@ -162,6 +162,16 @@ public final class EmoteData {
 	}
 
 	private static volatile Map<String, Emotes> heroes = Map.of();
+	/**
+	 * Clips in a hero's emote folders that the emote never plays ("<hero>/<clip name>"): those only in the set's gallery
+	 * preview tree (tools/emote_data.py "preview": Ana's Heroic set is also her hero gallery's, with its idle clips).
+	 */
+	private static volatile Set<String> previews = Set.of();
+
+	/** Whether the emote never plays this clip of the hero's (EmotePlan leaves it out). */
+	public static boolean preview(String hero, String clip) {
+		return previews.contains(hero + "/" + clip);
+	}
 
 	private EmoteData() {
 	}
@@ -178,13 +188,23 @@ public final class EmoteData {
 	static Set<String> load(ResourceManager resources) {
 		Map<String, Emotes> out = new HashMap<>();
 		Set<String> models = new TreeSet<>();
+		Set<String> preview = new java.util.HashSet<>();
 		for (Hero hero : Hero.values()) {
 			Optional<Resource> res = resources.getResource(Overcraft.id("emotes/" + hero.id + ".json"));
 			if (res.isEmpty()) {
 				continue;
 			}
 			try (Reader in = new InputStreamReader(res.get().open(), StandardCharsets.UTF_8)) {
-				Emotes emotes = parse(JsonParser.parseReader(in).getAsJsonObject());
+				JsonObject json = JsonParser.parseReader(in).getAsJsonObject();
+				Emotes emotes = parse(json);
+				for (Map.Entry<String, JsonElement> emote : json.getAsJsonObject("emotes").entrySet()) {
+					for (Map.Entry<String, JsonElement> clip : emote.getValue().getAsJsonObject().getAsJsonObject("clips").entrySet()) {
+						JsonElement flag = clip.getValue().getAsJsonObject().get("preview");
+						if (flag != null && flag.getAsBoolean()) {
+							preview.add(hero.id + "/" + clip.getKey());
+						}
+					}
+				}
 				out.put(hero.id, emotes);
 				emotes.emotes().values().forEach(clips -> clips.values().forEach(s -> s.forEach(spawn -> models.add(spawn.file()))));
 			} catch (Exception e) {
@@ -192,6 +212,7 @@ public final class EmoteData {
 			}
 		}
 		heroes = out;
+		previews = Set.copyOf(preview);
 		return models;
 	}
 

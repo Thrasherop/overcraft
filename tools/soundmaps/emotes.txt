@@ -1,15 +1,17 @@
 # The heroes' emote sounds: one sound event per 02C sound of an emote clip's animation effect (08F), built the way its
 # Wwise Play event builds it, and one event per voice stimulus (078) of the clips. Same format as kiriko.txt /
-# lucio.txt / mercy.txt / jetpack_cat.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build 154088). The
-# client plays each event at its component's start time while the emote runs (the clip components are in each rule's
-# comment). Read offline (Overwatch and Battle.net closed), Kiriko and Lúcio 2026-10-27, Mercy and Jetpack Cat
-# 2026-10-28; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\: emote_fx.py the clip components, ww.py
-# + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this file; sounds.json what the client needs: loops,
-# lengths, audience). Files extracted with DataTool's own WEM->OGG (extract_banks.py) into ExtraSounds\<Hero>\Emotes\;
-# a sound shared with an earlier hero's emotes is read from that hero's folder (Mercy's Listen Up, Mic Drop and Salty
-# ones from Lúcio's, her Rainy Stroll and Pod ones from Kiriko's; Jetpack Cat's Listen Up and Mic Drop ones from
-# Lúcio's). Nothing here has been listened to: each rule says what the data shows (H read), what is inferred (M) and
-# what is a guess (L).
+# lucio.txt / mercy.txt / jetpack_cat.txt / ana.txt; paths are under E:\Overwatch Archive\extracted\154088\ (build
+# 154088). The client plays each event at its component's start time while the emote runs (the clip components are
+# in each rule's comment). Read offline (Overwatch and Battle.net closed), Kiriko and Lúcio 2026-10-27, Mercy and
+# Jetpack Cat 2026-10-28, Ana 2026-10-31; research: E:\Overwatch Archive\research\emote-sounds\ (scripts\:
+# emote_fx.py the clip components, ww.py + wwfull.py the Wwise trees, emote_events.py / gen_emotes.py this file,
+# <hero>_what.py each hero's descriptions; sounds.json what the client needs: loops, lengths, audience). Files
+# extracted with DataTool's own WEM->OGG (extract_banks.py) into ExtraSounds\<Hero>\Emotes\; a sound shared with an
+# earlier hero's emotes is read from that hero's folder (Mercy's and Ana's Listen Up, Mic Drop and Salty ones from
+# Lúcio's, Mercy's Rainy Stroll and Pod ones from Kiriko's; Jetpack Cat's Listen Up and Mic Drop ones from Lúcio's).
+# Ana's voice lines are read from her voice extraction in research\ana\extract (../../research/ana/extract/, as
+# ana.txt reads it). Nothing here has been listened to: each rule says what the data shows (H read), what is
+# inferred (M) and what is a guess (L).
 # Gains: Wwise volume + make-up gain (the middle of random ranges) summed from each file up through its containers
 # and actor-mixers, plus its output bus chain (Init bank 1E818). Unlike the ability maps, ONE offset per hero is added
 # to every emote rule (not one per rule), so the sounds of an emote keep the game's balance with each other; it brings
@@ -3145,3 +3147,517 @@ $jetpack_cat.emote.sf684 = Jetpack Cat: swish
 $jetpack_cat.emote.sf685 = Jetpack Cat: purrs
 $jetpack_cat.emote.sf686 = Jetpack Cat: taps
 $jetpack_cat.emote.s1003b = Jetpack Cat: salt shakes
+
+# ===== Ana: 37 emote sounds (rules), 7 voice stimuli (plain events). Offset +13.0 dB (the loudest layer: 39BC).
+# Her own 30 02Cs (banks 1E7F8, 1E512, 1E67A; ExtraSounds/Ana/Emotes) are one-shots, mostly a single file each on one
+# mixer per emote under the emote mixer 749934277, at 15 m; the cloth rustles 3901 / 3956 / 399D (cloth mixer
+# 43599842) and the arm swings 39A0 / 39BC (the files of her ability 3P swings) at 30 m (H). Listen Up's, Mic Drop's
+# and Salty's are the shared achievement-emote 02Cs (bank 1E79B: the same Wwise trees as Lúcio's, H), so these rules
+# point at the files of Lúcio's extraction (ExtraSounds/Lúcio/Emotes), as Jetpack Cat's and Mercy's do, under her
+# event names. F8A7, held over the whole Dance loop, plays a Wwise Silence source and lists no file (H): its rule is
+# empty so that every event her emote data names has one. Not reproduced: 3AC3's Stop ends its first layer (the shared
+# whoosh 2ABDB8) at 0.58 s while its second runs on, so the event isn't cut and the built mix holds all 2.43 s of that
+# file (one stop per event, not per layer, in the builder). Voice: 7 VoiceStimulus components (H); her voice
+# extraction is in research/ana/extract, not under the build root, so those paths go through
+# ../../research/ana/extract/ as ana.txt's do. Each stimulus's own lines and weights from research/ana/voice.json
+# (Melee's six 0.7 lines as ana.txt's ana.voice.melee); 23 is her quick-melee shout (the shared melee effect 0A2C says
+# it too), 54 her jump grunt (her jump clip 186FA's effect too), both reused by Yut Nori; 23's stimulus carries a
+# criteria event (601.01C) not reproduced. Clip components read from her emote json with emote_fx.py.
+# 3901 clothes rustle: one of her 17 cloth rustles (the set 3956 and 399D use too) over a low thump (three 0.5-0.75 s
+# takes, all under 300 Hz, +300 cents), on the cloth mixer 43599842 (Dance, 0.3 s into its loop; Beach Ball, as she
+# catches the ball at 0.8 s). Clip components (clip id @start s [+window s]): beach_ball 45C3@0.804 hp 00A4; dance
+# 4309@0.300 hp 00A4.
+# Play event (02C 3901, bank 1E512): a: random of 17 (no repeat within 3), 0.12-0.56 s, 1ch, +49 cents, @0.010 s; b:
+# random of 3 (no repeat within 3), 0.53-0.75 s, 1ch, +299 cents, LPF/HPF 0/10 (not reproduced).
+# Play 897417161 fades in over 250 ms. Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -16.5; the rule adds the hero's offset. Length
+# 0.63 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.s3901 = ana.emote.s3901.a*1.029@0.01:-5.5 + ana.emote.s3901.b*1.189:-3.5
+# 3956 clothes rustle as the dance starts: the same 17 cloth rustles over a soft low thump (four takes, +338 cents),
+# cloth mixer 43599842 (Dance, at the start of both clips). Clip components (clip id @start s [+window s]): dance
+# 42A0@0.000 hp 00A4; dance 4309@0.000 hp 00A4.
+# Play event (02C 3956, bank 1E512): a: random of 17 (no repeat within 3), 0.12-0.56 s, 1ch, +338 cents, @0.025 s; b:
+# random of 4 (no repeat within 3), 0.38-0.59 s, 1ch, +338 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -28.5, b -29.5; the rule adds the hero's offset. Length
+# 0.48 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.s3956 = ana.emote.s3956.a*1.216@0.025:-15.5 + ana.emote.s3956.b*1.216:-16.5
+# 399D clothes rustle as she settles on her knee: the 17 cloth rustles and, 12 dB under them, four broad 0.45-0.74 s
+# takes, cloth mixer 43599842 (Take a Knee, at 1.33 s, after the kneeling thumps of 3ADC). Clip components (clip id
+# @start s [+window s]): take_a_knee 3E4D@1.333 hp 00A4.
+# Play event (02C 399D, bank 1E512): a: random of 17 (no repeat within 5), 0.12-0.56 s, 1ch, +112 cents, @0.010 s; b:
+# random of 4 (no repeat within 5), 0.45-0.74 s, 1ch, +12 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -27.5; the rule adds the hero's offset. Length
+# 0.73 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.s399d = ana.emote.s399d.a*1.067@0.01:-2.5 + ana.emote.s399d.b*1.007:-14.5
+# 39A0 an arm swing whoosh: the file of her grenade throw's and Nano Boost cast's 3P swing (2AA54B, H) (Beach Ball,
+# 0.27 s in, as she winds up before the ball appears in her hand at 0.8 s). Clip components (clip id @start s [+window
+# s]): beach_ball 45C3@0.267 hp 00A4.
+# Play event (02C 39A0, bank 1E67A): a: one file, 0.97 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 0.97 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.s39a0 = ana.emote.s39a0.a:-1.5
+# 39A5 her Protector movement: low and mid soft sounds at 0.55-0.85 s and 2.6-3.1 s (one 2.6 s file, 76% under 300 Hz)
+# on the Protector mixer 99551698 (Protector, from 0.55 s). Clip components (clip id @start s [+window s]): protector
+# 3D0D@0.000+3.267 hp 0000.
+# Play event (02C 39A5, bank 1E7F8): a: one file, 2.59 s, 1ch, @0.547 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0; the rule adds the hero's offset. Length 3.13 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s39a5 = ana.emote.s39a5.a@0.547:+4
+# 39A8 her Heroic pose: three low whooshes (0.1-0.65, 0.85-1.15 and 1.9-2.4 s; the shared 2.43 s file 2ABDB8, 99%
+# under 300 Hz) (Heroic, its pose clip 3C3B). Clip components (clip id @start s [+window s]): heroic 3C3B@0.000+2.833
+# hp 0000.
+# Play event (02C 39A8, bank 1E7F8): a: one file, 2.43 s, 1ch.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 2.43 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s39a8 = ana.emote.s39a8.a:-1.5
+# 39A9 her Tea Time movement: one 3.6 s file over the whole clip, mostly 300-2000 Hz, sounding at 0.1-0.6 s, about
+# 1.9-2.45 s and 2.75-3.65 s (Tea Time). Clip components (clip id @start s [+window s]): tea_time 3D64@0.000+3.533 hp
+# 0000.
+# Play event (02C 39A9, bank 1E7F8): a: one file, 3.63 s, 1ch, @0.098 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0; the rule adds the hero's offset. Length 3.73 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s39a9 = ana.emote.s39a9.a@0.098:+2
+# 39AA her Disapproving movement: one 3.9 s file over the whole clip at hardpoint 0001, broadband, busiest in its
+# first 1.5 s and again at 3.15-3.8 s (Disapproving). Clip components (clip id @start s [+window s]): disapproving
+# 3D75@0.000+3.867 hp 0001.
+# Play event (02C 39AA, bank 1E7F8): a: one file, 3.89 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 3.89 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s39aa = ana.emote.s39aa.a:-1.5
+# 39BC an arm swing whoosh: the file of her quick melee's 3P swing (31A87C, H), 0.53 s (Candy at 4.2 s, Thumbs Down at
+# 1.03 s, Thumbs Up at 0.9 s, Beach Ball at 3.77 s). Clip components (clip id @start s [+window s]): beach_ball
+# 45C3@3.767 hp 00A4; candy 3ED7@4.200 hp 00A4; thumbs_down 12C96@1.032 hp 00A4; thumbs_up 12E1B@0.899 hp 00A4.
+# Play event (02C 39BC, bank 1E67A): a: one file, 0.53 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +6.5; the rule adds the hero's offset. Length 0.53 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.s39bc = ana.emote.s39bc.a:+19.5
+# 3AC3 Not Impressed's movement: the shared low whoosh 2ABDB8 cut at 0.48 s, then a 3.8 s low file from 0.46 s (95%
+# under 300 Hz) sounding at about 0.46-1.05, 1.55-1.8 and 2.55-4.15 s. Clip components (clip id @start s [+window s]):
+# not_impressed 3E56@0.000+3.767 hp 00A4.
+# Play event (02C 3AC3, bank 1E7F8): a: one file, 2.43 s, 1ch, @0.033 s; b: one file, 3.80 s, 1ch, @0.462 s.
+# Stop 242528441 at 0.483 s with a 100 ms fade. Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5, b -24.5; the rule adds the hero's offset. Length
+# 4.26 s. Containers / delays / gains H (read); what it is L.
+@ana.emote.s3ac3 = ana.emote.s3ac3.a@0.033:-1.5 + ana.emote.s3ac3.b@0.462:-11.5
+# 3ADC kneeling down: three low thumps at about 0.9, 1.1 and 1.55 s (one 1.6 s 2-channel file from 0.69 s, 98% under
+# 300 Hz) (Take a Knee). Clip components (clip id @start s [+window s]): take_a_knee 3E4D@0.000+2.500 hp 00A4.
+# Play event (02C 3ADC, bank 1E7F8): a: one file, 1.58 s, 2ch, @0.686 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 2.26 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3adc = ana.emote.s3adc.a@0.686:+4.5
+# 3AE2 a short low knock, 0.11 s, at 3.33 s near the end of Not Impressed. Clip components (clip id @start s [+window
+# s]): not_impressed 3E56@0.000+3.767 hp 00A4.
+# Play event (02C 3AE2, bank 1E7F8): a: one file, 0.11 s, 1ch, @3.330 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 3.44 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3ae2 = ana.emote.s3ae2.a@3.33:-11.5
+# 3BAE candy wrappers crinkling: a bright noisy 0.7 s sound (two takes, 78-90% above 2 kHz, +480 cents) at hardpoint
+# 0003 just before the first four candies appear in her hand at 0.9 s (Candy). Clip components (clip id @start s
+# [+window s]): candy 3ED7@0.867 hp 0003.
+# Play event (02C 3BAE, bank 1E7F8): a: random of 2, 0.69-0.76 s, 1ch, +480 cents, LPF/HPF 17/26 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 0.57 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3bae = ana.emote.s3bae.a*1.320:-11.5
+# 3BB1 a soft low thump, 0.5 s, as her hand reaches into the bucket (Candy, 0.73 s, hardpoint 0003; the bucket 3FA2 is
+# out from 0.17 s). Clip components (clip id @start s [+window s]): candy 3ED7@0.733 hp 0003.
+# Play event (02C 3BB1, bank 1E7F8): a: one file, 0.51 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 0.51 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3bb1 = ana.emote.s3bb1.a:+7.5
+# 3BB2 a soft broadband rustle, 0.45 s, before the second four candies appear at 2.1 s (Candy, 1.77 s, hardpoint
+# 0003). Clip components (clip id @start s [+window s]): candy 3ED7@1.767 hp 0003.
+# Play event (02C 3BB2, bank 1E7F8): a: one file, 0.67 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 0.67 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3bb2 = ana.emote.s3bb2.a:+2.5
+# 3BB3 a soft tonal 0.8 s sound (391-689 Hz partials, +200 cents) after the second handful is gone (Candy, 2.97 s,
+# hardpoint 0003). Clip components (clip id @start s [+window s]): candy 3ED7@2.967 hp 0003.
+# Play event (02C 3BB3, bank 1E7F8): a: one file, 0.84 s, 1ch, +200 cents, LPF/HPF 0/53 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 0.75 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s3bb3 = ana.emote.s3bb3.a*1.122:+7.5
+# 3F89 a low swoosh twice: the same eight 0.7-1.3 s takes (80% under 300 Hz) at +380 cents, then at -120 cents 0.22 s
+# later, on the Dance mixer 794516854 (Dance, 1.93 s into its loop). Clip components (clip id @start s [+window s]):
+# dance 4309@1.933 hp 00A4.
+# Play event (02C 3F89, bank 1E512): a: random of 8 (no repeat within 3), 0.69-1.27 s, 1ch, -120 cents, @0.220 s,
+# LPF/HPF 0/21 (not reproduced); b: random of 8 (no repeat within 3), 0.69-1.27 s, 1ch, +380 cents, LPF/HPF 0/21 (not
+# reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -29.5, b -29.5; the rule adds the hero's offset. Length
+# 1.58 s. Containers / delays / gains H (read); what it is L.
+@ana.emote.s3f89 = ana.emote.s3f89.a*0.933@0.22:-16.5 + ana.emote.s3f89.b*1.245:-16.5
+# 469F the ball being struck: a punchy 0.2 s low hit (its file peaks at -1 dBFS), 0.27 s before the ball's window on
+# her right hand ends (Beach Ball, 2.5 s). Clip components (clip id @start s [+window s]): beach_ball 45C3@2.496 hp
+# 00A4.
+# Play event (02C 469F, bank 1E7F8): a: one file, 0.21 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.21 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.s469f = ana.emote.s469f.a:-5.5
+# 503D her Yut Nori movement: one 7.2 s tonal file (80% 300-2000 Hz, partials 382-673 Hz) over the whole clip,
+# sounding at 0.1-0.45, 0.75-1.15, 2.45-3.15, 5.3-5.9 and 6.7-7.2 s (Yut Nori). Clip components (clip id @start s
+# [+window s]): yut_nori 63B8@0.000+7.667 hp 00A4.
+# Play event (02C 503D, bank 1E7F8): a: one file, 7.22 s, 1ch.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 7.22 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.s503d = ana.emote.s503d.a:-1.5
+# B69E her Retro Hero sound: one 4.1 s strongly tonal file (92% 300-2000 Hz, partials 571-1024 Hz) in short bursts at
+# about 1.1, 1.4, 2.2, 2.85 and 3.3-3.85 s, each just after one of her four exertions (Retro Hero, from 0.23 s). Clip
+# components (clip id @start s [+window s]): retro_hero F060@0.000+5.833 hp 00A4.
+# Play event (02C B69E, bank 1E7F8): a: one file, 4.09 s, 1ch, @0.231 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 4.33 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sb69e = ana.emote.sb69e.a@0.231:-1.5
+# BC0D two short tonal clacks of her rifle, read as handling it: 0.42 s at 0.63 s (624-1632 Hz partials) and 0.34 s at
+# 2.33 s (a 3.6 kHz ring) (Heroic). Clip components (clip id @start s [+window s]): heroic 3C3B@0.000+2.833 hp 0000.
+# Play event (02C BC0D, bank 1E7F8): a: one file, 0.42 s, 1ch, @0.627 s; b: one file, 0.34 s, 1ch, @2.327 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5, b -14.5; the rule adds the hero's offset. Length
+# 2.67 s. Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc0d = ana.emote.sbc0d.a@0.627:-1.5 + ana.emote.sbc0d.b@2.327:-1.5
+# BC0E the opening low whoosh: the first 0.45 s of the shared file 2ABDB8, stopped with a 0.1 s fade (Candy). Clip
+# components (clip id @start s [+window s]): candy 3ED7@0.000+4.833 hp 00A4.
+# Play event (02C BC0E, bank 1E7F8): a: one file, 2.43 s, 1ch.
+# Stop 242528441 at 0.450 s with a 100 ms fade. Audience field 2 (3D), range 15 m.
+# The built file runs 2.43 s (Wwise stops or trims part of it): the client should stop it at 0.550 s.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 0.55 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.sbc0e = ana.emote.sbc0e.a:-1.5
+# BC0F a soft low thump at the very end, 7.1 s (0.54 s) (Yut Nori). Clip components (clip id @start s [+window s]):
+# yut_nori 63B8@0.000+7.667 hp 00A4.
+# Play event (02C BC0F, bank 1E7F8): a: one file, 0.54 s, 1ch, @7.100 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 7.64 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc0f = ana.emote.sbc0f.a@7.1:-1.5
+# BC10 the yut sticks: a woody tonal clack (around 1.16 kHz) at 0.41-0.8 s as the four sticks appear (0.43 s), and a
+# clatter at 3.1-3.55 s as they land (their window ends at 3.35 s, her shout at 3.11 s) (Yut Nori). Clip components
+# (clip id @start s [+window s]): yut_nori 63B8@0.000+7.667 hp 00A4.
+# Play event (02C BC10, bank 1E7F8): a: one file, 3.42 s, 1ch, @0.406 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.5; the rule adds the hero's offset. Length 3.82 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc10 = ana.emote.sbc10.a@0.406:-1.5
+# BC11 two soft low thumps: 0.5 s at 0.03 s and 0.35 s at 3.03 s (Protector). Clip components (clip id @start s
+# [+window s]): protector 3D0D@0.000+3.267 hp 0000.
+# Play event (02C BC11, bank 1E7F8): a: one file, 0.77 s, 1ch, @0.033 s; b: one file, 0.42 s, 1ch, @3.033 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0, b -9.0; the rule adds the hero's offset. Length 3.45
+# s. Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc11 = ana.emote.sbc11.a@0.033:+4 + ana.emote.sbc11.b@3.033:+4
+# BC12 a 2 s broad swish with a faint 7.7 kHz tone, at 0.79-1.8 s and 2.3-2.75 s (Protector). Clip components (clip id
+# @start s [+window s]): protector 3D0D@0.000+3.267 hp 0000.
+# Play event (02C BC12, bank 1E7F8): a: one file, 1.95 s, 1ch, @0.786 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0; the rule adds the hero's offset. Length 2.74 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc12 = ana.emote.sbc12.a@0.786:+4
+# BC16 a soft low noisy whoosh as she starts to kneel, 0.5 s (2-channel) (Take a Knee, at the start). Clip components
+# (clip id @start s [+window s]): take_a_knee 3E4D@0.000+2.500 hp 00A4.
+# Play event (02C BC16, bank 1E7F8): a: one file, 0.74 s, 2ch.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 0.74 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc16 = ana.emote.sbc16.a:+4.5
+# BC18 two short taps: a bright 0.15 s click at the start and a low tonal 0.1 s tap at 3.35 s, read as the teacup
+# lifted and set down (Tea Time; its cup 372A and saucer 373A are out the whole clip). Clip components (clip id @start
+# s [+window s]): tea_time 3D64@0.000+3.533 hp 0000.
+# Play event (02C BC18, bank 1E7F8): a: one file, 0.32 s, 1ch; b: one file, 0.29 s, 1ch, @3.200 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0, b -11.0; the rule adds the hero's offset. Length
+# 3.50 s. Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc18 = ana.emote.sbc18.a:+2 + ana.emote.sbc18.b@3.2:+2
+# BC19 porcelain clinks: a 2.15 s tonal file (partials around 0.94-1.02 kHz) of seven short taps from 0.74 s to 2.75
+# s, read as the spoon and cup (Tea Time). Clip components (clip id @start s [+window s]): tea_time 3D64@0.000+3.533
+# hp 0000.
+# Play event (02C BC19, bank 1E7F8): a: one file, 2.15 s, 1ch, @0.635 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.0; the rule adds the hero's offset. Length 2.79 s.
+# Containers / delays / gains H (read); what it is L.
+@ana.emote.sbc19 = ana.emote.sbc19.a@0.635:+2
+# DA44 the mic hitting the floor (Mic Drop, the shared emote). It plays at 0.93 s, where her mic's window (Lúcio's mic
+# 1A146 on hardpoint 000B, falling when the window ends) ends. Clip components (clip id @start s [+window s]):
+# mic_drop 15C84@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.sda44 = ana.emote.sda44.a:-5.5
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C84@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.sda4f = ana.emote.sda4f.a*1.169@0.01:+12.5
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 18501@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.se548 = ana.emote.se548.a:+3.5
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 18501@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.se549 = ana.emote.se549.a*0.891:-6.5 + ana.emote.se549.b:-6.5
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18501@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@ana.emote.se54a = ana.emote.se54a.a:-11.5
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 18501@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@ana.emote.se54b = ana.emote.se54b.a:-10.5
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C93@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@ana.emote.seea6 = ana.emote.seea6.a:+8.5 + ana.emote.seea6.b@1.45:+8.5 + ana.emote.seea6.c@0.03:-5.5 + ana.emote.seea6.d*2.378@0.15:+8.5
+# F8A7 the Dance's held sound (0.03-7.17 s of its loop clip): its Play event plays a Wwise Silence source, the
+# STUSound lists no file: nothing plays (H). No music for this dance is in her emote data. Clip components (clip id
+# @start s [+window s]): dance 4309@0.033+7.133 hp 00A4.
+# Play event (02C F8A7, bank 1E7F8): Play 185027309: a Wwise Silence source (its only action), and the STUSound lists
+# no file: nothing plays (H). The rule is empty (an event with no sound, no subtitle). Audience field 2 (3D), range 15
+# m.
+@ana.emote.sf8a7 =
+
+# ----- Ana's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC003.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC027.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC02A.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A7531.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC02B.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC007.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A757A.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC033.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A7530.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC034.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC028.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A7536.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A7532.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002AC030.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A7533.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A75F7.03F.ogg
+ana.emote.s3901.a = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002A758B.03F.ogg
+ana.emote.s3901.b = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002B258B.03F.ogg
+ana.emote.s3901.b = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002B2591.03F.ogg
+ana.emote.s3901.b = ExtraSounds/Ana/Emotes/Sounds/000000003901.02C/0000002B25C2.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC003.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC027.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC02A.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A7531.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC02B.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC007.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A757A.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC033.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A7530.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC034.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC028.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A7536.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A7532.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002AC030.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A7533.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A75F7.03F.ogg
+ana.emote.s3956.a = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002A758B.03F.ogg
+ana.emote.s3956.b = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002B257F.03F.ogg
+ana.emote.s3956.b = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002B25B8.03F.ogg
+ana.emote.s3956.b = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002B2583.03F.ogg
+ana.emote.s3956.b = ExtraSounds/Ana/Emotes/Sounds/000000003956.02C/0000002B256A.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A758B.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A75F7.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC028.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC034.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A7536.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A7532.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC030.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A7533.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A7530.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC033.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A757A.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC007.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC02B.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002A7531.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC02A.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC027.03F.ogg
+ana.emote.s399d.a = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002AC003.03F.ogg
+ana.emote.s399d.b = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002B2570.03F.ogg
+ana.emote.s399d.b = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002B25B2.03F.ogg
+ana.emote.s399d.b = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002B25B6.03F.ogg
+ana.emote.s399d.b = ExtraSounds/Ana/Emotes/Sounds/00000000399D.02C/0000002B25B3.03F.ogg
+ana.emote.s39a0.a = ExtraSounds/Ana/Emotes/Sounds/0000000039A0.02C/0000002AA54B.03F.ogg
+ana.emote.s39a5.a = ExtraSounds/Ana/Emotes/Sounds/0000000039A5.02C/0000002ABDC4.03F.ogg
+ana.emote.s39a8.a = ExtraSounds/Ana/Emotes/Sounds/0000000039A8.02C/0000002ABDB8.03F.ogg
+ana.emote.s39a9.a = ExtraSounds/Ana/Emotes/Sounds/0000000039A9.02C/0000002ABDC5.03F.ogg
+ana.emote.s39aa.a = ExtraSounds/Ana/Emotes/Sounds/0000000039AA.02C/0000002ABDB1.03F.ogg
+ana.emote.s39bc.a = ExtraSounds/Ana/Emotes/Sounds/0000000039BC.02C/00000031A87C.03F.ogg
+ana.emote.s3ac3.a = ExtraSounds/Ana/Emotes/Sounds/000000003AC3.02C/0000002ABDB8.03F.ogg
+ana.emote.s3ac3.b = ExtraSounds/Ana/Emotes/Sounds/000000003AC3.02C/0000002ABDC2.03F.ogg
+ana.emote.s3adc.a = ExtraSounds/Ana/Emotes/Sounds/000000003ADC.02C/0000002ABD62.03F.ogg
+ana.emote.s3ae2.a = ExtraSounds/Ana/Emotes/Sounds/000000003AE2.02C/0000002ABD6C.03F.ogg
+ana.emote.s3bae.a = ExtraSounds/Ana/Emotes/Sounds/000000003BAE.02C/0000002ABD67.03F.ogg
+ana.emote.s3bae.a = ExtraSounds/Ana/Emotes/Sounds/000000003BAE.02C/0000002ABDAD.03F.ogg
+ana.emote.s3bb1.a = ExtraSounds/Ana/Emotes/Sounds/000000003BB1.02C/0000002ABD66.03F.ogg
+ana.emote.s3bb2.a = ExtraSounds/Ana/Emotes/Sounds/000000003BB2.02C/0000002ABDCB.03F.ogg
+ana.emote.s3bb3.a = ExtraSounds/Ana/Emotes/Sounds/000000003BB3.02C/0000002ABDC7.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2562.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2589.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B258C.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2557.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2586.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2580.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2572.03F.ogg
+ana.emote.s3f89.a = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B256F.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2562.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2589.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B258C.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2557.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2586.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2580.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B2572.03F.ogg
+ana.emote.s3f89.b = ExtraSounds/Ana/Emotes/Sounds/000000003F89.02C/0000002B256F.03F.ogg
+ana.emote.s469f.a = ExtraSounds/Ana/Emotes/Sounds/00000000469F.02C/0000002ABD91.03F.ogg
+ana.emote.s503d.a = ExtraSounds/Ana/Emotes/Sounds/00000000503D.02C/0000002ABDB4.03F.ogg
+ana.emote.sb69e.a = ExtraSounds/Ana/Emotes/Sounds/00000000B69E.02C/0000002ABD8F.03F.ogg
+ana.emote.sbc0d.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC0D.02C/0000002ABD60.03F.ogg
+ana.emote.sbc0d.b = ExtraSounds/Ana/Emotes/Sounds/00000000BC0D.02C/0000002ABD94.03F.ogg
+ana.emote.sbc0e.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC0E.02C/0000002ABDB8.03F.ogg
+ana.emote.sbc0f.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC0F.02C/0000002ABDB2.03F.ogg
+ana.emote.sbc10.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC10.02C/0000002ABD93.03F.ogg
+ana.emote.sbc11.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC11.02C/0000002ABD65.03F.ogg
+ana.emote.sbc11.b = ExtraSounds/Ana/Emotes/Sounds/00000000BC11.02C/0000002ABD5D.03F.ogg
+ana.emote.sbc12.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC12.02C/0000002ABD68.03F.ogg
+ana.emote.sbc16.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC16.02C/0000002ABD63.03F.ogg
+ana.emote.sbc18.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC18.02C/0000002ABD90.03F.ogg
+ana.emote.sbc18.b = ExtraSounds/Ana/Emotes/Sounds/00000000BC18.02C/0000002ABDC3.03F.ogg
+ana.emote.sbc19.a = ExtraSounds/Ana/Emotes/Sounds/00000000BC19.02C/0000002ABDB6.03F.ogg
+ana.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+ana.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+ana.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+ana.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+ana.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+ana.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+ana.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+ana.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+ana.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+ana.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+ana.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+ana.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+ana.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+ana.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+ana.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+ana.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+ana.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+ana.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+ana.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+
+# ----- Ana's emote voice lines: one plain event per voice stimulus (078), every line of it (English, the one language extracted,
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 23 (shouts): 9 line(s) 0.65 s, 0.49 s, 0.45 s, 0.44 s, 0.44 s, 0.56 s, 0.39 s, 0.56 s, 0.68 s; clips yut_nori 63B8@3.111.
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CD.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CE.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7CF.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D0.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D1.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/00000002C7D3.0B2-(shouts).ogg | w=0.7
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064897.0B2-(shouts).ogg | w=1
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064898.0B2-(shouts).ogg | w=1
+ana.emote.v23 = ../../research/ana/extract/HeroVoice/Ana/Melee/000000064899.0B2-(shouts).ogg | w=1
+# 54 (grunts): 3 line(s) 0.29 s, 0.47 s, 0.22 s; clips yut_nori 63B8@5.669, stimulus volume -9 dB, radius 20 m.
+ana.emote.v54 = ../../research/ana/extract/HeroVoice/Ana/Jumping/00000002C827.0B2-(grunts).ogg | w=1
+ana.emote.v54 = ../../research/ana/extract/HeroVoice/Ana/Jumping/00000002C828.0B2-(grunts).ogg | w=1
+ana.emote.v54 = ../../research/ana/extract/HeroVoice/Ana/Jumping/00000002C82D.0B2-(grunts).ogg | w=1
+# 6A1 (laughs): 1 line(s) 2.05 s; clips not_impressed 3E56@0.000, stimulus volume -4 dB.
+ana.emote.v6a1 = ../../research/ana/extract/HeroVoice/Ana/Laugh/00000002EB97.0B2-(laughs).ogg | w=1
+# 1754 (exertion): 1 line(s) 0.62 s; clips retro_hero F060@0.067.
+ana.emote.v1754 = ../../research/ana/extract/HeroVoice/Ana/Unknown/1754.078/000000068C3C.0B2-(exertion).ogg | w=1
+# 1755 (exertion): 1 line(s) 0.71 s; clips retro_hero F060@0.933.
+ana.emote.v1755 = ../../research/ana/extract/HeroVoice/Ana/Unknown/1755.078/000000068C3B.0B2-(exertion).ogg | w=1
+# 1757 (exertion): 1 line(s) 0.69 s; clips retro_hero F060@3.033.
+ana.emote.v1757 = ../../research/ana/extract/HeroVoice/Ana/Unknown/1757.078/000000068C3D.0B2-(exertion).ogg | w=1
+# 1758 (exertion): 1 line(s) 0.39 s; clips retro_hero F060@2.067.
+ana.emote.v1758 = ../../research/ana/extract/HeroVoice/Ana/Unknown/1758.078/000000068C3E.0B2-(exertion).ogg | w=1
+
+# ----- Ana's subtitles
+$ana.emote.s3901 = Ana: clothes rustle
+$ana.emote.s3956 = Ana: clothes rustle
+$ana.emote.s399d = Ana: clothes rustle
+$ana.emote.s39a0 = Ana: whoosh
+$ana.emote.s39a5 = Ana: movement
+$ana.emote.s39a8 = Ana: whoosh
+$ana.emote.s39a9 = Ana: movement
+$ana.emote.s39aa = Ana: movement
+$ana.emote.s39bc = Ana: whoosh
+$ana.emote.s3ac3 = Ana: movement
+$ana.emote.s3adc = Ana: kneels
+$ana.emote.s3ae2 = Ana: knock
+$ana.emote.s3bae = Ana: wrappers crinkle
+$ana.emote.s3bb1 = Ana: thump
+$ana.emote.s3bb2 = Ana: wrappers rustle
+$ana.emote.s3bb3 = Ana: candy
+$ana.emote.s3f89 = Ana: swoosh
+$ana.emote.s469f = Ana: ball hit
+$ana.emote.s503d = Ana: movement
+$ana.emote.sb69e = Ana: retro blips
+$ana.emote.sbc0d = Ana: rifle clacks
+$ana.emote.sbc0e = Ana: whoosh
+$ana.emote.sbc0f = Ana: thump
+$ana.emote.sbc10 = Ana: sticks clack
+$ana.emote.sbc11 = Ana: thump
+$ana.emote.sbc12 = Ana: swish
+$ana.emote.sbc16 = Ana: whoosh
+$ana.emote.sbc18 = Ana: cup taps
+$ana.emote.sbc19 = Ana: teacup clinks
+$ana.emote.sda44 = Ana: mic drops
+$ana.emote.sda4f = Ana: mic feedback
+$ana.emote.se548 = Ana: music plays
+$ana.emote.se549 = Ana: music plays
+$ana.emote.se54a = Ana: music plays
+$ana.emote.se54b = Ana: music plays
+$ana.emote.seea6 = Ana: salt shakes
+$ana.emote.v23 = Ana: (shouts)
+$ana.emote.v54 = Ana: (grunts)
+$ana.emote.v6a1 = Ana: (laughs)
+$ana.emote.v1754 = Ana: (exertion)
+$ana.emote.v1755 = Ana: (exertion)
+$ana.emote.v1757 = Ana: (exertion)
+$ana.emote.v1758 = Ana: (exertion)

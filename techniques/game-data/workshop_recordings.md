@@ -33,3 +33,8 @@ position, velocity, buttons and facing every tick. It's allowed: it touches noth
 - **Check our own movement the same way:** a course in the dev world and `wallride_tests.py`-style scenarios printing
   the same numbers. A leave step that moved a whole tick without gravity was found only because the jump's top came
   out at 1.77 m against the recording's 1.41.
+- **One script for every hero** (2026-10-29, the owner asked for it after Lúcio's): `tools/workshop/movement_recorder.txt`
+  forces no hero and tags each tick with `Hero Of`, so one session covers many heroes. It keeps the Lúcio log's T, P, B
+  and A lines (the analysis still reads them) and adds K (every button, resources) and C (charges, cooldowns), press and
+  in-use bookmarks for each ability, take-offs and landings, and F combos for an ally bot (Guardian Angel, Swift Step)
+  and a full ult. `parse_log.py` reads both.

@@ -62,6 +62,12 @@ public final class Pings {
 		boolean warning = out.kind() == PingPayload.WARNING;
 		if (out.kind() != PingPayload.CANCEL && state != null && state.hero != null && (warning || now - last >= PING_LINE_TICKS)) {
 			String moment = out.kind() == PingPayload.ENEMY ? "ping_enemy" : warning ? "ping_warning" : "ping";
+			// Ana's "I slept a target!" (11EA) on an enemy she has asleep (ana.txt: no graph says it; ours, L)
+			if (out.kind() == PingPayload.ENEMY && state.hero == dev.overcraft.hero.Hero.ANA
+				&& player.level().getEntity(out.entity()) instanceof net.minecraft.world.entity.LivingEntity pinged
+				&& dev.overcraft.hero.Sleep.asleep(pinged)) {
+				moment = "ping_slept";
+			}
 			state.saidAt.put("ping", now);
 			dev.overcraft.hero.Voice.say(player, moment, 1);
 		}

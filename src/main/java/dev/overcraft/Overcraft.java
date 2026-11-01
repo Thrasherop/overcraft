@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.23";
+	public static final String ASSETS_NEEDED = "0.3.25";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -162,6 +162,8 @@ public class Overcraft implements ModInitializer {
 			Combat.tick(server);
 			HeroManager.tick(server);
 			dev.overcraft.mercy.Boosts.tick(server);
+			dev.overcraft.ana.Nano.tick(server);
+			dev.overcraft.ana.Anesthetic.tick(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -206,6 +208,10 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
 			}
+			if (damage > 0) {
+				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
+				dev.overcraft.hero.Sleep.onDamaged(entity);
+			}
 		});
 		// a hero's weapon never lies about in the world (dropped on death, thrown out of the inventory)
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
@@ -219,6 +225,8 @@ public class Overcraft implements ModInitializer {
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();
+			dev.overcraft.ana.Nano.clear();
+			dev.overcraft.ana.Anesthetic.clear();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

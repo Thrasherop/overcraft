@@ -34,6 +34,11 @@ public final class HeroState {
 	public double ability1Cooldown;
 	public double ability2Cooldown;
 	public int castTicks = -1;
+	/** Ana's Sleep Dart cast, ticks into it (-1 none). */
+	public int sleepCast = -1;
+	/** Ana's Nano Boost cast, ticks into it (-1 none), and the entity id it's for. */
+	public int nanoCast = -1;
+	public int nanoTarget = -1;
 	public @Nullable UUID castTarget;
 	/** Quick melee, every hero's (QuickMelee). */
 	public double meleeCooldown;
@@ -113,6 +118,10 @@ public final class HeroState {
 	 */
 	public boolean thornsOut;
 	public double bloomCharge;
+	/** Ana's Take Aim: how far scoped in, 0 (out) to 1 (fully scoped). */
+	public double scope;
+	/** Whether Take Aim was wanted last tick: its in and out sounds play as that changes. */
+	public boolean scopeWanted;
 	public boolean charging;
 	public @Nullable Integer bloomTarget;
 	public int bloomLinger;
@@ -194,7 +203,7 @@ public final class HeroState {
 		blasterOut = false;
 		swapTicks = holsterTicks = 0;
 		thornsOut = charging = treeAiming = false;
-		bloomCharge = bloomRecovery = thornSpread = seedCooldown = 0;
+		bloomCharge = bloomRecovery = thornSpread = seedCooldown = scope = 0;
 		bloomTarget = platformId = gripTarget = treeId = null;
 		bloomLinger = abilityLock = airTicks = 0;
 		platformThrow = dashTicks = gripCast = treeCast = -1;
@@ -219,6 +228,9 @@ public final class HeroState {
 		ability1Cooldown = ability2Cooldown = 0;
 		meleeCooldown = 0;
 		castTicks = -1;
+		sleepCast = -1;
+		nanoCast = -1;
+		nanoTarget = -1;
 		castTarget = null;
 		attackBuff = 0;
 		attackBuffUntil = 0;

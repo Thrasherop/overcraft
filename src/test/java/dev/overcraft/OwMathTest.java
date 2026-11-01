@@ -85,6 +85,32 @@ class OwMathTest {
 	}
 
 	@Test
+	void lucioStopsInHalfASecondOnEitherSong() {
+		// the owner's Workshop recording (2026-10-28): stops from 6.875 (Speed Boost) at a steady 13.7 m/s², from 5.5 at
+		// about 11: both about 0.5 s to a standstill (0.48 measured to under 0.2 m/s)
+		for (double run : new double[] {5.5, 5.5 * 1.25}) {
+			OwMovement.Mover mover = OwMovement.Mover.LUCIO.stopAt(run);
+			Vec3 v = new Vec3(run, 0, 0);
+			int steps = 0;
+			while (v.length() >= 0.2) {
+				v = OwMovement.groundStep(v, Vec3.ZERO, mover, 1.0 / 60);
+				steps++;
+			}
+			assertEquals(0.48, steps / 60.0, 0.03);
+		}
+		// starts stay quick: full speed in under 0.1 s (measured 0.06-0.08)
+		Vec3 boost = new Vec3(5.5 * 1.25, 0, 0);
+		OwMovement.Mover mover = OwMovement.Mover.LUCIO.stopAt(boost.x);
+		Vec3 v = Vec3.ZERO;
+		int steps = 0;
+		while (v.x < boost.x * 0.99) {
+			v = OwMovement.groundStep(v, boost, mover, 1.0 / 60);
+			steps++;
+		}
+		assertEquals(0.07, steps / 60.0, 0.03);
+	}
+
+	@Test
 	void airControlTurnsAJumpAround() {
 		// holding back right after take-off at a run: back is 4.95 m/s, so 5.5 / (3.5 x 4.95) = 0.32 s, inside one jump (0.67 s)
 		Vec3 v = new Vec3(5.5, 0, 0);
@@ -124,5 +150,21 @@ class OwMathTest {
 			ticks++;
 		} while (y > 0);
 		assertEquals(7.0, ticks / 20.0, 0.1);
+	}
+
+	@Test
+	void slowedRunReachesItsSlowedSpeed() {
+		// Ana's Take Aim, -65%: 5.5 x 0.35 = 1.925 m/s (W Movement speed); run 1 s of 60 Hz steps from a stand
+		double factor = 0.35;
+		dev.overcraft.hero.OwMovement.Mover mover = dev.overcraft.hero.OwMovement.Mover.DEFAULT.slowed(factor);
+		net.minecraft.world.phys.Vec3 v = net.minecraft.world.phys.Vec3.ZERO;
+		net.minecraft.world.phys.Vec3 wish = new net.minecraft.world.phys.Vec3(0, 0, 5.5 * factor);
+		for (int i = 0; i < 60; i++) {
+			v = dev.overcraft.hero.OwMovement.groundStep(v, wish, mover, 1 / 60.0);
+		}
+		org.junit.jupiter.api.Assertions.assertEquals(1.925, v.length(), 0.02);
+		// unslowed the mover is as it was
+		org.junit.jupiter.api.Assertions.assertSame(dev.overcraft.hero.OwMovement.Mover.DEFAULT,
+			dev.overcraft.hero.OwMovement.Mover.DEFAULT.slowed(1));
 	}
 }

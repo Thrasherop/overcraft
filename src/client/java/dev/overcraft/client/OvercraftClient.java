@@ -99,6 +99,7 @@ public class OvercraftClient implements ClientModInitializer {
 			HeroModelRenderer.clear();
 			ClientLifeweaver.clear();
 			dev.overcraft.client.effect.LifeweaverFx.clear();
+			dev.overcraft.client.effect.AnaFx.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -117,6 +118,7 @@ public class OvercraftClient implements ClientModInitializer {
 			JetpackCatSounds.tick(client);
 			MercySounds.tick(client);
 			LifeweaverSounds.tick(client);
+			AnaSounds.tick(client);
 			dev.overcraft.client.comms.EmoteSounds.tick(client);
 			if (client.level != null) {
 				dev.overcraft.client.effect.LucioFx.shields(client.level);
@@ -124,6 +126,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.JetpackCatFx.aim(client);
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
+				dev.overcraft.client.effect.AnaFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
@@ -152,6 +155,13 @@ public class OvercraftClient implements ClientModInitializer {
 			"blossom", 0.6f, false, 1, true));
 		EntityRendererRegistry.register(OcEntities.THORN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"thorn", 0.3f, false, 1, true));
+		// Ana's dart: its model 11741 isn't exported yet: the item stands in (her effects are a later step)
+		EntityRendererRegistry.register(OcEntities.ANA_DART, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"ana_dart", 0.3f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SLEEP_DART, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"sleep_dart", 0.3f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.BIOTIC_GRENADE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"biotic_grenade", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"lifeweaver_seed", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);

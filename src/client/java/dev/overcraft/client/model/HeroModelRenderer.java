@@ -198,6 +198,7 @@ public final class HeroModelRenderer {
 		state.setData(WEAPON, weaponShown ? HeroWeapon.place(hero, animator, loaded.model(), false, now)
 			: showcase != null ? HeroWeapon.placeShowcase(hero, loaded.model(), showcase, HeroAnimator.showcaseIntro(loaded.model(), showcaseAt))
 			: null);
+		state.setData(SIDEARM, weaponShown ? HeroWeapon.sidearm(hero, animator, loaded.model(), false, now) : null);
 		if (hero == Hero.MERCY && !previewing && entity.isAlive()) {
 			// her staff's head (where her beams start) and her hardpoints (chest, hand, wings: MercyFx), as posed, in the world
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -317,6 +318,7 @@ public final class HeroModelRenderer {
 	}
 
 	private static final RenderStateDataKey<EmoteProps.Placed> WEAPON = RenderStateDataKey.create(() -> "overcraft:hero_weapon");
+	private static final RenderStateDataKey<EmoteProps.Placed> SIDEARM = RenderStateDataKey.create(() -> "overcraft:hero_sidearm");
 
 	/**
 	 * Where her shadow falls this frame, or null for none (shadows off, invisible, asleep, nothing under her). The light
@@ -455,9 +457,10 @@ public final class HeroModelRenderer {
 		if (props != null) {
 			EmoteProps.submit(props, poseStack, collector, light, overlay);
 		}
-		EmoteProps.Placed weapon = state.getData(WEAPON);
-		if (weapon != null) {
-			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, light, overlay);
+		for (EmoteProps.Placed weapon : new EmoteProps.Placed[] {state.getData(WEAPON), state.getData(SIDEARM)}) {
+			if (weapon != null) {
+				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, light, overlay);
+			}
 		}
 		Shadow shadow = state.getData(SHADOW);
 		if (shadow != null && bed == null) {
@@ -806,6 +809,10 @@ public final class HeroModelRenderer {
 		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
+		EmoteProps.Placed sidearm = minecraft ? null : HeroWeapon.sidearm(hero, animator, loaded.model(), true, now);
+		if (sidearm != null) {
+			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(sidearm)), poseStack, collector, lit, overlay);
+		}
 		if (weapon != null) {
 			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
 			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)

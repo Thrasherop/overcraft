@@ -4,6 +4,41 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-10-31
+
+### Build 0.3.25 (Ana; Life Grip's bud; Mercy's, Lúcio's and Lifeweaver's 0.3.24 fixes)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.25): Ana's models and emote clips (`owm_survey.py --glb
+--keep=tools/clipmaps/ana[_1p|_rifle|_pistol].txt`, her emotes with `--clips-only --emotes=...` into `ana_clips.glb`), her
+emote props (`props <extraction> ana`), her icons (`ui`), her effects' masks and meshes (`effects` with
+`research\ana\fx` first), her sounds, voice and emote sounds (`sounds`), then `zip`.
+- **Ana, the sixth hero** (#63), from her game data and the public numbers (`AnaStats`, each number with its source):
+  - **Biotic Rifle** (left button): a dart that heals a hurt ally or hurts an enemy 75 over 0.5 s, passing through allies
+    at full health; 15 to a clip, 1.5 s reload. **Take Aim** (right button): zoomed, 65% slower, the shot hitscan.
+  - **Sleep Dart** (Shift): sleeps what it hits for 5 s; damage after the first 0.5 s wakes it. 14 s cooldown.
+  - **Biotic Grenade** (E): 90 healing to allies (Ana too) and 90 damage to enemies within 4 m; allies' healing +50% and
+    enemies can't be healed for 3 s. 12 s cooldown.
+  - **Nano Boost** (Q): the ally in your crosshair (else yourself) healed 250, dealing 50% more and taking 50% less for
+    8 s. Each hero says their own boosted line.
+  - **Perks:** Local Anesthetic, Speed Serum, Biotic Bounce, Headhunter.
+- **Her sounds and voice, from her Wwise events** (`tools/soundmaps/ana.txt`, 101 events): every moment of her kit, her
+  own in her head, the target's in theirs (healed, hit, slept, boosted), everyone else's at it.
+- **Her effects, from her data** (`tools/reference/ana-effects.md`): muzzle flash, the darts' and grenade's trails, the
+  scoped tracer, heal and harm hits, block marks, the sleeper's Zs, the grenade's burst and splat, the boost's and
+  anti-heal's pluses, Nano Boost's beam and glow, Local Anesthetic's dome and numbed enemies.
+- **Her 16 emotes, from the data**, with their props and sounds: the rifle put away where each emote says (Listen Up and
+  Salty for their whole length, from the shared emote tree's data), Tea Time's cup and teabag, Protector's saucer,
+  Candy's bucket, the beach ball, the dropped mic, Yut Nori's four sticks.
+- Found playing her and fixed: darts hit the ground again every tick (one Sleep Dart: 134 hits); the muzzle flash filled
+  her own view; the heal flash and boosted glow sat inside the target; Tea Time's teabag, Mic Drop's mic and Listen
+  Up's rifle floated off her hands (the owner: "the gun just kinda floating"); Heroic played her gallery idle instead.
+- **Life Grip's bud** at its real size round the whole ally (#74; the owner: "too small and centers on the feet").
+- **Mercy:** a Jump or Crouch pressed with Guardian Angel's Shift launches once she's flying (#57).
+- **Lúcio** stops on the ground in about half a second on either song, as the owner's Workshop recording (#57).
+- **Lifeweaver's Petal Platform** opens at the foot of a wall or a step; his first-person hand holds still.
+- Workshop: one movement recorder for every hero, with CSV and SQLite output.
+- Not yet: Kiriko's, Lúcio's, Mercy's and Jetpack Cat's emote data predate the gallery-preview and Listen Up / Salty
+  rules (regenerating it applies them).
+
 ## 2026-10-29
 
 ### Build 0.3.23 (Hello waves; Lifeweaver's back petals)

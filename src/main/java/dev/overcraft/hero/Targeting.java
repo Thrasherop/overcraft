@@ -17,13 +17,19 @@ public final class Targeting {
 	 * {@code range} metres. {@code needSight}: walls block it.
 	 */
 	public static @Nullable LivingEntity allyInView(LivingEntity hero, double range, double halfAngle, boolean needSight) {
+		return allyInView(hero, range, halfAngle, needSight, e -> true);
+	}
+
+	/** The same, among the allies {@code allowed} lets through (Nano Boost: not one already boosted). */
+	public static @Nullable LivingEntity allyInView(LivingEntity hero, double range, double halfAngle, boolean needSight,
+		java.util.function.Predicate<LivingEntity> allowed) {
 		Vec3 eye = hero.getEyePosition();
 		Vec3 look = hero.getViewVector(1.0f);
 		double cosLimit = Math.cos(Math.toRadians(halfAngle));
 		LivingEntity best = null;
 		double bestCos = cosLimit;
 		for (LivingEntity entity : hero.level().getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(range))) {
-			if (!Allies.isAlly(hero, entity)) {
+			if (!Allies.isAlly(hero, entity) || !allowed.test(entity)) {
 				continue;
 			}
 			AABB box = entity.getBoundingBox();
