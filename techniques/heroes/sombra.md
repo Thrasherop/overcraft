@@ -140,4 +140,17 @@ sphere, gold dome, code rain and pluses, the ground disc); EMP (cast rings at 0.
 circuit sphere at 1 s; `fxnear` listed the band, dome, ring and streaks); the hacked zombie seen from the side (skull,
 code at its feet, Minecraft's glow); a teleport (the burst where she left and where she landed, then the sparkles).
 
+## Two players (step 10's checks, 2026-11-01)
+- **Time a two-client check from one script.** Pressing Q on one client and Shift on the other from two harness runs
+  put seconds between them (each run starts Python and connects), and the hacked Ana's Sleep Dart "fired during the
+  silence": it was after it. `hacktest.py` (the scratchpad: both sockets in one script, the delay measured) showed the
+  silence holding at 0.67, 0.86, 1.06, 1.28 and 2.07 s and the dart firing at 3.87 s (the silence ends at 3.35 s).
+- **A cooldown can hide in a check:** E pressed 7 s after a teleport did nothing (7.5 s cooldown), and the "stealthed"
+  Sombra stood plain in the enemy's view. Read the cooldown in `state` before a check that needs the ability.
+
+Played (dev client and a second client on LAN, flat world `fx1`; Sombra on red, Ana ("Viewer") on blue, then red):
+- EMP on the enemy Ana at 6 m: 20 -> 16 health, glowing 7 s; her Shift blocked during the silence, working after.
+- Stealth as the enemy Ana sees it: hidden at 8 m (three frames over 2.4 s), see-through within 4 m (3 m and 3.3 m).
+- Hotfix on the allied Ana at 8 m: 10 -> 17.5 at once, 19.9 a second later, then 20.
+
 - Emotes: [sombra_emotes](../emotes/sombra_emotes.md).
