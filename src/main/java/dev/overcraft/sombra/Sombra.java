@@ -131,6 +131,7 @@ public final class Sombra implements HeroKit {
 		s.ultActive = Ow.ticks(EMP_CAST + EMP_NO_CHARGE);
 		s.empCast = 0;
 		Combat.animate(player, "ult_cast");
+		Effects.play(player.level(), "sombra_emp_cast", player.position(), Vec3.ZERO, player, 0, player);
 		Stealth.end(player, s);
 	}
 
@@ -157,6 +158,7 @@ public final class Sombra implements HeroKit {
 		AABB reach = player.getBoundingBox().inflate(EMP_RADIUS);
 		DamageSource source = Cyberspace.zoneSource(player);
 		boolean lifeHack = HeroManager.hasPerk(player, Perk.SOMBRA_LIFE_HACK);
+		Effects.play(level, "sombra_emp", player.position(), Vec3.ZERO, player, 0, player);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, reach, e -> e.isAlive() && e != player)) {
 			if (nearest(e, eye).distanceTo(eye) > EMP_RADIUS || !inSight(player, e)) {
 				continue;
@@ -166,7 +168,7 @@ public final class Sombra implements HeroKit {
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 				Effects.hitMarker(player, e, false);
-				Hack.creature(e, HACK_SILENCE);
+				Hack.creature(e, HACK_SILENCE, player);
 				if (e instanceof ServerPlayer enemy && HeroManager.state(enemy) instanceof HeroState es && es.hero == dev.overcraft.hero.Hero.SOMBRA) {
 					// a hacked Sombra's stealth ends too (0B1F's interrupt, M)
 					Stealth.end(enemy, es);
@@ -180,7 +182,7 @@ public final class Sombra implements HeroKit {
 		}
 		for (net.minecraft.world.entity.Entity d : level.getEntities(player, reach, Sombra::deployable)) {
 			if (enemyDeployable(player, d) && nearest(d, eye).distanceTo(eye) <= EMP_RADIUS) {
-				Hack.deployable(d);
+				Hack.deployable(d, player);
 			}
 		}
 	}
@@ -253,6 +255,7 @@ public final class Sombra implements HeroKit {
 		if (s.castTicks == Ow.ticks(CYBER_FIRE_AT)) {
 			ServerLevel level = player.level();
 			Vec3 from = fromEyes(player, WRIST_RIGHT, WRIST_UP, WRIST_AHEAD);
+			Effects.play(level, "sombra_cyber_launch", from, Vec3.ZERO, player, 0, player);
 			dev.overcraft.entity.CyberspaceEntity shot = new dev.overcraft.entity.CyberspaceEntity(player, level);
 			shot.launch(from, aimPoint(player).subtract(from), Ow.speed(CYBER_SPEED));
 			level.addFreshEntity(shot);
@@ -326,7 +329,11 @@ public final class Sombra implements HeroKit {
 		for (int i = 0; i < 8 && !level.noCollision(player, player.getDimensions(player.getPose()).makeBoundingBox(to)); i++) {
 			to = to.add(0, 0.25, 0);
 		}
+		// where she left and where she lands (1A76, 5FE0), then stealth's fade starting on her (1AD9)
+		Effects.play(level, "sombra_teleport", player.position(), Vec3.ZERO, player, 0, player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
+		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
+		Effects.play(level, "sombra_stealth", to, Vec3.ZERO, player, 0, player);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
 		s.softLanding = true;
@@ -414,7 +421,7 @@ public final class Sombra implements HeroKit {
 					HotfixHeal.start(player, ally);
 				} else {
 					// hacking an enemy deployable: no charge spent, then 6 s before she can hack again (614C)
-					Hack.deployable(target);
+					Hack.deployable(target, player);
 					s.hackLockoutUntil = player.level().getGameTime() + Ow.ticks(HOTFIX_HACK_LOCKOUT);
 					if (HeroManager.hasPerk(player, Perk.SOMBRA_DATA_PACKET)) {
 						dataPacket(s);
@@ -436,6 +443,9 @@ public final class Sombra implements HeroKit {
 		}
 		s.hotfixTarget = target.getId();
 		s.hotfixChannel = 0;
+		// its strands from her left forearm to them over the channel (7C6E.. to an ally, 1AC7.. to a hacked object)
+		Effects.play(player.level(), "sombra_strands", player.position(), Vec3.ZERO, target,
+			player.getId() * 2 + (target instanceof LivingEntity ? 0 : 1), player);
 		// Hotfix in stealth reveals her without ending it (BZ 2026-10-06; ours: for its channel and recovery)
 		Stealth.reveal(player, s, HOTFIX_CAST + HOTFIX_RECOVERY);
 		Combat.animate(player, "hotfix");
@@ -468,7 +478,8 @@ public final class Sombra implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 dir = cone(player.getViewVector(1.0f), spread, player.getRandom());
 		Vec3 end = eye.add(dir.scale(PISTOL_RANGE));
-		Vec3 block = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		Vec3 block = blockHit.getLocation();
 		LivingEntity best = null;
 		Vec3 bestAt = null;
 		double bestDist = eye.distanceToSqr(block);
@@ -483,6 +494,16 @@ public final class Sombra implements HeroKit {
 				bestAt = hit.get();
 				bestDist = hit.get().distanceToSqr(eye);
 			}
+		}
+		// the muzzle (hp 0006), the tracer to where the shot ended, the hit (1999, 1998, 010F)
+		Vec3 muzzle = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+		Vec3 stop = best != null ? bestAt : block;
+		Effects.play(level, "sombra_fire", muzzle, player.getViewVector(1.0f), player, 0, player);
+		Effects.play(level, "sombra_tracer", muzzle, stop.subtract(muzzle), player, 0, player);
+		if (best != null) {
+			Effects.play(level, "sombra_hit", bestAt, Vec3.ZERO, best, 0, player);
+		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
+			Effects.play(level, "sombra_hit_block", block, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null, 0, player);
 		}
 		if (best == null) {
 			return;
@@ -501,6 +522,9 @@ public final class Sombra implements HeroKit {
 			Effects.hitMarker(player, best, crit);
 		}
 	}
+
+	/** Her pistol's muzzle (hp 0006) from her eyes in her look's frame: ours until measured on her model (Ana's way). */
+	private static final double MUZZLE_RIGHT = 0.22, MUZZLE_UP = -0.18, MUZZLE_AHEAD = 0.55;
 
 	/** The head is the top of the box, as for Kiriko's kunai and Ana's darts (ours: 0.25 m under the eyes and up). */
 	private static final double HEAD_DEPTH = 0.25;

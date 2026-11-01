@@ -35,7 +35,18 @@ public final class Hack {
 
 	/** A creature hacked: silenced this long, revealed 8 s. */
 	public static void creature(LivingEntity target, double silence) {
+		creature(target, silence, null);
+	}
+
+	/** ... by this Sombra (her effects: the hacked look for the silence, the reveal's skull after it: 1704, 1B2F). */
+	public static void creature(LivingEntity target, double silence, @Nullable Entity by) {
 		long now = target.level().getGameTime();
+		if (target.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			dev.overcraft.hero.Effects.play(level, "sombra_hacked", target.position(), net.minecraft.world.phys.Vec3.ZERO, target,
+				Ow.ticks(silence), by);
+			dev.overcraft.hero.Effects.play(level, "sombra_revealed", target.position(), net.minecraft.world.phys.Vec3.ZERO, target,
+				Ow.ticks(HACK_REVEAL), by);
+		}
 		SILENCED.merge(target.getUUID(), now + Ow.ticks(silence), Math::max);
 		target.addEffect(new MobEffectInstance(MobEffects.GLOWING, Ow.ticks(HACK_REVEAL), 0, false, false));
 		if (target instanceof Creeper creeper) {
@@ -46,6 +57,15 @@ public final class Hack {
 
 	/** An enemy deployable (Lifeweaver's platform or tree) hacked: it stops working 10 s. */
 	public static void deployable(Entity deployable) {
+		deployable(deployable, null);
+	}
+
+	/** ... by this Sombra (its hacked look, 7D35). */
+	public static void deployable(Entity deployable, @Nullable Entity by) {
+		if (deployable.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			dev.overcraft.hero.Effects.play(level, "sombra_hacked_thing", deployable.position(), net.minecraft.world.phys.Vec3.ZERO,
+				deployable, Ow.ticks(HACK_DEPLOYABLE), by);
+		}
 		DEPLOYABLES.merge(deployable.getUUID(), deployable.level().getGameTime() + Ow.ticks(HACK_DEPLOYABLE), Math::max);
 	}
 

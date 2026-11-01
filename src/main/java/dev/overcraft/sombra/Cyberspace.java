@@ -66,6 +66,10 @@ public final class Cyberspace {
 				}
 			} else if (Allies.canHurt(z.sombra, e)) {
 				WEAKENED.merge(e.getUUID(), now + Ow.ticks(ZONE_LINGER_ENEMY), Math::max);
+				if ((now - z.opened) % 10 == 0) {
+					// its look on them (7AE1), refreshed every half second while they're inside
+					Effects.play(z.level, "sombra_weakened", e.position(), Vec3.ZERO, e, 10 + Ow.ticks(ZONE_LINGER_ENEMY), z.sombra);
+				}
 				if (damage > 0) {
 					float dealt = Combat.damage(e, zoneSource(z.sombra), damage);
 					Combat.credit(z.sombra, dealt);

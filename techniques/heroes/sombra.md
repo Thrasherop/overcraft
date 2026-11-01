@@ -121,4 +121,23 @@ person; the third-person wave).
 - **Her colour is in the strips:** purple (A06C / A06B) for her team, red-orange (ADD0 / ADCF) for enemies (M), gold for
   her heals (Hotfix, Cyberspace's allied side). The lessons it taught (over-life size rows, strip twins, per-target
   branches): [reading_game_data](../game-data/reading_game_data.md#ability-effects-what-sets-their-size-and-colour-sombras-pass-2026-11-01).
+## Her effects drawn (step 8, 2026-11-01)
+- `SombraFx` (client) draws each moment from [sombra-effects](../../tools/reference/sombra-effects.md): the pistol's
+  muzzle, tracer and hits; Hotfix's strands (gold to an ally, purple to a hacked object) and the healed ally's skull and
+  glow; Cyberspace's launch, flight (cubes, ribbon), burst and 3 s zone; the weakened enemy's arrows and chevrons; the
+  teleport's bursts and stealth's sparkles; EMP's cast rings and its 30 m pulse; hacked creatures' skulls and code panels,
+  hacked deployables' rings. Her palettes are in `EffectArt` (SOMBRA_*), most straight from `fx_palettes.txt`.
+- **A palette needs black at 0.** Mine from the report's hex strips started at the strip's own first colour, and every
+  additive mask drew its whole quad in it: a magenta square at her muzzle and black squares at each hit (played). The
+  masks carry their shape in their brightness; the strip starts at 0.1 over black now (`palettes.py` in the scratchpad's
+  pass). A colour sprite on black (the hit spark) is added in a tint, not drawn NATURAL.
+- **Two effects were invisible before this:** the server already sent "sombra_cyberspace" and no client drew it.
+
+Played (dev client, creative, fresh world `fx1`, at night, a NoAI zombie at 8 m and a villager): the pistol in first and
+third person (tracer to the zombie, hit sparks, the block hit); Hotfix on the villager (strand during the 0.5 s channel,
+then the gold skull and glow while it heals); Cyberspace at the zombie (launch flash, cube in flight, the burst, the zone's
+sphere, gold dome, code rain and pluses, the ground disc); EMP (cast rings at 0.15 s, the dome and streaks at 0.42 s, the
+circuit sphere at 1 s; `fxnear` listed the band, dome, ring and streaks); the hacked zombie seen from the side (skull,
+code at its feet, Minecraft's glow); a teleport (the burst where she left and where she landed, then the sparkles).
+
 - Emotes: [sombra_emotes](../emotes/sombra_emotes.md).

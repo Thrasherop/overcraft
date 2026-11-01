@@ -102,6 +102,7 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientLifeweaver.clear();
 			dev.overcraft.client.effect.LifeweaverFx.clear();
 			dev.overcraft.client.effect.AnaFx.clear();
+			dev.overcraft.client.effect.SombraFx.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
@@ -130,6 +131,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.JetpackCatFx.tethers(client.level);
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
 				dev.overcraft.client.effect.AnaFx.tick(client);
+				dev.overcraft.client.effect.SombraFx.tick(client);
 			}
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);

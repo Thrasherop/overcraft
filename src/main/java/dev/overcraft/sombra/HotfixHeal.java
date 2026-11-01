@@ -28,6 +28,9 @@ public final class HotfixHeal {
 		double[] healed = {0};
 		HEALS.add(new Heal(sombra, ally, ally.level().getGameTime() + Ow.ticks(HOTFIX_HEAL_TIME), healed));
 		give(sombra, ally, healed, HOTFIX_HEAL_NOW);
+		// its look on them while it heals (6570)
+		dev.overcraft.hero.Effects.play((net.minecraft.server.level.ServerLevel) ally.level(), "sombra_hotfixed", ally.position(),
+			net.minecraft.world.phys.Vec3.ZERO, ally, Ow.ticks(HOTFIX_HEAL_TIME), sombra);
 	}
 
 	/** Heals up to {@code amount}, never past the 175 in all; counts what it gave. */
@@ -47,6 +50,10 @@ public final class HotfixHeal {
 	public static void tick(MinecraftServer server) {
 		HEALS.removeIf(h -> {
 			if (!h.ally.isAlive() || h.ally.isRemoved() || h.ally.level().getGameTime() >= h.until || h.healed[0] >= HOTFIX_HEAL_TOTAL) {
+				if (h.ally.isAlive() && HEALS.stream().filter(o -> o.ally == h.ally).count() == 1) {
+					dev.overcraft.hero.Effects.play((net.minecraft.server.level.ServerLevel) h.ally.level(), "sombra_hotfixed_end",
+						h.ally.position(), net.minecraft.world.phys.Vec3.ZERO, h.ally, 0, h.sombra);
+				}
 				return true;
 			}
 			give(h.sombra, h.ally, h.healed, HOTFIX_HEAL_RATE / 20);
