@@ -130,3 +130,6 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **`reload` can run the dev client out of memory** (2026-11-02, Jetpack Cat): at `-Xmx3G` a resource reload re-reads every
+  hero model and died with "Java heap space" mid-reload (the window froze on the Mojang screen and every `dev` call timed
+  out). After changing the pack, restart the client instead.
