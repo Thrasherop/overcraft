@@ -15,6 +15,11 @@ public final class HeroState {
 	// input, from the client (cleared whenever slot 1 isn't selected)
 	public boolean primaryHeld;
 	public boolean secondaryHeld;
+	/**
+	 * A fire button pressed since the last tick (no tick has seen it held yet), and let go before one did: the release waits
+	 * for the next tick (HeroManager.held), so a quick click is never lost.
+	 */
+	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
 	public boolean wallClimbing;
 
@@ -260,6 +265,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;
 		ampUp = 0;

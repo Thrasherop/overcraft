@@ -223,3 +223,86 @@ and `heard` polled every 0.05 s from the command (times below include about 0.13
   the 0.033 s clip 1AB5A that our plan never plays). Not checked: the "others" copies from a second client; a
   voice line's right-click preview in the list (the harness's right `screenclick` equipped the line instead: not tried
   with the real mouse). Not listened to for balance.
+
+## Step 9 (the release play)
+2026-11-01, worktree `overcraft_juno` (branch `feature/juno`, with #76 and #60 merged in). Dev client "Kiriko" (`OC_ASSET_PACK`
+= the Ana checkout's pack) and `runClient2` "Viewer" over LAN (it needs `OC_ASSET_PACK` too, or it plays placeholders);
+fresh worlds `rel1` (flat survival), `relnight` (normal terrain), `fix1` (flat). Health read with `data get`, speeds with
+`trace`, sounds with `heard`; screenshots in `run/screenshots/` (r1-r8_*) and `run2/screenshots/` (v_*), each looked at.
+- **Every way in:** picked on joining (r1_select_juno: model, "75 health, 150 shields", six kit icons), READY: her HUD
+  225 (3 health + 7 shield pips), LShift / E / torpedo panel, 180 | 180, ult ring (r1_juno_hud). From H mid-game (near
+  the bed only: "Change hero" greyed 40 m out), to Brigitte and back (r1_hmenu_juno, her perks kept). After dying (fell
+  out of the world through a pool I'd dug to the void): back as Juno in hero mode, ult kept (r1_after_death). After
+  Save and Leave and `openworld rel1`: the select screen with Juno chosen, "ESC keep hero" (r1_rejoin).
+- **Mediblaster:** a villager at 4 health 6 m off +5.76 (72); a tamed wolf (tamed with bones by the use key in Minecraft
+  mode: entity reach is 3 m) 10 -> 15.76 (72); a 200-health zombie at midnight -6.71 (90 less armor), its head -10.13
+  (x1.5); a skeleton -7.2 (90); R: 180 again within 1 s. (At noon a zombie lost 7.71: it was burning.)
+- **Pulsar Torpedoes, mixed:** two zombies, a skeleton and a villager at 4 locked at once (red rings on the enemies, blue
+  on the villager: r2_torp_lock2); fired: the zombies -6.69 each 0.3 s on, the skeleton -6.8, the villager 12.16 at 1.1 s
+  and 14.80 at the end (135). Again on the fixed build (below): the same numbers (r8_lock3).
+- **Movement (trace):** double jump 4.47 m up (r2_doublejump, boot jets); jump held from 25 m: the hover at exactly
+  -3.00 m/s; a 35 m fall without hovering: 18 -> 18. Glide: 5.5 -> 18.32 one tick in, 7.70 by 0.5 s, 4 s, its cooldown
+  from its end (r2_glide). Up an 8-step stair onto a tower in one glide (r2_glide_slope); into a 7-high wall: up it at
+  3.00 m/s while W was held, then held level (r2_glide_wall). Water: her jumps swim (Minecraft's water physics, no double
+  jump out of it), and a glide started in water shows its pose but crawls at 1.9 m/s (r2_water_glide). At night: the
+  hover and a glide over the `relnight` hills (r4_glided); the Nether below.
+- **Perks through the perk menu** (Alt held, a click): Familiar Vitals, a villager 30 m ahead, 0.7 s of lock: 4 -> 12.32;
+  Locked On, two zombies locked and hit: the cooldown 6.55 s 1.5 s after firing; Faster Blaster, fire held while gliding:
+  180, 167, 156, 145, 133 every 0.5 s (about 22 a second, no gaps); Lift Off, three taps 0.35 s apart: 7.24 m up
+  (r2_perk_minor, r2_perk_menu3b, r2_perk_fb, r2_perk_lo).
+- **Two players, allies:** the ring thrown with Viewer 26 m ahead: his speed 5.50 -> 8.25 m/s the tick he crossed it,
+  held while he ran (his own trace); thrown through him standing, 8.25 at once (r3_ring_hang; v_ring_through, its
+  streaks in his view). Orbital Ray on Viewer at 10 (125 of 250): 17.48 at 1.5 s, full at 2.5 s; Kiriko's kunai from
+  inside it at a zombie -6.14 (78 = 60 x 1.3, less armor) (r3_ray_cast: blue and gold). He heard her volley_3p,
+  projectile, volley_end_3p, double_jump_3p, glide start_3p and loop_3p; she heard his kunai throw_3p and hit and her
+  own pain line, and saw his Kiriko throw (r3_viewer_kunai, r3_juno_sees_viewer, v_sees_juno).
+- **Enemies** (`overcraft team join blue` / `red`): a volley 20 -> 12.5 (90 and one head round); torpedoes 20 -> 13.2
+  (85), her launch flash and torpedo red and orange in his view (v_torp1, v_torp2); her ray red and orange in his view,
+  blue and gold in hers (v_ray_enemy2, r3_ray_enemy2), and no heal for him: 12 -> 12.
+- **A night on `relnight`** (normal terrain; spawn on a tree top in a forest by the sea), Viewer beside her as Brigitte,
+  a scripted fighter (`fighter.py` in the session's scratchpad: the nearest hostile by `data get`, the real fire keys,
+  torpedoes every 10 s, the ray when charged, Viewer healed under 13, a glide away under 8): about 150 volleys and 25
+  torpedo locks at zombies, skeletons, a creeper and spiders 5-30 m off, the ray once; she died four times (spiders and
+  zombies at the spawn while the script idled, and drowned fighting in the sea), Viewer once; every respawn back as Juno
+  in hero mode. It shows nothing broke over a night; it doesn't show how well she fights (from the tree top most
+  volleys hit leaves).
+- **The general play** (`fix1`): every hero from H at a 200-health zombie and a villager at 4 (r6_*): damage Kiriko 9.45,
+  Lucio 10.27, Jetpack Cat 7.13, Mercy 0 on her staff and 7.62 on her blaster (2), Lifeweaver 4.46, Ana 5.59, Sombra
+  6.29, Brigitte 7.2, Juno 6.71; each healed the villager. Minecraft mode (G): a stone block mined with an iron pickaxe
+  (r6_mc_mined), planks crafted in the inventory grid (r6_crafted), a chest placed, logs stored, closed and reopened with
+  them inside (r6_chest_reopen), planks built into a pillar (r6_built).
+- **One case nobody tried: the Nether.** A lava lake under an obsidian platform: the ray cast onto the lava (its beams
+  fall; its ground circle isn't seen, laid on the lake's floor under the lava: r7_ray_lava); off the platform with jump
+  held, the double jump and the hover at -3.00 over the lava, a glide into the arena's netherrack wall, climbing it at
+  3 m/s (r7_hover_lava); at the glide's end she fell into the lava: "tried to swim in lava", as anyone would.
+- **#76 Shield Bash, again** (Brigitte, `fix1`): from a jump 25.85 m/s for 5 ticks with her fall going on, then 14.19
+  bleeding in the air, 9.5 m (bashed at the jump's top; the recorded 8.1 started lower); from the ground 7.13 m (the
+  record's); into a NoAI zombie 4 m ahead: stopped on it, 70 to it (20 -> 14.4); into a stone wall: stopped at its face.
+- **#60 Jetpack Cat, again:** 0 -> 5.5 in about 0.15 s; no keys from 5.5: a straight line to 0 in 0.6 s; the boost from
+  5.5: 9.85 at 0.25 s, 16.59 at 0.85, 17.8 by 1.6 s, 2.5 s long; keys held after it: 17.48 ... 15.56, cut to 11.68 at
+  0.3 s, 5.5 by 0.9 s; no keys after it: a straight line from 17.8 to 0 in 1.85 s; backing off 5.50 (r5_cat_boost). All
+  as the recording's table.
+
+What playing found:
+- **A quick click could be lost (fixed).** The torpedo lock's right-button tap through the harness started a lock 5 of 5
+  times at 30 fps and 0 of 6 at 10 fps (the window unfocused): at a low frame rate the client runs two ticks in one
+  frame and sends the press and the release back to back, both handled before the server's next tick, which never saw
+  the button held. A real click shorter than a frame is lost the same way, for every hero's fire buttons.
+  `HeroManager.onInput` now keeps a button pressed since the last tick held until that tick has run (`HeroState`
+  `primaryFresh` / `primaryLetGo`, cleared by `HeroManager.held` after each hero tick). Played after the fix at 3-9 fps:
+  8 of 8 taps locked; 5 of 5 left taps after a lock cancelled it (2 s cooldown) with no volley fired; a Mediblaster tap
+  fired one volley (12), a 2 s hold three (36). The trap: [harness](../testing/harness.md).
+- **Not fixed (for the owner): Minecraft mode's held item.** Her first person shows her empty right glove and the item
+  tiny in the middle of the view (r6_mc_juno_pick); Brigitte, Mercy, Sombra, Lúcio and Lifeweaver show no item at all
+  (r6_mc_brigitte_pick, r6_mc_mercy_pick, r6_mc_sombra_pick, r6_mc_lucio_pick, r6_mc_lifeweaver_pick); Kiriko and Ana
+  hold theirs (Jetpack Cat uses Minecraft's arm by design). The item goes on `Weapon_L`
+  (`HeroAnimator.UpperBody.weapon`: Kiriko's view model is mirrored, her right-of-view hand is `_L`), not the hand on the
+  right for these models (Brigitte's flail is on `Weapon_R` in both views). Choosing the hand per model and placing the
+  item in it is a pass of its own across six heroes (already so on `main` for all but Juno).
+- **Not fixed:** a glide started in water does nothing but its pose; the ray's ground circle lies on the bottom under a
+  liquid; the pause menu still reads 0.3.27 (the version bump belongs to the merge).
+- **Not ours:** "Failed to save chunk" toasts in `relnight` (Windows' "Insufficient system resources" on E: while
+  checking for an oversized-chunk file; no `.mcc` written); a kunai's knockback pushing her 3.4 m (Minecraft's, any hero).
+
+Not tried: a second player as Juno; boats, ladders, minecarts; the Hyper Ring on an enemy; her emotes and voice lines
+(steps 8 and 8b); a real person's night (the scripted fighter is no player); crafting at a crafting table.

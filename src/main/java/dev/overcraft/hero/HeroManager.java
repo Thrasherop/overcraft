@@ -393,8 +393,29 @@ public final class HeroManager {
 		}
 		// the buttons held are kept even while the keys aren't live (asleep: Ana's Sleep Dart), so a button held through it
 		// fires again as it ends, as Overwatch's do; the client only sends them as they change (found playing)
-		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
-		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		// A quick click's press and release can both arrive between two server ticks (at a low frame rate the client runs
+		// two ticks in one frame and sends both back to back), and the ticks would never see it held: Juno's torpedo lock
+		// and fire were lost at 10 fps (found playing, the release play). The release then waits for the next tick.
+		boolean primary = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
+		boolean secondary = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		if (primary) {
+			state.primaryFresh |= !state.primaryHeld;
+			state.primaryHeld = true;
+			state.primaryLetGo = false;
+		} else if (state.primaryFresh) {
+			state.primaryLetGo = true;
+		} else {
+			state.primaryHeld = false;
+		}
+		if (secondary) {
+			state.secondaryFresh |= !state.secondaryHeld;
+			state.secondaryHeld = true;
+			state.secondaryLetGo = false;
+		} else if (state.secondaryFresh) {
+			state.secondaryLetGo = true;
+		} else {
+			state.secondaryHeld = false;
+		}
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if (!controls(player)) {
@@ -458,6 +479,7 @@ public final class HeroManager {
 			if (!controls && !Sleep.asleep(player)) {
 				// (asleep, they're kept: a button held through the sleep fires again as it ends)
 				state.primaryHeld = state.secondaryHeld = state.wallClimbing = false;
+				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
@@ -474,6 +496,18 @@ public final class HeroManager {
 			if (kit != null) {
 				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
 			}
+			held(state);
+		}
+	}
+
+	/** After a tick: the buttons it saw pressed are no longer fresh, and a click let go before it is let go now. */
+	private static void held(HeroState state) {
+		state.primaryFresh = state.secondaryFresh = false;
+		if (state.primaryLetGo) {
+			state.primaryHeld = state.primaryLetGo = false;
+		}
+		if (state.secondaryLetGo) {
+			state.secondaryHeld = state.secondaryLetGo = false;
 		}
 	}
 
