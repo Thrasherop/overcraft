@@ -84,3 +84,15 @@ Lifting a hero who presses into a ledge in the air (OwMovement.ledge) isn't enou
 zeroed the speed into it, so she falls back past the edge and is lifted again every tick, hanging there (#56). Lift,
 step her over the edge, and give back the speed the face took. Measured on a 1-block step: every running jump from
 0.05 s on gets over it.
+
+## Damage over time on players: use a type in no_impact (#82, 2026-11-02)
+- `LivingEntity.hurtServer` marks a hurt entity (`markHurt`) unless the damage type is in `minecraft:no_impact` (only
+  `drown` in vanilla), and a marked player is sent the server's view of their motion, which for a player moved by
+  their own client is stale: their speed snaps to it for a tick. A field hurting every 0.2 s with `minecraft:magic`
+  (in `no_knockback`, so no push) still jolted a walking player 3-4 times in 3 s (5.5 -> 0 m/s for a tick; averaged,
+  the 3.5 m/s seen in Sojourn's release play).
+- Overcraft's own `overcraft:field` (data/overcraft/damage_type/field.json, added to bypasses_armor, no_knockback and
+  no_impact) is the Disruptor's now: walking under it every 0.2 s never drops below 5.5 m/s. Same damage per hit as
+  magic. Any later damage-over-time ability on players should use it (or a type like it).
+- Testing it with one client: `/damage @s <n> <type> by <entity>` every 0.2 s while walking, speed read each tick.
+

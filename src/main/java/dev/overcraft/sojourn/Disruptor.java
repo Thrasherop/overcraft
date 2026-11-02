@@ -12,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -165,10 +164,17 @@ public final class Disruptor {
 		SLOWED.put(e, now);
 	}
 
-	/** The field's damage: from her, through armor and pushing no one (magic, as Sombra's zone). */
+	/**
+	 * The field's damage: from her, through armor, pushing no one and not jolting a player's movement (our own type,
+	 * overcraft:field, in the bypasses_armor, no_knockback and no_impact tags). Magic jolted it: a player hurt is sent the
+	 * server's view of their motion, and one walking through an enemy field slowed to 3.5 m/s on every damage step (#82).
+	 */
+	private static final net.minecraft.resources.ResourceKey<net.minecraft.world.damagesource.DamageType> FIELD =
+		net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, dev.overcraft.Overcraft.id("field"));
+
 	private static DamageSource fieldSource(ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.MAGIC), null, owner);
+			.getOrThrow(FIELD), null, owner);
 	}
 
 	/** Slowed by a field now (tests, the harness). */
