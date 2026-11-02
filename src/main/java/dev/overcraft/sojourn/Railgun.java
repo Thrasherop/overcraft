@@ -230,7 +230,7 @@ public final class Railgun {
 		float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
 		boolean barrier = dev.overcraft.brigitte.Barrier.took;
 		dev.overcraft.brigitte.Barrier.took = false;
-		Combat.credit(owner, dealt);
+		Combat.credit(owner, dealt, target);
 		Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 		if (dealt > 0) {
 			Effects.hitMarker(owner, target, crit);
@@ -317,7 +317,7 @@ public final class Railgun {
 			}
 			double damage = base * falloff * (crit ? CHARGED_CRIT : 1);
 			float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, crit);

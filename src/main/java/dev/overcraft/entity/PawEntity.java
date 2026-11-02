@@ -154,7 +154,7 @@ public class PawEntity extends OwProjectile {
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
 				: Combat.damage(target, damageSources().thrown(this, owner), damage);
 			if (owner instanceof Player cat) {
-				Combat.credit(cat, dealt);
+				Combat.credit(cat, dealt, target);
 				Combat.addFireForDamage(cat, dealt, Ow.toOw(target.getMaxHealth()));
 				if (cat instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);

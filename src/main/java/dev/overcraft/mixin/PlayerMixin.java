@@ -20,6 +20,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Player.class)
 public abstract class PlayerMixin {
 	/**
+	 * A hero's own body box (dev.overcraft.hero.HeroBody) on or off as the hero, the mode and the room around change, before
+	 * Minecraft's tick sets the pose from it.
+	 */
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void overcraft$heroBody(org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		Player self = (Player) (Object) this;
+		// also when the box Minecraft holds isn't the one wanted: the client's own player kept Minecraft's box on rejoin while
+		// the server's was his (found playing: it changed only when a crouch refreshed it)
+		boolean changed = dev.overcraft.hero.HeroBody.update(self);
+		net.minecraft.world.entity.EntityDimensions want = self.getDimensions(self.getPose());
+		if (changed || want.width() != self.getBbWidth() || want.height() != self.getBbHeight()) {
+			self.refreshDimensions();
+		}
+	}
+
+	/**
 	 * Sojourn's Power Slide keeps her low (sojourn-plan.md: a crouch-height box; Minecraft's crouching pose, 1.5 m, is the
 	 * nearest to her mover's 1.25 m): her camera drops and she slides under 1.5 m gaps. On her client from the slide it moves,
 	 * on the server from her kit (dev.overcraft.sojourn.Sojourn.slidingPose).

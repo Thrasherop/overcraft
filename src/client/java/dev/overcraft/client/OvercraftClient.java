@@ -138,6 +138,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
 				ClientSojourn.tick(client);
+			ClientSigma.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 				dev.overcraft.client.effect.SojournFx.tick(client);
@@ -194,6 +195,14 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
 		EntityRendererRegistry.register(OcEntities.SEED, dev.overcraft.client.model.LifeweaverPropRenderer::seed);
 		EntityRendererRegistry.register(OcEntities.TREE_OF_LIFE, dev.overcraft.client.model.LifeweaverPropRenderer::tree);
+		// Sigma's: the Hyperspheres have no model in his data (2D35 / 32B4 are effects only): the item stands in until his
+		// effects (step 10); the barrier is his model C015 with its four orbs FC88
+		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"hypersphere", 0.6f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
+		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
+		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"=sigma_rock", 1.2f, false, 1, false));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -251,6 +260,13 @@ public class OvercraftClient implements ClientModInitializer {
 		// a Life Grip moves whoever it has, hero or not (their own client: ClientLifeweaver.grip)
 		OwMovement.active = entity -> entity == mc.player && (ClientHero.controls() || ClientLifeweaver.gripped());
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
+		// the client's own player's body box follows the client's own hero mode (HeroBody)
+		dev.overcraft.hero.HeroBody.local = player -> player != mc.player ? null
+			: java.util.Optional.ofNullable(ClientHero.hero() != null && ClientHero.heroModeOn() && !player.isSpectator()
+				? ClientHero.hero() : null);
+		// a Stalwart tank's own client resists the slows it moves under (Tank)
+		dev.overcraft.hero.Tank.resistsSlows = entity -> entity == mc.player && ClientHero.controls()
+			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
 			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
@@ -270,6 +286,13 @@ public class OvercraftClient implements ClientModInitializer {
 			return lw != null ? lw : ClientBrigitte.bash(entity);
 		};
 		OwMovement.descent = ClientMercy::descent;
+		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
+		OwMovement.levitating = ClientSigma::levitating;
+		OwMovement.noJump = entity -> entity == mc.player && ClientHero.hero() == Hero.SIGMA
+			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0;
+		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
+			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
+			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;

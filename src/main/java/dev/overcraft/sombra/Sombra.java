@@ -177,7 +177,7 @@ public final class Sombra implements HeroKit {
 			}
 			if (Allies.canHurt(player, e)) {
 				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()));
-				Combat.credit(player, dealt);
+				Combat.credit(player, dealt, e);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 				Effects.hitMarker(player, e, false);
 				Hack.creature(e, HACK_SILENCE, player);
@@ -555,7 +555,7 @@ public final class Sombra implements HeroKit {
 			: 1 - (1 - PISTOL_FALLOFF_MIN) * (metres - PISTOL_FALLOFF_START) / (PISTOL_FALLOFF_END - PISTOL_FALLOFF_START);
 		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
 		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1));
-		Combat.credit(player, dealt);
+		Combat.credit(player, dealt, best);
 		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
 		if (dealt > 0) {
 			if (crit) {

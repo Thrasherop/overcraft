@@ -107,6 +107,13 @@ public final class OwMovement {
 
 	private static final Map<LivingEntity, Climb> CLIMBS = new WeakHashMap<>();
 
+	/** Set by the client: Sigma's Levitation (perk) lifts this entity this tick. */
+	public static Predicate<LivingEntity> levitating = entity -> false;
+	/** Set by the client: an ability holds this entity's jump (Sigma's Accretion gather). */
+	public static Predicate<LivingEntity> noJump = entity -> false;
+	/** Set by the client: Sigma flying in his Gravitic Flux (1 rising in its first 0.6 s, 2 after; 0 not flying). */
+	public static java.util.function.ToIntFunction<LivingEntity> sigmaFlight = entity -> 0;
+
 	/** Set by the client: this entity flies (Jetpack Cat's jetpack). */
 	public static Predicate<LivingEntity> flight = entity -> false;
 	/** Set by the client: ticks into Frenetic Flight (-1 not boosting). */
@@ -382,13 +389,16 @@ public final class OwMovement {
 			&& !entity.isFallFlying();
 	}
 
-	/** Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. */
+	/**
+	 * Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. A Stalwart tank
+	 * (Sigma) takes 40% less of each slow received (a Slowness potion, Local Anesthetic), not of their own (Tank).
+	 */
 	public static double speedFactor(LivingEntity entity) {
 		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed == null || speed.getBaseValue() <= 0) {
 			return 1;
 		}
-		double factor = speed.getValue() / speed.getBaseValue();
+		double factor = (Tank.resistsSlows.test(entity) ? Tank.resistedSpeed(speed) : speed.getValue()) / speed.getBaseValue();
 		if (entity.isSprinting()) {
 			factor /= 1.3; // Minecraft's sprint modifier; heroes don't sprint
 		}
@@ -492,6 +502,9 @@ public final class OwMovement {
 
 	/** Replaces {@code LivingEntity.travelInAir}. {@code input}: x strafe, z forward, as Minecraft passes it. */
 	public static void travel(LivingEntity entity, Vec3 input) {
+		if (sigmaFly(entity, input)) {
+			return;
+		}
 		// Lifeweaver's dash first: its last tick sets the speed he leaves it with, which the steps below then start from
 		// (asked after them, its cap never applied: 12 m from a standing jump, found playing)
 		Vec3 dashing = dash.apply(entity);
@@ -615,6 +628,12 @@ public final class OwMovement {
 			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity) * heavy);
 			dy = step[0];
 			vy = step[1];
+			if (levitating.test(entity)) {
+				// Sigma's Levitation (perk, 51E0 #382): up at 25 m/s² to 3 m/s, gravity off while it holds (M)
+				vy = Math.min(Ow.speed(dev.overcraft.sigma.SigmaStats.LEVITATION_SPEED), v.y + Ow.accel(dev.overcraft.sigma.SigmaStats.LEVITATION_ACCEL));
+				dy = (v.y + vy) / 2;
+				entity.resetFallDistance();
+			}
 			if (descent.test(entity) && vy < -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED)) {
 				// Angelic Descent: her fall held at 2 m/s (W; her data's property 978C5453 = 2.0)
 				vy = -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED);
@@ -974,6 +993,46 @@ public final class OwMovement {
 		return true;
 	}
 
+	/**
+	 * Sigma's flight in Gravitic Flux (1E41 #976 / #977): no gravity, 7.15 m/s every way (W A S D level along his facing,
+	 * jump up, crouch down), reaching it at 8 x that a second and stopping as fast with nothing held (D m_5C6B4602 = 8: L),
+	 * slowed as any move is. In its first 0.6 s he rises at 10 m/s² (#954) whatever he holds. True when it moved him.
+	 */
+	private static boolean sigmaFly(LivingEntity entity, Vec3 input) {
+		int flight = sigmaFlight.applyAsInt(entity);
+		if (flight == 0) {
+			return false;
+		}
+		entity.resetFallDistance();
+		boolean rising = flight == 1;
+		double speed = dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_SPEED * speedFactor(entity);
+		double yaw = Math.toRadians(entity.getYRot());
+		Vec3 forward = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+		Vec3 side = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
+		double vert = rising ? 0 : (jumpKeyHeld.test(entity) ? 1 : 0) - (crouchHeld.test(entity) ? 1 : 0);
+		Vec3 dir = forward.scale(Math.signum(input.z)).add(side.scale(Math.signum(input.x))).add(0, vert, 0);
+		Vec3 wish = dir.lengthSqr() > 1.0E-6 ? dir.normalize().scale(speed) : Vec3.ZERO;
+		double rate = dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_ACCEL * dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_SPEED;
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		Vec3 travelled = Vec3.ZERO;
+		double dt = 0.05 / SUBSTEPS;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			if (rising) {
+				Vec3 h = approach(new Vec3(v.x, 0, v.z), new Vec3(wish.x, 0, wish.z), rate * dt);
+				v = new Vec3(h.x, v.y + dev.overcraft.sigma.SigmaStats.FLUX_START_RISE * dt, h.z);
+			} else {
+				v = approach(v, wish, rate * dt);
+			}
+			travelled = travelled.add(v);
+		}
+		Vec3 step = travelled.scale(1.0 / SUBSTEPS / 20);
+		entity.setDeltaMovement(step);
+		entity.move(MoverType.SELF, step);
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+		return true;
+	}
 	/**
 	 * Mercy's Guardian Angel (her graph 006E: a StateMoveTo): her position (feet) straight to the point beside the ally at
 	 * 17 m/s (25 in Valkyrie), no gravity, the walls stopping her as any move. Within the arrival distance she holds there

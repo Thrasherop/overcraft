@@ -1273,6 +1273,19 @@ public final class HeroModelRenderer {
 	}
 
 	/**
+	 * A model with no texture of its own drawn as added light in one colour (ARGB; its alpha the strength), seen from both
+	 * sides, full bright: an energy field whose look is a shader in Overwatch (Sigma's barrier C015, material 7C75: no
+	 * texture in its export), a stand-in until its effect is read.
+	 */
+	public static void submitField(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector, int argb) {
+		HudShapes.ensure();
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, argb, false, false));
+		}
+	}
+
+	/**
 	 * The model again as pure added light, white-cyan at this strength (0 to 1): Protection Suzu's cleanse, which in
 	 * Overwatch turns them a glowing white (the second critique: the overlay alone only paled her, a ghost).
 	 */

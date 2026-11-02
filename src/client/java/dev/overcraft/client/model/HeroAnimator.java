@@ -130,6 +130,8 @@ public final class HeroAnimator {
 	private boolean juno, junoGliding;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
+	/** Sigma (his actions' clips: trigger). */
+	private boolean sigma;
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
@@ -273,6 +275,39 @@ public final class HeroAnimator {
 			String base = action.equals("ult") ? "overclock" : "disruptor";
 			clip = a.sojournSliding ? base + "_slide" : base;
 			viewClip = action.equals("ult") ? "" : a.sojournSliding ? "disruptor_slide" : "disruptor";
+		}
+		if (a.sigma) {
+			// his actions' clips (sigma.txt / sigma_1p.txt): the volley's three first-person clips cycle (187F v59 0 -> 1 -> 2), the
+			// third-person set holds one (fire_b: the clip map's D5); Grasp's start then its hold (0x60A -> 0x609); the barrier's
+			// deploy (0x1B7) and recall (0x1B6, first person only)
+			switch (action) {
+				case "spheres_0", "spheres_1", "spheres_2" -> {
+					clip = "fire_b";
+					viewClip = "fire_" + (char) ('a' + (action.charAt(8) - '0'));
+				}
+				case "grasp" -> {
+					clip = "grasp_start";
+					viewClip = "grasp_start";
+				}
+				case "grasp_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				case "barrier_recall" -> {
+					clip = "";
+					viewClip = "barrier_recall_sm1";
+				}
+				// Accretion: the gather (alias 0x608: 3P accretion_cast, 1P its first clip) and the throw (0x60E); cut short, none
+				case "accretion_cast" -> viewClip = "accretion_cast_se0";
+				case "accretion_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				// Gravitic Flux: start (0x1B8), aim (0x60F), cast (0x691), lift (0x175), slam (0x1B9, no first-person clip)
+				case "flux_slam" -> viewClip = "";
+				default -> {
+				}
+			}
 		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
@@ -1390,6 +1425,7 @@ public final class HeroAnimator {
 		junoGliding = glideNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
+		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
 		if (slideNow && !sojournSliding) {
 			slideSince = now;
@@ -1724,7 +1760,10 @@ public final class HeroAnimator {
 				case "crouch_walk_back_left" -> "crouch_walk_left";
 				case "crouch_walk_back_right" -> "crouch_walk_right";
 				case "crouch_walk_left", "crouch_walk_right" -> "crouch_walk";
-				case "crouch_idle" -> "crouch_walk"; // held still (see the rate below)
+				// no crouch-walk (Sigma: his one move clip for everything)
+				case "crouch_walk" -> "run";
+				// held still (see the rate below); a hero with no crouch clips at all (Sigma floats) stands
+				case "crouch_idle" -> model.clips.containsKey("crouch_walk") ? "crouch_walk" : "idle";
 				case "run_back", "strafe_left", "strafe_right" -> "run";
 				case "land", "jump" -> "fall";
 				// Lúcio has no fall clip: his jump's rise

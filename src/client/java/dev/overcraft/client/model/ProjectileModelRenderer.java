@@ -77,7 +77,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		State s = (State) state;
 		s.yRot = entity.getYRot(partialTicks);
 		s.xRot = entity.getXRot(partialTicks);
-		s.loaded = HeroModels.get("projectile_" + model);
+		// "=name": a hero model by its own name (Sigma's rock, sigma_rock), else projectile_<name>
+		s.loaded = HeroModels.get(model.startsWith("=") ? model.substring(1) : "projectile_" + model);
 		// the flight effects (trail, glow, sparkles), fed with where it is this frame
 		Vec3 at = entity.getPosition(partialTicks);
 		float dt = Fx.since(entity.getId());

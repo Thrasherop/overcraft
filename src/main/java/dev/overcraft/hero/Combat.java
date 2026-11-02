@@ -234,6 +234,14 @@ public final class Combat {
 		Perks.add(hero, points);
 	}
 
+	/**
+	 * The same, done to {@code target}: an enemy tank (a player in hero mode as a tank, not on the earner's side) gives 40%
+	 * less of both (the Tank role: Tank.ultFactor). Healing a tank ally counts in full.
+	 */
+	public static void credit(Player hero, double points, @org.jspecify.annotations.Nullable Entity target) {
+		credit(hero, points * Tank.ultFactor(hero, target));
+	}
+
 	public static void addUltCharge(Player hero, double points) {
 		addUltCharge(hero, points, false);
 	}
@@ -301,6 +309,7 @@ public final class Combat {
 			case SOMBRA -> (int) dev.overcraft.sombra.SombraStats.ULT_COST;
 			case BRIGITTE -> (int) dev.overcraft.brigitte.BrigitteStats.ULT_COST;
 			case JUNO -> (int) dev.overcraft.juno.JunoStats.ULT_COST;
+			case SIGMA -> (int) dev.overcraft.sigma.SigmaStats.ULT_COST;
 			case SOJOURN -> (int) dev.overcraft.sojourn.SojournStats.ULT_COST;
 			default -> 1;
 		};

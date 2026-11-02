@@ -40,7 +40,7 @@ public final class HeroModels {
 	 * torii, Jetpack Cat's rings and cones: Fx.mesh) load only from this list.
 	 */
 	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii",
-		"cat_torus", "cat_cone", "cat_sphere", "cat_purr_torus", "cat_purr_wall", "cat_half_ring",
+		"cat_torus", "cat_cone", "cat_sphere", "cat_purr_torus", "cat_purr_wall", "cat_half_ring", "cat_bubble",
 		// Lifeweaver's: his Petal Platform, his Tree of Life, and his seed (model 126CC: thrown, and Sow the Seed's on the ground)
 		"lifeweaver_platform", "lifeweaver_tree", "lifeweaver_seed", "projectile_lifeweaver_seed",
 		// his effects' meshes (LifeweaverFx): the platform's bloom outline, Life Grip's bud and its point's flower
@@ -119,6 +119,12 @@ public final class HeroModels {
 			if (hero == Hero.ANA) {
 				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
 				names.add("ana_pistol");
+			}
+			if (hero == Hero.SIGMA) {
+				// his Experimental Barrier (C015), its emitter orbs (FC88) and the Accretion rock (C5CA): drawn from steps 5 / 7
+				names.add("sigma_barrier");
+				names.add("sigma_barrier_orb");
+				names.add("sigma_rock");
 			}
 			if (hero == Hero.BRIGITTE) {
 				// her flail's head and her shield (HeroWeapon.extras; the barrier itself later)

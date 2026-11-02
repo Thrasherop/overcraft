@@ -32,6 +32,16 @@
   winners in as the defaults.
 
 ## Traps
+- **runClient2's harness port is fixed at 25600** (build.gradle `-Dovercraft.devPort=25600`; `OC_DEV_PORT` only tells
+  `dev.py` where to connect). Two agents both using runClient2 share one port: commands from another session landed in
+  Sigma's client (2026-11-02). Know which client answers before trusting a result (`state`'s player name: Viewer on run2).
+- **Hero mode's crouch is `key crouch`** (Ctrl), not `key sneak`: Shift is ability 1 (Sigma's Kinetic Grasp).
+- **Superflat slimes come back after a restart** even with `spawn_monsters` false (a fresh slime chunk spawns them before the
+  rule runs): Sigma died to them twice at 600 health. `difficulty peaceful` while looking, `normal` only for a mob test, then
+  peaceful again; and `Save and Leave` (pause menu, GUI 66 213 at 1920x1080) before killing the client, or the hero is lost.
+- **Measuring knockback:** `trace start`, the hit, `trace`: the first tick's horizontal speed after the hit, the same hit on a
+  control hero (Kiriko). A creeper `{Fuse:1s,ignited:1b,NoAI:1b}` 3 m off, with Resistance V so the control lives; one run in
+  three shows only the tick after the push (2.70 instead of 4.95): take the highest of a few.
 - **Taps are shorter than a tick:** `key <action> tap` sets and clears within one frame, so code that reads `isDown()`
   once a tick never sees it. A double ping needs two holds of 0.1 s. Hold it: `down`, a 0.15-0.2 s sleep, `up`.
 - Holding attack doesn't mine unless the window has the mouse (`continueAttack` checks `isMouseGrabbed`). Minecraft
@@ -130,3 +140,14 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **Heap for one client with every hero's models: 3 GB** (2026-11-02, Sigma): `JAVA_TOOL_OPTIONS=-Xmx2G` ran out of memory
+  loading the models (Juno's 46 MB glTF) and the client hung on its loading screen. A fresh `run` directory opens on the
+  accessibility screen: `close` it before `newworld` / `openworld`.
+- **Summoned test mobs** (2026-11-02): `equipment:{head:...}` replaces a skeleton's bow (it punches: give `mainhand` a bow
+  too); `attributes:[{id:"minecraft:movement_speed",base:0.0}]` keeps a mob on its mark while it still shoots (NoAI ones
+  don't); husks don't burn in daylight; armour changes every number (a husk's 2 points take 1.6-4.8% per hit: Minecraft's
+  armour rule), so count it in the expected value. `kill @e[type=!player]` also removes a hero's own entities (Sigma's
+  barrier). `trace` also prints Sigma's new spheres (`h`) and his barrier (`b x y z state share`) per tick.
+- **A ravager isn't held by `movement_speed` 0** (2026-11-02, Sigma): one walked 15 m to Sigma and killed him mid-test. Summon ravagers
+  NoAI (Overcraft's own lifts and knockdowns still move NoAI mobs: they move them by hand). A `state` health read between
+  steps shows it early (his health was falling before the ult went off).

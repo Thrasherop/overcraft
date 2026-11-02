@@ -136,6 +136,7 @@ public final class HeroManager {
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
+		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
 	}
 
@@ -174,9 +175,10 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
+		// Sigma: Gravitic Flux's flight (and Levitation) land him
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -270,6 +272,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOJOURN) {
 			dev.overcraft.sojourn.Sojourn.clear(player, state);
 		}
+		if (state.hero == Hero.SIGMA) {
+			dev.overcraft.sigma.Sigma.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -360,6 +365,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.SOJOURN) {
 				dev.overcraft.sojourn.Sojourn.clear(player, state);
+			}
+			if (state.hero == Hero.SIGMA) {
+				dev.overcraft.sigma.Sigma.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());
@@ -472,6 +480,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOJOURN && input.extra() != 0) {
 			dev.overcraft.sojourn.Sojourn.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.SIGMA && input.extra() != 0) {
+			dev.overcraft.sigma.Sigma.extra(player, state, input.extra());
+		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
 		}
@@ -482,6 +493,7 @@ public final class HeroManager {
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
+		dev.overcraft.sigma.GraviticFlux.tickAll(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		dev.overcraft.comms.Comms.tick();

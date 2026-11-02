@@ -545,7 +545,7 @@ public final class Lifeweaver implements HeroKit {
 		if (hits.size() >= SUPERBLOOM_THORNS) {
 			hits.clear();
 			float dealt = Combat.damage(target, player.damageSources().thrown(thorn, player), SUPERBLOOM_DAMAGE);
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);

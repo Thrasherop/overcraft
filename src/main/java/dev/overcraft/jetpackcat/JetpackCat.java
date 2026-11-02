@@ -279,7 +279,7 @@ public final class JetpackCat implements HeroKit {
 				continue;
 			}
 			double dealt = Combat.damage(w.target, player.damageSources().playerAttack(player), CLAWS_OUT_DAMAGE / Ow.ticks(1));
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, w.target);
 		}
 	}
 
@@ -491,7 +491,9 @@ public final class JetpackCat implements HeroKit {
 		s.purrTicks = 0;
 		Combat.animate(player, "purr");
 		ServerLevel level = player.level();
-		Effects.play(level, "purr", player.position(), Vec3.ZERO, player, player.getId(), player);
+		// dx 1: her "Hide Purr Range Ring" is on, and the clients make no range wall (70F9)
+		boolean hideRing = dev.overcraft.hero.HeroManager.options(player).hidePurrRing();
+		Effects.play(level, "purr", player.position(), new Vec3(hideRing ? 1 : 0, 0, 0), player, player.getId(), player);
 		HeroSounds.toOwner(player, OcSounds.JC_PURR_CAST);
 		Voice.say(player, "purr", 1);
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)
@@ -502,10 +504,11 @@ public final class JetpackCat implements HeroKit {
 			}
 			double scale = d <= PURR_RADIUS / 2 ? 1 : 1 - 0.7 * (d - PURR_RADIUS / 2) / (PURR_RADIUS / 2);
 			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), PURR_DAMAGE * scale);
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, e);
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			out = out.lengthSqr() < 1.0E-6 ? player.getViewVector(1.0f).multiply(1, 0, 1) : out.normalize();
-			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0);
+			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0)
+				.scale(dev.overcraft.hero.Tank.knockbackFactor(e));
 			e.push(push.x, push.y, push.z);
 			e.syncVelocity = true;
 			// a blue-violet flash at its chest (741C)
@@ -657,13 +660,13 @@ public final class JetpackCat implements HeroKit {
 			if (e == player || !e.isAlive() || d > radius || !Allies.canHurt(player, e)) {
 				continue;
 			}
-			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE));
+			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE), e);
 			// the knock-down (ours: Minecraft has no stun, so the heaviest Slowness and Weakness: no moving, no hitting)
 			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
 			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			if (out.lengthSqr() > 1.0E-6) {
-				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH));
+				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH) * dev.overcraft.hero.Tank.knockbackFactor(e));
 				e.push(push.x, 0.1, push.z);
 				e.syncVelocity = true;
 			}

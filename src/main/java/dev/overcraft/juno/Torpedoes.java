@@ -230,7 +230,7 @@ public final class Torpedoes {
 				}
 			} else {
 				float dealt = Combat.damage(f.target, source(f.juno), TORPEDO_DAMAGE);
-				Combat.credit(f.juno, dealt);
+				Combat.credit(f.juno, dealt, f.target);
 				Combat.addFireForDamage(f.juno, dealt, Ow.toOw(f.target.getMaxHealth()));
 				// contact set 07E9 type 0 (M: characters): B3C5 hers, B3E2 at the hit for the rest (500 m)
 				JunoSounds.own(f.juno, "torpedo.hit");

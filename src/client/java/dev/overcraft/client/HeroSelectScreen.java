@@ -243,7 +243,10 @@ public class HeroSelectScreen extends OwScreen {
 			try {
 				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
 				// preview turns toward a point: the box's own centre is straight ahead
-				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview),
+				// Minecraft centres the entity on half its box: a bigger hero box (Sigma's 2.5 m: HeroBody) would move every
+				// previewed hero, so the drop is kept against Minecraft's 1.8 m (found playing: Kiriko previewed low)
+				float boxShift = (minecraft.player.getBbHeight() - 1.8f) / 2;
+				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview) - boxShift,
 					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
@@ -466,12 +469,20 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f : 1;
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f
+			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
+			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : 1;
 	}
+
+	/**
+	 * Sigma's framing and drop: he floats with his head 2.12 m up (his idle's Head bone), so framed as the others (head near
+	 * the top, cut at mid-thigh) he is drawn larger and lower (ours, by eye; DevServer "selectframe" sets them).
+	 */
+	public static final float[] SIGMA_FRAME = {0.62f, 0.85f};
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
 	private static float drop(Hero hero) {
-		return hero == Hero.JETPACK_CAT ? 0.45f : MODEL_DROP;
+		return hero == Hero.JETPACK_CAT ? 0.45f : hero == Hero.SIGMA ? SIGMA_FRAME[1] : MODEL_DROP;
 	}
 
 	/** One ability of the kit: the key and the ability (its name, description and icon go by this id). */
@@ -533,6 +544,14 @@ public class HeroSelectScreen extends OwScreen {
 			// Whip Shot, Repair Pack, Rally, Inspire (her passive)
 			// her data's loadouts in order: Mediblaster (the left button), Pulsar Torpedoes (the right), Glide Boost, Martian
 			// Overboots (jump), Hyper Ring, Orbital Ray
+			// his data's loadouts in order: Hyperspheres (the left button), Experimental Barrier (the right), Kinetic Grasp,
+			// Accretion, Gravitic Flux; no passive of his own (Stalwart is the sub-role's)
+			case SIGMA -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "hyperspheres"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "experimental_barrier"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "kinetic_grasp"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "accretion"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "gravitic_flux"));
 			case JUNO -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "mediblaster"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "pulsar_torpedoes"),

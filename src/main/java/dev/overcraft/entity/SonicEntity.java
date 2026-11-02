@@ -92,14 +92,14 @@ public class SonicEntity extends OwProjectile {
 		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage)
 			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
 		// a small push along the round's flight (ours: the knockback exists, no source gives it)
-		Vec3 push = getDeltaMovement().normalize().scale(Ow.speed(LucioStats.AMP_KNOCKBACK));
+		Vec3 push = getDeltaMovement().normalize().scale(Ow.speed(LucioStats.AMP_KNOCKBACK) * dev.overcraft.hero.Tank.knockbackFactor(target));
 		if (part == null && target.isAlive()) {
 			target.push(push.x, 0, push.z);
 			target.syncVelocity = true;
 		}
 		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {
-			Combat.credit(owner, dealt);
+			Combat.credit(owner, dealt, target);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 			if (owner instanceof ServerPlayer shooter && dealt > 0) {
 				Effects.hitMarker(shooter, target, crit);

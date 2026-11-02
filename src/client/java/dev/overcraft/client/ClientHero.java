@@ -328,7 +328,8 @@ public final class ClientHero {
 			}
 		}
 
-		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player);
+		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
+			| ClientSigma.input(player);
 		if (held != lastHeld || pressed != 0 || extra != 0) {
 			lastHeld = held;
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));

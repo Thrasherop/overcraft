@@ -866,6 +866,18 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Kinetic Grasp (Shift) and Accretion (E), his data's ABILITY 1 / 2, in Kiriko's two places (ours)
+			ability(g, hero, w, "kinetic_grasp", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.GRASP_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.sigma.Sigma.MODE_GRASP) != 0) {
+				// lit while it holds (as Sojourn's slide)
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "accretion", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.ACCRETION_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.SOJOURN) {
 			// Power Slide (Shift: marked while she slides) and Disruptor Shot (E), her data's ABILITY 1 / 2, in Kiriko's two
 			// places (ours)
@@ -1042,6 +1054,25 @@ public final class HeroHud {
 		g.pose().popMatrix();
 	}
 
+	/**
+	 * Sigma's barrier on its panel: its health (0-650) as a number over a band along the panel's foot, light blue, brighter
+	 * while it's out; while it can't go out (recalled 1 s, broken 5 s) the band grey and the seconds left instead (ours:
+	 * Overwatch shows the health over his crosshair with the "Experimental Barrier UI" option).
+	 */
+	private static void barrierHealth(GuiGraphicsExtractor g, float share, int health, float cooldown, boolean out, float x, float y,
+									  float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		boolean waiting = cooldown > 0;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(share, 0, 1), 5, waiting ? 0x99A0A0A0 : out ? 0xFF9FE6FF : 0xB37FC8E8);
+		String number = waiting ? String.format(java.util.Locale.ROOT, "%.1f", cooldown) : String.valueOf(health);
+		brush(g, number, x + width - 34, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 34, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	/** Charges left on an ability's box (Flash Heal with Double Dose): the count in its corner (ours). */
 	private static void charges(GuiGraphicsExtractor g, int count, float x, float base, float w) {
 		float cx = x + 32;
@@ -1130,6 +1161,17 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Experimental Barrier (the right button) where Kiriko's ofuda panel is, its health along the panel's foot; Hyperspheres
+			// (the left: no ammo) where her kunai are
+			weapon(g, hero, w, "experimental_barrier", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			barrierHealth(g, s.meter(), s.secondaryAmmo(), s.secondaryReload(), (s.mode() & dev.overcraft.sigma.Sigma.MODE_BARRIER_OUT) != 0,
+				w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "hyperspheres", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SOJOURN) {
 			// Charged Shot (the right button) with her energy where Kiriko's ofuda panel is, the Railgun's 45 rounds (the left)
 			// where her kunai are

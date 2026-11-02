@@ -277,17 +277,20 @@ public final class Lucio implements HeroKit {
 			if (to.length() > WAVE_RANGE + target.getBbWidth() / 2 || to.normalize().dot(look) < cosLimit || !player.hasLineOfSight(target)) {
 				continue;
 			}
-			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage);
+			float hit = Combat.damage(target, player.damageSources().playerAttack(player), damage);
+			dealt += hit;
+			// each target's own share (an enemy tank's 40% less: Tank)
+			Combat.credit(player, hit, target);
 			if (target.isAlive()) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
-				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE))
+					* dev.overcraft.hero.Tank.knockbackFactor(target));
 				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));
 				target.syncVelocity = true;
 				// the lockout (ours: Minecraft has no "can't move", so a moment of heavy Slowness)
 				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(WAVE_LOCKOUT), 9, false, false));
 			}
 		}
-		Combat.credit(player, dealt);
 		s.ability3Cooldown = Ow.ticks(WAVE_COOLDOWN);
 		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(WAVE_RECOVERY));
 		s.volleyLeft = 0;

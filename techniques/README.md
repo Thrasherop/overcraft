@@ -49,12 +49,14 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Sound**: [sounds](sound/sounds.md). Bound and in-the-head sounds, checking what played, voice and music from the
   data.
 - **Minecraft**: [minecraft_26](minecraft/minecraft_26.md). Engine facts that cost time: input codes, projectiles,
-  the dragon, the HUD bars, cameras.
+  the dragon, the HUD bars, cameras. [barriers](minecraft/barriers.md): barriers as entities, what stops Minecraft's
+  projectiles, blasts and hits (Sigma's, Brigitte's).
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
   [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero,
-  being built); [dva](heroes/dva.md), hers (the second Tank, after Sigma's on feature/sigma; two bodies; researched).
+  being built); [sigma](heroes/sigma.md), his (the first Tank, being built: the Tank role, his body box);
+  [dva](heroes/dva.md), hers (the second Tank, on Sigma's Tank shell; two bodies; being built).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:
