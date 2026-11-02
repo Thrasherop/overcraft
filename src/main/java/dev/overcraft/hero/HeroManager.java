@@ -116,6 +116,7 @@ public final class HeroManager {
 		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
+		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
 	}
 
 	private HeroManager() {
@@ -153,8 +154,9 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
-		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
-			&& state.softLanding;
+		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md)
+		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
+			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
 	/** Hero mode is on (on unless switched off with G). */

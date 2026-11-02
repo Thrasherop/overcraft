@@ -47,6 +47,10 @@ def main():
     from importlib import import_module
     reader = import_module(ADDON + ".readers.OWAnimReader")
     blanim = import_module(ADDON + ".importer.blender.BLAnimation")
+    # the add-on reports a file it can't open with a popup, which crashes headless Blender (no window: popup_menu_end): every
+    # --entity import of Brigitte's and Juno's models died there. Printed instead, the import goes on without that file.
+    ui = import_module(ADDON + ".ui.UIUtil")
+    ui.createPopup = lambda title, label, icon="ERROR": print(f"OWM_POPUP {title}: {label}")
 
     entity = next((a.split("=", 1)[1] for a in args if a.startswith("--entity=")), None)
     if entity:

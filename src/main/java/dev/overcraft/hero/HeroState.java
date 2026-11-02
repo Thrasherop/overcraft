@@ -155,6 +155,8 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Juno: ticks into Glide Boost (-1 not gliding). */
+	public int junoGlide = -1;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
 	public int whipTicks = -1, whipBackAt;
 	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */

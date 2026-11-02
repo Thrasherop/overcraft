@@ -148,6 +148,11 @@ public abstract class LivingEntityMixin {
 			return power * dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK
 				* (s.gaPhase == dev.overcraft.mercy.Mercy.GA_LAUNCHED ? dev.overcraft.mercy.MercyStats.GA_LAUNCH_KNOCKBACK_VALKYRIE : 1);
 		}
+		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s
+			&& dev.overcraft.juno.Juno.gliding(s)) {
+			// Juno in Glide Boost takes half the knockback (her data's 0A04B51B = 1DF3 -0.5, 47B7 #774)
+			return power * dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
+		}
 		return (Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.JETPACK_CAT
 			? power * dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN : power;
 	}
