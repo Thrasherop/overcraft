@@ -133,5 +133,38 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **Her emote sounds** (`emotes.txt`, Brigitte's section; `research\brigitte\scripts\emote_sounds\`): as Sombra's, but her
     Taunt's 4790 is a random container of three Layer takes, which the shared `emote_events.py` stops on. Patched at
     import (`brigitte_patch.py`: the first take is built) so the shared generator still runs unedited.
+- <a id="juno-sounds"></a>**Juno's map (2026-11-01; `tools/soundmaps/juno.txt`, read for wiring in
+  `tools/reference/juno-sounds.md`; scripts `research\juno\scripts\sounds\` (Brigitte's pipeline, `juno_gen.py` writes the
+  map), data `research\juno\sounds\`; hub: [juno](../heroes/juno.md)):**
+  - **A volley's stream is built per volley, its time modulators at their start.** The Mediblaster's 5C2D is held for each
+    0.353 s volley. Its containers are trigger-rate repeats (the shared fire-rate parameter, 0.06 s at its default). Its
+    time modulators would pitch the stream 527 cents down at their end, the value a loop is read at, which is far past
+    anything a volley reaches. So `juno_gen.py` passes them as 0 (a scenario) and repeats each trigger-rate container at
+    its period across the volley (`tile=`). The same `tile` builds the torpedo lock tick, 0.02 s repeats, as 1.0 s of it.
+  - **The loop rule only counts `Sound` beds.** The torpedo's flight loop is three single-file *random containers*. The
+    rule saw no bed and took the loudest layer's period: a 2 s pitched layer. That dropped the two 6 s beds as "longer
+    than the loop". Check `--print`'s dropped lines on every loop; `looplen=` sets the length. A loop that lives a fixed
+    time with beds of 7-22 s, like the Orbital Ray's 8 s hum, is better built as one long one-shot that the game stops.
+  - **An effect can pick its copy by the local player, not by audience.** 4795 #395 asks whether the local player is Juno:
+    on her client it plays 5A90 (the heal confirm), and on everyone else's 56DD (the healed ally's own sound plus a 12 m
+    copy). The same holds for 47DD's "you are the torpedo's target".
+  - **Projectile slots, again:** `m_2170A015` is the "sound only" slot as the projectile is made (the Mediblaster's 5C5F, and
+    the ring's 5F2F). `m_A18274A3` is "on a target", with the shared 4010 -> 8DE7 crack, as in Ana's map. Child entities
+    of a projectile carry its flight loop (the torpedoes' 5350 / 5A5B).
+  - **The decompiler can print two nodes with one uid** (4695 #1132, 4441 #586, 4857 #1205). Their edges are listed
+    together, so a branch read from them is L until the node types are told apart.
+  - **A Play target can exist nowhere** (as Sombra's Hotfix): the torpedo "incoming" warning's B39F plays an object in none of
+    the 1148 banks. The moment is in the graph, but the sound is not in the build.
+  - **Adding one hero to another worktree's pack without touching the rest.** The sounds step deletes the whole
+    `sounds\` folder and rebuilds it from the running worktree's maps. To avoid that:
+    1. Copy `build_asset_pack.py` into a scratch root that holds only `tools/soundmaps/<hero>.txt`.
+    2. Build there with `OC_ASSET_PACK=<scratch pack>`.
+    3. Copy `sounds\<hero>\` into the target pack.
+    4. Merge only the `<hero>.*` keys into its `sounds.json` and `lang\en_us.json`.
+
+    Back the two JSON files up first.
+  - **Where the extra banks went:** for this pass the owner asked for extracted audio under `research\juno\sounds\`. The
+    banks her export lacked are in `research\juno\sounds\ExtraSounds\Juno`, reached from the build root as
+    `../../research/juno/sounds/ExtraSounds/Juno/...`. `measure_juno.py`'s `TOPS` points there.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
   (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

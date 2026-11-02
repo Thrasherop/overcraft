@@ -10,6 +10,12 @@ with: [workshop_recordings](../game-data/workshop_recordings.md) · built the wa
 - **The data map:** `tools/reference/juno-map.md` (her kit and movement from her graphs, node by node); the detail in
   `E:\Overwatch Archive\research\juno\` (`work_kit\kit_juno.md`, `work\assets.md`, `work\clipmap.md`, `extract\`).
 - **The plan:** `tools/reference/juno-plan.md` (where the sources disagree, what maps onto Overcraft, the order).
+- **Her sounds and voice (read 2026-11-01, not yet wired or heard):**
+  - The map is `tools/soundmaps/juno.txt`: 70 rules and 35 voice events, each with its 02C, effect, graph node and
+    confidence.
+  - The wiring list is `tools/reference/juno-sounds.md`.
+  - What the pass taught (volley streams, loop beds, copies picked by the local player, the decompiler's duplicate uids):
+    [sounds](../sound/sounds.md#juno-sounds).
 - **Her movement in the real game:** the owner's Workshop recording of 2026-11-01 (`tools/workshop/movement_recorder.txt`),
   read by `tools/workshop/analysis/juno.py`; the log and its tables in
   `E:\Overwatch Archive\research\movement\workshop-2026-11-01\`.
