@@ -333,10 +333,14 @@ def add_sounds(source):
 
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
-VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "sojourn": "Sojourn"}
+VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
-VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "sojourn": "../../research/sojourn/extract"}
+VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
+                   "sombra": "../../research/sombra/extract", "brigitte": "../../research/brigitte/extract",
+                   "lifeweaver": "../../research/lifeweaver/extract",
+                   "sojourn": "../../research/sojourn/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -358,9 +362,30 @@ VOICELINE_TABLES = {"jetpack_cat": ("Jetpack Cat", {
 
 
 def voice_text(file_name):
-    """The spoken text DataTool puts in a voice file's name ("<id>.0B2-<text>.ogg"; "?" became "_")."""
+    """The spoken text DataTool puts in a voice file's name ("<id>.0B2-<text>.ogg"): any character a file name can't hold
+    became "_" (a "?", the quotes round "_perfect world_", the colon after "(Swedish)"), so the .txt beside it is read
+    first (spoken_text)."""
+    import re
     text = file_name.split(".0B2-", 1)[-1].rsplit(".", 1)[0]
-    return text.replace("(Japanese)_ ", "(Japanese) ").replace("_", "?")
+    text = re.sub(r"^\(([^)]+)\)_ ", r"() ", text)
+    text = re.sub(r"(^|\s)_([^_]+)_(?=[\s.,!]|$)", r'""', text)
+    return text.replace("_", "?")
+
+
+def spoken_text(ogg):
+    """A voice file's spoken text: the subtitle DataTool wrote beside it (--subtitles-with-sounds: "<name>.txt", UTF-16)
+    when there is one, the exact line with its quotes and question marks (#77); else what its name says."""
+    txt = ogg.with_suffix(".txt")
+    if txt.exists():
+        raw = txt.read_bytes()
+        for enc in ("utf-16", "utf-16-le", "utf-8"):
+            try:
+                text = raw.decode(enc).strip().strip("﻿")
+                if text:
+                    return text
+            except UnicodeDecodeError:
+                pass
+    return voice_text(ogg.name)
 
 
 def add_voicelines(source, out, sounds):
@@ -376,19 +401,26 @@ def add_voicelines(source, out, sounds):
         base = root / "Unlocks" / "Heroes" / folder / "VoiceLine"
         spoken = {}
         for f in (root / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
-            spoken[f.name.split(".", 1)[0]] = voice_text(f.name)
+            if ".0B2-" in f.name or f.name.split(".", 1)[0] not in spoken:
+                spoken[f.name.split(".", 1)[0]] = spoken_text(f)
         if not base.exists():
             print(f"no voice line unlocks for {hero}: run DataTool extract-unlocks <out>/Unlocks with {folder}|voiceline=*")
             continue
         listed = []
+        seen_files = {}
         for unlock in sorted(d for d in base.glob("*/*") if d.is_dir()):
             name = unlock.name.replace("_", "?")
             key = slug(name)
-            if key in {e["id"] for e in listed}:
-                continue
             files = sorted(unlock.glob("*.ogg"))
             if not files:
                 continue
+            if key in {e["id"] for e in listed}:
+                # the same unlock listed under two groups; two different lines with one name (Brigitte's Season 10 "Get
+                # lost!" and Anniversary "Get Lost", 4A230 / 4A231) both stay, the second named by its group (#77)
+                if files[0].name.split(".", 1)[0] in seen_files.get(key, ()):
+                    continue
+                key = key + "_" + slug(unlock.parent.name)
+            seen_files.setdefault(key, set()).add(files[0].name.split(".", 1)[0])
             event = f"{hero}.voiceline.{key}"
             entries = []
             for i, f in enumerate(files):

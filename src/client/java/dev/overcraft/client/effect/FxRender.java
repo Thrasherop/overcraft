@@ -44,6 +44,19 @@ public final class FxRender {
 		.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
 		.build());
 
+	/**
+	 * The same under Improved Transparency: Minecraft's own additive form (OIT_ADDITIVE, as its lightning and energy swirl
+	 * have), adding light without covering what's behind. With the emissive entity set (alpha-blended) every effect's quad
+	 * covered the scene with its black texels: Orbital Ray a black square (found in the 0.3.29 second pass).
+	 */
+	private static final net.minecraft.client.renderer.oit.OitPipelineSet ADDITIVE_OIT = RenderPipelines.register(
+		net.minecraft.client.renderer.oit.OitPipelineSet.builder("overcraft_effect_additive", RenderPipeline.builder(RenderPipelines.OIT_ENTITY_SNIPPET)
+			.withShaderDefine("EMISSIVE")
+			.withShaderDefine("NO_OVERLAY")
+			.withShaderDefine("NO_CARDINAL_LIGHTING")
+			.withShaderDefine("OIT_ADDITIVE")
+			.withCull(false)).build());
+
 	private static final Map<Identifier, RenderType> ADDITIVE_TYPES = new HashMap<>();
 
 	/**
@@ -85,8 +98,37 @@ public final class FxRender {
 			BlendFactor.ONE, BlendFactor.ZERO, BlendOp.ADD)), GpuFormat.RGBA8_UNORM, ColorTargetState.WRITE_ALL))
 		.build());
 
+	/**
+	 * Improved Transparency's shadow: one blended pass (Minecraft's entity shadow, in triangles) with its order-independent
+	 * pipelines; every blended render type needs them in that mode, or the frame crashes (found in the 0.3.29 release play).
+	 */
+	private static final RenderPipeline HERO_SHADOW_PLAIN = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.ENTITY_SHADOW_SNIPPET)
+		.withLocation(Overcraft.id("pipeline/hero_shadow_plain"))
+		.withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+		.withCull(false)
+		// blended, as Minecraft's ENTITY_SHADOW: the snippet has no colour target, and a type with none counts as unblended,
+		// goes to the solid phase and crashes it ("color attachment count must match": found in the 0.3.29 second pass)
+		.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+		.build());
+	private static final net.minecraft.client.renderer.oit.OitPipelineSet HERO_SHADOW_OIT = RenderPipelines.register(
+		net.minecraft.client.renderer.oit.OitPipelineSet.builder("overcraft_hero_shadow",
+			RenderPipeline.builder(RenderPipelines.ENTITY_SHADOW_SNIPPET).withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withCull(false)).build());
+
 	private static RenderType heroShadowMark;
 	private static RenderType heroShadowDarken;
+	private static RenderType heroShadowOit;
+
+	/** A hero's body shadow in one blended pass, for Improved Transparency (vertex colour black at its strength). */
+	public static RenderType heroShadowOit() {
+		if (heroShadowOit == null) {
+			heroShadowOit = RenderType.create("overcraft_hero_shadow_oit", RenderSetup.builder(HERO_SHADOW_PLAIN)
+				.setOitPipelines(HERO_SHADOW_OIT)
+				.withTexture("Sampler0", dev.overcraft.client.hud.HudShapes.WHITE).useLightmap().useOverlay()
+				.setLayeringTransform(net.minecraft.client.renderer.rendertype.LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+				.createRenderSetup());
+		}
+		return heroShadowOit;
+	}
 
 	/** As RenderTypes.entityCutout, in triangles: hero models (their emit writes three corners a triangle). */
 	public static RenderType heroCutout(Identifier texture) {
@@ -128,7 +170,8 @@ public final class FxRender {
 
 	public static RenderType additive(Identifier texture) {
 		return ADDITIVE_TYPES.computeIfAbsent(texture, t -> RenderType.create("overcraft_effect_additive",
-			RenderSetup.builder(ADDITIVE).withTexture("Sampler0", t).useLightmap().useOverlay().sortOnUpload().createRenderSetup()));
+			RenderSetup.builder(ADDITIVE).setOitPipelines(ADDITIVE_OIT)
+				.withTexture("Sampler0", t).useLightmap().useOverlay().sortOnUpload().createRenderSetup()));
 	}
 
 	/** Blended by the texture's own alpha (colour sprites), full bright, no depth writes. */

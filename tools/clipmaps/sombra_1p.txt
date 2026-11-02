@@ -15,8 +15,8 @@
 0-32_000000003DE2 = walk_stealth_left   # 0.667 s; s2 (M)
 0-32_000000003DE4 = walk_stealth_right   # 0.667 s; s3 (M)
 0-60_000000003EBA = idle_stealth   # 0.0333 s; stealthed still, 2 frames
-0-32_000000003E91 = add_stealth_move_start   # 0.333 s; its transition 0 > 1: L
-0-32_000000003E92 = add_stealth_move_stop   # 0.167 s; 1 > 0: L
+0-32_000000003E91 = stealth_move_start   # 0.333 s; its transition 0 > 1: L
+0-32_000000003E92 = stealth_move_stop   # 0.167 s; 1 > 0: L
 0-32_000000003D98 = jump_stealth   # 0.167 s; stealthed air (818141D2) df 0x18 default: take-off
 0-32_000000003D99 = fall_stealth   # 0.4 s; 0.4 s
 0-32_000000003EC1 = jump_stealth_2   # 0.167 s; df 0x18 cat 0x15: L

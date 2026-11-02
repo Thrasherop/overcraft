@@ -35,6 +35,9 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - Catnapper: aim (a ring of the 5.5 m landing reach marks the spot), the 0.35 s windup, a 30 m/s dive, 25 damage and a
   1.5 s knock-down (Slowness and Weakness: no stun in Minecraft), then the nearest enemy hangs under her for up to 4 s,
   its top 1 m below her feet (held at her feet, a zombie hit her the whole carry and killed her).
+- Her quick melee's layers (`add_melee`, 132-0 19A96 / 97 / 98) are additive (bit 0x4 of the folder), and until #75 they
+  were exported with rest values on the 189 channels the game doesn't key, which added her face, eyes and knees' rest
+  offsets a second time. Mended in the pack ([additive_clips](../animation/additive_clips.md)).
 
 ## Effects and sounds (2026-10-28)
 - **Effects** from `tools/reference/jetpack_cat-effects.md` (a research pass over her 75 effects): `JetpackCatFx`. Her

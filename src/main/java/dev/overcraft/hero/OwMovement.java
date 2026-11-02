@@ -276,6 +276,8 @@ public final class OwMovement {
 		int used;
 		boolean held;
 		boolean gliding;
+		/** The glide's tick count last seen (ClientJuno counts from 0 at its start): a lower one is a new glide. */
+		int glideTick = -1;
 		boolean rising;
 		double glideY = Double.NaN;
 	}
@@ -532,7 +534,13 @@ public final class OwMovement {
 			double cos = Math.cos(Math.toRadians(entity.getYRot()));
 			wish = new Vec3(dir.x * cos - dir.z * sin, 0, dir.z * cos + dir.x * sin).scale(speed);
 		}
-		if (boots != null && gliding >= 0 && !boots.gliding) {
+		// a new glide: none going, or the count started again (a glide that ended while she swam was never seen to end:
+		// Minecraft moves her in a liquid, not travel, and the next one there got no burst, #81)
+		boolean fresh = boots != null && gliding >= 0 && (!boots.gliding || gliding < boots.glideTick);
+		if (boots != null) {
+			boots.glideTick = gliding;
+		}
+		if (fresh) {
 			// Glide Boost's start: 14 m/s added along her move input (forward without), her vertical speed cancelled, the
 			// height she holds from here
 			boots.gliding = true;

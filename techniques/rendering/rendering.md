@@ -45,6 +45,16 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
   (`Fx.Particle.follow`); placed once in the world, it stays behind as the hand moves on.
 - The world's light reaches first-person models: at night the lightmap turned the arms near-black purple. A view model
   wants a light floor.
+- **A view model's bone names don't say where its hands show (#78, 2026-11-02).** Kiriko's "_L" hand is on the right
+  of the view; Juno's, Brigitte's, Sombra's and Lifeweaver's "_R" hand is, and their other hand is behind the camera.
+  Mercy's "_R" weapon bone is out at her staff while her "_R" hand is at the camera. Measure with DevServer `viewbones`
+  (the hand bones as drawn in Minecraft mode, plus each hand bone's turn and knuckles in its grip) instead of
+  assuming. Minecraft mode now judges each hand by its knuckles' place in the view, at rest (a swing carries a hand
+  out of the view's edge), and Minecraft draws an item on a side with no hand of hers in view.
+- **One hero's hand-tuned grip carries to the others.** Kiriko's grips were set by eye. Every other view model's hand
+  bone gets the turn that puts it, at rest, the way her bone sits in the view, and is shifted so its knuckles sit where
+  hers do in the grip (`HELD_*_REF`, `HELD_*_KNUCKLES`, measured with `viewbones`). One measured reference, then
+  no per-hero tuning, and the item still moves with the hand.
 
 ## Effects and glows
 - **Minecraft's mipmapper treats any texture with transparency as a cutout:** it rescales alpha and adds 0.025 to the
@@ -139,3 +149,43 @@ Every hero's 512 px HUD head (HeroIcons, "head") is painted on the same frame te
 centred on column 273.5, the same edges for every hero. Map that template to the HUD's frame once, for all of them;
 fitting each by its own outline (width, top of the hair) moved heroes whose outline differs (Jetpack Cat's ears: about
 80 texels too high, #54). `HudShapes.cutHead`.
+
+## Effects and translucent terrain (2026-11-02, #80)
+- **Blended custom geometry draws before water.** In 26.3, `SubmitNodeCollection.submitCustomGeometry` puts a
+  RenderType with blending in `translucentCustomGeometry`, which `LevelRenderer.executeClassicTransparency` draws
+  *before* the translucent terrain; Minecraft's own particles go to `afterTerrain`, drawn after it. Our effects write no
+  depth, so water, stained glass and ice drew straight over them: Orbital Ray's circle on a pool showed only as a
+  faint blue ghost.
+- `Fx.afterTerrain` now submits the effects into `SubmitNodeStorage.order(0).afterTerrain` with a
+  `CustomFeatureRenderer.Submit`, like vanilla particles. The circle then shows on water at full strength
+  (`run2/screenshots/fix2_*.png` on fix/juno-liquids). An effect under a water surface is now hidden by it, as
+  vanilla's particles are.
+- **A liquid's surface is lower than the block's top** (a source with air above: 8/9 of a block). A decal laid on it
+  sits under the grass round the pool, and the grass cut the ring off at the bank. On a liquid, the ground point is
+  the block's top (`OrbitalRay.onTop`).
+- **The price: effects behind glass, water or ice are hidden** (the 0.3.29 release play,
+  [hand_play](../testing/hand_play.md#release-play-0329-2026-11-02)). In the after-terrain phase they're depth-tested
+  against the translucent terrain drawn before them, as vanilla particles are without Improved Transparency: Brigitte's
+  barrier seen through a stained-glass window isn't drawn.
+  Since e73fe79 only effects at a liquid's surface go there (`Fx.atLiquid`); the rest draw before the translucent
+  terrain again and the glass tints them (second pass: Suzu, the barrier, Sound Barrier, Purr, Ana's grenade,
+  Valkyrie, Orbital Ray behind glass, water and ice all tinted, not gone).
+- **Improved Transparency (F3+X, or the video option) and our render types** (Minecraft's `SubmitNodeCollection`, 26.3):
+  with it on, every blended phase is one `oitTranslucent` phase drawn through each type's `OitPipelineSet`
+  (`PreparedRenderType.drawFromBufferOit`), so:
+  - a blended type without an OIT set crashes the frame ("does not have OIT pipelines set up": the hero shadow, fixed
+    in 955e13c);
+  - **a type counts as blended only if its pipeline has a colour target with a blend function**
+    (`RenderType.hasBlending`). `ENTITY_SHADOW_SNIPPET` has none (vanilla's `ENTITY_SHADOW` adds
+    `BlendFunction.TRANSLUCENT`), so a pipeline built from the bare snippet went to the solid pass and crashed it
+    ("Render pass color attachment count must match pipeline color target state count", the first third-person frame
+    with a hero's shadow: the 0.3.29 second pass). `HERO_SHADOW_PLAIN` now sets it;
+  - **additive effects need Minecraft's additive OIT form**: an `OitPipelineSet` built with the `OIT_ADDITIVE` define
+    (as its lightning, energy swirl and dragon rays are), which adds light and covers nothing. With the alpha-blended
+    `OIT_ENTITY_EMISSIVE` every effect quad's black texels covered the scene: Orbital Ray was a black square with a
+    ring. `FxRender.ADDITIVE_OIT` is the entity shader with the effect pipeline's defines plus `OIT_ADDITIVE`.
+  Played with it on: a world joined with it saved on, seven heroes' effects through glass and water, third person and
+  body shadows, then off again (`sheet_b_it_on_fixed.png`).
+- **Attached particles and slow frames:** `Fx.attach` holds a particle at `life x (1 - fadeOut)` each client tick, but
+  `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
+  field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).

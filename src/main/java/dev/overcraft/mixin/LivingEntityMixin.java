@@ -27,6 +27,19 @@ public abstract class LivingEntityMixin {
 		}
 	}
 
+	/**
+	 * Juno's Glide Boost is a jetpack: in water or lava it keeps its own mover rather than swimming, as Overwatch has no
+	 * liquids to slow it (ours, #79: it crawled at the swim speed in her glide pose).
+	 */
+	@Inject(method = "travelInFluid", at = @At("HEAD"), cancellable = true)
+	private void overcraft$glideInFluid(Vec3 input, CallbackInfo ci) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		if (OwMovement.handles(self) && OwMovement.junoGlide.applyAsInt(self) >= 0) {
+			OwMovement.travel(self, input);
+			ci.cancel();
+		}
+	}
+
 	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
 	private void overcraft$owJump(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;

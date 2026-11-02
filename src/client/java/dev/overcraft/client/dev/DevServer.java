@@ -441,6 +441,13 @@ public final class DevServer {
 				}
 				out.add("placed", list);
 			}
+			case "viewbones" -> {
+				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode
+				com.google.gson.JsonObject bones = new com.google.gson.JsonObject();
+				dev.overcraft.client.model.HeroModelRenderer.VIEW_BONES.forEach((n, v) -> bones.addProperty(n,
+					String.format(java.util.Locale.ROOT, "%.3f %.3f %.3f", v.x, v.y, v.z)));
+				out.add("bones", bones);
+			}
 			case "held" -> {
 				// dev only: "held kunai|ofuda rx ry rz tx ty tz lift": how Minecraft mode's held items sit in her fists
 				String[] a = arg.trim().split(" ");
