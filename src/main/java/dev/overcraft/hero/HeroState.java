@@ -166,6 +166,8 @@ public final class HeroState {
 	public final java.util.List<Integer> junoLocked = new java.util.ArrayList<>();
 	public final java.util.List<Integer> junoFiring = new java.util.ArrayList<>();
 	public double junoFireClock;
+	/** Juno: ticks into Hyper Ring's cast and Orbital Ray's (-1 none). */
+	public int junoRingCast = -1, junoRayCast = -1;
 	/** Juno: her buttons last tick (their presses' edges). */
 	public boolean junoLeftWas, junoRightWas;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */

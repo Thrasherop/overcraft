@@ -80,8 +80,22 @@ public final class JunoStats {
 	public static final double SPREAD = 0.85;
 	/** Glide Boost (ABILITY 1): its cooldown from the glide's end (D 47B7 #538, 1625 6 s; W 6). */
 	public static final double GLIDE_COOLDOWN = 6;
-	/** Hyper Ring (ABILITY 2) (D 4857, 14 s; W 14). */
+	/** Hyper Ring (ABILITY 2): 14 s from its cast's end (D 4857; W 14; M when it starts). */
 	public static final double RING_COOLDOWN = 14;
+	/** Its cast 0.55 s, the ring thrown 0.25 s in (D 4857, anim 0x479). */
+	public static final double RING_CAST = 0.55, RING_THROW = 0.25;
+	/** It flies 35 m/s for 0.5 s (17.5 m, or to a wall), then hangs until 6 s are up; a 4.5 m ring (D 4858; W 4 m: D). */
+	public static final double RING_SPEED = 35, RING_FLIGHT = 0.5, RING_LIFE = 6, RING_RADIUS = 4.5;
+	/** Each ally through it +50% speed for 3 s, once a ring (D 4858; BZ; W; the recording: Juno at 8.12-8.25 m/s after hers). */
+	public static final double RING_BOOST = 0.5, RING_BOOST_TIME = 3;
+
+	// ---- Orbital Ray (4A44, 501A, 54A6) ----
+	/** Its cast 0.8 s, the ray landing 0.5 s in, 4 m ahead (D 4A44 0x175). */
+	public static final double RAY_CAST = 0.8, RAY_LAND = 0.5, RAY_AHEAD = 4;
+	/** 8 s, 8 m round, moving at up to 2.25 m/s (up over 0.5 s, down over its last 1.25 s) (D 501A; BZ 2024-10-15 2.25; W). */
+	public static final double RAY_TIME = 8, RAY_RADIUS = 8, RAY_SPEED = 2.25, RAY_RAMP_UP = 0.5, RAY_RAMP_DOWN = 1.25;
+	/** Allies inside: 85 a second and +30% damage, lingering 1 s (D 501A / 54A6; W; the linger W). */
+	public static final double RAY_HEAL = 85, RAY_DAMAGE_BOOST = 0.3, RAY_LINGER = 1;
 	/** Pulsar Torpedoes (the right button): 10 s, 2 s when nothing was locked (D 4695 #929-#932, 16FC / 2396; BZ 2024-08-20; W). */
 	public static final double TORPEDO_COOLDOWN = 10, TORPEDO_COOLDOWN_NONE = 2;
 	/** The lock: up to 4 s (D 1AF0 via v567); 40 m, 45 once a target's lock has begun (D 1A57 40 + 5; BZ 2024-08-20; W). */

@@ -67,3 +67,12 @@ Dev client, flat world `juno1`, survival, night; health read with `data get`:
   allowed after 2 s (the 2 s cooldown).
 - Not yet: the lock's on-screen marks and the torpedoes' look (step 7: until then nothing shows); its aim cone (D 103,
   read as the field of view: L) to settle by play with several targets.
+
+## Step 5 (Hyper Ring, Orbital Ray), played
+- **Hyper Ring** thrown level ahead, then a run through it (it hangs 17.5 m out): her speed 5.5 -> 8.25 m/s once through it;
+  its cooldown counting from the cast's end (9.2 s left 4.8 s after the press).
+- **Orbital Ray** at full charge, a villager at 4 health 6 m ahead: 10.8 one second after it landed (+6.8 = 85 a second);
+  a Mediblaster volley inside it at a zombie: 117 (90 x 1.3, less armor and the zombie burning in the noon sun); no ult
+  charge while it runs; the villager full by its end.
+- Ours: the ray's +30 % shares Mercy's damage-boost slot (the two don't add up yet); its speed ramps linear (the data's
+  curve M).
