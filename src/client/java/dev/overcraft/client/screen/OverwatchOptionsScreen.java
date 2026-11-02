@@ -61,16 +61,24 @@ public class OverwatchOptionsScreen extends OwScreen {
 	private static final int HERO = 1;
 	private int page = CONTROLS;
 
-	/** One of the HERO page's options: a switch, or a percentage from 10 to 100 in steps of 10. */
+	/**
+	 * One of the HERO page's options: a switch, or a percentage from 10 to 100 in steps of 10; hero, whose own it is
+	 * (null: every hero's).
+	 */
 	private record Option(String key, @Nullable BooleanSupplier on, @Nullable Consumer<Boolean> setOn,
-						  @Nullable IntSupplier percent, @Nullable IntConsumer setPercent) {
+						  @Nullable IntSupplier percent, @Nullable IntConsumer setPercent, @Nullable Hero hero) {
+		Option(String key, @Nullable BooleanSupplier on, @Nullable Consumer<Boolean> setOn, @Nullable IntSupplier percent,
+			   @Nullable IntConsumer setPercent) {
+			this(key, on, setOn, percent, setPercent, Hero.KIRIKO);
+		}
 	}
 
 	/** The first ALL_HEROES options are every hero's (under "ALL HEROES"), the rest the hero's own (under their name). */
 	private static final int ALL_HEROES = 2;
-	private static final List<Option> OPTIONS = List.of(
-		new Option("friendly_fire", () -> HeroOptions.get().friendlyFire, v -> HeroOptions.get().friendlyFire = v, null, null),
-		new Option("hero_arms", () -> HeroOptions.get().heroArms, v -> HeroOptions.get().heroArms = v, null, null),
+	private static final List<Option> ALL_OPTIONS = List.of(
+		new Option("friendly_fire", () -> HeroOptions.get().friendlyFire, v -> HeroOptions.get().friendlyFire = v, null, null,
+			null),
+		new Option("hero_arms", () -> HeroOptions.get().heroArms, v -> HeroOptions.get().heroArms = v, null, null, null),
 		new Option("ofuda_sensitivity", null, null, () -> HeroOptions.get().ofudaSensitivity,
 			v -> HeroOptions.get().ofudaSensitivity = v),
 		new Option("toggle_ofuda", () -> HeroOptions.get().toggleOfuda, v -> HeroOptions.get().toggleOfuda = v, null, null),
@@ -79,7 +87,21 @@ public class OverwatchOptionsScreen extends OwScreen {
 		new Option("auto_climb", () -> HeroOptions.get().autoClimb, v -> HeroOptions.get().autoClimb = v, null, null),
 		new Option("ofuda_cancels_reload", () -> HeroOptions.get().ofudaCancelsReload,
 			v -> HeroOptions.get().ofudaCancelsReload = v, null, null),
-		new Option("ofuda_ui", () -> HeroOptions.get().ofudaUi, v -> HeroOptions.get().ofudaUi = v, null, null));
+		new Option("ofuda_ui", () -> HeroOptions.get().ofudaUi, v -> HeroOptions.get().ofudaUi = v, null, null),
+		// Jetpack Cat's (her data's hero settings, research\jetpack_catssets2\settings_strings.json)
+		new Option("hide_purr_ring", () -> HeroOptions.get().hidePurrRing, v -> HeroOptions.get().hidePurrRing = v, null, null,
+			Hero.JETPACK_CAT));
+
+	/** The page's options: every hero's, then the shown hero's own. */
+	private static List<Option> options() {
+		Hero hero = shownHero();
+		return ALL_OPTIONS.stream().filter(o -> o.hero() == null || o.hero() == hero).toList();
+	}
+
+	/** The hero whose own options the page shows: the one played, else Kiriko. */
+	private static Hero shownHero() {
+		return ClientHero.hero() != null ? ClientHero.hero() : Hero.KIRIKO;
+	}
 
 	private record Row(@Nullable Section header, @Nullable Action action, float y) {
 	}
@@ -338,7 +360,8 @@ public class OverwatchOptionsScreen extends OwScreen {
 	private int optionAt(double mouseX, double mouseY) {
 		float x = refX(mouseX);
 		float y = refY(mouseY);
-		for (int i = 0; i < OPTIONS.size(); i++) {
+		List<Option> options = options();
+		for (int i = 0; i < options.size(); i++) {
 			if (y >= optionY(i) && y < optionY(i) + ROW_H - 4 && x >= LEFT && x <= LEFT + WIDTH) {
 				return i;
 			}
@@ -351,7 +374,7 @@ public class OverwatchOptionsScreen extends OwScreen {
 		if (i < 0) {
 			return false;
 		}
-		Option option = OPTIONS.get(i);
+		Option option = options().get(i);
 		if (option.on() != null) {
 			option.setOn().accept(!option.on().getAsBoolean());
 		} else {
@@ -365,14 +388,15 @@ public class OverwatchOptionsScreen extends OwScreen {
 	}
 
 	private void heroPage(GuiGraphicsExtractor g, int mouseX, int mouseY) {
-		Hero hero = ClientHero.hero() != null ? ClientHero.hero() : Hero.KIRIKO;
+		Hero hero = shownHero();
+		List<Option> options = options();
 		HudText.draw(g, Face.BODY, Component.translatable("overcraft.options.all_heroes").getString().toUpperCase(Locale.ROOT),
 			LEFT, TOP + 25, 15, ORANGE, Align.LEFT);
 		HudText.draw(g, Face.BODY, hero.displayName.toUpperCase(Locale.ROOT), LEFT, optionY(ALL_HEROES) - ROW_H + 25, 15, ORANGE,
 			Align.LEFT);
 		int hover = optionAt(mouseX, mouseY);
-		for (int i = 0; i < OPTIONS.size(); i++) {
-			Option option = OPTIONS.get(i);
+		for (int i = 0; i < options.size(); i++) {
+			Option option = options.get(i);
 			float y = optionY(i);
 			fill(g, LEFT, y, WIDTH, ROW_H - 4, i == hover ? ROW_HOVER : ROW);
 			String name = Component.translatable("overcraft.options.hero." + option.key()).getString().toUpperCase(Locale.ROOT);
@@ -394,8 +418,8 @@ public class OverwatchOptionsScreen extends OwScreen {
 		}
 		// what the option under the mouse does, under the list
 		if (hover >= 0) {
-			String about = Component.translatable("overcraft.options.hero." + OPTIONS.get(hover).key() + ".about").getString();
-			HudText.draw(g, Face.BODY, about, LEFT, optionY(OPTIONS.size()) + 30, 14, TEXT_DIM, Align.LEFT);
+			String about = Component.translatable("overcraft.options.hero." + options.get(hover).key() + ".about").getString();
+			HudText.draw(g, Face.BODY, about, LEFT, optionY(options.size()) + 30, 14, TEXT_DIM, Align.LEFT);
 		}
 	}
 

@@ -523,6 +523,8 @@
 	"overcraft.options.hero.hero_arms.about": "On: in Minecraft mode, first person shows your hero's own arms holding your items. Off: Minecraft's arm in your hero's colours.",
 	"overcraft.options.hero.ofuda_ui": "Healing Ofuda UI",
 	"overcraft.options.hero.ofuda_ui.about": "The Healing Ofuda counter under the crosshair.",
+	"overcraft.options.hero.hide_purr_ring": "Hide Purr Range Ring",
+	"overcraft.options.hero.hide_purr_ring.about": "Purr makes no gold wall showing its range.",
 	"overcraft.hud.victory": "Victory",
 	"overcraft.command.reset": "Readied the cooldowns and ammo of %s hero(es)",
 	"overcraft.command.ult": "Set the ult charge of %s hero(es) to %s%%",

@@ -140,6 +140,12 @@ public final class EffectArt {
 		CAT_TETHER_ENEMY(0, 0, 0, 0, .25f, 1, .131f, 0, .5f, 1, .263f, 0, .75f, 1, .629f, 0, 1, 1, 1, 0),
 		/** Lifeline's hook glow (6EA2 / 71B1 cone, r3): #7FA8FF to white. */
 		CAT_HOOK(0, 0, 0, 0, .25f, .25f, .33f, .5f, .5f, .5f, .66f, 1, .75f, .75f, .83f, 1, 1, 1, 1, 1),
+		/** The hook's bubbles (71B1 C9, 80047234 r3, HDR 3.6), normalised: deep blue to cyan. */
+		CAT_BUBBLE(0, 0, 0, 0, .25f, 0, .05f, .3f, .5f, 0, .35f, .53f, .75f, 0, .68f, .76f, 1, 0, 1, 1),
+		/** The towed ally's arc flash (7454 C6, 800EFD5D r6 #42FFFF), its brightness the mask's: black to cyan. */
+		CAT_ARC_FLASH(0, 0, 0, 0, .25f, .013f, .25f, .25f, .5f, .025f, .5f, .5f, .75f, .038f, .75f, .75f, 1, .05f, 1, 1),
+		/** The towed ally's arc lines (7454 C8, 8007D524 r8): slate blue to white . */
+		CAT_ARC_LINES(0, 0, 0, 0, .25f, .21f, .28f, .58f, .5f, .34f, .42f, .67f, .75f, .79f, .86f, .99f, 1, 1, 1, 1),
 		/** Lifeline's paw marker decal (7432, 800333C5 r3): blue to cyan. */
 		CAT_MARKER(0, 0, 0, 0, .25f, .001f, .175f, .976f, .5f, 0, .404f, .975f, .75f, 0, .671f, .992f, 1, .072f, 1, .991f),
 		/** Jetpack flame core (7064, 8004B7CE r7, HDR 11): blue to cyan to white. */
