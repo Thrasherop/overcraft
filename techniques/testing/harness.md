@@ -148,3 +148,6 @@
   don't); husks don't burn in daylight; armour changes every number (a husk's 2 points take 1.6-4.8% per hit: Minecraft's
   armour rule), so count it in the expected value. `kill @e[type=!player]` also removes a hero's own entities (Sigma's
   barrier). `trace` also prints Sigma's new spheres (`h`) and his barrier (`b x y z state share`) per tick.
+- **A ravager isn't held by `movement_speed` 0** (2026-11-02, Sigma): one walked 15 m to Sigma and killed him mid-test. Summon ravagers
+  NoAI (Overcraft's own lifts and knockdowns still move NoAI mobs: they move them by hand). A `state` health read between
+  steps shows it early (his health was falling before the ult went off).

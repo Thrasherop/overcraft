@@ -43,6 +43,11 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
 	private void overcraft$owJump(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
+		if (OwMovement.handles(self) && OwMovement.noJump.test(self)) {
+			// an ability holds the jump (Sigma's Accretion gather: 1BBB #651)
+			ci.cancel();
+			return;
+		}
 		if (OwMovement.handles(self) && OwMovement.sliding(self)) {
 			// sliding, the jump key is Power Slide's jump (OwMovement.slideTravel), not Minecraft's
 			ci.cancel();
@@ -162,7 +167,9 @@ public abstract class LivingEntityMixin {
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private double overcraft$flightResistance(double power) {
-		return overcraft$stateKnockback(power) * dev.overcraft.hero.Tank.knockbackFactor((LivingEntity) (Object) this);
+		// Sigma flying in his Gravitic Flux: half (1E41 #1071)
+		return overcraft$stateKnockback(power) * dev.overcraft.hero.Tank.knockbackFactor((LivingEntity) (Object) this)
+			* dev.overcraft.sigma.GraviticFlux.knockbackFactor((LivingEntity) (Object) this);
 	}
 
 	private double overcraft$stateKnockback(double power) {

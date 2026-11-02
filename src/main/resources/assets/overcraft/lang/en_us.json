@@ -667,5 +667,9 @@
 	"subtitles.overcraft.jetpack_cat.ult.friendly": "Jetpack Cat: (friendly ultimate cat sounds)",
 	"subtitles.overcraft.jetpack_cat.ult.enemy": "Jetpack Cat: (enemy ultimate cat sounds)",
 	"death.attack.overcraft.field": "%1$s burned up in a Disruptor field",
-	"death.attack.overcraft.field.player": "%1$s burned up in %2$s's Disruptor field"
+	"death.attack.overcraft.field.player": "%1$s burned up in %2$s's Disruptor field",
+	"death.attack.overcraft.gravitic_flux": "%1$s was lifted by a Gravitic Flux",
+	"death.attack.overcraft.gravitic_flux.player": "%1$s was lifted by %2$s's Gravitic Flux",
+	"death.attack.overcraft.gravitic_slam": "%1$s was slammed by a Gravitic Flux",
+	"death.attack.overcraft.gravitic_slam.player": "%1$s was slammed into the ground by %2$s"
 }

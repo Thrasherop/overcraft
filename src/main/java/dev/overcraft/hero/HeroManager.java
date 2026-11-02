@@ -175,9 +175,10 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
+		// Sigma: Gravitic Flux's flight (and Levitation) land him
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -489,6 +490,7 @@ public final class HeroManager {
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
+		dev.overcraft.sigma.GraviticFlux.tickAll(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		dev.overcraft.comms.Comms.tick();

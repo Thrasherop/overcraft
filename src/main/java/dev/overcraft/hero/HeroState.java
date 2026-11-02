@@ -207,6 +207,15 @@ public final class HeroState {
 	public double sigmaGraspAbsorbed;
 	/** The game time of his kit's last tick (his HUD's cooldowns). */
 	public long sigmaNow;
+	/**
+	 * Sigma's Accretion: ticks left of its gather (-1: none); Gravitic Flux's phase (dev.overcraft.sigma.GraviticFlux.NONE ..
+	 * SLAM), ticks into it, the aimed point; Hyper Strike's direct hits counted and whether his next quick melee carries it.
+	 */
+	public int sigmaCast = -1;
+	public int sigmaFluxPhase, sigmaFluxTicks;
+	public net.minecraft.world.phys.@Nullable Vec3 sigmaFluxPoint;
+	public int sigmaDirectHits;
+	public boolean sigmaStrikeReady;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

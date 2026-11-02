@@ -112,3 +112,13 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
   magic. Any later damage-over-time ability on players should use it (or a type like it).
 - Testing it with one client: `/damage @s <n> <type> by <entity>` every 0.2 s while walking, speed read each tick.
 
+## A held mob must be moved by hand (Sigma, 2026-11-02)
+- `LivingEntity.aiStep` calls `travel` only when `isEffectiveAi()`, which is false for a NoAI mob: switching a mob's AI
+  off (Sleep, a stun) also switches off Minecraft's movement, knockback and gravity included (the harness's "NoAI mobs
+  can't be moved" trap, from the engine's side). A stun that should carry a push (Accretion's knockdown:
+  `Sleep.knockdown`) or a lift (Gravitic Flux) moves the mob itself each tick: `mob.move(MoverType.SELF, v)`, then
+  Minecraft's own drag (x0.91, x0.98 vertical, the block's friction x0.91 on the ground, `getGravity()`).
+- `Entity.hurtMarked` is gone in 26.3: `needsSync = true` is what sends an entity's (and a player's own) motion to clients.
+- A one-off hit that must ignore armour, Resistance and Protection: a damage type in `bypasses_armor` and
+  `bypasses_effects` (the latter skips both the effect and enchantments: `getDamageAfterMagicAbsorb`), plus
+  `no_knockback` / `no_impact` when the ability moves the target itself (`overcraft:gravitic_slam`).

@@ -117,6 +117,12 @@ public final class OcEntities {
 		EntityType.Builder.<dev.overcraft.entity.SigmaBarrierEntity>of(dev.overcraft.entity.SigmaBarrierEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized(0.5f, (float) dev.overcraft.sigma.SigmaStats.BARRIER_HEIGHT)
 			.clientTrackingRange(10).updateInterval(1));
+	/** Sigma's Accretion rock (18B7): 0.3 m against blocks (the box), 0.9 m against creatures (its hit radius), not saved. */
+	public static final EntityType<dev.overcraft.entity.AccretionEntity> ACCRETION = register("accretion",
+		EntityType.Builder.<dev.overcraft.entity.AccretionEntity>of(dev.overcraft.entity.AccretionEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE, (float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

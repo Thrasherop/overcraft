@@ -53,14 +53,15 @@ public abstract class ServerExplosionMixin {
 	@WrapOperation(method = "hurtEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;pushFromExplosion(Lnet/minecraft/world/phys/Vec3;)V"))
 	private void overcraft$barrierPush(Entity entity, Vec3 impulse, Operation<Void> original) {
 		original.call(entity, dev.overcraft.brigitte.Barrier.blocksBlast(entity, center, cause()) ? Vec3.ZERO
-			: impulse.scale(dev.overcraft.hero.Tank.knockbackFactor(entity)));
+			: impulse.scale(dev.overcraft.hero.Tank.knockbackFactor(entity) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(entity)));
 	}
 
 	@WrapOperation(method = "hurtEntities", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private Object overcraft$barrierPlayerPush(Map<Object, Object> map, Object player, Object impulse, Operation<Object> original) {
 		boolean blocked = player instanceof Entity entity && dev.overcraft.brigitte.Barrier.blocksBlast(entity, center, cause());
-		// a Stalwart tank (Sigma) is pushed 40% less (dev.overcraft.hero.Tank)
+		// a Stalwart tank (Sigma) is pushed 40% less (dev.overcraft.hero.Tank), half that again flying in his Gravitic Flux
 		return original.call(map, player, blocked ? Vec3.ZERO
-			: impulse instanceof Vec3 v && player instanceof Entity entity ? v.scale(dev.overcraft.hero.Tank.knockbackFactor(entity)) : impulse);
+			: impulse instanceof Vec3 v && player instanceof Entity entity ? v.scale(dev.overcraft.hero.Tank.knockbackFactor(entity)
+				* dev.overcraft.sigma.GraviticFlux.knockbackFactor(entity)) : impulse);
 	}
 }

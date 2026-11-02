@@ -163,8 +163,77 @@ the barrier out, volleys aimed at the nearest each 0.5 s, Grasp every third voll
 skeleton died (47 volleys, 6 Grasps), Sigma ended at 48 of 48. The last skeleton backed off to 35 m, past the spheres'
 21.7 m: they burst short of it, as in Overwatch. Not tried: a raid, water, the Nether, ladders, a second player.
 
+## Steps 7-8 (Accretion, Gravitic Flux), played 2026-11-02
+Code: `dev.overcraft.sigma.Accretion` + `entity.AccretionEntity` (drawn by `ProjectileModelRenderer` with his rock's own
+model, `=sigma_rock`), `sigma.GraviticFlux` (his phases, the reticle, and every lifted creature: 1DBC), his flight in
+`OwMovement.sigmaFly` (fed by the client from his sync bits `MODE_FLUX_FLIGHT` / `MODE_FLUX_RISE`), the gather's jump
+lock `OwMovement.noJump` (`LivingEntityMixin.jumpFromGround`), `Sleep.knockdown` (a stun that keeps its push),
+damage types `overcraft:gravitic_flux` (the lift: no_knockback, no_impact) and `overcraft:gravitic_slam` (also
+bypasses_armor, bypasses_effects: the data's "no modifiers"). Numbers in `SigmaStats`, each with its source;
+`SigmaMathTest` (burst falloff, the slam and its cap, the rise). Stand-in effects and sounds (vanilla particles: his
+own are step 10). Dev client `runClient`, fresh flat survival world `sig7` at midnight, screenshots in
+`run/screenshots/` (`s7_*`, `s8_*`, not committed), each looked at. Measured with a one-connection driver (the
+scratchpad's `oc.py`: `c`, `mc`, `data`, `num`), husks / zombies with `movement_speed` 0 or NoAI.
+
+**What the data added to the plan:** Flux has a **0.6 s start** before the aim (1E41 #964 -> #954 -> #967): he rises at
+10 m/s² (`xA634D7B9 = up x 10`) while it plays; his flight (#974 -> #1110 -> #977) runs under every phase after it,
+including his 0.5 s slam phase, unless he is himself lifted. Each target's lift (1DBC) is 2 s, not the phase's 2.5:
+damage and a 1 m/s pull in at #575, held 0.4 s (#586: the same input-off flags as a stun), then (0, 18, 0) up with
+gravity x0.1 and a 3 m/s cap from the hold's end (#608 / #615, read as Levitation's accel and cap: M), 5 instead of 18 in
+its last 0.2 s; at the end gravity x22 and the slam the moment ground is within 5 m below (#644 -> #577), 0.6 s more
+after (#585). That reading gives a ~6 m lift, and the zombies rose 5.96 m. Hyper Strike's target graph 54A5 (for step
+9) has its +50 (v476, over 0.2 s) and a 0.8 s float (gravity x0.01, input off).
+
+**Accretion** (expected -> seen):
+- The gather (`trace`, running forward): **5.50 -> 1.37 m/s** (x0.25: -75%) for 12-13 ticks, back to 5.50 after; jump
+  held through it: **no jump** (y stayed -60.000). Its own slow: a Stalwart doesn't resist it (`Tank` OWN_SLOWS).
+- Cooldown: **10.45 at the throw** (10 s from 0.45 s after it, counted as one), the HUD's E box counting from it
+  (`s7_rock1_after.png`). The 3P gather and throw clips play (`s7_gather_3p.png`, `s7_rock_fly_a/b.png`).
+- A husk 10 m ahead (2 armour): **20 -> 10.5536**, exactly 80 + 40 through Minecraft's armour rule (6.2976 + 3.1488);
+  knocked 1.12 m back along the flight; **NoAI 1b** 0.2 s after the hit, gone after 1.4 s (the 1.1 s knockdown);
+  +25 ult on the hit.
+- A group (husks 1.5, 2.3 and 3.7 m beside the one hit): the hit one 120; **1.5 m: 40 (full)**, **2.3 m: 24** (the
+  falloff to 12 at 2.5 m), **3.7 m: untouched**; the two splashed pushed away from the burst (x +2.0 / +0.8 m), not
+  knocked down (no NoAI).
+- A stone wall 10 m ahead: the rock bursts on it; a husk 1.5 m before it beside the burst took 31 (2.48 health), **one
+  1 m behind it untouched** (sight).
+- The arc: a husk 30 m off, Sigma level: **pitch -9.5° hits** (the ballistic solution for 37 m/s and 18 m/s² is 9.5°),
+  **-5° falls short, -14° flies over**: the speed and gravity hold.
+- **Found:** the rock model C5CA is 2 m across, drawn at its data size it dwarfs his head as it leaves (`s7_rock_fly_a.png`);
+  with W's / D's 0.9 m read across (as the spheres' size was) it would hit with a 0.45 m radius inside a 2 m rock.
+  Read as the radius instead (M), so the rock hits what it visibly touches.
+- **Not tried:** a player knocked down (one client only: a second one doesn't fit in memory beside this one); the rock
+  against an enemy barrier (no second Sigma); water, lava.
+
+**Gravitic Flux** (expected -> seen):
+- Q (`trace`): **rise 1.47 m in its 0.6 s start**, then still in the air with nothing held (no gravity), the aim loop clip
+  in first person (`s8_reticle_1p.png`: both hands up). The reticle, his alone: a 7.5 m ring of violet dust where he
+  aims and its centre; the left button fixes it, or after **5 s it goes by itself** (flight ended 7.05 s after Q:
+  0.6 + 5 + 1 + 0.5 with no one caught).
+- His flight: **7.15 m/s** forward and sideways, **+7.15 up** on jump, **-7.15 down** on crouch (`trace`), stopped in a
+  tick or two when let go. Flown 13 m up, the flight's end dropped him to the ground: **48 -> 48** (no fall damage,
+  `softLanding` as Mercy's). A creeper beside him in flight: **2.07 m/s** pushed, on the ground **4.95** (x0.42: half
+  the knockback, the rest his flying mover braking it in the same tick).
+- A crowd (NoAI: two zombies, a cow, a ravager; a zombie 10 m off as the control), the point 9.2 m ahead: the four in the
+  cylinder lifted and slammed, **zombies 20 -> 6.064** (50 through armour 3.936 + 125 = 10 straight), **cow 10 -> 1**,
+  **ravager 100 -> 46** (4 + 50: half of its 1250), the control untouched; a zombie **rose 5.96 m in 1.9 s** after the
+  1 s cast, 3 m/s after its hold, pulled 0.48 m in, then slammed down in 0.25 s (`s8_lift_3p.png`). None took fall damage.
+- The bosses (NoAI, `mob_griefing` off): **Wither 300 -> 280.32**, **Warden 500 -> 480**, **Ender Dragon 200 -> 180**:
+  the slam capped at 200 (16), the lift's 50 (the Wither's armour 4: 3.68), the dragon through its head
+  (`s8_bosses_lift.png`: Wither and Warden in the air; the dragon isn't moved: ours).
+- With their AI on (three zombies, a cow): the zombies walked in during the cast and were lifted (NoAI 1b while lifted),
+  slammed (6.064 each), then got their AI back and chased him (he dropped to 24 of 48 under them: as in a fight).
+- An iron golem in the cylinder (an ally in Overcraft: `Allies`) passed by: 100 -> 100, the zombie beside it lifted.
+  The left button held through Flux: no spheres (his hands are busy, as in Grasp and the gather).
+- **Found (not a bug):** a first run with a ravager (`movement_speed` 0 doesn't hold a ravager) killed Sigma and caught no
+  one: the reticle was 25 m out (aimed from 4 m up) and the zombies at 15 m were outside its 7.5 m; with the aim on them,
+  every run caught them. Use NoAI ravagers.
+- **Not tried:** a player lifted (one client: their lift is sent as their speed each tick and their keys held 0.4 s, as
+  asleep: untested); the right-button confirm option and the "rise with ability 3" option (not built: Overwatch's
+  defaults, Open); the reticle's HUD timer; Flux over water or a cliff (no ground within 5 m: let go after 4 s).
+
 ## Not yet
-Steps 7-12 of the plan. Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
+Steps 9-12 of the plan. Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
 1.75 / 2.0 / 4.5 (it goes into the ground when sent downward: M); a blast that breaks the barrier still reaches those behind
 it (the break comes first); the 3P fire clips (the clip map holds only alias D5's three pitches: the volley plays fire_b,
 the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. Effects, sounds, voice (set 1E5.05F, 1293 subtitled

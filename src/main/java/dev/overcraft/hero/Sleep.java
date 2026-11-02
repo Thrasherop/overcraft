@@ -25,9 +25,9 @@ public final class Sleep {
 	}
 
 	/** One sleeper: since and until when (game time), whether its AI was already off, waking from a hit. */
-	private record Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking, boolean stun) {
+	private record Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking, boolean stun, boolean slides) {
 		Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking) {
-			this(entity, since, until, hadNoAi, waking, false);
+			this(entity, since, until, hadNoAi, waking, false, false);
 		}
 	}
 
@@ -64,13 +64,32 @@ public final class Sleep {
 	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
 	 */
 	public static void stun(LivingEntity entity, double seconds) {
+		stun(entity, seconds, false);
+	}
+
+	/**
+	 * A knockdown (Sigma's Accretion: 224E as Rally's bash, 1.1 s): a stun in which the creature keeps the knockback it was
+	 * given. A mob's AI is off, and with it Minecraft's own movement (a NoAI mob never travels: LivingEntity.aiStep), so the
+	 * knockdown moves it as Minecraft would (gravity, drag, the ground's friction) until it ends.
+	 */
+	public static void knockdown(LivingEntity entity, double seconds) {
+		stun(entity, seconds, true);
+	}
+
+	/** Whether its AI was off before Overcraft put it to sleep or stunned it (else its AI now). */
+	public static boolean hadNoAi(Mob mob) {
+		Sleeper s = SLEEPERS.get(mob.getUUID());
+		return s != null ? s.hadNoAi : mob.isNoAi();
+	}
+
+	private static void stun(LivingEntity entity, double seconds, boolean slides) {
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
 		if (old != null && !old.stun) {
 			return;
 		}
 		boolean hadNoAi = old != null ? old.hadNoAi : entity instanceof Mob mob && mob.isNoAi();
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false, true));
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false, true, slides));
 		if (entity instanceof Mob mob) {
 			mob.setNoAi(true);
 		}
@@ -125,9 +144,30 @@ public final class Sleep {
 				wake(s);
 				continue;
 			}
+			if (dev.overcraft.sigma.GraviticFlux.lifted(e)) {
+				// a Gravitic Flux moves it (its own tick)
+				continue;
+			}
+			if (s.slides) {
+				if (e instanceof Mob mob && mob.isNoAi()) {
+					slide(mob);
+				}
+				continue;
+			}
 			Vec3 v = e.getDeltaMovement();
 			e.setDeltaMovement(0, Math.min(v.y, 0), 0);
 		}
+	}
+
+	/** One tick of a held mob carried by its speed, as LivingEntity.travel would (gravity, air drag, the ground's friction). */
+	public static void slide(Mob mob) {
+		Vec3 v = mob.getDeltaMovement();
+		mob.move(net.minecraft.world.entity.MoverType.SELF, v);
+		Vec3 after = mob.getDeltaMovement();
+		float friction = mob.onGround()
+			? mob.level().getBlockState(mob.getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction() * 0.91f : 0.91f;
+		mob.setDeltaMovement(after.x * friction, (after.y - mob.getGravity()) * 0.98, after.z * friction);
+		mob.needsSync = true;
 	}
 
 	private static void wake(Sleeper s) {

@@ -90,6 +90,71 @@ public final class SigmaStats {
 	public static final double GRASP_COOLDOWN = 12;
 	/** Accretion: 10 s from 0.45 s after the throw (D 0498, #669; W 10 s) H. */
 	public static final double ACCRETION_COOLDOWN = 10;
+	/** Its cooldown starts this long after the throw (D 1BBB #669: a chase from 0.45 to 0, then #570 v61 = 10) H nodes, M timing. */
+	public static final double ACCRETION_COOLDOWN_DELAY = 0.45;
+
+	// ---- Accretion (sigma.md "Accretion", D 1BBB on him, 1EB9 on the rock) ----
+	/** The gather: 0.65 s (D #869 v670; anim 0x608 at 0.65 s; W 0.64) H. */
+	public static final double ACCRETION_CAST = 0.65;
+	/** -75% move speed while gathering (D 1B69 0.75 into v23184, #651 / #681; W -75%) H, and no jump (#651 x5C571F43 / x292F571E = 0) H nodes, M meaning. */
+	public static final double ACCRETION_CAST_SLOW = 0.75;
+	/** The rock: 37 m/s (D 0499, v6368; W 37) H, 18 m/s² of gravity (D #869 v7389 = 18) H, 30 s at most (D) H. */
+	public static final double ROCK_SPEED = 37, ROCK_GRAVITY = 18, ROCK_LIFETIME = 30;
+	/**
+	 * Its size: 0.9 m against creatures (D 265F, v76077; W 0.9) read as its radius (its model C5CA is 2 m across, drawn at its
+	 * data size: M), 0.3 m against blocks (D 28C0) H.
+	 */
+	public static final double ROCK_SIZE = 0.9, ROCK_BLOCK_SIZE = 0.3;
+	/** On a hit: 80 (D 049F, 1BBB v476; BZ 2024-07-09 40 -> 80; W 80) H. */
+	public static final double ROCK_IMPACT = 80;
+	/**
+	 * The burst where it lands: 40 (D 0495, v11863; W 40) H, full to 1.5 m (D 0496) H, its edge at 2.5 m (D 0497) H. D's
+	 * edge ring has factor 1 (no falloff read: L); ours W's 12 at the edge (x0.3), linear from 1.5 m (sigma-plan.md, M).
+	 */
+	public static final double ROCK_BURST = 40, ROCK_BURST_FULL = 1.5, ROCK_BURST_RADIUS = 2.5, ROCK_BURST_EDGE = 12.0 / 40;
+	/** The one it hits is knocked down 1.1 s (D 04A0; #590 max(1.1, ...); BZ 2023-04-11 0.8 -> 1.1; W 1.1) H. */
+	public static final double ROCK_KNOCKDOWN = 1.1;
+	/** Knockback on a hit: 6 m/s along its flight, 3 up (D 1B67 / 1B68; W 6.7 m/s) H. */
+	public static final double ROCK_KNOCKBACK = 6, ROCK_KNOCKBACK_UP = 3;
+	/** The burst's: 5 m/s away, 3 up (D 1B6A / 1B6B, M which pair; W 5.8 m/s) M. */
+	public static final double ROCK_BURST_KNOCKBACK = 5, ROCK_BURST_KNOCKBACK_UP = 3;
+	/** +25 ult charge on a hit (D 1BBB #683 STU_008D30B1 25) M. */
+	public static final double ROCK_ULT_ON_HIT = 25;
+
+	// ---- Gravitic Flux (sigma.md "Gravitic Flux", D 1E41 on him, 1DBC on each target) ----
+	/** The start: 0.6 s rising at 10 m/s² before the aim (D #954 xA634D7B9 = up x 10, #967 wait 0.6; anim 0x1B8 0.4 s) H nodes, M field. */
+	public static final double FLUX_START = 0.6, FLUX_START_RISE = 10;
+	/** The aim: up to 5 s (D 04AE, v567, chase #1271, then it fires itself #1294; W 5 s) H; out to 35 m (D #1268 m_6386E7B4; W 35) H. */
+	public static final double FLUX_AIM = 5, FLUX_RANGE = 35;
+	/** The cast: 1 s (D #961 v670; W 1 s) H. */
+	public static final double FLUX_CAST = 1;
+	/** The cylinder: 7.5 m radius (D 1867, alt 5.0; W 8: D's) H, 15 m tall (D 1DFB) H, its base 5 m under the aimed point (D #977 / #1292) H. */
+	public static final double FLUX_RADIUS = 7.5, FLUX_HEIGHT = 15, FLUX_BELOW = 5;
+	/** His lift phase: 2.5 s (D 1868, v68035; W 2.5) H; then his slam phase 0.5 s (D #1039) H. */
+	public static final double FLUX_LIFT_PHASE = 2.5, FLUX_SLAM_PHASE = 0.5;
+	/** Each target: 50 at the lift (D 04AB, v476; W 50) H, pulled 1 m/s in (D 1DBC #575 m_E33EFEE1 -1) M. */
+	public static final double FLUX_LIFT_DAMAGE = 50, FLUX_LIFT_PULL = 1;
+	/** Held still (no move, no jump, no abilities) for 0.4 s (D 23F2, v74536; 1DBC #586 / #552) H. */
+	public static final double FLUX_HOLD = 0.4;
+	/** Lifted 2 s (D 1DBC #597 v21244 = 2.0) H. */
+	public static final double FLUX_LIFT_TIME = 2.0;
+	/** Lifted: gravity x0.1, move speed x0.55 (D 1DBC #574 / #571: 1 - (1 - 0.1) x 0.5) H values, M meanings. */
+	public static final double FLUX_LIFT_GRAVITY = 0.1, FLUX_LIFT_SPEED = 0.55;
+	/**
+	 * The rise: 18 m/s² up (D #615 vec(0, 18, 0)), 5 in its last 0.2 s (#604 / #606), held to 3 m/s up from the end of the
+	 * hold (#608 x57643451 = 3) H values, M meanings (read as Levitation's accel and cap): about 6 m in all.
+	 */
+	public static final double FLUX_RISE = 18, FLUX_RISE_END = 5, FLUX_RISE_END_TIME = 0.2, FLUX_RISE_CAP = 3;
+	/** The slam: 50% of the target's max health (D 1AAD, v71023; 1DBC #577, m_FB3F6CA9 = 1: no modifiers; W 50%) H, once ground is within 5 m below (#644) H. */
+	public static final double FLUX_SLAM_SHARE = 0.5, FLUX_SLAM_GROUND = 5;
+	/** ...at most 200 on the Ender Dragon, the Wither and the Warden (ours, sigma-plan.md "Minecraft decisions": Open). */
+	public static final double FLUX_BOSS_CAP = 200;
+	/** After the lift: gravity x22 (D #582) and move speed -50% (D 1DFA -0.5 / #579 0.5) for 0.6 s after the slam (D 1DFC, #585) H values, M meanings. */
+	public static final double FLUX_HEAVY_GRAVITY = 22, FLUX_HEAVY_SLOW = 0.5, FLUX_HEAVY_TIME = 0.6;
+	/** His flight: gravity off, 5.5 m/s +30% = 7.15 (D #976 / 1B66 0.3; W 7.15) H, half the knockback (D #1071 x0A04B51B -0.5; W) H. */
+	public static final double FLUX_FLIGHT_SPEED = 5.5 * 1.3, FLUX_FLIGHT_KNOCKBACK = 0.5;
+	/** His flying mover's acceleration, x the speed a second (D #976 m_5C6B4602 = 8) L reading. */
+	public static final double FLUX_FLIGHT_ACCEL = 8;
 
 	// ---- his size (sigma.md "Size") ----
 	/**

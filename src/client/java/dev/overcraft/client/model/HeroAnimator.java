@@ -297,6 +297,14 @@ public final class HeroAnimator {
 					clip = "";
 					viewClip = "barrier_recall_sm1";
 				}
+				// Accretion: the gather (alias 0x608: 3P accretion_cast, 1P its first clip) and the throw (0x60E); cut short, none
+				case "accretion_cast" -> viewClip = "accretion_cast_se0";
+				case "accretion_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				// Gravitic Flux: start (0x1B8), aim (0x60F), cast (0x691), lift (0x175), slam (0x1B9, no first-person clip)
+				case "flux_slam" -> viewClip = "";
 				default -> {
 				}
 			}

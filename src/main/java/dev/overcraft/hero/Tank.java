@@ -46,7 +46,9 @@ public final class Tank {
 	 * Speed modifiers a hero puts on themselves (their own ability's slow, not one received): a Stalwart resists none of
 	 * them. Each hero's kit adds its own (Sigma's Accretion cast, later).
 	 */
-	private static final Set<Identifier> OWN_SLOWS = new HashSet<>();
+	private static final Set<Identifier> OWN_SLOWS = new HashSet<>(Set.of(
+		// Sigma's Accretion gather (-75%: dev.overcraft.sigma.Accretion.CAST_SLOW; here, so his own client knows it too)
+		Identifier.fromNamespaceAndPath("overcraft", "sigma_accretion_cast")));
 
 	public static boolean tank(@Nullable Hero hero) {
 		return hero != null && hero.role == Hero.Role.TANK;

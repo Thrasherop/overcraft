@@ -199,6 +199,9 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"hypersphere", 0.6f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
+		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
+		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"=sigma_rock", 1.2f, false, 1, false));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -282,6 +285,12 @@ public class OvercraftClient implements ClientModInitializer {
 			return lw != null ? lw : ClientBrigitte.bash(entity);
 		};
 		OwMovement.descent = ClientMercy::descent;
+		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
+		OwMovement.noJump = entity -> entity == mc.player && ClientHero.hero() == Hero.SIGMA
+			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0;
+		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
+			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
+			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;
