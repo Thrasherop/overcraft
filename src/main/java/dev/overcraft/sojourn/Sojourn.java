@@ -7,6 +7,7 @@ import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,6 +24,8 @@ import static dev.overcraft.sojourn.SojournStats.*;
 public final class Sojourn implements HeroKit {
 	/** The synced mode's bit: she's sliding (her client moves her: ClientSojourn). */
 	public static final int MODE_SLIDE = 1;
+	/** HeroManager.SOJOURN_GUN's flag over her energy points: she's in Overclock (any of its three phases). */
+	public static final int SYNC_OVERCLOCK = 1 << 10;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -45,6 +48,7 @@ public final class Sojourn implements HeroKit {
 		s.sojournSlide = -1;
 		s.sojournUlt = -1;
 		player.setAttached(HeroManager.SOJOURN_SLIDE, false);
+		player.setAttached(HeroManager.SOJOURN_GUN, 0);
 	}
 
 	@Override
@@ -72,6 +76,68 @@ public final class Sojourn implements HeroKit {
 		if (!java.util.Objects.equals(player.getAttached(HeroManager.SOJOURN_SLIDE), sliding)) {
 			player.setAttached(HeroManager.SOJOURN_SLIDE, sliding);
 		}
+		int gun = (int) Math.round(s.sojournEnergy) | (s.sojournUlt >= 0 ? SYNC_OVERCLOCK : 0);
+		if (!java.util.Objects.equals(player.getAttached(HeroManager.SOJOURN_GUN), gun)) {
+			player.setAttached(HeroManager.SOJOURN_GUN, gun);
+		}
+		lines(player, s);
+	}
+
+	/**
+	 * Her lines on her Railgun and Overclock: energy at 100 outside Overclock, 0E7C "Railgun charged!" (1A23 #1181 -> #1182);
+	 * still full 10 s on, 0E7D (#1183 / #1184); Overclock over, 0.5 s on, 0E87 "Cooling down" (2159 #363's end plug -> #709).
+	 */
+	private static void lines(ServerPlayer player, HeroState s) {
+		long now = player.level().getGameTime();
+		boolean full = s.sojournEnergy >= ENERGY_MAX;
+		if (!full) {
+			s.sojournFullAt = -1;
+			s.sojournFullSaid = false;
+			s.sojournHoldingSaid = false;
+		} else if (s.sojournFullAt < 0) {
+			s.sojournFullAt = now;
+		}
+		if (full && overclocked(s)) {
+			// full in Overclock: #1181's onTrue goes through #1300's gate unsaid, and it stays full after (no new onTrue:
+			// found playing, it said "Railgun charged" as Overclock ended)
+			s.sojournFullSaid = true;
+			s.sojournHoldingSaid = true;
+		}
+		if (full && !s.sojournFullSaid) {
+			s.sojournFullSaid = true;
+			Voice.say(player, "railgun_charged", 1);
+		} else if (full && !s.sojournHoldingSaid && now - s.sojournFullAt >= Ow.ticks(HOLDING_LINE)) {
+			s.sojournHoldingSaid = true;
+			Voice.say(player, "railgun_holding", 1);
+		}
+		if (s.sojournOcEndSay >= 0 && now >= s.sojournOcEndSay) {
+			s.sojournOcEndSay = -1;
+			if (player.isAlive()) {
+				Voice.say(player, "overclock_end", 1);
+			}
+		}
+	}
+
+	/** "Railgun still at full power!" after this long at full (1A23 #1183: a 10 s wait). */
+	private static final double HOLDING_LINE = 10;
+	/** Overclock's end line this long after it ends (2159 #709: 0.5 s). */
+	private static final double OVERCLOCK_END_LINE = 0.5;
+	/** Her in-air kill line holds while she's off the ground this long after her slide jump (ticks; ours: v41319's reset isn't read). */
+	private static final long AIR_KILL = 60;
+
+	/**
+	 * She killed an enemy (Voice.onDeath): in Overclock the kill counts and its count picks the line, 0B93 / 113C / 113D (3 and
+	 * 4) / 113E (2159 #1278 -> #1283); outside it a Charged Shot kill says 0B8F "Vaporized", 0E7A in the air after her slide
+	 * jump (v41319).
+	 */
+	public static void killed(ServerPlayer player, HeroState s) {
+		if (overclocked(s)) {
+			int n = ++s.sojournOcKills;
+			Voice.say(player, n == 1 ? "overclock_kill" : n == 2 ? "overclock_kill_2" : n <= 4 ? "overclock_kill_3" : "overclock_kill_5", 1);
+		} else if (s.sojournCharging) {
+			boolean air = !player.onGround() && player.level().getGameTime() - s.sojournSlideJumpAt < AIR_KILL;
+			Voice.say(player, air ? "charged_kill_air" : "charged_kill", 1);
+		}
 	}
 
 	/** Ticks after the slide's end before a landing clears its soft landing: past the jump's take-off (ours). */
@@ -87,6 +153,9 @@ public final class Sojourn implements HeroKit {
 			// the cast (D #114 / #361, 0.17 s; anim 0x479): the shot leaves at its end
 			s.sojournDisruptor = 0;
 			Combat.animate(player, "disruptor");
+			// 1441 #84's activation -> #123 322C (54E9 hers, 54FB 70 m) and #124 her line 0B92
+			SojournSounds.split(player, "disruptor.cast", player.getEyePosition(), 70);
+			Voice.say(player, "disruptor", 1);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.sojournUlt < 0 && s.ultCharge >= ULT_COST) {
 			s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.SOJOURN, s.ultCharge);
@@ -96,6 +165,13 @@ public final class Sojourn implements HeroKit {
 			// the cast: no fire for 0.75 s (D #364; W), a press of the right button waits in its buffer
 			s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(OVERCLOCK_CAST));
 			Combat.animate(player, "ult");
+			s.sojournOcKills = 0;
+			s.sojournOcEndSay = -1;
+			// 6FE3's cast (E539 hers, E53A 75 m; its loop is her clients': SojournSounds), the lines 0B19 / 0D2F (#771), her
+			// energy filling (32DC: 5E23, M the moment)
+			SojournSounds.split(player, "ult.cast", player.getEyePosition(), 75);
+			dev.overcraft.hero.HeroSounds.ultLine(player, SojournSounds.of("ult.friendly"), SojournSounds.of("ult.enemy"), 5);
+			SojournSounds.own(player, "energy.fill");
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
 			Railgun.startReload(player, s);
@@ -113,6 +189,8 @@ public final class Sojourn implements HeroKit {
 		if ((extra & HeroInputPayload.EXTRA_JUMP) != 0) {
 			endSlide(player, s, true);
 		} else if ((extra & HeroInputPayload.EXTRA_SLIDE_END) != 0) {
+			// into a wall (1E6F #962 -> #961 -> #641: the sweep's contact set 0702)
+			SojournSounds.split(player, "slide.wall", player.position(), 50);
 			endSlide(player, s, false);
 		}
 	}
@@ -134,6 +212,16 @@ public final class Sojourn implements HeroKit {
 		s.softLanding = true;
 		s.interruptReload(slideTime(player));
 		Combat.animate(player, "slide");
+		// 2905 / 28E8's start (5185 hers, 5186 others'), Dual Thrusters' own on top (65B6: C3C7), her exert 0B90; the loop, the
+		// scrape and the end are her clients' (SojournSounds); Friction Generators' fill (51EB #442 -> 32DC)
+		SojournSounds.split(player, "slide.start", player.position(), 50);
+		if (dual) {
+			SojournSounds.own(player, "perk.thrusters.start");
+		}
+		if (HeroManager.hasPerk(player, Perk.SOJOURN_FRICTION_GENERATORS)) {
+			SojournSounds.own(player, "energy.fill");
+		}
+		Voice.say(player, "slide", 1);
 	}
 
 	private static void endSlide(ServerPlayer player, HeroState s, boolean jumped) {
@@ -146,6 +234,10 @@ public final class Sojourn implements HeroKit {
 		player.setAttached(HeroManager.SOJOURN_SLIDE, false);
 		if (jumped) {
 			Combat.animate(player, "slide_jump");
+			// #411 -> #277 2C2E (549E hers, 54FC 70 m), with Dual Thrusters #1031 -> #1029 65B7 instead; her exert 0B91
+			SojournSounds.split(player, dual(player) ? "perk.thrusters.jump" : "slide.jump", player.position(), 70);
+			Voice.say(player, "slide_jump", 1);
+			s.sojournSlideJumpAt = player.level().getGameTime();
 		}
 	}
 
@@ -167,6 +259,8 @@ public final class Sojourn implements HeroKit {
 			s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 			if (s.ability1Cooldown <= 0) {
 				s.sojournSlideCharges++;
+				// #1022 -> #1024: a charge back (009B: 0FCF), both back (5F58: BB32)
+				SojournSounds.own(player, s.sojournSlideCharges >= DUAL_CHARGES ? "perk.thrusters.recharge_full" : "perk.thrusters.recharge");
 			}
 		}
 		if (s.sojournSlideCharges < DUAL_CHARGES && s.ability1Cooldown <= 0 && s.sojournSlide < 0) {
@@ -252,6 +346,9 @@ public final class Sojourn implements HeroKit {
 			return;
 		}
 		if (!player.isAlive() || ++s.sojournUlt > ultTicks()) {
+			if (player.isAlive()) {
+				s.sojournOcEndSay = player.level().getGameTime() + Ow.ticks(OVERCLOCK_END_LINE);
+			}
 			s.sojournUlt = -1;
 			s.ultActive = 0;
 			return;

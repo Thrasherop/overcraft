@@ -130,6 +130,8 @@ public final class HeroAnimator {
 	private boolean juno, junoGliding;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
+	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
+	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
 	private float glideSince = -100, hoverSince = -100, hoverEndAt = -100, doubleJumpAt = -100;
 	private int hoverTicks;
@@ -952,6 +954,12 @@ public final class HeroAnimator {
 		}
 		additive(model, pose, "add_charged_shot", "charged_shot", now);
 		energyLayer(model, pose, now);
+		SkinnedModel.Clip overclock = sojournOverclock ? clip(model, "add_overclock") : null;
+		if (overclock != null) {
+			// her stance through Overclock (834A, 0.8 s: additive weighted by df 0x1AC = v842, 2159 #374), on the clock (M: a
+			// looped stance layer); only her 3P model has it
+			Skeleton.addAdditive(overclock, time(overclock, now, true), pose, 1);
+		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
 		if (lifeweaver) {
@@ -1375,6 +1383,8 @@ public final class HeroAnimator {
 			slideJumpAt = now;
 		}
 		sojournSliding = slideNow;
+		Integer gun = sojourn ? entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_GUN) : null;
+		sojournOverclock = gun != null && (gun & dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK) != 0;
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {

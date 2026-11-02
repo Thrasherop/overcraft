@@ -90,6 +90,13 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Sojourn's Railgun as every client draws and hears it (SojournFx's glow on her gun by her energy, Overclock's look and
+	 * loop, her stance additive): her energy in whole points, plus Sojourn.SYNC_OVERCLOCK while she is in Overclock.
+	 */
+	public static final AttachmentType<Integer> SOJOURN_GUN = AttachmentRegistry.create(Overcraft.id("sojourn_gun"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));

@@ -65,6 +65,11 @@ public class RailgunShotEntity extends OwProjectile {
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel) {
+			if (getOwner() instanceof ServerPlayer owner) {
+				net.minecraft.core.Direction face = hit.getDirection();
+				Railgun.hitBlock(owner, hit.getLocation(),
+					new net.minecraft.world.phys.Vec3(face.getStepX(), face.getStepY(), face.getStepZ()));
+			}
 			discard();
 		}
 	}

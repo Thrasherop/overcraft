@@ -113,6 +113,18 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - Watch the white top of a palette: four rounds' glows stacked to a white ball. A glow gets its own palette without
   white (the data's own core colour).
 
+### Sojourn's effects (2026-11-02; [sojourn-effects](../../tools/reference/sojourn-effects.md), hub [sojourn](../heroes/sojourn.md))
+- **The Palette enum hit the class file's 64 KB limit** ("code too large" in EffectArt): each constant's stop array is built in
+  the enum's static initializer. Her 66 palettes pass arrays held by another class (`SojournPalettes`); do the same for the
+  next hero.
+- **A glow on the first-person view model is hidden by it:** the hand pass draws the gun after the world with depth cleared,
+  so a world particle at the view gun's point (`HeroModelRenderer.viewGun`, followed with `Particle.follow`) shows only round
+  the gun's edges. Glows meant to sit on the 1P gun need drawing in the hand pass (open).
+- **A fast projectile's trail can't be judged along the view:** from behind her a 150 m/s round's ribbon foreshortens to a
+  dot. Fire at `/tick rate 2`, then turn 70-80 degrees and screenshot: the rounds still in flight cross the view.
+- **A sphere round an area must be very faint:** her field's sphere at 0.18 alpha drew a milky solid dome over everything in
+  it; 0.06 reads as a shell.
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.

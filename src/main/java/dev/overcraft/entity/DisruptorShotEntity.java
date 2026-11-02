@@ -61,12 +61,18 @@ public class DisruptorShotEntity extends OwProjectile {
 
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
+		if (level() instanceof ServerLevel && isAlive() && getOwner() instanceof ServerPlayer owner) {
+			Disruptor.struck(owner, hit.getLocation(), false);
+		}
 		open(hit.getLocation());
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
+		if (level() instanceof ServerLevel && isAlive() && getOwner() instanceof ServerPlayer owner) {
+			Disruptor.struck(owner, hit.getLocation(), true);
+		}
 		// at the face it hit (sojourn-plan.md, ours), its centre a little out of the block
 		net.minecraft.core.Direction face = hit.getDirection();
 		open(hit.getLocation().add(face.getStepX() * 0.05, face.getStepY() * 0.05, face.getStepZ() * 0.05));

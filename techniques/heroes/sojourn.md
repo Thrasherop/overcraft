@@ -13,8 +13,9 @@ was: [juno](juno.md) (her movement hooks) and Ana (a gun on bone_0606: [ana](ana
 - **Clip maps:** `tools/clipmaps/sojourn.txt` (3P, 235 clips), `sojourn_1p.txt` (79), `sojourn_weapon.txt` (the Railgun, 23).
 - **Code:** `dev.overcraft.sojourn` (`Sojourn`, `SojournStats`: every number with D / BZ / W and its confidence, `Railgun`:
   the rounds, energy, Charged Shot; `Disruptor`: the Disruptor Shot's fields), `entity/RailgunShotEntity`,
-  `entity/DisruptorShotEntity`, `client/ClientSojourn`, `client/effect/SojournFx` (stand-in
-  looks until step 8), `OwMovement.slideTravel`.
+  `entity/DisruptorShotEntity`, `client/ClientSojourn`, `client/effect/SojournFx` (her data's
+  effects since step 8: [sojourn-effects](../../tools/reference/sojourn-effects.md)), `client/SojournSounds` and
+  `sojourn/SojournSounds` (her sounds: [sojourn-sounds](../../tools/reference/sojourn-sounds.md)), `OwMovement.slideTravel`.
 
 ## The models (step 1)
 Exported from the research extraction (build 154088) with `tools/owm_survey.py --glb --keep=<clip map>` (Blender 5.2,
@@ -224,3 +225,49 @@ slide jump away when hurt; real keys): Disruptor four times, 23 Charged Shots, O
 (hero mode, 150), Charged Shots at 150 after it; the ult full again by 105 s from her damage. She lived (18 at the end: the
 regeneration); the far skeletons at 30-45 m were missed for a minute (the scripted aim lags moving mobs: harness.md). The
 Disruptor's dome over the zombies (`n_end.png`). Not tried: dying in this night (the respawn was played in step 3), a raid.
+
+## Step 8 (her effects, sounds and voice from the data), played 2026-11-02
+Built: her effects from her data ([sojourn-effects](../../tools/reference/sojourn-effects.md); research `fx\Sojourn`, 45 effects,
+12 of Overclock's Stadium ones not in the build): `SojournFx` (rounds' comet ribbon 280D, muzzle 2837, hits 31E5, the gun's
+energy glow 31E6 by her energy's steps, the reload 30A6, the Charged Shot's muzzle 2834 / beam 2835 / tracer 2BF0 / hits 22BF,
+the slide 2905 and its jump 330E, the Disruptor's launch 2C92 / flight 2C8D / field 2228 with Deceleration 6C02, Overclock 2880 and
+a glow for 333B), 66 `SOJ_*` palettes (their stops in `SojournPalettes`: the enum's initializer outgrew 64 KB), 12 new masks.
+Her stance additive `add_overclock` plays through Overclock. A new synced `HeroManager.SOJOURN_GUN` (energy + Overclock) lets
+every client draw her gun and hear Overclock. Her sounds: the map from a parallel pass
+([sojourn-sounds](../../tools/reference/sojourn-sounds.md), `tools/soundmaps/sojourn.txt`, 119 events + 29 voice-line unlocks in
+the dev pack), wired by `sojourn.SojournSounds` (server one-shots) and `client.SojournSounds` (the slide's loop / scrape / end,
+Overclock's loop / ending / end, the Disruptor's flight loop, the field's loop and end, the burn for a player in an enemy field),
+`OcSounds.SOJOURN_SOUNDS` / `SOJOURN_VOICE`, her stimuli in `Voice`, her kill lines (`Sojourn.killed`).
+
+Dev client (`OC_ASSET_PACK` = the Ana checkout's pack, `JAVA_TOOL_OPTIONS=-Xmx2G`: memory was short, another session's client
+running), fresh flat world `soj8` at night (time stopped; `gamerule spawn_mobs` / `spawn_monsters false`: the old names failed),
+a NoAI zombie with 1000 health 12 m ahead; sounds from `heard` / `playing`, screenshots `run/screenshots/s8_*.png` (not
+committed), each looked at:
+- **Railgun:** per burst `fire_first` then `fire` per round (16/s), `projectile` at her, `hit` + `hit_enemy` per hit,
+  `energy.gain` per gain, `fire_end` at the release (heard). The round's ribbon: a cyan comet streak several metres long with a
+  bright head (`s8_r8.png`, seen by firing at `/tick rate 2` then turning 75 degrees: along the view it foreshortens to a dot);
+  muzzle flares and sparks at the gun (`fxnear`: at hp 0006, 1.06 m up), hit flashes on the zombie (`s8_r1-3.png`).
+- **Energy glow:** at 100 a cyan glow on her gun (`s8_rounds_slow.png`); **found:** too strong (a 0.76 m ball at 0.3): alpha
+  halved. **Not seen in her own view** (`s8_g100.png`): the view model covers it (open).
+- **Charged Shot:** `fire` / `fire_mid` / `fire_low` by her energy (95 -> fire, 40 -> mid, low seen), `shot`, `hit` +
+  `hit_enemy` per creature pierced, `hit_block` where it stops (31 m on, heard). The beam and tracer (`s8_c3.png`, `s8_c6.png`,
+  `fxslow 0.1` then a turn): **found:** glows every 0.6 m read as beads and the 1F35 sparks as white rings; now every 0.35 m,
+  fainter, sparks at 0.6 (`s8_c6.png`: a continuous dotted cyan line). No energy: the "not available" click (heard).
+  `charged_kill` ("Vaporized") on a 2-health zombie pierced behind the target (heard).
+- **Power Slide:** `slide.start`, her line, `slide.loop`, `slide.scrape.loop`, `slide.end` (heard); thruster glows at her
+  hips (`s8_s1.png`, `s8_s3.png`), dust behind; G at 0.3 s: the loops stop, the end rings out (`playing`). The slide jump:
+  `slide.jump` (heard), its plume, glows and sparks spawned at hp 002D / 002F (`fxnear`); in screenshots they were mostly behind
+  her. Her `slide_jump` exert wasn't said 0.45 s after the slide's (one line at a time: the data's rules).
+- **Disruptor:** `cast` + "Disrupting", the flight loop following it, `hit` at the zombie, `field.open` / `field.loop` /
+  `field.end` at it (heard). The field (`s8_d2.png`): the swirl decal on the ground, line glows, motes, the core; **found:**
+  its sphere at 0.18 alpha was a milky solid dome hiding everything: 0.06 (`s8_d4.png`).
+- **Overclock:** `ult.cast`, `ult.friendly`, `energy.fill`, `ult.loop` through it, `ult.ending` 1.3 s before its 8 s end,
+  `ult.end`, then "Cooling down" (heard). The look (`s8_o1-3.png`): glows on her gun, a faint cyan glow round her.
+  `overclock_kill` on a kill in it (heard). Hero switched mid-Overclock: its loop stopped (`playing`).
+  **Found playing (fixed):** "Railgun charged!" was said as Overclock ended (energy still 100); the data's line fires when it
+  reaches 100 outside Overclock: a fill in Overclock now counts as said. After the fix: `overclock_end` and no charged line.
+- **Reload and melee:** `railgun.reload` (heard); `melee` + her `melee` line (heard).
+- **Not tried / open:** a second client (`runClient2` was another session's: the `_3p` copies, the enemy rows, the burn sounds
+  on a player in an enemy field were not heard or seen); the in-own-view gun glows (hidden by the view model); death mid-
+  Overclock; `slide.touch` / `lift` / `idle.loop` / `energy.glow` / `full` / `spent` (EXTRA, L meanings: not wired); the field's
+  flame ring and Overclock's vents (no mesh); material effects; listened to for balance by a person.

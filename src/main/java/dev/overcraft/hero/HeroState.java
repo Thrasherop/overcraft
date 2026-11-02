@@ -180,6 +180,15 @@ public final class HeroState {
 	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).
 	 */
 	public int sojournDisruptor = -1, sojournDisruptorWrite = -1, sojournUlt = -1, sojournSlideCharges = 2;
+	/**
+	 * Sojourn's sounds and lines (step 8): her Railgun firing a burst (its first shot and its ring-out), her "Railgun charged"
+	 * said for this full charge and its "still at full power" (10 s on), a Charged Shot's damage being dealt now (its kill
+	 * line); when her energy reached full, when her slide jump left the ground (the in-air kill line), when Overclock's end line
+	 * is due (game time, -1 none); her kills in this Overclock.
+	 */
+	public boolean sojournFiring, sojournFullSaid, sojournHoldingSaid, sojournCharging;
+	public long sojournFullAt = -1, sojournSlideJumpAt = -1000, sojournOcEndSay = -1;
+	public int sojournOcKills;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
 	public int junoVolley;
 	public double junoVolleyClock;

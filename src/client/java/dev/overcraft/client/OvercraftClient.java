@@ -105,6 +105,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.SombraFx.clear();
 			dev.overcraft.client.effect.BrigitteFx.clear();
 			dev.overcraft.client.effect.JunoFx.clear();
+			dev.overcraft.client.effect.SojournFx.clear();
 			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
@@ -139,9 +140,11 @@ public class OvercraftClient implements ClientModInitializer {
 				ClientSojourn.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
+				dev.overcraft.client.effect.SojournFx.tick(client);
 			}
 			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
 			JunoSounds.tick(client);
+			SojournSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}

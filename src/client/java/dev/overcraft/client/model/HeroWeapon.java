@@ -297,12 +297,18 @@ public final class HeroWeapon {
 	 */
 	public static org.joml.@Nullable Vector3f muzzle(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
+		return point(hero, animator, heroModel, firstPerson, now, "hardpoint_0006");
+	}
+
+	/** The same for any node of the held weapon (Sojourn's Railgun: its energy glow's hp 007C), or null. */
+	public static org.joml.@Nullable Vector3f point(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now, String name) {
 		EmoteProps.Placed placed = place(hero, animator, heroModel, firstPerson, now);
 		if (placed == null) {
 			return null;
 		}
 		SkinnedModel weapon = placed.loaded().model();
-		int node = weapon.node("hardpoint_0006");
+		int node = weapon.node(name);
 		if (node < 0) {
 			return null;
 		}

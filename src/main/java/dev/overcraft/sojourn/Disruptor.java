@@ -72,9 +72,31 @@ public final class Disruptor {
 	/** The projectile stopped (DisruptorShotEntity): its field there. */
 	public static void open(ServerPlayer owner, Vec3 at) {
 		ServerLevel level = owner.level();
-		FIELDS.add(new Field(owner, level, at, level.getGameTime(), HeroManager.hasPerk(owner, Perk.SOJOURN_DECELERATION_FIELD)));
-		// its stand-in look for its whole life (SojournFx: her real effects are step 8)
-		Effects.play(level, "sojourn_disruptor_field", at, Vec3.ZERO, owner, Ow.ticks(FIELD_DELAY + FIELD_TIME), owner);
+		boolean slows = HeroManager.hasPerk(owner, Perk.SOJOURN_DECELERATION_FIELD);
+		FIELDS.add(new Field(owner, level, at, level.getGameTime(), slows));
+		// its look for its whole life (SojournFx: 2228, 6C02 with Deceleration Field), its loops and end at it, the burn on
+		// whoever is inside (dev.overcraft.client.SojournSounds); the variant carries its ticks and the perk
+		Effects.play(level, "sojourn_disruptor_field", at, Vec3.ZERO, owner, Ow.ticks(FIELD_DELAY + FIELD_TIME) | (slows ? FX_SLOWS : 0),
+			owner);
+		// 2228's one-shots: 9210 hers (aud 1, 70 m: at the field), 5402 for others (70 m)
+		SojournSounds.forOne(owner, "disruptor.field.open", at, 70);
+		SojournSounds.at(level, "disruptor.field.open_3p", at, 70, owner);
+	}
+
+	/** The field effect's variant flag over its ticks: Deceleration Field (6C02's sphere). */
+	public static final int FX_SLOWS = 1 << 12;
+
+	/**
+	 * The shot hit a creature (076A type 0: 5197's 5D51 in her head, 9050 500 m at it for others) or a block (type 2: 519A,
+	 * 892E 90 m + 8930 32 m, one copy for everyone).
+	 */
+	public static void struck(ServerPlayer owner, Vec3 at, boolean block) {
+		if (block) {
+			SojournSounds.at(owner.level(), "disruptor.hit_block", at, 90);
+		} else {
+			SojournSounds.own(owner, "disruptor.hit");
+			SojournSounds.at(owner.level(), "disruptor.hit_3p", at, 500, owner);
+		}
 	}
 
 	public static void tickAll(MinecraftServer server) {

@@ -95,6 +95,11 @@ public final class QuickMelee {
 			// her swing's foley from her melee clips (39BC at 0.4 s, built into the files)
 			HeroSounds.split(hero, OcSounds.ANA_MELEE, OcSounds.ANA_MELEE_3P, hero.position(), 30);
 		}
+		if (s.hero == Hero.SOJOURN) {
+			// her melee clips' foley: 1P 6B94's 36E7 (5ECD + 5F24) hers, 3P 7EF3's 372E (5FE7 30 m + 5FF4 45 m) for others
+			HeroSounds.split(hero, dev.overcraft.sojourn.SojournSounds.of("melee"), dev.overcraft.sojourn.SojournSounds.of("melee_3p"),
+				hero.position(), 45);
+		}
 		if (s.hero == Hero.JUNO) {
 			// her 1P melee clip E9B8's foley (5F7F: B2CF + B8BF); her 3P melee clips carry none (H), so hers only
 			HeroSounds.toOwner(hero, dev.overcraft.juno.JunoSounds.of("melee"));

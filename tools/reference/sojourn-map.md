@@ -217,5 +217,5 @@ the senders of energy messages 2161 / 2B08; v61743 (L Stadium) and v232 (energy 
 direction and which side 0x155 / 0x169 is (no yaw in the clips, `slideyaw_sojourn.py`); the gun's energy-state conditions; df 0xB7 cat
 0x68's setter; the 3P aliases 0x764 / 0x72B / 0xA33 and 1P 0x6D1 / 0x6D2 / 0x726 (played outside her kit or by nothing); set 4306's
 clips (19F7B-1A251) and the hero file's C395 / C0E2 (not extracted); 20 extracted 3P clips in no set (listed in `work\clipmap.md`);
-slot directions on her feet (not measured); her hit volumes; the voice set (01C2.05F, extracted, not mapped), sounds, effects and
-emotes (extracted, not mapped).
+slot directions on her feet (not measured); her hit volumes; effects and emotes (extracted, not mapped). Her sounds and voice set
+(01C2.05F) are mapped since 2026-11-02: [sojourn-sounds.md](sojourn-sounds.md).
