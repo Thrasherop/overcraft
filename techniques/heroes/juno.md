@@ -175,3 +175,19 @@ Played 2026-11-01, dev pack, host "Kiriko" as Juno and `runClient2` "Viewer" ove
 - Not wired: `fire_alt` (L which branch), the Stadium ones, `idle.loop_3p`, `jump` / `jump_3p` / `land`, `perk.ring_refund`
   (L live), `voice.ping_ring` (no ring ping), Faster Blaster's stream (no volley while it fires). Not listened to for
   balance (24 hit sounds a volley in her head).
+
+## Step 8 (her emotes), played
+All 22 from the data ([juno_emotes](../emotes/juno_emotes.md)): 75 clips in `hero_models/juno_clips.glb`, her data
+`emotes/juno.json` (`tools/emote_data.py juno`), the props (mic 1A146, pom-poms 1920B, sled 1AB3F, Galaxy Gazing's mobile
+17A7C with its clips, Game Start's hologram 11DA3) in the pack. What it took:
+- **Her emotes' mask 1 is the Mediblaster, not her geoset 1 (her body):** the mask-1 windows are the put-away windows of
+  the gun cell's slot E709, and Cheer Routine's pom-pom goes in the hand the gun stays at. `emote_data.py` maps her weapon
+  pieces to mask bits (gun 1, pods 2: M) and borrows 000A / 000B (Weapon_R / Weapon_L, Brigitte's) for the mic and the
+  pom-poms.
+- **Listen Up and Salty:** no mask, but the shared carrier puts E709 away; her gun now follows those windows
+  (`stowPieces`, found playing: the gun by her head).
+- **Shuffle played its 0.4 s intro only** (it starts 0.011 off her swaying idle, over `EmotePlan.SAME`): the nearest clip
+  under 0.013 now starts an emote with none closer; no other hero's emote is in that gap.
+- Played (dev client, world `junoemo`, picked from the select screen): every emote at four moments, the props held at
+  their windows, three picked through the Voice Lines -> Emotes loadout and the communication wheel. Not yet: their
+  sounds, first person, Sledding's two other loops, Game Start's hologram colour (Sombra's violet).
