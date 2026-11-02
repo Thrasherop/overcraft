@@ -54,7 +54,12 @@ public enum Perk {
 	SIGMA_KINETIC_CYCLE(Hero.SIGMA, Tier.MINOR, "kinetic_cycle"),
 	SIGMA_HYPER_REGENERATION(Hero.SIGMA, Tier.MINOR, "hyper_regeneration"),
 	SIGMA_HYPER_STRIKE(Hero.SIGMA, Tier.MAJOR, "hyper_strike"),
-	SIGMA_LEVITATION(Hero.SIGMA, Tier.MAJOR, "levitation");
+	SIGMA_LEVITATION(Hero.SIGMA, Tier.MAJOR, "levitation"),
+	// Sojourn's, the live list's order (BZ 2025-02-18 / 2025-08-26; W): their effects come in step 7 (sojourn-plan.md)
+	SOJOURN_OVERCHARGED(Hero.SOJOURN, Tier.MINOR, "overcharged"),
+	SOJOURN_DECELERATION_FIELD(Hero.SOJOURN, Tier.MINOR, "deceleration_field"),
+	SOJOURN_DUAL_THRUSTERS(Hero.SOJOURN, Tier.MAJOR, "dual_thrusters"),
+	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators");
 
 	public enum Tier { MINOR, MAJOR }
 

@@ -874,6 +874,24 @@ public final class HeroHud {
 				(float) dev.overcraft.sigma.SigmaStats.ACCRETION_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.SOJOURN) {
+			// Power Slide (Shift: marked while she slides) and Disruptor Shot (E), her data's ABILITY 1 / 2, in Kiriko's two
+			// places (ours)
+			// (with Dual Thrusters her charges come as the second ammo: the box ready while one is left, the count in its corner,
+			// as Mercy's Double Dose)
+			int slides = s.secondaryAmmo();
+			ability(g, hero, w, "power_slide", w - 641, 903, HeroControls.get(Action.ABILITY_1), slides > 0 ? 0 : s.ability1Cooldown(),
+				(float) dev.overcraft.sojourn.SojournStats.SLIDE_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.sojourn.Sojourn.MODE_SLIDE) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			if (slides > 1 || slides == 1 && s.ability1Cooldown() > 0) {
+				charges(g, slides, w - 641, 903, w);
+			}
+			ability(g, hero, w, "disruptor_shot", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.JUNO) {
 			// Glide Boost (Shift) and Hyper Ring (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "glide_boost", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1013,6 +1031,25 @@ public final class HeroHud {
 		g.pose().popMatrix();
 	}
 
+	/**
+	 * Sojourn's Railgun energy (0-1, 1.5 Overcharged) on her Charged Shot panel: its number (0-100, the data's v971) over a band
+	 * along the panel's foot, filling with it; her data's hero red, white when full (ours: Overwatch shows the energy round her
+	 * crosshair and on the gun).
+	 */
+	private static void railgunEnergy(GuiGraphicsExtractor g, float energy, float x, float y, float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		int colour = energy >= 0.999f ? 0xFFFFFFFF : 0xFFE8553F;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(energy, 0, 1), 5, colour);
+		// the number in white: in her hero red it vanished over her red gun in first person (found playing)
+		String number = String.valueOf(Math.round(energy * 100));
+		brush(g, number, x + width - 30, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 30, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	/** Charges left on an ability's box (Flash Heal with Double Dose): the count in its corner (ours). */
 	private static void charges(GuiGraphicsExtractor g, int count, float x, float base, float w) {
 		float cx = x + 32;
@@ -1108,6 +1145,16 @@ public final class HeroHud {
 				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
 			weapon(g, hero, w, "hyperspheres", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
 				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.SOJOURN) {
+			// Charged Shot (the right button) with her energy where Kiriko's ofuda panel is, the Railgun's 45 rounds (the left)
+			// where her kunai are
+			weapon(g, hero, w, "charged_shot", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			railgunEnergy(g, s.meter(), w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.JUNO) {

@@ -104,8 +104,39 @@
   entities) too. Use both for a projectile's flight, and `fx <effect> [variant] [enemy]` to play one moment 3 m ahead.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.
+- **Killing the client loses the hero** (2026-11-02, Sojourn): the world keeps the player's data from its last save, so
+  after `Stop-Process` a rejoin's select screen offered Kiriko, not the hero just played. To test a rejoin, Save and Leave
+  first (pause menu at 854x480: Save and Leave is `screenclick 59 189 1`).
+- **A `/fill` over the player suffocates them:** building a test stair where she stood cost 6 health inside the stone and
+  looked like a slide's fall damage (2026-11-02). Move away (`/tp`) before filling, and read health before the test.
 - **Two clients (2026-10-29):** wait for the second client's title screen before `connect` (connecting while its
   resources load crashed it). After `openworld`, click READY only once the world has loaded: clicked during the loading
   screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A
   rejoining client shows its select screen too. Keep the second client's fire pointed away from the hero under test:
   Kiriko's kunai killed Ana mid-test, and `resistance` doesn't stop Overcraft's damage.
+- **A health read right after a shot can come before the hit** (2026-11-02, Sojourn): a projectile 20 m off lands a tick or
+  two later, and the command's line in the log later still. Sleep a second before the read, and count from the newest line.
+- **Knockback moves the hero off the mark:** a stray mob pushed Sojourn 66 m off her spot, and every "miss" after was her
+  aim at empty air. `/tp @s` back at the start of each batch (2026-11-02).
+- **`aim.py` with no such mob left prints the hero's own position** (it reads the newest `entity data: [` line, and the
+  failed read adds none): "d=0.62" over and over meant every target was dead (2026-11-02).
+- **`trace` also logs the synced ammo, reload share and meter** (`a`, `r`, `m` at the end of each line): a weapon's rate,
+  reload and energy over time in one call. Since 2026-11-02 also both cooldowns, the second ammo and the ult flag (`c1 c2 s
+  u`): a slide's charges and recharge, Sharpshooter's refunds, an ult's length, tick by tick.
+- **A `data get` read can land on the wrong line** (2026-11-02, Sojourn): reading the newest "entity data" line after a command,
+  a read that timed out left its answer to be taken by the next one (a wolf "at 20" was the villager's read). Read one thing at
+  a time and check the entity's name in the line ("Wolf has the following ..."), or use `attribute <sel> <attr> get`, whose
+  line names the attribute.
+- **Zombies burn at noon:** a plain zombie target lost 1 health a second in the sun and spoiled a damage read; test at
+  midnight (`/time set midnight`) or give them fire resistance (2026-11-02).
+- **Picking a perk by script:** `overcraft perks @s 3`, then `key perk_menu down`, `key secondary_fire` (the first of a tier)
+  or `key primary_fire` (the second) held 0.15 s, `key perk_menu up`; again for the major (2026-11-02).
+- **One connection for a whole test:** a small driver that keeps the harness socket open and reads the game log for each
+  command's answer (exec'ing a test script with `c(cmd)`, `hp(tag)`) ran every step 5-7 measurement in one call each
+  (2026-11-02, Sojourn; the driver lives in that session's scratchpad, `oc.py`: worth bringing into `tools/`).
+- **A `/fill` reaching below the world's floor (y -64) fails as a whole** and says so only in the chat: a pit dug "to -70" in
+  superflat was never dug (2026-11-02, Sojourn). Keep fills inside -64..319.
+- **A boat summoned at a pool's floor stays under the water** and F can't reach it; she just wades. Summon it at the surface
+  (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
+- **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
+  it lands in the world (2026-11-02).

@@ -86,6 +86,17 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
+	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
+	/**
+	 * Sojourn's Railgun as every client draws and hears it (SojournFx's glow on her gun by her energy, Overclock's look and
+	 * loop, her stance additive): her energy in whole points, plus Sojourn.SYNC_OVERCLOCK while she is in Overclock.
+	 */
+	public static final AttachmentType<Integer> SOJOURN_GUN = AttachmentRegistry.create(Overcraft.id("sojourn_gun"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -126,6 +137,7 @@ public final class HeroManager {
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
 		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
+		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
 	}
 
 	private HeroManager() {
@@ -163,8 +175,9 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
-		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md)
-		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
+		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
+		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
+			|| state.hero == Hero.SOJOURN)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -255,6 +268,9 @@ public final class HeroManager {
 		if (state.hero == Hero.JUNO) {
 			dev.overcraft.juno.Juno.clear(player, state);
 		}
+		if (state.hero == Hero.SOJOURN) {
+			dev.overcraft.sojourn.Sojourn.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -342,6 +358,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.JUNO) {
 				dev.overcraft.juno.Juno.clear(player, state);
+			}
+			if (state.hero == Hero.SOJOURN) {
+				dev.overcraft.sojourn.Sojourn.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());
@@ -450,6 +469,9 @@ public final class HeroManager {
 		}
 		if (state.hero == Hero.JUNO && input.extra() != 0) {
 			dev.overcraft.juno.Juno.extra(player, state, input.extra());
+		}
+		if (state.hero == Hero.SOJOURN && input.extra() != 0) {
+			dev.overcraft.sojourn.Sojourn.extra(player, state, input.extra());
 		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());

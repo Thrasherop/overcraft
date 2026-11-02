@@ -40,7 +40,10 @@ public final class HeroWeapon {
 		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Sigma's hand spheres, entity 31A7 (model 106B4) on his hardpoint 000A = bone_004A (Weapon_R) in third person and 00C9 =
 		// bone_0606 in first (the models' hardpoint tables: 106F7 / 106F6; sigma-map.md "Models"); no offset read (M)
-		Hero.SIGMA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
+		Hero.SIGMA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
+		// Sojourn's Railgun, entity 2D20 (model D7B4) on her hardpoint 00C9 = bone_0606, no offset, in both views (var 4E30:
+		// research/sojourn/work/assets.md); hero_models/sojourn_weapon.glb
+		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -298,12 +301,18 @@ public final class HeroWeapon {
 	 */
 	public static org.joml.@Nullable Vector3f muzzle(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
+		return point(hero, animator, heroModel, firstPerson, now, "hardpoint_0006");
+	}
+
+	/** The same for any node of the held weapon (Sojourn's Railgun: its energy glow's hp 007C), or null. */
+	public static org.joml.@Nullable Vector3f point(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
+		float now, String name) {
 		EmoteProps.Placed placed = place(hero, animator, heroModel, firstPerson, now);
 		if (placed == null) {
 			return null;
 		}
 		SkinnedModel weapon = placed.loaded().model();
-		int node = weapon.node("hardpoint_0006");
+		int node = weapon.node(name);
 		if (node < 0) {
 			return null;
 		}
@@ -332,11 +341,16 @@ public final class HeroWeapon {
 		boolean staff = model.clips.containsKey("holstered");
 		EmoteData.WeaponClip played = null;
 		boolean flail = model.clips.containsKey("whip_return_blocked");
-		if ((staff || flail) && a.emoting() && a.emote() != null) {
+		// Sojourn's Railgun (its 3P fire layer is its own): Confidence, Standing By and Weapons Check play its clips on slot 4E30
+		boolean railgun = model.clips.containsKey("add_fire_3p");
+		if ((staff || flail || railgun) && a.emoting() && a.emote() != null) {
 			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md),
-			// or Brigitte's flail's (Cheer's 5265 on slot 3572)
-			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : "brigitte");
-			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), staff ? "staff" : "flail");
+			// Brigitte's flail's (Cheer's 5265 on slot 3572) or the Railgun's (techniques/emotes/sojourn_emotes.md). The
+			// Railgun's emote clips key its root at her bone_0606 in her space (a bake, equal to the mm): the root is kept on
+			// the hardpoint below (bakedRoot), so only its moving parts play
+			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : "brigitte");
+			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(),
+				staff ? "staff" : railgun ? "railgun" : "flail");
 		}
 		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
 		if (staffClip != null) {
@@ -381,6 +395,14 @@ public final class HeroWeapon {
 			Skeleton.sample(end, t - cast.duration(), pose);
 		}
 		add(model, pose, "add_fire", a.since("fire", now));
+		if (model.clips.containsKey("add_fire_3p")) {
+			// Sojourn's Railgun: its own fire and Charged Shot clips per view (sojourn_weapon.txt: sm[0] 1P, sm[1] 3P), the 1P's
+			// first shot of a burst its own
+			String fire = !firstPerson ? "add_fire_3p" : a.fireFirst() && model.clips.containsKey("add_fire_first_1p")
+				? "add_fire_first_1p" : "add_fire_1p";
+			add(model, pose, fire, a.since("fire", now));
+			add(model, pose, firstPerson ? "add_charged_shot_1p" : "add_charged_shot_3p", a.since("charged_shot", now));
+		}
 		add(model, pose, "add_soundwave", a.since("soundwave", now));
 		// Mercy's: the blaster's reload and shot (CF0, CDB), the staff's Flash Heal (126E7)
 		SkinnedModel.Clip own = model.clips.get("reload");

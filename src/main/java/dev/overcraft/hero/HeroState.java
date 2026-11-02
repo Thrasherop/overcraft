@@ -162,6 +162,35 @@ public final class HeroState {
 	public int bashTicks = -1, rallyTicks;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
+	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
+	public int sojournSlide = -1;
+	public long sojournSlideEndAt = -1000;
+	/** Sojourn: ticks on the ground in a row since her slide's soft landing could end (it ends once she has settled). */
+	public int sojournSettled;
+	public double sojournEnergy;
+	/**
+	 * Sojourn's Railgun: the share of a shot owed (16 a second at 20 ticks), the shots into the spread's ramp, when she last
+	 * fired it and last gained energy (game time), and her right button last tick.
+	 */
+	public double sojournShotClock = 1, sojournSpread;
+	public long sojournShotAt = -1000, sojournGainAt = -1000;
+	public boolean sojournRightWas;
+	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
+	public int sojournCharged;
+	/**
+	 * Sojourn: ticks into Disruptor Shot's cast (-1 none), ticks until its cooldown is written (-1 none); ticks into Overclock (-1
+	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).
+	 */
+	public int sojournDisruptor = -1, sojournDisruptorWrite = -1, sojournUlt = -1, sojournSlideCharges = 2;
+	/**
+	 * Sojourn's sounds and lines (step 8): her Railgun firing a burst (its first shot and its ring-out), her "Railgun charged"
+	 * said for this full charge and its "still at full power" (10 s on), a Charged Shot's damage being dealt now (its kill
+	 * line); when her energy reached full, when her slide jump left the ground (the in-air kill line), when Overclock's end line
+	 * is due (game time, -1 none); her kills in this Overclock.
+	 */
+	public boolean sojournFiring, sojournFullSaid, sojournHoldingSaid, sojournCharging;
+	public long sojournFullAt = -1, sojournSlideJumpAt = -1000, sojournOcEndSay = -1;
+	public int sojournOcKills;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
 	public int junoVolley;
 	public double junoVolleyClock;
@@ -289,6 +318,7 @@ public final class HeroState {
 		beamMode = beamLost = beamSearch = gaPhase = gaTicks = 0;
 		gaMomentum = 0;
 		softLanding = false;
+		sojournSettled = 0;
 		flashCharges = 1;
 		flashCast = -1;
 		ampFree = false;

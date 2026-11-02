@@ -61,6 +61,7 @@ public final class Perks {
 			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MINOR_XP;
 			case JUNO -> dev.overcraft.juno.JunoStats.PERK_MINOR_XP;
 			case SIGMA -> dev.overcraft.sigma.SigmaStats.PERK_MINOR_XP;
+			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -78,6 +79,7 @@ public final class Perks {
 			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MAJOR_XP;
 			case JUNO -> dev.overcraft.juno.JunoStats.PERK_MAJOR_XP;
 			case SIGMA -> dev.overcraft.sigma.SigmaStats.PERK_MAJOR_XP;
+			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

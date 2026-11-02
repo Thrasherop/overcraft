@@ -155,6 +155,10 @@ WEAPON_SLOTS = {
     # windows where a clip has no mask (Listen Up, Salty): BODY_WEAPON_STOW. DA1A (child 3024, effect 2B1E) is put away
     # 30 times but not in Heart Wave, Mic Drop or the shared ones: not the pod (Mic Drop's mask 7 hides it), not read
     "juno": {"E709": ("stow", "mediblaster", "juno.txt")},
+    # Sojourn's Railgun 2D20 hangs in slot 4E30 on 00C9 (research/sojourn/work/assets.md: "var 4E30"). EMOTE_CONTROLS=1: put
+    # away (action 1) in Triumph, Heroic, Handstand Push-ups, Wobble and the shared Mic Drop / 178AD; clips played on it
+    # (action 4) in Confidence (8F4B), Standing By (7DD9, 7DDB, 7DDA) and Weapons Check (9546): sojourn_weapon.txt
+    "sojourn": {"4E30": ("stow", "railgun", "sojourn_weapon.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -172,7 +176,7 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True}
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity

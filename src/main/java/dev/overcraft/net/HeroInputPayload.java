@@ -31,6 +31,8 @@ public record HeroInputPayload(int held, int pressed, int extra) implements Cust
 	public static final int EXTRA_CROUCH = 16;
 	/** Jump with back held (Guardian Angel's backward launch). */
 	public static final int EXTRA_BACK = 32;
+	/** Sojourn's Power Slide ended against a wall (her client moves her: ClientSojourn). */
+	public static final int EXTRA_SLIDE_END = 64;
 
 	public HeroInputPayload(int held, int pressed) {
 		this(held, pressed, 0);

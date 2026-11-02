@@ -334,12 +334,13 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
                    "sombra": "../../research/sombra/extract", "brigitte": "../../research/brigitte/extract",
-                   "lifeweaver": "../../research/lifeweaver/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "lifeweaver": "../../research/lifeweaver/extract",
+                   "sojourn": "../../research/sojourn/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -827,6 +828,21 @@ EFFECT_MASKS = {
     # Overboots / Glide Boost: the jet glow dot, the glide screen's thin fade strip
     "juno_jet_glow": ("Juno", "Overboots", "000000001603", 1),
     "juno_fade_thin": ("Juno", "GlideBoost", "000000019325", 1),
+    # Sojourn's (tools/reference/sojourn-effects.md; research\sojourn\fx). The Railgun: the round's comet strip, the hits'
+    # 3-frame bursts and stars, the thin line glow, the Overclock vents' stripes; the Charged Shot's beam line and its hit's
+    # 14-frame flash; the slide jump's tailed spark; the Disruptor's soft dot, the field's swirl, noise and flame ring
+    "sojourn_round": ("Sojourn", "Railgun", "00000001FDF6", 1),
+    "sojourn_burst": ("Sojourn", "Railgun", "00000001F79A", 3),
+    "sojourn_star": ("Sojourn", "Railgun", "00000001F796", 3),
+    "sojourn_line": ("Sojourn", "Railgun", "00000000C061", 1),
+    "sojourn_vents": ("Sojourn", "Railgun", "00000002A3EB", 1),
+    "sojourn_beam": ("Sojourn", "ChargedShot", "00000002A5D0", 1),
+    "sojourn_flash": ("Sojourn", "ChargedShot", "00000001F8BE", 14),
+    "sojourn_spark_tail": ("Sojourn", "PowerSlide", "00000000023F", 1),
+    "sojourn_dot": ("Sojourn", "Disruptor", "000000004A58", 1),
+    "sojourn_swirl": ("Sojourn", "Disruptor", "000000003DB8", 1),
+    "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
+    "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
 }
 
 
@@ -857,7 +873,9 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # torpedo's trail 2FCA7 x 7A9 (51E8 C39 / C47), the damage torpedo's trail 299E3 x 4C003 x 7A9 (5940 C15)
             "juno_tracer": ("juno_tracer_line", "juno_tracer_fade"),
             "juno_heal_trail": ("lw_wisp", "cat_fade"),
-            "juno_dmg_trail": ("cat_ring_line", "juno_ribbon_edge", "cat_fade")}
+            "juno_dmg_trail": ("cat_ring_line", "juno_ribbon_edge", "cat_fade"),
+            # Sojourn's field decal (2228 C21, tools/reference/sojourn-effects.md): the noise 299E5 x the swirl 3DB8
+            "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground

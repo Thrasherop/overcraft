@@ -469,7 +469,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO ? 0.72f
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : 1;
 	}
@@ -559,6 +559,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(net.minecraft.client.Minecraft.getInstance().options.keyJump), "martian_overboots"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "hyper_ring"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "orbital_ray"));
+			// her data's loadouts in order: the Railgun (the left button), Charged Shot (the right), Power Slide (its jump on
+			// Jump), Disruptor Shot, Overclock; no passive of her own (Sharpshooter is the sub-role's)
+			case SOJOURN -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "railgun"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "charged_shot"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "power_slide"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "disruptor_shot"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "overclock"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

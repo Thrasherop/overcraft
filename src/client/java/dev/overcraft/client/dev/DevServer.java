@@ -151,6 +151,8 @@ public final class DevServer {
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
+					out.addProperty("primaryReload", s.primaryReload());
+					out.addProperty("meter", s.meter());
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
 					out.addProperty("ability2Cooldown", s.ability2Cooldown());
@@ -582,9 +584,13 @@ public final class DevServer {
 						String keys = (o.keyUp.isDown() ? "W" : "") + (o.keyLeft.isDown() ? "A" : "") + (o.keyDown.isDown() ? "S" : "")
 							+ (o.keyRight.isDown() ? "D" : "") + (o.keyJump.isDown() ? "J" : "") + (o.keyShift.isDown() ? "C" : "");
 						synchronized (TRACE) {
-							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f", traceTick++,
-								Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
-								keys.isEmpty() ? "." : keys, dz, p.getYRot()));
+							// then the synced ammo, reload share and meter (Sojourn's energy / 100)
+							HeroSyncPayload hs = ClientHero.sync();
+							// (and the cooldowns, the second ammo, the ult flag: Sojourn's step 6-7 timings)
+							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f a%d r%.2f m%.4f c1%.2f c2%.2f s%d u%s",
+								traceTick++, Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
+								keys.isEmpty() ? "." : keys, dz, p.getYRot(), hs.primaryAmmo(), hs.primaryReload(), hs.meter(),
+								hs.ability1Cooldown(), hs.ability2Cooldown(), hs.secondaryAmmo(), hs.ultActive() ? "1" : "0"));
 						}
 					});
 				}

@@ -1,0 +1,91 @@
+# Sojourn, first person (model 00000000DCA8.00C = arms, look F27B.01A, on Gameplay1P 2281; set 08C1). The Railgun is the
+# same entity 2D20 on hp 00C9 (flag 1 in 1P, var 4E30) with its own clips (sojourn_weapon.txt, sm[0] = 1P: M).
+# From research\sojourn\work\clipmap.md (build 154088), written by research\sojourn\scripts\clipmaps_sojourn.py; H unless
+# noted. Base alias 0x002 / 0xA0E > sel[4]: sm[0] air, sm[1] ground by df 0x18 (cat 5 run, cat 9 stand: M); df 0x102 the
+# weapon layer (sub-alias 8230409A); df 0xE5 cat 0x24A = Power Slide (the Disruptor's slide copy). No Overclock clip in 1P
+# (alias 0x175 is not in the set: H): her energy layer below and the gun's own energy states carry it.
+0-60_000000006A21 = idle   # 0.0333 s; 1 frame held pose; df 0x18 cat 9 (stand), and the Power Slide base (0x5E4 sm[0])
+0-36_000000006C40 = run   # 0.5333 s; df 0x18 cat 5; 0.533 s
+0-36_000000006BD4 = jump   # 0.2333 s; sm[0] seq[0] take-off
+0-36_000000006BD5 = fall   # 0.4333 s; seq[1] / sm[1] the fall
+4-4_000000006BD8 = land   # 0.3667 s; additive tr[0>1]; also the slide jump's and reload's landing (onFinished slot 0x3D)
+4-4_000000007D40 = add_breathe   # 2.6667 s; additive under the base; 2.67 s
+4-6_000000006A27 = add_move   # 0.1667 s; df 0x18 additive (ground): L role
+4-6_000000006A1F = add_move_2   # 0.4667 s; df 0x18 additive: L role
+4-4_000000006A20 = add_move_3   # 1 s; additive on the above: L role
+4-12_000000006CA3 = add_idle_sway   # 0.2667 s; additive sm[0] (group 12): L
+4-4_000000006CA1 = add_move_stop   # 0.3 s; additive tr[1, 3 > 0]: L
+4-4_000000006CA2 = add_move_start   # 0.4 s; additive tr[0, 2 > 1]: L
+# Weapon layer (df 0x102, sub-alias 8230409A > 823040FA): an aim pose, an energy additive and the generic layer.
+36-38_0000000080D7 = add_aim   # 0.6 s; AnimationPose2d on df 0x5E3 and df 0x14 (pitch); 0.6 s
+4-28_0000000080FC = add_aim_tilt_left   # 0.0333 s; 1D df 0x6B2 at -0.4: L meaning
+4-60_000000006B35 = add_aim_tilt   # 1 s; 1D df 0x6B2 at 0
+4-28_0000000080FB = add_aim_tilt_right   # 0.0333 s; 1D df 0x6B2 at +0.4
+4-28_0000000080FF = add_aim_lean_left   # 0.0333 s; 1D df 0x235 at -1, weighted df 0x6B3: L
+4-28_0000000080FE = add_aim_lean_right   # 0.0333 s; 1D df 0x235 at +1
+4-4_000000008159 = add_aim_kick   # 0.2667 s; additive weighted STU_022259DA: L
+4-4_00000000815B = add_aim_2   # 1 s; additive: L
+4-28_0000000070AB = add_weapon   # 0.1667 s; the layer's base additive (also the Power Slide loop, 0x5E4 seq[1])
+4-12_000000007D6C = add_energy   # 0.3333 s; additive weighted df 0xF6 = her energy / 100 (1A23 #430 v176): the gun's charge in her hands (H weight, M look)
+4-4_00000000809F = add_weapon_state   # 0.7333 s; sm[1]: L
+4-4_000000007D78 = add_weapon_state_out   # 0.6667 s; tr[3>2]: L
+4-20_000000000C63 = add_layer   # 1.3333 s; generic layer sm[0] (as Juno's 0x140)
+4-4_0000000084D7 = add_layer_out   # 0.6667 s; tr[0>1]
+4-4_000000003B47 = add_layer_2   # 0.5667 s; time from df 0x19C
+4-20_000000003B43 = add_layer_jump   # 0.3333 s; df 0x18 cat 6 seq[0]: L
+4-20_000000003B44 = add_layer_fall   # 0.3333 s; seq[1]: L
+4-20_000000003B45 = add_layer_land   # 0.4333 s; tr[0>1]: L
+4-4_000000005687 = add_layer_in   # 0.6667 s; alias 0x140 tr[0, 4 > 1]: L
+4-4_00000000B9CB = add_148   # 2.5 s; additive weighted df 0x148: L
+# Railgun fire (sub-alias 82304088: sm[0] primary 823040FE, sm[1] Charged Shot = alias 0x16F; child 0 first shot, child 2
+# random repeats: M as the 3P layer).
+4-4_000000006C0B = add_fire_first   # 0.5333 s; primary sm[0]
+4-4_000000006C0F = add_fire   # 0.5333 s; rand[0] / rand[1]
+4-4_000000006C11 = add_fire_2   # 0.5333 s; rand[2]
+4-4_000000008490 = add_fire_3   # 0.5333 s; rand[3]
+4-28_000000006C10 = add_fire_hold   # 0.0167 s; 1-frame additive weighted df 0x32
+4-4_000000006C4A = add_charged_shot   # 0.7333 s; alias 0x16F, every child
+# Abilities.
+4-4_0000000080ED = add_slide_start   # 0.5 s; Power Slide alias 0x5E4 seq[0] over the held pose (1E6F #245 / #303)
+4-4_0000000080F4 = add_slide_end   # 0.3333 s; 0x5E4 seq[2]
+0-36_000000008958 = slide_jump   # 0.2333 s; alias 0x5F3 sm[0] seq[0] (1E6F #656)
+0-36_000000008959 = slide_jump_fall   # 0.4333 s; seq[1] / sm[1]; landing: land (slot 0x3D)
+0-36_000000006B33 = reload   # 1.3 s; alias 0x004 (1A23 #249); 1.3 s
+4-4_000000006B34 = add_reload_end   # 0.1667 s; the reload's (82304052) onFinished slot 0x3D
+4-4_000000008113 = add_reload_jump   # 0.2333 s; reload's air additive seq[0]: L
+4-4_000000008114 = add_reload_fall   # 0.4333 s; seq[1] / sm[1]: L
+0-32_000000006B94 = melee   # 0.7 s; alias 0x00D (0043 #117)
+4-0_000000006B95 = add_melee_end   # 0.4 s; 0x00D onFinished slot 0x3D
+0-32_000000006BD7 = disruptor   # 0.6667 s; alias 0x479 dfE5 default (1441 #354)
+0-32_0000000084A0 = disruptor_slide   # 1 s; dfE5 cat 0x24A (while sliding); 1.0 s
+4-0_000000006F93 = add_disruptor_end   # 0.3333 s; the Disruptor's (82304211) onFinished slot 0x3D
+4-28_00000000395B = add_template   # 0.5333 s; bound by the shared 1P templates 009 (reload) / 05C (melee) as a default parameter: L (also on the gun)
+# Shared states.
+0-36_000000007EFA = hello   # 1.3333 s; alias 0x1EE
+4-4_0000000084DB = add_hello   # 1.3333 s; alias 0x2DE
+0-36_000000007D5F = stun   # 1 s; alias 0x070
+0-36_000000007F09 = knockdown_start   # 1 s; 0x064
+0-60_000000007F0A = knockdown   # 0.6667 s; 0x065
+0-36_000000007F0B = knockdown_end   # 1 s; 0x066
+4-4_000000000957 = knockdown_shared   # 1 s; 0x1DE (shared)
+4-4_000000000959 = knockdown_shared_2   # 0.6667 s; 0x1DF (shared)
+4-4_000000000958 = knockdown_shared_3   # 1 s; 0x1E0 (shared)
+4-4_0000000084A9 = idle_fidget   # 3.6667 s; alias 0x467 seq[0] rand[0] (02C5 #275)
+0-36_000000008950 = pose_6d1   # 0.4 s; alias 0x6D1, time from df 0x19C (no graph of hers plays it): L
+0-36_00000000890C = pose_6d2   # 0.5 s; alias 0x6D2, time from df 0x19C: L
+4-4_00000000849E = add_726   # 0.6333 s; alias 0x726, time from df 0x199: L
+# Weapon sway (alias 0x0C8, shared clips, 1D on df 0x44 / 0xF0): L roles, as the other heroes' 1P sway.
+4-4_000000000C4F = sway   # 1.2333 s; sm[0] sm[0], 1D @1 on df 0xF0
+4-4_0000000000F4 = sway_1   # 0.5 s; sm[1] 1D 0
+4-4_0000000000F2 = sway_1_full   # 0.5 s; sm[1] 1D 1
+4-4_0000000000F5 = sway_2   # 0.5 s; sm[2] 0
+4-4_0000000000F3 = sway_2_full   # 0.5 s; sm[2] 1
+4-4_0000000000EB = sway_3   # 0.5 s; sm[3] 0
+4-4_000000000074 = sway_3_full   # 0.5 s; sm[3] 1
+4-4_0000000000E9 = sway_4   # 0.5 s; sm[4] 0
+4-4_000000000076 = sway_4_full   # 0.5 s; sm[4] 1
+4-4_0000000000EC = sway_5   # 0.5 s; sm[5] 0
+4-4_000000000075 = sway_5_full   # 0.5 s; sm[5] 1
+4-4_0000000000EA = sway_6   # 0.5 s; sm[6] 0
+4-4_000000000073 = sway_6_full   # 0.5 s; sm[6] 1
+4-6_0000000000F6 = add_sway   # 0.1667 s; additive

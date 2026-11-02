@@ -754,6 +754,192 @@ public final class EffectArt {
 		JUNO_GLIDE_RING_ENEMY_N(0, 0, 0, 0, .25f, 1, .408f, .293f, .5f, .997f, .126f, .126f, .75f, .868f, .064f, .064f, 1, .738f, 0, 0),
 		/** the 1P glide screen hex burst 5708 (5963 C9, ECIM(40)): blue to white (80035A6BEECD r7, peak 1.00; game hex #6E98FF #9ACAFF #BAEFFF #DCFFFF #FFFFFF). */
 		JUNO_GLIDE_SCREEN(0, 0, 0, 0, .25f, .325f, .587f, 1, .5f, .494f, .861f, 1, .75f, .716f, 1, 1, 1, 1, 1, 1),
+		// Sojourn's (tools/reference/sojourn-effects.md; research\sojourn\fx, ramps per ability): her team's cyan / teal / blue
+		// rows and her enemies' red ones, each LUT's row as the renderer names it
+		/** the Railgun's muzzle flare 210FD (2837 C46 / C48), 0.38-0.51 m and 0.55-2.5 m, 0.13 s: navy, cyan, cream (800F8C16CE25 r0, peak 1.00; game hex #004C88 #00ABD8 #00E5E1 #93FED9 #FFFAB6). */
+		SOJ_MUZZLE(SojournPalettes.SOJ_MUZZLE),
+		/** the muzzle flare's enemy twin (2837 C54): plum, red, gold (800E592E452A r0, peak 2.09; game hex #B30088 #C92C70 #E2414F #FF7723 #FFFF00). */
+		SOJ_MUZZLE_ENEMY(SojournPalettes.SOJ_MUZZLE_ENEMY),
+		SOJ_MUZZLE_ENEMY_N(SojournPalettes.SOJ_MUZZLE_ENEMY_N),
+		/** the muzzle's sparks 183A7 (2837 C74), 10-15 at 2-7.6 m/s: teal to cream, HDR 7 (800D949751B6 r1, peak 1.00; game hex #00E1D9 #00E1D9 #00E1D9 #AFECD0 #FFF9C4). */
+		SOJ_MUZZLE_SPARK(SojournPalettes.SOJ_MUZZLE_SPARK),
+		/** the muzzle sparks' enemy row (2837 C66): red to pale yellow (8002CA7C1279 r1, peak 1.00; game hex #E10000 #E10000 #E10B02 #F77430 #FFF177). */
+		SOJ_MUZZLE_SPARK_ENEMY(SojournPalettes.SOJ_MUZZLE_SPARK_ENEMY),
+		/** the round's ribbon 1FDF6 (280D C6), 0.096 m wide, 0.015-0.07 s: navy, cyan, cream, HDR 1.8 (8007CD484B35 r4, peak 1.83; game hex #004C88 #00ADDB #00F7F0 #C1FFF7 #FFFFEE). */
+		SOJ_ROUND(SojournPalettes.SOJ_ROUND),
+		SOJ_ROUND_N(SojournPalettes.SOJ_ROUND_N),
+		/** the round's enemy ribbon (280D C4): plum, red, orange, pale yellow, HDR 4.9 (8004F1F9D1E7 r2, peak 4.86; game hex #C5009E #EE3092 #FF5757 #FF8700 #FFFFE2). */
+		SOJ_ROUND_ENEMY(SojournPalettes.SOJ_ROUND_ENEMY),
+		SOJ_ROUND_ENEMY_N(SojournPalettes.SOJ_ROUND_ENEMY_N),
+		/** a round's hit flare 210FD (31E5 C23), 0.57-2.3 m, 0.07-0.16 s: navy, teal, pale yellow (8003B3BE55A6 r0, peak 1.27; game hex #005989 #0098A4 #00BFBD #00E2CE #FFFF85). */
+		SOJ_HIT(SojournPalettes.SOJ_HIT),
+		SOJ_HIT_N(SojournPalettes.SOJ_HIT_N),
+		/** the hit flare's enemy row (31E5 C29): plum, red, orange, pale yellow (800C3112949E r0, peak 1.27; game hex #440043 #9F001B #C73900 #E36200 #FFFF85). */
+		SOJ_HIT_ENEMY(SojournPalettes.SOJ_HIT_ENEMY),
+		SOJ_HIT_ENEMY_N(SojournPalettes.SOJ_HIT_ENEMY_N),
+		/** a round's hit sparks 183A7 (31E5 C27), 4 at 2.4-2.7 m/s: blue, cyan, pale yellow (800A4B0C4BDD r0, peak 1.00; game hex #007DFF #007DFF #00BCE4 #7CDCB8 #FFF177). */
+		SOJ_HIT_SPARK(SojournPalettes.SOJ_HIT_SPARK),
+		/** the hit sparks' enemy row (31E5 C33) (800DF9B6EC1D r0, peak 1.27; game hex #440043 #8D003A #B8002E #E15600 #FFFF85). */
+		SOJ_HIT_SPARK_ENEMY(SojournPalettes.SOJ_HIT_SPARK_ENEMY),
+		SOJ_HIT_SPARK_ENEMY_N(SojournPalettes.SOJ_HIT_SPARK_ENEMY_N),
+		/** the gun's energy glow 210FD on hp 007C (31E6 C47), 0.15 / 0.33 / 0.49 m by energy: teal to cyan, HDR 2.5 (800E50D3FD92 r0, peak 2.51; game hex #00DDFF #00E1FF #00F2FF #00FFFF #00FFFF). */
+		SOJ_GUN_GLOW(SojournPalettes.SOJ_GUN_GLOW),
+		SOJ_GUN_GLOW_N(SojournPalettes.SOJ_GUN_GLOW_N),
+		/** the energy glow's enemy row (31E6 C63): dark red to orange (800656F5F311 r1, peak 2.51; game hex #FF0000 #FF0000 #FF2A00 #FF7A00 #FFCA00). */
+		SOJ_GUN_GLOW_ENEMY(SojournPalettes.SOJ_GUN_GLOW_ENEMY),
+		SOJ_GUN_GLOW_ENEMY_N(SojournPalettes.SOJ_GUN_GLOW_ENEMY_N),
+		/** the gun's big glow 210FD on hp 007C (31E6 C61), 0.55-0.97 m: blue to cyan (800E7000846D r0, peak 1.19; game hex #0027BD #0086CD #00CEED #00E5FF #00EEFF). */
+		SOJ_GUN_CORE(SojournPalettes.SOJ_GUN_CORE),
+		SOJ_GUN_CORE_N(SojournPalettes.SOJ_GUN_CORE_N),
+		/** its enemy row: red to orange (800E7000846D r1, peak 1.19; game hex #BD0000 #CD6200 #ED9C00 #FFAE00 #FFB600). */
+		SOJ_GUN_CORE_ENEMY(SojournPalettes.SOJ_GUN_CORE_ENEMY),
+		SOJ_GUN_CORE_ENEMY_N(SojournPalettes.SOJ_GUN_CORE_ENEMY_N),
+		/** the 1P reload's flash 210FD on hp 007C (30A6 C11): teal to mint, HDR 4.2 (80020564EDB5 r0, peak 4.20; game hex #00B1E4 #00DCD2 #00FFC5 #00FFF9 #00FFFF). */
+		SOJ_RELOAD(SojournPalettes.SOJ_RELOAD),
+		SOJ_RELOAD_N(SojournPalettes.SOJ_RELOAD_N),
+		/** the Charged Shot's muzzle flare 210FD (2834 C37), 1-2.5 m: dark teal, blue, cyan (8003099EB5DB r0, peak 1.00; game hex #00251C #009ED8 #00C3F5 #00D3E1 #00E1CA). */
+		SOJ_CHARGED_MUZZLE(SojournPalettes.SOJ_CHARGED_MUZZLE),
+		/** the charged muzzle's enemy row (2834 C39): black, plum, red, gold, HDR 3.8 (8008C988E551 r0, peak 3.79; game hex #000000 #BD147D #FF3577 #FF4E66 #FFFF94). */
+		SOJ_CHARGED_MUZZLE_ENEMY(SojournPalettes.SOJ_CHARGED_MUZZLE_ENEMY),
+		SOJ_CHARGED_MUZZLE_ENEMY_N(SojournPalettes.SOJ_CHARGED_MUZZLE_ENEMY_N),
+		/** the Charged Shot's beam 2A5D0 (2835 C26 / C34, 1.3 s): navy, teal, green, white, HDR 2.3 (80085AB06897 r3, peak 2.26; game hex #0051B5 #007FA4 #00B096 #00F57E #FFFFFF). */
+		SOJ_CHARGED_BEAM(SojournPalettes.SOJ_CHARGED_BEAM),
+		SOJ_CHARGED_BEAM_N(SojournPalettes.SOJ_CHARGED_BEAM_N),
+		/** the beam's enemy row (2835 C21): plum, red, gold, HDR 3.8 (800F11791498 r9, peak 3.79; game hex #7E0068 #9B1663 #DA3159 #FF494D #FFFF94). */
+		SOJ_CHARGED_BEAM_ENEMY(SojournPalettes.SOJ_CHARGED_BEAM_ENEMY),
+		SOJ_CHARGED_BEAM_ENEMY_N(SojournPalettes.SOJ_CHARGED_BEAM_ENEMY_N),
+		/** the tracer 3216's glows (2BF0 C25-C31), 0.3-0.4 m at 256-500/s along it, 0.28-0.75 s: cream, ice blue, blue, HDR 8.2 (8005DDCA22CC r4, peak 8.19, falls; game hex #FFFFFF #FFFFFF #FFFFFF #00FFFF #00FFFF). */
+		SOJ_CHARGED_TRACER(SojournPalettes.SOJ_CHARGED_TRACER),
+		SOJ_CHARGED_TRACER_N(SojournPalettes.SOJ_CHARGED_TRACER_N),
+		/** the tracer's enemy row (2835 C23): plum, red, gold, HDR 3.8 (800ED038B259 r2, peak 3.79; game hex #7E0068 #C4207B #FF4477 #FF6168 #FFFF94). */
+		SOJ_CHARGED_TRACER_ENEMY(SojournPalettes.SOJ_CHARGED_TRACER_ENEMY),
+		SOJ_CHARGED_TRACER_ENEMY_N(SojournPalettes.SOJ_CHARGED_TRACER_ENEMY_N),
+		/** the tracer's sparks 1F35 (2BF0 C27), 4.4-9 m/s, 0.17-0.24 m: white to steel blue, HDR 15.6 (800808C16B1D r1, peak 15.59, falls; game hex #FFFFFF #FFFFFF #FFFFFF #FFFFFF #FFFFFF). */
+		SOJ_CHARGED_SPARK(SojournPalettes.SOJ_CHARGED_SPARK),
+		SOJ_CHARGED_SPARK_N(SojournPalettes.SOJ_CHARGED_SPARK_N),
+		/** the charged hit's sparks 183A7 (22BF C27), 27-29 at 2.6-6 m/s: blue to white (8004081A686E r1, peak 1.00; game hex #0004FF #696AFF #AFAFFF #DCDCFF #FFFFFF). */
+		SOJ_CHARGED_HIT_SPARK(SojournPalettes.SOJ_CHARGED_HIT_SPARK),
+		/** its enemy row (22BF C29): red, orange, peach (800FE1C55DCE r1, peak 1.55; game hex #FF0000 #FF3A00 #FF6500 #FF9600 #FFFEA3). */
+		SOJ_CHARGED_HIT_SPARK_ENEMY(SojournPalettes.SOJ_CHARGED_HIT_SPARK_ENEMY),
+		SOJ_CHARGED_HIT_SPARK_ENEMY_N(SojournPalettes.SOJ_CHARGED_HIT_SPARK_ENEMY_N),
+		/** the charged hit's smoke 1DFCA/B (22BF C40), 0.9-2.6 m, 0.6-1 s: grey to ice blue (8004D5D699CD r1, peak 1.79; game hex #555555 #8C999D #B0C3C9 #C2ECFB #B6FFFF). */
+		SOJ_CHARGED_SMOKE(SojournPalettes.SOJ_CHARGED_SMOKE),
+		SOJ_CHARGED_SMOKE_N(SojournPalettes.SOJ_CHARGED_SMOKE_N),
+		/** its enemy row (22BF C42): grey to peach (800569E244A1 r1, peak 1.50; game hex #555555 #9D938C #C9BBB0 #F4DDCD #FFFFE8). */
+		SOJ_CHARGED_SMOKE_ENEMY(SojournPalettes.SOJ_CHARGED_SMOKE_ENEMY),
+		SOJ_CHARGED_SMOKE_ENEMY_N(SojournPalettes.SOJ_CHARGED_SMOKE_ENEMY_N),
+		/** the slide's thruster glows 242 on hp 002C / 002E / 0030 / 0031 (2905 C23), 0.69 m, 13/s each: blue, cyan, mint (800DBCBFA263 r0, peak 1.00; game hex #002ED1 #00B1E8 #00EDFC #70FAE6 #A2FFC0). */
+		SOJ_SLIDE_JET(SojournPalettes.SOJ_SLIDE_JET),
+		/** their enemy row (2905 C25): plum to red, HDR 3.8 (800499AD68D4 r0, peak 3.79; game hex #7E0068 #BD0063 #FF0056 #FF0042 #FF0000). */
+		SOJ_SLIDE_JET_ENEMY(SojournPalettes.SOJ_SLIDE_JET_ENEMY),
+		SOJ_SLIDE_JET_ENEMY_N(SojournPalettes.SOJ_SLIDE_JET_ENEMY_N),
+		/** the slide's dust 1DFCA/B at the pelvis / hp 0017 (2905 C35), 1.06-1.2 m, 0.17-0.66 s: grey (80008989E0C7 r1, peak 0.86; game hex #393532 #88847E #B4AEA7 #D4CDC5 #EFE8DF). */
+		SOJ_SLIDE_SMOKE(SojournPalettes.SOJ_SLIDE_SMOKE),
+		/** the slide's sparks 183A7 from her feet hp 001B / 001C (2905 C38), 2.4-4.7 m/s: gold to plum, HDR 4.8 (800D405CC99B r0, peak 4.80, falls; game hex #FFFF5D #FFFF92 #FFFFAF #FFDAC1 #FF00D1). */
+		SOJ_SLIDE_SPARK(SojournPalettes.SOJ_SLIDE_SPARK),
+		SOJ_SLIDE_SPARK_N(SojournPalettes.SOJ_SLIDE_SPARK_N),
+		/** the slide's ground dust 14F9 (2905 C42), 1-1.45 m: warm grey (8001D4A0A8D5 r1, peak 0.62; game hex #928D87 #A4A19A #B3B1AA #C1C0B8 #CECEC5). */
+		SOJ_SLIDE_DUST(SojournPalettes.SOJ_SLIDE_DUST),
+		/** the thrusters' streaks 1F79A (2905 C30), 0.19-0.3 m: violet to blue, HDR 5.7 (8003D2CF06D1 r4, peak 5.72; game hex #6E00FF #6E00FF #6E00FF #6E00FF #6EFFFF). */
+		SOJ_SLIDE_STREAK(SojournPalettes.SOJ_SLIDE_STREAK),
+		SOJ_SLIDE_STREAK_N(SojournPalettes.SOJ_SLIDE_STREAK_N),
+		/** the slide jump's plume 1DFCA/B at hp 002D / 002F (330E C10), 103/s at 10.6-14.4 m/s: grey-teal (800D5EAB3710 r4, peak 0.51; game hex #628E8E #629C9C #62A8A8 #62B3B3 #62BDBD). */
+		SOJ_JUMP_SMOKE(SojournPalettes.SOJ_JUMP_SMOKE),
+		/** the slide jump's glow 210FD (330E C16), 1.36-1.45 m: blue to mint (800CC1E28E36 r0, peak 1.00; game hex #001EFF #008CF2 #00BDE3 #00E1D3 #00FFC2). */
+		SOJ_JUMP_GLOW(SojournPalettes.SOJ_JUMP_GLOW),
+		/** the slide jump's sparks 23F (330E C13): teal to ice, HDR 5.9 (80024CEF4843 r4, peak 5.88; game hex #00FFD2 #00FFDE #00FFFF #00FFFF #FFFFFF). */
+		SOJ_JUMP_SPARK(SojournPalettes.SOJ_JUMP_SPARK),
+		SOJ_JUMP_SPARK_N(SojournPalettes.SOJ_JUMP_SPARK_N),
+		/** the Disruptor in flight, line glows C061 (2C8D C17), 0.6-1 m: green, teal, ice, HDR 3.9 (800FAC707B08 r4, peak 3.90; game hex #00FFC6 #63FFFC #A3FFFF #D8FFFF #FFFFFF). */
+		SOJ_DISRUPTOR_CORE(SojournPalettes.SOJ_DISRUPTOR_CORE),
+		SOJ_DISRUPTOR_CORE_N(SojournPalettes.SOJ_DISRUPTOR_CORE_N),
+		/** its enemy row: red to peach, HDR 3.9 (800FAC707B08 r5, peak 3.90; game hex #FF0000 #FF7F63 #FFD0A3 #FFFFD8 #FFFFFF). */
+		SOJ_DISRUPTOR_CORE_ENEMY(SojournPalettes.SOJ_DISRUPTOR_CORE_ENEMY),
+		SOJ_DISRUPTOR_CORE_ENEMY_N(SojournPalettes.SOJ_DISRUPTOR_CORE_ENEMY_N),
+		/** its soft glow A17F (2C8D C21), 0.7 m: dark teal to white, HDR 5 (8001849425C2 r1, peak 5.00; game hex #005C4C #00A375 #00E7A1 #FFFF9E #FFFFFF). */
+		SOJ_DISRUPTOR_GLOW(SojournPalettes.SOJ_DISRUPTOR_GLOW),
+		SOJ_DISRUPTOR_GLOW_N(SojournPalettes.SOJ_DISRUPTOR_GLOW_N),
+		/** its enemy row (2C8D C19): dark red to pale yellow, HDR 5 (8005468757CE r1, peak 5.00; game hex #FF2020 #FF7041 #FFA960 #FFF277 #FFFFFF). */
+		SOJ_DISRUPTOR_GLOW_ENEMY(SojournPalettes.SOJ_DISRUPTOR_GLOW_ENEMY),
+		SOJ_DISRUPTOR_GLOW_ENEMY_N(SojournPalettes.SOJ_DISRUPTOR_GLOW_ENEMY_N),
+		/** its motes 4A58 drawn in (2C8D C23), 0.13-0.17 m, 50/s: green to ice, HDR 4.2 (800D845BCEB0 r0, peak 4.20; game hex #00FF8E #41FFAF #74FFEA #D0FFFF #FFFFFF). */
+		SOJ_DISRUPTOR_MOTE(SojournPalettes.SOJ_DISRUPTOR_MOTE),
+		SOJ_DISRUPTOR_MOTE_N(SojournPalettes.SOJ_DISRUPTOR_MOTE_N),
+		/** their enemy row: dark red to peach (800D845BCEB0 r1, peak 4.20; game hex #FF0000 #FF5A41 #FF9E74 #FFF9B8 #FFFFFF). */
+		SOJ_DISRUPTOR_MOTE_ENEMY(SojournPalettes.SOJ_DISRUPTOR_MOTE_ENEMY),
+		SOJ_DISRUPTOR_MOTE_ENEMY_N(SojournPalettes.SOJ_DISRUPTOR_MOTE_ENEMY_N),
+		/** the launch flash A17F (2C92 C9 / C11), 0.4 m and 6 m, 0.15 s: slate teal to mint, HDR 5 (8000BBD2D7CD r0, peak 5.00; game hex #54C1FC #62D9FF #9FFFFF #C8FFFF #4CFFFF). */
+		SOJ_DISRUPTOR_LAUNCH(SojournPalettes.SOJ_DISRUPTOR_LAUNCH),
+		SOJ_DISRUPTOR_LAUNCH_N(SojournPalettes.SOJ_DISRUPTOR_LAUNCH_N),
+		/** its enemy row: brown to yellow, HDR 5 (80085554FDB5 r1, peak 5.00; game hex #FC5454 #FF6D62 #FFCA9F #FFFFC0 #FFFF4C). */
+		SOJ_DISRUPTOR_LAUNCH_ENEMY(SojournPalettes.SOJ_DISRUPTOR_LAUNCH_ENEMY),
+		SOJ_DISRUPTOR_LAUNCH_ENEMY_N(SojournPalettes.SOJ_DISRUPTOR_LAUNCH_ENEMY_N),
+		/** the field's ground decal 299E5 x 3DB8 (2228 C21), 6 m: blue, teal, mint, HDR 3.6 (800BA56BCC99 r5, peak 3.63; game hex #00B2FF #A1FFFF #DBFFFF #FFFFFF #FFFFFF). */
+		SOJ_FIELD_DECAL(SojournPalettes.SOJ_FIELD_DECAL),
+		SOJ_FIELD_DECAL_N(SojournPalettes.SOJ_FIELD_DECAL_N),
+		/** the field's line glows C061 (2228 C23), 0.96-1.4 m, 16.6/s: green to ice, HDR 3.9 (80043C79F5F7 r4, peak 3.90; game hex #00FFC6 #63FFFC #A3FFFF #D8FFFF #FFFFFF). */
+		SOJ_FIELD_SWIRL(SojournPalettes.SOJ_FIELD_SWIRL),
+		SOJ_FIELD_SWIRL_N(SojournPalettes.SOJ_FIELD_SWIRL_N),
+		/** their enemy row: magenta, red, orange, cream, HDR 5.9 (80043C79F5F7 r5, peak 5.86; game hex #FF00FF #FF00ED #FF007A #FFB100 #FFFFFF). */
+		SOJ_FIELD_SWIRL_ENEMY(SojournPalettes.SOJ_FIELD_SWIRL_ENEMY),
+		SOJ_FIELD_SWIRL_ENEMY_N(SojournPalettes.SOJ_FIELD_SWIRL_ENEMY_N),
+		/** the field's sphere 1B761 (2228 C42), its 4 m: dark teal to mint, HDR 3 (800D7E44BBB5 r1, peak 3.00; game hex #00617A #00C3F6 #57F1FF #92FFFF #EAFFFF). */
+		SOJ_FIELD_DOME(SojournPalettes.SOJ_FIELD_DOME),
+		SOJ_FIELD_DOME_N(SojournPalettes.SOJ_FIELD_DOME_N),
+		/** its enemy row: black, dark red, peach, HDR 5 (800D7E44BBB5 r2, peak 5.00; game hex #000000 #BA2929 #FF3F3F #FF9D9D #FFFFFF). */
+		SOJ_FIELD_DOME_ENEMY(SojournPalettes.SOJ_FIELD_DOME_ENEMY),
+		SOJ_FIELD_DOME_ENEMY_N(SojournPalettes.SOJ_FIELD_DOME_ENEMY_N),
+		/** the field's flame ring E22E (29132 x 29149, 2228 C33), 11.8 m mesh: navy, green, ice, HDR 2.7 (8007A20C522D r6, peak 2.71; game hex #0034A3 #00AF7D #00FFAC #5BFFFF #E0FFFF). */
+		SOJ_FIELD_GROUND(SojournPalettes.SOJ_FIELD_GROUND),
+		SOJ_FIELD_GROUND_N(SojournPalettes.SOJ_FIELD_GROUND_N),
+		/** its enemy row: plum, red, orange, cream (8007A20C522D r7, peak 2.71; game hex #5B006D #EF0000 #FF923C #FFFB78 #FFFFE0). */
+		SOJ_FIELD_GROUND_ENEMY(SojournPalettes.SOJ_FIELD_GROUND_ENEMY),
+		SOJ_FIELD_GROUND_ENEMY_N(SojournPalettes.SOJ_FIELD_GROUND_ENEMY_N),
+		/** the field's opening flash 4A58 (2228 C31), 4.33 m, 0.35 s: green to ice, HDR 4.2 (80072E35BD9F r0, peak 4.20; game hex #00FF8E #48FFBD #86FFFF #C8FFFF #FFFFFF). */
+		SOJ_FIELD_FLASH(SojournPalettes.SOJ_FIELD_FLASH),
+		SOJ_FIELD_FLASH_N(SojournPalettes.SOJ_FIELD_FLASH_N),
+		/** its enemy row: dark red to pale yellow (80072E35BD9F r1, peak 5.00; game hex #FF0000 #F33D00 #FD6100 #FFFF60 #FFFFB6). */
+		SOJ_FIELD_FLASH_ENEMY(SojournPalettes.SOJ_FIELD_FLASH_ENEMY),
+		SOJ_FIELD_FLASH_ENEMY_N(SojournPalettes.SOJ_FIELD_FLASH_ENEMY_N),
+		/** the field's core sphere DBF (2228 C25), 0.5-0.6 m: teal to pale yellow, HDR 1.6 (800326663928 r3, peak 1.60; game hex #00FFEF #8EFFE5 #D6FFDE #FFFFD1 #FFFFB0). */
+		SOJ_FIELD_CORE(SojournPalettes.SOJ_FIELD_CORE),
+		SOJ_FIELD_CORE_N(SojournPalettes.SOJ_FIELD_CORE_N),
+		/** its enemy row: dark red to peach, HDR 3.3 (800326663928 r2, peak 3.29; game hex #FF0000 #EF5939 #F6905F #FFF9A8 #FFFFF4). */
+		SOJ_FIELD_CORE_ENEMY(SojournPalettes.SOJ_FIELD_CORE_ENEMY),
+		SOJ_FIELD_CORE_ENEMY_N(SojournPalettes.SOJ_FIELD_CORE_ENEMY_N),
+		/** the field's motes 4A58 drawn in (2228 C27), 75/s: green to ice, HDR 4.2 (800D1E8D75EF r0, peak 4.20; game hex #00FF8E #41FFAF #74FFEA #D0FFFF #FFFFFF). */
+		SOJ_FIELD_MOTE(SojournPalettes.SOJ_FIELD_MOTE),
+		SOJ_FIELD_MOTE_N(SojournPalettes.SOJ_FIELD_MOTE_N),
+		/** their enemy row: rust to pale yellow (800D1E8D75EF r1, peak 4.20; game hex #FF4900 #FF7531 #FFB25A #FFFB86 #FFFFFF). */
+		SOJ_FIELD_MOTE_ENEMY(SojournPalettes.SOJ_FIELD_MOTE_ENEMY),
+		SOJ_FIELD_MOTE_ENEMY_N(SojournPalettes.SOJ_FIELD_MOTE_ENEMY_N),
+		/** Deceleration Field's sphere 1385 (6C02 C5), 8 m: black, navy, steel, ice, HDR 5 (80053ECD2398 r8, peak 5.00; game hex #000000 #0F0079 #1B00AF #CCFFFF #FFFFFF). */
+		SOJ_DECEL(SojournPalettes.SOJ_DECEL),
+		SOJ_DECEL_N(SojournPalettes.SOJ_DECEL_N),
+		/** its enemy row: dark red to pink, HDR 2.7 (80053ECD2398 r9, peak 2.71; game hex #7A0000 #F50000 #FF5555 #FF8888 #FFE0E0). */
+		SOJ_DECEL_ENEMY(SojournPalettes.SOJ_DECEL_ENEMY),
+		SOJ_DECEL_ENEMY_N(SojournPalettes.SOJ_DECEL_ENEMY_N),
+		/** Overclock's glows 210FD on the gun hp 007C (2880 C33 / C60), 0.5-1.4 m, 20/s: blue, teal, green (800AD66DBD97 r0, peak 1.34; game hex #0052FF #00A2E9 #00D1CF #00FDA1 #00FF54). */
+		SOJ_OC_GLOW(SojournPalettes.SOJ_OC_GLOW),
+		SOJ_OC_GLOW_N(SojournPalettes.SOJ_OC_GLOW_N),
+		/** their enemy row (2880 C45): plum, red, orange, yellow (800E9644391F r0, peak 1.34; game hex #9800A9 #E81E6F #FF6000 #FFB100 #FFFF00). */
+		SOJ_OC_GLOW_ENEMY(SojournPalettes.SOJ_OC_GLOW_ENEMY),
+		SOJ_OC_GLOW_ENEMY_N(SojournPalettes.SOJ_OC_GLOW_ENEMY_N),
+		/** Overclock's core sphere DBF on the gun (2880 C37), 0.59 m: black, slate, blue, aqua, HDR 2.4 (8008BFCF1E87 r1, peak 2.42; game hex #000000 #002342 #8398BD #00B3FF #00FFFF). */
+		SOJ_OC_CORE(SojournPalettes.SOJ_OC_CORE),
+		SOJ_OC_CORE_N(SojournPalettes.SOJ_OC_CORE_N),
+		/** its enemy row (2880 C49): black, violet, red, yellow (800A11F4443D r1, peak 2.42; game hex #000000 #330042 #B863B4 #FF006A #FFFF00). */
+		SOJ_OC_CORE_ENEMY(SojournPalettes.SOJ_OC_CORE_ENEMY),
+		SOJ_OC_CORE_ENEMY_N(SojournPalettes.SOJ_OC_CORE_ENEMY_N),
+		/** Overclock's vent streaks 2A3EB x 2A3E2 on mesh E613 (2880 C42 / C57): blue, teal, mint, HDR 4.6 (800DF109EACE r2, peak 4.60; game hex #00D7FF #00FFFF #00FFFF #6FFFFF #C9FFFF). */
+		SOJ_OC_VENT(SojournPalettes.SOJ_OC_VENT),
+		SOJ_OC_VENT_N(SojournPalettes.SOJ_OC_VENT_N),
+		/** their enemy row (2880 C54): plum, red, orange, HDR 3.8 (8008BC3FD9C7 r2, peak 3.79; game hex #7E0068 #A00085 #FF7383 #FFB96E #FFF200). */
+		SOJ_OC_VENT_ENEMY(SojournPalettes.SOJ_OC_VENT_ENEMY),
+		SOJ_OC_VENT_ENEMY_N(SojournPalettes.SOJ_OC_VENT_ENEMY_N),
+		/** Overclock's material effect on her (333B C0, hp 0004): cyan falling to black, HDR 6.6 (80035FEA47FC r1, peak 6.59, falls; game hex #00FFFF #009E98 #005350 #001A19 #000000). */
+		SOJ_OC_BODY(SojournPalettes.SOJ_OC_BODY),
+		SOJ_OC_BODY_N(SojournPalettes.SOJ_OC_BODY_N),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 
