@@ -62,11 +62,17 @@ public final class Sojourn implements HeroKit {
 			endSlide(player, s, false);
 		}
 		// the slide and its jump land her unhurt (CLAUDE.md, #35): her fall doesn't count until she's down after it (a few ticks
-		// on, so the ground she jumped from doesn't count as the landing)
+		// on, so the ground she jumped from doesn't count as the landing) and has stayed down a moment: the jump's speed carried
+		// her off a ledge she had just touched (its edge, or a corner grazed on the way down) and the drop below hurt her (found
+		// in the release play: a 9 m drop, 18 -> 12)
 		if (s.softLanding) {
 			player.resetFallDistance();
-			if (s.sojournSlide < 0 && player.onGround() && player.level().getGameTime() > s.sojournSlideEndAt + SOFT_LANDING_GRACE) {
+			boolean down = s.sojournSlide < 0 && player.onGround()
+				&& player.level().getGameTime() > s.sojournSlideEndAt + SOFT_LANDING_GRACE;
+			s.sojournSettled = down ? s.sojournSettled + 1 : 0;
+			if (s.sojournSettled >= SOFT_LANDING_SETTLE) {
 				s.softLanding = false;
+				s.sojournSettled = 0;
 			}
 		}
 		disruptor(player, s, controls);
@@ -142,6 +148,11 @@ public final class Sojourn implements HeroKit {
 
 	/** Ticks after the slide's end before a landing clears its soft landing: past the jump's take-off (ours). */
 	private static final int SOFT_LANDING_GRACE = 6;
+	/**
+	 * Ticks on the ground in a row that end the soft landing: her landing speed (6-8 m/s) is gone in 3 ticks at the mover's
+	 * friction (trace: 6.33, 3.56, 0.49, 0), so a landing that slides her off an edge is still the jump's (ours).
+	 */
+	private static final int SOFT_LANDING_SETTLE = 5;
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {

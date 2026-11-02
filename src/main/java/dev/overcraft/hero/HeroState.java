@@ -165,6 +165,8 @@ public final class HeroState {
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;
+	/** Sojourn: ticks on the ground in a row since her slide's soft landing could end (it ends once she has settled). */
+	public int sojournSettled;
 	public double sojournEnergy;
 	/**
 	 * Sojourn's Railgun: the share of a shot owed (16 a second at 20 ticks), the shots into the spread's ramp, when she last
@@ -316,6 +318,7 @@ public final class HeroState {
 		beamMode = beamLost = beamSearch = gaPhase = gaTicks = 0;
 		gaMomentum = 0;
 		softLanding = false;
+		sojournSettled = 0;
 		flashCharges = 1;
 		flashCast = -1;
 		ampFree = false;
