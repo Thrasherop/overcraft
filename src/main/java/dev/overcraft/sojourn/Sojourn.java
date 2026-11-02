@@ -211,9 +211,11 @@ public final class Sojourn implements HeroKit {
 	/** Shift: the slide, on the ground or in the air (D #178, M), while it's ready. Her client moves her (ClientSojourn). */
 	private static void slide(ServerPlayer player, HeroState s) {
 		// (not in water: Minecraft's swimming moves her there, and a slide there spent its cooldown standing still: found
-		// playing; ours, Overwatch has no water)
+		// playing; ours, Overwatch has no water. Not seated in a boat or a minecart either: there it ended the next tick,
+		// its cooldown spent, its sound and line played and nothing moved: found in the release play)
 		boolean dual = dual(player);
-		if (s.sojournSlide >= 0 || (dual ? s.sojournSlideCharges <= 0 : s.ability1Cooldown > 0) || player.isInWater()) {
+		if (s.sojournSlide >= 0 || (dual ? s.sojournSlideCharges <= 0 : s.ability1Cooldown > 0) || player.isInWater()
+			|| player.isPassenger()) {
 			return;
 		}
 		if (dual) {
