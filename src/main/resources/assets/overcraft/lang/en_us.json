@@ -665,5 +665,7 @@
 	"subtitles.overcraft.jetpack_cat.voice.tether_end": "Jetpack Cat meows",
 	"subtitles.overcraft.jetpack_cat.voice.tether_attached": "Jetpack Cat: (Swedish) Tether attached",
 	"subtitles.overcraft.jetpack_cat.ult.friendly": "Jetpack Cat: (friendly ultimate cat sounds)",
-	"subtitles.overcraft.jetpack_cat.ult.enemy": "Jetpack Cat: (enemy ultimate cat sounds)"
+	"subtitles.overcraft.jetpack_cat.ult.enemy": "Jetpack Cat: (enemy ultimate cat sounds)",
+	"death.attack.overcraft.field": "%1$s burned up in a Disruptor field",
+	"death.attack.overcraft.field.player": "%1$s burned up in %2$s's Disruptor field"
 }
