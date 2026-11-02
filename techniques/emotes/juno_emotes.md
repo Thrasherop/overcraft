@@ -90,5 +90,10 @@ Dev client, fresh creative flat world `junoemo`, Juno picked from the select scr
   right / down / left slots (`jw_loadout_set.png`); then T held, the right button to the emote page, the pointer right:
   Sledding (`jw_wheel.png`, `jw_wheel_sled.png`); left: Shuffle; down: Galaxy Gazing. A jump ends one; G (Minecraft
   mode) mid-emote ends it.
-- Not yet: their sounds (no Juno section in `tools/soundmaps/emotes.txt`: the emote-sounds pass, as Sombra's and
+- Not yet (sounds since done: "Sounds" below): their sounds (no Juno section in `tools/soundmaps/emotes.txt` then: the emote-sounds pass, as Sombra's and
   Brigitte's); first person; a second player watching.
+
+## Sounds
+Her emotes' sounds and lines (48 02Cs, 21 voice stimuli) from the clips' effects, played at their data times:
+[sounds](../sound/sounds.md#juno-emote-sounds), the record in [juno step 8b](../heroes/juno.md#step-8b-emote-sounds-voice-lines-played).
+Two never sound: Winding Down's BAA1 (on its unplayed outro) and Sledding's slide loop F232 (on the 0.033 s clip 1AB5A).

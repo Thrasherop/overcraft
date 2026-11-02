@@ -178,7 +178,8 @@
        "sound": "FEC8",
        "at": 0.0333,
        "duration": 0.0,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "audience": "own"
       },
       {
        "sound": "FED4",
@@ -225,7 +226,10 @@
        "sound": "FEC7",
        "at": 0.0,
        "duration": 5.1,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 5.137,
+       "fade": 0.4,
+       "audience": "own"
       },
       {
        "sound": "FED4",
@@ -322,25 +326,35 @@
        "sound": "E548",
        "at": 0.0,
        "duration": 3.4667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 11.395,
+       "fade": 1.5,
+       "audience": "own"
       },
       {
        "sound": "E549",
        "at": 0.1116,
        "duration": 3.355,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "own"
       },
       {
        "sound": "E54A",
        "at": 0.0,
        "duration": 3.4667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 4.117,
+       "fade": 1.0,
+       "audience": "others"
       },
       {
        "sound": "E54B",
        "at": 0.1119,
        "duration": 3.3548,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "others"
       }
      ],
      "stow": [
@@ -422,7 +436,8 @@
        "sound": "DA4F",
        "at": 0.101,
        "duration": 2.0667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "chance": 0.4
       }
      ],
      "stow": [
@@ -1100,7 +1115,9 @@
        "sound": "BA88",
        "at": 0.0,
        "duration": 6.3333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 10.319,
+       "fade": 0.3
       },
       {
        "sound": "BA8A",
@@ -1527,7 +1544,9 @@
        "sound": "BFFD",
        "at": 0.0,
        "duration": 4.8333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 13.232,
+       "fade": 0.15
       }
      ],
      "stow": [
@@ -1666,7 +1685,9 @@
        "sound": "C440",
        "at": 0.0,
        "duration": 7.3667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 14.851,
+       "audience": "own"
       }
      ],
      "stow": [
@@ -1742,7 +1763,8 @@
        "sound": "C441",
        "at": 0.0,
        "duration": 0.5333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "audience": "own"
       }
      ],
      "stow": [
@@ -1804,7 +1826,9 @@
        "sound": "C8A4",
        "at": 1.2333,
        "duration": 2.7,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 10.319,
+       "fade": 0.5
       },
       {
        "voice": "18CE",
@@ -1872,7 +1896,9 @@
        "sound": "C8A4",
        "at": 0.0,
        "duration": 5.3333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 10.319,
+       "fade": 0.5
       }
      ],
      "stow": [
@@ -2065,7 +2091,8 @@
        "sound": "D8AC",
        "at": 0.2667,
        "duration": 1.3,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 1.0
       }
      ],
      "stow": [
@@ -2134,7 +2161,9 @@
        "sound": "D8C4",
        "at": 0.0,
        "duration": 3.7333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 8.147,
+       "fade": 1.0
       },
       {
        "voice": "192D",
@@ -2594,7 +2623,10 @@
        "sound": "F232",
        "at": 0.0,
        "duration": 0.0333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 18.117,
+       "chance": 0.833,
+       "fade": 0.15
       }
      ],
      "stow": [],

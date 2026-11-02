@@ -333,7 +333,10 @@ def add_sounds(source):
 
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
-VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy"}
+VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno"}
+# a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
+# soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
+VOICELINE_ROOTS = {"juno": "../../research/juno/extract"}
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -369,9 +372,10 @@ def add_voicelines(source, out, sounds):
     import json
     lang = {}
     for hero, folder in VOICELINE_HEROES.items():
-        base = Path(source) / "Unlocks" / "Heroes" / folder / "VoiceLine"
+        root = Path(source) / VOICELINE_ROOTS.get(hero, ".")
+        base = root / "Unlocks" / "Heroes" / folder / "VoiceLine"
         spoken = {}
-        for f in (Path(source) / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
+        for f in (root / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
             spoken[f.name.split(".", 1)[0]] = voice_text(f.name)
         if not base.exists():
             print(f"no voice line unlocks for {hero}: run DataTool extract-unlocks <out>/Unlocks with {folder}|voiceline=*")

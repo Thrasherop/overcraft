@@ -171,6 +171,26 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     motion arrives in held steps: a double jump read from it was missed or doubled, so her own client tells the server
     (`EXTRA_JUMP`), and a hover is read over 4 ticks. Loops that follow something in flight are client instances that move
     with it (`client.JunoSounds.Following`).
+  - <a id="juno-emote-sounds"></a>**Her emote sounds and voice lines (2026-11-01; `emotes.txt`, Juno's section; scripts
+    `research\juno\scripts\emote_sounds\`; played: [juno step 8b](../heroes/juno.md#step-8b-emote-sounds-voice-lines-played)):**
+    48 02Cs and 21 voice stimuli over her 22 emotes, Brigitte's pipeline with no patch (no random-of-layers case):
+    `emote_fx.py` -> `ww.py` -> `dump_banks.py` (banks 1E828, 1E7FE, 1E787, 1E79B) -> her `extract_banks.py` (35 own banks
+    into `ExtraSounds\Juno\Emotes`) -> `measure_emotes.py Juno ... Mercy:C440 Kiriko:FEC7 Lúcio:E548 ...` ->
+    `juno_what.py` -> `gen_juno.py` -> `apply_emote_sounds.py juno <repo>`, then the scratch-root build and merge above.
+    - **The TankLib scripts need the research venv:** `py -I` has no pythonnet (it skips the user site-packages, where
+      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archiveesearch\kiriko-animenv\Scripts\python.exe -I`;
+      `-I` still sees the venv's own packages. Text-only steps (measure, gen, apply) run under plain `py -I`.
+    - **Shared 02Cs keep showing up under new emotes:** Orion Dance's music FEC7 / FEC8 is Kiriko's, Crazy Choreography's
+      C440 / C441, Shuffle's E23F and Bunny Hop's F869 are Mercy's. Check every id against the earlier heroes'
+      `<hero>_ids.txt` before extracting; measure the shared ones from that hero's folder and give them the same
+      audience (the music: "own", group 8E muting it for the others).
+    - **Her voice stimuli read straight from `voice_lines.json`:** `juno_what.py` builds `VOICE_IDS` / `VOICE_W` / `STIM`
+      from it instead of copying lists by hand; each emote stimulus has its own `Unknown\<078>` folder.
+    - **Voice-line unlocks were only ever built for Kiriko, Lúcio, Mercy (and Jetpack Cat's table):** Ana, Sombra,
+      Brigitte and Lifeweaver have none in the pack yet. A hero extracted under `research\<hero>\extract` needs
+      `VOICELINE_ROOTS` (`build_asset_pack.py`), its path from the build root as the hero's soundmap uses.
+    - **The dev `key <action> tap` doesn't end an emote:** it releases the key before `ClientHero` reads the input, so the
+      emote (and its loops) kept going. Hold it (`key forward down`, 0.25 s, `key forward up`), as a player does.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

@@ -190,4 +190,36 @@ All 22 from the data ([juno_emotes](../emotes/juno_emotes.md)): 75 clips in `her
   under 0.013 now starts an emote with none closer; no other hero's emote is in that gap.
 - Played (dev client, world `junoemo`, picked from the select screen): every emote at four moments, the props held at
   their windows, three picked through the Voice Lines -> Emotes loadout and the communication wheel. Not yet: their
-  sounds, first person, Sledding's two other loops, Game Start's hologram colour (Sombra's violet).
+  sounds (done in step 8b, below), first person, Sledding's two other loops, Game Start's hologram colour (Sombra's violet).
+
+## Step 8b (emote sounds, voice lines), played
+Her emote sounds the way Sombra's and Brigitte's came ([sounds](../sound/sounds.md#juno-emote-sounds)): 48 02Cs and 21
+voice stimuli from her emote clips' effects, `tools/soundmaps/emotes.txt` (Juno's section), the play rules (loop, fade,
+chance, audience) copied into `emotes/juno.json` (16 events). Her 27 voice-line unlocks (DataTool `extract-unlocks
+"Juno|voiceline=*"`, in `research\juno\extract`) in the pack: `build_asset_pack.py`'s `VOICELINE_HEROES` + `VOICELINE_ROOTS`.
+Built in a scratch root and merged into the dev pack (only `juno.emote.*` / `juno.voiceline.*`, their lang keys and
+`voicelines/juno.json`).
+Played 2026-11-01, dev client, world `juno1`, Juno picked on the select screen, every emote started with the dev `emote`
+and `heard` polled every 0.05 s from the command (times below include about 0.13 s of command latency):
+- **Heart Wave** F496 0.13. **Bunny Hop** F869 at 0.60 and 3.75 (0.17 into each 3.2 s loop pass). **Orion Dance** FEC8 +
+  FED2 0.13, FED4 0.34, FED5 0.40, loop FEC7 + FED4 + FED3 0.47 and again 5.55. **Listen Up** E548 0.13, E549 0.20 (the
+  "others" E54A / E54B not heard by her own client, as meant). **Mic Drop** DA44 1.00-1.07; DA4F (chance 0.4) in 1 of 5
+  plays, at 0.27. **Salty** EEA6 0.13. **Disapproving** BA89 0.13. **Giddy** BA85 0.20, lines 179F 0.33, 17A0 0.80,
+  17A1 2.21. **Laser Training** BA87 0.13, 17A7 1.34, 17A8 1.80, 17A9 2.27, 17AA 2.74. **Heroic** B90B 0.13, 17A4 1.87.
+  **Laugh Attack** BA86 0.13, 17A6 0.60. **Winding Down** BA8B + BA8A 0.20, 17AF 1.20, BA8A 1.87, loop BA88 2.87, BAA9
+  2.94, BA8A 3.14, 17AB 3.68, 17AC 4.21, 17AD 8.35. **Game Start** C37F 0.20, 17AB 1.20, 17A1 2.07. **Release!** BC6D +
+  BC6F + BCB3 0.13, 17AB 1.27, 17AC 2.81. **Galaxy Gazing** BFFB 0.13, BFFC 0.87, 17AB 1.00, loop BFFD 2.27, C045 (the
+  mobile's prop clip) 3.01, again 7.15 / 7.88. **Crazy Choreography** C381 + C441 0.13, loop C380 + C440 0.67, 187D
+  2.07, 187E 3.48, loop again 8.01. **Chun-Li Wins** C880 0.13, C8A4 1.40, 18CE 1.80, loop C8A4 4.07. **Spinning Bird
+  Kick** C8A0 0.20, 18CA 0.47. **Cheer Routine** D8AC 0.33, loop D8AD + D8C4 1.61, 192E 1.94, AD52 2.14, 192D 4.01, again
+  5.28 / 5.68 / 5.95 / 7.76. **Blooming** DABF 0.13. **Shuffle** 1965 4.81, E23F 5.01. **Sledding** F247 0.60, 19B0 1.00.
+  Every one at its data time; no missing-sound warning in the log.
+- Ending: Galaxy Gazing's BFFD loop stopped as a held jump ended the emote (`playing`), the one-shot C045 rang out.
+- **Voice Lines:** Esc -> Voice Lines listed all 27 (screenshot `j8b_voicelines.png`), Seize the sol and Lightning kicks
+  equipped up / right (`j8b_equipped.png`), then said from the communication wheel (T, left button to the voice page,
+  pointer up / right): `juno.voiceline.seize_the_sol`, `juno.voiceline.lightning_kicks` in her head, subtitle "Juno:
+  Lightning Kicks!" (`j8b_wheel_voice*.png`). Heroic from the wheel's emote page: B90B + 17A4 (`j8b_wheel_emote_playing.png`).
+- Not heard: Winding Down's BAA1 (on the outro F38B, which we don't play) and Sledding's F232 (the sled's slide loop, on
+  the 0.033 s clip 1AB5A that our plan never plays). Not checked: the "others" copies from a second client; a
+  voice line's right-click preview in the list (the harness's right `screenclick` equipped the line instead: not tried
+  with the real mouse). Not listened to for balance.
