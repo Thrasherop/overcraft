@@ -32,6 +32,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -544,6 +545,14 @@ public final class HeroModelRenderer {
 			// this piece's flattened corners, worked out by the first pass and drawn again by the second; after everything
 			// at the default order, the marks first, so they never meet another hero's darkening
 			ShadowLaid[] laid = new ShadowLaid[1];
+			if (Minecraft.getInstance().gameRenderer.useImprovedTransparency()) {
+				// Improved Transparency: one blended pass through its order-independent pipelines (the two-pass mark and
+				// darken has none, and crashed the frame: "does not have OIT pipelines set up"); overlaps darken more there
+				collector.submitCustomGeometry(poseStack, FxRender.heroShadowOit(), (pose, buffer) -> {
+					emitShadow(mesh, layShadow(piece, mesh, skin, pose, prop, body, lightInModel, shadow), buffer, null);
+				});
+				continue;
+			}
 			collector.order(SHADOW_MARK_ORDER).submitCustomGeometry(poseStack, FxRender.heroShadowMark(), (pose, buffer) -> {
 				long t0 = System.nanoTime();
 				laid[0] = layShadow(piece, mesh, skin, pose, prop, body, lightInModel, shadow);
@@ -660,7 +669,8 @@ public final class HeroModelRenderer {
 	}
 
 	/** One pass of the laid shadow: marking (each corner's mark in its alpha) or darkening (white). */
-	private static void emitShadow(ShadowMesh mesh, ShadowLaid shadow, VertexConsumer buffer, boolean mark) {
+	/** mark: the first pass (alpha 1 - strength), else the second (white); null: one plain pass (black at its strength). */
+	private static void emitShadow(ShadowMesh mesh, ShadowLaid shadow, VertexConsumer buffer, @Nullable Boolean mark) {
 		int[] idx = mesh.indices();
 		float[] laid = shadow.corners();
 		for (int t0 = 0; t0 + 2 < idx.length; t0 += 3) {
@@ -669,9 +679,9 @@ public final class HeroModelRenderer {
 			}
 			for (int k = 0; k < 3; k++) {
 				int v = idx[t0 + k];
-				int alpha = mark ? Math.round(laid[v * 4 + 3] * 255) : 255;
+				int alpha = mark == null ? Math.round((1 - laid[v * 4 + 3]) * 255) : mark ? Math.round(laid[v * 4 + 3] * 255) : 255;
 				buffer.addVertex(laid[v * 4], laid[v * 4 + 1], laid[v * 4 + 2])
-					.setColor(alpha << 24 | 0xFFFFFF)
+					.setColor(alpha << 24 | (mark == null ? 0 : 0xFFFFFF))
 					.setUv(0.5f, 0.5f)
 					.setOverlay(OverlayTexture.NO_OVERLAY)
 					.setLight(FULL_BRIGHT)
@@ -750,6 +760,7 @@ public final class HeroModelRenderer {
 	 */
 	public static boolean submitMinecraftArms(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 											  float swayPitch, float swayYaw, FirstPersonHandsAndItemsRenderState hands, AvatarRenderState avatar) {
+		minecraftDraws = null;
 		// Jetpack Cat's paws are on her controls, with no fist to hold an item: Minecraft's arm and item (her paws put a
 		// pickaxe floating by her left console: found playing; how she should hold one is the owner's call)
 		if (ClientHero.heroView() || !dev.overcraft.client.controls.HeroOptions.get().heroArms || hands.isScoping
@@ -890,16 +901,175 @@ public final class HeroModelRenderer {
 				viewMuzzleAt = Util.getMillis();
 			}
 		}
+		if (minecraft && animator.viewPose() != null) {
+			// dev only (DevServer "viewbones"): the hands' bones in the view's space, to see which hand is where, and their
+			// turns in the view (Kiriko's are HELD_RIGHT_REF / HELD_LEFT_REF)
+			VIEW_BONES.clear();
+			Quaternionf l = new Matrix4f(view).mul(animator.kunaiHand).getUnnormalizedRotation(new Quaternionf()).normalize();
+			Quaternionf r = new Matrix4f(view).mul(animator.ofudaHand).getUnnormalizedRotation(new Quaternionf()).normalize();
+			VIEW_BONES.put("~turn _L", new Vector3f(l.x, l.y, l.z));
+			VIEW_BONES.put("~turn _L w", new Vector3f(l.w, 0, 0));
+			VIEW_BONES.put("~turn _R", new Vector3f(r.x, r.y, r.z));
+			VIEW_BONES.put("~turn _R w", new Vector3f(r.w, 0, 0));
+			SkinnedModel m = loaded.model();
+			for (int i = 0; i < m.nodeNames.length; i++) {
+				String n = m.nodeNames[i];
+				if (n != null && n.matches("(?i).*(wrist|weapon|hand|palm|finger_1|thumb_1|arm_|elbow|forearm).*")) {
+					Vector3f at = Skeleton.world(m, animator.viewPose(), i).getTranslation(new Vector3f());
+					VIEW_BONES.put(n, poseStack.last().pose().transformPosition(at));
+				}
+			}
+		}
 		if (minecraft) {
-			// the main hand's item in her kunai hand, the other's in her ofuda hand (the owner's idea too)
+			// the main hand's item in her hand on its side of the view, the other's in the other (the owner's idea too); an
+			// item on a side with no hand of hers in view (most heroes' other hand is behind the camera) is Minecraft's to
+			// draw, its own way, on that side: a left-handed Juno holds the off hand's item in her right-of-view hand (#78)
+			Matrix4f[] seen = viewHands(poseStack, animator, loaded.model());
 			boolean right = avatar.mainArm == net.minecraft.world.entity.HumanoidArm.RIGHT;
-			submitGripped(poseStack, collector, lit, player, right ? animator.kunaiHand : animator.ofudaHand, right,
-				hands.mainHandItem, MAIN_HELD);
-			submitGripped(poseStack, collector, lit, player, right ? animator.ofudaHand : animator.kunaiHand, !right,
-				hands.offHandItem, OFF_HELD);
+			Matrix4f main = seen[right ? 0 : 1];
+			Matrix4f off = seen[right ? 1 : 0];
+			// the swing turns the arm holding the main hand's item (none when Minecraft holds it: it swings its own)
+			animator.swingSide = main == null ? null : main == animator.kunaiHand;
+			submitGripped(poseStack, collector, lit, player, held(loaded.model(), animator, view, main, main == seen[0]),
+				main == seen[0], hands.mainHandItem, MAIN_HELD);
+			if (off != null) {
+				submitGripped(poseStack, collector, lit, player, held(loaded.model(), animator, view, off, off == seen[0]),
+					off == seen[0], hands.offHandItem, OFF_HELD);
+			}
+			minecraftDraws = main == null && off == null ? FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_BOTH_HANDS
+				: main == null ? FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_MAIN_HAND_ONLY
+				: off == null && !hands.offHandItem.isEmpty() ? FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_OFF_HAND_ONLY
+				: null;
 		}
 		poseStack.popPose();
 		return true;
+	}
+
+	/**
+	 * Set by submitMinecraftArms: the items with no hand of hers in view to hold them, which Minecraft draws its own way
+	 * (FirstPersonHandsMixin); null when she holds them all.
+	 */
+	public static FirstPersonHandsAndItemsRenderState.@org.jspecify.annotations.Nullable HandRenderSelection minecraftDraws;
+
+	/**
+	 * How Kiriko's hands' weapon bones sit in her view at rest (quaternions x, y, z, w, in her view model's frame:
+	 * DevServer "viewbones" with her picked; ours, measured): the grips (HELD_KUNAI, HELD_OFUDA) were set by eye on them.
+	 * Every other view model's hand bone is turned to match at rest, so an item sits in each hero's fist as in hers, and
+	 * still moves with the hand (#78: Juno's sword pointed down under her hand, Brigitte's was lost in her fist).
+	 */
+	public static final float[] HELD_RIGHT_REF = {0.741f, 0.185f, -0.458f, -0.456f}, HELD_LEFT_REF = {0.481f, 0.402f, 0.748f, -0.217f};
+	private static final Map<String, Quaternionf> HELD_TURNS = new HashMap<>();
+
+	/** A hand bone with the turn that puts it, at rest, the way Kiriko's on that side of the view sits (#78). */
+	private static @org.jspecify.annotations.Nullable Matrix4f held(SkinnedModel model, HeroAnimator animator, Matrix4f view,
+																   @org.jspecify.annotations.Nullable Matrix4f bone, boolean rightOfView) {
+		if (bone == null) {
+			// no hand of hers in view (Lúcio's): Minecraft draws the items (a null here crashed the frame, found playing)
+			return null;
+		}
+		String key = System.identityHashCode(model) + (bone == animator.kunaiHand ? "L" : "R") + (rightOfView ? ">" : "<");
+		if (animator.viewAtRest() || !HELD_TURNS.containsKey(key)) {
+			float[] ref = rightOfView ? HELD_RIGHT_REF : HELD_LEFT_REF;
+			Quaternionf seen = new Matrix4f(view).mul(bone).getUnnormalizedRotation(new Quaternionf()).normalize();
+			HELD_TURNS.put(key, seen.invert().mul(new Quaternionf(ref[0], ref[1], ref[2], ref[3]).normalize()));
+		}
+		Matrix4f grip = new Matrix4f(bone).rotate(HELD_TURNS.get(key));
+		// and moved so her knuckles sit where Kiriko's do in her grip: the item in the fist, not at a gun's grip bone
+		Vector3f knuckles = knuckles(model, animator, bone == animator.kunaiHand);
+		if (knuckles != null) {
+			Vector3f local = new Matrix4f(grip).invert().transformPosition(knuckles);
+			float[] ref = rightOfView ? HELD_RIGHT_KNUCKLES : HELD_LEFT_KNUCKLES;
+			VIEW_BONES.put("~knuckles " + (rightOfView ? "right" : "left"), new Vector3f(local));
+			if (ref != null) {
+				grip.translate(local.x - ref[0], local.y - ref[1], local.z - ref[2]);
+			}
+		}
+		return grip;
+	}
+
+	/** Kiriko's knuckles in her grip frames (metres; ours, measured with DevServer "viewbones"; null: not moved). */
+	public static float @org.jspecify.annotations.Nullable [] HELD_RIGHT_KNUCKLES = {0.023f, -0.042f, 0.070f}, HELD_LEFT_KNUCKLES = {0.037f, 0.023f, -0.028f};
+
+	/** A hand's knuckles in the model's space: the middle of its four fingers' first joints (null without them). */
+	private static @org.jspecify.annotations.Nullable Vector3f knuckles(SkinnedModel model, HeroAnimator animator, boolean left) {
+		Skeleton.Pose pose = animator.viewPose();
+		if (pose == null) {
+			return null;
+		}
+		Vector3f sum = new Vector3f();
+		for (String finger : new String[] {"IndexFinger_1_", "MiddleFinger_1_", "RingFinger_1_", "PinkyFinger_1_"}) {
+			int i = model.node(finger + (left ? "L" : "R"));
+			if (i < 0) {
+				return null;
+			}
+			sum.add(Skeleton.world(model, pose, i).getTranslation(new Vector3f()));
+		}
+		return sum.div(4);
+	}
+
+	/** How far out of the view's edges a hand bone may sit and its fist still show (the fist and item rise into the view). */
+	private static final float HAND_SEEN_MARGIN = 1.15f;
+
+	/**
+	 * Her two hands' weapon bones (the model's "_L" and "_R") as they show in the view: [right of the view, left of the
+	 * view], each null when out of view. Which side is which differs by view model (Kiriko's "_L" hand is on the right
+	 * of the view, Juno's "_R"), and most heroes' other hand is behind the camera (#78, measured with DevServer
+	 * "viewbones").
+	 */
+	private static Matrix4f[] viewHands(PoseStack poseStack, HeroAnimator animator, SkinnedModel model) {
+		// judged at rest and kept through a swing or an action: a swing carries the hand out of the view's edge, and the
+		// item jumped to Minecraft's own hand for those frames
+		boolean[] kept = SEEN_HANDS.get(model);
+		if (kept != null && !animator.viewAtRest()) {
+			Matrix4f[] out = new Matrix4f[2];
+			for (int side = 0; side < 2; side++) {
+				out[side] = kept[side * 2] ? (kept[side * 2 + 1] ? animator.kunaiHand : animator.ofudaHand) : null;
+			}
+			return out;
+		}
+		Matrix4f[] out = judgeHands(poseStack, animator, model);
+		SEEN_HANDS.put(model, new boolean[] {out[0] != null, out[0] == animator.kunaiHand, out[1] != null, out[1] == animator.kunaiHand});
+		return out;
+	}
+
+	/** Per view model: [right seen, right is "_L", left seen, left is "_L"], as last judged at rest. */
+	private static final Map<SkinnedModel, boolean[]> SEEN_HANDS = new IdentityHashMap<>();
+
+	private static Matrix4f[] judgeHands(PoseStack poseStack, HeroAnimator animator, SkinnedModel model) {
+		Minecraft mc = Minecraft.getInstance();
+		Camera camera = mc.gameRenderer.mainCamera();
+		float tanY = (float) Math.tan(Math.toRadians(mc.options.fov().get() / 2.0));
+		float tanX = tanY * mc.getWindow().getWidth() / Math.max(1, mc.getWindow().getHeight());
+		Matrix4f[] out = new Matrix4f[2];
+		float[] across = new float[2];
+		for (Matrix4f bone : new Matrix4f[] {animator.kunaiHand, animator.ofudaHand}) {
+			// the knuckles, where the item will sit (Mercy's "_R" weapon bone is out at her staff, her hand by the camera)
+			Vector3f knuckles = knuckles(model, animator, bone == animator.kunaiHand);
+			Vector3f at = poseStack.last().pose().transformPosition(knuckles != null ? knuckles : bone.getTranslation(new Vector3f()));
+			float ahead = at.dot(camera.forwardVector());
+			if (ahead < 0.1f) {
+				continue;
+			}
+			float x = -at.dot(camera.leftVector()) / ahead;
+			float y = at.dot(camera.upVector()) / ahead;
+			if (Math.abs(x) > tanX * HAND_SEEN_MARGIN || Math.abs(y) > tanY * HAND_SEEN_MARGIN) {
+				continue;
+			}
+			int side = x >= 0 ? 0 : 1;
+			if (out[side] != null) {
+				// both on one side of the view: the one further over keeps that side, the other takes the other
+				int other = 1 - side;
+				boolean further = side == 0 ? x > across[0] : x < across[1];
+				out[other] = further ? out[side] : bone;
+				across[other] = further ? across[side] : x;
+				if (!further) {
+					continue;
+				}
+			}
+			out[side] = bone;
+			across[side] = x;
+		}
+		return out;
 	}
 
 	/**
@@ -908,9 +1078,10 @@ public final class HeroModelRenderer {
 	 * bone so it moves with her hand, no bigger than heldMax. Held to the view's corner the first-person way, items
 	 * floated beside her fist (the owner, 2026-10-27).
 	 */
-	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, LocalPlayer player, Matrix4f bone,
-									  boolean kunaiSide, ItemStack item, net.minecraft.client.renderer.item.ItemStackRenderState state) {
-		if (item.isEmpty()) {
+	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, LocalPlayer player,
+									  @org.jspecify.annotations.Nullable Matrix4f bone, boolean kunaiSide, ItemStack item,
+									  net.minecraft.client.renderer.item.ItemStackRenderState state) {
+		if (item.isEmpty() || bone == null) {
 			return;
 		}
 		// her kunai hand shows on the right of the view: Minecraft's right hand's grip; her ofuda hand its left
@@ -947,6 +1118,9 @@ public final class HeroModelRenderer {
 		state.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();
 	}
+
+	/** Dev only: the view model's hand bones in the view's space as last drawn in Minecraft mode (DevServer "viewbones"). */
+	public static final Map<String, Vector3f> VIEW_BONES = new java.util.TreeMap<>();
 
 	private static final Map<SkinnedModel, Set<Integer>> ALL_PROPS = new IdentityHashMap<>();
 

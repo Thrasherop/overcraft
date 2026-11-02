@@ -180,6 +180,16 @@ public final class HeroAnimator {
 	private Skeleton.@Nullable Pose lastPose;
 	private Skeleton.@Nullable Pose lastViewPose;
 
+	/** Her first-person arms at rest: no action of hers playing and no Minecraft swing (held items' grips are taken then). */
+	public boolean viewAtRest() {
+		return actionsFirstPerson.playing() == null && swing <= 0;
+	}
+
+	/** The first-person pose last drawn (null before one). */
+	public Skeleton.@Nullable Pose viewPose() {
+		return lastViewPose;
+	}
+
 	public static HeroAnimator of(LivingEntity entity) {
 		return BY_ENTITY.computeIfAbsent(entity.getId(), id -> new HeroAnimator());
 	}
@@ -613,15 +623,10 @@ public final class HeroAnimator {
 	}
 
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
-		additive(model, pose, clipName, action, now, false);
-	}
-
-	/** The same, its offsets in each bone's own frame ({@link Skeleton#addAdditive}'s localOffsets). */
-	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now, boolean localOffsets) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
 		if (clip != null && t >= 0 && t <= clip.duration()) {
-			Skeleton.addAdditive(clip, t, pose, 1, null, localOffsets);
+			Skeleton.addAdditive(clip, t, pose, 1);
 		}
 	}
 
@@ -801,9 +806,19 @@ public final class HeroAnimator {
 	private final Matrix4f kunaiGrip = new Matrix4f();
 	private final Matrix4f ofudaGrip = new Matrix4f();
 
+	/**
+	 * Which arm Minecraft mode's swing turns: the model's "_L" one (true: Kiriko's right of the view), its "_R" one (false:
+	 * Juno's, Brigitte's), or none (null: Minecraft draws the main hand's item). Set by the renderer from where her hands
+	 * show and which holds the main hand's item (#78).
+	 */
+	public @Nullable Boolean swingSide = true;
+
 	/** Her right-of-view arm turned at the shoulder by these degrees about SWING's axis (her model's space). */
-	private static void swingArm(SkinnedModel model, Skeleton.Pose pose, float degrees) {
-		int arm = UpperBody.arm(model);
+	private void swingArm(SkinnedModel model, Skeleton.Pose pose, float degrees) {
+		if (swingSide == null) {
+			return;
+		}
+		int arm = UpperBody.arm(model, swingSide);
 		if (arm < 0) {
 			return;
 		}
@@ -1203,8 +1218,8 @@ public final class HeroAnimator {
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
-			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now, true);
-			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now, true);
+			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
+			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
 		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
 		additive(model, pose, "add_crossfade_heal", "crossfade_heal", now);
@@ -1649,6 +1664,7 @@ public final class HeroAnimator {
 		private static final Map<SkinnedModel, Integer> KUNAI_HANDS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> KUNAI_WRISTS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> ARMS = new HashMap<>();
+		private static final Map<SkinnedModel, Integer> ARMS_R = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> OFUDA_WRISTS = new HashMap<>();
 		private static final Map<SkinnedModel, Integer> OFUDA_HANDS = new HashMap<>();
 
@@ -1721,8 +1737,8 @@ public final class HeroAnimator {
 		}
 
 		/** The upper arm on the right of the view (the model's "_L" side). */
-		static int arm(SkinnedModel model) {
-			return ARMS.computeIfAbsent(model, m -> first(m, "Arm_L"));
+		static int arm(SkinnedModel model, boolean left) {
+			return (left ? ARMS : ARMS_R).computeIfAbsent(model, m -> first(m, left ? "Arm_L" : "Arm_R"));
 		}
 
 		/** The kunai hand's wrist (right of the view: the model's "_L" side), or the ofuda hand's. */

@@ -4,6 +4,29 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-02
+
+### Build 0.3.29 (fixes)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.29): the additive animation clips re-exported with
+`tools/owm_survey.py`'s fixed additive test, or patched in place with `tools/neutralize_additive.py` (Lúcio's wall-ride
+and reload leans, Jetpack Cat's melee, Juno's 1P fidget) and the renamed pose clips (`tools/rename_glb_clips.py`:
+Brigitte's, Sombra's 1P); then `sounds` (the new voice lines) and `zip`.
+- **Voice lines for Ana, Sombra, Brigitte and Lifeweaver** (#77): their Voice Lines tab lists every unlock (41, 45, 35,
+  22), each said from the communication wheel with its exact subtitle (read from the game's own text, quotes included).
+- **One convention for every animation layer** (#75): layers add in each bone's own frame, as Overwatch's importer does.
+  Some clips had been exported with whole poses where only changes belonged; they're fixed in the export.
+- **Minecraft mode, first person: items in each hero's own hand** (#78): the hand that's actually in view holds the
+  item, as Kiriko holds hers, and moves with it; an item with no hand on its side is drawn Minecraft's way; the swing
+  turns the arm holding it. Right- and left-handed.
+- **Juno in water and lava** (#79, #80, #81): Glide Boost keeps its speed in a liquid and always gets its burst; Orbital
+  Ray's circle lies on a liquid's surface.
+- **Effects over water, behind glass, at low frame rates:** effects at a liquid's surface draw after the water (not
+  dimmed); behind stained glass, ice or water they're tinted as before; attached effects (Brigitte's barrier) no longer
+  flicker at low frame rates.
+- **Improved Transparency (Video Settings) no longer crashes** with a hero picked, and effects and shadows draw right
+  in it.
+- **Mercy's Valkyrie flew at 22 m/s, not 9,** until her first Guardian Angel launch: fixed.
+
 ## 2026-11-01
 
 ### Build 0.3.28 (Juno, the ninth hero)

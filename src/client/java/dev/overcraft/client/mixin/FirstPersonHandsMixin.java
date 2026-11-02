@@ -27,7 +27,15 @@ public abstract class FirstPersonHandsMixin {
 		} else if (playerState.avatarRenderState != null && state.handRenderSelection != null
 			&& HeroModelRenderer.submitMinecraftArms(partialTicks, poseStack, collector, light, state.viewXRot - state.xBob,
 			state.viewYRot - state.yBob, state, playerState.avatarRenderState)) {
-			ci.cancel();
+			var draws = HeroModelRenderer.minecraftDraws;
+			boolean offOnly = draws == FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_OFF_HAND_ONLY;
+			boolean mainOnly = draws == FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_MAIN_HAND_ONLY;
+			if (offOnly && state.handRenderSelection.renderOffHand || mainOnly && state.handRenderSelection.renderMainHand) {
+				// her view model has no hand in view on that item's side: Minecraft draws it, alone (#78)
+				state.handRenderSelection = draws;
+			} else if (draws != FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_BOTH_HANDS) {
+				ci.cancel();
+			}
 		}
 	}
 }

@@ -111,8 +111,9 @@ left button for the first of a tier, the right for the second), dev client, flat
 - **Found playing: her torpedo pods flew apart.** The lock's additive moves the pods (bones 3CFB / 3CFC, a mirrored pair:
   the second turned 180 degrees about X) about 0.55 m: added in the parent's frame one went over her head and one to her hip
   (`juno_b_lock.png`). Turned by each bone's own rotation first, as the clip's turns already are, they open as a mirror
-  pair over her shoulders (x +-0.28, y +0.55) and rise apart on the fire. Her layers use that (`Skeleton.addAdditive`
-  localOffsets); whether every additive clip wants it is #75 (the export's additive tracks mix conventions).
+  pair over her shoulders (x +-0.28, y +0.55) and rise apart on the fire. That was her layers' option first; since #75
+  it is how every additive clip is added (the importer's own additive path does it, and mirrored pairs across the
+  heroes agree: [additive_clips](../animation/additive_clips.md)).
 - Ours (M): the glide's 8 ways by her motion, not her input (only her own client knows the input); the hover's ending
   layer and the torpedo hold layer (the lock isn't synced to others) not played; her 1P glide / hover layers not yet.
 

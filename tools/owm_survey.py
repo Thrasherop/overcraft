@@ -87,7 +87,7 @@ def main():
         action = blanim.importAction(data, rig, False)
         action.name = f"{folder}_{path.stem}"
         action.use_fake_user = True
-        if folder.startswith("4"):
+        if additive_folder(folder):
             keyed = {b.name: (b.positions.keyframeCount > 0, b.rotations.keyframeCount > 0) for b in data.bones}
             neutral_unkeyed(rig, action, keyed, data.header.duration)
         report.append({"name": action.name, "folder": folder, "id": path.stem, "frames": data.header.duration,
@@ -241,8 +241,16 @@ def survey(rig, meshes, report, out, shots=3, side=False):
 EXPORT_FPS = 30
 
 
+def additive_folder(folder):
+    """DataTool files a clip under Animations/<a>/<b>/ from its header; bit 0x4 of <a> marks the additive clips (4, 6, 20,
+    36, 132 ...: their offsets sit near zero, the others' near the rest pose, in every hero's data). Not only "4-*": Lúcio's
+    wall-ride leans are 36-38 and Jetpack Cat's melee 132-0 (techniques/animation/additive_clips.md, #75)."""
+    head = folder.split("-", 1)[0]
+    return head.isdigit() and int(head) & 4 != 0
+
+
 def neutral_unkeyed(rig, action, keyed, frames):
-    """Additive clips (the 4-* folders) hold deltas, not poses. The glTF exporter writes every bone, filling the ones a
+    """Additive clips (see additive_folder) hold deltas, not poses. The glTF exporter writes every bone, filling the ones a
     clip doesn't key with their rest pose, which as a delta would throw the skeleton apart (a wrist pushed out by the
     forearm's length): key every channel the clip lacks at a neutral delta instead (no offset, no turn from the
     parent), so it adds nothing. {@code keyed}: bone name -> (position keyed, rotation keyed)."""
