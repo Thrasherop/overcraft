@@ -104,6 +104,51 @@ public final class SojournStats {
 	public static final double SLIDE_JUMP_GRAVITY = 1.4, SLIDE_JUMP_GRAVITY_TIME = 0.25;
 
 	// ---- Disruptor Shot (1441, ability 2; step 5) ----
-	/** Its cooldown 15 s (D 1CE4 15; W) M. */
-	public static final double DISRUPTOR_COOLDOWN = 15;
+	/** Its cooldown 15 s (D 1CE4 15; W) M, written 0.5 s after the launch (D #360 wait 0.5 onEnd -> #355: H nodes, M timing). */
+	public static final double DISRUPTOR_COOLDOWN = 15, DISRUPTOR_COOLDOWN_AFTER = 0.5;
+	/** The cast: 0.17 s from the press to the launch (D v670, #114 / #361) H. */
+	public static final double DISRUPTOR_CAST = 0.17;
+	/**
+	 * The projectile: 40 m/s (D 04D5 40, #201; BZ 2025-11-11 30 -> 40; W) H, 0.2 m (D 2905 0.2) M, opening its field on contact
+	 * or after 0.75 s (D 10FC 0.75 s, 5342 #53 / #5; BZ 2025-11-11 1 -> 0.75 s) H: 30 m at most. No drop (no source gives one:
+	 * D's projectile has no gravity field read, W lists none) M.
+	 */
+	public static final double DISRUPTOR_SPEED = 40, DISRUPTOR_SIZE = 0.2, DISRUPTOR_TRAVEL = 0.75;
+	/**
+	 * The field (23E6, graph 1443): it hurts from 0.1 s after it opens (#158) for 3.5 s (04DD, #160; W) H, 4 m round (04D6, #331;
+	 * W) H, 90 a second (04CB 90, #163; BZ 2025-11-11 80 -> 90; W) H, ignoring armor (#163 m_FB3F6CA9 = 1, L meaning; W "ignores
+	 * armor" M): Minecraft's magic damage (bypasses armor, no knockback), as Sombra's zone. No energy from it (BZ 2024-12-16) H.
+	 */
+	public static final double FIELD_DELAY = 0.1, FIELD_TIME = 3.5, FIELD_RADIUS = 4, FIELD_DPS = 90;
+	/** It hurts in steps of 17.28 every 0.192 s (W: "17.28 every 0.192 s", the data's 90/s on its 0.192 s update) M. */
+	public static final double FIELD_STEP = 0.192;
+	/** Deceleration Field (minor perk): -25 % move speed inside, gone on leaving (D 1443 #319 +0.25, status 2456; BZ 2025-08-26; W) H/M. */
+	public static final double DECELERATION_SLOW = 0.25;
+
+	// ---- Overclock (2159, the ultimate; step 6) ----
+	/**
+	 * Its phases (D #450): a 0.75 s cast (#364 / #385: no fire, W "can't fire until the cast ends") H, 8 s (04CC, #370; W) H, a
+	 * 0.45 s tail (#401) H. Through all three her energy fills at 100 a second to its cap (04DF, 1A23 #739 / #738; BZ 2024-12-16
+	 * 120 -> 100; W) H, with no gain from hits and no decay (#655 / #931) H.
+	 */
+	public static final double OVERCLOCK_CAST = 0.75, OVERCLOCK_TIME = 8, OVERCLOCK_TAIL = 0.45, OVERCLOCK_FILL = 100;
+	/** Overcharged (minor perk): the cap 150 in Overclock, after it energy above 100 drains at 20 a second (D 1A23 #1485-#1488) H. */
+	public static final double OVERCHARGED_DRAIN = 20;
+
+	// ---- Sharpshooter (01C7, her sub-role) ----
+	/**
+	 * Critical damage to a "hero" (ours: any living creature or player) takes 0.0075 s per point off Power Slide's cooldown (D 23D7
+	 * 0.0075, #2832, ABILITY 1 only; BZ 2026-02-10 "0.75 % of damage dealt"; W's table) H; with Dual Thrusters off its recharge
+	 * (#1087 v38468) H. The point count is the damage dealt, crit included (M).
+	 */
+	public static final double SHARPSHOOTER = 0.0075;
+
+	// ---- Perks (51EB) ----
+	/** Dual Thrusters (major): two slide charges (D 1E6F #1033 v38465 = 2; BZ 2025-02-25 a third fixed) H, each 7 s, one at a time (#822, M). */
+	public static final int DUAL_CHARGES = 2;
+	/**
+	 * Friction Generators (major): +1 energy 75 times over a slide (D 51EB #468 / #470: 75 steps over the slide) H, fewer if it's cut
+	 * short (M), the decay paused meanwhile (#446) H; 75 (BZ 2026-06-16 50 -> 75; W) H.
+	 */
+	public static final double FRICTION_ENERGY = 75;
 }

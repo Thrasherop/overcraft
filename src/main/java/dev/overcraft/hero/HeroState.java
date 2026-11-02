@@ -175,6 +175,11 @@ public final class HeroState {
 	public boolean sojournRightWas;
 	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
 	public int sojournCharged;
+	/**
+	 * Sojourn: ticks into Disruptor Shot's cast (-1 none), ticks until its cooldown is written (-1 none); ticks into Overclock (-1
+	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).
+	 */
+	public int sojournDisruptor = -1, sojournDisruptorWrite = -1, sojournUlt = -1, sojournSlideCharges = 2;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
 	public int junoVolley;
 	public double junoVolleyClock;

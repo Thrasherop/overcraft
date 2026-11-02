@@ -45,12 +45,15 @@ public final class ClientSojourn {
 
 	/** Her slide this tick for OwMovement, or null. */
 	public static OwMovement.@Nullable Slide slide(LivingEntity entity) {
-		int length = Ow.ticks(SojournStats.SLIDE_TIME);
+		// Dual Thrusters: a 0.75 s slide, its jump 13.75 up and 11 along (D 51EB #422, 1E6F #1031)
+		boolean dual = ClientHero.sync().majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.SOJOURN_DUAL_THRUSTERS);
+		int length = Ow.ticks(dual ? SojournStats.SLIDE_TIME_DUAL : SojournStats.SLIDE_TIME);
 		if (entity != Minecraft.getInstance().player || ClientHero.hero() != Hero.SOJOURN || !ClientHero.controls() || slide < 0
 			|| slide >= length) {
 			return null;
 		}
-		return new OwMovement.Slide(slide, length, SojournStats.SLIDE_JUMP_UP, SojournStats.SLIDE_JUMP_ALONG);
+		return dual ? new OwMovement.Slide(slide, length, SojournStats.SLIDE_JUMP_UP_DUAL, SojournStats.SLIDE_JUMP_ALONG_DUAL)
+			: new OwMovement.Slide(slide, length, SojournStats.SLIDE_JUMP_UP, SojournStats.SLIDE_JUMP_ALONG);
 	}
 
 	/** OwMovement ended it: her jump or a wall. */

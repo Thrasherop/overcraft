@@ -41,6 +41,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.sojourn.SojournStats.RAILGUN_RADIUS * 2, (float) dev.overcraft.sojourn.SojournStats.RAILGUN_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	// Sojourn's Disruptor Shot in flight (not saved: 0.75 s)
+	public static final EntityType<dev.overcraft.entity.DisruptorShotEntity> DISRUPTOR_SHOT = register("disruptor_shot",
+		EntityType.Builder.<dev.overcraft.entity.DisruptorShotEntity>of(dev.overcraft.entity.DisruptorShotEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_SIZE * 2, (float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_SIZE * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	// Lifeweaver's: Healing Blossom and Thorn Volley; the thrown platform and seed; the platform, the seed on the ground and
 	// the tree (none saved: they're his while he's here)
 	public static final EntityType<dev.overcraft.entity.BlossomEntity> BLOSSOM = register("blossom",

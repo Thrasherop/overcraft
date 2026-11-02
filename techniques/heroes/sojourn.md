@@ -12,7 +12,8 @@ was: [juno](juno.md) (her movement hooks) and Ana (a gun on bone_0606: [ana](ana
 - **The plan:** `tools/reference/sojourn-plan.md` (where the sources disagree, what maps onto Overcraft, the order).
 - **Clip maps:** `tools/clipmaps/sojourn.txt` (3P, 235 clips), `sojourn_1p.txt` (79), `sojourn_weapon.txt` (the Railgun, 23).
 - **Code:** `dev.overcraft.sojourn` (`Sojourn`, `SojournStats`: every number with D / BZ / W and its confidence, `Railgun`:
-  the rounds, energy, Charged Shot), `entity/RailgunShotEntity`, `client/ClientSojourn`, `client/effect/SojournFx` (stand-in
+  the rounds, energy, Charged Shot; `Disruptor`: the Disruptor Shot's fields), `entity/RailgunShotEntity`,
+  `entity/DisruptorShotEntity`, `client/ClientSojourn`, `client/effect/SojournFx` (stand-in
   looks until step 8), `OwMovement.slideTravel`.
 
 ## The models (step 1)
@@ -143,3 +144,50 @@ A zombie has 2 armor: Minecraft takes 6.56 % off a 9 (0.72 health) and 1.6 % off
 - **Not tried:** barriers (+1 energy: needs a second player as an enemy Brigitte; the code reads `Barrier.took`), the ender
   dragon, a second player seeing her rounds and tracer, lava, boats, slopes, firing during Power Slide (allowed: nothing gates
   it), the Charged Shot past 100 m.
+
+## Steps 5-6 (Disruptor Shot, Overclock, Sharpshooter), played 2026-11-02
+Built: `Disruptor` (server: the cast, the launch, the fields as a list ticked by the server as Juno's Hyper Ring, their damage
+and Deceleration Field's slow), `entity/DisruptorShotEntity` (an `OwProjectile`, 40 m/s for 15 ticks, allies passed through),
+Overclock and Sharpshooter in `Sojourn` / `Railgun` (`Sojourn.overclocked`, `Railgun.cap`, `Sojourn.sharpshooter`), stand-in
+looks in `SojournFx` (a cyan glow and trail in flight; the field a faint ball, a 4 m dome and a bright core), the Disruptor's
+and the Overclock cast's clips in `HeroAnimator` (`disruptor` / `overclock`, their `_slide` copies while she slides; Overclock
+has no 1P clip, H). The harness's `trace` now also logs both cooldowns, the second ammo and the ult flag (`c1 c2 s u`).
+
+**Data vs plan:** all the plan's numbers stand. From the data: the field hurts in steps of 17.28 every 0.192 s (W's cadence on
+the data's 90/s: an accumulator of 3.84 ticks, 18 steps = 311 in its 70 ticks, not 315); her Disruptor cooldown is written
+0.5 s after the launch, so the box shows "just used" (15, coral) from the press until it's written. **Ours:** the shot leaves
+her eyes (D: her left wrist hp 0002), as the rounds do; the field reaches a creature when the nearest point of its box is within
+4 m; no line of sight (W: the field goes through barriers; nothing in the data asks for one), so it hurts through a wall; G or
+death during the 0.17 s cast drops the shot with nothing spent; Overclock runs on through Minecraft mode (G) as other heroes'
+ults do; the 9 s before the decay count from Overclock's end. Minecraft's magic damage is cut 85 % on witches (their own rule:
+not changed).
+
+World `soj5` (flat survival, midnight, monsters off), NoAI zombies / skeletons with 500 health (`Tags`, read with `data get`),
+health in Minecraft points (x 12.5 = Overwatch); scripts over one harness connection, screenshots in `run/screenshots/`:
+- **Damage through armor:** a plain zombie (2 armor) and one in full diamond (20 armor, 8 toughness), the field on the ground
+  between them: both 500 -> 475.117 (311.0, 18 steps of 17.28), 7.37 health a second while it lasts (92/s; `s5_field_1p.png`:
+  the field between them). The first try was at noon: the plain zombie burned in the sun (-1 a second) and read wrong.
+- **Cooldown:** ready again 16.1 s after the press (polled at 0.5 s: 0.17 + 0.5 + 15 = 15.67 expected); E shows 15 from the press.
+- **Max range in the air** (level aim, nothing hit): a zombie 3 m beside the line at 30 m took 311; 5 m beside it, 5 m past
+  it and 4 m short of it, 0: the field opened 30 m out (40 m/s x 0.75 s) and reaches 4 m.
+- **A wall** (stone, hit in its middle): a zombie 2.4 m in front and one 2.8 m behind it both took 311 (`s5_wall.png`: the
+  field's glow on the wall). With a zombie in the line the shot opened on it instead.
+- **The ground at her own feet** (looking down): her 18 -> 18, a villager 20 -> 20, an (untamed, NoAI) wolf beside her 8 -> 8
+  (a wolf counts as an ally of hers only when tamed by her; Allies), a zombie 3 m off took 311.
+- **Stacked:** five zombies in one block, the field at their feet: each 311.
+- **Water:** the shot into a 3-deep pool beside a zombie standing in it: 311 (`s5_water.png`); from under water at a zombie on
+  the bank 6 m off: 311.
+- **Overclock** (`trace`, one line a client tick): from the Q press her energy +5 a tick, 100 at tick 20; the left button held
+  from the press, the first round at tick 16 (the 0.75 s cast: 15 ticks with no fire); the ult flag on 182-184 ticks (184:
+  15 + 160 + 9). Three Charged Shots to a skeleton's head during it: 180 each (full energy), the meter back to 100 within 20
+  ticks each time (`s6_ult_hud.png`: the band white at 100, the ult ring empty). No ult charge while it runs.
+- **Ult charge from damage:** 1 s of rounds into a skeleton's body (135 dealt) took the ult from 3.2 to 150.3 points in 2 s
+  (135 + 5 a second); a fight's Disruptor and rounds filled it from 11 % to 100 %.
+- **Sharpshooter** (the slide's cooldown in `trace`): a full Charged Shot to a skeleton's head (180) took 1.30-1.55 s off it in
+  one step (1.35 expected; the client's samples straddle a tick); four single head rounds (18 each) 0.18-0.19 s each (0.135 +
+  the tick's 0.05); four body rounds, nothing.
+- **G mid-Overclock:** 1.2 s in, G: Minecraft mode, the hotbar, the left button fires nothing (45 rounds kept), energy 100;
+  G back 2.5 s later: rounds again, the ult flag ending at 184 ticks from the press as without G (`s6_mcmode.png`).
+- **Not tried:** a second player as her enemy (the Deceleration slow on a hero's own mover, the field on a player), lava, the
+  Disruptor against a barrier (the field opens on it, the data says it goes through), the Overclock cast while sliding (its
+  `overclock_slide` clip), the 3P stance additive `add_overclock` during it (not played: step 8's look).

@@ -129,7 +129,7 @@ public final class HeroAnimator {
 	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
 	private boolean juno, junoGliding;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
-	private boolean sojournSliding;
+	private boolean sojourn, sojournSliding;
 	private float slideSince = -100, slideJumpAt = -100;
 	private float glideSince = -100, hoverSince = -100, hoverEndAt = -100, doubleJumpAt = -100;
 	private int hoverTicks;
@@ -254,6 +254,13 @@ public final class HeroAnimator {
 				default -> {
 				}
 			}
+		}
+		if (a.sojourn && (action.equals("disruptor") || action.equals("ult"))) {
+			// her Disruptor (alias 0x479) and Overclock cast (0x175), their slide copies while she slides (df 0xE5 cat 0x24A:
+			// sojourn.txt); Overclock has no first-person clip (H: none in her 1P set)
+			String base = action.equals("ult") ? "overclock" : "disruptor";
+			clip = a.sojournSliding ? base + "_slide" : base;
+			viewClip = action.equals("ult") ? "" : a.sojournSliding ? "disruptor_slide" : "disruptor";
 		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
@@ -1359,6 +1366,7 @@ public final class HeroAnimator {
 		}
 		junoGliding = glideNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		this.sojourn = sojourn;
 		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
 		if (slideNow && !sojournSliding) {
 			slideSince = now;

@@ -173,6 +173,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.Torpedoes.tickAll(server);
 			dev.overcraft.juno.HyperRing.tickAll(server);
 			dev.overcraft.juno.OrbitalRay.tickAll(server);
+			dev.overcraft.sojourn.Disruptor.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
@@ -249,6 +250,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.Torpedoes.clearAll();
 			dev.overcraft.juno.HyperRing.clearAll();
 			dev.overcraft.juno.OrbitalRay.clearAll();
+			dev.overcraft.sojourn.Disruptor.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

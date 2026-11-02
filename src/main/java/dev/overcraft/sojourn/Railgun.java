@@ -115,19 +115,35 @@ public final class Railgun {
 		}
 	}
 
-	/** 9 s after her last gain her energy runs down at 15 a second (D #596 / #590). */
+	/**
+	 * 9 s after her last gain her energy runs down at 15 a second (D #596 / #590), not in Overclock (#931); above 100 after an
+	 * Overcharged Overclock it drains to 100 at 20 a second first (#1487 / #1488).
+	 */
 	private static void decay(HeroState s, long now) {
+		if (Sojourn.overclocked(s)) {
+			return;
+		}
+		if (s.sojournEnergy > ENERGY_MAX) {
+			s.sojournEnergy = Math.max(ENERGY_MAX, s.sojournEnergy - OVERCHARGED_DRAIN / 20);
+		}
 		if (s.sojournEnergy > 0 && now - s.sojournGainAt >= Ow.ticks(ENERGY_DECAY_DELAY)) {
 			s.sojournEnergy = Math.max(0, s.sojournEnergy - ENERGY_DECAY / 20);
 		}
 	}
 
+	/** Her energy's cap: 100, 150 in Overclock with Overcharged (D v971, 1A23 #1485). */
+	static double cap(ServerPlayer player, HeroState s) {
+		return Sojourn.overclocked(s) && HeroManager.hasPerk(player, dev.overcraft.hero.Perk.SOJOURN_OVERCHARGED)
+			? ENERGY_MAX_OVERCHARGED : ENERGY_MAX;
+	}
+
+	/** Energy from a hit: none in Overclock (D #655 / #656 / #776). */
 	private static void gain(ServerPlayer player, double energy) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero != dev.overcraft.hero.Hero.SOJOURN || energy <= 0) {
+		if (s == null || s.hero != dev.overcraft.hero.Hero.SOJOURN || energy <= 0 || Sojourn.overclocked(s)) {
 			return;
 		}
-		s.sojournEnergy = Math.min(ENERGY_MAX, s.sojournEnergy + energy);
+		s.sojournEnergy = Math.max(s.sojournEnergy, Math.min(cap(player, s), s.sojournEnergy + energy));
 		s.sojournGainAt = player.level().getGameTime();
 	}
 
@@ -190,6 +206,9 @@ public final class Railgun {
 		if (dealt > 0) {
 			Effects.hitMarker(owner, target, crit);
 		}
+		if (crit && s != null) {
+			Sojourn.sharpshooter(owner, s, dealt);
+		}
 		// energy from the hit, not the damage: none on a hit that did nothing (invulnerable), +1 on a barrier
 		gain(owner, barrier ? ENERGY_BARRIER : dealt > 0 ? crit ? ENERGY_CRIT : ENERGY_HIT : 0);
 	}
@@ -248,6 +267,9 @@ public final class Railgun {
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, crit);
+			}
+			if (crit) {
+				Sojourn.sharpshooter(player, s, dealt);
 			}
 		}
 		Vec3 from = muzzle(player);

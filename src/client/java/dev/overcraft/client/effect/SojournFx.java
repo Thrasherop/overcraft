@@ -43,12 +43,49 @@ public final class SojournFx {
 		return true;
 	}
 
+	/** Her Disruptor Shot in flight: a larger cyan glow with a trail (stand-in); false without the local pack. */
+	public static boolean disruptorFlight(int id, Vec3 at, @Nullable Entity owner) {
+		Palette p = or(KirikoFx.enemyOf(owner), Palette.CYAN);
+		Particle core = Fx.attach("disruptor_shot/" + id, at, () -> {
+			Particle g = Fx.particle("lucio_spark", p);
+			return g == null ? null : g.life(0.1f).size(0.5f, 0.5f).nearFade(1f).fade(0.02f, 0.5f);
+		});
+		if (core == null) {
+			return false;
+		}
+		Fx.trail(id, at, "mercy_band", p, 0.15f, 0.15f, 0.8f);
+		return true;
+	}
+
+	/**
+	 * Its field, for its whole life (variant: ticks): a faint cyan ball 8 m across (a camera-facing disc is a sphere's outline
+	 * from every side) and a brighter core (stand-ins, ours).
+	 */
+	private static void field(Vec3 at, int ticks, boolean enemy) {
+		float life = Math.max(0.1f, ticks / 20f);
+		Palette p = or(enemy, Palette.CYAN);
+		Particle ball = Fx.particle("mercy_glow", p);
+		if (ball != null) {
+			Fx.add(ball.at(at).life(life).size(8, 8).alpha(0.25f).fade(0.03f, 0.1f).nearFade(3));
+		}
+		// its upper half as a shell 4 m round, so its reach reads on the ground (the glow alone looked 2 m wide: played)
+		Particle dome = Fx.particle("mercy_glow", p);
+		if (dome != null) {
+			Fx.add(dome.at(at).shape(Fx.Shape.DOME).life(life).size(8, 8).alpha(0.2f).fade(0.03f, 0.1f).nearFade(1.5f));
+		}
+		Particle core = Fx.particle("lucio_spark", p);
+		if (core != null) {
+			Fx.add(core.at(at).life(life).size(1.2f, 0.8f).fade(0.02f, 0.2f).nearFade(1));
+		}
+	}
+
 	/** Her moments from the server; false for others' names. */
 	static boolean dispatch(EffectPayload e, boolean enemy) {
 		Vec3 at = new Vec3(e.x(), e.y(), e.z());
 		Vec3 dir = new Vec3(e.dx(), e.dy(), e.dz());
 		switch (e.effect()) {
 			case "sojourn_tracer" -> tracer(at, at.add(dir), enemy);
+			case "sojourn_disruptor_field" -> field(at, e.variant(), enemy);
 			default -> {
 				return false;
 			}

@@ -869,10 +869,16 @@ public final class HeroHud {
 		if (hero == Hero.SOJOURN) {
 			// Power Slide (Shift: marked while she slides) and Disruptor Shot (E), her data's ABILITY 1 / 2, in Kiriko's two
 			// places (ours)
-			ability(g, hero, w, "power_slide", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+			// (with Dual Thrusters her charges come as the second ammo: the box ready while one is left, the count in its corner,
+			// as Mercy's Double Dose)
+			int slides = s.secondaryAmmo();
+			ability(g, hero, w, "power_slide", w - 641, 903, HeroControls.get(Action.ABILITY_1), slides > 0 ? 0 : s.ability1Cooldown(),
 				(float) dev.overcraft.sojourn.SojournStats.SLIDE_COOLDOWN, ability1ReadyAt);
 			if ((s.mode() & dev.overcraft.sojourn.Sojourn.MODE_SLIDE) != 0) {
 				song(g, true, false, w - 641, 903, w);
+			}
+			if (slides > 1 || slides == 1 && s.ability1Cooldown() > 0) {
+				charges(g, slides, w - 641, 903, w);
 			}
 			ability(g, hero, w, "disruptor_shot", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 				(float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_COOLDOWN, ability2ReadyAt);

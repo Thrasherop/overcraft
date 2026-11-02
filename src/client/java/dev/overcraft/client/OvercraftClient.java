@@ -165,6 +165,9 @@ public class OvercraftClient implements ClientModInitializer {
 		// Sojourn's Railgun rounds: no model in her data (2F98 is effects only), drawn by their flight effect (SojournFx)
 		EntityRendererRegistry.register(OcEntities.RAILGUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"railgun_shot", 0.2f, false, 1, true));
+		// Sojourn's Disruptor Shot: drawn by its flight effect (SojournFx), the item only without the local pack
+		EntityRendererRegistry.register(OcEntities.DISRUPTOR_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"disruptor_shot", 0.3f, false, 1, true));
 		// Lifeweaver's: the blossom and the thorns have no model in his data, their flight effects are their look
 		// (LifeweaverFx: the item only without the local pack); the thrown platform and seed are his model 126CC; the
 		// platform, the seed on the ground and the tree their own models with their clips
