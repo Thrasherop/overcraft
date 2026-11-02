@@ -752,13 +752,11 @@ public final class OwMovement {
 	}
 
 	/**
-	 * Jetpack Cat's flight (her jetpack, a held mover override in her data's graph 59DC: air acceleration 9.5, speed
-	 * above 12 m/s decays, drag 8 a second with no input; the "fly" flag: no gravity). W follows her aim (look up to
-	 * climb), S backs off along it (4.95 m/s), A / D strafe, Space rises and Crouch sinks (her data: -1 / 0 / +1; the
-	 * vertical speed isn't a named value: ours, her run speed). Frenetic Flight (graph 59E0): its speed bonus ramps from
-	 * +25% to +65% (+5% every 0.04 s), its first 0.3 s on her burst mover (air acceleration 2, drag 2), then the sustain
-	 * (6 m/s, air acceleration 6, drag 1.25), pushed along the input at 25 m/s² (her data) up to 17.8 m/s (the wiki's
-	 * measured top speed: ours to combine them). True when it moved her.
+	 * Jetpack Cat's flight (her jetpack, a held mover override in her data's graph 59DC; the "fly" flag: no gravity), as
+	 * the owner's Workshop recording measured it (#60, JetpackCatStats): 5.5 m/s every way (W follows her aim, S backs off
+	 * along it, A / D strafe, Space rises and Crouch sinks), speeding up at 7.75 x that a second and slowing in a straight
+	 * line at 1.745 x; with input after a boost her speed is cut to 12 m/s, then slows to 5.5. Frenetic Flight: 20 m/s² for
+	 * 0.2 s, then 10.4, easing into 17.8 m/s, along the input (else her motion, else her aim). True when it moved her.
 	 */
 	private static boolean fly(LivingEntity entity, Vec3 input) {
 		if (!flight.test(entity)) {
@@ -787,6 +785,10 @@ public final class OwMovement {
 		double drag;
 		double max;
 		boolean free = valk && undamped.test(entity);
+		sinceBoost = boost >= 0 ? 0 : sinceBoost + 1;
+		if (!valk) {
+			return catFly(entity, wants, wishDir, look, boost >= 0, t, factor);
+		}
 		if (valk) {
 			// Valkyrie (her graph 10DA's mover: forward, back and strafe 5.5, x1.636 = 9 m/s every way, air acceleration
 			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay); in the 0.5 s after a launch her speed is
@@ -796,18 +798,8 @@ public final class OwMovement {
 			accel = dev.overcraft.mercy.MercyStats.VALKYRIE_AIR_ACCEL;
 			drag = free ? 0 : dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;
 			max = free ? Double.MAX_VALUE : wishSpeed;
-		} else if (boost >= 0) {
-			double bonus = Math.min(0.65, 0.25 + 0.05 * Math.floor(t / 0.04));
-			wishSpeed = (fwd < 0 ? 5.5 : 6.0) * factor * (1 + bonus);
-			boolean burst = t < 0.3;
-			accel = burst ? 2 : 6;
-			drag = burst ? 2 : 1.25;
-			max = dev.overcraft.jetpackcat.JetpackCatStats.BOOST_SPEED * factor;
 		} else {
-			wishSpeed = (fwd < 0 ? 4.95 : 5.5) * factor;
-			accel = dev.overcraft.jetpackcat.JetpackCatStats.FLY_ACCELERATE;
-			drag = dev.overcraft.jetpackcat.JetpackCatStats.FLY_DRAG;
-			max = dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX * factor;
+			return false;
 		}
 		Vec3 v = entity.getDeltaMovement().scale(20);
 		Vec3 travelled = Vec3.ZERO;
@@ -821,16 +813,8 @@ public final class OwMovement {
 			} else {
 				v = v.scale(Math.max(0, 1 - drag * dt));
 			}
-			if (boost >= 0) {
-				// the boost's own push, along the input (else her motion, else her aim)
-				Vec3 push = wants ? wishDir : v.lengthSqr() > 1.0E-4 ? v.normalize() : look;
-				v = v.add(push.scale(BOOST_PUSH * dt));
-			}
 			double speed = v.length();
-			if (speed > max && boost >= 0) {
-				// boosting, its push stops at the top speed (a soft cap let it run on to 29.5 m/s: measured playing)
-				v = v.scale(max / speed);
-			} else if (speed > max) {
+			if (speed > max) {
 				v = v.scale((max + (speed - max) * Math.max(0, 1 - AIR_DECAY * dt)) / speed);
 			}
 			travelled = travelled.add(v);
@@ -867,8 +851,55 @@ public final class OwMovement {
 		return true;
 	}
 
-	/** Frenetic Flight's push along the input, m/s² (her data's graph 59E0: 25). */
-	private static final double BOOST_PUSH = 25;
+	/** Ticks since Frenetic Flight was last on (Jetpack Cat's own client). */
+	private static int sinceBoost = 1000;
+
+	/** Jetpack Cat's flight and Frenetic Flight (see {@link #fly}); the boost {@code t} seconds in. */
+	private static boolean catFly(LivingEntity entity, boolean wants, Vec3 wishDir, Vec3 look, boolean boost, double t, double factor) {
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		double wish = dev.overcraft.jetpackcat.JetpackCatStats.FLY_SPEED * factor;
+		double slow = dev.overcraft.jetpackcat.JetpackCatStats.FLY_SLOW * wish;
+		double max = dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX * factor;
+		if (!boost && wants && sinceBoost >= Ow.ticks(dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX_AFTER_BOOST) && v.length() > max) {
+			v = v.normalize().scale(max);
+		}
+		Vec3 travelled = Vec3.ZERO;
+		double dt = 0.05 / SUBSTEPS;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			double speed = v.length();
+			if (boost) {
+				double top = dev.overcraft.jetpackcat.JetpackCatStats.BOOST_SPEED * factor;
+				double rate = t + i * dt < dev.overcraft.jetpackcat.JetpackCatStats.BOOST_KICK_TIME
+					? dev.overcraft.jetpackcat.JetpackCatStats.BOOST_KICK : dev.overcraft.jetpackcat.JetpackCatStats.BOOST_RAMP;
+				double next = speed + Math.min(rate, dev.overcraft.jetpackcat.JetpackCatStats.BOOST_EASE * (top - speed)) * dt;
+				Vec3 push = wants ? wishDir : speed > 1.0E-2 ? v.scale(1 / speed) : look;
+				Vec3 along = speed > 1.0E-2 ? v.scale(1 / speed) : push;
+				along = along.add(push.subtract(along).scale(Math.min(1, dev.overcraft.jetpackcat.JetpackCatStats.BOOST_TURN * dt)));
+				v = along.lengthSqr() > 1.0E-6 ? along.normalize().scale(Math.max(0, next)) : Vec3.ZERO;
+			} else if (wants) {
+				// above the wish speed it slows in a straight line; below, it speeds up toward the wish, no faster than it was
+				if (speed > wish) {
+					v = v.scale(Math.max(wish, speed - slow * dt) / speed);
+				}
+				double before = v.length();
+				v = accelerate(v, wishDir.scale(wish), dev.overcraft.jetpackcat.JetpackCatStats.FLY_ACCELERATE, dt);
+				double cap = Math.max(wish, before);
+				if (v.length() > cap) {
+					v = v.normalize().scale(cap);
+				}
+			} else {
+				v = speed <= slow * dt ? Vec3.ZERO : v.scale((speed - slow * dt) / speed);
+			}
+			travelled = travelled.add(v);
+		}
+		Vec3 step = travelled.scale(1.0 / SUBSTEPS / 20);
+		entity.setDeltaMovement(step);
+		entity.move(MoverType.SELF, step);
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+		return true;
+	}
 
 	/**
 	 * Leaving the wall: this tick's move at the velocity just set, falling through the tick as the air steps after it
