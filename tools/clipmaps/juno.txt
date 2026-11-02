@@ -9,11 +9,11 @@
 # Standing (df 0x18 default[4]).
 0-36_00000000E94E = idle   # 2 s; 2.0 s
 4-6_00000000EBA8 = add_aim   # 0.2 s; additive under the stand (and most poses), weighted df 0x32: M as Ana's / Brigitte's
-4-6_00000000EBAB = add_breathe   # 1.3667 s; additive 1D@1 on df 0x32: M
-4-6_00000000EBB0 = add_idle   # 0.2 s; additive: L
+4-6_00000000EBAB = add_stand_layer   # 1.3667 s; additive 1D@1 on df 0x32: M. Not the breathing layer: it turns her spine 97 degrees and a dozen bones 90-175 (measured 2026-11-01); played as add_breathe she flailed in her idle (found playing)
+4-6_00000000EBB0 = add_stand_layer_2   # 0.2 s; additive: L. Bones 0605 / 0606 turned 89 degrees: not an idle sway (measured)
 4-6_00000000EF09 = add_idle_2   # 1 s; alias 0x0FF additive: L
 4-0_000000000037 = add_idle_3   # 3 s; additive (shared clip 0x37): L
-4-4_00000000EC2F = add_breathe_2   # 2 s; additive on the df 0x102 layer and in the ability aliases: L
+4-4_00000000EC2F = add_breathe   # 2 s; additive on the df 0x102 layer and in the ability aliases: L. Her breathing: every bone turned a few degrees at most, like Kiriko's and Brigitte's add_breathe (measured 2026-11-01)
 0-32_00000000F4FE = pose_held   # 2 s; df 0x8A cat 4 (alias 0x008 held pose), 1D on df 0xB07 at 0
 0-32_00000000F508 = pose_held_down   # 2 s; 1D -1
 0-32_00000000F509 = pose_held_down_2   # 2 s; 1D -0.5

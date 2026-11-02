@@ -31,6 +31,9 @@ public final class Juno implements HeroKit {
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
+		double rate = Combat.cooldownRate(player);
+		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		if (s.junoGlide >= 0 && (++s.junoGlide >= Ow.ticks(GLIDE_TIME) || !controls || !player.isAlive())) {
 			endGlide(player, s);
 		}

@@ -33,3 +33,22 @@ with: [workshop_recordings](../game-data/workshop_recordings.md) · built the wa
 - **The `--entity` import crashed headless Blender** (the add-on's error popup has no window: `popup_menu_end`), as it had
   for every Brigitte model. `tools/owm_survey.py` now swaps the add-on's `createPopup` for a printed `OWM_POPUP` line, and
   the import goes on: her first-person look came out as its 8 meshes (25 without the entity).
+- **A layer named "breathing" can be anything:** her clip map's `add_breathe` (EBAB, an M mapping) turns her spine 97 degrees
+  and a dozen bones 90-175: played on her idle she flailed (gun overhead, bent double, found playing). Compared with
+  Kiriko's and Brigitte's `add_breathe` (a few degrees each), her EC2F is the breathing layer; EBAB and EBB0 now keep names
+  the code doesn't play (`tools/clipmaps/juno.txt`).
+
+## Steps 1-2 (the shell and her movement), played
+Dev client, flat world `juno1`, survival; measured with the harness's own velocity (`vx/vy/vz`), one reading a tick:
+- Picked from the select screen (her model, "Support, Survivor, 75 health, 150 shields", six kit icons; her helmet's face
+  showing after the glow fix); 18 Minecraft health (225); her HUD: Glide Boost (LShift), Hyper Ring (E), the torpedoes,
+  the Mediblaster's 180; standing still, a steady idle (after the breathing fix: juno_idle / idle_sheet2.png).
+- **Double jump:** a second press at about 0.25 s takes her to 4.46 m above the ground; one only. **Hover:** dropped from
+  20 m holding jump, her fall settles at exactly -3.0 m/s (first it settled near -5.5: gravity still pulling under the
+  easing, fixed); no fall damage at 20 m, hovering or not.
+- **Glide Boost:** from a walk 5.5 -> 17.74 m/s on the first tick, 7.7 by 0.55 s (the recording's curve); with no keys
+  7.7 from 0.5 s on (it first stayed at 14: the slowing only ran toward a pressed key, fixed); mid-air level for its 4 s,
+  then a fall and the 6 s cooldown (which first never counted down: her kit didn't tick it, fixed); up an 8-step stair in
+  one glide (7.85 m); a double jump mid-glide lifts her 3.5 m and she holds the new height; a second press at 1 s ends it
+  (the cooldown from there), one at 0.2 s is ignored.
+- Not yet: her weapons, Hyper Ring, Orbital Ray (steps 3-5); her animations for the double jump, hover and glide.

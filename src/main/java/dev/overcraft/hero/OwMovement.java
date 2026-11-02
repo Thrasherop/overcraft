@@ -186,12 +186,12 @@ public final class OwMovement {
 	}
 
 	/**
-	 * Glide Boost's slowing (m/s, over dt): above her glide speed (her keys' wish, 7.7 m/s; nothing held: kept) her speed falls
-	 * by 1.86 x max(speed, 12.45) per second, never below it (the recording: tools/workshop/analysis/juno.py).
+	 * Glide Boost's slowing (m/s, over dt): above her glide speed (7.7 m/s, with her speed buffs) her speed falls by 1.86 x
+	 * max(speed, 12.45) per second, never below it, keys held or not; below it she keeps what she has (the recording:
+	 * tools/workshop/analysis/juno.py; the burst with no keys held stayed at 14 m/s, found playing).
 	 */
-	private static Vec3 glideSlowing(Vec3 v, double wishSpeed, double dt) {
+	private static Vec3 glideSlowing(Vec3 v, double floor, double dt) {
 		double speed = v.length();
-		double floor = wishSpeed > 1.0E-6 ? wishSpeed : speed;
 		if (speed <= floor || speed < 1.0E-6) {
 			return v;
 		}
@@ -423,8 +423,8 @@ public final class OwMovement {
 			if (gliding >= 0) {
 				// Glide Boost: the burst slows to her glide speed (the recording's curve), and her keys steer it (air
 				// acceleration 12); with none held she keeps her speed
-				stepped = airStep(glideSlowing(stepped, wish.length() * 20, 0.05 / SUBSTEPS), wishMs, Double.MAX_VALUE, mover,
-					0.05 / SUBSTEPS);
+				stepped = airStep(glideSlowing(stepped, RUN_SPEED * speedFactor(entity) * (1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED),
+					0.05 / SUBSTEPS), wishMs, Double.MAX_VALUE, mover, 0.05 / SUBSTEPS);
 				travelled = travelled.add(stepped);
 				continue;
 			}
@@ -478,8 +478,16 @@ public final class OwMovement {
 				// Juno's hover: the jump held, her fall eased to 3 m/s (the same mover property as Mercy's descent: D 1A5E;
 				// the recording's easing, about 16 a second)
 				double cap = -Ow.speed(dev.overcraft.juno.JunoStats.HOVER_FALL);
-				vy = cap + (vy - cap) * Math.exp(-dev.overcraft.juno.JunoStats.HOVER_EASE * 0.05);
-				dy = Math.max(dy, vy);
+				if (v.y < cap) {
+					// faster than it: eased onto it, gravity overridden (the recording's fall settles on exactly -3.00; eased
+					// with gravity still pulling it held at about -5.5, found playing)
+					vy = cap + (v.y - cap) * Math.exp(-dev.overcraft.juno.JunoStats.HOVER_EASE * 0.05);
+					dy = (v.y + vy) / 2;
+				} else {
+					// reaching it: gravity takes her no faster
+					vy = cap;
+					dy = Math.max(dy, cap);
+				}
 				entity.resetFallDistance();
 			}
 		}
