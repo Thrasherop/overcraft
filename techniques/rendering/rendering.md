@@ -127,3 +127,17 @@ Every hero's 512 px HUD head (HeroIcons, "head") is painted on the same frame te
 centred on column 273.5, the same edges for every hero. Map that template to the HUD's frame once, for all of them;
 fitting each by its own outline (width, top of the hair) moved heroes whose outline differs (Jetpack Cat's ears: about
 80 texels too high, #54). `HudShapes.cutHead`.
+
+## Effects and translucent terrain (2026-11-02, #80)
+- **Blended custom geometry draws before water.** In 26.3, `SubmitNodeCollection.submitCustomGeometry` puts a
+  RenderType with blending in `translucentCustomGeometry`, which `LevelRenderer.executeClassicTransparency` draws
+  *before* the translucent terrain; Minecraft's own particles go to `afterTerrain`, drawn after it. Our effects write no
+  depth, so water, stained glass and ice drew straight over them: Orbital Ray's circle on a pool showed only as a
+  faint blue ghost.
+- `Fx.afterTerrain` now submits the effects into `SubmitNodeStorage.order(0).afterTerrain` with a
+  `CustomFeatureRenderer.Submit`, like vanilla particles. The circle then shows on water at full strength
+  (`run2/screenshots/fix2_*.png` on fix/juno-liquids). An effect under a water surface is now hidden by it, as
+  vanilla's particles are.
+- **A liquid's surface is lower than the block's top** (a source with air above: 8/9 of a block). A decal laid on it
+  sits under the grass round the pool, and the grass cut the ring off at the bank. On a liquid, the ground point is
+  the block's top (`OrbitalRay.onTop`).
