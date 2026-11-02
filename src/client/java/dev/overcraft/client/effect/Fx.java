@@ -8,6 +8,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -575,37 +576,60 @@ public final class Fx {
 		Vector3f up = new Vector3f(camera.upVector());
 		PoseStack poseStack = context.poseStack();
 
-		// one draw per texture and blend
+		// one draw per texture, blend and phase: at a liquid's surface after the translucent terrain, else before it
 		Map<RenderType, List<Particle>> byType = new HashMap<>();
+		Map<RenderType, List<Particle>> atLiquid = new HashMap<>();
+		BlockPos.MutableBlockPos block = new BlockPos.MutableBlockPos();
 		for (Particle p : PARTICLES) {
 			if (p.age < 0) {
 				continue;
 			}
 			Identifier tex = p.frame();
 			RenderType type = p.additive ? FxRender.additive(tex) : FxRender.blended(tex);
-			byType.computeIfAbsent(type, t -> new ArrayList<>()).add(p);
+			(atLiquid(mc.level, block, p.x, p.y, p.z) ? atLiquid : byType).computeIfAbsent(type, t -> new ArrayList<>()).add(p);
 		}
-		for (Map.Entry<RenderType, List<Particle>> e : byType.entrySet()) {
-			List<Particle> list = e.getValue();
-			afterTerrain(context, poseStack, e.getKey(), (pose, buffer) -> {
-				for (Particle p : list) {
-					emit(p, pose, buffer, cam, right, up);
+		for (Map<RenderType, List<Particle>> phase : List.of(byType, atLiquid)) {
+			for (Map.Entry<RenderType, List<Particle>> e : phase.entrySet()) {
+				List<Particle> list = e.getValue();
+				SubmitNodeCollector.CustomGeometryRenderer geometry = (pose, buffer) -> {
+					for (Particle p : list) {
+						emit(p, pose, buffer, cam, right, up);
+					}
+				};
+				if (phase == atLiquid) {
+					afterTerrain(context, poseStack, e.getKey(), geometry);
+				} else {
+					context.submitNodeCollector().submitCustomGeometry(poseStack, e.getKey(), geometry);
 				}
-			});
+			}
 		}
 		for (Trail trail : TRAILS.values()) {
 			if (trail.points.size() >= 2) {
-				afterTerrain(context, poseStack,
+				context.submitNodeCollector().submitCustomGeometry(poseStack,
 					trail.soft ? FxRender.blended(trail.texture) : FxRender.additive(trail.texture),
 					(pose, buffer) -> ribbon(trail, pose, buffer, cam, now));
 			}
 		}
 	}
 
+	/** In a liquid, or up to two blocks over one: lying on its surface (Orbital Ray's circle on a pool). */
+	private static boolean atLiquid(Level level, BlockPos.MutableBlockPos block, double x, double y, double z) {
+		block.set(x, y, z);
+		for (int i = 0; i < 3; i++) {
+			if (!level.getFluidState(block).isEmpty()) {
+				return true;
+			}
+			block.move(0, -1, 0);
+		}
+		return false;
+	}
+
 	/**
 	 * Submitted in the phase after translucent terrain, where Minecraft's own particles go (SubmitNodeCollection
-	 * .submitQuadParticleGroup). Blended custom geometry otherwise draws before it, and water, stained glass and ice were
-	 * drawn over every effect behind them, writing no depth: Orbital Ray's circle on a pool was gone (#80).
+	 * .submitQuadParticleGroup). Blended custom geometry draws before it, and the effects write no depth, so a pool's
+	 * water was drawn over Orbital Ray's circle lying on it (#80). Only effects at a liquid's surface come here: after
+	 * the translucent terrain, one behind stained glass, ice or water fails its depth test and vanishes, where drawn
+	 * before it the glass tints it as it should (Brigitte's barrier through a window: found in the 0.3.29 release play).
 	 */
 	private static void afterTerrain(LevelRenderContext context, PoseStack poseStack, RenderType type,
 									 net.minecraft.client.renderer.SubmitNodeCollector.CustomGeometryRenderer geometry) {
