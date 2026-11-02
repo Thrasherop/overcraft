@@ -111,4 +111,16 @@
 - **`aim.py` with no such mob left prints the hero's own position** (it reads the newest `entity data: [` line, and the
   failed read adds none): "d=0.62" over and over meant every target was dead (2026-11-02).
 - **`trace` also logs the synced ammo, reload share and meter** (`a`, `r`, `m` at the end of each line): a weapon's rate,
-  reload and energy over time in one call.
+  reload and energy over time in one call. Since 2026-11-02 also both cooldowns, the second ammo and the ult flag (`c1 c2 s
+  u`): a slide's charges and recharge, Sharpshooter's refunds, an ult's length, tick by tick.
+- **A `data get` read can land on the wrong line** (2026-11-02, Sojourn): reading the newest "entity data" line after a command,
+  a read that timed out left its answer to be taken by the next one (a wolf "at 20" was the villager's read). Read one thing at
+  a time and check the entity's name in the line ("Wolf has the following ..."), or use `attribute <sel> <attr> get`, whose
+  line names the attribute.
+- **Zombies burn at noon:** a plain zombie target lost 1 health a second in the sun and spoiled a damage read; test at
+  midnight (`/time set midnight`) or give them fire resistance (2026-11-02).
+- **Picking a perk by script:** `overcraft perks @s 3`, then `key perk_menu down`, `key secondary_fire` (the first of a tier)
+  or `key primary_fire` (the second) held 0.15 s, `key perk_menu up`; again for the major (2026-11-02).
+- **One connection for a whole test:** a small driver that keeps the harness socket open and reads the game log for each
+  command's answer (exec'ing a test script with `c(cmd)`, `hp(tag)`) ran every step 5-7 measurement in one call each
+  (2026-11-02, Sojourn; the driver lives in that session's scratchpad, `oc.py`: worth bringing into `tools/`).

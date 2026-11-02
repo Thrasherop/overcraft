@@ -191,3 +191,36 @@ health in Minecraft points (x 12.5 = Overwatch); scripts over one harness connec
 - **Not tried:** a second player as her enemy (the Deceleration slow on a hero's own mover, the field on a player), lava, the
   Disruptor against a barrier (the field opens on it, the data says it goes through), the Overclock cast while sliding (its
   `overclock_slide` clip), the 3P stance additive `add_overclock` during it (not played: step 8's look).
+
+## Step 7 (the perks), played 2026-11-02
+Each picked through the perk menu (`overcraft perks @s 3`, Left Alt held, the left button for the first of a tier, the right
+for the second: `s7_perk_menu.png`, `s7_menu_major.png`), each against its control (`overcraft perks @s 1`: none), same
+world, `trace` per client tick:
+- **Overcharged:** in Overclock the meter reached 150 (the HUD reads 150, `s7_overcharged_hud.png`) and a body Charged Shot
+  on a skeleton did 170 (control: 100 and 120); after the ult 150 -> 145 -> 140 -> 125 -> 110 at 5, 10, 25, 40 ticks: 20 a
+  second down to 100 (control: stays 100).
+- **Deceleration Field:** a NoAI zombie inside the field: movement speed 0.1725 (`attribute ... get`: 0.23 x 0.75); one 6 m
+  off, and the same zombie after the field, 0.23. A zombie walking at her through the field: 2.2-2.6 m/s before it, 1.24-1.56
+  inside (about 0.6, not 0.75: the reads are 0.37 s apart with the log's jitter, and Minecraft's walk isn't measured
+  finer here), back to 2.2-2.6 when the field ended; the control zombie kept 2.2-2.5 through it (the damage itself doesn't slow).
+- **Dual Thrusters:** two slides 1.3 s apart, both 15 ticks (0.75 s) at 14.3 m/s; the control refuses the second press. Its
+  charges (`s`): 2 -> 1 at the first press, 0 at the second, back to 1 at 7.0 s after the first slide's end and 2 another 6.8
+  s on, one at a time. The slide jump 0.4 s in: 14.3 -> 25.3 m/s along (14.3 + 11; W's 25), rising 12.6 m/s on the first tick
+  (13.75 under the 1.4 gravity), apex 4.57 m (control: 20.8, 15.8, 7.24 m). The HUD: the box ready with a yellow 2 in its corner
+  while both are there (`n_end.png`), the recharge's seconds once none is left (`s7_dual_hud.png`).
+- **Friction Generators:** a full slide from 0 energy: 75 (3.75 a tick; control 0); jumped out 0.4 s in: 48.75 (13 ticks).
+  **Found playing (fixed):** the first full slide gave 71.25: the gain ran after the slide's tick, so its last tick never
+  counted. Now before it (`Sojourn.tick`): 75.00 on the same steps after a restart.
+- **Seen once, not reproduced:** after an Overclock, a perk swap to Dual Thrusters and a slide, a screenshot 1.5 s after the
+  press still showed her sliding with 1 charge and no recharge (`s7_dual_one.png`): as if the slide began 0.75 s late. The
+  same steps twice more with `trace`: the slide at once, the recharge from its end (7.0).
+
+## A night with her whole kit so far (2026-11-02)
+`soj5` at 13000 with time running and monsters spawning, survival, her perks Overcharged and Dual Thrusters, 60 % ult; three
+zombies, a husk, a skeleton and a spider summoned 15-30 m round her, more spawning; 150 s of a scripted fight (`night.py`
+in the session's scratchpad: aim at the nearest, rounds, a Charged Shot at 70 % energy or more, Disruptor under 28 m, the
+slide jump away when hurt; real keys): Disruptor four times, 23 Charged Shots, Overclock at 17 s with a spider and a zombie
+2 m off (`n_ult.png`), G 2.5 s into it (Minecraft mode, energy 150, health 14.5 / 18: `n_g_midult.png`), G back 1 s later
+(hero mode, 150), Charged Shots at 150 after it; the ult full again by 105 s from her damage. She lived (18 at the end: the
+regeneration); the far skeletons at 30-45 m were missed for a minute (the scripted aim lags moving mobs: harness.md). The
+Disruptor's dome over the zombies (`n_end.png`). Not tried: dying in this night (the respawn was played in step 3), a raid.
