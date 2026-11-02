@@ -47,6 +47,10 @@ def main():
     from importlib import import_module
     reader = import_module(ADDON + ".readers.OWAnimReader")
     blanim = import_module(ADDON + ".importer.blender.BLAnimation")
+    # the add-on reports a file it can't open with a popup, which crashes headless Blender (no window: popup_menu_end): every
+    # --entity import of Brigitte's and Juno's models died there. Printed instead, the import goes on without that file.
+    ui = import_module(ADDON + ".ui.UIUtil")
+    ui.createPopup = lambda title, label, icon="ERROR": print(f"OWM_POPUP {title}: {label}")
 
     entity = next((a.split("=", 1)[1] for a in args if a.startswith("--entity=")), None)
     if entity:
@@ -305,7 +309,9 @@ BLANK_TEXTURES = {"00000000000A"}
 # opacity ADC3 as alpha, and drawn as a cut-out it was a few dark specks. Its colour 9FE9 (58FF5009) is a dark purple panel
 # that drawn as light all but vanished (played); its glow layer ADC4 (0403F89A, strength 2.0) is the lit lilac screen
 # (tools/reference/sombra-effects.md, "Her tablet": H keys, M which is the glow)
-SCREENS = {"0000000038EC": 0x0403F89A}
+# Juno's helmet glow 4E0C7 (material FA27, shader 0x26: its colour 58FF5009 and glow 0403F89A the same image, cyan on black):
+# drawn as a cut-out its black covered her face (a black disc on the select screen, found playing)
+SCREENS = {"0000000038EC": 0x0403F89A, "00000000FA27": 0x0403F89A}
 
 
 def owmat_textures(path):

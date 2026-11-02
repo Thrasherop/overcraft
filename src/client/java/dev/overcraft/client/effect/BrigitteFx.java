@@ -56,7 +56,7 @@ public final class BrigitteFx {
 	/** Repair Pack's speed (55 m/s: BrigitteStats.REPAIR_SPEED). */
 	private static final float PACK_SPEED = 55;
 	/** The bash's dash (0.3 s) and its trail after it, to 1 s (2284.00D, #685 / #686). */
-	private static final float BASH_TIME = 0.3f, TRAIL_END = 1.3f;
+	private static final float BASH_TIME = (float) dev.overcraft.brigitte.BrigitteStats.BASH_TIME, TRAIL_END = 1.3f;
 	/**
 	 * The ground dust's tint: its sprite 14D1C is grey with its shape in the alpha (a colour sprite, drawn as it is), tinted
 	 * by 220B's row (BRIGITTE_GROUND_DUST: red to gold; ours its middle, #FFB300). Through the palette as a mask it drew squares.

@@ -133,5 +133,65 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **Her emote sounds** (`emotes.txt`, Brigitte's section; `research\brigitte\scripts\emote_sounds\`): as Sombra's, but her
     Taunt's 4790 is a random container of three Layer takes, which the shared `emote_events.py` stops on. Patched at
     import (`brigitte_patch.py`: the first take is built) so the shared generator still runs unedited.
+- <a id="juno-sounds"></a>**Juno's map (2026-11-01; `tools/soundmaps/juno.txt`, read for wiring in
+  `tools/reference/juno-sounds.md`; scripts `research\juno\scripts\sounds\` (Brigitte's pipeline, `juno_gen.py` writes the
+  map), data `research\juno\sounds\`; hub: [juno](../heroes/juno.md)):**
+  - **A volley's stream is built per volley, its time modulators at their start.** The Mediblaster's 5C2D is held for each
+    0.353 s volley. Its containers are trigger-rate repeats (the shared fire-rate parameter, 0.06 s at its default). Its
+    time modulators would pitch the stream 527 cents down at their end, the value a loop is read at, which is far past
+    anything a volley reaches. So `juno_gen.py` passes them as 0 (a scenario) and repeats each trigger-rate container at
+    its period across the volley (`tile=`). The same `tile` builds the torpedo lock tick, 0.02 s repeats, as 1.0 s of it.
+  - **The loop rule only counts `Sound` beds.** The torpedo's flight loop is three single-file *random containers*. The
+    rule saw no bed and took the loudest layer's period: a 2 s pitched layer. That dropped the two 6 s beds as "longer
+    than the loop". Check `--print`'s dropped lines on every loop; `looplen=` sets the length. A loop that lives a fixed
+    time with beds of 7-22 s, like the Orbital Ray's 8 s hum, is better built as one long one-shot that the game stops.
+  - **An effect can pick its copy by the local player, not by audience.** 4795 #395 asks whether the local player is Juno:
+    on her client it plays 5A90 (the heal confirm), and on everyone else's 56DD (the healed ally's own sound plus a 12 m
+    copy). The same holds for 47DD's "you are the torpedo's target".
+  - **Projectile slots, again:** `m_2170A015` is the "sound only" slot as the projectile is made (the Mediblaster's 5C5F, and
+    the ring's 5F2F). `m_A18274A3` is "on a target", with the shared 4010 -> 8DE7 crack, as in Ana's map. Child entities
+    of a projectile carry its flight loop (the torpedoes' 5350 / 5A5B).
+  - **The decompiler can print two nodes with one uid** (4695 #1132, 4441 #586, 4857 #1205). Their edges are listed
+    together, so a branch read from them is L until the node types are told apart.
+  - **A Play target can exist nowhere** (as Sombra's Hotfix): the torpedo "incoming" warning's B39F plays an object in none of
+    the 1148 banks. The moment is in the graph, but the sound is not in the build.
+  - **Adding one hero to another worktree's pack without touching the rest.** The sounds step deletes the whole
+    `sounds\` folder and rebuilds it from the running worktree's maps. To avoid that:
+    1. Copy `build_asset_pack.py` into a scratch root that holds only `tools/soundmaps/<hero>.txt`.
+    2. Build there with `OC_ASSET_PACK=<scratch pack>`.
+    3. Copy `sounds\<hero>\` into the target pack.
+    4. Merge only the `<hero>.*` keys into its `sounds.json` and `lang\en_us.json`.
+
+    Back the two JSON files up first.
+  - **Where the extra banks went:** for this pass the owner asked for extracted audio under `research\juno\sounds\`. The
+    banks her export lacked are in `research\juno\sounds\ExtraSounds\Juno`, reached from the build root as
+    `../../research/juno/sounds/ExtraSounds/Juno/...`. `measure_juno.py`'s `TOPS` points there.
+  - **Wiring it (step 7c, [juno](../heroes/juno.md)):** a stop names the sound, not one copy: the torpedo lock's tick plays at
+    each target, so when one locks all stop and the ones still filling start again (`Torpedoes.ticking`). Another player's
+    motion arrives in held steps: a double jump read from it was missed or doubled, so her own client tells the server
+    (`EXTRA_JUMP`), and a hover is read over 4 ticks. Loops that follow something in flight are client instances that move
+    with it (`client.JunoSounds.Following`).
+  - <a id="juno-emote-sounds"></a>**Her emote sounds and voice lines (2026-11-01; `emotes.txt`, Juno's section; scripts
+    `research\juno\scripts\emote_sounds\`; played: [juno step 8b](../heroes/juno.md#step-8b-emote-sounds-voice-lines-played)):**
+    48 02Cs and 21 voice stimuli over her 22 emotes, Brigitte's pipeline with no patch (no random-of-layers case):
+    `emote_fx.py` -> `ww.py` -> `dump_banks.py` (banks 1E828, 1E7FE, 1E787, 1E79B) -> her `extract_banks.py` (35 own banks
+    into `ExtraSounds\Juno\Emotes`) -> `measure_emotes.py Juno ... Mercy:C440 Kiriko:FEC7 Lúcio:E548 ...` ->
+    `juno_what.py` -> `gen_juno.py` -> `apply_emote_sounds.py juno <repo>`, then the scratch-root build and merge above.
+    - **The TankLib scripts need the research venv:** `py -I` has no pythonnet (it skips the user site-packages, where
+      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archiveesearch\kiriko-animenv\Scripts\python.exe -I`;
+      `-I` still sees the venv's own packages. Text-only steps (measure, gen, apply) run under plain `py -I`.
+    - **Shared 02Cs keep showing up under new emotes:** Orion Dance's music FEC7 / FEC8 is Kiriko's, Crazy Choreography's
+      C440 / C441, Shuffle's E23F and Bunny Hop's F869 are Mercy's. Check every id against the earlier heroes'
+      `<hero>_ids.txt` before extracting; measure the shared ones from that hero's folder and give them the same
+      audience (the music: "own", group 8E muting it for the others).
+    - **Her voice stimuli read straight from `voice_lines.json`:** `juno_what.py` builds `VOICE_IDS` / `VOICE_W` / `STIM`
+      from it instead of copying lists by hand; each emote stimulus has its own `Unknown\<078>` folder.
+    - **Voice-line unlocks were only ever built for Kiriko, Lúcio, Mercy (and Jetpack Cat's table):** Ana, Sombra,
+      Brigitte and Lifeweaver have none in the pack yet. A hero extracted under `research\<hero>\extract` needs
+      `VOICELINE_ROOTS` (`build_asset_pack.py`), its path from the build root as the hero's soundmap uses.
+    - **The dev `key <action> tap` doesn't end an emote:** it releases the key before `ClientHero` reads the input, so the
+      emote (and its loops) kept going. Hold it (`key forward down`, 0.25 s, `key forward up`), as a player does.
+- **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
+  its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
   (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

@@ -84,6 +84,9 @@ off her added back (`HeroAnimator.emoteRootShift`).
   Before it was read, Kiriko's kunai stuck out of her mouth in Laugh.
 - Map each weapon piece of our .glb to its geoset bit (the tool does it by vertex count). Apply only to stowed weapon
   pieces; a bit that would hide the body can't mean that.
+- **A mask bit isn't always the geoset bit.** Juno's masks set 1 in nearly every emote, and her geoset 1 is her body:
+  her mask 1 is her Mediblaster (geoset 4), found by matching the mask windows to the put-away windows of the gun
+  cell's entity slot, and by a contact (a pom-pom in the gun's hand): [juno_emotes](juno_emotes.md#her-weapons-are-geosets-of-her-body-and-the-mask-bits-arent-the-geoset-bits).
 - **Partial clips** drive only some of her bones (upper-body emotes). Play them over the pose under the emote, taking
   only the channels the clip drives; our export fills undriven bones with their rest pose, so a channel constant at
   rest is left out (`HeroAnimator.driven`).
@@ -111,7 +114,8 @@ them by pose: it compares first and last frames over the core bones (mean 1 - |q
 - a loop's first frame is its last;
 - an outro ends there.
 
-Joins measure 0.000 to 0.007, non-joins 0.013 and up. The blend tree's own chain (`m_onFinished`) would replace this
+Joins measure 0.000 to 0.007, non-joins 0.013 and up. Where no clip starts within 0.01 of her stance, the nearest under 0.013 does (Juno's Shuffle
+intro, 0.011 off her swaying idle: [juno_emotes](juno_emotes.md#clip-chains)). The blend tree's own chain (`m_onFinished`) would replace this
 when read.
 
 ## 10. The camera

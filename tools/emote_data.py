@@ -112,6 +112,20 @@ INFERRED = {
 }
 
 
+# Standard hardpoints a hero's own models don't define, hung on the bone another hero's model puts them on, no offset
+# (as "borrowed" above), when no model in the hero's own extraction has them. Juno's has no 000A / 000B (Cheer Routine's
+# pom-poms, Mic Drop's mic) but has their bones: Brigitte's skin model 10C10 puts 000A on Weapon_R and 000B on Weapon_L
+# (emotes/brigitte.json); checked by contact (techniques/emotes/juno_emotes.md)
+BORROWED = {
+    "juno": {
+        "000A": {"bone": "Weapon_R", "t": [0, 0, 0], "q": [0, 0, 0, 1],
+                 "borrowed": "Brigitte's 10C10 hangs it on this bone (her model has no 000A; its offset not taken)"},
+        "000B": {"bone": "Weapon_L", "t": [0, 0, 0], "q": [0, 0, 0, 1],
+                 "borrowed": "Brigitte's 10C10 hangs it on this bone (her model has no 000B; its offset not taken)"},
+    },
+}
+
+
 # The EntityControl chunk (ECEC) is read from the effect's raw bytes: TankLib 2.25's structure predates a field, so what
 # it calls the "action" byte is the low byte of the control's identifier (Lúcio's "204" was his weapon slot 12CC). The raw
 # chunk (0x40 bytes): 0x00 the clip (006), 0x08 a second GUID, 0x10 the identifier (01C: the hero's child-entity slot it
@@ -134,7 +148,17 @@ WEAPON_SLOTS = {
     # 3816 put away 14 times, 52F0 (Cheer) and 5108 (Recalibrate) played; 33C0 plays 525F (Cheer)
     "brigitte": {"3572": ("stow", "flail", "brigitte_flail.txt"), "3816": ("stowShield", "shield", "brigitte_shield.txt"),
                  "33C0": ("stowHead", "head", "brigitte_flail_head.txt")},
+    # Juno's Mediblaster is a geoset of her body, but the cell on its hardpoint 01B5 is an entity in slot E709 (5ADB, model
+    # 167A9: research/juno/work/assets.md). EMOTE_CONTROLS=1: E709 put away 35 times, each window the one in which the
+    # clip's GeoSetFlags set mask 1 (Heart Wave 0.07-2.7 s against the mask's 0.1-2.7; Game Start 0.97-3.33 against
+    # 1.0-3.3), and over the whole of Listen Up, Mic Drop and Salty (the shared carrier 18537). Her gun geoset follows these
+    # windows where a clip has no mask (Listen Up, Salty): BODY_WEAPON_STOW. DA1A (child 3024, effect 2B1E) is put away
+    # 30 times but not in Heart Wave, Mic Drop or the shared ones: not the pod (Mic Drop's mask 7 hides it), not read
+    "juno": {"E709": ("stow", "mediblaster", "juno.txt")},
 }
+# a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
+# Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
+BODY_WEAPON_STOW = {"juno": [1]}
 
 # how each emote sound plays, decoded from its Wwise events (research/emote-sounds/sounds.json, written with
 # tools/soundmaps/emotes.txt): copied onto each sound event as "loop" (restarted every so many seconds while held),
@@ -159,6 +183,17 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 PREVIEW_TREE = "5C6"
 # the shared emotes' tree (Listen Up, Salty, Mic Drop) whose clip #3 puts the hero's weapon away over the whole emote
 CARRIER_TREE = "58F"
+
+# heroes whose weapons are geosets of their own body model, not entities or parked props: bit -> what it is. Juno's
+# model 0159.118 (research/juno/work/assets.md, models_summary.txt: H by the vertex counts): 2 the torpedo pod (3572
+# vertices, exactly the preview pod 16686's mesh), 4 the Mediblaster (6304 + 85 + 40 at the first LOD, the preview gun
+# 167A8's submeshes); 1 her body, 8 and 16 meshes her third-person look doesn't draw
+# The value is the bit of the emotes' GeoSetFlags mask that hides it, which for her is not the geoset's own bit (her body
+# is geoset 1, and 1 is the mask most of her emotes set: read as the geoset it would hide her body). Mask 1 is the
+# Mediblaster: Cheer Routine sets it 0.1 s in and from 0.37 s she holds a pom-pom on 000A, the hand the gun's bone (37DC)
+# stays at, 0.13 m from Wrist_R (techniques/emotes/juno_emotes.md). The masks only ever read 0, 1, 3, 7, nested as
+# Kiriko's 1 -> 3 -> 7 are; 2 is taken as the pod, 4 as geoset 8 (her first-person arms, not drawn in third person): M
+BODY_WEAPON_GEOSETS = {"juno": {4: 1, 2: 2}}
 
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
@@ -425,7 +460,25 @@ def main():
                     if bit >= 0:
                         piece_geosets[name] = bit
             print("submeshes (geoset, vertices):", descriptors)
-        for name, (count, size, centre) in glb_meshes(hero_glb).items():
+        if hero in BODY_WEAPON_GEOSETS:
+            # her weapons are geosets of her body (Juno's torpedo pod 2 and Mediblaster 4): the .glb's Submesh_<i> is the
+            # i-th of the model's first-LOD submeshes (the export keeps that LOD only, numbering them in order and skipping
+            # none: Submesh_4 has the pod's 3572 vertices, Submesh_7 the gun's 6304 + seam splits); only the weapon bits
+            # are pieces, so a mask can never hide her body
+            lod1 = []
+            for c in chunks_of_file(g):
+                if c is not None and c.GetType().Name == "teModelChunk_RenderMesh":
+                    for d in c.GetType().GetField("SubmeshDescriptors").GetValue(c):
+                        if int(str(d.LOD)) & 1:
+                            lod1.append((int(str(d.m_40)), int(str(d.VerticesToDraw))))
+            for name, (count, size, centre) in glb_meshes(hero_glb).items():
+                m = re.match(r"(?:holoc?_)?Submesh_(\d+)\.", name)
+                if m and int(m.group(1)) < len(lod1):
+                    bit, verts = lod1[int(m.group(1))]
+                    if bit in BODY_WEAPON_GEOSETS[hero] and verts <= count <= verts * 1.02 + 2:
+                        piece_geosets[name] = BODY_WEAPON_GEOSETS[hero][bit]
+            print("first-LOD submeshes (geoset, vertices):", lod1)
+        for name, (count, size, centre) in (() if hero in BODY_WEAPON_GEOSETS else glb_meshes(hero_glb).items()):
             if size <= PROP_SIZE and centre <= STOWED_RADIUS:
                 under = [(v, bit) for bit, v in per.items() if v <= count]
                 if under:
@@ -435,6 +488,8 @@ def main():
     emotes_dir = source / "Unlocks" / "Heroes" / HERO_FOLDERS.get(hero, hero.capitalize()) / "Emote"
     out = {"hero": hero, "source": "game data via TankLib (tools/emote_data.py)", "emotes": {}, "hardpoints": {},
            "pieceGeosets": piece_geosets}
+    if hero in BODY_WEAPON_STOW:
+        out["stowPieces"] = BODY_WEAPON_STOW[hero]
     used = set()
     bone_ids = {}
     found = []
@@ -600,6 +655,10 @@ def main():
                                               f"q {defs[hid]['q']} not taken)"}
                     missing.remove(hid)
     # what no model defines: inferred from the clips, and said so (techniques/emotes/emote_reproduction.md)
+    for hid in list(missing):
+        if hid in BORROWED.get(hero, {}):
+            table[hid] = BORROWED[hero][hid]
+            missing.remove(hid)
     for hid in list(missing):
         if hid in INFERRED.get(hero, {}):
             table[hid] = INFERRED[hero][hid]

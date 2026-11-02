@@ -66,6 +66,7 @@ public final class HeroArt {
 			case ANA -> "nano_boost";
 			case SOMBRA -> "emp";
 			case BRIGITTE -> "rally";
+			case JUNO -> "orbital_ray";
 			case ILLARI -> "captive_sun";
 		});
 	}

@@ -73,19 +73,39 @@ public final class Skeleton {
 
 	/** The same, on the nodes in {@code mask} only (all when null). */
 	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight, boolean @Nullable [] mask) {
+		addAdditive(clip, time, pose, weight, mask, false);
+	}
+
+	/**
+	 * The same; {@code localOffsets}: its offsets taken in each bone's own frame (turned by the bone's pose), as its turns
+	 * already are. Juno's torpedo pods (a mirrored pair, 3CFB / 3CFC, the second turned 180 degrees about X) open as a mirror
+	 * pair only that way (one went up, one down); whether every additive clip wants it is open (#75).
+	 */
+	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight, boolean @Nullable [] mask,
+		boolean localOffsets) {
 		if (weight <= 0) {
 			return;
 		}
 		Pose delta = new Pose(pose.t.length);
 		sample(clip, time, delta);
 		Quaternionf none = new Quaternionf();
+		// (by the base pose's turn, before this clip's own: the turn and offset as one transform, base x delta)
+		Quaternionf[] base = localOffsets ? new Quaternionf[pose.r.length] : null;
+		if (base != null) {
+			for (int i = 0; i < base.length; i++) {
+				base[i] = new Quaternionf(pose.r[i]);
+			}
+		}
 		for (SkinnedModel.Channel ch : clip.channels()) {
 			int i = ch.node();
 			if (mask != null && !mask[i]) {
 				continue;
 			}
 			switch (ch.path()) {
-				case 'T' -> pose.t[i].add(delta.t[i].x * weight, delta.t[i].y * weight, delta.t[i].z * weight);
+				case 'T' -> {
+					Vector3f d = new Vector3f(delta.t[i]).mul(weight);
+					pose.t[i].add(base != null ? base[i].transform(d) : d);
+				}
 				case 'R' -> pose.r[i].mul(new Quaternionf(none).slerp(delta.r[i], weight)).normalize();
 				default -> {
 				}

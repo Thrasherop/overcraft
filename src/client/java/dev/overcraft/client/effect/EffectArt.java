@@ -512,6 +512,248 @@ public final class EffectArt {
 		/** the decal's twin (220E C0): orange to red, HDR 1.5 (80055B2E2BA0 r5, peak 1.50; game hex #E18108 #EB5307 #F55E0B #FF4B0B #FF300F). */
 		BRIGITTE_RALLY_DECAL_ENEMY(0, 0, 0, 0, .25f, .834f, .086f, .002f, .5f, .917f, .111f, .003f, .75f, 1, .071f, .003f, 1, 1, .029f, .005f),
 		BRIGITTE_RALLY_DECAL_ENEMY_N(0, 0, 0, 0, .25f, .556f, .057f, .001f, .5f, .612f, .074f, .002f, .75f, .667f, .047f, .002f, 1, 1, .019f, .003f),
+		// Juno's (tools/reference/juno-effects.md, research/juno/work/fx_palettes.txt; the _N rows normalised by their peak)
+		/** Mediblaster muzzle torus 15A26 (51DA C29): sky blue then yellow, peak 1 (800C4E2EE0F8 r3, peak 1.00, falls; game hex #9BD6FF #FFE746 #FFE746 #FFE746 #FFE746). */
+		JUNO_MEDI_MUZZLE(0, 0, 0, 0, .25f, 1, .799f, .061f, .5f, 1, .799f, .061f, .75f, 1, .799f, .061f, 1, 1, .799f, .061f),
+		/** the muzzle torus's twin row: peach to red, HDR 5 (800C4E2EE0F8 r4, peak 5.00, falls; game hex #FFFFFF #FFFFFF #FFD0D0 #FF9999 #FF0000). */
+		JUNO_MEDI_MUZZLE_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .631f, .631f, .75f, 1, .318f, .318f, 1, 1, 0, 0),
+		JUNO_MEDI_MUZZLE_ENEMY_N(0, 0, 0, 0, .25f, 1, .408f, .293f, .5f, .997f, .126f, .126f, .75f, .868f, .064f, .064f, 1, .738f, 0, 0),
+		/** muzzle flare 37A79 (51DA C33 / C35): blue then yellow, HDR 2 (8003770F99FD r0, peak 2.00; game hex #0088FF #0088FF #0088FF #FFFFB6 #FFFFB6). */
+		JUNO_MEDI_FLASH(0, 0, 0, 0, .25f, 0, .244f, 1, .5f, 0, .244f, 1, .75f, 1, 1, .469f, 1, 1, 1, .469f),
+		JUNO_MEDI_FLASH_N(0, 0, 0, 0, .25f, 0, .122f, 1, .5f, 0, .122f, 1, .75f, 1, .93f, .234f, 1, 1, .93f, .234f),
+		/** the flare's twin: red then peach, HDR 2 (8003770F99FD r1, peak 2.00; game hex #FF0000 #FF0000 #FF0000 #FFE5B6 #FFE5B6). */
+		JUNO_MEDI_FLASH_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, 1, .783f, .469f, 1, 1, .783f, .469f),
+		JUNO_MEDI_FLASH_ENEMY_N(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, 1, .391f, .234f, 1, 1, .391f, .234f),
+		/** the round in flight (53B6 C10, strips 3A512 x 47DD9): navy, olive, gold, HDR 5 (80096596474B r3, peak 5.00; game hex #000307 #0057B9 #FFF736 #FFFF43 #FFFF69). */
+		JUNO_MEDI_TRACER(0, 0, 0, 0, .25f, 0, .094f, .487f, .5f, 1, .929f, .037f, .75f, 1, 1, .057f, 1, 1, 1, .142f),
+		JUNO_MEDI_TRACER_N(0, 0, 0, 0, .25f, 0, .019f, .097f, .5f, .263f, .186f, .007f, .75f, .399f, .283f, .011f, 1, 1, .709f, .028f),
+		/** the round's twin row: dark red, red, orange, HDR 1.7 (80096596474B r4, peak 1.69; game hex #000307 #B30103 #F22E0A #FF7F2B #FFAA3D). */
+		JUNO_MEDI_TRACER_ENEMY(0, 0, 0, 0, .25f, .449f, 0, .001f, .5f, .891f, .027f, .003f, .75f, 1, .213f, .025f, 1, 1, .403f, .046f),
+		JUNO_MEDI_TRACER_ENEMY_N(0, 0, 0, 0, .25f, .266f, 0, .001f, .5f, .527f, .016f, .002f, .75f, .762f, .126f, .015f, 1, 1, .238f, .027f),
+		/** the round's core (53B6 C8): black, olive, gold, HDR 20 (800D4E226EAA r3, peak 19.98; game hex #000307 #FFFF44 #FFFF53 #FFFF94 #FFFFC7). */
+		JUNO_MEDI_TRACER_CORE(0, 0, 0, 0, .25f, 1, 1, .057f, .5f, 1, 1, .086f, .75f, 1, 1, .296f, 1, 1, 1, .568f),
+		JUNO_MEDI_TRACER_CORE_N(0, 0, 0, 0, .25f, .101f, .071f, .003f, .5f, .152f, .108f, .004f, .75f, .522f, .369f, .015f, 1, 1, .709f, .028f),
+		/** hit on an ally (58B4 C6, 1CB5E x 4DB): black to cyan, HDR 2 (800A50ADFEBC r0, peak 2.00; game hex #000000 #00BCBC #06FFFF #42FFFF #5DFFFF). */
+		JUNO_MEDI_ALLY_HIT(0, 0, 0, 0, .25f, 0, .502f, .502f, .5f, .002f, 1, 1, .75f, .055f, 1, 1, 1, .109f, 1, 1),
+		JUNO_MEDI_ALLY_HIT_N(0, 0, 0, 0, .25f, 0, .251f, .251f, .5f, .001f, .502f, .502f, .75f, .028f, .749f, .749f, 1, .055f, 1, 1),
+		/** the ally hit's glow 266F (58B4 C8): pale yellow to olive, HDR 3.1, falls (800B693E275E r1, peak 3.14, falls; game hex #FFFFE8 #FFFFD2 #FBFD8B #FEF08B #FFEB8B). */
+		JUNO_MEDI_ALLY_HIT_GLOW(0, 0, 0, 0, .25f, 1, 1, .645f, .5f, .969f, .98f, .258f, .75f, .992f, .868f, .258f, 1, 1, .831f, .258f),
+		JUNO_MEDI_ALLY_HIT_GLOW_N(0, 0, 0, 0, .25f, .768f, .796f, .206f, .5f, .308f, .312f, .082f, .75f, .316f, .276f, .082f, 1, .318f, .264f, .082f),
+		/** hit on the world: decal (53B7 C1, 1CB5E x 266F): black to pale yellow, HDR 2 (800ADA9F68B9 r4, peak 2.00; game hex #000000 #FFFFC1 #FFFFD8 #FFFFEC #FFFFF8). */
+		JUNO_MEDI_WORLD(0, 0, 0, 0, .25f, 1, 1, .534f, .5f, 1, 1, .685f, .75f, 1, 1, .841f, 1, 1, 1, .935f),
+		JUNO_MEDI_WORLD_N(0, 0, 0, 0, .25f, .555f, .57f, .267f, .5f, .712f, .731f, .342f, .75f, .874f, .898f, .42f, 1, .972f, .999f, .467f),
+		/** the decal's twin: black to pink, HDR 2 (800ADA9F68B9 r5, peak 2.00; game hex #000000 #FFC1C1 #FFD8D8 #FFECEC #FFF8F8). */
+		JUNO_MEDI_WORLD_ENEMY(0, 0, 0, 0, .25f, 1, .534f, .534f, .5f, 1, .685f, .685f, .75f, 1, .841f, .841f, 1, 1, .935f, .935f),
+		JUNO_MEDI_WORLD_ENEMY_N(0, 0, 0, 0, .25f, .57f, .267f, .267f, .5f, .731f, .342f, .342f, .75f, .898f, .42f, .42f, 1, .999f, .467f, .467f),
+		/** reload sparks torus 15A26 (60BA C9): black, steel blue, cyan, HDR 10 (800CFFC2B92C r3, peak 9.99; game hex #000000 #DBFFFF #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RELOAD_SPARK(0, 0, 0, 0, .25f, .706f, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RELOAD_SPARK_N(0, 0, 0, 0, .25f, .071f, .213f, .334f, .5f, .113f, .434f, .556f, .75f, .141f, .729f, .735f, 1, .172f, 1, .922f),
+		/** reload ribbon (60BA C23, 299E3 x 4C003): black, violet, blue, HDR 5 (800218C59433 r4, peak 5.00; game hex #000000 #7A46C0 #847BF4 #A1C1FF #F0FFFF). */
+		JUNO_RELOAD_RIBBON(0, 0, 0, 0, .25f, .196f, .06f, .526f, .5f, .232f, .197f, .904f, .75f, .358f, .531f, 1, 1, .873f, 1, 1),
+		JUNO_RELOAD_RIBBON_N(0, 0, 0, 0, .25f, .039f, .012f, .105f, .5f, .046f, .039f, .181f, .75f, .072f, .106f, .38f, 1, .175f, .292f, 1),
+		/** the reload ribbon's twin: black, dark red, white, HDR 5 (800218C59433 r5, peak 5.00; game hex #000000 #AD4D4D #FF7878 #FFEEC1 #FFFFFF). */
+		JUNO_RELOAD_RIBBON_ENEMY(0, 0, 0, 0, .25f, .416f, .074f, .074f, .5f, 1, .187f, .187f, .75f, 1, .856f, .53f, 1, 1, 1, 1),
+		JUNO_RELOAD_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .083f, .015f, .015f, .5f, .211f, .037f, .037f, .75f, .437f, .171f, .106f, 1, 1, 1, 1),
+		/** pods charging (5254 C25, 37C36): black, slate, olive, white, HDR 6 (80089955364C r1, peak 6.00; game hex #000000 #B2D5F2 #FFFF6E #FFFFFF #FFFFFF). */
+		JUNO_POD_GLOW(0, 0, 0, 0, .25f, .445f, .663f, .892f, .5f, 1, 1, .156f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_POD_GLOW_N(0, 0, 0, 0, .25f, .074f, .111f, .149f, .5f, .23f, .188f, .026f, .75f, .557f, .535f, .45f, 1, 1, 1, 1),
+		/** the pod glow's twin: black, rust, orange, cream, HDR 4.9 (80089955364C r2, peak 4.88; game hex #000000 #FF411E #FFAA4B #FFFFEC #FFFFFF). */
+		JUNO_POD_GLOW_ENEMY(0, 0, 0, 0, .25f, 1, .052f, .013f, .5f, 1, .404f, .07f, .75f, 1, 1, .84f, 1, 1, 1, 1),
+		JUNO_POD_GLOW_ENEMY_N(0, 0, 0, 0, .25f, .216f, .011f, .003f, .5f, .351f, .083f, .014f, .75f, .647f, .381f, .172f, 1, 1, .746f, .381f),
+		/** pod ribbons on hp 048D / 048E (5254 C59 / C61): black, blue, yellow, HDR 3 (8000EFCEE857 r2, peak 3.00; game hex #000000 #82C0FF #A4F3FF #FFFFA1 #FFFFDA). */
+		JUNO_POD_RIBBON(0, 0, 0, 0, .25f, .225f, .528f, 1, .5f, .372f, .895f, 1, .75f, 1, 1, .355f, 1, 1, 1, .704f),
+		JUNO_POD_RIBBON_N(0, 0, 0, 0, .25f, .075f, .176f, .346f, .5f, .124f, .298f, .393f, .75f, .505f, .469f, .118f, 1, 1, .93f, .235f),
+		/** the pod ribbons' twin: black, dark red, white, HDR 5 (8000EFCEE857 r3, peak 5.00; game hex #000000 #AD4D4D #FF7878 #FFEEC1 #FFFFFF). */
+		JUNO_POD_RIBBON_ENEMY(0, 0, 0, 0, .25f, .416f, .074f, .074f, .5f, 1, .187f, .187f, .75f, 1, .856f, .53f, 1, 1, 1, 1),
+		JUNO_POD_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .083f, .015f, .015f, .5f, .211f, .037f, .037f, .75f, .437f, .171f, .106f, 1, 1, 1, 1),
+		/** the pod's star burst 12F7D (5254 C57): black, slate, olive, white, HDR 5 (8003AE56E82B r4, peak 5.00; game hex #000000 #90A9FA #EDEFC5 #FFFFAE #FFFFFF). */
+		JUNO_POD_BURST(0, 0, 0, 0, .25f, .277f, .399f, .952f, .5f, .844f, .867f, .555f, .75f, 1, 1, .425f, 1, 1, 1, 1),
+		JUNO_POD_BURST_N(0, 0, 0, 0, .25f, .055f, .08f, .191f, .5f, .169f, .173f, .111f, .75f, .394f, .372f, .085f, 1, 1, 1, 1),
+		/** the burst's twin: black, brown, white, HDR 5 (8003AE56E82B r5, peak 5.00; game hex #000000 #F2A81B #FFECB5 #FFFFFF #FFFFFF). */
+		JUNO_POD_BURST_ENEMY(0, 0, 0, 0, .25f, .884f, .393f, .011f, .5f, 1, .837f, .465f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_POD_BURST_ENEMY_N(0, 0, 0, 0, .25f, .177f, .079f, .002f, .5f, .263f, .168f, .093f, .75f, .453f, .416f, .386f, 1, 1, 1, 1),
+		/** launch flare 37A79 (5AF3 C29): blue then yellow, HDR 2 (80056BA6F14B r0, peak 2.00; game hex #0088FF #0088FF #0088FF #FFFFB6 #FFFFB6). */
+		JUNO_TORP_LAUNCH(0, 0, 0, 0, .25f, 0, .244f, 1, .5f, 0, .244f, 1, .75f, 1, 1, .469f, 1, 1, 1, .469f),
+		JUNO_TORP_LAUNCH_N(0, 0, 0, 0, .25f, 0, .122f, 1, .5f, 0, .122f, 1, .75f, 1, .93f, .234f, 1, 1, .93f, .234f),
+		/** the launch flare's twin: red then peach, HDR 2 (80056BA6F14B r1, peak 2.00; game hex #FF0000 #FF0000 #FF0000 #FFFFB6 #FFFFB6). */
+		JUNO_TORP_LAUNCH_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, 1, 1, .469f, 1, 1, 1, .469f),
+		JUNO_TORP_LAUNCH_ENEMY_N(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, 1, .558f, .234f, 1, 1, .558f, .234f),
+		/** ally torpedo trail (51E8 C39 / C47, 2FCA7): black, gold, pale yellow, HDR 3 (8008CE76213B r3, peak 3.00; game hex #000000 #FFDE8E #FFFF8F #FFFFE5 #FFFFFF). */
+		JUNO_TORP_HEAL_RIBBON(0, 0, 0, 0, .25f, 1, .732f, .272f, .5f, 1, 1, .277f, .75f, 1, 1, .785f, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_RIBBON_N(0, 0, 0, 0, .25f, .346f, .244f, .091f, .5f, .393f, .365f, .092f, .75f, .511f, .488f, .262f, 1, 1, .964f, .61f),
+		/** the ally trail's twin: black, red, white, HDR 5 (8008CE76213B r4, peak 5.00; game hex #000000 #FF9B94 #FFEBBF #FFFFFF #FFFFFF). */
+		JUNO_TORP_HEAL_RIBBON_ENEMY(0, 0, 0, 0, .25f, 1, .327f, .296f, .5f, 1, .827f, .521f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .318f, .065f, .059f, .5f, .437f, .166f, .104f, .75f, .706f, .399f, .208f, 1, 1, 1, 1),
+		/** ally torpedo core sphere DBF (51E8 C36 / C46): black, slate, cream, HDR 5 (8003CB620243 r1, peak 5.00; game hex #000000 #A3C0F8 #F2F2F2 #FFFFFF #FFFFFF). */
+		JUNO_TORP_HEAL_CORE(0, 0, 0, 0, .25f, .369f, .525f, .936f, .5f, .889f, .891f, .892f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_CORE_N(0, 0, 0, 0, .25f, .074f, .105f, .187f, .5f, .178f, .178f, .178f, .75f, .422f, .368f, .223f, 1, 1, .871f, .527f),
+		/** ally torpedo half-shell 160EA (51E8 C42): brown to pale yellow, HDR 5 (800BCD06F60D r2, peak 5.00; game hex #6D4000 #CCA770 #FFE9A4 #FFFFD2 #FFFFFF). */
+		JUNO_TORP_HEAL_SHELL(0, 0, 0, 0, .25f, .606f, .386f, .163f, .5f, 1, .819f, .372f, .75f, 1, 1, .645f, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_SHELL_N(0, 0, 0, 0, .25f, .121f, .077f, .033f, .5f, .24f, .164f, .074f, .75f, .394f, .327f, .129f, 1, 1, 1, .564f),
+		/** the shell's twin: dark red to white, HDR 5 (800BCD06F60D r3, peak 5.00; game hex #FF0000 #FF0000 #FFA783 #FFFFEA #FFFFFF). */
+		JUNO_TORP_HEAL_SHELL_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, .389f, .226f, .75f, 1, 1, .826f, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_SHELL_ENEMY_N(0, 0, 0, 0, .25f, .338f, 0, 0, .5f, .386f, .078f, .045f, .75f, .586f, .284f, .165f, 1, 1, .999f, .999f),
+		/** enemy torpedo trail (5940 C15, 299E3 x 4C003): navy to pale blue, HDR 5 (800BC34C1380 r4, peak 5.00; game hex #2A00A6 #3D3BBA #5F70EB #9EC4FF #FFFFFF). */
+		JUNO_TORP_DMG_RIBBON(0, 0, 0, 0, .25f, .047f, .043f, .49f, .5f, .114f, .162f, .83f, .75f, .34f, .552f, 1, 1, 1, 1, 1),
+		JUNO_TORP_DMG_RIBBON_N(0, 0, 0, 0, .25f, .009f, .009f, .098f, .5f, .023f, .032f, .166f, .75f, .068f, .11f, .411f, 1, .753f, .806f, 1),
+		/** the damage trail's twin: black, red, orange-cream, HDR 5 (800BC34C1380 r5, peak 5.00; game hex #000000 #AD4D4D #FF7878 #FFF5C8 #FFFFFF). */
+		JUNO_TORP_DMG_RIBBON_ENEMY(0, 0, 0, 0, .25f, .416f, .074f, .074f, .5f, 1, .187f, .187f, .75f, 1, .912f, .577f, 1, 1, 1, 1),
+		JUNO_TORP_DMG_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .083f, .015f, .015f, .5f, .211f, .037f, .037f, .75f, .485f, .182f, .115f, 1, 1, .597f, .305f),
+		/** enemy torpedo half-shell 160EA (5940 C19): violet to light blue, HDR 5 (8008DC40B527 r2, peak 5.00; game hex #44006D #BC85E2 #E5BBFF #F0FFFF #FFFFFF). */
+		JUNO_TORP_DMG_SHELL(0, 0, 0, 0, .25f, .5f, .234f, .763f, .5f, .782f, .499f, 1, .75f, .874f, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_DMG_SHELL_N(0, 0, 0, 0, .25f, .1f, .047f, .153f, .5f, .156f, .1f, .255f, .75f, .175f, .291f, .473f, 1, .242f, .73f, 1),
+		/** the damage shell's twin: dark red to peach, HDR 5 (8008DC40B527 r3, peak 5.00; game hex #FF0000 #FF0000 #FFA27E #FFFFDE #FFFFFF). */
+		JUNO_TORP_DMG_SHELL_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, .36f, .209f, .75f, 1, 1, .731f, 1, 1, 1, 1),
+		JUNO_TORP_DMG_SHELL_ENEMY_N(0, 0, 0, 0, .25f, .338f, 0, 0, .5f, .385f, .072f, .042f, .75f, .564f, .252f, .146f, 1, 1, .63f, .366f),
+		/** torpedo hit on an enemy, ring 724 (5B0D C15): grey-teal to cyan, HDR 5 (8008397E5051 r1, peak 5.00; game hex #CAFFF6 #CAFFF6 #F5FFFF #FFFFFF #FFFFFF). */
+		JUNO_TORP_DMG_HIT(0, 0, 0, 0, .25f, .59f, 1, .921f, .5f, .916f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_DMG_HIT_N(0, 0, 0, 0, .25f, .118f, .2f, .184f, .5f, .183f, .529f, .71f, .75f, .258f, .745f, 1, 1, .258f, .745f, 1),
+		/** the damage hit's twin: grey-brown to pink-red, HDR 5 (8008397E5051 r2, peak 5.00; game hex #FFD2CA #FFD2CA #FFF5F5 #FFFFFF #FFFFFF). */
+		JUNO_TORP_DMG_HIT_ENEMY(0, 0, 0, 0, .25f, 1, .644f, .59f, .5f, 1, .916f, .916f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_DMG_HIT_ENEMY_N(0, 0, 0, 0, .25f, .2f, .129f, .118f, .5f, .71f, .183f, .183f, .75f, 1, .258f, .258f, 1, 1, .258f, .258f),
+		/** torpedo hit on an ally (5B0C C14 / 5F46 C12, DA5B): white to yellow, falls (80030597EE51 r0, peak 1.00, falls; game hex #FFFFFF #FEFFDE #FCFFB5 #FBFF8B #FBFF8B). */
+		JUNO_TORP_HEAL_HIT(0, 0, 0, 0, .25f, .987f, 1, .731f, .5f, .974f, 1, .463f, .75f, .964f, 1, .258f, 1, .964f, 1, .258f),
+		/** the ally hit's half-shell 160EA (5B0C C25): brown to white, HDR 5 (800C88FF95CC r2, peak 5.00; game hex #6D4000 #E2CF85 #FFFFC6 #FFFFFF #FFFFFF). */
+		JUNO_TORP_HEAL_HIT_SHELL(0, 0, 0, 0, .25f, .763f, .621f, .234f, .5f, 1, 1, .566f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_TORP_HEAL_HIT_SHELL_N(0, 0, 0, 0, .25f, .153f, .124f, .047f, .5f, .255f, .224f, .113f, .75f, .454f, .441f, .391f, 1, 1, 1, 1),
+		/** ally torpedo hits a wall (5F45 C13, 568C): black, olive, gold, white, HDR 5 (800B671DC421 r1, peak 5.00; game hex #000000 #FAD173 #FFFF9E #FFFFC2 #FFFFFF). */
+		JUNO_TORP_WALL(0, 0, 0, 0, .25f, .959f, .638f, .171f, .5f, 1, 1, .341f, .75f, 1, 1, .54f, 1, 1, 1, 1),
+		JUNO_TORP_WALL_N(0, 0, 0, 0, .25f, .192f, .128f, .034f, .5f, .384f, .255f, .068f, .75f, .574f, .384f, .108f, 1, 1, 1, 1),
+		/** lock legs add 8A7D C5 (29F7 sparks): navy to cyan, HDR 3 (800BDFFAB667 r0, peak 3.00; game hex #1C00A4 #3B47B5 #617EDD #64CAFF #00FFFF). */
+		JUNO_TORP_LOCK_GLINT(0, 0, 0, 0, .25f, .044f, .064f, .462f, .5f, .119f, .207f, .721f, .75f, .127f, .59f, 1, 1, 0, 1, 1),
+		JUNO_TORP_LOCK_GLINT_N(0, 0, 0, 0, .25f, .015f, .021f, .154f, .5f, .04f, .069f, .24f, .75f, .042f, .197f, .349f, 1, 0, .922f, 1),
+		/** the ring itself: look 1BABB material E786 LUT row 1: black, navy, blue, HDR 1.78 (80073F0A0946 r1, peak 1.78; game hex #26032B #374593 #4164CA #2F90FF #00AEFF). */
+		JUNO_RING(0, 0, 0, 0, .25f, .038f, .06f, .293f, .5f, .053f, .127f, .589f, .75f, .029f, .277f, 1, 1, 0, .423f, 1),
+		JUNO_RING_N(0, 0, 0, 0, .25f, .021f, .034f, .165f, .5f, .03f, .071f, .331f, .75f, .016f, .156f, .672f, 1, 0, .238f, 1),
+		/** the ring's enemy look 1BC0D material E8C3 row 1: black, dark red, red, HDR 1.78 (800D3BE4E436 r1, peak 1.78; game hex #26032B #91063D #C80849 #FF0435 #FF0000). */
+		JUNO_RING_ENEMY(0, 0, 0, 0, .25f, .283f, .002f, .047f, .5f, .576f, .003f, .066f, .75f, 1, .001f, .035f, 1, 1, 0, 0),
+		JUNO_RING_ENEMY_N(0, 0, 0, 0, .25f, .159f, .001f, .027f, .5f, .324f, .001f, .037f, .75f, .668f, .001f, .02f, 1, 1, 0, 0),
+		/** the ring's ring sprites 15B77 (541C C24, 16E9D x 19167): black, navy, sky blue, HDR 5 (800CABBF218C r5, peak 5.00; game hex #000000 #2B49B6 #2486D9 #1BCAFF #FFFFFF). */
+		JUNO_RING_SPARK(0, 0, 0, 0, .25f, .024f, .066f, .47f, .5f, .018f, .237f, .691f, .75f, .011f, .588f, 1, 1, 1, 1, 1),
+		JUNO_RING_SPARK_N(0, 0, 0, 0, .25f, .005f, .013f, .094f, .5f, .004f, .047f, .138f, .75f, .002f, .118f, .245f, 1, .376f, .68f, 1),
+		/** the ring sprites' twin: black, brown, orange, HDR 2.2 (800CABBF218C r6, peak 2.16; game hex #000000 #BE5100 #F26A00 #FF8700 #FFA300). */
+		JUNO_RING_SPARK_ENEMY(0, 0, 0, 0, .25f, .518f, .082f, 0, .5f, .89f, .145f, 0, .75f, 1, .243f, 0, 1, 1, .364f, 0),
+		JUNO_RING_SPARK_ENEMY_N(0, 0, 0, 0, .25f, .239f, .038f, 0, .5f, .411f, .067f, 0, .75f, .673f, .112f, 0, 1, 1, .168f, 0),
+		/** the ring's disc flash 5E5E size 16 (541C C49, 190EC x 299DF): navy, teal, white, HDR 3 (80060448B358 r3, peak 3.00; game hex #241AD3 #2A87E8 #36FFFF #3FFFFF #FFFFFF). */
+		JUNO_RING_DISC(0, 0, 0, 0, .25f, .023f, .243f, .807f, .5f, .036f, 1, 1, .75f, .05f, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_DISC_N(0, 0, 0, 0, .25f, .008f, .081f, .269f, .5f, .012f, .341f, .373f, .75f, .017f, .743f, .446f, 1, 1, 1, 1),
+		/** the disc's twin: dark red, red, peach, HDR 3 (80060448B358 r4, peak 3.00; game hex #D32F1A #F73A21 #FF5031 #FF613C #FFFFFF). */
+		JUNO_RING_DISC_ENEMY(0, 0, 0, 0, .25f, .931f, .042f, .015f, .5f, 1, .08f, .03f, .75f, 1, .12f, .046f, 1, 1, 1, 1),
+		JUNO_RING_DISC_ENEMY_N(0, 0, 0, 0, .25f, .311f, .014f, .005f, .5f, .57f, .027f, .01f, .75f, .836f, .04f, .015f, 1, 1, .645f, .546f),
+		/** the ring's torus glow 15A26 (541C C30): black, teal, mint, HDR 10 (800215C126D1 r3, peak 10.00; game hex #000000 #D8FFFF #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RING_GLOW(0, 0, 0, 0, .25f, .689f, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_GLOW_N(0, 0, 0, 0, .25f, .069f, .192f, .309f, .5f, .107f, .414f, .379f, .75f, .137f, .721f, .315f, 1, .171f, 1, .305f),
+		/** the torus glow's twin: black, brown, white, HDR 4 (800215C126D1 r4, peak 4.00; game hex #000000 #CA8E64 #FFC785 #FFFFFF #FFFFFF). */
+		JUNO_RING_GLOW_ENEMY(0, 0, 0, 0, .25f, .589f, .272f, .127f, .5f, 1, .573f, .234f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_GLOW_ENEMY_N(0, 0, 0, 0, .25f, .147f, .068f, .032f, .5f, .286f, .143f, .058f, .75f, .553f, .478f, .387f, 1, 1, 1, 1),
+		/** the throw flash 37A79 / 568C at her hand (5AE7 C21-C27): black to mint, HDR 3 (800105E80D56 r0, peak 3.00; game hex #000000 #6FA47E #BDFFEE #F7FFFF #FFFFFF). */
+		JUNO_RING_LAUNCH(0, 0, 0, 0, .25f, .159f, .373f, .208f, .5f, .509f, 1, .859f, .75f, .93f, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_LAUNCH_N(0, 0, 0, 0, .25f, .053f, .124f, .069f, .5f, .17f, .415f, .286f, .75f, .31f, .776f, .604f, 1, .397f, 1, .799f),
+		/** the three flying orbs' trails (5B22 C11, 299E3): white, blue-grey, green, HDR 5, falls (800D9C7EE5BA r3, peak 5.00, falls; game hex #FFFFFF #FFFFFF #FDFFFF #00FF3E #00C72C). */
+		JUNO_RING_ORB_RIBBON(0, 0, 0, 0, .25f, 1, 1, 1, .5f, .984f, 1, 1, .75f, 0, 1, .049f, 1, 0, .571f, .025f),
+		JUNO_RING_ORB_RIBBON_N(0, 0, 0, 0, .25f, .319f, .55f, .731f, .5f, .197f, .58f, .26f, .75f, 0, .221f, .01f, 1, 0, .114f, .005f),
+		/** the orbs' trail twin: white, tan, red, HDR 5, falls (800D9C7EE5BA r5, peak 5.00, falls; game hex #FFFFFF #FFFFFF #FFFDFD #FF0000 #C70000). */
+		JUNO_RING_ORB_RIBBON_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .984f, .984f, .75f, 1, 0, 0, 1, .571f, 0, 0),
+		JUNO_RING_ORB_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .734f, .52f, .32f, .5f, .58f, .197f, .197f, .75f, .221f, 0, 0, 1, .114f, 0, 0),
+		/** the ring's end streaks 49944 (5D44 C36): navy to white, HDR 3 (800FD4BBE94C r3, peak 3.00; game hex #241AD3 #2D21FD #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RING_END(0, 0, 0, 0, .25f, .026f, .015f, .979f, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_END_N(0, 0, 0, 0, .25f, .009f, .005f, .326f, .5f, .499f, .546f, .611f, .75f, .762f, .834f, .812f, 1, .913f, 1, .973f),
+		/** the end streaks' twin: dark red to white, HDR 3 (800FD4BBE94C r4, peak 3.00; game hex #D3291A #FD3321 #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RING_END_ENEMY(0, 0, 0, 0, .25f, .979f, .033f, .015f, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RING_END_ENEMY_N(0, 0, 0, 0, .25f, .326f, .011f, .005f, .5f, .625f, .509f, .498f, .75f, .834f, .775f, .762f, 1, 1, .93f, .913f),
+		/** the speed lines on a boosted ally E99F (56DE C6): yellow to green, HDR 25, falls (800F2AAB0A81 r0, peak 24.98, falls; game hex #FFFF59 #FFFF7C #FFFF95 #FFFFAA #FFFFBB). */
+		JUNO_RING_BOOST(0, 0, 0, 0, .25f, 1, 1, .2f, .5f, 1, 1, .3f, .75f, 1, 1, .399f, 1, 1, 1, .5f),
+		JUNO_RING_BOOST_N(0, 0, 0, 0, .25f, .751f, .99f, .008f, .5f, .512f, .98f, .012f, .75f, .276f, .97f, .016f, 1, .04f, .961f, .02f),
+		/** the ground circle decal 4DBCC x 16E7A, 8.5 m (54F9 C32): black, olive-gold, pale blue-white, HDR 2 (800B875A72EE r3, peak 2.00; game hex #000000 #B69F0E #F8D918 #B6D3FF #FFFFFF). */
+		JUNO_RAY_DECAL(0, 0, 0, 0, .25f, .47f, .348f, .004f, .5f, .94f, .696f, .009f, .75f, .467f, .65f, 1, 1, 1, 1, 1),
+		JUNO_RAY_DECAL_N(0, 0, 0, 0, .25f, .235f, .174f, .002f, .5f, .47f, .348f, .005f, .75f, .233f, .325f, .559f, 1, .898f, .925f, 1),
+		/** the decal's twin: black, red, peach (800B875A72EE r4, peak 1.00; game hex #000000 #D45C4B #DB7A68 #E2907E #FFD4BD). */
+		JUNO_RAY_DECAL_ENEMY(0, 0, 0, 0, .25f, .656f, .106f, .07f, .5f, .71f, .194f, .139f, .75f, .763f, .281f, .207f, 1, 1, .658f, .509f),
+		/** the landing ring decal 139C growing 0 -> 7 m (54F9 C41): black, slate, white, HDR 3 (800533AEEE94 r1, peak 3.00; game hex #000000 #7C82B6 #AAB3F8 #DCE2FF #FFFFFF). */
+		JUNO_RAY_SHOCK(0, 0, 0, 0, .25f, .201f, .225f, .469f, .5f, .402f, .449f, .938f, .75f, .712f, .763f, 1, 1, 1, 1, 1),
+		JUNO_RAY_SHOCK_N(0, 0, 0, 0, .25f, .067f, .075f, .156f, .5f, .134f, .15f, .313f, .75f, .238f, .255f, .428f, 1, 1, 1, 1),
+		/** the landing ring's twin: black, brown, cream, HDR 3 (800533AEEE94 r2, peak 3.00; game hex #000000 #B67C7C #F8AAAA #FFD5D0 #FFFFFF). */
+		JUNO_RAY_SHOCK_ENEMY(0, 0, 0, 0, .25f, .469f, .201f, .201f, .5f, .938f, .402f, .402f, .75f, 1, .669f, .627f, 1, 1, 1, 1),
+		JUNO_RAY_SHOCK_ENEMY_N(0, 0, 0, 0, .25f, .156f, .067f, .067f, .5f, .313f, .134f, .134f, .75f, .428f, .223f, .209f, 1, 1, .847f, .701f),
+		/** the beam column 15A21 (54F9 C38, 18E48 x 31951): pale blue, yellow, white, HDR 4 (80051C2A6670 r2, peak 4.09; game hex #F3FFFF #F3FFFF #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RAY_COLUMN(0, 0, 0, 0, .25f, .898f, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_COLUMN_N(0, 0, 0, 0, .25f, .219f, .445f, 1, .5f, .965f, 1, .28f, .75f, .97f, 1, .471f, 1, 1, 1, 1),
+		/** the beam's outer column 15A21 (54F9 C40, 4D4 x 4DBCD): navy, teal, cyan, HDR 3.6 (800CE2546379 r2, peak 3.56; game hex #000087 #00CAFF #00FFFF #C2FFFF #00FFFF). */
+		JUNO_RAY_COLUMN_EDGE(0, 0, 0, 0, .25f, 0, .59f, 1, .5f, 0, 1, 1, .75f, .539f, 1, 1, 1, 0, 1, 1),
+		JUNO_RAY_COLUMN_EDGE_N(0, 0, 0, 0, .25f, 0, .165f, .354f, .5f, 0, .995f, .874f, .75f, .151f, .984f, .94f, 1, 0, .973f, 1),
+		/** the column's twin row: black, brown, peach, HDR 3 (80051C2A6670 r3, peak 3.00; game hex #000000 #B2782E #F3A442 #FFD47F #FFFFF8). */
+		JUNO_RAY_COLUMN_ENEMY(0, 0, 0, 0, .25f, .447f, .187f, .027f, .5f, .894f, .373f, .055f, .75f, 1, .662f, .211f, 1, 1, 1, .942f),
+		JUNO_RAY_COLUMN_ENEMY_N(0, 0, 0, 0, .25f, .149f, .062f, .009f, .5f, .298f, .125f, .018f, .75f, .447f, .221f, .07f, 1, 1, .618f, .314f),
+		/** the descending rings 15A26 size 8 (54F9 C36): black, slate, cream, HDR 50 (8004AEC38771 r3, peak 49.97; game hex #000000 #FFFFFF #FFFFFF #FFFFFF #FFFFFF). */
+		JUNO_RAY_RINGS(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_RINGS_N(0, 0, 0, 0, .25f, .022f, .059f, .104f, .5f, .091f, .14f, .158f, .75f, .493f, .486f, .366f, 1, 1, 1, 1),
+		/** the rings' twin: black, brown, white, HDR 4 (8004AEC38771 r4, peak 4.00; game hex #000000 #CA8E64 #FFC785 #FFFFFF #FFFFFF). */
+		JUNO_RAY_RINGS_ENEMY(0, 0, 0, 0, .25f, .589f, .272f, .127f, .5f, 1, .573f, .234f, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_RINGS_ENEMY_N(0, 0, 0, 0, .25f, .147f, .068f, .032f, .5f, .286f, .143f, .058f, .75f, .553f, .478f, .387f, 1, 1, 1, 1),
+		/** the ground glow 801 size 3 (54F9 C26, 4DB x 4C003 x C495): navy to white, HDR 5 (80044605BC64 r5, peak 5.00; game hex #0014AD #6173FF #EAFFFF #FFFFFF #FFFFFF). */
+		JUNO_RAY_GROUND(0, 0, 0, 0, .25f, .12f, .171f, 1, .5f, .821f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_GROUND_N(0, 0, 0, 0, .25f, .024f, .034f, .202f, .5f, .164f, .245f, .278f, .75f, .458f, .508f, .529f, 1, .965f, .991f, 1),
+		/** the ground glow's twin: black to red-pink, HDR 4 (80044605BC64 r7, peak 4.00; game hex #000000 #B25454 #FFA2A2 #FFD4D4 #FFE6E6). */
+		JUNO_RAY_GROUND_ENEMY(0, 0, 0, 0, .25f, .444f, .088f, .088f, .5f, 1, .36f, .36f, .75f, 1, .656f, .656f, 1, 1, .792f, .792f),
+		JUNO_RAY_GROUND_ENEMY_N(0, 0, 0, 0, .25f, .111f, .022f, .022f, .5f, .454f, .09f, .09f, .75f, .828f, .164f, .164f, 1, 1, .198f, .198f),
+		/** falling streaks 49944 at 40 m/s (54F9 C52): blue to pale blue-white, HDR 1.8 (80050158D799 r3, peak 1.80; game hex #241AD3 #291EE9 #B9BFFF #FAFFFF #FFFFFF). */
+		JUNO_RAY_RAIN(0, 0, 0, 0, .25f, .022f, .013f, .815f, .5f, .484f, .521f, 1, .75f, .952f, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_RAIN_N(0, 0, 0, 0, .25f, .012f, .007f, .452f, .5f, .268f, .289f, .634f, .75f, .528f, .574f, .816f, 1, .791f, .865f, 1),
+		/** the falling streaks' twin: black, red, pink, HDR 8 (80050158D799 r4, peak 8.00; game hex #000000 #FF0000 #FF6565 #FFF8F8 #FFFFFF). */
+		JUNO_RAY_RAIN_ENEMY(0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, .13f, .13f, .75f, 1, .935f, .935f, 1, 1, 1, 1),
+		JUNO_RAY_RAIN_ENEMY_N(0, 0, 0, 0, .25f, .171f, 0, 0, .5f, .342f, .016f, .016f, .75f, .644f, .117f, .117f, 1, 1, .246f, .246f),
+		/** the low wall 1F85 at the circle (54F9 C28, 38E1D x 31951): navy to light blue, HDR 7 (80063BF353FF r3, peak 7.00; game hex #0014AD #96B5FB #E2FFFF #FFFFFF #FFFFFF). */
+		JUNO_RAY_WALL(0, 0, 0, 0, .25f, .304f, .46f, .968f, .5f, .763f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_WALL_N(0, 0, 0, 0, .25f, .043f, .066f, .138f, .5f, .109f, .145f, .163f, .75f, .154f, .213f, .283f, 1, .455f, .702f, 1),
+		/** the wall's twin: peach to gold, falls (80063BF353FF r7, peak 1.00, falls; game hex #FFD9B5 #FFC3B0 #FFAAA9 #F0A17C #DF9700). */
+		JUNO_RAY_WALL_ENEMY(0, 0, 0, 0, .25f, 1, .546f, .432f, .5f, .997f, .401f, .398f, .75f, .869f, .355f, .201f, 1, .738f, .309f, 0),
+		/** an ally in the ray: material effect on the body (3169 C11, 19167): blue, HDR 5 (8000F7697B4A r2, peak 5.00; game hex #5266FF #5468FF #7789FF #A5B4FF #FFFFFF). */
+		JUNO_RAY_ALLY(0, 0, 0, 0, .25f, .088f, .138f, 1, .5f, .186f, .251f, 1, .75f, .377f, .458f, 1, 1, 1, 1, 1),
+		JUNO_RAY_ALLY_N(0, 0, 0, 0, .25f, .018f, .028f, .83f, .5f, .037f, .05f, .901f, .75f, .075f, .092f, .968f, 1, .521f, .539f, 1),
+		/** the body effect's other row: yellow to brown, falls (8000F7697B4A r1, peak 0.90, falls; game hex #F3DA00 #D67400 #B35900 #8F5900 #7C5900). */
+		JUNO_RAY_ALLY_GOLD(0, 0, 0, 0, .25f, .675f, .175f, 0, .5f, .451f, .1f, 0, .75f, .273f, .1f, 0, 1, .2f, .1f, 0),
+		/** the ally's rising chevrons DFDC (3169 C17): black to light blue (800FC76640A5 r3, peak 1.00; game hex #000000 #336FAF #6699DA #83B5F7 #92C2FF). */
+		JUNO_RAY_ALLY_RISE(0, 0, 0, 0, .25f, .033f, .158f, .426f, .5f, .133f, .319f, .704f, .75f, .227f, .463f, .93f, 1, .286f, .537f, 1),
+		/** the cast's cone EEB on her hand (5CCA C72): black, blue, cyan, HDR 10 (800FBE8BE003 r3, peak 9.99; game hex #002B57 #00CDFF #00FFFF #AEFFFF #FFFFFF). */
+		JUNO_RAY_CAST(0, 0, 0, 0, .25f, 0, .612f, 1, .5f, 0, 1, 1, .75f, .425f, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_CAST_N(0, 0, 0, 0, .25f, 0, .061f, .228f, .5f, 0, .122f, .452f, .75f, .043f, .355f, .755f, 1, .12f, .694f, 1),
+		/** the cast cone's twin: black, red, orange, HDR 10 (800FBE8BE003 r4, peak 9.99; game hex #570F00 #FF6B00 #FF9400 #FFFFAE #FFFFFF). */
+		JUNO_RAY_CAST_ENEMY(0, 0, 0, 0, .25f, 1, .148f, 0, .5f, 1, .296f, 0, .75f, 1, 1, .425f, 1, 1, 1, 1),
+		JUNO_RAY_CAST_ENEMY_N(0, 0, 0, 0, .25f, .228f, .015f, 0, .5f, .452f, .03f, 0, .75f, .755f, .168f, .043f, 1, 1, .397f, .12f),
+		/** the 3P cast ribbon (clip effect 61AD C8): violet, blue, cyan-white, HDR 5 (800CE2C38A79 r6, peak 5.00; game hex #8038FF #5A7AFF #62FFFF #DDFFFF #FFFFFF). */
+		JUNO_RAY_CAST_RIBBON(0, 0, 0, 0, .25f, .102f, .194f, 1, .5f, .123f, 1, 1, .75f, .72f, 1, 1, 1, 1, 1, 1),
+		JUNO_RAY_CAST_RIBBON_N(0, 0, 0, 0, .25f, .02f, .039f, .385f, .5f, .025f, .244f, .569f, .75f, .144f, .631f, .782f, 1, .533f, .855f, 1),
+		/** the cast ribbon's twin: red to cream, HDR 5 (800CE2C38A79 r7, peak 5.00; game hex #FF4F38 #FF7740 #FFB962 #FFFFDD #FFFFFF). */
+		JUNO_RAY_CAST_RIBBON_ENEMY(0, 0, 0, 0, .25f, 1, .186f, .051f, .5f, 1, .483f, .123f, .75f, 1, 1, .72f, 1, 1, 1, 1),
+		JUNO_RAY_CAST_RIBBON_ENEMY_N(0, 0, 0, 0, .25f, .385f, .037f, .01f, .5f, .569f, .097f, .025f, .75f, .782f, .3f, .144f, 1, 1, .776f, .533f),
+		/** boot and glide jet glow 1603 (5D10 C9, 5A40 C11, 5C36 C7): navy, teal, white, HDR 8 (800265141E85 r0, peak 8.00; game hex #2115FF #2EA9FF #50FFFF #FFFFFF #FFFFFF). */
+		JUNO_BOOT_JET(0, 0, 0, 0, .25f, .028f, .395f, 1, .5f, .081f, 1, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
+		JUNO_BOOT_JET_N(0, 0, 0, 0, .25f, .003f, .049f, .146f, .5f, .01f, .223f, .304f, .75f, .859f, .923f, .938f, 1, 1, 1, 1),
+		/** jet flame cone E21 x 2D278 (5A40 C15, 5C36 C9): blue to white, HDR 5 (800EC4671407 r0, peak 5.00; game hex #2D32FF #31C2FF #34FFFF #39FFFF #FFFFFF). */
+		JUNO_BOOT_FLAME(0, 0, 0, 0, .25f, .031f, .541f, 1, .5f, .035f, 1, 1, .75f, .041f, 1, 1, 1, 1, 1, 1),
+		JUNO_BOOT_FLAME_N(0, 0, 0, 0, .25f, .006f, .108f, .505f, .5f, .007f, .269f, .611f, .75f, .008f, .505f, .772f, 1, .947f, .991f, 1),
+		/** the inner flame cone (5D10 C13, 5A40 C17, 5C36 C11): violet, teal, white, HDR 8 (80095C8F5DA2 r0, peak 8.00; game hex #C715FF #BB84FE #AFE8FF #86FFFF #FFFFFF). */
+		JUNO_BOOT_FLAME_VIOLET(0, 0, 0, 0, .25f, .499f, .23f, .988f, .5f, .426f, .804f, 1, .75f, .239f, 1, 1, 1, 1, 1, 1),
+		JUNO_BOOT_FLAME_VIOLET_N(0, 0, 0, 0, .25f, .062f, .029f, .124f, .5f, .053f, .101f, .145f, .75f, .03f, .323f, .219f, 1, 1, 1, 1),
+		/** jet sparks 1F35 (5D10 C15, 5A40 C19): cyan, pale cyan (8000939E8147 r2, peak 1.00; game hex #00D4FF #5BE0FF #7EEBFF #98F5FF #ADFFFF). */
+		JUNO_BOOT_SPARK(0, 0, 0, 0, .25f, .105f, .744f, 1, .5f, .21f, .83f, 1, .75f, .313f, .914f, 1, 1, .418f, 1, 1),
+		/** the boots' ribbon (5985 C7, 2FCA7): pale blue to navy, HDR 5, falls (8009B556202A r4, peak 5.00, falls; game hex #FFFFFF #BEEEFF #6A95FF #6A95FF #6A95FF). */
+		JUNO_BOOT_RIBBON(0, 0, 0, 0, .25f, .517f, .853f, 1, .5f, .144f, .3f, 1, .75f, .144f, .3f, 1, 1, .144f, .3f, 1),
+		JUNO_BOOT_RIBBON_N(0, 0, 0, 0, .25f, .103f, .171f, .384f, .5f, .029f, .06f, .2f, .75f, .029f, .06f, .2f, 1, .029f, .06f, .2f),
+		/** hover torus 15A26 under her (5D10 C11): white to orange, HDR 3, falls (800BD5F0566C r3, peak 3.00, falls; game hex #FFFFFF #FFFFFF #FFFFBA #FFEB00 #FFE600). */
+		JUNO_HOVER_RING(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, .49f, .75f, 1, .828f, 0, 1, 1, .79f, 0),
+		JUNO_HOVER_RING_N(0, 0, 0, 0, .25f, .96f, .762f, .476f, .5f, .919f, .447f, .164f, .75f, .88f, .276f, 0, 1, .839f, .263f, 0),
+		/** the hover torus's twin: peach to red, HDR 5, falls (800BD5F0566C r4, peak 5.00, falls; game hex #FFFFFF #FFFFFF #FFD0D0 #FF9999 #FF0000). */
+		JUNO_HOVER_RING_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .631f, .631f, .75f, 1, .318f, .318f, 1, 1, 0, 0),
+		JUNO_HOVER_RING_ENEMY_N(0, 0, 0, 0, .25f, 1, .408f, .293f, .5f, .997f, .126f, .126f, .75f, .868f, .064f, .064f, 1, .738f, 0, 0),
+		/** glide torus 15A26 (5A40 C13): white to sky blue, HDR 3, falls (8007A6420EC4 r3, peak 3.00, falls; game hex #FFFFFF #EFFFFF #EBFFFF #E6FFFF #E1FFFF). */
+		JUNO_GLIDE_RING(0, 0, 0, 0, .25f, .865f, 1, 1, .5f, .829f, 1, 1, .75f, .793f, 1, 1, 1, .756f, 1, 1),
+		JUNO_GLIDE_RING_N(0, 0, 0, 0, .25f, .288f, .605f, .96f, .5f, .276f, .58f, .919f, .75f, .264f, .555f, .88f, 1, .252f, .529f, .839f),
+		/** the glide torus's twin: peach to red, HDR 5, falls (8007A6420EC4 r4, peak 5.00, falls; game hex #FFFFFF #FFFFFF #FFD0D0 #FF9999 #FF0000). */
+		JUNO_GLIDE_RING_ENEMY(0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, .631f, .631f, .75f, 1, .318f, .318f, 1, 1, 0, 0),
+		JUNO_GLIDE_RING_ENEMY_N(0, 0, 0, 0, .25f, 1, .408f, .293f, .5f, .997f, .126f, .126f, .75f, .868f, .064f, .064f, 1, .738f, 0, 0),
+		/** the 1P glide screen hex burst 5708 (5963 C9, ECIM(40)): blue to white (80035A6BEECD r7, peak 1.00; game hex #6E98FF #9ACAFF #BAEFFF #DCFFFF #FFFFFF). */
+		JUNO_GLIDE_SCREEN(0, 0, 0, 0, .25f, .325f, .587f, 1, .5f, .494f, .861f, 1, .75f, .716f, 1, 1, 1, 1, 1, 1),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 

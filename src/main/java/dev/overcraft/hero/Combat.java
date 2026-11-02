@@ -300,6 +300,7 @@ public final class Combat {
 			case ANA -> (int) dev.overcraft.ana.AnaStats.ULT_COST;
 			case SOMBRA -> (int) dev.overcraft.sombra.SombraStats.ULT_COST;
 			case BRIGITTE -> (int) dev.overcraft.brigitte.BrigitteStats.ULT_COST;
+			case JUNO -> (int) dev.overcraft.juno.JunoStats.ULT_COST;
 			default -> 1;
 		};
 	}

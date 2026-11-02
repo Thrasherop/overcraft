@@ -333,7 +333,10 @@ def add_sounds(source):
 
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
-VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy"}
+VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno"}
+# a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
+# soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
+VOICELINE_ROOTS = {"juno": "../../research/juno/extract"}
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -369,9 +372,10 @@ def add_voicelines(source, out, sounds):
     import json
     lang = {}
     for hero, folder in VOICELINE_HEROES.items():
-        base = Path(source) / "Unlocks" / "Heroes" / folder / "VoiceLine"
+        root = Path(source) / VOICELINE_ROOTS.get(hero, ".")
+        base = root / "Unlocks" / "Heroes" / folder / "VoiceLine"
         spoken = {}
-        for f in (Path(source) / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
+        for f in (root / "HeroVoice" / folder / "Voicelines").glob("*.ogg"):
             spoken[f.name.split(".", 1)[0]] = voice_text(f.name)
         if not base.exists():
             print(f"no voice line unlocks for {hero}: run DataTool extract-unlocks <out>/Unlocks with {folder}|voiceline=*")
@@ -740,6 +744,58 @@ EFFECT_MASKS = {
     "brigitte_flame_wisps": ("Brigitte", "RepairPack", "0000000044F7", 1),
     "brigitte_soft_spot": ("Brigitte", "RepairPack", "000000018B18", 1),
     "brigitte_soft_blob_b": ("Brigitte", "RepairPack", "0000000174D8", 1),
+    # Juno's (tools/reference/juno-effects.md; research\juno\fx). The Mediblaster: soft dot, lens flare, marble noise, the
+    # hit ring (4 frames), star glow, the round's line and length fade, the reload beam fade, the ribbons' torn edge, a
+    # cloud noise, a soft noise
+    "juno_soft_dot": ("Juno", "Mediblaster", "00000000568C", 1),
+    "juno_lens_flare": ("Juno", "Mediblaster", "000000037A79", 1),
+    "juno_marble": ("Juno", "Mediblaster", "000000000754", 1),
+    "juno_hit_ring": ("Juno", "Mediblaster", "00000001CB5E", 4),
+    "juno_star_glow": ("Juno", "Mediblaster", "00000000266F", 1),
+    "juno_tracer_line": ("Juno", "Mediblaster", "00000003A512", 1),
+    "juno_tracer_fade": ("Juno", "Mediblaster", "000000047DD9", 1),
+    "juno_beam_fade": ("Juno", "Mediblaster", "000000048E96", 1),
+    "juno_ribbon_edge": ("Juno", "Mediblaster", "00000004C003", 1),
+    "juno_cloud_noise": ("Juno", "Mediblaster", "0000000299E9", 1),
+    "juno_noise_soft": ("Juno", "Mediblaster", "00000002BE4A", 1),
+    # Pulsar Torpedoes: the thin ring, the lock add's wisps, the pods' streak band, the damage torpedo's dripping edge
+    "juno_ring_thin": ("Juno", "PulsarTorpedoes", "000000000724", 1),
+    "juno_lock_wisps": ("Juno", "PulsarTorpedoes", "00000000DDE5", 1),
+    "juno_streak_band": ("Juno", "PulsarTorpedoes", "000000016D78", 1),
+    "juno_drip_edge": ("Juno", "PulsarTorpedoes", "00000004C002", 1),
+    # Hyper Ring: the ring look's (15AD6 with 1BABB / 1BC0D, material E786 / E8C3) wavy edge and band masks, star field
+    # and noise; the disc flash's band and noise, the end streak, the sparkle (4 frames), a soft ring, a noise
+    "juno_ring_edge": ("Juno", "HyperRing", "00000003FE22", 1),
+    "juno_ring_band": ("Juno", "HyperRing", "00000003FD49", 1),
+    "juno_stars": ("Juno", "HyperRing", "00000002A907", 1),
+    "juno_ring_noise": ("Juno", "HyperRing", "000000001038", 1),
+    "juno_disc_band": ("Juno", "HyperRing", "0000000190EC", 1),
+    "juno_disc_noise": ("Juno", "HyperRing", "0000000299DF", 1),
+    "juno_streak_v": ("Juno", "HyperRing", "000000049944", 1),
+    "juno_sparkle": ("Juno", "HyperRing", "00000003C068", 4),
+    "juno_ring_soft": ("Juno", "HyperRing", "00000002F3EC", 1),
+    "juno_noise_c": ("Juno", "HyperRing", "0000000005DF", 1),
+    # Orbital Ray: the ground circle and its disc, the ground glow strip, the column's two masks, the low wall's fade,
+    # the corner glow, the cast's ribbon / glow / streak / fade, the star field, the ally's chevron glows and screen rim
+    "juno_ray_circle": ("Juno", "OrbitalRay", "00000004DBCC", 1),
+    "juno_ray_disc": ("Juno", "OrbitalRay", "000000016E7A", 1),
+    "juno_ray_ground": ("Juno", "OrbitalRay", "00000000C495", 1),
+    "juno_ray_column": ("Juno", "OrbitalRay", "000000031951", 1),
+    "juno_ray_column_edge": ("Juno", "OrbitalRay", "00000004DBCD", 1),
+    "juno_ray_wall_fade": ("Juno", "OrbitalRay", "000000038E1D", 1),
+    "juno_ray_corner": ("Juno", "OrbitalRay", "00000004F8EB", 1),
+    "juno_cast_ribbon": ("Juno", "OrbitalRay", "000000012201", 1),
+    "juno_cast_glow": ("Juno", "OrbitalRay", "000000042955", 1),
+    "juno_cast_streak": ("Juno", "OrbitalRay", "000000001C4F", 1),
+    "juno_cast_fade": ("Juno", "OrbitalRay", "000000000D9B", 1),
+    "juno_star_field": ("Juno", "OrbitalRay", "00000003C723", 1),
+    "juno_chevron_glow": ("Juno", "OrbitalRay", "000000027D0D", 1),
+    "juno_chevron_glow_b": ("Juno", "OrbitalRay", "000000027D0A", 1),
+    "juno_screen_rim": ("Juno", "OrbitalRay", "0000000212A6", 1),
+    "juno_screen_noise": ("Juno", "OrbitalRay", "00000002103C", 1),
+    # Overboots / Glide Boost: the jet glow dot, the glide screen's thin fade strip
+    "juno_jet_glow": ("Juno", "Overboots", "000000001603", 1),
+    "juno_fade_thin": ("Juno", "GlideBoost", "000000019325", 1),
 }
 
 
@@ -765,7 +821,12 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # Rally's armour pattern 144E5 x 14486 (219D C104), the pack trail's spot 18B18 x flame wisps 44F7 (218D C13)
             "brigitte_swing_band": ("brigitte_swing_streak_0", "brigitte_swing_edge"),
             "brigitte_rally_armor": ("brigitte_rally_armor_a", "brigitte_rally_armor_b"),
-            "brigitte_pack_trail": ("brigitte_soft_spot", "brigitte_flame_wisps")}
+            "brigitte_pack_trail": ("brigitte_soft_spot", "brigitte_flame_wisps"),
+            # Juno's (tools/reference/juno-effects.md): the Mediblaster round 3A512 x 47DD9 (53B6 C8 / C10), the ally
+            # torpedo's trail 2FCA7 x 7A9 (51E8 C39 / C47), the damage torpedo's trail 299E3 x 4C003 x 7A9 (5940 C15)
+            "juno_tracer": ("juno_tracer_line", "juno_tracer_fade"),
+            "juno_heal_trail": ("lw_wisp", "cat_fade"),
+            "juno_dmg_trail": ("cat_ring_line", "juno_ribbon_edge", "cat_fade")}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -814,7 +875,21 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "brigitte_ring": ("Brigitte", "Inspire", "00000000296B"),
                  "brigitte_shard": ("Brigitte", "ShieldBash", "000000000B18"),
                  "brigitte_whip_ring": ("Brigitte", "WhipShot", "0000000047D9"),
-                 "brigitte_rally_ring": ("Brigitte", "Rally", "000000005BEE")}
+                 "brigitte_rally_ring": ("Brigitte", "Rally", "000000005BEE"),
+                 # Juno's (tools/reference/juno-effects.md "Meshes"): the Hyper Ring 15AD6 (0.37 m ring, scale 25 = 9.25 m),
+                 # the beam column 15A21 (0.9 x 5.6 m tube), the ray's low wall 1F85, the cast cone EEB, the torpedo's half
+                 # shell 160EA, the pods' star burst 12F7D, a sphere D721, a thin torus EBEF, the flat disc 5E5E, the cast
+                 # blade 14063 (the fat torus 15A26 is cat_torus already)
+                 "juno_ring": ("Juno", "HyperRing", "000000015AD6"),
+                 "juno_column": ("Juno", "OrbitalRay", "000000015A21"),
+                 "juno_ray_wall": ("Juno", "OrbitalRay", "000000001F85"),
+                 "juno_cone": ("Juno", "OrbitalRay", "000000000EEB"),
+                 "juno_half_shell": ("Juno", "PulsarTorpedoes", "0000000160EA"),
+                 "juno_pod_burst": ("Juno", "PulsarTorpedoes", "000000012F7D"),
+                 "juno_sphere": ("Juno", "HyperRing", "00000000D721"),
+                 "juno_torus_thin": ("Juno", "OrbitalRay", "00000000EBEF"),
+                 "juno_disc": ("Juno", "HyperRing", "000000005E5E"),
+                 "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063")}
 
 
 def add_effects(*sources):

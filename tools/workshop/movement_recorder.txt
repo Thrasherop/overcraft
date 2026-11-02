@@ -62,7 +62,8 @@ rule("Start: recording on, counters at zero")
 
 	actions
 	{
-		Enable Inspector Recording;
+		"The Inspector's own recording off: it kept every variable change and action (the wall rays, about 20 writes a tick per player) and the log stopped after a few minutes (2026-11-01, twice); Log To Inspector lines still go to the log file"
+		Disable Inspector Recording;
 		Event Player.lastEvent = Custom String("ready");
 		Event Player.rideCount = 0;
 		Event Player.marks = 0;

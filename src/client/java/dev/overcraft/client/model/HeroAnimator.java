@@ -123,6 +123,26 @@ public final class HeroAnimator {
 	private boolean sombra;
 	/** Brigitte (brigitte_1p.txt): idle, jump, fall and land; no walk clip of her own (the idle while she moves). */
 	private boolean brigitte;
+	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
+	private boolean juno, junoGliding;
+	private float glideSince = -100, hoverSince = -100, hoverEndAt = -100, doubleJumpAt = -100;
+	private int hoverTicks;
+	private double lastVy;
+
+	/** Juno's last double jump (game seconds; -100 never), as seen from her motion: her boots' flames (JunoFx). */
+	public float junoDoubleJumpAt() {
+		return doubleJumpAt;
+	}
+
+	/** Juno hovering now (her fall held at 3 m/s for 3 ticks or more): her hover jets (JunoFx). */
+	public boolean junoHovering() {
+		return juno && hoverTicks >= 3;
+	}
+
+	/** Juno gliding now (synced): her glide jets (JunoFx). */
+	public boolean junoGliding() {
+		return juno && junoGliding;
+	}
 
 	/** Brigitte's shield up: raised more lately than lowered (her actions "shield_raise" / "shield_lower"). */
 	public boolean shieldUp(float now) {
@@ -200,6 +220,31 @@ public final class HeroAnimator {
 			clip = a.lifeweaverAction(action);
 			viewClip = a.lifeweaverViewAction(action);
 		}
+		if (a.juno) {
+			// her actions' clips (juno.txt / juno_1p.txt): the ring's throw, the ray's cast (in the air its own), the
+			// torpedoes' lock and fire (layers in 3P: below); the glide is a state, not an action
+			switch (action) {
+				case "ring" -> {
+					clip = "ring_throw";
+					viewClip = "ring_throw";
+				}
+				case "ult" -> {
+					clip = a.wasOnGround ? "ult_cast" : "ult_cast_air";
+					viewClip = "ult_cast";
+				}
+				case "torpedo_lock" -> {
+					clip = "";
+					viewClip = "torpedo_lock_start";
+				}
+				case "torpedo_fire" -> clip = "";
+				case "glide", "glide_end", "torpedo_cancel" -> {
+					clip = "";
+					viewClip = "";
+				}
+				default -> {
+				}
+			}
+		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
 			// (sombra_1p.txt hack_start)
@@ -216,8 +261,13 @@ public final class HeroAnimator {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
 			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land")
 				|| a.mercy && action.startsWith("ult_cast");
-			a.actions.trigger(clip, now);
-			a.actionsFirstPerson.trigger(viewClip, now);
+			// (an action with no clip of its own, as Juno's glide, cuts nothing)
+			if (!clip.isEmpty()) {
+				a.actions.trigger(clip, now);
+			}
+			if (!viewClip.isEmpty()) {
+				a.actionsFirstPerson.trigger(viewClip, now);
+			}
 		} else if (!a.mercy && !a.lifeweaver) {
 			a.actions.trigger(clip, now);
 			a.actionsFirstPerson.trigger(action, now);
@@ -563,10 +613,15 @@ public final class HeroAnimator {
 	}
 
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
+		additive(model, pose, clipName, action, now, false);
+	}
+
+	/** The same, its offsets in each bone's own frame ({@link Skeleton#addAdditive}'s localOffsets). */
+	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now, boolean localOffsets) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
 		if (clip != null && t >= 0 && t <= clip.duration()) {
-			Skeleton.addAdditive(clip, t, pose, 1);
+			Skeleton.addAdditive(clip, t, pose, 1, null, localOffsets);
 		}
 	}
 
@@ -1146,6 +1201,11 @@ public final class HeroAnimator {
 			flierLayers(model, entity, pose, now);
 		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
+		if (juno) {
+			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
+			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now, true);
+			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now, true);
+		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
 		additive(model, pose, "add_crossfade_heal", "crossfade_heal", now);
 		SkinnedModel.Clip wallLayer = base.startsWith("wallride") ? clip(model, "add_wallride") : null;
@@ -1235,6 +1295,26 @@ public final class HeroAnimator {
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		stealthed = sombra && entity.isInvisible();
+		juno = "juno".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		boolean glideNow = juno && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE));
+		if (glideNow && !junoGliding) {
+			glideSince = now;
+		}
+		junoGliding = glideNow;
+		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
+		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
+		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
+			doubleJumpAt = now;
+		}
+		boolean hoverNow = juno && !entity.onGround() && !junoGliding && vy < -0.13 && vy > -0.17;
+		hoverTicks = hoverNow ? hoverTicks + 1 : 0;
+		if (hoverTicks == 3) {
+			// its start is skipped when she hovered in the last 0.5 s (4441 #593)
+			hoverSince = now - hoverEndAt < 0.5f ? -100 : now;
+		} else if (hoverTicks == 0 && lastVy < -0.13 && lastVy > -0.17) {
+			hoverEndAt = now;
+		}
+		lastVy = vy;
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
@@ -1382,6 +1462,29 @@ public final class HeroAnimator {
 			next = "climb_top";
 		} else if (skates && wallSide != 0) {
 			next = wallSide > 0 ? "wallride_right" : "wallride_left";
+		} else if (juno && junoGliding) {
+			// Glide Boost (47B7): its start (0xE5, 2D by her motion), then the loop (0x02F: still at its centre, else 8
+			// ways); a double jump while gliding has its own (0x13E)
+			String d = moving ? (direction(forward, left).isEmpty() ? "_forward" : direction(forward, left)) : "";
+			SkinnedModel.Clip start = clip(model, "glide_start_forward");
+			SkinnedModel.Clip jumped = clip(model, "glide_double_jump");
+			if (doubleJumpAt >= glideSince && jumped != null && now - doubleJumpAt < jumped.duration()) {
+				next = "glide_double_jump" + d;
+			} else if (start != null && now - glideSince < start.duration()) {
+				next = "glide_start" + (d.isEmpty() ? "_forward" : d);
+			} else {
+				next = "glide" + d;
+			}
+		} else if (juno && !onGround && hoverTicks >= 3) {
+			// the hover (0x9FF start, then the 0x13D loop, both 2D by her motion)
+			String d = moving ? (direction(forward, left).isEmpty() ? "_forward" : direction(forward, left)) : "";
+			SkinnedModel.Clip start = clip(model, "hover_start");
+			next = (start != null && now - hoverSince < start.duration() ? "hover_start" : "hover") + d;
+		} else if (juno && !onGround && doubleJumpAt >= airborneSince) {
+			// after her double jump until she lands (df 0x583 cat 0x1E3): its take-off, then its air loop
+			String d = moving ? (direction(forward, left).isEmpty() ? "_forward" : direction(forward, left)) : "";
+			SkinnedModel.Clip take = clip(model, "double_jump");
+			next = (take != null && now - doubleJumpAt < take.duration() ? "double_jump" : "double_jump_fall") + d;
 		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";

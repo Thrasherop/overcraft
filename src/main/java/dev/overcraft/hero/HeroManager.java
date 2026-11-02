@@ -78,6 +78,14 @@ public final class HeroManager {
 	public static final AttachmentType<java.util.List<Integer>> LIFEWEAVER = AttachmentRegistry.create(Overcraft.id("lifeweaver"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all()));
 
+	/** Juno gliding (Glide Boost): for every client to animate her glide (HeroAnimator). */
+	public static final AttachmentType<Boolean> JUNO_GLIDE = AttachmentRegistry.create(Overcraft.id("juno_glide"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
+	/** Juno locking Pulsar Torpedoes: for every client to play her lock's sounds (JunoSounds: 520F, held while she locks). */
+	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -116,6 +124,7 @@ public final class HeroManager {
 		KITS.put(Hero.ANA, new dev.overcraft.ana.Ana());
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
+		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
 	}
 
 	private HeroManager() {
@@ -153,8 +162,9 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
-		return state != null && (state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
-			&& state.softLanding;
+		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md)
+		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA)
+			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -241,6 +251,9 @@ public final class HeroManager {
 		if (state.hero == Hero.BRIGITTE) {
 			dev.overcraft.brigitte.Brigitte.clear(player, state);
 		}
+		if (state.hero == Hero.JUNO) {
+			dev.overcraft.juno.Juno.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -326,6 +339,9 @@ public final class HeroManager {
 			if (state.hero == Hero.BRIGITTE) {
 				dev.overcraft.brigitte.Brigitte.clear(player, state);
 			}
+			if (state.hero == Hero.JUNO) {
+				dev.overcraft.juno.Juno.clear(player, state);
+			}
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -377,8 +393,29 @@ public final class HeroManager {
 		}
 		// the buttons held are kept even while the keys aren't live (asleep: Ana's Sleep Dart), so a button held through it
 		// fires again as it ends, as Overwatch's do; the client only sends them as they change (found playing)
-		state.primaryHeld = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
-		state.secondaryHeld = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		// A quick click's press and release can both arrive between two server ticks (at a low frame rate the client runs
+		// two ticks in one frame and sends both back to back), and the ticks would never see it held: Juno's torpedo lock
+		// and fire were lost at 10 fps (found playing, the release play). The release then waits for the next tick.
+		boolean primary = (input.held() & HeroInputPayload.HELD_PRIMARY) != 0;
+		boolean secondary = (input.held() & HeroInputPayload.HELD_SECONDARY) != 0;
+		if (primary) {
+			state.primaryFresh |= !state.primaryHeld;
+			state.primaryHeld = true;
+			state.primaryLetGo = false;
+		} else if (state.primaryFresh) {
+			state.primaryLetGo = true;
+		} else {
+			state.primaryHeld = false;
+		}
+		if (secondary) {
+			state.secondaryFresh |= !state.secondaryHeld;
+			state.secondaryHeld = true;
+			state.secondaryLetGo = false;
+		} else if (state.secondaryFresh) {
+			state.secondaryLetGo = true;
+		} else {
+			state.secondaryHeld = false;
+		}
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if (!controls(player)) {
@@ -410,6 +447,9 @@ public final class HeroManager {
 		if (state.hero == Hero.MERCY && input.extra() != 0) {
 			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.JUNO && input.extra() != 0) {
+			dev.overcraft.juno.Juno.extra(player, state, input.extra());
+		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
 		}
@@ -439,6 +479,7 @@ public final class HeroManager {
 			if (!controls && !Sleep.asleep(player)) {
 				// (asleep, they're kept: a button held through the sleep fires again as it ends)
 				state.primaryHeld = state.secondaryHeld = state.wallClimbing = false;
+				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
@@ -455,6 +496,18 @@ public final class HeroManager {
 			if (kit != null) {
 				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
 			}
+			held(state);
+		}
+	}
+
+	/** After a tick: the buttons it saw pressed are no longer fresh, and a click let go before it is let go now. */
+	private static void held(HeroState state) {
+		state.primaryFresh = state.secondaryFresh = false;
+		if (state.primaryLetGo) {
+			state.primaryHeld = state.primaryLetGo = false;
+		}
+		if (state.secondaryLetGo) {
+			state.secondaryHeld = state.secondaryLetGo = false;
 		}
 	}
 

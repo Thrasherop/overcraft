@@ -44,7 +44,12 @@ public enum Perk {
 	BRIGITTE_COMBAT_MEDIC(Hero.BRIGITTE, Tier.MINOR, "combat_medic"),
 	BRIGITTE_MORALE_BOOST(Hero.BRIGITTE, Tier.MINOR, "morale_boost"),
 	BRIGITTE_INSPIRING_STRIKE(Hero.BRIGITTE, Tier.MAJOR, "inspiring_strike"),
-	BRIGITTE_WHIPLASH(Hero.BRIGITTE, Tier.MAJOR, "whiplash");
+	BRIGITTE_WHIPLASH(Hero.BRIGITTE, Tier.MAJOR, "whiplash"),
+	// Juno's, the live list's order (D 0065.177)
+	JUNO_FAMILIAR_VITALS(Hero.JUNO, Tier.MINOR, "familiar_vitals"),
+	JUNO_LOCKED_ON(Hero.JUNO, Tier.MINOR, "locked_on"),
+	JUNO_FASTER_BLASTER(Hero.JUNO, Tier.MAJOR, "faster_blaster"),
+	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off");
 
 	public enum Tier { MINOR, MAJOR }
 

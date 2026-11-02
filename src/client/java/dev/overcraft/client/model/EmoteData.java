@@ -74,7 +74,17 @@ public final class EmoteData {
 	public record Emotes(Map<String, Map<String, List<Spawn>>> emotes, Map<String, Map<String, int[]>> geosets,
 		Map<String, Integer> pieceGeosets, Map<String, Hardpoint> hardpoints, Map<String, Map<String, List<Event>>> events,
 		Map<String, Map<String, float[][]>> stows, Map<String, Map<String, Map<String, float[][]>>> stowsOther,
-		Map<String, Map<String, List<WeaponClip>>> weaponClips, Map<String, Map<String, String>> clipNames) {
+		Map<String, Map<String, List<WeaponClip>>> weaponClips, Map<String, Map<String, String>> clipNames,
+		@Nullable Set<Integer> stowPieces) {
+		/**
+		 * Whether a weapon piece of this geoset bit goes with the stow windows where a clip has no geoset mask: all of them
+		 * unless the data names which ("stowPieces": Juno's Mediblaster, bit 1, follows its cell's slot E709 in Listen Up
+		 * and Salty; her torpedo pod has no slot the emotes put away).
+		 */
+		public boolean stowsPiece(int bit) {
+			return stowPieces == null || stowPieces.contains(bit);
+		}
+
 		/** The weapon's own clip playing at this point of the emote clip, or null (it holds its usual pose). */
 		public @Nullable WeaponClip weaponClip(String emote, @Nullable String clip, float at, String weapon) {
 			Map<String, List<WeaponClip>> clips = weaponClips.get(emote);
@@ -325,6 +335,13 @@ public final class EmoteData {
 				pieceGeosets.put(piece.getKey(), piece.getValue().getAsInt());
 			}
 		}
+		Set<Integer> stowPieces = null;
+		if (json.has("stowPieces")) {
+			stowPieces = new java.util.HashSet<>();
+			for (JsonElement bit : json.getAsJsonArray("stowPieces")) {
+				stowPieces.add(bit.getAsInt());
+			}
+		}
 		Map<String, Hardpoint> hardpoints = new HashMap<>();
 		for (Map.Entry<String, JsonElement> hp : json.getAsJsonObject("hardpoints").entrySet()) {
 			JsonObject h = hp.getValue().getAsJsonObject();
@@ -334,7 +351,7 @@ public final class EmoteData {
 				new Vector3f(t.get(0).getAsFloat(), t.get(1).getAsFloat(), t.get(2).getAsFloat()),
 				new Quaternionf(q.get(0).getAsFloat(), q.get(1).getAsFloat(), q.get(2).getAsFloat(), q.get(3).getAsFloat()).normalize()));
 		}
-		return new Emotes(emotes, geosets, pieceGeosets, hardpoints, events, stows, stowsOther, weaponClips, clipNames);
+		return new Emotes(emotes, geosets, pieceGeosets, hardpoints, events, stows, stowsOther, weaponClips, clipNames, stowPieces);
 	}
 
 	/** A clip's stow windows under this key ([start, end] in the clip's seconds), none when it has no such key. */
