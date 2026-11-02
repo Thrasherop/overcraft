@@ -155,8 +155,25 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
   [hand_play](../testing/hand_play.md#release-play-0329-2026-11-02)). In the after-terrain phase they're depth-tested
   against the translucent terrain drawn before them, as vanilla particles are without Improved Transparency: Brigitte's
   barrier seen through a stained-glass window isn't drawn.
-- **Improved Transparency (F3+X, or the video option) crashes with our render types:** `overcraft_hero_shadow_mark` has
-  no OIT pipelines. Every blended type submitted to a translucent phase needs them before that option can work.
+  Since e73fe79 only effects at a liquid's surface go there (`Fx.atLiquid`); the rest draw before the translucent
+  terrain again and the glass tints them (second pass: Suzu, the barrier, Sound Barrier, Purr, Ana's grenade,
+  Valkyrie, Orbital Ray behind glass, water and ice all tinted, not gone).
+- **Improved Transparency (F3+X, or the video option) and our render types** (Minecraft's `SubmitNodeCollection`, 26.3):
+  with it on, every blended phase is one `oitTranslucent` phase drawn through each type's `OitPipelineSet`
+  (`PreparedRenderType.drawFromBufferOit`), so:
+  - a blended type without an OIT set crashes the frame ("does not have OIT pipelines set up": the hero shadow, fixed
+    in 955e13c);
+  - **a type counts as blended only if its pipeline has a colour target with a blend function**
+    (`RenderType.hasBlending`). `ENTITY_SHADOW_SNIPPET` has none (vanilla's `ENTITY_SHADOW` adds
+    `BlendFunction.TRANSLUCENT`), so a pipeline built from the bare snippet went to the solid pass and crashed it
+    ("Render pass color attachment count must match pipeline color target state count", the first third-person frame
+    with a hero's shadow: the 0.3.29 second pass). `HERO_SHADOW_PLAIN` now sets it;
+  - **additive effects need Minecraft's additive OIT form**: an `OitPipelineSet` built with the `OIT_ADDITIVE` define
+    (as its lightning, energy swirl and dragon rays are), which adds light and covers nothing. With the alpha-blended
+    `OIT_ENTITY_EMISSIVE` every effect quad's black texels covered the scene: Orbital Ray was a black square with a
+    ring. `FxRender.ADDITIVE_OIT` is the entity shader with the effect pipeline's defines plus `OIT_ADDITIVE`.
+  Played with it on: a world joined with it saved on, seven heroes' effects through glass and water, third person and
+  body shadows, then off again (`sheet_b_it_on_fixed.png`).
 - **Attached particles and slow frames:** `Fx.attach` holds a particle at `life x (1 - fadeOut)` each client tick, but
   `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
   field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).

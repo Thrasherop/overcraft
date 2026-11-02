@@ -102,7 +102,9 @@ public final class ClientMercy {
 			return false;
 		}
 		double window = launchedInValkyrie ? MercyStats.GA_LAUNCH_STATE_VALKYRIE : MercyStats.GA_LAUNCH_STATE;
-		return entity.level().getGameTime() - launchedAt < window * 20;
+		// launchedAt starts at Long.MIN_VALUE: "now - launchedAt" overflowed negative and read as "just launched" until her
+		// first launch (Valkyrie flew at 22 m/s, not 9: the 0.3.29 release play)
+		return launchedAt != Long.MIN_VALUE && entity.level().getGameTime() - launchedAt < window * 20;
 	}
 
 	/**
@@ -173,7 +175,7 @@ public final class ClientMercy {
 				askedAt = now;
 				early = null;
 			}
-			if ((jumpPressed || crouchPressed) && now - askedAt <= earlyTicks) {
+			if ((jumpPressed || crouchPressed) && askedAt != Long.MIN_VALUE && now - askedAt <= earlyTicks) {
 				early = crouchPressed ? Action.CROUCH : Action.JUMP;
 				earlyAt = now;
 			}

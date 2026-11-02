@@ -52,5 +52,10 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
 - **Valkyrie drifts.** Her mover's air drag is every hero's 0.35/s, so with no input she coasts (9 to 4.7 m/s in
   1.9 s), and a super jump keeps rising for most of the ult (about 40 m). That is the data; whether it matches the game
   is for the owner's play.
+- **Valkyrie flew at 22 m/s until her first launch** (0.3.29 release play, second pass): `ClientMercy.launchedAt` starts
+  at `Long.MIN_VALUE`, so `now - launchedAt` overflowed negative and read as "just launched": the 0.5 s undamped window
+  (x2.4444) held from her first Valkyrie until she launched once. A start value must never be used in a subtraction:
+  it's tested first now (and `askedAt`'s the same). After the fix: 8.98 m/s forward and 8.97 up, a launch from Guardian
+  Angel in Valkyrie still peaks at 25.8 m/s.
 - **Her shots leave her first-person blaster's muzzle** (0.16 m right, 0.11 down, 0.71 ahead of the eyes, measured
   from the posed view model, the same at every pitch): her data launches each volley from the blaster's hp 0006.

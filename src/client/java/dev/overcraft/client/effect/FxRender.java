@@ -44,6 +44,19 @@ public final class FxRender {
 		.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
 		.build());
 
+	/**
+	 * The same under Improved Transparency: Minecraft's own additive form (OIT_ADDITIVE, as its lightning and energy swirl
+	 * have), adding light without covering what's behind. With the emissive entity set (alpha-blended) every effect's quad
+	 * covered the scene with its black texels: Orbital Ray a black square (found in the 0.3.29 second pass).
+	 */
+	private static final net.minecraft.client.renderer.oit.OitPipelineSet ADDITIVE_OIT = RenderPipelines.register(
+		net.minecraft.client.renderer.oit.OitPipelineSet.builder("overcraft_effect_additive", RenderPipeline.builder(RenderPipelines.OIT_ENTITY_SNIPPET)
+			.withShaderDefine("EMISSIVE")
+			.withShaderDefine("NO_OVERLAY")
+			.withShaderDefine("NO_CARDINAL_LIGHTING")
+			.withShaderDefine("OIT_ADDITIVE")
+			.withCull(false)).build());
+
 	private static final Map<Identifier, RenderType> ADDITIVE_TYPES = new HashMap<>();
 
 	/**
@@ -93,6 +106,9 @@ public final class FxRender {
 		.withLocation(Overcraft.id("pipeline/hero_shadow_plain"))
 		.withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
 		.withCull(false)
+		// blended, as Minecraft's ENTITY_SHADOW: the snippet has no colour target, and a type with none counts as unblended,
+		// goes to the solid phase and crashes it ("color attachment count must match": found in the 0.3.29 second pass)
+		.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 		.build());
 	private static final net.minecraft.client.renderer.oit.OitPipelineSet HERO_SHADOW_OIT = RenderPipelines.register(
 		net.minecraft.client.renderer.oit.OitPipelineSet.builder("overcraft_hero_shadow",
@@ -154,7 +170,7 @@ public final class FxRender {
 
 	public static RenderType additive(Identifier texture) {
 		return ADDITIVE_TYPES.computeIfAbsent(texture, t -> RenderType.create("overcraft_effect_additive",
-			RenderSetup.builder(ADDITIVE).setOitPipelines(RenderPipelines.OIT_ENTITY_EMISSIVE)
+			RenderSetup.builder(ADDITIVE).setOitPipelines(ADDITIVE_OIT)
 				.withTexture("Sampler0", t).useLightmap().useOverlay().sortOnUpload().createRenderSetup()));
 	}
 
