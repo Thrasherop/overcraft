@@ -64,8 +64,14 @@ public final class Skeleton {
 	}
 
 	/**
-	 * Adds an additive clip (Overwatch's 4-* layers: breathing, sway, walk bob) at {@code time} on top of {@code pose},
-	 * scaled by {@code weight}: its translations add, its rotations turn the bone further in its own frame.
+	 * Adds an additive clip (Overwatch's additive layers: breathing, sway, walk bob, aim) at {@code time} on top of
+	 * {@code pose}, scaled by {@code weight}. Each keyed bone's delta is composed after its pose, as one transform: base x
+	 * delta. Its turn turns the bone further in its own frame, and its offset is taken in the bone's own frame too
+	 * (turned by the bone's pose before this clip's turn), not added in the parent's. That is how the io_scene_owm
+	 * add-on imports an additive clip (BLAnimation.populateActionAdditive: basis @ delta), and what the data shows:
+	 * mirrored pairs (Juno's torpedo pods 3CFB / 3CFC, the second turned 180 degrees about X; her 1P 2C1D / 2C1E; the
+	 * clavicles of Sombra's 1P knockdown) carry deltas that are exact mirror images only read in each bone's frame
+	 * (techniques/animation/additive_clips.md, #75).
 	 */
 	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight) {
 		addAdditive(clip, time, pose, weight, null);
@@ -73,28 +79,16 @@ public final class Skeleton {
 
 	/** The same, on the nodes in {@code mask} only (all when null). */
 	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight, boolean @Nullable [] mask) {
-		addAdditive(clip, time, pose, weight, mask, false);
-	}
-
-	/**
-	 * The same; {@code localOffsets}: its offsets taken in each bone's own frame (turned by the bone's pose), as its turns
-	 * already are. Juno's torpedo pods (a mirrored pair, 3CFB / 3CFC, the second turned 180 degrees about X) open as a mirror
-	 * pair only that way (one went up, one down); whether every additive clip wants it is open (#75).
-	 */
-	public static void addAdditive(SkinnedModel.Clip clip, float time, Pose pose, float weight, boolean @Nullable [] mask,
-		boolean localOffsets) {
 		if (weight <= 0) {
 			return;
 		}
 		Pose delta = new Pose(pose.t.length);
 		sample(clip, time, delta);
 		Quaternionf none = new Quaternionf();
-		// (by the base pose's turn, before this clip's own: the turn and offset as one transform, base x delta)
-		Quaternionf[] base = localOffsets ? new Quaternionf[pose.r.length] : null;
-		if (base != null) {
-			for (int i = 0; i < base.length; i++) {
-				base[i] = new Quaternionf(pose.r[i]);
-			}
+		// the base pose's turns, before this clip's own (a clip's turn channel may come before its offset channel)
+		Quaternionf[] base = new Quaternionf[pose.r.length];
+		for (int i = 0; i < base.length; i++) {
+			base[i] = new Quaternionf(pose.r[i]);
 		}
 		for (SkinnedModel.Channel ch : clip.channels()) {
 			int i = ch.node();
@@ -102,10 +96,7 @@ public final class Skeleton {
 				continue;
 			}
 			switch (ch.path()) {
-				case 'T' -> {
-					Vector3f d = new Vector3f(delta.t[i]).mul(weight);
-					pose.t[i].add(base != null ? base[i].transform(d) : d);
-				}
+				case 'T' -> pose.t[i].add(base[i].transform(new Vector3f(delta.t[i]).mul(weight)));
 				case 'R' -> pose.r[i].mul(new Quaternionf(none).slerp(delta.r[i], weight)).normalize();
 				default -> {
 				}
