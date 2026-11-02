@@ -1,0 +1,60 @@
+# D.Va the pilot, first person (model 00000000F32B.00C on Gameplay1P 040B, base 1D50; set 0476; eye 1.32 m, crouched 0.8).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\dva\scripts\clipmaps_dva.py from the
+# compacted blend-tree sets (research\dva\work\clipmap_dva\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_0000000030B3 = stance_air_sm0_se0   # 0.1667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[0]; on 2 paths
+0-36_0000000030B4 = stance_air_sm0_se1   # 0.4 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[1]; on 4 paths
+0-60_0000000030AA = stance_crouch_move   # 0.0667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat65; on 4 paths
+0-36_0000000030C0 = stance_move   # 0.6667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat5; on 2 paths
+0-60_0000000030B6 = stance_stand   # 0.0333 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=default[4]; on 2 paths
+0-36_0000000030AB = stance   # 0.2333 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18:tr[4, 3>2, 1]; on 2 paths
+4-4_0000000030AE = add_layer_93_sm0   # 0.5 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[0]; on 3 paths
+4-4_0000000030AF = add_layer_93_sm2_ra0   # 0.4667 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[2] rand[0]; on 3 paths
+4-4_0000000030B1 = add_layer_93_sm2_ra1   # 0.4667 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[2] rand[1]; on 3 paths
+4-4_0000000030B0 = add_layer_93_sm2_ra2   # 0.4667 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[2] rand[2]; on 3 paths
+4-4_0000000030B2 = add_layer_93_sm2_ra3   # 0.4667 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[2] rand[3]; on 3 paths
+4-28_0000000030AD = add_layer_93   # 0.0333 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 +add(df32); on 3 paths
+4-4_00000000318C = add_stance_sm2_crouch_move   # 0.6667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18:+add() sm[2] df18=cat65; on 3 paths
+4-4_0000000030A9 = add_stance_sm2_crouch   # 2.1 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18:+add() sm[2] df18=cat66; on 4 paths
+4-4_0000000030AC = add_stance_sm2   # 0.2667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18:+add() sm[2] df18:tr[2, 1>4, 3]; on 2 paths
+4-6_0000000030C1 = add_layer_a2   # 0.1667 s; set 0476 alias A2 (1P (L)); +add(df102) @140 @A2; on 3 paths
+4-6_0000000030A7 = add_layer_a2_2   # 0.6667 s; set 0476 alias A2 (1P (L)); +add(df102) @140 @A2 +add(); on 3 paths
+4-4_0000000030A8 = add_layer_a2_3   # 1 s; set 0476 alias A2 (1P (L)); +add(df102) @140 @A2 +add() +add(); on 3 paths
+4-20_000000000C63 = add_layer_140_sm0_sm0   # 1.3333 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add(dfBC4) sm[0] sm[0]; on 4 paths
+4-4_000000005687 = add_layer_140_tr041   # 0.6667 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add(dfBC4) tr[0, 4>1]; on 2 paths
+4-4_000000003B47 = add_layer_140_sm0_sm0_2   # 0.5667 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add() sm[0] sm[0]; on 4 paths
+4-20_000000003B43 = add_layer_140_sm1_sm0_se0_sm0   # 0.3333 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add() sm[1] sm[0] seq[0] sm[0]; on 2 paths
+4-20_000000003B44 = add_layer_140_sm1_sm0_se0_sm1   # 0.3333 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add() sm[1] sm[0] seq[0] sm[1]; on 4 paths
+4-20_000000003B45 = add_layer_140_sm1_tr01   # 0.4333 s; set 0476 alias 140 (1P generic layer (L)); +add(df102) @140 +add() sm[1] tr[0>1]; on 2 paths
+0-36_000000000AB8 = draw   # 0.5333 s; set 0476 alias A9 (weapon draw (0015 #34) (L)); dfE4=cat7D @811D8077
+0-32_0000000030B9 = melee   # 0.8667 s; set 0476 alias D (quick melee (0043 #117, cat 6A) (H)); -
+0-36_0000000030BB = reload   # 1.5333 s; set 0476 alias 4 (Light Gun reload (02B8 #141) (H)); -
+0-32_000000003134 = call_mech_sm0   # 2 s; set 0476 alias E5 (Call Mech landing / getting in (mech 0276 #309 / #316, pilot 026A #405) (H)); ik ik sm[0]; on 2 paths
+0-36_00000000337E = stun   # 0.6667 s; set 0476 alias 70 (shared CC); -
+0-36_000000003531 = call_mech_cast_sm0   # 0.0667 s; set 0476 alias 433 (Call Mech, its first 0.2 s (026A #347) (H)); ik ik sm[0]; on 2 paths
+0-36_000000003650 = hello   # 1 s; set 0476 alias 1EE (the comms wheel's Hello); -
+4-4_00000000368A = add_hello_add   # 1 s; set 0476 alias 2DE (Hello additive); -
+0-36_00000000895C = a726   # 0.1667 s; set 0476 alias 726 (L); -
+0-36_00000000895B = a6d1   # 0.4 s; set 0476 alias 6D1 (L); -
+0-36_00000000895A = a6d2   # 0.5 s; set 0476 alias 6D2 (L); -
+4-4_000000000C4F = add_sway_sm0_sm0_up   # 1.2333 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[0] blend1d(dfF0) 1d@1.0
+4-4_0000000000F4 = add_sway_sm0_sm1   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[1] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F2 = add_sway_sm0_sm1_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[1] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000F5 = add_sway_sm0_sm2   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[2] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F3 = add_sway_sm0_sm2_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[2] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EB = add_sway_sm0_sm3   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[3] blend1d({'bound': '000000000044.013'})
+4-4_000000000074 = add_sway_sm0_sm3_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[3] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000E9 = add_sway_sm0_sm4   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[4] blend1d({'bound': '000000000044.013'})
+4-4_000000000076 = add_sway_sm0_sm4_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[4] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EC = add_sway_sm0_sm5   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[5] blend1d({'bound': '000000000044.013'})
+4-4_000000000075 = add_sway_sm0_sm5_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[5] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EA = add_sway_sm0_sm6   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[6] blend1d({'bound': '000000000044.013'})
+4-4_000000000073 = add_sway_sm0_sm6_up   # 0.5 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[6] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-6_0000000000F6 = add_sway   # 0.1667 s; set 0476 alias C8 (1P weapon sway (shared clips, as every hero's)); +add()
+4-4_000000000958 = add_knockdown_end   # 1 s; set 0476 alias 66 (shared CC); -; on 2 paths
+4-4_000000000959 = add_knockdown   # 0.6667 s; set 0476 alias 65 (shared CC); -; on 2 paths
+4-4_000000000957 = add_knockdown_start   # 1 s; set 0476 alias 64 (shared CC (224E)); -; on 2 paths
+# Extracted under this model but in none of its sets (7, not named): 000DE2 0030B5 0030BA 0030BE 003380 00395B 00895D

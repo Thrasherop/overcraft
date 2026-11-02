@@ -54,7 +54,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
   [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero,
-  being built).
+  being built); [dva](heroes/dva.md), hers (the second Tank, after Sigma's on feature/sigma; two bodies; researched).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:
@@ -64,5 +64,6 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - [sounds-round8](../tools/reference/sounds-round8.md), [music-round9](../tools/reference/music-round9.md).
 - [movement](../tools/reference/movement.md), [perks](../tools/reference/perks.md),
   [fonts](../tools/reference/fonts.md), [comms-reference](../tools/reference/comms-reference.md),
-  [lucio](../tools/reference/lucio.md).
+  [lucio](../tools/reference/lucio.md); D.Va's [dva](../tools/reference/dva.md), [dva-map](../tools/reference/dva-map.md),
+  [dva-plan](../tools/reference/dva-plan.md).
 - The critiques (`critique-*.md`).

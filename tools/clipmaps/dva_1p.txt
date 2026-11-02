@@ -1,0 +1,83 @@
+# D.Va's MEKA, first person (model 000000010354.00C on entity 041F, base 18B4; set 019B; eye 1.74 m).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\dva\scripts\clipmaps_dva.py from the
+# compacted blend-tree sets (research\dva\work\clipmap_dva\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_000000003190 = a98_move   # 1.0667 s; set 019B alias 98 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=cat1A5 @98 df18=cat5; on 7 paths
+0-60_000000003174 = a98_stand   # 1 s; set 019B alias 98 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=cat1A5 @98 df18=cat9; on 8 paths
+0-36_00000000318B = a99_move   # 0.7333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat5; on 7 paths
+0-60_00000000237D = a99_stand   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat9; on 7 paths
+4-28_0000000036CC = add_a99_sm0   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s0; on 7 paths
+4-28_0000000036CD = add_a99_sm0_2   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s1; on 7 paths
+4-28_0000000036CF = add_a99_sm0_3   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s2; on 7 paths
+4-28_0000000036CE = add_a99_sm0_4   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s3; on 7 paths
+4-28_0000000036D0 = add_a99_sm1   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[1]; on 7 paths
+4-6_0000000032A2 = add_a99   # 0.4667 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 +add({'bound': None}) @8066C07D +add(); on 7 paths
+4-4_000000003528 = add_stance_sm0_sm0_se0   # 0.0667 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 +add({'bound': None}) @8066C0E1 sm[0] seq[0]; on 5 paths
+4-4_000000003529 = add_stance_sm0_sm0_se1   # 0.5667 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 +add({'bound': None}) @8066C0E1 sm[0] seq[1]; on 10 paths
+0-36_0000000033F0 = stance_sm1   # 0.4 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 sm[1] @8066C0ED dfE5:tr[0>1]; on 3 paths
+0-36_0000000033F6 = stance_sm1_2   # 0.2667 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 sm[1] @8066C0ED dfE5:tr[1>0]; on 3 paths
+4-4_0000000033F5 = add_stance   # 4 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 +add(); on 5 paths
+4-4_000000003194 = add_stance_tr01   # 0.3 s; set 019B alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); @2 sel[4] @8066C085 @85 +add() tr[0>1]; on 5 paths
+4-6_0000000032A1 = add_base_se4   # 0.4333 s; set 019B alias 2 (the base tree (locomotion + layers)); @2 sel[4] @8066C085 +add({'bound': None}) @8066C07E @8066C07F; on 4 paths
+4-6_00000000329E = add_base_se4_2   # 0.9667 s; set 019B alias 2 (the base tree (locomotion + layers)); @2 sel[4] @8066C085 +add({'bound': None}) @8066C07E @8066C07F +add(); on 4 paths
+4-6_0000000031F1 = add_base_se4_3   # 0.3333 s; set 019B alias 2 (the base tree (locomotion + layers)); @2 sel[4] @8066C085 +add({'bound': None}) @8066C07E +add({'bound': None}) @8066C0F4 @8066C080; on 8 paths
+4-6_000000003253 = add_base_se4_4   # 0.4667 s; set 019B alias 2 (the base tree (locomotion + layers)); @2 sel[4] @8066C085 +add({'bound': None}) @8066C07E +add({'bound': None}) @8066C0F4 @8066C080 +add(); on 4 paths
+4-4_0000000035C4 = add_a43c_se0_ra0   # 1 s; set 019B alias 43C (shared (02C5 #277, L)); @2 +add(df102) @8066C0F7 @8066C0FC sm[0] +add() @43C seq[0] rand[0]; on 3 paths
+4-4_00000000362E = add_a43c_se0_ra1   # 1 s; set 019B alias 43C (shared (02C5 #277, L)); @2 +add(df102) @8066C0F7 @8066C0FC sm[0] +add() @43C seq[0] rand[1]; on 3 paths
+4-4_0000000035C5 = add_a43c_se0_ra2   # 1 s; set 019B alias 43C (shared (02C5 #277, L)); @2 +add(df102) @8066C0F7 @8066C0FC sm[0] +add() @43C seq[0] rand[2]; on 3 paths
+4-4_00000000362F = add_a43c_se0_ra3   # 1 s; set 019B alias 43C (shared (02C5 #277, L)); @2 +add(df102) @8066C0F7 @8066C0FC sm[0] +add() @43C seq[0] rand[3]; on 3 paths
+4-20_000000000C63 = add_layer_140_sm0_sm0   # 1.3333 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add(dfBC4) sm[0] sm[0]; on 6 paths
+4-4_000000005687 = add_layer_140_tr041   # 0.6667 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add(dfBC4) tr[0, 4>1]; on 3 paths
+4-4_000000003B47 = add_layer_140_sm0_sm0_2   # 0.5667 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add() sm[0] sm[0]; on 6 paths
+4-20_000000003B43 = add_layer_140_sm1_sm0_se0_sm0   # 0.3333 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add() sm[1] sm[0] seq[0] sm[0]; on 3 paths
+4-20_000000003B44 = add_layer_140_sm1_sm0_se0_sm1   # 0.3333 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add() sm[1] sm[0] seq[0] sm[1]; on 6 paths
+4-20_000000003B45 = add_layer_140_sm1_tr01   # 0.4333 s; set 019B alias 140 (1P generic layer (L)); @2 +add(df102) @8066C0F7 +add({'bound': None}) @140 +add() sm[1] tr[0>1]; on 3 paths
+4-0_000000003144 = add_a_a_sm0   # 0.6 s; set 019B alias A (L); +add() @A @8066C142 sm[0]; on 10 paths
+4-0_000000003143 = add_a_a_sm0_2   # 0.6 s; set 019B alias A (L); +add() @A +add({'bound': None}) @8066C143 sm[0]; on 10 paths
+0-36_0000000033CF = self_destruct   # 0.6 s; set 019B alias 175 (Self-Destruct (0B2F #300) (H)); -
+0-36_00000000338D = boosters   # 1 s; set 019B alias 3BB (Boosters flight / end (047E #145 / #194) (H)); @8066C08A df19E=default[0]; on 2 paths
+0-36_000000003313 = boosters_se0   # 0.3667 s; set 019B alias 3BB (Boosters flight / end (047E #145 / #194) (H)); @8066C08A df19E=default[2] seq[0]
+0-36_00000000318A = boosters_se1   # 0.6667 s; set 019B alias 3BB (Boosters flight / end (047E #145 / #194) (H)); @8066C08A df19E=default[2] seq[1] @8066C090
+4-6_00000000329F = add_boosters   # 2.0333 s; set 019B alias 3BB (Boosters flight / end (047E #145 / #194) (H)); +add({'bound': None}) @8066C088 +add()
+0-36_00000000352D = fusion_se0   # 0.3333 s; set 019B alias A5 (Fusion Cannons fire / end (050A #349 / #352) (H)); seq[0]
+0-36_00000000334B = fusion_se1   # 2 s; set 019B alias A5 (Fusion Cannons fire / end (050A #349 / #352) (H)); seq[1] df1F9=cat82
+0-36_000000003329 = mech_spawn_sm0   # 1 s; set 019B alias 435 (the mech's spawn (0276 #176) (H)); ik ik sm[0]; on 2 paths
+0-36_0000000034E4 = a13   # 0.8 s; set 019B alias 13 (1P (L)); rand[0] @13; on 2 paths
+0-36_0000000034E5 = aim   # 0.8 s; set 019B alias 9D (1D blend -1 / 0 / +1 (L: aim pitch)); rand[1] @9D; on 2 paths
+0-36_0000000034E8 = knockdown_start   # 1.1667 s; set 019B alias 64 (shared CC (224E)); -
+0-36_0000000034EA = knockdown_end   # 1 s; set 019B alias 66 (shared CC); -
+0-36_0000000034E9 = knockdown   # 1 s; set 019B alias 65 (shared CC); -
+0-36_0000000034EB = stun   # 0.6 s; set 019B alias 70 (shared CC); -
+0-36_000000003532 = hello   # 1.1667 s; set 019B alias 1EE (the comms wheel's Hello); -
+0-36_00000000334E = defense_matrix   # 0.3333 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); @8066C0F9 df1A0=default[0]; on 4 paths
+0-36_00000000334D = defense_matrix_se0   # 0.3333 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); @8066C0F9 df1A0=default[2] seq[0]; on 2 paths
+0-60_00000000331C = defense_matrix_se1_sm0   # 0.0333 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); @8066C0F9 df1A0=default[2] seq[1] @8066C08B sm[0]; on 2 paths
+0-36_00000000331D = defense_matrix_se1_sm1   # 1.6667 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); @8066C0F9 df1A0=default[2] seq[1] @8066C08B sm[1]; on 2 paths
+4-6_0000000035ED = add_defense_matrix   # 2.0333 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); +add({'bound': None}) @8066C0E8 df583=cat1B9 @8066C0E9 @8066C0F5 +add(); on 2 paths
+4-4_000000003534 = add_defense_matrix_2   # 0.6667 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); +add({'bound': None}) @8066C0E8 df583=cat1B9 @8066C0E9 +add({'bound': None}) @8066C0EC; on 2 paths
+4-4_00000000338B = add_defense_matrix_sm2_move   # 0.7333 s; set 019B alias 3F6 (Defense Matrix active / end (02CC #355 / #356) (H)); +add({'bound': None}) @8066C0E8 df583=default[1] @8066C0DF @8066C0DB df18:+add() sm[2] df18=cat5; on 2 paths
+0-36_00000000334A = destroyed   # 7.6667 s; set 019B alias 8 (the mech destroyed (0276 #482) (H)); -
+0-36_000000008B94 = a726   # 0.1667 s; set 019B alias 726 (L); -
+0-36_000000008B92 = a6d1   # 0.4 s; set 019B alias 6D1 (L); -
+0-36_000000008B93 = a6d2   # 0.5 s; set 019B alias 6D2 (L); -
+4-4_000000000C4F = add_sway_sm0_sm0_up   # 1.2333 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[0] blend1d(dfF0) 1d@1.0
+4-4_0000000000F4 = add_sway_sm0_sm1   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[1] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F2 = add_sway_sm0_sm1_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[1] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000F5 = add_sway_sm0_sm2   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[2] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F3 = add_sway_sm0_sm2_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[2] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EB = add_sway_sm0_sm3   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[3] blend1d({'bound': '000000000044.013'})
+4-4_000000000074 = add_sway_sm0_sm3_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[3] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000E9 = add_sway_sm0_sm4   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[4] blend1d({'bound': '000000000044.013'})
+4-4_000000000076 = add_sway_sm0_sm4_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[4] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EC = add_sway_sm0_sm5   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[5] blend1d({'bound': '000000000044.013'})
+4-4_000000000075 = add_sway_sm0_sm5_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[5] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EA = add_sway_sm0_sm6   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[6] blend1d({'bound': '000000000044.013'})
+4-4_000000000073 = add_sway_sm0_sm6_up   # 0.5 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); sm[0] sm[6] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-6_0000000000F6 = add_sway   # 0.1667 s; set 019B alias C8 (1P weapon sway (shared clips, as every hero's)); +add()
+4-4_000000000957 = add_knockdown_shared   # 1 s; set 019B alias 1DE (); -
+4-4_000000000959 = add_knockdown_shared_2   # 0.6667 s; set 019B alias 1DF (); -
+4-4_000000000958 = add_knockdown_shared_3   # 1 s; set 019B alias 1E0 (); -
+# Extracted under this model but in none of its sets (3, not named): 0033D0 00395B 008B90

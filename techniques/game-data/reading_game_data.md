@@ -117,6 +117,22 @@ From [juno-effects](../../tools/reference/juno-effects.md) (scripts `research\ju
 - **List the clips' effects up front** with `fx_juno_clipfx.py` (159 of her clips name one): most are footstep / camera-shake ones,
   so pick the ability clips by the clip map's state names.
 
+## A hero with two bodies (D.Va's pass, 2026-11-02)
+From [dva-map](../../tools/reference/dva-map.md) (scripts `research\dva\scripts\`, Sigma's retargeted):
+- **The hero entity can be only one of the bodies.** D.Va's hero entity 040A is the pilot; the MEKA is a pet (0407, STUPetComponent) with
+  its own mover, values graph, ability graphs and weapon manager, spawned by Call Mech. Crawl from the hero file *and* from every entity
+  its graphs spawn, run `varvalues.py` once per values graph (`G=<graph>`), and read the link state (026A #98: control to the pet, rider
+  attached and untargetable) before deciding how the mod models it.
+- **Value names mislead more on an older hero.** Of D.Va's values, 1185 "11" is a pellet count, 0404 "Micro Missile Cooldown" a fire rate,
+  03BE "Self-Destruct Damage Min" Call Mech's damage, 1B57 / 1B58 "Boosters Duration" the wreck's timers, 0C6A "Outer Radius" a fuse. Name
+  each by its reader node.
+- **StateModifyHealth's x60671788 isn't always a share:** Self-Destruct's flat 1000 uses it (Sigma's barrier read it as a percent). Check the
+  amount's scale before calling it either.
+- **A heal can carry the knockback:** the eject's launch is the 9999 heal's knockback pair (6 / 7). Search heals as well as damage for
+  m_E33EFEE1 / m_583C208B.
+- **Splitting the reading between agents by body worked** (two readers, about 25 minutes each); where they differed, the one reading the graph
+  that owns the transition was right. Brief each with the entity list and which graphs are whose.
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent
