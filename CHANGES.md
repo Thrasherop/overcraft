@@ -6,6 +6,31 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-01
 
+### Build 0.3.28 (Juno, the ninth hero)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.28): Juno's model (`tools/clipmaps/juno*.txt`: one body for
+both views, her gun and torpedo pod as geosets), her emote clips (`juno_clips.txt` into `juno_clips.glb`) and emote props
+(`props <extraction> juno`), her effects' masks and meshes (`effects`: the ring, the ray's half shells and disc), her
+sounds, voice, emote sounds and Voice Lines (`sounds`), then `zip`.
+- **Juno, the ninth hero** (#1), Support, Survivor, from her game data, the public numbers and the owner's Workshop
+  recording (`JunoStats`, each number with its source): 75 health and 150 shields.
+  - **Martian Mediblaster** (left button): volleys of 12 rounds, 7.5 damage (x1.5 to the head) or 6 healing each, 180
+    rounds, 1.5 s reload.
+  - **Pulsar Torpedoes** (right button, held to lock, then left to fire): up to 40 m, locks in 0.35-1.0 s by distance;
+    85 to each enemy, 85 at once and 50 over 2.5 s to each ally; 10 s cooldown, 2 s if none was locked.
+  - **Martian Overboots** (passive): a double jump (10.8 m/s up), and holding jump in the air slows her fall to 3 m/s; no fall damage.
+  - **Glide Boost** (Shift): +14 m/s, easing to 7.7 m/s, 4 s of level flight that climbs walls and stairs; 6 s cooldown.
+  - **Hyper Ring** (E): a ring thrown ahead; allies crossing it get +50% speed for 3 s.
+  - **Orbital Ray** (Q): an 8 m ray landed ahead that walks forward for 8 s, 85 healing a second and +30% damage to allies
+    inside.
+  - **Perks:** Familiar Vitals, Locked On, Faster Blaster, Lift Off.
+  - Her animations, effects, sounds and voice from her data; her emotes with their props and sounds; her Voice Lines on
+    the communication wheel.
+- **Brigitte's Shield Bash** as recorded in the real game (#76): 25.85 m/s for 0.256 s with gravity, then 15 m/s bleeding
+  off.
+- **Jetpack Cat's flight** as recorded (#60): its speed-up, slowing and boost curves.
+- **A quick click is no longer lost** (every hero): at a low frame rate a click's press and release could reach the server
+  between two ticks, and the hero never fired (found in Juno's release play).
+
 ### Build 0.3.27 (Brigitte, the eighth hero)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.27): Brigitte's models (`tools/clipmaps/brigitte*.txt`: her
 body, first-person arms, flail, flail head and shield; the flail, head and shield with their emote clips through
