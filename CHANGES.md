@@ -6,6 +6,25 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-02
 
+### Build 0.3.30 (Sojourn, the tenth hero)
+**The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.30): Sojourn's models (`tools/clipmaps/sojourn*.txt`: her body, first-person
+arms and Railgun with its emote clips), her emote clips (`sojourn_clips.txt` into `sojourn_clips.glb`), her emote props (`props
+<extraction> sojourn`), her effects' masks (`effects`), her sounds, voice, emote sounds and voice lines (`sounds`), then `zip`.
+- **Sojourn, the tenth hero and the first Damage hero** (#2), Sharpshooter, from her game data and the public numbers
+  (`SojournStats`, each number with its source): 225 health.
+  - **Railgun** (left button): 16 rounds a second, 9 damage (x2 to the head), no falloff, 45 rounds; each hit builds
+    **energy** (+5, +10 on a crit) shown under her crosshair.
+  - **Charged Shot** (right button): spends all the energy, 20 + energy damage (x1.5 to the head), through every enemy in
+    a line, stopped by blocks.
+  - **Power Slide** (Shift): a fast low slide, jump out of it for a long, high leap; no fall damage when it lands her.
+  - **Disruptor Shot** (E): a field that deals about 90 a second through armor for 3.5 s.
+  - **Overclock** (Q): her energy fills fast for 8 s.
+  - **Sharpshooter:** crits take time off Power Slide's cooldown. **Perks:** Overcharged, Deceleration Field, Dual
+    Thrusters, Friction Generators.
+  - Her animations, effects, sounds and voice from her data; her 11 emotes with her Railgun and mic as the data places
+    them; her voice lines on the communication wheel.
+- The select screen gains its first group headers beyond Support (Damage); a group is never narrower than its header.
+
 ### Build 0.3.29 (fixes)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.29): the additive animation clips re-exported with
 `tools/owm_survey.py`'s fixed additive test, or patched in place with `tools/neutralize_additive.py` (Lúcio's wall-ride
