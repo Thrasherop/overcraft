@@ -166,10 +166,14 @@ public final class HeroState {
 	public final java.util.List<Integer> junoLocked = new java.util.ArrayList<>();
 	public final java.util.List<Integer> junoFiring = new java.util.ArrayList<>();
 	public double junoFireClock;
+	/** Juno: Locked On's cooldown taken off for this firing (ticks, at most 5 s). */
+	public double junoLockedOn;
 	/** Juno: ticks into Hyper Ring's cast and Orbital Ray's (-1 none). */
 	public int junoRingCast = -1, junoRayCast = -1;
 	/** Juno: her buttons last tick (their presses' edges). */
 	public boolean junoLeftWas, junoRightWas;
+	/** Juno: the left click that ended her lock, still held: it fires nothing. */
+	public boolean junoLeftSpent;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
 	public int whipTicks = -1, whipBackAt;
 	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */

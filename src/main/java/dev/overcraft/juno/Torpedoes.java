@@ -88,7 +88,9 @@ public final class Torpedoes {
 				continue;
 			}
 			// lock time by distance (4B99 #193): 0.35 s at 5 m or nearer, 1.0 s at 40 m; Familiar Vitals x0.65 on allies (step 6)
-			double need = Math.min(LOCK_MAX, LOCK_MAX - (LOCK_MAX - LOCK_MIN) * (40 - d) / 35);
+			double need = Math.min(LOCK_MAX, LOCK_MAX - (LOCK_MAX - LOCK_MIN) * (40 - d) / 35)
+				* (Allies.isAlly(player, e) && dev.overcraft.hero.HeroManager.hasPerk(player, dev.overcraft.hero.Perk.JUNO_FAMILIAR_VITALS)
+					? FAMILIAR_VITALS : 1);
 			int progress = s.junoLockProgress.getOrDefault(id, 0) + 1;
 			s.junoLockProgress.put(id, progress);
 			if (progress >= Ow.ticks(need)) {
@@ -110,6 +112,7 @@ public final class Torpedoes {
 		s.junoFiring.addAll(s.junoLocked);
 		s.junoLocked.clear();
 		s.junoFireClock = 1;
+		s.junoLockedOn = 0;
 		s.ability3Cooldown = Ow.ticks(TORPEDO_COOLDOWN);
 		Combat.animate(player, "torpedo_fire");
 	}
@@ -173,6 +176,7 @@ public final class Torpedoes {
 				Combat.addFireForDamage(f.juno, dealt, Ow.toOw(f.target.getMaxHealth()));
 				if (dealt > 0) {
 					Effects.hitMarker(f.juno, f.target, false);
+					lockedOn(f.juno);
 				}
 			}
 			Effects.play(level, "juno_torpedo_hit", next, Vec3.ZERO, f.target, f.heal ? 1 : 0, f.juno);
@@ -184,6 +188,19 @@ public final class Torpedoes {
 			credit(h.juno, Combat.heal(h.ally, h.perTick));
 			return false;
 		});
+	}
+
+	/** Locked On: an enemy hit takes 1 s off the torpedoes' cooldown, 5 s at most a firing. */
+	private static void lockedOn(ServerPlayer juno) {
+		HeroState s = dev.overcraft.hero.HeroManager.state(juno);
+		if (s == null || !dev.overcraft.hero.HeroManager.hasPerk(juno, dev.overcraft.hero.Perk.JUNO_LOCKED_ON)) {
+			return;
+		}
+		double take = Math.min(Ow.ticks(LOCKED_ON), Ow.ticks(LOCKED_ON_MAX) - s.junoLockedOn);
+		if (take > 0) {
+			s.junoLockedOn += take;
+			s.ability3Cooldown = Math.max(0, s.ability3Cooldown - take);
+		}
 	}
 
 	private static void credit(ServerPlayer juno, float healed) {

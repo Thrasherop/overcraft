@@ -57,9 +57,16 @@ public final class Juno implements HeroKit {
 		}
 		ring(player, s);
 		ray(player, s);
+		boolean locking = s.junoLock >= 0;
 		Torpedoes.tick(player, s, rightPressed, leftPressed);
-		// locking, she can't shoot (W: channeled), and the press that fires the torpedoes isn't a volley
-		if (s.junoLock < 0 && s.junoFiring.isEmpty() && !leftPressed) {
+		// locking, she can't shoot (W: channeled), and the click that ends the lock isn't a volley, held or not (a tap
+		// fired one: found playing)
+		if (locking && leftPressed) {
+			s.junoLeftSpent = true;
+		} else if (!s.primaryHeld) {
+			s.junoLeftSpent = false;
+		}
+		if (s.junoLock < 0 && s.junoFiring.isEmpty() && !s.junoLeftSpent) {
 			Mediblaster.tick(player, s, attack);
 		}
 	}

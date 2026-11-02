@@ -30,6 +30,21 @@ final class Mediblaster {
 		if (s.primaryAmmo == 0 && s.primaryReload < 0 && s.junoVolley == 0) {
 			Juno.startReload(player, s);
 		}
+		if (Juno.gliding(s) && dev.overcraft.hero.HeroManager.hasPerk(player, dev.overcraft.hero.Perk.JUNO_FASTER_BLASTER)) {
+			// Faster Blaster: gliding, it fires on while the button is held, 22 rounds a second, no volleys
+			s.junoVolley = 0;
+			if (s.primaryHeld && s.primaryReload < 0 && s.primaryAmmo > 0) {
+				s.junoVolleyClock += FASTER_BLASTER_RATE / 20 * attack;
+				while (s.junoVolleyClock >= 1 && s.primaryAmmo > 0) {
+					s.junoVolleyClock -= 1;
+					s.primaryAmmo--;
+					round(player);
+				}
+			} else {
+				s.junoVolleyClock = 1;
+			}
+			return;
+		}
 		if (s.junoVolley == 0 && s.primaryHeld && s.weaponRecovery <= 0 && s.primaryReload < 0 && s.primaryAmmo > 0) {
 			// a new volley: its first round at once
 			s.junoVolley = VOLLEY;

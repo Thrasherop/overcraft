@@ -145,6 +145,7 @@ public final class DevServer {
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
 					out.addProperty("ability2Cooldown", s.ability2Cooldown());
+					out.addProperty("ability3Cooldown", s.ability3Cooldown());
 					out.addProperty("vx", player.getDeltaMovement().x);
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);

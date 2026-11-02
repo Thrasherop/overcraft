@@ -76,3 +76,18 @@ Dev client, flat world `juno1`, survival, night; health read with `data get`:
   charge while it runs; the villager full by its end.
 - Ours: the ray's +30 % shares Mercy's damage-boost slot (the two don't add up yet); its speed ramps linear (the data's
   curve M).
+
+## Step 6 (perks), played
+Each perk against its control (`overcraft perks @s 1`: none), picked through the perk menu (perk key held, a click: the
+left button for the first of a tier, the right for the second), dev client, flat world `juno1`, noon:
+- **Familiar Vitals:** a villager at 4 health 30 m ahead, 0.7 s of lock, then the left click: 4 -> 11.9 (85 at once and
+  the heal over time starting); without it 4 -> 4 and the 2 s cancel cooldown (30 m needs 0.81 s, 0.53 with the perk).
+- **Locked On:** two zombies 8 m ahead locked 1.2 s and hit: the torpedoes' cooldown 6.4 s 1.5 s after firing; without it
+  8.4 (-1 s an enemy hit).
+- **Faster Blaster:** the left button held 2 s while gliding: the ammo falling a steady ~2.2 every 0.1 s (42 rounds: 22 a
+  second, no gaps); without it volleys of 12 with the 0.45 s pauses between (36).
+- **Lift Off:** three jump taps 0.35 s apart: the top 7.57 m above the ground; without it 4.23 (the third does nothing).
+- **Found playing (the controls):** the left click that fired or cancelled the torpedoes also fired a Mediblaster volley
+  on the next tick, even a 0.12 s tap: the 30 m villager came out +3.95 with nothing locked (a volley at 65 % falloff).
+  The click that ends the lock now fires nothing until it's let go (`HeroState.junoLeftSpent`); played again: 4 -> 4.
+- The zombies' extra damage (a few points over 85) is the noon sun burning them, not ours.

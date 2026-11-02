@@ -114,4 +114,10 @@ public final class JunoStats {
 
 	// ---- Perks (the live list D 0065.177) ----
 	public static final double PERK_MINOR_XP = 2110, PERK_MAJOR_XP = 2110 + 3165;   // D 12B9 / 12BA; W 2110 / 5275
+	/** Familiar Vitals (minor): locks on allies take this share of the time (D 4B99 #260 x (1 - 0.35); BZ "35% faster"). */
+	public static final double FAMILIAR_VITALS = 0.65;
+	/** Locked On (minor): -1 s of the torpedoes' cooldown per enemy hit (D 522E #357-#360; BZ 2025-08-26), at most 5 s (W). */
+	public static final double LOCKED_ON = 1, LOCKED_ON_MAX = 5;
+	/** Faster Blaster (major): while gliding, the Mediblaster fires on, 22 rounds a second (D #1308-#1316; BZ 2026-06-16 22). */
+	public static final double FASTER_BLASTER_RATE = 22;
 }
