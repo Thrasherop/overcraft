@@ -623,15 +623,10 @@ public final class HeroAnimator {
 	}
 
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
-		additive(model, pose, clipName, action, now, false);
-	}
-
-	/** The same, its offsets in each bone's own frame ({@link Skeleton#addAdditive}'s localOffsets). */
-	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now, boolean localOffsets) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
 		if (clip != null && t >= 0 && t <= clip.duration()) {
-			Skeleton.addAdditive(clip, t, pose, 1, null, localOffsets);
+			Skeleton.addAdditive(clip, t, pose, 1);
 		}
 	}
 
@@ -1223,8 +1218,8 @@ public final class HeroAnimator {
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
-			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now, true);
-			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now, true);
+			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
+			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
 		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
 		additive(model, pose, "add_crossfade_heal", "crossfade_heal", now);

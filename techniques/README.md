@@ -26,6 +26,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Animation**
   - [animation_import](animation/animation_import.md): getting clips out and into the game; frames; additive and
     partial clips; finding the right clip.
+  - [additive_clips](animation/additive_clips.md): which clips are additive (bit 0x4 of the folder), what the
+    exporter does with them, and adding them in the bone's own frame (#75).
   - [cloth](animation/cloth.md): cloth is sometimes animated and sometimes simulated. For Kiriko, see
     [kiriko_cloth](animation/kiriko_cloth.md).
 - **Emotes**

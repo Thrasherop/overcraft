@@ -37,8 +37,9 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
   entering the heal song (CAB): `crossfade_speed` / `crossfade_heal`. 0.2 s after the press, 0.25 s cooldown. Its
   first-person clip only moves the left hand: actions play over the pose under them, or the gun's arm drops away.
 - **Wall ride:** `wallride_left` (2915) has his feet on a wall at his left; in first person the left hand trails the
-  wall (2518). The lean pose sheets (2927 / 29B3, 1P 2519 / 251E: the camera rolls -20..+20 degrees) aren't sampled
-  yet: their layout isn't read.
+  wall (2518). The lean sheets (2927 / 29B3, 1P 2519 / 251E: the camera rolls -20..+20 degrees) aren't sampled
+  yet: their layout isn't read. They are additive (folder 36-38, bit 0x4), and until #75 they were exported with rest
+  values on every bone they don't key: mended in the pack, [additive_clips](../animation/additive_clips.md).
 - **His dreads' hair cards** (material 8052) come out pure black: Overwatch's hair shader colours them. Not drawn.
 - **Not settled:** what df 0x2B (the jump's time) and df 0x1AD (skating's spring) are; which weapon reload (248D at 30
   fps, 26E8 at 60) is which view's; his aim sheet 265E's layout (74 frames, unlike Kiriko's 63); the alternate value
