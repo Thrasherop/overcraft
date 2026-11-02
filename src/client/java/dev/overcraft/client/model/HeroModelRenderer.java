@@ -545,6 +545,14 @@ public final class HeroModelRenderer {
 			// this piece's flattened corners, worked out by the first pass and drawn again by the second; after everything
 			// at the default order, the marks first, so they never meet another hero's darkening
 			ShadowLaid[] laid = new ShadowLaid[1];
+			if (Minecraft.getInstance().gameRenderer.useImprovedTransparency()) {
+				// Improved Transparency: one blended pass through its order-independent pipelines (the two-pass mark and
+				// darken has none, and crashed the frame: "does not have OIT pipelines set up"); overlaps darken more there
+				collector.submitCustomGeometry(poseStack, FxRender.heroShadowOit(), (pose, buffer) -> {
+					emitShadow(mesh, layShadow(piece, mesh, skin, pose, prop, body, lightInModel, shadow), buffer, null);
+				});
+				continue;
+			}
 			collector.order(SHADOW_MARK_ORDER).submitCustomGeometry(poseStack, FxRender.heroShadowMark(), (pose, buffer) -> {
 				long t0 = System.nanoTime();
 				laid[0] = layShadow(piece, mesh, skin, pose, prop, body, lightInModel, shadow);
@@ -661,7 +669,8 @@ public final class HeroModelRenderer {
 	}
 
 	/** One pass of the laid shadow: marking (each corner's mark in its alpha) or darkening (white). */
-	private static void emitShadow(ShadowMesh mesh, ShadowLaid shadow, VertexConsumer buffer, boolean mark) {
+	/** mark: the first pass (alpha 1 - strength), else the second (white); null: one plain pass (black at its strength). */
+	private static void emitShadow(ShadowMesh mesh, ShadowLaid shadow, VertexConsumer buffer, @Nullable Boolean mark) {
 		int[] idx = mesh.indices();
 		float[] laid = shadow.corners();
 		for (int t0 = 0; t0 + 2 < idx.length; t0 += 3) {
@@ -670,9 +679,9 @@ public final class HeroModelRenderer {
 			}
 			for (int k = 0; k < 3; k++) {
 				int v = idx[t0 + k];
-				int alpha = mark ? Math.round(laid[v * 4 + 3] * 255) : 255;
+				int alpha = mark == null ? Math.round((1 - laid[v * 4 + 3]) * 255) : mark ? Math.round(laid[v * 4 + 3] * 255) : 255;
 				buffer.addVertex(laid[v * 4], laid[v * 4 + 1], laid[v * 4 + 2])
-					.setColor(alpha << 24 | 0xFFFFFF)
+					.setColor(alpha << 24 | (mark == null ? 0 : 0xFFFFFF))
 					.setUv(0.5f, 0.5f)
 					.setOverlay(OverlayTexture.NO_OVERLAY)
 					.setLight(FULL_BRIGHT)
