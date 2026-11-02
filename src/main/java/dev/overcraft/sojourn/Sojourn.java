@@ -15,8 +15,8 @@ import static dev.overcraft.sojourn.SojournStats.*;
 
 /**
  * Sojourn's kit (tools/reference/sojourn-plan.md "Order"), built step by step, each played before the next. Now: the shell
- * (step 1: her model, her HUD with the energy meter) and Power Slide with its jump (step 2); the Railgun, Charged Shot,
- * Disruptor Shot and Overclock come next. Her buttons by her data's ids (sojourn-map.md, "Abilities"): the left button the
+ * (step 1: her model, her HUD with the energy meter), Power Slide with its jump (step 2), the Railgun and its energy (step 3,
+ * {@link Railgun}) and the Charged Shot (step 4); Disruptor Shot and Overclock come next. Her buttons by her data's ids (sojourn-map.md, "Abilities"): the left button the
  * Railgun, the right Charged Shot, Shift Power Slide (jump during it: the slide jump), E Disruptor Shot, Q Overclock.
  */
 public final class Sojourn implements HeroKit {
@@ -29,6 +29,10 @@ public final class Sojourn implements HeroKit {
 		s.primaryAmmo = RAILGUN_AMMO;
 		s.sojournSlide = -1;
 		s.sojournEnergy = 0;
+		s.sojournShotClock = 1;
+		s.sojournSpread = 0;
+		s.sojournRightWas = false;
+		s.sojournCharged = 0;
 	}
 
 	/** Leaving her (another hero, leaving the game): the synced slide off. */
@@ -53,6 +57,7 @@ public final class Sojourn implements HeroKit {
 				s.softLanding = false;
 			}
 		}
+		Railgun.tick(player, s, controls);
 		boolean sliding = s.sojournSlide >= 0;
 		if (!java.util.Objects.equals(player.getAttached(HeroManager.SOJOURN_SLIDE), sliding)) {
 			player.setAttached(HeroManager.SOJOURN_SLIDE, sliding);
@@ -66,6 +71,9 @@ public final class Sojourn implements HeroKit {
 	public void press(ServerPlayer player, HeroState s, int pressed) {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			slide(player, s);
+		}
+		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
+			Railgun.startReload(player, s);
 		}
 	}
 

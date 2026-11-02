@@ -11,8 +11,9 @@ was: [juno](juno.md) (her movement hooks) and Ana (a gun on bone_0606: [ana](ana
   (`work_kit\kit_sojourn.md`, `work\assets.md`, `work\clipmap.md`, `extract\`).
 - **The plan:** `tools/reference/sojourn-plan.md` (where the sources disagree, what maps onto Overcraft, the order).
 - **Clip maps:** `tools/clipmaps/sojourn.txt` (3P, 235 clips), `sojourn_1p.txt` (79), `sojourn_weapon.txt` (the Railgun, 23).
-- **Code:** `dev.overcraft.sojourn` (`Sojourn`, `SojournStats`: every number with D / BZ / W and its confidence),
-  `client/ClientSojourn`, `OwMovement.slideTravel`.
+- **Code:** `dev.overcraft.sojourn` (`Sojourn`, `SojournStats`: every number with D / BZ / W and its confidence, `Railgun`:
+  the rounds, energy, Charged Shot), `entity/RailgunShotEntity`, `client/ClientSojourn`, `client/effect/SojournFx` (stand-in
+  looks until step 8), `OwMovement.slideTravel`.
 
 ## The models (step 1)
 Exported from the research extraction (build 154088) with `tools/owm_survey.py --glb --keep=<clip map>` (Blender 5.2,
@@ -78,3 +79,67 @@ screenshots in `run/screenshots/` (not committed), each looked at.
 - Not yet: the 1P slide additives (`add_slide_start` / `add_slide_end`) are not played (only the 1P `slide_jump` action);
   the slide's eight body directions (0x72D: which category is which is L) play `slide_dir_214` only; others' clients seeing
   her slide (the synced `SOJOURN_SLIDE` animates her, not checked from a second client); lava, ladders, boats; a night.
+
+## Steps 3-4 (the Railgun, its energy, the Charged Shot), played 2026-11-02
+Built: `Railgun` (server: an accumulator at 16/s, a spread ellipse, 45 rounds and the 1.2 s reload, energy and its decay, the
+Charged Shot's piercing ray), `RailgunShotEntity` (Mercy's blaster shot's shape: an `OwProjectile`, swept by Minecraft's own
+hit test with `ProjectileUtilMixin`'s radius, allies passed through), the fire clips (`HeroAnimator.firstShotFire`: a burst's
+first shot `add_fire_first` 6F09 / 1P 6C0B, then `add_fire` 6F08 / the 1P's four at random; the gun's own `add_fire_first_1p`
+/ `add_fire_1p` / `add_fire_3p` and `add_charged_shot_*` in `HeroWeapon`), the 1P energy additive 7D6C weighted by energy /
+100, and stand-in effects (`SojournFx`: a cyan glow and trail per round, a cyan band for the Charged Shot).
+
+**Data vs plan:** the plan's numbers all stand. Added from the data: the Charged Shot waits **0.16 s after the last round**
+(D #513 / #230, M) and its press is **buffered 0.15 s** (D SECONDARY's buffer, H). Ours: the rounds leave from her eyes (D:
+the gun's muzzle hp 0006), so the crosshair is where they go, as Kiriko's kunai; the Charged Shot reaches 100 m (no number
+anywhere); a press while the left button is held stops the rounds so the shot goes (found playing, below); it pierces every
+creature on the line (D's pierce block, count 3, is L meaning: not applied).
+
+Dev client, world `soj4` (flat survival, midnight frozen, monsters off), targets NoAI zombies with 200 / 500 health (`Tags`,
+read with `data get entity @e[tag=..] Health`), skeletons at 20; each number below read in game, screenshots in
+`run/screenshots/` (not committed), each looked at. The harness's `trace` now logs the synced ammo, reload share and meter.
+A zombie has 2 armor: Minecraft takes 6.56 % off a 9 (0.72 health) and 1.6 % off anything over 40.
+- **Damage, crits:** a body round 0.6728 health off a zombie at 10 m (9 less its armor), a head round 1.3663 (18); a
+  skeleton (no armor) at 10 m and 25 m: 0.72 body, 1.44 head (`s3_skeletons.png`). No falloff at 25 m.
+- **Rate:** the left button held 2 s: 32 rounds in 40 ticks, four every five ticks; 0.3 s: 5; 0.5 s: 8.
+- **Reload:** empty, it starts by itself; 45 back at 19 ticks (0.95 s), firing again at 24 (1.2 s); R the same. G off 0.25 s
+  into it: the reload finishes in Minecraft mode (as Juno's), the left click there fires nothing; G back, she fires.
+- **Spread** (a zombie 20 m off): one round 0.2 m over its head misses (0 at the start), 2 s held there hits 16 of 32 (the
+  ramp reaching down); 0.75 m to its side, 32 held: 0 hits (0.64 sideways: a 1.6 circle would have hit); 1 m over: 0. Single
+  rounds 0.6 s after a burst over its head: all miss (back to 0). On its head top, 2 s: 27 of 32 (80 % expected).
+- **Energy:** +5 a body round, +10 a head round (2 rounds: 15; 2 heads: 20), +1 an armor stand's body, +2 its head, +1 a
+  boat, a minecart, an end crystal (which blew up 10 m off: 18 -> 14.3 for her). **Decay** (`trace`): the last gain at tick
+  14, falling from tick 194 (180 ticks = 9 s) at 0.75 a tick, 45.5 -> 0 in 60 ticks (15/s).
+- **The energy band** (never seen before): `s3_energy_hud.png` / `s3_energy_zoom.png`, 20 energy: an orange band a fifth of
+  the Charged Shot panel under the number; full (100) it turns white (`s3_sheet.png`). Over her red gun in first person the
+  orange band is hard to see; the number reads.
+- **Allies:** a villager 7 m and a tamed wolf 5 m on the line to a zombie 15 m off: 0.5 s of fire, 9 rounds hit the zombie,
+  villager 20 -> 20, wolf 8 -> 8, +45 energy (`s3_allies.png`). The Charged Shot through the villager: zombie -5.12 (65),
+  villager 20 -> 20.
+- **Water:** a zombie standing in a 2-deep pool 10 m off: 9 of 9 rounds; from under water at a land zombie 20 m off: 8 hits
+  (rounds in water slow by Minecraft's 0.8 a tick, as Kiriko's kunai do: they still reach).
+- **Charged Shot damage:** energy 30 -> 3.936 health (50, less armor), 100 body -> 9.446 (120), 100 head -> 14.17 (180), 25 ->
+  3.542 (45). **Pierce:** three zombies at 8, 12, 16 m: each 3.542. **A block:** a stone wall between the first and second:
+  the first 3.542, the two behind untouched (`s4_wall.png`). **Falloff:** 25 energy at 50 m -> 2.659 (x0.755), at 65 m ->
+  1.721 (x0.5).
+- **Lockout:** after it, rounds again 13-14 ticks later (the left button held through it); with 0 energy the right button
+  does nothing and there is no lockout (rounds at once).
+- **Found playing (fixed):** the right button pressed while the left is held did nothing (`trace`: the meter never dropped,
+  the rounds went on): each round restarted the 0.16 s gate and the press was gone. Now the press is kept 0.15 s (her data's
+  buffer) and holds the rounds back: rounds stop at tick 12-13, the shot at 15, then the lockout. Reproduced on the old
+  build first, the same steps after the fix.
+- **Found playing (fixed):** in her own first-person view each round's glow sat on the crosshair as it left her eyes, a cyan
+  blob over the target at 16 a second (`s3_rounds_1p.png`, `/tick rate 4`). Now drawn from 3 m on (`s3_rounds_1p_fixed.png`).
+- **The look:** 3P (`s3_rounds_back.png`, `x45.png`): her stance while firing, the Charged Shot's band from the gun. The 1P
+  energy additive at 100 against 0 (`s3_sheet.png`): no visible change to the gun's pose (its look is M). The fire clips play;
+  not compared frame by frame with the data's timing.
+- **Night fight** (3 zombies, a husk, a skeleton 35 m off, scripted aim through `aim.py`): without help she died twice
+  (a zombie hits 3 every second or so; her 225 is 18 health; the harness's aim lags moving mobs, the trap in harness.md), the
+  first time to old mobs left by a `kill` sent while dead. With Resistance III all five died to her rounds and Charged Shots
+  (energy 100 reached three times, `s3_night_fight.png`). After a death: Respawn, still Sojourn, 45 rounds.
+- **Every way in:** picked on the select screen in a fresh world and after a rejoin (client restarted): Sojourn, READY.
+- **Seen once, not reproduced:** a screenshot after a Charged Shot showed 45 rounds and 100 energy (`s4_3p_charged_front.png`);
+  the same steps with a `trace` showed the right numbers. A first Charged Shot through the villager found 0 energy (the 0.5 s
+  of rounds before it gained none); the same steps again worked.
+- **Not tried:** barriers (+1 energy: needs a second player as an enemy Brigitte; the code reads `Barrier.took`), the ender
+  dragon, a second player seeing her rounds and tracer, lava, boats, slopes, firing during Power Slide (allowed: nothing gates
+  it), the Charged Shot past 100 m.

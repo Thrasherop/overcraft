@@ -27,6 +27,44 @@ public final class SojournStats {
 	public static final double RELOAD = 1.2, RELOAD_FULL_AT = 0.96;
 	/** Energy: 0-100 (D v971 100; BZ 2025-02-18; W) H; 150 in Overclock with Overcharged (D #1485) H. */
 	public static final double ENERGY_MAX = 100, ENERGY_MAX_OVERCHARGED = 150;
+	/** 16 shots a second while the left button is held (D 04C6 16, volley #502; BZ 2025-08-26 15 -> 16; W) H. */
+	public static final double RAILGUN_RATE = 16;
+	/** 9 damage a shot (D 04C5 9; BZ 2023-01-24 10 -> 9; W) H; x2 on a crit (D 1CB4 2 / 04EE 1.0; W 18) M. No falloff (D) H. */
+	public static final double RAILGUN_DAMAGE = 9, RAILGUN_CRIT = 2;
+	/** A projectile at 150 m/s (D 04D3 150; W rev 285212) M/L, 0.175 m (D 2901 0.1 + global 28A6 0.075; BZ 2024-03-12) H/M. */
+	public static final double RAILGUN_SPEED = 150, RAILGUN_RADIUS = 0.175;
+	/** It lives 10 s (D, the volley's projectile 2F98) M. */
+	public static final double RAILGUN_LIFETIME = 10;
+	/**
+	 * The spread: 0 on the first shot, growing to 1.6 degrees over 12 shots (D 04C7 1.6 / 1E55 12; BZ 2024-08-20, 2023-07-11) H;
+	 * 0.64 sideways (W: 2.5 times more vertical; D has no split) M. Back after 0.3 s without a shot, over 0.25 s (D #629 / #628;
+	 * H values, M meaning).
+	 */
+	public static final double SPREAD_MAX = 1.6, SPREAD_SIDE = 0.64, SPREAD_SHOTS = 12, SPREAD_HOLD = 0.3, SPREAD_RECOVER = 0.25;
+	/**
+	 * Energy on a Railgun hit (D 1A23 #597 / #1480 / #649 / #650 / #775; BZ 2023-01-24, 2024-08-20; W) H: +5 a creature (a hero
+	 * in Overwatch: ours, every living creature and player), +10 a crit; +1 an object (ours: armor stands, end crystals, boats,
+	 * minecarts), +2 a crit on one (5 x 1CB3 0.2) M; +1 a barrier (tag B87) M.
+	 */
+	public static final double ENERGY_HIT = 5, ENERGY_CRIT = 10, ENERGY_OBJECT = 1, ENERGY_OBJECT_CRIT = 2, ENERGY_BARRIER = 1;
+	/** Decay: 9 s after the last gain (D 1E15, #596; BZ 2025-01-07 12 -> 9) H, then 15 a second to 0 (D 191F, #590; BZ 2024-08-20) H. */
+	public static final double ENERGY_DECAY_DELAY = 9, ENERGY_DECAY = 15;
+	/** After a Railgun shot, 0.16 s before a Charged Shot (D #513 / #230) M. */
+	public static final double RAILGUN_TO_CHARGED = 0.16;
+
+	// ---- Charged Shot (1A23 #450, secondary fire; step 4) ----
+	/** Damage 20 + energy: 1CE8 20 + (04C9 120 - 20) x energy / 100 (D #745; BZ 2024-12-10; W) H. x1.5 on a crit (D 04EF 0.5) M/H. */
+	public static final double CHARGED_BASE = 20, CHARGED_FULL = 120, CHARGED_CRIT = 1.5;
+	/** Falloff from 40 m to 60 m, down to 50 % (D 1CE6 / 1CE5 / 1CE7; BZ 2022-12-06; W) H/M. */
+	public static final double CHARGED_FALLOFF_START = 40, CHARGED_FALLOFF_END = 60, CHARGED_FALLOFF_MIN = 0.5;
+	/** A hitscan 0.11 m wide (D 2902 0.07 + global 28A2 0.04; BZ 2026-10-06; W rev 401600) H/M. */
+	public static final double CHARGED_RADIUS = 0.11;
+	/** How far the hitscan reaches: no number in her data or the sources (ours: Ana's 100 m scoped shot's reach). */
+	public static final double CHARGED_RANGE = 100;
+	/** After it, 0.65 s before either fire shoots again (D v2447, #438 / #615 / #617; W rev 282755 0.64) M. */
+	public static final double CHARGED_LOCKOUT = 0.65;
+	/** Its button's buffer: a press while the gun is busy waits 0.15 s (D SECONDARY xB42D90B7, 0.15 s) H. */
+	public static final double CHARGED_BUFFER = 0.15;
 
 	// ---- Power Slide (1E6F, ability 1) ----
 	/** At most 1 s (D 04E2 = v9110; BZ 2025-03-25; W) H; 0.75 s with Dual Thrusters (D 51EB #422 x0.75) H. */

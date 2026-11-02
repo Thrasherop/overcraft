@@ -35,6 +35,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2, (float) dev.overcraft.mercy.MercyStats.BLASTER_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	// Sojourn's Railgun rounds (not saved: 10 s of flight)
+	public static final EntityType<dev.overcraft.entity.RailgunShotEntity> RAILGUN_SHOT = register("railgun_shot",
+		EntityType.Builder.<dev.overcraft.entity.RailgunShotEntity>of(dev.overcraft.entity.RailgunShotEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.sojourn.SojournStats.RAILGUN_RADIUS * 2, (float) dev.overcraft.sojourn.SojournStats.RAILGUN_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	// Lifeweaver's: Healing Blossom and Thorn Volley; the thrown platform and seed; the platform, the seed on the ground and
 	// the tree (none saved: they're his while he's here)
 	public static final EntityType<dev.overcraft.entity.BlossomEntity> BLOSSOM = register("blossom",

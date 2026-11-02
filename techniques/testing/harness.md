@@ -104,3 +104,11 @@
   screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A
   rejoining client shows its select screen too. Keep the second client's fire pointed away from the hero under test:
   Kiriko's kunai killed Ana mid-test, and `resistance` doesn't stop Overcraft's damage.
+- **A health read right after a shot can come before the hit** (2026-11-02, Sojourn): a projectile 20 m off lands a tick or
+  two later, and the command's line in the log later still. Sleep a second before the read, and count from the newest line.
+- **Knockback moves the hero off the mark:** a stray mob pushed Sojourn 66 m off her spot, and every "miss" after was her
+  aim at empty air. `/tp @s` back at the start of each batch (2026-11-02).
+- **`aim.py` with no such mob left prints the hero's own position** (it reads the newest `entity data: [` line, and the
+  failed read adds none): "d=0.62" over and over meant every target was dead (2026-11-02).
+- **`trace` also logs the synced ammo, reload share and meter** (`a`, `r`, `m` at the end of each line): a weapon's rate,
+  reload and energy over time in one call.

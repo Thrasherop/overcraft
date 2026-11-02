@@ -142,6 +142,8 @@ public final class DevServer {
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
+					out.addProperty("primaryReload", s.primaryReload());
+					out.addProperty("meter", s.meter());
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
 					out.addProperty("ability2Cooldown", s.ability2Cooldown());
@@ -557,9 +559,11 @@ public final class DevServer {
 						String keys = (o.keyUp.isDown() ? "W" : "") + (o.keyLeft.isDown() ? "A" : "") + (o.keyDown.isDown() ? "S" : "")
 							+ (o.keyRight.isDown() ? "D" : "") + (o.keyJump.isDown() ? "J" : "") + (o.keyShift.isDown() ? "C" : "");
 						synchronized (TRACE) {
-							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f", traceTick++,
+							// then the synced ammo, reload share and meter (Sojourn's energy / 100)
+							HeroSyncPayload hs = ClientHero.sync();
+							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f a%d r%.2f m%.4f", traceTick++,
 								Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
-								keys.isEmpty() ? "." : keys, dz, p.getYRot()));
+								keys.isEmpty() ? "." : keys, dz, p.getYRot(), hs.primaryAmmo(), hs.primaryReload(), hs.meter()));
 						}
 					});
 				}

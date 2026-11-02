@@ -166,6 +166,15 @@ public final class HeroState {
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;
 	public double sojournEnergy;
+	/**
+	 * Sojourn's Railgun: the share of a shot owed (16 a second at 20 ticks), the shots into the spread's ramp, when she last
+	 * fired it and last gained energy (game time), and her right button last tick.
+	 */
+	public double sojournShotClock = 1, sojournSpread;
+	public long sojournShotAt = -1000, sojournGainAt = -1000;
+	public boolean sojournRightWas;
+	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
+	public int sojournCharged;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
 	public int junoVolley;
 	public double junoVolleyClock;

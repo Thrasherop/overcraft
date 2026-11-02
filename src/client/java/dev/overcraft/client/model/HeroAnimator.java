@@ -90,6 +90,9 @@ public final class HeroAnimator {
 	private int fireVariant;
 	/** Jetpack Cat's paw: the volleys swap paw each time (her add_fire / add_fire_2). */
 	private boolean fireSide;
+	/** The newest shot began a burst (Sojourn's first-shot clip), and the random child its repeat picked (0-3). */
+	private boolean fireFirst;
+	private int fireRandom;
 	/** When the current burst of shots began (a held, automatic weapon: Sombra's pistol), seconds. */
 	private float burstStart = -100;
 	/** A burst lasts while shots come this close together (ours: her 20 a second, with a tick to spare). */
@@ -195,6 +198,10 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("fire")) {
+			a.fireFirst = a.since("fire", now) > BURST_GAP;
+			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);
+		}
 		if (action.equals("fire") && a.since("fire", now) > BURST_GAP) {
 			a.burstStart = now;
 		}
@@ -258,7 +265,7 @@ public final class HeroAnimator {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
 		}
-		boolean layerOnly = action.equals("fire") || action.equals("soundwave") || action.equals("fire_blaster")
+		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
@@ -619,6 +626,43 @@ public final class HeroAnimator {
 		additive(model, pose, clipName, action, now, false);
 	}
 
+	/**
+	 * Sojourn's fire layer (sojourn.txt / sojourn_1p.txt: alias 0x092's child 0 the first shot, child 2 the repeats at random):
+	 * a burst's first shot add_fire_first, then add_fire (the 1P's rand[0] / rand[1]), add_fire_2 (rand[2]), add_fire_3 (rand[3]).
+	 * Null for a model without a first-shot clip (every other hero).
+	 */
+	public @Nullable String firstShotFire(SkinnedModel model) {
+		if (clip(model, "add_fire_first") == null) {
+			return null;
+		}
+		if (fireFirst) {
+			return "add_fire_first";
+		}
+		String repeat = new String[] {"add_fire", "add_fire", "add_fire_2", "add_fire_3"}[fireRandom];
+		return clip(model, repeat) != null ? repeat : "add_fire";
+	}
+
+	/** The newest shot began a burst (the weapon's own first-shot clip: HeroWeapon). */
+	public boolean fireFirst() {
+		return fireFirst;
+	}
+
+	/**
+	 * Sojourn's first-person energy additive 7D6C (add_energy), weighted by her energy / 100 (df 0xF6, 1A23 #430: H weight) on the
+	 * clock (a looped group-12 layer: M). Only her own view has it, so the energy is her client's sync.
+	 */
+	private void energyLayer(SkinnedModel model, Skeleton.Pose pose, float now) {
+		SkinnedModel.Clip energy = clip(model, "add_energy");
+		if (energy == null || dev.overcraft.client.ClientHero.hero() != dev.overcraft.hero.Hero.SOJOURN) {
+			return;
+		}
+		float weight = Math.clamp(dev.overcraft.client.ClientHero.sync().meter() * (float) (dev.overcraft.sojourn.SojournStats.ENERGY_MAX / 100),
+			0, 1);
+		if (weight > 0) {
+			Skeleton.addAdditive(energy, now % Math.max(energy.duration(), 1.0E-3f), pose, weight);
+		}
+	}
+
 	/** The same, its offsets in each bone's own frame ({@link Skeleton#addAdditive}'s localOffsets). */
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now, boolean localOffsets) {
 		SkinnedModel.Clip clip = clip(model, clipName);
@@ -892,9 +936,15 @@ public final class HeroAnimator {
 			// Jetpack Cat's: one per paw, swapping each volley (one only, Ana's: that one each shot)
 			fire = fireSide && clip(model, "add_fire_2") != null ? "add_fire_2" : "add_fire";
 		}
+		String firstShot = firstShotFire(model);
+		if (firstShot != null) {
+			fire = firstShot;
+		}
 		if (!burst(model, pose, now)) {
 			additive(model, pose, fire, "fire", now);
 		}
+		additive(model, pose, "add_charged_shot", "charged_shot", now);
+		energyLayer(model, pose, now);
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
 		if (lifeweaver) {
@@ -1197,9 +1247,13 @@ public final class HeroAnimator {
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
 		boolean flier = model.clips.containsKey("add_bob");
-		if (!burst(model, pose, now)) {
+		String firstShot = firstShotFire(model);
+		if (firstShot != null) {
+			additive(model, pose, firstShot, "fire", now);
+		} else if (!burst(model, pose, now)) {
 			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
 		}
+		additive(model, pose, "add_charged_shot", "charged_shot", now);
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}

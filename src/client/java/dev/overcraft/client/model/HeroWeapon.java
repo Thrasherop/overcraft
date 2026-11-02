@@ -380,6 +380,14 @@ public final class HeroWeapon {
 			Skeleton.sample(end, t - cast.duration(), pose);
 		}
 		add(model, pose, "add_fire", a.since("fire", now));
+		if (model.clips.containsKey("add_fire_3p")) {
+			// Sojourn's Railgun: its own fire and Charged Shot clips per view (sojourn_weapon.txt: sm[0] 1P, sm[1] 3P), the 1P's
+			// first shot of a burst its own
+			String fire = !firstPerson ? "add_fire_3p" : a.fireFirst() && model.clips.containsKey("add_fire_first_1p")
+				? "add_fire_first_1p" : "add_fire_1p";
+			add(model, pose, fire, a.since("fire", now));
+			add(model, pose, firstPerson ? "add_charged_shot_1p" : "add_charged_shot_3p", a.since("charged_shot", now));
+		}
 		add(model, pose, "add_soundwave", a.since("soundwave", now));
 		// Mercy's: the blaster's reload and shot (CF0, CDB), the staff's Flash Heal (126E7)
 		SkinnedModel.Clip own = model.clips.get("reload");
