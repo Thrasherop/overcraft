@@ -151,3 +151,6 @@
 - **A ravager isn't held by `movement_speed` 0** (2026-11-02, Sigma): one walked 15 m to Sigma and killed him mid-test. Summon ravagers
   NoAI (Overcraft's own lifts and knockdowns still move NoAI mobs: they move them by hand). A `state` health read between
   steps shows it early (his health was falling before the ult went off).
+- **`reload` can run the dev client out of memory** (2026-11-02, Jetpack Cat): at `-Xmx3G` a resource reload re-reads every
+  hero model and died with "Java heap space" mid-reload (the window froze on the Mojang screen and every `dev` call timed
+  out). After changing the pack, restart the client instead.

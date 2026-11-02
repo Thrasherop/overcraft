@@ -263,6 +263,9 @@ public final class JetpackCat implements HeroKit {
 		WOUNDS.removeIf(w -> w.target == target && w.owner == player);
 		WOUNDS.add(new Wound(target, player, new int[] {Ow.ticks(1)}));
 		Combat.buff(target, Attributes.MOVEMENT_SPEED, CLAWS_SLOW, -CLAWS_OUT_SLOW, 1);
+		// its wound effect (74D0) at their chest
+		Effects.play(player.level(), "claws_out", target.position().add(0, target.getBbHeight() * 0.7, 0),
+			target.position().subtract(player.position()), target, player.getId(), player);
 	}
 
 	private static final net.minecraft.resources.Identifier CLAWS_SLOW = dev.overcraft.Overcraft.id("jetpack_cat_claws_out");
@@ -288,6 +291,9 @@ public final class JetpackCat implements HeroKit {
 		if (HeroManager.hasPerk(player, Perk.JETPACK_CAT_TRANSPORT_SHIELDING)) {
 			// ours: Minecraft has no shields, so the golden hearts Sound Barrier's use, running down over the 3 s
 			Combat.overhealth(player, TRANSPORT_SHIELD, TRANSPORT_SHIELD_TIME);
+			// its hexes (5513), which only she sees
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.EffectPayload("transport_shield", player.getX(), player.getY(),
+				player.getZ(), 0, 0, 0, player.getId(), player.getId(), false));
 		}
 	}
 
@@ -597,7 +603,9 @@ public final class JetpackCat implements HeroKit {
 						HeroSounds.toOwner(player, OcSounds.JC_ULT_DIVE);
 						// her Catnapper line: the friendly meow to her side, the enemy one to theirs (1988 / 1989)
 						HeroSounds.ultLine(player, OcSounds.JC_ULT_FRIENDLY, OcSounds.JC_ULT_ENEMY, 4);
-						Effects.play(player.level(), "catnapper_cast", player.position(), player);
+						// her cast (7373) and, after the windup, her dive (7163): the client times the dive from this
+						Effects.play(player.level(), "catnapper_cast", player.position(), target.subtract(player.position()), player,
+							player.getId(), player);
 						if (s.lifelineOn) {
 							lifelineOff(player, s, false);
 						}
@@ -649,7 +657,7 @@ public final class JetpackCat implements HeroKit {
 		ServerLevel level = player.level();
 		player.setDeltaMovement(Vec3.ZERO);
 		player.syncVelocity = true;
-		Effects.play(level, "catnapper_land", player.position(), player);
+		Effects.play(level, "catnapper_land", player.position(), Vec3.ZERO, player, player.getId(), player);
 		Combat.animate(player, "ult_land");
 		HeroSounds.toOwner(player, OcSounds.JC_ULT_IMPACT);
 		LivingEntity nearest = null;
@@ -661,6 +669,8 @@ public final class JetpackCat implements HeroKit {
 				continue;
 			}
 			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE), e);
+			// the shockwave's per-target burst (7256), thrown out from her
+			Effects.play(level, "catnapper_hit", e.position(), e.position().subtract(player.position()), e, player.getId(), player);
 			// the knock-down (ours: Minecraft has no stun, so the heaviest Slowness and Weakness: no moving, no hitting)
 			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
 			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));

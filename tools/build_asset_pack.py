@@ -11,7 +11,7 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
-    py tools/build_asset_pack.py effects <dir> [<dir>...]  the ability effects' texture masks, from the effects
+    py tools/build_asset_pack.py effects [--only <prefix>] <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
                                                             "E:\Overwatch Archive\research\jetpack_cat\fx")
@@ -571,6 +571,18 @@ EFFECT_MASKS = {
     "cat_crack": ("JetpackCat", "Catnapper", "00000006CBB9", 1),
     "cat_crack_glow": ("JetpackCat", "Catnapper", "00000006CA10", 1),
     "cat_puff": ("JetpackCat", "Catnapper", "000000018B18", 1),
+    # her effects still undrawn after #59's first passes (research\jetpack_cat\work\fx_digest.txt and
+    # assets2\work\fx_digest.txt): Claws Out's claw marks (74D0, FX2), the landing hit's flame burst and dust puff
+    # (7256, FX2), Transport Shielding's hex edge (5513), the head slash's streak and the dive dome's strip (71B8), the
+    # paw print's teardrop (709F), the cast bell's thin line (7373 C37)
+    "cat_claws": ("JetpackCat", "ClawsOut", "0000000720CE", 1),
+    "cat_claw_flame": ("JetpackCat", "Catnapper", "00000000F7D2", 4),
+    "cat_dust_puff": ("JetpackCat", "Catnapper", "000000005429", 4),
+    "cat_hex_edge": ("JetpackCat", "Lifeline", "000000018400", 1),
+    "cat_slash": ("JetpackCat", "Catnapper", "000000037021", 1),
+    "cat_dome_strip": ("JetpackCat", "Catnapper", "000000055A46", 1),
+    "cat_teardrop": ("JetpackCat", "Pawjectiles", "000000000D89", 1),
+    "cat_bell_line": ("JetpackCat", "Catnapper", "000000054A15", 1),
 
     # Mercy's (tools/reference/mercy-effects.md): cloud noise, the beams' wavy streaks, centre line, noise, long
     # streaks and band, a second noise, the beamed ally's rim (INVERTED: black centre)
@@ -868,12 +880,26 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # the hook's bubbles (71B1 C9, sphere DBF): the noise 299E3 x 16E9D x the thin band 6C057 along the
             # sphere's V (its latitude): a noisy ring round the sphere's middle
             "cat_bubble_band": ("cat_ring_line", "cat_cone_line", "cat_line_strip"),
-            # Purr's range wall (70F9 C4, cylinder 19181): its strip 1C7A x the noises 18F00 and 19167
-            "cat_purr_wall_band": ("cat_band", "cat_soft_noise", "cat_glow_noise"),
+            # (Purr's range wall, cat_purr_wall_band, is baked by bake_cat_flame: its noises are tiled)
             # Catnapper's aim rings (71B3 C4): the strip 1C7A x the cloud 18E48; the aim lines' widest band (71AF C14):
             # the strip 1344 x 18E48
             "cat_nap_ring": ("cat_band", "cat_cloud"),
             "cat_nap_line": ("cat_strip", "cat_cloud"),
+            # the rest of #59 (work\fx_digest.txt, assets2\work\fx_digest.txt): the paw print's quads (709F C46: the
+            # teardrop D89 x 18E48), the landing's ground flash (71C2 C19: 4C09 x 16E9D), the head slash's arcs (71B8
+            # C8: 37021 x 299E3 x 2C41F), the dive's domes (71B8 C10: 18F00 x 18A1 x 1C7A x 299E3; C12: 55A46 x
+            # 16E9D), Claws Out's marks (74D0 C13:
+            # 720CE x 18E48), the landing hit's sphere (7256 C13: 16E9D x 18A1 x 18E48 x 1C7A), the dive's strip trails
+            # (7163 C96 / C103: 219FA x 16E9D), the cast's bell (7373 C37: 18E48 x 299E3 x 2C41F x 54A15)
+            "cat_paw_toe": ("cat_teardrop", "cat_cloud"),
+            "cat_ground_flash": ("cat_soft", "cat_cone_line"),
+            "cat_slash_band": ("cat_slash", "cat_ring_line", "cat_cone_noise"),
+            "cat_dome_glow": ("cat_soft_noise", "cat_rope", "cat_band", "cat_ring_line"),
+            "cat_dome_band": ("cat_dome_strip", "cat_cone_line"),
+            "cat_claw_marks": ("cat_claws", "cat_cloud"),
+            "cat_shock_sphere": ("cat_cone_line", "cat_rope", "cat_cloud", "cat_band"),
+            "cat_dive_band": ("cat_trail", "cat_cone_line"),
+            "cat_bell_band": ("cat_cloud", "cat_ring_line", "cat_cone_noise", "cat_bell_line"),
             # the Tree of Life's wave shell (47E2, tools/reference/lifeweaver-effects.md): bokeh 187EB x vertical fade
             # 3E4E5 x wisps 2FCA7. The bokeh alone is grey all over: on the sphere round him it tinted the whole view
             "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp"),
@@ -896,7 +922,7 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)
-STRETCHED = {"cat_bubble_band"}
+STRETCHED = {"cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -909,6 +935,12 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "cat_sphere": ("JetpackCat", "Purr", "000000001385"),
                  "cat_purr_torus": ("JetpackCat", "Purr", "00000001BD54"),
                  "cat_purr_wall": ("JetpackCat", "Purr", "000000019181"),
+                 # the jetpack's flame tube (7064 / 7373 / 7163), the cast's bell (7373 C37), the head slash's arc and
+                 # dome (71B8 C8 / C10)
+                 "cat_flame": ("JetpackCat", "Catnapper", "00000001B580"),
+                 "cat_bell": ("JetpackCat", "Catnapper", "000000019370"),
+                 "cat_slash_arc": ("JetpackCat", "Catnapper", "0000000152B9"),
+                 "cat_dome": ("JetpackCat", "Catnapper", "00000001B2FF"),
                  # Lifeweaver's (tools/reference/lifeweaver-effects.md "Meshes"): the thorn, the platform's bloom outline,
                  # the vine's coil (the tree's growth vine too), Life Grip's bud on the ally and the flower at its point
                  "lw_thorn": ("Lifeweaver", "ThornVolley", "0000000122CA"),
@@ -1010,15 +1042,79 @@ def bake_cat_arcs(out):
     return made
 
 
-def add_effects(*sources):
+def bake_cat_flame(out):
+    """Jetpack Cat's flame tube (1B580 in 7064 / 7373 / 7163, research\jetpack_cat\workx_digest.txt): the tube's V runs
+    from the nozzle (0) to its tip (1), its U once round it. Its masks multiplied: the strip 2C41F turned (its material
+    row r1 (0, -1, 1): v' = 1 - v, M) so it's bright at the nozzle, the fade 7A9 along V, and the noise 299E3 at the
+    row r3's scale (2 round, 0.25 along) scrolling along the tube (r3's -10: ours, 8 frames over one noise period,
+    looped by the mod), stretched to full brightness. Writes cat_flame_tube_0..7.png. Also Transport Shielding's hexes
+    (5513 C3): the grid 18F9B at its row r1's tiling (4.75 x 4) times the edge 18400: cat_hex_frame.png."""
+    from PIL import Image
+    names = ("cat_cone_noise", "cat_fade", "cat_ring_line", "cat_hex", "cat_hex_edge", "cat_band", "cat_soft_noise",
+             "cat_glow_noise")
+    if not all((out / f"{n}.png").exists() for n in names):
+        return 0
+    m = {n: Image.open(out / f"{n}.png").convert("L") for n in names}
+
+    def sample(name, u, v):
+        im = m[name]
+        return im.getpixel((int(u % 1 * im.width) % im.width, int(v % 1 * im.height) % im.height)) / 255
+
+    made = 0
+    w, h, frames = 64, 128, 8
+    for k in range(frames):
+        values = []
+        for y in range(h):
+            v = (y + 0.5) / h
+            along = sample("cat_cone_noise", 0.5, min(1 - v, 0.999)) * sample("cat_fade", 0.5, min(v, 0.999))
+            for x in range(w):
+                u = (x + 0.5) / w
+                values.append(along * sample("cat_ring_line", u * 2, v * 0.25 + k / frames))
+        top = max(values) or 1
+        img = Image.new("L", (w, h))
+        img.putdata([int(255 * min(1.0, val / top)) for val in values])
+        img.save(out / f"cat_flame_tube_{k}.png")
+        made += 1
+    n = 256
+    img = Image.new("L", (n, n))
+    img.putdata([int(255 * sample("cat_hex", (x + 0.5) / n * 4.75, (y + 0.5) / n * 4)
+                     * sample("cat_hex_edge", (x + 0.5) / n, (y + 0.5) / n)) for y in range(n) for x in range(n)])
+    img.save(out / "cat_hex_frame.png")
+    # Purr's range wall (70F9 C4, the cylinder 19181, V 0 at its top 4 m over her to 1 at 16 m under her): its strip 1C7A
+    # along V, the noises 18F00 and 19167 at the 12BB row r0's tiling (4 x 4), and its 65BC row r4 read as strength
+    # along V (M: its R and G each a bump, R at 0.4 and G at 0.6 of V, 0.07 / 0.01 at her own height): the wall is lit
+    # 4-12 m under her, the ground under her as she flies, and faint at her height
+    r4 = ((0, 0.07, 1.0, 0, 0, 0), (0, 0.01, 0.11, 1.0, 0.13, 0))
+
+    def strength(v):
+        k = min(int(v * 5), 4)
+        f = v * 5 - k
+        return min(1.0, sum(row[k] + (row[k + 1] - row[k]) * f for row in r4))
+
+    m["cat_band"] = Image.open(out / "cat_band.png").convert("L")
+    m["cat_soft_noise"] = Image.open(out / "cat_soft_noise.png").convert("L")
+    m["cat_glow_noise"] = Image.open(out / "cat_glow_noise.png").convert("L")
+    w, h = 512, 256
+    img = Image.new("L", (w, h))
+    img.putdata([int(255 * sample("cat_band", 0.5, (y + 0.5) / h) * strength((y + 0.5) / h)
+                     * sample("cat_soft_noise", (x + 0.5) / w * 4, (y + 0.5) / h * 4)
+                     * sample("cat_glow_noise", (x + 0.5) / w * 4, (y + 0.5) / h * 4)) for y in range(h) for x in range(w)])
+    img.save(out / "cat_purr_wall_band.png")
+    return made + 2
+
+
+def add_effects(*sources, only=""):
     """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
     converts their meshes (the torii gate) into hero_models/. Each from the first source folder that has it: Jetpack
-    Cat's research pass wrote hers outside the read-only extraction (research\jetpack_cat\fx)."""
+    Cat's research pass wrote hers outside the read-only extraction (research\jetpack_cat\fx). With only, just the
+    names starting with it (one hero's files into a pack other heroes' work shares: --only cat_)."""
     write_mcmeta()
     out = PACK / "assets" / "overcraft" / "textures" / "effect"
     out.mkdir(parents=True, exist_ok=True)
     copied = 0
     for name, (hero, ability, texture, frames) in EFFECT_MASKS.items():
+        if not name.startswith(only):
+            continue
         for frame in range(frames):
             suffix = "" if frame == 0 else f"_{frame}"
             src = next((Path(source) / hero / ability / "textures" / f"{texture}{suffix}.png" for source in sources
@@ -1038,7 +1134,7 @@ def add_effects(*sources):
                 whole.paste(ImageOps.mirror(half), (half.width, 0))
                 whole.save(out / f"{name}_full.png")
     for name, parts in PRODUCTS.items():
-        if all((out / f"{part}.png").exists() for part in parts):
+        if name.startswith(only) and all((out / f"{part}.png").exists() for part in parts):
             from PIL import Image, ImageChops
             masks = [Image.open(out / f"{part}.png").convert("L") for part in parts]
             size = (max(m.width for m in masks), max(m.height for m in masks))
@@ -1050,9 +1146,13 @@ def add_effects(*sources):
                 product = product.point(lambda v: min(255, v * 255 // top))
             product.save(out / f"{name}.png")
             copied += 1
-    copied += bake_cat_arcs(out)
+    if "cat_".startswith(only) or only.startswith("cat_"):
+        copied += bake_cat_arcs(out)
+        copied += bake_cat_flame(out)
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():
+        if not name.startswith(only):
+            continue
         src = next((Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"
                     for source in sources
                     if (Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl").exists()),
@@ -1196,7 +1296,11 @@ def main():
     elif cmd == "fonts":
         add_fonts(sys.argv[2])
     elif cmd == "effects":
-        add_effects(*sys.argv[2:])
+        args = sys.argv[2:]
+        only = ""
+        if args[:1] == ["--only"]:
+            only, args = args[1], args[2:]
+        add_effects(*args, only=only)
     elif cmd == "props":
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "zip":
