@@ -101,6 +101,22 @@ From [brigitte-effects](../../tools/reference/brigitte-effects.md) (scripts `res
 - **PowerShell `Get-Content -Raw | Set-Content -Encoding utf8` corrupts UTF-8 files** (reads them as ANSI, writes a
   BOM): `build_asset_pack.py`'s "Lúcio" came out double-encoded. Edit repo files with the Edit tool or Python.
 
+## A ranged healer's effects (Juno's pass, 2026-11-01)
+From [juno-effects](../../tools/reference/juno-effects.md) (scripts `research\juno\scripts\fx\fx_juno_*`):
+- **A marker on targets can be a HUD widget, not an effect.** Her torpedo lock-on marker is a `StateUXPresenter` (graph 4B99 #158)
+  showing UX element 0727.116 at the target's hp 0001 with the lock progress; the graph's only effect is a sound. Before looking for
+  a marker's effect, grep the per-target graph for `StateUXPresenter`.
+- **An effect mesh can carry its team twin as a second look.** The Hyper Ring is mesh 15AD6 drawn twice, look 1BABB (blue LUT) and
+  1BC0D (red). The extractor keys models by id and keeps only the first look: save the second with `fx_juno_savelook.py` and dump both
+  materials (`fx_juno_owmats.py`, `fx_juno_matdump.py`).
+- **Sizes and heights can sit in the hardpoint offsets.** The Orbital Ray's column is a 5.6 m tube placed at +200 / +250 m and rings at
+  +50 to +196 m above the ground point: read the offsets on each renderer's `hp` line in the cards, not just the mesh bounds.
+- **A held effect's length isn't the ability's.** Her 8 s ray is a 2 s effect held by a `StateTrackRay`; her 6 s ring a 2 s one.
+- **Per-target looks come from the per-target graph's begin.** The torpedo heal (4795 #390 at the heal wait's onBegin) and the ray's
+  ally look (54A6 #297 next to the +30 % damage) sit beside the status they apply, as Sombra's Cyberspace did.
+- **List the clips' effects up front** with `fx_juno_clipfx.py` (159 of her clips name one): most are footstep / camera-shake ones,
+  so pick the ability clips by the clip map's state names.
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent
