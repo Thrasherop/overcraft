@@ -1632,7 +1632,10 @@ public final class HeroAnimator {
 				case "crouch_walk_back_left" -> "crouch_walk_left";
 				case "crouch_walk_back_right" -> "crouch_walk_right";
 				case "crouch_walk_left", "crouch_walk_right" -> "crouch_walk";
-				case "crouch_idle" -> "crouch_walk"; // held still (see the rate below)
+				// no crouch-walk (Sigma: his one move clip for everything)
+				case "crouch_walk" -> "run";
+				// held still (see the rate below); a hero with no crouch clips at all (Sigma floats) stands
+				case "crouch_idle" -> model.clips.containsKey("crouch_walk") ? "crouch_walk" : "idle";
 				case "run_back", "strafe_left", "strafe_right" -> "run";
 				case "land", "jump" -> "fall";
 				// Lúcio has no fall clip: his jump's rise

@@ -130,6 +130,15 @@ public final class DevServer {
 					out.addProperty("onGround", player.onGround());
 					out.addProperty("crouching", player.isCrouching());
 					out.addProperty("sprinting", player.isSprinting());
+					// the body box (dev.overcraft.hero.HeroBody): pose, size and eye on this client and on the integrated server
+					out.addProperty("box", String.format(java.util.Locale.ROOT, "%s %.2fx%.2f eye %.2f", player.getPose(),
+						player.getBbWidth(), player.getBbHeight(), player.getEyeHeight()));
+					var server = mc.getSingleplayerServer();
+					var serverPlayer = server == null ? null : server.getPlayerList().getPlayer(player.getUUID());
+					if (serverPlayer != null) {
+						out.addProperty("serverBox", String.format(java.util.Locale.ROOT, "%s %.2fx%.2f eye %.2f",
+							serverPlayer.getPose(), serverPlayer.getBbWidth(), serverPlayer.getBbHeight(), serverPlayer.getEyeHeight()));
+					}
 					out.addProperty("slot", player.getInventory().getSelectedSlot());
 					out.addProperty("heroMode", ClientHero.controls());
 					HeroSyncPayload s = ClientHero.sync();
@@ -455,6 +464,15 @@ public final class DevServer {
 					held[i - 1] = Float.parseFloat(a[i]);
 				}
 				out.addProperty("held", java.util.Arrays.toString(held));
+			}
+			case "selectframe" -> {
+				// dev only: "selectframe <framing> <drop>": Sigma's size and drop on the hero select (HeroSelectScreen)
+				String[] a = arg.trim().split(" ");
+				float[] frame = dev.overcraft.client.HeroSelectScreen.SIGMA_FRAME;
+				for (int i = 0; i < a.length && i < 2 && !a[i].isEmpty(); i++) {
+					frame[i] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("frame", java.util.Arrays.toString(frame));
 			}
 			case "heldmax" -> {
 				// "heldmax [kunaiFlat kunaiSolid ofudaFlat ofudaSolid]"

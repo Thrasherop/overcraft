@@ -366,7 +366,7 @@ public final class Ana implements HeroKit {
 				}
 			} else if (Allies.canHurt(owner, e)) {
 				float dealt = Combat.damage(e, source, damage);
-				Combat.credit(owner, dealt);
+				Combat.credit(owner, dealt, e);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 				if (dealt > 0) {
 					Effects.hitMarker(owner, e, false);
@@ -613,7 +613,7 @@ public final class Ana implements HeroKit {
 				}
 			} else {
 				float dealt = Combat.damage(d.target, source(d), d.perTick);
-				Combat.credit(d.owner, dealt);
+				Combat.credit(d.owner, dealt, d.target);
 				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
 			}
 			if (d.ticks > 1) {

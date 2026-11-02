@@ -120,6 +120,12 @@ public final class HeroModels {
 				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
 				names.add("ana_pistol");
 			}
+			if (hero == Hero.SIGMA) {
+				// his Experimental Barrier (C015), its emitter orbs (FC88) and the Accretion rock (C5CA): drawn from steps 5 / 7
+				names.add("sigma_barrier");
+				names.add("sigma_barrier_orb");
+				names.add("sigma_rock");
+			}
 			if (hero == Hero.BRIGITTE) {
 				// her flail's head and her shield (HeroWeapon.extras; the barrier itself later)
 				names.add("brigitte_flail_head");

@@ -866,6 +866,14 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Kinetic Grasp (Shift) and Accretion (E), his data's ABILITY 1 / 2, in Kiriko's two places (ours)
+			ability(g, hero, w, "kinetic_grasp", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.GRASP_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "accretion", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.ACCRETION_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.JUNO) {
 			// Glide Boost (Shift) and Hyper Ring (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "glide_boost", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1093,6 +1101,15 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Experimental Barrier (the right button) where Kiriko's ofuda panel is, Hyperspheres (the left: no ammo) where her
+			// kunai are; the barrier's health bar comes with the barrier (step 5)
+			weapon(g, hero, w, "experimental_barrier", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			weapon(g, hero, w, "hyperspheres", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.JUNO) {
 			// Pulsar Torpedoes (the right button) where Kiriko's ofuda panel is, the Mediblaster's 180 rounds (the left) where
 			// her kunai are

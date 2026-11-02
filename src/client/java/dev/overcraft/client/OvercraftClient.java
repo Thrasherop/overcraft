@@ -241,6 +241,13 @@ public class OvercraftClient implements ClientModInitializer {
 		// a Life Grip moves whoever it has, hero or not (their own client: ClientLifeweaver.grip)
 		OwMovement.active = entity -> entity == mc.player && (ClientHero.controls() || ClientLifeweaver.gripped());
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
+		// the client's own player's body box follows the client's own hero mode (HeroBody)
+		dev.overcraft.hero.HeroBody.local = player -> player != mc.player ? null
+			: java.util.Optional.ofNullable(ClientHero.hero() != null && ClientHero.heroModeOn() && !player.isSpectator()
+				? ClientHero.hero() : null);
+		// a Stalwart tank's own client resists the slows it moves under (Tank)
+		dev.overcraft.hero.Tank.resistsSlows = entity -> entity == mc.player && ClientHero.controls()
+			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
 			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;

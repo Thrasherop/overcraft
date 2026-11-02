@@ -49,7 +49,12 @@ public enum Perk {
 	JUNO_FAMILIAR_VITALS(Hero.JUNO, Tier.MINOR, "familiar_vitals"),
 	JUNO_LOCKED_ON(Hero.JUNO, Tier.MINOR, "locked_on"),
 	JUNO_FASTER_BLASTER(Hero.JUNO, Tier.MAJOR, "faster_blaster"),
-	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off");
+	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off"),
+	// Sigma's, the live list's order (D 004B.177 = [2578, 26B7, 25AF, 2577].134)
+	SIGMA_KINETIC_CYCLE(Hero.SIGMA, Tier.MINOR, "kinetic_cycle"),
+	SIGMA_HYPER_REGENERATION(Hero.SIGMA, Tier.MINOR, "hyper_regeneration"),
+	SIGMA_HYPER_STRIKE(Hero.SIGMA, Tier.MAJOR, "hyper_strike"),
+	SIGMA_LEVITATION(Hero.SIGMA, Tier.MAJOR, "levitation");
 
 	public enum Tier { MINOR, MAJOR }
 

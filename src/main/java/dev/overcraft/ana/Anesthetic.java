@@ -86,7 +86,7 @@ public final class Anesthetic {
 			// its ticks spread over the 3 s (30 in 60 game ticks: one every 2)
 			if (t > 0 && t * ticks / length != (t - 1) * ticks / length) {
 				float dealt = Sleep.quietly(() -> Combat.damage(d.entity, Ana.shotSource(d.ana), AnaStats.ANESTHETIC_DAMAGE / ticks));
-				Combat.credit(d.ana, dealt);
+				Combat.credit(d.ana, dealt, d.entity);
 			}
 			double slow = AnaStats.ANESTHETIC_SLOW_FROM + (AnaStats.ANESTHETIC_SLOW_TO - AnaStats.ANESTHETIC_SLOW_FROM) * t / length;
 			Combat.buff(d.entity, Attributes.MOVEMENT_SPEED, SLOW, -slow, 0.1);

@@ -5,6 +5,7 @@
 	"mixins": [
 		"LivingEntityMixin",
 		"PlayerMixin",
+		"AvatarMixin",
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
 		"EntityMixin",

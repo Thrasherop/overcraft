@@ -150,10 +150,17 @@ public abstract class LivingEntityMixin {
 			? dev.overcraft.hero.Shields.onSetHealth(player, health) : health;
 	}
 
-	/** Jetpack Cat flying takes 40% less knockback (W: her "flight resistance"). */
+	/**
+	 * Jetpack Cat flying takes 40% less knockback (W: her "flight resistance"); a Stalwart tank (Sigma) 40% less of every
+	 * knockback, times any state's own (dev.overcraft.hero.Tank: D 01C7 #969).
+	 */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private double overcraft$flightResistance(double power) {
+		return overcraft$stateKnockback(power) * dev.overcraft.hero.Tank.knockbackFactor((LivingEntity) (Object) this);
+	}
+
+	private double overcraft$stateKnockback(double power) {
 		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.MERCY
 			&& HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s && dev.overcraft.mercy.Mercy.flying(s)) {
 			// Mercy in Valkyrie takes half the knockback (W; her data's 0A04B51B -0.5), a fifth of that just after a launch

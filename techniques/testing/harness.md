@@ -32,6 +32,16 @@
   winners in as the defaults.
 
 ## Traps
+- **runClient2's harness port is fixed at 25600** (build.gradle `-Dovercraft.devPort=25600`; `OC_DEV_PORT` only tells
+  `dev.py` where to connect). Two agents both using runClient2 share one port: commands from another session landed in
+  Sigma's client (2026-11-02). Know which client answers before trusting a result (`state`'s player name: Viewer on run2).
+- **Hero mode's crouch is `key crouch`** (Ctrl), not `key sneak`: Shift is ability 1 (Sigma's Kinetic Grasp).
+- **Superflat slimes come back after a restart** even with `spawn_monsters` false (a fresh slime chunk spawns them before the
+  rule runs): Sigma died to them twice at 600 health. `difficulty peaceful` while looking, `normal` only for a mob test, then
+  peaceful again; and `Save and Leave` (pause menu, GUI 66 213 at 1920x1080) before killing the client, or the hero is lost.
+- **Measuring knockback:** `trace start`, the hit, `trace`: the first tick's horizontal speed after the hit, the same hit on a
+  control hero (Kiriko). A creeper `{Fuse:1s,ignited:1b,NoAI:1b}` 3 m off, with Resistance V so the control lives; one run in
+  three shows only the tick after the push (2.70 instead of 4.95): take the highest of a few.
 - **Taps are shorter than a tick:** `key <action> tap` sets and clears within one frame, so code that reads `isDown()`
   once a tick never sees it. A double ping needs two holds of 0.1 s. Hold it: `down`, a 0.15-0.2 s sleep, `up`.
 - Holding attack doesn't mine unless the window has the mouse (`continueAttack` checks `isMouseGrabbed`). Minecraft

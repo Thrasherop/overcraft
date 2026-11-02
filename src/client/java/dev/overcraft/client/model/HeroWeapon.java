@@ -37,7 +37,10 @@ public final class HeroWeapon {
 		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Brigitte's Rocket Flail handle, entity 2282 on her hardpoint 000A = Weapon_R, no offset in both views
 		// (research/brigitte/work/assets.md); hero_models/brigitte_weapon.glb
-		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Sigma's hand spheres, entity 31A7 (model 106B4) on his hardpoint 000A = bone_004A (Weapon_R) in third person and 00C9 =
+		// bone_0606 in first (the models' hardpoint tables: 106F7 / 106F6; sigma-map.md "Models"); no offset read (M)
+		Hero.SIGMA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -160,6 +163,7 @@ public final class HeroWeapon {
 		}
 		return out;
 	}
+
 
 	/**
 	 * Her barrier when it's up, in her model's space (her feet the origin, her facing ahead): the shield unfolded (its deploy

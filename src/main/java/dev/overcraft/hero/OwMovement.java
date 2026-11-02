@@ -259,13 +259,16 @@ public final class OwMovement {
 			&& !entity.isFallFlying();
 	}
 
-	/** Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. */
+	/**
+	 * Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. A Stalwart tank
+	 * (Sigma) takes 40% less of each slow received (a Slowness potion, Local Anesthetic), not of their own (Tank).
+	 */
 	public static double speedFactor(LivingEntity entity) {
 		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed == null || speed.getBaseValue() <= 0) {
 			return 1;
 		}
-		double factor = speed.getValue() / speed.getBaseValue();
+		double factor = (Tank.resistsSlows.test(entity) ? Tank.resistedSpeed(speed) : speed.getValue()) / speed.getBaseValue();
 		if (entity.isSprinting()) {
 			factor /= 1.3; // Minecraft's sprint modifier; heroes don't sprint
 		}

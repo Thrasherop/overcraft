@@ -65,7 +65,7 @@ public class SleepDartEntity extends OwProjectile {
 		if (target != null && Allies.canHurt(owner, target)) {
 			// its 5 first, then the sleep: the dart's own hit doesn't wake it
 			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE);
-			Combat.credit(owner, dealt);
+			Combat.credit(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}

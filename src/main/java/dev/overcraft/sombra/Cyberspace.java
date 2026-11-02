@@ -75,7 +75,7 @@ public final class Cyberspace {
 				}
 				if (damage > 0) {
 					float dealt = Combat.damage(e, zoneSource(z.sombra), damage);
-					Combat.credit(z.sombra, dealt);
+					Combat.credit(z.sombra, dealt, e);
 					Combat.addFireForDamage(z.sombra, dealt, Ow.toOw(e.getMaxHealth()));
 					if (dealt > 0) {
 						Effects.hitMarker(z.sombra, e, false);

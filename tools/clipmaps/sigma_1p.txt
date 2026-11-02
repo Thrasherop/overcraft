@@ -4,15 +4,15 @@
 # each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
 # aim-pitch points -1 / +1 (sign L, as Juno's / Brigitte's), 8-way slots by the slot fields (H field, not measured on his body),
 # _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
-0-36_000000007094 = jump_takeoff   # 0.1667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 @82A84033 sm[0] seq[0]; on 3 paths
-0-36_000000007095 = jump_fall   # 0.4333 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 @82A84033 sm[0] seq[1]; on 6 paths
+0-36_000000007094 = jump   # (was jump_takeoff) 0.1667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 @82A84033 sm[0] seq[0]; on 3 paths
+0-36_000000007095 = fall   # (was jump_fall) 0.4333 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 @82A84033 sm[0] seq[1]; on 6 paths
 4-6_000000006FDB = add_jump_fall   # 0.1667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 +add({'bound': None}) @82A840B3 @82A84059; on 6 paths
 4-6_000000006FD4 = add_jump_fall_2   # 0.4667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 +add({'bound': None}) @82A840B3 @82A84059 +add(); on 6 paths
 4-4_000000006FD1 = add_jump_fall_3   # 1 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 +add({'bound': None}) @82A840B3 @82A84059 +add() +add(); on 6 paths
 4-22_00000000706C = add_jump_fall_4   # 0.1667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 +add({'bound': None}) @82A840B3 +add({'bound': None}) @82A840B4; on 5 paths
 4-22_000000007017 = add_jump_fall_5   # 0.4667 s; set 0AA1 alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); sel[3] @85 sm[0] @6 +add({'bound': None}) @82A840B3 +add({'bound': None}) @82A840B4 +add(); on 5 paths
-0-36_000000006F5D = move_move   # 1.3333 s; set 0AA1 alias 9 (1P move / stand (df18 cat5 / cat9)); sel[3] @85 sm[1] @82A840A2 @9 df18=cat5; on 3 paths
-0-60_000000006F60 = move_stand   # 0.3333 s; set 0AA1 alias 9 (1P move / stand (df18 cat5 / cat9)); sel[3] @85 sm[1] @82A840A2 @9 df18=cat9; on 3 paths
+0-36_000000006F5D = run   # (was move_move) 1.3333 s; set 0AA1 alias 9 (1P move / stand (df18 cat5 / cat9)); sel[3] @85 sm[1] @82A840A2 @9 df18=cat5; on 3 paths
+0-60_000000006F60 = idle   # (was move_stand) 0.3333 s; set 0AA1 alias 9 (1P move / stand (df18 cat5 / cat9)); sel[3] @85 sm[1] @82A840A2 @9 df18=cat9; on 3 paths
 4-4_000000007096 = add_stance_tr01   # 1.1333 s; set 0AA1 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[3] @85 +add() tr[0>1]; on 2 paths
 4-28_0000000070B8 = add_stance_sm0   # 0.0667 s; set 0AA1 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[3] @85 +add() sm[0]; on 2 paths
 4-4_0000000070B6 = add_stance_tr130   # 1 s; set 0AA1 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[3] @85 +add() tr[1, 3>0]; on 2 paths

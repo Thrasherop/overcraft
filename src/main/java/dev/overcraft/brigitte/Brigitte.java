@@ -121,10 +121,11 @@ public final class Brigitte implements HeroKit {
 			if (target != null) {
 				s.bashHit = true;
 				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE);
-				Combat.credit(player, dealt);
+				Combat.credit(player, dealt, target);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 				Effects.hitMarker(player, target, false);
-				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0);
+				// a Stalwart takes 40% less of it (Tank)
+				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0).scale(dev.overcraft.hero.Tank.knockbackFactor(target));
 				target.push(push.x, push.y, push.z);
 				target.needsSync = true;
 				Combat.animate(player, "shield_bash_hit");
@@ -322,11 +323,12 @@ public final class Brigitte implements HeroKit {
 			}
 			hit++;
 			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE);
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, e);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 			Effects.hitMarker(player, e, false);
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
-			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3);
+			double kept = dev.overcraft.hero.Tank.knockbackFactor(e);
+			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3 * kept, 0.25 * kept, push.z * Ow.speed(BASH_KNOCKBACK) * 3 * kept);
 			e.needsSync = true;
 			stun(player, e);
 		}
@@ -387,7 +389,7 @@ public final class Brigitte implements HeroKit {
 			}
 			if (hit != null) {
 				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE);
-				Combat.credit(player, dealt);
+				Combat.credit(player, dealt, hit);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
 				Effects.hitMarker(player, hit, false);
 				BrigitteSounds.split(player, "whip.hit", hit.getEyePosition(), 60);
@@ -445,7 +447,7 @@ public final class Brigitte implements HeroKit {
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
 				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE);
-				Combat.credit(p.whiplash, dealt);
+				Combat.credit(p.whiplash, dealt, p.target);
 				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
 				Effects.hitMarker(p.whiplash, p.target, false);
 				BrigitteSounds.split(p.whiplash, "perk.whiplash", p.target.getEyePosition(), 45);
@@ -591,7 +593,7 @@ public final class Brigitte implements HeroKit {
 			}
 			s.flailHit.add(target.getId());
 			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE);
-			Combat.credit(player, dealt);
+			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);

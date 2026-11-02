@@ -67,6 +67,7 @@ public final class HeroArt {
 			case SOMBRA -> "emp";
 			case BRIGITTE -> "rally";
 			case JUNO -> "orbital_ray";
+			case SIGMA -> "gravitic_flux";
 			case ILLARI -> "captive_sun";
 		});
 	}

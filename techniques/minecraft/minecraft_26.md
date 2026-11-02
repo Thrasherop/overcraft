@@ -12,6 +12,22 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.
 
 ## Gameplay
+- **A per-hero body box** (Sigma, 2026-11-02: [sigma](../heroes/sigma.md)): override `Avatar.getDefaultDimensions(Pose)`
+  (players don't override it; the eye height rides in `EntityDimensions.withEyeHeight`), and call `refreshDimensions()` from
+  `Player.tick` whenever the box Minecraft holds isn't the one wanted. Two traps: the client's own player kept Minecraft's box on
+  rejoin and after G while the server's switched (the refresh only stuck once a crouch changed the pose), so compare the held
+  box with the wanted one every tick and read the local player's hero from the client's own state, not only the synced
+  attachments. And `InventoryScreen.extractEntityInInventoryFollowsMouse` centres the entity on half its *current* box: a taller
+  box moves every previewed hero down unless the offset is corrected by `(height - 1.8) / 2`. `Player.updatePlayerPose` stands
+  a player only where the standing box fits, else crouches, else swims: grow a box only where its crouched size fits, or a
+  switch in a tunnel suffocates.
+- **Explosions push apart from their damage:** `ServerExplosion.hurtEntities` pushes with `pushFromExplosion` and, for a
+  player, through `hitPlayers` (their own client applies it), scaled by `EXPLOSION_KNOCKBACK_RESISTANCE`, not
+  `LivingEntity.knockback`. A knockback resistance has to scale both (`ServerExplosionMixin`), and a mob's melee hit goes
+  through `knockback` (0.4, vertical capped 0.4 on the ground).
+- **Slows are speed modifiers in Minecraft's order** (`AttributeInstance.calculateValue`: base + flat, then the base's shares,
+  then each total share multiplied): Slowness is -0.15 a level of the total, Local Anesthetic a share of the base. Resisting
+  "slows received" means recomputing the value with the negative ones scaled (`Tank.resistedValue`), keeping a hero's own.
 - **Synced Fabric attachments** must be registered at mod start, not lazily from an event.
 - **Minecraft's projectile hits ignore the projectile's size:** `ProjectileUtil.computeMargin` widens the target boxes
   from 0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`). Test

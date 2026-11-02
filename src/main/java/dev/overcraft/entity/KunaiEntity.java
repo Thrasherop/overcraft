@@ -99,7 +99,7 @@ public class KunaiEntity extends OwProjectile {
 		Effects.play(level, "kunai_hit_entity", at, getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
-			Combat.credit(owner, dealt);
+			Combat.credit(owner, dealt, target);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 			if (owner instanceof net.minecraft.server.level.ServerPlayer thrower && dealt > 0) {
 				Effects.hitMarker(thrower, target, crit);

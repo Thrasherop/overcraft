@@ -107,12 +107,24 @@ own worktree (issue #68, hero 7 of 12, after Sojourn #2). Written 2026-11-02 fro
 - **What counts as a "hero"** (Hyper Regeneration, Hyper Strike's count, the role's ult reduction): every living creature and player
   hit, as Sojourn's plan (Overwatch's "enemy heroes" have no Minecraft equivalent but mobs); barrier and Grasp count every projectile.
 - **Role Queue:** always on (+150): the mod has no queue; 600 total.
-- **Body size:** the data's 1.4 x 2.5 m box (2.05 m crouched): Open (above).
+- **Body size (the owner's decision, 2026-11-02):** "Sigma should be unable to fit through a door; that's funny. And the camera
+  height should match." His data's box in hero mode: **1.4 x 2.5 m, crouched 2.05 m** (D 2AB1), the camera at **2.06 m** (his head
+  hardpoint 0076 on bone_0011 in his stand 6E65, frame 0: M), crouched 1.61 m (ours: as far under the top as standing). Minecraft's
+  0.6 x 1.8 in Minecraft mode (G). He fits no 1-wide door or 2-high tunnel; a 3-high, 2-wide opening, yes; crouched, a 2.05 m+
+  gap. The box only grows where his crouched box fits (ours): picking him or G in a tight spot keeps Minecraft's box until there is
+  room, so a switch never suffocates him. (`dev.overcraft.hero.HeroBody`; the coordinator first set Minecraft's box as the default,
+  replaced the same day by this.)
 - **What the barrier blocks:** as Brigitte's (arrows, tridents, fireballs, potions, every hero projectile, blasts from the front); not
   melee; mobs walk through it (Overwatch's barriers don't block movement). Its own projectiles and his allies' pass from behind.
 - **Grasp against non-damage projectiles** (ender pearls, eggs, snowballs, fireworks): pearls and eggs eaten for 0 (W: healing
   projectiles absorbed for 0), fireworks' blast not (it's an explosion).
-- **Flux on bosses / big mobs:** the 50 % slam capped at 200 Overwatch damage on the Ender Dragon, the Wither and the Warden (ours: Open).
+- **Flux on bosses / big mobs:** the 50 % slam capped at 200 Overwatch damage on the Ender Dragon, the Wither and the Warden (ours,
+  set 2026-11-02 as the default: Open).
+- **Accretion's own burst:** no self-damage (ours, 2026-11-02: D has no self-damage entry; W's 20 -> 6 is not used: Open).
+- **The role's ult reduction:** only for the enemies of the tank (the BZ / W wording); healing a tank ally counts in full (ours, M).
+  Mercy's damage-boost credit (Boosts.amplify) doesn't know the victim and isn't reduced (not yet).
+- **Stalwart in Minecraft mode:** the knockback and slow resistance hold only in hero mode (as the movement does); the +150 health
+  always (health holds whatever the mode). The role's 15 % healing reduction waits for the global 30 % (not in Overcraft: Open).
 - **Hyperspheres and blocks:** bounce (W); never break blocks; burst on a creature or after 0.43 s.
 - **Keys:** Accretion ability 2 (E), Grasp ability 1 (LShift), barrier right button, Flux ult (Q), Levitation the jump key, as
   Overwatch's defaults; options: barrier toggle, reload recalls, Flux confirm button, rise with ability 3.

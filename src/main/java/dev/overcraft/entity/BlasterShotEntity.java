@@ -76,7 +76,7 @@ public class BlasterShotEntity extends OwProjectile {
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
 				: Combat.damage(target, damageSources().thrown(this, owner), damage);
 			if (owner instanceof Player mercy) {
-				Combat.credit(mercy, dealt);
+				Combat.credit(mercy, dealt, target);
 				Combat.addFireForDamage(mercy, dealt, Ow.toOw(target.getMaxHealth()));
 				if (mercy instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);

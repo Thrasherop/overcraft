@@ -125,6 +125,7 @@ public final class HeroManager {
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
+		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
 	}
 
 	private HeroManager() {

@@ -99,18 +99,30 @@ public class HeroSelectScreen extends OwScreen {
 		}
 		float total = -GROUP_GAP;
 		for (List<Hero> group : groups) {
-			total += GROUP_GAP + group.size() * (PORTRAIT + PORTRAIT_GAP) - PORTRAIT_GAP;
+			total += GROUP_GAP + groupWidth(group);
 		}
 		float x = (refWidth() - total) / 2;
 		List<Card> cards = new ArrayList<>();
 		for (List<Hero> group : groups) {
+			float start = x;
 			for (Hero hero : group) {
 				cards.add(new Card(hero, x, ROSTER_TOP));
 				x += PORTRAIT + PORTRAIT_GAP;
 			}
-			x += GROUP_GAP - PORTRAIT_GAP;
+			x = start + groupWidth(group) + GROUP_GAP;
 		}
 		return cards;
+	}
+
+	/**
+	 * A role group's width: its portraits, or its header (badge and name) when that's wider. Sojourn alone under DAMAGE: the
+	 * header ran into SUPPORT's (found playing, 2026-11-02).
+	 */
+	private static float groupWidth(List<Hero> group) {
+		float portraits = group.size() * (PORTRAIT + PORTRAIT_GAP) - PORTRAIT_GAP;
+		String role = Component.translatable("overcraft.role." + group.get(0).role.name().toLowerCase(Locale.ROOT)).getString()
+			.toUpperCase(Locale.ROOT);
+		return Math.max(portraits, 32 + HudText.width(Face.BODY, role, 16) + 8);
 	}
 
 	private @Nullable Hero cardAt(double mouseX, double mouseY) {
@@ -231,7 +243,10 @@ public class HeroSelectScreen extends OwScreen {
 			try {
 				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
 				// preview turns toward a point: the box's own centre is straight ahead
-				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview),
+				// Minecraft centres the entity on half its box: a bigger hero box (Sigma's 2.5 m: HeroBody) would move every
+				// previewed hero, so the drop is kept against Minecraft's 1.8 m (found playing: Kiriko previewed low)
+				float boxShift = (minecraft.player.getBbHeight() - 1.8f) / 2;
+				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview) - boxShift,
 					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
@@ -365,9 +380,11 @@ public class HeroSelectScreen extends OwScreen {
 			if (hero.role != lastRole) {
 				lastRole = hero.role;
 				float groupEnd = card.x();
+				List<Hero> group = new ArrayList<>();
 				for (int j = i; j < cards.size() && cards.get(j).hero().role == lastRole; j++) {
-					groupEnd = cards.get(j).x() + PORTRAIT;
+					group.add(cards.get(j).hero());
 				}
+				groupEnd = card.x() + groupWidth(group);
 				String role = Component.translatable("overcraft.role." + lastRole.name().toLowerCase(Locale.ROOT)).getString()
 					.toUpperCase(Locale.ROOT);
 				Identifier badge = HeroArt.role(lastRole);
@@ -452,12 +469,20 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO ? 0.72f : 1;
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO ? 0.72f
+			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
+			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : 1;
 	}
+
+	/**
+	 * Sigma's framing and drop: he floats with his head 2.12 m up (his idle's Head bone), so framed as the others (head near
+	 * the top, cut at mid-thigh) he is drawn larger and lower (ours, by eye; DevServer "selectframe" sets them).
+	 */
+	public static final float[] SIGMA_FRAME = {0.62f, 0.85f};
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
 	private static float drop(Hero hero) {
-		return hero == Hero.JETPACK_CAT ? 0.45f : MODEL_DROP;
+		return hero == Hero.JETPACK_CAT ? 0.45f : hero == Hero.SIGMA ? SIGMA_FRAME[1] : MODEL_DROP;
 	}
 
 	/** One ability of the kit: the key and the ability (its name, description and icon go by this id). */
@@ -519,6 +544,14 @@ public class HeroSelectScreen extends OwScreen {
 			// Whip Shot, Repair Pack, Rally, Inspire (her passive)
 			// her data's loadouts in order: Mediblaster (the left button), Pulsar Torpedoes (the right), Glide Boost, Martian
 			// Overboots (jump), Hyper Ring, Orbital Ray
+			// his data's loadouts in order: Hyperspheres (the left button), Experimental Barrier (the right), Kinetic Grasp,
+			// Accretion, Gravitic Flux; no passive of his own (Stalwart is the sub-role's)
+			case SIGMA -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "hyperspheres"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "experimental_barrier"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "kinetic_grasp"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "accretion"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "gravitic_flux"));
 			case JUNO -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "mediblaster"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "pulsar_torpedoes"),

@@ -31,11 +31,11 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
-                "ana": "Ana", "brigitte": "Brigitte"}
+                "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.

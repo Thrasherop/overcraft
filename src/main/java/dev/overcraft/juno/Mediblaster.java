@@ -134,7 +134,7 @@ final class Mediblaster {
 		JunoSounds.at(level, "mediblaster.hit_enemy_3p", bestAt, 500, player);
 		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
 		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1));
-		Combat.credit(player, dealt);
+		Combat.credit(player, dealt, best);
 		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
 		if (dealt > 0) {
 			Effects.hitMarker(player, best, crit);

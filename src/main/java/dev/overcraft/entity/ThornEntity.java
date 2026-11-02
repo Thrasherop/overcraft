@@ -75,7 +75,7 @@ public class ThornEntity extends OwProjectile {
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
 				: Combat.damage(target, damageSources().thrown(this, owner), damage);
 			if (owner instanceof Player lifeweaver) {
-				Combat.credit(lifeweaver, dealt);
+				Combat.credit(lifeweaver, dealt, target);
 				Combat.addFireForDamage(lifeweaver, dealt, Ow.toOw(target.getMaxHealth()));
 				if (lifeweaver instanceof ServerPlayer shooter) {
 					if (dealt > 0) {
