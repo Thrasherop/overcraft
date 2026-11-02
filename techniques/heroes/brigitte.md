@@ -196,3 +196,19 @@ Two dev clients (host "Kiriko" as Brigitte, `runClient2` "Viewer" joining over L
   (stone mined with a pickaxe, a chest placed and opened, the inventory); Save and Leave from the pause menu, rejoin,
   the select screen, Brigitte picked again with her barrier and packs full.
 - Not tried: a second player as Brigitte; the Nether; water and lava; boats.
+
+## Shield Bash as recorded (#76)
+The owner's Workshop recording (2026-11-01, `E:\Overwatch Archive\research\movement\workshop-2026-11-01b\`, three
+bashes from a jump): 25.85 m/s for 0.256 s (16 ticks at 62.5 a second) with gravity on her throughout, then her speed cut
+to 15 m/s with its direction kept. Ours had flown level at 22 m/s for 0.3 s and carried the whole 22 m/s on (12.97 m
+from a jump, 8.57 m from the ground: reproduced in game first). Now as recorded; OwMovement's air decay and ground
+friction take the 15 m/s off and already matched the recording (about 18 m/s/s at 14.7 in the air; x0.79 a server tick
+on the ground against its x0.81).
+Played (dev client, flat world `bash1`, the shield held, the left button), each a trace of her speed per tick:
+- From a jump: 25.85 m/s while her fall went on (vy -1.88 to -4.5), then 13.7 / -3.4 a tick after the cap; 8.38 m in
+  all (the recording works out to about 8.1).
+- From the ground: 25.85 m/s, then friction: 7.13 m.
+- Into a NoAI zombie 4 m ahead: she stopped on it at 3.88 m, 70 to it (20 to 14.4).
+- Into a stone wall 3.5 m ahead: stopped at it, 3.2 m.
+- Off a 3-block ledge: the bash falling with gravity, then 13.9 m/s bleeding to 7.5 by the landing, 12.49 m.
+- Not tried: slopes, water, a second player.
