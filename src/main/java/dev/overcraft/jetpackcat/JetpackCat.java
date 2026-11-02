@@ -491,7 +491,9 @@ public final class JetpackCat implements HeroKit {
 		s.purrTicks = 0;
 		Combat.animate(player, "purr");
 		ServerLevel level = player.level();
-		Effects.play(level, "purr", player.position(), Vec3.ZERO, player, player.getId(), player);
+		// dx 1: her "Hide Purr Range Ring" is on, and the clients make no range wall (70F9)
+		boolean hideRing = dev.overcraft.hero.HeroManager.options(player).hidePurrRing();
+		Effects.play(level, "purr", player.position(), new Vec3(hideRing ? 1 : 0, 0, 0), player, player.getId(), player);
 		HeroSounds.toOwner(player, OcSounds.JC_PURR_CAST);
 		Voice.say(player, "purr", 1);
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)

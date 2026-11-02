@@ -554,6 +554,14 @@ EFFECT_MASKS = {
     "cat_cone_noise": ("JetpackCat", "Lifeline", "00000002C41F", 1),
     "cat_cone_line": ("JetpackCat", "Lifeline", "000000016E9D", 1),
     "cat_ring_line": ("JetpackCat", "Lifeline", "0000000299E3", 1),
+    # the rest of #59 (research\jetpack_cat\work\fx_digest.txt): the hook's bubbles' thin band 6C057 (71B1 C9), the
+    # towed ally's arcs' masks (7454 C6 / C8: the round edge 71226, the noise 18F00, the strips BA19 and 39F16), which
+    # bake_cat_arcs() lays on the arc; 18F00 is also Purr's range wall's (70F9)
+    "cat_line_strip": ("JetpackCat", "Lifeline", "00000006C057", 1),
+    "cat_arc_edge": ("JetpackCat", "Lifeline", "000000071226", 1),
+    "cat_soft_noise": ("JetpackCat", "Lifeline", "000000018F00", 1),
+    "cat_arc_strip": ("JetpackCat", "Lifeline", "00000000BA19", 1),
+    "cat_arc_stripes": ("JetpackCat", "Lifeline", "000000039F16", 1),
     # Frenetic Flight and the jetpack: nozzle hot dot, trail strip, spark blobs
     "cat_glow_dot": ("JetpackCat", "FreneticFlight", "00000000A17F", 1),
     "cat_trail": ("JetpackCat", "FreneticFlight", "0000000219FA", 1),
@@ -857,6 +865,15 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
             "cat_tracer": ("cat_cloud", "cat_fade"),
             "cat_trail_ribbon": ("cat_noise", "cat_fade"),
+            # the hook's bubbles (71B1 C9, sphere DBF): the noise 299E3 x 16E9D x the thin band 6C057 along the
+            # sphere's V (its latitude): a noisy ring round the sphere's middle
+            "cat_bubble_band": ("cat_ring_line", "cat_cone_line", "cat_line_strip"),
+            # Purr's range wall (70F9 C4, cylinder 19181): its strip 1C7A x the noises 18F00 and 19167
+            "cat_purr_wall_band": ("cat_band", "cat_soft_noise", "cat_glow_noise"),
+            # Catnapper's aim rings (71B3 C4): the strip 1C7A x the cloud 18E48; the aim lines' widest band (71AF C14):
+            # the strip 1344 x 18E48
+            "cat_nap_ring": ("cat_band", "cat_cloud"),
+            "cat_nap_line": ("cat_strip", "cat_cloud"),
             # the Tree of Life's wave shell (47E2, tools/reference/lifeweaver-effects.md): bokeh 187EB x vertical fade
             # 3E4E5 x wisps 2FCA7. The bokeh alone is grey all over: on the sphere round him it tinted the whole view
             "lw_tree_wave": ("lw_bokeh", "lw_fade_v", "lw_wisp"),
@@ -877,12 +894,18 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             # Sojourn's field decal (2228 C21, tools/reference/sojourn-effects.md): the noise 299E5 x the swirl 3DB8
             "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl")}
 
+# products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
+# bubbles at a third, unseen in play)
+STRETCHED = {"cat_bubble_band"}
+
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
                  "cat_cone": ("JetpackCat", "Lifeline", "00000001B972"),
                  "cat_half_ring": ("JetpackCat", "Lifeline", "000000014874"),
+                 # the hook's bubbles' sphere (71B1 C9)
+                 "cat_bubble": ("JetpackCat", "Lifeline", "000000000DBF"),
                  "cat_sphere": ("JetpackCat", "Purr", "000000001385"),
                  "cat_purr_torus": ("JetpackCat", "Purr", "00000001BD54"),
                  "cat_purr_wall": ("JetpackCat", "Purr", "000000019181"),
@@ -941,6 +964,52 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063")}
 
 
+def bake_cat_arcs(out):
+    """Jetpack Cat's arcs round the towed ally (Lifeline 7454, research\\jetpack_cat\\work\\fx_digest.txt): the half
+    ring 14874 is planar-mapped (u = x + 0.5 across its 1 m, v from its top), a rectangle with a half disc cut out
+    (radius 0.362 of its 0.5), so the masks round it. Each renderer layers four: C6 (the 0.35 s flash) the cloud 18E48,
+    the round edge 71226, the noise 18F00 twice and the strip BA19; C8 (the 1 s lines) 71226, the noise 299E3, 18F00
+    twice and the strip 39F16. The shader isn't decoded, so how they lie is read from their shapes (M): 71226 (a disc's
+    edge round its corner) laid on each quarter round the arc's centre, one minus (the arc's outer rounding); the 4 x
+    256 strips are profiles across the band, from the cut edge out; the noises at the mesh's UVs. The product is
+    stretched to full brightness (ours: the data's colours are HDR). Writes cat_arc_flash.png and cat_arc_lines.png."""
+    import math
+    from PIL import Image
+    names = ("cat_arc_edge", "cat_cloud", "cat_soft_noise", "cat_ring_line", "cat_arc_strip", "cat_arc_stripes")
+    if not all((out / f"{n}.png").exists() for n in names):
+        return 0
+    m = {n: Image.open(out / f"{n}.png").convert("L") for n in names}
+
+    def sample(name, u, v):
+        im = m[name]
+        x = min(max(int(u * im.width), 0), im.width - 1)
+        y = min(max(int(v * im.height), 0), im.height - 1)
+        return im.getpixel((x, y)) / 255
+
+    inner, n = 0.362, 256
+    made = 0
+    for name, cloud, strip in (("cat_arc_flash", "cat_cloud", "cat_arc_strip"), ("cat_arc_lines", "cat_ring_line", "cat_arc_stripes")):
+        values = []
+        for y in range(n):
+            for x in range(n):
+                u, v = (x + 0.5) / n, (y + 0.5) / n
+                mx, my = u - 0.5, 0.5 - v
+                r = math.hypot(mx, my)
+                if r < inner - 0.01:
+                    values.append(0.0)
+                    continue
+                edge = 1 - sample("cat_arc_edge", abs(mx) * 2, 1 - abs(my) * 2)
+                across = sample(strip, 0.5, (r - inner) / (0.5 - inner))
+                noise = sample("cat_soft_noise", u, v)
+                values.append(sample(cloud, u, v) * edge * noise * noise * across)
+        top = max(values) or 1
+        img = Image.new("L", (n, n))
+        img.putdata([int(255 * min(1.0, val / top)) for val in values])
+        img.save(out / f"{name}.png")
+        made += 1
+    return made
+
+
 def add_effects(*sources):
     """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
     converts their meshes (the torii gate) into hero_models/. Each from the first source folder that has it: Jetpack
@@ -976,8 +1045,12 @@ def add_effects(*sources):
             product = masks[0].resize(size, Image.BILINEAR)
             for mask in masks[1:]:
                 product = ImageChops.multiply(product, mask.resize(size, Image.BILINEAR))
+            if name in STRETCHED:
+                top = product.getextrema()[1] or 1
+                product = product.point(lambda v: min(255, v * 255 // top))
             product.save(out / f"{name}.png")
             copied += 1
+    copied += bake_cat_arcs(out)
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():
         src = next((Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"
