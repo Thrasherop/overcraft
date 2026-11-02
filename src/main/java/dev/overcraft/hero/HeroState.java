@@ -15,6 +15,11 @@ public final class HeroState {
 	// input, from the client (cleared whenever slot 1 isn't selected)
 	public boolean primaryHeld;
 	public boolean secondaryHeld;
+	/**
+	 * A fire button pressed since the last tick (no tick has seen it held yet), and let go before one did: the release waits
+	 * for the next tick (HeroManager.held), so a quick click is never lost.
+	 */
+	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
 	public boolean wallClimbing;
 
@@ -155,6 +160,27 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Juno: ticks into Glide Boost (-1 not gliding). */
+	public int junoGlide = -1;
+	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
+	public int junoVolley;
+	public double junoVolleyClock;
+	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */
+	public int junoLock = -1;
+	public final java.util.Map<Integer, Integer> junoLockProgress = new java.util.HashMap<>();
+	public final java.util.List<Integer> junoLocked = new java.util.ArrayList<>();
+	public final java.util.List<Integer> junoFiring = new java.util.ArrayList<>();
+	public double junoFireClock;
+	/** Juno: each target whose lock tick is sounding, and when its file was started (game time; Torpedoes.ticking). */
+	public final java.util.Map<Integer, Long> junoLockTicking = new java.util.HashMap<>();
+	/** Juno: Locked On's cooldown taken off for this firing (ticks, at most 5 s). */
+	public double junoLockedOn;
+	/** Juno: ticks into Hyper Ring's cast and Orbital Ray's (-1 none). */
+	public int junoRingCast = -1, junoRayCast = -1;
+	/** Juno: her buttons last tick (their presses' edges). */
+	public boolean junoLeftWas, junoRightWas;
+	/** Juno: the left click that ended her lock, still held: it fires nothing. */
+	public boolean junoLeftSpent;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
 	public int whipTicks = -1, whipBackAt;
 	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */
@@ -239,6 +265,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;
 		ampUp = 0;

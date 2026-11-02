@@ -83,7 +83,7 @@ public final class EmoteProps {
 			// no mask now: a hero whose weapon is an entity of its own (Lúcio) puts its pieces away with it (the stow
 			// windows); one whose weapons are her own pieces (Kiriko) by whether a hand holds them
 			boolean away = mask >= 0 ? (mask & bit) != 0
-				: data.weaponEntity() ? data.stowed(emote, animator.emoteClip(), animator.emoteAt())
+				: data.weaponEntity() ? data.stowsPiece(bit) && data.stowed(emote, animator.emoteClip(), animator.emoteAt())
 				: parked(heroModel, pose, heroModel.joints[piece.joint4()[0]]);
 			if (away) {
 				hidden.add(piece.joint4()[0]);

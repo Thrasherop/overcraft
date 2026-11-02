@@ -35,7 +35,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
     [lucio_emotes](emotes/lucio_emotes.md); for Mercy (two weapon entities, controls read raw by slot),
     [mercy_emotes](emotes/mercy_emotes.md); for Ana (child-entity props, carriers posed at rest, the gallery preview tree),
     [ana_emotes](emotes/ana_emotes.md); for Sombra (a prop's clip starting in her stance, hologram materials),
-    [sombra_emotes](emotes/sombra_emotes.md).
+    [sombra_emotes](emotes/sombra_emotes.md); for Juno (weapons that are geosets of her body, mask bits that aren't the
+    geoset bits, an intro just off her stance), [juno_emotes](emotes/juno_emotes.md).
 - **Testing and review**
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
@@ -49,7 +50,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
-  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth, being built).
+  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth, being built).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:

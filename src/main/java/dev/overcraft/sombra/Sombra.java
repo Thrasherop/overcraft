@@ -572,7 +572,7 @@ public final class Sombra implements HeroKit {
 	private static final double HEAD_DEPTH = 0.25;
 
 	/** {@code dir} turned by an angle up to {@code degrees}, evenly over the cone's disc. */
-	static Vec3 cone(Vec3 dir, double degrees, net.minecraft.util.RandomSource random) {
+	public static Vec3 cone(Vec3 dir, double degrees, net.minecraft.util.RandomSource random) {
 		if (degrees <= 0) {
 			return dir;
 		}

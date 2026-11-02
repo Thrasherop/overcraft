@@ -448,6 +448,30 @@ public final class OcSounds {
 		"ping_warning", "ping_enemy", "barrier_raise", "bash", "bash_hit", "flail", "whip_hit", "repair_pack",
 		"repair_empty", "inspire", "barrier_damaged", "barrier_low", "barrier_broken", "ultimate");
 
+	/**
+	 * Juno's (tools/soundmaps/juno.txt, read for wiring in tools/reference/juno-sounds.md): her sounds by name ("juno." + name,
+	 * played through dev.overcraft.juno.JunoSounds on the server and dev.overcraft.client.JunoSounds for the loops) and her
+	 * lines by moment (Voice.say: "juno.voice.<moment>"; her wheel lines, "resurrected", "damage_boosted" and "nano_boosted"
+	 * are every hero's, registered in init()). The map's own pick for the ult line: ult.friendly / ult.enemy (16A9 / 16AA),
+	 * not voice.ultimate (184D, the same line), which stays registered but unplayed.
+	 */
+	public static final java.util.List<String> JUNO_SOUNDS = java.util.List.of(
+		"boots.double_jump", "boots.double_jump_3p", "boots.hover.loop", "boots.hover.loop_3p", "boots.hover_end",
+		"boots.hover_end_3p", "boots.hover_start", "boots.hover_start_3p", "boots.idle.loop_3p", "glide.end", "glide.end_3p",
+		"glide.ending", "glide.ending_3p", "glide.loop", "glide.loop_3p", "glide.start", "glide.start_3p", "jump", "jump_3p",
+		"land", "mediblaster.hit", "mediblaster.hit_block", "mediblaster.hit_enemy", "mediblaster.hit_enemy_3p",
+		"mediblaster.projectile", "mediblaster.reload", "mediblaster.reload_3p", "mediblaster.volley", "mediblaster.volley_3p",
+		"mediblaster.volley_end", "mediblaster.volley_end_3p", "melee", "perk.locked_on", "perk.ring_refund", "ring.appear",
+		"ring.cast", "ring.cast_3p", "ring.end", "ring.launch", "ring.loop", "ring.pass", "ring.pass_3p", "torpedo.fire",
+		"torpedo.fire_3p", "torpedo.fire_alt", "torpedo.flight.loop", "torpedo.flight_enemy.loop", "torpedo.heal",
+		"torpedo.heal_3p", "torpedo.heal_confirm", "torpedo.hit", "torpedo.hit_3p", "torpedo.hit_block", "torpedo.launch",
+		"torpedo.launch_3p", "torpedo.lock.loop", "torpedo.lock.loop_3p", "torpedo.lock_end_3p", "torpedo.lock_start",
+		"torpedo.lock_start_3p", "torpedo.lock_target", "torpedo.locking.loop", "ult.amp.end", "ult.amp.loop", "ult.amp.start",
+		"ult.cast", "ult.cast_3p", "ult.enemy", "ult.friendly", "ult.ray.ending", "ult.ray.hum", "ult.ray.inside.loop");
+	public static final java.util.List<String> JUNO_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "reload", "heal", "torpedo_ally", "torpedo", "ring", "ping_ring", "ultimate");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -463,6 +487,8 @@ public final class OcSounds {
 		SOMBRA_VOICE.forEach(moment -> register("sombra.voice." + moment));
 		BRIGITTE_SOUNDS.forEach(name -> register("brigitte." + name));
 		BRIGITTE_VOICE.forEach(moment -> register("brigitte.voice." + moment));
+		JUNO_SOUNDS.forEach(name -> register("juno." + name));
+		JUNO_VOICE.forEach(moment -> register("juno.voice." + moment));
 	}
 
 	private OcSounds() {

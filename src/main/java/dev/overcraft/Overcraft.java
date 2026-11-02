@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.27";
+	public static final String ASSETS_NEEDED = "0.3.28";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -170,6 +170,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Hack.tick(server);
 			dev.overcraft.brigitte.Inspire.tick(server);
 			dev.overcraft.brigitte.RepairPack.tick(server);
+			dev.overcraft.juno.Torpedoes.tickAll(server);
+			dev.overcraft.juno.HyperRing.tickAll(server);
+			dev.overcraft.juno.OrbitalRay.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
@@ -243,6 +246,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Hack.clear();
 			dev.overcraft.brigitte.Inspire.clear();
 			dev.overcraft.brigitte.RepairPack.clear();
+			dev.overcraft.juno.Torpedoes.clearAll();
+			dev.overcraft.juno.HyperRing.clearAll();
+			dev.overcraft.juno.OrbitalRay.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

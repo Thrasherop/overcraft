@@ -866,6 +866,14 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.JUNO) {
+			// Glide Boost (Shift) and Hyper Ring (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
+			ability(g, hero, w, "glide_boost", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.juno.JunoStats.GLIDE_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "hyper_ring", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.juno.JunoStats.RING_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.BRIGITTE) {
 			// Whip Shot (Shift) and Repair Pack (E: its charges are the weapon panel's), her data's ABILITY 1 / 2, in
 			// Kiriko's two places (ours)
@@ -1085,6 +1093,15 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.JUNO) {
+			// Pulsar Torpedoes (the right button) where Kiriko's ofuda panel is, the Mediblaster's 180 rounds (the left) where
+			// her kunai are
+			weapon(g, hero, w, "pulsar_torpedoes", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			weapon(g, hero, w, "mediblaster", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.juno.JunoStats.MEDIBLASTER_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.BRIGITTE) {
 			// Repair Pack's charges (E) where Kiriko's ofuda panel is, the Rocket Flail (the left button, no rounds) where her
 			// kunai are

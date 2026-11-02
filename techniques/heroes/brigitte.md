@@ -197,6 +197,12 @@ Two dev clients (host "Kiriko" as Brigitte, `runClient2` "Viewer" joining over L
   the select screen, Brigitte picked again with her barrier and packs full.
 - Not tried: a second player as Brigitte; the Nether; water and lava; boats.
 
+## The Workshop recording (2026-11-01: applied, #76)
+Shield Bash in the real game (two, `E:\Overwatch Archive
+esearch\movement\workshop-2026-11-01b\`): 25.85 m/s for 0.256 s
+(16 ticks at 62.5 a second: 6.6 m), then she carries 14.7 m/s, which bleeds off in the air (about 19 m/s²) until she lands.
+Ours: 22 m/s for 0.3 s (the same 6.6 m), stopping dead. Walking with the shield up: 3.85 m/s (ours, the 30 % slow: the same).
+
 ## Shield Bash as recorded (#76)
 The owner's Workshop recording (2026-11-01, `E:\Overwatch Archive\research\movement\workshop-2026-11-01b\`, three
 bashes from a jump): 25.85 m/s for 0.256 s (16 ticks at 62.5 a second) with gravity on her throughout, then her speed cut

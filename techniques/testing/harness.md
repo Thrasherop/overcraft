@@ -49,6 +49,10 @@
   854x480, the pause menu's Disconnect is `screenclick 213 174`.
 - **A click that confirms something needs to be held** (`key attack down`, 0.1 s, `up`): the server reads held
   buttons once a tick, and a tap's down and up can both arrive between two ticks (Catnapper's confirm was missed).
+  Not only the harness's: at a low frame rate (10 fps, the window unfocused) the client runs two ticks in one frame and
+  a real quick click is lost the same way (Juno's torpedo lock, 0 of 6 taps). Since the release play (2026-11-01,
+  [juno](../heroes/juno.md#step-9-the-release-play)) the server holds a fire button pressed and let go between two ticks
+  for one tick (`HeroManager.onInput` / `held`): 8 of 8 taps at 3-9 fps. Other inputs read as held (jump) still can.
 - **`secondary_fire` is the left button:** the action names follow Kiriko (her secondary, the kunai, is on the left).
   For Jetpack Cat and Lucio the left button is the primary fire, so `key secondary_fire` confirmed a Catnapper meant
   to be cancelled (2026-10-28). Q cancels it.

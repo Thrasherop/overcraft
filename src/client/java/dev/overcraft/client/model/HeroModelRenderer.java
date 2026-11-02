@@ -241,6 +241,18 @@ public final class HeroModelRenderer {
 			}
 			dev.overcraft.client.effect.MercyFx.posed(entity, staff, pose == null ? new net.minecraft.world.phys.Vec3[0] : points);
 		}
+		if (hero == Hero.JUNO && !previewing && entity.isAlive()) {
+			// her muzzle, torpedo pods, feet and casting hand, as posed, in the world (JunoFx.POINTS)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			String[] names = dev.overcraft.client.effect.JunoFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length && pose != null; i++) {
+				points[i] = bone(loaded.model(), pose, names[i], entity.getPosition(partialTicks), facing, state.scale);
+			}
+			if (pose != null) {
+				dev.overcraft.client.effect.JunoFx.posed(entity, points);
+			}
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
