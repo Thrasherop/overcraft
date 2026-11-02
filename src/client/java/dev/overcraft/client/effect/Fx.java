@@ -92,6 +92,8 @@ public final class Fx {
 		/** The flipbook loops (at fps, on the effects' clock) instead of stopping on its last frame. */
 		boolean loop;
 		boolean removed;
+		/** When attach last fed it (the effects' clock; -1: never): kept lit through a slow frame (see simulate). */
+		float fedAt = -1;
 		/** Meant to be seen up close (a first-person hand's puff): not faded near the camera. */
 		boolean near;
 		/** Fades out over this reach from the camera instead of the default (0: the default). */
@@ -515,6 +517,9 @@ public final class Fx {
 			+ (last[2] - at.z) * (last[2] - at.z));
 	}
 
+	/** How recently attach must have fed a particle for it to stay lit: two client ticks (now() carries the partial tick). */
+	private static final float ATTACH_FED = 0.1f;
+
 	/**
 	 * A particle that follows something (a glow on a projectile): made once, then moved here each frame and kept
 	 * lit; once no longer fed it fades out over the rest of its life.
@@ -531,6 +536,7 @@ public final class Fx {
 		}
 		p.at(at);
 		p.age = Math.min(p.age, p.life * (1 - p.fadeOut));
+		p.fedAt = now();
 		return p;
 	}
 
@@ -612,10 +618,17 @@ public final class Fx {
 	}
 
 	private static void simulate(float dt) {
+		float fedNow = now();
 		Iterator<Particle> it = PARTICLES.iterator();
 		while (it.hasNext()) {
 			Particle p = it.next();
 			p.age += dt;
+			// still fed (at the last client tick): stays lit. A frame longer than what's left of a short attached life (0.1 s
+			// of Brigitte's 0.2 s barrier layers at 10 fps) otherwise ended it between two feeds, every other frame
+			// (found in the 0.3.29 release play: the barrier drawn in half the frames at 10 fps)
+			if (p.fedAt >= 0 && fedNow - p.fedAt <= ATTACH_FED) {
+				p.age = Math.min(p.age, p.life * (1 - p.fadeOut));
+			}
 			if (p.age >= p.life) {
 				p.removed = true;
 				it.remove();

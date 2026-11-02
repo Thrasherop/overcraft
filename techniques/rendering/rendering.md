@@ -151,3 +151,12 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
 - **A liquid's surface is lower than the block's top** (a source with air above: 8/9 of a block). A decal laid on it
   sits under the grass round the pool, and the grass cut the ring off at the bank. On a liquid, the ground point is
   the block's top (`OrbitalRay.onTop`).
+- **The price: effects behind glass, water or ice are hidden** (the 0.3.29 release play,
+  [hand_play](../testing/hand_play.md#release-play-0329-2026-11-02)). In the after-terrain phase they're depth-tested
+  against the translucent terrain drawn before them, as vanilla particles are without Improved Transparency: Brigitte's
+  barrier seen through a stained-glass window isn't drawn.
+- **Improved Transparency (F3+X, or the video option) crashes with our render types:** `overcraft_hero_shadow_mark` has
+  no OIT pipelines. Every blended type submitted to a translucent phase needs them before that option can work.
+- **Attached particles and slow frames:** `Fx.attach` holds a particle at `life x (1 - fadeOut)` each client tick, but
+  `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
+  field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).
