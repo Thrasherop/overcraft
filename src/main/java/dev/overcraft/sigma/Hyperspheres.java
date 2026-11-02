@@ -106,6 +106,8 @@ public final class Hyperspheres {
 		if (target != null && Allies.canHurt(owner, target)) {
 			DamageSource hit = level.damageSources().thrown(sphere, owner);
 			float dealt = part != null ? Combat.damagePart(level, part, hit, SPHERE_DIRECT) : Combat.damage(target, hit, SPHERE_DIRECT);
+			// Hyper Regeneration and Hyper Strike's count (perks)
+			SigmaPerks.sphereDealt(owner, dealt, true);
 			Combat.credit(owner, dealt, target);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
@@ -131,6 +133,7 @@ public final class Hyperspheres {
 				continue;
 			}
 			float dealt = Combat.damage(e, source, burstDamage(d));
+			SigmaPerks.sphereDealt(owner, dealt, false);
 			Combat.credit(owner, dealt, e);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 			if (dealt > 0) {

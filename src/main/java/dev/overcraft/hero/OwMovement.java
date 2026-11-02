@@ -107,6 +107,8 @@ public final class OwMovement {
 
 	private static final Map<LivingEntity, Climb> CLIMBS = new WeakHashMap<>();
 
+	/** Set by the client: Sigma's Levitation (perk) lifts this entity this tick. */
+	public static Predicate<LivingEntity> levitating = entity -> false;
 	/** Set by the client: an ability holds this entity's jump (Sigma's Accretion gather). */
 	public static Predicate<LivingEntity> noJump = entity -> false;
 	/** Set by the client: Sigma flying in his Gravitic Flux (1 rising in its first 0.6 s, 2 after; 0 not flying). */
@@ -626,6 +628,12 @@ public final class OwMovement {
 			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity) * heavy);
 			dy = step[0];
 			vy = step[1];
+			if (levitating.test(entity)) {
+				// Sigma's Levitation (perk, 51E0 #382): up at 25 m/s² to 3 m/s, gravity off while it holds (M)
+				vy = Math.min(Ow.speed(dev.overcraft.sigma.SigmaStats.LEVITATION_SPEED), v.y + Ow.accel(dev.overcraft.sigma.SigmaStats.LEVITATION_ACCEL));
+				dy = (v.y + vy) / 2;
+				entity.resetFallDistance();
+			}
 			if (descent.test(entity) && vy < -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED)) {
 				// Angelic Descent: her fall held at 2 m/s (W; her data's property 978C5453 = 2.0)
 				vy = -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED);

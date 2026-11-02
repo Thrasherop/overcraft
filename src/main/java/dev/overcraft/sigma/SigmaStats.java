@@ -156,6 +156,27 @@ public final class SigmaStats {
 	/** His flying mover's acceleration, x the speed a second (D #976 m_5C6B4602 = 8) L reading. */
 	public static final double FLUX_FLIGHT_ACCEL = 8;
 
+	// ---- perks (sigma.md "Perks", D 51E0; the target filters' "enemy heroes" read as every creature: sigma-plan.md) ----
+	/** Kinetic Cycle: at Grasp's normal end, Accretion's cooldown -0.02 s a point absorbed (D 1D02 #735-#738 v21312 x 0.02; W -2 s per 100) H. */
+	public static final double KINETIC_CYCLE_PER_POINT = 0.02;
+	/** Hyper Regeneration: 30% of his Hyperspheres' damage heals his barrier (D 51E0 #431-#443 -> 1A2A #1039 x0.3; BZ 2026-07-14 40 -> 30%) H. */
+	public static final double HYPER_REGENERATION = 0.3;
+	/** Hyper Strike: every 5 direct sphere hits (D 51E0 v181 = 5, counted on id 9C8B: #398-#402) H. */
+	public static final int HYPER_STRIKE_HITS = 5;
+	/**
+	 * ...the next quick melee that lands knocks its target 14 m/s along his aim lifted 0.3 (D #391 v11272 = 14, #392
+	 * norm(aim + (0, 0.3, 0)) x 14; W 15) H, hurts 50 more (D 54A5 #513 v476 = 50, over 0.2 s: ours at once; W +50) H, and
+	 * floats it 0.8 s with gravity x0.01 and its input off (D 54A5 #454 v955 = 0.8, #404; W 1 s) H values, M meanings.
+	 */
+	public static final double HYPER_STRIKE_SPEED = 14, HYPER_STRIKE_LIFT = 0.3, HYPER_STRIKE_DAMAGE = 50, HYPER_STRIKE_FLOAT = 0.8,
+		HYPER_STRIKE_GRAVITY = 0.01;
+	/**
+	 * Levitation: jump held in the air from 0.2 s after leaving the ground (D 51E0 #379 / #375 0.2) H, once a landing (v1843)
+	 * H, up to 1.75 s (#383) H, accelerating at 25 m/s² up to 3 m/s (#382 STU_A9C4FF83 (0, 25, 0), max 3; W 2.3 m/s) M,
+	 * ending when let go (H nodes).
+	 */
+	public static final double LEVITATION_FROM = 0.2, LEVITATION_TIME = 1.75, LEVITATION_ACCEL = 25, LEVITATION_SPEED = 3;
+
 	// ---- his size (sigma.md "Size") ----
 	/**
 	 * His mover: 2.5 m tall, 0.7 m radius, crouched 2.05 m (D 2AB1, the default hero's 2.0 / 0.5 / 1.25) H. His body box in

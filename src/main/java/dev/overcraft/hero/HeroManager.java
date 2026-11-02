@@ -480,6 +480,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOJOURN && input.extra() != 0) {
 			dev.overcraft.sojourn.Sojourn.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.SIGMA && input.extra() != 0) {
+			dev.overcraft.sigma.Sigma.extra(player, state, input.extra());
+		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
 		}

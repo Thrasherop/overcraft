@@ -232,8 +232,43 @@ after (#585). That reading gives a ~6 m lift, and the zombies rose 5.96 m. Hyper
   asleep: untested); the right-button confirm option and the "rise with ability 3" option (not built: Overwatch's
   defaults, Open); the reticle's HUD timer; Flux over water or a cliff (no ground within 5 m: let go after 4 s).
 
+## Step 9 (perks), played 2026-11-02
+Code: `dev.overcraft.sigma.SigmaPerks` (hooks in `KineticGrasp.end`, `Hyperspheres.burst`, `QuickMelee.use`), his
+Levitation on his own client (`client.ClientSigma` -> `OwMovement.levitating`; EXTRA_JUMP tells the server, whose
+`softLanding` keeps its landing safe), `Sleep.knockdown(entity, seconds, gravity)` for Hyper Strike's float. Numbers in
+`SigmaStats` "perks". Each picked through the perk menu (`overcraft perks @s 3`, then Left Alt held and the left button
+for a tier's first perk, the right for its second: `s9_perk_menu.png`, the two icons by the ult after:
+`s9_perks_hud.png`, `s9_perks_hud2.png`); `overcraft perks @s 3` again clears the picks for the other pair.
+
+**From the data, past the plan:** Hyper Strike's target graph 54A5 holds its numbers: **+50** (v476, dealt over 0.2 s:
+ours at once) and a **0.8 s float** (v955; gravity x0.01 and its input off, #404), the knockback **14 m/s along
+norm(aim + 0.3 up)** (51E0 #392). Levitation starts on the jump *held* from 0.2 s in the air (#379 -> #375 -> #370).
+
+(expected -> seen, each against its control: the same steps without the perk)
+- **Kinetic Cycle** (3 arrows of 50 absorbed by Grasp, Accretion on cooldown): control **no change** at Grasp's end
+  (overhealth 7.2 = 90 = 60% of 150); with it **7.65 -> 4.55 s** at the end (3.10 = 150 x 0.02 + one tick).
+- **Hyper Regeneration** (barrier out and stopped at 400 after 5 arrows, three volleys into a husk past it, 350 dealt):
+  control **400 -> 400**; with it **400 -> 506** (+106; 30% of 350 = 105).
+- **Hyper Strike** (a 100-health husk, three volleys = 6 direct hits, then V): control **40** (3.149 through its armour,
+  a nudge); with it **90** (7.085: 40 + 50), knocked **5.9 m in 0.8 s** along his aim (14 m/s, Minecraft's air drag)
+  and lifted 0.3 m, NoAI through the float.
+- **Levitation** (jump held from the ground): control a **0.979 m** jump; with it **3.00 m/s up from 0.2 s after
+  take-off for 1.75 s** (35 ticks), **6.38 m** at the top, down with **48 -> 48** (no fall damage); a second hold in the
+  same air does nothing, the next landing allows it again (the held key jumped and levitated once more).
+- **A night fight** (four zombies with AI, two bow skeletons): the rock on the first (120, knocked down), Flux on the
+  three that had closed in (lifted, slammed to 6.064, one killed), spheres finishing them; Sigma down to 18 of 48 under
+  them, back to 48 after (`s9_fight_rock.png`, `s9_fight_flux.png`, `s9_fight_end.png`).
+- **G in Flux's flight**, 11.7 m up: Minecraft mode, his box back to Minecraft's, the fall landed **48 -> 48**; G again:
+  hero mode, his 1.40 x 2.50 box.
+- **Not tried:** Hyper Strike on a player, Levitation in water and on a ladder (it stops there: ClientSigma), the perks'
+  HUD (no Hyper Strike charge counter yet: the data's UX presenter #425 shows hits / 5).
+
 ## Not yet
-Steps 9-12 of the plan. Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
+Steps 10-12 of the plan. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
+HUD timer, Hyper Strike's charge counter; the rock leaves his eyes (the data's hp 01B6 on his right side: it would
+miss the crosshair); a player knocked down, lifted or struck (one client: their lift is their speed sent each tick
+and their keys held 0.4 s, untested); the slam's cap on bosses and Accretion's 12-at-the-edge falloff (ours: Open);
+the lift's 18 / 3 / 5 fields and Levitation's 25 / 3 read as accel and cap (M: a Workshop recording settles them). Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
 1.75 / 2.0 / 4.5 (it goes into the ground when sent downward: M); a blast that breaks the barrier still reaches those behind
 it (the break comes first); the 3P fire clips (the clip map holds only alias D5's three pitches: the volley plays fire_b,
 the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. Effects, sounds, voice (set 1E5.05F, 1293 subtitled

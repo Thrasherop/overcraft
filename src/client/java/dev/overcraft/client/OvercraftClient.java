@@ -138,6 +138,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
 				ClientSojourn.tick(client);
+			ClientSigma.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 				dev.overcraft.client.effect.SojournFx.tick(client);
@@ -286,6 +287,7 @@ public class OvercraftClient implements ClientModInitializer {
 		};
 		OwMovement.descent = ClientMercy::descent;
 		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
+		OwMovement.levitating = ClientSigma::levitating;
 		OwMovement.noJump = entity -> entity == mc.player && ClientHero.hero() == Hero.SIGMA
 			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0;
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA

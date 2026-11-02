@@ -86,6 +86,11 @@ public final class Sigma implements HeroKit {
 		}
 	}
 
+	/** His client's extra input (Levitation began: SigmaPerks). */
+	public static void extra(ServerPlayer player, HeroState s, int extra) {
+		SigmaPerks.extra(player, s, extra);
+	}
+
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
 		// no ammo (Hyperspheres have none); the barrier's health share as the meter, its cooldown as the second reload

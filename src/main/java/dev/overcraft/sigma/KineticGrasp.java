@@ -117,6 +117,8 @@ public final class KineticGrasp {
 		s.ability1Cooldown = Ow.ticks(GRASP_COOLDOWN);
 		if (normal && s.sigmaGraspAbsorbed > 0) {
 			Combat.overhealthPool(player, s.sigmaGraspAbsorbed * GRASP_CONVERSION, GRASP_MAX, GRASP_HOLD, GRASP_DECAY);
+			// Kinetic Cycle (minor perk): Accretion's cooldown shorter for what it took
+			SigmaPerks.graspEnded(s, s.sigmaGraspAbsorbed);
 			player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1f, 1.2f);
 		}
 		Combat.animate(player, "grasp_end");
