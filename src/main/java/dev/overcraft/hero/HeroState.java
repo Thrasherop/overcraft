@@ -162,6 +162,10 @@ public final class HeroState {
 	public int bashTicks = -1, rallyTicks;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
+	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
+	public int sojournSlide = -1;
+	public long sojournSlideEndAt = -1000;
+	public double sojournEnergy;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
 	public int junoVolley;
 	public double junoVolleyClock;

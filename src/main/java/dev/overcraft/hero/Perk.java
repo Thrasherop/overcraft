@@ -49,7 +49,12 @@ public enum Perk {
 	JUNO_FAMILIAR_VITALS(Hero.JUNO, Tier.MINOR, "familiar_vitals"),
 	JUNO_LOCKED_ON(Hero.JUNO, Tier.MINOR, "locked_on"),
 	JUNO_FASTER_BLASTER(Hero.JUNO, Tier.MAJOR, "faster_blaster"),
-	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off");
+	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off"),
+	// Sojourn's, the live list's order (BZ 2025-02-18 / 2025-08-26; W): their effects come in step 7 (sojourn-plan.md)
+	SOJOURN_OVERCHARGED(Hero.SOJOURN, Tier.MINOR, "overcharged"),
+	SOJOURN_DECELERATION_FIELD(Hero.SOJOURN, Tier.MINOR, "deceleration_field"),
+	SOJOURN_DUAL_THRUSTERS(Hero.SOJOURN, Tier.MAJOR, "dual_thrusters"),
+	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators");
 
 	public enum Tier { MINOR, MAJOR }
 

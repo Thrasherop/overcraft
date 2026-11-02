@@ -125,6 +125,9 @@ public final class HeroAnimator {
 	private boolean brigitte;
 	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
 	private boolean juno, junoGliding;
+	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
+	private boolean sojournSliding;
+	private float slideSince = -100, slideJumpAt = -100;
 	private float glideSince = -100, hoverSince = -100, hoverEndAt = -100, doubleJumpAt = -100;
 	private int hoverTicks;
 	private double lastVy;
@@ -1301,6 +1304,15 @@ public final class HeroAnimator {
 			glideSince = now;
 		}
 		junoGliding = glideNow;
+		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
+		if (slideNow && !sojournSliding) {
+			slideSince = now;
+		} else if (!slideNow && sojournSliding && !entity.onGround() && vy > 0.3) {
+			// it ended rising off the ground: her slide jump (1E6F #656, alias 0x5F3)
+			slideJumpAt = now;
+		}
+		sojournSliding = slideNow;
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
@@ -1462,6 +1474,14 @@ public final class HeroAnimator {
 			next = "climb_top";
 		} else if (skates && wallSide != 0) {
 			next = wallSide > 0 ? "wallride_right" : "wallride_left";
+		} else if (sojournSliding) {
+			// Power Slide (1E6F): its start (alias 0x5E4, 0.8 s), then the body (0x72D; cat 0x214 shares the start's additive:
+			// ours its default, M)
+			SkinnedModel.Clip start = clip(model, "slide_start");
+			next = start != null && now - slideSince < start.duration() ? "slide_start" : "slide_dir_214";
+		} else if (!onGround && slideJumpAt >= airborneSince - 0.3f && clip(model, "slide_jump") != null) {
+			// her slide jump until she lands (alias 0x5F3): its take-off, then its fall
+			next = now - slideJumpAt < clip(model, "slide_jump").duration() ? "slide_jump" : "slide_jump_fall";
 		} else if (juno && junoGliding) {
 			// Glide Boost (47B7): its start (0xE5, 2D by her motion), then the loop (0x02F: still at its centre, else 8
 			// ways); a double jump while gliding has its own (0x13E)

@@ -30,6 +30,11 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
 	private void overcraft$owJump(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
+		if (OwMovement.handles(self) && OwMovement.sliding(self)) {
+			// sliding, the jump key is Power Slide's jump (OwMovement.slideTravel), not Minecraft's
+			ci.cancel();
+			return;
+		}
 		if (OwMovement.handles(self)) {
 			Vec3 v = self.getDeltaMovement();
 			// off a rising Petal Platform the jump is 6 m/s stronger (dev.overcraft.entity.PetalPlatformEntity)

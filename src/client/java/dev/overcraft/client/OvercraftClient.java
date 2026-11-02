@@ -136,6 +136,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.AnaFx.tick(client);
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
+				ClientSojourn.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 			}
@@ -264,6 +265,9 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;
 		OwMovement.junoGlide = ClientJuno::glide;
+		// Sojourn's Power Slide and its jump
+		OwMovement.slide = ClientSojourn::slide;
+		OwMovement.slideEnded = ClientSojourn::ended;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

@@ -94,6 +94,11 @@
   entities) too. Use both for a projectile's flight, and `fx <effect> [variant] [enemy]` to play one moment 3 m ahead.
 - **Killing the dev client:** by its specific PID only (`Get-CimInstance Win32_Process` with `fabric.dli.config` in
   the command line, then `Stop-Process -Id`); pattern kills are refused.
+- **Killing the client loses the hero** (2026-11-02, Sojourn): the world keeps the player's data from its last save, so
+  after `Stop-Process` a rejoin's select screen offered Kiriko, not the hero just played. To test a rejoin, Save and Leave
+  first (pause menu at 854x480: Save and Leave is `screenclick 59 189 1`).
+- **A `/fill` over the player suffocates them:** building a test stair where she stood cost 6 health inside the stone and
+  looked like a slide's fall damage (2026-11-02). Move away (`/tp`) before filling, and read health before the test.
 - **Two clients (2026-10-29):** wait for the second client's title screen before `connect` (connecting while its
   resources load crashed it). After `openworld`, click READY only once the world has loaded: clicked during the loading
   screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A

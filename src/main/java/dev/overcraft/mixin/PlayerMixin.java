@@ -19,6 +19,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Player.class)
 public abstract class PlayerMixin {
+	/**
+	 * Sojourn's Power Slide keeps her low (sojourn-plan.md: a crouch-height box; Minecraft's crouching pose, 1.5 m, is the
+	 * nearest to her mover's 1.25 m): her camera drops and she slides under 1.5 m gaps. On her client from the slide it moves,
+	 * on the server from her kit (dev.overcraft.sojourn.Sojourn.slidingPose).
+	 */
+	@Inject(method = "getDesiredPose", at = @At("HEAD"), cancellable = true)
+	private void overcraft$slidePose(CallbackInfoReturnable<net.minecraft.world.entity.Pose> cir) {
+		if (dev.overcraft.sojourn.Sojourn.slidingPose((Player) (Object) this)) {
+			cir.setReturnValue(net.minecraft.world.entity.Pose.CROUCHING);
+		}
+	}
+
 	@Inject(method = "getHurtSound", at = @At("RETURN"), cancellable = true)
 	private void overcraft$heroPain(DamageSource source, CallbackInfoReturnable<SoundEvent> cir) {
 		if (cir.getReturnValue() == SoundEvents.PLAYER_HURT) {

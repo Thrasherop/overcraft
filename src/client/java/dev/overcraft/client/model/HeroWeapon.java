@@ -37,7 +37,10 @@ public final class HeroWeapon {
 		Hero.SOMBRA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Brigitte's Rocket Flail handle, entity 2282 on her hardpoint 000A = Weapon_R, no offset in both views
 		// (research/brigitte/work/assets.md); hero_models/brigitte_weapon.glb
-		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Sojourn's Railgun, entity 2D20 (model D7B4) on her hardpoint 00C9 = bone_0606, no offset, in both views (var 4E30:
+		// research/sojourn/work/assets.md); hero_models/sojourn_weapon.glb
+		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
