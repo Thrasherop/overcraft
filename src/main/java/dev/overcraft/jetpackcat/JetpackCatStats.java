@@ -15,13 +15,23 @@ public final class JetpackCatStats {
 	public static final double KNOCKBACK_TAKEN = 0.6;
 
 	// Jetpack (passive): permanent flight (game data: her flight mover, graph 59DC; tools/reference/movement.md)
+	/** Every way, backing off too (R: the owner's Workshop recording 2026-11-01, 5.50 forward, back, strafe, up, down). */
 	public static final double FLY_SPEED = 5.5;                // BZ Aug 14 2026 (back from 6)
-	/** Air acceleration, times the wish speed (BZ Aug 11 2026: 7.7 -> 9.5; the data holds 9.5). */
-	public static final double FLY_ACCELERATE = 9.5;
-	/** Speed above this decays (the data's flight mover: max air speed 12). */
+	/**
+	 * Speeding up toward the wish, times the wish speed, a second: 0 to 5.5 m/s in 0.13 s, steps of 1.37 every 0.032 s (R:
+	 * 42.7 m/s/s = 7.75 x 5.5; BZ Aug 11 2026 reads "7.7 -> 9.5" and the data holds 9.5, but the live game measures 7.75).
+	 */
+	public static final double FLY_ACCELERATE = 7.75;
+	/**
+	 * Slowing, times the wish speed, a second, in a straight line: with no input to a stop (5.5 to 0 in 0.56 s: 9.6 m/s/s,
+	 * R, three stops), and with input down to the wish speed (12 to 5.5 in 0.67 s); under Lifeline's +30% both 30% more
+	 * (R: 12.3 and 12.9 m/s/s). The data's "drag 8" read as an exponential stopped her in one tick (found against the
+	 * recording).
+	 */
+	public static final double FLY_SLOW = 1.745;
+	/** Above this, with input, her speed is cut to it at once, once a boost has been over 0.3 s (R: 14.59 -> 12.01). */
 	public static final double FLY_MAX = 12;
-	/** Drag with no input, per second (the data's flight mover: 8). */
-	public static final double FLY_DRAG = 8;
+	public static final double FLY_MAX_AFTER_BOOST = 0.3;
 
 	// Biotic Pawjectiles (primary fire): 1 centre pellet, 4 paws above it
 	public static final double PAW_DAMAGE = 4;                 // BZ Sep 8 2026 (4.5 -> 4)
@@ -50,8 +60,15 @@ public final class JetpackCatStats {
 	public static final double CENTRE_RADIUS_ALLY = 0.62;
 
 	// Frenetic Flight (secondary fire, held)
-	/** Top speed (W: 17.8 m/s, "+230.1%"). */
+	/** Top speed (W: 17.8 m/s, "+230.1%"; R: 17.80 held in three boosts). */
 	public static final double BOOST_SPEED = 17.8;
+	/**
+	 * Its speed-up (R, three boosts from 5.5-7 m/s): about 20 m/s/s for its first 0.2 s, then 10.4 m/s/s, easing into the
+	 * top speed (the gap shrinking about 7 a second: 16.85, 17.36, 17.60, 17.71 every 0.1 s): 17.8 by about 1.4 s.
+	 */
+	public static final double BOOST_KICK = 20, BOOST_KICK_TIME = 0.2, BOOST_RAMP = 10.4, BOOST_EASE = 7;
+	/** How fast a boost's direction follows the input, a second (ours: the recording has no turns). */
+	public static final double BOOST_TURN = 6;
 	/** Fuel: 40% a second burnt, 25% a second back after 0.75 s (BZ Feb 13 2026: 30 -> 25), a third of that carrying. */
 	public static final double FUEL_BURN = 0.40;
 	public static final double FUEL_REFILL = 0.25;
