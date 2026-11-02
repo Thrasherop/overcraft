@@ -194,6 +194,11 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
 		EntityRendererRegistry.register(OcEntities.SEED, dev.overcraft.client.model.LifeweaverPropRenderer::seed);
 		EntityRendererRegistry.register(OcEntities.TREE_OF_LIFE, dev.overcraft.client.model.LifeweaverPropRenderer::tree);
+		// Sigma's: the Hyperspheres have no model in his data (2D35 / 32B4 are effects only): the item stands in until his
+		// effects (step 10); the barrier is his model C015 with its four orbs FC88
+		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"hypersphere", 0.6f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);

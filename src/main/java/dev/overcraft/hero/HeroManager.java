@@ -271,6 +271,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SOJOURN) {
 			dev.overcraft.sojourn.Sojourn.clear(player, state);
 		}
+		if (state.hero == Hero.SIGMA) {
+			dev.overcraft.sigma.Sigma.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -361,6 +364,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.SOJOURN) {
 				dev.overcraft.sojourn.Sojourn.clear(player, state);
+			}
+			if (state.hero == Hero.SIGMA) {
+				dev.overcraft.sigma.Sigma.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());

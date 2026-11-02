@@ -140,3 +140,11 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **Heap for one client with every hero's models: 3 GB** (2026-11-02, Sigma): `JAVA_TOOL_OPTIONS=-Xmx2G` ran out of memory
+  loading the models (Juno's 46 MB glTF) and the client hung on its loading screen. A fresh `run` directory opens on the
+  accessibility screen: `close` it before `newworld` / `openworld`.
+- **Summoned test mobs** (2026-11-02): `equipment:{head:...}` replaces a skeleton's bow (it punches: give `mainhand` a bow
+  too); `attributes:[{id:"minecraft:movement_speed",base:0.0}]` keeps a mob on its mark while it still shoots (NoAI ones
+  don't); husks don't burn in daylight; armour changes every number (a husk's 2 points take 1.6-4.8% per hit: Minecraft's
+  armour rule), so count it in the expected value. `kill @e[type=!player]` also removes a hero's own entities (Sigma's
+  barrier). `trace` also prints Sigma's new spheres (`h`) and his barrier (`b x y z state share`) per tick.

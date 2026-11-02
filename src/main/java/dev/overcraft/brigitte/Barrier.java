@@ -105,6 +105,11 @@ public final class Barrier {
 		if (damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
 			return damage;
 		}
+		// the barriers that are entities (Sigma's) first: dev.overcraft.hero.Barriers
+		damage = dev.overcraft.hero.Barriers.absorb(victim, source, damage);
+		if (damage <= 0) {
+			return 0;
+		}
 		Vec3 from = from(source, victim);
 		if (from == null) {
 			return damage;
@@ -157,9 +162,12 @@ public final class Barrier {
 	}
 
 	/** Whether an up barrier stands between a blast's centre and {@code entity}, her or her ally (ServerExplosionMixin). */
-	public static boolean blocksBlast(Entity entity, Vec3 center) {
+	public static boolean blocksBlast(Entity entity, Vec3 center, @Nullable Entity cause) {
 		if (!(entity instanceof LivingEntity victim) || !(entity.level() instanceof ServerLevel level)) {
 			return false;
+		}
+		if (dev.overcraft.hero.Barriers.blocksBlast(entity, center, cause)) {
+			return true;
 		}
 		Vec3 to = victim.getBoundingBox().getCenter();
 		for (ServerPlayer brig : level.players()) {

@@ -38,6 +38,12 @@ public class KunaiEntity extends OwProjectile {
 		super(OcEntities.KUNAI, owner, level, new ItemStack(OcItems.KUNAI));
 	}
 
+	/** An enemy barrier takes its 60 (no crit on a barrier: ours). */
+	@Override
+	public double barrierDamage() {
+		return dev.overcraft.kiriko.KirikoStats.KUNAI_DAMAGE;
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return OcItems.KUNAI;

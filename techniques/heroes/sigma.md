@@ -97,7 +97,76 @@ decision (sigma-plan.md "Minecraft decisions").
   and a ravager's knockback; water, lava, ladders, boats, the Nether; others' clients seeing his box and model; the 15 % healing
   reduction (not built: the global one isn't in Overcraft).
 
+## Steps 4-6 (Hyperspheres, Experimental Barrier, Kinetic Grasp), played 2026-11-02
+Code: `dev.overcraft.sigma.Hyperspheres` + `entity.HypersphereEntity`, `sigma.SigmaBarrier` + `entity.SigmaBarrierEntity`
+(drawn by `client.model.SigmaBarrierRenderer`), `sigma.KineticGrasp`, and `dev.overcraft.hero.Barriers`: **a barrier can now be
+an entity** (a `Barriers.Shape`: an upright rectangle with a front, its owner's), which Brigitte's `Barrier.absorb` /
+`blocksBlast` and `ServerExplosionMixin` ask first, so both kinds live in one path ([barriers](../minecraft/barriers.md)).
+Numbers in `SigmaStats`, each with its source; `SigmaMathTest`. Stand-in effects and sounds (vanilla particles and sounds:
+his own are step 10). Dev client `runClient` (port 25599, `-Xmx3G`: 2 GB ran out of memory loading every hero's models),
+fresh flat survival world `sig4`, screenshots in `run/screenshots/` (not committed), each looked at. Measured with the
+harness (`trace` now also logs new spheres `h` and the barrier `b x y z state share`), `data get` for mob health and
+`AbsorptionAmount`, husks (no sunburn) and skeletons with a helmet, a bow and `movement_speed` 0.
+
+**Hyperspheres** (expected -> seen):
+- Volley timing (`trace`, held 3.3 s): spheres at ticks 2, 6, 32, 36, 62, 66: **0.2 s apart, 1.5 s a volley** (D).
+- Two direct hits on a husk 10 m off: 20 -> 10.66 health. Expected 2 x (20 + 40) = 120 = 9.6 Minecraft health, less the
+  husk's 2 armour points (Minecraft's armour rule per hit: 1.523 + 3.149 per sphere = 9.344): **exactly 9.344**
+  (`hs_fly.png`: the burst's stand-in particles on it).
+- The burst and its falloff: no creature in the way, three husks around the end of the spheres' 21.7 m: at 1.0 m from the
+  burst 13.70 (expected 13.70: full 40), at 2.0 m 15.49 (expected 15.48: 29.2 each), at 3.0 m (past 2.85) 20.0 (untouched):
+  **the 21.7 m / 0.434 s burst point and D's falloff both hold** (`hs_burst.png`).
+- Bounce: at 45 degrees into a stone wall 5.5 m ahead, both spheres came off it and hit a husk round the corner (two
+  direct hits, 9.344 again; `hs_bounce.png`). The wall is whole: no block breaks.
+- Not measured: the pull (0.75 m/s in, 1 m/s up, a few hundredths of a block a tick: lost under Minecraft's own 0.4 hit
+  knockback on the direct hit); a sphere against a player (no second player).
+
+**Experimental Barrier** (expected -> seen):
+- Out: centre 2.3 m ahead of his eyes (z 2.80 from z 0.50), bottom at his feet (y -60.03), then **1 block a tick = 20 m/s**
+  while held (`trace`), still when let go; held into a stone wall it stopped at **13.1 for a wall at 14 (0.9 m short)**.
+- Look (`b_enemy_side.png`, `b_edge.png`, `b_near_1p.png`, `b_vis_back.png`): its mesh C015 at its data size (6.70 x 4.18 m,
+  checked by its pixel size at 18 m), bulging toward the enemy, its four orbs FC88 on its corners. **Found:** its material
+  (7C75) has no texture in the export (a shader in Overwatch) and the model renderer skips untextured pieces: nothing was
+  drawn; now a field of added light (`HeroModelRenderer.submitField`). **Found:** at first it was near opaque white (added
+  light ignores alpha): scaled to a faint tint.
+- Skeleton arrows from the front (skeleton 8 m beyond it, a bow, speed 0): **Sigma 48 -> 48, barrier 650 -> 500** in 8 s;
+  his ult +43 (40 passive + 2% of 150). From behind (Sigma on its front side, the skeleton behind it): **Sigma 48 -> 40.1,
+  barrier untouched**. A blaze from the front: 3 fireballs, **barrier -187 (62.5 each), Sigma untouched**. A ghast: each
+  fireball bursts at its front, **barrier -150 a fireball** (Minecraft's blast rule at 0.3 m: 12 health), Sigma untouched;
+  a creeper 2 m before it: **barrier -284, Sigma (1.8 m behind it) untouched and not pushed** (`b_creeper.png`).
+- Broken (three creepers): gone, **no second deploy for 5 s** (a press 0.4 s after: nothing), out again after;
+  regeneration **79.3/s from 2 s after it came back** (recalled at 313: 376 at 2.6 s, 606 at 5.5 s, full at 6.1 s).
+- Recall: a press while it's out brings it back; out again 1.1 s later worked (1 s cooldown; the HUD showed 0.2 s left on
+  the panel at 0.7 s, `b_recalled_hud.png`).
+- A husk walked through it (z 15.9 -> 12.9 past its 14.8) to Sigma: creatures pass.
+- G with it out: it came back; switching to Brigitte: gone. **Found (fixed):** killed with it out, it stood there until he
+  respawned (his kit doesn't tick while he's dead); now it goes home when he dies: after the fix, `trace` saw it for the
+  ticks before `/kill` landed and never after (8 of 34 ticks), on a fresh client.
+- After the brightness fix (`b2_enemy_side.png`, `b2_own_side.png`): a pale see-through blue from both sides, the world
+  behind it readable, its orbs on the corners.
+- Brigitte's own barrier after the change: a skeleton's arrows taken (300 -> 257), her health untouched.
+- **Not tried:** Sojourn's rounds against it from a second player (a second client didn't fit in memory beside this one:
+  2 GB free); the Toggle and Reload-recalls options (not built: Overwatch's defaults, both off); slopes and stairs under a
+  moving barrier; the Nether.
+
+**Kinetic Grasp** (expected -> seen):
+- A skeleton's arrow (4 health = 50) inside the 2 s: **overhealth 2.4 = 30 (60%)**, health untouched while it held;
+  **decay from 3 s after the end at 5 a second** (2.32 -> 2.00 in 0.8 s; 0.72 -> 0.40); cooldown **12 s from the end**
+  (10.6 at 1.4 s).
+- A blaze's volley (3 x 62.5): **9.0 = 112.5 (60% of 187.5)**. A ghast's fireball (6 + its blast's 15 = 262.5): **12.6 =
+  157.5** (`g_blaze.png`, `g_ghast2.png`).
+- Cut short with G mid-hold after taking fireballs: **no overhealth**, cooldown 12 s started. A stun ends it the same way
+  (HeroManager.controls is false while asleep or stunned), not tried in game (no second player with a stun).
+
+**A night fight** (`fight_mid.png`, `fight_end.png`): midnight, three zombies and two bow skeletons (helmets) 16-20 m off,
+the barrier out, volleys aimed at the nearest each 0.5 s, Grasp every third volley: in 40 s the three zombies and one
+skeleton died (47 volleys, 6 Grasps), Sigma ended at 48 of 48. The last skeleton backed off to 35 m, past the spheres'
+21.7 m: they burst short of it, as in Overwatch. Not tried: a raid, water, the Nether, ladders, a second player.
+
 ## Not yet
-Steps 4-12 of the plan. Effects, sounds, voice (set 1E5.05F, 1293 subtitled
+Steps 7-12 of the plan. Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
+1.75 / 2.0 / 4.5 (it goes into the ground when sent downward: M); a blast that breaks the barrier still reaches those behind
+it (the break comes first); the 3P fire clips (the clip map holds only alias D5's three pitches: the volley plays fire_b,
+the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. Effects, sounds, voice (set 1E5.05F, 1293 subtitled
 lines extracted) and his 14 emotes are extracted but not mapped. A Workshop recording (Levitation's rise, Flux flight, the barrier's
 glide over slopes) would settle the M items.

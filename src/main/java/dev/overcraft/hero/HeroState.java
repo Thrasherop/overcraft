@@ -192,6 +192,21 @@ public final class HeroState {
 	public long sojournFullAt = -1, sojournSlideJumpAt = -1000, sojournOcEndSay = -1;
 	public int sojournOcKills;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
+	/**
+	 * Sigma (dev.overcraft.sigma.Sigma): ticks to his volley's second sphere (-1: none due), ticks left of the 1.3 s before
+	 * the next volley, the left button's 0.15 s buffer, the volleys fired (his three fire clips cycle); his barrier's entity
+	 * (out: sent or stopped), the right button last tick, when it can go out again; Kinetic Grasp's ticks left (-1: off) and
+	 * the damage it has absorbed (Overwatch points). The barrier's health is barrierHealth, as Brigitte's.
+	 */
+	public int sigmaSecondIn = -1, sigmaBuffer, sigmaVolleys;
+	public double sigmaReload;
+	public @Nullable Integer sigmaBarrierId;
+	public boolean sigmaRightWas;
+	public long sigmaBarrierReadyAt = -1;
+	public int sigmaGrasp = -1;
+	public double sigmaGraspAbsorbed;
+	/** The game time of his kit's last tick (his HUD's cooldowns). */
+	public long sigmaNow;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

@@ -13,7 +13,9 @@
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
-		"ServerExplosionMixin"
+		"ServerExplosionMixin",
+		"AbstractArrowAccessor",
+		"LargeFireballAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -36,6 +36,12 @@ public class RailgunShotEntity extends OwProjectile {
 		return (float) SojournStats.RAILGUN_RADIUS;
 	}
 
+	/** An enemy barrier takes its 9 (no crit on a barrier: ours). */
+	@Override
+	public double barrierDamage() {
+		return SojournStats.RAILGUN_DAMAGE;
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return Items.SNOWBALL;

@@ -130,6 +130,8 @@ public final class HeroAnimator {
 	private boolean juno, junoGliding;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
+	/** Sigma (his actions' clips: trigger). */
+	private boolean sigma;
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
@@ -273,6 +275,31 @@ public final class HeroAnimator {
 			String base = action.equals("ult") ? "overclock" : "disruptor";
 			clip = a.sojournSliding ? base + "_slide" : base;
 			viewClip = action.equals("ult") ? "" : a.sojournSliding ? "disruptor_slide" : "disruptor";
+		}
+		if (a.sigma) {
+			// his actions' clips (sigma.txt / sigma_1p.txt): the volley's three first-person clips cycle (187F v59 0 -> 1 -> 2), the
+			// third-person set holds one (fire_b: the clip map's D5); Grasp's start then its hold (0x60A -> 0x609); the barrier's
+			// deploy (0x1B7) and recall (0x1B6, first person only)
+			switch (action) {
+				case "spheres_0", "spheres_1", "spheres_2" -> {
+					clip = "fire_b";
+					viewClip = "fire_" + (char) ('a' + (action.charAt(8) - '0'));
+				}
+				case "grasp" -> {
+					clip = "grasp_start";
+					viewClip = "grasp_start";
+				}
+				case "grasp_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				case "barrier_recall" -> {
+					clip = "";
+					viewClip = "barrier_recall_sm1";
+				}
+				default -> {
+				}
+			}
 		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
@@ -1390,6 +1417,7 @@ public final class HeroAnimator {
 		junoGliding = glideNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
+		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
 		if (slideNow && !sojournSliding) {
 			slideSince = now;

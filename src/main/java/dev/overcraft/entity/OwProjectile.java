@@ -36,6 +36,19 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 		discard();
 	}
 
+	/**
+	 * What it would deal on a hit (Overwatch points): what an enemy barrier or Kinetic Grasp takes when it stops it
+	 * (dev.overcraft.hero.Barriers). 0 unless the projectile says (a healing one, or one not yet given its number).
+	 */
+	public double barrierDamage() {
+		return 0;
+	}
+
+	/** Stopped at an enemy barrier's front {@code at} (dev.overcraft.hero.Barriers.intercept): gone, unless it bursts there. */
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
+		discard();
+	}
+
 	/** Launches from {@code from} along {@code direction} at {@code speed} blocks per tick. */
 	public void launch(Vec3 from, Vec3 direction, double speed) {
 		setPos(from);

@@ -590,7 +590,9 @@ public final class DevServer {
 							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f a%d r%.2f m%.4f c1%.2f c2%.2f s%d u%s",
 								traceTick++, Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
 								keys.isEmpty() ? "." : keys, dz, p.getYRot(), hs.primaryAmmo(), hs.primaryReload(), hs.meter(),
-								hs.ability1Cooldown(), hs.ability2Cooldown(), hs.secondaryAmmo(), hs.ultActive() ? "1" : "0"));
+								hs.ability1Cooldown(), hs.ability2Cooldown(), hs.secondaryAmmo(), hs.ultActive() ? "1" : "0")
+								// Sigma: spheres seen for the first time this tick, his barrier's place, state and health share
+								+ sigmaTrace(client));
 						}
 					});
 				}
@@ -731,5 +733,22 @@ public final class DevServer {
 			}
 		}
 		throw new IllegalArgumentException("no key mapping " + name);
+	}
+
+	/** Dev only (trace): Sigma's new Hyperspheres this tick (" h2"), his barrier (" b x y z state share"). */
+	private static final java.util.Set<Integer> SPHERES_SEEN = new java.util.HashSet<>();
+
+	private static String sigmaTrace(Minecraft client) {
+		StringBuilder out = new StringBuilder();
+		int fresh = 0;
+		for (net.minecraft.world.entity.Entity e : client.level.entitiesForRendering()) {
+			if (e instanceof dev.overcraft.entity.HypersphereEntity && SPHERES_SEEN.add(e.getId())) {
+				fresh++;
+			}
+			if (e instanceof dev.overcraft.entity.SigmaBarrierEntity b) {
+				out.append(String.format(java.util.Locale.ROOT, " b %.2f %.2f %.2f %d %.3f", b.getX(), b.getY(), b.getZ(), b.state(), b.health()));
+			}
+		}
+		return (fresh > 0 ? " h" + fresh : "") + out;
 	}
 }
