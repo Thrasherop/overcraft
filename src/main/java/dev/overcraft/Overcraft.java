@@ -170,6 +170,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Hack.tick(server);
 			dev.overcraft.brigitte.Inspire.tick(server);
 			dev.overcraft.brigitte.RepairPack.tick(server);
+			dev.overcraft.juno.Torpedoes.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
@@ -243,6 +244,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sombra.Hack.clear();
 			dev.overcraft.brigitte.Inspire.clear();
 			dev.overcraft.brigitte.RepairPack.clear();
+			dev.overcraft.juno.Torpedoes.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 		});
 	}

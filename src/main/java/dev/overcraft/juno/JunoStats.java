@@ -58,15 +58,45 @@ public final class JunoStats {
 	/** Knockback taken while gliding: -50% (D x0A04B51B = 1DF3 -0.5, #774). */
 	public static final double GLIDE_KNOCKBACK = 0.5;
 
-	// ---- What the HUD shows (each ability's step fills in the rest) ----
-	/** The Mediblaster's magazine (D 4445; W 180). */
+	// ---- Mediblaster (4445): hitscan volleys (W; BZ 2026-10-06's small hitscan size) ----
+	/** The magazine (D 4445; W 180); its reload 1.5 s, full at 0.75 s (D; W 1.5 after an unsourced edit, was 1.8). */
 	public static final int MEDIBLASTER_AMMO = 180;
+	public static final double RELOAD = 1.5, RELOAD_FULL_AT = 0.75;
+	/** A volley: 12 rounds at 34 a second, then 0.45 s before the next (D: one volley per 0.80 s; BZ 2024-09-03 34/s; W 15.5/s). */
+	public static final int VOLLEY = 12;
+	public static final double VOLLEY_RATE = 34, VOLLEY_RECOVERY = 0.45;
+	/** Each round: 7.5 to an enemy, 6 healing to an ally (D 1381 / 1382; BZ 2024-09-03 / 2024-10-15; W). */
+	public static final double ROUND_DAMAGE = 7.5, ROUND_HEAL = 6;
+	/** Its size: 0.02 m against enemies, 0.22 m for allies (D; BZ 2026-10-06 small hitscan 0.02; W). */
+	public static final double ROUND_RADIUS_ENEMY = 0.02, ROUND_RADIUS_ALLY = 0.22;
+	/** Head hits x1.5, enemies only (BZ 2025-12-09; W; D x2 read as M). */
+	public static final double ROUND_CRIT = 1.5;
+	/**
+	 * Falloff: full to 25 m, 30% from 35 m, damage and healing (BZ 2024-10-15 / 2025-07-22 change it, so it is live; W the 30%;
+	 * D has the values but no node of hers reads them: the engine's, M). Out to 60 m (ours).
+	 */
+	public static final double FALLOFF_START = 25, FALLOFF_END = 35, FALLOFF_MIN = 0.3, RANGE = 60;
+	/** Spread (D _; W 0.85 degrees, M). */
+	public static final double SPREAD = 0.85;
 	/** Glide Boost (ABILITY 1): its cooldown from the glide's end (D 47B7 #538, 1625 6 s; W 6). */
 	public static final double GLIDE_COOLDOWN = 6;
 	/** Hyper Ring (ABILITY 2) (D 4857, 14 s; W 14). */
 	public static final double RING_COOLDOWN = 14;
-	/** Pulsar Torpedoes (the right button): 10 s, 2 s when nothing was locked (D 4695; W). */
+	/** Pulsar Torpedoes (the right button): 10 s, 2 s when nothing was locked (D 4695 #929-#932, 16FC / 2396; BZ 2024-08-20; W). */
 	public static final double TORPEDO_COOLDOWN = 10, TORPEDO_COOLDOWN_NONE = 2;
+	/** The lock: up to 4 s (D 1AF0 via v567); 40 m, 45 once a target's lock has begun (D 1A57 40 + 5; BZ 2024-08-20; W). */
+	public static final double LOCK_WINDOW = 4, LOCK_RANGE = 40, LOCK_FORGIVE = 5;
+	/** Each target's lock time: 0.35 s at 5 m or nearer to 1.0 s at 40 m (D 4B99 #193, 2BB8 / 2BB7; BZ 2026-08-11 0.35; W). */
+	public static final double LOCK_MIN = 0.35, LOCK_MAX = 1.0;
+	/**
+	 * Near her aim: a cone this wide (degrees; D v8451 103 on StateTrackTargets, L: read as the cone, which is the game's
+	 * default field of view: anyone on her screen). Ours to check by play.
+	 */
+	public static final double LOCK_CONE = 103;
+	/** One torpedo every 0.08 s (D v9805, #772); 24 m/s (D 1550, #931), the enemy's launched at 0.3 of it (D 2960); 5 s life (D). */
+	public static final double TORPEDO_GAP = 0.08, TORPEDO_SPEED = 24, ENEMY_LAUNCH = 0.3, TORPEDO_LIFE = 5;
+	/** On an enemy 85 (D 1441; BZ 2024-08-20; W); on an ally 85 at once and 50 over 2.5 s (D 1442 / 1443 / 1A3F; BZ; W). */
+	public static final double TORPEDO_DAMAGE = 85, TORPEDO_HEAL = 85, TORPEDO_HEAL_OVER_TIME = 50, TORPEDO_HEAL_TIME = 2.5;
 
 	// ---- Perks (the live list D 0065.177) ----
 	public static final double PERK_MINOR_XP = 2110, PERK_MAJOR_XP = 2110 + 3165;   // D 12B9 / 12BA; W 2110 / 5275

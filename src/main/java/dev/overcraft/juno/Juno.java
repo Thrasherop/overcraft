@@ -21,12 +21,15 @@ import static dev.overcraft.juno.JunoStats.*;
 public final class Juno implements HeroKit {
 	/** The synced mode's bit: she's gliding (her client moves her: ClientJuno). */
 	public static final int MODE_GLIDE = 1;
+	/** ... and she's locking Pulsar Torpedoes. */
+	public static final int MODE_LOCK = 2;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
 		s.weaponRecovery = 0;
 		s.primaryAmmo = MEDIBLASTER_AMMO;
 		s.junoGlide = -1;
+		Torpedoes.clear(s);
 	}
 
 	@Override
@@ -34,15 +37,59 @@ public final class Juno implements HeroKit {
 		double rate = Combat.cooldownRate(player);
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
+		s.ability3Cooldown = Math.max(0, s.ability3Cooldown - rate);
+		double attack = Combat.attackRate(player);
+		reload(s, attack);
+		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
 		if (s.junoGlide >= 0 && (++s.junoGlide >= Ow.ticks(GLIDE_TIME) || !controls || !player.isAlive())) {
 			endGlide(player, s);
 		}
+		boolean leftPressed = s.primaryHeld && !s.junoLeftWas;
+		boolean rightPressed = s.secondaryHeld && !s.junoRightWas;
+		s.junoLeftWas = s.primaryHeld;
+		s.junoRightWas = s.secondaryHeld;
+		if (!controls || !player.isAlive()) {
+			s.junoVolley = 0;
+			Torpedoes.clear(s);
+			return;
+		}
+		Torpedoes.tick(player, s, rightPressed, leftPressed);
+		// locking, she can't shoot (W: channeled), and the press that fires the torpedoes isn't a volley
+		if (s.junoLock < 0 && s.junoFiring.isEmpty() && !leftPressed) {
+			Mediblaster.tick(player, s, attack);
+		}
+	}
+
+	private static void reload(HeroState s, double attack) {
+		if (s.primaryReload < 0) {
+			return;
+		}
+		s.primaryReload += attack;
+		if (s.primaryReload >= Ow.ticks(RELOAD_FULL_AT)) {
+			s.primaryAmmo = MEDIBLASTER_AMMO;
+		}
+		if (s.primaryReload >= Ow.ticks(RELOAD)) {
+			s.primaryReload = -1;
+		}
+	}
+
+	/** R (not full, not reloading), or the magazine empty: 1.5 s, full at 0.75 s. */
+	static void startReload(ServerPlayer player, HeroState s) {
+		if (s.primaryReload >= 0 || s.primaryAmmo >= MEDIBLASTER_AMMO) {
+			return;
+		}
+		s.primaryReload = 0;
+		s.junoVolley = 0;
+		Combat.animate(player, "reload");
 	}
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			glide(player, s);
+		}
+		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0) {
+			startReload(player, s);
 		}
 	}
 
@@ -81,9 +128,9 @@ public final class Juno implements HeroKit {
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, false,
-			s.primaryAmmo, -1, -1, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
+			s.primaryAmmo, s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(RELOAD)) : -1, -1, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
-			Perk.index(s.majorPerk), 0, s.junoGlide >= 0 ? MODE_GLIDE : 0,
+			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), (s.junoGlide >= 0 ? MODE_GLIDE : 0) | (s.junoLock >= 0 ? MODE_LOCK : 0),
 			s.junoGlide >= 0 ? (float) ((Ow.ticks(GLIDE_TIME) - s.junoGlide) / 20.0) : 0, 0);
 	}
 }

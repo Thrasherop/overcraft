@@ -157,6 +157,17 @@ public final class HeroState {
 	public int bashTicks = -1, rallyTicks;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
+	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
+	public int junoVolley;
+	public double junoVolleyClock;
+	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */
+	public int junoLock = -1;
+	public final java.util.Map<Integer, Integer> junoLockProgress = new java.util.HashMap<>();
+	public final java.util.List<Integer> junoLocked = new java.util.ArrayList<>();
+	public final java.util.List<Integer> junoFiring = new java.util.ArrayList<>();
+	public double junoFireClock;
+	/** Juno: her buttons last tick (their presses' edges). */
+	public boolean junoLeftWas, junoRightWas;
 	/** Brigitte: Whip Shot (ticks into it, -1 none) and where it is along its flight; Repair Pack's recharge (ticks left). */
 	public int whipTicks = -1, whipBackAt;
 	/** Brigitte: Rally's cast (ticks into it, -1 none); a shockwave due (ticks left, -1 none); the extra armor it gives. */

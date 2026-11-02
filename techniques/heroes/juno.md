@@ -52,3 +52,18 @@ Dev client, flat world `juno1`, survival; measured with the harness's own veloci
   one glide (7.85 m); a double jump mid-glide lifts her 3.5 m and she holds the new height; a second press at 1 s ends it
   (the cooldown from there), one at 0.2 s is ignored.
 - Not yet: her weapons, Hyper Ring, Orbital Ray (steps 3-5); her animations for the double jump, hover and glide.
+
+## Steps 3-4 (Mediblaster, Pulsar Torpedoes), played
+Dev client, flat world `juno1`, survival, night; health read with `data get`:
+- **Mediblaster:** one volley (the left button held 0.3 s) at a zombie's body 6 m off: 200 -> 193.29 (90 = 7.2, less a
+  zombie's natural armor), 12 rounds spent; held 2 s: 36 rounds (3 volleys, one per 0.8 s); at its head x1.5 (10.1); a
+  villager at 4 health: 9.76 (+5.76 = 72 exactly); a zombie 30 m off: 4.49 (65 % falloff, less armor); R: full again by
+  0.9 s (0.75 s), from 96 rounds.
+- **Falloff kept although the data's graphs don't read it:** Blizzard's patch notes changed it in 2024-10 and 2025-07, so it
+  is live (the engine's, M); the patch notes win (CLAUDE.md).
+- **Pulsar Torpedoes:** a villager (ally, 4 health) 8 m and a zombie (200) 10 m ahead, the right button, 1.2 s, the left
+  button: the villager 11.92 at 0.8 s (85 + the start of 50 over 2.5 s) and 14.80 at its end (+10.8 = 135); the zombie
+  193.31 (85, less armor). With nothing in view: the lock cancelled by the right button, a new one refused at 0.5 s and
+  allowed after 2 s (the 2 s cooldown).
+- Not yet: the lock's on-screen marks and the torpedoes' look (step 7: until then nothing shows); its aim cone (D 103,
+  read as the field of view: L) to settle by play with several targets.
