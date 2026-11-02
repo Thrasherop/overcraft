@@ -46,6 +46,9 @@ public final class Juno implements HeroKit {
 		if (s.junoGlide >= 0 && (++s.junoGlide >= Ow.ticks(GLIDE_TIME) || !controls || !player.isAlive())) {
 			endGlide(player, s);
 		}
+		if (!java.util.Objects.equals(player.getAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE), gliding(s))) {
+			player.setAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE, gliding(s));
+		}
 		boolean leftPressed = s.primaryHeld && !s.junoLeftWas;
 		boolean rightPressed = s.secondaryHeld && !s.junoRightWas;
 		s.junoLeftWas = s.primaryHeld;

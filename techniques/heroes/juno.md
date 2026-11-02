@@ -91,3 +91,21 @@ left button for the first of a tier, the right for the second), dev client, flat
   on the next tick, even a 0.12 s tap: the 30 m villager came out +3.95 with nothing locked (a volley at 65 % falloff).
   The click that ends the lock now fires nothing until it's let go (`HeroState.junoLeftSpent`); played again: 4 -> 4.
 - The zombies' extra damage (a few points over 85) is the noon sun burning them, not ours.
+
+## Step 7a (her movement and ability clips), played
+- **Base states, seen by every client:** the glide from a synced flag (`HeroManager.JUNO_GLIDE`), the double jump and the
+  hover read from her motion (an upward kick in the air; a fall held at 3 m/s for 3 ticks), as Mercy's descent is. The
+  animator played: a plain jump `jump > fall`; a double jump `double_jump > double_jump_fall`; held, `hover_start` once
+  the fall settled at -3.0 m/s; the glide `glide_start_forward` for 0.57 s, then `glide_forward`. Front-view
+  screenshots (`run/screenshots/juno_a_*.png`): boots together on the double jump, knees bent and arms out in the hover,
+  a knee drawn up gliding.
+- **Actions:** `ring` > `ring_throw`, `ult` > `ult_cast` (in the air `ult_cast_air`), the torpedoes' lock and fire as 3P base
+  additives (df 0xAE7) and 1P clips (`torpedo_lock_start`, `torpedo_fire`); the glide's own action names play nothing
+  (they used to start the 2 s glide loop as an action).
+- **Found playing: her torpedo pods flew apart.** The lock's additive moves the pods (bones 3CFB / 3CFC, a mirrored pair:
+  the second turned 180 degrees about X) about 0.55 m: added in the parent's frame one went over her head and one to her hip
+  (`juno_b_lock.png`). Turned by each bone's own rotation first, as the clip's turns already are, they open as a mirror
+  pair over her shoulders (x +-0.28, y +0.55) and rise apart on the fire. Her layers use that (`Skeleton.addAdditive`
+  localOffsets); whether every additive clip wants it is #75 (the export's additive tracks mix conventions).
+- Ours (M): the glide's 8 ways by her motion, not her input (only her own client knows the input); the hover's ending
+  layer and the torpedo hold layer (the lock isn't synced to others) not played; her 1P glide / hover layers not yet.
