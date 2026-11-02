@@ -47,8 +47,19 @@ For every hero, a minute of the basics first, then their own moves. Press F afte
 - **Lifeweaver:** Rejuvenating Dash every direction, on the ground and in the air; Petal Platform rising with you on it.
 - **Ana:** the basics, scoped (hold right mouse) and not.
 - **Sombra:** Translocator thrown and used; walking and jumping in Stealth.
-- **Brigitte:** Shield Bash from a walk and a run; Whip Shot.
-- **Juno:** hover (hold Jump in the air), Glide Boost, landings.
+- **Brigitte:** Shield Bash (shield up, left click) from standing, a walk and a run, and into a bot; Whip Shot at a bot
+  from 5 m and 15 m; walking with the shield up.
+- **Juno** (the one being built now: these settle numbers no source gives):
+  - **Double jump:** jump, then tap Jump again at the top of the first jump; again tapping it as early as you can after
+    leaving the ground; again while falling from a ledge. Each standing still, then each running forward.
+  - **Hover:** from something tall (4 m or more), step off and hold Jump the whole way down; then fall a while first and
+    hold Jump late; then double jump and keep Jump held after it. Also: a plain jump on flat ground holding Jump.
+  - **Glide Boost** (Shift): on flat ground with no keys held; holding W; holding A (sideways); turning with the mouse
+    during it; straight into a wall; up a slope or a stair; off a ledge (does she stay level?); a double jump in the middle
+    of it; pressing Shift again to stop it about 1 s in. Let one run its full time.
+  - With the **Lift Off** perk if you reach it (Reload+F fills ult, not perks: perks need a few minutes of play): a triple
+    jump.
+  - Hyper Ring thrown, then run through it.
 - **Sojourn:** Power Slide, and Power Slide then Jump.
 - **Sigma:** the basics; Gravitic Flux's float.
 - **D.Va:** Boosters (straight, turning, into a wall), then out of the mech as the pilot.
