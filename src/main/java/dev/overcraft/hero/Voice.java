@@ -151,7 +151,23 @@ public final class Voice {
 		java.util.Map.entry("juno.torpedo", new Stimulus(60, 20, 20, false)), // 1761
 		java.util.Map.entry("juno.ring", new Stimulus(60, 15, 15, false)), // 16B0
 		java.util.Map.entry("juno.ping_ring", new Stimulus(70, 0, 0, true)), // 16DF
-		java.util.Map.entry("juno.ultimate", new Stimulus(95, 1, 1, false))); // 184D
+		java.util.Map.entry("juno.ultimate", new Stimulus(95, 1, 1, false)), // 184D
+		// Sojourn's (tools/soundmaps/sojourn.txt, the voice section; her set 01C2.05F)
+		java.util.Map.entry("sojourn.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("sojourn.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("sojourn.slide", new Stimulus(45, 1, 1, false)), // 0B90
+		java.util.Map.entry("sojourn.slide_jump", new Stimulus(45, 1, 1, false)), // 0B91
+		java.util.Map.entry("sojourn.disruptor", new Stimulus(60, 10, 10, false)), // 0B92
+		java.util.Map.entry("sojourn.railgun_charged", new Stimulus(60, 15, 25, false)), // 0E7C
+		java.util.Map.entry("sojourn.railgun_holding", new Stimulus(60, 20, 30, false)), // 0E7D
+		java.util.Map.entry("sojourn.charged_kill", new Stimulus(60, 15, 15, false)), // 0B8F
+		java.util.Map.entry("sojourn.charged_kill_air", new Stimulus(60, 15, 15, false)), // 0E7A
+		java.util.Map.entry("sojourn.overclock_kill", new Stimulus(50, 2, 2, false)), // 0B93
+		java.util.Map.entry("sojourn.overclock_kill_2", new Stimulus(60, 2, 2, false)), // 113C
+		java.util.Map.entry("sojourn.overclock_kill_3", new Stimulus(60, 0, 0, false)), // 113D (kills 3 and 4)
+		java.util.Map.entry("sojourn.overclock_kill_5", new Stimulus(60, 10, 10, false)), // 113E
+		java.util.Map.entry("sojourn.overclock_end", new Stimulus(50, 20, 20, false)), // 0E87
+		java.util.Map.entry("sojourn.ultimate", new Stimulus(95, 1, 1, false))); // 185C
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -289,6 +305,10 @@ public final class Voice {
 				return;
 			}
 			long now = killer.level().getGameTime();
+			if (state.hero == Hero.SOJOURN) {
+				// her own kill lines first (the Charged Shot's, Overclock's count): the shared ones below wait while she speaks
+				dev.overcraft.sojourn.Sojourn.killed(killer, state);
+			}
 			state.killChain = now - state.lastKillAt <= KILL_CHAIN ? state.killChain + 1 : 1;
 			state.lastKillAt = now;
 			if (state.killChain == 2 && now >= state.voiceReadyAt.getOrDefault("multikill", Long.MIN_VALUE)) {

@@ -99,18 +99,30 @@ public class HeroSelectScreen extends OwScreen {
 		}
 		float total = -GROUP_GAP;
 		for (List<Hero> group : groups) {
-			total += GROUP_GAP + group.size() * (PORTRAIT + PORTRAIT_GAP) - PORTRAIT_GAP;
+			total += GROUP_GAP + groupWidth(group);
 		}
 		float x = (refWidth() - total) / 2;
 		List<Card> cards = new ArrayList<>();
 		for (List<Hero> group : groups) {
+			float start = x;
 			for (Hero hero : group) {
 				cards.add(new Card(hero, x, ROSTER_TOP));
 				x += PORTRAIT + PORTRAIT_GAP;
 			}
-			x += GROUP_GAP - PORTRAIT_GAP;
+			x = start + groupWidth(group) + GROUP_GAP;
 		}
 		return cards;
+	}
+
+	/**
+	 * A role group's width: its portraits, or its header (badge and name) when that's wider. Sojourn alone under DAMAGE: the
+	 * header ran into SUPPORT's (found playing, 2026-11-02).
+	 */
+	private static float groupWidth(List<Hero> group) {
+		float portraits = group.size() * (PORTRAIT + PORTRAIT_GAP) - PORTRAIT_GAP;
+		String role = Component.translatable("overcraft.role." + group.get(0).role.name().toLowerCase(Locale.ROOT)).getString()
+			.toUpperCase(Locale.ROOT);
+		return Math.max(portraits, 32 + HudText.width(Face.BODY, role, 16) + 8);
 	}
 
 	private @Nullable Hero cardAt(double mouseX, double mouseY) {
@@ -365,9 +377,11 @@ public class HeroSelectScreen extends OwScreen {
 			if (hero.role != lastRole) {
 				lastRole = hero.role;
 				float groupEnd = card.x();
+				List<Hero> group = new ArrayList<>();
 				for (int j = i; j < cards.size() && cards.get(j).hero().role == lastRole; j++) {
-					groupEnd = cards.get(j).x() + PORTRAIT;
+					group.add(cards.get(j).hero());
 				}
+				groupEnd = card.x() + groupWidth(group);
 				String role = Component.translatable("overcraft.role." + lastRole.name().toLowerCase(Locale.ROOT)).getString()
 					.toUpperCase(Locale.ROOT);
 				Identifier badge = HeroArt.role(lastRole);
@@ -452,7 +466,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO ? 0.72f : 1;
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f : 1;
 	}
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
@@ -526,6 +540,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(net.minecraft.client.Minecraft.getInstance().options.keyJump), "martian_overboots"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "hyper_ring"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "orbital_ray"));
+			// her data's loadouts in order: the Railgun (the left button), Charged Shot (the right), Power Slide (its jump on
+			// Jump), Disruptor Shot, Overclock; no passive of her own (Sharpshooter is the sub-role's)
+			case SOJOURN -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "railgun"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "charged_shot"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "power_slide"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "disruptor_shot"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "overclock"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

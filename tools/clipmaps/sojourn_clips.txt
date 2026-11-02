@@ -1,0 +1,4 @@
+# Sojourn, third person's extra clips (owm_survey.py --clips-only), merged into hero_models/sojourn.glb by bone name (HeroModels).
+# Her emotes come with --emotes (emote_<name>_<n>, in id order: techniques/emotes/emote_reproduction.md); no other clips
+# here yet. Her Railgun is an entity of its own (slot 4E30): the clips her emotes play on it are in sojourn_weapon.txt
+# (techniques/emotes/sojourn_emotes.md).

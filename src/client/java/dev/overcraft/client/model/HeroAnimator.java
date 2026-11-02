@@ -90,6 +90,9 @@ public final class HeroAnimator {
 	private int fireVariant;
 	/** Jetpack Cat's paw: the volleys swap paw each time (her add_fire / add_fire_2). */
 	private boolean fireSide;
+	/** The newest shot began a burst (Sojourn's first-shot clip), and the random child its repeat picked (0-3). */
+	private boolean fireFirst;
+	private int fireRandom;
 	/** When the current burst of shots began (a held, automatic weapon: Sombra's pistol), seconds. */
 	private float burstStart = -100;
 	/** A burst lasts while shots come this close together (ours: her 20 a second, with a tick to spare). */
@@ -125,6 +128,11 @@ public final class HeroAnimator {
 	private boolean brigitte;
 	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
 	private boolean juno, junoGliding;
+	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
+	private boolean sojourn, sojournSliding;
+	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
+	private boolean sojournOverclock;
+	private float slideSince = -100, slideJumpAt = -100;
 	private float glideSince = -100, hoverSince = -100, hoverEndAt = -100, doubleJumpAt = -100;
 	private int hoverTicks;
 	private double lastVy;
@@ -202,6 +210,10 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("fire")) {
+			a.fireFirst = a.since("fire", now) > BURST_GAP;
+			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);
+		}
 		if (action.equals("fire") && a.since("fire", now) > BURST_GAP) {
 			a.burstStart = now;
 		}
@@ -255,6 +267,13 @@ public final class HeroAnimator {
 				}
 			}
 		}
+		if (a.sojourn && (action.equals("disruptor") || action.equals("ult"))) {
+			// her Disruptor (alias 0x479) and Overclock cast (0x175), their slide copies while she slides (df 0xE5 cat 0x24A:
+			// sojourn.txt); Overclock has no first-person clip (H: none in her 1P set)
+			String base = action.equals("ult") ? "overclock" : "disruptor";
+			clip = a.sojournSliding ? base + "_slide" : base;
+			viewClip = action.equals("ult") ? "" : a.sojournSliding ? "disruptor_slide" : "disruptor";
+		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
 			// (sombra_1p.txt hack_start)
@@ -265,7 +284,7 @@ public final class HeroAnimator {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
 		}
-		boolean layerOnly = action.equals("fire") || action.equals("soundwave") || action.equals("fire_blaster")
+		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
@@ -631,6 +650,43 @@ public final class HeroAnimator {
 	}
 
 	/**
+	 * Sojourn's fire layer (sojourn.txt / sojourn_1p.txt: alias 0x092's child 0 the first shot, child 2 the repeats at random):
+	 * a burst's first shot add_fire_first, then add_fire (the 1P's rand[0] / rand[1]), add_fire_2 (rand[2]), add_fire_3 (rand[3]).
+	 * Null for a model without a first-shot clip (every other hero).
+	 */
+	public @Nullable String firstShotFire(SkinnedModel model) {
+		if (clip(model, "add_fire_first") == null) {
+			return null;
+		}
+		if (fireFirst) {
+			return "add_fire_first";
+		}
+		String repeat = new String[] {"add_fire", "add_fire", "add_fire_2", "add_fire_3"}[fireRandom];
+		return clip(model, repeat) != null ? repeat : "add_fire";
+	}
+
+	/** The newest shot began a burst (the weapon's own first-shot clip: HeroWeapon). */
+	public boolean fireFirst() {
+		return fireFirst;
+	}
+
+	/**
+	 * Sojourn's first-person energy additive 7D6C (add_energy), weighted by her energy / 100 (df 0xF6, 1A23 #430: H weight) on the
+	 * clock (a looped group-12 layer: M). Only her own view has it, so the energy is her client's sync.
+	 */
+	private void energyLayer(SkinnedModel model, Skeleton.Pose pose, float now) {
+		SkinnedModel.Clip energy = clip(model, "add_energy");
+		if (energy == null || dev.overcraft.client.ClientHero.hero() != dev.overcraft.hero.Hero.SOJOURN) {
+			return;
+		}
+		float weight = Math.clamp(dev.overcraft.client.ClientHero.sync().meter() * (float) (dev.overcraft.sojourn.SojournStats.ENERGY_MAX / 100),
+			0, 1);
+		if (weight > 0) {
+			Skeleton.addAdditive(energy, now % Math.max(energy.duration(), 1.0E-3f), pose, weight);
+		}
+	}
+
+	/**
 	 * Jetpack Cat's additive layers over her flight (jetpack_cat-map.md): the hover's bob (on the clock), Frenetic
 	 * Flight's lean while boosting, and her actions, which are all layers in the third person (the reload, Purr, the
 	 * quick melee, Catnapper's aim: enter, then its 2-frame hold until she dives or lets go).
@@ -904,8 +960,20 @@ public final class HeroAnimator {
 			// Jetpack Cat's: one per paw, swapping each volley (one only, Ana's: that one each shot)
 			fire = fireSide && clip(model, "add_fire_2") != null ? "add_fire_2" : "add_fire";
 		}
+		String firstShot = firstShotFire(model);
+		if (firstShot != null) {
+			fire = firstShot;
+		}
 		if (!burst(model, pose, now)) {
 			additive(model, pose, fire, "fire", now);
+		}
+		additive(model, pose, "add_charged_shot", "charged_shot", now);
+		energyLayer(model, pose, now);
+		SkinnedModel.Clip overclock = sojournOverclock ? clip(model, "add_overclock") : null;
+		if (overclock != null) {
+			// her stance through Overclock (834A, 0.8 s: additive weighted by df 0x1AC = v842, 2159 #374), on the clock (M: a
+			// looped stance layer); only her 3P model has it
+			Skeleton.addAdditive(overclock, time(overclock, now, true), pose, 1);
 		}
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		additive(model, pose, "add_amp", "amp_it_up", now);
@@ -1209,9 +1277,13 @@ public final class HeroAnimator {
 		// Lúcio's additive layers (lucio-map.md): the volley at the root (one clip per volley), Soundwave, Crossfade's,
 		// the wall ride's, and his idle fidgets now and then
 		boolean flier = model.clips.containsKey("add_bob");
-		if (!burst(model, pose, now)) {
+		String firstShot = firstShotFire(model);
+		if (firstShot != null) {
+			additive(model, pose, firstShot, "fire", now);
+		} else if (!burst(model, pose, now)) {
 			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
 		}
+		additive(model, pose, "add_charged_shot", "charged_shot", now);
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}
@@ -1316,6 +1388,18 @@ public final class HeroAnimator {
 			glideSince = now;
 		}
 		junoGliding = glideNow;
+		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		this.sojourn = sojourn;
+		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
+		if (slideNow && !sojournSliding) {
+			slideSince = now;
+		} else if (!slideNow && sojournSliding && !entity.onGround() && vy > 0.3) {
+			// it ended rising off the ground: her slide jump (1E6F #656, alias 0x5F3)
+			slideJumpAt = now;
+		}
+		sojournSliding = slideNow;
+		Integer gun = sojourn ? entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_GUN) : null;
+		sojournOverclock = gun != null && (gun & dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK) != 0;
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
@@ -1477,6 +1561,14 @@ public final class HeroAnimator {
 			next = "climb_top";
 		} else if (skates && wallSide != 0) {
 			next = wallSide > 0 ? "wallride_right" : "wallride_left";
+		} else if (sojournSliding) {
+			// Power Slide (1E6F): its start (alias 0x5E4, 0.8 s), then the body (0x72D; cat 0x214 shares the start's additive:
+			// ours its default, M)
+			SkinnedModel.Clip start = clip(model, "slide_start");
+			next = start != null && now - slideSince < start.duration() ? "slide_start" : "slide_dir_214";
+		} else if (!onGround && slideJumpAt >= airborneSince - 0.3f && clip(model, "slide_jump") != null) {
+			// her slide jump until she lands (alias 0x5F3): its take-off, then its fall
+			next = now - slideJumpAt < clip(model, "slide_jump").duration() ? "slide_jump" : "slide_jump_fall";
 		} else if (juno && junoGliding) {
 			// Glide Boost (47B7): its start (0xE5, 2D by her motion), then the loop (0x02F: still at its centre, else 8
 			// ways); a double jump while gliding has its own (0x13E)

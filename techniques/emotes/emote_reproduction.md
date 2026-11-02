@@ -61,7 +61,7 @@ props are in hands."
 - **Contacts:** `tools/emote_contacts.py <glb> <bone> <point on the prop> <offset> <clip...>` measures how near a
   point on the prop comes to her mouth over the clip, and which way the prop's +Y points. For a held thing, also
   measure its axis against the knuckle line (index to pinky): a fist holds a handle across the palm (the mic: 9 degrees
-  off the knuckle line, as the verified tea is). Run it before overriding the data on a hunch, and before trusting a
+  off the knuckle line, as the verified tea is; `--knuckles=<index bone>,<pinky bone>` prints it every 0.25 s). Run it before overriding the data on a hunch, and before trusting a
   frame: a front view along her arm made a correct mic look like it covered her face.
 
 ## 5. Props with clips of their own
@@ -98,6 +98,9 @@ EntityControls naming its child-entity slot, and the geoset that goes with it is
 count: [lucio_emotes](lucio_emotes.md#his-weapon-is-an-entity-not-a-geoset-the-nuance-that-matters). TankLib reads
 the control's slot id as an "action" byte (its structure predates a field); read the chunk raw and match the slot:
 [mercy_emotes](mercy_emotes.md#two-weapons-each-an-entity-per-slot-stow-windows-2026-10-28).
+A weapon entity's own emote clips may key its root in her space, a bake of the bone it hangs on (Sojourn's Railgun:
+equal to her bone_0606 within 1 cm, frame for frame): keep its root on the hardpoint and play only its other bones
+([sojourn_emotes](sojourn_emotes.md#the-railguns-own-clips-root-baked-on-her-carrier)).
 
 ## 8. The coat: sometimes animated, sometimes simulated
 A hero's cloth bones are never keyed in a clip, but that doesn't make the cloth physics. Overwatch's cloth (Domino)

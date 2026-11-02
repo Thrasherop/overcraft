@@ -178,8 +178,7 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     into `ExtraSounds\Juno\Emotes`) -> `measure_emotes.py Juno ... Mercy:C440 Kiriko:FEC7 Lúcio:E548 ...` ->
     `juno_what.py` -> `gen_juno.py` -> `apply_emote_sounds.py juno <repo>`, then the scratch-root build and merge above.
     - **The TankLib scripts need the research venv:** `py -I` has no pythonnet (it skips the user site-packages, where
-      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archive
-esearch\kiriko-animenv\Scripts\python.exe -I`;
+      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archive\research\kiriko-anim\venv\Scripts\python.exe -I`;
       `-I` still sees the venv's own packages. Text-only steps (measure, gen, apply) run under plain `py -I`.
     - **Shared 02Cs keep showing up under new emotes:** Orion Dance's music FEC7 / FEC8 is Kiriko's, Crazy Choreography's
       C440 / C441, Shuffle's E23F and Bunny Hop's F869 are Mercy's. Check every id against the earlier heroes'
@@ -199,6 +198,54 @@ esearch\kiriko-animenv\Scripts\python.exe -I`;
       two groups is still kept once.
     - **The dev `key <action> tap` doesn't end an emote:** it releases the key before `ClientHero` reads the input, so the
       emote (and its loops) kept going. Hold it (`key forward down`, 0.25 s, `key forward up`), as a player does.
+- <a id="sojourn-emote-sounds"></a>**Sojourn's emote sounds and voice lines (2026-11-02; `emotes.txt`, Sojourn's section; scripts
+  `research\sojourn\scripts\emote_sounds\`; played: [sojourn step 9](../heroes/sojourn.md#step-9-her-emotes-from-the-data-played)):**
+  17 02Cs and 5 voice stimuli over her 11 emotes, Juno's pipeline unchanged: `emote_fx.py` -> `ww.py` (`sojourn_ids.txt`) ->
+  `dump_banks.py work\sojourn_banks_raw.json 00000001E5FA.043 00000001E599.043` -> her `extract_banks.py` (10 own banks into
+  `ExtraSounds\Sojourn\Emotes`) -> `measure_emotes.py Sojourn ... Lúcio:E548 ...` (the 7 shared) -> `facts.py` / `summary.py` ->
+  `sojourn_what.py` -> `gen_sojourn.py` -> `apply_emote_sounds.py sojourn <repo>`, then the scratch-root build and merge above
+  (the scratch root's `tools/soundmaps/` held only her section, as `emotes.txt`).
+  - **No id shared with another hero's emotes** but the achievement ones; each of hers is one long mono bed held over its
+    clip at 15 m (no loops). The one named stimulus folder: Guffaw's laugh 06A1 is in `HeroVoice\Sojourn\Laugh` (with other
+    laughs), so `VOICE_IDS` keeps only its line; the others are `Unknown\<078>`.
+  - **6BDB plays just before a stow window ends** (Heroic 4.17 against 4.07, Triumph 5.83 against 6.0): read as the gun
+    returning to her hands (M), a use of the stow windows to name a sound.
+- <a id="sojourn-sounds"></a>**Sojourn's map (2026-11-02; `tools/soundmaps/sojourn.txt`, read for wiring in
+  `tools/reference/sojourn-sounds.md`; scripts `research\sojourn\scripts\sounds\` (Juno's pipeline; the event table is its own
+  file, `sojourn_table.py`, and `sojourn_gen.py` writes the map), data `research\sojourn\sounds\`; hub: [sojourn](../heroes/sojourn.md)):**
+  - **The order the pipeline runs in** (Juno's, written down): `fx_graph_<hero>.py` (text) -> `fx_sounds2_<hero>.py` (TankLib:
+    every effect the graphs, clips and decompiles name) -> `clip_sounds_<hero>.py` / `fx_nodes.py` (text) -> `fx_timed.py` on the
+    entities' slot effects and `contacts.py` on the contact sets (TankLib) -> `ww.py` on the 02C list, then `dump_banks.py` on
+    the banks it names plus 1E818 (TankLib) -> `extract_banks.py` for the 02Cs her export lacks (DataTool) -> `measure_<hero>.py`,
+    `overview.py`, `stmg.py --offline` (the Init bank is the build's: copy `stmg_1E818.bin` from any hero) -> `voiceset_<hero>.py`
+    (TankLib) -> `<hero>_voice.py` -> `<hero>_gen.py --print`, then `--write` and `check_map.py`.
+  - **Pass `dump_banks.py` the banks' full names** (`00000001E7A3.043`): its keys must match `ww.py`'s `bank` field, which
+    `emote_events.node()` compares; short names (`1E7A3.043`) leave every node unfound. Sojourn's were re-keyed after the run.
+  - **A held automatic stream, split three ways.** The Railgun's 2BF5 (643C / 8AF0) is Sombra's kind of stream, held for the
+    whole burst (1A23 #571), not per volley as Juno's. Its "once" containers sound only on the first trigger, so it is built as
+    `fire_first` (once + one stream trigger), `fire` (one stream trigger, every later shot) and `fire_end` (the ring-out and the
+    Stop sets).
+  - **A shot can carry a charge parameter.** The Charged Shot's containers follow game parameter 2139477060 (0-1, default 0):
+    at 0 up to 10 dB quieter and +300 / +500 cents. Read at its default it would build the weakest shot. Built in
+    Lifeweaver's three bins (`fire`, `fire_mid`, `fire_low`) through the rule's scenario; M that it is energy / 100.
+  - **A weapon model's own clips carry its sounds:** the reload is on the Railgun's 1P / 3P clips 6FCB / 70D5 (set 0AB6), and
+    the gun's energy state machine's transition clips 7D86 / 7D87 / 7D88 carry the only energy-state cues; her body's clips
+    have none. `clipinfo.json` covers the gun's clips because it was resolved over all three models.
+  - **A movement ability's surface sounds are contact sets on its rays.** Power Slide's ground ray (1E6F #272 StateTrackRay)
+    holds a contact set while it finds ground (#273 STU_B63ECEB8: the scrape loop) and fires sweeps (STU_23A00A53) with their
+    own sets as it lands, lifts and hits a wall. Grep the decompiles for `.049` as well as for `.00D`.
+  - **A voice line can travel in a message.** Her Charged Shot kill lines are raised by ActionSendGameMessage (1B27) with the
+    stimulus as a parameter, and her Overclock kill lines through an ActionSwitch on a kill counter that sets a stimulus
+    variable (1A23 #1283 -> #1288 `m_stimulus = v45531`). Grep for `.078` anywhere in a node, not only in `m_stimulus`.
+  - **The own ult copy can repeat either line.** Her own 185C (key F1AC) has the enemy line's text ("This ends now!"), where
+    Juno's own copy has the friendly one's.
+  - **Stadium effects may not exist in the build at all:** twelve of 2159's effects (behind 0425 / 0441) fail TankLib's
+    OpenFile. A gated branch's missing effect isn't a reading error.
+  - **The decompiler's `#0` is not one node:** graph entries and some STU nodes all print as `#0`, so an edge "from #0" names no
+    one node (1E6F's 7601 and 7ABE, left out); duplicate uids (#1124 there) as in Juno's.
+  - **`extract_banks.py` writes only under its allowed roots;** Sojourn's copy allows `research\sojourn\sounds` beside
+    `extracted\`.
+  - **No reload line at all:** her 01C2.05F has neither 0E2C nor a reload stimulus of her own (as Sombra).
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

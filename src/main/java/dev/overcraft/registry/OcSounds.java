@@ -472,6 +472,34 @@ public final class OcSounds {
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "reload", "heal", "torpedo_ally", "torpedo", "ring", "ping_ring", "ultimate");
 
+	/**
+	 * Sojourn's (tools/soundmaps/sojourn.txt, read for wiring in tools/reference/sojourn-sounds.md): her sounds by name
+	 * ("sojourn." + name, played through dev.overcraft.sojourn.SojournSounds on the server and dev.overcraft.client.SojournSounds
+	 * for the loops) and her lines by moment (Voice.say: "sojourn.voice.<moment>"; her wheel lines, "resurrected",
+	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init()). Her set has no reload line (H). The ult line
+	 * is ult.friendly / ult.enemy (0B19 / 0D2F); voice.ultimate (185C, her own copy, the enemy line's text) stays unplayed.
+	 */
+	public static final java.util.List<String> SOJOURN_SOUNDS = java.util.List.of(
+		"charged.fire", "charged.fire_3p", "charged.fire_low", "charged.fire_low_3p", "charged.fire_mid", "charged.fire_mid_3p",
+		"charged.hit", "charged.hit_block", "charged.hit_enemy", "charged.hit_enemy_3p", "charged.shot", "disruptor.burn.end",
+		"disruptor.burn.loop", "disruptor.burn.start", "disruptor.cast", "disruptor.cast_3p", "disruptor.field.end",
+		"disruptor.field.end_3p", "disruptor.field.loop", "disruptor.field.loop_3p", "disruptor.field.open",
+		"disruptor.field.open_3p", "disruptor.flight.loop", "disruptor.flight.loop_3p", "disruptor.hit", "disruptor.hit_3p",
+		"disruptor.hit_block", "energy.fill", "energy.full", "energy.gain", "energy.glow", "energy.spent", "melee", "melee_3p",
+		"perk.thrusters.jump", "perk.thrusters.jump_3p", "perk.thrusters.recharge", "perk.thrusters.recharge_full",
+		"perk.thrusters.start", "railgun.fire", "railgun.fire_3p", "railgun.fire_end", "railgun.fire_end_3p",
+		"railgun.fire_first", "railgun.fire_first_3p", "railgun.hit", "railgun.hit_block", "railgun.hit_enemy",
+		"railgun.hit_enemy_3p", "railgun.idle.loop", "railgun.idle.loop_3p", "railgun.projectile", "railgun.reload",
+		"railgun.reload_3p", "slide.end", "slide.end_3p", "slide.jump", "slide.jump_3p", "slide.lift", "slide.lift_3p",
+		"slide.loop", "slide.loop_3p", "slide.scrape.loop", "slide.scrape.loop_3p", "slide.start", "slide.start_3p",
+		"slide.touch", "slide.touch_3p", "slide.wall", "slide.wall_3p", "ult.cast", "ult.cast_3p", "ult.end", "ult.end_3p",
+		"ult.ending", "ult.ending_3p", "ult.enemy", "ult.friendly", "ult.loop", "ult.loop_3p");
+	public static final java.util.List<String> SOJOURN_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "slide", "slide_jump", "disruptor", "railgun_charged", "railgun_holding", "charged_kill",
+		"charged_kill_air", "overclock_kill", "overclock_kill_2", "overclock_kill_3", "overclock_kill_5", "overclock_end",
+		"ultimate");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -489,6 +517,8 @@ public final class OcSounds {
 		BRIGITTE_VOICE.forEach(moment -> register("brigitte.voice." + moment));
 		JUNO_SOUNDS.forEach(name -> register("juno." + name));
 		JUNO_VOICE.forEach(moment -> register("juno.voice." + moment));
+		SOJOURN_SOUNDS.forEach(name -> register("sojourn." + name));
+		SOJOURN_VOICE.forEach(moment -> register("sojourn.voice." + moment));
 	}
 
 	private OcSounds() {

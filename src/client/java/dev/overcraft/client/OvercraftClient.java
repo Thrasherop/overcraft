@@ -105,6 +105,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.SombraFx.clear();
 			dev.overcraft.client.effect.BrigitteFx.clear();
 			dev.overcraft.client.effect.JunoFx.clear();
+			dev.overcraft.client.effect.SojournFx.clear();
 			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
@@ -136,11 +137,14 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.AnaFx.tick(client);
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
+				ClientSojourn.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
+				dev.overcraft.client.effect.SojournFx.tick(client);
 			}
 			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
 			JunoSounds.tick(client);
+			SojournSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -161,6 +165,12 @@ public class OvercraftClient implements ClientModInitializer {
 		// Mercy's blaster shots: drawn by their flight effect (MercyFx), the item only without the local pack
 		EntityRendererRegistry.register(OcEntities.BLASTER_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"blaster_shot", 0.3f, false, 1, true));
+		// Sojourn's Railgun rounds: no model in her data (2F98 is effects only), drawn by their flight effect (SojournFx)
+		EntityRendererRegistry.register(OcEntities.RAILGUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"railgun_shot", 0.2f, false, 1, true));
+		// Sojourn's Disruptor Shot: drawn by its flight effect (SojournFx), the item only without the local pack
+		EntityRendererRegistry.register(OcEntities.DISRUPTOR_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"disruptor_shot", 0.3f, false, 1, true));
 		// Lifeweaver's: the blossom and the thorns have no model in his data, their flight effects are their look
 		// (LifeweaverFx: the item only without the local pack); the thrown platform and seed are his model 126CC; the
 		// platform, the seed on the ground and the tree their own models with their clips
@@ -264,6 +274,9 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;
 		OwMovement.junoGlide = ClientJuno::glide;
+		// Sojourn's Power Slide and its jump
+		OwMovement.slide = ClientSojourn::slide;
+		OwMovement.slideEnded = ClientSojourn::ended;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

@@ -254,6 +254,29 @@ public final class HeroModelRenderer {
 				dev.overcraft.client.effect.JunoFx.posed(entity, points);
 			}
 		}
+		if (hero == Hero.SOJOURN && !previewing && entity.isAlive()) {
+			// her Railgun's muzzle (hp 0006) and energy glow point (hp 007C) as held, her body's hardpoints (SojournFx.POINTS),
+			// as posed, in the world
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.SojournFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.SojournFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f gun = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (gun != null) {
+						gun.mul(state.scale).rotateY(turn);
+						points[i] = base.add(gun.x, gun.y, gun.z);
+					}
+				}
+				dev.overcraft.client.effect.SojournFx.posed(entity, points);
+			}
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -731,6 +754,14 @@ public final class HeroModelRenderer {
 	private static final Vector3f VIEW_MUZZLE = new Vector3f();
 	private static long viewMuzzleAt = -1;
 
+	private static final Vector3f VIEW_GUN = new Vector3f();
+	private static long viewGunAt = -1;
+
+	/** Sojourn's own view's Railgun glow point (hp 007C) as drawn, from the camera in the world's axes, or null. */
+	public static @Nullable Vector3f viewGun() {
+		return viewGunAt >= 0 && Util.getMillis() - viewGunAt < 200 ? new Vector3f(VIEW_GUN) : null;
+	}
+
 	public static @Nullable Vector3f viewMuzzle() {
 		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
 	}
@@ -899,6 +930,12 @@ public final class HeroModelRenderer {
 			if (muzzle != null) {
 				poseStack.last().pose().transformPosition(muzzle, VIEW_MUZZLE);
 				viewMuzzleAt = Util.getMillis();
+			}
+			// Sojourn's Railgun's energy glow point (hp 007C) as drawn: SojournFx's glow on her own view's gun
+			Vector3f gun = hero == Hero.SOJOURN ? HeroWeapon.point(hero, animator, loaded.model(), true, now, "hardpoint_007C") : null;
+			if (gun != null) {
+				poseStack.last().pose().transformPosition(gun, VIEW_GUN);
+				viewGunAt = Util.getMillis();
 			}
 		}
 		if (minecraft && animator.viewPose() != null) {

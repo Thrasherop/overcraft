@@ -1,0 +1,36 @@
+# Sojourn's Railgun (entity 2D20, model 00000000D7B4.00C, 26 bones, look EBB2.01A; set 0AB6), on her hardpoint 00C9
+# (bone_0606 under 0605 / Pelvis, no offset) in both views (var 4E30); muzzle hardpoint 0006 (bone_0001, (0, 0.017, 0.413)
+# in its space). From research\sojourn\work\clipmap.md (build 154088), written by research\sojourn\scripts\clipmaps_sojourn.py.
+# Each alias is a two-state machine: sm[0] the first person, sm[1] the third (M, as Sombra's / Brigitte's weapons; the charged
+# shots' lengths match each view's own, 0.733 s 1P / 0.8 s 3P). The fire layers sit under df 0x8D cat (Overclock) and
+# default with the same clips (H for sm[0]). An energy state machine rides on top, its Overclock layer weighted df 0x1AC (empty).
+0-60_000000006E4D = idle   # 0.0333 s; the held pose, every locomotion branch (run rate by df 0x1A / 5.5, crouch walk / 3.0; air time from df 0x2B)
+4-4_000000007E24 = add_fire_first_1p   # 0.2333 s; sm[0] primary first shot (sub-alias 82AD808F)
+4-4_000000007077 = add_fire_1p   # 0.2167 s; rand[0-3]
+4-4_000000007031 = add_charged_shot_1p   # 0.7333 s; sm[0] Charged Shot (82AD809A / 82AD805B), every child
+4-4_00000000848B = add_fire_3p   # 0.4667 s; sm[1] primary (82AD80A4), every child
+4-0_000000008480 = add_charged_shot_3p   # 0.8 s; sm[1] Charged Shot (82AD80A3)
+4-28_000000007030 = add_energy_state_0   # 0.0333 s; 1P energy machine (82AD806B) state 0, 1 frame (L: empty)
+4-28_000000008096 = add_energy_state_1   # 1 s; state 1, 1.0 s (L meaning)
+4-28_000000006E8F = add_energy_state_2   # 1 s; state 2 (L)
+4-28_000000007D71 = add_energy_state_3   # 1 s; state 3 (L)
+4-4_00000000B906 = add_energy_2_to_0   # 1 s; transition 2 > 0 (with a condition)
+4-4_000000007D86 = add_energy_2_to_0_b   # 0.8667 s; transition 2 > 0
+4-4_000000007D87 = add_energy_0_to_3   # 0.3333 s; transition 0 > 3
+4-4_000000007D88 = add_energy_3_to_2   # 0.3333 s; transition 3 > 2
+4-28_0000000082C2 = add_energy_state_1_3p   # 1 s; 3P energy machine (82AD809D) state 1
+4-28_0000000082C3 = add_energy_state_2_3p   # 1 s; state 2
+4-28_0000000082C4 = add_energy_state_3_3p   # 1 s; state 3
+4-0_000000008437 = add_energy_2_to_0_3p   # 0.8 s; transition 2 > 0
+4-4_0000000082C6 = add_energy_to_1_3p   # 0.7333 s; transition 2 / 3 / 0 > 1
+4-0_00000000847B = add_energy_3_to_0_3p   # 0.8 s; transition 3 > 0
+0-36_000000006FCB = reload_1p   # 1.3 s; alias 0x004 sm[0]; 1.3 s
+0-36_0000000070D5 = reload   # 1.3 s; alias 0x004 sm[1] (3P); 1.3 s
+4-28_00000000395B = add_template   # 0.5333 s; a shared template's default clip (trees 009 / 05C), extracted with the gun: L
+# emote clips the data plays on the Railgun (slot 4E30, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS),
+# from the emote folders (--clips-from); each 27 bones, the gun's skeleton (techniques/emotes/sojourn_emotes.md)
+emote_000000008F4B = emote_confidence   # Confidence: 0-6.333 s
+emote_000000007DD9 = emote_standing_by_intro   # Standing By: its intro 7DD3, 0-3.267 s
+emote_000000007DDB = emote_standing_by_short   # Standing By: with her 0.367 s 7DD5, 0-0.367 s
+emote_000000007DDA = emote_standing_by_loop   # Standing By: with her loop 7DD4, 0-11.733 s
+emote_000000009546 = emote_weapons_check   # Weapons Check: 0-8.733 s

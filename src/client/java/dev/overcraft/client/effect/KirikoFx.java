@@ -109,12 +109,12 @@ public final class KirikoFx {
 					HeroHud.markInRush();
 				}
 			}
-			// Lúcio's, then Jetpack Cat's, then Mercy's, then Lifeweaver's, then Ana's, then Sombra's, then Brigitte's, then Juno's
+			// Lúcio's, then Jetpack Cat's, then Mercy's, then Lifeweaver's, then Ana's, then Sombra's, then Brigitte's, then Juno's, then Sojourn's
 			default -> {
 				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy) && !MercyFx.dispatch(e, enemy)
 					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy) && !SombraFx.dispatch(e, enemy)) {
-					if (!BrigitteFx.dispatch(e, enemy)) {
-						JunoFx.dispatch(e, enemy);
+					if (!BrigitteFx.dispatch(e, enemy) && !JunoFx.dispatch(e, enemy)) {
+						SojournFx.dispatch(e, enemy);
 					}
 				}
 			}
