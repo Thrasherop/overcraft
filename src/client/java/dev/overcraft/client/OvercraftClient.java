@@ -139,6 +139,8 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 			}
+			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
+			JunoSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -260,6 +262,7 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.descent = ClientMercy::descent;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
+		OwMovement.doubleJumped = ClientJuno::doubleJumped;
 		OwMovement.junoGlide = ClientJuno::glide;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;

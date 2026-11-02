@@ -62,6 +62,10 @@ public final class HyperRing {
 		Vec3 from = juno.getEyePosition().add(look.scale(0.5)).add(0, -0.3, 0);
 		RINGS.add(new Ring(juno, from, look, juno.level().getGameTime()));
 		Effects.play(juno.level(), "juno_ring", from, look, juno, 0, juno);
+		// the ring made: its "sound only" slot (5530 m_2170A015 -> 5F2F, 60 m; H slot, M role) and its forming (4858 #618 ->
+		// 541C, 70 m; M the moment), for everyone. Its hum while it lasts follows it on her clients (JunoSounds)
+		JunoSounds.at(juno.level(), "ring.launch", from, 60);
+		JunoSounds.at(juno.level(), "ring.appear", from, 70);
 	}
 
 	public static void tickAll(MinecraftServer server) {
@@ -72,6 +76,10 @@ public final class HyperRing {
 			if (age >= Ow.ticks(RING_LIFE) || r.juno.isRemoved()) {
 				it.remove();
 				continue;
+			}
+			if (age == Ow.ticks(RING_LIFE - RING_END_SOUND)) {
+				// its end, 0.15 s before the 6 s are up (#544 -> #508 53CA, 70 m), for everyone
+				JunoSounds.at(level, "ring.end", r.centre, 70);
 			}
 			if (age < Ow.ticks(RING_FLIGHT)) {
 				// in flight: 35 m/s along her aim, stopping at a wall
@@ -116,6 +124,8 @@ public final class HyperRing {
 			speed.addOrReplacePermanentModifier(new AttributeModifier(FAST, RING_BOOST, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 		FASTER.put(e, now + Ow.ticks(RING_BOOST_TIME));
+		// through it (#437 per ally -> #432 5A8B): in the ally's head, its 45 m copy at them for the rest (M on whom)
+		JunoSounds.on(e, "ring.pass", 45);
 		Effects.play((ServerLevel) e.level(), "juno_ring_boost", e.position(), Vec3.ZERO, e, Ow.ticks(RING_BOOST_TIME), null);
 	}
 

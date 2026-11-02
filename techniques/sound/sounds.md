@@ -166,5 +166,12 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **Where the extra banks went:** for this pass the owner asked for extracted audio under `research\juno\sounds\`. The
     banks her export lacked are in `research\juno\sounds\ExtraSounds\Juno`, reached from the build root as
     `../../research/juno/sounds/ExtraSounds/Juno/...`. `measure_juno.py`'s `TOPS` points there.
+  - **Wiring it (step 7c, [juno](../heroes/juno.md)):** a stop names the sound, not one copy: the torpedo lock's tick plays at
+    each target, so when one locks all stop and the ones still filling start again (`Torpedoes.ticking`). Another player's
+    motion arrives in held steps: a double jump read from it was missed or doubled, so her own client tells the server
+    (`EXTRA_JUMP`), and a hover is read over 4 ticks. Loops that follow something in flight are client instances that move
+    with it (`client.JunoSounds.Following`).
+- **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
+  its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing
   (`Shields`) and a dash that healed 66 of its 55; the kill lines showed Superbloom's 40 counted as a melee blow.

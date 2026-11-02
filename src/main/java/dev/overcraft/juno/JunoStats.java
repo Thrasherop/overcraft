@@ -48,6 +48,11 @@ public final class JunoStats {
 	public static final double GLIDE_SLOWING = 1.86, GLIDE_SLOWING_FLOOR = 12.45;
 	/** Up to 4 s (D 13BB); a second press ends it from 0.4 s (D #793 / #799: toggle, the default). */
 	public static final double GLIDE_TIME = 4, GLIDE_CANCEL_FROM = 0.4;
+	/**
+	 * Its running-out sound: on hers with 0.4 s left (47B7 #642 -> #544 op71(v215, 0.4) -> #545 5843), on the others' copy 3.0 s
+	 * in (B924's running-out set, delayed 3.0 s in its Play event) (H).
+	 */
+	public static final double GLIDE_ENDING = 0.4, GLIDE_ENDING_3P = 3.0;
 	/** Its mover: air acceleration 12, air speed max 9 (D #528); +40% move speed (D 1A38, #742); gravity off (D #780 / #761). */
 	public static final double GLIDE_AIR_ACCELERATE = 12, GLIDE_MAX_AIR = 9, GLIDE_SPEED = 0.4;
 	/**
@@ -86,6 +91,8 @@ public final class JunoStats {
 	public static final double RING_CAST = 0.55, RING_THROW = 0.25;
 	/** It flies 35 m/s for 0.5 s (17.5 m, or to a wall), then hangs until 6 s are up; a 4.5 m ring (D 4858; W 4 m: D). */
 	public static final double RING_SPEED = 35, RING_FLIGHT = 0.5, RING_LIFE = 6, RING_RADIUS = 4.5;
+	/** The ring's end sound, this long before its 6 s run out (4858 #463 -> #544 op71(v215, 0.15) -> #508 53CA, H). */
+	public static final double RING_END_SOUND = 0.15;
 	/** Each ally through it +50% speed for 3 s, once a ring (D 4858; BZ; W; the recording: Juno at 8.12-8.25 m/s after hers). */
 	public static final double RING_BOOST = 0.5, RING_BOOST_TIME = 3;
 
@@ -96,6 +103,10 @@ public final class JunoStats {
 	public static final double RAY_TIME = 8, RAY_RADIUS = 8, RAY_SPEED = 2.25, RAY_RAMP_UP = 0.5, RAY_RAMP_DOWN = 1.25;
 	/** Allies inside: 85 a second and +30% damage, lingering 1 s (D 501A / 54A6; W; the linger W). */
 	public static final double RAY_HEAL = 85, RAY_DAMAGE_BOOST = 0.3, RAY_LINGER = 1;
+	/** The ray's ending sound, with this long of it left (501A #22 op71(v29029, 2.7) -> #23 5AD2, H). */
+	public static final double RAY_ENDING = 2.7;
+	/** A target's lock tick file (5C17's 0.02 s stream, built as 1.0 s: the longest lock), started again as it ends. */
+	public static final double LOCKING_LOOP = 1.0;
 	/** Pulsar Torpedoes (the right button): 10 s, 2 s when nothing was locked (D 4695 #929-#932, 16FC / 2396; BZ 2024-08-20; W). */
 	public static final double TORPEDO_COOLDOWN = 10, TORPEDO_COOLDOWN_NONE = 2;
 	/** The lock: up to 4 s (D 1AF0 via v567); 40 m, 45 once a target's lock has begun (D 1A57 40 + 5; BZ 2024-08-20; W). */

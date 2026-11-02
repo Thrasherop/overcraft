@@ -29,6 +29,28 @@ public final class ClientJuno {
 		return entity == Minecraft.getInstance().player && ClientHero.hero() == Hero.JUNO && ClientHero.controls() ? glide : -1;
 	}
 
+	/** When her double jump last went off (game time, -1 told: OwMovement), for the server to tell the others (its 3p copy). */
+	private static long jumped = -1;
+
+	/** OwMovement's double jump: hers sounds in her head at once (JunoSounds), the server told with her next input. */
+	public static void doubleJumped(LivingEntity entity) {
+		if (entity == Minecraft.getInstance().player) {
+			jumped = entity.level().getGameTime();
+			JunoSounds.doubleJumped(Minecraft.getInstance());
+		}
+	}
+
+	/** Her extra input: EXTRA_JUMP once after her double jump. */
+	public static int input(net.minecraft.client.player.LocalPlayer player) {
+		if (jumped < 0) {
+			return 0;
+		}
+		// (not sent while a screen held her input back, found playing: the jump told late, long after)
+		boolean fresh = player.level().getGameTime() - jumped <= 2;
+		jumped = -1;
+		return fresh && ClientHero.hero() == Hero.JUNO ? dev.overcraft.net.HeroInputPayload.EXTRA_JUMP : 0;
+	}
+
 	/** Her jumps in the air: one, two with Lift Off; none for anyone else. */
 	public static int airJumps(LivingEntity entity) {
 		if (entity != Minecraft.getInstance().player || ClientHero.hero() != Hero.JUNO || !ClientHero.controls()) {

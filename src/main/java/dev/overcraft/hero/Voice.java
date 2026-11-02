@@ -140,7 +140,18 @@ public final class Voice {
 		java.util.Map.entry("brigitte.barrier_damaged", new Stimulus(60, 40, 60, false)), // 09BF
 		java.util.Map.entry("brigitte.barrier_low", new Stimulus(70, 20, 40, false)), // 09C0
 		java.util.Map.entry("brigitte.barrier_broken", new Stimulus(60, 20, 20, false)), // 09C1
-		java.util.Map.entry("brigitte.ultimate", new Stimulus(95, 1, 1, false))); // 183A
+		java.util.Map.entry("brigitte.ultimate", new Stimulus(95, 1, 1, false)), // 183A
+		// Juno's (tools/soundmaps/juno.txt, the voice section; her set 0278.05F)
+		java.util.Map.entry("juno.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("juno.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		// her own reload stimulus (the shared 0E2C is not in her set): its cooldown is 0 (the map's reading)
+		java.util.Map.entry("juno.reload", new Stimulus(60, 0, 0, false)), // 176F
+		java.util.Map.entry("juno.heal", new Stimulus(60, 20, 20, false)), // 1727
+		java.util.Map.entry("juno.torpedo_ally", new Stimulus(60, 20, 20, false)), // 16AF
+		java.util.Map.entry("juno.torpedo", new Stimulus(60, 20, 20, false)), // 1761
+		java.util.Map.entry("juno.ring", new Stimulus(60, 15, 15, false)), // 16B0
+		java.util.Map.entry("juno.ping_ring", new Stimulus(70, 0, 0, true)), // 16DF
+		java.util.Map.entry("juno.ultimate", new Stimulus(95, 1, 1, false))); // 184D
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

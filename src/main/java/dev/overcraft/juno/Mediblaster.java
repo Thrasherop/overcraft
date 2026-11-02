@@ -50,6 +50,10 @@ final class Mediblaster {
 			s.junoVolley = VOLLEY;
 			s.junoVolleyClock = 1;
 			Combat.animate(player, "fire");
+			// the volley's stream (5C2D held for #913's volley: one Play sounds all 12, its 3p copy B92C 150 m) and its 12
+			// projectiles' "sound only" slot (538E's 5C5F, 60 m, built as the whole volley: H slot, M role), once a volley
+			JunoSounds.split(player, "mediblaster.volley", player.getEyePosition(), 150);
+			JunoSounds.at(player.level(), "mediblaster.projectile", player.getEyePosition(), 60);
 		}
 		if (s.junoVolley == 0) {
 			return;
@@ -64,6 +68,8 @@ final class Mediblaster {
 		if (s.junoVolley == 0 || s.primaryAmmo == 0) {
 			s.junoVolley = 0;
 			s.weaponRecovery = Ow.ticks(VOLLEY_RECOVERY);
+			// the volley ends: 5C2D stops, B3DC's Stop event and its ring-out (H)
+			JunoSounds.split(player, "mediblaster.volley_end", player.getEyePosition(), 150);
 		}
 	}
 
@@ -103,20 +109,29 @@ final class Mediblaster {
 		if (best == null) {
 			if (blockHit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
 				Effects.play(level, "juno_round_block", block, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null, 0, player);
+				// contact set 07DC, type 2 (the world), for everyone (899F 90 m + 89A1, both in the file)
+				JunoSounds.at(level, "mediblaster.hit_block", block, 90);
 			}
 			return;
 		}
 		double metres = Math.sqrt(bestDist);
 		double falloff = metres <= FALLOFF_START ? 1 : metres >= FALLOFF_END ? FALLOFF_MIN
 			: 1 - (1 - FALLOFF_MIN) * (metres - FALLOFF_START) / (FALLOFF_END - FALLOFF_START);
+		// a character hit: 538E's "on a target" slot 51DA -> 4010 -> 8DE7, the shooter's confirmation (M, Ana's reading)
+		JunoSounds.own(player, "mediblaster.hit");
 		if (bestAlly) {
 			float healed = Combat.heal(best, ROUND_HEAL * falloff);
 			if (healed > 0) {
 				Combat.credit(player, healed);
 				Combat.addFireForHealing(player, healed);
+				// "Let me help!" (1727: 4445 #1216 -> #1213, M healing an ally with it; its 20 s cooldown in Voice)
+				dev.overcraft.hero.Voice.say(player, "heal", 1);
 			}
 			return;
 		}
+		// an enemy: contact set 07DC type 0 (M: characters) -> B38E hers, 9058 at the hit for the rest (500 m)
+		JunoSounds.own(player, "mediblaster.hit_enemy");
+		JunoSounds.at(level, "mediblaster.hit_enemy_3p", bestAt, 500, player);
 		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
 		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1));
 		Combat.credit(player, dealt);

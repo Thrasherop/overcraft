@@ -82,6 +82,10 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> JUNO_GLIDE = AttachmentRegistry.create(Overcraft.id("juno_glide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/** Juno locking Pulsar Torpedoes: for every client to play her lock's sounds (JunoSounds: 520F, held while she locks). */
+	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -247,6 +251,9 @@ public final class HeroManager {
 		if (state.hero == Hero.BRIGITTE) {
 			dev.overcraft.brigitte.Brigitte.clear(player, state);
 		}
+		if (state.hero == Hero.JUNO) {
+			dev.overcraft.juno.Juno.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -332,6 +339,9 @@ public final class HeroManager {
 			if (state.hero == Hero.BRIGITTE) {
 				dev.overcraft.brigitte.Brigitte.clear(player, state);
 			}
+			if (state.hero == Hero.JUNO) {
+				dev.overcraft.juno.Juno.clear(player, state);
+			}
 		}
 		OPTIONS.remove(player.getUUID());
 	}
@@ -415,6 +425,9 @@ public final class HeroManager {
 		}
 		if (state.hero == Hero.MERCY && input.extra() != 0) {
 			dev.overcraft.mercy.Mercy.extra(player, state, input.extra());
+		}
+		if (state.hero == Hero.JUNO && input.extra() != 0) {
+			dev.overcraft.juno.Juno.extra(player, state, input.extra());
 		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());

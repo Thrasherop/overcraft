@@ -31,7 +31,15 @@ public final class Juno implements HeroKit {
 		s.junoGlide = -1;
 		s.junoRingCast = -1;
 		s.junoRayCast = -1;
-		Torpedoes.clear(s);
+		Torpedoes.clear(player, s);
+	}
+
+	/** Leaving her (another hero, leaving the game): her synced glide and lock off, so her clients' loops stop with them. */
+	public static void clear(ServerPlayer player, HeroState s) {
+		Torpedoes.clear(player, s);
+		s.junoGlide = -1;
+		player.setAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE, false);
+		player.setAttached(dev.overcraft.hero.HeroManager.JUNO_LOCK, false);
 	}
 
 	@Override
@@ -55,7 +63,8 @@ public final class Juno implements HeroKit {
 		s.junoRightWas = s.secondaryHeld;
 		if (!controls || !player.isAlive()) {
 			s.junoVolley = 0;
-			Torpedoes.clear(s);
+			Torpedoes.clear(player, s);
+			lockFlag(player, s);
 			return;
 		}
 		ring(player, s);
@@ -71,6 +80,15 @@ public final class Juno implements HeroKit {
 		}
 		if (s.junoLock < 0 && s.junoFiring.isEmpty() && !s.junoLeftSpent) {
 			Mediblaster.tick(player, s, attack);
+		}
+		lockFlag(player, s);
+	}
+
+	/** The synced lock flag, for her clients' lock sounds (dev.overcraft.client.JunoSounds). */
+	private static void lockFlag(ServerPlayer player, HeroState s) {
+		boolean locking = s.junoLock >= 0;
+		if (!java.util.Objects.equals(player.getAttached(dev.overcraft.hero.HeroManager.JUNO_LOCK), locking)) {
+			player.setAttached(dev.overcraft.hero.HeroManager.JUNO_LOCK, locking);
 		}
 	}
 
@@ -95,6 +113,10 @@ public final class Juno implements HeroKit {
 		s.primaryReload = 0;
 		s.junoVolley = 0;
 		Combat.animate(player, "reload");
+		// her 1P clip E9B6's foley (5FA4) in her head, the 3P clip F6C3's (60BA, 45 m) for the rest; her own line 176F (4445
+		// #1334 / #1336)
+		JunoSounds.split(player, "mediblaster.reload", player.getEyePosition(), 45);
+		dev.overcraft.hero.Voice.say(player, "reload", 1);
 	}
 
 	@Override
@@ -108,14 +130,32 @@ public final class Juno implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0 && s.junoRingCast < 0) {
 			s.junoRingCast = 0;
 			Combat.animate(player, "ring");
+			// the press (4857 #807's activation -> 52FE / 5D47, her clips' B503 / B4FF; 70 m), and her line as the cast begins
+			// (#1097 onBegin -> #1203: 16B0)
+			JunoSounds.split(player, "ring.cast", player.getEyePosition(), 70);
+			dev.overcraft.hero.Voice.say(player, "ring", 1);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultCharge >= ULT_COST && s.junoRayCast < 0) {
 			s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.JUNO, s.ultCharge);
 			s.ultActive = Ow.ticks(RAY_LAND + RAY_TIME);
 			s.junoRayCast = 0;
 			// it ends her lock (W)
-			Torpedoes.clear(s);
+			Torpedoes.clear(player, s);
 			Combat.animate(player, "ult");
+			// the cast (54F8 held for 4A44 #430's 0.5 s, her 1P clip EA1C's B4FC; 75 m), and the line raised at the press (#853):
+			// 16A9 to her and her team, 16AA to her enemies (80 m; 184D, her own copy of 16A9's text, isn't played as well)
+			JunoSounds.split(player, "ult.cast", player.getEyePosition(), 75);
+			dev.overcraft.hero.HeroSounds.ultLine(player, JunoSounds.of("ult.friendly"), JunoSounds.of("ult.enemy"), 5);
+		}
+	}
+
+	/**
+	 * Her client's extra input: EXTRA_JUMP, her double jump (OwMovement moves her there): its sound for everyone else, at
+	 * her (4441 #570 -> #274 53EB: AD52, 60 m); hers played in her head by her client.
+	 */
+	public static void extra(ServerPlayer player, HeroState s, int extra) {
+		if ((extra & HeroInputPayload.EXTRA_JUMP) != 0 && player.isAlive()) {
+			dev.overcraft.hero.HeroSounds.at(player.level(), JunoSounds.of("boots.double_jump_3p"), player.getEyePosition(), 60, player);
 		}
 	}
 

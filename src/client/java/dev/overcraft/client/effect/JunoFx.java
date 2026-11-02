@@ -1221,6 +1221,40 @@ public final class JunoFx {
 		return true;
 	}
 
+	// ---- what her sounds follow (dev.overcraft.client.JunoSounds) ----
+
+	/**
+	 * Each thing of hers in flight now, by key ("torpedo_heal/<key>" an ally torpedo, "torpedo/<key>" an enemy-bound one,
+	 * "ring/<key>" a ring before its 6 s are up, "ray/<key>" a ray in its 8 s), and where it is.
+	 */
+	public static Map<String, Vec3> sounding() {
+		Map<String, Vec3> out = new HashMap<>();
+		float now = Fx.now();
+		for (Torpedo f : TORPEDOES) {
+			out.put((f.heal ? "torpedo_heal/" : "torpedo/") + f.key, f.at);
+		}
+		for (Ring r : RINGS) {
+			if (now - r.since < JunoStats.RING_LIFE) {
+				out.put("ring/" + r.key, r.centre(now));
+			}
+		}
+		for (Ray r : RAYS) {
+			out.put("ray/" + r.key, r.at);
+		}
+		return out;
+	}
+
+	/** Where one of them is now (null: gone). */
+	public static @Nullable Vec3 sounding(String key) {
+		return sounding().get(key);
+	}
+
+	/** An entity inside one of her rays (3169 held on it: the server's juno_ray_ally, twice a second). */
+	public static boolean inRay(Entity e) {
+		Held h = RAYED.get(e.getId());
+		return h != null && Fx.now() < h.until;
+	}
+
 	public static void clear() {
 		POSED.clear();
 		TORPEDOES.clear();

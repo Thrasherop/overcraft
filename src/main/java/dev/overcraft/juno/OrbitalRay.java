@@ -63,6 +63,10 @@ public final class OrbitalRay {
 				it.remove();
 				continue;
 			}
+			if (level.getGameTime() - r.born == Ow.ticks(RAY_TIME - RAY_ENDING)) {
+				// 2.7 s of it left (501A #22 -> #23 5AD2, 75 m), for everyone; its hum is her clients' (JunoSounds), stopped at 8 s
+				JunoSounds.at(level, "ult.ray.ending", r.at, 75);
+			}
 			// its speed: up over its first 0.5 s, down over its last 1.25 s (D 501A, M curve: ours linear)
 			double speed = RAY_SPEED * Math.min(1, Math.min(t / RAY_RAMP_UP, (RAY_TIME - t) / RAY_RAMP_DOWN));
 			r.at = ground(level, r.at.add(r.along.scale(Ow.speed(speed))), r.juno);

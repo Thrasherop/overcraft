@@ -136,3 +136,42 @@ both; the ring thrown, hanging, walked through (1P and 3P lines), its end; the r
 - Not done (ours / left): the lock marker is a world ring (the data's is HUD 0727.116); no 1P glide screen hex; no body
   material tint (a glow instead); the ray's ground circle is one flat at its point (floats on slopes); the reload's gun
   piece swap; enemies' red rows unseen (no second player).
+
+## Step 7c (her sounds), played
+Her 92 events ([juno-sounds](../../tools/reference/juno-sounds.md), `tools/soundmaps/juno.txt`) registered by
+`OcSounds.JUNO_SOUNDS` / `JUNO_VOICE`, her own stimuli in `Voice`. The server's one-shots go through `juno.JunoSounds`
+(as Brigitte's); everything that follows a state is her clients' (`client.JunoSounds`): the glide (synced
+`JUNO_GLIDE`), the lock (a new synced `JUNO_LOCK`), the hover (her motion, read over 4 ticks for others), the torpedoes',
+ring's and ray's loops at them as `JunoFx` flies them (`JunoFx.sounding`), the ray's inside loop and amp on this client's
+player (`JunoFx.inRay`). Her double jump is sent by her client (`OwMovement.doubleJumped` -> `EXTRA_JUMP`), the server plays
+the others' copy. Ult line: `ult.friendly` / `ult.enemy` through `HeroSounds.ultLine`; `voice.ultimate` (the same line)
+unplayed.
+Played 2026-11-01, dev pack, host "Kiriko" as Juno and `runClient2` "Viewer" over LAN, each sound read from both clients'
+`heard` and the new dev `playing` (what is still sounding: the channel asked whether stopped), polled every 0.1-0.2 s:
+- **Mediblaster** at a 200-health zombie, a hurt villager, a wall, Viewer as ally and as enemy (teams): one `volley` +
+  `projectile` per volley 0.8 s apart, `volley_end` as it ends, 12 `hit` (+ `hit_enemy`) a volley in her head, Viewer
+  `volley_3p` / `volley_end_3p` at her and 12 `hit_enemy_3p` at himself; `hit_block` for both; "Let me help!" on the
+  villager's heal. R: `reload` + her line in her head, done 2.2 s later.
+- **Pulsar Torpedoes:** lock start / loop in her head at the press (the loop again 3.19 s later), Viewer the _3p pair on
+  her; a tick at each target, both stopped within a tick of the second lock (0.6 s before their files end); `lock_target`
+  per lock; fire, line, one `launch` per torpedo, the flight loops following each torpedo and gone as it hit (enemy 0.12 s,
+  ally 1.1 s); `hit` / `hit_3p`, `hit_block` on a wall put up after the lock; `heal_confirm` hers, `heal` in Viewer's head;
+  "Support inbound!" with Viewer locked, "Pulsars inbound!" otherwise; Viewer `lock_end_3p`. Cancel with nothing locked:
+  `fire`, the lock's loops stopped.
+- **Hyper Ring:** cast + line at the press, `launch` / `appear` 0.25 s in, its hum following the ring, `ring.pass` in
+  Viewer's head as he crossed it (`pass_3p` at a villager), `end` 5.85 s after the launch, the hum stopped at 6.0 s.
+- **Orbital Ray:** cast + `ult.friendly` (Viewer an enemy: `ult.enemy`, no amp), the hum from the landing to 8.0 s, `ending`
+  at 5.3 s, the inside loop and amp start / loop for her and Viewer inside, amp end and both loops stopped as the ray walked
+  off her.
+- **Boots and glide:** double jump (on the ground and mid-glide) hers and Viewer's copy; hover start / loop / end at the
+  release, both sides; glide start / loop, `ending` with 0.4 s left (hers) and 3.0 s in (Viewer's), `end` at 4 s, loops
+  stopped.
+- **Stopping:** died mid-hover (loop gone in 0.1 s); hero switched mid-lock and mid-glide (loops gone); Viewer kicked
+  mid-ray (all his loops gone). Voice: select, respawn, death, pain, melee (+ her 1P melee foley), elimination, ping.
+- **Found playing:** another player's double jump read from motion missed some and doubled others (their steps arrive held,
+  then caught up): now told by her own client. Their hover ended and restarted mid-hover the same way: their fall is read
+  over 4 ticks and ends after 4 ticks out. `playing` at first showed stopped sounds for up to 1 s (the engine keeps a
+  stopped channel until 1 s after its start): it now asks the channel.
+- Not wired: `fire_alt` (L which branch), the Stadium ones, `idle.loop_3p`, `jump` / `jump_3p` / `land`, `perk.ring_refund`
+  (L live), `voice.ping_ring` (no ring ping), Faster Blaster's stream (no volley while it fires). Not listened to for
+  balance (24 hit sounds a volley in her head).
