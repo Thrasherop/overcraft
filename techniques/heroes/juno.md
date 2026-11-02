@@ -115,3 +115,24 @@ left button for the first of a tier, the right for the second), dev client, flat
   localOffsets); whether every additive clip wants it is #75 (the export's additive tracks mix conventions).
 - Ours (M): the glide's 8 ways by her motion, not her input (only her own client knows the input); the hover's ending
   layer and the torpedo hold layer (the lock isn't synced to others) not played; her 1P glide / hover layers not yet.
+
+## Step 7b (her effects), played
+`JunoFx` draws each moment of [juno-effects](../../tools/reference/juno-effects.md) with her 158 `JUNO_*` palettes
+(`EffectArt`, from `fx_palettes.txt`; the `_N` rows uncommented). The server adds `juno_round` / `juno_round_block`
+(each Mediblaster round), `juno_torpedo_wall`, `juno_ray_ally`, and `juno_locked` now names who locked (her marker shows
+on her client only). Her pods, feet, muzzle, wrist and gun piece come from her posed bones (`JunoFx.POINTS`).
+Played 2026-11-01 (dev pack; `run/screenshots/fx*_*.png`): rounds on a villager, the ground, a zombie; lock and volley at
+both; the ring thrown, hanging, walked through (1P and 3P lines), its end; the ray cast, landing, held, walked into
+(3P and 1P), from 40 m; the double jump, hover and glide. What playing taught:
+- **34 rounds a second stack:** the ally hit at the data's 2.4 m (and at half) was a solid ball hiding the villager; 0.3x.
+- **A quarter-circle mask:** the ray circle 4DBCC holds one quarter, its centre in a corner; on one quad it drew four
+  scalloped arcs. Four quads turned round the centre (`JunoFx.quarter`) make the 17 m circle.
+- **A tube's scrolling mask doesn't fit a quad or a still tube:** 31951 on the column mesh was a flat-ended white bar,
+  on quads hard-sided; inside the column the camera-facing pieces whitened the view. Soft line pieces falling 40 m/s
+  (its scroll), faded out from 4 m to 1 m off the axis.
+- **Flat discs need their mesh:** the disc flash's band is a stripe in V (the radius); on a quad it drew a bar. 5E5E.
+- **Mesh-only masks:** the chevron masks 27D0D / 27D0A are a frame and a ramp for DFDC; on quads they were squares.
+- **Jets spawned per tick trail behind a rising body:** held on the foot (`Fx.attach`) they stay on her boots.
+- Not done (ours / left): the lock marker is a world ring (the data's is HUD 0727.116); no 1P glide screen hex; no body
+  material tint (a glow instead); the ray's ground circle is one flat at its point (floats on slopes); the reload's gun
+  piece swap; enemies' red rows unseen (no second player).

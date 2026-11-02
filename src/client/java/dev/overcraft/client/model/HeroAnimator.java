@@ -129,6 +129,21 @@ public final class HeroAnimator {
 	private int hoverTicks;
 	private double lastVy;
 
+	/** Juno's last double jump (game seconds; -100 never), as seen from her motion: her boots' flames (JunoFx). */
+	public float junoDoubleJumpAt() {
+		return doubleJumpAt;
+	}
+
+	/** Juno hovering now (her fall held at 3 m/s for 3 ticks or more): her hover jets (JunoFx). */
+	public boolean junoHovering() {
+		return juno && hoverTicks >= 3;
+	}
+
+	/** Juno gliding now (synced): her glide jets (JunoFx). */
+	public boolean junoGliding() {
+		return juno && junoGliding;
+	}
+
 	/** Brigitte's shield up: raised more lately than lowered (her actions "shield_raise" / "shield_lower"). */
 	public boolean shieldUp(float now) {
 		return brigitte && since("shield_raise", now) < since("shield_lower", now);

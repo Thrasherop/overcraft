@@ -72,8 +72,9 @@ final class Mediblaster {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(player.getViewVector(1.0f), SPREAD, player.getRandom());
-		Vec3 block = level.clip(new ClipContext(eye, eye.add(dir.scale(RANGE)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player))
-			.getLocation();
+		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, eye.add(dir.scale(RANGE)), ClipContext.Block.COLLIDER,
+			ClipContext.Fluid.NONE, player));
+		Vec3 block = blockHit.getLocation();
 		LivingEntity best = null;
 		Vec3 bestAt = null;
 		boolean bestAlly = false;
@@ -95,7 +96,14 @@ final class Mediblaster {
 				bestDist = hit.get().distanceToSqr(eye);
 			}
 		}
+		// the round for her clients (JunoFx): muzzle 51DA, the round 53B6 to where it stopped, the ally hit 58B4 (variant 1;
+		// 2 an enemy, whose hit 5841 is empty), the world hit 53B7 on the block's face
+		Effects.play(level, "juno_round", eye, (best != null ? bestAt : block).subtract(eye), player, best == null ? 0 : bestAlly ? 1 : 2,
+			player);
 		if (best == null) {
+			if (blockHit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
+				Effects.play(level, "juno_round_block", block, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null, 0, player);
+			}
 			return;
 		}
 		double metres = Math.sqrt(bestDist);

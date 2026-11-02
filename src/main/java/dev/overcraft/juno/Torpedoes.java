@@ -95,7 +95,8 @@ public final class Torpedoes {
 			s.junoLockProgress.put(id, progress);
 			if (progress >= Ow.ticks(need)) {
 				s.junoLocked.add(id);
-				Effects.play(level, "juno_locked", e.position(), Vec3.ZERO, e, 0, player);
+				// the lock marker (0727.116, a HUD element on the target's hp 0001): her client draws it (variant: who locked it)
+				Effects.play(level, "juno_locked", e.position(), Vec3.ZERO, e, player.getId(), player);
 			}
 		}
 	}
@@ -153,10 +154,14 @@ public final class Torpedoes {
 			Vec3 to = aim.subtract(at);
 			double step = Ow.speed(speed);
 			Vec3 next = to.length() <= step ? aim : at.add(to.normalize().scale(step));
-			if (!f.heal && level.clip(new ClipContext(at, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, f.juno)).getType()
-				!= HitResult.Type.MISS) {
-				// damage torpedoes are stopped by terrain (W); healing ones follow their ally through it
+			net.minecraft.world.phys.BlockHitResult wall = f.heal ? null
+				: level.clip(new ClipContext(at, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, f.juno));
+			if (wall != null && wall.getType() != HitResult.Type.MISS) {
+				// damage torpedoes are stopped by terrain (W); healing ones follow their ally through it. The sparks there (5F45,
+				// the data's wall hit, along the normal)
 				it.remove();
+				Effects.play(level, "juno_torpedo_wall", wall.getLocation(), Vec3.atLowerCornerOf(wall.getDirection().getUnitVec3i()),
+					f.target, 0, f.juno);
 				continue;
 			}
 			f.at[0] = next;

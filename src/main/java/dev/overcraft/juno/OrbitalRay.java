@@ -39,6 +39,8 @@ public final class OrbitalRay {
 	}
 
 	private static final List<Ray> RAYS = new ArrayList<>();
+	/** How often (ticks) an ally inside is told so for their look (ours). */
+	private static final int ALLY_LOOK_EVERY = 10;
 
 	private OrbitalRay() {
 	}
@@ -75,6 +77,10 @@ public final class OrbitalRay {
 				}
 				// +30% damage while inside and for 1 s after (W): Mercy's boost's slot (ours: the two don't add up yet)
 				dev.overcraft.mercy.Boosts.boost(e, 1 + RAY_DAMAGE_BOOST, now + Ow.ticks(RAY_LINGER), r.juno.getUUID());
+				if ((now - r.born) % ALLY_LOOK_EVERY == 0) {
+					// their look inside it (3169, held while inside): sent twice a second, each held a little longer (ours)
+					Effects.play(level, "juno_ray_ally", e.position(), Vec3.ZERO, e, ALLY_LOOK_EVERY + 2, r.juno);
+				}
 			}
 		}
 	}
