@@ -45,6 +45,16 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
   (`Fx.Particle.follow`); placed once in the world, it stays behind as the hand moves on.
 - The world's light reaches first-person models: at night the lightmap turned the arms near-black purple. A view model
   wants a light floor.
+- **A view model's bone names don't say where its hands show (#78, 2026-11-02).** Kiriko's "_L" hand is on the right
+  of the view; Juno's, Brigitte's, Sombra's and Lifeweaver's "_R" hand is, and their other hand is behind the camera.
+  Mercy's "_R" weapon bone is out at her staff while her "_R" hand is at the camera. Measure with DevServer `viewbones`
+  (the hand bones as drawn in Minecraft mode, plus each hand bone's turn and knuckles in its grip) instead of
+  assuming. Minecraft mode now judges each hand by its knuckles' place in the view, at rest (a swing carries a hand
+  out of the view's edge), and Minecraft draws an item on a side with no hand of hers in view.
+- **One hero's hand-tuned grip carries to the others.** Kiriko's grips were set by eye. Every other view model's hand
+  bone gets the turn that puts it, at rest, the way her bone sits in the view, and is shifted so its knuckles sit where
+  hers do in the grip (`HELD_*_REF`, `HELD_*_KNUCKLES`, measured with `viewbones`). One measured reference, then
+  no per-hero tuning, and the item still moves with the hand.
 
 ## Effects and glows
 - **Minecraft's mipmapper treats any texture with transparency as a cutout:** it rescales alpha and adds 0.025 to the
