@@ -178,7 +178,8 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     into `ExtraSounds\Juno\Emotes`) -> `measure_emotes.py Juno ... Mercy:C440 Kiriko:FEC7 Lúcio:E548 ...` ->
     `juno_what.py` -> `gen_juno.py` -> `apply_emote_sounds.py juno <repo>`, then the scratch-root build and merge above.
     - **The TankLib scripts need the research venv:** `py -I` has no pythonnet (it skips the user site-packages, where
-      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archiveesearch\kiriko-animenv\Scripts\python.exe -I`;
+      `clr_loader` isn't anyway). Run them with `E:\Overwatch Archive
+esearch\kiriko-animenv\Scripts\python.exe -I`;
       `-I` still sees the venv's own packages. Text-only steps (measure, gen, apply) run under plain `py -I`.
     - **Shared 02Cs keep showing up under new emotes:** Orion Dance's music FEC7 / FEC8 is Kiriko's, Crazy Choreography's
       C440 / C441, Shuffle's E23F and Bunny Hop's F869 are Mercy's. Check every id against the earlier heroes'
@@ -186,9 +187,16 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
       audience (the music: "own", group 8E muting it for the others).
     - **Her voice stimuli read straight from `voice_lines.json`:** `juno_what.py` builds `VOICE_IDS` / `VOICE_W` / `STIM`
       from it instead of copying lists by hand; each emote stimulus has its own `Unknown\<078>` folder.
-    - **Voice-line unlocks were only ever built for Kiriko, Lúcio, Mercy (and Jetpack Cat's table):** Ana, Sombra,
-      Brigitte and Lifeweaver have none in the pack yet. A hero extracted under `research\<hero>\extract` needs
-      `VOICELINE_ROOTS` (`build_asset_pack.py`), its path from the build root as the hero's soundmap uses.
+    - **Every playable hero's voice-line unlocks are in the pack now (#77, 2026-11-02):** Ana's 41, Sombra's 45,
+      Brigitte's 35, Lifeweaver's 22 were already extracted under `research\<hero>\extract`; they only needed
+      `VOICELINE_HEROES` and `VOICELINE_ROOTS` (`build_asset_pack.py`), each its path from the build root.
+    - **Read the spoken text from the `.txt` beside a voice file, not its name.** DataTool's `--subtitles-with-sounds`
+      writes the subtitle (UTF-16) next to each `.ogg`. The name has every character a file name can't hold as `_`:
+      Lifeweaver's `A _perfect world_ is a perfect prison` is `A "perfect world" ...`, Brigitte's `(Swedish)_ Get lost`
+      is `(Swedish): Get lost`. `spoken_text` reads the `.txt` first.
+    - **Two unlocks can share a name with different lines** (Brigitte's Season 10 "Get lost!" 4A230 and Anniversary
+      "Get Lost" 4A231). The builder keeps both, the second's id ending in its group's name; the same file listed under
+      two groups is still kept once.
     - **The dev `key <action> tap` doesn't end an emote:** it releases the key before `ClientHero` reads the input, so the
       emote (and its loops) kept going. Hold it (`key forward down`, 0.25 s, `key forward up`), as a player does.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in

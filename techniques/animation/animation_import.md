@@ -2,7 +2,7 @@
 
 Getting a hero's clips out of Overwatch, finding the right one, and playing it right. Up: [Techniques](../README.md)
 · the data: [reading_game_data](../game-data/reading_game_data.md) · emotes: [emote_reproduction](../emotes/emote_reproduction.md)
-· cloth: [cloth](cloth.md)
+· cloth: [cloth](cloth.md) · additive layers: [additive_clips](additive_clips.md)
 
 ## Export
 - `tools/owm_survey.py` (Blender, headless, with the io_scene_owm add-on) imports a model and its clips and exports a
@@ -10,8 +10,11 @@ Getting a hero's clips out of Overwatch, finding the right one, and playing it r
   - `--keep=<clip map>` picks and renames clips (all ~330 take the glTF exporter more than 30 minutes).
   - `--emotes=<dir>` adds the hero's emotes as `emote_<slug>_<n>`.
 - **Clips are 30 or 60 fps**: export them onto one timeline.
-- **`4-*` folder clips are additive deltas**: they collapse alone; export neutral keys for unkeyed channels. `132-*`
-  are additive too (Jetpack Cat's quick melee). Name them `add_*` in the clip map and play them as layers: a hover
+- **Clips in a folder whose first number has bit 0x4 (`4-*`, `6-*`, `20-*`, `36-*`, `132-*`) are additive deltas**:
+  they collapse alone; export neutral keys for unkeyed channels (`owm_survey.additive_folder`), and add each delta in
+  the bone's own frame ([additive_clips](additive_clips.md), #75). Until #75 only `4-*` got neutral keys, so Lúcio's
+  36-38 leans and Jetpack Cat's 132-0 melee held rest values (`tools/neutralize_additive.py` mends such a glb). Name
+  them `add_*` in the clip map, and never a pose clip, and play them as layers: a hover
   hero's third-person actions (her reload, Purr, melee, Catnapper's aim) are all additive over the flight blend, and
   played as whole clips they would have replaced her pose.
 - **Additive clips can carry big offsets, not just motion around zero**: add_walk lifted the arms 85 px for as long
