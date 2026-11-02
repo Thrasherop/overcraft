@@ -124,3 +124,9 @@
 - **One connection for a whole test:** a small driver that keeps the harness socket open and reads the game log for each
   command's answer (exec'ing a test script with `c(cmd)`, `hp(tag)`) ran every step 5-7 measurement in one call each
   (2026-11-02, Sojourn; the driver lives in that session's scratchpad, `oc.py`: worth bringing into `tools/`).
+- **A `/fill` reaching below the world's floor (y -64) fails as a whole** and says so only in the chat: a pit dug "to -70" in
+  superflat was never dug (2026-11-02, Sojourn). Keep fills inside -64..319.
+- **A boat summoned at a pool's floor stays under the water** and F can't reach it; she just wades. Summon it at the surface
+  (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
+- **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
+  it lands in the world (2026-11-02).

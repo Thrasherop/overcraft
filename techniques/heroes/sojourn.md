@@ -310,3 +310,111 @@ frozen, mobs off (55 slimes killed), Sojourn picked on the select screen (her po
 - Not yet / doesn't match: Standing By's 7DD5 and Handstand's E143 (0.37 s each) are never played (not read what they are); the
   emote names lose their punctuation ("HANDSTAND PUSH UPS"); a second player hearing the "others" copies; Salty has no salt
   shaker (the data spawns none, as for every hero).
+
+## Step 10 (the release play), played 2026-11-02
+`next` (0.3.29) merged first (cb632f3: the additive convention change of #75 took her `localOffsets` overload away; her clips
+now go through the one `Skeleton.addAdditive`). Dev client (`OC_ASSET_PACK` = the Ana checkout's pack, `-Xmx2G`), Overwatch
+and Battle.net checked not running. Worlds: `soj10` (flat survival: bed and spawn point at -4 -60 -6; a NoAI zombie in an iron
+helmet with fire resistance at 0.5 -60 10.5, a NoAI villager at 4 health at 4.5 -60 10.5, a tamed NoAI wolf; a 2-deep pool
+at x 10-30 z 20-30 with a lava strip at x 32-36; a ladder at 50 -60 -1; a slab ramp at x -21..-31 z 20-24 up to a stone block
+at -32..-40, top -54; later a 9 m stone platform at x 100-124 z -33..-26, top -51) and `soj10n` (normal terrain, survival,
+a forest; the night on the plains at -169 66 5 by a village). Scripts over one harness connection (scratchpad `soj10\rp.py`,
+`rp2.py` for two clients); health with `data get`, speeds with `trace`, sounds with `heard`. Screenshots in
+`run/screenshots/` (`r_*`, `k_*`, `e*`, `ps_*`, `dis_*`, `oc_*`, `pk_*`, `emw_*`, `it{on,off}_*`, `mc*_*`, `n_*`, `nn_*`, `env_*`,
+`ramp_*`, `boat_*`, `g_*`, and `sheet_*` of them) and `run2/screenshots/` (`v_*`, the second player's), each looked at.
+
+**Every way in.** On the new world's select screen: her portrait (GUI 113, 192), "DAMAGE SHARPSHOOTER, 225 HEALTH", READY:
+18 health, 45 | 45 (`r_select_soj`, `r_join_hud`). H at the bed after Kiriko: Sojourn, 18, 45 (`r_h_soj`). `/kill`: the death
+screen, Respawn: Sojourn in hero mode, 18, 45, at the bed (`sheet_r_ways`). Save and Leave, `openworld`: the select screen
+with Sojourn chosen and "ESC KEEP HERO" (`r_rejoin_select`), READY: Sojourn. On `soj10n` from its select screen. Back to
+`soj10` later: Esc kept Sojourn and the Minecraft mode she was left in. After the client was killed (Save and Leave first)
+the select screen still offered her.
+
+**Her kit after the merge** (numbers in Minecraft health; the zombie has 4 armor with its helmet):
+- Railgun (the left button, `secondary_fire`): a body round 0.6152, a head round 1.2511 (9 / 18 less the armor), energy +5
+  / +10; held 1 s: 17 rounds, 10.46, energy capped at 100; R reloads to 45. Its sounds: `fire_first`, `fire`, `projectile`,
+  `hit` + `hit_enemy`, `energy.gain`, `fire_end`.
+- Charged Shot at 100: 9.293 (120), on through the zombie to a block 26 m on (`hit_block`); in Overclock to the head 13.94
+  (180). With no energy: the "not available" click and no shot.
+- **The additive change, looked at:** the 1P gun at energy 0 and 100, three frames each (`sheet_e_energy`): no visible
+  change, as before the merge (step 3). Overclock's stance `add_overclock` in 3P front against before it (`sheet_oc_zoom`):
+  the same stance, shoulders slightly turned; nothing jumps or floats.
+- Power Slide: 9.0, 10.3, 11.7, 13.0, 14.3 m/s, 20 ticks, then down to 0 (`ps_front`); the slide jump 20.8 m/s, apex 7.24 m,
+  18 -> 18 (`ps_jump_front`). Disruptor: the zombie 311 (24.88 health), the villager 20 -> 20 beside it, the dome
+  (`dis_1p`, `dis_3p`); its sounds and "Disrupting". Overclock: energy 100 at once, `ult.cast`, `ult.friendly`, `ult.loop`,
+  `ult.ending`, `ult.end`, "Cooling down"; her cyan glow (`sheet_dis_oc`).
+- Perks (`pk_menu`): Overcharged (150 in Overclock, then 139, 109 after: back down to 100), Dual Thrusters (two 0.75 s slides
+  1.3 s apart, charges 2 -> 1 -> 0, `pk_dual_hud`), Friction Generators (0 -> 75 over a full slide), Deceleration Field (the
+  zombie's speed 0.1725 in the field, 0.23 after).
+- Emotes from the wheel (T held, the right button, the pointer right / down / left): Weapons Check, Standing By, Confidence,
+  their sounds, the emote camera, ended by W (`sheet_emw`). A voice line from the wheel (up): "Not again" heard.
+- **Improved Transparency on** (F3+X; options.txt `improvedTransparency:true`), then the same round off (`sheet_it_on`,
+  `sheet_it_off`): rounds 1P and 3P, the Charged Shot, the field 1P and 3P, Overclock's glow, the slide's thrusters, the field
+  in the pool seen through the water. No crash, no dark boxes, the same look both ways. options.txt ends
+  `improvedTransparency:false`.
+
+**Minecraft mode (G) as Sojourn.** Held items (`sheet_mc2`, `sheet_mc_held`): the iron sword in her own gloved right hand at
+the lower right, the swing; bread in hand and eaten (food 8 -> 13); the bow drawn and fired (arrows 16 -> 15); the shield in
+the off hand drawn Minecraft's way and raised (with the sword: with cobblestone in hand the use placed a block instead,
+vanilla's order); a cobblestone placed and mined back with an iron pickaxe. Survival in `soj10n`, from an empty inventory:
+punched oak trunks (4 logs, then 2 more, about 3 s a log), 12 planks and a crafting table in the inventory grid, the table
+placed, at it 16 planks, sticks, a wooden pickaxe and a chest (`n_table_pick`, `n_table_chest`); a staircase dug 9 blocks
+down with the pickaxe (10 cobblestone, andesite); three wall blocks taken out and cobblestone put back from the hand (3 of 3,
+10 -> 7); the chest placed, 10 dirt and 2 sticks stored, its contents read back, reopened (`sheet_n_survival`). A first
+chopping script held the attack 7.8 s per log and dug her 7 blocks down beside the tree (the script, not a bug).
+
+**A night on normal terrain** (`soj10n`, time running from 13000, monsters on, five summoned with their AI round her plus the
+wild ones, 150 s of a scripted fight, real keys): in the forest the target was a mob in a cave below and she fired into the
+ground for two minutes (the script); on the plains by a village (`sheet_nn2`): Disruptors, Charged Shots at 0.7-1.0, Overclock
+at 14 s with zombies 2 m off, G 2.5 s into it (Minecraft mode, energy 100) and back, killed by a skeleton at 22 s, back at the
+spawn as Sojourn in hero mode, kills in the feed, alive at the end with 18. A run where the script's target choice was broken
+let zombies kill her 12 times at the spawn: every respawn Sojourn in hero mode (the one death with G sent by the harness on
+the death screen came back in Minecraft mode, the mode she died in).
+
+**Water, lava, slopes, ladders, a boat** (`soj10`):
+- Water: walking in 5.5 -> 2.0 m/s swimming; Shift refused in the water (cooldown 0); rounds from the water at the zombie hit
+  (4.71 in 0.6 s); slid into the pool: 20.9 m/s off the edge for 3 ticks, then the water's slowing, no hop (`env_water_*`).
+- Lava (fire resistance): walking in 5.5 -> 0.78 m/s, Shift refused, rounds from the lava hit (6.06), the Disruptor cast
+  from it; 18 -> 18 (`env_lava_*`).
+- Slopes: the slab ramp walked at 5.5 m/s to the top (Minecraft mode 4.32), slid up at 14.3 m/s, slid down off the block at
+  20.9 m/s with no damage (`ramp_hero`, `ramp_mc`). (A first ramp had a full block at its foot, my build: both modes stopped.)
+- Ladder: W climbs 8 m in about 3.5 s (`env_ladder_*`); let go, she slides down, 18 -> 18.
+- **Found playing (fixed, 3d6f3a0): a slide jump up the ramp took 4 health.** It grazed the block's top corner past the ramp
+  and dropped 6 m. Reproduced on the 9 m platform (slide, 0.4 s, jump, from x 100.5 + an offset): 2 of 7 hurt (landed on the
+  edge at 125.13 and slid off, 18 -> 12; grazed it and landed at 128.9, 18 -> 11). Her soft landing ended on the first tick
+  on the ground; it now ends after 5 ticks on the ground in a row. After, on a fresh client: 10 of 10 unhurt (one on the edge
+  then off to -60, three past it to x 129); walking off the same edge still 18 -> 12, and a slide jump that settled on the
+  platform then walked off 18 -> 12.
+- **Found playing (fixed, ae763bd): Power Slide in a boat spent its cooldown.** Seated, Shift played its start and her line,
+  ended the next tick, 6.7 s left, nothing moved. Refused while seated now: boat and minecart, cooldown 0, nothing heard;
+  rowing 6.3 m in 1 s, crouch (LCtrl) gets her out of both, the slide on land after as before. G while seated switched modes.
+
+**The general play: every other hero from H at the bed** (one fight each against the zombie and the villager, `sheet_g_*`),
+with Sojourn picked between Lucio and Jetpack Cat, Lifeweaver and Ana, and after Juno (each time 4.92 off the zombie in
+0.5 s): Kiriko (kunai -4.49 / -9.29, ofuda 4 -> 13.6, Swift Step 8.32 m, Suzu); Lucio (-6.16, Soundwave -3.28, aura, Amp It Up,
+crossfade, Sound Barrier); Jetpack Cat (Pawjectiles -6.52 and 4 -> 9.76, Lifeline on and off, Purr 4 -> 11.2, Catnapper);
+Mercy (heal beam 4 -> 11.26, blaster -12.56, Guardian Angel 9.4 m, Resurrect, Valkyrie); Lifeweaver (Blossom 4 -> 11.2,
+Thorns, platform, dash 9.58 m, Life Grip 10.94 m, Tree of Life); Ana (4 -> 10, -5.11, scoped, Sleep Dart, grenade 4 -> 11.2,
+Nano Boost); Sombra (pistol -9.29, Cyberspace, Translocator 12.6 m, EMP; Hotfix tapped does nothing, as designed); Brigitte
+(flail, barrier, whip, pack 4 -> 13.6, Rally); Juno (volley, torpedoes, Hyper Ring, Glide Boost 13.15 -> 7.70 m/s by `trace`,
+Orbital Ray 4 -> 19.98).
+
+**A second player** (`runClient2` from this worktree, "Viewer", port 25600, run dir `run2`; `/publish false 25565`, `connect
+127.0.0.1:25565`, Kiriko from its select screen; subtitles on):
+- As allies (no team): the Viewer sees her rounds' tracers, the Charged Shot's cyan dotted beam, her slide and slide jump,
+  the Disruptor's cyan dome and Overclock's glow (`sheet_v_ally`), and hears the `_3p` copies: `railgun.fire_first_3p` /
+  `fire_3p` / `fire_end_3p` / `projectile`, `charged.fire_3p` / `hit_enemy_3p` / `shot`, `slide.start_3p` / `loop_3p` /
+  `scrape.loop_3p` / `end_3p` / `jump_3p` and her lines, `disruptor.cast_3p` / `flight.loop_3p` / `field.*_3p`, `ult.cast_3p`
+  / `loop_3p` / `ending_3p` / `end_3p` and `ult.friendly`. Rounds and a Charged Shot through the Viewer standing on the line:
+  20 -> 20, the zombie behind hurt; her field at the Viewer's feet: 20 -> 20, walking in it at 5.5 m/s, no burn sound.
+- As enemies (`overcraft team join red` / `blue`, her perks Deceleration Field and Dual Thrusters): 0.5 s of rounds 20 -> 16.4
+  (`hit_enemy_3p` heard); her field on the Viewer: walking through it at 4.13 m/s (5.5 x 0.75; the control walk 5.5), 20 ->
+  8.94 in about 2 s, `disruptor.burn.start` / `burn.loop` / later `burn.end` heard, "Burning in a Disruptor field" on
+  screen, the dome orange from inside (`v_enemy_field`); a Charged Shot in Overclock 20 -> 10.4 (120) and `ult.enemy` heard;
+  enemy colours (`sheet_v_enemy_side`): the Charged Shot's beam orange-red, the field's dome orange.
+- Seen, not chased: in the enemy field the Viewer's speed dips to 3.5 m/s one tick in four (with the field's damage steps).
+
+`gradlew build` after the fixes: tests and `checkNoOverwatchAssets` pass.
+
+Not tried: Improved Transparency through the Video Settings screen (F3+X toggles the same option); the Nether; a raid; her
+emotes seen by the second player; the Disruptor against a barrier; dying mid-Overclock.
