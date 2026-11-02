@@ -1,0 +1,77 @@
+# Juno, first person (the same model 000000000159.118 with look 093A.119 on Gameplay1P 5108; set 12B2).
+# From research\juno\work\clipmap.md (build 154088), written by research\juno\scripts\clipmaps_juno.py; H unless noted.
+# The Mediblaster and torpedo pod are geosets of the model, moved by these clips. Base alias 0xA0E > sel[4] > df 0x18; df 0x583
+# cat 0x1B9 = Glide Boost (47B7 #689); the df 0x102 layer is sub-alias 0x140 (weapon layer, as Brigitte's generic layer).
+0-28_00000000E98C = idle   # 0.0333 s; held pose; stand, crouch (cat 0x66) and the glide's air (cat 0x1B9)
+0-4_00000000E9A6 = run   # 1.1667 s; df 0x18 cat 5
+0-4_00000000F262 = crouch_walk   # 1.3333 s; cat 0x65
+0-4_00000000EE91 = run_start   # 0.5 s; tr[4>3] (and crouch tr[2>1])
+0-4_00000000EE92 = run_stop   # 0.5667 s; tr[3>4] (and tr[1>2])
+0-4_00000000E9A8 = jump   # 0.2333 s; df 0x18 cat 6, df 0x583 default seq[0] (sub-alias 0x088) take-off
+0-4_00000000E9A9 = fall   # 0.4333 s; 0x088 seq[1] / sm[1]
+0-4_00000000EB92 = double_jump   # 0.2333 s; seq[1] (sub-alias 0x089): M the second jump
+0-4_00000000EB93 = double_jump_fall   # 0.4333 s; 0x089 fall
+4-4_00000000E9A7 = add_breathe   # 1.6667 s; additive (stand and crouch)
+4-4_00000000E9AA = land   # 0.9333 s; additive; tr[0 > 4, 2, 1, 3] out of the air
+4-4_00000000ED6E = add_move_start   # 0.5 s; additive; tr[4, 3 > 2, 1]: L
+4-4_00000000ED6F = add_move_stop   # 0.5 s; additive; tr[2, 1 > 4, 3]: L
+4-20_000000000C63 = add_layer   # 1.3333 s; sub-alias 0x140 layer sm[0] (df 0xBC4)
+4-4_000000005687 = add_layer_in   # 0.6667 s; tr[0, 4 > 1]: L
+4-4_000000003B47 = add_layer_2   # 0.5667 s; 0x140 second layer sm[0]
+4-20_000000003B43 = add_layer_jump   # 0.3333 s; sm[1] seq[0]: L
+4-20_000000003B44 = add_layer_fall   # 0.3333 s; L
+4-20_000000003B45 = add_layer_land   # 0.4333 s; tr[0>1]: L
+4-6_00000000F1BC = add_glide   # 1.3667 s; additive while gliding (df 0x583 cat 0x1B9)
+4-6_00000000ECA4 = add_aim   # 1.3667 s; additive otherwise (default)
+4-6_00000000ECB6 = add_aim_2   # 0.4667 s; additive (both)
+4-4_00000000ECB7 = add_aim_3   # 1 s; additive (both)
+4-0_00000000ECCE = add_sway_start   # 0.0333 s; seq[0]: L
+4-0_00000000ECCF = add_sway   # 0.6333 s; seq[1] bound 06C: L
+4-4_00000000ECD0 = add_sway_end   # 0.9 s; tr[0, 1 > 2]: L
+# Martian Overboots: hover alias 0x5CC (4441 #595, 31/30 speed) additive; no 1P 0x9FF / 0x13D (the 3P hover start / loop).
+4-4_00000000F286 = add_hover   # 1.0333 s; alias 0x5CC: M the hover
+# Glide Boost (47B7): start alias 0xE5 (#683) 4-slot additive, loop 0x606 (#691, 20/30 s), double jump in glide 0x13E (#682).
+4-4_00000000ED27 = add_glide_start   # 0.5333 s; 4-slot s0 (F)
+4-4_00000000ED28 = add_glide_start_back   # 0.5333 s; s1
+4-4_00000000ED2A = add_glide_start_left   # 0.5333 s; s2
+4-4_00000000ED29 = add_glide_start_right   # 0.5333 s; s3
+4-4_00000000ED2B = add_glide_loop   # 0.6667 s; alias 0x606
+4-4_00000000ED2C = add_glide_double_jump   # 0.6667 s; alias 0x13E
+# Mediblaster (4445): reload 0x004 (#1022) with air / landing additives; no fire clip (0x0A5 has no item, H).
+0-0_00000000E9B6 = reload   # 1.5333 s; alias 0x004
+4-4_00000000F25F = add_reload_jump   # 0.2333 s; while airborne seq[0]
+4-4_00000000F260 = add_reload_fall   # 0.4333 s; seq[1]
+4-4_00000000F261 = add_reload_land   # 0.9333 s; tr[0 > 4 ...]
+0-0_00000000E9B8 = melee   # 0.7 s; alias 0x00D (0043 #117); the same three additives
+# Pulsar Torpedoes (4695): alias 0x165 by df 0x1A0 (#1002 cat 0x6E 13/30 s, #1003 39/30 s, #1004 cat 0x82); per-pod 0x491 / 0x492.
+0-4_00000000EA1D = torpedo_lock_start   # 0.4333 s; cat 0x6E
+0-4_00000000EA1E = torpedo_lock   # 1.3 s; default (#1003 39/30 s: H match)
+0-4_00000000EA20 = torpedo_fire   # 0.7667 s; cat 0x82
+4-6_00000000EF8C = add_torpedo_jump   # 0.2333 s; additive seq[0]
+4-6_00000000EF8D = add_torpedo_fall   # 0.4333 s; seq[1]
+4-20_00000000ED52 = add_torpedo_run   # 1.6333 s; df 0x18 cat 5
+4-6_00000000ED50 = add_torpedo   # 1.3667 s; additive
+4-6_00000000ED4F = add_torpedo_2   # 0.4667 s; additive
+4-12_00000000ED51 = add_torpedo_3   # 1 s; additive
+4-6_00000000EF8E = add_torpedo_end   # 0.3 s; tr[0>1]
+4-30_00000000F0A3 = add_torpedo_pose   # 0.0333 s; one frame
+0-0_00000000EF94 = torpedo_launch   # 0.2333 s; alias 0x491 (#1064: one pod: M)
+0-0_00000000EF95 = torpedo_launch_2   # 0.2333 s; alias 0x492 (#1063: the other pod)
+0-0_00000000E9BA = ring_throw   # 0.8667 s; Hyper Ring alias 0x479 (4857 #1099)
+128-0_00000000EA1C = ult_cast   # 0.8333 s; Orbital Ray alias 0x175 (4A44 #516), priority 128; onFinished slot 0x3D EEBD
+0-4_00000000EEA9 = hello   # 1.5 s; alias 0x1EE
+4-4_00000000EEAA = add_hello   # 1.5 s; alias 0x2DE
+0-36_00000000F207 = stun   # 1 s; alias 0x070
+4-0_00000000F69B = knockdown_start   # 1 s; 0x064
+4-4_00000000F69C = knockdown   # 0.6667 s; 0x065
+4-0_00000000F69D = knockdown_end   # 1 s; 0x066
+4-4_000000000957 = knockdown_shared   # 1 s; 0x1DE (shared)
+4-4_000000000959 = knockdown_shared_2   # 0.6667 s; 0x1DF
+4-4_000000000958 = knockdown_shared_3   # 1 s; 0x1E0
+4-4_00000000EE79 = idle_fidget   # 1.6667 s; alias 0x467 seq[0] rand[0]
+4-4_00000000EE7B = idle_fidget_2   # 1.0667 s; rand[1]
+4-4_00000000EE7C = idle_fidget_3   # 0.8333 s; rand[2]
+4-4_00000000F417 = idle_fidget_4   # 2 s; rand[3]
+4-4_00000000F424 = idle_fidget_5   # 1.3333 s; rand[4]
+4-4_00000000F428 = idle_fidget_6   # 6.6667 s; rand[5]
+20-4_00000000F429 = idle_fidget_7   # 8.8333 s; rand[6]

@@ -89,8 +89,13 @@ public final class BrigitteStats {
 	public static final double RALLY_ENDING = 3;
 
 	// ---- Shield Bash (0EE3 #495) ----
-	/** A 0.3 s dash at 4x her speed (D #495 StateWait 0.3, 1C9C 4.0: about 6.6 m, M). */
-	public static final double BASH_TIME = 0.3, BASH_SPEED = 5.5 * 4;
+	/**
+	 * The dash: 25.85 m/s for 0.256 s (R: the owner's Workshop recording 2026-11-01, two bashes, 16 ticks at 62.5 a second:
+	 * 6.6 m; D #495 StateWait 0.3 and 1C9C 4.0 read as 22 m/s for 0.3 s, the same distance), gravity acting on her all the
+	 * while (R: her fall went on at 17.5 m/s/s through it); at its end her speed is cut to 15 m/s, its direction kept (R:
+	 * 14.69 / -3.01 and 14.83 / -2.24 a tick later), which her air decay or the ground's friction then takes off.
+	 */
+	public static final double BASH_TIME = 0.256, BASH_SPEED = 25.85, BASH_EXIT_SPEED = 15;
 	public static final double BASH_DAMAGE = 70;               // D 0B20; W
 	/** Its knockback (D 0B21 6 m/s). */
 	public static final double BASH_KNOCKBACK = 6;

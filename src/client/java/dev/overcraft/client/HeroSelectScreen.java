@@ -452,7 +452,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE ? 0.72f : 1;
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO ? 0.72f : 1;
 	}
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
@@ -517,6 +517,15 @@ public class HeroSelectScreen extends OwScreen {
 			// EMP, Conspirator (her passive)
 			// her data's loadouts in order: Rocket Flail (the left button), Barrier Shield (the right) and Shield Bash with it,
 			// Whip Shot, Repair Pack, Rally, Inspire (her passive)
+			// her data's loadouts in order: Mediblaster (the left button), Pulsar Torpedoes (the right), Glide Boost, Martian
+			// Overboots (jump), Hyper Ring, Orbital Ray
+			case JUNO -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "mediblaster"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "pulsar_torpedoes"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "glide_boost"),
+				new Line(HeroHud.shortKey(net.minecraft.client.Minecraft.getInstance().options.keyJump), "martian_overboots"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "hyper_ring"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "orbital_ray"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

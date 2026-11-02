@@ -47,8 +47,19 @@ For every hero, a minute of the basics first, then their own moves. Press F afte
 - **Lifeweaver:** Rejuvenating Dash every direction, on the ground and in the air; Petal Platform rising with you on it.
 - **Ana:** the basics, scoped (hold right mouse) and not.
 - **Sombra:** Translocator thrown and used; walking and jumping in Stealth.
-- **Brigitte:** Shield Bash from a walk and a run; Whip Shot.
-- **Juno:** hover (hold Jump in the air), Glide Boost, landings.
+- **Brigitte:** Shield Bash (shield up, left click) from standing, a walk and a run, and into a bot; Whip Shot at a bot
+  from 5 m and 15 m; walking with the shield up.
+- **Juno** (the one being built now: these settle numbers no source gives):
+  - **Double jump:** jump, then tap Jump again at the top of the first jump; again tapping it as early as you can after
+    leaving the ground; again while falling from a ledge. Each standing still, then each running forward.
+  - **Hover:** from something tall (4 m or more), step off and hold Jump the whole way down; then fall a while first and
+    hold Jump late; then double jump and keep Jump held after it. Also: a plain jump on flat ground holding Jump.
+  - **Glide Boost** (Shift): on flat ground with no keys held; holding W; holding A (sideways); turning with the mouse
+    during it; straight into a wall; up a slope or a stair; off a ledge (does she stay level?); a double jump in the middle
+    of it; pressing Shift again to stop it about 1 s in. Let one run its full time.
+  - With the **Lift Off** perk if you reach it (Reload+F fills ult, not perks: perks need a few minutes of play): a triple
+    jump.
+  - Hyper Ring thrown, then run through it.
 - **Sojourn:** Power Slide, and Power Slide then Jump.
 - **Sigma:** the basics; Gravitic Flux's float.
 - **D.Va:** Boosters (straight, turning, into a wall), then out of the mech as the pilot.
@@ -56,6 +67,13 @@ For every hero, a minute of the basics first, then their own moves. Press F afte
 - **Tracer:** Blink every direction, Recall.
 - **Cassidy:** Combat Roll every direction.
 - **Junkrat:** Concussion Mine jumps (one and two).
+
+## If the log stops early
+On 2026-11-01 both sessions' logs stopped while the game went on (after 4:19 with one player, 1:18 with three: about
+100,000 lines each). The script then had the Inspector's own recording on, which also keeps every variable change and
+action it runs (the wall rays: about 20 a tick for each player). It now turns that recording off (Log To Inspector lines
+still reach the file). If a log still stops, note the time it ends against what you were doing, and start a new file
+(spectator and back) every couple of minutes.
 
 ## What it can't see
 The Workshop has no value for some heroes' own state: Lúcio's song (say which you started on; Shift presses are

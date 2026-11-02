@@ -104,6 +104,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.AnaFx.clear();
 			dev.overcraft.client.effect.SombraFx.clear();
 			dev.overcraft.client.effect.BrigitteFx.clear();
+			dev.overcraft.client.effect.JunoFx.clear();
 			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
@@ -134,8 +135,12 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.LifeweaverFx.tick(client);
 				dev.overcraft.client.effect.AnaFx.tick(client);
 				dev.overcraft.client.effect.SombraFx.tick(client);
+				ClientJuno.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
+				dev.overcraft.client.effect.JunoFx.tick(client);
 			}
+			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
+			JunoSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -255,6 +260,10 @@ public class OvercraftClient implements ClientModInitializer {
 			return lw != null ? lw : ClientBrigitte.bash(entity);
 		};
 		OwMovement.descent = ClientMercy::descent;
+		// Juno's Martian Overboots (double jump, hover) and Glide Boost
+		OwMovement.airJumps = ClientJuno::airJumps;
+		OwMovement.doubleJumped = ClientJuno::doubleJumped;
+		OwMovement.junoGlide = ClientJuno::glide;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

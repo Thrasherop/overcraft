@@ -187,3 +187,9 @@ Dev client, a fresh normal-terrain survival world `gp0326`, at a player's invent
 - A second player was played earlier the same day (hacked Ana, stealth seen, Hotfix on a player, the tree hacked).
 
 - Emotes: [sombra_emotes](../emotes/sombra_emotes.md).
+
+## The Workshop recording (2026-11-01)
+The owner's third log (`E:\Overwatch Archiveesearch\movement\workshop-2026-11-01c\`): two Translocator teleports, 12.7 and
+13.5 m from her feet (one aimed 7.6 m up), each 0.22-0.23 s after the press (our 12.25 m at 72 m/s: 0.17 s of flight plus the
+throw), then stealth at 8.80 m/s throughout (5.5 x 1.6: the +60% our numbers had as M). The earlier two logs stopped writing
+before her part (the recorder's Inspector recording: [workshop_recordings](../game-data/workshop_recordings.md)).

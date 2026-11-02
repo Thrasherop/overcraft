@@ -29,6 +29,8 @@ public record EmotePlan(List<SkinnedModel.Clip> steps, SkinnedModel.@Nullable Cl
 	 * clips join, 0.000 to 0.007; where they don't, 0.013 and up.
 	 */
 	private static final float SAME = 0.01f;
+	/** Where no clip starts within SAME of her stance, the nearest under this starts the emote (Juno's Shuffle: 0.011). */
+	private static final float NEAR = 0.013f;
 	/** Shorter clips (some are a single frame) are poses, not motion: never a step or a loop. */
 	private static final float MIN_LENGTH = 0.05f;
 	private static final int MAX_STEPS = 6;
@@ -127,6 +129,21 @@ public record EmotePlan(List<SkinnedModel.Clip> steps, SkinnedModel.@Nullable Cl
 				start = e;
 				break;
 			}
+		}
+		if (start == null && bones.length > 0) {
+			// none within SAME of her idle's first frame, but one just over it: Juno's Shuffle intro (18182) starts 0.011
+			// off her hovering idle (it sways) and joins its loop 18183 at 0.0002; with no start it played the 0.4 s intro
+			// alone (found playing). Under NEAR, below every non-join measured (0.013 and up), it is the start
+			Ends nearest = null;
+			float best = NEAR;
+			for (Ends e : ends) {
+				float d = distance(e.first, stance, bones);
+				if (e.clip.duration() > MIN_LENGTH && d < best) {
+					nearest = e;
+					best = d;
+				}
+			}
+			start = nearest;
 		}
 		if (start == null) {
 			// none starts in her stance (Listen Up, Mic Drop): the first clip, once

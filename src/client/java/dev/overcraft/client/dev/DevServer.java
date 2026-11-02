@@ -145,6 +145,7 @@ public final class DevServer {
 					out.addProperty("secondaryAmmo", s.secondaryAmmo());
 					out.addProperty("ability1Cooldown", s.ability1Cooldown());
 					out.addProperty("ability2Cooldown", s.ability2Cooldown());
+					out.addProperty("ability3Cooldown", s.ability3Cooldown());
 					out.addProperty("vx", player.getDeltaMovement().x);
 					out.addProperty("vy", player.getDeltaMovement().y);
 					out.addProperty("vz", player.getDeltaMovement().z);
@@ -583,6 +584,45 @@ public final class DevServer {
 				// dev only: hero mode on or off, as G does
 				ClientHero.setHeroMode(!arg.equals("off"));
 				out.addProperty("ok", true);
+			}
+			case "playing" -> {
+				// dev only: the overcraft sounds playing now (the sound engine's live instances, read by reflection), so a loop's
+				// stop can be checked as well as its start
+				java.util.Set<String> now = new java.util.TreeSet<>();
+				try {
+					for (java.lang.reflect.Field f : mc.getSoundManager().getClass().getDeclaredFields()) {
+						if (!f.getType().getSimpleName().equals("SoundEngine")) {
+							continue;
+						}
+						f.setAccessible(true);
+						Object engine = f.get(mc.getSoundManager());
+						for (java.lang.reflect.Field g : engine.getClass().getDeclaredFields()) {
+							if (!java.util.Map.class.isAssignableFrom(g.getType())) {
+								continue;
+							}
+							g.setAccessible(true);
+							// the instance -> channel map (a stopped channel stays in it up to 1 s after its start: asked whether stopped)
+							for (var e : new java.util.ArrayList<>(((java.util.Map<?, ?>) g.get(engine)).entrySet())) {
+								if (!(e.getKey() instanceof net.minecraft.client.resources.sounds.SoundInstance sound)
+									|| !sound.getIdentifier().getNamespace().equals("overcraft") || e.getValue() == null) {
+									continue;
+								}
+								java.lang.reflect.Method stopped;
+								try {
+									stopped = e.getValue().getClass().getMethod("isStopped");
+								} catch (NoSuchMethodException none) {
+									continue;
+								}
+								if (!(Boolean) stopped.invoke(e.getValue())) {
+									now.add(sound.getIdentifier().getPath());
+								}
+							}
+						}
+					}
+				} catch (ReflectiveOperationException | RuntimeException e) {
+					out.addProperty("error", e.toString());
+				}
+				out.addProperty("playing", String.join(" ", now));
 			}
 			case "soundinfo" -> {
 				// dev only: which files a sound event resolves to (the local pack's recordings, or the jar's stand-ins)

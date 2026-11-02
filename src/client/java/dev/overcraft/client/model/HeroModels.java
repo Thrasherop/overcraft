@@ -50,7 +50,10 @@ public final class HeroModels {
 		// Brigitte's effects' meshes (BrigitteFx): the swing arcs, the shield's outline, the half dome, the band, Inspire's
 		// ring, the shard, the whip head's ring, Rally's ground ring
 		"brigitte_swing_arc", "brigitte_swing_arc_back", "brigitte_shield_plate", "brigitte_dome", "brigitte_band", "brigitte_ring",
-		"brigitte_shard", "brigitte_whip_ring", "brigitte_rally_ring");
+		"brigitte_shard", "brigitte_whip_ring", "brigitte_rally_ring",
+		// Juno's effects' meshes (JunoFx): the Hyper Ring (15AD6), the torpedo's nose shell (160EA), the disc flash
+		// (5E5E); her rings are cat_torus (15A26)
+		"juno_ring", "juno_half_shell", "juno_disc");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

@@ -139,6 +139,77 @@ public final class OwMovement {
 
 	private static final Map<LivingEntity, Ride> RIDES = new WeakHashMap<>();
 
+	/** Set by the client: Juno's Martian Overboots, her jumps in the air (0 for anyone else; 2 with Lift Off). */
+	public static java.util.function.ToIntFunction<LivingEntity> airJumps = entity -> 0;
+	/** Set by the client: Juno's Glide Boost, ticks into it (-1 when she isn't gliding). */
+	public static java.util.function.ToIntFunction<LivingEntity> junoGlide = entity -> -1;
+	/** Set by the client: Juno's double jump just went off (for her animation and the server). */
+	public static java.util.function.Consumer<LivingEntity> doubleJumped = entity -> {
+	};
+
+	/** Juno's boots: ticks in the air, jumps used, the jump key last tick; her glide: going, rising from a double jump. */
+	private static final class Boots {
+		int airTicks;
+		int used;
+		boolean held;
+		boolean gliding;
+		boolean rising;
+		double glideY = Double.NaN;
+	}
+
+	/** Glide Boost's mover (D 47B7 #528): the default with air acceleration 12 and air speed max 9. */
+	private static final Mover GLIDE = new Mover(GROUND_ACCELERATE, FRICTION, STOP_SPEED, dev.overcraft.juno.JunoStats.GLIDE_AIR_ACCELERATE,
+		AIR_DECAY, dev.overcraft.juno.JunoStats.GLIDE_MAX_AIR);
+
+	/**
+	 * Juno's double jump (D 4441): the jump pressed in the air from 0.1 s after leaving the ground, while she has one left (one,
+	 * two with Lift Off; back on landing): her vertical speed set to 10.8 m/s, her horizontal speed kept. Mid-glide
+	 * it lifts her, and the glide holds the height it reaches.
+	 */
+	private static Vec3 boots(LivingEntity entity, Boots b, Vec3 v, int jumps, int gliding) {
+		if (entity.onGround() && gliding < 0) {
+			b.airTicks = 0;
+			b.used = 0;
+		} else {
+			b.airTicks++;
+		}
+		boolean held = jumpKeyHeld.test(entity);
+		boolean pressed = held && !b.held;
+		b.held = held;
+		if (pressed && !entity.onGround() && b.airTicks >= Ow.ticks(dev.overcraft.juno.JunoStats.DOUBLE_JUMP_FROM) && b.used < jumps) {
+			b.used++;
+			b.rising = gliding >= 0;
+			doubleJumped.accept(entity);
+			return new Vec3(v.x, Ow.speed(dev.overcraft.juno.JunoStats.DOUBLE_JUMP_SPEED), v.z);
+		}
+		return v;
+	}
+
+	/**
+	 * Glide Boost's slowing (m/s, over dt): above her glide speed (7.7 m/s, with her speed buffs) her speed falls by 1.86 x
+	 * max(speed, 12.45) per second, never below it, keys held or not; below it she keeps what she has (the recording:
+	 * tools/workshop/analysis/juno.py; the burst with no keys held stayed at 14 m/s, found playing).
+	 */
+	private static Vec3 glideSlowing(Vec3 v, double floor, double dt) {
+		double speed = v.length();
+		if (speed <= floor || speed < 1.0E-6) {
+			return v;
+		}
+		double slowed = Math.max(floor, speed - dev.overcraft.juno.JunoStats.GLIDE_SLOWING
+			* Math.max(speed, dev.overcraft.juno.JunoStats.GLIDE_SLOWING_FLOOR) * dt);
+		return v.scale(slowed / speed);
+	}
+
+	/** No ground within the hover's 2.5 m below her (D 4441 #376: a ray down from 0.25 m up, M on its sense). */
+	private static boolean clear(LivingEntity entity) {
+		Vec3 from = entity.position().add(0, 0.25, 0);
+		return entity.level().clip(new net.minecraft.world.level.ClipContext(from,
+			from.add(0, -0.25 - dev.overcraft.juno.JunoStats.HOVER_CLEARANCE, 0), net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType() == net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
+	private static final Map<LivingEntity, Boots> BOOTS = new WeakHashMap<>();
+
 	private static final class Ride {
 		boolean riding;
 		/** The wall's outward normal (axis-aligned: Minecraft's walls are). */
@@ -306,8 +377,16 @@ public final class OwMovement {
 			return;
 		}
 		Vec3 v = entity.getDeltaMovement();
+		// Juno's Martian Overboots and Glide Boost (dev.overcraft.juno: her double jump, hover and glide)
+		int jumps = airJumps.applyAsInt(entity);
+		int gliding = junoGlide.applyAsInt(entity);
+		Boots boots = jumps > 0 || gliding >= 0 ? BOOTS.computeIfAbsent(entity, e -> new Boots()) : null;
+		if (boots != null) {
+			v = boots(entity, boots, v, jumps, gliding);
+		}
 		Vec3 flat = new Vec3(input.x, 0, input.z);
-		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity);
+		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity)
+			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1);
 		Vec3 wish = Vec3.ZERO;
 		if (speed > 0 && flat.lengthSqr() > 1.0E-7) {
 			Vec3 dir = flat.normalize();
@@ -315,19 +394,40 @@ public final class OwMovement {
 			double cos = Math.cos(Math.toRadians(entity.getYRot()));
 			wish = new Vec3(dir.x * cos - dir.z * sin, 0, dir.z * cos + dir.x * sin).scale(speed);
 		}
+		if (boots != null && gliding >= 0 && !boots.gliding) {
+			// Glide Boost's start: 14 m/s added along her move input (forward without), her vertical speed cancelled, the
+			// height she holds from here
+			boots.gliding = true;
+			boots.rising = false;
+			boots.glideY = entity.getY();
+			double yaw = Math.toRadians(entity.getYRot());
+			Vec3 along = wish.lengthSqr() > 1.0E-9 ? wish.normalize() : new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+			v = new Vec3(v.x, 0, v.z).add(along.scale(Ow.speed(dev.overcraft.juno.JunoStats.GLIDE_BURST)));
+		} else if (boots != null && gliding < 0) {
+			boots.gliding = false;
+		}
 		// the mover runs in m/s at 60 Hz; the tick moves by the steps' average and carries the last step's speed
 		Vec3 wishMs = wish.scale(20);
 		Vec3 stepped = new Vec3(v.x, 0, v.z).scale(20);
 		Vec3 travelled = Vec3.ZERO;
-		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off)
-		boolean grounded = entity.onGround() && v.y <= 0;
-		Mover mover = OwMovement.mover.apply(entity);
+		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off); gliding,
+		// she's always in the air (no friction, her glide's mover)
+		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0;
+		Mover mover = gliding >= 0 ? GLIDE : OwMovement.mover.apply(entity);
 		// Lúcio's floor follows his run speed (5.5, 6.875 on Speed Boost, more amped, less slowed); everyone else's is
 		// scaled under a slow
 		mover = Mover.LUCIO.equals(mover) ? mover.stopAt(RUN_SPEED * speedFactor(entity)) : mover.slowed(speedFactor(entity));
 		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
 		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
 		for (int i = 0; i < SUBSTEPS; i++) {
+			if (gliding >= 0) {
+				// Glide Boost: the burst slows to her glide speed (the recording's curve), and her keys steer it (air
+				// acceleration 12); with none held she keeps her speed
+				stepped = airStep(glideSlowing(stepped, RUN_SPEED * speedFactor(entity) * (1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED),
+					0.05 / SUBSTEPS), wishMs, Double.MAX_VALUE, mover, 0.05 / SUBSTEPS);
+				travelled = travelled.add(stepped);
+				continue;
+			}
 			stepped = grounded ? groundStep(stepped, wishMs, mover, 0.05 / SUBSTEPS)
 				: airStep(stepped, wishMs, maxAirSpeed, mover, 0.05 / SUBSTEPS);
 			travelled = travelled.add(stepped);
@@ -349,6 +449,21 @@ public final class OwMovement {
 		double dy = vy;
 		if (climb(entity, input)) {
 			vy = dy = Ow.speed(KirikoStats.CLIMB_SPEED);
+		} else if (boots != null && gliding >= 0) {
+			entity.resetFallDistance();
+			if (boots.rising) {
+				// a double jump mid-glide: up under gravity, then level again at the height it reached
+				double[] step = verticalStep(vy, false, 1);
+				dy = step[0];
+				vy = step[1];
+				if (vy <= 0) {
+					boots.rising = false;
+					vy = dy = 0;
+				}
+			} else {
+				// level, gravity off; over a step (something in her way) it rises (D 47B7 #812-#816: ours 3 m/s)
+				vy = dy = entity.horizontalCollision && wish != Vec3.ZERO ? Ow.speed(dev.overcraft.juno.JunoStats.GLIDE_CLIMB) : 0;
+			}
 		} else {
 			// on the ground too: the small push down is what keeps Minecraft's onGround true
 			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity));
@@ -358,6 +473,22 @@ public final class OwMovement {
 				// Angelic Descent: her fall held at 2 m/s (W; her data's property 978C5453 = 2.0)
 				vy = -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED);
 				dy = Math.max(dy, vy);
+			}
+			if (boots != null && jumpKeyHeld.test(entity) && vy < -Ow.speed(dev.overcraft.juno.JunoStats.HOVER_FALL) && clear(entity)) {
+				// Juno's hover: the jump held, her fall eased to 3 m/s (the same mover property as Mercy's descent: D 1A5E;
+				// the recording's easing, about 16 a second)
+				double cap = -Ow.speed(dev.overcraft.juno.JunoStats.HOVER_FALL);
+				if (v.y < cap) {
+					// faster than it: eased onto it, gravity overridden (the recording's fall settles on exactly -3.00; eased
+					// with gravity still pulling it held at about -5.5, found playing)
+					vy = cap + (v.y - cap) * Math.exp(-dev.overcraft.juno.JunoStats.HOVER_EASE * 0.05);
+					dy = (v.y + vy) / 2;
+				} else {
+					// reaching it: gravity takes her no faster
+					vy = cap;
+					dy = Math.max(dy, cap);
+				}
+				entity.resetFallDistance();
 			}
 		}
 
@@ -621,13 +752,11 @@ public final class OwMovement {
 	}
 
 	/**
-	 * Jetpack Cat's flight (her jetpack, a held mover override in her data's graph 59DC: air acceleration 9.5, speed
-	 * above 12 m/s decays, drag 8 a second with no input; the "fly" flag: no gravity). W follows her aim (look up to
-	 * climb), S backs off along it (4.95 m/s), A / D strafe, Space rises and Crouch sinks (her data: -1 / 0 / +1; the
-	 * vertical speed isn't a named value: ours, her run speed). Frenetic Flight (graph 59E0): its speed bonus ramps from
-	 * +25% to +65% (+5% every 0.04 s), its first 0.3 s on her burst mover (air acceleration 2, drag 2), then the sustain
-	 * (6 m/s, air acceleration 6, drag 1.25), pushed along the input at 25 m/s² (her data) up to 17.8 m/s (the wiki's
-	 * measured top speed: ours to combine them). True when it moved her.
+	 * Jetpack Cat's flight (her jetpack, a held mover override in her data's graph 59DC; the "fly" flag: no gravity), as
+	 * the owner's Workshop recording measured it (#60, JetpackCatStats): 5.5 m/s every way (W follows her aim, S backs off
+	 * along it, A / D strafe, Space rises and Crouch sinks), speeding up at 7.75 x that a second and slowing in a straight
+	 * line at 1.745 x; with input after a boost her speed is cut to 12 m/s, then slows to 5.5. Frenetic Flight: 20 m/s² for
+	 * 0.2 s, then 10.4, easing into 17.8 m/s, along the input (else her motion, else her aim). True when it moved her.
 	 */
 	private static boolean fly(LivingEntity entity, Vec3 input) {
 		if (!flight.test(entity)) {
@@ -656,6 +785,10 @@ public final class OwMovement {
 		double drag;
 		double max;
 		boolean free = valk && undamped.test(entity);
+		sinceBoost = boost >= 0 ? 0 : sinceBoost + 1;
+		if (!valk) {
+			return catFly(entity, wants, wishDir, look, boost >= 0, t, factor);
+		}
 		if (valk) {
 			// Valkyrie (her graph 10DA's mover: forward, back and strafe 5.5, x1.636 = 9 m/s every way, air acceleration
 			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay); in the 0.5 s after a launch her speed is
@@ -665,18 +798,8 @@ public final class OwMovement {
 			accel = dev.overcraft.mercy.MercyStats.VALKYRIE_AIR_ACCEL;
 			drag = free ? 0 : dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;
 			max = free ? Double.MAX_VALUE : wishSpeed;
-		} else if (boost >= 0) {
-			double bonus = Math.min(0.65, 0.25 + 0.05 * Math.floor(t / 0.04));
-			wishSpeed = (fwd < 0 ? 5.5 : 6.0) * factor * (1 + bonus);
-			boolean burst = t < 0.3;
-			accel = burst ? 2 : 6;
-			drag = burst ? 2 : 1.25;
-			max = dev.overcraft.jetpackcat.JetpackCatStats.BOOST_SPEED * factor;
 		} else {
-			wishSpeed = (fwd < 0 ? 4.95 : 5.5) * factor;
-			accel = dev.overcraft.jetpackcat.JetpackCatStats.FLY_ACCELERATE;
-			drag = dev.overcraft.jetpackcat.JetpackCatStats.FLY_DRAG;
-			max = dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX * factor;
+			return false;
 		}
 		Vec3 v = entity.getDeltaMovement().scale(20);
 		Vec3 travelled = Vec3.ZERO;
@@ -690,16 +813,8 @@ public final class OwMovement {
 			} else {
 				v = v.scale(Math.max(0, 1 - drag * dt));
 			}
-			if (boost >= 0) {
-				// the boost's own push, along the input (else her motion, else her aim)
-				Vec3 push = wants ? wishDir : v.lengthSqr() > 1.0E-4 ? v.normalize() : look;
-				v = v.add(push.scale(BOOST_PUSH * dt));
-			}
 			double speed = v.length();
-			if (speed > max && boost >= 0) {
-				// boosting, its push stops at the top speed (a soft cap let it run on to 29.5 m/s: measured playing)
-				v = v.scale(max / speed);
-			} else if (speed > max) {
+			if (speed > max) {
 				v = v.scale((max + (speed - max) * Math.max(0, 1 - AIR_DECAY * dt)) / speed);
 			}
 			travelled = travelled.add(v);
@@ -736,8 +851,55 @@ public final class OwMovement {
 		return true;
 	}
 
-	/** Frenetic Flight's push along the input, m/s² (her data's graph 59E0: 25). */
-	private static final double BOOST_PUSH = 25;
+	/** Ticks since Frenetic Flight was last on (Jetpack Cat's own client). */
+	private static int sinceBoost = 1000;
+
+	/** Jetpack Cat's flight and Frenetic Flight (see {@link #fly}); the boost {@code t} seconds in. */
+	private static boolean catFly(LivingEntity entity, boolean wants, Vec3 wishDir, Vec3 look, boolean boost, double t, double factor) {
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		double wish = dev.overcraft.jetpackcat.JetpackCatStats.FLY_SPEED * factor;
+		double slow = dev.overcraft.jetpackcat.JetpackCatStats.FLY_SLOW * wish;
+		double max = dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX * factor;
+		if (!boost && wants && sinceBoost >= Ow.ticks(dev.overcraft.jetpackcat.JetpackCatStats.FLY_MAX_AFTER_BOOST) && v.length() > max) {
+			v = v.normalize().scale(max);
+		}
+		Vec3 travelled = Vec3.ZERO;
+		double dt = 0.05 / SUBSTEPS;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			double speed = v.length();
+			if (boost) {
+				double top = dev.overcraft.jetpackcat.JetpackCatStats.BOOST_SPEED * factor;
+				double rate = t + i * dt < dev.overcraft.jetpackcat.JetpackCatStats.BOOST_KICK_TIME
+					? dev.overcraft.jetpackcat.JetpackCatStats.BOOST_KICK : dev.overcraft.jetpackcat.JetpackCatStats.BOOST_RAMP;
+				double next = speed + Math.min(rate, dev.overcraft.jetpackcat.JetpackCatStats.BOOST_EASE * (top - speed)) * dt;
+				Vec3 push = wants ? wishDir : speed > 1.0E-2 ? v.scale(1 / speed) : look;
+				Vec3 along = speed > 1.0E-2 ? v.scale(1 / speed) : push;
+				along = along.add(push.subtract(along).scale(Math.min(1, dev.overcraft.jetpackcat.JetpackCatStats.BOOST_TURN * dt)));
+				v = along.lengthSqr() > 1.0E-6 ? along.normalize().scale(Math.max(0, next)) : Vec3.ZERO;
+			} else if (wants) {
+				// above the wish speed it slows in a straight line; below, it speeds up toward the wish, no faster than it was
+				if (speed > wish) {
+					v = v.scale(Math.max(wish, speed - slow * dt) / speed);
+				}
+				double before = v.length();
+				v = accelerate(v, wishDir.scale(wish), dev.overcraft.jetpackcat.JetpackCatStats.FLY_ACCELERATE, dt);
+				double cap = Math.max(wish, before);
+				if (v.length() > cap) {
+					v = v.normalize().scale(cap);
+				}
+			} else {
+				v = speed <= slow * dt ? Vec3.ZERO : v.scale((speed - slow * dt) / speed);
+			}
+			travelled = travelled.add(v);
+		}
+		Vec3 step = travelled.scale(1.0 / SUBSTEPS / 20);
+		entity.setDeltaMovement(step);
+		entity.move(MoverType.SELF, step);
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+		return true;
+	}
 
 	/**
 	 * Leaving the wall: this tick's move at the velocity just set, falling through the tick as the air steps after it

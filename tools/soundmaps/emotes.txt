@@ -5409,3 +5409,742 @@ $brigitte.emote.v6a1 = Brigitte: (laughs)
 $brigitte.emote.v15e4 = Brigitte: (beat)
 $brigitte.emote.v15e5 = Brigitte: (flex)
 $brigitte.emote.v15e6 = Brigitte: (cheer)
+
+# ===== Juno: 48 emote sounds (rules), 21 voice stimuli (plain events). Offset +6.5 dB (the loudest layer: C440).
+# Her own 35 02Cs (banks 1E828, 1E7FE, 1E787 and the shared emote bank 1E79B's Sledding F232 / F247;
+# ExtraSounds/Juno/Emotes) are mostly one or two long files held over a clip at 15 m on the emote mixer 749934277
+# (state 00FC +2 dB), Cheer Routine's AD52 at 60 m (H). Loops: Winding Down's / Chun-Li Wins' low bed BA88 / C8A4 (one
+# file), Galaxy Gazing's BFFD, Cheer Routine's D8C4 and Sledding's F232 (H). Listen Up's, Mic Drop's and Salty's are
+# the shared achievement-emote 02Cs (bank 1E79B), read from Lucio's extraction; Orion Dance's music FEC7 / FEC8 from
+# Kiriko's; Crazy Choreography's music C440 / C441, Shuffle's E23F and Bunny Hop's F869 from Mercy's: the same 02Cs
+# (H), under her event names. Winding Down's BAA1 is on its outro clip F38B, which our emote does not play; Sledding's
+# F232 is on the 0.033 s clip 1AB5A (H). Voice: 26 VoiceStimulus components of 21 stimuli (H), every line of each with
+# its weight from research/juno/sounds/voice_lines.json (all 1.0, 0 dB, 35 m); her voice extraction is in
+# research/juno/extract, reached through ../../research/juno/extract/ as juno.txt does. Clip components read from her
+# emote json with emote_fx.py.
+# AD52 a 1.2 s whoosh-and-thump take (one of ten, 2-channel, about half its energy under 300 Hz) as she shakes the
+# pom-poms up, 0.57 s into Cheer Routine's loop; 60 m range. Clip components (clip id @start s [+window s]):
+# cheer_routine 14B0A@0.567 hp 00A4.
+# Play event (02C AD52, bank 1E787): a: random of 10 (no repeat within 7), 1.14-1.19 s, 2ch.
+# Audience field 2 (3D), range 60 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.0; the rule adds the hero's offset. Length 1.19 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sad52 = juno.emote.sad52.a:-5.5
+# B90B one 2.9 s 2-channel file, from 0.1 s (bright: 35% over 6 kHz), held over Heroic's pose. Clip components (clip
+# id @start s [+window s]): heroic F4F0@0.000+3.167 hp 00A4.
+# Play event (02C B90B, bank 1E828): a: one file, 2.88 s, 2ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 2.98 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sb90b = juno.emote.sb90b.a@0.1:-9
+# BA85 two layers over Giddy (3.3-3.4 s): a stereo bed spread across the bands and a quieter mid layer from 0.15 s.
+# Clip components (clip id @start s [+window s]): giddy F385@0.000+3.367 hp 00A4.
+# Play event (02C BA85, bank 1E828): a: one file, 3.33 s, 2ch, @0.150 s; b: one file, 3.38 s, 1ch, LPF/HPF 0/30 (not
+# reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -12.5, b -10.5; the rule adds the hero's offset. Length
+# 3.48 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sba85 = juno.emote.sba85.a@0.15:-6 + juno.emote.sba85.b:-4
+# BA86 two low layers over Laugh Attack (4.2-4.7 s, 97-98% under 300 Hz): a low rumble under her laugh. Clip
+# components (clip id @start s [+window s]): laugh_attack F386@0.000+4.600 hp 00A4.
+# Play event (02C BA86, bank 1E828): a: one file, 4.71 s, 2ch, @0.150 s; b: one file, 4.15 s, 1ch, LPF/HPF 0/30 (not
+# reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -10.5; the rule adds the hero's offset. Length
+# 4.86 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sba86 = juno.emote.sba86.a@0.15:-9 + juno.emote.sba86.b:-4
+# BA87 two layers over Laser Training (4.3 s stereo, centroid 3.1 kHz, and a 3.8 s low layer from 0.4 s): read as the
+# training laser's hum and zaps. Clip components (clip id @start s [+window s]): laser_training F387@0.000+4.233 hp
+# 00A4.
+# Play event (02C BA87, bank 1E828): a: one file, 4.34 s, 2ch; b: one file, 3.82 s, 1ch, @0.400 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -15.5; the rule adds the hero's offset. Length
+# 4.34 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sba87 = juno.emote.sba87.a:-9 + juno.emote.sba87.b@0.4:-9
+# BA88 a 10.3 s low bed, looping (Wwise loop 0), fading in over 0.5 s and out over 0.3 s at its stop, held over
+# Winding Down's 6.3 s loop; the same file as Chun-Li Wins' C8A4. Clip components (clip id @start s [+window s]):
+# winding_down F38A@0.000+6.333 hp 00A4.
+# Play event (02C BA88, bank 1E828): a: one file, 10.32 s, 1ch, LOOPS (Wwise loop count 0 = endless), LPF/HPF 0/30
+# (not reproduced).
+# Play 896324368 fades in over 500 ms. Its Stop event fades 0.30 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 10.32 s,
+# loop 10.319 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sba88 = juno.emote.sba88.a:-4
+# BA89 two layers from 0.2 s over Disapproving (a stereo 3.9 s file, 41% over 6 kHz, and a low 4.0 s one). Clip
+# components (clip id @start s [+window s]): disapproving F388@0.000+4.433 hp 00A4.
+# Play event (02C BA89, bank 1E828): a: one file, 3.92 s, 2ch, @0.200 s; b: one file, 3.97 s, 1ch, @0.200 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5, b -15.5; the rule adds the hero's offset. Length
+# 4.17 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sba89 = juno.emote.sba89.a@0.2:-9 + juno.emote.sba89.b@0.2:-9
+# BA8A a short tap or click (one of five 0.22-0.34 s takes, mostly 300 Hz-6 kHz), at 0, 1.77 s of Winding Down's intro
+# and 0.23 s into its loop. Clip components (clip id @start s [+window s]): winding_down F389@0.000 hp 00A4;
+# winding_down F389@1.767+0.233 hp 00A4; winding_down F38A@0.233+1.233 hp 00A4.
+# Play event (02C BA8A, bank 1E828): a: random of 5 (no repeat within 3), 0.22-0.34 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5; the rule adds the hero's offset. Length 0.34 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sba8a = juno.emote.sba8a.a:-7
+# BA8B three layers over Winding Down's 2.8 s intro (a 2.4 s low stereo hit, a 4.3 s low bed from 0.35 s, a 3.8 s
+# low-mid one): her settling down. Clip components (clip id @start s [+window s]): winding_down F389@0.000+2.800 hp
+# 00A4.
+# Play event (02C BA8B, bank 1E828): a: one file, 4.34 s, 2ch, @0.350 s, LPF/HPF 0/30 (not reproduced); b: one file,
+# 2.37 s, 2ch; c: one file, 3.81 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -15.5, c -15.5; the rule adds the hero's offset.
+# Length 4.69 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sba8b = juno.emote.sba8b.a@0.35:-4 + juno.emote.sba8b.b:-9 + juno.emote.sba8b.c:-9
+# BAA1 a 0.84 s take over Winding Down's outro clip F38B (ours does not play the outro: the event stays unheard). Clip
+# components (clip id @start s [+window s]): winding_down F38B@0.000+0.467 hp 00A4.
+# Play event (02C BAA1, bank 1E828): a: one file, 0.84 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 0.84 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbaa1 = juno.emote.sbaa1.a:-4
+# BAA9 a soft 0.4-0.5 s mid take (one of six, -280 cents) 0.03 s into Winding Down's loop. Clip components (clip id
+# @start s [+window s]): winding_down F38A@0.033+0.567 hp 00A4.
+# Play event (02C BAA9, bank 1E828): a: random of 6 (no repeat within 3), 0.40-0.50 s, 1ch, -280 cents, LPF/HPF 0/30
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.59 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbaa9 = juno.emote.sbaa9.a*0.851:-12
+# BC6D a 4.9 s low swell (99% under 300 Hz) from 0.35 s over Release!. Clip components (clip id @start s [+window s]):
+# release F69E@0.000+5.467 hp 00A4.
+# Play event (02C BC6D, bank 1E7FE): a: one file, 4.91 s, 2ch, @0.350 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 5.25 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbc6d = juno.emote.sbc6d.a@0.35:+1
+# BC6F three quiet mid takes (0.5-0.7 s) at 0, 2.35 and 3.37 s of Release!. Clip components (clip id @start s [+window
+# s]): release F69E@0.000+5.467 hp 00A4.
+# Play event (02C BC6F, bank 1E7FE): a: one file, 0.69 s, 1ch, +100 cents; b: one file, 0.49 s, 1ch, @2.350 s; c: one
+# file, 0.61 s, 1ch, @3.370 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -2.5, b +1.5, c +1.5; the rule adds the hero's offset.
+# Length 3.98 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sbc6f = juno.emote.sbc6f.a*1.059:+4 + juno.emote.sbc6f.b@2.35:+8 + juno.emote.sbc6f.c@3.37:+8
+# BCB3 a 0.58 s hit at 4.5 s of Release! (the file of Spinning Bird Kick's C8A0 at 0 s). Clip components (clip id
+# @start s [+window s]): release F69E@0.000+5.467 hp 00A4.
+# Play event (02C BCB3, bank 1E828): a: one file, 0.58 s, 1ch, @4.500 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 5.08 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbcb3 = juno.emote.sbcb3.a@4.5:-12
+# BFFB one 2.4 s stereo file as Galaxy Gazing starts (spread across the bands): read as her settling to sit and look
+# up. Clip components (clip id @start s [+window s]): galaxy_gazing 111C5@0.000+2.167 hp 00A4.
+# Play event (02C BFFB, bank 1E828): a: one file, 2.38 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 2.38 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbffb = juno.emote.sbffb.a:-4
+# BFFC a 3.6 s low stereo swell, -300 cents, from 0.77 s of Galaxy Gazing's intro, as the mobile (17A7C) appears at
+# 0.83 s. Clip components (clip id @start s [+window s]): galaxy_gazing 111C5@0.767+1.400 hp 00A4.
+# Play event (02C BFFC, bank 1E828): a: one file, 3.57 s, 2ch, -300 cents, @0.030 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5; the rule adds the hero's offset. Length 4.27 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sbffc = juno.emote.sbffc.a*0.841@0.03:-1
+# BFFD Galaxy Gazing's loop bed: an 11.1 s mid tonal file looping (-300 cents, 99% at 300 Hz-2 kHz, partials near
+# 590-830 Hz), started at a random point and faded in over 1 s, with a continuous random of six 2.4 s tonal low takes
+# (-300 / -600 cents): read as a soft starry hum while she gazes. Clip components (clip id @start s [+window s]):
+# galaxy_gazing 111C6@0.000+4.833 hp 00A4.
+# Play event (02C BFFD, bank 1E828): a: random of 6 (no repeat within 4), 2.36-2.38 s, 1ch, -300 cents, LOOPS: a
+# continuous container retriggering a new file every 6.00 s (trigger rate; the files overlap), some files differ by
+# -8.5/-300/+0 -0.5/+0/+0 +0.5/+0/+0 +3.5/+0/+0 +4.5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 35/0 (not reproduced); b: one file, 11.13 s, 2ch, -300 cents, LOOPS (Wwise loop count 0 =
+# endless).
+# Play 602239478 fades in over 1000 ms; Seek 602239478 to a random fraction -1.0-1.0. Its Stop event fades 0.15 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -19.5; the rule adds the hero's offset. Length
+# 13.23 s, loop 13.232 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sbffd = juno.emote.sbffd.a*0.841:-4 + juno.emote.sbffd.b*0.841:-13
+# C045 a high glittering twinkle (one of five 0.84 s takes, 82-98% over 6 kHz, partials near 9 and 14 kHz) on the
+# mobile's own loop clip 111C9 at 0.77 s. Clip components (clip id @start s [+window s]): galaxy_gazing 111C9@0.767 hp
+# 00A4.
+# Play event (02C C045, bank 1E828): a: random of 5 (no repeat within 2), 0.84 s, 1ch, LPF/HPF 0/60 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -25.5; the rule adds the hero's offset. Length 0.84 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sc045 = juno.emote.sc045.a:-19
+# C37F Game Start's eight layers over 0-3.5 s: low hits, 2 s bright layers (97-99% over 6 kHz) from 0.65 s and 1 s as
+# the hologram wall (11DA3) lights up at 0.7 s, a 0.8 s hit at 2.7 s. Clip components (clip id @start s [+window s]):
+# game_start 1202A@0.000+3.600 hp 00A4.
+# Play event (02C C37F, bank 1E828): a: one file, 1.19 s, 1ch, @0.950 s, LPF/HPF 0/35 (not reproduced); b: one file,
+# 0.73 s, 1ch; c: one file, 2.17 s, 2ch, @0.650 s, LPF/HPF 25/0 (not reproduced); d: one file, 0.97 s, 2ch, @0.500 s,
+# LPF/HPF 25/0 (not reproduced); e: one file, 2.02 s, 1ch, @1.000 s; f: one file, 0.82 s, 1ch, @2.700 s; g: one file,
+# 0.48 s, 2ch, @2.300 s; h: one file, 0.89 s, 1ch, @1.250 s, LPF/HPF 0/30 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5, b -3.5, c -3.5, d -2.5, e -2.5, f -7.5, g -5.5, h
+# -3.5; the rule adds the hero's offset. Length 3.52 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sc37f = juno.emote.sc37f.a@0.95:+6 + juno.emote.sc37f.b:+3 + juno.emote.sc37f.c@0.65:+3 + juno.emote.sc37f.d@0.5:+4 + juno.emote.sc37f.e@1:+4 + juno.emote.sc37f.f@2.7:-1 + juno.emote.sc37f.g@2.3:+1 + juno.emote.sc37f.h@1.25:+3
+# C380 Crazy Choreography's loop: a 7.5 s low-mid bed from 0.01 s and twelve short low hits (0.13-0.47 s, the kit
+# shared with C880 / FED4 / FED5) at 0.48 s and 2.13-6.9 s: read as her steps on the beat (the music is C440). Clip
+# components (clip id @start s [+window s]): crazy_choreography 11FD4@0.000+7.300 hp 00A4.
+# Play event (02C C380, bank 1E828): a: one file, 0.21 s, 1ch, @3.050 s; b: one file, 0.21 s, 1ch, @6.900 s; c: one
+# file, 0.24 s, 1ch, @3.400 s; d: one file, 0.27 s, 1ch, @2.330 s; e: one file, 0.13 s, 1ch, @6.200 s; f: one file,
+# 0.17 s, 1ch, @2.130 s; g: one file, 0.27 s, 1ch, @4.350 s; h: one file, 0.17 s, 1ch, @2.730 s; i: one file, 0.13 s,
+# 1ch, @4.890 s; j: one file, 0.14 s, 1ch, @6.660 s; k: one file, 0.17 s, 1ch, @3.980 s; l: one file, 0.47 s, 1ch,
+# @0.480 s; m: one file, 7.47 s, 1ch, @0.010 s.
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5, b -17.5, c -17.5, d -12.5, e -7.5, f -12.5, g -17.5,
+# h -17.5, i -17.5, j -14.5, k -15.5, l -12.5, m -15.5; the rule adds the hero's offset. Length 7.48 s. Containers /
+# delays / gains H (read); what it is L.
+@juno.emote.sc380 = juno.emote.sc380.a@3.05:-14 + juno.emote.sc380.b@6.9:-11 + juno.emote.sc380.c@3.4:-11 + juno.emote.sc380.d@2.33:-6 + juno.emote.sc380.e@6.2:-1 + juno.emote.sc380.f@2.13:-6 + juno.emote.sc380.g@4.35:-11 + juno.emote.sc380.h@2.73:-11 + juno.emote.sc380.i@4.89:-11 + juno.emote.sc380.j@6.66:-8 + juno.emote.sc380.k@3.98:-9 + juno.emote.sc380.l@0.48:-6 + juno.emote.sc380.m@0.01:-9
+# C381 one 0.41 s mid take, 0.1 s into Crazy Choreography's lead-in clip. Clip components (clip id @start s [+window
+# s]): crazy_choreography 11FD5@0.000+0.533 hp 00A4.
+# Play event (02C C381, bank 1E828): a: one file, 0.41 s, 1ch, @0.100 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5; the rule adds the hero's offset. Length 0.51 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sc381 = juno.emote.sc381.a@0.1:-7
+# C440 the dance music, her own copy: a continuous sequence of three 14.78 s takes (Mercy's Crazy Choreography 02C,
+# the same mixer as Kiriko's Orion Dance and the same 8E states), held over the 7.37 s loop clip. Clip components
+# (clip id @start s [+window s]): crazy_choreography 11FD4@0.000+7.367 hp 00A4.
+# Play event (02C C440, bank 1E79B): a: random of 3, 14.78 s, 2ch, @0.074 s, LOOPS: a continuous container, endless,
+# the next file when one ends.
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E as Mercy's Crazy Choreography C440 (the same 02C): 00FC +2 dB, 00F5 and five others -99 dB).
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 14.85 s,
+# loop 14.851 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sc440 = juno.emote.sc440.a@0.074:-4
+# C441 the music's 0.53 s pickup, her own copy, in the 0.53 s lead-in clip 11FD5 (Crazy Choreography; Mercy's 02C).
+# Clip components (clip id @start s [+window s]): crazy_choreography 11FD5@0.000+0.533 hp 00A4.
+# Play event (02C C441, bank 1E79B): a: one file, 0.53 s, 2ch, @0.075 s.
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E as Mercy's C441 (the same 02C)).
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 0.61 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sc441 = juno.emote.sc441.a@0.075:-4
+# C880 three low layers over Chun-Li Wins' intro (a 3 s bed from 0.13 s, a short hit at 0.75 s -100 cents from the
+# step kit, a 1.9 s low-mid layer from 1.33 s). Clip components (clip id @start s [+window s]): chun_li_wins
+# 12286@0.000+3.933 hp 00A4.
+# Play event (02C C880, bank 1E828): a: one file, 3.02 s, 1ch, @0.130 s; b: one file, 0.17 s, 1ch, -100 cents, @0.750
+# s; c: one file, 1.91 s, 1ch, @1.330 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.5, b -8.5, c -7.5; the rule adds the hero's offset.
+# Length 3.24 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sc880 = juno.emote.sc880.a@0.13:-7 + juno.emote.sc880.b*0.944@0.75:-2 + juno.emote.sc880.c@1.33:-1
+# C8A0 seven low hits and swishes over Spinning Bird Kick (0-3.05 s, 56-96% under 300 Hz): the kicks. Clip components
+# (clip id @start s [+window s]): spinning_bird_kick 125D5@0.000+3.833 hp 00A4.
+# Play event (02C C8A0, bank 1E828): a: one file, 0.69 s, 1ch; b: one file, 0.58 s, 1ch, @2.900 s; c: one file, 1.32
+# s, 1ch, @2.100 s; d: one file, 0.74 s, 2ch, -200 cents, @0.030 s, LPF/HPF 28/24 (not reproduced); e: one file, 0.58
+# s, 1ch, @2.050 s; f: one file, 0.74 s, 2ch, -100 cents, @3.050 s, LPF/HPF 0/21 (not reproduced); g: one file, 3.03
+# s, 1ch, @0.500 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5, b -26.5, c -14.5, d -24.5, e -22.5, f -29.5, g -7.5;
+# the rule adds the hero's offset. Length 3.83 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sc8a0 = juno.emote.sc8a0.a:-12 + juno.emote.sc8a0.b@2.9:-20 + juno.emote.sc8a0.c@2.1:-8 + juno.emote.sc8a0.d*0.891@0.03:-18 + juno.emote.sc8a0.e@2.05:-16 + juno.emote.sc8a0.f*0.944@3.05:-23 + juno.emote.sc8a0.g@0.5:-1
+# C8A4 the 10.3 s low looping bed of BA88 (one file), started at a random point, faded in over 0.25 s, from 1.23 s of
+# Chun-Li Wins' intro and over its loop. Clip components (clip id @start s [+window s]): chun_li_wins
+# 12286@1.233+2.700 hp 00A4; chun_li_wins 12293@0.000+5.333 hp 00A4.
+# Play event (02C C8A4, bank 1E828): a: one file, 10.32 s, 1ch, LOOPS (Wwise loop count 0 = endless), LPF/HPF 0/30
+# (not reproduced).
+# Play 911628607 fades in over 250 ms; Seek 911628607 to a random fraction 0.0-1.0. Its Stop event fades 0.50 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -20.5; the rule adds the hero's offset. Length 10.32 s,
+# loop 10.319 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sc8a4 = juno.emote.sc8a4.a:-14
+# D8AC two bright layers (82-98% over 6 kHz) as the pom-poms appear in her hands (0.37 s) in Cheer Routine's intro:
+# read as their rustle. Clip components (clip id @start s [+window s]): cheer_routine 14B09@0.267+1.300 hp 00A4.
+# Play event (02C D8AC, bank 1E828): a: one file, 2.71 s, 2ch; b: one file, 1.31 s, 1ch.
+# Its Stop event fades 1.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5, b -9.5; the rule adds the hero's offset. Length 2.71
+# s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sd8ac = juno.emote.sd8ac.a:-11 + juno.emote.sd8ac.b:-3
+# D8AD two bright layers (81-99% over 6 kHz) over Cheer Routine's loop: the pom-poms rustling. Clip components (clip
+# id @start s [+window s]): cheer_routine 14B0A@0.000+3.700 hp 00A4.
+# Play event (02C D8AD, bank 1E828): a: one file, 3.62 s, 2ch; b: one file, 3.63 s, 1ch.
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -9.5; the rule adds the hero's offset. Length 3.63
+# s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sd8ad = juno.emote.sd8ad.a:-13 + juno.emote.sd8ad.b:-3
+# D8C4 one 8.2 s stereo layer, looping (2-6 kHz mostly), over Cheer Routine's loop, faded 1 s at its stop. Clip
+# components (clip id @start s [+window s]): cheer_routine 14B0A@0.000+3.733 hp 00A4.
+# Play event (02C D8C4, bank 1E828): a: one file, 8.15 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Its Stop event fades 1.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -37.5; the rule adds the hero's offset. Length 8.15 s, loop
+# 8.147 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sd8c4 = juno.emote.sd8c4.a:-31
+# DA44 the mic hitting the floor, at 0.93 s (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C92@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sda44 = juno.emote.sda44.a:-12
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C92@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sda4f = juno.emote.sda4f.a*1.169@0.01:+6
+# DABF Blooming's four layers: two low ones from 0.2 / 0.3 s, a 4.5 s bright shimmer (75% over 6 kHz), a low one at
+# 3.8 s and a thump at 4.58 s: read as the flowers blooming. Clip components (clip id @start s [+window s]): blooming
+# 15C11@0.000+5.033 hp 00A4.
+# Play event (02C DABF, bank 1E828): a: one file, 4.51 s, 2ch, @0.200 s, LPF/HPF 20/0 (not reproduced); b: one file,
+# 1.31 s, 2ch, @3.800 s; c: one file, 1.62 s, 1ch, @0.300 s; d: one file, 0.60 s, 1ch, @4.580 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -7.5, b -9.5, c -9.5, d -9.5; the rule adds the hero's
+# offset. Length 5.18 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sdabf = juno.emote.sdabf.a@0.2:-1 + juno.emote.sdabf.b@3.8:-3 + juno.emote.sdabf.c@0.3:-3 + juno.emote.sdabf.d@4.58:-3
+# E23F a low pop: two 0.2 s tonal takes pitched down 1775 cents and a 0.6 s tonal tick at +410 cents (Shuffle, 4.6 s
+# into its loop; Mercy's 02C). Clip components (clip id @start s [+window s]): shuffle 18183@4.600 hp 00A4.
+# Play event (02C E23F, bank 1E79B): a: random of 2 (no repeat within 2), 0.18-0.21 s, 1ch, -1775 cents, @0.200 s,
+# LPF/HPF 0/55 (not reproduced); b: random of 1 (no repeat within 2), 0.60 s, 1ch, +410 cents, @0.280 s, LPF/HPF 0/55
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a +3.5, b -13.5; the rule adds the hero's offset. Length 0.78
+# s. Containers / delays / gains H (read); what it is L.
+@juno.emote.se23f = juno.emote.se23f.a*0.359@0.2:+10 + juno.emote.se23f.b*1.267@0.28:-7
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 1851C@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.se548 = juno.emote.se548.a:-3
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 1851C@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.se549 = juno.emote.se549.a*0.891:-13 + juno.emote.se549.b:-13
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 1851C@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.se54a = juno.emote.se54a.a:-18
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 1851C@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.se54b = juno.emote.se54b.a:-17
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C91@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.seea6 = juno.emote.seea6.a:+2 + juno.emote.seea6.b@1.45:+2 + juno.emote.seea6.c@0.03:-12 + juno.emote.seea6.d*2.378@0.15:+2
+# F232 the sled sliding (loop): two long beds (14 s, 1.6-2.6 kHz partials; -125 cents) started at random points, faded
+# in over 0.2 s, and one of five takes (or a silence) at 5.5 s; on the 0.033 s clip 1AB5A only. Clip components (clip
+# id @start s [+window s]): sledding 1AB5A@0.000+0.033 hp 00A4.
+# Play event (02C F232, bank 1E79B): a: random of 5 + 1 silences, 8.82-12.62 s, 1ch, @5.500 s, LOOPS: a continuous
+# container, endless, the next file when one ends; b: one file, 14.00 s, 1ch, -125 cents, LOOPS (Wwise loop count 0 =
+# endless); c: one file, 16.00 s, 1ch, LOOPS (Wwise loop count 0 = endless).
+# Play 454498311 fades in over 200 ms; Play 342666335 fades in over 200 ms; Seek 454498311 to a random fraction
+# 0.0-1.0; Seek 342666335 to a random fraction 0.0-1.0. Its Stop event fades 0.15 s. Sounds in 83% of plays. Audience
+# field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -40.5, b -28.0, c -23.5; the rule adds the hero's offset.
+# Length 18.12 s, loop 18.117 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sf232 = juno.emote.sf232.a@5.5:-34 + juno.emote.sf232.b*0.930:-21.5 + juno.emote.sf232.c:-17
+# F247 a 0.8-1.2 s mid take (one of three) 0.43 s into Sledding's intro, as the sled appears at 0.5 s. Clip components
+# (clip id @start s [+window s]): sledding 17E9A@0.433 hp 00A4.
+# Play event (02C F247, bank 1E79B): a: random of 3, 0.82-1.17 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5; the rule adds the hero's offset. Length 1.17 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sf247 = juno.emote.sf247.a:-15
+# F496 Heart Wave's six layers: mid tonal chimes (0.8-1.5 s, 0.9-1.6 kHz) at 0.5-0.7 s, a 3 s bright shimmer, a low
+# hit and two takes at 2.25 s pitched +500 / -500 cents: read as the heart's sparkle. Clip components (clip id @start
+# s [+window s]): heart_wave 1810A@0.000+3.000 hp 00A4.
+# Play event (02C F496, bank 1E828): a: one file, 1.47 s, 1ch, @0.030 s; b: one file, 0.77 s, 1ch, @0.700 s; c: one
+# file, 1.13 s, 1ch, @0.600 s, LPF/HPF 0/50 (not reproduced); d: one file, 3.02 s, 2ch, @0.500 s, LPF/HPF 20/0 (not
+# reproduced); e: one file, 1.57 s, 2ch, +500 cents, @2.250 s; f: one file, 1.04 s, 1ch, -500 cents, @2.250 s, LPF/HPF
+# 70/0 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5, b -8.5, c +1.5, d -11.5, e -6.5, f -9.5; the rule
+# adds the hero's offset. Length 3.63 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sf496 = juno.emote.sf496.a@0.03:-2 + juno.emote.sf496.b@0.7:-2 + juno.emote.sf496.c@0.6:+8 + juno.emote.sf496.d@0.5:-5 + juno.emote.sf496.e*1.335@2.25:0 + juno.emote.sf496.f*0.749@2.25:-3
+# F869 a noisy airy puff: two layers of 0.7-1.25 s takes, flat-spectrum noise mostly above 4 kHz, pitched +405 to +530
+# cents (Bunny Hop, 0.17 s into its loop; Mercy's 02C). Clip components (clip id @start s [+window s]): bunny_hop
+# 1A272@0.167 hp 00A4.
+# Play event (02C F869, bank 1E712): a: random of 9 (no repeat within 6), 0.69-1.15 s, 1ch, +530 cents; b: random of 7
+# (no repeat within 4), 0.78-1.25 s, 1ch, +530 cents, @0.015 s, some files differ by +0/-125/+0 (dB / cents / s; not
+# reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.0, b -22.5; the rule adds the hero's offset. Length
+# 0.94 s. Containers / delays / gains H (read); what it is L.
+@juno.emote.sf869 = juno.emote.sf869.a*1.358:-8.5 + juno.emote.sf869.b*1.358@0.015:-16
+# FEC7 the dance music (loop, Orion Dance; Kiriko's 02C): her own copy, the same mixer and 8E states as Kiriko's. Clip
+# components (clip id @start s [+window s]): orion_dance 1AB6D@0.000+5.100 hp 00A4.
+# Play event (02C FEC7, bank 1E79B): a: one file, 5.14 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# SetState group 2072919291 = 3194910319. Its Stop event fades 0.40 s. Audience field 2 (3D), range 15 m. Heard by:
+# own (group 8E as Kiriko's Orion Dance FEC7 (the same 02C): 00FC +2 dB, 00F5 and five others -99 dB).
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.0; the rule adds the hero's offset. Length 5.14 s, loop
+# 5.137 s. Containers / delays / gains H (read); what it is M.
+@juno.emote.sfec7 = juno.emote.sfec7.a:-8.5
+# FEC8 the music's opening hit (Orion Dance's intro at 0.03 s; Kiriko's 02C, her 'closing hit'): her own copy. Clip
+# components (clip id @start s [+window s]): orion_dance 1AB6C@0.033 hp 00A4.
+# Play event (02C FEC8, bank 1E79B): a: one file, 0.38 s, 2ch.
+# SetState group 2072919291 = 3194910319. Audience field 2 (3D), range 15 m. Heard by: own (group 8E as Kiriko's Orion
+# Dance FEC8 (the same 02C)).
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.0; the rule adds the hero's offset. Length 0.38 s.
+# Containers / delays / gains H (read); what it is M.
+@juno.emote.sfec8 = juno.emote.sfec8.a:-6.5
+# FED2 a quiet 0.49 s mid take at 0.03 s of Orion Dance's intro. Clip components (clip id @start s [+window s]):
+# orion_dance 1AB6C@0.033 hp 00A4.
+# Play event (02C FED2, bank 1E828): a: one file, 0.49 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.49 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sfed2 = juno.emote.sfed2.a:-12
+# FED3 a quiet 5.45 s mid tonal layer (82% 300 Hz-2 kHz) over Orion Dance's loop. Clip components (clip id @start s
+# [+window s]): orion_dance 1AB6D@0.000+5.067 hp 00A4.
+# Play event (02C FED3, bank 1E828): a: one file, 5.45 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 5.45 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sfed3 = juno.emote.sfed3.a:-12
+# FED4 a short low hit (one of six 0.13-0.21 s takes from the step kit, -10 / -160 cents) at 0.23 s of Orion Dance's
+# intro and at its loop's start. Clip components (clip id @start s [+window s]): orion_dance 1AB6C@0.233 hp 00A4;
+# orion_dance 1AB6D@0.000 hp 00A4.
+# Play event (02C FED4, bank 1E828): a: random of 6 (no repeat within 4), 0.13-0.21 s, 1ch, -10 cents, some files
+# differ by -2.5/+0/+0 -0.5/-150/+0 -0.5/+0/+0 +0.5/+0/+0 +10.5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch
+# and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.0; the rule adds the hero's offset. Length 0.21 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sfed4 = juno.emote.sfed4.a*0.994:-11.5
+# FED5 a short low hit (one of five 0.14-0.27 s takes from the step kit) at 0.33 s of Orion Dance's intro. Clip
+# components (clip id @start s [+window s]): orion_dance 1AB6C@0.333 hp 00A4.
+# Play event (02C FED5, bank 1E828): a: random of 5 (no repeat within 4), 0.14-0.27 s, 1ch, -20 cents, some files
+# differ by +3/+0/+0 +5/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5; the rule adds the hero's offset. Length 0.27 s.
+# Containers / delays / gains H (read); what it is L.
+@juno.emote.sfed5 = juno.emote.sfed5.a*0.989:-11
+
+# ----- Juno's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB5F.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB5D.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB65.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB63.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB60.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB61.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB66.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB5E.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB64.03F.ogg
+juno.emote.sad52.a = ExtraSounds/Juno/Emotes/Sounds/00000000AD52.02C/0000002ADB62.03F.ogg
+juno.emote.sb90b.a = ExtraSounds/Juno/Emotes/Sounds/00000000B90B.02C/0000002AB88D.03F.ogg
+juno.emote.sba85.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA85.02C/0000002AB8E5.03F.ogg
+juno.emote.sba85.b = ExtraSounds/Juno/Emotes/Sounds/00000000BA85.02C/0000002AB87F.03F.ogg
+juno.emote.sba86.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA86.02C/0000002AB8AA.03F.ogg
+juno.emote.sba86.b = ExtraSounds/Juno/Emotes/Sounds/00000000BA86.02C/0000002AB8A7.03F.ogg
+juno.emote.sba87.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA87.02C/0000002AB8D2.03F.ogg
+juno.emote.sba87.b = ExtraSounds/Juno/Emotes/Sounds/00000000BA87.02C/0000002AB8BE.03F.ogg
+juno.emote.sba88.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA88.02C/0000002AB8A5.03F.ogg
+juno.emote.sba89.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA89.02C/0000002AB890.03F.ogg
+juno.emote.sba89.b = ExtraSounds/Juno/Emotes/Sounds/00000000BA89.02C/0000002AB880.03F.ogg
+juno.emote.sba8a.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8A.02C/0000002AB8E9.03F.ogg
+juno.emote.sba8a.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8A.02C/0000002AB8D8.03F.ogg
+juno.emote.sba8a.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8A.02C/0000002AB8A9.03F.ogg
+juno.emote.sba8a.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8A.02C/0000002AB969.03F.ogg
+juno.emote.sba8a.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8A.02C/0000002AB888.03F.ogg
+juno.emote.sba8b.a = ExtraSounds/Juno/Emotes/Sounds/00000000BA8B.02C/0000002AB8D1.03F.ogg
+juno.emote.sba8b.b = ExtraSounds/Juno/Emotes/Sounds/00000000BA8B.02C/0000002AB884.03F.ogg
+juno.emote.sba8b.c = ExtraSounds/Juno/Emotes/Sounds/00000000BA8B.02C/0000002AB8D6.03F.ogg
+juno.emote.sbaa1.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA1.02C/0000002AB8AD.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB8C6.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB8CB.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB873.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB878.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB8B0.03F.ogg
+juno.emote.sbaa9.a = ExtraSounds/Juno/Emotes/Sounds/00000000BAA9.02C/0000002AB8CA.03F.ogg
+juno.emote.sbc6d.a = ExtraSounds/Juno/Emotes/Sounds/00000000BC6D.02C/0000002AB8B2.03F.ogg
+juno.emote.sbc6f.a = ExtraSounds/Juno/Emotes/Sounds/00000000BC6F.02C/0000002AB8DB.03F.ogg
+juno.emote.sbc6f.b = ExtraSounds/Juno/Emotes/Sounds/00000000BC6F.02C/0000002AB8AE.03F.ogg
+juno.emote.sbc6f.c = ExtraSounds/Juno/Emotes/Sounds/00000000BC6F.02C/0000002AB8E0.03F.ogg
+juno.emote.sbcb3.a = ExtraSounds/Juno/Emotes/Sounds/00000000BCB3.02C/0000002AB8CE.03F.ogg
+juno.emote.sbffb.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFB.02C/0000002AB8A8.03F.ogg
+juno.emote.sbffc.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFC.02C/0000002AB889.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB8C1.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB8B3.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB88B.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB883.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB8B9.03F.ogg
+juno.emote.sbffd.a = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB8B5.03F.ogg
+juno.emote.sbffd.b = ExtraSounds/Juno/Emotes/Sounds/00000000BFFD.02C/0000002AB87B.03F.ogg
+juno.emote.sc045.a = ExtraSounds/Juno/Emotes/Sounds/00000000C045.02C/0000002AB8C7.03F.ogg
+juno.emote.sc045.a = ExtraSounds/Juno/Emotes/Sounds/00000000C045.02C/0000002AB8A4.03F.ogg
+juno.emote.sc045.a = ExtraSounds/Juno/Emotes/Sounds/00000000C045.02C/0000002AB8BC.03F.ogg
+juno.emote.sc045.a = ExtraSounds/Juno/Emotes/Sounds/00000000C045.02C/0000002AB87C.03F.ogg
+juno.emote.sc045.a = ExtraSounds/Juno/Emotes/Sounds/00000000C045.02C/0000002AB88C.03F.ogg
+juno.emote.sc37f.a = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8C5.03F.ogg
+juno.emote.sc37f.b = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB87D.03F.ogg
+juno.emote.sc37f.c = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8E3.03F.ogg
+juno.emote.sc37f.d = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8A6.03F.ogg
+juno.emote.sc37f.e = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8CF.03F.ogg
+juno.emote.sc37f.f = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8D5.03F.ogg
+juno.emote.sc37f.g = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB8D9.03F.ogg
+juno.emote.sc37f.h = ExtraSounds/Juno/Emotes/Sounds/00000000C37F.02C/0000002AB872.03F.ogg
+juno.emote.sc380.a = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB886.03F.ogg
+juno.emote.sc380.b = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB879.03F.ogg
+juno.emote.sc380.c = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8E8.03F.ogg
+juno.emote.sc380.d = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8BA.03F.ogg
+juno.emote.sc380.e = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB877.03F.ogg
+juno.emote.sc380.f = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB88E.03F.ogg
+juno.emote.sc380.g = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB885.03F.ogg
+juno.emote.sc380.h = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB88A.03F.ogg
+juno.emote.sc380.i = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8EB.03F.ogg
+juno.emote.sc380.j = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8D4.03F.ogg
+juno.emote.sc380.k = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8EA.03F.ogg
+juno.emote.sc380.l = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB8E1.03F.ogg
+juno.emote.sc380.m = ExtraSounds/Juno/Emotes/Sounds/00000000C380.02C/0000002AB881.03F.ogg
+juno.emote.sc381.a = ExtraSounds/Juno/Emotes/Sounds/00000000C381.02C/0000002AB8BB.03F.ogg
+juno.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2AD.03F.ogg
+juno.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2CB.03F.ogg
+juno.emote.sc440.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C440.02C/0000002BF2CC.03F.ogg
+juno.emote.sc441.a = ExtraSounds/Mercy/Emotes/Sounds/00000000C441.02C/0000002BF293.03F.ogg
+juno.emote.sc880.a = ExtraSounds/Juno/Emotes/Sounds/00000000C880.02C/0000002BF12F.03F.ogg
+juno.emote.sc880.b = ExtraSounds/Juno/Emotes/Sounds/00000000C880.02C/0000002AB88A.03F.ogg
+juno.emote.sc880.c = ExtraSounds/Juno/Emotes/Sounds/00000000C880.02C/0000002BF121.03F.ogg
+juno.emote.sc8a0.a = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002BF133.03F.ogg
+juno.emote.sc8a0.b = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002AB8CE.03F.ogg
+juno.emote.sc8a0.c = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002BF126.03F.ogg
+juno.emote.sc8a0.d = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002BF131.03F.ogg
+juno.emote.sc8a0.e = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002AD838.03F.ogg
+juno.emote.sc8a0.f = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002BF12A.03F.ogg
+juno.emote.sc8a0.g = ExtraSounds/Juno/Emotes/Sounds/00000000C8A0.02C/0000002BF125.03F.ogg
+juno.emote.sc8a4.a = ExtraSounds/Juno/Emotes/Sounds/00000000C8A4.02C/0000002AB8A5.03F.ogg
+juno.emote.sd8ac.a = ExtraSounds/Juno/Emotes/Sounds/00000000D8AC.02C/0000002BF128.03F.ogg
+juno.emote.sd8ac.b = ExtraSounds/Juno/Emotes/Sounds/00000000D8AC.02C/0000002BF11B.03F.ogg
+juno.emote.sd8ad.a = ExtraSounds/Juno/Emotes/Sounds/00000000D8AD.02C/0000002BF12B.03F.ogg
+juno.emote.sd8ad.b = ExtraSounds/Juno/Emotes/Sounds/00000000D8AD.02C/0000002BF11E.03F.ogg
+juno.emote.sd8c4.a = ExtraSounds/Juno/Emotes/Sounds/00000000D8C4.02C/0000002BF11D.03F.ogg
+juno.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+juno.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+juno.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+juno.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+juno.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+juno.emote.sdabf.a = ExtraSounds/Juno/Emotes/Sounds/00000000DABF.02C/0000003097E1.03F.ogg
+juno.emote.sdabf.b = ExtraSounds/Juno/Emotes/Sounds/00000000DABF.02C/0000003097FD.03F.ogg
+juno.emote.sdabf.c = ExtraSounds/Juno/Emotes/Sounds/00000000DABF.02C/0000003097E0.03F.ogg
+juno.emote.sdabf.d = ExtraSounds/Juno/Emotes/Sounds/00000000DABF.02C/0000003097DF.03F.ogg
+juno.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE3.03F.ogg
+juno.emote.se23f.a = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE4.03F.ogg
+juno.emote.se23f.b = ExtraSounds/Mercy/Emotes/Sounds/00000000E23F.02C/00000031BFE6.03F.ogg
+juno.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+juno.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+juno.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+juno.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+juno.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+juno.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+juno.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+juno.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+juno.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+juno.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+juno.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+juno.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+juno.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+juno.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+juno.emote.sf232.a = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/00000032714B.03F.ogg
+juno.emote.sf232.a = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/00000032712B.03F.ogg
+juno.emote.sf232.a = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/000000327129.03F.ogg
+juno.emote.sf232.a = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/000000327108.03F.ogg
+juno.emote.sf232.a = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/00000032712A.03F.ogg
+juno.emote.sf232.b = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/000000327107.03F.ogg
+juno.emote.sf232.c = ExtraSounds/Juno/Emotes/Sounds/00000000F232.02C/00000032710A.03F.ogg
+juno.emote.sf247.a = ExtraSounds/Juno/Emotes/Sounds/00000000F247.02C/000000326E8C.03F.ogg
+juno.emote.sf247.a = ExtraSounds/Juno/Emotes/Sounds/00000000F247.02C/000000326E8A.03F.ogg
+juno.emote.sf247.a = ExtraSounds/Juno/Emotes/Sounds/00000000F247.02C/000000326E8B.03F.ogg
+juno.emote.sf496.a = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C7F8.03F.ogg
+juno.emote.sf496.b = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C7F7.03F.ogg
+juno.emote.sf496.c = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C7F9.03F.ogg
+juno.emote.sf496.d = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C7FA.03F.ogg
+juno.emote.sf496.e = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C5DF.03F.ogg
+juno.emote.sf496.f = ExtraSounds/Juno/Emotes/Sounds/00000000F496.02C/00000033C7FC.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CF9.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D67.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8C95.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D70.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CE0.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D6D.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CEF.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D44.03F.ogg
+juno.emote.sf869.a = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A9246.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CDD.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D5B.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CE6.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8D5F.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A923D.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A91E7.03F.ogg
+juno.emote.sf869.b = ExtraSounds/Mercy/Emotes/Sounds/00000000F869.02C/0000002A8CA1.03F.ogg
+juno.emote.sfec7.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEC7.02C/0000003511DA.03F.ogg
+juno.emote.sfec8.a = ExtraSounds/Kiriko/Emotes/Sounds/00000000FEC8.02C/0000003511DB.03F.ogg
+juno.emote.sfed2.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED2.02C/000000351044.03F.ogg
+juno.emote.sfed3.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED3.02C/000000351045.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB88E.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB88A.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB886.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB8EA.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB8EB.03F.ogg
+juno.emote.sfed4.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED4.02C/0000002AB877.03F.ogg
+juno.emote.sfed5.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED5.02C/0000002AB8BA.03F.ogg
+juno.emote.sfed5.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED5.02C/0000002AB8E8.03F.ogg
+juno.emote.sfed5.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED5.02C/0000002AB885.03F.ogg
+juno.emote.sfed5.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED5.02C/0000002AB8D4.03F.ogg
+juno.emote.sfed5.a = ExtraSounds/Juno/Emotes/Sounds/00000000FED5.02C/0000002AB879.03F.ogg
+
+# ----- Juno's emote voice lines: one plain event per voice stimulus (078), every line of it (English and Japanese
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 179F (excited inhale): 1 line(s) 0.54 s; clips giddy F385@0.200.
+juno.emote.v179f = ../../research/juno/extract/HeroVoice/Juno/Unknown/179F.078/000000068F91.0B2-(excited inhale).ogg | w=1
+# 17A0 (rising excitement): 1 line(s) 1.48 s; clips giddy F385@0.667.
+juno.emote.v17a0 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A0.078/000000068F92.0B2-(rising excitement).ogg | w=1
+# 17A1 Yeah!: 3 line(s) 0.93 s, 0.82 s, 0.89 s; clips game_start 1202A@1.933, giddy F385@2.100.
+juno.emote.v17a1 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A1.078/000000068F93.0B2-Yeah!.ogg | w=1
+juno.emote.v17a1 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A1.078/000000068F94.0B2-Yeah!.ogg | w=1
+juno.emote.v17a1 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A1.078/000000068F95.0B2-Yeah!.ogg | w=1
+# 17A4 Hmmm?: 1 line(s) 0.31 s; clips heroic F4F0@1.733.
+juno.emote.v17a4 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A4.078/000000068F98.0B2-Hmmm_.ogg | w=1
+# 17A6 (laughs): 3 line(s) 2.69 s, 2.76 s, 2.64 s; clips laugh_attack F386@0.467.
+juno.emote.v17a6 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A6.078/000000068F9C.0B2-(laughs).ogg | w=1
+juno.emote.v17a6 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A6.078/000000068F9D.0B2-(laughs).ogg | w=1
+juno.emote.v17a6 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A6.078/000000068F9E.0B2-(laughs).ogg | w=1
+# 17A7 (grunts): 1 line(s) 0.35 s; clips laser_training F387@1.233.
+juno.emote.v17a7 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A7.078/000000068F9F.0B2-(grunts).ogg | w=1
+# 17A8 (surprised inhale): 1 line(s) 0.28 s; clips laser_training F387@1.733.
+juno.emote.v17a8 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A8.078/000000068FA1.0B2-(surprised inhale).ogg | w=1
+# 17A9 Ah!: 1 line(s) 0.42 s; clips laser_training F387@2.200.
+juno.emote.v17a9 = ../../research/juno/extract/HeroVoice/Juno/Unknown/17A9.078/000000068FA2.0B2-Ah!.ogg | w=1
+# 17AA (giggles): 1 line(s) 0.52 s; clips laser_training F387@2.700.
+juno.emote.v17aa = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AA.078/000000068FA0.0B2-(giggles).ogg | w=1
+# 17AB (surprised inhale): 4 line(s) 0.32 s, 0.35 s, 0.33 s, 0.31 s; clips galaxy_gazing 111C5@0.933, game_start 1202A@1.067, release F69E@1.167, winding_down F38A@0.767.
+juno.emote.v17ab = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AB.078/000000068FA5.0B2-(surprised inhale).ogg | w=1
+juno.emote.v17ab = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AB.078/000000068FA6.0B2-(surprised inhale).ogg | w=1
+juno.emote.v17ab = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AB.078/000000068FAE.0B2-(surprised inhale).ogg | w=1
+juno.emote.v17ab = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AB.078/000000068FAF.0B2-(surprised inhale).ogg | w=1
+# 17AC (giggles): 4 line(s) 0.95 s, 1.18 s, 0.92 s, 0.99 s; clips release F69E@2.700, winding_down F38A@1.333.
+juno.emote.v17ac = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AC.078/000000068FA3.0B2-(giggles).ogg | w=1
+juno.emote.v17ac = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AC.078/000000068FA4.0B2-(giggles).ogg | w=1
+juno.emote.v17ac = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AC.078/000000068FAB.0B2-(giggles).ogg | w=1
+juno.emote.v17ac = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AC.078/000000068FAD.0B2-(giggles).ogg | w=1
+# 17AD Hmmmmm?: 2 line(s) 1.21 s, 0.88 s; clips winding_down F38A@5.333.
+juno.emote.v17ad = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AD.078/000000068FA7.0B2-Hmmmmm_.ogg | w=1
+juno.emote.v17ad = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AD.078/000000068FA8.0B2-Hmmmmm_.ogg | w=1
+# 17AF (sighs in relief): 1 line(s) 0.95 s; clips winding_down F389@1.133.
+juno.emote.v17af = ../../research/juno/extract/HeroVoice/Juno/Unknown/17AF.078/000000068FB0.0B2-(sighs in relief).ogg | w=1
+# 187D (giggles): 3 line(s) 0.60 s, 0.48 s, 0.57 s; clips crazy_choreography 11FD4@1.367.
+juno.emote.v187d = ../../research/juno/extract/HeroVoice/Juno/Unknown/187D.078/00000006997D.0B2-(giggles).ogg | w=1
+juno.emote.v187d = ../../research/juno/extract/HeroVoice/Juno/Unknown/187D.078/00000006997E.0B2-(giggles).ogg | w=1
+juno.emote.v187d = ../../research/juno/extract/HeroVoice/Juno/Unknown/187D.078/00000006997F.0B2-(giggles).ogg | w=1
+# 187E (exhales): 5 line(s) 0.65 s, 0.60 s, 0.57 s, 0.65 s, 0.59 s; clips crazy_choreography 11FD4@2.833.
+juno.emote.v187e = ../../research/juno/extract/HeroVoice/Juno/Unknown/187E.078/000000069980.0B2-(exhales).ogg | w=1
+juno.emote.v187e = ../../research/juno/extract/HeroVoice/Juno/Unknown/187E.078/000000069981.0B2-(exhales).ogg | w=1
+juno.emote.v187e = ../../research/juno/extract/HeroVoice/Juno/Unknown/187E.078/000000069982.0B2-(exhales).ogg | w=1
+juno.emote.v187e = ../../research/juno/extract/HeroVoice/Juno/Unknown/187E.078/000000069983.0B2-(exhales).ogg | w=1
+juno.emote.v187e = ../../research/juno/extract/HeroVoice/Juno/Unknown/187E.078/000000069984.0B2-(exhales).ogg | w=1
+# 18CA Spinning Bird Kick!: 1 line(s) 1.63 s; clips spinning_bird_kick 125D5@0.333.
+juno.emote.v18ca = ../../research/juno/extract/HeroVoice/Juno/Unknown/18CA.078/000000069D39.0B2-Spinning Bird Kick!.ogg | w=1
+# 18CE (Japanese) (laughs) I did it!: 1 line(s) 2.17 s; clips chun_li_wins 12286@1.633.
+juno.emote.v18ce = ../../research/juno/extract/HeroVoice/Juno/Unknown/18CE.078/000000069AC2.0B2-(Japanese)_ (laughs) I did it!.ogg | w=1
+# 192D (giggles): 3 line(s) 1.32 s, 1.44 s, 1.43 s; clips cheer_routine 14B0A@2.400.
+juno.emote.v192d = ../../research/juno/extract/HeroVoice/Juno/Unknown/192D.078/00000006A1FF.0B2-(giggles).ogg | w=1
+juno.emote.v192d = ../../research/juno/extract/HeroVoice/Juno/Unknown/192D.078/00000006A200.0B2-(giggles).ogg | w=1
+juno.emote.v192d = ../../research/juno/extract/HeroVoice/Juno/Unknown/192D.078/00000006A204.0B2-(giggles).ogg | w=1
+# 192E (cheers): 3 line(s) 1.72 s, 1.60 s, 1.41 s; clips cheer_routine 14B0A@0.301.
+juno.emote.v192e = ../../research/juno/extract/HeroVoice/Juno/Unknown/192E.078/00000006A201.0B2-(cheers).ogg | w=1
+juno.emote.v192e = ../../research/juno/extract/HeroVoice/Juno/Unknown/192E.078/00000006A202.0B2-(cheers).ogg | w=1
+juno.emote.v192e = ../../research/juno/extract/HeroVoice/Juno/Unknown/192E.078/00000006A203.0B2-(cheers).ogg | w=1
+# 1965 Woooo! / Woo woo! / (laugh) / (gasp): 6 line(s) 1.48 s, 1.44 s, 1.45 s, 1.44 s, 1.45 s, 1.44 s; clips shuffle 18183@4.391.
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6B7.0B2-Woo woo!.ogg | w=1
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6BA.0B2-(laugh).ogg | w=1
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6BB.0B2-(gasp).ogg | w=1
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6BC.0B2-Woooo!.ogg | w=1
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6BD.0B2-Woooo!.ogg | w=1
+juno.emote.v1965 = ../../research/juno/extract/HeroVoice/Juno/Unknown/1965.078/00000006A6BF.0B2-Woooo!.ogg | w=1
+# 19B0 (laughs): 3 line(s) 1.55 s, 1.13 s, 1.31 s; clips sledding 17E9A@0.833.
+juno.emote.v19b0 = ../../research/juno/extract/HeroVoice/Juno/Unknown/19B0.078/00000006AD51.0B2-(laughs).ogg | w=1
+juno.emote.v19b0 = ../../research/juno/extract/HeroVoice/Juno/Unknown/19B0.078/00000006AD52.0B2-(laughs).ogg | w=1
+juno.emote.v19b0 = ../../research/juno/extract/HeroVoice/Juno/Unknown/19B0.078/00000006AD53.0B2-(laughs).ogg | w=1
+
+# ----- Juno's subtitles
+$juno.emote.sad52 = Juno: pom-poms shake
+$juno.emote.sb90b = Juno: sparkles
+$juno.emote.sba85 = Juno: giddy flourish
+$juno.emote.sba86 = Juno: rumble
+$juno.emote.sba87 = Juno: laser hums
+$juno.emote.sba88 = Juno: low hum
+$juno.emote.sba89 = Juno: disapproving flourish
+$juno.emote.sba8a = Juno: tap
+$juno.emote.sba8b = Juno: settles
+$juno.emote.sbaa1 = Juno: rustle
+$juno.emote.sbaa9 = Juno: rustle
+$juno.emote.sbc6d = Juno: swell
+$juno.emote.sbc6f = Juno: whoosh
+$juno.emote.sbcb3 = Juno: hit
+$juno.emote.sbffb = Juno: rustle
+$juno.emote.sbffc = Juno: swell
+$juno.emote.sbffd = Juno: starry hum
+$juno.emote.sc045 = Juno: stars twinkle
+$juno.emote.sc37f = Juno: hologram hums
+$juno.emote.sc380 = Juno: dance steps
+$juno.emote.sc381 = Juno: whoosh
+$juno.emote.sc440 = Juno: music plays
+$juno.emote.sc441 = Juno: music starts
+$juno.emote.sc880 = Juno: victory pose
+$juno.emote.sc8a0 = Juno: kicks
+$juno.emote.sc8a4 = Juno: low hum
+$juno.emote.sd8ac = Juno: pom-poms rustle
+$juno.emote.sd8ad = Juno: pom-poms rustle
+$juno.emote.sd8c4 = Juno: cheer
+$juno.emote.sda44 = Juno: mic drops
+$juno.emote.sda4f = Juno: mic feedback
+$juno.emote.sdabf = Juno: flowers bloom
+$juno.emote.se23f = Juno: pop
+$juno.emote.se548 = Juno: music plays
+$juno.emote.se549 = Juno: music plays
+$juno.emote.se54a = Juno: music plays
+$juno.emote.se54b = Juno: music plays
+$juno.emote.seea6 = Juno: salt shakes
+$juno.emote.sf232 = Juno: sled slides
+$juno.emote.sf247 = Juno: sled lands
+$juno.emote.sf496 = Juno: heart sparkles
+$juno.emote.sf869 = Juno: puff
+$juno.emote.sfec7 = Juno: music plays
+$juno.emote.sfec8 = Juno: music starts
+$juno.emote.sfed2 = Juno: whoosh
+$juno.emote.sfed3 = Juno: shimmer
+$juno.emote.sfed4 = Juno: step
+$juno.emote.sfed5 = Juno: step
+$juno.emote.v179f = Juno: (excited inhale)
+$juno.emote.v17a0 = Juno: (rising excitement)
+$juno.emote.v17a1 = Juno: Yeah!
+$juno.emote.v17a4 = Juno: Hmmm?
+$juno.emote.v17a6 = Juno: (laughs)
+$juno.emote.v17a7 = Juno: (grunts)
+$juno.emote.v17a8 = Juno: (surprised inhale)
+$juno.emote.v17a9 = Juno: Ah!
+$juno.emote.v17aa = Juno: (giggles)
+$juno.emote.v17ab = Juno: (surprised inhale)
+$juno.emote.v17ac = Juno: (giggles)
+$juno.emote.v17ad = Juno: Hmmmmm?
+$juno.emote.v17af = Juno: (sighs in relief)
+$juno.emote.v187d = Juno: (giggles)
+$juno.emote.v187e = Juno: (exhales)
+$juno.emote.v18ca = Juno: Spinning Bird Kick!
+$juno.emote.v18ce = Juno: (Japanese) (laughs) I did it!
+$juno.emote.v192d = Juno: (giggles)
+$juno.emote.v192e = Juno: (cheers)
+$juno.emote.v1965 = Juno: Woooo! / Woo woo! / (laugh) / (gasp)
+$juno.emote.v19b0 = Juno: (laughs)

@@ -18,7 +18,10 @@ public enum Hero {
 	// her kit is being built (#65), step by step on her branch: playable there, not merged until it's whole
 	BRIGITTE("brigitte", "Brigitte", Role.SUPPORT, "survivor",
 		dev.overcraft.brigitte.BrigitteStats.HEALTH + dev.overcraft.brigitte.BrigitteStats.ARMOR, true, 0xFFC7432E),
-	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E);
+	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E),
+	// her kit is being built (#1), step by step on her branch: playable there, not merged until it's whole
+	JUNO("juno", "Juno", Role.SUPPORT, "survivor", dev.overcraft.juno.JunoStats.HEALTH + dev.overcraft.juno.JunoStats.SHIELDS, true,
+		0xFFE85A9B);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 
@@ -43,7 +46,7 @@ public enum Hero {
 
 	/** Shields: the top of owHealth, regenerating by themselves, healed after the health under them (Hit points: Shields). */
 	public int shields() {
-		return this == LIFEWEAVER ? dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS : 0;
+		return this == LIFEWEAVER ? dev.overcraft.lifeweaver.LifeweaverStats.SHIELDS : this == JUNO ? dev.overcraft.juno.JunoStats.SHIELDS : 0;
 	}
 
 	/**

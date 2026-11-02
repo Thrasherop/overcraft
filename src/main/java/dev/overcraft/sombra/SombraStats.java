@@ -73,7 +73,10 @@ public final class SombraStats {
 	// ---- Translocator (ability 2: E; D 0C19 ABILITY 2) ----
 	/** The beacon: this fast (BZ 2023-10-10; W), under this gravity (D 0C1A, M: W gives no number). */
 	public static final double BEACON_SPEED = 72, BEACON_GRAVITY = 20;
-	/** It takes her on its first touch of terrain, or this far along its path (BZ 2026-10-06; W: 0.17 s at 72 m/s). */
+	/**
+	 * It takes her on its first touch of terrain, or this far along its path (BZ 2026-10-06; W: 0.17 s at 72 m/s; the owner's
+	 * Workshop recording 2026-11-01: two teleports 12.7 and 13.5 m from her feet, 0.22-0.23 s after the press).
+	 */
 	public static final double BEACON_RANGE = 12.25;
 	/** She lands this far above it (D 0C19), phased out this long (W). */
 	public static final double TELEPORT_UP = 0.5, TELEPORT_PHASED = 0.4;
@@ -82,7 +85,7 @@ public final class SombraStats {
 
 	// ---- Stealth (after every teleport: D 420C; no longer an ability of its own) ----
 	public static final double STEALTH_FADE_IN = 0.75, STEALTH_TIME = 6.5, STEALTH_FADE_OUT = 0.3;   // D 420C; BZ
-	/** Faster while stealthed (D, M; W +60%). */
+	/** Faster while stealthed (D, M; W +60%; the recording 2026-11-01: 8.80 m/s throughout, 5.5 x 1.6). */
 	public static final double STEALTH_SPEED = 0.6;
 	/** An enemy this near, in sight, sees her (D 420C: 4 m; the panel's 12 m is Lúcio's). */
 	public static final double STEALTH_DETECT = 4;

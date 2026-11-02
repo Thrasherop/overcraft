@@ -38,3 +38,9 @@ position, velocity, buttons and facing every tick. It's allowed: it touches noth
   and A lines (the analysis still reads them) and adds K (every button, resources) and C (charges, cooldowns), press and
   in-use bookmarks for each ability, take-offs and landings, and F combos for an ally bot (Guardian Angel, Swift Step)
   and a full ult. `parse_log.py` reads both.
+
+## The log stopped early (2026-11-01)
+Both of the owner's first two all-hero sessions stopped writing while the game went on: 4:19 with one player logged, 1:18
+with three (the game's AI bots are logged as players), about 100,000 lines each. The script had `Enable Inspector
+Recording`, which also keeps every variable change and action (the wall rays: about 20 writes a tick per player). Now
+`Disable Inspector Recording` (Log To Inspector still writes the file). Check a new script's first log ends when the play did.
