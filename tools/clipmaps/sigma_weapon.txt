@@ -1,0 +1,49 @@
+# Sigma's hand spheres (entity 31A7, model 0000000106B4.00C, set 0AD7), on hardpoint 000A (3P) / 00C9 (1P), var 54CE;
+# spawned by the weapon graph 187F #78. Each alias is the spheres' part of his own action of the same alias.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\sigma\scripts\clipmaps_sigma.py from the
+# compacted blend-tree sets (research\sigma\work\clipmap_sigma\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# aim-pitch points -1 / +1 (sign L, as Juno's / Brigitte's), 8-way slots by the slot fields (H field, not measured on his body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+0-36_0000000070A5 = stance_air_sm0_se0   # 0.1667 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18=cat6 @82B5C076 @82B5C012 sm[0] seq[0]; on 2 paths
+0-36_0000000070A6 = stance_air_sm0_se1   # 0.4333 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18=cat6 @82B5C076 @82B5C012 sm[0] seq[1]; on 4 paths
+0-60_000000006F79 = stance_c65   # 0.3333 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18=cat65; on 8 paths
+0-52_0000000070B9 = stance   # 1 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18:tr[4, 3>2, 1]; on 2 paths
+0-52_0000000070BB = stance_2   # 1.5333 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18:tr[2, 1>4, 3]; on 2 paths
+4-20_000000006F76 = add_stance_sm2_move   # 1.3333 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18:+add() sm[2] df18=cat5; on 2 paths
+4-4_0000000070A7 = add_stance_sm2   # 1.3333 s; set 0AD7 alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 @85 df18:+add() sm[2] df18:tr[0>4, 2, 1, 3]; on 2 paths
+4-6_000000007073 = add_pose_a0e_se1_sm0_sm5   # 0.4667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 @82B5C071 @82B5C070 +add()
+4-22_000000007071 = add_pose_a0e_se1_sm0_sm5_2   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 @82B5C071 +add({'bound': None}) @82B5C037
+4-6_000000007093 = add_pose_a0e_se1_sm0_sm5_3   # 0.4667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 @82B5C071 +add({'bound': None}) @82B5C037 +add()
+4-6_000000007074 = add_pose_a0e_se1_sm0_sm5_4   # 0.4667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 +add({'bound': None}) @82B5C072 @82B5C06F +add()
+4-22_000000007072 = add_pose_a0e_se1_sm0_sm5_5   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 +add({'bound': None}) @82B5C072 +add({'bound': None}) @82B5C038
+4-6_000000007092 = add_pose_a0e_se1_sm0_sm5_6   # 0.4667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 @82B5C029 +add({'bound': None}) @82B5C036 +add({'bound': None}) @82B5C072 +add({'bound': None}) @82B5C038 +add()
+4-28_0000000074E2 = add_pose_a0e_se1_sm0_sm5_down   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 +add({'bound': None}) @82B5C0D8 +add() blend1d(df7C7) 1d@-4.0
+4-28_0000000074C0 = add_pose_a0e_se1_sm0_sm5_up   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 +add({'bound': None}) @82B5C0D8 +add() blend1d(df7C7) 1d@4.0
+4-28_0000000074C1 = add_pose_a0e_se1_sm0_sm5_down_2   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 +add({'bound': None}) @82B5C0D8 +add() blend1d(df7C7) 1d@-4.0
+4-28_0000000074E3 = add_pose_a0e_se1_sm0_sm5_up_2   # 0.1667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] sm[5] @82B5C0D7 +add({'bound': None}) @82B5C0D8 +add() blend1d(df7C7) 1d@4.0
+20-0_000000006F77 = add_pose_a0e_se1_sm0   # 16 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] +add() @82B5C07F @82B5C030
+4-4_0000000070CD = add_pose_a0e_se1_sm0_se0_ra0   # 1.4667 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] +add() @82B5C07F +add({'bound': None}) @82B5C07E seq[0] rand[0]; on 2 paths
+4-28_0000000070D0 = add_pose_a0e_se1_sm0_se0_ra1   # 0.3333 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[0] +add() @82B5C07F +add({'bound': None}) @82B5C07E seq[0] rand[1]; on 2 paths
+0-60_000000006FA8 = pose_a0e_se1_sm1_se5   # 0.3 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[1] sel[5] @82B5C0A7 @82B5C06C dfB7=cat68; on 2 paths
+20-4_00000000704B = add_pose_a0e_se1_sm1_se5   # 14.2333 s; set 0AD7 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); sel[1] @82B5C009 sm[1] sel[5] @82B5C0A7 +add({'bound': None}) @82B5C06D
+0-36_000000007020 = accretion_throw_sm0   # 0.5333 s; set 0AD7 alias 60E (Accretion throw (1BBB #641) (H)); sm[0] @82B5C062
+0-52_000000007474 = accretion_throw_sm1   # 0.6333 s; set 0AD7 alias 60E (Accretion throw (1BBB #641) (H)); sm[1] @82B5C069
+0-52_00000000701F = accretion_cast_sm0   # 0.6 s; set 0AD7 alias 608 (Accretion gather (1BBB #627, the 0.65 s cast) (H)); sm[0] @82B5C063
+0-52_000000007473 = accretion_cast_sm1   # 0.7667 s; set 0AD7 alias 608 (Accretion gather (1BBB #627, the 0.65 s cast) (H)); sm[1] @82B5C06A
+0-60_000000006FA6 = melee_sm0   # 1 s; set 0AD7 alias D (quick melee (0043 #117, cat 6A) (H)); sm[0] @82B5C05E dfE4=cat7E @82B5C05F; on 2 paths
+0-36_00000000725F = melee_sm1   # 1.0333 s; set 0AD7 alias D (quick melee (0043 #117, cat 6A) (H)); sm[1] @82B5C06B
+0-32_000000007151 = stun_sm0   # 1 s; set 0AD7 alias 70 (shared CC); sm[0] @82B5C09A
+0-32_000000006F78 = fire_a_sm0   # 2.1333 s; set 0AD7 alias D3 (Hyperspheres volley (187F #216, v59 = 0 of a 3-cycle) (H)); sm[0] @82B5C095
+0-36_00000000714F = fire_a_sm1   # 1.9333 s; set 0AD7 alias D3 (Hyperspheres volley (187F #216, v59 = 0 of a 3-cycle) (H)); sm[1] @82B5C0A6; on 3 paths
+0-32_000000007115 = fire_c_sm0   # 1.2667 s; set 0AD7 alias D6 (Hyperspheres volley (187F #209, v59 = 2) (H)); sm[0] @82B5C0D4
+0-32_0000000070F7 = fire_b_sm0   # 1.2667 s; set 0AD7 alias D5 (Hyperspheres volley (187F #206, v59 = 1) (H)); sm[0] @82B5C0D3
+0-32_0000000071D5 = flux_slam_sm0   # 0.5 s; set 0AD7 alias 1B9 (Gravitic Flux slam (1E41 #1037, 0.5 s) (H)); sm[0] @82B5C0BB
+0-36_0000000072A2 = flux_slam_sm1   # 1.1333 s; set 0AD7 alias 1B9 (Gravitic Flux slam (1E41 #1037, 0.5 s) (H)); sm[1] @82B5C0CC; on 2 paths
+0-36_00000000703F = a5ac_sm0   # 0.4667 s; set 0AD7 alias 5AC (L); sm[0] @82B5C0BD
+0-60_0000000072A3 = a5ac_sm1   # 0.0333 s; set 0AD7 alias 5AC (L); sm[1] @82B5C0CF; on 3 paths
+0-32_000000007041 = flux_lift_sm0   # 2.5 s; set 0AD7 alias 175 (Gravitic Flux lift (1E41 #1095, the 2.5 s) (H)); sm[0] @82B5C0BF
+0-32_000000007042 = flux_aim_sm0   # 2 s; set 0AD7 alias 60F (Gravitic Flux targeting loop (1E41 #1274, 2 s) (H)); sm[0] @82B5C0CE
+0-32_0000000071CD = a65c_sm0   # 0.4667 s; set 0AD7 alias 65C (no graph of his plays it (L: a flux end)); sm[0] @82B5C0C5
+0-32_000000007040 = flux_start_sm0   # 0.4 s; set 0AD7 alias 1B8 (Gravitic Flux start (1E41 #1020, 0.4 s) (H)); sm[0] @82B5C0C2; on 2 paths
+# Extracted under this model but in none of its sets (9, not named): 001D5B 00395B 0071CE 0071E8 007208 007296 007456 0074B8 00805E

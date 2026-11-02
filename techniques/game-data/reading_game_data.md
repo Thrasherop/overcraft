@@ -117,6 +117,17 @@ From [juno-effects](../../tools/reference/juno-effects.md) (scripts `research\ju
 - **List the clips' effects up front** with `fx_juno_clipfx.py` (159 of her clips name one): most are footstep / camera-shake ones,
   so pick the ability clips by the clip map's state names.
 
+## Values, modes and roles (Sigma's pass, 2026-11-02)
+From [heroes/sigma](../heroes/sigma.md) (scripts `research\sigma\scripts\`, Sojourn's retargeted):
+- **A value's main number is `value_m_3E5360A1`;** its `values` row can lead with another mode's (Sigma's health 047C: 200, row 300).
+  `gvsummary_sigma.py` prints main, alt and readers together.
+- **Check a StateModifyHealth's mode before reading a rate:** `m_DD792FF0 = x60671788` is a share of max, `x00943466` an absolute amount.
+  Sigma's barrier regenerates 0.122 of its max a second: 79.3/s at 650, where the patch notes still say 85 (0.122 x the old 700).
+- **Knockback is a pair:** `m_E33EFEE1` horizontal, `m_583C208B` vertical (Accretion 6 / 3 = the wiki's 6.7 m/s).
+- **Role and sub-role passives are in the shared graph 01C7,** keyed on the hero's category (0850 Tank, 084E / 0851 the others) and
+  sub-role tags (116B Stalwart, 1173 Survivor): read them there for any hero of that role.
+- **A skin can swap every model** an entity names: map clips under the skin's `.owentity` models (106F7 for Sigma's D75A).
+
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner
   corrections: the "hackles up" idle, a phone emote as the crouch idle, a recovery as the throw. A research sub-agent

@@ -1,0 +1,165 @@
+# Sigma, third person (skin model 0000000106F7.00C on Gameplay3P 2AB1, whose base model is D75A; set 0A7E). His hand
+# spheres are their own model (sigma_weapon.txt) on hardpoint 000A (00C9 in 1P), var 54CE.
+# He floats: one move clip (stance df18 cat5, 70DB, 1.23 s) for every direction, no walk / crouch-walk / run 8-way (H tree);
+# the jump is 8-way.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\sigma\scripts\clipmaps_sigma.py from the
+# compacted blend-tree sets (research\sigma\work\clipmap_sigma\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# aim-pitch points -1 / +1 (sign L, as Juno's / Brigitte's), 8-way slots by the slot fields (H field, not measured on his body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+0-60_00000000728B = pose_held   # 2 s; set 0A7E alias 8 (df8A cat4, the held pose (H tree)); df8A=cat4 @8; on 2 paths
+0-32_000000007232 = jump_takeoff   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:F; on 3 paths
+4-6_000000007137 = add_jump_takeoff   # 0.7 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:F +add(); on 37 paths
+0-32_00000000737A = jump_takeoff_forward_right   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:FR; on 3 paths
+0-32_000000007234 = jump_takeoff_right   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:R; on 3 paths
+0-32_000000007376 = jump_takeoff_back_right   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:BR; on 3 paths
+0-32_000000007371 = jump_takeoff_back   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:B; on 3 paths
+0-32_000000007378 = jump_takeoff_back_left   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:BL; on 3 paths
+0-32_000000007235 = jump_takeoff_left   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:L; on 3 paths
+0-32_00000000737C = jump_takeoff_forward_left   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[0] 8way:FL; on 3 paths
+0-32_00000000700F = jump_apex   # 0.1333 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[0] 8way:F; on 29 paths
+0-32_000000007374 = jump_fall   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:F; on 6 paths
+0-32_00000000737B = jump_fall_forward_right   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:FR; on 6 paths
+0-32_00000000736E = jump_fall_right   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:R; on 6 paths
+0-32_000000007377 = jump_fall_back_right   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:BR; on 6 paths
+0-32_000000007372 = jump_fall_back   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:B; on 6 paths
+0-32_000000007379 = jump_fall_back_left   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:BL; on 6 paths
+0-32_000000007370 = jump_fall_left   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:L; on 6 paths
+0-32_00000000737D = jump_fall_forward_left   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[0] sm[0] seq[1] sm[1] 8way:FL; on 6 paths
+0-32_00000000700D = jump_still_takeoff   # 0.2 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[1] sm[0] seq[0]; on 3 paths
+0-32_00000000700E = jump_still_fall   # 0.4667 s; set 0A7E alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop, 8-way (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat6 @6 sel[1] sm[0] seq[1] sm[1]; on 6 paths
+0-32_0000000070DB = stance_sm1_move   # 1.2333 s; set 0A7E alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=cat5; on 2 paths
+0-32_000000006E65 = stance_sm1_stand   # 2.3 s; set 0A7E alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); df8A=default[1] sel[3] @85 sm[1] df18=default[2]; on 4 paths
+4-6_000000007004 = add_stance_sm1_sm1_stand_1ed   # 0.6667 s; set 0A7E alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); df8A=default[1] sel[3] @85 sm[1] df18:+add() sm[1] df18=default[1] @829F8110 df18=cat1ED; on 11 paths
+4-6_000000007005 = add_stance_sm1_sm1_stand_1ed_se1   # 0.3 s; set 0A7E alias 85 (the stance machine (alias 2 sm[1]); df18 cat5 move, cat6 air, default stand (H tree)); df8A=default[1] sel[3] @85 sm[1] df18:+add() sm[1] df18=default[1] @829F8110 df18=cat1ED +add() sel[1]; on 11 paths
+4-28_000000007307 = add_base_se0   # 0.2 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() sel[0]
+4-4_000000007305 = add_base_tr10   # 0.4 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() tr[1>0]
+4-4_000000007306 = add_base_tr01   # 0.4 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() tr[0>1]
+4-28_000000007300 = add_base_se0_2   # 0.2 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() +add(df16E) sel[0]
+4-4_0000000072FE = add_base_tr10_2   # 0.4 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() +add(df16E) tr[1>0]
+4-4_0000000072FF = add_base_tr01_2   # 0.4 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() +add(df16E) tr[0>1]
+4-20_000000007099 = add_base_se1   # 3 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() sel[1]
+4-6_000000007444 = add_layer_2e   # 0.6667 s; set 0A7E alias 2E (L); df8A=default[1] +add(df16D) @FF sm[0] @2E +add(); on 3 paths
+4-4_000000007002 = add_layer_2e_2   # 1 s; set 0A7E alias 2E (L); df8A=default[1] +add(df16D) @FF sm[0] @2E +add() +add(); on 12 paths
+4-6_000000007446 = add_fire_layer_sm0   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[0] +add(); on 2 paths
+4-6_000000007439 = add_fire_layer_sm0_2   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[0] +add(); on 2 paths
+4-6_00000000742F = add_fire_layer_sm0_3   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[0] +add(); on 2 paths
+4-6_000000007447 = add_fire_layer_sm0_4   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[0] +add(); on 2 paths
+4-6_0000000073D3 = add_layer_c7   # 0.6667 s; set 0A7E alias C7 (L); df8A=default[1] +add(df16D) @FF sm[1] @C7 +add(); on 3 paths
+4-6_00000000709E = add_fire_layer_sm1   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[1] +add(); on 2 paths
+4-6_0000000070A3 = add_fire_layer_sm1_2   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[1] +add(); on 2 paths
+4-6_0000000070AD = add_fire_layer_sm1_sm0   # 0.1667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[1] +add() sm[0]; on 2 paths
+4-6_0000000070A4 = add_fire_layer_sm1_3   # 0.6667 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[1] +add(); on 2 paths
+4-6_0000000070F4 = add_fire_layer_sm1_4   # 0.3 s; set 0A7E alias FF (additive weapon layer on df16D: sm[0..2] (L: the volley's three alternating arms)); df8A=default[1] +add(df16D) @FF sm[1] +add(); on 2 paths
+4-6_000000007003 = add_layer_643   # 0.6667 s; set 0A7E alias 643 (L); df8A=default[1] +add(df16D) @FF sm[2] @643 +add(); on 6 paths
+0-28_0000000072F9 = idle_layer_sm0   # 0.3 s; set 0A7E alias C2 (override layer on dfFA, three states (L: idle fidgets; sm[2] 11.3 s)); df8A=default[1] +ovr(dfFA) @C2 sm[0]; on 2 paths
+0-28_0000000072F8 = idle_layer_sm1   # 0.3 s; set 0A7E alias C2 (override layer on dfFA, three states (L: idle fidgets; sm[2] 11.3 s)); df8A=default[1] +ovr(dfFA) @C2 sm[1]; on 2 paths
+16-4_0000000072F7 = idle_layer_sm2   # 11.3333 s; set 0A7E alias C2 (override layer on dfFA, three states (L: idle fidgets; sm[2] 11.3 s)); df8A=default[1] +ovr(dfFA) @C2 sm[2]; on 2 paths
+4-6_0000000072AC = add_layer_663   # 0.6667 s; set 0A7E alias 663 (L); df8A=default[1] +add() @C4 sm[0] @663 @829F81B6 +add(); on 3 paths
+4-6_0000000072AA = add_layer_663_2   # 0.3 s; set 0A7E alias 663 (L); df8A=default[1] +add() @C4 sm[0] @663 +add({'bound': None}) @829F81B1; on 6 paths
+4-6_0000000072CD = add_layer_663_3   # 0.3 s; set 0A7E alias 663 (L); df8A=default[1] +add() @C4 sm[0] @663 +add({'bound': None}) @829F81B1 +add(); on 3 paths
+4-4_000000007429 = add_layer_7b_takeoff   # 0.2 s; set 0A7E alias 7B (L); df8A=default[1] +add() @C4 sm[1] df18=cat6 +add(df170) @7B sm[0] seq[0]; on 3 paths
+4-4_00000000742B = add_layer_7b_apex   # 0.1333 s; set 0A7E alias 7B (L); df8A=default[1] +add() @C4 sm[1] df18=cat6 +add(df170) @7B sm[0] seq[1] sm[0]; on 3 paths
+4-4_00000000742A = add_layer_7b_fall   # 0.4333 s; set 0A7E alias 7B (L); df8A=default[1] +add() @C4 sm[1] df18=cat6 +add(df170) @7B sm[0] seq[1] sm[1]; on 6 paths
+4-6_0000000073E8 = add_layer_669_sm0   # 0.4333 s; set 0A7E alias 669 (L); df8A=default[1] +add() @C4 sm[1] df18=default[1] +add(df16F) @669 @829F812D sm[0]; on 3 paths
+4-6_000000007399 = add_layer_669_sm0_sm0   # 0.3 s; set 0A7E alias 669 (L); df8A=default[1] +add() @C4 sm[1] df18=default[1] +add(df16F) @669 @829F812D sm[0] +add() sm[0]; on 3 paths
+4-4_000000007009 = add_air_layer_takeoff   # 0.2 s; set 0A7E alias C1 (additive air layer (L)); df8A=default[1] +add() @C4 sm[2] df18=cat6 +add(df170) @C1 sm[0] seq[0]; on 3 paths
+4-4_00000000700B = add_air_layer_apex   # 0.1333 s; set 0A7E alias C1 (additive air layer (L)); df8A=default[1] +add() @C4 sm[2] df18=cat6 +add(df170) @C1 sm[0] seq[1] sm[0]; on 3 paths
+4-4_00000000700A = add_air_layer_fall   # 0.4667 s; set 0A7E alias C1 (additive air layer (L)); df8A=default[1] +add() @C4 sm[2] df18=cat6 +add(df170) @C1 sm[0] seq[1] sm[1]; on 6 paths
+4-6_00000000744C = add_hand_layer_sm2_stand_sm0   # 0.4333 s; set 0A7E alias C4 (hand / sphere additive layer (df16F / df170) (L)); df8A=default[1] +add() @C4 sm[2] df18=default[1] sm[0]; on 2 paths
+4-4_0000000027AD = add_base_sm0   # 0.0333 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A:+add() sm[0]
+4-4_0000000027AE = add_base_tr01_3   # 0.0333 s; set 0A7E alias 2 (the base tree (locomotion + layers)); df8A:+add() tr[0>1]
+0-60_000000006FD7 = pulled_loop_b   # 0.6667 s; set 0A7E alias 1C8 (2D); @829F807A blend2d(df235,df236) 2d(+0.00,-1.00); on 2 paths
+0-60_000000006FD6 = pulled_loop_r   # 0.6667 s; set 0A7E alias 1C8 (2D); @829F807A blend2d(df235,df236) 2d(+1.00,+0.00); on 2 paths
+0-60_000000006FD8 = pulled_loop_f   # 0.6667 s; set 0A7E alias 1C8 (2D); @829F807A blend2d(df235,df236) 2d(+0.00,+1.00); on 2 paths
+0-60_000000006FD9 = pulled_loop_l   # 0.6667 s; set 0A7E alias 1C8 (2D); @829F807A blend2d(df235,df236) 2d(-1.00,+0.00); on 2 paths
+0-60_000000006FD5 = pulled_loop   # 0.6667 s; set 0A7E alias 1C8 (2D); @829F807A blend2d(df235,df236) 2d(+0.00,+0.00); on 2 paths
+4-4_000000001BD5 = add_pulled_loop   # 1.2 s; set 0A7E alias 1C8 (2D); +add({'bound': None}) @829F8079
+0-32_000000007225 = accretion_cast_down   # 0.7667 s; set 0A7E alias 608 (Accretion gather (1BBB #627, the 0.65 s cast) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_000000006F6C = accretion_cast   # 0.7667 s; set 0A7E alias 608 (Accretion gather (1BBB #627, the 0.65 s cast) (H)); blend1d({'bound': None})
+0-32_000000007194 = accretion_cast_up   # 0.7667 s; set 0A7E alias 608 (Accretion gather (1BBB #627, the 0.65 s cast) (H)); blend1d({'bound': None}) 1d@1.0
+0-32_000000006F7D = knockdown_start_sm0   # 1 s; set 0A7E alias 64 (shared CC); ik ik sm[0]; on 2 paths
+0-36_000000006F7E = knockdown_sm0   # 0.3333 s; set 0A7E alias 65 (shared CC); ik ik sm[0]; on 2 paths
+0-32_000000006F7F = knockdown_end_sm0   # 1.3333 s; set 0A7E alias 66 (shared CC); ik ik sm[0]; on 2 paths
+0-36_000000006F81 = stun_sm0   # 0.7333 s; set 0A7E alias 70 (shared CC); ik ik sm[0]; on 2 paths
+0-32_000000007226 = accretion_throw_down   # 0.5 s; set 0A7E alias 60E (Accretion throw (1BBB #641) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_000000006F6D = accretion_throw   # 0.5 s; set 0A7E alias 60E (Accretion throw (1BBB #641) (H)); blend1d({'bound': None})
+0-32_000000007195 = accretion_throw_up   # 0.5 s; set 0A7E alias 60E (Accretion throw (1BBB #641) (H)); blend1d({'bound': None}) 1d@1.0
+0-32_000000007193 = fire_b_down   # 1.9333 s; set 0A7E alias D5 (Hyperspheres volley (187F #206, v59 = 1) (H)); blend1d({'bound': None}) 1d@-1.0; on 3 paths
+0-32_000000006FC7 = fire_b   # 1.9333 s; set 0A7E alias D5 (Hyperspheres volley (187F #206, v59 = 1) (H)); blend1d({'bound': None}); on 3 paths
+0-32_000000007026 = fire_b_up   # 1.9333 s; set 0A7E alias D5 (Hyperspheres volley (187F #206, v59 = 1) (H)); blend1d({'bound': None}) 1d@1.0; on 3 paths
+0-32_0000000073D0 = barrier_down   # 1 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=cat1F8 blend1d(df14) 1d@-1.0
+0-32_000000006E84 = barrier   # 1 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=cat1F8 blend1d(df14)
+0-32_0000000073C8 = barrier_up   # 1 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=cat1F8 blend1d(df14) 1d@1.0
+4-4_00000000735B = add_barrier   # 1 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=cat1F8 blend1d(df14) +add()
+4-4_00000000735D = add_barrier_2   # 0.9333 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=cat1F8 blend1d(df14) +add()
+0-32_0000000073D1 = barrier_down_2   # 0.8333 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=default[1] blend1d(df14) 1d@-1.0
+0-32_000000006E85 = barrier_2   # 0.8333 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=default[1] blend1d(df14)
+0-32_0000000073C9 = barrier_up_2   # 0.8333 s; set 0A7E alias 40 (Experimental Barrier (1B55 #812 cat 82 hold / #861 cat 1F8 send) (H)); dfC4=default[1] blend1d(df14) 1d@1.0
+0-32_000000006FB8 = flux_start   # 0.4667 s; set 0A7E alias 1B8 (Gravitic Flux start (1E41 #1020, 0.4 s) (H)); -
+0-32_000000007106 = grasp_start_down   # 0.5 s; set 0A7E alias 60A (Kinetic Grasp start (1D02 #398, 0.5 s) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_000000006F6F = grasp_start   # 0.5 s; set 0A7E alias 60A (Kinetic Grasp start (1D02 #398, 0.5 s) (H)); blend1d({'bound': None})
+0-32_0000000070FC = grasp_start_up   # 0.5 s; set 0A7E alias 60A (Kinetic Grasp start (1D02 #398, 0.5 s) (H)); blend1d({'bound': None}) 1d@1.0
+0-32_000000006FBA = flux_aim   # 2 s; set 0A7E alias 60F (Gravitic Flux targeting loop (1E41 #1274, 2 s) (H)); @829F81EE
+0-32_000000006FBC = flux_lift   # 2.6667 s; set 0A7E alias 175 (Gravitic Flux lift (1E41 #1095, the 2.5 s) (H)); @829F81EF; on 2 paths
+0-32_000000007253 = flux_slam   # 0.4667 s; set 0A7E alias 1B9 (Gravitic Flux slam (1E41 #1037, 0.5 s) (H)); -
+0-60_00000000725B = a65c   # 0.5 s; set 0A7E alias 65C (no graph of his plays it (L: a flux end)); -
+0-32_000000007103 = grasp_hold_down   # 2.2667 s; set 0A7E alias 609 (Kinetic Grasp hold (1D02 #746 / #748, its 2 s) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_000000006F6E = grasp_hold   # 2.2333 s; set 0A7E alias 609 (Kinetic Grasp hold (1D02 #746 / #748, its 2 s) (H)); blend1d({'bound': None})
+0-32_0000000070FB = grasp_hold_up   # 2.2667 s; set 0A7E alias 609 (Kinetic Grasp hold (1D02 #746 / #748, its 2 s) (H)); blend1d({'bound': None}) 1d@1.0
+0-32_000000007248 = melee_crouch_down   # 1.2 s; set 0A7E alias D (quick melee (0043 #117, cat 6A) (H)); df18=cat66 @829F820F blend1d({'bound': None}) 1d@-1.0; on 2 paths
+0-32_000000006F89 = melee_crouch   # 1.2 s; set 0A7E alias D (quick melee (0043 #117, cat 6A) (H)); df18=cat66 @829F820F blend1d({'bound': None}); on 2 paths
+0-32_000000007244 = melee_crouch_up   # 1.2 s; set 0A7E alias D (quick melee (0043 #117, cat 6A) (H)); df18=cat66 @829F820F blend1d({'bound': None}) 1d@1.0; on 2 paths
+0-32_000000007462 = hello   # 1.3333 s; set 0A7E alias 1EE (the comms wheel's Hello); -
+4-0_000000007470 = add_hello_add   # 1.3333 s; set 0A7E alias 2DE (Hello additive); -
+0-32_000000006FBB = flux_cast   # 0.8667 s; set 0A7E alias 691 (Gravitic Flux cast (1E41 #1089, the 1 s activation) (H)); @829F8215
+4-20_0000000074AB = add_flux_lift_add   # 2.6667 s; set 0A7E alias 5A7 (1E41 #1097 additive (H)); -
+4-20_00000000739E = add_flux_cast_add   # 0.8667 s; set 0A7E alias 692 (1E41 #1102 additive (H)); -
+0-36_000000006F6A = barrier_cast   # 0.9333 s; set 0A7E alias 1B7 (Experimental Barrier deploy (1B55 #879, 0.53 s) (H)); -
+4-4_00000000738E = add_barrier_cast_add   # 0.9333 s; set 0A7E alias 634 (1B55 #1000 additive with the deploy (H)); -
+0-32_000000000998 = a56   # 0.7 s; set 0A7E alias 56 (L); -
+0-36_000000001139 = a13b   # 1 s; set 0A7E alias 13B (L); -
+4-6_00000000113A = add_a13b   # 0.1333 s; set 0A7E alias 13B (L); +add()
+4-6_000000000FD0 = add_a13b_2   # 0.1333 s; set 0A7E alias 13B (L); +add() +add()
+0-32_00000000187D = a14e   # 0.7667 s; set 0A7E alias 14E (L); -
+0-36_000000000847 = knockdown_shared_sm0   # 1 s; set 0A7E alias 1DE (); ik ik sm[0]; on 2 paths
+0-60_000000000848 = knockdown_shared_2_sm0   # 1 s; set 0A7E alias 1DF (); ik ik sm[0]; on 2 paths
+0-36_000000000849 = knockdown_shared_3_sm0   # 1.2667 s; set 0A7E alias 1E0 (); ik ik sm[0]; on 2 paths
+0-36_0000000084E3 = showcase_687_sm0   # 0.6667 s; set 0F34 alias 687 (set 0F34 (the hero file's m_CFC554DC; L role)); ik ik sm[0]; on 2 paths
+0-36_0000000084DC = showcase_se1_air_sm0_se0   # 0.1 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat6 @83CD0011 sm[0] seq[0]
+0-36_0000000084DE = showcase_se1_air_sm0_se1_sm0   # 0.0333 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat6 @83CD0011 sm[0] seq[1] sm[0]
+0-36_0000000084DD = showcase_se1_air_sm0_se1_sm1   # 0.4667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat6 @83CD0011 sm[0] seq[1] sm[1]; on 2 paths
+0-36_0000000084EA = showcase_se1_move   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:F; on 2 paths
+4-6_0000000084E0 = add_showcase_se1_move   # 0.6667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:F +add(); on 9 paths
+0-36_0000000084E8 = showcase_se1_move_forward_right   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:FR; on 2 paths
+0-36_0000000084E7 = showcase_se1_move_right   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:R; on 2 paths
+0-36_0000000084EB = showcase_se1_move_back_right   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:BR; on 2 paths
+0-36_0000000084ED = showcase_se1_move_back   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:B; on 2 paths
+0-36_0000000084EC = showcase_se1_move_back_left   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:BL; on 2 paths
+0-36_0000000084EE = showcase_se1_move_left   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:L; on 2 paths
+0-36_0000000084E9 = showcase_se1_move_forward_left   # 0.7667 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=cat5 @83CD000C 8way:FL; on 2 paths
+0-36_0000000084E5 = showcase_se1_stand_sm0   # 0.7 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=default[2] @83CD0012 dfB7=cat68 sm[0]; on 2 paths
+0-36_0000000084E6 = showcase_se1_stand_sm0_2   # 0.7 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=default[2] @83CD0012 dfB7=default[1] sm[0]; on 2 paths
+4-0_000000000037 = add_showcase_se1_stand_sm0   # 3 s; set 0F34 alias 688 (set 0F34 locomotion (L role)); @83CD001E sel[1] df18=default[2] @83CD0012 +add() sm[0]
+0-36_0000000084E2 = showcase_68c_sm0   # 1 s; set 0F34 alias 68C (set 0F34 (L)); ik ik sm[0]; on 2 paths
+0-36_00000000D80B = showcase_4ce   # 1 s; set 0F34 alias 4CE (set 0F34 (L)); dfC3=cat6E @83CD0018
+0-36_00000000D80C = showcase_4ce_2   # 4 s; set 0F34 alias 4CE (set 0F34 (L)); dfC3=default[1] @83CD0019
+0-36_00000000D80D = showcase_982   # 0.3333 s; set 0F34 alias 982 (set 0F34 (L)); -
+0-32_00000000B1E6 = select   # 4.4 s; set 0DF1 alias 477 (set 0DF1, the hero file's select alias 0x477 (H: STUHero m_06FAEF85)); @837C400C dfC3=cat6E @837C400E
+0-36_00000000B1EA = select_2   # 6.5667 s; set 0DF1 alias 477 (set 0DF1, the hero file's select alias 0x477 (H: STUHero m_06FAEF85)); @837C400C dfC3=default[1] @837C400F
+# not extracted: 00000000BAC9 = base_sm1_sm1_se0   # 6.3333 s; set 0C91 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[0]; on 3 paths
+0-36_00000000BE25 = base_sm1_sm1_se1   # 6.6667 s; set 0C91 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[1]; on 18 paths
+0-32_00000000BF4F = base_sm1_sm1_se3   # 8 s; set 0C91 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[3]; on 3 paths
+16-32_00000000BF2C = base_sm1_sm1_se5   # 9.3333 s; set 0C91 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[5]; on 3 paths
+0-32_00000000BE99 = base_sm1_sm1_se9   # 6.6667 s; set 0C91 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[9]; on 3 paths
+0-36_000000007458 = pose_45c   # 4 s; set 0B0E alias 45C (set 0B0E (L)); @4A0 sel[1] @45C; on 7 paths
+4-0_000000007349 = add_pose_4a0_se3   # 3 s; set 0B0E alias 4A0 (set 0B0E (L)); @4A0 sel[3] +add(); on 2 paths
+4-4_000000007010 = add_pose_4a0_tr03   # 1.3333 s; set 0B0E alias 4A0 (set 0B0E (L)); @4A0 +add() tr[0>3]; on 2 paths
+# not extracted: 0000000074B8 = pose_a0e   # 28.4333 s; set 0B28 alias A0E (sets 0B0E / 0B28 (L: showcase / gallery poses)); @82CA00DC
+# not extracted: 000000019EFE = intro_b33_sm1_se0   # 5.9 s; set 430C alias B33 (set 430C (L: highlight intro)); sm[1] seq[0]
+# not extracted: 000000019F01 = intro_b33_sm1_se1   # 7.6667 s; set 430C alias B33 (set 430C (L: highlight intro)); sm[1] seq[1]; on 4 paths
+# not extracted: 000000019F07 = intro_b33_sm1_se3   # 6.6667 s; set 430C alias B33 (set 430C (L: highlight intro)); sm[1] seq[3]; on 2 paths
+# not extracted: 000000019F09 = intro_b1e_sm1_se0   # 3.6333 s; set 430C alias B1E (set 430C (L)); sm[1] seq[0]
+# not extracted: 000000019F1E = intro_b1e_sm1_se1   # 2.3 s; set 430C alias B1E (set 430C (L)); sm[1] seq[1]
+# not extracted: 00000001A129 = add_intro_b1d   # 0.4333 s; set 430C alias B1D (set 430C (L)); -
+# Extracted under this model but in none of its sets (31, not named): 000999 00099A 00099B 00099C 00099D 00099E 00099F 0009A0 000FCF 001D90 002158 0037AD 0046BE 006599 006FB9 00700C 00727D 007318 00738A 00738F 007390 0073E9 00742C 00745D 00805D 0084DF 0084E4 00D2C3 00D80E 00E5C1 01285B
