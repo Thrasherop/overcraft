@@ -85,3 +85,27 @@ From `research/jetpack_cat/assets2.md` (the owner: "use less custom assets more 
 - The rope node's numbers (stiffness and the rest: unnamed), the Lifeline launch's direction F, two Catnapper fields,
   which ranged copy of a sound is allies' and which enemies', and the showcase's condition parameters.
 - Carrying a "tank" 30% slower isn't done (Minecraft has no tanks).
+
+## Her flight from the Workshop recording (#60, 2026-11-01)
+The owner's recording (`E:\Overwatch Archive\research\movement\workshop-2026-11-01b\`, 48 s of her flying, sampled at
+62.5 a second) against ours, the same moves played in the dev client (world `cat1`, `cat_ours.py` traces):
+
+| | the recording | ours before | ours now |
+|---|---|---|---|
+| 0 to 5.5 m/s | 0.13 s, steps of 1.37 / 0.032 s (42.7 m/s/s = 7.75 x 5.5) | 0.12 s (9.5 x 5.5) | 0.13 s |
+| no keys, from 5.5 | a straight line to 0 in 0.56 s (9.6 m/s/s), three stops | 3.58 after one tick, a long tail | 0.6 s, straight |
+| backing off | 5.50 m/s | 4.95 | 5.5 |
+| Space / Crouch | +5.5 / -5.5 m/s | the same | the same |
+| boost from 5.5 | 9.5 at 0.2 s, 16.85 at 0.91, 17.36 at 1.01, 17.80 by 1.4 s | 17.8 at 0.45 s | 9.5 at 0.17, 16.26 at 0.84, 17.45 at 1.01, 17.8 by 1.6 |
+| boost length | 2.5 s on a full tank | 2.5 s | 2.5 s |
+| after it, keys held | slowing, cut to about 12 at 0.3 s (14.58 -> 11.54), down to 5.5 by 0.7 s | slowing to 12 and staying there | 17.32 ... 15.4, cut to 11.52 at 0.3 s, 5.5 by 1.0 s |
+| after it, no keys | a straight line, about 8.5-9.6 m/s/s | stopped in 0.7 s (11.46 -> 7.46 in a tick) | a straight line, 1.9 s from 17.8 |
+
+- **The rule that fits every run:** speeding up toward the wish at 7.75 x the wish speed a second, slowing in a straight
+  line at 1.745 x; under Lifeline's +30% both 30% more (12.3 / 12.9 m/s/s measured, 12.5 predicted). The data's "drag 8"
+  read as an exponential was what stopped her dead, the "funky" feel of #60. BZ Aug 11 2026 says her air acceleration
+  went 7.7 -> 9.5 and the data holds 9.5, but the live game measures 7.75: the recording wins (what the game does now).
+- **Found playing:** a forward of 7.15 m/s was Lifeline left on (a toggle: +30% while on, mode 16), not the flight; the
+  recording's 7.15 stretches are the same.
+- Ours (M): how fast a boost's direction follows the input (6 a second) and turns at cruise (the recording has no clean
+  turn); the boost's first 0.2 s as one 20 m/s/s step (the three runs kick +1 to +3 m/s at different times).
