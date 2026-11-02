@@ -6148,3 +6148,228 @@ $juno.emote.v192d = Juno: (giggles)
 $juno.emote.v192e = Juno: (cheers)
 $juno.emote.v1965 = Juno: Woooo! / Woo woo! / (laugh) / (gasp)
 $juno.emote.v19b0 = Juno: (laughs)
+
+# ===== Sojourn: 17 emote sounds (rules), 5 voice stimuli (plain events). Offset +9.0 dB (the loudest layer: 6517).
+# Her own 10 02Cs (banks 1E5FA and 1E599; ExtraSounds/Sojourn/Emotes) are mostly one long mono file held over a clip
+# at 15 m, each a single take but Wobble's 6BBD and the gun's return 6BDB (three each) (H). No loops. Listen Up's, Mic
+# Drop's and Salty's are the shared achievement-emote 02Cs (bank 1E79B), read from Lucio's extraction: the same 02Cs
+# (H), under her event names. Voice: 6 VoiceStimulus components of 5 stimuli (H), every line of each with its weight
+# from research/sojourn/sounds/voice_lines.json (all 1.0; 35 m; 0 dB but 06A1 -4 dB); her voice extraction is in
+# research/sojourn/extract, reached through ../../research/sojourn/extract/ as sojourn.txt does. Clip components read
+# from her emote json with emote_fx.py.
+# 650D a 0.74 s bright mono take (41% 2-6 kHz, 21% over 6 kHz) on hardpoint 02A8 (bone_002E, her left hand's chain)
+# 1.33 s into Standing By's intro, as she brings the Railgun up across her chest in both hands (seen in game at 1.4
+# s): read as the gun's clank. Clip components (clip id @start s [+window s]): standing_by 7DD3@1.333 hp 02A8.
+# Play event (02C 650D, bank 1E5FA): a: one file, 0.74 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 0.74 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s650d = sojourn.emote.s650d.a:-2.5
+# 650E a 0.76 s low take (67% under 300 Hz) on hardpoint 001C (Foot_L) 0.83 s into Standing By's intro: read as her
+# step. Clip components (clip id @start s [+window s]): standing_by 7DD3@0.833 hp 001C.
+# Play event (02C 650E, bank 1E5FA): a: one file, 0.76 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5; the rule adds the hero's offset. Length 0.76 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.s650e = sojourn.emote.s650e.a:-1.5
+# 650F one 6.25 s mono tonal file (85% 300 Hz-2 kHz, partials near 650-700 Hz) held over Triumph's whole clip. Clip
+# components (clip id @start s [+window s]): triumph 9295@0.000+6.467 hp 00A4.
+# Play event (02C 650F, bank 1E5FA): a: one file, 6.25 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 6.25 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s650f = sojourn.emote.s650f.a:+0.5
+# 6510 one 3.3 s low-mid bed (65% under 300 Hz, 32% 300 Hz-2 kHz) held over Standing By's intro. Clip components (clip
+# id @start s [+window s]): standing_by 7DD3@0.000+3.267 hp 00A4.
+# Play event (02C 6510, bank 1E5FA): a: one file, 3.34 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 3.34 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s6510 = sojourn.emote.s6510.a:-2.5
+# 6511 one 6.9 s low bed (93% under 300 Hz) from 0.3 s over Guffaw: a low rumble under her laugh. Clip components
+# (clip id @start s [+window s]): guffaw 9261@0.000+7.600 hp 00A4.
+# Play event (02C 6511, bank 1E5FA): a: one file, 6.93 s, 1ch, @0.300 s.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -1.5; the rule adds the hero's offset. Length 7.24 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s6511 = sojourn.emote.s6511.a@0.3:+7.5
+# 6516 one 6.1 s low bed (91% under 300 Hz) held over Confidence. Clip components (clip id @start s [+window s]):
+# confidence 8F4A@0.000+6.333 hp 00A4.
+# Play event (02C 6516, bank 1E5FA): a: one file, 6.12 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -2.5; the rule adds the hero's offset. Length 6.12 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s6516 = sojourn.emote.s6516.a:+6.5
+# 6517 one 8.7 s 2-channel file over the whole of Weapons Check, the loudest of hers (peak -0.8 dBFS), spread across
+# the bands (57% under 300 Hz, 14% over 6 kHz): read as the Railgun's handling, its parts worked as she checks it.
+# Clip components (clip id @start s [+window s]): weapons_check 92F8@0.000+8.733 hp 00A4.
+# Play event (02C 6517, bank 1E5FA): a: one file, 8.71 s, 2ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.0; the rule adds the hero's offset. Length 8.71 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.s6517 = sojourn.emote.s6517.a:0
+# 6BBD a short low hit (one of three 0.10-0.18 s takes, +150 cents) 1.73 s into Wobble's first clip. Clip components
+# (clip id @start s [+window s]): wobble CF17@1.733 hp 00A4.
+# Play event (02C 6BBD, bank 1E599): a: random of 3, 0.10-0.18 s, 1ch, +150 cents, some files differ by -1/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 0.16 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s6bbd = sojourn.emote.s6bbd.a*1.091:-15.5
+# 6BDB a short low thump (one of three 0.29-0.35 s takes, 96-99% under 300 Hz) at 4.17 s of Heroic and 5.83 s of
+# Triumph, just before each puts the Railgun back in her hands (their stow windows end at 4.07 and 6.0 s): read as the
+# gun returning. Clip components (clip id @start s [+window s]): heroic BDBC@4.167 hp 00A4; triumph 9295@5.833 hp
+# 00A4.
+# Play event (02C 6BDB, bank 1E5FA): a: random of 3 (no repeat within 2), 0.29-0.35 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -8.5; the rule adds the hero's offset. Length 0.35 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.s6bdb = sojourn.emote.s6bdb.a:+0.5
+# 927E one 4.7 s low bed (80% under 300 Hz) held over Heroic's pose. Clip components (clip id @start s [+window s]):
+# heroic BDBC@0.005+4.995 hp 00A4.
+# Play event (02C 927E, bank 1E5FA): a: one file, 4.67 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 4.67 s.
+# Containers / delays / gains H (read); what it is L.
+@sojourn.emote.s927e = sojourn.emote.s927e.a:+2.5
+# DA44 the mic hitting the floor, at 0.93 s (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C8A@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.sda44 = sojourn.emote.sda44.a:-9.5
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C8A@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.sda4f = sojourn.emote.sda4f.a*1.169@0.01:+8.5
+# E548 the emote's music, her own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 184F7@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@sojourn.emote.se548 = sojourn.emote.se548.a:-0.5
+# E549 the music's second layer, her own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 184F7@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@sojourn.emote.se549 = sojourn.emote.se549.a*0.891:-10.5 + sojourn.emote.se549.b:-10.5
+# E54A the emote's music as everyone else hears it from her: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 184F7@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@sojourn.emote.se54a = sojourn.emote.se54a.a:-15.5
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 184F7@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@sojourn.emote.se54b = sojourn.emote.se54b.a:-14.5
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C90@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@sojourn.emote.seea6 = sojourn.emote.seea6.a:+4.5 + sojourn.emote.seea6.b@1.45:+4.5 + sojourn.emote.seea6.c@0.03:-9.5 + sojourn.emote.seea6.d*2.378@0.15:+4.5
+
+# ----- Sojourn's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+sojourn.emote.s650d.a = ExtraSounds/Sojourn/Emotes/Sounds/00000000650D.02C/0000002B1B4C.03F.ogg
+sojourn.emote.s650e.a = ExtraSounds/Sojourn/Emotes/Sounds/00000000650E.02C/0000002B1B46.03F.ogg
+sojourn.emote.s650f.a = ExtraSounds/Sojourn/Emotes/Sounds/00000000650F.02C/0000002B1B15.03F.ogg
+sojourn.emote.s6510.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006510.02C/0000002B1B31.03F.ogg
+sojourn.emote.s6511.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006511.02C/0000002B1B18.03F.ogg
+sojourn.emote.s6516.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006516.02C/0000002B1B2F.03F.ogg
+sojourn.emote.s6517.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006517.02C/0000002B1B17.03F.ogg
+sojourn.emote.s6bbd.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BBD.02C/0000002B1065.03F.ogg
+sojourn.emote.s6bbd.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BBD.02C/0000002B1061.03F.ogg
+sojourn.emote.s6bbd.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BBD.02C/0000002B1060.03F.ogg
+sojourn.emote.s6bdb.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BDB.02C/0000002B1B49.03F.ogg
+sojourn.emote.s6bdb.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BDB.02C/0000002B1B45.03F.ogg
+sojourn.emote.s6bdb.a = ExtraSounds/Sojourn/Emotes/Sounds/000000006BDB.02C/0000002B1B16.03F.ogg
+sojourn.emote.s927e.a = ExtraSounds/Sojourn/Emotes/Sounds/00000000927E.02C/0000002B1B4E.03F.ogg
+sojourn.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+sojourn.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+sojourn.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+sojourn.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+sojourn.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+sojourn.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+sojourn.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sojourn.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sojourn.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sojourn.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sojourn.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+sojourn.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+sojourn.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+sojourn.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sojourn.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sojourn.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sojourn.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sojourn.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+sojourn.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+
+# ----- Sojourn's emote voice lines: one plain event per voice stimulus (078), every line of it (English
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 1211 (cheers): 1 line(s) 1.04 s; clips triumph 9295@0.400.
+sojourn.emote.v1211 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/1211.078/000000064554.0B2-(cheers).ogg | w=1
+# 12DE Yeah!: 1 line(s) 0.85 s; clips triumph 9295@3.067.
+sojourn.emote.v12de = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/12DE.078/000000064DAC.0B2-Yeah!.ogg | w=1
+# 16B6 (grunt): 5 line(s) 0.46 s, 0.55 s, 0.52 s, 0.50 s, 0.68 s; clips handstand_push_ups E141@2.996, handstand_push_ups E142@1.436.
+sojourn.emote.v16b6 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B6.078/000000067E26.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b6 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B6.078/000000067E27.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b6 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B6.078/000000067E28.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b6 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B6.078/000000067E29.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b6 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B6.078/000000067E2A.0B2-(grunt).ogg | w=1
+# 16B7 (grunt): 5 line(s) 0.81 s, 0.89 s, 0.79 s, 0.84 s, 0.72 s; clips handstand_push_ups E142@0.465.
+sojourn.emote.v16b7 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B7.078/000000067E2B.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b7 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B7.078/000000067E2C.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b7 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B7.078/000000067E2D.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b7 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B7.078/000000067E2E.0B2-(grunt).ogg | w=1
+sojourn.emote.v16b7 = ../../research/sojourn/extract/HeroVoice/Sojourn/Unknown/16B7.078/000000067E2F.0B2-(grunt).ogg | w=1
+# 6A1 (laughs): 1 line(s) 6.91 s; clips guffaw 9261@0.000, stimulus volume -4 dB.
+sojourn.emote.v6a1 = ../../research/sojourn/extract/HeroVoice/Sojourn/Laugh/00000005882E.0B2-(laughs).ogg | w=1
+
+# ----- Sojourn's subtitles
+$sojourn.emote.s650d = Sojourn: gun clanks
+$sojourn.emote.s650e = Sojourn: footstep
+$sojourn.emote.s650f = Sojourn: triumphant swell
+$sojourn.emote.s6510 = Sojourn: settles
+$sojourn.emote.s6511 = Sojourn: rumble
+$sojourn.emote.s6516 = Sojourn: low hum
+$sojourn.emote.s6517 = Sojourn: gun mechanisms
+$sojourn.emote.s6bbd = Sojourn: thump
+$sojourn.emote.s6bdb = Sojourn: gun returns
+$sojourn.emote.s927e = Sojourn: low hum
+$sojourn.emote.sda44 = Sojourn: mic drops
+$sojourn.emote.sda4f = Sojourn: mic feedback
+$sojourn.emote.se548 = Sojourn: music plays
+$sojourn.emote.se549 = Sojourn: music plays
+$sojourn.emote.se54a = Sojourn: music plays
+$sojourn.emote.se54b = Sojourn: music plays
+$sojourn.emote.seea6 = Sojourn: salt shakes
+$sojourn.emote.v1211 = Sojourn: (cheers)
+$sojourn.emote.v12de = Sojourn: Yeah!
+$sojourn.emote.v16b6 = Sojourn: (grunt)
+$sojourn.emote.v16b7 = Sojourn: (grunt)
+$sojourn.emote.v6a1 = Sojourn: (laughs)

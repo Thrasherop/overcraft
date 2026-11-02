@@ -21,7 +21,10 @@ public enum Hero {
 	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E),
 	// her kit is being built (#1), step by step on her branch: playable there, not merged until it's whole
 	JUNO("juno", "Juno", Role.SUPPORT, "survivor", dev.overcraft.juno.JunoStats.HEALTH + dev.overcraft.juno.JunoStats.SHIELDS, true,
-		0xFFE85A9B);
+		0xFFE85A9B),
+	// the first Damage hero (#2): her kit is being built, step by step on her branch: playable there, not merged until it's whole;
+	// Sharpshooter (D loadout 0DDD; BZ 2026-02-10); her data's hero colour (0.843, 0.243, 0.173)
+	SOJOURN("sojourn", "Sojourn", Role.DAMAGE, "sharpshooter", dev.overcraft.sojourn.SojournStats.HEALTH, true, 0xFFD73E2C);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

@@ -31,6 +31,8 @@ public final class Barrier {
 	private static final Identifier SLOW = dev.overcraft.Overcraft.id("brigitte_barrier");
 	/** The part of a hit the barrier didn't take, landing (LivingEntityMixin): not taken again. */
 	public static boolean passing;
+	/** A hit was taken by a barrier since this was last cleared (Sojourn's Railgun: +1 energy on a barrier, not +5). */
+	public static boolean took;
 
 	private Barrier() {
 	}
@@ -118,6 +120,7 @@ public final class Barrier {
 			double took = Math.min(ow, s.barrierHealth);
 			double before = s.barrierHealth / maxHealth(s);
 			s.barrierHealth -= took;
+			Barrier.took = true;
 			double after = s.barrierHealth / maxHealth(s);
 			// a hit on it (her flail's barrier contact 0015, M: anything hitting her barrier), and its calls
 			BrigitteSounds.at(level, "hit_barrier", to.add(from.subtract(to).normalize().scale(1)), 100);

@@ -9,9 +9,15 @@ Kiriko's Skateboard tea (000A on Weapon_R; the straw's top 0.3 m up the cup):
     py tools/emote_contacts.py local-assets/pack/assets/overcraft/hero_models/kiriko.glb Weapon_R 0,0.3,0 0,0,0,1 emote_skateboard_8
     -> 0.031 m at 7.27 s (her sip), cup up 0.78; with Lucio's offset 1,0,0,0: 0.555 m, upside down.
 The mouth is taken as 8 cm in front of the Head bone (ours, rough).
+
+--knuckles=<index bone>,<pinky bone>: also prints, every 0.25 s, the angle between the prop's +Y and the knuckle line
+(index to pinky): a fist holds a handle across the palm, within about 10 degrees of it (Sojourn's mic in Mic Drop:
+IndexFinger_1_L,PinkyFinger_1_L; techniques/emotes/sojourn_emotes.md).
 """
 import json, struct, sys, math
 import numpy as np
+knuckles = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--knuckles=")), None)
+sys.argv = [a for a in sys.argv if not a.startswith("--")]
 glb, bone, tip, hq = sys.argv[1], sys.argv[2], [float(x) for x in sys.argv[3].split(",")], [float(x) for x in sys.argv[4].split(",")]
 d = open(glb, "rb").read()
 n = struct.unpack_from("<I", d, 12)[0]
@@ -70,4 +76,10 @@ for clip in sys.argv[5:]:
         dist = np.linalg.norm(p[:3] - mouth[:3])
         up = (W[:3, :3] @ np.array([0, 1, 0]))[1]
         if best is None or dist < best[0]: best = (dist, t, up)
+        if knuckles and k % 4 == 0:
+            line = world(by[knuckles[1]], pose)[:3, 3] - world(by[knuckles[0]], pose)[:3, 3]
+            axis = W[:3, :3] @ np.array([0, 1, 0])
+            cos = abs(axis @ line) / np.linalg.norm(line)
+            print("  %.2f s  +Y to the knuckle line %.0f degrees, prop origin %.2f m up" % (
+                t, np.degrees(np.arccos(min(1, cos))), W[1, 3]))
     print(clip, "closest tip-to-mouth %.3f m at %.2f s (prop +Y world up-component %.2f)" % best)

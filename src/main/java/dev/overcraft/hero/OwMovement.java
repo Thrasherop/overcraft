@@ -147,6 +147,129 @@ public final class OwMovement {
 	public static java.util.function.Consumer<LivingEntity> doubleJumped = entity -> {
 	};
 
+	/**
+	 * Sojourn's Power Slide this tick (dev.overcraft.sojourn.SojournStats): ticks into it, its length in ticks, and its jump's
+	 * speeds (m/s up, m/s added along the slide).
+	 */
+	public record Slide(int ticks, int length, double jumpUp, double jumpAlong) {
+	}
+
+	/** Set by the client: Sojourn's Power Slide now, or null when she isn't sliding. */
+	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Slide> slide = entity -> null;
+	/** Set by the client: the slide ended here (true: her slide jump; false: a wall stopped it). */
+	public static java.util.function.BiConsumer<LivingEntity, Boolean> slideEnded = (entity, jumped) -> {
+	};
+
+	/** Her slide: going, its direction (unit, level), ticks blocked, ticks off the ground, the jump key last tick, heavy ticks left. */
+	private static final class Slider {
+		boolean sliding;
+		Vec3 dir = Vec3.ZERO;
+		int blocked;
+		int air;
+		boolean held;
+		int heavy;
+	}
+
+	private static final Map<LivingEntity, Slider> SLIDERS = new WeakHashMap<>();
+
+	/** Sliding now (Minecraft's own jump is off: the jump key is the slide jump). */
+	public static boolean sliding(LivingEntity entity) {
+		return slide.apply(entity) != null;
+	}
+
+	/**
+	 * Power Slide (D 1E6F, sojourn-map.md): along her move input as it began (forward with none), at 5.5 m/s x (1 + 1.6 x the
+	 * ramp), +1.2 more off the ground, her fall held at 2 m/s; the jump key (with ground within 2 m below, or 0.15 s after
+	 * leaving it) sets her rise to 17 m/s and adds 6.5 m/s along the slide, under 1.4 x gravity for 0.25 s, and ends it; held
+	 * against a wall for 0.3 s it ends. Speed buffs scale it; the +75 % cap doesn't (W). Moved here, the server told
+	 * (slideEnded). Ours: the direction fixed at the start, the speed set each tick (the data's mover reaches it at once on the
+	 * ground: acceleration 35).
+	 */
+	private static void slideTravel(LivingEntity entity, Vec3 input, Slide sl, Slider s) {
+		double yaw = Math.toRadians(entity.getYRot());
+		boolean jumpHeld = jumpKeyHeld.test(entity);
+		if (!s.sliding) {
+			s.sliding = true;
+			s.blocked = 0;
+			s.held = jumpHeld;
+			s.air = entity.onGround() ? 0 : 1000;
+			Vec3 flat = new Vec3(input.x, 0, input.z);
+			if (flat.lengthSqr() > 1.0E-7) {
+				Vec3 d = flat.normalize();
+				s.dir = new Vec3(d.x * Math.cos(yaw) - d.z * Math.sin(yaw), 0, d.z * Math.cos(yaw) + d.x * Math.sin(yaw)).normalize();
+			} else {
+				s.dir = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+			}
+		}
+		boolean grounded = entity.onGround();
+		s.air = grounded ? 0 : s.air + 1;
+		boolean pressed = jumpHeld && !s.held;
+		s.held = jumpHeld;
+		double t = sl.ticks();
+		double up = dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_FROM + (1 - dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_FROM)
+			* Math.min(1, t / Ow.ticks(dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_UP));
+		double left = (sl.length() - t) / Ow.ticks(dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_DOWN);
+		double down = left >= 1 ? 1 : dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_TO
+			+ (1 - dev.overcraft.sojourn.SojournStats.SLIDE_RAMP_TO) * Math.max(0, left);
+		double bonus = dev.overcraft.sojourn.SojournStats.SLIDE_BONUS * Math.min(up, down)
+			+ (grounded ? 0 : dev.overcraft.sojourn.SojournStats.SLIDE_BONUS_AIR);
+		Vec3 h = s.dir.scale(Ow.speed(RUN_SPEED * speedFactor(entity) * (1 + bonus)));
+		entity.resetFallDistance();
+		if (pressed && (grounded || s.air <= Ow.ticks(dev.overcraft.sojourn.SojournStats.SLIDE_JUMP_COYOTE) || groundWithin(entity,
+			dev.overcraft.sojourn.SojournStats.SLIDE_JUMP_GROUND))) {
+			// the slide jump (D #411): her vertical speed set, 6.5 m/s added along the slide, 1.4 x gravity for 0.25 s (this tick
+			// the first of them), and the slide over
+			Vec3 hv = h.add(s.dir.scale(Ow.speed(sl.jumpAlong())));
+			double[] step = verticalStep(Ow.speed(sl.jumpUp()), false, dev.overcraft.sojourn.SojournStats.SLIDE_JUMP_GRAVITY);
+			s.sliding = false;
+			s.heavy = Ow.ticks(dev.overcraft.sojourn.SojournStats.SLIDE_JUMP_GRAVITY_TIME) - 1;
+			entity.setDeltaMovement(hv.x, step[0], hv.z);
+			entity.move(MoverType.SELF, entity.getDeltaMovement());
+			Vec3 after = entity.getDeltaMovement();
+			entity.setDeltaMovement(after.x == 0 ? 0 : hv.x, after.y == 0 ? 0 : step[1], after.z == 0 ? 0 : hv.z);
+			slideEnded.accept(entity, true);
+			return;
+		}
+		Vec3 v = entity.getDeltaMovement();
+		double[] step = verticalStep(v.y, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity));
+		double dy = step[0];
+		double vy = step[1];
+		double cap = -Ow.speed(dev.overcraft.sojourn.SojournStats.SLIDE_FALL);
+		if (vy < cap) {
+			// her fall held at 2 m/s (D x978C5453 = 2.0): off a ledge she sinks slowly
+			vy = cap;
+			dy = Math.max(dy, cap);
+		}
+		Vec3 from = entity.position();
+		entity.setDeltaMovement(h.x, dy, h.z);
+		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		Vec3 moved = entity.position().subtract(from);
+		Vec3 after = entity.getDeltaMovement();
+		double carried = after.y == 0 || (entity.onGround() && vy < 0) ? 0 : vy;
+		entity.setDeltaMovement(after.x == 0 ? 0 : h.x, carried, after.z == 0 ? 0 : h.z);
+		// a wall in her way (less than half the slide's move made along it) for 0.3 s ends it (D #684 / #685, #961 -> #963)
+		double along = moved.x * s.dir.x + moved.z * s.dir.z;
+		s.blocked = entity.horizontalCollision && along < h.length() * 0.5 ? s.blocked + 1 : 0;
+		if (s.blocked >= Ow.ticks(dev.overcraft.sojourn.SojournStats.SLIDE_WALL_END)) {
+			s.sliding = false;
+			slideEnded.accept(entity, false);
+		} else if (entity.isInWater() || entity.level().getFluidState(net.minecraft.core.BlockPos.containing(entity.getX(), entity.getY() + 0.1,
+			entity.getZ())).is(net.minecraft.tags.FluidTags.WATER)) {
+			// into water it ends at once (ours: Overwatch has none; Minecraft's swimming takes over, and between its ticks the
+			// slide skimmed on over the pool: found playing)
+			s.sliding = false;
+			slideEnded.accept(entity, false);
+		}
+	}
+
+	/** Ground within this far below her (D 1E6F #337: a ray from 0.5 m above her feet, M on its sense). */
+	private static boolean groundWithin(LivingEntity entity, double metres) {
+		Vec3 from = entity.position().add(0, 0.5, 0);
+		return entity.level().clip(new net.minecraft.world.level.ClipContext(from, from.add(0, -0.5 - metres, 0),
+			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType()
+			!= net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
 	/** Juno's boots: ticks in the air, jumps used, the jump key last tick; her glide: going, rising from a double jump. */
 	private static final class Boots {
 		int airTicks;
@@ -378,6 +501,21 @@ public final class OwMovement {
 			entity.move(MoverType.SELF, dashing);
 			return;
 		}
+		// Sojourn's Power Slide (and, after its jump, 0.25 s of heavier gravity below)
+		Slide sliding = slide.apply(entity);
+		Slider slider = sliding != null ? SLIDERS.computeIfAbsent(entity, e -> new Slider()) : SLIDERS.get(entity);
+		if (slider != null && sliding == null) {
+			slider.sliding = false;
+		}
+		if (sliding != null) {
+			slideTravel(entity, input, sliding, slider);
+			return;
+		}
+		double heavy = 1;
+		if (slider != null && slider.heavy > 0) {
+			slider.heavy--;
+			heavy = dev.overcraft.sojourn.SojournStats.SLIDE_JUMP_GRAVITY;
+		}
 		Vec3 v = entity.getDeltaMovement();
 		// Juno's Martian Overboots and Glide Boost (dev.overcraft.juno: her double jump, hover and glide)
 		int jumps = airJumps.applyAsInt(entity);
@@ -474,7 +612,7 @@ public final class OwMovement {
 			}
 		} else {
 			// on the ground too: the small push down is what keeps Minecraft's onGround true
-			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity));
+			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity) * heavy);
 			dy = step[0];
 			vy = step[1];
 			if (descent.test(entity) && vy < -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED)) {
