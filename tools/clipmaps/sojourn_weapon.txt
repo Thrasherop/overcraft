@@ -27,3 +27,10 @@
 0-36_000000006FCB = reload_1p   # 1.3 s; alias 0x004 sm[0]; 1.3 s
 0-36_0000000070D5 = reload   # 1.3 s; alias 0x004 sm[1] (3P); 1.3 s
 4-28_00000000395B = add_template   # 0.5333 s; a shared template's default clip (trees 009 / 05C), extracted with the gun: L
+# emote clips the data plays on the Railgun (slot 4E30, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS),
+# from the emote folders (--clips-from); each 27 bones, the gun's skeleton (techniques/emotes/sojourn_emotes.md)
+emote_000000008F4B = emote_confidence   # Confidence: 0-6.333 s
+emote_000000007DD9 = emote_standing_by_intro   # Standing By: its intro 7DD3, 0-3.267 s
+emote_000000007DDB = emote_standing_by_short   # Standing By: with her 0.367 s 7DD5, 0-0.367 s
+emote_000000007DDA = emote_standing_by_loop   # Standing By: with her loop 7DD4, 0-11.733 s
+emote_000000009546 = emote_weapons_check   # Weapons Check: 0-8.733 s

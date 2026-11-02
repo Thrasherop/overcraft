@@ -191,6 +191,18 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
       `VOICELINE_ROOTS` (`build_asset_pack.py`), its path from the build root as the hero's soundmap uses.
     - **The dev `key <action> tap` doesn't end an emote:** it releases the key before `ClientHero` reads the input, so the
       emote (and its loops) kept going. Hold it (`key forward down`, 0.25 s, `key forward up`), as a player does.
+- <a id="sojourn-emote-sounds"></a>**Sojourn's emote sounds and voice lines (2026-11-02; `emotes.txt`, Sojourn's section; scripts
+  `research\sojourn\scripts\emote_sounds\`; played: [sojourn step 9](../heroes/sojourn.md#step-9-her-emotes-from-the-data-played)):**
+  17 02Cs and 5 voice stimuli over her 11 emotes, Juno's pipeline unchanged: `emote_fx.py` -> `ww.py` (`sojourn_ids.txt`) ->
+  `dump_banks.py work\sojourn_banks_raw.json 00000001E5FA.043 00000001E599.043` -> her `extract_banks.py` (10 own banks into
+  `ExtraSounds\Sojourn\Emotes`) -> `measure_emotes.py Sojourn ... Lúcio:E548 ...` (the 7 shared) -> `facts.py` / `summary.py` ->
+  `sojourn_what.py` -> `gen_sojourn.py` -> `apply_emote_sounds.py sojourn <repo>`, then the scratch-root build and merge above
+  (the scratch root's `tools/soundmaps/` held only her section, as `emotes.txt`).
+  - **No id shared with another hero's emotes** but the achievement ones; each of hers is one long mono bed held over its
+    clip at 15 m (no loops). The one named stimulus folder: Guffaw's laugh 06A1 is in `HeroVoice\Sojourn\Laugh` (with other
+    laughs), so `VOICE_IDS` keeps only its line; the others are `Unknown\<078>`.
+  - **6BDB plays just before a stow window ends** (Heroic 4.17 against 4.07, Triumph 5.83 against 6.0): read as the gun
+    returning to her hands (M), a use of the stow windows to name a sound.
 - <a id="sojourn-sounds"></a>**Sojourn's map (2026-11-02; `tools/soundmaps/sojourn.txt`, read for wiring in
   `tools/reference/sojourn-sounds.md`; scripts `research\sojourn\scripts\sounds\` (Juno's pipeline; the event table is its own
   file, `sojourn_table.py`, and `sojourn_gen.py` writes the map), data `research\sojourn\sounds\`; hub: [sojourn](../heroes/sojourn.md)):**

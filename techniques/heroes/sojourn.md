@@ -271,3 +271,42 @@ committed), each looked at:
   on a player in an enemy field were not heard or seen); the in-own-view gun glows (hidden by the view model); death mid-
   Overclock; `slide.touch` / `lift` / `idle.loop` / `energy.glow` / `full` / `spent` (EXTRA, L meanings: not wired); the field's
   flame ring and Overclock's vents (no mesh); material effects; listened to for balance by a person.
+
+## Step 9 (her emotes from the data), played
+All 11 from the data ([sojourn_emotes](../emotes/sojourn_emotes.md)): 40 clips in `hero_models/sojourn_clips.glb`, the Railgun
+re-exported with its 5 emote clips (`sojourn_weapon.txt`, `--clips-from`), her data `emotes/sojourn.json` (`tools/emote_data.py
+sojourn`, slot 4E30), her emote sounds (`tools/soundmaps/emotes.txt`, Sojourn's section: 17 02Cs, 5 voice stimuli; 10 own banks
+extracted into `ExtraSounds\Sojourn\Emotes`; [sounds](../sound/sounds.md#sojourn-emote-sounds)), built in a scratch root and
+merged into the dev pack (only `sojourn.emote.*`, their subtitles; `sounds.json` and `en_us.json` backed up first). What it took:
+- **The Railgun's emote clips key its root at her bone_0606 in her space** (equal within 1 cm in all five): `HeroWeapon.pose`
+  plays them (`"railgun"`) with the root kept on the hardpoint (`bakedRoot`), so only its parts move. Confidence lays it on
+  the ground and kicks it back up into her hand; Standing By and Weapons Check keep it in her hands.
+- `tools/emote_contacts.py --knuckles=` (the handle-across-the-fist check the method describes, now printed): her mic 12 degrees.
+
+Played 2026-11-02, dev client (`OC_ASSET_PACK` = the Ana checkout's pack, `-Xmx2G`), a fresh creative flat world `sojemo`, noon
+frozen, mobs off (55 slimes killed), Sojourn picked on the select screen (her portrait, READY); screenshots in `run/screenshots/`
+(not committed), each looked at:
+- **All 11 by the dev `emote`** (from first person: the emote camera takes over, 0 first-person frames), frames at 0.8 / 2.0 /
+  3.6 / 5.6 s (`se_<emote>_<t>.png`, sheets `sesheet0-3.png`), each ended by a held W (0.3 s) or by running out; clips and
+  sounds polled every 0.1 s. Chains: Standing By 7DD3 -> loop 7DD4, Handstand E141 -> loop E142, Wobble CF17 -> loop CF19.
+- **Held frames** (`emoteat`): Weapons Check 1.0-7.5 s (`swc_sheet.png`), Confidence 3.0 / 5.7, Standing By 1.4, Guffaw 3.0,
+  Heroic 4.3, Triumph 6.2 (`sh_sheet.png`), Mic Drop 0.6 and Weapons Check 7.5 close (`sh_mic_wc.png`); Standing By's loop from
+  the back camera (`se3p_sheet.png`): the gun away where the data puts it away, back in her hands at Heroic 4.07 / Triumph 6.0,
+  on the grass and kicked up in Confidence, the mic in her left fist then on the ground. A separate agent critiqued the sheets:
+  its worst points (no mic at 0.8 s, the gun through her torso at Weapons Check 7.5 s) were small-tile misreadings, checked
+  close up; the gun's tip touching the grass in Standing By's kneel is the clip's.
+- **Sounds** (`heard`, times from the command, about 0.1 s late): Triumph 650F 0.18, "(cheers)" 1211 0.48, "Yeah!" 12DE 3.13,
+  6BDB 5.82; Listen Up E548 + E549 0.18; Mic Drop DA44 1.08 (DA4F, 40 %, not in that play); Salty EEA6 0.18; Confidence 6516;
+  Guffaw 6511 + laugh 06A1; Heroic 927E 0.18, 6BDB 4.25; Standing By 6510, 650E 0.98, 650D 1.40; Weapons Check 6517;
+  Handstand grunts 16B6 3.02, 16B7 / 16B6 in the loop at its data times; Wobble 6BBD 1.77. No missing-sound warning.
+- **Ending** (`playing`): Weapons Check's 8.7 s 6517 stops with a held W at 4 s; Listen Up's music fades out over its 1.5 / 2 s
+  fades after the emote (ended early or not), gone 3 s later; Guffaw's bed stops, its laugh line plays on (voice lines aren't
+  cut: every hero's). G mid-emote: Minecraft mode, the emote and its sound end; G back: Sojourn.
+- **The player's way:** Esc -> Voice Lines -> Emotes listed all 11 (`sw_em.png`); Weapons Check / Standing By / Confidence put on
+  right / down / left (`sw_em_set_crop.png`); T held, the right button to the emote page (`sw_wheel_right.png`), the pointer
+  right: Weapons Check (its sound heard); down: Standing By's loop; left: Confidence; each ended by a held movement key.
+- **Seen once, not reproduced:** once, 3 s after Weapons Check was started from the wheel, `playing` listed nothing; three more
+  starts (dev and wheel) all listed 6517 through the clip.
+- Not yet / doesn't match: Standing By's 7DD5 and Handstand's E143 (0.37 s each) are never played (not read what they are); the
+  emote names lose their punctuation ("HANDSTAND PUSH UPS"); a second player hearing the "others" copies; Salty has no salt
+  shaker (the data spawns none, as for every hero).

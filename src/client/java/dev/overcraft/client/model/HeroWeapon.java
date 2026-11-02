@@ -337,11 +337,16 @@ public final class HeroWeapon {
 		boolean staff = model.clips.containsKey("holstered");
 		EmoteData.WeaponClip played = null;
 		boolean flail = model.clips.containsKey("whip_return_blocked");
-		if ((staff || flail) && a.emoting() && a.emote() != null) {
+		// Sojourn's Railgun (its 3P fire layer is its own): Confidence, Standing By and Weapons Check play its clips on slot 4E30
+		boolean railgun = model.clips.containsKey("add_fire_3p");
+		if ((staff || flail || railgun) && a.emoting() && a.emote() != null) {
 			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md),
-			// or Brigitte's flail's (Cheer's 5265 on slot 3572)
-			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : "brigitte");
-			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(), staff ? "staff" : "flail");
+			// Brigitte's flail's (Cheer's 5265 on slot 3572) or the Railgun's (techniques/emotes/sojourn_emotes.md). The
+			// Railgun's emote clips key its root at her bone_0606 in her space (a bake, equal to the mm): the root is kept on
+			// the hardpoint below (bakedRoot), so only its moving parts play
+			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : "brigitte");
+			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(),
+				staff ? "staff" : railgun ? "railgun" : "flail");
 		}
 		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
 		if (staffClip != null) {
