@@ -184,11 +184,11 @@ public final class JunoFx {
 		return e != null && e == mc.player && mc.options.getCameraType().isFirstPerson();
 	}
 
-	/** The ground under a point (from 3 m above it down to 20 m below), as the server's OrbitalRay.ground. */
+	/** The ground under a point (from 3 m above it down to 20 m below), as the server's OrbitalRay.ground (liquids' surface: #80). */
 	private static Vec3 ground(Level level, Vec3 at, @Nullable Entity by) {
-		var hit = level.clip(new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE,
+		var hit = level.clip(new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY,
 			by == null ? net.minecraft.world.phys.shapes.CollisionContext.empty() : net.minecraft.world.phys.shapes.CollisionContext.of(by)));
-		return hit.getType() == HitResult.Type.MISS ? at : hit.getLocation();
+		return hit.getType() == HitResult.Type.MISS ? at : dev.overcraft.juno.OrbitalRay.onTop(level, hit);
 	}
 
 	// ---- her posed points (HeroModelRenderer) ----

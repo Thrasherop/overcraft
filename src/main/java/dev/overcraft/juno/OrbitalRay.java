@@ -89,10 +89,16 @@ public final class OrbitalRay {
 		}
 	}
 
-	/** The ground under a point (from 3 m above it down to 20 m below), so the ray follows slopes and steps. */
+	/** The ground under a point (from 3 m above it down to 20 m below), so the ray follows slopes and steps; a liquid's surface counts (#80). */
 	private static Vec3 ground(net.minecraft.world.level.Level level, Vec3 at, ServerPlayer juno) {
-		var hit = level.clip(new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, juno));
-		return hit.getType() == HitResult.Type.MISS ? at : hit.getLocation();
+		var hit = level.clip(new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, juno));
+		return hit.getType() == HitResult.Type.MISS ? at : onTop(level, hit);
+	}
+
+	/** Where a ground trace stopped; on a liquid, its block's top, level with the bank round it (#80: a pool's surface is 0.11 m lower, and the grass hid the circle's edge). */
+	public static Vec3 onTop(net.minecraft.world.level.Level level, net.minecraft.world.phys.BlockHitResult hit) {
+		Vec3 at = hit.getLocation();
+		return level.getFluidState(hit.getBlockPos()).isEmpty() ? at : new Vec3(at.x, hit.getBlockPos().getY() + 1, at.z);
 	}
 
 	public static void clearAll() {

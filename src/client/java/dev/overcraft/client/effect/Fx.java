@@ -32,7 +32,8 @@ import java.util.function.Supplier;
 /**
  * The client's live effects: particles (camera-facing sprites, flat decals and rings, streaks along their motion,
  * domes) and ribbon trails behind projectiles, simulated per frame on the game's clock (they pause with it) and drawn
- * after the world's solid parts (LevelRenderEvents.COLLECT_SUBMITS). Recipes for each ability are in KirikoFx.
+ * after translucent terrain, as Minecraft's own particles (collected in LevelRenderEvents.COLLECT_SUBMITS; see
+ * afterTerrain). Recipes for each ability are in KirikoFx.
  */
 public final class Fx {
 	public enum Shape {
@@ -580,7 +581,7 @@ public final class Fx {
 		}
 		for (Map.Entry<RenderType, List<Particle>> e : byType.entrySet()) {
 			List<Particle> list = e.getValue();
-			context.submitNodeCollector().submitCustomGeometry(poseStack, e.getKey(), (pose, buffer) -> {
+			afterTerrain(context, poseStack, e.getKey(), (pose, buffer) -> {
 				for (Particle p : list) {
 					emit(p, pose, buffer, cam, right, up);
 				}
@@ -588,10 +589,25 @@ public final class Fx {
 		}
 		for (Trail trail : TRAILS.values()) {
 			if (trail.points.size() >= 2) {
-				context.submitNodeCollector().submitCustomGeometry(poseStack,
+				afterTerrain(context, poseStack,
 					trail.soft ? FxRender.blended(trail.texture) : FxRender.additive(trail.texture),
 					(pose, buffer) -> ribbon(trail, pose, buffer, cam, now));
 			}
+		}
+	}
+
+	/**
+	 * Submitted in the phase after translucent terrain, where Minecraft's own particles go (SubmitNodeCollection
+	 * .submitQuadParticleGroup). Blended custom geometry otherwise draws before it, and water, stained glass and ice were
+	 * drawn over every effect behind them, writing no depth: Orbital Ray's circle on a pool was gone (#80).
+	 */
+	private static void afterTerrain(LevelRenderContext context, PoseStack poseStack, RenderType type,
+									 net.minecraft.client.renderer.SubmitNodeCollector.CustomGeometryRenderer geometry) {
+		if (context.submitNodeCollector() instanceof net.minecraft.client.renderer.SubmitNodeStorage storage) {
+			storage.order(0).afterTerrain.submit(
+				new net.minecraft.client.renderer.feature.CustomFeatureRenderer.Submit(poseStack.last().copy(), type, geometry));
+		} else {
+			context.submitNodeCollector().submitCustomGeometry(poseStack, type, geometry);
 		}
 	}
 
