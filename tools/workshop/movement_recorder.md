@@ -68,6 +68,13 @@ For every hero, a minute of the basics first, then their own moves. Press F afte
 - **Cassidy:** Combat Roll every direction.
 - **Junkrat:** Concussion Mine jumps (one and two).
 
+## If the log stops early
+On 2026-11-01 both sessions' logs stopped while the game went on (after 4:19 with one player, 1:18 with three: about
+100,000 lines each). The script then had the Inspector's own recording on, which also keeps every variable change and
+action it runs (the wall rays: about 20 a tick for each player). It now turns that recording off (Log To Inspector lines
+still reach the file). If a log still stops, note the time it ends against what you were doing, and start a new file
+(spectator and back) every couple of minutes.
+
 ## What it can't see
 The Workshop has no value for some heroes' own state: Lúcio's song (say which you started on; Shift presses are
 counted), who Guardian Angel or Swift Step went to (the bot you made is the only ally, so it's that one), Mercy's
