@@ -31,7 +31,8 @@
 		"OptionsCameraMixin",
 		"EntityShadowMixin",
 		"HudFontTextureMixin",
-		"HeroChatFormatMixin"
+		"HeroChatFormatMixin",
+		"InventoryDollMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
