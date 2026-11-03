@@ -160,6 +160,65 @@ public final class EffectArt {
 		CAT_NAP_MARKER(0, 0, 0, 0, .25f, 0, .393f, 1, .5f, 0, .067f, 1, .75f, 0, .067f, 1, 1, 0, .067f, 1),
 		/** Catnapper's landing flash (71C2, 8006A53D r0, from black, HDR 7): violet-pink to sky to cyan. */
 		CAT_NAP_IMPACT(0, 0, 0, 0, .25f, .307f, .109f, .744f, .5f, .237f, .218f, 1, .75f, .13f, .614f, 1, 1, .009f, 1, 1),
+		// the rest of #59 (CatPalettes: the enum's initializer is at the class file's limit)
+		/** The jetpack's outer flame (7064 C24, 80063381 r7): deep blue to teal. */
+		CAT_FLAME_TEAL(CatPalettes.CAT_FLAME_TEAL),
+		/** The Catnapper cast's bell (7373 C37, 8007DA82 r7, from black): gold to pale yellow. */
+		CAT_BELL_GOLD(CatPalettes.CAT_BELL_GOLD),
+		/** The cast's and the dive's exhaust rings (7373 C18 / 7163 C73, 80038B2E r4, HDR 4.65): blue to cyan. */
+		CAT_RING_CYAN(CatPalettes.CAT_RING_CYAN),
+		/** The same rings' gold pair (7373 C21 / 7163 C84, 800BD8BA r4, HDR 3.4): yellow to white. */
+		CAT_RING_GOLD(CatPalettes.CAT_RING_GOLD),
+		/** The head slash's arcs (71B8 C8, 8005B765 r8, HDR 17): cyan to white. */
+		CAT_SLASH(CatPalettes.CAT_SLASH),
+		/** The same, the enemy row (8005B765 r9): red to white. */
+		CAT_SLASH_ENEMY(CatPalettes.CAT_SLASH_ENEMY),
+		/** The head slash's domes (71B8 C10, 8007E2E6 r7, HDR 6.2): sky to cyan to white. */
+		CAT_DOME(CatPalettes.CAT_DOME),
+		/** The inner dome (71B8 C12, 8000B7F8 r6, HDR 3): deep blue to cyan. */
+		CAT_DOME_DEEP(CatPalettes.CAT_DOME_DEEP),
+		/** Both domes' enemy rows (8007E2E6 r8 / 8000B7F8 r5): red to white. */
+		CAT_DOME_ENEMY(CatPalettes.CAT_DOME_ENEMY),
+		/** The landing's ground flash (71C2 C19, 800C2FC5 r3): navy to deep blue. */
+		CAT_NAP_GROUND(CatPalettes.CAT_NAP_GROUND),
+		/** The same, the enemy row (800C2FC5 r4): maroon to red. */
+		CAT_NAP_GROUND_ENEMY(CatPalettes.CAT_NAP_GROUND_ENEMY),
+		/** Transport Shielding's hexes (5513 C3, 800D0BB1 r3): teal to cyan. */
+		CAT_HEX(CatPalettes.CAT_HEX),
+		/** Claws Out's marks (74D0 C13, 8006D576 r4, from black): teal to pale cyan. */
+		CAT_CLAWS(CatPalettes.CAT_CLAWS),
+		/** The same, the enemy row (8006D576 r3): dark red to pale pink. */
+		CAT_CLAWS_ENEMY(CatPalettes.CAT_CLAWS_ENEMY),
+		/** Claws Out's sparks (74D0 C15, 800D0510 r1, from black): navy to cyan. */
+		CAT_CLAW_SPARK(CatPalettes.CAT_CLAW_SPARK),
+		/** The same, the enemy row (800D0510 r0): red to yellow. */
+		CAT_CLAW_SPARK_ENEMY(CatPalettes.CAT_CLAW_SPARK_ENEMY),
+		/** The landing hit's sphere (7256 C13, 800C7EF8 r5, HDR 4.8): blue to cyan. */
+		CAT_SHOCK(CatPalettes.CAT_SHOCK),
+		/** The landing hit's flame burst (7256 C17, 800CFAE7 r3, HDR 22): blue to sky to cyan. */
+		CAT_SHOCK_FLAME(CatPalettes.CAT_SHOCK_FLAME),
+		/** The same, the enemy row (800CFAE7 r4): dark red to orange. */
+		CAT_SHOCK_FLAME_ENEMY(CatPalettes.CAT_SHOCK_FLAME_ENEMY),
+		/** The landing hit's sparks (7256 C21, 8008B3B1 r1, from black): violet to blue to white. */
+		CAT_SHOCK_SPARK(CatPalettes.CAT_SHOCK_SPARK),
+		/** The dive's thin tube trail (7163 C57, 8009F6ED r3, HDR 3.6): white head, cyan. */
+		CAT_DIVE_CYAN(CatPalettes.CAT_DIVE_CYAN),
+		/** The dive's middle tube trail (7163 C61, 800C202B r3, HDR 2.7): cyan to blue. */
+		CAT_DIVE_BLUE(CatPalettes.CAT_DIVE_BLUE),
+		/** The dive's wide tube trail (7163 C65, 8000C8DF r3, HDR 2.7): white head, gold. */
+		CAT_DIVE_GOLD(CatPalettes.CAT_DIVE_GOLD),
+		/** The dive trails' enemy rows (r4): white head, orange. */
+		CAT_DIVE_ENEMY(CatPalettes.CAT_DIVE_ENEMY),
+		/** The dive's strip trails (7163 C103, 8004F990 r3, HDR 2.7): blue to cyan. */
+		CAT_DIVE_STRIP(CatPalettes.CAT_DIVE_STRIP),
+		/** The jetpack's and the dive's gold sparks (7064 C44 / 7163 C92, r1): gold to pale yellow. */
+		CAT_SPARK_GOLD(CatPalettes.CAT_SPARK_GOLD),
+		/** The jetpack's pale sparks (7064 C47 / 7163 C113, 800A522D r1): slate to pale blue. */
+		CAT_SPARK_PALE(CatPalettes.CAT_SPARK_PALE),
+		/** The jetpack sparks' enemy row (800D5B12 r2): red to pale pink. */
+		CAT_SPARK_ENEMY(CatPalettes.CAT_SPARK_ENEMY),
+		/** The paw print's second set (709F C56, 800751FB r4, HDR 2.4): deep blue to white. */
+		CAT_PAW_PRINT_BLUE(CatPalettes.CAT_PAW_PRINT_BLUE),
 		// Lifeweaver's (tools/reference/lifeweaver-effects.md "Palettes", generated from his LUT rows)
 		/** His hex sparkles 3EB7D (8005B0D22D52 r0, HDR 5): magenta-pink to white. */
 		LW_PINK(0, 0, 0, 0, .25f, 1, .343f, 1, .5f, 1, .83f, 1, .75f, 1, 1, 1, 1, 1, 1, 1),

@@ -101,10 +101,64 @@ From `research\jetpack_cat\work\fx_digest.txt` (71B1, 7454, 70F9, 71B3, 71AF) an
 - **Not tried:** a second player (the setting as another player sees it: the server path is the same one), an enemy
   Jetpack Cat's arcs and bubbles (red), the arcs from her own first person (Lifeline forces third person).
 - **Still ours or unsettled:** the arcs' mask layout (M) and both effects' strengths; the wall's 0.35; the seeking rings'
-  growth (L) and the cable's tiling (L); the rest listed under "Still ours" in `JetpackCatFx` (the paw print's 5x scale,
-  spark sizes, the landing's 12 m ground flash, the jetpack flames as streaks). Not drawn at all yet: Catnapper's cast
-  (7373), dive (7163) and head slash (71B8), the landing's per-enemy burst (7256), Transport Shielding's hex (5513), Claws
-  Out (74D0).
+  growth (L) and the cable's tiling (L). (The rest listed here then is done: next section.)
+
+## The last of #59: every effect of hers drawn, from her data (2026-11-02)
+From `research\jetpack_cat\workx_digest.txt` (7064, 7373, 7163, 71B8, 709F, 71C2, 70F9, 5513) and
+`assets2\workx_digest.txt` (7256, 74D0). New pack files (`build_asset_pack.py`: `effects --only cat_ <FX1> <FX2>` writes
+only hers into a shared pack): meshes `cat_flame` 1B580, `cat_bell` 19370, `cat_slash_arc` 152B9, `cat_dome` 1B2FF (also
+in `HeroModels.EXTRAS`: an effect mesh not listed there never loads, `Fx.mesh` is null and nothing is drawn); masks 720CE,
+F7D2, 5429, 18400, 37021, 55A46, D89, 54A15 and products of them; bakes `bake_cat_flame` (the flame tube's 8 frames, the
+hexes, the range wall). Her new palettes are in `CatPalettes` (EffectArt's enum initializer is at the class file's 64 KB).
+- **Jetpack flames (7064):** the tube 1B580 itself (0.128 m wide, 0.17 m long, its V 0 at the nozzle), three layers at the
+  data's sizes (1.1 teal, 1.1 gold, 0.55 white-hot), the masks 2C41F x 7A9 x 299E3 baked into 8 frames of the noise moving
+  down it, looped at 20 a second (the data's scroll rate -10 isn't usable as is: ours). Sparks: 50 gold and 45 pale a
+  second of 0.011-0.014 m blobs stretched 6 along their way (their speed is an engine input: ours 1 m/s).
+- **Spark sizes:** the shots' sparks at the data's 0.15-0.5 m (they're 1F35 blobs filling half the quad).
+- **The paw print (709F):** the data's layout and sizes, no 5x: a print about 0.1 m across, the teardrop D89 x 18E48 in
+  two sets (gold 0.09-0.27 m, blue 0.09-0.47 m). In play it's small and mostly behind the enemy-hit flare (as the data has
+  it).
+- **Catnapper's cast (7373):** flares of the flame tube on both nozzles, exhaust rings (1BD54, 1C7A x 18E48) shot out at
+  6.9 m/s, a gold bell (19370 at 1.1, its wide end 0.43 m under her feet, narrow end up: the mesh as it stands, M).
+- **The dive (7163)** from the end of the 0.35 s windup until `catnapper_land` (the server now sends her id with the cast and
+  the landing): three tube trails and two strips per nozzle at the data's widths and lives, the spark bursts (30 at the
+  start, 144 pale and 50 gold a second), gold exhaust rings 7 a second. Not drawn: its heat streaks (distortion) and its
+  speed lines (placed by an engine input, ECIN, not decoded).
+- **The head slash (71B8),** the dive's first 0.2 s: arcs 152B9 100 a second, 1.6 m ahead of her middle (its hardpoint 01DA
+  isn't resolved: M), and two domes 1B2FF (2.58 m) 0.21 m ahead. At full strength the inner dome (55A46, a mostly white
+  strip) was a solid cyan disc in play: drawn at 0.6 / 0.35 (ours).
+- **The landing's ground flash (71C2 C19):** 21.7 m as the data has it, 4C09 x 16E9D, navy to #0004FF (800C2FC5 r3). By
+  night it washes the whole view navy for its 0.25 s (`h2.png`); by day it hardly shows. The data's colour never goes past
+  pure blue, so it doesn't whiten the view as the old 12 m cyan glow would have at that size.
+- **The landing's hit on each enemy (7256):** the server plays `catnapper_hit` on each one it damages, thrown out from her: a
+  0.26 m sphere, tan smoke and dust, a small flame burst, 2-4 sparks back toward her (the effect's own (0, 0.3, 0.98) and
+  (0, 0, -1): M that its Z is away from her). Seen spawning on both zombies (`fxnear`), small at play distance.
+- **Transport Shielding (5513):** only she sees it (the server sends it to her alone, M). The frame 5C75 is a square with an
+  octagon cut out and its edge mask 18400 is black inside a circle, so it's hexes in a square's corners: drawn as a camera
+  facing square at her chest from a camera off her (Lifeline and the carry lift the camera), 1.45 m before her eyes in true
+  first person. It lasts while her absorption does (up to 3 s); her absorption reaches the client a tick after the effect,
+  which at first ended it at once (found playing).
+- **Claws Out (74D0):** three claw-mark quads (720CE x 18E48, 0.75 m: the data's 0.49-1.01 runs on an input not decoded,
+  ours its middle) at the data's turn range, 5 sparks, at the clawed one's chest moved 0.4 m toward her (at the chest's
+  middle the zombie's own body hid them, found playing). Teal for her side, pink-red for theirs.
+- **Purr's wall at night (70F9):** reproduced first: past 10 m the ground and the sky at the horizon took about +40 of
+  gold by night (`purr_1p_a.png`). The data has no 0.35 (ours); what it has: its noises tiled 4 x 4 (12BB r0) and a 65BC row
+  r4 of two narrow bumps (R peaking at 0.4, G at 0.6 of its input, 0.07 / 0.01 at 0.2). Read as strength along the wall's V
+  (0 at its top 4 m over her, M: the age reading has it dark for the first 2 s of a 4 s Purr, which doesn't fit), the wall
+  is lit 4-12 m under her and faint at her own height. Baked into `cat_purr_wall_band`: on the ground the tint is now about
+  +12 (`purr3_1p_ground_1s5.png`); flying 8 m up, the ring lies on the ground round her (`purr3_3p_air.png`).
+- **Played** (dev client 2, world `cat59b`, superflat, picked on the select screen, again on each rejoin after a restart):
+  Purr on the ground by night and day and 8 m up, first and third person; the jetpack flames close up by day and night,
+  back and front (`flame_*`); a volley onto a NoAI zombie with the effects slowed (`shot1-4`, `fxnear`: the print's quads at
+  the data's sizes); Catnapper by night and by day onto AI zombies, at /tick rate 3-4 and at full speed (`nap2_*`, `d*`,
+  `e*`, `h*`): cast, windup rings, dive trails and sparks, the head slash's domes, the landing, the hit bursts on both
+  zombies, the carry; Transport Shielding (picked in the perk menu) by Lifeline on a villager (`ts*`) and by the carry
+  (`k3.png`); Claws Out by quick melee on a zombie in first person (`claws1.png`). Screenshots in `run2/screenshots/`.
+- **Not tried:** an enemy Jetpack Cat (the red rows), a second player seeing her dive, Transport Shielding in true first
+  person (Lifeline and the carry always lift the camera), Claws Out from the third person (the second swing was still on
+  its 6 s cooldown). A `reload` of the resource packs ran the 3 GB client out of memory (hero models): restart instead.
+- **Still ours:** the flame noise's speed; the jetpack sparks' speed; the 0.6 / 0.35 dome strengths; the wall's 0.35 and its
+  r4 reading (M); Claws Out's size; where 01DA is; the hex overlay's place in first person; the bell's orientation.
 
 ## The body that was never drawn (0.3.16, found by the owner)
 - 0.3.16 shipped an empty jetpack with eyes and a tongue: her fur material (shader 0x10D) has its colour texture only
