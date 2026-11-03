@@ -1676,25 +1676,30 @@ public final class HeroAnimator {
 		}
 	}
 
-	/** Whether each clip is a turn-in-place stand (TURN_IN_PLACE), worked out once per clip. */
-	private static final Map<SkinnedModel.Clip, Boolean> TURNS = new java.util.IdentityHashMap<>();
+	/**
+	 * Whether each clip is a turn-in-place stand (TURN_IN_PLACE), worked out once per clip, per model: a model a resource
+	 * reload replaces lets its answers go with it.
+	 */
+	private static final Map<SkinnedModel, Map<String, Boolean>> TURNS = java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
 	/**
 	 * How far (degrees) a stand clip's root turns from its first frame to its last to count as a turn-in-place sheet (ours:
 	 * the data's turn sheets go 120; a stand that only sways turns a few).
 	 */
 	static final float TURN_IN_PLACE = 45;
+	/** The frames looked at through a clip for its turn (the largest from the first counts: a turn that comes back too). */
+	private static final int TURN_SAMPLES = 16;
 
 	/**
 	 * A turn-in-place stand: the clip's root (the bone above the pelvis, or the pelvis) faces more than TURN_IN_PLACE
-	 * degrees away at its end from where it faced at its start. Overwatch picks such a sheet's frame by the turn's progress
-	 * (H for Kiriko's: kiriko-research.md); played on the clock it spins the hero round.
+	 * degrees away from where it faced at the start, at some point of the clip. Overwatch picks such a sheet's frame by the
+	 * turn's progress (H for Kiriko's: kiriko-research.md); played on the clock it spins the hero round.
 	 */
 	public static boolean turnsInPlace(SkinnedModel model, String name) {
 		SkinnedModel.Clip clip = clip(model, name);
 		if (clip == null || clip.duration() <= 0) {
 			return false;
 		}
-		return TURNS.computeIfAbsent(clip, c -> {
+		return TURNS.computeIfAbsent(model, m -> new java.util.concurrent.ConcurrentHashMap<>()).computeIfAbsent(name, n -> {
 			int root = UpperBody.mover(model);
 			if (root < 0) {
 				root = model.node("Pelvis");
@@ -1703,12 +1708,17 @@ public final class HeroAnimator {
 				return false;
 			}
 			Skeleton.Pose first = new Skeleton.Pose(model.nodeNames.length).rest(model);
-			Skeleton.Pose last = new Skeleton.Pose(model.nodeNames.length).rest(model);
-			Skeleton.sample(c, 0, first);
-			Skeleton.sample(c, c.duration(), last);
+			Skeleton.sample(clip, 0, first);
 			Matrix4f a = Skeleton.world(model, first, root);
-			Matrix4f b = Skeleton.world(model, last, root);
-			return Math.max(yawBetween(a, b, new Vector3f(1, 0, 0)), yawBetween(a, b, new Vector3f(0, 0, 1))) > TURN_IN_PLACE;
+			for (int i = 1; i <= TURN_SAMPLES; i++) {
+				Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
+				Skeleton.sample(clip, clip.duration() * i / TURN_SAMPLES, at);
+				Matrix4f b = Skeleton.world(model, at, root);
+				if (Math.max(yawBetween(a, b, new Vector3f(1, 0, 0)), yawBetween(a, b, new Vector3f(0, 0, 1))) > TURN_IN_PLACE) {
+					return true;
+				}
+			}
+			return false;
 		});
 	}
 
