@@ -101,6 +101,9 @@ the control's slot id as an "action" byte (its structure predates a field); read
 A weapon entity's own emote clips may key its root in her space, a bake of the bone it hangs on (Sojourn's Railgun:
 equal to her bone_0606 within 1 cm, frame for frame): keep its root on the hardpoint and play only its other bones
 ([sojourn_emotes](sojourn_emotes.md#the-railguns-own-clips-root-baked-on-her-carrier)).
+A root keyed in her space isn't always a bake of the hardpoint: Sigma's Constellation keys his spheres' root from his idle's hand
+while his own Weapon_R starts 1.4 m higher. Compare the two over the clip; where they part, the clip's root is where the weapon is,
+from the hero's origin ([sigma_emotes](sigma_emotes.md#constellation-a-weapon-clip-keyed-in-his-space-that-is-not-his-hand)).
 
 ## 8. The coat: sometimes animated, sometimes simulated
 A hero's cloth bones are never keyed in a clip, but that doesn't make the cloth physics. Overwatch's cloth (Domino)

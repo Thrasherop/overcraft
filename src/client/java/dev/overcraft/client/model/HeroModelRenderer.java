@@ -1249,7 +1249,7 @@ public final class HeroModelRenderer {
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			if (texture == null && piece.mesh().endsWith(SIGMA_CORE)) {
+			if (texture == null && (piece.mesh().endsWith(SIGMA_CORE) || piece.mesh().endsWith(SIGMA_CORE_BASE))) {
 				// Sigma's hand-sphere cores (submeshes 2 / 3 of 106B4, material 7C98: a shader, no colour texture): its cloud
 				// noise 19167 through its LUT's colour row times its emission (8000DFB0EAFE r1: plum, violet to blue), as added light
 				Identifier core = dev.overcraft.client.effect.EffectArt.get("cat_glow_noise",
@@ -1285,6 +1285,11 @@ public final class HeroModelRenderer {
 
 	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
 	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
+	/**
+	 * The same cores on the spheres' base model D7DD (submeshes 2 / 3, material 7C98 again), which his emotes spawn as props
+	 * (Dans' juggled copy, Constellation's two: techniques/emotes/sigma_emotes.md); drawn dark without this.
+	 */
+	private static final String SIGMA_CORE_BASE = "3060878AEBDEB872";
 
 	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
 	private static final int HOLOGRAM = 0xFF8344EF;

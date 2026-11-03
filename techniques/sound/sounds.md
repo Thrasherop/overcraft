@@ -210,6 +210,22 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     laughs), so `VOICE_IDS` keeps only its line; the others are `Unknown\<078>`.
   - **6BDB plays just before a stow window ends** (Heroic 4.17 against 4.07, Triumph 5.83 against 6.0): read as the gun
     returning to her hands (M), a use of the stow windows to name a sound.
+- <a id="sigma-emote-sounds"></a>**Sigma's emote sounds and voice lines (2026-11-02; `emotes.txt`, Sigma's section; scripts
+  `research\sigma\scripts\emote_sounds\`; played: [sigma step 11](../heroes/sigma.md#step-11-his-emotes-from-the-data)):**
+  30 02Cs and 3 voice stimuli over his 14 emotes, Sojourn's pipeline unchanged: `emote_fx.py` -> `ww.py` (`sigma_ids.txt`) ->
+  `dump_banks.py work\sigma_banks_raw.json 00000001E4DF.043 00000001E7CC.043 00000001E79B.043` -> his `extract_banks.py` (23 own
+  banks into `ExtraSounds\Sigma\Emotes`, log `research\sigma\logs\extract-sigma-emote-sounds.log`) -> `measure_emotes.py Sigma
+  ... Lúcio:E548 ...` (the 7 shared) -> `facts.py` -> `sigma_what.py` -> `gen_sigma.py` -> `apply_emote_sounds.py sigma <repo>`,
+  then the scratch-root build (its `tools/soundmaps/` holding only his section, as `emotes.txt`) and the merge of the 33
+  `sigma.emote.*` keys and their subtitles.
+  - **One file on two events at once:** Maestro's music is 60D4 and 610B, the same 39.03F from 0.62 s, on two mixers (610B 8 dB
+    louder, with none of the 04C conditions every other one of his carries). Played both, it would double: 60D4 is a duplicate
+    (`DUPLICATES`, in `emote_data.py` and `apply_emote_sounds.py`), as Lúcio's Dance Party's second bus. Keep the louder one: the
+    map's offset is set from the loudest layer, and leaving that one out would shift every sound of the hero.
+  - **The 04C pair 0223 / 0224 is not an audience marker:** Listen Up's "others" copy E54A has it, but so do 27 of his 30, the own
+    ones included. Audience stays as read from the music's own events (E548 / E549 own, E54A / E54B others).
+  - Stepping Stones' footsteps 91C3 sit on his feet's hardpoints (001C, 001B); Relaxation's ticks on 0002 / 0003. His two hums
+    (11B3, 12D3) are `Unknown\<078>`, his laugh 06A1 in `HeroVoice\Sigma\Laugh` (-4 dB).
 - <a id="sojourn-sounds"></a>**Sojourn's map (2026-11-02; `tools/soundmaps/sojourn.txt`, read for wiring in
   `tools/reference/sojourn-sounds.md`; scripts `research\sojourn\scripts\sounds\` (Juno's pipeline; the event table is its own
   file, `sojourn_table.py`, and `sojourn_gen.py` writes the map), data `research\sojourn\sounds\`; hub: [sojourn](../heroes/sojourn.md)):**

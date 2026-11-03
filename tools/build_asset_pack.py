@@ -1133,6 +1133,7 @@ def add_props(source, only=None):
     model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""
     import json
     write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
     for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
         hero = json.loads(data.read_text(encoding="utf8"))
         if only and hero["hero"] != only:
@@ -1197,9 +1198,16 @@ def add_props(source, only=None):
             if not glb.exists():
                 print(f"{name}: export failed: {result.stderr[-2000:]}")
                 continue
+            # a prop another hero's emotes share keeps that hero's clips (Sombra's B9A7 and Sigma's AE48 on 1024E)
+            before = work / f"{name}.before.glb"
+            if dest.exists():
+                shutil.copyfile(dest, before)
             shutil.copyfile(glb, dest)
             subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
                            + [f"{a}={b}" for a, b in renames.items()], check=True)
+            if before.exists():
+                subprocess.run([sys.executable, str(ROOT / "tools" / "merge_glb_clips.py"), str(dest), str(before)], check=True)
+                before.unlink()
             print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
 
 

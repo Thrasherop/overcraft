@@ -20,6 +20,14 @@ public final class EmoteCamera {
 	private static final float SWING = 0.5f;
 	/** How far it orbits from her (blocks; ours, nearer than Minecraft's third person, 4: she fills the screen more). */
 	private static final float DISTANCE = 2.5f;
+	/**
+	 * The eye height DISTANCE was set for (a Minecraft-sized hero: Kiriko's 1.62). A taller hero is framed the same way, the
+	 * orbit out in proportion (ours): at 2.5 blocks Sigma (eye 2.06, 2.5 m tall, his hands up to 3.3 m in Constellation)
+	 * had his head out of the top of the screen in every emote (found playing his emotes).
+	 */
+	private static final float EYE = 1.62f;
+	/** The hero's own reach: DISTANCE scaled by its eye height over EYE, never nearer than DISTANCE. */
+	private static float reach = DISTANCE;
 	/** Nearer than this to the point it orbits, it's inside her head: she isn't drawn (her held ofuda filled the view). */
 	private static final float INSIDE = 0.8f;
 	/**
@@ -72,16 +80,17 @@ public final class EmoteCamera {
 		if (mc.level == null) {
 			return 0;
 		}
+		reach = DISTANCE * Math.max(1, player.getEyeHeight() / EYE);
 		Vec3 pivot = player.position().add(0, player.getEyeHeight() * PIVOT, 0);
 		float best = 0;
 		double bestRoom = -1;
 		for (float turn : new float[] {0, 30, -30, 60, -60, 90, -90, 120, -120, 150, -150, 180}) {
 			// the camera sits back along its look from the point it orbits
-			Vec3 back = Vec3.directionFromRotation(START_PITCH, player.getYRot() + 180 + turn).scale(-(DISTANCE + 0.3));
+			Vec3 back = Vec3.directionFromRotation(START_PITCH, player.getYRot() + 180 + turn).scale(-(reach + 0.3));
 			HitResult hit = mc.level.clip(new ClipContext(pivot, pivot.add(back), ClipContext.Block.VISUAL,
 				ClipContext.Fluid.NONE, player));
-			double room = hit.getType() == HitResult.Type.MISS ? DISTANCE + 0.3 : hit.getLocation().distanceTo(pivot);
-			if (room >= DISTANCE + 0.29) {
+			double room = hit.getType() == HitResult.Type.MISS ? reach + 0.3 : hit.getLocation().distanceTo(pivot);
+			if (room >= reach + 0.29) {
 				return turn;
 			}
 			if (room > bestRoom) {
@@ -137,7 +146,7 @@ public final class EmoteCamera {
 	/** How far the view is from the point it orbits: out fast, then swinging round (ease-out cubic). */
 	public static float distance() {
 		float s = 1 - swing();
-		return DISTANCE * (1 - s * s * s);
+		return reach * (1 - s * s * s);
 	}
 
 	/** The view is still inside her (the first moments of the swing): HeroModelRenderer doesn't draw her. */

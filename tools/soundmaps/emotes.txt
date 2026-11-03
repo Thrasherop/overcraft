@@ -6373,3 +6373,430 @@ $sojourn.emote.v12de = Sojourn: Yeah!
 $sojourn.emote.v16b6 = Sojourn: (grunt)
 $sojourn.emote.v16b7 = Sojourn: (grunt)
 $sojourn.emote.v6a1 = Sojourn: (laughs)
+
+# ===== Sigma: 30 emote sounds (rules), 3 voice stimuli (plain events). Offset +6.5 dB (the loudest layer: 610B).
+# His own 23 02Cs (banks 1E7CC and 1E4DF; ExtraSounds/Sigma/Emotes) are mostly one long stereo file held over a clip
+# at 15 m, with timed hits in Stepping Stones and Relaxation and many timed sets in Maestro and Constellation (H). No
+# loops. Maestro's music plays through two events at once, 60D4 and 610B, the same file (39.03F) on two mixers: the
+# louder, 610B, is kept (60D4 a duplicate: tools/emote_data.py DUPLICATES, M). Listen Up's, Mic Drop's and Salty's are
+# the shared achievement-emote 02Cs (bank 1E79B), read from Lucio's extraction. Voice: 3 VoiceStimulus components of 3
+# stimuli (H), every line of each with its weight from research/sigma/sounds/voice_lines.json (all 1.0; 35 m; 0 dB but
+# 06A1 -4 dB); his voice extraction is in research/sigma/extract, reached through ../../research/sigma/extract/ as
+# sigma.txt does. Clip components read from his emote json with emote_fx.py.
+# 5A1A one of three 0.46 s mid takes (-75 cents; 47-64% 300 Hz-2 kHz) at 0.04 s of Stepping Stones' first clip and
+# 1.17 s of its loop, as a rock rises off the ground: read as a stone knock. Clip components (clip id @start s
+# [+window s]): stepping_stones AF58@0.036 hp 00A4; stepping_stones AF59@1.167 hp 00A4.
+# Play event (02C 5A1A, bank 1E4DF): a: random of 3, 0.46-0.47 s, 1ch, -75 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -37.5; the rule adds the hero's offset. Length 0.49 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a1a = sigma.emote.s5a1a.a*0.958:-31
+# 5A23 four layered random sets of short bright ticks and sparkles (most over 2 kHz, from 0.0 to 0.19 s) at 1.24 s of
+# Stepping Stones and 0.07 s of its loop: read as his gravity's crackle on the rocks. Clip components (clip id @start
+# s [+window s]): stepping_stones AF58@1.241 hp 00A4; stepping_stones AF59@0.067 hp 00A4.
+# Play event (02C 5A23, bank 1E4DF): a: random of 7 (no repeat within 4), 0.06-0.30 s, 1ch, -25 cents, @0.190 s; b:
+# random of 6 (no repeat within 3), 0.07-0.38 s, 1ch, -25 cents, some files differ by +0/-230/+0 (dB / cents / s; not
+# reproduced: one gain, pitch and delay per layer); c: random of 3, 0.21-0.29 s, 1ch, -25 cents, @0.050 s; d: one
+# file, 0.44 s, 1ch, -100 cents.
+# Audience field 2 (3D), range 30 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -16.5, b -19.5, c -35.5, d -14.5; the rule adds the hero's
+# offset. Length 0.49 s. Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a23 = sigma.emote.s5a23.a*0.986@0.19:-10 + sigma.emote.s5a23.b*0.986:-13 + sigma.emote.s5a23.c*0.986@0.05:-29 + sigma.emote.s5a23.d*0.944:-8
+# 5A33 one 4.2 s stereo take held over Applause (46% 300 Hz-2 kHz, a 1 kHz partial): read as his clapping. Clip
+# components (clip id @start s [+window s]): applause 7359@0.003+3.625 hp 00A4.
+# Play event (02C 5A33, bank 1E7CC): a: one file, 4.18 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5; the rule adds the hero's offset. Length 4.18 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.s5a33 = sigma.emote.s5a33.a:-15
+# 5A37 one of five 4 s stereo takes held over Inconsequential, two of them near Applause's own (the same 1 kHz
+# partial): read as his hands' and coat's movement as he waves it away. Clip components (clip id @start s [+window
+# s]): inconsequential 72F6@0.000+3.733 hp 00A4.
+# Play event (02C 5A37, bank 1E7CC): a: random of 5, 4.04-4.20 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5; the rule adds the hero's offset. Length 4.20 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a37 = sigma.emote.s5a37.a:-15
+# 5A44 one 4.5 s stereo take held over Laugh (spread over the bands), under his laugh line: read as his body's
+# movement. Clip components (clip id @start s [+window s]): laugh 7348@0.000+3.933 hp 00A4.
+# Play event (02C 5A44, bank 1E7CC): a: one file, 4.50 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -21.5; the rule adds the hero's offset. Length 4.50 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a44 = sigma.emote.s5a44.a:-15
+# 5A58 one 10.6 s low stereo bed (95% under 300 Hz) held over Observations. Clip components (clip id @start s [+window
+# s]): observations 72F0@0.003+10.397 hp 00A4.
+# Play event (02C 5A58, bank 1E7CC): a: one file, 10.57 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -1.5; the rule adds the hero's offset. Length 10.57 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a58 = sigma.emote.s5a58.a:+5
+# 5A5A one 4 s low stereo bed (98% under 300 Hz) held over Relaxation's way in, as the rock comes up under him. Clip
+# components (clip id @start s [+window s]): relaxation 7341@0.000+3.933 hp 00A4.
+# Play event (02C 5A5A, bank 1E7CC): a: one file, 3.95 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 3.95 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a5a = sigma.emote.s5a5a.a:-9
+# 5A5B one of four short bright takes (-250 / -275 cents) at 1.27 s and 2.83 s of Relaxation's loop, on hardpoints
+# 0003 / 0002: read as the spheres' ticks. Clip components (clip id @start s [+window s]): relaxation 7344@1.267 hp
+# 0003; relaxation 7344@2.833 hp 0002.
+# Play event (02C 5A5B, bank 1E7CC): a: random of 2, 0.12-0.21 s, 1ch, -250 cents, LPF/HPF 4/0 (not reproduced); b:
+# random of 2, 0.22-0.29 s, 1ch, -275 cents, LPF/HPF 0/70 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -10.5, b -15.5; the rule adds the hero's offset. Length
+# 0.34 s. Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a5b = sigma.emote.s5a5b.a*0.866:-4 + sigma.emote.s5a5b.b*0.853:-9
+# 5A6A one 4.4 s airy stereo take (82% over 6 kHz) held over Heroic: read as a shimmer under the pose. Clip components
+# (clip id @start s [+window s]): heroic 7458@0.033+3.933 hp 00A4.
+# Play event (02C 5A6A, bank 1E7CC): a: one file, 4.41 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 4.41 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a6a = sigma.emote.s5a6a.a:-12
+# 5A72 one of seven 1.9 s soft takes (+200 cents, mostly 2-6 kHz) at 0.59 s (hardpoint 0003) and 2.08 s (0002) of
+# Relaxation's loop: read as a soft whoosh. Clip components (clip id @start s [+window s]): relaxation 7344@0.587 hp
+# 0003; relaxation 7344@2.082 hp 0002.
+# Play event (02C 5A72, bank 1E7CC): a: random of 7, 1.82-1.87 s, 1ch, +200 cents.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -5.5; the rule adds the hero's offset. Length 1.66 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a72 = sigma.emote.s5a72.a*1.122:+1
+# 5A76 one 1 s low thump (92% under 300 Hz) over Relaxation's 0.47 s step. Clip components (clip id @start s [+window
+# s]): relaxation 7346@0.001+0.463 hp 00A4.
+# Play event (02C 5A76, bank 1E7CC): a: one file, 0.98 s, 2ch.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -15.5; the rule adds the hero's offset. Length 0.98 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s5a76 = sigma.emote.s5a76.a:-9
+# 606D two layers held over Dans' loop: a 9.8 s mid / high bed from 0.1 s and an 8 s low and airy one from 1.8 s. Clip
+# components (clip id @start s [+window s]): dans 83AB@0.012+9.846 hp 00A4.
+# Play event (02C 606D, bank 1E7CC): a: one file, 9.79 s, 1ch, @0.100 s; b: one file, 8.07 s, 1ch, @1.800 s.
+# Its Stop event fades 0.10 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5, b -6.5; the rule adds the hero's offset. Length 9.89
+# s. Containers / delays / gains H (read); what it is L.
+@sigma.emote.s606d = sigma.emote.s606d.a@0.1:0 + sigma.emote.s606d.b@1.8:0
+# 606E one 2 s bed (mid and high) from 0.1 s over Dans' way in. Clip components (clip id @start s [+window s]): dans
+# 83AA@0.000+1.931 hp 00A4.
+# Play event (02C 606E, bank 1E7CC): a: one file, 2.02 s, 1ch, @0.100 s.
+# Its Stop event fades 0.30 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.5; the rule adds the hero's offset. Length 2.12 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s606e = sigma.emote.s606e.a@0.1:0
+# 60C0 eleven timed sets over Maestro's 10.2 s (from 0.0 to 10.1 s; one a 10.2 s low-mid bed) of short whooshes,
+# knocks and ticks, three files shared with Constellation's 9DD9: read as the conducted rocks moving. Clip components
+# (clip id @start s [+window s]): maestro 8086@0.000+10.167 hp 00A4.
+# Play event (02C 60C0, bank 1E7CC): a: random of 5, 0.92-1.09 s, 1ch, @10.100 s; b: random of 3, 0.07-0.21 s, 1ch,
+# @10.000 s; c: random of 3, 0.34-0.44 s, 1ch, -75 cents, @7.300 s; d: random of 3, 0.34-0.44 s, 1ch, -75 cents,
+# @1.100 s; e: random of 2, 0.42-0.44 s, 1ch, -100 cents, @0.500 s; f: random of 2, 0.24-0.29 s, 1ch, -100 cents,
+# @4.900 s; g: random of 2, 0.24-0.29 s, 1ch, -100 cents; h: random of 2, 0.23-0.28 s, 1ch, -100 cents, @8.500 s; i:
+# random of 2, 0.23-0.34 s, 1ch, +100 cents, @6.900 s; j: random of 2, 0.23-0.28 s, 1ch, -100 cents, @5.800 s; k: one
+# file, 10.23 s, 1ch, @0.100 s; l: one file, 2.56 s, 1ch, -400 cents, @1.700 s.
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5, b +1.5, c -26.5, d -26.5, e -19.5, f -29.5, g -29.5,
+# h -17.5, i -18.5, j -24.5, k -5.5, l -26.5; the rule adds the hero's offset. Length 11.19 s. Containers / delays /
+# gains H (read); what it is L.
+@sigma.emote.s60c0 = sigma.emote.s60c0.a@10.1:-11 + sigma.emote.s60c0.b@10:+8 + sigma.emote.s60c0.c*0.958@7.3:-20 + sigma.emote.s60c0.d*0.958@1.1:-20 + sigma.emote.s60c0.e*0.944@0.5:-13 + sigma.emote.s60c0.f*0.944@4.9:-23 + sigma.emote.s60c0.g*0.944:-23 + sigma.emote.s60c0.h*0.944@8.5:-11 + sigma.emote.s60c0.i*1.059@6.9:-12 + sigma.emote.s60c0.j*0.944@5.8:-18 + sigma.emote.s60c0.k@0.1:+1 + sigma.emote.s60c0.l*0.794@1.7:-20
+# 60D4 Maestro's music again: the same file as 610B at the same moment, on another mixer, 8 dB quieter (a duplicate:
+# not played, tools/emote_data.py DUPLICATES). Clip components (clip id @start s [+window s]): maestro
+# 8086@0.000+10.167 hp 00A4.
+# Play event (02C 60D4, bank 1E7CC): a: one file, 10.50 s, 2ch, @0.620 s.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.0; the rule adds the hero's offset. Length 11.12 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.s60d4 = sigma.emote.s60d4.a@0.62:-6.5
+# 610B one 10.5 s stereo tonal file (66% 300 Hz-2 kHz, partials at 64-784 Hz) from 0.62 s over Maestro: read as the
+# music he conducts. Clip components (clip id @start s [+window s]): maestro 8086@0.000+10.167 hp 00A4.
+# Play event (02C 610B, bank 1E7CC): a: one file, 10.50 s, 2ch, @0.620 s.
+# Its Stop event fades 0.50 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -6.0; the rule adds the hero's offset. Length 11.12 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.s610b = sigma.emote.s610b.a@0.62:+0.5
+# 81C1 one 7 s stereo bed (68% under 300 Hz) held over Magic Pumpkins, the loudest of his (peak +3 dBFS). Clip
+# components (clip id @start s [+window s]): magic_pumpkins AE47@0.000+6.967 hp 00A4.
+# Play event (02C 81C1, bank 1E7CC): a: one file, 7.01 s, 2ch.
+# Its Stop event fades 0.00 s. Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -17.5; the rule adds the hero's offset. Length 7.01 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s81c1 = sigma.emote.s81c1.a:-11
+# 919E one 4.4 s low stereo bed (69% under 300 Hz) over Stepping Stones' first clip. Clip components (clip id @start s
+# [+window s]): stepping_stones AF58@0.000+5.033 hp 00A4.
+# Play event (02C 919E, bank 1E7CC): a: one file, 4.38 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -11.5; the rule adds the hero's offset. Length 4.38 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s919e = sigma.emote.s919e.a:-5
+# 919F one 1.6 s low stereo hit (86% under 300 Hz) at 0.84 s of Stepping Stones' loop. Clip components (clip id @start
+# s [+window s]): stepping_stones AF59@0.839 hp 00A4.
+# Play event (02C 919F, bank 1E7CC): a: one file, 1.59 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.0; the rule adds the hero's offset. Length 1.59 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s919f = sigma.emote.s919f.a:-7.5
+# 91A0 one 0.9 s low stereo hit at the start of Stepping Stones' loop. Clip components (clip id @start s [+window s]):
+# stepping_stones AF59@0.017 hp 00A4.
+# Play event (02C 91A0, bank 1E7CC): a: one file, 0.90 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.0; the rule adds the hero's offset. Length 0.90 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s91a0 = sigma.emote.s91a0.a:-7.5
+# 91C2 one 0.65 s low stereo hit at 4.65 s of Stepping Stones and 2.81 s of its loop. Clip components (clip id @start
+# s [+window s]): stepping_stones AF58@4.646 hp 00A4; stepping_stones AF59@2.814 hp 00A4.
+# Play event (02C 91C2, bank 1E7CC): a: one file, 0.65 s, 2ch, LPF/HPF 0/15 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -14.0; the rule adds the hero's offset. Length 0.65 s.
+# Containers / delays / gains H (read); what it is L.
+@sigma.emote.s91c2 = sigma.emote.s91c2.a:-7.5
+# 91C3 one of nine 0.25-0.34 s sub-bass takes (all under 300 Hz) on his feet's hardpoints (001C at 2.92 / 1.10 s, 001B
+# at 4.60 / 2.70 s) in Stepping Stones: read as his steps onto the rocks. Clip components (clip id @start s [+window
+# s]): stepping_stones AF58@2.920 hp 001C; stepping_stones AF58@4.598 hp 001B; stepping_stones AF59@1.100 hp 001C;
+# stepping_stones AF59@2.700 hp 001B.
+# Play event (02C 91C3, bank 1E7CC): a: random of 9 (no repeat within 4), 0.23-0.34 s, 1ch, +100 cents, LPF/HPF 0/65
+# (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -13.0; the rule adds the hero's offset. Length 0.33 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.s91c3 = sigma.emote.s91c3.a*1.059:-6.5
+# 9DD9 a 5.8 s airy stereo bed (53% over 6 kHz) from 0.3 s and six timed sets of short chimes (from 0.0 to 5.8 s) over
+# Constellation: read as the stars he draws. Clip components (clip id @start s [+window s]): constellation
+# CBDF@0.000+6.900 hp 00A4.
+# Play event (02C 9DD9, bank 1E7CC): a: random of 2, 0.42-0.44 s, 1ch, -100 cents; b: random of 2, 0.24-0.29 s, 1ch,
+# -100 cents, @5.800 s; c: random of 2, 0.48 s, 1ch, @5.500 s; d: random of 2, 0.42-0.46 s, 1ch, -50 cents, @1.600 s;
+# e: random of 2, 0.41-0.42 s, 1ch, +400 cents, @5.200 s, some files differ by +0/-200/+0 (dB / cents / s; not
+# reproduced: one gain, pitch and delay per layer); f: one file, 5.84 s, 2ch, @0.300 s; g: one file, 0.53 s, 1ch, -300
+# cents, @0.200 s, LPF/HPF 0/45 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -22.5, b -33.5, c -25.5, d -32.5, e -42.5, f -15.5, g
+# -19.5; the rule adds the hero's offset. Length 6.14 s. Containers / delays / gains H (read); what it is L.
+@sigma.emote.s9dd9 = sigma.emote.s9dd9.a*0.944:-16 + sigma.emote.s9dd9.b*0.944@5.8:-27 + sigma.emote.s9dd9.c@5.5:-19 + sigma.emote.s9dd9.d*0.972@1.6:-26 + sigma.emote.s9dd9.e*1.260@5.2:-36 + sigma.emote.s9dd9.f@0.3:-9 + sigma.emote.s9dd9.g*0.841@0.2:-13
+# DA44 the mic hitting the floor, at 0.93 s (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C83@0.933 hp 00A4.
+# Play event (02C DA44, bank 1E79B): a: random of 4 (no repeat within 2), 0.40-0.54 s, 1ch.
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -18.5; the rule adds the hero's offset. Length 0.54 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.sda44 = sigma.emote.sda44.a:-12
+# DA4F mic feedback whine, only 6 in 15 plays (Mic Drop, the shared emote). Clip components (clip id @start s [+window
+# s]): mic_drop 15C83@0.101+2.067 hp 00A4.
+# Play event (02C DA4F, bank 1E79B): a: random of 6 + 9 silences (no repeat within 7), 0.72-2.44 s, 2ch, +270 cents,
+# @0.010 s, some files differ by -1/+0/+0 +1/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay
+# per layer), LPF/HPF 30/0 (not reproduced).
+# Sounds in 40% of plays. Audience field 2 (3D), range 35 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -0.5; the rule adds the hero's offset. Length 2.10 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.sda4f = sigma.emote.sda4f.a*1.169@0.01:+6
+# E548 the emote's music, his own copy: 4-channel, looped from a random point (Listen Up, shared). Clip components
+# (clip id @start s [+window s]): listen_up 1851B@0.000+3.467 hp 00A4.
+# Play event (02C E548, bank 1E79B): a: one file, 11.39 s, 4ch, LOOPS (Wwise loop count 0 = endless).
+# Play 278366246 fades in over 500 ms; Seek 278366246 to a random fraction 0.0-1.0. Its Stop event fades 1.50 s.
+# Audience field 2 (3D), range 100 m. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -9.5; the rule adds the hero's offset. Length 11.39 s, loop
+# 11.395 s. Containers / delays / gains H (read); what it is M.
+@sigma.emote.se548 = sigma.emote.se548.a:-3
+# E549 the music's second layer, his own copy: 2D, front and rear (Listen Up, shared). Clip components (clip id @start
+# s [+window s]): listen_up 1851B@0.112+3.355 hp 00A4.
+# Play event (02C E549, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch, -200 cents; b: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range none. Heard by: own (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -19.5, b -19.5; the rule adds the hero's offset. Length
+# 5.32 s. Containers / delays / gains H (read); what it is M.
+@sigma.emote.se549 = sigma.emote.se549.a*0.891:-13 + sigma.emote.se549.b:-13
+# E54A the emote's music as everyone else hears it from him: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 1851B@0.000+3.467 hp 00A4.
+# Play event (02C E54A, bank 1E79B): a: one file, 4.12 s, 2ch, LOOPS (Wwise loop count 0 = endless).
+# Play 593352062 fades in over 500 ms; Seek 593352062 to a random fraction 0.0-1.0. Its Stop event fades 1.00 s.
+# Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -24.5; the rule adds the hero's offset. Length 4.12 s, loop
+# 4.117 s. Containers / delays / gains H (read); what it is M.
+@sigma.emote.se54a = sigma.emote.se54a.a:-18
+# E54B the music's second layer as everyone else hears it: 3D (Listen Up, shared). Clip components (clip id @start s
+# [+window s]): listen_up 1851B@0.112+3.355 hp 00A4.
+# Play event (02C E54B, bank 1E79B): a: random of 2, 4.71-4.74 s, 2ch.
+# Its Stop event fades 2.00 s. Audience field 2 (3D), range 15 m. Heard by: others (group 8E state, see the header).
+# Net gains (Wwise volume + make-up up the chain + bus): a -23.5; the rule adds the hero's offset. Length 4.74 s.
+# Containers / delays / gains H (read); what it is M.
+@sigma.emote.se54b = sigma.emote.se54b.a:-17
+# EEA6 salt shaker: two shakes and a pouring hiss with a ting (Salty, shared). Clip components (clip id @start s
+# [+window s]): salty 18C9C@0.026+2.341 hp 00A4.
+# Play event (02C EEA6, bank 1E79B): a: random of 2, 0.20-0.29 s, 1ch, some files differ by -2/+0/+0 +2/+0/+0 (dB /
+# cents / s; not reproduced: one gain, pitch and delay per layer); b: random of 2, 0.20-0.29 s, 1ch, @1.450 s, some
+# files differ by -2/+0/+0 +2/+0/+0 (dB / cents / s; not reproduced: one gain, pitch and delay per layer); c: one
+# file, 2.91 s, 2ch, @0.030 s; d: one file, 2.28 s, 1ch, +1500 cents, @0.150 s, LPF/HPF 0/55 (not reproduced).
+# Audience field 2 (3D), range 15 m.
+# Net gains (Wwise volume + make-up up the chain + bus): a -4.5, b -4.5, c -18.5, d -4.5; the rule adds the hero's
+# offset. Length 2.94 s. Containers / delays / gains H (read); what it is L.
+@sigma.emote.seea6 = sigma.emote.seea6.a:+2 + sigma.emote.seea6.b@1.45:+2 + sigma.emote.seea6.c@0.03:-12 + sigma.emote.seea6.d*2.378@0.15:+2
+
+# ----- Sigma's emote sound sources: <source> = <file>, one line per variant (the extracted 02C folders)
+sigma.emote.s5a1a.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A1A.02C/0000002AF7E0.03F.ogg
+sigma.emote.s5a1a.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A1A.02C/0000002AF789.03F.ogg
+sigma.emote.s5a1a.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A1A.02C/0000002AF79D.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7AA.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7A8.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7A5.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7D5.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF76F.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7D2.03F.ogg
+sigma.emote.s5a23.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF773.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF786.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AB090.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF788.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AB03A.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AB085.03F.ogg
+sigma.emote.s5a23.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7C8.03F.ogg
+sigma.emote.s5a23.c = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF796.03F.ogg
+sigma.emote.s5a23.c = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7CF.03F.ogg
+sigma.emote.s5a23.c = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF7B0.03F.ogg
+sigma.emote.s5a23.d = ExtraSounds/Sigma/Emotes/Sounds/000000005A23.02C/0000002AF781.03F.ogg
+sigma.emote.s5a33.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A33.02C/0000002AB04B.03F.ogg
+sigma.emote.s5a37.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A37.02C/0000002AB058.03F.ogg
+sigma.emote.s5a37.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A37.02C/0000002AB060.03F.ogg
+sigma.emote.s5a37.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A37.02C/0000002AB05A.03F.ogg
+sigma.emote.s5a37.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A37.02C/0000002AB04E.03F.ogg
+sigma.emote.s5a37.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A37.02C/0000002AB041.03F.ogg
+sigma.emote.s5a44.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A44.02C/0000002AB083.03F.ogg
+sigma.emote.s5a58.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A58.02C/0000002AB043.03F.ogg
+sigma.emote.s5a5a.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A5A.02C/0000002AB08E.03F.ogg
+sigma.emote.s5a5b.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A5B.02C/0000002AB085.03F.ogg
+sigma.emote.s5a5b.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A5B.02C/0000002AB03A.03F.ogg
+sigma.emote.s5a5b.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A5B.02C/0000002AB05D.03F.ogg
+sigma.emote.s5a5b.b = ExtraSounds/Sigma/Emotes/Sounds/000000005A5B.02C/0000002AB030.03F.ogg
+sigma.emote.s5a6a.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A6A.02C/0000002AB054.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB032.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB02B.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB05E.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB08B.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB02E.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB046.03F.ogg
+sigma.emote.s5a72.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A72.02C/0000002AB062.03F.ogg
+sigma.emote.s5a76.a = ExtraSounds/Sigma/Emotes/Sounds/000000005A76.02C/0000002AB03D.03F.ogg
+sigma.emote.s606d.a = ExtraSounds/Sigma/Emotes/Sounds/00000000606D.02C/0000002AB028.03F.ogg
+sigma.emote.s606d.b = ExtraSounds/Sigma/Emotes/Sounds/00000000606D.02C/0000002AB02A.03F.ogg
+sigma.emote.s606e.a = ExtraSounds/Sigma/Emotes/Sounds/00000000606E.02C/0000002AB091.03F.ogg
+sigma.emote.s60c0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB03E.03F.ogg
+sigma.emote.s60c0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB05F.03F.ogg
+sigma.emote.s60c0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB087.03F.ogg
+sigma.emote.s60c0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB03F.03F.ogg
+sigma.emote.s60c0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB02C.03F.ogg
+sigma.emote.s60c0.b = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB03A.03F.ogg
+sigma.emote.s60c0.b = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB090.03F.ogg
+sigma.emote.s60c0.b = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB085.03F.ogg
+sigma.emote.s60c0.c = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB093.03F.ogg
+sigma.emote.s60c0.c = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB037.03F.ogg
+sigma.emote.s60c0.c = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB089.03F.ogg
+sigma.emote.s60c0.d = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB093.03F.ogg
+sigma.emote.s60c0.d = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB037.03F.ogg
+sigma.emote.s60c0.d = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB089.03F.ogg
+sigma.emote.s60c0.e = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB026.03F.ogg
+sigma.emote.s60c0.e = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB08A.03F.ogg
+sigma.emote.s60c0.f = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB08D.03F.ogg
+sigma.emote.s60c0.f = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB035.03F.ogg
+sigma.emote.s60c0.g = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB08D.03F.ogg
+sigma.emote.s60c0.g = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB035.03F.ogg
+sigma.emote.s60c0.h = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB053.03F.ogg
+sigma.emote.s60c0.h = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB033.03F.ogg
+sigma.emote.s60c0.i = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB042.03F.ogg
+sigma.emote.s60c0.i = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB051.03F.ogg
+sigma.emote.s60c0.j = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB053.03F.ogg
+sigma.emote.s60c0.j = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB033.03F.ogg
+sigma.emote.s60c0.k = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB08C.03F.ogg
+sigma.emote.s60c0.l = ExtraSounds/Sigma/Emotes/Sounds/0000000060C0.02C/0000002AB05C.03F.ogg
+sigma.emote.s60d4.a = ExtraSounds/Sigma/Emotes/Sounds/0000000060D4.02C/0000002AB039.03F.ogg
+sigma.emote.s610b.a = ExtraSounds/Sigma/Emotes/Sounds/00000000610B.02C/0000002AB039.03F.ogg
+sigma.emote.s81c1.a = ExtraSounds/Sigma/Emotes/Sounds/0000000081C1.02C/0000002AB086.03F.ogg
+sigma.emote.s919e.a = ExtraSounds/Sigma/Emotes/Sounds/00000000919E.02C/0000002AB038.03F.ogg
+sigma.emote.s919f.a = ExtraSounds/Sigma/Emotes/Sounds/00000000919F.02C/0000002AB084.03F.ogg
+sigma.emote.s91a0.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091A0.02C/0000002AB040.03F.ogg
+sigma.emote.s91c2.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C2.02C/0000002AB03B.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB04A.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB04F.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB04C.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB047.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB025.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB049.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB056.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB04D.03F.ogg
+sigma.emote.s91c3.a = ExtraSounds/Sigma/Emotes/Sounds/0000000091C3.02C/0000002AB048.03F.ogg
+sigma.emote.s9dd9.a = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB026.03F.ogg
+sigma.emote.s9dd9.a = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB08A.03F.ogg
+sigma.emote.s9dd9.b = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB08D.03F.ogg
+sigma.emote.s9dd9.b = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB035.03F.ogg
+sigma.emote.s9dd9.c = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB029.03F.ogg
+sigma.emote.s9dd9.c = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB057.03F.ogg
+sigma.emote.s9dd9.d = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB05B.03F.ogg
+sigma.emote.s9dd9.d = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB034.03F.ogg
+sigma.emote.s9dd9.e = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB03C.03F.ogg
+sigma.emote.s9dd9.e = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB02D.03F.ogg
+sigma.emote.s9dd9.f = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB052.03F.ogg
+sigma.emote.s9dd9.g = ExtraSounds/Sigma/Emotes/Sounds/000000009DD9.02C/0000002AB092.03F.ogg
+sigma.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2B0.03F.ogg
+sigma.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF2AF.03F.ogg
+sigma.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF292.03F.ogg
+sigma.emote.sda44.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA44.02C/0000002BF294.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A98.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9A.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9E.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9F.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A99.03F.ogg
+sigma.emote.sda4f.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000DA4F.02C/000000319A9C.03F.ogg
+sigma.emote.se548.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E548.02C/00000031DD02.03F.ogg
+sigma.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sigma.emote.se549.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sigma.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD23.03F.ogg
+sigma.emote.se549.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000E549.02C/00000031DD20.03F.ogg
+sigma.emote.se54a.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54A.02C/00000031DD22.03F.ogg
+sigma.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD23.03F.ogg
+sigma.emote.se54b.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000E54B.02C/00000031DD20.03F.ogg
+sigma.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sigma.emote.seea6.a = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sigma.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6D.03F.ogg
+sigma.emote.seea6.b = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6E.03F.ogg
+sigma.emote.seea6.c = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F6C.03F.ogg
+sigma.emote.seea6.d = ExtraSounds/Lúcio/Emotes/Sounds/00000000EEA6.02C/000000324F79.03F.ogg
+
+# ----- Sigma's emote voice lines: one plain event per voice stimulus (078), every line of it (English
+# takes alike) with the voice research's weight (w=). Stimuli: radius 35 m, volume 0 dB unless said. H.
+# 11B3 (humming): 2 line(s) 4.42 s, 4.46 s; clips stepping_stones AF58@0.000.
+sigma.emote.v11b3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/11B3.078/000000064D76.0B2-(humming).ogg | w=1
+sigma.emote.v11b3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/11B3.078/000000064D77.0B2-(humming).ogg | w=1
+# 12D3 (humming): 4 line(s) 2.13 s, 2.99 s, 3.82 s, 1.78 s; clips stepping_stones AF59@0.832.
+sigma.emote.v12d3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/12D3.078/000000064D75.0B2-(humming).ogg | w=1
+sigma.emote.v12d3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/12D3.078/000000064D78.0B2-(humming).ogg | w=1
+sigma.emote.v12d3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/12D3.078/000000064D79.0B2-(humming).ogg | w=1
+sigma.emote.v12d3 = ../../research/sigma/extract/HeroVoice/Sigma/Unknown/12D3.078/000000064D7A.0B2-(humming).ogg | w=1
+# 6A1 (laughs): 1 line(s) 1.94 s; clips laugh 7348@0.007, stimulus volume -4 dB.
+sigma.emote.v6a1 = ../../research/sigma/extract/HeroVoice/Sigma/Laugh/000000058D8A.0B2-(laughs).ogg | w=1
+
+# ----- Sigma's subtitles
+$sigma.emote.s5a1a = Sigma: stone knocks
+$sigma.emote.s5a23 = Sigma: gravity crackles
+$sigma.emote.s5a33 = Sigma: clapping
+$sigma.emote.s5a37 = Sigma: dismissive gesture
+$sigma.emote.s5a44 = Sigma: body shakes
+$sigma.emote.s5a58 = Sigma: low hum
+$sigma.emote.s5a5a = Sigma: low gravity hum
+$sigma.emote.s5a5b = Sigma: spheres tick
+$sigma.emote.s5a6a = Sigma: shimmer
+$sigma.emote.s5a72 = Sigma: soft whoosh
+$sigma.emote.s5a76 = Sigma: low thump
+$sigma.emote.s606d = Sigma: dance swirls
+$sigma.emote.s606e = Sigma: dance begins
+$sigma.emote.s60c0 = Sigma: rocks swirl
+$sigma.emote.s60d4 = Sigma: music plays
+$sigma.emote.s610b = Sigma: music plays
+$sigma.emote.s81c1 = Sigma: pumpkins float
+$sigma.emote.s919e = Sigma: low rumble
+$sigma.emote.s919f = Sigma: rock thuds
+$sigma.emote.s91a0 = Sigma: rock thuds
+$sigma.emote.s91c2 = Sigma: rock thuds
+$sigma.emote.s91c3 = Sigma: footstep
+$sigma.emote.s9dd9 = Sigma: stars chime
+$sigma.emote.sda44 = Sigma: mic drops
+$sigma.emote.sda4f = Sigma: mic feedback
+$sigma.emote.se548 = Sigma: music plays
+$sigma.emote.se549 = Sigma: music plays
+$sigma.emote.se54a = Sigma: music plays
+$sigma.emote.se54b = Sigma: music plays
+$sigma.emote.seea6 = Sigma: salt shakes
+$sigma.emote.v11b3 = Sigma: (humming)
+$sigma.emote.v12d3 = Sigma: (humming)
+$sigma.emote.v6a1 = Sigma: (laughs)

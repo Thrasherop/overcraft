@@ -334,14 +334,68 @@ screenshots `run/screenshots/s10_*`, `s11_*`, `sigma_s12_*`, not committed, each
   is BC5); the refraction / distortion renderers; the overhealth's body material (a glow stands in); world glows at his hands
   hidden by the 1P view model (the cores themselves now draw in 1P); not listened to for balance by a person.
 
+## Step 11 (his emotes from the data), played 2026-11-02
+All 14 from the data ([sigma_emotes](../emotes/sigma_emotes.md)): 64 clips in `hero_models/sigma_clips.glb`, the spheres re-exported
+with their 6 emote clips (`sigma_weapon.txt`, `--clips-from`), his data `emotes/sigma.json` (`tools/emote_data.py sigma`, slot
+54CE), five props (`prop_d7dd`, `prop_c5ca`, `prop_eaad`, `prop_3b50`, and AE48 added to the shared `prop_1024e`), his emote sounds
+(`tools/soundmaps/emotes.txt`, Sigma's section: 30 02Cs, 3 voice stimuli; 23 own banks extracted into
+`ExtraSounds\Sigma\Emotes`; [sounds](../sound/sounds.md#sigma-emote-sounds)), built in a scratch root and merged into the dev pack
+(only `sigma.emote.*`, their subtitles, `sounds/sigma/emote/`; `sounds.json` and `en_us.json` backed up first; the old
+`sigma_weapon.glb` and `prop_1024e.glb` too). What it took:
+- **Constellation keys the spheres' root in his space, not on his hand** (it starts at his idle's hand while his Weapon_R starts
+  1.4 m higher): `HeroWeapon.place` puts such a clip at his origin with its root applied (`keyedInHisSpace`); the other sphere
+  clips keep the hardpoint.
+- **Props a prop's clip spawns:** Magic Pumpkins' pumpkins hang on the carrier 1024E's bones, spawned by its clip AE48
+  (`EmoteProps.inner`, as Lúcio's booth); `emote_data.py` no longer pairs a spawn with the clip that spawns it.
+- **A shared prop keeps every hero's clips:** `build_asset_pack.py props` merges the pack file's clips into the new export
+  (`tools/merge_glb_clips.py`).
+- **Found playing (fixed):** the emote camera, 2.5 blocks out for every hero, had his head out of the top of the screen (eye 2.06,
+  hands to 3.3 m): it now orbits out in proportion to the hero's eye height over 1.62 (3.2 blocks for him, others unchanged,
+  `EmoteCamera.reach`). The spheres' copies (D7DD: Dans, Constellation) drew dark: their cores are the same material 7C98 under
+  another submesh key (`SIGMA_CORE_BASE`), now lit as the spheres' are.
+
+Played 2026-11-02, dev client (`OC_ASSET_PACK` = the Ana checkout's pack, `-Xmx3G`), fresh creative flat worlds `sigemo`, `sigemo2`,
+`sigemo3` (one per client start), noon frozen, mobs off; Sigma picked on each world's select screen (his portrait, READY: 48
+health, eye 2.06); Overwatch and Battle.net checked closed before every archive read and launch. Screenshots in `run/screenshots/`
+(not committed), each looked at:
+- **All 14 by the dev `emote`**, each started from first person (the emote camera takes over), frames at 1.0 / 2.5 / 4.5 / 6.0 s
+  (`sb_<emote>_<t>.png`, sheets `sb_sheet_*.png`; before the camera fix `sa_*`), each ended by a held W (0.3 s) or by running out;
+  clips and sounds polled every 0.1 s (scratchpad `sigma_play.py`). Chains: Dans 83AA -> loop 83AB, Relaxation 7341 -> loop 7344,
+  Stepping Stones AF58 -> loop AF59; Heroic plays 7458 (6E65, 700F, 7349, 7010 are the gallery preview tree's).
+- **Held frames** (`emoteat`, `props`): Mic Drop 0.6 (`sc_mic_0.6_zoom.png`: the mic in his left fist; contact: its +Y 16 degrees
+  off his left knuckle line through 0-0.93 s, `emote_contacts.py --knuckles`) and 1.6 (on the ground); Dans 3.0 / 4.5 / 6.0 / 8.0
+  (the juggled copy round his chest and hands, cores lit after the fix: `sd_core_zoom.png`); Constellation 1.0 / 3.5 / 6.5 from
+  below and the side (`sc_con_sheet.png`, `sd_sheet1.png`: the two copies 0.9-1.1 m off his raised hand, the spheres back in his
+  hand at 6.5); Observations 4.5 (`sc_obs_4.5_zoom.png`: the sphere's cage opened round its glowing core, the clip's own);
+  Stepping Stones 2.92 / 4.6: at each footstep (91C3 on 001C / 001B) the foot is 0.12-0.15 m ahead of and 0.22-0.24 m over a
+  rock's origin. Seen: pumpkins rising round him, the baton and the rocks circling in Maestro, his rock gathering under him and
+  his seat on it in Relaxation, the spheres away (`weapon` "out": false) in Listen Up / Mic Drop / Salty / Dans / Magic Pumpkins /
+  Applause / Inconsequential / Laugh / Maestro / Stepping Stones and in Constellation's 2.0-5.9 s.
+- **Sounds** (`heard`, about 0.1 s late): Listen Up E548 + E549; Mic Drop DA44 1.08 (DA4F, 40 %, not in those plays); Salty EEA6;
+  Dans 606E, 606D at the loop; Magic Pumpkins 81C1; Applause 5A33; Heroic 5A6A; Inconsequential 5A37; Laugh 5A44 + "(laughs)"
+  06A1; Maestro 60C0 + 610B (60D4, the duplicate, never); Observations 5A58; Relaxation 5A5A, then in the loop 5A72 at 0.59 s,
+  5A5B, 5A72 at 2.08 s; Stepping Stones 919E + 5A1A + "(humming)" 11B3, 5A23 1.24, 91C3 2.92 / 4.6, 91C2 4.65, then the loop's
+  91A0 + 5A23, 919F + "(humming)" 12D3 0.83, 91C3, 5A1A; Constellation 9DD9. No missing-sound warning.
+- **Ending** (`playing`): Maestro's 10 s 610B and Observations' 5A58 stop with a held W mid-emote (nothing playing 0.5 s after);
+  a one-shot already started (Relaxation's 1.9 s 5A72, Stepping Stones' 919F and hum) plays out, as every hero's. **G mid-emote**
+  (Observations at 2 s, the real G key): Minecraft mode, box 0.60 x 1.80, the emote and 5A58 gone; G again: Sigma, hero mode.
+  **From third person** (Relaxation): the emote camera, then back to third person after a held W (`se_ends_sheet.png`).
+- **The player's way:** Esc -> Voice Lines -> Emotes listed all 14 (`sw_em.png`); Maestro / Constellation / Magic Pumpkins put on
+  right / down / left (`sw_em_set.png`); T held, the primary-fire button (`key primary_fire`) to the emote page, the pointer right: Maestro (60C0 + 610B);
+  down: Constellation (9DD9); left: Magic Pumpkins (81C1); each ended by a held W (`sw_sheet.png`). (The secondary-fire button is the voice
+  page: "Reduce your expectations" heard when tried first.)
+- **Not done / doesn't match yet:** no separate agent critiqued the frames; a second player hearing the "others" copies and seeing
+  the props not tried; the 0.3 s 6599 and 0.67 s 7004 layers (folder 4, in most of his emotes) and Relaxation's 0.47 s step 7346 are
+  never played by our plan (not read what they are); Salty has no salt shaker (the data spawns none, as for every hero); what each
+  of his own sounds is was read from timing and measurements, not listened to (L).
+
 ## Not yet
-Steps 11-12 of the plan. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
+Step 12 of the plan. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
 HUD timer, Hyper Strike's charge counter; the rock leaves his eyes (the data's hp 01B6 on his right side: it would
 miss the crosshair); a player knocked down, lifted or struck (one client: their lift is their speed sent each tick
 and their keys held 0.4 s, untested); the slam's cap on bosses and Accretion's 12-at-the-edge falloff (ours: Open);
 the lift's 18 / 3 / 5 fields and Levitation's 25 / 3 read as accel and cap (M: a Workshop recording settles them). Open from steps 4-6: the barrier's Toggle / Reload-recalls options; the barrier's motion fields
 1.75 / 2.0 / 4.5 (it goes into the ground when sent downward: M); a blast that breaks the barrier still reaches those behind
 it (the break comes first); the 3P fire clips (the clip map holds only alias D5's three pitches: the volley plays fire_b,
-the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. His 14 emotes are extracted but not
-mapped (effects, sounds and voice: step 10). A Workshop recording (Levitation's rise, Flux flight, the barrier's
+the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. His emotes: step 11. A Workshop recording (Levitation's rise, Flux flight, the barrier's
 glide over slopes) would settle the M items.
