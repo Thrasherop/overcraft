@@ -158,3 +158,109 @@ Other points:
 9. Foresight 0.3 s and not when emoting / asleep / in a screen; Jetpack Cat's crosshair looked at; F5 in the blend-out
    kept; the passing branch removed.
 Also the owner's call: melee goes through barriers.
+
+## Second pass (2026-11-02, the rework 50c8148..c548424)
+
+Independent read-only check of the five commits on aa22aaa: the diff, the record's rework section, every
+`run3/screenshots/brig88_r_*` image cited (and the two contact sheets), the scripts `brig88_t11-t15.py` and logs
+`brig88_client4/6/7.log` in the scratchpad, Minecraft 26.3's sources (`ServerExplosion`, `Guardian`, `Ravager`,
+`AbstractWindCharge`, `Player.hurtServer`), the wiki through its MediaWiki API (Barrier, Jetpack Cat, Lúcio; no personal
+info sent), and `E:\Overwatch Archive\research\jetpack_cat\` (Overwatch and Battle.net checked not running). Not built
+(another agent may use the worktree), not played.
+
+**Verdict: don't merge yet.** Two blockers, both small; the rest of the rework holds up.
+
+### Blockers, ranked
+1. **`Barrier.isMelee` lets non-melee area abilities through, against the wiki.** It counts every `PLAYER_ATTACK` and
+   every hit whose direct entity is its living attacker as melee. In the mod `playerAttack(player)` is also the source of
+   Jetpack Cat's **Purr** (`JetpackCat.java:512`) and **Catnapper's landing** (`:670`), and of Lúcio's **Soundwave**
+   (`Lucio.java:280`). The wiki's Barrier page lists what pierces barriers (melee, and named abilities); none of these
+   three is on it, and their ability boxes carry no `ignores_barrier` (Jetpack Cat's Lifeline and **Claws Out** do, so
+   Claws Out's wound ticks, `:284`, are right to pass). In Overwatch a barrier blocks Purr, Catnapper and Soundwave. Her
+   data doesn't say otherwise: Purr's cast (5A7E node 210) is a plain `STUStatescriptModifyHealth` with knockback rings,
+   no readable barrier field. The record noticed Purr and the ult and accepted it; Soundwave isn't mentioned. Vanilla is
+   hit the same way: a guardian's beam (`indirectMagic(guardian, guardian)` then `doHurtTarget`), a ravager's roar (AoE
+   `mobAttack`), a warden's sonic boom now all pass. Before this branch the barrier took those hits' damage. Fix: drop the
+   `PLAYER_ATTACK` shortcut, mark quick melee the way the flail is marked (`meleeHit`, or an `overcraft:melee` tag), and
+   give Purr / Catnapper / Soundwave a source with no direct entity (as `Combat.hitscan`), so the "direct is the
+   attacker" rule doesn't catch them. (Their pushes, `e.push` / `setDeltaMovement`, never asked the barrier: true before
+   this branch too; worth a line in the record.) PvP with teams only, but it changes two other heroes' kits with no
+   source behind it.
+2. **Still no play with real input** (CLAUDE.md: the real mouse and keys before a merge). The record says the desktop
+   tool can't hold the right button. It can hold a key: rebind the barrier's mapping to a keyboard key in Controls and
+   hold it with `hold_key`, with mobs walking at her so no mouse turn is needed; or the owner holds the shield for five
+   minutes. Until one of those, the hand-play gate isn't met.
+
+### The first critique's items
+1. **Creeper death: accepted, not independently provable.** The log shows a Sombra session (20:36) before the 20:40
+   fight and no hero switch in between; the `'hero': 'sombra'` line was the script's console output, not kept. The
+   enderman and skeleton deaths are now written down. **New:** `brig88_client7.log` 21:39:19 "Third was slain by
+   Breeze", 12 s after the x 3000 live-breeze run ended (21:39:07: the script cleared Resistance and released the button,
+   the breeze still alive). Not in the record. Probably the barrier-down aftermath, but it has to be written down like
+   the others.
+2. **Resolved.** "Against it" now needs `b` within the barrier's width; the lowest crossing is 1 m under her feet.
+   Played with villagers beside/behind, a step, stairs. `brig88_r_slope.png` shows only the stone platform before the
+   test (no stairs, no creeper, barrier down): the set-up, not the result. The numbers carry it.
+3. **Resolved.** `Barrier.blast` charges each covering barrier once at `hurtEntities`' head by `ServerExplosion`'s own
+   formula at the nearest point (checked against 26.3's source). 294 at 3 m checks out (2.1 m from the barrier: 23.5
+   Minecraft health). Is it Overwatch's rule? No source gives how a barrier takes splash; the wiki says only that
+   barriers block blasts (Rip-Tire, Total Mayhem). A barrier closer to the blast than she is taking more than she would
+   is what any distance falloff gives, so 294 vs 209 is consistent. Where it over-charges: (a) **full exposure ignores
+   blocks**: a creeper going off behind a wall in front of her still drains it; (b) **no difficulty scaling**:
+   `Player.hurtServer` scales `scalesWithDifficulty` sources before our HEAD hook, so on Hard she'd take 1.5x a blast
+   unshielded while the barrier pays the Normal amount, and on Easy it pays more than she would; (c) any blast within 2r
+   (6 m for a creeper) anywhere in front, even far off to the side, costs it at least 12.5 (Minecraft's "+1"). A near
+   miss off the edge costs both the barrier (by its edge) and her (uncovered): right for Overwatch, where splash hits
+   every exposed target. (a) and (b) are cheap (a block clip from the centre to the nearest point; the difficulty factor
+   as `Player.hurtServer` applies it). Not blocking.
+4. **Resolved.** The push is judged by geometry (`blocksBlast`), and explosions that hurt no one charge nothing
+   (`shouldDamageEntity` false). Played with a live breeze.
+5. **Resolved on this side.** `Barrier.blocksBlast(entity, centre, cause)` matches feature/sigma's call; the merge steps
+   are in the record. Whoever merges second still owns the replay.
+6. **Answered** (1.04 a field of view, 8.0 conditional, 0.4 M; rise 0.5 m ours). `brig88_r_frame.png`: head and
+   shoulders under the crosshair, the ult ring on her back. `brig88_r_blend_in_1.png`: no hair, the barrier fills the
+   screen from close. Side by side with Overwatch: still the owner's call.
+7. **Resolved.** 16 samples, a weak per-model cache, the `turnclips` list pasted. `brig88_r_ana_scoped_*` show Ana held
+   still in a lowered stance; the image itself can't show she is scoped. The list now holds every hero's plain `idle`
+   (Lúcio's too), consistent with Kiriko's sheets (H), but Lúcio's stand wasn't looked at before/after.
+8. **Partly.** Withdrawn images named; the push spread measured. Real input: blocker 2.
+9. **Mostly.** Foresight 0.3 s; F5 in the blend-out keeps the player's choice; the passing branch is gone. But
+   `ClientBrigitte.barrierView`'s "asleep or stunned (Sleep's attachment)" checks `mc.player.isSleeping()` (a bed), not
+   the synced `HeroManager.ASLEEP` the server refuses on (`HeroManager.controls` -> `Sleep.asleep`): under Ana's Sleep
+   Dart or Rally's stun a right press still pops the view out for 0.3 s. `mc.player.hasAttached(HeroManager.ASLEEP)`
+   would do. Not blocking.
+10. Not tried, as the record says: two players, two Brigittes, her own TNT, riding, water (a guardian's beam now passes:
+    blocker 1), charged creepers, end-crystal chains (the state stack reads right; not played).
+
+### What the rework added, checked
+- **`Barrier.tickProjectiles`:** the owner goes through `stops`, so her and her allies' fireballs and wind charges pass
+  and ownerless ones (a dispenser's) are stopped; only a step from in front of the plane to behind it, inside the
+  rectangle, counts, so projectiles fired from behind her (allies' or enemies') never meet it. Fine. Small: the burst
+  goes through `onHitBlock` at `BlockPos.containing(hit)`, which with the 1 m bottom can be the ground block (a burning
+  fireball lights TNT there, a target block or bell reacts): harmless in practice. A small fireball's 62.5 isn't
+  difficulty-scaled (as 3b).
+- **Nested explosions:** `overcraft$outer` is pushed at HEAD and popped at every RETURN of `hurtEntities` (the
+  radius-0 one too). An exception inside would leave it one deep: acceptable.
+- **`s.barrierBlast`** keeps the last `ServerExplosion` alive (one object per Brigitte): negligible.
+- **Compile by reading:** each commit stands alone (50c8148 server only; b18f449's camera API with both call sites;
+  1948b3f self-contained). The shadowed fields (`level`, `center`, `source`, `radius`, `damageCalculator`),
+  `Projectile.onHit`, the `hurtingprojectile` package and `Direction.getApproximateNearest` exist in 26.3. No unit test
+  touches the changed code.
+- **`build.gradle`'s `client3`:** a Loom run config only (`runClient3`, run dir `run3`, gitignored). It doesn't touch the
+  jar, `remapJar` or `checkNoOverwatchAssets`: harmless for the shipped build.
+- **The fall out of the world at x 5000** (21:46:53): the same session's log has 17 "Insufficient system resources"
+  failures storing chunks (and one screenshot). Likely the machine, not the mod; the record should say so.
+
+### To merge
+Fix 1 (narrow `isMelee`, change the three abilities' sources, replay Purr and Soundwave on a Brigitte with teams, and
+check a zombie and quick melee still go through), meet 2 (the barrier held on a real key against a creeper and a
+skeleton), write down the 21:39:19 death. Then it can go into `next`. 3(a)/(b) and 9's sleep check can follow as issues.
+
+## Answers to the second pass (2026-11-02, [brigitte](../heroes/brigitte.md#the-barrier-after-the-second-critique-88-2026-11-02-critique_88))
+1. Melee is now only a marked blow (mobs' doHurtTarget but a guardian's, a player's own attack, quick melee, the flail);
+   Soundwave, Purr and Catnapper's pushes and lockouts stop at a barrier with their damage. Played: a zombie through
+   (30.5 each), an arrow, a guardian's beam and a warden's sonic booms on the barrier. The three hero abilities: not
+   played (one client).
+2. Real input: tried and blocked (no app match for the dev client; asked by path: denied). Needs the owner.
+3. The 21:39:19 breeze death and the 17 chunk-save errors at the x 5000 fall are in the record.
+4. The foresight checks Sleep's attachment. Lucio's stand: unchanged (`idle` was on the old list), looked at.

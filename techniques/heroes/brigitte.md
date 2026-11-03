@@ -352,11 +352,49 @@ lowest 7.7 of 20. Zombies' hits came through the raised barrier (2.44 each: mele
 it (227 -> 0) with nothing to her, an arrow hit her while it was refilling; arrows on it otherwise (255 -> 205 -> 155 ->
 105). Before it, a teleport to x 5000 left her falling out of the world ("fell out of the world" 0.7 s after the
 teleport, at y -172) where 1000-4100 had been fine: not reproduced or looked into (the hero's own movement in a chunk
-not yet loaded?).
+not yet loaded?). That session's log (`brig88_client7.log`) has 17 "Insufficient system resources" errors saving
+chunks around it: the machine was out of memory (0.4-0.5 GB free that evening with three clients up), which may be the
+cause.
+
+One more death in that session, not written down at first: 21:39:19 "Third was slain by Breeze", 12 s after the last
+x 3000 breeze run ended (21:39:07: the script cleared her Resistance and let the button go, so the barrier was down) and
+the breeze, never killed, kept shooting; "standing on air" at 21:39:12 is her thrown up. The barrier wasn't up: not a
+barrier case.
+
+## The barrier after the second critique (#88, 2026-11-02, [critique_88](../testing/critique_88.md#second-pass-2026-11-02-the-rework-50c8148c548424))
+- **Melee only when marked.** `Barrier.isMelee` had counted every player-attack hit and every hit by its own attacker, so
+  Lucio's Soundwave, Jetpack Cat's Purr and Catnapper's landing (all `playerAttack`), a guardian's beam, a ravager's roar
+  (a mob attack, but no blow) and a warden's sonic boom passed the barrier, though the wiki lists none of them among
+  what pierces barriers. Now a blow is melee only while one is being dealt (`Barrier.meleeDepth`): a mob's
+  `doHurtTarget` (Mob's, and the bee's, iron golem's, hoglin's and zoglin's, which strike without it; not a guardian's,
+  whose beam ends in it), a player's own attack (Minecraft mode), a hero's quick melee, her flail's swing. A damage-type
+  test can't tell these apart; the marker sits outside `Combat.damage`, so fix/killfeed-hud's `Blow` merges beside it.
+- **Area abilities stop at a barrier whole.** Soundwave's push and lockout, Purr's push and Catnapper's knock-down were
+  pushes and effects the barrier never saw (true before #88 too): `Barrier.shields(victim, attacker)` now skips them
+  for anyone a barrier covers from the attacker's eyes, as their damage is.
+- **The camera's foresight** checks Sleep's synced attachment (`HeroManager.ASLEEP`, what the server refuses on), not
+  a bed: under a Sleep Dart or Rally's stun a right press no longer pulls the view out for 0.3 s (compile-checked; not
+  played under a dart).
+
+Played (dev client `runClient3`, port 25601, flat survival world `brig88g`, Normal, midnight; `brig88_t16.py`):
+| Case | Seen |
+|---|---|
+| A zombie 2 m ahead, barrier up | 30.5 to her each hit (three hits), barrier 300 throughout (`brig88_r2_zombie.png`) |
+| A skeleton 12 m ahead, barrier up | the arrow on the barrier (300 -> 263), none to her |
+| A guardian in a pool 7 m ahead, barrier up | its beam on the barrier (300 -> 213 -> 125: the beam's magic and its attack both), none to her |
+| A warden 9 m ahead below her 5-block pillar, angered, barrier up | two sonic booms on the barrier (300 -> 175 -> 50), none to her |
+| Lucio's stand from the front, 2.1 s (`brig88_r2_lucio_sheet.png`) | still; his stand is `idle`, which the old name list held too, so it is unchanged (his `idle_alt` isn't a stand any state plays) |
+
+Not played: Soundwave, Purr and Catnapper against her barrier (they need a second hero: one client only); a ravager's
+roar (vanilla roars only after a shield stuns it).
 
 **What a critic should check (not done or not certain):**
-- **Hand play with the real mouse and keys:** none. The desktop tool can't hold the right button (it has only a left
-  hold) or turn the view (SDL reads raw mouse input); the owner has to hold the shield by hand.
+- **Hand play with the real mouse and keys:** none yet. Tried (2026-11-02): the barrier bound to B in the run's
+  `config/overcraft-hero-controls.json` (so `hold_key` could hold it, mobs walking at her, no mouse turn needed); the
+  desktop tool's `request_access` found no app for the dev client under "java", "OpenJDK Platform binary", "OpenJDK
+  Platform 25.0.4.1" or the window title "Minecraft* 26.3 - Singleplayer" (only the installed Minecraft Launcher and
+  Minecraft for Windows); asked for the client's java.exe by path, it came back "user_denied" (nobody at the PC to
+  approve it). The owner has to approve the access or hold the shield by hand.
 - **The bash's drop to first person** is only in the harness trace (first person from 0.24 s, back from 0.44 s): with a
   0.3 s blend each way inside a 0.35 s window it is a dip, and no screenshot caught it (the game's screenshot lands
   0.2-0.3 s late). Whether Overwatch's view really dips there (v68007, M) needs a replay.
@@ -365,8 +403,8 @@ not yet loaded?).
 - **The barrier's place:** Overwatch hangs it on her hand (bone 002C); ours is a flat 1.51 x 2.64 m rectangle 0.9 m
   ahead. A creeper 45 degrees off at 2 m passes its edge (by 0.15 m) and hurts her fully. The charge from its nearest
   point makes it take more than she would have (294 at 3 m, against her 209).
-- **Hero blasts:** Juno's torpedoes and Sojourn's Disruptor have no position: judged from the shooter's eyes. Jetpack
-  Cat's Purr and ult use the player-attack type: they now count as melee and go through.
+- **Hero blasts:** Juno's torpedoes and Sojourn's Disruptor have no position: judged from the shooter's eyes. (Purr,
+  Catnapper and Soundwave are blocked: see the second rework.)
 - **Merging with feature/sigma** (#68): both branches rewrote `ServerExplosionMixin` and `Barrier`. This branch keeps
   Sigma's entry points (`Barrier.blocksBlast(entity, centre, cause)`, the same full-exposure charge at the head of
   `hurtEntities`); the merge must: call `Barriers.blast` beside `Barrier.blast` at the head, keep Sigma's
