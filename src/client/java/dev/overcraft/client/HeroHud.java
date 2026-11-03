@@ -162,7 +162,7 @@ public final class HeroHud {
 		}
 		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
-		track(s);
+		track(s, hero);
 		if (!ClientHero.heroView()) {
 			minecraftMode(g, s, hero);
 			return;
@@ -185,7 +185,8 @@ public final class HeroHud {
 			crosshair(g, w / 2, h / 2);
 		}
 		hitMarker(g, w / 2, h / 2);
-		eliminatedCaption(g, w / 2, h / 2 + 205);
+		// below every hero's widgets under the crosshair: at +205 it ran through Lúcio's song indicator (+191, found playing)
+		eliminatedCaption(g, w / 2, h / 2 + 250);
 		if (hero == Hero.KIRIKO) {
 			if (firstPerson && HeroOptions.get().ofudaUi) {
 				ofudaCounter(g, s, w / 2, h / 2 + 136);
@@ -214,15 +215,18 @@ public final class HeroHud {
 	}
 
 	/** Notices cooldowns ending, the ofuda clip refilling and the ult starting, for the flashes and the countdown. */
-	private static void track(HeroSyncPayload s) {
+	private static void track(HeroSyncPayload s, Hero hero) {
 		long now = Util.getMillis();
 		// Swift Step's hand seal is sent on top of its cooldown (Kiriko.sync): past it, she has stepped. Ready again only
-		// after a cooldown, not after a seal that found no room by the ally (nothing was spent)
-		float stepTotal = (float) KirikoStats.SWIFT_STEP_COOLDOWN;
+		// after a cooldown, not after a seal that found no room by the ally (nothing was spent). Kiriko's alone: any other
+		// hero's ability 1 crossing her 7 s flashed the step's teal on them (#107: Ana's Sleep Dart, Sombra's
+		// Cyberspace, Lifeweaver's Petal Platform)
+		boolean kiriko = hero == Hero.KIRIKO;
+		float stepTotal = kiriko ? (float) KirikoStats.SWIFT_STEP_COOLDOWN : Float.MAX_VALUE;
 		if (ability1Seen > 0 && ability1Seen <= stepTotal && s.ability1Cooldown() <= 0) {
 			ability1ReadyAt = now;
 		}
-		if (ability1Seen > stepTotal && s.ability1Cooldown() > 0 && s.ability1Cooldown() <= stepTotal) {
+		if (kiriko && ability1Seen > stepTotal && s.ability1Cooldown() > 0 && s.ability1Cooldown() <= stepTotal) {
 			stepCastAt = now;
 		}
 		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
@@ -1458,7 +1462,7 @@ public final class HeroHud {
 		if (target == null) {
 			return;
 		}
-		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h, Action.ABILITY_1);
 	}
 
 	/**
@@ -1514,12 +1518,15 @@ public final class HeroHud {
 			}
 		}
 		if (target != null) {
-			targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+			targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h, Action.ABILITY_1);
 		}
 	}
 
-	/** Overwatch's ability-target marker (013C.116): cyan corner brackets in a diamond on the point, Ability 1's key under. */
-	private static void targetMarker(GuiGraphicsExtractor g, Vec3 at, float w, float h) {
+	/**
+	 * Overwatch's ability-target marker (013C.116): cyan corner brackets in a diamond on the point, the key of the
+	 * ability it's for under them (it printed Ability 1's whatever the ability: #108).
+	 */
+	private static void targetMarker(GuiGraphicsExtractor g, Vec3 at, float w, float h, Action key) {
 		float[] screen = project(at, w, h);
 		if (screen == null) {
 			return;
@@ -1542,7 +1549,7 @@ public final class HeroHud {
 			fill(g, sx < 0 ? ox : ox - t, sy < 0 ? oy : oy - arm, t, arm, CYAN);
 		}
 		g.pose().popMatrix();
-		keyLabel(g, HeroControls.get(Action.ABILITY_1), x, y + half * 1.42f + 18, CYAN, false);
+		keyLabel(g, HeroControls.get(key), x, y + half * 1.42f + 18, CYAN, false);
 	}
 
 	/**
