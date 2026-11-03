@@ -160,6 +160,8 @@ public final class Hyperspheres {
 				double f = pullFactor(d) * dev.overcraft.hero.Tank.knockbackFactor(e);
 				e.push(in.x * Ow.speed(SPHERE_PULL) * f, Ow.speed(SPHERE_PULL_UP) * f, in.z * Ow.speed(SPHERE_PULL) * f);
 				e.needsSync = true;
+				// a player's own client moves them (needsSync reaches only the others watching)
+				e.syncVelocity = e.syncVelocity || e instanceof net.minecraft.world.entity.player.Player;
 			}
 		}
 		// its burst 2EAB (m_6CB564CC, the same on a creature, a wall or at its range's end: SigmaFx), and its sound: 5E0A / 5E09

@@ -291,6 +291,7 @@ public final class GraviticFlux {
 		Vec3 in = new Vec3(at.x - e.getX(), 0, at.z - e.getZ());
 		in = in.lengthSqr() < 1.0E-6 ? Vec3.ZERO : in.normalize();
 		e.setDeltaMovement(new Vec3(before.x, 0, before.z).add(in.scale(Ow.speed(FLUX_LIFT_PULL))));
+		e.syncVelocity = e.syncVelocity || e instanceof Player;
 		if (e instanceof Mob mob) {
 			mob.setNoAi(true);
 			mob.setTarget(null);
@@ -388,8 +389,10 @@ public final class GraviticFlux {
 				}
 				mob.needsSync = true;
 			} else {
-				// a player moves on their own client: sent their speed every tick
+				// a player moves on their own client: sent their speed every tick, to them too (syncVelocity: needsSync
+				// reaches only the others watching, so a lifted player's own client never rose: found in the release play)
 				e.needsSync = true;
+				e.syncVelocity = true;
 			}
 		}
 	}

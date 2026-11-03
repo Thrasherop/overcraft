@@ -195,6 +195,8 @@ public final class Accretion {
 			* Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 		e.setDeltaMovement(before.add(dir.scale(Ow.speed(along) * f)).add(0, Ow.speed(up) * f, 0));
 		e.needsSync = true;
+		// a player's own client moves them: it needs the speed too (needsSync reaches only the others watching)
+		e.syncVelocity = e.syncVelocity || e instanceof net.minecraft.world.entity.player.Player;
 	}
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
