@@ -92,4 +92,63 @@ class DvaMathTest {
 		// the eject's launch: 6 back, 7 up = 9.2 m/s
 		assertEquals(9.22, Math.hypot(DvaStats.EJECT_BACK, DvaStats.EJECT_UP), 0.01);
 	}
+
+	@Test
+	void fusionVolley() {
+		// 11 pellets: the middle, 4 at half the cone, 6 at its edge (D 050A #444)
+		net.minecraft.world.phys.Vec3 look = new net.minecraft.world.phys.Vec3(0, 0, 1);
+		var dirs = dev.overcraft.dva.FusionCannons.pattern(look, DvaStats.FUSION_SPREAD, 0.3);
+		assertEquals(11, dirs.size());
+		int middle = 0, half = 0, edge = 0;
+		for (var d : dirs) {
+			double deg = Math.toDegrees(Math.acos(Math.min(1, d.dot(look))));
+			if (deg < 0.01) {
+				middle++;
+			} else if (Math.abs(deg - DvaStats.FUSION_SPREAD / 2) < 0.01) {
+				half++;
+			} else if (Math.abs(deg - DvaStats.FUSION_SPREAD) < 0.01) {
+				edge++;
+			}
+		}
+		assertEquals(1, middle);
+		assertEquals(4, half);
+		assertEquals(6, edge);
+		// a volley every 0.15 s (3 ticks): 6.67 a second, 146.7 a second at 2 a pellet
+		assertEquals(3, Ow.ticks(DvaStats.FUSION_INTERVAL));
+		assertEquals(146.7, DvaStats.FUSION_PELLETS * DvaStats.FUSION_DAMAGE / DvaStats.FUSION_INTERVAL, 0.1);
+		// falloff 10 -> 20 m to x0.3 (W 0.6 a pellet)
+		assertEquals(1, dev.overcraft.dva.FusionCannons.falloff(10), 1e-9);
+		assertEquals(0.65, dev.overcraft.dva.FusionCannons.falloff(15), 1e-9);
+		assertEquals(0.3, dev.overcraft.dva.FusionCannons.falloff(20), 1e-9);
+		assertEquals(0.3, dev.overcraft.dva.FusionCannons.falloff(40), 1e-9);
+		// armor takes each pellet its 7, at most halved: a 2-damage pellet does 1 (W); 11 pellets 22 -> 11
+		assertEquals(1, dev.overcraft.hero.Shields.armorReduce(2, 1), 1e-9);
+		assertEquals(11, dev.overcraft.hero.Shields.armorReduce(22, 11), 1e-9);
+		// one big hit is still one: 100 -> 93
+		assertEquals(93, dev.overcraft.hero.Shields.armorReduce(100, 1), 1e-9);
+	}
+
+	@Test
+	void defenseMatrixAndBoosters() {
+		// 100 at 33 a second: 3.03 s; back at 16 a second after 0.75 s: 6.25 s from empty (D 02CC)
+		assertEquals(3.03, DvaStats.MATRIX_ENERGY / DvaStats.MATRIX_DRAIN, 0.01);
+		assertEquals(6.25, DvaStats.MATRIX_ENERGY / DvaStats.MATRIX_REGEN, 1e-9);
+		assertEquals(15, Ow.ticks(DvaStats.MATRIX_REGEN_DELAY));
+		assertEquals(10, Ow.ticks(DvaStats.MATRIX_MIN));
+		// its box along the aim: 2.5 m wide, 2 m tall, 0.8 to 10.25 m ahead (D #205)
+		var box = new dev.overcraft.hero.Barriers.Box(DvaStats.MATRIX_SIDE, DvaStats.MATRIX_HALF_HEIGHT, DvaStats.MATRIX_HALF_HEIGHT,
+			DvaStats.MATRIX_NEAR, DvaStats.MATRIX_FAR);
+		var f = new net.minecraft.world.phys.Vec3(0, 0, 1);
+		var r = new net.minecraft.world.phys.Vec3(-1, 0, 0);
+		var u = new net.minecraft.world.phys.Vec3(0, 1, 0);
+		assertTrue(box.contains(new net.minecraft.world.phys.Vec3(1.2, 0.9, 10), f, r, u));
+		assertFalse(box.contains(new net.minecraft.world.phys.Vec3(0, 0, 0.5), f, r, u));
+		assertFalse(box.contains(new net.minecraft.world.phys.Vec3(0, 0, 10.5), f, r, u));
+		assertFalse(box.contains(new net.minecraft.world.phys.Vec3(1.3, 0, 5), f, r, u));
+		// Boosters: 12 m/s (5.5 x 2.18), 0.4 to 2 s: 4.8 to 24 m; 25 + 17.5 m/s push (D 047E)
+		assertEquals(12.0, DvaStats.BOOSTERS_SPEED, 0.02);
+		assertEquals(23.98, DvaStats.BOOSTERS_SPEED * DvaStats.BOOSTERS_TIME, 0.01);
+		assertEquals(17.46, Math.hypot(DvaStats.BOOSTERS_KNOCKBACK, DvaStats.BOOSTERS_KNOCKBACK_UP), 0.01);
+		assertEquals(0.1, DvaStats.BOOSTERS_KNOCKBACK_TAKEN, 1e-9);
+	}
 }

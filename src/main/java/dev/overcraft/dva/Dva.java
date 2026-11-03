@@ -42,6 +42,11 @@ import static dev.overcraft.dva.DvaStats.*;
 public final class Dva implements HeroKit {
 	/** Her forms (HeroManager.DVA_FORM, synced to every client). */
 	public static final int MECH = 0, PILOT = 1, CALLING = 2, WRECK = 3;
+	/**
+	 * The sync's mode: her form in the low bits ({@link #FORM_BITS}), then her mech kit's state for the HUD and her client: the
+	 * Fusion Cannons firing, Defense Matrix up, Boosters flying (her client moves her: OwMovement.dvaBoosters).
+	 */
+	public static final int FORM_BITS = 7, MODE_FIRING = 8, MODE_MATRIX = 16, MODE_BOOSTING = 32;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -57,13 +62,37 @@ public final class Dva implements HeroKit {
 		s.dvaEjectedAt = -1000;
 		s.dvaInitiatorReadyAt = -1;
 		s.dvaCallSpot = null;
+		freshMech(s);
 		player.setAttached(HeroManager.DVA_FORM, MECH);
 		HeroManager.refreshHealth(player, s, true);
+	}
+
+	/** A new mech's kit (each call is a new pet entity with its own vars: D 0407, M): the matrix full, nothing cooling down. */
+	static void freshMech(HeroState s) {
+		s.dvaMatrix = false;
+		s.dvaMatrixEnergy = MATRIX_ENERGY;
+		s.dvaMatrixTicks = 0;
+		s.dvaMatrixCooldown = 0;
+		s.dvaMatrixDownAt = -1000;
+		s.dvaBoost = -1;
+		s.dvaBoostCooldownIn = -1;
+		s.dvaBoostHit.clear();
+		s.ability1Cooldown = 0;
+		s.ability2Cooldown = 0;
+		s.weaponRecovery = 0;
+	}
+
+	/** Her mech kit stops at once (the wreck, G, another hero): the matrix down, the flight over, the slow off. */
+	static void stopMechKit(ServerPlayer player, HeroState s) {
+		DefenseMatrix.end(player, s, player.level().getGameTime());
+		Boosters.end(player, s);
+		FusionCannons.slow(player, false);
 	}
 
 	/** Leaving her (another hero, leaving the world): the unmanned mech goes. */
 	public static void clear(ServerPlayer player, HeroState s) {
 		removeMech(player, s);
+		stopMechKit(player, s);
 		player.removeAttached(HeroManager.DVA_FORM);
 	}
 
@@ -139,6 +168,7 @@ public final class Dva implements HeroKit {
 		s.dvaForm = WRECK;
 		s.dvaTicks = 0;
 		s.shield = 0;
+		stopMechKit(player, s);
 		player.setAttached(HeroManager.DVA_FORM, WRECK);
 		return 0.01f;
 	}
@@ -150,13 +180,23 @@ public final class Dva implements HeroKit {
 		long now = player.level().getGameTime();
 		s.dvaNow = now;
 		s.dvaTicks++;
-		if (s.softLanding && player.onGround() && now - s.dvaEjectedAt > 2) {
-			// the eject's launch lands her (no fall damage: CLAUDE.md #35)
+		if (s.softLanding && player.onGround() && now - s.dvaEjectedAt > 2 && !Boosters.active(s) && now - s.dvaBoostEndedAt > 2) {
+			// the eject's launch and Boosters land her (no fall damage: CLAUDE.md #35)
 			s.softLanding = false;
 		}
+		double rate = Combat.cooldownRate(player);
+		if (!Boosters.active(s)) {
+			s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
+		}
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		if (!HeroManager.heroMode(player)) {
 			return;
 		}
+		// the mech's kit (steps 4-6): Defense Matrix first (no Fusion while it's up), Boosters, the Fusion Cannons
+		boolean mech = s.dvaForm == MECH && controls && player.isAlive() && !Sleep.asleep(player);
+		DefenseMatrix.tick(player, s, mech);
+		Boosters.tick(player, s, mech);
+		FusionCannons.tick(player, s, mech && !s.dvaMatrix, Boosters.active(s));
 		switch (s.dvaForm) {
 			case WRECK -> {
 				// no passive ult meanwhile, and frozen where it fell (D 0276 #79)
@@ -176,11 +216,15 @@ public final class Dva implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.dvaForm == PILOT) {
 			callMech(player, s);
 		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.dvaForm == MECH && HeroManager.heroMode(player)) {
+			Boosters.press(player, s);
+		}
 	}
 
 	/** G (HeroManager.setHeroMode): out of hero mode she is the pilot; back in, the mech she left at the health it had. */
 	public static void heroMode(ServerPlayer player, HeroState s, boolean on) {
 		if (!on) {
+			stopMechKit(player, s);
 			switch (s.dvaForm) {
 				case MECH -> {
 					// the mech and its health kept for G back (the plan's default 9); the pilot's own health is full
@@ -361,6 +405,7 @@ public final class Dva implements HeroKit {
 		// the Self-Destruct charge the last mech had (D 0276 #88 / 026A #775); Call Mech's starts again at 0 (#85)
 		s.ultCharge = s.dvaMechUlt;
 		s.ultActive = 0;
+		freshMech(s);
 		HeroManager.refreshHealth(player, s, true);
 	}
 
@@ -393,8 +438,10 @@ public final class Dva implements HeroKit {
 		long now = s.dvaNow;
 		float lock = (float) Math.max(0, (s.dvaCallLockUntil - now) / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ultCost(s), s.dvaForm == CALLING,
-			-1, -1, -1, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero,
+			-1, -1, -1, s.dvaMatrixCooldown > 0 ? s.dvaMatrixCooldown / 20f : -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero,
 			s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), lock,
-			s.dvaForm, 0, 0);
+			s.dvaForm | (s.primaryHeld && FusionCannons.firing(s, now) ? MODE_FIRING : 0) | (s.dvaMatrix ? MODE_MATRIX : 0)
+				| (Boosters.active(s) ? MODE_BOOSTING : 0),
+			Boosters.active(s) ? (float) ((Ow.ticks(BOOSTERS_TIME) - s.dvaBoost) / 20.0) : 0, (float) (s.dvaMatrixEnergy / MATRIX_ENERGY));
 	}
 }

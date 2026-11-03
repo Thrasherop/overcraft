@@ -230,6 +230,19 @@ public final class HeroState {
 	public net.minecraft.world.phys.@Nullable Vec3 dvaCallSpot;
 	public float dvaCallYaw;
 	public @Nullable Integer dvaMechId;
+	/**
+	 * D.Va's mech kit (steps 4-6): Fusion's last volley (game time); Defense Matrix up, its energy, its ticks up, when it went
+	 * down, its cooldown (ticks); Boosters' ticks flown (-1 not flying), ticks to its cooldown (-1 none), when it ended, the
+	 * creatures it hit this flight (each once).
+	 */
+	public long dvaLastVolley = -1000;
+	public boolean dvaMatrix;
+	public double dvaMatrixEnergy;
+	public int dvaMatrixTicks, dvaMatrixCooldown;
+	public long dvaMatrixDownAt = -1000;
+	public int dvaBoost = -1, dvaBoostCooldownIn = -1;
+	public long dvaBoostEndedAt = -1000;
+	public final java.util.Set<Integer> dvaBoostHit = new java.util.HashSet<>();
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

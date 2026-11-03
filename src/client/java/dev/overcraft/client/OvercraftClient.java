@@ -294,6 +294,9 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
 			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
 			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
+		// D.Va's Boosters: the server's flight, her client's move
+		OwMovement.dvaBoosters = entity -> entity == mc.player && ClientHero.hero() == Hero.DVA
+			&& (ClientHero.sync().mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;

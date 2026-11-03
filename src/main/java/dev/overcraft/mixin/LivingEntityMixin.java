@@ -34,7 +34,8 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "travelInFluid", at = @At("HEAD"), cancellable = true)
 	private void overcraft$glideInFluid(Vec3 input, CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		if (OwMovement.handles(self) && OwMovement.junoGlide.applyAsInt(self) >= 0) {
+		// (D.Va's Boosters the same: a jet, 12 m/s through water as through air: ours)
+		if (OwMovement.handles(self) && (OwMovement.junoGlide.applyAsInt(self) >= 0 || OwMovement.dvaBoosters.test(self))) {
 			OwMovement.travel(self, input);
 			ci.cancel();
 		}
@@ -174,8 +175,10 @@ public abstract class LivingEntityMixin {
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private double overcraft$flightResistance(double power) {
 		// Sigma flying in his Gravitic Flux: half (1E41 #1071)
+		// D.Va in her Boosters: a tenth (047E #243)
 		return overcraft$stateKnockback(power) * dev.overcraft.hero.Tank.knockbackFactor((LivingEntity) (Object) this)
-			* dev.overcraft.sigma.GraviticFlux.knockbackFactor((LivingEntity) (Object) this);
+			* dev.overcraft.sigma.GraviticFlux.knockbackFactor((LivingEntity) (Object) this)
+			* dev.overcraft.dva.Boosters.knockbackFactor((LivingEntity) (Object) this);
 	}
 
 	private double overcraft$stateKnockback(double power) {

@@ -101,6 +101,37 @@ Renamed in the clip maps: MEKA 3450 `idle`, the 30F8 set `run` / `run_*` / `stra
   enters none), a stun during Call Mech (Ana's Sleep Dart from a second player), the Initiator heal in game (it needs
   Boosters: step 6), the call on a slope or a ledge's edge (the 4 m probe), the HUD's ult icon change seen only as pilot.
 
+## Step 4: the Fusion Cannons, played 2026-11-02
+Code: `dva.FusionCannons` (each number in `DvaStats` with its source), `Shields.pellets` / `Shields.armorReduce(ow, hits)`.
+A **hitscan shotgun**: every 0.15 s (3 ticks, Combat.attackRate) 11 rays from her eyes in the data's pattern (1 in the middle,
+4 at half the 3.375 degree cone, 6 at its edge: D 050A #444; the pattern turned at random each volley: ours, the data's
+"jitter 0.7" unread, L), one entity search a volley. **A volley's pellets on one creature are summed into one hit** (one
+`Combat.damage`): Minecraft's hurt cooldown is cleared per call anyway, but eleven calls a volley would be eleven hurt
+sounds, knockbacks and kill credits. Armor (another D.Va, Brigitte) takes the summed hit **as its pellets** (`Shields.pellets`
+set around the call: each 7 smaller, each at most halved: 22 -> 11, as W's "a 2-damage pellet on armor does 1"). Damage
+source: an arrow's type with her as both the direct and the causing entity, so `Barriers.absorb` sees a hitscan shot (Sombra's
+pistol passes a null direct entity, so an enemy barrier never took it: worth fixing there). The -30 % slow is an attribute
+modifier while the button is held and she can fire, off while boosting (D: gated by Boosters' v87). Not while the matrix is up.
+Stand-in look: a crit spark where a pellet hits, smoke where it ends; a firework-blast sound a volley.
+
+**Played** (world `dva46`, flat, midnight, NoAI targets with armor 0; harness driver `oc.py`: one socket, chat-command
+answers read from the log). Expected -> seen, Overwatch points:
+- **One volley** (the button held 0.06 s) on a 3.6 m wide giant: slant 6.6 m 22 -> **22.00**; 15.6 m 13.39 -> **13.57**
+  (the hits land on the box's near face, a little closer); 25.4 m 6.60 (the 0.3 floor) -> **6.60**; 35.3 m -> 5.40 (9 of 11:
+  the cone, 2.1 m wide there, outgrows the giant). The falloff counts the 3D distance to the hit.
+- **Rate:** held 2.03 s: 286 = **13 volleys** (2.03 / 0.15 = 13.5): 6.4 a second, 141 damage a second on one target.
+- **Headshot** (a zombie 5 m off, aimed at 1.72 m): body 22, head **38** (8 pellets x2 on the head, 3 on the body).
+- **A group:** three zombies 0.8 m apart at 5 m: 0 / 22 / 0 (the cone is 0.6 m wide there); at 12 m: **1.72 / 5.16 / 1.72**
+  (1 / 3 / 1 pellets at x0.86, each creature one summed hit) (`s46_group12.png`).
+- **An ally:** a villager 4 m ahead of a giant: villager 20 -> 20, the giant behind it 22 (passed through).
+- **A wall:** stone between: 1 s held, the giant took 0, the wall whole (`execute if blocks`: 66 blocks the same).
+- **Slow:** forward 5.50 m/s, firing **3.85** (x0.70) from the first volley's tick, 5.50 again on release (trace).
+- First and third person while firing (`s46_fire_1p.png`, `s46_fire_front.png`): hits flash the target, HUD unchanged; ult
+  charge from her damage (199 -> 229 for 22 dealt, plus the 5 a second passive).
+- **Not tried / open:** the firing clips (3P ABE1 -> AACD -> 13525 and its additive layer, 1P 352D / 334B) don't play yet: the
+  mech stands in `idle` while firing (with the effects, step 11); armor on another tank (needs a second player: per-pellet
+  armor is unit-tested only); Precision Fusion (step 10); an enemy Sigma barrier in the way (no second player).
+
 ## Not yet
 Steps 4-13: the weapons and abilities (Fusion Cannons, Defense Matrix, Boosters with Initiator's heal, Micro Missiles,
 Self-Destruct, the Light Gun), perks, sounds / voice / effects, emotes, two players. Effects (111 extracted), sounds, voice

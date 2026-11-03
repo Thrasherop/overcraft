@@ -72,8 +72,19 @@ public final class Shields {
 		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0) {
 			return damage;
 		}
-		double ow = Ow.toOw(damage);
-		return Ow.hp(ow - Math.min(ARMOR_FLAT, ow * ARMOR_CAP));
+		return (float) Ow.hp(armorReduce(Ow.toOw(damage), pellets));
+	}
+
+	/**
+	 * How many hits the damage being dealt now stands for (1, or a shotgun's pellets summed into one hit: D.Va's Fusion
+	 * Cannons). Armor takes each pellet its 7 (W: "a 2-damage pellet on armor does 1"), so a summed hit is reduced as its
+	 * pellets would be. Set around the call (try / finally).
+	 */
+	public static int pellets = 1;
+
+	/** A hit of {@code ow} standing for {@code hits} equal hits, on armor: each 7 smaller, each at most halved. */
+	public static double armorReduce(double ow, int hits) {
+		return ow - Math.min(ARMOR_FLAT * Math.max(1, hits), ow * ARMOR_CAP);
 	}
 
 	/**

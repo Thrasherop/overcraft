@@ -868,7 +868,8 @@ public final class HeroHud {
 
 	/** D.Va as the pilot (or calling her mech): her HUD is the pilot's (the sync's mode is her form). */
 	private static boolean dvaPilot(HeroSyncPayload s) {
-		return s.mode() == dev.overcraft.dva.Dva.PILOT || s.mode() == dev.overcraft.dva.Dva.CALLING;
+		int form = s.mode() & dev.overcraft.dva.Dva.FORM_BITS;
+		return form == dev.overcraft.dva.Dva.PILOT || form == dev.overcraft.dva.Dva.CALLING;
 	}
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
@@ -880,6 +881,10 @@ public final class HeroHud {
 			// Boosters (Shift) and Micro Missiles (E), the mech's ABILITY 1 / 2 (D 047E / 1128), in Kiriko's two places (ours)
 			ability(g, hero, w, "boosters", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
 				(float) dev.overcraft.dva.DvaStats.BOOSTERS_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0) {
+				// lit while she flies (as Sigma's Grasp)
+				song(g, true, false, w - 641, 903, w);
+			}
 			ability(g, hero, w, "micro_missiles", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 				(float) dev.overcraft.dva.DvaStats.MISSILES_COOLDOWN, ability2ReadyAt);
 			return;
@@ -1058,6 +1063,24 @@ public final class HeroHud {
 	 * along the panel's foot, filling with it; her data's hero red, white when full (ours: Overwatch shows the energy round her
 	 * crosshair and on the gun).
 	 */
+	/**
+	 * D.Va's Defense Matrix energy on its panel: the number over a band along the panel's foot, her pink while it's up, white
+	 * when full (ours: Overwatch shows it as a bar under her crosshair).
+	 */
+	private static void matrixEnergy(GuiGraphicsExtractor g, float energy, boolean waiting, boolean up, float x, float y, float width,
+									 float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		int colour = waiting ? 0x99A0A0A0 : up ? 0xFFFC79BD : energy >= 0.999f ? 0xFFFFFFFF : 0xB3FCA8D4;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(energy, 0, 1), 5, colour);
+		String number = String.valueOf(Math.round(energy * 100));
+		brush(g, number, x + width - 30, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 30, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	private static void railgunEnergy(GuiGraphicsExtractor g, float energy, float x, float y, float width, float w) {
 		float cx = x + width / 2;
 		g.pose().pushMatrix();
@@ -1187,10 +1210,12 @@ public final class HeroHud {
 					clip, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 				return;
 			}
-			// the mech: Defense Matrix (the right button) where Kiriko's ofuda panel is, the Fusion Cannons (the left: no ammo)
-			// where her kunai are
+			// the mech: Defense Matrix (the right button) where Kiriko's ofuda panel is, its energy along the panel's foot; the
+			// Fusion Cannons (the left: no ammo) where her kunai are
 			weapon(g, hero, w, "defense_matrix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
 				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			matrixEnergy(g, s.meter(), s.secondaryReload() > 0, (s.mode() & dev.overcraft.dva.Dva.MODE_MATRIX) != 0,
+				w - 484, 923.5f, 169, w);
 			weapon(g, hero, w, "fusion_cannons", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
 				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;

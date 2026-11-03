@@ -65,6 +65,56 @@ public final class DvaStats {
 	/** Its knockback, 15 m/s along and 3 up (D 348C 1B5D 15 / 1B5E 3, 026A #949 / #950) H. */
 	public static final double CALL_KNOCKBACK = 15, CALL_KNOCKBACK_UP = 3;
 
+	// ---- Fusion Cannons (dva.md "Fusion Cannons", 050A) ----
+	/** Pellets a volley: 1 in the middle, 4 at half the cone, 6 at its edge (D 1185 11 at 050A #444, its pattern m_5EC1EB38; W 11) H. */
+	public static final int FUSION_PELLETS = 11, FUSION_INNER = 4, FUSION_OUTER = 6;
+	/** Damage a pellet (D 0398 2 at #421; W 2) H. */
+	public static final double FUSION_DAMAGE = 2;
+	/** Falloff from 10 m to 20 m (D 039C 10 / 039B 20 at #447 / #448; W) H. */
+	public static final double FUSION_FALLOFF_START = 10, FUSION_FALLOFF_END = 20;
+	/** The floor past 20 m: x0.3 (W 0.6 a pellet; D's floor var v37674 has no writer read, 0303 0.3 likely: L). */
+	public static final double FUSION_FALLOFF_MIN = 0.3;
+	/** A volley every 0.15 s: 6.67 a second, 146.7 damage a second (D 050A #411 / #269 0.15 s; W 0.15) H. */
+	public static final double FUSION_INTERVAL = 0.15;
+	/** The cone: 3.375 degrees (D 0399 3.375; BZ 2024-06-20 3.75 -> 3.375; W) H. */
+	public static final double FUSION_SPREAD = 3.375;
+	/** -30 % move speed while firing, none while boosting (D 050A #376 1DB9 0.3, gated by Boosters' v87; BZ 2023-10-31; W) H. */
+	public static final double FUSION_SLOW = 0.3;
+	/** A pellet's radius, the global small hitscan (D 01C7 #1198 28A3 0.02; BZ 2026-10-06 0.04 -> 0.02) H. */
+	public static final double FUSION_RADIUS = 0.02;
+	/** Headshots x2 (D 03A6 1.0 unread, the generic x2: M; W) M. */
+	public static final double FUSION_CRIT = 2;
+	/** How far a pellet reaches (ours: past 20 m it does the floor; Overwatch's hitscan has no end given, L). */
+	public static final double FUSION_RANGE = 60;
+
+	// ---- Defense Matrix (dva.md "Defense Matrix", 02CC) ----
+	/** Its energy, 100, drained 33 a second while up: 3.03 s from full (D 1864 100, 1B49 33 at #395; BZ 2024-08-20 3 s; W) H. */
+	public static final double MATRIX_ENERGY = 100, MATRIX_DRAIN = 33;
+	/** Back at 16 a second, 0.75 s after it's lowered: 6.25 s from empty (D 03B7 16 at #389, 1B50 0.75 at #284; W 16 / 0.75) M. */
+	public static final double MATRIX_REGEN = 16, MATRIX_REGEN_DELAY = 0.75;
+	/** Up at least 0.5 s once raised (D 02CC #321; W 0.496) M. */
+	public static final double MATRIX_MIN = 0.5;
+	/** Its cooldown after each use, 1 s (D 1865 1.0 at #326 / #377; W) M. */
+	public static final double MATRIX_COOLDOWN = 1;
+	/** The box along her aim: 1.25 m either side, 1 m up and down, from 0.8 to 10.25 m ahead (D #205, 1B4E 10.25; W 10.3) H values, M origin. */
+	public static final double MATRIX_SIDE = 1.25, MATRIX_HALF_HEIGHT = 1, MATRIX_NEAR = 0.8, MATRIX_FAR = 10.25;
+	/** 4 % of what it eats to her ult (D 02CC #255 v6584 x 0.04 to STU_008D30B1, M that it's ult charge) L. */
+	public static final double MATRIX_ULT_SHARE = 0.04;
+
+	// ---- Boosters (dva.md "Boosters", 047E) ----
+	/** Her flight's speed along her aim: 5.5 x (1 + 1.18) = 12 m/s (D 047E #158 flight mover, 1285 1.18; W 12) M. */
+	public static final double BOOSTERS_SPEED = 5.5 * (1 + 1.18);
+	/** Its length: 2 s at most, ended by a second press from 0.4 s on (D 03AF 2 at #166, #179 0.4 s; W) M. */
+	public static final double BOOSTERS_TIME = 2, BOOSTERS_MIN = 0.4;
+	/** Its cooldown starts 0.3 s after the flight ends (D 047E #168 -> #171) M. */
+	public static final double BOOSTERS_COOLDOWN_DELAY = 0.3;
+	/** Each enemy hit once a flight in a 1.5 m sphere 1 m up and 2 m ahead: 25 (D 03AB 25, #172 / #173; BZ 2024-06-20; W) H. */
+	public static final double BOOSTERS_DAMAGE = 25, BOOSTERS_HIT_RADIUS = 1.5, BOOSTERS_HIT_UP = 1, BOOSTERS_HIT_AHEAD = 2;
+	/** Its push: 17 m/s along her flight and 4 up (D 03AC 17 / 03AD 4 at #369 / #370; W 17.5) M. */
+	public static final double BOOSTERS_KNOCKBACK = 17, BOOSTERS_KNOCKBACK_UP = 4;
+	/** Knockback she takes while flying: x0.1 (D 1E09 -0.9 at #243) M. */
+	public static final double BOOSTERS_KNOCKBACK_TAKEN = 1 - 0.9;
+
 	// ---- the kit's cooldowns and ammo the HUD shows now (their abilities: steps 4-9) ----
 	/** Boosters' cooldown (D 33D9 03A9 4, 047E #221; BZ 2026-03-10 3.5 -> 4; W 4) H. */
 	public static final double BOOSTERS_COOLDOWN = 4;
