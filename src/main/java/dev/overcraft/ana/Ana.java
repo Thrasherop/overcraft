@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
@@ -634,8 +633,7 @@ public final class Ana implements HeroKit {
 
 	/** Damage from her with no projectile of its own (a scoped shot, Local Anesthetic's ticks). */
 	public static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 
 	@Override

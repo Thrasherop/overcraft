@@ -15,7 +15,6 @@ import dev.overcraft.net.HeroSyncPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.level.ClipContext;
@@ -586,8 +585,7 @@ public final class Sombra implements HeroKit {
 
 	/** Damage from her with no projectile of its own (the pistol's shots: hitscan), so a kill isn't a melee kill. */
 	static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 
 	/** R (not with a full clip or mid-reload), or the clip empty: 1.2 s, the clip full 0.48 s in. */
