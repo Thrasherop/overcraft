@@ -44,6 +44,12 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   pulling an ally by her stale speed barely lifted it, and Minecraft's airborne knockback keeps the target's stored
   vertical speed, so a zombie's hit threw a flying hero down at 22 m/s (`LivingEntityMixin` now starts a hero's
   knockback from the known movement).
+- **A speed set on a player reaches their own client only through `syncVelocity`** (the old `hurtMarked`): 26.3's
+  `ServerEntity.sendChanges` sends a `needsSync` speed to the others watching (`sendToTrackingPlayers`), and only
+  `syncVelocity` goes `...AndSelf`. Sigma's Gravitic Flux lifted a mob but left a lifted player's own client on the
+  ground (y -60.00 for 4 s, the lift's sounds heard), found in his release play (2026-11-02, [sigma](../heroes/sigma.md)).
+  Vanilla hurt knockback sets it for you; a lift or push on a no-knockback hit doesn't. `LifeGrip` and `Brigitte` set
+  `needsSync` alone on targets that can be players: worth a look.
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is

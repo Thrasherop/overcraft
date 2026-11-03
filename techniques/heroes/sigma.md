@@ -389,8 +389,127 @@ health, eye 2.06); Overwatch and Battle.net checked closed before every archive 
   never played by our plan (not read what they are); Salty has no salt shaker (the data spawns none, as for every hero); what each
   of his own sounds is was read from timing and measurements, not listened to (L).
 
+## Step 12 (the release play), played 2026-11-02
+`next` merged first (9e9d3af: Jetpack Cat's flames, Catnapper and perks, #59; conflicts kept both sides: Catnapper's
+per-target credit with its target plus its new hit effect, both harness notes, `bake_sigma_barrier` beside `bake_cat_flame`
+under `add_effects`' new `only=` filter). Dev client `runClient` (`OC_ASSET_PACK` = the Ana checkout's pack, `-Xmx3G`),
+Overwatch and Battle.net checked not running before every launch. Worlds: `sig12` (flat survival: a bed at -9 -60 0/1 and
+the spawn point beside it; a stone-brick wall with an open oak door at 30 -60 20; a 3-wide, 2-high tunnel at x 39-41 z 9-20;
+a 2-deep pool x 60-80 z 0-10 with a lava strip x 82-86; a ladder at 100 -60 1; a half-block ramp x 110-117 z 20-24) and
+`sig12n` (normal terrain: a savanna shore; a stone platform at -42..-30 79 38..54 with a Nether portal). Scripts over one
+harness connection (scratchpad `sig12\oc.py`, `lib.py`, `r*.py`, `n*.py`, `g1.py`, `oc2.py` + `p*.py` for two clients);
+health with `data get`, speeds and heights with `trace`, sounds with `heard`. Screenshots in `run/screenshots/` (`r_*`,
+`r2_*`, `k_*`, `k2_*`, `f_*`, `iton_*`, `pk_*`, `em_*`, `vl_*`, `b_*`, `env_*`, `boat_*`, `n_*`, `nn*_*`, `nether*_*`,
+`g_*`, `qa_*`, `h_*`, and `sheet_*` of them) and `run2/screenshots/` (`v_*`, the second player's), each looked at.
+
+**Every way in.** The new world's select screen: his portrait in TANK (GUI 109 216), "TANK STALWART, 350 HEALTH, 250
+SHIELDS", five kit keys, READY: 48 health, 1.40 x 2.50, eye 2.06, 650 barrier (`r_select_sigma`, `r_join_hud`). H at the
+bed: Kiriko (20), then H again: Sigma (48), "select" line each time. `/kill`, Respawn: Sigma in hero mode at 48, the
+respawn line. Save and Leave, `openworld`: the select screen with Sigma chosen and "ESC KEEP HERO" (`r_rejoin_select`),
+READY: Sigma. On `sig12n` from its select screen. After each client restart (Save and Leave first) Sigma was kept.
+- **Found (fixed, 9eef40d): respawning at the bed laid him down.** 3 of 3 `/kill` + Respawn put him beside the bed (-8.5
+  -60 2.5) in Minecraft's swimming pose: box 0.60 x 0.60, camera 0.40 m, his model lying on the ground (`r_respawn_3p`),
+  until he walked away; a `/tp` into the same spot alive did the same. Minecraft places a respawn by its own 0.6 x 1.8 box
+  and his kept 1.4 m box overlapped the bed. `HeroBody.update` now keeps his box only while his crouched box fits where he
+  is: after the fix (fresh client) 3 of 3 respawns STANDING 0.60 x 1.80 on client and server, his box back after 0.8 s
+  walking off (`r2_respawn_3p`); the door (stopped at z 19.30, through in Minecraft mode) and the tunnel (stopped at 9.30;
+  G inside: Minecraft's box, 48 health; walked out: his) replayed the same.
+
+**His kit** (a 400-health NoAI husk 12 m off, 2 armour; night; first and third person, `sheet_k1`, `sheet_f`):
+spheres 400 -> 381.31 (4 direct, 18.69 through armour), one volley 9.34; the rock 9.45 (80 + 40 through armour), gather,
+throw, fly-by, flight loop, `hit_enemy`, `impact`; the barrier out (deploy, send, move, stop, hum, "Barrier
+initialized"), a bow skeleton's arrows on it 650 -> 450 in 8 s with Sigma at 48, recall (`stop`, `recall`, `return`, "Return
+to me"); Grasp on three summoned arrows: 7.2 overhealth, `absorb`, `overhealth`; Flux on four husks: the reticle rings,
+the column, all four 400 -> 196.064 (4 + 200), `start`, "What is that melody?", `flight`, `aim`, `cast`, `lift`, `slam_3p`,
+`slam_hit`, `slam_land`, `end`. (A bow skeleton didn't fire inside two 2 s Grasps: no arrows to take; the summoned ones
+were.) **Flux aimed at a husk's body from the ground lands past it** (the ray meets the ground ~19 m out, and he rises 1.5
+m in the start): aimed at its feet it lifts it, through his own barrier too. As in Overwatch, not a bug.
+- **Perks** (`overcraft perks @s 3`, Left Alt + the right button twice, `pk_menu_*`, `pk_hud`): Hyper Regeneration: the
+  barrier 450 -> 521 after 234 dealt past it (30 %: 70), `barrier_damaged` heard (the line steps 10-11 never heard);
+  Levitation: jump held, 3.00 m/s up for 34 ticks, 6.38 m, 48 -> 48, its loop.
+- **Emotes from the wheel** (T held, the right button, the pointer right / down / left): Maestro (60C0, 610B),
+  Constellation (9DD9), Magic Pumpkins (81C1), the emote camera each time, each ended by W with nothing left playing; the
+  voice page's "Hold it together" (`sheet_em`).
+- **Improved Transparency on** (F3+X, options.txt `improvedTransparency:true`): spheres 1P and 3P, the barrier 1P, 3P and
+  from in front with a husk behind it, Grasp 1P and 3P, the rock, Flux's reticle and lift 1P and 3P (`sheet_iton`): no dark
+  boxes, the same look as off; F3+X again: options.txt ends `improvedTransparency:false` (checked again at the end).
+
+**His body and Minecraft mode.** Door, tunnel and G as above. Minecraft mode on `sig12n` in survival from an empty
+inventory: three oak logs punched (3.6 s each, picked up by walking over them), 12 planks and a crafting table in the
+inventory grid, the table placed (held in his green first-person hand, `n_held_table_1p`) and used: a chest from 8 planks;
+a dirt block dug with the fist; the chest placed (held in his hand 1P, `n_held_chest_1p`), the dirt stored, the chest
+closed and reopened with the dirt in it (`sheet_mc`). Two rows of hearts (48).
+
+**Water, lava, slopes, ladders, a boat, the Nether, a night.**
+- Water: 5.5 -> 1.93 m/s walking in; jump held swims up; the barrier deployed from the water (its screenshot not looked at). Lava with fire resistance: 0.74 m/s,
+  spheres (two new, `volley`) and the rock from in it, 48 -> 48.
+- Ladder: W climbed 7.4 m; let go, he slides down at the ladder's speed, 48 -> 48 (2 of 2). (A first run read 48 -> 39:
+  my script cleared fire resistance as he left the lava, and he burned.)
+- The half-block ramp: hero mode 5.42 m/s to the top, Minecraft mode 4.12 m/s.
+- Boat: from 3 m out F did nothing for him and boarded Kiriko (his eye is 0.44 m higher: the boat was past Minecraft's 3
+  m interact reach for him, `boat_f3_58.5`); from the water's edge F boarded it. Seated: rowed 7.8 m in 2 s (Kiriko the
+  same), Grasp, the rock, the spheres and the barrier all work seated; Flux cast seated (he stayed in the boat: ours, not
+  refused as Sojourn's slide is); G seated: Minecraft mode, G again: his box, still seated; crouch: out, Minecraft's box
+  until he stepped off (the fix above).
+- The Nether: through a portal built on a stone platform (walked through it in hero mode, in his 2.5 m box), the
+  arrival portal fits him; spheres, barrier (1P and 3P), the rock, Grasp, Flux in a basalt delta (`sheet_nether4`), back
+  through the arrival portal. (Two first tries built the portal on the sea and he drowned: my site.)
+- **A night** on `sig12n` (time running, monsters on, eight summoned with their AI on open ground plus the wild ones, 120 s
+  of a scripted fight with real keys, `sheet_nn2`): volleys, barrier, Grasp when low, the rock every 10 s, Flux at 40 s
+  (`ult.friendly`, the lift on those caught), G at 80 s and back; killed at 38 s (`death`), respawned in hero mode at 48,
+  `multikill` heard, 3 of 8 killed. (A first run by a tree aimed into its trunk for 150 s: the script.)
+
+**The general play: every other hero from H at the bed** (one fight each against a 400-health NoAI zombie in an iron
+helmet and a 4-health NoAI villager: the left button, the right at the villager, E, Shift, Q + the left button; `sheet_g`),
+with Sigma picked after Lucio, Lifeweaver, Brigitte and Sojourn (each time 400 -> 391.42 -> 382.34, 28 of his sounds):
+Kiriko (zombie -22.5, villager 4 -> 13.6), Lucio (-18.5, villager to 20), Jetpack Cat (-13.2), Mercy (villager 4 -> 9.3),
+Lifeweaver (the script's thorns missed; platform, Tree of Life seen), Ana (-25.3, villager -> 11.2), Sombra (-88.5,
+villager -> 18), Brigitte (-5.6, villager -> 8.6, Rally's 28), Juno (-18.9, villager -> 14.8), Sojourn (-36.6). Each hero's
+own sounds only, no missing-sound warning, their HUDs and weapons right.
+
+**The QA audit's blocker (fixed, 223aa7f): his sphere-core glow on other heroes.** The cores were matched by submesh key
+6B24EE2D2B083AFE alone, a key that untextured pieces of `lucio_weapon`, `sombra_weapon`, `ana_pistol`, `brigitte`,
+`brigitte_shield`, `lifeweaver_platform` and `lw_flower_ring` share (read from the pack's .glb files). Reproduced (each
+picked from H, 1P and front, noon and midnight, `qa_before_*`): Brigitte's barrier a magenta-white wall. Pieces now carry
+their material's name and the cores need material 7C98 too; after (`qa_after_*`): Brigitte's barrier cyan-blue again,
+Lucio, Sombra, Ana (pistol out), Lifeweaver (platform) unchanged, his own cores still violet in 1P (the emote copy D7DD
+shares that path and material; not re-seen in a clear frame). The audit's other notes: his barrier health and Flux timer
+at the reticle (Overwatch's reticle widgets) are **not done: left for #85**; Kiriko's Swift Step flash on Grasp
+(`HeroHud.track`, being fixed on `next`) **not seen** at Grasp's end (`qa_grasp_end_a/b`), not watched at its cooldown's end.
+
+**Two players** (port 25600 was taken by another agent's client at the first check, then free; host "Kiriko" as Sigma on
+`sig12` opened to LAN, `connect` from runClient2 as "Viewer", Sojourn from her select screen; `overcraft team join red` /
+`blue`; peaceful for the first round):
+- **The ult -40 %:** Sojourn's railgun held 1 s into Sigma: 132 dealt, her ult +100.6 and +94.7 in 1.7 s; into Kiriko
+  (switched from H): 86 and 131 dealt, +116.2 and +152.2. Less her passive (+10.8 in 2.2 s: about 8.3): 0.70 and 0.65 a
+  point of damage on Sigma, 1.25 and 1.10 on Kiriko: **x0.57-0.64**, the 0.6 within the noise.
+- **His barrier blocks her rounds from its front:** Sigma 48 -> 48, the barrier 650 -> 506 (`brigitte.hit_barrier`,
+  `barrier_damaged` heard on her client); from its back (she behind it, Sigma before it): Sigma hit (48 -> 37.8), the
+  barrier untouched, as built (one-sided, the plan's front; Overwatch's own barrier may block from both sides: **check**).
+  Seen from her side in the enemy colouring, a warm yellow-orange field (`v_barrier2`). (A first try read no block: the
+  barrier wasn't in her line, sent too short.)
+- **Grasp eats her rounds:** 48 -> 48, 5.62 overhealth; on her client `absorb_3p`, `absorb_shooter`, `start_3p`,
+  `loop_3p`, `overhealth_3p`.
+- **Accretion knocks her down:** her speed 0 with W held for 1.1 s, then 5.5; 18 -> 15.6 (peaceful: its burst's explosion
+  damage scales to 0 and she regenerated; not a clean number); `gather_3p`, `throw_3p`, `hit_enemy_3p` heard.
+- **Found (fix committed, b1a7099, NOT YET PLAYED): Flux didn't lift her.** Caught (`lift`, `lifted`, `slam`,
+  `slam_hit_3p`, `ult.enemy` on her client; 18 -> 9), but her own client stayed at y -60.00 for 4 s. The lift sets her
+  speed with `needsSync`, which 26.3 sends only to the others watching ([minecraft_26](../minecraft/minecraft_26.md)); now
+  `syncVelocity` too, also for the rock's and Hyper Strike's push and the spheres' pull. Rebuilt and both clients started
+  again, but another agent's third client had left 1.2 GB free and the restarted second client hung loading: **the fix
+  hasn't been seen working.**
+- She heard his `_3p` copies (barrier, Grasp, rock, Flux) and his voice lines. **Not done with two players:** her view of
+  his spheres in flight, the rock, Flux's column, his emotes (and their "others" sounds); Kiriko's kunai into his barrier;
+  the spheres' pull and Hyper Strike on a player; a clean Accretion damage number on normal.
+
+**Not found to be bugs, written down:** the inventory screen's doll in Minecraft mode cuts his head off (his 2.5 m model
+in Minecraft's 1.8 m frame: cosmetic, open); Flux's flight does nothing seated in a boat (ours).
+
 ## Not yet
-Step 12 of the plan. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
+Step 12's two-player round again with the lift fix (b1a7099): Flux lifting a player, the rock's push and Hyper Strike on
+a player, her view of his spheres, rock, Flux and emotes with their "others" sounds, Kiriko's kunai into his barrier;
+whether his barrier should block from its back (Overwatch's barriers block from both sides?); his reticle widgets (#85);
+the inventory doll's framing. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
 HUD timer, Hyper Strike's charge counter; the rock leaves his eyes (the data's hp 01B6 on his right side: it would
 miss the crosshair); a player knocked down, lifted or struck (one client: their lift is their speed sent each tick
 and their keys held 0.4 s, untested); the slam's cap on bosses and Accretion's 12-at-the-edge falloff (ours: Open);

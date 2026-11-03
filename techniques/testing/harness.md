@@ -154,3 +154,16 @@
 - **`reload` can run the dev client out of memory** (2026-11-02, Jetpack Cat): at `-Xmx3G` a resource reload re-reads every
   hero model and died with "Java heap space" mid-reload (the window froze on the Mojang screen and every `dev` call timed
   out). After changing the pack, restart the client instead.
+- **A `/tp` of a seated player dismounts them** (2026-11-02, Sigma): a "re-aim" `/tp @s ~ ~ ~ yaw pitch` after boarding a
+  boat left him standing beside it and "rowing" did nothing. Aim before boarding, or with `look`.
+- **`positioned over world_surface` / `motion_blocking_no_leaves` land on water** (2026-11-02, Sigma): a "dry" spot for a
+  portal was the sea, and he drowned twice. Build a stone platform in the air for a test site on normal terrain.
+- **A `/spawnpoint` on a non-full block is "obstructed"**: the respawn went to world spawn with "You have no home bed or
+  charged respawn anchor, or it was obstructed". Use an integer position on full ground.
+- **Peaceful zeroes "always"-scaling damage to players** (explosion types: Accretion's burst) and regenerates them: test
+  hero-on-player damage on normal with `natural_health_regeneration` off.
+- **Interact reach is from the eyes:** Sigma (eye 2.06 m) couldn't board a boat about 3 m out that Kiriko boarded from the
+  same spot; from the water's edge he did. Step closer before calling it a bug.
+- **Two clients need ~7 GB free** (2026-11-02, Sigma): with another agent's third client up (1.2 GB free) a restarted
+  second client hung on its loading screen. Check free memory (`Win32_OperatingSystem.FreePhysicalMemory`) before
+  starting the pair, and don't restart one mid-test when memory is short.
