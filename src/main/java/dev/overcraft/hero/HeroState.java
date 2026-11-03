@@ -216,6 +216,15 @@ public final class HeroState {
 	public net.minecraft.world.phys.@Nullable Vec3 sigmaFluxPoint;
 	public int sigmaDirectHits;
 	public boolean sigmaStrikeReady;
+	/**
+	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
+	 * Levitation's end, for others' look and sound (the server is told it began; ours: 1.75 s on, or a landing).
+	 */
+	public double sigmaBarrierSample = -1;
+	public boolean sigmaBarrierUnder;
+	public long sigmaLevitateUntil = -1;
+	/** When Hyper Regeneration's heal on his barrier was last drawn (6E81: 0.5 s long, so once a 0.5 s at most). */
+	public long sigmaHealFxAt = -100;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

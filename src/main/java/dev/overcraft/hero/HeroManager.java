@@ -97,6 +97,13 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> SOJOURN_GUN = AttachmentRegistry.create(Overcraft.id("sojourn_gun"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Sigma's state as every client draws and hears it (SigmaFx, client.SigmaSounds): Sigma.SYNC_* bits (Kinetic Grasp, the
+	 * gather, Gravitic Flux's flight and its aim, Levitation, Hyper Strike charged). Absent or 0: none of them.
+	 */
+	public static final AttachmentType<Integer> SIGMA_STATE = AttachmentRegistry.create(Overcraft.id("sigma_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));

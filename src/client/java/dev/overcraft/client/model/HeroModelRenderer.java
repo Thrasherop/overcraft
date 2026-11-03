@@ -277,6 +277,29 @@ public final class HeroModelRenderer {
 				dev.overcraft.client.effect.SojournFx.posed(entity, points);
 			}
 		}
+		if (hero == Hero.SIGMA && !previewing && entity.isAlive()) {
+			// his hand spheres' cores and muzzle as held (SigmaFx.POINTS: bone_0442 / bone_0444 / hp 007C on 106B4) and his body's
+			// hardpoints, as posed, in the world
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.SigmaFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.SigmaFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.SigmaFx.posed(entity, points);
+			}
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -1226,6 +1249,17 @@ public final class HeroModelRenderer {
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
+			if (texture == null && piece.mesh().endsWith(SIGMA_CORE)) {
+				// Sigma's hand-sphere cores (submeshes 2 / 3 of 106B4, material 7C98: a shader, no colour texture): its cloud
+				// noise 19167 through its LUT's colour row times its emission (8000DFB0EAFE r1: plum, violet to blue), as added light
+				Identifier core = dev.overcraft.client.effect.EffectArt.get("cat_glow_noise",
+					dev.overcraft.client.effect.EffectArt.Palette.SIG_HAND_EMISSION, false);
+				if (core != null) {
+					collector.submitCustomGeometry(poseStack, FxRender.additive(core),
+						(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, 0xFFFFFFFF, false, false));
+				}
+				continue;
+			}
 			if (texture == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
@@ -1248,6 +1282,9 @@ public final class HeroModelRenderer {
 			});
 		}
 	}
+
+	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
+	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
 
 	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
 	private static final int HOLOGRAM = 0xFF8344EF;
@@ -1279,8 +1316,14 @@ public final class HeroModelRenderer {
 	 */
 	public static void submitField(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector, int argb) {
 		HudShapes.ensure();
+		submitField(loaded, skin, poseStack, collector, argb, HudShapes.WHITE);
+	}
+
+	/** The same through a texture on the model's own UVs (Sigma's barrier: its field's rim and hexes, SigmaBarrierRenderer). */
+	public static void submitField(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector, int argb,
+		net.minecraft.resources.Identifier texture) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
-			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
+			collector.submitCustomGeometry(poseStack, FxRender.additive(texture),
 				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, argb, false, false));
 		}
 	}

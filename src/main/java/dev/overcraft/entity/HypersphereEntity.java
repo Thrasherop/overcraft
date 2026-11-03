@@ -27,6 +27,8 @@ import net.minecraft.world.phys.Vec3;
 public class HypersphereEntity extends OwProjectile {
 	/** Its exact lifetime in ticks (8.68: it bursts that far through its ninth step). */
 	private static final double LIFE = SigmaStats.SPHERE_LIFETIME * 20;
+	/** The volley's second sphere (32B4: its own burst and wall sounds, 5E09 / 591B), the server's to know. */
+	public boolean second;
 
 	public HypersphereEntity(EntityType<? extends HypersphereEntity> type, Level level) {
 		super(type, level);
@@ -54,16 +56,6 @@ public class HypersphereEntity extends OwProjectile {
 	@Override
 	protected double getDefaultGravity() {
 		return Ow.accel(SigmaStats.SPHERE_GRAVITY);
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (level().isClientSide() && isAlive()) {
-			// stand-in look (his effects come with step 10): a dark violet trail
-			Vec3 p = position();
-			level().addParticle(net.minecraft.core.particles.ParticleTypes.REVERSE_PORTAL, p.x, p.y, p.z, 0, 0, 0);
-		}
 	}
 
 	@Override
@@ -96,6 +88,9 @@ public class HypersphereEntity extends OwProjectile {
 			case Z -> new Vec3(v.x, v.y, -v.z);
 		};
 		setDeltaMovement(bounced);
+		if (getOwner() instanceof ServerPlayer owner && level() instanceof ServerLevel) {
+			dev.overcraft.sigma.Hyperspheres.bounced(owner, second, hit.getLocation());
+		}
 		// out of the face by its block radius
 		setPos(hit.getLocation().add(face.getStepX() * (SigmaStats.SPHERE_BLOCK_RADIUS + 0.01), face.getStepY() * (SigmaStats.SPHERE_BLOCK_RADIUS + 0.01),
 			face.getStepZ() * (SigmaStats.SPHERE_BLOCK_RADIUS + 0.01)));

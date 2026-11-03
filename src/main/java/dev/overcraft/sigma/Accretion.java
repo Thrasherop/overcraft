@@ -10,20 +10,15 @@ import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Sleep;
 import dev.overcraft.hero.Tank;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -36,7 +31,7 @@ import static dev.overcraft.sigma.SigmaStats.*;
  * jump, then the rock (AccretionEntity) along his aim: 80 to the creature it hits, knocked down 1.1 s and pushed 6 m/s
  * along its flight and 3 up; a 40 burst where it lands (full to 1.5 m, 12 at its 2.5 m edge: ours, M) pushing 5 away and
  * 3 up. No self-damage (ours, the plan's decision), no block damage. +25 ult on a hit. 10 s cooldown from 0.45 s after
- * the throw. Stand-in look and sound (his own come in step 10).
+ * the throw. Look and sound from his data (step 10: sigma-effects.md "Accretion", sigma-sounds.md 4).
  */
 public final class Accretion {
 	private Accretion() {
@@ -59,7 +54,9 @@ public final class Accretion {
 		Combat.buff(player, Attributes.MOVEMENT_SPEED, CAST_SLOW, -ACCRETION_CAST_SLOW, ACCRETION_CAST);
 		// his gather (alias 0x608, #627): HeroAnimator
 		Combat.animate(player, "accretion_cast");
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.GRAVEL_BREAK, SoundSource.PLAYERS, 1f, 0.6f);
+		// the gather 2C32 (#639: 5E0B his, 54A0 + 964B others' 70 m; its look 2C64 from SIGMA_STATE: SigmaFx), his line (0B9C, #664)
+		SigmaSounds.split(player, "accretion.gather", player.getEyePosition(), 70);
+		dev.overcraft.hero.Voice.say(player, "accretion", 1);
 	}
 
 	static void tick(ServerPlayer player, HeroState s, boolean controls) {
@@ -94,7 +91,8 @@ public final class Accretion {
 		rock.launch(player.getEyePosition(), player.getViewVector(1.0f), Ow.speed(ROCK_SPEED));
 		player.level().addFreshEntity(rock);
 		Combat.animate(player, "accretion_throw");
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 1f, 0.5f);
+		// the throw 2C33 (#809 -> #879 -> #640: 5E0C his, 964C others' 70 m); its flight loop and fly-by are his clients'
+		SigmaSounds.split(player, "accretion.throw", player.getEyePosition(), 70);
 	}
 
 	/** The burst's damage at {@code d} m: 40 to 1.5 m, then down to 12 at 2.5 m, none past it. */
@@ -115,7 +113,7 @@ public final class Accretion {
 	 * behind an enemy barrier, takes the burst (pushed away from it, but the one it hit), and an enemy barrier in front
 	 * of it takes it too. Never him.
 	 */
-	public static void impact(ServerPlayer owner, AccretionEntity rock, Vec3 at, @Nullable Entity direct) {
+	public static void impact(ServerPlayer owner, AccretionEntity rock, Vec3 at, @Nullable Entity direct, Vec3 face) {
 		ServerLevel level = owner.level();
 		EnderDragonPart part = direct instanceof EnderDragonPart p ? p : null;
 		LivingEntity target = part != null ? part.parentMob : direct instanceof LivingEntity living ? living : null;
@@ -131,6 +129,9 @@ public final class Accretion {
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}
+			// the character contact 6DC (8C30 his, 90DC others' 500 m)
+			SigmaSounds.own(owner, "accretion.hit_enemy");
+			SigmaSounds.at(level, "accretion.hit_enemy_3p", at, 500, owner);
 			// +25 on a hit (#683, M)
 			Combat.addUltCharge(owner, ROCK_ULT_ON_HIT * Tank.ultFactor(owner, target), false);
 			if (target.isAlive()) {
@@ -175,10 +176,13 @@ public final class Accretion {
 				}
 			}
 		}
-		// stand-in look and sound (his rock's own, 1EB9's effects: step 10)
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState()), at.x, at.y, at.z, 40, 0.8, 0.8, 0.8, 0.2);
-		level.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 0.8f, 0.8f);
+		// its burst 2C07 (m_6CB564CC: SigmaFx, its crater on the face it hit) and 54A4 for everyone (80 m); on a block the shared
+		// world contact 0245 (858A + 85C7, 90 m)
+		Effects.play(level, "sigma_rock_impact", at, face, null, direct != null ? 1 : 0, owner);
+		SigmaSounds.at(level, "accretion.impact", at, 80);
+		if (direct == null && face.lengthSqr() > 0) {
+			SigmaSounds.at(level, "accretion.hit_block", at, 90);
+		}
 	}
 
 	/**

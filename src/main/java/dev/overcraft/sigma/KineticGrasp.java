@@ -4,13 +4,11 @@ import dev.overcraft.Ow;
 import dev.overcraft.hero.Allies;
 import dev.overcraft.hero.Barriers;
 import dev.overcraft.hero.Combat;
+import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Sleep;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.AABB;
@@ -23,7 +21,8 @@ import static dev.overcraft.sigma.SigmaStats.*;
  * either side of his aim, 1.6 m down to 1.1 m up, 0.4 to 2.6 m ahead of his eyes) is absorbed: gone, its damage counted
  * (Barriers.projectileDamage) and 5% of it to his ult. At a normal end 60% of the count becomes overhealth, up to 400 with
  * what's left of an earlier pool (Combat.overhealthPool), held 3 s, then 5 a second; cut short (a stun, death, G) none.
- * 12 s cooldown from its end. His hands are busy: no spheres, no barrier sent meanwhile (ours, M). Stand-in look and sound.
+ * 12 s cooldown from its end. His hands are busy: no spheres, no barrier sent meanwhile (ours, M). Its look and sound from his data
+ * (step 10): the field 2BE4 from SIGMA_STATE (SigmaFx), each absorb 2C84, the overhealth 2D3E; sigma-sounds.md 3.
  */
 public final class KineticGrasp {
 	private KineticGrasp() {
@@ -42,7 +41,9 @@ public final class KineticGrasp {
 		s.sigmaGraspAbsorbed = 0;
 		// his start clip (0x60A, #398) then the hold (0x609): HeroAnimator
 		Combat.animate(player, "grasp");
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.8f, 1.6f);
+		// #489 -> #751 -> #484 2C26 (5E05 his, 54C2 others' 70 m; its loop is his clients'), and his line (0B9A, #556)
+		SigmaSounds.split(player, "grasp.start", player.getEyePosition(), 70);
+		dev.overcraft.hero.Voice.say(player, "grasp", 1);
 	}
 
 	static void tick(ServerPlayer player, HeroState s, boolean controls) {
@@ -93,13 +94,14 @@ public final class KineticGrasp {
 			// 5% of what it absorbs to his ult (#432, M)
 			Combat.addUltCharge(player, damage * GRASP_ULT_SHARE, false);
 			Barriers.stop(p, in, false);
-			level.sendParticles(ParticleTypes.REVERSE_PORTAL, in.x, in.y, in.z, 12, 0.1, 0.1, 0.1, 0.05);
-			level.playSound(null, in.x, in.y, in.z, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8f, 1.5f);
-		}
-		// stand-in look: the box's front face, faintly
-		Vec3 mid = eye.add(f.scale(GRASP_FAR)).add(u.scale((GRASP_UP - GRASP_DOWN) / 2));
-		if (s.sigmaGrasp % 4 == 0) {
-			level.sendParticles(ParticleTypes.PORTAL, mid.x, mid.y, mid.z, 6, 0.5, 0.6, 0.5, 0);
+			// 2C84 where it dies (#518 / #695); 2C46 (54AF his, 54B0 others' 30 m), the shooter's own 2F31 (#567 / #693 true)
+			Effects.play(level, "sigma_absorb", in, p.getDeltaMovement(), player, 0, player);
+			SigmaSounds.splitAt(player, "grasp.absorb", in, 30, 30);
+			if (owner instanceof ServerPlayer shooter) {
+				SigmaSounds.own(shooter, "grasp.absorb_shooter");
+			}
+			// "Hold it together...!" (0B9B, #560: an absorbed hit that isn't an ultimate)
+			dev.overcraft.hero.Voice.say(player, "grasp_absorb", 1);
 		}
 	}
 
@@ -118,8 +120,10 @@ public final class KineticGrasp {
 		if (normal && s.sigmaGraspAbsorbed > 0) {
 			Combat.overhealthPool(player, s.sigmaGraspAbsorbed * GRASP_CONVERSION, GRASP_MAX, GRASP_HOLD, GRASP_DECAY);
 			// Kinetic Cycle (minor perk): Accretion's cooldown shorter for what it took
-			SigmaPerks.graspEnded(s, s.sigmaGraspAbsorbed);
-			player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1f, 1.2f);
+			SigmaPerks.graspEnded(player, s, s.sigmaGraspAbsorbed);
+			// 1D03 #207 -> #209 -> #208 2D3E on him (hp 0001): its look and 1A1E his / 1A17 others' 70 m
+			Effects.play(player.level(), "sigma_overhealth", player.position(), Vec3.ZERO, player, 0, player);
+			SigmaSounds.split(player, "grasp.overhealth", player.getEyePosition(), 70);
 		}
 		Combat.animate(player, "grasp_end");
 	}

@@ -10,16 +10,12 @@ import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.OwMovement;
 import dev.overcraft.hero.Sleep;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -53,7 +49,8 @@ import static dev.overcraft.sigma.SigmaStats.*;
  * every enemy in a 7.5 m cylinder, 15 m tall from 5 m under the point, in sight of the point, is lifted: 50 damage, held
  * still 0.4 s, lifted 2 s (about 6 m); then slammed down (gravity x22) for half their max health once the ground is
  * within 5 m (no armour, no Resistance, no Protection: the data's "no modifiers"; at most 200 on the three bosses: ours),
- * and 0.6 s at -50% speed after. His lift phase is 2.5 s, then 0.5 s of his slam. Stand-in look and sound (step 10).
+ * and 0.6 s at -50% speed after. His lift phase is 2.5 s, then 0.5 s of his slam. Look and sound from his data (step 10:
+ * sigma-effects.md "Gravitic Flux", sigma-sounds.md 5; his body's glow and his flight loop from SIGMA_STATE on every client).
  */
 public final class GraviticFlux {
 	private GraviticFlux() {
@@ -65,7 +62,7 @@ public final class GraviticFlux {
 	public static final Identifier HEAVY_SLOW = Overcraft.id("sigma_flux_heavy");
 	/** The lift's damage (pushing no one: the lift does) and the slam's (no armour, effects or enchantments). */
 	private static final ResourceKey<DamageType> LIFT_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_flux"));
-	private static final ResourceKey<DamageType> SLAM_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_slam"));
+	static final ResourceKey<DamageType> SLAM_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_slam"));
 
 	static boolean active(HeroState s) {
 		return s.sigmaFluxPhase != NONE;
@@ -95,7 +92,11 @@ public final class GraviticFlux {
 		s.ultActive = Ow.ticks(FLUX_START + FLUX_AIM + FLUX_CAST + FLUX_LIFT_PHASE + FLUX_SLAM_PHASE);
 		// its start (alias 0x1B8, #1020)
 		Combat.animate(player, "flux_start");
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.2f, 0.6f);
+		// the rise 2BEF (#967 -> #1052: 5E0D his, 5453 others' 75 m) and the ult lines, all three raised at the press (#1322):
+		// 0BA4 "What is that melody?" to him and his side, 0BA3 (the Dutch line) to enemies; his own 185B repeats the enemy
+		// line's text and stays unplayed, as Sojourn's
+		SigmaSounds.split(player, "flux.start", player.getEyePosition(), 75);
+		dev.overcraft.hero.HeroSounds.ultLine(player, SigmaSounds.of("ult.friendly"), SigmaSounds.of("ult.enemy"), 5);
 	}
 
 	/** Its end (done, or cut short: G, death, another hero, a stun): he lands safely, those lifted go on falling on their own. */
@@ -106,6 +107,8 @@ public final class GraviticFlux {
 		s.sigmaFluxPhase = NONE;
 		s.sigmaFluxPoint = null;
 		s.ultActive = 0;
+		// its end 2E12 (#1069: 596B his, 596C others' 75 m)
+		SigmaSounds.split(player, "flux.end", player.getEyePosition(), 75);
 		// an ability's landing never hurts (the owner's rule, #35)
 		s.softLanding = true;
 	}
@@ -144,14 +147,13 @@ public final class GraviticFlux {
 					phase(s, CAST);
 					// the cast (0x691, #1089)
 					Combat.animate(player, "flux_cast");
-					level.playSound(null, at.x, at.y, at.z, SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 2f, 0.5f);
+					// the cast 2C6B at the point (#986: its columns, decal and sparks, SigmaFx; 5E0E his, 58FD others' 75 m)
+					Effects.play(level, "sigma_flux_cast", at, Vec3.ZERO, player, 0, player);
+					SigmaSounds.splitAt(player, "flux.cast", at, 75, 75);
 				}
 			}
 			case CAST -> {
 				Vec3 at = s.sigmaFluxPoint;
-				if (at != null && s.sigmaFluxTicks % 2 == 0) {
-					ring(level, null, at, FLUX_RADIUS, ParticleTypes.REVERSE_PORTAL, 48);
-				}
 				if (s.sigmaFluxTicks >= Ow.ticks(FLUX_CAST)) {
 					List<LivingEntity> targets = at == null ? List.of() : targets(player, at);
 					for (LivingEntity e : targets) {
@@ -160,8 +162,9 @@ public final class GraviticFlux {
 					// none caught: straight to his slam phase (#995 -> #996 v59 = 4)
 					phase(s, targets.isEmpty() ? SLAM : LIFT);
 					Combat.animate(player, targets.isEmpty() ? "flux_slam" : "flux_lift");
-					if (at != null) {
-						level.playSound(null, at.x, at.y, at.z, SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.5f, 0.6f);
+					if (at != null && !targets.isEmpty()) {
+						// targets taken (2C6A at the point, #1000: the upward sweep, SigmaFx)
+						Effects.play(level, "sigma_flux_taken", at, Vec3.ZERO, player, 0, player);
 					}
 				}
 			}
@@ -202,25 +205,12 @@ public final class GraviticFlux {
 		return down.getType() != HitResult.Type.MISS ? down.getLocation() : end;
 	}
 
-	/** The reticle, his alone: a ring the cylinder's size where it would go, and its centre (stand-in: his own effect 2C68 in step 10). */
+	/**
+	 * The reticle, his alone (the cosmetic 31A2's 2C9E at the aimed point, #1287): its point sent to his client each tick, which
+	 * draws its ring decal and cylinder (SigmaFx) and holds its loop there (5A15, client.SigmaSounds).
+	 */
 	private static void reticle(ServerPlayer player, Vec3 at) {
-		if (player.tickCount % 2 == 0) {
-			ring(player.level(), player, at.add(0, 0.1, 0), FLUX_RADIUS, new DustParticleOptions(0x8A7CFF, 1.5f), 40);
-			player.level().sendParticles(player, ParticleTypes.END_ROD, true, true, at.x, at.y + 0.2, at.z, 2, 0.1, 0.1, 0.1, 0);
-		}
-	}
-
-	private static void ring(ServerLevel level, @Nullable ServerPlayer only, Vec3 at, double radius,
-							 net.minecraft.core.particles.ParticleOptions particle, int count) {
-		for (int i = 0; i < count; i++) {
-			double a = Math.PI * 2 * i / count;
-			double x = at.x + Math.cos(a) * radius, z = at.z + Math.sin(a) * radius;
-			if (only != null) {
-				level.sendParticles(only, particle, true, true, x, at.y, z, 1, 0, 0, 0, 0);
-			} else {
-				level.sendParticles(particle, x, at.y, z, 1, 0, 0.05, 0, 0);
-			}
-		}
+		Effects.send(player, "sigma_reticle", at, player, 0, player);
 	}
 
 	/**
@@ -308,8 +298,14 @@ public final class GraviticFlux {
 		if (e instanceof ServerPlayer p) {
 			// held still 0.4 s (#586: no move, no jump, no abilities): their client, as asleep
 			p.setAttached(HeroManager.ASLEEP, true);
+			// 2C35 (#589, 5502): the lifted one's own
+			SigmaSounds.own(p, "flux.lifted");
 		}
-		level.sendParticles(ParticleTypes.REVERSE_PORTAL, e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ(), 30, 0.4, 0.6, 0.4, 0.1);
+		// its look (2D88 at the start, 2BEA if it stood on the ground, then 2BEB / 2BE7 while lifted: SigmaFx) and 2E8D (#619:
+		// 5454 at it for everyone, 75 m)
+		Vec3 mid = e.position().add(0, e.getBbHeight() / 2, 0);
+		Effects.play(level, "sigma_lift", mid, Vec3.ZERO, e, e.onGround() ? 1 : 0, owner);
+		SigmaSounds.at(level, "flux.lift", mid, 75);
 	}
 
 	/** Deals Overwatch damage to a creature (the Ender Dragon through its head: its body takes a quarter). */
@@ -364,6 +360,12 @@ public final class GraviticFlux {
 				// the slam: gravity x22 (#582) to Overwatch's terminal speed; damage once ground is within 5 m below (#644)
 				if (l.slamAt < 0 && t <= FLUX_LIFT_TIME + 0.05) {
 					Combat.buff(e, Attributes.MOVEMENT_SPEED, HEAVY_SLOW, -FLUX_HEAVY_SLOW, 4);
+					// slammed down (#599 onFinished -> #582 -> #590 2CA2: 550A the target's own, 550B others' 75 m)
+					if (e instanceof ServerPlayer p) {
+						SigmaSounds.own(p, "flux.slam");
+					}
+					SigmaSounds.at((ServerLevel) e.level(), "flux.slam_3p", e.position(), 75,
+						e instanceof ServerPlayer p ? new Player[] {p} : new Player[0]);
 				}
 				vy = Math.max(-Ow.speed(OwMovement.TERMINAL_SPEED), v.y - Ow.accel(OwMovement.GRAVITY_DOWN * FLUX_HEAVY_GRAVITY));
 				hx *= 0.91;
@@ -412,8 +414,12 @@ public final class GraviticFlux {
 		if (dealt > 0) {
 			Effects.hitMarker(l.owner, e, false);
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION, e.getX(), e.getY(), e.getZ(), 1, 0, 0, 0, 0);
-		level.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.MACE_SMASH_GROUND_HEAVY, SoundSource.PLAYERS, 1f, 0.8f);
+		// no slam look in the data (2CA2 / 2CA3 are sounds: H by search): ours, dust where it lands (SigmaFx); the landing 2CA3
+		// (#609: 5E0F for everyone, 70 m) and the hit on each (#638 -> 1E41 #1147 sweep 075D: 8DF8 his, 90E4 others' 500 m)
+		Effects.play(level, "sigma_slam", e.position(), Vec3.ZERO, e, 0, l.owner);
+		SigmaSounds.at(level, "flux.slam_land", e.position(), 70);
+		SigmaSounds.own(l.owner, "flux.slam_hit");
+		SigmaSounds.at(level, "flux.slam_hit_3p", e.position(), 500, l.owner);
 	}
 
 	private static void release(Lifted l) {

@@ -24,6 +24,11 @@ public final class Sigma implements HeroKit {
 	 * Flux's flight, its 0.6 s rise.
 	 */
 	public static final int MODE_BARRIER_OUT = 1, MODE_GRASP = 2, MODE_GATHER = 4, MODE_FLUX_FLIGHT = 8, MODE_FLUX_RISE = 16;
+	/**
+	 * HeroManager.SIGMA_STATE's bits, for every client's look and sound (SigmaFx, client.SigmaSounds): the MODE_* above but the
+	 * barrier's, plus Flux's aim (the reticle), Levitation and Hyper Strike charged.
+	 */
+	public static final int SYNC_FLUX_AIM = 32, SYNC_LEVITATE = 64, SYNC_STRIKE = 128;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -46,6 +51,9 @@ public final class Sigma implements HeroKit {
 		s.sigmaFluxPoint = null;
 		s.sigmaDirectHits = 0;
 		s.sigmaStrikeReady = false;
+		s.sigmaBarrierSample = -1;
+		s.sigmaBarrierUnder = false;
+		s.sigmaLevitateUntil = -1;
 	}
 
 	/** Leaving him (another hero, leaving the world): his barrier goes, Grasp ends with nothing. */
@@ -54,6 +62,7 @@ public final class Sigma implements HeroKit {
 		KineticGrasp.end(player, s, false);
 		Accretion.cancel(player, s);
 		GraviticFlux.end(player, s);
+		player.setAttached(dev.overcraft.hero.HeroManager.SIGMA_STATE, 0);
 	}
 
 	@Override
@@ -71,6 +80,14 @@ public final class Sigma implements HeroKit {
 		KineticGrasp.tick(player, s, controls);
 		Accretion.tick(player, s, controls);
 		GraviticFlux.tick(player, s, controls);
+		SigmaPerks.tick(player, s);
+		int state = (KineticGrasp.active(s) ? MODE_GRASP : 0) | (Accretion.casting(s) ? MODE_GATHER : 0)
+			| (GraviticFlux.flying(s) ? MODE_FLUX_FLIGHT : 0) | (s.sigmaFluxPhase == GraviticFlux.START ? MODE_FLUX_RISE : 0)
+			| (s.sigmaFluxPhase == GraviticFlux.AIM ? SYNC_FLUX_AIM : 0) | (s.sigmaNow < s.sigmaLevitateUntil ? SYNC_LEVITATE : 0)
+			| (s.sigmaStrikeReady ? SYNC_STRIKE : 0);
+		if (!java.util.Objects.equals(player.getAttached(dev.overcraft.hero.HeroManager.SIGMA_STATE), state)) {
+			player.setAttached(dev.overcraft.hero.HeroManager.SIGMA_STATE, state);
+		}
 	}
 
 	@Override
@@ -83,6 +100,18 @@ public final class Sigma implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0) {
 			GraviticFlux.press(player, s);
+		}
+	}
+
+	/**
+	 * He killed an enemy (Voice.onDeath): his rock's kill line "Collision!" (0B9D: a kill by damage id 53A7, 1BBB #722 -> #723's
+	 * message) or the slam's "To the void!" (0BA5: damage id 53A8, 1DBC #577 -> 1E41 #1134), before the shared ones.
+	 */
+	public static void killed(ServerPlayer player, net.minecraft.world.damagesource.DamageSource source) {
+		if (source.getDirectEntity() instanceof dev.overcraft.entity.AccretionEntity) {
+			dev.overcraft.hero.Voice.say(player, "accretion_kill", 1);
+		} else if (source.is(GraviticFlux.SLAM_TYPE)) {
+			dev.overcraft.hero.Voice.say(player, "flux_kill", 1);
 		}
 	}
 

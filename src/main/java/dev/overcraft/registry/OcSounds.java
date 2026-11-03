@@ -500,6 +500,34 @@ public final class OcSounds {
 		"charged_kill_air", "overclock_kill", "overclock_kill_2", "overclock_kill_3", "overclock_kill_5", "overclock_end",
 		"ultimate");
 
+	/**
+	 * Sigma's (tools/soundmaps/sigma.txt, read for wiring in tools/reference/sigma-sounds.md): his sounds by name ("sigma." +
+	 * name, played through dev.overcraft.sigma.SigmaSounds on the server and dev.overcraft.client.SigmaSounds for the loops) and
+	 * his lines by moment (Voice.say: "sigma.voice.<moment>"; his wheel lines, "resurrected", "damage_boosted" and
+	 * "nano_boosted" are every hero's, registered in init()). His set has no reload line (H: no ammunition). The ult line is
+	 * ult.friendly / ult.enemy (0BA4 / 0BA3); voice.ultimate (185B, his own copy, the enemy line's text) stays unplayed.
+	 */
+	public static final java.util.List<String> SIGMA_SOUNDS = java.util.List.of(
+		"accretion.flight.loop", "accretion.flyby", "accretion.gather", "accretion.gather_3p", "accretion.hit_block",
+		"accretion.hit_enemy", "accretion.hit_enemy_3p", "accretion.impact", "accretion.start", "accretion.throw",
+		"accretion.throw_3p", "accretion.throw_crack", "ambient.loop", "ambient.loop_3p", "barrier.break", "barrier.break_3p",
+		"barrier.deploy", "barrier.deploy_3p", "barrier.hold_3p", "barrier.hum.loop", "barrier.hum.loop_3p", "barrier.low",
+		"barrier.move.loop", "barrier.move.loop_3p", "barrier.recall", "barrier.return", "barrier.return_3p", "barrier.send",
+		"barrier.send_3p", "barrier.stop", "barrier.stop_3p", "flux.aim.loop", "flux.cast", "flux.cast_3p", "flux.end",
+		"flux.end_3p", "flux.flight.loop", "flux.flight.loop_3p", "flux.layer", "flux.lift", "flux.lift_foley",
+		"flux.lift_foley_3p", "flux.lifted", "flux.slam", "flux.slam_3p", "flux.slam_hit", "flux.slam_hit_3p", "flux.slam_land",
+		"flux.start", "flux.start_3p", "grasp.absorb", "grasp.absorb_3p", "grasp.absorb_shooter", "grasp.layer", "grasp.loop",
+		"grasp.loop_3p", "grasp.overhealth", "grasp.overhealth_3p", "grasp.start", "grasp.start_3p", "melee", "melee_3p",
+		"move_3p", "perk.hyper_strike.hit", "perk.hyper_strike.hit_3p", "perk.hyper_strike.ready", "perk.kinetic_cycle",
+		"perk.levitation.loop", "perk.levitation_3p", "sphere.burst", "sphere.burst2", "sphere.burst2_3p", "sphere.burst_3p",
+		"sphere.fire", "sphere.fire_3p", "sphere.flight.loop", "sphere.hit", "sphere.hit_block", "sphere.hit_block2",
+		"sphere.hit_block2_3p", "sphere.hit_block_3p", "sphere.hit_enemy", "sphere.hit_enemy_3p", "sphere.impact_3p",
+		"sphere.reform", "sphere.reform_3p", "sphere.volley", "sphere.volley_3p", "ult.enemy", "ult.friendly");
+	public static final java.util.List<String> SIGMA_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "hyperspheres", "grasp", "grasp_absorb", "accretion", "accretion_kill", "barrier",
+		"barrier_recall", "barrier_broken", "barrier_damaged", "barrier_low", "flux_kill", "ultimate");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -519,6 +547,8 @@ public final class OcSounds {
 		JUNO_VOICE.forEach(moment -> register("juno.voice." + moment));
 		SOJOURN_SOUNDS.forEach(name -> register("sojourn." + name));
 		SOJOURN_VOICE.forEach(moment -> register("sojourn.voice." + moment));
+		SIGMA_SOUNDS.forEach(name -> register("sigma." + name));
+		SIGMA_VOICE.forEach(moment -> register("sigma.voice." + moment));
 	}
 
 	private OcSounds() {

@@ -167,7 +167,22 @@ public final class Voice {
 		java.util.Map.entry("sojourn.overclock_kill_3", new Stimulus(60, 0, 0, false)), // 113D (kills 3 and 4)
 		java.util.Map.entry("sojourn.overclock_kill_5", new Stimulus(60, 10, 10, false)), // 113E
 		java.util.Map.entry("sojourn.overclock_end", new Stimulus(50, 20, 20, false)), // 0E87
-		java.util.Map.entry("sojourn.ultimate", new Stimulus(95, 1, 1, false))); // 185C
+		java.util.Map.entry("sojourn.ultimate", new Stimulus(95, 1, 1, false)), // 185C
+		// Sigma's (tools/soundmaps/sigma.txt, the voice section; his set 01E5.05F; tools/reference/sigma-sounds.md 7)
+		java.util.Map.entry("sigma.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("sigma.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("sigma.hyperspheres", new Stimulus(60, 5, 5, false)), // 0B99
+		java.util.Map.entry("sigma.grasp", new Stimulus(60, 20, 20, false)), // 0B9A
+		java.util.Map.entry("sigma.grasp_absorb", new Stimulus(60, 5, 5, false)), // 0B9B
+		java.util.Map.entry("sigma.accretion", new Stimulus(60, 1, 1, false)), // 0B9C
+		java.util.Map.entry("sigma.accretion_kill", new Stimulus(60, 10, 10, false)), // 0B9D
+		java.util.Map.entry("sigma.barrier", new Stimulus(60, 40, 50, false)), // 0B9E
+		java.util.Map.entry("sigma.barrier_recall", new Stimulus(60, 30, 45, false)), // 0B9F
+		java.util.Map.entry("sigma.barrier_broken", new Stimulus(60, 15, 20, true)), // 0BA2
+		java.util.Map.entry("sigma.barrier_damaged", new Stimulus(60, 40, 80, false)), // 0BA0
+		java.util.Map.entry("sigma.barrier_low", new Stimulus(60, 5, 12, false)), // 0BA1
+		java.util.Map.entry("sigma.flux_kill", new Stimulus(50, 5, 5, false)), // 0BA5
+		java.util.Map.entry("sigma.ultimate", new Stimulus(95, 1, 1, false))); // 185B
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -308,6 +323,10 @@ public final class Voice {
 			if (state.hero == Hero.SOJOURN) {
 				// her own kill lines first (the Charged Shot's, Overclock's count): the shared ones below wait while she speaks
 				dev.overcraft.sojourn.Sojourn.killed(killer, state);
+			}
+			if (state.hero == Hero.SIGMA) {
+				// his own kill lines (the rock's "Collision!", the slam's "To the void!") first
+				dev.overcraft.sigma.Sigma.killed(killer, source);
 			}
 			state.killChain = now - state.lastKillAt <= KILL_CHAIN ? state.killChain + 1 : 1;
 			state.lastKillAt = now;

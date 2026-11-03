@@ -334,13 +334,14 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
                    "sombra": "../../research/sombra/extract", "brigitte": "../../research/brigitte/extract",
                    "lifeweaver": "../../research/lifeweaver/extract",
-                   "sojourn": "../../research/sojourn/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "sojourn": "../../research/sojourn/extract",
+                   "sigma": "../../research/sigma/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -851,6 +852,26 @@ EFFECT_MASKS = {
     "sojourn_swirl": ("Sojourn", "Disruptor", "000000003DB8", 1),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
+    # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,
+    # the noisy wisp, the burst's lens streak, thin streak, star, radial rays, the wispy ring; Barrier: the horizontal line,
+    # the soft square, the field's rim and its hex cells (for the baked field); Accretion: the rock chunks, the crater
+    # cracks; Flux: the soft disc, the reticle's rings and the vortex ring
+    "sigma_swirl": ("Sigma", "Hyperspheres", "000000020126", 1),
+    "sigma_wisp": ("Sigma", "Hyperspheres", "0000000200E4", 1),
+    "sigma_lens": ("Sigma", "Hyperspheres", "00000001FDB2", 1),
+    "sigma_streak": ("Sigma", "Hyperspheres", "00000001FBCE", 1),
+    "sigma_star": ("Sigma", "Hyperspheres", "0000000208CC", 1),
+    "sigma_rays": ("Sigma", "Hyperspheres", "0000000007AB", 1),
+    "sigma_wisp_ring": ("Sigma", "Hyperspheres", "00000001FC54", 1),
+    "sigma_lens_line": ("Sigma", "Barrier", "00000002006C", 1),
+    "sigma_soft_square": ("Sigma", "Barrier", "0000000208AE", 1),
+    "sigma_barrier_rim": ("Sigma", "Barrier", "00000001FE0A", 1),
+    "sigma_barrier_hex": ("Sigma", "Barrier", "000000018F9B", 1),
+    "sigma_rock_chunk": ("Sigma", "Accretion", "00000002C0F8", 4),
+    "sigma_crater": ("Sigma", "Accretion", "00000002048A", 1),
+    "sigma_disc": ("Sigma", "GraviticFlux", "000000009489", 1),
+    "sigma_flux_rings": ("Sigma", "GraviticFlux", "0000000202A6", 1),
+    "sigma_flux_vortex": ("Sigma", "GraviticFlux", "0000000202B3", 1),
 }
 
 
@@ -892,7 +913,18 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "juno_heal_trail": ("lw_wisp", "cat_fade"),
             "juno_dmg_trail": ("cat_ring_line", "juno_ribbon_edge", "cat_fade"),
             # Sojourn's field decal (2228 C21, tools/reference/sojourn-effects.md): the noise 299E5 x the swirl 3DB8
-            "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl")}
+            "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl"),
+            # Sigma's (tools/reference/sigma-effects.md): his renderers multiply two masks where one alone is a full-frame
+            # noise that drew as a square on a quad (found playing): the launch cone's wisp 200E4 rounded by the soft glow
+            # 4C09 (ours: on its cone mesh CA08 the band 1C7A shapes it), the barrier's corner motes and the rock's flash
+            # 4DB x 1FC54, the burst's flash 208CC x 7AB, the send streaks 16E9D x 4C09, Flux's glows on him 4C09 x 4DB
+            "sigma_wisp_soft": ("sigma_wisp", "cat_soft"),
+            "sigma_mote": ("mercy_noise", "sigma_wisp_ring"),
+            "sigma_burst_flash": ("sigma_star", "sigma_rays"),
+            "sigma_send_streak": ("cat_cone_line", "cat_soft"),
+            "sigma_flux_glow": ("cat_soft", "mercy_noise"),
+            # Levitation's streaks (65BF: 299E1 x 299E8 x A7B6 on its half-shell 963D): the noise rounded by the glow A7B6
+            "sigma_levitate": ("cat_noise", "glow")}
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)
@@ -1010,6 +1042,30 @@ def bake_cat_arcs(out):
     return made
 
 
+def bake_sigma_barrier(out):
+    """Sigma's barrier field (material 7C75 on C015, whose UVs run 0-1 over the whole barrier: tools/reference/sigma-effects.md):
+    the shader's soft rounded-rectangle rim 1FE0A stretched over it, plus its hex cells 18F9B tiled across it (4 across, 2.5
+    down: the 6.7 x 4.18 m barrier's cells kept round; the shader's tiling isn't readable, ours) as a faint shimmer, and a dim
+    floor so the middle still reads. Written as sigma_barrier_field.png (640 x 400), drawn through the LUT's rows."""
+    from PIL import Image
+    if not all((out / f"{n}.png").exists() for n in ("sigma_barrier_rim", "sigma_barrier_hex")):
+        return 0
+    rim = Image.open(out / "sigma_barrier_rim.png").convert("L").resize((640, 400), Image.BILINEAR)
+    hexes = Image.open(out / "sigma_barrier_hex.png").convert("L")
+    tile = hexes.resize((160, 160), Image.BILINEAR)
+    values = []
+    rp, tp = rim.load(), tile.load()
+    for y in range(400):
+        for x in range(640):
+            r = rp[x, y] / 255
+            h = tp[x % 160, y % 160] / 255
+            values.append(min(1.0, 0.06 + 0.9 * r + 0.12 * h))
+    img = Image.new("L", (640, 400))
+    img.putdata([int(255 * v) for v in values])
+    img.save(out / "sigma_barrier_field.png")
+    return 1
+
+
 def add_effects(*sources):
     """Copies the effects' masks into assets/overcraft/textures/effect/ (flipbooks as <name>_<frame>.png), and
     converts their meshes (the torii gate) into hero_models/. Each from the first source folder that has it: Jetpack
@@ -1051,6 +1107,7 @@ def add_effects(*sources):
             product.save(out / f"{name}.png")
             copied += 1
     copied += bake_cat_arcs(out)
+    copied += bake_sigma_barrier(out)
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():
         src = next((Path(source) / hero / ability / "models" / "Models" / f"{model}.00C" / f"{model}.owmdl"

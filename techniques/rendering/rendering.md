@@ -135,6 +135,26 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A sphere round an area must be very faint:** her field's sphere at 0.18 alpha drew a milky solid dome over everything in
   it; 0.06 reads as a shell.
 
+### Sigma's effects (2026-11-02; [sigma-effects](../../tools/reference/sigma-effects.md), hub [sigma](../heroes/sigma.md#step-10-his-effects-sounds-and-voice-from-the-data-played-2026-11-02))
+- **Even holding only references, the Palette enum is near its 64 KB:** his 200 rows (`SigmaPalettes`) didn't fit as enum
+  constants ("code too large" again); only the 112 SigmaFx draws are named in `EffectArt.Palette`, the rest stay in
+  `SigmaPalettes` for later. The next hero should move the enum's constants out (a map keyed by name) rather than trim.
+- **Many of his renderers multiply two masks, and one alone is a full-frame noise:** 200E4, 4DB, 7AB, 16E9D, 299E1 and
+  19167 fill their square, so on a quad they drew as squares (the launch cone, the barrier's corner motes, Grasp's disc,
+  the send streaks, Flux's glows, Levitation). Bake the data's pair (`PRODUCTS`: `sigma_mote` = 4DB x 1FC54 ...) or round
+  the noise with the soft glow 4C09; look at a mask sheet before drawing any mask on a quad.
+- **A shader-only material can still be drawn from its masks and LUT:** the barrier's 7C75 (rim 1FE0A over UV 0-1, hex
+  cells 18F9B tiled) baked into `sigma_barrier_field` and drawn on its own mesh through the LUT row as added light
+  (`HeroModelRenderer.submitField(..., texture)`); the hand spheres' cores (7C98, untextured submeshes skipped until
+  now) drawn in `submitModel` as added light through the cloud noise, both views, so the 1P view model shows them too
+  (where world particles can't). A LUT row whose alpha is its emission must be multiplied by it: drawn as RGB the cores
+  read pink (the row's dark plum middle), RGB x A gives the data's violet to blue (`SIG_HAND_EMISSION`).
+- **Added light over a big shape must be faint, more so by day:** the barrier at 0.6 strength was a solid cyan wall and
+  white against the sky; 0.22 reads see-through day and night. Flux's 15 m cylinders need 0.04-0.07 alpha, Grasp's 3 m
+  haze 0.05 with a 3 m near-fade (from the front camera it filled the screen).
+- **To look at effects in third person, turn after acting:** the camera behind a 2.5 m tank hides everything ahead of him;
+  act, then `look` 25-60 degrees aside and screenshot (what he left in the world stays put).
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.
