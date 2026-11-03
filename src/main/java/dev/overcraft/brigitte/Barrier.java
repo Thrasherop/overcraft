@@ -40,6 +40,7 @@ public final class Barrier {
 	/** Each tick of her kit: up while the right button is held (and not broken), regenerating while down. */
 	public static void tick(ServerPlayer player, HeroState s, boolean controls) {
 		long now = player.level().getGameTime();
+		s.barrierLocked = now < s.barrierBrokenUntil;
 		boolean want = controls && player.isAlive() && s.secondaryHeld && now >= s.barrierBrokenUntil && s.barrierHealth > 0;
 		if (want && !s.barrierUp) {
 			s.barrierUp = true;
@@ -85,10 +86,15 @@ public final class Barrier {
 		return s.rallyTicks > 0 ? BARRIER_HEALTH_RALLY : BARRIER_HEALTH;
 	}
 
-	/** Leaving her (another hero, dying): down, its slow off. */
+	/**
+	 * Leaving her (another hero, dying): down, its slow off, and everyone told (her stance and the field are drawn from
+	 * the raise and lower they heard: without the lower she respawned holding it, #88).
+	 */
 	public static void clear(ServerPlayer player, HeroState s) {
 		if (s.barrierUp) {
 			stopLoops(player);
+			dev.overcraft.hero.Combat.animate(player, "shield_lower");
+			s.barrierDownSince = player.level().getGameTime();
 		}
 		s.barrierUp = false;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -98,27 +104,42 @@ public final class Barrier {
 	}
 
 	/**
+	 * The blast being dealt out now (ServerExplosionMixin, around each entity's hit): its centre and the explosion itself,
+	 * and whether a barrier stopped the hit just dealt (then the blast pushes them no more than it hurt them).
+	 */
+	public static @Nullable Vec3 blast;
+	public static @Nullable Object blastKey;
+	public static boolean blocked;
+
+	/**
 	 * Every hit passes here (LivingEntityMixin, before armor): what's left of {@code damage} (Minecraft health) after any
 	 * Brigitte's barrier that stands between the hit's source and {@code victim} took it. The victim is her or her ally.
+	 * A hit the barrier takes stops there, all of it, even one bigger than the barrier has left (it breaks): Overwatch's
+	 * barriers block a hit, they don't pass on what's over (the wiki's Barrier page: of Rip-Tire and Total Mayhem, "barriers
+	 * block the explosion"; no source gives a carry-over: M). Ours had passed the rest on as a hit of its own, so a creeper
+	 * 1.5 m ahead broke it and still hurt her and threw her 5 m back (#88). A blast is charged to it once, however many it
+	 * would hit behind it.
 	 */
 	public static float absorb(LivingEntity victim, DamageSource source, float damage) {
 		if (damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
 			return damage;
 		}
-		Vec3 from = from(source, victim);
-		if (from == null) {
-			return damage;
-		}
-		Vec3 to = victim.getBoundingBox().getCenter();
-		for (ServerPlayer brig : level.players()) {
+		ServerPlayer brig = covering(victim, source);
+		if (brig != null) {
 			HeroState s = HeroManager.state(brig);
-			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || brig.distanceToSqr(victim) > 100
-				|| !Allies.isSelfOrAlly(brig, victim) || source.getEntity() == brig || !crosses(brig, s, from, to)) {
-				continue;
+			Vec3 from = blast != null ? blast : from(source, victim);
+			Vec3 to = victim.getBoundingBox().getCenter();
+			boolean sameBlast = blastKey != null && s.barrierBlast == blastKey;
+			blocked = true;
+			if (sameBlast) {
+				// it took this blast already (for her, or for another behind it)
+				return 0;
+			}
+			if (blastKey != null) {
+				s.barrierBlast = blastKey;
 			}
 			double ow = Ow.toOw(damage);
 			double took = Math.min(ow, s.barrierHealth);
-			double before = s.barrierHealth / maxHealth(s);
 			s.barrierHealth -= took;
 			Barrier.took = true;
 			double after = s.barrierHealth / maxHealth(s);
@@ -148,28 +169,34 @@ public final class Barrier {
 				dev.overcraft.hero.Effects.play(level, "brigitte_barrier_break", brig.position().add(facing.scale(BARRIER_AHEAD)).add(0, 1.2, 0),
 					facing, brig, s.rallyTicks > 0 ? 1 : 0, brig);
 			}
-			damage = (float) Ow.hp(ow - took);
-			if (damage <= 0) {
-				return 0;
-			}
+			return 0;
 		}
 		return damage;
 	}
 
-	/** Whether an up barrier stands between a blast's centre and {@code entity}, her or her ally (ServerExplosionMixin). */
-	public static boolean blocksBlast(Entity entity, Vec3 center) {
-		if (!(entity instanceof LivingEntity victim) || !(entity.level() instanceof ServerLevel level)) {
-			return false;
+	/**
+	 * The Brigitte whose up barrier stands between the hit's source and {@code victim} (her or her ally), or null. Asked
+	 * before armor too (LivingEntityMixin): her armor takes 7 off a hit on her, not off a hit on her barrier (it took 30.5 of
+	 * a zombie's 37.5: #88).
+	 */
+	public static @Nullable ServerPlayer covering(LivingEntity victim, DamageSource source) {
+		if (!(victim.level() instanceof ServerLevel level)) {
+			return null;
+		}
+		Vec3 from = blast != null ? blast : from(source, victim);
+		if (from == null) {
+			return null;
 		}
 		Vec3 to = victim.getBoundingBox().getCenter();
 		for (ServerPlayer brig : level.players()) {
 			HeroState s = HeroManager.state(brig);
-			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig.distanceToSqr(victim) <= 100
-				&& Allies.isSelfOrAlly(brig, victim) && crosses(brig, s, center, to)) {
-				return true;
+			boolean sameBlast = s != null && blastKey != null && s.barrierBlast == blastKey;
+			if (s != null && s.hero == Hero.BRIGITTE && (s.barrierUp || sameBlast) && brig.distanceToSqr(victim) <= 100
+				&& Allies.isSelfOrAlly(brig, victim) && source.getEntity() != brig && crosses(brig, s, from, to)) {
+				return brig;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/** Where a hit came from: a projectile's way in, a blast's centre, an attacker's eyes. */
@@ -179,8 +206,9 @@ public final class Barrier {
 			Vec3 v = p.getDeltaMovement();
 			return v.lengthSqr() < 1.0E-6 ? p.position() : p.position().subtract(v.normalize().scale(6));
 		}
-		// a blast (TNT, a creeper, a fireball's): its centre. A primed TNT is the hit's direct entity with no attacker, and
-		// went through the barrier while only direct-less hits counted as blasts (found playing)
+		// a blast not dealt by an explosion (`/damage ... explosion at`; real explosions set `blast`): its centre. A primed
+		// TNT is the hit's direct entity with no attacker, and went through the barrier while only direct-less hits counted
+		// as blasts (found playing)
 		if (source.getSourcePosition() != null && !(direct instanceof LivingEntity)) {
 			return source.getSourcePosition();
 		}
@@ -188,21 +216,36 @@ public final class Barrier {
 		return attacker != null && attacker != victim ? attacker.getEyePosition() : null;
 	}
 
-	/** Whether the way from {@code a} to {@code b} crosses her barrier's rectangle (square to her facing, 0.9 m ahead). */
+	/**
+	 * Whether the way from {@code a} to {@code b} crosses her barrier's rectangle (square to her facing, BARRIER_AHEAD
+	 * ahead), or starts against it: a source in front of her body but nearer than the barrier, within its width and
+	 * height, is taken as at the barrier. In Overwatch there's no room between her and the shield she holds; Minecraft
+	 * lets a creeper walk through it up to her chest and go off there (ours, #88).
+	 */
 	static boolean crosses(ServerPlayer brig, HeroState s, Vec3 a, Vec3 b) {
 		float yaw = brig.getYRot() * (float) (Math.PI / 180);
 		Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+		Vec3 side = new Vec3(facing.z, 0, -facing.x);
 		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
+		boolean rally = s.rallyTicks > 0;
+		double halfWidth = (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2, height = rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT;
 		double da = a.subtract(centre).dot(facing), db = b.subtract(centre).dot(facing);
-		// from in front of it to behind it
-		if (da <= 0 || db > 0) {
+		if (db > 0) {
+			// what it would hit is in front of it
 			return false;
 		}
-		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));
-		Vec3 side = new Vec3(facing.z, 0, -facing.x);
+		Vec3 at;
+		if (da > 0) {
+			// from in front of it to behind it: where the way meets its plane
+			at = a.add(b.subtract(a).scale(da / (da - db)));
+		} else if (a.subtract(brig.position()).dot(facing) > 0) {
+			// between her and it (a creeper pressed to her chest, a fireball going off on her front): against it
+			at = a;
+		} else {
+			return false;
+		}
 		double across = Math.abs(at.subtract(centre).dot(side));
 		double up = at.y - brig.getY();
-		boolean rally = s.rallyTicks > 0;
-		return across <= (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2 && up >= -0.2 && up <= (rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT);
+		return across <= halfWidth && up >= -0.2 && up <= height;
 	}
 }

@@ -110,8 +110,10 @@ public abstract class LivingEntityMixin {
 		// a weakened attacker (Sombra's Cyberspace) deals half
 		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
 			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
-		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce)
+		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce): not
+		// one a Brigitte's barrier takes instead, which it would have shrunk on the barrier (#88)
 		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player
+			&& (dev.overcraft.brigitte.Barrier.passing || dev.overcraft.brigitte.Barrier.covering(player, source) == null)
 			? dev.overcraft.hero.Shields.armorReduce(player, boosted) : boosted;
 	}
 

@@ -174,6 +174,7 @@ public final class DevServer {
 							m.dot(right), m.dot(up), m.dot(look), player.getXRot()));
 					}
 					out.addProperty("anim1p", HeroAnimator.of(player).playingFirstPerson());
+					out.addProperty("camera", mc.options.getCameraType().name() + " " + dev.overcraft.client.AbilityCamera.describe());
 					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
 					out.addProperty("heroAttached", attached == null ? "" : attached);
 				}
@@ -440,6 +441,17 @@ public final class DevServer {
 					out.addProperty("out", !animator.emoting() || dev.overcraft.client.model.HeroWeapon.inEmote(hero, animator));
 				}
 				out.add("placed", list);
+			}
+			case "turnclips" -> {
+				// dev only: "turnclips [hero]": the clips of a hero's model held at their first frame as turn-in-place stands
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted()
+						.filter(n -> dev.overcraft.client.model.HeroAnimator.turnsInPlace(loaded.model(), n)).forEach(list::add);
+				}
+				out.add("turns", list);
 			}
 			case "viewbones" -> {
 				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode

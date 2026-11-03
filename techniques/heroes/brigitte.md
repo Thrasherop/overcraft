@@ -218,3 +218,76 @@ Played (dev client, flat world `bash1`, the shield held, the left button), each 
 - Into a stone wall 3.5 m ahead: stopped at it, 3.2 m.
 - Off a 3-block ledge: the bash falling with gravity, then 13.9 m/s bleeding to 7.5 by the landing, 12.49 m.
 - Not tried: slopes, water, a second player.
+
+## The barrier fixed (#88, 2026-11-02)
+The owner's playtest: "brig shield is super buggy. Like, go into third person, hold shield, and brig starts looking
+around. Also, holding shield doesn't go into third person mode. it also didn't do anything for creeper explosion
+protection". Each reproduced first (dev client `runClient2`, flat survival worlds `brig88a`-`brig88d`, Normal, the shield on
+the right button through the key mappings), then fixed and played again.
+
+- **She spun with the shield up.** Her shield-up stand `idle_shield` (4FE7) is a turn-in-place sheet (root yaw 0 -> -120
+  over its 31 frames, `rootyaw_3p.txt`); the animator held such sheets at frame 0 only by a name list, and played this one
+  on the clock: from behind she turned side-on and back every second (`brig88_before_back_held_0/4/6.png`). Now any stand
+  whose root turns over 45 degrees is held ([animation_import](../animation/animation_import.md#finding-the-right-clip));
+  with the shield up her stand is still and square to her aim from behind, the front and turned 30 degrees
+  (`brig88_after_back_held_9.png`, `brig88_after_front_held.png`, `brig88_after_back_turned.png`). Her stand's own breathing
+  (`add_breathe_shield`) now plays under it. The rule also stills Sombra's stealthed stand and Mercy's blaster stand
+  (`brig88_sheet_sombra.png`, `brig88_sheet_mercy.png`); every hero's stand twice 1.2 s apart: `brig88_stands.png`.
+- **No third-person view.** Her data has one: 0EE3 #857, on while the shield is up for her own view, 2 m back (4 in
+  Rally, chased over 0.4 s), a 0.3 s blend, off for the first 0.35 s of a bash; no hero setting turns it off
+  ([rendering](../rendering/rendering.md#ability-cameras-2026-11-02-88)). Traced (the harness's `state` `camera`): in 0.3 s
+  after the raise, 2 m; a bash: first person by 0.24 s, back from 0.44 s; released: out over 0.3 s to first person; Rally:
+  4 m. F5 while held cycles front and back, never first person. G (Minecraft mode) or her death: first person at once. The
+  crosshair is drawn from behind and sits on what she aims at (`brig88_after_center_zoom.png`, `brig88_night2_2.png`).
+- **Creepers went through.** Three causes, each seen in numbers (health in Overwatch HP, the barrier's from the HUD):
+  - a hit bigger than what the barrier had left broke it and the rest landed as a hit of its own, with the blast's push:
+    a creeper 1.5 m ahead broke it, 43 to her, thrown 5.4 m; two TNT broke it and 54 reached her. Overwatch's barriers
+    stop a hit whole (M: the wiki, "barriers block the explosion"; no source gives a carry-over). Now: 0 to her, no push.
+  - a creeper's blast was judged from the creeper's eyes, and one nearer than the barrier's plane (0.9 m) wasn't in
+    front of it at all: at 0.7 m ahead with the shield up she died (250). Now explosions are judged from their centre
+    (`ServerExplosionMixin` hands it to `Barrier`), and a source between her front and the plane counts as at the
+    barrier (ours: in Overwatch there's no room there): 0 to her, the barrier broken.
+  - her armor took 7 off each hit before the barrier did: a zombie's 37.5 cost the barrier 30.5. Now 37.5.
+  A blast is charged to the barrier once, and stops for everyone behind it.
+- **Found playing:** dying with the shield up left her in its stance after the respawn, the field drawn on her (the lower
+  was never sent): the barrier now goes down on death and on leaving her, and a player who comes into range while it's up
+  is sent its raise (not played with two clients: one client only on 25600).
+
+Played after (each with the shield up unless said; health before -> after, barrier before -> after):
+
+| Case | Before the fix | After |
+|---|---|---|
+| Creeper 3 m ahead (ignited) | 0 to her, 300 -> 98 | 0, 300 -> 91 |
+| Creeper 1.5 m ahead | 43 to her, 300 -> 0, pushed 5.4 m | 0, 300 -> 0, no push |
+| Creeper 0.7 m ahead | dead (250), barrier untouched | 0, 300 -> 0 |
+| Live creeper walking up from 8 m | 0, 300 -> 66 | 0, 300 -> 59 |
+| Creeper 3 m behind | 202 | 202 (as it should) |
+| Creeper 3 m ahead, shield down | 202, pushed 2.65 m | 202, pushed 2 m |
+| Creeper 2 m ahead 45 degrees right | dead | dead: outside the 1.51 m barrier's width |
+| TNT 3 m ahead | 54 to her, 300 -> 0, pushed 1.95 m | 0, 300 -> 0, no push |
+| TNT 3 m behind | dead | dead |
+| Ghast fireball from 8 m ahead | 0, 300 -> 175, pushed 3.8 m | 0, 300 -> 161, no push |
+| Ghast fireball, shield down | 74, pushed 9 m | 68, pushed 9 m |
+| Wither skull (owned) from 8 m ahead | not tried | 0, 300 -> 136 (100 impact + 64 blast) |
+| Wither skull (owned), shield down | not tried | 118, pushed 6.9 m |
+| Zombie hits | barrier -30 each, one reached her (30.5) | barrier -37.5 each, none reached her |
+
+A night fight (spawning off, three creepers, two skeletons and a zombie summoned 10-18 m ahead, live; the barrier up,
+dropped for the flail when something was within 3.5 m and the barrier under 120; a script aiming at the nearest mob):
+45 s, lowest health 13.1 of 20, every hit on her taken while the barrier was broken or refilling, two creeper blasts taken
+whole by it. The first try aimed at dropped dirt items, not mobs, and she was shot from the side: the script's fault (the
+selector now excludes items). Also: picked from the select screen on a fresh world, from the hero menu (H) after a death,
+and after a Save and Leave and rejoin; G out and back with the shield held.
+
+**What a critic should check (not done or not certain):**
+- **Overwatch side by side:** the view's lift (1 m, ours: #857's other fields 6.67 / 2.0 are unread) and whether her
+  view really drops to first person in a bash (v68007's meaning is M). Watch a Brigitte play or a replay.
+- **Melee through the barrier:** the wiki says every melee attack goes through barriers; ours stops mob melee (zombies)
+  at it, as step 4 chose. A balance call for the owner, not changed here.
+- **The barrier's place:** Overwatch hangs it on her hand (Weapon_L, bone 002C); ours is a flat 1.51 x 2.64 m rectangle
+  0.9 m ahead. A blast 45 degrees off at 2 m passes its edge (by 0.15 m) and hurts her fully: is that Overwatch's cover?
+- **Hero blasts:** Juno's torpedoes and Sojourn's Disruptor hit with no position, so the barrier judges them from the
+  shooter's eyes, not the blast; a torpedo landing beside her from in front is blocked whole. Sigma's branch has its own
+  barriers to merge with this.
+- **Multiplayer:** the raise sent to a player who starts watching her is compile-checked only.
+- **Sombra's, Mercy's and Lifeweaver's stands** are still now by the rule: not played through their kits after it.

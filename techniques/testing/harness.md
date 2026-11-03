@@ -16,6 +16,9 @@
     lowest point, fps.
   - `screenshot <file>`, `window 1920 1080`, `perspective first|back|front`, `subtitles on|off`, `heard` (the sounds
     played since the last call).
+- **Ability views and stands (2026-11-02, #88):** `state` reports `camera` (Minecraft's view type, then AbilityCamera's
+    on / off, leaving, blend and distance): trace it in a loop to time a view's blend. `turnclips [hero]` lists the clips
+    the animator holds at frame 0 as turn-in-place stands.
 - **Emotes:** `emote <id>`, `emoteat <s>|off` (every emote held at that time), `emotef5 on|off`. The wheel by hand:
   `key comms down`, `key primary_fire` (right click: the emote page), `mouse 0 -150` (the top slot), `key comms up`.
 - **Effects:** `fxslow <share>` (0.08: about twelve times slower; `fxslow 1` back), and `state` reports `fx`, the

@@ -618,6 +618,22 @@ public final class Brigitte implements HeroKit {
 			(int) Math.ceil(s.barrierHealth), -1, s.secondaryAmmo, -1, (float) (s.ability1Cooldown / 20.0),
 			(float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
-			Perk.index(s.majorPerk), 0, 0, 0, 0);
+			Perk.index(s.majorPerk), 0, (s.barrierUp ? MODE_BARRIER : 0) | (s.rallyTicks > 0 ? MODE_RALLY : 0)
+				| (s.barrierLocked ? MODE_BROKEN : 0), 0, 0);
 	}
+
+	/**
+	 * A player who starts seeing her (Overcraft's START_TRACKING) hears of a barrier already up: it's an action others
+	 * heard begin, so one who came into range while she held it saw her without it, its stand or its field (#88).
+	 */
+	public static void showState(ServerPlayer brig, ServerPlayer viewer) {
+		HeroState s = HeroManager.state(brig);
+		if (s != null && s.hero == dev.overcraft.hero.Hero.BRIGITTE && s.barrierUp) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer,
+				new dev.overcraft.net.HeroActionPayload(brig.getId(), "shield_raise"));
+		}
+	}
+
+	/** Her synced mode's bits (the client's barrier camera, ClientHero): the barrier up, Rally on, broken (locked out). */
+	public static final int MODE_BARRIER = 1, MODE_RALLY = 2, MODE_BROKEN = 4;
 }
