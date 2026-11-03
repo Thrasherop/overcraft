@@ -1249,7 +1249,8 @@ public final class HeroModelRenderer {
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			if (texture == null && (piece.mesh().endsWith(SIGMA_CORE) || piece.mesh().endsWith(SIGMA_CORE_BASE))) {
+			if (texture == null && piece.material().endsWith(SIGMA_CORE_MATERIAL)
+				&& (piece.mesh().endsWith(SIGMA_CORE) || piece.mesh().endsWith(SIGMA_CORE_BASE))) {
 				// Sigma's hand-sphere cores (submeshes 2 / 3 of 106B4, material 7C98: a shader, no colour texture): its cloud
 				// noise 19167 through its LUT's colour row times its emission (8000DFB0EAFE r1: plum, violet to blue), as added light
 				Identifier core = dev.overcraft.client.effect.EffectArt.get("cat_glow_noise",
@@ -1283,6 +1284,13 @@ public final class HeroModelRenderer {
 		}
 	}
 
+	/**
+	 * Sigma's hand-sphere cores' material (7C98, a shader with no colour texture). The submesh keys below are shared with other
+	 * models' untextured pieces (Lucio's, Sombra's, Ana's pistol, Brigitte's and her shield, Lifeweaver's platform and flower
+	 * ring all have a 6B24EE2D2B083AFE piece), which keyed alone drew violet: found by the 2026-11-02 QA audit, seen on
+	 * Brigitte's shield in the release play.
+	 */
+	private static final String SIGMA_CORE_MATERIAL = "7C98";
 	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
 	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
 	/**
