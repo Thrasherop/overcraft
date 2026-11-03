@@ -36,7 +36,8 @@ loom {
 			runDir "run2"
 			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			vmArg "-Dovercraft.dev=true"
-			vmArg "-Dovercraft.devPort=25600"
+			// OC_DEV_PORT2 moves it when another checkout's second client already holds 25600 (two agents on one machine)
+			vmArg "-Dovercraft.devPort=${System.getenv('OC_DEV_PORT2') ?: '25600'}"
 			programArgs "--username", "Viewer"
 		}
 	}
