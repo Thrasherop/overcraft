@@ -128,7 +128,7 @@ public final class Brigitte implements HeroKit {
 				// a Stalwart takes 40% less of it (Tank)
 				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0).scale(dev.overcraft.hero.Tank.knockbackFactor(target));
 				target.push(push.x, push.y, push.z);
-				target.needsSync = true;
+				Combat.pushedNow(target);
 				dev.overcraft.hero.Combat.pushed(target, player, dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.animate(player, "shield_bash_hit");
 				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
@@ -331,7 +331,7 @@ public final class Brigitte implements HeroKit {
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
 			double kept = dev.overcraft.hero.Tank.knockbackFactor(e);
 			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3 * kept, 0.25 * kept, push.z * Ow.speed(BASH_KNOCKBACK) * 3 * kept);
-			e.needsSync = true;
+			Combat.pushedNow(e);
 			dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			stun(player, e);
 		}
@@ -458,7 +458,7 @@ public final class Brigitte implements HeroKit {
 				p.whiplash = null;
 				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
-				p.target.needsSync = true;
+				Combat.pushedNow(p.target);
 				return true;
 			}
 			if (p.left-- <= 0) {
@@ -467,7 +467,7 @@ public final class Brigitte implements HeroKit {
 			Vec3 v = p.target.getDeltaMovement();
 			// level speed held, its first lift once (Minecraft's gravity brings them down)
 			p.target.setDeltaMovement(p.velocity.x, p.left == Ow.ticks(WHIP_PUSH_TIME) - 1 ? p.velocity.y : v.y, p.velocity.z);
-			p.target.needsSync = true;
+			Combat.pushedNow(p.target);
 			return false;
 		});
 	}

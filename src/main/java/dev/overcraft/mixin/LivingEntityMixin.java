@@ -139,6 +139,34 @@ public abstract class LivingEntityMixin {
 	}
 
 	/**
+	 * A hero's hit takes no Minecraft knockback (#93, Combat.heroHit): Overwatch's weapons and most abilities don't push,
+	 * and those that do push for themselves after the hit. The hurt still tilts a hit player's view toward whoever hit
+	 * them (indicateDamage, from the shooter for a hitscan shot, which has no position of its own).
+	 */
+	@com.llamalad7.mixinextras.injector.v2.WrapWithCondition(method = "hurtServer", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/LivingEntity;dealDefaultKnockback(Lnet/minecraft/world/damagesource/DamageSource;FZ)V"))
+	private boolean overcraft$heroHitKnockback(LivingEntity self, net.minecraft.world.damagesource.DamageSource source, float damage,
+											   boolean blocked) {
+		if (!dev.overcraft.hero.Combat.heroHit(self, source)) {
+			return true;
+		}
+		net.minecraft.world.phys.Vec3 from = source.getSourcePosition() != null ? source.getSourcePosition()
+			: source.getEntity() != null ? source.getEntity().position() : null;
+		if (from != null && !blocked) {
+			self.indicateDamage(from.x - self.getX(), from.z - self.getZ());
+		}
+		return false;
+	}
+
+	/** Nor Minecraft's impact (#93): a hit player would be sent their stale motion, a jolt (minecraft_26.md, #82). */
+	@com.llamalad7.mixinextras.injector.v2.WrapWithCondition(method = "hurtServer", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/LivingEntity;markHurt()V"))
+	private boolean overcraft$heroHitImpact(LivingEntity self,
+											@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
+		return !dev.overcraft.hero.Combat.heroHit(self, source);
+	}
+
+	/**
 	 * Shields (dev.overcraft.hero.Shields): every change to a shielded hero's health passes here. A loss comes off the
 	 * shields first; a gain heals the health under them, then them.
 	 */

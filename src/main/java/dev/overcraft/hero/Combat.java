@@ -68,7 +68,7 @@ public final class Combat {
 	/**
 	 * A hitscan shot's damage from a hero (Ana's rifle, Sombra's pistol, Sojourn's Charged Shot): overcraft:hitscan, not a
 	 * projectile, so endermen take it instead of teleporting away (the owner's balance call, #92); otherwise as the arrow
-	 * type they used (knockback, armor). No direct entity, so the kill feed doesn't take it for melee.
+	 * type they used (armor; no knockback, as no hero hit has: heroHit). No direct entity, so the kill feed doesn't take it for melee.
 	 */
 	public static DamageSource hitscan(net.minecraft.server.level.ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
@@ -134,6 +134,33 @@ public final class Combat {
 			hurt.run();
 		} finally {
 			dealing = outer;
+		}
+	}
+
+	/**
+	 * Whether the hurt running on {@code victim} with {@code source} is a hero's hit (dealt through Combat.damage, #93).
+	 * Overwatch hits don't push: weapon fire and most abilities have no knockback at all (the wiki's Status effect page,
+	 * Knockback, rev 408792, lists the few that do: for our heroes Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr
+	 * and Catnapper, Lúcio's Soundwave, Sigma's Hyperspheres, Accretion and Hyper Strike, and quick melee's "very small"
+	 * one), and those push the target themselves after the hit. So a hero's hit takes none of Minecraft's default knockback
+	 * (0.4 and a hop, in a random direction when the hit has no position: hitscan, the flail) and no impact either (a hurt
+	 * player is sent the server's stale copy of their motion, a jolt: minecraft_26.md #82); an ability that pushes syncs its
+	 * own push (pushedNow). LivingEntityMixin asks this inside LivingEntity.hurtServer.
+	 */
+	public static boolean heroHit(LivingEntity victim, DamageSource source) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == source.getEntity();
+	}
+
+	/**
+	 * After an ability pushed {@code target} (Entity.push or knockback, which only mark it for the watchers): its own client
+	 * is sent the motion too when it is a player, which Minecraft's hurt used to do for every hit (markHurt, now off for
+	 * hero hits: heroHit).
+	 */
+	public static void pushedNow(Entity target) {
+		target.needsSync = true;
+		if (target instanceof Player) {
+			target.syncVelocity = true;
 		}
 	}
 

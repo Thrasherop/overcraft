@@ -140,3 +140,32 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - Played: an enderman at 8 m took Sombra's pistol (40 -> 27.5), Ana's scoped shot (-> 34) and the Charged Shot
   (-> 25.6) in place; Juno's Mediblaster, the control, sent it 26 m away untouched.
 
+
+## Hero hits don't push (#93, 2026-11-03)
+- **The cause:** every hero hit went through `LivingEntity.hurtServer`, which adds `dealDefaultKnockback` (0.4 and a hop on
+  the ground) unless the damage type is in `minecraft:no_knockback`. A hit with no position (hitscan's `overcraft:hitscan`
+  with no direct entity, Brigitte's flail as `magic`) has `xd = zd = 0`, and `LivingEntity.knockback` then picks a
+  **random** direction. Heroes use Minecraft's own types (`thrown`, `player_attack`, `magic`), so tagging types couldn't
+  fix it without changing vanilla skeletons' arrows.
+- **The rule (data):** the wiki's Status effect page, Knockback (rev 408792), lists the weapons and abilities that knock
+  enemies back; for our heroes only Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr and Catnapper (and Headbutt),
+  Lúcio's Soundwave, Sigma's Hyperspheres, Accretion and Hyper Strike, plus quick melee's "very small knockback". Each of
+  those already pushes the target itself after the hit. So: **a hit dealt through `Combat.damage` takes no Minecraft
+  knockback and no Minecraft impact** (`Combat.heroHit`, asked by two `@WrapWithCondition`s in `LivingEntityMixin` on
+  `hurtServer`'s `dealDefaultKnockback` and `markHurt`). A hit player's view still tilts toward the shooter
+  (`indicateDamage` from the source position, else the attacker's). Minecraft's own hits (a sword in Minecraft mode, a
+  zombie) are untouched.
+- **The catch:** `markHurt` was also what carried an ability's push to a *player's* own client (`Entity.push` and
+  `knockback` only set `needsSync`, which goes to the watchers). Every push after a hero hit now ends with
+  `Combat.pushedNow(target)` (`needsSync`, plus `syncVelocity` for a player): Brigitte's bash, Rally's shockwave, Whip
+  Shot's held push (now sent each tick it holds the speed, where only the first tick's reached a player before) and quick
+  melee. Soundwave, Purr, Catnapper and Lúcio's rounds already set `syncVelocity`; Sigma's sends `sendSpeed`.
+- **Measured** (a 200-health zombie with AI and `movement_speed` 0 at 8 m, `Pos` read through `/data` during and after, three
+  hits each): before, each kunai moved it 1.99 m and Sombra's pistol threw it 3.4 m sideways with a hop in its first 0.1 s
+  (then every shot missed it); after, kunai 0.000 m, pistol 0.000 m over 1 s of fire, Brigitte's flail 0.000 m. Pushes kept:
+  quick melee 0.50 m (its own 0.15, no longer doubled by Minecraft's 0.4: X13), Soundwave 3.91 m, Whip Shot 7.75 m, Purr 3.41 m.
+- **What a critic should check:** PvP. With one client the victim was always a mob; a second player hit by kunai, the
+  pistol, Whip Shot and quick melee (pushes reaching their own client through `pushedNow`) hasn't been played (no memory for
+  a second client, 2026-11-03). Lúcio's Sonic Amplifier rounds push by our own choice (`SonicEntity`, "no source gives
+  it"); the wiki's list doesn't name them. Any new ability that pushes a target after a hero hit must call `pushedNow`, or
+  a player target won't move on their screen.
