@@ -69,14 +69,25 @@ public final class QuickMelee {
 				continue;
 			}
 			DamageSource source = hero.damageSources().playerAttack(hero);
-			float dealt = Combat.damage(target, source, DAMAGE);
-			Combat.credit(hero, dealt);
+			// melee: through barriers (dev.overcraft.brigitte.Barrier.isMelee)
+			dev.overcraft.brigitte.Barrier.meleeDepth++;
+			float dealt;
+			try {
+				dealt = Combat.damage(target, source, DAMAGE, claws ? Blow.melee("claws_out") : Blow.MELEE);
+			} finally {
+				dev.overcraft.brigitte.Barrier.meleeDepth--;
+			}
+			Combat.credit(hero, dealt, target);
 			Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(hero, target, false);
 			}
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
 			target.knockback(KNOCKBACK, -look.x, -look.z, source, Ow.hp(dealt));
+			if (!hit && s.hero == Hero.SIGMA) {
+				// Sigma's Hyper Strike (major perk): the first one it lands on
+				dev.overcraft.sigma.SigmaPerks.meleeHit(hero, s, target);
+			}
 			hit = true;
 			if (claws) {
 				dev.overcraft.jetpackcat.JetpackCat.wound(hero, target);
@@ -99,6 +110,11 @@ public final class QuickMelee {
 			// her melee clips' foley: 1P 6B94's 36E7 (5ECD + 5F24) hers, 3P 7EF3's 372E (5FE7 30 m + 5FF4 45 m) for others
 			HeroSounds.split(hero, dev.overcraft.sojourn.SojournSounds.of("melee"), dev.overcraft.sojourn.SojournSounds.of("melee_3p"),
 				hero.position(), 45);
+		}
+		if (s.hero == Hero.SIGMA) {
+			// his melee clips' foley: 1P 6FCD's 3086 (59F1 + 5A6C) his, 3P 6F89's 306A (59F7, 30 m) for others
+			HeroSounds.split(hero, dev.overcraft.sigma.SigmaSounds.of("melee"), dev.overcraft.sigma.SigmaSounds.of("melee_3p"),
+				hero.position(), 30);
 		}
 		if (s.hero == Hero.JUNO) {
 			// her 1P melee clip E9B8's foley (5F7F: B2CF + B8BF); her 3P melee clips carry none (H), so hers only

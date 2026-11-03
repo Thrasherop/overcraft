@@ -130,6 +130,15 @@ public final class DevServer {
 					out.addProperty("onGround", player.onGround());
 					out.addProperty("crouching", player.isCrouching());
 					out.addProperty("sprinting", player.isSprinting());
+					// the body box (dev.overcraft.hero.HeroBody): pose, size and eye on this client and on the integrated server
+					out.addProperty("box", String.format(java.util.Locale.ROOT, "%s %.2fx%.2f eye %.2f", player.getPose(),
+						player.getBbWidth(), player.getBbHeight(), player.getEyeHeight()));
+					var server = mc.getSingleplayerServer();
+					var serverPlayer = server == null ? null : server.getPlayerList().getPlayer(player.getUUID());
+					if (serverPlayer != null) {
+						out.addProperty("serverBox", String.format(java.util.Locale.ROOT, "%s %.2fx%.2f eye %.2f",
+							serverPlayer.getPose(), serverPlayer.getBbWidth(), serverPlayer.getBbHeight(), serverPlayer.getEyeHeight()));
+					}
 					out.addProperty("slot", player.getInventory().getSelectedSlot());
 					out.addProperty("heroMode", ClientHero.controls());
 					HeroSyncPayload s = ClientHero.sync();
@@ -174,6 +183,7 @@ public final class DevServer {
 							m.dot(right), m.dot(up), m.dot(look), player.getXRot()));
 					}
 					out.addProperty("anim1p", HeroAnimator.of(player).playingFirstPerson());
+					out.addProperty("camera", mc.options.getCameraType().name() + " " + dev.overcraft.client.AbilityCamera.describe());
 					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
 					out.addProperty("heroAttached", attached == null ? "" : attached);
 				}
@@ -441,6 +451,17 @@ public final class DevServer {
 				}
 				out.add("placed", list);
 			}
+			case "turnclips" -> {
+				// dev only: "turnclips [hero]": the clips of a hero's model held at their first frame as turn-in-place stands
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted()
+						.filter(n -> dev.overcraft.client.model.HeroAnimator.turnsInPlace(loaded.model(), n)).forEach(list::add);
+				}
+				out.add("turns", list);
+			}
 			case "viewbones" -> {
 				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode
 				com.google.gson.JsonObject bones = new com.google.gson.JsonObject();
@@ -457,6 +478,15 @@ public final class DevServer {
 					held[i - 1] = Float.parseFloat(a[i]);
 				}
 				out.addProperty("held", java.util.Arrays.toString(held));
+			}
+			case "selectframe" -> {
+				// dev only: "selectframe <framing> <drop>": Sigma's size and drop on the hero select (HeroSelectScreen)
+				String[] a = arg.trim().split(" ");
+				float[] frame = dev.overcraft.client.HeroSelectScreen.SIGMA_FRAME;
+				for (int i = 0; i < a.length && i < 2 && !a[i].isEmpty(); i++) {
+					frame[i] = Float.parseFloat(a[i]);
+				}
+				out.addProperty("frame", java.util.Arrays.toString(frame));
 			}
 			case "heldmax" -> {
 				// "heldmax [kunaiFlat kunaiSolid ofudaFlat ofudaSolid]"
@@ -572,7 +602,9 @@ public final class DevServer {
 							TRACE.add(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f %.3f %s %s %.2f %.2f a%d r%.2f m%.4f c1%.2f c2%.2f s%d u%s",
 								traceTick++, Math.sqrt(dx * dx + dz * dz), dx, p.getDeltaMovement().y * 20, p.getY(), p.onGround() ? "G" : "-",
 								keys.isEmpty() ? "." : keys, dz, p.getYRot(), hs.primaryAmmo(), hs.primaryReload(), hs.meter(),
-								hs.ability1Cooldown(), hs.ability2Cooldown(), hs.secondaryAmmo(), hs.ultActive() ? "1" : "0"));
+								hs.ability1Cooldown(), hs.ability2Cooldown(), hs.secondaryAmmo(), hs.ultActive() ? "1" : "0")
+								// Sigma: spheres seen for the first time this tick, his barrier's place, state and health share
+								+ sigmaTrace(client));
 						}
 					});
 				}
@@ -713,5 +745,22 @@ public final class DevServer {
 			}
 		}
 		throw new IllegalArgumentException("no key mapping " + name);
+	}
+
+	/** Dev only (trace): Sigma's new Hyperspheres this tick (" h2"), his barrier (" b x y z state share"). */
+	private static final java.util.Set<Integer> SPHERES_SEEN = new java.util.HashSet<>();
+
+	private static String sigmaTrace(Minecraft client) {
+		StringBuilder out = new StringBuilder();
+		int fresh = 0;
+		for (net.minecraft.world.entity.Entity e : client.level.entitiesForRendering()) {
+			if (e instanceof dev.overcraft.entity.HypersphereEntity && SPHERES_SEEN.add(e.getId())) {
+				fresh++;
+			}
+			if (e instanceof dev.overcraft.entity.SigmaBarrierEntity b) {
+				out.append(String.format(java.util.Locale.ROOT, " b %.2f %.2f %.2f %d %.3f", b.getX(), b.getY(), b.getZ(), b.state(), b.health()));
+			}
+		}
+		return (fresh > 0 ? " h" + fresh : "") + out;
 	}
 }

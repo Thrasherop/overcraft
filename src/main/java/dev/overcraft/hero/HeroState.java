@@ -151,6 +151,8 @@ public final class HeroState {
 	public boolean sombraFiring, sombraStealthed;
 	/** Brigitte: her flail's swing (ticks into it, -1 none), which side it's on (0 forehand, 1 backhand), whom it hit. */
 	public int flailSwing = -1, flailCombo;
+	/** The swing running is her quick melee (V), not the primary fire: the kill feed's fist (kill_feed.md). */
+	public boolean flailMelee;
 	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
 	/** Brigitte: when the flail may start Inspire again (game time). */
 	public long inspireReadyAt = -1;
@@ -160,6 +162,10 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
+	public @org.jspecify.annotations.Nullable Object barrierBlast;
+	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */
+	public boolean barrierLocked;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
@@ -192,6 +198,39 @@ public final class HeroState {
 	public long sojournFullAt = -1, sojournSlideJumpAt = -1000, sojournOcEndSay = -1;
 	public int sojournOcKills;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
+	/**
+	 * Sigma (dev.overcraft.sigma.Sigma): ticks to his volley's second sphere (-1: none due), ticks left of the 1.3 s before
+	 * the next volley, the left button's 0.15 s buffer, the volleys fired (his three fire clips cycle); his barrier's entity
+	 * (out: sent or stopped), the right button last tick, when it can go out again; Kinetic Grasp's ticks left (-1: off) and
+	 * the damage it has absorbed (Overwatch points). The barrier's health is barrierHealth, as Brigitte's.
+	 */
+	public int sigmaSecondIn = -1, sigmaBuffer, sigmaVolleys;
+	public double sigmaReload;
+	public @Nullable Integer sigmaBarrierId;
+	public boolean sigmaRightWas;
+	public long sigmaBarrierReadyAt = -1;
+	public int sigmaGrasp = -1;
+	public double sigmaGraspAbsorbed;
+	/** The game time of his kit's last tick (his HUD's cooldowns). */
+	public long sigmaNow;
+	/**
+	 * Sigma's Accretion: ticks left of its gather (-1: none); Gravitic Flux's phase (dev.overcraft.sigma.GraviticFlux.NONE ..
+	 * SLAM), ticks into it, the aimed point; Hyper Strike's direct hits counted and whether his next quick melee carries it.
+	 */
+	public int sigmaCast = -1;
+	public int sigmaFluxPhase, sigmaFluxTicks;
+	public net.minecraft.world.phys.@Nullable Vec3 sigmaFluxPoint;
+	public int sigmaDirectHits;
+	public boolean sigmaStrikeReady;
+	/**
+	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
+	 * Levitation's end, for others' look and sound (the server is told it began; ours: 1.75 s on, or a landing).
+	 */
+	public double sigmaBarrierSample = -1;
+	public boolean sigmaBarrierUnder;
+	public long sigmaLevitateUntil = -1;
+	/** When Hyper Regeneration's heal on his barrier was last drawn (6E81: 0.5 s long, so once a 0.5 s at most). */
+	public long sigmaHealFxAt = -100;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

@@ -38,6 +38,12 @@ public class KunaiEntity extends OwProjectile {
 		super(OcEntities.KUNAI, owner, level, new ItemStack(OcItems.KUNAI));
 	}
 
+	/** An enemy barrier takes its 60 (no crit on a barrier: ours). */
+	@Override
+	public double barrierDamage() {
+		return dev.overcraft.kiriko.KirikoStats.KUNAI_DAMAGE;
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return OcItems.KUNAI;
@@ -46,13 +52,6 @@ public class KunaiEntity extends OwProjectile {
 	@Override
 	protected int lifetime() {
 		return 40;
-	}
-
-	/** This kunai's hit was a headshot (set before its damage is dealt: the kill feed reads it). */
-	private boolean headshot;
-
-	public boolean headshot() {
-		return headshot;
 	}
 
 	@Override
@@ -88,18 +87,17 @@ public class KunaiEntity extends OwProjectile {
 		// the dragon's head is its head; anyone else's, the top of their box
 		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
 		// known before the damage: a killing blow's kill feed and voice line look at it while the damage is dealt
-		headshot = crit;
 		HeroState state = crit && getOwner() instanceof Player thrower ? HeroManager.state(thrower) : null;
 		if (state != null) {
 			state.critAt = level.getGameTime();
 		}
 		double damage = KirikoStats.KUNAI_DAMAGE * (crit ? KirikoStats.KUNAI_CRIT : 1);
-		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage)
-			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.KIRIKO))
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.KIRIKO));
 		Effects.play(level, "kunai_hit_entity", at, getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
-			Combat.credit(owner, dealt);
+			Combat.credit(owner, dealt, target);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 			if (owner instanceof net.minecraft.server.level.ServerPlayer thrower && dealt > 0) {
 				Effects.hitMarker(thrower, target, crit);

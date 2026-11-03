@@ -28,6 +28,12 @@ import java.util.Optional;
  * hits takes 75, heal or damage, over 0.5 s (Ana.dose).
  */
 public class AnaDartEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.ana.AnaStats.RIFLE_DAMAGE;
+	}
+
 	public AnaDartEntity(EntityType<? extends AnaDartEntity> type, Level level) {
 		super(type, level);
 	}

@@ -30,6 +30,12 @@ import net.minecraft.world.phys.Vec3;
  * headshot does double. Paw shots are her entity 6D19, the centre shot 6D1B: no model, all particles.
  */
 public class PawEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return amount;
+	}
+
 	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
 	private static final double HEAD_DEPTH = 0.25;
 
@@ -151,10 +157,10 @@ public class PawEntity extends OwProjectile {
 		} else if (target != null && Allies.canHurt(owner, target)) {
 			boolean crit = !centre && (part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH);
 			double damage = amount * (crit ? JetpackCatStats.PAW_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
-				: Combat.damage(target, damageSources().thrown(this, owner), damage);
+			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT))
+				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			if (owner instanceof Player cat) {
-				Combat.credit(cat, dealt);
+				Combat.credit(cat, dealt, target);
 				Combat.addFireForDamage(cat, dealt, Ow.toOw(target.getMaxHealth()));
 				if (cat instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);

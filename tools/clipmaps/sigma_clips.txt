@@ -1,0 +1,4 @@
+# Sigma, third person's extra clips (owm_survey.py --clips-only), merged into hero_models/sigma.glb by bone name (HeroModels).
+# His emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md); no other clips
+# here yet. His hand spheres are an entity of their own (slot 54CE): the clips his emotes play on them are in sigma_weapon.txt
+# (techniques/emotes/sigma_emotes.md).

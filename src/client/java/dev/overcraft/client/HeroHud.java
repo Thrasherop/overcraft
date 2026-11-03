@@ -162,7 +162,7 @@ public final class HeroHud {
 		}
 		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
-		track(s);
+		track(s, hero);
 		if (!ClientHero.heroView()) {
 			minecraftMode(g, s, hero);
 			return;
@@ -179,13 +179,17 @@ public final class HeroHud {
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
 		float below = Math.max(toastSlots * 32, effectRowsBottom(player));
 		KillFeedHud.render(g, w - 36, Math.max(36, below / scale + 12));
-		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes)
+		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes), and
+		// from behind while an ability holds the view: it turns to the point her aim meets, under the crosshair (Brigitte's
+		// barrier camera had none: #88)
 		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
-		if (firstPerson) {
+		if (firstPerson || AbilityCamera.active() && !dev.overcraft.client.comms.EmoteCamera.active()
+			&& mc.options.getCameraType() == net.minecraft.client.CameraType.THIRD_PERSON_BACK) {
 			crosshair(g, w / 2, h / 2);
 		}
 		hitMarker(g, w / 2, h / 2);
-		eliminatedCaption(g, w / 2, h / 2 + 205);
+		// below every hero's widgets under the crosshair: at +205 it ran through Lúcio's song indicator (+191, found playing)
+		eliminatedCaption(g, w / 2, h / 2 + 250);
 		if (hero == Hero.KIRIKO) {
 			if (firstPerson && HeroOptions.get().ofudaUi) {
 				ofudaCounter(g, s, w / 2, h / 2 + 136);
@@ -214,15 +218,18 @@ public final class HeroHud {
 	}
 
 	/** Notices cooldowns ending, the ofuda clip refilling and the ult starting, for the flashes and the countdown. */
-	private static void track(HeroSyncPayload s) {
+	private static void track(HeroSyncPayload s, Hero hero) {
 		long now = Util.getMillis();
 		// Swift Step's hand seal is sent on top of its cooldown (Kiriko.sync): past it, she has stepped. Ready again only
-		// after a cooldown, not after a seal that found no room by the ally (nothing was spent)
-		float stepTotal = (float) KirikoStats.SWIFT_STEP_COOLDOWN;
+		// after a cooldown, not after a seal that found no room by the ally (nothing was spent). Kiriko's alone: any other
+		// hero's ability 1 crossing her 7 s flashed the step's teal on them (#107: Ana's Sleep Dart, Sombra's
+		// Cyberspace, Lifeweaver's Petal Platform)
+		boolean kiriko = hero == Hero.KIRIKO;
+		float stepTotal = kiriko ? (float) KirikoStats.SWIFT_STEP_COOLDOWN : Float.MAX_VALUE;
 		if (ability1Seen > 0 && ability1Seen <= stepTotal && s.ability1Cooldown() <= 0) {
 			ability1ReadyAt = now;
 		}
-		if (ability1Seen > stepTotal && s.ability1Cooldown() > 0 && s.ability1Cooldown() <= stepTotal) {
+		if (kiriko && ability1Seen > stepTotal && s.ability1Cooldown() > 0 && s.ability1Cooldown() <= stepTotal) {
 			stepCastAt = now;
 		}
 		if (ability2Seen > 0 && s.ability2Cooldown() <= 0) {
@@ -310,8 +317,10 @@ public final class HeroHud {
 		if (kind == 2) {
 			net.minecraft.world.entity.Entity victim = Minecraft.getInstance().level == null ? null
 				: Minecraft.getInstance().level.getEntity(target);
-			if (victim != null) {
-				eliminated = victim.getName().getString().toUpperCase(Locale.ROOT);
+			// past tracking range the client has no entity: the name from our own kill line (sent just before the marker)
+			String name = victim != null ? victim.getName().getString() : dev.overcraft.client.hud.KillFeedHud.ownVictim();
+			if (name != null) {
+				eliminated = name.toUpperCase(Locale.ROOT);
 				eliminatedAt = Fx.now();
 			}
 		}
@@ -866,6 +875,18 @@ public final class HeroHud {
 	// ---- bottom right: abilities and weapons ----
 
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Kinetic Grasp (Shift) and Accretion (E), his data's ABILITY 1 / 2, in Kiriko's two places (ours)
+			ability(g, hero, w, "kinetic_grasp", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.GRASP_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.sigma.Sigma.MODE_GRASP) != 0) {
+				// lit while it holds (as Sojourn's slide)
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "accretion", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.sigma.SigmaStats.ACCRETION_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.SOJOURN) {
 			// Power Slide (Shift: marked while she slides) and Disruptor Shot (E), her data's ABILITY 1 / 2, in Kiriko's two
 			// places (ours)
@@ -1042,6 +1063,25 @@ public final class HeroHud {
 		g.pose().popMatrix();
 	}
 
+	/**
+	 * Sigma's barrier on its panel: its health (0-650) as a number over a band along the panel's foot, light blue, brighter
+	 * while it's out; while it can't go out (recalled 1 s, broken 5 s) the band grey and the seconds left instead (ours:
+	 * Overwatch shows the health over his crosshair with the "Experimental Barrier UI" option).
+	 */
+	private static void barrierHealth(GuiGraphicsExtractor g, float share, int health, float cooldown, boolean out, float x, float y,
+									  float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		boolean waiting = cooldown > 0;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(share, 0, 1), 5, waiting ? 0x99A0A0A0 : out ? 0xFF9FE6FF : 0xB37FC8E8);
+		String number = waiting ? String.format(java.util.Locale.ROOT, "%.1f", cooldown) : String.valueOf(health);
+		brush(g, number, x + width - 34, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 34, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	/** Charges left on an ability's box (Flash Heal with Double Dose): the count in its corner (ours). */
 	private static void charges(GuiGraphicsExtractor g, int count, float x, float base, float w) {
 		float cx = x + 32;
@@ -1130,6 +1170,17 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.SIGMA) {
+			// Experimental Barrier (the right button) where Kiriko's ofuda panel is, its health along the panel's foot; Hyperspheres
+			// (the left: no ammo) where her kunai are
+			weapon(g, hero, w, "experimental_barrier", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			barrierHealth(g, s.meter(), s.secondaryAmmo(), s.secondaryReload(), (s.mode() & dev.overcraft.sigma.Sigma.MODE_BARRIER_OUT) != 0,
+				w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "hyperspheres", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SOJOURN) {
 			// Charged Shot (the right button) with her energy where Kiriko's ofuda panel is, the Railgun's 45 rounds (the left)
 			// where her kunai are
@@ -1458,7 +1509,7 @@ public final class HeroHud {
 		if (target == null) {
 			return;
 		}
-		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+		targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h, Action.ABILITY_1);
 	}
 
 	/**
@@ -1514,12 +1565,15 @@ public final class HeroHud {
 			}
 		}
 		if (target != null) {
-			targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+			targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h, Action.ABILITY_1);
 		}
 	}
 
-	/** Overwatch's ability-target marker (013C.116): cyan corner brackets in a diamond on the point, Ability 1's key under. */
-	private static void targetMarker(GuiGraphicsExtractor g, Vec3 at, float w, float h) {
+	/**
+	 * Overwatch's ability-target marker (013C.116): cyan corner brackets in a diamond on the point, the key of the
+	 * ability it's for under them (it printed Ability 1's whatever the ability: #108).
+	 */
+	private static void targetMarker(GuiGraphicsExtractor g, Vec3 at, float w, float h, Action key) {
 		float[] screen = project(at, w, h);
 		if (screen == null) {
 			return;
@@ -1542,7 +1596,7 @@ public final class HeroHud {
 			fill(g, sx < 0 ? ox : ox - t, sy < 0 ? oy : oy - arm, t, arm, CYAN);
 		}
 		g.pose().popMatrix();
-		keyLabel(g, HeroControls.get(Action.ABILITY_1), x, y + half * 1.42f + 18, CYAN, false);
+		keyLabel(g, HeroControls.get(key), x, y + half * 1.42f + 18, CYAN, false);
 	}
 
 	/**

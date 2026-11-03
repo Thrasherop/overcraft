@@ -78,6 +78,12 @@ public class DisruptorShotEntity extends OwProjectile {
 		open(hit.getLocation().add(face.getStepX() * 0.05, face.getStepY() * 0.05, face.getStepZ() * 0.05));
 	}
 
+	/** An enemy barrier: its field opens there, at the barrier's front (W: "on hitting ... an object"). */
+	@Override
+	public void hitBarrier(Vec3 at) {
+		open(at);
+	}
+
 	private void open(Vec3 at) {
 		if (!(level() instanceof ServerLevel) || !isAlive()) {
 			return;

@@ -12,6 +12,22 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   Controls screen, and can be silenced or swapped with a mixin on isDown/consumeClick.
 
 ## Gameplay
+- **A per-hero body box** (Sigma, 2026-11-02: [sigma](../heroes/sigma.md)): override `Avatar.getDefaultDimensions(Pose)`
+  (players don't override it; the eye height rides in `EntityDimensions.withEyeHeight`), and call `refreshDimensions()` from
+  `Player.tick` whenever the box Minecraft holds isn't the one wanted. Two traps: the client's own player kept Minecraft's box on
+  rejoin and after G while the server's switched (the refresh only stuck once a crouch changed the pose), so compare the held
+  box with the wanted one every tick and read the local player's hero from the client's own state, not only the synced
+  attachments. And `InventoryScreen.extractEntityInInventoryFollowsMouse` centres the entity on half its *current* box: a taller
+  box moves every previewed hero down unless the offset is corrected by `(height - 1.8) / 2`. `Player.updatePlayerPose` stands
+  a player only where the standing box fits, else crouches, else swims: grow a box only where its crouched size fits, or a
+  switch in a tunnel suffocates.
+- **Explosions push apart from their damage:** `ServerExplosion.hurtEntities` pushes with `pushFromExplosion` and, for a
+  player, through `hitPlayers` (their own client applies it), scaled by `EXPLOSION_KNOCKBACK_RESISTANCE`, not
+  `LivingEntity.knockback`. A knockback resistance has to scale both (`ServerExplosionMixin`), and a mob's melee hit goes
+  through `knockback` (0.4, vertical capped 0.4 on the ground).
+- **Slows are speed modifiers in Minecraft's order** (`AttributeInstance.calculateValue`: base + flat, then the base's shares,
+  then each total share multiplied): Slowness is -0.15 a level of the total, Local Anesthetic a share of the base. Resisting
+  "slows received" means recomputing the value with the negative ones scaled (`Tank.resistedValue`), keeping a hero's own.
 - **Synced Fabric attachments** must be registered at mod start, not lazily from an event.
 - **Minecraft's projectile hits ignore the projectile's size:** `ProjectileUtil.computeMargin` widens the target boxes
   from 0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`). Test
@@ -28,6 +44,16 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   pulling an ally by her stale speed barely lifted it, and Minecraft's airborne knockback keeps the target's stored
   vertical speed, so a zombie's hit threw a flying hero down at 22 m/s (`LivingEntityMixin` now starts a hero's
   knockback from the known movement).
+- **A speed set on a player reaches their own client only through `syncVelocity`** (the old `hurtMarked`): 26.3's
+  `ServerEntity.sendChanges` sends a `needsSync` speed to the others watching (`sendToTrackingPlayers`), and only
+  `syncVelocity` goes `...AndSelf`. Sigma's Gravitic Flux lifted a mob but left a lifted player's own client on the
+  ground (y -60.00 for 4 s, the lift's sounds heard), found in his release play (2026-11-02, [sigma](../heroes/sigma.md)).
+  Vanilla hurt knockback sets it for you; a lift or push on a no-knockback hit doesn't. **Setting `syncVelocity` wasn't
+  enough either** (played): the server's copy of a player's speed is their client's to set (each movement packet on the
+  ground zeroes its fall), so a lift that reads it back never builds up, and a hit's own `syncVelocity` sends that stale
+  copy a tick after your push and undoes it. What worked (`Accretion.sendSpeed`): send `ClientboundSetEntityMotionPacket`
+  to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. `LifeGrip` and
+  `Brigitte` set `needsSync` alone on targets that can be players: worth a look.
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
@@ -96,6 +122,16 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
   magic. Any later damage-over-time ability on players should use it (or a type like it).
 - Testing it with one client: `/damage @s <n> <type> by <entity>` every 0.2 s while walking, speed read each tick.
 
+## A held mob must be moved by hand (Sigma, 2026-11-02)
+- `LivingEntity.aiStep` calls `travel` only when `isEffectiveAi()`, which is false for a NoAI mob: switching a mob's AI
+  off (Sleep, a stun) also switches off Minecraft's movement, knockback and gravity included (the harness's "NoAI mobs
+  can't be moved" trap, from the engine's side). A stun that should carry a push (Accretion's knockdown:
+  `Sleep.knockdown`) or a lift (Gravitic Flux) moves the mob itself each tick: `mob.move(MoverType.SELF, v)`, then
+  Minecraft's own drag (x0.91, x0.98 vertical, the block's friction x0.91 on the ground, `getGravity()`).
+- `Entity.hurtMarked` is gone in 26.3: `needsSync = true` is what sends an entity's (and a player's own) motion to clients.
+- A one-off hit that must ignore armour, Resistance and Protection: a damage type in `bypasses_armor` and
+  `bypasses_effects` (the latter skips both the effect and enchantments: `getDamageAfterMagicAbsorb`), plus
+  `no_knockback` / `no_impact` when the ability moves the target itself (`overcraft:gravitic_slam`).
 ## Endermen dodge anything tagged is_projectile (#92, 2026-11-02)
 - `Enderman.hurtServer` teleports away and takes nothing from a damage type in `minecraft:is_projectile`, whatever
   made it. Our hitscan weapons dealt `minecraft:arrow` (tagged), so endermen dodged Ana's rifle, Sombra's pistol and

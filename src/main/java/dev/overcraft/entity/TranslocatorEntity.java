@@ -22,6 +22,17 @@ import net.minecraft.world.phys.EntityHitResult;
  * and can't be damaged (W).
  */
 public class TranslocatorEntity extends OwProjectile {
+	/** Strong (Grasp can't take it) and through barriers (the wiki's Barrier page and Sigma page). */
+	@Override
+	public boolean strong() {
+		return true;
+	}
+
+	@Override
+	public boolean passesBarriers() {
+		return true;
+	}
+
 	/** The face it touched, outward (none when it stopped in the air). */
 	private net.minecraft.world.phys.Vec3 face = net.minecraft.world.phys.Vec3.ZERO;
 	/** How far it has come along its path, and where this tick's move started. */

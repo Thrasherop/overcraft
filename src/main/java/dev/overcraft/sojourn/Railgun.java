@@ -3,6 +3,7 @@ package dev.overcraft.sojourn;
 import dev.overcraft.Ow;
 import dev.overcraft.entity.RailgunShotEntity;
 import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Blow;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroManager;
@@ -226,10 +227,11 @@ public final class Railgun {
 		}
 		double damage = RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1);
 		dev.overcraft.brigitte.Barrier.took = false;
-		float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+		float dealt = part != null ? Combat.damagePart(level, part, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN))
+			: Combat.damage(target, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN));
 		boolean barrier = dev.overcraft.brigitte.Barrier.took;
 		dev.overcraft.brigitte.Barrier.took = false;
-		Combat.credit(owner, dealt);
+		Combat.credit(owner, dealt, target);
 		Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 		if (dealt > 0) {
 			Effects.hitMarker(owner, target, crit);
@@ -315,8 +317,12 @@ public final class Railgun {
 				s.critAt = level.getGameTime();
 			}
 			double damage = base * falloff * (crit ? CHARGED_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
-			Combat.credit(player, dealt);
+			// the Charged Shot is her weapon's secondary fire with an icon of its own (the wiki: "Sojourn via Charged Shot,
+			// Disruptor Shot or Overclock"); fired in Overclock, the ult's (it only exists so while the ult runs: kill_feed.md)
+			Blow blow = (Sojourn.overclocked(s) ? Blow.ult("overclock").crit(crit) : Blow.weapon("charged_shot", crit))
+				.by(dev.overcraft.hero.Hero.SOJOURN);
+			float dealt = part != null ? Combat.damagePart(level, part, source, damage, blow) : Combat.damage(target, source, damage, blow);
+			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, crit);

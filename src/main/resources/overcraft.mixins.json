@@ -5,6 +5,7 @@
 	"mixins": [
 		"LivingEntityMixin",
 		"PlayerMixin",
+		"AvatarMixin",
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
 		"EntityMixin",
@@ -12,7 +13,12 @@
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
-		"ServerExplosionMixin"
+		"ServerExplosionMixin",
+		"AbstractArrowAccessor",
+		"LargeFireballAccessor",
+		"ProjectileInvoker",
+		"MeleeHitMixin",
+		"PlayerMeleeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

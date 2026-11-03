@@ -334,11 +334,13 @@ public final class Ana implements HeroKit {
 	 * isn't raised); enemies take 90 and can't be healed for 3 s.
 	 */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade) {
-		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE);
+		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE, dev.overcraft.hero.Blow.ability("biotic_grenade"));
 	}
 
 	/** A burst of {@code heal} / {@code damage}: the throw's (90), or Biotic Bounce's second (60) with the same 4 m and 3 s. */
-	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage) {
+	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage,
+									dev.overcraft.hero.Blow what) {
+		dev.overcraft.hero.Blow blow = what.by(dev.overcraft.hero.Hero.ANA);
 		DamageSource source = owner.damageSources().thrown(grenade, owner);
 		// the burst (384F): hers in her head, everyone else's at it
 		HeroSounds.toOwner(owner, OcSounds.ANA_GRENADE_BURST);
@@ -364,8 +366,8 @@ public final class Ana implements HeroKit {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
 			} else if (Allies.canHurt(owner, e)) {
-				float dealt = Combat.damage(e, source, damage);
-				Combat.credit(owner, dealt);
+				float dealt = Combat.damage(e, source, damage, blow);
+				Combat.credit(owner, dealt, e);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 				if (dealt > 0) {
 					Effects.hitMarker(owner, e, false);
@@ -524,7 +526,7 @@ public final class Ana implements HeroKit {
 	// ---- the rifle's doses: 75 over 0.5 s, heal or damage (0B95 #193 / #205) ----
 
 	private record Dose(ServerPlayer owner, LivingEntity target, boolean heal, @org.jspecify.annotations.Nullable Entity dart,
-						double perTick, int ticks) {
+						double perTick, int ticks, boolean crit) {
 	}
 
 	private static final List<Dose> DOSES = new ArrayList<>();
@@ -538,7 +540,7 @@ public final class Ana implements HeroKit {
 		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && at.y >= target.getEyeY() - HEAD_DEPTH;
 		int ticks = Math.max(1, Ow.ticks(RIFLE_OVER));
 		double amount = heal ? RIFLE_HEAL : RIFLE_DAMAGE * (crit ? HEADHUNTER : 1);
-		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks));
+		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks, crit));
 		HeroSounds.toOwner(owner, OcSounds.ANA_HIT);
 		// where it struck, on the side facing her: at their centre the burst was hidden inside their body (found playing)
 		Effects.play((ServerLevel) target.level(), heal ? "ana_heal_hit" : "ana_harm_hit", at, Vec3.ZERO, null, 0, owner);
@@ -611,12 +613,12 @@ public final class Ana implements HeroKit {
 					Combat.addFireForHealing(d.owner, healed);
 				}
 			} else {
-				float dealt = Combat.damage(d.target, source(d), d.perTick);
-				Combat.credit(d.owner, dealt);
+				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit).by(dev.overcraft.hero.Hero.ANA));
+				Combat.credit(d.owner, dealt, d.target);
 				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
 			}
 			if (d.ticks > 1) {
-				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1));
+				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1, d.crit));
 			}
 		}
 		DOSES.clear();
@@ -625,7 +627,7 @@ public final class Ana implements HeroKit {
 
 	/**
 	 * The dart's own damage, or a scoped shot's: a shot from her with no projectile of its own. Her own blow (her
-	 * playerAttack) would make a kill a melee kill (Voice.onDeath reads the direct entity: Superbloom's was, 0.3.22).
+	 * playerAttack) would make a kill a melee kill (Voice.onKill falls back to the direct entity: Superbloom's was, 0.3.22).
 	 */
 	private static DamageSource source(Dose d) {
 		return d.dart != null ? d.owner.damageSources().thrown(d.dart, d.owner) : shotSource(d.owner);

@@ -66,8 +66,12 @@ public abstract class CameraMixin {
 		Vec3 eye = entity.getEyePosition(partialTicks);
 		Vec3 look = entity.getViewVector(partialTicks);
 		Vec3 up = new Vec3(camera.upVector());
+		// how far back: the ability's own (Brigitte's barrier: 2 m) or Minecraft's third person, blended in from her eyes
+		float own = entity instanceof LivingEntity living
+			? (float) living.getAttributeValue(Attributes.CAMERA_DISTANCE) * living.getScale() : 4;
+		float distance = AbilityCamera.frameDistance(own);
 		// the lift, cut short under a ceiling
-		double lift = AbilityCamera.LIFT;
+		double lift = AbilityCamera.lift();
 		HitResult roof = entity.level().clip(new ClipContext(eye, eye.add(up.scale(lift + 0.2)), ClipContext.Block.VISUAL,
 			ClipContext.Fluid.NONE, entity));
 		if (roof.getType() != HitResult.Type.MISS) {
@@ -75,9 +79,6 @@ public abstract class CameraMixin {
 		}
 		Vec3 from = eye.add(up.scale(lift));
 		setPosition(from.x, from.y, from.z);
-		// back as far as Minecraft's own third person goes
-		float distance = entity instanceof LivingEntity living
-			? (float) living.getAttributeValue(Attributes.CAMERA_DISTANCE) * living.getScale() : 4;
 		move(-getMaxZoom(distance), 0, 0);
 		HitResult seen = entity.level().clip(new ClipContext(eye, eye.add(look.scale(AbilityCamera.AIM_REACH)),
 			ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));

@@ -1,5 +1,7 @@
 {
   "values": [
-    "overcraft:field"
+    "overcraft:field",
+    "overcraft:gravitic_flux",
+    "overcraft:gravitic_slam"
   ]
 }

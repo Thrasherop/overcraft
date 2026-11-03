@@ -16,6 +16,9 @@
     lowest point, fps.
   - `screenshot <file>`, `window 1920 1080`, `perspective first|back|front`, `subtitles on|off`, `heard` (the sounds
     played since the last call).
+- **Ability views and stands (2026-11-02, #88):** `state` reports `camera` (Minecraft's view type, then AbilityCamera's
+    on / off, leaving, blend and distance): trace it in a loop to time a view's blend. `turnclips [hero]` lists the clips
+    the animator holds at frame 0 as turn-in-place stands.
 - **Emotes:** `emote <id>`, `emoteat <s>|off` (every emote held at that time), `emotef5 on|off`. The wheel by hand:
   `key comms down`, `key primary_fire` (right click: the emote page), `mouse 0 -150` (the top slot), `key comms up`.
 - **Effects:** `fxslow <share>` (0.08: about twelve times slower; `fxslow 1` back), and `state` reports `fx`, the
@@ -32,6 +35,16 @@
   winners in as the defaults.
 
 ## Traps
+- **runClient2's harness port is fixed at 25600** (build.gradle `-Dovercraft.devPort=25600`; `OC_DEV_PORT` only tells
+  `dev.py` where to connect). Two agents both using runClient2 share one port: commands from another session landed in
+  Sigma's client (2026-11-02). Know which client answers before trusting a result (`state`'s player name: Viewer on run2).
+- **Hero mode's crouch is `key crouch`** (Ctrl), not `key sneak`: Shift is ability 1 (Sigma's Kinetic Grasp).
+- **Superflat slimes come back after a restart** even with `spawn_monsters` false (a fresh slime chunk spawns them before the
+  rule runs): Sigma died to them twice at 600 health. `difficulty peaceful` while looking, `normal` only for a mob test, then
+  peaceful again; and `Save and Leave` (pause menu, GUI 66 213 at 1920x1080) before killing the client, or the hero is lost.
+- **Measuring knockback:** `trace start`, the hit, `trace`: the first tick's horizontal speed after the hit, the same hit on a
+  control hero (Kiriko). A creeper `{Fuse:1s,ignited:1b,NoAI:1b}` 3 m off, with Resistance V so the control lives; one run in
+  three shows only the tick after the push (2.70 instead of 4.95): take the highest of a few.
 - **Taps are shorter than a tick:** `key <action> tap` sets and clears within one frame, so code that reads `isDown()`
   once a tick never sees it. A double ping needs two holds of 0.1 s. Hold it: `down`, a 0.15-0.2 s sleep, `up`.
 - Holding attack doesn't mine unless the window has the mouse (`continueAttack` checks `isMouseGrabbed`). Minecraft
@@ -130,6 +143,34 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **Heap for one client with every hero's models: 3 GB** (2026-11-02, Sigma): `JAVA_TOOL_OPTIONS=-Xmx2G` ran out of memory
+  loading the models (Juno's 46 MB glTF) and the client hung on its loading screen. A fresh `run` directory opens on the
+  accessibility screen: `close` it before `newworld` / `openworld`.
+- **Summoned test mobs** (2026-11-02): `equipment:{head:...}` replaces a skeleton's bow (it punches: give `mainhand` a bow
+  too); `attributes:[{id:"minecraft:movement_speed",base:0.0}]` keeps a mob on its mark while it still shoots (NoAI ones
+  don't); husks don't burn in daylight; armour changes every number (a husk's 2 points take 1.6-4.8% per hit: Minecraft's
+  armour rule), so count it in the expected value. `kill @e[type=!player]` also removes a hero's own entities (Sigma's
+  barrier). `trace` also prints Sigma's new spheres (`h`) and his barrier (`b x y z state share`) per tick.
+- **A ravager isn't held by `movement_speed` 0** (2026-11-02, Sigma): one walked 15 m to Sigma and killed him mid-test. Summon ravagers
+  NoAI (Overcraft's own lifts and knockdowns still move NoAI mobs: they move them by hand). A `state` health read between
+  steps shows it early (his health was falling before the ult went off).
 - **`reload` can run the dev client out of memory** (2026-11-02, Jetpack Cat): at `-Xmx3G` a resource reload re-reads every
   hero model and died with "Java heap space" mid-reload (the window froze on the Mojang screen and every `dev` call timed
   out). After changing the pack, restart the client instead.
+- **A `/tp` of a seated player dismounts them** (2026-11-02, Sigma): a "re-aim" `/tp @s ~ ~ ~ yaw pitch` after boarding a
+  boat left him standing beside it and "rowing" did nothing. Aim before boarding, or with `look`.
+- **`positioned over world_surface` / `motion_blocking_no_leaves` land on water** (2026-11-02, Sigma): a "dry" spot for a
+  portal was the sea, and he drowned twice. Build a stone platform in the air for a test site on normal terrain.
+- **A `/spawnpoint` on a non-full block is "obstructed"**: the respawn went to world spawn with "You have no home bed or
+  charged respawn anchor, or it was obstructed". Use an integer position on full ground.
+- **Peaceful zeroes "always"-scaling damage to players** (explosion types: Accretion's burst) and regenerates them: test
+  hero-on-player damage on normal with `natural_health_regeneration` off.
+- **Interact reach is from the eyes:** Sigma (eye 2.06 m) couldn't board a boat about 3 m out that Kiriko boarded from the
+  same spot; from the water's edge he did. Step closer before calling it a bug.
+- **Two clients need ~7 GB free** (2026-11-02, Sigma): with another agent's third client up (1.2 GB free) a restarted
+  second client hung on its loading screen. Check free memory (`Win32_OperatingSystem.FreePhysicalMemory`) before
+  starting the pair, and don't restart one mid-test when memory is short.
+- **A `/kill` is not always neutral** (2026-11-02, kill feed): before the GENERIC_KILL rule a `/kill @e` clearing the test
+  world credited the hero whose blow had landed in the last 5 s (a stray feed line and ELIMINATED), and with
+  `send_command_feedback` off a `/summon` with bad NBT fails without a word. Turn feedback on while setting up. See
+  [kill_feed](../hud/kill_feed.md).

@@ -133,8 +133,8 @@ final class Mediblaster {
 		JunoSounds.own(player, "mediblaster.hit_enemy");
 		JunoSounds.at(level, "mediblaster.hit_enemy_3p", bestAt, 500, player);
 		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
-		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1));
-		Combat.credit(player, dealt);
+		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1), dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JUNO));
+		Combat.credit(player, dealt, best);
 		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
 		if (dealt > 0) {
 			Effects.hitMarker(player, best, crit);

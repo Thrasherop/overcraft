@@ -1,0 +1,20 @@
+# Sigma's props: the barrier (pet 2D25, model 00000000C015.00C, look DD58, set 0AEF), its four emitter orbs (entity 30EB,
+# model 00000000FC88.00C, set 0AF0; on his hardpoints 02FD-0300 while held, the barrier's 0029 / 002A / 0032 / 0033 when sent:
+# 1B55 #816-#819), and the Accretion rock (C5CA: its clips are in no set; the projectile entity 18B7 plays them, L).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\sigma\scripts\clipmaps_sigma.py from the
+# compacted blend-tree sets (research\sigma\work\clipmap_sigma\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# aim-pitch points -1 / +1 (sign L, as Juno's / Brigitte's), 8-way slots by the slot fields (H field, not measured on his body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+0-28_000000007082 = barrier_sm0   # 0.3333 s; set 0AEF alias 2; sm[0]
+0-20_000000007081 = barrier_sm1   # 0.3 s; set 0AEF alias 2; sm[1]
+0-28_000000007083 = barrier_orb   # 0.3333 s; set 0AF0 alias 2; -
+0-32_000000006F97 = rock_006f97   # 0.7667 s; Accretion rock C5CA, in no set (L role)
+0-60_000000006F9C = rock_006f9c   # 0.3333 s; Accretion rock C5CA, in no set (L role)
+0-36_00000000701D = rock_00701d   # 0.6 s; Accretion rock C5CA, in no set (L role)
+0-60_000000007202 = rock_007202   # 0.0333 s; Accretion rock C5CA, in no set (L role)
+0-44_000000007203 = rock_007203   # 0.5 s; Accretion rock C5CA, in no set (L role)
+0-36_00000000738B = rock_00738b   # 5 s; Accretion rock C5CA, in no set (L role)
+0-32_00000000738C = rock_00738c   # 5 s; Accretion rock C5CA, in no set (L role)
+0-32_00000000738D = rock_00738d   # 5 s; Accretion rock C5CA, in no set (L role)
+0-32_0000000074B3 = rock_0074b3   # 5 s; Accretion rock C5CA, in no set (L role)

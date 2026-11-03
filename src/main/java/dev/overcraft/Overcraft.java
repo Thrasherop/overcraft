@@ -175,13 +175,15 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.tickAll(server);
 			dev.overcraft.sojourn.Disruptor.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
+			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline)
+		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline, Brigitte's barrier)
 		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
 			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
 				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
+				dev.overcraft.brigitte.Brigitte.showState(hero, player);
 			}
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
@@ -204,9 +206,18 @@ public class Overcraft implements ModInitializer {
 				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
-		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
+		// Brigitte's barrier goes down as she dies: it stood on over her body, and she came back in its stance (#88)
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayer player) {
+				dev.overcraft.hero.HeroState state = HeroManager.state(player);
+				if (state != null && state.hero == dev.overcraft.hero.Hero.BRIGITTE) {
+					dev.overcraft.brigitte.Barrier.clear(player, state);
+				}
+			}
+		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
@@ -237,6 +248,7 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.sigma.GraviticFlux.clearAll();
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();

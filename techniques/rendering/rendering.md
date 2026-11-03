@@ -135,6 +135,42 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A sphere round an area must be very faint:** her field's sphere at 0.18 alpha drew a milky solid dome over everything in
   it; 0.06 reads as a shell.
 
+### Sigma's effects (2026-11-02; [sigma-effects](../../tools/reference/sigma-effects.md), hub [sigma](../heroes/sigma.md#step-10-his-effects-sounds-and-voice-from-the-data-played-2026-11-02))
+- **Even holding only references, the Palette enum is near its 64 KB:** his 200 rows (`SigmaPalettes`) didn't fit as enum
+  constants ("code too large" again); only the 112 SigmaFx draws are named in `EffectArt.Palette`, the rest stay in
+  `SigmaPalettes` for later. The next hero should move the enum's constants out (a map keyed by name) rather than trim.
+- **Many of his renderers multiply two masks, and one alone is a full-frame noise:** 200E4, 4DB, 7AB, 16E9D, 299E1 and
+  19167 fill their square, so on a quad they drew as squares (the launch cone, the barrier's corner motes, Grasp's disc,
+  the send streaks, Flux's glows, Levitation). Bake the data's pair (`PRODUCTS`: `sigma_mote` = 4DB x 1FC54 ...) or round
+  the noise with the soft glow 4C09; look at a mask sheet before drawing any mask on a quad.
+- **A shader-only material can still be drawn from its masks and LUT:** the barrier's 7C75 (rim 1FE0A over UV 0-1, hex
+  cells 18F9B tiled) baked into `sigma_barrier_field` and drawn on its own mesh through the LUT row as added light
+  (`HeroModelRenderer.submitField(..., texture)`); the hand spheres' cores (7C98, untextured submeshes skipped until
+  now) drawn in `submitModel` as added light through the cloud noise, both views, so the 1P view model shows them too
+  (where world particles can't). A LUT row whose alpha is its emission must be multiplied by it: drawn as RGB the cores
+  read pink (the row's dark plum middle), RGB x A gives the data's violet to blue (`SIG_HAND_EMISSION`).
+- **Added light over a big shape must be faint, more so by day:** the barrier at 0.6 strength was a solid cyan wall and
+  white against the sky; 0.22 reads see-through day and night. Flux's 15 m cylinders need 0.04-0.07 alpha, Grasp's 3 m
+  haze 0.05 with a 3 m near-fade (from the front camera it filled the screen).
+- **To look at effects in third person, turn after acting:** the camera behind a 2.5 m tank hides everything ahead of him;
+  act, then `look` 25-60 degrees aside and screenshot (what he left in the world stays put).
+
+## Ability cameras (2026-11-02, #88)
+- **An ability's third-person view is in its graph, not guessed.** Brigitte's barrier view is 0EE3 #857
+  (`STU_582E0D5F`): a distance (2 m times her scale, 4 in Rally, chased over 0.4 s), a 0.3 s blend in and out for her
+  own view, on while v1319 (shield up, she is the viewer, not in the first 0.35 s of a bash). Its 1.04 is Stadium's
+  third-person field of view (x the hero setting), not a height: read every field's condition before naming it. Search a hero's ability
+  graph for the node type and its condition before placing a view by eye; her hero settings (`herosettings_*.json`)
+  say whether Overwatch lets the player turn it off (hers don't).
+- `AbilityCamera` takes the distance, a chase speed and the blend; `CameraMixin` places the view (lifted 1 m for Jetpack
+  Cat, 0.5 m for Brigitte so her head and shoulders show under the crosshair, both ours; turned to the point the aim
+  meets; her model hidden while the view is under 1 m from her, mid-blend), and `HeroHud` draws the crosshair from behind while one holds the view: the
+  centre of the screen is where she aims. Blend by time, not frames: at a low frame rate a per-frame step capped at
+  0.1 s made the 0.3 s blend take over a second (found tracing it with the harness's `state` `camera` field).
+- **Foresee the player's own press.** The server's word that the barrier went up came 0.1-0.3 s after the press, and
+  the view sat in first person that long; `ClientBrigitte.barrierView` starts it from her own press (unless her barrier
+  is broken: a synced bit), for 0.5 s until the server agrees.
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.

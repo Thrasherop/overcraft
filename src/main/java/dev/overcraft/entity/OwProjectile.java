@@ -36,6 +36,37 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 		discard();
 	}
 
+	/**
+	 * What it would deal on a hit (Overwatch points): what an enemy barrier or Kinetic Grasp takes when it stops it
+	 * (dev.overcraft.hero.Barriers). 0 unless the projectile says (a healing one, or one not yet given its number).
+	 */
+	public double barrierDamage() {
+		return 0;
+	}
+
+	/** Stopped at an enemy barrier's front {@code at} (dev.overcraft.hero.Barriers.intercept): gone, unless it bursts there. */
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
+		discard();
+	}
+
+	/** The same, with the barrier's face toward where it came from ({@code normal}: unit, horizontal), for a bounce. */
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at, net.minecraft.world.phys.Vec3 normal) {
+		hitBarrier(at);
+	}
+
+	/**
+	 * A "strong projectile" Kinetic Grasp can't absorb (the wiki's Sigma page: "Beam, Melee, Extended Melee or AoE attacks
+	 * or Strong Projectiles"; its list: Accretion, Petal Platform, Translocator): it flies on through the box.
+	 */
+	public boolean strong() {
+		return false;
+	}
+
+	/** Flies through enemy barriers (the wiki's Barrier page: the Translocator's beacon "can travel through barriers"). */
+	public boolean passesBarriers() {
+		return false;
+	}
+
 	/** Launches from {@code from} along {@code direction} at {@code speed} blocks per tick. */
 	public void launch(Vec3 from, Vec3 direction, double speed) {
 		setPos(from);
