@@ -347,6 +347,13 @@ harness's mapped keys, not the hand; scratchpad `brig88_t11.py` - `t15.py`):
 | Ana scoped from behind, 1.2 s | `idle_scoped` held still (`brig88_r_ana_scoped_0/2.png`) |
 | Jetpack Cat's Lifeline | from behind, Minecraft's 4 m, the crosshair now drawn over the tether's mark (`brig88_r_cat_lifeline.png`) |
 
+A night fight on the rework (the same six mobs, the script now aims at mobs only and checks the hero first): 45 s,
+lowest 7.7 of 20. Zombies' hits came through the raised barrier (2.44 each: melee goes through), a creeper blast broke
+it (227 -> 0) with nothing to her, an arrow hit her while it was refilling; arrows on it otherwise (255 -> 205 -> 155 ->
+105). Before it, a teleport to x 5000 left her falling out of the world ("fell out of the world" 0.7 s after the
+teleport, at y -172) where 1000-4100 had been fine: not reproduced or looked into (the hero's own movement in a chunk
+not yet loaded?).
+
 **What a critic should check (not done or not certain):**
 - **Hand play with the real mouse and keys:** none. The desktop tool can't hold the right button (it has only a left
   hold) or turn the view (SDL reads raw mouse input); the owner has to hold the shield by hand.
