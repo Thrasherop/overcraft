@@ -65,6 +65,17 @@ public final class Combat {
 	 * clearing it let the cooldown drop every hit after the first in half a second (a volley's 5 shots did 4: found
 	 * playing Jetpack Cat).
 	 */
+	/**
+	 * A hitscan shot's damage from a hero (Ana's rifle, Sombra's pistol, Sojourn's Charged Shot): overcraft:hitscan, not a
+	 * projectile, so endermen take it instead of teleporting away (the owner's balance call, #92); otherwise as the arrow
+	 * type they used (knockback, armor). No direct entity, so the kill feed doesn't take it for melee.
+	 */
+	public static DamageSource hitscan(net.minecraft.server.level.ServerPlayer owner) {
+		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("hitscan"))), null, owner);
+	}
+
 	public static float damage(LivingEntity target, DamageSource source, double owDamage) {
 		float before = target.getHealth() + target.getAbsorptionAmount();
 		target.damageCooldownTime = 0;

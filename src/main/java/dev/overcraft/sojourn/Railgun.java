@@ -10,7 +10,6 @@ import dev.overcraft.hero.HeroState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
@@ -359,7 +358,6 @@ public final class Railgun {
 
 	/** Damage from her with no projectile of its own (the Charged Shot: hitscan), so a kill isn't a melee kill. */
 	private static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 }
