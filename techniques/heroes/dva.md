@@ -200,7 +200,22 @@ mech, still **8.44**. The eject's launch goes through the same path (it passed i
 - **Not tried:** the knockback she takes while flying (x0.1, no push measured mid-flight); Extended Boosters (step 10);
   Hold To Use Boosters (the option isn't built); hitting a second player.
 
+## The night fight after steps 4-6 (2026-11-02)
+`dva46` at midnight, monsters spawning, a wave of 12 around her (6 zombies and a husk, 4 skeletons, a creeper, a spider)
+14-22 m off, she in a full mech. The harness drove it as a player would: the left button held throughout, her aim turned to
+the nearest of the wave every 0.5 s (`execute ... anchored eyes facing entity ... eyes run tp @s ~ ~ ~ ~ ~`), the matrix toward
+a skeleton within 16 m now and then, Boosters every ~12 s. **8 of 12 dead in 20 s** (the kill feed: zombies, a skeleton, the
+creeper: `s7_night_30.png`, `s7_night_3p.png`); about 30 s in the mech's 675 ran out (a creeper's blast took 30 in one), the
+wreck and the eject in the middle of the crowd, and the pilot, with no Light Gun until step 9, died 9 s later. Respawned in
+the mech. Nothing in the HUD broke (the low-health vignette, the kill feed and the Boosters cooldown all right).
+- **Harness lessons** (worth keeping, [harness](../testing/harness.md)): `tp ... facing` aims from the **feet**: for the 2.3
+  m mech every nearby zombie's eyes were above her and she fired at the sky (0 kills); anchor at the eyes. And a fight loop
+  that fires 0.8 s per 2.5 s loop (counting, reading state, aiming between) spread its damage over whichever monster was
+  nearest and killed nothing in 40 s: hold the button and only aim in the loop. Monsters that spawned naturally during a fight
+  stay after `spawn_monsters` goes off and hit her after a respawn: clear them before the next run.
+
 ## Not yet
-Steps 4-13: the weapons and abilities (Fusion Cannons, Defense Matrix, Boosters with Initiator's heal, Micro Missiles,
-Self-Destruct, the Light Gun), perks, sounds / voice / effects, emotes, two players. Effects (111 extracted), sounds, voice
+Steps 7-13: Micro Missiles, Self-Destruct, the Light Gun and the pilot's fight, perks, sounds / voice / effects (and the
+firing / matrix clips), emotes, two players. Open from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox` after Sigma's
+step 10 merges; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam against the matrix. Effects (111 extracted), sounds, voice
 (set 57.05F, 1129 subtitled lines) and her 15 emotes are extracted but not mapped.
