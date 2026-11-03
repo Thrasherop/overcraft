@@ -132,6 +132,34 @@ answers read from the log). Expected -> seen, Overwatch points:
   mech stands in `idle` while firing (with the effects, step 11); armor on another tank (needs a second player: per-pellet
   armor is unit-tested only); Precision Fusion (step 10); an enemy Sigma barrier in the way (no second player).
 
+## Step 5: Defense Matrix, played 2026-11-02
+Code: `dva.DefenseMatrix`, and **`Barriers.absorbBox(player, Box, Eater)`**: Kinetic Grasp's projectile-eating box made general
+(a `Box` of side / down / up / near / far in the aim's frame; the last and next step of each projectile sampled 9 times; each
+eaten one handed to the `Eater` with its damage, then stopped whole). **Grasp itself still runs its own copy of the loop:**
+Sigma's branch has uncommitted step-10 edits inside that loop (2026-11-02), so moving it onto `absorbBox` here would
+conflict; do it after his effects merge. The matrix: the right button held (`secondaryHeld`), 0.5 s minimum, 33 a second, 1 s
+cooldown after each use, 16 a second back from 0.75 s after it's down; 4 % of what it eats to her ult; no Fusion meanwhile;
+down at once in the wreck, on G and asleep. HUD: the energy as a number and a band on its panel (pink while up, white full,
+grey cooling down). Stand-in look: glow sparks through the box past 3 m, a poof and a chime where it eats one.
+
+**Played** (`dva46`; mobs held with `movement_speed` / `flying_speed` 0, so they still shoot; she at full health each window):
+- **Resource** (trace of the synced energy): from full, empty about 3.0 s after the press (expected 3.03); back **15 ticks**
+  after empty (0.75 s), **8.0 in 10 ticks** (16 / s), full 124 ticks (6.2 s) later; a 0.05 s tap costs **16.5** (the 0.5 s
+  minimum). Let go and held again at once: it rises a little through the 1 s cooldown, then drains again. (The traced
+  numbers come in bunches at 10-26 fps: read totals, not single ticks.)
+- **Three skeletons 8 m ahead:** matrix up 3 s **lost 0** (ult +23.5 against the 16.8 passive: 4 % of about 170 eaten); down
+  3 s lost 6.88 (`s5_skeleton_matrix.png`: the energy 0 at the end).
+- **Two blazes:** up 3 s **lost 0** (ult +31.8: about six fireballs eaten); down 6 s lost 4.94 and she burned.
+- **A witch 6 m ahead:** up lost 0; down lost 1.0 (a potion); potions count 0 damage, so no ult from them.
+- **A ghast 18 m off:** up **lost 0**, ult +10.7 over the passive = 4 % of one fireball's 262 (6 + its blast's 15); down lost
+  5.44 (`s5_ghast_matrix.png`).
+- **Not stopped:** an ignited creeper 3 m ahead with the matrix up: **lost 16.19** (blasts aren't projectiles); two skeletons
+  at her side, the matrix up ahead: **lost 5.88** (the box is only ahead).
+- **Not reproduced:** a guardian's beam: in a glass pool it never saw her, in a pool sunk in the ground it never attacked
+  (no beam drawn either time). By code the matrix only takes `Projectile` entities, so a beam passes; unplayed.
+- **Not tried:** the Toggle Defense Matrix option (the hold is Overwatch's default; the option is not built); Shield System's
+  25 % (step 10); hero projectiles from a second player.
+
 ## Not yet
 Steps 4-13: the weapons and abilities (Fusion Cannons, Defense Matrix, Boosters with Initiator's heal, Micro Missiles,
 Self-Destruct, the Light Gun), perks, sounds / voice / effects, emotes, two players. Effects (111 extracted), sounds, voice
