@@ -590,7 +590,14 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			s.flailHit.add(target.getId());
-			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE);
+			// a melee blow: through enemy barriers (Barrier.isMelee; the wiki lists her flail among them)
+			Barrier.meleeHit = true;
+			float dealt;
+			try {
+				dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE);
+			} finally {
+				Barrier.meleeHit = false;
+			}
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

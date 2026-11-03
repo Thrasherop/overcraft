@@ -175,6 +175,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.tickAll(server);
 			dev.overcraft.sojourn.Disruptor.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
+			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));

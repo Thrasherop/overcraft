@@ -4,63 +4,95 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.overcraft.brigitte.Barrier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Explosions and Brigitte's barrier (dev.overcraft.brigitte.Barrier). Each entity's hit is dealt with the blast's centre
- * and the explosion known to the barrier: a creeper's blast was judged from the creeper's eyes, and from its centre a
- * blast is charged to the barrier once however many stand behind it (#88). One the barrier stopped pushes no one either:
- * Minecraft pushes from an explosion apart from its damage, so a creeper's blast the barrier took whole still threw her
- * 4 m back (found playing). Others' push (pushFromExplosion), and a player's, which their own client applies (hitPlayers).
+ * Explosions and Brigitte's barrier (dev.overcraft.brigitte.Barrier). Before the blast hurts anyone, each barrier in
+ * front of it takes it once, by its own distance (Barrier.blast); while it hurts them, its centre, the explosion and who
+ * set it off are known to Barrier, so a hit behind a barrier is 0 (a creeper's blast had been judged from the creeper's
+ * eyes, #88). Nobody behind a barrier is pushed either, judged by where they are, not by whether they were hurt (a
+ * breeze's wind charge hurts no one): Minecraft pushes from an explosion apart from its damage, so a creeper's blast the
+ * barrier took whole still threw her 4 m back (found playing). Others' push (pushFromExplosion), and a player's, which
+ * their own client applies (hitPlayers).
  */
 @Mixin(ServerExplosion.class)
 public abstract class ServerExplosionMixin {
 	@Shadow
 	@Final
 	private Vec3 center;
+	@Shadow
+	@Final
+	private float radius;
+	@Shadow
+	@Final
+	private ServerLevel level;
+	@Shadow
+	@Final
+	private @Nullable Entity source;
+	@Shadow
+	@Final
+	private ExplosionDamageCalculator damageCalculator;
 
-	/** Who this blast's hit was stopped for (by a barrier): their push is stopped too. */
+	/** The blast state of an explosion set off while another was being dealt (an end crystal's chain), put back after. */
 	@Unique
-	private final Set<Entity> overcraft$shielded = Collections.newSetFromMap(new IdentityHashMap<>());
+	private static final Deque<Object[]> overcraft$outer = new ArrayDeque<>();
 
-	@WrapOperation(method = "hurtEntities", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/world/entity/Entity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-	private boolean overcraft$barrierHit(Entity entity, ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
+	@Inject(method = "hurtEntities", at = @At("HEAD"))
+	private void overcraft$barrierBlast(CallbackInfo ci) {
+		overcraft$outer.push(new Object[] {Barrier.blast, Barrier.blastKey, Barrier.blastCause});
+		Entity cause = overcraft$cause();
 		Barrier.blast = center;
 		Barrier.blastKey = this;
-		Barrier.blocked = false;
-		try {
-			return original.call(entity, level, source, damage);
-		} finally {
-			if (Barrier.blocked) {
-				overcraft$shielded.add(entity);
-			}
-			Barrier.blast = null;
-			Barrier.blastKey = null;
-			Barrier.blocked = false;
+		Barrier.blastCause = cause;
+		// a wind charge's calculator hurts no one: its barrier takes nothing either
+		boolean hurts = !level.players().isEmpty()
+			&& damageCalculator.shouldDamageEntity((ServerExplosion) (Object) this, level.players().getFirst());
+		Barrier.blast(level, center, radius, cause, hurts);
+	}
+
+	@Inject(method = "hurtEntities", at = @At("RETURN"))
+	private void overcraft$barrierBlastEnd(CallbackInfo ci) {
+		Object[] outer = overcraft$outer.isEmpty() ? new Object[3] : overcraft$outer.pop();
+		Barrier.blast = (Vec3) outer[0];
+		Barrier.blastKey = outer[1];
+		Barrier.blastCause = (Entity) outer[2];
+	}
+
+	/** Who set it off: a creeper, a ghast's fireball's ghast, TNT's lighter. */
+	@Unique
+	private @Nullable Entity overcraft$cause() {
+		if (source instanceof net.minecraft.world.entity.projectile.Projectile p && p.getOwner() != null) {
+			return p.getOwner();
 		}
+		if (source instanceof net.minecraft.world.entity.item.PrimedTnt tnt) {
+			return tnt.getOwner();
+		}
+		return source;
 	}
 
 	@WrapOperation(method = "hurtEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;pushFromExplosion(Lnet/minecraft/world/phys/Vec3;)V"))
 	private void overcraft$barrierPush(Entity entity, Vec3 impulse, Operation<Void> original) {
-		original.call(entity, overcraft$shielded.contains(entity) ? Vec3.ZERO : impulse);
+		original.call(entity, Barrier.blocksBlast(entity, center, overcraft$cause()) ? Vec3.ZERO : impulse);
 	}
 
 	@WrapOperation(method = "hurtEntities", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private Object overcraft$barrierPlayerPush(Map<Object, Object> map, Object player, Object impulse, Operation<Object> original) {
-		return original.call(map, player, player instanceof Entity entity && overcraft$shielded.contains(entity) ? Vec3.ZERO : impulse);
+		boolean blocked = player instanceof Entity entity && Barrier.blocksBlast(entity, center, overcraft$cause());
+		return original.call(map, player, blocked ? Vec3.ZERO : impulse);
 	}
 }
