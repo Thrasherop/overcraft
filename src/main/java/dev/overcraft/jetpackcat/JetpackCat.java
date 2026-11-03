@@ -512,6 +512,10 @@ public final class JetpackCat implements HeroKit {
 			double scale = d <= PURR_RADIUS / 2 ? 1 : 1 - 0.7 * (d - PURR_RADIUS / 2) / (PURR_RADIUS / 2);
 			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), PURR_DAMAGE * scale, dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			Combat.credit(player, dealt, e);
+			if (dev.overcraft.brigitte.Barrier.shields(e, player)) {
+				// a barrier in the way took it: no push behind it (#88; any barrier: Barriers)
+				continue;
+			}
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			out = out.lengthSqr() < 1.0E-6 ? player.getViewVector(1.0f).multiply(1, 0, 1) : out.normalize();
 			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0)
@@ -671,6 +675,10 @@ public final class JetpackCat implements HeroKit {
 				continue;
 			}
 			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT)), e);
+			if (dev.overcraft.brigitte.Barrier.shields(e, player)) {
+				// a barrier in the way took it: no knock-down or push behind it (#88; any barrier: Barriers)
+				continue;
+			}
 			// the shockwave's per-target burst (7256), thrown out from her
 			Effects.play(level, "catnapper_hit", e.position(), e.position().subtract(player.position()), e, player.getId(), player);
 			// the knock-down (ours: Minecraft has no stun, so the heaviest Slowness and Weakness: no moving, no hitting)

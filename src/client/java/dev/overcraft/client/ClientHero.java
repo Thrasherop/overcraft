@@ -157,6 +157,17 @@ public final class ClientHero {
 		return Minecraft.getInstance().player != null && ClientPlayNetworking.canSend(SelectHeroPayload.TYPE);
 	}
 
+	/**
+	 * Brigitte's barrier camera (0EE3 #857): 2 m back, 4 in Rally (v6054: v1261 2, v1262 4; H), a 0.3 s blend (H), the
+	 * change chased over 0.4 s (StateChaseVar #869 / #870's m_5BEFF040: M a time, since #699 gives its 30 m/s rate in
+	 * another field, m_9B0385B4). #857's 8.0 is the distance while v44373 (set by game message 1DC5, unknown: L), its 1.04
+	 * the field of view in Stadium's third person (1.04 x the "Third Person Field of View" setting v67256), not a height.
+	 * The rise is ours (0.5 m: her head and shoulders under the crosshair; at 1 m she sat on the screen's bottom edge under
+	 * the ult ring); #857's 6.67 and 2.0 are unread.
+	 */
+	static final float BARRIER_CAMERA = 2, BARRIER_CAMERA_RALLY = 4, BARRIER_CAMERA_CHASE = 0.4f, BARRIER_CAMERA_BLEND = 0.3f,
+		BARRIER_CAMERA_LIFT = 0.5f;
+
 	public static void onDisconnect() {
 		EmoteCamera.stop(Minecraft.getInstance());
 		AbilityCamera.update(Minecraft.getInstance(), false);
@@ -191,8 +202,18 @@ public final class ClientHero {
 		}
 		// Jetpack Cat with Lifeline on (towing or seeking), or in Catnapper from its aim to the end of the carry: from behind
 		int mode = sync.mode();
-		AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
-			&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
+		if (controls() && hero() == Hero.BRIGITTE) {
+			// Brigitte with her barrier up: from behind, 2 m back (4 in Rally, chased over 0.4 s), blended over 0.3 s, and
+			// not for the first 0.35 s of a Shield Bash (0EE3 #857: AbilityCamera, ClientBrigitte.barrierView)
+			float scale = player.getScale();
+			AbilityCamera.update(mc, ClientBrigitte.barrierView((mode & dev.overcraft.brigitte.Brigitte.MODE_BARRIER) != 0,
+					(mode & dev.overcraft.brigitte.Brigitte.MODE_BROKEN) != 0),
+				((mode & dev.overcraft.brigitte.Brigitte.MODE_RALLY) != 0 ? BARRIER_CAMERA_RALLY : BARRIER_CAMERA) * scale,
+				(BARRIER_CAMERA_RALLY - BARRIER_CAMERA) * scale / BARRIER_CAMERA_CHASE, BARRIER_CAMERA_BLEND, BARRIER_CAMERA_LIFT * scale);
+		} else {
+			AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
+				&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
+		}
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
 		if (view != chatHeroView) {

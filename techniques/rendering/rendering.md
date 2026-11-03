@@ -155,6 +155,22 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **To look at effects in third person, turn after acting:** the camera behind a 2.5 m tank hides everything ahead of him;
   act, then `look` 25-60 degrees aside and screenshot (what he left in the world stays put).
 
+## Ability cameras (2026-11-02, #88)
+- **An ability's third-person view is in its graph, not guessed.** Brigitte's barrier view is 0EE3 #857
+  (`STU_582E0D5F`): a distance (2 m times her scale, 4 in Rally, chased over 0.4 s), a 0.3 s blend in and out for her
+  own view, on while v1319 (shield up, she is the viewer, not in the first 0.35 s of a bash). Its 1.04 is Stadium's
+  third-person field of view (x the hero setting), not a height: read every field's condition before naming it. Search a hero's ability
+  graph for the node type and its condition before placing a view by eye; her hero settings (`herosettings_*.json`)
+  say whether Overwatch lets the player turn it off (hers don't).
+- `AbilityCamera` takes the distance, a chase speed and the blend; `CameraMixin` places the view (lifted 1 m for Jetpack
+  Cat, 0.5 m for Brigitte so her head and shoulders show under the crosshair, both ours; turned to the point the aim
+  meets; her model hidden while the view is under 1 m from her, mid-blend), and `HeroHud` draws the crosshair from behind while one holds the view: the
+  centre of the screen is where she aims. Blend by time, not frames: at a low frame rate a per-frame step capped at
+  0.1 s made the 0.3 s blend take over a second (found tracing it with the harness's `state` `camera` field).
+- **Foresee the player's own press.** The server's word that the barrier went up came 0.1-0.3 s after the press, and
+  the view sat in first person that long; `ClientBrigitte.barrierView` starts it from her own press (unless her barrier
+  is broken: a synced bit), for 0.5 s until the server agrees.
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.

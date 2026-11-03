@@ -6,6 +6,15 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-02
 
+### Brigitte's Barrier Shield fixed (#88; not in a build yet)
+- With the shield up she no longer turns round and round: her shield-up stand is held still, as every turn-in-place
+  stand now is (found by what the clip does, not by name: Sombra's stealthed stand and Mercy's blaster stand too).
+- Raising the shield moves the view behind her, as Overwatch does (her data: 2 m back, 4 m in Rally, a 0.3 s blend, first
+  person for the start of a Shield Bash), with the crosshair on what she aims at.
+- The barrier now stops a blast whole: a creeper or TNT that breaks it no longer hurts or throws her, a creeper right
+  against it is blocked, and a blast is charged to it once. Her armor no longer shrinks hits on the barrier.
+- Dying with the shield up no longer brings her back holding it; a player who comes into range sees it already up.
+
 ### Build 0.3.30 (Sojourn, the tenth hero)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.30): Sojourn's models (`tools/clipmaps/sojourn*.txt`: her body, first-person
 arms and Railgun with its emote clips), her emote clips (`sojourn_clips.txt` into `sojourn_clips.glb`), her emote props (`props

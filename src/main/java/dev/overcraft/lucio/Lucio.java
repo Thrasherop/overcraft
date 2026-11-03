@@ -282,7 +282,8 @@ public final class Lucio implements HeroKit {
 			dealt += hit;
 			// each target's own share (an enemy tank's 40% less: Tank)
 			Combat.credit(player, hit, target);
-			if (target.isAlive()) {
+			// a barrier in the way takes the wave whole: no push, no lockout behind it (#88; any barrier: Barriers)
+			if (target.isAlive() && !dev.overcraft.brigitte.Barrier.shields(target, player)) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
 				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE))
 					* dev.overcraft.hero.Tank.knockbackFactor(target));

@@ -162,6 +162,10 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
+	public @org.jspecify.annotations.Nullable Object barrierBlast;
+	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */
+	public boolean barrierLocked;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */

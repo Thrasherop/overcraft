@@ -61,8 +61,8 @@ public final class GraviticFlux {
 	/** The lifted creatures' heavy slow after the lift (not his own: a Stalwart target resists it as any slow). */
 	public static final Identifier HEAVY_SLOW = Overcraft.id("sigma_flux_heavy");
 	/** The lift's damage (pushing no one: the lift does) and the slam's (no armour, effects or enchantments). */
-	private static final ResourceKey<DamageType> LIFT_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_flux"));
-	static final ResourceKey<DamageType> SLAM_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_slam"));
+	public static final ResourceKey<DamageType> LIFT_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_flux"));
+	public static final ResourceKey<DamageType> SLAM_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Overcraft.id("gravitic_slam"));
 
 	static boolean active(HeroState s) {
 		return s.sigmaFluxPhase != NONE;

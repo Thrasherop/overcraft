@@ -71,8 +71,10 @@ public final class Barriers {
 
 	private static final Set<Shape> LIVE = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
 
-	/** A hero's hit with no projectile farther than this is a shot, not a melee blow (ours: past Minecraft's 3 m reach). */
-	private static final double MELEE_REACH = 3;
+	/** Damage that goes through every barrier and never hurts one (Gravitic Flux's lift and slam). */
+	public static boolean piercing(DamageSource source) {
+		return source.is(dev.overcraft.sigma.GraviticFlux.LIFT_TYPE) || source.is(dev.overcraft.sigma.GraviticFlux.SLAM_TYPE);
+	}
 
 	private Barriers() {
 	}
@@ -237,7 +239,12 @@ public final class Barriers {
 	 * side) takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule with full exposure: impact
 	 * (1 - d / 2r), (impact² + impact) / 2 x 7 x 2r + 1).
 	 */
-	public static void blast(Level level, Vec3 centre, float radius, @Nullable Entity cause) {
+	public static void blast(Level level, Vec3 centre, float radius, @Nullable Entity cause, boolean hurts) {
+		if (!hurts) {
+			// a breeze's wind charge hurts no one: its barrier takes nothing either (Brigitte's rule, #88); what it pushes
+			// behind a barrier is stopped by where they stand (blocksBlast)
+			return;
+		}
 		double reach = radius * 2;
 		for (Shape s : in(level)) {
 			if (!stops(s, cause)) {
@@ -292,10 +299,16 @@ public final class Barriers {
 	 * Every hit passes here first (Brigitte's Barrier.absorb, from LivingEntityMixin): what's left of {@code damage}
 	 * (Minecraft health) after the entity barriers between it and {@code victim}. A projectile whose last step crossed one
 	 * (a point-blank shot the barrier's own tick hadn't seen) is stopped whole; a blast's damage behind one is gone (the
-	 * barrier took the blast itself: {@link #blast}); a hero's shot from past melee reach crossing one is taken by it.
+	 * barrier took the blast itself: {@link #blast}); a shot without a projectile crossing one is taken by it, whole.
 	 */
 	public static float absorb(LivingEntity victim, DamageSource source, float damage) {
 		if (damage <= 0 || LIVE.isEmpty() || !(victim.level() instanceof ServerLevel level)) {
+			return damage;
+		}
+		// melee goes through every barrier (Brigitte's marked blows: dev.overcraft.brigitte.Barrier.isMelee; the owner,
+		// 2026-11-02: "Melee goes through"), and so does Gravitic Flux (the wiki's Barrier page: it "ignores barriers but
+		// cannot damage them")
+		if (dev.overcraft.brigitte.Barrier.isMelee(source) || piercing(source)) {
 			return damage;
 		}
 		Entity direct = source.getDirectEntity(), attacker = source.getEntity();
@@ -318,15 +331,15 @@ public final class Barriers {
 				}
 				continue;
 			}
-			if (attacker instanceof Player shooter && direct == attacker && shooter.distanceTo(victim) > MELEE_REACH) {
-				Vec3 at = crossing(s, shooter.getEyePosition(), to);
+			if (attacker != null && attacker != victim && (direct == null || direct == attacker)) {
+				// a shot with no projectile (hitscan: Sombra's pistol, Juno's Mediblaster, Ana's scoped shot, the Charged Shot
+				// build their source with no direct entity; the critique's #1) or a hero's own hit, judged from the
+				// shooter's eyes; the whole hit stops at it, even one bigger than it has left (it breaks: Brigitte's rule,
+				// #88, the wiki's "barriers block the explosion")
+				Vec3 at = crossing(s, attacker.getEyePosition(), to);
 				if (at != null) {
-					double ow = Ow.toOw(damage);
-					double took = s.barrierTake(ow, at);
-					damage = (float) Ow.hp(ow - took);
-					if (damage <= 0) {
-						return 0;
-					}
+					s.barrierTake(Ow.toOw(damage), at);
+					return 0;
 				}
 			}
 		}

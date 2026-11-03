@@ -179,9 +179,12 @@ public final class HeroHud {
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
 		float below = Math.max(toastSlots * 32, effectRowsBottom(player));
 		KillFeedHud.render(g, w - 36, Math.max(36, below / scale + 12));
-		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes)
+		// the crosshair and the counter under it only in first person, as Minecraft's (none on her while she emotes), and
+		// from behind while an ability holds the view: it turns to the point her aim meets, under the crosshair (Brigitte's
+		// barrier camera had none: #88)
 		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
-		if (firstPerson) {
+		if (firstPerson || AbilityCamera.active() && !dev.overcraft.client.comms.EmoteCamera.active()
+			&& mc.options.getCameraType() == net.minecraft.client.CameraType.THIRD_PERSON_BACK) {
 			crosshair(g, w / 2, h / 2);
 		}
 		hitMarker(g, w / 2, h / 2);

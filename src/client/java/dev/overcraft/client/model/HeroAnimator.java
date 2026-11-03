@@ -1270,7 +1270,11 @@ public final class HeroAnimator {
 		// crouched, its own breathing where there's one (Ana's data uses the standing one crouched too: 3C44)
 		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") && clip(model, "add_breathe_crouch") != null
 			? "add_breathe_crouch" : "add_breathe");
-		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
+		if (base.equals("idle_shield")) {
+			// Brigitte's shield-up stand has its own (brigitte.txt: add_breathe_shield, 1.6 s)
+			breathe = clip(model, "add_breathe_shield");
+		}
+		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle") || base.equals("idle_shield"))) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
 		if (poseEmote(model, entity, now, pose)) {
@@ -1696,14 +1700,74 @@ public final class HeroAnimator {
 		} else if (base.startsWith("crouch_walk")) {
 			// standing still crouched with no crouch idle clip: the crouch-walk's pose, held
 			rate = moving ? (float) Math.clamp(metresPerSecond / CROUCH_CLIP_SPEED, 0.5, 2) : 0;
-		} else if (base.equals("idle") || base.equals("crouch_idle") || base.equals("idle_scoped") || base.equals("crouch_idle_scoped")) {
+		} else if (turnsInPlace(model, base)) {
 			// Overwatch doesn't play its stand clips on the clock: their frame follows a game parameter (turn-in-place
-			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md). Ana's scoped
-			// stands are the same sheets (3C5D / 3C9C): on the clock they turned her 120 degrees away (found playing)
+			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md). Known by
+			// what they do, not by name: their root turns 120 degrees over the clip (rootyaw_3p.txt: Brigitte's 4E88 /
+			// 4E89, her shield-up 4FE5 / 4FE7). By name, Ana's scoped stands turned her 120 degrees away until added to
+			// the list, then Brigitte's shield-up stand turned her round and round (#88: "brig starts looking around")
 			rate = 0;
 		} else {
 			rate = 1;
 		}
+	}
+
+	/**
+	 * Whether each clip is a turn-in-place stand (TURN_IN_PLACE), worked out once per clip, per model: a model a resource
+	 * reload replaces lets its answers go with it.
+	 */
+	private static final Map<SkinnedModel, Map<String, Boolean>> TURNS = java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
+	/**
+	 * How far (degrees) a stand clip's root turns from its first frame to its last to count as a turn-in-place sheet (ours:
+	 * the data's turn sheets go 120; a stand that only sways turns a few).
+	 */
+	static final float TURN_IN_PLACE = 45;
+	/** The frames looked at through a clip for its turn (the largest from the first counts: a turn that comes back too). */
+	private static final int TURN_SAMPLES = 16;
+
+	/**
+	 * A turn-in-place stand: the clip's root (the bone above the pelvis, or the pelvis) faces more than TURN_IN_PLACE
+	 * degrees away from where it faced at the start, at some point of the clip. Overwatch picks such a sheet's frame by the
+	 * turn's progress (H for Kiriko's: kiriko-research.md); played on the clock it spins the hero round.
+	 */
+	public static boolean turnsInPlace(SkinnedModel model, String name) {
+		SkinnedModel.Clip clip = clip(model, name);
+		if (clip == null || clip.duration() <= 0) {
+			return false;
+		}
+		return TURNS.computeIfAbsent(model, m -> new java.util.concurrent.ConcurrentHashMap<>()).computeIfAbsent(name, n -> {
+			int root = UpperBody.mover(model);
+			if (root < 0) {
+				root = model.node("Pelvis");
+			}
+			if (root < 0) {
+				return false;
+			}
+			Skeleton.Pose first = new Skeleton.Pose(model.nodeNames.length).rest(model);
+			Skeleton.sample(clip, 0, first);
+			Matrix4f a = Skeleton.world(model, first, root);
+			for (int i = 1; i <= TURN_SAMPLES; i++) {
+				Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
+				Skeleton.sample(clip, clip.duration() * i / TURN_SAMPLES, at);
+				Matrix4f b = Skeleton.world(model, at, root);
+				if (Math.max(yawBetween(a, b, new Vector3f(1, 0, 0)), yawBetween(a, b, new Vector3f(0, 0, 1))) > TURN_IN_PLACE) {
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
+	/** The angle (degrees) between where {@code axis} points flat on the ground under {@code a} and under {@code b}. */
+	private static float yawBetween(Matrix4f a, Matrix4f b, Vector3f axis) {
+		Vector3f u = a.transformDirection(new Vector3f(axis));
+		Vector3f v = b.transformDirection(new Vector3f(axis));
+		u.y = 0;
+		v.y = 0;
+		if (u.length() < 0.3f || v.length() < 0.3f) {
+			return 0;
+		}
+		return (float) Math.toDegrees(u.angle(v));
 	}
 
 	/** Which of 8 directions the movement goes, relative to the body: "" (forward), "_forward_left", "_left", ... */
