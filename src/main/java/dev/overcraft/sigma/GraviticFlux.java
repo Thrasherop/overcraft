@@ -259,6 +259,11 @@ public final class GraviticFlux {
 		int ticks;
 		int slamAt = -1;
 		final boolean hadNoAi;
+		/**
+		 * A lifted player's speed, kept here: the server's copy of a player's speed is their client's to set (each movement
+		 * packet on the ground zeroes its fall), so read back it never built up (vy 0.00 on her client, found playing).
+		 */
+		Vec3 speed = Vec3.ZERO;
 
 		Lifted(LivingEntity entity, ServerPlayer owner, Vec3 centre, boolean hadNoAi) {
 			this.entity = entity;
@@ -278,7 +283,8 @@ public final class GraviticFlux {
 	private static void lift(ServerPlayer owner, LivingEntity e, Vec3 at) {
 		ServerLevel level = owner.level();
 		boolean hadNoAi = e instanceof Mob mob && Sleep.hadNoAi(mob);
-		LIFTED.put(e.getUUID(), new Lifted(e, owner, at, hadNoAi));
+		Lifted lifted = new Lifted(e, owner, at, hadNoAi);
+		LIFTED.put(e.getUUID(), lifted);
 		Vec3 before = e.getDeltaMovement();
 		DamageSource source = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(LIFT_TYPE), owner);
 		float dealt = hurt(level, e, source, FLUX_LIFT_DAMAGE);
@@ -291,7 +297,8 @@ public final class GraviticFlux {
 		Vec3 in = new Vec3(at.x - e.getX(), 0, at.z - e.getZ());
 		in = in.lengthSqr() < 1.0E-6 ? Vec3.ZERO : in.normalize();
 		e.setDeltaMovement(new Vec3(before.x, 0, before.z).add(in.scale(Ow.speed(FLUX_LIFT_PULL))));
-		e.syncVelocity = e.syncVelocity || e instanceof Player;
+		lifted.speed = e.getDeltaMovement();
+		Accretion.sendSpeed(e);
 		if (e instanceof Mob mob) {
 			mob.setNoAi(true);
 			mob.setTarget(null);
@@ -346,7 +353,7 @@ public final class GraviticFlux {
 			double t = l.ticks * 0.05;
 			l.ticks++;
 			e.resetFallDistance();
-			Vec3 v = e.getDeltaMovement();
+			Vec3 v = e instanceof Player ? l.speed : e.getDeltaMovement();
 			double vy;
 			double hx = v.x, hz = v.z;
 			if (t < FLUX_LIFT_TIME) {
@@ -381,6 +388,7 @@ public final class GraviticFlux {
 				}
 			}
 			e.setDeltaMovement(hx, vy, hz);
+			l.speed = e.getDeltaMovement();
 			if (e instanceof Mob mob) {
 				// its AI is off, and with it Minecraft's movement: moved here
 				mob.setNoAi(true);
@@ -389,10 +397,10 @@ public final class GraviticFlux {
 				}
 				mob.needsSync = true;
 			} else {
-				// a player moves on their own client: sent their speed every tick, to them too (syncVelocity: needsSync
-				// reaches only the others watching, so a lifted player's own client never rose: found in the release play)
+				// a player moves on their own client: their speed sent to it every tick (Accretion.sendSpeed: a lifted player's
+				// own client never rose, found in the release play), and to the others watching
 				e.needsSync = true;
-				e.syncVelocity = true;
+				Accretion.sendSpeed(e);
 			}
 		}
 	}

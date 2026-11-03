@@ -169,6 +169,7 @@ public final class Accretion {
 				if (e == target) {
 					// the one it hit keeps its push along the flight (Minecraft's blast knockback undone)
 					e.setDeltaMovement(before);
+					sendSpeed(e);
 				} else {
 					Vec3 away = new Vec3(e.getX() - at.x, 0, e.getZ() - at.z);
 					away = away.lengthSqr() < 1.0E-6 ? along : away.normalize();
@@ -195,8 +196,22 @@ public final class Accretion {
 			* Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 		e.setDeltaMovement(before.add(dir.scale(Ow.speed(along) * f)).add(0, Ow.speed(up) * f, 0));
 		e.needsSync = true;
-		// a player's own client moves them: it needs the speed too (needsSync reaches only the others watching)
-		e.syncVelocity = e.syncVelocity || e instanceof net.minecraft.world.entity.player.Player;
+		sendSpeed(e);
+	}
+
+	/**
+	 * A player's own client moves them, so a speed set on one has to be sent to it now: needsSync reaches only the others
+	 * watching, and syncVelocity alone wasn't enough (played, two clients: a lifted player never rose, vy 0.00 on her
+	 * client every tick; the server's own copy of her speed is reset by her next movement packet landing on the ground
+	 * before the tracker sends it). The hit's own syncVelocity is cleared too: the tracker would send that stale copy a
+	 * tick later and undo the push (the rock's knockback reached her client as nothing). Mobs: nothing (the server moves
+	 * them).
+	 */
+	public static void sendSpeed(LivingEntity e) {
+		if (e instanceof net.minecraft.server.level.ServerPlayer p) {
+			p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
+			p.syncVelocity = false;
+		}
 	}
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
