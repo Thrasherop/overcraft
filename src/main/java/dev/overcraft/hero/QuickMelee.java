@@ -69,7 +69,14 @@ public final class QuickMelee {
 				continue;
 			}
 			DamageSource source = hero.damageSources().playerAttack(hero);
-			float dealt = Combat.damage(target, source, DAMAGE);
+			// melee: through barriers (dev.overcraft.brigitte.Barrier.isMelee)
+			dev.overcraft.brigitte.Barrier.meleeDepth++;
+			float dealt;
+			try {
+				dealt = Combat.damage(target, source, DAMAGE);
+			} finally {
+				dev.overcraft.brigitte.Barrier.meleeDepth--;
+			}
 			Combat.credit(hero, dealt);
 			Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

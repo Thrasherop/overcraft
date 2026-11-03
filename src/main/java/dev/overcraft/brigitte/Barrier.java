@@ -108,8 +108,11 @@ public final class Barrier {
 	public static @Nullable Vec3 blast;
 	public static @Nullable Object blastKey;
 	public static @Nullable Entity blastCause;
-	/** Her flail's swing is being dealt (Brigitte.swingHit): melee, which goes through barriers. */
-	public static boolean meleeHit;
+	/**
+	 * A melee blow is being dealt (more than 0): a mob's doHurtTarget, a player's own attack (MeleeHitMixin,
+	 * PlayerMeleeMixin), a hero's quick melee, her flail's swing. Melee goes through barriers.
+	 */
+	public static int meleeDepth;
 
 	/** The lowest a way may cross her barrier, from her feet (m, ours: below her feet ahead is the ground of a step or slope). */
 	private static final double BOTTOM = -1.0;
@@ -153,6 +156,8 @@ public final class Barrier {
 	 * fireball has no blast: the barrier takes its 5 and it's gone (BLAZE_FIREBALL, ours from its damage).
 	 */
 	public static void tickProjectiles(net.minecraft.server.MinecraftServer server) {
+		// (a blow that threw never reached its RETURN: the marker mustn't outlive the tick)
+		meleeDepth = 0;
 		for (ServerPlayer brig : server.getPlayerList().getPlayers()) {
 			HeroState s = HeroManager.state(brig);
 			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || !(brig.level() instanceof ServerLevel level)) {
@@ -323,19 +328,33 @@ public final class Barrier {
 	}
 
 	/**
-	 * Melee: a mob's or a player's own blow (the hit's direct entity is the attacker, not a projectile), Minecraft's melee
-	 * types, or her flail's swing. Overwatch's barriers let every melee attack through (the wiki's Barrier page), and the
-	 * owner chose it (2026-11-02: "Melee goes through"); ours had stopped zombies at it.
+	 * Melee: only a blow marked as one (meleeDepth): mobs' melee attacks, a player's own blow, heroes' quick melee, her
+	 * flail's swing. Overwatch's barriers let every melee attack through (the wiki's Barrier page), and the owner chose it
+	 * (2026-11-02: "Melee goes through"). Not by damage type: Minecraft's player-attack type is also the source of Lucio's
+	 * Soundwave and Jetpack Cat's Purr and Catnapper, which a barrier blocks (the wiki lists them nowhere among what
+	 * pierces), and a ravager's roar is a mob attack (#88's second critique).
 	 */
 	public static boolean isMelee(DamageSource source) {
-		if (meleeHit || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK)
-			|| source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK_NO_AGGRO)
-			|| source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)) {
-			return true;
+		return meleeDepth > 0;
+	}
+
+	/**
+	 * Whether a Brigitte's up barrier stands between {@code attacker}'s eyes and {@code victim} (her or her ally): an area
+	 * ability's push and lockout stop there with its damage (Soundwave, Purr, Catnapper's landing).
+	 */
+	public static boolean shields(LivingEntity victim, Entity attacker) {
+		if (!(victim.level() instanceof ServerLevel level)) {
+			return false;
 		}
-		Entity direct = source.getDirectEntity();
-		return direct != null && direct == source.getEntity() && direct instanceof LivingEntity
-			&& !(direct instanceof net.minecraft.world.entity.projectile.Projectile);
+		Vec3 from = attacker.getEyePosition(), to = victim.getBoundingBox().getCenter();
+		for (ServerPlayer brig : level.players()) {
+			HeroState s = HeroManager.state(brig);
+			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig.distanceToSqr(victim) <= 100
+				&& Allies.isSelfOrAlly(brig, victim) && stops(brig, attacker) && crosses(brig, s, from, to)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Where a hit came from: a projectile's way in, a blast's centre, an attacker's eyes. */

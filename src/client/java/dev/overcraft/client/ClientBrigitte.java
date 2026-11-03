@@ -87,8 +87,9 @@ public final class ClientBrigitte {
 			return false;
 		}
 		Minecraft mc = Minecraft.getInstance();
-		// not where the server will refuse it: emoting, asleep or stunned (Sleep's attachment), a screen open
+		// not where the server will refuse it: emoting, in a bed, asleep or stunned (Sleep's synced attachment), a screen open
 		boolean refused = mc.player == null || mc.gui.screen() != null || mc.player.isSleeping()
+			|| mc.player.hasAttached(dev.overcraft.hero.HeroManager.ASLEEP)
 			|| dev.overcraft.client.model.HeroAnimator.of(mc.player).emoting();
 		return up || rightWas && !locked && !refused && ClientHero.sync().primaryAmmo() > 0 && secondsSince(rightPressedAt) < FORESEE;
 	}

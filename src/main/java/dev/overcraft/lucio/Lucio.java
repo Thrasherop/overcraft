@@ -278,7 +278,8 @@ public final class Lucio implements HeroKit {
 				continue;
 			}
 			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage);
-			if (target.isAlive()) {
+			// a Brigitte's barrier in the way takes the wave whole: no push, no lockout behind it (#88)
+			if (target.isAlive() && !dev.overcraft.brigitte.Barrier.shields(target, player)) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
 				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));

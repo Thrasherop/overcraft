@@ -13,7 +13,9 @@
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
 		"ServerExplosionMixin",
-		"ProjectileInvoker"
+		"ProjectileInvoker",
+		"MeleeHitMixin",
+		"PlayerMeleeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
