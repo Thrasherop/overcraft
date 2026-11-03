@@ -535,11 +535,80 @@ another checkout holding 25600 / 25565.
 
 **Not bugs, written down:** Flux's flight does nothing seated in a boat (ours).
 
+**After the independent critique** ([critique_sigma](../testing/critique_sigma.md), 33 findings, 2026-11-03).
+- **Integrated first:** `fix/killfeed-hud` (fd827ae) and `fix/brigitte-shield` (a0c1fe9) merged into this branch by rule, not
+  by side. Every conflict keeps the kill feed's `Blow` and his `credit(..., target)`. His damage is tagged:
+  - spheres: weapon (arrow);
+  - Accretion: `ability:accretion`, with `Combat.pushed` after its push;
+  - Flux's lift and slam: `ult:gravitic_flux`, pushed at the lift;
+  - Hyper Strike: `perk:hyper_strike`.
+  One set of barrier rules for both barriers:
+  - enemy fire is stopped from both sides;
+  - a hit that breaks a barrier stops whole;
+  - only marked melee (`Barrier.meleeDepth`) goes through, for his barrier too (`MELEE_REACH` is gone);
+  - Soundwave, Purr and Catnapper pushes stop at any barrier (`Barrier.shields` asks `Barriers`);
+  - her explosion mixin carries Stalwart's push scaling and `Barriers.blast(..., hurts)` (a wind charge charges nothing);
+  - her absorb and blocksBlast ask `Barriers` first.
+- **Blockers 1-5 and the rest (5afc4a9):**
+  - hitscan is judged from the shooter's eyes and absorbed by Grasp (only hits with no direct entity: area hits pass);
+  - `barrierDamage()` for every damaging projectile;
+  - strong projectiles fly through Grasp; the Translocator passes barriers; Petal Platform bounces off one;
+  - Flux goes through every barrier and never hurts one (`Barriers.piercing`);
+  - a hack recalls the barrier and cuts Grasp, the gather and Flux;
+  - asleep, stunned or knocked down, the barrier stops in place and stays out;
+  - Accretion and Flux cancel Grasp;
+  - no spheres, Grasp or rock while he pushes the barrier;
+  - `HeroBody.makeRoom` (G in a doorway, a respawn beside a bed): moved to room within 2 m, or kept in Minecraft mode
+    with "No room for Sigma here", and the client follows the server's hero mode after 0.5 s;
+  - Levitation at W's 2.3 m/s.
+- **Played** (sig12, normal difficulty, host Sigma and the LAN guest as each hero from H, red vs blue, through the
+  harness; desktop control was denied, so not real input):
+
+  | Viewer's hero | Into his barrier (Sigma 48 -> 48 every time) | Into Grasp (48 -> 48, overhealth at its end) |
+  |---|---|---|
+  | Sombra | barrier 650 -> 514 | 6.55 |
+  | Juno | 650 -> 471 | 8.64 |
+  | Ana (rifle and scoped) | 650 -> 501 | scoped: 3.60 = 45, 60% of 75 |
+  | Lúcio | 650 -> 474 | 4.22 |
+  | Lifeweaver | 650 -> 506 | thorns: 5.18 |
+  | Jetpack Cat | 650 -> 506 | 6.91 |
+  | Mercy (blaster) | 650 -> 490 | 5.76 |
+  | Sojourn | 650 -> 533 | 3.89 |
+  | Kiriko | 650 -> 590 | 5.76 |
+
+  - **Strong and pass-through projectiles:**
+    - another Sigma's rock went through his Grasp, 48 -> 38.4;
+    - Sombra's Translocator flew through his barrier: she went from z 16.5 to 3.8, past the barrier at 10.8;
+    - Petal Platform bounced off it and opened on her side.
+  - **Hack:** Sombra's EMP from 8 m recalled the barrier within 0.25 s and cut Grasp.
+  - **Sleep:** Ana's Sleep Dart while he sent the barrier stopped it in place, and it stayed out.
+  - **Flux vs an enemy Brigitte:** with her shield up, her barrier stayed 300 -> 300. She was lifted and slammed
+    (20 -> 7.12), and the husk behind her went 400 -> 196.06.
+  - **The door rule:** G in the 1-wide doorway moved him to z 19.09 with his box, and W stopped at 19.30. G in the
+    2-high tunnel was refused with the message (`h6_tunnel_g`). Respawning at the bed moved him 0.25 m off it, with his
+    box and hero mode on.
+  - **Grasp and the barrier:** E in Grasp threw the rock with no overhealth; no volleys fired while sending (one with
+    it standing).
+  - **Levitation:** 5.07 m.
+  - **Kill feed:** the spheres show the arrow, the rock its icon, Flux the ult icon (`sheet_kf`).
+  - **A creeper 1.5 m beyond his barrier:** 48 -> 48 with the barrier 650 -> 293; without it, 48 -> 46.2.
+  - **Not reproduced on the old build first** (the critic read the code; each was played only after the fix).
+  - **Not played:** Soundwave, Purr or Catnapper at his barrier; Brigitte's shield from behind with an ally; Flux
+    through an enemy Sigma's barrier; Biotic Grenade at it (it's taken whole, no burst: ours).
+- **Screenshots the critic found wrong:**
+  - `v8_spheres_incoming` is the viewer's own hurt Sojourn, not him;
+  - `env_water_barrier` shows no barrier;
+  - `v8_flux_column` shows the ring but no column from the enemy side;
+  - `v8_emote_maestro` is too far to judge.
+  Her view of his spheres in flight is still unseen.
+
 ## Not yet
-Hyper Strike's knock and float on a player (her client's friction eats it; the float is the server's for mobs); a lifted
-player rises 4.2 m against a mob's 6 (her client's gravity between packets); Brigitte's shield from behind with an ally;
-the red Sigma in her `v8_spheres_incoming` frame; his reticle widgets (#85); the kill feed's `Blow` tags for his damage
-when `fix/killfeed-hud` reaches `next`. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
+Hyper Strike's knock and float on a player; a lifted player rises 4.2 m against a mob's 6; the critique's 11 (Flux,
+Accretion and Hyper Strike can save mobs NoAI), 14 (lifted players keep their abilities after 0.4 s), 17-22 (splash rules,
+the slam and temporary health, Accretion's self-damage, the barrier's shape and the void, blasts through walls, Grasp's
+box to his feet), 23-28 (screenshots, the enemy barrier's colour, the sleeve, the reticle and Flux's 1P look), 29-30
+(late joiners, an ally's shots) and 31-32 (real input, earned perks and ult); the merge with `feature/dva` (#8); his
+reticle widgets (#85). Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
 HUD timer, Hyper Strike's charge counter; the rock leaves his eyes (the data's hp 01B6 on his right side: it would
 miss the crosshair); a player knocked down, lifted or struck (one client: their lift is their speed sent each tick
 and their keys held 0.4 s, untested); the slam's cap on bosses and Accretion's 12-at-the-edge falloff (ours: Open);
