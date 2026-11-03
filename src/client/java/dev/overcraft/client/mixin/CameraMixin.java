@@ -71,7 +71,7 @@ public abstract class CameraMixin {
 			? (float) living.getAttributeValue(Attributes.CAMERA_DISTANCE) * living.getScale() : 4;
 		float distance = AbilityCamera.frameDistance(own);
 		// the lift, cut short under a ceiling
-		double lift = AbilityCamera.LIFT * AbilityCamera.eased();
+		double lift = AbilityCamera.lift();
 		HitResult roof = entity.level().clip(new ClipContext(eye, eye.add(up.scale(lift + 0.2)), ClipContext.Block.VISUAL,
 			ClipContext.Fluid.NONE, entity));
 		if (roof.getType() != HitResult.Type.MISS) {

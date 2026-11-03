@@ -20,6 +20,8 @@ public final class AbilityCamera {
 	 * Minecraft's third person sits on that line, so what she aims at (Catnapper's marker) was always behind her head.
 	 */
 	public static final float LIFT = 1;
+	/** Under this far back (m), the view is in her: her model isn't drawn (mid-blend her ponytail filled the screen). */
+	private static final float INSIDE = 1.0f;
 	/** How far her line of sight is followed for the point the lifted view turns to (ours). */
 	public static final double AIM_REACH = 64;
 
@@ -34,6 +36,9 @@ public final class AbilityCamera {
 	private static float chaseSpeed;
 	/** The blend in and out (s; 0: at once) and how far in it is (0 at her eyes, 1 all the way back). */
 	private static float blendTime;
+	/** How far the view rises off her line of sight (m) for the ability holding it, and how far back it was last frame. */
+	private static float lift = LIFT;
+	private static float shown;
 	private static float blend;
 	private static long lastNanos;
 
@@ -42,15 +47,21 @@ public final class AbilityCamera {
 
 	/** Each client tick: whether such an ability runs now (Minecraft's own distance, no blend). */
 	public static void update(Minecraft mc, boolean wanted) {
-		update(mc, wanted, -1, 0, 0);
+		update(mc, wanted, -1, 0, 0, LIFT);
 	}
 
 	/**
 	 * Each client tick: whether such an ability runs now, how far back its view sits ({@code distance} m, negative for
 	 * Minecraft's own), how fast a change in that distance is chased (m/s, 0 at once) and its blend in and out (s).
 	 */
-	public static void update(Minecraft mc, boolean wanted, float distance, float chase, float blendSeconds) {
+	public static void update(Minecraft mc, boolean wanted, float distance, float chase, float blendSeconds, float rise) {
+		if (leaving && mc.options.getCameraType() != CameraType.THIRD_PERSON_BACK) {
+			// the player chose another view (F5) while it blended out: theirs stands
+			active = false;
+			leaving = false;
+		}
 		if (wanted) {
+			lift = rise;
 			wantDistance = distance;
 			chaseSpeed = chase;
 			blendTime = blendSeconds;
@@ -111,7 +122,18 @@ public final class AbilityCamera {
 			float step = chaseSpeed * dt;
 			distance = Math.abs(target - distance) <= step ? target : distance + Math.signum(target - distance) * step;
 		}
-		return distance * eased();
+		shown = distance * eased();
+		return shown;
+	}
+
+	/** How far the view rises off her line of sight now (m). */
+	public static float lift() {
+		return lift * eased();
+	}
+
+	/** Whether the view is inside her now (mid-blend): her model isn't drawn then (HeroModelRenderer). */
+	public static boolean inside() {
+		return active && shown < INSIDE;
 	}
 
 	/** The blend eased in and out (0 at her eyes, 1 all the way back), for the lift as for the distance. */

@@ -86,7 +86,11 @@ public final class ClientBrigitte {
 		if (secondsSince(bashStartedAt) < BASH_VIEW_OFF) {
 			return false;
 		}
-		return up || rightWas && !locked && ClientHero.sync().primaryAmmo() > 0 && secondsSince(rightPressedAt) < FORESEE;
+		Minecraft mc = Minecraft.getInstance();
+		// not where the server will refuse it: emoting, asleep or stunned (Sleep's attachment), a screen open
+		boolean refused = mc.player == null || mc.gui.screen() != null || mc.player.isSleeping()
+			|| dev.overcraft.client.model.HeroAnimator.of(mc.player).emoting();
+		return up || rightWas && !locked && !refused && ClientHero.sync().primaryAmmo() > 0 && secondsSince(rightPressedAt) < FORESEE;
 	}
 
 	private static double secondsSince(long nanos) {
@@ -96,7 +100,7 @@ public final class ClientBrigitte {
 	/** Off from a Shield Bash's start for this long (s: v68007, set 0.35 s on while v596 rises, 0EE3 #1042 -> #909, H). */
 	static final double BASH_VIEW_OFF = 0.35;
 	/** How long her own press stands for the server's word that the barrier went up (s, ours). */
-	private static final double FORESEE = 0.5;
+	private static final double FORESEE = 0.3;
 	private static boolean rightWas;
 	private static long rightPressedAt, bashStartedAt;
 

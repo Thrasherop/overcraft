@@ -139,7 +139,8 @@ public final class HeroModelRenderer {
 	/** While extracting a player's render state: a hero in hero mode with a model gets a {@link Draw}. */
 	public static void extract(LivingEntity entity, LivingEntityRenderState state, float partialTicks) {
 		state.setData(DRAW, null);
-		state.setData(UNSEEN, entity == Minecraft.getInstance().player && dev.overcraft.client.comms.EmoteCamera.inside());
+		state.setData(UNSEEN, entity == Minecraft.getInstance().player
+			&& (dev.overcraft.client.comms.EmoteCamera.inside() || dev.overcraft.client.AbilityCamera.inside()));
 		Hero hero;
 		String chosen = entity.getAttached(HeroManager.HERO);
 		if (preview != null && entity == Minecraft.getInstance().player) {

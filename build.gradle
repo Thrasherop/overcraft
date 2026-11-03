@@ -39,6 +39,16 @@ loom {
 			vmArg "-Dovercraft.devPort=25600"
 			programArgs "--username", "Viewer"
 		}
+		// a third, for a third agent working beside the other two (harness OC_DEV_PORT=25601)
+		client3 {
+			client()
+			name "Minecraft Client 3"
+			runDir "run3"
+			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
+			vmArg "-Dovercraft.dev=true"
+			vmArg "-Dovercraft.devPort=25601"
+			programArgs "--username", "Third"
+		}
 	}
 }
 
