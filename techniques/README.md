@@ -46,6 +46,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
   - [visual_review](testing/visual_review.md): comparing with the real game, frames at exact times, critique agents.
+- **HUD**: [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
+  damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.
 - **Rendering**: [rendering](rendering/rendering.md). Minecraft 26.3's renderer, effects, glows, shadows, held items,
   fonts.
 - **Sound**: [sounds](sound/sounds.md). Bound and in-the-head sounds, checking what played, voice and music from the

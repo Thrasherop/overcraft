@@ -115,7 +115,8 @@ public final class Hyperspheres {
 		LivingEntity target = part != null ? part.parentMob : direct instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
 			DamageSource hit = level.damageSources().thrown(sphere, owner);
-			float dealt = part != null ? Combat.damagePart(level, part, hit, SPHERE_DIRECT) : Combat.damage(target, hit, SPHERE_DIRECT);
+			float dealt = part != null ? Combat.damagePart(level, part, hit, SPHERE_DIRECT, dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA))
+				: Combat.damage(target, hit, SPHERE_DIRECT, dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA));
 			// Hyper Regeneration and Hyper Strike's count (perks)
 			SigmaPerks.sphereDealt(owner, dealt, true);
 			Combat.credit(owner, dealt, target);
@@ -146,7 +147,7 @@ public final class Hyperspheres {
 			if (d > SPHERE_BURST_RADIUS || !inSight(level, at, e) || Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
 				continue;
 			}
-			float dealt = Combat.damage(e, source, burstDamage(d));
+			float dealt = Combat.damage(e, source, burstDamage(d), dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA));
 			SigmaPerks.sphereDealt(owner, dealt, false);
 			Combat.credit(owner, dealt, e);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));

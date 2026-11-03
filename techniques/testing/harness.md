@@ -167,3 +167,7 @@
 - **Two clients need ~7 GB free** (2026-11-02, Sigma): with another agent's third client up (1.2 GB free) a restarted
   second client hung on its loading screen. Check free memory (`Win32_OperatingSystem.FreePhysicalMemory`) before
   starting the pair, and don't restart one mid-test when memory is short.
+- **A `/kill` is not always neutral** (2026-11-02, kill feed): before the GENERIC_KILL rule a `/kill @e` clearing the test
+  world credited the hero whose blow had landed in the last 5 s (a stray feed line and ELIMINATED), and with
+  `send_command_feedback` off a `/summon` with bad NBT fails without a word. Turn feedback on while setting up. See
+  [kill_feed](../hud/kill_feed.md).

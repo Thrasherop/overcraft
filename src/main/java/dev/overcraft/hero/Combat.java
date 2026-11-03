@@ -65,27 +65,160 @@ public final class Combat {
 	 * clearing it let the cooldown drop every hit after the first in half a second (a volley's 5 shots did 4: found
 	 * playing Jetpack Cat).
 	 */
-	public static float damage(LivingEntity target, DamageSource source, double owDamage) {
-		float before = target.getHealth() + target.getAbsorptionAmount();
-		target.damageCooldownTime = 0;
-		target.hurt(source, Ow.hp(owDamage));
-		target.damageCooldownTime = 0;
-		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
-		return Math.max(0, Ow.toOw(dealt));
+	/**
+	 * A hitscan shot's damage from a hero (Ana's rifle, Sombra's pistol, Sojourn's Charged Shot): overcraft:hitscan, not a
+	 * projectile, so endermen take it instead of teleporting away (the owner's balance call, #92); otherwise as the arrow
+	 * type they used (knockback, armor). No direct entity, so the kill feed doesn't take it for melee.
+	 */
+	public static DamageSource hitscan(net.minecraft.server.level.ServerPlayer owner) {
+		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("hitscan"))), null, owner);
+	}
+
+	/**
+	 * Deals a hero's damage, saying what dealt it ({@code blow}: the weapon, melee, an ability, a perk, the ult, whether
+	 * it was critical, and the hero who dealt it, filled from the attacker's hero when not given). A death it causes is
+	 * told by it (KillFeed, which also calls Voice: they run inside the hurt). A hit that lands and moves its target is
+	 * remembered a while (pushed), so a fall or the void it sends them into still credits the hero (#84).
+	 */
+	public static float damage(LivingEntity target, DamageSource source, double owDamage, Blow blow) {
+		return deal(target, target, source, blow, () -> target.hurt(source, Ow.hp(owDamage)));
 	}
 
 	/**
 	 * The same through one of the Ender Dragon's parts (its head and neck take it all, the rest a quarter plus one:
-	 * Minecraft's rule, EnderDragon.hurt).
+	 * Minecraft's rule, EnderDragon.hurt). The dragon's death runs inside this hurt too (LivingEntity.die calls its
+	 * handleKillingBlow, which starts the DYING phase), so its kill is told with the blow like any other.
 	 */
-	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage) {
-		LivingEntity dragon = part.parentMob;
-		float before = dragon.getHealth() + dragon.getAbsorptionAmount();
-		dragon.damageCooldownTime = 0;
-		part.hurtServer(level, source, Ow.hp(owDamage));
-		dragon.damageCooldownTime = 0;
-		float dealt = before - (dragon.isAlive() ? dragon.getHealth() + dragon.getAbsorptionAmount() : 0);
+	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage, Blow blow) {
+		return deal(part.parentMob, part, source, blow, () -> part.hurtServer(level, source, Ow.hp(owDamage)));
+	}
+
+	private static float deal(LivingEntity target, Entity hit, DamageSource source, Blow blow, Runnable hurt) {
+		blow = withHero(blow, source.getEntity());
+		float before = target.getHealth() + target.getAbsorptionAmount();
+		net.minecraft.world.phys.Vec3 moving = target.getDeltaMovement();
+		dealingWhile(source.getEntity(), target, blow, () -> {
+			target.damageCooldownTime = 0;
+			hurt.run();
+			target.damageCooldownTime = 0;
+		});
+		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
+		// a hit that did nothing (a barrier took it all, it was cancelled, the target can't be hurt) is no one's push
+		if (dealt > 0 && target.isAlive() && !target.getDeltaMovement().equals(moving)) {
+			pushed(target, source.getEntity(), blow);
+		}
 		return Math.max(0, Ow.toOw(dealt));
+	}
+
+	/** The blow with its hero: as given, else the attacker's hero now (a hit that lands as it's made). */
+	public static Blow withHero(Blow blow, @org.jspecify.annotations.Nullable Entity attacker) {
+		return blow.hero() == null && attacker instanceof Player player ? blow.by(HeroManager.hero(player)) : blow;
+	}
+
+	/** The hero damage being dealt right now (inside Combat.damage's hurt): who, to whom, with what. */
+	private record Dealt(@org.jspecify.annotations.Nullable Object attacker, Object target, Blow blow) {
+	}
+
+	private static @org.jspecify.annotations.Nullable Dealt dealing;
+
+	/**
+	 * Runs {@code hurt} with this blow as the one being dealt, then puts back whatever was being dealt before (a hurt
+	 * that deals hero damage of its own, nested). Package-private for BlowTest.
+	 */
+	static void dealingWhile(@org.jspecify.annotations.Nullable Object attacker, Object target, Blow blow, Runnable hurt) {
+		Dealt outer = dealing;
+		dealing = new Dealt(attacker, target, blow);
+		try {
+			hurt.run();
+		} finally {
+			dealing = outer;
+		}
+	}
+
+	/** The blow being dealt to {@code victim} by {@code attacker} right now, or null. Package-private for BlowTest. */
+	static @org.jspecify.annotations.Nullable Blow dealtTo(Object victim, @org.jspecify.annotations.Nullable Object attacker) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == attacker ? d.blow : null;
+	}
+
+	/**
+	 * A creature's last push by a hero: by whom, with what, when (game time), and its own tickCount then (to compare with
+	 * a later mob's blow, LivingEntity.lastHurtByMobTimestamp).
+	 */
+	public record LastPush(UUID attacker, Blow blow, long at, int victimTick) {
+	}
+
+	private static final Map<UUID, LastPush> lastPushes = new HashMap<>();
+
+	/**
+	 * How long a hero's push still counts for a death by the world (a fall, the void, lava, a wall): Minecraft's own kill
+	 * credit window (LivingEntity.lastHurtByPlayerMemoryTime, 100 ticks).
+	 */
+	public static final int CREDIT_TICKS = 100;
+
+	/**
+	 * A hero's blow moved {@code target} (its knockback inside the hurt, seen by Combat.damage, or an ability's own push
+	 * after it: Soundwave, Purr, Catnapper, Shield Bash, Whip Shot, Rally's shockwave): if the world kills it within
+	 * CREDIT_TICKS, the kill is that hero's, with that blow.
+	 */
+	public static void pushed(LivingEntity target, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (attacker instanceof Player hero && hero != target) {
+			lastPushes.put(target.getUUID(), new LastPush(hero.getUUID(), withHero(blow, hero), now(target), target.tickCount));
+		}
+	}
+
+	/**
+	 * What dealt the blow that is killing {@code victim} with {@code source}: the hero damage being dealt to it right
+	 * now, or null (not a hero's: a zombie's bite, a sword in Minecraft mode, the world).
+	 */
+	public static @org.jspecify.annotations.Nullable Blow blow(LivingEntity victim, DamageSource source) {
+		return dealtTo(victim, source.getEntity());
+	}
+
+	/**
+	 * The deaths the world deals that a push can cause: a fall, the void, lava, a wall it was pushed into (suffocation, or
+	 * flying into one). Not sunburn, drowning, starving, a dispenser's arrow, cramming or /kill.
+	 */
+	public static boolean pushDeath(DamageSource source) {
+		return source.getEntity() == null && (source.is(net.minecraft.tags.DamageTypeTags.IS_FALL)
+			|| source.typeHolder().unwrapKey().map(key -> pushDeathType(key.identifier().toString())).orElse(false));
+	}
+
+	/** The world's damage types (besides falls) a push can kill with, by id. Package-private for BlowTest. */
+	static boolean pushDeathType(String id) {
+		return switch (id) {
+			case "minecraft:out_of_world", "minecraft:lava", "minecraft:in_wall", "minecraft:fly_into_wall", "minecraft:fall" -> true;
+			default -> false;
+		};
+	}
+
+	/** Whether a push made at {@code at} still counts at {@code now} (game times). Package-private for BlowTest. */
+	static boolean inCreditWindow(long now, long at) {
+		return now - at <= CREDIT_TICKS;
+	}
+
+	/**
+	 * The hero push that a death by the world is credited to: within CREDIT_TICKS, and not overtaken by a later blow from
+	 * someone else (a skeleton's arrow after the hero's boop takes the kill, as Minecraft's own kill credit would);
+	 * null otherwise.
+	 */
+	public static @org.jspecify.annotations.Nullable LastPush recentPush(LivingEntity victim) {
+		LastPush last = lastPushes.get(victim.getUUID());
+		if (last == null || !inCreditWindow(now(victim), last.at)) {
+			return null;
+		}
+		LivingEntity other = victim.getLastHurtByMob();
+		if (other != null && !other.getUUID().equals(last.attacker) && victim.getLastHurtByMobTimestamp() > last.victimTick) {
+			return null;
+		}
+		return last;
+	}
+
+	/** It died: its last push has been told, and is forgotten. */
+	public static void forget(LivingEntity victim) {
+		lastPushes.remove(victim.getUUID());
 	}
 
 	/**
@@ -437,6 +570,7 @@ public final class Combat {
 		if (server.getTickCount() % 200 == 0) {
 			long time = server.overworld().getGameTime();
 			phasedUntil.values().removeIf(until -> until < time);
+			lastPushes.values().removeIf(last -> time - last.at > CREDIT_TICKS);
 		}
 	}
 
@@ -472,5 +606,7 @@ public final class Combat {
 		buffs.clear();
 		overhealth.clear();
 		overhealthLeft.clear();
+		lastPushes.clear();
+		dealing = null;
 	}
 }

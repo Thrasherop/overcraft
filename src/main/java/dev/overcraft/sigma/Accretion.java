@@ -123,7 +123,8 @@ public final class Accretion {
 		if (target != null && Allies.canHurt(owner, target)) {
 			Vec3 before = target.getDeltaMovement();
 			DamageSource hit = level.damageSources().thrown(rock, owner);
-			float dealt = part != null ? Combat.damagePart(level, part, hit, ROCK_IMPACT) : Combat.damage(target, hit, ROCK_IMPACT);
+			float dealt = part != null ? Combat.damagePart(level, part, hit, ROCK_IMPACT, BLOW)
+				: Combat.damage(target, hit, ROCK_IMPACT, BLOW);
 			Combat.credit(owner, dealt, target);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
@@ -136,6 +137,8 @@ public final class Accretion {
 			Combat.addUltCharge(owner, ROCK_ULT_ON_HIT * Tank.ultFactor(owner, target), false);
 			if (target.isAlive()) {
 				push(target, before, along, ROCK_KNOCKBACK, ROCK_KNOCKBACK_UP);
+				// a fall or the void after it is his kill (kill_feed.md "A death the world deals")
+				Combat.pushed(target, owner, BLOW);
 				// knocked down 1.1 s (224E, #585 / #590): no moving, no keys, no AI; carried by the push
 				Sleep.knockdown(target, ROCK_KNOCKDOWN);
 			}
@@ -159,7 +162,7 @@ public final class Accretion {
 				continue;
 			}
 			Vec3 before = e.getDeltaMovement();
-			float dealt = Combat.damage(e, source, burstDamage(d));
+			float dealt = Combat.damage(e, source, burstDamage(d), BLOW);
 			Combat.credit(owner, dealt, e);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 			if (dealt > 0) {
@@ -191,6 +194,9 @@ public final class Accretion {
 	 * Minecraft's own hit knockback), less a Stalwart's share, Sigma's in flight, and the creature's own resistance (an
 	 * iron golem none: Minecraft's knockback rule).
 	 */
+	/** Its kill-feed blow (kill_feed.md's table: his ability, its icon). */
+	static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ability("accretion").by(dev.overcraft.hero.Hero.SIGMA);
+
 	static void push(LivingEntity e, Vec3 before, Vec3 dir, double along, double up) {
 		double f = Tank.knockbackFactor(e) * GraviticFlux.knockbackFactor(e)
 			* Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));

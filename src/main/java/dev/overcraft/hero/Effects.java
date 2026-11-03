@@ -32,13 +32,23 @@ public final class Effects {
 	}
 
 	/**
-	 * The thrower's hit marker on their crosshair: 0 a hit, 1 a critical hit, 2 a kill. Sent to them alone (others
-	 * don't see your hit markers).
+	 * The thrower's hit marker on their crosshair: 0 a hit, 1 a critical hit. Sent to them alone (others don't see your
+	 * hit markers). A hit that killed sends nothing here: the kill marker (2, with "ELIMINATED") comes from the death
+	 * itself (killMarker, from KillFeed), so every way a hero kills gets it once, whether or not the damage's own code
+	 * marks its hits (#106: Soundwave, Purr, the Disruptor field and Ana's rifle never got it).
 	 */
 	public static void hitMarker(ServerPlayer shooter, LivingEntity target, boolean crit) {
-		int kind = !target.isAlive() || target.getHealth() <= 0 ? 2 : crit ? 1 : 0;
+		if (!target.isAlive() || target.getHealth() <= 0) {
+			return;
+		}
 		ServerPlayNetworking.send(shooter, new EffectPayload("hit_marker", target.getX(), target.getY(), target.getZ(), 0, 0, 0,
-			target.getId(), kind, false));
+			target.getId(), crit ? 1 : 0, false));
+	}
+
+	/** The kill marker and the final blow's "ELIMINATED" caption, for the hero who killed {@code victim}. */
+	public static void killMarker(ServerPlayer killer, LivingEntity victim) {
+		ServerPlayNetworking.send(killer, new EffectPayload("hit_marker", victim.getX(), victim.getY(), victim.getZ(), 0, 0, 0,
+			victim.getId(), 2, false));
 	}
 
 	/**

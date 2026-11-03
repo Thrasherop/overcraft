@@ -3,6 +3,7 @@ package dev.overcraft.sojourn;
 import dev.overcraft.Ow;
 import dev.overcraft.entity.RailgunShotEntity;
 import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Blow;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroManager;
@@ -10,7 +11,6 @@ import dev.overcraft.hero.HeroState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
@@ -227,7 +227,8 @@ public final class Railgun {
 		}
 		double damage = RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1);
 		dev.overcraft.brigitte.Barrier.took = false;
-		float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+		float dealt = part != null ? Combat.damagePart(level, part, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN))
+			: Combat.damage(target, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN));
 		boolean barrier = dev.overcraft.brigitte.Barrier.took;
 		dev.overcraft.brigitte.Barrier.took = false;
 		Combat.credit(owner, dealt, target);
@@ -316,7 +317,11 @@ public final class Railgun {
 				s.critAt = level.getGameTime();
 			}
 			double damage = base * falloff * (crit ? CHARGED_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+			// the Charged Shot is her weapon's secondary fire with an icon of its own (the wiki: "Sojourn via Charged Shot,
+			// Disruptor Shot or Overclock"); fired in Overclock, the ult's (it only exists so while the ult runs: kill_feed.md)
+			Blow blow = (Sojourn.overclocked(s) ? Blow.ult("overclock").crit(crit) : Blow.weapon("charged_shot", crit))
+				.by(dev.overcraft.hero.Hero.SOJOURN);
+			float dealt = part != null ? Combat.damagePart(level, part, source, damage, blow) : Combat.damage(target, source, damage, blow);
 			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {
@@ -359,7 +364,6 @@ public final class Railgun {
 
 	/** Damage from her with no projectile of its own (the Charged Shot: hitscan), so a kill isn't a melee kill. */
 	private static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 }

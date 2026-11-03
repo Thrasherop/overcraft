@@ -50,13 +50,6 @@ public class SonicEntity extends OwProjectile {
 		return Ow.ticks(60 / LucioStats.AMP_SPEED);
 	}
 
-	private boolean headshot;
-
-	/** This round's hit was a headshot (set before its damage: the kill feed reads it). */
-	public boolean headshot() {
-		return headshot;
-	}
-
 	@Override
 	protected boolean canHitEntity(Entity entity) {
 		Entity target = entity instanceof EnderDragonPart part ? part.parentMob : entity;
@@ -83,19 +76,19 @@ public class SonicEntity extends OwProjectile {
 			return;
 		}
 		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
-		headshot = crit;
 		HeroState state = crit && getOwner() instanceof Player shooter ? HeroManager.state(shooter) : null;
 		if (state != null) {
 			state.critAt = level.getGameTime();
 		}
 		double damage = LucioStats.AMP_DAMAGE * (crit ? LucioStats.AMP_CRIT : 1);
-		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage)
-			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO))
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO));
 		// a small push along the round's flight (ours: the knockback exists, no source gives it)
 		Vec3 push = getDeltaMovement().normalize().scale(Ow.speed(LucioStats.AMP_KNOCKBACK) * dev.overcraft.hero.Tank.knockbackFactor(target));
 		if (part == null && target.isAlive()) {
 			target.push(push.x, 0, push.z);
 			target.syncVelocity = true;
+			dev.overcraft.hero.Combat.pushed(target, getOwner(), dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.LUCIO));
 		}
 		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {

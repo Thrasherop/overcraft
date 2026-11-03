@@ -275,6 +275,9 @@ public final class GraviticFlux {
 
 	private static final Map<UUID, Lifted> LIFTED = new HashMap<>();
 
+	/** Its kill-feed blow (kill_feed.md's table: the ult, its icon), the lift's and the slam's. */
+	private static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ult("gravitic_flux").by(dev.overcraft.hero.Hero.SIGMA);
+
 	/** Being lifted or slammed by a Gravitic Flux now (Sleep leaves its movement to this). */
 	public static boolean lifted(LivingEntity entity) {
 		return LIFTED.containsKey(entity.getUUID());
@@ -298,6 +301,8 @@ public final class GraviticFlux {
 		in = in.lengthSqr() < 1.0E-6 ? Vec3.ZERO : in.normalize();
 		e.setDeltaMovement(new Vec3(before.x, 0, before.z).add(in.scale(Ow.speed(FLUX_LIFT_PULL))));
 		lifted.speed = e.getDeltaMovement();
+		// a fall or the void out of the lift is his kill ("To the void!": kill_feed.md "A death the world deals")
+		Combat.pushed(e, owner, BLOW);
 		Accretion.sendSpeed(e);
 		if (e instanceof Mob mob) {
 			mob.setNoAi(true);
@@ -318,7 +323,7 @@ public final class GraviticFlux {
 
 	/** Deals Overwatch damage to a creature (the Ender Dragon through its head: its body takes a quarter). */
 	private static float hurt(ServerLevel level, LivingEntity e, DamageSource source, double ow) {
-		return e instanceof EnderDragon dragon ? Combat.damagePart(level, dragon.head, source, ow) : Combat.damage(e, source, ow);
+		return e instanceof EnderDragon dragon ? Combat.damagePart(level, dragon.head, source, ow, BLOW) : Combat.damage(e, source, ow, BLOW);
 	}
 
 	/** The three bosses (the slam's cap: ours). */

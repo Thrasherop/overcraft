@@ -132,3 +132,11 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - A one-off hit that must ignore armour, Resistance and Protection: a damage type in `bypasses_armor` and
   `bypasses_effects` (the latter skips both the effect and enchantments: `getDamageAfterMagicAbsorb`), plus
   `no_knockback` / `no_impact` when the ability moves the target itself (`overcraft:gravitic_slam`).
+## Endermen dodge anything tagged is_projectile (#92, 2026-11-02)
+- `Enderman.hurtServer` teleports away and takes nothing from a damage type in `minecraft:is_projectile`, whatever
+  made it. Our hitscan weapons dealt `minecraft:arrow` (tagged), so endermen dodged Ana's rifle, Sombra's pistol and
+  Sojourn's Charged Shot. They use `overcraft:hitscan` now (`Combat.hitscan`: the arrow type's other settings, not a
+  projectile); real projectiles (Juno's rounds and torpedoes, kunai, darts) keep the dodge.
+- Played: an enderman at 8 m took Sombra's pistol (40 -> 27.5), Ana's scoped shot (-> 34) and the Charged Shot
+  (-> 25.6) in place; Juno's Mediblaster, the control, sent it 26 m away untouched.
+

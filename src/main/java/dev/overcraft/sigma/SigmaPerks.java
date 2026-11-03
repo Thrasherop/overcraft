@@ -74,7 +74,8 @@ public final class SigmaPerks {
 		ServerLevel level = hero.level();
 		Vec3 before = target.getDeltaMovement();
 		DamageSource source = hero.damageSources().playerAttack(hero);
-		float dealt = Combat.damage(target, source, HYPER_STRIKE_DAMAGE);
+		dev.overcraft.hero.Blow blow = dev.overcraft.hero.Blow.perk("hyper_strike").by(dev.overcraft.hero.Hero.SIGMA);
+		float dealt = Combat.damage(target, source, HYPER_STRIKE_DAMAGE, blow);
 		Combat.credit(hero, dealt, target);
 		Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
 		if (dealt > 0) {
@@ -83,6 +84,7 @@ public final class SigmaPerks {
 		if (target.isAlive()) {
 			Vec3 dir = hero.getViewVector(1.0f).add(0, HYPER_STRIKE_LIFT, 0).normalize();
 			Accretion.push(target, Vec3.ZERO, dir, HYPER_STRIKE_SPEED, 0);
+			Combat.pushed(target, hero, blow);
 			Sleep.knockdown(target, HYPER_STRIKE_FLOAT, HYPER_STRIKE_GRAVITY);
 		}
 		// 54A5 on the target: 2BE7 (the lifted look, its 0.8 s float) and 6550 / 6551 / 67C0's sounds (the target's own, others' 500 m)
