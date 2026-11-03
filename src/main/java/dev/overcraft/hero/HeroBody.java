@@ -17,8 +17,8 @@ import java.util.WeakHashMap;
  * <p>
  * The box grows only where it fits (ours): picking him or pressing G in a 2-high tunnel keeps Minecraft's box until he
  * steps out to where at least his crouched box fits (Minecraft then crouches him if only that fits), so a switch never
- * puts him inside blocks (suffocating). It never shrinks to fit a gap: crawling under a ledge is Minecraft's own swimming
- * pose, as for anyone already stuck.
+ * puts him inside blocks (suffocating). Put where even his crouched box doesn't fit (a respawn beside a bed, a /tp), he has
+ * Minecraft's box until he steps out, as after G in a tunnel.
  */
 public final class HeroBody {
 	private HeroBody() {
@@ -69,15 +69,18 @@ public final class HeroBody {
 	}
 
 	/**
-	 * Each tick (PlayerMixin): on when wanted and his crouched box fits where he is, off when not wanted; Minecraft's
-	 * dimensions refreshed when it changes. True when it changed.
+	 * Each tick (PlayerMixin): on while wanted and his crouched box fits where he is, off when not wanted or when he's been
+	 * put where it doesn't fit (a respawn beside the bed, a /tp: Minecraft places a player by its own 0.6 x 1.8 box; with his
+	 * kept, Minecraft laid him down in its swimming pose with a 0.4 m camera until he walked out: found in the release play,
+	 * 2026-11-02). Walking never gets him there, since his box collides first. Minecraft's dimensions refreshed when it
+	 * changes. True when it changed.
 	 */
 	public static boolean update(Player player) {
 		Hero hero = wanted(player);
 		boolean was = Boolean.TRUE.equals(BIG.get(player));
 		EntityDimensions crouched = of(hero, Pose.CROUCHING);
-		boolean now = crouched != null && (was || player.level().noCollision(player,
-			crouched.makeBoundingBox(player.position()).deflate(1.0E-7)));
+		boolean now = crouched != null && player.level().noCollision(player,
+			crouched.makeBoundingBox(player.position()).deflate(1.0E-7));
 		if (now == was) {
 			return false;
 		}
