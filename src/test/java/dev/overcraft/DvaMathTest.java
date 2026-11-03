@@ -151,4 +151,33 @@ class DvaMathTest {
 		assertEquals(17.46, Math.hypot(DvaStats.BOOSTERS_KNOCKBACK, DvaStats.BOOSTERS_KNOCKBACK_UP), 0.01);
 		assertEquals(0.1, DvaStats.BOOSTERS_KNOCKBACK_TAKEN, 1e-9);
 	}
+
+	@Test
+	void missilesSelfDestructAndLightGun() {
+		// 18 at 14 a second (0.7 a tick) after 0.25 s: 135 if all land (2 + 5.5 each) (D 1128)
+		assertEquals(5, Ow.ticks(DvaStats.MISSILES_CAST));
+		assertEquals(0.7, DvaStats.MISSILES_RATE / 20, 1e-9);
+		assertEquals(135, DvaStats.MISSILES_COUNT * (DvaStats.MISSILES_IMPACT + DvaStats.MISSILES_SPLASH), 1e-9);
+		assertEquals(40, Ow.ticks(DvaStats.MISSILES_RANGE / DvaStats.MISSILES_SPEED));
+		// the burst: full to 0.1 m, x0.25 at 1.5 m (1.375: W), none past
+		assertEquals(1, dev.overcraft.dva.MicroMissiles.splashFactor(0.05), 1e-9);
+		assertEquals(1.375, DvaStats.MISSILES_SPLASH * dev.overcraft.dva.MicroMissiles.splashFactor(1.5), 1e-9);
+		assertEquals(0, dev.overcraft.dva.MicroMissiles.splashFactor(1.6), 1e-9);
+		// Self-Destruct: 1000 to 6 m, then 50 + 950 x (21 - d) / 15 (D #280)
+		assertEquals(1000, dev.overcraft.dva.SelfDestruct.damage(3), 1e-9);
+		assertEquals(1000, dev.overcraft.dva.SelfDestruct.damage(6), 1e-9);
+		assertEquals(620, dev.overcraft.dva.SelfDestruct.damage(12), 1e-9);
+		assertEquals(240, dev.overcraft.dva.SelfDestruct.damage(18), 1e-9);
+		assertEquals(50, dev.overcraft.dva.SelfDestruct.damage(21), 1e-9);
+		assertEquals(0, dev.overcraft.dva.SelfDestruct.damage(21.5), 1e-9);
+		// its knockback: 22.4 m/s at the centre, 7.8 at 21 m (ours, linear)
+		double full = Math.hypot(DvaStats.SELF_DESTRUCT_KNOCKBACK, DvaStats.SELF_DESTRUCT_KNOCKBACK_UP);
+		assertEquals(22.36, full, 0.01);
+		assertEquals(7.8, full * dev.overcraft.dva.SelfDestruct.knockbackFactor(21), 1e-9);
+		assertEquals(60, Ow.ticks(DvaStats.SELF_DESTRUCT_FUSE));
+		// the Light Gun: 7 a second, 98 a second, 20 rounds in 2.86 s; the rounds back at 0.91 s of the 1.4 (D 02B8)
+		assertEquals(98, DvaStats.LIGHT_GUN_DAMAGE * DvaStats.LIGHT_GUN_RATE, 1e-9);
+		assertEquals(18, Ow.ticks(DvaStats.LIGHT_GUN_RELOAD * DvaStats.LIGHT_GUN_RELOAD_AMMO));
+		assertEquals(28, Ow.ticks(DvaStats.LIGHT_GUN_RELOAD));
+	}
 }

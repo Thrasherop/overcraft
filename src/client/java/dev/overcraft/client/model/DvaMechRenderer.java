@@ -44,6 +44,10 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 		if (entity.kind() == DvaMechEntity.WRECK) {
 			state.clip = "destroyed_sm0";
 			state.time = (float) dev.overcraft.dva.DvaStats.WRECK_TIME + t;
+		} else if (entity.kind() == DvaMechEntity.SELF_DESTRUCT) {
+			// flying on to its blast: her stand (its own 3644 is an additive layer over the base: step 11)
+			state.clip = "idle";
+			state.time = t;
 		} else {
 			state.clip = "call_mech";
 			state.time = t;

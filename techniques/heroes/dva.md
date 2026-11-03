@@ -214,8 +214,56 @@ the mech. Nothing in the HUD broke (the low-health vignette, the kill feed and t
   nearest and killed nothing in 40 s: hold the button and only aim in the loop. Monsters that spawned naturally during a fight
   stay after `spawn_monsters` goes off and hit her after a respawn: clear them before the next run.
 
+## Steps 7-9: Micro Missiles, Self-Destruct, the Light Gun, played 2026-11-02
+Code: `dva.MicroMissiles` + `entity.DvaMissileEntity`, `dva.SelfDestruct` (the `DvaMechEntity` kind SELF_DESTRUCT flies
+on and calls it each tick), `dva.LightGun` + `entity.LightGunShotEntity`; each number in `DvaStats` with its source;
+`Dva.eject(player, s, wreck)` now serves both the wreck and Self-Destruct (the data's one eject message 016C). Stand-in
+look and sound throughout (firework / snowball items, glow and explosion particles): her own are step 11.
+
+**From the data, not by eye:** the missiles' muzzles are hp 0075 / 0077 (1128 #357's m_muzzles), read off the 1P model
+10354's empties: 0.88 m either side, 1.976 m up, 0.32 m ahead (the 3P model's are posed and asymmetric: the 1P rest pose
+is the one to read). #357's lifetime field is 0 and its m_FEC435C6 100: read as a 100 m range (2 s), M.
+
+**Found playing (fixed): a direct missile hit lost a quarter of its splash.** A giant took **131 of 135** every volley.
+Logging each burst showed it at the missile's centre, **0.175 m off the box** (Minecraft's entity hit location is the
+projectile's position, not the contact), so the splash read d = 0.175 (x0.96). The burst now sits at the box point nearest
+the missile: **135.0**, three volleys. Block hits were right already (the clip is the centre ray to the face).
+[minecraft_26](../minecraft/minecraft_26.md).
+
+**Played** (world `dva79`, fresh flat, midnight; targets held with `movement_speed` 0, armor 0; driver `dva_oc.py`):
+- **Missiles:** 18 on a giant 10 m off: **135.0** (18 x (2 + 5.5)), the same with the matrix up (her own aren't eaten) and
+  while boosting (modes 16 / 32). The cooldown appears **1.44 s** after E (0.25 + 17/14 = 1.46) at 7.0, ready **8.46 s**
+  after; E inside it does nothing. **Splash** at a wall: zombies 0.3 / 1.0 / 1.7 m from the burst took **88.4 / 51.3 / 0**
+  (expected 88.4 / 51.3 / 0). **Self-damage:** her front 0.5 m from the burst, **39.4** (77.8 halved by armor a missile: 38.9).
+- **Self-Destruct** (`overcraft ult @s 100`, Q): she ejects at once (pilot 175, Light Gun full); 3 s later zombies with
+  their nearest point 3 / 6 / 12 / 18 / 21 / 21.6 m from the centre took **1000 / 1000 / 620 / 240 / 50 / 0** (D's formula
+  exactly); one behind a stone wall **0**, one in the open at 7.7 m **892.3** (892.3). Knockback: thrown **4.98 / 4.2 / 3.0 /
+  1.9 / 1.4 m**, against a Minecraft-physics simulation of 22.4 -> 7.8 m/s linear: 4.82 / 4.03 / 2.84 / 1.76 / 1.29.
+  **Call Mech full (280)** right after. **From the wreck:** `/damage 200` with Self-Destruct charged, Q within the second:
+  pilot at once, a zombie 3.7 m off took 1000. **While boosting:** the mech carried on 2.4 m past her and stopped (on the
+  ground its friction halves its speed a tick: Overwatch's own slide isn't in the data, M).
+- **Light Gun:** held 2.0 s: **14 rounds** (7/s), a giant took **196** (14 each); **body 14, head 28**; R from 6 left: the
+  rounds back between **0.88 and 0.95 s** (0.91), the reload over at **1.41 s** (1.4); held 3.2 s from full: empty and
+  reloading by itself. HUD `6 | 20` (`s9_gun_1p.png`).
+- **Call Mech's charge:** +20.3 in 4 s after an eject (5/s), +61.5 for four rounds and a second (56 + 5). **On a ledge:**
+  1.15 m from a 3 m drop's edge, facing off it: the mech came down below (y -60, z 8.15), and she drove it.
+- **Dying as the pilot:** the death screen; respawned in the mech at 54 / 54 (a real death, the only one).
+- **Night fight** (a wave of 14: zombies, a husk, four skeletons with bows, a creeper, a spider; monsters spawning; 70 %
+  Self-Destruct charge to start; the harness held the left button and aimed at the nearest each 0.5 s, E whenever ready,
+  Boosters every 12 s, Q when charged): the charge filled from Fusion and missiles by **7.6 s**, **Self-Destruct killed six**
+  (the kill feed, `night_15.png`); as the pilot the Light Gun fought on (ammo 16 -> 1), Call Mech charged in 3 s, she called
+  it at 31 s and fought on in the new mech to 75 s, ending at 50.6 / 54. **Harness trap, not a bug:** the call said "No room
+  for the mech here" for 20 s because the eject had put her against the splash test's leftover wall (the mech's 1.4 m box
+  didn't fit): clear the arena between runs.
+- **Not tried / open:** a stun during Call Mech (Ana's Sleep Dart needs a second player); two players (her missiles and
+  Self-Destruct on another hero, armor and shields under them, the warning seen by others); Self-Destruct falling out of the
+  world (a flat world has a floor); the Light Gun Input option (Primary only, the default); the Light Gun's muzzle is
+  Mercy's measured place, not hers (M); in the night fight her ammo stayed at 16 for several seconds after the eject while
+  the button was held through it (unconfirmed: she may have been aiming at the wall; worth a look); the missile, Self-Destruct
+  (3644 additive) and fire / reload clips are triggered but the additive layers don't play on her yet (step 11).
+
 ## Not yet
-Steps 7-13: Micro Missiles, Self-Destruct, the Light Gun and the pilot's fight, perks, sounds / voice / effects (and the
+Steps 10-13: perks, sounds / voice / effects (and the
 firing / matrix clips), emotes, two players. Open from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox` after Sigma's
 step 10 merges; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam against the matrix. Effects (111 extracted), sounds, voice
 (set 57.05F, 1129 subtitled lines) and her 15 emotes are extracted but not mapped.

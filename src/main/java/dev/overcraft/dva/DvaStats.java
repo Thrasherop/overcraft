@@ -123,6 +123,47 @@ public final class DvaStats {
 	/** The Light Gun's magazine (D 348C 03A8 20, 02B8 #325; W 20) H. */
 	public static final int LIGHT_GUN_AMMO = 20;
 
+	// ---- Micro Missiles (dva.md "Micro Missiles", 1128) ----
+	/** The wait before the first missile: 0.25 s (D 1128 #652 / #363 v670; W 0.16) L. */
+	public static final double MISSILES_CAST = 0.25;
+	/** 18 missiles at 14 a second: 1.29 s a volley (D 1B56 18, 0404 14 at #645; BZ 2026-10-06 11 -> 14; W 18) H. */
+	public static final int MISSILES_COUNT = 18;
+	public static final double MISSILES_RATE = 14;
+	/** 50 m/s, 0.175 m (D 03B5 50 at #651; 28D6 0.1 + 28A6 0.075 at #357; BZ 2023-10-31 40 -> 50) H. */
+	public static final double MISSILES_SPEED = 50, MISSILES_RADIUS = 0.1 + 0.075;
+	/** How far one flies: 100 m (D #357 m_FEC435C6 100, its lifetime field 0: M that it's a range) = 2 s at 50 m/s. */
+	public static final double MISSILES_RANGE = 100;
+	/** 2 to the creature it hits, then 5.5 to all within 0.1 m, down to x0.25 at 1.5 m (D 03B0 2, 03B1 5.5, 03B6 0.1, 03B4 1.5, 1B51 0.25; BZ 2026-05-12 3 -> 2) H. */
+	public static final double MISSILES_IMPACT = 2, MISSILES_SPLASH = 5.5, MISSILES_SPLASH_FULL = 0.1, MISSILES_SPLASH_RADIUS = 1.5,
+		MISSILES_SPLASH_EDGE = 0.25;
+	/**
+	 * The muzzles they alternate from: hp 0075 / 0077 on the MEKA (D 1128 #357), read off her first-person model 10354 (rest
+	 * pose, from her feet): 0.88 m either side, 1.976 m up, 0.32 m ahead (H positions; from her eyes in her look's frame: M).
+	 */
+	public static final double MISSILES_MUZZLE_SIDE = 0.88, MISSILES_MUZZLE_UP = 1.976 - MECH_EYE, MISSILES_MUZZLE_AHEAD = 0.32;
+
+	// ---- Self-Destruct (dva.md "Self-Destruct", 0B2F) ----
+	/** Its fuse: 3 s from the cast (D 0C6A 3 at #410, misnamed "Outer Radius"; W 3) H. */
+	public static final double SELF_DESTRUCT_FUSE = 3;
+	/** 1000 within 6 m, then down to 50 at 21 m, none past (D #280: 03BB 1000, 03BC 6, 03B9 50, 03BD 21; BZ 2024-02-13; W 100 min) H / L. */
+	public static final double SELF_DESTRUCT_DAMAGE = 1000, SELF_DESTRUCT_INNER = 6, SELF_DESTRUCT_MIN = 50, SELF_DESTRUCT_RADIUS = 21;
+	/** Its centre, 1.3 m above the mech's feet (D #259) M. */
+	public static final double SELF_DESTRUCT_UP = 1.3;
+	/** Its knockback at the centre: 20 m/s out, 10 up = 22.4 (D 1B59 20 / 1B5A 10 at #458 / #459) H values, M axes. */
+	public static final double SELF_DESTRUCT_KNOCKBACK = 20, SELF_DESTRUCT_KNOCKBACK_UP = 10;
+	/** At 21 m: 7.8 m/s of the 22.4 (W's minimum; D's ring factors 0.75 / 0.75 / 0.25 unread as to axis: ours linear, Open 4) L. */
+	public static final double SELF_DESTRUCT_KNOCKBACK_EDGE = 7.8 / Math.hypot(20, 10);
+	/** The mech is gone 0.3 s after the blast (D 0B2F, after #274) M. */
+	public static final double SELF_DESTRUCT_LINGER = 0.3;
+
+	// ---- the pilot's Light Gun (dva.md "Pilot", 02B8) ----
+	/** 14 a shot, 7 a second, x2 on the head, no falloff, no spread (D 03A2 14 / 03A4 7 at #326 / #327, 03A7 unread: the generic x2) H / M. */
+	public static final double LIGHT_GUN_DAMAGE = 14, LIGHT_GUN_RATE = 7, LIGHT_GUN_CRIT = 2;
+	/** 50 m/s, a 0.275 m hit, 5 s (D 03A5 50, 28D5 0.2 + 28A6 0.075, lifetime 5 at #94; BZ 2024-03-12 size) H. */
+	public static final double LIGHT_GUN_SPEED = 50, LIGHT_GUN_RADIUS = 0.2 + 0.075, LIGHT_GUN_LIFE = 5;
+	/** Reload 1.4 s, the magazine full at 0.65 of it (0.91 s), firing allowed from then (D 03A3 1.4 at #323, #354 0.65, #218 v414: M) H / M. */
+	public static final double LIGHT_GUN_RELOAD = 1.4, LIGHT_GUN_RELOAD_AMMO = 0.65;
+
 	// ---- the Initiator sub-role (dva-map.md "Role: Tank and Initiator", 01C7) ----
 	/** Boosters' start heals 50 over 1 s, not at full health (D 01C7 #2539 / #2857: 23D0 50, 23D1 1; BZ 2026-05-12 60 -> 50) H. */
 	public static final double INITIATOR_HEAL = 50, INITIATOR_HEAL_TIME = 1;

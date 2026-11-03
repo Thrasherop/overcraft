@@ -26,7 +26,8 @@ import java.util.UUID;
  * it, nothing hurts it (ours, M). Its clips by kind (DvaMechRenderer): the landing 0xE5, the destruction 0x8.
  */
 public class DvaMechEntity extends Entity {
-	public static final int CALL = 0, WRECK = 1;
+	/** Falling in on Call Mech; the wreck after the eject; flying on to Self-Destruct (0B2F). */
+	public static final int CALL = 0, WRECK = 1, SELF_DESTRUCT = 2;
 	private static final EntityDataAccessor<Integer> OWNER = SynchedEntityData.defineId(DvaMechEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(DvaMechEntity.class, EntityDataSerializers.INT);
 
@@ -75,10 +76,16 @@ public class DvaMechEntity extends Entity {
 			return;
 		}
 		ServerPlayer owner = ownerId == null ? null : level.getServer().getPlayerList().getPlayer(ownerId);
-		// the wreck lingers 0.75 s (D 0276 #60 v69943 = 1B58); a called mech goes when she drives it (or 3 s at most: ours)
-		double life = kind() == WRECK ? dev.overcraft.dva.DvaStats.WRECK_LINGER : 3;
+		// the wreck lingers 0.75 s (D 0276 #60 v69943 = 1B58); a called mech goes when she drives it (or 3 s at most: ours); a
+		// Self-Destructing one bursts at 3 s and is gone 0.3 s after (D 0B2F)
+		double life = kind() == WRECK ? dev.overcraft.dva.DvaStats.WRECK_LINGER : kind() == SELF_DESTRUCT
+			? dev.overcraft.dva.DvaStats.SELF_DESTRUCT_FUSE + dev.overcraft.dva.DvaStats.SELF_DESTRUCT_LINGER : 3;
 		if (owner == null || tickCount >= Ow.ticks(life)) {
 			discard();
+			return;
+		}
+		if (kind() == SELF_DESTRUCT) {
+			dev.overcraft.dva.SelfDestruct.tick(this, owner);
 		}
 	}
 

@@ -243,6 +243,13 @@ public final class HeroState {
 	public int dvaBoost = -1, dvaBoostCooldownIn = -1;
 	public long dvaBoostEndedAt = -1000;
 	public final java.util.Set<Integer> dvaBoostHit = new java.util.HashSet<>();
+	/**
+	 * D.Va's steps 7-9: Micro Missiles' ticks into the cast (-1: no volley), missiles left, the rate's accumulator, the muzzle
+	 * next; the Light Gun's ticks to its next round; the Self-Destructing mech (entity id).
+	 */
+	public int dvaMissileTicks = -1, dvaMissilesLeft, dvaMissileSide;
+	public double dvaMissileClock, dvaGunRecovery;
+	public @Nullable Integer dvaSelfDestructId;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */

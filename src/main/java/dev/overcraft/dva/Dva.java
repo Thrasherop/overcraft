@@ -62,6 +62,8 @@ public final class Dva implements HeroKit {
 		s.dvaEjectedAt = -1000;
 		s.dvaInitiatorReadyAt = -1;
 		s.dvaCallSpot = null;
+		s.dvaSelfDestructId = null;
+		LightGun.refill(s);
 		freshMech(s);
 		player.setAttached(HeroManager.DVA_FORM, MECH);
 		HeroManager.refreshHealth(player, s, true);
@@ -77,6 +79,8 @@ public final class Dva implements HeroKit {
 		s.dvaBoost = -1;
 		s.dvaBoostCooldownIn = -1;
 		s.dvaBoostHit.clear();
+		s.dvaMissileTicks = -1;
+		s.dvaMissilesLeft = 0;
 		s.ability1Cooldown = 0;
 		s.ability2Cooldown = 0;
 		s.weaponRecovery = 0;
@@ -86,12 +90,18 @@ public final class Dva implements HeroKit {
 	static void stopMechKit(ServerPlayer player, HeroState s) {
 		DefenseMatrix.end(player, s, player.level().getGameTime());
 		Boosters.end(player, s);
+		MicroMissiles.stop(s);
 		FusionCannons.slow(player, false);
 	}
 
 	/** Leaving her (another hero, leaving the world): the unmanned mech goes. */
 	public static void clear(ServerPlayer player, HeroState s) {
 		removeMech(player, s);
+		// a Self-Destruct still flying goes with her (another hero, leaving the world)
+		if (s.dvaSelfDestructId != null && player.level().getEntity(s.dvaSelfDestructId) instanceof DvaMechEntity mech) {
+			mech.discard();
+		}
+		s.dvaSelfDestructId = null;
 		stopMechKit(player, s);
 		player.removeAttached(HeroManager.DVA_FORM);
 	}
@@ -201,13 +211,16 @@ public final class Dva implements HeroKit {
 		boolean mech = s.dvaForm == MECH && controls && player.isAlive() && !Sleep.asleep(player);
 		DefenseMatrix.tick(player, s, mech);
 		Boosters.tick(player, s, mech);
+		MicroMissiles.tick(player, s, mech);
+		// the pilot's Light Gun (step 9)
+		LightGun.tick(player, s, s.dvaForm == PILOT && controls && player.isAlive() && !Sleep.asleep(player));
 		FusionCannons.tick(player, s, mech && !s.dvaMatrix, Boosters.active(s));
 		switch (s.dvaForm) {
 			case WRECK -> {
 				// no passive ult meanwhile, and frozen where it fell (D 0276 #79)
 				s.ultActive = Math.max(s.ultActive, 2);
 				if (s.dvaTicks >= Ow.ticks(WRECK_TIME)) {
-					eject(player, s);
+					eject(player, s, true);
 				}
 			}
 			case CALLING -> tickCall(player, s);
@@ -218,11 +231,25 @@ public final class Dva implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
-		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.dvaForm == PILOT) {
-			callMech(player, s);
+		if (!HeroManager.heroMode(player)) {
+			return;
 		}
-		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.dvaForm == MECH && HeroManager.heroMode(player)) {
+		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0) {
+			if (s.dvaForm == PILOT) {
+				callMech(player, s);
+			} else if ((s.dvaForm == MECH || s.dvaForm == WRECK) && s.ultCharge >= MECH_ULT_COST && !Sleep.asleep(player)) {
+				// Self-Destruct: from the mech, or from the wreck's 1.0 s (0276 #213 -> message 0592)
+				SelfDestruct.cast(player, s);
+			}
+		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && s.dvaForm == MECH) {
 			Boosters.press(player, s);
+		}
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.dvaForm == MECH) {
+			MicroMissiles.press(player, s);
+		}
+		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && s.dvaForm == PILOT) {
+			LightGun.reload(player, s);
 		}
 	}
 
@@ -262,14 +289,21 @@ public final class Dva implements HeroKit {
 
 	// ---- the eject (D 026A #97 / #370 / #880; 0276 #84) ----
 
-	/** The mech's wreck ejects her: the pilot, launched back and up, a full 175, briefly immune; the wreck stays a moment. */
-	static void eject(ServerPlayer player, HeroState s) {
+	/**
+	 * The mech's wreck (or Self-Destruct: 0B2F #271's 016C, the same message) ejects her: the pilot, launched back and up, a
+	 * full 175, briefly immune, the Light Gun full; {@code wreck}: the wreck stays a moment.
+	 */
+	static void eject(ServerPlayer player, HeroState s, boolean wreck) {
 		ServerLevel level = (ServerLevel) player.level();
 		long now = level.getGameTime();
 		Vec3 facing = Vec3.directionFromRotation(0, player.getYRot());
-		// the wreck stays where the mech died for 0.75 s, playing on its destruction (D 0276 #60 / #112)
-		DvaMechEntity wreck = new DvaMechEntity(level, player, DvaMechEntity.WRECK, player.position(), player.getYRot());
-		level.addFreshEntity(wreck);
+		stopMechKit(player, s);
+		if (wreck) {
+			// the wreck stays where the mech died for 0.75 s, playing on its destruction (D 0276 #60 / #112)
+			level.addFreshEntity(new DvaMechEntity(level, player, DvaMechEntity.WRECK, player.position(), player.getYRot()));
+		}
+		// she ejects with a full gun (026A #152 refilled it while she drove)
+		LightGun.refill(s);
 		// the mech's Self-Destruct charge is kept for the next mech (D 026A #775), Call Mech's starts at 0 (#85)
 		s.dvaMechUlt = s.ultCharge;
 		s.ultCharge = 0;
@@ -442,8 +476,10 @@ public final class Dva implements HeroKit {
 	public HeroSyncPayload sync(HeroState s) {
 		long now = s.dvaNow;
 		float lock = (float) Math.max(0, (s.dvaCallLockUntil - now) / 20.0);
+		boolean pilot = s.dvaForm == PILOT || s.dvaForm == CALLING;
+		float reload = pilot && s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(LIGHT_GUN_RELOAD)) : -1;
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ultCost(s), s.dvaForm == CALLING,
-			-1, -1, -1, s.dvaMatrixCooldown > 0 ? s.dvaMatrixCooldown / 20f : -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero,
+			pilot ? s.primaryAmmo : -1, reload, -1, s.dvaMatrixCooldown > 0 ? s.dvaMatrixCooldown / 20f : -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero,
 			s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), lock,
 			s.dvaForm | (s.primaryHeld && FusionCannons.firing(s, now) ? MODE_FIRING : 0) | (s.dvaMatrix ? MODE_MATRIX : 0)
 				| (Boosters.active(s) ? MODE_BOOSTING : 0),

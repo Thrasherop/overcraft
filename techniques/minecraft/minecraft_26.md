@@ -133,3 +133,8 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
   4.8 m back, 0.8 s in the air (7 m/s at 17.5 gravity, 6 m/s along). Use the packet whenever the server launches the
   player's own client (M: why needsSync didn't arrive wasn't traced). Up: [Techniques](../README.md) ·
   [heroes/dva](../heroes/dva.md)
+
+- **A projectile's entity hit is where its centre is, not where it touches** (2026-11-02, D.Va's missiles): `EntityHitResult.getLocation()`
+  for a thrown projectile is its own position, a radius off the target's box. A splash measured from there loses its
+  full-damage ring on a direct hit (131 of 135 a volley); burst at the box point nearest that position instead. Block hits
+  are fine (the centre ray's point on the face). [dva](../heroes/dva.md)
