@@ -38,7 +38,7 @@ public final class Conspirator {
 
 	private static boolean ultReady(ServerPlayer other) {
 		HeroState o = HeroManager.state(other);
-		return o != null && o.hero != null && HeroManager.heroMode(other) && o.ultCharge >= dev.overcraft.hero.Combat.ultCost(o.hero);
+		return o != null && o.hero != null && HeroManager.heroMode(other) && o.ultCharge >= dev.overcraft.hero.Combat.ultCost(o);
 	}
 
 	private static void send(ServerPlayer player, HeroState s, int[] ready) {

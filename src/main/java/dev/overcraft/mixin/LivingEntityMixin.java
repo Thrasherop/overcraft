@@ -128,6 +128,11 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
 	private void overcraft$barrier(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
 								   float damage, CallbackInfoReturnable<Boolean> cir) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && dev.overcraft.dva.Dva.untargetable(player)) {
+			// D.Va's wreck, a call's last second, the eject's 0.4 s: nothing hurts her (D 026A #880 / #351, 0276 #79)
+			cir.setReturnValue(false);
+			return;
+		}
 		if (dev.overcraft.brigitte.Barrier.passing) {
 			return;
 		}
@@ -156,8 +161,9 @@ public abstract class LivingEntityMixin {
 	 */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "setHealth", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private float overcraft$shields(float health) {
+		// D.Va's mech at 0 is her wreck, not her death (dev.overcraft.dva.Dva.catchDeath)
 		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player
-			? dev.overcraft.hero.Shields.onSetHealth(player, health) : health;
+			? dev.overcraft.dva.Dva.catchDeath(player, dev.overcraft.hero.Shields.onSetHealth(player, health)) : health;
 	}
 
 	/**

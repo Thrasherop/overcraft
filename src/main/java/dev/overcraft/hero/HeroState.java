@@ -216,6 +216,20 @@ public final class HeroState {
 	public net.minecraft.world.phys.@Nullable Vec3 sigmaFluxPoint;
 	public int sigmaDirectHits;
 	public boolean sigmaStrikeReady;
+	/**
+	 * D.Va (dev.overcraft.dva.Dva): her form (Dva.MECH .. WRECK) and the ticks in it; the Self-Destruct charge kept while she's
+	 * the pilot (the next mech's); the mech's health and armor kept over Minecraft mode (G; -1: none kept); until when Call
+	 * Mech is locked and she can't be hurt (game time); when she last ejected; when Initiator's heal may land again; Call
+	 * Mech's spot and her facing at the press; the unmanned mech (entity id); the game time of her kit's last tick.
+	 */
+	public int dvaForm, dvaTicks;
+	public double dvaMechUlt;
+	public float dvaStoredHealth = -1;
+	public double dvaStoredArmor;
+	public long dvaCallLockUntil = -1, dvaImmuneUntil = -1, dvaEjectedAt = -1000, dvaInitiatorReadyAt = -1, dvaNow;
+	public net.minecraft.world.phys.@Nullable Vec3 dvaCallSpot;
+	public float dvaCallYaw;
+	public @Nullable Integer dvaMechId;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */
@@ -366,6 +380,26 @@ public final class HeroState {
 		perkXp = 0;
 		perkTicks = 0;
 		minorPerk = majorPerk = null;
+	}
+
+	/** The hero's health in the body this player is in (D.Va: the mech's 675 or the pilot's 175), else Hero.owHealth. */
+	public int owHealth(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.owHealth(player) : hero == null ? 0 : hero.owHealth;
+	}
+
+	/** Armor in the body this player is in (D.Va: the mech's 325, the pilot none). */
+	public int armor(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.armor(player) : hero == null ? 0 : hero.armor();
+	}
+
+	/** Shields in the body this player is in. */
+	public int shields(net.minecraft.world.entity.player.Player player) {
+		return hero == null ? 0 : hero.shields();
+	}
+
+	/** The top layer (shields and armor) in the body this player is in. */
+	public int layer(net.minecraft.world.entity.player.Player player) {
+		return shields(player) + armor(player);
 	}
 
 	public boolean has(Perk perk) {

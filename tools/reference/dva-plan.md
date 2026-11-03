@@ -132,6 +132,8 @@ the second Tank: she builds on Sigma's branch** (`feature/sigma`, `E:\claude\mod
    (the matrix reuses its absorb box), and rebase onto `next` when he merges.
 2. **Where does the pilot sit in 3P?** The attach point isn't read yet (026A #95 / #99's hardpoint). Default: the mech's hp 0012 Head minus
    her own head height, posed with category 0283's clip; read the node's hardpoint before drawing.
+   **Settled 2026-11-02 (step 2): not drawn.** The MEKA model already has her hands on its controls and the data hides the
+   pilot entity while linked (026A #794); drawn at #99's attach (no hardpoint, no offset) her legs hung under the mech.
 3. **Fusion damage floor:** W 0.3 x (0.6 a pellet) until 3361 #132 is shown to feed v37674.
 4. **Self-Destruct knockback falloff:** linear 22.4 -> 7.8 m/s (W's minimum) until the ring fields are read on a second ring-using ability.
 5. **Missiles' self-damage:** on (W), the flag not found in D.

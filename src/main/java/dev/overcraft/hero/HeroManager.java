@@ -97,6 +97,13 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> SOJOURN_GUN = AttachmentRegistry.create(Overcraft.id("sojourn_gun"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/**
+	 * D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK), for every client to give her the body's box, eye, model and keys.
+	 * Absent: not D.Va. Not saved: a fresh kit (joining, respawning) is in her mech.
+	 */
+	public static final AttachmentType<Integer> DVA_FORM = AttachmentRegistry.create(Overcraft.id("dva_form"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -137,6 +144,7 @@ public final class HeroManager {
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
 		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
+		KITS.put(Hero.DVA, new dev.overcraft.dva.Dva());
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
 	}
 
@@ -175,10 +183,10 @@ public final class HeroManager {
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
-		// Sigma: Gravitic Flux's flight (and Levitation) land him
+		// Sigma: Gravitic Flux's flight (and Levitation) land him; D.Va: the eject's launch lands her
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -195,6 +203,11 @@ public final class HeroManager {
 				dev.overcraft.comms.Comms.endEmote(player);
 			}
 			player.setAttached(HERO_MODE, on);
+			HeroState state = STATES.get(player.getUUID());
+			if (state != null && state.hero == Hero.DVA) {
+				// out of hero mode she's the pilot, back in the mech she left (the plan's default 9)
+				dev.overcraft.dva.Dva.heroMode(player, state, on);
+			}
 		}
 	}
 
@@ -275,6 +288,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SIGMA) {
 			dev.overcraft.sigma.Sigma.clear(player, state);
 		}
+		if (state.hero == Hero.DVA) {
+			dev.overcraft.dva.Dva.clear(player, state);
+		}
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -290,20 +306,35 @@ public final class HeroManager {
 		}
 	}
 
-	/** Health; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
-	private static void applyKit(ServerPlayer player, HeroState state, boolean fresh) {
+	/**
+	 * The hero's max health for the body they're in (D.Va's mech 675 or pilot 175); {@code full} also fills it and the top
+	 * layer (her eject's full heal, a new mech at full). Her forms call it as they change.
+	 */
+	public static void refreshHealth(ServerPlayer player, HeroState state, boolean full) {
 		AttributeInstance maxHealth = player.getAttribute(Attributes.MAX_HEALTH);
 		if (maxHealth != null) {
 			maxHealth.removeModifier(HEALTH_MODIFIER);
 			if (state.hero != null) {
-				double target = Ow.hp(state.hero.owHealth);
+				double target = Ow.hp(state.owHealth(player));
 				maxHealth.addPermanentModifier(new AttributeModifier(HEALTH_MODIFIER, target - maxHealth.getBaseValue(),
 					AttributeModifier.Operation.ADD_VALUE));
 			}
 		}
 		if (player.getHealth() > player.getMaxHealth()) {
-			player.setHealth(player.getMaxHealth());
+			// (the layer can't be more than what's left: a body with less of it)
+			state.shield = Math.min(state.shield, state.layer(player));
+			Shields.setRaw(player, player.getMaxHealth());
 		}
+		if (full && state.hero != null) {
+			state.shield = state.layer(player);
+			Shields.setRaw(player, player.getMaxHealth());
+		}
+		state.shield = Math.min(state.shield, state.layer(player));
+	}
+
+	/** Health; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
+	private static void applyKit(ServerPlayer player, HeroState state, boolean fresh) {
+		refreshHealth(player, state, false);
 		// the hero weapon item that once held slot 1 (hero mode was "slot 1 held" until #26): taken out of old saves
 		removeWeapons(player.getInventory());
 		if (state.hero == null) {
@@ -311,7 +342,7 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		if (fresh) {
-			state.shield = state.hero.layer();
+			state.shield = state.layer(player);
 			player.setHealth(player.getMaxHealth());
 			if (kit != null) {
 				kit.equip(player, state);
@@ -368,6 +399,9 @@ public final class HeroManager {
 			}
 			if (state.hero == Hero.SIGMA) {
 				dev.overcraft.sigma.Sigma.clear(player, state);
+			}
+			if (state.hero == Hero.DVA) {
+				dev.overcraft.dva.Dva.clear(player, state);
 			}
 		}
 		OPTIONS.remove(player.getUUID());

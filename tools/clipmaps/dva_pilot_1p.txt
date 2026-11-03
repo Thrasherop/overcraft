@@ -5,11 +5,11 @@
 # points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
 # _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
 # A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
-0-36_0000000030B3 = stance_air_sm0_se0   # 0.1667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[0]; on 2 paths
-0-36_0000000030B4 = stance_air_sm0_se1   # 0.4 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[1]; on 4 paths
-0-60_0000000030AA = stance_crouch_move   # 0.0667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat65; on 4 paths
-0-36_0000000030C0 = stance_move   # 0.6667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat5; on 2 paths
-0-60_0000000030B6 = stance_stand   # 0.0333 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=default[4]; on 2 paths
+0-36_0000000030B3 = jump   # (was stance_air_sm0_se0: 1P take-off) 0.1667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[0]; on 2 paths
+0-36_0000000030B4 = fall   # (was stance_air_sm0_se1: 1P fall) 0.4 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat6 @811D8087 sm[0] seq[1]; on 4 paths
+0-60_0000000030AA = crouch_idle   # (was stance_crouch_move: 1P crouch (cat65 / cat66)) 0.0667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat65; on 4 paths
+0-36_0000000030C0 = run   # (was stance_move: 1P move) 0.6667 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=cat5; on 2 paths
+0-60_0000000030B6 = idle   # (was stance_stand: 1P stand) 0.0333 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18=default[4]; on 2 paths
 0-36_0000000030AB = stance   # 0.2333 s; set 0476 alias 85 (the stance machine (alias 2); df18 cat6 air (the jump), else the ground tree (H tree)); sel[4] @85 df18:tr[4, 3>2, 1]; on 2 paths
 4-4_0000000030AE = add_layer_93_sm0   # 0.5 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[0]; on 3 paths
 4-4_0000000030AF = add_layer_93_sm2_ra0   # 0.4667 s; set 0476 alias 93 (additive layer, two states (L)); sel[4] @85 df18:+add() sm[1] @93 sm[2] rand[0]; on 3 paths

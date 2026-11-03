@@ -533,7 +533,7 @@ public final class HeroHud {
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
 		// armor (Brigitte's) the same way, in Overwatch's armor yellow
-		int shieldMax = hero.layer() + (hero.armor() > 0 ? Math.max(0, max - hero.owHealth) : 0);
+		int shieldMax = hero.layer(player) + (hero.armor(player) > 0 ? Math.max(0, max - hero.owHealth(player)) : 0);
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);
@@ -547,7 +547,7 @@ public final class HeroHud {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor() > 0 ? ARMOR : SHIELD : WHITE);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor(player) > 0 ? ARMOR : SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -782,7 +782,8 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ultimate(hero);
+			// D.Va's ult is her body's: Self-Destruct in the mech, Call Mech as the pilot
+			Identifier fox = hero == Hero.DVA && dvaPilot(s) ? HeroArt.ability(hero, "call_mech") : HeroArt.ultimate(hero);
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}
@@ -865,7 +866,24 @@ public final class HeroHud {
 
 	// ---- bottom right: abilities and weapons ----
 
+	/** D.Va as the pilot (or calling her mech): her HUD is the pilot's (the sync's mode is her form). */
+	private static boolean dvaPilot(HeroSyncPayload s) {
+		return s.mode() == dev.overcraft.dva.Dva.PILOT || s.mode() == dev.overcraft.dva.Dva.CALLING;
+	}
+
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.DVA) {
+			if (dvaPilot(s)) {
+				// the pilot has no abilities: her Light Gun and Call Mech only (D 040A's loadouts E0 / DF)
+				return;
+			}
+			// Boosters (Shift) and Micro Missiles (E), the mech's ABILITY 1 / 2 (D 047E / 1128), in Kiriko's two places (ours)
+			ability(g, hero, w, "boosters", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.dva.DvaStats.BOOSTERS_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "micro_missiles", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.dva.DvaStats.MISSILES_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.SIGMA) {
 			// Kinetic Grasp (Shift) and Accretion (E), his data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "kinetic_grasp", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1161,6 +1179,22 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.DVA) {
+			if (dvaPilot(s)) {
+				// the Light Gun (the left button, 20 rounds) where Kiriko's kunai are (full until it fires: step 9)
+				int clip = dev.overcraft.dva.DvaStats.LIGHT_GUN_AMMO;
+				weapon(g, hero, w, "light_gun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo() < 0 ? clip : s.primaryAmmo(),
+					clip, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+				return;
+			}
+			// the mech: Defense Matrix (the right button) where Kiriko's ofuda panel is, the Fusion Cannons (the left: no ammo)
+			// where her kunai are
+			weapon(g, hero, w, "defense_matrix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			weapon(g, hero, w, "fusion_cannons", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SIGMA) {
 			// Experimental Barrier (the right button) where Kiriko's ofuda panel is, its health along the panel's foot; Hyperspheres
 			// (the left: no ammo) where her kunai are

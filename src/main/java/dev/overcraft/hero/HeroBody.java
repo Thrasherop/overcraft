@@ -35,11 +35,22 @@ public final class HeroBody {
 	 */
 	public static final EntityDimensions SIGMA_CROUCHING = EntityDimensions.scalable(1.4f, 2.05f).withEyeHeight(1.61f);
 
+	/**
+	 * D.Va's MEKA: its mover's 1.4 x 2.3 m, the camera at its first-person eye 1.74 m (D 0407 mover height 2.3 / radius 0.7, H;
+	 * 041F's eye field 1.74 standing and crouched, H field, M meaning). It can't crouch (no crouch in any mech graph, D 0276
+	 * #246): its crouched box is the same. Only in the mech's body (dev.overcraft.dva.Dva.mechBody): the pilot is Minecraft's.
+	 */
+	public static final EntityDimensions DVA_MECH = EntityDimensions.scalable(dev.overcraft.dva.DvaStats.MECH_WIDTH,
+		dev.overcraft.dva.DvaStats.MECH_HEIGHT).withEyeHeight(dev.overcraft.dva.DvaStats.MECH_EYE);
+
 	/** Who has their hero's box now (the client's and the server's players apart; weak: players leave). */
 	private static final Map<Player, Boolean> BIG = Collections.synchronizedMap(new WeakHashMap<>());
 
 	/** The box this hero wants in this pose, or null for Minecraft's (other heroes, other poses). */
 	public static @Nullable EntityDimensions of(@Nullable Hero hero, Pose pose) {
+		if (hero == Hero.DVA) {
+			return pose == Pose.STANDING || pose == Pose.CROUCHING ? DVA_MECH : null;
+		}
 		if (hero != Hero.SIGMA) {
 			return null;
 		}
@@ -57,10 +68,13 @@ public final class HeroBody {
 	public static @Nullable Hero wanted(Player player) {
 		java.util.Optional<Hero> mine = local.apply(player);
 		if (mine != null) {
-			return mine.orElse(null);
+			Hero hero = mine.orElse(null);
+			return hero == Hero.DVA && !dev.overcraft.dva.Dva.mechBody(player) ? null : hero;
 		}
 		String id = player.getAttached(HeroManager.HERO);
-		return id == null || !HeroManager.heroMode(player) || player.isSpectator() ? null : Hero.byId(id);
+		Hero hero = id == null || !HeroManager.heroMode(player) || player.isSpectator() ? null : Hero.byId(id);
+		// D.Va's box is the mech's only in its body (the pilot, a call: Minecraft's)
+		return hero == Hero.DVA && !dev.overcraft.dva.Dva.mechBody(player) ? null : hero;
 	}
 
 	/** The box the player has now in this pose, or null for Minecraft's. */

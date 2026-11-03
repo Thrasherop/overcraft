@@ -7,8 +7,8 @@
 # A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
 0-36_000000003190 = a98_move   # 1.0667 s; set 019B alias 98 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=cat1A5 @98 df18=cat5; on 7 paths
 0-60_000000003174 = a98_stand   # 1 s; set 019B alias 98 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=cat1A5 @98 df18=cat9; on 8 paths
-0-36_00000000318B = a99_move   # 0.7333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat5; on 7 paths
-0-60_00000000237D = a99_stand   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat9; on 7 paths
+0-36_00000000318B = run   # (was a99_move: 1P move, dfE5 default) 0.7333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat5; on 7 paths
+0-60_00000000237D = idle   # (was a99_stand: 1P stand, dfE5 default (3174 is cat1A5, firing)) 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD @8066C074 df18=cat9; on 7 paths
 4-28_0000000036CC = add_a99_sm0   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s0; on 7 paths
 4-28_0000000036CD = add_a99_sm0_2   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s1; on 7 paths
 4-28_0000000036CF = add_a99_sm0_3   # 0.0333 s; set 019B alias 99 (1P (L)); @2 sel[4] @8066C085 @85 sm[0] @8066C0DC @8066C0E2 @8066C078 dfE5=default[1] @99 @8066C0FD +add({'bound': None}) @8066C0FE sm[0] strafe 4slot:s2; on 7 paths

@@ -122,7 +122,7 @@ public final class Comms {
 		String moment = "call_" + callout.id;
 		if (callout == Callout.ULTIMATE_STATUS && state != null && state.hero != null) {
 			// Overwatch's three: charging, almost ready (90%, ours), ready; the chat line gives the charge
-			int percent = (int) Math.floor(100 * state.ultCharge / Combat.ultCost(state.hero));
+			int percent = (int) Math.floor(100 * state.ultCharge / Combat.ultCost(state));
 			moment = percent >= 100 ? "ult_ready" : percent >= 90 ? "call_ult_almost" : "call_ult_charging";
 			text = percent >= 100 ? Component.translatable("overcraft.callout.ultimate_ready")
 				: Component.translatable("overcraft.callout.ultimate_charge", Math.min(99, percent));

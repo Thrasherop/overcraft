@@ -125,7 +125,7 @@ public final class OvercraftCommand {
 				continue;
 			}
 			s.ultCharge = 0;
-			Combat.addUltCharge(player, Combat.ultCost(s.hero) * percent / 100.0);
+			Combat.addUltCharge(player, Combat.ultCost(s) * percent / 100.0);
 			done++;
 		}
 		int count = done;

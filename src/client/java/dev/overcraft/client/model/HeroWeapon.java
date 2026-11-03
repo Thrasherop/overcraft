@@ -41,6 +41,9 @@ public final class HeroWeapon {
 		// Sigma's hand spheres, entity 31A7 (model 106B4) on his hardpoint 000A = bone_004A (Weapon_R) in third person and 00C9 =
 		// bone_0606 in first (the models' hardpoint tables: 106F7 / 106F6; sigma-map.md "Models"); no offset read (M)
 		Hero.SIGMA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
+		// D.Va's Light Gun, entity 0982 (model 10246) on the pilot's hardpoint 000A = Weapon_R in both views (dva-map.md
+		// "Models"), no offset read (M); the mech's Fusion Cannons are part of its own model
+		Hero.DVA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Sojourn's Railgun, entity 2D20 (model D7B4) on her hardpoint 00C9 = bone_0606, no offset, in both views (var 4E30:
 		// research/sojourn/work/assets.md); hero_models/sojourn_weapon.glb
 		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
@@ -52,6 +55,10 @@ public final class HeroWeapon {
 	public static EmoteProps.@Nullable Placed place(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
 		Spec spec = SPECS.get(hero);
+		if (hero == Hero.DVA && animator.dvaMech()) {
+			// in the mech she holds no gun (the cannons are the mech's)
+			return null;
+		}
 		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
 		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
 			: HeroModels.weapon(hero);

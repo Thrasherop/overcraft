@@ -6,7 +6,7 @@
 # points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
 # _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
 # A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
-0-60_000000003121 = base   # 0.0333 s; set 048B alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @2; on 2 paths
+0-60_000000003121 = idle   # (was base: the gun's base pose) 0.0333 s; set 048B alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @2; on 2 paths
 4-32_0000000031D3 = add_pose_a0e_sm0_sm0   # 0.5 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[0] +add() @8122C003 sm[0]; on 5 paths
 0-60_000000003820 = pose_a0e_sm1_se5   # 0.0667 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[1] sel[5] @8122C00F; on 2 paths
 4-32_00000000381F = add_pose_a0e_sm1_sm0   # 0.5 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[1] +add() @8122C010 sm[0]; on 5 paths

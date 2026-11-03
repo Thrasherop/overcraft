@@ -29,10 +29,10 @@ public final class Shields {
 	/** The health a shielded hero's setHealth may really set. */
 	public static float onSetHealth(ServerPlayer player, float health) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.hero.layer() + s.extraArmor == 0 || regenerating) {
+		if (s == null || s.hero == null || s.layer(player) + s.extraArmor == 0 || regenerating) {
 			return health;
 		}
-		double layer = s.hero.layer() + s.extraArmor;
+		double layer = s.layer(player) + s.extraArmor;
 		float old = player.getHealth();
 		if (health < old) {
 			// a loss comes off the top: the shields first
@@ -69,11 +69,24 @@ public final class Shields {
 	 */
 	public static float armorReduce(ServerPlayer player, float damage) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.hero.armor() == 0 || s.shield <= 0 || damage <= 0) {
+		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0) {
 			return damage;
 		}
 		double ow = Ow.toOw(damage);
 		return Ow.hp(ow - Math.min(ARMOR_FLAT, ow * ARMOR_CAP));
+	}
+
+	/**
+	 * Sets the health as it is, the layer's share left to the caller (a body change: D.Va's eject, a new mech), past the
+	 * split above.
+	 */
+	public static void setRaw(ServerPlayer player, float health) {
+		regenerating = true;
+		try {
+			player.setHealth(health);
+		} finally {
+			regenerating = false;
+		}
 	}
 
 	/** Adds this much (Overwatch points) to the top layer as armor, her health growing with it (Rally's +100). */
@@ -89,7 +102,7 @@ public final class Shields {
 
 	/** Each tick (HeroManager): the shields regenerate 3 s after the last damage. */
 	public static void tick(ServerPlayer player, HeroState s) {
-		int max = s.hero == null ? 0 : s.hero.shields();
+		int max = s.hero == null ? 0 : s.shields(player);
 		if (max == 0 || s.shield >= max || !player.isAlive()
 			|| Combat.now(player) - s.lastDamagedTick < Ow.ticks(DELAY)) {
 			return;

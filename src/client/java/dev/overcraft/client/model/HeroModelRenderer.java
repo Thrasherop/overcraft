@@ -118,6 +118,11 @@ public final class HeroModelRenderer {
 	/** The hero the select screen shows the local player as, while it draws them; null otherwise. */
 	private static @Nullable Hero preview;
 
+	/** The select screen is drawing this entity as its preview hero. */
+	private static boolean previewing(LivingEntity entity) {
+		return preview != null && entity == Minecraft.getInstance().player;
+	}
+
 	/** The select screen draws the player as this hero (null: as they are). */
 	public static void preview(@Nullable Hero hero) {
 		preview = hero;
@@ -158,7 +163,7 @@ public final class HeroModelRenderer {
 			LAST_HERO.remove(entity.getId());
 			return;
 		}
-		HeroModels.Loaded loaded = HeroModels.get(hero);
+		HeroModels.Loaded loaded = previewing(entity) ? HeroModels.get(hero) : HeroModels.of(hero, entity);
 		if (loaded == null) {
 			return;
 		}
@@ -858,7 +863,7 @@ public final class HeroModelRenderer {
 		if (player == null || hero == null) {
 			return false;
 		}
-		HeroModels.Loaded loaded = HeroModels.firstPerson(hero);
+		HeroModels.Loaded loaded = HeroModels.firstPerson(hero, player);
 		if (loaded == null) {
 			return false;
 		}

@@ -31,11 +31,12 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "dva"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
-                "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma"}
+                "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
+                "dva": "D.Va"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -89,14 +90,16 @@ def slug(name):
     return "".join(c if c.isascii() and c.isalnum() else "_" for c in plain.lower()).strip("_")
 
 
-def add_ui(source):
-    """Copies each hero's icons to textures/gui/heroes/<hero>/: portrait, portrait_close, head, fullbody, card, bust,
+def add_ui(source, only=None):
+    """Copies each hero's icons (or only that hero's: `ui <source> <hero>`) to textures/gui/heroes/<hero>/: portrait, portrait_close, head, fullbody, card, bust,
     silhouette(_small), abilities/<ability>.png, perks/<perk>.png."""
     icons = Path(source) / "HeroIcons"
     if not icons.is_dir():
         sys.exit(f"no HeroIcons in {source}: run DataTool extract-hero-icons into it first")
     write_mcmeta()
     for hero, folder in sorted(HERO_FOLDERS.items()):
+        if only and hero != only:
+            continue
         src = icons / folder
         if not src.is_dir():
             print(f"{hero}: no icons ({src})")
@@ -123,6 +126,8 @@ def add_ui(source):
         for png in out.rglob("*.png"):
             png.with_name(png.name + ".mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
         print(f"{hero}: {sum(1 for _ in out.rglob('*.png'))} images -> {out}")
+    if only:
+        return  # one hero's icons: the shared ones (roles, kill feed, Lucio's song) are left as they are
     dump = Path(source) / "UITextures" / "UITextureDump"
     roles = PACK / "assets" / "overcraft" / "textures" / "gui" / "roles"
     for role, texture in ROLE_ICONS.items():
@@ -1290,7 +1295,7 @@ def main():
         convert(str(src), out)
         print("added:", out, out.stat().st_size // 1024, "KB")
     elif cmd == "ui":
-        add_ui(sys.argv[2])
+        add_ui(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "sounds":
         add_sounds(sys.argv[2])
     elif cmd == "fonts":

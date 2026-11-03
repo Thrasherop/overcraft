@@ -68,6 +68,7 @@ public final class HeroArt {
 			case BRIGITTE -> "rally";
 			case JUNO -> "orbital_ray";
 			case SIGMA -> "gravitic_flux";
+			case DVA -> "self_destruct";
 			case SOJOURN -> "overclock";
 			case ILLARI -> "captive_sun";
 		});

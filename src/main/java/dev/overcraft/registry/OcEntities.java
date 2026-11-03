@@ -123,6 +123,11 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE, (float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE)
 			.clientTrackingRange(8).updateInterval(1));
+	/** D.Va's MEKA while nobody drives it (pet 0407): its mover's 1.4 x 2.3 m, not saved. */
+	public static final EntityType<dev.overcraft.entity.DvaMechEntity> DVA_MECH = register("dva_mech",
+		EntityType.Builder.<dev.overcraft.entity.DvaMechEntity>of(dev.overcraft.entity.DvaMechEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(dev.overcraft.dva.DvaStats.MECH_WIDTH, dev.overcraft.dva.DvaStats.MECH_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

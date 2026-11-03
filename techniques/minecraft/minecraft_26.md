@@ -122,3 +122,11 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - A one-off hit that must ignore armour, Resistance and Protection: a damage type in `bypasses_armor` and
   `bypasses_effects` (the latter skips both the effect and enchantments: `getDamageAfterMagicAbsorb`), plus
   `no_knockback` / `no_impact` when the ability moves the target itself (`overcraft:gravitic_slam`).
+
+## Pushing a hero player from the server (D.Va's eject, 2026-11-02)
+- `setDeltaMovement` + `needsSync = true` on a **ServerPlayer in hero mode** did not move her: the eject's 6 back / 7 up
+  launch left D.Va standing (`state` vy 0, same z), though the line above holds for mobs. Sending
+  `player.connection.send(new ClientboundSetEntityMotionPacket(player))` right after setting the motion did: 1.4 m up,
+  4.8 m back, 0.8 s in the air (7 m/s at 17.5 gravity, 6 m/s along). Use the packet whenever the server launches the
+  player's own client (M: why needsSync didn't arrive wasn't traced). Up: [Techniques](../README.md) ·
+  [heroes/dva](../heroes/dva.md)

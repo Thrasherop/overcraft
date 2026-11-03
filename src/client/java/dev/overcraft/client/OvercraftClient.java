@@ -200,6 +200,7 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"hypersphere", 0.6f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
+		EntityRendererRegistry.register(OcEntities.DVA_MECH, dev.overcraft.client.model.DvaMechRenderer::new);
 		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
 		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"=sigma_rock", 1.2f, false, 1, false));

@@ -38,6 +38,70 @@ Everything learned about D.Va, by subject. Hero 8 of the owner's 2026-10-28 list
 - **The mech is the hero default mover but its size** (2.3 m tall, 0.7 m radius); its 1P eye field is 1.74 m standing and crouched (the
   same number: no crouch). Sigma's 1P field was 2.1 against his head hardpoint's 2.06, so the field is a fair stand-in for the eye (M).
 
+## Steps 1-3 (the two-body shell, the hero and her models, movement), played 2026-11-02
+Branch `feature/dva` on Sigma's Tank code (merged `feature/sigma`, then `next`). Code: `dev.overcraft.dva` (`Dva`: the forms,
+the wreck, the eject, Call Mech; `DvaStats`, each number with its source), `entity.DvaMechEntity` (the unmanned mech) and
+`client.model.DvaMechRenderer`, `HeroManager.DVA_FORM` (her form, synced), `HeroManager.refreshHealth` (max health per
+body), `HeroState.owHealth / armor / layer(player)` and `Hero.owHealth / armor / layer(player)` (per body, read by Shields,
+the HUD), `Combat.ultCost(state)` (Self-Destruct 1700 / Call Mech 280), `Tank.initiator` / `initiatorReady` and
+`Dva.initiator` (the heal, for Boosters in step 6), `HeroBody.DVA_MECH`, `Shields.setRaw`, `DvaMathTest`. Models exported
+with `tools/owm_survey.py --glb --keep=<clip map> --entity=<owentity>` (Blender 5.2 headless, Overwatch checked closed) from
+`research\dva\extract\Heroes\D.Va\Skin\Overwatch\Overwatch` into the shared pack: `dva.glb` (FBB0, entity 0407, 139
+clips, 3 min), `dva_1p.glb` (10354, 041F, 75), `dva_pilot.glb` (F2FF, Gameplay3P, 100, 4 min), `dva_pilot_1p.glb` (F32B,
+Gameplay1P, 52), `dva_weapon.glb` (10246, Light Gun-5402, 11); her icons with `build_asset_pack.py ui <extracted> dva` (the
+hero filter is new). Dev client run2, world `dva1` (flat survival), screenshots in `run2/screenshots/` (not committed), each
+looked at.
+
+**Clips from the data, not by eye:** her default locomotion is the dfE5 *default* branch; dfE5 category 1A5 is what Fusion
+Cannons' firing state sets (050A #333: H), so the 3048 move set (1.07 s) and the 3451 / 3452 stands are the firing ones.
+Renamed in the clip maps: MEKA 3450 `idle`, the 30F8 set `run` / `run_*` / `strafe_*`, 2376 / 2377 `jump` / `fall`; 1P
+237D / 318B; pilot 322D `idle`, the 3229 set, the 16896 crouch-walk set, 169CD `crouch_idle`, 3216 / 3219 `jump` / `fall`
+(3219 is also her seated pose: set 048A's dfE5 cat283, 026A #832); pilot 1P 30B6 / 30C0 / 30B3 / 30B4 / 30AA; the gun's 3121.
+
+**Data vs plan:**
+- **The pilot in the cockpit (Open 2) is settled: she isn't drawn.** The mech model FBB0 already holds the pilot's hands
+  on its controls (`s3_noseat.png`), and the data hides the pilot entity while linked (026A #794). The plan's default
+  (the pilot model seated at the attach point) hung her legs out under the mech (`s3_3p_front.png`): removed.
+- **Call Mech's drop is the clip's own:** the mech entity sits on its spot and 311F brings it down from the sky; her 3120
+  runs and flips her into it (`s13_call_a.png`, `s13_call_c.png`). No drop height of ours.
+- Select screen: the MEKA, framed at 0.42 / 0.55 (by eye with `selectframe dva`; the others' framing filled the screen
+  from the cannons down: `s2_select_dva.png` -> `s2_frame_a.png`).
+
+**Played (expected -> seen):**
+- **Select** (`s1_select.png`, `s2_frame_a.png`, `s7_rejoin_select.png`): TANK has Sigma and D.Va; "TANK INITIATOR",
+  "350 HEALTH, 325 ARMOR", seven kit icons (LMB Fusion Cannons, RMB Defense Matrix, LSHIFT Boosters, E Micro Missiles, Q
+  Self-Destruct, LMB Light Gun, Q Call Mech). Pause card D.VA TANK INITIATOR (`pause.png`).
+- **Mech HUD and body** (`s3_1p_mech.png`, `s3_3p_front.png`, `s4_tunnel_back.png`): 675 | 675, 27 pips (14 white, 13
+  armor yellow), Boosters / Micro Missiles boxes, the matrix and cannon panels; the cockpit and cannons in first person;
+  `state` box 1.40 x 2.30, eye 1.74 on client and server; health 54 Minecraft. A 10-health hit (125) took 118 (armor's 7):
+  54 -> 45.56.
+- **Doors and tunnels:** the mech stopped at a 1-wide, 2-high door (z 5.30 = the wall at 6 less 0.7) and a 2-wide, 2-high
+  tunnel (also with the crouch key held: still standing, `crouching` false), went through a 2-wide, 3-high opening (z 16.4).
+  The pilot went through the door and the tunnel standing (z 19.4 / 19.1) and crouched (`s9_pilot_door.png`).
+- **G (Minecraft mode):** the mech at 45.56 -> G: the pilot's 14 / 14, Minecraft's box, through the tunnel; G back outside:
+  45.56 / 54 again (`s4_g_pilot.png`). G back inside the tunnel: hero mode, the small box kept until she walked out, then
+  1.40 x 2.30; no suffocation.
+- **The mech's death:** `/damage 200`: health 0.01 (no death screen), form WRECK, its 31C3 destruction playing, inputs
+  held, 1.0 s, then the eject: 14 / 14, pilot box, `eject` clip (`s5_eject.png`: 175, 7 pips, Light Gun 20 | 20, the wreck
+  beside her for 0.75 s). Self-Destruct's charge kept for the next mech (553.5 carried), Call Mech's from 0.
+- **Found (fixed): no eject launch.** `needsSync` alone left her standing; the motion packet sent straight to her client
+  launched her 1.4 m up and 4.8 m back over 0.8 s (expected 1.40 m, 4.8 m: 7 up, 6 back, gravity 17.5).
+  [minecraft_26](../minecraft/minecraft_26.md).
+- **Call Mech** (`overcraft ult @s 100`, Q): 0.2 s idle, then 3120 / the mech's 311F; she is the mech 1.95 s after the
+  press, 1.5 m ahead (z -9.5 -> -8.0), at 54 / 54. A 100-health husk 1 m from the spot took 19.68 (250 = 20, less its 2
+  armour points), one 3.8 m off none. Q 0.3 s after an eject: nothing (the 1 s lock); at 1.6 s: the call. Q in a 2-wide,
+  2-high tunnel: "No room for the mech here", the 280 kept (`s11_noroom.png`).
+- **Pilot:** 5.49 m/s, jump 0.98 m (W 0.98), crouch-walk about 3 m/s, Call Mech charging 5/s, the Light Gun in her hand in
+  both views (`s9_pilot_1p.png`, `s12_pilot_front.png`). **Mech:** 5.49 m/s forward, 4.78 back (expected 4.95: 90 %), `run`,
+  `run_back`, `strafe_left`, `run_forward_left`, `jump` / `fall` playing; jump 0.98 m (`s10_mech_run.png`).
+- **Falls:** the mech from 6 m: 18 Overwatch (2 Minecraft less armor's 7), the pilot from 6 m: 2; the eject from 12 m: none.
+- **Death and respawn:** the mech killed, then the pilot: the death screen; respawned in the mech at 54 / 54, its box.
+  **Rejoin** (Save and Leave, a new client): D.Va on the select, in the mech at 54.
+- **Not tried:** two players (others seeing her forms), the wreck in water / lava / on ladders, boats (default 10: the mech
+  enters none), a stun during Call Mech (Ana's Sleep Dart from a second player), the Initiator heal in game (it needs
+  Boosters: step 6), the call on a slope or a ledge's edge (the 4 m probe), the HUD's ult icon change seen only as pilot.
+
 ## Not yet
-All of it: the plan's 13 steps. Effects (111 extracted), sounds, voice (set 57.05F, 1129 subtitled lines, both bodies the same set) and her
-15 emotes are extracted but not mapped.
+Steps 4-13: the weapons and abilities (Fusion Cannons, Defense Matrix, Boosters with Initiator's heal, Micro Missiles,
+Self-Destruct, the Light Gun), perks, sounds / voice / effects, emotes, two players. Effects (111 extracted), sounds, voice
+(set 57.05F, 1129 subtitled lines) and her 15 emotes are extracted but not mapped.

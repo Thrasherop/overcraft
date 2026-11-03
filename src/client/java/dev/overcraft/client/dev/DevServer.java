@@ -468,9 +468,13 @@ public final class DevServer {
 				out.addProperty("held", java.util.Arrays.toString(held));
 			}
 			case "selectframe" -> {
-				// dev only: "selectframe <framing> <drop>": Sigma's size and drop on the hero select (HeroSelectScreen)
+				// dev only: "selectframe [dva] <framing> <drop>": Sigma's (or D.Va's) size and drop on the hero select
 				String[] a = arg.trim().split(" ");
 				float[] frame = dev.overcraft.client.HeroSelectScreen.SIGMA_FRAME;
+				if (a.length > 0 && a[0].equals("dva")) {
+					frame = dev.overcraft.client.HeroSelectScreen.DVA_FRAME;
+					a = java.util.Arrays.copyOfRange(a, 1, a.length);
+				}
 				for (int i = 0; i < a.length && i < 2 && !a[i].isEmpty(); i++) {
 					frame[i] = Float.parseFloat(a[i]);
 				}

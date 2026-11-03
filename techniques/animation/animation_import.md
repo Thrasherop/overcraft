@@ -88,3 +88,11 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
   body) with 0x2DE (the same wave, additive) beside it, which the clip maps had as "Others (L meaning)". The callout graph
   0686 runs graph 0341, which plays them (research\hello_gesture\hello_gesture.md). STU references are stored mangled, so
   searching raw bytes for a GUID misses them: use the research's structured scanner (`stuscan.py`).
+
+- **A body the data hides may already be in the other model** (D.Va, 2026-11-02): her pilot rides inside the MEKA hidden
+  (026A #794, the seated category 0283), and the mech model FBB0 has the pilot's gloved hands on its controls of its own.
+  Drawing the pilot model seated at the attach point (no hardpoint, no offset: 026A #99) hung her legs out under the mech.
+  Draw the bigger model alone first and look before adding the rider ([heroes/dva](../heroes/dva.md)).
+- **A clip can carry an entity's whole entrance.** Call Mech's landing (311F, 0xE5) drops the mech from the sky by its
+  root motion, and the pilot's (3120) runs and jumps her into it: the entity sits on its spot and the clips do the rest,
+  no hand-made fall. Play the data's clip on the spawned entity before inventing a motion.

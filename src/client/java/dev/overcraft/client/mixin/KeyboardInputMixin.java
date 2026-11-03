@@ -21,7 +21,9 @@ public abstract class KeyboardInputMixin extends ClientInput {
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void overcraft$heroKeys(CallbackInfo ci) {
 		var player = net.minecraft.client.Minecraft.getInstance().player;
-		if (player != null && Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))) {
+		if (player != null && (Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
+			|| dev.overcraft.dva.Dva.held(player))) {
+			// (D.Va calling her mech, and its wreck: no moving, no jumping either: D 026A #105, 0276 #79)
 			// asleep (Ana's Sleep Dart: dev.overcraft.hero.Sleep): no moving, no jumping, hero or not
 			this.keyPresses = Input.EMPTY;
 			this.moveVector = Vec2.ZERO;
@@ -34,8 +36,9 @@ public abstract class KeyboardInputMixin extends ClientInput {
 		boolean back = HeroControls.get(Action.MOVE_BACK).isDown();
 		boolean left = HeroControls.get(Action.MOVE_LEFT).isDown();
 		boolean right = HeroControls.get(Action.MOVE_RIGHT).isDown();
-		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown(),
-			HeroControls.get(Action.CROUCH).isDown(), false);
+		// D.Va's mech can't crouch (no crouch in any mech graph: D 0276 #246); her crouch key does nothing in it
+		boolean crouch = HeroControls.get(Action.CROUCH).isDown() && !dev.overcraft.dva.Dva.mechBody(player);
+		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown(), crouch, false);
 		this.moveVector = new Vec2(impulse(left, right), impulse(forward, back)).normalized();
 	}
 
