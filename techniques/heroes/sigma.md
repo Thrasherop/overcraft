@@ -485,31 +485,61 @@ at the reticle (Overwatch's reticle widgets) are **not done: left for #85**; Kir
   point of damage on Sigma, 1.25 and 1.10 on Kiriko: **x0.57-0.64**, the 0.6 within the noise.
 - **His barrier blocks her rounds from its front:** Sigma 48 -> 48, the barrier 650 -> 506 (`brigitte.hit_barrier`,
   `barrier_damaged` heard on her client); from its back (she behind it, Sigma before it): Sigma hit (48 -> 37.8), the
-  barrier untouched, as built (one-sided, the plan's front; Overwatch's own barrier may block from both sides: **check**).
+  barrier untouched, as first built (one-sided, the plan's front). **Fixed after (8cec2ca): both sides**, below.
   Seen from her side in the enemy colouring, a warm yellow-orange field (`v_barrier2`). (A first try read no block: the
   barrier wasn't in her line, sent too short.)
 - **Grasp eats her rounds:** 48 -> 48, 5.62 overhealth; on her client `absorb_3p`, `absorb_shooter`, `start_3p`,
   `loop_3p`, `overhealth_3p`.
 - **Accretion knocks her down:** her speed 0 with W held for 1.1 s, then 5.5; 18 -> 15.6 (peaceful: its burst's explosion
   damage scales to 0 and she regenerated; not a clean number); `gather_3p`, `throw_3p`, `hit_enemy_3p` heard.
-- **Found (fix committed, b1a7099, NOT YET PLAYED): Flux didn't lift her.** Caught (`lift`, `lifted`, `slam`,
+- **Found: Flux didn't lift her** (first fix b1a7099 didn't work; the real one dcf800e, below). Caught (`lift`, `lifted`, `slam`,
   `slam_hit_3p`, `ult.enemy` on her client; 18 -> 9), but her own client stayed at y -60.00 for 4 s. The lift sets her
   speed with `needsSync`, which 26.3 sends only to the others watching ([minecraft_26](../minecraft/minecraft_26.md)); now
   `syncVelocity` too, also for the rock's and Hyper Strike's push and the spheres' pull. Rebuilt and both clients started
-  again, but another agent's third client had left 1.2 GB free and the restarted second client hung loading: **the fix
-  hasn't been seen working.**
+  again, but another agent's third client had left 1.2 GB free and the restarted second client hung loading.
 - She heard his `_3p` copies (barrier, Grasp, rock, Flux) and his voice lines. **Not done with two players:** her view of
   his spheres in flight, the rock, Flux's column, his emotes (and their "others" sounds); Kiriko's kunai into his barrier;
   the spheres' pull and Hyper Strike on a player; a clean Accretion damage number on normal.
 
-**Not found to be bugs, written down:** the inventory screen's doll in Minecraft mode cuts his head off (his 2.5 m model
-in Minecraft's 1.8 m frame: cosmetic, open); Flux's flight does nothing seated in a boat (ours).
+**Finishing step 12 (the coordinator's three items), 2026-11-02 evening.** Free memory checked before each start (the
+other agents' clients came and went: twice the second client timed out or hung while five clients shared the machine;
+waited until only mine ran); runClient2's harness moved to 25610 (`OC_DEV_PORT2`, 723190c) and the LAN game to 25577,
+another checkout holding 25600 / 25565.
+- **His barrier blocks enemy fire from both sides (8cec2ca).** Overwatch's do: the wiki (Weird Gloop, MediaWiki API)
+  Barrier rev 406358 "Barriers only affect the opposing team"; Winston rev 408465: an enemy inside the dome "can still hit
+  Winston or his allies if they are also inside", so "move outside of it so that the enemy has to exit the bubble to
+  attack you"; Sigma rev 408635: "dance around your Experimental Barrier to block his shots". No side flag in his data
+  notes. `Barriers.crossing` (projectiles, hitscan, blasts) and Brigitte's `Barrier.crosses` (same rule, shared through
+  `Barriers` on `next`) take either side now. Played (sig12, normal, a bow skeleton held still): Sigma on its front side,
+  the skeleton on its back: 48 -> 48, the barrier 650 -> 513 (`bb_back_front`, `bb_back_1p`); from its front 48 -> 48,
+  650 -> 500 (`bb_front_3p`); no barrier, the same skeleton: 48 -> 41.2; Brigitte's shield from the front 20 -> 20. Two
+  players: Kiriko's kunai into his barrier: Sigma 48 -> 48, the barrier 650 -> 470, `hit_barrier` on her client, the field
+  in the enemy's warm colouring (`v8_kunai_barrier`). Not played: Brigitte's shield from behind with an ally before it.
+- **A pushed or lifted player now moves on her own client (dcf800e).** b1a7099's `syncVelocity` changed nothing when
+  played (vy 0.00 on her client every tick). Two causes: the server's copy of a player's speed is reset by her own
+  movement packets, so Flux reading it back never built a rise; and the hit's own `syncVelocity` made the tracker send that
+  stale copy a tick after the push. `Accretion.sendSpeed` now sends the motion packet at once and clears the flag; Flux
+  keeps a lifted player's speed itself (`Lifted.speed`). On normal difficulty, natural regeneration off, read on HER client:
+  **the rock** 18 -> 8.40 (120: 80 + 40), knocked 5.97 m/s along its flight with a small hop, held 1.1 s (W does nothing),
+  then 5.5 m/s; **Flux** lifted her from -60.00 to -55.78 (4.2 m; a husk rises 5.5-6 m: her client's own gravity acts
+  between the packets) and slammed her back, 18 -> 5 (lift 50 + half of 225); **the spheres' pull** vy 7.97 on her client
+  (before: 0.00), 18 -> 13.2. A husk after the change: lifted 5.5 m, slammed, 400 -> 196.064, as before.
+  **Not fixed: Hyper Strike on a player** deals its 90 (18 -> 10.8) but its 14 m/s knock is eaten by her client's ground
+  friction (3.23 m/s for a tick) and its 0.8 s low-gravity float is the server's for mobs only.
+- **Her view:** the rock coming (`v8_rock_incoming`), Flux's rings and column with a husk lifted beside her
+  (`v8_flux_column`; `cast_3p`, `lift`, `slam_3p`, `slam_hit_3p`, `slam_land`, `ult.enemy`), herself lifted
+  (`v8_flux_lifted_*`, `h8_flux_lift_3p`), his Maestro (`v8_emote_maestro`; 60C0 and 610B heard on her client), the
+  spheres' `volley_3p`, `burst_3p`, `impact_3p` (`v8_spheres_incoming`: he drew all red in that frame, not looked into).
+- **The inventory doll (2b4a654):** framed by his own height (scaled 1.8 / 2.5, centred on half of it): his whole body
+  in the frame in Minecraft mode (`doll_sigma_mc`), Kiriko's unchanged (`doll_kiriko_mc`).
+
+**Not bugs, written down:** Flux's flight does nothing seated in a boat (ours).
 
 ## Not yet
-Step 12's two-player round again with the lift fix (b1a7099): Flux lifting a player, the rock's push and Hyper Strike on
-a player, her view of his spheres, rock, Flux and emotes with their "others" sounds, Kiriko's kunai into his barrier;
-whether his barrier should block from its back (Overwatch's barriers block from both sides?); his reticle widgets (#85);
-the inventory doll's framing. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
+Hyper Strike's knock and float on a player (her client's friction eats it; the float is the server's for mobs); a lifted
+player rises 4.2 m against a mob's 6 (her client's gravity between packets); Brigitte's shield from behind with an ally;
+the red Sigma in her `v8_spheres_incoming` frame; his reticle widgets (#85); the kill feed's `Blow` tags for his damage
+when `fix/killfeed-hud` reaches `next`. Open from steps 7-9: Flux's right-button confirm and "rise with ability 3" options, its
 HUD timer, Hyper Strike's charge counter; the rock leaves his eyes (the data's hp 01B6 on his right side: it would
 miss the crosshair); a player knocked down, lifted or struck (one client: their lift is their speed sent each tick
 and their keys held 0.4 s, untested); the slam's cap on bosses and Accretion's 12-at-the-edge falloff (ours: Open);
