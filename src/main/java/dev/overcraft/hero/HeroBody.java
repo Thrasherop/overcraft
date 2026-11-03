@@ -88,6 +88,52 @@ public final class HeroBody {
 		return true;
 	}
 
+	/**
+	 * On the server, each tick: a hero in hero mode whose box doesn't fit where he is (G pressed in a doorway, a respawn
+	 * beside the bed, a /tp) is moved to the nearest spot within 2 m where his crouched box fits, or, with none, put back
+	 * in Minecraft mode with a word why. Otherwise G in a 1-wide doorway gave Sigma a 0.6 m box that walked him through
+	 * it and along any 1-wide corridor (the critique's #15), undoing the owner's "unable to fit through a door".
+	 */
+	public static void makeRoom(net.minecraft.server.level.ServerPlayer player) {
+		Hero hero = wanted(player);
+		EntityDimensions crouched = of(hero, Pose.CROUCHING);
+		if (crouched == null || big(player) || player.isPassenger() || player.isSpectator() || !player.isAlive()
+			|| fits(player, crouched, player.position())) {
+			return;
+		}
+		net.minecraft.world.phys.Vec3 at = player.position();
+		net.minecraft.world.phys.Vec3 best = null;
+		double bestD = Double.MAX_VALUE;
+		for (double dy : new double[] {0, 0.5, 1.0}) {
+			for (double dx = -2; dx <= 2.001; dx += 0.25) {
+				for (double dz = -2; dz <= 2.001; dz += 0.25) {
+					double d = dx * dx + dz * dz + dy * dy;
+					if (d >= bestD || d > 4.0) {
+						continue;
+					}
+					net.minecraft.world.phys.Vec3 to = at.add(dx, dy, dz);
+					if (fits(player, crouched, to) && !player.level().noCollision(player,
+						crouched.makeBoundingBox(to).move(0, -1.0, 0).deflate(0.05))) {
+						// room, and ground within a metre under it
+						best = to;
+						bestD = d;
+					}
+				}
+			}
+		}
+		if (best != null) {
+			player.connection.teleport(best.x, best.y, best.z, player.getYRot(), player.getXRot());
+		} else {
+			HeroManager.setHeroMode(player, false);
+			player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("overcraft.hero.no_room",
+				hero.displayName), true);
+		}
+	}
+
+	private static boolean fits(Player player, EntityDimensions box, net.minecraft.world.phys.Vec3 at) {
+		return player.level().noCollision(player, box.makeBoundingBox(at).deflate(1.0E-7));
+	}
+
 	public static boolean big(Player player) {
 		return Boolean.TRUE.equals(BIG.get(player));
 	}

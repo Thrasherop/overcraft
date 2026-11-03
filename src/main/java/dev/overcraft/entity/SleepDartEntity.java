@@ -25,6 +25,12 @@ import net.minecraft.world.phys.EntityHitResult;
  * The one it hits takes 5 and sleeps 5 s (Sleep).
  */
 public class SleepDartEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.ana.AnaStats.SLEEP_DAMAGE;
+	}
+
 	public SleepDartEntity(EntityType<? extends SleepDartEntity> type, Level level) {
 		super(type, level);
 	}

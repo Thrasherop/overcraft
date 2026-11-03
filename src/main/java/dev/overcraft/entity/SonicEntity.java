@@ -28,6 +28,12 @@ import net.minecraft.world.phys.Vec3;
  * allies; hits what isn't a creature (an end crystal, a boat) as an arrow does, like the kunai (#34).
  */
 public class SonicEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.lucio.LucioStats.AMP_DAMAGE;
+	}
+
 	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
 	private static final double HEAD_DEPTH = 0.25;
 

@@ -184,7 +184,7 @@ public final class Barriers {
 		Vec3 c = shape.barrierCentre();
 		double reach = Math.max(shape.barrierWidth(), shape.barrierHeight()) / 2 + 8;
 		for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(c, c).inflate(reach), Barriers::takes)) {
-			if (!stops(shape, p.getOwner())) {
+			if (!stops(shape, p.getOwner()) || p instanceof OwProjectile ow && ow.passesBarriers()) {
 				continue;
 			}
 			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo);
@@ -200,7 +200,13 @@ public final class Barriers {
 				shape.barrierTake(damage, at);
 			}
 			double from = before.subtract(shape.barrierCentre()).dot(shape.barrierFacing());
-			stop(p, at.add(shape.barrierFacing().scale(from < 0 ? -0.3 : 0.3)), true);
+			Vec3 normal = shape.barrierFacing().scale(from < 0 ? -1 : 1);
+			if (p instanceof OwProjectile ow) {
+				// a hero projectile does its own (bursts, bounces: Petal Platform), on the side it came from
+				ow.hitBarrier(at.add(normal.scale(0.3)), normal);
+				continue;
+			}
+			stop(p, at.add(normal.scale(0.3)), true);
 		}
 	}
 
@@ -302,7 +308,7 @@ public final class Barriers {
 	 * barrier took the blast itself: {@link #blast}); a shot without a projectile crossing one is taken by it, whole.
 	 */
 	public static float absorb(LivingEntity victim, DamageSource source, float damage) {
-		if (damage <= 0 || LIVE.isEmpty() || !(victim.level() instanceof ServerLevel level)) {
+		if (damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
 			return damage;
 		}
 		// melee goes through every barrier (Brigitte's marked blows: dev.overcraft.brigitte.Barrier.isMelee; the owner,
@@ -313,6 +319,12 @@ public final class Barriers {
 		}
 		Entity direct = source.getDirectEntity(), attacker = source.getEntity();
 		Vec3 to = victim.getBoundingBox().getCenter();
+		if (attacker != null && attacker != victim && direct == null && !source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
+			&& dev.overcraft.sigma.KineticGrasp.absorbsShot(victim, source, damage)) {
+			// a hitscan shot (no direct entity: Combat.hitscan, Juno's rounds) into an enemy Sigma's Kinetic Grasp; an area
+			// ability's hit (Soundwave, Purr: the hero is its direct entity) isn't one ("AoE attacks" pass Grasp: the wiki)
+			return 0;
+		}
 		for (Shape s : in(level)) {
 			if (!stops(s, attacker)) {
 				continue;
@@ -325,6 +337,9 @@ public final class Barriers {
 				continue;
 			}
 			if (direct instanceof Projectile p) {
+				if (p instanceof OwProjectile ow && ow.passesBarriers()) {
+					continue;
+				}
 				if (crossing(s, new Vec3(p.xo, p.yo, p.zo), p.position()) != null) {
 					s.barrierTake(projectileDamage(p), p.position());
 					return 0;

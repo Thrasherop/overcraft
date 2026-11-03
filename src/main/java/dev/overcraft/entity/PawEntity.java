@@ -30,6 +30,12 @@ import net.minecraft.world.phys.Vec3;
  * headshot does double. Paw shots are her entity 6D19, the centre shot 6D1B: no model, all particles.
  */
 public class PawEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return amount;
+	}
+
 	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
 	private static final double HEAD_DEPTH = 0.25;
 

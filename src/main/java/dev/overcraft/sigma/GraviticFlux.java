@@ -81,10 +81,11 @@ public final class GraviticFlux {
 
 	/** Q: it starts, with the ult full and his hands free. */
 	static void press(ServerPlayer player, HeroState s) {
-		if (active(s) || s.ultCharge < ULT_COST || Accretion.casting(s) || KineticGrasp.active(s) || Sleep.asleep(player)
-			|| !player.isAlive()) {
+		if (active(s) || s.ultCharge < ULT_COST || Accretion.casting(s) || Sleep.asleep(player) || !player.isAlive()) {
 			return;
 		}
+		// it cancels Kinetic Grasp, with no overhealth (the wiki; the critique's #12)
+		KineticGrasp.end(player, s, false);
 		s.ultCharge = Combat.afterUlt(Hero.SIGMA, s.ultCharge);
 		s.sigmaFluxPhase = START;
 		s.sigmaFluxTicks = 0;

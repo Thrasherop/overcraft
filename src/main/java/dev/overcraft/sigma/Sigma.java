@@ -73,9 +73,20 @@ public final class Sigma implements HeroKit {
 			s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		}
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
+		// a hack (Sombra's): his channels are cut, Grasp with no overhealth, the gather, Flux (the wiki: channels a hack
+		// interrupts; the critique's #9); the barrier comes back in SigmaBarrier.tick
+		if (dev.overcraft.sombra.Hack.silenced(player)) {
+			KineticGrasp.end(player, s, false);
+			Accretion.cancel(player, s);
+			if (GraviticFlux.active(s)) {
+				GraviticFlux.end(player, s);
+			}
+		}
 		// his hands are busy in Grasp, Accretion's gather and Gravitic Flux: no spheres, no barrier sent meanwhile (ours, M)
 		boolean busy = KineticGrasp.active(s) || Accretion.casting(s) || GraviticFlux.active(s);
-		Hyperspheres.tick(player, s, controls, busy);
+		// and no spheres while he pushes the barrier out (the wiki: "Sigma cannot use his primary fire or normal abilities
+		// while deploying the barrier"; the critique's #13)
+		Hyperspheres.tick(player, s, controls, busy || SigmaBarrier.sending(player, s));
 		SigmaBarrier.tick(player, s, controls, busy);
 		KineticGrasp.tick(player, s, controls);
 		Accretion.tick(player, s, controls);

@@ -5,6 +5,7 @@ import dev.overcraft.entity.SigmaBarrierEntity;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroState;
+import dev.overcraft.hero.Sleep;
 import dev.overcraft.hero.Perks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +30,12 @@ public final class SigmaBarrier {
 	}
 
 	/** His barrier out in the world, or null (put away). */
+	/** He's pushing it out now (sent, the button held): his hands are on it (no spheres, no Grasp, no rock: the wiki). */
+	static boolean sending(ServerPlayer player, HeroState s) {
+		SigmaBarrierEntity b = out(player, s);
+		return b != null && b.state() == SigmaBarrierEntity.SENT && s.secondaryHeld;
+	}
+
 	public static @Nullable SigmaBarrierEntity out(ServerPlayer player, HeroState s) {
 		if (s.sigmaBarrierId == null) {
 			return null;
@@ -46,9 +53,19 @@ public final class SigmaBarrier {
 		boolean pressed = s.secondaryHeld && !s.sigmaRightWas;
 		s.sigmaRightWas = s.secondaryHeld;
 		SigmaBarrierEntity b = out(player, s);
+		boolean held = Sleep.asleep(player) && player.isAlive();
+		boolean hacked = dev.overcraft.sombra.Hack.silenced(player);
 		if (b != null) {
-			if (!controls || !player.isAlive()) {
-				// G, death: it comes back to him
+			if (held) {
+				// asleep, stunned or knocked down: it stops where it is, still out (the wiki: "Being stunned or knocked down
+				// stops the barrier at its current location, but will not cause an active barrier to be retracted"; the
+				// critique's #10: it had been recalled)
+				if (b.state() == SigmaBarrierEntity.SENT) {
+					b.setState(SigmaBarrierEntity.STOPPED);
+					halted(player, b);
+				}
+			} else if (!controls || !player.isAlive() || hacked) {
+				// G, death, a hack (the wiki: "automatically recalled if Sigma is ... hacked"): it comes back to him
 				stow(player, s, b);
 			} else if (pressed) {
 				// a press while it's out recalls it (1B55 #721 / #916): its halt 2C96 as the recall starts (1A2A #886), his
@@ -67,7 +84,7 @@ public final class SigmaBarrier {
 				b.setState(SigmaBarrierEntity.STOPPED);
 				halted(player, b);
 			}
-		} else if (pressed && controls && player.isAlive() && !locked && now >= s.sigmaBarrierReadyAt && now >= s.barrierBrokenUntil
+		} else if (pressed && controls && player.isAlive() && !locked && !hacked && now >= s.sigmaBarrierReadyAt && now >= s.barrierBrokenUntil
 			&& s.barrierHealth > 0) {
 			deploy(player, s);
 		}

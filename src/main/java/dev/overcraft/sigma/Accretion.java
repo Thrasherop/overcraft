@@ -46,10 +46,13 @@ public final class Accretion {
 
 	/** E: the gather starts, if ready and his hands are free. */
 	static void press(ServerPlayer player, HeroState s) {
-		if (casting(s) || s.ability2Cooldown > 0 || KineticGrasp.active(s) || GraviticFlux.active(s) || Sleep.asleep(player)
-			|| !player.isAlive()) {
+		if (casting(s) || s.ability2Cooldown > 0 || GraviticFlux.active(s) || Sleep.asleep(player) || !player.isAlive()
+			|| SigmaBarrier.sending(player, s)) {
 			return;
 		}
+		// it cancels Kinetic Grasp, with no overhealth (the wiki: "Accretion or Gravitic Flux can be activated to cancel
+		// Kinetic Grasp"; the critique's #12: it had been refused)
+		KineticGrasp.end(player, s, false);
 		s.sigmaCast = Ow.ticks(ACCRETION_CAST);
 		Combat.buff(player, Attributes.MOVEMENT_SPEED, CAST_SLOW, -ACCRETION_CAST_SLOW, ACCRETION_CAST);
 		// his gather (alias 0x608, #627): HeroAnimator

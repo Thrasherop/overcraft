@@ -23,6 +23,15 @@ import net.minecraft.world.phys.EntityHitResult;
  * (M: the hit filter). The burst is Ana.grenadeBurst.
  */
 public class BioticGrenadeEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.ana.AnaStats.GRENADE_DAMAGE;
+	}
+
+	// (a burst on an enemy barrier: the barrier takes it and it's gone, no splash on either side: ours, the wiki's
+	// "barriers block the explosion")
+
 	public BioticGrenadeEntity(EntityType<? extends BioticGrenadeEntity> type, Level level) {
 		super(type, level);
 	}

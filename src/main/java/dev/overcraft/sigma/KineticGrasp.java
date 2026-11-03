@@ -10,6 +10,7 @@ import dev.overcraft.hero.Sleep;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +35,7 @@ public final class KineticGrasp {
 
 	/** Shift: it starts, if ready. */
 	static void press(ServerPlayer player, HeroState s) {
-		if (active(s) || s.ability1Cooldown > 0 || Sleep.asleep(player) || !player.isAlive()) {
+		if (active(s) || s.ability1Cooldown > 0 || Sleep.asleep(player) || !player.isAlive() || SigmaBarrier.sending(player, s)) {
 			return;
 		}
 		s.sigmaGrasp = Ow.ticks(GRASP_TIME);
@@ -75,7 +76,9 @@ public final class KineticGrasp {
 		Vec3 u = r.cross(f).normalize();
 		for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(eye, eye).inflate(GRASP_FAR + 6), Barriers::takes)) {
 			Entity owner = p.getOwner();
-			if (owner == player || owner != null && Allies.isSelfOrAlly(player, owner)) {
+			if (owner == player || owner != null && Allies.isSelfOrAlly(player, owner)
+				|| p instanceof dev.overcraft.entity.OwProjectile ow && ow.strong()) {
+				// (a strong projectile flies on through: the wiki's Sigma page, Accretion, Petal Platform, Translocator)
 				continue;
 			}
 			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo), next = now.add(p.getDeltaMovement());
@@ -103,6 +106,49 @@ public final class KineticGrasp {
 			// "Hold it together...!" (0B9B, #560: an absorbed hit that isn't an ultimate)
 			dev.overcraft.hero.Voice.say(player, "grasp_absorb", 1);
 		}
+	}
+
+	/**
+	 * A shot with no projectile (hitscan: Sombra's pistol, Juno's Mediblaster, Ana's scoped shot, Sojourn's Charged Shot)
+	 * whose way from the shooter's eyes to {@code victim} goes through an enemy Sigma's Grasp box: absorbed there as a
+	 * projectile would be (the wiki: Grasp is the answer to hitscan too; it can't block only "Beam, Melee, Extended Melee
+	 * or AoE attacks or Strong Projectiles"). The critique's #3: it had ignored them. True when it took the hit.
+	 */
+	public static boolean absorbsShot(LivingEntity victim, net.minecraft.world.damagesource.DamageSource source, float damage) {
+		Entity shooter = source.getEntity();
+		if (shooter == null || !(victim.level() instanceof ServerLevel level)) {
+			return false;
+		}
+		Vec3 from = shooter.getEyePosition(), to = victim.getBoundingBox().getCenter();
+		for (ServerPlayer sigma : level.players()) {
+			HeroState s = dev.overcraft.hero.HeroManager.state(sigma);
+			if (s == null || s.hero != dev.overcraft.hero.Hero.SIGMA || !active(s) || sigma == shooter
+				|| shooter instanceof LivingEntity living && Allies.isSelfOrAlly(sigma, living) || sigma.distanceToSqr(to) > 400) {
+				continue;
+			}
+			Vec3 eye = sigma.getEyePosition();
+			Vec3 f = sigma.getViewVector(1.0f);
+			Vec3 r = f.cross(new Vec3(0, 1, 0));
+			r = r.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : r.normalize();
+			Vec3 u = r.cross(f).normalize();
+			int steps = (int) Math.ceil(from.distanceTo(to) / 0.2);
+			for (int i = 0; i <= steps; i++) {
+				Vec3 at = from.lerp(to, i / (double) Math.max(1, steps));
+				if (inBox(at.subtract(eye), f, r, u)) {
+					double ow = Ow.toOw(damage);
+					s.sigmaGraspAbsorbed += ow;
+					Combat.addUltCharge(sigma, ow * GRASP_ULT_SHARE, false);
+					Effects.play(level, "sigma_absorb", at, to.subtract(from).normalize(), sigma, 0, sigma);
+					SigmaSounds.splitAt(sigma, "grasp.absorb", at, 30, 30);
+					if (shooter instanceof ServerPlayer p) {
+						SigmaSounds.own(p, "grasp.absorb_shooter");
+					}
+					dev.overcraft.hero.Voice.say(sigma, "grasp_absorb", 1);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	static boolean inBox(Vec3 rel, Vec3 f, Vec3 r, Vec3 u) {

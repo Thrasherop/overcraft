@@ -172,10 +172,11 @@ public final class SigmaStats {
 		HYPER_STRIKE_GRAVITY = 0.01;
 	/**
 	 * Levitation: jump held in the air from 0.2 s after leaving the ground (D 51E0 #379 / #375 0.2) H, once a landing (v1843)
-	 * H, up to 1.75 s (#383) H, accelerating at 25 m/s² up to 3 m/s (#382 STU_A9C4FF83 (0, 25, 0), max 3; W 2.3 m/s) M,
-	 * ending when let go (H nodes).
+	 * H, up to 1.75 s (#383) H, accelerating at 25 m/s² (#382 STU_A9C4FF83 (0, 25, 0)) up to W's 2.3 m/s (Sigma rev 408635:
+	 * "mspeed = 2.3 m/s", "up to a 5 meter height"). The data's "max 3" read as the cap (M) rose 6.38 m from a standing
+	 * jump, 28% over W's 5 m (the critique's #16); 2.3 is W's measured speed. Ending when let go (H nodes).
 	 */
-	public static final double LEVITATION_FROM = 0.2, LEVITATION_TIME = 1.75, LEVITATION_ACCEL = 25, LEVITATION_SPEED = 3;
+	public static final double LEVITATION_FROM = 0.2, LEVITATION_TIME = 1.75, LEVITATION_ACCEL = 25, LEVITATION_SPEED = 2.3;
 
 	// ---- his size (sigma.md "Size") ----
 	/**

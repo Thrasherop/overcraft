@@ -24,6 +24,12 @@ import net.minecraft.world.phys.Vec3;
  * Allies and its owner don't stop it; no block breaks.
  */
 public class AccretionEntity extends OwProjectile {
+	/** Grasp can't absorb it (the wiki: "Accretion cannot"): it flies on and hits him. */
+	@Override
+	public boolean strong() {
+		return true;
+	}
+
 	public AccretionEntity(EntityType<? extends AccretionEntity> type, Level level) {
 		super(type, level);
 	}

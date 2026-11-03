@@ -54,6 +54,12 @@ public final class ClientHero {
 	 * round trip later. Null: the server's flag.
 	 */
 	private static @Nullable Boolean heroModeLocal;
+	/**
+	 * When it was switched here (millis): the server's word wins half a second later. The server can refuse (HeroBody.makeRoom:
+	 * no room for Sigma's box), and its flag then never changes to agree: the client stayed in hero mode with a 0.6 m box
+	 * while the server had him in Minecraft mode (found playing the G-in-a-tunnel rule, 2026-11-02).
+	 */
+	private static long heroModeLocalAt;
 	private static boolean openSelectOnJoin;
 	/** The join's hero select was opened and no hero is picked yet. */
 	private static boolean joinSelectShown;
@@ -105,7 +111,7 @@ public final class ClientHero {
 			return false;
 		}
 		boolean synced = player.getAttachedOrElse(HeroManager.HERO_MODE, true);
-		if (heroModeLocal != null && heroModeLocal == synced) {
+		if (heroModeLocal != null && (heroModeLocal == synced || net.minecraft.util.Util.getMillis() - heroModeLocalAt > 500)) {
 			heroModeLocal = null;
 		}
 		return heroModeLocal != null ? heroModeLocal : synced;
@@ -114,6 +120,7 @@ public final class ClientHero {
 	/** A hero was just picked (the server puts the player in hero mode). */
 	public static void pickedHero() {
 		heroModeLocal = true;
+		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 	}
 
 	/**
@@ -479,6 +486,7 @@ public final class ClientHero {
 	/** Hero mode on or off: here at once, and on the server. */
 	public static void setHeroMode(boolean on) {
 		heroModeLocal = on;
+		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {
 			ClientPlayNetworking.send(new HeroModePayload(on));
 		}

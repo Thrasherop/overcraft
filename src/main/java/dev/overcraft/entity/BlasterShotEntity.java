@@ -26,6 +26,12 @@ import net.minecraft.world.phys.Vec3;
  * (100 in Valkyrie), gone after 5 s. Enemies only: allies don't stop it. No falloff, no spread.
  */
 public class BlasterShotEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.mercy.MercyStats.BLASTER_DAMAGE;
+	}
+
 	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
 	private static final double HEAD_DEPTH = 0.25;
 	/** The shot's life (s): her data's 5 s lifetime. */
