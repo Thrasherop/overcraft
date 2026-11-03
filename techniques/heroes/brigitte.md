@@ -272,22 +272,103 @@ Played after (each with the shield up unless said; health before -> after, barri
 | Wither skull (owned), shield down | not tried | 118, pushed 6.9 m |
 | Zombie hits | barrier -30 each, one reached her (30.5) | barrier -37.5 each, none reached her |
 
+Screenshots above are in the first run's `run2/screenshots`; the rework's in `run3/screenshots` (`brig88_r_*`). Not cited
+on purpose: `brig88_after_front_held.png` (an earlier HUD build: it still drew the crosshair in the front view; the
+committed code's front view is `brig88_r_front_held.png`), `brig88_cam2_in_*` (the world hadn't loaded after a teleport:
+all sky), `brig88_respawn.png` (Sombra, from a hero switch that hadn't taken).
+
+**The first night fights, every death written down.** Three runs on the fixed build (`brig88_client4.log`):
+- 20:40:10 "blown up by Creeper" six seconds in: **she was Sombra, not Brigitte** (the script's own output: `'hero':
+  'sombra'`, max health 18, "barrier" 60 -> 47 was her ammo). The dev `hero brigitte` after a Sombra test hadn't taken,
+  and the script never checked. Not a barrier case; the fights after check the hero first.
+- 20:40:38 "slain by Enderman": dead at spawn on the hero menu at night (spawning was on in that world), before the fight.
+- 20:41:58 "shot by Skeleton": the script aimed her at the nearest entity, which was dropped dirt from the craters; she
+  faced away from the skeleton (`brig88_night_4.png`: dirt's data in the chat). Its selector now leaves out items.
+- The fourth (fixed targeting) is the one below: 45 s, lowest 13.1, no hit through the barrier.
+
 A night fight (spawning off, three creepers, two skeletons and a zombie summoned 10-18 m ahead, live; the barrier up,
 dropped for the flail when something was within 3.5 m and the barrier under 120; a script aiming at the nearest mob):
 45 s, lowest health 13.1 of 20, every hit on her taken while the barrier was broken or refilling, two creeper blasts taken
-whole by it. The first try aimed at dropped dirt items, not mobs, and she was shot from the side: the script's fault (the
-selector now excludes items). Also: picked from the select screen on a fresh world, from the hero menu (H) after a death,
-and after a Save and Leave and rejoin; G out and back with the shield held.
+whole by it. (Before the melee rule below: zombies' hits then went into the barrier.)
+
+## The barrier reworked after the critique (#88, 2026-11-02, [critique_88](../testing/critique_88.md))
+- **Melee goes through** (the owner, 2026-11-02: "Melee goes through"; the wiki's Barrier page: every melee attack
+  pierces barriers). `Barrier.isMelee`: Minecraft's mob and player attack types, a hit whose direct entity is the
+  attacker (not a projectile), and her own flail's swing. Ranged hits, projectiles and blasts from the front stay
+  blocked. **The same rule applies to Sigma's barrier** once it uses the shared code (feature/sigma's `Barriers`).
+- **A blast is charged by the barrier's own exposure**, before anyone is hurt: what an entity at its nearest point
+  would take at full exposure (Minecraft's rule, as feature/sigma's `Barriers.blast`), once, whoever stands behind it.
+  Before, it paid what the blast did to whichever covered entity Minecraft's loop met first.
+- **The push is judged by where people are**, not by whether they were hurt (`Barrier.blocksBlast`, the signature
+  feature/sigma calls): a wind charge hurts no one, so its push had gone through.
+- **"Against the barrier" only covers what's behind it within its width**: an ally 5 m to her side of a creeper at her
+  chest is hit as Minecraft would hit them. The barrier's lowest crossing is 1 m under her feet (was 0.2): the ground of
+  a step or a slope ahead (ours).
+- **Blast-carrying projectiles go off on the barrier** (`Barrier.tickProjectiles`): a ghast's fireball, a wither skull,
+  a wind charge about to pass through it from the front bursts there; a blaze's small fireball is gone and the barrier
+  takes its 5 (62.5). Found playing: a breeze's wind charge that missed her went off at her back and threw her 10 m up
+  and over her own barrier (the fall killed her).
+- **The camera** (re-read #857, [rendering](../rendering/rendering.md#ability-cameras-2026-11-02-88)): 1.04 is Stadium's
+  third-person field of view, not a height; 8.0 the distance while v44373 (game message 1DC5: unknown, L); 0.4 a time (M:
+  the rate field is a different one, m_9B0385B4, 30 m/s on #699). The rise is 0.5 m (ours): her head and shoulders under
+  the crosshair (`brig88_r_frame.png`); at 1 m she sat on the screen's bottom edge. Her model isn't drawn while the view
+  is under 1 m from her (mid-blend her ponytail had filled the screen: `brig88_r_blend_in_1.png` now shows the field
+  and no hair). F5 in the blend-out keeps the player's choice (traced: released, F5 at once -> front, stays). The
+  foresight is 0.3 s and not when emoting, asleep or a screen is open.
+- **Turn-in-place by all of a clip**, the largest turn from its first frame over 16 samples; the cache goes with a
+  reloaded model. Held now (`turnclips`, 2026-11-02): Brigitte idle(_2), idle_shield(_2), crouch_idle(_2); Sombra
+  idle(_2), idle_stealth(_2), crouch_idle(_2); Kiriko idle, crouch_idle; Ana idle(_2), idle_scoped(_2), crouch_idle(_2),
+  crouch_idle_scoped(_2); Lucio idle, idle_alt, crouch_idle(_alt); Mercy idle(_2), idle_blaster(_2), crouch_idle; Juno
+  crouch_shared; Sojourn idle(_alt), f42_idle(_alt), crouch_idle(_alt), crouch_shared; Lifeweaver idle(_2),
+  idle_charging(_2), idle_thorn(_2), idle_firing_thorn(_2), crouch_idle(_2); Jetpack Cat none. (The list also names
+  additive and emote clips, which never play as a stand and aren't affected.)
+- The dead "rest lands as its own hit" branch is gone (nothing passes on any more).
+
+Played on the rework (dev client `runClient3`, port 25601, flat survival worlds `brig88e` / `brig88f`, Normal; the
+harness's mapped keys, not the hand; scratchpad `brig88_t11.py` - `t15.py`):
+
+| Case | Seen |
+|---|---|
+| A zombie hitting her, barrier up | 30.5 to her each hit (37.5 less armor), the barrier untouched (300) |
+| A skeleton 12 m ahead, barrier up | the arrow on the barrier (300 -> 250), none to her |
+| Creeper 0.7 m ahead, villagers 5 m to her right and 1.5 m behind | her 0, the one behind 20 -> 20, the one beside 20 -> 15.1; barrier 300 -> 0 |
+| Creeper 3 m ahead, a villager 1.5 m behind / her alone (twice each) | the barrier 300 -> 6 every time, her and the villager 0 |
+| Her a block up, creeper below 1.5 m / 3 m ahead | 0, barrier 300 -> 0 / 300 -> 6 |
+| Her on top of stairs, creeper two steps down 2.5 m ahead (`brig88_r_slope.png`) | 0, 300 -> 82 |
+| A breeze's wind charge from 6 m ahead, barrier down / up | pushed 11 m and 6.2 / not moved, 0 |
+| A live breeze, she turning to face it (three runs of 30 s, 5-7 wind charges seen in flight each) | not moved once; barrier down: launched 4 times |
+| Ghast fireball from ahead / one passing 0.5 m beside her chest | 0, barrier 300 -> 156 / 0, 300 -> 156 (it burst on the barrier) |
+| Blaze small fireball from ahead | 0, 300 -> 238 (62.5) |
+| Wither skull (owned) from ahead | 0, 300 -> 156 |
+| Creeper 3 m ahead, barrier down, three runs | 202.4 each; pushed 2.65, 2.00, 2.00 m: the first run's "2.65 -> 2" was this run-to-run spread, not a change |
+| Switching hero (H) with the shield held | the menu lowered it; Kiriko picked with the button held: her plain stand, first person |
+| A Nether portal with the shield held | lowered as the loading screen opened (Minecraft releases every held key there); pressed again in the Nether: up, from behind |
+| Improved Transparency on (F3+X) | the barrier and her drawn as before (`brig88_r_transparency_held.png`) |
+| Ana scoped from behind, 1.2 s | `idle_scoped` held still (`brig88_r_ana_scoped_0/2.png`) |
+| Jetpack Cat's Lifeline | from behind, Minecraft's 4 m, the crosshair now drawn over the tether's mark (`brig88_r_cat_lifeline.png`) |
 
 **What a critic should check (not done or not certain):**
-- **Overwatch side by side:** the view's lift (1 m, ours: #857's other fields 6.67 / 2.0 are unread) and whether her
-  view really drops to first person in a bash (v68007's meaning is M). Watch a Brigitte play or a replay.
-- **Melee through the barrier:** the wiki says every melee attack goes through barriers; ours stops mob melee (zombies)
-  at it, as step 4 chose. A balance call for the owner, not changed here.
-- **The barrier's place:** Overwatch hangs it on her hand (Weapon_L, bone 002C); ours is a flat 1.51 x 2.64 m rectangle
-  0.9 m ahead. A blast 45 degrees off at 2 m passes its edge (by 0.15 m) and hurts her fully: is that Overwatch's cover?
-- **Hero blasts:** Juno's torpedoes and Sojourn's Disruptor hit with no position, so the barrier judges them from the
-  shooter's eyes, not the blast; a torpedo landing beside her from in front is blocked whole. Sigma's branch has its own
-  barriers to merge with this.
-- **Multiplayer:** the raise sent to a player who starts watching her is compile-checked only.
-- **Sombra's, Mercy's and Lifeweaver's stands** are still now by the rule: not played through their kits after it.
+- **Hand play with the real mouse and keys:** none. The desktop tool can't hold the right button (it has only a left
+  hold) or turn the view (SDL reads raw mouse input); the owner has to hold the shield by hand.
+- **The bash's drop to first person** is only in the harness trace (first person from 0.24 s, back from 0.44 s): with a
+  0.3 s blend each way inside a 0.35 s window it is a dip, and no screenshot caught it (the game's screenshot lands
+  0.2-0.3 s late). Whether Overwatch's view really dips there (v68007, M) needs a replay.
+- **Overwatch side by side:** the 0.5 m rise, #857's 6.67 and 2.0, the 8.0 distance's condition. The ult ring still sits
+  on her back, as Overwatch's sits over a hero in third person.
+- **The barrier's place:** Overwatch hangs it on her hand (bone 002C); ours is a flat 1.51 x 2.64 m rectangle 0.9 m
+  ahead. A creeper 45 degrees off at 2 m passes its edge (by 0.15 m) and hurts her fully. The charge from its nearest
+  point makes it take more than she would have (294 at 3 m, against her 209).
+- **Hero blasts:** Juno's torpedoes and Sojourn's Disruptor have no position: judged from the shooter's eyes. Jetpack
+  Cat's Purr and ult use the player-attack type: they now count as melee and go through.
+- **Merging with feature/sigma** (#68): both branches rewrote `ServerExplosionMixin` and `Barrier`. This branch keeps
+  Sigma's entry points (`Barrier.blocksBlast(entity, centre, cause)`, the same full-exposure charge at the head of
+  `hurtEntities`); the merge must: call `Barriers.blast` beside `Barrier.blast` at the head, keep Sigma's
+  Stalwart / Gravitic Flux knockback scaling in the two push wraps around `Barrier.blocksBlast`, keep his
+  `Barriers.absorb` first in `Barrier.absorb` (which now returns 0 for a covered hit, no passing branch), make
+  `covering` (the armor skip) and `isMelee` cover his barrier too, and replay both heroes' blast cases.
+- **Multiplayer:** the raise sent to a player who starts watching her is compile-checked only (one client).
+- **Two Brigittes** (the first in the player list is asked), **her own TNT** (skips the barrier for her allies too),
+  **riding, water, ladders, mid-air, Totem of Undying, charged creepers, end crystals' chains** (the blast state is
+  stacked for nested explosions, not played): not tried.
+- **Invulnerability frames:** two hits in the same half-second both cost the barrier where vanilla ignores the second
+  (older than #88).
