@@ -30,12 +30,16 @@ import java.util.Set;
 /**
  * Barriers that are entities (sigma-plan.md "What the Tank role needs": a barrier that is an entity, not Brigitte's
  * state-bound rectangle; Sigma's Experimental Barrier first, Reinhardt's, Winston's, Orisa's and Ramattra's later). Each is
- * a {@link Shape}: a flat, upright rectangle with a front, its owner's. What it stops, from its front only and only from
- * its owner's enemies (Overwatch's barriers let allies' shots through and block nothing from behind):
+ * a {@link Shape}: a flat, upright rectangle with a front (the way it was put up), its owner's. What it stops, from either
+ * side, only from its owner's enemies: Overwatch's barriers "only affect the opposing team" (the wiki's Barrier page, rev
+ * 406358) and block them both ways: an enemy inside Winston's dome "can still hit Winston or his allies if they are also
+ * inside", so "move outside of it so that the enemy has to exit the bubble to attack you" (Winston, rev 408465); Sigma's
+ * own page has players "dance around your Experimental Barrier to block his shots" (rev 408635). Until the 2026-11-02
+ * release play ours blocked from its front only (an enemy on its back side shot Sigma through it):
  * <ul>
  * <li>projectiles crossing it ({@link #intercept}: arrows, tridents, fireballs, potions, shulker bullets, every hero
  * projectile), each charging it with the damage it would have dealt ({@link #projectileDamage});</li>
- * <li>blasts in front of it, as a block in the way would (ServerExplosionMixin: {@link #blast}, {@link #blocksBlast});</li>
+ * <li>blasts on either side of it, as a block in the way would (ServerExplosionMixin: {@link #blast}, {@link #blocksBlast});</li>
  * <li>a hero's hit without a projectile (a hitscan shot) from more than a melee's reach ({@link #absorb}).</li>
  * </ul>
  * Melee and creatures pass (Overwatch's barriers don't block movement or melee but Reinhardt's hammer). Brigitte's
@@ -101,11 +105,12 @@ public final class Barriers {
 		return owner != null && (attacker == null || attacker != owner && !Allies.isSelfOrAlly(owner, attacker));
 	}
 
-	/** Where the way from {@code a} to {@code b} crosses {@code shape} from its front, or null. */
+	/** Where the way from {@code a} to {@code b} crosses {@code shape}, from either side, or null. */
 	public static @Nullable Vec3 crossing(Shape shape, Vec3 a, Vec3 b) {
 		Vec3 c = shape.barrierCentre(), f = shape.barrierFacing();
 		double da = a.subtract(c).dot(f), db = b.subtract(c).dot(f);
-		if (da <= 0 || db > 0) {
+		// from one side to the other (or onto it): the signs differ
+		if (da == db || da > 0 && db > 0 || da < 0 && db < 0) {
 			return null;
 		}
 		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));
@@ -113,7 +118,7 @@ public final class Barriers {
 		return Math.abs(at.subtract(c).dot(side)) <= shape.barrierWidth() / 2 && Math.abs(at.y - c.y) <= shape.barrierHeight() / 2 ? at : null;
 	}
 
-	/** The first barrier of {@code attacker}'s enemies the way from {@code a} to {@code b} crosses from its front. */
+	/** The first barrier of {@code attacker}'s enemies the way from {@code a} to {@code b} crosses. */
 	public static @Nullable Shape between(Level level, Vec3 a, Vec3 b, @Nullable Entity attacker) {
 		for (Shape s : in(level)) {
 			if (stops(s, attacker) && crossing(s, a, b) != null) {
@@ -167,8 +172,8 @@ public final class Barriers {
 	}
 
 	/**
-	 * Each tick of an entity barrier (its own tick): the projectiles whose last or next step crosses it from its front are
-	 * stopped there, and it takes their damage.
+	 * Each tick of an entity barrier (its own tick): the projectiles whose last or next step crosses it (either side) are
+	 * stopped there, on the side they came from, and it takes their damage.
 	 */
 	public static void intercept(Shape shape) {
 		if (!(shape.barrierLevel() instanceof ServerLevel level)) {
@@ -192,7 +197,8 @@ public final class Barriers {
 			if (damage > 0) {
 				shape.barrierTake(damage, at);
 			}
-			stop(p, at.add(shape.barrierFacing().scale(0.3)), true);
+			double from = before.subtract(shape.barrierCentre()).dot(shape.barrierFacing());
+			stop(p, at.add(shape.barrierFacing().scale(from < 0 ? -0.3 : 0.3)), true);
 		}
 	}
 
@@ -227,8 +233,8 @@ public final class Barriers {
 	// ---- blasts ----
 
 	/**
-	 * A Minecraft blast (ServerExplosionMixin, before it hurts anyone): each enemy barrier with the blast's centre in front
-	 * of it takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule with full exposure: impact
+	 * A Minecraft blast (ServerExplosionMixin, before it hurts anyone): each enemy barrier near the blast's centre (either
+	 * side) takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule with full exposure: impact
 	 * (1 - d / 2r), (impact² + impact) / 2 x 7 x 2r + 1).
 	 */
 	public static void blast(Level level, Vec3 centre, float radius, @Nullable Entity cause) {
@@ -237,7 +243,7 @@ public final class Barriers {
 			if (!stops(s, cause)) {
 				continue;
 			}
-			Vec3 nearest = nearestFront(s, centre);
+			Vec3 nearest = nearest(s, centre);
 			double d = nearest == null ? reach : nearest.distanceTo(centre);
 			if (d >= reach) {
 				continue;
@@ -248,12 +254,9 @@ public final class Barriers {
 		}
 	}
 
-	/** The point of {@code shape} nearest {@code at}, when {@code at} is in front of it; else null. */
-	public static @Nullable Vec3 nearestFront(Shape shape, Vec3 at) {
+	/** The point of {@code shape} nearest {@code at} (on either side of it). */
+	public static Vec3 nearest(Shape shape, Vec3 at) {
 		Vec3 c = shape.barrierCentre(), f = shape.barrierFacing();
-		if (at.subtract(c).dot(f) <= 0) {
-			return null;
-		}
 		Vec3 side = new Vec3(f.z, 0, -f.x);
 		double across = Math.clamp(at.subtract(c).dot(side), -shape.barrierWidth() / 2, shape.barrierWidth() / 2);
 		double up = Math.clamp(at.y - c.y, -shape.barrierHeight() / 2, shape.barrierHeight() / 2);

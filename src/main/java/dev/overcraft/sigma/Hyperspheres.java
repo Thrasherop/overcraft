@@ -132,8 +132,8 @@ public final class Hyperspheres {
 			direct.hurtServer(level, level.damageSources().thrown(sphere, owner), Ow.hp(SPHERE_DIRECT));
 		}
 		for (Barriers.Shape b : Barriers.enemyBarriers(level, owner)) {
-			Vec3 near = Barriers.nearestFront(b, at);
-			if (near != null && near.distanceTo(at) <= SPHERE_BURST_RADIUS) {
+			Vec3 near = Barriers.nearest(b, at);
+			if (near.distanceTo(at) <= SPHERE_BURST_RADIUS) {
 				b.barrierTake(burstDamage(near.distanceTo(at)), near);
 			}
 		}

@@ -202,8 +202,8 @@ public final class Barrier {
 		Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
 		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
 		double da = a.subtract(centre).dot(facing), db = b.subtract(centre).dot(facing);
-		// from in front of it to behind it
-		if (da <= 0 || db > 0) {
+		// from one side of it to the other, either way (Overwatch's barriers block enemy fire both ways: Barriers)
+		if (da == db || da > 0 && db > 0 || da < 0 && db < 0) {
 			return false;
 		}
 		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));

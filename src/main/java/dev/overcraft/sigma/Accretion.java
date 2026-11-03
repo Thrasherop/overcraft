@@ -144,8 +144,8 @@ public final class Accretion {
 			direct.hurtServer(level, level.damageSources().thrown(rock, owner), Ow.hp(ROCK_IMPACT));
 		}
 		for (Barriers.Shape b : Barriers.enemyBarriers(level, owner)) {
-			Vec3 near = Barriers.nearestFront(b, at);
-			if (near != null && near.distanceTo(at) <= ROCK_BURST_RADIUS) {
+			Vec3 near = Barriers.nearest(b, at);
+			if (near.distanceTo(at) <= ROCK_BURST_RADIUS) {
 				b.barrierTake(burstDamage(near.distanceTo(at)), near);
 			}
 		}
