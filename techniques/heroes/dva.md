@@ -160,6 +160,46 @@ grey cooling down). Stand-in look: glow sparks through the box past 3 m, a poof 
 - **Not tried:** the Toggle Defense Matrix option (the hold is Overwatch's default; the option is not built); Shield System's
   25 % (step 10); hero projectiles from a second player.
 
+## Step 6: Boosters, played 2026-11-02
+Code: `dva.Boosters` (server: the flight's state, hits, cooldown, Initiator), `OwMovement.dvaBoosters` (her client: 12 m/s
+along her look each tick, no gravity, turning with the mouse; also through water, by the `travelInFluid` hook Juno's glide
+uses), the sync's `Dva.MODE_BOOSTING` (as Sigma's Flux flight: the server decides, her client moves her),
+`Boosters.knockbackFactor` in LivingEntityMixin (x0.1 while flying). Shift starts it (ready, in the mech, awake); Shift again
+from 0.4 s ends it; 2 s at most; the 4 s cooldown is set 0.3 s after the end; the start is Initiator's trigger
+(`Dva.initiator`). Each enemy once a flight in a 1.5 m sphere 1 m up and 2 m ahead: 25, and 17 m/s along her flight + 4 up
+(a player's push sent straight to their client). A new mech (Call Mech, a respawn) starts with its matrix full and nothing
+cooling down (each mech is a new pet entity with its own vars: D 0407, M). Stand-in: small flames on her back, a
+fire-charge sound; her 0x3BB clips are triggered (`boosters_se0` -> `boosters_se1`, `boosters` at the end).
+
+**Found playing (fixed): Boosters' landing hurt her.** Aimed 30 degrees up she rose 12 m and **lost 8.44** landing (a plain
+12 m fall's damage). A log at both ends showed why: the server took her client's "on the ground" **2 m above the ground, two
+ticks before she landed**, cleared `softLanding`, and the landing counted the whole 12.8 m. The lesson was already written
+([minecraft_26](../minecraft/minecraft_26.md) "A fall is checked after the ground", from Mercy) and steps 1-3 hadn't used it.
+Fix: while `softLanding` is set the server forgets her fall each tick (`resetFallDistance`, as Sigma's Flux does). After:
+30 degrees up 54 -> **54**, 60 degrees up (17 m) 54 -> **54**, twice, on two builds; the control, a plain 12 m fall in the
+mech, still **8.44**. The eject's launch goes through the same path (it passed in steps 1-3 by timing).
+
+**Played** (`dva46`, traces of her client's speed):
+- **Level:** 12.0 m/s from the 3rd tick after the press, 2 s, **23.8 m** (expected 24); the cooldown appears 0.3 s after
+  the end at 3.95 s (4 s).
+- **Aimed up 30 degrees:** 10.38 across, **5.99 up** (12 cos / sin 30); 60 degrees: 5.99 / 10.38.
+- **Shift again** at 0.8 s: ends it (19 ticks, 11.8 m); at 0.2 s: ignored (the full 23.8 m).
+- **Three zombies in a row** (held by `movement_speed` 0, armor 0): each took **25 once** (200 -> 198) and was thrown 3.2-3.7
+  m along her flight (`s6_hit_1p.png`); they punched her for 4.9 meanwhile.
+- **Initiator:** hurt, a boost healed **+4.00 = 50** over about 1 s; another 4.8 s later (hurt again) **0** (the 5 s
+  lockout); one past the lockout **50** again; at full health nothing. (A first try read 5.25 inside the lockout: the tank's
+  own regeneration had started 6 s after the hurt. Hurt her again right before each boost.)
+- **A wall** 8 m ahead: she stopped at **z 7.30** (its face less her 0.7 m radius), no damage (`s6_wall.png`).
+- **Water** (3 deep): **12.0 m/s** throughout, level (`s6_water.png`). **1-block steps:** a level flight stops at the first
+  (z 4.30): a full block is a 1 m wall to a flight, as in Overwatch; aim up to climb.
+- **Fusion while flying:** mode 40 (boosting + firing), **12.0 m/s throughout** (no slow); **the matrix while flying:** mode
+  48 (boosting + matrix) (`s6_matrix_boost.png`).
+- **G mid-flight:** the flight ends, Minecraft mode; G back: the mech, mode 0.
+- Both views (`s6_boost_3p_b.png`, `s6_boost_1p.png`): the LSHIFT box lit while flying, its cooldown counting after. Found:
+  the first stand-in flames (big, at chest height) filled the third-person camera; now small flames low on her back.
+- **Not tried:** the knockback she takes while flying (x0.1, no push measured mid-flight); Extended Boosters (step 10);
+  Hold To Use Boosters (the option isn't built); hitting a second player.
+
 ## Not yet
 Steps 4-13: the weapons and abilities (Fusion Cannons, Defense Matrix, Boosters with Initiator's heal, Micro Missiles,
 Self-Destruct, the Light Gun), perks, sounds / voice / effects, emotes, two players. Effects (111 extracted), sounds, voice

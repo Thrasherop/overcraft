@@ -180,9 +180,14 @@ public final class Dva implements HeroKit {
 		long now = player.level().getGameTime();
 		s.dvaNow = now;
 		s.dvaTicks++;
-		if (s.softLanding && player.onGround() && now - s.dvaEjectedAt > 2 && !Boosters.active(s) && now - s.dvaBoostEndedAt > 2) {
-			// the eject's launch and Boosters land her (no fall damage: CLAUDE.md #35)
-			s.softLanding = false;
+		if (s.softLanding) {
+			// the eject's launch and Boosters land her (no fall damage: CLAUDE.md #35). Her fall is forgotten each tick until
+			// she's down, as Sigma's Flux does: the server saw her on the ground 2 m up two ticks before she landed (her
+			// client's word comes ahead of her position), cleared this, and the landing counted the whole 12.8 m (found playing)
+			player.resetFallDistance();
+			if (player.onGround() && now - s.dvaEjectedAt > 2 && !Boosters.active(s) && now - s.dvaBoostEndedAt > 2) {
+				s.softLanding = false;
+			}
 		}
 		double rate = Combat.cooldownRate(player);
 		if (!Boosters.active(s)) {

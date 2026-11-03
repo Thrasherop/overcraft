@@ -94,6 +94,9 @@ For "the mod stays invisible" checks (#32):
 A "this landing is safe" flag cleared when the server first sees the player on the ground can be gone by the time
 Minecraft applies that fall's damage (it can come a tick later, from the move packets). Clear the fall distance while
 the flag is up rather than relying on the flag at the damage event (Mercy's landings: [heroes/mercy](../heroes/mercy.md)).
+Again 2026-11-02 (D.Va's Boosters, [heroes/dva](../heroes/dva.md)): the server took her client's "on the ground" 2 m above
+it, two ticks before she landed, and the cleared flag let a 12.8 m fall through (8.44 lost). Every new soft landing should
+reset the fall each tick from the start; check this note before writing one.
 
 ## A ledge assist must also carry the hero over
 Lifting a hero who presses into a ledge in the air (OwMovement.ledge) isn't enough: the ledge's face has already
