@@ -48,8 +48,12 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   `ServerEntity.sendChanges` sends a `needsSync` speed to the others watching (`sendToTrackingPlayers`), and only
   `syncVelocity` goes `...AndSelf`. Sigma's Gravitic Flux lifted a mob but left a lifted player's own client on the
   ground (y -60.00 for 4 s, the lift's sounds heard), found in his release play (2026-11-02, [sigma](../heroes/sigma.md)).
-  Vanilla hurt knockback sets it for you; a lift or push on a no-knockback hit doesn't. `LifeGrip` and `Brigitte` set
-  `needsSync` alone on targets that can be players: worth a look.
+  Vanilla hurt knockback sets it for you; a lift or push on a no-knockback hit doesn't. **Setting `syncVelocity` wasn't
+  enough either** (played): the server's copy of a player's speed is their client's to set (each movement packet on the
+  ground zeroes its fall), so a lift that reads it back never builds up, and a hit's own `syncVelocity` sends that stale
+  copy a tick after your push and undoes it. What worked (`Accretion.sendSpeed`): send `ClientboundSetEntityMotionPacket`
+  to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. `LifeGrip` and
+  `Brigitte` set `needsSync` alone on targets that can be players: worth a look.
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
