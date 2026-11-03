@@ -204,7 +204,7 @@ public class Overcraft implements ModInitializer {
 				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
-		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)

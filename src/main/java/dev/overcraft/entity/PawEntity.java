@@ -151,8 +151,8 @@ public class PawEntity extends OwProjectile {
 		} else if (target != null && Allies.canHurt(owner, target)) {
 			boolean crit = !centre && (part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH);
 			double damage = amount * (crit ? JetpackCatStats.PAW_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit))
-				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit));
+			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT))
+				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			if (owner instanceof Player cat) {
 				Combat.credit(cat, dealt);
 				Combat.addFireForDamage(cat, dealt, Ow.toOw(target.getMaxHealth()));

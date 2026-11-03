@@ -334,11 +334,13 @@ public final class Ana implements HeroKit {
 	 * isn't raised); enemies take 90 and can't be healed for 3 s.
 	 */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade) {
-		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE);
+		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE, dev.overcraft.hero.Blow.ability("biotic_grenade"));
 	}
 
 	/** A burst of {@code heal} / {@code damage}: the throw's (90), or Biotic Bounce's second (60) with the same 4 m and 3 s. */
-	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage) {
+	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage,
+									dev.overcraft.hero.Blow what) {
+		dev.overcraft.hero.Blow blow = what.by(dev.overcraft.hero.Hero.ANA);
 		DamageSource source = owner.damageSources().thrown(grenade, owner);
 		// the burst (384F): hers in her head, everyone else's at it
 		HeroSounds.toOwner(owner, OcSounds.ANA_GRENADE_BURST);
@@ -364,7 +366,7 @@ public final class Ana implements HeroKit {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
 			} else if (Allies.canHurt(owner, e)) {
-				float dealt = Combat.damage(e, source, damage, dev.overcraft.hero.Blow.ability("biotic_grenade"));
+				float dealt = Combat.damage(e, source, damage, blow);
 				Combat.credit(owner, dealt);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 				if (dealt > 0) {
@@ -611,7 +613,7 @@ public final class Ana implements HeroKit {
 					Combat.addFireForHealing(d.owner, healed);
 				}
 			} else {
-				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit));
+				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit).by(dev.overcraft.hero.Hero.ANA));
 				Combat.credit(d.owner, dealt);
 				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
 			}
@@ -625,7 +627,7 @@ public final class Ana implements HeroKit {
 
 	/**
 	 * The dart's own damage, or a scoped shot's: a shot from her with no projectile of its own. Her own blow (her
-	 * playerAttack) would make a kill a melee kill (Voice.onDeath reads the direct entity: Superbloom's was, 0.3.22).
+	 * playerAttack) would make a kill a melee kill (Voice.onKill falls back to the direct entity: Superbloom's was, 0.3.22).
 	 */
 	private static DamageSource source(Dose d) {
 		return d.dart != null ? d.owner.damageSources().thrown(d.dart, d.owner) : shotSource(d.owner);

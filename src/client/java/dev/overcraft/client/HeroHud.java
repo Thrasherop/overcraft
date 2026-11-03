@@ -314,8 +314,10 @@ public final class HeroHud {
 		if (kind == 2) {
 			net.minecraft.world.entity.Entity victim = Minecraft.getInstance().level == null ? null
 				: Minecraft.getInstance().level.getEntity(target);
-			if (victim != null) {
-				eliminated = victim.getName().getString().toUpperCase(Locale.ROOT);
+			// past tracking range the client has no entity: the name from our own kill line (sent just before the marker)
+			String name = victim != null ? victim.getName().getString() : dev.overcraft.client.hud.KillFeedHud.ownVictim();
+			if (name != null) {
+				eliminated = name.toUpperCase(Locale.ROOT);
 				eliminatedAt = Fx.now();
 			}
 		}

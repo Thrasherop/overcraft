@@ -72,8 +72,8 @@ public class ThornEntity extends OwProjectile {
 		if (target != null && Allies.canHurt(owner, target)) {
 			boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
 			double damage = LifeweaverStats.THORN_DAMAGE * (crit ? LifeweaverStats.THORN_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit))
-				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit));
+			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LIFEWEAVER))
+				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LIFEWEAVER));
 			if (owner instanceof Player lifeweaver) {
 				Combat.credit(lifeweaver, dealt);
 				Combat.addFireForDamage(lifeweaver, dealt, Ow.toOw(target.getMaxHealth()));

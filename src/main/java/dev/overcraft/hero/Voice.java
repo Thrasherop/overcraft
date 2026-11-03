@@ -293,11 +293,14 @@ public final class Voice {
 	 * A hero player killed an enemy (a hostile mob or an enemy player: Overwatch's lines are for enemies, not a cow): a
 	 * multikill line on the burst's second kill (within KILL_CHAIN, once per burst, not again for 15-20 s), else a melee
 	 * remark or an elimination line, a headshot's or a kill in the air's among them. (Their own pain and death cries
-	 * are their hurt and death sounds: PlayerMixin.) Multikill used to fire on any two kills of anything within 4 s, on
+	 * are their hurt and death sounds: PlayerMixin.) Called by KillFeed with the hero the kill is credited to and the blow
+	 * that made it, so a fall after a boop counts as the hero's kill here too (its line, the multikill chain, Overclock's
+	 * count). Multikill used to fire on any two kills of anything within 4 s, on
 	 * every kill of a chain: "Now I'm having fun" seemed to come with every kill (#13).
 	 */
-	public static void onDeath(LivingEntity victim, DamageSource source) {
-		if (source.getEntity() instanceof ServerPlayer killer && killer != victim
+	public static void onKill(LivingEntity victim, DamageSource source, net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity credited,
+							  @org.jspecify.annotations.Nullable Blow blow) {
+		if (credited instanceof ServerPlayer killer && killer != victim
 			&& (victim instanceof net.minecraft.world.entity.monster.Enemy || victim instanceof net.minecraft.world.entity.player.Player)
 			&& !Allies.wasAlly(killer, victim)) {
 			HeroState state = HeroManager.state(killer);
@@ -313,11 +316,10 @@ public final class Voice {
 			state.lastKillAt = now;
 			if (state.killChain == 2 && now >= state.voiceReadyAt.getOrDefault("multikill", Long.MIN_VALUE)) {
 				say(killer, "multikill", 1);
-			} else if (Combat.blow(victim, source) instanceof Blow dealt ? dealt.kind() == Blow.Kind.MELEE : source.getDirectEntity() == killer) {
+			} else if (blow != null ? blow.kind() == Blow.Kind.MELEE : source.getDirectEntity() == killer) {
 				// ours: the data has no gate in front of it that could be read
 				say(killer, "melee_kill", 0.6f);
 			} else {
-				Blow blow = Combat.blow(victim, source);
 				boolean headshot = blow != null ? blow.crit() : state.critAt == now;
 				boolean inAir = !victim.onGround() && !victim.isInWater() && !victim.onClimbable() && !victim.isPassenger();
 				// the kill graph (33B4) tests something like random(0,1) < 0.66 on this path (a guess at its bytecode: L)

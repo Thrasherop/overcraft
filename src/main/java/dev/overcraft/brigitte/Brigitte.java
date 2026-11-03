@@ -89,6 +89,7 @@ public final class Brigitte implements HeroKit {
 				startBash(player, s);
 			}
 		} else if (s.primaryHeld && s.flailSwing < 0) {
+			s.flailMelee = false;
 			startSwing(player, s);
 		}
 	}
@@ -120,13 +121,14 @@ public final class Brigitte implements HeroKit {
 			LivingEntity target = bashTarget(player);
 			if (target != null) {
 				s.bashHit = true;
-				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash"));
+				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 				Effects.hitMarker(player, target, false);
 				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0);
 				target.push(push.x, push.y, push.z);
 				target.needsSync = true;
+				dev.overcraft.hero.Combat.pushed(target, player, dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.animate(player, "shield_bash_hit");
 				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
 				Effects.play(player.level(), "brigitte_bash_hit", player.position().add(flat(player).scale(0.6)).add(0, 1.2, 0), flat(player),
@@ -321,13 +323,14 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			hit++;
-			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash"));
+			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 			Effects.hitMarker(player, e, false);
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
 			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3);
 			e.needsSync = true;
+			dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			stun(player, e);
 		}
 	}
@@ -386,7 +389,7 @@ public final class Brigitte implements HeroKit {
 				}
 			}
 			if (hit != null) {
-				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE, dev.overcraft.hero.Blow.ability("whip_shot"));
+				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE, dev.overcraft.hero.Blow.ability("whip_shot").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
 				Effects.hitMarker(player, hit, false);
@@ -399,6 +402,7 @@ public final class Brigitte implements HeroKit {
 					.add(0, Ow.speed(WHIP_LIFT), 0);
 				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME),
 					HeroManager.hasPerk(player, Perk.BRIGITTE_WHIPLASH) ? player : null));
+				dev.overcraft.hero.Combat.pushed(hit, player, dev.overcraft.hero.Blow.ability("whip_shot").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Inspire.trigger(player, s, true, INSPIRE_TIME * (HeroManager.hasPerk(player, Perk.BRIGITTE_MORALE_BOOST) ? MORALE_BOOST : 1));
 				back(player, s, "whip_return", a.add(s.whipDir.scale(Math.sqrt(best))));
 			} else if (block.getType() != HitResult.Type.MISS) {
@@ -444,7 +448,7 @@ public final class Brigitte implements HeroKit {
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
-				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash"));
+				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt);
 				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
 				Effects.hitMarker(p.whiplash, p.target, false);
@@ -525,6 +529,7 @@ public final class Brigitte implements HeroKit {
 	/** Her quick melee is the flail's swing (1248 #267: no shared quick melee on her). */
 	public static void melee(ServerPlayer player, HeroState s) {
 		if (s.flailSwing < 0) {
+			s.flailMelee = true;
 			startSwing(player, s);
 		}
 	}
@@ -590,7 +595,8 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			s.flailHit.add(target.getId());
-			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE, dev.overcraft.hero.Blow.WEAPON);
+			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE,
+				(s.flailMelee ? dev.overcraft.hero.Blow.MELEE : dev.overcraft.hero.Blow.WEAPON).by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

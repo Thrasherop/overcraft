@@ -104,7 +104,8 @@ public class BioticGrenadeEntity extends OwProjectile {
 		ServerPlayer owner = getOwner() instanceof ServerPlayer p ? p : null;
 		if (owner != null) {
 			if (bounced) {
-				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST);
+				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST,
+					dev.overcraft.hero.Blow.perk("biotic_bounce"));
 			} else {
 				Ana.grenadeBurst(level, owner, position(), this);
 			}

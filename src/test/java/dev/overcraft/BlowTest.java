@@ -27,7 +27,7 @@ class BlowTest {
 		assertEquals("ability:soundwave", Blow.ability("soundwave").feed());
 		assertEquals("perk:superbloom", Blow.perk("superbloom").feed());
 		assertEquals("ult:catnapper", Blow.ult("catnapper").feed());
-		assertTrue(Blow.ability("charged_shot").crit(true).crit());
+		assertTrue(Blow.weapon("charged_shot", false).crit(true).crit());
 		assertEquals("ult:overclock", Blow.ult("overclock").crit(true).feed());
 	}
 
@@ -37,7 +37,7 @@ class BlowTest {
 	 */
 	@Test
 	void everyNamedIconFitsThePayload() throws IOException {
-		Pattern call = Pattern.compile("Blow\\.(ability|perk|ult)\\(\"([^\"]*)\"");
+		Pattern call = Pattern.compile("Blow\\.(ability|perk|ult|weapon|melee)\\(\"([^\"]*)\"");
 		List<String> found = new ArrayList<>();
 		try (Stream<Path> files = Files.walk(Path.of("src/main/java"))) {
 			for (Path file : files.filter(f -> f.toString().endsWith(".java")).toList()) {
@@ -53,7 +53,7 @@ class BlowTest {
 		// the heroes' ability, perk and ult kills (the wiki's elimination icons), each named somewhere
 		for (String expected : List.of("ability:soundwave", "ability:purr", "ult:catnapper", "perk:claws_out", "perk:superbloom",
 			"ability:biotic_grenade", "ability:sleep_dart", "perk:local_anesthetic", "ability:shield_bash", "ability:whip_shot",
-			"perk:whiplash", "ability:pulsar_torpedoes", "ability:charged_shot", "ult:overclock", "ability:disruptor_shot",
+			"perk:whiplash", "ability:pulsar_torpedoes", "weapon:charged_shot", "ult:overclock", "ult:rally", "perk:biotic_bounce", "melee:claws_out", "ability:disruptor_shot",
 			"ability:cyberspace", "ult:emp")) {
 			assertTrue(found.contains(expected), expected + " is never dealt");
 		}

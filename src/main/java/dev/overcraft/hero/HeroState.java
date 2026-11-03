@@ -151,6 +151,8 @@ public final class HeroState {
 	public boolean sombraFiring, sombraStealthed;
 	/** Brigitte: her flail's swing (ticks into it, -1 none), which side it's on (0 forehand, 1 backhand), whom it hit. */
 	public int flailSwing = -1, flailCombo;
+	/** The swing running is her quick melee (V), not the primary fire: the kill feed's fist (kill_feed.md). */
+	public boolean flailMelee;
 	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
 	/** Brigitte: when the flail may start Inspire again (game time). */
 	public long inspireReadyAt = -1;

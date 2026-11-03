@@ -86,8 +86,8 @@ public class KunaiEntity extends OwProjectile {
 			state.critAt = level.getGameTime();
 		}
 		double damage = KirikoStats.KUNAI_DAMAGE * (crit ? KirikoStats.KUNAI_CRIT : 1);
-		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit))
-			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit));
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.KIRIKO))
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.KIRIKO));
 		Effects.play(level, "kunai_hit_entity", at, getOwner());
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {

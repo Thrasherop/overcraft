@@ -277,12 +277,13 @@ public final class Lucio implements HeroKit {
 			if (to.length() > WAVE_RANGE + target.getBbWidth() / 2 || to.normalize().dot(look) < cosLimit || !player.hasLineOfSight(target)) {
 				continue;
 			}
-			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage, dev.overcraft.hero.Blow.ability("soundwave"));
+			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage, dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 			if (target.isAlive()) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
 				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));
 				target.syncVelocity = true;
+				dev.overcraft.hero.Combat.pushed(target, player, dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 				// the lockout (ours: Minecraft has no "can't move", so a moment of heavy Slowness)
 				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(WAVE_LOCKOUT), 9, false, false));
 			}

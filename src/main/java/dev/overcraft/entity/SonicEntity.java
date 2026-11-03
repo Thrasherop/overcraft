@@ -81,13 +81,14 @@ public class SonicEntity extends OwProjectile {
 			state.critAt = level.getGameTime();
 		}
 		double damage = LucioStats.AMP_DAMAGE * (crit ? LucioStats.AMP_CRIT : 1);
-		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit))
-			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit));
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO))
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO));
 		// a small push along the round's flight (ours: the knockback exists, no source gives it)
 		Vec3 push = getDeltaMovement().normalize().scale(Ow.speed(LucioStats.AMP_KNOCKBACK));
 		if (part == null && target.isAlive()) {
 			target.push(push.x, 0, push.z);
 			target.syncVelocity = true;
+			dev.overcraft.hero.Combat.pushed(target, getOwner(), dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.LUCIO));
 		}
 		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {

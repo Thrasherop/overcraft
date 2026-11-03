@@ -214,30 +214,46 @@ public final class KillFeedHud {
 	/**
 	 * The icons between the two sides, left to right (the wiki's "Elimination Feed", 2026-06-19): the weapon's fire none,
 	 * only the arrow (the owner's #33 too: Ana's rifle silhouette in her GUI data is her HUD weapon panel's art, not a
-	 * feed icon); Quick Melee the fist; an ability, a perk's own damage or the ult its icon (an ult's pulsing); a death by
-	 * the world alone none; a critical hit the red target after any of them.
+	 * feed icon); Quick Melee the fist; an ability, a perk's own damage or the ult its icon (an ult's pulsing); a death with
+	 * no killer the skull (#33); a mob's ranged kill only the arrow, its bite the fist; a critical hit the red target after any of them.
 	 */
 	static java.util.List<Icon> icons(KillFeedPayload kill) {
 		java.util.List<Icon> icons = new java.util.ArrayList<>(2);
-		String weapon = kill.weapon();
-		int colon = weapon.indexOf(':');
-		if (weapon.equals("melee")) {
-			// Overwatch's Quick Melee fist from the local pack, else ours
-			Identifier fist = HeroArt.killFeed("melee");
-			icons.add(new Icon(fist != null ? fist : HudShapes.FIST, true));
-		} else if (colon > 0 && !kill.killer().isEmpty()) {
-			String kind = weapon.substring(0, colon);
-			String slug = weapon.substring(colon + 1);
-			Hero hero = kill.killerHero().isEmpty() ? null : Hero.byId(kill.killerHero());
-			Identifier art = hero == null ? null : kind.equals("perk") ? HeroArt.perk(hero, slug) : HeroArt.ability(hero, slug);
-			boolean ult = kind.equals("ult");
-			String text = art != null ? null : slug.replace('_', ' ').toUpperCase(Locale.ROOT);
-			icons.add(new Icon(art, false, 0xFFFFFF, ult, text));
-		}
-		if (kill.headshot()) {
-			icons.add(new Icon(HudShapes.HEADSHOT, true, HEADSHOT_RED, false, null));
+		for (String token : dev.overcraft.hero.KillFeed.iconTokens(kill.weapon(), kill.killer().isEmpty(), kill.headshot())) {
+			if (token.equals("skull")) {
+				icons.add(new Icon(HudShapes.SKULL, true));
+			} else if (token.equals("fist")) {
+				// Overwatch's Quick Melee fist from the local pack, else ours
+				Identifier fist = HeroArt.killFeed("melee");
+				icons.add(new Icon(fist != null ? fist : HudShapes.FIST, true));
+			} else if (token.equals("headshot")) {
+				icons.add(new Icon(HudShapes.HEADSHOT, true, HEADSHOT_RED, false, null));
+			} else {
+				// "icon:<kind>:<slug>": the hero's art, abilities first, then perks; with no art in the pack, its name
+				String[] parts = token.split(":", 3);
+				Hero hero = kill.killerHero().isEmpty() ? null : Hero.byId(kill.killerHero());
+				Identifier art = hero == null ? null : HeroArt.ability(hero, parts[2]);
+				if (art == null && hero != null) {
+					art = HeroArt.perk(hero, parts[2]);
+				}
+				String text = art != null ? null : parts[2].replace('_', ' ').toUpperCase(Locale.ROOT);
+				icons.add(new Icon(art, false, 0xFFFFFF, parts[1].equals("ult"), text));
+			}
 		}
 		return icons;
+	}
+
+	/**
+	 * The victim of this player's newest kill line, if it came in the last second: ELIMINATED's name when the victim is
+	 * past tracking range and the client can't look it up.
+	 */
+	public static @Nullable String ownVictim() {
+		for (Line line : LINES) {
+			if (line.kill().byYou() && Util.getMillis() - line.at() < 1000) {
+				return line.kill().victim();
+			}
+		}
+		return null;
 	}
 
 	private static int lerp(int from, int to, float t) {
