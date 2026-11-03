@@ -175,7 +175,7 @@ public final class Sombra implements HeroKit {
 				continue;
 			}
 			if (Allies.canHurt(player, e)) {
-				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()));
+				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()), dev.overcraft.hero.Blow.ult("emp"));
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 				Effects.hitMarker(player, e, false);
@@ -553,7 +553,7 @@ public final class Sombra implements HeroKit {
 		double falloff = metres <= PISTOL_FALLOFF_START ? 1 : metres >= PISTOL_FALLOFF_END ? PISTOL_FALLOFF_MIN
 			: 1 - (1 - PISTOL_FALLOFF_MIN) * (metres - PISTOL_FALLOFF_START) / (PISTOL_FALLOFF_END - PISTOL_FALLOFF_START);
 		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
-		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1));
+		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1), dev.overcraft.hero.Blow.weapon(crit));
 		Combat.credit(player, dealt);
 		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
 		if (dealt > 0) {

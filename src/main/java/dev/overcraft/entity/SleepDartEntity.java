@@ -64,7 +64,7 @@ public class SleepDartEntity extends OwProjectile {
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
 			// its 5 first, then the sleep: the dart's own hit doesn't wake it
-			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE);
+			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE, dev.overcraft.hero.Blow.ability("sleep_dart"));
 			Combat.credit(owner, dealt);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);

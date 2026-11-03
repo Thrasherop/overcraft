@@ -76,11 +76,23 @@ public final class Combat {
 				dev.overcraft.Overcraft.id("hitscan"))), null, owner);
 	}
 
-	public static float damage(LivingEntity target, DamageSource source, double owDamage) {
+	/**
+	 * Deals a hero's damage, saying what dealt it ({@code blow}: the weapon, melee, an ability, a perk, the ult, and
+	 * whether it was critical). A death it causes is told by it (KillFeed, Voice: they run inside the hurt), and the
+	 * victim remembers it a while, so a fall or the void it sends them into still credits the hero (#84).
+	 */
+	public static float damage(LivingEntity target, DamageSource source, double owDamage, Blow blow) {
 		float before = target.getHealth() + target.getAbsorptionAmount();
-		target.damageCooldownTime = 0;
-		target.hurt(source, Ow.hp(owDamage));
-		target.damageCooldownTime = 0;
+		Dealt outer = dealing;
+		dealing = new Dealt(source.getEntity(), target, blow);
+		remember(target, source, blow);
+		try {
+			target.damageCooldownTime = 0;
+			target.hurt(source, Ow.hp(owDamage));
+			target.damageCooldownTime = 0;
+		} finally {
+			dealing = outer;
+		}
 		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
 	}
@@ -89,14 +101,65 @@ public final class Combat {
 	 * The same through one of the Ender Dragon's parts (its head and neck take it all, the rest a quarter plus one:
 	 * Minecraft's rule, EnderDragon.hurt).
 	 */
-	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage) {
+	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage, Blow blow) {
 		LivingEntity dragon = part.parentMob;
 		float before = dragon.getHealth() + dragon.getAbsorptionAmount();
-		dragon.damageCooldownTime = 0;
-		part.hurtServer(level, source, Ow.hp(owDamage));
-		dragon.damageCooldownTime = 0;
+		Dealt outer = dealing;
+		dealing = new Dealt(source.getEntity(), dragon, blow);
+		remember(dragon, source, blow);
+		try {
+			dragon.damageCooldownTime = 0;
+			part.hurtServer(level, source, Ow.hp(owDamage));
+			dragon.damageCooldownTime = 0;
+		} finally {
+			dealing = outer;
+		}
 		float dealt = before - (dragon.isAlive() ? dragon.getHealth() + dragon.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
+	}
+
+	/** The hero damage being dealt right now (inside Combat.damage's hurt): who, to whom, with what. */
+	private record Dealt(@org.jspecify.annotations.Nullable Entity attacker, LivingEntity target, Blow blow) {
+	}
+
+	private static @org.jspecify.annotations.Nullable Dealt dealing;
+
+	/** A creature's last hero blow: by whom, with what, when (game time). */
+	public record LastBlow(UUID attacker, Blow blow, long at) {
+	}
+
+	private static final Map<UUID, LastBlow> lastBlows = new HashMap<>();
+
+	/**
+	 * How long a hero's blow still counts for a death by the world (a fall, the void, lava): Minecraft's own kill credit
+	 * window (LivingEntity.lastHurtByPlayerMemoryTime, 100 ticks).
+	 */
+	public static final int CREDIT_TICKS = 100;
+
+	private static void remember(LivingEntity target, DamageSource source, Blow blow) {
+		if (source.getEntity() instanceof Player hero) {
+			lastBlows.put(target.getUUID(), new LastBlow(hero.getUUID(), blow, now(target)));
+		}
+	}
+
+	/**
+	 * What dealt the blow that is killing {@code victim} with {@code source}: the hero damage being dealt to it right
+	 * now, or null (not a hero's: a zombie's bite, a sword in Minecraft mode, the world).
+	 */
+	public static @org.jspecify.annotations.Nullable Blow blow(LivingEntity victim, DamageSource source) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == source.getEntity() ? d.blow : null;
+	}
+
+	/** The victim's last hero blow if it was within CREDIT_TICKS, for a death the world dealt; else null. */
+	public static @org.jspecify.annotations.Nullable LastBlow recentBlow(LivingEntity victim) {
+		LastBlow last = lastBlows.get(victim.getUUID());
+		return last != null && now(victim) - last.at <= CREDIT_TICKS ? last : null;
+	}
+
+	/** It died: its last blow has been told, and is forgotten. */
+	public static void forget(LivingEntity victim) {
+		lastBlows.remove(victim.getUUID());
 	}
 
 	/**
@@ -439,6 +502,7 @@ public final class Combat {
 		if (server.getTickCount() % 200 == 0) {
 			long time = server.overworld().getGameTime();
 			phasedUntil.values().removeIf(until -> until < time);
+			lastBlows.values().removeIf(last -> time - last.at > CREDIT_TICKS);
 		}
 	}
 
@@ -474,5 +538,7 @@ public final class Combat {
 		buffs.clear();
 		overhealth.clear();
 		overhealthLeft.clear();
+		lastBlows.clear();
+		dealing = null;
 	}
 }

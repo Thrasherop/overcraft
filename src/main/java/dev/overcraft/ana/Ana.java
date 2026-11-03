@@ -364,7 +364,7 @@ public final class Ana implements HeroKit {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
 			} else if (Allies.canHurt(owner, e)) {
-				float dealt = Combat.damage(e, source, damage);
+				float dealt = Combat.damage(e, source, damage, dev.overcraft.hero.Blow.ability("biotic_grenade"));
 				Combat.credit(owner, dealt);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 				if (dealt > 0) {
@@ -524,7 +524,7 @@ public final class Ana implements HeroKit {
 	// ---- the rifle's doses: 75 over 0.5 s, heal or damage (0B95 #193 / #205) ----
 
 	private record Dose(ServerPlayer owner, LivingEntity target, boolean heal, @org.jspecify.annotations.Nullable Entity dart,
-						double perTick, int ticks) {
+						double perTick, int ticks, boolean crit) {
 	}
 
 	private static final List<Dose> DOSES = new ArrayList<>();
@@ -538,7 +538,7 @@ public final class Ana implements HeroKit {
 		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && at.y >= target.getEyeY() - HEAD_DEPTH;
 		int ticks = Math.max(1, Ow.ticks(RIFLE_OVER));
 		double amount = heal ? RIFLE_HEAL : RIFLE_DAMAGE * (crit ? HEADHUNTER : 1);
-		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks));
+		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks, crit));
 		HeroSounds.toOwner(owner, OcSounds.ANA_HIT);
 		// where it struck, on the side facing her: at their centre the burst was hidden inside their body (found playing)
 		Effects.play((ServerLevel) target.level(), heal ? "ana_heal_hit" : "ana_harm_hit", at, Vec3.ZERO, null, 0, owner);
@@ -611,12 +611,12 @@ public final class Ana implements HeroKit {
 					Combat.addFireForHealing(d.owner, healed);
 				}
 			} else {
-				float dealt = Combat.damage(d.target, source(d), d.perTick);
+				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit));
 				Combat.credit(d.owner, dealt);
 				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
 			}
 			if (d.ticks > 1) {
-				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1));
+				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1, d.crit));
 			}
 		}
 		DOSES.clear();

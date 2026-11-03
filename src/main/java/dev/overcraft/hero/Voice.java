@@ -313,11 +313,12 @@ public final class Voice {
 			state.lastKillAt = now;
 			if (state.killChain == 2 && now >= state.voiceReadyAt.getOrDefault("multikill", Long.MIN_VALUE)) {
 				say(killer, "multikill", 1);
-			} else if (source.getDirectEntity() == killer) {
+			} else if (Combat.blow(victim, source) instanceof Blow dealt ? dealt.kind() == Blow.Kind.MELEE : source.getDirectEntity() == killer) {
 				// ours: the data has no gate in front of it that could be read
 				say(killer, "melee_kill", 0.6f);
 			} else {
-				boolean headshot = state.critAt == now;
+				Blow blow = Combat.blow(victim, source);
+				boolean headshot = blow != null ? blow.crit() : state.critAt == now;
 				boolean inAir = !victim.onGround() && !victim.isInWater() && !victim.onClimbable() && !victim.isPassenger();
 				// the kill graph (33B4) tests something like random(0,1) < 0.66 on this path (a guess at its bytecode: L)
 				say(killer, "elimination", 0.66f, headshot ? "headshot" : null, inAir ? "in_air" : null);

@@ -133,3 +133,7 @@
 - **`reload` can run the dev client out of memory** (2026-11-02, Jetpack Cat): at `-Xmx3G` a resource reload re-reads every
   hero model and died with "Java heap space" mid-reload (the window froze on the Mojang screen and every `dev` call timed
   out). After changing the pack, restart the client instead.
+- **A `/kill` is not always neutral** (2026-11-02, kill feed): before the GENERIC_KILL rule a `/kill @e` clearing the test
+  world credited the hero whose blow had landed in the last 5 s (a stray feed line and ELIMINATED), and with
+  `send_command_feedback` off a `/summon` with bad NBT fails without a word. Turn feedback on while setting up. See
+  [kill_feed](../hud/kill_feed.md).

@@ -120,7 +120,7 @@ public final class Brigitte implements HeroKit {
 			LivingEntity target = bashTarget(player);
 			if (target != null) {
 				s.bashHit = true;
-				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE);
+				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash"));
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 				Effects.hitMarker(player, target, false);
@@ -321,7 +321,7 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			hit++;
-			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE);
+			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash"));
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
 			Effects.hitMarker(player, e, false);
@@ -386,7 +386,7 @@ public final class Brigitte implements HeroKit {
 				}
 			}
 			if (hit != null) {
-				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE);
+				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE, dev.overcraft.hero.Blow.ability("whip_shot"));
 				Combat.credit(player, dealt);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
 				Effects.hitMarker(player, hit, false);
@@ -444,7 +444,7 @@ public final class Brigitte implements HeroKit {
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
-				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE);
+				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash"));
 				Combat.credit(p.whiplash, dealt);
 				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
 				Effects.hitMarker(p.whiplash, p.target, false);
@@ -590,7 +590,7 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			s.flailHit.add(target.getId());
-			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE);
+			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE, dev.overcraft.hero.Blow.WEAPON);
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

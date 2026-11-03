@@ -90,20 +90,30 @@ public final class KillFeedHud {
 		float left = x;
 		// right to left: the victim, the weapon, the killer
 		x = side(g, kill.victim(), kill.victimHero(), kill.victimType(), kill.victimAlly(), x, y, alpha, true);
-		// what it was done with, then a bold white ">" (about 9 x 14 px, a 3 px stroke). Weapon fire shows no icon, an
-		// ability its icon, melee a fist, the world's doing a skull, and a headshot its own mark after them (the owner, #33)
+		// what it was done with (icons()), then a bold white ">" (about 9 x 14 px, a 3 px stroke)
 		java.util.List<Icon> icons = icons(kill);
-		float iconW = 24 + icons.size() * ICON_SLOT + Math.max(0, icons.size() - 1) * 2;
+		float iconsW = 0;
+		for (Icon icon : icons) {
+			iconsW += icon.width() + 2;
+		}
+		float iconW = 24 + iconsW;
 		x -= iconW;
 		fill(g, x, y, iconW, ROW_H, argb(0x0B1520, 0.7f * alpha));
 		float at = x + 3;
 		for (Icon icon : icons) {
-			if (icon.glyph()) {
-				image(g, icon.id(), at + 2, y + 6, ROW_H - 12, ROW_H - 12, argb(icon.rgb(), alpha));
+			// an ult's icon pulses, as the ready ult does (the wiki: "animated similar to the one shown when it is fully
+			// charged"; the pulse's speed and depth are ours)
+			float glow = icon.pulse() ? 0.7f + 0.3f * (float) Math.sin(Util.getMillis() / 1000f * Math.PI * 2 * 1.5f) : 1;
+			int rgb = icon.pulse() ? lerp(0xFFC24A, icon.rgb(), glow) : icon.rgb();
+			if (icon.text() != null) {
+				// no art in the pack: the ability's name, small, in its place
+				HudText.plain(g, Face.BODY, icon.text(), at + icon.width() / 2, y + ROW_H / 2 + 4, 9, argb(rgb, alpha), Align.CENTER);
+			} else if (icon.glyph()) {
+				image(g, icon.id(), at + 2, y + 6, ROW_H - 12, ROW_H - 12, argb(rgb, alpha));
 			} else {
-				image(g, icon.id(), at, y + 5, ICON_SLOT, ROW_H - 10, argb(icon.rgb(), alpha));
+				image(g, icon.id(), at, y + 5, ICON_SLOT, ICON_SLOT, argb(rgb, alpha));
 			}
-			at += ICON_SLOT + 2;
+			at += icon.width() + 2;
 		}
 		g.pose().pushMatrix();
 		g.pose().translate(x + iconW - 11, y + ROW_H / 2);
@@ -181,40 +191,60 @@ public final class KillFeedHud {
 		return connection == null ? null : connection.getPlayerInfo(name);
 	}
 
-	/** One icon in a row's middle: a hero's ability art, or a square glyph (Overwatch's or ours), and its colour. */
-	private record Icon(Identifier id, boolean glyph, int rgb) {
+	/**
+	 * One icon in a row's middle: a hero's ability art, or a square glyph (Overwatch's or ours), its colour, whether it
+	 * pulses (an ult's), or a name drawn in its place when the pack has no art.
+	 */
+	private record Icon(@Nullable Identifier id, boolean glyph, int rgb, boolean pulse, @Nullable String text) {
 		Icon(Identifier id, boolean glyph) {
-			this(id, glyph, 0xFFFFFF);
+			this(id, glyph, 0xFFFFFF, false, null);
+		}
+
+		float width() {
+			return text != null ? HudText.width(Face.BODY, text, 9) + 6 : ICON_SLOT;
 		}
 	}
 
 	/** The headshot mark's red: the crit hit marker's. */
 	private static final int HEADSHOT_RED = 0xFF3A3A;
 
-	/** The width each icon takes in a row's middle. */
-	private static final float ICON_SLOT = 26;
+	/** The width (and height) each icon takes in a row's middle: the row less a 5 px margin above and below. */
+	private static final float ICON_SLOT = ROW_H - 10;
 
-	/** The icons between the two sides, left to right. */
-	private static java.util.List<Icon> icons(KillFeedPayload kill) {
+	/**
+	 * The icons between the two sides, left to right (the wiki's "Elimination Feed", 2026-06-19): the weapon's fire none,
+	 * only the arrow (the owner's #33 too: Ana's rifle silhouette in her GUI data is her HUD weapon panel's art, not a
+	 * feed icon); Quick Melee the fist; an ability, a perk's own damage or the ult its icon (an ult's pulsing); a death by
+	 * the world alone none; a critical hit the red target after any of them.
+	 */
+	static java.util.List<Icon> icons(KillFeedPayload kill) {
 		java.util.List<Icon> icons = new java.util.ArrayList<>(2);
 		String weapon = kill.weapon();
-		if (kill.killer().isEmpty()) {
-			icons.add(new Icon(HudShapes.SKULL, true));
-		} else if (weapon.equals("melee") || weapon.isEmpty()) {
+		int colon = weapon.indexOf(':');
+		if (weapon.equals("melee")) {
 			// Overwatch's Quick Melee fist from the local pack, else ours
 			Identifier fist = HeroArt.killFeed("melee");
 			icons.add(new Icon(fist != null ? fist : HudShapes.FIST, true));
-		} else if (!weapon.equals("weapon")) {
+		} else if (colon > 0 && !kill.killer().isEmpty()) {
+			String kind = weapon.substring(0, colon);
+			String slug = weapon.substring(colon + 1);
 			Hero hero = kill.killerHero().isEmpty() ? null : Hero.byId(kill.killerHero());
-			Identifier art = hero == null ? null : HeroArt.ability(hero, weapon);
-			if (art != null) {
-				icons.add(new Icon(art, false));
-			}
+			Identifier art = hero == null ? null : kind.equals("perk") ? HeroArt.perk(hero, slug) : HeroArt.ability(hero, slug);
+			boolean ult = kind.equals("ult");
+			String text = art != null ? null : slug.replace('_', ' ').toUpperCase(Locale.ROOT);
+			icons.add(new Icon(art, false, 0xFFFFFF, ult, text));
 		}
 		if (kill.headshot()) {
-			icons.add(new Icon(HudShapes.HEADSHOT, true, HEADSHOT_RED));
+			icons.add(new Icon(HudShapes.HEADSHOT, true, HEADSHOT_RED, false, null));
 		}
 		return icons;
+	}
+
+	private static int lerp(int from, int to, float t) {
+		int r = Math.round(((from >> 16) & 0xFF) + (((to >> 16) & 0xFF) - ((from >> 16) & 0xFF)) * t);
+		int gr = Math.round(((from >> 8) & 0xFF) + (((to >> 8) & 0xFF) - ((from >> 8) & 0xFF)) * t);
+		int b = Math.round((from & 0xFF) + ((to & 0xFF) - (from & 0xFF)) * t);
+		return r << 16 | gr << 8 | b;
 	}
 
 	private static int argb(int rgb, float a) {

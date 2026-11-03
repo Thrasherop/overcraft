@@ -3,6 +3,7 @@ package dev.overcraft.sojourn;
 import dev.overcraft.Ow;
 import dev.overcraft.entity.RailgunShotEntity;
 import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Blow;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroManager;
@@ -226,7 +227,8 @@ public final class Railgun {
 		}
 		double damage = RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1);
 		dev.overcraft.brigitte.Barrier.took = false;
-		float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+		float dealt = part != null ? Combat.damagePart(level, part, source, damage, Blow.weapon(crit))
+			: Combat.damage(target, source, damage, Blow.weapon(crit));
 		boolean barrier = dev.overcraft.brigitte.Barrier.took;
 		dev.overcraft.brigitte.Barrier.took = false;
 		Combat.credit(owner, dealt);
@@ -315,7 +317,10 @@ public final class Railgun {
 				s.critAt = level.getGameTime();
 			}
 			double damage = base * falloff * (crit ? CHARGED_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+			// the Charged Shot has its own icon in the feed; fired in Overclock, the ult's (the wiki names Overclock among
+			// her elimination icons, and in it her charged shots are the ult's: which shot it shows for is L)
+			Blow blow = (Sojourn.overclocked(s) ? Blow.ult("overclock") : Blow.ability("charged_shot")).crit(crit);
+			float dealt = part != null ? Combat.damagePart(level, part, source, damage, blow) : Combat.damage(target, source, damage, blow);
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

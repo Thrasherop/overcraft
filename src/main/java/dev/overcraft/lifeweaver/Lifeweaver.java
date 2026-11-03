@@ -544,7 +544,7 @@ public final class Lifeweaver implements HeroKit {
 		hits.add(now);
 		if (hits.size() >= SUPERBLOOM_THORNS) {
 			hits.clear();
-			float dealt = Combat.damage(target, player.damageSources().thrown(thorn, player), SUPERBLOOM_DAMAGE);
+			float dealt = Combat.damage(target, player.damageSources().thrown(thorn, player), SUPERBLOOM_DAMAGE, dev.overcraft.hero.Blow.perk("superbloom"));
 			Combat.credit(player, dealt);
 			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

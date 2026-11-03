@@ -277,7 +277,7 @@ public final class Lucio implements HeroKit {
 			if (to.length() > WAVE_RANGE + target.getBbWidth() / 2 || to.normalize().dot(look) < cosLimit || !player.hasLineOfSight(target)) {
 				continue;
 			}
-			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage);
+			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage, dev.overcraft.hero.Blow.ability("soundwave"));
 			if (target.isAlive()) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
 				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));

@@ -69,7 +69,7 @@ public final class QuickMelee {
 				continue;
 			}
 			DamageSource source = hero.damageSources().playerAttack(hero);
-			float dealt = Combat.damage(target, source, DAMAGE);
+			float dealt = Combat.damage(target, source, DAMAGE, claws ? Blow.perk("claws_out") : Blow.MELEE);
 			Combat.credit(hero, dealt);
 			Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
 			if (dealt > 0) {

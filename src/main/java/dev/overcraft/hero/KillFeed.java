@@ -1,6 +1,5 @@
 package dev.overcraft.hero;
 
-import dev.overcraft.entity.KunaiEntity;
 import dev.overcraft.net.KillFeedPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,7 +14,13 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Overwatch's kill feed (top right): who killed whom, with what. Sent for kills by a player playing a hero and for
- * every player's death (a hero killed by a zombie shows too), to players within RANGE.
+ * every player's death (a hero killed by a zombie shows too), to players within RANGE. A hero who kills also gets the
+ * kill marker and "ELIMINATED" here, from the death itself, whatever dealt it (#106).
+ *
+ * <p>What the line shows between the names follows the wiki's "Elimination Feed" (2026-06-19): the weapon's fire, any
+ * mode, shows only the arrow; Quick Melee a fist; an ability, a perk's own damage or the ult its icon; a critical hit the
+ * small red target after it; a death by the world alone only the arrow and the victim. What dealt a hero's damage comes
+ * with it (Blow, given to Combat.damage), so no hero has a rule of its own here (#84, #102).
  */
 public final class KillFeed {
 	/** Blocks around the death that see the line (ours: about a fight's reach). */
@@ -29,12 +34,28 @@ public final class KillFeed {
 			return;
 		}
 		Entity killer = source.getEntity();
+		Blow blow = Combat.blow(victim, source);
+		if (killer == null && !source.is(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL)) {
+			// the world dealt it (a fall, the void, lava): a hero's blow in the last 5 s takes the kill, with its icon (the
+			// wiki: a stun or knockback is shown when the world finishes the job). Not /kill: a command isn't the world (a
+			// /kill of a zombie just shot was credited to the shooter, found playing)
+			Combat.LastBlow last = Combat.recentBlow(victim);
+			Player hero = last == null ? null : level.getServer().getPlayerList().getPlayer(last.attacker());
+			if (hero != null && hero != victim) {
+				killer = hero;
+				blow = last.blow().crit(false);
+			}
+		}
+		Combat.forget(victim);
 		boolean heroKiller = killer instanceof Player player && HeroManager.hero(player) != null;
+		if (killer instanceof ServerPlayer hero && hero != victim && HeroManager.hero(hero) != null && HeroManager.heroMode(hero)) {
+			Effects.killMarker(hero, victim);
+		}
 		if (!heroKiller && !(victim instanceof Player)) {
 			return;
 		}
-		String weapon = weapon(source, killer);
-		boolean headshot = source.getDirectEntity() instanceof KunaiEntity kunai && kunai.headshot();
+		String weapon = weapon(source, killer, blow);
+		boolean headshot = blow != null && blow.crit();
 		String killerName = killer == null ? "" : killer.getDisplayName().getString();
 		String killerHero = heroOf(killer);
 		String victimName = victim.getDisplayName().getString();
@@ -48,17 +69,14 @@ public final class KillFeed {
 	}
 
 	/**
-	 * What the kill was made with, as the feed shows it: the hero's weapon fire (no icon in Overwatch's feed: the owner,
-	 * #33; Kiriko's kunai are her weapon's secondary fire), melee, an ability (its icon), or nothing in particular.
+	 * What the kill was made with, as the payload carries it (Blow.feed): a hero's blow as it was dealt; otherwise a blow
+	 * by the killer's own hand (a mob's bite, a sword) is melee, anything else (an arrow, the world) the arrow alone.
 	 */
-	private static String weapon(DamageSource source, @Nullable Entity killer) {
-		if (source.getDirectEntity() instanceof KunaiEntity) {
-			return "weapon";
+	static String weapon(DamageSource source, @Nullable Entity killer, @Nullable Blow blow) {
+		if (blow != null) {
+			return blow.feed();
 		}
-		if (killer instanceof Player player && HeroManager.hero(player) != null && source.getDirectEntity() == killer) {
-			return "melee";
-		}
-		return "";
+		return killer != null && source.getDirectEntity() == killer ? "melee" : "weapon";
 	}
 
 	/** The entity's type id ("minecraft:zombie"), for the feed's face; "" for none. */
