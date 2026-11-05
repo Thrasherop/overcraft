@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import dev.overcraft.hero.HeroState;
 import org.junit.jupiter.api.Test;
 
-/** Rally's shockwave: the tracker's slots, then the bashed target out of the list (0EE3 #877 -> #890, #120). */
+/** Rally's shockwave: the tracker's 10, then this Brigitte's bashed target out of the list (0EE3 #877 -> #890, #120), as Brigitte.shockwave calls it. */
 class BrigitteRulesTest {
 	private static List<UUID> ids(int n) {
 		List<UUID> list = new ArrayList<>();
@@ -20,10 +21,16 @@ class BrigitteRulesTest {
 		return list;
 	}
 
+	private static HeroState bashed(UUID id) {
+		HeroState s = new HeroState();
+		s.rallyBashed = id;
+		return s;
+	}
+
 	@Test
 	void theBashedOneIsPassedOver() {
 		List<UUID> tracked = ids(3);
-		List<UUID> hits = Brigitte.shockwaveHits(tracked, tracked.get(1), Function.identity(), 10);
+		List<UUID> hits = Brigitte.shockwaveHits(tracked, bashed(tracked.get(1)), Function.identity());
 		assertEquals(2, hits.size());
 		assertFalse(hits.contains(tracked.get(1)));
 	}
@@ -31,17 +38,17 @@ class BrigitteRulesTest {
 	@Test
 	void itStillFillsOneOfTheTen() {
 		List<UUID> tracked = ids(12);
-		assertEquals(9, Brigitte.shockwaveHits(tracked, tracked.get(0), Function.identity(), 10).size());
+		assertEquals(9, Brigitte.shockwaveHits(tracked, bashed(tracked.get(0)), Function.identity()).size());
 	}
 
 	@Test
 	void outsideTheTenItCostsNothing() {
 		List<UUID> tracked = ids(12);
-		assertEquals(10, Brigitte.shockwaveHits(tracked, tracked.get(11), Function.identity(), 10).size());
+		assertEquals(10, Brigitte.shockwaveHits(tracked, bashed(tracked.get(11)), Function.identity()).size());
 	}
 
 	@Test
 	void noBashNoExclusion() {
-		assertEquals(3, Brigitte.shockwaveHits(ids(3), null, Function.identity(), 10).size());
+		assertEquals(3, Brigitte.shockwaveHits(ids(3), bashed(null), Function.identity()).size());
 	}
 }

@@ -61,7 +61,7 @@ public final class Anesthetic {
 			BURSTS.remove(b);
 			double r = AnaStats.ANESTHETIC_RADIUS;
 			for (LivingEntity e : b.level.getEntitiesOfClass(LivingEntity.class, new AABB(b.at, b.at).inflate(r + 2))) {
-				if (e.isAlive() && !Combat.phaseStops(e) && Allies.areaHits(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)
+				if (e.isAlive() && Allies.areaHits(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)
 					&& !dev.overcraft.brigitte.Barrier.shields(e, b.ana, b.at)) {
 					// a second burst on the same one starts its 3 s over (ours)
 					DOSED.put(e.getUUID(), new Dosed(e, b.ana, b.level.getGameTime()));
@@ -113,12 +113,17 @@ public final class Anesthetic {
 			var stop3p = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P.location(),
 				net.minecraft.sounds.SoundSource.PLAYERS);
 			for (ServerPlayer listener : level.players()) {
-				if (listener != target && listener.distanceTo(target) <= EARSHOT
-					&& DOSED.values().stream().noneMatch(d -> d.entity != listener && d.entity.level() == level && d.entity.distanceTo(listener) <= EARSHOT)) {
+				if (stops3p(listener == target, listener.distanceTo(target),
+					DOSED.values().stream().anyMatch(d -> d.entity != listener && d.entity.level() == level && d.entity.distanceTo(listener) <= EARSHOT))) {
 					listener.connection.send(stop3p);
 				}
 			}
 		}
+	}
+
+	/** Whether this listener gets the 3p stop. Package-private for CombatRuleTest's neighbour AnestheticRuleTest. */
+	static boolean stops3p(boolean isTarget, double toTarget, boolean anotherNumbedInEarshot) {
+		return !isTarget && toTarget <= EARSHOT && !anotherNumbedInEarshot;
 	}
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {

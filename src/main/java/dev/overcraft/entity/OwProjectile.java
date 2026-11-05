@@ -24,6 +24,16 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 		super(type, owner, level, stack);
 	}
 
+	/**
+	 * Through the phased (Allies.hurtRule), unless they're the owner's side: Healing Ofuda, a Pawjectile, a Blossom still reach a phased ally. A vanilla arrow or a fireball isn't one of these: it stops there, as it did.
+	 */
+	@Override
+	protected boolean canHitEntity(net.minecraft.world.entity.Entity entity) {
+		return super.canHitEntity(entity)
+			&& !(entity instanceof LivingEntity living && dev.overcraft.hero.Combat.phaseStops(living)
+				&& !(getOwner() instanceof LivingEntity owner && dev.overcraft.hero.Allies.isAlly(owner, living)));
+	}
+
 	/** Lifetime in ticks. */
 	protected abstract int lifetime();
 

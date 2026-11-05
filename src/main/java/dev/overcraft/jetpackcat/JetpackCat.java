@@ -259,9 +259,6 @@ public final class JetpackCat implements HeroKit {
 
 	/** The wound (40 over 1 s) and the slow (30% for 1 s) on an enemy her empowered quick melee hit. */
 	public static void wound(ServerPlayer player, LivingEntity target) {
-		if (Combat.phaseStops(target)) {
-			return;
-		}
 		WOUNDS.removeIf(w -> w.target == target && w.owner == player);
 		WOUNDS.add(new Wound(target, player, new int[] {Ow.ticks(1)}));
 		Combat.buff(target, Attributes.MOVEMENT_SPEED, CLAWS_SLOW, -CLAWS_OUT_SLOW, 1);
@@ -786,10 +783,6 @@ public final class JetpackCat implements HeroKit {
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius))) {
 			double d = e.distanceTo(player);
 			if (e == player || !e.isAlive() || d > radius || !Allies.areaHits(player, e)) {
-				continue;
-			}
-			if (Combat.phaseStops(e)) {
-				// out of the landing's trackers (5B7B's filters, mask 20: M; W Kiriko rev 408632 "not targetable"): no hit, no knock-down, no tether
 				continue;
 			}
 			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT)), e);

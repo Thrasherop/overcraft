@@ -426,7 +426,7 @@ public final class Combat {
 	 * Healing reduction         no hurt, no reduction                  at once                                  D 01C7 #1186; W
 	 * Local Anesthetic          yes (Anesthetic)                       at once: damage, slow                    W damage over time, slows; 6123 reads no flag: M
 	 * Claws Out                 yes (JetpackCat.wound)                 at once: damage, slow                    W names it; no graph read: M
-	 * Hyper Strike's float      yes (Sleep.stun)                       at once                                  W names it; 54A5 reads no flag: M
+	 * Hyper Strike's float      yes: not hit                           NOT removed                              Holds.Cleansing.STAYS: 54A5 reads no flag (M); W's list means its damage ("50 over 0.37 s"), W never removes Knockback: ours
 	 * Deceleration Field slow   yes: out of the field's filter         at once; back after, if still inside     W slows; D 1443's tracker, mask 20: M
 	 * Weaken (Cyberspace)       yes: out of the zone's filter          not by this: its 0.25 s linger runs out  D 6102's tracker, mask 20: M; W silent
 	 * Accretion, Catnapper      yes (Sleep.stun): the hit's filter     NOT removed                              D 224E #400 goes nowhere (type 6BBE); W; 1EB9 #338 and 5B7B's filters, mask 20: M
@@ -437,7 +437,7 @@ public final class Combat {
 	 * Minecraft's effects, fire no                                     removed                                  ours
 	 * </pre>
 	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
-	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M); ours tests at the one door (Sleep.stun). Hits that pass through the phased: dart, whip, bash, shockwave, EMP, Soundwave, Hyper Strike, Catnapper.
+	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
 	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
 	 */
 	public static void cleanse(LivingEntity target) {
@@ -476,7 +476,28 @@ public final class Combat {
 	 * "its attack ignoring property prevents most negative effects": ours that it's this same list. None of those three calls cleanse: W "No longer cleanses on use" for Swift Step; the data's readers would end a status on the other two, not done, ours.
 	 */
 	public static boolean phaseStops(LivingEntity target) {
-		return !devCleanseOff && isPhased(target);
+		return phaseStopsRule(target.level().isClientSide(), devCleanseOff, !target.level().isClientSide() && isPhased(target));
+	}
+
+	/**
+	 * Only the server knows: projectiles ask from canHitEntity, and ThrowableProjectile.tick runs that on the client's copy too, where these maps are another thread's in single player and empty on a remote client.
+	 * The client's copy answers "not phased" and may look to stop for a tick; the server's says where it goes. Package-private for CombatRuleTest.
+	 */
+	static boolean phaseStopsRule(boolean clientSide, boolean devOff, boolean phased) {
+		return !clientSide && !devOff && phased;
+	}
+
+	/**
+	 * Whether the phase refuses this damage. Not what beats Minecraft's own invulnerability (the bypasses_invulnerability tag: /kill, the void): ours, or a phased hero read "Killed" and stood there,
+	 * and fell through the void until the phase was out. A bed's blast isn't in it, so #27's stays refused. Life Grip's and Resurrect's the same.
+	 */
+	public static boolean refusesDamage(LivingEntity target, net.minecraft.world.damagesource.DamageSource source) {
+		return refusesRule(isPhased(target), source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY));
+	}
+
+	/** Package-private for CombatRuleTest. */
+	static boolean refusesRule(boolean phased, boolean bypassesInvulnerability) {
+		return phased && !bypassesInvulnerability;
 	}
 
 	public static boolean isPhased(LivingEntity target) {

@@ -30,6 +30,14 @@ public final class Sleep {
 		Sleeper(LivingEntity entity, long since, long until, boolean waking) {
 			this(entity, since, until, waking, false, false, 1);
 		}
+
+		Sleeper(LivingEntity entity, Holds.Hold hold) {
+			this(entity, hold.since(), hold.until(), hold.waking(), hold.stun(), hold.slides(), hold.gravity());
+		}
+
+		Holds.Hold hold() {
+			return new Holds.Hold(since, until, waking, stun, slides, gravity);
+		}
 	}
 
 	private static final net.minecraft.resources.Identifier FLOAT = dev.overcraft.Overcraft.id("knockdown_float");
@@ -43,7 +51,7 @@ public final class Sleep {
 		return SLEEPERS.containsKey(entity.getUUID());
 	}
 
-	/** Puts it to sleep for {@code seconds}; a new sleep replaces one under way (ours: 224E's replace rule is M). */
+	/** Puts it to sleep for {@code seconds}, as Holds.stacked says (not on a knock-down: ours). */
 	public static void put(LivingEntity entity, double seconds) {
 		if (Combat.phaseStops(entity)) {
 			// (224E #96 fails on a phased one, #575 lets only a knock-down by)
@@ -51,8 +59,12 @@ public final class Sleep {
 		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false));
-		if (old == null) {
+		Holds.Hold hold = Holds.stacked(old == null ? null : old.hold(), Holds.sleep(now, now + Ow.ticks(seconds)));
+		if (hold == null) {
+			return;
+		}
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, hold));
+		if (old == null || old.stun) {
 			// the sleep's bed (1A1F, as long as the sleep): the sleeper's own, everyone else's at it (45 m)
 			sound(entity, dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET, dev.overcraft.registry.OcSounds.ANA_SLEEP);
 		}
@@ -137,89 +149,50 @@ public final class Sleep {
 		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
-	/** What a cleanse does to a hold, by its kind (Combat.cleanse's table). Package-private for SleepRulesTest. */
-	enum Cleansing {
-		/** A dart's sleep: the wake damage starts, without damage's "slept 0.5 s" gate: 224E #401 -> #418 -> #204 -> #304, past #332 (H). */
-		WAKES,
-		/** A stun: ended on the spot (224E #402 -> #416 -> #297). */
-		ENDS,
-		/** Hyper Strike's float (W names it; 54A5 reads no flag: M): ended, and FLOATED still spares the landing. */
-		ENDS_FLOAT,
-		/** A knock-down (Accretion, Catnapper: type 6BBE): 224E #400 goes nowhere (H); W "Cleanses never remove"; BZ "No longer cleanses hard knockdown stuns". */
-		STAYS
-	}
-
-	static Cleansing cleansing(boolean stun, boolean slides, double gravity) {
-		return !stun ? Cleansing.WAKES : !slides ? Cleansing.ENDS : gravity != 1 ? Cleansing.ENDS_FLOAT : Cleansing.STAYS;
-	}
-
-	/** What Protection Suzu's cleanse does here (Combat.cleanse's table). */
+	/** What Protection Suzu's cleanse does here (Combat.cleanse's table; Holds.cleansed has the rule). */
 	public static void cleanse(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
 		if (s == null) {
 			return;
 		}
-		long now = entity.level().getGameTime();
-		switch (cleansing(s.stun, s.slides, s.gravity)) {
-			case WAKES -> {
-				if (!s.waking && s.until - now > Ow.ticks(AnaStats.SLEEP_WAKING)) {
-					SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), true));
-				}
+		Holds.Hold after = Holds.cleansed(s.hold(), entity.level().getGameTime(), Ow.ticks(AnaStats.SLEEP_WAKING));
+		if (after == null) {
+			wake(s);
+			if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+				Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
 			}
-			case ENDS -> {
-				wake(s);
-				if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
-					Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
-				}
-			}
-			case ENDS_FLOAT -> {
-				wake(s);
-				Combat.buff(entity, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
-				if (entity.level() instanceof net.minecraft.server.level.ServerLevel level && !dev.overcraft.sigma.GraviticFlux.lifted(entity)) {
-					// its look too (a Flux's lift has the same one, and is unaffected)
-					Effects.play(level, "sigma_strike_end", entity.position(), Vec3.ZERO, entity, 0, null);
-				}
-			}
-			case STAYS -> {
-			}
+		} else {
+			SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, after));
 		}
-	}
-
-	/**
-	 * A stun landing on a knock-down stays a knock-down, carried by its push and uncleansable, for as long as the longer of the two; a knock-down on a stun takes over. Rally's stun over
-	 * Accretion's used to make it a plain stun, 18 ticks held and cleansable (runs/polish4/crit_repro_abde763.txt). Ours: 224E's replace rule isn't read past #130. Package-private for SleepRulesTest.
-	 */
-	static boolean slidesAfter(boolean oldSlides, boolean newSlides) {
-		return oldSlides || newSlides;
 	}
 
 	/** Lets a player's client go, unless something else still holds them (a Flux's first 0.4 s, or a hold here). */
 	public static void release(ServerPlayer player) {
-		if (!SLEEPERS.containsKey(player.getUUID()) && !dev.overcraft.sigma.GraviticFlux.holding(player)) {
+		if (Holds.letsGo(SLEEPERS.containsKey(player.getUUID()), dev.overcraft.sigma.GraviticFlux.holding(player))) {
 			player.removeAttached(HeroManager.ASLEEP);
 		}
 	}
 
 	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
 		if (Combat.phaseStops(entity)) {
-			// (a stun: 224E #96 / #575. A knock-down: the hit's own filter, mask 20 as 5B7B's, and W)
+			// (a stun: 224E #96 / #575. A knock-down: the hit's own filter, mask 20 (M) as 5B7B's and 1EB9 #338's, and W; hits don't get here, Allies: this is the door for what isn't a hit)
 			return;
 		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
-		if (old != null && !old.stun) {
+		Holds.Hold hold = Holds.stacked(old == null ? null : old.hold(), Holds.stun(now, now + Ow.ticks(seconds), slides, gravity));
+		if (hold == null) {
 			return;
 		}
-		long until = now + Ow.ticks(seconds);
-		if (old != null && old.until > until) {
-			until = old.until;
-		}
-		boolean oldSlides = old != null && old.slides;
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, until, false, true, slidesAfter(oldSlides, slides), !slides && oldSlides ? old.gravity : gravity));
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, hold));
 		if (entity instanceof ServerPlayer player) {
 			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
-			if (gravity != 1 && !Combat.devFixOff) {
+			if (hold.gravity() == 1 && old != null && old.gravity != 1) {
+				// a plain knock-down ended the float (Holds.stacked, ours): its gravity back
+				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+			}
+			if (gravity != 1 && hold.gravity() != 1 && !Combat.devFixOff) {
 				// a player moves on their own client: Hyper Strike's float (#109) goes there as Minecraft's gravity attribute, which
 				// Minecraft mode falls by and hero mode reads (OvercraftClient's gravityScale); a mob's is in slide
 				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, gravity - 1, seconds);

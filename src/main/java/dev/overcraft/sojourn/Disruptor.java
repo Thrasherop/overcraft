@@ -128,7 +128,7 @@ public final class Disruptor {
 					Combat.credit(f.owner, dealt, e);
 					Combat.addFireForDamage(f.owner, dealt, e);
 				}
-				if (f.slows && !Combat.phaseStops(e)) {
+				if (f.slows) {
 					slow(e, f.level.getGameTime());
 				}
 			}

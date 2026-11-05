@@ -197,7 +197,16 @@ public final class Allies {
 	public static boolean canHurt(LivingEntity hero, Entity other) {
 		// (not what the hero is riding: a hitscan's way starts inside their mount, and they aren't aiming at it)
 		boolean here = other != hero && other != hero.getVehicle() && other instanceof LivingEntity living && living.isAlive() && !other.isSpectator();
-		return here && !isAlly(hero, other) || hero instanceof Player player && HeroManager.options(player).friendlyFire() && isAlly(hero, other);
+		boolean ally = isAlly(hero, other);
+		return hurtRule(here, ally, hero instanceof Player player && HeroManager.options(player).friendlyFire(), other instanceof LivingEntity living && Combat.phaseStops(living));
+	}
+
+	/**
+	 * canHurt's rule. The phased aren't hit at all: W Status effect rev 408841 "unable to be hit by enemy attacks", W Kiriko rev 408632 "pass through them": a hit passes on to whatever is behind them,
+	 * and spends nothing. D: the trackers' filters, m_4EA686DB 20 or 148 (M that bits 16 and 4 are this). This is the one place every aimed hit asks (the kits, OwProjectile for what flies). Package-private for AlliesRuleTest.
+	 */
+	static boolean hurtRule(boolean here, boolean ally, boolean friendlyFire, boolean phased) {
+		return !phased && (here && !ally || friendlyFire && ally);
 	}
 
 	/**
@@ -205,6 +214,11 @@ public final class Allies {
 	 * lock), touch other: an enemy, or an ally with friendly fire on. Never a bystander (#99).
 	 */
 	public static boolean areaHits(LivingEntity hero, Entity other) {
+		return !(other instanceof LivingEntity living && Combat.phaseStops(living)) && areaTouches(hero, other);
+	}
+
+	/** The same whether or not it's phased: Gravitic Flux's lift alone: its filter (1E41) is mask 16, no bit 4 (M); W "completely unaffected". */
+	public static boolean areaTouches(LivingEntity hero, Entity other) {
 		return isEnemy(hero, other) || hero instanceof Player player && HeroManager.options(player).friendlyFire() && isAlly(hero, other);
 	}
 

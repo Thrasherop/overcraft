@@ -212,9 +212,8 @@ public final class Brigitte implements HeroKit {
 		Vec3 ahead = flat(player);
 		LivingEntity best = null;
 		double bestDist = Double.MAX_VALUE;
-		// (not the phased: #501's filter, mask 148, holds 20)
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BASH_REACH + 1),
-			e -> e.isAlive() && Allies.areaHits(player, e) && !Combat.phaseStops(e))) {
+			e -> e.isAlive() && Allies.areaHits(player, e))) {
 			AABB box = e.getBoundingBox();
 			Vec3 near = new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
 			Vec3 to = new Vec3(box.getCenter().x - eye.x, 0, box.getCenter().z - eye.z);
@@ -359,14 +358,14 @@ public final class Brigitte implements HeroKit {
 		Vec3 ahead = flat(player);
 		java.util.List<LivingEntity> tracked = new java.util.ArrayList<>();
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
-			// (not the phased: #877's filter, mask 148, holds 20)
-			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && !Combat.phaseStops(e))) {
+			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours)
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && player.hasLineOfSight(e) && !Barrier.shields(e, player))) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (to.lengthSqr() <= 0.25 || to.normalize().dot(ahead) >= 0) {
 				tracked.add(e);
 			}
 		}
-		for (LivingEntity e : shockwaveHits(tracked, devRallyTwice ? null : s.rallyBashed, LivingEntity::getUUID, RALLY_SHOCKWAVE_TARGETS)) {
+		for (LivingEntity e : shockwaveHits(tracked, s, LivingEntity::getUUID)) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt, e);
@@ -379,11 +378,11 @@ public final class Brigitte implements HeroKit {
 		}
 	}
 
-	/** Who a shockwave hits of those its tracker found: the first {@code slots}, less the bashed one (#877's 10, then #890). Package-private for BrigitteRulesTest. */
-	static <T> java.util.List<T> shockwaveHits(java.util.List<T> tracked, java.util.@org.jspecify.annotations.Nullable UUID bashed, java.util.function.Function<T, java.util.UUID> id, int slots) {
+	/** Who a shockwave hits of those its tracker found: the first 10, less the one this Brigitte's bash hit (#877's 10, then #890). Package-private for BrigitteRulesTest. */
+	static <T> java.util.List<T> shockwaveHits(java.util.List<T> tracked, HeroState s, java.util.function.Function<T, java.util.UUID> id) {
 		java.util.List<T> hits = new java.util.ArrayList<>();
-		for (T e : tracked.subList(0, Math.min(slots, tracked.size()))) {
-			if (!id.apply(e).equals(bashed)) {
+		for (T e : tracked.subList(0, Math.min(RALLY_SHOCKWAVE_TARGETS, tracked.size()))) {
+			if (devRallyTwice || !id.apply(e).equals(s.rallyBashed)) {
 				hits.add(e);
 			}
 		}
@@ -392,9 +391,6 @@ public final class Brigitte implements HeroKit {
 
 	/** Rally's stun (Sleep.stun) and its halo over the target's head (220D, for the stun's time). */
 	private static void stun(ServerPlayer player, LivingEntity target) {
-		if (dev.overcraft.hero.Combat.phaseStops(target)) {
-			return;
-		}
 		dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
 		BrigitteSounds.on(target, "stun", 30);
 		Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);
@@ -439,8 +435,7 @@ public final class Brigitte implements HeroKit {
 			LivingEntity hit = null;
 			double best = Double.MAX_VALUE;
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, new AABB(a, end).inflate(WHIP_RADIUS + 1),
-				// (through the phased: W Kiriko rev 408632)
-				e -> e.isAlive() && Allies.canHurt(player, e) && !Combat.phaseStops(e))) {
+				e -> e.isAlive() && Allies.canHurt(player, e))) {
 				java.util.Optional<Vec3> at = e.getBoundingBox().inflate(WHIP_RADIUS).clip(a, end);
 				if (at.isPresent() && at.get().distanceToSqr(a) < best) {
 					hit = e;
@@ -507,6 +502,10 @@ public final class Brigitte implements HeroKit {
 	public static void tickPushes() {
 		PUSHED.removeIf(p -> {
 			if (!p.target.isAlive() || p.target.isRemoved()) {
+				return true;
+			}
+			if (dev.overcraft.hero.Combat.phaseStops(p.target)) {
+				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
 				return true;
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {

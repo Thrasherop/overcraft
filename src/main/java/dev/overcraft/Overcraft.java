@@ -195,7 +195,7 @@ public class Overcraft implements ModInitializer {
 		});
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			if (Combat.isPhased(entity)) {
+			if (Combat.refusesDamage(entity, source)) {
 				return false;
 			}
 			// a fall in hero mode hurts from the hero's own safe height (LivingEntityMixin), unless an ability lands it (#35)

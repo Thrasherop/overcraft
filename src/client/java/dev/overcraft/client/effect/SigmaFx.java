@@ -1053,8 +1053,6 @@ public final class SigmaFx {
 				}
 			}
 			case "sigma_slam" -> slam(at, enemy);
-			// (Hyper Strike's float cleansed: its lifted look goes with it, Sleep.cleanse)
-			case "sigma_strike_end" -> LIFTED.remove(e.entity());
 			case "sigma_strike" -> {
 				if (entity != null) {
 					LIFTED.put(entity.getId(), new Lift(Fx.now(), enemy, (float) SigmaStats.HYPER_STRIKE_FLOAT));
