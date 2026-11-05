@@ -248,6 +248,7 @@ public class Overcraft implements ModInitializer {
 			HeroManager.clear();
 			Combat.clear();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
+			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();

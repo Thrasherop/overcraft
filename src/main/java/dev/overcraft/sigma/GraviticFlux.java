@@ -272,7 +272,7 @@ public final class GraviticFlux {
 		}
 	}
 
-	private static final Map<UUID, Lifted> LIFTED = new HashMap<>();
+	private static final Map<UUID, Lifted> LIFTED = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/** Its kill-feed blow (kill_feed.md's table: the ult, its icon), the lift's and the slam's. */
 	private static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ult("gravitic_flux").by(dev.overcraft.hero.Hero.SIGMA);

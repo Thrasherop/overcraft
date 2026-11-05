@@ -32,7 +32,8 @@ public final class Sleep {
 		}
 	}
 
-	private static final Map<UUID, Sleeper> SLEEPERS = new HashMap<>();
+	/** (Concurrent: Mob.isNoAi asks this from worldgen threads too.) */
+	private static final Map<UUID, Sleeper> SLEEPERS = new java.util.concurrent.ConcurrentHashMap<>();
 
 	public static boolean asleep(LivingEntity entity) {
 		return SLEEPERS.containsKey(entity.getUUID());
@@ -89,26 +90,33 @@ public final class Sleep {
 	 * player) never is.
 	 */
 	public static boolean aiHeld(Mob mob) {
+		if (SLEEPERS.isEmpty()) {
+			return dev.overcraft.sigma.GraviticFlux.holds(mob);
+		}
 		Sleeper s = SLEEPERS.get(mob.getUUID());
 		return s != null && s.entity == mob || dev.overcraft.sigma.GraviticFlux.holds(mob);
 	}
 
-	/** Reading a mob's own NoAI flag, not Overcraft's hold (its save, a bucket, a conversion: MobMixin). */
-	private static int savedView;
+	/**
+	 * This thread is reading mobs' own NoAI flags, not Overcraft's hold (a save, a bucket, a conversion: MobMixin). Per thread:
+	 * Mob.addAdditionalSaveData also runs on worldgen threads (a mob placed in a new chunk is saved into it: ProtoChunk.addEntity),
+	 * and a shared counter could stick, after which no mob could be held until the game restarted (critique_systems S1).
+	 */
+	private static final ThreadLocal<Integer> OWN_VIEW = ThreadLocal.withInitial(() -> 0);
 
 	/** Runs {@code read} seeing every mob's own NoAI flag (what gets saved or copied), not the hold. */
 	public static <T> T ownAi(java.util.function.Supplier<T> read) {
-		savedView++;
+		OWN_VIEW.set(OWN_VIEW.get() + 1);
 		try {
 			return read.get();
 		} finally {
-			savedView--;
+			OWN_VIEW.set(OWN_VIEW.get() - 1);
 		}
 	}
 
 	/** Whether isNoAi should answer with the hold now (not while something saves or copies the mob). */
 	public static boolean holdApplies(Mob mob) {
-		return savedView == 0 && aiHeld(mob);
+		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
 	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
@@ -194,6 +202,11 @@ public final class Sleep {
 			? mob.level().getBlockState(mob.getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction() * 0.91f : 0.91f;
 		mob.setDeltaMovement(after.x * friction, (after.y - mob.getGravity() * gravity) * 0.98, after.z * friction);
 		mob.needsSync = true;
+	}
+
+	/** The world stopped: nothing held over (an entry would pin its mob and level until the next world's first tick). */
+	public static void clear() {
+		SLEEPERS.clear();
 	}
 
 	private static void wake(Sleeper s) {
