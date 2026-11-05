@@ -18,7 +18,10 @@
 		"LargeFireballAccessor",
 		"ProjectileInvoker",
 		"MeleeHitMixin",
-		"PlayerMeleeMixin"
+		"PlayerMeleeMixin",
+		"MobMixin",
+		"ConversionTypeMixin",
+		"BucketableMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

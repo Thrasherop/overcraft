@@ -169,3 +169,26 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
   a second client, 2026-11-03). Lúcio's Sonic Amplifier rounds push by our own choice (`SonicEntity`, "no source gives
   it"); the wiki's list doesn't name them. Any new ability that pushes a target after a hero hit must call `pushedNow`, or
   a player target won't move on their screen.
+
+## Holding a mob still without its saved NoAI flag (#97, 2026-11-04)
+- **The cause:** Sleep, stuns, knockdowns and Gravitic Flux called `Mob.setNoAi(true)` and put it back from a map in memory.
+  `NoAI` is saved with the mob (`Mob.addAdditionalSaveData`), so a mob unloaded or saved mid-sleep (Save and Quit, its chunk
+  left behind, a server stop, even an autosave followed by a crash) stayed a statue for good: `wake` ran on the removed object,
+  after its save. Reproduced: dart a zombie, Save and Leave, rejoin: `NoAI: 1b`, 10 s after its sleep should have ended.
+- **The fix:** the flag isn't touched. `MobMixin` answers `Mob.isNoAi` with `Sleep.aiHeld` (the very object put to sleep, by
+  identity: the same mob loaded again is a new object, so it's awake; the client's copy shares the UUID and, in single player, the
+  JVM, so the mixin is also server-side only). `isNoAi` rather than `isEffectiveAi` because a dozen mobs read it directly: the
+  dragon's flight (`EnderDragon.aiStep`), the warden, shulkers, conversions in progress.
+- **Three places read `isNoAi` to save or copy it**, and read the mob's own flag now (`Sleep.ownAi`): its save (`MobMixin`),
+  a bucket (`BucketableMixin`, an interface mixin with `@WrapMethod`: the read is in a lambda inside the static method) and a
+  conversion (`ConversionTypeMixin`). Grep `isNoAi()` in the sources when Minecraft updates: a new reader that copies it leaks the hold.
+- **Played** (fresh world, a zombie with AI): asleep it stands (0.000 m in 2 s) and walks after its time (3.27 m), `NoAI` absent
+  throughout. Save and Leave mid-sleep, rejoin: absent, it walks (4.45 m in 2.5 s; one rejoin it had killed Ana on the select
+  screen, which is awake enough). Accretion's knockdown slid it and let it go. Gravitic Flux: Save and Leave at y -58.24 mid-lift,
+  rejoin: absent, on the ground, walks 6.18 m. A mob NoAI of its own stays `1b` through a sleep. A slept pig struck by lightning: its
+  zombified piglin has none. A slept axolotl caught in a bucket: `bucket_entity_data` has none. (Asleep confirmed by its bed
+  sound in `heard`: `ana.sleep ->`, not `ana.sleep.cast`, which is only the shot.)
+- **What a critic should check:** a world saved by an older build keeps its statues: nothing tells a leaked `NoAI` from a
+  map maker's (`/data merge entity <mob> {NoAI:0b}` frees one). A sleep doesn't survive a reload by design: it just ends. Stun on a
+  mob through Rally's bash shares this path and wasn't played on its own. Autosave mid-sleep followed by a crash: same save
+  path, not played. A dedicated server: same code, not played.
