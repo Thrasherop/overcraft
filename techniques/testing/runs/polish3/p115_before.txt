@@ -1,0 +1,11 @@
+=== #115 before: a bot Lucio the real client sees, told it rides by the input packet (bot input luc 4 0 0, HELD_WALL_RIDE)
+{'ok': True, 'hero': 'LUCIO'}
+seen idle {'animator': True, 'playing': 'idle', 'emote': 'null', 'emoteTime': 30.45, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+seen riding {'animator': True, 'playing': 'idle', 'emote': 'null', 'emoteTime': 31.05, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+seen riding {'animator': True, 'playing': 'idle', 'emote': 'null', 'emoteTime': 31.6, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+seen riding {'animator': True, 'playing': 'idle', 'emote': 'null', 'emoteTime': 32.15, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+seen riding {'animator': True, 'playing': 'idle', 'emote': 'null', 'emoteTime': 32.7, 'sinceAim': 1000.0, 'sinceShield': 1000.0}

@@ -49,6 +49,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
   - [visual_review](testing/visual_review.md): comparing with the real game, frames at exact times, critique agents.
   - [critique_rules](testing/critique_rules.md): the critique of the ally, barrier, Catnapper and headshot rules (fix/rules, 2026-11-04).
+  - [polish3](testing/polish3.md): the Nov 3 patch, Suzu on anti-heal, the wall ride for others, every push on a real client, Hyper Strike's and Rider's widgets (fix/polish-3).
 - **HUD**: [reticle](hud/reticle.md): every hero's widgets at the crosshair, what the data binds and what's ours (#85). [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
   damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.
 - **Rendering**: [rendering](rendering/rendering.md). Minecraft 26.3's renderer, effects, glows, shadows, held items,

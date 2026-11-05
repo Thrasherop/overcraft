@@ -1,0 +1,21 @@
+=== #85 before, base + dev tool only
+hero lucio mode True screen  hp 18.0 / 18.0
+['[05:35:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Set 1 player(s) to perk level 3, no perks picked']
+perks 3 hero lucio screen 
+t 0 y -58.92 z -15.95 anim wallride_left meter 0.04
+t 1 y -58.08 z -13.81 anim wallride_left meter 0.1
+t 2 y -57.54 z -11.66 anim wallride_left meter 0.16
+t 3 y -57.25 z -9.52 anim wallride_left meter 0.22
+t 4 y -57.09 z -7.37 anim wallride_left meter 0.28
+t 5 y -57.0 z -5.23 anim wallride_left meter 0.34
+t 6 y -56.95 z -3.08 anim wallride_left meter 0.4
+t 7 y -56.93 z -0.94 anim wallride_left meter 0.46
+t 8 y -56.91 z 1.21 anim wallride_left meter 0.52
+t 9 y -56.9 z 3.35 anim wallride_left meter 0.59
+t 10 y -56.9 z 6.21 anim wallride_left meter 0.65
+t 11 y -56.9 z 8.36 anim wallride_left meter 0.71
+t 12 y -56.9 z 10.5 anim wallride_left meter 0.77
+t 13 y -56.9 z 12.65 anim wallride_left meter 0.83
+hero sigma mode True screen  hp 48.0 / 48.0
+['[05:35:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Set 1 player(s) to perk level 3, no perks picked']
+perks 3 hero sigma major None
