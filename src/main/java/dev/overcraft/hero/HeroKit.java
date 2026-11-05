@@ -16,6 +16,11 @@ public interface HeroKit {
 
 	HeroSyncPayload sync(HeroState state);
 
+	/** What this kit's widgets at the reticle need beyond its sync (#85). */
+	default HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState state) {
+		return HeroSyncPayload.Widgets.NONE;
+	}
+
 	/** Why a hero leaves play (HeroManager.outOfPlay). */
 	enum OutOfPlay {
 		/** G: plain Minecraft, the hero kept for later. */

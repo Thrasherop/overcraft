@@ -797,6 +797,37 @@ public final class Mercy implements HeroKit {
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), flags(s), left, (float) s.gaMomentum);
 	}
 
+	/**
+	 * Her widgets (#85): the soul Resurrect would take, or is taking, as the data's 052B shows it (00CA #306: 67DC the name, 67DA
+	 * the portrait, 067C the count of souls in reach); the client has no entity for a soul, so its name and type come here.
+	 */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		Souls.Soul soul = s.resSoul != null ? Souls.get(s.resSoul) : null;
+		int count = 0;
+		if (soul == null && s.ability2Cooldown <= 0) {
+			double best = RES_CONE;
+			for (Souls.Soul candidate : Souls.near(player, RES_RANGE, SOUL_TIME)) {
+				count++;
+				// as startResurrect picks
+				double angle = candidate.at.distanceTo(player.position()) < 1.5 ? 0 : angleTo(player, candidate.at.add(0, 0.5, 0));
+				if (angle <= best) {
+					soul = candidate;
+					best = angle;
+				}
+			}
+		}
+		if (soul == null) {
+			return HeroSyncPayload.Widgets.NONE;
+		}
+		// a player's face is their hero's (00CA #306's 67DA); the client has no body to ask
+		HeroState other = soul.body instanceof ServerPlayer dead ? HeroManager.state(dead) : null;
+		String face = other != null && other.hero != null ? "hero:" + other.hero.id
+			: net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(soul.body.getType()).toString();
+		return new HeroSyncPayload.Widgets(-1, -1, -1, false, count, s.resSoul != null ? s.castTicks / 20f : 0, (float) RES_CAST, 0,
+			soul.body.getName().getString(), face);
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel, a Resurrect under way and Valkyrie end; for good, her looks and slow too. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

@@ -647,6 +647,14 @@ public final class Ana implements HeroKit {
 			Perk.index(s.majorPerk), 0, flags(s), 0, (float) s.scope);
 	}
 
+	/** Her widgets (#85): preview, who Q would boost (013C, 0B9E #377), startNano's own pick, with it ready. None for herself. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		LivingEntity target = s.ultCharge >= ULT_COST && !casting(s)
+			? dev.overcraft.hero.Targeting.allyInView(player, NANO_RANGE, NANO_CONE, true, e -> !Nano.boosted(e)) : null;
+		return new HeroSyncPayload.Widgets(-1, -1, target == null ? -1 : target.getId(), false, 0, 0, 0, 0, "", "");
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): her casts and her scope (and its slow). */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

@@ -105,6 +105,8 @@ public final class JetpackCatStats {
 
 	// Purr (ability 2)
 	public static final double PURR_COOLDOWN = 12;             // W
+	/** A towed player can let go from this far into the tow (5A8F; was inline in JetpackCat.lifeline). */
+	public static final double LIFELINE_DETACH_AFTER = 0.6;
 	public static final double PURR_TIME = 4;                  // W
 	public static final double PURR_RADIUS = 10;               // W
 	public static final double PURR_DAMAGE = 30;               // W: on the cast
