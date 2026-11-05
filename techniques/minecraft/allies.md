@@ -20,7 +20,7 @@ Two questions use those:
 
 A bystander also gives no ult charge or perk progress (`Combat.credit`), or a chicken farm fills an ult. A golem is an enemy for as long as Minecraft keeps it so, then an ally again.
 
-## Played (2026-11-04; old = 985f73c, one commit before; same scripts; `rl_old_*` / `rl_new_*` in each worktree's `run/screenshots`)
+## Played (2026-11-04; old = 985f73c, one commit before; same scripts; `rl_new_*` in `overcraft_rules/run/screenshots`, `rl_old_*` were read and went with their temporary worktree)
 | Case | Old | New |
 |---|---|---|
 | Kunai at an angered iron golem | 99 -> 99 (passes through) | 99 -> 94.2 |
