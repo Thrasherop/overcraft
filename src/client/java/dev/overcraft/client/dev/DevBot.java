@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * hero, a team and the server's whole hero tick, and takes hits as a player does. It has no client, so it doesn't move, and
  * nothing it would see is checked: what it proves is server rules (a barrier stopping a shot); what a second player sees on
  * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot secondary <name> on|off"
- * (the right button, held), "bot read <name>", "bot asleep", "bot remove <name>".
+ * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>".
  */
 final class DevBot {
 	private DevBot() {
@@ -87,6 +87,55 @@ final class DevBot {
 				}
 				out.addProperty("asleep", names.toString().trim());
 			}
+			case "set" -> {
+				// "bot set <name> <health> <barrier>": back to known numbers between shots
+				ServerPlayer bot = BOTS.get(a[1]);
+				bot.setHealth(Float.parseFloat(a[2]));
+				HeroManager.state(bot).barrierHealth = Double.parseDouble(a[3]);
+			}
+			case "antiheal" -> {
+				StringBuilder names = new StringBuilder();
+				for (ServerLevel level : server.getAllLevels()) {
+					for (var e : level.getAllEntities()) {
+						if (e instanceof LivingEntity living && dev.overcraft.hero.Combat.antiHealed(living)) {
+							names.append(living.getType().toShortString()).append(' ');
+						}
+					}
+				}
+				out.addProperty("antiHealed", names.toString().trim());
+			}
+			case "self" -> {
+				// the local player's numbers no HUD shows
+				ServerPlayer me = server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow();
+				HeroState s = HeroManager.state(me);
+				out.addProperty("fire", s.fireScore);
+				out.addProperty("ult", s.ultCharge);
+				out.addProperty("energy", s.sojournEnergy);
+				out.addProperty("critAt", s.critAt);
+				out.addProperty("now", me.level().getGameTime());
+			}
+			case "side" -> {
+				// "bot side <type>": what Allies says of the nearest of that type, for the local player, and what it's doing
+				ServerPlayer me = server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow();
+				LivingEntity best = null;
+				for (var e : me.level().getAllEntities()) {
+					if (e instanceof LivingEntity living && e != me && living.getType().toShortString().equals(a[1])
+						&& (best == null || e.distanceToSqr(me) < best.distanceToSqr(me))) {
+						best = living;
+					}
+				}
+				if (best != null) {
+					out.addProperty("ally", dev.overcraft.hero.Allies.isAlly(me, best));
+					out.addProperty("enemy", dev.overcraft.hero.Allies.isEnemy(me, best));
+					out.addProperty("bystander", dev.overcraft.hero.Allies.isBystander(me, best));
+					out.addProperty("area", dev.overcraft.hero.Allies.areaHits(me, best));
+					if (best instanceof net.minecraft.world.entity.Mob mob) {
+						out.addProperty("target", String.valueOf(mob.getTarget()));
+						out.addProperty("brainTarget", String.valueOf(mob.getBrain().getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET).orElse(null)));
+					}
+					out.addProperty("y", best.getY());
+				}
+			}
 			case "remove" -> {
 				ServerPlayer bot = BOTS.remove(a[1]);
 				CHANNELS.remove(a[1]);
@@ -94,7 +143,7 @@ final class DevBot {
 					server.getPlayerList().remove(bot);
 				}
 			}
-			default -> out.addProperty("error", "add | secondary | read | asleep | remove");
+			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | remove");
 		}
 	}
 
