@@ -331,13 +331,13 @@ public final class Ana implements HeroKit {
 	/**
 	 * The burst: everyone within 4 m of it (no falloff: D 119B) and in sight of it (its sight profile 0019, L: ours by a
 	 * ray to the centre or the eyes). Allies, Ana too, are healed 90 and their healing raised 50% for 3 s (its own heal
-	 * isn't raised); enemies take 90 and can't be healed for 3 s.
+	 * isn't raised); enemies take 60 (BZ 2026-11-03) and can't be healed for 3 s.
 	 */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade) {
 		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE, dev.overcraft.hero.Blow.ability("biotic_grenade"));
 	}
 
-	/** A burst of {@code heal} / {@code damage}: the throw's (90), or Biotic Bounce's second (60) with the same 4 m and 3 s. */
+	/** A burst of {@code heal} / {@code damage}: the throw's (90 / 60), or Biotic Bounce's second (60 / 60) with the same 4 m and 3 s. */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage,
 									dev.overcraft.hero.Blow what) {
 		dev.overcraft.hero.Blow blow = what.by(dev.overcraft.hero.Hero.ANA);

@@ -112,7 +112,7 @@ public final class Cyberspace {
 		WEAKENED.values().removeIf(until -> server.overworld().getGameTime() >= until);
 	}
 
-	/** The factor on the damage this attacker deals now: halved while weakened. */
+	/** The factor on the damage this attacker deals now: 1 - WEAKEN while weakened. */
 	public static double dealtFactor(@Nullable Entity attacker) {
 		if (attacker == null) {
 			return 1;

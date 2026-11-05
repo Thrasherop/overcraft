@@ -3,9 +3,9 @@ package dev.overcraft.brigitte;
 /**
  * Brigitte's numbers (tools/reference/brigitte.md has every quote, revision and date; the game data map is brigitte-map.md,
  * build 154088 of 2026-10-06, with its detail in E:\Overwatch Archive\research\brigitte\work_kit\). Sources: the game data
- * (D, with its value id or graph node), Blizzard patch notes (BZ), the Overwatch wiki (W). No patch has touched her since
- * the data build (BZ's last: 2026-09-08), so the data's numbers are the live ones; where none gives a value, it's ours and
- * says so. Filled in step by step (brigitte-plan.md, "Order").
+ * (D, with its value id or graph node), Blizzard patch notes (BZ), the Overwatch wiki (W). One patch has touched her since
+ * the data build: BZ 2026-11-03, Inspire's two numbers, marked below (checked again 2026-11-05: BZ's last is that one). The
+ * data's numbers are otherwise the live ones; where none gives a value, it's ours and says so. Filled in step by step (brigitte-plan.md, "Order").
  */
 public final class BrigitteStats {
 	private BrigitteStats() {
@@ -32,12 +32,13 @@ public final class BrigitteStats {
 	public static final double FLAIL_PITCH = 30;
 
 	// ---- Inspire (12D8 -> 11B9) ----
-	public static final double INSPIRE_HEAL_NOW = 12;          // D 2A2C; BZ 2026-07-14; W
+	/** BZ 2026-11-03 (12 -> 15), after the data build (D 2A2C: 12); W rev 408812 lists the patch. */
+	public static final double INSPIRE_HEAL_NOW = 15;
 	public static final double INSPIRE_HEAL_OVER_TIME = 45;    // D 0B24; BZ 2026-07-14; W
 	public static final double INSPIRE_TIME = 4;               // D 1344; W
 	public static final double INSPIRE_RADIUS = 20;            // D 1345; W
-	/** The flail can start it at most this often (D 2ABF; W). */
-	public static final double INSPIRE_COOLDOWN = 1.25;
+	/** The flail can start it at most this often: BZ 2026-11-03 (1.25 -> 1 s), after the data build (D 2ABF: 1.25); W rev 408812 "1 second". */
+	public static final double INSPIRE_COOLDOWN = 1;
 
 	// ---- Cooldowns the HUD shows (each ability's step fills in the rest) ----
 	// ---- Whip Shot (Shift: 1259) ----

@@ -1,7 +1,7 @@
 package dev.overcraft.kiriko;
 
 /**
- * Kiriko's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Oct 20 2026 patch.
+ * Kiriko's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Nov 3 2026 patch (nothing for her in it).
  * Sources: Blizzard patch notes (overwatch.blizzard.com/en-us/news/patch-notes/live/) first, the Overwatch wiki where
  * the notes give no number. Never from the game's files. Where a source gave none, the value is ours and says so.
  */

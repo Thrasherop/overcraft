@@ -40,7 +40,7 @@ public final class Inspire {
 		}
 	}
 
-	/** An enemy hit by her flail (gated by the 1.25 s), or by Whip Shot or Shield Bash ({@code always}). */
+	/** An enemy hit by her flail (gated by INSPIRE_COOLDOWN), or by Whip Shot or Shield Bash ({@code always}). */
 	public static void trigger(ServerPlayer brigitte, HeroState s, boolean always, double seconds) {
 		long now = brigitte.level().getGameTime();
 		if (!always && now < s.inspireReadyAt) {

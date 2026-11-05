@@ -1,7 +1,7 @@
 package dev.overcraft.lucio;
 
 /**
- * Lúcio's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Oct 20 2026 patch
+ * Lúcio's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Nov 3 2026 patch (nothing for him in it)
  * (tools/reference/lucio.md has every quote). Sources: Blizzard patch notes first, the Overwatch wiki where the notes
  * give no number. Where a source gave none, the value is ours and says so.
  */
