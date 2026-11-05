@@ -84,6 +84,12 @@ public class SuzuEntity extends OwProjectile {
 		burst(position());
 	}
 
+	/** An enemy barrier: it bursts there, as on a wall (ours; dropped without a burst before, #104). */
+	@Override
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
+		burst(at);
+	}
+
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);

@@ -92,6 +92,13 @@ public class BioticGrenadeEntity extends OwProjectile {
 		burst(null);
 	}
 
+	/** An enemy barrier: it bursts there, as on a wall (ours; dropped without a burst before, #104). */
+	@Override
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
+		setPos(at);
+		burst(null);
+	}
+
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
