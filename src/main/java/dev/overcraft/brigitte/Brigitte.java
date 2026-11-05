@@ -674,7 +674,18 @@ public final class Brigitte implements HeroKit {
 			(float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, (s.barrierUp ? MODE_BARRIER : 0) | (s.rallyTicks > 0 ? MODE_RALLY : 0)
-				| (s.barrierLocked ? MODE_BROKEN : 0), 0, 0);
+				| (s.barrierLocked ? MODE_BROKEN : 0), 0, s.repairRecharge > 0 ? (float) (s.repairRecharge / 20.0) : 0);
+	}
+
+	/**
+	 * Her widgets (#85): count, the allies Inspire is healing, herself not counted (0C7A, 12D8 #479: 067C = v702, the count its
+	 * message 2AD8 brings); left and total, Rally's time (0237, 12BE #188); left2, the seconds her broken barrier stays down (0240,
+	 * 0EE3 #558). Her sync's meter is Repair Pack's recharge, in seconds.
+	 */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		float broken = Math.max(0, s.barrierBrokenUntil - player.level().getGameTime()) / 20f;
+		return new HeroSyncPayload.Widgets(-1, Inspire.healing(player), s.rallyTicks / 20f, (float) RALLY_TIME, broken, "", "");
 	}
 
 	/**

@@ -760,6 +760,13 @@ public final class JetpackCat implements HeroKit {
 			Perk.index(s.majorPerk), 0, mode, left, (float) (s.fuel / 100));
 	}
 
+	/** Her widgets (#85): target, who Lifeline tows or Catnapper carries (0BA3, 5A8F #1097: the towed ally's portrait v59143). */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		Integer held = s.lifelineTarget != null ? s.lifelineTarget : s.ultPhase == ULT_CARRY ? s.carried : null;
+		return new HeroSyncPayload.Widgets(held == null ? -1 : held, 0, 0, 0, 0, "", "");
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): Lifeline lets go and its speed goes, Catnapper's carry ends, Purr stops. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

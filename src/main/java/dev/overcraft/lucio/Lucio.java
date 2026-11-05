@@ -315,11 +315,13 @@ public final class Lucio implements HeroKit {
 		double radius = SONG_RADIUS * (amped && HeroManager.hasPerk(player, Perk.LUCIO_NOISE_VIOLATION) ? 1 + NOISE_VIOLATION_RANGE : 1);
 		double seconds = SONG_TICKS / 20.0;
 		float healed = 0;
+		int reached = 0;
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius))) {
 			if (!Allies.isSelfOrAlly(player, ally) || !ally.isAlive() || ally.distanceTo(player) > radius
 				|| ally != player && !player.hasLineOfSight(ally)) {
 				continue;
 			}
+			reached += ally == player ? 0 : 1;
 			if (s.speedSong) {
 				Combat.buff(ally, Attributes.MOVEMENT_SPEED, SPEED_SONG_BUFF, amped ? AMP_UP_SPEED : SPEED_SONG, SONG_LINGER + seconds);
 			} else {
@@ -328,6 +330,7 @@ public final class Lucio implements HeroKit {
 			}
 		}
 		Combat.credit(player, healed);
+		s.songAllies = reached;
 	}
 
 	/** Sound Barrier lands: 625 overhealth to himself and allies within 30 m, gone over 6 s. Beat Drop: Amp It Up 4 s. */
@@ -356,6 +359,12 @@ public final class Lucio implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk),
 			(float) (s.ability3Cooldown / 20.0), s.speedSong ? 1 : 0, s.ampUp / 20f, (float) s.riderCharge);
+	}
+
+	/** His widgets (#85): count, the allies his song reaches, himself not counted (0263, 0266 #374: 067C = count(v375) - 1). */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		return new HeroSyncPayload.Widgets(-1, s.songAllies, 0, 0, 0, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */

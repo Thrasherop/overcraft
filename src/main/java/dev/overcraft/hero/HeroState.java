@@ -76,6 +76,8 @@ public final class HeroState {
 	public boolean pawSide;
 	/** Jetpack Cat: the ally Lifeline tows (entity id), or null, and ticks since it attached. */
 	public @Nullable Integer lifelineTarget;
+	/** Lúcio: the allies his song reached last time it went out, himself not counted (his widget, #85). */
+	public int songAllies;
 	public int lifelineTicks;
 	/** Jetpack Cat's Lifeline is switched on (seeking, or towing lifelineTarget), and for how many ticks. */
 	public boolean lifelineOn;

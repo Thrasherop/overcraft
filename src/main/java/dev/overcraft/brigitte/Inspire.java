@@ -84,6 +84,17 @@ public final class Inspire {
 		});
 	}
 
+	/** How many of her allies her Inspire is healing now, herself not counted (the widget under her crosshair). */
+	public static int healing(ServerPlayer brigitte) {
+		int count = 0;
+		for (Heal heal : HEALS) {
+			if (heal.brigitte == brigitte && heal.ally != brigitte) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	public static void clear() {
 		HEALS.clear();
 	}

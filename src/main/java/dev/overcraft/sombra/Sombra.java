@@ -622,6 +622,19 @@ public final class Sombra implements HeroKit {
 			Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}
 
+	/**
+	 * Her widgets (#85): target, who Hotfix is locked on (0D81, 614C #1798); left and total, her stealth (0277 / 008B, 420C
+	 * #1057: v215 / v567); left2, the hack lockout (00B1, 614C #2775: v6358 / v45433).
+	 */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		long now = player.level().getGameTime();
+		float stealth = Stealth.stealthed(player, s) ? (s.stealthUntil - now) / 20f : 0;
+		float lockout = Math.max(0, s.hackLockoutUntil - now) / 20f;
+		return new HeroSyncPayload.Widgets(s.hotfixChannel >= 0 && s.hotfixTarget != null ? s.hotfixTarget : -1, 0, stealth,
+			(float) (STEALTH_FADE_IN + STEALTH_TIME), lockout, "", "");
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): her stealth ends (invisible and 60% faster in Minecraft mode after G: found playing), Hotfix's channel; for good, her beacon. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

@@ -145,6 +145,13 @@ public final class Sigma implements HeroKit {
 			(float) (s.barrierHealth / BARRIER_HEALTH));
 	}
 
+	/** His widgets (#85): left and total, Gravitic Flux's aim (0237 and 00DB, 1E41 #1152, #1283, #1299), its 5 s as the phase runs. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		boolean aiming = s.sigmaFluxPhase == GraviticFlux.AIM;
+		return new HeroSyncPayload.Widgets(-1, aiming ? 1 : 0, aiming ? (float) (FLUX_AIM - s.sigmaFluxTicks / 20.0) : 0, (float) FLUX_AIM, 0, "", "");
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): his barrier, Kinetic Grasp, Accretion's gather and Gravitic Flux end. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

@@ -551,7 +551,7 @@ public final class HeroManager {
 				}
 			}
 			if (kit != null) {
-				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
+				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield).withWidgets(kit.widgets(player, state)));
 			}
 			held(state);
 		}
