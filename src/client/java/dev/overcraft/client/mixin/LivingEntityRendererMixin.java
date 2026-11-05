@@ -32,6 +32,23 @@ public abstract class LivingEntityRendererMixin {
 		}
 	}
 
+	/** Hanging on a Lifeline, ours: a body leans along the rope, from the point it hangs by (JetpackCatFx.tilt), carried in the render state. */
+	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
+		at = @At("TAIL"))
+	private void overcraft$towTilt(LivingEntity entity, LivingEntityRenderState state, float partialTicks, CallbackInfo ci) {
+		state.setData(dev.overcraft.client.effect.JetpackCatFx.TILT, dev.overcraft.client.effect.JetpackCatFx.tilt(entity, partialTicks));
+	}
+
+	@Inject(method = "setupRotations", at = @At("HEAD"))
+	private void overcraft$towTiltApply(LivingEntityRenderState state, PoseStack poseStack, float bodyRot, float scale, CallbackInfo ci) {
+		float[] tilt = state.getData(dev.overcraft.client.effect.JetpackCatFx.TILT);
+		if (tilt != null) {
+			poseStack.translate(0, tilt[4], 0);
+			poseStack.mulPose(new org.joml.Matrix4f().rotation(new org.joml.Quaternionf(tilt[0], tilt[1], tilt[2], tilt[3])));
+			poseStack.translate(0, -tilt[4], 0);
+		}
+	}
+
 	/** Draws the hero model instead of the Minecraft one when the render state carries one (players in hero mode). */
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
 		at = @At("HEAD"), cancellable = true)

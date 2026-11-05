@@ -22,7 +22,7 @@ can (positions, speeds, buttons). Nothing touches Overwatch's files or memory.
 - Everyone in the game is forced to Jetpack Cat and logged. Each line starts with the player's slot (**S0**, **S1**...),
   shown at the top left of each player's readout: **note who was which slot**.
 - **You host** (with the log file option on); others join. The log file is written on the host's machine.
-- A second player is useful for Lifeline (towing an ally) and Catnapper.
+- A second player is useful for Lifeline (towing an ally) and Catnapper. **Wanted for #89** (no recording has anyone on her rope yet; the rope's numbers have no names): with the ally letting go of every key, S0 towing S1: hang still for 3 s; W for 4 s and stop (how far S1 trails, how far past they swing, how long it lasts); a 90° turn; straight up; Frenetic Flight for 2 s; S1 on the ground as she rises. Then once with S1 holding W, and once S1 pressing Jump to Detach. A bot may do for S1: her graph has an automatic catch for one kind of target (5A8F #1224, L).
 
 ## What to fly
 Each a few times. Press **Interact (F)** right after one you want me to look at: it logs a numbered MARK and shows it on

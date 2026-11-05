@@ -46,6 +46,95 @@ public final class JetpackCatFx {
 		return dev.overcraft.client.effect.Fx.now() - towedAt;
 	}
 
+	/**
+	 * Dev only (DevServer's "devtow"): ties the local player's rope to any entity, with no second player to tow them: ClientTow
+	 * and the rope's look on the towed one's own screen, not the server's side of a tow. -1 lets go.
+	 */
+	public static void devTow(net.minecraft.client.player.LocalPlayer player, int anchor) {
+		TETHERS.entrySet().removeIf(e -> e.getValue()[0] == player.getId());
+		if (anchor >= 0) {
+			TETHERS.put(anchor, new int[] {player.getId(), 0, 0});
+			hookLeaves(anchor);
+		}
+	}
+
+	private static java.util.List<String> devFrames;
+
+	/** Dev only ("towframes"): starts recording each frame's rope ends, or stops and returns them. */
+	public static String devFrames(boolean start) {
+		String all = devFrames == null ? "" : String.join("\n", devFrames);
+		devFrames = start ? new java.util.ArrayList<>() : null;
+		return all;
+	}
+
+	/** This one hangs on a Jetpack Cat's rope (a tow or a carry). */
+	public static boolean towed(int id) {
+		for (int[] tether : TETHERS.values()) {
+			if (tether[0] == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static final net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey<float[]> TILT = net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey.create(() -> "overcraft tow tilt");
+	/** Each towed body's lean as last drawn: its "up", eased (entity id -> direction). */
+	private static final Map<Integer, Vec3> TILTS = new HashMap<>();
+	private static float tiltAt;
+	/** Ours: how much of the rope's angle a body takes, and how fast its lean follows (a second). */
+	private static final double TILT_SHARE = 0.8, TILT_RATE = 8;
+
+	/**
+	 * The lean of a body on her rope, ours (no data: mobs aren't in Overwatch): its up turned toward her, from the point it hangs by:
+	 * {x, y, z, w of the turn, the point's height}, or null. Heroes pose by their own clips (HeroAnimator's "pulled"), so not those.
+	 */
+	public static float @Nullable [] tilt(net.minecraft.world.entity.LivingEntity entity, float partial) {
+		if (TETHERS.isEmpty()) {
+			TILTS.clear();
+			return null;
+		}
+		int catId = -1;
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == entity.getId()) {
+				catId = e.getKey();
+			}
+		}
+		net.minecraft.world.entity.Entity cat = catId < 0 ? null : entity.level().getEntity(catId);
+		Vec3 last = TILTS.get(entity.getId());
+		if (cat == null && last == null) {
+			return null;
+		}
+		Vec3 want = UP;
+		if (cat != null && !entity.onGround()) {
+			Vec3 to = cat.getPosition(partial).subtract(entity.getPosition(partial));
+			if (to.length() > 3.5) {
+				to = to.normalize();
+				want = UP.scale(1 - TILT_SHARE).add(to.scale(TILT_SHARE)).normalize();
+			}
+		}
+		float now = Fx.now();
+		float dt = Math.clamp(now - tiltAt, 0, 0.1f);
+		tiltAt = now;
+		Vec3 up = last == null ? UP : last.add(want.subtract(last).scale(Math.min(1, TILT_RATE * dt))).normalize();
+		if (cat == null && up.subtract(UP).lengthSqr() < 1.0E-4) {
+			TILTS.remove(entity.getId());
+			return null;
+		}
+		TILTS.put(entity.getId(), up);
+		org.joml.Quaternionf turn = new org.joml.Quaternionf().rotationTo(0, 1, 0, (float) up.x, (float) up.y, (float) up.z);
+		return new float[] {turn.x, turn.y, turn.z, turn.w, entity.getBbHeight()};
+	}
+
+	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
+	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == player.getId() && e.getValue()[2] == 0) {
+				return e.getKey();
+			}
+		}
+		return -1;
+	}
+
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
 	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
 	/** Jetpack Cats in Purr: her id -> when it ends (client seconds), for her range wall (70F9). */
@@ -169,12 +258,12 @@ public final class JetpackCatFx {
 				case "purr_hit" -> enemyHit(at, 1);
 				case "lifeline_attach" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 0});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					attach(at);
 				}
 				case "catnapper_tether" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 1});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					tetherStart(at);
 				}
 				case "tether_end" -> TETHERS.remove(e.variant());
@@ -521,7 +610,7 @@ public final class JetpackCatFx {
 
 	/**
 	 * Each client tick: every rope, every Lifeline seeking (its marker, rings and hook glow) and every Jetpack Cat's boost
-	 * trails. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
+	 * trails, and each hook's way out and back. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
 	 * tip (0283) to the hook over the ally (their hardpoint 0520, 2.2 m up: in Minecraft, just over their head).
 	 */
 	public static void tethers(net.minecraft.client.multiplayer.ClientLevel level) {
@@ -536,13 +625,31 @@ public final class JetpackCatFx {
 			}
 			enemy = t.getValue()[1] == 1;
 			try {
-				rope(t.getKey(), armTip(cat), hook(towed), t.getValue()[2] == 1);
-				hookGlow(t.getKey(), towed);
+				Hook out = HOOKS.computeIfAbsent(t.getKey(), k -> new Hook(1));
+				out.at = hook(towed, 1);
+				out.carry = t.getValue()[2] == 1;
+				out.enemy = t.getValue()[1] == 1;
+				if (out.out < 1) {
+					out.out = Math.min(1, out.out + HOOK_OUT / 20);
+					if (out.out >= 1) {
+						latch(t.getKey(), t.getValue()[0]);
+					}
+				} else {
+					hookGlow(t.getKey(), towed);
+				}
 			} finally {
 				enemy = false;
 			}
 		}
 		ARCS.keySet().retainAll(TETHERS.keySet());
+		// let go: the hook goes back to her arm from where it was (D #874: at 3.5 a second)
+		HOOKS.entrySet().removeIf(h -> {
+			if (TETHERS.containsKey(h.getKey())) {
+				return false;
+			}
+			h.getValue().out -= HOOK_BACK / 20;
+			return h.getValue().out <= 0 || level.getEntity(h.getKey()) == null;
+		});
 		seekers(level);
 		purrWalls(level);
 		boostTrails(level);
@@ -551,18 +658,89 @@ public final class JetpackCatFx {
 	}
 
 	/** Her jetpack arm's tip (0283), posed; else ours, behind and above her middle (her own first person). */
-	private static Vec3 armTip(net.minecraft.world.entity.Entity cat) {
+	private static Vec3 armTip(net.minecraft.world.entity.Entity cat, float partial) {
 		Posed p = posed(cat);
 		if (p != null && p.at.length > ARM) {
 			return p.at[ARM];
 		}
-		double yaw = Math.toRadians(cat.getYRot());
-		return cat.position().add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
+		double yaw = Math.toRadians(cat.getYRot(partial));
+		return cat.getPosition(partial).add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
 	}
 
 	/** Where the hook sits on a towed ally: their 0520, 2.2 m over their feet (H); ours, just over a mob's head. */
-	private static Vec3 hook(net.minecraft.world.entity.Entity towed) {
-		return towed.position().add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	private static Vec3 hook(net.minecraft.world.entity.Entity towed, float partial) {
+		return towed.getPosition(partial).add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	}
+
+	/** The hook's way out to the ally and back, a second (D 5A8F #1175: v73806 chases 1 at 4.5, 0 at 3.5; H). */
+	private static final float HOOK_OUT = 4.5f, HOOK_BACK = 3.5f;
+
+	/**
+	 * The rope's outer glow. 71B0 C22's 0.2573 m strip is 1344 x the noise 18F00, so most of its width is dark; as a plain soft line at 0.45 it
+	 * read as a thick glowing bar. 0.18 is ours: about that strength less the noise's mean.
+	 */
+	private static final float ROPE_GLOW = 0.18f;
+
+	/** A hook out of her arm: how far (0 at her arm, 1 on the ally) and the point it's going to or last had. */
+	private static final class Hook {
+		float out;
+		Vec3 at = Vec3.ZERO;
+		boolean carry;
+		boolean enemy;
+
+		Hook(float out) {
+			this.out = out;
+		}
+	}
+
+	/** Each Jetpack Cat's hook while it's out of her arm. A player who starts to see her mid-tow sees it already there. */
+	private static final Map<Integer, Hook> HOOKS = new HashMap<>();
+
+	/** Thrown (again, from where it had got to if it was on its way back). */
+	private static void hookLeaves(int catId) {
+		HOOKS.computeIfAbsent(catId, k -> new Hook(0));
+	}
+
+	/**
+	 * Each frame, ahead of the effects' own step: the rope from where her arm is drawn to where the hook is, at this frame's
+	 * partial tick. Fed once a tick it stood still between ticks while she and the ally were drawn moving: 0.4 m out at her
+	 * 7 m/s, and over a metre at a boost. Straight whatever it's doing: the data's beam (5A8F #966) has two points and no
+	 * sag or noise of its own (H), so it swings and goes slack only as its two ends move.
+	 */
+	static void ropes() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		if (mc.level == null || HOOKS.isEmpty()) {
+			return;
+		}
+		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		for (Map.Entry<Integer, Hook> e : HOOKS.entrySet()) {
+			net.minecraft.world.entity.Entity cat = mc.level.getEntity(e.getKey());
+			if (cat == null || !cat.isAlive()) {
+				continue;
+			}
+			Hook h = e.getValue();
+			int[] tether = TETHERS.get(e.getKey());
+			net.minecraft.world.entity.Entity towed = tether == null ? null : mc.level.getEntity(tether[0]);
+			Vec3 to = towed == null ? h.at : hook(towed, partial);
+			if (devFrames != null && towed != null) {
+				Vec3 a = cat.getPosition(partial);
+				Vec3 b = towed.getPosition(partial);
+				devFrames.add(String.format(java.util.Locale.ROOT, "%.3f %.3f %.3f %.3f %.3f %.3f %.3f", Fx.now(), a.x, a.y, a.z, b.x, b.y, b.z));
+			}
+			Vec3 from = armTip(cat, partial);
+			if (towed == mc.player && mc.options.getCameraType().isFirstPerson()) {
+				// on the towed one's own screen the hook is 0.25 m over their eyes and the rope's width fans out to fill the sky
+				// (found on the rope, s2_first_up): theirs starts a metre up it (ours)
+				Vec3 up = from.subtract(to);
+				to = to.add(up.normalize().scale(Math.min(1, up.length())));
+			}
+			enemy = h.enemy;
+			try {
+				rope(e.getKey(), from, from.add(to.subtract(from).scale(h.out)), h.carry);
+			} finally {
+				enemy = false;
+			}
+		}
 	}
 
 	/**
@@ -580,7 +758,7 @@ public final class JetpackCatFx {
 		strip("rope/braid/" + id, from, piece, "cat_rope_braid", cable, 0.04f, 1);
 		strip("rope/noise/" + id, from, piece, "cat_glow_noise", glow, 0.13f, 0.7f);
 		// (the data's 1344 strip is multiplied by a scrolling noise there; alone it drew a wedge: a soft line instead)
-		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, 0.45f);
+		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, ROPE_GLOW);
 		if (carry) {
 			strip("rope/carry/" + id, from, piece, "cat_cloud", glow, 0.32f, 0.35f);
 		}
@@ -595,7 +773,7 @@ public final class JetpackCatFx {
 	 * for 0.8 s; and round them the arcs (7454).
 	 */
 	private static void hookGlow(int catId, net.minecraft.world.entity.Entity towed) {
-		Vec3 hook = hook(towed);
+		Vec3 hook = hook(towed, 1);
 		float[] cone = Fx.mesh("cat_cone");
 		if (cone != null) {
 			// held on the hook (spawned free, they were left behind as she towed: found playing); the cone is stored
@@ -738,8 +916,8 @@ public final class JetpackCatFx {
 		if (cat == null || towed == null) {
 			return;
 		}
-		Vec3 from = armTip(cat);
-		Vec3 piece = hook(towed).subtract(from);
+		Vec3 from = armTip(cat, 1);
+		Vec3 piece = hook(towed, 1).subtract(from);
 		float len = (float) piece.length();
 		if (len < 1.0E-3f) {
 			return;
@@ -797,7 +975,7 @@ public final class JetpackCatFx {
 					// the cone 1B972 with its gradient (2C41F, an 8 x 256 strip along it), kept on her arm's tip
 					Particle cone = Fx.particle("cat_cone_noise", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HOOK);
 					if (cone != null) {
-						Vec3 tip = armTip(cat);
+						Vec3 tip = armTip(cat, 1);
 						Fx.add(cone.at(tip.add(0, -0.58, 0)).mesh(coneMesh, new Vec3(1, 0, 0)).life(1).size(0.3f, 0.3f)
 							.alpha(0.8f).fade(0.1f, 0.7f));
 					}
