@@ -83,7 +83,7 @@ public class KunaiEntity extends OwProjectile {
 		}
 		Vec3 at = hit.getLocation();
 		// the dragon's head is its head; anyone else's, the top of their box
-		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement());
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 		// known before the damage: a killing blow's kill feed and voice line look at it while the damage is dealt
 		HeroState state = crit && getOwner() instanceof Player thrower ? HeroManager.state(thrower) : null;
 		if (state != null) {
@@ -96,7 +96,7 @@ public class KunaiEntity extends OwProjectile {
 		level.playSound(null, at.x, at.y, at.z, OcSounds.KIRIKO_KUNAI_HIT, SoundSource.PLAYERS, 1, 1);
 		if (getOwner() instanceof Player owner) {
 			Combat.credit(owner, dealt, target);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, target);
 			if (owner instanceof net.minecraft.server.level.ServerPlayer thrower && dealt > 0) {
 				Effects.hitMarker(thrower, target, crit);
 				dev.overcraft.kiriko.Kiriko.fortuneTeller(thrower);

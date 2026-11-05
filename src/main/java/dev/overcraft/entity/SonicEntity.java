@@ -79,7 +79,7 @@ public class SonicEntity extends OwProjectile {
 			discard();
 			return;
 		}
-		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement());
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 		HeroState state = crit && getOwner() instanceof Player shooter ? HeroManager.state(shooter) : null;
 		if (state != null) {
 			state.critAt = level.getGameTime();
@@ -95,7 +95,7 @@ public class SonicEntity extends OwProjectile {
 		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {
 			Combat.credit(owner, dealt, target);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, target);
 			if (owner instanceof ServerPlayer shooter && dealt > 0) {
 				Effects.hitMarker(shooter, target, crit);
 			}

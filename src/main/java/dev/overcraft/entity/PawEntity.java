@@ -153,13 +153,13 @@ public class PawEntity extends OwProjectile {
 			// the shot's way, to stand the paw print across it
 			Effects.play(level, centre ? "paw_heal_centre" : "paw_heal", at, getDeltaMovement(), null, 0, owner);
 		} else if (target != null && Allies.canHurt(owner, target)) {
-			boolean crit = !centre && (part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement()));
+			boolean crit = !centre && (part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius()));
 			double damage = amount * (crit ? JetpackCatStats.PAW_CRIT : 1);
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT))
 				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			if (owner instanceof Player cat) {
 				Combat.credit(cat, dealt, target);
-				Combat.addFireForDamage(cat, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(cat, dealt, target);
 				if (cat instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);
 				}

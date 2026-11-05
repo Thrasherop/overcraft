@@ -75,13 +75,13 @@ public class BlasterShotEntity extends OwProjectile {
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		Vec3 at = hit.getLocation();
 		if (target != null && Allies.canHurt(owner, target)) {
-			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement());
+			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 			double damage = MercyStats.BLASTER_DAMAGE * (crit ? MercyStats.BLASTER_CRIT : 1);
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.MERCY))
 				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.MERCY));
 			if (owner instanceof Player mercy) {
 				Combat.credit(mercy, dealt, target);
-				Combat.addFireForDamage(mercy, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(mercy, dealt, target);
 				if (mercy instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);
 				}
