@@ -136,6 +136,10 @@ public final class ReticleHud {
 			// a Jetpack Cat's Lifeline in reach: her graph 5A8F, 3A94 #1253: Interact, "Lifeline"; Interact takes it
 			prompt(g, Action.INTERACT, "overcraft.hud.prompt.lifeline", null, null);
 		}
+		if (dev.overcraft.client.ClientLifeweaver.gripJumpLive(player)) {
+			// held by a Lifeweaver's Life Grip: 21EE #617, 00DB: Jump, 31330 "CANCEL", from when Jump lets go (#621 -> #620 -> #614, 0.65 s)
+			prompt(g, Action.JUMP, "overcraft.hud.prompt.cancel", null, null);
+		}
 		// what a marker keeps out of next frame (a hero's own are drawn above, and go by the last frame's)
 		roomTop = roomBottom = roomHalf = 0;
 		if (first >= 0) {
@@ -342,8 +346,8 @@ public final class ReticleHud {
 	/**
 	 * Juno. Her timed abilities, 0237: Glide Boost's on the centre layer (47B7 #641: v215 / v567, op109(v215), its icon 024D), the
 	 * torpedo lock window's in her reticle (4695 #1225 / #1283). Their prompts, 00DB: the glide's own button, 1B3C0 "CANCEL" (47B7 #637);
-	 * the lock's two buttons (4695 #867, #1051: the torpedoes' and the Mediblaster's, 177F0 "FIRE" on one and 04CC "CANCEL" on the other,
-	 * swapped by an option). In the mod either button fires (Torpedoes.java), so both say FIRE; no cancel is built.
+	 * the lock's two buttons (4695 #1051, the default of the swap option v55397, off: the Mediblaster's button (the left, its Action named
+	 * for Kiriko's secondary) 177F0 "FIRE", the torpedoes' (the right) 04CC "CANCEL"; Torpedoes.tick does what they say, #112).
 	 */
 	private static void juno(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float partial) {
 		boolean gliding = (s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0;
@@ -365,7 +369,7 @@ public final class ReticleHud {
 			prompt(g, Action.ABILITY_1, "overcraft.hud.prompt.cancel", null, null);
 		}
 		if (locking) {
-			prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.fire", Action.PRIMARY_FIRE, "overcraft.hud.prompt.fire");
+			prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.fire", Action.PRIMARY_FIRE, "overcraft.hud.prompt.cancel");
 		}
 	}
 

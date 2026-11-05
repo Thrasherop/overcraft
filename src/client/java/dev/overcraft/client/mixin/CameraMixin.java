@@ -39,6 +39,26 @@ public abstract class CameraMixin {
 
 	@Shadow protected abstract float getMaxZoom(float cameraDist);
 
+	@Shadow @org.spongepowered.asm.mixin.Final private org.joml.Quaternionf rotation;
+	@Shadow @org.spongepowered.asm.mixin.Final private org.joml.Vector3f forwards;
+	@Shadow @org.spongepowered.asm.mixin.Final private org.joml.Vector3f up;
+	@Shadow @org.spongepowered.asm.mixin.Final private org.joml.Vector3f left;
+
+	/** Lúcio's roll on the wall, first person (#105): setRotation has no roll, so the camera's turn takes it after, and its axes with it. */
+	@Inject(method = "alignWithEntity", at = @At("TAIL"))
+	private void overcraft$wallRoll(float partialTicks, CallbackInfo ci) {
+		float roll = dev.overcraft.client.ClientHero.wallRoll(entity, partialTicks);
+		if (roll != 0) {
+			rotation.rotateZ(-roll * Mth.DEG_TO_RAD);
+			new org.joml.Vector3f(0, 0, -1).rotate(rotation, forwards);
+			new org.joml.Vector3f(0, 1, 0).rotate(rotation, up);
+			new org.joml.Vector3f(-1, 0, 0).rotate(rotation, left);
+			matrixPropertiesDirty |= 3;
+		}
+	}
+
+	@Shadow private int matrixPropertiesDirty;
+
 	@Inject(method = "alignWithEntity", at = @At("TAIL"))
 	private void overcraft$emoteOrbit(float partialTicks, CallbackInfo ci) {
 		if (!EmoteCamera.active() || entity == null || entity != Minecraft.getInstance().player) {

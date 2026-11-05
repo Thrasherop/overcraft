@@ -394,16 +394,21 @@ public final class SombraFx {
 			case "sombra_hit" -> hit(at, enemy);
 			case "sombra_hit_block" -> blockHit(at, dir, enemy);
 			case "sombra_strands" -> STRANDS.put(e.entity(), new Strands(e.variant() >> 1, now, (e.variant() & 1) == 1, enemy));
-			case "sombra_hotfixed" -> HOTFIXED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "sombra_hotfixed" -> HOTFIXED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_hotfixed_end" -> HOTFIXED.remove(e.entity());
-			case "sombra_hacked" -> HACKED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_revealed" -> REVEALED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_hacked_thing" -> HACKED_THINGS.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_weakened" -> WEAKENED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "sombra_hacked" -> HACKED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_revealed" -> REVEALED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_hacked_thing" -> HACKED_THINGS.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_weakened" -> WEAKENED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_cyber_launch" -> launch(at, enemy);
 			case "sombra_cyberspace" -> {
 				burst(at, enemy);
 				ZONES.add(new Zone(at, now, now + e.variant() / 20f, enemy));
+			}
+			// for one who has just come to see it (Effects.showHeld, #96): the zone as it is, no burst, one a place
+			case "sombra_cyberspace_state" -> {
+				ZONES.removeIf(z -> z.at.distanceToSqr(at) < 0.01);
+				ZONES.add(new Zone(at, now - e.dx(), now + (e.variant() & 0xFFFF) / 20f, enemy));
 			}
 			case "sombra_teleport" -> teleport(at, enemy);
 			case "sombra_stealth" -> stealth(at, enemy);

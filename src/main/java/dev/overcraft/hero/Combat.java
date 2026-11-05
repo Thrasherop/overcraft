@@ -41,6 +41,15 @@ public final class Combat {
 	public static final int REGEN_DELAY = Ow.ticks(6);
 	public static final double REGEN_FLAT = 10;
 	public static final double REGEN_PERCENT = 0.05;
+	/**
+	 * Being hurt by an enemy cuts the healing received (the role graph 01C7, everyone's since BZ 2026-02-10 "In-Combat Healing
+	 * Reduction on Damage: -30%", "Reduced effectiveness against Tanks: -15%"; BZ 2026-07-30's 15% was Quick Play Hacked's alone,
+	 * and the notes to 2026-11-03 change nothing else of it): D #1308 v25267 = 1A33 0.3, x 1CAC 0.5 for a tank, for 1E68 3 s (#881).
+	 * W's rules: a new hit doesn't stack; no self-damage; it multiplies with other healing modifiers; it's cleansable. W's box is
+	 * flagged "removed" and was edited on after that (its table of exempt abilities, none of them ours): D and BZ settle it
+	 * (tools/reference/sigma.md, Disagreements 11).
+	 */
+	public static final double HEAL_CUT = 0.3, HEAL_CUT_TANK_SHARE = 0.5, HEAL_CUT_TIME = 3;
 
 	private static final Identifier RUSH_SPEED = Overcraft.id("kitsune_rush_speed");
 	private static final Identifier RUSH_ATTACK = Overcraft.id("kitsune_rush_attack");
@@ -49,6 +58,8 @@ public final class Combat {
 	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
 	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
 	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
+	/** The healing reduction on a creature hurt by an enemy (game time it ends). */
+	private static final Map<UUID, Long> healCutUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
 	private static final Map<UUID, LivingEntity> rushedEntities = new HashMap<>();
 
@@ -300,17 +311,76 @@ public final class Combat {
 
 	/**
 	 * Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. Ana's Biotic
-	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one. Minecraft's own healing (food,
-	 * potions) doesn't pass here and isn't scaled (ours: the owner's open question, ana-plan.md).
+	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one; a hurt one's takes the healing reduction too.
+	 * Minecraft's own healing (food, potions) doesn't pass here and isn't scaled, as Overwatch's health packs heal for their
+	 * full amount (W Global Passive Abilities; ours: the owner's open question, ana-plan.md).
 	 */
 	public static float heal(LivingEntity target, double owHeal) {
-		double scale = antiHealed(target) ? 0 : healBoosted(target) ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		double scale = healScale(antiHealed(target), healBoosted(target), healCut(target), healCutTank(target));
 		if (scale <= 0) {
 			return 0;
 		}
 		float before = target.getHealth();
 		target.heal(Ow.hp(owHeal * scale));
 		return Ow.toOw(target.getHealth() - before);
+	}
+
+	/** What healing received is multiplied by. Package-private for HealScaleTest. */
+	static double healScale(boolean antiHealed, boolean boosted, boolean cut, boolean tank) {
+		if (antiHealed) {
+			return 0;
+		}
+		double scale = boosted ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		return cut ? scale * (1 - HEAL_CUT * (tank ? HEAL_CUT_TANK_SHARE : 1)) : scale;
+	}
+
+	/** Whether a hurt is the kind that cuts healing: by someone else, not on their side. Package-private for HealScaleTest. */
+	static boolean cutsHealing(boolean hasAttacker, boolean self, boolean ally) {
+		return hasAttacker && !self && !ally;
+	}
+
+	/**
+	 * It was hurt (Overcraft's AFTER_DAMAGE: a hurt whose amount, before armor, is over 0, a mob's as much as a hero's): the graph's path into the
+	 * reduction, 01C7 #1281 (message 0011: damage taken, v35367 its tags, v18513 the attacker) -> #1202 -> #882 -> #2712 -> #881:
+	 * <ul>
+	 * <li>#1202: the attacker, or its owner, passes a filter of a player hero (m_84065FD1 1) on the other side (m_66747E7D 2) (H nodes, M the filter's meaning, by
+	 * Ana's and Lifeweaver's graphs). So nothing with no attacker cuts (a fall, lava, drowning, and in Minecraft burning, poison and wither, which name
+	 * none), nor your own, nor your side's. Ours: a mob counts as that attacker, as Overcraft's fights are against mobs.</li>
+	 * <li>#882: not a hit tagged 191F, Local Anesthetic's damage over time (Sleep.quiet: the only damage that runs under it).</li>
+	 * <li>#2712: {v61743, not v76560} only a Damage hero's (#2702, category 084E): a mode's rule (M: Stadium's, by W Passive ability). Not ours.</li>
+	 * <li>#881: the 3 s wait, from the start again on each hit (m_0DBAFD7F 1: M, and W "doesn't stack").</li>
+	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: what sets those two isn't in the graph: read, undecoded. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
+	 * -> #1184): read, undecoded. #610 StateCombatModFilter x9007B042, op67(v25267): the healing scale itself (M, as Ana's B064); m_7724EC51 and m_5BF820E4: undecoded.</li>
+	 * </ul>
+	 * A no-team hit from another player or their pet counts as their own side's (Allies: with no teams everyone is an ally): it cuts nothing: decision, ours.
+	 */
+	public static void onHurt(LivingEntity target, DamageSource source) {
+		Entity by = source.getEntity();
+		// a player's own side, or a pet's owner's (a mob asked about a player answers "no teams, so allied", Allies.playersAllied: played,
+		// a husk's hit cut nothing)
+		LivingEntity side = by instanceof Player player ? player
+			: by instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : null;
+		boolean ally = side != null && (side == target || Allies.wasAlly(side, target));
+		if (!Sleep.quiet() && cutsHealing(by != null, by == target, ally)) {
+			healCutUntil.put(target.getUUID(), now(target) + Ow.ticks(HEAL_CUT_TIME));
+		}
+	}
+
+	public static boolean healCut(LivingEntity target) {
+		Long until = healCutUntil.get(target.getUUID());
+		return until != null && now(target) < until;
+	}
+
+	/** Whether the reduction on this one is a tank's (a player in hero mode as a tank, as Tank.ultFactor reads it). */
+	private static boolean healCutTank(LivingEntity target) {
+		return target instanceof Player player && HeroManager.controls(player) && Tank.tank(HeroManager.hero(player));
+	}
+
+	/** It died: nothing that scales its healing comes back with it (a player respawns under the same UUID). */
+	public static void clearHealing(LivingEntity target) {
+		healCutUntil.remove(target.getUUID());
+		healBoostUntil.remove(target.getUUID());
+		antiHealUntil.remove(target.getUUID());
 	}
 
 	/** Healing received +50% for {@code seconds} (an ally in Biotic Grenade's burst), not on an anti-healed one. */
@@ -345,6 +415,8 @@ public final class Combat {
 			}
 		}
 		harmful.forEach(target::removeEffect);
+		// (W Global Passive Abilities: "cleansable")
+		healCutUntil.remove(target.getUUID());
 		target.clearFire();
 		target.setTicksFrozen(0);
 	}
@@ -657,6 +729,7 @@ public final class Combat {
 		if (server.getTickCount() % 200 == 0) {
 			long time = server.overworld().getGameTime();
 			phasedUntil.values().removeIf(until -> until < time);
+			healCutUntil.values().removeIf(until -> until < time);
 			lastPushes.values().removeIf(last -> time - last.at > CREDIT_TICKS);
 		}
 	}
@@ -679,6 +752,7 @@ public final class Combat {
 
 	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
 	public static void animate(ServerPlayer hero, String clip) {
+		dev.overcraft.comms.Comms.animated(hero, clip);
 		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
 		ServerPlayNetworking.send(hero, payload);
 		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
@@ -688,6 +762,9 @@ public final class Combat {
 
 	public static void clear() {
 		phasedUntil.clear();
+		healCutUntil.clear();
+		healBoostUntil.clear();
+		antiHealUntil.clear();
 		rushedUntil.clear();
 		rushedEntities.clear();
 		buffs.clear();

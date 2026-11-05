@@ -1,0 +1,83 @@
+===== kiriko
+ hero kiriko health 20.0
+   2.8 ability_2 pressed, health 20.0, ult 271, nearest (-3, -60, 2)
+   5.5 ability_1 pressed, health 15.0, ult 532, nearest (4, -60, -1)
+   8.1 ultimate pressed, health 12.0, ult 618, nearest (3, -60, -4)
+  10.7 primary_fire pressed, health 9.0, ult 881, nearest (4, -60, -8)
+  13.3 ability_2 pressed, health 6.0, ult 1145, nearest (9, -59, -4)
+  15.9 ability_1 pressed, health 6.0, ult 1158, nearest (8, -60, 16)
+  18.4 ultimate pressed, health 9.060005, ult 1171, nearest (7, -60, 19)
+  21.1 primary_fire pressed, health 13.830013, ult 1304, nearest (8, -58, -8)
+  23.7 ability_2 pressed, health 18.510021, ult 1387, nearest (7, -60, 19)
+  26.2 ability_1 pressed, health 20.0, ult 1400, nearest (9, -60, 18)
+ end: time 27 s, health 20.0, deaths 0, undead left 0, kills in chat: 0
+ log errors: []
+===== lucio
+ hero lucio health 18.0
+   2.9 primary_fire pressed, health 18.0, ult 272, nearest (-4, -60, 2)
+   5.5 ability_2 pressed, health 15.268801, ult 459, nearest (0, -60, 1)
+   8.1 ultimate pressed, health 18.0, ult 640, nearest (-6, -58, -2)
+  10.7 ability_1 pressed, health 16.537598, ult 933, nearest (-12, -60, -2)
+  13.3 primary_fire pressed, health 14.671997, ult 1148, nearest (-16, -60, -3)
+  15.9 ability_2 pressed, health 14.671997, ult 1287, nearest (-16, -60, -3)
+  18.5 ultimate pressed, health 12.011997, ult 1457, nearest (-20, -60, -3)
+  20.0 nothing left in reach
+ end: time 21 s, health 12.011997, deaths 0, undead left 0, kills in chat: 0
+ log errors: []
+===== juno
+ hero juno health 18.0
+   2.9 primary_fire pressed, health 18.0, ult 305, nearest (-3, -60, 2)
+   5.5 ability_2 pressed, health 11.0, ult 318, nearest (3, -60, -2)
+   8.1 ability_1 pressed, health 9.0, ult 813, nearest (5, -59, -7)
+  10.7 ultimate pressed, health 6.538499, ult 992, nearest (7, -60, -5)
+  13.3 primary_fire pressed, health 11.098495, ult 1121, nearest (16, -60, 5)
+  15.8 ability_2 pressed, health 9.698494, ult 1253, nearest (16, -60, 2)
+  18.4 ability_1 pressed, health 14.13849, ult 1362, nearest (21, -60, 3)
+  21.0 ultimate pressed, health 18.0, ult 1375, nearest (7, -60, -4)
+  23.5 primary_fire pressed, health 18.0, ult 1388, nearest (7, -60, -3)
+  26.1 ability_2 pressed, health 18.0, ult 1400, nearest (7, -60, -3)
+ end: time 27 s, health 18.0, deaths 0, undead left 0, kills in chat: 0
+ log errors: []
+===== brigitte
+ hero brigitte health 20.0
+   2.8 ability_1 pressed, health 20.0, ult 124, nearest (-3, -60, 2)
+   5.4 ability_2 pressed, health 18.209494, ult 415, nearest (3, -60, -1)
+   8.0 primary_fire pressed, health 15.167989, ult 941, nearest (1, -60, -7)
+  10.6 ultimate pressed, health 18.181482, ult 1257, nearest (1, -60, -11)
+  13.2 ability_1 pressed, health 18.283476, ult 1467, nearest (-1, -60, -15)
+  15.7 ability_2 pressed, health 20.0, ult 1500, nearest (1, -60, -11)
+  18.3 primary_fire pressed, health 20.0, ult 1512, nearest (1, -60, -11)
+  20.9 ultimate pressed, health 20.0, ult 1525, nearest (1, -60, -11)
+  23.4 ability_1 pressed, health 20.0, ult 1538, nearest (1, -60, -11)
+  25.9 ability_2 pressed, health 20.0, ult 1551, nearest (1, -60, -11)
+ end: time 27 s, health 20.0, deaths 0, undead left 0, kills in chat: 0
+ log errors: []
+===== sigma
+ hero sigma health 48.0
+   2.8 ability_2 pressed, health 48.0, ult 152, nearest (-4, -60, 2)
+   5.6 ability_1 pressed, health 40.0, ult 603, nearest (2, -60, -1)
+   8.1 primary_fire pressed, health 31.0, ult 783, nearest (5, -60, -2)
+  10.7 ultimate pressed, health 22.0, ult 1062, nearest (7, -60, -4)
+  13.3 ability_2 pressed, health 22.360003, ult 1112, nearest (5, -62, -3)
+  15.8 ability_1 pressed, health 28.360044, ult 1124, nearest (7, -59, -5)
+  18.4 primary_fire pressed, health 41.520016, ult 1137, nearest (5, -62, -3)
+  21.0 ultimate pressed, health 48.0, ult 1150, nearest (15, -60, 22)
+  23.6 ability_2 pressed, health 48.0, ult 1163, nearest (9, -46, -6)
+  26.1 ability_1 pressed, health 48.0, ult 1176, nearest (15, -60, 22)
+ end: time 27 s, health 48.0, deaths 0, undead left -1, kills in chat: 0
+ log errors: []
+===== mercy
+ hero mercy health 18.0
+{'ok': True, 'hero': 'KIRIKO'}
+ beam on the ally: 15.850011
+   3.6 ability_2 pressed, health 18.0, ult 104, nearest (5, -60, 2)
+   6.2 ability_1 pressed, health 12.431198, ult 142, nearest (2, -60, -1)
+   8.8 ultimate pressed, health 5.0468044, ult 230, nearest (4, -60, -9)
+  11.3 primary_fire pressed, health 1.9200034, ult 318, nearest (1, -60, -6)
+  13.0 died
+  17.5 ability_2 pressed, health 18.0, ult 407, nearest (0, -60, -2)
+  20.1 ability_1 pressed, health 12.408799, ult 429, nearest (1, -60, 4)
+  22.7 ultimate pressed, health 9.408799, ult 442, nearest (0, -60, 1)
+  25.2 primary_fire pressed, health 4.6799974, ult 515, nearest (0, -60, -4)
+ end: time 27 s, health 2.6286354, deaths 1, undead left -1, kills in chat: 0
+ log errors: []

@@ -38,9 +38,9 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
   first-person clip only moves the left hand: actions play over the pose under them, or the gun's arm drops away.
 - **Wall ride:** `wallride_left` (2915) has his feet on a wall at his left; in first person the left hand trails the
   wall (2518). The lean sheets (2927 / 29B3, 1P 2519 / 251E: the camera rolls -20..+20 degrees) aren't sampled
-  yet: their layout isn't read. They are additive (folder 36-38, bit 0x4), and until #75 they were exported with rest
+  yet (done: "Polish" below). They are additive (folder 36-38, bit 0x4), and until #75 they were exported with rest
   values on every bone they don't key: mended in the pack, [additive_clips](../animation/additive_clips.md).
-- **His dreads' hair cards** (material 8052) come out pure black: Overwatch's hair shader colours them. Not drawn.
+- **His dreads' hair cards** (material 8052) come out pure black: Overwatch's hair shader colours them. Drawn since #105: "Polish" below.
 - **Not settled:** what df 0x2B (the jump's time) and df 0x1AD (skating's spring) are; which weapon reload (248D at 30
   fps, 26E8 at 60) is which view's; his aim sheet 265E's layout (74 frames, unlike Kiriko's 63); the alternate value
   set in his game values (a mode's).
@@ -89,3 +89,10 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Polish (#105, #114, fix/polish-2, 2026-11-05)
+This corrects the notes above on the lean sheets and the dreads.
+- **Lean and roll:** [aim_sheets](../animation/aim_sheets.md). Played: `a_105_side_out70`, `out40` (his body to the aim with his skates on the wall), `a_105_wall_1p_along` (horizon 20 degrees over), `_back` (the other way), `a_105_ride_1p_in70`, `out60`, `up` (little or none), `a_105_roll_gone` (level again off the wall). Baseline: `b_105_wall_1p_along`, level. No clip of the real game was compared: a critic should.
+- **Dreads:** material 8052's colour image is black with the cards' cut in its alpha, and Overwatch's hair shader (0xD9) colours it. `tools/glow_maps.py --colours` bakes `hero_models/colour/000000008052.png`, `HeroModels.colourHair` puts it in place of the black image. **Its tint is ours** (74, 48, 44, picked from the dreads' solid mesh beside it): the card's slots hold no colour we could name (2123B a flat teal, read as a flow map; the ramp 800263259A9D gold and near black, not his brown). Baseline `b_105_dreads_side` (two stumps), `a_105_dreads_day_*` (the fan of locs). Compare with the real game's.
+- **The discs:** `skates` drew a 0.3 m glow of ours on each skate. The data has lights there (Foot_L 001C, Foot_R 001B, intensity 1), no sprite: gone, and Minecraft can't draw those lights. Mask 4F3 (`lucio_soft`) is flat to a third of its width, then an edge: it's why they read as hard discs, and the wall ride's glow dots were on it too, where the data says 29F7 (`lucio_spark`). Baseline `b_114_lucio_day`, `_night`; `a_114_lucio_*`. There is no `b_114_ride_*`: the baseline wasn't shot on the wall from that angle. 4F3 is still used for his Crossfade and Soundwave puffs: look at those next time.
+- **The slab on the ride (the critique, `a_114_ride_out40`):** two causes. Camera-facing sprites at his skates go through the wall, so the wall's face cut them straight: the hard top edge and the bars (`Particle.lift`, off the wall's normal). And the dots and sparks at 0.7 and 1, 50-100 a second, summed to flat yellow: now 0.31, 29F7's own brightness on the beat (its curve, H; applied to the wall ride's sparks too: M, and those are another mask in the data, 3F9D). `f_114_ride_out40`, `_out70`, `_night`: a soft low glow and the trail. Looked at in thumbnails and a crop; not compared with Overwatch.

@@ -694,9 +694,9 @@ public final class Brigitte implements HeroKit {
 	 * A player who starts seeing her (Overcraft's START_TRACKING) hears of a barrier already up: it's an action others
 	 * heard begin, so one who came into range while she held it saw her without it, its stand or its field (#88).
 	 */
-	public static void showState(ServerPlayer brig, ServerPlayer viewer) {
-		HeroState s = HeroManager.state(brig);
-		if (s != null && s.hero == dev.overcraft.hero.Hero.BRIGITTE && s.barrierUp) {
+	@Override
+	public void showState(ServerPlayer brig, HeroState s, ServerPlayer viewer) {
+		if (s.barrierUp) {
 			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer,
 				new dev.overcraft.net.HeroActionPayload(brig.getId(), "shield_raise"));
 		}

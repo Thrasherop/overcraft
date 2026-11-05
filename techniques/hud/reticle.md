@@ -91,3 +91,6 @@ Found playing the fixes: the markers' room was cleared before the hero's markers
 
 ## Still open
 World widgets, not built: souls' markers (08F3), icons over the Cat for allies (0C3D / 011F), over a repaired or Hotfixed ally (011F), Hotfix's band on their health bar (0D86), Juno's lock marker 0727. Sigma's Barrier as an ability box with its broken icon (0241, 1FC8A); his Hyper Strike counter (0243). Sombra's 00DB 017B #596 (CANCEL / CANCEL), 0237 #528 and 0275 0164 #447: not matched to anything in the mod. Lúcio's Accelerando meter (0275, 5162 #450). Juno's and Life Grip's cancels: in the data (04CC, 31330), not in the mod, so not prompted: worth a mechanics issue. 013C's "Disabled" text (319B2). A mob with no `MobFaces` entry gets a plus: 1BDC2 is in `extracted\154088\UITextures` but not the pack.
+
+## Cancels (#112, 2026-11-05)
+Juno's lock now says "[LMB] FIRE [RMB] CANCEL" (#1051), the buttons doing what they say; a player held by Life Grip sees "[SPACE] CANCEL" from 0.65 s (21EE #617). This closes the two "not built" lines above: [juno](../heroes/juno.md), [lifeweaver](../heroes/lifeweaver.md).

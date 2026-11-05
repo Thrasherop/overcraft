@@ -168,6 +168,11 @@ public final class Sleep {
 	}
 
 	/** It took damage (Overcraft's AFTER_DAMAGE): after 0.5 s asleep it wakes, 0.5 s later. */
+	/** Damage that wakes no sleeper is running (Local Anesthetic's, tag 191F, 224E #203): it starts no healing reduction either (01C7 #882). */
+	public static boolean quiet() {
+		return quiet > 0;
+	}
+
 	public static void onDamaged(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
 		if (s == null || s.waking || s.stun || quiet > 0) {

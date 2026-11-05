@@ -238,13 +238,13 @@ public final class AnaFx {
 			case "ana_grenade_burst" -> grenadeBurst(at, enemy, e.variant() == 1);
 			case "ana_anesthetic" -> anesthetic(at, enemy);
 			case "ana_nano_beam" -> nanoBeam(at, at.add(dir), enemy);
-			case "ana_asleep" -> ASLEEP.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "ana_asleep" -> ASLEEP.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "ana_wake" -> ASLEEP.remove(e.entity());
-			case "ana_boosted" -> BOOSTED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "ana_anti_healed" -> ANTI_HEALED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "ana_nano" -> NANOED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "ana_boosted" -> BOOSTED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "ana_anti_healed" -> ANTI_HEALED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "ana_nano" -> NANOED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "ana_nano_end" -> NANOED.remove(e.entity());
-			case "ana_numbed" -> NUMBED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "ana_numbed" -> NUMBED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			default -> {
 				return false;
 			}

@@ -253,6 +253,12 @@ public final class JetpackCatFx {
 						PURRING.put(e.variant(), Fx.now() + (float) dev.overcraft.jetpackcat.JetpackCatStats.PURR_TIME);
 					}
 				}
+				// one who has just come to see it (JetpackCat.showState, #96): her range wall only, for what's left
+				case "purr_state" -> {
+					if (!enemy) {
+						PURRING.put(e.variant(), Fx.now() + e.dx());
+					}
+				}
 				case "purr_wave" -> purrPulse(at);
 				case "purr_heal" -> allyHit(at);
 				case "purr_hit" -> enemyHit(at, 1);

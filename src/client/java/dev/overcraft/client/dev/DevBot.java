@@ -31,7 +31,11 @@ import java.util.concurrent.TimeUnit;
  * hero, a team and the server's whole hero tick, and takes hits as a player does. It has no client, so it doesn't move, and
  * nothing it would see is checked: what it proves is server rules (a barrier stopping a shot); what a second player sees on
  * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot secondary <name> on|off"
- * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>".
+ * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>",
+ * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
+ * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
+ * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>", "bot fx <name> <effect> <ticks>", "bot rays" (Juno's rays this client
+ * holds), "bot roll [trace]" (the camera's roll, each frame with trace).
  */
 final class DevBot {
 	private DevBot() {
@@ -142,6 +146,71 @@ final class DevBot {
 					out.addProperty("y", best.getY());
 				}
 			}
+			case "press" -> {
+				ServerPlayer bot = BOTS.get(a[1]);
+				int flag = switch (a[2]) {
+					case "ability1" -> dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_1;
+					case "ability2" -> dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_2;
+					case "ultimate" -> dev.overcraft.net.HeroInputPayload.PRESS_ULTIMATE;
+					case "reload" -> dev.overcraft.net.HeroInputPayload.PRESS_RELOAD;
+					default -> dev.overcraft.net.HeroInputPayload.PRESS_MELEE;
+				};
+				HeroManager.kit(HeroManager.state(bot).hero).press(bot, HeroManager.state(bot), flag);
+				out.addProperty("ok", true);
+			}
+			case "seen" -> {
+				// "bot seen <name>": what this client's animator holds of it (#96): the emote and how far it has run, Catnapper's aim
+				ServerPlayer bot = BOTS.get(a[1]);
+				var seen = dev.overcraft.client.model.HeroAnimator.existing(bot.getId());
+				out.addProperty("animator", seen != null);
+				if (seen != null) {
+					float now = bot.level().getGameTime() / 20f;
+					out.addProperty("emote", String.valueOf(seen.emote()));
+					out.addProperty("emoteTime", seen.emoteTime(now));
+					out.addProperty("sinceAim", seen.since("ult_aim", now));
+					out.addProperty("sinceShield", seen.since("shield_raise", now));
+				}
+			}
+			case "showstate" -> HeroManager.devNoShowState = a[1].equals("off");
+			case "fx" -> {
+				// "bot fx <name> <effect> <ticks>": the effect on the bot as a kit plays it, by the bot (a state a bot's kit can't reach here)
+				ServerPlayer bot = BOTS.get(a[1]);
+				dev.overcraft.hero.Effects.play((ServerLevel) bot.level(), a[2], bot.position(), net.minecraft.world.phys.Vec3.ZERO, bot, Integer.parseInt(a[3]), bot);
+				out.addProperty("ok", true);
+			}
+			case "fxw" -> {
+				// "bot fxw <name> <effect> <variant>": the same as one laid in the world at it, made by it (Cyberspace, the Disruptor's field)
+				ServerPlayer bot = BOTS.get(a[1]);
+				dev.overcraft.hero.Effects.play((ServerLevel) bot.level(), a[2], bot.position(), net.minecraft.world.phys.Vec3.ZERO, null, Integer.parseInt(a[3]), bot);
+				out.addProperty("ok", true);
+			}
+			case "rays" -> out.addProperty("rays", dev.overcraft.client.effect.JunoFx.devRays());
+			case "roll" -> {
+				// "bot roll": the camera's roll now; "bot roll trace": and every frame's (aim yaw off the ride, wanted, roll) since the last call
+				out.addProperty("roll", dev.overcraft.client.ClientHero.devRoll());
+				if (a.length > 1) {
+					com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+					dev.overcraft.client.ClientHero.devRollTrace().forEach(list::add);
+					out.add("trace", list);
+				}
+			}
+			case "healcut" -> {
+				// "bot healcut <name>": the healing reduction on it now (#103)
+				out.addProperty("cut", dev.overcraft.hero.Combat.healCut(BOTS.get(a[1])));
+			}
+			case "charge" -> {
+				HeroManager.state(BOTS.get(a[1])).ultCharge = Double.parseDouble(a[2]);
+				out.addProperty("ok", true);
+			}
+			case "emote" -> {
+				dev.overcraft.comms.Comms.emote(BOTS.get(a[1]), a[2]);
+				out.addProperty("ok", true);
+			}
+			case "move" -> {
+				ServerPlayer bot = BOTS.get(a[1]);
+				bot.snapTo(Double.parseDouble(a[2]), Double.parseDouble(a[3]), Double.parseDouble(a[4]), bot.getYRot(), bot.getXRot());
+				out.addProperty("ok", true);
+			}
 			case "remove" -> {
 				ServerPlayer bot = BOTS.remove(a[1]);
 				CHANNELS.remove(a[1]);
@@ -149,7 +218,7 @@ final class DevBot {
 					server.getPlayerList().remove(bot);
 				}
 			}
-			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | remove");
+			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | press | charge | emote | move | seen | showstate | healcut | fx | fxw | rays | roll | remove");
 		}
 	}
 

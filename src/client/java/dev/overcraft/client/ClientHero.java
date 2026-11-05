@@ -104,6 +104,44 @@ public final class ClientHero {
 		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
 	}
 
+	/** The roll now and when it was last eased (eased over 0.25 s: the wall-ride node's blend 4.0, M). */
+	private static float wallRollNow, wallRollAt = -1;
+
+	/** Lúcio's first-person roll on the wall this frame, eased in and out (HeroAnimator.wallRoll, CameraMixin). */
+	public static float wallRoll(net.minecraft.world.entity.@Nullable Entity entity, float partialTicks) {
+		Minecraft mc = Minecraft.getInstance();
+		if (entity != mc.player || mc.player == null) {
+			return 0;
+		}
+		float now = (mc.player.level().getGameTime() + partialTicks) / 20f;
+		float dt = wallRollAt < 0 ? 0 : Math.clamp(now - wallRollAt, 0, 0.25f);
+		wallRollAt = now;
+		float want = 0;
+		int side = dev.overcraft.hero.OwMovement.wallRiding(mc.player);
+		if (side != 0 && mc.options.getCameraType().isFirstPerson() && heroView()) {
+			want = dev.overcraft.client.model.HeroAnimator.wallRollFor(side, mc.player.getViewYRot(partialTicks) - dev.overcraft.hero.OwMovement.wallRideYaw(mc.player),
+				mc.player.getViewXRot(partialTicks));
+		}
+		wallRollNow += Math.clamp(want - wallRollNow, -dt * 80, dt * 80);
+		if (DEV_ROLLS.size() < 2000 && dt > 0) {
+			DEV_ROLLS.add(String.format(java.util.Locale.ROOT, "%.3f yaw %.1f want %.2f roll %.2f", now, mc.player.getViewYRot(partialTicks), want, wallRollNow));
+		}
+		return wallRollNow;
+	}
+
+	/** Dev only (DevBot "roll"): the last frames' roll. */
+	private static final java.util.List<String> DEV_ROLLS = new java.util.ArrayList<>();
+
+	public static float devRoll() {
+		return wallRollNow;
+	}
+
+	public static java.util.List<String> devRollTrace() {
+		java.util.List<String> out = new java.util.ArrayList<>(DEV_ROLLS);
+		DEV_ROLLS.clear();
+		return out;
+	}
+
 	/** Hero mode is switched on (G), whether or not the hero can act right now. */
 	public static boolean heroModeOn() {
 		LocalPlayer player = Minecraft.getInstance().player;

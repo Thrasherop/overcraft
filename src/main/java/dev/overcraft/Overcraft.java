@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.30";
+	public static final String ASSETS_NEEDED = "0.3.31";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -162,6 +162,7 @@ public class Overcraft implements ModInitializer {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			dev.overcraft.hero.Effects.tick(server);
 			HeroManager.tick(server);
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
@@ -180,13 +181,8 @@ public class Overcraft implements ModInitializer {
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline, Brigitte's barrier)
-		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
-			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
-				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
-				dev.overcraft.brigitte.Brigitte.showState(hero, player);
-			}
-		});
+		// a player who starts seeing someone hears of the states others heard begin (#96)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register(HeroManager::showState);
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);
@@ -213,6 +209,7 @@ public class Overcraft implements ModInitializer {
 		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
 		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			Combat.clearHealing(entity);
 			if (entity instanceof ServerPlayer player) {
 				HeroManager.onDeath(player);
 			}
@@ -233,6 +230,7 @@ public class Overcraft implements ModInitializer {
 				dev.overcraft.hero.Allies.remember(mob, entity);
 			}
 			if (damage > 0) {
+				Combat.onHurt(entity, source);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}
@@ -250,6 +248,8 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.hero.Effects.clear();
+			Comms.clearEmotes();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
 			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();

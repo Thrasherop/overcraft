@@ -82,3 +82,6 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Wing glows (#114, 2026-11-05)
+The "white blobs": `wingGlows`, in Angelic Descent and Guardian Angel, drew the soft ball 139C alone at 1.5 m, added: over the sky it's white and very large (`b_114_mercy_day_1`), gold at night. The data's is three masks multiplied (139C x 13CC wisps x 4DB: PRODUCTS `mercy_wing_glow`, stretched, as the product peaks at 158 of 255), so wispy. Blended, at 0.6 (ours, by eye). **By day it's a faint yellow wisp over the sky, at night gold** (`f_114_mercy_day_1`, `_night_1`): the first version's note that "the yellow stays yellow" was false (a pale grey-blue haze: the critique read it right). The six bright orbs over her head by day were her wing motes and dots, added (data's top stop white): now blended, the dots in the data's yellow. The real game draws these in HDR through its own curve, which Minecraft can't: this is the look that reads, not the data's strength.

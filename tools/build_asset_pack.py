@@ -900,6 +900,8 @@ MIRRORED = {"cat_paw_marker"}
 # the listed masks, each stretched over the same UVs. Lifeline's rings (7490, research\jetpack_cat\assets2.md): the
 # 299E3 noise times the 1C7A strip, which across the torus's tube (its V) lights the outer rim and fades top and bottom
 PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
+            # Mercy's wing glows (17E9 / 019C: 139C x 13CC wisps x the noise 4DB)
+            "mercy_wing_glow": ("mercy_soft", "mercy_wisp", "mercy_noise"),
             # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
             "cat_tracer": ("cat_cloud", "cat_fade"),
             "cat_trail_ribbon": ("cat_noise", "cat_fade"),
@@ -959,7 +961,7 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)
-STRETCHED = {"cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
+STRETCHED = {"mercy_wing_glow", "cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -1402,6 +1404,10 @@ def missing():
     for name in ("mercy_clips", "jetpack_cat_clips", "lifeweaver_1p_clips"):
         if not (MODELS / f"{name}.glb").exists():
             gaps.append(f"hero_models/{name}.glb")
+    if not (MODELS / "colour" / "000000008052.png").exists():
+        gaps.append("hero_models/colour/000000008052.png (glows)")
+    if not (PACK / "assets" / "overcraft" / "textures" / "effect" / "mercy_wing_glow.png").exists():
+        gaps.append("textures/effect/mercy_wing_glow.png (effects)")
     return sorted(set(gaps))
 
 

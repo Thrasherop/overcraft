@@ -245,6 +245,29 @@ public final class HeroManager {
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
 		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA);
 
+	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
+	public static boolean devNoShowState;
+
+	/**
+	 * The one rule of #96: a player who starts seeing {@code tracked} learns the state it's in. Three kinds carry every state
+	 * others see: attachments (HERO_LOOKS and the like) go by themselves on tracking; timed effects go from Effects' list; and here
+	 * the hero's emote, with the time it has run, and whatever its kit holds (HeroKit.showState).
+	 */
+	public static void showState(net.minecraft.world.entity.Entity tracked, ServerPlayer viewer) {
+		if (devNoShowState) {
+			return;
+		}
+		Effects.showHeld(tracked, viewer);
+		if (tracked instanceof ServerPlayer hero) {
+			dev.overcraft.comms.Comms.showEmote(hero, viewer);
+			HeroState state = STATES.get(hero.getUUID());
+			HeroKit kit = state == null || state.hero == null ? null : kit(state.hero);
+			if (kit != null) {
+				kit.showState(hero, state, viewer);
+			}
+		}
+	}
+
 	/** A player died (AFTER_DEATH): their hero leaves play, as at a switch, but stays theirs. */
 	public static void onDeath(ServerPlayer player) {
 		outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.DEATH);
