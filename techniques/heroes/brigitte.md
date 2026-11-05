@@ -430,3 +430,4 @@ Second pass (the critique, 2026-11-05; final branch; all shots stepped a tick at
 
 ## The Nov 3 patch (#116)
 Inspire's gate 1 s, 15 at once: the flail's triggers are 1.2 s apart now, every second swing ([polish3](../testing/polish3.md)). The data still says 1.25 and 12: it predates the patch.
+- **Whip Shot's push goes about 8 m (W rev 408812; owner 2026-11-05):** 25 m/s and one push are D 133E's; the hold is ours, and a player's own client holds it (`WhipPushPayload`): the server's copy of their vertical speed is stale. 8.48 m on a hero, 7.75 m on a husk. [polish4](../testing/polish4.md).

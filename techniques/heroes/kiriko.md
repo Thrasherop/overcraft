@@ -30,3 +30,4 @@ Everything learned about Kiriko, by subject. She was the flagship: where the met
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+- **Her Suzu line (FC5) isn't the throw's:** it plays 0.5 s after a status tells her it was cleansed (1C7D -> 180C #88 sends 1955 -> 30D8 #93, #89), so a Suzu at a healthy ally or nobody is silent (#121, owner 2026-11-05: follow the data). [status_and_cleanse](../game-data/status_and_cleanse.md), [polish4](../testing/polish4.md).

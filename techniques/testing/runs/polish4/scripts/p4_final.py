@@ -73,7 +73,7 @@ if want('potions'):
     a = add('ally', 'mercy', 'blue', x, 3, 0); mc('/effect give %s minecraft:poison 30 0' % a); mc('/effect give %s minecraft:regeneration 30 0' % a); log('  bot ally before', sh(a, 'effects')); sleep(1); me('kiriko', x, 0.5, 0, 62); log(' ', 'real Suzu cd', st().get('ability2Cooldown')); press('ability_2', 0.1); sleep(0.5); log('  bot ally after', sh(a, 'effects') if False else '(me() removed the bot: not read)')
     x = spot(); me('kiriko', x, 0.5, 0, 62); a = add('ally', 'mercy', 'blue', x + 1, 3.5, 0); mc('/effect give %s minecraft:poison 30 0' % a); mc('/effect give %s minecraft:regeneration 30 0' % a); mc('/effect give %s minecraft:fire_resistance 30 0' % a); log('  bot ally before', sh(a, 'effects')); press('ability_2', 0.1); sleep(0.5); log('  bot ally after', sh(a, 'effects', 'phased'))
     x = spot(); me('kiriko', x, 0.5, 0, 62); mc('/summon minecraft:wolf %s -60 3.5 {Tags:["w"],Owner:%s,Health:8f,Sitting:1b,OrderedToSit:1b,active_effects:[{id:"minecraft:poison",duration:600},{id:"minecraft:speed",duration:600}],Fire:200s}' % (x + 1, re.search(r"\[I; ?[-\d, ]+\]", ' '.join(mc('/data get entity @s UUID', 0.4))).group(0)), 0.2)
-    log('  wolf before', mc('/data get entity @e[tag=w,limit=1] active_effects', 0.3)[-1:], mc('/data get entity @e[tag=w,limit=1] Fire', 0.3)[-1:]); press('ability_2', 0.1); sleep(0.5); log('  wolf after', mc('/data get entity @e[tag=w,limit=1] active_effects', 0.3)[-1:], mc('/data get entity @e[tag=w,limit=1] Fire', 0.3)[-1:])
+    log('  wolf before', mc('/data get entity @e[tag=w,sort=nearest,limit=1] active_effects', 0.3)[-1:], mc('/data get entity @e[tag=w,sort=nearest,limit=1] Fire', 0.3)[-1:]); press('ability_2', 0.1); sleep(0.5); log('  wolf after', mc('/data get entity @e[tag=w,sort=nearest,limit=1] active_effects', 0.3)[-1:], mc('/data get entity @e[tag=w,sort=nearest,limit=1] Fire', 0.3)[-1:])
 
 if want('tether'):
     log('### Suzu on a tethered real client (mid-carry)')
@@ -109,16 +109,16 @@ if want('grip'):
 if want('mobally'):
     log('### a mob ally other than a wolf: a tamed cat; and the villager the dart passes')
     x = spot(); me('kiriko', x, -6.5, 0, 0); UU = re.search(r"\[I; ?[-\d, ]+\]", ' '.join(mc('/data get entity @s UUID', 0.4))).group(0)
-    mc('/summon minecraft:cat %s -60 4.5 {Tags:["c"],Owner:%s,Health:6f,Sitting:1b,OrderedToSit:1b}' % (x, UU), 0.2); log('  side', bot('side cat')); n = add('ana', 'ana', 'red', x, 7.5, 180, 20); bot('press %s ability1' % n); sleep(0.7); log('  after a dart', bot('asleep'), 'health', hp('@e[tag=c,limit=1]')); c('screenshot p4_fin_cat_asleep.png')
+    mc('/summon minecraft:cat %s -60 4.5 {Tags:["c"],Owner:%s,Health:6f,Sitting:1b,OrderedToSit:1b}' % (x, UU), 0.2); log('  side', bot('side cat')); n = add('ana', 'ana', 'red', x, 7.5, 180, 20); bot('press %s ability1' % n); sleep(0.7); log('  after a dart', bot('asleep'), 'health', hp('@e[tag=c,sort=nearest,limit=1]')); c('screenshot p4_fin_cat_asleep.png')
     k = add('kiri', 'kiriko', 'blue', x + 3, 4.5, 90, 72); bot('press %s ability2' % k)
     for i in range(5):
-        sleep(0.2); log('   +%.1f %s health %s' % (0.2 * (i + 1), bot('asleep'), hp('@e[tag=c,limit=1]')))
+        sleep(0.2); log('   +%.1f %s health %s' % (0.2 * (i + 1), bot('asleep'), hp('@e[tag=c,sort=nearest,limit=1]')))
 
 if want('creeper'):
     log('### a hacked creeper on the blue team, fuse cut, a Suzu, a red bot near it')
     for suzu in (False, True):
         x = spot(); me('mercy', x, -13); mc('/summon minecraft:creeper %s -60 8 {Tags:["cr"],Team:"blue",attributes:[{id:"minecraft:movement_speed",base:0.0}]}' % x, 0.2); s_ = add('som', 'sombra', 'red', x + 1, 6.5, 0); bot('charge %s 9999' % s_); k = add('kiri', 'kiriko', 'blue', x - 3, 8, -90, 72)
-        log('  side for Kiriko', bot('side creeper')); mc('/team join blue @e[tag=cr]', 0.2); log('  side', bot('side creeper')); sleep(0.6); bot('press %s ultimate' % s_); sleep(1.0); log('  hacked: exists', mc('/execute if entity @e[tag=cr]', 0.2)[-1:], mc('/data get entity @e[tag=cr,limit=1] ignited', 0.2)[-1:]); c('screenshot p4_fin_creeper_%s_a.png' % suzu)
+        log('  side for Kiriko', bot('side creeper')); mc('/team join blue @e[tag=cr]', 0.2); log('  side', bot('side creeper')); sleep(0.6); bot('press %s ultimate' % s_); sleep(1.0); log('  hacked: exists', mc('/execute if entity @e[tag=cr]', 0.2)[-1:], mc('/data get entity @e[tag=cr,sort=nearest,limit=1] ignited', 0.2)[-1:]); c('screenshot p4_fin_creeper_%s_a.png' % suzu)
         if suzu: bot('press %s ability2' % k)
         for i in range(10):
             sleep(0.35); log('   +%.2f exists %s bot %s' % (0.35 * (i + 1), mc('/execute if entity @e[tag=cr]', 0.1)[-1:][0][-20:] if mc('/execute if entity @e[tag=cr]', 0.1)[-1:] else '', sh(s_, 'health')))
@@ -132,11 +132,11 @@ if want('rally'):
         for tag, dz in (('a', 2.2), ('b', 5.5), ('c', -3.5)):
             mc('/summon minecraft:zombie %s -60 %s {NoAI:1b,Tags:["%s"],Health:20f,equipment:{head:{id:"minecraft:iron_helmet",count:1}},active_effects:[{id:"minecraft:fire_resistance",duration:9999,show_particles:0b}]}' % (x, 0.5 + dz, tag), 0.1)
         sleep(0.3); mc('/giveult'); press('ultimate', 0.15); sleep(1.2); c('key primary_fire down'); sleep(0.5); press('secondary_fire', 0.15); a1 = bot('asleep'); sleep(0.2); a2 = bot('asleep'); c('screenshot p4_fin_rally_%s_hit.png' % fix); sleep(0.9); c('key primary_fire up')
-        log('fix rally', fix, 'a b c', [hp('@e[tag=%s,limit=1]' % t) for t in 'abc'], 'stunned at once', a1.get('asleep'), '0.2 s later', a2.get('asleep'))
+        log('fix rally', fix, 'a b c', [hp('@e[tag=%s,sort=nearest,limit=1]' % t) for t in 'abc'], 'stunned at once', a1.get('asleep'), '0.2 s later', a2.get('asleep'))
     bot('fix rally on')
     log('--- a phased bot in the wave')
     x = spot(); clear(); pick('brigitte'); mc('/gamemode survival @s'); mc('/time set midnight'); tp(x, -60, 0.5, 0, 0); mc('/summon minecraft:zombie %s -60 2.7 {NoAI:1b,Tags:["a"],Health:20f,active_effects:[{id:"minecraft:fire_resistance",duration:9999,show_particles:0b}]}' % x, 0.1); p = add('red', 'mercy', 'red', x + 2, 6, 180); kr = add('krd', 'kiriko', 'red', x + 2, 8, 180, 72)
-    mc('/giveult'); press('ultimate', 0.15); sleep(1.2); c('key primary_fire down'); sleep(0.5); bot('press %s ability2' % kr); sleep(0.05); press('secondary_fire', 0.12); r = rows(p, 0.5, ['phased', 'asleep', 'health']); c('key primary_fire up'); log('  phase', span(r, 1), 'stun', span(r, 2), 'health', r[0][3], r[-1][3], 'bashed', hp('@e[tag=a,limit=1]'))
+    mc('/giveult'); press('ultimate', 0.15); sleep(1.2); c('key primary_fire down'); sleep(0.5); bot('press %s ability2' % kr); sleep(0.05); press('secondary_fire', 0.12); r = rows(p, 0.5, ['phased', 'asleep', 'health']); c('key primary_fire up'); log('  phase', span(r, 1), 'stun', span(r, 2), 'health', r[0][3], r[-1][3], 'bashed', hp('@e[tag=a,sort=nearest,limit=1]'))
 
 if want('places'):
     log('### places: asleep and woken on a ladder, in a boat, in lava (fire resistance), in shallow water; a real Kiriko in the Nether')
@@ -146,7 +146,7 @@ if want('places'):
         mc('/fill %d -60 1 %d -55 1 minecraft:stone' % (x, x), 0.15); mc('/fill %d -60 0 %d -55 0 minecraft:ladder[facing=north]' % (x, x), 0.15); mc('/tp @s %s -58 0.5 0 0' % x, 0.2); press('forward', 0.2)
     wake_at('ladder', ladder)
     def boat(x):
-        mc('/summon minecraft:oak_boat %s -60 0.5 {Tags:["b"]}' % x, 0.2); c('look 0 75'); mc('/tp @s %s -60 -0.5 0 60' % x, 0.1); c('look 0 60'); sleep(0.3); press('interact', 0.15); sleep(0.4); log('   riding', mc('/data get entity @e[tag=b,limit=1] Passengers', 0.3)[-1:][0][-60:] if mc('/data get entity @e[tag=b,limit=1] Passengers', 0.3)[-1:] else '')
+        mc('/summon minecraft:oak_boat %s -60 0.5 {Tags:["b"]}' % x, 0.2); c('look 0 75'); mc('/tp @s %s -60 -0.5 0 60' % x, 0.1); c('look 0 60'); sleep(0.3); press('interact', 0.15); sleep(0.4); log('   riding', mc('/data get entity @e[tag=b,sort=nearest,limit=1] Passengers', 0.3)[-1:][0][-60:] if mc('/data get entity @e[tag=b,sort=nearest,limit=1] Passengers', 0.3)[-1:] else '')
     wake_at('boat', boat)
     def lava(x):
         mc('/effect give @s minecraft:fire_resistance 60 0', 0.1); mc('/fill %d -61 -3 %d -61 3 minecraft:lava' % (x - 3, x + 3), 0.15)

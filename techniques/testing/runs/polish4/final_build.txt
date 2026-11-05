@@ -32,6 +32,6 @@ Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 
 [Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 44s
+BUILD SUCCESSFUL in 43s
 10 actionable tasks: 10 executed
 Configuration cache entry reused.

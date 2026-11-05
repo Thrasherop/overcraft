@@ -1,0 +1,341 @@
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:31:25
+{'ok': True}
+/difficulty normal ['[11:32:34] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:32:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:32:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[11:32:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:32:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:32:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[11:32:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[11:32:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:32:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 63 entities']
+=== the second critique, reproduced or not. Harness keys, bots with bot phase; not a person.
+--- 1 Accretion at a phased bot, a zombie behind: a bot Sigma; his ult, the rock
+hero mercy mode True screen  hp 18.0 / 18.0
+  phased False target knocked (345, 357, 13) health 8.400001 | behind 200.0 -> 200.0 | Sigma ult 3.8 -> 161.8 | heard ['sigma.accretion.gather_3p', 'sigma.accretion.throw_3p', 'sigma.accretion.flyby', 'sigma.accretion.flight.loop']
+hero mercy mode True screen  hp 18.0 / 18.0
+  phased True target knocked None health 18.0 | behind 200.0 -> 200.0 | Sigma ult 3.2 -> 41.5 | heard ['sigma.accretion.gather_3p', 'sigma.accretion.throw_3p', 'sigma.accretion.flyby', 'sigma.accretion.flight.loop']
+--- 2 stacking on a bot target, Suzu by a bot: Hyper on Accretion; dart on a knock-down; dart on a stun
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu False held (766, 787, 22) phase None gravity reads [0.001, 0.08]
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu True held (997, 997, 1) phase (999, 1007, 9) gravity reads [0.08]
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + dart, Suzu False held (1227, 1248, 22) sleeping None phase None
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + dart, Suzu True held (1536, 1557, 22) sleeping None phase (1543, 1552, 10)
+hero mercy mode True screen  hp 18.0 / 18.0
+  Rally stun + dart, Suzu False held (1867, 1978, 112) sleeping (1879, 1978, 100) phase None
+hero mercy mode True screen  hp 18.0 / 18.0
+  Rally stun + dart, Suzu True held (2209, 2218, 10) sleeping None phase (2219, 2227, 9)
+--- 3 quick melee: a real Cat with Claws Out at a phased bot; a real Sigma with Hyper Strike at a phased bot and a zombie in the same swing
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Cat, Claws at real client, phased False claws cooldown 111.0 speed=0.07 health=13.36 ['melee.hit']
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Cat, Claws at real client, phased True claws cooldown 112.0 speed=0.1 health=18.0 ['melee.hit']
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Sigma, Hyper, phased False target health=10.8 gravity=0.001 asleep=True zombie 200.0 -> 196.8512 charge left False ult 139.6
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Sigma, Hyper, phased True target health=18.0 gravity=0.08 asleep=False zombie 200.0 -> 196.8512 charge left True ult 49.6
+    swung again zombie 193.7024 charge left True
+--- 5 phased: /kill, the void, a bed blast
+hero mercy mode True screen  hp 18.0 / 18.0
+  /kill: chat ['[11:35:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Kiriko'] health 18.0 phased True
+hero mercy mode True screen  hp 18.0 / 18.0
+  void at y -200 for 1.2 s: health 18.0 y -213.62940090945554
+  later: health 10.0 y -281.6
+hero mercy mode True screen  hp 18.0 / 18.0
+  bed in the Nether, phased: health 8.0 -> 8.0 block ['[11:35:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Test passed']
+--- 7 the shockwave's numbers: real Brigitte, Rally, noon and midnight, fire resistance and not; a bot Brigitte with armour, her start read
+hero brigitte mode True screen  hp 20.0 / 20.0
+  noon fire resistance False just after: bashed 13.4 second 11.4 bot 20.0 -> 14.96 | 1.3 s later: bashed 10.4 second 9.4 bot 14.96
+hero brigitte mode True screen  hp 20.0 / 20.0
+  midnight fire resistance False just after: bashed 14.4 second 14.4 bot 20.0 -> 14.96 | 1.3 s later: bashed 14.4 second 14.4 bot 14.96
+hero brigitte mode True screen  hp 20.0 / 20.0
+  noon fire resistance True just after: bashed 14.4 second 14.4 bot 20.0 -> 14.96 | 1.3 s later: bashed 14.4 second 14.4 bot 14.96
+--- the "off 14.4": limit=1 with no sort reads any entity with the tag that's loaded. A stale cat tagged c at 10 health 60 m off; a fresh zombie tagged c here
+hero kiriko mode True screen  hp 20.0 / 20.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  limit=1: 10.0 | sort=nearest: 19.0
+  /kill of all non-players here, then: ['[11:36:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 48 entities']
+  how many left with the tag ['[11:36:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed']
+DONE
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:36:34
+/difficulty normal ['[11:36:35] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:36:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:36:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[11:36:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:36:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:36:37] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[11:36:37] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[11:36:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:36:38] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+hero kiriko mode True screen  hp 20.0 / 20.0
+EXC kunai False TypeError("'str' object is not callable")
+hero kiriko mode True screen  hp 20.0 / 20.0
+EXC kunai True TypeError("'str' object is not callable")
+hero lucio mode True screen  hp 18.0 / 18.0
+EXC sonic False TypeError("'str' object is not callable")
+hero lucio mode True screen  hp 18.0 / 18.0
+EXC sonic True TypeError("'str' object is not callable")
+hero sigma mode True screen  hp 48.0 / 48.0
+EXC hypersphere False TypeError("'str' object is not callable")
+hero sigma mode True screen  hp 48.0 / 48.0
+EXC hypersphere True TypeError("'str' object is not callable")
+hero sojourn mode True screen  hp 18.0 / 18.0
+EXC railgun False TypeError("'str' object is not callable")
+hero sojourn mode True screen  hp 18.0 / 18.0
+EXC railgun True TypeError("'str' object is not callable")
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+EXC thorn False TypeError("'str' object is not callable")
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+EXC thorn True TypeError("'str' object is not callable")
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+EXC paw False TypeError("'str' object is not callable")
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+EXC paw True TypeError("'str' object is not callable")
+hero sojourn mode True screen  hp 18.0 / 18.0
+EXC disruptor False TypeError("'str' object is not callable")
+hero sojourn mode True screen  hp 18.0 / 18.0
+EXC disruptor True TypeError("'str' object is not callable")
+hero ana mode True screen  hp 20.0 / 20.0
+EXC anadart False TypeError("'str' object is not callable")
+hero ana mode True screen  hp 20.0 / 20.0
+EXC anadart True TypeError("'str' object is not callable")
+hero ana mode True screen  hp 20.0 / 20.0
+EXC sleepdart False TypeError("'str' object is not callable")
+hero ana mode True screen  hp 20.0 / 20.0
+EXC sleepdart True TypeError("'str' object is not callable")
+hero sigma mode True screen  hp 48.0 / 48.0
+EXC accretion False TypeError("'str' object is not callable")
+hero sigma mode True screen  hp 48.0 / 48.0
+EXC accretion True TypeError("'str' object is not callable")
+hero sombra mode True screen  hp 18.0 / 18.0
+EXC pistol-hitscan False TypeError("'str' object is not callable")
+hero sombra mode True screen  hp 18.0 / 18.0
+EXC pistol-hitscan True TypeError("'str' object is not callable")
+hero juno mode True screen  hp 18.0 / 18.0
+EXC mediblaster-hitscan False TypeError("'str' object is not callable")
+hero juno mode True screen  hp 18.0 / 18.0
+EXC mediblaster-hitscan True TypeError("'str' object is not callable")
+hero brigitte mode True screen  hp 20.0 / 20.0
+EXC whip False TypeError("'str' object is not callable")
+hero brigitte mode True screen  hp 20.0 / 20.0
+EXC whip True TypeError("'str' object is not callable")
+--- Mercy blaster: she needs her weapon out: not switched by this script, not tried
+hero brigitte mode True screen  hp 20.0 / 20.0
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:40:16
+/difficulty normal ['[11:40:17] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:40:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:40:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[11:40:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:40:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:40:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[11:40:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[11:40:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:40:20] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+hero kiriko mode True screen  hp 20.0 / 20.0
+kunai                  phased=False target 18.00 -> 8.40 | behind 200.0 -> 200.0 | asleep  | hit sounds ['kiriko.kunai.hit']
+hero kiriko mode True screen  hp 20.0 / 20.0
+kunai                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['kiriko.kunai.hit']
+hero lucio mode True screen  hp 18.0 / 18.0
+sonic                  phased=False target 18.00 -> 10.96 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero lucio mode True screen  hp 18.0 / 18.0
+sonic                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero sigma mode True screen  hp 48.0 / 48.0
+hypersphere            phased=False target 18.00 -> 8.40 | behind 200.0 -> 195.12886 | asleep  | hit sounds ['sigma.sphere.hit', 'sigma.sphere.hit_enemy', 'sigma.sphere.hit', 'sigma.sphere.hit_enemy']
+hero sigma mode True screen  hp 48.0 / 48.0
+hypersphere            phased=True  target 18.00 -> 18.00 | behind 200.0 -> 195.0628 | asleep  | hit sounds ['sigma.sphere.hit', 'sigma.sphere.hit_enemy', 'sigma.sphere.hit', 'sigma.sphere.hit_enemy']
+hero sojourn mode True screen  hp 18.0 / 18.0
+railgun                phased=False target 18.00 -> 9.36 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sojourn.railgun.hit', 'sojourn.railgun.hit_enemy', 'sojourn.railgun.hit', 'sojourn.railgun.hit_enemy']
+hero sojourn mode True screen  hp 18.0 / 18.0
+railgun                phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sojourn.railgun.hit', 'sojourn.railgun.hit_enemy', 'sojourn.railgun.hit', 'sojourn.railgun.hit_enemy']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=False target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+paw                    phased=False target 18.00 -> 12.24 | behind 200.0 -> 200.0 | asleep  | hit sounds ['jetpack_cat.paw.hit', 'jetpack_cat.paw.hit', 'jetpack_cat.paw.hit']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+paw                    phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['jetpack_cat.paw.hit', 'jetpack_cat.paw.hit', 'jetpack_cat.paw.hit']
+hero sojourn mode True screen  hp 18.0 / 18.0
+disruptor              phased=False target 18.00 -> 9.71 | behind 200.0 -> 191.7056 | asleep  | hit sounds ['sojourn.disruptor.hit']
+hero sojourn mode True screen  hp 18.0 / 18.0
+disruptor              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 190.3232 | asleep  | hit sounds ['sojourn.disruptor.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+anadart                phased=False target 18.00 -> 12.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['ana.rifle.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+anadart                phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['ana.rifle.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+sleepdart              phased=False target 18.00 -> 17.60 | behind 200.0 -> 200.0 | asleep player@31021 | hit sounds ['ana.sleep.dart.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+sleepdart              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 199.6288 | asleep zombie@31081 | hit sounds ['ana.sleep.dart.hit']
+hero sigma mode True screen  hp 48.0 / 48.0
+accretion              phased=False target 18.00 -> 8.40 | behind 200.0 -> 199.09837 | asleep player@31141 | hit sounds ['sigma.accretion.hit_enemy']
+hero sigma mode True screen  hp 48.0 / 48.0
+accretion              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 199.09837 | asleep  | hit sounds ['sigma.accretion.hit_enemy']
+hero sombra mode True screen  hp 18.0 / 18.0
+pistol-hitscan         phased=False target 18.00 -> 13.32 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit']
+hero sombra mode True screen  hp 18.0 / 18.0
+pistol-hitscan         phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit']
+hero juno mode True screen  hp 18.0 / 18.0
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:47:24
+/difficulty normal ['[11:47:25] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:47:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:47:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[11:47:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:47:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:47:27] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[11:47:28] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[11:47:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:47:29] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+=== the second critique, reproduced or not. Harness keys, bots with bot phase; not a person.
+--- 2 stacking on a bot target, Suzu by a bot: Hyper on Accretion; dart on a knock-down; dart on a stun
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu False held (18207, 18227, 21) phase None gravity reads [0.001, 0.08]
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu True held (18476, 18476, 1) phase (18482, 18490, 9) gravity reads [0.08]
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + dart, Suzu False held (18741, 18761, 21) sleeping None phase None
+hero mercy mode True screen  hp 18.0 / 18.0
+  Accretion + dart, Suzu True held (19087, 19107, 21) sleeping None phase (19099, 19107, 9)
+hero mercy mode True screen  hp 18.0 / 18.0
+  Rally stun + dart, Suzu False held (19457, 19571, 115) sleeping (19473, 19571, 99) phase None
+hero mercy mode True screen  hp 18.0 / 18.0
+  Rally stun + dart, Suzu True held (19842, 19868, 27) sleeping (19860, 19868, 9) phase (19860, 19868, 9)
+--- a creeper by a target it can reach, EMP or not; target logged
+hero mercy mode True screen  hp 18.0 / 18.0
+   emp False +0.6 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +1.4 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +2.2 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +3.0 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +3.8 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +4.6 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +5.4 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +6.2 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +7.0 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +7.8 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +8.6 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +9.4 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +10.2 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +11.0 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +11.8 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+   emp False +12.6 ? | target ServerPlayer['som4469'/5 | bot Sombra health=18.0 stealth False
+hero mercy mode True screen  hp 18.0 / 18.0
+   emp True +0.8 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +1.6 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +2.4 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +3.1 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +3.9 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +4.7 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +5.5 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +6.3 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +7.1 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +7.9 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +8.7 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +9.5 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +10.3 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +11.1 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +11.9 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+   emp True +12.7 ? | target ServerPlayer['som4470'/5 | bot Sombra health=18.0 stealth False
+--- Anesthetic: the real client not numbed, two bots numbed, a Suzu on one: the other's 3p
+hero mercy mode True screen  hp 18.0 / 18.0
+  ally speed=0.061 other speed=0.061 me speed=0.1 {'playing': 'overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p'}
+   +0.20 ally speed=0.1 phased=True | other speed=0.066 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p
+   +0.70 ally speed=0.1 phased=False | other speed=0.069 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p
+   +1.20 ally speed=0.1 phased=False | other speed=0.073 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p
+   +1.70 ally speed=0.1 phased=False | other speed=0.076 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p
+   +2.20 ally speed=0.1 phased=False | other speed=0.079 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p
+   +2.70 ally speed=0.1 phased=False | other speed=0.1 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p
+   +3.20 ally speed=0.1 phased=False | other speed=0.1 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p
+   +3.60 ally speed=0.1 phased=False | other speed=0.1 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p
+   +4.10 ally speed=0.1 phased=False | other speed=0.1 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p
+   +4.60 ally speed=0.1 phased=False | other speed=0.1 phased=False | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot_3p
+--- #124: Life Grip on a tethered ally and on an ally in Flux (real client the ally; a bot Lifeweaver)
+hero mercy mode True screen  hp 18.0 / 18.0
+  tethered carriedBy=cat4476 asleep=True x=40600.5 z=1.733
+   gripped: carried (21398, 21428, 31) x 40600.5 -> 40600.016913117266 phase (21398, 21406, 9)
+hero mercy mode True screen  hp 18.0 / 18.0
+  lifted lifted=True x=40660.5 y=-58.303
+   gripped: lifted (21728, 21758, 31) x 40660.5 -> 40667.256202970195 y -57.87046478056525 -> -60.0 phase (21728, 21740, 13)
+DONE
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:50:38
+/difficulty normal ['[11:50:39] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:50:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:50:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[11:50:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:50:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:50:41] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[11:50:42] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[11:50:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:50:43] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=False target 18.00 -> 14.16 | behind 200.0 -> 200.0 | asleep  | hit sounds ['lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit']
+hero juno mode True screen  hp 18.0 / 18.0
+mediblaster-hitscan    phased=False target 18.00 -> 10.80 | behind 200.0 -> 200.0 | asleep  | hit sounds ['juno.mediblaster.hit', 'juno.mediblaster.hit_enemy', 'juno.mediblaster.hit', 'juno.mediblaster.hit_enemy']
+hero juno mode True screen  hp 18.0 / 18.0
+mediblaster-hitscan    phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['juno.mediblaster.hit', 'juno.mediblaster.hit_enemy', 'juno.mediblaster.hit', 'juno.mediblaster.hit_enemy']
+hero brigitte mode True screen  hp 20.0 / 20.0
+whip                   phased=False target 18.00 -> 12.40 | behind 200.0 -> 200.0 | asleep  | hit sounds ['brigitte.whip.hit', 'brigitte.voice.whip_hit']
+hero brigitte mode True screen  hp 20.0 / 20.0
+whip                   phased=True  target 18.00 -> 18.00 | behind 200.0 -> 194.4 | asleep  | hit sounds ['brigitte.whip.hit']
+--- Mercy blaster: she needs her weapon out: not switched by this script, not tried
+hero brigitte mode True screen  hp 20.0 / 20.0
+bash                   phased=False target 18.00 -> 12.40 | behind 200.0 -> 200.0 | ['brigitte.bash.dash']
+hero mercy mode True screen  hp 18.0 / 18.0
+melee                  phased=False target 18.00 -> 14.80 | behind 200.0 -> 200.0 | ['mercy.voice.melee', 'melee.hit']
+hero mercy mode True screen  hp 18.0 / 18.0
+catnapper              phased=False me knocked (24036, 24056, 21), carried by cat4647, health 16.0 | beside me zombie 200.0 -> 198.08, held 
+hero brigitte mode True screen  hp 20.0 / 20.0
+bash                   phased=True  target 18.00 -> 18.00 | behind 200.0 -> 194.4 | ['brigitte.bash.dash']
+hero mercy mode True screen  hp 18.0 / 18.0
+melee                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | ['mercy.voice.melee', 'melee.hit']
+hero mercy mode True screen  hp 18.0 / 18.0
+catnapper              phased=True  me knocked None, carried by , health 18.0 | beside me zombie 200.0 -> 198.08, held 
+--- Hyper Strike by a bot Sigma, charge read: target phased or not, then again at the zombie alone
+hero mercy mode True screen  hp 18.0 / 18.0
+TREE (git at launch; the client itself can't say): 48b1120 dirty_src_files=0 launched=2026-11-05T11:30:44
+TIME 11:54:05
+/difficulty normal ['[11:54:05] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[11:54:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[11:54:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[11:54:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[11:54:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[11:54:07] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[11:54:07] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[11:54:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[11:54:08] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+--- a dart on a knock-down, aimed at where the bot has stopped; Suzu or not
+hero mercy mode True screen  hp 18.0 / 18.0
+   dart thrown, 0.3 s into it, target at 60059.45 3.5
+  Suzu False held (26196, 26310, 115) sleeping (26216, 26310, 95) phase None health=11.23
+hero mercy mode True screen  hp 18.0 / 18.0
+   dart thrown, 0.3 s into it, target at 60119.4 3.5
+  Suzu True held (26533, 26565, 33) sleeping (26557, 26565, 9) phase (26557, 26565, 9) health=17.46
+--- a creeper 2.2 m from a bot, EMP or not; target logged, its Fuse not readable while swelling: alive or blown, and the bot's health
+hero mercy mode True screen  hp 18.0 / 18.0
+   emp False +0.8 t passed. Count: 1 | target ServerPlayer['som4854'/6 | bot Sombra health=18.0
+   emp False +1.7 t passed. Count: 1 | target None | bot Sombra health=0.0
+   emp False +2.6 [CHAT] Test failed | target None | bot Sombra health=0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+   silenced?
+   emp True +1.4 t passed. Count: 1 | target ServerPlayer['som4855'/6 | bot Sombra health=18.0
+   emp True +2.3 t passed. Count: 1 | target ServerPlayer['som4855'/6 | bot Sombra health=18.0
+   emp True +3.2 t passed. Count: 1 | target ServerPlayer['som4855'/6 | bot Sombra health=18.0
+   emp True +4.1 t passed. Count: 1 | target ServerPlayer['som4855'/6 | bot Sombra health=18.0
+   emp True +5.0 [CHAT] Test failed | target None | bot Sombra health=0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+   silenced?
+   emp True +1.4 t passed. Count: 1 | target ServerPlayer['som4856'/6 | bot Sombra health=18.0
+   emp True +2.3 t passed. Count: 1 | target ServerPlayer['som4856'/6 | bot Sombra health=18.0
+   emp True +3.2 t passed. Count: 1 | target ServerPlayer['som4856'/6 | bot Sombra health=18.0
+   emp True +4.1 t passed. Count: 1 | target ServerPlayer['som4856'/6 | bot Sombra health=18.0
+   emp True +5.0 [CHAT] Test failed | target None | bot Sombra health=0.0
+DONE

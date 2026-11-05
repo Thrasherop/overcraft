@@ -10,8 +10,10 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 - Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
 - Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
 - Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
-- Filed, not fixed: #122 (the shockwave through walls and barriers), #123, #124.
-- Record: techniques/testing/polish4.md. For the owner to hear: #121, her Suzu line on every throw.
+- The shockwave no longer goes through walls and barriers (#122). `/kill` and the void kill the phased. Filed, not fixed: #123, #124.
+- Kiriko's Suzu line now plays only 0.5 s after an actual cleanse, as the game's data has it, not on every throw (#121). A Suzu at a healthy ally says nothing; poison and fire, which the data doesn't know about, don't count.
+- Whip Shot pushes about 8 m on flat ground, as the wiki has it (8.48 m on a hero, 7.75 m on a husk or in Minecraft mode); still 25 m/s.
+- Record: techniques/testing/polish4.md.
 
 ### On fix/polish-3 (not released, version not bumped)
 - Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
