@@ -968,6 +968,12 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
+		if (hero == Hero.ANA && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
+			// fully scoped, Overwatch draws nothing of her: her view model goes (0B94 #199, M) and her scope's overlay fills
+			// the view (HeroHud.anaScope, #90). Her held pose 3B92 already takes the arms out of view (played); not drawing
+			// them makes sure no edge of the rifle shows inside the lens while she turns (the arms' sway)
+			return true;
+		}
 		if (hero == Hero.BRIGITTE && !minecraft) {
 			// her barrier up, as her side sees it: square to her view, 0.9 m ahead, from about her feet up (HeroWeapon)
 			EmoteProps.Placed barrier = HeroWeapon.barrierShown(animator, now);

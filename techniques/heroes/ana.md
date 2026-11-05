@@ -46,7 +46,7 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   120 degrees away. The animator holds `idle_scoped` / `crouch_idle_scoped` at frame 0 as it does `idle`.
 - **Zoom and sensitivity live on the client:** `ClientAna` scales the FOV toward 30 degrees with the synced scope and the
   mouse turn to 30% fully scoped (`HeroFovMixin`, `MouseHandlerMixin`), in first person only.
-- **No scope overlay yet:** its texture isn't extracted (her effects step).
+- **No scope overlay yet:** its texture isn't extracted (her effects step). Built since: [#90](#90-her-scope-2026-11-04).
 
 ## Building her (2026-10-29: step 4, Biotic Grenade)
 - **Healing modifiers live in `Combat.heal`,** so every hero's healing is boosted or blocked (Ana's grenade affects all
@@ -113,3 +113,33 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
 - **Not reproduced:** once, a dart missed a zombie walking straight at her (no sleep, no damage); the same setup run again
   hit, and later runs did too.
 - Emotes: [ana_emotes](../emotes/ana_emotes.md).
+
+## #90: her scope (2026-11-04)
+The owner's playtest: "still no scoped in UI". Reproduced on `next` (`hp_a_scoped`, worktree `run/screenshots`): zoomed, the generic
+"+", nothing else.
+- **The overlay (`HeroHud.anaScope`, `HudShapes.SCOPE` / `SCOPE_RIM`):** the data shows UX view model 0613.116 on the HUD root from
+  scope 0.8 (0B94 #278) with its style 9C89, its skin reticle E615 (base 0A82.116, `CVGetSkinOverride`) and E77D; 0613, its base 05BE
+  and 0A82 hold bindings only, no texture at any depth, and none is in her GUI export. So when it shows is the data's; the look is ours:
+  a round lens 470 px in radius at 1080 high, dark past a soft edge, a thin cool rim, her reticle (fine ring, centre dot, lines to
+  the sides and down), fading in between 80 % and 100 %, under every HUD widget. A UX `.116` is a schema of bindings; its art is elsewhere
+  in the client's UI, not in what DataTool gives.
+- **Zoom: 30 is vertical, and it was right.** Overwatch keeps the vertical view and widens with the screen, and its 103 setting is
+  horizontal at 16:9 (70.5 vertical). Players' measurements give Ana and Widowmaker 51 degrees horizontal at 16:9 scoped, one thread saying
+  outright "30 vertical", and 2 atan(tan 15 x 16/9) = 50.9. The audit's "17 vertical" reading would zoom about twice as far.
+  Sources (community, not Blizzard; the wiki has no number): [Blizzard forum](https://us.forums.blizzard.com/en/overwatch/t/ashe-has-60scoped-and-widow-ana-have-30-please-explain/243164),
+  [mouse-sensitivity.com](https://www.mouse-sensitivity.com/forums/topic/268-overwatch-2/page/9/). Minecraft's FOV is vertical: the
+  multiplier takes it to 30 from any FOV setting.
+- **The zoom followed Minecraft's easing** (`Camera.tickFov`, halfway a tick, meant for the speed widening), trailing her 0.25 s by
+  2-3 ticks: `ScopeFovMixin` sets it straight while scoped. `trace` read the sync: 0.2, 0.4, 0.6, 0.8, 1.0 over five ticks, out in 4.
+- **The view model isn't drawn fully scoped** (0B94 #199, M); 3B92 already takes the arms out of view, this keeps any edge from
+  swinging into the lens.
+- **A trap in timing it:** each `screenshot` stalls the game about 0.2 s, so spaced screenshots made the scope look 0.5 s late. Time with `trace`.
+
+Played (`hp3_a*`, `hp6_a*`; dev client, picked from the menu, rejoined, day and night): scope on a NoAI zombie at 30 m: 20 -> 14.41, ammo
+15 -> 14; a villager at 20 m 4 -> 10 (75 = 6) through the lens; a scoped walk 1.9 m/s; a jump; R and Sleep Dart take it down; G while
+scoped: plain Minecraft, no lens, normal zoom, and back; third person: no lens; at 1280x720 the lens fits.
+
+What a critic should check:
+- **Side by side with Overwatch: the lens's size and the reticle's shape are by memory, not a frame.** They're one method to change.
+  Skins change the reticle in the game (E615); we have one.
+- Not tried: a second player, dying while scoped, Nano Boost's cast while scoped (it unscopes by code, not looked at), ultrawide.
