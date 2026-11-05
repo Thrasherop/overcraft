@@ -348,7 +348,9 @@ public final class Ana implements HeroKit {
 		Effects.play(level, "ana_grenade_burst", at, Vec3.ZERO, null, heal < GRENADE_HEAL ? 1 : 0, owner);
 		boolean healedAny = false, hurtAny = false;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(GRENADE_RADIUS + 2))) {
-			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)) {
+			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)
+				|| dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
+				// (an enemy barrier between the burst and them stops all of it: the wiki's Barrier page, "barriers block the explosion")
 				continue;
 			}
 			if (Allies.isSelfOrAlly(owner, e)) {
@@ -365,10 +367,10 @@ public final class Ana implements HeroKit {
 				} else {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
-			} else if (Allies.canHurt(owner, e)) {
+			} else if (Allies.areaHits(owner, e)) {
 				float dealt = Combat.damage(e, source, damage, blow);
 				Combat.credit(owner, dealt, e);
-				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+				Combat.addFireForDamage(owner, dealt, e);
 				if (dealt > 0) {
 					Effects.hitMarker(owner, e, false);
 					hurtAny = true;
@@ -533,11 +535,10 @@ public final class Ana implements HeroKit {
 
 	/**
 	 * A dart or a scoped shot (no dart) reached a hurt ally (heal) or an enemy at {@code at}: its 75 lands over 0.5 s.
-	 * Headhunter: an enemy hit in the head takes x2 (0B95 #269; allies are never crit). The head is the top of the box, as
-	 * for Kiriko's kunai (ours: 0.25 m under the eyes and up).
+	 * Headhunter: an enemy hit in the head takes x2 (0B95 #269; allies are never crit; the head: Headshot).
 	 */
 	public static void dose(ServerPlayer owner, LivingEntity target, boolean heal, @org.jspecify.annotations.Nullable Entity dart, Vec3 at) {
-		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && dev.overcraft.hero.Headshot.crossed(target, at, dart != null ? dart.getDeltaMovement() : at.subtract(owner.getEyePosition()), dart != null ? DART_RADIUS_ENEMY : SCOPED_RADIUS_ENEMY);
 		int ticks = Math.max(1, Ow.ticks(RIFLE_OVER));
 		double amount = heal ? RIFLE_HEAL : RIFLE_DAMAGE * (crit ? HEADHUNTER : 1);
 		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks, crit));
@@ -567,7 +568,6 @@ public final class Ana implements HeroKit {
 		}
 	}
 
-	private static final double HEAD_DEPTH = 0.25;
 
 	/**
 	 * What one of her shots or abilities does to {@code target} sounds twice: {@code own} in its head (a player: the healed
@@ -615,7 +615,7 @@ public final class Ana implements HeroKit {
 			} else {
 				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit).by(dev.overcraft.hero.Hero.ANA));
 				Combat.credit(d.owner, dealt, d.target);
-				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
+				Combat.addFireForDamage(d.owner, dealt, d.target);
 			}
 			if (d.ticks > 1) {
 				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1, d.crit));

@@ -77,7 +77,7 @@ public final class SigmaPerks {
 		dev.overcraft.hero.Blow blow = dev.overcraft.hero.Blow.perk("hyper_strike").by(dev.overcraft.hero.Hero.SIGMA);
 		float dealt = Combat.damage(target, source, HYPER_STRIKE_DAMAGE, blow);
 		Combat.credit(hero, dealt, target);
-		Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
+		Combat.addFireForDamage(hero, dealt, target);
 		if (dealt > 0) {
 			Effects.hitMarker(hero, target, false);
 		}

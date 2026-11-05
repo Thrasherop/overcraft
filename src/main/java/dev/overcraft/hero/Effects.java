@@ -41,8 +41,9 @@ public final class Effects {
 		if (!target.isAlive() || target.getHealth() <= 0) {
 			return;
 		}
+		// (a bystander's head earns no crit marker: #99)
 		ServerPlayNetworking.send(shooter, new EffectPayload("hit_marker", target.getX(), target.getY(), target.getZ(), 0, 0, 0,
-			target.getId(), crit ? 1 : 0, false));
+			target.getId(), crit && !Allies.isBystander(shooter, target) ? 1 : 0, false));
 	}
 
 	/** The kill marker and the final blow's "ELIMINATED" caption, for the hero who killed {@code victim}. */

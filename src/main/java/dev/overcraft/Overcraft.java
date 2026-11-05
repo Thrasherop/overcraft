@@ -229,6 +229,9 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
 			}
+			if (damage > 0 && source.getEntity() instanceof net.minecraft.world.entity.Mob mob && source.getEntity() != entity) {
+				dev.overcraft.hero.Allies.remember(mob, entity);
+			}
 			if (damage > 0) {
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);

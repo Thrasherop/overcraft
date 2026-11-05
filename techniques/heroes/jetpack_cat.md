@@ -33,7 +33,7 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - Purr: 30 damage at the cast, full to 5 m and 0.3 at 10 m; every wave of the 4 pulses lands, past the 4 s too (300 a
   Purr, 360 with Purrfect Form, measured).
 - Catnapper: aim (a ring of the 5.5 m landing reach marks the spot), the 0.35 s windup, a 30 m/s dive, 25 damage and a
-  1.5 s knock-down (Slowness and Weakness: no stun in Minecraft), then the nearest enemy hangs under her for up to 4 s,
+  1.5 s knock-down (`Sleep.knockdown`, #101 below), then the nearest enemy but a boss hangs under her for up to 4 s,
   its top 1 m below her feet (held at her feet, a zombie hit her the whole carry and killed her).
 - Her quick melee's layers (`add_melee`, 132-0 19A96 / 97 / 98) are additive (bit 0x4 of the folder), and until #75 they
   were exported with rest values on the 189 channels the game doesn't key, which added her face, eyes and knees' rest
@@ -210,3 +210,28 @@ The owner's recording (`E:\Overwatch Archive\research\movement\workshop-2026-11-
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Catnapper's knock-down and what it carries (#101, 2026-11-04)
+Up: [Techniques](../README.md) · who's an enemy: [allies](../minecraft/allies.md) · the hold: [minecraft_26](../minecraft/minecraft_26.md#holding-a-mob-still-without-its-saved-noai-flag-97-2026-11-04)
+- **The cause:** Slowness X and Weakness X stand in for "knocked down (stun 1.5 s)" (W), written before `Sleep` existed. AI runs under them. **The fix:** `Sleep.knockdown`, the stun that keeps its push (Accretion's). She keeps the push of 2.8 m/s; so does the mob she carries, moved by `Sleep.slide` for its first 1.5 s.
+- **A held creeper's fuse:** `Creeper.tick` runs the fuse outside its AI, so a creeper held mid-swell went off anyway. `Sleep.tick` now turns it back (`setSwellDir(-1)`) for Sleep Dart, Rally's stun and all, unless it's lit by flint and steel. Found reading `Creeper.java`; played below.
+- **The carry:** the nearest `Allies.areaHits` target that isn't `Allies.isBoss` (Ender Dragon, Wither, Warden, Elder Guardian). **Ours:** her data and the wiki have no such rule (only tanks pulled 30% slower, and no Minecraft mob counts as a tank). A boss is still damaged and knocked down.
+- **Played, old (985f73c) vs new, same script** (keys through DevServer, Resistance V on her, real AI mobs held by `movement_speed` 0 and each read by a line in the log):
+
+| Case | Old | New |
+|---|---|---|
+| Three skeletons 3 m off, arrows in the first 1.5 s after she lands | 1 at 1.2 s, then on (1 at 2.1, 1 at 2.7, ...) (`rl_old_101sk`) | 0, all three listed held, then 3 at once at 2.1 s when it ends (`rl_new_101sk`) |
+| A creeper with a 1.5 s fuse, 0.45 s into it at her confirm | gone by 1.6 s, the carry with it | held to 1.9 s and alive, goes off by 4.3 s (mode 4 through it) |
+| Nearest a cow, a zombie further on | carried the cow up (y -63 -> -45) | the cow stays on the ground, 10 health; the zombie goes up |
+| Nearest a Wither / Warden / Elder Guardian | carried each (-61 -> -49, -63 -> -44, -61 -> -44) | each stays; the zombie goes up. |
+| From the air, onto two zombies, a skeleton, a cow and a stand (`rl_new_play_aim`, `_land`, `_carry`) | not played | landed at 1.2 s; all three mobs held 1.2 -> 2.5 s and free at 2.8; cow 10, stand up, zombies 18.08; rose to y -26 with one |
+
+- **What a critic should check:** one run each: the arrow count is small (old 1 in 1.5 s against about 1 a second before she landed). Not played: a second player as the target (`Sleep.stun` freezes their keys and their client; the carry's speed is sent the old way, so being carried while stunned is unverified). A mob already asleep from a dart isn't turned into a knockdown (`Sleep.stun` returns), so it is tethered but `Sleep.tick` holds it still until it wakes. Water, lava, ladders, boats, the Nether: not tried. Flyers (a phantom, a blaze): not tried.
+
+### Round 2 (critique_rules, 2026-11-05)
+Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
+- **Landing on a creeper:** it's carried, its AI back at 1.5 s, and it goes off about 3.6 s after the landing, 1 m under her: **she dies** from 18 on the ground (18 -> 0), or is left with **1.5 of 18** flying up with it. Nothing changed: **the owner's call** whether the carry drops a creeper, holds its fuse or skips it.
+- **Two zombies and a skeleton:** she took 18 -> 12 in the first 0.4 s (they hit her before she landed: the confirm's 0.35 s), then regenerated through the carry at full speed to 18. No harm while they were held.
+- **Flyers keep their height** (NoAI, so only the knock-down moves them; a zombie nearer, so it's the carried one): phantom old -57 -> -60, new -57; blaze old -57 -> -59.8, new -57. **The Ender Dragon isn't pulled:** old -56 -> -95 in 1 s (through the bedrock), new stays -56. Slides feel water (not played).
+- **A creeper in Gravitic Flux** (200 health, 3 s fuse): old went off 1.9 s after the confirm, new alive 7.5 s+ (`Sleep.holdFuse`).
+- **The carry takes** no dead mob, shulker, rider or dart's sleeper (by code; a shulker not played).
