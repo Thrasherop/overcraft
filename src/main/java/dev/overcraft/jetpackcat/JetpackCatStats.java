@@ -60,16 +60,22 @@ public final class JetpackCatStats {
 	public static final double CENTRE_RADIUS_ALLY = 0.62;
 
 	// Frenetic Flight (secondary fire, held)
-	/** Top speed (W: 17.8 m/s, "+230.1%"; R: 17.80 held in three boosts). */
+	/**
+	 * Top speed: 17.80 held in three boosts (R, 2026-11-01, before the patch; W rev 408445 the same). W rev 408976 (2026-11-04, after the patch) says 17.43, its
+	 * edit note "it seemed like they changed the max speed AGAIN", and leaves its "+230.1%" as it was. BZ 2026-11-03 names acceleration and fuel only, and more push
+	 * shouldn't lower a top speed, and the data doesn't hold one (gaps.md: the mover's balance). So 17.8 kept, M: the wiki's reading of the live game is unexplained, 2% off; a
+	 * new recording decides.
+	 */
 	public static final double BOOST_SPEED = 17.8;
 	/**
 	 * Its speed-up (R, three boosts from 5.5-7 m/s, 2026-11-01): about 20 m/s/s for its first 0.2 s, then 10.4 m/s/s, easing into
 	 * the top speed (the gap shrinking about 7 a second: 16.85, 17.36, 17.60, 17.71 every 0.1 s): 17.8 by about 1.4 s. The
 	 * recording is of the old push: BZ Nov 3 2026 "Acceleration increased from 25 to 28 meters per second" (D 59E0 #63's 25 is the
-	 * old value). Ours (M, inferred, no new recording): both rates x 28/25, the top speed and its easing left alone (the notes
-	 * touch neither). A new recording should replace these.
+	 * old value). Ours (M, inferred, no new recording): both rates +3, the push's own rise, 23 and 13.4: what the recording shows is the push less a
+	 * drag that doesn't depend on it, so it adds. The alternative, x 28/25 (22.4 and 11.65), would be right only if the drag scaled too. The top speed
+	 * and its easing left alone. A new recording should replace these.
 	 */
-	public static final double BOOST_KICK = 20 * 28 / 25.0, BOOST_KICK_TIME = 0.2, BOOST_RAMP = 10.4 * 28 / 25.0, BOOST_EASE = 7;
+	public static final double BOOST_KICK = 20 + 3, BOOST_KICK_TIME = 0.2, BOOST_RAMP = 10.4 + 3, BOOST_EASE = 7;
 	/** How fast a boost's direction follows the input, a second (ours: the recording has no turns). */
 	public static final double BOOST_TURN = 6;
 	/**

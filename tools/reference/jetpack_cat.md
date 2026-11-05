@@ -12,7 +12,7 @@ Released 2026-02-10 (Season 1). Patches that touched her: 02-13, 02-24, 03-10, 0
 09-10, 10-06. Nothing for her on 10-13 or 10-20.
 
 ## Base
-- Health 225, no armor or shields (W, LQ). Support, sub-role Tactician (BZ 2026-02-10; data). Base speed 5.5 m/s (BZ
+- Health 200 (BZ 2026-11-03, 225 before), no armor or shields (W, LQ). Support, sub-role Tactician (BZ 2026-02-10; data). Base speed 5.5 m/s (BZ
   2026-08-14, back from 6 set on 08-11). Air acceleration 9.5 (BZ 2026-08-11, from 7.7; the data holds 9.5).
 - Knockback taken -40% ("flight resistance", W). Hit volumes (BZ 2026-10-06): head 18.5, torso 17, waist 26, legs 12
   (from 15.8 / 14.8 / 19.5 / 9.7; units not given). Data size: Normal.
@@ -45,7 +45,7 @@ Released 2026-02-10 (Season 1). Patches that touched her: 02-13, 02-24, 03-10, 0
 
 ## Frenetic Flight (secondary fire, held)
 - "Accelerate in your movement direction" (HP), any direction (W). Fuel: costs 40%/s (2.5 s of boost on a full tank, ours),
-  refills 25%/s (BZ 2026-02-13: 30 -> 25) after a 0.75 s delay, 4 s from empty (W).
+  refills 20%/s (BZ 2026-11-03: 25 -> 20; BZ 2026-02-13: 30 -> 25) after a 0.75 s delay, 5 s from empty.
 - While carrying anyone: refill 3x slower (BZ 2026-06-16, was 2x), so 8.3%/s (W rounds to 8; LQ's 15 was launch).
 - Top speed 17.8 m/s, written as "+230.1%" (W; 5.5 x 3.301 = 18.2: doesn't match, flag). Acceleration -11% (BZ
   2026-04-14, no base number given). Catnapper refills the tank (W).

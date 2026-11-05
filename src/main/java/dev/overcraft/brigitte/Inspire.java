@@ -15,7 +15,7 @@ import static dev.overcraft.brigitte.BrigitteStats.*;
 
 /**
  * Inspire, her passive (12D8 -> 11B9 on each ally): her flail, Whip Shot and Shield Bash hitting an enemy heal her and her
- * allies within 20 m (no sight test, M) 12 at once and 45 over 4 s. The flail can start it at most every 1.25 s; Whip Shot
+ * allies within 20 m (no sight test, M) 12 at once and 45 over 4 s. The flail can start it at most every INSPIRE_COOLDOWN (1 s, BZ 2026-11-03); Whip Shot
  * and Shield Bash always do (12D8 #428 -> #443). A new one on an ally replaces what's left of the last (ours: its refresh or
  * stack policy isn't decoded, L; W: it doesn't stack).
  */

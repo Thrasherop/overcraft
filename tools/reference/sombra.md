@@ -66,7 +66,7 @@ cooldown 13** (after D's build); 10-20 a challenge fix only.
 
 ## Hotfix (secondary fire; targeted)
 - "Heal an ally over time for a set amount of health. Can also freely hack health packs and most enemy deployables." (W).
-- **Heal: 65 at once, then 25 HP/s, up to 175 in all or 12 s, whichever first** (D _; BZ 2026-10-06; W: "always heals a total
+- **Heal: 65 at once, then 25 HP/s, up to 175 in all or 10 s (BZ 2026-11-03; 12 before and in D), whichever first** (D _; BZ 2026-10-06; W: "always heals a total
   of 175, unless it expires"; so 65 + 110 over 4.4 s at the base rate) **H**. Healing modifiers change its rate, not the 175
   capacity; re-applying resets duration and capacity, it doesn't stack; no limit on how many allies carry one (W) **M**.
   Targets allied heroes and B.O.B. only (W) **M**. Damage doesn't interrupt the heal (W) **M**.

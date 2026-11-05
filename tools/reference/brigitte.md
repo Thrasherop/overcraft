@@ -64,14 +64,14 @@ Nothing on 2026-10-06, 10-13 or 10-20.
 
 ## Inspire (passive)
 - "Dealing damage to enemies heals nearby allies." (W).
-- **12 healing at once + 45 over 4 s (11.25 HP/s)** to herself and every ally **within 20 m** in sight when it triggers (D _;
+- **15 healing at once (BZ 2026-11-03; 12 before and in D) + 45 over 4 s (11.25 HP/s)** to herself and every ally **within 20 m** in sight when it triggers (D _;
   BZ 2026-07-14 "Now grants 12 instant healing on trigger. Healing over time reduced from 60 to 45."; BZ 2024-12-10 duration
   5 -> 4 s "healing per second remains unchanged"; W 12 + 11.25/s, ticks of 2.16 every 0.192 s, rev 376973) **H**.
 - It is applied once, at the trigger, not a moving aura: allies who leave the 20 m keep healing; blocked by sight and enemy
   barriers; it doesn't stack, a new trigger resets the duration (W) **M**.
 - **Triggered by damage from Rocket Flail, Whip Shot or Shield Bash** (D _; W) **M**, on heroes (and B.O.B., Minefield)
-  only (W) **M**. **Rocket Flail can trigger it once every 1.25 s**; Whip Shot and Shield Bash always trigger it (W) **M**.
-  So steady swings trigger it every third swing (W: 3 x 0.6 > 1.25 > 2 x 0.6) **M**. During Rally a multi-hit Shield Bash
+  only (W) **M**. **Rocket Flail can trigger it once every 1 s (BZ 2026-11-03; 1.25 s before and in D)**; Whip Shot and Shield Bash always trigger it (W) **M**.
+  So steady swings trigger it every second swing (1.2 s; played: 1.2-1.26 s apart; every third under the old 1.25) **M**. During Rally a multi-hit Shield Bash
   triggers it once (W) **M**.
 - Hero option: Inspire UI (allies being healed under the crosshair) **on** (BZ 2026-05-12; W) **H**.
 
