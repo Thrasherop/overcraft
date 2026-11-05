@@ -6,4 +6,4 @@
 0-32_000000003697 = hello   # the staff, 1.0 s (H)
 # her stand's aim sheets (set 0068: AnimationPose2d on the aim drivers, modes 6 / 5, the staff's and the blaster's branch; techniques/animation/aim_sheets.md)
 4-6_0000000009EF = add_aim
-4-6_000000000AC3 = add_aim_blaster
+4-2_000000000AC3 = add_aim_blaster

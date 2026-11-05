@@ -7,8 +7,8 @@
  ],
  "sombra": [
   {"model": "sombra_magazine", "id": "EE06", "on": "weapon", "bone": "bone_0955", "views": "both", "hidden": [["reload", 0.0333, 0.2, "third"]]},
-  {"model": "sombra_beacon", "on": "hero", "bone": "Weapon_L", "views": "third", "window": ["translocate", 0, 0.0667]},
-  {"model": "sombra_beacon", "on": "hero", "bone": "Weapon_L", "views": "first", "window": ["translocate", 0, 0.0333]}
+  {"model": "sombra_beacon", "id": "10518", "on": "hero", "bone": "Weapon_L", "views": "third", "window": ["translocate", 0, 0.0667]},
+  {"model": "sombra_beacon", "id": "10518", "on": "hero", "bone": "Weapon_L", "views": "first", "window": ["translocate", 0, 0.0333]}
  ],
  "juno": [
   {"model": "juno_cell", "id": "167A9", "on": "hero", "bone": "bone_2B9D", "views": "both"},
