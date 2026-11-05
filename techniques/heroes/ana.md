@@ -154,3 +154,6 @@ Played on `next` merged in, harness keys, dev pack. `Refs #90`: the lens and ret
 - **Merged with `leavePlay`:** G, death, switch, leave and rejoin while scoped (`m_ana_g*`, `m_ana_d`): no lens, no zoom left over.
 
 Not tried: a second player; 3P ability cameras while scoped; F1. Skins change the reticle in the game (E615): one here.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

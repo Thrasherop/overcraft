@@ -4,3 +4,13 @@
 # body) with #30's additive 0x2DE beside it (not used: the two are the same wave; how the engine layers them isn't read).
 0-32_00000000C454 = hello_thorn   # 1P 0x1EE, 1.733 s (M: thorn / blossom in the 3P order)
 0-32_00000000C453 = hello   # 1.733 s
+# The thorn ammo display (lifeweaver-map.md "Thorn ammo display (1P)": an 8-state counter on his body's bones, M: thorns left): each override holds
+# the bones of the chips gone so far (3, 6, 9, 12, 21, 24, 27, 30 bones keyed, scale X 0.3); played by HeroAnimator.thornCounter.
+0-12_00000000D36A = thorn_count_1
+0-12_00000000D369 = thorn_count_2
+0-12_00000000D368 = thorn_count_3
+0-12_00000000D367 = thorn_count_4
+0-12_00000000D364 = thorn_count_5
+0-12_00000000D363 = thorn_count_6
+0-12_00000000D362 = thorn_count_7
+0-12_00000000D361 = thorn_count_8

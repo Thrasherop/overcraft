@@ -13,8 +13,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Which clip a hero plays, from what they're doing, and the pose that gives. The base clip follows movement (idle,
@@ -47,14 +50,6 @@ public final class HeroAnimator {
 	public static final float CLIMB_SHIFT = 0.3f;
 	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
 	private static final float CLIMB_DUST_EVERY = 0.5f;
-	/** The aim sheet's frames per second (its 63 frames are keyed 1/30 s apart in the export). */
-	private static final float AIM_FPS = 30;
-	/** Aim pitch (degrees) at the ends of the sheet's pitch row (ours: Minecraft's whole range). */
-	private static final float AIM_PITCH = 90;
-	/** Which end of the row is looking down: frame 21 tilts the spine one way, 41 the other (checked in game). */
-	private static final float AIM_SIGN = -1;
-	/** How much of the pitch the sheet's spine, neck and head turn at its ends (27-31 of 90 degrees, read from it). */
-	private static final float AIM_SHARE = 0.3f;
 
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
@@ -186,6 +181,68 @@ public final class HeroAnimator {
 		return blaster;
 	}
 
+	/** When her beam last came on and went off (game s): the staff's start and end layers. */
+	public float beamOnSince() {
+		return beamOnSince;
+	}
+
+	public float beamOffAt() {
+		return beamOffAt;
+	}
+
+	/** The beam's mode before it went off (1 heal, 2 boost): which end layer. */
+	public int beamLast() {
+		return beamLast;
+	}
+
+	/** On the move (a run or strafe base): the weapon's move layer (Lúcio's amp, Sigma's spheres). */
+	public boolean reloadWithAmmo() {
+		return reloadWithAmmo;
+	}
+
+	public boolean moving() {
+		return base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk") || base.startsWith("skate");
+	}
+
+	/** In the air: Sigma's spheres' air stance. */
+	public boolean airborne() {
+		return base.startsWith("jump") || base.startsWith("fall");
+	}
+
+	/** Seconds since the current burst of shots began (a held automatic: Sombra's pistol's fire layer). */
+	public float burstAge(float now) {
+		return now - burstStart;
+	}
+
+	/** Sojourn's Railgun's energy machine (ours from her energy: its conditions aren't decoded): 0 empty, 3 charging, 2 full. */
+	public int energyState() {
+		return energyState;
+	}
+
+	public int energyFrom() {
+		return energyFrom;
+	}
+
+	public float energyAt() {
+		return energyAt;
+	}
+
+	private int energyState;
+	private int energyFrom;
+	private float energyAt = -100;
+	private int beamLast = 1;
+	/** The newest reload began with ammo left (her "ammo left" clips: 0B94 #33): known for the local player, the common case for anyone else. */
+	private boolean reloadWithAmmo = true;
+
+	private void trackEnergy(int energy, float now) {
+		int target = energy <= 0 ? 0 : energy >= 100 ? 2 : 3;
+		if (target != energyState) {
+			energyFrom = energyState;
+			energyState = target;
+			energyAt = now;
+		}
+	}
+
 	/** The pose last drawn (third person, first person): the weapon hangs on its bones. */
 	private Skeleton.@Nullable Pose lastPose;
 	private Skeleton.@Nullable Pose lastViewPose;
@@ -220,6 +277,11 @@ public final class HeroAnimator {
 			a.burstStart = now;
 		}
 		a.actionAt.put(action, now);
+		if (action.equals("reload") && net.minecraft.client.Minecraft.getInstance().player != null
+			&& net.minecraft.client.Minecraft.getInstance().player.getId() == entityId) {
+			dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+			a.reloadWithAmmo = s == null || s.primaryAmmo() > 0;
+		}
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
 			a.fireVariant = new int[] {2, 3, 4, 4}[java.util.concurrent.ThreadLocalRandom.current().nextInt(4)];
@@ -634,6 +696,7 @@ public final class HeroAnimator {
 	 * machine 0x16E: the bloom's time is the charge, df 0xC9), held full at the end; the volley's layer.
 	 */
 	private void lifeweaverView(SkinnedModel model, Skeleton.Pose pose, float now) {
+		thornCounter(model, pose);
 		if (bloomCharging) {
 			SkinnedModel.Clip bloom = clip(model, "bloom");
 			if (bloom != null) {
@@ -1433,18 +1496,8 @@ public final class HeroAnimator {
 				}
 			}
 		}
-		// Overwatch's aim pose sheet (A71F) on top of everything: her spine, neck and arms follow where she aims up or
-		// down. Its middle row (frames 21-41) runs through the aim's pitch, 31 level; the rows either side are aim yaw,
-		// not needed while her body faces her aim
-		SkinnedModel.Clip aim = asleep ? null : clip(model, "add_aim");
-		float lookPitch = asleep ? 0 : headPitch;
-		// (Kiriko's sheet: 63 frames. Lúcio's 265E has 74 laid out otherwise, not read yet: his head turns the whole pitch)
-		if (aim != null && Math.round(aim.duration() * AIM_FPS) == 62) {
-			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
-			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
-			// the sheet already tilts the spine, neck and head by about this share of the pitch: the head turns the rest
-			lookPitch = headPitch * (1 - AIM_SHARE);
-		}
+		// Overwatch's aim pose sheets on top of everything: spine, neck, arms and gun follow where the hero aims up or down (#95)
+		float lookPitch = asleep ? 0 : headPitch - aimSheets(model, pose, now, headPitch);
 
 		stepCloth(model, entity, pose, now);
 		lastPose = pose;
@@ -1452,6 +1505,127 @@ public final class HeroAnimator {
 		Quaternionf look = asleep ? new Quaternionf()
 			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/**
+	 * Lifeweaver's first-person thorn counter (lifeweaver-map.md "Thorn ammo display": overrides D36A .. D361 of the bones of his blossom
+	 * hand, each holding one more chip's bones scaled away; M that they count thorns left, ours how: eight even shares of his 100).
+	 */
+	private void thornCounter(SkinnedModel model, Skeleton.Pose pose) {
+		dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+		if (!thorns || s == null) {
+			return;
+		}
+		int gone = (int) Math.ceil((1 - s.secondaryAmmo() / (double) dev.overcraft.lifeweaver.LifeweaverStats.THORN_AMMO) * 8);
+		SkinnedModel.Clip counter = gone <= 0 ? null : clip(model, "thorn_count_" + Math.min(gone, 8));
+		if (counter != null) {
+			Skeleton.sample(driven(model, counter), 0, pose);
+		}
+	}
+
+	/** The sheet playing and the one it took over from, and when (the sheets differ most at the ends of the pitch). */
+	private @Nullable AimSheet aimSheet;
+	private @Nullable AimSheet aimSheetBefore;
+	private float aimSheetAt = -100;
+	private @Nullable SkinnedModel aimSheetModel;
+	/** The sheet each state resolved to, so a frame builds no names. */
+	private final Map<String, Optional<AimSheet>> aimSheetPicks = new HashMap<>();
+	/** Seconds a sheet takes over from the last (ours: the base clips' own FADE scale). */
+	private static final float AIM_SHEET_FADE = 0.15f;
+
+	/**
+	 * Lays this state's aim sheet over the pose for the aim's pitch, cross-faded from the last, and returns what its chain has
+	 * turned already (degrees): the head's own look turns the rest. No hero's sheet is named alike, so each slot is tried by
+	 * every name it goes by and the clip must measure as a sheet (AimSheet); the data's own pick under each state, in each
+	 * hero's clip map, is why a name is where it is (techniques/animation/aim_sheets.md).
+	 */
+	private float aimSheets(SkinnedModel model, Skeleton.Pose pose, float now, float headPitch) {
+		if (aimSheetModel != model) {
+			// another hero's model (a switch): that hero's sheet keys its bones, not these
+			aimSheetModel = model;
+			aimSheet = null;
+			aimSheetBefore = null;
+			aimSheetPicks.clear();
+		}
+		if (now < aimSheetAt) {
+			// time went backward (another world under the same animator): no fade stays stuck at its start
+			aimSheetAt = now - AIM_SHEET_FADE;
+		}
+		AimSheet sheet = aimSheetNow(model, now);
+		if (sheet != aimSheet) {
+			aimSheetBefore = aimSheet;
+			aimSheet = sheet;
+			aimSheetAt = now;
+		}
+		boolean[] mask = UpperBody.aimMask(model);
+		float w = Math.clamp((now - aimSheetAt) / AIM_SHEET_FADE, 0, 1);
+		float turned = 0;
+		if (aimSheetBefore != null && w < 1) {
+			aimSheetBefore.apply(pose, headPitch, 1 - w, mask);
+			turned += aimSheetBefore.pitchAt(headPitch) * (1 - w);
+		}
+		if (aimSheet != null) {
+			aimSheet.apply(pose, headPitch, w, mask);
+			turned += aimSheet.pitchAt(headPitch) * w;
+		}
+		return turned;
+	}
+
+	private @Nullable AimSheet aimSheetNow(SkinnedModel model, float now) {
+		// the variants: Ana's scope, Sombra's stealth, Brigitte's shield
+		String v = scoped ? "_scoped" : stealthed ? "_stealth" : shieldUp(now) ? "_shield" : blaster ? "_blaster" : "";
+		// Sigma's stand's sheet keys only his neck and head (Arm_R 2 degrees at its ends); his hands aim while he fires, by the fire layer's (add_fire_layer_sm1, sm[1] the third person: Arm_R 21, Weapon_R 40)
+		boolean sigmaFiring = sigma && Math.min(since("spheres_0", now), Math.min(since("spheres_1", now), since("spheres_2", now))) < SIGMA_HANDS_AIM;
+		return aimSheetPicks.computeIfAbsent(base + v + (thorns ? "+t" : "") + (junoGliding ? "+g" : "") + (sigmaFiring ? "+f" : ""),
+			k -> Optional.ofNullable(pickAimSheet(model, v, sigmaFiring))).orElse(null);
+	}
+
+	/** Seconds after a volley that Sigma's hands stay on his aim (ours: about his volley's own clip). */
+	private static final float SIGMA_HANDS_AIM = 1.2f;
+
+	private @Nullable AimSheet pickAimSheet(SkinnedModel model, String v, boolean sigmaFiring) {
+		boolean air = base.startsWith("jump") || base.startsWith("fall") || base.startsWith("air");
+		boolean moving = base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk");
+		String dir = !moving ? "" : base.startsWith("run_") ? base.substring(3).replace("_stealth", "").replace("_blaster", "").replace("_thorn", "")
+			: base.startsWith("strafe_left") ? "_left" : base.startsWith("strafe_right") ? "_right" : "";
+		List<String> names = new ArrayList<>();
+		if (sigmaFiring) {
+			names.add("add_fire_layer_sm1");
+		}
+		if (base.startsWith("crouch_walk")) {
+			String walkDir = base.substring("crouch_walk".length());
+			names.addAll(List.of("add_aim_crouch_walk" + v + walkDir, "add_aim_crouch_walk" + walkDir, "add_aim_crouch_walk" + v,
+				"add_aim_crouch_walk", "add_crouch_walk"));
+		}
+		if (base.contains("crouch")) {
+			names.addAll(List.of("add_aim_crouch" + v, "add_aim_crouch", "add_crouch" + (thorns ? "_idle_thorn" : "_idle"), "add_crouch",
+				"add_stance_sm1_sm1_stand_1ed"));
+		} else if (junoGliding) {
+			names.add("add_glide");
+		} else if (air) {
+			names.addAll(List.of("add_aim_jump" + v, "add_aim_jump", "add_jump", "add_air", "add_jump_takeoff"));
+		} else if (moving) {
+			names.addAll(List.of("add_aim_run" + v + dir, "add_aim_run" + dir, "add_run" + dir));
+			if (!dir.contains("back")) {
+				// Ana's unscoped back slots ride her stand's sheet, as her clip map has it (3B7D on BR, B, BL)
+				names.addAll(List.of("add_aim_run" + v, "add_aim_run", "add_run"));
+			}
+		}
+		// the stand's: Sojourn's and Lifeweaver's and Mercy's by the layer's name, Juno's and Brigitte's add_aim, Sigma's 72AC
+		names.addAll(List.of("add_aim" + v, "add_aim", blaster ? "add_idle_blaster" : thorns ? "add_idle_thorn" : "add_idle", "add_stand",
+			"add_layer_663"));
+		for (String name : names) {
+			AimSheet sheet = AimSheet.of(model, clip(model, name));
+			if (sheet != null) {
+				return sheet;
+			}
+		}
+		return null;
+	}
+
+	/** Dev only ("aimsheets"): the sheet in use now. */
+	public @Nullable AimSheet aimSheetInUse() {
+		return aimSheet;
 	}
 
 	/** The cloth the clips leave rigid (coat tails): simulated, kept out of the legs and above the floor. */
@@ -1524,6 +1698,9 @@ public final class HeroAnimator {
 		sojournSliding = slideNow;
 		Integer gun = sojourn ? entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_GUN) : null;
 		sojournOverclock = gun != null && (gun & dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK) != 0;
+		if (gun != null) {
+			trackEnergy(gun & (dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK - 1), now);
+		}
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
@@ -1553,6 +1730,9 @@ public final class HeroAnimator {
 			beamOnSince = now;
 		} else if (beamNow == 0 && beamMode != 0) {
 			beamOffAt = now;
+		}
+		if (beamNow != 0) {
+			beamLast = beamNow;
 		}
 		beamMode = beamNow;
 		boolean ga = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_GA);
@@ -1958,15 +2138,18 @@ public final class HeroAnimator {
 		}
 
 		/**
-		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands). Its
-		 * unnamed helper bones swing up to 177 degrees and its legs a little: left alone.
+		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands), and the gun's
+		 * carrier, 0605 / 0606 under the pelvis (Ana's rifle and Sojourn's Railgun hang on hp 00C9 = bone_0606, outside the arm
+		 * chain: without it their hands bent up and the gun stayed level). Its other helper bones swing up to 177 degrees and
+		 * its legs a little: left alone.
 		 */
 		static boolean[] aimMask(SkinnedModel model) {
 			return AIM_MASKS.computeIfAbsent(model, m -> {
 				boolean[] upper = mask(m);
 				boolean[] aim = new boolean[upper.length];
 				for (int i = 0; i < aim.length; i++) {
-					aim[i] = upper[i] && !m.nodeNames[i].startsWith("bone_");
+					String name = m.nodeNames[i];
+					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606"));
 				}
 				return aim;
 			});

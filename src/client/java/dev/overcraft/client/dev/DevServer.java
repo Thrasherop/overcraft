@@ -232,7 +232,10 @@ public final class DevServer {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.cull = arg.endsWith("on");
 				} else if (arg.startsWith("stride ")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.stride = Integer.parseInt(arg.substring(7));
+				} else if (arg.startsWith("glow ")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glow = Integer.parseInt(arg.substring(5));
 				} else if (arg.equals("reset")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.pose = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.emit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.shadow = 0;
@@ -244,6 +247,7 @@ public final class DevServer {
 					out.addProperty("fps", fps);
 					out.addProperty("poseMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.pose / 1e6 / frames);
 					out.addProperty("emitMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.emit / 1e6 / frames);
+					out.addProperty("glowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit / 1e6 / frames);
 					out.addProperty("shadowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.shadow / 1e6 / frames);
 				}
 			}
@@ -501,6 +505,47 @@ public final class DevServer {
 						.filter(n -> dev.overcraft.client.model.HeroAnimator.turnsInPlace(loaded.model(), n)).forEach(list::add);
 				}
 				out.add("turns", list);
+			}
+			case "aimpose" -> {
+				// dev only: "aimpose <pitch> [turn]" / "aimpose off": the model aims this pitch, turned this far from the camera, to judge the
+				// aim sheets from any side with a level camera (the third-person camera otherwise swings with the aim)
+				String[] a = arg.trim().split(" ");
+				dev.overcraft.client.model.HeroModelRenderer.DEV_AIM = a[0].equals("off") ? null
+					: new float[] {Float.parseFloat(a[0]), a.length > 1 ? Float.parseFloat(a[1]) : 0};
+				out.addProperty("ok", true);
+			}
+			case "aimcheck" -> {
+				// dev only: the gun as posed now: the barrel's pitch (+ down) from its origin to its muzzle (hp 0006), and how far the origin is from the hand, in her model's space
+				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
+				float now = player.level().getGameTime() / 20f;
+				var placed = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
+				org.joml.Vector3f muzzle = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.muzzle(hero, animator, loaded.model(), false, now);
+				if (placed != null && muzzle != null) {
+					org.joml.Vector3f at = placed.at().getTranslation(new org.joml.Vector3f());
+					org.joml.Vector3f d = new org.joml.Vector3f(muzzle).sub(at);
+					out.addProperty("barrelPitch", Math.toDegrees(Math.atan2(-d.y, Math.hypot(d.x, d.z))));
+					out.addProperty("muzzleY", muzzle.y);
+				}
+				if (animator.aimSheetInUse() != null) {
+					out.addProperty("sheet", animator.aimSheetInUse().describe());
+				}
+			}
+			case "aimsheets" -> {
+				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonObject list = new com.google.gson.JsonObject();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted().filter(n -> n.startsWith("add_")).forEach(n -> {
+						var sheet = dev.overcraft.client.model.AimSheet.of(loaded.model(), loaded.model().clips.get(n));
+						if (sheet != null) {
+							list.addProperty(n, sheet.describe());
+						}
+					});
+				}
+				out.add("sheets", list);
 			}
 			case "viewbones" -> {
 				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode

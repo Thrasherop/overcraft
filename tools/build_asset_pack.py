@@ -11,6 +11,11 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py parts <DataTool output dir> [hero]  the models weapon_parts.json names (magazines, vials), from the hero's skin folder
+    py tools/build_asset_pack.py clips <DataTool output dir> [hero]  the clips-only files: each tools/clipmaps/<hero>[_1p]_clips.txt into hero_models/ (Blender)
+    py tools/build_asset_pack.py glows <DataTool output dir> [<dir> ...]  every glow, from the materials (tools/glow_maps.py; no Blender, needs Pillow)
+    py tools/build_asset_pack.py weapons <DataTool output dir> [<dir> ...]  parts, clips and glows, over every root (a root holds Heroes/<Hero>/Skin/...: the archive's
+                                                            extracted\\154088 and research\\<hero>\\extract each hold some heroes), then zip's completeness check
     py tools/build_asset_pack.py effects [--only <prefix>] <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
@@ -31,7 +36,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
@@ -1312,6 +1317,94 @@ def add_props(source, only=None):
             print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
 
 
+def add_parts(source, only=None):
+    """Converts every model src/main/resources/assets/overcraft/weapon_parts.json names by id (techniques/animation/weapon_parts.md)
+    into hero_models/<model>.glb, a static mesh on its origin. <source> is the extraction root holding Heroes/<Hero>/Skin. Then
+    tools/glow_maps.py for their glows."""
+    import json
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    for hero, parts in table.items():
+        if hero == "_" or (only and hero != only) or hero not in HERO_FOLDERS:
+            continue
+        done = set()
+        for part in parts:
+            if "id" not in part or part["model"] in done:
+                continue
+            done.add(part["model"])
+            padded = "%012X" % int(part["id"], 16)
+            found = sorted((Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin").glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{part['model']}: no model {padded} under {source}")
+                continue
+            dest = MODELS / f"{part['model']}.glb"
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+                   str(found[0]), str(dest)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+            print(part["model"] + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
+def clip_ids(clip_map):
+    """The clip ids a clip map names."""
+    import re
+    return [m.group(2) for line in clip_map.read_text(encoding="utf8").splitlines() for m in [re.match(r"\s*(\d+-\d+|emote)_([0-9A-F]+)\s*=", line)] if m]
+
+
+def add_clips(source, only=None):
+    """The clips-only files (techniques/animation/animation_import.md): each clip map named *_clips.txt, exported from the model folder that holds its first clip. Its emote_* clips come
+    from the hero's emote folders."""
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    for clip_map in sorted((ROOT / "tools" / "clipmaps").glob("*_clips.txt")):
+        name = clip_map.stem
+        hero = name[:-len("_1p_clips")] if name.endswith("_1p_clips") else name[:-len("_clips")]
+        if hero not in HERO_FOLDERS or (only and hero != only):
+            continue
+        ids = clip_ids(clip_map)
+        skin = Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin"
+        if not skin.is_dir():
+            continue
+        # a map with no clips of its own only takes the emotes (--emotes): from the hero's model, found by the hero's own map
+        look_for = ids or clip_ids(ROOT / "tools" / "clipmaps" / f"{hero}.txt")
+        folder = next((p.parents[3] for clip in look_for for p in skin.glob(f"*/*/Models/*/Animations/*/*/{clip}.owanimclip")), None)
+        if folder is None:
+            print(f"{name}: no clip of its map under {skin}")
+            continue
+        model = next(folder.glob("*.owmdl"))
+        work = LOCAL / "work" / name
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--", str(model), str(work), "--glb", "--clips-only",
+               f"--keep={clip_map}", "--only=" + ",".join(ids or ["none"])]
+        emotes = Path(source) / "Unlocks" / "Heroes" / HERO_FOLDERS[hero] / "Emote"
+        if emotes.is_dir():
+            cmd.append(f"--clips-from={emotes}" if ids else f"--emotes={emotes}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        out = work / f"{model.stem}.glb"
+        report = [line for line in result.stdout.splitlines() if line.startswith(("OWM_KEEP", "OWM_GLB"))]
+        print(name + ": " + (" ".join(report) or result.stderr[-1000:]))
+        if out.exists():
+            shutil.copyfile(out, MODELS / f"{name}.glb")
+
+
+def add_glows(*sources):
+    subprocess.run([sys.executable, str(ROOT / "tools" / "glow_maps.py"), *sources], check=True, env=dict(os.environ, OC_ASSET_PACK=str(PACK)))
+
+
+def missing():
+    """What the pack lacks of this build's weapon work: the zip goes out either way, but a pack without these shows the player none of it (critique_parts F)."""
+    import json
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    gaps = [f"hero_models/{row['model']}.glb" for rows in table.values() if isinstance(rows, list) for row in rows if not (MODELS / f"{row['model']}.glb").exists()]
+    for hero in sorted(HERO_FOLDERS):
+        if (MODELS / f"{hero}.glb").exists() and not (MODELS / f"{hero}_glow.json").exists():
+            gaps.append(f"hero_models/{hero}_glow.json")
+    for name in ("mercy_clips", "jetpack_cat_clips", "lifeweaver_1p_clips"):
+        if not (MODELS / f"{name}.glb").exists():
+            gaps.append(f"hero_models/{name}.glb")
+    return sorted(set(gaps))
+
+
 def build_version():
     """This build's version (gradle.properties)."""
     for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
@@ -1369,9 +1462,24 @@ def main():
         add_effects(*args, only=only)
     elif cmd == "props":
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "parts":
+        add_parts(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "clips":
+        add_clips(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "glows":
+        add_glows(*sys.argv[2:])
+    elif cmd == "weapons":
+        for root in sys.argv[2:]:
+            add_parts(root)
+            add_clips(root)
+        add_glows(*sys.argv[2:])
+        print("missing:", missing() or "nothing")
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")
+        gaps = missing()
+        if gaps:
+            print("WARNING, this pack lacks:", *gaps, "(py tools/build_asset_pack.py weapons <roots>)", sep="\n  ")
         write_version()
         out = LOCAL / "overcraft-assets.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:

@@ -366,3 +366,6 @@ Played on `next` merged in (fix/systems' `leavePlay`), through the harness socke
 - A glide during a lock (both bars) and F5 mid-lock (`hp11_gl`, `hp11_f1`, `hp11_f2`) work. Improved Transparency on: pods and lock fine (`hp14_j*`).
 
 Still not tried: Orbital Ray cutting a lock, two Junos side by side (`podLaunch` takes the first within 1.5 m), water, boats, ladders, a real second player.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

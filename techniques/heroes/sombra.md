@@ -240,3 +240,6 @@ The first pass said "no art" of the fades: wrong, only the held state has none. 
 
 What a critic should check now: mid-fade in motion (stills only; screenshots stall the game); whether the mask on her UVs reads as a diagonal (the data may use another UV); a side by side
 with Overwatch for the held look; the ring's brightness in first person. Not tried: an emote while stealthed, crouching, swimming, an ally's or enemy's view (one client only).
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

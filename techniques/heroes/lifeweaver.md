@@ -50,3 +50,6 @@ and the first with shields. Up: [Techniques](../README.md) · the method:
 ## Open
 The plan's "Open" list: the platform's collision and its riders, the tree's canopy, his fall-damage height, and what
 ends the platform when he dies.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

@@ -8,6 +8,6 @@
 4-4_000000003DD7 = add_fire_end   # 0.467 s; transition 0 / 1 > 2, 0.467 s
 0-36_000000003E60 = reload   # 1.5 s; 0x004 sm[1] (3P), 1.5 s
 0-4_000000003DDB = reload_1p   # 1.37 s; 0x004 sm[0] (1P), 1.367 s
-0-12_000000004032 = melee   # 0.8 s; 0x00D sm[0] only, 0.8 s: L which view
+0-12_000000004032 = melee_1p   # 0.8 s; 0x00D sm[0] only, 0.8 s: L which view
 0-0_000000004033 = ult_cast   # 0.567 s; EMP 0x175, 0.567 s
 4-12_000000004060 = add_ult_cast_end   # 0.467 s; its onFinished slot 0x3D
