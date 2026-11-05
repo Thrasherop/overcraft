@@ -291,6 +291,7 @@ public final class HeroModels {
 				model.images.clear();
 				// her cloth's drivers, from the game data (ClothSim)
 				model.clothDrivers = ClothSim.readDrivers(resources, name);
+				colourHair(resources, model, images);
 				Map<String, PreparedGlow> glow = readGlow(resources, name, glowImages);
 				out.put(name, new Prepared(model, images, glow, litPieces(model, glow)));
 				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
@@ -452,6 +453,32 @@ public final class HeroModels {
 	}
 
 	/** Every pixel black and opaque. */
+	/**
+	 * Hair cards exported black (Lúcio's dreads, material 8052: his hair shader colours them and glTF kept only the black image) take their
+	 * real colours from hero_models/colour/<material>.png (tools/glow_maps.py, #105). Without it they stay black, and aren't drawn.
+	 */
+	private static void colourHair(ResourceManager resources, SkinnedModel model, List<@Nullable NativeImage> images) {
+		for (SkinnedModel.Piece piece : model.pieces) {
+			NativeImage image = piece.image() >= 0 && piece.image() < images.size() ? images.get(piece.image()) : null;
+			if (image == null || piece.material().isEmpty() || !isBlack(image)) {
+				continue;
+			}
+			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/colour/" + piece.material().toLowerCase(java.util.Locale.ROOT) + ".png");
+			var found = id == null ? java.util.Optional.<net.minecraft.server.packs.resources.Resource>empty() : resources.getResource(id);
+			if (found.isPresent()) {
+				try (InputStream in = found.get().open()) {
+					NativeImage coloured = readImage(in.readAllBytes());
+					if (coloured != null) {
+						image.close();
+						images.set(piece.image(), coloured);
+					}
+				} catch (Exception e) {
+					Overcraft.LOG.error("Couldn't read hair colours {}", id, e);
+				}
+			}
+		}
+	}
+
 	private static boolean isBlack(NativeImage image) {
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {

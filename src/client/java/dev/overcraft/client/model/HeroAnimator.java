@@ -1140,6 +1140,7 @@ public final class HeroAnimator {
 		if (setOff != null && now - movingSince <= setOff.duration()) {
 			Skeleton.addAdditive(setOff, now - movingSince, pose, 1);
 		}
+		wallLean(model, pose, entity);
 		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
 		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
 		// movement (HeroModelRenderer.drift, the owner's playtest: #14)
@@ -1482,6 +1483,7 @@ public final class HeroAnimator {
 		if (wallLayer != null) {
 			Skeleton.addAdditive(wallLayer, time(wallLayer, now, true), pose, 1);
 		}
+		wallLean(model, pose, entity);
 		fidget(model, pose, now);
 		if (mercy) {
 			mercyLayers(model, pose, now);
@@ -1505,6 +1507,53 @@ public final class HeroAnimator {
 		Quaternionf look = asleep ? new Quaternionf()
 			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/** Columns in a row of Lúcio's lean sheets (87 frames, 3 rows: level, down, up; his 2927 / 29B3 / 2519 / 251E, measured). */
+	private static final int WALL_LEAN_COLUMNS = 29;
+
+	/**
+	 * Which column of the lean sheet: the middle (14) looking along the ride, -12.86 degrees of aim a column, so +90 of aim to the
+	 * right is column 7, whose root turns the body back +90 (left): the feet stay on the wall while the body faces the aim (HeroAnimator
+	 * .facing). Measured off the sheets (bone_0001's yaw and roll, column by column); the driver is df 5E3 in 3P and df 299 in 1P, whose
+	 * writer isn't in any graph (engine's: searched lucio\graphs). Package-private for WallLeanTest.
+	 */
+	static float wallLeanColumn(float aimOffRide) {
+		return Math.clamp((WALL_LEAN_COLUMNS - 1) / 2f - Mth.wrapDegrees(aimOffRide) / (360f / (WALL_LEAN_COLUMNS - 1)), 0, WALL_LEAN_COLUMNS - 1);
+	}
+
+	/**
+	 * His lean on the wall (#105): alias 0x357's pose sheet over the loop, the aim's yaw off the ride picking the column. Only the sheet's
+	 * level row: the rows up and down hold the same turn at +-89 of pitch, and the aim's pitch is the aim sheet's and the head's here.
+	 */
+	private void wallLean(SkinnedModel model, Skeleton.Pose pose, LivingEntity entity) {
+		if (wallSide == 0) {
+			return;
+		}
+		float heading = dev.overcraft.hero.OwMovement.wallRideYaw(entity);
+		SkinnedModel.Clip sheet = clip(model, wallSide > 0 ? "add_wallride_right_lean" : "add_wallride_left_lean");
+		if (sheet != null && !Float.isNaN(heading)) {
+			Skeleton.addAdditive(sheet, wallLeanColumn(entity.getYHeadRot() - heading) / 30f, pose, 1);
+		}
+	}
+
+	/** The camera's roll at full lean on the wall: the 1P sheets' Camera bone, +-20 at the middle column and its opposite (2519 / 251E). */
+	private static final float WALL_ROLL = 20;
+
+	/**
+	 * The first-person roll on the wall for this aim, in degrees of the camera's own roll, plus to its right (its top leaning right).
+	 * It's the sheets' Camera bone, linear between 0 with the aim square to the wall and 20 with it along it, on the far side the other
+	 * way; the rows at +-89 of pitch hold none, so it goes with the pitch too (linear: the sheet's rows). Away from the wall: M, the
+	 * sheets' sign read by the 3P clip's feet on the wall (a critic should compare with Overwatch). Package-private for WallLeanTest.
+	 */
+	public static float wallRollFor(int side, float aimOffRide, float pitch) {
+		return wallRoll(side, aimOffRide, pitch);
+	}
+
+	static float wallRoll(int side, float aimOffRide, float pitch) {
+		float off = Math.abs(Mth.wrapDegrees(aimOffRide));
+		float along = 1 - off / 90;
+		return -side * WALL_ROLL * along * (1 - Math.min(Math.abs(pitch), 89) / 89);
 	}
 
 	/**

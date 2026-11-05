@@ -64,3 +64,9 @@ So the +-90 mapping lands the guns on the aim to a few degrees (Ana, Sojourn, LÃ
 - **Not done:** the aim's yaw columns (the body always faces the aim, so never needed); Sombra's `add_aim_hack*` (no client state says she's hacking);
   Sojourn's `add_slide_dir_*` and Juno's `add_double_jump*` (their sheets exist, the stand's or air's plays); D.Va's (not on `next`).
 - **Ours:** the driver's range. Pitch +-90 to the line's ends, the old code's choice, which lands the guns along the aim in the shots; df 0xB6's own scale isn't read.
+
+## LÃºcio's wall-ride lean (#105, 2026-11-05)
+Alias 0x357's other `AnimationPose2d`: 87 frames, **three rows of 29**: level, down (+89), up (-89), Y driver df 14, X driver df 5E3 (3P) / df 299 (1P). The X drivers' writer isn't in his graphs (searched `research\lucio\graphs`): the layout is measured, off bone_0001: column 14 is the aim along the ride, 12.86 degrees a column, the root's yaw undoing the aim (+90 at column 7), so the feet stay on the wall while the body faces the aim, as `HeroAnimator.facing` has it. In the 1P sheets the Camera bone rolls +20 at column 14 and -20 at the ends (the right sheet the other way), 0 square to the wall, linear between, 0 in the rows at +-89.
+- `HeroAnimator.wallLean`: the level row only, additive, both views; the aim's pitch stays the aim sheet's and the head's. `CameraMixin.overcraft$wallRoll` turns the camera, `ClientHero.wallRoll` eases it 0.25 s (the node's blend 4.0: M).
+- **The sign (M):** the sheet's axis alone doesn't say which way in Minecraft's view: taken as top of the view away from the wall, as his feet on the wall put him.
+- **What a critic should check:** Workshop or a clip of the real game for the roll's sign and whether it follows the aim this way; only the local player rides (see [minecraft_26](../minecraft/minecraft_26.md)).

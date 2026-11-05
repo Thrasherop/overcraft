@@ -39,6 +39,16 @@ RAMP = 0x5118206D
 STRENGTHS = {3250491852, 2446772623}
 BLANK = {"00000000000A", "00000000000B", "00000000000C", "000000004791"}
 MAX_SIZE = 512
+# Hair cards whose colour image is black: the hair shader (0xD9) colours them itself (Lúcio's dreads 8052: 2123A is black with the strands' cut
+# in its alpha; its other slots are no colour we can name: 2123B, a flat teal, reads as a flow map, the ramp 800263259A9D isn't his hair's
+# brown in any row), and the .glb took the black image. Baked to hero_models/colour/<material>.png: the tint of the dreads' own solid mesh
+# beside them (ours, picked from his model), shaded by the card's 0xBCBE747D mask (bright at the root; the share is ours), its alpha the
+# colour image's, used by HeroModels in place of the black one (#105). `glow_maps.py --colours <root>` writes only these.
+HAIR_SHADER = 0xD9
+HAIR_SHADE = 0xBCBE747D
+COLOURS = MODELS / "colour"
+HAIR_SHADE_FLOOR = 0.62
+HAIR_TINTS = {"000000008052": (74, 48, 44)}
 # Screens whose image holds their states in its channels (Juno's gun 4E48C: red the frame, green the happy face, blue the angry; its look
 # by the ramp 800957B5CD42, a flat grey, so the colour is ours): written as the frame + one face, and the frame + the other as "alt".
 # Glass over a screen: a flat-colour shell on the screen's own bounds (Juno's gun FBC0, 85 v over FB30's 40 v; shader 0x26, its colour and
@@ -140,6 +150,22 @@ def bake(shader, textures):
     return None
 
 
+def hair(name, shader, textures):
+    """A black hair card's colours (HAIR_SHADER above), or None."""
+    if shader != HAIR_SHADER or name not in HAIR_TINTS or not all(k in textures for k in (HAIR_SHADE, ALBEDO[0])):
+        return None
+    albedo = Image.open(textures[ALBEDO[0]]).convert("RGBA")
+    if max(band[1] for band in albedo.getextrema()[:3]) > 8:
+        return None
+    colour = Image.new("RGB", albedo.size, HAIR_TINTS[name])
+    shade = Image.open(textures[HAIR_SHADE]).convert("L").resize(albedo.size, Image.BILINEAR)
+    low, high = shade.getextrema()
+    ramp = shade.point(lambda v: int(255 * (HAIR_SHADE_FLOOR + (1 - HAIR_SHADE_FLOOR) * (v - low) / max(high - low, 1))))
+    out = ImageChops.multiply(colour, Image.merge("RGB", (ramp, ramp, ramp))).convert("RGBA")
+    out.putalpha(albedo.getchannel("A"))
+    return out
+
+
 def multiply(a, b):
     size = (min(max(a.width, b.width), MAX_SIZE), min(max(a.height, b.height), MAX_SIZE))
     return ImageChops.multiply(a.resize(size), b.resize(size))
@@ -158,8 +184,10 @@ def index(roots):
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    materials = index(sys.argv[1:])
+    only_colours = sys.argv[1] == "--colours"
+    materials = index(sys.argv[2:] if only_colours else sys.argv[1:])
     GLOW.mkdir(parents=True, exist_ok=True)
+    COLOURS.mkdir(parents=True, exist_ok=True)
     for model in sorted(MODELS.glob("*.glb")):
         if not glowing_model(model.stem):
             continue
@@ -168,6 +196,12 @@ def main():
             if mesh.startswith(("holo_", "holoc_")) or name not in materials:
                 continue
             shader, textures, strength = owmat(materials[name])
+            coloured = hair(name, shader, textures)
+            if coloured is not None:
+                coloured.save(COLOURS / f"{name.lower()}.png")
+                print(f"{model.stem} {name}: hair colours baked")
+            if only_colours:
+                continue
             image = bake(shader, textures)
             if image is None:
                 continue
@@ -194,6 +228,8 @@ def main():
             else:
                 image.save(GLOW / f"{name.lower()}.png")
             print(f"{model.stem} {name} shader {shader:X} brightest {brightest} strength {strength:.2f}")
+        if only_colours:
+            continue
         target = MODELS / f"{model.stem}_glow.json"
         if table:
             target.write_text(json.dumps(table, indent=1) + "\n", encoding="utf8")

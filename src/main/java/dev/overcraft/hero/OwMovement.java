@@ -1245,6 +1245,16 @@ public final class OwMovement {
 		return cross > 0 ? 1 : -1;
 	}
 
+	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it (the local player only: as wallRiding). */
+	public static float wallRideYaw(LivingEntity entity) {
+		Ride ride = RIDES.get(entity);
+		if (ride == null || !ride.riding) {
+			return Float.NaN;
+		}
+		Vec3 heading = ride.heading();
+		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
+	}
+
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */
 	public static boolean isClimbing(LivingEntity entity) {
 		Climb climb = CLIMBS.get(entity);

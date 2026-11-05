@@ -99,6 +99,28 @@ public final class ClientHero {
 	 * The screen in hero mode: a hero and hero mode on, alive or not (the HUD's choice; dying flipped it to Minecraft's
 	 * hotbar and hearts behind the death screen).
 	 */
+	/** The roll now and when it was last eased (eased over 0.25 s: the wall-ride node's blend 4.0, M). */
+	private static float wallRollNow, wallRollAt = -1;
+
+	/** Lúcio's first-person roll on the wall this frame, eased in and out (HeroAnimator.wallRoll, CameraMixin). */
+	public static float wallRoll(net.minecraft.world.entity.@Nullable Entity entity, float partialTicks) {
+		Minecraft mc = Minecraft.getInstance();
+		if (entity != mc.player || mc.player == null) {
+			return 0;
+		}
+		float now = (mc.player.level().getGameTime() + partialTicks) / 20f;
+		float dt = wallRollAt < 0 ? 0 : Math.clamp(now - wallRollAt, 0, 0.25f);
+		wallRollAt = now;
+		float want = 0;
+		int side = dev.overcraft.hero.OwMovement.wallRiding(mc.player);
+		if (side != 0 && mc.options.getCameraType().isFirstPerson() && heroView()) {
+			want = dev.overcraft.client.model.HeroAnimator.wallRollFor(side, mc.player.getViewYRot(partialTicks) - dev.overcraft.hero.OwMovement.wallRideYaw(mc.player),
+				mc.player.getViewXRot(partialTicks));
+		}
+		wallRollNow += Math.clamp(want - wallRollNow, -dt * 80, dt * 80);
+		return wallRollNow;
+	}
+
 	public static boolean heroView() {
 		LocalPlayer player = Minecraft.getInstance().player;
 		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
