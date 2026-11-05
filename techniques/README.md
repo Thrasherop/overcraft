@@ -26,6 +26,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Animation**
   - [animation_import](animation/animation_import.md): getting clips out and into the game; frames; additive and
     partial clips; finding the right clip.
+  - [critique_parts](testing/critique_parts.md): the independent read of weapon parts, aim sheets and glows, 2026-11-04.
   - [additive_clips](animation/additive_clips.md): which clips are additive (bit 0x4 of the folder), what the
   - [aim_sheets](animation/aim_sheets.md): how the body and gun follow the aim, every hero's sheet layout; [weapon_parts](animation/weapon_parts.md): the data's magazines and vials, a table; weapon clips by rule; on-gun displays.
     exporter does with them, and adding them in the bone's own frame (#75).
