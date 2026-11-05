@@ -335,6 +335,9 @@ flat world, 1920x1080; `hp_tl_*`, `hp_tf_*`, `hp2_*`, `hp3_*`, `hp4_*` in the wo
   `build_asset_pack.py zip` copies the whole pack. Candidates left: the owner's installed zip, or the icon the owner missed being the
   one the data shows **while gliding**, which we hadn't drawn and now do. Ask the owner which, with this build.
 
+A night fight on the final build (`hp7_f*`): live zombies and a skeleton, a villager at 6: lock, fire from the raised pods (seen from
+behind at `fxslow 0.08`): villager 14.88, zombie 13.31 (85, less armor); the Mediblaster held; Glide Boost with its bar as a zombie hit her.
+
 What a critic should check:
 - **The pods' size and place in her own view against the game.** The clip puts them in the top corners; `ARM_SCALE` 1.4 (matched on
   Kiriko) pushes them out and enlarges them, cut by the screen's edge. No Overwatch frame of this moment was at hand. If they sit
