@@ -76,7 +76,7 @@ Keys through the harness (`key`, Minecraft's key mappings), **not the physical m
 | Pass | What | Seen |
 |---|---|---|
 | Day, 1920 (`rt4_*`, `rt6_*`) | every hero but D.Va and Kiriko's own widgets | `rt4_cat_carry1` no panel; `rt4_ana_scoped_*` marker on the lens, no panel; `rt4_overclock_start` 8.0; `rt4_stealth_*` ring in place of hers; `rt6_hotfix_two` two slots with health; `rt4_lockout` the bar (set by the dev command `devwidget lockout`: no enemy deployable exists with one client); `rt4_mercy_beam_boost` health, strip, "RESURRECT VILLAGER" |
-| Broken barrier (`rt7_broke_a`, `_b`, `_c`) | `devwidget barrier1`, then a zombie's hit | barrier gone, box counting 5 then 2, then ready |
+| Broken barrier (`rt7_broke_a`, `_b`, `_c`) | `devwidget barrier1`, then `/damage @s 2 mob_attack by` a zombie (a command, not a swing; the game answered "invulnerable" with the barrier taking it) | barrier gone, box counting 5 then 2, then ready |
 | Bright: white wall, sky (`rt4_wall_*`, `rt4_sky_*`, `rt6_sky_cat`) | Brigitte, Sigma, Mercy, Ana, Lifeweaver, Cat | crosshairs and the barrier bar read. `wall_jetpack_cat` and `sky_jetpack_cat` are Brigitte (the switch was refused just after being hit), so the Cat's is `rt6_sky_cat` only; no snow biome |
 | Night, 1280 (`rt6n_*`) | Sojourn, Brigitte, Mercy, Juno, on the final build | legible |
 | Real terrain, night, real mobs (`rt5_fight_*`) | Kiriko, Sojourn, Brigitte, Lúcio, Sombra, Juno, about 8 s each: two zombies and a skeleton, aim by a `tp` facing the nearest, no resistance | health before and after (OW-scale hearts in Minecraft health): 20 to 10, 18 to 13, 20 to 18.8, 16.5 to 17.7, 15.5 to 18, 18 to 6. No deaths. A scripted scrap, not a night in survival |
