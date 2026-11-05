@@ -142,9 +142,18 @@ final class DevBot {
 					}
 				}
 				out.addProperty("carriedBy", by);
+				out.addProperty("ult", st == null ? 0 : st.ultCharge);
+				out.addProperty("strike", st != null && st.sigmaStrikeReady);
+				out.addProperty("claws", st == null ? 0 : st.clawsCooldown);
 				out.addProperty("x", who.getX());
 				out.addProperty("y", who.getY());
 				out.addProperty("z", who.getZ());
+			}
+			case "phase" -> {
+				// "bot phase <name|me> <seconds>": phased for as long as a test needs, Combat.phase itself (a Suzu gives 0.5 s, too short to aim a real weapon through); dev only
+				ServerPlayer who = a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1]);
+				dev.overcraft.hero.Combat.phase(who, Double.parseDouble(a[2]));
+				out.addProperty("phased", dev.overcraft.hero.Combat.isPhased(who));
 			}
 			case "playing" -> {
 				// "bot playing [text]": the sounds this client has running now (SoundEngine's own list, read by reflection, dev only), for what a stop packet stopped
