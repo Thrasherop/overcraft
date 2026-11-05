@@ -333,3 +333,10 @@ The change alters every fight: mobs no longer stagger. So: normal terrain at mid
 - **The creeper is what kills:** a hit of 12-17 Minecraft health on the small heroes and 18.8-28.7 on Sigma (Minecraft's blast; a full-health 250 HP hero is 20), and nothing keeps it off now. Most deaths have one such hit in them. Before #93 a kunai pushed it 2 m each.
 
 Open for the owner: whether melee mobs reaching heroes sooner is right. Overwatch's rule says yes (no stagger); Minecraft's mobs weren't built for it.
+
+## Respawning at 14-16 of 20 (#111, 2026-11-04)
+Up: [Techniques](../README.md) · [harness](harness.md). **Not a bug in the respawn; reported, nothing changed.**
+- **Tried, reading health every 0.2-0.25 s after each respawn, about 130 respawns (the first three lists on the old build, the states and modes on the new):** `/kill` five times each on all eleven heroes on next; a zombie's kill far from spawn; fall, lava, void, magic, a creeper's blast and burning, twice each, on Kiriko, Brigitte (armor) and Lifeweaver (shields); dying after Rally's +100, in Sound Barrier, in Nano; four in Minecraft mode; six hurt to 5 first; from the Nether. **Full every time**, at once. Food stayed 20.
+- **The one way to see 14-16:** mobs left at the spawn. Two zombies and a skeleton beside it: 20 for 3-5 s, then 20 -> 17 -> 14 -> 12 (Normal's zombie 3): the issue's number, and read a few seconds after a respawn it looks like coming back hurt. The same trap is in [harness](harness.md) from 2026-10-28.
+- **Open for the owner:** Overwatch has spawn rooms; Minecraft has only the wait while a client loads. Whether a hero should get a moment of protection on respawn is a design call, not done.
+- **What a critic should check:** the session of the original sighting can't be repeated (its setup isn't recorded). Not tried: a death to another hero's blow (the bot can't fire), Save and Leave mid-death, a real second player, hard or easy difficulty.

@@ -418,3 +418,18 @@ Orbital Ray 4 -> 19.98).
 
 Not tried: Improved Transparency through the Video Settings screen (F3+X toggles the same option); the Nether; a raid; her
 emotes seen by the second player; the Disruptor against a barrier; dying mid-Overclock.
+
+## False headshots (#110, 2026-11-04)
+Up: [Techniques](../README.md). One rule for all ten checks now: `dev.overcraft.hero.Headshot`, with `HeadshotTest`.
+- **The issue's steps didn't reproduce it.** Two NoAI zombies 12.5 m apart, the first's chest on the line: no false crit. Scanned on the old build: pitches through 8 ray heights at the second zombie with 5 m and 12.5 m to the first: every crit agreed with the 1.49 m band (`rl_t110c`). `kf_soj6`'s own setup isn't recorded;
+  a likely cause there is the harness's "`look` and an ability in the same tick act on the old aim" (not shown).
+- **What did reproduce:** a steep shot. From a 10 m pillar, 2.5 m out, 77 degrees down: **every** aim from the legs up was a headshot, the Charged Shot x1.5 and the kunai x2, because the hit point is where the ray enters the box inflated by its radius, through the top face (the critique's reading).
+- **The fix:** does the shot's line pass through the head? The head: from 0.25 m under the eyes to the box's top + 0.11 m, and 5/12 of the width each side of the middle (a zombie's head is 0.5 m in a 0.6 m box; ours for every mob). A level shot past the side of the head at head height is now a body hit.
+
+| 10 m up, 2.5 m out, aimed at height | Old Charged Shot (energy 50) | New |
+|---|---|---|
+| legs, 0.3 | 105 (crit) | 60 at energy 40 (body) |
+| waist 0.9, chest 1.3, head 1.6, top 1.9 | 105 (crit) | crit: from there the line goes through the head |
+| kunai: legs / waist / head | 120 / 120 / 120 | 60 / 120 / 120 |
+
+- **What a critic should check:** whether the waist from 77 degrees should be a head: geometry says yes, a player may not. Only Charged Shot and kunai were played; the other eight sites share the one call by code. Mobs that aren't built like a zombie (a spider's head is at its front; a ravager's): the middle of the box is ours and wrong for them. Not reproduced is not the same as explained: if the owner sees a false crit on a level line, this isn't its cause.

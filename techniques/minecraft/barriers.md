@@ -41,3 +41,28 @@ Brigitte's state-bound one ([brigitte](../heroes/brigitte.md))
 - **A skeleton on a pillar lobs over a barrier:** its arrow's arc passes above the 4.18 m top. Test from the ground.
 - **His kit doesn't tick while he's dead** (HeroManager): anything of his in the world must notice itself (the barrier
   went home only on respawn).
+
+## Every enemy hero projectile stops at Brigitte's too; a dart sleeps no one behind one (#104, #83, 2026-11-04)
+- **The cause:** her barrier is her state, so it only asked "what's hitting her or her ally?" at the hurt (`Barrier.absorb`). `SleepDartEntity` then slept the target whatever the hit had done: barrier 300 -> 295 and she was
+  asleep behind it. Accretion's knockdown and push had the same shape. A shot at anything not on her side (a zombie behind her) wasn't stopped at all, dart or pistol.
+- **The fix, by rule:** `Barrier.tickProjectiles` now does for `OwProjectile`s what `Barriers.intercept` does for an entity barrier: last and next step, either side, she takes `barrierDamage`, it does `hitBarrier`. And
+  `covering` and `shields` no longer ask that the victim is hers: an enemy's shot crossing it stops, whatever is behind (`Barriers.absorb` always did). A dart that gets to the hurt anyway (point blank) is removed by the absorb: the dart
+  checks `isRemoved()` before the sleep.
+- **What burst on contact now bursts on a barrier** (Biotic Grenade, Protection Suzu, Cyberspace: ours). They were dropped silently, at Sigma's since he was added. A round keeps its +1 energy (`RailgunShotEntity.hitBarrier`), Sigma's too, which never ran (the critique's So4).
+- **Played with `bot` (a second player with no client: [harness](../testing/harness.md)), Ana or Sombra on team red, the bot on blue, old vs new:**
+
+| Case | Old | New |
+|---|---|---|
+| Dart at her behind her barrier | barrier 295, **she's asleep, barrier down** (`rl_old_104a`) | barrier 295, awake, barrier up (`rl_new_104a`) |
+| Dart at a zombie past her side, through the barrier | not measured cleanly (she was still asleep from the case before) | barrier 290, zombie 200 -> 200, no one asleep |
+| Barrier down (control) | she sleeps | she sleeps |
+| Sombra's pistol at her, 2 s (#83) | barrier 300 -> 170, her health 20 | the same |
+| The pistol at a zombie behind her | barrier -6.5, **zombie 200 -> 189.8** | barrier -130, zombie 200 |
+| Same team | no hit on barrier or her | the same |
+| Two rounds at the zombie behind her | not played | barrier -18, energy 0 -> 2, zombie 200 |
+| Accretion at her barrier with 22 left | not played | it breaks; the rock's burst (a hit of its own, after) then reaches her 20 -> 17.4 and the zombie -1.1; no knockdown |
+| Dart at a zombie behind Sigma's barrier | barrier 645, zombie 200 | the same |
+
+- **#83 needed no fix of its own for its issue's steps** (a fix before this branch: the hitscan rule); this branch only adds the shot at something not on her side.
+- **What a critic should check:** a real second client: the bot has no eyes, so what the barrier's owner sees and hears, and whether the dart's stop shows on the shooter's screen, are unverified. A dart stopped at a barrier makes no burst or sound of its own (ours: Local Anesthetic doesn't burst there;
+  the data wasn't searched for a barrier contact on it). Grenade and Suzu bursts on a barrier: none played. Blasts (`blocking`) still ask that the victim is hers: a cow behind her takes a creeper's blast. Rock on a barrier with 22 left: should its burst stop as the hit that broke it does? Hack's sight test (the critique's B6) wasn't looked at.

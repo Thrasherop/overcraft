@@ -54,7 +54,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   data.
 - **Minecraft**: [minecraft_26](minecraft/minecraft_26.md). Engine facts that cost time: input codes, projectiles,
   the dragon, the HUD bars, cameras. [barriers](minecraft/barriers.md): barriers as entities, what stops Minecraft's
-  projectiles, blasts and hits (Sigma's, Brigitte's).
+  projectiles, blasts and hits (Sigma's, Brigitte's). [allies](minecraft/allies.md): allies, enemies and bystanders, the one
+  rule, and what's ours.
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);

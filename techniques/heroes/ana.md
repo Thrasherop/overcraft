@@ -154,3 +154,5 @@ Played on `next` merged in, harness keys, dev pack. `Refs #90`: the lens and ret
 - **Merged with `leavePlay`:** G, death, switch, leave and rejoin while scoped (`m_ana_g*`, `m_ana_d`): no lens, no zoom left over.
 
 Not tried: a second player; 3P ability cameras while scoped; F1. Skins change the reticle in the game (E615): one here.
+
+Sleep Dart at an enemy barrier stops there and sleeps no one behind it (#104): [barriers](../minecraft/barriers.md). A creeper held asleep burns its fuse back down (#101): [jetpack_cat](jetpack_cat.md).
