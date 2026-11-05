@@ -420,7 +420,7 @@ public final class Combat {
 	 * <pre>
 	 * state                     prevented in the phase                 removed                                  source
 	 * Sleep Dart                yes (Sleep.put)                        wakes: its 0.5 s waking, no 0.5 s gate   D 224E #96 / #575; #401 -> #418 -> #204 -> #304
-	 * Rally's stun              yes (Sleep.stun)                       at once                                  D 224E #96 / #575; #402 -> #416 -> #297 (type 0E34: M)
+	 * Rally's stun              yes (Sleep.stun)                       at once                                  D 224E #96 / #575; #402 -> #416 -> #297 (its public schema's default type, 4EB6)
 	 * Hack: silence, reveal     yes (Hack.creature)                    at once, both                            D 224E #402 (type 4EB6); 0B1F #453 -> #610 -> #611 -> #609
 	 * Biotic Grenade anti-heal  yes (antiHeal)                         at once                                  D 0C72's stop {v6604, v8440, v478}, then v8440 -> 1C7D; W
 	 * Healing reduction         no hurt, no reduction                  at once                                  D 01C7 #1186; W
@@ -429,12 +429,16 @@ public final class Combat {
 	 * Hyper Strike's float      yes (Sleep.stun)                       at once                                  W names it; 54A5 reads no flag: M
 	 * Deceleration Field slow   yes: out of the field's filter         at once; back after, if still inside     W slows; D 1443's tracker, mask 20: M
 	 * Weaken (Cyberspace)       yes: out of the zone's filter          not by this: its 0.25 s linger runs out  D 6102's tracker, mask 20: M; W silent
-	 * Accretion, Catnapper      yes (Sleep.stun): the hit's filter     NOT removed                              D 224E #400 goes nowhere (type 6BBE); W; 5B7B's filter, mask 20
-	 * Gravitic Flux's lift      no                                     NOT removed                              W "completely unaffected"; no flag read in his graphs: M
+	 * Accretion, Catnapper      yes (Sleep.stun): the hit's filter     NOT removed                              D 224E #400 goes nowhere (type 6BBE); W; 1EB9 #338 and 5B7B's filters, mask 20: M
+	 * Catnapper's tether        yes (JetpackCat.land skips them)       NOT removed mid-carry                    5B7B's mask 20: M; W Status effect "Catnapper: Cannot be cleansed"
+	 * Soundwave's push, lockout yes (Lucio: not hit)                   the lockout goes (Minecraft's Slowness)  W prevented, not removed; the lockout itself is ours (LucioStats)
+	 * Gravitic Flux: the lift   no: its filter, mask 16, has no bit 4  NOT removed                              1E41 #1292's filter, M; W "completely unaffected"; no flag read in his graphs: M
+	 * Gravitic Flux: its slow   no                                     NOT removed: it ends with the slam       part of the Flux W calls unaffected (HEAVY_SLOW, GraviticFlux); W's "slows" not applied: ours
 	 * Minecraft's effects, fire no                                     removed                                  ours
 	 * </pre>
-	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's own phase test. 224E #575 lets type 6BBE through on a phased hero:
-	 * what stops a knock-down there is the hit's filter (mask 20, as 5B7B's); ours tests at the one door (Sleep.stun).
+	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
+	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M); ours tests at the one door (Sleep.stun). Hits that pass through the phased: dart, whip, bash, shockwave, EMP, Soundwave, Hyper Strike, Catnapper.
+	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
 	 */
 	public static void cleanse(LivingEntity target) {
 		if (!devCleanseOff) {
@@ -466,7 +470,11 @@ public final class Combat {
 		phasedUntil.merge(target.getUUID(), until, Math::max);
 	}
 
-	/** Whether the phase keeps a new negative state off it now (Combat.cleanse's table; off with the dev switch). */
+	/**
+	 * Whether the phase keeps a new negative state off it now (Combat.cleanse's table; off with the dev switch). Every phase here, not only Suzu's. Suzu: 180C. Life Grip: 21EE #606.
+	 * Resurrect (Souls, 2.25 s): D 00CA #677 sets the same v8440. Translocator (Sombra, 0.4 s): D 0C19 #330 too. Swift Step (Kiriko, 0.25 s): no v8440 in her graphs read but the shared 1065; W "phased"; W Status effect
+	 * "its attack ignoring property prevents most negative effects": ours that it's this same list. None of those three calls cleanse: W "No longer cleanses on use" for Swift Step; the data's readers would end a status on the other two, not done, ours.
+	 */
 	public static boolean phaseStops(LivingEntity target) {
 		return !devCleanseOff && isPhased(target);
 	}

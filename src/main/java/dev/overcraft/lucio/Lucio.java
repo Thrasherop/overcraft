@@ -287,6 +287,10 @@ public final class Lucio implements HeroKit {
 			if (to.length() > WAVE_RANGE + target.getBbWidth() / 2 || to.normalize().dot(look) < cosLimit || !player.hasLineOfSight(target)) {
 				continue;
 			}
+			if (dev.overcraft.hero.Combat.phaseStops(target)) {
+				// W Kiriko rev 408632: knockbacks such as Soundwave are prevented, and phased heroes aren't targetable: no hit, no push, no lockout
+				continue;
+			}
 			float hit = Combat.damage(target, player.damageSources().playerAttack(player), damage,
 				dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 			dealt += hit;

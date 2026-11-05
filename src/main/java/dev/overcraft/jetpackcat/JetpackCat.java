@@ -788,6 +788,10 @@ public final class JetpackCat implements HeroKit {
 			if (e == player || !e.isAlive() || d > radius || !Allies.areaHits(player, e)) {
 				continue;
 			}
+			if (Combat.phaseStops(e)) {
+				// out of the landing's trackers (5B7B's filters, mask 20: M; W Kiriko rev 408632 "not targetable"): no hit, no knock-down, no tether
+				continue;
+			}
 			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT)), e);
 			if (dev.overcraft.brigitte.Barrier.shields(e, player)) {
 				// a barrier in the way took it: no knock-down or push behind it (#88; any barrier: Barriers)

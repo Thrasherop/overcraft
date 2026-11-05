@@ -175,6 +175,10 @@ public final class Sombra implements HeroKit {
 				continue;
 			}
 			if (Allies.areaHits(player, e)) {
+				if (Combat.phaseStops(e)) {
+					// out of EMP's trackers (0B31's filters, mask 20: M): no hit, no hack, her stealth stays
+					continue;
+				}
 				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()), dev.overcraft.hero.Blow.ult("emp").by(dev.overcraft.hero.Hero.SOMBRA));
 				Combat.credit(player, dealt, e);
 				Combat.addFireForDamage(player, dealt, e);

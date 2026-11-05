@@ -72,7 +72,7 @@ public final class Sleep {
 	}
 
 	/**
-	 * A stun (Brigitte's Shield Bash in Rally, 224E with type 6BBE: 0.75 s): held as a sleeper is (a mob still, a player's
+	 * A stun (Brigitte's Shield Bash in Rally, 224E with no type of its own: its public schema's default, 4EB6: 0.75 s): held as a sleeper is (a mob still, a player's
 	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
 	 */
 	public static void stun(LivingEntity entity, double seconds) {
@@ -137,6 +137,22 @@ public final class Sleep {
 		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
+	/** What a cleanse does to a hold, by its kind (Combat.cleanse's table). Package-private for SleepRulesTest. */
+	enum Cleansing {
+		/** A dart's sleep: the wake damage starts, without damage's "slept 0.5 s" gate: 224E #401 -> #418 -> #204 -> #304, past #332 (H). */
+		WAKES,
+		/** A stun: ended on the spot (224E #402 -> #416 -> #297). */
+		ENDS,
+		/** Hyper Strike's float (W names it; 54A5 reads no flag: M): ended, and FLOATED still spares the landing. */
+		ENDS_FLOAT,
+		/** A knock-down (Accretion, Catnapper: type 6BBE): 224E #400 goes nowhere (H); W "Cleanses never remove"; BZ "No longer cleanses hard knockdown stuns". */
+		STAYS
+	}
+
+	static Cleansing cleansing(boolean stun, boolean slides, double gravity) {
+		return !stun ? Cleansing.WAKES : !slides ? Cleansing.ENDS : gravity != 1 ? Cleansing.ENDS_FLOAT : Cleansing.STAYS;
+	}
+
 	/** What Protection Suzu's cleanse does here (Combat.cleanse's table). */
 	public static void cleanse(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
@@ -144,23 +160,44 @@ public final class Sleep {
 			return;
 		}
 		long now = entity.level().getGameTime();
-		if (!s.stun) {
-			// the wake damage starts, without damage's "slept 0.5 s" gate: 224E #401 -> #418 -> #204 -> #304, past #332 (H)
-			if (!s.waking && s.until - now > Ow.ticks(AnaStats.SLEEP_WAKING)) {
-				SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), true));
+		switch (cleansing(s.stun, s.slides, s.gravity)) {
+			case WAKES -> {
+				if (!s.waking && s.until - now > Ow.ticks(AnaStats.SLEEP_WAKING)) {
+					SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), true));
+				}
 			}
-		} else if (!s.slides) {
-			// a stun: ended on the spot (224E #402 -> #416 -> #297)
-			wake(s);
-			if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
-				Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
+			case ENDS -> {
+				wake(s);
+				if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+					Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
+				}
 			}
-		} else if (s.gravity != 1) {
-			// Hyper Strike's float (W): its gravity back, and FLOATED still spares the landing
-			wake(s);
-			Combat.buff(entity, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+			case ENDS_FLOAT -> {
+				wake(s);
+				Combat.buff(entity, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+				if (entity.level() instanceof net.minecraft.server.level.ServerLevel level && !dev.overcraft.sigma.GraviticFlux.lifted(entity)) {
+					// its look too (a Flux's lift has the same one, and is unaffected)
+					Effects.play(level, "sigma_strike_end", entity.position(), Vec3.ZERO, entity, 0, null);
+				}
+			}
+			case STAYS -> {
+			}
 		}
-		// a knock-down (Accretion, Catnapper: type 6BBE) stays: 224E #400 goes nowhere (H); W "Cleanses never remove"; BZ "No longer cleanses hard knockdown stuns"
+	}
+
+	/**
+	 * A stun landing on a knock-down stays a knock-down, carried by its push and uncleansable, for as long as the longer of the two; a knock-down on a stun takes over. Rally's stun over
+	 * Accretion's used to make it a plain stun, 18 ticks held and cleansable (runs/polish4/crit_repro_abde763.txt). Ours: 224E's replace rule isn't read past #130. Package-private for SleepRulesTest.
+	 */
+	static boolean slidesAfter(boolean oldSlides, boolean newSlides) {
+		return oldSlides || newSlides;
+	}
+
+	/** Lets a player's client go, unless something else still holds them (a Flux's first 0.4 s, or a hold here). */
+	public static void release(ServerPlayer player) {
+		if (!SLEEPERS.containsKey(player.getUUID()) && !dev.overcraft.sigma.GraviticFlux.holding(player)) {
+			player.removeAttached(HeroManager.ASLEEP);
+		}
 	}
 
 	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
@@ -173,7 +210,12 @@ public final class Sleep {
 		if (old != null && !old.stun) {
 			return;
 		}
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false, true, slides, gravity));
+		long until = now + Ow.ticks(seconds);
+		if (old != null && old.until > until) {
+			until = old.until;
+		}
+		boolean oldSlides = old != null && old.slides;
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, until, false, true, slidesAfter(oldSlides, slides), !slides && oldSlides ? old.gravity : gravity));
 		if (entity instanceof ServerPlayer player) {
 			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
@@ -318,7 +360,7 @@ public final class Sleep {
 		if (s.stun) {
 			if (s.entity instanceof ServerPlayer player) {
 				// (left set, a stunned player stayed frozen for good: found playing, two clients)
-				player.removeAttached(HeroManager.ASLEEP);
+				release(player);
 			}
 			return;
 		}
@@ -339,7 +381,7 @@ public final class Sleep {
 			Effects.play(level, "ana_wake", s.entity.position(), Vec3.ZERO, s.entity, 0, null);
 		}
 		if (s.entity instanceof ServerPlayer player) {
-			player.removeAttached(HeroManager.ASLEEP);
+			release(player);
 		}
 	}
 }

@@ -69,6 +69,10 @@ public final class SigmaPerks {
 		if (!s.sigmaStrikeReady || !s.has(Perk.SIGMA_HYPER_STRIKE)) {
 			return;
 		}
+		if (Combat.phaseStops(target)) {
+			// (W: not targetable. The charge isn't spent on a blow that passes through: ours)
+			return;
+		}
 		s.sigmaStrikeReady = false;
 		s.sigmaDirectHits = 0;
 		ServerLevel level = hero.level();

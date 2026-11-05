@@ -57,7 +57,9 @@ public class SleepDartEntity extends OwProjectile {
 	@Override
 	protected boolean canHitEntity(Entity entity) {
 		return super.canHitEntity(entity) && entity != getOwner()
-			&& !(getOwner() instanceof LivingEntity owner && entity instanceof LivingEntity living && Allies.isAlly(owner, living));
+			&& !(getOwner() instanceof LivingEntity owner && entity instanceof LivingEntity living && Allies.isAlly(owner, living))
+			// through the phased (W Kiriko rev 408632 "pass through them"), so neither it nor Local Anesthetic's burst is spent there
+			&& !(entity instanceof LivingEntity phased && Combat.phaseStops(phased));
 	}
 
 	@Override
