@@ -510,6 +510,24 @@ public final class DevServer {
 					: new float[] {Float.parseFloat(a[0]), a.length > 1 ? Float.parseFloat(a[1]) : 0};
 				out.addProperty("ok", true);
 			}
+			case "aimcheck" -> {
+				// dev only: the gun as posed now: the barrel's pitch (+ down) from its origin to its muzzle (hp 0006), and how far the origin is from the hand, in her model's space
+				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
+				float now = player.level().getGameTime() / 20f;
+				var placed = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
+				org.joml.Vector3f muzzle = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.muzzle(hero, animator, loaded.model(), false, now);
+				if (placed != null && muzzle != null) {
+					org.joml.Vector3f at = placed.at().getTranslation(new org.joml.Vector3f());
+					org.joml.Vector3f d = new org.joml.Vector3f(muzzle).sub(at);
+					out.addProperty("barrelPitch", Math.toDegrees(Math.atan2(-d.y, Math.hypot(d.x, d.z))));
+					out.addProperty("muzzleY", muzzle.y);
+				}
+				if (animator.aimSheetInUse() != null) {
+					out.addProperty("sheet", animator.aimSheetInUse().describe());
+				}
+			}
 			case "aimsheets" -> {
 				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
 				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());

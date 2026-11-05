@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Which clip a hero plays, from what they're doing, and the pose that gives. The base clip follows movement (idle,
@@ -1516,6 +1517,8 @@ public final class HeroAnimator {
 	private @Nullable AimSheet aimSheetBefore;
 	private float aimSheetAt = -100;
 	private @Nullable SkinnedModel aimSheetModel;
+	/** The sheet each state resolved to, so a frame builds no names. */
+	private final Map<String, Optional<AimSheet>> aimSheetPicks = new HashMap<>();
 	/** Seconds a sheet takes over from the last (ours: the base clips' own FADE scale). */
 	private static final float AIM_SHEET_FADE = 0.15f;
 
@@ -1526,13 +1529,18 @@ public final class HeroAnimator {
 	 * hero's clip map, is why a name is where it is (techniques/animation/aim_sheets.md).
 	 */
 	private float aimSheets(SkinnedModel model, Skeleton.Pose pose, float now, float headPitch) {
-		AimSheet sheet = aimSheetNow(model, now);
 		if (aimSheetModel != model) {
 			// another hero's model (a switch): that hero's sheet keys its bones, not these
 			aimSheetModel = model;
 			aimSheet = null;
 			aimSheetBefore = null;
+			aimSheetPicks.clear();
 		}
+		if (now < aimSheetAt) {
+			// time went backward (another world under the same animator): no fade stays stuck at its start
+			aimSheetAt = now - AIM_SHEET_FADE;
+		}
+		AimSheet sheet = aimSheetNow(model, now);
 		if (sheet != aimSheet) {
 			aimSheetBefore = aimSheet;
 			aimSheet = sheet;
@@ -1555,6 +1563,16 @@ public final class HeroAnimator {
 	private @Nullable AimSheet aimSheetNow(SkinnedModel model, float now) {
 		// the variants: Ana's scope, Sombra's stealth, Brigitte's shield
 		String v = scoped ? "_scoped" : stealthed ? "_stealth" : shieldUp(now) ? "_shield" : blaster ? "_blaster" : "";
+		// Sigma's stand's sheet keys only his neck and head (Arm_R 2 degrees at its ends); his hands aim while he fires, by the fire layer's (add_fire_layer_sm1, sm[1] the third person: Arm_R 21, Weapon_R 40)
+		boolean sigmaFiring = sigma && Math.min(since("spheres_0", now), Math.min(since("spheres_1", now), since("spheres_2", now))) < SIGMA_HANDS_AIM;
+		return aimSheetPicks.computeIfAbsent(base + v + (thorns ? "+t" : "") + (junoGliding ? "+g" : "") + (sigmaFiring ? "+f" : ""),
+			k -> Optional.ofNullable(pickAimSheet(model, v, sigmaFiring))).orElse(null);
+	}
+
+	/** Seconds after a volley that Sigma's hands stay on his aim (ours: about his volley's own clip). */
+	private static final float SIGMA_HANDS_AIM = 1.2f;
+
+	private @Nullable AimSheet pickAimSheet(SkinnedModel model, String v, boolean sigmaFiring) {
 		boolean air = base.startsWith("jump") || base.startsWith("fall") || base.startsWith("air");
 		boolean moving = base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk");
 		String dir = !moving ? "" : base.startsWith("run_") ? base.substring(3).replace("_stealth", "").replace("_blaster", "").replace("_thorn", "")
@@ -1589,6 +1607,11 @@ public final class HeroAnimator {
 			}
 		}
 		return null;
+	}
+
+	/** Dev only ("aimsheets"): the sheet in use now. */
+	public @Nullable AimSheet aimSheetInUse() {
+		return aimSheet;
 	}
 
 	/** The cloth the clips leave rigid (coat tails): simulated, kept out of the legs and above the floor. */

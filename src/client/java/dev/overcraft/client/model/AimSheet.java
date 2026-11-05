@@ -5,7 +5,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,12 @@ public final class AimSheet {
 	public record Layout(int[] line, int neutral) {
 	}
 
-	private static final Map<SkinnedModel.Clip, AimSheet> SHEETS = new IdentityHashMap<>();
+	private static final Map<SkinnedModel.Clip, AimSheet> SHEETS = new java.util.IdentityHashMap<>();
+
+	/** A resource reload: the old models' clips go with them. */
+	static void clear() {
+		SHEETS.clear();
+	}
 	private static final AimSheet NONE = new AimSheet(null, null, null, new float[0]);
 
 	private final SkinnedModel.@Nullable Clip clip;
@@ -108,15 +112,20 @@ public final class AimSheet {
 	}
 
 	/** How far from zero (degrees, the whole chain's axes summed) a frame may be and still be the sheet's level frame. */
-	private static final float NEUTRAL = 8;
+	private static final float NEUTRAL = 25;
 	private static final float NEAR_NEUTRAL = 1.5f;
 	/** A line's whole pitch span must be at least this (degrees): a sheet's narrower axis, or a breath, is not an aim. */
 	private static final float MIN_SPAN = 30;
 	/** Frames this far apart in pitch or from level in yaw are another row of the table. */
-	private static final float MAX_STEP = 45, MAX_YAW = 35;
+	private static final float MAX_STEP = 45, MAX_YAW = 55;
+	/**
+	 * Each side of level must turn at least this (degrees): Sojourn's add_crouch_walk passed a span test alone as frames 17, 3, 31 with its chain at +39, 0, -3,
+	 * and aiming up left her gun level (critique_parts A1).
+	 */
+	private static final float MIN_SIDE = 10;
 	/** Rows of a yaw-and-pitch table hold this many yaws in every sheet read (Brigitte, Sigma, Sombra's stealth). */
 	private static final int ROW = 7;
-	private static final float ROW_YAW = 15;
+	private static final float ROW_YAW = 20, ROW_STEP = 8;
 
 	/**
 	 * The pitch line from each frame's chain pitch x (+ down), yaw y and total turn, or null: the longest run of consecutive
@@ -148,7 +157,7 @@ public final class AimSheet {
 				b++;
 			}
 			float span = x[a] - x[b];
-			if (span > bestSpan && a < c && c < b) {
+			if (span > bestSpan && a < c && c < b && x[a] - x[c] >= MIN_SIDE && x[c] - x[b] >= MIN_SIDE) {
 				bestSpan = span;
 				bestA = a;
 				bestB = b;
@@ -165,14 +174,16 @@ public final class AimSheet {
 		for (int c : level) {
 			List<Integer> column = new ArrayList<>();
 			for (int f = c % ROW; f < x.length; f += ROW) {
-				if (Math.abs(y[f] - y[c]) < ROW_YAW) {
+				// (a row at about level's pitch is no step of the line: Sojourn's crouch-walk frame 31 at -3 between 3 at 0 and 10 at -39)
+				if (Math.abs(y[f] - y[c]) < ROW_YAW && (f == c || Math.abs(x[f] - x[c]) >= ROW_STEP)) {
 					column.add(f);
 				}
 			}
 			column.sort(Comparator.comparing(f -> -x[f]));
 			int n = column.size();
 			int at = column.indexOf(c);
-			if (n >= 3 && 0 < at && at < n - 1 && x[column.get(0)] - x[column.get(n - 1)] >= MIN_SPAN) {
+			if (n >= 3 && 0 < at && at < n - 1 && x[column.get(0)] - x[column.get(n - 1)] >= MIN_SPAN
+				&& x[column.get(0)] - x[c] >= MIN_SIDE && x[c] - x[column.get(n - 1)] >= MIN_SIDE) {
 				return new Layout(column.stream().mapToInt(Integer::intValue).toArray(), at);
 			}
 		}
