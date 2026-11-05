@@ -202,12 +202,14 @@ public final class Souls {
 		living.clearFire();
 		living.setHealth(living.getMaxHealth() * healthFraction);
 		// its loot was dropped at its death: none again (#98)
+		boolean first = !lootGiven(living);
 		living.setAttached(RESURRECTED, true);
 		if (!level.addFreshEntity(living)) {
 			return false;
 		}
 		comeBack(living);
-		if (by != null && living instanceof net.minecraft.world.entity.npc.villager.Villager villager) {
+		// (the thanks only the first time, as its loot: kill-and-resurrect stacked the cure's discount, critique_systems L5)
+		if (first && by != null && living instanceof net.minecraft.world.entity.npc.villager.Villager villager) {
 			level.onReputationEvent(net.minecraft.world.entity.ai.village.ReputationEventType.ZOMBIE_VILLAGER_CURED, by, villager);
 		}
 		return true;
