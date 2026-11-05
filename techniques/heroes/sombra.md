@@ -193,3 +193,29 @@ The owner's third log (`E:\Overwatch Archiveesearch\movement\workshop-2026-11-0
 13.5 m from her feet (one aimed 7.6 m up), each 0.22-0.23 s after the press (our 12.25 m at 72 m/s: 0.17 s of flight plus the
 throw), then stealth at 8.80 m/s throughout (5.5 x 1.6: the +60% our numbers had as M). The earlier two logs stopped writing
 before her part (the recorder's Inspector recording: [workshop_recordings](../game-data/workshop_recordings.md)).
+
+## #87: her stealth, as she and others see it (2026-11-04)
+The owner's playtest: "slightly phased out look and animations not active in translocate; her more sprinting animations in first
+person while invis doesn't work". Reproduced on `next` (`hp_s_*`, `hp_s2_*` in the worktree's `run/screenshots`): running stealthed at
+8.8 m/s her first person held the pistol still in the plain view (three frames alike), arms and gun solid; from behind, a flat 25 %
+figure with no pistol.
+- **Her first-person stealth clips were mapped and never played.** `viewBase` only knew idle / walk / jump / fall. Now her stealthed
+  set (graph 420C's category 0x1EE: `idle_stealth`, `walk_stealth` + `_left` / `_right` by the 4 slots, `jump_stealth`, `fall_stealth`,
+  layer `add_idle_stealth`). These clips put the pistol away and pump her hands in turn at the screen's bottom corners, which is
+  the sprint the owner means: played over nine phases of the 0.667 s cycle (`hp2_t*`), left hand, then right, then none.
+- **"Stealthed" now starts at the teleport, not at the fade's end,** from a synced `HeroManager.SOMBRA_STEALTH` (the tick it began, -1
+  after): the speed already ran from the landing, and damage's 1.3 s reveal no longer drops the clips (420C's state goes on).
+- **The look (`HeroModelRenderer.submitStealth`, `ClientSombra.phase`):** the data has no art: 16EA is empty, the invisibility is a
+  renderer state (STU_33A46033), 1AD9 / 1AD8 a wipe with a red-to-cyan edge over her material. Ours: lilac and see-through at
+  38 % (each piece's opacity flickering 12 times a second, a digital shimmer), a faint purple glow, her weapon too, and a cross-fade
+  from solid over the data's 0.75 s and back over 0.3 s, brightest mid-fade. Her own arms take the same, plus a 30 % purple tint at
+  the screen's edges (1A75 held: its colour read dim red, L; 55 % hid the sky, cut). Played day and night, 1P and 3P
+  (`hp5_s*`, `hp5_n*`): throw, fade, run, strafe, `damage` (reveal), a shot (ends it, solid), its 6.5 s end.
+
+What a critic should check:
+- **The look against Overwatch side by side:** ours is a texture at 38 %, not its refraction, and no wipe edge. The flicker is per piece,
+  so a large piece flickers as one. If it reads as a hologram, lower the glow first.
+- Her 1P stride plays on the clock (0.667 s, as the map lists it) at 8.8 m/s; the graph's rate node wasn't found.
+- **A second player wasn't played here** (one client only, after the machine's crash): an ally's and a near enemy's view of her
+  use the same `submit` path as her own third person. Enemies past 4 m still see nothing (not changed, played earlier).
+- Not built: her stealth reticle and timer ring (0277 with 008B), #85. Hidden first-person clips left L: `stealth_486` / `_487`, `add_stealth_layer`.

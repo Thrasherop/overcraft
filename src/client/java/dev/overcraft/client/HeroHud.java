@@ -287,6 +287,15 @@ public final class HeroHud {
 		}
 		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
 		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
+		if (firstPerson && ClientHero.hero() == Hero.SOMBRA) {
+			// stealthed, her own view's edges tinted (1A75 held while stealthed: a dim screen quad, its colour L; ours her
+			// stealth's purple, as Overwatch's stealthed view is), with her arms phased out (#87)
+			float phase = ClientSombra.phase(player, (player.level().getGameTime() + Minecraft.getInstance().getDeltaTracker()
+				.getGameTimeDeltaPartialTick(true)) / 20f);
+			if (phase > 0) {
+				image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x5A1E9C, 0.3f * phase));
+			}
+		}
 		float step = since(stepCastAt);
 		if (firstPerson && step < STEP_FLASH) {
 			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)

@@ -93,6 +93,12 @@ public final class Stealth {
 			dev.overcraft.hero.Voice.say(player, "uncloak", 1);
 		}
 		s.sombraStealthed = on;
+		// every client's look of her (#87): when it began while it lasts, -1 after
+		Long shown = player.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		long want = on ? s.stealthFrom : -1;
+		if (shown == null ? want >= 0 : shown != want) {
+			player.setAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH, want);
+		}
 		boolean potion = player.hasEffect(net.minecraft.world.effect.MobEffects.INVISIBILITY);
 		if (player.isInvisible() != (hidden || potion)) {
 			player.setInvisible(hidden || potion);

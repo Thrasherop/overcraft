@@ -992,7 +992,8 @@ public final class HeroAnimator {
 				// the rise, held at its end until he lands
 				SkinnedModel.Clip start = clip(model, "jump_start");
 				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
-			} else if (viewBase.equals("idle")) {
+			} else if (viewBase.equals("idle") || viewBase.equals("idle_stealth")) {
+				// (Sombra's stealthed stand, 3EBA: two frames held, as her plain one)
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
@@ -1032,7 +1033,9 @@ public final class HeroAnimator {
 			lifeweaverView(model, pose, now);
 		}
 		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster"
-			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn" : "add_idle");
+			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn"
+			// Sombra stealthed: her stealthed stand's own layer (B1CB, sombra_1p.txt)
+			: stealthed && clip(model, "add_idle_stealth") != null ? "add_idle_stealth" : "add_idle");
 		if (idleLayer != null) {
 			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out. Lifeweaver's blossom
 			// stand (C6C8, 0.167 s) is timed by its state machine's dataflows (df 0xB5 / 0xB8, research clipmap.md), not
@@ -1128,6 +1131,17 @@ public final class HeroAnimator {
 			} else if (scopeIn > 0) {
 				// raising or lowering: the raise clip at the scope's own place (3B84, timed by df 0x6D)
 				want = "scope_in";
+			}
+			if (stealthed) {
+				// Sombra stealthed (graph 420C's category 0x1EE on her view's blend tree, sombra_1p.txt): her own stand, jump
+				// and fall, and a 4-slot walk (s0 / s1 forward and back, s2 left, s3 right) with the stealthed run's quicker
+				// stride. Only the third person had them (#87: her first person kept the plain walk while she ran at 8.8 m/s)
+				String stealth = want.equals("walk") && base.startsWith("strafe_left") ? "walk_stealth_left"
+					: want.equals("walk") && base.startsWith("strafe_right") ? "walk_stealth_right"
+					: want + "_stealth";
+				if (model.clips.containsKey(stealth)) {
+					return stealth;
+				}
 			}
 			return model.clips.containsKey(want) ? want : "idle";
 		}
@@ -1452,7 +1466,10 @@ public final class HeroAnimator {
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
-		stealthed = sombra && entity.isInvisible();
+		// her stealth from its start (the synced HeroManager.SOMBRA_STEALTH: fading in and revealed count, as 420C's state does),
+		// or Minecraft's invisibility (a potion)
+		Long stealthFrom = entity.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		stealthed = sombra && (stealthFrom != null && stealthFrom >= 0 || entity.isInvisible());
 		juno = "juno".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		boolean glideNow = juno && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE));
 		if (glideNow && !junoGliding) {
