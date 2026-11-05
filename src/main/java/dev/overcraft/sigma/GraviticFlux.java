@@ -289,6 +289,9 @@ public final class GraviticFlux {
 	}
 
 	private static void lift(ServerPlayer owner, LivingEntity e, Vec3 at) {
+		if (e instanceof Mob mob && mob.getTarget() != null) {
+			dev.overcraft.hero.Allies.remember(mob, mob.getTarget());
+		}
 		ServerLevel level = owner.level();
 		Lifted lifted = new Lifted(e, owner, at);
 		LIFTED.put(e.getUUID(), lifted);
@@ -296,7 +299,7 @@ public final class GraviticFlux {
 		DamageSource source = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(LIFT_TYPE), owner);
 		float dealt = hurt(level, e, source, FLUX_LIFT_DAMAGE);
 		Combat.credit(owner, dealt, e);
-		Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+		Combat.addFireForDamage(owner, dealt, e);
 		if (dealt > 0) {
 			Effects.hitMarker(owner, e, false);
 		}
@@ -355,6 +358,7 @@ public final class GraviticFlux {
 		}
 		for (Lifted l : new ArrayList<>(LIFTED.values())) {
 			LivingEntity e = l.entity;
+			dev.overcraft.hero.Sleep.holdFuse(e);
 			if (e.isRemoved() || !e.isAlive()) {
 				release(l);
 				continue;
@@ -429,7 +433,7 @@ public final class GraviticFlux {
 		DamageSource source = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(SLAM_TYPE), l.owner);
 		float dealt = hurt(level, e, source, slamDamage(Ow.toOw(e.getMaxHealth()), boss(e)));
 		Combat.credit(l.owner, dealt, e);
-		Combat.addFireForDamage(l.owner, dealt, Ow.toOw(e.getMaxHealth()));
+		Combat.addFireForDamage(l.owner, dealt, e);
 		if (dealt > 0) {
 			Effects.hitMarker(l.owner, e, false);
 		}

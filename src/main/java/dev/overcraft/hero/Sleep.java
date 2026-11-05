@@ -52,6 +52,10 @@ public final class Sleep {
 			Effects.play(level, "ana_asleep", entity.position(), Vec3.ZERO, entity, Ow.ticks(seconds), null);
 		}
 		if (entity instanceof Mob mob) {
+			if (mob.getTarget() != null) {
+				// (asleep it's still the one who was after them: Allies)
+				Allies.remember(mob, mob.getTarget());
+			}
 			mob.setTarget(null);
 		}
 		if (entity instanceof ServerPlayer player) {
@@ -79,6 +83,12 @@ public final class Sleep {
 	/** The same with its gravity scaled (Hyper Strike's float: x0.01, 54A5 #404). */
 	public static void knockdown(LivingEntity entity, double seconds, double gravity) {
 		stun(entity, seconds, true, gravity);
+	}
+
+	/** Under a dart's sleep, not a stun or knock-down: Catnapper's tether can't pull it (Sleep.tick holds it still). */
+	public static boolean sleeping(LivingEntity entity) {
+		Sleeper s = SLEEPERS.get(entity.getUUID());
+		return s != null && !s.stun;
 	}
 
 	/**
@@ -177,11 +187,7 @@ public final class Sleep {
 				wake(s);
 				continue;
 			}
-			if (e instanceof net.minecraft.world.entity.monster.Creeper creeper && !creeper.isIgnited()) {
-				// a creeper's fuse runs in its own tick, not in its AI: held with its fuse lit it went off anyway (found playing, #101).
-				// It burns back down, as when a target walks off. One lit by flint and steel goes on (Minecraft's: nothing puts that out)
-				creeper.setSwellDir(-1);
-			}
+			holdFuse(e);
 			if (dev.overcraft.sigma.GraviticFlux.lifted(e)) {
 				// a Gravitic Flux moves it (its own tick)
 				continue;
@@ -198,11 +204,47 @@ public final class Sleep {
 		}
 	}
 
-	/** One tick of a held mob carried by its speed, as LivingEntity.travel would (gravity, air drag, the ground's friction). */
+	/**
+	 * A creeper's fuse runs in its own tick, not in its AI: held with its fuse lit it went off anyway (#101). It burns back down, as
+	 * when a target walks off. One lit by flint and steel goes on (Minecraft's: nothing puts that out). For every hold: Gravitic Flux's too.
+	 */
+	public static void holdFuse(LivingEntity e) {
+		if (e instanceof net.minecraft.world.entity.monster.Creeper creeper && !creeper.isIgnited()) {
+			creeper.setSwellDir(-1);
+		}
+	}
+
+	/** Stays up by itself: a knock-down doesn't drop it out of the sky (a ghast fell about 30 blocks; ours). */
+	private static boolean flies(Mob mob) {
+		return mob.isNoGravity() || mob.getMoveControl() instanceof net.minecraft.world.entity.ai.control.FlyingMoveControl
+			|| mob instanceof net.minecraft.world.entity.monster.Ghast || mob instanceof net.minecraft.world.entity.monster.Phantom
+			|| mob instanceof net.minecraft.world.entity.monster.Vex || mob instanceof net.minecraft.world.entity.monster.Blaze
+			|| mob instanceof net.minecraft.world.entity.ambient.Bat;
+	}
+
+	/**
+	 * One tick of a held mob carried by its speed, as LivingEntity.travel would (gravity, air drag, the ground's friction). A flyer keeps
+	 * its height, and a boss isn't moved at all (the Ender Dragon has no physics: it sank through the island).
+	 */
 	public static void slide(Mob mob, double gravity) {
+		if (Allies.isBoss(mob)) {
+			mob.setDeltaMovement(Vec3.ZERO);
+			return;
+		}
+		if (flies(mob)) {
+			gravity = 0;
+			// (and no hop: Catnapper's 0.1 up took it 2.2 m up, nothing bringing it down)
+			mob.setDeltaMovement(mob.getDeltaMovement().multiply(1, 0, 1));
+		}
 		Vec3 v = mob.getDeltaMovement();
 		mob.move(net.minecraft.world.entity.MoverType.SELF, v);
 		Vec3 after = mob.getDeltaMovement();
+		if (mob.isInWater()) {
+			// water's drag, and it sinks slowly (LivingEntity.travelInWater's 0.8 and gravity / 16)
+			mob.setDeltaMovement(after.x * 0.8, (after.y - mob.getGravity() * gravity / 16) * 0.8, after.z * 0.8);
+			mob.needsSync = true;
+			return;
+		}
 		float friction = mob.onGround()
 			? mob.level().getBlockState(mob.getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction() * 0.91f : 0.91f;
 		mob.setDeltaMovement(after.x * friction, (after.y - mob.getGravity() * gravity) * 0.98, after.z * friction);

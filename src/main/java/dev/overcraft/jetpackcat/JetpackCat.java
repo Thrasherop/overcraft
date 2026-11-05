@@ -685,7 +685,10 @@ public final class JetpackCat implements HeroKit {
 				Combat.push(e, new Vec3(push.x, 0.1, push.z), player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			}
 			// the tether takes the nearest it can carry: a boss is knocked down with the rest and stays where it is (Allies.isBoss, ours)
-			if (d < nearestD && !Allies.isBoss(e)) {
+			// (not one the landing killed, a shulker fixed to its wall, anything riding, or a dart's sleeper Sleep holds still: she'd hang on
+			// a tether that doesn't move)
+			if (d < nearestD && e.isAlive() && !Allies.isBoss(e) && !e.isPassenger() && !dev.overcraft.hero.Sleep.sleeping(e)
+				&& !(e instanceof net.minecraft.world.entity.monster.Shulker)) {
 				nearest = e;
 				nearestD = d;
 			}
