@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * machine holds one game at a time). A real ServerPlayer on a connection to nowhere: it is in the player list, has a
  * hero, a team and the server's whole hero tick, and takes hits as a player does. It has no client, so it doesn't move, and
  * nothing it would see is checked: what it proves is server rules (a barrier stopping a shot); what a second player sees on
- * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot input <name> <held> <pressed> <extra>" (a client's input packet, HeroManager.onInput), "bot perk <name> <PERK>", "bot strike <name>", "bot wall <name> <side> <yaw>", "bot wallme", "bot secondary <name> on|off"
+ * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot input <name> <held> <pressed> <extra>" (a client's input packet, HeroManager.onInput), "bot perk <name> <PERK>", "bot strike <name>", "bot wall <name> <side> <yaw>", "bot wallme", "bot look <name> <yaw> <pitch>", "bot path <name> <vx> <vy> <vz> <ticks>", "bot secondary <name> on|off"
  * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>",
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
@@ -44,6 +44,7 @@ final class DevBot {
 	private static final Map<String, ServerPlayer> BOTS = new HashMap<>();
 	private static final Map<String, EmbeddedChannel> CHANNELS = new HashMap<>();
 	private static boolean hooked;
+	private static final Map<String, double[]> PATHS = new HashMap<>();
 
 	static void handle(MinecraftServer server, String arg, JsonObject out) throws Exception {
 		CompletableFuture<Void> done = new CompletableFuture<>();
@@ -80,6 +81,20 @@ final class DevBot {
 				int side = Integer.parseInt(a[2]);
 				HeroManager.onInput(BOTS.get(a[1]), new dev.overcraft.net.HeroInputPayload(side == 0 ? 0 : dev.overcraft.net.HeroInputPayload.HELD_WALL_RIDE, 0, 0,
 					side == 0 ? 0 : dev.overcraft.hero.OwMovement.wallCode(side, Float.parseFloat(a[3]))));
+				out.addProperty("ok", true);
+			}
+			case "look" -> {
+				// "bot look <name> <yaw> <pitch>": a /tp doesn't reach a bot (it has no client to answer), this does
+				ServerPlayer bot = BOTS.get(a[1]);
+				float yaw = Float.parseFloat(a[2]);
+				bot.setYRot(yaw);
+				bot.setYHeadRot(yaw);
+				bot.setXRot(Float.parseFloat(a[3]));
+				out.addProperty("ok", true);
+			}
+			case "path" -> {
+				// "bot path <name> <vx> <vy> <vz> <ticks>" (m/s): carried along by hand each tick, its known movement set as a client's packets would: a flying carrier, as far as a bot can be one
+				PATHS.put(a[1], new double[] {Double.parseDouble(a[2]) / 20, Double.parseDouble(a[3]) / 20, Double.parseDouble(a[4]) / 20, Double.parseDouble(a[5])});
 				out.addProperty("ok", true);
 			}
 			case "fixoff" -> {
@@ -296,6 +311,20 @@ final class DevBot {
 			hooked = true;
 			// what a client's connection would tick: its effects, its timers (nothing while it stands still and sends nothing)
 			ServerTickEvents.END_SERVER_TICK.register(s -> {
+				PATHS.entrySet().removeIf(e -> {
+					ServerPlayer b = BOTS.get(e.getKey());
+					double[] p = e.getValue();
+					if (b == null || p[3]-- <= 0) {
+						if (b != null) {
+							b.setKnownMovement(net.minecraft.world.phys.Vec3.ZERO);
+						}
+						return true;
+					}
+					b.snapTo(b.getX() + p[0], b.getY() + p[1], b.getZ() + p[2], b.getYRot(), b.getXRot());
+					b.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+					b.setKnownMovement(new net.minecraft.world.phys.Vec3(p[0], p[1], p[2]));
+					return false;
+				});
 				for (ServerPlayer b : BOTS.values()) {
 					if (!b.isRemoved() && b.level().getServer() == s) {
 						b.doTick();
