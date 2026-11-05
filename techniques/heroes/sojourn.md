@@ -433,3 +433,21 @@ Up: [Techniques](../README.md). One rule for all ten checks now: `dev.overcraft.
 | kunai: legs / waist / head | 120 / 120 / 120 | 60 / 120 / 120 |
 
 - **What a critic should check:** whether the waist from 77 degrees should be a head: geometry says yes, a player may not. Only Charged Shot and kunai were played; the other eight sites share the one call by code. Mobs that aren't built like a zombie (a spider's head is at its front; a ravager's): the middle of the box is ours and wrong for them. Not reproduced is not the same as explained: if the owner sees a false crit on a level line, this isn't its cause.
+
+### Round 2: each mob's own head (critique_rules 11, 2026-11-05)
+`Headshot`: upright, broad (a golem), a row (the Wither), or front-headed (animals, spiders, a ravager, a ghast's face): placed by the mob's eye height and the way its head faces, since Minecraft's server has no head position. Thickness counts sideways and over the top, up to 0.11 m (a kunai's 0.195 m contact made a cow's flank a crit). **All ours.** Kunai, played (60 body, 120 crit), keys by `KeyMapping.set`:
+
+| Aim | Old | New |
+|---|---|---|
+| Spider's head, from the front | 60 | 120 |
+| Its head, from its side | 120 | 120 |
+| Its abdomen: behind, side, top | 120, 120, 120 | 60, 60, 60 |
+| Golem's head / shoulder / chest (it had to be turned) | not run | 120 / 60 / 60 |
+| Ghast: middle / top / low, from the front | 60 / 120 / 60 | 120 / 120 / 60 |
+| Cow's head from the front | 120 | 120 |
+| Ravager's head from the front / its flank | 60 / 60 | 120 / 60 |
+| Zombie, skeleton, creeper: head / chest | 120 / 60 | 120 / 60 |
+| Wither: mid head / body / side head | 120 / 60 / miss | 120 / 60 / miss (the kunai passed: its box is 0.9 m wide; the side heads are outside it) |
+
+- **The waist from 77 degrees still crits** (the line really goes through the head): for the owner to say. **No level-case false crit has shown up.**
+- **What a critic should check:** a moving target; a muzzle offset (a thrown kunai's way isn't the eye's); a ghast's face from the side is a crit near its front edge; a hit from behind a front-headed mob with its head turned (`getYHeadRot`).

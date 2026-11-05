@@ -18,7 +18,7 @@ Two questions use those:
 - **`areaHits`: what takes everyone in reach without aiming** (bursts, fields, waves, swings, locks): enemies only (friendly fire adds allies). The list: EMP, Cyberspace, Biotic Grenade's burst, Local
   Anesthetic, Purr, Catnapper's landing, Brigitte's flail, bash target and Rally's shockwave, Juno's lock, Accretion's and Hypersphere's bursts, Gravitic Flux, the Disruptor, Soundwave.
 
-A bystander also gives no ult charge or perk progress (`Combat.credit`), or a chicken farm fills an ult. A golem is an enemy for as long as Minecraft keeps it so, then an ally again.
+A bystander pays nothing: ult charge, perk progress, On Fire, Sojourn's energy and Sharpshooter, Accretion's +25, Hyper Regeneration, Mercy's share of a boosted hit, a crit marker. (Round 2, the critique's 6; a farm filled an ult.) A hit on one still deals its damage. A golem is an enemy for as long as Minecraft keeps it so, then an ally again.
 
 ## Played (2026-11-04; old = 985f73c, one commit before; same scripts; `rl_new_*` in `overcraft_rules/run/screenshots`, `rl_old_*` were read and went with their temporary worktree)
 | Case | Old | New |
@@ -44,10 +44,31 @@ A bystander also gives no ult charge or perk progress (`Combat.credit`), or a ch
 - **Who a mob targets is known only on the server.** `getTarget` and the anger's fields aren't synced: on a client, a turned golem is still an ally: its ally health bar shows and Juno's lock
   ring has the ally look (`rl_new_play_junolock`). Open.
 
+## Round 2, after [critique_rules](../testing/critique_rules.md) (2026-11-05)
+**What "played" means here (the critique's 3):** every run is the dev harness: keys through `KeyMapping.set` (`key` in DevServer), aim by `look` or `/execute ... facing`, not a real mouse or keyboard; the bot is a server-side player, no second client. Mobs, terrain, damage and hits are the real game's. Old = b88a2fa, new = the build after the critique; pictures: `overcraft_rules/run/screenshots` (`rl2_new_*`, `old/rl2_old_*`), gitignored.
+
+**Who's hostile now:** a mob's target, its brain's `ATTACK_TARGET` (a Zombie Nautilus's: `Mob.getTarget` doesn't read it), its anger at the hero or anyone on their side, universal anger, and **a short memory** (ours, 5 s: the blow it just landed, or what it was after when a hold cleared its target), so a llama doesn't flicker between spits. A goat counts from its first ram (a ram's target is a position), not while it lines up. **An unowned mount carrying an enemy** is an enemy (a skeleton's horse, a drowned's Nautilus). **Kill lines** ask `Allies.wasEnemy`: a turned golem and an angry wolf get them; a killed cow never did (the first version of this note was wrong).
+
+**Calm by nature (the owner's default for now, ours, open):** piglins, zombified piglins and endermen are bystanders to area abilities until they target or anger at the hero's side, so a Soundwave doesn't start a bastion's fight. Spiders by day stay enemies, not asked. Pings: the client can't see targets, so a calm piglin pings red as before.
+
+| Case | Old | New |
+|---|---|---|
+| Accretion on a cow, ult | 9.5 -> 43.2 (+25) | 9.2 -> 18.2 (passive) |
+| Railgun rounds on a cow, 1.2 s, energy | 0 -> 95; head: crit | 0 -> 0; no crit flag |
+| Kill line on a turned golem (`heard`) | none | `kiriko.voice.elimination` |
+| Llama after a hit, side each 0.5 s | `EEEEbbbbbbbbbb` | `EEEEEEEEEEEEEb` |
+| Bee after its sting | `EEEEEEEbbbbbbb` | `EEEEEEEEEEEEEE` |
+| Zombie Nautilus in water | bystander (not run in water; on land it has no target) | `EEEE...`, brain target her |
+| A skeleton horse with a skeleton riding / alone | not run / bystander | enemy / bystander |
+| Soundwave on a zombified piglin and an enderman, calm | 20 -> 16.5, 40 -> 36.4 | 20, 40 |
+| A piglin with no gold | enemy | enemy (it targets her); hit |
+| Six unplayed sites: Cyberspace, grenade burst, Local Anesthetic, Rally's shockwave, sphere burst, Flux; cow, stand, zombie, villager in reach | not run | cow 10 and stand up in all six; zombie hurt in all six (Flux 200 -> 96); villager healed by Cyberspace, grenade, Rally's Inspire |
+
 ## What a critic should check
+- **Round 2's open points:** a village golem turned by low reputation (not done: the golem was punched); a real goat on a mountain; a drowned riding a Nautilus (the rule by a skeleton's horse); a bastion in gold: the piglin stayed a bystander until a brute (an enemy) took the Soundwave, and then the group angered, as Minecraft's alert does, so "doesn't start a bastion's fight" holds only with no brute in the wave.
 - **The owner's call:** cows take an aimed shot at all? Flail can't hit a cow or break a stand (quick melee and Whip Shot can: chosen because a swing takes everyone in its arc). A copper golem is a bystander, not an ally.
-  Armor stands take aimed shots but Sojourn's plain round also gives +1 energy on one (Railgun's object branch, older).
-- **A bystander still gives:** On Fire points (`addFireForDamage` has no target), Accretion's +25 ult on a direct hit, Sojourn's energy, a hit marker, and a kill feed row and kill line if killed. Not changed.
+  Armor stands take aimed shots and give nothing; Sojourn's +1 on an object is for boats and end crystals now.
+- **A bystander still gets:** a plain hit marker and a kill feed row if killed; no kill line. Not changed.
 - **Not played:** two players with real clients (teams, a pet of a player on another team: code only); a village golem turned by low reputation; a pet of an offline owner (it falls through to bystander); llamas, bees, polar bears
-  (the same `NeutralMob` or target path as the wolf, by code); a goat's ram (a brain memory, not a target: it stays a bystander while it rams).
+  (the same `NeutralMob` or target path as the wolf: bees, llamas and polar bears now played on flat ground).
 - **`Combat.credit` on a target just killed:** asked after the death, so `isBystander` has no alive check. An angered wolf killed in one hit: its target field is still set, so it counts.

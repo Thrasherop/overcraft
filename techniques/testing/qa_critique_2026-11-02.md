@@ -212,4 +212,4 @@ systems 16 (the shared X items also count once in each hero they reach).
 - #12 / C1 partly wrong: Lifeline and the carry already ended on G, death and most switches (`keepFlight`); the real bugs were to Mercy, and in other kits ([hand_play](hand_play.md)).
 - #1 / X1, X13 ([minecraft_26](../minecraft/minecraft_26.md)), #8 / A2 ([minecraft_26](../minecraft/minecraft_26.md)), S2 ([hand_play](hand_play.md)): reproduced and fixed.
 
-- #10 / X6, #11 / X7, J1 ([allies](../minecraft/allies.md)), #13 / C2, C3 ([jetpack_cat](../heroes/jetpack_cat.md)), B6 / A3 ([barriers](../minecraft/barriers.md)): reproduced and fixed.
+- #10 / X6, #11 / X7, J1 ([allies](../minecraft/allies.md)), #13 / C2, C3 ([jetpack_cat](../heroes/jetpack_cat.md)), B6 / A3 ([barriers](../minecraft/barriers.md)): reproduced and fixed in server rules, played by the dev bot and harness keys; no second client. Open points in each note and in [critique_rules](critique_rules.md).

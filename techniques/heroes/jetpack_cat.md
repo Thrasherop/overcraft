@@ -224,3 +224,11 @@ Up: [Techniques](../README.md) · who's an enemy: [allies](../minecraft/allies.m
 | From the air, onto two zombies, a skeleton, a cow and a stand (`rl_new_play_aim`, `_land`, `_carry`) | not played | landed at 1.2 s; all three mobs held 1.2 -> 2.5 s and free at 2.8; cow 10, stand up, zombies 18.08; rose to y -26 with one |
 
 - **What a critic should check:** one run each: the arrow count is small (old 1 in 1.5 s against about 1 a second before she landed). Not played: a second player as the target (`Sleep.stun` freezes their keys and their client; the carry's speed is sent the old way, so being carried while stunned is unverified). A mob already asleep from a dart isn't turned into a knockdown (`Sleep.stun` returns), so it is tethered but `Sleep.tick` holds it still until it wakes. Water, lava, ladders, boats, the Nether: not tried. Flyers (a phantom, a blaze): not tried.
+
+### Round 2 (critique_rules, 2026-11-05)
+Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
+- **Landing on a creeper:** it's carried, its AI back at 1.5 s, and it goes off about 3.6 s after the landing, 1 m under her: **she dies** from 18 on the ground (18 -> 0), or is left with **1.5 of 18** flying up with it. Nothing changed: **the owner's call** whether the carry drops a creeper, holds its fuse or skips it.
+- **Two zombies and a skeleton:** she took 18 -> 12 in the first 0.4 s (they hit her before she landed: the confirm's 0.35 s), then regenerated through the carry at full speed to 18. No harm while they were held.
+- **Flyers keep their height** (NoAI, so only the knock-down moves them; a zombie nearer, so it's the carried one): phantom old -57 -> -60, new -57; blaze old -57 -> -59.8, new -57. **The Ender Dragon isn't pulled:** old -56 -> -95 in 1 s (through the bedrock), new stays -56. Slides feel water (not played).
+- **A creeper in Gravitic Flux** (200 health, 3 s fuse): old went off 1.9 s after the confirm, new alive 7.5 s+ (`Sleep.holdFuse`).
+- **The carry takes** no dead mob, shulker, rider or dart's sleeper (by code; a shulker not played).
