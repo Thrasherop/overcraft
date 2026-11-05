@@ -538,7 +538,7 @@ public final class HeroAnimator {
 	private float emoteStart;
 	private @Nullable Vec3 emoteFrom;
 	/** How far (m) the hero may drift before an emote ends (ours: Minecraft nudges players a little standing still). */
-	private static final double EMOTE_MOVE = 0.15;
+	private static final double EMOTE_MOVE = dev.overcraft.comms.Comms.EMOTE_MOVE;
 	/** Seconds an emote eases in from the movement pose, and a one-shot back out to it (ours). */
 	private static final float EMOTE_EASE = 0.2f;
 

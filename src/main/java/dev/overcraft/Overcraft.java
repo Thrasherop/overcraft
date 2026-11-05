@@ -162,6 +162,7 @@ public class Overcraft implements ModInitializer {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			dev.overcraft.hero.Effects.tick(server);
 			HeroManager.tick(server);
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
@@ -180,13 +181,8 @@ public class Overcraft implements ModInitializer {
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline, Brigitte's barrier)
-		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
-			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
-				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
-				dev.overcraft.brigitte.Brigitte.showState(hero, player);
-			}
-		});
+		// a player who starts seeing someone hears of the states others heard begin (#96)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register(HeroManager::showState);
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);
@@ -252,6 +248,8 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.hero.Effects.clear();
+			Comms.clearEmotes();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
 			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();

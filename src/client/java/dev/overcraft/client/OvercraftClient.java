@@ -72,8 +72,10 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
 				if (payload.clip().startsWith("emote:")) {
-					HeroAnimator.emote(payload.entityId(), payload.clip().substring("emote:".length()),
-						context.client().level.getGameTime() / 20f);
+					// "emote:<id>", or "emote:<id>@<ticks>": already that far on, for one who has just come to see it (Comms.showEmote, #96)
+					String[] emote = payload.clip().substring("emote:".length()).split("@");
+					float ran = emote.length > 1 ? Integer.parseInt(emote[1]) / 20f : 0;
+					HeroAnimator.emote(payload.entityId(), emote[0], context.client().level.getGameTime() / 20f - ran);
 					return;
 				}
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);

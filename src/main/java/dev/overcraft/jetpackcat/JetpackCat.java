@@ -372,12 +372,12 @@ public final class JetpackCat implements HeroKit {
 	/**
 	 * A player has just started to see her (joined, respawned, came into range): her Lifeline switched on and whoever
 	 * she tows or carries, which other players otherwise hear of only as they change (found playing with two players:
-	 * an ally who respawned under her got no Lifeline prompt until she switched it off and on).
+	 * an ally who respawned under her got no Lifeline prompt until she switched it off and on), and Catnapper's aim (#96).
 	 */
-	public static void showState(ServerPlayer cat, ServerPlayer viewer) {
-		HeroState s = HeroManager.state(cat);
-		if (s == null || s.hero != Hero.JETPACK_CAT) {
-			return;
+	@Override
+	public void showState(ServerPlayer cat, HeroState s, ServerPlayer viewer) {
+		if (s.ultPhase == ULT_AIM) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(cat.getId(), "ult_aim"));
 		}
 		if (s.lifelineOn) {
 			Effects.send(viewer, "lifeline_state", cat.position(), null, cat.getId(), cat);

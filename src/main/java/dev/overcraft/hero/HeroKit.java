@@ -21,6 +21,15 @@ public interface HeroKit {
 		return HeroSyncPayload.Widgets.NONE;
 	}
 
+	/**
+	 * A player has just started to see this hero (joined, respawned, came into range: HeroManager.showState, #96): tell them what
+	 * the kit is in the middle of that others heard begin and that nothing else carries. Not what's synced with an attachment
+	 * (HeroManager.HERO_LOOKS, Fabric sends those on tracking) nor a timed effect ({@link Effects#showHeld}): this is for a
+	 * held state told by an action, with no end of its own.
+	 */
+	default void showState(ServerPlayer player, HeroState state, ServerPlayer viewer) {
+	}
+
 	/** Why a hero leaves play (HeroManager.outOfPlay). */
 	enum OutOfPlay {
 		/** G: plain Minecraft, the hero kept for later. */

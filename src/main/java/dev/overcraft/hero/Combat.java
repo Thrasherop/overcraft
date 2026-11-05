@@ -742,6 +742,7 @@ public final class Combat {
 
 	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
 	public static void animate(ServerPlayer hero, String clip) {
+		dev.overcraft.comms.Comms.animated(hero, clip);
 		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
 		ServerPlayNetworking.send(hero, payload);
 		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
