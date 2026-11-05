@@ -294,3 +294,27 @@ seated switched modes; Ctrl (crouch) got out in hero mode, Shift in Minecraft mo
 Not tried: a second client; the Nether; a tamed wolf (the villager was every ally); perks; emotes; a real 10 fps run (the
 window stayed at 30-75 fps); Improved Transparency with every effect; the view from under the pool (the teleport put the
 camera in the bank).
+
+## Leaving play: one hook, four doors (#100, 2026-11-04)
+- **The rule:** every hero leaves play in one place: `HeroManager.outOfPlay(player, state, why)` (G, death, a hero switch, leaving), which calls
+  `HeroKit.leavePlay` before anything resets the state, then shares the flight permission and the synced looks. A new kit's states end there.
+  Each kit's tick still ends what it does while `controls` is false (asleep, spectator): that's not a substitute, since a dead hero's tick doesn't run, and a
+  switch or a leave never reaches one.
+- **Saved modifiers are the trap:** `addOrReplacePermanentModifier` writes the speed into the player's save and copies it through death. Lifeline, Rally,
+  Inspiring Strike, the Hyper Ring and overhealth's cap used it; all are transient now (only the hero's own health is saved), and joining takes off any stale
+  `overcraft:` modifier an older build saved.
+- **Reproduced before the fix:** Sombra's stealth after G: see-through and 6.91 m/s (Minecraft's walk is 4.32) until its 7 s ran out. Lúcio after G: +25% speed, still
+  renewed 3.5 s on. Jetpack Cat to Mercy with Lifeline on: +30% for good (5.61 m/s in Minecraft mode, a save carrying it). Kiriko's Swift Step cast, G within its
+  0.2 s: she landed by her ally in Minecraft mode.
+- **The critique was partly wrong:** Lifeline and the carry already ended on G and death (`JetpackCat.keepFlight`, run each tick for every hero) and on a switch, except
+  to Mercy, whom its guard skips. Read the running path, and reproduce.
+- **Played after, real keys** (`speed` = `/attribute` value, base 0.1): Sombra G 0.1, walk 4.31, solid (`sys100_sombra_G`), switch 0.1, death 0.1, leave 0.1. Lúcio G: no song
+  speed after its linger, a hurt villager gets no healing (hero mode: +1.9 in 1 s; Minecraft mode: 0 in 2 s). Kiriko G in the cast: stayed, three of three; control lands. Jetpack Cat
+  Lifeline on G, death, to Mercy, leave: 0.1, rope off, the villager only wanders. Catnapper's carry G, death: phase 0. Ana scoped 0.035, G 0.1 with the button held. Brigitte
+  Rally (0.115, 28 max) G, switch, leave, death: 0.1, 20 max. Barrier 0.07, G 0.1. Juno's glide G: ended, 5.25 s cooldown. Sojourn's slide G: ended. Sigma's Grasp G: cooldown starts; gather G: 0.1;
+  Flux G: down unhurt. Mercy's Resurrect cast G: 0.1, villager not back, cooldown runs; Valkyrie G, switch, leave: mayfly off. Lifeweaver's platform: stays on G, gone on a switch,
+  a death and a leave. A planted stale modifier (0.13): 0.1 on rejoin, hero health intact.
+- **What a critic should check:** a second player: the towed ally's view of the rope ending, a watcher seeing Sombra appear (one client only). Sigma's `grasp_hold` plays out up to
+  its 2.2 s after G in third person (the data has no end clip; the same on any early end). Sombra's beacon stays through a death as before: Overwatch's rule not checked. G cuts an
+  ult in progress (Rally, Sound Barrier) with the charge spent: ours, as dying would. Lúcio's Amp It Up timer runs on silently after G. Spectator mode goes through tick branches only.
+

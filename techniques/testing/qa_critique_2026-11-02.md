@@ -206,3 +206,9 @@ Severity: **High** = a player meets it in a normal session, or it breaks Overwat
 ## Count per hero
 Brigitte 10 · Sombra 5 · Ana 5 · Juno 6 · Sojourn 4 · Mercy 3 · Lifeweaver 2 · Kiriko 2 · Lúcio 4 · Jetpack Cat 4 ·
 systems 16 (the shared X items also count once in each hero they reach).
+
+## Checked in game since (2026-11-04)
+- #9 / M1 half wrong: a chested donkey does not come back with its inventory; the iron farm was real ([mercy](../heroes/mercy.md)).
+- #12 / C1 partly wrong: Lifeline and the carry already ended on G, death and most switches (`keepFlight`); the real bugs were to Mercy, and in other kits ([hand_play](hand_play.md)).
+- #1 / X1, X13 ([minecraft_26](../minecraft/minecraft_26.md)), #8 / A2 ([minecraft_26](../minecraft/minecraft_26.md)), S2 ([hand_play](hand_play.md)): reproduced and fixed.
+

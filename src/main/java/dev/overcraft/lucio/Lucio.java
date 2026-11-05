@@ -169,7 +169,8 @@ public final class Lucio implements HeroKit {
 			}
 		}
 
-		if (player.tickCount % SONG_TICKS == 0) {
+		// in play only: in Minecraft mode his song neither plays nor heals nor speeds anyone (#100)
+		if (controls && player.tickCount % SONG_TICKS == 0) {
 			songs(player, s);
 		}
 		syncSong(player, s, controls);
@@ -357,5 +358,15 @@ public final class Lucio implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk),
 			(float) (s.ability3Cooldown / 20.0), s.speedSong ? 1 : 0, s.ampUp / 20f, (float) s.riderCharge);
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.barrierCast = -1;
+		s.songSwap = -1;
+		s.ampDelay = 0;
+		s.volleyLeft = 0;
+		player.setAttached(dev.overcraft.hero.HeroManager.SONG, 0);
 	}
 }

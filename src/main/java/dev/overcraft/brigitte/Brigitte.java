@@ -53,6 +53,11 @@ public final class Brigitte implements HeroKit {
 		Barrier.clear(player, s);
 		s.bashTicks = -1;
 		endRally(player, s);
+		s.strikeFastUntil = -1;
+		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(STRIKE_FAST);
+		}
 	}
 
 	@Override
@@ -164,7 +169,7 @@ public final class Brigitte implements HeroKit {
 			// Inspiring Strike: 30% faster for 2 s after the dash (51F2 #455 / #456)
 			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
 			if (speed != null) {
-				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(STRIKE_FAST,
+				speed.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(STRIKE_FAST,
 					INSPIRING_STRIKE_SPEED, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 			}
 			s.strikeFastUntil = player.level().getGameTime() + Ow.ticks(INSPIRING_STRIKE_TIME);
@@ -249,14 +254,14 @@ public final class Brigitte implements HeroKit {
 			s.extraArmor = RALLY_ARMOR;
 			var max = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
 			if (max != null) {
-				max.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_HEALTH,
+				max.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_HEALTH,
 					Ow.hp(RALLY_ARMOR), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
 			}
 			// her armor is the layer at the top of her health (Shields): the 100 goes on as armor
 			dev.overcraft.hero.Shields.grant(player, s, RALLY_ARMOR);
 			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
 			if (speed != null) {
-				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_FAST, RALLY_SPEED,
+				speed.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_FAST, RALLY_SPEED,
 					net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 			}
 		}
@@ -651,4 +656,10 @@ public final class Brigitte implements HeroKit {
 
 	/** Her synced mode's bits (the client's barrier camera, ClientHero): the barrier up, Rally on, broken (locked out). */
 	public static final int MODE_BARRIER = 1, MODE_RALLY = 2, MODE_BROKEN = 4;
+
+	/** Out of play (#100: HeroKit.leavePlay): her barrier goes down, a bash and Rally end, Inspiring Strike's speed goes. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		clear(player, s);
+	}
 }

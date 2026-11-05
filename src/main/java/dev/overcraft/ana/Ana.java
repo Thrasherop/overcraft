@@ -646,4 +646,13 @@ public final class Ana implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, flags(s), 0, (float) s.scope);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her casts and her scope (and its slow). */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.castTicks = -1;
+		s.sleepCast = -1;
+		s.nanoCast = -1;
+		clear(player, s);
+	}
 }

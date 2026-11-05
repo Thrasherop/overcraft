@@ -397,7 +397,7 @@ public final class JetpackCat implements HeroKit {
 		s.lifelineOnTicks = 0;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
-			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
+			speed.addOrUpdateTransientModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
 				AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 		Combat.animate(player, "lifeline");
@@ -763,5 +763,17 @@ public final class JetpackCat implements HeroKit {
 			s.primaryAmmo, reload, (int) Math.round(s.fuel), -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, mode, left, (float) (s.fuel / 100));
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): Lifeline lets go and its speed goes, Catnapper's carry ends, Purr stops. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.lifelineOn) {
+			lifelineOff(player, s, false);
+		}
+		if (s.ultPhase != ULT_NONE) {
+			endUlt(player, s);
+		}
+		s.purrTicks = -1;
 	}
 }

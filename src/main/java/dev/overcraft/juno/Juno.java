@@ -226,4 +226,14 @@ public final class Juno implements HeroKit {
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), (s.junoGlide >= 0 ? MODE_GLIDE : 0) | (s.junoLock >= 0 ? MODE_LOCK : 0),
 			s.junoGlide >= 0 ? (float) ((Ow.ticks(GLIDE_TIME) - s.junoGlide) / 20.0) : 0, 0);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her glide ends (its cooldown starts, as when it runs out), the torpedo lock. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.junoGlide >= 0) {
+			endGlide(player, s);
+		}
+		s.junoVolley = 0;
+		clear(player, s);
+	}
 }

@@ -796,4 +796,25 @@ public final class Mercy implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), flags(s), left, (float) s.gaMomentum);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel and a Resurrect under way end (Valkyrie's time runs on); for good, her looks and slow too. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		int modeBefore = s.beamTarget == null ? BEAM_NONE : s.beamMode;
+		boolean lockedBefore = s.beamTarget != null;
+		endBeam(s);
+		beamSounds(player, s, modeBefore, lockedBefore);
+		if (s.gaPhase != GA_NONE) {
+			endGuardianAngel(s);
+		}
+		if (s.resSoul != null) {
+			endResurrect(player, s, false);
+		}
+		s.flashCast = -1;
+		if (why.forGood()) {
+			clear(player, s);
+		} else {
+			publish(player, s);
+		}
+	}
 }

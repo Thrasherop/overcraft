@@ -899,4 +899,21 @@ public final class Lifeweaver implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), flags(s), s.ultActive / 20f, (float) s.bloomCharge);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): what he was doing ends; the platform and the tree go on, unless he's gone for good. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.charging = false;
+		s.bloomTarget = null;
+		s.treeAiming = false;
+		s.gripCast = -1;
+		s.dashTicks = -1;
+		s.platformThrow = -1;
+		s.primaryWas = s.secondaryWas = false;
+		if (why.forGood()) {
+			clear(player, s);
+		} else {
+			publish(player, s);
+		}
+	}
 }

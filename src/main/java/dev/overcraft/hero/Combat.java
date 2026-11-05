@@ -495,7 +495,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds), now(entity)));
@@ -516,7 +516,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		long holdUntil = now(entity) + Ow.ticks(hold);
