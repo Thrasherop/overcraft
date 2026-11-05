@@ -225,7 +225,7 @@ public final class GraviticFlux {
 		Vec3 eye = at.add(0, 1, 0);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at.x - FLUX_RADIUS - 3, bottom, at.z - FLUX_RADIUS - 3,
 			at.x + FLUX_RADIUS + 3, top, at.z + FLUX_RADIUS + 3))) {
-			if (!e.isAlive() || e == owner || !Allies.canHurt(owner, e) || e.isSpectator() || LIFTED.containsKey(e.getUUID())) {
+			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e) || e.isSpectator() || LIFTED.containsKey(e.getUUID())) {
 				continue;
 			}
 			AABB box = e.getBoundingBox();

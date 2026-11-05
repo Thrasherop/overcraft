@@ -365,7 +365,7 @@ public final class Ana implements HeroKit {
 				} else {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
-			} else if (Allies.canHurt(owner, e)) {
+			} else if (Allies.areaHits(owner, e)) {
 				float dealt = Combat.damage(e, source, damage, blow);
 				Combat.credit(owner, dealt, e);
 				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));

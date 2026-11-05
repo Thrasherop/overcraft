@@ -212,7 +212,7 @@ public final class Brigitte implements HeroKit {
 		LivingEntity best = null;
 		double bestDist = Double.MAX_VALUE;
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BASH_REACH + 1),
-			e -> e.isAlive() && Allies.canHurt(player, e))) {
+			e -> e.isAlive() && Allies.areaHits(player, e))) {
 			AABB box = e.getBoundingBox();
 			Vec3 near = new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
 			Vec3 to = new Vec3(box.getCenter().x - eye.x, 0, box.getCenter().z - eye.z);
@@ -350,7 +350,7 @@ public final class Brigitte implements HeroKit {
 		Vec3 ahead = flat(player);
 		int hit = 0;
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
-			e -> e.isAlive() && Allies.canHurt(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS)) {
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS)) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (hit >= RALLY_SHOCKWAVE_TARGETS || to.lengthSqr() > 0.25 && to.normalize().dot(ahead) < 0) {
 				continue;
@@ -617,7 +617,7 @@ public final class Brigitte implements HeroKit {
 		float aimPitch = player.getXRot();
 		for (net.minecraft.world.entity.Entity e : level.getEntities(player, player.getBoundingBox().inflate(FLAIL_RANGE + 1))) {
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
-			if (target == null || !target.isAlive() || !Allies.canHurt(player, target) || s.flailHit.contains(target.getId())) {
+			if (target == null || !target.isAlive() || !Allies.areaHits(player, target) || s.flailHit.contains(target.getId())) {
 				continue;
 			}
 			AABB box = e.getBoundingBox();

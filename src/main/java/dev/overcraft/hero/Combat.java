@@ -451,9 +451,13 @@ public final class Combat {
 
 	/**
 	 * The same, done to {@code target}: an enemy tank (a player in hero mode as a tank, not on the earner's side) gives 40%
-	 * less of both (the Tank role: Tank.ultFactor). Healing a tank ally counts in full.
+	 * less of both (the Tank role: Tank.ultFactor). Healing a tank ally counts in full. A bystander (a cow, an armor stand:
+	 * Allies) gives nothing, or a chicken farm would fill an ult (#99, ours).
 	 */
 	public static void credit(Player hero, double points, @org.jspecify.annotations.Nullable Entity target) {
+		if (target != null && Allies.isBystander(hero, target)) {
+			return;
+		}
 		credit(hero, points * Tank.ultFactor(hero, target));
 	}
 

@@ -174,7 +174,7 @@ public final class Sombra implements HeroKit {
 			if (nearest(e, eye).distanceTo(eye) > EMP_RADIUS || !inSight(player, e)) {
 				continue;
 			}
-			if (Allies.canHurt(player, e)) {
+			if (Allies.areaHits(player, e)) {
 				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()), dev.overcraft.hero.Blow.ult("emp").by(dev.overcraft.hero.Hero.SOMBRA));
 				Combat.credit(player, dealt, e);
 				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));

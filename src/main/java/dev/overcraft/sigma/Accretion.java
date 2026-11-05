@@ -157,7 +157,7 @@ public final class Accretion {
 		}
 		DamageSource source = level.damageSources().explosion(rock, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(ROCK_BURST_RADIUS + 2))) {
-			if (!e.isAlive() || e == owner || !Allies.canHurt(owner, e)) {
+			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));

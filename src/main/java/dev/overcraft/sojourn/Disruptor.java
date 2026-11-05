@@ -121,7 +121,7 @@ public final class Disruptor {
 			}
 			DamageSource source = fieldSource(f.owner);
 			for (LivingEntity e : f.level.getEntitiesOfClass(LivingEntity.class, new AABB(f.centre, f.centre).inflate(FIELD_RADIUS),
-				e -> e.isAlive() && e != f.owner && Allies.canHurt(f.owner, e) && inside(e, f.centre))) {
+				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre))) {
 				if (step) {
 					float dealt = Combat.damage(e, source, FIELD_DPS * FIELD_STEP, dev.overcraft.hero.Blow.ability("disruptor_shot").by(dev.overcraft.hero.Hero.SOJOURN));
 					Combat.credit(f.owner, dealt, e);

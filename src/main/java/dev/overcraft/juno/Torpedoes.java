@@ -75,7 +75,7 @@ public final class Torpedoes {
 		double cos = Math.cos(Math.toRadians(LOCK_CONE / 2));
 		java.util.Set<Integer> filling = new java.util.HashSet<>();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(LOCK_RANGE + LOCK_FORGIVE),
-			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.canHurt(player, e)))) {
+			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.areaHits(player, e)))) {
 			int id = e.getId();
 			if (s.junoLocked.contains(id)) {
 				continue;

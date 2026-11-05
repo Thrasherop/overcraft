@@ -506,7 +506,7 @@ public final class JetpackCat implements HeroKit {
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(PURR_RADIUS))) {
 			double d = e.distanceTo(player);
-			if (e == player || !e.isAlive() || d > PURR_RADIUS || !Allies.canHurt(player, e)) {
+			if (e == player || !e.isAlive() || d > PURR_RADIUS || !Allies.areaHits(player, e)) {
 				continue;
 			}
 			double scale = d <= PURR_RADIUS / 2 ? 1 : 1 - 0.7 * (d - PURR_RADIUS / 2) / (PURR_RADIUS / 2);
@@ -668,7 +668,7 @@ public final class JetpackCat implements HeroKit {
 		double radius = ULT_RADIUS;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius))) {
 			double d = e.distanceTo(player);
-			if (e == player || !e.isAlive() || d > radius || !Allies.canHurt(player, e)) {
+			if (e == player || !e.isAlive() || d > radius || !Allies.areaHits(player, e)) {
 				continue;
 			}
 			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT)), e);
