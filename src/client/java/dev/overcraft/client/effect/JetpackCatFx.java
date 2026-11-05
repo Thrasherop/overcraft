@@ -22,6 +22,22 @@ public final class JetpackCatFx {
 	private static boolean enemy;
 	/** Each Jetpack Cat towing or carrying someone: her entity id -> {theirs, 1 if she's an enemy's}. */
 	private static final Map<Integer, int[]> TETHERS = new HashMap<>();
+	/** Dev only (DevServer's "devtowed"): shows the towed one's prompt with one client on the machine, no second player to tow. */
+	public static boolean devTowed;
+
+	/** A Jetpack Cat tows or carries the local player (their Detach prompt, #85). */
+	public static boolean towed(net.minecraft.client.player.LocalPlayer player) {
+		if (devTowed) {
+			return true;
+		}
+		for (int[] tether : TETHERS.values()) {
+			if (tether[0] == player.getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
 	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
 	/** Jetpack Cats in Purr: her id -> when it ends (client seconds), for her range wall (70F9). */

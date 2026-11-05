@@ -356,6 +356,10 @@ public final class DevServer {
 				});
 				out.addProperty("ok", true);
 			}
+			case "devtowed" -> {
+				dev.overcraft.client.effect.JetpackCatFx.devTowed = arg.equals("on");
+				out.addProperty("ok", true);
+			}
 			case "hero" -> {
 				ClientPlayNetworking.send(new SelectHeroPayload(arg));
 				out.addProperty("ok", true);
