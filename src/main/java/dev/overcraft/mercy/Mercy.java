@@ -820,8 +820,12 @@ public final class Mercy implements HeroKit {
 		if (soul == null) {
 			return HeroSyncPayload.Widgets.NONE;
 		}
-		return new HeroSyncPayload.Widgets(-1, count, s.resSoul != null ? s.castTicks / 20f : 0, (float) RES_CAST, 0,
-			soul.body.getName().getString(), net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(soul.body.getType()).toString());
+		// a player's face is their hero's (00CA #306's 67DA); the client has no body to ask
+		HeroState other = soul.body instanceof ServerPlayer dead ? HeroManager.state(dead) : null;
+		String face = other != null && other.hero != null ? "hero:" + other.hero.id
+			: net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(soul.body.getType()).toString();
+		return new HeroSyncPayload.Widgets(-1, -1, -1, false, count, s.resSoul != null ? s.castTicks / 20f : 0, (float) RES_CAST, 0,
+			soul.body.getName().getString(), face);
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel, a Resurrect under way and Valkyrie end; for good, her looks and slow too. */

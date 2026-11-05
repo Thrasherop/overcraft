@@ -364,7 +364,7 @@ public final class Lucio implements HeroKit {
 	/** His widgets (#85): count, the allies his song reaches, himself not counted (0263, 0266 #374: 067C = count(v375) - 1). */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
-		return new HeroSyncPayload.Widgets(-1, s.songAllies, 0, 0, 0, "", "");
+		return new HeroSyncPayload.Widgets(-1, -1, -1, false, s.songAllies, 0, 0, 0, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */

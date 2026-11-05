@@ -678,14 +678,16 @@ public final class Brigitte implements HeroKit {
 	}
 
 	/**
-	 * Her widgets (#85): count, the allies Inspire is healing, herself not counted (0C7A, 12D8 #479: 067C = v702, the count its
-	 * message 2AD8 brings); left and total, Rally's time (0237, 12BE #188); left2, the seconds her broken barrier stays down (0240,
+	 * Her widgets (#85): preview, who Repair Pack would go to (as repairPack picks: 013C, 0EDD #469); flag, Inspire on her (7CCD, its state
+	 * stack v31949); count, the allies it's healing, herself not counted (0C7A, 12D8 #479: 067C = v702, the count its message 2AD8 brings); left and total, Rally's time (0237, 12BE #188); left2, the seconds her broken barrier stays down (0240,
 	 * 0EE3 #558). Her sync's meter is Repair Pack's recharge, in seconds.
 	 */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
 		float broken = Math.max(0, s.barrierBrokenUntil - player.level().getGameTime()) / 20f;
-		return new HeroSyncPayload.Widgets(-1, Inspire.healing(player), s.rallyTicks / 20f, (float) RALLY_TIME, broken, "", "");
+		LivingEntity repair = s.secondaryAmmo > 0 && s.bashTicks < 0 ? dev.overcraft.hero.Targeting.allyInView(player, REPAIR_RANGE, REPAIR_CONE, true) : null;
+		return new HeroSyncPayload.Widgets(-1, -1, repair == null ? -1 : repair.getId(), Inspire.active(player), Inspire.healing(player),
+			s.rallyTicks / 20f, (float) RALLY_TIME, broken, "", "");
 	}
 
 	/**

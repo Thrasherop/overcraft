@@ -900,6 +900,14 @@ public final class Lifeweaver implements HeroKit {
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), flags(s), s.ultActive / 20f, (float) s.bloomCharge);
 	}
 
+	/** His widgets (#85): preview, who Life Grip would take (013C, 21EF #704), startGrip's own pick and refusals. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		LivingEntity grip = s.ability2Cooldown > 0 || s.abilityLock > 0 || s.gripCast >= 0 || s.treeAiming || s.treeCast >= 0
+			? null : pick(player, GRIP_CONE, GRIP_RANGE);
+		return new HeroSyncPayload.Widgets(-1, -1, grip == null || LifeGrip.gripped(grip) ? -1 : grip.getId(), false, 0, 0, 0, 0, "", "");
+	}
+
 	/** Out of play (#100: HeroKit.leavePlay): what he was doing ends; the platform and the tree go on, unless he's gone for good. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {

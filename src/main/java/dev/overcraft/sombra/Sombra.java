@@ -622,16 +622,27 @@ public final class Sombra implements HeroKit {
 	}
 
 	/**
-	 * Her widgets (#85): target, who Hotfix is locked on (0D81, 614C #1798); left and total, her stealth (0277 / 008B, 420C
-	 * #1057: v215 / v567); left2, the hack lockout (00B1, 614C #2775: v6358 / v45433).
+	 * Her widgets (#85): target and target2, 0D81's two slots (614C #1798, #1831: v3544 / v11652, the allies Hotfix is healing, v77182[n],
+	 * else what she's hacking v536), so the one her channel's locked on first; preview, who Hotfix would take (as hotfix picks); left and
+	 * total, her stealth (0277 / 008B, 420C #1057: v215 / v567); left2, the hack lockout (00B1, 614C #2775: v6358 / v45433).
 	 */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
 		long now = player.level().getGameTime();
 		float stealth = Stealth.stealthed(player, s) ? (s.stealthUntil - now) / 20f : 0;
 		float lockout = Math.max(0, s.hackLockoutUntil - now) / 20f;
-		return new HeroSyncPayload.Widgets(s.hotfixChannel >= 0 && s.hotfixTarget != null ? s.hotfixTarget : -1, 0, stealth,
-			(float) (STEALTH_FADE_IN + STEALTH_TIME), lockout, "", "");
+		java.util.List<Integer> slots = new java.util.ArrayList<>();
+		if (s.hotfixChannel >= 0 && s.hotfixTarget != null) {
+			slots.add(s.hotfixTarget);
+		}
+		for (int id : HotfixHeal.healing(player)) {
+			if (!slots.contains(id)) {
+				slots.add(id);
+			}
+		}
+		LivingEntity preview = s.hotfixCharges > 0 && s.hotfixChannel < 0 ? dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true) : null;
+		return new HeroSyncPayload.Widgets(slots.isEmpty() ? -1 : slots.get(0), slots.size() < 2 ? -1 : slots.get(1), preview == null ? -1 : preview.getId(),
+			false, 0, stealth, s.stealthTotal / 20f, lockout, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): her stealth ends (invisible and 60% faster in Minecraft mode after G: found playing), Hotfix's channel; for good, her beacon. */

@@ -148,6 +148,11 @@ public final class HeroHud {
 	private HeroHud() {
 	}
 
+	/** GUI units per reference pixel for this screen. */
+	public static float scaleOf(GuiGraphicsExtractor g) {
+		return scale(g.guiWidth(), g.guiHeight());
+	}
+
 	/** GUI units per reference pixel: the 1920x1080 layout fitted to the screen's height, or its width when narrower. */
 	private static float scale(int guiWidth, int guiHeight) {
 		return Math.min(guiHeight / REF_H, guiWidth / REF_W);
@@ -219,12 +224,9 @@ public final class HeroHud {
 			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		} else if (hero == Hero.LUCIO && firstPerson) {
 			songIndicator(g, s, w / 2, h / 2 + SONG_BELOW);
-		} else if (hero == Hero.JUNO) {
-			junoTimers(g, player, s, w / 2, h / 2, delta.getGameTimeDeltaPartialTick(true));
 		}
 		// over the target markers just drawn: an ally near the aim has one right here (found playing)
 		dev.overcraft.client.hud.ReticleHud.render(g, player, hero, s, w, h, delta.getGameTimeDeltaPartialTick(true));
-		lifelinePrompt(g, player, w, h);
 		if (ClientHero.perkMenuOpen()) {
 			perkMenu(g, hero, s, w, h);
 		}
@@ -288,9 +290,9 @@ public final class HeroHud {
 	}
 
 	/** Her scope overlay shows from 80% scoped in (D 0B94 #278: op73(v169, 0.8)). */
-	private static final float SCOPE_SHOWN = 0.8f;
+	public static final float SCOPE_SHOWN = 0.8f;
 	/** The lens's rim from the screen's short side (reference pixels, ours: from memory the lens nearly fills the height). */
-	private static final float SCOPE_MARGIN = 20;
+	public static final float SCOPE_MARGIN = 20;
 
 	/**
 	 * Ana's scope (#90). Her data shows UX view model 0613.116 on the HUD root from 80% scoped (0B94 #278), with her skin's
@@ -994,11 +996,16 @@ public final class HeroHud {
 			return;
 		}
 		if (hero == Hero.BRIGITTE) {
-			// Barrier Shield (the right button: 0240 / 0243, 0EE3 #558, #1150, its cooldown seconds while it's broken, marked while
-			// it's up), Whip Shot (Shift), Repair Pack (E: 0243, 0EDD #387, its charges in its corner) in Lucio's three places (ours);
-			// Shield Bash, on the left button while the barrier's up, is on the weapon panel
-			ability(g, hero, w, "barrier_shield", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), s.widgets().left2(),
-				(float) dev.overcraft.brigitte.BrigitteStats.BARRIER_BROKEN, -1);
+			// Barrier Shield (the right button: 0240 / 0243, 0EE3 #558, #1150, its cooldown seconds while it's broken), which while it's up
+			// is Shield Bash (the left button: only then can she), Whip Shot (Shift), Repair Pack (E: 0243, 0EDD #387, its charges in its
+			// corner, the next one's recharge along its foot) in Lucio's three places (ours)
+			if ((s.mode() & dev.overcraft.brigitte.Brigitte.MODE_BARRIER) != 0) {
+				ability(g, hero, w, "shield_bash", w - 719, 900, HeroControls.get(Action.SECONDARY_FIRE), s.ability2Cooldown(),
+					(float) dev.overcraft.brigitte.BrigitteStats.BASH_COOLDOWN, ability2ReadyAt);
+			} else {
+				ability(g, hero, w, "barrier_shield", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), s.widgets().left2(),
+					(float) dev.overcraft.brigitte.BrigitteStats.BARRIER_BROKEN, -1);
+			}
 			// its health along the box's foot (0240's 01D3: 1 - health / max; the band ours), brighter while it's up
 			boolean rally = s.widgets().left() > 0;
 			float barrierMax = (float) (rally ? dev.overcraft.brigitte.BrigitteStats.BARRIER_HEALTH_RALLY : dev.overcraft.brigitte.BrigitteStats.BARRIER_HEALTH);
@@ -1008,6 +1015,9 @@ public final class HeroHud {
 			float repair = (float) dev.overcraft.brigitte.BrigitteStats.REPAIR_RECHARGE;
 			ability(g, hero, w, "repair_pack", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.secondaryAmmo() > 0 ? 0 : s.meter(), repair, -1);
 			charges(g, s.secondaryAmmo(), w - 563, 906, w);
+			if (s.secondaryAmmo() > 0 && s.meter() > 0) {
+				boxBand(g, 1 - s.meter() / repair, 0xFFF7C43A, w - 563, 906, w);
+			}
 			return;
 		}
 		if (hero == Hero.SOMBRA) {
@@ -1119,6 +1129,30 @@ public final class HeroHud {
 		return -1;
 	}
 
+	/** Healing Blossom's charge (0-1) along the foot of its panel, where there's no reticle to show it (ours). */
+	private static void bloomCharge(GuiGraphicsExtractor g, float charge, boolean held, float x, float y, float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		fill(g, x + 8, y + 58, width - 16, 4, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(charge, 0, 1), 4, held ? 0xFFFF8FC8 : 0xB3F3A7C8);
+		g.pose().popMatrix();
+	}
+
+	/** Sojourn's Railgun energy on her Charged Shot panel, where there's no reticle to show it: its number over a band (ours). */
+	private static void railgunEnergy(GuiGraphicsExtractor g, float energy, float x, float y, float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		int colour = energy >= 0.999f ? 0xFFFFFFFF : 0xFFE8553F;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(energy, 0, 1), 5, colour);
+		String number = String.valueOf((int) Math.ceil(energy * 100));
+		brush(g, number, x + width - 30, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 30, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	/**
 	 * Sigma's barrier on its panel: its health (0-650) as a number over a band along the panel's foot, light blue, brighter
 	 * while it's out; while it can't go out (recalled 1 s, broken 5 s) the band grey and the seconds left instead (ours:
@@ -1132,9 +1166,12 @@ public final class HeroHud {
 		boolean waiting = cooldown > 0;
 		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
 		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(share, 0, 1), 5, waiting ? 0x99A0A0A0 : out ? 0xFF9FE6FF : 0xB37FC8E8);
-		String number = waiting ? String.format(java.util.Locale.ROOT, "%.1f", cooldown) : String.valueOf(health);
-		brush(g, number, x + width - 34, y + 50, 26);
-		HudText.plain(g, Face.NUMBERS, number, x + width - 34, y + 50, 26, WHITE, Align.CENTER);
+		// (out, its number's at the crosshair: ReticleHud)
+		if (!out) {
+			String number = waiting ? String.format(java.util.Locale.ROOT, "%.1f", cooldown) : String.valueOf(health);
+			brush(g, number, x + width - 34, y + 50, 26);
+			HudText.plain(g, Face.NUMBERS, number, x + width - 34, y + 50, 26, WHITE, Align.CENTER);
+		}
 		g.pose().popMatrix();
 	}
 
@@ -1249,9 +1286,12 @@ public final class HeroHud {
 		}
 		if (hero == Hero.SOJOURN) {
 			// Charged Shot (the right button) where Kiriko's ofuda panel is, the Railgun's 45 rounds (the left) where her kunai
-			// are; her energy is at her reticle (044D: ReticleHud)
+			// are; her energy is at her reticle (044D: ReticleHud), and here when there's no reticle (from behind, an emote)
 			weapon(g, hero, w, "charged_shot", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
 				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			if (!dev.overcraft.client.hud.ReticleHud.atReticle()) {
+				railgunEnergy(g, s.meter(), w - 484, 923.5f, 169, w);
+			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
@@ -1266,13 +1306,7 @@ public final class HeroHud {
 			return;
 		}
 		if (hero == Hero.BRIGITTE) {
-			// Shield Bash (the left button while the barrier's up) where Kiriko's ofuda panel is, its seconds while it cools, the
-			// Rocket Flail (the left button, no rounds) where her kunai are
-			weapon(g, hero, w, "shield_bash", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
-				HeroControls.get(Action.SECONDARY_FIRE), w - 355, 1009);
-			if (s.ability2Cooldown() > 0) {
-				HudText.draw(g, Face.BODY, String.valueOf((int) Math.ceil(s.ability2Cooldown())), w - 342, 923.5f + 40, 16, WHITE, Align.RIGHT);
-			}
+			// the Rocket Flail (the left button, no rounds) where Kiriko's kunai are
 			weapon(g, hero, w, "rocket_flail", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
 				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
@@ -1293,9 +1327,12 @@ public final class HeroHud {
 		}
 		if (hero == Hero.LIFEWEAVER) {
 			// his two weapons in Kiriko's two places: Healing Blossom on the left button (its charge at his reticle, 072E:
-			// ReticleHud), Thorn Volley on the right
+			// ReticleHud, and along this panel's foot when there's no reticle), Thorn Volley on the right
 			weapon(g, hero, w, "healing_blossom", w - 484, 923.5f, 169, 64, 40, 40, w - 342, s.primaryAmmo(),
 				dev.overcraft.lifeweaver.LifeweaverStats.BLOSSOM_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 355, 1009);
+			if (!dev.overcraft.client.hud.ReticleHud.atReticle()) {
+				bloomCharge(g, s.meter(), (s.mode() & dev.overcraft.lifeweaver.Lifeweaver.FLAG_CHARGING) != 0, w - 484, 923.5f, 169, w);
+			}
 			weapon(g, hero, w, "thorn_volley", w - 307, 938.5f, 251, 65, 114, 36, w - 81, s.secondaryAmmo(),
 				dev.overcraft.lifeweaver.LifeweaverStats.THORN_AMMO, HeroControls.get(Action.PRIMARY_FIRE), w - 96, 1026);
 			return;
@@ -1380,7 +1417,7 @@ public final class HeroHud {
 	}
 
 	/** Under a weapon panel: the mouse with the fire button in orange, or the key it's bound to. */
-	private static void mouse(GuiGraphicsExtractor g, KeyMapping fire, float cx, float cy) {
+	public static void mouse(GuiGraphicsExtractor g, KeyMapping fire, float cx, float cy) {
 		String key = KeyMappingHelper.getBoundKeyOf(fire).getName();
 		if (key.equals("key.mouse.left") || key.equals("key.mouse.right")) {
 			// 19 x 27 with its outline (Overwatch's: white, a crisp dark outline and button lines, the bound button
@@ -1505,52 +1542,6 @@ public final class HeroHud {
 	private static final int SONG_SPEED_DIM = 0x995E9C6A;
 
 	/**
-	 * Juno's timed abilities under the crosshair (#86), the data's timed-ability widget 0237.116: Glide Boost's on the centre
-	 * layer v40843 (47B7 #641: its fraction v215 / v567, its time op109(v215) and its ability icon 024D), the torpedo lock
-	 * window's in her reticle v11821 (4695 #1225 / #1283: fraction and time). The widget's art isn't in the data: ours, a
-	 * shrinking bar with the time beside it (the glide's icon at its left). Glide's time left is synced (Juno.sync's
-	 * activeLeft); the lock's is her lock action's age against the 4 s window (HeroAnimator.junoLocking).
-	 */
-	private static void junoTimers(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float partial) {
-		float y = cy + TIMER_BELOW;
-		if ((s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0) {
-			float total = (float) dev.overcraft.juno.JunoStats.GLIDE_TIME;
-			timedBar(g, HeroArt.ability(Hero.JUNO, "glide_boost"), s.activeLeft() / total, s.activeLeft(), cx, y);
-			y += TIMER_GAP;
-		}
-		dev.overcraft.client.model.HeroAnimator a = dev.overcraft.client.model.HeroAnimator.of(player);
-		float now = (player.level().getGameTime() + partial) / 20f;
-		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && a.junoLocking(now)) {
-			float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
-			float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
-			timedBar(g, null, left / total, left, cx, y);
-		}
-	}
-
-	/** The timed-ability bar's top below the crosshair, and the next one's below it (reference pixels, ours). */
-	private static final float TIMER_BELOW = 92, TIMER_GAP = 30;
-	private static final float TIMER_W = 180, TIMER_H = 6;
-
-	/** One timed-ability bar (0237): the share left as a white bar shrinking toward its left end, the seconds at its right. */
-	private static void timedBar(GuiGraphicsExtractor g, @Nullable Identifier icon, float share, float seconds,
-								 float cx, float y) {
-		share = Math.clamp(share, 0, 1);
-		float x = cx - TIMER_W / 2;
-		// a dark shadow under all of it, so it reads over a bright sky
-		fill(g, x - 1, y - 1, TIMER_W + 2, TIMER_H + 2, 0x80000000);
-		fill(g, x, y, TIMER_W, TIMER_H, 0x40FFFFFF);
-		fill(g, x, y, TIMER_W * share, TIMER_H, 0xF2FFFFFF);
-		String text = String.format(java.util.Locale.ROOT, "%.1f", Math.max(0, seconds));
-		brush(g, text, x + TIMER_W + 30, y + TIMER_H + 6, 18);
-		HudText.plain(g, Face.NUMBERS, text, x + TIMER_W + 30, y + TIMER_H + 6, 18, WHITE, Align.CENTER);
-		if (icon != null) {
-			float s = 26;
-			image(g, icon, x - s - 9, y + TIMER_H / 2 - s / 2 + 1, s, s, 0x99000000);
-			image(g, icon, x - s - 10, y + TIMER_H / 2 - s / 2, s, s, WHITE);
-		}
-	}
-
-	/**
 	 * The ofuda counter under the crosshair: five amber "/" bars, one per volley (two ofuda), spent ones from the right
 	 * as thin light outlines over a dark fill, a white flash when the clip comes back; a thin bracket under it. The
 	 * refill started by letting go keeps the ofuda left showing (all dim, they read as all thrown: #12).
@@ -1616,22 +1607,6 @@ public final class HeroHud {
 	}
 
 	/**
-	 * An ally Jetpack Cat's Lifeline in reach: Overwatch's prompt on the ally (her graph 5A8F, 3A94 #1253: Interact,
-	 * "Lifeline"), under the crosshair; Interact takes it (ClientHero, LifelineGrabPayload). Its look is ours.
-	 */
-	private static void lifelinePrompt(GuiGraphicsExtractor g, LocalPlayer player, float w, float h) {
-		if (dev.overcraft.client.effect.JetpackCatFx.lifelineOffer(player) < 0) {
-			return;
-		}
-		// clear of Kiriko's ofuda counter (+136) and Lúcio's song circles (+161)
-		Hero hero = ClientHero.hero();
-		float y = h / 2 + (hero == Hero.KIRIKO ? 188 : hero == Hero.LUCIO ? 132 : 150);
-		float textW = HudText.width(Face.BODY, "LIFELINE", 18);
-		keyLabel(g, HeroControls.get(Action.INTERACT), w / 2 - textW / 2 - 22, y, WHITE, false);
-		HudText.draw(g, Face.BODY, "LIFELINE", w / 2 - textW / 2 + 4, y + 7, 18, WHITE, Align.LEFT);
-	}
-
-	/**
 	 * Guardian Angel's target, as her graph previews it (006E #834 / #295: E:\Overwatch Archive\research\mercy\gaps2.md 1):
 	 * the same generic ability-target marker as Swift Step's (013C.116, on the ally's chest, hardpoint 0001), shown while
 	 * it's off cooldown and she isn't flying or just launched, on the ally it would take her to: her beam's target first
@@ -1688,6 +1663,15 @@ public final class HeroHud {
 		float half = 48;
 		float arm = 18;
 		float t = 3;
+		// landing on the widgets under the crosshair, it closes up over the ally above them, its key beside it (#85)
+		float above = dev.overcraft.client.hud.ReticleHud.markerRoom(x, y, half * 1.42f + 30, w / 2);
+		boolean closed = !Float.isNaN(above);
+		if (closed) {
+			half = 30;
+			arm = 12;
+			t = 2.5f;
+			y = Math.min(y, above - half * 1.42f - 2);
+		}
 		g.pose().pushMatrix();
 		g.pose().translate(x, y);
 		g.pose().rotate((float) Math.toRadians(45));
@@ -1701,7 +1685,11 @@ public final class HeroHud {
 			fill(g, sx < 0 ? ox : ox - t, sy < 0 ? oy : oy - arm, t, arm, CYAN);
 		}
 		g.pose().popMatrix();
-		keyLabel(g, HeroControls.get(key), x, y + half * 1.42f + 18, CYAN, false);
+		if (closed) {
+			keyLabel(g, HeroControls.get(key), x + half * 1.42f + 22, y, CYAN, false);
+		} else {
+			keyLabel(g, HeroControls.get(key), x, y + half * 1.42f + 18, CYAN, false);
+		}
 	}
 
 	/**

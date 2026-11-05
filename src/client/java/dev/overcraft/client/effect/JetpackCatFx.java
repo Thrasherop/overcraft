@@ -24,18 +24,26 @@ public final class JetpackCatFx {
 	private static final Map<Integer, int[]> TETHERS = new HashMap<>();
 	/** Dev only (DevServer's "devtowed"): shows the towed one's prompt with one client on the machine, no second player to tow. */
 	public static boolean devTowed;
+	/** When the local player's tow began (the effects' clock), -1 not towed. */
+	private static float towedAt = -1;
 
-	/** A Jetpack Cat tows or carries the local player (their Detach prompt, #85). */
-	public static boolean towed(net.minecraft.client.player.LocalPlayer player) {
-		if (devTowed) {
-			return true;
-		}
+	/**
+	 * How long a Jetpack Cat's Lifeline has towed the local player (s), -1 not towed: their Detach prompt (#85). Catnapper's carry
+	 * (a tether's third value) isn't a tow: jump does nothing there.
+	 */
+	public static float towedFor(net.minecraft.client.player.LocalPlayer player) {
+		boolean towed = devTowed;
 		for (int[] tether : TETHERS.values()) {
-			if (tether[0] == player.getId()) {
-				return true;
-			}
+			towed |= tether[0] == player.getId() && tether[2] == 0;
 		}
-		return false;
+		if (!towed) {
+			towedAt = -1;
+			return -1;
+		}
+		if (towedAt < 0) {
+			towedAt = dev.overcraft.client.effect.Fx.now();
+		}
+		return dev.overcraft.client.effect.Fx.now() - towedAt;
 	}
 
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */

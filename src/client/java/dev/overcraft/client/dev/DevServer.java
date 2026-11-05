@@ -376,6 +376,22 @@ public final class DevServer {
 				});
 				out.addProperty("ok", true);
 			}
+			case "devwidget" -> {
+				// dev only, for shots of widgets one client can't reach (#85): "lockout": Sombra's hack lockout runs, with no enemy
+				// deployable about; "barrier1": Brigitte's barrier down to 1, so the next real hit breaks it
+				var server = mc.getSingleplayerServer();
+				java.util.UUID id = player.getUUID();
+				server.execute(() -> {
+					var serverPlayer = server.getPlayerList().getPlayer(id);
+					var state = serverPlayer == null ? null : dev.overcraft.hero.HeroManager.state(serverPlayer);
+					if (state != null && arg.equals("lockout")) {
+						state.hackLockoutUntil = serverPlayer.level().getGameTime() + 120;
+					} else if (state != null && arg.equals("barrier1")) {
+						state.barrierHealth = 1;
+					}
+				});
+				out.addProperty("ok", true);
+			}
 			case "devtowed" -> {
 				dev.overcraft.client.effect.JetpackCatFx.devTowed = arg.equals("on");
 				out.addProperty("ok", true);

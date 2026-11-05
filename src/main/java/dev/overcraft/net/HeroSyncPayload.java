@@ -26,12 +26,13 @@ public record HeroSyncPayload(String heroId, float ultCharge, int ultCost, boole
 
 	/**
 	 * What a hero's widgets at the reticle show that the fields above don't (#85, client/hud/ReticleHud): each kit says what its
-	 * own mean (HeroKit.widgets). target: an entity's id, -1 none; count: a number to show, 0 none; left and total: a timer's
-	 * seconds left and full length, 0 none; left2: a second timer's seconds left; name and face: who, when the client has no
-	 * entity to ask (a soul): their name and entity type, "" none.
+	 * own mean (HeroKit.widgets). target and target2: entities' ids, -1 none; preview: the ally the kit's button would take now, the
+	 * server's own pick so the marker can't disagree with the button, -1 none; flag: a state the widget shows; count: a number to
+	 * show, 0 none; left and total: a timer's seconds left and full length, 0 none; left2: a second timer's seconds left; name and
+	 * face: who, when the client has no entity to ask (a soul): their name and entity type, or "hero:id", "" none.
 	 */
-	public record Widgets(int target, int count, float left, float total, float left2, String name, String face) {
-		public static final Widgets NONE = new Widgets(-1, 0, 0, 0, 0, "", "");
+	public record Widgets(int target, int target2, int preview, boolean flag, int count, float left, float total, float left2, String name, String face) {
+		public static final Widgets NONE = new Widgets(-1, -1, -1, false, 0, 0, 0, 0, "", "");
 	}
 
 	/** Without shields (the kits' own sync; HeroManager adds them: withShield). */
@@ -83,6 +84,9 @@ public record HeroSyncPayload(String heroId, float ultCharge, int ultCost, boole
 			buf.writeFloat(p.meter);
 			buf.writeFloat(p.shield);
 			buf.writeVarInt(p.widgets.target());
+			buf.writeVarInt(p.widgets.target2());
+			buf.writeVarInt(p.widgets.preview());
+			buf.writeBoolean(p.widgets.flag());
 			buf.writeVarInt(p.widgets.count());
 			buf.writeFloat(p.widgets.left());
 			buf.writeFloat(p.widgets.total());
@@ -94,7 +98,7 @@ public record HeroSyncPayload(String heroId, float ultCharge, int ultCost, boole
 			buf.readBoolean(), buf.readBoolean(), buf.readBoolean(),
 			buf.readByte(), buf.readFloat(), buf.readByte(), buf.readByte(), buf.readByte(),
 			buf.readFloat(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
-			new Widgets(buf.readVarInt(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readUtf(64), buf.readUtf(64))));
+			new Widgets(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readBoolean(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readUtf(64), buf.readUtf(64))));
 
 	@Override
 	public Type<HeroSyncPayload> type() {

@@ -149,7 +149,7 @@ public final class Sigma implements HeroKit {
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
 		boolean aiming = s.sigmaFluxPhase == GraviticFlux.AIM;
-		return new HeroSyncPayload.Widgets(-1, aiming ? 1 : 0, aiming ? (float) (FLUX_AIM - s.sigmaFluxTicks / 20.0) : 0, (float) FLUX_AIM, 0, "", "");
+		return new HeroSyncPayload.Widgets(-1, -1, -1, false, aiming ? 1 : 0, aiming ? (float) (FLUX_AIM - s.sigmaFluxTicks / 20.0) : 0, (float) FLUX_AIM, 0, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): his barrier, Kinetic Grasp, Accretion's gather and Gravitic Flux end. */

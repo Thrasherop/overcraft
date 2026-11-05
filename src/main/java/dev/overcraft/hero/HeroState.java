@@ -144,6 +144,8 @@ public final class HeroState {
 	 */
 	public @org.jspecify.annotations.Nullable Integer beaconId;
 	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
+	/** The length (ticks) stealthUntil was last set to: the ring's full share, a refill's being shorter than a first stealth's. */
+	public int stealthTotal = 1;
 	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
 	public int empCast = -1;
 	public long hackLockoutUntil = -1;
