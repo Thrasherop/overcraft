@@ -271,7 +271,7 @@ public final class Lucio implements HeroKit {
 		double cosLimit = Math.cos(Math.toRadians(WAVE_HALF_ANGLE));
 		float dealt = 0;
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(WAVE_RANGE))) {
-			if (target == player || !Allies.canHurt(player, target)) {
+			if (target == player || !Allies.areaHits(player, target)) {
 				continue;
 			}
 			Vec3 to = target.getBoundingBox().getCenter().subtract(eye);

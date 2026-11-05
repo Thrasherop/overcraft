@@ -157,3 +157,5 @@ Not tried: a second player; 3P ability cameras while scoped; F1. Skins change th
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+Sleep Dart at an enemy barrier stops there and sleeps no one behind it (#104): [barriers](../minecraft/barriers.md). A creeper held asleep burns its fuse back down (#101): [jetpack_cat](jetpack_cat.md).

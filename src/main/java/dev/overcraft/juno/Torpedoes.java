@@ -75,7 +75,7 @@ public final class Torpedoes {
 		double cos = Math.cos(Math.toRadians(LOCK_CONE / 2));
 		java.util.Set<Integer> filling = new java.util.HashSet<>();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(LOCK_RANGE + LOCK_FORGIVE),
-			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.canHurt(player, e)))) {
+			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.areaHits(player, e)))) {
 			int id = e.getId();
 			if (s.junoLocked.contains(id)) {
 				continue;
@@ -231,7 +231,7 @@ public final class Torpedoes {
 			} else {
 				float dealt = Combat.damage(f.target, source(f.juno), TORPEDO_DAMAGE, dev.overcraft.hero.Blow.ability("pulsar_torpedoes").by(dev.overcraft.hero.Hero.JUNO));
 				Combat.credit(f.juno, dealt, f.target);
-				Combat.addFireForDamage(f.juno, dealt, Ow.toOw(f.target.getMaxHealth()));
+				Combat.addFireForDamage(f.juno, dealt, f.target);
 				// contact set 07E9 type 0 (M: characters): B3C5 hers, B3E2 at the hit for the rest (500 m)
 				JunoSounds.own(f.juno, "torpedo.hit");
 				JunoSounds.at(level, "torpedo.hit_3p", next, 500, f.juno);

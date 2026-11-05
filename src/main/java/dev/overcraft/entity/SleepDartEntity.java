@@ -71,6 +71,11 @@ public class SleepDartEntity extends OwProjectile {
 		if (target != null && Allies.canHurt(owner, target)) {
 			// its 5 first, then the sleep: the dart's own hit doesn't wake it
 			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE, dev.overcraft.hero.Blow.ability("sleep_dart").by(dev.overcraft.hero.Hero.ANA));
+			if (isRemoved()) {
+				// a barrier between it and the target took it, there and then (LivingEntityMixin: a shot it stops is gone), and the
+				// sleep stops with it (#104). Hers is met in flight (Barrier.tickProjectiles), a point-blank one here
+				return;
+			}
 			Combat.credit(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);

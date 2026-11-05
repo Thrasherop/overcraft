@@ -78,7 +78,7 @@ public final class QuickMelee {
 				dev.overcraft.brigitte.Barrier.meleeDepth--;
 			}
 			Combat.credit(hero, dealt, target);
-			Combat.addFireForDamage(hero, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(hero, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(hero, target, false);
 			}

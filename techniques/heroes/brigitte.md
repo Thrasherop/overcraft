@@ -57,8 +57,8 @@ after a heal to 158, the health pips filled and the armor's stayed empty; full a
 - **The flail is a sweep, not a ray:** each tick of the hit window (0.2-0.4 s) widens the arc covered (-17.5 + 35 t^2
   degrees, the backhand mirrored), and every enemy within 6 m (nearest point of its box) whose side is in the arc, in
   sight, takes 45 once per swing. Her quick melee starts the same swing. Magic damage: Overwatch's flail pushes no one.
-- **An iron golem is an ally** in the mod (`Allies`): a flail test on one did nothing, rightly; use a ravager for a big
-  target.
+- **An iron golem is an ally** in the mod unless it has turned on her ([allies](../minecraft/allies.md), #99): a flail test on one did nothing, rightly; use a ravager for a big
+  target. The flail, bash and Rally's shockwave leave bystanders alone (a cow, an armor stand).
 - **Open for step 8:** the flail's head flies out on its chain in a swing (entity 2283 flung, chain beam 216C / 33C1); the
   swing clips play on her, not yet on the head.
 

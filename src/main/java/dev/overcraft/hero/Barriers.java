@@ -191,6 +191,9 @@ public final class Barriers {
 			Vec3 at = crossing(shape, before, now);
 			if (at == null) {
 				at = crossing(shape, now, now.add(p.getDeltaMovement()));
+				if (at != null && !reaches(p, now, at)) {
+					continue;
+				}
 			}
 			if (at == null) {
 				continue;
@@ -208,6 +211,25 @@ public final class Barriers {
 			}
 			stop(p, at.add(normal.scale(0.3)), true);
 		}
+	}
+
+	/**
+	 * Whether {@code p}, on its next step from {@code now}, gets as far as {@code at} (a barrier it's about to cross): not if a
+	 * block, or a creature it would hit, comes first (the critique of #104: looking a step ahead stopped a shot before its own tick
+	 * reached the Brigitte it was fired at, from behind; a zombie pressed to a barrier's front was out of reach the same way).
+	 */
+	public static boolean reaches(Projectile p, Vec3 now, Vec3 at) {
+		if (p.level().clip(new net.minecraft.world.level.ClipContext(now, at, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, p)).getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+			return false;
+		}
+		double r = p instanceof OwProjectile ow ? ow.hitRadius() : 0.3;
+		for (Entity e : p.level().getEntities(p, new AABB(now, at).inflate(r + 1))) {
+			if (((dev.overcraft.mixin.ProjectileInvoker) p).overcraft$canHitEntity(e) && e.getBoundingBox().inflate(r).clip(now, at).isPresent()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

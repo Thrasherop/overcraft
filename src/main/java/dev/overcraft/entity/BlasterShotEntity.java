@@ -32,8 +32,6 @@ public class BlasterShotEntity extends OwProjectile {
 		return dev.overcraft.mercy.MercyStats.BLASTER_DAMAGE;
 	}
 
-	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
-	private static final double HEAD_DEPTH = 0.25;
 	/** The shot's life (s): her data's 5 s lifetime. */
 	private static final double LIFETIME = 5;
 
@@ -77,13 +75,13 @@ public class BlasterShotEntity extends OwProjectile {
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		Vec3 at = hit.getLocation();
 		if (target != null && Allies.canHurt(owner, target)) {
-			boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 			double damage = MercyStats.BLASTER_DAMAGE * (crit ? MercyStats.BLASTER_CRIT : 1);
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.MERCY))
 				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.MERCY));
 			if (owner instanceof Player mercy) {
 				Combat.credit(mercy, dealt, target);
-				Combat.addFireForDamage(mercy, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(mercy, dealt, target);
 				if (mercy instanceof ServerPlayer shooter && dealt > 0) {
 					Effects.hitMarker(shooter, target, crit);
 				}

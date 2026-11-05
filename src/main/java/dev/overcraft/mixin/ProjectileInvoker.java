@@ -10,4 +10,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ProjectileInvoker {
 	@Invoker("onHit")
 	void overcraft$onHit(HitResult hit);
+
+	@Invoker("canHitEntity")
+	boolean overcraft$canHitEntity(net.minecraft.world.entity.Entity entity);
 }
