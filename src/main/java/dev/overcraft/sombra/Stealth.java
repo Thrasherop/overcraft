@@ -37,12 +37,14 @@ public final class Stealth {
 		if (stealthed(player, s) && now >= s.stealthFrom + Ow.ticks(STEALTH_FADE_IN)) {
 			// already stealthed: the timer refills, no new fade (420C #1046)
 			s.stealthUntil = now + Ow.ticks(STEALTH_TIME);
+			s.stealthTotal = Ow.ticks(STEALTH_TIME);
 			s.revealedUntil = -1;
 			dropTargets(player);
 			return;
 		}
 		s.stealthFrom = now;
 		s.stealthUntil = now + Ow.ticks(STEALTH_FADE_IN + STEALTH_TIME);
+		s.stealthTotal = Ow.ticks(STEALTH_FADE_IN + STEALTH_TIME);
 		s.revealedUntil = -1;
 		dropTargets(player);
 	}

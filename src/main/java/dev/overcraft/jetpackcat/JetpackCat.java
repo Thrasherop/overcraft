@@ -459,7 +459,7 @@ public final class JetpackCat implements HeroKit {
 		// client sends: rising faster than her had been the test, and the rope's swing alone let a player go (found
 		// playing with a second player)
 		s.lifelineTicks++;
-		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(0.6)) {
+		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(LIFELINE_DETACH_AFTER)) {
 			Vec3 heading = player.getKnownMovement().multiply(1, 0, 1);
 			heading = heading.lengthSqr() > 1.0E-4 ? heading.normalize() : player.getLookAngle().multiply(1, 0, 1).normalize();
 			release(player, s);
@@ -758,6 +758,12 @@ public final class JetpackCat implements HeroKit {
 			s.primaryAmmo, reload, (int) Math.round(s.fuel), -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, mode, left, (float) (s.fuel / 100));
+	}
+
+	/** Her widgets (#85): target, who Lifeline tows (0BA3, 5A8F #1097: the towed ally's portrait v59143). Catnapper's carried enemy has none. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		return new HeroSyncPayload.Widgets(s.lifelineTarget == null ? -1 : s.lifelineTarget, -1, -1, false, 0, 0, 0, 0, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): Lifeline lets go and its speed goes, Catnapper's carry ends, Purr stops. */

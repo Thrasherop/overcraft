@@ -23,3 +23,11 @@ Written from `fix/systems` for whoever merges `feature/dva` (worktree `overcraft
 
 ## What a critic should check
 A mech pushed off a ledge and an ejected pilot through G, death, a switch and a leave, each one played; her body box after each (`HeroBody`). Whether a held AI (`Sleep.aiHeld`) on her `WRECK` makes sense: she's a player, so it doesn't apply.
+
+## What she needs from the reticle widgets (#85, fix/reticle-ui)
+Written from `fix/reticle-ui`, not built here: her widgets are on her own branch. The system is `client/hud/ReticleHud` ([reticle](../hud/reticle.md)); add a `case DVA` to its `render` and `crosshair`, and her values to `Dva.widgets` (`HeroKit.widgets`). From the audit, D in `research\dva\work_kit`:
+- **Defense Matrix under the crosshair:** 04F0 with resource 02CF (`decomp_02CC.txt` 557, 888); today a weapon panel. `resourceBar` with its share.
+- **Boosters:** 0237 and 00DB, "[Shift] cancel" (`decomp_047E.txt` 720, 733): `timedBar` from `activeLeft` (`Dva.java:486`, synced, unread) and `prompt`.
+- **Self-Destruct warning:** 0031 at the mech + 2 m for anyone within 21 m, texts 947F / AAD9, texture 4EA7 (`decomp_0B2F.txt` 476-553): a world widget, for every player near, not only hers: not in `ReticleHud`; project it as `targetMarker` does.
+- **Crosshairs:** separate in the mech and as the pilot: Fusion CF, Light Gun E0; the Light Gun's ammo widget 02AB (`decomp_050A.txt` 382, `decomp_02B8.txt` 516 / 533). `crosshair` falls to the "+" until she has a case.
+- **As the pilot:** the mech's saved Self-Destruct charge (a second 01EE, `decomp_026A.txt` 1264) and the Call Mech 1 s lock.

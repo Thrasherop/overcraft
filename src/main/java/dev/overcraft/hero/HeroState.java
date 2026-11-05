@@ -76,6 +76,8 @@ public final class HeroState {
 	public boolean pawSide;
 	/** Jetpack Cat: the ally Lifeline tows (entity id), or null, and ticks since it attached. */
 	public @Nullable Integer lifelineTarget;
+	/** Lúcio: the allies his song reached last time it went out, himself not counted (his widget, #85). */
+	public int songAllies;
 	public int lifelineTicks;
 	/** Jetpack Cat's Lifeline is switched on (seeking, or towing lifelineTarget), and for how many ticks. */
 	public boolean lifelineOn;
@@ -142,6 +144,8 @@ public final class HeroState {
 	 */
 	public @org.jspecify.annotations.Nullable Integer beaconId;
 	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
+	/** The length (ticks) stealthUntil was last set to: the ring's full share, a refill's being shorter than a first stealth's. */
+	public int stealthTotal = 1;
 	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
 	public int empCast = -1;
 	public long hackLockoutUntil = -1;
