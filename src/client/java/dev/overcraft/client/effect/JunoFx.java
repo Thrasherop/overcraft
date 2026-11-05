@@ -57,6 +57,7 @@ public final class JunoFx {
 		final int key;
 		final int target;
 		final boolean heal, enemy;
+		float nearReach = 1;
 		final float since;
 		Vec3 at;
 		@Nullable Vec3 heading;
@@ -206,8 +207,8 @@ public final class JunoFx {
 		}
 		Posed p = POSED.get(juno.getId());
 		// (a slow frame or a screenshot's stall skips ticks: past 1 tick her pods' glow fell back to the rest place on her chest,
-		// critique M4; a quarter second of old pose is nearer than that)
-		return p == null || juno.level().getGameTime() - p.tick > 5 || which >= p.points.length ? null : p.points[which];
+		// critique M4 (played: a screenshot stalls 4-5 ticks); a second of old pose is nearer than that)
+		return p == null || juno.level().getGameTime() - p.tick > 20 || which >= p.points.length ? null : p.points[which];
 	}
 
 	/**
@@ -536,7 +537,10 @@ public final class JunoFx {
 				Fx.add(dot.at(at).life(range(0.05f, 0.1f)).size(s, s * 0.7f).alpha(0.35f).fade(0.01f, 0.5f).nearFade(1.5f));
 			}
 		}
-		TORPEDOES.add(new Torpedo(-(100_000 + (keys++ & 0xFFFF)), target, at, heal, enemy, Fx.now()));
+		Torpedo flying = new Torpedo(-(100_000 + (keys++ & 0xFFFF)), target, at, heal, enemy, Fx.now());
+		// her own, from her eyes: faded until 3 m out, or the slow-launched ball hung in the screen's corner (critique M5)
+		flying.nearReach = k < 1 ? 3 : 1;
+		TORPEDOES.add(flying);
 	}
 
 	/**
@@ -575,7 +579,7 @@ public final class JunoFx {
 		float coreSize = f.heal ? 0.3f : 0.5f;
 		Particle c = Fx.attach("juno_torp/" + f.key, at, () -> {
 			Particle g = Fx.particle("juno_soft_dot", core);
-			return g == null ? null : g.life(0.15f).size(coreSize, coreSize).fade(0.02f, 0.5f).nearFade(1);
+			return g == null ? null : g.life(0.15f).size(coreSize, coreSize).fade(0.02f, 0.5f).nearFade(f.nearReach);
 		});
 		if (c != null) {
 			c.at(at);
@@ -584,7 +588,7 @@ public final class JunoFx {
 			: f.enemy ? Palette.JUNO_TORP_DMG_RIBBON_ENEMY_N : Palette.JUNO_TORP_DMG_RIBBON_N;
 		Particle halo = Fx.attach("juno_torp_halo/" + f.key, at, () -> {
 			Particle g = Fx.particle("lw_burst", burst);
-			return g == null ? null : g.life(0.15f).size(0.66f, 0.66f).alpha(0.5f).spin(range(0, 6.28f), 3).fade(0.02f, 0.5f).nearFade(1);
+			return g == null ? null : g.life(0.15f).size(0.66f, 0.66f).alpha(0.5f).spin(range(0, 6.28f), 3).fade(0.02f, 0.5f).nearFade(f.nearReach);
 		});
 		if (halo != null) {
 			halo.at(at);
@@ -597,7 +601,7 @@ public final class JunoFx {
 			Particle nose = Fx.particle("juno_noise_soft", core);
 			if (nose != null) {
 				Fx.add(nose.at(at.subtract(up.scale(size / 2))).mesh(shell, up.cross(f.heading), up).life(0.06f).size(size, size).alpha(0.5f)
-					.fade(0.01f, 0.3f).nearFade(1));
+					.fade(0.01f, 0.3f).nearFade(f.nearReach));
 			}
 		}
 		Fx.trail(f.key, at, f.heal ? "juno_heal_trail" : "juno_dmg_trail", burst, f.heal ? 0.38f : 1, 0.3f, 0.85f);

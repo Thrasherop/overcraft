@@ -581,23 +581,23 @@ public final class SombraFx {
 			return;
 		}
 		if (raw != ringFrom) {
-			// the cylinder's axis (its z) squashed to a band: 8.4 m tall at the data's unit length stood as a wall (ours)
+			// the cylinder's axis (its Y as imported) squashed to a band: 8.4 m tall at the data's unit length stood as a wall (ours)
 			ringFrom = raw;
 			ringMesh = raw.clone();
-			for (int i = 2; i < ringMesh.length; i += 5) {
+			for (int i = 1; i < ringMesh.length; i += 5) {
 				ringMesh[i] *= RING_BAND;
 			}
 		}
 		float[] mesh = ringMesh;
 		Fx.attach("sombra_detect/" + me.getId(), me.position().add(0, RING_LIFT, 0), () -> {
 			Particle p = Fx.particle("sombra_square_band", Palette.SOMBRA_DETECT_RING_N);
-			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0), new Vec3(0, 0, 1)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.5f).fade(0.05f, 0.2f);
+			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.5f).fade(0.05f, 0.2f);
 		});
 	}
 
 	private static float @org.jspecify.annotations.Nullable [] ringFrom, ringMesh;
 	private static final float RING_BAND = 0.1f;
-	private static final float RING_LIFT = 0.5f;
+	private static final float RING_LIFT = 0.1f;
 	/** 8 m across: the cylinder's 0.95 scaled. */
 	private static final float RING_SIZE = 8 / 0.95f;
 

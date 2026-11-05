@@ -346,3 +346,23 @@ What a critic should check:
 - The bar is ours in shape; the "[LShift] cancel" prompt (00DB, string 1B3C0, text not found) is still not drawn, and the lock marks
   are world rings, not the 0727 HUD marks (#85).
 - Not tried: the lock with a second player, in water, or cut by Orbital Ray (its clip replaces the view's); boats, ladders.
+
+## After the critique ([critique_hero_polish](../testing/critique_hero_polish.md), 2026-11-04)
+Played on `next` merged in (fix/systems' `leavePlay`), through the harness socket (its keys are Minecraft's key mappings), dev pack:
+- **H1, the lock's pose stuck. Reproduced first on the commit before the fix:** lock, `/kill`, respawn: no gun, pods up, and a volley fired from nothing
+  (`hp8_old_after_death*`); lock, G, G the same (`hp8_old_g`). `Torpedoes.clear` now sends `torpedo_cancel` if a lock was open; a hack ends a lock.
+  Played after, both views: death, G, sleep, stun, hack (`hp9_*`; the last three by the dev-only `cut` command: no second client), a hero switch and
+  leave and rejoin while locked (`m_jun_sw`, `m_jun_lv`): gun back each time, `anim1p` null, pods down.
+- **H2, the icon:** on the owner's own package (the 0.3.31 `overcraft-assets.zip` from `current_overcraft.zip`, through `LocalAssetPack`'s zip path) the
+  LShift icon shows ready, gliding and on cooldown (`hp8_zip_*`). **Not played: the 0.3.31 jar itself** in a real install; the code was the dev client's. So not
+  reproduced, still not explained. `4cba105`'s `Fixes #86` overstates; later commits say `Refs #86`, and the icon half waits for the owner: which icon, which
+  state, which build. The zip's date also weakens the "owner's old zip" candidate (the critique's reading).
+- **M3:** a cancel fades the pods home over 0.15 s (`hp9_3p_cancel*`); a fire inside the start no longer adds both offsets.
+- **M4, the glow on her chest: the posed point's limit.** `point()` gave up after 1 tick without a frame; a screenshot stalls 4-5, and it dropped to the rest place. It
+  came back at a 5-tick limit (`hp11_t3`), so it's 20 now. Not seen again in the later shots, but the stall that caused it also made it hard to see: a critic should
+  look at it live at low fps.
+- **M5:** her own launch flares are a quarter size, and her own torpedoes fade in out to 3 m (the slow-launched ball hung in the top corner, `hp11_6b`). After:
+  four targets at real speed, `hp14_j1`, `hp14_j2`, nothing over her aim. **Six targets were played only before the fade** (`hp11_6a`-`c`).
+- A glide during a lock (both bars) and F5 mid-lock (`hp11_gl`, `hp11_f1`, `hp11_f2`) work. Improved Transparency on: pods and lock fine (`hp14_j*`).
+
+Still not tried: Orbital Ray cutting a lock, two Junos side by side (`podLaunch` takes the first within 1.5 m), water, boats, ladders, a real second player.
