@@ -1873,6 +1873,10 @@ public final class HeroAnimator {
 		} else if (!onGround && slideJumpAt >= airborneSince - 0.3f && clip(model, "slide_jump") != null) {
 			// her slide jump until she lands (alias 0x5F3): its take-off, then its fall
 			next = now - slideJumpAt < clip(model, "slide_jump").duration() ? "slide_jump" : "slide_jump_fall";
+		} else if (!onGround && dev.overcraft.client.effect.JetpackCatFx.towed(entity.getId()) && clip(model, "pulled") != null) {
+			// on her rope: alias 0x1C8 (5A8F #1324, H; its 2D blend on df 0x235 / 0x236 isn't driven: its centre). Where the clipmap has it:
+			// Ana, Brigitte, Juno, Sojourn, Sombra. Kiriko, Lúcio, Mercy and Sigma's other name aren't mapped: their air pose
+			next = "pulled";
 		} else if (juno && junoGliding) {
 			// Glide Boost (47B7): its start (0xE5, 2D by her motion), then the loop (0x02F: still at its centre, else 8
 			// ways); a double jump while gliding has its own (0x13E)
@@ -1903,10 +1907,6 @@ public final class HeroAnimator {
 			// his jump (alias 0x006): the takeoff, then the rise, held till he lands (lucio-map.md read these as skating)
 			SkinnedModel.Clip start = clip(model, "jump" + jumpDirection + "_start");
 			next = start != null && now - airborneSince < start.duration() ? "jump" + jumpDirection + "_start" : "jump" + jumpDirection;
-		} else if (!onGround && dev.overcraft.client.effect.JetpackCatFx.towed(entity.getId()) && clip(model, "pulled") != null) {
-			// on her rope: alias 0x1C8 (5A8F #1324, H; its 2D blend on df 0x235 / 0x236 isn't driven: its centre). Where the clipmap has it:
-			// Ana, Brigitte, Juno, Sojourn, Sombra. Kiriko, Lúcio, Mercy and Sigma's other name aren't mapped: their air pose
-			next = "pulled";
 		} else if (!onGround) {
 			next = vy > 0 ? "jump" : "fall";
 		} else if (skates && !moving && !crouching && clip(model, "skate_stop" + skateDirection) != null
