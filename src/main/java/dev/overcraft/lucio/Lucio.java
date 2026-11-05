@@ -175,6 +175,12 @@ public final class Lucio implements HeroKit {
 		}
 		syncSong(player, s, controls);
 
+		// how he rides, for the others watching (#115: only his own client knows it, and tells us)
+		int wall = controls ? s.wallRide : 0;
+		if (player.getAttachedOrElse(HeroManager.LUCIO_WALL, 0) != wall) {
+			player.setAttached(HeroManager.LUCIO_WALL, wall);
+		}
+
 		// Wall Ride's sound while he rides, and his line once he's been on the wall 2.2 s
 		if (s.wallRiding) {
 			if (s.wallRideTicks == 0) {
@@ -370,6 +376,9 @@ public final class Lucio implements HeroKit {
 	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		// (his tick doesn't run dead, and a corpse stayed on the wall to others: found playing, #115)
+		s.wallRide = 0;
+		player.removeAttached(HeroManager.LUCIO_WALL);
 		s.barrierCast = -1;
 		s.songSwap = -1;
 		if (s.ampUp > 0 || s.ampDelay > 0) {

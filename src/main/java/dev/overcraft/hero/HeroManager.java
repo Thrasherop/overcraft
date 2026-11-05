@@ -86,6 +86,13 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Lúcio on a wall (#115): for every other client to pose him (HeroAnimator's clip and lean, LucioFx's sparks): OwMovement.wallCode's
+	 * side and ride yaw, 0 off it. Only his own client knows his ride (it moves him), so it says, in its input.
+	 */
+	public static final AttachmentType<Integer> LUCIO_WALL = AttachmentRegistry.create(Overcraft.id("lucio_wall"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -243,7 +250,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, LUCIO_WALL);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;
@@ -498,6 +505,7 @@ public final class HeroManager {
 			state.secondaryHeld = false;
 		}
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
+		state.wallRide = state.wallRiding ? input.wall() : 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if (!controls(player)) {
 			return;

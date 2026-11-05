@@ -21,6 +21,8 @@ public final class HeroState {
 	 */
 	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
+	/** How he rides, as his client says (OwMovement.wallCode: side and ride yaw, 0 off the wall), for others to see (HeroManager.LUCIO_WALL). */
+	public int wallRide;
 	public boolean wallClimbing;
 
 	// weapons
@@ -337,6 +339,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		wallRide = 0;
 		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;

@@ -409,11 +409,15 @@ public final class ClientHero {
 
 		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
 			| ClientSigma.input(player);
-		if (held != lastHeld || pressed != 0 || extra != 0) {
+		int wall = OwMovement.wallCode(player);
+		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));
+			lastWall = wall;
+			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra, wall));
 		}
 	}
+
+	private static int lastWall;
 
 	private static boolean chatHeroView;
 

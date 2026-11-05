@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * machine holds one game at a time). A real ServerPlayer on a connection to nowhere: it is in the player list, has a
  * hero, a team and the server's whole hero tick, and takes hits as a player does. It has no client, so it doesn't move, and
  * nothing it would see is checked: what it proves is server rules (a barrier stopping a shot); what a second player sees on
- * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot secondary <name> on|off"
+ * their screen still needs two clients. "bot add <name> <hero> <team|-> x y z yaw", "bot input <name> <held> <pressed> <extra>" (a client's input packet, HeroManager.onInput), "bot perk <name> <PERK>", "bot strike <name>", "bot wall <name> <side> <yaw>", "bot wallme", "bot secondary <name> on|off"
  * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>",
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
@@ -69,6 +69,46 @@ final class DevBot {
 				var bot = BOTS.get(a[1]);
 				HeroState s = HeroManager.state(bot);
 				HeroManager.kit(s.hero).press(bot, s, dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_1);
+			}
+			case "input" -> {
+				// "bot input <name> <held> <pressed> <extra>": what a client's input packet does, by the same way in (HeroManager.onInput): its buttons, keys, wall ride
+				HeroManager.onInput(BOTS.get(a[1]), new dev.overcraft.net.HeroInputPayload(Integer.parseInt(a[2]), Integer.parseInt(a[3]), Integer.parseInt(a[4])));
+				out.addProperty("ok", true);
+			}
+			case "wall" -> {
+				// "bot wall <name> <side> <yaw>": what Lucio's client says riding a wall (#115), by the same way in; side 0: off it
+				int side = Integer.parseInt(a[2]);
+				HeroManager.onInput(BOTS.get(a[1]), new dev.overcraft.net.HeroInputPayload(side == 0 ? 0 : dev.overcraft.net.HeroInputPayload.HELD_WALL_RIDE, 0, 0,
+					side == 0 ? 0 : dev.overcraft.hero.OwMovement.wallCode(side, Float.parseFloat(a[3]))));
+				out.addProperty("ok", true);
+			}
+			case "fixoff" -> {
+				dev.overcraft.hero.Combat.devFixOff = a[1].equals("on");
+				out.addProperty("fixoff", dev.overcraft.hero.Combat.devFixOff);
+			}
+			case "pos" -> {
+				ServerPlayer bot = BOTS.get(a[1]);
+				out.addProperty("pos", bot.position().toString());
+			}
+			case "wallme" -> {
+				// the local player as the server has him: what his client told it, and what it sends others (#115)
+				ServerPlayer me = server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow();
+				HeroState s = HeroManager.state(me);
+				int code = me.getAttachedOrElse(HeroManager.LUCIO_WALL, 0);
+				out.addProperty("riding", s.wallRiding);
+				out.addProperty("code", code);
+				out.addProperty("side", dev.overcraft.hero.OwMovement.wallCodeSide(code));
+				out.addProperty("yaw", dev.overcraft.hero.OwMovement.wallCodeYaw(code));
+			}
+			case "perk" -> {
+				// "bot perk <name> <PERK_ENUM>": a perk picked, as the perk menu does
+				HeroManager.state(BOTS.get(a[1])).majorPerk = dev.overcraft.hero.Perk.valueOf(a[2]);
+				out.addProperty("ok", true);
+			}
+			case "strike" -> {
+				// "bot strike <name>": Sigma's Hyper Strike charged
+				HeroManager.state(BOTS.get(a[1])).sigmaStrikeReady = true;
+				out.addProperty("ok", true);
 			}
 			case "secondary" -> {
 				HeroState s = HeroManager.state(BOTS.get(a[1]));
@@ -164,6 +204,14 @@ final class DevBot {
 				var seen = dev.overcraft.client.model.HeroAnimator.existing(bot.getId());
 				out.addProperty("animator", seen != null);
 				if (seen != null) {
+					out.addProperty("playing", seen.playing());
+					var drawn = net.minecraft.client.Minecraft.getInstance().level == null ? null : net.minecraft.client.Minecraft.getInstance().level.getEntity(bot.getId());
+					if (drawn instanceof LivingEntity living) {
+						out.addProperty("wallSide", dev.overcraft.hero.OwMovement.wallRiding(living));
+						out.addProperty("wallYaw", dev.overcraft.hero.OwMovement.wallRideYaw(living));
+						out.addProperty("wallNormal", dev.overcraft.hero.OwMovement.wallRideNormal(living).toString());
+						out.addProperty("code", living.getAttachedOrElse(HeroManager.LUCIO_WALL, 0));
+					}
 					float now = bot.level().getGameTime() / 20f;
 					out.addProperty("emote", String.valueOf(seen.emote()));
 					out.addProperty("emoteTime", seen.emoteTime(now));

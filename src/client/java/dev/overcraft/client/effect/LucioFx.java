@@ -216,7 +216,7 @@ public final class LucioFx {
 	 *
 	 * @param song 0 none, 1 heal, 2 speed, +4 amped (HeroManager.SONG)
 	 */
-	public static void skates(int id, Vec3 left, Vec3 right, int song, float now, boolean enemyOwner, boolean wallRiding) {
+	public static void skates(int id, Vec3 left, Vec3 right, int song, float now, boolean enemyOwner, boolean wallRiding, Vec3 wallNormal) {
 		int which = song & 3;
 		Integer was = SONG.put(id, which);
 		if (which == 0) {
@@ -252,7 +252,7 @@ public final class LucioFx {
 			float dt = Fx.since(-(id * 8 + 7) - 1);
 			if (wallRiding) {
 				float since = WALL_SINCE.computeIfAbsent(id, k -> now);
-				wallRide(left, right, colour, dt, now - since);
+				wallRide(left, right, colour, dt, now - since, wallNormal);
 			} else {
 				WALL_SINCE.remove(id);
 			}
@@ -408,11 +408,10 @@ public final class LucioFx {
 	 * at up to 1.6 m/s (about 30 a second per skate: ours 25), and the skates' sparks growing from 0.15 to 0.44 m over
 	 * the ride's first 0.67 s.
 	 */
-	private static void wallRide(Vec3 left, Vec3 right, Palette colour, float dt, float ridden) {
+	private static void wallRide(Vec3 left, Vec3 right, Palette colour, float dt, float ridden, Vec3 wall) {
 		int n = (int) (25 * dt + Fx.RANDOM.nextFloat());
 		// his skates are on the wall: what's drawn there, facing the camera, is cut straight by the wall's face (bars and a hard top edge, the
-		// critique's #5), so lifted off it. Only the local player's ride is known (OwMovement), and only his is drawn
-		Vec3 wall = dev.overcraft.hero.OwMovement.wallRideNormal(net.minecraft.client.Minecraft.getInstance().player);
+		// critique's #5), so lifted off it (his own wall: OwMovement.wallRideNormal, another's from what he told the server, #115)
 		float sparkSize = 0.15f + 0.29f * Math.clamp(ridden / 0.67f, 0, 1);
 		for (Vec3 foot : new Vec3[] {left, right}) {
 			for (int i = 0; i < n; i++) {
