@@ -319,11 +319,16 @@ public final class HeroAnimator {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
 			// (sombra_1p.txt hack_start)
 			clip = "hack_cat82";
-			viewClip = "hack_start";
+			// (stealthed, her raise is its own: B1CC)
+			viewClip = a.stealthed ? "hack_start_stealth" : "hack_start";
 		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
+		}
+		if (a.sombra && action.equals("stealth_487") && (a.actionsFirstPerson.playing() != null || a.actions.playing() != null)) {
+			// the fade back never cuts what ended her stealth: EMP's or Cyberspace's cast plays on (0487's priority 0xDD: M)
+			return;
 		}
 		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
@@ -997,6 +1002,11 @@ public final class HeroAnimator {
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
+			} else if (viewBase.equals("stealth_move_start")) {
+				// her stealthed run's way in and out (3E91 / 3E92, the 4-slot's transitions 0 > 1 and 1 > 0: L), once
+				t = Math.min(now - movingSince, baseClip.duration());
+			} else if (viewBase.equals("stealth_move_stop")) {
+				t = Math.min(now - stoppedAt, baseClip.duration());
 			} else {
 				t = time(baseClip, now, true);
 			}
@@ -1070,7 +1080,19 @@ public final class HeroAnimator {
 		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
 		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
 		// movement (HeroModelRenderer.drift, the owner's playtest: #14)
+		if (sombra && since("stealth_486", now) > (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP) {
+			// alias 0486 plays 0.525 s of the 0.9 s clip (420C #868), then its own end layer eases her into the stand
+			actionsFirstPerson.cancel("stealth_486", now);
+			actions.cancel("stealth_486", now);
+		}
 		actionsFirstPerson.apply(model, pose, now, null);
+		if (sombra) {
+			SkinnedModel.Clip end = clip(model, "add_stealth_486_end");
+			float past = since("stealth_486", now) - (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP;
+			if (end != null && past >= 0 && past <= end.duration()) {
+				Skeleton.addAdditive(end, past, pose, 1);
+			}
+		}
 		int tip = UpperBody.fingertip(model);
 		if (tip >= 0) {
 			Skeleton.world(model, pose, tip).getTranslation(fingertip);
@@ -1136,7 +1158,11 @@ public final class HeroAnimator {
 				// Sombra stealthed (graph 420C's category 0x1EE on her view's blend tree, sombra_1p.txt): her own stand, jump
 				// and fall, and a 4-slot walk (s0 / s1 forward and back, s2 left, s3 right) with the stealthed run's quicker
 				// stride. Only the third person had them (#87: her first person kept the plain walk while she ran at 8.8 m/s)
-				String stealth = want.equals("walk") && base.startsWith("strafe_left") ? "walk_stealth_left"
+				SkinnedModel.Clip setOff = clip(model, "stealth_move_start");
+				SkinnedModel.Clip settle = clip(model, "stealth_move_stop");
+				String stealth = want.equals("walk") && setOff != null && now - movingSince < setOff.duration() ? "stealth_move_start"
+					: want.equals("idle") && settle != null && now - stoppedAt < settle.duration() ? "stealth_move_stop"
+					: want.equals("walk") && base.startsWith("strafe_left") ? "walk_stealth_left"
 					: want.equals("walk") && base.startsWith("strafe_right") ? "walk_stealth_right"
 					: want + "_stealth";
 				if (model.clips.containsKey(stealth)) {

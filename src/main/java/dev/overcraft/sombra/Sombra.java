@@ -351,7 +351,6 @@ public final class Sombra implements HeroKit {
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.dest_3p"), to, 45, player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
-		Effects.play(level, "sombra_stealth", to, Vec3.ZERO, player, 0, player);
 		SombraSounds.at(level, "translocator.arrive", to, 45);
 		SombraSounds.split(player, "stealth.start", to, 30);
 		SombraSounds.own(player, "stealth.loop");

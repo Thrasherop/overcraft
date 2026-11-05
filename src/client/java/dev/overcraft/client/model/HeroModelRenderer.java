@@ -135,6 +135,7 @@ public final class HeroModelRenderer {
 
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
+		dev.overcraft.client.ClientSombra.clear();
 		LAST_HERO.clear();
 	}
 
@@ -480,58 +481,101 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
-	/** How much of a stealthed hero shows to those who see her, fully phased out (ours: 0.25 read as gone; #87 "slightly"). */
-	private static final float SEE_THROUGH = 0.38f;
-	/** Her phased-out tint (lilac, over her own colours) and its shimmer's glow (her stealth's purple, A06C: M). */
+	/** How much of a stealthed hero shows to those who see her, and to her own eyes, fully phased out (ours). */
+	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.6f;
+	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
 	private static final int STEALTH_TINT = 0xC8B4FF, STEALTH_GLOW = 0x9A55FF;
-	/** The shimmer's steps a second: each piece's opacity changes on each step (a digital flicker, ours). */
-	private static final float STEALTH_STEPS = 12;
+	/** 1AD9's wipe edge row, by the fade (sombra-effects: #6D0000 #CE0000 #F6502B #00DFB6; read by age: M). */
+	private static final int[] WIPE_EDGE = {0x6D0000, 0xCE0000, 0xF6502B, 0x00DFB6};
+	private static final Identifier WIPE_MASK = dev.overcraft.Overcraft.id("hud/sombra_wipe");
+	/** The wipe's mask is built: null not yet, false without the pack's frames. */
+	private static @Nullable Boolean wipeMade;
 
 	/**
-	 * Sombra stealthed (#87), as Overwatch shows her to those who still see her and in her own view: see-through and lilac,
-	 * shimmering. Her data has no art for it (420C's 16EA is empty, the invisibility is a renderer state, STU_33A46033: M); the
-	 * stealth's in and out (1AD9 / 1AD8) wipe her with a red-to-cyan edge over 1 s. Ours: each piece's opacity flickers
-	 * between steps (a digital shimmer), a faint purple glow over her, and the fade in or out cross-fades her solid model
-	 * into it (phase 0 solid, 1 fully phased out), with the glow strongest mid-fade (the wipe's bright edge).
+	 * A7BF's 6 frames as one mask for Minecraft's dissolve shader (RenderTypes.entityCutoutDissolve): each frame whites out
+	 * more of it, so a texel's alpha is when it goes (1 for the first frame's, 1/6 for the last's, near 0 for those never
+	 * white), against the vertex alpha falling 1 -> 0. The data's frames, on her own UVs.
 	 */
-	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
-		Set<Integer> hidden, float phase, float time, int light, int overlay) {
-		phase = Math.clamp(phase, 0, 1);
-		if (phase < 1) {
-			// mid-fade: her solid self fading under the shimmer (drawn translucent at what's left of her)
-			float solid = 1 - phase;
-			int color = Math.clamp(Math.round(solid * solid * 255), 0, 255) << 24 | 0xFFFFFF;
-			for (SkinnedModel.Piece piece : loaded.model().pieces) {
-				Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-				boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-				if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
-					continue;
+	private static boolean wipeMask() {
+		if (wipeMade == null) {
+			wipeMade = false;
+			try {
+				var resources = Minecraft.getInstance().getResourceManager();
+				com.mojang.blaze3d.platform.NativeImage out = null;
+				for (int frame = 5; frame >= 0; frame--) {
+					try (java.io.InputStream in = resources.open(dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+						 com.mojang.blaze3d.platform.NativeImage image = com.mojang.blaze3d.platform.NativeImage.read(in)) {
+						if (out == null) {
+							out = new com.mojang.blaze3d.platform.NativeImage(image.getWidth(), image.getHeight(), true);
+							for (int y = 0; y < out.getHeight(); y++) {
+								for (int x = 0; x < out.getWidth(); x++) {
+									out.setPixel(x, y, 8 << 24 | 0xFFFFFF);
+								}
+							}
+						}
+						int alpha = Math.round(255 * (6 - frame) / 6f);
+						for (int y = 0; y < out.getHeight(); y++) {
+							for (int x = 0; x < out.getWidth(); x++) {
+								if ((image.getPixel(x, y) >> 16 & 0xFF) > 127) {
+									out.setPixel(x, y, alpha << 24 | 0xFFFFFF);
+								}
+							}
+						}
+					}
 				}
-				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, color, true, false));
+				if (out != null) {
+					Minecraft.getInstance().getTextureManager().register(WIPE_MASK, new HeroTexture(WIPE_MASK, out, net.minecraft.client.renderer.texture.MipmapStrategy.MEAN));
+					wipeMade = true;
+				}
+			} catch (java.io.IOException e) {
+				dev.overcraft.Overcraft.LOG.warn("Sombra's stealth wipe: {}", e.toString());
 			}
 		}
-		int step = (int) Math.floor(time * STEALTH_STEPS);
-		int index = 0;
+		return wipeMade;
+	}
+
+	/**
+	 * Sombra stealthed (#87), as she shows to those who still see her and in her own view. The fades are the data's: 1AD9 / 1AD8
+	 * wipe her solid self away along A7BF's diagonal frames, with its edge row's colours lit on the frame reached (phase 0 solid, 1
+	 * phased out). What's held has no art in the data (16EA is empty, the invisibility a renderer state, STU_33A46033: M): ours, one
+	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		phase = Math.clamp(phase, 0, 1);
+		boolean wipe = wipeMask();
+		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
+		float opacity = (own ? SEE_THROUGH_OWN : SEE_THROUGH) * (0.92f + 0.16f * pulse) * phase;
+		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+		// what's left of her solid self, as vertex alpha against the wipe's mask (or plainly fading without the pack)
+		int solid = Math.clamp(Math.round((1 - phase) * 255), 0, 255) << 24 | 0xFFFFFF;
+		float fading = phase;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
-			index++;
 			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
-			// each piece's own flicker this step: 70-115% of the see-through share
-			int h = (step * 31 + index * 131) * 0x9E3779B1;
-			float flicker = 0.7f + 0.45f * ((h >>> 8) & 0xFF) / 255f;
-			float opacity = SEE_THROUGH * flicker * phase;
-			int color = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+			if (fading < 1) {
+				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+			}
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, color, true, false));
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
 		}
-		// the purple over her: a steady faint glow, brighter while she fades (the wipe's edge), pulsing a little
-		float edge = 4 * phase * (1 - phase);
-		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 1.3f);
-		submitGlow(loaded, skin, poseStack, collector, hidden, 0.28f * phase + 0.08f * pulse * phase + 0.9f * edge, true, STEALTH_GLOW);
+		if (wipe) {
+			// mid-fade the edge: the frame reached, lit in the row's colour by the fade; held, the frames turning slowly as glints
+			float mid = 4 * phase * (1 - phase);
+			int frame = phase < 1 ? Math.clamp((int) (phase * 6), 0, 5) : Math.floorMod((int) Math.floor(time * 5), 6);
+			float along = phase * 3;
+			int from = Math.clamp((int) along, 0, 2);
+			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
+			float strength = phase < 1 ? 0.85f * mid : 0.1f;
+			if (strength > 0.01f) {
+				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+			}
+		}
+		submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
 	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
@@ -592,13 +636,13 @@ public final class HeroModelRenderer {
 			// Overwatch's stealthed Sombra to those who see her (her side, an enemy within 4 m, herself from behind): phased
 			// out, her weapon too; fading there over the stealth's 0.75 s and back over its 0.3 s (#87)
 			float phase = stealth != null ? stealth[0] : 1;
-			float time = stealth != null ? stealth[1] : 0;
-			submitStealth(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), phase, time, light, overlay);
+			float time = stealth != null ? stealth[1] : state.ageInTicks / 20f;
+			submitStealth(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), phase, time, light, overlay, false);
 			EmoteProps.Placed held = state.getData(WEAPON);
 			if (held != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(held.at());
-				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay);
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
 				poseStack.popPose();
 			}
 			poseStack.popPose();
@@ -1023,7 +1067,7 @@ public final class HeroModelRenderer {
 		// Sombra stealthed: her own arms and pistol phased out too, as Overwatch's (#87: they stayed solid)
 		float stealth = hero == Hero.SOMBRA && !minecraft ? dev.overcraft.client.ClientSombra.phase(player, now) : 0;
 		if (stealth > 0) {
-			submitStealth(loaded, skin, poseStack, collector, Set.of(), stealth, now, lit, overlay);
+			submitStealth(loaded, skin, poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
 		} else {
 			submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
 			submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
@@ -1049,7 +1093,7 @@ public final class HeroModelRenderer {
 			if (stealth > 0) {
 				poseStack.pushPose();
 				poseStack.mulPose(weapon.at());
-				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay);
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
 				poseStack.popPose();
 			} else {
 				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);

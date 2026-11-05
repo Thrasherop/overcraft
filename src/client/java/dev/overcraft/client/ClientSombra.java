@@ -24,6 +24,12 @@ public final class ClientSombra {
 	private ClientSombra() {
 	}
 
+	/** Leaving a world: no phantom fade on a reused entity id. */
+	public static void clear() {
+		ENDED.clear();
+		LAST.clear();
+	}
+
 	/**
 	 * 0 (solid) to 1 (fully phased out) at this time ((game time + partial) / 20 s). Fading in from the start, fully out while
 	 * Minecraft's invisibility hides her, solid while revealed, fading back after.
@@ -40,6 +46,11 @@ public final class ClientSombra {
 			} else if (entity.isInvisible()) {
 				phase = 1;
 			}
+		}
+		// a reveal's end comes back with a short fade, not a snap (10 calls is a few frames: ours)
+		Float seen = LAST.get(id);
+		if (seen != null && phase >= 1 && seen < 1 && from != null && now - from / 20f > (float) SombraStats.STEALTH_FADE_IN) {
+			phase = Math.min(1, seen + 0.02f);
 		}
 		Float last = LAST.put(id, phase);
 		if (last != null && last > 0 && phase <= 0) {
