@@ -141,6 +141,11 @@ public final class LucioStats {
 	public static final double PERK_MINOR_XP = 2020;
 	public static final double PERK_MAJOR_XP = 5050;
 	/** Soundwave Rider: riding a wall charges the next Soundwave, +25% knockback and +50% damage; ~5 s fills it (wiki). */
+	/**
+	 * Off the wall a part charge waits this long before draining (D 5162: #462's other plug -> StateWait #463, 3 s -> #465, not while full (v66768) -> ChaseVar #464 at 20 a
+	 * second toward its default 0). H values, M the path: #462 STU_B591EBFE's own fields (v1204, 0.75) aren't decoded.
+	 */
+	public static final double RIDER_DRAIN_WAIT = 3;
 	public static final double RIDER_KNOCKBACK = 0.25;
 	public static final double RIDER_DAMAGE = 0.50;
 	public static final double RIDER_CHARGE_TIME = 5;

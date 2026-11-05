@@ -159,11 +159,14 @@ public final class Lucio implements HeroKit {
 		}
 
 		// Soundwave Rider (perk): riding a wall charges the next Soundwave over about 5 s; off the wall a part charge
-		// drains, a full one holds until used (the wiki)
+		// waits 3 s, then drains at the same rate, a full one holds until used (5162 #462 -> #463 -> #465 -> #464)
 		if (HeroManager.hasPerk(player, Perk.LUCIO_SOUNDWAVE_RIDER)) {
 			double step = 1.0 / Ow.ticks(RIDER_CHARGE_TIME);
 			if (s.wallRiding) {
 				s.riderCharge = Math.min(1, s.riderCharge + step);
+				s.riderDrainWait = Ow.ticks(RIDER_DRAIN_WAIT);
+			} else if (s.riderDrainWait > 0) {
+				s.riderDrainWait--;
 			} else if (s.riderCharge < 1) {
 				s.riderCharge = Math.max(0, s.riderCharge - step);
 			}

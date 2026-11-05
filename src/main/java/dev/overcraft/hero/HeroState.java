@@ -23,6 +23,8 @@ public final class HeroState {
 	public boolean wallRiding;
 	/** How he rides, as his client says (OwMovement.wallCode: side and ride yaw, 0 off the wall), for others to see (HeroManager.LUCIO_WALL). */
 	public int wallRide;
+	/** Soundwave Rider: ticks before a part charge starts to drain. */
+	public int riderDrainWait;
 	public boolean wallClimbing;
 
 	// weapons

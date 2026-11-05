@@ -223,7 +223,8 @@ public final class ReticleHud {
 		HeroSyncPayload.Widgets strike = s.widgets();
 		if (reticle && strike.flag()) {
 			mark(y);
-			pips(g, (int) strike.left2(), dev.overcraft.sigma.SigmaStats.HYPER_STRIKE_HITS, cx, y);
+			// (narrower than Brigitte's: at 22 wide the row touched his spheres in view at 720p)
+			pips(g, (int) strike.left2(), dev.overcraft.sigma.SigmaStats.HYPER_STRIKE_HITS, cx, y, 14, 4);
 			y += 16;
 		}
 		y = Math.max(y, cy + TIMER_BELOW);
@@ -457,7 +458,7 @@ public final class ReticleHud {
 			// (Beat Drop's 4 s runs the same bar a little over: it shows full, then counts down)
 			timedBar(g, HeroArt.ability(hero, "amp_it_up"), s.activeLeft() / (float) dev.overcraft.lucio.LucioStats.AMP_UP_TIME, s.activeLeft(), cy);
 		}
-		if (s.meter() > 0) {
+		if (reticle && s.meter() > 0) {
 			// Soundwave Rider's charge, 0275 on the centre layer (5162 #450, under perk gate #437: v66249 / 100, chased to 100 at 20 a second,
 			// #439, the 5 s the wiki gives; #443's 1.25 is its knockback; shown once it isn't 0, 27A3). The note on #85 called this "Accelerando's
 			// meter": Accelerando (the same graph's #391 -> #393) has no widget. The mod's charge is s.meter(); the colour's ours, gold when full.
@@ -575,13 +576,16 @@ public final class ReticleHud {
 
 	/** A count of what's left (Repair Pack's), as a row of short bars: full and empty (00F3 binds the count alone: the shape ours). */
 	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top) {
-		float pw = 22;
-		float gap = 6;
+		pips(g, have, max, cx, top, 22, 6);
+	}
+
+	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top, float pw, float gap) {
 		float x = cx - (max * pw + (max - 1) * gap) / 2;
 		for (int i = 0; i < max; i++) {
 			float px = x + i * (pw + gap);
-			fill(g, px - 1, top - 1, pw + 2, 8, 0x80000000);
-			fill(g, px, top, pw, 6, i < have ? 0xF2F7C43A : 0x33FFFFFF);
+			fill(g, px - 1, top - 1, pw + 2, 8, 0xA6000000);
+			// (an empty one a touch brighter: at 0x33 they were lost at night, on Sigma's and on Brigitte's)
+			fill(g, px, top, pw, 6, i < have ? 0xF2F7C43A : 0x66FFFFFF);
 		}
 	}
 
