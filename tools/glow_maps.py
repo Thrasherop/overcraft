@@ -43,6 +43,7 @@ MAX_SIZE = 512
 # by the ramp 800957B5CD42, a flat grey, so the colour is ours): written as the frame + one face, and the frame + the other as "alt".
 # Glass over a screen: a flat-colour shell on the screen's own bounds (Juno's gun FBC0, 85 v over FB30's 40 v; shader 0x26, its colour and
 # glow the same flat 1E38C). Drawn solid it hid her face and read white; so drawn only as this faint added light (ours).
+SHADER_26_STRENGTH = 0.25
 GLASS = {"00000000FBC0": 0.1}
 SCREEN_FACES = {"00000000FB30": (0.62, 0.95, 1.0)}
 # A mask this dim everywhere adds nothing a player sees (out of 255).
@@ -162,6 +163,10 @@ def main():
                 continue
             image.thumbnail((MAX_SIZE, MAX_SIZE))
             table[name] = {"texture": name.lower(), "strength": round(min(max(strength, 0.0), 2.0), 3)}
+            if shader == 0x26:
+                # its glow layer is its colour image again (Lúcio's amp visor 811C, Mercy's 7FDC): added at any strength over the piece's own
+                # colour it read flat white where the plain piece had detail (played), so a faint share (ours)
+                table[name]["strength"] = SHADER_26_STRENGTH
             if name in GLASS:
                 table[name].update(strength=GLASS[name], glass=True)
             if name in SCREEN_FACES:
