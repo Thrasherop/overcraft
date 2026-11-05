@@ -480,7 +480,7 @@ public final class Brigitte implements HeroKit {
 		}
 	}
 
-	/** Whip Shot's push, held a few ticks (WHIP_PUSH_TIME). */
+	/** Whip Shot's push, held a few ticks (WHIP_PUSH_TIME; a player's client holds its own: WhipPushPayload). */
 	private static final class Push {
 		final LivingEntity target;
 		final Vec3 velocity;
@@ -506,6 +506,7 @@ public final class Brigitte implements HeroKit {
 			}
 			if (dev.overcraft.hero.Combat.phaseStops(p.target)) {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
+				letGo(p.target);
 				return true;
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
@@ -519,14 +520,15 @@ public final class Brigitte implements HeroKit {
 				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
 				Combat.send(p.target);
+				letGo(p.target);
 				return true;
 			}
 			if (p.left-- <= 0) {
 				return p.whiplash == null || p.whiplashLeft <= 0;
 			}
 			boolean first = p.left == Ow.ticks(WHIP_PUSH_TIME) - 1;
-			if (p.target instanceof net.minecraft.server.level.ServerPlayer && !first) {
-				// a player's client moves them: the one send below gives them the push. Each tick's would overwrite their own
+			if (p.target instanceof ServerPlayer && !first) {
+				// a player's client moves them and holds it (the payload below). Each tick's send would overwrite their own
 				// vertical speed from the server's stale copy (critique_systems S4), a stutter in the air
 				return false;
 			}
@@ -534,8 +536,17 @@ public final class Brigitte implements HeroKit {
 			// level speed held, its first lift once (Minecraft's gravity brings them down)
 			p.target.setDeltaMovement(p.velocity.x, first ? p.velocity.y : v.y, p.velocity.z);
 			Combat.send(p.target);
+			if (p.target instanceof ServerPlayer pushed) {
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(pushed, new dev.overcraft.net.WhipPushPayload(true, p.velocity.x, p.velocity.z));
+			}
 			return false;
 		});
+	}
+
+	private static void letGo(LivingEntity target) {
+		if (target instanceof ServerPlayer pushed) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(pushed, dev.overcraft.net.WhipPushPayload.OFF);
+		}
 	}
 
 	/** The flail starts back from where its head is: no more hits; the cooldown when it's in her hand (0.3 s). */

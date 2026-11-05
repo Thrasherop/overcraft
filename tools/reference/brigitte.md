@@ -82,7 +82,7 @@ Nothing on 2026-10-06, 10-13 or 10-20.
   against enemies** (no global size bonus), **0 against walls and barriers** (W rev 401611) **M**.
 - Cast **0.192 s + 0.176 s recovery** under 6 m, **+0.304 s recovery** at 6 m or more (W) **M**. **She moves 50% slower
   while it's out** (2.75 m/s) (W) **M**.
-- **Knockback 25 m/s back + 3 m/s up** (25.18 m/s), about **8 m** on flat ground (W rev 408812; 25 and one push D 133E; the distance in the mod is 5.88 m on a hero, 5.6 on a husk: polish3.md) **M**. Deflect blocks it without
+- **Knockback 25 m/s back + 3 m/s up** (25.18 m/s), about **8 m** on flat ground (W rev 408812; 25 and one push D 133E) **M**. In the mod the push is held to reach W, the hold's length ours (`WHIP_PUSH_TIME`, `WHIP_HERO_PUSH_TIME`; the owner, 2026-11-05: "If wiki says 8m then we should use 8m"): played 8.48 m on a hero, 7.75 m on a husk, a zombie and a player in Minecraft mode (`techniques/testing/runs/polish4/third_after.txt`). Deflect blocks it without
   reflecting it (W) **M**.
 
 ## Repair Pack (ability 2; targeted projectile)

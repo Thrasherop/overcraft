@@ -49,10 +49,14 @@ public final class BrigitteStats {
 	public static final double WHIP_WINDUP = 0.2, WHIP_SPEED = 80, WHIP_RANGE = 20, WHIP_RADIUS = 0.5;
 	/** The push: her level aim at the launch x 25 m/s, and 2 m/s up (D 133E; #638, H: along her aim, not away from her). */
 	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 2;
-	/** How long its push is held. Ours: the data has one push (D 133E 25 m/s, #994 -> #638), which moved a husk 1.9 m against Minecraft's ground friction, so
-	 * it's held 0.25 s towards W Brigitte rev 408812's "~8 meter knockback distance on flat ground" (W, M: no data for a distance). It doesn't reach it: played 5.88 m on a
-	 * standing hero, about 5.6 m on a husk (runs/polish3/p109_before_a.txt, polish3.md). Left so: the owner's call. W's V:3 is D's m_583C208B = 3, not read as the lift, L; the lift is #638's vector. */
+	/**
+	 * How long its push is held, so that it goes W Brigitte rev 408812's "~8 meter knockback distance on flat ground" (W, M; the owner, 2026-11-05: "If wiki says
+	 * 8m then we should use 8m"). D 133E gives the 25 m/s and one push (#994 -> #638), no distance; the length of the hold is ours, chosen to reach W: 25 m/s x 0.25 s
+	 * = 6.25 m plus the slide on Minecraft's friction. Played: 7.75 m on a husk, a zombie and a player in Minecraft mode (runs/polish4/third_after.txt). W's V:3 is D's m_583C208B = 3, not read as the lift, L; the lift is #638's vector.
+	 */
 	public static final double WHIP_PUSH_TIME = 0.25;
+	/** The same for a player in hero mode, whose ground stops them almost at once (OwMovement.FRICTION): the hold and its stop go 8.48 m, played (runs/polish4/third_after.txt; 0.25 s falls short by more). Ours, as above. */
+	public static final double WHIP_HERO_PUSH_TIME = 0.3;
 	/** The flail's way back: 0.3 s from a hit, a wall or the end of its reach (D 002B's returns, ours the shorter 0.175 s
 	 * under 5 m left out). */
 	public static final double WHIP_RETURN = 0.3;
