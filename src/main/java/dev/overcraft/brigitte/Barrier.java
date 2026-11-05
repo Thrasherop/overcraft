@@ -188,6 +188,38 @@ public final class Barrier {
 					p.discard();
 				}
 			}
+			heroProjectiles(level, brig, s);
+		}
+	}
+
+	/**
+	 * A hero's projectile crossing her up barrier stops there, whatever it was flying at, as at a barrier that is an entity
+	 * (Barriers.intercept, the same rules; #104): she takes what it would have dealt, and it does its own (a burst, a bounce). Left
+	 * to reach its target, what it did after the hit went through her: Sleep Dart put an enemy to sleep behind her, Accretion knocked
+	 * one down, and a shot at something not on her side wasn't stopped at all.
+	 */
+	private static void heroProjectiles(ServerLevel level, ServerPlayer brig, HeroState s) {
+		for (dev.overcraft.entity.OwProjectile p : level.getEntitiesOfClass(dev.overcraft.entity.OwProjectile.class, brig.getBoundingBox().inflate(8),
+			e -> dev.overcraft.hero.Barriers.takes(e) && !e.passesBarriers() && stops(brig, e.getOwner()))) {
+			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo);
+			Vec3 at = meets(brig, s, before, now);
+			if (at == null) {
+				at = meets(brig, s, now, now.add(p.getDeltaMovement()));
+			}
+			if (at == null) {
+				continue;
+			}
+			double damage = p.barrierDamage();
+			if (damage > 0) {
+				take(level, brig, s, damage, at);
+			}
+			Vec3 facing = facing(brig);
+			Vec3 normal = before.subtract(brig.position().add(facing.scale(BARRIER_AHEAD))).dot(facing) < 0 ? facing.scale(-1) : facing;
+			p.hitBarrier(at.add(normal.scale(0.3)), normal);
+			if (!s.barrierUp) {
+				// that broke it
+				return;
+			}
 		}
 	}
 
@@ -303,8 +335,11 @@ public final class Barrier {
 		Vec3 to = victim.getBoundingBox().getCenter();
 		for (ServerPlayer brig : level.players()) {
 			HeroState s = HeroManager.state(brig);
+			// her side, whoever shoots; or anyone, when it's her enemy who shoots (a shot at a zombie behind her stops at her too:
+			// a barrier doesn't ask what's behind it, Barriers.absorb, #83)
 			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig.distanceToSqr(victim) <= 100
-				&& Allies.isSelfOrAlly(brig, victim) && source.getEntity() != brig && crosses(brig, s, from, to)) {
+				&& source.getEntity() != brig && (Allies.isSelfOrAlly(brig, victim) || source.getEntity() != null && stops(brig, source.getEntity()))
+				&& crosses(brig, s, from, to)) {
 				return brig;
 			}
 		}
@@ -349,8 +384,8 @@ public final class Barrier {
 	}
 
 	/**
-	 * Whether a Brigitte's up barrier stands between {@code attacker}'s eyes and {@code victim} (her or her ally): an area
-	 * ability's push and lockout stop there with its damage (Soundwave, Purr, Catnapper's landing).
+	 * Whether a Brigitte's up barrier stands between {@code attacker}'s eyes and {@code victim}: an area ability's push, lockout
+	 * or knock-down stop there with its damage (Soundwave, Purr, Catnapper's landing).
 	 */
 	public static boolean shields(LivingEntity victim, Entity attacker) {
 		if (!(victim.level() instanceof ServerLevel level)) {
@@ -364,7 +399,7 @@ public final class Barrier {
 		for (ServerPlayer brig : level.players()) {
 			HeroState s = HeroManager.state(brig);
 			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig.distanceToSqr(victim) <= 100
-				&& Allies.isSelfOrAlly(brig, victim) && stops(brig, attacker) && crosses(brig, s, from, to)) {
+				&& stops(brig, attacker) && crosses(brig, s, from, to)) {
 				return true;
 			}
 		}
