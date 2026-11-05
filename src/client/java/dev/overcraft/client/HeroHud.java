@@ -1524,7 +1524,7 @@ public final class HeroHud {
 		float y = cy + TIMER_BELOW;
 		if ((s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0) {
 			float total = (float) dev.overcraft.juno.JunoStats.GLIDE_TIME;
-			timedBar(g, HeroArt.ability(Hero.JUNO, "glide_boost"), "glide_boost", s.activeLeft() / total, s.activeLeft(), cx, y);
+			timedBar(g, HeroArt.ability(Hero.JUNO, "glide_boost"), s.activeLeft() / total, s.activeLeft(), cx, y);
 			y += TIMER_GAP;
 		}
 		dev.overcraft.client.model.HeroAnimator a = dev.overcraft.client.model.HeroAnimator.of(player);
@@ -1532,7 +1532,7 @@ public final class HeroHud {
 		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && a.junoLocking(now)) {
 			float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
 			float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
-			timedBar(g, null, "pulsar_torpedoes", left / total, left, cx, y);
+			timedBar(g, null, left / total, left, cx, y);
 		}
 	}
 
@@ -1541,7 +1541,7 @@ public final class HeroHud {
 	private static final float TIMER_W = 180, TIMER_H = 6;
 
 	/** One timed-ability bar (0237): the share left as a white bar shrinking toward its left end, the seconds at its right. */
-	private static void timedBar(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float share, float seconds,
+	private static void timedBar(GuiGraphicsExtractor g, @Nullable Identifier icon, float share, float seconds,
 								 float cx, float y) {
 		share = Math.clamp(share, 0, 1);
 		float x = cx - TIMER_W / 2;

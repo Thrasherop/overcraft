@@ -205,7 +205,9 @@ public final class JunoFx {
 			return null;
 		}
 		Posed p = POSED.get(juno.getId());
-		return p == null || juno.level().getGameTime() - p.tick > 1 || which >= p.points.length ? null : p.points[which];
+		// (a slow frame or a screenshot's stall skips ticks: past 1 tick her pods' glow fell back to the rest place on her chest,
+		// critique M4; a quarter second of old pose is nearer than that)
+		return p == null || juno.level().getGameTime() - p.tick > 5 || which >= p.points.length ? null : p.points[which];
 	}
 
 	/**
@@ -517,13 +519,18 @@ public final class JunoFx {
 	private static void launch(Vec3 at, int target, boolean heal, boolean enemy) {
 		LOCKS.remove(target);
 		Palette p = enemy ? Palette.JUNO_TORP_LAUNCH_ENEMY_N : Palette.JUNO_TORP_LAUNCH_N;
-		for (float s : new float[] {0.65f, 1.5f}) {
+		// in her own view her pods are half a metre from her eyes: a quarter the size, as their lock glow (critique M5)
+		Minecraft mc = Minecraft.getInstance();
+		float k = mc.player != null && ownFirstPerson(mc.player) && at.distanceToSqr(mc.player.getEyePosition()) < 2 * 2 ? 0.25f : 1;
+		for (float s0 : new float[] {0.65f, 1.5f}) {
+			float s = s0 * k;
 			Particle lens = Fx.particle("juno_lens_flare", p);
 			if (lens != null) {
 				Fx.add(lens.at(at).life(range(0.05f, 0.1f)).size(s, s * 0.7f).alpha(0.35f).fade(0.01f, 0.5f).nearFade(1.5f));
 			}
 		}
-		for (float s : new float[] {0.35f, 0.64f}) {
+		for (float s0 : new float[] {0.35f, 0.64f}) {
+			float s = s0 * k;
 			Particle dot = Fx.particle("juno_soft_dot", p);
 			if (dot != null) {
 				Fx.add(dot.at(at).life(range(0.05f, 0.1f)).size(s, s * 0.7f).alpha(0.35f).fade(0.01f, 0.5f).nearFade(1.5f));

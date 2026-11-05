@@ -67,6 +67,10 @@ public final class Juno implements HeroKit {
 			lockFlag(player, s);
 			return;
 		}
+		if (s.junoLock >= 0 && dev.overcraft.sombra.Hack.silenced(player)) {
+			// hacked: the lock ends (W: stun, knockdown or hack interrupt it); her gun still works
+			Torpedoes.clear(player, s);
+		}
 		ring(player, s);
 		ray(player, s);
 		boolean locking = s.junoLock >= 0;

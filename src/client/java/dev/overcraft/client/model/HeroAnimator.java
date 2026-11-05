@@ -1359,7 +1359,6 @@ public final class HeroAnimator {
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
-			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
 			// then the lock's hold (cat 0x1F8, 4695 #1199) looping while the window lasts, over the start's last frame: the
 			// start holds her pods 0.55 m up (3CFB +0.28, +0.55 in every key), the hold's own keys only bob them 1-4 cm about
 			// zero, and the fire's first key has them at +0.3, +0.52, so the three meet only with the start's offset kept
@@ -1367,13 +1366,23 @@ public final class HeroAnimator {
 			SkinnedModel.Clip start = clip(model, "add_torpedo_lock_start");
 			SkinnedModel.Clip hold = clip(model, "add_torpedo_lock");
 			float lockFor = since("torpedo_lock", now);
-			if (start != null && hold != null && junoLocking(now) && lockFor > start.duration()) {
-				Skeleton.addAdditive(start, start.duration(), pose, 1);
-				Skeleton.addAdditive(hold, (lockFor - start.duration()) % hold.duration(), pose, 1);
-				// and cat 0x1F8's second layer, F788, 4.07 s: the 4 s lock window's own (clipmap.md, M)
-				SkinnedModel.Clip window = clip(model, "add_torpedo_lock_hold");
-				if (window != null) {
-					Skeleton.addAdditive(window, Math.min(lockFor - start.duration(), window.duration()), pose, 1);
+			// the lock's end: its fire takes over at once (its first key is where the hold is); a cancel fades the pods home
+			// over ActionTrack's 0.15 s, as her first person (no exit clip in 3P's df 0xAE7: critique M3)
+			float cancelled = since("torpedo_cancel", now);
+			float weight = junoLocking(now) ? 1 : cancelled < lockFor && lockFor < since("torpedo_fire", now) && cancelled < 0.15f
+				? 1 - cancelled / 0.15f : 0;
+			if (start != null && hold != null && weight > 0) {
+				float held = lockFor - (weight < 1 ? cancelled : 0);
+				if (held <= start.duration()) {
+					Skeleton.addAdditive(start, held, pose, weight);
+				} else {
+					Skeleton.addAdditive(start, start.duration(), pose, weight);
+					Skeleton.addAdditive(hold, (held - start.duration()) % hold.duration(), pose, weight);
+					// and cat 0x1F8's second layer, F788, 4.07 s: the 4 s lock window's own (clipmap.md, M)
+					SkinnedModel.Clip window = clip(model, "add_torpedo_lock_hold");
+					if (window != null) {
+						Skeleton.addAdditive(window, Math.min(held - start.duration(), window.duration()), pose, weight);
+					}
 				}
 			}
 			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
