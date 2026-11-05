@@ -38,6 +38,8 @@ public final class AbilityCamera {
 	private static float blendTime;
 	/** How far the view rises off her line of sight (m) for the ability holding it, and how far back it was last frame. */
 	private static float lift = LIFT;
+	/** How far the view sits to her right (m) for the ability holding it. */
+	private static float side;
 	private static float shown;
 	private static float blend;
 	private static long lastNanos;
@@ -55,6 +57,11 @@ public final class AbilityCamera {
 	 * Minecraft's own), how fast a change in that distance is chased (m/s, 0 at once) and its blend in and out (s).
 	 */
 	public static void update(Minecraft mc, boolean wanted, float distance, float chase, float blendSeconds, float rise) {
+		update(mc, wanted, distance, chase, blendSeconds, rise, 0);
+	}
+
+	/** The same, the view {@code right} m to her right. */
+	public static void update(Minecraft mc, boolean wanted, float distance, float chase, float blendSeconds, float rise, float right) {
 		// dev only ("aimpose"): the body seen from any side, whatever its ability's view
 		wanted = wanted && dev.overcraft.client.model.HeroModelRenderer.DEV_AIM == null;
 		if (leaving && mc.options.getCameraType() != CameraType.THIRD_PERSON_BACK) {
@@ -64,6 +71,7 @@ public final class AbilityCamera {
 		}
 		if (wanted) {
 			lift = rise;
+			side = right;
 			wantDistance = distance;
 			chaseSpeed = chase;
 			blendTime = blendSeconds;
@@ -126,6 +134,11 @@ public final class AbilityCamera {
 		}
 		shown = distance * eased();
 		return shown;
+	}
+
+	/** How far to her right the view sits now (m). */
+	public static float side() {
+		return side * eased();
 	}
 
 	/** How far the view rises off her line of sight now (m). */

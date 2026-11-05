@@ -11,13 +11,19 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The local player on a Jetpack Cat's Lifeline (#89). A player moves themselves, so the rope pulls them here, on their own
- * client, as her graph runs it in the ally's context: their mover, gravity and keys go on as ever (OwMovement, or Minecraft's
- * walking out of hero mode) and the rope is added to their speed before the tick moves them. UNVERIFIED on a second player
- * so far: see techniques/heroes/jetpack_cat.md.
+ * client, where her graph has the node (the ally's context, H): their mover, gravity and keys go on as ever (OwMovement, or
+ * Minecraft's walking out of hero mode) and the rope is added to their speed before the tick moves them. The force's shape is
+ * ours (LifelineRope). Played on a bot's rope and on a floating anchor, never with a real second player: see
+ * techniques/heroes/jetpack_cat.md.
  */
 public final class ClientTow {
 	private static boolean taut;
-	private static Vec3 herLast;
+	/** Where she was seen, these last ticks: her speed over a quarter of a second, not from one bunch of position updates. */
+	private static final java.util.ArrayDeque<Vec3> SEEN = new java.util.ArrayDeque<>();
+	private static final int SEEN_TICKS = 5;
+	/** Her fastest change of speed, m/s²: 7.75 x 5.5, her flight's acceleration in the recording (jetpack_cat.md, #60). */
+	private static final double HER_ACCEL = 42.7;
+	private static Vec3 her = Vec3.ZERO;
 
 	private ClientTow() {
 	}
@@ -37,16 +43,25 @@ public final class ClientTow {
 		int catId = JetpackCatFx.towedBy(player);
 		Entity cat = catId < 0 ? null : mc.level.getEntity(catId);
 		if (cat == null) {
-			herLast = null;
+			SEEN.clear();
+			her = Vec3.ZERO;
 			return;
 		}
 		Vec3 herAt = cat.position();
 		// her speed from where she's seen: other players arrive by their positions, not their speeds
-		Vec3 her = herLast == null ? Vec3.ZERO : herAt.subtract(herLast).scale(20);
-		herLast = herAt;
+		Vec3 seen = SEEN.isEmpty() ? Vec3.ZERO : herAt.subtract(SEEN.peekFirst()).scale(20.0 / SEEN.size());
+		// and no faster a change than she can make (a jump of her position is a hitch or a blink, not a speed): after a 6 m /tp this
+		// took the towed player to 29 m/s and past her
+		her = OwMovement.approach(her, seen, HER_ACCEL * 0.05);
+		SEEN.addLast(herAt);
+		if (SEEN.size() > SEEN_TICKS) {
+			SEEN.removeFirst();
+		}
 		Vec3 v = player.getDeltaMovement().scale(20);
 		Vec3 toHer = herAt.subtract(player.position());
-		if (!LifelineRope.taut(toHer, JetpackCatStats.LIFELINE_ROPE)) {
+		// past what the server lets a rope be (it's let go, or she's blinked: its word is on the way): no pull
+		if (!LifelineRope.taut(toHer, JetpackCatStats.LIFELINE_ROPE)
+			|| toHer.horizontalDistance() > JetpackCatStats.LIFELINE_ROPE * JetpackCatStats.LIFELINE_BREAK) {
 			return;
 		}
 		taut = true;

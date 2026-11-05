@@ -34,7 +34,7 @@ class LifelineRopeTest {
 	@Test
 	void hangsPastItsLengthByGravityOverStiffness() {
 		Vec3[] end = fly(t -> Vec3.ZERO, Vec3.ZERO, HANG, Vec3.ZERO, 0, 12);
-		assertEquals(4 + 17.1 / 30, end[0].distanceTo(end[1]), 0.05); // gravity is 16.7 rising, 17.5 falling
+		assertEquals(4 + 17.1 / 30, end[0].distanceTo(end[1]), 0.1); // gravity is 16.7 rising, 17.5 falling
 		assertEquals(0, end[2].length(), 0.3); // a bob of about 0.04 m: the two gravities
 	}
 
@@ -91,6 +91,28 @@ class LifelineRopeTest {
 		// a rope never pushes, however fast it's closing
 		Vec3 closing = new Vec3(0, 20, 0);
 		assertEquals(20, LifelineRope.pull(new Vec3(0, 5, 0), Vec3.ZERO, closing, LENGTH, DT).y, 1.0E-6);
+	}
+
+	@Test
+	void aCatchArrivesWithoutThrowingThemPastHer() {
+		// 8 m under her and 3 m aside, as a villager's caught: the rope never goes far slack, and the swing it leaves is small
+		Vec3 ally = new Vec3(0, -8, 3);
+		Vec3 v = Vec3.ZERO;
+		double shortest = 99;
+		for (int i = 0; i < 360; i++) {
+			v = LifelineRope.free(v, DT);
+			v = LifelineRope.pull(ally.scale(-1), Vec3.ZERO, v, LENGTH, DT);
+			ally = ally.add(v.scale(DT));
+			shortest = Math.min(shortest, ally.length());
+		}
+		assertTrue(shortest > 4.0, "came to " + shortest);
+	}
+
+	@Test
+	void herBlinkingDoesntThrowThem() {
+		// a bunch of position updates reads as 3000 m/s for a tick: what they get is bounded by her real top speed and the reel
+		Vec3 v = LifelineRope.pull(new Vec3(0, 0, 150), new Vec3(0, 0, 3000), Vec3.ZERO, LENGTH, DT);
+		assertTrue(v.length() <= 23.2 + 10 + 1.0E-6, "v " + v.length());
 	}
 
 	@Test

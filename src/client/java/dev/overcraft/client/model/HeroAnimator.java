@@ -1903,6 +1903,10 @@ public final class HeroAnimator {
 			// his jump (alias 0x006): the takeoff, then the rise, held till he lands (lucio-map.md read these as skating)
 			SkinnedModel.Clip start = clip(model, "jump" + jumpDirection + "_start");
 			next = start != null && now - airborneSince < start.duration() ? "jump" + jumpDirection + "_start" : "jump" + jumpDirection;
+		} else if (!onGround && dev.overcraft.client.effect.JetpackCatFx.towed(entity.getId()) && clip(model, "pulled") != null) {
+			// on her rope: alias 0x1C8 (5A8F #1324, H; its 2D blend on df 0x235 / 0x236 isn't driven: its centre). Where the clipmap has it:
+			// Ana, Brigitte, Juno, Sojourn, Sombra. Kiriko, Lúcio, Mercy and Sigma's other name aren't mapped: their air pose
+			next = "pulled";
 		} else if (!onGround) {
 			next = vy > 0 ? "jump" : "fall";
 		} else if (skates && !moving && !crouching && clip(model, "skate_stop" + skateDirection) != null

@@ -741,6 +741,15 @@ public final class DevServer {
 				dev.overcraft.client.effect.JetpackCatFx.devTow(player, anchor == null ? -1 : anchor.getId());
 				out.addProperty("anchor", anchor == null ? -1 : anchor.getId());
 			}
+			case "towframes" -> {
+				// dev only (#89): "towframes start", then "towframes": each rendered frame, as drawn: time (s), her x y z, the towed one's x y z
+				if (arg.equals("start")) {
+					dev.overcraft.client.effect.JetpackCatFx.devFrames(true);
+					out.addProperty("ok", true);
+				} else {
+					out.addProperty("trace", dev.overcraft.client.effect.JetpackCatFx.devFrames(false));
+				}
+			}
 			case "towtrace" -> {
 				// dev only (#89): "towtrace start", then "towtrace": per server tick, the Jetpack Cat and whoever her Lifeline tows:
 				// tick, her x y z, their x y z, their on-ground (m). The server's view, so it reads a mob or a player the same

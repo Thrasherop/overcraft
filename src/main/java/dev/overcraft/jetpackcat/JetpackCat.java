@@ -317,11 +317,12 @@ public final class JetpackCat implements HeroKit {
 
 	/** This ally is in her Lifeline's cylinder, in her sight, not on another rope, not just let go. */
 	public static boolean lifelineReaches(ServerPlayer cat, LivingEntity ally) {
-		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger()) {
+		// (asleep or carrying a rider isn't an ally to pull away, ours: a mob can't opt in, and a sleeper flew off its bed, a horse with its rider)
+		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger() || ally.isVehicle() || ally.isSleeping()) {
 			return false;
 		}
 		Long until = LOCKED_OUT.get(ally);
-		if (until != null && cat.level().getGameTime() < until) {
+		if (until != null && cat.level().getServer().getTickCount() < until) {
 			return false;
 		}
 		Vec3 to = ally.position().subtract(cat.position());
@@ -485,6 +486,14 @@ public final class JetpackCat implements HeroKit {
 	}
 
 	private static final java.util.Map<LivingEntity, Towing> TOWING = new java.util.WeakHashMap<>();
+	/** Minecraft's air drag a tick, across and down (LivingEntity.travelInAir, decompiled). */
+	private static final double MC_AIR_DRAG = 0.91, MC_FALL_DRAG = 0.98;
+	/** Ours: a speed past this since last tick (m/s) wasn't a move, a teleport: not taken as its speed. */
+	private static final double BLINK_SPEED = 40;
+	/** Ours: a change past this (blocks a tick) over what Minecraft's drag explains is a hit, not its AI's little push (0.02 in the air). */
+	private static final double HIT_SEEN = 0.1;
+	/** Ours: m/s pressing a towed mob to the ground while the rope isn't lifting it (Minecraft's own gravity for a tick). */
+	private static final double PRESS_DOWN = 1.6;
 
 	/**
 	 * The rope on whoever it tows, this tick (LifelineRope). A player moves themselves: their own client pulls them
@@ -526,25 +535,28 @@ public final class JetpackCat implements HeroKit {
 		// the speed we gave it, less what a wall or the ground took. Not the speed it really moved at: that holds its AI's walk,
 		// which without Minecraft's friction adds up to 40 m/s² and held a villager against the rope, on its feet (found playing).
 		// Picked up from the ground it has no walk to speak of (a player's keys are their own: ClientTow)
-		Vec3 v = moved.lengthSqr() > 40 * 40 ? now.scale(20) : moved;
+		Vec3 v = moved.lengthSqr() > BLINK_SPEED * BLINK_SPEED ? now.scale(20) : moved;
 		if (t.sent != null) {
 			Vec3 sent = t.sent.scale(20);
 			v = new Vec3(ally.horizontalCollision ? moved.x : sent.x, ally.verticalCollision ? moved.y : sent.y,
 				ally.horizontalCollision ? moved.z : sent.z);
 			// a hit since the last tick shows as a speed that isn't what Minecraft made of the one we gave it
 			if (!ally.horizontalCollision && !ally.verticalCollision) {
-				Vec3 expected = new Vec3(t.sent.x * 0.91, (t.sent.y - ally.getGravity()) * 0.98, t.sent.z * 0.91);
+				Vec3 expected = new Vec3(t.sent.x * MC_AIR_DRAG, (t.sent.y - ally.getGravity()) * MC_FALL_DRAG, t.sent.z * MC_AIR_DRAG);
 				Vec3 hit = now.subtract(expected);
-				if (hit.lengthSqr() > 0.1 * 0.1 && !ally.onGround()) {
+				if (hit.lengthSqr() > HIT_SEEN * HIT_SEEN && !ally.onGround()) {
 					v = v.add(hit.scale(20));
 				}
 			}
 		}
 		for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
-			if (!ally.isNoGravity() && !ally.onGround()) {
-				v = LifelineRope.free(v, dt);
-			}
+			v = LifelineRope.free(v, dt);
 			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+		}
+		if (ally.onGround() && v.y <= 0) {
+			// the rope isn't lifting them: on the ground, pressed to it as Minecraft keeps a walker (with no gravity here the pull's little
+			// upward share hopped them every other tick, found in a trace)
+			v = new Vec3(v.x, -PRESS_DOWN, v.z);
 		}
 		t.sent = v.scale(0.05);
 		ally.setDeltaMovement(t.sent);
@@ -567,11 +579,18 @@ public final class JetpackCat implements HeroKit {
 			return;
 		}
 		Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+		// and whoever was on it, wherever they are: effects only go 96 m round her, and if she's blinked past that their client went
+		// on pulling them to her, let go by the server (found on a bot's rope)
+		if (player.level().getEntity(s.lifelineTarget) instanceof ServerPlayer towed) {
+			Effects.send(towed, "tether_end", player.position(), null, player.getId(), player);
+		}
+		int target = s.lifelineTarget;
+		TOWING.keySet().removeIf(a -> a.getId() == target);
 		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
 		if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
-			LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
-			LOCKED_OUT.put(ally, player.level().getGameTime() + Ow.ticks(LIFELINE_LOCKOUT));
-			TOWING.remove(ally);
+			// (the server's own count: /time set moved the world's clock under these, found locking a player out for good)
+			LET_GO.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LET_GO_GRACE));
+			LOCKED_OUT.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LIFELINE_LOCKOUT));
 		}
 		s.lifelineTarget = null;
 	}

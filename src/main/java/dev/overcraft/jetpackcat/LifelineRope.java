@@ -9,8 +9,9 @@ import net.minecraft.world.phys.Vec3;
  * their keys, and the rope is one more force on them, and only while it's stretched past its length: that's what makes them
  * hang, trail, swing and lift. Velocities in m/s, positions in m.
  *
- * <p>Her data names the node's numbers but not what they mean (`E:\Overwatch Archive\research\jetpack_cat\gaps.md`, "What the
- * rope node's 12 numbers mean"), so the reading here is M: see {@code JetpackCatStats.ROPE_*}. No recording has an ally on it.
+ * <p>Her data holds the node's numbers but not what they mean (`E:\Overwatch Archive\research\jetpack_cat\gaps.md`: "Still
+ * unknown", stiffness L), and no recording has an ally on it. So the shape of this force is ours, made to look like a rope: see
+ * {@code JetpackCatStats.ROPE_*}.
  */
 public final class LifelineRope {
 	private LifelineRope() {
@@ -24,11 +25,18 @@ public final class LifelineRope {
 			return ally; // slack: a rope doesn't push
 		}
 		Vec3 along = toHer.scale(1 / dist);
+		// her speed as a limit on theirs: seen from far off it can be anything (a /tp, or a hitch bunching her position updates: 3000 m/s
+		// for a tick threw a towed player 180 m, found on a bot's rope)
+		if (her.lengthSqr() > JetpackCatStats.ROPE_HER_TOP * JetpackCatStats.ROPE_HER_TOP) {
+			her = her.normalize().scale(JetpackCatStats.ROPE_HER_TOP);
+		}
 		Vec3 relative = her.subtract(ally);
 		double separating = relative.dot(along);
 		double add = (JetpackCatStats.ROPE_STIFFNESS * stretch + JetpackCatStats.ROPE_DAMPING * separating) * dt;
-		// it reels them in no faster than this: from 13 m under her the spring alone threw a villager past her at 50 m/s
-		add = Math.min(add, Math.max(0, JetpackCatStats.ROPE_REEL_SPEED + separating));
+		// it closes no faster than this, and slower as it comes to its length so it arrives without throwing them past her: from 13 m
+		// under her the spring alone threw a villager at 50 m/s, and 10 m/s all the way in threw them to 2.6 m and 37°
+		double closing = Math.min(JetpackCatStats.ROPE_REEL_SPEED, JetpackCatStats.ROPE_ARRIVE * stretch);
+		add = Math.min(add, Math.max(0, closing + separating));
 		Vec3 pulled = ally.add(along.scale(Math.max(0, add)));
 		// the swing dies away, slowly: only what's across the rope
 		Vec3 across = relative.subtract(along.scale(separating));

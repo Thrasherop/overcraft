@@ -58,6 +58,73 @@ public final class JetpackCatFx {
 		}
 	}
 
+	private static java.util.List<String> devFrames;
+
+	/** Dev only ("towframes"): starts recording each frame's rope ends, or stops and returns them. */
+	public static String devFrames(boolean start) {
+		String all = devFrames == null ? "" : String.join("\n", devFrames);
+		devFrames = start ? new java.util.ArrayList<>() : null;
+		return all;
+	}
+
+	/** This one hangs on a Jetpack Cat's rope (a tow or a carry). */
+	public static boolean towed(int id) {
+		for (int[] tether : TETHERS.values()) {
+			if (tether[0] == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static final net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey<float[]> TILT = net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey.create(() -> "overcraft tow tilt");
+	/** Each towed body's lean as last drawn: its "up", eased (entity id -> direction). */
+	private static final Map<Integer, Vec3> TILTS = new HashMap<>();
+	private static float tiltAt;
+	/** Ours: how much of the rope's angle a body takes, and how fast its lean follows (a second). */
+	private static final double TILT_SHARE = 0.8, TILT_RATE = 8;
+
+	/**
+	 * The lean of a body on her rope, ours (no data: mobs aren't in Overwatch): its up turned toward her, from the point it hangs by:
+	 * {x, y, z, w of the turn, the point's height}, or null. Heroes pose by their own clips (HeroAnimator's "pulled"), so not those.
+	 */
+	public static float @Nullable [] tilt(net.minecraft.world.entity.LivingEntity entity, float partial) {
+		if (TETHERS.isEmpty()) {
+			TILTS.clear();
+			return null;
+		}
+		int catId = -1;
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == entity.getId()) {
+				catId = e.getKey();
+			}
+		}
+		net.minecraft.world.entity.Entity cat = catId < 0 ? null : entity.level().getEntity(catId);
+		Vec3 last = TILTS.get(entity.getId());
+		if (cat == null && last == null) {
+			return null;
+		}
+		Vec3 want = UP;
+		if (cat != null && !entity.onGround()) {
+			Vec3 to = cat.getPosition(partial).subtract(entity.getPosition(partial));
+			if (to.length() > 3.5) {
+				to = to.normalize();
+				want = UP.scale(1 - TILT_SHARE).add(to.scale(TILT_SHARE)).normalize();
+			}
+		}
+		float now = Fx.now();
+		float dt = Math.clamp(now - tiltAt, 0, 0.1f);
+		tiltAt = now;
+		Vec3 up = last == null ? UP : last.add(want.subtract(last).scale(Math.min(1, TILT_RATE * dt))).normalize();
+		if (cat == null && up.subtract(UP).lengthSqr() < 1.0E-4) {
+			TILTS.remove(entity.getId());
+			return null;
+		}
+		TILTS.put(entity.getId(), up);
+		org.joml.Quaternionf turn = new org.joml.Quaternionf().rotationTo(0, 1, 0, (float) up.x, (float) up.y, (float) up.z);
+		return new float[] {turn.x, turn.y, turn.z, turn.w, entity.getBbHeight()};
+	}
+
 	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
 	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
 		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
@@ -608,6 +675,12 @@ public final class JetpackCatFx {
 	/** The hook's way out to the ally and back, a second (D 5A8F #1175: v73806 chases 1 at 4.5, 0 at 3.5; H). */
 	private static final float HOOK_OUT = 4.5f, HOOK_BACK = 3.5f;
 
+	/**
+	 * The rope's outer glow. 71B0 C22's 0.2573 m strip is 1344 x the noise 18F00, so most of its width is dark; as a plain soft line at 0.45 it
+	 * read as a thick glowing bar. 0.18 is ours: about that strength less the noise's mean.
+	 */
+	private static final float ROPE_GLOW = 0.18f;
+
 	/** A hook out of her arm: how far (0 at her arm, 1 on the ally) and the point it's going to or last had. */
 	private static final class Hook {
 		float out;
@@ -649,6 +722,11 @@ public final class JetpackCatFx {
 			int[] tether = TETHERS.get(e.getKey());
 			net.minecraft.world.entity.Entity towed = tether == null ? null : mc.level.getEntity(tether[0]);
 			Vec3 to = towed == null ? h.at : hook(towed, partial);
+			if (devFrames != null && towed != null) {
+				Vec3 a = cat.getPosition(partial);
+				Vec3 b = towed.getPosition(partial);
+				devFrames.add(String.format(java.util.Locale.ROOT, "%.3f %.3f %.3f %.3f %.3f %.3f %.3f", Fx.now(), a.x, a.y, a.z, b.x, b.y, b.z));
+			}
 			Vec3 from = armTip(cat, partial);
 			if (towed == mc.player && mc.options.getCameraType().isFirstPerson()) {
 				// on the towed one's own screen the hook is 0.25 m over their eyes and the rope's width fans out to fill the sky
@@ -680,7 +758,7 @@ public final class JetpackCatFx {
 		strip("rope/braid/" + id, from, piece, "cat_rope_braid", cable, 0.04f, 1);
 		strip("rope/noise/" + id, from, piece, "cat_glow_noise", glow, 0.13f, 0.7f);
 		// (the data's 1344 strip is multiplied by a scrolling noise there; alone it drew a wedge: a soft line instead)
-		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, 0.45f);
+		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, ROPE_GLOW);
 		if (carry) {
 			strip("rope/carry/" + id, from, piece, "cat_cloud", glow, 0.32f, 0.35f);
 		}

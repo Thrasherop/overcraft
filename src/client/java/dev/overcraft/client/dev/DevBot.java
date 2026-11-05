@@ -60,6 +60,12 @@ final class DevBot {
 		}
 		switch (a[0]) {
 			case "add" -> add(server, a, out);
+			case "ability1" -> {
+				// its Shift, as a key press reaches the kit (#89: a bot Jetpack Cat's Lifeline, for a real client to take)
+				var bot = BOTS.get(a[1]);
+				HeroState s = HeroManager.state(bot);
+				HeroManager.kit(s.hero).press(bot, s, dev.overcraft.net.HeroInputPayload.PRESS_ABILITY_1);
+			}
 			case "secondary" -> {
 				HeroState s = HeroManager.state(BOTS.get(a[1]));
 				s.secondaryHeld = a[2].equals("on");
