@@ -193,3 +193,50 @@ The owner's third log (`E:\Overwatch Archiveesearch\movement\workshop-2026-11-0
 13.5 m from her feet (one aimed 7.6 m up), each 0.22-0.23 s after the press (our 12.25 m at 72 m/s: 0.17 s of flight plus the
 throw), then stealth at 8.80 m/s throughout (5.5 x 1.6: the +60% our numbers had as M). The earlier two logs stopped writing
 before her part (the recorder's Inspector recording: [workshop_recordings](../game-data/workshop_recordings.md)).
+
+## #87: her stealth, as she and others see it (2026-11-04)
+The owner's playtest: "slightly phased out look and animations not active in translocate; her more sprinting animations in first
+person while invis doesn't work". Reproduced on `next` (`hp_s_*`, `hp_s2_*` in the worktree's `run/screenshots`): running stealthed at
+8.8 m/s her first person held the pistol still in the plain view (three frames alike), arms and gun solid; from behind, a flat 25 %
+figure with no pistol.
+- **Her first-person stealth clips were mapped and never played.** `viewBase` only knew idle / walk / jump / fall. Now her stealthed
+  set (graph 420C's category 0x1EE: `idle_stealth`, `walk_stealth` + `_left` / `_right` by the 4 slots, `jump_stealth`, `fall_stealth`,
+  layer `add_idle_stealth`). These clips put the pistol away and pump her hands in turn at the screen's bottom corners, which is
+  the sprint the owner means: played over nine phases of the 0.667 s cycle (`hp2_t*`), left hand, then right, then none.
+- **"Stealthed" now starts at the teleport, not at the fade's end,** from a synced `HeroManager.SOMBRA_STEALTH` (the tick it began, -1
+  after): the speed already ran from the landing, and damage's 1.3 s reveal no longer drops the clips (420C's state goes on).
+- **The look (`HeroModelRenderer.submitStealth`, `ClientSombra.phase`):** the data has no art: 16EA is empty, the invisibility is a
+  renderer state (STU_33A46033), 1AD9 / 1AD8 a wipe with a red-to-cyan edge over her material. Ours: lilac and see-through at
+  38 % (each piece's opacity flickering 12 times a second, a digital shimmer), a faint purple glow, her weapon too, and a cross-fade
+  from solid over the data's 0.75 s and back over 0.3 s, brightest mid-fade (replaced: see "After the critique"). Her own arms take the same, plus a 30 % purple tint at
+  the screen's edges (1A75 held: its colour read dim red, L; 55 % hid the sky, cut). Played day and night, 1P and 3P
+  (`hp5_s*`, `hp5_n*`): throw, fade, run, strafe, `damage` (reveal), a shot (ends it, solid), its 6.5 s end.
+
+What a critic should check:
+- **The look against Overwatch side by side:** ours is a texture at 38 %, not its refraction, and no wipe edge. The flicker is per piece,
+  so a large piece flickers as one. If it reads as a hologram, lower the glow first.
+- Her 1P stride plays on the clock (0.667 s, as the map lists it) at 8.8 m/s; the graph's rate node wasn't found.
+- **A second player wasn't played here** (one client only, after the machine's crash): an ally's and a near enemy's view of her
+  use the same `submit` path as her own third person. Enemies past 4 m still see nothing (not changed, played earlier).
+- Not built: her stealth reticle and timer ring (0277 with 008B), #85. Hidden first-person clips left L: `stealth_486` / `_487`, `add_stealth_layer`.
+
+## After the critique ([critique_hero_polish](../testing/critique_hero_polish.md), 2026-11-04)
+The first pass said "no art" of the fades: wrong, only the held state has none. What changed, on `next` merged in, harness keys, dev pack:
+- **H4, the data's wipe, in Minecraft's own shader.** 26.3's entity shader has a dissolve (`RenderTypes.entityCutoutDissolve(texture, mask)`: discard where vertex alpha is
+  below the mask's alpha, on the model's UVs). A7BF's six frames (`sombra_dissolve_0-5`) are baked into one mask (`HeroModelRenderer.wipeMask`: a texel's alpha says when it
+  goes), her solid self drawn through it with alpha 1 - phase, the edge row's colours (#6D0000 -> #00DFB6, read by the fade: M) added on the frame reached. Played: she
+  breaks up in A7BF's diagonal pieces with an orange edge (`hp10_f*`), her arm too (`hp10_a`, `hp10_b`). 1AD8 is "the wipe twice"; ours once, reversed, over 0.3 s (M).
+- **H3, the in and out clips.** Aliases 0486 and 0487 (already named `stealth_486` / `stealth_487` in `sombra.txt` and `sombra_1p.txt`) now play: 420C #868's 0.525 s is how long
+  0486 plays, timed to end with the 0.75 s fade, then `add_stealth_486_end` (1P); 0487 at the end, unless a cast that ended it is playing (0487's priority: M). Also the
+  stealthed run's transitions (3E91 / 3E92: L) and Hotfix's stealthed raise (B1CC, by reading; **not looked at**).
+- **M1:** one opacity for all of her, a slow pulse; A7BF's frames turn over her at 10 % as glints (ours). Sparkles moved to the fade's end, 0.77 s (1AD9). A teleport while
+  stealthed refills without a new fade (420C #1046; by reading, not played: its cooldown outlasts stealth).
+- **M2:** her arms at 60 % (`SEE_THROUGH_OWN`), 30 % edge tint: daytime first person in `hp10_h`-`l`. Still: the hands show in part of the cycle only, and the skin reads pale. The
+  stride is on the clock; the 1.75 x in the map is the 3P tree's slots, the 1P tree's weren't found.
+- **The detection ring 4DD9,** on by default in the data (`SombraFx.detectionRing`): 129B x 43D04, 8 m across, for her alone (M). `sombra_cylinder` had to be added to `HeroModels`. First played flat as a huge square: its axis is Y as imported, not z as `sombra-effects.md` says. Height 0.8 m is ours (`hp14_a`, `hp14_b`, `hp14_d`).
+- **Reveal:** a real zombie's hit, 225 -> 188, red flash, solid-ish while revealed (`hp14_c`, `hp14_d`); its end comes back over a few frames.
+- **Merged with `leavePlay`:** G ends it, solid in Minecraft mode, no phantom on G back (`m_som_g*`); death (`m_som_d`), switch to Juno (`m_som_sw`), leave and rejoin (`m_som_lv`): nothing left over.
+- **Improved Transparency on:** no crash, the same look in 1P and 3P (`hp13_*`, `hp14_a`-`e`).
+
+What a critic should check now: mid-fade in motion (stills only; screenshots stall the game); whether the mask on her UVs reads as a diagonal (the data may use another UV); a side by side
+with Overwatch for the held look; the ring's brightness in first person. Not tried: an emote while stealthed, crouching, swimming, an ally's or enemy's view (one client only).

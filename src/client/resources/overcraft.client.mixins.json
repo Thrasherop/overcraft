@@ -26,6 +26,7 @@
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
 		"HeroFovMixin",
+		"ScopeFovMixin",
 		"CameraMixin",
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",

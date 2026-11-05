@@ -104,6 +104,14 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> SIGMA_STATE = AttachmentRegistry.create(Overcraft.id("sigma_state"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Sombra's stealth as every client draws it (HeroModelRenderer's phased-out look, her stealthed clips): the game tick her
+	 * stealth began (Stealth.start: its 0.75 s fade-in counts from there) while it lasts, -1 once it's over (#87). Whether she
+	 * is hidden or seen through is still Minecraft's invisibility (Stealth.tick).
+	 */
+	public static final AttachmentType<Long> SOMBRA_STEALTH = AttachmentRegistry.create(Overcraft.id("sombra_stealth"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));

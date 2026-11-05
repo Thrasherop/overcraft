@@ -257,11 +257,17 @@ public final class HeroAnimator {
 					viewClip = "ult_cast";
 				}
 				case "torpedo_lock" -> {
+					// the view's start then its hold for the whole window (ActionTrack: torpedo_lock_view)
 					clip = "";
-					viewClip = "torpedo_lock_start";
+					viewClip = "torpedo_lock_view";
 				}
 				case "torpedo_fire" -> clip = "";
-				case "glide", "glide_end", "torpedo_cancel" -> {
+				case "torpedo_cancel" -> {
+					// the view's lock fades back to the gun (ActionTrack); nothing new starts
+					clip = "";
+					viewClip = "torpedo_cancel";
+				}
+				case "glide", "glide_end" -> {
 					clip = "";
 					viewClip = "";
 				}
@@ -313,11 +319,16 @@ public final class HeroAnimator {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
 			// (sombra_1p.txt hack_start)
 			clip = "hack_cat82";
-			viewClip = "hack_start";
+			// (stealthed, her raise is its own: B1CC)
+			viewClip = a.stealthed ? "hack_start_stealth" : "hack_start";
 		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
+		}
+		if (a.sombra && action.equals("stealth_487") && (a.actionsFirstPerson.playing() != null || a.actions.playing() != null)) {
+			// the fade back never cuts what ended her stealth: EMP's or Cyberspace's cast plays on (0487's priority 0xDD: M)
+			return;
 		}
 		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
@@ -676,6 +687,16 @@ public final class HeroAnimator {
 		return true;
 	}
 
+	/**
+	 * Juno's Pulsar Torpedoes lock window is open, as her actions tell it (lock sent, no fire, cancel or ult since, within the
+	 * 4 s window): every client knows it this way (JunoFx's pods read it the same).
+	 */
+	public boolean junoLocking(float now) {
+		float lockFor = since("torpedo_lock", now);
+		return lockFor < since("torpedo_fire", now) && lockFor < since("torpedo_cancel", now) && lockFor < since("ult", now)
+			&& lockFor < (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW + 0.1f;
+	}
+
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
 		SkinnedModel.Clip clip = clip(model, clipName);
 		float t = since(action, now);
@@ -976,10 +997,16 @@ public final class HeroAnimator {
 				// the rise, held at its end until he lands
 				SkinnedModel.Clip start = clip(model, "jump_start");
 				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
-			} else if (viewBase.equals("idle")) {
+			} else if (viewBase.equals("idle") || viewBase.equals("idle_stealth")) {
+				// (Sombra's stealthed stand, 3EBA: two frames held, as her plain one)
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
+			} else if (viewBase.equals("stealth_move_start")) {
+				// her stealthed run's way in and out (3E91 / 3E92, the 4-slot's transitions 0 > 1 and 1 > 0: L), once
+				t = Math.min(now - movingSince, baseClip.duration());
+			} else if (viewBase.equals("stealth_move_stop")) {
+				t = Math.min(now - stoppedAt, baseClip.duration());
 			} else {
 				t = time(baseClip, now, true);
 			}
@@ -1016,7 +1043,9 @@ public final class HeroAnimator {
 			lifeweaverView(model, pose, now);
 		}
 		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster"
-			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn" : "add_idle");
+			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn"
+			// Sombra stealthed: her stealthed stand's own layer (B1CB, sombra_1p.txt)
+			: stealthed && clip(model, "add_idle_stealth") != null ? "add_idle_stealth" : "add_idle");
 		if (idleLayer != null) {
 			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out. Lifeweaver's blossom
 			// stand (C6C8, 0.167 s) is timed by its state machine's dataflows (df 0xB5 / 0xB8, research clipmap.md), not
@@ -1051,7 +1080,19 @@ public final class HeroAnimator {
 		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
 		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
 		// movement (HeroModelRenderer.drift, the owner's playtest: #14)
+		if (sombra && since("stealth_486", now) > (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP) {
+			// alias 0486 plays 0.525 s of the 0.9 s clip (420C #868), then its own end layer eases her into the stand
+			actionsFirstPerson.cancel("stealth_486", now);
+			actions.cancel("stealth_486", now);
+		}
 		actionsFirstPerson.apply(model, pose, now, null);
+		if (sombra) {
+			SkinnedModel.Clip end = clip(model, "add_stealth_486_end");
+			float past = since("stealth_486", now) - (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP;
+			if (end != null && past >= 0 && past <= end.duration()) {
+				Skeleton.addAdditive(end, past, pose, 1);
+			}
+		}
 		int tip = UpperBody.fingertip(model);
 		if (tip >= 0) {
 			Skeleton.world(model, pose, tip).getTranslation(fingertip);
@@ -1112,6 +1153,21 @@ public final class HeroAnimator {
 			} else if (scopeIn > 0) {
 				// raising or lowering: the raise clip at the scope's own place (3B84, timed by df 0x6D)
 				want = "scope_in";
+			}
+			if (stealthed) {
+				// Sombra stealthed (graph 420C's category 0x1EE on her view's blend tree, sombra_1p.txt): her own stand, jump
+				// and fall, and a 4-slot walk (s0 / s1 forward and back, s2 left, s3 right) with the stealthed run's quicker
+				// stride. Only the third person had them (#87: her first person kept the plain walk while she ran at 8.8 m/s)
+				SkinnedModel.Clip setOff = clip(model, "stealth_move_start");
+				SkinnedModel.Clip settle = clip(model, "stealth_move_stop");
+				String stealth = want.equals("walk") && setOff != null && now - movingSince < setOff.duration() ? "stealth_move_start"
+					: want.equals("idle") && settle != null && now - stoppedAt < settle.duration() ? "stealth_move_stop"
+					: want.equals("walk") && base.startsWith("strafe_left") ? "walk_stealth_left"
+					: want.equals("walk") && base.startsWith("strafe_right") ? "walk_stealth_right"
+					: want + "_stealth";
+				if (model.clips.containsKey(stealth)) {
+					return stealth;
+				}
 			}
 			return model.clips.containsKey(want) ? want : "idle";
 		}
@@ -1329,7 +1385,32 @@ public final class HeroAnimator {
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
-			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
+			// then the lock's hold (cat 0x1F8, 4695 #1199) looping while the window lasts, over the start's last frame: the
+			// start holds her pods 0.55 m up (3CFB +0.28, +0.55 in every key), the hold's own keys only bob them 1-4 cm about
+			// zero, and the fire's first key has them at +0.3, +0.52, so the three meet only with the start's offset kept
+			// under the hold (M; a contact check of the keys). Alone, the pods folded back down mid-lock (#86)
+			SkinnedModel.Clip start = clip(model, "add_torpedo_lock_start");
+			SkinnedModel.Clip hold = clip(model, "add_torpedo_lock");
+			float lockFor = since("torpedo_lock", now);
+			// the lock's end: its fire takes over at once (its first key is where the hold is); a cancel fades the pods home
+			// over ActionTrack's 0.15 s, as her first person (no exit clip in 3P's df 0xAE7: critique M3)
+			float cancelled = since("torpedo_cancel", now);
+			float weight = junoLocking(now) ? 1 : cancelled < lockFor && lockFor < since("torpedo_fire", now) && cancelled < 0.15f
+				? 1 - cancelled / 0.15f : 0;
+			if (start != null && hold != null && weight > 0) {
+				float held = lockFor - (weight < 1 ? cancelled : 0);
+				if (held <= start.duration()) {
+					Skeleton.addAdditive(start, held, pose, weight);
+				} else {
+					Skeleton.addAdditive(start, start.duration(), pose, weight);
+					Skeleton.addAdditive(hold, (held - start.duration()) % hold.duration(), pose, weight);
+					// and cat 0x1F8's second layer, F788, 4.07 s: the 4 s lock window's own (clipmap.md, M)
+					SkinnedModel.Clip window = clip(model, "add_torpedo_lock_hold");
+					if (window != null) {
+						Skeleton.addAdditive(window, Math.min(held - start.duration(), window.duration()), pose, weight);
+					}
+				}
+			}
 			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
 		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
@@ -1420,7 +1501,10 @@ public final class HeroAnimator {
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
-		stealthed = sombra && entity.isInvisible();
+		// her stealth from its start (the synced HeroManager.SOMBRA_STEALTH: fading in and revealed count, as 420C's state does),
+		// or Minecraft's invisibility (a potion)
+		Long stealthFrom = entity.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		stealthed = sombra && (stealthFrom != null && stealthFrom >= 0 || entity.isInvisible());
 		juno = "juno".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		boolean glideNow = juno && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE));
 		if (glideNow && !junoGliding) {

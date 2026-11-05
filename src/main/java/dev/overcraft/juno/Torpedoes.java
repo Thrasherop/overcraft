@@ -288,6 +288,11 @@ public final class Torpedoes {
 			JunoSounds.stopFor(player, "torpedo.locking.loop");
 			s.junoLockTicking.clear();
 		}
+		// a lock cut any way but its fire (death, G, sleep, a stun, a hack, another hero): her clients' lock pose ends with it.
+		// Silent, the first person's looping hold outlived the lock: no gun and the pods up, even after a respawn (critique H1)
+		if (s.junoLock >= 0) {
+			Combat.animate(player, "torpedo_cancel");
+		}
 		s.junoLock = -1;
 		s.junoLockProgress.clear();
 		s.junoLocked.clear();

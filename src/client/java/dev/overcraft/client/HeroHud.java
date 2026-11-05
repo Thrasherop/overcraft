@@ -167,13 +167,31 @@ public final class HeroHud {
 			minecraftMode(g, s, hero);
 			return;
 		}
-		screenEffects(g, s, player);
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		float w = g.guiWidth() / scale;
 		float h = g.guiHeight() / scale;
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
+		// Ana scoped in: her scope over the view, under every widget and the screen's hurt tints (under its surround they were
+		// lost: critique M6), in place of the crosshair once it shows, eased between the sync's ticks (#90)
+		float scope = hero == Hero.ANA ? ClientAna.ownScopeEased() : 0;
+		if (scope > SCOPE_SHOWN) {
+			anaScope(g, w, h, Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1));
+		}
+		g.pose().popMatrix();
+		screenEffects(g, s, player);
+		g.pose().pushMatrix();
+		g.pose().scale(scale, scale);
+		// scoped, ally marks only over the lens: over its black surround they marked nothing to be seen (critique M6)
+		boolean lens = scope >= 1;
+		float lensAt = Math.min(w, h) / 2 - SCOPE_MARGIN;
+		if (lens) {
+			g.enableScissor(Math.round(w / 2 - lensAt), Math.round(h / 2 - lensAt), Math.round(w / 2 + lensAt), Math.round(h / 2 + lensAt));
+		}
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
+		if (lens) {
+			g.disableScissor();
+		}
 		// Overwatch's kill feed sits where Minecraft's toasts and status-effect icons do: below any showing (toasts 32 GUI
 		// units a slot; the icons' rows end 25 or 50 units down). The weakness icon hid a line's victim (found playing)
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
@@ -183,7 +201,9 @@ public final class HeroHud {
 		// from behind while an ability holds the view: it turns to the point her aim meets, under the crosshair (Brigitte's
 		// barrier camera had none: #88)
 		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
-		if (firstPerson || AbilityCamera.active() && !dev.overcraft.client.comms.EmoteCamera.active()
+		if (scope > SCOPE_SHOWN) {
+			// (the scope's own reticle instead)
+		} else if (firstPerson || AbilityCamera.active() && !dev.overcraft.client.comms.EmoteCamera.active()
 			&& mc.options.getCameraType() == net.minecraft.client.CameraType.THIRD_PERSON_BACK) {
 			crosshair(g, w / 2, h / 2);
 		}
@@ -199,6 +219,8 @@ public final class HeroHud {
 			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		} else if (hero == Hero.LUCIO && firstPerson) {
 			songIndicator(g, s, w / 2, h / 2 + SONG_BELOW);
+		} else if (hero == Hero.JUNO) {
+			junoTimers(g, player, s, w / 2, h / 2, delta.getGameTimeDeltaPartialTick(true));
 		}
 		lifelinePrompt(g, player, w, h);
 		if (ClientHero.perkMenuOpen()) {
@@ -263,6 +285,53 @@ public final class HeroHud {
 		return at < 0 ? Float.MAX_VALUE : (Util.getMillis() - at) / 1000f;
 	}
 
+	/** Her scope overlay shows from 80% scoped in (D 0B94 #278: op73(v169, 0.8)). */
+	private static final float SCOPE_SHOWN = 0.8f;
+	/** The lens's rim from the screen's short side (reference pixels, ours: from memory the lens nearly fills the height). */
+	private static final float SCOPE_MARGIN = 20;
+
+	/**
+	 * Ana's scope (#90). Her data shows UX view model 0613.116 on the HUD root from 80% scoped (0B94 #278), with her skin's
+	 * reticle (E615: base 0A82.116, CVGetSkinOverride) and a style (9C89); neither it nor the reticle holds any art at any
+	 * depth, and none is in her GUI export, so the look is ours after Overwatch's: the view through a round lens, dark beyond
+	 * its rim, her reticle (a fine ring round a centre dot, fine lines out to the sides and down) at its centre, fading in
+	 * over the last 20% of the scope-in. The rifle is out of view meanwhile (her view model is not drawn fully scoped:
+	 * HeroModelRenderer, 0B94 #199).
+	 */
+	private static void anaScope(GuiGraphicsExtractor g, float w, float h, float shown) {
+		float cx = w / 2;
+		float cy = h / 2;
+		float r = Math.min(w, h) / 2 - SCOPE_MARGIN;
+		float half = r / HudShapes.SCOPE_CLEAR;
+		int dark = alpha(0x050608, 0.96f * shown);
+		image(g, HudShapes.SCOPE, cx - half, cy - half, half * 2, half * 2, dark);
+		// beyond the square: solid
+		fill(g, 0, 0, cx - half, h, dark);
+		fill(g, cx + half, 0, w - cx - half, h, dark);
+		fill(g, cx - half, 0, half * 2, cy - half, dark);
+		fill(g, cx - half, cy + half, half * 2, h - cy - half, dark);
+		// the lens rim, a faint cool grey
+		image(g, HudShapes.SCOPE_RIM, cx - half, cy - half, half * 2, half * 2, alpha(0xB8C4CC, 0.45f * shown));
+		// her reticle: a dark outline under white, as the crosshair's
+		int white = alpha(0xFFFFFF, 0.95f * shown);
+		int shade = alpha(0x000000, 0.55f * shown);
+		float ring = 30;
+		image(g, HudShapes.RING_THIN, cx - ring - 1, cy - ring - 1, ring * 2 + 2, ring * 2 + 2, shade);
+		image(g, HudShapes.RING_THIN, cx - ring, cy - ring, ring * 2, ring * 2, white);
+		image(g, HudShapes.DISC, cx - 3.5f, cy - 3.5f, 7, 7, shade);
+		image(g, HudShapes.DISC, cx - 2.5f, cy - 2.5f, 5, 5, white);
+		float gap = ring + 14;
+		float side = 150;
+		float down = 110;
+		for (int pass = 0; pass < 2; pass++) {
+			float o = pass == 0 ? 1 : 0;
+			int color = pass == 0 ? shade : white;
+			fill(g, cx - gap - side - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
+			fill(g, cx + gap - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
+			fill(g, cx - 1 - o, cy + gap - o, 2 + 2 * o, down + 2 * o, color);
+		}
+	}
+
 	// ---- the screen itself ----
 
 	/**
@@ -285,6 +354,15 @@ public final class HeroHud {
 		}
 		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
 		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
+		if (firstPerson && ClientHero.hero() == Hero.SOMBRA) {
+			// stealthed, her own view's edges tinted (1A75 held while stealthed: a dim screen quad, its colour L; ours her
+			// stealth's purple, as Overwatch's stealthed view is), with her arms phased out (#87)
+			float phase = ClientSombra.phase(player, (player.level().getGameTime() + Minecraft.getInstance().getDeltaTracker()
+				.getGameTimeDeltaPartialTick(true)) / 20f);
+			if (phase > 0) {
+				image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x5A1E9C, 0.3f * phase));
+			}
+		}
 		float step = since(stepCastAt);
 		if (firstPerson && step < STEP_FLASH) {
 			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)
@@ -1446,6 +1524,52 @@ public final class HeroHud {
 	private static final int SONG_SPEED = 0xFF52E24A;
 	private static final int SONG_HEAL_DIM = 0x99B49B5C;
 	private static final int SONG_SPEED_DIM = 0x995E9C6A;
+
+	/**
+	 * Juno's timed abilities under the crosshair (#86), the data's timed-ability widget 0237.116: Glide Boost's on the centre
+	 * layer v40843 (47B7 #641: its fraction v215 / v567, its time op109(v215) and its ability icon 024D), the torpedo lock
+	 * window's in her reticle v11821 (4695 #1225 / #1283: fraction and time). The widget's art isn't in the data: ours, a
+	 * shrinking bar with the time beside it (the glide's icon at its left). Glide's time left is synced (Juno.sync's
+	 * activeLeft); the lock's is her lock action's age against the 4 s window (HeroAnimator.junoLocking).
+	 */
+	private static void junoTimers(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float partial) {
+		float y = cy + TIMER_BELOW;
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0) {
+			float total = (float) dev.overcraft.juno.JunoStats.GLIDE_TIME;
+			timedBar(g, HeroArt.ability(Hero.JUNO, "glide_boost"), s.activeLeft() / total, s.activeLeft(), cx, y);
+			y += TIMER_GAP;
+		}
+		dev.overcraft.client.model.HeroAnimator a = dev.overcraft.client.model.HeroAnimator.of(player);
+		float now = (player.level().getGameTime() + partial) / 20f;
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && a.junoLocking(now)) {
+			float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
+			float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
+			timedBar(g, null, left / total, left, cx, y);
+		}
+	}
+
+	/** The timed-ability bar's top below the crosshair, and the next one's below it (reference pixels, ours). */
+	private static final float TIMER_BELOW = 92, TIMER_GAP = 30;
+	private static final float TIMER_W = 180, TIMER_H = 6;
+
+	/** One timed-ability bar (0237): the share left as a white bar shrinking toward its left end, the seconds at its right. */
+	private static void timedBar(GuiGraphicsExtractor g, @Nullable Identifier icon, float share, float seconds,
+								 float cx, float y) {
+		share = Math.clamp(share, 0, 1);
+		float x = cx - TIMER_W / 2;
+		// a dark shadow under all of it, so it reads over a bright sky
+		fill(g, x - 1, y - 1, TIMER_W + 2, TIMER_H + 2, 0x80000000);
+		fill(g, x, y, TIMER_W, TIMER_H, 0x40FFFFFF);
+		fill(g, x, y, TIMER_W * share, TIMER_H, 0xF2FFFFFF);
+		String text = String.format(java.util.Locale.ROOT, "%.1f", Math.max(0, seconds));
+		brush(g, text, x + TIMER_W + 30, y + TIMER_H + 6, 18);
+		HudText.plain(g, Face.NUMBERS, text, x + TIMER_W + 30, y + TIMER_H + 6, 18, WHITE, Align.CENTER);
+		if (icon != null) {
+			float s = 26;
+			image(g, icon, x - s - 9, y + TIMER_H / 2 - s / 2 + 1, s, s, 0x99000000);
+			image(g, icon, x - s - 10, y + TIMER_H / 2 - s / 2, s, s, WHITE);
+		}
+	}
 
 	/**
 	 * The ofuda counter under the crosshair: five amber "/" bars, one per volley (two ofuda), spent ones from the right
