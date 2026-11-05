@@ -19,3 +19,4 @@ overcraft-assets.zip
 __pycache__/
 run3/
 logs/
+run_client.out

@@ -1404,6 +1404,10 @@ def missing():
     for name in ("mercy_clips", "jetpack_cat_clips", "lifeweaver_1p_clips"):
         if not (MODELS / f"{name}.glb").exists():
             gaps.append(f"hero_models/{name}.glb")
+    if not (MODELS / "colour" / "000000008052.png").exists():
+        gaps.append("hero_models/colour/000000008052.png (glows)")
+    if not (PACK / "assets" / "overcraft" / "textures" / "effect" / "mercy_wing_glow.png").exists():
+        gaps.append("textures/effect/mercy_wing_glow.png (effects)")
     return sorted(set(gaps))
 
 

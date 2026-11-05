@@ -6,6 +6,10 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-05
 
+### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt
+- Healing reduction (#103), a player arriving learns what's going on (#96), Juno's lock cancels and Life Grip's prompt (#112), Brigitte's first-person chain (#113), Lúcio's dreads, lean and camera roll (#105), Lúcio's and Mercy's glows (#114).
+- The pack: `effects`, `glows`, then `zip` (techniques/building/building.md). An older pack shows in red in the pause menu.
+
 ### Jetpack Cat's Lifeline: a real rope (#89; not in a build yet)
 - Whoever she tows now hangs under her and trails behind her as she flies, swings past her when she stops, swings wide in a turn, comes up off the ground on a stretch of rope, and rides over a wall.
   They used to copy her speed, keeping whatever offset they had, and stood still at whatever angle they stopped.

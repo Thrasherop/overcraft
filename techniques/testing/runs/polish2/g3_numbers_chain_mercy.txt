@@ -1,0 +1,69 @@
+===== #112
+hero juno -> {"ok": true}
+juno
+--- first_right_locked health before g entity data: 20.0f {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'}
+first_right_locked health after g entity data: 20.0f {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'} torpedoes heard ["{'heard': 'juno.torpedo.lock_start -> juno/torpedo/lock_start/5 (SimpleSoundInstance", ' in the h
+--- left_locked health before g entity data: 20.0f {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'}
+left_locked health after ntity data: 13.3088f {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 6.8, 'anim': 'idle'} torpedoes heard ["{'heard': 'juno.torpedo.lock_start -> juno/torpedo/lock_start/2 (SimpleSoundInstance", ' in the head) | 
+--- right_none health before - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'}
+right_none health after - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'} torpedoes heard ["{'heard': 'juno.torpedo.lock_start -> juno/torpedo/lock_start/2 (SimpleSoundInstance", ' in the head) | juno.torpedo.lock.lo
+--- left_none health before - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'}
+left_none health after - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 1.8, 'anim': 'idle'} torpedoes heard ["{'heard': 'juno.torpedo.lock_start -> juno/torpedo/lock_start/5 (SimpleSoundInstance", ' in the head) | juno.torpedo.lock.loo
+--- early_right health before - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'}
+early_right health after - {'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'anim': 'idle'} torpedoes heard ["{'heard': 'juno.torpedo.lock_start -> juno/torpedo/lock_start/4 (SimpleSoundInstance", ' in the head) | juno.torpedo.lock.l
+===== #103 beam
+hero mercy -> {"ok": true}
+mercy
+--- Dps kiriko {'ok': True, 'hero': 'KIRIKO'}
+  beam target? 20.0
+  after a fall (no attacker, no regen) 4.22 -> 8.62 in 1.00 s = 4.39 /s (55 OW/s)
+  husk hit Dps: 13.02 -> 10.39 after 0.7 s
+  just hurt by a husk                4.00 -> 7.08 in 1.00 s = 3.07 /s (38 OW/s)
+  3.3+ s after the hit               4.22 -> 8.62 in 1.00 s = 4.39 /s (55 OW/s)
+  husk never hit
+  1.5 s after another hit            4.31 -> 10.51 in 1.00 s = 6.18 /s (77 OW/s)
+--- Tank sigma {'ok': True, 'hero': 'SIGMA'}
+  beam target? 48.0
+  after a fall (no attacker, no regen) 4.00 -> 8.40 in 1.00 s = 4.39 /s (55 OW/s)
+  husk hit Tank: 12.80 -> 10.43 after 0.7 s
+  just hurt by a husk                4.19 -> 7.93 in 1.00 s = 3.74 /s (47 OW/s)
+  3.3+ s after the hit               4.34 -> 11.14 in 1.00 s = 6.78 /s (85 OW/s)
+  husk never hit
+  1.5 s after another hit            4.50 -> 14.50 in 1.00 s = 9.98 /s (125 OW/s)
+===== #103 timer, death
+bot add Self kiriko - 0.5 -60 6.5 180 -> {"ok": true, "hero": "KIRIKO"}
+{'ok': True, 'hero': 'KIRIKO'}
+bot healcut Self -> {"cut": false}
+before {'cut': False}
+bot healcut Self -> {"cut": true}
+after a husk's blow {'cut': True}
+the cut lasted 2.84 s
+bot healcut Self -> {"cut": true}
+a second blow, 1.5 s on, still {'cut': True}
+a third blow starts it again: 3.01 s
+bot add Song lucio - 3.5 -60 0.5 90 -> {"ok": true, "hero": "LUCIO"}
+{'ok': True, 'hero': 'LUCIO'}
+  fall only (full song)                    10.32 -> 13.52 = 1.60 /s
+  a husk's blow: cut                       9.74 -> 11.98 = 1.11 /s
+  dead 0.0 DeathScreen
+  respawned, 1.1 s after the blow          10.00 -> 12.88 = 1.60 /s
+mercy
+===== #114 Mercy
+hero mercy -> {"ok": true}
+hero mercy
+perspective back -> {"ok": true}
+day y -23.066310920881726 fx 21 anim fly
+
+night y -23.390191823854938 fx 22 anim fly
+
+look 0 -60 -> {"ok": true}
+screenshot f_114_mercy_standing_up.png -> {"file": "E:\\claude\\mods\\overcraft_polish\\run\\screenshots\\f_114_mercy_standing_up.png"}
+look 0 0 -> {"ok": true}
+===== #113
+hero brigitte -> {"ok": true}
+brigitte
+moving, real time
+===== the pause menu with this pack (version 0.3.30 in it, 0.3.31 needed)
+press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+[]
