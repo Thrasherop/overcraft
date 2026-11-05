@@ -99,13 +99,14 @@ public class SuzuEntity extends OwProjectile {
 		}
 		double r = KirikoStats.SUZU_RADIUS;
 		float healedTotal = 0;
+		boolean told = false;
 		for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(r))) {
 			if (!Allies.isSelfOrAlly(owner, entity) || !touches(entity, at, r) || !inSight(level, at, entity)
 				|| dev.overcraft.brigitte.Barrier.shields(entity, owner, at)) {
 				continue;
 			}
 			// (the cleanse first: her heal isn't cut by the healing reduction it takes off)
-			Combat.cleanse(entity);
+			told |= Combat.cleanse(entity);
 			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);
 			Combat.phase(entity, KirikoStats.SUZU_PHASED);
 			// Foxtrot (perk): allies run faster for a while (the game data: allies; Kiriko is left out, ours to check)
@@ -124,6 +125,16 @@ public class SuzuEntity extends OwProjectile {
 				((dev.overcraft.mixin.ZombieVillagerInvoker) infected).overcraft$startConverting(owner.getUUID(), 1);
 				Effects.play(level, "suzu_cleansed", infected.position(), Vec3.ZERO, infected, 0, getOwner());
 			}
+		}
+		// Her Suzu line only when a status was actually cleansed (#121): a status ending on the cleanse sends 1C7D, 180C #93 -> #131 -> #88 sends
+		// her 1955, 30D8 #88 -> #93 (0.5 s) -> #89 plays FC5, at most every 10 s (Voice's table). Healing and phasing alone say nothing. What counts:
+		// Combat.cleanse's table. 180C only passes it on in its first 0.65 s (#129): all of these cleanses are at the burst, so always inside.
+		if (told && owner instanceof net.minecraft.server.level.ServerPlayer kiriko) {
+			dev.overcraft.ana.Ana.later(level, KirikoStats.SUZU_LINE_AT, () -> {
+				if (kiriko.isAlive() && !kiriko.isRemoved()) {
+					dev.overcraft.hero.Voice.say(kiriko, "suzu", 1);
+				}
+			});
 		}
 		if (owner instanceof Player player) {
 			Combat.credit(player, healedTotal);

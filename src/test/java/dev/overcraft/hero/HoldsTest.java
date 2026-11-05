@@ -113,4 +113,11 @@ class HoldsTest {
 		assertFalse(Holds.letsGo(true, false));
 		assertFalse(Holds.letsGo(false, true));
 	}
+	/** #121: what answers a cleanse by saying so (1C7D), which is all Kiriko's Suzu line asks. */
+	@org.junit.jupiter.api.Test
+	void sleepAndStunTellKnockDownDoesNot() {
+		org.junit.jupiter.api.Assertions.assertTrue(Holds.tells(Holds.sleep(0, 100)));
+		org.junit.jupiter.api.Assertions.assertTrue(Holds.tells(Holds.stun(0, 100, false, 1)));
+		org.junit.jupiter.api.Assertions.assertFalse(Holds.tells(Holds.stun(0, 100, true, 1)));
+	}
 }

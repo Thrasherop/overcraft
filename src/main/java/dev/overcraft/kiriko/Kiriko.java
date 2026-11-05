@@ -140,7 +140,7 @@ public final class Kiriko implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0) {
 			throwSuzu(player);
 			s.interruptReload(SUZU_THROW_ANIMATION);
-			Voice.say(player, "suzu", 1);
+			// no line on the throw: her throw's voice 30D8 #85 (FC1) has no lines; her Suzu line is the cleanse's (SuzuEntity.burst, #121)
 			s.ability2Cooldown = Ow.ticks(SUZU_COOLDOWN);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {

@@ -150,11 +150,12 @@ public final class Sleep {
 	}
 
 	/** What Protection Suzu's cleanse does here (Combat.cleanse's table; Holds.cleansed has the rule). */
-	public static void cleanse(LivingEntity entity) {
+	public static boolean cleanse(LivingEntity entity) {
 		Sleeper s = SLEEPERS.get(entity.getUUID());
 		if (s == null) {
-			return;
+			return false;
 		}
+		boolean told = Holds.tells(s.hold());
 		Holds.Hold after = Holds.cleansed(s.hold(), entity.level().getGameTime(), Ow.ticks(AnaStats.SLEEP_WAKING));
 		if (after == null) {
 			wake(s);
@@ -164,6 +165,7 @@ public final class Sleep {
 		} else {
 			SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, after));
 		}
+		return told;
 	}
 
 	/** Lets a player's client go, unless something else still holds them (a Flux's first 0.4 s, or a hold here). */

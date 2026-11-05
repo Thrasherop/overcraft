@@ -71,6 +71,11 @@ final class Holds {
 		return !hold.stun ? Cleansing.WAKES : !hold.slides ? Cleansing.ENDS : Cleansing.STAYS;
 	}
 
+	/** Whether it says it was cleansed (1C7D): a sleep (224E #418) and a stun (#416) do; a knock-down's and a float's answer goes nowhere (#400). */
+	static boolean tells(Hold hold) {
+		return cleansing(hold) != Cleansing.STAYS;
+	}
+
 	/** The hold after a cleanse: null if it's ended now; a sleep with more than its waking left goes to waking; anything else as it was. */
 	static @Nullable Hold cleansed(Hold hold, long now, int wakingTicks) {
 		return switch (cleansing(hold)) {

@@ -270,10 +270,12 @@ public final class JetpackCat implements HeroKit {
 	private static final net.minecraft.resources.Identifier CLAWS_SLOW = dev.overcraft.Overcraft.id("jetpack_cat_claws_out");
 
 	/** Protection Suzu's cleanse (Combat.cleanse's table): the wound and its slow stop. */
-	public static void cleanse(LivingEntity target) {
-		if (WOUNDS.removeIf(w -> w.target == target)) {
+	public static boolean cleanse(LivingEntity target) {
+		boolean wounded = WOUNDS.removeIf(w -> w.target == target);
+		if (wounded) {
 			Combat.buff(target, Attributes.MOVEMENT_SPEED, CLAWS_SLOW, 0, 0);
 		}
+		return wounded;
 	}
 
 	private static void tickWounds(ServerPlayer player) {

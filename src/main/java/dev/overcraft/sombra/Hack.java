@@ -72,11 +72,11 @@ public final class Hack {
 	 * Protection Suzu's cleanse (Combat.cleanse's table): the whole status ends, silence and reveal (0B1F #453 {v6604, v8440} -> #610 -> #611 -> #609),
 	 * and its looks go with it. Only a glowing Hack gave is taken off: one from elsewhere (a spectral arrow) can't be told apart while the reveal runs, and goes too.
 	 */
-	public static void cleanse(LivingEntity target) {
+	public static boolean cleanse(LivingEntity target) {
 		boolean silenced = SILENCED.remove(target.getUUID()) != null;
 		boolean revealed = REVEALED.remove(target.getUUID()) != null;
 		if (!silenced && !revealed) {
-			return;
+			return false;
 		}
 		if (revealed) {
 			target.removeEffect(MobEffects.GLOWING);
@@ -89,6 +89,7 @@ public final class Hack {
 			dev.overcraft.hero.Effects.play(level, "sombra_hacked_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
 			dev.overcraft.hero.Effects.play(level, "sombra_revealed_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
 		}
+		return true;
 	}
 
 	/** An enemy deployable (Lifeweaver's platform or tree) hacked: it stops working 10 s. */

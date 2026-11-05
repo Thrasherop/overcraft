@@ -439,13 +439,19 @@ public final class Combat {
 	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
 	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
 	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
+	 * <p>
+	 * Returns whether a status that says so was cleansed: the one thing Kiriko's Suzu line answers (#121, SuzuEntity.burst). The data's senders of
+	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91: H nodes.
+	 * Removed and silent: the healing reduction (01C7 #1186 ends without it), Local Anesthetic (6123 has neither v8440 nor 1C7D), the zones' slows
+	 * (1443, 6102 trackers). Minecraft's effects and fire: no graph, so nothing says so (ours, following the data; the owner's to change).
 	 */
-	public static void cleanse(LivingEntity target) {
+	public static boolean cleanse(LivingEntity target) {
+		boolean told = false;
 		if (!devCleanseOff) {
-			Sleep.cleanse(target);
-			dev.overcraft.sombra.Hack.cleanse(target);
+			told |= Sleep.cleanse(target);
+			told |= dev.overcraft.sombra.Hack.cleanse(target);
 			dev.overcraft.ana.Anesthetic.cleanse(target);
-			dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
+			told |= dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
 			dev.overcraft.sojourn.Disruptor.cleanse(target);
 		}
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();
@@ -457,12 +463,15 @@ public final class Combat {
 		harmful.forEach(target::removeEffect);
 		// (W Global Passive Abilities: "cleansable")
 		healCutUntil.remove(target.getUUID());
-		if (!devFixOff && antiHealUntil.remove(target.getUUID()) != null && target.level() instanceof net.minecraft.server.level.ServerLevel level) {
+		boolean antiHealEnded = !devFixOff && antiHealUntil.remove(target.getUUID()) != null;
+		told |= antiHealEnded;
+		if (antiHealEnded && target.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			// its pluses go with it (Effects' ENDS: a player who starts seeing them now isn't told either)
 			Effects.play(level, "ana_anti_healed_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
 		}
 		target.clearFire();
 		target.setTicksFrozen(0);
+		return told;
 	}
 
 	public static void phase(LivingEntity target, double seconds) {

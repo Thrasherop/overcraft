@@ -66,6 +66,8 @@ public final class KirikoStats {
 	public static final double SUZU_PROJECTILE_RADIUS = 0.2;
 	public static final double SUZU_HEAL = 80;               // Dec 2023
 	public static final double SUZU_PHASED = 0.5;            // Sep 2026
+	/** Her Suzu line (voice FC5), this long after an ally's status told her it was cleansed (D 30D8 #88 -> #90 -> #93 0.5 s -> #89: H). */
+	public static final double SUZU_LINE_AT = 0.5;
 	/** Thrown straight up it lands after about 7 s (wiki): g = 2v/t. */
 	public static final double SUZU_GRAVITY = 2 * SUZU_SPEED / 7.0;
 
