@@ -1235,8 +1235,8 @@ public final class OwMovement {
 
 	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
 	public static int wallRiding(LivingEntity entity) {
-		Ride ride = RIDES.get(entity);
-		if (ride == null || !ride.riding) {
+		Ride ride = riding(entity);
+		if (ride == null) {
 			return 0;
 		}
 		// the wall is on the side the normal points away from: right if (heading x up) points into it
@@ -1245,10 +1245,33 @@ public final class OwMovement {
 		return cross > 0 ? 1 : -1;
 	}
 
-	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it (the local player only: as wallRiding). */
-	public static float wallRideYaw(LivingEntity entity) {
+	/**
+	 * His ride, if he's truly on the wall. Only ride() ever cleared the flag, and it runs only for a hero the movement handles: dead, on a
+	 * ladder, under elytra or levitation (handles), out of hero mode (active), switched to another hero (wallRide), the flag stayed up, and the
+	 * camera's roll with it (the critique's B3). Those end the ride here, for good: it doesn't resume in mid air when they're over.
+	 */
+	private static @org.jspecify.annotations.Nullable Ride riding(LivingEntity entity) {
 		Ride ride = RIDES.get(entity);
 		if (ride == null || !ride.riding) {
+			return null;
+		}
+		if (!entity.isAlive() || !handles(entity) || !wallRide.test(entity) || entity.isInWater() || entity.onGround()) {
+			ride.riding = false;
+			return null;
+		}
+		return ride;
+	}
+
+	/** The wall's outward normal, or up off it (for a lifted effect: LucioFx). */
+	public static Vec3 wallRideNormal(@org.jspecify.annotations.Nullable LivingEntity entity) {
+		Ride ride = entity == null ? null : riding(entity);
+		return ride == null ? new Vec3(0, 1, 0) : ride.normal;
+	}
+
+	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it (the local player only: as wallRiding). */
+	public static float wallRideYaw(LivingEntity entity) {
+		Ride ride = riding(entity);
+		if (ride == null) {
 			return Float.NaN;
 		}
 		Vec3 heading = ride.heading();

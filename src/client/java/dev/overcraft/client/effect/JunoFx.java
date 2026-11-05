@@ -91,6 +91,8 @@ public final class JunoFx {
 		final List<Float> piecesAlpha = new ArrayList<>();
 		Vec3 at;
 		int step;
+		/** Whose: her entity id. */
+		int owner = -1;
 
 		Ray(int key, Vec3 at, Vec3 along, int life, boolean enemy) {
 			this.key = key;
@@ -986,8 +988,22 @@ public final class JunoFx {
 	 * at 0, 0.07, 0.16, 0.26 s, life 1 s (754 x 1C7A, the cat_band strip; the data's size 8 is 27.7 m across, the visible band
 	 * narrower: ours 8 m across), and the shockwave decal 139C growing over 1.2 s (ours its recipe's 0 -> 7 m).
 	 */
-	private static void land(Vec3 at, Vec3 along, int ticks, boolean enemy) {
-		RAYS.add(new Ray(keys++ & 0xFFFF, at, along.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : along.normalize(), Math.max(ticks, 1), enemy));
+	/** A ray of this Juno's, its {@code left} ticks of {@code life} to go: one a Juno, so a repeat replaces. */
+	private static void addRay(Vec3 at, Vec3 along, int owner, int life, int left, boolean enemy) {
+		RAYS.removeIf(r -> r.owner == owner);
+		Ray ray = new Ray(keys++ & 0xFFFF, at, along.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : along.normalize(), Math.max(life, 1), enemy);
+		ray.owner = owner;
+		ray.step = Math.max(0, life - left);
+		RAYS.add(ray);
+	}
+
+	/** Dev only: the rays held now. */
+	public static int devRays() {
+		return RAYS.size();
+	}
+
+	private static void land(Vec3 at, Vec3 along, int owner, int ticks, boolean enemy) {
+		addRay(at, along, owner, ticks, ticks, enemy);
 		float[] torus = Fx.mesh("cat_torus");
 		float[][] drops = {{196, 0}, {150, 0.07f}, {100, 0.16f}, {50, 0.26f}};
 		for (float[] d : drops) {
@@ -1255,9 +1271,12 @@ public final class JunoFx {
 			case "juno_torpedo_hit" -> torpedoHit(at, e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_wall" -> wall(at, dir, e.entity(), enemy);
 			case "juno_ring" -> throwRing(entity, at, dir, enemy);
-			case "juno_ring_boost" -> BOOSTED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "juno_ray" -> land(at, dir, e.variant(), enemy);
-			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "juno_ring_boost" -> BOOSTED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "juno_ray" -> land(at, dir, e.entity(), e.variant(), enemy);
+			// one who has just come to see it (OrbitalRay.showTo): where it is now, its age from what's left, no landing
+			case "juno_ray_state" -> addRay(at, dir, e.entity(), (int) Math.round(JunoStats.RAY_TIME * 20), e.variant(), enemy);
+			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "juno_locks_gone" -> LOCKS.clear();
 			default -> {
 				return false;
 			}

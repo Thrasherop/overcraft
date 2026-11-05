@@ -452,7 +452,9 @@ public final class HeroModels {
 		return out;
 	}
 
-	/** Every pixel black and opaque. */
+	/** The hair cards a pack is meant to hold colours for (the other black images are eye shadows and such, not drawn on purpose). */
+	private static final java.util.Set<String> HAIR_CARDS = java.util.Set.of("000000008052");
+
 	/**
 	 * Hair cards exported black (Lúcio's dreads, material 8052: his hair shader colours them and glTF kept only the black image) take their
 	 * real colours from hero_models/colour/<material>.png (tools/glow_maps.py, #105). Without it they stay black, and aren't drawn.
@@ -465,6 +467,9 @@ public final class HeroModels {
 			}
 			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/colour/" + piece.material().toLowerCase(java.util.Locale.ROOT) + ".png");
 			var found = id == null ? java.util.Optional.<net.minecraft.server.packs.resources.Resource>empty() : resources.getResource(id);
+			if (found.isEmpty() && HAIR_CARDS.contains(piece.material())) {
+				Overcraft.LOG.warn("The asset pack has no hair colours for {}: his dreads won't be drawn (py tools/build_asset_pack.py glows, then zip)", piece.material());
+			}
 			if (found.isPresent()) {
 				try (InputStream in = found.get().open()) {
 					NativeImage coloured = readImage(in.readAllBytes());
@@ -479,6 +484,7 @@ public final class HeroModels {
 		}
 	}
 
+	/** Every pixel black and opaque. */
 	private static boolean isBlack(NativeImage image) {
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {

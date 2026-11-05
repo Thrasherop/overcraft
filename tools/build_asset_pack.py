@@ -961,7 +961,7 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)
-STRETCHED = {"cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
+STRETCHED = {"mercy_wing_glow", "cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground

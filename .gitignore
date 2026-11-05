@@ -18,3 +18,4 @@ overcraft-assets.zip
 *.blend1
 __pycache__/
 run3/
+logs/

@@ -72,7 +72,7 @@ public final class LucioFx {
 				case "sonic_hit_block" -> sonicHitBlock(at, dir);
 				case "sound_barrier_cast" -> barrierCast(at);
 				case "sound_barrier" -> barrierSlam(at);
-				case "sound_barrier_ally" -> SHIELDED.put(e.entity(), new float[] {Fx.now() + e.variant() / 20f, enemy ? 1 : 0, Fx.now()});
+				case "sound_barrier_ally" -> SHIELDED.put(e.entity(), new float[] {Fx.now() + e.variant() / 20f, enemy ? 1 : 0, Fx.now() - e.dx()});
 				default -> {
 					return false;
 				}
@@ -410,6 +410,9 @@ public final class LucioFx {
 	 */
 	private static void wallRide(Vec3 left, Vec3 right, Palette colour, float dt, float ridden) {
 		int n = (int) (25 * dt + Fx.RANDOM.nextFloat());
+		// his skates are on the wall: what's drawn there, facing the camera, is cut straight by the wall's face (bars and a hard top edge, the
+		// critique's #5), so lifted off it. Only the local player's ride is known (OwMovement), and only his is drawn
+		Vec3 wall = dev.overcraft.hero.OwMovement.wallRideNormal(net.minecraft.client.Minecraft.getInstance().player);
 		float sparkSize = 0.15f + 0.29f * Math.clamp(ridden / 0.67f, 0, 1);
 		for (Vec3 foot : new Vec3[] {left, right}) {
 			for (int i = 0; i < n; i++) {
@@ -417,13 +420,14 @@ public final class LucioFx {
 				Particle d = Fx.particle("lucio_spark", colour);
 				if (d != null) {
 					float size = range(0.2f, 0.5f);
+					// (0.31: 29F7's own brightness, the beat's curve (H in lucio-effects.md); at 0.7 these and the sparks summed to a flat yellow slab)
 					Fx.add(d.at(foot.add(0, 0.08, 0)).velocity(randomUnit().scale(range(0.13f, 1.66f))).life(range(0.18f, 0.36f))
-						.size(size, size * 0.5f).alpha(0.7f).fade(0.05f, 0.6f));
+						.size(size, size * 0.5f).alpha(0.31f).fade(0.05f, 0.6f).lift(wall));
 				}
 				Particle s = Fx.particle("lucio_spark", colour);
 				if (s != null) {
 					Fx.add(s.at(foot.add(0, 0.05, 0)).velocity(new Vec3(0, 0.56, 0).add(randomUnit().scale(0.3))).life(range(0.18f, 0.31f))
-						.size(sparkSize, sparkSize * 0.4f).spin(range(0, Mth.TWO_PI), 0).fade(0.05f, 0.6f));
+						.size(sparkSize, sparkSize * 0.4f).spin(range(0, Mth.TWO_PI), 0).alpha(0.31f).fade(0.05f, 0.6f).lift(wall));
 				}
 			}
 		}

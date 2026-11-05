@@ -340,9 +340,19 @@ public final class Combat {
 	}
 
 	/**
-	 * It was hurt (Overcraft's AFTER_DAMAGE: any hurt that took health, a mob's as much as a hero's): an enemy's hit starts the
-	 * healing reduction, or its 3 s again. Self-damage doesn't (W). The world has no attacker and cuts nothing: a fall, lava,
-	 * drowning (ours: Overwatch's rule speaks of damage dealt, and W's "objects" are a hero's turrets and such).
+	 * It was hurt (Overcraft's AFTER_DAMAGE: a hurt whose amount, before armor, is over 0, a mob's as much as a hero's): the graph's path into the
+	 * reduction, 01C7 #1281 (message 0011: damage taken, v35367 its tags, v18513 the attacker) -> #1202 -> #882 -> #2712 -> #881:
+	 * <ul>
+	 * <li>#1202: the attacker, or its owner, passes a filter of a player hero (m_84065FD1 1) on the other side (m_66747E7D 2) (H nodes, M the filter's meaning, by
+	 * Ana's and Lifeweaver's graphs). So nothing with no attacker cuts (a fall, lava, drowning, and in Minecraft burning, poison and wither, which name
+	 * none), nor your own, nor your side's. Ours: a mob counts as that attacker, as Overcraft's fights are against mobs.</li>
+	 * <li>#882: not a hit tagged 191F, Local Anesthetic's damage over time (Sleep.quiet: the only damage that runs under it).</li>
+	 * <li>#2712: {v61743, not v76560} only a Damage hero's (#2702, category 084E): a mode's rule (M: Stadium's, by W Passive ability). Not ours.</li>
+	 * <li>#881: the 3 s wait, from the start again on each hit (m_0DBAFD7F 1: M, and W "doesn't stack").</li>
+	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: what sets those two isn't in the graph: read, undecoded. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
+	 * -> #1184): read, undecoded. #610 StateCombatModFilter x9007B042, op67(v25267): the healing scale itself (M, as Ana's B064); m_7724EC51 and m_5BF820E4: undecoded.</li>
+	 * </ul>
+	 * A no-team hit from another player or their pet counts as their own side's (Allies: with no teams everyone is an ally): it cuts nothing: decision, ours.
 	 */
 	public static void onHurt(LivingEntity target, DamageSource source) {
 		Entity by = source.getEntity();
@@ -351,7 +361,7 @@ public final class Combat {
 		LivingEntity side = by instanceof Player player ? player
 			: by instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : null;
 		boolean ally = side != null && (side == target || Allies.wasAlly(side, target));
-		if (cutsHealing(by != null, by == target, ally)) {
+		if (!Sleep.quiet() && cutsHealing(by != null, by == target, ally)) {
 			healCutUntil.put(target.getUUID(), now(target) + Ow.ticks(HEAL_CUT_TIME));
 		}
 	}

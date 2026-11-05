@@ -34,7 +34,8 @@ import java.util.concurrent.TimeUnit;
  * (the right button, held), "bot read <name>", "bot set <name> <health> <barrier>", "bot asleep", "bot antiheal", "bot self", "bot side <type>", "bot remove <name>",
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
- * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>".
+ * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>", "bot fx <name> <effect> <ticks>", "bot rays" (Juno's rays this client
+ * holds), "bot roll [trace]" (the camera's roll, each frame with trace).
  */
 final class DevBot {
 	private DevBot() {
@@ -165,6 +166,28 @@ final class DevBot {
 				}
 			}
 			case "showstate" -> HeroManager.devNoShowState = a[1].equals("off");
+			case "fx" -> {
+				// "bot fx <name> <effect> <ticks>": the effect on the bot as a kit plays it, by the bot (a state a bot's kit can't reach here)
+				ServerPlayer bot = BOTS.get(a[1]);
+				dev.overcraft.hero.Effects.play((ServerLevel) bot.level(), a[2], bot.position(), net.minecraft.world.phys.Vec3.ZERO, bot, Integer.parseInt(a[3]), bot);
+				out.addProperty("ok", true);
+			}
+			case "fxw" -> {
+				// "bot fxw <name> <effect> <variant>": the same as one laid in the world at it, made by it (Cyberspace, the Disruptor's field)
+				ServerPlayer bot = BOTS.get(a[1]);
+				dev.overcraft.hero.Effects.play((ServerLevel) bot.level(), a[2], bot.position(), net.minecraft.world.phys.Vec3.ZERO, null, Integer.parseInt(a[3]), bot);
+				out.addProperty("ok", true);
+			}
+			case "rays" -> out.addProperty("rays", dev.overcraft.client.effect.JunoFx.devRays());
+			case "roll" -> {
+				// "bot roll": the camera's roll now; "bot roll trace": and every frame's (aim yaw off the ride, wanted, roll) since the last call
+				out.addProperty("roll", dev.overcraft.client.ClientHero.devRoll());
+				if (a.length > 1) {
+					com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+					dev.overcraft.client.ClientHero.devRollTrace().forEach(list::add);
+					out.add("trace", list);
+				}
+			}
 			case "healcut" -> {
 				// "bot healcut <name>": the healing reduction on it now (#103)
 				out.addProperty("cut", dev.overcraft.hero.Combat.healCut(BOTS.get(a[1])));
@@ -189,7 +212,7 @@ final class DevBot {
 					server.getPlayerList().remove(bot);
 				}
 			}
-			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | press | charge | emote | move | seen | showstate | healcut | remove");
+			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | press | charge | emote | move | seen | showstate | healcut | fx | fxw | rays | roll | remove");
 		}
 	}
 

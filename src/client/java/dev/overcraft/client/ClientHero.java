@@ -99,6 +99,11 @@ public final class ClientHero {
 	 * The screen in hero mode: a hero and hero mode on, alive or not (the HUD's choice; dying flipped it to Minecraft's
 	 * hotbar and hearts behind the death screen).
 	 */
+	public static boolean heroView() {
+		LocalPlayer player = Minecraft.getInstance().player;
+		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
+	}
+
 	/** The roll now and when it was last eased (eased over 0.25 s: the wall-ride node's blend 4.0, M). */
 	private static float wallRollNow, wallRollAt = -1;
 
@@ -118,12 +123,23 @@ public final class ClientHero {
 				mc.player.getViewXRot(partialTicks));
 		}
 		wallRollNow += Math.clamp(want - wallRollNow, -dt * 80, dt * 80);
+		if (DEV_ROLLS.size() < 2000 && dt > 0) {
+			DEV_ROLLS.add(String.format(java.util.Locale.ROOT, "%.3f yaw %.1f want %.2f roll %.2f", now, mc.player.getViewYRot(partialTicks), want, wallRollNow));
+		}
 		return wallRollNow;
 	}
 
-	public static boolean heroView() {
-		LocalPlayer player = Minecraft.getInstance().player;
-		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
+	/** Dev only (DevBot "roll"): the last frames' roll. */
+	private static final java.util.List<String> DEV_ROLLS = new java.util.ArrayList<>();
+
+	public static float devRoll() {
+		return wallRollNow;
+	}
+
+	public static java.util.List<String> devRollTrace() {
+		java.util.List<String> out = new java.util.ArrayList<>(DEV_ROLLS);
+		DEV_ROLLS.clear();
+		return out;
 	}
 
 	/** Hero mode is switched on (G), whether or not the hero can act right now. */

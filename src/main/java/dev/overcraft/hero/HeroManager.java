@@ -245,7 +245,6 @@ public final class HeroManager {
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
 		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA);
 
-	/** A player died (AFTER_DEATH): their hero leaves play, as at a switch, but stays theirs. */
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;
 
@@ -269,6 +268,7 @@ public final class HeroManager {
 		}
 	}
 
+	/** A player died (AFTER_DEATH): their hero leaves play, as at a switch, but stays theirs. */
 	public static void onDeath(ServerPlayer player) {
 		outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.DEATH);
 	}

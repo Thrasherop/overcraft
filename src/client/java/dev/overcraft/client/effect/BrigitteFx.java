@@ -214,6 +214,10 @@ public final class BrigitteFx {
 		if (len < 0.1f) {
 			return;
 		}
+		if (ownFirstPerson(brigitte)) {
+			// (her own view's is viewChain; this renderer can run for her in first person too, and its yellow band then lay across the view)
+			return;
+		}
 		boolean enemy = KirikoFx.enemyOf(brigitte);
 		Particle ribbon = Fx.attach("brigitte_chain/" + brigitte.getId(), from, () -> {
 			Particle p = Fx.particle("brigitte_chain_band", enemy ? Palette.BRIGITTE_CHAIN_ENEMY_N : Palette.BRIGITTE_CHAIN_N);
@@ -518,7 +522,7 @@ public final class BrigitteFx {
 			case "brigitte_bash" -> BASHES.put(e.entity(), new Held(now, now + TRAIL_END, enemy));
 			case "brigitte_bash_hit" -> bashHit(at, dir, enemy);
 			case "brigitte_bash_end" -> dev.overcraft.client.ClientBrigitte.ended(e.entity());
-			case "brigitte_stun" -> STUNS.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "brigitte_stun" -> STUNS.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "brigitte_inspire" -> inspire(at, enemy);
 			case "brigitte_pack" -> PACKS.add(new Pack(at, e.entity(), now, enemy));
 			case "brigitte_pack_arrive" -> {

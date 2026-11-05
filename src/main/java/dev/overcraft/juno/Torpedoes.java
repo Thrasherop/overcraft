@@ -148,6 +148,7 @@ public final class Torpedoes {
 		if (s.junoLocked.isEmpty()) {
 			s.ability3Cooldown = Ow.ticks(TORPEDO_COOLDOWN_NONE);
 			Combat.animate(player, "torpedo_cancel");
+			locksGone(player);
 			return;
 		}
 		// "Support inbound!" with more allies locked than enemies (#1239 op73(v9293, v58608) true -> #1165, M), else
@@ -291,6 +292,11 @@ public final class Torpedoes {
 			.getOrThrow(DamageTypes.ARROW), null, owner);
 	}
 
+	/** Her client's rings on what she'd locked go with a lock that launched nothing (else they stayed for 5 s: the critique's B2). */
+	private static void locksGone(ServerPlayer player) {
+		Effects.send(player, "juno_locks_gone", player.position(), null, 0, player);
+	}
+
 	/** Her lock and her torpedoes gone (another hero, death), its targets' ticking stopped. */
 	static void clear(ServerPlayer player, HeroState s) {
 		if (!s.junoLockTicking.isEmpty()) {
@@ -301,6 +307,7 @@ public final class Torpedoes {
 		// Silent, the first person's looping hold outlived the lock: no gun and the pods up, even after a respawn (critique H1)
 		if (s.junoLock >= 0) {
 			Combat.animate(player, "torpedo_cancel");
+			locksGone(player);
 		}
 		s.junoLock = -1;
 		s.junoLockProgress.clear();

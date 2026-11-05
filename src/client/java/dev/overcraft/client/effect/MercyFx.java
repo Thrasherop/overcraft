@@ -318,20 +318,27 @@ public final class MercyFx {
 	/**
 	 * Soft yellow glows rising off both wings (Guardian Angel's 17E9, Angelic Descent's 019C: 1.5-2.1 m, rising 0.5 m/s in
 	 * a 25° cone), {@code chance} a tick each, and yellow dots. The data's glow is three masks multiplied (139C x 13CC wisps x the noise
-	 * 4DB: mercy_wing_glow). The soft ball alone, at 1.5 m and added over the sky, read as two white blobs behind her head, gold at night
-	 * (#114); blended (Fx.soft), the yellow stays yellow on a bright sky.
+	 * 4DB: mercy_wing_glow, stretched to full range as its three masks' product peaks at 158 of 255). The soft ball alone, at 1.5 m and added
+	 * over the sky, read as two white blobs behind her head, gold at night (#114). Blended (Fx.soft), and at 0.6 (ours, by eye: the data's strength
+	 * is in an HDR curve this can't draw): by day a faint yellow wisp, not the data's light. An older pack lacks the mask: the soft ball, very faint.
 	 */
 	private static void wingGlows(Posed p, float chance, float size) {
 		for (int w = WING_L; w <= WING_R; w++) {
 			if (Fx.RANDOM.nextFloat() < chance) {
 				Particle glow = Fx.soft("mercy_wing_glow", Palette.MERCY_WING_GLOW);
+				float strength = 0.6f;
+				if (glow == null) {
+					glow = Fx.soft("mercy_soft", Palette.MERCY_WING_GLOW);
+					strength = 0.12f;
+				}
 				if (glow != null) {
 					Fx.add(glow.at(p.points[w]).velocity(cone(UP, 25).scale(range(0.47f, 0.52f))).life(range(0.45f, 0.54f))
-						.size(size * 0.8f, size).alpha(0.5f).nearFade(1.5f).fade(0.1f, 0.6f));
+						.size(size * 0.8f, size).alpha(strength).nearFade(1.5f).fade(0.1f, 0.6f));
 				}
 			}
 			if (Fx.RANDOM.nextFloat() < 16 / 20f) {
-				Particle dot = Fx.particle("cat_heal_dot", Palette.NATURAL);
+				// (blended: the data's are yellow, 019C's strip; added, white by day)
+				Particle dot = Fx.soft("cat_heal_dot", Palette.MERCY_WING_GLOW);
 				if (dot != null) {
 					Fx.add(dot.at(p.points[w]).velocity(UP.scale(range(0.13f, 0.32f))).life(range(0.2f, 0.3f)).size(0.09f, 0.09f)
 						.nearFade(1).fade(0.05f, 0.5f));
@@ -389,7 +396,8 @@ public final class MercyFx {
 	private static void wingMotes(Posed p) {
 		for (int w = WING_L; w <= WING_R; w++) {
 			if (Fx.RANDOM.nextFloat() < 5 / 20f) {
-				Particle mote = Fx.particle("cat_soft_ball", Palette.MERCY_WING_GOLD_N);
+				// blended: the data's top stop is white, and its lower stops added over the sky went white too: bright orbs over her by day (#114)
+				Particle mote = Fx.soft("cat_soft_ball", Palette.MERCY_WING_GOLD_N);
 				if (mote != null) {
 					Fx.add(mote.at(p.points[w].add(0, 0.1, 0)).velocity(randomUnit().scale(range(0.19f, 0.27f))).life(range(0.8f, 1.5f))
 						.size(range(0.15f, 0.3f), 0.05f).alpha(0.6f).nearFade(1.5f).fade(0.2f, 0.5f));

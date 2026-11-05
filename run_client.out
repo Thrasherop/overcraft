@@ -1,0 +1,978 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx3G
+Calculating task graph as configuration cache cannot be reused because Gradle property 'version' has changed.
+
+> Configure project :
+Fabric Loom: 1.19.3
+
+> Task :processClientResources UP-TO-DATE
+> Task :downloadAssets UP-TO-DATE
+> Task :generateLog4jConfig UP-TO-DATE
+> Task :generateDLIConfig UP-TO-DATE
+> Task :configureLaunch UP-TO-DATE
+> Task :configureClientLaunch UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileClientJava UP-TO-DATE
+> Task :clientClasses UP-TO-DATE
+
+> Task :runClient
+Picked up JAVA_TOOL_OPTIONS: -Xmx3G
+[04:32:16] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 26.3 with Fabric Loader 0.20.1
+[04:32:16] [main/INFO] (FabricLoader/Mappings) Mappings not present!
+[04:32:17] [main/INFO] (FabricLoader) Loading 52 mods:
+	- fabric-advancement-api-v1 1.0.1+38c7a2d55d
+	- fabric-api 0.165.0+26.3
+	- fabric-api-base 2.0.6+fcdff87f5d
+	- fabric-api-lookup-api-v1 2.0.24+3434d6d95d
+	- fabric-biome-api-v1 20.1.1+85210bca5d
+	- fabric-block-api-v1 3.1.0+0ae6f9115d
+	- fabric-block-getter-api-v2 2.0.9+3434d6d95d
+	- fabric-client-gametest-api-v1 6.0.11+131f8d475d
+	- fabric-command-api-v2 3.1.2+fcdff87f5d
+	- fabric-content-registries-v0 15.0.6+74ed1ea55d
+	- fabric-convention-tags-v2 4.10.5+187b64905d
+	- fabric-crash-report-info-v1 1.0.7+fcdff87f5d
+	- fabric-creative-tab-api-v1 5.0.22+fcdff87f5d
+	- fabric-data-attachment-api-v1 2.2.33+b9b88df45d
+	- fabric-data-generation-api-v1 27.4.2+187b64905d
+	- fabric-debug-api-v1 1.0.5+5af7744b5d
+	- fabric-dimensions-v1 5.1.20+5af7744b5d
+	- fabric-entity-events-v1 6.0.4+3434d6d95d
+	- fabric-events-interaction-v0 5.3.9+b9b88df45d
+	- fabric-game-rule-api-v1 4.0.10+3434d6d95d
+	- fabric-gametest-api-v1 4.0.35+3434d6d95d
+	- fabric-item-api-v1 14.8.0+d1c0d72b5d
+	- fabric-key-mapping-api-v1 2.0.8+3434d6d95d
+	- fabric-lifecycle-events-v1 4.1.9+ffef5f675d
+	- fabric-loot-api-v3 4.0.9+4068fd645d
+	- fabric-menu-api-v1 2.0.30+ed66f0a35d
+	- fabric-message-api-v1 7.0.10+3434d6d95d
+	- fabric-model-loading-api-v1 8.0.37+fcdff87f5d
+	- fabric-networking-api-v1 6.4.0+a21c9eb65d
+	- fabric-object-builder-api-v1 24.1.12+e2f63d3e5d
+	- fabric-particles-v1 5.0.27+3434d6d95d
+	- fabric-permission-api-v1 1.0.8+fcdff87f5d
+	- fabric-recipe-api-v1 10.0.11+b9b88df45d
+	- fabric-registry-sync-v0 8.0.4+1ca9f6365d
+	- fabric-renderer-api-v1 17.0.17+79385d0b5d
+	- fabric-renderer-indigo 9.1.25+b9d63e335d
+	- fabric-rendering-fluids-v1 6.0.6+3434d6d95d
+	- fabric-rendering-v1 27.2.0+eb9fe70b5d
+	- fabric-resource-conditions-api-v1 6.2.0+0d124ae85d
+	- fabric-resource-loader-v0 3.3.27+4fc5413f5d
+	- fabric-resource-loader-v1 3.1.0+5af7744b5d
+	- fabric-screen-api-v1 5.2.4+48607d035d
+	- fabric-serialization-api-v1 2.0.7+74ed1ea55d
+	- fabric-sound-api-v1 2.0.7+3434d6d95d
+	- fabric-tag-api-v1 2.1.11+fcdff87f5d
+	- fabric-transfer-api-v1 8.0.25+fcdff87f5d
+	- fabric-transitive-access-wideners-v1 8.1.17+e2f63d3e5d
+	- fabricloader 0.20.1
+	- java 25
+	- minecraft 26.3
+	- mixinextras 0.5.5
+	- overcraft 0.3.31
+[04:32:17] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/C:/Users/ultra/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.17.5+mixin.0.8.7/cef8519a91129d0c21fa03bb9378f0e8ca810e5/sponge-mixin-0.17.5+mixin.0.8.7.jar Service=Knot/Fabric Env=CLIENT
+[04:32:20] [main/INFO] (FabricLoader/MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.5).
+[04:32:21] [Datafixer Bootstrap #0/INFO] (Minecraft) 307 Datafixer optimizations took 367 milliseconds
+[04:32:22] [main/ERROR] (HkeyPerformanceDataUtil) Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: 
+
+com.sun.jna.platform.win32.Win32Exception: The parameter is incorrect.
+	at knot//com.sun.jna.platform.win32.Advapi32Util.registryGetStringArray(Advapi32Util.java:921)
+	at knot//com.sun.jna.platform.win32.Advapi32Util.registryGetStringArray(Advapi32Util.java:898)
+	at knot//oshi.driver.windows.registry.HkeyPerformanceDataUtil.mapCounterIndicesFromRegistry(HkeyPerformanceDataUtil.java:274)
+	at knot//oshi.driver.windows.registry.HkeyPerformanceDataUtil.<clinit>(HkeyPerformanceDataUtil.java:51)
+	at knot//oshi.driver.windows.registry.ProcessPerformanceData.buildProcessMapFromRegistry(ProcessPerformanceData.java:45)
+	at knot//oshi.software.os.windows.WindowsOperatingSystem.queryProcessMapFromRegistry(WindowsOperatingSystem.java:328)
+	at knot//oshi.util.Memoizer$1.get(Memoizer.java:65)
+	at knot//oshi.software.os.windows.WindowsOperatingSystem.processMapToList(WindowsOperatingSystem.java:298)
+	at knot//oshi.software.os.windows.WindowsOperatingSystem.getProcess(WindowsOperatingSystem.java:292)
+	at knot//oshi.software.os.OperatingSystem.getCurrentProcess(OperatingSystem.java:246)
+	at knot//net.minecraft.SystemReport.lambda$putSoftware$0(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.putSoftware(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.lambda$new$7(SystemReport.java:68)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.<init>(SystemReport.java:68)
+	at knot//net.minecraft.CrashReport.<init>(CrashReport.java:35)
+	at knot//net.minecraft.CrashReport.preload(CrashReport.java:252)
+	at knot//net.minecraft.client.main.Main.main(Main.java:172)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:517)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+[04:32:22] [main/WARN] (PerfCounterQuery) Unable to locate English counter names in registry Perflib 009. Assuming English counters. Error 0x80070057. See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values
+[04:32:22] [main/WARN] (Minecraft) Failed to get system info for Process Loads
+
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getUserTime()" because "process" is null
+	at knot//net.minecraft.SystemReport.lambda$putProcessDetails$0(SystemReport.java:190)
+	at knot//net.minecraft.SystemReport.setDetail(SystemReport.java:96)
+	at knot//net.minecraft.SystemReport.putProcessDetails(SystemReport.java:189)
+	at knot//net.minecraft.SystemReport.lambda$putSoftware$0(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.putSoftware(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.lambda$new$7(SystemReport.java:68)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.<init>(SystemReport.java:68)
+	at knot//net.minecraft.CrashReport.<init>(CrashReport.java:35)
+	at knot//net.minecraft.CrashReport.preload(CrashReport.java:252)
+	at knot//net.minecraft.client.main.Main.main(Main.java:172)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:517)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+[04:32:22] [main/WARN] (Minecraft) Failed to get system info for Process Virtual Size (MiB)
+
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getVirtualSize()" because "process" is null
+	at knot//net.minecraft.SystemReport.lambda$putProcessDetails$1(SystemReport.java:202)
+	at knot//net.minecraft.SystemReport.setDetail(SystemReport.java:96)
+	at knot//net.minecraft.SystemReport.putProcessDetails(SystemReport.java:202)
+	at knot//net.minecraft.SystemReport.lambda$putSoftware$0(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.putSoftware(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.lambda$new$7(SystemReport.java:68)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.<init>(SystemReport.java:68)
+	at knot//net.minecraft.CrashReport.<init>(CrashReport.java:35)
+	at knot//net.minecraft.CrashReport.preload(CrashReport.java:252)
+	at knot//net.minecraft.client.main.Main.main(Main.java:172)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:517)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+[04:32:22] [main/WARN] (Minecraft) Failed to get system info for Process Resident Size (MiB)
+
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getResidentSetSize()" because "process" is null
+	at knot//net.minecraft.SystemReport.lambda$putProcessDetails$2(SystemReport.java:203)
+	at knot//net.minecraft.SystemReport.setDetail(SystemReport.java:96)
+	at knot//net.minecraft.SystemReport.putProcessDetails(SystemReport.java:203)
+	at knot//net.minecraft.SystemReport.lambda$putSoftware$0(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.putSoftware(SystemReport.java:116)
+	at knot//net.minecraft.SystemReport.lambda$new$7(SystemReport.java:68)
+	at knot//net.minecraft.SystemReport.ignoreErrors(SystemReport.java:121)
+	at knot//net.minecraft.SystemReport.<init>(SystemReport.java:68)
+	at knot//net.minecraft.CrashReport.<init>(CrashReport.java:35)
+	at knot//net.minecraft.CrashReport.preload(CrashReport.java:252)
+	at knot//net.minecraft.client.main.Main.main(Main.java:172)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:517)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+[04:32:30] [Render thread/INFO] (Minecraft) Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
+[04:32:30] [Render thread/INFO] (Minecraft) Setting user: Kiriko
+[04:32:31] [Overcraft DevServer/INFO] (Overcraft) Overcraft DevServer on 127.0.0.1:25599
+[04:32:31] [Render thread/INFO] (Indigo) [Indigo] Registering Indigo renderer!
+[04:32:32] [Render thread/INFO] (Minecraft) Backend library: LWJGL version 3.4.3-snapshot
+[04:32:32] [Render thread/INFO] (Minecraft) SDL [SYSTEM]: App name: Minecraft
+[04:32:32] [Render thread/INFO] (Minecraft) SDL [SYSTEM]: App version: 26.3
+[04:32:32] [Render thread/INFO] (Minecraft) SDL [SYSTEM]: App ID: com.mojang.minecraft
+[04:32:32] [Render thread/INFO] (Minecraft) SDL [SYSTEM]: SDL revision: SDL-3.4.14-62f10da
+[04:32:34] [Render thread/INFO] (Minecraft) Preferring discrete GPU: NVIDIA GeForce RTX 3070 Laptop GPU
+[04:32:34] [Render thread/INFO] (Minecraft) Using graphics backend OpenGL, using drivers: 3.3.0 - Build 31.0.101.3962
+[04:32:34] [Render thread/INFO] (Minecraft) Using graphics device: Intel(R) UHD Graphics (Intel)
+[04:32:34] [Render thread/INFO] (Minecraft) Using graphics device extensions: GL_ARB_multi_draw_indirect, GL_ARB_shader_draw_parameters, GL_ARB_base_instance, GL_KHR_debug, GL_ARB_draw_indirect, GL_ARB_clip_control, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access, GL_EXT_texture_filter_anisotropic
+[04:32:34] [Render thread/INFO] (Minecraft) Created window using SDL video driver: windows
+[04:32:34] [Render thread/INFO] (Overcraft) Local Overwatch asset pack: E:\claude\mods\overcraft_ana\local-assets\pack
+[04:32:36] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[04:32:36] [Render thread/INFO] (Minecraft) Reloading ResourceManager: vanilla, vanilla, fabric-advancement-api-v1, fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-getter-api-v2, fabric-client-gametest-api-v1, fabric-command-api-v2, fabric-content-registries-v0, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-creative-tab-api-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-debug-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-gametest-api-v1, fabric-item-api-v1, fabric-key-mapping-api-v1, fabric-lifecycle-events-v1, fabric-loot-api-v3, fabric-menu-api-v1, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-permission-api-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-rendering-fluids-v1, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-resource-loader-v1, fabric-screen-api-v1, fabric-serialization-api-v1, fabric-sound-api-v1, fabric-tag-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, overcraft, overcraft:local_assets
+[04:32:37] [Worker-Main-8/INFO] (Minecraft) Found unifont_pua-17.0.01.hex, loading
+[04:32:37] [Worker-Main-6/INFO] (Minecraft) Found unifont_all_no_pua-17.0.01.hex, loading
+[04:32:37] [Worker-Main-1/INFO] (Minecraft) Found unifont_jp_patch-17.0.01.hex, loading
+[04:32:40] [Worker-Main-5/INFO] (Overcraft) Hero model kitsune: 181 nodes, 162 joints, 2 pieces, 3 clips [start, leap, run]
+[04:32:41] [Worker-Main-5/INFO] (Overcraft) Hero model projectile_kunai: 17 nodes, 13 joints, 1 pieces, 0 clips []
+[04:32:41] [Worker-Main-5/INFO] (Overcraft) Hero model projectile_ofuda: 23 nodes, 16 joints, 1 pieces, 1 clips [4-6_00000000A71F]
+[04:32:42] [Worker-Main-5/INFO] (Overcraft) Hero model projectile_suzu: 14 nodes, 11 joints, 1 pieces, 2 clips [0-28_00000000ACF5, 0-60_00000000E3D8]
+[04:32:42] [Worker-Main-5/INFO] (Overcraft) Hero model torii: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:42] [Worker-Main-5/INFO] (Overcraft) Hero model cat_torus: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:42] [Worker-Main-5/INFO] (Overcraft) Hero model cat_cone: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_sphere: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_purr_torus: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_purr_wall: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_half_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_bubble: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_flame: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_bell: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_slash_arc: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model cat_dome: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_platform: 27 nodes, 9 joints, 2 pieces, 7 clips [descend, idle, pose, raised, land, rise, unfold]
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_tree: 54 nodes, 40 joints, 5 pieces, 11 clips [end_leaning, add_end, add_idle, grow, idle, grow_enclosed_2, add_grow_enclosed, end, add_pulse, grow_leaning, grow_enclosed]
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_seed: 7 nodes, 3 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model projectile_lifeweaver_seed: 7 nodes, 3 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lw_flower_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lw_bud: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model lw_flower: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_beacon: 16 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_swing_arc: 4 nodes, 1 joints, 2 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_swing_arc_back: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_shield_plate: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_dome: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_band: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_shard: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_whip_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_rally_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model juno_ring: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model juno_half_shell: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model juno_disc: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_cylinder: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:43] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1024e: 25 nodes, 9 joints, 0 pieces, 2 clips [B9A7, AE48]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_105fb: 181 nodes, 162 joints, 2 pieces, 3 clips [E920, E921, E91F]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_10c56: 12 nodes, 6 joints, 2 pieces, 2 clips [DCB2, DCAF]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_118f1: 37 nodes, 26 joints, 1 pieces, 2 clips [C217, C2E7]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_11da3: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_13061: 7 nodes, 1 joints, 2 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_138dc: 77 nodes, 48 joints, 2 pieces, 1 clips [DC9C]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_15c94: 5 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1635: 30 nodes, 17 joints, 6 pieces, 3 clips [5673, 5674, 5677]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_17a7c: 19 nodes, 10 joints, 1 pieces, 2 clips [111C9, 111C8]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_181a6: 14 nodes, 11 joints, 1 pieces, 2 clips [19555, 19553]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1920b: 466 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_19525: 19 nodes, 13 joints, 1 pieces, 2 clips [15B76, 15B75]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_197fb: 16 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1a146: 7 nodes, 1 joints, 2 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1ab3f: 5 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1b045: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1b046: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1b7dd: 16 nodes, 13 joints, 1 pieces, 2 clips [19331, 19332]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1cba0: 165 nodes, 135 joints, 3 pieces, 2 clips [1A712, 1A713]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_1d9d0: 6 nodes, 1 joints, 2 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_372a: 8 nodes, 3 joints, 2 pieces, 1 clips [3D76]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3730: 6 nodes, 2 joints, 1 pieces, 1 clips [3D0F]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_373a: 8 nodes, 5 joints, 1 pieces, 1 clips [3D77]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3771: 13 nodes, 5 joints, 1 pieces, 1 clips [3DC3]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_389d: 73 nodes, 62 joints, 1 pieces, 3 clips [E019, 7CD4, B3A7]
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a5b: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a5c: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a5d: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a60: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:44] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a61: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a62: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a63: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3a64: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3b50: 13 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3cc4: 11 nodes, 8 joints, 1 pieces, 1 clips [7CB2]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3cc5: 6 nodes, 3 joints, 1 pieces, 1 clips [7C83]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3cda: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3cf7: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_3fa2: 27 nodes, 11 joints, 7 pieces, 1 clips [3ED9]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_4943: 6 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_49bb: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_4f4b: 44 nodes, 30 joints, 1 pieces, 1 clips [492B]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_5ccb: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_67a7: 32 nodes, 22 joints, 2 pieces, 3 clips [5670, 5671, 5678]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_863c: 3 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_89b9: 4 nodes, 1 joints, 1 pieces, 4 clips [640C, 640E, 640D, 640F]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_c5ca: 27 nodes, 12 joints, 1 pieces, 11 clips [7340, AF60, 7345, 7347, AF67, AF65, AF66, AF5C, 8087, AF64, AF62]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_d7dd: 67 nodes, 48 joints, 4 pieces, 3 clips [CBE2, 83AD, CBE0]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_e221: 11 nodes, 6 joints, 1 pieces, 1 clips [7C83]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_e222: 7 nodes, 2 joints, 1 pieces, 1 clips [7C83]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_e5ba: 133 nodes, 103 joints, 3 pieces, 1 clips [805C]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_eaad: 9 nodes, 6 joints, 1 pieces, 1 clips [84DA]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_f559: 13 nodes, 7 joints, 1 pieces, 1 clips [B4D9]
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model prop_f698: 9 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:45] [Worker-Main-5/INFO] (Overcraft) Hero model ana_vial: 5 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:46] [Worker-Main-5/INFO] (Overcraft) Hero model ana_dart: 7 nodes, 1 joints, 3 pieces, 0 clips []
+[04:32:46] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_magazine: 6 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:46] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_beacon: 16 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:46] [Worker-Main-5/INFO] (Overcraft) Hero model juno_cell: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:46] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn_magazine: 4 nodes, 1 joints, 1 pieces, 0 clips []
+[04:32:49] [Worker-Main-5/INFO] (Overcraft) Hero model sigma: 346 nodes, 274 joints, 9 pieces, 147 clips [grasp_start_up, showcase_se1_move_back, add_flux_lift_add, showcase_687_sm0, select, add_showcase_se1_stand_sm0, add_layer_663, add_layer_7b_fall, flux_lift, add_a13b, barrier_down_2, flux_start, add_base_tr01_2, jump_right, add_base_tr01_3, barrier_up_2, pose_45c, idle_layer_sm2, showcase_4ce_2, idle_layer_sm1, accretion_cast, idle_layer_sm0, jump, accretion_cast_down, barrier_2, add_air_layer_apex, fall_left, showcase_se1_air_sm0_se1_sm0, fire_b_down, showcase_se1_air_sm0_se1_sm1, showcase_se1_air_sm0_se0, accretion_throw_up, add_stance_sm1_sm1_stand_1ed, add_fire_layer_sm1, add_fire_layer_sm0, hello, pulled_loop, add_fire_layer_sm0_2, add_fire_layer_sm0_3, add_fire_layer_sm0_4, barrier_cast, fall_back, showcase_68c_sm0, add_layer_643, add_barrier_cast_add, stun_sm0, add_layer_663_2, add_pose_4a0_tr03, add_layer_663_3, base_sm1_sm1_se1, a13b, base_sm1_sm1_se3, fall, add_hand_layer_sm2_stand_sm0, base_sm1_sm1_se5, add_jump_takeoff, add_layer_669_sm0, base_sm1_sm1_se9, jump_apex, knockdown_start_sm0, add_layer_7b_takeoff, flux_slam, pulled_loop_r, add_breathe, add_fire_layer_sm1_sm0, add_hello_add, melee_crouch, add_layer_2e_2, fall_back_right, showcase_se1_move_back_left, pulled_loop_l, pulled_loop_b, showcase_se1_move_forward_right, fall_forward, grasp_start_down, pulled_loop_f, flux_cast, add_pulled_loop, grasp_hold, grasp_hold_up, melee_crouch_down, run, a14e, fall_forward_right, jump_forward_right, fall_forward_left, fire_b, accretion_throw_down, barrier, add_a13b_2, knockdown_sm0, melee_crouch_up, add_layer_669_sm0_sm0, jump_back, add_base_sm0, showcase_4ce, showcase_se1_move_forward_left, add_barrier_2, add_stance_sm1_sm1_stand_1ed_se1, knockdown_shared_2_sm0, flux_aim, showcase_se1_move, jump_left, select_2, add_base_se0, accretion_cast_up, a65c, add_base_tr10_2, jump_back_left, fall_right, showcase_se1_move_back_right, jump_forward_left, a56, showcase_982, jump_forward, add_layer_2e, knockdown_shared_sm0, showcase_se1_move_right, add_base_tr01, barrier_down, knockdown_end_sm0, knockdown_shared_3_sm0, fall_back_left, showcase_se1_stand_sm0, add_barrier, add_base_se0_2, idle, pose_held, fire_b_up, barrier_up, showcase_se1_move_left, add_layer_7b_apex, accretion_throw, add_showcase_se1_move, add_flux_cast_add, add_base_tr10, add_pose_4a0_se3, jump_back_right, showcase_se1_stand_sm0_2, add_air_layer_fall, add_layer_c7, add_air_layer_takeoff, grasp_start, grasp_hold_down, add_fire_layer_sm1_2, add_fire_layer_sm1_3, add_fire_layer_sm1_4]
+[04:32:51] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_1p: 183 nodes, 118 joints, 2 pieces, 105 clips [barrier_recall_sm0_sm3, barrier_recall_sm0_sm2, barrier_recall_sm0_sm1, add_knockdown_start, barrier_recall_sm0_sm6, add_layer_663, barrier_recall_sm0_sm0, flux_lift, add_layer_140_sm0_sm0_2, flux_start, add_layer_140_sm0_sm0, add_sway_sm0_sm2_up, add_knockdown_shared_2, barrier_sm0_se0_sm1, barrier_sm0_se0_sm0, jump, add_hand_layer_sm0_sm0_se0, add_hand_layer_sm0_sm0_se1, add_sway_sm0_sm5_up, add_knockdown_shared_3, add_sway, a6d1, a6d2, add_hand_layer_sm0, hello, barrier_cast, add_sway_sm0_sm4_up, add_layer_663_4, add_layer_663_5, add_layer_663_2, add_layer_663_3, add_layer_66b_sm1_sm0, fall, add_layer_66b_sm1_sm1, melee, add_layer_140_tr041, barrier_sm0_se1, add_accretion_cast, add_hello_add, add_stance_tr01, add_hand_layer_sm0_move, flux_cast, add_sway_sm0_sm6_up, add_stance_sm0, barrier_recall_sm1, grasp_hold, add_knockdown, run, add_layer_140_sm1_sm0_se0_sm1, stun, add_layer_140_sm1_sm0_se0_sm0, fire_c, fire_b, fire_a, a725, add_hand_layer_sm0_stand, add_stance_tr130, add_base_sm0, add_knockdown_shared, add_base_sm1, flux_aim, a65e, a65f, add_hand_layer_sm0_4, add_hand_layer_sm0_3, add_hand_layer_sm0_2, add_layer_66b_sm0, add_layer_66b_sm1, add_layer_66b_sm2, add_sway_sm0_sm1_up, add_jump_fall, add_stance_tr021, add_layer_66b_sm0_sm1, add_knockdown_end, add_layer_66b_sm0_sm0, add_layer_140_sm1_tr01, add_fire_b_3, add_fire_b_2, add_jump_fall_3, add_jump_fall_4, add_jump_fall_2, add_a726, barrier_sm1, add_jump_fall_5, add_sway_sm0_sm0_up, add_barrier, add_sway_sm0_sm3_up, idle, accretion_throw, add_accretion_cast_2, add_hand_layer, add_fire_b, add_sway_sm0_sm3, grasp_start, accretion_cast_se0, add_accretion_cast_5, add_layer_66b, add_sway_sm0_sm2, accretion_cast_se1, add_accretion_cast_4, add_sway_sm0_sm1, add_accretion_cast_3, add_sway_sm0_sm6, add_sway_sm0_sm5, add_sway_sm0_sm4]
+[04:32:51] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_weapon: 67 nodes, 48 joints, 4 pieces, 47 clips [add_stance_sm2, add_pose_a0e_se1_sm0, add_pose_a0e_se1_sm0_se0_ra0, emote_relaxation_short, flux_start_sm0, add_pose_a0e_se1_sm0_se0_ra1, add_pose_a0e_se1_sm0_sm5_6, add_pose_a0e_se1_sm0_sm5_down, flux_slam_sm1, flux_aim_sm0, flux_slam_sm0, a5ac_sm1, stance_air_sm0_se1, stun_sm0, stance_air_sm0_se0, a5ac_sm0, add_pose_a0e_se1_sm0_sm5_down_2, emote_observations, add_pose_a0e_se1_sm0_sm5_2, add_pose_a0e_se1_sm0_sm5_3, add_pose_a0e_se1_sm0_sm5_4, add_pose_a0e_se1_sm0_sm5_5, pose_a0e_se1_sm1_se5, fire_c_sm0, add_pose_a0e_se1_sm0_sm5, stance_2, fire_a_sm1, accretion_cast_sm0, accretion_cast_sm1, idle, accretion_throw_sm0, accretion_throw_sm1, a65c_sm0, fire_b_sm0, emote_heroic, flux_lift_sm0, add_pose_a0e_se1_sm0_sm5_up, add_pose_a0e_se1_sm1_se5, emote_constellation, add_stance_sm2_move, melee_sm0, add_pose_a0e_se1_sm0_sm5_up_2, melee_sm1, emote_relaxation_intro, stance, emote_relaxation_loop, fire_a_sm0]
+[04:32:52] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_clips: 337 nodes, 274 joints, 0 pieces, 64 clips [emote_listen_up_2, emote_listen_up_1, emote_applause_1, emote_applause_2, emote_magic_pumpkins_1, emote_magic_pumpkins_2, emote_dans_4, emote_dans_5, emote_dans_2, emote_relaxation_1, emote_dans_3, emote_relaxation_2, emote_dans_1, emote_constellation_5, emote_constellation_4, emote_constellation_3, emote_stepping_stones_10, emote_stepping_stones_11, emote_stepping_stones_4, emote_laugh_1, emote_observations_3, emote_stepping_stones_3, emote_observations_2, emote_stepping_stones_6, emote_inconsequential_1, emote_observations_1, emote_stepping_stones_5, emote_stepping_stones_2, emote_stepping_stones_1, emote_inconsequential_2, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_stepping_stones_8, emote_stepping_stones_7, emote_stepping_stones_9, emote_heroic_2, emote_heroic_3, emote_relaxation_10, emote_heroic_1, emote_constellation_2, emote_constellation_1, emote_relaxation_7, emote_salty_3, emote_relaxation_8, emote_salty_4, emote_relaxation_9, emote_relaxation_3, emote_relaxation_4, emote_relaxation_5, emote_relaxation_6, emote_maestro_1, emote_mic_drop_1, emote_maestro_2, emote_mic_drop_2, emote_mic_drop_3, emote_mic_drop_4, emote_maestro_3, emote_maestro_4, emote_listen_up_4, emote_listen_up_3, emote_salty_1, emote_salty_2]
+[04:32:52] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_barrier: 14 nodes, 6 joints, 1 pieces, 2 clips [barrier_sm0, barrier_sm1]
+[04:32:52] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_barrier_orb: 5 nodes, 2 joints, 1 pieces, 1 clips [barrier_orb]
+[04:32:52] [Worker-Main-5/INFO] (Overcraft) Hero model sigma_rock: 27 nodes, 12 joints, 1 pieces, 9 clips [rock_006f97, rock_007203, rock_0074b3, rock_00738d, rock_00738c, rock_00738b, rock_007202, rock_00701d, rock_006f9c]
+[04:32:55] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko: 618 nodes, 566 joints, 11 pieces, 134 clips [emote_listen_up_1, emote_orion_dance_3, emote_orion_dance_1, emote_orion_dance_2, run_back_left, emote_sign_thanks_2, emote_sign_thanks_1, throw_kunai_end, climb, crouch_walk_back, crouch_walk_forward_right, jump, emote_choreography_3, add_aim, emote_choreography_1, emote_choreography_2, crouch_walk_left, run_back_right, swift_step, emote_challenge_2, emote_challenge_1, knockdown, emote_heroic_4, throw_suzu_end, emote_heroic_5, emote_pod_pet_3, emote_pod_pet_4, emote_pod_pet_1, emote_pod_pet_2, fall, emote_pod_pet_5, emote_heroic_2, emote_heroic_3, emote_rainy_stroll_5, emote_heroic_1, emote_rainy_stroll_4, melee, emote_rainy_stroll_3, emote_rainy_stroll_2, add_breathe_crouch, emote_rainy_stroll_1, emote_salty_3, knockdown_getup, emote_salty_4, strafe_left, ult_cast_end, add_breathe, emote_cheer_2, emote_cheer_1, emote_mic_drop_1, throw_kunai_2, crouch_walk_right, emote_mic_drop_2, throw_kunai_3, emote_mic_drop_3, throw_kunai_1, throw_suzu, emote_listen_up_4, emote_listen_up_3, emote_salty_1, throw_kunai_4, crouch_walk, run_back, run, crouch_idle, emote_fox_cuddles_6, emote_fox_cuddles_1, emote_fox_cuddles_4, emote_fox_cuddles_5, emote_fox_cuddles_2, emote_fox_cuddles_3, melee_2, emote_isn_t_this_fun_2, melee_3, emote_isn_t_this_fun_1, emote_laugh_2, crouch_walk_forward_left, emote_laugh_1, crouch_walk_back_left, emote_donut_break_1, emote_sweet_treat_1, emote_sweet_treat_2, emote_donut_break_2, emote_headbanging_1, emote_headbanging_3, emote_headbanging_2, run_forward_right, climb_top, crouch_walk_back_right, throw_ofuda_start, emote_friendly_kitty_6, emote_friendly_kitty_5, death, emote_friendly_kitty_4, emote_friendly_kitty_3, throw_ofuda_end, emote_friendly_kitty_2, emote_friendly_kitty_1, swift_step_end, emote_skateboard_10, emote_skateboard_11, emote_kneeling_2, emote_skateboard_2, emote_kneeling_1, emote_skateboard_3, emote_skateboard_1, reload, throw_ofuda_hold, emote_kneeling_3, land, emote_skateboard_8, emote_skateboard_9, emote_skateboard_6, emote_skateboard_7, emote_skateboard_4, strafe_right, emote_skateboard_5, emote_whirlwind_5, emote_whirlwind_4, throw_ofuda, ult_cast, idle, select_intro, emote_whirlwind_1, emote_whirlwind_3, emote_whirlwind_2, select_hold, throw_ofuda_alt_start, emote_killer_beam_2, throw_ofuda_alt, emote_killer_beam_1, emote_blooming_1, emote_blooming_2, run_forward_left]
+[04:32:57] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko_1p: 613 nodes, 566 joints, 5 pieces, 21 clips [throw_ofuda, ult_cast, idle, throw_ofuda_end, throw_suzu_end, swift_step_end, add_breathe, throw_kunai_end, climb, throw_kunai_2, throw_ofuda_alt_start, reload, throw_kunai_1, throw_ofuda_hold, throw_ofuda_alt, throw_suzu, melee, climb_top, throw_ofuda_start, add_walk, swift_step]
+[04:32:57] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko_clips: 607 nodes, 566 joints, 0 pieces, 1 clips [hello]
+[04:32:57] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko_1p_clips: 607 nodes, 566 joints, 0 pieces, 1 clips [hello]
+[04:32:59] [Worker-Main-5/INFO] (Overcraft) Hero model lucio: 317 nodes, 245 joints, 12 pieces, 134 clips [emote_listen_up_1, add_melee_aim, wallride_right, crouch_walk_back, crouch_walk_forward_right, jump_right, skate_forward_right, skate_right, add_fidget_2_end, jump_back_start, emote_dance_party_10, emote_a_suave_gift_5, add_aim, emote_a_suave_gift_6, emote_a_suave_gift_1, emote_a_suave_gift_2, emote_a_suave_gift_3, emote_a_suave_gift_4, emote_moonwalk_1, add_wallride_right_lean, skate_back, crouch_walk_left, emote_big_swing_2, emote_moonwalk_2, emote_big_swing_1, emote_moonwalk_3, jump_forward_end, skate_stop_back, crouch_idle_alt, add_fire, emote_heroic_6, knockdown, emote_heroic_7, emote_heroic_4, knockdown_hold, emote_heroic_5, ult_end, emote_tuning_1, emote_tuning_2, skate_stop_right, jump_right_end, melee_down, skate_stop_left, emote_heroic_2, emote_heroic_3, emote_heroic_1, melee, wallride_left, jump_left_end, emote_dance_party_6, emote_nah_2, emote_salty_3, knockdown_getup, emote_dance_party_7, emote_nah_1, emote_salty_4, emote_dance_party_4, emote_dance_party_5, add_fidget_1, jump_forward_start, add_fidget_2, emote_dance_party_8, emote_dance_party_9, emote_knee_slapper_2, emote_knee_slapper_1, emote_dance_party_2, emote_dance_party_3, skate_back_right, emote_dance_party_1, emote_capoeira_1, emote_mic_drop_1, crouch_walk_right, emote_mic_drop_2, emote_mic_drop_3, emote_capoeira_2, emote_listen_up_4, emote_listen_up_3, emote_salty_1, crouch_walk, crossfade_speed_moving, crossfade_speed_moving_side, add_fire_hold, crossfade_heal_moving, crouch_idle, jump_back, crossfade_speed, jump_left_start, skate_forward_left, emote_in_the_groove_2, jump_right_start, crossfade_heal, emote_in_the_groove_1, add_reload_end, jump_left, skate_stop_forward, crouch_walk_forward_left, crouch_walk_back_left, add_wallride, select_alt, crossfade_heal_moving_side, jump_back_end, skate, crouch_walk_back_right, add_soundwave, jump_alt_end, amp, add_crossfade_speed, jump_forward, emote_dance_off_1, emote_dance_off_2, reload, emote_dance_off_3, jump_alt, add_crossfade_heal, emote_juggle_3, emote_juggle_2, emote_juggle_1, ult_cast, idle, add_wallride_left_lean, jump_alt_start, select_intro, idle_alt, skate_back_left, skate_left, select_hold, emote_smooth_3, emote_smooth_2, emote_chilling_3, emote_chilling_2, emote_chilling_4, melee_up, emote_chilling_1, emote_smooth_1]
+[04:33:00] [Worker-Main-5/INFO] (Overcraft) Hero model lucio_1p: 149 nodes, 88 joints, 2 pieces, 35 clips [add_soundwave, add_fire, amp, add_fire_hold, add_fire_2, add_fire_3, add_fire_4, add_reload_lean_right, ult_end, wallride_right, reload, skate_right, melee, crossfade_speed, wallride_left, add_jump, jump, jump_start, crossfade_heal, ult_cast, idle, add_amp, add_wallride_left_lean, add_breathe, skate_left, add_sway_a, add_sway_b, add_sway_c, add_wallride_right_lean, skate_back, add_wallride, inspect, add_skate_start, skate_forward, add_reload_lean_left]
+[04:33:00] [Worker-Main-5/INFO] (Overcraft) Hero model lucio_weapon: 29 nodes, 16 joints, 6 pieces, 8 clips [add_soundwave, reload, add_fire, ult_cast, idle, reload_1p, ult_end, add_move]
+[04:33:00] [Worker-Main-5/INFO] (Overcraft) Hero model lucio_clips: 305 nodes, 245 joints, 0 pieces, 1 clips [hello]
+[04:33:00] [Worker-Main-5/INFO] (Overcraft) Hero model lucio_1p_clips: 139 nodes, 88 joints, 0 pieces, 1 clips [hello]
+[04:33:01] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat: 321 nodes, 281 joints, 13 pieces, 40 clips [add_ult_aim_start, add_bob_2, fly_back_left, emote_listen_up_1, add_fire, knockdown, ult_land, add_fire_2, add_melee, add_reload, knockdown_end, add_ult_aim_end, add_boost, fly_back, fly_forward_left, ult_dive, add_ult_aim, fly_left, ult_dive_start, emote_heroic_2, add_bob, emote_heroic_3, emote_heroic_1, add_melee_up, fly_forward, knockdown_start, idle, select_intro, emote_mic_drop_1, select_hold, add_purr, fly_back_right, fly_right, select_fidget_2, select_fidget_1, add_melee_down, select_fidget_4, select_fidget_3, emote_salty_1, fly_forward_right]
+[04:33:02] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat_1p: 312 nodes, 281 joints, 4 pieces, 15 clips [knockdown_start, add_idle, add_fire, knockdown, idle, add_fire_2, knockdown_end, ult_aim_start, add_down, add_up, ult_aim, purr, reload, ult_aim_end, melee]
+[04:33:02] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat_clips: 307 nodes, 281 joints, 0 pieces, 2 clips [add_aim, hello]
+[04:33:02] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat_1p_clips: 307 nodes, 281 joints, 0 pieces, 1 clips [hello]
+[04:33:05] [Worker-Main-5/INFO] (Overcraft) Hero model mercy: 500 nodes, 408 joints, 10 pieces, 188 clips [ga_fly_back, emote_listen_up_1, select_fidget, melee_blaster, emote_applause_1, emote_applause_2, add_flash_heal, fly_forward_right_blaster, run_back_left, fly_forward_left, crouch_walk_back, emote_loved_2, add_idle_blaster_2, emote_loved_1, crouch_walk_forward_right, jump, ga_fly_right, knockdown_blaster, knockdown_start_blaster, crouch_walk_forward_left_blaster, fly_blaster, emote_relax_2, emote_relax_3, run_back_right_blaster, emote_relax_4, emote_relax_1, add_idle_2, run_forward_right_blaster, crouch_walk_left, fall_blaster, emote_caduceus_1, ga_fly_blaster, emote_caduceus_2, emote_caduceus_3, select_fidget_2, land_blaster, run_back_right, jump_blaster, melee_up_blaster, emote_heroic_6, knockdown, emote_heroic_7, emote_heroic_4, ga_start_blaster, crouch_walk_right_blaster, emote_heroic_5, add_beam_end_2, melee_down, fall, jump_2_blaster, reload_blaster, emote_heroic_2, emote_heroic_3, emote_rainy_stroll_6, emote_rainy_stroll_5, emote_heroic_1, emote_rainy_stroll_4, melee, emote_rainy_stroll_3, emote_rainy_stroll_2, emote_rainy_stroll_1, add_beam_end, fly_forward, emote_salty_3, emote_salty_4, fly_right_blaster, crouch_walk_back_blaster, strafe_left, idle_2, land_forward, add_fire_blaster, ga_launch_blaster, add_breathe, emote_mic_drop_1, crouch_walk_right, emote_mic_drop_2, emote_mic_drop_3, fly, fly_back_right, emote_listen_up_4, emote_no_pulse_2, emote_shuffle_2, crouch_walk_back_right_blaster, emote_listen_up_3, emote_no_pulse_1, emote_shuffle_1, crouch_walk_left_blaster, emote_salty_1, fly_forward_right, resurrect, emote_shuffle_3, crouch_walk, fly_back_left, idle_blaster, run_back, strafe_right_blaster, crouch_walk_forward_right_blaster, run, strafe_left_blaster, crouch_walk_blaster, fly_back, land_back, crouch_idle, fly_left, ga_launch, add_flash_heal_flying, fly_forward_blaster, fly_back_left_blaster, emote_pod_glide_2, emote_pod_glide_1, fly_left_blaster, add_beam_start, emote_pod_glide_8, emote_pod_glide_7, crouch_walk_back_left_blaster, emote_pod_glide_9, run_blaster, emote_pod_glide_4, emote_pod_glide_3, emote_pod_glide_6, emote_pod_glide_5, emote_the_best_medicine_2, fly_back_right_blaster, crouch_walk_forward_left, emote_the_best_medicine_1, crouch_walk_back_left, knockdown_end_blaster, run_forward_right, crouch_walk_back_right, idle_blaster_2, ga_start, add_beam, ga_start_2, resurrect_blaster, emote_flurry_2, ga_fly, emote_flurry_3, emote_lazy_river_1, knockdown_end, emote_lazy_river_2, emote_lazy_river_3, run_forward_left_blaster, emote_lazy_river_4, emote_lazy_river_5, fly_back_blaster, emote_flurry_1, emote_lazy_river_6, emote_hustle_3, emote_hustle_4, emote_hustle_1, emote_hustle_2, ult_cast_blaster, land, run_back_blaster, hit_react, strafe_right, knockdown_start, add_idle, jump_2, ult_cast, ga_fly_left, idle, land_right, pose_held, emote_crazy_choreography_2, emote_crazy_choreography_1, emote_crazy_choreography_4, emote_crazy_choreography_3, land_left, add_beam_2, add_beam_3, add_idle_blaster, select_hold, melee_down_blaster, run_back_left_blaster, fly_forward_left_blaster, emote_bunny_hop_1, fly_right, melee_up, emote_parasol_1, emote_bunny_hop_4, emote_parasol_3, emote_so_tough_2, emote_parasol_2, run_forward_left, emote_bunny_hop_2, emote_bunny_hop_3, emote_so_tough_1]
+[04:33:06] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_1p: 184 nodes, 109 joints, 2 pieces, 53 clips [crouch_walk, idle_blaster, melee_blaster, add_beam_start_2, add_flash_heal, crouch_walk_blaster, crouch_idle, ga_launch, jump, fly_blaster, add_beam_start, fall_blaster, add_fly_blaster_2, ga_fly_blaster, draw_blaster, jump_blaster, ga_start, add_beam, knockdown, resurrect_blaster, ga_start_blaster, ga_fly, add_fire_blaster_5, knockdown_end, add_beam_end_2, add_fire_blaster_2, fall, reload_blaster, add_fire_blaster_4, add_fire_blaster_3, ult_cast_blaster, add_fly, melee, add_beam_end, knockdown_start, add_idle, ult_cast, add_fly_blaster, idle, crouch_idle_blaster, add_fire_blaster, ga_launch_blaster, draw, add_beam_2, add_beam_3, add_idle_blaster, add_beam_4, add_reload_blaster, fly, walk_blaster, add_fly_2, resurrect, walk]
+[04:33:06] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_clips: 476 nodes, 408 joints, 0 pieces, 4 clips [hello_blaster, add_aim_blaster, add_aim, hello]
+[04:33:06] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_1p_clips: 168 nodes, 109 joints, 0 pieces, 2 clips [hello_blaster, hello]
+[04:33:06] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_staff: 23 nodes, 12 joints, 4 pieces, 19 clips [emote_parasol, add_beam, add_layer_2, add_beam_swap_2, idle, add_beam_short_2, add_beam_start, add_beam_start_2, add_flash_heal, add_beam_2, add_beam_end_2, add_beam_swap, holstered, emote_caduceus, add_flash_heal_2, add_beam_short, add_layer, add_beam_end, emote_flurry]
+[04:33:07] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_blaster: 19 nodes, 10 joints, 1 pieces, 4 clips [reload, add_fire, idle, add_layer]
+[04:33:09] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver: 631 nodes, 581 joints, 12 pieces, 123 clips [grip_thorn, dash_back_right, select_fidget, tree_cast_up, release, release_down, dash_forward_right, run_back_left, add_release_end_up, after_fire_thorn, crouch_walk_back_left_thorn, crouch_walk_back, add_crouch_idle, crouch_walk_forward_right, add_charging, add_land_forward, jump, crouch_walk_forward_right_thorn, dash_back_left, add_after_fire_thorn, dash_back, run_back_thorn, crouch_walk_left, select_fidget_2, reload_thorn, run_back_right, release_up, run_thorn, add_crouch_idle_thorn, knockdown, firing_thorn, crouch_idle_thorn, release_moving, melee_down, run_back_left_thorn, fall, crouch_walk_forward_left_thorn, melee, grip, charge, jump_forward_start, strafe_left, idle_2, add_breathe, crouch_idle_2, crouch_walk_thorn, fire_thorn_up, crouch_walk_right, idle_firing_thorn, run_forward_right_thorn, release_moving_up, throw, strafe_right_thorn, add_release_end_down, crouch_idle_thorn_2, crouch_walk, tree_aim, release_moving_down, dash_forward_left, run_back, idle_charging_2, run, grip_up, crouch_idle, idle_thorn, throw_blossom, add_fire_thorn, charge_up, add_release_end, add_land, add_dash_end, knockdown_end_thorn, fire_thorn_down, idle_firing_thorn_2, tree_cast, add_firing_thorn, idle_thorn_2, grip_down, add_firing_thorn_2, charge_down, crouch_walk_forward_left, fire_thorn, tree_aim_start_up, crouch_walk_back_left, crouch_walk_back_thorn, tree_cast_down, dash, run_forward_right, crouch_walk_back_right, dash_back_thorn, jump_forward, knockdown_end, dash_left, dash_right, jump_forward_2, reload, add_after_fire_end_thorn, add_firing_end_thorn, charge_full, hit_react, strafe_right, crouch_walk_left_thorn, knockdown_start, run_forward_left_thorn, add_idle, jump_2, run_back_right_thorn, idle, crouch_walk_right_thorn, tree_aim_start, pose_held, idle_charging, strafe_left_thorn, select_intro, select_hold, add_idle_thorn, throw_down, crouch_walk_back_right_thorn, dash_thorn, throw_up, melee_up, run_forward_left, tree_aim_start_down]
+[04:33:11] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_1p: 609 nodes, 581 joints, 5 pieces, 76 clips [tree_aim, add_dash_3, add_knockdown_end_thorn, add_dash_4, add_knockdown_start, add_dash_2, add_knockdown, add_melee_thorn_end, draw_thorn, add_fire_thorn_start, add_reload_thorn_end, add_dash_thorn, idle_thorn, bloom, add_fire_thorn, bloom_full, add_knockdown_thorn, add_land, bloom_chain, reload_thorn_after_fire, jump, add_tree_cancel_end_thorn, tree_cast, add_firing_thorn, add_melee_end, add_throw_end, add_knockdown_start_thorn, add_reload_end, bloom_chain_5, bloom_chain_4, tree_cancel, bloom_chain_3, bloom_chain_2, fall_thorn, add_tree_cast_end, add_grip_down, hit_react_thorn, bloom_full_2, reload_thorn, add_dash, add_reload_thorn_after_fire_end, add_grip_up, add_land_thorn, add_knockdown_end, add_tree_aim_start_end, add_reload, add_throw, tree_aim_start_thorn, add_grip_2, add_tree_cancel_end, add_tree_cast_end_thorn, reload, fall, tree_cancel_thorn, add_dash_thorn_2, melee, add_dash_thorn_3, add_dash_thorn_4, hit_react, jump_thorn, add_grip, grip, add_bloom, add_idle, draw_thorn_2, idle, tree_aim_start, add_fire_thorn_end, draw, tree_cast_thorn, draw_2, add_idle_thorn, throw, melee_thorn, walk_thorn, walk]
+[04:33:11] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_clips: 603 nodes, 581 joints, 0 pieces, 2 clips [hello_thorn, hello]
+[04:33:11] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_1p_clips: 603 nodes, 581 joints, 0 pieces, 10 clips [thorn_count_8, thorn_count_6, hello_thorn, thorn_count_7, thorn_count_4, hello, thorn_count_5, thorn_count_2, thorn_count_3, thorn_count_1]
+[04:33:14] [Worker-Main-5/INFO] (Overcraft) Hero model ana: 604 nodes, 505 joints, 8 pieces, 137 clips [fall_right_scoped, select_fidget, run_back_to_forward, run_forward_to_back, run_back_left, add_idle_react, throw_grenade_down, add_aim_crouch_walk, crouch_walk_back, jump_back_2, crouch_walk_back_left_scoped, crouch_walk_forward_right, jump_right, run_stop_right, fall_left_scoped, jump, cast_nano, cast_sleep_down, fall_left, add_land_scoped, face_scoped, add_aim, add_aim_jump, run_stop_forward, run_forward_left_scoped, run_back_right_scoped, strafe_left_scoped, pulled_y_minus, crouch_walk_left, crouch_walk_scoped, knockdown_alt, hit_react_2, select_fidget_2, hello, run_forward_right_scoped, select_fidget_3, add_aim_jump_scoped, run_back_right, fall_back, add_fire, knockdown, run_stop_left, add_aim_crouch, crouch_walk_left_scoped, jump_left_2, melee_down, fall, melee, crouch_walk_forward_right_scoped, crouch_idle_scoped, run_stop_back, add_run, knockdown_alt_end, pulled, strafe_left, idle_2, throw_grenade_up, pulled_x_plus, fall_back_scoped, add_breathe, crouch_idle_2, crouch_walk_right, face, throw_grenade, add_aim_run_left, crouch_walk, add_idle_react_2, jump_back_2_scoped, add_idle_react_3, add_idle_react_4, run_back, jump_2_scoped, run, run_back_left_scoped, add_run_end_scoped, add_aim_crouch_scoped, crouch_idle, jump_back, crouch_walk_back_right_scoped, jump_right_2_scoped, cast_nano_up, add_land, pulled_x_minus, reload_crouch, run_back_scoped, run_left_to_right, face_in, cast_sleep, pulled_x_plus_scoped, jump_left, crouch_idle_scoped_2, pulled_y_plus_scoped, pulled_y_minus_scoped, crouch_walk_forward_left, add_aim_run_right, crouch_walk_back_left, pulled_x_minus_scoped, add_pulled, add_aim_scoped, run_forward_right, crouch_walk_back_right, fall_right, idle_scoped_2, face_start, run_right_to_left, crouch_walk_right_scoped, add_aim_run, cast_sleep_up, knockdown_end, jump_left_2_scoped, pulled_scoped, face_in_scoped, pulled_y_plus, reload, run_scoped, jump_right_2, cast_nano_down, idle_scoped, knockdown_alt_start, hit_react, strafe_right, knockdown_start, add_aim_crouch_walk_scoped, jump_2, idle, crouch_walk_back_scoped, pose_held, select_intro, add_aim_throw, select_hold, add_run_sway, fall_scoped, add_land_2, melee_up, strafe_right_scoped, crouch_walk_forward_left_scoped, run_forward_left]
+[04:33:15] [Worker-Main-5/INFO] (Overcraft) Hero model ana_1p: 171 nodes, 97 joints, 3 pieces, 33 clips [scope_in, add_fire, add_knockdown_start, add_layer_in, add_knockdown_end, add_fall, add_knockdown, reload_ammo_left, add_knockdown_alt_start, reload, fall, add_land, add_fire_alt, melee, idle_scoped, add_jump, hit_react, jump, cast_nano, add_idle, add_look_sway, cast_sleep, idle, add_knockdown_alt_end, add_sway, add_knockdown_alt, add_layer_out, throw_grenade, add_move_lean, hello, add_layer, walk, add_walk]
+[04:33:15] [Worker-Main-5/INFO] (Overcraft) Hero model ana_weapon: 32 nodes, 20 joints, 3 pieces, 8 clips [emote_tea_time_away, reload, add_fire, emote_tea_time_return, idle, reload_ammo_left_1p, reload_ammo_left, add_fire_alt_1p]
+[04:33:16] [Worker-Main-5/INFO] (Overcraft) Hero model ana_clips: 565 nodes, 505 joints, 0 pieces, 51 clips [emote_not_impressed_2, emote_listen_up_1, emote_not_impressed_1, emote_tea_time_4, emote_tea_time_5, emote_tea_time_6, emote_tea_time_1, emote_tea_time_2, emote_tea_time_3, emote_disapproving_1, emote_disapproving_2, emote_thumbs_up_2, emote_thumbs_up_1, emote_take_a_knee_3, emote_yut_nori_3, emote_yut_nori_4, emote_take_a_knee_1, emote_yut_nori_1, emote_take_a_knee_2, emote_yut_nori_2, emote_yut_nori_5, emote_yut_nori_6, emote_candy_2, emote_candy_1, emote_candy_3, emote_heroic_6, emote_heroic_4, emote_retro_hero_2, emote_heroic_5, emote_retro_hero_1, emote_beach_ball_1, emote_beach_ball_2, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_heroic_1, emote_salty_3, emote_salty_4, emote_thumbs_down_1, emote_dance_3, emote_protector_3, emote_protector_2, emote_protector_1, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_thumbs_down_2, emote_listen_up_4, emote_listen_up_3, emote_salty_1]
+[04:33:16] [Worker-Main-5/INFO] (Overcraft) Hero model ana_pistol: 11 nodes, 3 joints, 3 pieces, 0 clips []
+[04:33:18] [Worker-Main-5/INFO] (Overcraft) Hero model sombra: 414 nodes, 319 joints, 10 pieces, 116 clips [run_forward_left_stealth, select_fidget, jump_stealth, run_back_left, crouch_walk_back, add_aim_run_back, add_fire_end, add_aim_run_forward_right, crouch_walk_forward_right, add_hack_start, hack_walk, hack_idle, add_aim_stealth, jump, add_aim_hack_walk, run_back_right_stealth, add_aim, add_aim_crouch_2, add_aim_jump, pulled_y_minus, run_stealth, crouch_walk_left, knockdown_alt, run_forward_right_stealth, select_fidget_2, hello, run_back_right, idle_stealth, add_fire, knockdown, strafe_right_stealth, add_land_stealth, add_aim_crouch, add_crouch_stealth, melee_down, fall, melee, throw_cyberspace, add_aim_hack, add_aim_hack_walk_left, emote_preview, throw_cyberspace_up, hack_cat82, hack_cat82_down, knockdown_alt_end, pulled, strafe_left, idle_2, pulled_x_plus, add_throw_cyberspace_end, add_breathe, add_hello, run_back_left_stealth, crouch_idle_2, crouch_walk_right, hack_walk_back, throw, add_aim_run_left, add_aim_run_back_left, crouch_walk, add_hacking_start, add_run_end, add_fire_hold, run_back, run, hack_walk_left, crouch_idle, idle_stealth_2, jump_2_stealth, add_land, pulled_x_minus, run_back_stealth, add_reload_end, add_aim_jump_stealth, add_hack, add_aim_run_back_right, crouch_walk_forward_left, add_aim_run_right, crouch_walk_back_left, add_pulled, stealth_486, stealth_487, run_forward_right, crouch_walk_back_right, add_aim_run, fall_stealth, knockdown_end, hack_cat82_up, strafe_left_stealth, add_run_end_stealth, hack_walk_right, pulled_y_plus, reload, add_hacking, add_aim_run_forward_left, add_throw_cyberspace_end_2, add_throw_cyberspace_end_3, knockdown_alt_start, hit_react, strafe_right, knockdown_start, add_aim_run_stealth, jump_2, ult_cast, idle, add_fire_start, pose_held, add_aim_hack_walk_right, select_intro, throw_cyberspace_down, add_aim_2, select_hold, throw_down, throw_up, melee_up, run_forward_left]
+[04:33:20] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_1p: 173 nodes, 91 joints, 2 pieces, 60 clips [hack_cat94, add_knockdown_start, add_fire_hold, jump_stealth, add_knockdown, crouch_idle, hacking, add_fire_end, hack_walk, add_stealth_layer, hack_idle, add_land, jump, add_melee_end, add_reload_end, hack_jump, add_hack, hack_cat82_stealth, stealth_486, stealth_487, hello, idle_stealth, add_move_stop, add_fire, add_stealth_486_end, add_knockdown_end, add_ult_cast_end, fall_stealth_2, fall_stealth, hack_cat82_stealth_walk, walk_stealth_right, walk_stealth_left, stealth_move_start, reload, stealth_move_stop, fall, jump_stealth_2, melee, throw_cyberspace, hit_react, add_idle_stealth, add_move_start, hack_cat82, add_idle, ult_cast, idle, add_fire_start, add_hack_land, add_throw_cyberspace_end, add_hello, add_translocate_end, hack_fall, walk_stealth, throw, hack_cat1f1, hack_start_stealth, translocate, hack_start, walk, add_walk]
+[04:33:20] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_weapon: 29 nodes, 17 joints, 5 pieces, 8 clips [reload, add_fire, ult_cast, add_fire_end, melee_1p, reload_1p, add_fire_start, add_ult_cast_end]
+[04:33:20] [Worker-Main-5/INFO] (Overcraft) Hero model sombra_clips: 378 nodes, 319 joints, 0 pieces, 68 clips [emote_listen_up_1, emote_ed_s_saunter_1, emote_ed_s_saunter_2, emote_ed_s_saunter_3, emote_browsing_2, emote_masterpiece_1, emote_browsing_1, emote_browsing_3, emote_amused_2, emote_amused_1, emote_sit_3, emote_sit_2, emote_sit_1, emote_choreography_3, emote_hold_on_1, emote_hold_on_2, emote_sit_6, emote_sit_5, emote_sit_4, emote_choreography_1, emote_choreography_2, emote_groove_3, emote_pet_slicer_4, emote_groove_2, emote_pet_slicer_1, emote_groove_1, emote_pet_slicer_2, emote_pet_slicer_3, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_regifted_1, emote_dance_off_1, emote_dance_off_2, emote_regifted_4, emote_regifted_5, emote_regifted_2, emote_regifted_3, emote_dance_off_3, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_rainy_stroll_5, emote_heroic_1, emote_rainy_stroll_4, emote_rainy_stroll_3, emote_rainy_stroll_2, emote_rainy_stroll_1, emote_salty_3, emote_salty_4, emote_marioneta_3, emote_marioneta_2, emote_marioneta_1, emote_boop_1, emote_dance_3, emote_boop_2, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_regifted_6, emote_listen_up_4, emote_shuffle_2, emote_listen_up_3, emote_shuffle_1, emote_salty_1, emote_shuffle_3]
+[04:33:22] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte: 464 nodes, 392 joints, 11 pieces, 184 clips [swing_down, swing_windup_3_up, add_shield_bash_end_2, run_back_left, run_back_left_shield, add_ult_end, add_aim_crouch_walk, crouch_walk_back, jump_2_back, add_aim_run_back, run_turn, add_aim_run_shield_back, add_aim_run_forward_right, crouch_walk_forward_right, jump_right, run_stop_right, jump_shield, shield_bash_hit, jump, ult_cast_shield, fall_left, hello_down, add_aim, ult_stop, whip_return_miss, add_aim_jump, add_shield_lower_end, crouch_walk_left, ult_hold_shield, knockdown_alt, hello, jump_2_left, run_back_right, fall_back, shield_bash, add_aim_run_shield_right, jump_2_forward_right, knockdown, pulled_w_shield, jump_2_forward_left, run_stop_left, swing_2_up, knockdown_end_alt, run_stop_left_shield, add_aim_crouch, swing_2, add_throw, pulled_s_shield, fall, run_back_right_shield, add_emote_preview, ult_start, run_stop_back, add_shield_raise_end, swing_windup_down, pulled, strafe_left, idle_2, swing_windup_3_down, ult_hold, add_aim_crouch_walk_back, add_breathe, add_hello, add_aim_crouch_walk_back_right, crouch_idle_2, add_aim_crouch_walk_forward_left, crouch_walk_right, swing, fall_back_right, throw, add_aim_run_left, add_aim_run_shield_left, add_aim_run_back_left, whip_return_blocked, fall_forward, idle_shield_2, swing_link_2, swing_end_2, swing_end, crouch_walk, run_stop_shield, run_back, add_land_8, add_land_9, add_land_6, run, fall_forward_right, jump_forward_right, add_aim_crouch_walk_left, whip, add_aim_run_shield, stunned, crouch_idle, fall_forward_left, knockdown_start_alt, hit, run_stop, add_aim_crouch_walk_right, add_aim_run_shield_forward_right, add_ult_end_shield, swing_end_2_up, jump_back, swing_2_down, add_land, run_forward_left_shield, swing_windup_3, strafe_left_shield, swing_end_up, pulled_e, run_forward_right_shield, pulled_n_shield, add_aim_run_shield_forward_left, add_select, jump_left, shield_lower, add_aim_run_back_right, crouch_walk_forward_left, pulled_s, add_aim_run_shield_back_left, add_aim_run_right, crouch_walk_back_left, add_pulled, add_aim_crouch_walk_forward_right, jump_back_left, pulled_w, add_land_shield, pulled_n, run_forward_right, swing_windup, crouch_walk_back_right, fall_right, add_shield_bash_end, jump_forward_left, fall_shield, shield_raise, add_breathe_shield, swing_end_down, jump_forward, run_shield, add_aim_run, knockdown_end, swing_link_up, add_whip, run_back_shield, swing_windup_up, add_aim_run_forward_left, run_stop_right_shield, fall_back_left, add_aim_shield, jump_2_back_left, jump_2_right, jump_2_forward, swing_link, strafe_right, add_aim_crouch_walk_back_left, run_turn_2, knockdown_start, strafe_right_shield, pulled_shield, jump_2, ult_cast, idle, pose_held, hello_up, whip_return_close, swing_link_2_down, swing_up, pulled_e_shield, jump_2_shield, add_aim_run_shield_back_right, swing_link_down, whip_return, swing_end_2_down, jump_2_back_right, jump_back_right, throw_down, add_land_4, add_land_5, add_land_2, add_land_3, throw_up, run_forward_left, swing_link_2_up, idle_shield]
+[04:33:22] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_1p: 159 nodes, 104 joints, 2 pieces, 37 clips [add_move_stop, knockdown, swing_2, knockdown_end, add_whip, whip, stunned, whip_2, crouch_idle, fall, add_bob, land, swing_windup_3, throw_2, swing_link, jump, add_move_start, knockdown_start, add_idle, ult_cast, idle, whip_return_close, add_aim, whip_return_miss, add_hello, add_sway, add_aim_2, whip_return, whip_return_close_2, swing, throw, hello, whip_return_blocked, swing_windup, swing_link_2, swing_end_2, swing_end]
+[04:33:23] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_weapon: 14 nodes, 7 joints, 1 pieces, 33 clips [whip_return_close_1p, swing_2_1p, swing_windup_3_1p, whip_return_1p, shield_raise, swing_2, swing_end_2_1p, emote_cheer, whip, stunned, swing_1p, swing_windup_1p, whip_2_1p, swing_link, whip_return_miss_1p, swing_link_2_1p, idle, whip_return_blocked_1p, swing_end_1p, whip_return_close, whip_return_miss, whip_return, ult_cast_1p, swing_link_1p, swing, whip_return_blocked, swing_windup, swing_link_2, swing_end_2, idle_shield, swing_end, whip_1p, whip_return_close_2_1p]
+[04:33:23] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_clips: 453 nodes, 392 joints, 0 pieces, 57 clips [emote_power_flail_1, emote_listen_up_1, emote_recalibrate_1, emote_taunt_2, emote_katt_3, emote_katt_2, emote_taunt_1, emote_katt_1, emote_power_flail_4, emote_power_flail_2, emote_power_flail_3, emote_flail_tricks_2, emote_flail_tricks_1, emote_choreography_3, emote_choreography_4, emote_choreography_1, emote_choreography_2, emote_hilarious_3, emote_hilarious_2, emote_hilarious_1, emote_kneel_4, emote_kneel_3, emote_kneel_2, emote_kneel_1, emote_recalibrate_3, emote_recalibrate_2, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_heroic_1, emote_guard_duty_2, emote_salty_3, emote_guard_duty_3, emote_salty_4, emote_guard_duty_1, emote_dance_4, emote_guard_duty_4, emote_dance_3, emote_cheer_5, emote_cheer_2, emote_cheer_1, emote_cheer_4, emote_cheer_3, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_bunny_hop_1, emote_listen_up_4, emote_listen_up_3, emote_bunny_hop_2, emote_salty_1, emote_bunny_hop_3]
+[04:33:23] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_flail_head: 29 nodes, 23 joints, 1 pieces, 28 clips [whip_return_close_1p, swing_2_1p, swing_windup_3_1p, whip_return_1p, swing_2, swing_end_2_1p, emote_cheer, whip, stunned, swing_1p, swing_windup_1p, whip_2_1p, whip_return_miss_1p, swing_link_2_1p, ult_cast, idle, whip_return_blocked_1p, swing_end_1p, whip_return_close, whip_return_miss, whip_return, ult_cast_1p, swing_link_1p, swing, swing_end_2, swing_end, whip_1p, whip_return_close_2_1p]
+[04:33:23] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte_shield: 30 nodes, 21 joints, 2 pieces, 12 clips [grow_rally, fold, fold_rally, idle_up_rally, idle_up, deploy_rally, bash_hit, bash_hit_rally, shrink_rally, deploy, emote_cheer, emote_recalibrate]
+[04:33:27] [Worker-Main-5/INFO] (Overcraft) Hero model juno: 410 nodes, 362 joints, 15 pieces, 270 clips [add_showcase, add_ring_throw_glide, run_back_left, jump_apex_back, add_layer_run_2, add_layer_run, add_torpedo_lock_start, crouch_walk_back, add_aim_run_back, add_glide_start_add_2, glide_double_jump_forward_right, add_torpedo_lock, double_jump_right, add_aim_pitch_up, hover_back, ring_throw_up, jump, run_turn_right, add_run_lean, double_jump_apex_back, fall_left, stop_back, run_turn_back, add_jump_forward, hover_start_right, stop, add_layer_2f, double_jump_apex_forward, double_jump_fall_back_left, hover_start_forward_right, glide_back, hit_react_2, add_layer, double_jump_back_left, double_jump_fall_forward_right, run_back_right, glide_start_forward, add_crouch, add_run_turn_left, add_glide_back_right, add_layer_hover_2, double_jump, add_double_jump_back_right, add_jump_back, double_jump_fall_back_right, add_run_turn_right, glide_double_jump_left, jump_apex, add_double_jump_right, hover_right, hover_start_forward, knockdown_shared_3, add_crouch_walk_left, glide_start_back_right, pulled, knockdown_shared_2, add_layer_pitch, double_jump_left, add_hello, add_land_left, add_glide_back, stop_right, fall_back_right, add_run_turn_forward, double_jump_fall_forward, showcase, add_aim_run_back_left, glide, hover_start_back_right, jump_apex_forward_right, add_double_jump_forward_right, glide_forward_right, hover_start_forward_left, run_back, add_double_jump_forward, add_stand_layer_2, run, add_double_jump_back, stun, add_glide_turn_forward, crouch_shared, fall_forward_right, jump_forward_right, hover_forward, jump_apex_back_right, add_layer_settle, add_torpedo_lock_legs, add_layer_pitch_up, jump_back, add_land, double_jump_forward_right, add_layer_cat22e, add_layer_cat22e_2, jump_apex_forward, add_jump_back_left, add_aim_run_back_right, pose_special, add_pulled, add_stand_layer, jump_back_left, add_glide_forward, add_glide_forward_left, run_forward_right, crouch_walk_back_right, add_aim_pitch, jump_forward_left, add_layer_cat22e_end, jump_apex_right, add_glide_turn_left, add_jump_forward_left, glide_double_jump_back_left, jump_forward, knockdown_end, add_glide_start_back_right, add_hello_2, hover_start_back_left, ring_throw, hover_start, pose_torpedo, hover, double_jump_fall_back, double_jump_apex_back_left, fall_back_left, strafe_right, add_two_frame_2, pose_special_2, pose_special_3, add_land_back_right, glide_stop_2, pose_fire, select_intro, glide_start_forward_left, select_hold, glide_start_back, jump_apex_back_left, glide_stop_5, hover_start_back, glide_stop_6, melee_up, ult_cast_air, add_ring_throw_2, double_jump_apex_back_right, glide_stop_3, glide_stop_4, pulled_back, glide_stop_7, glide_forward_left, glide_stop_8, jump_apex_forward_left, stop_left, glide_double_jump_forward_left, add_layer_2, add_glide_forward_right, add_torpedo_fire_legs, double_jump_apex_left, double_jump_apex_forward_right, add_torpedo_legs, glide_start_left, add_jump_forward_right, add_glide_start_add, double_jump_forward, pulled_forward, add_aim_run_forward_right, crouch_walk_forward_right, jump_right, jump_apex_left, add_torpedo_fire, double_jump_forward_left, glide_left, hover_forward_right, double_jump_fall, add_crouch_walk, hover_forward_left, double_jump_apex_right, pose_held_down_2, hover_start_left, add_ring_throw, add_aim, add_jump_left, add_double_jump_forward_left, add_idle_2, ring_throw_down, glide_start_back_left, add_idle_3, add_crouch_walk_right, add_glide_right, crouch_walk_left, hello, hover_left, fall_back, glide_double_jump_forward, glide_back_left, knockdown, pose_held_up, add_glide_left, add_glide, run_turn_forward, glide_double_jump_right, add_double_jump, melee_down, fall, add_layer_hover_end, add_glide_start_right, add_jump_back_right, glide_start_right, melee, add_jump, strafe_left, add_breathe, add_run_turn_back, hover_back_left, add_jump_right, crouch_walk_right, glide_forward, glide_right, add_aim_run_left, double_jump_fall_right, run_turn_left, melee_air_up, double_jump_apex, fall_forward, glide_double_jump_back, crouch_walk, add_two_frame, add_land_right, double_jump_fall_forward_left, crouch_idle, fall_forward_left, double_jump_apex_forward_left, hover_back_right, add_double_jump_left, add_glide_start_forward_right, pulled_left, add_glide_back_left, add_select, jump_left, glide_double_jump_back_right, add_aim_pitch_down, crouch_walk_forward_left, add_aim_run_right, crouch_walk_back_left, pulled_right, double_jump_back, melee_air_down, fall_right, add_glide_turn_back, add_hover, add_aim_run, pose_held_down, melee_air, reload, glide_back_right, add_aim_run_forward_left, glide_start_forward_right, glide_stop, hit_react, add_layer_hover, knockdown_start, ult_cast, idle, knockdown_shared, pose_held, add_torpedo_lock_hold, double_jump_back_right, glide_double_jump, jump_back_right, add_double_jump_back_left, add_layer_pitch_down, double_jump_fall_left, run_forward_left]
+[04:33:28] [Worker-Main-5/INFO] (Overcraft) Hero model juno_1p: 403 nodes, 362 joints, 8 pieces, 69 clips [crouch_walk, add_layer_2, add_layer_in, add_glide_start_left, run, add_torpedo_end, stun, idle_fidget_2, torpedo_lock_start, add_torpedo_jump, run_stop, idle_fidget_5, idle_fidget_6, idle_fidget_3, idle_fidget_4, idle_fidget_7, add_layer_fall, double_jump_fall, jump, add_torpedo, add_torpedo_fall, add_layer_jump, idle_fidget, add_aim, add_glide_double_jump, add_glide_start_back, add_glide_loop, add_sway, add_reload_land, torpedo_fire, torpedo_lock, hello, add_reload_fall, add_layer, add_torpedo_pose, add_hover, add_move_stop, torpedo_launch, add_torpedo_3, knockdown, add_torpedo_2, add_glide, knockdown_end, add_glide_start, add_sway_start, ring_throw, double_jump, reload, fall, torpedo_launch_2, add_sway_end, land, run_start, add_glide_start_right, melee, add_torpedo_run, add_move_start, knockdown_start, knockdown_shared_3, ult_cast, idle, knockdown_shared, knockdown_shared_2, add_layer_land, add_aim_3, add_breathe, add_hello, add_aim_2, add_reload_jump]
+[04:33:28] [Worker-Main-5/INFO] (Overcraft) Hero model juno_clips: 392 nodes, 362 joints, 0 pieces, 75 clips [emote_listen_up_2, emote_listen_up_1, emote_orion_dance_3, emote_orion_dance_1, emote_orion_dance_2, emote_heart_wave_2, emote_heart_wave_1, emote_spinning_bird_kick_1, emote_spinning_bird_kick_2, emote_game_start_1, emote_winding_down_2, emote_game_start_2, emote_winding_down_1, emote_winding_down_4, emote_winding_down_3, emote_galaxy_gazing_1, emote_disapproving_1, emote_galaxy_gazing_2, emote_disapproving_2, emote_galaxy_gazing_3, emote_galaxy_gazing_4, emote_sledding_3, emote_sledding_2, emote_sledding_5, emote_sledding_4, emote_sledding_6, emote_sledding_1, emote_cheer_routine_4, emote_heroic_6, emote_cheer_routine_1, emote_heroic_7, emote_laugh_attack_1, emote_cheer_routine_2, emote_heroic_4, emote_cheer_routine_3, emote_heroic_5, emote_release_2, emote_release_1, emote_release_3, emote_giddy_1, emote_giddy_2, emote_galaxy_gazing_5, emote_heroic_2, emote_galaxy_gazing_6, emote_heroic_3, emote_heroic_1, emote_salty_3, emote_laser_training_1, emote_salty_4, emote_crazy_choreography_2, emote_crazy_choreography_1, emote_crazy_choreography_4, emote_crazy_choreography_3, emote_laser_training_2, emote_chun_li_wins_4, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_mic_drop_4, emote_chun_li_wins_1, emote_chun_li_wins_2, emote_chun_li_wins_3, emote_bunny_hop_1, emote_laugh_attack_2, emote_blooming_1, emote_listen_up_4, emote_shuffle_2, emote_blooming_2, emote_listen_up_3, emote_shuffle_1, emote_bunny_hop_2, emote_salty_1, emote_bunny_hop_3, emote_salty_2, emote_shuffle_3]
+[04:33:31] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn: 361 nodes, 288 joints, 9 pieces, 235 clips [melee_slide_side, run_back_left, disruptor_slide_m095_down, crouch_walk_back, add_pulled_end, jump, add_layer_pose_2, disruptor_slide_side_down, slide_dir_25d, slide_dir_25f, slide_dir_25e, f42_run_left, pose_lineup_3, pose_lineup_2, add_charged_shot, melee_slide_side_p050_down, reload_slide_side_m050, add_slide_start_end, melee_slide_m095_up, stop, hit_react_2, melee_slide_side_up, add_run_forward_left, run_back_right, overclock_slide_up, overclock_move, slide_dir_260, add_crouch, reload_slide_side_m025, f42_fall, melee_slide_side_m050, add_slide_start_end_8, add_slide_start_end_7, f42_run, overclock_slide_m095_down, add_slide_start_end_6, add_slide_start_end_5, f42_run_right, add_slide_start_end_4, disruptor_slide_side_m050_up, add_slide_start_end_3, add_slide_start_end_2, f42_run_forward_right, jump_apex, add_run, knockdown_shared_3, pulled, add_disruptor_end, knockdown_shared_2, disruptor_slide_side_m080_down, add_hello, disruptor_slide_down, melee_slide_side_m050_up, disruptor_slide_side_p050, f42_jump_apex, a33, melee_slide_m095_down, melee_slide_up, run_back, run, run_right, stun, crouch_shared, overclock_move_down, reload_slide_side_m080, a33_2, disruptor_down, crouch_walk_shared, add_melee_end, overclock_slide_side_m080_down, add_slide_dir_211, add_slide_dir_212, overclock_move_left_down, add_72b_2, add_slide_dir_213, disruptor_slide_m095_up, pose_special, add_pulled, melee_slide_side_m080, overclock_slide_side_m050_up, overclock_slide_side_m050, run_forward_right, add_layer_pose, crouch_walk_back_right, add_stand, disruptor_slide_side_p050_up, pose_764, knockdown_end, pose_lineup, add_run_right, overclock_move_back_up, overclock_slide_m095_up, overclock_move_back, melee_slide_down, slide_jump_land, f42_land, overclock_slide_side_m080, pose_special_2, pose_special_3, add_slide, reload_slide_side_m075, disruptor_slide_up, add_shared_pose_in, add_slide_side, overclock_slide_m095, f42_4ce_start, reload_slide_p025, add_f42_687_end, f42_idle, disruptor_slide_side_m080_up, melee_up, f42_982, pulled_back, melee_slide_side_m050_down, f42_run_back, select, crouch_walk_shared_left, f42_run_back_left, slide_jump_apex, disruptor, overclock_slide_side, preview_emote, slide_jump, disruptor_up, add_fire_first, f42_jump, pulled_forward, a33_end_2, crouch_walk_forward_right, disruptor_slide_side_m050_down, add_764, pose_special_4, add_shared_pose, add_crouch_walk, a33_end, add_air, disruptor_slide_side, overclock_move_right, crouch_walk_shared_forward_right, reload_slide_m095, crouch_walk_shared_right, crouch_walk_left, disruptor_slide_side_m080, hello, f42_687, crouch_idle_alt, add_fire, knockdown, add_run_left, disruptor_slide_side_m050, crouch_walk_shared_back_right, melee_slide_side_m080_down, overclock_slide_side_m050_down, melee_down, overclock_move_back_down, slide_jump_fall, disruptor_slide_m095, fall, add_f42_idle, overclock_move_right_down, melee, f42_4ce, f42_run_back_right, reload_slide_side_p025, reload_slide, a33_start, slide_start, disruptor_slide, crouch_walk_right, f42_idle_alt, melee_slide_side_p050, crouch_walk, overclock_slide_side_p050, overclock_slide_side_p050_down, add_overclock, add_f42_982_end, crouch_idle, reload_slide_side_p070, overclock_move_right_up, intro, intro_4, run_left, intro_3, intro_2, add_c8, pulled_left, overclock_slide_side_p050_up, melee_slide_side_down, add_run_back, melee_slide, crouch_walk_shared_forward_left, a33_start_2, crouch_walk_forward_left, crouch_walk_back_left, pulled_right, melee_slide_side_m080_up, disruptor_slide_side_up, overclock, disruptor_slide_side_p050_down, add_72b, add_c8_2, add_slide_dir_260, crouch_walk_shared_back_left, overclock_slide_side_m080_up, reload_slide_side_p050, reload, overclock_slide_down, f42_run_forward_left, reload_slide_m025, land, overclock_slide, overclock_slide_side_down, hit_react, add_slide_dir_25e, add_slide_dir_25f, crouch_walk_shared_back, knockdown_start, f42_68c, idle, select_idle, knockdown_shared, add_slide_dir_25d, add_stand_2, pose_held, melee_slide_m095, overclock_move_up, idle_alt, overclock_move_left_up, overclock_move_left, slide_dir_212, slide_dir_211, slide_dir_214, melee_slide_side_p050_up, run_forward_left, slide_dir_213]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn_1p: 202 nodes, 138 joints, 2 pieces, 79 clips [sway_3_full, add_slide_end, add_layer_2, add_layer_in, add_fire_hold, disruptor, add_weapon_state, run, stun, slide_jump, add_726, add_fire_first, sway_2_full, pose_6d2, add_idle_sway, pose_6d1, add_layer_fall, jump, add_aim_tilt_right, add_melee_end, add_reload_end, add_layer_jump, idle_fidget, sway_3, add_aim, sway_4, add_slide_start, sway, sway_5, sway_6, add_sway, add_template, add_charged_shot, add_layer_out, add_aim_kick, sway_1, sway_2, add_weapon, add_aim_tilt, add_aim_lean_left, add_aim_lean_right, hello, add_reload_fall, add_layer, add_move_stop, add_fire, knockdown, add_weapon_state_out, add_fire_2, sway_6_full, add_fire_3, knockdown_end, slide_jump_fall, reload, fall, sway_1_full, add_148, land, melee, sway_5_full, add_move_start, knockdown_start, knockdown_shared_3, idle, knockdown_shared, add_disruptor_end, knockdown_shared_2, add_layer_land, add_move_2, add_move_3, add_breathe, add_hello, add_aim_2, add_aim_tilt_left, add_energy, sway_4_full, disruptor_slide, add_reload_jump, add_move]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn_weapon: 49 nodes, 26 joints, 7 pieces, 28 clips [add_energy_2_to_0_b, add_fire_first_1p, add_energy_0_to_3, emote_standing_by_loop, add_energy_2_to_0_3p, add_energy_state_3, add_energy_3_to_0_3p, add_energy_state_0, add_energy_state_1, add_energy_state_2, emote_weapons_check, add_energy_state_1_3p, add_energy_to_1_3p, add_energy_state_3_3p, reload, emote_confidence, add_energy_3_to_2, emote_standing_by_short, idle, reload_1p, add_energy_2_to_0, add_charged_shot_3p, add_fire_3p, add_charged_shot_1p, add_fire_1p, emote_standing_by_intro, add_template, add_energy_state_2_3p]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn_clips: 352 nodes, 288 joints, 0 pieces, 38 clips [emote_guffaw_1, emote_guffaw_2, emote_listen_up_1, emote_heroic_4, emote_heroic_5, emote_weapons_check_1, emote_wobble_1, emote_wobble_2, emote_weapons_check_3, emote_wobble_3, emote_weapons_check_2, emote_handstand_push_ups_4, emote_handstand_push_ups_3, emote_handstand_push_ups_2, emote_handstand_push_ups_1, emote_confidence_2, emote_heroic_2, emote_confidence_3, emote_heroic_3, emote_heroic_1, emote_confidence_1, emote_salty_3, emote_standing_by_2, emote_salty_4, emote_standing_by_3, emote_standing_by_1, emote_standing_by_6, emote_standing_by_7, emote_standing_by_4, emote_standing_by_5, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_triumph_1, emote_triumph_2, emote_listen_up_4, emote_listen_up_3, emote_salty_1]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model sigma: 64 clips added from sigma_clips [emote_listen_up_2, emote_listen_up_1, emote_applause_1, emote_applause_2, emote_magic_pumpkins_1, emote_magic_pumpkins_2, emote_dans_4, emote_dans_5, emote_dans_2, emote_relaxation_1, emote_dans_3, emote_relaxation_2, emote_dans_1, emote_constellation_5, emote_constellation_4, emote_constellation_3, emote_stepping_stones_10, emote_stepping_stones_11, emote_stepping_stones_4, emote_laugh_1, emote_observations_3, emote_stepping_stones_3, emote_observations_2, emote_stepping_stones_6, emote_inconsequential_1, emote_observations_1, emote_stepping_stones_5, emote_stepping_stones_2, emote_stepping_stones_1, emote_inconsequential_2, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_stepping_stones_8, emote_stepping_stones_7, emote_stepping_stones_9, emote_heroic_2, emote_heroic_3, emote_relaxation_10, emote_heroic_1, emote_constellation_2, emote_constellation_1, emote_relaxation_7, emote_salty_3, emote_relaxation_8, emote_salty_4, emote_relaxation_9, emote_relaxation_3, emote_relaxation_4, emote_relaxation_5, emote_relaxation_6, emote_maestro_1, emote_mic_drop_1, emote_maestro_2, emote_mic_drop_2, emote_mic_drop_3, emote_mic_drop_4, emote_maestro_3, emote_maestro_4, emote_listen_up_4, emote_listen_up_3, emote_salty_1, emote_salty_2]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko: 1 clips added from kiriko_clips [hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model kiriko_1p: 1 clips added from kiriko_1p_clips [hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model lucio: 1 clips added from lucio_clips [hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model lucio_1p: 1 clips added from lucio_1p_clips [hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat: 2 clips added from jetpack_cat_clips [add_aim, hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model jetpack_cat_1p: 1 clips added from jetpack_cat_1p_clips [hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model mercy: 4 clips added from mercy_clips [hello_blaster, add_aim_blaster, add_aim, hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model mercy_1p: 2 clips added from mercy_1p_clips [hello_blaster, hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver: 2 clips added from lifeweaver_clips [hello_thorn, hello]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model lifeweaver_1p: 10 clips added from lifeweaver_1p_clips [thorn_count_8, thorn_count_6, hello_thorn, thorn_count_7, thorn_count_4, hello, thorn_count_5, thorn_count_2, thorn_count_3, thorn_count_1]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model ana: 51 clips added from ana_clips [emote_not_impressed_2, emote_listen_up_1, emote_not_impressed_1, emote_tea_time_4, emote_tea_time_5, emote_tea_time_6, emote_tea_time_1, emote_tea_time_2, emote_tea_time_3, emote_disapproving_1, emote_disapproving_2, emote_thumbs_up_2, emote_thumbs_up_1, emote_take_a_knee_3, emote_yut_nori_3, emote_yut_nori_4, emote_take_a_knee_1, emote_yut_nori_1, emote_take_a_knee_2, emote_yut_nori_2, emote_yut_nori_5, emote_yut_nori_6, emote_candy_2, emote_candy_1, emote_candy_3, emote_heroic_6, emote_heroic_4, emote_retro_hero_2, emote_heroic_5, emote_retro_hero_1, emote_beach_ball_1, emote_beach_ball_2, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_heroic_1, emote_salty_3, emote_salty_4, emote_thumbs_down_1, emote_dance_3, emote_protector_3, emote_protector_2, emote_protector_1, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_thumbs_down_2, emote_listen_up_4, emote_listen_up_3, emote_salty_1]
+[04:33:33] [Worker-Main-5/INFO] (Overcraft) Hero model sombra: 68 clips added from sombra_clips [emote_listen_up_1, emote_ed_s_saunter_1, emote_ed_s_saunter_2, emote_ed_s_saunter_3, emote_browsing_2, emote_masterpiece_1, emote_browsing_1, emote_browsing_3, emote_amused_2, emote_amused_1, emote_sit_3, emote_sit_2, emote_sit_1, emote_choreography_3, emote_hold_on_1, emote_hold_on_2, emote_sit_6, emote_sit_5, emote_sit_4, emote_choreography_1, emote_choreography_2, emote_groove_3, emote_pet_slicer_4, emote_groove_2, emote_pet_slicer_1, emote_groove_1, emote_pet_slicer_2, emote_pet_slicer_3, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_regifted_1, emote_dance_off_1, emote_dance_off_2, emote_regifted_4, emote_regifted_5, emote_regifted_2, emote_regifted_3, emote_dance_off_3, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_rainy_stroll_5, emote_heroic_1, emote_rainy_stroll_4, emote_rainy_stroll_3, emote_rainy_stroll_2, emote_rainy_stroll_1, emote_salty_3, emote_salty_4, emote_marioneta_3, emote_marioneta_2, emote_marioneta_1, emote_boop_1, emote_dance_3, emote_boop_2, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_regifted_6, emote_listen_up_4, emote_shuffle_2, emote_listen_up_3, emote_shuffle_1, emote_salty_1, emote_shuffle_3]
+[04:33:34] [Worker-Main-5/INFO] (Overcraft) Hero model brigitte: 57 clips added from brigitte_clips [emote_power_flail_1, emote_listen_up_1, emote_recalibrate_1, emote_taunt_2, emote_katt_3, emote_katt_2, emote_taunt_1, emote_katt_1, emote_power_flail_4, emote_power_flail_2, emote_power_flail_3, emote_flail_tricks_2, emote_flail_tricks_1, emote_choreography_3, emote_choreography_4, emote_choreography_1, emote_choreography_2, emote_hilarious_3, emote_hilarious_2, emote_hilarious_1, emote_kneel_4, emote_kneel_3, emote_kneel_2, emote_kneel_1, emote_recalibrate_3, emote_recalibrate_2, emote_heroic_6, emote_heroic_7, emote_heroic_4, emote_heroic_5, emote_dance_2, emote_heroic_2, emote_dance_1, emote_heroic_3, emote_heroic_1, emote_guard_duty_2, emote_salty_3, emote_guard_duty_3, emote_salty_4, emote_guard_duty_1, emote_dance_4, emote_guard_duty_4, emote_dance_3, emote_cheer_5, emote_cheer_2, emote_cheer_1, emote_cheer_4, emote_cheer_3, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_bunny_hop_1, emote_listen_up_4, emote_listen_up_3, emote_bunny_hop_2, emote_salty_1, emote_bunny_hop_3]
+[04:33:34] [Worker-Main-5/INFO] (Overcraft) Hero model juno: 75 clips added from juno_clips [emote_listen_up_2, emote_listen_up_1, emote_orion_dance_3, emote_orion_dance_1, emote_orion_dance_2, emote_heart_wave_2, emote_heart_wave_1, emote_spinning_bird_kick_1, emote_spinning_bird_kick_2, emote_game_start_1, emote_winding_down_2, emote_game_start_2, emote_winding_down_1, emote_winding_down_4, emote_winding_down_3, emote_galaxy_gazing_1, emote_disapproving_1, emote_galaxy_gazing_2, emote_disapproving_2, emote_galaxy_gazing_3, emote_galaxy_gazing_4, emote_sledding_3, emote_sledding_2, emote_sledding_5, emote_sledding_4, emote_sledding_6, emote_sledding_1, emote_cheer_routine_4, emote_heroic_6, emote_cheer_routine_1, emote_heroic_7, emote_laugh_attack_1, emote_cheer_routine_2, emote_heroic_4, emote_cheer_routine_3, emote_heroic_5, emote_release_2, emote_release_1, emote_release_3, emote_giddy_1, emote_giddy_2, emote_galaxy_gazing_5, emote_heroic_2, emote_galaxy_gazing_6, emote_heroic_3, emote_heroic_1, emote_salty_3, emote_laser_training_1, emote_salty_4, emote_crazy_choreography_2, emote_crazy_choreography_1, emote_crazy_choreography_4, emote_crazy_choreography_3, emote_laser_training_2, emote_chun_li_wins_4, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_mic_drop_4, emote_chun_li_wins_1, emote_chun_li_wins_2, emote_chun_li_wins_3, emote_bunny_hop_1, emote_laugh_attack_2, emote_blooming_1, emote_listen_up_4, emote_shuffle_2, emote_blooming_2, emote_listen_up_3, emote_shuffle_1, emote_bunny_hop_2, emote_salty_1, emote_bunny_hop_3, emote_salty_2, emote_shuffle_3]
+[04:33:34] [Worker-Main-5/INFO] (Overcraft) Hero model sojourn: 38 clips added from sojourn_clips [emote_guffaw_1, emote_guffaw_2, emote_listen_up_1, emote_heroic_4, emote_heroic_5, emote_weapons_check_1, emote_wobble_1, emote_wobble_2, emote_weapons_check_3, emote_wobble_3, emote_weapons_check_2, emote_handstand_push_ups_4, emote_handstand_push_ups_3, emote_handstand_push_ups_2, emote_handstand_push_ups_1, emote_confidence_2, emote_heroic_2, emote_confidence_3, emote_heroic_3, emote_heroic_1, emote_confidence_1, emote_salty_3, emote_standing_by_2, emote_salty_4, emote_standing_by_3, emote_standing_by_1, emote_standing_by_6, emote_standing_by_7, emote_standing_by_4, emote_standing_by_5, emote_mic_drop_1, emote_mic_drop_2, emote_mic_drop_3, emote_triumph_1, emote_triumph_2, emote_listen_up_4, emote_listen_up_3, emote_salty_1]
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:lucio.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:jetpack_cat.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:mercy.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:lifeweaver.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:ana.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:sombra.voice.resurrected
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_no
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_hello
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_need_healing
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_group_up
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_need_help
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_sorry
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_thanks
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_good_job
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_ult_charging
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.call_ult_almost
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.resurrected
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.damage_boosted
+[04:33:34] [Render thread/WARN] (Minecraft) Missing sound for event: overcraft:illari.voice.nano_boosted
+[04:33:34] [Render thread/INFO] (Minecraft) OpenAL initialized on device OpenAL Soft on Speakers (C-Media(R) Audio)
+[04:33:34] [Render thread/INFO] (Minecraft) Sound engine started
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 256x128x0 minecraft:textures/atlas/celestials.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 128x128x0 minecraft:textures/atlas/decorated_pot.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 1024x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 1024x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
+[04:33:34] [Render thread/INFO] (Minecraft) Created: 2048x2048x4 minecraft:textures/atlas/blocks.png-atlas
+[04:33:35] [Render thread/INFO] (Minecraft) Created: 1024x512x0 minecraft:textures/atlas/items.png-atlas
+[04:33:35] [Render thread/INFO] (Minecraft) Created: 1024x1024x0 minecraft:textures/atlas/gui.png-atlas
+[04:33:36] [Render thread/INFO] (Minecraft) Created: 128x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[04:33:36] [Render thread/INFO] (Minecraft) Created: 512x512x0 minecraft:textures/atlas/chest.png-atlas
+[04:33:36] [Render thread/INFO] (Minecraft) Created: 512x512x0 minecraft:textures/atlas/shulker_boxes.png-atlas
+[04:34:02] [Download-3/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[04:34:06] [Worker-Main-6/INFO] (Minecraft) Loaded 1866 advancements
+[04:34:07] [Render thread/INFO] (BiomeModificationImpl) Applied 0 biome modifications to 0 of 67 new biomes in 1.515 ms
+[04:34:07] [Server thread/INFO] (Minecraft) Starting integrated minecraft server version 26.3
+[04:34:07] [Server thread/INFO] (Minecraft) Generating keypair
+[04:34:08] [Server thread/INFO] (Minecraft) Selecting global world spawn...
+[04:34:08] [Server thread/INFO] (Minecraft) Loading 0 persistent chunks...
+[04:34:08] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[04:34:08] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:overworld
+[04:34:08] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_nether
+[04:34:09] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_end
+[04:34:10] [Server thread/INFO] (Minecraft) Loading 47 chunks for player spawn...
+[04:34:10] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[04:34:10] [Server thread/INFO] (Minecraft) Preparing spawn area: 29%
+[04:34:10] [Server thread/INFO] (Minecraft) Preparing spawn area: 57%
+[04:34:10] [Server thread/INFO] (Minecraft) Preparing spawn area: 57%
+[04:34:10] [Server thread/INFO] (Minecraft) Time elapsed: 2378 ms
+[04:34:11] [Server thread/INFO] (Minecraft) Kiriko[local:E:2a434208] logged in with entity id 1 at (10.5, -60.0, -2.5)
+[04:34:11] [Server thread/INFO] (Minecraft) System chat: Kiriko joined the game
+[04:34:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Overcraft's asset pack is from build 0.3.30; this build (0.3.31) needs 0.3.31 or newer. Rebuild it (py tools/build_asset_pack.py zip) and copy it to .minecraft/overcraft/overcraft-assets.zip.
+[04:34:11] [Server thread/INFO] (Minecraft) Changing view distance to 16, from 10
+[04:34:11] [Server thread/INFO] (Minecraft) Changing simulation distance to 12, from 0
+[04:34:12] [Render thread/WARN] (Minecraft) Requested post effect does not exist: minecraft:end_of_frame
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
+[04:34:12] [Render thread/INFO] (Minecraft) Loaded 2 advancements
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 2 reached during a single frame. New capacity will be 8.
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
+[04:34:12] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
+[04:34:13] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
+[04:34:14] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
+[04:34:15] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 256 reached during a single frame. New capacity will be 512.
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Game rule spawn_monsters is now set to false]
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The difficulty has been set to Peaceful]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty has been set to Peaceful
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:noon]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Game rule advance_time is now set to false]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule advance_time is now set to false
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 1891 block(s)]
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set own game mode to Survival Mode]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 1891 block(s)
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Set own game mode to Survival Mode
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set spawn point to 0, -60, 0 [0.0, 0.0] in minecraft:overworld for Kiriko]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Set spawn point to 0, -60, 0 [0.0, 0.0] in minecraft:overworld for Kiriko
+[04:34:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:34:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:34:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied effect Resistance to Kiriko]
+[04:34:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied effect Resistance to Kiriko
+[04:34:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:34:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:34:27] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:34:28] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 224 block(s)]
+[04:34:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 224 block(s)
+[04:34:28] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -29.500000]
+[04:34:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -29.500000
+[04:34:28] [Render thread/INFO] (Minecraft) Loaded 13 advancements
+[04:34:32] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 224 block(s)]
+[04:34:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 224 block(s)
+[04:34:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 224 block(s)]
+[04:34:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 224 block(s)
+[04:34:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -29.500000]
+[04:34:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -29.500000
+[04:34:38] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 224 block(s)]
+[04:34:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 224 block(s)
+[04:34:40] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:34:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:34:42] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied effect Levitation to Kiriko]
+[04:34:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied effect Levitation to Kiriko
+[04:34:45] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:34:48] [Server thread/INFO] (Minecraft) System chat: Kiriko has reached the goal [Sky's the Limit]
+[04:34:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Replaced 1 slot(s) on Kiriko with [Elytra]]
+[04:34:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko has reached the goal [Sky's the Limit]
+[04:34:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Replaced 1 slot(s) on Kiriko with [Elytra]
+[04:34:48] [Render thread/INFO] (Minecraft) Loaded 18 advancements
+[04:34:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:34:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:34:51] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Replaced 1 slot(s) on Kiriko with [Air]]
+[04:34:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Replaced 1 slot(s) on Kiriko with [Air]
+[04:34:54] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:34:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:34:56] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:34:58] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set spawn point to 39, -60, -20 [0.0, 0.0] in minecraft:overworld for Kiriko]
+[04:34:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Set spawn point to 39, -60, -20 [0.0, 0.0] in minecraft:overworld for Kiriko
+[04:34:58] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -21.500000]
+[04:34:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -21.500000
+[04:35:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set spawn point to 0, -60, 0 [0.0, 0.0] in minecraft:overworld for Kiriko]
+[04:35:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Set spawn point to 0, -60, 0 [0.0, 0.0] in minecraft:overworld for Kiriko
+[04:35:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:06] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:08] [Server thread/INFO] (Minecraft) System chat: Kiriko was killed
+[04:35:08] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Kiriko]
+[04:35:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko was killed
+[04:35:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Kiriko
+[04:35:12] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied effect Resistance to Kiriko]
+[04:35:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied effect Resistance to Kiriko
+[04:35:12] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:17] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:17] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:35:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:25] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:28] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:35:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:midnight]
+[04:35:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:midnight
+[04:35:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 39.100000, -60.000000, -24.500000]
+[04:35:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 39.100000, -60.000000, -24.500000
+[04:35:33] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:noon]
+[04:35:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon
+[04:35:33] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The difficulty has been set to Normal]
+[04:35:33] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty has been set to Normal
+[04:35:33] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:37] [Server thread/INFO] (Minecraft) J1[embedded] logged in with entity id 165 at (400.5, -60.0, 400.5)
+[04:35:37] [Server thread/INFO] (Minecraft) System chat: J1 joined the game
+[04:35:37] [Render thread/INFO] (Minecraft) [System] [CHAT] J1 joined the game
+[04:35:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set J1's game mode to Survival Mode]
+[04:35:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Successfully filled 966 block(s)]
+[04:35:39] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 2317ms or 46 ticks behind
+[04:35:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Set J1's game mode to Survival Mode
+[04:35:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Successfully filled 966 block(s)
+[04:35:40] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:35:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:35:42] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:35:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:35:45] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:47] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:35:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:35:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:50] [Server thread/INFO] (Minecraft) K1[embedded] logged in with entity id 250 at (400.5, -60.0, 400.5)
+[04:35:50] [Server thread/INFO] (Minecraft) System chat: K1 joined the game
+[04:35:50] [Render thread/INFO] (Minecraft) [System] [CHAT] K1 joined the game
+[04:35:50] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set K1's game mode to Survival Mode]
+[04:35:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Set K1's game mode to Survival Mode
+[04:35:54] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:35:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:35:56] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:35:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:35:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:35:58] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:35:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:01] [Server thread/INFO] (Minecraft) H[embedded] logged in with entity id 326 at (400.5, -60.0, 400.5)
+[04:36:01] [Server thread/INFO] (Minecraft) System chat: H joined the game
+[04:36:01] [Render thread/INFO] (Minecraft) [System] [CHAT] H joined the game
+[04:36:01] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set H's game mode to Survival Mode]
+[04:36:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Set H's game mode to Survival Mode
+[04:36:02] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:05] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:06] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:07] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:09] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:10] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:11] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:15] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:16] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:17] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:19] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:23] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:26] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:27] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:28] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:30] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:30] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:31] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:31] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:32] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:35] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:37] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:38] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:41] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:42] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:45] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:46] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:49] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:49] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:50] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:52] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:54] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:55] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:56] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:36:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:36:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:36:59] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:36:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:00] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:00] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:02] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:05] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:06] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:07] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:09] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:10] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:11] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:14] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:16] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:17] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:18] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:22] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:25] [Server thread/INFO] (Minecraft) C1[embedded] logged in with entity id 1186 at (400.5, -60.0, 400.5)
+[04:37:25] [Server thread/INFO] (Minecraft) System chat: C1 joined the game
+[04:37:25] [Render thread/INFO] (Minecraft) [System] [CHAT] C1 joined the game
+[04:37:25] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set C1's game mode to Survival Mode]
+[04:37:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Set C1's game mode to Survival Mode
+[04:37:27] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:28] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:29] [Server thread/INFO] (Minecraft) Emo[embedded] logged in with entity id 1216 at (400.5, -60.0, 400.5)
+[04:37:29] [Server thread/INFO] (Minecraft) System chat: Emo joined the game
+[04:37:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Emo joined the game
+[04:37:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set Emo's game mode to Survival Mode]
+[04:37:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Set Emo's game mode to Survival Mode
+[04:37:33] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:36] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:37] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:41] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:42] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 400.500000, -60.000000, 392.500000]
+[04:37:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 400.500000, -60.000000, 392.500000
+[04:37:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:44] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:37:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:37:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:37:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:37:52] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:37:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:37:52] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The difficulty has been set to Peaceful]
+[04:37:52] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty has been set to Peaceful
+[04:38:10] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:38:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:38:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The difficulty has been set to Normal]
+[04:38:13] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty has been set to Normal
+[04:38:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false
+[04:38:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Removed every effect from Kiriko]
+[04:38:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Removed every effect from Kiriko
+[04:38:14] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found
+[04:38:14] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:38:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:38:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Husk has the following entity data: 20.0f
+[04:38:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Husk has the following entity data: 20.0f
+[04:38:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:38:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:38:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:38:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:38:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Husk has the following entity data: 20.0f
+[04:38:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Husk has the following entity data: 13.3088f
+[04:38:38] [Server thread/INFO] (Minecraft) System chat: Kiriko has made the advancement [Monster Hunter]
+[04:38:38] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:38:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko has made the advancement [Monster Hunter]
+[04:38:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:38:38] [Render thread/INFO] (Minecraft) Loaded 60 advancements
+[04:38:54] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found
+[04:39:09] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found
+[04:39:23] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found
+[04:39:23] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:39:24] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:39:24] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1319, l='ServerLevel[pl_f]', x=-148.28, y=-58.00, z=228.63] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1320, l='ServerLevel[pl_f]', x=-145.72, y=-58.00, z=228.37] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1322, l='ServerLevel[pl_f]', x=-160.28, y=-59.00, z=232.63] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1324, l='ServerLevel[pl_f]', x=-160.72, y=-59.00, z=239.37] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Nitwit'/1327, l='ServerLevel[pl_f]', x=-174.72, y=-58.00, z=230.37] died, message: 'Nitwit was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1328, l='ServerLevel[pl_f]', x=-205.63, y=-58.00, z=230.72] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1329, l='ServerLevel[pl_f]', x=-124.72, y=-58.00, z=228.37] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) Villager Villager['Villager'/1330, l='ServerLevel[pl_f]', x=-218.28, y=-58.00, z=243.63] died, message: 'Villager was killed'
+[04:39:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed 30 entities]
+[04:39:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 30 entities
+[04:39:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:39:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:39:27] [Server thread/INFO] (Minecraft) Dps[embedded] logged in with entity id 1368 at (0.5, -60.0, 6.5)
+[04:39:27] [Server thread/INFO] (Minecraft) System chat: Dps joined the game
+[04:39:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Dps joined the game
+[04:39:30] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set Dps's game mode to Survival Mode]
+[04:39:30] [Render thread/INFO] (Minecraft) [System] [CHAT] Set Dps's game mode to Survival Mode
+[04:39:30] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Dps]
+[04:39:30] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Dps
+[04:39:31] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:39:31] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:39:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:39:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:39:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:39:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:39:51] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:39:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:39:55] [Server thread/INFO] (Minecraft) Tank[embedded] logged in with entity id 1385 at (0.5, -60.0, 6.5)
+[04:39:55] [Server thread/INFO] (Minecraft) System chat: Tank joined the game
+[04:39:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Tank joined the game
+[04:39:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set Tank's game mode to Survival Mode]
+[04:39:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set Tank's game mode to Survival Mode
+[04:39:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Tank]
+[04:39:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Tank
+[04:39:59] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:39:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:40:00] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:40:00] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:40:04] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:40:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:40:12] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:40:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:40:16] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal
+[04:40:16] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found
+[04:40:16] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:16] [Server thread/INFO] (Minecraft) Self[embedded] logged in with entity id 1390 at (0.5, -60.0, 6.5)
+[04:40:16] [Server thread/INFO] (Minecraft) System chat: Self joined the game
+[04:40:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Self joined the game
+[04:40:16] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set Self's game mode to Survival Mode]
+[04:40:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Set Self's game mode to Survival Mode
+[04:40:17] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Summoned new Husk]
+[04:40:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Summoned new Husk
+[04:40:18] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Self]
+[04:40:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Self
+[04:40:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Self]
+[04:40:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Self
+[04:40:22] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Self]
+[04:40:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Self
+[04:40:25] [Server thread/INFO] (Minecraft) Song[embedded] logged in with entity id 1392 at (3.5, -60.0, 0.5)
+[04:40:25] [Server thread/INFO] (Minecraft) System chat: Song joined the game
+[04:40:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Song joined the game
+[04:40:25] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set Song's game mode to Survival Mode]
+[04:40:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Set Song's game mode to Survival Mode
+[04:40:27] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 8.0 damage to Kiriko]
+[04:40:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 8.0 damage to Kiriko
+[04:40:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 4.0 damage to Kiriko]
+[04:40:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 4.0 damage to Kiriko
+[04:40:32] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 2.0 damage to Kiriko]
+[04:40:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 2.0 damage to Kiriko
+[04:40:32] [Server thread/INFO] (Minecraft) System chat: Kiriko was killed while fighting Husk
+[04:40:32] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Kiriko]
+[04:40:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko was killed while fighting Husk
+[04:40:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Kiriko
+[04:40:33] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:40:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:34] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 8.0 damage to Kiriko]
+[04:40:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied 8.0 damage to Kiriko
+[04:40:36] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed Husk]
+[04:40:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Husk
+[04:40:36] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The difficulty has been set to Peaceful]
+[04:40:36] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty has been set to Peaceful
+[04:40:36] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied effect Resistance to Kiriko]
+[04:40:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Applied effect Resistance to Kiriko
+[04:40:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Clock minecraft:overworld is already at time marker minecraft:noon
+[04:40:40] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -20.000000, 0.500000]
+[04:40:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -20.000000, 0.500000
+[04:40:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:44] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:midnight]
+[04:40:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:midnight
+[04:40:44] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -20.000000, 0.500000]
+[04:40:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -20.000000, 0.500000
+[04:40:47] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:47] [Server thread/INFO] (Minecraft) Player Kiriko standing on air - force-sending blocks below
+[04:40:48] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:noon]
+[04:40:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon
+[04:40:50] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Peaceful
+[04:40:50] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Killed 41 entities]
+[04:40:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 41 entities
+[04:40:50] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Teleported Kiriko to 0.500000, -60.000000, 0.500000]
+[04:40:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Teleported Kiriko to 0.500000, -60.000000, 0.500000
+[04:40:55] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is frozen]
+[04:40:55] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[04:40:56] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 2 tick(s)]
+[04:40:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 2 tick(s)
+[04:40:56] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:40:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:40:57] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:40:58] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:40:58] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:40:59] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:40:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:00] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:00] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:00] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:00] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:01] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:02] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:02] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:03] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:04] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:05] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:05] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:06] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:07] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:07] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:08] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:09] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:41:09] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:41:11] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is frozen]
+[04:41:11] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[04:41:11] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 2 tick(s)]
+[04:41:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 2 tick(s)
+[04:41:12] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:12] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:13] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:14] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:15] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:15] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:41:15] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:41:17] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is frozen]
+[04:41:17] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[04:41:18] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 2 tick(s)]
+[04:41:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 2 tick(s)
+[04:41:18] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:19] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:19] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:20] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:21] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:22] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:41:22] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:41:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is frozen]
+[04:41:24] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[04:41:24] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 2 tick(s)]
+[04:41:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 2 tick(s)
+[04:41:25] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:25] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:26] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:27] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:27] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:28] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:29] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:30] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:30] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:30] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:30] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:31] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:41:31] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:41:38] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:midnight]
+[04:41:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:midnight
+[04:41:38] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is frozen]
+[04:41:38] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[04:41:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 2 tick(s)]
+[04:41:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 2 tick(s)
+[04:41:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:39] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:40] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:41] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:41] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Stepping 1 tick(s)]
+[04:41:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Stepping 1 tick(s)
+[04:41:42] [Server thread/INFO] (Minecraft) System chat: [Kiriko: The game is running normally]
+[04:41:42] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally
+[04:41:43] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Set minecraft:overworld to time marker minecraft:noon]
+[04:41:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon
+[04:41:46] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[04:41:46] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:overworld
+[04:41:46] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_nether
+[04:41:46] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_end
+[04:42:29] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[04:42:29] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:overworld
+[04:42:29] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_nether
+[04:42:29] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_end
+[04:42:29] [Server thread/INFO] (Minecraft) Kiriko lost connection: Disconnected
+[04:42:29] [Server thread/INFO] (Minecraft) System chat: Kiriko left the game
+[04:42:29] [Server thread/INFO] (Minecraft) Stopping singleplayer server as player logged out
+[04:42:29] [Server thread/INFO] (Minecraft) Stopping server
+[04:42:29] [Server thread/INFO] (Minecraft) Saving players
+[04:42:29] [Server thread/INFO] (Minecraft) Saving worlds
+[04:42:29] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:overworld
+[04:42:30] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_nether
+[04:42:30] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[pl_f]'/minecraft:the_end

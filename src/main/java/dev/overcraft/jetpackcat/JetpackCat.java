@@ -379,6 +379,9 @@ public final class JetpackCat implements HeroKit {
 		if (s.ultPhase == ULT_AIM) {
 			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(cat.getId(), "ult_aim"));
 		}
+		if (s.purrTicks >= 0 && !dev.overcraft.hero.HeroManager.options(cat).hidePurrRing()) {
+			Effects.sendState(viewer, "purr_state", cat.position(), new Vec3(PURR_TIME - s.purrTicks / 20.0, 0, 0), null, cat.getId(), cat);
+		}
 		if (s.lifelineOn) {
 			Effects.send(viewer, "lifeline_state", cat.position(), null, cat.getId(), cat);
 		}

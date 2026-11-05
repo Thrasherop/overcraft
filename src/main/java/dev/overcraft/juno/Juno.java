@@ -34,6 +34,15 @@ public final class Juno implements HeroKit {
 		Torpedoes.clear(player, s);
 	}
 
+	/** A player has just started to see her (#96): her lock's pose (the sync's JUNO_LOCK is only her lock sounds') and her ray. */
+	@Override
+	public void showState(ServerPlayer juno, HeroState s, ServerPlayer viewer) {
+		if (s.junoLock >= 0) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(juno.getId(), "torpedo_lock"));
+		}
+		OrbitalRay.showTo(juno, viewer);
+	}
+
 	/** Leaving her (another hero, leaving the game): her synced glide and lock off, so her clients' loops stop with them. */
 	public static void clear(ServerPlayer player, HeroState s) {
 		Torpedoes.clear(player, s);
