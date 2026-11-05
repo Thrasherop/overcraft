@@ -103,7 +103,7 @@ public final class JetpackCat implements HeroKit {
 			if (s.ultPhase != ULT_NONE) {
 				endUlt(player, s);
 			}
-			s.purrTicks = -1;
+			endPurr(s);
 		}
 		boolean modeAllows = player.isCreative() || player.isSpectator();
 		boolean want = cat || valkyrie || modeAllows;
@@ -768,6 +768,14 @@ public final class JetpackCat implements HeroKit {
 		}
 		if (s.ultPhase != ULT_NONE) {
 			endUlt(player, s);
+		}
+		endPurr(s);
+	}
+
+	/** A Purr cut short still costs its cooldown: its burst has gone out (it would come back at once on G back). */
+	private static void endPurr(HeroState s) {
+		if (s.purrTicks >= 0) {
+			s.ability2Cooldown = Ow.ticks(PURR_COOLDOWN);
 		}
 		s.purrTicks = -1;
 	}

@@ -909,6 +909,9 @@ public final class Lifeweaver implements HeroKit {
 		s.gripCast = -1;
 		s.dashTicks = -1;
 		s.platformThrow = -1;
+		// a Tree cast under way is cut, not sprouted at the old spot on G back; its charge stays spent
+		s.treeCast = -1;
+		s.treeAt = null;
 		s.primaryWas = s.secondaryWas = false;
 		if (why.forGood()) {
 			clear(player, s);

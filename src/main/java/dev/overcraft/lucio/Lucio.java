@@ -363,7 +363,15 @@ public final class Lucio implements HeroKit {
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
 		s.barrierCast = -1;
 		s.songSwap = -1;
-		s.ampDelay = 0;
+		if (s.ampUp > 0 || s.ampDelay > 0) {
+			// Amp It Up ends with him (it ran on silently), and costs its cooldown
+			s.ampUp = 0;
+			s.ampDelay = 0;
+			if (!s.ampFree) {
+				s.ability2Cooldown = Ow.ticks(AMP_UP_COOLDOWN);
+			}
+			s.ampFree = false;
+		}
 		s.volleyLeft = 0;
 		player.setAttached(dev.overcraft.hero.HeroManager.SONG, 0);
 	}

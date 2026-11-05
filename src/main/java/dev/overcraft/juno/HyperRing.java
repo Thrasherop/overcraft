@@ -129,6 +129,15 @@ public final class HyperRing {
 		Effects.play((ServerLevel) e.level(), "juno_ring_boost", e.position(), Vec3.ZERO, e, Ow.ticks(RING_BOOST_TIME), null);
 	}
 
+	/** Out of its speed at once (she left play: Juno.leavePlay). */
+	static void unboost(LivingEntity e) {
+		FASTER.remove(e);
+		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(FAST);
+		}
+	}
+
 	public static void clearAll() {
 		RINGS.clear();
 		for (LivingEntity e : FASTER.keySet()) {

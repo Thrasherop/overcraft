@@ -74,7 +74,8 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
   contents once, then nothing. Allay: its 5 emeralds once, back with an empty inventory. Villager: no drops; its 4 bread (never
   dropped) stay on it. Wolf: 2 XP at the first death, none after. The mark survives Save and Leave: a marked golem killed after a
   rejoin dropped nothing. A fresh golem still drops (the control).
+- **The cure's thanks, once too** (critique L5): a villager's first Resurrect fires `ZOMBIE_VILLAGER_CURED` (#52); later ones don't, or kill-and-resurrect stacked the discount. By code, not played a second time on a trader's prices.
+- **For the owner** (critique L4): "once" also removes the XP of a mob that gave none at its first death (a wolf a skeleton killed); saddles and armor stay on the ground after Resurrect, which a player may read as a bug. Only `AbstractVillager`, iron and snow golems, allays and owned pets leave a soul, so copper golems and slimes don't arise (L6).
 - **What a critic should check:** a resurrected mob that picked up or was given items drops those (real items); a farm of
-  player-carried gear isn't a dup. Armored wolves: the armor takes the hit and breaks first, so its drop wasn't seen. Copper golems (their own
-  `dropEquipment`) weren't played. The allay flew off out of Resurrect's reach on its second death: no duplicate, but also no third cycle.
+  player-carried gear isn't a dup. Armored wolves: the armor takes the hit and breaks first, so its drop wasn't seen. The allay flew off out of Resurrect's reach on its second death: no duplicate, but also no third cycle.
 

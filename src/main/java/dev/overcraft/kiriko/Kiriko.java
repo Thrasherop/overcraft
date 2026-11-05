@@ -343,5 +343,10 @@ public final class Kiriko implements HeroKit {
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
 		s.castTicks = -1;
 		s.castTarget = null;
+		// Kitsune Rush runs on through a death, as it does in Overwatch (ours: the wiki doesn't say); G, a switch or a leave ends
+		// it, and her +30% with it (it renewed itself each tick in Minecraft mode: critique_systems M2)
+		if (why != dev.overcraft.hero.HeroKit.OutOfPlay.DEATH) {
+			KitsuneRush.end(player);
+		}
 	}
 }

@@ -223,6 +223,8 @@ public final class HeroManager {
 		if (kit != null) {
 			kit.leavePlay(player, state, why);
 		}
+		// whatever ult was running has ended (its charge stays spent: HeroKit.leavePlay)
+		state.ultActive = 0;
 		dev.overcraft.jetpackcat.JetpackCat.keepFlight(player, state, false);
 		if (why.forGood()) {
 			for (AttachmentType<?> look : HERO_LOOKS) {

@@ -629,6 +629,9 @@ public final class Sombra implements HeroKit {
 		s.hotfixChannel = -1;
 		s.hotfixTarget = null;
 		s.hotfixHeld = false;
+		// a cast under way is cut, not resumed on G back: EMP's charge and Cyberspace's cooldown are spent at the press
+		s.empCast = -1;
+		s.castTicks = -1;
 		if (why.forGood()) {
 			clear(player, s);
 		}

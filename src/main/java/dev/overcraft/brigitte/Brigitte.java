@@ -49,9 +49,34 @@ public final class Brigitte implements HeroKit {
 	}
 
 	/** Leaving her (another hero, leaving the world): the barrier down, its slow off. */
+	/**
+	 * Her whip, flail swing, bash and Rally's shockwave stop: they ran on through Minecraft mode, dealing damage (critique_systems
+	 * M1). The whip thrown and the bash begun cost their cooldowns.
+	 */
+	private static void endActions(ServerPlayer player, HeroState s) {
+		if (s.whipTicks >= 0) {
+			s.ability1Cooldown = Ow.ticks(WHIP_COOLDOWN);
+			if (s.whipOut != -2 && player.isAlive()) {
+				// the rope comes back on every client (it stays out otherwise)
+				BrigitteSounds.split(player, "whip.return", player.getEyePosition(), 70);
+				Effects.play(player.level(), "brigitte_whip_back", player.getEyePosition(), Vec3.ZERO, player, Ow.ticks(WHIP_RETURN), player);
+			}
+		}
+		s.whipTicks = -1;
+		s.whipOut = -1;
+		s.flailSwing = -1;
+		s.shockwaveIn = -1;
+		if (s.bashTicks >= 0) {
+			s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);
+			// her client stops moving her
+			Effects.play(player.level(), "brigitte_bash_end", player.position(), Vec3.ZERO, player, 0, player);
+		}
+		s.bashTicks = -1;
+	}
+
 	public static void clear(ServerPlayer player, HeroState s) {
 		Barrier.clear(player, s);
-		s.bashTicks = -1;
+		endActions(player, s);
 		endRally(player, s);
 		s.strikeFastUntil = -1;
 		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
@@ -79,6 +104,10 @@ public final class Brigitte implements HeroKit {
 		swing(player, s);
 		bash(player, s);
 		Barrier.tick(player, s, controls);
+		if (!controls) {
+			// asleep or stunned too: what her arms were doing is cut
+			endActions(player, s);
+		}
 		boolean pressed = s.primaryHeld && !s.leftWas;
 		if (!s.primaryHeld && s.leftWas && !s.barrierUp && player.isAlive()) {
 			// the flail put up as the left button is let go (223A)

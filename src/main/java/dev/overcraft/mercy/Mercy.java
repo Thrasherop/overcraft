@@ -797,7 +797,7 @@ public final class Mercy implements HeroKit {
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), flags(s), left, (float) s.gaMomentum);
 	}
 
-	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel and a Resurrect under way end (Valkyrie's time runs on); for good, her looks and slow too. */
+	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel, a Resurrect under way and Valkyrie end; for good, her looks and slow too. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
 		int modeBefore = s.beamTarget == null ? BEAM_NONE : s.beamMode;
@@ -811,6 +811,11 @@ public final class Mercy implements HeroKit {
 			endResurrect(player, s, false);
 		}
 		s.flashCast = -1;
+		// Valkyrie ends (its charge stays spent); her fall from it counts as an ability's landing while she's still in play
+		if (s.ultPhase != ULT_NONE) {
+			s.ultPhase = ULT_NONE;
+			s.softLanding = true;
+		}
 		if (why.forGood()) {
 			clear(player, s);
 		} else {

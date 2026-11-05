@@ -234,6 +234,14 @@ public final class Juno implements HeroKit {
 			endGlide(player, s);
 		}
 		s.junoVolley = 0;
+		// casts are cut, not resumed on G back: the ray's charge was spent at the press; a ring already thrown costs its cooldown.
+		// A ray or ring already out goes on in the world
+		if (s.junoRingCast >= Ow.ticks(RING_THROW)) {
+			s.ability2Cooldown = Ow.ticks(RING_COOLDOWN);
+		}
+		s.junoRingCast = -1;
+		s.junoRayCast = -1;
+		HyperRing.unboost(player);
 		clear(player, s);
 	}
 }

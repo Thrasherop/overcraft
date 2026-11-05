@@ -388,12 +388,15 @@ public final class Sojourn implements HeroKit {
 			(float) (s.sojournEnergy / ENERGY_MAX));
 	}
 
-	/** Out of play (#100: HeroKit.leavePlay): a slide ends (its cooldown starts); for good, Overclock and her gun's look too. */
+	/** Out of play (#100: HeroKit.leavePlay): a slide (its cooldown starts) and Overclock end; for good, her gun's look too. */
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
 		if (s.sojournSlide >= 0) {
 			endSlide(player, s, false);
 		}
+		// Overclock ends, its charge spent: its glow and loop went on through G and on her corpse (the synced gun: critique_systems M4)
+		s.sojournUlt = -1;
+		player.setAttached(HeroManager.SOJOURN_GUN, (int) Math.round(s.sojournEnergy));
 		if (why.forGood()) {
 			clear(player, s);
 		}
