@@ -259,6 +259,9 @@ public final class JetpackCat implements HeroKit {
 
 	/** The wound (40 over 1 s) and the slow (30% for 1 s) on an enemy her empowered quick melee hit. */
 	public static void wound(ServerPlayer player, LivingEntity target) {
+		if (Combat.phaseStops(target)) {
+			return;
+		}
 		WOUNDS.removeIf(w -> w.target == target && w.owner == player);
 		WOUNDS.add(new Wound(target, player, new int[] {Ow.ticks(1)}));
 		Combat.buff(target, Attributes.MOVEMENT_SPEED, CLAWS_SLOW, -CLAWS_OUT_SLOW, 1);
@@ -268,6 +271,13 @@ public final class JetpackCat implements HeroKit {
 	}
 
 	private static final net.minecraft.resources.Identifier CLAWS_SLOW = dev.overcraft.Overcraft.id("jetpack_cat_claws_out");
+
+	/** Protection Suzu's cleanse (Combat.cleanse's table): the wound and its slow stop. */
+	public static void cleanse(LivingEntity target) {
+		if (WOUNDS.removeIf(w -> w.target == target)) {
+			Combat.buff(target, Attributes.MOVEMENT_SPEED, CLAWS_SLOW, 0, 0);
+		}
+	}
 
 	private static void tickWounds(ServerPlayer player) {
 		java.util.Iterator<Wound> it = WOUNDS.iterator();

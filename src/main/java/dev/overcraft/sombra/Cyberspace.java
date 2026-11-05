@@ -69,6 +69,10 @@ public final class Cyberspace {
 					}
 				}
 			} else if (Allies.areaHits(z.sombra, e)) {
+				if (Combat.phaseStops(e)) {
+					// out of the enemy tracker's filter (6102's mask 20, M): no damage, no new weaken; what it has lingers 0.25 s
+					continue;
+				}
 				WEAKENED.merge(e.getUUID(), now + Ow.ticks(ZONE_LINGER_ENEMY), Math::max);
 				if ((now - z.opened) % 10 == 0) {
 					// its look on them (7AE1), refreshed every half second while they're inside

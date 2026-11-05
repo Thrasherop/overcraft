@@ -76,7 +76,7 @@ public final class LifeGrip {
 		boolean far = ally.position().distanceTo(to) > GRIP_NEAR;
 		PULLS.put(ally.getUUID(), new Pull(ally, caster, to, caster.level().getGameTime(), far));
 		CLOSE.remove(ally.getUUID());
-		// (the cleanse first: the heal isn't cut by the healing reduction it takes off)
+		// (the cleanse first: the heal isn't cut by the healing reduction it takes off; D: 21EE #605 sends the same 1BC5 as Suzu's status, #606 sets the same v8440)
 		Combat.cleanse(ally);
 		float healed = Combat.heal(ally, GRIP_HEAL);
 		if (healed > 0) {

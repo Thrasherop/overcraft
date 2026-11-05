@@ -28,6 +28,8 @@ public final class Hack {
 	/** Who is silenced until when (game time); deployables hacked until when. */
 	private static final Map<UUID, Long> SILENCED = new HashMap<>();
 	private static final Map<UUID, Long> DEPLOYABLES = new HashMap<>();
+	/** Who Hack's reveal is on, until when. */
+	private static final Map<UUID, Long> REVEALED = new HashMap<>();
 	private static final java.util.Set<Creeper> CREEPERS = new java.util.HashSet<>();
 
 	private Hack() {
@@ -40,6 +42,9 @@ public final class Hack {
 
 	/** ... by this Sombra (her effects: the hacked look for the silence, the reveal's skull after it: 1704, 1B2F). */
 	public static void creature(LivingEntity target, double silence, @Nullable Entity by) {
+		if (dev.overcraft.hero.Combat.phaseStops(target)) {
+			return;
+		}
 		long now = target.level().getGameTime();
 		if (target.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			dev.overcraft.hero.Effects.play(level, "sombra_hacked", target.position(), net.minecraft.world.phys.Vec3.ZERO, target,
@@ -55,10 +60,33 @@ public final class Hack {
 				Ow.ticks(HACK_REVEAL), by);
 		}
 		SILENCED.merge(target.getUUID(), now + Ow.ticks(silence), Math::max);
+		REVEALED.merge(target.getUUID(), now + Ow.ticks(HACK_REVEAL), Math::max);
 		target.addEffect(new MobEffectInstance(MobEffects.GLOWING, Ow.ticks(HACK_REVEAL), 0, false, false));
 		if (target instanceof Creeper creeper) {
 			creeper.setSwellDir(-1);
 			CREEPERS.add(creeper);
+		}
+	}
+
+	/**
+	 * Protection Suzu's cleanse (Combat.cleanse's table): the whole status ends, silence and reveal (0B1F #453 {v6604, v8440} -> #610 -> #611 -> #609),
+	 * and its looks go with it. Only a glowing Hack gave is taken off: one from elsewhere (a spectral arrow) can't be told apart while the reveal runs, and goes too.
+	 */
+	public static void cleanse(LivingEntity target) {
+		boolean silenced = SILENCED.remove(target.getUUID()) != null;
+		boolean revealed = REVEALED.remove(target.getUUID()) != null;
+		if (!silenced && !revealed) {
+			return;
+		}
+		if (revealed) {
+			target.removeEffect(MobEffects.GLOWING);
+		}
+		if (target instanceof Creeper creeper) {
+			CREEPERS.remove(creeper);
+		}
+		if (target.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			dev.overcraft.hero.Effects.play(level, "sombra_hacked_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
+			dev.overcraft.hero.Effects.play(level, "sombra_revealed_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
 		}
 	}
 
@@ -97,6 +125,7 @@ public final class Hack {
 	public static void tick(MinecraftServer server) {
 		long now = server.overworld().getGameTime();
 		SILENCED.values().removeIf(until -> now >= until);
+		REVEALED.values().removeIf(until -> now >= until);
 		DEPLOYABLES.values().removeIf(until -> now >= until);
 		// a silenced creeper's fuse stays cut (its swell goal lights it again each tick it's near its target)
 		CREEPERS.removeIf(creeper -> {
@@ -110,6 +139,7 @@ public final class Hack {
 
 	public static void clear() {
 		SILENCED.clear();
+		REVEALED.clear();
 		DEPLOYABLES.clear();
 		CREEPERS.clear();
 	}

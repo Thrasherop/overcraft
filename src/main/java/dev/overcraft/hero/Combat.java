@@ -60,6 +60,8 @@ public final class Combat {
 	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
 	/** Dev only (DevBot's "fixoff"): #117's cleanse and #109's float switched off, to show the fixes are what made the difference. */
 	public static boolean devFixOff;
+	/** Dev only (DevBot's "fix 119"): #119's list (below) and what the phase prevents switched off, the rest of the cleanse as it was. */
+	public static boolean devCleanseOff;
 	/** The healing reduction on a creature hurt by an enemy (game time it ends). */
 	private static final Map<UUID, Long> healCutUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
@@ -351,7 +353,7 @@ public final class Combat {
 	 * <li>#882: not a hit tagged 191F, Local Anesthetic's damage over time (Sleep.quiet: the only damage that runs under it).</li>
 	 * <li>#2712: {v61743, not v76560} only a Damage hero's (#2702, category 084E): a mode's rule (M: Stadium's, by W Passive ability). Not ours.</li>
 	 * <li>#881: the 3 s wait, from the start again on each hit (m_0DBAFD7F 1: M, and W "doesn't stack").</li>
-	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: what sets those two isn't in the graph: read, undecoded. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
+	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: v8440 is the flag Protection Suzu's status (180C #60) and Life Grip (21EE #606) set, so the phase ends it (H nodes, M the flag's meaning, #119); v6604: not read. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
 	 * -> #1184): read, undecoded. #610 StateCombatModFilter x9007B042, op67(v25267): the healing scale itself (M, as Ana's B064); m_7724EC51 and m_5BF820E4: undecoded.</li>
 	 * </ul>
 	 * A no-team hit from another player or their pet counts as their own side's (Allies: with no teams everyone is an ally): it cuts nothing: decision, ours.
@@ -412,12 +414,36 @@ public final class Combat {
 	}
 
 	/**
-	 * Removes what Protection Suzu and Life Grip cleanse: harmful effects, burning, freezing, the healing reduction and Biotic
-	 * Grenade's anti-heal (#117: W Kiriko rev 408632, "[[Anti-heal]], such as Biotic Grenade" under what phased-out allies are immune
-	 * to, and "removes any allies' anti-heals"; W Lifeweaver rev 408779, "Life Grip can cleanse an ally's Anti-Heal"). The data has no
-	 * cleanse node for either (lifeweaver-map.md: status side), so W is the source, M.
+	 * What Protection Suzu and Life Grip cleanse (#119, techniques/game-data/status_and_cleanse.md). The data's cleanse: Suzu's status 031A
+	 * -> graph 180C sets v8440 (#60) and sends itself message 1BC5 (#92); Life Grip does the same (21EE #606, #605). Each status answers one of those
+	 * itself, so the list is their readers. H nodes; M that v8440 means "phased". W = Kiriko rev 408632 and Status effect rev 408841. Every negative state in the mod:
+	 * <pre>
+	 * state                     prevented in the phase                 removed                                  source
+	 * Sleep Dart                yes (Sleep.put)                        wakes: its 0.5 s waking, no 0.5 s gate   D 224E #96 / #575; #401 -> #418 -> #204 -> #304
+	 * Rally's stun              yes (Sleep.stun)                       at once                                  D 224E #96 / #575; #402 -> #416 -> #297 (type 0E34: M)
+	 * Hack: silence, reveal     yes (Hack.creature)                    at once, both                            D 224E #402 (type 4EB6); 0B1F #453 -> #610 -> #611 -> #609
+	 * Biotic Grenade anti-heal  yes (antiHeal)                         at once                                  D 0C72's stop {v6604, v8440, v478}, then v8440 -> 1C7D; W
+	 * Healing reduction         no hurt, no reduction                  at once                                  D 01C7 #1186; W
+	 * Local Anesthetic          yes (Anesthetic)                       at once: damage, slow                    W damage over time, slows; 6123 reads no flag: M
+	 * Claws Out                 yes (JetpackCat.wound)                 at once: damage, slow                    W names it; no graph read: M
+	 * Hyper Strike's float      yes (Sleep.stun)                       at once                                  W names it; 54A5 reads no flag: M
+	 * Deceleration Field slow   yes: out of the field's filter         at once; back after, if still inside     W slows; D 1443's tracker, mask 20: M
+	 * Weaken (Cyberspace)       yes: out of the zone's filter          not by this: its 0.25 s linger runs out  D 6102's tracker, mask 20: M; W silent
+	 * Accretion, Catnapper      yes (Sleep.stun): the hit's filter     NOT removed                              D 224E #400 goes nowhere (type 6BBE); W; 5B7B's filter, mask 20
+	 * Gravitic Flux's lift      no                                     NOT removed                              W "completely unaffected"; no flag read in his graphs: M
+	 * Minecraft's effects, fire no                                     removed                                  ours
+	 * </pre>
+	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's own phase test. 224E #575 lets type 6BBE through on a phased hero:
+	 * what stops a knock-down there is the hit's filter (mask 20, as 5B7B's); ours tests at the one door (Sleep.stun).
 	 */
 	public static void cleanse(LivingEntity target) {
+		if (!devCleanseOff) {
+			Sleep.cleanse(target);
+			dev.overcraft.sombra.Hack.cleanse(target);
+			dev.overcraft.ana.Anesthetic.cleanse(target);
+			dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
+			dev.overcraft.sojourn.Disruptor.cleanse(target);
+		}
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();
 		for (MobEffectInstance effect : target.getActiveEffects()) {
 			if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
@@ -438,6 +464,11 @@ public final class Combat {
 	public static void phase(LivingEntity target, double seconds) {
 		long until = now(target) + Ow.ticks(seconds);
 		phasedUntil.merge(target.getUUID(), until, Math::max);
+	}
+
+	/** Whether the phase keeps a new negative state off it now (Combat.cleanse's table; off with the dev switch). */
+	public static boolean phaseStops(LivingEntity target) {
+		return !devCleanseOff && isPhased(target);
 	}
 
 	public static boolean isPhased(LivingEntity target) {

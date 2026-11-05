@@ -46,6 +46,11 @@ public final class BrigitteFx {
 	private static final Map<Integer, Whip> WHIPS = new HashMap<>();
 	private static final Map<Integer, Held> BASHES = new HashMap<>();
 	private static final Map<Integer, Held> STUNS = new HashMap<>();
+
+	/** Dev only: what it draws on this entity now. */
+	public static String devHeld(int id) {
+		return STUNS.containsKey(id) ? "stun " : "";
+	}
 	private static final Map<Integer, Held> HEALS = new HashMap<>();
 	private static final Map<Integer, Held> RALLIED = new HashMap<>();
 	private static final Map<Integer, Held> BURSTS = new HashMap<>();
@@ -523,6 +528,7 @@ public final class BrigitteFx {
 			case "brigitte_bash_hit" -> bashHit(at, dir, enemy);
 			case "brigitte_bash_end" -> dev.overcraft.client.ClientBrigitte.ended(e.entity());
 			case "brigitte_stun" -> STUNS.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "brigitte_stun_end" -> STUNS.remove(e.entity());
 			case "brigitte_inspire" -> inspire(at, enemy);
 			case "brigitte_pack" -> PACKS.add(new Pack(at, e.entity(), now, enemy));
 			case "brigitte_pack_arrive" -> {

@@ -40,6 +40,11 @@ public final class SombraFx {
 
 	private static final Map<Integer, Held> HACKED = new HashMap<>();
 	private static final Map<Integer, Held> REVEALED = new HashMap<>();
+
+	/** Dev only: what it draws on this entity now. */
+	public static String devHeld(int id) {
+		return (HACKED.containsKey(id) ? "hacked " : "") + (REVEALED.containsKey(id) ? "revealed " : "") + (WEAKENED.containsKey(id) ? "weakened " : "");
+	}
 	private static final Map<Integer, Held> HOTFIXED = new HashMap<>();
 	private static final Map<Integer, Held> WEAKENED = new HashMap<>();
 	private static final Map<Integer, Held> HACKED_THINGS = new HashMap<>();
@@ -398,6 +403,8 @@ public final class SombraFx {
 			case "sombra_hotfixed_end" -> HOTFIXED.remove(e.entity());
 			case "sombra_hacked" -> HACKED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_revealed" -> REVEALED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_hacked_end" -> HACKED.remove(e.entity());
+			case "sombra_revealed_end" -> REVEALED.remove(e.entity());
 			case "sombra_hacked_thing" -> HACKED_THINGS.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_weakened" -> WEAKENED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_cyber_launch" -> launch(at, enemy);

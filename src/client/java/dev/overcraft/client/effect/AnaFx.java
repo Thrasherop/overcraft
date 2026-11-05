@@ -33,6 +33,11 @@ public final class AnaFx {
 	private static final Map<Integer, Held> BOOSTED = new HashMap<>();
 	private static final Map<Integer, Held> ANTI_HEALED = new HashMap<>();
 	private static final Map<Integer, Held> NANOED = new HashMap<>();
+	/** Dev only: what it draws on this entity now. */
+	public static String devHeld(int id) {
+		return (ASLEEP.containsKey(id) ? "asleep " : "") + (ANTI_HEALED.containsKey(id) ? "antiHealed " : "") + (NUMBED.containsKey(id) ? "numbed " : "");
+	}
+
 	private static final Map<Integer, Held> NUMBED = new HashMap<>();
 
 	private AnaFx() {
@@ -246,6 +251,7 @@ public final class AnaFx {
 			case "ana_nano" -> NANOED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "ana_nano_end" -> NANOED.remove(e.entity());
 			case "ana_numbed" -> NUMBED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "ana_numbed_end" -> NUMBED.remove(e.entity());
 			default -> {
 				return false;
 			}

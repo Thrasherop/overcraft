@@ -45,6 +45,10 @@ public final class Sleep {
 
 	/** Puts it to sleep for {@code seconds}; a new sleep replaces one under way (ours: 224E's replace rule is M). */
 	public static void put(LivingEntity entity, double seconds) {
+		if (Combat.phaseStops(entity)) {
+			// (224E #96 fails on a phased one, #575 lets only a knock-down by)
+			return;
+		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
 		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false));
@@ -133,7 +137,37 @@ public final class Sleep {
 		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
+	/** What Protection Suzu's cleanse does here (Combat.cleanse's table). */
+	public static void cleanse(LivingEntity entity) {
+		Sleeper s = SLEEPERS.get(entity.getUUID());
+		if (s == null) {
+			return;
+		}
+		long now = entity.level().getGameTime();
+		if (!s.stun) {
+			// the wake damage starts, without damage's "slept 0.5 s" gate: 224E #401 -> #418 -> #204 -> #304, past #332 (H)
+			if (!s.waking && s.until - now > Ow.ticks(AnaStats.SLEEP_WAKING)) {
+				SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), true));
+			}
+		} else if (!s.slides) {
+			// a stun: ended on the spot (224E #402 -> #416 -> #297)
+			wake(s);
+			if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+				Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
+			}
+		} else if (s.gravity != 1) {
+			// Hyper Strike's float (W): its gravity back, and FLOATED still spares the landing
+			wake(s);
+			Combat.buff(entity, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+		}
+		// a knock-down (Accretion, Catnapper: type 6BBE) stays: 224E #400 goes nowhere (H); W "Cleanses never remove"; BZ "No longer cleanses hard knockdown stuns"
+	}
+
 	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
+		if (Combat.phaseStops(entity)) {
+			// (a stun: 224E #96 / #575. A knock-down: the hit's own filter, mask 20 as 5B7B's, and W)
+			return;
+		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
 		if (old != null && !old.stun) {

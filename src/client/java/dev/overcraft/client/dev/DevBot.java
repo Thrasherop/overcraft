@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
  * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>", "bot fx <name> <effect> <ticks>", "bot rays" (Juno's rays this client
- * holds), "bot roll [trace]" (the camera's roll, each frame with trace).
+ * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|rally> on|off", "bot cc <name|me>" (the statuses on it).
  */
 final class DevBot {
 	private DevBot() {
@@ -100,6 +100,37 @@ final class DevBot {
 			case "fixoff" -> {
 				dev.overcraft.hero.Combat.devFixOff = a[1].equals("on");
 				out.addProperty("fixoff", dev.overcraft.hero.Combat.devFixOff);
+			}
+			case "fix" -> {
+				// "bot fix <119|rally> on|off": the fix itself on or off, in one build, to show it makes the difference
+				boolean on = a[2].equals("on");
+				if (a[1].equals("119")) {
+					dev.overcraft.hero.Combat.devCleanseOff = !on;
+				}
+				out.addProperty(a[1], on);
+			}
+			case "cc" -> {
+				// "bot cc <name|me>": what's on it now, read from the server
+				ServerPlayer who = a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1]);
+				out.addProperty("asleep", dev.overcraft.hero.Sleep.asleep(who));
+				out.addProperty("sleeping", dev.overcraft.hero.Sleep.sleeping(who));
+				out.addProperty("silenced", dev.overcraft.sombra.Hack.silenced(who));
+				out.addProperty("glowing", who.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING));
+				out.addProperty("antiHeal", dev.overcraft.hero.Combat.antiHealed(who));
+				out.addProperty("healCut", dev.overcraft.hero.Combat.healCut(who));
+				out.addProperty("weak", dev.overcraft.sombra.Cyberspace.dealtFactor(who));
+				out.addProperty("phased", dev.overcraft.hero.Combat.isPhased(who));
+				out.addProperty("speed", who.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED));
+				out.addProperty("gravity", who.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY));
+				out.addProperty("health", who.getHealth());
+				out.addProperty("lifted", dev.overcraft.sigma.GraviticFlux.lifted(who));
+				out.addProperty("now", who.level().getGameTime());
+			}
+			case "held" -> {
+				// "bot held <name|me>": the held looks the server remembers on it, for late viewers (Effects), and what this client is drawing on it
+				ServerPlayer who = a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1]);
+				out.addProperty("server", dev.overcraft.hero.Effects.devHeld(who));
+				out.addProperty("client", dev.overcraft.client.effect.AnaFx.devHeld(who.getId()) + dev.overcraft.client.effect.SombraFx.devHeld(who.getId()) + dev.overcraft.client.effect.BrigitteFx.devHeld(who.getId()));
 			}
 			case "pos" -> {
 				ServerPlayer bot = BOTS.get(a[1]);

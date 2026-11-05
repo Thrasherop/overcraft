@@ -369,6 +369,9 @@ public final class Brigitte implements HeroKit {
 
 	/** Rally's stun (Sleep.stun) and its halo over the target's head (220D, for the stun's time). */
 	private static void stun(ServerPlayer player, LivingEntity target) {
+		if (dev.overcraft.hero.Combat.phaseStops(target)) {
+			return;
+		}
 		dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
 		BrigitteSounds.on(target, "stun", 30);
 		Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);

@@ -128,7 +128,7 @@ public final class Disruptor {
 					Combat.credit(f.owner, dealt, e);
 					Combat.addFireForDamage(f.owner, dealt, e);
 				}
-				if (f.slows) {
+				if (f.slows && !Combat.phaseStops(e)) {
 					slow(e, f.level.getGameTime());
 				}
 			}
@@ -154,6 +154,16 @@ public final class Disruptor {
 	}
 
 	/** Deceleration Field: 25 % slower while inside, renewed each tick there, gone the tick after leaving. */
+	/** Protection Suzu's cleanse (Combat.cleanse's table): the slow stops now; still inside once the phase ends, it comes back. */
+	public static void cleanse(LivingEntity target) {
+		if (SLOWED.remove(target) != null) {
+			AttributeInstance speed = target.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.removeModifier(SLOW);
+			}
+		}
+	}
+
 	private static void slow(LivingEntity e, long now) {
 		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed == null) {
