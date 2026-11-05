@@ -155,6 +155,28 @@ final class DevBot {
 				dev.overcraft.hero.Combat.phase(who, Double.parseDouble(a[2]));
 				out.addProperty("phased", dev.overcraft.hero.Combat.isPhased(who));
 			}
+			case "shots" -> {
+				// "bot shots": every Overwatch projectile as this client has it and as the server has it (type@x,y,z), and each Sombra-hackable deployable on the server
+				StringBuilder cl = new StringBuilder();
+				for (net.minecraft.world.entity.Entity e : net.minecraft.client.Minecraft.getInstance().level.entitiesForRendering()) {
+					if (e instanceof dev.overcraft.entity.OwProjectile) {
+						cl.append(e.getClass().getSimpleName()).append(String.format("@%.1f,%.1f,%.1f ", e.getX(), e.getY(), e.getZ()));
+					}
+				}
+				StringBuilder sv = new StringBuilder();
+				StringBuilder dep = new StringBuilder();
+				for (net.minecraft.world.entity.Entity e : server.overworld().getAllEntities()) {
+					if (e instanceof dev.overcraft.entity.OwProjectile) {
+						sv.append(e.getClass().getSimpleName()).append(String.format("@%.1f,%.1f,%.1f ", e.getX(), e.getY(), e.getZ()));
+					}
+					if (e instanceof dev.overcraft.entity.PetalPlatformEntity || e instanceof dev.overcraft.entity.TreeOfLifeEntity) {
+						dep.append(e.getClass().getSimpleName()).append(" hacked=").append(dev.overcraft.sombra.Hack.hacked(e)).append(' ');
+					}
+				}
+				out.addProperty("client", cl.toString().trim());
+				out.addProperty("server", sv.toString().trim());
+				out.addProperty("deployables", dep.toString().trim());
+			}
 			case "playing" -> {
 				// "bot playing [text]": the sounds this client has running now (SoundEngine's own list, read by reflection, dev only), for what a stop packet stopped
 				StringBuilder names = new StringBuilder();
