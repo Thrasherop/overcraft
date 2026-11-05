@@ -46,6 +46,16 @@ public final class JetpackCatFx {
 		return dev.overcraft.client.effect.Fx.now() - towedAt;
 	}
 
+	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
+	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == player.getId() && e.getValue()[2] == 0) {
+				return e.getKey();
+			}
+		}
+		return -1;
+	}
+
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
 	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
 	/** Jetpack Cats in Purr: her id -> when it ends (client seconds), for her range wall (70F9). */

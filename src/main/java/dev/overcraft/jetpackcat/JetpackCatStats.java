@@ -93,6 +93,21 @@ public final class JetpackCatStats {
 	public static final double LIFELINE_BREAK_GRACE = 0.2;
 	public static final double LIFELINE_HEIGHT = 15;           // W: and 15 m tall
 	public static final double LIFELINE_ROPE = 4;              // W; her data's rope length, max(4, 0.2) (graph #1137)
+	/**
+	 * The rope's pull, m/s² per metre past its length: D 5A8F #1137's first number, m_81D6C3A4 = 30 (and 5B7B #391, the same).
+	 * The value is H, that it's a stiffness is M: unnamed, and no recording has an ally on the rope. With about 17 m/s² of
+	 * gravity an ally hangs 0.56 m past the 4 m.
+	 */
+	public static final double ROPE_STIFFNESS = 30;
+	/** The rope's damping along itself, a second: D #1137 m_725EB364 = 2. The value is H, that it's a damping is M. */
+	public static final double ROPE_DAMPING = 2;
+	/** The most it reels an ally in at, m/s, closing on her: D #1137 m_6211A3C1 = 10. The value is H, that it's this is L (ours). */
+	public static final double ROPE_REEL_SPEED = 10;
+	/**
+	 * How fast a swing dies, a second, on what's across the rope. Ours: nothing in the data reads as this, and with no damping
+	 * at all a mover keeps a swing under 5.5 m/s going for ever. 0.5 halves it in about 3 s, a swing or so.
+	 */
+	public static final double ROPE_SWING_DAMPING = 0.5;
 	/** The rope snaps when she is this many rope lengths from the ally across (her data's #928: M, a horizontal offset). */
 	public static final double LIFELINE_BREAK = 3;
 	public static final double LIFELINE_COOLDOWN = 2;          // W

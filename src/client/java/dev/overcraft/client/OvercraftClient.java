@@ -120,6 +120,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.LucioFx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
+		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
@@ -271,6 +272,7 @@ public class OvercraftClient implements ClientModInitializer {
 		dev.overcraft.hero.Tank.resistsSlows = entity -> entity == mc.player && ClientHero.controls()
 			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
+		OwMovement.roped = entity -> entity == mc.player && ClientTow.taut();
 		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
 			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
