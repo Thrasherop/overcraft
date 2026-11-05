@@ -169,7 +169,7 @@ public final class HeroModelRenderer {
 		float now = (entity.level().getGameTime() + partialTicks) / 20f;
 		HeroAnimator animator = HeroAnimator.of(entity);
 		// the body faces her aim (HeroAnimator.facing); the head's turn is then measured from there
-		float facing = animator.facing(entity, partialTicks);
+		float facing = animator.facing(entity, partialTicks) + (DEV_AIM != null && entity == Minecraft.getInstance().player ? DEV_AIM[1] : 0);
 		state.yRot = Mth.wrapDegrees(state.yRot + state.bodyRot - facing);
 		state.bodyRot = facing;
 		long t0 = System.nanoTime();
@@ -182,7 +182,8 @@ public final class HeroModelRenderer {
 		Skeleton.Pose showcase = previewing ? HeroAnimator.showcasePose(loaded.model(), showcaseAt) : null;
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
-			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
+			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : DEV_AIM != null ? 0 : state.yRot,
+				previewing ? 0 : DEV_AIM != null && entity == Minecraft.getInstance().player ? DEV_AIM[0] : state.xRot);
 		}
 		Timing.pose += System.nanoTime() - t0;
 		// her weapons in an emote: as its GeoSetFlags hide them (the data); where the data has none, an emote with props
@@ -1451,6 +1452,55 @@ public final class HeroModelRenderer {
 
 	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
 	private static final int HOLOGRAM = 0xFF8344EF;
+
+	/** Ana's rifle's sight screen (the 48 vertices of material BB56, shader 0x32, the image 38704). */
+	private static final String ANA_SCREEN = "00000000BB56";
+	/** Her ammo's digits on it: colour from the screen's image, size and offset ours, read against the screen in first person. */
+	private static final int ANA_DIGITS = 0xFFA8EEFF;
+	private static final float ANA_DIGIT_SCALE = 0.0009f;
+
+	/**
+	 * The ammo counter on her rifle's sight: tens and units of her ammo, 9 from 100 up (0B94 #542 / #543, ana-map.md), which the data
+	 * sends to dataflows 0B9A / 0B9B and shows by a means not read; drawn as text on the screen's own piece, facing out of it.
+	 */
+	private static void anaCounter(EmoteProps.Placed weapon, PoseStack poseStack, SubmitNodeCollector collector) {
+		dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+		SkinnedModel.Piece screen = null;
+		for (SkinnedModel.Piece piece : weapon.loaded().model().pieces) {
+			if (piece.material().equals(ANA_SCREEN)) {
+				screen = piece;
+			}
+		}
+		if (s == null || screen == null || screen.vertexCount() == 0) {
+			return;
+		}
+		Vector3f c = new Vector3f(), n = new Vector3f();
+		for (int v = 0; v < screen.vertexCount(); v++) {
+			c.add(screen.pos()[v * 3], screen.pos()[v * 3 + 1], screen.pos()[v * 3 + 2]);
+			n.add(screen.normal()[v * 3], screen.normal()[v * 3 + 1], screen.normal()[v * 3 + 2]);
+		}
+		c.div(screen.vertexCount());
+		n.normalize();
+		Vector3f up = new Vector3f(0, 1, 0).sub(new Vector3f(n).mul(n.y)).normalize();
+		Vector3f right = new Vector3f(up).cross(n).normalize();
+		int ammo = s.primaryAmmo();
+		String digits = ammo > 99 ? "99" : String.format(java.util.Locale.ROOT, "%02d", ammo);
+		net.minecraft.client.gui.Font font = Minecraft.getInstance().font;
+		poseStack.pushPose();
+		poseStack.mulPose(weapon.at());
+		poseStack.mulPose(weapon.skin()[screen.joint4()[0]]);
+		poseStack.mulPose(new Matrix4f(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, n.x, n.y, n.z, 0, c.x + n.x * 0.0008f, c.y + n.y * 0.0008f, c.z + n.z * 0.0008f, 1));
+		poseStack.scale(ANA_DIGIT_SCALE, -ANA_DIGIT_SCALE, ANA_DIGIT_SCALE);
+		collector.submitText(poseStack, -font.width(digits) / 2f, -4, net.minecraft.network.chat.Component.literal(digits).getVisualOrderText(), false,
+			net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, FULL_BRIGHT, ANA_DIGITS, 0, 0);
+		poseStack.popPose();
+	}
+
+	/** Dev only (DevServer "aimpose"): the local player's model aims this pitch and is turned this far, the camera left level. */
+	public static float @Nullable [] DEV_AIM;
+
+	/** A glow at strength 1 (ours: its image holds the colour, Overwatch's HDR strength is clamped to 2 by the tool). */
+	private static final float GLOW_ALPHA = 0.8f;
 
 	/**
 	 * A spirit: the model see-through and glowing (Kitsune Rush's fox: Overwatch's is a translucent ice-blue spirit; drawn

@@ -482,6 +482,29 @@ public final class DevServer {
 				}
 				out.add("turns", list);
 			}
+			case "aimpose" -> {
+				// dev only: "aimpose <pitch> [turn]" / "aimpose off": the model aims this pitch, turned this far from the camera, to judge the
+				// aim sheets from any side with a level camera (the third-person camera otherwise swings with the aim)
+				String[] a = arg.trim().split(" ");
+				dev.overcraft.client.model.HeroModelRenderer.DEV_AIM = a[0].equals("off") ? null
+					: new float[] {Float.parseFloat(a[0]), a.length > 1 ? Float.parseFloat(a[1]) : 0};
+				out.addProperty("ok", true);
+			}
+			case "aimsheets" -> {
+				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonObject list = new com.google.gson.JsonObject();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted().filter(n -> n.startsWith("add_")).forEach(n -> {
+						var sheet = dev.overcraft.client.model.AimSheet.of(loaded.model(), loaded.model().clips.get(n));
+						if (sheet != null) {
+							list.addProperty(n, sheet.describe());
+						}
+					});
+				}
+				out.add("sheets", list);
+			}
 			case "viewbones" -> {
 				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode
 				com.google.gson.JsonObject bones = new com.google.gson.JsonObject();

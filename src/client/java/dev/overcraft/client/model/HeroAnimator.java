@@ -13,7 +13,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,14 +49,6 @@ public final class HeroAnimator {
 	public static final float CLIMB_SHIFT = 0.3f;
 	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
 	private static final float CLIMB_DUST_EVERY = 0.5f;
-	/** The aim sheet's frames per second (its 63 frames are keyed 1/30 s apart in the export). */
-	private static final float AIM_FPS = 30;
-	/** Aim pitch (degrees) at the ends of the sheet's pitch row (ours: Minecraft's whole range). */
-	private static final float AIM_PITCH = 90;
-	/** Which end of the row is looking down: frame 21 tilts the spine one way, 41 the other (checked in game). */
-	private static final float AIM_SIGN = -1;
-	/** How much of the pitch the sheet's spine, neck and head turn at its ends (27-31 of 90 degrees, read from it). */
-	private static final float AIM_SHARE = 0.3f;
 
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
@@ -1433,18 +1427,8 @@ public final class HeroAnimator {
 				}
 			}
 		}
-		// Overwatch's aim pose sheet (A71F) on top of everything: her spine, neck and arms follow where she aims up or
-		// down. Its middle row (frames 21-41) runs through the aim's pitch, 31 level; the rows either side are aim yaw,
-		// not needed while her body faces her aim
-		SkinnedModel.Clip aim = asleep ? null : clip(model, "add_aim");
-		float lookPitch = asleep ? 0 : headPitch;
-		// (Kiriko's sheet: 63 frames. Lúcio's 265E has 74 laid out otherwise, not read yet: his head turns the whole pitch)
-		if (aim != null && Math.round(aim.duration() * AIM_FPS) == 62) {
-			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
-			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
-			// the sheet already tilts the spine, neck and head by about this share of the pitch: the head turns the rest
-			lookPitch = headPitch * (1 - AIM_SHARE);
-		}
+		// Overwatch's aim pose sheets on top of everything: spine, neck, arms and gun follow where the hero aims up or down (#95)
+		float lookPitch = asleep ? 0 : headPitch - aimSheets(model, pose, now, headPitch);
 
 		stepCloth(model, entity, pose, now);
 		lastPose = pose;
@@ -1452,6 +1436,102 @@ public final class HeroAnimator {
 		Quaternionf look = asleep ? new Quaternionf()
 			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/**
+	 * Lifeweaver's first-person thorn counter (lifeweaver-map.md "Thorn ammo display": overrides D36A .. D361 of the bones of his blossom
+	 * hand, each holding one more chip's bones scaled away; M that they count thorns left, ours how: eight even shares of his 100).
+	 */
+	private void thornCounter(SkinnedModel model, Skeleton.Pose pose) {
+		dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+		if (!thorns || s == null) {
+			return;
+		}
+		int gone = (int) Math.ceil((1 - s.secondaryAmmo() / (double) dev.overcraft.lifeweaver.LifeweaverStats.THORN_AMMO) * 8);
+		SkinnedModel.Clip counter = gone <= 0 ? null : clip(model, "thorn_count_" + Math.min(gone, 8));
+		if (counter != null) {
+			Skeleton.sample(driven(model, counter), 0, pose);
+		}
+	}
+
+	/** The sheet playing and the one it took over from, and when (the sheets differ most at the ends of the pitch). */
+	private @Nullable AimSheet aimSheet;
+	private @Nullable AimSheet aimSheetBefore;
+	private float aimSheetAt = -100;
+	private @Nullable SkinnedModel aimSheetModel;
+	/** Seconds a sheet takes over from the last (ours: the base clips' own FADE scale). */
+	private static final float AIM_SHEET_FADE = 0.15f;
+
+	/**
+	 * Lays this state's aim sheet over the pose for the aim's pitch, cross-faded from the last, and returns what its chain has
+	 * turned already (degrees): the head's own look turns the rest. No hero's sheet is named alike, so each slot is tried by
+	 * every name it goes by and the clip must measure as a sheet (AimSheet); the data's own pick under each state, in each
+	 * hero's clip map, is why a name is where it is (techniques/animation/aim_sheets.md).
+	 */
+	private float aimSheets(SkinnedModel model, Skeleton.Pose pose, float now, float headPitch) {
+		AimSheet sheet = aimSheetNow(model, now);
+		if (aimSheetModel != model) {
+			// another hero's model (a switch): that hero's sheet keys its bones, not these
+			aimSheetModel = model;
+			aimSheet = null;
+			aimSheetBefore = null;
+		}
+		if (sheet != aimSheet) {
+			aimSheetBefore = aimSheet;
+			aimSheet = sheet;
+			aimSheetAt = now;
+		}
+		boolean[] mask = UpperBody.aimMask(model);
+		float w = Math.clamp((now - aimSheetAt) / AIM_SHEET_FADE, 0, 1);
+		float turned = 0;
+		if (aimSheetBefore != null && w < 1) {
+			aimSheetBefore.apply(pose, headPitch, 1 - w, mask);
+			turned += aimSheetBefore.pitchAt(headPitch) * (1 - w);
+		}
+		if (aimSheet != null) {
+			aimSheet.apply(pose, headPitch, w, mask);
+			turned += aimSheet.pitchAt(headPitch) * w;
+		}
+		return turned;
+	}
+
+	private @Nullable AimSheet aimSheetNow(SkinnedModel model, float now) {
+		// the variants: Ana's scope, Sombra's stealth, Brigitte's shield
+		String v = scoped ? "_scoped" : stealthed ? "_stealth" : shieldUp(now) ? "_shield" : blaster ? "_blaster" : "";
+		boolean air = base.startsWith("jump") || base.startsWith("fall") || base.startsWith("air");
+		boolean moving = base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk");
+		String dir = !moving ? "" : base.startsWith("run_") ? base.substring(3).replace("_stealth", "").replace("_blaster", "").replace("_thorn", "")
+			: base.startsWith("strafe_left") ? "_left" : base.startsWith("strafe_right") ? "_right" : "";
+		List<String> names = new ArrayList<>();
+		if (base.startsWith("crouch_walk")) {
+			String walkDir = base.substring("crouch_walk".length());
+			names.addAll(List.of("add_aim_crouch_walk" + v + walkDir, "add_aim_crouch_walk" + walkDir, "add_aim_crouch_walk" + v,
+				"add_aim_crouch_walk", "add_crouch_walk"));
+		}
+		if (base.contains("crouch")) {
+			names.addAll(List.of("add_aim_crouch" + v, "add_aim_crouch", "add_crouch" + (thorns ? "_idle_thorn" : "_idle"), "add_crouch",
+				"add_stance_sm1_sm1_stand_1ed"));
+		} else if (junoGliding) {
+			names.add("add_glide");
+		} else if (air) {
+			names.addAll(List.of("add_aim_jump" + v, "add_aim_jump", "add_jump", "add_air", "add_jump_takeoff"));
+		} else if (moving) {
+			names.addAll(List.of("add_aim_run" + v + dir, "add_aim_run" + dir, "add_run" + dir));
+			if (!dir.contains("back")) {
+				// Ana's unscoped back slots ride her stand's sheet, as her clip map has it (3B7D on BR, B, BL)
+				names.addAll(List.of("add_aim_run" + v, "add_aim_run", "add_run"));
+			}
+		}
+		// the stand's: Sojourn's and Lifeweaver's and Mercy's by the layer's name, Juno's and Brigitte's add_aim, Sigma's 72AC
+		names.addAll(List.of("add_aim" + v, "add_aim", blaster ? "add_idle_blaster" : thorns ? "add_idle_thorn" : "add_idle", "add_stand",
+			"add_layer_663"));
+		for (String name : names) {
+			AimSheet sheet = AimSheet.of(model, clip(model, name));
+			if (sheet != null) {
+				return sheet;
+			}
+		}
+		return null;
 	}
 
 	/** The cloth the clips leave rigid (coat tails): simulated, kept out of the legs and above the floor. */
@@ -1966,7 +2046,8 @@ public final class HeroAnimator {
 				boolean[] upper = mask(m);
 				boolean[] aim = new boolean[upper.length];
 				for (int i = 0; i < aim.length; i++) {
-					aim[i] = upper[i] && !m.nodeNames[i].startsWith("bone_");
+					String name = m.nodeNames[i];
+					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606"));
 				}
 				return aim;
 			});
