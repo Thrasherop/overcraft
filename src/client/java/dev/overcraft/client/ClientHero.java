@@ -213,6 +213,8 @@ public final class ClientHero {
 	static final float BARRIER_CAMERA = 2, BARRIER_CAMERA_RALLY = 4, BARRIER_CAMERA_CHASE = 0.4f, BARRIER_CAMERA_BLEND = 0.3f,
 		BARRIER_CAMERA_LIFT = 0.5f;
 
+	static final float LIFELINE_VIEW_SEEKING = 3.5f, LIFELINE_VIEW_TOWING = 6.75f, LIFELINE_VIEW_RISE = 0.35f, LIFELINE_VIEW_RIGHT = 0.85f;
+
 	public static void onDisconnect() {
 		EmoteCamera.stop(Minecraft.getInstance());
 		AbilityCamera.update(Minecraft.getInstance(), false);
@@ -256,8 +258,19 @@ public final class ClientHero {
 				((mode & dev.overcraft.brigitte.Brigitte.MODE_RALLY) != 0 ? BARRIER_CAMERA_RALLY : BARRIER_CAMERA) * scale,
 				(BARRIER_CAMERA_RALLY - BARRIER_CAMERA) * scale / BARRIER_CAMERA_CHASE, BARRIER_CAMERA_BLEND, BARRIER_CAMERA_LIFT * scale);
 		} else {
-			AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
-				&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
+			boolean cat = controls() && hero() == Hero.JETPACK_CAT;
+			int ult = mode & 7;
+			boolean carrying = ult == dev.overcraft.jetpackcat.JetpackCat.ULT_CARRY;
+			if (cat && ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 && ult == dev.overcraft.jetpackcat.JetpackCat.ULT_NONE || carrying)) {
+				// Lifeline's own view (5A8F #911 STU_582E0D5F, the node Brigitte's barrier view is, H; #1148, #1146, #1147, #1150): 3.5 m back
+				// seeking, 6.75 m with someone on the rope (v43716: Catnapper's carry sets it too), chased over 0.35 s and 0.45 s, blended
+				// over 0.3 s. Its (0, 0.35, 0) as the rise and its (-0.85, 0, 0) as to her right are M: the fields are unnamed
+				boolean towing = (mode & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0 || carrying;
+				AbilityCamera.update(mc, true, towing ? LIFELINE_VIEW_TOWING : LIFELINE_VIEW_SEEKING,
+					(LIFELINE_VIEW_TOWING - LIFELINE_VIEW_SEEKING) / (towing ? 0.45f : 0.35f), 0.3f, LIFELINE_VIEW_RISE, LIFELINE_VIEW_RIGHT);
+			} else {
+				AbilityCamera.update(mc, cat && ult != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE);
+			}
 		}
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();

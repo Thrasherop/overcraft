@@ -12,6 +12,7 @@ import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.OwMovement;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.hero.HeroSounds;
@@ -316,11 +317,12 @@ public final class JetpackCat implements HeroKit {
 
 	/** This ally is in her Lifeline's cylinder, in her sight, not on another rope, not just let go. */
 	public static boolean lifelineReaches(ServerPlayer cat, LivingEntity ally) {
-		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger()) {
+		// (asleep or carrying a rider isn't an ally to pull away, ours: a mob can't opt in, and a sleeper flew off its bed, a horse with its rider)
+		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger() || ally.isVehicle() || ally.isSleeping()) {
 			return false;
 		}
 		Long until = LOCKED_OUT.get(ally);
-		if (until != null && cat.level().getGameTime() < until) {
+		if (until != null && cat.level().getServer().getTickCount() < until) {
 			return false;
 		}
 		Vec3 to = ally.position().subtract(cat.position());
@@ -438,35 +440,130 @@ public final class JetpackCat implements HeroKit {
 		}
 		Entity found = player.level().getEntity(s.lifelineTarget);
 		Vec3 apart = found == null ? Vec3.ZERO : player.position().subtract(found.position());
-		if (!(found instanceof LivingEntity ally) || !ally.isAlive()
-			|| s.lifelineTicks >= Ow.ticks(LIFELINE_BREAK_GRACE) && apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK) {
+		if (!(found instanceof LivingEntity ally) || !ally.isAlive() || ally.isPassenger()
+			|| s.lifelineTicks >= Ow.ticks(LIFELINE_BREAK_GRACE) && (apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK
+				|| throughTerrain(player, ally, apart))) {
 			release(player, s);
 			return;
 		}
-		Vec3 to = player.position().subtract(ally.position());
-		double dist = to.length();
-		if (dist > LIFELINE_ROPE) {
-			// the rope pulls the slack out: her speed, plus a spring on the extra length (ours: the rope node's 30, 2)
-			Vec3 pull = to.normalize().scale((dist - LIFELINE_ROPE) * 0.5).add(player.getKnownMovement());
-			ally.setDeltaMovement(pull);
-			ally.syncVelocity = true;
-			ally.resetFallDistance();
-		}
+		tow(player, ally);
 		if (player.tickCount % 4 == 0) {
 			Combat.heal(ally, LIFELINE_HEAL / 5);
 		}
-		// a towed player lets go with their jump key, from 0.6 s into the tow (her data), launched along her flight: 8 m/s
-		// ahead and 10.5 up (her data's detach launch; the wiki's 13.2 m/s is the two together). Read from the keys the
-		// client sends: rising faster than her had been the test, and the rope's swing alone let a player go (found
-		// playing with a second player)
+		// a towed player lets go with their jump key, from 0.6 s into the tow (her data). D #1014: their vertical speed
+		// cancelled (x57643451 = 0) and (F.x x 8, 10.5, F.z x 8) added (xA634D7B9: Juno's and Sojourn's reading, M), F the
+		// ally's own facing (STU_021D01CD{self}, in the ally's context: M): what they had across is kept (W: "momentum kept").
+		// Read from the keys the client sends: rising faster than her had been the test, and the rope's swing alone let a
+		// player go (found playing with a second player)
 		s.lifelineTicks++;
 		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(LIFELINE_DETACH_AFTER)) {
-			Vec3 heading = player.getKnownMovement().multiply(1, 0, 1);
-			heading = heading.lengthSqr() > 1.0E-4 ? heading.normalize() : player.getLookAngle().multiply(1, 0, 1).normalize();
+			Vec3 had = towed.getKnownMovement();
+			Vec3 facing = towed.getLookAngle().multiply(1, 0, 1);
+			facing = facing.lengthSqr() > 1.0E-4 ? facing.normalize() : Vec3.ZERO;
 			release(player, s);
-			towed.setDeltaMovement(heading.scale(Ow.speed(LIFELINE_LAUNCH_FORWARD)).add(0, Ow.speed(LIFELINE_LAUNCH_UP), 0));
-			towed.syncVelocity = true;
+			towed.setDeltaMovement(had.x + facing.x * Ow.speed(LIFELINE_LAUNCH_FORWARD), Ow.speed(LIFELINE_LAUNCH_UP),
+				had.z + facing.z * Ow.speed(LIFELINE_LAUNCH_FORWARD));
+			Combat.send(towed);
 		}
+	}
+
+	/**
+	 * The rope is broken pulled through terrain (W): straight up through a roof the data's across-only test (#928) never
+	 * fires, and she took a villager's rope 30 m up through one (found playing). The same 3 lengths, in any direction, with
+	 * something solid between them, is ours.
+	 */
+	private static boolean throughTerrain(ServerPlayer player, LivingEntity ally, Vec3 apart) {
+		return apart.length() > LIFELINE_ROPE * LIFELINE_BREAK
+			&& player.level().clip(new ClipContext(player.position().add(0, LIFELINE_SIGHT, 0), ally.getBoundingBox().getCenter(),
+				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
+	/** Where a towed mob was last tick and the speed it was last given (blocks a tick), null while it's left to itself. */
+	private static final class Towing {
+		Vec3 last;
+		@Nullable Vec3 sent;
+
+		Towing(Vec3 last) {
+			this.last = last;
+		}
+	}
+
+	private static final java.util.Map<LivingEntity, Towing> TOWING = new java.util.WeakHashMap<>();
+	/** Minecraft's air drag a tick, across and down (LivingEntity.travelInAir, decompiled). */
+	private static final double MC_AIR_DRAG = 0.91, MC_FALL_DRAG = 0.98;
+	/** Ours: a speed past this since last tick (m/s) wasn't a move, a teleport: not taken as its speed. */
+	private static final double BLINK_SPEED = 40;
+	/** Ours: a change past this (blocks a tick) over what Minecraft's drag explains is a hit, not its AI's little push (0.02 in the air). */
+	private static final double HIT_SEEN = 0.1;
+	/** Ours: m/s pressing a towed mob to the ground while the rope isn't lifting it (Minecraft's own gravity for a tick). */
+	private static final double PRESS_DOWN = 1.6;
+
+	/**
+	 * The rope on whoever it tows, this tick (LifelineRope). A player moves themselves: their own client pulls them
+	 * (ClientTow), keys and all, and here they're only kept from falls and from the floating kick. A mob moves here, by the
+	 * same math with no keys, so a villager on the rope behaves as a player who lets go of the keys.
+	 */
+	private static void tow(ServerPlayer player, LivingEntity ally) {
+		ally.resetFallDistance();
+		if (ally instanceof ServerPlayer towed) {
+			((dev.overcraft.mixin.ServerGamePacketListenerAccessor) towed.connection).overcraft$setAboveGroundTickCount(0);
+			return;
+		}
+		Towing t = TOWING.computeIfAbsent(ally, a -> new Towing(a.position()));
+		Vec3 pos = ally.position();
+		Vec3 moved = pos.subtract(t.last).scale(20);
+		Vec3 now = ally.getDeltaMovement();
+		t.last = pos;
+		Vec3 toHer = player.position().subtract(pos);
+		boolean taut = LifelineRope.taut(toHer, LIFELINE_ROPE);
+		Vec3 her = player.getKnownMovement().scale(20);
+		double dt = 0.05 / OwMovement.SUBSTEPS;
+		if (ally.isInLiquid()) {
+			// the water or lava has them, its own drag and all; the rope only adds to it
+			t.sent = null;
+			if (taut) {
+				Vec3 v = now.scale(20);
+				for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
+					v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+				}
+				ally.setDeltaMovement(v.scale(0.05));
+				ally.needsSync = true;
+			}
+			return;
+		}
+		if (ally.onGround() && !taut) {
+			t.sent = null; // on their own feet inside the rope: Minecraft walks them
+			return;
+		}
+		// the speed we gave it, less what a wall or the ground took. Not the speed it really moved at: that holds its AI's walk,
+		// which without Minecraft's friction adds up to 40 m/s² and held a villager against the rope, on its feet (found playing).
+		// Picked up from the ground it has no walk to speak of (a player's keys are their own: ClientTow)
+		Vec3 v = moved.lengthSqr() > BLINK_SPEED * BLINK_SPEED ? now.scale(20) : moved;
+		if (t.sent != null) {
+			Vec3 sent = t.sent.scale(20);
+			v = new Vec3(ally.horizontalCollision ? moved.x : sent.x, ally.verticalCollision ? moved.y : sent.y,
+				ally.horizontalCollision ? moved.z : sent.z);
+			// a hit since the last tick shows as a speed that isn't what Minecraft made of the one we gave it
+			if (!ally.horizontalCollision && !ally.verticalCollision) {
+				Vec3 expected = new Vec3(t.sent.x * MC_AIR_DRAG, (t.sent.y - ally.getGravity()) * MC_FALL_DRAG, t.sent.z * MC_AIR_DRAG);
+				Vec3 hit = now.subtract(expected);
+				if (hit.lengthSqr() > HIT_SEEN * HIT_SEEN && !ally.onGround()) {
+					v = v.add(hit.scale(20));
+				}
+			}
+		}
+		for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
+			v = LifelineRope.free(v, dt);
+			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+		}
+		if (ally.onGround() && v.y <= 0) {
+			// the rope isn't lifting them: on the ground, pressed to it as Minecraft keeps a walker (with no gravity here the pull's little
+			// upward share hopped them every other tick, found in a trace)
+			v = new Vec3(v.x, -PRESS_DOWN, v.z);
+		}
+		t.sent = v.scale(0.05);
+		ally.setDeltaMovement(t.sent);
+		ally.needsSync = true;
 	}
 
 	private static void startLifeline(ServerPlayer player, HeroState s, LivingEntity ally) {
@@ -485,10 +582,18 @@ public final class JetpackCat implements HeroKit {
 			return;
 		}
 		Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+		// and whoever was on it, wherever they are: effects only go 96 m round her, and if she's blinked past that their client went
+		// on pulling them to her, let go by the server (found on a bot's rope)
+		if (player.level().getEntity(s.lifelineTarget) instanceof ServerPlayer towed) {
+			Effects.send(towed, "tether_end", player.position(), null, player.getId(), player);
+		}
+		int target = s.lifelineTarget;
+		TOWING.keySet().removeIf(a -> a.getId() == target);
 		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
 		if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
-			LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
-			LOCKED_OUT.put(ally, player.level().getGameTime() + Ow.ticks(LIFELINE_LOCKOUT));
+			// (the server's own count: /time set moved the world's clock under these, found locking a player out for good)
+			LET_GO.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LET_GO_GRACE));
+			LOCKED_OUT.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LIFELINE_LOCKOUT));
 		}
 		s.lifelineTarget = null;
 	}

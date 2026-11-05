@@ -134,6 +134,8 @@ public final class OwMovement {
 	/** Guardian Angel's move: to this point at this speed (m/s), arriving within this distance. */
 	public record Glide(Vec3 to, double speed, double arrive) {
 	}
+	/** Set by the client: a Lifeline's rope is pulling this entity (ClientTow). */
+	public static Predicate<LivingEntity> roped = entity -> false;
 	/** Set by the client: the crouch key is down (flying, it sinks her). */
 	public static Predicate<LivingEntity> crouchHeld = entity -> false;
 
@@ -571,7 +573,8 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off); gliding,
 		// she's always in the air (no friction, her glide's mover)
-		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0;
+		// on a stretched Lifeline there's no friction: dragged along the ground they'd lag 4 m further back (M, the rope's)
+		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0 && !roped.test(entity);
 		Mover mover = gliding >= 0 ? GLIDE : OwMovement.mover.apply(entity);
 		// Lúcio's floor follows his run speed (5.5, 6.875 on Speed Boost, more amped, less slowed); everyone else's is
 		// scaled under a slow

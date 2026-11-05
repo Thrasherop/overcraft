@@ -55,6 +55,12 @@ public final class DevServer {
 	private static int traceTick;
 	private static double traceX, traceZ;
 
+	/** Lifeline's tow since "towtrace start" (dev only, #89): one line per server tick. */
+	private static final java.util.List<String> TOW = new java.util.ArrayList<>();
+	private static boolean towTracing;
+	private static boolean towHooked;
+	private static int towTick;
+
 	/** Sounds heard since the last "heard" command (dev only). */
 	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
 	private static boolean listening;
@@ -716,6 +722,69 @@ public final class DevServer {
 					synchronized (TRACE) {
 						out.addProperty("trace", String.join("\n", TRACE));
 						TRACE.clear();
+					}
+				}
+			}
+			case "devtow" -> {
+				// dev only (#89): "devtow <entity type>" hangs the local player on a rope to the nearest of that type (JetpackCatFx.devTow);
+				// "devtow off". The player's own side of a tow, for want of a second client
+				net.minecraft.world.entity.Entity anchor = null;
+				if (!arg.equals("off")) {
+					double best = Double.MAX_VALUE;
+					for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+						if (e != player && net.minecraft.world.entity.EntityType.getKey(e.getType()).getPath().equals(arg) && e.distanceToSqr(player) < best) {
+							best = e.distanceToSqr(player);
+							anchor = e;
+						}
+					}
+				}
+				dev.overcraft.client.effect.JetpackCatFx.devTow(player, anchor == null ? -1 : anchor.getId());
+				out.addProperty("anchor", anchor == null ? -1 : anchor.getId());
+			}
+			case "towframes" -> {
+				// dev only (#89): "towframes start", then "towframes": each rendered frame, as drawn: time (s), her x y z, the towed one's x y z
+				if (arg.equals("start")) {
+					dev.overcraft.client.effect.JetpackCatFx.devFrames(true);
+					out.addProperty("ok", true);
+				} else {
+					out.addProperty("trace", dev.overcraft.client.effect.JetpackCatFx.devFrames(false));
+				}
+			}
+			case "towtrace" -> {
+				// dev only (#89): "towtrace start", then "towtrace": per server tick, the Jetpack Cat and whoever her Lifeline tows:
+				// tick, her x y z, their x y z, their on-ground (m). The server's view, so it reads a mob or a player the same
+				if (!towHooked) {
+					towHooked = true;
+					net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server -> {
+						if (!towTracing) {
+							return;
+						}
+						for (net.minecraft.server.level.ServerPlayer cat : server.getPlayerList().getPlayers()) {
+							dev.overcraft.hero.HeroState s = dev.overcraft.hero.HeroManager.state(cat);
+							if (s == null || s.hero != dev.overcraft.hero.Hero.JETPACK_CAT) {
+								continue;
+							}
+							net.minecraft.world.entity.Entity a = s.lifelineTarget == null ? null : cat.level().getEntity(s.lifelineTarget);
+							synchronized (TOW) {
+								TOW.add(a == null ? String.format(java.util.Locale.ROOT, "%d %.3f %.3f %.3f - - - -", towTick++, cat.getX(), cat.getY(), cat.getZ())
+									: String.format(java.util.Locale.ROOT, "%d %.3f %.3f %.3f %.3f %.3f %.3f %s", towTick++, cat.getX(), cat.getY(), cat.getZ(),
+										a.getX(), a.getY(), a.getZ(), a.onGround() ? "G" : "-"));
+							}
+						}
+					});
+				}
+				if (arg.equals("start")) {
+					synchronized (TOW) {
+						TOW.clear();
+					}
+					towTick = 0;
+					towTracing = true;
+					out.addProperty("ok", true);
+				} else {
+					towTracing = false;
+					synchronized (TOW) {
+						out.addProperty("trace", String.join("\n", TOW));
+						TOW.clear();
 					}
 				}
 			}

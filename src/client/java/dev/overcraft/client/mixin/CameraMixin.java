@@ -98,6 +98,13 @@ public abstract class CameraMixin {
 			lift = Math.max(0, roof.getLocation().distanceTo(eye) - 0.2);
 		}
 		Vec3 from = eye.add(up.scale(lift));
+		float right = AbilityCamera.side();
+		if (right != 0) {
+			// to her side, cut short by a wall
+			Vec3 toSide = new Vec3(camera.leftVector()).scale(-right);
+			HitResult wall = entity.level().clip(new ClipContext(from, from.add(toSide), ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, entity));
+			from = wall.getType() == HitResult.Type.MISS ? from.add(toSide) : from.add(wall.getLocation().subtract(from).scale(0.8));
+		}
 		setPosition(from.x, from.y, from.z);
 		move(-getMaxZoom(distance), 0, 0);
 		HitResult seen = entity.level().clip(new ClipContext(eye, eye.add(look.scale(AbilityCamera.AIM_REACH)),
