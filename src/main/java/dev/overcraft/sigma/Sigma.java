@@ -144,4 +144,10 @@ public final class Sigma implements HeroKit {
 			Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0, mode, KineticGrasp.active(s) ? s.sigmaGrasp / 20f : 0,
 			(float) (s.barrierHealth / BARRIER_HEALTH));
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): his barrier, Kinetic Grasp, Accretion's gather and Gravitic Flux end. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		clear(player, s);
+	}
 }

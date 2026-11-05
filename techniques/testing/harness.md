@@ -174,3 +174,7 @@
   world credited the hero whose blow had landed in the last 5 s (a stray feed line and ELIMINATED), and with
   `send_command_feedback` off a `/summon` with bad NBT fails without a word. Turn feedback on while setting up. See
   [kill_feed](../hud/kill_feed.md).
+- **A command run by a dead player still answers oddly** (2026-11-04): a hero who fell (a `/tp` onto a platform not filled yet) stayed on the death screen while a script went on: `/fill` said "That position is not loaded", `/tp` "worked", and `Received attachment change for unknown target` filled the log. Read `health` between steps, fill before you `/tp`, and leave the world if it happens.
+- **Leaving a world takes more than 6 s to free its lock** with a busy client: `openworld` right after failed ("locked a portion of the file") and left the old state showing. Wait 12 s and check `screen`.
+- **`heard` matches:** the bed sound is `ana.sleep ->`; `ana.sleep.cast` is only the shot. A dart that missed still "sounds" right if you search "sleep".
+- **`git stash` is one stack for every worktree** (2026-11-04): another agent pushed theirs over mine during a build, and my `stash pop` tried to apply theirs (conflicts; pop keeps the entry on a conflict, so nothing was lost). Don't stash in a worktree: copy the files aside, and if you must, name the entry by its message, never pop the top blind.

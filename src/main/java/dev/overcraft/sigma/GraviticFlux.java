@@ -252,29 +252,27 @@ public final class GraviticFlux {
 
 	// ---- the lifted (1DBC on each target) ----
 
-	/** One lifted creature: by whom, toward where, ticks since its lift, whether slammed yet and when, its AI before. */
+	/** One lifted creature: by whom, toward where, ticks since its lift, whether slammed yet and when. */
 	private static final class Lifted {
 		final LivingEntity entity;
 		final ServerPlayer owner;
 		final Vec3 centre;
 		int ticks;
 		int slamAt = -1;
-		final boolean hadNoAi;
 		/**
 		 * A lifted player's speed, kept here: the server's copy of a player's speed is their client's to set (each movement
 		 * packet on the ground zeroes its fall), so read back it never built up (vy 0.00 on her client, found playing).
 		 */
 		Vec3 speed = Vec3.ZERO;
 
-		Lifted(LivingEntity entity, ServerPlayer owner, Vec3 centre, boolean hadNoAi) {
+		Lifted(LivingEntity entity, ServerPlayer owner, Vec3 centre) {
 			this.entity = entity;
 			this.owner = owner;
 			this.centre = centre;
-			this.hadNoAi = hadNoAi;
 		}
 	}
 
-	private static final Map<UUID, Lifted> LIFTED = new HashMap<>();
+	private static final Map<UUID, Lifted> LIFTED = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/** Its kill-feed blow (kill_feed.md's table: the ult, its icon), the lift's and the slam's. */
 	private static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ult("gravitic_flux").by(dev.overcraft.hero.Hero.SIGMA);
@@ -284,10 +282,15 @@ public final class GraviticFlux {
 		return LIFTED.containsKey(entity.getUUID());
 	}
 
+	/** This very mob is lifted now: its AI held off (Sleep.aiHeld, never its saved NoAI flag: #97). */
+	public static boolean holds(Mob mob) {
+		Lifted l = LIFTED.get(mob.getUUID());
+		return l != null && l.entity == mob;
+	}
+
 	private static void lift(ServerPlayer owner, LivingEntity e, Vec3 at) {
 		ServerLevel level = owner.level();
-		boolean hadNoAi = e instanceof Mob mob && Sleep.hadNoAi(mob);
-		Lifted lifted = new Lifted(e, owner, at, hadNoAi);
+		Lifted lifted = new Lifted(e, owner, at);
 		LIFTED.put(e.getUUID(), lifted);
 		Vec3 before = e.getDeltaMovement();
 		DamageSource source = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(LIFT_TYPE), owner);
@@ -306,7 +309,7 @@ public final class GraviticFlux {
 		Combat.pushed(e, owner, BLOW);
 		Accretion.sendSpeed(e);
 		if (e instanceof Mob mob) {
-			mob.setNoAi(true);
+			// its AI held off while lifted (holds)
 			mob.setTarget(null);
 		}
 		if (e instanceof ServerPlayer p) {
@@ -396,8 +399,7 @@ public final class GraviticFlux {
 			e.setDeltaMovement(hx, vy, hz);
 			l.speed = e.getDeltaMovement();
 			if (e instanceof Mob mob) {
-				// its AI is off, and with it Minecraft's movement: moved here
-				mob.setNoAi(true);
+				// its AI is held off, and with it Minecraft's movement: moved here
 				if (!(e instanceof EnderDragon)) {
 					mob.move(MoverType.SELF, e.getDeltaMovement());
 				}
@@ -443,9 +445,6 @@ public final class GraviticFlux {
 		LIFTED.remove(l.entity.getUUID());
 		LivingEntity e = l.entity;
 		Combat.buff(e, Attributes.MOVEMENT_SPEED, HEAVY_SLOW, 0, 0);
-		if (e instanceof Mob mob && !Sleep.asleep(mob)) {
-			mob.setNoAi(l.hadNoAi);
-		}
 		if (e instanceof ServerPlayer p && !Sleep.asleep(p)) {
 			p.removeAttached(HeroManager.ASLEEP);
 		}

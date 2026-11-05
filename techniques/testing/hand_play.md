@@ -294,3 +294,42 @@ seated switched modes; Ctrl (crouch) got out in hero mode, Shift in Minecraft mo
 Not tried: a second client; the Nether; a tamed wolf (the villager was every ally); perks; emotes; a real 10 fps run (the
 window stayed at 30-75 fps); Improved Transparency with every effect; the view from under the pool (the teleport put the
 camera in the bank).
+
+## Leaving play: one hook, four doors (#100, 2026-11-04; second pass after [critique_systems](critique_systems.md))
+- **The hook:** every hero leaves play in one place: `HeroManager.outOfPlay(player, state, why)` (G, death, a hero switch, leaving), which calls `HeroKit.leavePlay` before anything resets the state, then shares the flight permission and the synced looks. A new kit's
+  states end there. Each kit's tick still ends what it does while `controls` is false (asleep, spectator): no substitute, since a dead hero's tick doesn't run, and a switch or a leave never reaches one.
+- **The rule, ours and open for the owner (critique M3):** G ends whatever is running, for every hero, nothing resumes on G back, and charge already spent stays spent. So Overclock, Valkyrie and Kitsune Rush end on G; EMP, Orbital Ray and Tree casts are cancelled. An ability whose effect has gone out
+  still costs its cooldown (Purr, a thrown ring, the whip). What has landed in the world (a ray, a tree, a platform) goes on through G and death, and goes on a switch or a leave. Through a death Kitsune Rush runs on (ours: the wiki doesn't say). G is one key from WASD and can cost a full ult: the owner should decide.
+- **Saved modifiers are the trap:** `addOrReplacePermanentModifier` writes the speed into the player's save. Lifeline, Rally, Inspiring Strike, the Hyper Ring and overhealth's cap used it; all are transient now (only the hero's own health is saved), and joining takes off any stale `overcraft:` modifier an older build saved. Mobs aren't swept: an ally saved mid-buff under an older build keeps it.
+- **Reproduced before the fix (keys through DevServer):** Sombra's stealth after G: see-through and 6.91 m/s (Minecraft's walk is 4.32) until its 7 s ran out. Lúcio after G: +25%, still renewed 3.5 s on. Jetpack Cat to Mercy with Lifeline on: +30% for good (5.61 m/s, a save carrying it). Kiriko's Swift Step cast, G inside its 0.2 s: she landed by her ally. Second pass (`sys_rep_old.txt`, build c5dcff9): Sombra's EMP pulsed on G back; a Tree
+  sprouted at its old spot on G back; Juno's ray landed on G back; Kitsune Rush kept 0.13 (5.59 m/s) after G; Overclock's `sojourn.ult.loop` played on after G; Valkyrie resumed on G back (`mayfly` 1b); the whip thrown as G landed hit a zombie 5.6 health and threw it 5.7 m.
+- **The critique was partly wrong the first time round:** Lifeline and the carry already ended on G and death (`JetpackCat.keepFlight`) and on a switch, except to Mercy, whom its guard skips. Read the running path, and reproduce.
+- **Played after, same steps** (`speed` = `/attribute` value, base 0.1):
+  - Sombra: G 0.1, walk 4.31, solid (`sys100_sombra_G`); switch, death, leave 0.1. EMP + G: no pulse on G back.
+  - Lúcio: G: no song speed after its linger; a hurt villager gets no healing (hero mode +1.9 in 1 s, Minecraft mode 0 in 2 s). Amp It Up + G: cooldown 11.45 s.
+  - Kiriko: G in the cast: stayed, 3 of 3; without G she lands. Rush + G: 0.1, walk 4.30.
+  - Jetpack Cat: Lifeline on G, death, to Mercy, leave: 0.1, rope off; carry on G, death: phase 0. Purr + G: cooldown 11.5 s.
+  - Ana: scoped 0.035, G 0.1 with the button held. Brigitte: Rally (0.115, 28 max) G, switch, leave, death: 0.1, 20 max; barrier 0.07, G 0.1; whip + G: zombie untouched, cooldown 2.4 s; flail + G: untouched.
+  - Juno: glide G: ended, 5.25 s cooldown; ring thrown + G: cooldown 13.5 s; Q then G: nothing lands on G back, ult stays spent. Sojourn: slide G ended; Overclock + G: `sojourn.ult.end`, no loop. Sigma: Grasp G: cooldown starts; gather G: 0.1; Flux G: down unhurt.
+  - Mercy: Resurrect cast G: 0.1, villager not back, cooldown runs; Valkyrie G, switch, leave: `mayfly` off; G back: idle. Lifeweaver: Tree cast + G: no tree on G back; platform stays on G, gone on a switch and a leave, and at the respawn after a death (`PetalPlatformEntity` ends it when its owner is removed: a player waiting on the death screen keeps it up).
+  - A planted stale modifier (0.13): 0.1 on rejoin, hero health intact.
+- **How it was played, honestly (critique M7):** "keys" here are `KeyMapping.set` through DevServer in the client, not the mouse and keyboard (desktop control was denied); aims are `look`. Hero deaths in these lists are `/kill @s`, except in the fight below. Kills on resurrected mobs are `/damage ... by @s`. `overcraft reset` and `giveult` refill. Good for measuring; not what CLAUDE.md calls playing as a player: the owner's hands haven't been on this.
+- **What a critic should check:** a second player (one client only: the machine crashed under memory): the towed ally's rope ending, a watcher seeing Sombra appear, Valkyrie's and Overclock's looks on another client. Falls: G in mid-air (Valkyrie, Flux, Jetpack) is Minecraft mode, so the fall hurts as Minecraft's. Sigma's `grasp_hold` plays out up to 2.2 s after G in third person (the data has no end clip; the same on any early end). Sombra's beacon stays through a death: Overwatch's rule not checked. Another Kiriko's Rush or Lúcio's song on an ally in Minecraft mode still applies: effects on others. Spectator goes through tick branches only.
+
+## A fight after #93 (2026-11-04)
+The change alters every fight: mobs no longer stagger. So: normal terrain at midnight, spawned 12-16 m round the hero: 3 zombies, 2 skeletons, 1 creeper, all with AI, two rounds each. A script aims at the nearest mob and holds fire (`look`, DevServer keys: not a player; no abilities, no strafing, so this is a floor). Numbers below, `sys_fight_<build>.txt` in the session's scratchpad.
+
+| Two rounds each | pre-#93 (9f1c001): cleared, deaths, lowest health | now: cleared, deaths, lowest health |
+|---|---|---|
+| Kiriko (20) | 0 of 2, 0, 20 (never reached: mobs left 2) | 1 of 2 (13.7 s), 1, 0 |
+| Sombra (18) | 0 of 2, 1, 0 | 0 of 2, 2, 0 |
+| Brigitte (20) | 1 of 2 (20.6 s), 0, 2.2 | 0 of 2, 0, 6.5 |
+| Juno (18) | 0 of 2, 1, 0 | 1 of 2 (31.6 s), 1, 0 |
+| Sigma (48) | 0 of 2, 0, 28.5 | 0 of 2, 1, 0 |
+| **All ten rounds** | **1 cleared, 2 deaths** | **2 cleared, 5 deaths** |
+
+- **Read it as a direction, not a measurement:** ten rounds, different terrain each build (three pre-#93 rounds had mobs that never reached the hero at all, 6 left and no hit taken), and the script doesn't strafe, retreat or use an ability.
+- **What it shows:** first bites land at about the same time (2-5 s), but after #93 they keep coming: zombies aren't thrown back between hits, and the rounds with most hits are all after it (Brigitte: 14+ hits in 15 s; before, 5-7). Shots no longer miss a mob they threw aside, so clears are quicker where the hero lives (Kiriko 13.7 s).
+- **The creeper is what kills:** a hit of 12-17 Minecraft health on the small heroes and 18.8-28.7 on Sigma (Minecraft's blast; a full-health 250 HP hero is 20), and nothing keeps it off now. Most deaths have one such hit in them. Before #93 a kunai pushed it 2 m each.
+
+Open for the owner: whether melee mobs reaching heroes sooner is right. Overwatch's rule says yes (no stagger); Minecraft's mobs weren't built for it.

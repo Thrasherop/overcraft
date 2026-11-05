@@ -140,3 +140,58 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - Played: an enderman at 8 m took Sombra's pistol (40 -> 27.5), Ana's scoped shot (-> 34) and the Charged Shot
   (-> 25.6) in place; Juno's Mediblaster, the control, sent it 26 m away untouched.
 
+
+## Hero hits don't push (#93, 2026-11-03; second pass after [critique_systems](../testing/critique_systems.md), 2026-11-04)
+- **The cause:** every hero hit went through `LivingEntity.hurtServer`, which adds `dealDefaultKnockback` (0.4 and a hop on the ground) unless the damage type is in
+  `minecraft:no_knockback`. A hit with no position (`overcraft:hitscan` with no direct entity) has `xd = zd = 0`, and `LivingEntity.knockback` then picks a **random** direction. Heroes use Minecraft's
+  own types (`thrown`, `player_attack`), so tagging types couldn't fix it without changing vanilla skeletons' arrows. (The flail wasn't in it: `magic` is in `no_knockback`, measured 0.000 m before the
+  fix too. The critique's "flail" was a reading.)
+- **The rule (data):** the wiki's Status effect page, Knockback, lists what knocks enemies back; for our heroes Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr and Catnapper, Lúcio's Soundwave, Sigma's
+  Hyperspheres, Accretion and Hyper Strike, plus quick melee's "very small knockback". Its Headbutt was removed (BZ 2026-08-11, `tools/reference/jetpack_cat.md`). Lúcio's Sonic rounds aren't on it, but BZ 2024-07-12 says
+  the knockback exists: their existence is sourced, their 0.6 m/s is ours. So: **a hit dealt through `Combat.damage` takes no Minecraft knockback and no Minecraft impact** (`Combat.heroHit`, asked by two
+  `@WrapWithCondition`s in `LivingEntityMixin`). A hit player's view still tilts toward the shooter (`indicateDamage`). Minecraft's own hits (a sword in Minecraft mode, a zombie) are untouched.
+- **One way to push (the second pass):** `Combat.push` (on top of what it's doing) and `Combat.launch` (replacing it). Both scale by `Combat.pushShare` (knockback resistance, a Stalwart's, Flux's, Valkyrie's, Glide Boost's, Jetpack
+  Cat's: they read differently per ability before, so a resistant mob was thrown by Whip Shot), do nothing while phased, send it (`Combat.send`) and remember it for the kill credit (`Combat.pushed`). **A new ability that pushes uses these.**
+  Whip Shot holds its own speed, and quick melee goes through Minecraft's `knockback`: each calls `send` and `pushed` itself.
+- **Kill credit** (found by the critique, reproduced): `Combat.deal` credited a push by seeing the hurt move the target, which only Minecraft's knockback ever did. So after the first pass quick melee, Hypersphere pulls and the rock's splash
+  lost it. Reproduced: a zombie quick-meleed off a 25 m ledge died with no feed row, no ELIMINATED, no line (`sys_rep_ledge1`). After: feed row and ELIMINATED (same picture, new build). The rock's burst off the ledge: eliminated, his elimination line. Whip Shot: the same.
+- **Pushes on a player are UNVERIFIED** until the two-client pass. `Combat.send` uses what Sigma's two-client play found: `ClientboundSetEntityMotionPacket` to the player at once, `syncVelocity` cleared (the tracker's goes a tick later, after their next movement
+  packet reset the server's copy). `motion` starts from `getKnownMovement`, so Sonic rounds shouldn't bring back the #82 jolt, and Whip Shot sends a player its push once (each tick's send would overwrite their vertical speed with a stale one). All that is
+  from the code. Not one push has been seen on a second player's screen since the first pass.
+- **Measured** (a 200-health zombie with AI and `movement_speed` 0, `Pos` read through `/data`, three hits each; keys through DevServer):
+
+| | pre-#93 (9f1c001) | now |
+|---|---|---|
+| Kunai | 1.99 m each | 0.000 m |
+| Sombra's pistol | 3.4 m sideways with a hop in 0.1 s, then missing | 0.000 m over 1 s |
+| Flail | 0.000 m | 0.000 m |
+| Quick melee | 1.74 m (Minecraft's 0.4 and its own 0.15) | 0.50 m |
+| Soundwave, Whip Shot, Purr | not measured | 3.91, 7.75, 3.41 m |
+| Whip Shot, Purr at knockback resistance 1.0 | (2.34 m on a ravager, which walks: not a clean number) | 0.00 m, 0.00 m |
+
+- **What a critic should check:** the two-client pass above; the Hypersphere pull: its burst on a wall 2.8 m past a ledge didn't take the zombie off it, so its credit is by code, not seen. A fight after this: see [hand_play](../testing/hand_play.md#a-fight-after-93-2026-11-04).
+
+## Holding a mob still without its saved NoAI flag (#97, 2026-11-04)
+- **The cause:** Sleep, stuns, knockdowns and Gravitic Flux called `Mob.setNoAi(true)` and put it back from a map in memory.
+  `NoAI` is saved with the mob (`Mob.addAdditionalSaveData`), so a mob unloaded or saved mid-sleep (Save and Quit, its chunk
+  left behind, a server stop, even an autosave followed by a crash) stayed a statue for good: `wake` ran on the removed object,
+  after its save. Reproduced: dart a zombie, Save and Leave, rejoin: `NoAI: 1b`, 10 s after its sleep should have ended.
+- **The fix:** the flag isn't touched. `MobMixin` answers `Mob.isNoAi` with `Sleep.aiHeld` (the very object put to sleep, by
+  identity: the same mob loaded again is a new object, so it's awake; the client's copy shares the UUID and, in single player, the
+  JVM, so the mixin is also server-side only). `isNoAi` rather than `isEffectiveAi` because a dozen mobs read it directly: the
+  dragon's flight (`EnderDragon.aiStep`), the warden, shulkers, conversions in progress.
+- **Three places read `isNoAi` to save or copy it**, and read the mob's own flag now (`Sleep.ownAi`): its save (`MobMixin`),
+  a bucket (`BucketableMixin`, an interface mixin with `@WrapMethod`: the read is in a lambda inside the static method) and a
+  conversion (`ConversionTypeMixin`). Grep `isNoAi()` in the sources when Minecraft updates: a new reader that copies it leaks the hold.
+- **Played** (fresh world, a zombie with AI): asleep it stands (0.000 m in 2 s) and walks after its time (3.27 m), `NoAI` absent
+  throughout. Save and Leave mid-sleep, rejoin: absent, it walks (4.45 m in 2.5 s; one rejoin it had killed Ana on the select
+  screen, which is awake enough). Accretion's knockdown slid it and let it go. Gravitic Flux: Save and Leave at y -58.24 mid-lift,
+  rejoin: absent, on the ground, walks 6.18 m. A mob NoAI of its own stays `1b` through a sleep. A slept pig struck by lightning: its
+  zombified piglin has none. A slept axolotl caught in a bucket: `bucket_entity_data` has none. (Asleep confirmed by its bed
+  sound in `heard`: `ana.sleep ->`, not `ana.sleep.cast`, which is only the shot.)
+- **Threads (the critique's S1):** `Mob.addAdditionalSaveData` also runs on worldgen threads (`ProtoChunk.addEntity` saves a placed mob), so a plain counter for "read the own flag" could stick and stop every hold until a restart. It's a `ThreadLocal`, and the
+  maps it reads are concurrent. Played on normal terrain (`sysN`): 8 places, 400 m apart in new chunks, a zombie slept at each while the world generated: asleep (bed sound), moved 0.000 m in 2 s, `NoAI` absent, every time. That shows the hold keeps working while exploring; the race itself can't be shown, its removal is by construction.
+- **What a critic should check:** a world saved by an older build keeps its statues: nothing tells a leaked `NoAI` from a
+  map maker's (`/data merge entity <mob> {NoAI:0b}` frees one). A sleep doesn't survive a reload by design: it just ends. Stun on a
+  mob through Rally's bash shares this path and wasn't played on its own. Autosave mid-sleep followed by a crash: same save
+  path, not played. A dedicated server: same code, not played.

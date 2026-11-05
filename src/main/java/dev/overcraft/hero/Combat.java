@@ -68,7 +68,7 @@ public final class Combat {
 	/**
 	 * A hitscan shot's damage from a hero (Ana's rifle, Sombra's pistol, Sojourn's Charged Shot): overcraft:hitscan, not a
 	 * projectile, so endermen take it instead of teleporting away (the owner's balance call, #92); otherwise as the arrow
-	 * type they used (knockback, armor). No direct entity, so the kill feed doesn't take it for melee.
+	 * type they used (armor; no knockback, as no hero hit has: heroHit). No direct entity, so the kill feed doesn't take it for melee.
 	 */
 	public static DamageSource hitscan(net.minecraft.server.level.ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
@@ -79,8 +79,8 @@ public final class Combat {
 	/**
 	 * Deals a hero's damage, saying what dealt it ({@code blow}: the weapon, melee, an ability, a perk, the ult, whether
 	 * it was critical, and the hero who dealt it, filled from the attacker's hero when not given). A death it causes is
-	 * told by it (KillFeed, which also calls Voice: they run inside the hurt). A hit that lands and moves its target is
-	 * remembered a while (pushed), so a fall or the void it sends them into still credits the hero (#84).
+	 * told by it (KillFeed, which also calls Voice: they run inside the hurt). The hit itself moves no one (heroHit): what
+	 * pushes does so through push or launch, which remember it for the kill credit (#84).
 	 */
 	public static float damage(LivingEntity target, DamageSource source, double owDamage, Blow blow) {
 		return deal(target, target, source, blow, () -> target.hurt(source, Ow.hp(owDamage)));
@@ -98,17 +98,12 @@ public final class Combat {
 	private static float deal(LivingEntity target, Entity hit, DamageSource source, Blow blow, Runnable hurt) {
 		blow = withHero(blow, source.getEntity());
 		float before = target.getHealth() + target.getAbsorptionAmount();
-		net.minecraft.world.phys.Vec3 moving = target.getDeltaMovement();
 		dealingWhile(source.getEntity(), target, blow, () -> {
 			target.damageCooldownTime = 0;
 			hurt.run();
 			target.damageCooldownTime = 0;
 		});
 		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
-		// a hit that did nothing (a barrier took it all, it was cancelled, the target can't be hurt) is no one's push
-		if (dealt > 0 && target.isAlive() && !target.getDeltaMovement().equals(moving)) {
-			pushed(target, source.getEntity(), blow);
-		}
 		return Math.max(0, Ow.toOw(dealt));
 	}
 
@@ -137,6 +132,89 @@ public final class Combat {
 		}
 	}
 
+	/**
+	 * Whether the hurt running on {@code victim} with {@code source} is a hero's hit (dealt through Combat.damage, #93).
+	 * Overwatch hits don't push: weapon fire and most abilities have no knockback at all (the wiki's Status effect page,
+	 * Knockback, rev 408792, lists the few that do: for our heroes Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr
+	 * and Catnapper, Lúcio's Soundwave, Sigma's Hyperspheres, Accretion and Hyper Strike, and quick melee's "very small"
+	 * one), and those push the target themselves after the hit. So a hero's hit takes none of Minecraft's default knockback
+	 * (0.4 and a hop, in a random direction when the hit has no position: hitscan, the flail) and no impact either (a hurt
+	 * player is sent the server's stale copy of their motion, a jolt: minecraft_26.md #82); an ability that pushes does it
+	 * through push or launch. LivingEntityMixin asks this inside LivingEntity.hurtServer.
+	 */
+	public static boolean heroHit(LivingEntity victim, DamageSource source) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == source.getEntity();
+	}
+
+	/**
+	 * What share of a push {@code target} takes from its state (M6): a Stalwart's (Tank), Sigma's in Flux, Mercy in Valkyrie and
+	 * just after a launch, Juno gliding, Jetpack Cat flying (the wiki's table of who takes less: Status effect, Knockback). Not
+	 * its knockback resistance, which Minecraft's own knockback applies itself.
+	 */
+	public static double knockbackTaken(@org.jspecify.annotations.Nullable Entity target) {
+		double state = 1;
+		if (target instanceof Player player && HeroManager.controls(player) && HeroManager.state(player) instanceof HeroState s) {
+			if (s.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.flying(s)) {
+				// half in Valkyrie (W; her data's 0A04B51B -0.5), a fifth of that just after a launch (006E #477: 0A04B51B x0.2)
+				state = dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK
+					* (s.gaPhase == dev.overcraft.mercy.Mercy.GA_LAUNCHED ? dev.overcraft.mercy.MercyStats.GA_LAUNCH_KNOCKBACK_VALKYRIE : 1);
+			} else if (dev.overcraft.juno.Juno.gliding(s)) {
+				// half in Glide Boost (her data's 0A04B51B = 1DF3 -0.5, 47B7 #774)
+				state = dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
+			} else if (s.hero == Hero.JETPACK_CAT) {
+				state = dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN;
+			}
+		}
+		return state * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
+	}
+
+	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
+	public static double pushShare(LivingEntity target) {
+		return knockbackTaken(target) * Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+	}
+
+	/** What it is moving at now: a player's client moves them, so the speed it reports (the server's copy is stale). */
+	public static net.minecraft.world.phys.Vec3 motion(LivingEntity target) {
+		return target instanceof ServerPlayer player ? player.getKnownMovement() : target.getDeltaMovement();
+	}
+
+	/**
+	 * A hero's push on top of what {@code target} is doing: the one way an ability knocks something back (#93). Scaled by
+	 * pushShare, none while it is phased (Protection Suzu, Life Grip), sent to its own client when it is a player, and remembered
+	 * for the kill credit.
+	 */
+	public static void push(LivingEntity target, net.minecraft.world.phys.Vec3 impulse, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (!isPhased(target)) {
+			target.setDeltaMovement(motion(target).add(impulse.scale(pushShare(target))));
+			send(target);
+			pushed(target, attacker, blow);
+		}
+	}
+
+	/** The same, replacing what it was doing: it leaves at {@code velocity} (Soundwave). */
+	public static void launch(LivingEntity target, net.minecraft.world.phys.Vec3 velocity, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (!isPhased(target)) {
+			target.setDeltaMovement(velocity.scale(pushShare(target)));
+			send(target);
+			pushed(target, attacker, blow);
+		}
+	}
+
+	/**
+	 * Sends a speed just set on {@code target}: to the others watching (needsSync), and at once to its own client when it is a
+	 * player, who moves on it. The tracker's syncVelocity isn't enough: played with two clients, it goes a tick later, after
+	 * their next movement packet has reset the server's copy (Accretion's first version: the rock's knockback reached a player as
+	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this.
+	 */
+	public static void send(LivingEntity target) {
+		target.needsSync = true;
+		if (target instanceof ServerPlayer player) {
+			player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
+			player.syncVelocity = false;
+		}
+	}
+
 	/** The blow being dealt to {@code victim} by {@code attacker} right now, or null. Package-private for BlowTest. */
 	static @org.jspecify.annotations.Nullable Blow dealtTo(Object victim, @org.jspecify.annotations.Nullable Object attacker) {
 		Dealt d = dealing;
@@ -159,9 +237,8 @@ public final class Combat {
 	public static final int CREDIT_TICKS = 100;
 
 	/**
-	 * A hero's blow moved {@code target} (its knockback inside the hurt, seen by Combat.damage, or an ability's own push
-	 * after it: Soundwave, Purr, Catnapper, Shield Bash, Whip Shot, Rally's shockwave): if the world kills it within
-	 * CREDIT_TICKS, the kill is that hero's, with that blow.
+	 * A hero's blow moved {@code target} (push and launch call this; Flux, Whip Shot, quick melee and Accretion's rock call it
+	 * for their own moves): if the world kills it within CREDIT_TICKS, the kill is that hero's, with that blow.
 	 */
 	public static void pushed(LivingEntity target, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
 		if (attacker instanceof Player hero && hero != target) {
@@ -284,6 +361,11 @@ public final class Combat {
 		}
 		Long until = phasedUntil.get(target.getUUID());
 		return until != null && now(target) < until;
+	}
+
+	/** Out of a Kitsune Rush at once (hers, when she leaves play: #100); the tick takes its buffs off. */
+	public static void endRush(LivingEntity target) {
+		rushedUntil.remove(target.getUUID());
 	}
 
 	/** Kitsune Rush: in (or just out of) a corridor until {@code until}. */
@@ -468,7 +550,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds), now(entity)));
@@ -489,7 +571,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		long holdUntil = now(entity) + Ow.ticks(hold);

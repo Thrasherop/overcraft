@@ -102,6 +102,7 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Souls.init();
 		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
@@ -209,13 +210,11 @@ public class Overcraft implements ModInitializer {
 		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
-		// Brigitte's barrier goes down as she dies: it stood on over her body, and she came back in its stance (#88)
+		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
+		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof ServerPlayer player) {
-				dev.overcraft.hero.HeroState state = HeroManager.state(player);
-				if (state != null && state.hero == dev.overcraft.hero.Hero.BRIGITTE) {
-					dev.overcraft.brigitte.Barrier.clear(player, state);
-				}
+				HeroManager.onDeath(player);
 			}
 		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
@@ -249,6 +248,7 @@ public class Overcraft implements ModInitializer {
 			HeroManager.clear();
 			Combat.clear();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
+			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();

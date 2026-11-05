@@ -124,7 +124,7 @@ public final class Accretion {
 		Vec3 along = new Vec3(flight.x, 0, flight.z);
 		along = along.lengthSqr() < 1.0E-8 ? Vec3.ZERO : along.normalize();
 		if (target != null && Allies.canHurt(owner, target)) {
-			Vec3 before = target.getDeltaMovement();
+			Vec3 before = Combat.motion(target);
 			DamageSource hit = level.damageSources().thrown(rock, owner);
 			float dealt = part != null ? Combat.damagePart(level, part, hit, ROCK_IMPACT, BLOW)
 				: Combat.damage(target, hit, ROCK_IMPACT, BLOW);
@@ -164,23 +164,19 @@ public final class Accretion {
 			if (d > ROCK_BURST_RADIUS || !inSight(level, at, e) || Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
 				continue;
 			}
-			Vec3 before = e.getDeltaMovement();
 			float dealt = Combat.damage(e, source, burstDamage(d), BLOW);
 			Combat.credit(owner, dealt, e);
 			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
 			if (dealt > 0) {
 				Effects.hitMarker(owner, e, false);
 			}
-			if (e.isAlive()) {
-				if (e == target) {
-					// the one it hit keeps its push along the flight (Minecraft's blast knockback undone)
-					e.setDeltaMovement(before);
-					sendSpeed(e);
-				} else {
-					Vec3 away = new Vec3(e.getX() - at.x, 0, e.getZ() - at.z);
-					away = away.lengthSqr() < 1.0E-6 ? along : away.normalize();
-					push(e, before, away, ROCK_BURST_KNOCKBACK, ROCK_BURST_KNOCKBACK_UP);
-				}
+			// (the one it hit keeps its push along the flight)
+			if (e.isAlive() && e != target) {
+				Vec3 away = new Vec3(e.getX() - at.x, 0, e.getZ() - at.z);
+				away = away.lengthSqr() < 1.0E-6 ? along : away.normalize();
+				push(e, Combat.motion(e), away, ROCK_BURST_KNOCKBACK, ROCK_BURST_KNOCKBACK_UP);
+				// a fall or the void after it is his kill (kill_feed.md "A death the world deals")
+				Combat.pushed(e, owner, BLOW);
 			}
 		}
 		// its burst 2C07 (m_6CB564CC: SigmaFx, its crater on the face it hit) and 54A4 for everyone (80 m); on a block the shared
@@ -193,28 +189,24 @@ public final class Accretion {
 	}
 
 	/**
-	 * Sets its speed to what it had before the hit plus {@code along} m/s along {@code dir} and {@code up} m/s up (replacing
-	 * Minecraft's own hit knockback), less a Stalwart's share, Sigma's in flight, and the creature's own resistance (an
-	 * iron golem none: Minecraft's knockback rule).
+	 * Sets its speed to what it had before the hit plus {@code along} m/s along {@code dir} and {@code up} m/s up, less what
+	 * its state and its own resistance take off (Combat.pushShare; an iron golem none: Minecraft's knockback rule).
 	 */
 	/** Its kill-feed blow (kill_feed.md's table: his ability, its icon). */
 	static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ability("accretion").by(dev.overcraft.hero.Hero.SIGMA);
 
 	static void push(LivingEntity e, Vec3 before, Vec3 dir, double along, double up) {
-		double f = Tank.knockbackFactor(e) * GraviticFlux.knockbackFactor(e)
-			* Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+		if (Combat.isPhased(e)) {
+			return;
+		}
+		double f = Combat.pushShare(e);
 		e.setDeltaMovement(before.add(dir.scale(Ow.speed(along) * f)).add(0, Ow.speed(up) * f, 0));
-		e.needsSync = true;
-		sendSpeed(e);
+		Combat.send(e);
 	}
 
 	/**
-	 * A player's own client moves them, so a speed set on one has to be sent to it now: needsSync reaches only the others
-	 * watching, and syncVelocity alone wasn't enough (played, two clients: a lifted player never rose, vy 0.00 on her
-	 * client every tick; the server's own copy of her speed is reset by her next movement packet landing on the ground
-	 * before the tracker sends it). The hit's own syncVelocity is cleared too: the tracker would send that stale copy a
-	 * tick later and undo the push (the rock's knockback reached her client as nothing). Mobs: nothing (the server moves
-	 * them).
+	 * A speed set on a player, to their own client now (Combat.send's note says why; played with two clients: a lifted player
+	 * never rose on syncVelocity alone).
 	 */
 	public static void sendSpeed(LivingEntity e) {
 		if (e instanceof net.minecraft.server.level.ServerPlayer p) {
