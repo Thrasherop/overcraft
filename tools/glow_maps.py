@@ -32,7 +32,7 @@ MASKS = {0xBCBE747D, 0x5ACB436A}
 ALBEDO = (0xAD10F602, 0xAD10F602)
 DECAL_EMISSION, DECAL_COLOUR = 0xEDCD5483, 0x665648E9
 GLOW_LAYER = 0x0403F89A
-CARD_IMAGES = (0xCA8ECF6A, 0xD569F1CA)
+CARD_IMAGES = (0xCA8ECF6A, 0xD569F1CA, 0xFFD569F1)
 CARD_MASKS = (0x42BB2842, 0x35BC18D4)
 RAMP = 0x5118206D
 # strength parameters the add-on knows ("Emission Strength")
@@ -44,14 +44,27 @@ MAX_SIZE = 512
 # Glass over a screen: a flat-colour shell on the screen's own bounds (Juno's gun FBC0, 85 v over FB30's 40 v; shader 0x26, its colour and
 # glow the same flat 1E38C). Drawn solid it hid her face and read white; so drawn only as this faint added light (ours).
 SHADER_26_STRENGTH = 0.25
+# A grey card's colour where its ramp says nothing (flat): Brigitte's shield's 479 v (6B00: image 14D13, the bracket and core), ours from the barrier's cyan.
+CARD_TINTS = {"000000006B00": (0.45, 0.85, 1.0)}
 GLASS = {"00000000FBC0": 0.1}
 SCREEN_FACES = {"00000000FB30": (0.62, 0.95, 1.0)}
 # A mask this dim everywhere adds nothing a player sees (out of 255).
 DIM = 12
-SKIP_MODELS = ("prop_", "cat_", "lw_", "juno_c", "juno_d", "juno_h", "juno_p", "juno_r", "juno_s", "juno_t", "brigitte_band", "brigitte_dome",
-               "brigitte_rally", "brigitte_ring", "brigitte_sh", "brigitte_sw", "brigitte_wh", "sombra_arc", "sombra_band", "sombra_bowl",
-               "sombra_ch", "sombra_cu", "sombra_cy", "sombra_ho", "sombra_pa", "sombra_ri", "sombra_sq", "ana_lens", "ana_plus", "ana_shell",
-               "torii")
+# The models with glows, by exact name: a prefix list ate juno_cell and brigitte_shield (critique_parts A4). Heroes, their view models and their weapons
+# by the pattern, the parts from weapon_parts.json, and these.
+MODELS_BY_NAME = {"mercy_staff", "mercy_blaster", "ana_pistol", "brigitte_flail_head", "brigitte_shield", "sombra_beacon", "sigma_barrier_orb",
+                  "lifeweaver_platform", "lifeweaver_seed", "lifeweaver_tree", "projectile_kunai", "projectile_ofuda", "projectile_suzu",
+                  "projectile_lifeweaver_seed"}
+HERO_IDS = {"kiriko", "lucio", "jetpack_cat", "mercy", "lifeweaver", "ana", "sombra", "brigitte", "juno", "sojourn", "sigma", "dva", "dva_pilot"}
+
+
+def glowing_model(stem):
+    if stem in MODELS_BY_NAME or stem in HERO_IDS:
+        return True
+    if stem.endswith("_1p") and stem[:-3] in HERO_IDS or stem.endswith("_weapon") and stem[:-7] in HERO_IDS:
+        return True
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    return any(isinstance(rows, list) and any(row["model"] == stem for row in rows) for rows in table.values())
 
 
 def owmat(path):
@@ -148,7 +161,7 @@ def main():
     materials = index(sys.argv[1:])
     GLOW.mkdir(parents=True, exist_ok=True)
     for model in sorted(MODELS.glob("*.glb")):
-        if model.stem.startswith(SKIP_MODELS) or model.stem.endswith("_clips"):
+        if not glowing_model(model.stem):
             continue
         table = {}
         for name, mesh in sorted(glb_materials(model).items()):
@@ -162,6 +175,8 @@ def main():
             if brightest < DIM:
                 continue
             image.thumbnail((MAX_SIZE, MAX_SIZE))
+            if name in CARD_TINTS:
+                image = Image.merge("RGB", [band.point(lambda v, c=c: int(v * c)) for band, c in zip(image.split(), CARD_TINTS[name])])
             table[name] = {"texture": name.lower(), "strength": round(min(max(strength, 0.0), 2.0), 3)}
             if shader == 0x26:
                 # its glow layer is its colour image again (Lúcio's amp visor 811C, Mercy's 7FDC): added at any strength over the piece's own

@@ -232,7 +232,10 @@ public final class DevServer {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.cull = arg.endsWith("on");
 				} else if (arg.startsWith("stride ")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.stride = Integer.parseInt(arg.substring(7));
+				} else if (arg.startsWith("glow ")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glow = Integer.parseInt(arg.substring(5));
 				} else if (arg.equals("reset")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.pose = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.emit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.shadow = 0;
@@ -244,6 +247,7 @@ public final class DevServer {
 					out.addProperty("fps", fps);
 					out.addProperty("poseMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.pose / 1e6 / frames);
 					out.addProperty("emitMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.emit / 1e6 / frames);
+					out.addProperty("glowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit / 1e6 / frames);
 					out.addProperty("shadowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.shadow / 1e6 / frames);
 				}
 			}

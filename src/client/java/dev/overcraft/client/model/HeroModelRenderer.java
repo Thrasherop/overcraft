@@ -51,7 +51,7 @@ import java.util.Set;
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
 	/** {@code cull}: back faces left out before upload (not for the select screen's GUI view, whose camera isn't at the origin). */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull) {
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
@@ -196,7 +196,8 @@ public final class HeroModelRenderer {
 		} else if (!previewing && EmoteProps.holds(hero.id, animator)) {
 			hidden = allProps(loaded.model());
 		}
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null));
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null,
+			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity)));
 		float phase = hero == Hero.SOMBRA && !previewing ? dev.overcraft.client.ClientSombra.phase(entity, now) : 0;
 		state.setData(STEALTH, phase > 0 ? new float[] {phase, now} : null);
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
@@ -646,10 +647,22 @@ public final class HeroModelRenderer {
 				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
 				poseStack.popPose();
 			}
+			// her magazine goes with the gun (critique_parts C9)
+			EmoteProps.Held heldParts = state.getData(SIDEARM);
+			if (heldParts != null) {
+				for (EmoteProps.Placed part : heldParts.props()) {
+					poseStack.pushPose();
+					poseStack.mulPose(part.at());
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+					poseStack.popPose();
+				}
+			}
 			poseStack.popPose();
 			return true;
 		}
+		altGlow = draw.angryFace();
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
+		altGlow = false;
 		if (state.outlineColor != 0) {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
 		}
@@ -1070,7 +1083,9 @@ public final class HeroModelRenderer {
 		if (stealth > 0) {
 			submitStealth(loaded, skin, poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
 		} else {
+			altGlow = hero == Hero.JUNO && !minecraft && dev.overcraft.client.ClientJuno.faceAngry(player);
 			submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
+			altGlow = false;
 			submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
 		}
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
@@ -1082,8 +1097,17 @@ public final class HeroModelRenderer {
 		animator.whipHead = whip == null ? null : new Matrix4f(poseStack.last().pose()).invert()
 			.transformPosition(new Vector3f((float) (whip.x - cam.x), (float) (whip.y - cam.y), (float) (whip.z - cam.z)));
 		if (!minecraft) {
-			EmoteProps.submit(new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), true, now)), poseStack, collector,
-				lit, overlay);
+			java.util.List<EmoteProps.Placed> viewParts = HeroWeapon.extras(hero, animator, loaded.model(), true, now);
+			if (stealth > 0) {
+				for (EmoteProps.Placed part : viewParts) {
+					poseStack.pushPose();
+					poseStack.mulPose(part.at());
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+					poseStack.popPose();
+				}
+			} else {
+				EmoteProps.submit(new EmoteProps.Held(viewParts), poseStack, collector, lit, overlay);
+			}
 			if (hero == Hero.BRIGITTE && animator.chainFrom != null && animator.chainTo != null) {
 				Vector3f a = poseStack.last().pose().transformPosition(new Vector3f(animator.chainFrom));
 				Vector3f b = poseStack.last().pose().transformPosition(new Vector3f(animator.chainTo));
@@ -1376,6 +1400,11 @@ public final class HeroModelRenderer {
 		public static long emit;
 		/** Her shadows' share (both passes). */
 		public static long shadow;
+		/** Its glows' share, apart from emit. */
+		public static long glowEmit;
+		/** Dev ("timing glow N"): how glows draw, to measure them: off, whole pieces sorted as they first were, whole unsorted, lit triangles unsorted (the shipped way). */
+		public static final int GLOW_OFF = 0, GLOW_WHOLE_SORTED = 1, GLOW_WHOLE = 2, GLOW_LIT = 3;
+		public static int glow = GLOW_LIT;
 		/** Dev: draw only every this many triangles (1 = all), to see what the vertex count costs. */
 		public static int stride = 1;
 		/** Dev: CPU back-face culling on (compare pictures with it off). */
@@ -1424,12 +1453,22 @@ public final class HeroModelRenderer {
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
-			if (glow != null) {
+			if (glow != null && Timing.glow != Timing.GLOW_OFF) {
 				int tint = Math.clamp(Math.round(glow.strength() * GLOW_ALPHA * 255), 0, 255) << 24 | 0xFFFFFF;
-				// a screen with two faces (Juno's gun 4E48C: the other on an enemy)
-				Identifier lit = glow.alt() != null && dev.overcraft.client.ClientJuno.faceAngry() ? glow.alt() : glow.texture();
-				collector.submitCustomGeometry(poseStack, FxRender.additive(lit),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, tint, cull && texture != null, false));
+				// a screen with two faces (Juno's gun 4E48C: the other on an enemy, by that Juno's own aim: altGlow)
+				Identifier image = glow.alt() != null && altGlow ? glow.alt() : glow.texture();
+				// its lit triangles alone (HeroModels.litPieces), not sorted: added light sums alike in any order
+				SkinnedModel.Piece part = Timing.glow == Timing.GLOW_LIT ? loaded.lit().getOrDefault(piece, piece) : piece;
+				if (part.indices().length > 0) {
+					collector.submitCustomGeometry(poseStack, Timing.glow == Timing.GLOW_WHOLE_SORTED ? FxRender.additive(image) : FxRender.glow(image),
+						(pose, buffer) -> {
+							long t0 = System.nanoTime();
+							emit(part, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, tint, cull && texture != null, false);
+							Timing.glowEmit += System.nanoTime() - t0;
+						});
+				}
+			}
+			if (glow != null) {
 				if (texture == null || glow.glass()) {
 					continue;
 				}
@@ -1453,8 +1492,10 @@ public final class HeroModelRenderer {
 	/** Ana's rifle's sight screen (the 48 vertices of material BB56, shader 0x32, the image 38704). */
 	private static final String ANA_SCREEN = "00000000BB56";
 	/** Her ammo's digits on it: colour from the screen's image, size and offset ours, read against the screen in first person. */
-	private static final int ANA_DIGITS = 0xFFA8EEFF;
-	private static final float ANA_DIGIT_SCALE = 0.0009f;
+	private static final int ANA_DIGITS = 0xFFC8F4FF;
+	/** A plate behind them, over the screen's own art: without it they read as a scribble on it at play distance (critique_parts D). */
+	private static final int ANA_DIGIT_PLATE = 0xF2081420;
+	private static final float ANA_DIGIT_SCALE = 0.00105f;
 
 	/**
 	 * The ammo counter on her rifle's sight: tens and units of her ammo, 9 from 100 up (0B94 #542 / #543, ana-map.md), which the data
@@ -1489,9 +1530,12 @@ public final class HeroModelRenderer {
 		poseStack.mulPose(new Matrix4f(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, n.x, n.y, n.z, 0, c.x + n.x * 0.0008f, c.y + n.y * 0.0008f, c.z + n.z * 0.0008f, 1));
 		poseStack.scale(ANA_DIGIT_SCALE, -ANA_DIGIT_SCALE, ANA_DIGIT_SCALE);
 		collector.submitText(poseStack, -font.width(digits) / 2f, -4, net.minecraft.network.chat.Component.literal(digits).getVisualOrderText(), false,
-			net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, FULL_BRIGHT, ANA_DIGITS, 0, 0);
+			net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, FULL_BRIGHT, ANA_DIGITS, ANA_DIGIT_PLATE, 0);
 		poseStack.popPose();
 	}
+
+	/** Whether the piece screens drawn now show their other face (Juno's gun: this Juno aims at an enemy). */
+	private static boolean altGlow;
 
 	/** Dev only (DevServer "aimpose"): the local player's model aims this pitch and is turned this far, the camera left level. */
 	public static float @Nullable [] DEV_AIM;

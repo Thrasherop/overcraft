@@ -55,6 +55,13 @@ public final class WeaponParts {
 		}
 	}
 
+	/** Every model the table names (HeroModels warns about those the pack lacks). */
+	static java.util.Set<String> names() {
+		java.util.Set<String> out = new java.util.HashSet<>();
+		PARTS.values().forEach(parts -> parts.forEach(part -> out.add(part.model())));
+		return out;
+	}
+
 	public static List<Part> of(String hero) {
 		return PARTS.getOrDefault(hero, List.of());
 	}

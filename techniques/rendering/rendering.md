@@ -161,6 +161,17 @@ shader has no colour image weren't drawn. A re-export of every hero costs hours;
 `hero_models/glow/<id>.png` and `<model>_glow.json`, drawn by `submitModel` as added light on the piece's own UVs (`FxRender.additive`, whose OIT set exists).
 - **Which slot is light** (io_scene_owm `shader_metadata`): 0xBCBE747D Emission and 0x5ACB436A Skin Emission are grey masks, multiplied by the colour image 0xAD10F602 (Sombra's lit strips, Ana's rifle: a grey mask alone would be white); 0xEDCD5483 on decals (shader 0x22) over 0x665648E9; 0x0403F89A on shader 0x26, as it is; shader 0x32 (a light card) its image in 0xCA8ECF6A / 0xD569F1CA, else mask x its ramp 0x5118206D's brightest row. A blank (000A, 4791) or a map under 12 of 255 isn't a glow.
 - **Strength:** the material's Emission Strength is HDR (Kiriko's 12, Sombra's 20), clamped to 2 and multiplied by 0.8 (ours, by eye, day and night).
+- **Only what lights, once.** An emission map lives on a hero's main material, so whole pieces were 49-100% of a hero's triangles drawn twice ([critique_parts](../testing/critique_parts.md) C1). `HeroModels.litPieces` keeps a piece's triangles whose part of the image has light (a grid of samples per triangle), `FxRender.glow` doesn't sort on upload (added light sums alike in any order), and one texture serves every model that shares an image. The models are named exactly (a prefix list had cut `juno_cell` and `brigitte_shield`).
+- **Measured** (`timing glow N`, ms of glow emit per frame on one hero, CPU: emit and pose were steady; the window ran at its 30 fps background cap, so fps says nothing here and the GPU's share wasn't measured):
+
+  | | whole pieces | lit triangles | |
+  |---|---|---|---|
+  | Lifeweaver 3P / 1P | 2.25 / 1.09 | 0.44 / 0.30 | |
+  | Mercy 3P / 1P | 2.60 / 1.37 | 0.40 / 0.21 | |
+  | Juno 3P / 1P | 1.70 / 1.09 | 0.12 / 0.09 | |
+  | Ana 3P / 1P | 2.40 / 1.21 | 0.05 / 0.04 | |
+
+  Sorted against unsorted showed no change in emit (the sort runs at upload, outside this timer). The hero's own emit is 1.9-2.8 ms in 3P for comparison.
 - **Played, then cut back:** shader 0x26's glow layer is often its colour image again; added at its strength over the lit colour, Lúcio's amp visor went flat white where the plain piece had detail (`z1_lucio_1p`): 0.25 now (ours). Juno's gun's glass FBC0 is a flat shell over the screen FB30: drawn solid it hid her face and read white, so it's only a faint added light (`GLASS`).
 - **The light cards were shown as data:** Ana's sight screen, Juno's gun's face, the amp's and pistol's cards. Their flipbooks and scrolling layers (Sombra's bars A5B6, letters 9F80) are one still image.
 - **Played:** next's client against this branch (`z0_*` in the next checkout's run/screenshots, `z1_*` in this one's): seven heroes first person at night and third person looking up; Improved Transparency toggled on with F3+X in play (no crash; `z1_it_juno*`).
