@@ -67,7 +67,7 @@ Hyper Regeneration 40 -> 30 %. 2026-10-06: global hitscan sizes only (none of hi
 - **Enemies gain 40 % less ult charge from damage and healing on a tank** (D 01C7 #1066: v46219 = **1CAA 0.6**, or **1CAB 0.8** under
   the mode flag v66788: M that 0.8 is 6v6; BZ 2026-02-10, 2024-07-09 30 -> 40 %; W "40% less", 6v6 20 %) **H**. It also slows perk
   progress (W Roles) **M**.
-- **Healing reduction when hurt, 15 % on a tank** (everyone's 30 % halved): D #1308 v25267 = 1A33 0.3 x **1CAC 0.5** for category 0850,
+- **Healing reduction when hurt, 15 % on a tank** (built: `Combat.heal`, #103) (everyone's 30 % halved): D #1308 v25267 = 1A33 0.3 x **1CAC 0.5** for category 0850,
   for **1E68 3 s** (#881) (BZ 2026-02-10 baseline 30 %, tanks 15 %; W Global Passive marks the box "removed" while still editing it:
   see Disagreements) **H** (D settles it is in this build).
 - Knockback and critical-hit resistance **left the role** in 2026-02-10 and went to the sub-roles (Stalwart: knockback; Bruiser: crits),

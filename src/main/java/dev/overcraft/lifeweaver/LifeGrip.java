@@ -76,12 +76,13 @@ public final class LifeGrip {
 		boolean far = ally.position().distanceTo(to) > GRIP_NEAR;
 		PULLS.put(ally.getUUID(), new Pull(ally, caster, to, caster.level().getGameTime(), far));
 		CLOSE.remove(ally.getUUID());
+		// (the cleanse first: the heal isn't cut by the healing reduction it takes off)
+		Combat.cleanse(ally);
 		float healed = Combat.heal(ally, GRIP_HEAL);
 		if (healed > 0) {
 			Combat.credit(caster, healed);
 			Combat.addFireForHealing(caster, healed);
 		}
-		Combat.cleanse(ally);
 		ally.setDeltaMovement(Vec3.ZERO);
 		ally.needsSync = true;
 		if (ally instanceof ServerPlayer player) {

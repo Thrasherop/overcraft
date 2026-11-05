@@ -213,6 +213,7 @@ public class Overcraft implements ModInitializer {
 		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
 		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			Combat.clearHealing(entity);
 			if (entity instanceof ServerPlayer player) {
 				HeroManager.onDeath(player);
 			}
@@ -233,6 +234,7 @@ public class Overcraft implements ModInitializer {
 				dev.overcraft.hero.Allies.remember(mob, entity);
 			}
 			if (damage > 0) {
+				Combat.onHurt(entity, source);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}
