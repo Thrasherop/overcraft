@@ -58,7 +58,7 @@ public final class HeroWeapon {
 		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
 		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
 			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
-		if (spec == null || weapon == null || heroPose == null) {
+		if (spec == null || weapon == null || heroPose == null || heroPose.t.length != heroModel.nodeNames.length) {
 			return null;
 		}
 		Mount mount = firstPerson ? spec.firstPerson() : spec.thirdPerson();
@@ -192,6 +192,8 @@ public final class HeroWeapon {
 		}
 		EmoteProps.Placed weapon = !a.emoting() || inEmote(hero, a) ? place(hero, a, heroModel, firstPerson, now) : null;
 		Skeleton.Pose heroPose = firstPerson ? a.lastViewPose() : a.lastPose();
+		// the gun's pose once, however many parts hang on it (critique_parts C2)
+		Skeleton.Pose gunPose = weapon == null ? null : pose(weapon.loaded().model(), a, firstPerson, now);
 		for (WeaponParts.Part part : parts) {
 			HeroModels.Loaded model = HeroModels.get(part.model());
 			if (model == null || !part.shown(a, firstPerson, now)) {
@@ -207,7 +209,7 @@ public final class HeroWeapon {
 				if (node < 0) {
 					continue;
 				}
-				at = new Matrix4f(weapon.at()).mul(Skeleton.world(gun, pose(gun, a, firstPerson, now), node));
+				at = new Matrix4f(weapon.at()).mul(Skeleton.world(gun, gunPose, node));
 			} else {
 				int node = heroModel.node(part.bone());
 				if (a.emoting() || heroPose == null || node < 0) {

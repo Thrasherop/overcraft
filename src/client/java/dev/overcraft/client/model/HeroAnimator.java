@@ -196,6 +196,10 @@ public final class HeroAnimator {
 	}
 
 	/** On the move (a run or strafe base): the weapon's move layer (Lúcio's amp, Sigma's spheres). */
+	public boolean reloadWithAmmo() {
+		return reloadWithAmmo;
+	}
+
 	public boolean moving() {
 		return base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk") || base.startsWith("skate");
 	}
@@ -227,6 +231,8 @@ public final class HeroAnimator {
 	private int energyFrom;
 	private float energyAt = -100;
 	private int beamLast = 1;
+	/** The newest reload began with ammo left (her "ammo left" clips: 0B94 #33): known for the local player, the common case for anyone else. */
+	private boolean reloadWithAmmo = true;
 
 	private void trackEnergy(int energy, float now) {
 		int target = energy <= 0 ? 0 : energy >= 100 ? 2 : 3;
@@ -271,6 +277,11 @@ public final class HeroAnimator {
 			a.burstStart = now;
 		}
 		a.actionAt.put(action, now);
+		if (action.equals("reload") && net.minecraft.client.Minecraft.getInstance().player != null
+			&& net.minecraft.client.Minecraft.getInstance().player.getId() == entityId) {
+			dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+			a.reloadWithAmmo = s == null || s.primaryAmmo() > 0;
+		}
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
 			a.fireVariant = new int[] {2, 3, 4, 4}[java.util.concurrent.ThreadLocalRandom.current().nextInt(4)];
@@ -1578,6 +1589,9 @@ public final class HeroAnimator {
 		String dir = !moving ? "" : base.startsWith("run_") ? base.substring(3).replace("_stealth", "").replace("_blaster", "").replace("_thorn", "")
 			: base.startsWith("strafe_left") ? "_left" : base.startsWith("strafe_right") ? "_right" : "";
 		List<String> names = new ArrayList<>();
+		if (sigmaFiring) {
+			names.add("add_fire_layer_sm1");
+		}
 		if (base.startsWith("crouch_walk")) {
 			String walkDir = base.substring("crouch_walk".length());
 			names.addAll(List.of("add_aim_crouch_walk" + v + walkDir, "add_aim_crouch_walk" + walkDir, "add_aim_crouch_walk" + v,

@@ -32,15 +32,20 @@ final class WeaponClips {
 
 	/** Lays the clips the hero's actions and state call for over the pose (which holds the weapon's idle). */
 	static void play(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now, Skeleton.Pose pose) {
-		state(model, a, firstPerson, now, pose);
+		stance(model, a, firstPerson, now, pose);
 		SkinnedModel.Clip newest = null;
 		float newestAt = Float.MAX_VALUE;
 		List<SkinnedModel.Clip> layers = new ArrayList<>();
 		List<Float> layerAt = new ArrayList<>();
-		for (String name : model.clips.keySet()) {
-			boolean additive = name.startsWith("add_");
-			String base = base(name);
-			if (base.equals("fire") || STATES.stream().anyMatch(base::startsWith) || !name.equals(pick(model, additive, base, firstPerson))) {
+		for (String clipName : model.clips.keySet()) {
+			boolean additive = clipName.startsWith("add_");
+			String base = base(clipName);
+			// "reload_ammo_left" is the state list's for its own name, but the reload's clip when pick chooses it
+			String name = clipName;
+			if (base.equals("reload_ammo_left") && clipName.equals(pick(model, false, "reload", a, firstPerson))) {
+				base = "reload";
+			}
+			if (base.equals("fire") || isState(base) || !clipName.equals(pick(model, additive, base, a, firstPerson))) {
 				continue;
 			}
 			float since = since(a, base, firstPerson, now);
@@ -61,10 +66,21 @@ final class WeaponClips {
 		}
 		chain(model, a, now, pose, "ult_cast", "ult_end", false);
 		chain(model, a, now, pose, "ult_cast", "add_ult_cast_end", true);
+		// over the pose clip: sampled first they'd be lost on its keyed bones for its whole length
+		layers(model, a, firstPerson, now, pose);
 		for (int i = 0; i < layers.size(); i++) {
 			Skeleton.addAdditive(layers.get(i), layerAt.get(i), pose, 1);
 		}
 		fire(model, a, firstPerson, now, pose);
+	}
+
+	private static boolean isState(String base) {
+		for (String state : STATES) {
+			if (base.startsWith(state)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Mercy's blaster's reload CF0 is from an additive folder (4-4), though named as a pose (additive_clips.md). */
@@ -96,16 +112,22 @@ final class WeaponClips {
 	}
 
 	/** This view's clip for a base: its own suffix, else the plain one, else (third person) a clip for no view in particular. */
-	static String pick(SkinnedModel model, boolean additive, String base, boolean firstPerson) {
+	static String pick(SkinnedModel model, boolean additive, String base, HeroAnimator a, boolean firstPerson) {
 		String p = additive ? "add_" + base : base;
+		if (base.equals("reload") && firstPerson && model.clips.containsKey("reload_ammo_left_1p")) {
+			// Ana's rifle: its plain "reload" is the third person's (3CE4, time df 0x66), its first person's empty reload 3C5A isn't extracted, so the ammo-left one
+			return "reload_ammo_left_1p";
+		}
+		if (base.equals("reload") && !firstPerson && a.reloadWithAmmo() && model.clips.containsKey("reload_ammo_left")) {
+			return "reload_ammo_left";
+		}
 		for (String name : firstPerson ? new String[] {p + "_1p", p + "_sm0", p} : new String[] {p + "_3p", p + "_sm1", p}) {
 			if (model.clips.containsKey(name)) {
 				return name;
 			}
 		}
 		if (firstPerson) {
-			// Ana's rifle: the one first-person reload extracted (3C5A isn't); Sombra's melee (sm[0] only) has no other
-			return base.equals("reload") && model.clips.containsKey("reload_ammo_left_1p") ? "reload_ammo_left_1p" : null;
+			return null;
 		}
 		// a set whose third person has the first person's clip alone (Sigma's Flux: sm[0] only), not the third's own volleys
 		return base.equals("fire_b") || base.equals("fire_c") ? null : model.clips.containsKey(p + "_sm0") ? p + "_sm0" : null;
@@ -161,8 +183,8 @@ final class WeaponClips {
 		}
 	}
 
-	/** The layers a state holds: Sigma's stance, Lúcio's move, Brigitte's shield stance, Sojourn's energy, Mercy's beams. */
-	private static void state(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now, Skeleton.Pose pose) {
+	/** The poses a state holds, under the action's: Brigitte's shield stance, Sigma's air stance. */
+	private static void stance(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now, Skeleton.Pose pose) {
 		SkinnedModel.Clip shield = firstPerson ? null : model.clips.get("idle_shield");
 		if (shield != null && a.shieldUp(now)) {
 			Skeleton.sample(shield, 0, pose);
@@ -171,6 +193,10 @@ final class WeaponClips {
 		if (air != null && a.airborne()) {
 			Skeleton.sample(air, now % Math.max(air.duration(), 1.0E-3f), pose);
 		}
+	}
+
+	/** The layers a state holds: Sigma's stance, Lúcio's move, Sojourn's energy, Mercy's beams. */
+	private static void layers(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now, Skeleton.Pose pose) {
 		loop(model, a.moving() && model.clips.containsKey("add_stance_sm2_move") ? "add_stance_sm2_move" : "add_stance_sm2", now, pose);
 		if (a.moving()) {
 			loop(model, "add_move", now, pose);
