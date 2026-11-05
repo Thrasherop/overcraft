@@ -518,11 +518,8 @@ public final class JetpackCat implements HeroKit {
 			}
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			out = out.lengthSqr() < 1.0E-6 ? player.getViewVector(1.0f).multiply(1, 0, 1) : out.normalize();
-			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0)
-				.scale(dev.overcraft.hero.Tank.knockbackFactor(e));
-			e.push(push.x, push.y, push.z);
-			e.syncVelocity = true;
-			dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
+			Combat.push(e, out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0), player,
+				dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			// a blue-violet flash at its chest (741C)
 			Effects.play(level, "purr_hit", e.position().add(0, e.getBbHeight() * 0.6, 0), player);
 		}
@@ -686,10 +683,8 @@ public final class JetpackCat implements HeroKit {
 			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			if (out.lengthSqr() > 1.0E-6) {
-				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH) * dev.overcraft.hero.Tank.knockbackFactor(e));
-				e.push(push.x, 0.1, push.z);
-				e.syncVelocity = true;
-				dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
+				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH));
+				Combat.push(e, new Vec3(push.x, 0.1, push.z), player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			}
 			if (d < nearestD) {
 				nearest = e;

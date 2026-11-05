@@ -286,11 +286,9 @@ public final class Lucio implements HeroKit {
 			// a barrier in the way takes the wave whole: no push, no lockout behind it (#88; any barrier: Barriers)
 			if (target.isAlive() && !dev.overcraft.brigitte.Barrier.shields(target, player)) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
-				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE))
-					* dev.overcraft.hero.Tank.knockbackFactor(target));
-				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));
-				target.syncVelocity = true;
-				dev.overcraft.hero.Combat.pushed(target, player, dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
+				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push);
+				Combat.launch(target, new Vec3(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z)), player,
+					dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 				// the lockout (ours: Minecraft has no "can't move", so a moment of heavy Slowness)
 				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(WAVE_LOCKOUT), 9, false, false));
 			}
