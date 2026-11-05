@@ -379,8 +379,8 @@ public final class Ana implements HeroKit {
 				if (Combat.antiHealed(e)) {
 					// (not on the phased: Combat.antiHeal)
 					Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+					onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
 				}
-				onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
 			}
 		}
 		// her lines: 0.1 s after a heal (0B99 #232), 0.2 s after damage (0C72 #231)
