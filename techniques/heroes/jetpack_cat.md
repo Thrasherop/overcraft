@@ -28,8 +28,8 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - A volley is 4 paws (4 each, double on the head) and a centre shot (8, no headshots): 24 to a body, 40 to a head
   (measured: 22.3 and 37.3 after a zombie's armour). Paws hit enemies at 0.19 m and allies at 0.31 m (centre 0.37 /
   0.62): `PawEntity.hitRadius` and an ally sweep before each move.
-- Lifeline: the rope pulls the ally by her real movement (`getKnownMovement`), so a villager hangs 3-4 m under her and
-  follows. It heals 25 a second and ends when she dies, leaves hero mode or changes hero.
+- Lifeline: a real rope since #89, [below](#lifelines-rope-as-a-force-89-2026-11-05). It heals 25 a second and ends when she
+  dies, leaves hero mode or changes hero.
 - Purr: 30 damage at the cast, full to 5 m and 0.3 at 10 m; every wave of the 4 pulses lands, past the 4 s too (300 a
   Purr, 360 with Purrfect Form, measured).
 - Catnapper: aim (a ring of the 5.5 m landing reach marks the spot), the 0.35 s windup, a 30 m/s dive, 25 damage and a
@@ -210,3 +210,77 @@ The owner's recording (`E:\Overwatch Archive\research\movement\workshop-2026-11-
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Lifeline's rope, as a force (#89, 2026-11-05)
+The owner: "cat's tether physics are not really simulated lol". They weren't: `lifeline()` gave the ally her speed each tick.
+
+**What the data says (`research\jetpack_cat\graphs\000000005A8F.01B.json`, gaps.md):**
+- H: the rope is a node on the ally, not on her (#1137 `STU_5ADDD07D`, under #961 under the subgraph #963 runs on each of v468, so
+  `self` = the ally; target m_3E3E203A = v29068 = her). So she isn't pulled by what she tows. Length max(v1648, 0.2) = 4 m. Catnapper's
+  #391 has the same numbers.
+- H the values, unnamed: m_81D6C3A4 30, m_D3298B60 0, m_725EB364 2, m_A7920B68 0.05, m_FD449F3B 20, m_B5ED6E63 0.1, m_BDAC583A 0.1,
+  m_6211A3C1 10, m_F469D76A 0.2, m_AD67829E 0.1, bools m_8D252344 0, m_84D349FB 1, m_B060F688 0, plus m_21A537D3 = v24063 = 2 and the
+  empty var m_54989959 = v8316. No other graph I could read owns this node type (all 765 pulled graphs in `research\*\graphs`: only
+  5A8F and 5B7B). **There's no name for any of them and no decode of what they do. Stiffness and damping below are a reading.**
+- H: nothing in the ally's subgraph overrides their mover: no gravity or speed override, no flight node (walked from #931 down: only
+  the rope, the status, the effects, anim 0x1C8). That's the case for "their own mover, plus a force".
+- H: the break is across only, `|(dx, 0, dz)|² > 9 x 4²` after 0.2 s (#928). Detach #1014: x57643451 = 0, xA634D7B9 = (F.x 8, 10.5, F.z 8)
+  with F = STU_021D01CD{self}, the same pair Juno's Glide Boost and Sojourn's slide jump use (vertical speed cancelled, velocity added).
+- H: the beam (#966, effect 71B0) is ribbons of two points: **the rope is straight in Overwatch's own data, sag or not.** No curve, no noise
+  displacing it. So it swings only as its ends move, and a slack rope draws straight. M: nothing draws a slack shape elsewhere; I found no
+  second effect. A hook (entity 6EC4) flies out to it at 4.5/s and back at 3.5/s (#1175, #874).
+- **No recording covers it.** The three owner recordings (`research\movement\workshop-2026-11-01*`) have no second player beside her
+  (S1 is Mauga only, during Winston). `tools/workshop/jetpack_cat_flight_recorder.md` now says what to record.
+
+**What's done (`LifelineRope`, `JetpackCat.tow`, `ClientTow`):** past 4 m, a pull along the rope of 30 x stretch + 2 x how fast it's
+stretching, at most reeling in at 10 m/s, and nothing when slack. Between pulls the ally's own air mover runs: gravity, and the decay above
+5.5 m/s. That decay (H, every hero's mover) is what gives the trail: `tan = 2 x (v - 5.5) / g`. A player: their own client (a push from the
+server each tick overwrote their keys and fought their prediction). A mob: the server, on our own speed, so Minecraft's 0.91 air drag and
+32 m/s² gravity don't apply: **a villager on the rope behaves as a player with no keys.** In water or lava: their own physics with the pull on top.
+On their feet inside the rope: Minecraft walks them.
+
+**Ours, in `JetpackCatStats`:** the reading of 30 and 2; 10 as the reel cap (L); the swing's 0.5/s damping (nothing in the data reads as that);
+no friction while stretched; breaking through terrain at 3 lengths in any direction (W says it breaks "pulled through terrain", the data's test is
+across only: straight up through a roof a villager's rope ran 30 m, `c2` trace); the first metre of the rope left off on the towed player's own
+screen (the fan, `s2_first_up.png`). Detach's F as the ally's look (M).
+
+**Measured, the same keys on the same flat world (`towtrace`; traces `tt_before\`, `tt_after\` in the session's scratchpad; shots `tt_shots\`):**
+
+| | before | after |
+|---|---|---|
+| Hanging, she's still | stands wherever it stopped: 20.6° off vertical for 2 s, for ever (`before straight`) | settles under her at 4.55-4.6 m, past 4 by g / 30 |
+| Flying at 7.15 m/s | her exact speed, **0.5 m AHEAD of her** (z ally > z cat), 7° | 0.8-0.97 m behind, 10-12° (predicted 10.7°) |
+| She stops | it stops with her | swings past her to 31°, back, 19° the other way, about 3.6 s a swing, dying over several (the unit test: within 0.2 m of hanging by 25 s) |
+| Turning 90° and 180° | no lag | swings wide: 43° then 64° (`a1 hard turns`) |
+| Rising / sinking | rigid 4.0 | lags, bounces 4.2-5.1 m, then steady |
+| Frenetic Flight | 2-8° at 21 m/s | 66-79°, 5.9 m across, nearly level behind her |
+| Caught from 8 m under her | 45-64 m/s | 10 m/s, overshoots to 2.5 m (a yank), swings in |
+| Lifted off the ground | at once, rigid | stretches to 5 m, comes up swinging |
+
+Before the AI fix a villager on its feet held the rope off by walking: without friction its AI's push adds up (`a1 lifted`: stuck at 63° on the ground).
+
+**Played** (dev client, world `tt_tow`, flat, real keys; Jetpack Cat picked by the dev `hero` command, not by mouse on the select screen, which was only seen on rejoin; Lifeline by Shift): each row above; a low wall
+(`c2_wall*`: held at the wall, rides up it and over), a wall she climbs (`c1 tall wall`), a roof (`c3 roof`: snaps at 12 m), oak trees and a ramp (`t1_*`: hits a
+trunk, swings round), water (`c2_water*`: floats, dragged, sits on the surface, pulled out), iron golem (`c2_golem`), let go at 20 m up (its momentum kept, Health still 20 read 3 s later, `c2_let_go`), day and night
+(`p1_night_*`), third person and `perspective first`, which Lifeline's own view keeps lifted (`p1_first*`), the hook back to her arm on primary fire (`p1_back0`), Purr on the rope (`p1_purr`, `p2_fight3`), G out of hero mode (ends it), death on the rope and
+respawn (`p2_dead`, `p2_respawned`), zombies and a skeleton at night (`p2_fight*`), Save and Leave mid-tow and rejoin (`p2_rejoin`).
+**The towed player's own side, on one client** (`devtow`: Kiriko on a rope to a floating armor stand teleported at 7 m/s: real keys, real `OwMovement`, `s2_*`): lifted from the ground, W and A swing them
+(5.5 m/s at the bottom, up to 3.5 m/s up the arc), let go of the keys and it decays, trails at 7 m/s with the rope at 4.8-5.1, GRAPPLED and Detach on the HUD.
+
+**NOT verified: nothing has been played with a real second player.** One client on the machine; the dev `bot` is on `fix/rules`, not merged (`git log next..fix/rules`), so not used. The two-client pass must check:
+1. The towed player's view: smooth, no jolt, no rubber band against the server (ClientTow runs on where it *sees* her, 100 ms old or so).
+2. Detach: launch, 0.6 s gate, F as their own look, momentum kept (only ever read, never run: `Combat.send`).
+3. A dedicated server: no floating kick (`aboveGroundTickCount` reset each tick), no "moved too quickly" at a 23 m/s boost, no fall damage after slack rope.
+4. Grab prompt, then her seeing them: the rope drawn on both screens, an enemy's red.
+5. Their abilities on the rope: wall climb, Glide Boost, Swift Step; W says a movement ability leaves the rope, **not done**.
+
+**What a critic should check:**
+- That 30 and 2 aren't just what I wanted them to be. ζ = 0.18, a bouncy rope: if Overwatch's isn't, 2 isn't the damping. A recording settles it.
+- That the trail's angle (the air decay) is real: M. If real Overwatch has the ally hang straight under her at 7 m/s, the ally's mover is overridden somewhere I didn't read.
+- That 0.5 m ahead in "before" was the old code, and not the trace (server position of her arrives in pairs of ticks: `towtrace` shows her speed as 0 / 14.3 alternating at times; the ally's isn't).
+- That she goes 23 m/s on a Frenetic Flight with Lifeline on (17.8 x 1.3). Not touched here, but it's what the 79° comes from: the wiki's 17.8 may be a cap.
+- Catnapper's carry still holds the enemy at a point (`ULT_CARRY`, found-playing reasons): same rope node in the data, not converted.
+- The towed pose: data has the ally play alias 0x1C8 (#1324, 2D on df 0x235 / 0x236). Clipmaps name it `pulled` on some heroes (Ana, Brigitte, Juno, Sigma, Sojourn, Sombra), not Kiriko or Lúcio or her: not played. A hook mesh (1BAD1) isn't drawn on the rope's end either: still the balls.
+- The hook glow and arcs are still fed once a tick; only the rope is per frame.
+
+See also the mover: [movement note in minecraft_26](../minecraft/minecraft_26.md).

@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-05
+
+### Jetpack Cat's Lifeline: a real rope (#89; not in a build yet)
+- Whoever she tows now hangs under her and trails behind her as she flies, swings past her when she stops, swings wide in a turn, comes up off the ground on a stretch of rope, and rides over a wall.
+  They used to copy her speed (flying half a metre ahead of her, and standing still at whatever angle they stopped).
+- A towed player keeps their keys: their own client pulls them. Not yet played with a real second player.
+- The rope flies out from her arm and back. It breaks if it's pulled through terrain from any direction. Jump to Detach keeps what you had across.
+
 ## 2026-11-02
 
 ### Brigitte's Barrier Shield fixed (#88; not in a build yet)
