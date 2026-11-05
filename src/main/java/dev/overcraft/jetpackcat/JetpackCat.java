@@ -20,8 +20,6 @@ import dev.overcraft.registry.OcSounds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -655,7 +653,7 @@ public final class JetpackCat implements HeroKit {
 		}
 	}
 
-	/** The landing: 25 damage, a 1.5 s knock-down and a push in 5.5 m; the nearest enemy is tethered and carried. */
+	/** The landing: 25 damage, a 1.5 s knock-down and a push in 5.5 m; the nearest enemy but a boss is tethered and carried. */
 	private static void land(ServerPlayer player, HeroState s) {
 		ServerLevel level = player.level();
 		player.setDeltaMovement(Vec3.ZERO);
@@ -678,15 +676,16 @@ public final class JetpackCat implements HeroKit {
 			}
 			// the shockwave's per-target burst (7256), thrown out from her
 			Effects.play(level, "catnapper_hit", e.position(), e.position().subtract(player.position()), e, player.getId(), player);
-			// the knock-down (ours: Minecraft has no stun, so the heaviest Slowness and Weakness: no moving, no hitting)
-			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
-			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
+			// the knock-down: "knocked down (stun 1.5 s) and pushed" (W): held as Rally's and Accretion's are (Sleep: no AI, no keys, no
+			// shots), and it keeps the push, as a knock-down does
+			dev.overcraft.hero.Sleep.knockdown(e, ULT_KNOCKDOWN);
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			if (out.lengthSqr() > 1.0E-6) {
 				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH));
 				Combat.push(e, new Vec3(push.x, 0.1, push.z), player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			}
-			if (d < nearestD) {
+			// the tether takes the nearest it can carry: a boss is knocked down with the rest and stays where it is (Allies.isBoss, ours)
+			if (d < nearestD && !Allies.isBoss(e)) {
 				nearest = e;
 				nearestD = d;
 			}

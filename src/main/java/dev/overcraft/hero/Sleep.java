@@ -177,6 +177,11 @@ public final class Sleep {
 				wake(s);
 				continue;
 			}
+			if (e instanceof net.minecraft.world.entity.monster.Creeper creeper && !creeper.isIgnited()) {
+				// a creeper's fuse runs in its own tick, not in its AI: held with its fuse lit it went off anyway (found playing, #101).
+				// It burns back down, as when a target walks off. One lit by flint and steel goes on (Minecraft's: nothing puts that out)
+				creeper.setSwellDir(-1);
+			}
 			if (dev.overcraft.sigma.GraviticFlux.lifted(e)) {
 				// a Gravitic Flux moves it (its own tick)
 				continue;
