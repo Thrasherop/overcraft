@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
  * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>", "bot fx <name> <effect> <ticks>", "bot rays" (Juno's rays this client
- * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|rally> on|off", "bot cc <name|me>" (the statuses on it).
+ * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|rally> on|off", "bot cc <name|me>" (the statuses on it), "bot held <name|me>", "bot playing [text]" (the sounds running in this client).
  */
 final class DevBot {
 	private DevBot() {
@@ -127,12 +127,50 @@ final class DevBot {
 				out.addProperty("health", who.getHealth());
 				out.addProperty("lifted", dev.overcraft.sigma.GraviticFlux.lifted(who));
 				out.addProperty("now", who.level().getGameTime());
+				out.addProperty("held", Boolean.TRUE.equals(who.getAttached(HeroManager.ASLEEP)));
+				out.addProperty("fire", who.getRemainingFireTicks());
+				StringBuilder effects = new StringBuilder();
+				who.getActiveEffects().forEach(e -> effects.append(e.getEffect().unwrapKey().map(k -> k.identifier().getPath()).orElse("?")).append(' '));
+				out.addProperty("effects", effects.toString().trim());
+				HeroState st = HeroManager.state(who);
+				out.addProperty("stealth", st != null && dev.overcraft.sombra.Stealth.stealthed(who, st));
+				String by = "";
+				for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+					HeroState ps = HeroManager.state(p);
+					if (ps != null && ps.carried != null && ps.carried == who.getId()) {
+						by = p.getScoreboardName();
+					}
+				}
+				out.addProperty("carriedBy", by);
+				out.addProperty("x", who.getX());
+				out.addProperty("y", who.getY());
+				out.addProperty("z", who.getZ());
+			}
+			case "playing" -> {
+				// "bot playing [text]": the sounds this client has running now (SoundEngine's own list, read by reflection, dev only), for what a stop packet stopped
+				StringBuilder names = new StringBuilder();
+				try {
+					var f = net.minecraft.client.sounds.SoundManager.class.getDeclaredField("soundEngine");
+					f.setAccessible(true);
+					Object engine = f.get(net.minecraft.client.Minecraft.getInstance().getSoundManager());
+					var g = net.minecraft.client.sounds.SoundEngine.class.getDeclaredField("instanceToChannel");
+					g.setAccessible(true);
+					for (Object o : new java.util.ArrayList<>(((Map<?, ?>) g.get(engine)).keySet())) {
+						String id = ((net.minecraft.client.resources.sounds.SoundInstance) o).getIdentifier().toString();
+						if (a.length < 2 || id.contains(a[1])) {
+							names.append(id).append(' ');
+						}
+					}
+				} catch (ReflectiveOperationException e) {
+					names.append("error ").append(e);
+				}
+				out.addProperty("playing", names.toString().trim());
 			}
 			case "held" -> {
 				// "bot held <name|me>": the held looks the server remembers on it, for late viewers (Effects), and what this client is drawing on it
 				ServerPlayer who = a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1]);
 				out.addProperty("server", dev.overcraft.hero.Effects.devHeld(who));
-				out.addProperty("client", dev.overcraft.client.effect.AnaFx.devHeld(who.getId()) + dev.overcraft.client.effect.SombraFx.devHeld(who.getId()) + dev.overcraft.client.effect.BrigitteFx.devHeld(who.getId()));
+				out.addProperty("client", dev.overcraft.client.effect.AnaFx.devHeld(who.getId()) + dev.overcraft.client.effect.SombraFx.devHeld(who.getId()) + dev.overcraft.client.effect.BrigitteFx.devHeld(who.getId()) + dev.overcraft.client.effect.SigmaFx.devHeld(who.getId()));
 			}
 			case "pos" -> {
 				ServerPlayer bot = BOTS.get(a[1]);
