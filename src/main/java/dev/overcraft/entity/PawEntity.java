@@ -36,8 +36,6 @@ public class PawEntity extends OwProjectile {
 		return amount;
 	}
 
-	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** When each healed creature last heard a shot's heal sound (game time), by entity id. */
 	private static final java.util.Map<Integer, Long> HEAL_SOUNDED = new java.util.HashMap<>();
@@ -155,7 +153,7 @@ public class PawEntity extends OwProjectile {
 			// the shot's way, to stand the paw print across it
 			Effects.play(level, centre ? "paw_heal_centre" : "paw_heal", at, getDeltaMovement(), null, 0, owner);
 		} else if (target != null && Allies.canHurt(owner, target)) {
-			boolean crit = !centre && (part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH);
+			boolean crit = !centre && (part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement()));
 			double damage = amount * (crit ? JetpackCatStats.PAW_CRIT : 1);
 			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT))
 				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JETPACK_CAT));

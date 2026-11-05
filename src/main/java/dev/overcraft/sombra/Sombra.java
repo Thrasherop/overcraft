@@ -551,7 +551,7 @@ public final class Sombra implements HeroKit {
 		double metres = Math.sqrt(bestDist);
 		double falloff = metres <= PISTOL_FALLOFF_START ? 1 : metres >= PISTOL_FALLOFF_END ? PISTOL_FALLOFF_MIN
 			: 1 - (1 - PISTOL_FALLOFF_MIN) * (metres - PISTOL_FALLOFF_START) / (PISTOL_FALLOFF_END - PISTOL_FALLOFF_START);
-		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
+		boolean crit = dev.overcraft.hero.Headshot.crossed(best, bestAt, bestAt.subtract(eye));
 		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1), dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOMBRA));
 		Combat.credit(player, dealt, best);
 		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
@@ -566,8 +566,6 @@ public final class Sombra implements HeroKit {
 	/** Her pistol's muzzle (hp 0006) from her eyes in her look's frame: ours until measured on her model (Ana's way). */
 	private static final double MUZZLE_RIGHT = 0.22, MUZZLE_UP = -0.18, MUZZLE_AHEAD = 0.55;
 
-	/** The head is the top of the box, as for Kiriko's kunai and Ana's darts (ours: 0.25 m under the eyes and up). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** {@code dir} turned by an angle up to {@code degrees}, evenly over the cone's disc. */
 	public static Vec3 cone(Vec3 dir, double degrees, net.minecraft.util.RandomSource random) {

@@ -210,7 +210,7 @@ public final class Railgun {
 		DamageSource source = level.damageSources().thrown(shot, owner);
 		if (target == null || target instanceof ArmorStand) {
 			// an object (an end crystal, a boat, a minecart, an armor stand): hurt as an arrow does, +1 energy (+2 on a crit)
-			boolean crit = target != null && at.y >= target.getEyeY() - HEAD_DEPTH;
+			boolean crit = target != null && dev.overcraft.hero.Headshot.crossed(target, at, shot.getDeltaMovement());
 			entity.hurtServer(level, source, Ow.hp(RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1)));
 			gain(owner, crit ? ENERGY_OBJECT_CRIT : ENERGY_OBJECT);
 			struck(owner, at);
@@ -220,7 +220,7 @@ public final class Railgun {
 			return;
 		}
 		struck(owner, at);
-		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, shot.getDeltaMovement());
 		HeroState s = HeroManager.state(owner);
 		if (crit && s != null) {
 			s.critAt = level.getGameTime();
@@ -241,6 +241,11 @@ public final class Railgun {
 		}
 		// energy from the hit, not the damage: none on a hit that did nothing (invulnerable), +1 on a barrier
 		gain(owner, barrier ? ENERGY_BARRIER : dealt > 0 ? crit ? ENERGY_CRIT : ENERGY_HIT : 0);
+	}
+
+	/** A round stopped by a barrier: +1 energy (the +1 hit() gives for one took on the way to a target). */
+	public static void hitBarrier(ServerPlayer owner) {
+		gain(owner, ENERGY_BARRIER);
 	}
 
 	/**
@@ -312,7 +317,7 @@ public final class Railgun {
 				hit.entity().hurtServer(level, source, Ow.hp(base * falloff));
 				continue;
 			}
-			boolean crit = part != null ? part == part.parentMob.head : hit.at().y >= target.getEyeY() - HEAD_DEPTH;
+			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, hit.at(), stop.subtract(eye));
 			if (crit) {
 				s.critAt = level.getGameTime();
 			}
@@ -359,8 +364,6 @@ public final class Railgun {
 			== HitResult.Type.MISS ? at : eye;
 	}
 
-	/** The head: the top of the box, 0.25 m under the eyes and up (Kiriko's kunai's band). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** Damage from her with no projectile of its own (the Charged Shot: hitscan), so a kill isn't a melee kill. */
 	private static DamageSource shotSource(ServerPlayer owner) {

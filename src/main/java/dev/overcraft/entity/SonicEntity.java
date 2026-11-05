@@ -34,8 +34,6 @@ public class SonicEntity extends OwProjectile {
 		return dev.overcraft.lucio.LucioStats.AMP_DAMAGE;
 	}
 
-	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
-	private static final double HEAD_DEPTH = 0.25;
 
 	public SonicEntity(EntityType<? extends SonicEntity> type, Level level) {
 		super(type, level);
@@ -81,7 +79,7 @@ public class SonicEntity extends OwProjectile {
 			discard();
 			return;
 		}
-		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement());
 		HeroState state = crit && getOwner() instanceof Player shooter ? HeroManager.state(shooter) : null;
 		if (state != null) {
 			state.critAt = level.getGameTime();

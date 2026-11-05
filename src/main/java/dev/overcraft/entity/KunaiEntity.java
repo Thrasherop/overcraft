@@ -27,8 +27,6 @@ import net.minecraft.world.phys.Vec3;
 
 /** Kiriko's kunai: fast, no drop, no falloff, 2x on a headshot. Passes through allies. */
 public class KunaiEntity extends OwProjectile {
-	/** How far below the eyes a hit still counts as the head (blocks). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	public KunaiEntity(EntityType<? extends KunaiEntity> type, Level level) {
 		super(type, level);
@@ -85,7 +83,7 @@ public class KunaiEntity extends OwProjectile {
 		}
 		Vec3 at = hit.getLocation();
 		// the dragon's head is its head; anyone else's, the top of their box
-		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement());
 		// known before the damage: a killing blow's kill feed and voice line look at it while the damage is dealt
 		HeroState state = crit && getOwner() instanceof Player thrower ? HeroManager.state(thrower) : null;
 		if (state != null) {
