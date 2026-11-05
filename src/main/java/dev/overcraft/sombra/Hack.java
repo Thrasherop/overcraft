@@ -81,8 +81,9 @@ public final class Hack {
 		if (revealed) {
 			target.removeEffect(MobEffects.GLOWING);
 		}
-		if (target instanceof Creeper creeper) {
-			CREEPERS.remove(creeper);
+		if (target instanceof net.minecraft.server.level.ServerPlayer player) {
+			// their own hacked sound (2.5 s and more of it played on after a cleanse: runs/polish4/crit_after.txt) goes; ours. A stop names a sound, so to them alone: others' 3p runs out
+			player.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.Overcraft.id("sombra.hacked"), net.minecraft.sounds.SoundSource.PLAYERS));
 		}
 		if (target.level() instanceof net.minecraft.server.level.ServerLevel level) {
 			dev.overcraft.hero.Effects.play(level, "sombra_hacked_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
