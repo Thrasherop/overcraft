@@ -9,6 +9,8 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
 - Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
 - Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
+- Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
+- Filed, not fixed: #122 (the shockwave through walls and barriers), #123, #124.
 - Record: techniques/testing/polish4.md. For the owner to hear: #121, her Suzu line on every throw.
 
 ### On fix/polish-3 (not released, version not bumped)

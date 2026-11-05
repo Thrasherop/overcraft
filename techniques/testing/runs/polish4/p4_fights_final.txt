@@ -1,0 +1,37 @@
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 5
+## final kiriko round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 16.0 end hp 20.0/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 5
+## final kiriko round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 1.9 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 5
+## final brigitte round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 13.1 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 5
+brigitte 2 died at 10.7, back as brigitte hp 20.0 mode True
+## final brigitte round 2 mobs left 2 of 6 cleared at None deaths 1 lowest hp 2.0 end hp 20.0/20.0
+   death line: Kiriko was shot by Skeleton
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 5
+## final ana round 1 mobs left 4 of 6 cleared at None deaths 0 lowest hp 6.1 end hp 6.1/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 5
+ana 2 died at 15.7, back as ana hp 16.0 mode True
+--- final: second invocation, ana and sombra again from the start (the first invocation was cut by my time limit in ana round 2)
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 5
+ana 1 died at 20.5, back as ana hp 20.0 mode True
+## final ana round 1 mobs left 3 of 6 cleared at None deaths 1 lowest hp 5.0 end hp 20.0/20.0
+   death line: Kiriko was shot by Skeleton
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 5
+ana 2 died at 13.8, back as ana hp 16.0 mode True
+## final ana round 2 mobs left 2 of 6 cleared at None deaths 1 lowest hp 1.7 end hp 20.0/20.0
+   death line: Kiriko was shot by Skeleton
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 5
+## final sombra round 1 mobs left 4 of 6 cleared at None deaths 0 lowest hp 10.3 end hp 18.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 5
+## final sombra round 2 mobs left 4 of 6 cleared at None deaths 0 lowest hp 8.1 end hp 14.0/18.0

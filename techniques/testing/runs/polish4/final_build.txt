@@ -1,9 +1,5 @@
 Picked up JAVA_TOOL_OPTIONS: -Xmx2G
-Calculating task graph as no cached configuration is available for tasks: clean build
-
-> Configure project :
-Fabric Loom: 1.19.3
-
+Reusing configuration cache.
 > Task :validateAccessWidener NO-SOURCE
 > Task :clean
 > Task :processTestResources NO-SOURCE
@@ -36,6 +32,6 @@ Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 
 [Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 1m 32s
+BUILD SUCCESSFUL in 44s
 10 actionable tasks: 10 executed
-Configuration cache entry stored.
+Configuration cache entry reused.
