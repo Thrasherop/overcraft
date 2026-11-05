@@ -54,7 +54,7 @@ public final class Effects {
 	}
 	/** The effects that end a held one early. */
 	private static final java.util.Map<String, String> ENDS = java.util.Map.of("ana_wake", "ana_asleep", "ana_nano_end", "ana_nano",
-		"sombra_hotfixed_end", "sombra_hotfixed");
+		"sombra_hotfixed_end", "sombra_hotfixed", "ana_anti_healed_end", "ana_anti_healed");
 
 	private record Held(String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, @Nullable Entity owner, long since, long until, Spec spec, int flagBits) {
 		boolean over() {

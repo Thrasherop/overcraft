@@ -58,6 +58,8 @@ public final class Combat {
 	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
 	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
 	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
+	/** Dev only (DevBot's "fixoff"): #117's cleanse and #109's float switched off, to show the fixes are what made the difference. */
+	public static boolean devFixOff;
 	/** The healing reduction on a creature hurt by an enemy (game time it ends). */
 	private static final Map<UUID, Long> healCutUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
@@ -390,8 +392,11 @@ public final class Combat {
 		}
 	}
 
-	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. */
+	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. Not on the phased (W Kiriko rev 408632). */
 	public static void antiHeal(LivingEntity target, double seconds) {
+		if (isPhased(target)) {
+			return;
+		}
 		antiHealUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
 		healBoostUntil.remove(target.getUUID());
 	}
@@ -406,7 +411,12 @@ public final class Combat {
 		return until != null && now(target) < until;
 	}
 
-	/** Removes what Protection Suzu cleanses: harmful effects, burning, freezing. */
+	/**
+	 * Removes what Protection Suzu and Life Grip cleanse: harmful effects, burning, freezing, the healing reduction and Biotic
+	 * Grenade's anti-heal (#117: W Kiriko rev 408632, "[[Anti-heal]], such as Biotic Grenade" under what phased-out allies are immune
+	 * to, and "removes any allies' anti-heals"; W Lifeweaver rev 408779, "Life Grip can cleanse an ally's Anti-Heal"). The data has no
+	 * cleanse node for either (lifeweaver-map.md: status side), so W is the source, M.
+	 */
 	public static void cleanse(LivingEntity target) {
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();
 		for (MobEffectInstance effect : target.getActiveEffects()) {
@@ -417,6 +427,10 @@ public final class Combat {
 		harmful.forEach(target::removeEffect);
 		// (W Global Passive Abilities: "cleansable")
 		healCutUntil.remove(target.getUUID());
+		if (!devFixOff && antiHealUntil.remove(target.getUUID()) != null && target.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			// its pluses go with it (Effects' ENDS: a player who starts seeing them now isn't told either)
+			Effects.play(level, "ana_anti_healed_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
+		}
 		target.clearFire();
 		target.setTicksFrozen(0);
 	}

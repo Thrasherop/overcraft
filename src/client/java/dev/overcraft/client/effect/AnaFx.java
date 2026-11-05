@@ -242,6 +242,7 @@ public final class AnaFx {
 			case "ana_wake" -> ASLEEP.remove(e.entity());
 			case "ana_boosted" -> BOOSTED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "ana_anti_healed" -> ANTI_HEALED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "ana_anti_healed_end" -> ANTI_HEALED.remove(e.entity());
 			case "ana_nano" -> NANOED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "ana_nano_end" -> NANOED.remove(e.entity());
 			case "ana_numbed" -> NUMBED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));

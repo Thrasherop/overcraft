@@ -376,7 +376,10 @@ public final class Ana implements HeroKit {
 					hurtAny = true;
 				}
 				Combat.antiHeal(e, GRENADE_EFFECT_TIME);
-				Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+				if (Combat.antiHealed(e)) {
+					// (not on the phased: Combat.antiHeal)
+					Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+				}
 				onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
 			}
 		}
