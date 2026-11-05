@@ -143,7 +143,7 @@ final class DevBot {
 					server.getPlayerList().remove(bot);
 				}
 			}
-			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | remove");
+			default -> out.addProperty("error", "add | secondary | read | set | asleep | antiheal | self | side | press | charge | emote | move | remove");
 		}
 	}
 
