@@ -170,6 +170,8 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: who her last bash in Rally hit: its shockwave passes them over (0EE3 #890). */
+	public @Nullable UUID rallyBashed;
 	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
 	public @org.jspecify.annotations.Nullable Object barrierBlast;
 	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */

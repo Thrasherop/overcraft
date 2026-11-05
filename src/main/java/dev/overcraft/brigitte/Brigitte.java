@@ -177,6 +177,7 @@ public final class Brigitte implements HeroKit {
 					// in Rally the bash stuns, and a shockwave follows (12BE: 1340, #878)
 					stun(player, target);
 					s.shockwaveIn = Ow.ticks(RALLY_SHOCKWAVE_AT);
+					s.rallyBashed = target.getUUID();
 				}
 				end(player, s);
 				return;
@@ -342,7 +343,14 @@ public final class Brigitte implements HeroKit {
 		}
 	}
 
-	/** Her bash's shockwave in Rally, 0.15 s after its hit: up to 10 enemies within 8 m ahead, 70, a push and the stun. */
+	/** Dev only (DevBot's "fix rally"): the bashed target hit again, as it was. */
+	public static boolean devRallyTwice;
+
+	/**
+	 * Her bash's shockwave in Rally, 0.15 s after its hit: up to 10 enemies within 8 m ahead, 70, a push and the stun; not the one the bash hit, which takes one of each:
+	 * 0EE3 #877's tracker (10 at most, its list v1184) -> #890 STU_DA54F8F7 {list v1184, value v375, the bash's own target} -> #886 hits v1184 -> #887 stuns v1184. H nodes;
+	 * M that the node takes a value out of a list: 4C3509FB is its "add" and 1C2CC6D5 its "clear" on the same field, and 1259 #1001 uses it the same way on the whip's area. The target still fills one of the tracker's 10.
+	 */
 	private static void shockwave(ServerPlayer player, HeroState s) {
 		if (s.shockwaveIn < 0 || s.shockwaveIn-- > 0) {
 			return;
@@ -356,6 +364,9 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			hit++;
+			if (!devRallyTwice && e.getUUID().equals(s.rallyBashed)) {
+				continue;
+			}
 			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt, e);
 			Combat.addFireForDamage(player, dealt, e);
