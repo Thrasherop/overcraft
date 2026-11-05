@@ -21,7 +21,8 @@
 		"PlayerMeleeMixin",
 		"MobMixin",
 		"ConversionTypeMixin",
-		"BucketableMixin"
+		"BucketableMixin",
+		"ResurrectedLootMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

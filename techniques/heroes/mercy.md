@@ -59,3 +59,22 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
   Angel in Valkyrie still peaks at 25.8 m/s.
 - **Her shots leave her first-person blaster's muzzle** (0.16 m right, 0.11 down, 0.71 ahead of the eyes, measured
   from the posed view model, the same at every pitch): her data launches each volley from the blaster's hp 0006.
+
+## What Resurrect brings back: nothing twice (#98, 2026-11-04)
+- **Reproduced:** an iron golem killed and resurrected three times dropped 5, 3 and 5 ingots: an iron farm.
+- **The critique's other half was wrong:** a chested donkey does *not* come back with its inventory. `AbstractChestedHorse.dropEquipment`
+  drops the items and the chest, then `setChest(false)`, and its save writes `Items` only with a chest: played, 5 diamonds, 7 gold
+  and the chest on the ground, the donkey back with `ChestedHorse: 0b` and no `Items`. Read the save, not only the drop.
+- **The rule (ours; Overwatch has no loot):** a creature's loot comes once. The soul is saved after the drops, so what the mob
+  carried and dropped lies where it fell, as a resurrected player's inventory does. What its death made from nothing (the loot
+  table, experience) was given at the first death: `Souls.RESURRECTED` (a saved attachment) marks a brought-back mob and
+  `ResurrectedLootMixin` cancels `dropFromLootTable` and `dropExperience` for it. Rejected: holding the drops until the soul's 10 s end
+  (drops late for every pet with any player in the world, lost on a stop), and taking drops back at the Resurrect (already picked up by then).
+- **Played** (three deaths each): golem: 2 poppies and 3 ingots, then nothing, nothing. Donkey: 2 leather, the saddle, its chest and
+  contents once, then nothing. Allay: its 5 emeralds once, back with an empty inventory. Villager: no drops; its 4 bread (never
+  dropped) stay on it. Wolf: 2 XP at the first death, none after. The mark survives Save and Leave: a marked golem killed after a
+  rejoin dropped nothing. A fresh golem still drops (the control).
+- **What a critic should check:** a resurrected mob that picked up or was given items drops those (real items); a farm of
+  player-carried gear isn't a dup. Armored wolves: the armor takes the hit and breaks first, so its drop wasn't seen. Copper golems (their own
+  `dropEquipment`) weren't played. The allay flew off out of Resurrect's reach on its second death: no duplicate, but also no third cycle.
+

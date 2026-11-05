@@ -102,6 +102,7 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Souls.init();
 		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);

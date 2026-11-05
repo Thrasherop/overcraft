@@ -36,6 +36,12 @@ import java.util.UUID;
  * pet, a villager, a golem, an allay: Allies) leaves a soul where they fell. A player's soul lasts while they wait on
  * the death screen (respawning, leaving or the soul's time running out takes it); a mob's soul is its saved data, made
  * again in the world when it's resurrected (its body is gone by then: Minecraft removes the dead after 1 s).
+ * <p>
+ * Nothing comes back twice (#98). The soul is saved after the death's drops, so what the mob carried and dropped (a donkey's
+ * chest and what was in it, a pet's armor) lies where it fell and doesn't come back on it, as a resurrected player's
+ * dropped inventory doesn't. What its death made out of nothing (its loot table: a golem's iron, and its experience) was
+ * given once: a resurrected mob is marked (RESURRECTED, saved with it) and its later deaths drop neither
+ * (ResurrectedLootMixin). Before, killing and resurrecting an iron golem was an iron farm (5, 3, 5 ingots, played).
  */
 public final class Souls {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -59,6 +65,23 @@ public final class Souls {
 			this.diedAt = body.level().getGameTime();
 			this.mob = mob;
 		}
+	}
+
+	/**
+	 * A mob Mercy brought back: its loot table and experience were given at its first death, so it drops neither again
+	 * (#98). Saved with it.
+	 */
+	public static final net.fabricmc.fabric.api.attachment.v1.AttachmentType<Boolean> RESURRECTED =
+		net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry.create(dev.overcraft.Overcraft.id("resurrected"),
+			builder -> builder.persistent(com.mojang.serialization.Codec.BOOL));
+
+	/** At mod start: registers RESURRECTED before any world loads. */
+	public static void init() {
+	}
+
+	/** Whether this creature's loot and experience were already given (a resurrected mob's). */
+	public static boolean lootGiven(LivingEntity entity) {
+		return Boolean.TRUE.equals(entity.getAttached(RESURRECTED));
 	}
 
 	private static final Map<UUID, Soul> SOULS = new LinkedHashMap<>();
@@ -178,6 +201,8 @@ public final class Souls {
 		living.hurtTime = 0;
 		living.clearFire();
 		living.setHealth(living.getMaxHealth() * healthFraction);
+		// its loot was dropped at its death: none again (#98)
+		living.setAttached(RESURRECTED, true);
 		if (!level.addFreshEntity(living)) {
 			return false;
 		}
