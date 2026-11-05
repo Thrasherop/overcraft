@@ -420,3 +420,6 @@ roar (vanilla roars only after a shield stuns it).
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## The first-person chain (#113, 2026-11-05)
+Stepped at 20 tps (`/tick freeze`, `/tick step 1`, a shot a tick): **no chain to be seen at all while the head flew** (`b_113_t01`, `t02`), though `fxnear` had it alive, 4.95 m long. Three causes, one fix: it was a world particle fed from the hand pass, so a frame late, under the world's projection and depth, and 0.04 m wide (ours; the data's ribbon is 0.075) additive over the sky. `BrigitteFx.viewChain` draws it in the hand pass in the arms' own pose, 0.075 m, tiled squares laid twice for the data's HDR (ours), from hp 0076 to the head's own hardpoint 0004 (both views: it was the head's origin). Played: `a_113_t00`-`t03`, handle to head in every frame. The critique's reading at `/tick rate 5` ("a tick-stepped chain") wasn't the cause. Not played: Whip Shot in first person (the same code: `whipHead`). Her barrier and bash in first person not touched.

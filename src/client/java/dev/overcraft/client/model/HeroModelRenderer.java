@@ -1109,9 +1109,7 @@ public final class HeroModelRenderer {
 				EmoteProps.submit(new EmoteProps.Held(viewParts), poseStack, collector, lit, overlay);
 			}
 			if (hero == Hero.BRIGITTE && animator.chainFrom != null && animator.chainTo != null) {
-				Vector3f a = poseStack.last().pose().transformPosition(new Vector3f(animator.chainFrom));
-				Vector3f b = poseStack.last().pose().transformPosition(new Vector3f(animator.chainTo));
-				dev.overcraft.client.effect.BrigitteFx.chain(player, cam.add(a.x, a.y, a.z), cam.add(b.x, b.y, b.z));
+				dev.overcraft.client.effect.BrigitteFx.viewChain(poseStack, collector, animator.chainFrom, animator.chainTo, now);
 			}
 		}
 		if (weapon != null) {

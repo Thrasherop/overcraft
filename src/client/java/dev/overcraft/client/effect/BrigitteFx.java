@@ -206,7 +206,7 @@ public final class BrigitteFx {
 
 	/**
 	 * The flail's chain (216C / 22CF: a 0.075 m ribbon, the 13DB9 band, olive to white HDR 10; red rows to her enemies), from
-	 * the handle to the head while it's off its socket; in her own view the energy ribbon (33C1: squares, sky blue; v28985, M).
+	 * the handle to the head while it's off its socket, in the world. Her own view's: viewChain.
 	 */
 	public static void chain(Entity brigitte, Vec3 from, Vec3 to) {
 		Vec3 piece = to.subtract(from);
@@ -214,16 +214,62 @@ public final class BrigitteFx {
 		if (len < 0.1f) {
 			return;
 		}
-		boolean own = ownFirstPerson(brigitte);
 		boolean enemy = KirikoFx.enemyOf(brigitte);
-		Particle ribbon = Fx.attach("brigitte_chain/" + brigitte.getId() + (own ? "/1p" : ""), from, () -> {
-			Particle p = own ? Fx.particle("brigitte_energy_squares", Palette.BRIGITTE_ENERGY_BLUE_N)
-				: Fx.particle("brigitte_chain_band", enemy ? Palette.BRIGITTE_CHAIN_ENEMY_N : Palette.BRIGITTE_CHAIN_N);
-			return p == null ? null : p.life(0.08f).fade(0.01f, 0.5f).nearFade(own ? 0.05f : 0.3f);
+		Particle ribbon = Fx.attach("brigitte_chain/" + brigitte.getId(), from, () -> {
+			Particle p = Fx.particle("brigitte_chain_band", enemy ? Palette.BRIGITTE_CHAIN_ENEMY_N : Palette.BRIGITTE_CHAIN_N);
+			return p == null ? null : p.life(0.08f).fade(0.01f, 0.5f).nearFade(0.3f);
 		});
 		if (ribbon != null) {
-			ribbon.at(from.add(piece.scale(0.5))).axis(piece).size(len, len).aspect((own ? 0.04f : 0.075f) / len);
+			ribbon.at(from.add(piece.scale(0.5))).axis(piece).size(len, len).aspect(0.075f / len);
 		}
+	}
+
+	/** Her own view's chain, wide as the data's (0.075 m, the same ribbon as 216C's) and repeating its squares this often along it (ours). */
+	private static final float VIEW_CHAIN_WIDTH = 0.075f, VIEW_CHAIN_TILE = 0.5f;
+	/** Its squares run along it (ours), and it's laid this many times: the data's HDR 3.5 over a bright sky (ours, by eye). */
+	private static final float VIEW_CHAIN_SCROLL = 2;
+	private static final int VIEW_CHAIN_LAYERS = 2;
+
+	/**
+	 * Her first-person chain, the energy ribbon (33C1: squares, sky blue; v28985, M): drawn in the hand pass, in the arms' own pose, from
+	 * the handle to the head as they are drawn this frame. It was a world particle (#113), and so a frame behind them, under another
+	 * projection than the hand pass's and behind the depth it clears: the head flew off with no chain to be seen, its ends nowhere near.
+	 * The ribbon faces the eye, the origin of the view's space.
+	 */
+	public static void viewChain(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector,
+		org.joml.Vector3f from, org.joml.Vector3f to, float now) {
+		net.minecraft.resources.Identifier texture = EffectArt.get("brigitte_energy_squares", Palette.BRIGITTE_ENERGY_BLUE_N);
+		float len = from.distance(to);
+		if (texture == null || len < 0.1f) {
+			return;
+		}
+		org.joml.Vector3f eye = new org.joml.Matrix4f(poseStack.last().pose()).invert().transformPosition(new org.joml.Vector3f());
+		org.joml.Vector3f along = new org.joml.Vector3f(to).sub(from).div(len);
+		org.joml.Vector3f toEye = new org.joml.Vector3f(eye).sub(from).normalize();
+		org.joml.Vector3f side = new org.joml.Vector3f(along).cross(toEye);
+		if (side.lengthSquared() < 1.0E-6f) {
+			return;
+		}
+		side.normalize(VIEW_CHAIN_WIDTH / 2);
+		int pieces = Math.max(1, (int) Math.ceil(len / VIEW_CHAIN_TILE));
+		float scroll = now * VIEW_CHAIN_SCROLL;
+		for (int layer = 0; layer < VIEW_CHAIN_LAYERS; layer++) {
+			collector.submitCustomGeometry(poseStack, FxRender.additive(texture), (pose, buffer) -> {
+				for (int i = 0; i < pieces; i++) {
+					org.joml.Vector3f a = new org.joml.Vector3f(from).add(new org.joml.Vector3f(along).mul(len * i / pieces));
+					org.joml.Vector3f b = new org.joml.Vector3f(from).add(new org.joml.Vector3f(along).mul(len * (i + 1) / pieces));
+					viewVertex(pose, buffer, a.x + side.x, a.y + side.y, a.z + side.z, 0, scroll);
+					viewVertex(pose, buffer, a.x - side.x, a.y - side.y, a.z - side.z, 1, scroll);
+					viewVertex(pose, buffer, b.x - side.x, b.y - side.y, b.z - side.z, 1, 1 + scroll);
+					viewVertex(pose, buffer, b.x + side.x, b.y + side.y, b.z + side.z, 0, 1 + scroll);
+				}
+			});
+		}
+	}
+
+	private static void viewVertex(com.mojang.blaze3d.vertex.PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float x, float y, float z, float u, float v) {
+		buffer.addVertex(pose, x, y, z).setColor(0xFFFFFFFF).setUv(u, v).setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY)
+			.setLight(0xF000F0).setNormal(pose, 0, 1, 0);
 	}
 
 	/** The head in flight: the rocket flare's sparks shooting back from it for its first 0.5 s (2770), then nothing more. */

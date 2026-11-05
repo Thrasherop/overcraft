@@ -147,7 +147,10 @@ public final class HeroWeapon {
 					// the chain (216C / 22CF: the handle's hp 0076 = bone_0596 to the head) while the head is off its socket
 					org.joml.Vector3f from = start < 0 ? seated.getTranslation(new org.joml.Vector3f())
 						: new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, start)).getTranslation(new org.joml.Vector3f());
-					org.joml.Vector3f to = at.getTranslation(new org.joml.Vector3f());
+					// (to the head's own hardpoint 0004, as the data's ribbon: brigitte-effects.md)
+					int tip = head.model().node("hardpoint_0004");
+					org.joml.Vector3f to = tip < 0 ? at.getTranslation(new org.joml.Vector3f())
+						: new Matrix4f(at).mul(Skeleton.world(head.model(), headPose, tip)).getTranslation(new org.joml.Vector3f());
 					if (to.distance(from) > CHAIN_SHOWN) {
 						animator.chainFrom = from;
 						animator.chainTo = to;
