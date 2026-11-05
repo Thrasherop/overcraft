@@ -62,7 +62,16 @@ public final class Torpedoes {
 		}
 		s.junoLock++;
 		track(player, s);
-		if (leftPressed || rightPressed || s.junoLock >= Ow.ticks(LOCK_WINDOW)) {
+		// the buttons go live 0.4 s in, or with the first lock (4695 #893 v15541 -> #921, #922 -> #923: v24728). With her default
+		// options (Toggle on, Swap off: #869, #1052 false) the left button fires, only with something locked (#1055 -> #1053 ->
+		// #1056), and the right cancels, with or without (#1057 -> #1054 sets the end and skips the launches, #928 true); the prompts
+		// say the same (#1051). Four seconds up, what's locked goes (#1110 -> #952)
+		boolean live = s.junoLock >= Ow.ticks(LOCK_BUTTONS_FROM) || !s.junoLocked.isEmpty();
+		if (live && rightPressed) {
+			// nothing launched, so the 2 s of a lock with no targets (#962 -> #931; 10 s comes with a launch, M)
+			s.junoLocked.clear();
+			fire(player, s);
+		} else if (live && leftPressed && !s.junoLocked.isEmpty() || s.junoLock >= Ow.ticks(LOCK_WINDOW)) {
 			fire(player, s);
 		}
 	}

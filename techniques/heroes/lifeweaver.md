@@ -53,3 +53,6 @@ ends the platform when he dies.
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Life Grip's cancel (#112, 2026-11-05)
+It's the held ally's, not his: 21EE #617 shows Jump and 31330 "CANCEL" to the local ally, and Jump lets go from 0.65 s (#621 -> #620 v77821 -> #614). The let-go was already built; the prompt wasn't (`ReticleHud`: `ClientLifeweaver.gripJumpLive`). Played with a bot Lifeweaver gripping the real client (`bot press Grip ability2`): `a_112_grip_prompt` "[SPACE] CANCEL", Jump let go and he fell where he was. Not reproduced before the fix (the baseline's bot had no press): the prompt's absence there is by reading the code. It shows in hero mode only: `ReticleHud` isn't drawn in Minecraft mode, though Jump works there. No caster's cancel exists in the graphs read (21EE's ends, kit_grip_tree 2g).

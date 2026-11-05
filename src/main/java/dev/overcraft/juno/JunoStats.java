@@ -111,6 +111,8 @@ public final class JunoStats {
 	public static final double TORPEDO_COOLDOWN = 10, TORPEDO_COOLDOWN_NONE = 2;
 	/** The lock: up to 4 s (D 1AF0 via v567); 40 m, 45 once a target's lock has begun (D 1A57 40 + 5; BZ 2024-08-20; W). */
 	public static final double LOCK_WINDOW = 4, LOCK_RANGE = 40, LOCK_FORGIVE = 5;
+	/** Her lock's buttons do nothing for this long unless something is locked already (D 4695 #893 v15541; #112). */
+	public static final double LOCK_BUTTONS_FROM = 0.4;
 	/** Each target's lock time: 0.35 s at 5 m or nearer to 1.0 s at 40 m (D 4B99 #193, 2BB8 / 2BB7; BZ 2026-08-11 0.35; W). */
 	public static final double LOCK_MIN = 0.35, LOCK_MAX = 1.0;
 	/**
