@@ -267,11 +267,13 @@ respawn (`p2_dead`, `p2_respawned`), zombies and a skeleton at night (`p2_fight*
 **The towed player's own side, on one client** (`devtow`: Kiriko on a rope to a floating armor stand teleported at 7 m/s: real keys, real `OwMovement`, `s2_*`): lifted from the ground, W and A swing them
 (5.5 m/s at the bottom, up to 3.5 m/s up the arc), let go of the keys and it decays, trails at 7 m/s with the rope at 4.8-5.1, GRAPPLED and Detach on the HUD.
 
-**NOT verified: nothing has been played with a real second player.** One client on the machine; the dev `bot` is on `fix/rules`, not merged (`git log next..fix/rules`), so not used. The two-client pass must check:
-1. The towed player's view: smooth, no jolt, no rubber band against the server (ClientTow runs on where it *sees* her, 100 ms old or so).
-2. Detach: launch, 0.6 s gate, F as their own look, momentum kept (only ever read, never run: `Combat.send`).
-3. A dedicated server: no floating kick (`aboveGroundTickCount` reset each tick), no "moved too quickly" at a 23 m/s boost, no fall damage after slack rope.
-4. Grab prompt, then her seeing them: the rope drawn on both screens, an enemy's red.
+**A real client on a bot's rope (`k1_*`, world `tt_bot`):** the bot reached `next` while this was being written, so a throwaway worktree of `next` plus this branch, with one extra dev line (`bot ability1 <name>`: `kit.press` with PRESS_ABILITY_1; not on any branch), ran this: the bot is the Jetpack Cat, I'm Kiriko on the real client. The LIFELINE prompt on F (`k1_prompt`); F catches, by the real `LifelineGrabPayload`; GRAPPLED and Detach show. W walks me 5.5 m/s to about 5.2 m and the rope pulls me back. `/tp` moves the bot at 7.15 m/s: I'm lifted and swing below it (`k1_flown`; the first yank rises past her, the /tp took her up 6 m at once). Space: **vy exactly 10.50 and 1.91 -> 9.91 m/s across (+8 along my look, what I had kept: D #1014)**, then gravity, landed. It proves the server's and my client's path; the bot has no client, its motion is /tp, and I never saw what another player sees.
+
+**Still NOT verified: nothing has been played with two real clients.** The one-client rule stands. The two-client pass must check:
+1. The towed player's view with a really flying cat: smooth, no jolt, no rubber band against the server (ClientTow runs on where it *sees* her, about 100 ms old).
+2. Her view of them: the rope and their swing on her screen as their own client moves them, their model's pose.
+3. A dedicated server: no floating kick (`aboveGroundTickCount` reset each tick: read, never run on one), no "moved too quickly" at a 23 m/s boost, no fall damage after slack rope.
+4. An enemy's red rope.
 5. Their abilities on the rope: wall climb, Glide Boost, Swift Step; W says a movement ability leaves the rope, **not done**.
 
 **What a critic should check:**
