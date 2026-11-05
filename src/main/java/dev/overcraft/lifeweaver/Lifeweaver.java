@@ -546,7 +546,7 @@ public final class Lifeweaver implements HeroKit {
 			hits.clear();
 			float dealt = Combat.damage(target, player.damageSources().thrown(thorn, player), SUPERBLOOM_DAMAGE, dev.overcraft.hero.Blow.perk("superbloom").by(dev.overcraft.hero.Hero.LIFEWEAVER));
 			Combat.credit(player, dealt, target);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
 			}

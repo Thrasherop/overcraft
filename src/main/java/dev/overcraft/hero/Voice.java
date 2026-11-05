@@ -315,9 +315,7 @@ public final class Voice {
 	 */
 	public static void onKill(LivingEntity victim, DamageSource source, net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity credited,
 							  @org.jspecify.annotations.Nullable Blow blow) {
-		if (credited instanceof ServerPlayer killer && killer != victim
-			&& (victim instanceof net.minecraft.world.entity.monster.Enemy || victim instanceof net.minecraft.world.entity.player.Player)
-			&& !Allies.wasAlly(killer, victim)) {
+		if (credited instanceof ServerPlayer killer && killer != victim && Allies.wasEnemy(killer, victim)) {
 			HeroState state = HeroManager.state(killer);
 			if (state == null || state.hero == null) {
 				return;

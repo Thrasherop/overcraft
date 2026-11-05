@@ -51,7 +51,7 @@ public final class Boosts {
 	 * The damage a boosted attacker deals, raised; the Mercy boosting them gets ult charge for what she added (W). The
 	 * boost is applied when the damage lands (W says when a projectile is fired: ours, Minecraft's arrows don't say).
 	 */
-	public static float amplify(@Nullable Entity attacker, float damage) {
+	public static float amplify(@Nullable Entity attacker, float damage, @Nullable Entity victim) {
 		double factor = damageFactor(attacker);
 		if (factor == 1 || damage <= 0 || attacker == null || attacker.level().getServer() == null) {
 			return damage;
@@ -61,7 +61,7 @@ public final class Boosts {
 		net.minecraft.server.level.ServerPlayer mercy = by == null ? null : attacker.level().getServer().getPlayerList().getPlayer(by);
 		if (mercy != null) {
 			// her share of what was added, not Nano's
-			dev.overcraft.hero.Combat.credit(mercy, dev.overcraft.Ow.toOw((float) (damage * (mercyFactor(attacker) - 1))));
+			dev.overcraft.hero.Combat.credit(mercy, dev.overcraft.Ow.toOw((float) (damage * (mercyFactor(attacker) - 1))), victim);
 		}
 		return raised;
 	}

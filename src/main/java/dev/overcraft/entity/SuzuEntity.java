@@ -84,12 +84,6 @@ public class SuzuEntity extends OwProjectile {
 		burst(position());
 	}
 
-	/** An enemy barrier: it bursts there, as on a wall (ours; dropped without a burst before, #104). */
-	@Override
-	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
-		burst(at);
-	}
-
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
@@ -106,7 +100,8 @@ public class SuzuEntity extends OwProjectile {
 		double r = KirikoStats.SUZU_RADIUS;
 		float healedTotal = 0;
 		for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(r))) {
-			if (!Allies.isSelfOrAlly(owner, entity) || !touches(entity, at, r) || !inSight(level, at, entity)) {
+			if (!Allies.isSelfOrAlly(owner, entity) || !touches(entity, at, r) || !inSight(level, at, entity)
+				|| dev.overcraft.brigitte.Barrier.shields(entity, owner, at)) {
 				continue;
 			}
 			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);

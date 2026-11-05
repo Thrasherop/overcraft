@@ -66,13 +66,6 @@ public class CyberspaceEntity extends OwProjectile {
 		open();
 	}
 
-	/** An enemy barrier: it opens there, as on a wall (ours; dropped without opening before, #104). */
-	@Override
-	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
-		setPos(at);
-		open();
-	}
-
 	/** At its life's end in the air it opens where it is (M). */
 	@Override
 	protected void expire() {

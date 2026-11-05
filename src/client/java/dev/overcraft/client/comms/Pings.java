@@ -219,7 +219,8 @@ public final class Pings {
 	 * rest of what Allies calls enemies (cows, sheep: things a hero may hit) are notable things.
 	 */
 	private static boolean hostile(LocalPlayer player, Entity e) {
-		return Allies.isEnemy(player, e) && (e instanceof Player || e instanceof Enemy || e instanceof Mob mob && mob.getTarget() instanceof Player);
+		return !Allies.isAlly(player, e) && e != player && e instanceof net.minecraft.world.entity.LivingEntity && !e.isSpectator()
+			&& (e instanceof Player || e instanceof Enemy || e instanceof Mob mob && mob.getTarget() instanceof Player);
 	}
 
 	private static void send(int kind, Vec3 at, int entity) {

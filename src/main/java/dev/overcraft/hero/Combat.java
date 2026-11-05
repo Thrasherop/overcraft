@@ -411,10 +411,11 @@ public final class Combat {
 	public static final double FIRE_DECAY_PER_SECOND = 5;
 	public static final int FIRE_COOLDOWN_TICKS = 60;
 
-	/** Points toward On Fire for damage dealt (Overwatch HP) to a victim of this max health (Overwatch HP). */
-	public static void addFireForDamage(Player hero, double dealt, double victimMaxHealth) {
-		if (victimMaxHealth > 0) {
-			addFire(hero, dealt / victimMaxHealth * 100);
+	/** Points toward On Fire for damage dealt (Overwatch HP) to a victim, worth 100 for all its health; a bystander none (Allies). */
+	public static void addFireForDamage(Player hero, double dealt, LivingEntity victim) {
+		double max = Ow.toOw(victim.getMaxHealth());
+		if (max > 0 && !Allies.isBystander(hero, victim)) {
+			addFire(hero, dealt / max * 100);
 		}
 	}
 

@@ -113,7 +113,7 @@ public abstract class LivingEntityMixin {
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
 		// a weakened attacker (Sombra's Cyberspace) deals half
-		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
+		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage, (LivingEntity) (Object) this) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
 			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
 		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce): not
 		// one a Brigitte's barrier takes instead, which it would have shrunk on the barrier (#88)

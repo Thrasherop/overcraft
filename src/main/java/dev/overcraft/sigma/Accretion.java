@@ -129,7 +129,7 @@ public final class Accretion {
 			float dealt = part != null ? Combat.damagePart(level, part, hit, ROCK_IMPACT, BLOW)
 				: Combat.damage(target, hit, ROCK_IMPACT, BLOW);
 			Combat.credit(owner, dealt, target);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}
@@ -137,7 +137,9 @@ public final class Accretion {
 			SigmaSounds.own(owner, "accretion.hit_enemy");
 			SigmaSounds.at(level, "accretion.hit_enemy_3p", at, 500, owner);
 			// +25 on a hit (#683, M)
-			Combat.addUltCharge(owner, ROCK_ULT_ON_HIT * Tank.ultFactor(owner, target), false);
+			if (!Allies.isBystander(owner, target)) {
+				Combat.addUltCharge(owner, ROCK_ULT_ON_HIT * Tank.ultFactor(owner, target), false);
+			}
 			if (target.isAlive()) {
 				push(target, before, along, ROCK_KNOCKBACK, ROCK_KNOCKBACK_UP);
 				// a fall or the void after it is his kill (kill_feed.md "A death the world deals")
@@ -155,18 +157,20 @@ public final class Accretion {
 				b.barrierTake(burstDamage(near.distanceTo(at)), near);
 			}
 		}
+		// a Brigitte's up barrier the same, once (not once for each one behind it)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, at, ROCK_BURST_RADIUS, Accretion::burstDamage);
 		DamageSource source = level.damageSources().explosion(rock, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(ROCK_BURST_RADIUS + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > ROCK_BURST_RADIUS || !inSight(level, at, e) || Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			if (d > ROCK_BURST_RADIUS || !inSight(level, at, e) || dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
 				continue;
 			}
 			float dealt = Combat.damage(e, source, burstDamage(d), BLOW);
 			Combat.credit(owner, dealt, e);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, e, false);
 			}

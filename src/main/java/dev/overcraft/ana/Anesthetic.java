@@ -59,7 +59,8 @@ public final class Anesthetic {
 			BURSTS.remove(b);
 			double r = AnaStats.ANESTHETIC_RADIUS;
 			for (LivingEntity e : b.level.getEntitiesOfClass(LivingEntity.class, new AABB(b.at, b.at).inflate(r + 2))) {
-				if (e.isAlive() && Allies.areaHits(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)) {
+				if (e.isAlive() && Allies.areaHits(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)
+					&& !dev.overcraft.brigitte.Barrier.shields(e, b.ana, b.at)) {
 					// a second burst on the same one starts its 3 s over (ours)
 					DOSED.put(e.getUUID(), new Dosed(e, b.ana, b.level.getGameTime()));
 					// numbed (7E60 / 7E70 on the enemy): theirs, and at them for everyone else, Ana too (she has no copy of

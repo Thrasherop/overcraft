@@ -92,13 +92,6 @@ public class BioticGrenadeEntity extends OwProjectile {
 		burst(null);
 	}
 
-	/** An enemy barrier: it bursts there, as on a wall (ours; dropped without a burst before, #104). */
-	@Override
-	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
-		setPos(at);
-		burst(null);
-	}
-
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
@@ -118,6 +111,10 @@ public class BioticGrenadeEntity extends OwProjectile {
 			return;
 		}
 		ServerPlayer owner = getOwner() instanceof ServerPlayer p ? p : null;
+		// the burst comes from where it is, not along its way: a barrier it has already flown past (round its edge) doesn't take what lands
+		// behind it (Barrier.from reads a moving projectile's way in)
+		net.minecraft.world.phys.Vec3 flight = getDeltaMovement();
+		setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
 		if (owner != null) {
 			if (bounced) {
 				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST,
@@ -132,7 +129,7 @@ public class BioticGrenadeEntity extends OwProjectile {
 		}
 		bounced = true;
 		noHit = 4;
-		net.minecraft.world.phys.Vec3 v = getDeltaMovement();
+		net.minecraft.world.phys.Vec3 v = flight;
 		if (block != null) {
 			// off a block: mirrored across its face, slowed
 			net.minecraft.core.Direction face = block.getDirection();

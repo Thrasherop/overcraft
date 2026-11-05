@@ -157,7 +157,7 @@ public final class Brigitte implements HeroKit {
 				s.bashHit = true;
 				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt, target);
-				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(player, dealt, target);
 				Effects.hitMarker(player, target, false);
 				// a Stalwart takes 40% less of it (Tank)
 				Combat.push(target, flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0), player,
@@ -358,7 +358,7 @@ public final class Brigitte implements HeroKit {
 			hit++;
 			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt, e);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, e);
 			Effects.hitMarker(player, e, false);
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
 			Combat.push(e, new Vec3(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3), player,
@@ -423,7 +423,7 @@ public final class Brigitte implements HeroKit {
 			if (hit != null) {
 				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE, dev.overcraft.hero.Blow.ability("whip_shot").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt, hit);
-				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
+				Combat.addFireForDamage(player, dealt, hit);
 				Effects.hitMarker(player, hit, false);
 				BrigitteSounds.split(player, "whip.hit", hit.getEyePosition(), 60);
 				if (hit instanceof net.minecraft.world.entity.player.Player) {
@@ -486,7 +486,7 @@ public final class Brigitte implements HeroKit {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
 				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt, p.target);
-				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
+				Combat.addFireForDamage(p.whiplash, dealt, p.target);
 				Effects.hitMarker(p.whiplash, p.target, false);
 				BrigitteSounds.split(p.whiplash, "perk.whiplash", p.target.getEyePosition(), 45);
 				p.whiplash = null;
@@ -647,7 +647,7 @@ public final class Brigitte implements HeroKit {
 				Barrier.meleeDepth--;
 			}
 			Combat.credit(player, dealt, target);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
 				BrigitteSounds.split(player, "flail.impact", target.getEyePosition(), 60);

@@ -118,9 +118,11 @@ public final class Hyperspheres {
 			float dealt = part != null ? Combat.damagePart(level, part, hit, SPHERE_DIRECT, dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA))
 				: Combat.damage(target, hit, SPHERE_DIRECT, dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA));
 			// Hyper Regeneration and Hyper Strike's count (perks)
-			SigmaPerks.sphereDealt(owner, dealt, true);
+			if (!Allies.isBystander(owner, target)) {
+				SigmaPerks.sphereDealt(owner, dealt, true);
+			}
 			Combat.credit(owner, dealt, target);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}
@@ -138,19 +140,21 @@ public final class Hyperspheres {
 				b.barrierTake(burstDamage(near.distanceTo(at)), near);
 			}
 		}
+		// a Brigitte's up barrier the same, once (not once for each one behind it)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, at, SPHERE_BURST_RADIUS, Hyperspheres::burstDamage);
 		DamageSource source = level.damageSources().explosion(sphere, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(SPHERE_BURST_RADIUS + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > SPHERE_BURST_RADIUS || !inSight(level, at, e) || Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			if (d > SPHERE_BURST_RADIUS || !inSight(level, at, e) || dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
 				continue;
 			}
 			float dealt = Combat.damage(e, source, burstDamage(d), dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA));
 			SigmaPerks.sphereDealt(owner, dealt, false);
 			Combat.credit(owner, dealt, e);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, e, false);
 			}

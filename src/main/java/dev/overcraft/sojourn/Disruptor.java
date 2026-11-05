@@ -121,11 +121,12 @@ public final class Disruptor {
 			}
 			DamageSource source = fieldSource(f.owner);
 			for (LivingEntity e : f.level.getEntitiesOfClass(LivingEntity.class, new AABB(f.centre, f.centre).inflate(FIELD_RADIUS),
-				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre))) {
+				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre)
+					&& !dev.overcraft.brigitte.Barrier.shields(e, f.owner, f.centre))) {
 				if (step) {
 					float dealt = Combat.damage(e, source, FIELD_DPS * FIELD_STEP, dev.overcraft.hero.Blow.ability("disruptor_shot").by(dev.overcraft.hero.Hero.SOJOURN));
 					Combat.credit(f.owner, dealt, e);
-					Combat.addFireForDamage(f.owner, dealt, Ow.toOw(e.getMaxHealth()));
+					Combat.addFireForDamage(f.owner, dealt, e);
 				}
 				if (f.slows) {
 					slow(e, f.level.getGameTime());

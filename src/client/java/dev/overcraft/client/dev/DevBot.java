@@ -131,7 +131,7 @@ final class DevBot {
 					out.addProperty("area", dev.overcraft.hero.Allies.areaHits(me, best));
 					if (best instanceof net.minecraft.world.entity.Mob mob) {
 						out.addProperty("target", String.valueOf(mob.getTarget()));
-						out.addProperty("brainTarget", String.valueOf(mob.getBrain().getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET).orElse(null)));
+						out.addProperty("brainTarget", String.valueOf(mob.getBrain().hasMemoryValue(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET) ? mob.getBrain().getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET).orElse(null) : null));
 					}
 					out.addProperty("y", best.getY());
 				}

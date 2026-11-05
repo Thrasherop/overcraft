@@ -54,7 +54,8 @@ public final class Cyberspace {
 	private static void apply(Zone z, double damage, double heal) {
 		long now = z.level.getGameTime();
 		for (LivingEntity e : z.level.getEntitiesOfClass(LivingEntity.class, new AABB(z.at, z.at).inflate(ZONE_RADIUS + 1))) {
-			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(z.at) > ZONE_RADIUS * ZONE_RADIUS) {
+			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(z.at) > ZONE_RADIUS * ZONE_RADIUS
+				|| dev.overcraft.brigitte.Barrier.shields(e, z.sombra, z.at)) {
 				continue;
 			}
 			if (Allies.isSelfOrAlly(z.sombra, e)) {
@@ -76,7 +77,7 @@ public final class Cyberspace {
 				if (damage > 0) {
 					float dealt = Combat.damage(e, zoneSource(z.sombra), damage, dev.overcraft.hero.Blow.ability("cyberspace").by(dev.overcraft.hero.Hero.SOMBRA));
 					Combat.credit(z.sombra, dealt, e);
-					Combat.addFireForDamage(z.sombra, dealt, Ow.toOw(e.getMaxHealth()));
+					Combat.addFireForDamage(z.sombra, dealt, e);
 					if (dealt > 0) {
 						Effects.hitMarker(z.sombra, e, false);
 					}
