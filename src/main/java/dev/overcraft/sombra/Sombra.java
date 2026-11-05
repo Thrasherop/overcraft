@@ -621,4 +621,19 @@ public final class Sombra implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her stealth ends (invisible and 60% faster in Minecraft mode after G: found playing), Hotfix's channel; for good, her beacon. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		Stealth.clear(player, s);
+		s.hotfixChannel = -1;
+		s.hotfixTarget = null;
+		s.hotfixHeld = false;
+		// a cast under way is cut, not resumed on G back: EMP's charge and Cyberspace's cooldown are spent at the press
+		s.empCast = -1;
+		s.castTicks = -1;
+		if (why.forGood()) {
+			clear(player, s);
+		}
+	}
 }

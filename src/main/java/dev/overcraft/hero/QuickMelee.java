@@ -83,7 +83,11 @@ public final class QuickMelee {
 				Effects.hitMarker(hero, target, false);
 			}
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
+			// (the only push now: Minecraft's own from the hurt is off for hero hits, #93; it pushed twice, X13)
 			target.knockback(KNOCKBACK, -look.x, -look.z, source, Ow.hp(dealt));
+			Combat.send(target);
+			// a fall or the void after it is the hero's kill (#84: the classic boop)
+			Combat.pushed(target, hero, claws ? Blow.melee("claws_out") : Blow.MELEE);
 			if (!hit && s.hero == Hero.SIGMA) {
 				// Sigma's Hyper Strike (major perk): the first one it lands on
 				dev.overcraft.sigma.SigmaPerks.meleeHit(hero, s, target);

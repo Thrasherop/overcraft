@@ -155,13 +155,12 @@ public final class Hyperspheres {
 				Effects.hitMarker(owner, e, false);
 			}
 			if (e.isAlive()) {
-				// the pull: in toward the burst and up (D 1B64 / 1B65), a Stalwart's 40% less
+				// the pull: in toward the burst and up (D 1B64 / 1B65)
 				Vec3 in = new Vec3(at.x - e.getX(), 0, at.z - e.getZ());
 				in = in.lengthSqr() < 1.0E-6 ? Vec3.ZERO : in.normalize();
-				double f = pullFactor(d) * dev.overcraft.hero.Tank.knockbackFactor(e);
-				e.push(in.x * Ow.speed(SPHERE_PULL) * f, Ow.speed(SPHERE_PULL_UP) * f, in.z * Ow.speed(SPHERE_PULL) * f);
-				e.needsSync = true;
-				Accretion.sendSpeed(e);
+				double f = pullFactor(d);
+				Combat.push(e, new Vec3(in.x * Ow.speed(SPHERE_PULL) * f, Ow.speed(SPHERE_PULL_UP) * f, in.z * Ow.speed(SPHERE_PULL) * f), owner,
+					dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.SIGMA));
 			}
 		}
 		// its burst 2EAB (m_6CB564CC, the same on a creature, a wall or at its range's end: SigmaFx), and its sound: 5E0A / 5E09

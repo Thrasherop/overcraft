@@ -16,7 +16,8 @@ import java.util.UUID;
 /**
  * Sleep (Ana's Sleep Dart: the status 026F -> 0BDE -> the shared crowd-control graph 224E, tools/reference/ana.md).
  * Asleep a creature does nothing until its time runs out. Damage wakes it, but only once it has slept 0.5 s (earlier
- * damage is ignored, not saved), and the waking takes 0.5 s. A mob is stopped by switching its AI off (restored after);
+ * damage is ignored, not saved), and the waking takes 0.5 s. A mob is stopped by holding its AI off (aiHeld: never its
+ * saved NoAI flag, #97);
  * a player can't move (their client: ClientSleep) or use their hero's keys (HeroManager.controls). Bosses sleep too, and
  * no Minecraft mob counts as a tank for the data's shorter tank sleep (the owner's open questions, ana-plan.md: ours).
  */
@@ -24,14 +25,15 @@ public final class Sleep {
 	private Sleep() {
 	}
 
-	/** One sleeper: since and until when (game time), whether its AI was already off, waking from a hit. */
-	private record Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking, boolean stun, boolean slides, double gravity) {
-		Sleeper(LivingEntity entity, long since, long until, boolean hadNoAi, boolean waking) {
-			this(entity, since, until, hadNoAi, waking, false, false, 1);
+	/** One sleeper: since and until when (game time), waking from a hit. */
+	private record Sleeper(LivingEntity entity, long since, long until, boolean waking, boolean stun, boolean slides, double gravity) {
+		Sleeper(LivingEntity entity, long since, long until, boolean waking) {
+			this(entity, since, until, waking, false, false, 1);
 		}
 	}
 
-	private static final Map<UUID, Sleeper> SLEEPERS = new HashMap<>();
+	/** (Concurrent: Mob.isNoAi asks this from worldgen threads too.) */
+	private static final Map<UUID, Sleeper> SLEEPERS = new java.util.concurrent.ConcurrentHashMap<>();
 
 	public static boolean asleep(LivingEntity entity) {
 		return SLEEPERS.containsKey(entity.getUUID());
@@ -41,8 +43,7 @@ public final class Sleep {
 	public static void put(LivingEntity entity, double seconds) {
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
-		boolean hadNoAi = old != null ? old.hadNoAi : entity instanceof Mob mob && mob.isNoAi();
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false));
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false));
 		if (old == null) {
 			// the sleep's bed (1A1F, as long as the sleep): the sleeper's own, everyone else's at it (45 m)
 			sound(entity, dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET, dev.overcraft.registry.OcSounds.ANA_SLEEP);
@@ -51,7 +52,6 @@ public final class Sleep {
 			Effects.play(level, "ana_asleep", entity.position(), Vec3.ZERO, entity, Ow.ticks(seconds), null);
 		}
 		if (entity instanceof Mob mob) {
-			mob.setNoAi(true);
 			mob.setTarget(null);
 		}
 		if (entity instanceof ServerPlayer player) {
@@ -81,10 +81,42 @@ public final class Sleep {
 		stun(entity, seconds, true, gravity);
 	}
 
-	/** Whether its AI was off before Overcraft put it to sleep or stunned it (else its AI now). */
-	public static boolean hadNoAi(Mob mob) {
+	/**
+	 * Whether Overcraft holds this mob's AI off now (asleep, stunned, knocked down, lifted by Gravitic Flux): MobMixin answers
+	 * Mob.isNoAi with it, so the mob does nothing, as a NoAI mob does, without its saved NoAI flag ever being touched (#97).
+	 * That flag used to be set and put back from this map: a mob unloaded or saved mid-sleep (its chunk left behind, Save
+	 * and Quit, a server stop) was written NoAI and stayed a statue for good. Held only for the very object put to sleep, so
+	 * the same mob loaded again (a new object, same UUID) is awake, and the client's copy (same UUID, same JVM in single
+	 * player) never is.
+	 */
+	public static boolean aiHeld(Mob mob) {
+		if (SLEEPERS.isEmpty()) {
+			return dev.overcraft.sigma.GraviticFlux.holds(mob);
+		}
 		Sleeper s = SLEEPERS.get(mob.getUUID());
-		return s != null ? s.hadNoAi : mob.isNoAi();
+		return s != null && s.entity == mob || dev.overcraft.sigma.GraviticFlux.holds(mob);
+	}
+
+	/**
+	 * This thread is reading mobs' own NoAI flags, not Overcraft's hold (a save, a bucket, a conversion: MobMixin). Per thread:
+	 * Mob.addAdditionalSaveData also runs on worldgen threads (a mob placed in a new chunk is saved into it: ProtoChunk.addEntity),
+	 * and a shared counter could stick, after which no mob could be held until the game restarted (critique_systems S1).
+	 */
+	private static final ThreadLocal<Integer> OWN_VIEW = ThreadLocal.withInitial(() -> 0);
+
+	/** Runs {@code read} seeing every mob's own NoAI flag (what gets saved or copied), not the hold. */
+	public static <T> T ownAi(java.util.function.Supplier<T> read) {
+		OWN_VIEW.set(OWN_VIEW.get() + 1);
+		try {
+			return read.get();
+		} finally {
+			OWN_VIEW.set(OWN_VIEW.get() - 1);
+		}
+	}
+
+	/** Whether isNoAi should answer with the hold now (not while something saves or copies the mob). */
+	public static boolean holdApplies(Mob mob) {
+		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
 	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
@@ -93,11 +125,7 @@ public final class Sleep {
 		if (old != null && !old.stun) {
 			return;
 		}
-		boolean hadNoAi = old != null ? old.hadNoAi : entity instanceof Mob mob && mob.isNoAi();
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), hadNoAi, false, true, slides, gravity));
-		if (entity instanceof Mob mob) {
-			mob.setNoAi(true);
-		}
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false, true, slides, gravity));
 		if (entity instanceof ServerPlayer player) {
 			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
@@ -137,7 +165,7 @@ public final class Sleep {
 		}
 		long now = entity.level().getGameTime();
 		if (now - s.since >= Ow.ticks(AnaStats.SLEEP_WAKE_FROM) && s.until - now > Ow.ticks(AnaStats.SLEEP_WAKING)) {
-			SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), s.hadNoAi, true));
+			SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, s.since, now + Ow.ticks(AnaStats.SLEEP_WAKING), true));
 		}
 	}
 
@@ -154,7 +182,8 @@ public final class Sleep {
 				continue;
 			}
 			if (s.slides) {
-				if (e instanceof Mob mob && mob.isNoAi()) {
+				if (e instanceof Mob mob) {
+					// (its AI held off, Minecraft doesn't move it: aiHeld)
 					slide(mob, s.gravity);
 				}
 				continue;
@@ -175,12 +204,14 @@ public final class Sleep {
 		mob.needsSync = true;
 	}
 
+	/** The world stopped: nothing held over (an entry would pin its mob and level until the next world's first tick). */
+	public static void clear() {
+		SLEEPERS.clear();
+	}
+
 	private static void wake(Sleeper s) {
 		SLEEPERS.remove(s.entity.getUUID());
 		if (s.stun) {
-			if (s.entity instanceof Mob mob) {
-				mob.setNoAi(s.hadNoAi);
-			}
 			if (s.entity instanceof ServerPlayer player) {
 				// (left set, a stunned player stayed frozen for good: found playing, two clients)
 				player.removeAttached(HeroManager.ASLEEP);
@@ -202,9 +233,6 @@ public final class Sleep {
 				sound(s.entity, dev.overcraft.registry.OcSounds.ANA_WAKE_TARGET, dev.overcraft.registry.OcSounds.ANA_WAKE);
 			}
 			Effects.play(level, "ana_wake", s.entity.position(), Vec3.ZERO, s.entity, 0, null);
-		}
-		if (s.entity instanceof Mob mob) {
-			mob.setNoAi(s.hadNoAi);
 		}
 		if (s.entity instanceof ServerPlayer player) {
 			player.removeAttached(HeroManager.ASLEEP);

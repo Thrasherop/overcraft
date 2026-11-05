@@ -337,4 +337,16 @@ public final class Kiriko implements HeroKit {
 			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0, 0, 0, 0);
 	}
+
+	/** Out of play (#100: HeroKit.leavePlay): a Swift Step under way doesn't land her by her ally (it did, after G: found playing). */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.castTicks = -1;
+		s.castTarget = null;
+		// Kitsune Rush runs on through a death, as it does in Overwatch (ours: the wiki doesn't say); G, a switch or a leave ends
+		// it, and her +30% with it (it renewed itself each tick in Minecraft mode: critique_systems M2)
+		if (why != dev.overcraft.hero.HeroKit.OutOfPlay.DEATH) {
+			KitsuneRush.end(player);
+		}
+	}
 }

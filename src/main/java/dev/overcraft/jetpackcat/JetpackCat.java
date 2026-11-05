@@ -103,7 +103,7 @@ public final class JetpackCat implements HeroKit {
 			if (s.ultPhase != ULT_NONE) {
 				endUlt(player, s);
 			}
-			s.purrTicks = -1;
+			endPurr(s);
 		}
 		boolean modeAllows = player.isCreative() || player.isSpectator();
 		boolean want = cat || valkyrie || modeAllows;
@@ -397,7 +397,7 @@ public final class JetpackCat implements HeroKit {
 		s.lifelineOnTicks = 0;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
-			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
+			speed.addOrUpdateTransientModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
 				AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 		Combat.animate(player, "lifeline");
@@ -518,11 +518,8 @@ public final class JetpackCat implements HeroKit {
 			}
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			out = out.lengthSqr() < 1.0E-6 ? player.getViewVector(1.0f).multiply(1, 0, 1) : out.normalize();
-			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0)
-				.scale(dev.overcraft.hero.Tank.knockbackFactor(e));
-			e.push(push.x, push.y, push.z);
-			e.syncVelocity = true;
-			dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
+			Combat.push(e, out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0), player,
+				dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			// a blue-violet flash at its chest (741C)
 			Effects.play(level, "purr_hit", e.position().add(0, e.getBbHeight() * 0.6, 0), player);
 		}
@@ -686,10 +683,8 @@ public final class JetpackCat implements HeroKit {
 			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			if (out.lengthSqr() > 1.0E-6) {
-				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH) * dev.overcraft.hero.Tank.knockbackFactor(e));
-				e.push(push.x, 0.1, push.z);
-				e.syncVelocity = true;
-				dev.overcraft.hero.Combat.pushed(e, player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
+				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH));
+				Combat.push(e, new Vec3(push.x, 0.1, push.z), player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			}
 			if (d < nearestD) {
 				nearest = e;
@@ -763,5 +758,25 @@ public final class JetpackCat implements HeroKit {
 			s.primaryAmmo, reload, (int) Math.round(s.fuel), -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, mode, left, (float) (s.fuel / 100));
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): Lifeline lets go and its speed goes, Catnapper's carry ends, Purr stops. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.lifelineOn) {
+			lifelineOff(player, s, false);
+		}
+		if (s.ultPhase != ULT_NONE) {
+			endUlt(player, s);
+		}
+		endPurr(s);
+	}
+
+	/** A Purr cut short still costs its cooldown: its burst has gone out (it would come back at once on G back). */
+	private static void endPurr(HeroState s) {
+		if (s.purrTicks >= 0) {
+			s.ability2Cooldown = Ow.ticks(PURR_COOLDOWN);
+		}
+		s.purrTicks = -1;
 	}
 }

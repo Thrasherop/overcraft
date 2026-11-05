@@ -169,7 +169,8 @@ public final class Lucio implements HeroKit {
 			}
 		}
 
-		if (player.tickCount % SONG_TICKS == 0) {
+		// in play only: in Minecraft mode his song neither plays nor heals nor speeds anyone (#100)
+		if (controls && player.tickCount % SONG_TICKS == 0) {
 			songs(player, s);
 		}
 		syncSong(player, s, controls);
@@ -285,11 +286,9 @@ public final class Lucio implements HeroKit {
 			// a barrier in the way takes the wave whole: no push, no lockout behind it (#88; any barrier: Barriers)
 			if (target.isAlive() && !dev.overcraft.brigitte.Barrier.shields(target, player)) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
-				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE))
-					* dev.overcraft.hero.Tank.knockbackFactor(target));
-				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));
-				target.syncVelocity = true;
-				dev.overcraft.hero.Combat.pushed(target, player, dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
+				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push);
+				Combat.launch(target, new Vec3(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z)), player,
+					dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 				// the lockout (ours: Minecraft has no "can't move", so a moment of heavy Slowness)
 				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(WAVE_LOCKOUT), 9, false, false));
 			}
@@ -357,5 +356,23 @@ public final class Lucio implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk),
 			(float) (s.ability3Cooldown / 20.0), s.speedSong ? 1 : 0, s.ampUp / 20f, (float) s.riderCharge);
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.barrierCast = -1;
+		s.songSwap = -1;
+		if (s.ampUp > 0 || s.ampDelay > 0) {
+			// Amp It Up ends with him (it ran on silently), and costs its cooldown
+			s.ampUp = 0;
+			s.ampDelay = 0;
+			if (!s.ampFree) {
+				s.ability2Cooldown = Ow.ticks(AMP_UP_COOLDOWN);
+			}
+			s.ampFree = false;
+		}
+		s.volleyLeft = 0;
+		player.setAttached(dev.overcraft.hero.HeroManager.SONG, 0);
 	}
 }

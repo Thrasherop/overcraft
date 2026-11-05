@@ -303,7 +303,7 @@ What playing found:
 - **Not fixed:** a glide started in water does nothing but its pose; the ray's ground circle lies on the bottom under a
   liquid; the pause menu still reads 0.3.27 (the version bump belongs to the merge).
 - **Not ours:** "Failed to save chunk" toasts in `relnight` (Windows' "Insufficient system resources" on E: while
-  checking for an oversized-chunk file; no `.mcc` written); a kunai's knockback pushing her 3.4 m (Minecraft's, any hero).
+  checking for an oversized-chunk file; no `.mcc` written); a kunai's knockback pushing her 3.4 m (Minecraft's, any hero; gone since #93: hero hits take no Minecraft knockback, [minecraft_26](../minecraft/minecraft_26.md#hero-hits-dont-push-93-2026-11-03)).
 
 Not tried: a second player as Juno; boats, ladders, minecarts; the Hyper Ring on an enemy; her emotes and voice lines
 (steps 8 and 8b); a real person's night (the scripted fighter is no player); crafting at a crafting table.
