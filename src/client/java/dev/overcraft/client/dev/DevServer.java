@@ -268,6 +268,26 @@ public final class DevServer {
 				mc.options.showSubtitles().set(!arg.equals("off"));
 				out.addProperty("ok", true);
 			}
+			case "cut" -> {
+				// dev only: "cut sleep|stun|hack <seconds>" on the local player, in the one-player world: what an enemy's dart, stun or EMP
+				// does, without a second client
+				String[] a = arg.split(" ");
+				double seconds = a.length > 1 ? Double.parseDouble(a[1]) : 2;
+				var server = mc.getSingleplayerServer();
+				var target = server == null || player == null ? null : server.getPlayerList().getPlayer(player.getUUID());
+				if (target != null) {
+					server.execute(() -> {
+						switch (a[0]) {
+							case "sleep" -> dev.overcraft.hero.Sleep.put(target, seconds);
+							case "stun" -> dev.overcraft.hero.Sleep.stun(target, seconds);
+							case "hack" -> dev.overcraft.sombra.Hack.creature(target, seconds);
+							default -> {
+							}
+						}
+					});
+				}
+				out.addProperty("ok", target != null);
+			}
 			case "respawn" -> {
 				// what the death screen's Respawn button does
 				if (player != null) {

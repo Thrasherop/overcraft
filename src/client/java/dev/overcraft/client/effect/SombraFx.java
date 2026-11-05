@@ -93,6 +93,7 @@ public final class SombraFx {
 					: Palette.SOMBRA_BEACON_TRAIL_N, 0.5f, 0.3f, 0.4f);
 			}
 		}
+		detectionRing(mc);
 		held(mc, HACKED, now, SombraFx::hacked);
 		held(mc, REVEALED, now, SombraFx::revealed);
 		held(mc, HOTFIXED, now, SombraFx::hotfixed);
@@ -563,6 +564,42 @@ public final class SombraFx {
 			Fx.add(flash.at(mid).life(0.35f).size(2, 1.4f).alpha(0.6f).fade(0.02f, 0.6f).nearFade(0.8f));
 		}
 	}
+
+	/**
+	 * Her stealth's detection ring (4DD9, held while stealthed; the option "Hide Stealth Detection Ring" v52253 is off by default,
+	 * 420C #959 -> #785): the open cylinder 129B x the three squares band 43D04, violet, 8 m across (the 4 m an enemy sees her from,
+	 * df 0639: M), shown to her alone (M). Its height is the mesh's scaled with its width, squashed by the mesh's own axis: see play.
+	 */
+	private static void detectionRing(Minecraft mc) {
+		net.minecraft.client.player.LocalPlayer me = mc.player;
+		Long from = me == null ? null : me.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		if (from == null || from < 0 || !"sombra".equals(me.getAttached(dev.overcraft.hero.HeroManager.HERO))) {
+			return;
+		}
+		float[] raw = Fx.mesh("sombra_cylinder");
+		if (raw == null) {
+			return;
+		}
+		if (raw != ringFrom) {
+			// the cylinder's axis (its Y as imported) squashed to a band: 8.4 m tall at the data's unit length stood as a wall (ours)
+			ringFrom = raw;
+			ringMesh = raw.clone();
+			for (int i = 1; i < ringMesh.length; i += 5) {
+				ringMesh[i] *= RING_BAND;
+			}
+		}
+		float[] mesh = ringMesh;
+		Fx.attach("sombra_detect/" + me.getId(), me.position().add(0, RING_LIFT, 0), () -> {
+			Particle p = Fx.particle("sombra_square_band", Palette.SOMBRA_DETECT_RING_N);
+			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.5f).fade(0.05f, 0.2f);
+		});
+	}
+
+	private static float @org.jspecify.annotations.Nullable [] ringFrom, ringMesh;
+	private static final float RING_BAND = 0.1f;
+	private static final float RING_LIFT = 0.1f;
+	/** 8 m across: the cylinder's 0.95 scaled. */
+	private static final float RING_SIZE = 8 / 0.95f;
 
 	/** Stealth fades in (1AD9): purple sparkles round her middle as she goes. */
 	private static void stealth(Vec3 at, boolean enemy) {

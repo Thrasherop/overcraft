@@ -57,6 +57,8 @@ public final class HeroModelRenderer {
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
 	/** The camera's inside her (the emote camera's first moments): she isn't drawn, not even as Minecraft's player. */
 	private static final RenderStateDataKey<Boolean> UNSEEN = RenderStateDataKey.create(() -> "overcraft:hero_unseen");
+	/** Sombra's stealth: how far phased out (0-1) and the time, for her phased-out look (ClientSombra.phase, #87). */
+	private static final RenderStateDataKey<float[]> STEALTH = RenderStateDataKey.create(() -> "overcraft:hero_stealth");
 
 	/**
 	 * Her body's shadow this frame (the owner, 2026-10-27: "casting a body shaped shadow would be good"): the direction
@@ -133,6 +135,7 @@ public final class HeroModelRenderer {
 
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
+		dev.overcraft.client.ClientSombra.clear();
 		LAST_HERO.clear();
 	}
 
@@ -193,6 +196,8 @@ public final class HeroModelRenderer {
 			hidden = allProps(loaded.model());
 		}
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null));
+		float phase = hero == Hero.SOMBRA && !previewing ? dev.overcraft.client.ClientSombra.phase(entity, now) : 0;
+		state.setData(STEALTH, phase > 0 ? new float[] {phase, now} : null);
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
 		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
@@ -476,8 +481,102 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
-	/** How much of a stealthed hero shows to those who see her (ours). */
-	private static final float SEE_THROUGH = 0.25f;
+	/** How much of a stealthed hero shows to those who see her, and to her own eyes, fully phased out (ours). */
+	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.6f;
+	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
+	private static final int STEALTH_TINT = 0xC8B4FF, STEALTH_GLOW = 0x9A55FF;
+	/** 1AD9's wipe edge row, by the fade (sombra-effects: #6D0000 #CE0000 #F6502B #00DFB6; read by age: M). */
+	private static final int[] WIPE_EDGE = {0x6D0000, 0xCE0000, 0xF6502B, 0x00DFB6};
+	private static final Identifier WIPE_MASK = dev.overcraft.Overcraft.id("hud/sombra_wipe");
+	/** The wipe's mask is built: null not yet, false without the pack's frames. */
+	private static @Nullable Boolean wipeMade;
+
+	/**
+	 * A7BF's 6 frames as one mask for Minecraft's dissolve shader (RenderTypes.entityCutoutDissolve): each frame whites out
+	 * more of it, so a texel's alpha is when it goes (1 for the first frame's, 1/6 for the last's, near 0 for those never
+	 * white), against the vertex alpha falling 1 -> 0. The data's frames, on her own UVs.
+	 */
+	private static boolean wipeMask() {
+		if (wipeMade == null) {
+			wipeMade = false;
+			try {
+				var resources = Minecraft.getInstance().getResourceManager();
+				com.mojang.blaze3d.platform.NativeImage out = null;
+				for (int frame = 5; frame >= 0; frame--) {
+					try (java.io.InputStream in = resources.open(dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+						 com.mojang.blaze3d.platform.NativeImage image = com.mojang.blaze3d.platform.NativeImage.read(in)) {
+						if (out == null) {
+							out = new com.mojang.blaze3d.platform.NativeImage(image.getWidth(), image.getHeight(), true);
+							for (int y = 0; y < out.getHeight(); y++) {
+								for (int x = 0; x < out.getWidth(); x++) {
+									out.setPixel(x, y, 8 << 24 | 0xFFFFFF);
+								}
+							}
+						}
+						int alpha = Math.round(255 * (6 - frame) / 6f);
+						for (int y = 0; y < out.getHeight(); y++) {
+							for (int x = 0; x < out.getWidth(); x++) {
+								if ((image.getPixel(x, y) >> 16 & 0xFF) > 127) {
+									out.setPixel(x, y, alpha << 24 | 0xFFFFFF);
+								}
+							}
+						}
+					}
+				}
+				if (out != null) {
+					Minecraft.getInstance().getTextureManager().register(WIPE_MASK, new HeroTexture(WIPE_MASK, out, net.minecraft.client.renderer.texture.MipmapStrategy.MEAN));
+					wipeMade = true;
+				}
+			} catch (java.io.IOException e) {
+				dev.overcraft.Overcraft.LOG.warn("Sombra's stealth wipe: {}", e.toString());
+			}
+		}
+		return wipeMade;
+	}
+
+	/**
+	 * Sombra stealthed (#87), as she shows to those who still see her and in her own view. The fades are the data's: 1AD9 / 1AD8
+	 * wipe her solid self away along A7BF's diagonal frames, with its edge row's colours lit on the frame reached (phase 0 solid, 1
+	 * phased out). What's held has no art in the data (16EA is empty, the invisibility a renderer state, STU_33A46033: M): ours, one
+	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		phase = Math.clamp(phase, 0, 1);
+		boolean wipe = wipeMask();
+		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
+		float opacity = (own ? SEE_THROUGH_OWN : SEE_THROUGH) * (0.92f + 0.16f * pulse) * phase;
+		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+		// what's left of her solid self, as vertex alpha against the wipe's mask (or plainly fading without the pack)
+		int solid = Math.clamp(Math.round((1 - phase) * 255), 0, 255) << 24 | 0xFFFFFF;
+		float fading = phase;
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
+			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
+				continue;
+			}
+			if (fading < 1) {
+				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+			}
+			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
+		}
+		if (wipe) {
+			// mid-fade the edge: the frame reached, lit in the row's colour by the fade; held, the frames turning slowly as glints
+			float mid = 4 * phase * (1 - phase);
+			int frame = phase < 1 ? Math.clamp((int) (phase * 6), 0, 5) : Math.floorMod((int) Math.floor(time * 5), 6);
+			float along = phase * 3;
+			int from = Math.clamp((int) along, 0, 2);
+			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
+			float strength = phase < 1 ? 0.85f * mid : 0.1f;
+			if (strength > 0.01f) {
+				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+			}
+		}
+		submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
+	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
 	public static boolean submit(LivingEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
@@ -532,9 +631,20 @@ public final class HeroModelRenderer {
 		}
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
-		if (seeThrough) {
-			// Overwatch's stealthed Sombra to those who see her: a faint purple shimmer of her (ours: 25%, her colour)
-			submitSpirit(draw.loaded(), draw.skin(), poseStack, collector, SEE_THROUGH, 0, 0xB89BFF, 0xB89BFF, false);
+		float[] stealth = state.getData(STEALTH);
+		if (seeThrough || stealth != null) {
+			// Overwatch's stealthed Sombra to those who see her (her side, an enemy within 4 m, herself from behind): phased
+			// out, her weapon too; fading there over the stealth's 0.75 s and back over its 0.3 s (#87)
+			float phase = stealth != null ? stealth[0] : 1;
+			float time = stealth != null ? stealth[1] : state.ageInTicks / 20f;
+			submitStealth(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), phase, time, light, overlay, false);
+			EmoteProps.Placed held = state.getData(WEAPON);
+			if (held != null) {
+				poseStack.pushPose();
+				poseStack.mulPose(held.at());
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+				poseStack.popPose();
+			}
 			poseStack.popPose();
 			return true;
 		}
@@ -786,6 +896,14 @@ public final class HeroModelRenderer {
 		return viewGunAt >= 0 && Util.getMillis() - viewGunAt < 200 ? new Vector3f(VIEW_GUN) : null;
 	}
 
+	private static final Vector3f[] VIEW_PODS = {new Vector3f(), new Vector3f()};
+	private static long viewPodsAt = -1;
+
+	/** Juno's own view's torpedo pod (0 or 1) as drawn, from the camera in the world's axes, or null (as viewGun). */
+	public static @Nullable Vector3f viewPod(int side) {
+		return viewPodsAt >= 0 && Util.getMillis() - viewPodsAt < 200 ? new Vector3f(VIEW_PODS[side]) : null;
+	}
+
 	public static @Nullable Vector3f viewMuzzle() {
 		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
 	}
@@ -894,6 +1012,12 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
+		if (hero == Hero.ANA && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
+			// fully scoped, Overwatch draws nothing of her: her view model goes (0B94 #199, M) and her scope's overlay fills
+			// the view (HeroHud.anaScope, #90). Her held pose 3B92 already takes the arms out of view (played); not drawing
+			// them makes sure no edge of the rifle shows inside the lens while she turns (the arms' sway)
+			return true;
+		}
 		if (hero == Hero.BRIGITTE && !minecraft) {
 			// her barrier up, as her side sees it: square to her view, 0.9 m ahead, from about her feet up (HeroWeapon)
 			EmoteProps.Placed barrier = HeroWeapon.barrierShown(animator, now);
@@ -924,12 +1048,30 @@ public final class HeroModelRenderer {
 		// where her ofuda hand's fingertip is in the view: the throw's puff pops there
 		poseStack.last().pose().transformPosition(animator.fingertip, VIEW_FINGERTIP);
 		viewFingertipAt = Util.getMillis();
+		if (hero == Hero.JUNO && !minecraft && animator.viewPose() != null) {
+			// her torpedo pods (bones 0182 / 0183 = hp 048D / 048E) as her own view draws them: the lock raises them into the
+			// top corners (torpedo_lock_start), and her torpedoes leave from there (#86: they started behind her eyes)
+			for (int side = 0; side < 2; side++) {
+				int node = loaded.model().node(side == 0 ? "bone_0182" : "bone_0183");
+				if (node >= 0) {
+					Vector3f at = Skeleton.world(loaded.model(), animator.viewPose(), node).getTranslation(new Vector3f());
+					poseStack.last().pose().transformPosition(at, VIEW_PODS[side]);
+				}
+			}
+			viewPodsAt = Util.getMillis();
+		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
 		int lit = Math.max(light & 0xFFFF, VIEW_MODEL_MIN_LIGHT << 4) | light & 0xFFFF0000;
-		submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
-		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
+		// Sombra stealthed: her own arms and pistol phased out too, as Overwatch's (#87: they stayed solid)
+		float stealth = hero == Hero.SOMBRA && !minecraft ? dev.overcraft.client.ClientSombra.phase(player, now) : 0;
+		if (stealth > 0) {
+			submitStealth(loaded, skin, poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+		} else {
+			submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
+			submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
+		}
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
 		net.minecraft.world.phys.Vec3 cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
@@ -948,7 +1090,14 @@ public final class HeroModelRenderer {
 			}
 		}
 		if (weapon != null) {
-			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			if (stealth > 0) {
+				poseStack.pushPose();
+				poseStack.mulPose(weapon.at());
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+				poseStack.popPose();
+			} else {
+				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			}
 			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)
 			Vector3f muzzle = HeroWeapon.muzzle(hero, animator, loaded.model(), true, now);
 			if (muzzle != null) {
