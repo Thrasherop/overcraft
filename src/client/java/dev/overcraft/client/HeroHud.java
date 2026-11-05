@@ -167,19 +167,31 @@ public final class HeroHud {
 			minecraftMode(g, s, hero);
 			return;
 		}
-		screenEffects(g, s, player);
 		float scale = scale(g.guiWidth(), g.guiHeight());
 		float w = g.guiWidth() / scale;
 		float h = g.guiHeight() / scale;
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
-		// Ana scoped in: her scope over the view, under every widget (ally marks, the kill feed, her HUD), in place of the
-		// crosshair once it shows (#90)
-		float scope = hero == Hero.ANA ? ClientAna.ownScope() : 0;
-		if (scope >= SCOPE_SHOWN) {
+		// Ana scoped in: her scope over the view, under every widget and the screen's hurt tints (under its surround they were
+		// lost: critique M6), in place of the crosshair once it shows, eased between the sync's ticks (#90)
+		float scope = hero == Hero.ANA ? ClientAna.ownScopeEased() : 0;
+		if (scope > SCOPE_SHOWN) {
 			anaScope(g, w, h, Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1));
 		}
+		g.pose().popMatrix();
+		screenEffects(g, s, player);
+		g.pose().pushMatrix();
+		g.pose().scale(scale, scale);
+		// scoped, ally marks only over the lens: over its black surround they marked nothing to be seen (critique M6)
+		boolean lens = scope >= 1;
+		float lensAt = Math.min(w, h) / 2 - SCOPE_MARGIN;
+		if (lens) {
+			g.enableScissor(Math.round(w / 2 - lensAt), Math.round(h / 2 - lensAt), Math.round(w / 2 + lensAt), Math.round(h / 2 + lensAt));
+		}
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
+		if (lens) {
+			g.disableScissor();
+		}
 		// Overwatch's kill feed sits where Minecraft's toasts and status-effect icons do: below any showing (toasts 32 GUI
 		// units a slot; the icons' rows end 25 or 50 units down). The weakness icon hid a line's victim (found playing)
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
@@ -189,7 +201,7 @@ public final class HeroHud {
 		// from behind while an ability holds the view: it turns to the point her aim meets, under the crosshair (Brigitte's
 		// barrier camera had none: #88)
 		boolean firstPerson = mc.options.getCameraType().isFirstPerson();
-		if (scope >= SCOPE_SHOWN) {
+		if (scope > SCOPE_SHOWN) {
 			// (the scope's own reticle instead)
 		} else if (firstPerson || AbilityCamera.active() && !dev.overcraft.client.comms.EmoteCamera.active()
 			&& mc.options.getCameraType() == net.minecraft.client.CameraType.THIRD_PERSON_BACK) {
@@ -275,8 +287,8 @@ public final class HeroHud {
 
 	/** Her scope overlay shows from 80% scoped in (D 0B94 #278: op73(v169, 0.8)). */
 	private static final float SCOPE_SHOWN = 0.8f;
-	/** The scope's clear circle's radius, reference pixels at 1080 high (ours: it fills the height but a dark rim). */
-	private static final float SCOPE_RADIUS = 470;
+	/** The lens's rim from the screen's short side (reference pixels, ours: from memory the lens nearly fills the height). */
+	private static final float SCOPE_MARGIN = 20;
 
 	/**
 	 * Ana's scope (#90). Her data shows UX view model 0613.116 on the HUD root from 80% scoped (0B94 #278), with her skin's
@@ -289,7 +301,7 @@ public final class HeroHud {
 	private static void anaScope(GuiGraphicsExtractor g, float w, float h, float shown) {
 		float cx = w / 2;
 		float cy = h / 2;
-		float r = Math.min(SCOPE_RADIUS, Math.min(w, h) / 2 - 20);
+		float r = Math.min(w, h) / 2 - SCOPE_MARGIN;
 		float half = r / HudShapes.SCOPE_CLEAR;
 		int dark = alpha(0x050608, 0.96f * shown);
 		image(g, HudShapes.SCOPE, cx - half, cy - half, half * 2, half * 2, dark);

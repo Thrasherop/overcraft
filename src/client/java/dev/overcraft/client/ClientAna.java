@@ -59,6 +59,20 @@ public final class ClientAna {
 		return viewScope();
 	}
 
+	private static float eased;
+	private static long easedAt;
+
+	/** ownScope, moved at the scope's own speed between the sync's ticks (0.2 a tick left the overlay's fade two steps). */
+	public static float ownScopeEased() {
+		long now = net.minecraft.util.Util.getMillis();
+		float dt = Math.clamp((now - easedAt) / 1000f, 0, 0.1f);
+		easedAt = now;
+		float target = viewScope();
+		float step = dt * (target >= eased ? (float) (1 / AnaStats.SCOPE_IN) : (float) (1 / AnaStats.SCOPE_OUT));
+		eased = target <= 0 && step > eased ? 0 : eased + Math.clamp(target - eased, -step, step);
+		return eased;
+	}
+
 	/**
 	 * The field of view's multiplier: from the player's own setting toward 30° as the scope comes up. Vertical degrees, as
 	 * Minecraft's: the data's v172 = 30 (0B94 #83 -> the camera's #84) is vertical too. Overwatch keeps the vertical view
