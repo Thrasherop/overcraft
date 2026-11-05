@@ -1247,9 +1247,21 @@ public final class OwMovement {
 			return 0;
 		}
 		// the wall is on the side the normal points away from: right if (heading x up) points into it
-		Vec3 heading = ride.heading();
+		Vec3 heading = shownHeading(entity, ride);
 		double cross = heading.z * ride.normal.x - heading.x * ride.normal.z;
 		return cross > 0 ? 1 : -1;
+	}
+
+	/**
+	 * The way he's shown riding. Square on, the way isn't set for its first 0.3 s, and heading() says the axis: the clip and what others see began on
+	 * that side and flipped when the ride proper chose (played, #115: wallride_right, then left at 0.3 s). So till then, the side the camera will choose. S held
+	 * at that moment still chooses against it (inputWay needs the input, which isn't here): one flip, as before.
+	 */
+	private static Vec3 shownHeading(LivingEntity entity, Ride ride) {
+		if (ride.way != 0) {
+			return ride.heading();
+		}
+		return cameraWay(entity, ride) < 0 ? ride.axis.scale(-1) : ride.axis;
 	}
 
 	/** Another player's ride on this client, by HeroManager.LUCIO_WALL, or 0. Never one's own: that's his ride itself, and the synced copy lags it. */
@@ -1317,7 +1329,7 @@ public final class OwMovement {
 		if (ride == null) {
 			return Float.NaN;
 		}
-		Vec3 heading = ride.heading();
+		Vec3 heading = shownHeading(entity, ride);
 		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
 	}
 
