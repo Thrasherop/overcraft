@@ -257,11 +257,17 @@ public final class HeroAnimator {
 					viewClip = "ult_cast";
 				}
 				case "torpedo_lock" -> {
+					// the view's start then its hold for the whole window (ActionTrack: torpedo_lock_view)
 					clip = "";
-					viewClip = "torpedo_lock_start";
+					viewClip = "torpedo_lock_view";
 				}
 				case "torpedo_fire" -> clip = "";
-				case "glide", "glide_end", "torpedo_cancel" -> {
+				case "torpedo_cancel" -> {
+					// the view's lock fades back to the gun (ActionTrack); nothing new starts
+					clip = "";
+					viewClip = "torpedo_cancel";
+				}
+				case "glide", "glide_end" -> {
 					clip = "";
 					viewClip = "";
 				}
@@ -674,6 +680,16 @@ public final class HeroAnimator {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Juno's Pulsar Torpedoes lock window is open, as her actions tell it (lock sent, no fire, cancel or ult since, within the
+	 * 4 s window): every client knows it this way (JunoFx's pods read it the same).
+	 */
+	public boolean junoLocking(float now) {
+		float lockFor = since("torpedo_lock", now);
+		return lockFor < since("torpedo_fire", now) && lockFor < since("torpedo_cancel", now) && lockFor < since("ult", now)
+			&& lockFor < (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW + 0.1f;
 	}
 
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
@@ -1330,6 +1346,22 @@ public final class HeroAnimator {
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
 			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
+			// then the lock's hold (cat 0x1F8, 4695 #1199) looping while the window lasts, over the start's last frame: the
+			// start holds her pods 0.55 m up (3CFB +0.28, +0.55 in every key), the hold's own keys only bob them 1-4 cm about
+			// zero, and the fire's first key has them at +0.3, +0.52, so the three meet only with the start's offset kept
+			// under the hold (M; a contact check of the keys). Alone, the pods folded back down mid-lock (#86)
+			SkinnedModel.Clip start = clip(model, "add_torpedo_lock_start");
+			SkinnedModel.Clip hold = clip(model, "add_torpedo_lock");
+			float lockFor = since("torpedo_lock", now);
+			if (start != null && hold != null && junoLocking(now) && lockFor > start.duration()) {
+				Skeleton.addAdditive(start, start.duration(), pose, 1);
+				Skeleton.addAdditive(hold, (lockFor - start.duration()) % hold.duration(), pose, 1);
+				// and cat 0x1F8's second layer, F788, 4.07 s: the 4 s lock window's own (clipmap.md, M)
+				SkinnedModel.Clip window = clip(model, "add_torpedo_lock_hold");
+				if (window != null) {
+					Skeleton.addAdditive(window, Math.min(lockFor - start.duration(), window.duration()), pose, 1);
+				}
+			}
 			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
 		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);

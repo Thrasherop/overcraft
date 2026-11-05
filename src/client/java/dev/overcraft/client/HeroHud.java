@@ -199,6 +199,8 @@ public final class HeroHud {
 			guardianAngelTarget(g, player, s, w, h, delta.getGameTimeDeltaPartialTick(true));
 		} else if (hero == Hero.LUCIO && firstPerson) {
 			songIndicator(g, s, w / 2, h / 2 + SONG_BELOW);
+		} else if (hero == Hero.JUNO) {
+			junoTimers(g, player, s, w / 2, h / 2, delta.getGameTimeDeltaPartialTick(true));
 		}
 		lifelinePrompt(g, player, w, h);
 		if (ClientHero.perkMenuOpen()) {
@@ -1446,6 +1448,52 @@ public final class HeroHud {
 	private static final int SONG_SPEED = 0xFF52E24A;
 	private static final int SONG_HEAL_DIM = 0x99B49B5C;
 	private static final int SONG_SPEED_DIM = 0x995E9C6A;
+
+	/**
+	 * Juno's timed abilities under the crosshair (#86), the data's timed-ability widget 0237.116: Glide Boost's on the centre
+	 * layer v40843 (47B7 #641: its fraction v215 / v567, its time op109(v215) and its ability icon 024D), the torpedo lock
+	 * window's in her reticle v11821 (4695 #1225 / #1283: fraction and time). The widget's art isn't in the data: ours, a
+	 * shrinking bar with the time beside it (the glide's icon at its left). Glide's time left is synced (Juno.sync's
+	 * activeLeft); the lock's is her lock action's age against the 4 s window (HeroAnimator.junoLocking).
+	 */
+	private static void junoTimers(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float partial) {
+		float y = cy + TIMER_BELOW;
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0) {
+			float total = (float) dev.overcraft.juno.JunoStats.GLIDE_TIME;
+			timedBar(g, HeroArt.ability(Hero.JUNO, "glide_boost"), "glide_boost", s.activeLeft() / total, s.activeLeft(), cx, y);
+			y += TIMER_GAP;
+		}
+		dev.overcraft.client.model.HeroAnimator a = dev.overcraft.client.model.HeroAnimator.of(player);
+		float now = (player.level().getGameTime() + partial) / 20f;
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && a.junoLocking(now)) {
+			float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
+			float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
+			timedBar(g, null, "pulsar_torpedoes", left / total, left, cx, y);
+		}
+	}
+
+	/** The timed-ability bar's top below the crosshair, and the next one's below it (reference pixels, ours). */
+	private static final float TIMER_BELOW = 92, TIMER_GAP = 30;
+	private static final float TIMER_W = 180, TIMER_H = 6;
+
+	/** One timed-ability bar (0237): the share left as a white bar shrinking toward its left end, the seconds at its right. */
+	private static void timedBar(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float share, float seconds,
+								 float cx, float y) {
+		share = Math.clamp(share, 0, 1);
+		float x = cx - TIMER_W / 2;
+		// a dark shadow under all of it, so it reads over a bright sky
+		fill(g, x - 1, y - 1, TIMER_W + 2, TIMER_H + 2, 0x80000000);
+		fill(g, x, y, TIMER_W, TIMER_H, 0x40FFFFFF);
+		fill(g, x, y, TIMER_W * share, TIMER_H, 0xF2FFFFFF);
+		String text = String.format(java.util.Locale.ROOT, "%.1f", Math.max(0, seconds));
+		brush(g, text, x + TIMER_W + 30, y + TIMER_H + 6, 18);
+		HudText.plain(g, Face.NUMBERS, text, x + TIMER_W + 30, y + TIMER_H + 6, 18, WHITE, Align.CENTER);
+		if (icon != null) {
+			float s = 26;
+			image(g, icon, x - s - 9, y + TIMER_H / 2 - s / 2 + 1, s, s, 0x99000000);
+			image(g, icon, x - s - 10, y + TIMER_H / 2 - s / 2, s, s, WHITE);
+		}
+	}
 
 	/**
 	 * The ofuda counter under the crosshair: five amber "/" bars, one per volley (two ofuda), spent ones from the right

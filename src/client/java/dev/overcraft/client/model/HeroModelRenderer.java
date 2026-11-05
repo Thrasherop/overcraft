@@ -786,6 +786,14 @@ public final class HeroModelRenderer {
 		return viewGunAt >= 0 && Util.getMillis() - viewGunAt < 200 ? new Vector3f(VIEW_GUN) : null;
 	}
 
+	private static final Vector3f[] VIEW_PODS = {new Vector3f(), new Vector3f()};
+	private static long viewPodsAt = -1;
+
+	/** Juno's own view's torpedo pod (0 or 1) as drawn, from the camera in the world's axes, or null (as viewGun). */
+	public static @Nullable Vector3f viewPod(int side) {
+		return viewPodsAt >= 0 && Util.getMillis() - viewPodsAt < 200 ? new Vector3f(VIEW_PODS[side]) : null;
+	}
+
 	public static @Nullable Vector3f viewMuzzle() {
 		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
 	}
@@ -924,6 +932,18 @@ public final class HeroModelRenderer {
 		// where her ofuda hand's fingertip is in the view: the throw's puff pops there
 		poseStack.last().pose().transformPosition(animator.fingertip, VIEW_FINGERTIP);
 		viewFingertipAt = Util.getMillis();
+		if (hero == Hero.JUNO && !minecraft && animator.viewPose() != null) {
+			// her torpedo pods (bones 0182 / 0183 = hp 048D / 048E) as her own view draws them: the lock raises them into the
+			// top corners (torpedo_lock_start), and her torpedoes leave from there (#86: they started behind her eyes)
+			for (int side = 0; side < 2; side++) {
+				int node = loaded.model().node(side == 0 ? "bone_0182" : "bone_0183");
+				if (node >= 0) {
+					Vector3f at = Skeleton.world(loaded.model(), animator.viewPose(), node).getTranslation(new Vector3f());
+					poseStack.last().pose().transformPosition(at, VIEW_PODS[side]);
+				}
+			}
+			viewPodsAt = Util.getMillis();
+		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
