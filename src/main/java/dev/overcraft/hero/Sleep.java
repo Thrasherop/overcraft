@@ -33,6 +33,8 @@ public final class Sleep {
 	}
 
 	private static final net.minecraft.resources.Identifier FLOAT = dev.overcraft.Overcraft.id("knockdown_float");
+	/** Players on their way down from a float: no fall counts till they land. */
+	private static final Map<UUID, ServerPlayer> FLOATED = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/** (Concurrent: Mob.isNoAi asks this from worldgen threads too.) */
 	private static final Map<UUID, Sleeper> SLEEPERS = new java.util.concurrent.ConcurrentHashMap<>();
@@ -145,6 +147,9 @@ public final class Sleep {
 				// a player moves on their own client: Hyper Strike's float (#109) goes there as Minecraft's gravity attribute, which
 				// Minecraft mode falls by and hero mode reads (OvercraftClient's gravityScale); a mob's is in slide
 				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, gravity - 1, seconds);
+				// Its landing doesn't hurt. Overwatch has no fall damage, and the float took a Brigitte struck aiming up 18 m: 13.92 -> 0 on the landing,
+				// where the floatless throw cost 4 (runs/polish3/c3_hyper_up.txt). Ours, from that: not the #84 rule for pushes, which keep their falls
+				FLOATED.put(player.getUUID(), player);
 			}
 		}
 	}
@@ -193,6 +198,11 @@ public final class Sleep {
 
 	/** Each server tick (HeroManager): sleepers stay put, and wake when their time is up. */
 	public static void tick(MinecraftServer server) {
+		FLOATED.values().removeIf(player -> {
+			player.resetFallDistance();
+			// (not the tick it began, still on the ground)
+			return !player.isAlive() || player.isRemoved() || player.onGround() && !SLEEPERS.containsKey(player.getUUID());
+		});
 		for (Sleeper s : new ArrayList<>(SLEEPERS.values())) {
 			LivingEntity e = s.entity;
 			if (e.isRemoved() || !e.isAlive() || e.level().getGameTime() >= s.until) {
@@ -265,6 +275,7 @@ public final class Sleep {
 
 	/** The world stopped: nothing held over (an entry would pin its mob and level until the next world's first tick). */
 	public static void clear() {
+		FLOATED.clear();
 		SLEEPERS.clear();
 	}
 
