@@ -1099,6 +1099,9 @@ public final class HeroModelRenderer {
 			} else {
 				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
 			}
+			if (hero == Hero.ANA) {
+				anaCounter(weapon, poseStack, collector);
+			}
 			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)
 			Vector3f muzzle = HeroWeapon.muzzle(hero, animator, loaded.model(), true, now);
 			if (muzzle != null) {

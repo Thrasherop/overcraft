@@ -684,6 +684,7 @@ public final class HeroAnimator {
 	 * machine 0x16E: the bloom's time is the charge, df 0xC9), held full at the end; the volley's layer.
 	 */
 	private void lifeweaverView(SkinnedModel model, Skeleton.Pose pose, float now) {
+		thornCounter(model, pose);
 		if (bloomCharging) {
 			SkinnedModel.Clip bloom = clip(model, "bloom");
 			if (bloom != null) {
@@ -2100,8 +2101,10 @@ public final class HeroAnimator {
 		}
 
 		/**
-		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands). Its
-		 * unnamed helper bones swing up to 177 degrees and its legs a little: left alone.
+		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands), and the gun's
+		 * carrier, 0605 / 0606 under the pelvis (Ana's rifle and Sojourn's Railgun hang on hp 00C9 = bone_0606, outside the arm
+		 * chain: without it their hands bent up and the gun stayed level). Its other helper bones swing up to 177 degrees and
+		 * its legs a little: left alone.
 		 */
 		static boolean[] aimMask(SkinnedModel model) {
 			return AIM_MASKS.computeIfAbsent(model, m -> {
