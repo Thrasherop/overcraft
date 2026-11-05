@@ -207,8 +207,10 @@ public final class LucioFx {
 
 	/**
 	 * His song as it shows on him (CAB heal / CD2 speed, 1 s loops), from his model's renderer each frame: a light
-	 * trail from each skate (about 0.4 s of travel, amber for Healing Boost, green for Speed Boost: width ours), a glow
-	 * on each skate (0.3 m: ours) and a beat once a second (a 0.15 m spark at each foot, 0.3 s). Swapping songs: a column
+	 * trail from each skate (about 0.4 s of travel, amber for Healing Boost, green for Speed Boost: width ours) and a beat
+	 * once a second (a 0.15 m spark at each foot, 0.3 s). The data has no sprite on the skate: what glows there are lights (Foot_L
+	 * 001C, Foot_R 001B, intensity 1), which light the model and which Minecraft has no way to draw. A 0.3 m glow of ours stood in,
+	 * and read as two hard yellow discs at his calves (#114). Swapping songs: a column
 	 * round him in the new song's colour (1D2C / 1D2D: a 1 m cylinder, faded over 1 s). Amped (075C, every 0.97 s): two
 	 * flat rings at his feet and a burst of 12 sparkles. No ring on the ground: the data has none (H).
 	 *
@@ -227,11 +229,6 @@ public final class LucioFx {
 			for (int side = 0; side < 2; side++) {
 				// a trail per skate and song (a trail keeps its colour: the other song's fades out on its own)
 				Fx.trail(-(id * 8 + which * 2 + side) - 1, feet[side].add(0, 0.08, 0), "lucio_trail", colour, 0.2f, 0.4f, 0.75f);
-				String key = "lucio_skate/" + id + "/" + which + "/" + side;
-				Fx.attach(key, feet[side].add(0, 0.1, 0), () -> {
-					Particle g = Fx.particle("lucio_soft", colour);
-					return g == null ? null : g.life(0.25f).size(0.3f, 0.3f).alpha(0.8f).fade(0.1f, 0.5f);
-				});
 			}
 			float beat = BEAT.getOrDefault(id, -10f);
 			if (now - beat >= 1 || now < beat) {
@@ -416,7 +413,8 @@ public final class LucioFx {
 		float sparkSize = 0.15f + 0.29f * Math.clamp(ridden / 0.67f, 0, 1);
 		for (Vec3 foot : new Vec3[] {left, right}) {
 			for (int i = 0; i < n; i++) {
-				Particle d = Fx.particle("lucio_soft", colour);
+				// (the data's 29F7, a soft falloff; 4F3 is flat to a third of its width and an edge: hard yellow discs round the skates, #114)
+				Particle d = Fx.particle("lucio_spark", colour);
 				if (d != null) {
 					float size = range(0.2f, 0.5f);
 					Fx.add(d.at(foot.add(0, 0.08, 0)).velocity(randomUnit().scale(range(0.13f, 1.66f))).life(range(0.18f, 0.36f))

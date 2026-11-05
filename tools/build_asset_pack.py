@@ -900,6 +900,8 @@ MIRRORED = {"cat_paw_marker"}
 # the listed masks, each stretched over the same UVs. Lifeline's rings (7490, research\jetpack_cat\assets2.md): the
 # 299E3 noise times the 1C7A strip, which across the torus's tube (its V) lights the outer rim and fades top and bottom
 PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
+            # Mercy's wing glows (17E9 / 019C: 139C x 13CC wisps x the noise 4DB)
+            "mercy_wing_glow": ("mercy_soft", "mercy_wisp", "mercy_noise"),
             # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
             "cat_tracer": ("cat_cloud", "cat_fade"),
             "cat_trail_ribbon": ("cat_noise", "cat_fade"),

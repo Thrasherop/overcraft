@@ -317,15 +317,17 @@ public final class MercyFx {
 
 	/**
 	 * Soft yellow glows rising off both wings (Guardian Angel's 17E9, Angelic Descent's 019C: 1.5-2.1 m, rising 0.5 m/s in
-	 * a 25° cone), {@code chance} a tick each, faint (ours: 35%: a glow on the wings), and yellow dots.
+	 * a 25° cone), {@code chance} a tick each, and yellow dots. The data's glow is three masks multiplied (139C x 13CC wisps x the noise
+	 * 4DB: mercy_wing_glow). The soft ball alone, at 1.5 m and added over the sky, read as two white blobs behind her head, gold at night
+	 * (#114); blended (Fx.soft), the yellow stays yellow on a bright sky.
 	 */
 	private static void wingGlows(Posed p, float chance, float size) {
 		for (int w = WING_L; w <= WING_R; w++) {
 			if (Fx.RANDOM.nextFloat() < chance) {
-				Particle glow = Fx.particle("mercy_soft", Palette.MERCY_WING_GLOW);
+				Particle glow = Fx.soft("mercy_wing_glow", Palette.MERCY_WING_GLOW);
 				if (glow != null) {
 					Fx.add(glow.at(p.points[w]).velocity(cone(UP, 25).scale(range(0.47f, 0.52f))).life(range(0.45f, 0.54f))
-						.size(size * 0.8f, size).alpha(0.35f).nearFade(1.5f).fade(0.1f, 0.6f));
+						.size(size * 0.8f, size).alpha(0.5f).nearFade(1.5f).fade(0.1f, 0.6f));
 				}
 			}
 			if (Fx.RANDOM.nextFloat() < 16 / 20f) {
