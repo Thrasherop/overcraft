@@ -275,8 +275,10 @@ public class OvercraftClient implements ClientModInitializer {
 			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
 		OwMovement.roped = entity -> entity == mc.player && ClientTow.taut();
-		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
-			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
+		OwMovement.gravityScale = entity -> (entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
+			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1)
+			// Minecraft's gravity attribute on them, against its default 0.08 (Hyper Strike's float, Sleep.stun: x0.01)
+			* entity.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY) / 0.08;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown()
 			&& !ClientMercy.heldForLaunch(HeroControls.Action.JUMP);

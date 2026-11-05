@@ -751,6 +751,7 @@ public final class JetpackCat implements HeroKit {
 				// zombie hit her the whole carry and killed her (found playing)
 				Vec3 hold = player.position().add(0, -enemy.getBbHeight() - 1.0, 0);
 				enemy.setDeltaMovement(hold.subtract(enemy.position()).scale(0.5).add(player.getKnownMovement()));
+				// (played on a real client, #109: this alone holds a player up there, y -58.9 under a bot on a ledge, both modes; the 4 s in runs/polish3/p109_carry.txt)
 				enemy.syncVelocity = true;
 				if (player.tickCount % 4 == 0) {
 					Combat.heal(player, ULT_SELF_HEAL / 5);

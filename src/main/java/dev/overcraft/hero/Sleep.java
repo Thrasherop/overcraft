@@ -32,6 +32,8 @@ public final class Sleep {
 		}
 	}
 
+	private static final net.minecraft.resources.Identifier FLOAT = dev.overcraft.Overcraft.id("knockdown_float");
+
 	/** (Concurrent: Mob.isNoAi asks this from worldgen threads too.) */
 	private static final Map<UUID, Sleeper> SLEEPERS = new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -139,6 +141,11 @@ public final class Sleep {
 		if (entity instanceof ServerPlayer player) {
 			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
+			if (gravity != 1 && !Combat.devFixOff) {
+				// a player moves on their own client: Hyper Strike's float (#109) goes there as Minecraft's gravity attribute, which
+				// Minecraft mode falls by and hero mode reads (OvercraftClient's gravityScale); a mob's is in slide
+				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, gravity - 1, seconds);
+			}
 		}
 	}
 
