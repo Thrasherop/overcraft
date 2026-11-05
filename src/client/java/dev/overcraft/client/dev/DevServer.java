@@ -288,6 +288,15 @@ public final class DevServer {
 				}
 				out.addProperty("ok", target != null);
 			}
+			case "bot" -> {
+				// dev only: a second player with no second client (DevBot)
+				var server = mc.getSingleplayerServer();
+				if (server == null) {
+					out.addProperty("error", "no integrated server");
+				} else {
+					DevBot.handle(server, arg, out);
+				}
+			}
 			case "respawn" -> {
 				// what the death screen's Respawn button does
 				if (player != null) {
