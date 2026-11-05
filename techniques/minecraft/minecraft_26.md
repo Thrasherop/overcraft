@@ -219,4 +219,4 @@ A player far off gets no packet: `Effects.play` reaches 96 m and `Combat.animate
 - **What a critic should check:** an effect whose client holds a state by its variant and isn't in `HELD` (grep `e.variant() / 20f` in `*Fx.java`); `Effects.note` keeps a strong reference to entities until `over`: fine for its seconds, but check `over` covers a removed one; an emote replay's first frames (no ease in).
 
 ## A float or a lift a player must feel (polish3, 2026-11-05)
-A stun's gravity scale reached mobs only (`Sleep.slide`). What changes how a player falls belongs on their client: Minecraft's `Attributes.GRAVITY` as a transient modifier syncs to it, and hero mode's `OvercraftClient.gravityScale` reads it against the default 0.08. Hyper Strike: top y -59.52 to -56.19.
+A stun's gravity scale reached mobs only (`Sleep.slide`). What changes how a player falls belongs on their client: Minecraft's `Attributes.GRAVITY` as a transient modifier syncs to it, and hero mode's `OvercraftClient.gravityScale` reads it against the default 0.08. Hyper Strike: top y -59.52 to -56.19. Mind what it does to the landing: a longer float is a longer fall (`Sleep.FLOATED`).

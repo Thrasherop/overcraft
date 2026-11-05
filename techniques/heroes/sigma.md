@@ -622,4 +622,4 @@ glide over slopes) would settle the M items.
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
 
 ## Hyper Strike reaches a player (#109, #85, 2026-11-05)
-The float (gravity x0.01) now goes to a struck player's client as the gravity attribute; its count shows at the reticle: [polish3](../testing/polish3.md).
+The float (gravity x0.01) now goes to a struck player's client as the gravity attribute, and its landing doesn't hurt (aimed up it reached 18 m and killed a Brigitte); its count shows at the reticle: [polish3](../testing/polish3.md).

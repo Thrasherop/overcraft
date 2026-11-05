@@ -9,6 +9,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 ### On fix/polish-3 (not released, version not bumped)
 - Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
 - Protection Suzu and Life Grip clear Biotic Grenade's anti-heal (#117). Other players see Lucio's wall ride (#115). Hyper Strike's float reaches a struck player; every other push already did (#109). Sigma's Hyper Strike count and Soundwave Rider's charge at the crosshair (#85).
+- **HeroInputPayload's shape changed** (a ride's side and yaw): a client and server on builds either side of this don't work together: update both.
 - Record: techniques/testing/polish3.md.
 
 ### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt

@@ -300,4 +300,4 @@ Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
 - **The carry takes** no dead mob, shulker, rider or dart's sleeper (by code; a shulker not played).
 
 ## The Nov 3 patch (#116)
-Health 200, fuel back at 20% a second, boost acceleration 25 -> 28. The boost's rates are the 2026-11-01 recording's x 28/25: inferred, **needs a new recording** ([polish3](../testing/polish3.md)).
+Health 200, fuel back at 20% a second, boost acceleration 25 -> 28. The boost's rates are the 2026-11-01 recording's +3 (23, 13.4), the alternative x 28/25; top speed kept at 17.8 though W now says 17.43: both inferred, **need a new recording** ([polish3](../testing/polish3.md)).

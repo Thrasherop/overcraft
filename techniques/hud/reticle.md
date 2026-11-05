@@ -94,3 +94,6 @@ World widgets, not built: souls' markers (08F3), icons over the Cat for allies (
 
 ## Cancels (#112, 2026-11-05)
 Juno's lock now says "[LMB] FIRE [RMB] CANCEL" (#1051), the buttons doing what they say; a player held by Life Grip sees "[SPACE] CANCEL" from 0.65 s (21EE #617). This closes the two "not built" lines above: [juno](../heroes/juno.md), [lifeweaver](../heroes/lifeweaver.md).
+
+## Soundwave Rider and Hyper Strike, second pass (2026-11-05)
+Rider's bar draws only at the reticle (in third person it crossed his body). A part charge now waits 3 s, then drains: [polish3](../testing/polish3.md). Sigma's pips are narrower than Brigitte's (they touched his spheres at 720p), and empty pips are 0x66 white on a heavier edge, read at night in `sheet_c_pips`, for Brigitte's too (shared; hers not re-shot).
