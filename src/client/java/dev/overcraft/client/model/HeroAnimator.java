@@ -180,6 +180,62 @@ public final class HeroAnimator {
 		return blaster;
 	}
 
+	/** When her beam last came on and went off (game s): the staff's start and end layers. */
+	public float beamOnSince() {
+		return beamOnSince;
+	}
+
+	public float beamOffAt() {
+		return beamOffAt;
+	}
+
+	/** The beam's mode before it went off (1 heal, 2 boost): which end layer. */
+	public int beamLast() {
+		return beamLast;
+	}
+
+	/** On the move (a run or strafe base): the weapon's move layer (Lúcio's amp, Sigma's spheres). */
+	public boolean moving() {
+		return base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk") || base.startsWith("skate");
+	}
+
+	/** In the air: Sigma's spheres' air stance. */
+	public boolean airborne() {
+		return base.startsWith("jump") || base.startsWith("fall");
+	}
+
+	/** Seconds since the current burst of shots began (a held automatic: Sombra's pistol's fire layer). */
+	public float burstAge(float now) {
+		return now - burstStart;
+	}
+
+	/** Sojourn's Railgun's energy machine (ours from her energy: its conditions aren't decoded): 0 empty, 3 charging, 2 full. */
+	public int energyState() {
+		return energyState;
+	}
+
+	public int energyFrom() {
+		return energyFrom;
+	}
+
+	public float energyAt() {
+		return energyAt;
+	}
+
+	private int energyState;
+	private int energyFrom;
+	private float energyAt = -100;
+	private int beamLast = 1;
+
+	private void trackEnergy(int energy, float now) {
+		int target = energy <= 0 ? 0 : energy >= 100 ? 2 : 3;
+		if (target != energyState) {
+			energyFrom = energyState;
+			energyState = target;
+			energyAt = now;
+		}
+	}
+
 	/** The pose last drawn (third person, first person): the weapon hangs on its bones. */
 	private Skeleton.@Nullable Pose lastPose;
 	private Skeleton.@Nullable Pose lastViewPose;
@@ -1604,6 +1660,9 @@ public final class HeroAnimator {
 		sojournSliding = slideNow;
 		Integer gun = sojourn ? entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_GUN) : null;
 		sojournOverclock = gun != null && (gun & dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK) != 0;
+		if (gun != null) {
+			trackEnergy(gun & (dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK - 1), now);
+		}
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
@@ -1633,6 +1692,9 @@ public final class HeroAnimator {
 			beamOnSince = now;
 		} else if (beamNow == 0 && beamMode != 0) {
 			beamOffAt = now;
+		}
+		if (beamNow != 0) {
+			beamLast = beamNow;
 		}
 		beamMode = beamNow;
 		boolean ga = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_GA);
