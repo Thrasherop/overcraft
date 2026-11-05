@@ -46,6 +46,18 @@ public final class JetpackCatFx {
 		return dev.overcraft.client.effect.Fx.now() - towedAt;
 	}
 
+	/**
+	 * Dev only (DevServer's "devtow"): ties the local player's rope to any entity, with no second player to tow them: ClientTow
+	 * and the rope's look on the towed one's own screen, not the server's side of a tow. -1 lets go.
+	 */
+	public static void devTow(net.minecraft.client.player.LocalPlayer player, int anchor) {
+		TETHERS.entrySet().removeIf(e -> e.getValue()[0] == player.getId());
+		if (anchor >= 0) {
+			TETHERS.put(anchor, new int[] {player.getId(), 0, 0});
+			hookLeaves(anchor);
+		}
+	}
+
 	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
 	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
 		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
@@ -179,12 +191,12 @@ public final class JetpackCatFx {
 				case "purr_hit" -> enemyHit(at, 1);
 				case "lifeline_attach" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 0});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					attach(at);
 				}
 				case "catnapper_tether" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 1});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					tetherStart(at);
 				}
 				case "tether_end" -> TETHERS.remove(e.variant());
@@ -531,7 +543,7 @@ public final class JetpackCatFx {
 
 	/**
 	 * Each client tick: every rope, every Lifeline seeking (its marker, rings and hook glow) and every Jetpack Cat's boost
-	 * trails. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
+	 * trails, and each hook's way out and back. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
 	 * tip (0283) to the hook over the ally (their hardpoint 0520, 2.2 m up: in Minecraft, just over their head).
 	 */
 	public static void tethers(net.minecraft.client.multiplayer.ClientLevel level) {
@@ -546,13 +558,31 @@ public final class JetpackCatFx {
 			}
 			enemy = t.getValue()[1] == 1;
 			try {
-				rope(t.getKey(), armTip(cat), hook(towed), t.getValue()[2] == 1);
-				hookGlow(t.getKey(), towed);
+				Hook out = HOOKS.computeIfAbsent(t.getKey(), k -> new Hook(1));
+				out.at = hook(towed, 1);
+				out.carry = t.getValue()[2] == 1;
+				out.enemy = t.getValue()[1] == 1;
+				if (out.out < 1) {
+					out.out = Math.min(1, out.out + HOOK_OUT / 20);
+					if (out.out >= 1) {
+						latch(t.getKey(), t.getValue()[0]);
+					}
+				} else {
+					hookGlow(t.getKey(), towed);
+				}
 			} finally {
 				enemy = false;
 			}
 		}
 		ARCS.keySet().retainAll(TETHERS.keySet());
+		// let go: the hook goes back to her arm from where it was (D #874: at 3.5 a second)
+		HOOKS.entrySet().removeIf(h -> {
+			if (TETHERS.containsKey(h.getKey())) {
+				return false;
+			}
+			h.getValue().out -= HOOK_BACK / 20;
+			return h.getValue().out <= 0 || level.getEntity(h.getKey()) == null;
+		});
 		seekers(level);
 		purrWalls(level);
 		boostTrails(level);
@@ -561,18 +591,78 @@ public final class JetpackCatFx {
 	}
 
 	/** Her jetpack arm's tip (0283), posed; else ours, behind and above her middle (her own first person). */
-	private static Vec3 armTip(net.minecraft.world.entity.Entity cat) {
+	private static Vec3 armTip(net.minecraft.world.entity.Entity cat, float partial) {
 		Posed p = posed(cat);
 		if (p != null && p.at.length > ARM) {
 			return p.at[ARM];
 		}
-		double yaw = Math.toRadians(cat.getYRot());
-		return cat.position().add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
+		double yaw = Math.toRadians(cat.getYRot(partial));
+		return cat.getPosition(partial).add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
 	}
 
 	/** Where the hook sits on a towed ally: their 0520, 2.2 m over their feet (H); ours, just over a mob's head. */
-	private static Vec3 hook(net.minecraft.world.entity.Entity towed) {
-		return towed.position().add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	private static Vec3 hook(net.minecraft.world.entity.Entity towed, float partial) {
+		return towed.getPosition(partial).add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	}
+
+	/** The hook's way out to the ally and back, a second (D 5A8F #1175: v73806 chases 1 at 4.5, 0 at 3.5; H). */
+	private static final float HOOK_OUT = 4.5f, HOOK_BACK = 3.5f;
+
+	/** A hook out of her arm: how far (0 at her arm, 1 on the ally) and the point it's going to or last had. */
+	private static final class Hook {
+		float out;
+		Vec3 at = Vec3.ZERO;
+		boolean carry;
+		boolean enemy;
+
+		Hook(float out) {
+			this.out = out;
+		}
+	}
+
+	/** Each Jetpack Cat's hook while it's out of her arm. A player who starts to see her mid-tow sees it already there. */
+	private static final Map<Integer, Hook> HOOKS = new HashMap<>();
+
+	/** Thrown (again, from where it had got to if it was on its way back). */
+	private static void hookLeaves(int catId) {
+		HOOKS.computeIfAbsent(catId, k -> new Hook(0));
+	}
+
+	/**
+	 * Each frame, ahead of the effects' own step: the rope from where her arm is drawn to where the hook is, at this frame's
+	 * partial tick. Fed once a tick it stood still between ticks while she and the ally were drawn moving: 0.4 m out at her
+	 * 7 m/s, and over a metre at a boost. Straight whatever it's doing: the data's beam (5A8F #966) has two points and no
+	 * sag or noise of its own (H), so it swings and goes slack only as its two ends move.
+	 */
+	static void ropes() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		if (mc.level == null || HOOKS.isEmpty()) {
+			return;
+		}
+		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		for (Map.Entry<Integer, Hook> e : HOOKS.entrySet()) {
+			net.minecraft.world.entity.Entity cat = mc.level.getEntity(e.getKey());
+			if (cat == null || !cat.isAlive()) {
+				continue;
+			}
+			Hook h = e.getValue();
+			int[] tether = TETHERS.get(e.getKey());
+			net.minecraft.world.entity.Entity towed = tether == null ? null : mc.level.getEntity(tether[0]);
+			Vec3 to = towed == null ? h.at : hook(towed, partial);
+			Vec3 from = armTip(cat, partial);
+			if (towed == mc.player && mc.options.getCameraType().isFirstPerson()) {
+				// on the towed one's own screen the hook is 0.25 m over their eyes and the rope's width fans out to fill the sky
+				// (found on the rope, s2_first_up): theirs starts a metre up it (ours)
+				Vec3 up = from.subtract(to);
+				to = to.add(up.normalize().scale(Math.min(1, up.length())));
+			}
+			enemy = h.enemy;
+			try {
+				rope(e.getKey(), from, from.add(to.subtract(from).scale(h.out)), h.carry);
+			} finally {
+				enemy = false;
+			}
+		}
 	}
 
 	/**
@@ -605,7 +695,7 @@ public final class JetpackCatFx {
 	 * for 0.8 s; and round them the arcs (7454).
 	 */
 	private static void hookGlow(int catId, net.minecraft.world.entity.Entity towed) {
-		Vec3 hook = hook(towed);
+		Vec3 hook = hook(towed, 1);
 		float[] cone = Fx.mesh("cat_cone");
 		if (cone != null) {
 			// held on the hook (spawned free, they were left behind as she towed: found playing); the cone is stored
@@ -748,8 +838,8 @@ public final class JetpackCatFx {
 		if (cat == null || towed == null) {
 			return;
 		}
-		Vec3 from = armTip(cat);
-		Vec3 piece = hook(towed).subtract(from);
+		Vec3 from = armTip(cat, 1);
+		Vec3 piece = hook(towed, 1).subtract(from);
 		float len = (float) piece.length();
 		if (len < 1.0E-3f) {
 			return;
@@ -807,7 +897,7 @@ public final class JetpackCatFx {
 					// the cone 1B972 with its gradient (2C41F, an 8 x 256 strip along it), kept on her arm's tip
 					Particle cone = Fx.particle("cat_cone_noise", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HOOK);
 					if (cone != null) {
-						Vec3 tip = armTip(cat);
+						Vec3 tip = armTip(cat, 1);
 						Fx.add(cone.at(tip.add(0, -0.58, 0)).mesh(coneMesh, new Vec3(1, 0, 0)).life(1).size(0.3f, 0.3f)
 							.alpha(0.8f).fade(0.1f, 0.7f));
 					}

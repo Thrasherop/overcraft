@@ -716,6 +716,22 @@ public final class DevServer {
 					}
 				}
 			}
+			case "devtow" -> {
+				// dev only (#89): "devtow <entity type>" hangs the local player on a rope to the nearest of that type (JetpackCatFx.devTow);
+				// "devtow off". The player's own side of a tow, for want of a second client
+				net.minecraft.world.entity.Entity anchor = null;
+				if (!arg.equals("off")) {
+					double best = Double.MAX_VALUE;
+					for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+						if (e != player && net.minecraft.world.entity.EntityType.getKey(e.getType()).getPath().equals(arg) && e.distanceToSqr(player) < best) {
+							best = e.distanceToSqr(player);
+							anchor = e;
+						}
+					}
+				}
+				dev.overcraft.client.effect.JetpackCatFx.devTow(player, anchor == null ? -1 : anchor.getId());
+				out.addProperty("anchor", anchor == null ? -1 : anchor.getId());
+			}
 			case "towtrace" -> {
 				// dev only (#89): "towtrace start", then "towtrace": per server tick, the Jetpack Cat and whoever her Lifeline tows:
 				// tick, her x y z, their x y z, their on-ground (m). The server's view, so it reads a mob or a player the same
