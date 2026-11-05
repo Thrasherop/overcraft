@@ -1412,12 +1412,24 @@ public final class HeroModelRenderer {
 				}
 				continue;
 			}
-			if (texture == null || isEyeShadow(loaded, piece)) {
+			// its added light (HeroModels.Glow, tools/glow_maps.py): over its colour, or alone where the piece has none (a light card)
+			HeroModels.Glow glow = loaded.glow().get(piece.material());
+			if (texture == null && glow == null || texture != null && isEyeShadow(loaded, piece)) {
 				continue;
 			}
 			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
+			}
+			if (glow != null) {
+				int tint = Math.clamp(Math.round(glow.strength() * GLOW_ALPHA * 255), 0, 255) << 24 | 0xFFFFFF;
+				// a screen with two faces (Juno's gun 4E48C: the other on an enemy)
+				Identifier lit = glow.alt() != null && dev.overcraft.client.ClientJuno.faceAngry() ? glow.alt() : glow.texture();
+				collector.submitCustomGeometry(poseStack, FxRender.additive(lit),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, tint, cull && texture != null, false));
+				if (texture == null || glow.glass()) {
+					continue;
+				}
 			}
 			if (piece.mesh().startsWith("holo_") || piece.mesh().startsWith("holoc_")) {
 				// a hologram (tools/owm_static.py): its light mask added in the tint, lit by itself, seen from both sides; a
@@ -1434,24 +1446,6 @@ public final class HeroModelRenderer {
 			});
 		}
 	}
-
-	/**
-	 * Sigma's hand-sphere cores' material (7C98, a shader with no colour texture). The submesh keys below are shared with other
-	 * models' untextured pieces (Lucio's, Sombra's, Ana's pistol, Brigitte's and her shield, Lifeweaver's platform and flower
-	 * ring all have a 6B24EE2D2B083AFE piece), which keyed alone drew violet: found by the 2026-11-02 QA audit, seen on
-	 * Brigitte's shield in the release play.
-	 */
-	private static final String SIGMA_CORE_MATERIAL = "7C98";
-	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
-	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
-	/**
-	 * The same cores on the spheres' base model D7DD (submeshes 2 / 3, material 7C98 again), which his emotes spawn as props
-	 * (Dans' juggled copy, Constellation's two: techniques/emotes/sigma_emotes.md); drawn dark without this.
-	 */
-	private static final String SIGMA_CORE_BASE = "3060878AEBDEB872";
-
-	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
-	private static final int HOLOGRAM = 0xFF8344EF;
 
 	/** Ana's rifle's sight screen (the 48 vertices of material BB56, shader 0x32, the image 38704). */
 	private static final String ANA_SCREEN = "00000000BB56";
@@ -1501,6 +1495,24 @@ public final class HeroModelRenderer {
 
 	/** A glow at strength 1 (ours: its image holds the colour, Overwatch's HDR strength is clamped to 2 by the tool). */
 	private static final float GLOW_ALPHA = 0.8f;
+
+	/**
+	 * Sigma's hand-sphere cores' material (7C98, a shader with no colour texture). The submesh keys below are shared with other
+	 * models' untextured pieces (Lucio's, Sombra's, Ana's pistol, Brigitte's and her shield, Lifeweaver's platform and flower
+	 * ring all have a 6B24EE2D2B083AFE piece), which keyed alone drew violet: found by the 2026-11-02 QA audit, seen on
+	 * Brigitte's shield in the release play.
+	 */
+	private static final String SIGMA_CORE_MATERIAL = "7C98";
+	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
+	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
+	/**
+	 * The same cores on the spheres' base model D7DD (submeshes 2 / 3, material 7C98 again), which his emotes spawn as props
+	 * (Dans' juggled copy, Constellation's two: techniques/emotes/sigma_emotes.md); drawn dark without this.
+	 */
+	private static final String SIGMA_CORE_BASE = "3060878AEBDEB872";
+
+	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
+	private static final int HOLOGRAM = 0xFF8344EF;
 
 	/**
 	 * A spirit: the model see-through and glowing (Kitsune Rush's fox: Overwatch's is a translucent ice-blue spirit; drawn

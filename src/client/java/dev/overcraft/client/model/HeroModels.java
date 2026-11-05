@@ -31,7 +31,14 @@ public final class HeroModels {
 	 * A loaded model and its textures (by image index; null where the image didn't load), and which images are one flat
 	 * colour (Overwatch's shader-driven overlays use them: HeroModelRenderer.isEyeShadow).
 	 */
-	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures, boolean[] flat) {
+	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures, boolean[] flat, Map<String, Glow> glow) {
+	}
+
+	/**
+	 * A material's added light (tools/glow_maps.py from its .owmat: hero_models/<model>_glow.json, hero_models/glow/<id>.png), drawn
+	 * lit by itself on the piece's own UVs: what Overwatch's shaders glow, and the pieces with no colour image at all.
+	 */
+	public record Glow(Identifier texture, float strength, @Nullable Identifier alt, boolean glass) {
 	}
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
@@ -100,7 +107,45 @@ public final class HeroModels {
 			});
 	}
 
-	private record Prepared(SkinnedModel model, List<@Nullable NativeImage> images) {
+	private record Prepared(SkinnedModel model, List<@Nullable NativeImage> images, Map<String, PreparedGlow> glow) {
+	}
+
+	private record PreparedGlow(String texture, float strength, NativeImage image, @Nullable NativeImage alt, boolean glass) {
+	}
+
+	/** The model's glows, if the pack has them; a bad row is skipped, not the model. */
+	private static Map<String, PreparedGlow> readGlow(ResourceManager resources, String name) {
+		Map<String, PreparedGlow> out = new HashMap<>();
+		Identifier table = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + "_glow.json");
+		Optional<Resource> res = table == null ? Optional.empty() : resources.getResource(table);
+		if (res.isEmpty()) {
+			return out;
+		}
+		try (java.io.Reader reader = res.get().openAsReader()) {
+			com.google.gson.JsonObject rows = com.google.gson.JsonParser.parseReader(reader).getAsJsonObject();
+			for (String material : rows.keySet()) {
+				com.google.gson.JsonObject row = rows.getAsJsonObject(material);
+				String texture = row.get("texture").getAsString();
+				Identifier id = Overcraft.id("hero_models/glow/" + texture + ".png");
+				Optional<Resource> png = resources.getResource(id);
+				Optional<Resource> alt = row.has("alt") ? resources.getResource(Overcraft.id("hero_models/glow/" + row.get("alt").getAsString() + ".png"))
+					: Optional.empty();
+				if (png.isPresent()) {
+					try (InputStream in = png.get().open()) {
+						NativeImage altImage = null;
+						if (alt.isPresent()) {
+							try (InputStream a = alt.get().open()) {
+								altImage = NativeImage.read(a);
+							}
+						}
+						out.put(material, new PreparedGlow(texture, row.get("strength").getAsFloat(), NativeImage.read(in), altImage, row.has("glass")));
+					}
+				}
+			}
+		} catch (Exception e) {
+			Overcraft.LOG.warn("The {} model's glows didn't load: {}", name, e.toString());
+		}
+		return out;
 	}
 
 	/** Every model the pack has, by file name (hero ids and {@link #EXTRAS}). */
@@ -157,7 +202,7 @@ public final class HeroModels {
 				}
 				// her cloth's drivers, from the game data (ClothSim)
 				model.clothDrivers = ClothSim.readDrivers(resources, name);
-				out.put(name, new Prepared(model, images));
+				out.put(name, new Prepared(model, images, readGlow(resources, name)));
 				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
 					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
 			} catch (Exception e) {
@@ -382,7 +427,20 @@ public final class HeroModels {
 				REGISTERED.add(id);
 				ids[i] = id;
 			}
-			Loaded loaded = new Loaded(p.model(), ids, flat);
+			Map<String, Glow> glow = new HashMap<>();
+			p.glow().forEach((material, g) -> {
+				Identifier id = Overcraft.id("hero_models/" + name + "/glow_" + g.texture());
+				textures.register(id, new HeroTexture(id, g.image()));
+				REGISTERED.add(id);
+				Identifier alt = null;
+				if (g.alt() != null) {
+					alt = Overcraft.id("hero_models/" + name + "/glow_" + g.texture() + "_alt");
+					textures.register(alt, new HeroTexture(alt, g.alt()));
+					REGISTERED.add(alt);
+				}
+				glow.put(material, new Glow(id, g.strength(), alt, g.glass()));
+			});
+			Loaded loaded = new Loaded(p.model(), ids, flat, glow);
 			Hero hero = Hero.byId(name);
 			if (hero != null) {
 				MODELS.put(hero, loaded);

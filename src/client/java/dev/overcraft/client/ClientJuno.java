@@ -58,4 +58,33 @@ public final class ClientJuno {
 		}
 		return Perk.byIndex(ClientHero.sync().majorPerk()) == Perk.JUNO_LIFT_OFF ? JunoStats.AIR_JUMPS_LIFT_OFF : JunoStats.AIR_JUMPS;
 	}
+
+	/** How far her gun's screen reads what she aims at (ours: her Mediblaster's long range). */
+	private static final double FACE_RANGE = 40;
+	private static long faceTick = -1;
+	private static boolean faceAngry;
+
+	/**
+	 * Her gun's screen: happy on an ally or nothing, angry on an enemy (the wiki, tools/reference/juno.md; the two faces are the green and
+	 * blue channels of its image 4E48C, chosen by no node read, so ours from her aim), checked once a tick.
+	 */
+	public static boolean faceAngry() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		net.minecraft.client.player.LocalPlayer player = mc.player;
+		if (player == null) {
+			return false;
+		}
+		long tick = player.level().getGameTime();
+		if (tick != faceTick) {
+			faceTick = tick;
+			net.minecraft.world.phys.Vec3 eye = player.getEyePosition();
+			net.minecraft.world.phys.Vec3 to = eye.add(player.getViewVector(1).scale(FACE_RANGE));
+			net.minecraft.world.phys.AABB box = player.getBoundingBox().expandTowards(player.getViewVector(1).scale(FACE_RANGE)).inflate(1);
+			net.minecraft.world.phys.EntityHitResult hit = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(player, eye, to, box,
+				e -> e instanceof net.minecraft.world.entity.LivingEntity && !e.isSpectator(), FACE_RANGE * FACE_RANGE);
+			faceAngry = hit != null && dev.overcraft.hero.Allies.isEnemy(player, hit.getEntity())
+				&& player.hasLineOfSight(hit.getEntity());
+		}
+		return faceAngry;
+	}
 }
