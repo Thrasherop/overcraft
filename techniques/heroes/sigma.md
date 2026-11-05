@@ -617,3 +617,6 @@ the lift's 18 / 3 / 5 fields and Levitation's 25 / 3 read as accel and cap (M: a
 it (the break comes first); the 3P fire clips (the clip map holds only alias D5's three pitches: the volley plays fire_b,
 the first person cycles fire_a / b / c); the hand-held orbs on his hp 02FD-0300 while the barrier is with him. His emotes: step 11. A Workshop recording (Levitation's rise, Flux flight, the barrier's
 glide over slopes) would settle the M items.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

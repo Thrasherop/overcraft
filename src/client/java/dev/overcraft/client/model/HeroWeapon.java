@@ -117,6 +117,7 @@ public final class HeroWeapon {
 		if (pistol != null) {
 			out.add(pistol);
 		}
+		parts(hero, animator, heroModel, firstPerson, now, out);
 		if (hero == Hero.BRIGITTE) {
 			// in an emote the flail and its head go with the stow windows (slot 3572); the folded shield (339E) no emote touches
 			EmoteProps.Placed flail = animator.emoting() && !inEmote(hero, animator) ? null
@@ -178,6 +179,46 @@ public final class HeroWeapon {
 		return out;
 	}
 
+
+	/**
+	 * The models the data attaches as equipment (weapon_parts.json, WeaponParts: Sombra's magazine, Ana's vial and dart, Juno's
+	 * cell, Sojourn's reload magazine): each on its parent's hardpoint, as its window and hidden rows say for this view. In an emote
+	 * only those on a weapon the emote keeps out (Juno's cell hangs on her body, whose gun an emote's geosets put away).
+	 */
+	private static void parts(Hero hero, HeroAnimator a, SkinnedModel heroModel, boolean firstPerson, float now, java.util.List<EmoteProps.Placed> out) {
+		java.util.List<WeaponParts.Part> parts = WeaponParts.of(hero.id);
+		if (parts.isEmpty()) {
+			return;
+		}
+		EmoteProps.Placed weapon = !a.emoting() || inEmote(hero, a) ? place(hero, a, heroModel, firstPerson, now) : null;
+		Skeleton.Pose heroPose = firstPerson ? a.lastViewPose() : a.lastPose();
+		for (WeaponParts.Part part : parts) {
+			HeroModels.Loaded model = HeroModels.get(part.model());
+			if (model == null || !part.shown(a, firstPerson, now)) {
+				continue;
+			}
+			Matrix4f at;
+			if (part.onWeapon()) {
+				if (weapon == null) {
+					continue;
+				}
+				SkinnedModel gun = weapon.loaded().model();
+				int node = gun.node(part.bone());
+				if (node < 0) {
+					continue;
+				}
+				at = new Matrix4f(weapon.at()).mul(Skeleton.world(gun, pose(gun, a, firstPerson, now), node));
+			} else {
+				int node = heroModel.node(part.bone());
+				if (a.emoting() || heroPose == null || node < 0) {
+					continue;
+				}
+				at = Skeleton.world(heroModel, heroPose, node);
+			}
+			at.translate(part.t()).rotate(part.q());
+			out.add(new EmoteProps.Placed(model, at, Skeleton.skin(model.model(), rest(model.model()), -1, null)));
+		}
+	}
 
 	/**
 	 * Her barrier when it's up, in her model's space (her feet the origin, her facing ahead): the shield unfolded (its deploy

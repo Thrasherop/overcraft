@@ -207,3 +207,6 @@ The owner's recording (`E:\Overwatch Archive\research\movement\workshop-2026-11-
   recording's 7.15 stretches are the same.
 - Ours (M): how fast a boost's direction follows the input (6 a second) and turns at cruise (the recording has no clean
   turn); the boost's first 0.2 s as one 20 m/s/s step (the three runs kick +1 to +3 m/s at different times).
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

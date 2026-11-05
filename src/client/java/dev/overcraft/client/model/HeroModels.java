@@ -109,6 +109,8 @@ public final class HeroModels {
 		List<String> names = new ArrayList<>(EXTRAS);
 		// the emotes' props, by the ids the emote data names (prop_<model id>)
 		names.addAll(EmoteData.load(resources));
+		// the weapons' attached parts (weapon_parts.json)
+		names.addAll(WeaponParts.load(resources));
 		for (Hero hero : Hero.values()) {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");

@@ -418,3 +418,6 @@ Orbital Ray 4 -> 19.98).
 
 Not tried: Improved Transparency through the Video Settings screen (F3+X toggles the same option); the Nether; a raid; her
 emotes seen by the second player; the Disruptor against a barrier; dying mid-Overclock.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

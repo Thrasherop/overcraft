@@ -11,6 +11,7 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py parts <DataTool output dir> [hero]  the models weapon_parts.json names (magazines, vials), from the hero's skin folder
     py tools/build_asset_pack.py effects [--only <prefix>] <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
@@ -1312,6 +1313,35 @@ def add_props(source, only=None):
             print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
 
 
+def add_parts(source, only=None):
+    """Converts every model src/main/resources/assets/overcraft/weapon_parts.json names by id (techniques/animation/weapon_parts.md)
+    into hero_models/<model>.glb, a static mesh on its origin. <source> is the extraction root holding Heroes/<Hero>/Skin. Then
+    tools/glow_maps.py for their glows."""
+    import json
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    for hero, parts in table.items():
+        if hero == "_" or (only and hero != only):
+            continue
+        done = set()
+        for part in parts:
+            if "id" not in part or part["model"] in done:
+                continue
+            done.add(part["model"])
+            padded = "%012X" % int(part["id"], 16)
+            found = sorted((Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin").glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{part['model']}: no model {padded} under {source}")
+                continue
+            dest = MODELS / f"{part['model']}.glb"
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+                   str(found[0]), str(dest)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+            print(part["model"] + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
 def build_version():
     """This build's version (gradle.properties)."""
     for line in (ROOT / "gradle.properties").read_text(encoding="utf8").splitlines():
@@ -1369,6 +1399,8 @@ def main():
         add_effects(*args, only=only)
     elif cmd == "props":
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "parts":
+        add_parts(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")

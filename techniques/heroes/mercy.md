@@ -79,3 +79,6 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
 - **What a critic should check:** a resurrected mob that picked up or was given items drops those (real items); a farm of
   player-carried gear isn't a dup. Armored wolves: the armor takes the hit and breaks first, so its drop wasn't seen. The allay flew off out of Resurrect's reach on its second death: no duplicate, but also no third cycle.
 
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

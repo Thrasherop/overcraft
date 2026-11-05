@@ -86,3 +86,6 @@ where some of what her research guessed got settled. Up: [Techniques](../README.
 - His effects on allies (amped speed lines 4ADD, the barrier's shield 0D86), the wall ride's sparks, the amp on the
   DJ booth (nested spawns), the wall ride's lean sheets, his collectible voice lines on the wheel.
 - Kiriko could get the same: her own alias 0x006 4-slot set (AFCB-AFD7) is her directional jump, now unused.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

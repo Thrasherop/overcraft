@@ -417,3 +417,6 @@ roar (vanilla roars only after a shield stuns it).
   stacked for nested explosions, not played): not tried.
 - **Invulnerability frames:** two hits in the same half-second both cost the barrier where vanilla ignores the second
   (older than #88).
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
