@@ -6,6 +6,11 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-05
 
+### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
+- Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
+- Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
+- Record: techniques/testing/polish4.md. For the owner to hear: #121, her Suzu line on every throw.
+
 ### On fix/polish-3 (not released, version not bumped)
 - Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
 - Protection Suzu and Life Grip clear Biotic Grenade's anti-heal (#117). Other players see Lucio's wall ride (#115). Hyper Strike's float reaches a struck player; every other push already did (#109). Sigma's Hyper Strike count and Soundwave Rider's charge at the crosshair (#85).

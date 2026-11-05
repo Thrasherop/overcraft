@@ -7,6 +7,7 @@ Everything learned about Kiriko, by subject. She was the flagship: where the met
 - **Emotes:** [kiriko_emotes](../emotes/kiriko_emotes.md): the spawn table, hardpoints, weapons' geosets, what was
   wrong at first and why.
 - **Coat:** [kiriko_cloth](../animation/kiriko_cloth.md): Domino cloth driven by 38 hand-keyed coat bones.
+- **Protection Suzu's cleanse:** [status_and_cleanse](../game-data/status_and_cleanse.md): 031A -> 180C, what each status does; played: [polish4](../testing/polish4.md).
 - **Reference research:** [kiriko-reference](../../tools/reference/kiriko-reference.md) (how she looks and plays),
   [kiriko-sounds](../../tools/reference/kiriko-sounds.md), [kiriko-voice](../../tools/reference/kiriko-voice.md),
   [kiriko-effects](../../tools/reference/kiriko-effects.md), [sounds-round8](../../tools/reference/sounds-round8.md),

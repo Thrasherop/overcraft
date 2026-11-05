@@ -132,6 +132,8 @@ at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a 
 0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
 300, the villager's overhealth kept.
 
+- **The bashed target isn't in the shockwave** (#120, 0EE3 #890): 70, one push, 7.9 m on a hero, was 140, 19.7 m; step 6's play above read a husk behind it, not the bashed one. [polish4](../testing/polish4.md).
+
 ## Step 7 (perks)
 Each perk against its control, picked through the perk menu (Alt held, a click), dev client, flat world `perksb`:
 - **Combat Medic:** a pack thrown (recharge running), then one swing at three ravagers: the charge back after 2.2 s, against

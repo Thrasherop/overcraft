@@ -1,0 +1,41 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx2G
+Calculating task graph as no cached configuration is available for tasks: clean build
+
+> Configure project :
+Fabric Loom: 1.19.3
+
+> Task :validateAccessWidener NO-SOURCE
+> Task :clean
+> Task :processTestResources NO-SOURCE
+> Task :processIncludeJars
+> Task :processClientResources
+> Task :processResources
+
+> Task :compileJava
+Note: E:\claude\mods\overcraft_polish4\src\main\java\dev\overcraft\hero\Combat.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :classes
+
+> Task :compileClientJava
+Note: E:\claude\mods\overcraft_polish4\src\client\java\dev\overcraft\client\OvercraftClient.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :clientClasses
+> Task :jar
+> Task :assemble
+> Task :checkNoOverwatchAssets
+> Task :compileTestJava
+> Task :testClasses
+
+> Task :test
+Picked up JAVA_TOOL_OPTIONS: -Xmx2G
+
+> Task :check
+> Task :build
+
+[Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 32s
+10 actionable tasks: 10 executed
+Configuration cache entry stored.
