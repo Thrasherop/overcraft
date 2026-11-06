@@ -133,7 +133,7 @@ sensitivities** v54211-v54215 (Primary, Secondary, Ability 1, Ability 2, Ultimat
   #450), crit **x2** (1CB4 2 / 04EE 1.0, M), from the gun's muzzle hp 0006 (H). **Spread 0 -> 04C7 1.6 degrees over 1E55 12 shots**,
   recovering after 0.3 s in 0.25 s (#629 / #628; H values, M meaning); no vertical / horizontal split in her graph. **45 rounds**
   (04D4), **reload 1.2 s** (04C8): the magazine is full at **0.96 s** (#287: 1.2 x 0.8), firing locked to 1.2 s (#283); auto reload
-  on empty (#1133) (H). After a railgun volley a **0.16 s** gate (#513 / #230) before the charged shot (M).
+  on empty (#1133) (H). After a railgun volley a **0.16 s** gate (#513 / #230) on the reload (#75), the next rounds (#415) and Disruptor's start (1441's F495731F) (H nodes): **not** on the charged shot, whose #421 sits beside them (#75's always-on plug -> #615 -> #326). Read wrongly until #126.
 - **Energy** (1A23, H): **v87**, cap **v971 100** (#601), shown as v176 = v87 / 100 (df 0xF6). **Gain only from railgun damage (id
   47BE, #607) and never during Overclock** (#655 / #656 / #776): **+5 a hero hit, +10 a crit** (#597 / #1480); a non-hero / deployable
   **+1, +2 a crit** (5 x 1CB3 0.2, #649 / #650 / #1481); a barrier (tag B87, M) **+1** (#775 / #777); times a combat-mod multiplier

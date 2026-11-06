@@ -82,7 +82,7 @@ public final class ClientSojourn {
 		Minecraft mc = Minecraft.getInstance();
 		net.minecraft.client.player.LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || ClientHero.hero() != Hero.SOJOURN || !ClientHero.controls() || mc.gui.screen() != null
-			|| ClientHero.perkMenuOpen() || dev.overcraft.client.comms.CommsWheel.open()
+			|| ClientHero.perkMenuOpen() || dev.overcraft.client.comms.CommsWheel.holding()
 			|| Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
 			|| !net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(
 				dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE)).equals(key)) {
