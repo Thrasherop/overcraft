@@ -199,9 +199,23 @@ public final class HeroManager {
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
 		// Sigma: Gravitic Flux's flight (and Levitation) land him
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
+		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below)
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.LUCIO || state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO)
 			&& state.softLanding || state.hero == Hero.JUNO);
+	}
+
+	/**
+	 * A movement ability's fall doesn't count until they're down after it (CLAUDE.md, #35): each tick while {@code moving} or still falling from it. {@code grace}: not down yet whatever the
+	 * ground says, just after a teleport, when the server's onGround is the place she left.
+	 */
+	public static void softLanding(Player player, HeroState s, boolean moving, boolean grace) {
+		boolean was = s.softLanding;
+		s.softLanding = Holds.softLanding(was, moving, player.onGround(), grace);
+		// (also on the tick they land: Minecraft can check the fall a tick after the server sees them down: Mercy's note)
+		if (was || s.softLanding) {
+			player.resetFallDistance();
+		}
 	}
 
 	/** Hero mode is on (on unless switched off with G). */

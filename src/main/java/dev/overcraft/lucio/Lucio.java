@@ -178,6 +178,8 @@ public final class Lucio implements HeroKit {
 		}
 		syncSong(player, s, controls);
 
+		// a wall ride lands him unhurt, off its end, off a jump, off a high wall (#35; real keys, a6609b6: 4.48 m and the pain line, hidden from health by the song)
+		HeroManager.softLanding(player, s, controls && s.wallRiding, false);
 		// how he rides, for the others watching (#115: only his own client knows it, and tells us)
 		int wall = controls ? s.wallRide : 0;
 		if (player.getAttachedOrElse(HeroManager.LUCIO_WALL, 0) != wall) {

@@ -25,13 +25,13 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 	}
 
 	/**
-	 * Through the phased (Allies.hurtRule), unless they're the owner's side: Healing Ofuda, a Pawjectile, a Blossom still reach a phased ally. A vanilla arrow or a fireball isn't one of these: it stops there, as it did.
+	 * <b>The client's copy never takes a creature:</b> only the server knows who's phased, and a client copy that "hit" one discarded itself (onHit) while the server's flew on unseen. The server's word ends it, a
+	 * tick or so later; a block still stops the client's. Through the phased (Allies.hurtRule), unless they're the owner's side: Healing Ofuda, a Pawjectile, a Blossom still reach a phased ally. A vanilla arrow or a fireball isn't one of these: it stops there, as it did.
 	 */
 	@Override
 	protected boolean canHitEntity(net.minecraft.world.entity.Entity entity) {
-		return super.canHitEntity(entity)
-			&& !(entity instanceof LivingEntity living && dev.overcraft.hero.Combat.phaseStops(living)
-				&& !(getOwner() instanceof LivingEntity owner && dev.overcraft.hero.Allies.isAlly(owner, living)));
+		return dev.overcraft.hero.Allies.shotRule(level().isClientSide(), super.canHitEntity(entity), entity instanceof LivingEntity living && dev.overcraft.hero.Combat.phaseStops(living),
+			entity instanceof LivingEntity living && getOwner() instanceof LivingEntity owner && dev.overcraft.hero.Allies.isAlly(owner, living));
 	}
 
 	/** Lifetime in ticks. */

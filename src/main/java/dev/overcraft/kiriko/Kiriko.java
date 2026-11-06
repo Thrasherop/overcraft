@@ -55,6 +55,9 @@ public final class Kiriko implements HeroKit {
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
+		if (s.softLanding) {
+			HeroManager.softLanding(player, s, false, player.level().getGameTime() < s.softLandingGrace);
+		}
 		double attack = Combat.attackRate(player);
 		double cooldown = Combat.cooldownRate(player);
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
@@ -270,6 +273,9 @@ public final class Kiriko implements HeroKit {
 		Effects.play(level, "swift_step_depart", from, player);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
+		// an ally in the air leaves her there: the step lands her (#35)
+		s.softLanding = true;
+		s.softLandingGrace = level.getGameTime() + 4;
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
 		if (s.has(Perk.KIRIKO_READY_STEP)) {

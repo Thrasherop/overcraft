@@ -224,15 +224,9 @@ public final class Sombra implements HeroKit {
 		return new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
 	}
 
-	/** Sight to any of its hit points (0B31: several; ours its eyes, middle and feet), blocks in the way. */
+	/** Sight to any of its hit points (Combat.inSight). */
 	private static boolean inSight(ServerPlayer player, LivingEntity e) {
-		Vec3 eye = player.getEyePosition();
-		for (Vec3 to : new Vec3[] {e.getEyePosition(), e.getBoundingBox().getCenter(), e.position().add(0, 0.1, 0)}) {
-			if (player.level().clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS) {
-				return true;
-			}
-		}
-		return false;
+		return Combat.inSight(player.level(), player.getEyePosition(), e, player);
 	}
 
 	/** What EMP and Hotfix hack: Lifeweaver's platform and tree (a Sombra's beacon flies 0.17 s and can't be touched: W). */
@@ -244,7 +238,7 @@ public final class Sombra implements HeroKit {
 	private static boolean enemyDeployable(ServerPlayer player, net.minecraft.world.entity.Entity d) {
 		net.minecraft.world.entity.Entity owner = d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
 			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId()) : null;
-		return owner instanceof LivingEntity living && living != player && Allies.canHurt(player, living);
+		return owner instanceof LivingEntity living && living != player && Allies.againstHero(player, living);
 	}
 
 	// ---- Cyberspace (Shift: 610E, the zone 6102) ----

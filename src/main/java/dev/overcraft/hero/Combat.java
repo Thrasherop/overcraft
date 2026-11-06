@@ -403,6 +403,20 @@ public final class Combat {
 		healBoostUntil.remove(target.getUUID());
 	}
 
+	/**
+	 * Sight from {@code from} to any part of it: eyes, middle or feet, blocks in the way (0B31: several hit points; ours these three). What area abilities ask: EMP, the Suzu, the
+	 * numbness, Rally's pulse and wave. A one-line eye-to-eye test missed a target whose head alone was behind something.
+	 */
+	public static boolean inSight(net.minecraft.world.level.Level level, net.minecraft.world.phys.Vec3 from, LivingEntity target, Entity viewer) {
+		for (double y : new double[] {target.getEyeY(), target.getY() + target.getBbHeight() / 2, target.getY() + 0.1}) {
+			if (level.clip(new net.minecraft.world.level.ClipContext(from, new net.minecraft.world.phys.Vec3(target.getX(), y, target.getZ()),
+				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, viewer)).getType() == net.minecraft.world.phys.HitResult.Type.MISS) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean healBoosted(LivingEntity target) {
 		Long until = healBoostUntil.get(target.getUUID());
 		return until != null && now(target) < until;
@@ -489,8 +503,8 @@ public final class Combat {
 	}
 
 	/**
-	 * Only the server knows: projectiles ask from canHitEntity, and ThrowableProjectile.tick runs that on the client's copy too, where these maps are another thread's in single player and empty on a remote client.
-	 * The client's copy answers "not phased" and may look to stop for a tick; the server's says where it goes. Package-private for CombatRuleTest.
+	 * Only the server knows, and OwProjectile's client copies never ask (hitRule). Other client-side callers get "not phased". Was: projectiles ask from canHitEntity, and ThrowableProjectile.tick runs that on the client's copy too, where these maps are another thread's in single player and empty on a remote client.
+	 * The client's copy answers "not phased" and may look to stop for a tick; the server's says where it goes. Package-private for PhaseRulesTest.
 	 */
 	static boolean phaseStopsRule(boolean clientSide, boolean devOff, boolean phased) {
 		return !clientSide && !devOff && phased;
@@ -504,7 +518,7 @@ public final class Combat {
 		return refusesRule(isPhased(target), source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY));
 	}
 
-	/** Package-private for CombatRuleTest. */
+	/** Package-private for PhaseRulesTest. */
 	static boolean refusesRule(boolean phased, boolean bypassesInvulnerability) {
 		return phased && !bypassesInvulnerability;
 	}

@@ -156,13 +156,6 @@ public class SuzuEntity extends OwProjectile {
 
 	/** Some part of the entity (feet, middle or head) can be seen from the burst. */
 	private boolean inSight(ServerLevel level, Vec3 at, LivingEntity entity) {
-		Vec3 from = at.add(0, 0.1, 0);
-		for (double y : new double[] {entity.getY() + 0.1, entity.getY() + entity.getBbHeight() / 2, entity.getEyeY()}) {
-			Vec3 to = new Vec3(entity.getX(), y, entity.getZ());
-			if (level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS) {
-				return true;
-			}
-		}
-		return false;
+		return Combat.inSight(level, at.add(0, 0.1, 0), entity, this);
 	}
 }

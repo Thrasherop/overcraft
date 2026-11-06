@@ -201,9 +201,20 @@ public final class Allies {
 		return hurtRule(here, ally, hero instanceof Player player && HeroManager.options(player).friendlyFire(), other instanceof LivingEntity living && Combat.phaseStops(living));
 	}
 
+	/** Who a shot's copy takes (OwProjectile.canHitEntity): never the client's; through the phased, unless they're the owner's side. Tested: ShotRuleTest. */
+	public static boolean shotRule(boolean clientSide, boolean vanilla, boolean phased, boolean ownSide) {
+		return !clientSide && vanilla && (!phased || ownSide);
+	}
+
+	/** canHurt without the phase: is it against this hero at all? For what's theirs rather than them (Sombra's hack of a deployable): a phased owner still owns it. */
+	public static boolean againstHero(LivingEntity hero, Entity other) {
+		boolean here = other != hero && other != hero.getVehicle() && other instanceof LivingEntity living && living.isAlive() && !other.isSpectator();
+		return hurtRule(here, isAlly(hero, other), hero instanceof Player player && HeroManager.options(player).friendlyFire(), false);
+	}
+
 	/**
 	 * canHurt's rule. The phased aren't hit at all: W Status effect rev 408841 "unable to be hit by enemy attacks", W Kiriko rev 408632 "pass through them": a hit passes on to whatever is behind them,
-	 * and spends nothing. D: the trackers' filters, m_4EA686DB 20 or 148 (M that bits 16 and 4 are this). This is the one place every aimed hit asks (the kits, OwProjectile for what flies). Package-private for AlliesRuleTest.
+	 * and spends nothing. D: the trackers' filters, m_4EA686DB 20 or 148 (M that bits 16 and 4 are this). This is the one place every aimed hit asks (the kits, OwProjectile for what flies). Package-private for PhaseRulesTest.
 	 */
 	static boolean hurtRule(boolean here, boolean ally, boolean friendlyFire, boolean phased) {
 		return !phased && (here && !ally || friendlyFire && ally);

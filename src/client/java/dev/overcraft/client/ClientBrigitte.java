@@ -24,10 +24,6 @@ public final class ClientBrigitte {
 	private static final int STOPPED = -2;
 	/** Her vertical speed through the bash (blocks a tick): gravity goes on acting on her (BrigitteStats). */
 	private static double bashVy;
-	/** Whip Shot's push on her target's own client (WhipPushPayload): its level speed, blocks a tick, and the player's tickCount it's held to. */
-	private static double whipX, whipZ;
-	private static int whipUntil = -1;
-	private static boolean whipFirst;
 
 	private ClientBrigitte() {
 	}
@@ -119,54 +115,5 @@ public final class ClientBrigitte {
 
 	public static void clear() {
 		bashLeft = -1;
-		whipUntil = -1;
-	}
-
-	/** Whip Shot has you, or has let go. In hero mode the hold is the longer one: a hero's ground stops them at once (BrigitteStats). */
-	public static void onWhipPush(dev.overcraft.net.WhipPushPayload payload) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null || !payload.on()) {
-			whipUntil = -1;
-			return;
-		}
-		whipX = payload.x();
-		whipZ = payload.z();
-		whipFirst = true;
-		whipUntil = player.tickCount + Ow.ticks(dev.overcraft.hero.OwMovement.handles(player) ? BrigitteStats.WHIP_HERO_PUSH_TIME : BrigitteStats.WHIP_PUSH_TIME);
-	}
-
-	/** Still held this tick, or over: its time up, a wall reached (Whiplash's slam asks the same on the server), or dead. */
-	private static boolean whipHeld(LivingEntity entity) {
-		if (whipUntil < 0) {
-			return false;
-		}
-		if (entity.tickCount >= whipUntil || !entity.isAlive() || entity.horizontalCollision && !whipFirst) {
-			whipUntil = -1;
-			return false;
-		}
-		return true;
-	}
-
-	/** The push's move this tick in hero mode (OwMovement.dash, as the bash), or null: its speed across; up and down its lift, then Overwatch's gravity. */
-	public static @Nullable Vec3 whipped(LivingEntity entity) {
-		if (entity != Minecraft.getInstance().player || !whipHeld(entity)) {
-			return null;
-		}
-		double vy = entity.getDeltaMovement().y;
-		if (whipFirst) {
-			whipFirst = false;
-			return new Vec3(whipX, vy, whipZ);
-		}
-		double g = Ow.speed(vy > 0 ? dev.overcraft.hero.OwMovement.GRAVITY_UP : dev.overcraft.hero.OwMovement.GRAVITY_DOWN) / 20;
-		return new Vec3(whipX, entity.onGround() && vy <= 0 ? -g : vy - g, whipZ);
-	}
-
-	/** The same in Minecraft mode, each tick before she moves: Minecraft's own travel moves on this speed, and its gravity on the vertical. */
-	public static void tick(Minecraft mc) {
-		LocalPlayer player = mc.player;
-		if (player != null && !dev.overcraft.hero.OwMovement.handles(player) && whipHeld(player)) {
-			whipFirst = false;
-			player.setDeltaMovement(whipX, player.getDeltaMovement().y, whipZ);
-		}
 	}
 }

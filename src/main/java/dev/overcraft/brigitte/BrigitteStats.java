@@ -47,16 +47,18 @@ public final class BrigitteStats {
 	public static final double WHIP_DAMAGE = 70;               // D 0B38; W
 	/** 0.2 s, then a straight shot at 80 m/s to 20 m, 0.5 m round, one target, no gravity (D #593, 2B27, 133D, 2B26). */
 	public static final double WHIP_WINDUP = 0.2, WHIP_SPEED = 80, WHIP_RANGE = 20, WHIP_RADIUS = 0.5;
-	/** The push: her level aim at the launch x 25 m/s, and 2 m/s up (D 133E; #638, H: along her aim, not away from her). */
-	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 2;
 	/**
-	 * How long its push is held, so that it goes W Brigitte rev 408812's "~8 meter knockback distance on flat ground" (W, M; the owner, 2026-11-05: "If wiki says
-	 * 8m then we should use 8m"). D 133E gives the 25 m/s and one push (#994 -> #638), no distance; the length of the hold is ours, chosen to reach W: 25 m/s x 0.25 s
-	 * = 6.25 m plus the slide on Minecraft's friction. Played: 7.75 m on a husk, a zombie and a player in Minecraft mode (runs/polish4/third_after.txt). W's V:3 is D's m_583C208B = 3, not read as the lift, L; the lift is #638's vector.
+	 * The push: her level aim at the launch x 25 m/s and 3 m/s up. D: 1259 #638's pair, m_E33EFEE1 = v9275 = 133E's 25 and m_583C208B = 3 x scale, read as horizontal and vertical as
+	 * Accretion's 6 / 3 is (reading_game_data.md), W "H:25, V:3" (25.18 m/s). The same node's m_1376B4DF is 25 across + 2 up (25.08 along her aim in its other branch), so the data holds both a 2 and a 3 and
+	 * doesn't say which moves them. **What decides it is the play and W's distance:** on Overwatch's own air numbers (OwMovement), one push with 3 up lands a hero at 8.04 m, W "~8 meter", and with 2 up at 5.88 m
+	 * (runs/polish4/whip_lift3_experiment.txt). M. Along her level aim: #638's first branch; the second (v417, not read) isn't built.
 	 */
-	public static final double WHIP_PUSH_TIME = 0.25;
-	/** The same for a player in hero mode, whose ground stops them almost at once (OwMovement.FRICTION): the hold and its stop go 8.48 m, played (runs/polish4/third_after.txt; 0.25 s falls short by more). Ours, as above. */
-	public static final double WHIP_HERO_PUSH_TIME = 0.3;
+	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 3;
+	/**
+	 * How long a mob's push is held. **Ours:** the data has one push, and a mob on Minecraft's ground friction stops at 4.66 m. 0.15 s gets it to W's distance: 7.99 m on a husk (same file; 0.1 s 7.5 m, 0.2 s 8.41 m).
+	 * A player has no hold: one push, their client moves them (8.04 m in hero mode; 4.66 m in Minecraft mode, Minecraft's friction: left so, ours).
+	 */
+	public static final double WHIP_PUSH_TIME = 0.15;
 	/** The flail's way back: 0.3 s from a hit, a wall or the end of its reach (D 002B's returns, ours the shorter 0.175 s
 	 * under 5 m left out). */
 	public static final double WHIP_RETURN = 0.3;
@@ -103,8 +105,8 @@ public final class BrigitteStats {
 	 */
 	public static final double BASH_TIME = 0.256, BASH_SPEED = 25.85, BASH_EXIT_SPEED = 15;
 	public static final double BASH_DAMAGE = 70;               // D 0B20; W
-	/** Its knockback (D 0B21 6 m/s). */
-	public static final double BASH_KNOCKBACK = 6;
+	/** Its knockback, the pair (D 0EE3 #503, and #886 on the shockwave: m_E33EFEE1 v9275 = 0B21's 6, m_583C208B 3, as the whip's and Accretion's), W kbspeed 6 m/s. */
+	public static final double BASH_KNOCKBACK = 6, BASH_LIFT = 3;
 	/** Who it hits: one enemy within this reach ahead of her, in this cone (D #501: radius 2.48, ~35 degrees, L). */
 	public static final double BASH_REACH = 2.5, BASH_CONE = 35;
 

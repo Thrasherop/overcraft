@@ -121,18 +121,13 @@ public final class Anesthetic {
 		}
 	}
 
-	/** Whether this listener gets the 3p stop. Package-private for CombatRuleTest's neighbour AnestheticRuleTest. */
+	/** Whether this listener gets the 3p stop. Package-private for AnestheticRuleTest's neighbour AnestheticRuleTest. */
 	static boolean stops3p(boolean isTarget, double toTarget, boolean anotherNumbedInEarshot) {
 		return !isTarget && toTarget <= EARSHOT && !anotherNumbedInEarshot;
 	}
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
-		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
-				return true;
-			}
-		}
-		return false;
+		return Combat.inSight(level, at, e, e);
 	}
 
 	public static void clear() {

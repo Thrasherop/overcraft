@@ -87,8 +87,8 @@ public final class Sleep {
 	 * A stun (Brigitte's Shield Bash in Rally, 224E with no type of its own: its public schema's default, 4EB6: 0.75 s): held as a sleeper is (a mob still, a player's
 	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
 	 */
-	public static void stun(LivingEntity entity, double seconds) {
-		stun(entity, seconds, false, 1);
+	public static boolean stun(LivingEntity entity, double seconds) {
+		return stun(entity, seconds, false, 1);
 	}
 
 	/**
@@ -175,16 +175,16 @@ public final class Sleep {
 		}
 	}
 
-	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
+	private static boolean stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
 		if (Combat.phaseStops(entity)) {
 			// (a stun: 224E #96 / #575. A knock-down: the hit's own filter, mask 20 (M) as 5B7B's and 1EB9 #338's, and W; hits don't get here, Allies: this is the door for what isn't a hit)
-			return;
+			return false;
 		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
 		Holds.Hold hold = Holds.stacked(old == null ? null : old.hold(), Holds.stun(now, now + Ow.ticks(seconds), slides, gravity));
 		if (hold == null) {
-			return;
+			return false;
 		}
 		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, hold));
 		if (entity instanceof ServerPlayer player) {
@@ -202,7 +202,8 @@ public final class Sleep {
 				// where the floatless throw cost 4 (runs/polish3/c3_hyper_up.txt). Ours, from that: not the #84 rule for pushes, which keep their falls
 				FLOATED.put(player.getUUID(), player);
 			}
-		}
+		}
+		return true;
 	}
 
 	/** {@code own} in the sleeper's head (a player), {@code others} at it for everyone else, out to 45 m (3866). */

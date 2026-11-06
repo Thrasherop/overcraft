@@ -103,6 +103,8 @@ public final class Brigitte implements HeroKit {
 		whip(player, s);
 		swing(player, s);
 		bash(player, s);
+		// Shield Bash lands her unhurt (#35: off a ledge 19 -> 17.6)
+		HeroManager.softLanding(player, s, controls && s.bashTicks >= 0, false);
 		Barrier.tick(player, s, controls);
 		if (!controls) {
 			// asleep or stunned too: what her arms were doing is cut
@@ -160,7 +162,7 @@ public final class Brigitte implements HeroKit {
 				Combat.addFireForDamage(player, dealt, target);
 				Effects.hitMarker(player, target, false);
 				// a Stalwart takes 40% less of it (Tank)
-				Combat.push(target, flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0), player,
+				Combat.push(target, flat(player).scale(Ow.speed(BASH_KNOCKBACK)).add(0, Ow.speed(BASH_LIFT), 0), player,
 					dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.animate(player, "shield_bash_hit");
 				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
@@ -299,10 +301,13 @@ public final class Brigitte implements HeroKit {
 		if ((Ow.ticks(RALLY_TIME) - s.rallyTicks) % Ow.ticks(RALLY_PULSE) == 0) {
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_RADIUS),
 				e -> e.isAlive() && Allies.isSelfOrAlly(player, e) && e.distanceTo(player) <= RALLY_RADIUS
-					&& (e == player || player.hasLineOfSight(e)))) {
+					&& (e == player || Combat.inSight(player.level(), player.getEyePosition(), e, player)))) {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
 				Combat.overhealthPool(e, RALLY_OVERHEALTH, RALLY_OVERHEALTH_MAX, RALLY_OVERHEALTH_TIME, 1000);
-				Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
+				// #125: she takes it too: 12BE #158's filter 6 and no gate before the pool on 12C1 (#167, #183, #187, #193, #195, #174). Only its looks skip her: #178 (self != v40, the sender) -> #176, #177
+				if (e != player) {
+					Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
+				}
 				if (e instanceof ServerPlayer ally && ally != player) {
 					BrigitteSounds.own(ally, "rally.overhealth");
 				}
@@ -359,7 +364,7 @@ public final class Brigitte implements HeroKit {
 		java.util.List<LivingEntity> tracked = new java.util.ArrayList<>();
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
 			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours)
-			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && player.hasLineOfSight(e) && !Barrier.shields(e, player))) {
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && Combat.inSight(player.level(), player.getEyePosition(), e, player) && !Barrier.shields(e, player))) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (to.lengthSqr() <= 0.25 || to.normalize().dot(ahead) >= 0) {
 				tracked.add(e);
@@ -372,7 +377,7 @@ public final class Brigitte implements HeroKit {
 			Combat.addFireForDamage(player, dealt, e);
 			Effects.hitMarker(player, e, false);
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
-			Combat.push(e, new Vec3(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3), player,
+			Combat.push(e, new Vec3(push.x * Ow.speed(BASH_KNOCKBACK), Ow.speed(BASH_LIFT), push.z * Ow.speed(BASH_KNOCKBACK)), player,
 				dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			stun(player, e);
 		}
@@ -391,9 +396,11 @@ public final class Brigitte implements HeroKit {
 
 	/** Rally's stun (Sleep.stun) and its halo over the target's head (220D, for the stun's time). */
 	private static void stun(ServerPlayer player, LivingEntity target) {
-		dev.overcraft.hero.Sleep.stun(target, RALLY_STUN);
-		BrigitteSounds.on(target, "stun", 30);
-		Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);
+		// (refused on a sleeper or the phased: then no halo and no sound)
+		if (dev.overcraft.hero.Sleep.stun(target, RALLY_STUN)) {
+			BrigitteSounds.on(target, "stun", 30);
+			Effects.play(player.level(), "brigitte_stun", target.position(), Vec3.ZERO, target, Ow.ticks(RALLY_STUN), player);
+		}
 	}
 
 	// ---- Whip Shot (1259) ----
@@ -451,9 +458,7 @@ public final class Brigitte implements HeroKit {
 				if (hit instanceof net.minecraft.world.entity.player.Player) {
 					dev.overcraft.hero.Voice.say(player, "whip_hit", 1);
 				}
-				Vec3 level = new Vec3(s.whipDir.x, 0, s.whipDir.z);
-				Vec3 push = (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK)))
-					.add(0, Ow.speed(WHIP_LIFT), 0);
+				Vec3 push = whipPush(s.whipDir);
 				// a Stalwart's, a state's or a resistance's share (Combat.pushShare); a warden or a ravager isn't moved at all
 				double share = Combat.isPhased(hit) ? 0 : Combat.pushShare(hit);
 				if (share > 0) {
@@ -480,7 +485,13 @@ public final class Brigitte implements HeroKit {
 		}
 	}
 
-	/** Whip Shot's push, held a few ticks (WHIP_PUSH_TIME; a player's client holds its own: WhipPushPayload). */
+	/** Whip Shot's push: the pair, along her level aim (BrigitteStats). Package-private for BrigitteRulesTest. */
+	static Vec3 whipPush(Vec3 aim) {
+		Vec3 level = new Vec3(aim.x, 0, aim.z);
+		return (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK))).add(0, Ow.speed(WHIP_LIFT), 0);
+	}
+
+	/** Whip Shot's push, held a few ticks on a mob (WHIP_PUSH_TIME); a player gets the one push (critique_systems S4: each tick's send would overwrite their own vertical speed). */
 	private static final class Push {
 		final LivingEntity target;
 		final Vec3 velocity;
@@ -506,7 +517,6 @@ public final class Brigitte implements HeroKit {
 			}
 			if (dev.overcraft.hero.Combat.phaseStops(p.target)) {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
-				letGo(p.target);
 				return true;
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
@@ -520,7 +530,6 @@ public final class Brigitte implements HeroKit {
 				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
 				Combat.send(p.target);
-				letGo(p.target);
 				return true;
 			}
 			if (p.left-- <= 0) {
@@ -528,25 +537,14 @@ public final class Brigitte implements HeroKit {
 			}
 			boolean first = p.left == Ow.ticks(WHIP_PUSH_TIME) - 1;
 			if (p.target instanceof ServerPlayer && !first) {
-				// a player's client moves them and holds it (the payload below). Each tick's send would overwrite their own
-				// vertical speed from the server's stale copy (critique_systems S4), a stutter in the air
 				return false;
 			}
 			Vec3 v = p.target.getDeltaMovement();
 			// level speed held, its first lift once (Minecraft's gravity brings them down)
 			p.target.setDeltaMovement(p.velocity.x, first ? p.velocity.y : v.y, p.velocity.z);
 			Combat.send(p.target);
-			if (p.target instanceof ServerPlayer pushed) {
-				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(pushed, new dev.overcraft.net.WhipPushPayload(true, p.velocity.x, p.velocity.z));
-			}
 			return false;
 		});
-	}
-
-	private static void letGo(LivingEntity target) {
-		if (target instanceof ServerPlayer pushed) {
-			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(pushed, dev.overcraft.net.WhipPushPayload.OFF);
-		}
 	}
 
 	/** The flail starts back from where its head is: no more hits; the cooldown when it's in her hand (0.3 s). */

@@ -117,6 +117,8 @@ public final class HeroState {
 	public double gaMomentum;
 	/** Mercy: an Angelic Descent or a launch is landing her (no fall damage until she's down). */
 	public boolean softLanding;
+	/** Kiriko: game time until which the server's onGround is still the place she stepped from. */
+	public long softLandingGrace;
 	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
 	public int flashCharges = 1;
 	public int flashCast = -1;

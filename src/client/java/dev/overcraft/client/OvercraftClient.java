@@ -53,8 +53,6 @@ public class OvercraftClient implements ClientModInitializer {
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
-		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.WhipPushPayload.TYPE, (payload, context) ->
-			ClientBrigitte.onWhipPush(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
 			ClientLifeweaver.onGrip(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ResurrectPayload.TYPE, (payload, context) -> {
@@ -125,7 +123,6 @@ public class OvercraftClient implements ClientModInitializer {
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
 		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
-		ClientTickEvents.START_CLIENT_TICK.register(ClientBrigitte::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
@@ -295,8 +292,7 @@ public class OvercraftClient implements ClientModInitializer {
 		// Lifeweaver's dash, else Brigitte's Shield Bash
 		OwMovement.dash = entity -> {
 			net.minecraft.world.phys.Vec3 lw = ClientLifeweaver.dash(entity);
-			net.minecraft.world.phys.Vec3 bash = lw != null ? lw : ClientBrigitte.bash(entity);
-			return bash != null ? bash : ClientBrigitte.whipped(entity);
+			return lw != null ? lw : ClientBrigitte.bash(entity);
 		};
 		OwMovement.descent = ClientMercy::descent;
 		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)

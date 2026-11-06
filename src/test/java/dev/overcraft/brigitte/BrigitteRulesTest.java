@@ -51,4 +51,13 @@ class BrigitteRulesTest {
 	void noBashNoExclusion() {
 		assertEquals(3, Brigitte.shockwaveHits(ids(3), bashed(null), Function.identity()).size());
 	}
+
+	/** The pair, D 1259 #638 / W H:25, V:3: blocks a tick. */
+	@org.junit.jupiter.api.Test
+	void theWhipPushesAlongHerLevelAimAt25And3Up() {
+		net.minecraft.world.phys.Vec3 v = Brigitte.whipPush(new net.minecraft.world.phys.Vec3(0, 0.6, 2));
+		org.junit.jupiter.api.Assertions.assertEquals(0, v.x, 1.0E-9);
+		org.junit.jupiter.api.Assertions.assertEquals(dev.overcraft.Ow.speed(25), v.z, 1.0E-9);
+		org.junit.jupiter.api.Assertions.assertEquals(dev.overcraft.Ow.speed(3), v.y, 1.0E-9);
+	}
 }

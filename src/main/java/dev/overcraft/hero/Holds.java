@@ -71,6 +71,11 @@ final class Holds {
 		return !hold.stun ? Cleansing.WAKES : !hold.slides ? Cleansing.ENDS : Cleansing.STAYS;
 	}
 
+	/** A movement ability's landing (HeroManager.softLanding): set while it moves them, kept until they're down after it; grace: the ground just left doesn't count. Tested: SoftLandingTest. */
+	static boolean softLanding(boolean was, boolean moving, boolean onGround, boolean grace) {
+		return moving || was && (!onGround || grace);
+	}
+
 	/** Whether it says it was cleansed (1C7D): a sleep (224E #418) and a stun (#416) do; a knock-down's and a float's answer goes nowhere (#400). */
 	static boolean tells(Hold hold) {
 		return cleansing(hold) != Cleansing.STAYS;
