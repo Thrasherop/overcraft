@@ -189,6 +189,11 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !Sleep.asleep(player);
 	}
 
+	/** A hero in hero mode, alive, whether or not their keys are live: what a fall asks. Asleep or stunned in the air, an ability's landing and their own safe height still count (#35). */
+	public static boolean inHeroPlay(Player player) {
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator();
+	}
+
 	/**
 	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely (the owner, #35). Without one, a hero's falls count from their safe
 	 * height (Hero.safeFall): Kiriko's plain fall from her climb's height, her Swift Step's by its soft landing.
@@ -593,9 +598,10 @@ public final class HeroManager {
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
-				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past (Holds.landingEnds)
+				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past, nor while it runs (Holds.landingEnds, stayed)
 				if (state.softLanding) {
-					state.softLandingTouch = player.isInWater() || player.onClimbable() ? state.softLandingTouch + 1 : 0;
+					boolean running = state.gaPhase != 0 || state.dashTicks >= 0 || state.sojournSlide >= 0 || state.bashTicks >= 0 || state.wallRiding || state.sigmaFluxPhase != 0;
+					state.softLandingTouch = !running && Holds.stayed(player.isInWater(), player.onClimbable(), player.getKnownMovement().y) ? state.softLandingTouch + 1 : 0;
 					if (Holds.landingEnds(heroMode(player), state.softLandingTouch)) {
 						state.softLanding = false;
 						state.softLandingTouch = 0;

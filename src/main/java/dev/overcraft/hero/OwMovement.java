@@ -102,6 +102,8 @@ public final class OwMovement {
 
 	/** Set by the client: this entity moves the Overwatch way (the local player, a hero, slot 1). */
 	public static Predicate<LivingEntity> active = entity -> false;
+	/** An ability is moving this local player now (Guardian Angel, Life Grip, Rejuvenating Dash, Shield Bash, Power Slide): Minecraft's water and ladder don't get a say (#127). */
+	public static Predicate<LivingEntity> abilityMoving = entity -> false;
 	/** Set by the client: this entity has Kiriko's wall climb. */
 	public static Predicate<LivingEntity> wallClimb = entity -> false;
 

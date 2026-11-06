@@ -55,6 +55,10 @@ public final class ClientBrigitte {
 	 * The bash's move this tick (OwMovement), or null; at its end her speed is cut to 15 m/s (the steps that follow start
 	 * from it), on a hit to nothing across.
 	 */
+	public static boolean bashing(LivingEntity entity) {
+		return entity == Minecraft.getInstance().player && bashLeft != -1;
+	}
+
 	public static @Nullable Vec3 bash(LivingEntity entity) {
 		if (entity != Minecraft.getInstance().player || bashLeft == -1) {
 			return null;

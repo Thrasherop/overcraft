@@ -267,7 +267,7 @@ final class DevBot {
 			}
 			case "perk" -> {
 				// "bot perk <name> <PERK_ENUM>": a perk picked, as the perk menu does
-				HeroManager.state(BOTS.get(a[1])).majorPerk = dev.overcraft.hero.Perk.valueOf(a[2]);
+				HeroManager.state(a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1])).majorPerk = dev.overcraft.hero.Perk.valueOf(a[2]);
 				out.addProperty("ok", true);
 			}
 			case "strike" -> {

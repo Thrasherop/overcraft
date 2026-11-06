@@ -294,6 +294,7 @@ public class OvercraftClient implements ClientModInitializer {
 			net.minecraft.world.phys.Vec3 lw = ClientLifeweaver.dash(entity);
 			return lw != null ? lw : ClientBrigitte.bash(entity);
 		};
+		OwMovement.abilityMoving = entity -> ClientLifeweaver.grip(entity) != null || ClientMercy.glide(entity) != null || ClientLifeweaver.dashing(entity) || ClientBrigitte.bashing(entity) || ClientSojourn.slide(entity) != null;
 		OwMovement.descent = ClientMercy::descent;
 		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
 		OwMovement.levitating = ClientSigma::levitating;

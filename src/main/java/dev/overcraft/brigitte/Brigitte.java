@@ -104,7 +104,7 @@ public final class Brigitte implements HeroKit {
 		swing(player, s);
 		bash(player, s);
 		// Shield Bash lands her unhurt (#35: off a ledge 19 -> 17.6)
-		HeroManager.softLanding(player, s, controls && s.bashTicks >= 0, false);
+		HeroManager.softLanding(player, s, controls && s.bashTicks >= 0, player.level().getGameTime() < s.softLandingGrace);
 		Barrier.tick(player, s, controls);
 		if (!controls) {
 			// asleep or stunned too: what her arms were doing is cut
@@ -194,6 +194,9 @@ public final class Brigitte implements HeroKit {
 
 	private static void end(ServerPlayer player, HeroState s) {
 		s.bashTicks = -1;
+		// its landing, however it ended (a hit on its first tick never had a tick of moving), and not down until her exit glide has run out: she leaves at 15 m/s and can go off a ledge (#35; ours, the stop takes about 6 ticks)
+		s.softLanding = true;
+		s.softLandingGrace = player.level().getGameTime() + BASH_LANDING_GRACE;
 		s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);
 		if (HeroManager.hasPerk(player, Perk.BRIGITTE_INSPIRING_STRIKE)) {
 			// Inspiring Strike: 30% faster for 2 s after the dash (51F2 #455 / #456)
@@ -518,6 +521,10 @@ public final class Brigitte implements HeroKit {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
 				return true;
 			}
+			// her perk ends with her: G, death, leaving, another hero (as endActions; asleep or stunned she keeps it: the whip's already landed)
+			if (p.whiplash != null && (p.whiplash.isRemoved() || !p.whiplash.isAlive() || !HeroManager.heroMode(p.whiplash) || HeroManager.hero(p.whiplash) != dev.overcraft.hero.Hero.BRIGITTE)) {
+				p.whiplash = null;
+			}
 			// (a player's flag comes before their position does: a 7 m wall and every wall in Minecraft mode read as nothing to hit. So what they hit is looked at for a few ticks from the flag; ours)
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
 				p.lookFor = SLAM_LOOK;
@@ -550,6 +557,7 @@ public final class Brigitte implements HeroKit {
 	}
 
 	private static final int SLAM_LOOK = 3;
+	private static final int BASH_LANDING_GRACE = 8;
 
 	/**
 	 * A wall to slam into (BZ "slam enemies into walls"), all ours: something at their body's height, above a step's 0.6 (so not a stair or a slab), and not above their head (a ceiling isn't one: their box keeps its top),

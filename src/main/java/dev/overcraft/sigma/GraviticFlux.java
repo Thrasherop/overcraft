@@ -100,7 +100,7 @@ public final class GraviticFlux {
 		dev.overcraft.hero.HeroSounds.ultLine(player, SigmaSounds.of("ult.friendly"), SigmaSounds.of("ult.enemy"), 5);
 	}
 
-	/** Its end (done, or cut short: G, death, another hero, a stun): he lands safely, those lifted go on falling on their own. */
+	/** Its end (done, or cut short: death, another hero, a stun): he lands safely, those lifted go on falling on their own. Cut short by G he doesn't: nothing of the hero's play carries over (Holds.landingEnds clears it the next tick). */
 	static void end(ServerPlayer player, HeroState s) {
 		if (!active(s)) {
 			return;

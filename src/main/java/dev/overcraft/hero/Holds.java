@@ -82,6 +82,14 @@ final class Holds {
 	 */
 	static final int LANDING_TOUCH = 10;
 
+	/**
+	 * This tick counts towards having stayed: in water; or on a ladder or vines climbing or holding on, not sliding down them (Minecraft caps a slide at 0.15 a tick, so tall vines take a second or more to fall past, and a
+	 * bash past 3 of them hurt). The rule's reading, ours: "an ability's landing doesn't hurt" until they've taken hold of something. Tested: SoftLandingTest.
+	 */
+	static boolean stayed(boolean inWater, boolean onClimbable, double vy) {
+		return inWater || onClimbable && vy > -0.1;
+	}
+
 	static boolean landingEnds(boolean heroMode, int touchTicks) {
 		return !heroMode || touchTicks >= LANDING_TOUCH;
 	}

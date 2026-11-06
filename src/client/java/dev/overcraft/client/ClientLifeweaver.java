@@ -97,6 +97,11 @@ public final class ClientLifeweaver {
 	 * than his walk's (ours: kept at 14 m/s, the dash carried him 12.3 m from a jump; W measures 6.9 m in the air, and the
 	 * data's 0.25 s at 28.875 m/s is 7.2 m, so little is left after it).
 	 */
+	/** A dash is under way here: asks without spending its ticks. */
+	public static boolean dashing(LivingEntity entity) {
+		return entity == Minecraft.getInstance().player && dashLeft >= 0;
+	}
+
 	public static @Nullable Vec3 dash(LivingEntity entity) {
 		if (entity != Minecraft.getInstance().player || dashLeft < 0) {
 			return null;

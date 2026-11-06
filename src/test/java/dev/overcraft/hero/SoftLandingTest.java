@@ -39,4 +39,13 @@ class SoftLandingTest {
 		assertFalse(Holds.landingEnds(true, Holds.LANDING_TOUCH - 1));
 		assertFalse(Holds.landingEnds(true, 0));
 	}
+
+	@Test
+	void slidingDownALadderIsntStaying() {
+		assertFalse(Holds.stayed(false, true, -0.15));
+		assertTrue(Holds.stayed(false, true, 0));
+		assertTrue(Holds.stayed(false, true, 0.1));
+		assertTrue(Holds.stayed(true, false, -0.5));
+		assertFalse(Holds.stayed(false, false, 0));
+	}
 }
