@@ -199,6 +199,10 @@ public final class HeroState {
 	public int sojournCharged;
 	/** The buffered press was already shown on her client (HeroInputPayload.PRESS_CHARGED_SHOWN). */
 	public boolean sojournChargedShown;
+	/** Where the shown press's ray starts: her camera's eye as she pressed (Railgun.aim), null: the server's. */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 sojournAimFrom;
+	/** Hacked, for her client (Sojourn.MODE_SILENCED). */
+	public boolean sojournSilenced;
 	/** Ticks left of the Charged Shot's recovery (D v2447, 1A23 #438 / #636). */
 	public double sojournChargedLock;
 	/**

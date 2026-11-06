@@ -24,6 +24,8 @@ public final class ClientSojourn {
 	private static long toldAt = -1;
 	/** The art generation her effects were last made ahead for. */
 	private static int artMade = -1;
+	/** The art generation her effects were last made ahead for another Sojourn in the world. */
+	private static int othersArtMade = -1;
 
 	private ClientSojourn() {
 	}
@@ -39,10 +41,25 @@ public final class ClientSojourn {
 				}
 			});
 		}
-		if (ClientHero.hero() == Hero.SOJOURN && artMade != dev.overcraft.client.effect.EffectArt.generation()) {
+		OTHERS_RELOADS.removeIf(s -> !mc.getSoundManager().isActive(s));
+		fireDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).isDown();
+		ultDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).isDown();
+		int art = dev.overcraft.client.effect.EffectArt.generation();
+		if (ClientHero.hero() == Hero.SOJOURN && artMade != art) {
 			// her art made as she's picked, not in the frame of her first shot (EffectArt.prepare)
-			artMade = dev.overcraft.client.effect.EffectArt.generation();
+			artMade = art;
 			dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART);
+		}
+		if (othersArtMade != art && mc.level != null && mc.level.getGameTime() % 20 == 0) {
+			// another Sojourn in the world: this client's first sight of her first shot cost 209 ms as an ally, 153 as an enemy
+			for (net.minecraft.client.player.AbstractClientPlayer other : mc.level.players()) {
+				if (other != mc.player && Hero.SOJOURN.id.equals(other.getAttached(dev.overcraft.hero.HeroManager.HERO))) {
+					othersArtMade = art;
+					dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART);
+					dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART_ENEMY);
+					break;
+				}
+			}
 		}
 		boolean on = mc.player != null && ClientHero.hero() == Hero.SOJOURN && ClientHero.controls()
 			&& (ClientHero.sync().mode() & Sojourn.MODE_SLIDE) != 0;
@@ -95,49 +112,82 @@ public final class ClientSojourn {
 	 * (no energy, its recovery) goes the usual way at the next tick (ClientHero), and the server decides.
 	 */
 	public static void clicked(com.mojang.blaze3d.platform.InputConstants.Key key) {
+		if (ClientHero.hero() != Hero.SOJOURN) {
+			return;
+		}
+		// the first of a press only: KeyboardHandler clicks again on the OS's repeat of a held key, and that was a shot every 0.65 s
+		boolean fire = bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key), ult = bound(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).equals(key);
+		if (fire && fireDown || ult && ultDown) {
+			return;
+		}
+		fireDown |= fire;
+		ultDown |= ult;
 		Minecraft mc = Minecraft.getInstance();
 		net.minecraft.client.player.LocalPlayer player = mc.player;
-		if (player == null || mc.level == null || ClientHero.hero() != Hero.SOJOURN || !ClientHero.controls() || mc.gui.screen() != null
+		if (player == null || mc.level == null || !ClientHero.controls() || mc.gui.screen() != null
 			|| ClientHero.perkMenuOpen() || dev.overcraft.client.comms.CommsWheel.holding()
 			|| Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))) {
 			return;
 		}
-		if (bound(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).equals(key)) {
+		if (ult) {
 			ultPressed();
 		}
-		if (!bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key)) {
+		if (!fire) {
 			return;
 		}
 		double energy = ClientHero.sync().meter() * SojournStats.ENERGY_MAX;
 		long now = System.nanoTime();
-		if (now < lockedUntil && lockedUntil - now <= CALL_WINDOW_NANOS) {
-			// late in its recovery: this press goes the usual way, waits in the server's buffer, and the shot it makes only reaches her
-			// a round trip on (Railgun): a click before then must not play a shot the server will drop
-			serverMayFireUntil = now + SERVER_SHOT_WAIT_NANOS;
+		if (energy <= 0) {
+			return;
 		}
-		if (energy <= 0 || now < lockedUntil || now < serverMayFireUntil) {
+		if (now < lockedUntil) {
+			if (lockedUntil - now <= CALL_WINDOW_NANOS) {
+				// late in its recovery: the server's buffer keeps this press and fires it as the recovery ends, and that shot only reaches her a
+				// round trip on: a click before then must not play a shot the server will drop. Sent now, so the window is the server's to the tick
+				ClientHero.pressNow(0, 0, 0, 0, 0, 0);
+				serverMayFireUntil = lockedUntil + roundTripNanos(mc, player);
+			}
+			return;
+		}
+		if (now < serverMayFireUntil) {
+			// the same, with that shot still on its way: this press is the server's to judge
+			ClientHero.pressNow(0, 0, 0, 0, 0, 0);
+			serverMayFireUntil = now + roundTripNanos(mc, player);
 			return;
 		}
 		locked(SojournStats.CHARGED_LOCKOUT);
 		// the mouse's movement this frame hasn't turned her yet: Minecraft.runTick applies it after the events and the tick, and a click in
 		// the same poll as a flick read the old aim (4 of 10). Applied now, in the events' order; the frame's own call finds what's left
 		mc.mouseHandler.handleAccumulatedMovement();
-		// with her aim of this moment: the server's copy may be a tick old, and she may have just flicked onto the target
-		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot());
-		show(mc, player, energy);
+		// with her aim and her eye of the frame she saw: the server's copies may be a tick old (a tick ahead of the camera, in fact: its position is the
+		// tick's, the camera's is drawn between ticks: 0.7 m at a slide, 3 of 10 perfect flicks missed), and she may have just flicked onto the target
+		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(mc.getDeltaTracker().getGameTimeDeltaPartialTick(true));
+		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot(), eye.x, eye.y, eye.z);
+		show(mc, player, energy, eye);
 	}
 
-	/** How near its end a press in the recovery can still be fired by the server: its 0.15 s buffer, and a tick each way on the road (ours). */
-	private static final long CALL_WINDOW_NANOS = 250_000_000;
-	/** A press left to the server: no shot shown for this long, or until its shot arrives (ours: a generous round trip; a ping above it can still show one). */
-	private static final long SERVER_SHOT_WAIT_NANOS = 500_000_000;
+	/** How near its end a press in the recovery is kept: the server's 0.15 s buffer, and the tick it may wait to be looked at (ours; measured in sojourn.md). */
+	private static final long CALL_WINDOW_NANOS = 200_000_000;
+	/** Beyond the ping: the server's tick and a frame here (ours). */
+	private static final long SHOT_ON_ITS_WAY_NANOS = 150_000_000;
+
+	/** From now: how long a shot the server fires now takes to reach her. The ping is the list's (vanilla's keepalive), so a sudden spike can still show a shot it drops. */
+	private static long roundTripNanos(Minecraft mc, net.minecraft.client.player.LocalPlayer player) {
+		var info = mc.getConnection() == null ? null : mc.getConnection().getPlayerInfo(player.getUUID());
+		return ((info == null ? 0 : info.getLatency()) + dev.overcraft.client.dev.DevLag.roundTripMillis()) * 1_000_000L + SHOT_ON_ITS_WAY_NANOS;
+	}
+
+	/** The right button and Q are down, as far as a press goes (their OS repeats aren't presses). */
+	private static boolean fireDown;
+	private static boolean ultDown;
 	/** Until when (nanoTime) the server may be about to fire a press this client didn't show. */
 	private static long serverMayFireUntil;
 
 	/** Q as it goes down, if her ult is ready: no shot through its cast, from now, not a round trip on (ghost shots at a 100 ms dev lag). */
 	private static void ultPressed() {
 		var sync = ClientHero.sync();
-		if (sync.ultCharge() >= sync.ultCost() && !sync.ultActive()) {
+		// (hacked, the server strips the press: HeroManager.onInput)
+		if (sync.ultCharge() >= sync.ultCost() && !sync.ultActive() && (sync.mode() & Sojourn.MODE_SILENCED) == 0) {
 			locked(SojournStats.OVERCLOCK_CAST);
 		}
 	}
@@ -152,12 +202,12 @@ public final class ClientSojourn {
 		serverMayFireUntil = 0;
 	}
 
-	private static void show(Minecraft mc, net.minecraft.client.player.LocalPlayer player, double energy) {
+	private static void show(Minecraft mc, net.minecraft.client.player.LocalPlayer player, double energy, net.minecraft.world.phys.Vec3 eye) {
 		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
 		dev.overcraft.client.model.HeroAnimator.trigger(player.getId(), "charged_shot", (mc.level.getGameTime() + partial) / 20f);
 		ClientHero.playOwn(dev.overcraft.sojourn.SojournSounds.of(dev.overcraft.sojourn.Railgun.chargedFireSound(energy)).location(), 1, 1,
 			player.getRandom().nextLong());
-		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(), look = player.getViewVector(1);
+		net.minecraft.world.phys.Vec3 look = player.getViewVector(1);
 		// (60 m: Railgun's copy for everyone, HeroSounds.at's volume)
 		mc.level.playLocalSound(eye.x, eye.y, eye.z, dev.overcraft.sojourn.SojournSounds.of("charged.shot"), net.minecraft.sounds.SoundSource.PLAYERS,
 			Math.max(1, 60f / 16), 1, false);

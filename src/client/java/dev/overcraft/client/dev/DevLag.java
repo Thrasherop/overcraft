@@ -23,6 +23,11 @@ public final class DevLag {
 	private DevLag() {
 	}
 
+	/** What it adds to a round trip (vanilla's ping doesn't see it). */
+	public static long roundTripMillis() {
+		return 2 * millis;
+	}
+
 	public static synchronized void set(long ms) {
 		millis = ms;
 		if (ms > 0 && pool == null) {

@@ -64,6 +64,9 @@ public final class Railgun {
 		if (!controls || !player.isAlive()) {
 			s.sojournShotClock = 1;
 			s.sojournCharged = 0;
+			// (or a press shown just before G or death would refuse the next one's edge)
+			s.sojournChargedShown = false;
+			s.sojournAimFrom = null;
 			return;
 		}
 		// the right button first: it outranks the rounds and the reload (D: its v33 priority 0x79 over their 0x2, #425 / #233 / #571).
@@ -75,6 +78,7 @@ public final class Railgun {
 		chargedIfReady(player, s);
 		if (s.sojournCharged > 0 && --s.sojournCharged <= 0) {
 			s.sojournChargedShown = false;
+			s.sojournAimFrom = null;
 		}
 		if (s.primaryAmmo == 0 && s.primaryReload < 0 && s.reloadHeld <= 0) {
 			startReload(player, s);
@@ -140,13 +144,21 @@ public final class Railgun {
 	 * rotation packet sent just before it wasn't enough: a look and a press 33 ms later went along the old aim 4 times in 8 (played, cause
 	 * not read further).
 	 */
-	public static void aim(ServerPlayer player, float yaw, float pitch) {
+	public static void aim(ServerPlayer player, HeroState s, dev.overcraft.net.HeroInputPayload input) {
+		float yaw = input.yaw(), pitch = input.pitch();
 		if (Float.isFinite(yaw) && Float.isFinite(pitch)) {
 			player.setYRot(yaw);
 			player.setYHeadRot(yaw);
 			player.setXRot(Math.clamp(pitch, -90f, 90f));
 		}
+		// and from where: the ray from the camera she aimed with, not the server's tick position (played: perfect flicks missed 3 of 10 at a slide, the
+		// camera 0.7 m behind). Hers to say only near her and with nothing solid between (ours: 6 m, a run's 27 m/s over a tick and a 0.15 s ping)
+		Vec3 from = new Vec3(input.x(), input.y(), input.z()), eye = player.getEyePosition();
+		s.sojournAimFrom = from.isFinite() && from.distanceToSqr(eye) <= AIM_FROM_REACH * AIM_FROM_REACH
+			&& player.level().clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS ? from : null;
 	}
+
+	private static final double AIM_FROM_REACH = 6;
 
 	private static void chargedIfReady(ServerPlayer player, HeroState s) {
 		if (s.sojournCharged > 0 && s.sojournEnergy > 0 && chargedReady(s)) {
@@ -355,7 +367,8 @@ public final class Railgun {
 		} else {
 			Combat.animate(player, "charged_shot");
 		}
-		Vec3 eye = player.getEyePosition();
+		Vec3 eye = s.sojournAimFrom != null ? s.sojournAimFrom : player.getEyePosition();
+		s.sojournAimFrom = null;
 		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f", eye.x, eye.y, eye.z));
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
