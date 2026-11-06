@@ -499,6 +499,7 @@ public final class Brigitte implements HeroKit {
 		/** Whiplash's Brigitte (the perk), for 0.5 s from the hit; null without it or once it's dealt. */
 		@org.jspecify.annotations.Nullable ServerPlayer whiplash;
 		int whiplashLeft = Ow.ticks(WHIPLASH_TIME);
+		boolean collided;
 
 		Push(LivingEntity target, Vec3 velocity, int left, @org.jspecify.annotations.Nullable ServerPlayer whiplash) {
 			this.target = target;
@@ -519,7 +520,10 @@ public final class Brigitte implements HeroKit {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
 				return true;
 			}
-			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision && intoAWall(p)) {
+			// (a player's flag comes before their position does, so what they hit is looked at the tick after: a 7 m wall read as nothing to hit; intoAWall)
+			boolean slam = p.whiplash != null && p.whiplashLeft-- > 0 && p.collided && intoAWall(p);
+			p.collided = p.target.horizontalCollision;
+			if (slam) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
 				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt, p.target);
