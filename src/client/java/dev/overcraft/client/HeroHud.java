@@ -858,8 +858,11 @@ public final class HeroHud {
 		}
 	}
 
-	/** Her scope's wash, a multiply (measured from the owner's frame 1: white comes out about (236, 236, 255)). */
-	private static final float SCOPE_WASH_R = 0.925f, SCOPE_WASH_G = 0.925f;
+	/**
+	 * Her scope's wash, a multiply (measured, weakly: the owner's frame 1 scoped against frame 2 unscoped, the same map from other spots: sky R/B and G/B fall to .90 and .92,
+	 * floor to .82 and .87; much of frame 1's blue is the map's own).
+	 */
+	private static final float SCOPE_WASH_R = 0.88f, SCOPE_WASH_G = 0.91f;
 	/** A blocked ability's red (measured from the owner's frame 2), and how long her beacon's throw blocks the rest (0C19 #145 v8349 = 0.4 s, H). */
 	private static final int LOCKED_RED = 0xFFF53757;
 	private static final float SOMBRA_THROW_LOCK = 0.4f;
