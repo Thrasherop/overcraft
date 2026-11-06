@@ -178,6 +178,7 @@ public final class Sojourn implements HeroKit {
 			Voice.say(player, "disruptor", 1);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.sojournUlt < 0 && s.ultCharge >= ULT_COST) {
+			dev.overcraft.hero.PressTrace.mark("srv_ult");
 			s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.SOJOURN, s.ultCharge);
 			s.sojournUlt = 0;
 			// no ult charge through all three phases (W Ultimate ability: none while it's active)
