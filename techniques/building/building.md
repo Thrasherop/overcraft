@@ -47,5 +47,8 @@ Gradle, code edits and git on this checkout. Up: [Techniques](../README.md) · e
 - And look at the result: a "the cat is visible" check that saw only eyes and a tongue in an empty jetpack passed
   it. Look at the whole model, from every side, against the hero's portrait.
 
+## Moving a pack's version
+`py tools/build_asset_pack.py projectiles <root>` (Ana's dart and grenade, 2026-11-05) is only in `overcraft_ana`'s shared dev pack so far: a release must run it and move `Overcraft.ASSETS_NEEDED`, or a player's old zip draws Minecraft's arrow and potion. The pack's stamp (`asset_pack.json`) is whatever `gradle.properties` the stamping worktree had: the shared pack read 0.3.30 on 2026-11-05 although every model was newer, which is why a test client warned "from build 0.3.30" against `ASSETS_NEEDED` 0.3.31. A stale stamp on a shared pack, not stale assets.
+
 ## A real install after fix/polish-2 (0.3.31 needs its pack rebuilt)
 `Overcraft.ASSETS_NEEDED` is 0.3.31: an older zip shows its assets' version in red in the pause menu (`f_4_pause`). In this order, each over the player's extraction: `py tools/build_asset_pack.py effects <dirs>` (bakes `mercy_wing_glow`), `py tools/build_asset_pack.py glows <roots>` (`glow_maps.py`: glows and `hero_models/colour/`, the dreads), then `py tools/build_asset_pack.py zip`: **zip doesn't run the others** (critique_parts). `zip` lists what's missing (`missing()`, which now knows these two). With an old pack: Mercy's wing glow falls back to a very faint soft ball; the dreads stay undrawn and the log warns. Played: the old pack's red version here; the fallbacks and a real install's zip were **not** played. The dev pack at `overcraft_ana/local-assets/pack` has these two files, placed by hand and still says 0.3.30.
