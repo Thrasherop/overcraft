@@ -197,10 +197,27 @@ public final class HeroManager {
 	/** Falling when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till the fall's over. */
 	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
 
+	/** Coming into hero mode (G, a pick): a fall under way stays Minecraft's. */
+	private static void startPlainFall(Player player) {
+		if (player.fallDistance > 0) {
+			PLAIN_FALLS.add(player.getUUID());
+		}
+	}
+
+	/** In what holds them and stops a fall: water, lava, a cobweb. */
+	public static boolean heldInBlock(net.minecraft.world.entity.LivingEntity e) {
+		return e.isInWater() || e.isInLava() || e.level().getBlockState(e.blockPosition()).is(net.minecraft.world.level.block.Blocks.COBWEB);
+	}
+
+	/** Their Jump is Minecraft's or the mount's here, not an air ability's: riding, in what holds them, on a ladder, in powder snow with the boots to climb it (LivingEntity's own test). Client and server ask this. */
+	public static boolean jumpIsNotAirborne(net.minecraft.world.entity.LivingEntity e) {
+		return e.isPassenger() || heldInBlock(e) || e.onClimbable()
+			|| e.getInBlockState().is(net.minecraft.world.level.block.Blocks.POWDER_SNOW) && net.minecraft.world.level.block.PowderSnowBlock.canEntityWalkOnPowderSnow(e);
+	}
+
 	/** The ticks in a row a landing has stayed somewhere, this tick's included (Holds.stayed). */
 	public static int landingTouch(net.minecraft.world.entity.LivingEntity e, int touch) {
-		boolean held = e.isInWater() || e.isInLava() || e.level().getBlockState(e.blockPosition()).is(net.minecraft.world.level.block.Blocks.COBWEB);
-		return Holds.stayed(held, e.onClimbable(), e.getKnownMovement().y) ? touch + 1 : 0;
+		return Holds.stayed(heldInBlock(e), e.onClimbable(), e.getKnownMovement().y) ? touch + 1 : 0;
 	}
 
 	/** A landing not tied to hero mode (Life Grip's, on anyone) is over: riding, or stayed. */
@@ -251,8 +268,8 @@ public final class HeroManager {
 				if (!on) {
 					// plain Minecraft from here: nothing of the hero's play carries over (#100)
 					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
-				} else if (player.fallDistance > 0) {
-					PLAIN_FALLS.add(player.getUUID());
+				} else {
+					startPlainFall(player);
 				}
 			}
 			player.setAttached(HERO_MODE, on);
@@ -363,6 +380,7 @@ public final class HeroManager {
 			return;
 		}
 		boolean same = state.hero == hero;
+		boolean wasInPlay = state.hero != null && heroMode(player);
 		state.freePick = false;
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
@@ -379,6 +397,9 @@ public final class HeroManager {
 		applyKit(player, state, true);
 		if (hero != null) {
 			// picking a hero puts you in hero mode
+			if (!wasInPlay) {
+				startPlainFall(player);
+			}
 			player.setAttached(HERO_MODE, true);
 			Voice.say(player, "select", 1);
 		}
@@ -438,6 +459,7 @@ public final class HeroManager {
 	}
 
 	public static void onLeave(ServerPlayer player) {
+		PLAIN_FALLS.remove(player.getUUID());
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
 			player.setAttached(ULT_CHARGE, state.ultCharge);
@@ -613,8 +635,8 @@ public final class HeroManager {
 				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
-				// (the distance it counts, not onGround: Minecraft clears it on landing, in water, on a ladder, and a reset by an ability ends it too; onGround read true in mid-air after G)
-				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger()) {
+				// over by the distance, not onGround (which read true in mid-air after G): Minecraft clears it on landing, in water, on a ladder. An ability used ends it directly: its landing, Juno's glide (a level glide clears nothing), though the next packet adds to the distance again
+				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger() || state.softLanding || state.junoGlide >= 0) {
 					PLAIN_FALLS.remove(player.getUUID());
 				}
 				tickRules(player, state);
@@ -707,5 +729,6 @@ public final class HeroManager {
 
 	public static void clear() {
 		STATES.clear();
+		PLAIN_FALLS.clear();
 	}
 }

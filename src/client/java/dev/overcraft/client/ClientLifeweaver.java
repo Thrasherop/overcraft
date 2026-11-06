@@ -74,8 +74,8 @@ public final class ClientLifeweaver {
 		boolean jump = HeroControls.get(Action.JUMP).isDown();
 		boolean pressed = jump && !jumpWas;
 		jumpWas = jump;
-		// Space swims or climbs there and spends nothing (Jump in the air is the dash's only key: tools/reference/lifeweaver.md; the legacy scheme's isn't built): since the travel inject it was a real 7 m throw
-		boolean holding = player.isInWater() || player.onClimbable();
+		// Space swims, climbs or drives the mount there and spends nothing (Jump in the air is the dash's only key: tools/reference/lifeweaver.md; the legacy scheme's isn't built)
+		boolean holding = dev.overcraft.hero.HeroManager.jumpIsNotAirborne(player);
 		airTicks = player.onGround() || holding ? 0 : airTicks + 1;
 		if (ClientHero.hero() != Hero.LIFEWEAVER || !pressed || player.onGround() || holding || airTicks < dev.overcraft.Ow.ticks(LifeweaverStats.DASH_AIR_DELAY)
 			|| ClientHero.sync().ability3Cooldown() > 0 || dashLeft >= 0 || gripTo != null) {
@@ -104,6 +104,11 @@ public final class ClientLifeweaver {
 	 * than his walk's (ours: kept at 14 m/s, the dash carried him 12.3 m from a jump; W measures 6.9 m in the air, and the
 	 * data's 0.25 s at 28.875 m/s is 7.2 m, so little is left after it).
 	 */
+	/** G: hero mode's off, so is the dash, here at once (the server's ended it: G back inside its 0.25 s went on along the old direction with no server dash and no landing). */
+	public static void endDash() {
+		dashLeft = -1;
+	}
+
 	/** A dash is under way here: asks without spending its ticks. */
 	public static boolean dashing(LivingEntity entity) {
 		if (dashLeft >= 0 && entity.level().getGameTime() > dashBy) {

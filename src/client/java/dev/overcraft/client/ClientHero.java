@@ -540,6 +540,9 @@ public final class ClientHero {
 
 	/** Hero mode on or off: here at once, and on the server. */
 	public static void setHeroMode(boolean on) {
+		if (!on) {
+			ClientLifeweaver.endDash();
+		}
 		heroModeLocal = on;
 		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {
