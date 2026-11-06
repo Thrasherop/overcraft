@@ -293,7 +293,7 @@ public final class HeroHud {
 		float cx = w / 2;
 		float cy = h / 2;
 		float k = 1080f / 1121;
-		int yellow = alpha(0xE6E8A0, 0.75f * shown);
+		int yellow = alpha(0xE6E8A0, 0.45f * shown);
 		int bright = alpha(0xFFFFB4, 0.95f * shown);
 		int blue = alpha(0x3C4F86, 0.85f * shown);
 		int band = alpha(0x5A669F, 0.75f * shown);
