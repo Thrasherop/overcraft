@@ -70,7 +70,10 @@ public final class ReticleHud {
 	private static final int ALLY = 0xFF29C8F0;
 	/** Mercy's beams, as her beams read: the heal gold, the boost blue (ours, from MercyFx's look). */
 	private static final int BEAM_HEAL = 0xFFF5D226, BEAM_BOOST = 0xFF4FB8FF;
-	private static final int STEALTH = 0xFFB46CFF;
+	/** Her stealth bar (stealthBar: measured from the owner's frames 3, 4; the fill read (240, 100, 250)). */
+	private static final int STEALTH = 0xFFF064FA, STEALTH_TRACK = 0x80808080;
+	private static final float STEALTH_BAR_BELOW = 122, STEALTH_BAR_W = 279, STEALTH_TRACK_H = 10, STEALTH_FILL_H = 6.5f, STEALTH_LABEL_BELOW = 148,
+		STEALTH_LABEL_CAP = 14;
 	/** Saturated, so it reads on a barrier's own pale colour and on a bright sky (a pale blue vanished on Sigma's: the critique). */
 	private static final int BARRIER = 0xFF1FA2F2;
 	private static final int RAILGUN = 0xFFE8553F;
@@ -323,8 +326,8 @@ public final class ReticleHud {
 	}
 
 	/**
-	 * Sombra. Her stealth, 0277 with its ring 008B (420C #1057: its share v215 / v567): in the layer of her reticle itself (v29677.v1897,
-	 * as 00A3), so it takes her crosshair's place: see crosshair. 0D81 in her reticle, two slots (614C #1798, #1831: v3544 / v11652, each
+	 * Sombra. Her stealth, 0277 with 008B (420C #1057: a bool and a share, 009A = v215 / v567, H): not a ring, as the live game shows (the
+	 * owner's frames 3 and 4): see stealthBar. 0D81 in her reticle, two slots (614C #1798, #1831: v3544 / v11652, each
 	 * Hotfix's ally v77182[n], else what she's hacking v536; the portrait, and its health 019C); the lockout, 00B1 (#2775: v6358 / v45433);
 	 * Hotfix's preview 013C (#593).
 	 */
@@ -333,11 +336,6 @@ public final class ReticleHud {
 		HeroSyncPayload.Widgets d = s.widgets();
 		marker(g, player, d.preview(), w, h, partial, Action.PRIMARY_FIRE);
 		if (reticle) {
-			if (d.left() > 0 && d.total() > 0) {
-				float r = 22;
-				HeroHud.arc(g, cx, cy, r + 0.5f, 6, 0, 360, 0x73000000);
-				HeroHud.arc(g, cx, cy, r, 3.5f, 0, 360 * Math.clamp(d.left() / d.total(), 0, 1), STEALTH);
-			}
 			for (int id : new int[] {d.target(), d.target2()}) {
 				Entity target = id < 0 ? null : player.level().getEntity(id);
 				if (target != null) {
@@ -352,6 +350,43 @@ public final class ReticleHud {
 				fill(g, cx - bw / 2, y, bw * share, 4, WARN);
 				y += 12;
 			}
+			if (d.left() > 0 && d.total() > 0) {
+				stealthBar(g, d.left() / d.total(), cx, cy);
+			}
+		}
+	}
+
+	/**
+	 * Her stealth's time: a round-ended bar, draining toward its left end, with INVISIBLE under it. All measured from the owner's frames 3
+	 * and 4 (at 1080 high): the bar's centre 122 below the crosshair, 279 wide, its track 10 tall, the fill 6.5 in (240, 100, 250), a
+	 * translucent grey track; the label's caps 14 high centred 148 below. The data has only the share (008B's 009A); its label is
+	 * 250D4.07C "Invisible" (M). Clear of whatever's above it on the stack (a Hotfix panel), ours.
+	 */
+	private static void stealthBar(GuiGraphicsExtractor g, float share, float cx, float cy) {
+		float mid = Math.max(cy + STEALTH_BAR_BELOW, y + STEALTH_TRACK_H / 2 + 2);
+		mark(mid - STEALTH_TRACK_H / 2);
+		float x = cx - STEALTH_BAR_W / 2;
+		pill(g, x, mid - STEALTH_TRACK_H / 2, STEALTH_BAR_W, STEALTH_TRACK_H, STEALTH_TRACK);
+		share = Math.clamp(share, 0, 1);
+		if (share > 0) {
+			float inset = (STEALTH_TRACK_H - STEALTH_FILL_H) / 2;
+			pill(g, x + inset, mid - STEALTH_FILL_H / 2, Math.max(STEALTH_FILL_H, (STEALTH_BAR_W - 2 * inset) * share), STEALTH_FILL_H, STEALTH);
+		}
+		float baseline = mid + (STEALTH_LABEL_BELOW - STEALTH_BAR_BELOW) + STEALTH_LABEL_CAP / 2;
+		HudText.outlined(g, Face.BODY, Component.translatable("overcraft.hud.stealth.invisible").getString(), cx, baseline, STEALTH_LABEL_CAP, WHITE,
+			0x59000000, 1, Align.CENTER);
+		y = baseline + 6;
+	}
+
+	/** A bar with round ends, in rows so a translucent colour doesn't double up where the ends would overlap it. */
+	private static void pill(GuiGraphicsExtractor g, float x, float top, float width, float height, int colour) {
+		float r = height / 2;
+		int rows = Math.max(6, Math.round(height * 2));
+		float row = height / rows;
+		for (int i = 0; i < rows; i++) {
+			float dy = (i + 0.5f) * row - r;
+			float inset = r - (float) Math.sqrt(Math.max(0, r * r - dy * dy));
+			fill(g, x + inset, top + i * row, width - 2 * inset, row, colour);
 		}
 	}
 
@@ -767,13 +802,11 @@ public final class ReticleHud {
 				ring(g, cx, cy, 10);
 				dot(g, cx, cy, 2);
 			}
-			// 00A3 (018D #595): the machine pistol's spread. Stealthed, 0277 takes its place in the same layer (420C #1057): the dot in
-			// its ring (the ring: sombra, above)
+			// 00A3 (018D #595), stealthed or not: a small ring round a dot (measured from the owner's frames 2-4: outer radius 9, about 4
+			// thick, the dot 1; its green is the owner's setting). Her stealth doesn't replace it: stealthBar
 			case SOMBRA -> {
-				if (s.widgets().left() <= 0) {
-					ring(g, cx, cy, 16);
-				}
-				dot(g, cx, cy, 2);
+				ring(g, cx, cy, 7);
+				dot(g, cx, cy, 1);
 			}
 			// 00F2 (145B #51): a flail's reach: a dot and two side ticks, heavy enough for her own bright barrier
 			case BRIGITTE -> {
