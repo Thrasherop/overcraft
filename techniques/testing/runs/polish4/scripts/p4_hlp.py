@@ -2,7 +2,7 @@
 import math
 SP = r"C:/Users/ultra/AppData/Local/Temp/claude/E--claude-mods-overcraft/6635df67-fe58-47ac-a0d2-4067e7d195cf/scratchpad/"
 exec(open(SP + "p4_lib.py", encoding="utf8").read())
-log('TREE (git at launch; the client itself can\'t say):', open(r"E:/claude/mods/overcraft_polish4/run/p4_launch_tree.txt").read().strip() if os.path.exists(r"E:/claude/mods/overcraft_polish4/run/p4_launch_tree.txt") else '?')
+log('TREE (git at launch; the client itself can\'t say):', open("E:/claude/mods/" + globals().get("OTHER_TREE", "overcraft_polish4") + "/run/p4_launch_tree.txt").read().strip() if os.path.exists(r"E:/claude/mods/overcraft_polish4/run/p4_launch_tree.txt") else '?')
 log('TIME', time.strftime('%H:%M:%S'))
 XX = [globals().get('XSTART', 10000)]
 NN = [int(time.time()) % 10000]
