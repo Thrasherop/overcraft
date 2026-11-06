@@ -46,6 +46,17 @@ if want('hardstop'):
     if cc.get('asleep'):
         c('presstrace energy 50'); tr = press_trace(wait=0.3); log('press asleep:', tr[:220] or '(nothing)', '| meter', st().get('meter'), 'still asleep', c('bot cc me').get('asleep'))
     c('bot remove ' + nm); sleep(8); guard()
+    nm = 'rgbri%d' % (int(time.time()) % 10000)
+    log(c('bot add %s brigitte red 0.5 -60 3.5 180' % nm)); mc('/gamemode survival ' + nm, 0.15); c('bot look %s 180 0' % nm); sleep(0.3); c('bot charge %s 9999' % nm)
+    log(c('bot press %s ultimate' % nm))
+    for i in range(40):
+        cc = c('bot cc me')
+        if cc.get('asleep'): break
+        sleep(0.02)
+    log('stunned (Rally)', cc.get('asleep'), 'after', i, 'polls')
+    if cc.get('asleep'):
+        c('presstrace energy 50'); tr = press_trace(wait=0.2); log('press stunned:', tr[:220] or '(nothing)', '| meter', st().get('meter'))
+    c('bot remove ' + nm); sleep(2); guard()
     nm = 'rgsom%d' % (int(time.time()) % 10000)
     log(c('bot add %s sombra red 0.5 -60 5.5 180' % nm)); mc('/gamemode survival ' + nm, 0.15); c('bot look %s 180 0' % nm); sleep(0.3); c('bot charge %s 9999' % nm)
     log(c('bot press %s ultimate' % nm))

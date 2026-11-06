@@ -253,3 +253,6 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
 - **Read a mask's falloff before calling it soft** (`lucio_soft`, 4F3: 255 to a third of its radius, then an edge; `mercy_soft` falls smoothly, but at 1.5 m added over the sky it's a sun). Sample a row across the middle.
 - **A black colour image with a shader that colours it:** `HeroModels.colourHair` takes `hero_models/colour/<material>.png` (`tools/glow_maps.py --colours`). glTF can't carry it, and a re-export isn't needed.
 - **A camera roll** is `rotation.rotateZ` and the three axes after `alignWithEntity`: `setRotation` has none (`CameraMixin.overcraft$wallRoll`). The arms stay square to the screen: their pass undoes the view.
+
+## First use of an effect (2026-11-06, [sojourn](../heroes/sojourn.md#round-two-a-code-critic-and-the-coordinators-real-keys-2026-11-06))
+`EffectArt.get` reads and colours a mask on the thread that first asks, in the frame of the shot: 930 ms on Sojourn's first Charged Shot. `EffectArt.prepare(list)` makes a hero's art ahead, on a worker, then a few textures a frame; only Sojourn has a list so far. Find it with `presstrace sample`; check with `art_miss` in a trace.

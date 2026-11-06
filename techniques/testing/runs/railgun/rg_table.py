@@ -16,7 +16,26 @@ def setup_world():
     c('window 1280 720')
 def pick():
     mc('/spawnpoint @s 0 -60 0'); mc('/tp @s 0 -60 0'); sleep(0.5)
-    c('hero sojourn'); sleep(0.8); c('close'); c('heromode on'); sleep(0.5)
+    c('presstrace frames on'); c('presstrace start'); t0 = time.time()
+    if os.environ.get('RG_RACE') or os.environ.get('RG_SAMPLE'): c('presstrace sample 1500')
+    c('hero sojourn')
+    if os.environ.get('RG_RACE'):
+        # the first shot as soon as she's in play, the art not ready yet
+        sleep(0.25); c('close'); c('heromode on'); c('presstrace energy 50'); sleep(0.1); c('key primary_fire down'); c('key primary_fire up'); sleep(1.0)
+    else:
+        sleep(0.8)
+    for _i in range(80):
+        n = c('presstrace art').get('art')
+        if n == 0 and time.time() - t0 > 0.6: break
+        sleep(0.1)
+    tr = c('presstrace').get('trace', ''); c('presstrace frames off')
+    F = [float(p.split(' ')[0]) for p in tr.split(' | ') if p and p.split(' ')[1:] in (['f'], ['frame'])]
+    G = [(round(a), round(b - a)) for a, b in zip(F, F[1:]) if b - a >= 40]
+    log('WARM art ready after %.2f s; frames over 40 ms (at ms, length):' % (time.time() - t0), G, 'frames', len(F), 'misses', [p for p in tr.split(' | ') if 'art_miss' in p][:12], 'of', sum(1 for p in tr.split(' | ') if 'art_miss' in p))
+    if os.environ.get('RG_RACE') or os.environ.get('RG_SAMPLE'):
+        sleep(1); ln = lines(); j = [i for i, l in enumerate(ln) if 'SAMPLE' in l]; log('\n'.join(ln[j[-1]:j[-1] + 30]) if j else 'no sample')
+    if os.environ.get('RG_RACE'): log('RACE', [p for p in tr.split(' | ') if p.split(' ')[-1] in ('press', 'fx', 'clip', 'srv_shot')])
+    c('close'); c('heromode on'); sleep(0.5)
     for _i in range(10):
         if not st().get('screen'): break
         c('close'); sleep(0.4)
@@ -146,9 +165,9 @@ def p_empty():
     s = st(); return dict(ammo=s.get('primaryAmmo'), rel=s.get('primaryReload'))
 if want('empty'): row('empty magazine, reloading', p_empty, post=read_ammo, wait=2.2)
 def p_emote():
-    c('emote 9295'); sleep(0.6); s = st(); return dict(anim=s.get('anim'), emote=s.get('emote'))
+    c('emote triumph'); sleep(0.7); s = st(); return dict(clip=s.get('emoteClip'), cam=s.get('emoteCamera'))
 def p_emote_post():
-    s = st(); return dict(anim=s.get('anim'), emote=s.get('emote'))
+    s = st(); return dict(clip=s.get('emoteClip'), cam=s.get('emoteCamera'))
 if want('emote'): row('in an emote', p_emote, post=p_emote_post)
 if want('oc'):
     def p_oc_cast():
