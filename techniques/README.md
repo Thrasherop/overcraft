@@ -59,6 +59,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   the dragon, the HUD bars, cameras. [barriers](minecraft/barriers.md): barriers as entities, what stops Minecraft's
   projectiles, blasts and hits (Sigma's, Brigitte's). [allies](minecraft/allies.md): allies, enemies and bystanders, the one
   rule, and what's ours.
+- **Play of the Game**: [design](potg/design.md). The design of the POTG and its replay, not built yet (#44): what Overwatch's
+  is, when ours happens, scoring, recorded packets redrawn with ghosts in the loaded world, what's unproven.
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
