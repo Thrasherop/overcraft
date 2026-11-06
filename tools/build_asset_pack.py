@@ -1348,6 +1348,30 @@ def add_parts(source, only=None):
             print(part["model"] + ": " + (" ".join(report) or result.stderr[-2000:]))
 
 
+# Thrown things drawn as models in flight (ProjectileModelRenderer, hero_models/<name>.glb), by hero and model id. `projectiles <source>` converts them.
+PROJECTILES = {
+    "projectile_ana_dart": ("ana", "11741"),  # her unscoped shot, entity 15B7 (ana-effects H)
+    "projectile_biotic_grenade": ("ana", "11763"),  # entity 1426 (ana-effects H)
+}
+
+
+def add_projectiles(source):
+    """Converts PROJECTILES into hero_models/<name>.glb, static meshes on their origins. <source> is the extraction root holding Heroes/<Hero>/Skin."""
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    for name, (hero, model) in PROJECTILES.items():
+        padded = "%012X" % int(model, 16)
+        found = sorted((Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin").glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+        if not found:
+            print(f"{name}: no model {padded} under {source}")
+            continue
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+               str(found[0]), str(MODELS / f"{name}.glb")]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+        print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
 def clip_ids(clip_map):
     """The clip ids a clip map names."""
     import re
@@ -1470,6 +1494,8 @@ def main():
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "parts":
         add_parts(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "projectiles":
+        add_projectiles(sys.argv[2])
     elif cmd == "clips":
         add_clips(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "glows":
