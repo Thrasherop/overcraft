@@ -428,55 +428,132 @@ public final class JunoFx {
 
 	// ---- Pulsar Torpedoes ----
 
+	/** Seconds into this lock, or below 0 with none going. */
+	public static float lockingFor(HeroAnimator a, float t) {
+		float lockFor = a.since("torpedo_lock", t);
+		return lockFor < a.since("torpedo_fire", t) && lockFor < a.since("torpedo_cancel", t) && lockFor < a.since("ult", t)
+			&& lockFor < JunoStats.LOCK_WINDOW + 0.1f ? lockFor : -1;
+	}
+
+	/** The hand pass's field of view, vertical (Minecraft's fixed 70; the note's bones at 1.4 land where it says with it): half its tangent. */
+	private static final float VIEW_TAN = (float) Math.tan(Math.toRadians(70) / 2);
+	/** How far from the eye her view's glows are drawn: ahead of the pods' meshes, whose depth the hand pass tests against (ours). */
+	private static final float VIEW_DEPTH = 0.2f;
+	/** Her pods' spheres against the bones: the bones at the lock's hold are at about (0.97, 0.54) of the screen, half off it; the frames' spheres at (0.76, 0.43) (the owner's frames, measured). */
+	private static final float VIEW_IN_X = 0.78f, VIEW_IN_Y = 0.8f;
+	/** Radii, as shares of half the screen's height. The sphere 190 of 544 (and 195 by "3s"), the yellow rim 330 (the owner's frames, measured). */
+	private static final float VIEW_SPHERE = 0.35f, VIEW_RIM = 0.607f;
+	/** The rim comes in between the frames' "4s" (no rim) and "3s", ours; the sphere pops up with the pods' raise (13/30 s, H). */
+	private static final float VIEW_RIM_FROM = 0.5f, VIEW_RIM_IN = 0.4f, VIEW_RAISE = 13 / 30f;
+
+	/**
+	 * The pods' glow as her own view sees it, drawn in the hand pass over the drawn pods (#86: a world particle was painted over by the pod, since
+	 * the arms draw later with depth cleared: rendering "Things in the hand pass"; and a quarter size on top of that). Layers from the data, 5254.00D
+	 * (4695 #214 on 048D, #862 on 048E): soft 568C; star E221 x 627C to .727 at .49 of the lock; ring 724 x 0558 from .5 to .282; burst 37C36 x 364C
+	 * over F6 .769-1; flare 37A79 x 75E0. Their sizes in metres don't fit a pod half a metre from the eye, so sizes and places are measured from the
+	 * owner's frames (a glass sphere, a bright star inside, then a faint yellow rim); brightnesses ours.
+	 */
+	public static void viewPods(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, Player juno, float now) {
+		HeroAnimator a = HeroAnimator.of(juno);
+		float t = lockingFor(a, now);
+		if (t < 0) {
+			return;
+		}
+		Minecraft mc = Minecraft.getInstance();
+		float aspect = (float) mc.getWindow().getWidth() / Math.max(1, mc.getWindow().getHeight());
+		float raise = Math.min(1, t / VIEW_RAISE);
+		float progress = Math.min(1, t / POD_FULL);
+		org.joml.Matrix4f inverse = new org.joml.Matrix4f(poseStack.last().pose()).invert();
+		for (int side = 0; side < 2; side++) {
+			org.joml.Vector3f bone = dev.overcraft.client.model.HeroModelRenderer.viewPod(side);
+			if (bone == null || bone.z >= -0.01f) {
+				continue;
+			}
+			float x = bone.x / -bone.z * VIEW_IN_X / (VIEW_TAN * aspect);
+			float y = bone.y / -bone.z * VIEW_IN_Y / VIEW_TAN;
+			float sphere = VIEW_SPHERE * raise;
+			float spin = now * (side == 0 ? 0.7f : -0.7f);
+			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, 0, 0.8f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, 0, 1.2f * raise);
+			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.65f * progress), aspect, spin, 1.2f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, 0, 0.6f * progress);
+			float burst = Math.max(0, (progress - 0.769f) / 0.231f);
+			if (burst > 0) {
+				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, spin, 0.6f);
+			}
+			float rim = Math.clamp((t - VIEW_RIM_FROM) / VIEW_RIM_IN, 0, 1);
+			if (rim > 0) {
+				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM, aspect, 0, 0.35f * rim);
+			}
+		}
+	}
+
+	/** One facing quad at this place on the screen ((x, y) in -1..1, its radius a share of half the height), added to the scene. */
+	private static void viewPodLayer(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, org.joml.Matrix4f inverse,
+		String mask, Palette palette, float x, float y, float radius, float aspect, float spin, float strength) {
+		net.minecraft.resources.Identifier texture = EffectArt.get(mask, palette);
+		if (texture == null || strength <= 0.01f) {
+			return;
+		}
+		float cx = x * VIEW_TAN * aspect * VIEW_DEPTH;
+		float cy = y * VIEW_TAN * VIEW_DEPTH;
+		float r = radius * VIEW_TAN * VIEW_DEPTH;
+		float cos = (float) Math.cos(spin) * r;
+		float sin = (float) Math.sin(spin) * r;
+		int colour = Math.clamp(Math.round(strength * 255), 0, 255) << 24 | 0xFFFFFF;
+		collector.submitCustomGeometry(poseStack, FxRender.additive(texture), (pose, buffer) -> {
+			viewPodVertex(pose, buffer, inverse, cx - cos + sin, cy - sin - cos, colour, 0, 1);
+			viewPodVertex(pose, buffer, inverse, cx + cos + sin, cy + sin - cos, colour, 1, 1);
+			viewPodVertex(pose, buffer, inverse, cx + cos - sin, cy + sin + cos, colour, 1, 0);
+			viewPodVertex(pose, buffer, inverse, cx - cos - sin, cy - sin + cos, colour, 0, 0);
+		});
+	}
+
+	private static void viewPodVertex(com.mojang.blaze3d.vertex.PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, org.joml.Matrix4f inverse,
+		float x, float y, int colour, float u, float v) {
+		org.joml.Vector3f at = inverse.transformPosition(new org.joml.Vector3f(x, y, -VIEW_DEPTH));
+		buffer.addVertex(pose, at.x, at.y, at.z).setColor(colour).setUv(u, v).setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY)
+			.setLight(0xF000F0).setNormal(pose, 0, 1, 0);
+	}
+
 	/**
 	 * The pods while she locks (5254 on hp 048D / 048E, held: sizes by the lock's progress, M input): per pod a burst glow
 	 * 37C36 growing to 1 m over the last quarter, a star flare E221 to 0.73 m, sparks drifting back, blue (red to her enemies).
 	 * The progress here: her time locking over the longest lock (ours). After a volley, the pods' fire trails (62B6: 0.15 m
-	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). In her own view on the view model's pods as drawn (up in the top
-	 * corners while she locks: HeroModelRenderer.viewPod), a quarter the size (they're half a metre from her eyes there), no
-	 * sparks or trails (#86: nothing showed on them in her view).
+	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). In her own view not here: viewPods, in the hand pass.
 	 */
 	private static void pods(Player juno) {
 		boolean own = ownFirstPerson(juno);
 		HeroAnimator a = HeroAnimator.of(juno);
 		float t = juno.level().getGameTime() / 20f;
 		float lockFor = a.since("torpedo_lock", t);
-		boolean locking = lockFor < a.since("torpedo_fire", t) && lockFor < a.since("torpedo_cancel", t) && lockFor < a.since("ult", t)
-			&& lockFor < JunoStats.LOCK_WINDOW + 0.1f;
+		boolean locking = lockingFor(a, t) >= 0;
 		boolean enemy = KirikoFx.enemyOf(juno);
-		if (locking) {
+		if (locking && !own) {
 			float progress = Math.min(1, lockFor / POD_FULL);
 			// the burst glow only over the last quarter of it
 			float burst = Math.max(0, (progress - 0.75f) / 0.25f);
 			for (int side = 0; side < 2; side++) {
 				int s = side;
-				// in her own view the particle follows the drawn pod (its position a drift from it: none)
-				Vec3 at = own ? Vec3.ZERO : pod(juno, side);
-				java.util.function.Supplier<org.joml.Vector3f> view = () -> {
-					org.joml.Vector3f v = dev.overcraft.client.model.HeroModelRenderer.viewPod(s);
-					return v != null ? v : new org.joml.Vector3f(0, 0, -100);
-				};
-				float k = own ? 0.25f : 1;
-				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
+				Vec3 at = pod(juno, side);
+				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side, at, () -> {
 					Particle g = Fx.particle("lw_burst", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : own ? g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).follow(view).near()
-						: g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (glow != null) {
-					float size = (0.15f + 0.85f * burst) * k;
+					float size = 0.15f + 0.85f * burst;
 					glow.size(size, size);
 				}
-				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
+				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side, at, () -> {
 					Particle g = Fx.particle("lw_star", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : own ? g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).follow(view).near()
-						: g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (star != null) {
-					float size = 0.73f * progress * k;
+					float size = 0.73f * progress;
 					star.size(size, size);
 				}
 				// sparks up to 20 a second, drifting back
-				if (!own && Fx.RANDOM.nextFloat() < progress) {
+				if (Fx.RANDOM.nextFloat() < progress) {
 					Particle spark = Fx.particle("spark#4", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
 					if (spark != null) {
 						Fx.add(spark.at(at).velocity(facing(juno).scale(-range(0.3f, 1)).add(randomUnit().scale(0.3))).life(range(0.2f, 0.4f))

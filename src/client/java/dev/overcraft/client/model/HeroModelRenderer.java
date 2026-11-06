@@ -1088,6 +1088,7 @@ public final class HeroModelRenderer {
 				}
 			}
 			viewPodsAt = Util.getMillis();
+			dev.overcraft.client.effect.JunoFx.viewPods(poseStack, collector, player, now);
 		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
