@@ -213,6 +213,8 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"=sigma_rock", 1.2f, false, 1, false));
 
+		// under everything: Sombra's stealth tints the view, not the HUD (#87)
+		HudElementRegistry.addFirst(Overcraft.id("stealth_wash"), HeroHud::stealthWash);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode

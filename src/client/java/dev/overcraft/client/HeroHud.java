@@ -358,15 +358,6 @@ public final class HeroHud {
 		}
 		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
 		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
-		if (firstPerson && ClientHero.hero() == Hero.SOMBRA) {
-			// stealthed, her own view's edges tinted (1A75 held while stealthed: a dim screen quad, its colour L; ours her
-			// stealth's purple, as Overwatch's stealthed view is), with her arms phased out (#87)
-			float phase = ClientSombra.phase(player, (player.level().getGameTime() + Minecraft.getInstance().getDeltaTracker()
-				.getGameTimeDeltaPartialTick(true)) / 20f);
-			if (phase > 0) {
-				image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x5A1E9C, 0.3f * phase));
-			}
-		}
 		float step = since(stepCastAt);
 		if (firstPerson && step < STEP_FLASH) {
 			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)
@@ -493,6 +484,35 @@ public final class HeroHud {
 	 */
 	public static boolean inRushPath() {
 		return since(inRushAt) < 0.3f;
+	}
+
+	/**
+	 * Sombra's stealth over her own first-person view, under the HUD: a multiply of the whole screen (#87). D: 420C #851 STU_1B93D61B, colour
+	 * R .8431 G .5451 B 1.0, amount 0.7, own first person only (H node, M role). A linear multiply by lerp(1, colour, 0.7), which is about
+	 * (0.945, 0.843, 1.0) in display values and predicts white -> (241, 214, 255); a white wall in the owner's frame 4 is (249, 215, 255).
+	 * It fades with her stealth's phase (ours: the node's m_2D8ADFF8 200, m_2068FD7A 0.2 and m_EC1A7839 1.2 are unread, L).
+	 */
+	public static void stealthWash(GuiGraphicsExtractor g, DeltaTracker delta) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null || ClientHero.hero() != Hero.SOMBRA || !mc.options.getCameraType().isFirstPerson()) {
+			return;
+		}
+		float phase = ClientSombra.phase(mc.player, (mc.player.level().getGameTime() + delta.getGameTimeDeltaPartialTick(true)) / 20f);
+		if (phase <= 0) {
+			return;
+		}
+		float amount = STEALTH_WASH_AMOUNT * phase;
+		int colour = 0xFF000000 | display(1 + (STEALTH_WASH_R - 1) * amount) << 16 | display(1 + (STEALTH_WASH_G - 1) * amount) << 8
+			| display(1 + (STEALTH_WASH_B - 1) * amount);
+		g.fill(STEALTH_WASH, 0, 0, g.guiWidth(), g.guiHeight(), colour);
+		// the GUI sorts a stratum's quads by pipeline: without this the HUD drawn after would come out under the multiply
+		g.nextStratum();
+	}
+
+	/** A linear 0-1 as sRGB's 0-255. */
+	private static int display(float linear) {
+		double v = linear <= 0.0031308f ? 12.92 * linear : 1.055 * Math.pow(linear, 1 / 2.4) - 0.055;
+		return (int) Math.clamp(Math.round(v * 255), 0, 255);
 	}
 
 	/**
@@ -766,6 +786,18 @@ public final class HeroHud {
 			}
 		}
 	}
+
+	/** 420C #851 (D): see stealthWash. */
+	private static final float STEALTH_WASH_R = 0.8431f, STEALTH_WASH_G = 0.5451f, STEALTH_WASH_B = 1, STEALTH_WASH_AMOUNT = 0.7f;
+	/** Multiplies what's already on the screen by its colour. */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline STEALTH_WASH = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_multiply"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(new com.mojang.renderpearl.api.pipeline.BlendFunction(
+				com.mojang.renderpearl.api.pipeline.BlendFactor.DST_COLOR, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendOp.ADD, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendOp.ADD)))
+			.build());
 
 	/** Overwatch's perk menu orange: the brackets round the discs, and the perks' names (the owner's screenshot). */
 	private static final int PERK_ARC = 0xFFF0781E;
