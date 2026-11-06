@@ -126,6 +126,12 @@ public final class Railgun {
 			s.sojournCharged = bufferTicks();
 			s.sojournChargedShown = true;
 			chargedIfReady(player, s);
+			if (s.sojournCharged == 0) {
+				// fired on the packet, before this tick's countdown: a tick more, or 13 ticks of recovery ran out in 0.60 s against the data's
+				// 0.65 (measured: next shot +603 ms; D #438)
+				s.sojournChargedLock += 1;
+				s.weaponRecovery += 1;
+			}
 		}
 	}
 

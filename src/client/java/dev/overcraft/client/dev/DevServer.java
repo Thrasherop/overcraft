@@ -326,6 +326,20 @@ public final class DevServer {
 					}
 					case "lag" -> DevLag.set(Long.parseLong(a[1]));
 					case "art" -> out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
+					case "sounding" -> {
+						// the channels actually running, by id: SoundEngine lists a stopped sound for 20 ticks from its start, so "bot playing" can't tell
+						var f = net.minecraft.client.sounds.SoundManager.class.getDeclaredField("soundEngine");
+						f.setAccessible(true);
+						var g = net.minecraft.client.sounds.SoundEngine.class.getDeclaredField("instanceToChannel");
+						g.setAccessible(true);
+						int n = 0;
+						for (var e : new java.util.ArrayList<>(((java.util.Map<net.minecraft.client.resources.sounds.SoundInstance, net.minecraft.client.sounds.ChannelAccess.ChannelHandle>) g.get(f.get(mc.getSoundManager()))).entrySet())) {
+							if (e.getKey().getIdentifier().getPath().contains(a[1]) && !e.getValue().isStopped()) {
+								n++;
+							}
+						}
+						out.addProperty("sounding", n);
+					}
 					case "frames" -> dev.overcraft.hero.PressTrace.allFrames(a[1].equals("on"));
 					case "sample" -> {
 						// the client's thread sampled for this many ms from now, into the log (dev only)
