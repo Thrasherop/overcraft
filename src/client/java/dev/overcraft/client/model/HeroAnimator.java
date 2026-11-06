@@ -54,6 +54,7 @@ public final class HeroAnimator {
 	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
 	private String base = "idle";
+	private static final float TRANSLOCATE_PACE = 0.5f / (12f / 30f), TRANSLOCATE_SWING = 0.05f;
 	/** Seconds into the base clip (it can play faster or slower than real time: {@link #rate}). */
 	private float basePhase;
 	private float rate = 1;
@@ -394,6 +395,7 @@ public final class HeroAnimator {
 		}
 		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
+		boolean translocating = a.sombra && action.equals("throw");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
 			a.wholeBody = action.equals("sound_barrier") || action.equals("ult_dive") || action.equals("ult_land")
@@ -404,6 +406,12 @@ public final class HeroAnimator {
 			}
 			if (!viewClip.isEmpty()) {
 				a.actionsFirstPerson.trigger(viewClip, now);
+			}
+			if (translocating) {
+				// her throw, 0C19 #38 (alias 0x0F4): m_86701C3E 0.5, m_2B98273A 12/30, so 1.25 x (M: ActionTrack.paced). A swing in of 0.05 (ours, with
+				// the owner's frame 2: the hand far along it, the beacon just gone; 0.1 left it on the clip's first frame with the beacon in flight)
+				a.actions.paced(TRANSLOCATE_PACE, TRANSLOCATE_SWING, now);
+				a.actionsFirstPerson.paced(TRANSLOCATE_PACE, TRANSLOCATE_SWING, now);
 			}
 		} else if (!a.mercy && !a.lifeweaver) {
 			a.actions.trigger(clip, now);

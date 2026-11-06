@@ -41,6 +41,10 @@ final class ActionTrack {
 	private float cancelledAt = -1;
 	/** The last step loops until another action (Jetpack Cat's Catnapper aim, held until she dives or lets go). */
 	private boolean holdLast;
+	/** How fast this action's clips play (a StateAnim's m_86701C3E over its m_2B98273A: see {@link #paced}), 1 by default. */
+	private float pace = 1;
+	/** How long the first clip takes to swing in this time. */
+	private float swing = SWING_IN;
 
 	/** An action was triggered (by name, as the server sends them). */
 	void trigger(String action, float now) {
@@ -109,6 +113,17 @@ final class ActionTrack {
 		}
 	}
 
+	/**
+	 * The action just triggered plays at this pace, swinging in over this time. For a StateAnim whose two times differ: m_86701C3E over
+	 * m_2B98273A reads as its speed (M, sombra side_by_side note: 0043 #117's 0.76 and 0.76 / (v21541 + v42056) make that the melee's rate mods, and
+	 * no other reading fits it).
+	 */
+	void paced(float pace, float swingIn, float now) {
+		this.pace = pace;
+		stepStart = now + swingIn;
+		swing = swingIn;
+	}
+
 	/** The playing action fades out from where it is if its name starts with {@code prefix} (Hello's wave, cut by firing). */
 	void cancel(String prefix, float now) {
 		String current = current();
@@ -139,6 +154,8 @@ final class ActionTrack {
 	private void start(float now, String... names) {
 		stepLength = -1;
 		holdLast = false;
+		pace = 1;
+		swing = SWING_IN;
 		steps.clear();
 		steps.addAll(List.of(names));
 		step = 0;
@@ -181,7 +198,7 @@ final class ActionTrack {
 				step++;
 				continue;
 			}
-			float local = now - stepStart;
+			float local = clipTime(now - stepStart);
 			if (steps.get(step).equals("throw_ofuda") && now < channelUntil && local > clip.duration() * FLICK_SHARE) {
 				// keep throwing: only the flick repeats while fire is held, the redraw of the fan plays when it stops
 				stepStart += clip.duration() * FLICK_SHARE;
@@ -195,23 +212,23 @@ final class ActionTrack {
 				if (holdLast && clip.duration() > 1.0E-3f) {
 					// loops: on to this pass of it (in one step: her first-person aim pose is a single frame, and
 					// stepping by its length never caught up, freezing the game: found playing)
-					stepStart += clip.duration() * (float) Math.floor(local / clip.duration());
+					stepStart += clip.duration() / pace * (float) Math.floor(local / clip.duration());
 					break;
 				}
 				break; // the last step holds its end while fading out (a held pose too)
 			}
 			fromClip = resolve(model, steps.get(step));
-			stepStart += clip.duration();
+			stepStart += clip.duration() / pace;
 			step++;
 		}
 		if (clip == null || step >= steps.size()) {
 			step = -1;
 			return;
 		}
-		float local = now - stepStart;
+		float local = clipTime(now - stepStart);
 		float weight = 1;
 		if (cancelledAt >= 0) {
-			local = cancelledAt - stepStart;
+			local = clipTime(cancelledAt - stepStart);
 			weight = 1 - (now - cancelledAt) / FADE;
 			if (weight <= 0) {
 				step = -1;
@@ -221,7 +238,7 @@ final class ActionTrack {
 		}
 		if (step == 0 && local < 0) {
 			// swinging in: ease from the movement pose to the clip's first frame
-			float in = 1 + local / SWING_IN;
+			float in = swing <= 0 ? 1 : 1 + (now - stepStart) / swing;
 			weight = Math.max(0, in * in * (3 - 2 * in));
 		}
 		if (step == steps.size() - 1 && local > clip.duration() && !holdLast) {
@@ -248,6 +265,11 @@ final class ActionTrack {
 			act = before;
 		}
 		Skeleton.blend(pose, act, weight, mask);
+	}
+
+	/** Seconds since a step's start as seconds into its clip (before the start, the swing in: as they are). */
+	private float clipTime(float seconds) {
+		return seconds > 0 ? seconds * pace : seconds;
 	}
 
 	private static Skeleton.Pose copy(Skeleton.Pose pose) {
