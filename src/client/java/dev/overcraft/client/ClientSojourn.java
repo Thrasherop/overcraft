@@ -42,6 +42,10 @@ public final class ClientSojourn {
 			});
 		}
 		OTHERS_RELOADS.removeIf(s -> !mc.getSoundManager().isActive(s));
+		if (stopReloadTicks > 0) {
+			stopReloadTicks--;
+			mc.getSoundManager().stop(dev.overcraft.Overcraft.id("sojourn.railgun.reload"), null);
+		}
 		fireDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).isDown();
 		ultDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).isDown();
 		int art = dev.overcraft.client.effect.EffectArt.generation();
