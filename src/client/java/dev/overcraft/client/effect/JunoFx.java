@@ -481,13 +481,13 @@ public final class JunoFx {
 			float y = bone.dot(up) / depth * VIEW_IN_Y / VIEW_TAN;
 			float sphere = VIEW_SPHERE * raise;
 			float spin = now * (side == 0 ? 0.7f : -0.7f);
-			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, forward, right, up, 0, 0.8f * raise);
-			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, forward, right, up, 0, 1.2f * raise);
-			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.65f * progress), aspect, forward, right, up, spin, 1.2f * raise);
-			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, forward, right, up, 0, 0.6f * progress);
+			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, forward, right, up, 0, 0.12f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, forward, right, up, 0, 0.7f * raise);
+			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.45f * progress), aspect, forward, right, up, spin, 0.8f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, forward, right, up, 0, 0.2f * progress);
 			float burst = Math.max(0, (progress - 0.769f) / 0.231f);
 			if (burst > 0) {
-				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, forward, right, up, spin, 0.6f);
+				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, forward, right, up, spin, 0.2f);
 			}
 			float rim = Math.clamp((t - VIEW_RIM_FROM) / VIEW_RIM_IN, 0, 1);
 			if (rim > 0) {
