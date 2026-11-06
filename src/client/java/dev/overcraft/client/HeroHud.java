@@ -285,7 +285,7 @@ public final class HeroHud {
 
 	/**
 	 * Her scope, scoped in (#90). The data says when (0B94 #278 shows 0613.116 from op73(v169, 0.8), H) and not what: 0613, 05BE and 0A82 hold no texture and nothing of them
-	 * is found in the UI library .10F; its 1,334 textures, the 72 the UI dump lacked among them, were looked at, with none of this art; rifle 10B96's 30 textures; her effects
+	 * is found in the UI library .10F; its textures were looked at as thumbnails (1,262 dumped and 50 of the 72 undumped; the other 22 ids aren't files in the build), with none of this art, though its vector shapes aren't excluded; rifle 10B96's 30 textures; her effects
 	 * (techniques/testing/side_by_side_2026-11-05.md). So all of this is OURS, redrawn from the owner's frame 1 (2000 x 1121, crosshair (1001, 562), measured). No surround: the
 	 * view stays, under a blue wash (stealthWash) and these lines. Drawn on the reference grid, so any size of screen; mirrored about the crosshair.
 	 */
