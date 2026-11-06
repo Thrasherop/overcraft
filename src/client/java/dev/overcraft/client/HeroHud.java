@@ -187,16 +187,7 @@ public final class HeroHud {
 		screenEffects(g, s, player);
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
-		// scoped, ally marks only over the lens: over its black surround they marked nothing to be seen (critique M6)
-		boolean lens = scope >= 1;
-		float lensAt = Math.min(w, h) / 2 - SCOPE_MARGIN;
-		if (lens) {
-			g.enableScissor(Math.round(w / 2 - lensAt), Math.round(h / 2 - lensAt), Math.round(w / 2 + lensAt), Math.round(h / 2 + lensAt));
-		}
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
-		if (lens) {
-			g.disableScissor();
-		}
 		// Overwatch's kill feed sits where Minecraft's toasts and status-effect icons do: below any showing (toasts 32 GUI
 		// units a slot; the icons' rows end 25 or 50 units down). The weakness icon hid a line's victim (found playing)
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
@@ -291,48 +282,115 @@ public final class HeroHud {
 
 	/** Her scope overlay shows from 80% scoped in (D 0B94 #278: op73(v169, 0.8)). */
 	public static final float SCOPE_SHOWN = 0.8f;
-	/** The lens's rim from the screen's short side (reference pixels, ours: from memory the lens nearly fills the height). */
-	public static final float SCOPE_MARGIN = 20;
 
 	/**
-	 * Ana's scope (#90). Her data shows UX view model 0613.116 on the HUD root from 80% scoped (0B94 #278), with her skin's
-	 * reticle (E615: base 0A82.116, CVGetSkinOverride) and a style (9C89); neither it nor the reticle holds any art at any
-	 * depth, and none is in her GUI export, so the look is ours after Overwatch's: the view through a round lens, dark beyond
-	 * its rim, her reticle (a fine ring round a centre dot, fine lines out to the sides and down) at its centre, fading in
-	 * over the last 20% of the scope-in. The rifle is out of view meanwhile (her view model is not drawn fully scoped:
-	 * HeroModelRenderer, 0B94 #199).
+	 * Her scope, scoped in (#90). The data says when (0B94 #278 shows 0613.116 from op73(v169, 0.8), H) and not what: 0613, 05BE and 0A82 hold no texture and nothing of them
+	 * is found in the UI library .10F; its 1,334 textures, the 72 the UI dump lacked among them, were looked at, with none of this art; rifle 10B96's 30 textures; her effects
+	 * (techniques/testing/side_by_side_2026-11-05.md). So all of this is OURS, redrawn from the owner's frame 1 (2000 x 1121, crosshair (1001, 562), measured). No surround: the
+	 * view stays, under a blue wash (stealthWash) and these lines. Drawn on the reference grid, so any size of screen; mirrored about the crosshair.
 	 */
 	private static void anaScope(GuiGraphicsExtractor g, float w, float h, float shown) {
 		float cx = w / 2;
 		float cy = h / 2;
-		float r = Math.min(w, h) / 2 - SCOPE_MARGIN;
-		float half = r / HudShapes.SCOPE_CLEAR;
-		int dark = alpha(0x050608, 0.96f * shown);
-		image(g, HudShapes.SCOPE, cx - half, cy - half, half * 2, half * 2, dark);
-		// beyond the square: solid
-		fill(g, 0, 0, cx - half, h, dark);
-		fill(g, cx + half, 0, w - cx - half, h, dark);
-		fill(g, cx - half, 0, half * 2, cy - half, dark);
-		fill(g, cx - half, cy + half, half * 2, h - cy - half, dark);
-		// the lens rim, a faint cool grey
-		image(g, HudShapes.SCOPE_RIM, cx - half, cy - half, half * 2, half * 2, alpha(0xB8C4CC, 0.45f * shown));
-		// her reticle: a dark outline under white, as the crosshair's
-		int white = alpha(0xFFFFFF, 0.95f * shown);
-		int shade = alpha(0x000000, 0.55f * shown);
-		float ring = 30;
-		image(g, HudShapes.RING_THIN, cx - ring - 1, cy - ring - 1, ring * 2 + 2, ring * 2 + 2, shade);
-		image(g, HudShapes.RING_THIN, cx - ring, cy - ring, ring * 2, ring * 2, white);
-		image(g, HudShapes.DISC, cx - 3.5f, cy - 3.5f, 7, 7, shade);
-		image(g, HudShapes.DISC, cx - 2.5f, cy - 2.5f, 5, 5, white);
-		float gap = ring + 14;
-		float side = 150;
-		float down = 110;
-		for (int pass = 0; pass < 2; pass++) {
-			float o = pass == 0 ? 1 : 0;
-			int color = pass == 0 ? shade : white;
-			fill(g, cx - gap - side - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
-			fill(g, cx + gap - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
-			fill(g, cx - 1 - o, cy + gap - o, 2 + 2 * o, down + 2 * o, color);
+		float k = 1080f / 1121;
+		int yellow = alpha(0xE6E8A0, 0.75f * shown);
+		int bright = alpha(0xFFFFB4, 0.95f * shown);
+		int blue = alpha(0x3C4F86, 0.85f * shown);
+		int band = alpha(0x5A669F, 0.75f * shown);
+		int corner = alpha(0xE0DE80, 0.95f * shown);
+		// the big circle round the crosshair, low alpha (r 330)
+		HeroHud.arc(g, cx, cy, 330 * k, 2.5f, 0, 360, alpha(0x4D64B4, 0.35f * shown));
+		// the lens arc, on its own circle: apex (1000, 75), through (650, 310): centre (1000, 453), r 378, down 68 either way
+		HeroHud.arc(g, cx, cy + (453 - 562) * k, 378 * k, 2, -68, 68, yellow);
+		for (int side = -1; side <= 1; side += 2) {
+			final int m = side;
+			// the lens arc's hooks
+			scopeLine(g, cx, cy, k, m, 351, -252, 321, -207, 2, yellow);
+			// the inner arcs, tapered: r 266, x 735, y 505-618
+			scopeTaper(g, cx, cy, 266 * k, side, 8, bright);
+			// the struts: outlined capsules (875, 565) to (965, 685)
+			scopeStrut(g, cx, cy, k, m, blue);
+			// the small circles (688, 820), r 32 and 10, a line in toward (880, 625)
+			float scx = cx + m * 313 * k;
+			float scy = cy + 258 * k;
+			image(g, HudShapes.RING_THIN, scx - 32 * k, scy - 32 * k, 64 * k, 64 * k, blue);
+			image(g, HudShapes.RING_THIN, scx - 10 * k, scy - 10 * k, 20 * k, 20 * k, alpha(0x5A70B8, 0.95f * shown));
+			scopeLine(g, cx, cy, k, m, 290, 240, 121, 63, 1.5f, blue);
+			// the thick corners (497, 815), (497, 850), (635, 997)
+			scopeLine(g, cx, cy, k, m, 504, 253, 504, 288, 7, corner);
+			scopeLine(g, cx, cy, k, m, 504, 288, 366, 435, 7, corner);
+			// thin yellow: (595, 635) to (505, 790); (652, 997), (770, 997), (810, 957); ticks (910, 858) to (876, 916)
+			scopeLine(g, cx, cy, k, m, 406, 73, 496, 228, 2, yellow);
+			scopeLine(g, cx, cy, k, m, 349, 435, 231, 435, 2, yellow);
+			scopeLine(g, cx, cy, k, m, 231, 435, 191, 395, 2, yellow);
+			scopeLine(g, cx, cy, k, m, 91, 296, 125, 354, 2, yellow);
+			// the blue band (465, 850) to (590, 1015)
+			scopeLine(g, cx, cy, k, m, 536, 288, 411, 453, 8, band);
+		}
+		// the chevrons: x 1000, five bars, y 725-825, widths 120 to 80, the last solid
+		for (int i = 0; i < 5; i++) {
+			float top = (163 + i * 21) * k;
+			float half = (60 - i * 5) * k;
+			int colour = alpha(0x3C3F60, 0.95f * shown);
+			if (i == 4) {
+				image(g, HudShapes.LINE, cx - half, cy + top - 3 * k, 2 * half, 9 * k, alpha(0x4D6AAE, 0.95f * shown));
+				break;
+			}
+			float deep = 6 * k;
+			for (int m = -1; m <= 1; m += 2) {
+				scopeLine(g, cx, cy, 1, m, half, top, half - deep, top + deep * 2, 1.5f, colour);
+				scopeLine(g, cx, cy, 1, m, half - deep, top + deep * 2, 0, top + deep * 2, 1.5f, colour);
+				scopeLine(g, cx, cy, 1, m, half, top, 0, top, 1.5f, colour);
+			}
+		}
+		// the crosshair: four ticks about 6 long round a gap of 4, green to (28, 230, 37) (the owner's colour setting, as Sombra's)
+		int green = alpha(0x1CE625, shown);
+		float gap = 4 * k;
+		float tick = 6 * k;
+		float t = 2 * k;
+		fill(g, cx - t / 2, cy - gap - tick, t, tick, green);
+		fill(g, cx - t / 2, cy + gap, t, tick, green);
+		fill(g, cx - gap - tick, cy - t / 2, tick, t, green);
+		fill(g, cx + gap, cy - t / 2, tick, t, green);
+	}
+
+	/** A segment on her scope, in the frame's pixels from the crosshair, mirrored by side (1 the right, -1 the left), soft-edged. */
+	private static void scopeLine(GuiGraphicsExtractor g, float cx, float cy, float k, int side, float x1, float y1, float x2, float y2, float thick, int colour) {
+		float ax = cx + side * x1 * k;
+		float ay = cy + y1 * k;
+		float bx = cx + side * x2 * k;
+		float by = cy + y2 * k;
+		float len = (float) Math.hypot(bx - ax, by - ay);
+		g.pose().pushMatrix();
+		g.pose().translate(ax, ay);
+		g.pose().rotate((float) Math.atan2(by - ay, bx - ax));
+		image(g, HudShapes.LINE, -thick, -thick * 1.5f, len + 2 * thick, thick * 3, colour);
+		g.pose().popMatrix();
+	}
+
+	/** Her scope's inner arcs: on a circle round the crosshair, the frame's y 505-618, thickest in the middle. */
+	private static void scopeTaper(GuiGraphicsExtractor g, float cx, float cy, float r, int side, float thick, int colour) {
+		int pieces = 8;
+		float span = 12.5f;
+		for (int i = 0; i < pieces; i++) {
+			float a = -span + 2 * span * i / pieces;
+			float b = -span + 2 * span * (i + 1) / pieces;
+			float mid = (i + 0.5f) / pieces;
+			float at = side > 0 ? 90 : -90;
+			HeroHud.arc(g, cx, cy, r, 2 + (thick - 2) * (float) Math.sin(Math.PI * mid), at + a, at + b, colour);
+		}
+	}
+
+	/** Her scope's strut: a capsule's outline, (875, 565) to (965, 685) in the frame, mirrored: two lines and round ends. */
+	private static void scopeStrut(GuiGraphicsExtractor g, float cx, float cy, float k, int side, int colour) {
+		float x1 = 126, y1 = 3, x2 = 36, y2 = 123;
+		float len = (float) Math.hypot(x2 - x1, y2 - y1);
+		float nx = (y2 - y1) / len * 8;
+		float ny = -(x2 - x1) / len * 8;
+		scopeLine(g, cx, cy, k, side, x1 + nx, y1 + ny, x2 + nx, y2 + ny, 3, colour);
+		scopeLine(g, cx, cy, k, side, x1 - nx, y1 - ny, x2 - nx, y2 - ny, 3, colour);
+		for (float[] end : new float[][] {{x1, y1}, {x2, y2}}) {
+			image(g, HudShapes.RING_THIN, cx + side * end[0] * k - 9 * k, cy + end[1] * k - 9 * k, 18 * k, 18 * k, colour);
 		}
 	}
 
@@ -494,7 +552,20 @@ public final class HeroHud {
 	 */
 	public static void stealthWash(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.player == null || ClientHero.hero() != Hero.SOMBRA || !mc.options.getCameraType().isFirstPerson()) {
+		if (mc.player == null || !mc.options.getCameraType().isFirstPerson()) {
+			return;
+		}
+		if (ClientHero.hero() == Hero.ANA) {
+			float scope = ClientAna.ownScopeEased();
+			if (scope > SCOPE_SHOWN) {
+				float k = Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1);
+				int colour = 0xFF000000 | Math.round(255 * (1 + (SCOPE_WASH_R - 1) * k)) << 16 | Math.round(255 * (1 + (SCOPE_WASH_G - 1) * k)) << 8 | 0xFF;
+				g.fill(STEALTH_WASH, 0, 0, g.guiWidth(), g.guiHeight(), colour);
+				g.nextStratum();
+			}
+			return;
+		}
+		if (ClientHero.hero() != Hero.SOMBRA) {
 			return;
 		}
 		float phase = ClientSombra.phase(mc.player, (mc.player.level().getGameTime() + delta.getGameTimeDeltaPartialTick(true)) / 20f);
@@ -787,6 +858,8 @@ public final class HeroHud {
 		}
 	}
 
+	/** Her scope's wash, a multiply (measured from the owner's frame 1: white comes out about (236, 236, 255)). */
+	private static final float SCOPE_WASH_R = 0.925f, SCOPE_WASH_G = 0.925f;
 	/** A blocked ability's red (measured from the owner's frame 2), and how long her beacon's throw blocks the rest (0C19 #145 v8349 = 0.4 s, H). */
 	private static final int LOCKED_RED = 0xFFF53757;
 	private static final float SOMBRA_THROW_LOCK = 0.4f;

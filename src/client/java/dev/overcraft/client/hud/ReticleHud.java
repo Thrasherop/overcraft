@@ -1,7 +1,6 @@
 package dev.overcraft.client.hud;
 
 import dev.overcraft.client.AbilityCamera;
-import dev.overcraft.client.ClientAna;
 import dev.overcraft.client.ClientLifeweaver;
 import dev.overcraft.client.ClientMercy;
 import dev.overcraft.client.HeroArt;
@@ -62,8 +61,6 @@ public final class ReticleHud {
 	private static final float PROMPT_BELOW = 160;
 	/** The stack's half width as far as a marker should care (a bar, its icon and its seconds: ours). */
 	private static final float STACK_HALF = 140;
-	/** How far round the scope's centre a marker may go and stay on the lens (its reach, plus the rim's margin: ours). */
-	private static final float SCOPE_MARKER_ROOM = 90;
 
 	private static final int WHITE = 0xFFFFFFFF;
 	/** The edge on a target's portrait: 0252 binds the team's colours, whose values aren't in the data's text; ours, the ally cyan. */
@@ -591,9 +588,7 @@ public final class ReticleHud {
 	/**
 	 * Ana. Nano Boost's preview with it ready, 013C (0B9E #377: v1691[0], the key): the server's own pick (Ana.widgets: not one already
 	 * boosted). The panel 0257 (#381), the prompt 00DB (#384: 16195 "NANO BOOST" / 16196 "CANCEL") and #373 bind v8070, the target after the
-	 * press: they're the Requires Target Confirmation flow (option v29052, off by default, not in the mod), so not drawn. Scoped, only on
-	 * the lens: over the scope's black surround it marks nothing to be seen, as her ally marks (HeroHud, critique_hero_polish M6). The data
-	 * has no scope test: ours.
+	 * press: they're the Requires Target Confirmation flow (option v29052, off by default, not in the mod), so not drawn.
 	 */
 	private static void ana(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h, float partial) {
 		int id = s.widgets().preview();
@@ -601,12 +596,6 @@ public final class ReticleHud {
 			return;
 		}
 		Vec3 at = target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0);
-		if (ClientAna.ownScope() > HeroHud.SCOPE_SHOWN) {
-			float[] screen = HeroHud.project(at, w, h);
-			if (screen == null || Math.hypot(screen[0] - w / 2, screen[1] - h / 2) > Math.min(w, h) / 2 - HeroHud.SCOPE_MARGIN - SCOPE_MARKER_ROOM) {
-				return;
-			}
-		}
 		HeroHud.targetMarker(g, at, w, h, Action.ULTIMATE);
 	}
 
