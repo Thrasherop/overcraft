@@ -82,7 +82,7 @@ Nothing on 2026-10-06, 10-13 or 10-20.
   against enemies** (no global size bonus), **0 against walls and barriers** (W rev 401611) **M**.
 - Cast **0.192 s + 0.176 s recovery** under 6 m, **+0.304 s recovery** at 6 m or more (W) **M**. **She moves 50% slower
   while it's out** (2.75 m/s) (W) **M**.
-- **Knockback 25 m/s back + 3 m/s up** (25.18 m/s), about **8 m** on flat ground (W rev 408812; D 1259 #638's pair: v9275 = 133E's 25, m_583C208B 3; its m_1376B4DF has 2 up, which isn't what plays out) **M**. In the mod: one push on a player, 8.04 m on a hero, 4.66 m in Minecraft mode; a mob held 0.15 s, ours, 7.99 m (`techniques/testing/polish4.md`). Deflect blocks it without
+- **Knockback 25 m/s back + 3 m/s up** (25.18 m/s), about **8 m** on flat ground (W rev 408812; D 1259 #638's pair: v9275 = 133E's 25, m_583C208B 3; the same node's m_1376B4DF has 2 up, and 25.08 = |(25, 2)|: the data holds both) **L-M**: 3 is chosen because our mover lands at W's distance with it; nobody has measured Overwatch. In the mod: one push on a player, 8.04 m on a hero, 4.66 m in Minecraft mode; a mob held 0.15 s, ours, 7.99 m (`techniques/testing/polish4.md`). Deflect blocks it without
   reflecting it (W) **M**.
 
 ## Repair Pack (ability 2; targeted projectile)
@@ -127,7 +127,7 @@ Nothing on 2026-10-06, 10-13 or 10-20.
   +10% global, 2024-03-12 -8%) **M** (see Disagreements).
 - **10 s** (D _; W) **M**. Cast **0 + 0.704 s** recovery; usable at any time, cancelling whatever she's doing (W) **M**.
 - Herself: **+100 armor** for the duration (healable, not regenerating) (D _; BZ 2023-04-11 "100 restorable armor"; W) **H**;
-  **+15% speed** (6.33 m/s by arithmetic), not against the speed cap (D _; BZ 2023-04-11 30 -> 15%; W) **H**. Overhealth on her too by the data (12BE #158's filter 6; 12C1 #178 skips only the looks on her, M; #125); W's infobox says "allies", and BZ 2023-04-11 was read as none.
+  **+15% speed** (6.33 m/s by arithmetic), not against the speed cap (D _; BZ 2023-04-11 30 -> 15%; W) **H**. No overhealth for her: BZ 2023-04-11 "Brigitte no longer gradually builds temporary health like her nearby allies"; W "(allies)" **H**. The data leans the other way, unexplained (12BE #158's filter 6, 12C1 #178; #125).
 - Allies **within 8 m**: **15 overhealth every 0.5 s (30/s), up to 100** (D _; W rev 266702 8.5 -> 8 m) **M**. The overhealth
   **lasts 30 s** from the first tick, even outside the radius or after her death, then decays quickly; losing all of it
   restarts the timer (W) **M**.

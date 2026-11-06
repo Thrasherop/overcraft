@@ -1,0 +1,50 @@
+TREE: 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05 20:53:44
+{'ok': True}
+ 20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs kiriko round 1 mobs left 1 of 6 cleared at None deaths 0 lowest hp 13.0 end hp 20.0/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 6 by type [('@e[type=minecraft:zombie]', ['e-sending blocks below']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs kiriko round 2 mobs left 4 of 6 cleared at None deaths 0 lowest hp 7.0 end hp 20.0/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 3 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs kiriko round 3 mobs left 3 of 6 cleared at None deaths 0 lowest hp 7.6 end hp 20.0/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 4 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+kiriko 4 died at 7.8, back as kiriko hp 17.0 mode True
+## kbs kiriko round 4 mobs left 2 of 6 cleared at None deaths 1 lowest hp 13.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs brigitte round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 14.5 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs brigitte round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 8.1 end hp 8.1/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 3 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs brigitte round 3 mobs left 2 of 6 cleared at None deaths 0 lowest hp 16.6 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 4 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs brigitte round 4 mobs left 2 of 6 cleared at None deaths 0 lowest hp 16.6 end hp 20.0/20.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs sombra round 1 mobs left 1 of 6 cleared at None deaths 0 lowest hp 1.7 end hp 18.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## kbs sombra round 2 mobs left 1 of 6 cleared at None deaths 0 lowest hp 14.0 end hp 18.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 3 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+TREE: 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05 21:02:36
+{'ok': True}
+ 20.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## s2 sombra round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 7.4 end hp 14.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+sombra 2 died at 13.1, back as sombra hp 18.0 mode True
+sombra 2 died at 30.5, back as sombra hp 18.0 mode True
+## s2 sombra round 2 mobs left 2 of 6 cleared at None deaths 2 lowest hp 4.2 end hp 18.0/18.0
+   death line: Kiriko was shot by Skeleton
+   death line: Kiriko was blown up by Creeper

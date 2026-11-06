@@ -430,4 +430,4 @@ Second pass (the critique, 2026-11-05; final branch; all shots stepped a tick at
 
 ## The Nov 3 patch (#116)
 Inspire's gate 1 s, 15 at once: the flail's triggers are 1.2 s apart now, every second swing ([polish3](../testing/polish3.md)). The data still says 1.25 and 12: it predates the patch.
-- **Whip Shot's push goes about 8 m (W rev 408812; owner 2026-11-05):** the data's pair, 25 / 3, one push: 8.04 m on a hero, on Overwatch's air numbers. A mob needs a 0.15 s hold, ours (7.99 m): Minecraft's friction. Try the data before a fudge: the first answer here was a hold on lift 2. Shield Bash the same: 6 / 3. [polish4](../testing/polish4.md).
+- **Whip Shot's push goes about 8 m (W rev 408812; owner 2026-11-05):** one push at 25 / 3: 8.04 m on a hero, in our mover on Overwatch's air numbers. The data also holds 2 up; 3 is what reaches W's figure. A mob needs a 0.15 s hold, ours (7.99 m): Minecraft's friction. Try the data before a fudge: the first answer here was a hold on lift 2. Shield Bash the same: 6 / 3. [polish4](../testing/polish4.md).

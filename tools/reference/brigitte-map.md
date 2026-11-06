@@ -158,7 +158,7 @@ v49150 on, Inspire UI v75478 on, vibration v54074-v54078.
   #619 a **straight chase at 80 m/s: no gravity** (full range 0.244 s). Hit: world ray #620 (0129.097); enemy sphere #596
   **r 0.5 m, one target** (filter 64, M); #986 (r 1, filter 128) 50 to objects (M). **Blocked**: #610, target.v4112 and facing
   her -> no damage (H expr, M barrier). **#638: 70 damage**, tags 3679 + 03BF. **Knockback = her horizontal aim at launch x 25 +
-  2 m/s up**; airborne target (v417, L) 3D aim x 25.08; **the direction is her aim, not away from her** (H). Return (alias
+  2 m/s up** by `m_1376B4DF`, while the pair says 25 / 3 (`m_E33EFEE1` v9275, `m_583C208B` 3 x scale): the mod plays 3, chosen to reach W's 8 m (`polish4.md`), not settled here; airborne target (v417, L) 3D aim x 25.08; **the direction is her aim, not away from her** (H). Return (alias
   002B): hit beyond 5 m 0.3 s (cat 006A 0.583 s); wall / blocked 0.3 s (00C9 0.4 s); miss 0.3 s (0141 0.625 s); anything under
   5 m 0.175 s (0106 0.4 s); **no hits on the way back** (H). **Cooldown when the return anim ends** (#1033 -> #688 -> #689), also
   on interrupt (#1054 -> #894): a hit at 10 m is ready about 4.9 s after the press (M). Head entity 2283 lerped from the hand
@@ -181,7 +181,7 @@ v49150 on, Inspire UI v75478 on, vibration v54074-v54078.
   the press** (#152), cast lock #88 **0.7 s**, the **10 s** state #77 (0B13; alt 15; x modifiers and v13032) from t = 0. While
   active: **self armor pool 100** (#204, type xA6B6AFE9, id 32B3, no decay field, ends with Rally, M); **move speed +0.15**
   (#148, M +15%: not on the panel); v842 = 1 (read by 0EE3 / 0EE4 / 0EDD); **pulse #158 every 0.5 s** (#161): **8 m** (1342),
-  sight tag 02A0, filter 6 (M: allies and herself) -> 12C1: if the ally's 32B3 overhealth is under **100** (1341) grant
+  sight tag 02A0, filter 6 (M: allies and herself? BZ says not her: #125) -> 12C1: if the ally's 32B3 overhealth is under **100** (1341) grant
   **min(100 - current, 15)**, each chunk its own pool inside a **30 s** StateWait (#195 / #174): **30/s up to 100, each chunk
   lasting 30 s, outliving Rally** (whether it decays after: L). 3B8E credits absorbed damage to her (M). In 0EE3 / 0EE4: barrier
   **300 + 450 = 750, refilled** (0EE4 #299 / #302 / #295), x1.2 size; **bash stuns 0.75 s** (1340, #889 -> #888, 224E, effect
@@ -256,9 +256,9 @@ mapped here (method: `techniques/emotes/emote_reproduction.md`). Voice-line unlo
 
 ## Not found
 The barrier's dimensions (mesh 1064F / look 13917, not measured); STU_ED807E07 (bash radius term) and op77 (flail sweep
-radius); `m_583C208B` (L up-knockback); v14131 / v14130 / v417 / v4112 / v6194 / v69292 / v78714 / v69279 / v3652; the 02FF
+radius); `m_583C208B` (the pair's vertical, M; against #638's 2 up: `polish4.md`); v14131 / v14130 (the mod takes them as 1) / v417 / v4112 / v6194 / v69292 / v78714 / v69279 / v3652; the 02FF
 falloff; the Rally stun's CC type; whether Rally armor and the ally overhealth decay after their 30 s / Rally end; the pool
 type hashes (xA6B6AFE9 armor, xCBEFD125 overhealth: M from panel text); Inspire's refresh-vs-stack policy x8715BB77; whether
-Brigitte's own Rally overhealth (M yes: filter 6, and 12C1 #178 skips only its looks on her: #125); the draw clip (0x0A9 has none in her sets); the roles of flail cats
+Brigitte's own Rally overhealth (BZ 2023-04-11 and W no; filter 6 and 12C1 #178 lean yes, unexplained: #125); the draw clip (0x0A9 has none in her sets); the roles of flail cats
 0x71 / 0xA1 and the 1P whip states; the voice set, voice lines' text and sounds (not mapped in this pass); intros, victory poses
 and the 16 unextracted clips.

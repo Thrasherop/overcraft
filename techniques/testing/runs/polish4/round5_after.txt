@@ -1,0 +1,161 @@
+TREE (git at launch; the client itself can't say): 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05
+TIME 21:04:12
+TREE (git at launch): 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05 21:04:12
+/difficulty normal ['[21:04:12] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[21:04:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[21:04:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[21:04:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[21:04:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[21:04:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[21:04:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[21:04:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[21:04:15] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### an ordinary hit and a phased pass-through, tick by tick, client copy c, server copy s (z). The real client shoots a bot at z 5.5. In single player: on a remote server, add speed x ping
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased False target z 5.5: client last z None, server last z None | target health=12.0 | ticks: 
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased True  target z 5.5: client last z 132.33, server last z 138.58 | target health=18.0 | ticks: 2274 c7.35 s7.35 | 2275 c13.60 s7.35 | 2276 c13.60 s19.85 | 2277 c19.85 s19.85 | 2278 c26.10 s32.35 | 2279 c32.35 s32.35 | 2280 c38.60 s44.84 | 2281 c44.84 s44.84 | 2280 c51.09 s51.09
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased False target z 5.5: client last z None, server last z None | target health=12.0 | ticks: 
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased True  target z 5.5: client last z 138.58, server last z 132.33 | target health=18.0 | ticks: 2688 c7.35 s7.35 | 2689 c13.60 s7.35 | 2690 c19.85 s19.85 | 2691 c26.10 s19.85 | 2692 c32.35 s32.35 | 2693 c38.60 s32.35 | 2694 c44.84 s44.84 | 2695 c51.09 s44.84 | 2696 c57.34 s57.34
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased False target z 5.5: client last z 7.1, server last z 4.1 | target health=17.6 | ticks: 2900 c4.10 s4.10 | 2901 c7.10 s4.10
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased True  target z 5.5: client last z 55.09, server last z 52.09 | target health=18.0 | ticks: 3108 c4.10 s4.10 | 3109 c7.10 s4.10 | 3110 c10.10 s10.10 | 3111 c13.10 s10.10 | 3112 c16.10 s16.10 | 3113 c19.10 s16.10 | 3114 c22.10 s22.10 | 3115 c25.10 s22.10 | 3116 c28.10 s28.10
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased False target z 5.5: client last z 7.1, server last z 1.1 | target health=17.6 | ticks: 3320 c4.10 s1.10 | 3321 c7.10 s1.10
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased True  target z 5.5: client last z 55.09, server last z 52.09 | target health=18.0 | ticks: 3530 c4.10 s4.10 | 3531 c7.10 s4.10 | 3532 c10.10 s10.10 | 3533 c13.10 s10.10 | 3534 c16.10 s16.10 | 3535 c19.10 s16.10 | 3536 c22.10 s22.10 | 3537 c25.10 s22.10 | 3538 c28.10 s28.10
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased False target z 5.5: client last z 9.5, server last z 5.0 | target health=8.4 | ticks: 3736 c5.00 s5.00 | 3737 c9.50 s5.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased True  target z 5.5: client last z 99.48, server last z 94.99 | target health=18.0 | ticks: 3948 c5.00 s5.00 | 3949 c9.50 s5.00 | 3950 c14.00 s14.00 | 3951 c18.50 s14.00 | 3952 c23.00 s23.00 | 3953 c27.50 s23.00 | 3954 c32.00 s32.00 | 3955 c36.49 s32.00 | 3956 c40.99 s40.99
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased False target z 5.5: client last z 9.5, server last z 5.0 | target health=8.4 | ticks: 4156 c5.00 s5.00 | 4157 c9.50 s5.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased True  target z 5.5: client last z 108.48, server last z 103.98 | target health=18.0 | ticks: 4371 c5.00 s5.00 | 4372 c9.50 s5.00 | 4373 c14.00 s14.00 | 4374 c18.50 s14.00 | 4375 c23.00 s23.00 | 4376 c27.50 s23.00 | 4377 c32.00 s32.00 | 4378 c36.49 s32.00 | 4379 c40.99 s40.99
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased False target z 5.5: client last z 11.05, server last z 1.05 | target health=12.24 | ticks: 4582 c6.05 c6.05 s1.05 s1.05 | 4583 c11.05 c11.05 s1.05 s1.05
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased True  target z 5.5: client last z 111.03, server last z 106.04 | target health=18.0 | ticks: 4798 c6.05 c6.05 c6.05 c6.05 s6.05 s6.05 s1.05 s1.05 | 4799 c11.05 c11.05 c11.05 c11.05 s6.05 s6.05 s1.05 s1.05 | 4800 c16.05 c16.05 c11.05 c11.05 c6.05 c6.05 s16.05 s16.05 s11.05 s11.05 s1.05 s1.05 | 4801 c21.05 c21.05 c16.05 c16.05 c11.05 c11.05 s16.05 s16.05 s11.05 s11.05 s1.05 s1.05 | 4802 c26.0
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased False target z 5.5: client last z 11.05, server last z 1.05 | target health=14.16 | ticks: 5008 c6.05 c6.05 s1.05 s1.05 | 5009 c11.05 c11.05 s1.05 s1.05
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased True  target z 5.5: client last z 111.03, server last z 106.03 | target health=18.0 | ticks: 5220 c6.05 c6.05 c6.05 c6.05 s6.05 s6.05 s1.05 s1.05 | 5221 c11.05 c11.05 c11.05 c11.05 s6.05 s6.05 s1.05 s1.05 | 5222 c16.05 c16.05 c11.05 c11.05 c6.05 c6.05 s16.05 s16.05 s11.05 s11.05 s1.05 s1.05 | 5223 c21.05 c21.05 c16.05 c16.05 c11.05 c11.05 s16.05 s16.05 s11.05 s11.05 s1.05 s1.05 | 5224 c26.0
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased False target z 5.5: client last z 6.5, server last z 3.5 | target health=11.6 | ticks: 5428 c3.50 c3.50 c3.50 c3.50 c3.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 5429 c6.50 c6.50 c6.50 c6.50 c6.50 s3.50 s3.50 s3.50 s3.50 s3.50
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased True  target z 5.5: client last z 39.5, server last z 36.5 | target health=18.0 | ticks: 5636 c3.50 c3.50 c3.50 c3.50 c3.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 5637 c6.50 c6.50 c6.50 c6.50 c6.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 5638 c9.50 c9.49 c9.49 c9.50 c9.50 c3.50 c3.50 c3.50 c3.50 c3.50 s9.50 s9.49 s9.49 s9.50 s9.50 s0.50 s0.50 s0.50 s0.50 s0.50 | 5639 c12.50 c12.49 c12.49 c12.50 c12.50
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased False target z 5.5: client last z 6.5, server last z 3.5 | target health=11.6 | ticks: 5798 c3.50 c3.50 c3.50 c3.50 c3.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 5799 c6.50 c6.50 c6.50 c6.50 c6.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 5800 c3.50 c3.50 c3.50 c3.50 c3.50 s0.50 s0.50 s0.50 s0.50 s0.50 | 5801 c6.50 c6.50 c6.50 c6.50 c6.50 s0.50 s0.50 s0.50 s0.50 s0.50
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased True  target z 5.5: client last z 39.5, server last z 36.5 | target health=18.0 | ticks: 6010 c3.50 c3.50 c3.50 c3.50 c3.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 6011 c6.50 c6.50 c6.50 c6.50 c6.50 s3.50 s3.50 s3.50 s3.50 s3.50 | 6012 c9.50 c9.49 c9.49 c9.50 c9.50 c3.50 c3.50 c3.50 c3.50 c3.50 s9.50 s9.49 s9.49 s9.50 s9.50 s0.50 s0.50 s0.50 s0.50 s0.50 | 6013 c12.50 c12.49 c12.49 c12.50 c12.50
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased False target z 5.5: client last z 5.5, server last z 3.0 | target health=3.92 | ticks: 6222 c3.00 s3.00 | 6223 c5.50 s3.00 | 6230 c3.00 s3.00 | 6231 c5.50 s3.00
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased True  target z 5.5: client last z 60.49, server last z 57.99 | target health=18.0 | ticks: 6438 c3.00 s3.00 | 6439 c5.50 s3.00 | 6440 c8.00 c3.00 s8.00 s3.00 | 6441 c10.50 c5.50 s8.00 s3.00 | 6442 c13.00 c8.00 c3.00 s13.00 s8.00 s0.50 | 6443 c15.50 c10.50 c5.50 s13.00 s8.00 s0.50 | 6444 c18.00 c13.00 c5.50 s18.00 s13.00 s5.50 | 6445 c20.50 c15.50 c8.00 s18.00 s13.00 s5.50 | 6446 c23.00 c1
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased False target z 5.5: client last z 5.5, server last z 3.0 | target health=3.92 | ticks: 6650 c3.00 s3.00 | 6651 c5.50 s3.00 | 6652 c3.00 s3.00 | 6653 c5.50 s3.00 | 6654 c3.00 s0.50 | 6655 c5.50 s0.50 | 6658 c3.00 s3.00 | 6659 c5.50 s3.00
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased True  target z 5.5: client last z 57.99, server last z 57.99 | target health=18.0 | ticks: 6860 c3.00 s3.00 | 6861 c5.50 s3.00 | 6860 c5.50 c3.00 s8.00 s3.00 | 6861 c8.00 c5.50 s8.00 s3.00 | 6862 c10.50 c5.50 s13.00 s8.00 | 6863 c13.00 c8.00 s13.00 s8.00 s0.50 | 6864 c15.50 c10.50 c3.00 s15.50 s10.50 s3.00 | 6865 c18.00 c13.00 c5.50 s18.00 s10.50 s3.00 | 6866 c23.00 c18.00 c10.50 c3.00 s2
+### Rally: overhealth on a bot ally, none on herself (#125); AbsorptionAmount read 2 s in
+hero brigitte mode True screen  hp 20.0 / 20.0
+  herself riko has the following entity data: 0.0f | ally as the following entity data: 5.9999995f | her hp 28.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  herself riko has the following entity data: 0.0f | ally as the following entity data: 5.9999995f | her hp 28.0
+### bash off a 9 m ledge onto a ladder on a wall ahead, never touching ground; step off backwards. 7 m drop with 3 safe
+hero brigitte mode True screen  hp 20.0 / 20.0
+  on the ladder at y -54.08 z 7.51 ground False; end y -60.00 z 5.36, health 18.5 -> 19.5, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  on the ladder at y -52.58 z 7.51 ground False; end y -60.00 z 4.49, health 18.5 -> 18.6, pain ['brigitte.voice.pain']
+DONE
+TREE (git at launch; the client itself can't say): 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05
+TIME 21:09:34
+TREE (git at launch): 234dce8 dirty_src_files=0 launched=2026-11-05T20:53:05 21:09:34
+/difficulty normal ['[21:09:34] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[21:09:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[21:09:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[21:09:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[21:09:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[21:09:36] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[21:09:37] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[21:09:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[21:09:37] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### a soft landing and G: ride off a wall 9 m up; G in the air; landing in plain Minecraft. Health is read in Minecraft mode, where the song is off
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air True: off False, ride ['lucio.wallride.start'], y end -51.00, health 18.0 -> 17.0, hero mode False, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: off False, ride ['lucio.wallride.start'], y end -60.00, health 18.0 -> 12.4, hero mode True, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air True: off False, ride ['lucio.wallride.start'], y end -51.00, health 18.0 -> 17.0, hero mode False, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: off False, ride ['lucio.wallride.start'], y end -60.00, health 18.0 -> 12.6, hero mode True, pain ['lucio.voice.pain']
+  control: plain Minecraft Lucio walks off the same 9 m
+hero lucio mode True screen  hp 18.0 / 18.0
+  y -60.00, health 18.0 -> 12.0, pain ['lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air True: y end -60.00, health 18.5 -> 19.5, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air False: y end -60.00, health 18.5 -> 20.0, pain []
+### Swift Step that leaves her in the air: a bot ally on a one-block perch 20 m up; the perch and bot go as she arrives. Then G or not
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G False: arrived y -40.39; end y -60.00, health 20.0 -> 8.0, pain ['kiriko.voice.pain'], cd1 4.3
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G True: arrived y -40.39; end y -60.00, health 20.0 -> 2.0, pain ['kiriko.voice.pain'], cd1 4.55
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G False: arrived y -40.39; end y -60.00, health 20.0 -> 20.0, pain [], cd1 4.35
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G True: arrived y -40.39; end y -60.00, health 20.0 -> 5.0, pain ['kiriko.voice.pain'], cd1 4.55
+### Whiplash in a 2-high tunnel: a real client, a bot Brigitte with the perk 5 m behind. Nothing ahead for 20 m but where said
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped straight along it: x 0.20 -> 0.20, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped straight along it: x 0.20 -> 0.20, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped 3 degrees into it: x 0.20 -> 0.20, z 0.50 -> 2.78, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped 3 degrees into it: x 0.20 -> 0.20, z 0.50 -> 2.78, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  whipped 8 degrees into it: x 0.20 -> 0.20, z 0.50 -> 0.50, health 20.0 -> 20.0 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  whipped 8 degrees into it: x 0.20 -> 0.20, z 0.50 -> 0.50, health 20.0 -> 20.0 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no side wall, the ceiling alone, straight: x 0.00 -> 0.00, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no side wall, the ceiling alone, straight: x 0.00 -> 0.00, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 2-high, end wall 5 m ahead, Whiplash (a real wall): x 0.00 -> 0.00, z 0.50 -> 4.70, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 2-high, end wall 5 m ahead, Whiplash (a real wall): x 0.00 -> 0.00, z 0.50 -> 4.70, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 3 degrees into the side wall, no perk: x 0.20 -> 0.20, z 0.50 -> 7.14, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero mercy mode True screen  hp 18.0 / 18.0
+  tunnel, husk against the side, straight, Whiplash husk: moved 5.25 m (z 0.50 -> 5.75), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  tunnel, end wall at 4, husk, Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+### death and dimension change in a soft landing (Brigitte, bash off 9 m)
+hero brigitte mode True screen  hp 20.0 / 20.0
+  died in it, respawned as brigitte, then 12 m: y -60.00, health -> 12.6 of 20.0, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Nether in it, 11 m: y 112.00, health 18.5 -> 18.5, on ground True, pain ['brigitte.voice.pain', 'brigitte.voice.pain']
+### Whiplash on a Minecraft-mode target; on a stair or slab against a mob; a real wall against a mob
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, wall at 3 m + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, wall at 3 m + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, no wall + Whiplash, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, one slab + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero mercy mode True screen  hp 18.0 / 18.0
+  one stair + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0

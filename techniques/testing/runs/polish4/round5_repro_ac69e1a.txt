@@ -1,0 +1,234 @@
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:22:16
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:22:16
+/difficulty normal []
+/gamerule minecraft:spawn_monsters false []
+/gamerule minecraft:natural_health_regeneration false []
+/time set noon ['[20:22:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:22:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:22:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[20:22:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[20:22:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] []
+### a soft landing and G: ride off a wall 9 m up; G in the air; landing in plain Minecraft. Health is read in Minecraft mode, where the song is off
+hero  mode False screen  hp 20.0 / 20.0
+  Lucio, G in the air True: y end -60.00, health 18.0 -> 12.0, hero mode False, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: y end -51.00, health 18.0 -> 18.0, hero mode True, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air True: y end -60.00, health 18.0 -> 18.0, hero mode False, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: y end -51.00, health 18.0 -> 18.0, hero mode True, pain []
+  control: plain Minecraft Lucio walks off the same 9 m
+hero lucio mode True screen  hp 18.0 / 18.0
+  y -60.00, health 17.9 -> 11.9, pain ['lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air True: y end -60.00, health 19.0 -> 20.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air False: y end -60.00, health 19.0 -> 20.0, pain []
+### Swift Step that leaves her in the air: a bot ally on a one-block perch 20 m up; the perch and bot go as she arrives. Then G or not
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G False: arrived y -39.78; end y -60.00, health 20.0 -> 20.0, pain [], cd1 4.65
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G True: arrived y -39.55; end y -60.00, health 20.0 -> 20.0, pain [], cd1 5.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G False: arrived y -39.78; end y -60.00, health 20.0 -> 20.0, pain [], cd1 4.8
+hero kiriko mode True screen  hp 20.0 / 20.0
+  G True: arrived y -39.55; end y -60.00, health 20.0 -> 20.0, pain [], cd1 5.0
+### Whiplash in a 2-high tunnel: a real client, a bot Brigitte with the perk 5 m behind. Nothing ahead for 20 m but where said
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped straight along it: x 0.20 -> 0.20, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped straight along it: x 0.20 -> 0.20, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped 3 degrees into it: x 0.20 -> 0.20, z 0.50 -> 2.78, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  touching the side wall, whipped 3 degrees into it: x 0.20 -> 0.20, z 0.50 -> 2.78, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  whipped 8 degrees into it: x 0.20 -> 0.20, z 0.50 -> 0.50, health 20.0 -> 20.0 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  whipped 8 degrees into it: x 0.20 -> 0.20, z 0.50 -> 0.50, health 20.0 -> 20.0 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no side wall, the ceiling alone, straight: x 0.00 -> 0.00, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no side wall, the ceiling alone, straight: x 0.00 -> 0.00, z 0.50 -> 7.15, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 2-high, end wall 5 m ahead, Whiplash (a real wall): x 0.00 -> 0.00, z 0.50 -> 4.70, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 2-high, end wall 5 m ahead, Whiplash (a real wall): x 0.00 -> 0.00, z 0.50 -> 4.70, health 20.0 -> 9.6 (14.4 whip, 9.6 with the slam)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  control: 3 degrees into the side wall, no perk: x 0.20 -> 0.20, z 0.50 -> 7.14, health 20.0 -> 14.4 (14.4 whip, 9.6 with the slam)
+hero mercy mode True screen  hp 18.0 / 18.0
+  tunnel, husk against the side, straight, Whiplash husk: moved 5.25 m (z 0.50 -> 5.75), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  tunnel, end wall at 4, husk, Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+### a soft landing that ends in water or on a ladder, then a drop (the climb out stood in by /tp 12 m up): is it still soft?
+hero lucio mode True screen  hp 18.0 / 18.0
+  water: before the drop y -51.00 on ground True, health 18.0; after 12 m: y -60.00, health -> 9.6, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:28:17
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:28:17
+/difficulty normal ['[20:28:17] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:28:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:28:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[20:28:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[20:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[20:28:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:28:20] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### a soft landing and G: ride off a wall 9 m up; G in the air; landing in plain Minecraft. Health is read in Minecraft mode, where the song is off
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air True: off True, ride [], y end -60.00, health 13.2 -> 13.3, hero mode False, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: off False, ride ['lucio.wallride.start'], y end -51.78, health 18.0 -> 18.0, hero mode True, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air True: off False, ride ['lucio.wallride.start'], y end -51.00, health 18.0 -> 18.0, hero mode False, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, G in the air False: off False, ride ['lucio.wallride.start'], y end -60.00, health 18.0 -> 12.6, hero mode True, pain ['lucio.voice.pain']
+  control: plain Minecraft Lucio walks off the same 9 m
+hero lucio mode True screen  hp 18.0 / 18.0
+  y -60.00, health 18.0 -> 12.0, pain ['lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain', 'lucio.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air True: y end -60.00, health 18.5 -> 20.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off 9 m, G in the air False: y end -60.00, health 18.5 -> 20.0, pain []
+### a soft landing that ends in water or on a ladder, then a drop (the climb out stood in by /tp 12 m up): is it still soft?
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  water: before the drop y -60.00 on ground True, health 18.0; after 12 m: y -60.00, health -> 9.4, pain ['lucio.voice.pain']
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:33:56
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:33:56
+/difficulty normal ['[20:33:56] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:33:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:33:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[20:33:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:33:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:33:58] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[20:33:58] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[20:33:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:33:59] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### a soft landing that ends in water or on a ladder, then a drop (the climb out stood in by /tp 12 m up over a stone floor). Brigitte bashes off a 9 m ledge: 12 m with 3 safe hurts 9 if it counts
+hero lucio mode True screen  hp 18.0 / 18.0
+  water: before the drop y -60.00 on ground True, health 15.8; after 12 m: y -60.00, health -> 10.4, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder: before the drop y -55.28 on ground False, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ground: before the drop y -60.00 on ground True, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  water: before the drop y -60.00 on ground True, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder: before the drop y -55.28 on ground False, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ground: before the drop y -60.00 on ground True, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+### death and dimension change in a soft landing (Brigitte, bash off 9 m)
+hero brigitte mode True screen  hp 20.0 / 20.0
+  died in it, respawned as brigitte, then 12 m: y -60.00, health -> 11.6 of 20.0, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Nether in it, 11 m: y -60.00, health 18.5 -> 19.9, on ground True, pain []
+DONE
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:37:12
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:37:12
+/difficulty normal ['[20:37:12] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:37:12] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:37:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[20:37:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:37:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:37:14] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[20:37:14] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[20:37:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:37:15] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### control and deep water: tp from the air with no contact at all; a 6 m deep pool, afloat. Same drop
+hero brigitte mode True screen  hp 20.0 / 20.0
+  air: before the drop y -60.00 on ground True, health 15.3; after 12 m: y -60.00, health -> 9.8, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  deep: before the drop y -54.00 on ground True, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder: before the drop y -55.43 on ground False, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  air: before the drop y -55.82 on ground False, health 19.9; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  deep: before the drop y -54.00 on ground True, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder: before the drop y -55.28 on ground False, health 20.0; after 12 m: y -60.00, health -> 11.6, pain ['brigitte.voice.pain']
+DONE
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:38:54
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:38:54
+/difficulty normal ['[20:38:54] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:38:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:38:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[20:38:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:38:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:38:56] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[20:38:57] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[20:38:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:38:58] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Whiplash on a Minecraft-mode target; on a stair or slab against a mob; a real wall against a mob
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, wall at 3 m + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, wall at 3 m + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, no wall + Whiplash, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Minecraft mode, one slab + Whiplash, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero mercy mode True screen  hp 18.0 / 18.0
+  one stair + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  one stair + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  one slab + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  one slab + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+### Rally's wave at a zombie with only its feet in sight: floating wall z 7, zombie z 8.5, x + 2; bot sight read from where she stands
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall False bashed 14.4 past the wall 14.4 | sight before eye 160600.50,-58.38,0.50: zombie@160600.5,-60.0,2.7 combat=true vanilla=true; zombie@160602.5,-60.0,8.5 combat=true vanilla=true;  | after eye 160600.50,-58.38,5.67: zombie@160600.5,-60.0,2.7 combat=true vanilla=true; zombie@160602.5,-60.0,8.5 combat=true vanilla=true; 
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall True bashed 14.4 past the wall 14.4 | sight before eye 160660.50,-58.38,0.50: zombie@160660.5,-60.0,2.7 combat=true vanilla=true; zombie@160662.5,-60.0,8.5 combat=true vanilla=false;  | after eye 160660.50,-58.38,3.09: zombie@160660.5,-60.0,2.7 combat=true vanilla=true; zombie@160662.5,-60.0,8.5 combat=true vanilla=false; 
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall False bashed 14.4 past the wall 14.4 | sight before eye 160720.50,-58.38,0.50: zombie@160720.5,-60.0,2.7 combat=true vanilla=true; zombie@160722.5,-60.0,8.5 combat=true vanilla=true;  | after eye 160720.50,-58.38,3.09: zombie@160720.5,-60.0,2.7 combat=true vanilla=true; zombie@160722.5,-60.0,8.5 combat=true vanilla=true; 
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall True bashed 14.4 past the wall 14.4 | sight before eye 160780.50,-58.38,0.50: zombie@160780.5,-60.0,2.7 combat=true vanilla=true; zombie@160782.5,-60.0,8.5 combat=true vanilla=false;  | after eye 160780.50,-58.38,3.09: zombie@160780.5,-60.0,2.7 combat=true vanilla=true; zombie@160782.5,-60.0,8.5 combat=true vanilla=false; 
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall True bashed 14.4 past the wall 14.4 | sight before eye 160840.50,-58.38,0.50: zombie@160840.5,-60.0,2.7 combat=true vanilla=true; zombie@160842.5,-60.0,8.5 combat=true vanilla=false;  | after eye 160840.50,-58.38,3.09: zombie@160840.5,-60.0,2.7 combat=true vanilla=true; zombie@160842.5,-60.0,8.5 combat=true vanilla=false; 
+DONE
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:42:45
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30 20:42:45
+/difficulty normal ['[20:42:45] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:42:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:42:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[20:42:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:42:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:42:47] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[20:42:47] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[20:42:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:42:48] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### bash off a 9 m ledge onto a ladder on a wall ahead, never touching ground; step off it backwards: does the drop hurt? Control: walk off the same ladder with no bash
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash True: on the ladder at y -52.88 z 7.51 ground False; end y -60.00 z 4.90, health 18.5 -> 20.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash False: on the ladder at y -59.28 z 7.50 ground False; end y -60.00 z 4.86, health 18.5 -> 18.5, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash True: on the ladder at y -52.88 z 7.51 ground False; end y -60.00 z 4.90, health 18.5 -> 20.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash False: on the ladder at y -59.28 z 7.50 ground False; end y -60.00 z 4.86, health 18.5 -> 18.5, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash True: on the ladder at y -52.88 z 7.51 ground False; end y -60.00 z 4.90, health 18.5 -> 20.0, pain []
+DONE
