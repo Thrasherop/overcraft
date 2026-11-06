@@ -1,4 +1,4 @@
-TREE last src commit c83ddc3, HEAD c83ddc3, dirty_src=0, gradlew clean build, 2026-11-06T03:22, 120 tests, 0 failures
+TREE last src commit f504333, HEAD f504333, dirty_src=0, gradlew clean build, 2026-11-06T14:12, 121 tests, 0 failures
 Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 Reusing configuration cache.
 > Task :validateAccessWidener NO-SOURCE
@@ -33,6 +33,6 @@ Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 
 [Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 52s
+BUILD SUCCESSFUL in 48s
 10 actionable tasks: 10 executed
 Configuration cache entry reused.
