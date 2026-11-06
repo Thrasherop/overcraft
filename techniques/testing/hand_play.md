@@ -1,7 +1,7 @@
 # Hand play: playing it like a player
 
 CLAUDE.md requires playing every change in the real game before claiming it. This is how that play works and what it
-catches. Up: [Techniques](../README.md) · the tools: [harness](harness.md) · looking closely: [visual_review](visual_review.md)
+catches. Up: [Techniques](../README.md) · the tools: [harness](harness.md) · looking closely: [visual_review](visual_review.md) · the whole QA loop: [polish_method](polish_method.md)
 
 ## A row in a table needs a trace with the thing in it (critique of #89, 2026-11-05)
 Open the raw file before writing the row. A "before" of 2-8° at 21 m/s came from a trace with nobody on the rope; "0.5 m ahead of her" was the test's own 3 m offset shrinking; a "night fight" was four daylight shots of summoned mobs. If no trace has it, the row says not measured. And check where a number's label came from: an old guess read again is still a guess (L stays L until something is decoded).
