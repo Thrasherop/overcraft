@@ -375,6 +375,7 @@ public final class SojournFx {
 	 * at 4.4-9 m/s, white to steel blue, one a metre where the data's are 1669 a second, at 0.6 of its size: rings, played). Fainter at low energy (ours).
 	 */
 	private static void tracer(@Nullable Entity shooter, Vec3 sentFrom, Vec3 to, float energy, boolean enemy) {
+		dev.overcraft.hero.PressTrace.seen("fx");
 		Vec3 from = shooter != null ? muzzle(shooter) : sentFrom;
 		Vec3 piece = to.subtract(from);
 		float len = (float) piece.length();

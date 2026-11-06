@@ -413,6 +413,7 @@ public final class ClientHero {
 		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
 			lastWall = wall;
+			dev.overcraft.hero.PressTrace.mark("sent");
 			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra, wall));
 		}
 	}

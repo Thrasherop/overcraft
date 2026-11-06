@@ -167,6 +167,7 @@ public final class Railgun {
 
 	/** One round from her eyes along her aim, spread inside the ellipse its ramp has reached. */
 	private static void shoot(ServerPlayer player, HeroState s, long now) {
+		dev.overcraft.hero.PressTrace.mark("srv_round");
 		double share = Math.min(s.sojournSpread, SPREAD_SHOTS) / SPREAD_SHOTS;
 		Vec3 dir = spread(player.getViewVector(1.0f), SPREAD_MAX * share, SPREAD_SIDE * share, player.getRandom());
 		s.sojournSpread = Math.min(SPREAD_SHOTS, s.sojournSpread + 1);
@@ -267,6 +268,7 @@ public final class Railgun {
 
 	/** One shot along her aim, through every enemy on its line up to a block: 20 + energy each, spending it all. */
 	private static void chargedShot(ServerPlayer player, HeroState s) {
+		dev.overcraft.hero.PressTrace.mark("srv_shot");
 		ServerLevel level = player.level();
 		double energy = s.sojournEnergy;
 		s.sojournEnergy = 0;

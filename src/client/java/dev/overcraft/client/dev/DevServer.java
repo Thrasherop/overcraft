@@ -61,6 +61,7 @@ public final class DevServer {
 	private static boolean towHooked;
 	private static int towTick;
 
+	private static boolean pressTraceListening;
 	/** Sounds heard since the last "heard" command (dev only). */
 	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
 	private static boolean listening;
@@ -307,6 +308,42 @@ public final class DevServer {
 					DevBot.handle(server, arg, out);
 				}
 			}
+			case "presstrace" -> {
+				// dev only (#126): "presstrace start", then a press, then "presstrace": from the press to the shot, its sounds, its
+				// look and clip, each on one clock (hero.PressTrace). "presstrace energy <n>": her energy, as if she'd just earned it; "ammo <n>"
+				String[] a = arg.split(" ");
+				switch (a[0]) {
+					case "start" -> {
+						if (!pressTraceListening) {
+							pressTraceListening = true;
+							mc.getSoundManager().addListener((sound, events, range) -> {
+								if (sound.getIdentifier().getPath().startsWith("sojourn.charged.") || sound.getIdentifier().getPath().startsWith("sojourn.railgun.reload")) {
+									dev.overcraft.hero.PressTrace.mark("snd:" + sound.getIdentifier().getPath().substring("sojourn.".length()));
+								}
+							});
+						}
+						dev.overcraft.hero.PressTrace.start();
+					}
+					case "energy" -> {
+						var server = mc.getSingleplayerServer();
+						double energy = Double.parseDouble(a[1]);
+						java.util.UUID id = player.getUUID();
+						server.execute(() -> {
+							var who = server.getPlayerList().getPlayer(id);
+							var s = dev.overcraft.hero.HeroManager.state(who);
+							s.sojournEnergy = energy;
+							s.sojournGainAt = who.level().getGameTime();
+						});
+					}
+					case "ammo" -> {
+						var server = mc.getSingleplayerServer();
+						int ammo = Integer.parseInt(a[1]);
+						java.util.UUID id = player.getUUID();
+						server.execute(() -> dev.overcraft.hero.HeroManager.state(server.getPlayerList().getPlayer(id)).primaryAmmo = ammo);
+					}
+					default -> out.addProperty("trace", dev.overcraft.hero.PressTrace.dump());
+				}
+			}
 			case "respawn" -> {
 				// what the death screen's Respawn button does
 				if (player != null) {
@@ -320,6 +357,7 @@ public final class DevServer {
 				InputConstants.Key bound = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key);
 				switch (a.length > 1 ? a[1] : "tap") {
 					case "down" -> {
+						dev.overcraft.hero.PressTrace.mark("press");
 						KeyMapping.set(bound, true);
 						KeyMapping.click(bound);
 					}

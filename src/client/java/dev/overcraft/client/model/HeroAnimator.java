@@ -269,6 +269,9 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("charged_shot")) {
+			dev.overcraft.hero.PressTrace.seen("clip");
+		}
 		if (action.equals("fire")) {
 			a.fireFirst = a.since("fire", now) > BURST_GAP;
 			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);
