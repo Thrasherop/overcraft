@@ -10,6 +10,7 @@ import java.util.List;
 public final class PressTrace {
 	private static volatile boolean on;
 	private static volatile boolean wantFrame;
+	private static volatile boolean allFrames;
 	private static long t0;
 	private static final List<String> MARKS = new ArrayList<>();
 
@@ -50,7 +51,14 @@ public final class PressTrace {
 		if (on && wantFrame) {
 			wantFrame = false;
 			add("frame");
+		} else if (on && allFrames) {
+			add("f");
 		}
+	}
+
+	/** Every frame marked as "f" as well, to see a hitch between them. */
+	public static void allFrames(boolean all) {
+		allFrames = all;
 	}
 
 	private static synchronized void add(String what) {

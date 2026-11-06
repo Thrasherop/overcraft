@@ -324,12 +324,29 @@ public final class DevServer {
 						}
 						dev.overcraft.hero.PressTrace.start();
 					}
+					case "lag" -> DevLag.set(Long.parseLong(a[1]));
+					case "frames" -> dev.overcraft.hero.PressTrace.allFrames(a[1].equals("on"));
+					case "sample" -> {
+						// the client's thread sampled for this many ms from now, into the log (dev only)
+						Thread main = Thread.currentThread();
+						int ms = Integer.parseInt(a[1]);
+						Thread sampler = new Thread(() -> {
+							try {
+								dev.overcraft.Overcraft.LOG.info("SAMPLE\n{}", DevLag.sample(main, ms));
+							} catch (InterruptedException e) {
+								Thread.currentThread().interrupt();
+							}
+						}, "Overcraft sampler");
+						sampler.setDaemon(true);
+						sampler.start();
+					}
 					case "energy" -> {
 						var server = mc.getSingleplayerServer();
 						double energy = Double.parseDouble(a[1]);
 						java.util.UUID id = player.getUUID();
+						String named = a.length > 2 ? a[2] : null;
 						server.execute(() -> {
-							var who = server.getPlayerList().getPlayer(id);
+							var who = named != null ? server.getPlayerList().getPlayerByName(named) : server.getPlayerList().getPlayer(id);
 							var s = dev.overcraft.hero.HeroManager.state(who);
 							s.sojournEnergy = energy;
 							s.sojournGainAt = who.level().getGameTime();

@@ -414,7 +414,7 @@ public final class ClientHero {
 			lastHeld = held;
 			lastWall = wall;
 			dev.overcraft.hero.PressTrace.mark("sent");
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra, wall));
+			dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(held, pressed, extra, wall));
 		}
 	}
 
@@ -424,7 +424,7 @@ public final class ClientHero {
 	public static void pressNow(int pressed, float yaw, float pitch) {
 		lastHeld |= HeroInputPayload.HELD_SECONDARY;
 		dev.overcraft.hero.PressTrace.mark("sent");
-		ClientPlayNetworking.send(new HeroInputPayload(lastHeld, pressed, 0, lastWall, yaw, pitch));
+		dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(lastHeld, pressed, 0, lastWall, yaw, pitch));
 	}
 
 	private static boolean chatHeroView;
