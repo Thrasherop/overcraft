@@ -155,6 +155,15 @@ final class DevBot {
 				dev.overcraft.hero.Combat.phase(who, Double.parseDouble(a[2]));
 				out.addProperty("phased", dev.overcraft.hero.Combat.isPhased(who));
 			}
+			case "sight" -> {
+				// "bot sight": from the real player's eyes, each mob within 12 m: Combat.inSight and vanilla's eye-to-eye test
+				ServerPlayer me = server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow();
+				StringBuilder b = new StringBuilder(String.format("eye %.2f,%.2f,%.2f: ", me.getEyePosition().x, me.getEyePosition().y, me.getEyePosition().z));
+				for (net.minecraft.world.entity.LivingEntity e : me.level().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, me.getBoundingBox().inflate(12), e -> e instanceof net.minecraft.world.entity.Mob)) {
+					b.append(String.format("%s@%.1f,%.1f,%.1f combat=%s vanilla=%s; ", e.getType().toShortString(), e.getX(), e.getY(), e.getZ(), dev.overcraft.hero.Combat.inSight(me.level(), me.getEyePosition(), e, me), me.hasLineOfSight(e)));
+				}
+				out.addProperty("sight", b.toString());
+			}
 			case "shots" -> {
 				// "bot shots": every Overwatch projectile as this client has it and as the server has it (type@x,y,z), and each Sombra-hackable deployable on the server
 				StringBuilder cl = new StringBuilder();
