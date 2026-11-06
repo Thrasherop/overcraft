@@ -454,3 +454,68 @@ Up: [Techniques](../README.md). One rule for all ten checks now: `dev.overcraft.
 
 - **The waist from 77 degrees still crits** (the line really goes through the head): for the owner to say. **No level-case false crit has shown up.**
 - **What a critic should check:** a moving target; a muzzle offset (a thrown kunai's way isn't the eye's); a ghast's face from the side is a crit near its front edge; a hit from behind a front-headed mob with its head turned (`getYHeadRot`).
+
+## The Charged Shot on the press (#126, 2026-11-06)
+Up: [Techniques](../README.md) · the harness: [harness](../testing/harness.md) · raw files and scripts: [runs/railgun](../testing/runs/railgun/). The owner: "firing railgun is the highest priority. it cancels reloading, primary fire, all sorts of stuff, with 0 (or at least basically 0) cast time. There is a recovery time, but it fires immediately despite what is currently happening." "Railgun" here is her right button.
+
+**What the sources say**
+- **Cast time, H:** W's infobox (Sojourn, page last edited 2026-10-31): "0 second startup + 0.64 seconds recovery". D: nothing between SECONDARY #421 and the volley #450 but energy > 0 (#451), and no wait node.
+- **Priority, H for the nodes, M for the stack's meaning:** in 1A23, #75's always-on plug leads to #615 (v2447 = 0, its recovery) -> #326 -> #421: beside the reload (#75's true plug, #233) and the rounds (its false plug, #415 -> #617 -> #1445 -> #527), not under them. #425 pushes v33 at priority 0x79, over the reload's #233 and the rounds' #571 at 0x2. (That 0x79 outranks 0x2 is read from #233 having an under plug at all: the 024 assets' order isn't read.)
+- **Reload, H nodes, M meaning:** #233's under plug is #234 v51 = 0, and its top plug's wait #287 and anim #249 stop with it: the reload is over, not paused. #285 fills the magazine only after #287's 0.96 s. So a cut reload keeps the ammo it had (the owner's rule for a cut reload too: `HeroState.interruptReload`), and only an empty magazine reloads by itself after the recovery (#75's second clause needs v2447 = 0).
+- **Recovery, M:** #438 v2447 = 0.65, chased at (1 + attack mods) a second (#636), W 0.64. SECONDARY's buffer 0.15 s (H). The rounds wait on it too (#617).
+- **0.16 s, corrected:** v173 (#513, after a volley) gates #75's reload, #415's rounds and Disruptor's start. Not #421. The old "0.16 s before a Charged Shot" (M in kit_sojourn.md) was wrong, and it was what a held left button felt like. Those three readers aren't all in the code: see "found, not fixed" below.
+- **Held, M:** #421 and #527 use the same plug m_80AF45FB, the one that resumes a held left button's rounds when #527 begins again. So a right button still down as the recovery ends fires again. In Overclock that's a shot every 0.65 s; out of it, the "not available" click (#632).
+- **Not found:** nothing in Blizzard's patch notes or elsewhere on W about priority or cancelling (searched through the API). Overclock's 0.75 s cast keeps its block: W's text and D #364; how the data blocks it is not read (L), and #421's m_53C4B6A6 = v842 isn't understood. Melee: nothing in her graphs stops #421 during 0043's melee, which pushes v33 at 0x79 as well: an engine-side lock can't be ruled out, so "it cuts a melee's recovery" is L, ours by the owner's "all sorts of stuff".
+
+**The fix**
+- Server (`Railgun`): `chargedReady` is its own lock (`sojournChargedLock`) and Overclock's cast. Reload, rounds, melee recovery, slide, Disruptor's cast don't hold it. `chargedShot` cuts a reload (`interruptReload`).
+- Client (`ClientSojourn.clicked`, from `KeyMapping.click`, the moment `MouseHandler.onButton` sees the button): with energy and no lock it sends the press at once with her aim, and plays her two sounds, the tracer and the clip. `Railgun.pressedShown` fires on the packet; her copies aren't sent back, others' are. A press it can't call goes at the next tick as before, and the server decides.
+- `HeroAnimator.trigger`: "charged_shot" ends the reload's clips, layers and sound on every client.
+- **Not called on the client:** asleep (the synced attachment), a screen, the perk menu, the comms key held. Hack doesn't stop it (a weapon; `HeroManager.onInput` silences abilities only).
+
+**Measured** (`presstrace`, one clock; `key primary_fire down` is KeyMapping.set + click, what `MouseHandler.onButton` calls). 5 presses a row (6 for the first four old rows), median / worst ms from the press. "Look" = the tracer made; "frame" = the next frame's world pass reached, not light on a screen; the harness runs at a frame's start, so a real click adds up to a frame's wait on either build. Old: 430712b (polish-4 + the trace), raw `rg_old_*.txt`. New: 4b45d79, raw `rg_new_*.txt`, later commits as noted, `rg_final*.txt`. All at 30 fps except where marked (the window lost focus: 10 fps, which inflates those old numbers). `rg_old_b.txt`'s rows from "in the air" on are void (she had died falling): `rg_old_c.txt` reran them.
+
+| Case | Old: fired, press to sound | Old: to server shot | New: fired, press to sound | New: to look / frame | New: to server shot |
+|---|---|---|---|---|---|
+| Idle | 6/6, 67 / 117 | 61 / 65 | 5/5, 0.1 / 4 | 0.5 / 4 (the session's first press: frame 289, old 674) | 8 / 47 |
+| Mid-reload, 0.3 s in | **0/6, the press lost** | - | 5/5, 0.2 / 0.3 | 0.5 / 3.6 | 14 / 38 |
+| Reload past 0.96 s | 6/6, 67 / 100 | 53 / 67 | 5/5, 0.2 / 0.2 | 0.3 / 2.9 | 27 / 40 |
+| Reload at its end (asked 1.14 s) | 6/6, 67 / 101 | 48 / 69 | 5/5, 0.1 / 0.1 | 0.3 / 3.1 | 9 / 48 |
+| Holding left, firing | 5/5, **168** / 168 | **163** / 165 | 5/5, 0.1 / 0.2 | 0.3 / 3.1 | 44 / 51 |
+| Between left shots | 5/5, 67 / 68 | 47 / 60 | 5/5, 0.1 / 0.1 | 0.3 / 2.7 | 30 / 43 |
+| Recovery, 0.25 s on | 0/5 | - | 0/5: as the data | - | - |
+| Recovery, asked 0.55 s on (with overhead, likely past it) | 5/5, 67 / 100 | 45 / 69 | 5/5, 0.1 / 0.1 | 0.2 / 2.6 | 17 / 44 |
+| Recovery, 0.72 s on | 5/5, 67 / 67 | 51 / 64 | 5/5, 0.1 / 0.1 | 0.2 / 1.4 | 37 / 45 |
+| Just after G back | 5/5, 67 / 67 | 44 / 64 | 5/5, 0.1 / 0.1 | 0.2 / 2.7 | 29 / 42 |
+| Jump, rising | 5/5, 34 / 67 | 33 / 67 | 5/5, 0.1 / 0.1 | 0.2 / 2.5 | 18 / 30 |
+| Landing | 5/5, 67 / 67 | 50 / 62 | 5/5, 0.1 / 0.1 | 0.3 / 2.4 | 17 / 32 |
+| Sliding | 5/5, 34 / 100 | 31 / 69 | 5/5, 0.1 / 0.1 | 0.2 / 2.6 | 14 / 37 |
+| In the air | 5/5, 67 / 67 | 40 / 65 | 5/5, 0.1 / 0.1 | 0.3 / 2.6 | 41 / 48 |
+| Disruptor's cast | 4/4, 67 / 67 | 55 / 62 | 4/4, 0.1 / 0.1 | 0.2 / 1.9 | 16 / 28 |
+| Melee's recovery | **0/5, lost** | - | 5/5, 0.1 / 0.2 | 0.3 / 1.2 | 33 / 44 |
+| Crouched | 5/5, 67 / 100 (10 fps) | 34 / 61 | 5/5, 0.1 / 0.3 | 0.2 / 2.5 | 25 / 48 |
+| Low energy, 3 | 5/5, 100 / 100 (10 fps) | 19 / 23 | 5/5, 0.1 / 0.1 | 0.3 / 2.6 | 19 / 47 |
+| Full energy | 5/5, 100 / 100 (10 fps) | 51 / 54 | 5/5, 0.1 / 0.1 | 0.3 / 2.5 | 26 / 50 |
+| No energy | 0/5 | - | 0/5, the click heard (`kiriko.ability.denied`) | - | - |
+| Empty, auto-reloading | **0/5, lost** | - | 5/5, 0.1 / 0.1 | 0.3 / 2.2 | 21 / 49 |
+| In an emote | **void:** my `emote 9295` played nothing, so not measured | - | 5/5 with Triumph playing (`emoteClip`, its camera on; both gone after) on b0a9f51, 0.2 / 0.2 | 0.4 / 3.0 | 36 / 46 |
+| Overclock's cast, 0.3 s in | 0/3 | - | 0/3: the hard stop kept | - | - |
+| In Overclock | 3/3, 100 / 100 (10 fps) | 20 / 52 | 3/3, 0.1 / 0.2 (16d1ca9) | 0.3 / 1.8 | 21 / 23 |
+
+The server shot is still up to about 50 ms after the press: the packet waits for the server (why isn't read: a queue until its next tick, likely). The hit's crack (`snd:charged.hit`) comes back about 33 ms after that, at a frame. **So what she sees and hears of the shot itself is at once; the hit's own sound and marker aren't.**
+
+**Other checks, new build, each read from its raw**
+- **Cut reload:** at 0.3 s in, 20 rounds: after the shot 20, reload off (rel -1), meter 0; still 20 at +1.2 s; R again reloads to 45. Listed by the sound engine (`bot playing`): uncut until 1.2-1.4 s; cut gone by 0.3-0.5 s (polled at 10 fps, and the engine's list is what's read, not the audio). Past 0.96 s: 45 kept. Empty: reload off, starts again by about 0.77 s after the shot, 45 at about 1.7 s.
+- **Left held through a shot** (real rounds): last round 22 ms before the press, none till 627 ms after. Burst, shot, burst with energy earned by real rounds at the zombie: 1 shot, 15 rounds, the meter 0.8 before and 0.7 after.
+- **No double shots:** every row's count is one a press; 6 quick taps (0.02 s): 6 shots, 6 clips, meter 0 each. **No stuck state:** `anim` idle and the ammo right after each sequence; a slide and a shot in it: 1 shot.
+- **Damage (the server's):** 50 energy 8.27 (a head: 105, less a zombie's 2 armor), 100 energy 14.17 (180), as step 4's.
+- **Held:** 2.5 s out of Overclock: 1 shot (old too). 3 s in Overclock: a shot every 0.65 s (old: 1 in 3 s). Those repeats come from the server, so their look is late by what's left of a tick and a frame (22 ms and 8 ms in `rg_final2.txt`).
+- **The buffer:** a press late in the recovery, not called by the client (`rg_new_x.txt`, its 0.402 line): the server fired it, the look 100 ms on at 10 fps. **The 0.15 s edge wasn't measured.**
+- **Flick:** `look -90` and the press one frame later, zombies ahead and to the side, 30 fps: with a rotation packet first, 4 of 8 went along the old aim (`rg_final.txt`); with the aim in the press, 8 of 8 on the new target (`rg_final2.txt`). **Old build not measured.**
+- **Hard stops:** asleep (a bot Ana's dart): no shot, no ghost, energy kept. Dead, Minecraft mode, the comms key held 0.2 s and 0.5 s (found: at 0.2 s it fired until b0a9f51): nothing. Hacked (a bot Sombra's EMP): it fires, as a weapon; **the request listed hack as a stop, the code and BZ say abilities only: for the owner to say.**
+- **Other heroes:** Kiriko's right button after the change: ofuda, no shot (`clicked` returns for anyone but Sojourn). Others not played.
+- **The look:** `run/screenshots/rg_new_f1` (not committed; the frame after a press in a reload: the gun kicked, the flash, 20 rounds). The reload's pose goes at once, with no blend back on the view: read in stills only. HUD: the energy reads 100 in that frame and 0 when the sync arrives, a tick and a frame at most; the reload bar the same.
+
+**Found, not fixed:** v173's 0.16 s isn't in the code for the rounds or the reload (a left click right after a burst, R right after firing), and Disruptor's start. R in the recovery is refused (`startReload`), where D's #80 sets v51 and the reload starts as it ends. Hit marker and crack wait for the server, as for every hero. A wrong client call shows a shot that wasn't.
+
+**What wasn't tried:** a real mouse or a person: every press is the harness's KeyMapping.set + click, so **this isn't the merge gate's hand play, and feel isn't judged.** A second client seeing the shot (its packets are in the code, its reload cut too; one client on this machine). A dedicated server with real latency: a press the server then refuses shows a shot that wasn't (her energy gone in that moment, a stun on the way): not provoked. Attack-speed buffs on the client's lock (0.65 s flat: a press it thinks too early goes the old way; if slowed, it could show one early and the server buffers it). The perk menu open. 60+ fps. An Overwatch side by side.

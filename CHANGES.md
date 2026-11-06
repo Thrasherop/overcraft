@@ -4,6 +4,11 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## Unreleased
+
+### On fix/railgun-crisp (not released, version not bumped; built on fix/polish-4)
+- Sojourn's Charged Shot fires on the press and outranks everything but its recovery, Overclock's cast and a stun or sleep (#126). A press in a reload, in an empty magazine's reload or in a melee's recovery was lost; now it fires and cuts the reload (the magazine keeps what it had; R or an empty magazine reloads again). A held left button no longer delays it 0.16 s, a misreading of her data. Her sounds, tracer and clip start on the press, not about 67 ms later (168 ms over a held left button, 30 fps); the damage is still the server's, up to about 50 ms on. It goes where the crosshair was as you pressed. Held through its 0.65 s recovery it fires again (in Overclock, every 0.65 s). Played by harness keys, not by a person.
+
 ## 2026-11-05
 
 ### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
