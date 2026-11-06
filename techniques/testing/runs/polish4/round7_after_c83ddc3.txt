@@ -237,3 +237,94 @@ hero lucio mode True screen  hp 18.0 / 18.0
 hero lucio mode True screen  hp 18.0 / 18.0
   release, G True, try 2: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 8.0, end y -60.00, pain 1  [CLEAN] | s -48.3s -48.3s -48.3s -48.2s -48.2s -48.1s -48.1s -48.1s -48.1s -48.0s -48.0s -48.0s -47.0 -47.2 -47.9 -48.4 -48.9 -50.1 -50.8 -51.6 -53.4 -54.3 -55.4 -57.6 -58.8 -60.0g
 DONE
+TREE (git at launch; the client itself can't say): 8547c23 dirty_src_files=0 launched=2026-11-06T03:22:57
+TIME 03:24:47
+TREE (git at launch): 8547c23 dirty_src_files=0 launched=2026-11-06T03:22:57 03:24:47
+/difficulty normal ['[03:24:47] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[03:24:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[03:24:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[03:24:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[03:24:49] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[03:24:49] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[03:24:49] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[03:24:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[03:24:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 65 entities']
+TREE7 8547c23 dirty_src_files=0 launched=2026-11-06T03:22:57 03:24:51
+### real Brigitte, Whiplash set last, no /overcraft reset after pick; a husk, wall at z 4; G 0.25 s after the press or not; read 1.2 s on
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: husk 194.4, mode True, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: husk 200.0, mode False, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: husk 194.4, mode True, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: husk 200.0, mode False, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: husk 194.4, mode True, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: husk 194.4, mode False, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: husk 194.4, mode True, cd1 before 0.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: husk 194.4, mode False, cd1 before 0.0
+DONE
+TREE (git at launch; the client itself can't say): 8547c23 dirty_src_files=0 launched=2026-11-06T03:26:27
+TIME 03:28:18
+TREE (git at launch): 8547c23 dirty_src_files=0 launched=2026-11-06T03:26:27 03:28:18
+/difficulty normal ['[03:28:18] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[03:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[03:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[03:28:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[03:28:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[03:28:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[03:28:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[03:28:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[03:28:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 69 entities']
+TREE7 8547c23 dirty_src_files=0 launched=2026-11-06T03:26:27 03:28:22
+### real Brigitte: a husk and a wall at z D, read of the husk z and health; whether the push reaches the wall inside the window
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control, wall 4: husk before [60060.5d, -60.0d, 0.5d]; after [60060.5d, -60.0d, 8.492550124759584d] health 194.4f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control, wall 3: husk before [60120.5d, -60.0d, 0.5d]; after [60120.5d, -60.0d, 8.492550124759584d] health 194.4f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G, wall 3: husk before [60180.5d, -60.0d, 0.5d]; after [60180.5d, -60.0d, 0.5d] health 200.0f; mode False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control, wall 2: husk before [60240.5d, -60.0d, 0.5d]; after [60240.5d, -60.0d, 8.492550124759584d] health 194.4f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G, wall 2: husk before [60300.5d, -60.0d, 0.5d]; after [60300.5d, -60.0d, 0.5d] health 200.0f; mode False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control, wall 2: husk before [60360.5d, -60.0d, 0.5d]; after [60360.5d, -60.0d, 8.492550124759584d] health 194.4f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G, wall 2: husk before [60420.5d, -60.0d, 0.5d]; after [60420.5d, -60.0d, 0.5d] health 200.0f; mode False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control, wall 3: husk before [60480.5d, -60.0d, 0.5d]; after [60480.5d, -60.0d, 8.492550124759584d] health 194.4f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G, wall 3: husk before [60540.5d, -60.0d, 0.5d]; after [60540.5d, -60.0d, 8.492550124759584d] health 194.4f; mode False
+DONE
+TREE (git at launch; the client itself can't say): 8547c23 dirty_src_files=0 launched=2026-11-06T03:30:12
+TIME 03:32:00
+TREE (git at launch): 8547c23 dirty_src_files=0 launched=2026-11-06T03:30:12 03:32:00
+/difficulty normal ['[03:32:00] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[03:32:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[03:32:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[03:32:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[03:32:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[03:32:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[03:32:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[03:32:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[03:32:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+TREE7 8547c23 dirty_src_files=0 launched=2026-11-06T03:30:12 03:32:04
+### real Brigitte, Whiplash: she is at the spot before the wall is placed (the earlier rows placed it from spawn, in an unloaded chunk: void). G as the health read shows the hit
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: hit read at +0.99; after [80060.5d, -60.0d, 5.699999988079071d] health 189.59999f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: hit read at +0.41; after [80120.5d, -60.0d, 5.699999988079071d] health 194.4f; mode False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: hit read at +0.41; after [80180.5d, -60.0d, 5.699999988079071d] health 189.59999f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: hit read at +0.41; after [80240.5d, -60.0d, 5.699999988079071d] health 194.4f; mode False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  control: hit read at +0.41; after [80300.5d, -60.0d, 5.699999988079071d] health 189.59999f; mode True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  G: hit read at +0.41; after [80360.5d, -60.0d, 5.699999988079071d] health 194.4f; mode False
+DONE
