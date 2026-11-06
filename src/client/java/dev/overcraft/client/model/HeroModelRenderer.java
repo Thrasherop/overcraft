@@ -556,8 +556,9 @@ public final class HeroModelRenderer {
 	}
 
 	/**
-	 * {@code cull}: false for what's held, as EmoteProps.submit draws it unstealthed. Culled, her pistol came out as a few shards, or nothing to see at all: a run's
-	 * whole cycle showed her right hand empty (sbsf_day_cycle*), and that read as "the clips put it away" from the first pass on.
+	 * {@code cull}: false for what's held, as EmoteProps.submit draws it: no back-face culling, and not a hero's stowed prop. A small model on its own origin passes
+	 * isProp, so emit parked its triangles near the origin: her pistol came out as a few shards or nothing, in first and third person (sbsf_day_cycle*, sbsf_vday_3p_back),
+	 * and that read as "the clips put it away" from the first pass on.
 	 */
 	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own, boolean cull) {
@@ -571,7 +572,7 @@ public final class HeroModelRenderer {
 		float fading = phase;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = cull && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
@@ -594,7 +595,8 @@ public final class HeroModelRenderer {
 			float along = phase * 3;
 			int from = Math.clamp((int) along, 0, 2);
 			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
-			float strength = phase < 1 ? 0.85f * mid : own ? 0 : 0.1f;
+			// (her own view's edge fainter, ours: at 0.85 it lit the whole pistol salmon, then cyan, 0.75 s long and half a screen wide: sbsf_vday_cycle03-06)
+			float strength = phase < 1 ? (own ? 0.3f : 0.85f) * mid : own ? 0 : 0.1f;
 			if (strength > 0.01f) {
 				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
 			}
