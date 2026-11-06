@@ -33,10 +33,10 @@ class SoftLandingTest {
 	}
 
 	@Test
-	void minecraftModeWaterAndALadderEndIt() {
-		assertTrue(Holds.landingEnds(false, false, false));
-		assertTrue(Holds.landingEnds(true, true, false));
-		assertTrue(Holds.landingEnds(true, false, true));
-		assertFalse(Holds.landingEnds(true, false, false));
+	void minecraftModeEndsItAndSoDoesStayingOnALadderNotATouch() {
+		assertTrue(Holds.landingEnds(false, 0));
+		assertTrue(Holds.landingEnds(true, Holds.LANDING_TOUCH));
+		assertFalse(Holds.landingEnds(true, Holds.LANDING_TOUCH - 1));
+		assertFalse(Holds.landingEnds(true, 0));
 	}
 }

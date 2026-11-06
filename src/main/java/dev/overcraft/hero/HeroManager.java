@@ -593,9 +593,15 @@ public final class HeroManager {
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
-				// a soft landing doesn't carry over to Minecraft mode, and water or a ladder has landed them (Holds.landingEnds)
-				if (state.softLanding && Holds.landingEnds(heroMode(player), player.isInWater(), player.onClimbable())) {
-					state.softLanding = false;
+				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past (Holds.landingEnds)
+				if (state.softLanding) {
+					state.softLandingTouch = player.isInWater() || player.onClimbable() ? state.softLandingTouch + 1 : 0;
+					if (Holds.landingEnds(heroMode(player), state.softLandingTouch)) {
+						state.softLanding = false;
+						state.softLandingTouch = 0;
+					}
+				} else {
+					state.softLandingTouch = 0;
 				}
 				if (kit != null) {
 					kit.tick(player, state, controls);

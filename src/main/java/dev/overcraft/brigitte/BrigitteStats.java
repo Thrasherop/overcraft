@@ -115,7 +115,7 @@ public final class BrigitteStats {
 	public static final double RALLY_CAST = 0.7, RALLY_TIME = 10;
 	/** Her armor +100 and her speed +15% while it lasts (D #204 / #148, M the speed: not on the panel; W). */
 	public static final double RALLY_ARMOR = 100, RALLY_SPEED = 0.15;
-	/** Every 0.5 s, her and her allies within 8 m in sight get 15 overhealth, up to 100, each lasting 30 s (D #158, 1342,
+	/** Every 0.5 s, her allies within 8 m in sight, not herself (#125), get 15 overhealth, up to 100, each lasting 30 s (D #158, 1342,
 	 * 1341; W). */
 	public static final double RALLY_PULSE = 0.5, RALLY_RADIUS = 8, RALLY_OVERHEALTH = 15, RALLY_OVERHEALTH_MAX = 100,
 		RALLY_OVERHEALTH_TIME = 30;

@@ -558,7 +558,9 @@ public final class Brigitte implements HeroKit {
 	private static boolean intoAWall(Push p) {
 		net.minecraft.world.phys.AABB body = p.target.getBoundingBox();
 		// (a hair narrower: flush against a side wall, the exact box already reads as inside it)
-		body = body.setMinY(Math.min(body.minY + 0.6, body.maxY - 0.1)).inflate(-0.02, 0, -0.02);
+		// (a mob under the step's height: the same slice above the step, not its own top, which a slab would block: a silverfish)
+		double above = body.minY + 0.6;
+		body = new net.minecraft.world.phys.AABB(body.minX + 0.02, above, body.minZ + 0.02, body.maxX - 0.02, Math.max(body.maxY, above + 0.1), body.maxZ - 0.02);
 		boolean blockedX = !p.target.level().noCollision(p.target, body.move(Math.signum(p.velocity.x) * 0.12, 0, 0));
 		boolean blockedZ = !p.target.level().noCollision(p.target, body.move(0, 0, Math.signum(p.velocity.z) * 0.12));
 		return headOn(p.velocity.x, p.velocity.z, blockedX, blockedZ);

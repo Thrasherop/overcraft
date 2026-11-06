@@ -76,9 +76,14 @@ final class Holds {
 		return moving || was && (!onGround || grace);
 	}
 
-	/** What ends a soft landing whoever's it is: leaving hero mode (nothing of the hero's play carries over), water, a ladder. Tested: SoftLandingTest. */
-	static boolean landingEnds(boolean heroMode, boolean inWater, boolean onClimbable) {
-		return !heroMode || inWater || onClimbable;
+	/**
+	 * What ends a soft landing whoever's it is: leaving hero mode (nothing of the hero's play carries over), or staying in water or on a ladder this many ticks in a row. A touch doesn't: abilities set the flag once, and a dash
+	 * off a ladder, or a fall past one vine, keeps it (a bash down a wall past a vine hurt: runs/polish4/round6_repro_fb62f3c.txt). All ours, 0.5 s. Tested: SoftLandingTest.
+	 */
+	static final int LANDING_TOUCH = 10;
+
+	static boolean landingEnds(boolean heroMode, int touchTicks) {
+		return !heroMode || touchTicks >= LANDING_TOUCH;
 	}
 
 	/**

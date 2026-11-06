@@ -119,6 +119,8 @@ public final class HeroState {
 	public boolean softLanding;
 	/** Kiriko: game time until which the server's onGround is still the place she stepped from. */
 	public long softLandingGrace;
+	/** Ticks of a soft landing spent in water or on a ladder, in a row (Holds.landingEnds). */
+	public int softLandingTouch;
 	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
 	public int flashCharges = 1;
 	public int flashCast = -1;
