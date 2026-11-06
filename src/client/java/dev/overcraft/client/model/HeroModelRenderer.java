@@ -552,6 +552,15 @@ public final class HeroModelRenderer {
 	 */
 	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		submitStealth(loaded, skin, poseStack, collector, hidden, phase, time, light, overlay, own, true);
+	}
+
+	/**
+	 * {@code cull}: false for what's held, as EmoteProps.submit draws it unstealthed. Culled, her pistol came out as a few shards, or nothing to see at all: a run's
+	 * whole cycle showed her right hand empty (sbsf_day_cycle*), and that read as "the clips put it away" from the first pass on.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own, boolean cull) {
 		phase = Math.clamp(phase, 0, 1);
 		boolean wipe = wipeMask();
 		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
@@ -568,14 +577,14 @@ public final class HeroModelRenderer {
 			}
 			if (fading < 1) {
 				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, cull, false));
 			}
 			if (own) {
 				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, phased, true, false));
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, phased, cull, false));
 			} else {
 				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
+					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, cull, false));
 			}
 		}
 		if (wipe) {
@@ -659,7 +668,7 @@ public final class HeroModelRenderer {
 			if (held != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(held.at());
-				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 				poseStack.popPose();
 			}
 			// her magazine goes with the gun (critique_parts C9)
@@ -668,7 +677,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : heldParts.props()) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 					poseStack.popPose();
 				}
 			}
@@ -1118,7 +1127,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : viewParts) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 					poseStack.popPose();
 				}
 			} else {
@@ -1132,7 +1141,7 @@ public final class HeroModelRenderer {
 			if (stealth > 0) {
 				poseStack.pushPose();
 				poseStack.mulPose(weapon.at());
-				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 				poseStack.popPose();
 			} else {
 				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
