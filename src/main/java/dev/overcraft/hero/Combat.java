@@ -503,7 +503,7 @@ public final class Combat {
 	}
 
 	/**
-	 * Only the server knows: these maps are per side, and a remote client's is empty. A client-side caller gets "not phased". Shots don't ask there: OwProjectile's client copy never takes a creature (Allies.shotRule). Package-private for PhaseRulesTest.
+	 * Only the server knows: these maps are per side, and a remote client's is empty. A client-side caller gets "not phased". Shots don't ask there: OwProjectile.canHitEntity returns first on the client. Package-private for PhaseRulesTest.
 	 */
 	static boolean phaseStopsRule(boolean clientSide, boolean devOff, boolean phased) {
 		return !clientSide && !devOff && phased;

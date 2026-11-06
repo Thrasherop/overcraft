@@ -121,7 +121,7 @@ public final class Anesthetic {
 		}
 	}
 
-	/** Whether this listener gets the 3p stop. Package-private for AnestheticRuleTest's neighbour AnestheticRuleTest. */
+	/** Whether this listener gets the 3p stop. Package-private for AnestheticRuleTest. */
 	static boolean stops3p(boolean isTarget, double toTarget, boolean anotherNumbedInEarshot) {
 		return !isTarget && toTarget <= EARSHOT && !anotherNumbedInEarshot;
 	}

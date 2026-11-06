@@ -190,8 +190,8 @@ public final class HeroManager {
 	}
 
 	/**
-	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely
-	 * (later: Winston's Jump Pack, Juno's glide; the owner, #35). Kiriko has none: her falls count from her safe height.
+	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely (the owner, #35). Without one, a hero's falls count from their safe
+	 * height (Hero.safeFall): Kiriko's plain fall from her climb's height, her Swift Step's by its soft landing.
 	 */
 	public static boolean fallIsSafe(Player player) {
 		HeroState state = STATES.get(player.getUUID());
@@ -593,6 +593,10 @@ public final class HeroManager {
 			}
 			if (player.isAlive()) {
 				tickRules(player, state);
+				// a soft landing doesn't carry over to Minecraft mode, and water or a ladder has landed them (Holds.landingEnds)
+				if (state.softLanding && Holds.landingEnds(heroMode(player), player.isInWater(), player.onClimbable())) {
+					state.softLanding = false;
+				}
 				if (kit != null) {
 					kit.tick(player, state, controls);
 				}

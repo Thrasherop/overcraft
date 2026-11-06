@@ -50,8 +50,8 @@ public final class BrigitteStats {
 	/**
 	 * The push: her level aim at the launch x 25 m/s and 3 m/s up. D: 1259 #638's pair, m_E33EFEE1 = v9275 = 133E's 25 and m_583C208B = 3 x scale, read as horizontal and vertical as
 	 * Accretion's 6 / 3 is (reading_game_data.md), W "H:25, V:3" (25.18 m/s). The same node's m_1376B4DF is 25 across + 2 up (25.08 along her aim in its other branch), so the data holds both a 2 and a 3 and
-	 * doesn't say which moves them. **What decides it is the play and W's distance:** on Overwatch's own air numbers (OwMovement), one push with 3 up lands a hero at 8.04 m, W "~8 meter", and with 2 up at 5.88 m
-	 * (runs/polish4/whip_lift3_experiment.txt). M. Along her level aim: #638's first branch; the second (v417, not read) isn't built.
+	 * doesn't say which moves them; 25.08 is exactly the length of (25, 2), so that vector is consistent with 2. **Why 3 here: nobody has measured Overwatch.** W says "~8 meter", and our mover on Overwatch's air numbers lands a hero at 8.04 m with 3 up, 5.88 m with 2
+	 * (runs/polish4/whip_lift3_experiment.txt). M. Along her level aim: #638's first branch; the second (v417, not read) isn't built. Its scale v14131 is taken as 1 (not read).
 	 */
 	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 3;
 	/**
@@ -105,7 +105,7 @@ public final class BrigitteStats {
 	 */
 	public static final double BASH_TIME = 0.256, BASH_SPEED = 25.85, BASH_EXIT_SPEED = 15;
 	public static final double BASH_DAMAGE = 70;               // D 0B20; W
-	/** Its knockback, the pair (D 0EE3 #503, and #886 on the shockwave: m_E33EFEE1 v9275 = 0B21's 6, m_583C208B 3, as the whip's and Accretion's), W kbspeed 6 m/s. */
+	/** Its knockback, the pair (D 0EE3 #503, and #886 on the shockwave: m_E33EFEE1 v9275 = 0B21's 6, m_583C208B 3, as the whip's and Accretion's), W kbspeed 6 m/s. Its scale v14130 is taken as 1 (not read). */
 	public static final double BASH_KNOCKBACK = 6, BASH_LIFT = 3;
 	/** Who it hits: one enemy within this reach ahead of her, in this cone (D #501: radius 2.48, ~35 degrees, L). */
 	public static final double BASH_REACH = 2.5, BASH_CONE = 35;

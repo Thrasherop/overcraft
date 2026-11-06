@@ -60,4 +60,14 @@ class BrigitteRulesTest {
 		org.junit.jupiter.api.Assertions.assertEquals(dev.overcraft.Ow.speed(25), v.z, 1.0E-9);
 		org.junit.jupiter.api.Assertions.assertEquals(dev.overcraft.Ow.speed(3), v.y, 1.0E-9);
 	}
+
+	/** Whiplash: head on, not brushing along a wall (a side wall at 3 degrees took the 60 in a tunnel). */
+	@org.junit.jupiter.api.Test
+	void aWallSlamsHeadOnNotAlongside() {
+		org.junit.jupiter.api.Assertions.assertTrue(Brigitte.headOn(0, 1, false, true));
+		org.junit.jupiter.api.Assertions.assertTrue(Brigitte.headOn(0.7, 0.7, true, false));
+		org.junit.jupiter.api.Assertions.assertFalse(Brigitte.headOn(0.05, 1, true, false));
+		org.junit.jupiter.api.Assertions.assertFalse(Brigitte.headOn(0, 1, false, false));
+		org.junit.jupiter.api.Assertions.assertFalse(Brigitte.headOn(0, 0, true, true));
+	}
 }

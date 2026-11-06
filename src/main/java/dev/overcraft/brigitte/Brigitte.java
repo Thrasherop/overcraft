@@ -300,15 +300,13 @@ public final class Brigitte implements HeroKit {
 		}
 		if ((Ow.ticks(RALLY_TIME) - s.rallyTicks) % Ow.ticks(RALLY_PULSE) == 0) {
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_RADIUS),
-				e -> e.isAlive() && Allies.isSelfOrAlly(player, e) && e.distanceTo(player) <= RALLY_RADIUS
-					&& (e == player || Combat.inSight(player.level(), player.getEyePosition(), e, player)))) {
+				// not herself (#125): BZ 2023-04-11 "Brigitte no longer gradually builds temporary health like her nearby allies", W "(allies)". The data leans the other way (12BE #158's filter 6, M; 12C1 #178 skips looks on the sender, no gate on the pool): not firm enough against that
+				e -> e.isAlive() && Allies.isAlly(player, e) && e != player && e.distanceTo(player) <= RALLY_RADIUS
+					&& Combat.inSight(player.level(), player.getEyePosition(), e, player))) {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
 				Combat.overhealthPool(e, RALLY_OVERHEALTH, RALLY_OVERHEALTH_MAX, RALLY_OVERHEALTH_TIME, 1000);
-				// #125: she takes it too: 12BE #158's filter 6 and no gate before the pool on 12C1 (#167, #183, #187, #193, #195, #174). Only its looks skip her: #178 (self != v40, the sender) -> #176, #177
-				if (e != player) {
-					Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
-				}
-				if (e instanceof ServerPlayer ally && ally != player) {
+				Effects.play(player.level(), "brigitte_rally_ally", e.position(), Vec3.ZERO, e, 0, player);
+				if (e instanceof ServerPlayer ally) {
 					BrigitteSounds.own(ally, "rally.overhealth");
 				}
 			}
@@ -499,7 +497,7 @@ public final class Brigitte implements HeroKit {
 		/** Whiplash's Brigitte (the perk), for 0.5 s from the hit; null without it or once it's dealt. */
 		@org.jspecify.annotations.Nullable ServerPlayer whiplash;
 		int whiplashLeft = Ow.ticks(WHIPLASH_TIME);
-		boolean collided;
+		int lookFor;
 
 		Push(LivingEntity target, Vec3 velocity, int left, @org.jspecify.annotations.Nullable ServerPlayer whiplash) {
 			this.target = target;
@@ -520,10 +518,11 @@ public final class Brigitte implements HeroKit {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
 				return true;
 			}
-			// (a player's flag comes before their position does, so what they hit is looked at the tick after: a 7 m wall read as nothing to hit; intoAWall)
-			boolean slam = p.whiplash != null && p.whiplashLeft-- > 0 && p.collided && intoAWall(p);
-			p.collided = p.target.horizontalCollision;
-			if (slam) {
+			// (a player's flag comes before their position does: a 7 m wall and every wall in Minecraft mode read as nothing to hit. So what they hit is looked at for a few ticks from the flag; ours)
+			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
+				p.lookFor = SLAM_LOOK;
+			}
+			if (p.whiplash != null && p.lookFor-- > 0 && intoAWall(p)) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
 				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt, p.target);
@@ -531,13 +530,12 @@ public final class Brigitte implements HeroKit {
 				Effects.hitMarker(p.whiplash, p.target, false);
 				BrigitteSounds.split(p.whiplash, "perk.whiplash", p.target.getEyePosition(), 45);
 				p.whiplash = null;
-				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
 				Combat.send(p.target);
 				return true;
 			}
 			if (p.left-- <= 0) {
-				return p.whiplash == null || p.whiplashLeft <= 0;
+				return p.whiplash == null || p.whiplashLeft <= 0 && p.lookFor <= 0;
 			}
 			boolean first = p.left == Ow.ticks(WHIP_PUSH_TIME) - 1;
 			if (p.target instanceof ServerPlayer && !first) {
@@ -551,11 +549,24 @@ public final class Brigitte implements HeroKit {
 		});
 	}
 
-	/** Not a step: a stair or a slab stops them in the air too, but it isn't a wall to slam into (BZ "slam enemies into walls"). Ours: free one step up, the way they were going, is a step. */
+	private static final int SLAM_LOOK = 3;
+
+	/**
+	 * A wall to slam into (BZ "slam enemies into walls"), all ours: something at their body's height, above a step's 0.6 (so not a stair or a slab), and not above their head (a ceiling isn't one: their box keeps its top),
+	 * on the side the push mostly goes (headOn: not a wall they brush along).
+	 */
 	private static boolean intoAWall(Push p) {
-		Vec3 along = new Vec3(p.velocity.x, 0, p.velocity.z);
-		Vec3 nudge = along.lengthSqr() < 1.0E-6 ? Vec3.ZERO : along.normalize().scale(0.1);
-		return !p.target.level().noCollision(p.target, p.target.getBoundingBox().move(nudge.x, 0.6, nudge.z));
+		net.minecraft.world.phys.AABB body = p.target.getBoundingBox();
+		body = body.setMinY(Math.min(body.minY + 0.6, body.maxY - 0.1));
+		boolean blockedX = !p.target.level().noCollision(p.target, body.move(Math.signum(p.velocity.x) * 0.1, 0, 0));
+		boolean blockedZ = !p.target.level().noCollision(p.target, body.move(0, 0, Math.signum(p.velocity.z) * 0.1));
+		return headOn(p.velocity.x, p.velocity.z, blockedX, blockedZ);
+	}
+
+	/** Blocked on an axis that holds at least half the push (ours: under 30 degrees to a wall is brushing along it). Package-private for BrigitteRulesTest. */
+	static boolean headOn(double x, double z, boolean blockedX, boolean blockedZ) {
+		double length = Math.hypot(x, z);
+		return length > 1.0E-6 && (blockedX && Math.abs(x) / length >= 0.5 || blockedZ && Math.abs(z) / length >= 0.5);
 	}
 
 	/** The flail starts back from where its head is: no more hits; the cooldown when it's in her hand (0.3 s). */

@@ -201,9 +201,9 @@ public final class Allies {
 		return hurtRule(here, ally, hero instanceof Player player && HeroManager.options(player).friendlyFire(), other instanceof LivingEntity living && Combat.phaseStops(living));
 	}
 
-	/** Who a shot's copy takes (OwProjectile.canHitEntity): never the client's; through the phased, unless they're the owner's side. Tested: ShotRuleTest. */
-	public static boolean shotRule(boolean clientSide, boolean vanilla, boolean phased, boolean ownSide) {
-		return !clientSide && vanilla && (!phased || ownSide);
+	/** Who the server's copy of a shot takes (OwProjectile.canHitEntity; the client's asks nothing): through the phased, unless they're the owner's side. Tested: ShotRuleTest. */
+	public static boolean shotRule(boolean vanilla, boolean phased, boolean ownSide) {
+		return vanilla && (!phased || ownSide);
 	}
 
 	/** canHurt without the phase: is it against this hero at all? For what's theirs rather than them (Sombra's hack of a deployable): a phased owner still owns it. */

@@ -76,6 +76,11 @@ final class Holds {
 		return moving || was && (!onGround || grace);
 	}
 
+	/** What ends a soft landing whoever's it is: leaving hero mode (nothing of the hero's play carries over), water, a ladder. Tested: SoftLandingTest. */
+	static boolean landingEnds(boolean heroMode, boolean inWater, boolean onClimbable) {
+		return !heroMode || inWater || onClimbable;
+	}
+
 	/**
 	 * Whether it says it was cleansed (1C7D): a sleep (224E #418) and a stun (#416) do; a knock-down's and a float's answer goes nowhere (#400). A sleeper already waking tells again: #401's filter is the type alone and
 	 * nothing gates #552 -> #418 on the waking (M: that Entry is live while waking), so a second Kiriko's Suzu says her line; a same Kiriko's is held by her 10 s.

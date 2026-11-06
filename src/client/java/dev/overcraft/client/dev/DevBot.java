@@ -38,6 +38,8 @@ import java.util.concurrent.TimeUnit;
  * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|rally> on|off", "bot cc <name|me>" (the statuses on it), "bot held <name|me>", "bot playing [text]" (the sounds running in this client).
  */
 final class DevBot {
+	private static final java.util.List<String> SHOT_TRACE = new java.util.concurrent.CopyOnWriteArrayList<>();
+	private static boolean shotTraceHooked;
 	private DevBot() {
 	}
 
@@ -163,6 +165,39 @@ final class DevBot {
 					b.append(String.format("%s@%.1f,%.1f,%.1f combat=%s vanilla=%s; ", e.getType().toShortString(), e.getX(), e.getY(), e.getZ(), dev.overcraft.hero.Combat.inSight(me.level(), me.getEyePosition(), e, me), me.hasLineOfSight(e)));
 				}
 				out.addProperty("sight", b.toString());
+			}
+			case "shottrace" -> {
+				// "bot shottrace start", then "bot shottrace": per client tick, each Overwatch projectile's z on this client (c) and on the server (s): an ordinary hit's overshoot, read tick by tick
+				if (a.length > 1 && a[1].equals("start")) {
+					SHOT_TRACE.clear();
+					if (!shotTraceHooked) {
+						shotTraceHooked = true;
+						net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(mc -> {
+							if (mc.level == null || SHOT_TRACE.size() > 400) {
+								return;
+							}
+							StringBuilder row = new StringBuilder();
+							for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+								if (e instanceof dev.overcraft.entity.OwProjectile) {
+									row.append(String.format("c%.2f ", e.getZ()));
+								}
+							}
+							net.minecraft.server.MinecraftServer sv = mc.getSingleplayerServer();
+							if (sv != null) {
+								for (net.minecraft.world.entity.Entity e : sv.overworld().getAllEntities()) {
+									if (e instanceof dev.overcraft.entity.OwProjectile) {
+										row.append(String.format("s%.2f ", e.getZ()));
+									}
+								}
+							}
+							if (row.length() > 0) {
+								SHOT_TRACE.add(mc.level.getGameTime() + " " + row.toString().trim());
+							}
+						});
+					}
+				} else {
+					out.addProperty("trace", String.join(" | ", SHOT_TRACE));
+				}
 			}
 			case "shots" -> {
 				// "bot shots": every Overwatch projectile as this client has it and as the server has it (type@x,y,z), and each Sombra-hackable deployable on the server

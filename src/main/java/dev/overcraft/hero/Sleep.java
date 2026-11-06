@@ -202,7 +202,7 @@ public final class Sleep {
 				// where the floatless throw cost 4 (runs/polish3/c3_hyper_up.txt). Ours, from that: not the #84 rule for pushes, which keep their falls
 				FLOATED.put(player.getUUID(), player);
 			}
-		}
+		}
 		return true;
 	}
 

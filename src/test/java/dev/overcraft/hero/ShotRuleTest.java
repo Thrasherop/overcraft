@@ -5,31 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-/** Who a shot's copy takes: never the client's (it can't know who's phased, and it would vanish there); through the phased, unless they're the owner's side. */
+/** Who the server's copy of a shot takes: through the phased, unless they're the owner's side. (The client's returns first in canHitEntity: not offline-testable.) */
 class ShotRuleTest {
 	@Test
 	void theServerHitsAnEnemy() {
-		assertTrue(Allies.shotRule(false, true, false, false));
-	}
-
-	@Test
-	void theClientNeverTakesACreature() {
-		assertFalse(Allies.shotRule(true, true, false, false));
-		assertFalse(Allies.shotRule(true, true, true, true));
+		assertTrue(Allies.shotRule(true, false, false));
 	}
 
 	@Test
 	void aPhasedEnemyIsPassedThrough() {
-		assertFalse(Allies.shotRule(false, true, true, false));
+		assertFalse(Allies.shotRule(true, true, false));
 	}
 
 	@Test
 	void aPhasedAllyStillTakesAHeal() {
-		assertTrue(Allies.shotRule(false, true, true, true));
+		assertTrue(Allies.shotRule(true, true, true));
 	}
 
 	@Test
 	void minecraftsNoStandsWhateverElse() {
-		assertFalse(Allies.shotRule(false, false, false, true));
+		assertFalse(Allies.shotRule(false, false, true));
 	}
 }

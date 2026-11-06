@@ -31,4 +31,12 @@ class SoftLandingTest {
 	void aPlainFallIsntOne() {
 		assertFalse(Holds.softLanding(false, false, false, false));
 	}
+
+	@Test
+	void minecraftModeWaterAndALadderEndIt() {
+		assertTrue(Holds.landingEnds(false, false, false));
+		assertTrue(Holds.landingEnds(true, true, false));
+		assertTrue(Holds.landingEnds(true, false, true));
+		assertFalse(Holds.landingEnds(true, false, false));
+	}
 }
