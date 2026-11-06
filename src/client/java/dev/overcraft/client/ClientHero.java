@@ -420,6 +420,13 @@ public final class ClientHero {
 
 	private static int lastWall;
 
+	/** A press that can't wait for the next tick (Sojourn's Charged Shot: ClientSojourn): sent now, with the right button held. */
+	public static void pressNow(int pressed) {
+		lastHeld |= HeroInputPayload.HELD_SECONDARY;
+		dev.overcraft.hero.PressTrace.mark("sent");
+		ClientPlayNetworking.send(new HeroInputPayload(lastHeld, pressed, 0, lastWall));
+	}
+
 	private static boolean chatHeroView;
 
 	/** The perk menu is up (HeroHud draws it). */

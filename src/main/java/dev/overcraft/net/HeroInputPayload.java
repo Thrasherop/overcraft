@@ -22,6 +22,8 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall) imple
 	public static final int PRESS_ULTIMATE = 4;
 	public static final int PRESS_RELOAD = 8;
 	public static final int PRESS_MELEE = 16;
+	/** Sojourn's Charged Shot, pressed and already shown on her own client (ClientSojourn): her own copies aren't sent back. */
+	public static final int PRESS_CHARGED_SHOWN = 32;
 
 	/** Extra presses: Mercy's weapon keys (Overwatch's 1 / 2, the scroll wheel), and Jump / Crouch (Guardian Angel's launches). */
 	public static final int EXTRA_STAFF = 1;

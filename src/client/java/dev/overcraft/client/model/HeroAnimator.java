@@ -272,6 +272,20 @@ public final class HeroAnimator {
 		if (action.equals("charged_shot")) {
 			dev.overcraft.hero.PressTrace.seen("clip");
 		}
+		boolean own = net.minecraft.client.Minecraft.getInstance().player != null && net.minecraft.client.Minecraft.getInstance().player.getId() == entityId;
+		if (action.equals("charged_shot") && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) {
+			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound
+			a.actionAt.remove("reload");
+			a.actions.cancel("reload", now);
+			a.actionsFirstPerson.cancel("reload", now);
+			dev.overcraft.client.ClientSojourn.reloadCut(own);
+		}
+		// (what her client knows of her fire's locks, for the press: ClientSojourn)
+		if (own && action.equals("charged_shot")) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.CHARGED_LOCKOUT);
+		} else if (own && action.equals("ult") && dev.overcraft.client.ClientHero.hero() == dev.overcraft.hero.Hero.SOJOURN) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.OVERCLOCK_CAST);
+		}
 		if (action.equals("fire")) {
 			a.fireFirst = a.since("fire", now) > BURST_GAP;
 			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);

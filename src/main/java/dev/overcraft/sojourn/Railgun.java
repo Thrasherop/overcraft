@@ -43,8 +43,10 @@ public final class Railgun {
 			s.reloadHeld--;
 		}
 		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
+		boolean recovering = s.sojournChargedLock > 0;
+		s.sojournChargedLock = Math.max(0, s.sojournChargedLock - attack);
 		decay(s, now);
-		boolean rightPressed = s.secondaryHeld && !s.sojournRightWas;
+		boolean rightPressed = rightPressed(s.secondaryHeld, s.sojournRightWas, recovering && s.sojournChargedLock <= 0);
 		s.sojournRightWas = s.secondaryHeld;
 		if (s.sojournFiring && now - s.sojournShotAt >= BURST_OVER) {
 			// the burst is over (PRIMARY up, empty, the Charged Shot, G): 2BF5's Stop, its ring-out (643C hers, 8AF0 100 m)
@@ -62,29 +64,24 @@ public final class Railgun {
 		double rate = RAILGUN_RATE / 20 * attack;
 		if (!controls || !player.isAlive()) {
 			s.sojournShotClock = 1;
+			s.sojournCharged = 0;
 			return;
+		}
+		// the right button first: it outranks the rounds and the reload (D: its v33 priority 0x79 over their 0x2, #425 / #233 / #571).
+		// Only its own recovery holds it back, a press then waiting 0.15 s (D: SECONDARY's buffer)
+		if (rightPressed && s.sojournEnergy > 0) {
+			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
+			s.sojournChargedShown = false;
+		}
+		chargedIfReady(player, s);
+		if (s.sojournCharged > 0 && --s.sojournCharged <= 0) {
+			s.sojournChargedShown = false;
 		}
 		if (s.primaryAmmo == 0 && s.primaryReload < 0 && s.reloadHeld <= 0) {
 			startReload(player, s);
 		}
 		// her fire is locked through the whole reload (D #283) and the Charged Shot's 0.65 s
 		boolean ready = s.primaryReload < 0 && s.weaponRecovery <= 0;
-		// the right button, buffered 0.15 s while her gun is busy (D: SECONDARY's buffer); a press while the Railgun fires
-		// stops its rounds, and the shot goes 0.16 s after the last of them (D #513 / #230; ours, that the press waits for it
-		// rather than being lost while the left button stays held: found playing)
-		if (rightPressed && s.sojournEnergy > 0) {
-			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
-		} else if (s.sojournCharged > 0 && (!ready || s.sojournEnergy <= 0)) {
-			s.sojournCharged--;
-		}
-		if (s.sojournCharged > 0 && s.sojournEnergy > 0) {
-			if (ready && now - s.sojournShotAt >= Ow.ticks(RAILGUN_TO_CHARGED)) {
-				s.sojournCharged = 0;
-				chargedShot(player, s);
-				s.sojournShotClock = 1;
-			}
-			return;
-		}
 		if (s.primaryHeld && ready && s.primaryAmmo > 0) {
 			// an accumulator on the exact schedule: the first round at once, then 0.8 a tick (four rounds every five ticks)
 			while (s.sojournShotClock >= 1 && s.primaryAmmo > 0) {
@@ -99,6 +96,47 @@ public final class Railgun {
 			}
 		} else {
 			s.sojournShotClock = Math.min(1, s.sojournShotClock + rate);
+		}
+	}
+
+	/**
+	 * The right button counts as pressed when it goes down, and when its recovery ends with it still down: #421 begins again then,
+	 * and its held plug m_80AF45FB is the one that resumes the rounds of a held left button at #527 (D, M).
+	 */
+	static boolean rightPressed(boolean held, boolean was, boolean recoveryJustOver) {
+		return held && (!was || recoveryJustOver);
+	}
+
+	/**
+	 * Nothing holds the Charged Shot back but its own recovery and Overclock's cast (D #364: 0.75 s; W "can't fire until the cast
+	 * ends"; M how it blocks). A reload, the rounds, a melee's recovery, a slide, Disruptor's cast don't (kept here, not by
+	 * weaponRecovery, which is the rounds' and a melee's as well).
+	 */
+	static boolean chargedReady(HeroState s) {
+		return s.sojournChargedLock <= 0 && !(s.sojournUlt >= 0 && s.sojournUlt < Ow.ticks(OVERCLOCK_CAST));
+	}
+
+	/**
+	 * Her client has already shown this press (ClientSojourn): the shot goes now, on the packet, not at the next tick. A client
+	 * a moment ahead of the recovery here waits in the buffer. No energy here means her client was behind: nothing happens, and
+	 * what it showed was a shot that wasn't (ours: no damage; only when the energy ran out as she pressed).
+	 */
+	static void pressedShown(ServerPlayer player, HeroState s) {
+		s.sojournRightWas = true;
+		if (s.sojournEnergy > 0) {
+			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
+			s.sojournChargedShown = true;
+			chargedIfReady(player, s);
+		}
+	}
+
+	private static void chargedIfReady(ServerPlayer player, HeroState s) {
+		if (s.sojournCharged > 0 && s.sojournEnergy > 0 && chargedReady(s)) {
+			boolean shown = s.sojournChargedShown;
+			s.sojournCharged = 0;
+			s.sojournChargedShown = false;
+			chargedShot(player, s, shown);
+			s.sojournShotClock = 1;
 		}
 	}
 
@@ -266,14 +304,33 @@ public final class Railgun {
 
 	// ---- Charged Shot ----
 
-	/** One shot along her aim, through every enemy on its line up to a block: 20 + energy each, spending it all. */
-	private static void chargedShot(ServerPlayer player, HeroState s) {
+	/** Her copy of its gun's sound, by the energy spent (below; ClientSojourn): 2835, pitched by energy in three bins (M). */
+	public static String chargedFireSound(double energy) {
+		double charge = Math.min(1, energy / ENERGY_MAX);
+		return charge <= 0.3 ? "charged.fire_low" : charge <= 0.9 ? "charged.fire_mid" : "charged.fire";
+	}
+
+	/**
+	 * One shot along her aim, through every enemy on its line up to a block: 20 + energy each, spending it all. {@code shown}: her
+	 * client has already played its sounds, look and clip (ClientSojourn), so only others get them from here; the damage is here.
+	 */
+	private static void chargedShot(ServerPlayer player, HeroState s, boolean shown) {
 		dev.overcraft.hero.PressTrace.mark("srv_shot");
 		ServerLevel level = player.level();
 		double energy = s.sojournEnergy;
 		s.sojournEnergy = 0;
-		s.weaponRecovery = Ow.ticks(CHARGED_LOCKOUT);
-		Combat.animate(player, "charged_shot");
+		// it ends a reload: on top of v33 at 0x79 it puts the reload's #233 (0x2) under it, whose under plug sets v51 = 0 (#234) and
+		// whose anim and wait stop: the magazine keeps what it has, full only past #285's 0.96 s (D H nodes, M the stack's meaning).
+		// The owner's rule for a cut reload too (HeroState.interruptReload). An empty magazine reloads again after the recovery
+		// (#75 needs v2447 = 0; startReload's weaponRecovery here). Every client's animator ends the reload's look on this clip
+		s.interruptReload(0);
+		s.sojournChargedLock = Ow.ticks(CHARGED_LOCKOUT);
+		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(CHARGED_LOCKOUT));
+		if (shown) {
+			Combat.animateOthers(player, "charged_shot");
+		} else {
+			Combat.animate(player, "charged_shot");
+		}
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
@@ -298,12 +355,17 @@ public final class Railgun {
 		double base = CHARGED_BASE + (CHARGED_FULL - CHARGED_BASE) * energy / ENERGY_MAX;
 		// 2484's 2835 (517B hers, 517D 100 m), pitched by game parameter 2139477060 (read as energy / 100, M: three bins), and
 		// its sound slot 3349 (8F11 + 551F, 60 m) for everyone
-		double charge = Math.min(1, energy / ENERGY_MAX);
-		String fire = charge <= 0.3 ? "charged.fire_low" : charge <= 0.9 ? "charged.fire_mid" : "charged.fire";
-		SojournSounds.split(player, fire, eye, 100);
-		SojournSounds.at(level, "charged.shot", eye, 60);
+		String fire = chargedFireSound(energy);
 		Vec3 from = muzzle(player);
-		Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player);
+		if (shown) {
+			SojournSounds.at(level, fire + "_3p", eye, 100, player);
+			SojournSounds.at(level, "charged.shot", eye, 60, player);
+			Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player, player);
+		} else {
+			SojournSounds.split(player, fire, eye, 100);
+			SojournSounds.at(level, "charged.shot", eye, 60);
+			Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player);
+		}
 		s.sojournCharging = true;
 		for (Hit hit : hits) {
 			EnderDragonPart part = hit.entity() instanceof EnderDragonPart p ? p : null;

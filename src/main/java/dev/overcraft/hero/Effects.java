@@ -177,8 +177,17 @@ public final class Effects {
 	/** The same, made by owner: each player near it gets it in their own team's view of the owner. */
 	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant,
 							@Nullable Entity owner) {
+		play(level, effect, at, direction, entity, variant, owner, null);
+	}
+
+	/** The same but for {@code skip}, whose own client has already played it (Sojourn's Charged Shot: ClientSojourn). */
+	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant,
+							@Nullable Entity owner, @Nullable ServerPlayer skip) {
 		note(level, effect, at, direction, entity, variant, owner);
 		for (ServerPlayer player : PlayerLookup.around(level, at, RANGE)) {
+			if (player == skip) {
+				continue;
+			}
 			boolean enemy = owner != null && owner != player && !Allies.wasAlly(player, owner);
 			ServerPlayNetworking.send(player, new EffectPayload(effect, at.x, at.y, at.z, (float) direction.x,
 				(float) direction.y, (float) direction.z, entity == null ? -1 : entity.getId(), variant, enemy));

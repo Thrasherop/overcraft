@@ -37,6 +37,8 @@ public final class Sojourn implements HeroKit {
 		s.sojournSpread = 0;
 		s.sojournRightWas = false;
 		s.sojournCharged = 0;
+		s.sojournChargedShown = false;
+		s.sojournChargedLock = 0;
 		s.sojournDisruptor = -1;
 		s.sojournDisruptorWrite = -1;
 		s.sojournUlt = -1;
@@ -156,6 +158,9 @@ public final class Sojourn implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
+		if ((pressed & HeroInputPayload.PRESS_CHARGED_SHOWN) != 0) {
+			Railgun.pressedShown(player, s);
+		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			slide(player, s);
 		}

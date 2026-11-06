@@ -33,6 +33,12 @@ public abstract class KeyMappingMixin {
 		}
 	}
 
+	/** A key going down, at the moment it does, not at the next tick (MouseHandler.onButton, KeyboardHandler.keyPress). */
+	@Inject(method = "click", at = @At("TAIL"))
+	private static void overcraft$clicked(com.mojang.blaze3d.platform.InputConstants.Key key, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		dev.overcraft.client.ClientSojourn.clicked(key);
+	}
+
 	private boolean overcraft$suppressed() {
 		return HeroControls.suppressedInHeroMode((KeyMapping) (Object) this) && ClientHero.controls();
 	}

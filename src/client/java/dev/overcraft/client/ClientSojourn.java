@@ -67,6 +67,68 @@ public final class ClientSojourn {
 		toldAt = entity.level().getGameTime();
 	}
 
+	// ---- the Charged Shot on the press (#126) ----
+
+	/** Until when (nanoTime) she can't fire it: its recovery, or Overclock's cast, as this client knows them. */
+	private static long lockedUntil;
+
+	/**
+	 * A key went down. On her right button, the shot leaves now: "firing railgun is the highest priority ... with 0 cast time" (the
+	 * owner, #126; W "0 second startup"). Her sounds, its look and clip start here, on the press, as the press goes to the server with
+	 * her aim of this moment; the server does the damage and tells the others (Railgun.pressedShown). A press this client can't call
+	 * (no energy, its recovery) goes the usual way at the next tick (ClientHero), and the server decides.
+	 */
+	public static void clicked(com.mojang.blaze3d.platform.InputConstants.Key key) {
+		Minecraft mc = Minecraft.getInstance();
+		net.minecraft.client.player.LocalPlayer player = mc.player;
+		if (player == null || mc.level == null || ClientHero.hero() != Hero.SOJOURN || !ClientHero.controls() || mc.gui.screen() != null
+			|| ClientHero.perkMenuOpen() || dev.overcraft.client.comms.CommsWheel.open()
+			|| Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
+			|| !net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(
+				dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE)).equals(key)) {
+			return;
+		}
+		double energy = ClientHero.sync().meter() * SojournStats.ENERGY_MAX;
+		if (energy <= 0 || System.nanoTime() < lockedUntil) {
+			return;
+		}
+		locked(SojournStats.CHARGED_LOCKOUT);
+		// the server aims by her rotation: its own copy may be a tick old, and she may have just flicked onto the target
+		player.connection.send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(player.getYRot(), player.getXRot(),
+			player.onGround(), player.horizontalCollision));
+		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN);
+		show(mc, player, energy);
+	}
+
+	/** She can't fire it for this long from now (s). */
+	public static void locked(double seconds) {
+		lockedUntil = System.nanoTime() + (long) (seconds * 1.0e9);
+	}
+
+	private static void show(Minecraft mc, net.minecraft.client.player.LocalPlayer player, double energy) {
+		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+		dev.overcraft.client.model.HeroAnimator.trigger(player.getId(), "charged_shot", (mc.level.getGameTime() + partial) / 20f);
+		ClientHero.playOwn(dev.overcraft.sojourn.SojournSounds.of(dev.overcraft.sojourn.Railgun.chargedFireSound(energy)).location(), 1, 1,
+			player.getRandom().nextLong());
+		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(), look = player.getViewVector(1);
+		// (60 m: Railgun's copy for everyone, HeroSounds.at's volume)
+		mc.level.playLocalSound(eye.x, eye.y, eye.z, dev.overcraft.sojourn.SojournSounds.of("charged.shot"), net.minecraft.sounds.SoundSource.PLAYERS,
+			Math.max(1, 60f / 16), 1, false);
+		// the same line as the server's: its blocks stop it (Railgun.chargedShot)
+		net.minecraft.world.phys.Vec3 end = eye.add(look.scale(SojournStats.CHARGED_RANGE));
+		var hit = mc.level.clip(new net.minecraft.world.level.ClipContext(eye, end, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, player));
+		net.minecraft.world.phys.Vec3 stop = hit.getType() == net.minecraft.world.phys.HitResult.Type.MISS ? end : hit.getLocation();
+		net.minecraft.world.phys.Vec3 dir = stop.subtract(eye);
+		dev.overcraft.client.effect.KirikoFx.play(new dev.overcraft.net.EffectPayload("sojourn_tracer", eye.x, eye.y, eye.z, (float) dir.x, (float) dir.y,
+			(float) dir.z, player.getId(), (int) Math.round(energy), false));
+	}
+
+	/** The shot cut a reload on {@code own} or another's gun: its sound stops with its clips (HeroAnimator.trigger). */
+	public static void reloadCut(boolean own) {
+		Minecraft.getInstance().getSoundManager().stop(dev.overcraft.Overcraft.id(own ? "sojourn.railgun.reload" : "sojourn.railgun.reload_3p"), null);
+	}
+
 	/** Her extra input: the slide's end, once. */
 	public static int input(net.minecraft.client.player.LocalPlayer player) {
 		int out = tell;
