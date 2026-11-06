@@ -118,6 +118,10 @@ final class DevBot {
 				ServerPlayer who = a[1].equals("me") ? server.getPlayerList().getPlayers().stream().filter(x -> !BOTS.containsValue(x)).findFirst().orElseThrow() : BOTS.get(a[1]);
 				out.addProperty("asleep", dev.overcraft.hero.Sleep.asleep(who));
 				out.addProperty("sleeping", dev.overcraft.hero.Sleep.sleeping(who));
+				dev.overcraft.hero.HeroState softState = HeroManager.state(who);
+				out.addProperty("softLanding", softState != null && softState.softLanding);
+				out.addProperty("climbable", who.onClimbable());
+				out.addProperty("inWater", who.isInWater());
 				out.addProperty("silenced", dev.overcraft.sombra.Hack.silenced(who));
 				out.addProperty("glowing", who.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING));
 				out.addProperty("antiHeal", dev.overcraft.hero.Combat.antiHealed(who));
