@@ -28,6 +28,8 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 	 * drawn (0..1), which the server turns into a place on her own path (Railgun.pressedShown). Only with this bit: the rest never send them.
 	 */
 	public static final int PRESS_CHARGED_SHOWN = 32;
+	/** Her Charged Shot, pressed where her client won't show it (late in its recovery): the server's to fire: a press in its own right, whatever the held bits did. */
+	public static final int PRESS_CHARGED_KEPT = 64;
 
 	/** Extra presses: Mercy's weapon keys (Overwatch's 1 / 2, the scroll wheel), and Jump / Crouch (Guardian Angel's launches). */
 	public static final int EXTRA_STAFF = 1;

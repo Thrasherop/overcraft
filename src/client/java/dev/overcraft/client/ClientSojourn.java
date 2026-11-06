@@ -149,7 +149,7 @@ public final class ClientSojourn {
 			if (lockedUntil - now <= CALL_WINDOW_NANOS) {
 				// late in its recovery: the server's buffer keeps this press and fires it as the recovery ends, and that shot only reaches her a
 				// round trip on: a click before then must not play a shot the server will drop. Sent now, so the window is the server's to the tick
-				ClientHero.pressNow(0, 0, 0, 1);
+				ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_KEPT, 0, 0, 1);
 				serverMayFireUntil = lockedUntil + roundTripNanos(mc, player);
 			}
 			return;
@@ -157,7 +157,7 @@ public final class ClientSojourn {
 		if (now < serverMayFireUntil || dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).isDown()) {
 			// the same, with that shot still on its way: this press is the server's to judge. Or Q is held: a repeat may have started Overclock before this
 			// client can know her ult is ready, and its cast would drop this shot
-			ClientHero.pressNow(0, 0, 0, 1);
+			ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_KEPT, 0, 0, 1);
 			serverMayFireUntil = now + roundTripNanos(mc, player);
 			return;
 		}

@@ -164,6 +164,18 @@ public final class Railgun {
 		}
 	}
 
+	/**
+	 * A press her client left to this side: fired as the recovery ends, or now. Mashing, the held bit may never fall between two ticks, and the edge in {@link #tick}
+	 * never comes: 1 shot in 5 s at 15 clicks a second (real mouse events).
+	 */
+	static void pressedKept(ServerPlayer player, HeroState s) {
+		s.sojournRightWas = true;
+		if (s.sojournEnergy > 0 && !s.sojournChargedShown) {
+			s.sojournCharged = bufferTicks();
+			chargedIfReady(player, s);
+		}
+	}
+
 	/** A jump longer than this between two positions is a teleport, not a move: no point between them. Over a tick at the slide jump's 27.4 m/s (ours). */
 	private static final double PATH_STEP_MAX = 2;
 

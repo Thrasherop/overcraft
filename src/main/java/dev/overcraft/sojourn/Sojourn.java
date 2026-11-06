@@ -162,6 +162,9 @@ public final class Sojourn implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
+		if ((pressed & HeroInputPayload.PRESS_CHARGED_KEPT) != 0) {
+			Railgun.pressedKept(player, s);
+		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			slide(player, s);
 		}
