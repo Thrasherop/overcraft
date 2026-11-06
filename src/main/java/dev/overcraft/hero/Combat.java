@@ -503,8 +503,7 @@ public final class Combat {
 	}
 
 	/**
-	 * Only the server knows, and OwProjectile's client copies never ask (hitRule). Other client-side callers get "not phased". Was: projectiles ask from canHitEntity, and ThrowableProjectile.tick runs that on the client's copy too, where these maps are another thread's in single player and empty on a remote client.
-	 * The client's copy answers "not phased" and may look to stop for a tick; the server's says where it goes. Package-private for PhaseRulesTest.
+	 * Only the server knows: these maps are per side, and a remote client's is empty. A client-side caller gets "not phased". Shots don't ask there: OwProjectile's client copy never takes a creature (Allies.shotRule). Package-private for PhaseRulesTest.
 	 */
 	static boolean phaseStopsRule(boolean clientSide, boolean devOff, boolean phased) {
 		return !clientSide && !devOff && phased;
