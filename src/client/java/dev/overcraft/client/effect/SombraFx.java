@@ -91,7 +91,11 @@ public final class SombraFx {
 			if (e instanceof CyberspaceEntity) {
 				cyberFlight(e, enemy);
 			} else if (e instanceof TranslocatorEntity) {
-				// the beacon's ribbons: 0.25 and 0.5 m wide, 0.3 s, violet (1B0F)
+				// the beacon's ribbons: 0.25 and 0.5 m wide, 0.3 s, violet (1B0F, H, on child 1710). Not for her who threw it: the owner's frame 2 has none with the beacon
+				// about 2 m out (measured; one frame, and why isn't in what's read), and ours buried the beacon in a wedge (sbsf_vday_fade03)
+				if (e instanceof net.minecraft.world.entity.projectile.Projectile thrown && thrown.getOwner() != null && ownFirstPerson(thrown.getOwner())) {
+					continue;
+				}
 				Fx.trail(e.getId(), e.position(), "lucio_trail", enemy ? Palette.SOMBRA_BEACON_TRAIL_ENEMY_N : Palette.SOMBRA_BEACON_TRAIL_N,
 					0.25f, 0.3f, 0.9f);
 				Fx.trail(e.getId() + 1_000_000, e.position(), "lucio_trail", enemy ? Palette.SOMBRA_BEACON_TRAIL_ENEMY_N
