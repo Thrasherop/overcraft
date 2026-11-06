@@ -70,9 +70,9 @@ if want('lag'):
         log('LAG', name, counts(tr), extra, '|', tr[:420])
     def playing(): return c('presstrace sounding railgun.reload').get('sounding')
     # 4: R, then the right button inside the ping
-    for i in range(5 if want('lag4') else 0):
+    for i in range(12 if want('lag4') else 0):
         ready(); c('presstrace ammo 20'); c('presstrace energy 50'); sleep(0.4); c('presstrace start')
-        c('key reload down'); c('key reload up'); c('key primary_fire down'); c('key primary_fire up'); sleep(0.5)
+        c('key reload down'); c('key reload up'); c('key primary_fire down'); c('key primary_fire up'); sleep(0.6)
         s = st(); p = playing(); tr = c('presstrace').get('trace', '')
         log('LAG4 R+press', i, 'at +0.5 s anim', s.get('anim'), 'ammo', s.get('primaryAmmo'), 'rel', round(s.get('primaryReload'), 2), 'playing', p, '|', tr[:260]); sleep(1.2)
     # 4: hold left to empty, the right button as it does
@@ -84,7 +84,9 @@ if want('lag'):
     # 5a: a press the client can't call in the last of its lock (the tick path; the server fires it, she learns a round trip on), then a click as her lock runs out
     # (energy reset 0.2 s after the first press: the server's shot comes a ping on and would spend it)
     for i, third in enumerate((0.66, 0.70, 0.74, 0.78, 0.82, 0.86) * 2 if want('lag5') else ()):
-        ready(); c('presstrace energy 50'); sleep(0.4); c('presstrace start'); t0 = time.time(); tap('primary_fire', 0.02); sleep(0.3); c('presstrace energy 50')
+        ready(); c('presstrace energy 50'); sleep(0.4); c('presstrace start'); t0 = time.time(); tap('primary_fire', 0.02)
+        while time.time() - t0 < 0.26: sleep(0.002)
+        c('presstrace energy 50')  # (after the shot spends it, and in time to reach her before the second press)
         while time.time() - t0 < 0.56: sleep(0.002)
         tap('primary_fire', 0.02)
         while time.time() - t0 < third: sleep(0.002)

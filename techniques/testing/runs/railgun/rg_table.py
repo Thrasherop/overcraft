@@ -63,7 +63,7 @@ ROWS = []
 def shot(pre, hold=0.06, wait=0.9, energy=50, post=None, set_energy=True):
     """pre() puts her in the case, then one press of the right button. Returns the numbers."""
     pre_ctx = pre() if pre else None
-    if set_energy is True: c('presstrace energy %s' % energy)
+    if set_energy is True: c('presstrace energy %s' % energy); sleep(0.12)  # (a tick for the sync: at 118 fps the press beat it, and went by the tick path)
     c('presstrace start')
     c('key primary_fire down'); sleep(hold); c('key primary_fire up'); sleep(wait)
     tr = c('presstrace').get('trace', '')

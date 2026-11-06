@@ -1,0 +1,99 @@
+=== #126 table. TREE dfabe4c dirty_src_files=0 launched=2026-11-06T03:40:34 at 03:43:28
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 03:43:36 fps 30
+### done
+### round three 03:43:36 fps 30
+MASH asked 0.42 0.75: presses at [0, 401, 735] looks at [0, 802] shots at [24, 779] third look late by 67 
+MASH asked 0.42 0.80: presses at [0, 402, 769] looks at [0, 836] shots at [12, 817] third look late by 67 
+MASH asked 0.44 0.75: presses at [0, 434, 736] looks at [0, 803] shots at [39, 793] third look late by 67 
+MASH asked 0.40 0.72: presses at [0, 367, 701] looks at [0, 701] shots at [16, 716] third look late by 0 
+MASH asked 0.52 0.75: presses at [0, 502, 736] looks at [0, 703] shots at [46, 701] third look late by none 
+MASH asked 0.52 0.85: presses at [0, 500, 835] looks at [1, 701] shots at [16, 670] third look late by none 
+MASH asked 0.60 0.85: presses at [0, 567, 835] looks at [0, 701] shots at [28, 684] third look late by none 
+MASH asked 0.42 0.75: presses at [0, 402, 735] looks at [0, 769] shots at [8, 760] third look late by 34 
+MASH asked 0.42 0.80: presses at [0, 401, 769] looks at [0, 836] shots at [1, 804] third look late by 67 
+MASH asked 0.44 0.75: presses at [0, 434, 735] looks at [0, 802] shots at [44, 797] third look late by 67 
+MASH asked 0.40 0.72: presses at [0, 367, 701] looks at [0, 701] shots at [22, 722] third look late by 0 
+MASH asked 0.52 0.75: presses at [0, 500, 734] looks at [0, 701] shots at [36, 692] third look late by none 
+MASH0 no energy at the middle click: presses [0, 534, 801] looks [0, 835] shots [16, 820] last look late by 34
+MASH0 no energy at the middle click: presses [0, 534, 768] looks [0, 835] shots [28, 831] last look late by 67
+MASH0 no energy at the middle click: presses [0, 535, 769] looks [0, 836] shots [25, 828] last look late by 67
+MASH0 no energy at the middle click: presses [0, 535, 802] looks [0, 836] shots [17, 821] last look late by 34
+REPEAT V held 3 s in Overclock: {'presses': 0, 'fx': 3, 'clip': 3, 'srv': 3, 'fire': 3} 33.6 sent | 33.6 clip | 33.6 snd:charged.fire | 33.8 snd:charged.shot | 33.8 fx | 34.6 sent | 36.5 frame | 75.2 srv_shot | 75.2 srv_eye 0.500 -58.380 0.500 | 85.2 snd:charged.hit | 85.4 snd:charged.hit_enemy | 580.3 sent | 630.3 sent | 684.9 sent | 736.1 sent | 786.8 sent | 838.2 sent | 879.4 sent |
+REPEAT V held 2 s, energy: {'presses': 0, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1}
+=== #126 table. TREE dfabe4c dirty_src_files=0 launched=2026-11-06T03:40:34 at 03:44:35
+WARM art ready after 0.83 s; frames over 40 ms (at ms, length): [] frames 98 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 119
+=== rows
+### round two 03:44:42 fps 116
+### done
+### round three 03:44:42 fps 116
+STUCK shown flag after G, then after G back [(False, False), (True, True), (False, False), (False, False), (False, False), (False, False), (False, False), (False, False), (False, False), (False, False)]
+HACK silenced True ult active None presses [0, 30] looks [74] shots [67] | 16.3 press | 45.9 press | 46.6 sent | 47.4 art_miss:sombra_code_wall/sombra_enemy_red | 83.2 srv_shot | 83.2 srv_eye 0.500 -58.380 0.500 | 90.3 clip | 90.4 snd:charged.fire_mid | 90.5 snd:charged.shot | 90.5 fx | 90.7 snd:charged.hit | 90.7
+HACK silenced True ult active None presses [0, 28] looks [71] shots [63] | 14.0 press | 42.2 press | 42.9 sent | 76.9 srv_shot | 76.9 srv_eye 0.500 -58.380 0.500 | 84.8 clip | 84.8 snd:charged.fire_mid | 85.0 snd:charged.shot | 85.0 fx | 85.2 snd:charged.hit | 85.2 snd:charged.hit_enemy | 85.3 snd:charged.hit | 85
+HACK silenced True ult active None presses [0, 28] looks [114] shots [110] | 14.2 press | 28.7 sent | 42.2 press | 85.5 sent | 124.0 srv_shot | 124.1 srv_eye 0.500 -58.380 0.500 | 127.4 clip | 127.5 snd:charged.fire_mid | 127.6 snd:charged.shot | 127.7 fx | 127.8 snd:charged.hit | 127.9 snd:charged.hit_enemy | 128.1
+SPEED run hit took 5.51 x at press -4.12 camera to server eye 0.231 cam [-4.348, -58.38, 0.5] eye [-4.117, -58.38, 0.5]
+SPEED run hit took 5.51 x at press -4.39 camera to server eye 0.242 cam [-4.634, -58.38, 0.5] eye [-4.392, -58.38, 0.5]
+SPEED run hit took 5.51 x at press -4.39 camera to server eye 0.011 cam [-4.403, -58.38, 0.5] eye [-4.392, -58.38, 0.5]
+SPEED run hit took 5.51 x at press -4.39 camera to server eye 0.231 cam [-4.623, -58.38, 0.5] eye [-4.392, -58.38, 0.5]
+SPEED run hit took 5.51 x at press -4.12 camera to server eye 0.159 cam [-4.276, -58.38, 0.5] eye [-4.117, -58.38, 0.5]
+SPEED run hit took 5.51 x at press -4.12 camera to server eye 0.159 cam [-4.276, -58.38, 0.5] eye [-4.117, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -5.99 camera to server eye 0.302 cam [-6.292, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -6.31 camera to server eye 0.246 cam [-6.236, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -5.99 camera to server eye 0.133 cam [-6.123, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED slide hit took 8.27 x at press -6.31 camera to server eye 0.553 cam [-6.733, -58.73, 0.5] eye [-6.305, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -5.99 camera to server eye 0.057 cam [-6.047, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED slide hit took 8.27 x at press -6.31 camera to server eye 0.601 cam [-6.794, -58.73, 0.5] eye [-6.305, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -5.99 camera to server eye 0.12 cam [-6.11, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED slide hit took 5.51 x at press -5.99 camera to server eye 0.114 cam [-6.104, -58.38, 0.5] eye [-5.99, -58.38, 0.5]
+SPEED jump hit took 5.51 x at press -9.18 camera to server eye 0.149 cam [-9.32, -51.369, 0.5] eye [-9.18, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -8.47 camera to server eye 0.181 cam [-8.635, -51.358, 0.5] eye [-8.465, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -9.18 camera to server eye 0.149 cam [-9.32, -51.369, 0.5] eye [-9.18, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -9.18 camera to server eye 0.111 cam [-9.284, -51.382, 0.5] eye [-9.18, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -8.91 camera to server eye 0.165 cam [-9.06, -51.363, 0.5] eye [-8.905, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -8.91 camera to server eye 0.126 cam [-9.023, -51.377, 0.5] eye [-8.905, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -9.18 camera to server eye 0.212 cam [-9.379, -51.347, 0.5] eye [-9.18, -51.42, 0.5]
+SPEED jump hit took 5.51 x at press -8.47 camera to server eye 0.197 cam [-8.65, -51.352, 0.5] eye [-8.465, -51.42, 0.5]
+MANY frames over 45 ms by shot: [] of 40 fps 118
+### done
+=== #126 table. TREE dfabe4c dirty_src_files=0 launched=2026-11-06T03:48:00 at 03:49:05
+{'ok': True}
+WARM art ready after 2.02 s; frames over 40 ms (at ms, length): [(67, 142), (209, 259), (468, 57)] frames 49 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 03:49:57 fps 30
+### done
+### round three 03:49:57 fps 30
+SPEED run hit took 5.51 top speed in trace 5.88 camera to server eye 0.132 cam [-1.649, -58.38, 0.5] eye [-1.517, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.91 camera to server eye 0.269 cam [-2.061, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.88 camera to server eye 0.154 cam [-1.671, -58.38, 0.5] eye [-1.517, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.88 camera to server eye 0.176 cam [-1.693, -58.38, 0.5] eye [-1.517, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.88 camera to server eye 0.17 cam [-1.687, -58.38, 0.5] eye [-1.517, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.9 camera to server eye 0.132 cam [-1.924, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.89 camera to server eye 0.038 cam [-1.83, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.91 camera to server eye 0.269 cam [-2.061, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.9 camera to server eye 0.137 cam [-1.929, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED run hit took 5.51 top speed in trace 5.89 camera to server eye 0.066 cam [-1.858, -58.38, 0.5] eye [-1.792, -58.38, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.329 cam [-4.856, -58.73, 0.5] eye [-4.527, -58.73, 0.5] miss line?
+SPEED slide MISS took 0.0 top speed in trace 14.3 camera to server eye 0.7 cam [-5.502, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.257 cam [-4.784, -58.73, 0.5] eye [-4.527, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.228 cam [-5.03, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide MISS took 0.0 top speed in trace 14.3 camera to server eye 0.686 cam [-5.488, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.057 cam [-4.859, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide MISS took 0.0 top speed in trace 14.3 camera to server eye 0.629 cam [-5.431, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.586 cam [-5.388, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.228 cam [-4.315, -58.73, 0.5] eye [-4.087, -58.73, 0.5] miss line?
+SPEED slide hit took 5.51 top speed in trace 14.3 camera to server eye 0.171 cam [-4.973, -58.73, 0.5] eye [-4.802, -58.73, 0.5] miss line?
+SPEED jump MISS took 0.0 top speed in trace 20.8 camera to server eye 0.695 cam [-2.403, -56.515, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 5.51 top speed in trace 20.8 camera to server eye 0.533 cam [-1.999, -56.417, 0.5] eye [-1.576, -56.093, 0.5] miss line?
+SPEED jump MISS took 0.0 top speed in trace 20.8 camera to server eye 0.811 cam [-2.22, -56.586, 0.5] eye [-1.576, -56.093, 0.5] miss line?
+SPEED jump hit took 8.27 top speed in trace 20.8 camera to server eye 0.417 cam [-2.182, -56.346, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 5.51 top speed in trace 20.8 camera to server eye 0.579 cam [-2.311, -56.445, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 5.51 top speed in trace 20.8 camera to server eye 0.602 cam [-2.329, -56.459, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 5.51 top speed in trace 20.8 camera to server eye 0.556 cam [-2.293, -56.431, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 5.51 top speed in trace 20.8 camera to server eye 0.208 cam [-2.016, -56.22, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump hit took 8.27 top speed in trace 20.8 camera to server eye 0.441 cam [-2.201, -56.361, 0.5] eye [-1.851, -56.093, 0.5] miss line?
+SPEED jump MISS took 0.0 top speed in trace 20.8 camera to server eye 0.648 cam [-2.091, -56.487, 0.5] eye [-1.576, -56.093, 0.5] miss line?
+### done
