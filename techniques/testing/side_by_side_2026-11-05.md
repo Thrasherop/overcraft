@@ -82,3 +82,23 @@ Second look needed: `night_stand` first read as a bug; `fade00`-`23` show it's i
 
 ## The cost of the first reading
 Twice this pass a note's claim hid the bug: "the clips put the pistol away" hid a culled pistol, and "bones in view" hid world axes. Read the raw before believing either.
+
+## The verification run (2026-11-05, later)
+Same input, same disclaimer: harness keys, not the merge gate. Overwatch and Battle.net checked, one client, my lock. Two launches: `sbsf_v*` on aab3642, then `sbsf_w*` on the fixes below. Each cycle: 16 shots 0.048 s of clip apart at `/tick rate 4`, begun past the fade.
+
+**Corrections to the table above:**
+- **The pistol's cause was only half right.** da044d7 (culling) wasn't enough: `sbsf_vday_3p_back` and `vnight_3p_front` still showed rags at her hand. `isProp` took the small pistol for a parked prop, and `emit` dropped its triangles near the origin. Now off for held pieces, as `EmoteProps.submit` already does.
+- **Commit 3aca759's message overstates the search** ("none of .10F's 1,334 textures or the 72 undumped"). True: 1,262 seen as thumbnails, 50 of the 72 decoded, 22 ids not files in the build, vector shapes not excluded. See [what was searched](#ana-s-scope-what-was-searched). History isn't rewritten.
+
+| Asked | Shots | Seen | Still differs |
+|---|---|---|---|
+| Pistol, hands, day | `wday_cycle00`-`15` | Pistol in 00-02 and 06-09, left hand in 13-15, neither in 03-05, 10-12: the gaps the data predicts. Whole gun, top at about y 650 of 1080, as frame 3 | More saturated and more solid than frame 3's and frame 4's pale glass (0.8, unchanged). The Hud sits over it, as in the frame |
+| Same, night | `wnight_cycle00`-`15` | Pistol 00-05, left hand 10-12 | Sheet at 240 px only; dark, as the scene is |
+| Pods, compass | `wday_pods0`, `90`, `180`, `-90` `_a`-`_c`; `wnight_pods0`, `90` | Same place facing each way. Glass ring, star, the yellow rim by `_b`. On aab3642 they were blown-out white discs (`vday_pods*`): brightnesses cut, ours. Inside the note's circles for "4s" and "3s" (`c_w`, by the note's positions: Juno's frames aren't files) | Pod mesh shows through the star, unjudged against the real frames. On firing, the note's streaks not compared |
+| Wash | `vday_scope`, `wday_scope`, `wnight_scope`, beside frame 1 | Grey stone (112, 116, 128): a cool cast, whole view, no surround | **Reads far less blue than frame 1**, on Minecraft's grey. Ratios say the map supplies much of frame 1's blue, but that's two spots; the owner may want more. Lens arc's yellow cut to 0.45 to sit as faintly as the frame's |
+| Mid-fade | `vday_cycle03`-`06` then `wday_fade05`-`12`, `wnight_fade10`, `12` | Before: the pistol lit salmon then cyan. After (own view's edge 0.3, ours): her own colours, a faint edge, a hint of pieces | No frame of the real fade to compare. Arrival's pink glows and white bars (`wday_fade05`, `06`) are the teleport effect, not touched; big at this slowed moment, not judged |
+| Unread shots | `night_juno_lock0`, `3`, `fire2`, `after`; `hud_lifeweaver`, `_cd`, `hud_mercy`, `_cd`, `hud_sojourn`, `_cd` | Juno at night: marks, arc, prompts, red glide read; flash at the hits. Others' boxes as normal, Lifeweaver's counting 12. Mercy and Sojourn's press showed no cooldown in `_cd` (Guardian Angel with no target; a slide's charges): not a box state | These predate the fixes; none of the fixes touch them |
+| 3P gun | `wday_3p_back`, `wday_3p_front`, `wnight_3p_back`, `wnight_3p_front` | A whole, dark, see-through pistol in her hand, where aab3642 had rags | **Enemies past 4 m can't be checked on one client:** that path (`isInvisibleToPlayer`) has no change, and wasn't played. Nor an ally's view. No Overwatch frame of her third person |
+| Beacon's trail | `vday_fade03`, then `wday_fade02` | **The data has one** (1B0F on child 1710, H), so not removed. Frame 2 shows none at about 2 m, and ours was a wedge burying the beacon. Now not drawn for her own first person; others still see it. `wday_fade02`: the beacon alone, round, eye up, legs down, as frame 2 | One frame, cause unread (audience, or the ribbon's start). Ours is brighter than frame 2's dark body (lit, and a different backdrop). 0.05 s on, the beacon's gone from the view at this speed (`wday_fade03`), so the flight is short |
+
+**Throw: still open.** `wday_fade02`-`04`: hand high with the beacon out, lower after; needs the owner's clip. Not touched this run.

@@ -202,7 +202,7 @@ figure with no pistol.
 - **Her first-person stealth clips were mapped and never played.** `viewBase` only knew idle / walk / jump / fall. Now her stealthed
   set (graph 420C's category 0x1EE: `idle_stealth`, `walk_stealth` + `_left` / `_right` by the 4 slots, `jump_stealth`, `fall_stealth`,
   layer `add_idle_stealth`). These clips pump her hands in turn at the screen's bottom corners, which is
-  the sprint the owner means: played over nine phases of the 0.667 s cycle (`hp2_t*`), left hand, then right, then none. **Corrected 2026-11-05:** they don't put the pistol away (1DDA, 1DDC, 1DDD hold no Ctl or Model; `Weapon_R` keys are flat): the right hand pumps with it in view ([side_by_side](../testing/side_by_side_2026-11-05.md)).
+  the sprint the owner means: played over nine phases of the 0.667 s cycle (`hp2_t*`), left hand, then right, then none. **Corrected 2026-11-05:** they don't put the pistol away (1DDA, 1DDC, 1DDD hold no Ctl or Model; `Weapon_R` keys are flat at scale 1): the right hand pumps with it in view. It looked put away because our stealth pass dropped its triangles as a parked prop ([side_by_side](../testing/side_by_side_2026-11-05.md#the-verification-run-2026-11-05-later)).
 - **"Stealthed" now starts at the teleport, not at the fade's end,** from a synced `HeroManager.SOMBRA_STEALTH` (the tick it began, -1
   after): the speed already ran from the landing, and damage's 1.3 s reveal no longer drops the clips (420C's state goes on).
 - **The look (`HeroModelRenderer.submitStealth`, `ClientSombra.phase`):** the data has no art: 16EA is empty, the invisibility is a
