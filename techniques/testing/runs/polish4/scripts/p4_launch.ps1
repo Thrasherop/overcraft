@@ -1,6 +1,7 @@
 # One client, the lock first, Overwatch and others checked in the same command. Writes which commit this client was built from.
 $w = 'E:\claude\mods\overcraft_polish4'
-New-Item -ItemType Directory -Path E:\claude\mods\.oc_client_lock -ErrorAction Stop | Out-Null
+New-Item -ItemType Directory -Path E:\claude\mods\.oc_client_lock -ErrorAction Stop | Out-Null
+(Get-Item E:\claude\mods\.oc_client_lock).CreationTimeUtc.Ticks | Out-File -Encoding ascii C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\6635df67-fe58-47ac-a0d2-4067e7d195cf\scratchpad\p4_lock_mine.txt
 $ow = Get-Process Overwatch, Battle.net -ErrorAction SilentlyContinue
 $cl = Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'java' -and $_.CommandLine -match 'fabric.dli.config' }
 $bl = Get-Process blender -ErrorAction SilentlyContinue

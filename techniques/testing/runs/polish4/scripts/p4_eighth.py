@@ -46,7 +46,7 @@ HERO_START = {'lifeweaver': 2.0, 'sojourn': 2.0, 'sombra': 2.0, 'brigitte': 2.0}
 if w8('start'):
     log('### an ability that starts on a ladder, in 1-deep water or on vines, up high: does its fall hurt? 11-20 m drops; soft read each read where the build has it')
     # Mercy: GA from where she stands (feet in water, on a ladder, on vines) to an ally 15 m up, launched in mid-air
-    for where, how in [(w_, h_) for w_ in ('plain', 'water', 'ladder', 'vine') for h_ in ('launch', 'lost')] * ROWS:
+    for where, how in [(w_, h_) for w_ in ('plain', 'water', 'ladder', 'vine') for h_ in ('launch', 'cancel', 'lost')] * ROWS:
         x = spot(r=24); xi = int(x)
         if where == 'water': mc('/setblock %d -60 0 minecraft:water' % xi, 0.05)
         if where == 'ladder': mc('/setblock %d -60 -1 minecraft:stone' % xi, 0.02); mc('/setblock %d -60 0 minecraft:ladder[facing=south]' % xi, 0.05)
@@ -54,6 +54,7 @@ if w8('start'):
         mc('/fill %d -44 7 %d -44 7 minecraft:stone' % (xi + 1, xi + 1), 0.1); h0 = place('mercy', x, -60, 0.5, 0, 0); a = add('up', 'mercy', 'blue', x + 1, 7.5, 0, 0, -43); sleep(0.4); c('look 7 -62'); sleep(0.2); c('heard')
         q0 = cc('me'); c('key ability_1 down'); sleep(0.05); c('key ability_1 up'); sleep(0.5); s1 = st(); q1 = cc('me')
         if how == 'launch': c('key jump down'); sleep(0.05); c('key jump up')
+        elif how == 'cancel': c('key ability_1 down'); sleep(0.05); c('key ability_1 up')
         else: bot('remove ' + a)
         ser = watch_land(); result('Mercy GA from %s, %s (in it: climb %s water %s; y %.1f at the release, soft %s)' % (where, how, q0.get('climbable'), q0.get('inWater'), s1['y'], q1.get('softLanding')), h0, ser)
     # Lifeweaver, Sojourn off a ladder high up: dropping off, ability in the air
@@ -172,6 +173,15 @@ if w8('tunnelceil'):
     for i in range(4):
         x = spot(r=20); xi = int(math.floor(x)); mc('/fill %d -58 -8 %d -58 22 minecraft:stone' % (xi - 3, xi + 3), 0.05); mc('/fill %d -60 -8 %d -59 22 minecraft:stone' % (xi + 1, xi + 1), 0.05); r0 = mc('/execute if block %d -58 3 minecraft:stone' % xi, 0.25)[-1:]
         pick('kiriko'); mc('/gamemode survival @s'); mc('/overcraft reset'); mc('/time set midnight'); tp(x + 0.2, -60, 0.5, 180, 0); c('look 180 0'); sleep(0.3); b = add('brig', 'brigitte', 'red', x, -4.5, 0, 0); sleep(0.2); s0 = st(); c('trace start'); bot('press %s ability1' % b); sleep(2); tr = c('trace').get('trace', '').splitlines(); s1 = st(); ys = [float(l.split()[4]) for l in tr if len(l.split()) > 4]; log('  run %d: ceiling read %s, z %.2f -> %.2f, y top %s' % (i, r0[0][-16:] if r0 else None, s0['z'], s1['z'], max(ys) if ys else None))
+if w8('behind6'):
+    log('### the zombie behind, after the client return: a phased bot at 5 m, a zombie at z 18, real client; control unphased')
+    def shot6(kind, hero, key, hold, pitch=-1):
+        for phased in (False, True):
+            x = spot(); me(hero, x, 0.5, 0, 0); c('look 0 %s' % pitch); mc('/time set midnight'); t = add('tgt', 'mercy', 'red', x, 5.5, 180)
+            mc('/summon minecraft:zombie %s -60 18 {NoAI:1b,Tags:["bz"],Health:200f,attributes:[{id:"minecraft:max_health",base:200}]}' % x, 0.1); sleep(0.2)
+            if phased: bot('phase %s 1.8' % t)
+            c('key %s down' % key); sleep(hold); c('key %s up' % key); sleep(1.0); log('  %-10s phased %-5s target %s | zombie %s | screen %r' % (kind, phased, sh(t, 'health'), hp('@e[tag=bz,sort=nearest,limit=1]'), st().get('screen'))); mc('/kill @e[tag=bz]', 0.1)
+    shot6('ana dart', 'ana', 'secondary_fire', 0.1); shot6('sleep dart', 'ana', 'ability_1', 0.1); shot6('kunai', 'kiriko', 'secondary_fire', 0.15); shot6('railgun', 'sojourn', 'secondary_fire', 0.15); shot6('paw', 'jetpack_cat', 'secondary_fire', 0.15); shot6('thorn', 'lifeweaver', 'primary_fire', 0.3)
 if w8('hudg'):
     log('### Rally\'s HUD, and after G on the last code: screenshots p6_rally_on, p6_rally_g')
     x = spot(); clear(); pick('brigitte'); mc('/gamemode survival @s'); mc('/overcraft reset'); mc('/time set midnight'); tp(x, -60, 0.5, 0, 0); a = add('ally', 'mercy', 'blue', x + 2, 3.5, 0); sleep(0.2); mc('/giveult'); press('ultimate', 0.15); sleep(2.2); c('window 1280 720'); sleep(0.3); c('screenshot p6_rally_on.png'); s = st(); log('  in Rally: health %s of %s, state %s' % (s.get('health'), s.get('maxHealth'), {k: s[k] for k in s if 'rmor' in k or 'bsorb' in k or 'ow' in k.lower()})); sleep(0.2); c('heromode off'); sleep(0.5); c('heromode on'); sleep(0.8); c('screenshot p6_rally_g.png'); s = st(); al = mc('/data get entity @e[name=%s,limit=1] AbsorptionAmount' % a, 0.2)[-1:]; me_ = mc('/data get entity @s AbsorptionAmount', 0.2)[-1:]; log('  after G and back: health %s, her absorption %s, ally %s' % (s.get('health'), me_[0][-12:] if me_ else None, al[0][-12:] if al else None))

@@ -1,0 +1,28 @@
+TREE main 21b0d22, launch stamp: 21b0d22 dirty_src_files=0 launched=2026-11-06T01:10:29 01:12:07
+/difficulty normal ['[01:13:06] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[01:13:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[01:13:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[01:13:07] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[01:13:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[01:13:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[01:13:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[01:13:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[01:13:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 48 entities']
+### GA at a NoAI villager 12 m ahead at her level: z read every 0.1 s or so from the key. A hit on the villager is not asked
+hero mercy mode True screen  hp 18.0 / 18.0
+  plain: z 0.50, reads 1.3 3.0 3.9 4.7 6.4 7.3 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9, cd1 1.25
+hero mercy mode True screen  hp 18.0 / 18.0
+  water: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  ladder: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  vine: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  plain: z 0.50, reads 1.3 2.2 3.9 4.7 5.6 7.3 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9 7.9, cd1 1.35
+hero mercy mode True screen  hp 18.0 / 18.0
+  water: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  ladder: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  vine: z 0.50, reads 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5, cd1 0.0
+DONE
