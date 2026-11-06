@@ -12,7 +12,8 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 - Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
 - The shockwave no longer goes through walls and barriers (#122). `/kill` and the void kill the phased. Filed, not fixed: #123, #124.
 - Kiriko's Suzu line now plays only 0.5 s after an actual cleanse, as the game's data has it, not on every throw (#121). A Suzu at a healthy ally says nothing; poison and fire, which the data doesn't know about, don't count.
-- Whip Shot pushes about 8 m on flat ground, as the wiki has it (8.48 m on a hero, 7.75 m on a husk or in Minecraft mode); still 25 m/s.
+- Whip Shot pushes about 8 m on flat ground, as the wiki has it: the game data's 25 m/s and 3 up, one push (8.04 m on a hero; a mob 7.99 m; in Minecraft mode 4.66 m). Shield Bash and Rally's wave use the data's 6 and 3, a much smaller push than before (2.5 m on a hero, was 7.9 m).
+- Lucio off a wall ride, and Brigitte off a Shield Bash, land unhurt (#35). Shots you fire at someone phased no longer vanish on your screen. EMP and hack catch a deployable whose owner is phased. Rally's wave reaches someone whose feet are in sight. Whiplash slams into walls, not stairs and slabs.
 - Record: techniques/testing/polish4.md.
 
 ### On fix/polish-3 (not released, version not bumped)

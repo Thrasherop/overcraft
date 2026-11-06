@@ -66,6 +66,9 @@ cursor. Turning with the real mouse still needs the owner.
   click the game rather than granting textinputhost.exe.
 - Check the screen is clear before a key run (`dev state`'s "screen"): a menu (OverwatchMenuScreen) was open once
   and swallowed the first try.
+- **Screenshots hide windows that still take clicks (2026-11-05).** With the game in front, the Claude app kept a panel over the right of the screen; the screenshot masked it and showed the game there, so clicks on the roster's right half went into Claude's window, about 12 of them, and looked like portraits that wouldn't select. Before clicking, ask Windows who owns the point (`WindowFromPoint` with `SetProcessDPIAware`), and place the game clear of it: `window 1180 664`, then `SetWindowPos` to the left of the screen, then check a grid of points across its rect. Keys go to the foreground window and weren't affected.
+- **`NoAI` mobs don't take pushes.** A real Whip Shot did its damage to a `NoAI` husk and moved it 0 m; the same shot on a husk with AI and `movement_speed` 0 moved it 7.75 m. Use the second for anything that pushes.
+- **What this input can't do:** the mouse can't turn the view, and only one key can be held per call, with no right button held. So Barrier and Bash together, W with Space, and aim all stay with the owner; say so in the record.
 
 ## Test worlds
 - **Summon test mobs** with `Tags:["x"]` and select `@e[tag=x]`.

@@ -1,5 +1,9 @@
 Picked up JAVA_TOOL_OPTIONS: -Xmx2G
-Reusing configuration cache.
+Calculating task graph as configuration cache cannot be reused because cached artifact information for net.fabricmc.fabric-loom:net.fabricmc.fabric-loom.gradle.plugin:1.19-SNAPSHOT has expired.
+
+> Configure project :
+Fabric Loom: 1.19.3
+
 > Task :validateAccessWidener NO-SOURCE
 > Task :clean
 > Task :processTestResources NO-SOURCE
@@ -32,6 +36,6 @@ Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 
 [Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 43s
+BUILD SUCCESSFUL in 1m 33s
 10 actionable tasks: 10 executed
-Configuration cache entry reused.
+Configuration cache entry stored.

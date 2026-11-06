@@ -1,0 +1,209 @@
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 18:41:22
+TREE (git at launch): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48 18:41:22
+/difficulty normal ['[18:41:22] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[18:41:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[18:41:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[18:41:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[18:41:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[18:41:24] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[18:41:24] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[18:41:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[18:41:25] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### flat ground: W "~8 meter"; a bot Brigitte 5 m from a real client, a real Brigitte (keys) 5 m from a husk and a zombie
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat zombie: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+### a wall 3 m behind: the hold stops, nothing more than the whip's damage; with the perk, the slam
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 4.90 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 12 m + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  no wall + Whiplash husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+### slopes and ledges
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 4.90 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 13.98 m (z 0.50 -> 14.48), y -55.00 -> -60.00 top -54.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 13.58 12.80
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 13.98 m (z 0.50 -> 14.48), y -55.00 -> -60.00 top -54.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 13.98 m (z 0.50 -> 14.48), y -55.00 -> -60.00 top -54.734, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs down husk: moved 13.11 m (z 0.50 -> 13.61), y -55.00 -> -60.00, health 192.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 12.33 m (z 0.50 -> 12.83), y -57.00 -> -60.00 top -56.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 13.58 12.80
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 12.33 m (z 0.50 -> 12.83), y -57.00 -> -60.00 top -56.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 12.33 m (z 0.50 -> 12.83), y -57.00 -> -60.00 top -56.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode off: moved 5.32 m (z 0.50 -> 5.82), y -57.00 -> -60.00 top -56.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 2.54 2.31
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 12.05 m (z 0.50 -> 12.55), y -57.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 12.05 m (z 0.50 -> 12.55), y -57.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 12.05 m (z 0.50 -> 12.55), y -57.00 -> -60.00, health 194.4
+### a second push and other things in the hold
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 9.85 m (z 0.50 -> 10.35), y -60.00 -> -60.00 top -58.924, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 13.58 12.80
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 10.39 m (z 0.50 -> 10.89), y -60.00 -> -60.00 top -58.769, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 9.85 m (z 0.50 -> 10.35), y -60.00 -> -60.00 top -58.924, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 2.53 m (z 0.50 -> 3.03), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 4.67 5.50 5.50 5.50 23.12 20.52 18.17 16.04 14.12 12.39 10.82 9.41 0.17 5.43
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 3.08 m (z 0.50 -> 3.58), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 2.53 m (z 0.50 -> 3.03), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.01 m (z 0.50 -> 8.51), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.20 14.26 8.08 3.30
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.01 m (z 0.50 -> 8.51), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.01 m (z 0.50 -> 8.51), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  dies in the hold, respawns, hero mode on: moved 0.00 m (z 0.50 -> 0.50), y -60.00 -> -60.00 top -59.734, health 20.0 -> 20.0, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 17.14 15.60 14.20 12.92
+  after the respawn: x 0.5 z 0.5 health 20.0
+### two Brigittes in line whip 0.1 s or so apart: the second lands inside the first's hold
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 10.96 m (z 0.50 -> 11.46), y -60.00 -> -60.00 top -59.517, health 20.0 -> 8.8, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 23.73 21.97 20.37 18.93 17.64 16.46
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 10.96 m (z 0.50 -> 11.46), y -60.00 -> -60.00 top -59.517, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 10.96 m (z 0.50 -> 11.46), y -60.00 -> -60.00 top -59.517, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 9.49 m (z 0.50 -> 9.99), y -60.00 -> -60.00 top -59.563, health 20.0 -> 8.8, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 25.00 22.75 20.70 18.84 17.14 15.60 14.20 7.75
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 9.49 m (z 0.50 -> 9.99), y -60.00 -> -60.00 top -59.563, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 9.49 m (z 0.50 -> 9.99), y -60.00 -> -60.00 top -59.563, health 20.0 -> 8.8, ground True
+### Whiplash on one stair, one slab; Minecraft mode at the first stair; water; ladder
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab, no perk, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 6.2 m, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, standing on the bottom, hero mode on: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 20.00 16.00 12.80 10.24 8.19 6.55 5.24 4.19 3.36
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, standing on the bottom, hero mode on: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, hero mode off: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 20.00 16.00 12.80 10.24 8.19 6.55 5.24 4.19 3.36
+hero brigitte mode True screen  hp 20.0 / 20.0
+  in water husk: moved 8.74 m (z 0.50 -> 9.24), y -61.00 -> -61.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  on a ladder (feet in it), hero mode on: moved 0.52 m (z 1.50 -> 2.02), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 3.00 1.64 1.49 1.36 1.23 1.12 0.61 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  on a ladder (feet in it), hero mode on: moved 0.52 m (z 1.50 -> 2.02), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  on a ladder, hero mode off: moved 0.55 m (z 1.50 -> 2.05), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 3.00 1.64 1.49 1.36 1.23 1.12 0.61 0.33 0.18 0.10
+### a hacked creeper: at 2.2 m from a bot, speed 0; reads every 0.3 s or so: alive, its target, the bot's health. Control and EMP, 3 each
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.2:gone:tgt:18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.4:alive:tgt:18.0 1.1:gone:tgt:18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.2:gone:tgt:18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.3:gone:tgt:18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.2:gone:tgt:18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.3:gone:tgt:18.0
+DONE

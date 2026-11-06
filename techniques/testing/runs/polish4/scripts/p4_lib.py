@@ -7,6 +7,10 @@ def pick(h):
     c('respawn'); sleep(1.5)
     mc('/spawnpoint @s 0 -60 0');
     c('hero '+h); sleep(0.8); c('close'); c('heromode on'); sleep(0.5)
+    # a menu left open swallows every key: never go on with one (behind_final and crit2_final at 8023e8d did: void)
+    for _i in range(10):
+        if not st().get('screen'): break
+        c('close'); sleep(0.4)
     s=st(); log('hero',s.get('hero'),'mode',s.get('heroMode'),'screen',s.get('screen'),'hp',s.get('health'),'/',s.get('maxHealth'))
 def tp(x,y,z,yaw=0,pitch=0):
     mc('/tp @s %s %s %s %s %s'%(x,y,z,yaw,pitch)); c('look %s %s'%(yaw,pitch)); sleep(0.25)

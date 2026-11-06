@@ -144,7 +144,7 @@ v49150 on, Inspire UI v75478 on, vibration v54074-v54078.
   set to 15 at the end (#828-#830, L cap); stops early on an enemy or a wall (v488 -> #772, M); **no StateMoverOverride** (H).
   Sends message **26FD** (#1094: Survivor). **Hit #501**: radius 2.4775 x scale + v9339 x 0.5225 (v9339 = STU_ED807E07(self) / 6,
   L), shape op89(1.73 x scale, r) (L: a ~35° cone), enemy hero units, **one target**, sight 002C.097; **#503: 70 damage (0B20;
-  alt 80), knockback 6 m/s (0B21) x STU_3832D36C(v14130)** plus 3x the same in `m_583C208B` (L up), tag **7851**, effect 2206
+  alt 80), knockback 6 m/s (0B21) x STU_3832D36C(v14130)** with `m_583C208B` = 3 x the scale: the vertical of the pair (M; the mod once read it as 3 x the 6), tag **7851**, effect 2206
   on hp 01D8, 3C51 assist 2 s, anim 0571 to the pet, voice 09C2 (L 50%), criterion 3678. Also #732 (90° cone, 70 to
   deployables, M) and #762 (1.5 m ray, r 0.5, tag 0385: walls / barriers, M). **Cooldown 1135 5 s at t = 0.3 s** (#495 onEnd ->
   #656 -> #504 v13062); v596 clears 0.05 s later (#704). No input cancels it; the barrier breaking does (#708, M). **No stun
@@ -259,6 +259,6 @@ The barrier's dimensions (mesh 1064F / look 13917, not measured); STU_ED807E07 (
 radius); `m_583C208B` (L up-knockback); v14131 / v14130 / v417 / v4112 / v6194 / v69292 / v78714 / v69279 / v3652; the 02FF
 falloff; the Rally stun's CC type; whether Rally armor and the ally overhealth decay after their 30 s / Rally end; the pool
 type hashes (xA6B6AFE9 armor, xCBEFD125 overhealth: M from panel text); Inspire's refresh-vs-stack policy x8715BB77; whether
-Brigitte gets her own Rally overhealth (filter 6: M yes); the draw clip (0x0A9 has none in her sets); the roles of flail cats
+Brigitte's own Rally overhealth (M yes: filter 6, and 12C1 #178 skips only its looks on her: #125); the draw clip (0x0A9 has none in her sets); the roles of flail cats
 0x71 / 0xA1 and the 1P whip states; the voice set, voice lines' text and sounds (not mapped in this pass); intros, victory poses
 and the 16 unextracted clips.

@@ -1,0 +1,75 @@
+TREE: e5e5f66 dirty_src_files=0 launched=2026-11-05T17:54:15 17:54:32
+{'ok': True}
+ 20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 1 died at 11.1, back as ana hp 16.0 mode True
+## anab2 ana round 1 mobs left 1 of 6 cleared at None deaths 1 lowest hp 7.0 end hp 19.5/20.0
+   death line: Kiriko was blown up by Creeper
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 6.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 3 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 3 mobs left 1 of 6 cleared at None deaths 0 lowest hp 8.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 4 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 4 mobs left 3 of 6 cleared at None deaths 0 lowest hp 6.1 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 5 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 5 mobs left 4 of 6 cleared at None deaths 0 lowest hp 13.0 end hp 18.6/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 6 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 6 mobs left 2 of 6 cleared at None deaths 0 lowest hp 12.0 end hp 17.5/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 7 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 7 mobs left 2 of 6 cleared at None deaths 0 lowest hp 9.3 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 8 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 8 died at 13.4, back as ana hp 20.0 mode True
+## anab2 ana round 8 mobs left 3 of 6 cleared at None deaths 1 lowest hp 0.6 end hp 20.0/20.0
+   death line: Kiriko was slain by Zombie
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 9 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 9 mobs left 2 of 6 cleared at None deaths 0 lowest hp 13.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 10 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 10 mobs left 1 of 6 cleared at None deaths 0 lowest hp 4.7 end hp 14.6/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 11 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 11 mobs left 2 of 6 cleared at None deaths 0 lowest hp 6.4 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 12 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 12 mobs left 4 of 6 cleared at None deaths 0 lowest hp 14.6 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 13 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 13 died at 12.3, back as ana hp 20.0 mode True
+## anab2 ana round 13 mobs left 2 of 6 cleared at None deaths 1 lowest hp 1.5 end hp 19.0/20.0
+   death line: Kiriko was slain by Zombie
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 14 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 14 mobs left 3 of 6 cleared at None deaths 0 lowest hp 8.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 15 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 15 mobs left 3 of 6 cleared at None deaths 0 lowest hp 1.9 end hp 6.1/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 16 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 16 mobs left 5 of 6 cleared at None deaths 0 lowest hp 2.0 end hp 17.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 17 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 17 died at 8.4, back as ana hp 17.0 mode True
+## anab2 ana round 17 mobs left 2 of 6 cleared at None deaths 1 lowest hp 14.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 18 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 18 died at 6.8, back as ana hp 16.0 mode True
+## anab2 ana round 18 mobs left 3 of 6 cleared at None deaths 1 lowest hp 12.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 19 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## anab2 ana round 19 mobs left 2 of 6 cleared at None deaths 0 lowest hp 12.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 20 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 20 died at 9.5, back as ana hp 20.0 mode True
+## anab2 ana round 20 mobs left 2 of 6 cleared at None deaths 1 lowest hp 3.0 end hp 19.8/20.0
+   death line: Kiriko was blown up by Creeper

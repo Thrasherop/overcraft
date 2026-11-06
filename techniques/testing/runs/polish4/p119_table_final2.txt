@@ -1,0 +1,576 @@
+=== #119 off/on. LABEL: tree: see TREE line
+TREE (git at launch): 8023e8d dirty_src_files=0 launched=2026-11-05T18:10:37 18:13:54
+/difficulty normal ['[18:15:17] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[18:15:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[18:15:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[18:15:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[18:15:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[18:15:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[18:15:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[18:15:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[18:15:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 69 entities']
+################ bot fix 119 off {'119': False}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Sleep on allyB
+    applied: asleep=True phased=False health=17.6 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+    throw real cd2 13.8
+    +0.15 asleep=True phased=True health=18.0
+    +0.32 asleep=True phased=True health=18.0
+    +0.49 asleep=True phased=False health=18.0
+    +0.65 asleep=True phased=False health=18.0
+    +0.82 asleep=True phased=False health=18.0
+    +0.99 asleep=True phased=False health=18.0
+    end: asleep=True phased=False health=18.0 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Sleep on me
+    applied: asleep=True phased=False health=17.6 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+    throw bot {'ok': True}
+    +0.15 asleep=True phased=True health=18.0
+    +0.32 asleep=True phased=True health=18.0
+    +0.49 asleep=True phased=True health=18.0
+    +0.65 asleep=True phased=False health=18.0
+    +0.82 asleep=True phased=False health=18.0
+    +0.99 asleep=True phased=False health=18.0
+    end: asleep=True phased=False health=18.0 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Stun on allyB, Suzu not thrown (control), read by game tick
+    ticks read while held [2375, 2381, 2381, 2382, 2383, 2383, 2384, 2385, 2385, 2386, 2387, 2387, 2388, 2389, 2389] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Stun on allyB, Suzu thrown once the server has it, read by game tick
+    ticks read while held [2592, 2596, 2597, 2598, 2598, 2599, 2600, 2600, 2601, 2602, 2602, 2603, 2604, 2604, 2605, 2606, 2606] (D 1340: 15 from the first); phase from [2598] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Stun on me, Suzu not thrown (control), read by game tick
+    ticks read while held [2806, 2809, 2810, 2811, 2811, 2812, 2813, 2813, 2814, 2815, 2815, 2816, 2817, 2817, 2818, 2819, 2819, 2820] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Stun on me, Suzu thrown once the server has it, read by game tick
+    ticks read while held [3018, 3022, 3023, 3023, 3024, 3025, 3025, 3026, 3027, 3027, 3028, 3029, 3029, 3030, 3031, 3031, 3032] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+--- Hack on allyB
+hero kiriko mode True screen  hp 20.0 / 20.0
+   real Kiriko 17.6 m from Sombra, past EMP
+    applied: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '} me silenced=False throw real cd2 13.9
+    +0.10 silenced=True glowing=True phased=False
+    +0.23 silenced=True glowing=True phased=False
+    +0.37 silenced=True glowing=True phased=True
+    +0.47 silenced=True glowing=True phased=True
+    +0.59 silenced=True glowing=True phased=True
+    +0.73 silenced=True glowing=True phased=True
+    +0.86 silenced=True glowing=True phased=False
+    +0.99 silenced=True glowing=True phased=False
+    end: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '}
+--- Hack on me
+hero ana mode True screen  hp 20.0 / 20.0
+    Shift by the real key while hacked: cd1 0.0 -> 0.0
+    applied: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '} throw bot {'ok': True}
+    +0.10 silenced=True glowing=True phased=True
+    +0.23 silenced=True glowing=True phased=True
+    +0.37 silenced=True glowing=True phased=True
+    +0.50 silenced=True glowing=True phased=False
+    +0.64 silenced=True glowing=True phased=False
+    +0.74 silenced=True glowing=True phased=False
+    end: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '}
+    Shift by the real key after Suzu: cd1 0.0 -> 0.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- AntiHeal on allyB
+    applied: antiHeal=True healCut=True health=13.2 phased=False | held {'server': '[ana_anti_healed]', 'client': 'antiHealed '}
+    throw real cd2 13.9
+    +0.10 antiHeal=False healCut=False health=18.0 phased=True
+    +0.24 antiHeal=False healCut=False health=18.0 phased=True
+    +0.37 antiHeal=False healCut=False health=18.0 phased=True
+    +0.50 antiHeal=False healCut=False health=18.0 phased=False
+    +0.64 antiHeal=False healCut=False health=18.0 phased=False
+    end: antiHeal=False healCut=False health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- AntiHeal on me
+    applied: antiHeal=True healCut=True health=13.2 phased=False | held {'server': '[ana_anti_healed]', 'client': 'antiHealed '}
+    throw bot {'ok': True}
+    +0.10 antiHeal=False healCut=False health=18.0 phased=True
+    +0.23 antiHeal=False healCut=False health=18.0 phased=True
+    +0.37 antiHeal=False healCut=False health=18.0 phased=True
+    +0.50 antiHeal=False healCut=False health=18.0 phased=False
+    +0.64 antiHeal=False healCut=False health=18.0 phased=False
+    end: antiHeal=False healCut=False health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Numbed on allyB
+    applied: asleep=True speed=0.061 health=17.48 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+    throw real cd2 13.85
+    +0.20 asleep=True speed=0.064 health=18.0
+    +0.43 asleep=True speed=0.065 health=17.88
+    +0.64 asleep=True speed=0.066 health=17.64
+    +0.87 asleep=True speed=0.068 health=17.28
+    +1.10 asleep=True speed=0.069 health=17.04
+    +1.31 asleep=True speed=0.071 health=16.8
+    end: asleep=True speed=0.071 health=16.8 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Numbed on me
+    applied: asleep=True speed=0.061 health=17.48 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+    throw bot {'ok': True}
+    +0.20 asleep=True speed=0.062 health=18.0
+    +0.40 asleep=True speed=0.064 health=18.0
+    +0.64 asleep=True speed=0.066 health=17.76
+    +0.87 asleep=True speed=0.067 health=17.52
+    +1.10 asleep=True speed=0.069 health=17.16
+    +1.34 asleep=True speed=0.07 health=16.92
+    end: asleep=True speed=0.07 health=16.92 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Claws on allyB
+    applied: speed=0.07 health=14.16 phased=False | held {'server': '[]', 'client': ''}
+    throw real cd2 13.85
+    +0.10 speed=0.07 health=18.0 phased=True
+    +0.23 speed=0.07 health=18.0 phased=True
+    +0.37 speed=0.07 health=17.84 phased=False
+    +0.50 speed=0.1 health=17.36 phased=False
+    +0.64 speed=0.1 health=17.36 phased=False
+    +0.77 speed=0.1 health=17.36 phased=False
+    +0.88 speed=0.1 health=17.36 phased=False
+    +1.02 speed=0.1 health=17.36 phased=False
+    end: speed=0.1 health=17.36 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Claws on me
+    applied: speed=0.07 health=14.0 phased=False | held {'server': '[]', 'client': ''}
+    throw bot {'ok': True}
+    +0.10 speed=0.07 health=18.0 phased=True
+    +0.24 speed=0.07 health=18.0 phased=True
+    +0.37 speed=0.07 health=18.0 phased=True
+    +0.50 speed=0.07 health=17.84 phased=False
+    +0.64 speed=0.07 health=17.52 phased=False
+    +0.77 speed=0.1 health=17.36 phased=False
+    +0.90 speed=0.1 health=17.36 phased=False
+    +1.00 speed=0.1 health=17.36 phased=False
+    end: speed=0.1 health=17.36 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- HyperStrike on allyB
+    applied: asleep=True gravity=0.001 phased=False | held {'server': '[]', 'client': 'lifted '}
+    throw real cd2 13.85
+    +0.10 asleep=True gravity=0.001 phased=True
+    +0.23 asleep=True gravity=0.001 phased=True
+    +0.37 asleep=False gravity=0.08 phased=False
+    +0.50 asleep=False gravity=0.08 phased=False
+    +0.61 asleep=False gravity=0.08 phased=False
+    +0.74 asleep=False gravity=0.08 phased=False
+    +0.87 asleep=False gravity=0.08 phased=False
+    +1.01 asleep=False gravity=0.08 phased=False
+    end: asleep=False gravity=0.08 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- HyperStrike on me
+    applied: asleep=True gravity=0.001 phased=False | held {'server': '[]', 'client': 'lifted '}
+    throw bot {'ok': True}
+    +0.10 asleep=True gravity=0.001 phased=True
+    +0.23 asleep=True gravity=0.001 phased=True
+    +0.37 asleep=True gravity=0.001 phased=True
+    +0.50 asleep=False gravity=0.08 phased=False
+    +0.63 asleep=False gravity=0.08 phased=False
+    +0.77 asleep=False gravity=0.08 phased=False
+    +0.90 asleep=False gravity=0.08 phased=False
+    +1.04 asleep=False gravity=0.08 phased=False
+    end: asleep=False gravity=0.08 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Deceleration on allyB
+    applied: speed=0.075 phased=False health=11.088 | held {'server': '[]', 'client': ''}
+    throw real cd2 13.9
+    +0.15 speed=0.075 phased=True health=17.488
+    +0.32 speed=0.075 phased=True health=17.488
+    +0.49 speed=0.075 phased=False health=17.488
+    +0.65 speed=0.075 phased=False health=16.106
+    +0.82 speed=0.075 phased=False health=14.723
+    +0.99 speed=0.075 phased=False health=13.341
+    +1.15 speed=0.075 phased=False health=11.958
+    +1.32 speed=0.075 phased=False health=10.576
+    +1.49 speed=0.075 phased=False health=9.194
+    +1.66 speed=0.075 phased=False health=9.194
+    end: speed=0.075 phased=False health=7.811 | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Deceleration on me
+    applied: speed=0.075 phased=False health=12.47 | held {'server': '[]', 'client': ''}
+    throw bot {'ok': True}
+    +0.15 speed=0.075 phased=True health=17.488
+    +0.32 speed=0.075 phased=True health=17.488
+    +0.49 speed=0.075 phased=True health=17.488
+    +0.65 speed=0.075 phased=False health=16.106
+    +0.82 speed=0.075 phased=False health=14.723
+    +0.99 speed=0.075 phased=False health=13.341
+    +1.15 speed=0.075 phased=False health=11.958
+    +1.32 speed=0.075 phased=False health=10.576
+    +1.49 speed=0.075 phased=False health=9.194
+    +1.65 speed=0.075 phased=False health=7.811
+    end: speed=0.075 phased=False health=7.811 | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Weaken on allyB
+    applied: weak=0.6 phased=False health=14.9 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+    throw real cd2 13.8
+    +0.10 weak=0.6 phased=True health=18.0
+    +0.23 weak=0.6 phased=True health=18.0
+    +0.36 weak=0.6 phased=False health=17.8
+    +0.50 weak=0.6 phased=False health=17.6
+    +0.63 weak=0.6 phased=False health=17.3
+    +0.76 weak=0.6 phased=False health=17.0
+    +0.90 weak=0.6 phased=False health=16.8
+    +1.03 weak=0.6 phased=False health=16.5
+    +1.16 weak=0.6 phased=False health=16.3
+    +1.26 weak=0.6 phased=False health=16.0
+    +1.40 weak=0.6 phased=False health=15.8
+    +1.53 weak=0.6 phased=False health=15.5
+    end: weak=0.6 phased=False health=15.4 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Weaken on me
+    applied: weak=0.6 phased=False health=14.9 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+    throw bot {'ok': True}
+    +0.10 weak=0.6 phased=True health=18.0
+    +0.23 weak=0.6 phased=True health=18.0
+    +0.37 weak=0.6 phased=True health=18.0
+    +0.47 weak=0.6 phased=True health=18.0
+    +0.61 weak=0.6 phased=False health=17.8
+    +0.71 weak=0.6 phased=False health=17.6
+    +0.84 weak=0.6 phased=False health=17.3
+    +0.97 weak=0.6 phased=False health=17.0
+    +1.11 weak=0.6 phased=False health=16.8
+    +1.24 weak=0.6 phased=False health=16.5
+    +1.38 weak=0.6 phased=False health=16.2
+    +1.51 weak=0.6 phased=False health=16.0
+    end: weak=0.6 phased=False health=15.9 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Accretion on allyB: thrown when it lands; how long does the knock-down last?
+    down at +1.00; held {'server': '[]', 'client': ''}; throw real cd2 13.85
+    knock-down lasted 0.90 s (data v13550 1.1 at least); the Suzu reached it: True
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Accretion on me: thrown when it lands; how long does the knock-down last?
+    down at +0.80; held {'server': '[]', 'client': ''}; throw bot {'ok': True}
+    knock-down lasted 1.10 s (data v13550 1.1 at least); the Suzu reached it: True
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Flux on allyB
+    lifted at +0.72, lifted=True speed=0.1 health=14.0; throw real cd2 13.8
+    +0.20 lifted=True phased=True health=18.0 speed=0.1
+    +0.44 lifted=True phased=False health=18.0 speed=0.1
+    +0.67 lifted=True phased=False health=18.0 speed=0.1
+    +0.90 lifted=True phased=False health=18.0 speed=0.1
+    +1.14 lifted=True phased=False health=18.0 speed=0.1
+    +1.37 lifted=True phased=False health=18.0 speed=0.1
+    +1.57 lifted=True phased=False health=18.0 speed=0.1
+    +1.80 lifted=True phased=False health=18.0 speed=0.05
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Flux on me
+    lifted at +0.77, lifted=True speed=0.1 health=14.0; throw bot {'ok': True}
+    +0.20 lifted=True phased=True health=18.0 speed=0.1
+    +0.44 lifted=True phased=True health=18.0 speed=0.1
+    +0.67 lifted=True phased=False health=18.0 speed=0.1
+    +0.90 lifted=True phased=False health=18.0 speed=0.1
+    +1.11 lifted=True phased=False health=18.0 speed=0.1
+    +1.34 lifted=True phased=False health=18.0 speed=0.1
+    +1.57 lifted=True phased=False health=18.0 speed=0.1
+    +1.77 lifted=True phased=False health=18.0 speed=0.1
+################ prevented, fix off
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Sleep Dart inside the phase, on the real client
+   throw bot {'ok': True}
+    phased at +0.03; effect started
+    +0.13 asleep=False phased=True health=18.0
+    +0.27 asleep=False phased=True health=18.0
+    +0.40 asleep=True phased=True health=18.0
+    +0.50 asleep=True phased=False health=18.0
+    +0.64 asleep=True phased=False health=18.0
+    +0.77 asleep=True phased=False health=18.0
+    +0.87 asleep=True phased=False health=18.0
+    +1.00 asleep=True phased=False health=18.0
+    +1.11 asleep=True phased=False health=18.0
+    +1.25 asleep=True phased=False health=18.0
+    held {'server': '[ana_asleep]', 'client': 'asleep '}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- EMP inside the phase, on the real client: both pressed, read every tick
+   throw bot {'ok': True}
+    phased ticks 6575..6584; silenced ticks 6579..6604; held {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '}; me silenced=True glowing=True
+    (EMP pressed in this order, its pulse time decides: if the silence starts after the phase it isn't a test of prevention)
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Accretion inside the phase, on the real client
+   throw bot {'ok': True}
+    phased ticks 6746..6755; knocked down ticks 6754..6775; health 18.0
+################ late viewer, fix off
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- late viewer: Hack on a bot, Suzu from a bot, the real client away for it
+    hacked silenced=True glowing=True {'server': '[sombra_hacked, sombra_revealed]', 'client': ''}
+    after Suzu silenced=True glowing=True {'server': '[sombra_hacked, sombra_revealed]', 'client': ''}
+    back in range: client draws {'server': '[sombra_revealed]', 'client': 'revealed '}
+    asleep asleep=True {'server': '[sombra_revealed, ana_asleep]', 'client': ''}
+    after Suzu asleep=True {'server': '[sombra_revealed, ana_asleep]', 'client': ''}
+    back in range: client draws {'server': '[ana_asleep]', 'client': 'asleep '}
+################ bot fix 119 on {'119': True}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Sleep on allyB
+    applied: asleep=True phased=False health=17.6 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+    throw real cd2 13.9
+    +0.15 asleep=True phased=True health=18.0
+    +0.32 asleep=True phased=True health=18.0
+    +0.48 asleep=False phased=False health=18.0
+    +0.65 asleep=False phased=False health=18.0
+    +0.83 asleep=False phased=False health=18.0
+    +0.99 asleep=False phased=False health=18.0
+    end: asleep=False phased=False health=18.0 | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Sleep on me
+    applied: asleep=True phased=False health=17.6 | held {'server': '[ana_asleep]', 'client': 'asleep '}
+    throw bot {'ok': True}
+    +0.15 asleep=True phased=True health=18.0
+    +0.32 asleep=True phased=True health=18.0
+    +0.49 asleep=True phased=True health=18.0
+    +0.65 asleep=False phased=False health=18.0
+    +0.82 asleep=False phased=False health=18.0
+    +0.99 asleep=False phased=False health=18.0
+    end: asleep=False phased=False health=18.0 | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Stun on allyB, Suzu not thrown (control), read by game tick
+    ticks read while held [7676, 7679, 7680, 7680, 7681, 7682, 7682, 7683, 7684, 7684, 7685, 7686, 7686, 7687, 7688, 7688, 7689, 7690, 7690] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Stun on allyB, Suzu thrown once the server has it, read by game tick
+    ticks read while held [7891, 7895, 7896] (D 1340: 15 from the first); phase from [7897] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Stun on me, Suzu not thrown (control), read by game tick
+    ticks read while held [8103, 8106, 8107, 8108, 8108, 8109, 8110, 8110, 8111, 8112, 8112, 8113, 8114, 8114, 8115, 8116, 8116, 8117] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Stun on me, Suzu thrown once the server has it, read by game tick
+    ticks read while held [8316, 8320, 8320, 8321, 8322, 8322, 8323, 8324, 8324, 8325, 8326, 8326, 8327, 8328, 8328, 8329, 8330, 8330] (D 1340: 15 from the first); phase from [] ; held at start {'server': '[brigitte_stun]', 'client': 'stun '} ; end {'server': '[]', 'client': ''} ; health 12.4
+--- Hack on allyB
+hero kiriko mode True screen  hp 20.0 / 20.0
+   real Kiriko 17.6 m from Sombra, past EMP
+    applied: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '} me silenced=False throw real cd2 13.8
+    +0.10 silenced=True glowing=True phased=False
+    +0.23 silenced=False glowing=False phased=True
+    +0.37 silenced=False glowing=False phased=True
+    +0.50 silenced=False glowing=False phased=True
+    +0.63 silenced=False glowing=False phased=True
+    +0.77 silenced=False glowing=False phased=False
+    +0.90 silenced=False glowing=False phased=False
+    +1.04 silenced=False glowing=False phased=False
+    end: silenced=False glowing=False phased=False {'server': '[]', 'client': ''}
+--- Hack on me
+hero ana mode True screen  hp 20.0 / 20.0
+    Shift by the real key while hacked: cd1 0.0 -> 0.0
+    applied: silenced=True glowing=True phased=False {'server': '[sombra_hacked, sombra_revealed]', 'client': 'hacked revealed '} throw bot {'ok': True}
+    +0.10 silenced=False glowing=False phased=True
+    +0.24 silenced=False glowing=False phased=True
+    +0.37 silenced=False glowing=False phased=True
+    +0.50 silenced=False glowing=False phased=False
+    +0.64 silenced=False glowing=False phased=False
+    +0.77 silenced=False glowing=False phased=False
+    end: silenced=False glowing=False phased=False {'server': '[]', 'client': ''}
+    Shift by the real key after Suzu: cd1 0.0 -> 14.65
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- AntiHeal on allyB
+    applied: antiHeal=True healCut=True health=13.2 phased=False | held {'server': '[ana_anti_healed]', 'client': 'antiHealed '}
+    throw real cd2 13.9
+    +0.10 antiHeal=False healCut=False health=18.0 phased=True
+    +0.23 antiHeal=False healCut=False health=18.0 phased=True
+    +0.34 antiHeal=False healCut=False health=18.0 phased=True
+    +0.47 antiHeal=False healCut=False health=18.0 phased=False
+    +0.58 antiHeal=False healCut=False health=18.0 phased=False
+    end: antiHeal=False healCut=False health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- AntiHeal on me
+    applied: antiHeal=True healCut=True health=13.2 phased=False | held {'server': '[ana_anti_healed]', 'client': 'antiHealed '}
+    throw bot {'ok': True}
+    +0.10 antiHeal=False healCut=False health=18.0 phased=True
+    +0.23 antiHeal=False healCut=False health=18.0 phased=True
+    +0.37 antiHeal=False healCut=False health=18.0 phased=True
+    +0.50 antiHeal=False healCut=False health=18.0 phased=False
+    +0.64 antiHeal=False healCut=False health=18.0 phased=False
+    end: antiHeal=False healCut=False health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Numbed on allyB
+    applied: asleep=True speed=0.061 health=17.48 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+    throw real cd2 13.8
+    +0.20 asleep=True speed=0.1 health=18.0
+    +0.44 asleep=False speed=0.1 health=18.0
+    +0.67 asleep=False speed=0.1 health=18.0
+    +0.87 asleep=False speed=0.1 health=18.0
+    +1.07 asleep=False speed=0.1 health=18.0
+    +1.31 asleep=False speed=0.1 health=18.0
+    end: asleep=False speed=0.1 health=18.0 | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Numbed on me
+    applied: asleep=True speed=0.061 health=17.48 | held {'server': '[ana_asleep, ana_numbed]', 'client': 'asleep numbed '}
+    throw bot {'ok': True}
+    +0.20 asleep=True speed=0.1 health=18.0
+    +0.44 asleep=True speed=0.1 health=18.0
+    +0.67 asleep=False speed=0.1 health=18.0
+    +0.90 asleep=False speed=0.1 health=18.0
+    +1.10 asleep=False speed=0.1 health=18.0
+    +1.34 asleep=False speed=0.1 health=18.0
+    end: asleep=False speed=0.1 health=18.0 | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Claws on allyB
+    applied: speed=0.07 health=14.16 phased=False | held {'server': '[]', 'client': ''}
+    throw real cd2 13.85
+    +0.10 speed=0.1 health=18.0 phased=True
+    +0.20 speed=0.1 health=18.0 phased=True
+    +0.34 speed=0.1 health=18.0 phased=True
+    +0.47 speed=0.1 health=18.0 phased=False
+    +0.57 speed=0.1 health=18.0 phased=False
+    +0.68 speed=0.1 health=18.0 phased=False
+    +0.82 speed=0.1 health=18.0 phased=False
+    +0.95 speed=0.1 health=18.0 phased=False
+    end: speed=0.1 health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Claws on me
+    applied: speed=0.07 health=14.0 phased=False | held {'server': '[]', 'client': ''}
+    throw bot {'ok': True}
+    +0.10 speed=0.1 health=18.0 phased=True
+    +0.23 speed=0.1 health=18.0 phased=True
+    +0.37 speed=0.1 health=18.0 phased=True
+    +0.47 speed=0.1 health=18.0 phased=True
+    +0.60 speed=0.1 health=18.0 phased=False
+    +0.74 speed=0.1 health=18.0 phased=False
+    +0.87 speed=0.1 health=18.0 phased=False
+    +1.00 speed=0.1 health=18.0 phased=False
+    end: speed=0.1 health=18.0 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- HyperStrike on allyB
+    applied: asleep=True gravity=0.001 phased=False | held {'server': '[]', 'client': 'lifted '}
+    throw real cd2 13.85
+    +0.10 asleep=True gravity=0.001 phased=True
+    +0.21 asleep=True gravity=0.001 phased=True
+    +0.34 asleep=False gravity=0.08 phased=False
+    +0.48 asleep=False gravity=0.08 phased=False
+    +0.61 asleep=False gravity=0.08 phased=False
+    +0.74 asleep=False gravity=0.08 phased=False
+    +0.84 asleep=False gravity=0.08 phased=False
+    +0.98 asleep=False gravity=0.08 phased=False
+    end: asleep=False gravity=0.08 phased=False | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- HyperStrike on me
+    applied: asleep=True gravity=0.001 phased=False | held {'server': '[]', 'client': 'lifted '}
+    throw bot {'ok': True}
+    +0.10 asleep=True gravity=0.001 phased=True
+    +0.23 asleep=True gravity=0.001 phased=True
+    +0.34 asleep=True gravity=0.001 phased=True
+    +0.47 asleep=True gravity=0.001 phased=True
+    +0.60 asleep=False gravity=0.08 phased=False
+    +0.74 asleep=False gravity=0.08 phased=False
+    +0.87 asleep=False gravity=0.08 phased=False
+    +1.00 asleep=False gravity=0.08 phased=False
+    end: asleep=False gravity=0.08 phased=False | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Deceleration on allyB
+    applied: speed=0.075 phased=False health=12.47 | held {'server': '[]', 'client': ''}
+    throw real cd2 13.7
+    +0.15 speed=0.1 phased=True health=17.488
+    +0.35 speed=0.075 phased=False health=16.106
+    +0.55 speed=0.075 phased=False health=14.723
+    +0.75 speed=0.075 phased=False health=13.341
+    +0.95 speed=0.075 phased=False health=11.958
+    +1.15 speed=0.075 phased=False health=10.576
+    +1.35 speed=0.075 phased=False health=9.194
+    +1.55 speed=0.075 phased=False health=7.811
+    +1.75 speed=0.075 phased=False health=6.429
+    +1.95 speed=0.075 phased=False health=5.046
+    end: speed=0.1 phased=False health=3.664 | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Deceleration on me
+    applied: speed=0.075 phased=False health=11.088 | held {'server': '[]', 'client': ''}
+    throw bot {'ok': True}
+    +0.15 speed=0.1 phased=True health=16.106
+    +0.35 speed=0.1 phased=True health=16.106
+    +0.55 speed=0.075 phased=False health=14.723
+    +0.75 speed=0.075 phased=False health=13.341
+    +0.95 speed=0.075 phased=False health=11.958
+    +1.15 speed=0.075 phased=False health=10.576
+    +1.35 speed=0.075 phased=False health=9.194
+    +1.55 speed=0.075 phased=False health=7.811
+    +1.75 speed=0.075 phased=False health=6.429
+    +1.95 speed=0.075 phased=False health=5.046
+    end: speed=0.075 phased=False health=3.664 | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Weaken on allyB
+    applied: weak=0.6 phased=False health=14.7 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+    throw real cd2 13.7
+    +0.10 weak=1.0 phased=True health=18.0
+    +0.30 weak=0.6 phased=False health=17.6
+    +0.50 weak=0.6 phased=False health=17.2
+    +0.70 weak=0.6 phased=False health=16.8
+    +0.90 weak=0.6 phased=False health=16.4
+    +1.10 weak=0.6 phased=False health=16.0
+    +1.30 weak=0.6 phased=False health=15.6
+    +1.50 weak=0.6 phased=False health=15.2
+    +1.70 weak=0.6 phased=False health=15.1
+    +1.90 weak=1.0 phased=False health=15.1
+    +2.10 weak=1.0 phased=False health=15.1
+    +2.30 weak=1.0 phased=False health=15.1
+    end: weak=1.0 phased=False health=15.1 | held {'server': '[]', 'client': ''}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Weaken on me
+    applied: weak=0.6 phased=False health=14.9 | held {'server': '[sombra_weakened]', 'client': 'weakened '}
+    throw bot {'ok': True}
+    +0.10 weak=0.6 phased=True health=18.0
+    +0.30 weak=1.0 phased=True health=18.0
+    +0.50 weak=0.6 phased=False health=17.8
+    +0.70 weak=0.6 phased=False health=17.4
+    +0.90 weak=0.6 phased=False health=17.0
+    +1.10 weak=0.6 phased=False health=16.6
+    +1.30 weak=0.6 phased=False health=16.2
+    +1.50 weak=0.6 phased=False health=15.8
+    +1.70 weak=0.6 phased=False health=15.4
+    +1.90 weak=0.6 phased=False health=15.0
+    +2.10 weak=0.6 phased=False health=14.9
+    +2.30 weak=1.0 phased=False health=14.9
+    end: weak=1.0 phased=False health=14.9 | held {'server': '[]', 'client': ''}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Accretion on allyB: thrown when it lands; how long does the knock-down last?
+    down at +0.80; held {'server': '[]', 'client': ''}; throw real cd2 13.7
+    knock-down lasted 1.10 s (data v13550 1.1 at least); the Suzu reached it: True
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Accretion on me: thrown when it lands; how long does the knock-down last?
+    down at +0.80; held {'server': '[]', 'client': ''}; throw bot {'ok': True}
+    knock-down lasted 1.10 s (data v13550 1.1 at least); the Suzu reached it: True
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- Flux on allyB
+    lifted at +0.80, lifted=True speed=0.1 health=14.0; throw real cd2 13.7
+    +0.20 lifted=True phased=False health=18.0 speed=0.1
+    +0.50 lifted=True phased=False health=18.0 speed=0.1
+    +0.80 lifted=True phased=False health=18.0 speed=0.1
+    +1.10 lifted=True phased=False health=18.0 speed=0.1
+    +1.40 lifted=True phased=False health=18.0 speed=0.05
+    +1.70 lifted=True phased=False health=9.0 speed=0.05
+    +2.00 lifted=True phased=False health=9.0 speed=0.05
+    +2.30 lifted=False phased=False health=9.0 speed=0.1
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Flux on me
+    lifted at +0.80, lifted=True speed=0.1 health=14.0; throw bot {'ok': True}
+    +0.20 lifted=True phased=True health=18.0 speed=0.1
+    +0.50 lifted=True phased=False health=18.0 speed=0.1
+    +0.80 lifted=True phased=False health=18.0 speed=0.1
+    +1.10 lifted=True phased=False health=18.0 speed=0.1
+    +1.40 lifted=True phased=False health=18.0 speed=0.1
+    +1.70 lifted=True phased=False health=9.0 speed=0.05
+    +2.00 lifted=True phased=False health=9.0 speed=0.05
+    +2.30 lifted=False phased=False health=9.0 speed=0.1
+################ prevented, fix on
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Sleep Dart inside the phase, on the real client
+   throw bot {'ok': True}
+    phased at +0.10; effect started
+    +0.20 asleep=False phased=True health=18.0
+    +0.40 asleep=True phased=False health=17.6
+    +0.61 asleep=True phased=False health=17.6
+    +0.81 asleep=True phased=False health=17.6
+    +1.01 asleep=True phased=False health=17.6
+    +1.21 asleep=True phased=False health=17.6
+    +1.40 asleep=True phased=False health=17.6
+    +1.61 asleep=True phased=False health=17.6
+    +1.81 asleep=True phased=False health=17.6
+    +2.01 asleep=True phased=False health=17.6
+    held {'server': '[ana_asleep]', 'client': 'asleep '}
+hero mercy mode True screen  hp 18.0 / 18.0
+--- EMP inside the phase, on the real client: both pressed, read every tick
+   throw bot {'ok': True}
+    phased ticks 12318..12326; silenced ticks None..None; held {'server': '[]', 'client': ''}; me silenced=False glowing=False
+    (EMP pressed in this order, its pulse time decides: if the silence starts after the phase it isn't a test of prevention)
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Accretion inside the phase, on the real client
+   throw bot {'ok': True}
+    phased ticks 12530..12538; knocked down ticks None..None; health 18.0
+################ late viewer, fix on
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- late viewer: Hack on a bot, Suzu from a bot, the real client away for it
+    hacked silenced=True glowing=True {'server': '[sombra_hacked, sombra_revealed]', 'client': ''}
+    after Suzu silenced=False glowing=False {'server': '[]', 'client': ''}
+    back in range: client draws {'server': '[]', 'client': ''}
+    asleep asleep=True {'server': '[ana_asleep]', 'client': ''}
+    after Suzu asleep=False {'server': '[]', 'client': ''}
+    back in range: client draws {'server': '[]', 'client': ''}
+DONE

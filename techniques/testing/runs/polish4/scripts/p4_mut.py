@@ -21,6 +21,13 @@ MUTS = [
  ("anesthetic: stops others' sound", "ana/Anesthetic.java", "return !isTarget && toTarget <= EARSHOT && !anotherNumbedInEarshot;", "return !isTarget && toTarget <= EARSHOT;"),
  ("#121: a knock-down tells", "hero/Holds.java", "return cleansing(hold) != Cleansing.STAYS;", "return true;"),
  ("#121: a sleep or a stun doesn't tell", "hero/Holds.java", "return cleansing(hold) != Cleansing.STAYS;", "return false;"),
+ ("shots: the client copy takes creatures", "hero/Allies.java", "return !clientSide && vanilla && (!phased || ownSide);", "return vanilla && (!phased || ownSide);"),
+ ("shots: stops on the phased", "hero/Allies.java", "return !clientSide && vanilla && (!phased || ownSide);", "return !clientSide && vanilla;"),
+ ("shots: a phased ally refused", "hero/Allies.java", "return !clientSide && vanilla && (!phased || ownSide);", "return !clientSide && vanilla && !phased;"),
+ ("landing: not kept in the air", "hero/Holds.java", "return moving || was && (!onGround || grace);", "return moving;"),
+ ("landing: the ground left counts", "hero/Holds.java", "return moving || was && (!onGround || grace);", "return moving || was && !onGround;"),
+ ("whip: lift 2", "brigitte/BrigitteStats.java", "WHIP_KNOCKBACK = 25, WHIP_LIFT = 3;", "WHIP_KNOCKBACK = 25, WHIP_LIFT = 2;"),
+ ("whip: not level", "brigitte/Brigitte.java", "Vec3 level = new Vec3(aim.x, 0, aim.z);", "Vec3 level = aim;"),
  ("call site #121: every Suzu tells (not offline-testable, expected to pass)", "entity/SuzuEntity.java", "told |= Combat.cleanse(entity);", "Combat.cleanse(entity); told = true;"),
  ("call site: Sleep.cleanse no longer asks Holds (not offline-testable, expected to pass)", "hero/Sleep.java", "Holds.Hold after = Holds.cleansed(s.hold(), entity.level().getGameTime(), Ow.ticks(AnaStats.SLEEP_WAKING));", "Holds.Hold after = null;"),
  ("call site: canHurt passes phased=false (not offline-testable, expected to pass)", "hero/Allies.java", "other instanceof LivingEntity living && Combat.phaseStops(living));", "false);"),
@@ -30,7 +37,7 @@ def log(*a):
     s = " ".join(str(x) for x in a); print(s[:200], flush=True); out.write(s + "\n"); out.flush()
 def run():
     env = dict(os.environ, JAVA_TOOL_OPTIONS="-Xmx2G")
-    r = subprocess.run(["cmd", "/c", W.replace("/", chr(92)) + chr(92) + "gradlew.bat", "-p", W, "test", "--console=plain", "--tests", "*HoldsTest", "--tests", "*PhaseRulesTest", "--tests", "*AnestheticRuleTest", "--tests", "*BrigitteRulesTest", "--continue"], cwd=W, env=env, capture_output=True, text=True, errors="replace")
+    r = subprocess.run(["cmd", "/c", W.replace("/", chr(92)) + chr(92) + "gradlew.bat", "-p", W, "test", "--console=plain", "--tests", "*HoldsTest", "--tests", "*PhaseRulesTest", "--tests", "*AnestheticRuleTest", "--tests", "*BrigitteRulesTest", "--tests", "*ShotRuleTest", "--tests", "*SoftLandingTest", "--continue"], cwd=W, env=env, capture_output=True, text=True, errors="replace")
     t = r.stdout + r.stderr
     failed = [l.strip() for l in t.splitlines() if " FAILED" in l and "Task" not in l]
     return ("BUILD SUCCESSFUL" in t, failed, [l for l in t.splitlines() if "tests completed" in l or "error:" in l][:3] or t[-300:] if "BUILD SUCCESSFUL" not in t and not failed else [l for l in t.splitlines() if "tests completed" in l])
