@@ -194,7 +194,7 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !PLAIN_FALLS.contains(player.getUUID());
 	}
 
-	/** In the air when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till they're down. */
+	/** Falling when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till the fall's over. */
 	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
 
 	/** The ticks in a row a landing has stayed somewhere, this tick's included (Holds.stayed). */
@@ -251,7 +251,7 @@ public final class HeroManager {
 				if (!on) {
 					// plain Minecraft from here: nothing of the hero's play carries over (#100)
 					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
-				} else if (!player.onGround()) {
+				} else if (player.fallDistance > 0) {
 					PLAIN_FALLS.add(player.getUUID());
 				}
 			}
@@ -613,7 +613,8 @@ public final class HeroManager {
 				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
-				if (player.onGround() || !heroMode(player) || player.isPassenger() || player.isInWater() || player.onClimbable()) {
+				// (the distance it counts, not onGround: Minecraft clears it on landing, in water, on a ladder, and a reset by an ability ends it too; onGround read true in mid-air after G)
+				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger()) {
 					PLAIN_FALLS.remove(player.getUUID());
 				}
 				tickRules(player, state);

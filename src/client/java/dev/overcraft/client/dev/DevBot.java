@@ -121,6 +121,8 @@ final class DevBot {
 				dev.overcraft.hero.HeroState softState = HeroManager.state(who);
 				out.addProperty("softLanding", softState != null && softState.softLanding);
 				out.addProperty("climbable", who.onClimbable());
+				out.addProperty("inHeroPlay", HeroManager.inHeroPlay(who));
+				out.addProperty("fallDistance", who.fallDistance);
 				out.addProperty("inWater", who.isInWater());
 				out.addProperty("silenced", dev.overcraft.sombra.Hack.silenced(who));
 				out.addProperty("glowing", who.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING));
