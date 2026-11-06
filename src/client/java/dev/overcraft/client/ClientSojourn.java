@@ -224,6 +224,7 @@ public final class ClientSojourn {
 	/** Others' reloads sounding here, to stop the right one: a sound by id would stop every Sojourn's. */
 	private static final java.util.List<net.minecraft.client.resources.sounds.SoundInstance> OTHERS_RELOADS = new java.util.ArrayList<>();
 	private static boolean hearing;
+	private static int stopReloadTicks;
 
 	/**
 	 * The shot cut a reload on her own gun or another's: its sound stops with its clips (HeroAnimator.trigger). Her own is hers alone. Of
@@ -233,6 +234,8 @@ public final class ClientSojourn {
 		Minecraft mc = Minecraft.getInstance();
 		if (own) {
 			mc.getSoundManager().stop(dev.overcraft.Overcraft.id("sojourn.railgun.reload"), null);
+			// and again: a sound just started gets its buffer on the sound thread, and a stop ahead of that lets it play on (1 of 9 at a 100 ms dev lag)
+			stopReloadTicks = 3;
 			return;
 		}
 		net.minecraft.world.entity.Entity shooter = mc.level == null ? null : mc.level.getEntity(entityId);
