@@ -71,6 +71,8 @@ cursor. Turning with the real mouse still needs the owner.
 - **What this input can't do:** the mouse can't turn the view, and only one key can be held per call, with no right button held. So Barrier and Bash together, W with Space, and aim all stay with the owner; say so in the record.
 
 ## Test worlds
+Harness runs against the owner's frames: [side_by_side](side_by_side_2026-11-05.md).
+
 - **Summon test mobs** with `Tags:["x"]` and select `@e[tag=x]`.
 - **While setting up,** use `/difficulty peaceful` (a slime killed the test once). Gamerules are snake_case in 26.3
   (`send_command_feedback`).
