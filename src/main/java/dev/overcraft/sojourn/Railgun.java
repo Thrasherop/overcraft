@@ -43,10 +43,9 @@ public final class Railgun {
 			s.reloadHeld--;
 		}
 		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
-		boolean recovering = s.sojournChargedLock > 0;
 		s.sojournChargedLock = Math.max(0, s.sojournChargedLock - attack);
 		decay(s, now);
-		boolean rightPressed = rightPressed(s.secondaryHeld, s.sojournRightWas, recovering && s.sojournChargedLock <= 0);
+		boolean rightPressed = s.secondaryHeld && !s.sojournRightWas;
 		s.sojournRightWas = s.secondaryHeld;
 		if (s.sojournFiring && now - s.sojournShotAt >= BURST_OVER) {
 			// the burst is over (PRIMARY up, empty, the Charged Shot, G): 2BF5's Stop, its ring-out (643C hers, 8AF0 100 m)
@@ -68,10 +67,10 @@ public final class Railgun {
 			return;
 		}
 		// the right button first: it outranks the rounds and the reload (D: its v33 priority 0x79 over their 0x2, #425 / #233 / #571).
-		// Only its own recovery holds it back, a press then waiting 0.15 s (D: SECONDARY's buffer)
-		if (rightPressed && s.sojournEnergy > 0) {
-			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
-			s.sojournChargedShown = false;
+		// Only its own recovery holds it back, a press then waiting 0.15 s (D: SECONDARY's buffer). A press her client has shown keeps
+		// that: this edge taking over made her copies come twice (reproduced with a 100 ms dev lag)
+		if (rightPressed && s.sojournEnergy > 0 && !s.sojournChargedShown) {
+			s.sojournCharged = bufferTicks();
 		}
 		chargedIfReady(player, s);
 		if (s.sojournCharged > 0 && --s.sojournCharged <= 0) {
@@ -100,11 +99,11 @@ public final class Railgun {
 	}
 
 	/**
-	 * The right button counts as pressed when it goes down, and when its recovery ends with it still down: #421 begins again then,
-	 * and its held plug m_80AF45FB is the one that resumes the rounds of a held left button at #527 (D, M).
+	 * Ticks a press waits: set one tick and counted down before each check after it, so it's looked at the tick it's made and on the
+	 * 3 after, 0.15 s (D #421 m_246438AD). Set to 3 it was looked at for 0.10 s.
 	 */
-	static boolean rightPressed(boolean held, boolean was, boolean recoveryJustOver) {
-		return held && (!was || recoveryJustOver);
+	static int bufferTicks() {
+		return Ow.ticks(CHARGED_BUFFER) + 1;
 	}
 
 	/**
@@ -124,7 +123,7 @@ public final class Railgun {
 	static void pressedShown(ServerPlayer player, HeroState s) {
 		s.sojournRightWas = true;
 		if (s.sojournEnergy > 0) {
-			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
+			s.sojournCharged = bufferTicks();
 			s.sojournChargedShown = true;
 			chargedIfReady(player, s);
 		}
@@ -336,7 +335,13 @@ public final class Railgun {
 		// whose anim and wait stop: the magazine keeps what it has, full only past #285's 0.96 s (D H nodes, M the stack's meaning).
 		// The owner's rule for a cut reload too (HeroState.interruptReload). An empty magazine reloads again after the recovery
 		// (#75 needs v2447 = 0; startReload's weaponRecovery here). Every client's animator ends the reload's look on this clip
+		boolean cut = s.primaryReload >= 0;
 		s.interruptReload(0);
+		if (shown && cut) {
+			// her client cut what it knew of as she pressed, and this reload's clip and sound may have crossed her press on the wire:
+			// behind them in the same stream, this ends them (HeroAnimator.trigger; a ghost reload at a 100 ms dev lag)
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "reload_cut"));
+		}
 		s.sojournChargedLock = Ow.ticks(CHARGED_LOCKOUT);
 		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(CHARGED_LOCKOUT));
 		if (shown) {

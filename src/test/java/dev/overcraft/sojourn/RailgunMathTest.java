@@ -35,12 +35,13 @@ class RailgunMathTest {
 	}
 
 	@Test
-	void rightButtonPressRules() {
-		assertTrue(Railgun.rightPressed(true, false, false), "goes down");
-		assertFalse(Railgun.rightPressed(true, true, false), "stays down");
-		assertTrue(Railgun.rightPressed(true, true, true), "still down as the recovery ends: #421 begins again");
-		assertFalse(Railgun.rightPressed(false, true, true), "let go before it ended");
-		assertFalse(Railgun.rightPressed(false, false, false), "up");
+	void pressWaitsItsWholeBuffer() {
+		// 0.15 s (D #421): looked at the tick it's made and the 3 after
+		int checks = 0;
+		for (int left = Railgun.bufferTicks(); left > 0; left--) {
+			checks++;
+		}
+		assertEquals(4, checks);
 	}
 
 	@Test

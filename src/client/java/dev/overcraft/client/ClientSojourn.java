@@ -30,6 +30,15 @@ public final class ClientSojourn {
 
 	/** Each client tick: the slide follows the server's flag. */
 	public static void tick(Minecraft mc) {
+		if (!hearing) {
+			hearing = true;
+			net.minecraft.resources.Identifier others = dev.overcraft.Overcraft.id("sojourn.railgun.reload_3p");
+			mc.getSoundManager().addListener((sound, events, range) -> {
+				if (sound.getIdentifier().equals(others)) {
+					OTHERS_RELOADS.add(sound);
+				}
+			});
+		}
 		if (ClientHero.hero() == Hero.SOJOURN && artMade != dev.overcraft.client.effect.EffectArt.generation()) {
 			// her art made as she's picked, not in the frame of her first shot (EffectArt.prepare)
 			artMade = dev.overcraft.client.effect.EffectArt.generation();
@@ -90,24 +99,57 @@ public final class ClientSojourn {
 		net.minecraft.client.player.LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || ClientHero.hero() != Hero.SOJOURN || !ClientHero.controls() || mc.gui.screen() != null
 			|| ClientHero.perkMenuOpen() || dev.overcraft.client.comms.CommsWheel.holding()
-			|| Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
-			|| !net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(
-				dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE)).equals(key)) {
+			|| Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))) {
+			return;
+		}
+		if (bound(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).equals(key)) {
+			ultPressed();
+		}
+		if (!bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key)) {
 			return;
 		}
 		double energy = ClientHero.sync().meter() * SojournStats.ENERGY_MAX;
-		if (energy <= 0 || System.nanoTime() < lockedUntil) {
+		long now = System.nanoTime();
+		if (now < lockedUntil && lockedUntil - now <= CALL_WINDOW_NANOS) {
+			// late in its recovery: this press goes the usual way, waits in the server's buffer, and the shot it makes only reaches her
+			// a round trip on (Railgun): a click before then must not play a shot the server will drop
+			serverMayFireUntil = now + SERVER_SHOT_WAIT_NANOS;
+		}
+		if (energy <= 0 || now < lockedUntil || now < serverMayFireUntil) {
 			return;
 		}
 		locked(SojournStats.CHARGED_LOCKOUT);
+		// the mouse's movement this frame hasn't turned her yet: Minecraft.runTick applies it after the events and the tick, and a click in
+		// the same poll as a flick read the old aim (4 of 10). Applied now, in the events' order; the frame's own call finds what's left
+		mc.mouseHandler.handleAccumulatedMovement();
 		// with her aim of this moment: the server's copy may be a tick old, and she may have just flicked onto the target
 		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot());
 		show(mc, player, energy);
 	}
 
-	/** She can't fire it for this long from now (s). */
+	/** How near its end a press in the recovery can still be fired by the server: its 0.15 s buffer, and a tick each way on the road (ours). */
+	private static final long CALL_WINDOW_NANOS = 250_000_000;
+	/** A press left to the server: no shot shown for this long, or until its shot arrives (ours: a generous round trip; a ping above it can still show one). */
+	private static final long SERVER_SHOT_WAIT_NANOS = 500_000_000;
+	/** Until when (nanoTime) the server may be about to fire a press this client didn't show. */
+	private static long serverMayFireUntil;
+
+	/** Q as it goes down, if her ult is ready: no shot through its cast, from now, not a round trip on (ghost shots at a 100 ms dev lag). */
+	private static void ultPressed() {
+		var sync = ClientHero.sync();
+		if (sync.ultCharge() >= sync.ultCost() && !sync.ultActive()) {
+			locked(SojournStats.OVERCLOCK_CAST);
+		}
+	}
+
+	private static com.mojang.blaze3d.platform.InputConstants.Key bound(dev.overcraft.client.controls.HeroControls.Action action) {
+		return net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(dev.overcraft.client.controls.HeroControls.get(action));
+	}
+
+	/** She can't fire it for this long from now (s). A shot from the server has arrived: nothing more is on its way. */
 	public static void locked(double seconds) {
 		lockedUntil = System.nanoTime() + (long) (seconds * 1.0e9);
+		serverMayFireUntil = 0;
 	}
 
 	private static void show(Minecraft mc, net.minecraft.client.player.LocalPlayer player, double energy) {
@@ -129,9 +171,28 @@ public final class ClientSojourn {
 			(float) dir.z, player.getId(), (int) Math.round(energy), false));
 	}
 
-	/** The shot cut a reload on {@code own} or another's gun: its sound stops with its clips (HeroAnimator.trigger). */
-	public static void reloadCut(boolean own) {
-		Minecraft.getInstance().getSoundManager().stop(dev.overcraft.Overcraft.id(own ? "sojourn.railgun.reload" : "sojourn.railgun.reload_3p"), null);
+	/** Others' reloads sounding here, to stop the right one: a sound by id would stop every Sojourn's. */
+	private static final java.util.List<net.minecraft.client.resources.sounds.SoundInstance> OTHERS_RELOADS = new java.util.ArrayList<>();
+	private static boolean hearing;
+
+	/**
+	 * The shot cut a reload on her own gun or another's: its sound stops with its clips (HeroAnimator.trigger). Her own is hers alone. Of
+	 * others', the one nearest this Sojourn: the server's packet says where, not whose (ours; two side by side could swap).
+	 */
+	public static void reloadCut(int entityId, boolean own) {
+		Minecraft mc = Minecraft.getInstance();
+		if (own) {
+			mc.getSoundManager().stop(dev.overcraft.Overcraft.id("sojourn.railgun.reload"), null);
+			return;
+		}
+		net.minecraft.world.entity.Entity shooter = mc.level == null ? null : mc.level.getEntity(entityId);
+		OTHERS_RELOADS.removeIf(s -> !mc.getSoundManager().isActive(s));
+		if (shooter != null) {
+			OTHERS_RELOADS.stream().min(java.util.Comparator.comparingDouble(s -> shooter.distanceToSqr(s.getX(), s.getY(), s.getZ()))).ifPresent(s -> {
+				mc.getSoundManager().stop(s);
+				OTHERS_RELOADS.remove(s);
+			});
+		}
 	}
 
 	/** Her extra input: the slide's end, once. */
