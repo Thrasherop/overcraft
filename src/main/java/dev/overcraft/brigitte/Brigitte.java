@@ -194,7 +194,7 @@ public final class Brigitte implements HeroKit {
 
 	private static void end(ServerPlayer player, HeroState s) {
 		s.bashTicks = -1;
-		// its landing, however it ended (a hit on its first tick never had a tick of moving), and not down until her exit glide has run out: she leaves at 15 m/s and can go off a ledge (#35; ours, the stop takes about 6 ticks)
+		// its landing, whether it ran out, hit a wall or hit someone (a hit on its first tick never had a tick of moving), not if she's left play (endActions), and not down until her exit glide has run out: she leaves at 15 m/s and can go off a ledge (#35; ours, the stop takes about 6 ticks)
 		s.softLanding = true;
 		s.softLandingGrace = player.level().getGameTime() + BASH_LANDING_GRACE;
 		s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);

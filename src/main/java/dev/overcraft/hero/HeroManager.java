@@ -189,9 +189,23 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !Sleep.asleep(player);
 	}
 
-	/** A hero in hero mode, alive, whether or not their keys are live: what a fall asks. Asleep or stunned in the air, an ability's landing and their own safe height still count (#35). */
+	/** A hero in hero mode, alive, whether or not their keys are live: what a fall asks. Asleep or stunned in the air, an ability's landing and their own safe height still count (#35). A fall begun in Minecraft mode stays Minecraft's (PLAIN_FALLS). */
 	public static boolean inHeroPlay(Player player) {
-		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator();
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !PLAIN_FALLS.contains(player.getUUID());
+	}
+
+	/** In the air when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till they're down. */
+	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
+
+	/** The ticks in a row a landing has stayed somewhere, this tick's included (Holds.stayed). */
+	public static int landingTouch(net.minecraft.world.entity.LivingEntity e, int touch) {
+		boolean held = e.isInWater() || e.isInLava() || e.level().getBlockState(e.blockPosition()).is(net.minecraft.world.level.block.Blocks.COBWEB);
+		return Holds.stayed(held, e.onClimbable(), e.getKnownMovement().y) ? touch + 1 : 0;
+	}
+
+	/** A landing not tied to hero mode (Life Grip's, on anyone) is over: riding, or stayed. */
+	public static boolean landingOver(net.minecraft.world.entity.LivingEntity e, int touch) {
+		return Holds.landingEnds(true, touch, e.isPassenger());
 	}
 
 	/**
@@ -237,6 +251,8 @@ public final class HeroManager {
 				if (!on) {
 					// plain Minecraft from here: nothing of the hero's play carries over (#100)
 					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
+				} else if (!player.onGround()) {
+					PLAIN_FALLS.add(player.getUUID());
 				}
 			}
 			player.setAttached(HERO_MODE, on);
@@ -597,12 +613,15 @@ public final class HeroManager {
 				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
+				if (player.onGround() || !heroMode(player) || player.isPassenger() || player.isInWater() || player.onClimbable()) {
+					PLAIN_FALLS.remove(player.getUUID());
+				}
 				tickRules(player, state);
 				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past, nor while it runs (Holds.landingEnds, stayed)
 				if (state.softLanding) {
 					boolean running = state.gaPhase != 0 || state.dashTicks >= 0 || state.sojournSlide >= 0 || state.bashTicks >= 0 || state.wallRiding || state.sigmaFluxPhase != 0;
-					state.softLandingTouch = !running && Holds.stayed(player.isInWater(), player.onClimbable(), player.getKnownMovement().y) ? state.softLandingTouch + 1 : 0;
-					if (Holds.landingEnds(heroMode(player), state.softLandingTouch)) {
+					state.softLandingTouch = running ? 0 : landingTouch(player, state.softLandingTouch);
+					if (Holds.landingEnds(heroMode(player), state.softLandingTouch, player.isPassenger())) {
 						state.softLanding = false;
 						state.softLandingTouch = 0;
 					}

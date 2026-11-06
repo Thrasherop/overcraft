@@ -34,10 +34,10 @@ class SoftLandingTest {
 
 	@Test
 	void minecraftModeEndsItAndSoDoesStayingOnALadderNotATouch() {
-		assertTrue(Holds.landingEnds(false, 0));
-		assertTrue(Holds.landingEnds(true, Holds.LANDING_TOUCH));
-		assertFalse(Holds.landingEnds(true, Holds.LANDING_TOUCH - 1));
-		assertFalse(Holds.landingEnds(true, 0));
+		assertTrue(Holds.landingEnds(false, 0, false));
+		assertTrue(Holds.landingEnds(true, Holds.LANDING_TOUCH, false));
+		assertFalse(Holds.landingEnds(true, Holds.LANDING_TOUCH - 1, false));
+		assertFalse(Holds.landingEnds(true, 0, false));
 	}
 
 	@Test
@@ -47,5 +47,10 @@ class SoftLandingTest {
 		assertTrue(Holds.stayed(false, true, 0.1));
 		assertTrue(Holds.stayed(true, false, -0.5));
 		assertFalse(Holds.stayed(false, false, 0));
+	}
+
+	@Test
+	void ridingEndsIt() {
+		assertTrue(Holds.landingEnds(true, 0, true));
 	}
 }

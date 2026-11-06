@@ -77,21 +77,21 @@ final class Holds {
 	}
 
 	/**
-	 * What ends a soft landing whoever's it is: leaving hero mode (nothing of the hero's play carries over), or staying in water or on a ladder this many ticks in a row. A touch doesn't: abilities set the flag once, and a dash
+	 * What ends a soft landing whoever's it is: leaving hero mode (nothing of the hero's play carries over), riding (a passenger's never on the ground, so it would last as long as the ride), or staying in water or on a ladder this many ticks in a row. A touch doesn't: abilities set the flag once, and a dash
 	 * off a ladder, or a fall past one vine, keeps it (a bash down a wall past a vine hurt: runs/polish4/round6_repro_fb62f3c.txt). All ours, 0.5 s. Tested: SoftLandingTest.
 	 */
 	static final int LANDING_TOUCH = 10;
 
 	/**
-	 * This tick counts towards having stayed: in water; or on a ladder or vines climbing or holding on, not sliding down them (Minecraft caps a slide at 0.15 a tick, so tall vines take a second or more to fall past, and a
+	 * This tick counts towards having stayed: in water, lava or a cobweb, which hold them and stop any fall; or on a ladder or vines climbing or holding on, not sliding down them (Minecraft caps a slide at 0.15 a tick, so tall vines take a second or more to fall past, and a
 	 * bash past 3 of them hurt). The rule's reading, ours: "an ability's landing doesn't hurt" until they've taken hold of something. Tested: SoftLandingTest.
 	 */
-	static boolean stayed(boolean inWater, boolean onClimbable, double vy) {
-		return inWater || onClimbable && vy > -0.1;
+	static boolean stayed(boolean heldInBlock, boolean onClimbable, double vy) {
+		return heldInBlock || onClimbable && vy > -0.1;
 	}
 
-	static boolean landingEnds(boolean heroMode, int touchTicks) {
-		return !heroMode || touchTicks >= LANDING_TOUCH;
+	static boolean landingEnds(boolean heroMode, int touchTicks, boolean riding) {
+		return !heroMode || riding || touchTicks >= LANDING_TOUCH;
 	}
 
 	/**
