@@ -519,7 +519,7 @@ public final class Brigitte implements HeroKit {
 				// phased after it hit: the hold of the push and Whiplash are off (W: no knockback)
 				return true;
 			}
-			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
+			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision && intoAWall(p)) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
 				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt, p.target);
@@ -545,6 +545,13 @@ public final class Brigitte implements HeroKit {
 			Combat.send(p.target);
 			return false;
 		});
+	}
+
+	/** Not a step: a stair or a slab stops them in the air too, but it isn't a wall to slam into (BZ "slam enemies into walls"). Ours: free one step up, the way they were going, is a step. */
+	private static boolean intoAWall(Push p) {
+		Vec3 along = new Vec3(p.velocity.x, 0, p.velocity.z);
+		Vec3 nudge = along.lengthSqr() < 1.0E-6 ? Vec3.ZERO : along.normalize().scale(0.1);
+		return !p.target.level().noCollision(p.target, p.target.getBoundingBox().move(nudge.x, 0.6, nudge.z));
 	}
 
 	/** The flail starts back from where its head is: no more hits; the cooldown when it's in her hand (0.3 s). */
