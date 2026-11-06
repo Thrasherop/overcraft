@@ -38,6 +38,8 @@ public final class Railgun {
 	static void tick(ServerPlayer player, HeroState s, boolean controls) {
 		double attack = Combat.attackRate(player);
 		long now = player.level().getGameTime();
+		s.sojournPosT2 = s.sojournPosT1;
+		s.sojournPosT1 = player.position();
 		reload(s, attack);
 		if (s.reloadHeld > 0) {
 			s.reloadHeld--;
@@ -64,9 +66,10 @@ public final class Railgun {
 		if (!controls || !player.isAlive()) {
 			s.sojournShotClock = 1;
 			s.sojournCharged = 0;
-			// (or a press shown just before G or death would refuse the next one's edge)
+			// (or a press shown just before G would refuse the next one's edge; this tick doesn't run for the dead, so a death reaches it through the
+			// respawn's first tick, or Sojourn.equip on a switch)
 			s.sojournChargedShown = false;
-			s.sojournAimFrom = null;
+			s.sojournAim = null;
 			return;
 		}
 		// the right button first: it outranks the rounds and the reload (D: its v33 priority 0x79 over their 0x2, #425 / #233 / #571).
@@ -78,7 +81,7 @@ public final class Railgun {
 		chargedIfReady(player, s);
 		if (s.sojournCharged > 0 && --s.sojournCharged <= 0) {
 			s.sojournChargedShown = false;
-			s.sojournAimFrom = null;
+			s.sojournAim = null;
 		}
 		if (s.primaryAmmo == 0 && s.primaryReload < 0 && s.reloadHeld <= 0) {
 			startReload(player, s);
@@ -119,46 +122,62 @@ public final class Railgun {
 		return s.sojournChargedLock <= 0 && !(s.sojournUlt >= 0 && s.sojournUlt < Ow.ticks(OVERCLOCK_CAST));
 	}
 
+	/** The shot she was shown: where from and where to, kept for this one press while it waits. */
+	public record Aim(Vec3 eye, float yaw, float pitch) {
+	}
+
 	/**
-	 * Her client has already shown this press (ClientSojourn): the shot goes now, on the packet, not at the next tick. A client
-	 * a moment ahead of the recovery here waits in the buffer. No energy here means her client was behind: nothing happens, and
-	 * what it showed was a shot that wasn't (ours: no damage; only when the energy ran out as she pressed).
+	 * Her client has already shown this press (ClientSojourn): the shot goes now, on the packet, not at the next tick (Fabric queues it behind her moves on the one
+	 * PacketProcessor, read: so her position here is the one she last sent). A client a moment ahead of the recovery here waits in the buffer. No energy here means her
+	 * client was behind: nothing happens, and what it showed was a shot that wasn't (ours: no damage; only when the energy ran out as she pressed).
+	 * <p>The rotation is hers, as in every move packet. The place isn't hers to say: the press says only how far between her last two positions she saw from, and it's
+	 * worked out here on her own reported path (played: 0.7 m behind at a slide, perfect flicks missed 3 of 10).
 	 */
-	static void pressedShown(ServerPlayer player, HeroState s) {
+	public static void pressedShown(ServerPlayer player, HeroState s, dev.overcraft.net.HeroInputPayload input) {
+		if (s.hero != dev.overcraft.hero.Hero.SOJOURN) {
+			return;
+		}
+		float yaw = input.yaw(), pitch = input.pitch();
+		if (Float.isFinite(yaw) && Float.isFinite(pitch)) {
+			pitch = Math.clamp(pitch, -90f, 90f);
+			player.setYRot(yaw);
+			player.setYHeadRot(yaw);
+			player.setXRot(pitch);
+		}
 		s.sojournRightWas = true;
 		if (s.sojournEnergy > 0) {
 			s.sojournCharged = bufferTicks();
 			s.sojournChargedShown = true;
+			Vec3 at = pathPoint(player.position(), s.sojournPosT1, s.sojournPosT2, input.partial());
+			s.sojournAim = new Aim(at.add(0, player.getEyeHeight(), 0), player.getYRot(), player.getXRot());
 			chargedIfReady(player, s);
 			if (s.sojournCharged == 0) {
 				// fired on the packet, before this tick's countdown: a tick more, or 13 ticks of recovery ran out in 0.60 s against the data's
 				// 0.65 (measured: next shot +603 ms; D #438)
 				s.sojournChargedLock += 1;
 				s.weaponRecovery += 1;
+				// (at once, so her client can read a round trip off it: ClientSojourn.acked)
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "charged_ack"));
 			}
+		} else {
+			s.sojournAim = null;
 		}
 	}
+
+	/** A jump longer than this between two positions is a teleport, not a move: no point between them. Over a tick at the slide jump's 27.4 m/s (ours). */
+	private static final double PATH_STEP_MAX = 2;
 
 	/**
-	 * The press's own aim (her client's rotation is hers to say, here as in every move packet): the crosshair she pressed on. A
-	 * rotation packet sent just before it wasn't enough: a look and a press 33 ms later went along the old aim 4 times in 8 (played, cause
-	 * not read further).
+	 * The point {@code partial} (0..1; anything else: the latest) of the way along her last step. {@code t1} and {@code t2}: where she was at the end of the last two
+	 * ticks: if she has moved since the last tick (this press came in with that move) the step began at t1, else at t2.
 	 */
-	public static void aim(ServerPlayer player, HeroState s, dev.overcraft.net.HeroInputPayload input) {
-		float yaw = input.yaw(), pitch = input.pitch();
-		if (Float.isFinite(yaw) && Float.isFinite(pitch)) {
-			player.setYRot(yaw);
-			player.setYHeadRot(yaw);
-			player.setXRot(Math.clamp(pitch, -90f, 90f));
+	static Vec3 pathPoint(Vec3 now, @org.jspecify.annotations.Nullable Vec3 t1, @org.jspecify.annotations.Nullable Vec3 t2, float partial) {
+		Vec3 from = t1 != null && !t1.equals(now) ? t1 : t2;
+		if (from == null || !Float.isFinite(partial) || from.distanceToSqr(now) > PATH_STEP_MAX * PATH_STEP_MAX) {
+			return now;
 		}
-		// and from where: the ray from the camera she aimed with, not the server's tick position (played: perfect flicks missed 3 of 10 at a slide, the
-		// camera 0.7 m behind). Hers to say only near her and with nothing solid between (ours: 6 m, a run's 27 m/s over a tick and a 0.15 s ping)
-		Vec3 from = new Vec3(input.x(), input.y(), input.z()), eye = player.getEyePosition();
-		s.sojournAimFrom = from.isFinite() && from.distanceToSqr(eye) <= AIM_FROM_REACH * AIM_FROM_REACH
-			&& player.level().clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS ? from : null;
+		return from.lerp(now, Math.clamp(partial, 0f, 1f));
 	}
-
-	private static final double AIM_FROM_REACH = 6;
 
 	private static void chargedIfReady(ServerPlayer player, HeroState s) {
 		if (s.sojournCharged > 0 && s.sojournEnergy > 0 && chargedReady(s)) {
@@ -367,10 +386,12 @@ public final class Railgun {
 		} else {
 			Combat.animate(player, "charged_shot");
 		}
-		Vec3 eye = s.sojournAimFrom != null ? s.sojournAimFrom : player.getEyePosition();
-		s.sojournAimFrom = null;
-		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f %.2f", eye.x, eye.y, eye.z, player.getYRot()));
-		Vec3 end = eye.add(player.getViewVector(1.0f).scale(CHARGED_RANGE));
+		// a shown press's shot is what she was shown, wherever a move packet has turned her since; anything else, where the server has her
+		Aim aim = shown ? s.sojournAim : null;
+		s.sojournAim = null;
+		Vec3 eye = aim != null ? aim.eye() : player.getEyePosition();
+		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f %.2f", eye.x, eye.y, eye.z, aim != null ? aim.yaw() : player.getYRot()));
+		Vec3 end = eye.add((aim != null ? Vec3.directionFromRotation(aim.pitch(), aim.yaw()) : player.getViewVector(1.0f)).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 stop = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
 		record Hit(Entity entity, Vec3 at, double dist) {

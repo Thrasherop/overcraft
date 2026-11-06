@@ -35,6 +35,18 @@ class RailgunMathTest {
 	}
 
 	@Test
+	void theShotsPlaceIsOnHerOwnPath() {
+		Vec3 t2 = new Vec3(0, 0, 0), t1 = new Vec3(1, 0, 0), now = new Vec3(2, 0, 0);
+		assertEquals(1.5, Railgun.pathPoint(now, t1, t2, 0.5f).x, 1e-6, "moved since the last tick: the step from t1");
+		assertEquals(0.5, Railgun.pathPoint(t1, t1, t2, 0.5f).x, 1e-6, "not since: the step from t2");
+		assertEquals(2, Railgun.pathPoint(now, t1, t2, 1e9f).x, 1e-6, "clamped");
+		assertEquals(1, Railgun.pathPoint(now, t1, t2, -5).x, 1e-6, "clamped");
+		assertEquals(2, Railgun.pathPoint(now, t1, t2, Float.NaN).x, 1e-6, "no sense: the latest");
+		assertEquals(50, Railgun.pathPoint(new Vec3(50, 0, 0), t1, t2, 0).x, 1e-6, "a teleport isn't a step");
+		assertEquals(2, Railgun.pathPoint(now, null, null, 0).x, 1e-6, "no history");
+	}
+
+	@Test
 	void pressWaitsItsWholeBuffer() {
 		// 0.15 s (D #421): looked at the tick it's made and the 3 after
 		int checks = 0;

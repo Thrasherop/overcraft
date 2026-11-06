@@ -1392,6 +1392,7 @@ public final class EffectArt {
 	/** Resource packs changed: colour them again when next asked. */
 	public static void clear() {
 		CACHE.clear();
+		QUEUED.clear();
 		generation++;
 	}
 
@@ -1407,6 +1408,9 @@ public final class EffectArt {
 	/** Coloured on the worker, waiting for the client's thread to make them textures. */
 	private static final java.util.Queue<Made> MADE = new java.util.concurrent.ConcurrentLinkedQueue<>();
 	private static final java.util.concurrent.atomic.AtomicInteger OUTSTANDING = new java.util.concurrent.atomic.AtomicInteger();
+	/** Sent to the worker: CACHE only knows what's finished, and she and another Sojourn's list share art. */
+	private static final java.util.Set<String> QUEUED = new java.util.HashSet<>();
+	private static long madeBytes;
 	/** What a frame may spend turning them into textures: ours, under a frame at 144 Hz by far. */
 	private static final long FRAME_BUDGET_NANOS = 1_500_000;
 	private static volatile int generation;
@@ -1414,6 +1418,11 @@ public final class EffectArt {
 
 	public static int generation() {
 		return generation;
+	}
+
+	/** Texture memory of what was made ahead, mips included (the harness). */
+	public static long madeBytes() {
+		return madeBytes;
 	}
 
 	/** How many are still on their way (the harness). */
@@ -1443,7 +1452,7 @@ public final class EffectArt {
 			for (int i = 0; i < frames; i++) {
 				String name = hash >= 0 ? art.mask().substring(0, hash) + "_" + i : art.mask();
 				String key = name + "/" + art.palette().name().toLowerCase(Locale.ROOT) + (art.soft() ? "_soft" : "");
-				if (!CACHE.containsKey(key)) {
+				if (!CACHE.containsKey(key) && QUEUED.add(key)) {
 					OUTSTANDING.incrementAndGet();
 					maker.execute(() -> {
 						try {
@@ -1473,6 +1482,7 @@ public final class EffectArt {
 			OUTSTANDING.decrementAndGet();
 			if (made.generation() == generation && !CACHE.containsKey(made.key())) {
 				Identifier id = Overcraft.id("effect/" + made.key());
+				madeBytes += made.image().getWidth() * (long) made.image().getHeight() * 4 * 4 / 3;
 				Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, made.image(), MipmapStrategy.MEAN));
 				CACHE.put(made.key(), Optional.of(id));
 			} else {

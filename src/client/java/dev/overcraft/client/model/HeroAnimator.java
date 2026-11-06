@@ -280,6 +280,10 @@ public final class HeroAnimator {
 			a.actionsFirstPerson.cancel("reload", now);
 			dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
 		}
+		if (action.equals("charged_ack")) {
+			dev.overcraft.client.ClientSojourn.acked();
+			return;
+		}
 		if (action.equals("reload_cut")) {
 			// (the server to her alone: a reload that crossed her shown press on the wire)
 			return;

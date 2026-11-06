@@ -325,9 +325,9 @@ public final class DevServer {
 						dev.overcraft.hero.PressTrace.start();
 					}
 					case "lag" -> DevLag.set(Long.parseLong(a[1]));
-					// a modified client's press, as it would send it: "send <held> <pressed> <yaw> <pitch> <x> <y> <z>"
+					// a modified client's press, as it would send it: "send <held> <pressed> <yaw> <pitch> <partial>"
 					case "send" -> net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.overcraft.net.HeroInputPayload(Integer.parseInt(a[1]), Integer.parseInt(a[2]), 0, 0,
-						Float.parseFloat(a[3]), Float.parseFloat(a[4]), Double.parseDouble(a[5]), Double.parseDouble(a[6]), Double.parseDouble(a[7])));
+						Float.parseFloat(a[3]), Float.parseFloat(a[4]), Float.parseFloat(a[5])));
 					case "bind" -> dev.overcraft.client.controls.HeroControls.set(dev.overcraft.client.controls.HeroControls.Action.valueOf(a[1].toUpperCase(java.util.Locale.ROOT)), InputConstants.getKey(a[2]));
 					case "flags" -> {
 						var s = dev.overcraft.hero.HeroManager.state(mc.getSingleplayerServer().getPlayerList().getPlayer(player.getUUID()));
@@ -349,7 +349,10 @@ public final class DevServer {
 						KeyMapping.click(bound);
 						KeyMapping.set(bound, false);
 					}
-					case "art" -> out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
+					case "art" -> {
+						out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
+						out.addProperty("artBytes", dev.overcraft.client.effect.EffectArt.madeBytes());
+					}
 					case "sounding" -> {
 						// the channels actually running, by id: SoundEngine lists a stopped sound for 20 ticks from its start, so "bot playing" can't tell
 						var f = net.minecraft.client.sounds.SoundManager.class.getDeclaredField("soundEngine");

@@ -46,8 +46,8 @@ public final class ClientSojourn {
 			stopReloadTicks--;
 			mc.getSoundManager().stop(dev.overcraft.Overcraft.id("sojourn.railgun.reload"), null);
 		}
+		// (KeyMapping.set clears it as the key goes up: this is for a release something else ate, an overlay's)
 		fireDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).isDown();
-		ultDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).isDown();
 		int art = dev.overcraft.client.effect.EffectArt.generation();
 		if (ClientHero.hero() == Hero.SOJOURN && artMade != art) {
 			// her art made as she's picked, not in the frame of her first shot (EffectArt.prepare)
@@ -119,14 +119,14 @@ public final class ClientSojourn {
 		if (ClientHero.hero() != Hero.SOJOURN) {
 			return;
 		}
-		// the first of a press only: KeyboardHandler clicks again on the OS's repeat of a held key, and that was a shot every 0.65 s
+		// the first of a press only: KeyboardHandler clicks again on the OS's repeat of a held key, and that was a shot every 0.65 s. (Q's repeats aren't filtered:
+		// ClientHero.drain sends them as presses, so one can start Overclock)
 		boolean fire = bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key), ult = bound(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).equals(key);
-		if (fire && fireDown || ult && ultDown) {
-			dev.overcraft.hero.PressTrace.mark(fire ? "refused" : "refused_q");
+		if (fire && fireDown) {
+			dev.overcraft.hero.PressTrace.mark("refused");
 			return;
 		}
 		fireDown |= fire;
-		ultDown |= ult;
 		Minecraft mc = Minecraft.getInstance();
 		net.minecraft.client.player.LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || !ClientHero.controls() || mc.gui.screen() != null
@@ -149,14 +149,15 @@ public final class ClientSojourn {
 			if (lockedUntil - now <= CALL_WINDOW_NANOS) {
 				// late in its recovery: the server's buffer keeps this press and fires it as the recovery ends, and that shot only reaches her a
 				// round trip on: a click before then must not play a shot the server will drop. Sent now, so the window is the server's to the tick
-				ClientHero.pressNow(0, 0, 0, 0, 0, 0);
+				ClientHero.pressNow(0, 0, 0, 1);
 				serverMayFireUntil = lockedUntil + roundTripNanos(mc, player);
 			}
 			return;
 		}
-		if (now < serverMayFireUntil) {
-			// the same, with that shot still on its way: this press is the server's to judge
-			ClientHero.pressNow(0, 0, 0, 0, 0, 0);
+		if (now < serverMayFireUntil || dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).isDown()) {
+			// the same, with that shot still on its way: this press is the server's to judge. Or Q is held: a repeat may have started Overclock before this
+			// client can know her ult is ready, and its cast would drop this shot
+			ClientHero.pressNow(0, 0, 0, 1);
 			serverMayFireUntil = now + roundTripNanos(mc, player);
 			return;
 		}
@@ -164,11 +165,13 @@ public final class ClientSojourn {
 		// the mouse's movement this frame hasn't turned her yet: Minecraft.runTick applies it after the events and the tick, and a click in
 		// the same poll as a flick read the old aim (4 of 10). Applied now, in the events' order; the frame's own call finds what's left
 		mc.mouseHandler.handleAccumulatedMovement();
-		// with her aim and her eye of the frame she saw: the server's copies may be a tick old (a tick ahead of the camera, in fact: its position is the
-		// tick's, the camera's is drawn between ticks: 0.7 m at a slide, 3 of 10 perfect flicks missed), and she may have just flicked onto the target
-		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(mc.getDeltaTracker().getGameTimeDeltaPartialTick(true));
+		// with her aim and where between her last two positions she saw from: the camera is drawn between ticks, the server's position is the tick's: 0.7 m at a
+		// slide, 3 of 10 perfect flicks missed. The server works out the place itself, on her own path (Railgun.pressedShown)
+		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(partial);
 		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "click %.3f %.3f %.3f %.2f %.2f", eye.x, eye.y, eye.z, player.getYRot(), player.getXRot()));
-		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot(), eye.x, eye.y, eye.z);
+		shownAt = System.nanoTime();
+		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot(), partial);
 		show(mc, player, energy, eye);
 	}
 
@@ -177,15 +180,38 @@ public final class ClientSojourn {
 	/** Beyond the ping: the server's tick and a frame here (ours). */
 	private static final long SHOT_ON_ITS_WAY_NANOS = 150_000_000;
 
-	/** From now: how long a shot the server fires now takes to reach her. The ping is the list's (vanilla's keepalive), so a sudden spike can still show a shot it drops. */
+	/**
+	 * From now: how long a shot the server fires now takes to reach her. Measured on her own shots (Railgun's "charged_ack"): vanilla's list ping is too slow to lean
+	 * on alone: the server sends it every 30 s, from a keepalive every 15 s averaged 3 to 1, and just after joining it's the login's figure. A spike can still show a shot it drops.
+	 */
 	private static long roundTripNanos(Minecraft mc, net.minecraft.client.player.LocalPlayer player) {
 		var info = mc.getConnection() == null ? null : mc.getConnection().getPlayerInfo(player.getUUID());
-		return ((info == null ? 0 : info.getLatency()) + dev.overcraft.client.dev.DevLag.roundTripMillis()) * 1_000_000L + SHOT_ON_ITS_WAY_NANOS;
+		return Math.max((info == null ? 0 : info.getLatency()) * 1_000_000L, measuredRoundTrip) + SHOT_ON_ITS_WAY_NANOS;
 	}
 
-	/** The right button and Q are down, as far as a press goes (their OS repeats aren't presses). */
+	/** The server fired a press she'd shown, at once: a round trip's measure. */
+	public static void acked() {
+		if (shownAt != 0) {
+			long rtt = System.nanoTime() - shownAt;
+			measuredRoundTrip = measuredRoundTrip == 0 ? rtt : (measuredRoundTrip * 3 + rtt) / 4;
+			shownAt = 0;
+		}
+	}
+
+	/** A key went up (KeyMapping.set): the next click on it is a press, whenever the next tick is. */
+	public static void released(com.mojang.blaze3d.platform.InputConstants.Key key) {
+		if (fireDown && bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key)) {
+			fireDown = false;
+		}
+	}
+
+	private static long shownAt;
+	private static long measuredRoundTrip;
+	/** The right button is down, as far as a press goes (its OS repeats aren't presses). */
 	private static boolean fireDown;
-	private static boolean ultDown;
+	/** A Q lock's end: a repeat inside it doesn't stretch it. */
+	private static long ultArmedUntil;
+
 	/** Until when (nanoTime) the server may be about to fire a press this client didn't show. */
 	private static long serverMayFireUntil;
 
@@ -193,8 +219,9 @@ public final class ClientSojourn {
 	private static void ultPressed() {
 		var sync = ClientHero.sync();
 		// (hacked, the server strips the press: HeroManager.onInput)
-		if (sync.ultCharge() >= sync.ultCost() && !sync.ultActive() && (sync.mode() & Sojourn.MODE_SILENCED) == 0) {
+		if (sync.ultCharge() >= sync.ultCost() && !sync.ultActive() && (sync.mode() & Sojourn.MODE_SILENCED) == 0 && System.nanoTime() >= ultArmedUntil) {
 			locked(SojournStats.OVERCLOCK_CAST);
+			ultArmedUntil = lockedUntil;
 		}
 	}
 

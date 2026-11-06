@@ -39,6 +39,13 @@ public abstract class KeyMappingMixin {
 		dev.overcraft.client.ClientSojourn.clicked(key);
 	}
 
+	@Inject(method = "set", at = @At("HEAD"))
+	private static void overcraft$released(com.mojang.blaze3d.platform.InputConstants.Key key, boolean down, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		if (!down) {
+			dev.overcraft.client.ClientSojourn.released(key);
+		}
+	}
+
 	private boolean overcraft$suppressed() {
 		return HeroControls.suppressedInHeroMode((KeyMapping) (Object) this) && ClientHero.controls();
 	}

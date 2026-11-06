@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * Client to server, hero controls (only while hotbar slot 1 is selected): which fire buttons are held, and the
  * ability keys pressed since the last one.
  */
-public record HeroInputPayload(int held, int pressed, int extra, int wall, float yaw, float pitch, double x, double y, double z) implements CustomPacketPayload {
+public record HeroInputPayload(int held, int pressed, int extra, int wall, float yaw, float pitch, float partial) implements CustomPacketPayload {
 	public static final int HELD_PRIMARY = 1;
 	public static final int HELD_SECONDARY = 2;
 	/** Riding a wall (Lúcio's Wall Ride: the client moves him; the server needs it for Soundwave Rider, and {@code wall} says how: OwMovement.wallCode). */
@@ -24,7 +24,8 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 	public static final int PRESS_MELEE = 16;
 	/**
 	 * Sojourn's Charged Shot, pressed and already shown on her own client (ClientSojourn): her own copies aren't sent back, and
-	 * {@code yaw}, {@code pitch} and the eye {@code x y z} carry her aim of that moment (only with this bit: the rest never send them).
+	 * {@code yaw} and {@code pitch} carry her aim of that moment, and {@code partial} how far between her last two positions the frame she saw was
+	 * drawn (0..1), which the server turns into a place on her own path (Railgun.pressedShown). Only with this bit: the rest never send them.
 	 */
 	public static final int PRESS_CHARGED_SHOWN = 32;
 
@@ -48,7 +49,7 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 	}
 
 	public HeroInputPayload(int held, int pressed, int extra, int wall) {
-		this(held, pressed, extra, wall, 0, 0, 0, 0, 0);
+		this(held, pressed, extra, wall, 0, 0, 1);
 	}
 
 	public static final Type<HeroInputPayload> TYPE = new Type<>(Overcraft.id("hero_input"));
@@ -61,13 +62,11 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 			if ((p.pressed & PRESS_CHARGED_SHOWN) != 0) {
 				buf.writeFloat(p.yaw);
 				buf.writeFloat(p.pitch);
-				buf.writeDouble(p.x);
-				buf.writeDouble(p.y);
-				buf.writeDouble(p.z);
+				buf.writeFloat(p.partial);
 			}
 		}, buf -> {
 			int held = buf.readByte(), pressed = buf.readByte(), extra = buf.readByte(), wall = buf.readVarInt();
-			return (pressed & PRESS_CHARGED_SHOWN) != 0 ? new HeroInputPayload(held, pressed, extra, wall, buf.readFloat(), buf.readFloat(), buf.readDouble(), buf.readDouble(), buf.readDouble())
+			return (pressed & PRESS_CHARGED_SHOWN) != 0 ? new HeroInputPayload(held, pressed, extra, wall, buf.readFloat(), buf.readFloat(), buf.readFloat())
 				: new HeroInputPayload(held, pressed, extra, wall);
 		});
 
