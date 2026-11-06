@@ -325,6 +325,27 @@ public final class DevServer {
 						dev.overcraft.hero.PressTrace.start();
 					}
 					case "lag" -> DevLag.set(Long.parseLong(a[1]));
+					case "bind" -> dev.overcraft.client.controls.HeroControls.set(dev.overcraft.client.controls.HeroControls.Action.valueOf(a[1].toUpperCase(java.util.Locale.ROOT)), InputConstants.getKey(a[2]));
+					case "flags" -> {
+						var s = dev.overcraft.hero.HeroManager.state(mc.getSingleplayerServer().getPlayerList().getPlayer(player.getUUID()));
+						out.addProperty("shown", s.sojournChargedShown);
+						out.addProperty("buffer", s.sojournCharged);
+						out.addProperty("lock", s.sojournChargedLock);
+					}
+					case "aimpress" -> {
+						// dev only: from where the camera is this frame, aim at x y z, and the right button down, in one go: a perfect flick at speed
+						float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+						net.minecraft.world.phys.Vec3 cam = player.getEyePosition(partial);
+						net.minecraft.world.phys.Vec3 to = new net.minecraft.world.phys.Vec3(Double.parseDouble(a[1]), Double.parseDouble(a[2]), Double.parseDouble(a[3])).subtract(cam);
+						player.setYRot((float) Math.toDegrees(Math.atan2(-to.x, to.z)));
+						player.setXRot((float) -Math.toDegrees(Math.atan2(to.y, Math.hypot(to.x, to.z))));
+						player.setYHeadRot(player.getYRot());
+						dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "press cam %.3f %.3f %.3f", cam.x, cam.y, cam.z));
+						InputConstants.Key bound = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE));
+						KeyMapping.set(bound, true);
+						KeyMapping.click(bound);
+						KeyMapping.set(bound, false);
+					}
 					case "art" -> out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
 					case "sounding" -> {
 						// the channels actually running, by id: SoundEngine lists a stopped sound for 20 ticks from its start, so "bot playing" can't tell
@@ -498,7 +519,8 @@ public final class DevServer {
 				long handle = mc.getWindow().handle();
 				net.minecraft.client.input.KeyEvent event = new net.minecraft.client.input.KeyEvent(key.getValue(), 0, 0);
 				if (a.length > 1) {
-					mc.keyboardHandler.keyPress(handle, a[1].equals("up") ? 0 : 1, event);
+					// (repeat: what the OS sends for a held key, through the same handler)
+					mc.keyboardHandler.keyPress(handle, a[1].equals("up") ? 0 : a[1].equals("repeat") ? 2 : 1, event);
 				} else {
 					mc.keyboardHandler.keyPress(handle, 1, event);
 					mc.keyboardHandler.keyPress(handle, 0, event);

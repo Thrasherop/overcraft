@@ -356,6 +356,7 @@ public final class Railgun {
 			Combat.animate(player, "charged_shot");
 		}
 		Vec3 eye = player.getEyePosition();
+		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f", eye.x, eye.y, eye.z));
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 stop = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
