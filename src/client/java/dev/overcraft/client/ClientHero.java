@@ -421,10 +421,10 @@ public final class ClientHero {
 	private static int lastWall;
 
 	/** A press that can't wait for the next tick (Sojourn's Charged Shot: ClientSojourn): sent now, with the right button held. */
-	public static void pressNow(int pressed) {
+	public static void pressNow(int pressed, float yaw, float pitch) {
 		lastHeld |= HeroInputPayload.HELD_SECONDARY;
 		dev.overcraft.hero.PressTrace.mark("sent");
-		ClientPlayNetworking.send(new HeroInputPayload(lastHeld, pressed, 0, lastWall));
+		ClientPlayNetworking.send(new HeroInputPayload(lastHeld, pressed, 0, lastWall, yaw, pitch));
 	}
 
 	private static boolean chatHeroView;

@@ -93,10 +93,8 @@ public final class ClientSojourn {
 			return;
 		}
 		locked(SojournStats.CHARGED_LOCKOUT);
-		// the server aims by her rotation: its own copy may be a tick old, and she may have just flicked onto the target
-		player.connection.send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(player.getYRot(), player.getXRot(),
-			player.onGround(), player.horizontalCollision));
-		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN);
+		// with her aim of this moment: the server's copy may be a tick old, and she may have just flicked onto the target
+		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot());
 		show(mc, player, energy);
 	}
 

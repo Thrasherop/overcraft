@@ -130,6 +130,19 @@ public final class Railgun {
 		}
 	}
 
+	/**
+	 * The press's own aim (her client's rotation is hers to say, here as in every move packet): the crosshair she pressed on. A
+	 * rotation packet sent just before it wasn't enough: a look and a press 33 ms later went along the old aim 4 times in 8 (played, cause
+	 * not read further).
+	 */
+	public static void aim(ServerPlayer player, float yaw, float pitch) {
+		if (Float.isFinite(yaw) && Float.isFinite(pitch)) {
+			player.setYRot(yaw);
+			player.setYHeadRot(yaw);
+			player.setXRot(Math.clamp(pitch, -90f, 90f));
+		}
+	}
+
 	private static void chargedIfReady(ServerPlayer player, HeroState s) {
 		if (s.sojournCharged > 0 && s.sojournEnergy > 0 && chargedReady(s)) {
 			boolean shown = s.sojournChargedShown;
