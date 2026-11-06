@@ -465,33 +465,40 @@ public final class JunoFx {
 		float raise = Math.min(1, t / VIEW_RAISE);
 		float progress = Math.min(1, t / POD_FULL);
 		org.joml.Matrix4f inverse = new org.joml.Matrix4f(poseStack.last().pose()).invert();
+		// the pass's pose ends in the world's axes from the camera (HeroModelRenderer.viewPod), not the view's: the bone read along the camera's own
+		// (a test on its z alone drew nothing while she faced south: first capture, sbsf_day_juno_lock*)
+		net.minecraft.client.Camera camera = mc.gameRenderer.mainCamera();
+		org.joml.Vector3f forward = new org.joml.Vector3f(camera.forwardVector());
+		org.joml.Vector3f up = new org.joml.Vector3f(camera.upVector());
+		org.joml.Vector3f right = new org.joml.Vector3f(camera.leftVector()).negate();
 		for (int side = 0; side < 2; side++) {
 			org.joml.Vector3f bone = dev.overcraft.client.model.HeroModelRenderer.viewPod(side);
-			if (bone == null || bone.z >= -0.01f) {
+			float depth = bone == null ? 0 : bone.dot(forward);
+			if (depth < 0.01f) {
 				continue;
 			}
-			float x = bone.x / -bone.z * VIEW_IN_X / (VIEW_TAN * aspect);
-			float y = bone.y / -bone.z * VIEW_IN_Y / VIEW_TAN;
+			float x = bone.dot(right) / depth * VIEW_IN_X / (VIEW_TAN * aspect);
+			float y = bone.dot(up) / depth * VIEW_IN_Y / VIEW_TAN;
 			float sphere = VIEW_SPHERE * raise;
 			float spin = now * (side == 0 ? 0.7f : -0.7f);
-			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, 0, 0.8f * raise);
-			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, 0, 1.2f * raise);
-			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.65f * progress), aspect, spin, 1.2f * raise);
-			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, 0, 0.6f * progress);
+			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, forward, right, up, 0, 0.8f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, forward, right, up, 0, 1.2f * raise);
+			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.65f * progress), aspect, forward, right, up, spin, 1.2f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, forward, right, up, 0, 0.6f * progress);
 			float burst = Math.max(0, (progress - 0.769f) / 0.231f);
 			if (burst > 0) {
-				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, spin, 0.6f);
+				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, forward, right, up, spin, 0.6f);
 			}
 			float rim = Math.clamp((t - VIEW_RIM_FROM) / VIEW_RIM_IN, 0, 1);
 			if (rim > 0) {
-				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM, aspect, 0, 0.35f * rim);
+				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM, aspect, forward, right, up, 0, 0.35f * rim);
 			}
 		}
 	}
 
 	/** One facing quad at this place on the screen ((x, y) in -1..1, its radius a share of half the height), added to the scene. */
 	private static void viewPodLayer(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, org.joml.Matrix4f inverse,
-		String mask, Palette palette, float x, float y, float radius, float aspect, float spin, float strength) {
+		String mask, Palette palette, float x, float y, float radius, float aspect, org.joml.Vector3f forward, org.joml.Vector3f right, org.joml.Vector3f up, float spin, float strength) {
 		net.minecraft.resources.Identifier texture = EffectArt.get(mask, palette);
 		if (texture == null || strength <= 0.01f) {
 			return;
@@ -503,16 +510,17 @@ public final class JunoFx {
 		float sin = (float) Math.sin(spin) * r;
 		int colour = Math.clamp(Math.round(strength * 255), 0, 255) << 24 | 0xFFFFFF;
 		collector.submitCustomGeometry(poseStack, FxRender.additive(texture), (pose, buffer) -> {
-			viewPodVertex(pose, buffer, inverse, cx - cos + sin, cy - sin - cos, colour, 0, 1);
-			viewPodVertex(pose, buffer, inverse, cx + cos + sin, cy + sin - cos, colour, 1, 1);
-			viewPodVertex(pose, buffer, inverse, cx + cos - sin, cy + sin + cos, colour, 1, 0);
-			viewPodVertex(pose, buffer, inverse, cx - cos - sin, cy - sin + cos, colour, 0, 0);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx - cos + sin, cy - sin - cos, colour, 0, 1);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx + cos + sin, cy + sin - cos, colour, 1, 1);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx + cos - sin, cy + sin + cos, colour, 1, 0);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx - cos - sin, cy - sin + cos, colour, 0, 0);
 		});
 	}
 
 	private static void viewPodVertex(com.mojang.blaze3d.vertex.PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, org.joml.Matrix4f inverse,
-		float x, float y, int colour, float u, float v) {
-		org.joml.Vector3f at = inverse.transformPosition(new org.joml.Vector3f(x, y, -VIEW_DEPTH));
+		org.joml.Vector3f forward, org.joml.Vector3f right, org.joml.Vector3f up, float x, float y, int colour, float u, float v) {
+		org.joml.Vector3f at = new org.joml.Vector3f(forward).mul(VIEW_DEPTH).add(new org.joml.Vector3f(right).mul(x)).add(new org.joml.Vector3f(up).mul(y));
+		inverse.transformPosition(at);
 		buffer.addVertex(pose, at.x, at.y, at.z).setColor(colour).setUv(u, v).setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY)
 			.setLight(0xF000F0).setNormal(pose, 0, 1, 0);
 	}
