@@ -22,12 +22,19 @@ public final class ClientSojourn {
 	/** What to tell the server with the next input (EXTRA_JUMP / EXTRA_SLIDE_END), and when it happened (game time). */
 	private static int tell;
 	private static long toldAt = -1;
+	/** The art generation her effects were last made ahead for. */
+	private static int artMade = -1;
 
 	private ClientSojourn() {
 	}
 
 	/** Each client tick: the slide follows the server's flag. */
 	public static void tick(Minecraft mc) {
+		if (ClientHero.hero() == Hero.SOJOURN && artMade != dev.overcraft.client.effect.EffectArt.generation()) {
+			// her art made as she's picked, not in the frame of her first shot (EffectArt.prepare)
+			artMade = dev.overcraft.client.effect.EffectArt.generation();
+			dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART);
+		}
 		boolean on = mc.player != null && ClientHero.hero() == Hero.SOJOURN && ClientHero.controls()
 			&& (ClientHero.sync().mode() & Sojourn.MODE_SLIDE) != 0;
 		if (!on) {

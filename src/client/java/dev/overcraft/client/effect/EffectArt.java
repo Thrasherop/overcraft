@@ -1274,6 +1274,18 @@ public final class EffectArt {
 	}
 
 	private static @Nullable Identifier load(String name, Palette palette, boolean soft, String key) {
+		dev.overcraft.hero.PressTrace.mark("art_miss:" + key);
+		NativeImage out = coloured(name, palette, soft);
+		if (out == null) {
+			return null;
+		}
+		Identifier id = Overcraft.id("effect/" + key);
+		Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
+		return id;
+	}
+
+	/** The mask coloured with the palette, not yet a texture: read from the pack and worked out pixel by pixel. */
+	private static @Nullable NativeImage coloured(String name, Palette palette, boolean soft) {
 		Identifier source = Overcraft.id("textures/effect/" + name + ".png");
 		Minecraft mc = Minecraft.getInstance();
 		NativeImage made = generated(name);
@@ -1311,9 +1323,7 @@ public final class EffectArt {
 					}
 				}
 			}
-			Identifier id = Overcraft.id("effect/" + key);
-			mc.getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
-			return id;
+			return out;
 		} catch (IOException e) {
 			Overcraft.LOG.warn("Effect texture {} didn't load: {}", name, e.toString());
 			return null;
@@ -1382,5 +1392,95 @@ public final class EffectArt {
 	/** Resource packs changed: colour them again when next asked. */
 	public static void clear() {
 		CACHE.clear();
+		generation++;
+	}
+
+	// ---- ahead of its first use (#126) ----
+
+	/** One piece of a hero's art: a mask ("name", or "name#frames" as Fx.particle has it), its palette, blended or added. */
+	public record Art(String mask, Palette palette, boolean soft) {
+	}
+
+	private record Made(String key, NativeImage image, int generation) {
+	}
+
+	/** Coloured on the worker, waiting for the client's thread to make them textures. */
+	private static final java.util.Queue<Made> MADE = new java.util.concurrent.ConcurrentLinkedQueue<>();
+	private static final java.util.concurrent.atomic.AtomicInteger OUTSTANDING = new java.util.concurrent.atomic.AtomicInteger();
+	/** What a frame may spend turning them into textures: ours, under a frame at 144 Hz by far. */
+	private static final long FRAME_BUDGET_NANOS = 1_500_000;
+	private static volatile int generation;
+	private static java.util.concurrent.@Nullable ExecutorService maker;
+
+	public static int generation() {
+		return generation;
+	}
+
+	/** How many are still on their way (the harness). */
+	public static int outstanding() {
+		return OUTSTANDING.get();
+	}
+
+	/**
+	 * A hero's art made before it's wanted. Its first use read every mask from the pack and coloured it pixel by pixel on the client's
+	 * thread, in the frame of the shot: 930 ms of two frames on Sojourn's first Charged Shot, 252 of 290 samples of the thread in
+	 * {@link #load} (#126). Here a low-priority worker does that part, and each frame makes a few textures of what's ready. Asked for
+	 * before it's ready, it loads as it did, and the worker's copy is dropped.
+	 */
+	public static void prepare(java.util.List<Art> arts) {
+		if (maker == null) {
+			maker = java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+				Thread t = new Thread(r, "Overcraft effect art");
+				t.setDaemon(true);
+				t.setPriority(Thread.MIN_PRIORITY);
+				return t;
+			});
+		}
+		int now = generation;
+		for (Art art : arts) {
+			int hash = art.mask().indexOf('#');
+			int frames = hash >= 0 ? Integer.parseInt(art.mask().substring(hash + 1)) : 1;
+			for (int i = 0; i < frames; i++) {
+				String name = hash >= 0 ? art.mask().substring(0, hash) + "_" + i : art.mask();
+				String key = name + "/" + art.palette().name().toLowerCase(Locale.ROOT) + (art.soft() ? "_soft" : "");
+				if (!CACHE.containsKey(key)) {
+					OUTSTANDING.incrementAndGet();
+					maker.execute(() -> {
+						try {
+							NativeImage image = coloured(name, art.palette(), art.soft());
+							if (image != null) {
+								MADE.add(new Made(key, image, now));
+								return;
+							}
+						} catch (RuntimeException e) {
+							Overcraft.LOG.warn("Effect art {} wasn't made ahead: {}", key, e.toString());
+						}
+						OUTSTANDING.decrementAndGet();
+					});
+				}
+			}
+		}
+	}
+
+	/** Each frame, on the client's thread: textures from what the worker has made, within the budget. */
+	public static void frame() {
+		Made made = MADE.peek();
+		if (made == null) {
+			return;
+		}
+		long end = System.nanoTime() + FRAME_BUDGET_NANOS;
+		while ((made = MADE.poll()) != null) {
+			OUTSTANDING.decrementAndGet();
+			if (made.generation() == generation && !CACHE.containsKey(made.key())) {
+				Identifier id = Overcraft.id("effect/" + made.key());
+				Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, made.image(), MipmapStrategy.MEAN));
+				CACHE.put(made.key(), Optional.of(id));
+			} else {
+				made.image().close();
+			}
+			if (System.nanoTime() >= end) {
+				return;
+			}
+		}
 	}
 }

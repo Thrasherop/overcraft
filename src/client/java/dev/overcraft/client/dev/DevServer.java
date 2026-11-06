@@ -325,6 +325,7 @@ public final class DevServer {
 						dev.overcraft.hero.PressTrace.start();
 					}
 					case "lag" -> DevLag.set(Long.parseLong(a[1]));
+					case "art" -> out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
 					case "frames" -> dev.overcraft.hero.PressTrace.allFrames(a[1].equals("on"));
 					case "sample" -> {
 						// the client's thread sampled for this many ms from now, into the log (dev only)

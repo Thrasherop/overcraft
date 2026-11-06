@@ -103,6 +103,52 @@ public final class SojournFx {
 	}
 
 	/** A particle on a mask, blended for an enemy's warm red (additive red over a bright sky turned pink-white). */
+	/** Her own art, made ahead as she's picked (EffectArt.prepare, #126): each mask and palette her effects below ask for. An enemy's copies aren't here. */
+	public static final List<EffectArt.Art> ART = List.of(
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_CHARGED_SMOKE, true),
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_JUMP_SMOKE, true),
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_SLIDE_SMOKE, true),
+		new EffectArt.Art("cat_band", Palette.SOJ_FIELD_DOME, false),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_GLOW, false),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_LAUNCH, false),
+		new EffectArt.Art("cat_puff", Palette.SOJ_FIELD_MOTE, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_CHARGED_HIT_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_HIT_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_MUZZLE_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_RELOAD, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_SLIDE_SPARK, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_MUZZLE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_TRACER, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_FIELD_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_HIT, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_JUMP_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_MUZZLE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_RELOAD, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_ROUND, false),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.SOJ_SLIDE_DUST, true),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_FIELD_DOME, false),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_OC_BODY, false),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_SLIDE_JET, false),
+		new EffectArt.Art("mercy_noise_b", Palette.SOJ_DECEL, false),
+		new EffectArt.Art("sojourn_beam", Palette.SOJ_CHARGED_BEAM, false),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_HIT, false),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_SLIDE_STREAK, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_DISRUPTOR_MOTE, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_FLASH, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_MOTE, false),
+		new EffectArt.Art("sojourn_field_decal", Palette.SOJ_FIELD_DECAL, false),
+		new EffectArt.Art("sojourn_flash#14", Palette.SOJ_CHARGED_MUZZLE, false),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_DISRUPTOR_CORE, false),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_FIELD_SWIRL, false),
+		new EffectArt.Art("sojourn_round", Palette.SOJ_ROUND, false),
+		new EffectArt.Art("sojourn_spark_tail", Palette.SOJ_JUMP_SPARK, false),
+		new EffectArt.Art("spark#4", Palette.SOJ_CHARGED_SPARK_N, false)
+	);
+
 	private static @Nullable Particle make(String mask, boolean enemy, Palette ours, Palette theirs) {
 		return enemy ? Fx.soft(mask, theirs) : Fx.particle(mask, ours);
 	}
