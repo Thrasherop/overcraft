@@ -103,6 +103,10 @@ public final class Torpedoes {
 					? FAMILIAR_VITALS : 1);
 			int progress = s.junoLockProgress.getOrDefault(id, 0) + 1;
 			s.junoLockProgress.put(id, progress);
+			if (progress == 1) {
+				// her client's mark closes in over this (0727.116's 646D, the fill: M)
+				Effects.play(level, "juno_lock_fill", e.position(), new Vec3(need, 0, 0), e, player.getId(), player);
+			}
 			if (progress >= Ow.ticks(need)) {
 				s.junoLocked.add(id);
 				// the lock marker (0727.116, a HUD element on the target's hp 0001): her client draws it (variant: who locked it)

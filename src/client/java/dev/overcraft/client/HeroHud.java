@@ -787,6 +787,9 @@ public final class HeroHud {
 		}
 	}
 
+	/** A blocked ability's red (measured from the owner's frame 2), and how long her beacon's throw blocks the rest (0C19 #145 v8349 = 0.4 s, H). */
+	private static final int LOCKED_RED = 0xFFF53757;
+	private static final float SOMBRA_THROW_LOCK = 0.4f;
 	/** 420C #851 (D): see stealthWash. */
 	private static final float STEALTH_WASH_R = 0.8431f, STEALTH_WASH_G = 0.5451f, STEALTH_WASH_B = 1, STEALTH_WASH_AMOUNT = 0.7f;
 	/** Multiplies what's already on the screen by its colour. */
@@ -1257,7 +1260,24 @@ public final class HeroHud {
 		curve(g, cx, base + 36, slopeAt(960 - (w - cx)));
 		Identifier icon = HeroArt.ability(hero, ability);
 		boolean ready = cooldown <= 0;
-		if (ready || cooldown > total - CAST_TIME) {
+		if (abilityLocked(hero, ability)) {
+			// blocked (0786, 630E on each ability box: 47B7 #500, #860, 0C19 #597, a general flag, M). Measured from the owner's frame 2: a dark box reddening
+			// downward, edged in (245, 55, 87), its icon that red, slashed from bottom left to top right, a red line at its foot
+			float y = base + 3;
+			float h = 66;
+			box(g, x, y, size, h, 0xB31A1014);
+			boxFade(g, x, y, size, h, 0x00000000);
+			fill(g, x + 1, y + h * 0.55f, size - 2, h * 0.45f - 1, 0x66C01F38);
+			dev.overcraft.client.hud.HudDraw.outline(g, x, y, size, h, 2, LOCKED_RED);
+			iconOrName(g, icon, ability, x, y + 1, size, LOCKED_RED);
+			g.pose().pushMatrix();
+			g.pose().translate(cx, y + h / 2);
+			g.pose().rotate((float) Math.atan2(-h, size));
+			fill(g, -44, -3, 88, 6, 0x80301018);
+			fill(g, -44, -1, 88, 2, LOCKED_RED);
+			g.pose().popMatrix();
+			fill(g, x, y + h + 5, size, 2.5f, LOCKED_RED);
+		} else if (ready || cooldown > total - CAST_TIME) {
 			float y = base + 3;
 			float h = 66;
 			if (!ready) {
@@ -1292,6 +1312,25 @@ public final class HeroHud {
 			keyLabel(g, key, cx, base + 98, 0, ready);
 		}
 		g.pose().popMatrix();
+	}
+
+	/**
+	 * Whether this ability can't be used for what she's doing now: a general state of the boxes (see ability), each case read from the frames and the kit. Juno: while
+	 * she locks, Glide Boost (the issue's frame); Sombra: throwing the beacon, Cyberspace (frame 2, for its 0.4 s move: 0C19 #145 v8349). Being hacked isn't here: the
+	 * silence isn't synced to the client that has it (Hack.silenced).
+	 */
+	private static boolean abilityLocked(Hero hero, String ability) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null) {
+			return false;
+		}
+		HeroSyncPayload s = ClientHero.sync();
+		return switch (hero) {
+			case JUNO -> ability.equals("glide_boost") && s != null && (s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0;
+			case SOMBRA -> ability.equals("cyberspace") && dev.overcraft.client.model.HeroAnimator.of(mc.player).since("throw",
+				(mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f) < SOMBRA_THROW_LOCK;
+			default -> false;
+		};
 	}
 
 	private static void iconOrName(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float x, float y,
@@ -1333,6 +1372,7 @@ public final class HeroHud {
 			// her kunai are
 			weapon(g, hero, w, "pulsar_torpedoes", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
 				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			torpedoCount(g, s, w);
 			weapon(g, hero, w, "mediblaster", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.juno.JunoStats.MEDIBLASTER_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
@@ -1431,6 +1471,27 @@ public final class HeroHud {
 		}
 		g.pose().popMatrix();
 		mouse(g, fire, mouseX, mouseY);
+	}
+
+	/** The torpedo slot counts down (the issue's frames): the lock's seconds while she locks, its cooldown after. The place in the panel is ours. */
+	private static void torpedoCount(GuiGraphicsExtractor g, HeroSyncPayload s, float w) {
+		float left = 0;
+		Minecraft mc = Minecraft.getInstance();
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && mc.player != null) {
+			float now = (mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f;
+			left = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW - dev.overcraft.client.model.HeroAnimator.of(mc.player).since("torpedo_lock", now);
+		} else {
+			left = s.ability3Cooldown();
+		}
+		if (left > 0) {
+			float cx = w - 484 + 169 / 2f;
+			float mid = 923.5f + 64 / 2f;
+			g.pose().pushMatrix();
+			curve(g, cx, mid, slopeAt(960 - (w - cx)));
+			String seconds = String.valueOf((int) Math.ceil(left));
+			HudText.draw(g, Face.NUMBERS, seconds, w - 342, mid + 10, 20, WHITE, Align.RIGHT);
+			g.pose().popMatrix();
+		}
 	}
 
 	/**

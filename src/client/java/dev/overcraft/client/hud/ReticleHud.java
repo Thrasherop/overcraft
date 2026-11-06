@@ -74,6 +74,9 @@ public final class ReticleHud {
 	private static final int STEALTH = 0xFFF064FA, STEALTH_TRACK = 0x80808080;
 	private static final float STEALTH_BAR_BELOW = 122, STEALTH_BAR_W = 279, STEALTH_TRACK_H = 10, STEALTH_FILL_H = 6.5f, STEALTH_LABEL_BELOW = 148,
 		STEALTH_LABEL_CAP = 14;
+	/** Juno's lock: its arc (measured from the owner's frames: see lockTimer), corner curves, tick, glyph; ally blue and enemy red (the frames' locked box (245, 55, 87)). */
+	private static final float LOCK_ARC_R = 575, LOCK_ARC_LOW = 248, LOCK_ARC_SWEEP = 27, LOCK_CORNER_R = 990, LOCK_TICK = 228, LOCK_GLYPH = 253;
+	private static final int LOCK_BLUE = 0xFF4DA8F0, LOCK_RED = 0xFFF53757;
 	/** Saturated, so it reads on a barrier's own pale colour and on a bright sky (a pale blue vanished on Sigma's: the critique). */
 	private static final int BARRIER = 0xFF1FA2F2;
 	private static final int RAILGUN = 0xFFE8553F;
@@ -403,20 +406,103 @@ public final class ReticleHud {
 			float total = (float) dev.overcraft.juno.JunoStats.GLIDE_TIME;
 			timedBar(g, HeroArt.ability(hero, "glide_boost"), s.activeLeft() / total, s.activeLeft(), cy);
 		}
-		if (locking) {
-			HeroAnimator a = HeroAnimator.of(player);
-			float now = (player.level().getGameTime() + partial) / 20f;
-			if (a.junoLocking(now)) {
-				float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
-				float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
-				timedBar(g, HeroArt.ability(hero, "pulsar_torpedoes"), left / total, left, cy);
-			}
-		}
 		if (gliding) {
 			prompt(g, Action.ABILITY_1, "overcraft.hud.prompt.cancel", null, null);
 		}
+		float now = (player.level().getGameTime() + partial) / 20f;
+		dev.overcraft.client.effect.JunoFx.lockMarks(Minecraft.getInstance(), now, (target, fill) -> junoMark(g, target, (float) fill, 2 * cx, 2 * cy, partial));
 		if (locking) {
-			prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.fire", Action.PRIMARY_FIRE, "overcraft.hud.prompt.cancel");
+			HeroAnimator a = HeroAnimator.of(player);
+			if (a.junoLocking(now)) {
+				float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
+				float left = Math.clamp(total - a.since("torpedo_lock", now), 0, total);
+				lockTimer(g, left, total, cx, cy);
+			}
+			junoCorners(g, cx, cy);
+			lockPrompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.fire", cx, cy, -1);
+			lockPrompt(g, Action.PRIMARY_FIRE, "overcraft.hud.prompt.cancel", cx, cy, 1);
+		}
+	}
+
+	/**
+	 * Her lock's time, 0237 in her reticle (4695 #1225, #1283: H that it's a slot of her reticle): measured from the owner's frames, not a bar: a blue crescent left
+	 * of the crosshair on a circle round it, its centre about (-570, 87) at "4s" and (-560, 117) at "3s", so its lower end stays and its upper end comes down as
+	 * the time goes; whole seconds and "s" beside it (the frames'). Its length and colour ours, from those two places.
+	 */
+	private static void lockTimer(GuiGraphicsExtractor g, float left, float total, float cx, float cy) {
+		float share = Math.clamp(left / total, 0, 1);
+		// clockwise from 12 o'clock: the lower end stays, at 248, the upper comes down from 275
+		float low = LOCK_ARC_LOW;
+		float high = LOCK_ARC_LOW + LOCK_ARC_SWEEP * share;
+		int pieces = 6;
+		for (int i = 0; i < pieces; i++) {
+			// tapered toward both ends, as the frames' crescent
+			float a = low + (high - low) * i / pieces;
+			float b = low + (high - low) * (i + 1) / pieces;
+			float mid = (i + 0.5f) / pieces;
+			HeroHud.arc(g, cx, cy, LOCK_ARC_R, 2 + 7 * (float) Math.sin(Math.PI * mid), a, b, LOCK_BLUE);
+		}
+		float middle = (float) Math.toRadians((low + high) / 2);
+		float x = cx + (float) Math.sin(middle) * LOCK_ARC_R + 52;
+		float y0 = cy - (float) Math.cos(middle) * LOCK_ARC_R - 20;
+		String seconds = (int) Math.ceil(left) + "s";
+		HudText.outlined(g, Face.NUMBERS, seconds, x, y0 + 9, 20, WHITE, 0xB3000000, 1.5f, Align.CENTER);
+	}
+
+	/** Blue curves in both lower corners while she locks: not found in 4695's presenters or 5254; measured from the owner's frames: from about 965 left of the crosshair, 217 down, curving down to the screen's foot. On a circle round the crosshair, ours. */
+	private static void junoCorners(GuiGraphicsExtractor g, float cx, float cy) {
+		for (int side = -1; side <= 1; side += 2) {
+			float from = side < 0 ? 180 + 57 : 180 - 77;
+			float to = side < 0 ? 180 + 77 : 180 - 57;
+			HeroHud.arc(g, cx, cy, LOCK_CORNER_R, 5, from, to, 0x8C4DA8F0);
+			HeroHud.arc(g, cx, cy, LOCK_CORNER_R + 8, 2.5f, from, to, 0x4D9FE6FF);
+		}
+	}
+
+	/**
+	 * One of the lock's prompts, 00DB (4695 #1051: H, one widget, two slots): measured from the owner's frames: level with the crosshair, either side of it: a thin
+	 * tick 228 out, the button's glyph 253 out, its word beyond it (FIRE's centre 300 out on the left; CANCEL's 320 on the right).
+	 */
+	private static void lockPrompt(GuiGraphicsExtractor g, Action key, String text, float cx, float cy, int side) {
+		String word = Component.translatable(text).getString();
+		fill(g, cx + side * LOCK_TICK - 0.75f, cy - 18, 1.5f, 36, 0xB3FFFFFF);
+		HeroHud.mouse(g, HeroControls.get(key), cx + side * LOCK_GLYPH, cy);
+		HudText.outlined(g, Face.BODY, word, cx + side * (LOCK_GLYPH + 22), cy + 7, 14, WHITE, 0x80000000, 1, side < 0 ? Align.RIGHT : Align.LEFT);
+	}
+
+	/**
+	 * A lock's mark on the HUD, on the target's middle (hp 0001). Its progress and its side are the data's (0727's 646D, 5BC2: M); the art isn't located, so ours from
+	 * the issue's description of the frames: four chevrons closing in with the fill; a blue plus for an ally, a red diamond for an enemy (Critical's 39DD.004 may be
+	 * that piece: L, not used).
+	 */
+	private static void junoMark(GuiGraphicsExtractor g, Entity target, float fill, float w, float h, float partial) {
+		float[] at = HeroHud.project(target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h);
+		if (at == null) {
+			return;
+		}
+		boolean ally = dev.overcraft.hero.Allies.wasAlly(Minecraft.getInstance().player, target);
+		int colour = ally ? LOCK_BLUE : LOCK_RED;
+		fill = Math.clamp(fill, 0, 1);
+		float reach = 26 + 26 * (1 - fill);
+		int alpha = Math.round(255 * (0.45f + 0.55f * fill));
+		int tint = alpha << 24 | colour & 0xFFFFFF;
+		for (int turn = 0; turn < 4; turn++) {
+			g.pose().pushMatrix();
+			g.pose().translate(at[0], at[1]);
+			g.pose().rotate((float) (turn * Math.PI / 2));
+			image(g, HudShapes.CHEVRON_BOLD, -11, -reach - 8, 22, 12, tint);
+			g.pose().popMatrix();
+		}
+		if (ally) {
+			image(g, HudShapes.DISC, at[0] - 13, at[1] - 13, 26, 26, 0xA6000000);
+			image(g, HudShapes.PLUS, at[0] - 10, at[1] - 10, 20, 20, tint);
+		} else {
+			g.pose().pushMatrix();
+			g.pose().translate(at[0], at[1]);
+			g.pose().rotate((float) (Math.PI / 4));
+			fill(g, -10, -10, 20, 20, tint);
+			g.pose().popMatrix();
+			image(g, HudShapes.PLUS, at[0] - 7, at[1] - 7, 14, 14, WHITE);
 		}
 	}
 

@@ -109,6 +109,8 @@ public final class JunoFx {
 	private static final List<Ray> RAYS = new ArrayList<>();
 	/** Her lock markers on the targets she has locked (her own client only), the ring's boost, the ray's allies. */
 	private static final Map<Integer, Held> LOCKS = new HashMap<>();
+	/** Her locks still filling, on her own client: when each began and when it would be done. */
+	private static final Map<Integer, Held> FILLS = new HashMap<>();
 	private static final Map<Integer, Held> BOOSTED = new HashMap<>();
 	private static final Map<Integer, Held> RAYED = new HashMap<>();
 	/** Each Juno's last reload whose sparks were drawn (its start, game s): once a reload. */
@@ -265,7 +267,6 @@ public final class JunoFx {
 			}
 		}
 		torpedoes(mc, now);
-		locks(mc, now);
 		rings(mc, now);
 		rays(mc);
 		boosted(mc, now);
@@ -778,25 +779,30 @@ public final class JunoFx {
 	}
 
 	/**
-	 * Her lock markers (the data's is UX element 0727.116 on the target's hp 0001, a HUD widget, not decoded: ours a ring
-	 * round the target's middle, cyan on an ally, red on an enemy, turning), on her own client only, from the lock until its
-	 * torpedo leaves.
+	 * Her locks as her HUD marks them (4B99 #158: 0727.116, world layer, shown to her alone; 646D = v10349 / v1723 the fill, 5BC2 ally or enemy, M), each
+	 * mark's art ours since none is located (ReticleHud.junoMark): the target, how far its lock has filled, 0-1. A filling one's from the server's
+	 * first tick on it (it sends how long the fill takes), and is dropped if the lock hasn't come by then (out of the cone); a locked one is 1 until
+	 * its torpedo leaves.
 	 */
-	private static void locks(Minecraft mc, float now) {
-		held(mc, LOCKS, now, (target, h, n) -> {
-			boolean ally = mc.player != null && dev.overcraft.hero.Allies.wasAlly(mc.player, target);
-			Vec3 centre = target.getBoundingBox().getCenter();
-			float size = Math.max(0.9f, target.getBbHeight() * 0.9f);
-			Particle ring = Fx.attach("juno_lock/" + target.getId(), centre, () -> {
-				Particle r = Fx.particle("juno_ring_thin", ally ? Palette.JUNO_TORP_LOCK_GLINT_N : Palette.ENEMY);
-				return r == null ? null : r.life(0.2f).spin(0, 1.5f).alpha(0.9f).fade(0.05f, 0.5f).nearFade(0.5f);
-			});
-			if (ring != null) {
-				// a snap in at the lock: from 1.6x to its size over 0.15 s
-				float in = Math.min(1, (n - h.since) / 0.15f);
-				ring.size(size * (1.6f - 0.6f * in), size * (1.6f - 0.6f * in));
+	public static void lockMarks(Minecraft mc, float now, java.util.function.ObjDoubleConsumer<Entity> mark) {
+		if (mc.level == null) {
+			return;
+		}
+		for (Iterator<Map.Entry<Integer, Held>> it = FILLS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Integer, Held> fill = it.next();
+			Entity target = mc.level.getEntity(fill.getKey());
+			if (target == null || now >= fill.getValue().until || LOCKS.containsKey(fill.getKey())) {
+				it.remove();
+			} else {
+				mark.accept(target, (now - fill.getValue().since) / (fill.getValue().until - fill.getValue().since));
 			}
-		});
+		}
+		for (Map.Entry<Integer, Held> lock : LOCKS.entrySet()) {
+			Entity target = mc.level.getEntity(lock.getKey());
+			if (target != null && now < lock.getValue().until) {
+				mark.accept(target, 1);
+			}
+		}
 	}
 
 	// ---- Hyper Ring ----
@@ -1344,6 +1350,11 @@ public final class JunoFx {
 					LOCKS.put(e.entity(), new Held(now, now + (float) JunoStats.LOCK_WINDOW + 1, enemy));
 				}
 			}
+			case "juno_lock_fill" -> {
+				if (mc.player != null && e.variant() == mc.player.getId()) {
+					FILLS.put(e.entity(), new Held(now, now + e.dx(), enemy));
+				}
+			}
 			case "juno_torpedo" -> launch(podLaunch(mc, at), e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_hit" -> torpedoHit(at, e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_wall" -> wall(at, dir, e.entity(), enemy);
@@ -1353,7 +1364,10 @@ public final class JunoFx {
 			// one who has just come to see it (OrbitalRay.showTo): where it is now, its age from what's left, no landing
 			case "juno_ray_state" -> addRay(at, dir, e.entity(), (int) Math.round(JunoStats.RAY_TIME * 20), e.variant(), enemy);
 			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
-			case "juno_locks_gone" -> LOCKS.clear();
+			case "juno_locks_gone" -> {
+				LOCKS.clear();
+				FILLS.clear();
+			}
 			default -> {
 				return false;
 			}
@@ -1400,6 +1414,7 @@ public final class JunoFx {
 		TORPEDOES.clear();
 		RINGS.clear();
 		RAYS.clear();
+		FILLS.clear();
 		LOCKS.clear();
 		BOOSTED.clear();
 		RAYED.clear();
