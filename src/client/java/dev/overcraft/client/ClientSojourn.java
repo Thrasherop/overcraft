@@ -122,6 +122,7 @@ public final class ClientSojourn {
 		// the first of a press only: KeyboardHandler clicks again on the OS's repeat of a held key, and that was a shot every 0.65 s
 		boolean fire = bound(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).equals(key), ult = bound(dev.overcraft.client.controls.HeroControls.Action.ULTIMATE).equals(key);
 		if (fire && fireDown || ult && ultDown) {
+			dev.overcraft.hero.PressTrace.mark(fire ? "refused" : "refused_q");
 			return;
 		}
 		fireDown |= fire;
@@ -166,6 +167,7 @@ public final class ClientSojourn {
 		// with her aim and her eye of the frame she saw: the server's copies may be a tick old (a tick ahead of the camera, in fact: its position is the
 		// tick's, the camera's is drawn between ticks: 0.7 m at a slide, 3 of 10 perfect flicks missed), and she may have just flicked onto the target
 		net.minecraft.world.phys.Vec3 eye = player.getEyePosition(mc.getDeltaTracker().getGameTimeDeltaPartialTick(true));
+		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "click %.3f %.3f %.3f %.2f %.2f", eye.x, eye.y, eye.z, player.getYRot(), player.getXRot()));
 		ClientHero.pressNow(HeroInputPayload.PRESS_CHARGED_SHOWN, player.getYRot(), player.getXRot(), eye.x, eye.y, eye.z);
 		show(mc, player, energy, eye);
 	}
