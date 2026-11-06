@@ -68,11 +68,11 @@ public final class ReticleHud {
 	/** Mercy's beams, as her beams read: the heal gold, the boost blue (ours, from MercyFx's look). */
 	private static final int BEAM_HEAL = 0xFFF5D226, BEAM_BOOST = 0xFF4FB8FF;
 	/** Her stealth bar (stealthBar: measured from the owner's frames 3, 4; the fill read (240, 100, 250)). */
-	private static final int STEALTH = 0xFFF064FA, STEALTH_TRACK = 0x80808080;
-	private static final float STEALTH_BAR_BELOW = 122, STEALTH_BAR_W = 279, STEALTH_TRACK_H = 10, STEALTH_FILL_H = 6.5f, STEALTH_LABEL_BELOW = 148,
+	private static final int STEALTH = 0xFFF064FA, STEALTH_TRACK = 0x3B000000;
+	private static final float STEALTH_BAR_BELOW = 122, STEALTH_BAR_W = 279, STEALTH_TRACK_H = 12, STEALTH_FILL_H = 7, STEALTH_LABEL_BELOW = 148,
 		STEALTH_LABEL_CAP = 14;
-	/** Juno's lock: its arc (measured from the owner's frames: see lockTimer), corner curves, tick, glyph; ally blue and enemy red (the frames' locked box (245, 55, 87)). */
-	private static final float LOCK_ARC_R = 575, LOCK_ARC_LOW = 248, LOCK_ARC_SWEEP = 27, LOCK_CORNER_R = 990, LOCK_TICK = 228, LOCK_GLYPH = 253;
+	/** Juno's lock: its arc, corner curves, tick, glyph (eye-read from the chat's copies: see lockTimer); ally blue, enemy red (Sombra's frame 2's locked box (245, 55, 87)). */
+	private static final float LOCK_ARC_R = 595, LOCK_ARC_LOW = 247, LOCK_ARC_SWEEP = 27, LOCK_CORNER_R = 990, LOCK_TICK = 228, LOCK_GLYPH = 253;
 	private static final int LOCK_BLUE = 0xFF4DA8F0, LOCK_RED = 0xFFF53757;
 	/** Saturated, so it reads on a barrier's own pale colour and on a bright sky (a pale blue vanished on Sigma's: the critique). */
 	private static final int BARRIER = 0xFF1FA2F2;
@@ -358,8 +358,7 @@ public final class ReticleHud {
 
 	/**
 	 * Her stealth's time: a round-ended bar, draining toward its left end, with INVISIBLE under it. All measured from the owner's frames 3
-	 * and 4 (at 1080 high): the bar's centre 122 below the crosshair, 279 wide, its track 10 tall, the fill 6.5 in (240, 100, 250), a
-	 * translucent grey track; the label's caps 14 high centred 148 below. The data has only the share (008B's 009A); its label is
+	 * and 4 (at 1080 high): the bar's centre 122 below the crosshair, 279 wide, its track 12 tall (rows 661-672) darkening what's behind to about x .77, the fill 7 in (240, 100, 250); the label's caps 14 high centred 148 below. The data has only the share (008B's 009A); its label is
 	 * 250D4.07C "Invisible" (M). Clear of whatever's above it on the stack (a Hotfix panel), ours.
 	 */
 	private static void stealthBar(GuiGraphicsExtractor g, float share, float cx, float cy) {
@@ -407,8 +406,8 @@ public final class ReticleHud {
 			prompt(g, Action.ABILITY_1, "overcraft.hud.prompt.cancel", null, null);
 		}
 		float now = (player.level().getGameTime() + partial) / 20f;
-		dev.overcraft.client.effect.JunoFx.lockMarks(Minecraft.getInstance(), now, (target, fill) -> junoMark(g, target, (float) fill, 2 * cx, 2 * cy, partial));
-		if (locking) {
+		dev.overcraft.client.effect.JunoFx.lockMarks(Minecraft.getInstance(), now, locking, (target, fill) -> junoMark(g, target, (float) fill, 2 * cx, 2 * cy, partial));
+		if (locking && atReticle()) {
 			HeroAnimator a = HeroAnimator.of(player);
 			if (a.junoLocking(now)) {
 				float total = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW;
@@ -422,22 +421,22 @@ public final class ReticleHud {
 	}
 
 	/**
-	 * Her lock's time, 0237 in her reticle (4695 #1225, #1283: H that it's a slot of her reticle): measured from the owner's frames, not a bar: a blue crescent left
-	 * of the crosshair on a circle round it, its centre about (-570, 87) at "4s" and (-560, 117) at "3s", so its lower end stays and its upper end comes down as
-	 * the time goes; whole seconds and "s" beside it (the frames'). Its length and colour ours, from those two places.
+	 * Her lock's time, 0237 in her reticle (4695 #1225, #1283: H that it's a slot of her reticle). The rest is eye-read from the chat's copies of the owner's frames, by the note and the
+	 * critic's reading, not measured: a blue crescent about 30 thick, left of the crosshair on a circle round it, its centre about (-570, 112) at "4s" and (-560, 144) at "3s", so its
+	 * lower end stays and its upper end comes down; whole seconds and "s" beside it. Colour ours.
 	 */
 	private static void lockTimer(GuiGraphicsExtractor g, float left, float total, float cx, float cy) {
 		float share = Math.clamp(left / total, 0, 1);
-		// clockwise from 12 o'clock: the lower end stays, at 248, the upper comes down from 275
 		float low = LOCK_ARC_LOW;
 		float high = LOCK_ARC_LOW + LOCK_ARC_SWEEP * share;
-		int pieces = 6;
+		int pieces = 14;
 		for (int i = 0; i < pieces; i++) {
-			// tapered toward both ends, as the frames' crescent
 			float a = low + (high - low) * i / pieces;
 			float b = low + (high - low) * (i + 1) / pieces;
 			float mid = (i + 0.5f) / pieces;
-			HeroHud.arc(g, cx, cy, LOCK_ARC_R, 2 + 7 * (float) Math.sin(Math.PI * mid), a, b, LOCK_BLUE);
+			float thick = 2 + 28 * (float) Math.sin(Math.PI * mid);
+			// the crescent's outer edge stays on the circle, its inner edge bulges in
+			HeroHud.arc(g, cx, cy, LOCK_ARC_R - thick / 2, thick, a, b, LOCK_BLUE);
 		}
 		float middle = (float) Math.toRadians((low + high) / 2);
 		float x = cx + (float) Math.sin(middle) * LOCK_ARC_R + 52;
@@ -446,18 +445,25 @@ public final class ReticleHud {
 		HudText.outlined(g, Face.NUMBERS, seconds, x, y0 + 9, 20, WHITE, 0xB3000000, 1.5f, Align.CENTER);
 	}
 
-	/** Blue curves in both lower corners while she locks: not found in 4695's presenters or 5254; measured from the owner's frames: from about 965 left of the crosshair, 217 down, curving down to the screen's foot. On a circle round the crosshair, ours. */
+	/**
+	 * Blue curves in both lower corners while she locks: not found in 4695's presenters or 5254. Eye-read from the chat's copies, by the note: from about 2 in from the screen's edge, 326 up
+	 * from its foot, curving down to its foot about 134 in. Anchored to each lower corner, so any aspect: each on a circle of radius 990 centred 960 in and 540 up from its corner (ours).
+	 */
 	private static void junoCorners(GuiGraphicsExtractor g, float cx, float cy) {
+		float h = 2 * cy;
+		float w = 2 * cx;
 		for (int side = -1; side <= 1; side += 2) {
+			float at = side < 0 ? 960 : w - 960;
+			float mid = h - 540;
 			float from = side < 0 ? 180 + 57 : 180 - 77;
 			float to = side < 0 ? 180 + 77 : 180 - 57;
-			HeroHud.arc(g, cx, cy, LOCK_CORNER_R, 5, from, to, 0x8C4DA8F0);
-			HeroHud.arc(g, cx, cy, LOCK_CORNER_R + 8, 2.5f, from, to, 0x4D9FE6FF);
+			HeroHud.arc(g, at, mid, LOCK_CORNER_R, 5, from, to, 0x8C4DA8F0);
+			HeroHud.arc(g, at, mid, LOCK_CORNER_R + 8, 2.5f, from, to, 0x4D9FE6FF);
 		}
 	}
 
 	/**
-	 * One of the lock's prompts, 00DB (4695 #1051: H, one widget, two slots): measured from the owner's frames: level with the crosshair, either side of it: a thin
+	 * One of the lock's prompts, 00DB (4695 #1051: H, one widget, two slots): eye-read from the chat's copies of the owner's frames, by the note, not measured: level with the crosshair, either side of it: a thin
 	 * tick 228 out, the button's glyph 253 out, its word beyond it (FIRE's centre 300 out on the left; CANCEL's 320 on the right).
 	 */
 	private static void lockPrompt(GuiGraphicsExtractor g, Action key, String text, float cx, float cy, int side) {
@@ -499,7 +505,6 @@ public final class ReticleHud {
 			g.pose().rotate((float) (Math.PI / 4));
 			fill(g, -10, -10, 20, 20, tint);
 			g.pose().popMatrix();
-			image(g, HudShapes.PLUS, at[0] - 7, at[1] - 7, 14, 14, WHITE);
 		}
 	}
 
@@ -877,11 +882,11 @@ public final class ReticleHud {
 				ring(g, cx, cy, 10);
 				dot(g, cx, cy, 2);
 			}
-			// 00A3 (018D #595), stealthed or not: a small ring round a dot (measured from the owner's frames 2-4: outer radius 9, about 4
-			// thick, the dot 1; its green is the owner's setting). Her stealth doesn't replace it: stealthBar
+			// 00A3 (018D #595), stealthed or not: a small ring (measured from the owner's frames 2-4: outer radius 9, about 4 thick) round a dot that barely shows; its green is the
+			// owner's setting, ours white. Her stealth doesn't replace it: stealthBar
 			case SOMBRA -> {
 				ring(g, cx, cy, 7);
-				dot(g, cx, cy, 1);
+				image(g, HudShapes.DISC, cx - 0.8f, cy - 0.8f, 1.6f, 1.6f, 0x80FFFFFF);
 			}
 			// 00F2 (145B #51): a flail's reach: a dot and two side ticks, heavy enough for her own bright barrier
 			case BRIGITTE -> {

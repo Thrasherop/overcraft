@@ -11,6 +11,7 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py projectiles <DataTool output dir>  thrown things drawn as models in flight (PROJECTILES: Ana's dart and grenade)
     py tools/build_asset_pack.py parts <DataTool output dir> [hero]  the models weapon_parts.json names (magazines, vials), from the hero's skin folder
     py tools/build_asset_pack.py clips <DataTool output dir> [hero]  the clips-only files: each tools/clipmaps/<hero>[_1p]_clips.txt into hero_models/ (Blender)
     py tools/build_asset_pack.py glows <DataTool output dir> [<dir> ...]  every glow, from the materials (tools/glow_maps.py; no Blender, needs Pillow)

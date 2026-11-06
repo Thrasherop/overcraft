@@ -485,10 +485,9 @@ public final class HeroModelRenderer {
 	}
 
 	/**
-	 * How much of a stealthed hero shows to those who see her (ours), and to her own eyes (measured from the owner's frames 3, 4: her pistol's own
-	 * colours with the floor faintly through it, her hand dark glass). The data's look (420C #29: 48AC on her first-person self, material 35C4;
-	 * #30 48F0 on her weapon) only names compiled .127 shader variants per material effect, no colour or opacity: 144 bytes each, a shader group
-	 * (2C, D9, 32 .088), a slot (.03A) and a hash; nothing read says which of its 40-odd effect ids stealth uses.
+	 * How much of a stealthed hero shows to those who see her, and to her own eyes: both OURS, no measurement exists. The owner's frames show a hooded skin (purple hood, navy glove, coloured nails, a cream
+	 * and purple gun) and ours is the default, so frames can't set her colour or opacity. The data's look (420C #29: 48AC on her first-person self, material 35C4; #30 48F0 on her weapon) only names compiled
+	 * .127 shader variants per material effect, no colour or opacity: 144 bytes each, a shader group (2C, D9, 32 .088), a slot (.03A) and a hash; nothing read says which of its 40-odd effect ids stealth uses.
 	 */
 	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.8f;
 	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
@@ -602,7 +601,7 @@ public final class HeroModelRenderer {
 			}
 		}
 		if (!own) {
-			submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
+			submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW, cull);
 		}
 	}
 
@@ -1637,6 +1636,12 @@ public final class HeroModelRenderer {
 	/** The same in this colour. */
 	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float strength, boolean cull, int rgb) {
+		submitGlow(loaded, skin, poseStack, collector, hidden, strength, cull, rgb, true);
+	}
+
+	/** The same; {@code props} false for what's held, whose triangles near its origin aren't parked (submitStealth). */
+	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float strength, boolean cull, int rgb, boolean props) {
 		if (strength <= 0) {
 			return;
 		}
@@ -1647,7 +1652,7 @@ public final class HeroModelRenderer {
 			if (piece.image() < 0 || loaded.textures()[piece.image()] == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}

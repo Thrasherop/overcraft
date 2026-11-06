@@ -440,10 +440,13 @@ public final class JunoFx {
 	private static final float VIEW_TAN = (float) Math.tan(Math.toRadians(70) / 2);
 	/** How far from the eye her view's glows are drawn: ahead of the pods' meshes, whose depth the hand pass tests against (ours). */
 	private static final float VIEW_DEPTH = 0.2f;
-	/** Her pods' spheres against the bones: the bones at the lock's hold are at about (0.97, 0.54) of the screen, half off it; the frames' spheres at (0.76, 0.43) (the owner's frames, measured). */
+	/** Her pods' spheres against the bones: the bones at the lock's hold are at about (0.97, 0.54) of the screen, half off it; the frames' spheres at about (0.76, 0.43) (eye-read from the chat's copies, by the note). */
 	private static final float VIEW_IN_X = 0.78f, VIEW_IN_Y = 0.8f;
-	/** Radii, as shares of half the screen's height. The sphere 190 of 544 (and 195 by "3s"), the yellow rim 330 (the owner's frames, measured). */
-	private static final float VIEW_SPHERE = 0.35f, VIEW_RIM = 0.607f;
+	/**
+	 * Radii, as shares of half the screen's height. The sphere 190 of 544 (and 195 by "3s"), the yellow rim 330 (eye-read from the chat's copies, by the note). The ring's mask 724 stops short of its quad:
+	 * ours came out at 163 and 277 of 190 and 330 (the critic's read of wday_pods), so 1.17 on the quad.
+	 */
+	private static final float VIEW_SPHERE = 0.35f, VIEW_RIM = 0.607f, VIEW_RING_MASK = 1.17f;
 	/** The rim comes in between the frames' "4s" (no rim) and "3s", ours; the sphere pops up with the pods' raise (13/30 s, H). */
 	private static final float VIEW_RIM_FROM = 0.5f, VIEW_RIM_IN = 0.4f, VIEW_RAISE = 13 / 30f;
 
@@ -452,7 +455,7 @@ public final class JunoFx {
 	 * the arms draw later with depth cleared: rendering "Things in the hand pass"; and a quarter size on top of that). Layers from the data, 5254.00D
 	 * (4695 #214 on 048D, #862 on 048E): soft 568C; star E221 x 627C to .727 at .49 of the lock; ring 724 x 0558 from .5 to .282; burst 37C36 x 364C
 	 * over F6 .769-1; flare 37A79 x 75E0. Their sizes in metres don't fit a pod half a metre from the eye, so sizes and places are measured from the
-	 * owner's frames (a glass sphere, a bright star inside, then a faint yellow rim); brightnesses ours.
+	 * note's eye-read of the chat's copies (a glass sphere, a bright star inside that washes the mesh out, then a faint yellow rim); brightnesses ours.
 	 */
 	public static void viewPods(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, Player juno, float now) {
 		HeroAnimator a = HeroAnimator.of(juno);
@@ -481,9 +484,9 @@ public final class JunoFx {
 			float y = bone.dot(up) / depth * VIEW_IN_Y / VIEW_TAN;
 			float sphere = VIEW_SPHERE * raise;
 			float spin = now * (side == 0 ? 0.7f : -0.7f);
-			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 1.1f, aspect, forward, right, up, 0, 0.12f * raise);
-			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 1.02f, aspect, forward, right, up, 0, 0.7f * raise);
-			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.35f + 0.45f * progress), aspect, forward, right, up, spin, 0.8f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 0.75f, aspect, forward, right, up, 0, 0.9f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * VIEW_RING_MASK, aspect, forward, right, up, 0, 0.7f * raise);
+			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.5f + 0.5f * progress), aspect, forward, right, up, spin, 1.3f * raise);
 			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, forward, right, up, 0, 0.2f * progress);
 			float burst = Math.max(0, (progress - 0.769f) / 0.231f);
 			if (burst > 0) {
@@ -491,7 +494,7 @@ public final class JunoFx {
 			}
 			float rim = Math.clamp((t - VIEW_RIM_FROM) / VIEW_RIM_IN, 0, 1);
 			if (rim > 0) {
-				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM, aspect, forward, right, up, 0, 0.35f * rim);
+				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM * VIEW_RING_MASK, aspect, forward, right, up, 0, 0.35f * rim);
 			}
 		}
 	}
@@ -792,22 +795,30 @@ public final class JunoFx {
 	 * first tick on it (it sends how long the fill takes), and is dropped if the lock hasn't come by then (out of the cone); a locked one is 1 until
 	 * its torpedo leaves.
 	 */
-	public static void lockMarks(Minecraft mc, float now, java.util.function.ObjDoubleConsumer<Entity> mark) {
+	public static void lockMarks(Minecraft mc, float now, boolean locking, java.util.function.ObjDoubleConsumer<Entity> mark) {
 		if (mc.level == null) {
 			return;
+		}
+		if (!locking) {
+			// the lock's over: nothing goes on filling
+			FILLS.clear();
 		}
 		for (Iterator<Map.Entry<Integer, Held>> it = FILLS.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry<Integer, Held> fill = it.next();
 			Entity target = mc.level.getEntity(fill.getKey());
-			if (target == null || now >= fill.getValue().until || LOCKS.containsKey(fill.getKey())) {
+			if (target == null || LOCKS.containsKey(fill.getKey())) {
 				it.remove();
 			} else {
-				mark.accept(target, (now - fill.getValue().since) / (fill.getValue().until - fill.getValue().since));
+				// (the server says when it stops: juno_lock_unfill; a late lock waits at full)
+				mark.accept(target, Math.min(1, (now - fill.getValue().since) / Math.max(0.01f, fill.getValue().until - fill.getValue().since)));
 			}
 		}
-		for (Map.Entry<Integer, Held> lock : LOCKS.entrySet()) {
+		for (Iterator<Map.Entry<Integer, Held>> it = LOCKS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Integer, Held> lock = it.next();
 			Entity target = mc.level.getEntity(lock.getKey());
-			if (target != null && now < lock.getValue().until) {
+			if (target == null || now >= lock.getValue().until) {
+				it.remove();
+			} else {
 				mark.accept(target, 1);
 			}
 		}
@@ -1359,8 +1370,14 @@ public final class JunoFx {
 				}
 			}
 			case "juno_lock_fill" -> {
+				// dx how long a full fill takes, dy how much is done: a target that left and came back goes on from there
 				if (mc.player != null && e.variant() == mc.player.getId()) {
-					FILLS.put(e.entity(), new Held(now, now + e.dx(), enemy));
+					FILLS.put(e.entity(), new Held(now - e.dx() * e.dy(), now + e.dx() * (1 - e.dy()), enemy));
+				}
+			}
+			case "juno_lock_unfill" -> {
+				if (mc.player != null && e.variant() == mc.player.getId()) {
+					FILLS.remove(e.entity());
 				}
 			}
 			case "juno_torpedo" -> launch(podLaunch(mc, at), e.entity(), e.variant() == 1, enemy);

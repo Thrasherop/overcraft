@@ -292,106 +292,31 @@ public final class HeroHud {
 	private static void anaScope(GuiGraphicsExtractor g, float w, float h, float shown) {
 		float cx = w / 2;
 		float cy = h / 2;
+		dev.overcraft.client.hud.AnaScopeArt.ensure();
+		// on the reference grid, centred; a narrower screen than 16:9 fits its width (ours: no frame of one)
+		float fit = Math.min(1, w / dev.overcraft.client.hud.AnaScopeArt.W);
+		int W = dev.overcraft.client.hud.AnaScopeArt.W;
+		int H = dev.overcraft.client.hud.AnaScopeArt.H;
+		g.pose().pushMatrix();
+		g.pose().translate(cx - W * fit / 2, cy - H * fit / 2);
+		g.pose().scale(fit, fit);
+		g.blit(SCOPE_ART, dev.overcraft.client.hud.AnaScopeArt.TEXTURE, 0, 0, 0, 0, W, H, W, H, W, H, Math.round(255 * shown) << 24 | 0xFFFFFF);
+		g.pose().popMatrix();
+		// the crosshair: four ticks about 6 long round a gap of 4 (measured from frame 1; its green is the owner's setting, ours is the plain white)
+		int colour = alpha(0xFFFFFF, shown);
+		int edge = alpha(0x000000, 0.5f * shown);
 		float k = 1080f / 1121;
-		int yellow = alpha(0xE6E8A0, 0.45f * shown);
-		int bright = alpha(0xFFFFB4, 0.95f * shown);
-		int blue = alpha(0x3C4F86, 0.85f * shown);
-		int band = alpha(0x5A669F, 0.75f * shown);
-		int corner = alpha(0xE0DE80, 0.95f * shown);
-		// the big circle round the crosshair, low alpha (r 330)
-		HeroHud.arc(g, cx, cy, 330 * k, 2.5f, 0, 360, alpha(0x4D64B4, 0.35f * shown));
-		// the lens arc, on its own circle: apex (1000, 75), through (650, 310): centre (1000, 453), r 378, down 68 either way
-		HeroHud.arc(g, cx, cy + (453 - 562) * k, 378 * k, 2, -68, 68, yellow);
-		for (int side = -1; side <= 1; side += 2) {
-			final int m = side;
-			// the lens arc's hooks
-			scopeLine(g, cx, cy, k, m, 351, -252, 321, -207, 2, yellow);
-			// the inner arcs, tapered: r 266, x 735, y 505-618
-			scopeTaper(g, cx, cy, 266 * k, side, 8, bright);
-			// the struts: outlined capsules (875, 565) to (965, 685)
-			scopeStrut(g, cx, cy, k, m, blue);
-			// the small circles (688, 820), r 32 and 10, a line in toward (880, 625)
-			float scx = cx + m * 313 * k;
-			float scy = cy + 258 * k;
-			image(g, HudShapes.RING_THIN, scx - 32 * k, scy - 32 * k, 64 * k, 64 * k, blue);
-			image(g, HudShapes.RING_THIN, scx - 10 * k, scy - 10 * k, 20 * k, 20 * k, alpha(0x5A70B8, 0.95f * shown));
-			scopeLine(g, cx, cy, k, m, 290, 240, 121, 63, 1.5f, blue);
-			// the thick corners (497, 815), (497, 850), (635, 997)
-			scopeLine(g, cx, cy, k, m, 504, 253, 504, 288, 7, corner);
-			scopeLine(g, cx, cy, k, m, 504, 288, 366, 435, 7, corner);
-			// thin yellow: (595, 635) to (505, 790); (652, 997), (770, 997), (810, 957); ticks (910, 858) to (876, 916)
-			scopeLine(g, cx, cy, k, m, 406, 73, 496, 228, 2, yellow);
-			scopeLine(g, cx, cy, k, m, 349, 435, 231, 435, 2, yellow);
-			scopeLine(g, cx, cy, k, m, 231, 435, 191, 395, 2, yellow);
-			scopeLine(g, cx, cy, k, m, 91, 296, 125, 354, 2, yellow);
-			// the blue band (465, 850) to (590, 1015)
-			scopeLine(g, cx, cy, k, m, 536, 288, 411, 453, 8, band);
-		}
-		// the chevrons: x 1000, five bars, y 725-825, widths 120 to 80, the last solid
-		for (int i = 0; i < 5; i++) {
-			float top = (163 + i * 21) * k;
-			float half = (60 - i * 5) * k;
-			int colour = alpha(0x3C3F60, 0.95f * shown);
-			if (i == 4) {
-				image(g, HudShapes.LINE, cx - half, cy + top - 3 * k, 2 * half, 9 * k, alpha(0x4D6AAE, 0.95f * shown));
-				break;
-			}
-			float deep = 6 * k;
-			for (int m = -1; m <= 1; m += 2) {
-				scopeLine(g, cx, cy, 1, m, half, top, half - deep, top + deep * 2, 1.5f, colour);
-				scopeLine(g, cx, cy, 1, m, half - deep, top + deep * 2, 0, top + deep * 2, 1.5f, colour);
-				scopeLine(g, cx, cy, 1, m, half, top, 0, top, 1.5f, colour);
-			}
-		}
-		// the crosshair: four ticks about 6 long round a gap of 4, green to (28, 230, 37) (the owner's colour setting, as Sombra's)
-		int green = alpha(0x1CE625, shown);
 		float gap = 4 * k;
 		float tick = 6 * k;
 		float t = 2 * k;
-		fill(g, cx - t / 2, cy - gap - tick, t, tick, green);
-		fill(g, cx - t / 2, cy + gap, t, tick, green);
-		fill(g, cx - gap - tick, cy - t / 2, tick, t, green);
-		fill(g, cx + gap, cy - t / 2, tick, t, green);
-	}
-
-	/** A segment on her scope, in the frame's pixels from the crosshair, mirrored by side (1 the right, -1 the left), soft-edged. */
-	private static void scopeLine(GuiGraphicsExtractor g, float cx, float cy, float k, int side, float x1, float y1, float x2, float y2, float thick, int colour) {
-		float ax = cx + side * x1 * k;
-		float ay = cy + y1 * k;
-		float bx = cx + side * x2 * k;
-		float by = cy + y2 * k;
-		float len = (float) Math.hypot(bx - ax, by - ay);
-		g.pose().pushMatrix();
-		g.pose().translate(ax, ay);
-		g.pose().rotate((float) Math.atan2(by - ay, bx - ax));
-		image(g, HudShapes.LINE, -thick, -thick * 1.5f, len + 2 * thick, thick * 3, colour);
-		g.pose().popMatrix();
-	}
-
-	/** Her scope's inner arcs: on a circle round the crosshair, the frame's y 505-618, thickest in the middle. */
-	private static void scopeTaper(GuiGraphicsExtractor g, float cx, float cy, float r, int side, float thick, int colour) {
-		int pieces = 8;
-		float span = 12.5f;
-		for (int i = 0; i < pieces; i++) {
-			float a = -span + 2 * span * i / pieces;
-			float b = -span + 2 * span * (i + 1) / pieces;
-			float mid = (i + 0.5f) / pieces;
-			float at = side > 0 ? 90 : -90;
-			HeroHud.arc(g, cx, cy, r, 2 + (thick - 2) * (float) Math.sin(Math.PI * mid), at + a, at + b, colour);
-		}
-	}
-
-	/** Her scope's strut: a capsule's outline, (875, 565) to (965, 685) in the frame, mirrored: two lines and round ends. */
-	private static void scopeStrut(GuiGraphicsExtractor g, float cx, float cy, float k, int side, int colour) {
-		float x1 = 126, y1 = 3, x2 = 36, y2 = 123;
-		float len = (float) Math.hypot(x2 - x1, y2 - y1);
-		float nx = (y2 - y1) / len * 8;
-		float ny = -(x2 - x1) / len * 8;
-		scopeLine(g, cx, cy, k, side, x1 + nx, y1 + ny, x2 + nx, y2 + ny, 3, colour);
-		scopeLine(g, cx, cy, k, side, x1 - nx, y1 - ny, x2 - nx, y2 - ny, 3, colour);
-		for (float[] end : new float[][] {{x1, y1}, {x2, y2}}) {
-			image(g, HudShapes.RING_THIN, cx + side * end[0] * k - 9 * k, cy + end[1] * k - 9 * k, 18 * k, 18 * k, colour);
-		}
+		fill(g, cx - t / 2 - 1, cy - gap - tick - 1, t + 2, tick + 2, edge);
+		fill(g, cx - t / 2 - 1, cy + gap - 1, t + 2, tick + 2, edge);
+		fill(g, cx - gap - tick - 1, cy - t / 2 - 1, tick + 2, t + 2, edge);
+		fill(g, cx + gap - 1, cy - t / 2 - 1, tick + 2, t + 2, edge);
+		fill(g, cx - t / 2, cy - gap - tick, t, tick, colour);
+		fill(g, cx - t / 2, cy + gap, t, tick, colour);
+		fill(g, cx - gap - tick, cy - t / 2, tick, t, colour);
+		fill(g, cx + gap, cy - t / 2, tick, t, colour);
 	}
 
 	// ---- the screen itself ----
@@ -561,6 +486,9 @@ public final class HeroHud {
 				float k = Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1);
 				int colour = 0xFF000000 | Math.round(255 * (1 + (SCOPE_WASH_R - 1) * k)) << 16 | Math.round(255 * (1 + (SCOPE_WASH_G - 1) * k)) << 8 | 0xFF;
 				g.fill(STEALTH_WASH, 0, 0, g.guiWidth(), g.guiHeight(), colour);
+				g.nextStratum();
+				int lift = 0xFF000000 | Math.round(255 * SCOPE_LIFT_G * k) << 8 | Math.round(255 * SCOPE_LIFT_B * k);
+				g.fill(SCREEN_WASH, 0, 0, g.guiWidth(), g.guiHeight(), lift);
 				g.nextStratum();
 			}
 			return;
@@ -859,12 +787,27 @@ public final class HeroHud {
 	}
 
 	/**
-	 * Her scope's wash, a multiply (measured, weakly: the owner's frame 1 scoped against frame 2 unscoped, the same map from other spots: sky R/B and G/B fall to .90 and .92,
-	 * floor to .82 and .87; much of frame 1's blue is the map's own).
+	 * Her scope's wash: a small multiply, then a blue screen blend, which lifts darks toward blue and leaves brights alone. A multiply alone can't: frame 1's dark stairs read
+	 * (59, 63, 96) and its white box (251, 253, 254) (research/side_by_side_2026-11-05/data_read/frame1_spots.txt). Ours, tuned by those spots; no unwashed frame of the same spot exists.
 	 */
-	private static final float SCOPE_WASH_R = 0.88f, SCOPE_WASH_G = 0.91f;
+	private static final float SCOPE_WASH_R = 0.96f, SCOPE_WASH_G = 0.98f, SCOPE_LIFT_G = 0.02f, SCOPE_LIFT_B = 0.15f;
+	/** Adds the art's own light by its alpha. */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline SCOPE_ART = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_add_textured"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(com.mojang.renderpearl.api.pipeline.BlendFunction.LIGHTNING))
+			.build());
+	/** A screen blend: 1 - (1 - scene)(1 - colour). */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline SCREEN_WASH = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_screen"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(new com.mojang.renderpearl.api.pipeline.BlendFunction(
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendFactor.ONE_MINUS_SRC_COLOR,
+				com.mojang.renderpearl.api.pipeline.BlendOp.ADD, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendOp.ADD)))
+			.build());
 	/** A blocked ability's red (measured from the owner's frame 2), and how long her beacon's throw blocks the rest (0C19 #145 v8349 = 0.4 s, H). */
-	private static final int LOCKED_RED = 0xFFF53757;
+	private static final int LOCKED_RED = 0xFFF53757, ACTIVE_ORANGE = 0xFFFC805F;
 	private static final float SOMBRA_THROW_LOCK = 0.4f;
 	/** 420C #851 (D): see stealthWash. */
 	private static final float STEALTH_WASH_R = 0.8431f, STEALTH_WASH_G = 0.5451f, STEALTH_WASH_B = 1, STEALTH_WASH_AMOUNT = 0.7f;
@@ -1337,22 +1280,21 @@ public final class HeroHud {
 		Identifier icon = HeroArt.ability(hero, ability);
 		boolean ready = cooldown <= 0;
 		if (abilityLocked(hero, ability)) {
-			// blocked (0786, 630E on each ability box: 47B7 #500, #860, 0C19 #597, a general flag, M). Measured from the owner's frame 2: a dark box reddening
-			// downward, edged in (245, 55, 87), its icon that red, slashed from bottom left to top right, a red line at its foot
+			// blocked (0786, 630E on each ability box: 47B7 #500, #860, 0C19 #597, a general flag, M). Measured from the owner's frame 2 (over a backdrop of (78, 79, 111), the box reads
+			// (160, 70, 88) at its top, (194, 65, 85) at its foot, (175, 67, 86) mean): see-through, reddening downward, edged in (245, 55, 87), its icon that red, slashed, a line at its foot
 			float y = base + 3;
 			float h = 66;
-			box(g, x, y, size, h, 0xB31A1014);
-			boxFade(g, x, y, size, h, 0x00000000);
-			fill(g, x + 1, y + h * 0.55f, size - 2, h * 0.45f - 1, 0x66C01F38);
+			dev.overcraft.client.hud.HudDraw.gradient(g, x, y, size, h, 0x99D73F49, 0xBFE93C4C);
 			dev.overcraft.client.hud.HudDraw.outline(g, x, y, size, h, 2, LOCKED_RED);
 			iconOrName(g, icon, ability, x, y + 1, size, LOCKED_RED);
 			g.pose().pushMatrix();
 			g.pose().translate(cx, y + h / 2);
 			g.pose().rotate((float) Math.atan2(-h, size));
-			fill(g, -44, -3, 88, 6, 0x80301018);
-			fill(g, -44, -1, 88, 2, LOCKED_RED);
+			fill(g, -44, -1.5f, 88, 3, 0xCCF5A0AA);
 			g.pose().popMatrix();
 			fill(g, x, y + h + 5, size, 2.5f, LOCKED_RED);
+		} else if (abilityActive(hero, ability)) {
+			activeBox(g, icon, ability, x, base + 3, size, 66, "");
 		} else if (ready || cooldown > total - CAST_TIME) {
 			float y = base + 3;
 			float h = 66;
@@ -1396,6 +1338,31 @@ public final class HeroHud {
 	 * silence isn't synced to the client that has it (Hack.silenced).
 	 */
 	private static boolean abilityLocked(Hero hero, String ability) {
+		return locked(hero, ability);
+	}
+
+	/** Solid orange, its icon dark, seconds over it if any: an ability in use (measured from the owner's frame 2, Translocator's box: (252, 128, 95)). */
+	private static void activeBox(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float x, float y, float size, float h, String seconds) {
+		box(g, x, y, size, h, ACTIVE_ORANGE);
+		iconOrName(g, icon, ability, x, y + 1, size, seconds.isEmpty() ? 0xF21A1B2E : 0x661A1B2E);
+		if (!seconds.isEmpty()) {
+			brush(g, seconds, x + size / 2, y + h / 2 + 15, 31);
+			HudText.plain(g, Face.NUMBERS, seconds, x + size / 2, y + h / 2 + 15, 31, WHITE, Align.CENTER);
+		}
+	}
+
+	/** Her beacon in the throw: Translocator's box is the active one (frame 2); the rest are locked (0C19 #145 v8349 = 0.4 s, H). */
+	private static boolean sombraThrowing() {
+		Minecraft mc = Minecraft.getInstance();
+		return mc.player != null && dev.overcraft.client.model.HeroAnimator.of(mc.player).since("throw",
+			(mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f) < SOMBRA_THROW_LOCK;
+	}
+
+	private static boolean abilityActive(Hero hero, String ability) {
+		return hero == Hero.SOMBRA && ability.equals("translocator") && sombraThrowing();
+	}
+
+	private static boolean locked(Hero hero, String ability) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.player == null) {
 			return false;
@@ -1403,8 +1370,7 @@ public final class HeroHud {
 		HeroSyncPayload s = ClientHero.sync();
 		return switch (hero) {
 			case JUNO -> ability.equals("glide_boost") && s != null && (s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0;
-			case SOMBRA -> ability.equals("cyberspace") && dev.overcraft.client.model.HeroAnimator.of(mc.player).since("throw",
-				(mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f) < SOMBRA_THROW_LOCK;
+			case SOMBRA -> !ability.equals("translocator") && sombraThrowing();
 			default -> false;
 		};
 	}
@@ -1531,9 +1497,10 @@ public final class HeroHud {
 		line(g, x, y + height - 3, width, false);
 		float mid = y + height / 2;
 		Identifier icon = HeroArt.ability(hero, weapon);
+		int tint = hero == Hero.SOMBRA && weapon.equals("hotfix") && sombraThrowing() ? LOCKED_RED : WHITE;
 		if (icon != null) {
 			// the kunai's icon a little further in than the ofuda's card (the eighth critique, the owner's frames)
-			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, WHITE);
+			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, tint);
 		}
 		if (clip > 0) {
 			// a weapon with no ammo (Mercy's staff) shows none
@@ -1549,25 +1516,23 @@ public final class HeroHud {
 		mouse(g, fire, mouseX, mouseY);
 	}
 
-	/** The torpedo slot counts down (the issue's frames): the lock's seconds while she locks, its cooldown after. The place in the panel is ours. */
+	/** The torpedo slot counts down: an orange box with the lock's seconds while she locks (the note's frames, eye-read), its cooldown after, plain. The place in the panel is ours. */
 	private static void torpedoCount(GuiGraphicsExtractor g, HeroSyncPayload s, float w) {
-		float left = 0;
 		Minecraft mc = Minecraft.getInstance();
+		float cx = w - 484 + 169 / 2f;
+		float mid = 923.5f + 64 / 2f;
+		g.pose().pushMatrix();
+		curve(g, cx, mid, slopeAt(960 - (w - cx)));
 		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && mc.player != null) {
 			float now = (mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f;
-			left = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW - dev.overcraft.client.model.HeroAnimator.of(mc.player).since("torpedo_lock", now);
-		} else {
-			left = s.ability3Cooldown();
+			float left = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW - dev.overcraft.client.model.HeroAnimator.of(mc.player).since("torpedo_lock", now);
+			activeBox(g, HeroArt.ability(Hero.JUNO, "pulsar_torpedoes"), "pulsar_torpedoes", w - 484 + 8, 923.5f + 2, 56, 58, String.valueOf(Math.max(1, (int) Math.ceil(left))));
+		} else if (s.ability3Cooldown() > 0) {
+			String seconds = String.valueOf((int) Math.ceil(s.ability3Cooldown()));
+			brush(g, seconds, w - 484 + 36, mid + 12, 26);
+			HudText.plain(g, Face.NUMBERS, seconds, w - 484 + 36, mid + 12, 26, WHITE, Align.CENTER);
 		}
-		if (left > 0) {
-			float cx = w - 484 + 169 / 2f;
-			float mid = 923.5f + 64 / 2f;
-			g.pose().pushMatrix();
-			curve(g, cx, mid, slopeAt(960 - (w - cx)));
-			String seconds = String.valueOf((int) Math.ceil(left));
-			HudText.draw(g, Face.NUMBERS, seconds, w - 342, mid + 10, 20, WHITE, Align.RIGHT);
-			g.pose().popMatrix();
-		}
+		g.pose().popMatrix();
 	}
 
 	/**

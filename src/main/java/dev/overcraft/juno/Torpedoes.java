@@ -83,6 +83,7 @@ public final class Torpedoes {
 		Vec3 look = player.getViewVector(1.0f);
 		double cos = Math.cos(Math.toRadians(LOCK_CONE / 2));
 		java.util.Set<Integer> filling = new java.util.HashSet<>();
+		java.util.Map<Integer, double[]> fills = new java.util.HashMap<>();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(LOCK_RANGE + LOCK_FORGIVE),
 			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.areaHits(player, e)))) {
 			int id = e.getId();
@@ -103,10 +104,7 @@ public final class Torpedoes {
 					? FAMILIAR_VITALS : 1);
 			int progress = s.junoLockProgress.getOrDefault(id, 0) + 1;
 			s.junoLockProgress.put(id, progress);
-			if (progress == 1) {
-				// her client's mark closes in over this (0727.116's 646D, the fill: M)
-				Effects.play(level, "juno_lock_fill", e.position(), new Vec3(need, 0, 0), e, player.getId(), player);
-			}
+			fills.put(id, new double[] {need, Math.min(1, progress / (double) Ow.ticks(need))});
 			if (progress >= Ow.ticks(need)) {
 				s.junoLocked.add(id);
 				// the lock marker (0727.116, a HUD element on the target's hp 0001): her client draws it (variant: who locked it)
@@ -118,6 +116,29 @@ public final class Torpedoes {
 			}
 		}
 		ticking(player, s, filling);
+		marks(player, s, filling, fills);
+	}
+
+	/**
+	 * Her client's marks close in with each fill (0727.116's 646D: M): told when one starts or comes back, with how far it's got, and when it stops. A locked one has its own message.
+	 */
+	private static void marks(ServerPlayer player, HeroState s, java.util.Set<Integer> filling, java.util.Map<Integer, double[]> fills) {
+		ServerLevel level = player.level();
+		for (int id : filling) {
+			Entity e = level.getEntity(id);
+			if (e != null && !s.junoLockFilling.contains(id)) {
+				double[] f = fills.get(id);
+				Effects.play(level, "juno_lock_fill", e.position(), new Vec3(f[0], f[1], 0), e, player.getId(), player);
+			}
+		}
+		for (int id : s.junoLockFilling) {
+			Entity e = level.getEntity(id);
+			if (e != null && !filling.contains(id)) {
+				Effects.play(level, "juno_lock_unfill", e.position(), Vec3.ZERO, e, player.getId(), player);
+			}
+		}
+		s.junoLockFilling.clear();
+		s.junoLockFilling.addAll(filling);
 	}
 
 	/**
@@ -146,6 +167,7 @@ public final class Torpedoes {
 		s.junoLock = -1;
 		s.junoLockProgress.clear();
 		ticking(player, s, java.util.Set.of());
+		marks(player, s, java.util.Set.of(), java.util.Map.of());
 		// the fire state's start (4695 #938 onBegin -> #1132 -> #934 effect 520D, 70 m; L which of its pair is the usual one).
 		// The cancel takes the same pair (#943 false -> #1139 -> #1132: L)
 		JunoSounds.split(player, "torpedo.fire", player.getEyePosition(), 70);
