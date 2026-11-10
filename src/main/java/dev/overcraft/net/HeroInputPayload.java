@@ -9,10 +9,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * Client to server, hero controls (only while hotbar slot 1 is selected): which fire buttons are held, and the
  * ability keys pressed since the last one.
  */
-public record HeroInputPayload(int held, int pressed, int extra) implements CustomPacketPayload {
+public record HeroInputPayload(int held, int pressed, int extra, int wall) implements CustomPacketPayload {
 	public static final int HELD_PRIMARY = 1;
 	public static final int HELD_SECONDARY = 2;
-	/** Riding a wall (Lúcio's Wall Ride: the client moves him; the server needs it for Soundwave Rider). */
+	/** Riding a wall (Lúcio's Wall Ride: the client moves him; the server needs it for Soundwave Rider, and {@code wall} says how: OwMovement.wallCode). */
 	public static final int HELD_WALL_RIDE = 4;
 	/** Climbing a wall (Kiriko: the client moves her; the climb interrupts a reload, #42). */
 	public static final int HELD_WALL_CLIMB = 8;
@@ -35,7 +35,11 @@ public record HeroInputPayload(int held, int pressed, int extra) implements Cust
 	public static final int EXTRA_SLIDE_END = 64;
 
 	public HeroInputPayload(int held, int pressed) {
-		this(held, pressed, 0);
+		this(held, pressed, 0, 0);
+	}
+
+	public HeroInputPayload(int held, int pressed, int extra) {
+		this(held, pressed, extra, 0);
 	}
 
 	public static final Type<HeroInputPayload> TYPE = new Type<>(Overcraft.id("hero_input"));
@@ -44,7 +48,8 @@ public record HeroInputPayload(int held, int pressed, int extra) implements Cust
 			buf.writeByte(p.held);
 			buf.writeByte(p.pressed);
 			buf.writeByte(p.extra);
-		}, buf -> new HeroInputPayload(buf.readByte(), buf.readByte(), buf.readByte()));
+			buf.writeVarInt(p.wall);
+		}, buf -> new HeroInputPayload(buf.readByte(), buf.readByte(), buf.readByte(), buf.readVarInt()));
 
 	@Override
 	public Type<HeroInputPayload> type() {

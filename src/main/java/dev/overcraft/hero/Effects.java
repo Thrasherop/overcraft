@@ -54,7 +54,8 @@ public final class Effects {
 	}
 	/** The effects that end a held one early. */
 	private static final java.util.Map<String, String> ENDS = java.util.Map.of("ana_wake", "ana_asleep", "ana_nano_end", "ana_nano",
-		"sombra_hotfixed_end", "sombra_hotfixed");
+		"sombra_hotfixed_end", "sombra_hotfixed", "ana_anti_healed_end", "ana_anti_healed", "ana_numbed_end", "ana_numbed",
+		"sombra_hacked_end", "sombra_hacked", "sombra_revealed_end", "sombra_revealed", "brigitte_stun_end", "brigitte_stun");
 
 	private record Held(String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, @Nullable Entity owner, long since, long until, Spec spec, int flagBits) {
 		boolean over() {
@@ -113,6 +114,12 @@ public final class Effects {
 		if (server.getTickCount() % 200 == 0) {
 			HELD_NOW.removeIf(Held::over);
 		}
+	}
+
+	/** Dev only: the held states on this entity a late viewer would be told of. */
+	public static String devHeld(Entity entity) {
+		HELD_NOW.removeIf(Held::over);
+		return HELD_NOW.stream().filter(h -> h.entity == entity).map(Held::effect).toList().toString();
 	}
 
 	public static void clear() {

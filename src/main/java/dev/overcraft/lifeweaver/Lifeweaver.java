@@ -646,7 +646,7 @@ public final class Lifeweaver implements HeroKit {
 	 * at 28.875 m/s along his keys; here its heal (55 over the dash) and its cooldown (5 s from its end).
 	 */
 	private static void startDash(ServerPlayer player, HeroState s) {
-		if (s.ability3Cooldown > 0 || s.dashTicks >= 0 || player.onGround() || LifeGrip.gripped(player)) {
+		if (s.ability3Cooldown > 0 || s.dashTicks >= 0 || player.onGround() || LifeGrip.gripped(player) || HeroManager.jumpIsNotAirborne(player)) {
 			return;
 		}
 		s.dashTicks = Ow.ticks(DASH_TIME);
@@ -915,6 +915,10 @@ public final class Lifeweaver implements HeroKit {
 		s.bloomTarget = null;
 		s.treeAiming = false;
 		s.gripCast = -1;
+		if (s.dashTicks >= 0) {
+			// its cooldown starts, as when it runs out (G skipped it otherwise)
+			s.ability3Cooldown = Ow.ticks(DASH_COOLDOWN);
+		}
 		s.dashTicks = -1;
 		s.platformThrow = -1;
 		// a Tree cast under way is cut, not sprouted at the old spot on G back; its charge stays spent

@@ -119,7 +119,7 @@ public final class ReticleHud {
 		boolean reticle = atReticle();
 		switch (hero) {
 			case SOJOURN -> sojourn(g, s, cx, cy, reticle);
-			case SIGMA -> sigma(g, hero, s, cx, cy);
+			case SIGMA -> sigma(g, hero, s, cx, cy, reticle);
 			case BRIGITTE -> brigitte(g, player, hero, s, cx, cy, w, h, partial, reticle);
 			case MERCY -> mercy(g, player, hero, s, cx, cy, reticle);
 			case SOMBRA -> sombra(g, player, s, cx, cy, w, h, partial, reticle);
@@ -215,9 +215,18 @@ public final class ReticleHud {
 	 * Sigma. His barrier's health, 0275 on the centre layer (2155 #12: the bar's share C7, the health v586 in the text 5FCE, a whole
 	 * number; his hero option "Experimental Barrier UI", on by default) while it's out. Gravitic Flux's aim: 0237 (1E41 #1152) and
 	 * 00DB (#1283: primary, 4ED9 "CONFIRM"; #1299's secondary is also "CONFIRM" there, 1DE77, but the mod takes the left only).
-	 * Kinetic Grasp's hold: its time, as the other timed abilities (the data draws none: ours).
+	 * Kinetic Grasp's hold: its time, as the other timed abilities (the data draws none: ours). Hyper Strike's count (his perk): 0243 in the
+	 * ability bar (51E0 #425: quick melee's icon and button, 01D3 the hits over 5); ours: five pips at the reticle, which is where his hands
+	 * are looking, and when it's charged the key and the perk's name (25111 "Hyper Strike", which the data doesn't put on this widget).
 	 */
-	private static void sigma(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float cx, float cy) {
+	private static void sigma(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float cx, float cy, boolean reticle) {
+		HeroSyncPayload.Widgets strike = s.widgets();
+		if (reticle && strike.flag()) {
+			mark(y);
+			// (narrower than Brigitte's: at 22 wide the row touched his spheres in view at 720p)
+			pips(g, (int) strike.left2(), dev.overcraft.sigma.SigmaStats.HYPER_STRIKE_HITS, cx, y, 14, 4);
+			y += 16;
+		}
 		y = Math.max(y, cy + TIMER_BELOW);
 		if ((s.mode() & dev.overcraft.sigma.Sigma.MODE_BARRIER_OUT) != 0) {
 			resourceBar(g, HeroArt.ability(hero, "experimental_barrier"), s.meter(), String.valueOf(s.secondaryAmmo()), BARRIER);
@@ -230,6 +239,9 @@ public final class ReticleHud {
 		if (d.count() > 0) {
 			timedBar(g, HeroArt.ultimate(hero), d.left() / d.total(), d.left(), cy);
 			prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.confirm", null, null);
+		}
+		if (reticle && d.flag() && d.left2() >= dev.overcraft.sigma.SigmaStats.HYPER_STRIKE_HITS) {
+			prompt(g, Action.QUICK_MELEE, "overcraft.hud.prompt.hyper_strike", null, null);
 		}
 	}
 
@@ -446,6 +458,13 @@ public final class ReticleHud {
 			// (Beat Drop's 4 s runs the same bar a little over: it shows full, then counts down)
 			timedBar(g, HeroArt.ability(hero, "amp_it_up"), s.activeLeft() / (float) dev.overcraft.lucio.LucioStats.AMP_UP_TIME, s.activeLeft(), cy);
 		}
+		if (reticle && s.meter() > 0) {
+			// Soundwave Rider's charge, 0275 on the centre layer (5162 #450, under perk gate #437: v66249 / 100, chased to 100 at 20 a second,
+			// #439, the 5 s the wiki gives; #443's 1.25 is its knockback; shown once it isn't 0, 27A3). The note on #85 called this "Accelerando's
+			// meter": Accelerando (the same graph's #391 -> #393) has no widget. The mod's charge is s.meter(); the colour's ours, gold when full.
+			y = Math.max(y, cy + TIMER_BELOW);
+			resourceBar(g, HeroArt.perk(hero, "soundwave_rider"), s.meter(), null, s.meter() >= 1 ? 0xFFF7C43A : WHITE);
+		}
 	}
 
 	/**
@@ -557,13 +576,16 @@ public final class ReticleHud {
 
 	/** A count of what's left (Repair Pack's), as a row of short bars: full and empty (00F3 binds the count alone: the shape ours). */
 	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top) {
-		float pw = 22;
-		float gap = 6;
+		pips(g, have, max, cx, top, 22, 6);
+	}
+
+	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top, float pw, float gap) {
 		float x = cx - (max * pw + (max - 1) * gap) / 2;
 		for (int i = 0; i < max; i++) {
 			float px = x + i * (pw + gap);
-			fill(g, px - 1, top - 1, pw + 2, 8, 0x80000000);
-			fill(g, px, top, pw, 6, i < have ? 0xF2F7C43A : 0x33FFFFFF);
+			fill(g, px - 1, top - 1, pw + 2, 8, 0xA6000000);
+			// (an empty one a touch brighter: at 0x33 they were lost at night, on Sigma's and on Brigitte's)
+			fill(g, px, top, pw, 6, i < have ? 0xF2F7C43A : 0x66FFFFFF);
 		}
 	}
 

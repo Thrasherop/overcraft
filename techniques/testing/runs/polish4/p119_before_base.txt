@@ -1,0 +1,58 @@
+=== #119 BEFORE. Tree: base e5e5f66 (fix/polish-3 tip), unmodified. Input: harness key mappings and bots, not a mouse; bots are server-side players, not second clients.
+screen HeroSelectScreen
+/difficulty normal ['[08:02:01] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[08:02:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[08:02:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[08:02:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[08:02:02] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[08:02:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[08:02:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[08:02:03] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[08:02:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 71 entities']
+me {'screen': '', 'hero': '', 'heroMode': False, 'health': 20.0, 'maxHealth': 20.0}
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- A sleep on a bot ally
+{'ok': True}
+after dart True all {'asleep': 'player@2'}
+suzu cd2 13.75
+  A +0.25 (True, 18.0, 13.4)
+  A +0.50 (True, 18.0, 13.1)
+  A +0.75 (True, 18.0, 12.8)
+  A +1.00 (True, 18.0, 12.4)
+  A +1.25 (True, 18.0, 12.1)
+  A +1.50 (True, 18.0, 11.8)
+  A +1.75 (True, 18.0, 11.4)
+  A +2.00 (True, 18.0, 11.1)
+hero mercy mode True screen  hp 18.0 / 18.0
+--- B sleep on the real client
+{'ok': True}
+after dart {'asleep': 'player@1'} clip idle
+{'ok': True}
+  B +0.50 ('player@1', 'idle')
+  B +1.00 ('player@1', 'idle')
+  B +1.50 ('player@1', 'idle')
+  B +2.00 ('player@1', 'idle')
+  B +2.50 ('player@1', 'idle')
+  B +3.00 ('player@1', 'idle')
+  B +3.50 ('player@1', 'idle')
+  B +4.00 ('player@1', 'idle')
+  B +4.50 ('', 'idle')
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- C stun on a bot ally
+bash {'asleep': 'player@1 player@2'} 6.7999997
+  C +0.15 ('player@0 player@2', 6.7999997)
+  C +0.30 ('player@-1 player@2', 6.7999997)
+  C +0.45 ('', 6.7999997)
+  C +0.60 ('', 6.7999997)
+  C +0.75 ('', 6.7999997)
+  C +0.90 ('', 6.7999997)
+  C +1.05 ('', 6.7999997)
+  C +1.20 ('', 6.7999997)
+hero mercy mode True screen  hp 18.0 / 18.0
+--- D Hack on the real client
+{'ok': True}
+glowing? ['[08:02:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko has the following entity data: [{duration: 149, show_icon: 0b, id: "minecraft:glowing", show_particles: 0b}]']
+{'ok': True}
+after suzu effects ['[08:02:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko has the following entity data: [{duration: 131, show_icon: 0b, id: "minecraft:glowing", show_particles: 0b}]']
+Shift pressed while "cleansed": cd1 0.0 -> 0.0
+after 3s

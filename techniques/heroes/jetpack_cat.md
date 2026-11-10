@@ -298,3 +298,6 @@ Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
 - **Flyers keep their height** (NoAI, so only the knock-down moves them; a zombie nearer, so it's the carried one): phantom old -57 -> -60, new -57; blaze old -57 -> -59.8, new -57. **The Ender Dragon isn't pulled:** old -56 -> -95 in 1 s (through the bedrock), new stays -56. Slides feel water (not played).
 - **A creeper in Gravitic Flux** (200 health, 3 s fuse): old went off 1.9 s after the confirm, new alive 7.5 s+ (`Sleep.holdFuse`).
 - **The carry takes** no dead mob, shulker, rider or dart's sleeper (by code; a shulker not played).
+
+## The Nov 3 patch (#116)
+Health 200, fuel back at 20% a second, boost acceleration 25 -> 28. The boost's rates are the 2026-11-01 recording's +3 (23, 13.4), the alternative x 28/25; top speed kept at 17.8 though W now says 17.43: both inferred, **need a new recording** ([polish3](../testing/polish3.md)).

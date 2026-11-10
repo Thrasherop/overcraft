@@ -1,0 +1,84 @@
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 19:00:35
+/difficulty normal ['[19:00:37] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[19:00:37] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[19:00:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[19:00:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[19:00:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[19:00:39] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[19:00:39] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[19:00:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[19:00:40] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+hero kiriko mode True screen  hp 20.0 / 20.0
+kunai                  phased=False target 18.00 -> 8.40 | behind 200.0 -> 200.0 | asleep  | hit sounds ['kiriko.kunai.hit']
+hero kiriko mode True screen  hp 20.0 / 20.0
+kunai                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 195.2768 | asleep  | hit sounds ['kiriko.kunai.hit']
+hero lucio mode True screen  hp 18.0 / 18.0
+sonic                  phased=False target 18.00 -> 10.96 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero lucio mode True screen  hp 18.0 / 18.0
+sonic                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 193.27539 | asleep  | hit sounds []
+hero sigma mode True screen  hp 48.0 / 48.0
+hypersphere            phased=False target 18.00 -> 8.40 | behind 200.0 -> 195.12886 | asleep  | hit sounds ['sigma.sphere.hit', 'sigma.sphere.hit_enemy', 'sigma.sphere.hit', 'sigma.sphere.hit_enemy']
+hero sigma mode True screen  hp 48.0 / 48.0
+hypersphere            phased=True  target 18.00 -> 18.00 | behind 200.0 -> 190.656 | asleep  | hit sounds ['sigma.sphere.hit', 'sigma.sphere.hit_enemy', 'sigma.sphere.hit', 'sigma.sphere.hit_enemy']
+hero sojourn mode True screen  hp 18.0 / 18.0
+railgun                phased=False target 18.00 -> 10.08 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sojourn.railgun.hit', 'sojourn.railgun.hit_enemy', 'sojourn.railgun.hit', 'sojourn.railgun.hit_enemy']
+hero sojourn mode True screen  hp 18.0 / 18.0
+railgun                phased=True  target 18.00 -> 18.00 | behind 200.0 -> 194.6178 | asleep  | hit sounds ['sojourn.railgun.hit', 'sojourn.railgun.hit_enemy', 'sojourn.railgun.hit', 'sojourn.railgun.hit_enemy']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=False target 18.00 -> 14.16 | behind 200.0 -> 200.0 | asleep  | hit sounds ['lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+thorn                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 195.53787 | asleep  | hit sounds ['lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit', 'lifeweaver.thorn.hit']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+paw                    phased=False target 18.00 -> 12.24 | behind 200.0 -> 200.0 | asleep  | hit sounds ['jetpack_cat.paw.hit', 'jetpack_cat.paw.hit', 'jetpack_cat.paw.hit']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+paw                    phased=True  target 18.00 -> 18.00 | behind 200.0 -> 195.5451 | asleep  | hit sounds ['jetpack_cat.paw.hit', 'jetpack_cat.paw.hit', 'jetpack_cat.paw.hit', 'jetpack_cat.paw.hit']
+hero sojourn mode True screen  hp 18.0 / 18.0
+disruptor              phased=False target 18.00 -> 9.71 | behind 200.0 -> 190.3232 | asleep  | hit sounds ['sojourn.disruptor.hit']
+hero sojourn mode True screen  hp 18.0 / 18.0
+disruptor              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 190.3232 | asleep  | hit sounds ['sojourn.disruptor.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+anadart                phased=False target 18.00 -> 12.00 | behind 200.0 -> 200.0 | asleep  | hit sounds ['ana.rifle.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+anadart                phased=True  target 18.00 -> 18.00 | behind 200.0 -> 194.40796 | asleep  | hit sounds ['ana.rifle.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+sleepdart              phased=False target 18.00 -> 17.60 | behind 200.0 -> 200.0 | asleep player@801021 | hit sounds ['ana.sleep.dart.hit']
+hero ana mode True screen  hp 20.0 / 20.0
+sleepdart              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 199.6288 | asleep zombie@801081 | hit sounds ['ana.sleep.dart.hit']
+hero sigma mode True screen  hp 48.0 / 48.0
+accretion              phased=False target 18.00 -> 8.40 | behind 200.0 -> 199.09837 | asleep player@801141 | hit sounds ['sigma.accretion.hit_enemy']
+hero sigma mode True screen  hp 48.0 / 48.0
+accretion              phased=True  target 18.00 -> 18.00 | behind 200.0 -> 190.55359 | asleep zombie@801201 | hit sounds ['sigma.accretion.hit_enemy']
+hero sombra mode True screen  hp 18.0 / 18.0
+pistol-hitscan         phased=False target 18.00 -> 13.32 | behind 200.0 -> 200.0 | asleep  | hit sounds ['sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit']
+hero sombra mode True screen  hp 18.0 / 18.0
+pistol-hitscan         phased=True  target 18.00 -> 18.00 | behind 200.0 -> 196.12952 | asleep  | hit sounds ['sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit', 'sombra.pistol.hit']
+hero juno mode True screen  hp 18.0 / 18.0
+mediblaster-hitscan    phased=False target 18.00 -> 10.80 | behind 200.0 -> 200.0 | asleep  | hit sounds ['juno.mediblaster.hit', 'juno.mediblaster.hit_enemy', 'juno.mediblaster.hit', 'juno.mediblaster.hit_enemy']
+hero juno mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+mediblaster-hitscan    phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero juno mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+whip                   phased=False target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+whip                   phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | asleep  | hit sounds []
+--- Mercy blaster: she needs her weapon out: not switched by this script, not tried
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+bash                   phased=False target 18.00 -> 18.00 | behind 200.0 -> 200.0 | []
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+melee                  phased=False target 18.00 -> 18.00 | behind 200.0 -> 200.0 | []
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+catnapper              phased=False me knocked None, carried by , health 18.0 | beside me zombie 200.0 -> 200.0, held 
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+bash                   phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | []
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+melee                  phased=True  target 18.00 -> 18.00 | behind 200.0 -> 200.0 | []
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+catnapper              phased=True  me knocked None, carried by , health 18.0 | beside me zombie 200.0 -> 200.0, held 
+--- Hyper Strike by a bot Sigma, charge read: target phased or not, then again at the zombie alone
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  phased False: first swing: target health=10.8 asleep=True gravity=0.001; zombie 200.0 -> 196.8512 strike=False; charge left False
+    second swing: zombie 196.8512 -> 196.8512; charge left False
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  phased True: first swing: target health=18.0 asleep=False gravity=0.08; zombie 200.0 -> 196.8512 strike=False; charge left False
+    second swing: zombie 196.8512 -> 196.8512; charge left False
+DONE

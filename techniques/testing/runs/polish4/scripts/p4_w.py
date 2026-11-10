@@ -1,0 +1,10 @@
+XSTART=20000
+exec(open(r"C:/Users/ultra/AppData/Local/Temp/claude/E--claude-mods-overcraft/6635df67-fe58-47ac-a0d2-4067e7d195cf/scratchpad/p4_hlp.py", encoding="utf8").read())
+setup()
+log('--- Whip Shot at a phased real client: spent on her, Inspire and all?')
+x = spot(); me('mercy', x); k = add('kiri', 'kiriko', 'blue', x - 3, 0.5, -90, 72); b = add('brig', 'brigitte', 'red', x, 4.5, 180, 0)
+c('heard'); bot('press %s ability2' % k); t0 = time.time()
+bot('press %s ability1' % b); log(' whip pressed; windup 0.2 s, then 80 m/s')
+r = rows('me', 0.7, ['phased', 'z', 'health'])
+log('  phase', span(r, 1), 'z', r[0][2], r[-1][2], 'health', r[-1][3]); log('  heard whip', heard('whip'))
+clear()

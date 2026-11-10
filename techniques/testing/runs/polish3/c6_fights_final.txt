@@ -1,0 +1,46 @@
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 6
+kiriko 1 died at 9.9, back as kiriko hp 15.0 mode True
+## final kiriko round 1 mobs left 1 of 6 cleared at None deaths 1 lowest hp 8.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 6
+## final kiriko round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 7.4 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 6
+## final brigitte round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 16.6 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 6
+## final brigitte round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 17.6 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 6
+## final ana round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 20.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 6
+## final ana round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 12.0 end hp 20.0/20.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 6
+## final sombra round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 13.0 end hp 18.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 6
+sombra 2 died at 22.0, back as sombra hp 18.0 mode True
+## final sombra round 2 mobs left 5 of 6 cleared at None deaths 1 lowest hp 1.0 end hp 12.3/18.0
+   death line: Kiriko was shot by Skeleton
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+start jetpack_cat 1 mobs 6
+## final jetpack_cat round 1 mobs left 5 of 6 cleared at None deaths 0 lowest hp 12.0 end hp 16.0/16.0
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+start jetpack_cat 2 mobs 6
+## final jetpack_cat round 2 mobs left 5 of 6 cleared at None deaths 0 lowest hp 12.0 end hp 16.0/16.0
+hero sigma mode True screen  hp 48.0 / 48.0
+start sigma 1 mobs 6
+## final sigma round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 29.0 end hp 48.0/48.0
+hero sigma mode True screen  hp 48.0 / 48.0
+start sigma 2 mobs 6
+## final sigma round 2 mobs left 3 of 6 cleared at None deaths 0 lowest hp 37.0 end hp 40.1/48.0
+hero lucio mode True screen  hp 18.0 / 18.0
+start lucio 1 mobs 5
+## final lucio round 1 mobs left 4 of 6 cleared at None deaths 0 lowest hp 9.8 end hp 18.0/18.0
+hero lucio mode True screen  hp 18.0 / 18.0
+start lucio 2 mobs 5
+## final lucio round 2 mobs left 3 of 6 cleared at None deaths 0 lowest hp 12.5 end hp 18.0/18.0

@@ -58,6 +58,10 @@ public final class Combat {
 	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
 	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
 	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
+	/** Dev only (DevBot's "fixoff"): #117's cleanse and #109's float switched off, to show the fixes are what made the difference. */
+	public static boolean devFixOff;
+	/** Dev only (DevBot's "fix 119"): #119's list (below) and what the phase prevents switched off, the rest of the cleanse as it was. */
+	public static boolean devCleanseOff;
 	/** The healing reduction on a creature hurt by an enemy (game time it ends). */
 	private static final Map<UUID, Long> healCutUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
@@ -349,7 +353,7 @@ public final class Combat {
 	 * <li>#882: not a hit tagged 191F, Local Anesthetic's damage over time (Sleep.quiet: the only damage that runs under it).</li>
 	 * <li>#2712: {v61743, not v76560} only a Damage hero's (#2702, category 084E): a mode's rule (M: Stadium's, by W Passive ability). Not ours.</li>
 	 * <li>#881: the 3 s wait, from the start again on each hit (m_0DBAFD7F 1: M, and W "doesn't stack").</li>
-	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: what sets those two isn't in the graph: read, undecoded. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
+	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: v8440 is the flag Protection Suzu's status (180C #60) and Life Grip (21EE #606) set, so the phase ends it (H nodes, M the flag's meaning, #119); v6604: not read. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
 	 * -> #1184): read, undecoded. #610 StateCombatModFilter x9007B042, op67(v25267): the healing scale itself (M, as Ana's B064); m_7724EC51 and m_5BF820E4: undecoded.</li>
 	 * </ul>
 	 * A no-team hit from another player or their pet counts as their own side's (Allies: with no teams everyone is an ally): it cuts nothing: decision, ours.
@@ -390,10 +394,27 @@ public final class Combat {
 		}
 	}
 
-	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. */
+	/** No healing at all for {@code seconds} (an enemy in Biotic Grenade's burst); a boost it had ends. Not on the phased (W Kiriko rev 408632). */
 	public static void antiHeal(LivingEntity target, double seconds) {
+		if (isPhased(target)) {
+			return;
+		}
 		antiHealUntil.merge(target.getUUID(), now(target) + Ow.ticks(seconds), Math::max);
 		healBoostUntil.remove(target.getUUID());
+	}
+
+	/**
+	 * Sight from {@code from} to any part of it: eyes, middle or feet, blocks in the way (0B31: several hit points; ours these three). What area abilities ask: EMP, the Suzu, the
+	 * numbness, Rally's pulse and wave. A one-line eye-to-eye test missed a target whose head alone was behind something.
+	 */
+	public static boolean inSight(net.minecraft.world.level.Level level, net.minecraft.world.phys.Vec3 from, LivingEntity target, Entity viewer) {
+		for (double y : new double[] {target.getEyeY(), target.getY() + target.getBbHeight() / 2, target.getY() + 0.1}) {
+			if (level.clip(new net.minecraft.world.level.ClipContext(from, new net.minecraft.world.phys.Vec3(target.getX(), y, target.getZ()),
+				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, viewer)).getType() == net.minecraft.world.phys.HitResult.Type.MISS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean healBoosted(LivingEntity target) {
@@ -406,8 +427,47 @@ public final class Combat {
 		return until != null && now(target) < until;
 	}
 
-	/** Removes what Protection Suzu cleanses: harmful effects, burning, freezing. */
-	public static void cleanse(LivingEntity target) {
+	/**
+	 * What Protection Suzu and Life Grip cleanse (#119, techniques/game-data/status_and_cleanse.md). The data's cleanse: Suzu's status 031A
+	 * -> graph 180C sets v8440 (#60) and sends itself message 1BC5 (#92); Life Grip does the same (21EE #606, #605). Each status answers one of those
+	 * itself, so the list is their readers. H nodes; M that v8440 means "phased". W = Kiriko rev 408632 and Status effect rev 408841. Every negative state in the mod:
+	 * <pre>
+	 * state                     prevented in the phase                 removed                                  source
+	 * Sleep Dart                yes (Sleep.put)                        wakes: its 0.5 s waking, no 0.5 s gate   D 224E #96 / #575; #401 -> #418 -> #204 -> #304
+	 * Rally's stun              yes (Sleep.stun)                       at once                                  D 224E #96 / #575; #402 -> #416 -> #297 (its public schema's default type, 4EB6)
+	 * Hack: silence, reveal     yes (Hack.creature)                    at once, both                            D 224E #402 (type 4EB6); 0B1F #453 -> #610 -> #611 -> #609
+	 * Biotic Grenade anti-heal  yes (antiHeal)                         at once                                  D 0C72's stop {v6604, v8440, v478}, then v8440 -> 1C7D; W
+	 * Healing reduction         no hurt, no reduction                  at once                                  D 01C7 #1186; W
+	 * Local Anesthetic          yes (Anesthetic)                       at once: damage, slow                    W damage over time, slows; 6123 reads no flag: M
+	 * Claws Out                 yes (JetpackCat.wound)                 at once: damage, slow                    W names it; no graph read: M
+	 * Hyper Strike's float      yes: not hit                           NOT removed                              Holds.Cleansing.STAYS: 54A5 reads no flag (M); W's list means its damage ("50 over 0.37 s"), W never removes Knockback: ours
+	 * Deceleration Field slow   yes: out of the field's filter         at once; back after, if still inside     W slows; D 1443's tracker, mask 20: M
+	 * Weaken (Cyberspace)       yes: out of the zone's filter          not by this: its 0.25 s linger runs out  D 6102's tracker, mask 20: M; W silent
+	 * Accretion, Catnapper      yes (Sleep.stun): the hit's filter     NOT removed                              D 224E #400 goes nowhere (type 6BBE); W; 1EB9 #338 and 5B7B's filters, mask 20: M
+	 * Catnapper's tether        yes (JetpackCat.land skips them)       NOT removed mid-carry                    5B7B's mask 20: M; W Status effect "Catnapper: Cannot be cleansed"
+	 * Soundwave's push, lockout yes (Lucio: not hit)                   the lockout goes (Minecraft's Slowness)  W prevented, not removed; the lockout itself is ours (LucioStats)
+	 * Gravitic Flux: the lift   no: its filter, mask 16, has no bit 4  NOT removed                              1E41 #1292's filter, M; W "completely unaffected"; no flag read in his graphs: M
+	 * Gravitic Flux: its slow   no                                     NOT removed: it ends with the slam       part of the Flux W calls unaffected (HEAVY_SLOW, GraviticFlux); W's "slows" not applied: ours
+	 * Minecraft's effects, fire no                                     removed                                  ours
+	 * </pre>
+	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
+	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
+	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
+	 * <p>
+	 * Returns whether a status that says so was cleansed: the one thing Kiriko's Suzu line answers (#121, SuzuEntity.burst). The data's senders of
+	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91: H nodes.
+	 * Removed and silent: the healing reduction (01C7 #1186 ends without it), Local Anesthetic (6123 has neither v8440 nor 1C7D), the zones' slows
+	 * (1443, 6102 trackers). Minecraft's effects and fire: no graph, so nothing says so (ours, following the data; the owner's to change).
+	 */
+	public static boolean cleanse(LivingEntity target) {
+		boolean told = false;
+		if (!devCleanseOff) {
+			told |= Sleep.cleanse(target);
+			told |= dev.overcraft.sombra.Hack.cleanse(target);
+			dev.overcraft.ana.Anesthetic.cleanse(target);
+			told |= dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
+			dev.overcraft.sojourn.Disruptor.cleanse(target);
+		}
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();
 		for (MobEffectInstance effect : target.getActiveEffects()) {
 			if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
@@ -417,13 +477,49 @@ public final class Combat {
 		harmful.forEach(target::removeEffect);
 		// (W Global Passive Abilities: "cleansable")
 		healCutUntil.remove(target.getUUID());
+		boolean antiHealEnded = !devFixOff && antiHealUntil.remove(target.getUUID()) != null;
+		told |= antiHealEnded;
+		if (antiHealEnded && target.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			// its pluses go with it (Effects' ENDS: a player who starts seeing them now isn't told either)
+			Effects.play(level, "ana_anti_healed_end", target.position(), net.minecraft.world.phys.Vec3.ZERO, target, 0, null);
+		}
 		target.clearFire();
 		target.setTicksFrozen(0);
+		return told;
 	}
 
 	public static void phase(LivingEntity target, double seconds) {
 		long until = now(target) + Ow.ticks(seconds);
 		phasedUntil.merge(target.getUUID(), until, Math::max);
+	}
+
+	/**
+	 * Whether the phase keeps a new negative state off it now (Combat.cleanse's table; off with the dev switch). Every phase here, not only Suzu's. Suzu: 180C. Life Grip: 21EE #606.
+	 * Resurrect (Souls, 2.25 s): D 00CA #677 sets the same v8440. Translocator (Sombra, 0.4 s): D 0C19 #330 too. Swift Step (Kiriko, 0.25 s): no v8440 in her graphs read but the shared 1065; W "phased"; W Status effect
+	 * "its attack ignoring property prevents most negative effects": ours that it's this same list. None of those three calls cleanse: W "No longer cleanses on use" for Swift Step; the data's readers would end a status on the other two, not done, ours.
+	 */
+	public static boolean phaseStops(LivingEntity target) {
+		return phaseStopsRule(target.level().isClientSide(), devCleanseOff, !target.level().isClientSide() && isPhased(target));
+	}
+
+	/**
+	 * Only the server knows: these maps are per side, and a remote client's is empty. A client-side caller gets "not phased". Shots don't ask there: OwProjectile.canHitEntity returns first on the client. Package-private for PhaseRulesTest.
+	 */
+	static boolean phaseStopsRule(boolean clientSide, boolean devOff, boolean phased) {
+		return !clientSide && !devOff && phased;
+	}
+
+	/**
+	 * Whether the phase refuses this damage. Not what beats Minecraft's own invulnerability (the bypasses_invulnerability tag: /kill, the void): ours, or a phased hero read "Killed" and stood there,
+	 * and fell through the void until the phase was out. A bed's blast isn't in it, so #27's stays refused. Life Grip's and Resurrect's the same.
+	 */
+	public static boolean refusesDamage(LivingEntity target, net.minecraft.world.damagesource.DamageSource source) {
+		return refusesRule(isPhased(target), source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY));
+	}
+
+	/** Package-private for PhaseRulesTest. */
+	static boolean refusesRule(boolean phased, boolean bypassesInvulnerability) {
+		return phased && !bypassesInvulnerability;
 	}
 
 	public static boolean isPhased(LivingEntity target) {

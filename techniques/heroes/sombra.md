@@ -243,3 +243,7 @@ with Overwatch for the held look; the ring's brightness in first person. Not tri
 
 ## Weapon parts, glows and aim (2026-11-04, #91, #95)
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+
+## The Nov 3 patch (#116)
+Hotfix 10 s, Weaken 40%. "EMP overrides hacked health packs" has nothing to act on: the mod has no packs ([polish3](../testing/polish3.md)).

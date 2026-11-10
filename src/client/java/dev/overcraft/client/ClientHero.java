@@ -409,11 +409,15 @@ public final class ClientHero {
 
 		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
 			| ClientSigma.input(player);
-		if (held != lastHeld || pressed != 0 || extra != 0) {
+		int wall = OwMovement.wallCode(player);
+		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));
+			lastWall = wall;
+			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra, wall));
 		}
 	}
+
+	private static int lastWall;
 
 	private static boolean chatHeroView;
 
@@ -536,6 +540,9 @@ public final class ClientHero {
 
 	/** Hero mode on or off: here at once, and on the server. */
 	public static void setHeroMode(boolean on) {
+		if (!on) {
+			ClientLifeweaver.endDash();
+		}
 		heroModeLocal = on;
 		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {

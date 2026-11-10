@@ -86,6 +86,13 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Lúcio on a wall (#115): for every other client to pose him (HeroAnimator's clip and lean, LucioFx's sparks): OwMovement.wallCode's
+	 * side and ride yaw, 0 off it. Only his own client knows his ride (it moves him), so it says, in its input.
+	 */
+	public static final AttachmentType<Integer> LUCIO_WALL = AttachmentRegistry.create(Overcraft.id("lucio_wall"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -182,9 +189,45 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !Sleep.asleep(player);
 	}
 
+	/** A hero in hero mode, alive, whether or not their keys are live: what a fall asks. Asleep or stunned in the air, an ability's landing and their own safe height still count (#35). A fall begun in Minecraft mode stays Minecraft's (PLAIN_FALLS). */
+	public static boolean inHeroPlay(Player player) {
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !PLAIN_FALLS.contains(player.getUUID());
+	}
+
+	/** Falling when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till the fall's over. */
+	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
+
+	/** Coming into hero mode (G, a pick): a fall under way stays Minecraft's. */
+	private static void startPlainFall(Player player) {
+		if (player.fallDistance > 0) {
+			PLAIN_FALLS.add(player.getUUID());
+		}
+	}
+
+	/** In what holds them and stops a fall: water, lava, a cobweb. */
+	public static boolean heldInBlock(net.minecraft.world.entity.LivingEntity e) {
+		return e.isInWater() || e.isInLava() || e.level().getBlockState(e.blockPosition()).is(net.minecraft.world.level.block.Blocks.COBWEB);
+	}
+
+	/** Their Jump is Minecraft's or the mount's here, not an air ability's: riding, in what holds them, on a ladder, in powder snow with the boots to climb it (LivingEntity's own test). Client and server ask this. */
+	public static boolean jumpIsNotAirborne(net.minecraft.world.entity.LivingEntity e) {
+		return e.isPassenger() || heldInBlock(e) || e.onClimbable()
+			|| e.getInBlockState().is(net.minecraft.world.level.block.Blocks.POWDER_SNOW) && net.minecraft.world.level.block.PowderSnowBlock.canEntityWalkOnPowderSnow(e);
+	}
+
+	/** The ticks in a row a landing has stayed somewhere, this tick's included (Holds.stayed). */
+	public static int landingTouch(net.minecraft.world.entity.LivingEntity e, int touch) {
+		return Holds.stayed(heldInBlock(e), e.onClimbable(), e.getKnownMovement().y) ? touch + 1 : 0;
+	}
+
+	/** A landing not tied to hero mode (Life Grip's, on anyone) is over: riding, or stayed. */
+	public static boolean landingOver(net.minecraft.world.entity.LivingEntity e, int touch) {
+		return Holds.landingEnds(true, touch, e.isPassenger());
+	}
+
 	/**
-	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely
-	 * (later: Winston's Jump Pack, Juno's glide; the owner, #35). Kiriko has none: her falls count from her safe height.
+	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely (the owner, #35). Without one, a hero's falls count from their safe
+	 * height (Hero.safeFall): Kiriko's plain fall from her climb's height, her Swift Step's by its soft landing.
 	 */
 	public static boolean fallIsSafe(Player player) {
 		HeroState state = STATES.get(player.getUUID());
@@ -192,9 +235,23 @@ public final class HeroManager {
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
 		// Sigma: Gravitic Flux's flight (and Levitation) land him
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
+		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below)
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.LUCIO || state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO)
 			&& state.softLanding || state.hero == Hero.JUNO);
+	}
+
+	/**
+	 * A movement ability's fall doesn't count until they're down after it (CLAUDE.md, #35): each tick while {@code moving} or still falling from it. {@code grace}: not down yet whatever the
+	 * ground says, just after a teleport, when the server's onGround is the place she left.
+	 */
+	public static void softLanding(Player player, HeroState s, boolean moving, boolean grace) {
+		boolean was = s.softLanding;
+		s.softLanding = Holds.softLanding(was, moving, player.onGround(), grace);
+		// (also on the tick they land: Minecraft can check the fall a tick after the server sees them down: Mercy's note)
+		if (was || s.softLanding) {
+			player.resetFallDistance();
+		}
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -211,6 +268,8 @@ public final class HeroManager {
 				if (!on) {
 					// plain Minecraft from here: nothing of the hero's play carries over (#100)
 					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
+				} else {
+					startPlainFall(player);
 				}
 			}
 			player.setAttached(HERO_MODE, on);
@@ -243,7 +302,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, LUCIO_WALL);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;
@@ -321,6 +380,7 @@ public final class HeroManager {
 			return;
 		}
 		boolean same = state.hero == hero;
+		boolean wasInPlay = state.hero != null && heroMode(player);
 		state.freePick = false;
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
@@ -337,6 +397,9 @@ public final class HeroManager {
 		applyKit(player, state, true);
 		if (hero != null) {
 			// picking a hero puts you in hero mode
+			if (!wasInPlay) {
+				startPlainFall(player);
+			}
 			player.setAttached(HERO_MODE, true);
 			Voice.say(player, "select", 1);
 		}
@@ -396,6 +459,7 @@ public final class HeroManager {
 	}
 
 	public static void onLeave(ServerPlayer player) {
+		PLAIN_FALLS.remove(player.getUUID());
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
 			player.setAttached(ULT_CHARGE, state.ultCharge);
@@ -498,6 +562,7 @@ public final class HeroManager {
 			state.secondaryHeld = false;
 		}
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
+		state.wallRide = state.wallRiding ? input.wall() : 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
 		if (!controls(player)) {
 			return;
@@ -570,7 +635,22 @@ public final class HeroManager {
 				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
+				// over by the distance, not onGround (which read true in mid-air after G): Minecraft clears it on landing, in water, on a ladder. An ability used ends it directly: its landing, Juno's glide (a level glide clears nothing), though the next packet adds to the distance again
+				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger() || state.softLanding || state.junoGlide >= 0) {
+					PLAIN_FALLS.remove(player.getUUID());
+				}
 				tickRules(player, state);
+				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past, nor while it runs (Holds.landingEnds, stayed)
+				if (state.softLanding) {
+					boolean running = state.gaPhase != 0 || state.dashTicks >= 0 || state.sojournSlide >= 0 || state.bashTicks >= 0 || state.wallRiding || state.sigmaFluxPhase != 0;
+					state.softLandingTouch = running ? 0 : landingTouch(player, state.softLandingTouch);
+					if (Holds.landingEnds(heroMode(player), state.softLandingTouch, player.isPassenger())) {
+						state.softLanding = false;
+						state.softLandingTouch = 0;
+					}
+				} else {
+					state.softLandingTouch = 0;
+				}
 				if (kit != null) {
 					kit.tick(player, state, controls);
 				}
@@ -649,5 +729,6 @@ public final class HeroManager {
 
 	public static void clear() {
 		STATES.clear();
+		PLAIN_FALLS.clear();
 	}
 }

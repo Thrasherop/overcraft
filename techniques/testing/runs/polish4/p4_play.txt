@@ -1,0 +1,77 @@
+=== Play on tree a20c352, world p4b, survival, normal. Keys: KeyMapping.set through DevServer, aim by look, not a mouse or a person. Bots: server-side players, no second client. Mobs: real ones, /summon.
+{'ok': True}
+--- 1 real Brigitte: Q, right button up, left button bash, at midnight; zombies in iron helmets (fire resistance) 2 m and 5 m ahead, a third behind her
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off start [20.0, 20.0, 20.0]
+  Rally 28.0 ultActive? None
+  asleep {'asleep': 'zombie@3001 zombie@3001'}
+  after [14.4, 14.4, 20.0] (armour: an iron helmet, 2 points)
+  heard {'heard': ''}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on start [20.0, 20.0, 20.0]
+  Rally 28.0 ultActive? None
+  asleep {'asleep': 'zombie@3101 zombie@3101'}
+  after [14.4, 14.4, 20.0] (armour: an iron helmet, 2 points)
+  heard {'heard': 'brigitte.voice.pain -> brigitte/voice/pain/5 (SimpleSoundInstance, at 3000.5 -60.0 4.4) | brigitte.voice.death -> brigitte/voice/death/0 (SimpleSoundInstance, at 3000.5 -60.0 4.4) | brigitt
+--- 2 real Kiriko at midnight: a tamed wolf and a villager slept by a bot Ana, two zombies walking at them, Suzu by the real key
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wolf side {'ally': True, 'enemy': False, 'bystander': False, 'area': False, 'target': 'null', 'brainTarget': 'null', 'y': -60.0}
+  villager side {'ally': True, 'enemy': False, 'bystander': False, 'area': False, 'target': 'null', 'brainTarget': 'null', 'y': -60.0}
+  after a dart at the wolf {'asleep': 'wolf@3201'}
+  after one at the villager {'asleep': 'wolf@3201'}
+  wolf 7.6 villager 10.0
+  Suzu cd2 13.75
+   +0.25 asleep {'asleep': 'wolf@3201'}
+   +0.50 asleep {'asleep': ''}
+   +0.75 asleep {'asleep': ''}
+   +1.00 asleep {'asleep': ''}
+   +1.25 asleep {'asleep': ''}
+  wolf 8.0 villager 16.4
+  14 s of kunai: zombies left ['[09:03:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed'] health 20.0 wolf 8.0 villager 16.4
+--- 3 real Sombra asleep at midnight with zombies on her: a bot Kiriko wakes her
+hero sombra mode True screen  hp 18.0 / 18.0
+  slept True health 17.6
+  before Suzu True 18.0
+   +0.2 asleep True phased True health 18.0
+   +0.4 asleep True phased True health 18.0
+   +0.6 asleep False phased False health 18.0
+   +0.8 asleep False phased False health 18.0
+   +1.0 asleep False phased False health 18.0
+   +1.2 asleep False phased False health 15.0
+   +1.4 asleep False phased False health 15.0
+   +1.6 asleep False phased False health 12.0
+  Cyberspace by the key, cd1 12.9
+--- 4 asleep in Minecraft mode (G off), a bot Kiriko
+hero mercy mode True screen  hp 18.0 / 18.0
+  slept True mode False
+   +0.2 True
+   +0.4 True
+   +0.6 False
+   +0.8 False
+   +1.0 False
+   +1.2 False
+--- 5 Life Grip wakes: a bot Lifeweaver grips the slept real client
+hero mercy mode True screen  hp 18.0 / 18.0
+  slept True
+  grip {'ok': True}
+   +0.2 asleep True phased True
+   +0.4 asleep True phased True
+   +0.6 asleep False phased True
+   +0.8 asleep False phased False
+   +1.0 asleep False phased False
+   +1.2 asleep False phased False
+   +1.4 asleep False phased False
+   +1.6 asleep False phased False
+  (which of his keys is the grip: read in the code; a miss here says nothing)
+--- 6 asleep in water, a bot Kiriko on the bank
+hero mercy mode True screen  hp 18.0 / 18.0
+  slept False y -62.0
+   +0.25 asleep False phased True y -62.0
+   +0.50 asleep False phased True y -62.0
+   +0.75 asleep False phased False y -62.0
+   +1.00 asleep False phased False y -62.0
+   +1.25 asleep False phased False y -62.0
+   +1.50 asleep False phased False y -62.0
+   +1.75 asleep False phased False y -62.0
+   +2.00 asleep False phased False y -62.0
+DONE

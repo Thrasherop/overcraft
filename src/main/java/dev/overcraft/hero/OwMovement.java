@@ -102,6 +102,8 @@ public final class OwMovement {
 
 	/** Set by the client: this entity moves the Overwatch way (the local player, a hero, slot 1). */
 	public static Predicate<LivingEntity> active = entity -> false;
+	/** An ability is moving this local player now (Guardian Angel, Life Grip, Rejuvenating Dash, Shield Bash, Power Slide): Minecraft's water and ladder don't get a say (#127). */
+	public static Predicate<LivingEntity> abilityMoving = entity -> false;
 	/** Set by the client: this entity has Kiriko's wall climb. */
 	public static Predicate<LivingEntity> wallClimb = entity -> false;
 
@@ -1236,16 +1238,56 @@ public final class OwMovement {
 			&& !entity.level().noCollision(entity, band.move(-faceNormal.x * reach, 0, -faceNormal.z * reach));
 	}
 
-	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
+	/** Riding a wall right now, and on which side: 1 the wall on his right, -1 his left. The local player's from his ride, another's as he told the server (#115). */
 	public static int wallRiding(LivingEntity entity) {
+		int seen = wallSeen(entity);
+		if (seen != 0) {
+			return wallCodeSide(seen);
+		}
 		Ride ride = riding(entity);
 		if (ride == null) {
 			return 0;
 		}
 		// the wall is on the side the normal points away from: right if (heading x up) points into it
-		Vec3 heading = ride.heading();
+		Vec3 heading = shownHeading(entity, ride);
 		double cross = heading.z * ride.normal.x - heading.x * ride.normal.z;
 		return cross > 0 ? 1 : -1;
+	}
+
+	/**
+	 * The way he's shown riding. Square on, the way isn't set for its first 0.3 s, and heading() says the axis: the clip and what others see began on
+	 * that side and flipped when the ride proper chose (played, #115: wallride_right, then left at 0.3 s). So till then, the side the camera will choose. S held
+	 * at that moment still chooses against it (inputWay needs the input, which isn't here): one flip, as before.
+	 */
+	private static Vec3 shownHeading(LivingEntity entity, Ride ride) {
+		if (ride.way != 0) {
+			return ride.heading();
+		}
+		return cameraWay(entity, ride) < 0 ? ride.axis.scale(-1) : ride.axis;
+	}
+
+	/** Another player's ride on this client, by HeroManager.LUCIO_WALL, or 0. Never one's own: that's his ride itself, and the synced copy lags it. */
+	private static int wallSeen(LivingEntity entity) {
+		return entity.level().isClientSide() && !wallRide.test(entity) ? entity.getAttachedOrElse(HeroManager.LUCIO_WALL, 0) : 0;
+	}
+
+	/** His ride as one number, for the wire (#115): 0 off the wall, else 1 + ride yaw in tenths of a degree x 2 + 1 with the wall on his right. */
+	public static int wallCode(LivingEntity entity) {
+		int side = wallRiding(entity);
+		return side == 0 ? 0 : wallCode(side, wallRideYaw(entity));
+	}
+
+	public static int wallCode(int side, float yaw) {
+		int tenths = Math.floorMod(Math.round(yaw * 10), 3600);
+		return 1 + tenths * 2 + (side > 0 ? 1 : 0);
+	}
+
+	public static int wallCodeSide(int code) {
+		return code == 0 ? 0 : (code - 1) % 2 == 1 ? 1 : -1;
+	}
+
+	public static float wallCodeYaw(int code) {
+		return (code - 1) / 2 / 10f;
 	}
 
 	/**
@@ -1265,19 +1307,31 @@ public final class OwMovement {
 		return ride;
 	}
 
-	/** The wall's outward normal, or up off it (for a lifted effect: LucioFx). */
+	/** The wall's outward normal, or up off it (for a lifted effect: LucioFx). Another's from his side and ride yaw. */
 	public static Vec3 wallRideNormal(@org.jspecify.annotations.Nullable LivingEntity entity) {
+		int seen = entity == null ? 0 : wallSeen(entity);
+		if (seen != 0) {
+			// (wallRiding's cross read backward: with the heading h, 1 is the normal (h.z, 0, -h.x))
+			double yaw = Math.toRadians(wallCodeYaw(seen));
+			double x = -Math.sin(yaw);
+			double z = Math.cos(yaw);
+			return wallCodeSide(seen) > 0 ? new Vec3(z, 0, -x) : new Vec3(-z, 0, x);
+		}
 		Ride ride = entity == null ? null : riding(entity);
 		return ride == null ? new Vec3(0, 1, 0) : ride.normal;
 	}
 
-	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it (the local player only: as wallRiding). */
+	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it. */
 	public static float wallRideYaw(LivingEntity entity) {
+		int seen = wallSeen(entity);
+		if (seen != 0) {
+			return wallCodeYaw(seen);
+		}
 		Ride ride = riding(entity);
 		if (ride == null) {
 			return Float.NaN;
 		}
-		Vec3 heading = ride.heading();
+		Vec3 heading = shownHeading(entity, ride);
 		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
 	}
 

@@ -1,0 +1,258 @@
+=== the select screen by screenclick; H menu by key and screenclick; rejoin mid-state
+{'error': 'java.lang.IllegalArgumentException: no key mapping hero_menu'}
+H: screen DeathScreen hero jetpack_cat
+click a hero tile, Lucio by position read off the shot follows in the second script step
+--- Save and Leave mid-ride state: Lucio charged Rider part, then rejoin
+hero lucio mode True screen  hp 18.0 / 18.0
+riding wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0} meter 0.32
+OverwatchMenuScreen
+{'screen': 'TitleScreen'}
+left: screen TitleScreen inWorld False
+{'ok': True}
+rejoined: screen HeroSelectScreen hero lucio mode True meter 0.0
+Esc keeps the hero
+after Esc: screen  hero lucio mode True wall {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0}
+=== places: each changed hero: walk 1 s, jump, each ability, a shot; health and clip read
+hero brigitte mode True screen  hp 20.0 / 20.0
+brigitte water walked: y -61.67 z -5.29 hp 20.0 anim fall ground False
+brigitte water used: y -62.67 hp 20.0 cds 2.7 0.0 anim fall+swing
+brigitte lava walked: y -62.16 z 23.36 hp 20.0 anim fall ground False
+brigitte lava used: y -63.00 hp 20.0 cds 2.8 0.0 anim idle+swing_2
+brigitte slope up: y -52.00 z 67.28 hp 18.5 anim run
+brigitte slope walked: y -53.22 z 76.31 hp 18.0 anim fall ground False
+brigitte slope used: y -60.00 hp 8.6 cds 2.9 0.0 anim idle+swing
+hero ana mode True screen  hp 20.0 / 20.0
+ana water walked: y -62.59 z -5.39 hp 20.0 anim fall ground False
+ana water used: y -63.00 hp 20.0 cds 14.3 11.3 anim idle+cast_sleep
+ana lava walked: y -62.12 z 23.36 hp 20.0 anim fall ground False
+ana lava used: y -63.00 hp 20.0 cds 10.3 7.3 anim idle
+ana slope up: y -52.00 z 67.28 hp 17.0 anim run
+ana slope walked: y -53.22 z 76.31 hp 16.0 anim fall ground False
+ana slope used: y -60.00 hp 6.0 cds 3.2 0.2 anim idle
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+jetpack_cat water walked: y -60.58 z -3.65 hp 16.0 anim idle ground False
+jetpack_cat water used: y -61.22 hp 16.0 cds 0.0 0.0 anim idle
+jetpack_cat lava walked: y -61.38 z 24.52 hp 16.0 anim idle ground False
+jetpack_cat lava used: y -62.46 hp 16.0 cds 0.0 11.2 anim idle
+jetpack_cat slope up: y -55.84 z 63.44 hp 13.0 anim fly_forward
+jetpack_cat slope walked: y -51.91 z 66.70 hp 12.0 anim idle ground False
+jetpack_cat slope used: y -53.00 hp 10.0 cds 0.0 3.8 anim idle
+hero sombra mode True screen  hp 18.0 / 18.0
+sombra water walked: y -61.47 z -5.29 hp 18.0 anim fall ground False
+sombra water used: y -62.54 hp 18.0 cds 12.2 7.0 anim fall_stealth+stealth_486
+sombra lava walked: y -62.16 z 23.40 hp 18.0 anim fall_stealth ground False
+sombra lava used: y -63.00 hp 18.0 cds 7.9 2.8 anim idle_stealth
+sombra slope up: y -52.00 z 67.60 hp 15.0 anim run
+sombra slope walked: y -54.10 z 77.19 hp 14.0 anim fall ground False
+sombra slope used: y -58.41 hp 5.0 cds 0.5 7.0 anim fall_stealth+stealth_486
+hero lucio mode True screen  hp 18.0 / 18.0
+lucio water walked: y -62.20 z -5.19 hp 18.0 anim jump_forward ground False
+lucio water used: y -62.88 hp 18.0 cds 0.0 0.0 anim jump_forward+amp
+lucio lava walked: y -62.12 z 23.44 hp 18.0 anim jump_forward ground False
+lucio lava used: y -63.00 hp 18.0 cds 0.0 9.7 anim idle
+lucio slope up: y -52.50 z 66.93 hp 17.1 anim skate
+lucio slope walked: y -47.84 z 76.11 hp 17.8 anim jump_forward ground False
+lucio slope used: y -60.00 hp 9.2 cds 0.0 2.2 anim idle
+hero sigma mode True screen  hp 48.0 / 48.0
+sigma water walked: y -61.45 z -5.29 hp 48.0 anim fall ground False
+sigma water used: y -62.49 hp 48.0 cds 0.0 9.1 anim fall+grasp_hold
+sigma lava walked: y -62.16 z 23.40 hp 48.0 anim fall ground False
+sigma lava used: y -63.00 hp 48.0 cds 7.7 4.1 anim idle+fire_b
+sigma slope up: y -52.00 z 67.28 hp 45.0 anim run
+sigma slope walked: y -52.79 z 76.86 hp 43.0 anim fall ground False
+sigma slope used: y -60.00 hp 33.0 cds 0.0 9.1 anim idle+fire_b
+=== Nether: a stone floor at y 100, night-lit, each hero
+nether hero now sigma hp 0.0 48.0
+brigitte nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+brigitte nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+nether hero now sigma hp 0.0 48.0
+ana nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+ana nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+nether hero now sigma hp 0.0 48.0
+jetpack_cat nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+jetpack_cat nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+nether hero now sigma hp 0.0 48.0
+sombra nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+sombra nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+nether hero now sigma hp 0.0 48.0
+lucio nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+lucio nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+nether hero now sigma hp 0.0 48.0
+sigma nether walked: y 67.00 z 0.50 hp 0.0 anim death ground True
+sigma nether used: y 67.00 hp 0.0 cds 0.0 6.2 anim death
+errors other than start-up auth 2
+Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=ErrorResponse[path=/player/attributes, error=null, errorMessage=null, details=null]]
+[06:48:04] [Download-3/ERROR] (Minecraft) Couldn't connect to realms
+NOTE: everything from here to the next file marker is VOID: the Nether's first try had killed her, a harness `respawn` left the client on a broken local player (max health stuck at 48, hero mode false, the DeathScreen back). The client was restarted; the valid run follows.
+respawned first
+=== H menu by key, a tile and READY by screenclick, each changed hero
+H: HeroSelectScreen was sigma
+{'screen': 'DeathScreen'}
+{'screen': 'DeathScreen'}
+ now sigma screen DeathScreen hp 0.0 / 48.0 mode False
+ ability_1 cd 0.0 death
+H: HeroSelectScreen was sigma
+{'screen': 'HeroSelectScreen'}
+{'screen': 'DeathScreen'}
+ now lucio screen DeathScreen hp 18.0 / 48.0 mode False
+ ability_1 cd 0.0 idle
+H: HeroSelectScreen was lucio
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now jetpack_cat screen  hp 16.0 / 48.0 mode False
+ ability_1 cd 0.0 idle
+H: HeroSelectScreen was jetpack_cat
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now ana screen  hp 20.0 / 48.0 mode False
+ ability_1 cd 0.0 idle
+H: HeroSelectScreen was ana
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now sombra screen  hp 18.0 / 48.0 mode False
+ ability_1 cd 0.0 idle
+H: HeroSelectScreen was sombra
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now brigitte screen  hp 20.0 / 48.0 mode False
+ ability_1 cd 0.0 idle
+=== the select screen on rejoining: Save and Leave (screenclick), openworld, a tile, READY
+PauseScreen
+{'screen': 'PauseScreen'}
+PauseScreen {'ok': True}
+rejoined  brigitte
+{'screen': ''}
+{'screen': ''}
+ now brigitte  False
+=== 8 the pluses: bot ally seen level at 6 m, Suzu; fix off then on; a burst of shots
+{'fixoff': True}
+{'antiHealed': 'player'}
+plus particles 0
+after Suzu {'antiHealed': 'player'} plus 0
+ +0.7 plus 0
+ +1.0 plus 0
+ +1.3 plus 0
+ +1.6 plus 0
+{'fixoff': False}
+{'antiHealed': ''}
+plus particles 0
+after Suzu {'antiHealed': ''} plus 0
+ +0.7 plus 0
+ +1.0 plus 0
+ +1.3 plus 0
+ +1.6 plus 0
+{'fixoff': False}
+=== Nether, floor first (the first try fell: void)
+in nether: y -60.0 hp 20.0
+nether hero kiriko hp 20.0 48.0
+  brigitte y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+nether hero kiriko hp 20.0 48.0
+  ana y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+nether hero kiriko hp 20.0 48.0
+  jetpack_cat y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+nether hero kiriko hp 20.0 48.0
+  sombra y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+nether hero kiriko hp 20.0 48.0
+  lucio y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+nether hero kiriko hp 20.0 48.0
+  sigma y -60.00 z 301.42 hp 20.0 cds 0.0 0.0 anim idle
+zombified piglin near, fight a little as Lucio
+magma cube fight hp 20.0 cubes ['[07:03:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed']
+
+===== after a restart, valid =====
+=== H menu by key, a tile and READY by screenclick, each changed hero
+H: HeroSelectScreen was kiriko
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now sigma screen  hp 48.0 / 48.0 mode True
+ ability_1 cd 0.0 idle+grasp_hold
+H: HeroSelectScreen was sigma
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now lucio screen  hp 18.0 / 18.0 mode True
+ ability_1 cd 0.0 idle+crossfade_speed
+H: HeroSelectScreen was lucio
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now jetpack_cat screen  hp 16.0 / 16.0 mode True
+ ability_1 cd 0.0 idle
+H: HeroSelectScreen was jetpack_cat
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now ana screen  hp 20.0 / 20.0 mode True
+ ability_1 cd 14.3 idle+cast_sleep
+H: HeroSelectScreen was ana
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now sombra screen  hp 18.0 / 18.0 mode True
+ ability_1 cd 12.75 idle+throw_cyberspace
+H: HeroSelectScreen was sombra
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now brigitte screen  hp 20.0 / 20.0 mode True
+ ability_1 cd 0.0 idle+whip_return_miss
+=== the select screen on rejoining: Save and Leave (screenclick), openworld, a tile, READY
+OverwatchMenuScreen
+{'screen': 'TitleScreen'}
+TitleScreen {'ok': True}
+rejoined HeroSelectScreen brigitte
+{'screen': 'HeroSelectScreen'}
+{'screen': ''}
+ now ana  True
+=== 8 the pluses: bot ally seen level at 6 m, Suzu; fix off then on; a burst of shots
+{'fixoff': True}
+{'antiHealed': 'player'}
+plus particles 6
+after Suzu {'antiHealed': 'player'} plus 6
+ +0.7 plus 6
+ +1.0 plus 5
+ +1.3 plus 5
+ +1.6 plus 5
+{'fixoff': False}
+{'antiHealed': 'player'}
+plus particles 6
+after Suzu {'antiHealed': 'player'} plus 5
+ +0.7 plus 5
+ +1.0 plus 5
+ +1.3 plus 6
+ +1.6 plus 3
+{'fixoff': False}
+=== Nether, floor first (the first try fell: void)
+in nether: y 101.0 hp 17.810001
+nether hero brigitte hp 20.0 20.0
+  brigitte y 101.00 z 8.87 hp 20.0 cds 2.8 0.0 anim idle+swing
+nether hero ana hp 20.0 20.0
+  ana y 101.00 z 8.87 hp 20.0 cds 14.3 11.3 anim idle+cast_sleep
+nether hero jetpack_cat hp 16.0 16.0
+  jetpack_cat y 102.65 z 8.40 hp 16.0 cds 0.0 0.0 anim idle
+nether hero sombra hp 18.0 18.0
+  sombra y 99.00 z 21.27 hp 17.2 cds 12.1 7.0 anim idle_stealth+stealth_486
+nether hero lucio hp 18.0 18.0
+  lucio y 101.00 z 9.92 hp 18.0 cds 0.0 0.0 anim idle+amp
+nether hero sigma hp 48.0 48.0
+  sigma y 101.00 z 8.87 hp 48.0 cds 0.0 9.1 anim idle+grasp_hold
+zombified piglin near, fight a little as Lucio
+magma cube fight hp 48.0 cubes ['[07:08:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Test passed. Count: 1']
+start sigma 48.0 -60.0
+=== 8 the pluses, bot ally 3.5 m off, Suzu at the ground between; fix off then on
+{'fixoff': True}
+{'antiHealed': 'player player'}
+plus particles 5
+after Suzu {'antiHealed': 'player player'} plus 1 cd 13.4
+ +0.65 plus 0
+ +0.90 plus 1
+ +1.15 plus 2
+ +1.40 plus 4
+ +1.65 plus 5
+ +1.90 plus 3
+{'fixoff': False}
+{'antiHealed': 'player player'}
+plus particles 1
+after Suzu {'antiHealed': ''} plus 1 cd 13.4
+ +0.65 plus 0
+ +0.90 plus 0
+ +1.15 plus 0
+ +1.40 plus 0
+ +1.65 plus 0
+ +1.90 plus 0
+{'fixoff': False}

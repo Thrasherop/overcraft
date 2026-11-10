@@ -1,0 +1,5 @@
+TREE: e299f07 dirty_src_files=0 launched=2026-11-05T11:59:11
+--- the same session as the table: teams, spawn_monsters false set by setup(), bots gone
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 5 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## why5 kiriko round 1 mobs left 5 of 6 cleared at None deaths 0 lowest hp 16.0 end hp 13.0/20.0

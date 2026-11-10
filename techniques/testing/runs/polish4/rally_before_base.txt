@@ -1,0 +1,12 @@
+=== Rally: the bash and the shockwave on one target. Tree/label: base e5e5f66, unmodified . Bot Brigitte (server-side, not a second client); victim: the real client and a NoAI husk; harness input.
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- real client, hero health 20.0 pos None (100.5, 0.5)
+peak {'ticks': 65, 'peakH': 30.38, 'peakV': 6.24, 'firstline': '0 0.00 0.00 0.00 -60.000 G . 0.00 0.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0'}
+health 20.0 -> 8.799999 = OW 140.0 pos None (100.5, 20.20027324630516)
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- real client, minecraft health 20.0 pos None (100.5, 0.5)
+peak {'ticks': 65, 'peakH': 26.14, 'peakV': 3.43, 'firstline': '0 0.00 0.00 -1.57 -60.000 G . 0.00 0.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0'}
+health 20.0 -> 8.799999 = OW 140.0 pos None (100.5, 12.279656233844888)
+hero kiriko mode True screen  hp 20.0 / 20.0
+--- husk, on team? red bot, husk an enemy of no one: Allies decides
+husk 200.0 -> 188.79999 = OW 140.0 ['[08:05:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Husk has the following entity data: [200.5d, -60.0d, 0.5d]']

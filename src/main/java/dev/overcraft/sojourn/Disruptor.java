@@ -153,6 +153,16 @@ public final class Disruptor {
 		return centre.distanceToSqr(x, y, z) <= FIELD_RADIUS * FIELD_RADIUS;
 	}
 
+	/** Protection Suzu's cleanse (Combat.cleanse's table): the slow stops now; still inside once the phase ends, it comes back. */
+	public static void cleanse(LivingEntity target) {
+		if (SLOWED.remove(target) != null) {
+			AttributeInstance speed = target.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.removeModifier(SLOW);
+			}
+		}
+	}
+
 	/** Deceleration Field: 25 % slower while inside, renewed each tick there, gone the tick after leaving. */
 	private static void slow(LivingEntity e, long now) {
 		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);

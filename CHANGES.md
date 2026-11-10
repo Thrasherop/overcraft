@@ -6,6 +6,24 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 
 ## 2026-11-05
 
+### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
+- Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
+- Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
+- Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
+- The shockwave no longer goes through walls and barriers (#122). `/kill` and the void kill the phased. Filed, not fixed: #123, #124.
+- Kiriko's Suzu line now plays only 0.5 s after an actual cleanse, as the game's data has it, not on every throw (#121). A Suzu at a healthy ally says nothing; poison and fire, which the data doesn't know about, don't count.
+- Whip Shot pushes about 8 m on flat ground, as the wiki has it: the game data's 25 m/s and 3 up, one push (8.04 m on a hero; a mob 7.99 m; in Minecraft mode 4.66 m). Shield Bash and Rally's wave use the data's 6 and 3, a much smaller push than before (2.5 m on a hero, was 7.9 m).
+- Lucio off a wall ride, and Brigitte off a Shield Bash, land unhurt (#35). Shots you fire at someone phased no longer vanish on your screen. EMP and hack catch a deployable whose owner is phased. Rally's wave reaches someone whose feet are in sight. Whiplash slams into walls, not stairs, slabs or a wall it's brushing, and now slams a Minecraft-mode target too.
+- Rally: Brigitte herself takes no overhealth, as Blizzard's April 2023 patch has it (#125). G in the air ends an ability's soft landing; so does staying in water or climbing a ladder, but not what it started on, brushes past or slides down.
+- A hero slept or stunned in the air lands as they would awake. A Shield Bash lands her unhurt however it ended, off a ledge too. Whiplash ends with her (G, death, leaving). Guardian Angel, Life Grip, Shield Bash and Power Slide work from water and ladders (#127). Lifeweaver's Space there swims or climbs, and spends nothing, and on a mount it's the mount's. A hero picked mid-fall lands as Steve would, as with G. Riding, lava and cobwebs end a landing. A fall begun in Minecraft mode stays Minecraft's if G comes before the ground.
+- Record: techniques/testing/polish4.md.
+
+### On fix/polish-3 (not released, version not bumped)
+- Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
+- Protection Suzu and Life Grip clear Biotic Grenade's anti-heal (#117). Other players see Lucio's wall ride (#115). Hyper Strike's float reaches a struck player; every other push already did (#109). Sigma's Hyper Strike count and Soundwave Rider's charge at the crosshair (#85).
+- **HeroInputPayload's shape changed** (a ride's side and yaw): a client and server on builds either side of this don't work together: update both.
+- Record: techniques/testing/polish3.md.
+
 ### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt
 - Healing reduction (#103), a player arriving learns what's going on (#96), Juno's lock cancels and Life Grip's prompt (#112), Brigitte's first-person chain (#113), Lúcio's dreads, lean and camera roll (#105), Lúcio's and Mercy's glows (#114).
 - The pack: `effects`, `glows`, then `zip` (techniques/building/building.md). An older pack shows in red in the pause menu.

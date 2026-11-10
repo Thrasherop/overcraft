@@ -1,0 +1,114 @@
+TREE (git at launch; the client itself can't say): cbb0bd9 dirty_src_files=0 launched=2026-11-05T19:21:41
+TIME 19:23:40
+TREE (git at launch): cbb0bd9 dirty_src_files=0 launched=2026-11-05T19:21:41 19:23:40
+/difficulty normal ['[19:23:40] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[19:23:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[19:23:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[19:23:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[19:23:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[19:23:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[19:23:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[19:23:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[19:23:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+### a wall 3 m behind: the hold stops, nothing more than the whip's damage; with the perk, the slam
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.738, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 4.90 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 12 m + Whiplash, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  no wall + Whiplash husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+### Whiplash on one stair, one slab; Minecraft mode at the first stair; water; ladder
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab at 2.2 m + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab, no perk, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 5.35 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 2.2 m, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs at 6.2 m, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, standing on the bottom, hero mode on: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 25.00 20.00 16.00 12.80 10.24 8.19 6.55 5.24 4.19 3.36 2.68 2.15
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, standing on the bottom, hero mode on: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  in water, hero mode off: moved 6.24 m (z 0.50 -> 6.74), y -61.00 -> -61.00 top -60.467, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 20.00 16.00 12.80 10.24 8.19 6.55 5.24 4.19 3.36 2.68
+TREE (git at launch; the client itself can't say): cbb0bd9 dirty_src_files=0 launched=2026-11-05T19:21:41
+TIME 19:37:10
+TREE (git at launch): cbb0bd9 dirty_src_files=0 launched=2026-11-05T19:21:41 19:37:10
+/difficulty normal ['[19:37:10] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[19:37:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[19:37:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[19:37:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[19:37:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[19:37:12] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[19:37:12] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[19:37:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[19:37:13] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### a hacked creeper: at 2.2 m from a bot, speed 0; reads every 0.3 s or so: alive, its target, the bot's health. Control and EMP, 3 each
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.5:alive:tgt:18.0 1.2:alive:tgt:18.0 1.9:alive:tgt:18.0 2.6:gone:-:0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.8:alive:tgt:18.0 1.6:alive:tgt:18.0 2.3:alive:tgt:18.0 3.0:alive:tgt:18.0 3.7:alive:tgt:18.0 4.4:alive:tgt:18.0 5.1:gone:-:0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.5:alive:tgt:18.0 1.2:alive:tgt:18.0 1.9:gone:-:0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.6:alive:tgt:18.0 1.3:alive:tgt:18.0 2.0:alive:tgt:18.0 2.7:alive:tgt:18.0 3.4:alive:tgt:18.0 4.1:alive:tgt:18.0 4.8:alive:tgt:18.0 5.5:gone:-:0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp False 0.5:alive:tgt:18.0 1.2:alive:tgt:18.0 1.9:gone:-:0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  emp True 0.6:alive:tgt:18.0 1.3:alive:tgt:18.0 2.0:alive:tgt:18.0 2.7:alive:tgt:18.0 3.4:alive:tgt:18.0 4.1:alive:tgt:18.0 4.8:alive:tgt:18.0 5.5:gone:-:0.0
+DONE

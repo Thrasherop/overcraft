@@ -168,5 +168,5 @@ throw speed.
 - Rejuvenating Dash: W's 28.9 / 24.25 m/s over 0.3 s are 8.7 / 7.3 m, not its own 6.15 / 6.9 m.
 - Ult cost: W 2400 (2200 x 1.09 = 2398); no BZ number.
 - Petal Platform cast time 3 s (W) has no explanation in W or BZ.
-- Life Grip: W's "does not cleanse debuffs applied beforehand" predates BZ 2026-04-14's "now cleanses allies when pulled".
+- Life Grip: W's "does not cleanse debuffs applied beforehand" predates BZ 2026-04-14's "now cleanses allies when pulled". The data has the cleanse: 21EE #605 sends 1BC5, #606 sets v8440, as Suzu's status does (techniques/game-data/status_and_cleanse.md).
 - The game data disagrees with several of these: listed in `lifeweaver-map.md` ("Disagreements with lifeweaver.md").

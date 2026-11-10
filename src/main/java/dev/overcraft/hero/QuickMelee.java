@@ -89,7 +89,7 @@ public final class QuickMelee {
 			// a fall or the void after it is the hero's kill (#84: the classic boop)
 			Combat.pushed(target, hero, claws ? Blow.melee("claws_out") : Blow.MELEE);
 			if (!hit && s.hero == Hero.SIGMA) {
-				// Sigma's Hyper Strike (major perk): the first one it lands on
+				// Sigma's Hyper Strike (major perk): the first one it lands on (W Sigma rev 409089: "Charge is not consumed if quick melee doesn't hit any enemies"; the phased aren't hit, canHurt)
 				dev.overcraft.sigma.SigmaPerks.meleeHit(hero, s, target);
 			}
 			hit = true;

@@ -1,0 +1,38 @@
+=== #115 AFTER: the sending end. The real client is Lucio on the real wall at x=6 (keys through the harness), read on the server: wallme
+hero lucio mode True screen  hp 18.0 / 18.0
+before {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0}
+ ride L -58.92 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+ ride L -57.86 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+ ride L -57.37 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+ ride L -57.11 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+ ride L -57.0 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+ ride L -56.95 wallride_left {'riding': True, 'code': 1, 'side': -1, 'yaw': 0.0}
+off the wall jump_forward False {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0}
+ ride R -58.92 wallride_right {'riding': True, 'code': 3602, 'side': 1, 'yaw': 180.0}
+ ride R -57.86 wallride_right {'riding': True, 'code': 3602, 'side': 1, 'yaw': 180.0}
+ ride R -57.43 wallride_right {'riding': True, 'code': 3602, 'side': 1, 'yaw': 180.0}
+ ride R -57.13 wallride_right {'riding': True, 'code': 3602, 'side': 1, 'yaw': 180.0}
+G mid-ride {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0} jump_forward
+landed {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0}
+ride {'riding': True, 'code': 3602, 'side': 1, 'yaw': 180.0}
+dead {'riding': False, 'code': 3602, 'side': 1, 'yaw': 180.0}
+respawned {'riding': False, 'code': 0, 'side': 0, 'yaw': 0.0} lucio
+=== #115 AFTER: the seeing end. A bot Lucio on the wall, told by the input packet (a real ServerPlayer; its body stands where put, no client moves it). This real client draws it through the real sync
+{'ok': True, 'hero': 'LUCIO'}
+idle {'animator': True, 'playing': 'idle', 'wallSide': 0, 'wallYaw': nan, 'wallNormal': '(0.0, 1.0, 0.0)', 'code': 0}
+{'ok': True}
+left, yaw 0 {'animator': True, 'playing': 'wallride_left', 'wallSide': -1, 'wallYaw': 0.0, 'wallNormal': '(-1.0, 0.0, -0.0)', 'code': 1}
+{'ok': True}
+right, yaw 180 {'animator': True, 'playing': 'wallride_right', 'wallSide': 1, 'wallYaw': 180.0, 'wallNormal': '(-1.0, 0.0, 1.2246467991473532E-16)', 'code': 3602}
+{'ok': True}
+{}
+far, showstate on {'animator': True, 'playing': 'wallride_left', 'wallSide': None, 'wallYaw': None, 'wallNormal': None, 'code': None}
+back, showstate on {'animator': True, 'playing': 'wallride_left', 'wallSide': -1, 'wallYaw': 0.0, 'wallNormal': '(-1.0, 0.0, -0.0)', 'code': 1}
+{}
+far, showstate off {'animator': True, 'playing': 'wallride_left', 'wallSide': None, 'wallYaw': None, 'wallNormal': None, 'code': None}
+back, showstate off {'animator': True, 'playing': 'wallride_left', 'wallSide': -1, 'wallYaw': 0.0, 'wallNormal': '(-1.0, 0.0, -0.0)', 'code': 1}
+{}
+{'ok': True}
+off {'animator': True, 'playing': 'idle', 'wallSide': 0, 'wallYaw': nan, 'wallNormal': '(0.0, 1.0, 0.0)', 'code': 0}
+{'ok': True}
+killed mid ride {'animator': True, 'playing': 'knockdown', 'wallSide': None, 'wallYaw': None, 'wallNormal': None, 'code': None}

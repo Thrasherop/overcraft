@@ -327,7 +327,8 @@ public final class HeroModelRenderer {
 				net.minecraft.world.phys.Vec3 right = bone(loaded.model(), pose, "Foot_R", base, facing, state.scale);
 				if (left != null && right != null) {
 					dev.overcraft.client.effect.LucioFx.skates(entity.getId(), left, right, song, now,
-						dev.overcraft.client.effect.KirikoFx.enemyOf(entity), animator.playing().startsWith("wallride"));
+						dev.overcraft.client.effect.KirikoFx.enemyOf(entity), animator.playing().startsWith("wallride"),
+						dev.overcraft.hero.OwMovement.wallRideNormal(player));
 				}
 				if (song == (2 | 4)) {
 					// amped Speed Boost shows on his allies in reach (and him): speed lines (4ADD)

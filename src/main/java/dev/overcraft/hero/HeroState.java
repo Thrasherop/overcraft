@@ -21,6 +21,10 @@ public final class HeroState {
 	 */
 	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
+	/** How he rides, as his client says (OwMovement.wallCode: side and ride yaw, 0 off the wall), for others to see (HeroManager.LUCIO_WALL). */
+	public int wallRide;
+	/** Soundwave Rider: ticks before a part charge starts to drain. */
+	public int riderDrainWait;
 	public boolean wallClimbing;
 
 	// weapons
@@ -113,6 +117,10 @@ public final class HeroState {
 	public double gaMomentum;
 	/** Mercy: an Angelic Descent or a launch is landing her (no fall damage until she's down). */
 	public boolean softLanding;
+	/** Kiriko: game time until which the server's onGround is still the place she stepped from. */
+	public long softLandingGrace;
+	/** Ticks of a soft landing spent in water or on a ladder, in a row (Holds.landingEnds). */
+	public int softLandingTouch;
 	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
 	public int flashCharges = 1;
 	public int flashCast = -1;
@@ -166,6 +174,8 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: who her last bash in Rally hit: its shockwave passes them over (0EE3 #890). */
+	public @Nullable UUID rallyBashed;
 	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
 	public @org.jspecify.annotations.Nullable Object barrierBlast;
 	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */
@@ -337,6 +347,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		wallRide = 0;
 		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;

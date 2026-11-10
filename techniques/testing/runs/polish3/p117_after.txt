@@ -1,0 +1,95 @@
+NOTE (added 2026-11-05): the first run below used the wrong key name (ability2): its Suzu lines are VOID. The second run is valid.
+=== #117 AFTER, fix/polish-3 working tree
+hero kiriko mode True screen  hp 20.0 / 20.0
+{'ok': True, 'hero': 'ANA'}
+-- after_grenade_then_suzu start health 12.0 antiheal {'antiHealed': ''}
+after grenade 7.2 antiheal {'antiHealed': 'player'}
+  +0.25s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+  +0.50s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+  +0.75s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+  +1.00s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+  +1.25s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+  +1.50s health 7.2 antiheal {'antiHealed': 'player'} cd2 0.0
+after_grenade_then_suzu Suzu change 0.0 (80 OW = +6.40; her passive may add)
+heard {'heard': ''}
+-- after_control_no_grenade start health 12.0 antiheal {'antiHealed': ''}
+  +0.25s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+  +0.50s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+  +0.75s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+  +1.00s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+  +1.25s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+  +1.50s health 12.0 antiheal {'antiHealed': ''} cd2 0.0
+after_control_no_grenade Suzu change 0.0 (80 OW = +6.40; her passive may add)
+heard {'heard': ''}
+phased try +0.2 15.2 {'antiHealed': 'player'}
+phased try +0.4 15.2 {'antiHealed': 'player'}
+phased try +0.6 15.2 {'antiHealed': 'player'}
+phased try +0.8 15.2 {'antiHealed': 'player'}
+phased try +1.0 15.2 {'antiHealed': 'player'}
+phased try +1.2 15.2 {'antiHealed': 'player'}
+{'ok': True, 'hero': 'MERCY'}
+ally after grenade 14.675002 {'antiHealed': ''}
+  ally +0.3 15.695003 {'antiHealed': ''}
+  ally +0.6 16.289999 {'antiHealed': ''}
+  ally +0.9 16.884993 {'antiHealed': ''}
+  ally +1.2 17.479986 {'antiHealed': ''}
+  ally +1.5 18.0 {'antiHealed': ''}
+--- Life Grip
+{'ok': True, 'hero': 'LIFEWEAVER'}
+after grenade 9.2 antiheal {'antiHealed': 'player'}
+{'ok': True}
+  +0.25s health 15.2 z 0.5 antiheal {'antiHealed': ''}
+  +0.50s health 15.2 z -3.25 antiheal {'antiHealed': ''}
+  +0.75s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.00s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.25s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.50s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+Life Grip change 6.0 (75 OW = +6.00) from 9.2
+{}
+=== #117 AFTER, second run: the first used a wrong key name (ability2), so no Suzu flew in it
+hero kiriko mode True screen  hp 20.0 / 20.0
+{'ok': True, 'hero': 'ANA'}
+-- after_grenade_then_suzu start health 12.0 antiheal {'antiHealed': ''}
+after grenade 7.2 antiheal {'antiHealed': 'player'}
+  +0.25s health 13.6 antiheal {'antiHealed': ''} cd2 13.6
+  +0.50s health 13.6 antiheal {'antiHealed': ''} cd2 13.3
+  +0.75s health 13.6 antiheal {'antiHealed': ''} cd2 13.0
+  +1.00s health 13.6 antiheal {'antiHealed': ''} cd2 12.7
+  +1.25s health 13.6 antiheal {'antiHealed': ''} cd2 12.4
+  +1.50s health 13.6 antiheal {'antiHealed': ''} cd2 12.1
+after_grenade_then_suzu Suzu change 6.4 (80 OW = +6.40; her passive may add)
+heard {'heard': 'kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head) | kiriko.voice.suzu -> kiriko/voice/suzu/0 (SimpleSoundInstance, in the head) | kiriko.suzu.burst -> kiriko/suzu/burst/3 (SimpleSoundInstance, at 0.5 -60.0 0.8)'}
+-- after_control_no_grenade start health 12.0 antiheal {'antiHealed': ''}
+  +0.25s health 18.4 antiheal {'antiHealed': ''} cd2 13.55
+  +0.50s health 18.4 antiheal {'antiHealed': ''} cd2 13.25
+  +0.75s health 18.4 antiheal {'antiHealed': ''} cd2 12.95
+  +1.00s health 18.4 antiheal {'antiHealed': ''} cd2 12.65
+  +1.25s health 18.4 antiheal {'antiHealed': ''} cd2 12.35
+  +1.50s health 18.4 antiheal {'antiHealed': ''} cd2 12.05
+after_control_no_grenade Suzu change 6.4 (80 OW = +6.40; her passive may add)
+heard {'heard': 'kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head) | kiriko.suzu.burst -> kiriko/suzu/burst/3 (SimpleSoundInstance, at 0.5 -60.0 0.8)'}
+phased try +0.2 20.0 {'antiHealed': ''}
+phased try +0.4 20.0 {'antiHealed': ''}
+phased try +0.6 20.0 {'antiHealed': ''}
+phased try +0.8 20.0 {'antiHealed': ''}
+phased try +1.0 20.0 {'antiHealed': ''}
+phased try +1.2 20.0 {'antiHealed': ''}
+{'ok': True, 'hero': 'MERCY'}
+ally after grenade 9.620003 {'antiHealed': 'player'}
+  ally +0.3 16.020002 {'antiHealed': ''}
+  ally +0.6 16.020002 {'antiHealed': ''}
+  ally +0.9 16.020002 {'antiHealed': ''}
+  ally +1.2 16.020002 {'antiHealed': ''}
+  ally +1.5 16.020002 {'antiHealed': ''}
+--- Life Grip
+{'ok': True, 'hero': 'LIFEWEAVER'}
+after grenade 9.2 antiheal {'antiHealed': 'player'}
+{'ok': True}
+  +0.25s health 15.2 z 0.5 antiheal {'antiHealed': ''}
+  +0.50s health 15.2 z -3.25 antiheal {'antiHealed': ''}
+  +0.75s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.00s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.25s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+  +1.50s health 15.2 z -5.25 antiheal {'antiHealed': ''}
+Life Grip change 6.0 (75 OW = +6.00) from 9.2
+{}
