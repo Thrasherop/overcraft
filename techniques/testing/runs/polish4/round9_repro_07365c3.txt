@@ -1,0 +1,73 @@
+TREE (git at launch; the client itself can't say): 07365c3 dirty_src_files=0 launched=2026-11-06T14:30:51
+TIME 14:32:22
+TREE (git at launch): 07365c3 dirty_src_files=0 launched=2026-11-06T14:30:51 14:32:22
+/difficulty normal ['[14:32:22] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[14:32:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[14:32:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[14:32:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[14:32:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[14:32:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[14:32:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[14:32:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[14:32:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+TREE7 07365c3 dirty_src_files=0 launched=2026-11-06T14:30:51 14:32:26
+### Lifeweaver, hurt, on a horse, boat or minecart: tap Space: cd3 and health 1 s on
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  horse (passenger): health 14.0 -> 18.4, cd3 0.00 -> 4.25, dash sound ['lifeweaver.dash']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  boat (passenger): health 14.0 -> 18.4, cd3 0.00 -> 4.20, dash sound ['lifeweaver.dash']
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  minecart (passenger): health 14.0 -> 18.4, cd3 0.00 -> 4.25, dash sound ['lifeweaver.dash']
+### Lifeweaver hung 2 m up inside lava, powder snow (leather boots), a cobweb: tap Space: z, cd3. Fire resistance in lava
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lava: z 0.50 -> 0.50, y -59.28 -> -59.28, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  snow: z 0.50 -> 0.50, y -60.00 -> -60.00, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  web: z 0.50 -> 0.50, y -58.06 -> -58.08, cd3 4.40, dash sound ['lifeweaver.dash']
+### Juno: Minecraft mode, walk off, G on partway, Shift to glide: inHeroPlay read through; let it end and drop. Control: no glide
+hero juno mode True screen  hp 18.0 / 18.0
+  glide: health 15.0 -> 0.0, end y -60.0 | -40.7p -40.7p -40.7p -40.7p -40.7p -40.7p -49.9p -51.6p -53.4p -55.3p -58.4p -60.0pg
+hero juno mode True screen  hp 18.0 / 18.0
+  none: health 15.0 -> 0.0, end y -60.0 | -38.6p -40.7p -42.8p -45.1p -47.4p -49.8p -49.8p -52.2p -54.8p -57.3p -59.9p -60.0pg
+### Jetpack Cat: the same; Space held to fly once G is on, then let go and come down
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  fly: health 13.0 -> 16.0, end y -60.0 | -42.0H -41.9H -42.2H -42.8H -43.3H -58.1H -58.7H -59.2H -59.8H -60.0Hg
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  none: health 13.0 -> 16.0, end y -60.0 | -42.5p -44.4p -46.1p -47.7p -49.3p -60.0H -60.0H -60.0H -60.0H -60.0H
+### G in the dash: cd3; G back at once: does the client go on?
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G stays off: z at G 4.32 -> 11.81, y -60.00, cd3 0.00
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G back at once: z at G 2.95 -> 4.77, y -60.00, cd3 0.00
+### an ability after G on mid-fall: inHeroPlay read through it. Lifeweaver's dash; landing from 20 m
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  dash: health 17.0 -> 20.0 | -45.6Hs -45.6Hs -45.6Hs -45.6Hs -45.7Hs -45.8Hs -45.9Hs -46.4Hs -46.6Hs -47.0Hs -47.7Hs -48.2Hs -48.7Hs -49.8Hs -50.4Hs -51.0Hs -52.4Hs -53.9Hs -54.7Hs -55.6Hs -57.3Hs -58.2H -59.2H -60.0Hg
+### picking a hero mid-fall in Minecraft mode, from a ledge at the spawnpoint: Kiriko 15 m (hero rule 7, plain 12)
+hero brigitte mode True screen  hp 20.0 / 20.0
+  {'ok': True}: now brigitte, health 18.5 -> 7.1 of max?, inHeroPlay at the pick False
+DONE
+TREE (git at launch; the client itself can't say): 07365c3 dirty_src_files=0 launched=2026-11-06T14:51:40
+TIME 14:53:39
+TREE (git at launch): 07365c3 dirty_src_files=0 launched=2026-11-06T14:51:40 14:53:39
+/difficulty normal ['[14:53:39] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[14:53:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[14:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[14:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[14:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[14:53:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[14:53:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[14:53:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[14:53:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+TREE7 07365c3 dirty_src_files=0 launched=2026-11-06T14:30:51 14:53:43
+### Lifeweaver hung 2 m up inside lava, powder snow (leather boots), a cobweb: tap Space: z, cd3. Fire resistance in lava
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lava: z 0.50 -> 0.50, y -59.28 -> -59.28, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  snow: z 0.50 -> 0.50, y -60.00 -> -60.00, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  web: z 0.50 -> 0.93, y -58.06 -> -58.08, cd3 4.35, dash sound ['lifeweaver.dash']
+### picking a hero mid-fall in Minecraft mode, from a ledge at the spawnpoint: Kiriko 15 m (hero rule 7, plain 12)
+hero brigitte mode True screen  hp 20.0 / 20.0
+  {'ok': True}: now kiriko, health 18.5 -> 14.0 of max?, inHeroPlay at the pick True
+DONE

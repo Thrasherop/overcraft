@@ -1,6 +1,11 @@
-TREE last src commit f504333, HEAD f504333, dirty_src=0, gradlew clean build, 2026-11-06T14:12, 121 tests, 0 failures
+TREE last src commit 3aaa947, HEAD 3aaa947, dirty_src=0, gradlew clean build, 2026-11-10T16:03, 121 tests, 0 failures
 Picked up JAVA_TOOL_OPTIONS: -Xmx2G
-Reusing configuration cache.
+Starting a Gradle Daemon, 4 busy and 3 stopped Daemons could not be reused, use --status for details
+Calculating task graph as configuration cache cannot be reused because file '..\..\..\..\C:\Users\ultra\.gradle\caches\fabric-loom\mojang_versions_manifest.json' has changed.
+
+> Configure project :
+Fabric Loom: 1.19.4
+
 > Task :validateAccessWidener NO-SOURCE
 > Task :clean
 > Task :processTestResources NO-SOURCE
@@ -33,6 +38,6 @@ Picked up JAVA_TOOL_OPTIONS: -Xmx2G
 
 [Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish4/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 48s
+BUILD SUCCESSFUL in 47s
 10 actionable tasks: 10 executed
-Configuration cache entry reused.
+Configuration cache entry stored.

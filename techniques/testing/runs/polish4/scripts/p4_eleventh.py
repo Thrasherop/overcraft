@@ -44,13 +44,13 @@ if w9('grip'):
     log('### Life Grip let go in deep water by Jump; swim to a ladder; climb; step off onto stone. A grip\'s real landing: control. Mob: control')
     for i in range(ROWS):
         x = spot(r=28); xi = int(x)
-        mc('/fill %d -63 0 %d -60 2 minecraft:water' % (xi - 12, xi + 4), 0.15); mc('/fill %d -64 0 %d -64 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -44 4 %d -60 4 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -60 3 %d -45 3 minecraft:ladder[facing=north]' % (xi - 12, xi + 4), 0.2)
+        mc('/fill %d -63 0 %d -60 2 minecraft:water' % (xi - 12, xi + 4), 0.15); mc('/fill %d -64 0 %d -64 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -30 4 %d -60 4 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -60 3 %d -31 3 minecraft:ladder[facing=north]' % (xi - 12, xi + 4), 0.2)
         h0 = spx('mercy', x + 2, -61, 1.5, 0, 0); g = add('lw', 'lifeweaver', 'blue', x - 10, 1.5, -90, 0, -59); sleep(0.3); bot('press %s ability2' % g); sleep(0.7); c('key jump down'); sleep(0.08); c('key jump up'); sleep(0.2); s1, q1 = snap(); c('key jump down'); c('key forward down'); t0 = time.time()
-        while time.time() - t0 < 9:
+        while time.time() - t0 < 14:
             s2, q2 = snap()
-            if s2['y'] > -48: break
+            if s2['y'] > -38: break
             sleep(0.05)
-        c('key forward up'); c('key jump up'); s3, q3 = snap(); mc('/fill %d -60 0 %d -60 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); c('heard'); h0 = st()['health']; c('key back down'); sleep(0.2); c('key back up'); ser = bottom(); result('let go in water at z %.1f x %.1f; climbed to y %.1f' % (s1['z'], s1['x'] - x, s3['y']), h0, ser[-10:])
+        c('key forward up'); c('key jump up'); s3, q3 = snap(); mc('/fill %d -60 0 %d -60 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); c('heard'); h0 = st()['health']; c('key back down'); sleep(0.3); c('key back up'); ser = bottom(); result('let go in water at z %.1f x %.1f; climbed to y %.1f' % (s1['z'], s1['x'] - x, s3['y']), h0, ser[-10:])
     for mode in ('hero', 'minecraft') * ROWS:
         x = spot(r=28); xi = int(x); mc('/fill %d -49 -3 %d -49 3 minecraft:stone' % (xi - 18, xi - 14), 0.1); mc('/fill %d -49 -1 %d -49 2 minecraft:stone' % (xi - 1, xi + 1), 0.1); h0 = spx('mercy', x, -48, 0.5, 90, 0); g = add('lw', 'lifeweaver', 'blue', x - 16, 0.5, -90, 0, -48); sleep(0.3)
         if mode == 'minecraft': c('heromode off'); sleep(0.2)
@@ -58,12 +58,12 @@ if w9('grip'):
 if w9('climbctl'):
     log('### control for the grip row: the same pool, ladder and step, no grip at all')
     for i in range(ROWS):
-        x = spot(r=28); xi = int(x); mc('/fill %d -63 0 %d -60 2 minecraft:water' % (xi - 12, xi + 4), 0.15); mc('/fill %d -64 0 %d -64 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -44 4 %d -60 4 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -60 3 %d -45 3 minecraft:ladder[facing=north]' % (xi - 12, xi + 4), 0.2); h0 = spx('mercy', x, -61, 1.5, 0, 0); c('key jump down'); c('key forward down'); t0 = time.time()
-        while time.time() - t0 < 9:
+        x = spot(r=28); xi = int(x); mc('/fill %d -63 0 %d -60 2 minecraft:water' % (xi - 12, xi + 4), 0.15); mc('/fill %d -64 0 %d -64 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -30 4 %d -60 4 minecraft:stone' % (xi - 12, xi + 4), 0.1); mc('/fill %d -60 3 %d -31 3 minecraft:ladder[facing=north]' % (xi - 12, xi + 4), 0.2); h0 = spx('mercy', x, -61, 1.5, 0, 0); c('key jump down'); c('key forward down'); t0 = time.time()
+        while time.time() - t0 < 14:
             s2, q2 = snap()
-            if s2['y'] > -48: break
+            if s2['y'] > -38: break
             sleep(0.05)
-        c('key forward up'); c('key jump up'); s3, q3 = snap(); mc('/fill %d -60 0 %d -60 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); c('heard'); h0 = st()['health']; c('key back down'); sleep(0.2); c('key back up'); ser = bottom(); result('no grip; climbed to y %.1f' % s3['y'], h0, ser[-10:])
+        c('key forward up'); c('key jump up'); s3, q3 = snap(); mc('/fill %d -60 0 %d -60 2 minecraft:stone' % (xi - 12, xi + 4), 0.1); c('heard'); h0 = st()['health']; c('key back down'); sleep(0.3); c('key back up'); ser = bottom(); result('no grip; climbed to y %.1f' % s3['y'], h0, ser[-10:])
 if w9('swimjump'):
     log('### a swimmer holding Space through a grip: does it let go at 0.65 s? x, pull reached')
     for hold in (True, False) * ROWS:
