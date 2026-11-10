@@ -513,19 +513,7 @@ public final class LifeweaverFx {
 				sparkles(ground.add(range(-1, 1), 0, range(-1, 1)), 2, 1.76f, 3, UP, 5, Palette.LW_PINK_N, 0.06f, 0.15f, 0.6f, 1);
 			}
 		}
-		if (s.has(Lifeweaver.FLAG_CHARGING) && s.bloomTarget() >= 0 && mc.level.getGameTime() % 2 == 0) {
-			Entity ally = mc.level.getEntity(s.bloomTarget());
-			if (ally != null) {
-				Vec3 top = ally.position().add(0, ally.getBbHeight() + 0.35, 0);
-				Particle ring = Fx.attach("lw_target", top, () -> {
-					Particle r = Fx.particle("lw_ring", Palette.LW_GOLD_N);
-					return r == null ? null : r.shape(Shape.FLAT).normal(UP).life(0.2f).size(0.7f, 0.7f).fade(0.05f, 0.5f);
-				});
-				if (ring != null) {
-					ring.at(top);
-				}
-			}
-		}
+		// (the blossom's target is marked by the data's 013C preview on the HUD: ReticleHud, #85)
 	}
 
 	// ---- every frame: the vines ----

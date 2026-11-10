@@ -22,15 +22,13 @@ import static dev.overcraft.brigitte.BrigitteStats.*;
 /**
  * Barrier Shield (0EE3 on her, the barrier pet 2284 running 0EE4): held up on the right button (the data's default), it
  * stands in front of her and takes what would cross it: hits on her or an ally behind it from in front, arrows, blasts,
- * melee (ours: Overwatch's barriers stop melee but for Reinhardt's hammer). 300 health; down, it comes back at 85 a second
+ * but not melee, which goes through as in Overwatch (the owner, 2026-11-02: "Melee goes through"). 300 health; down, it comes back at 85 a second
  * after 2 s; broken, 5 s before it can go up again. Up, she's 30% slower and her flail is still (0EE3 #670). Its size is the
  * deployed shield's (1.51 m x 2.64 m, measured on the mesh 1064F's idle_up: no number in any graph), from the ground up,
  * 0.9 m ahead of her, square to her facing (ours). Here it's her state, not an entity.
  */
 public final class Barrier {
 	private static final Identifier SLOW = dev.overcraft.Overcraft.id("brigitte_barrier");
-	/** The part of a hit the barrier didn't take, landing (LivingEntityMixin): not taken again. */
-	public static boolean passing;
 	/** A hit was taken by a barrier since this was last cleared (Sojourn's Railgun: +1 energy on a barrier, not +5). */
 	public static boolean took;
 
@@ -40,6 +38,7 @@ public final class Barrier {
 	/** Each tick of her kit: up while the right button is held (and not broken), regenerating while down. */
 	public static void tick(ServerPlayer player, HeroState s, boolean controls) {
 		long now = player.level().getGameTime();
+		s.barrierLocked = now < s.barrierBrokenUntil;
 		boolean want = controls && player.isAlive() && s.secondaryHeld && now >= s.barrierBrokenUntil && s.barrierHealth > 0;
 		if (want && !s.barrierUp) {
 			s.barrierUp = true;
@@ -85,10 +84,15 @@ public final class Barrier {
 		return s.rallyTicks > 0 ? BARRIER_HEALTH_RALLY : BARRIER_HEALTH;
 	}
 
-	/** Leaving her (another hero, dying): down, its slow off. */
+	/**
+	 * Leaving her (another hero, dying): down, its slow off, and everyone told (her stance and the field are drawn from
+	 * the raise and lower they heard: without the lower she respawned holding it, #88).
+	 */
 	public static void clear(ServerPlayer player, HeroState s) {
 		if (s.barrierUp) {
 			stopLoops(player);
+			dev.overcraft.hero.Combat.animate(player, "shield_lower");
+			s.barrierDownSince = player.level().getGameTime();
 		}
 		s.barrierUp = false;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -98,82 +102,352 @@ public final class Barrier {
 	}
 
 	/**
+	 * The explosion being dealt out now (ServerExplosionMixin, from the head of its hurtEntities to its end): its centre,
+	 * the explosion itself, and who set it off. Saved and restored around a blast set off inside another (end crystals).
+	 */
+	public static @Nullable Vec3 blast;
+	public static @Nullable Object blastKey;
+	public static @Nullable Entity blastCause;
+	/**
+	 * A melee blow is being dealt (more than 0): a mob's doHurtTarget, a player's own attack (MeleeHitMixin,
+	 * PlayerMeleeMixin), a hero's quick melee, her flail's swing. Melee goes through barriers.
+	 */
+	public static int meleeDepth;
+
+	/** The lowest a way may cross her barrier, from her feet (m, ours: below her feet ahead is the ground of a step or slope). */
+	private static final double BOTTOM = -1.0;
+
+	/**
+	 * Before an explosion hurts anyone (ServerExplosionMixin): each Brigitte's up barrier with the blast's centre in front
+	 * of it takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule at full exposure: impact
+	 * 1 - d / 2r, (impact² + impact) / 2 x 7 x 2r + 1), once, whoever stands behind it. Charged from whoever the explosion
+	 * happened to hurt first, a villager 8 m behind her cost it little and she a lot (#88's critique). Sigma's barriers
+	 * (feature/sigma's Barriers.blast) take blasts the same way. {@code hurts}: whether this explosion hurts at all (a
+	 * breeze's wind charge doesn't).
+	 */
+	public static void blast(ServerLevel level, Vec3 centre, float radius, @Nullable Entity cause, boolean hurts) {
+		double reach = radius * 2;
+		for (ServerPlayer brig : level.players()) {
+			HeroState s = HeroManager.state(brig);
+			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || !stops(brig, cause)) {
+				continue;
+			}
+			Vec3 nearest = nearestFront(brig, s, centre);
+			if (nearest == null) {
+				continue;
+			}
+			// it stops this blast for all behind it, even if the blast breaks it
+			s.barrierBlast = blastKey;
+			double d = nearest.distanceTo(centre);
+			if (!hurts || d >= reach) {
+				continue;
+			}
+			double impact = 1 - d / reach;
+			double mc = (impact * impact + impact) / 2 * 7 * reach + 1;
+			take(level, brig, s, Ow.toOw(mc), nearest);
+		}
+	}
+
+	/**
+	 * Each server tick: a blast-carrying projectile (a ghast's fireball, a wither skull, a breeze's or a player's wind
+	 * charge; a blaze's small fireball) about to pass through a Brigitte's up barrier from the front meets it there and
+	 * goes off on it, as on a wall. Minecraft lets it fly through to burst behind her: a breeze's wind charge that missed
+	 * her went off at her back and threw her 10 m up and forward over her barrier (#88's rework, found playing). A small
+	 * fireball has no blast: the barrier takes its 5 and it's gone (BLAZE_FIREBALL, ours from its damage).
+	 */
+	public static void tickProjectiles(net.minecraft.server.MinecraftServer server) {
+		// (a blow that threw never reached its RETURN: the marker mustn't outlive the tick)
+		meleeDepth = 0;
+		for (ServerPlayer brig : server.getPlayerList().getPlayers()) {
+			HeroState s = HeroManager.state(brig);
+			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || !(brig.level() instanceof ServerLevel level)) {
+				continue;
+			}
+			for (var p : level.getEntitiesOfClass(net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile.class,
+				brig.getBoundingBox().inflate(8), e -> e.isAlive() && stops(brig, e.getOwner()))) {
+				Vec3 facing = facing(brig);
+				Vec3 from = p.position(), to = from.add(p.getDeltaMovement());
+				Vec3 at = meets(brig, s, from, to);
+				if (at == null) {
+					continue;
+				}
+				// on the side it came from (both sides stop it)
+				Vec3 out = from.subtract(brig.position().add(facing.scale(BARRIER_AHEAD))).dot(facing) < 0 ? facing.scale(-1) : facing;
+				facing = out;
+				Vec3 hit = at.add(facing.scale(0.05));
+				p.setPos(hit.add(facing.scale(0.3)));
+				if (p instanceof net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball) {
+					take(level, brig, s, Ow.toOw(BLAZE_FIREBALL), hit);
+					p.discard();
+					continue;
+				}
+				net.minecraft.core.Direction face = net.minecraft.core.Direction.getApproximateNearest(facing.x, facing.y, facing.z);
+				((dev.overcraft.mixin.ProjectileInvoker) p).overcraft$onHit(new net.minecraft.world.phys.BlockHitResult(hit.add(facing.scale(0.3)),
+					face, net.minecraft.core.BlockPos.containing(hit), false));
+				if (p.isAlive()) {
+					p.discard();
+				}
+			}
+			heroProjectiles(level, brig, s);
+		}
+	}
+
+	/**
+	 * A projectile crossing her up barrier stops there, whatever it was flying at, as at a barrier that is an entity
+	 * (Barriers.intercept, the same rules; #104): she takes what it would have dealt, and it does its own (a hero's) or drops. Left
+	 * to reach its target, what it did after the hit went through her: Sleep Dart put an enemy to sleep behind her, Accretion knocked
+	 * one down, and a shot at something not on her side wasn't stopped at all; nor an arrow at a target far past her (#83, critique 5).
+	 */
+	private static void heroProjectiles(ServerLevel level, ServerPlayer brig, HeroState s) {
+		for (net.minecraft.world.entity.projectile.Projectile p : level.getEntitiesOfClass(net.minecraft.world.entity.projectile.Projectile.class,
+			brig.getBoundingBox().inflate(8), e -> dev.overcraft.hero.Barriers.takes(e) && stops(brig, e.getOwner())
+				&& !(e instanceof net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile)
+				&& !(e instanceof dev.overcraft.entity.OwProjectile ow && ow.passesBarriers()))) {
+			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo);
+			Vec3 at = meets(brig, s, before, now);
+			if (at == null) {
+				at = meets(brig, s, now, now.add(p.getDeltaMovement()));
+				// the next step: only if it gets that far (she's in front of it, seen from behind her: flanking works)
+				if (at != null && !dev.overcraft.hero.Barriers.reaches(p, now, at)) {
+					continue;
+				}
+			}
+			if (at == null) {
+				continue;
+			}
+			double damage = dev.overcraft.hero.Barriers.projectileDamage(p);
+			if (damage > 0) {
+				take(level, brig, s, damage, at);
+			}
+			Vec3 facing = facing(brig);
+			Vec3 normal = before.subtract(brig.position().add(facing.scale(BARRIER_AHEAD))).dot(facing) < 0 ? facing.scale(-1) : facing;
+			if (p instanceof dev.overcraft.entity.OwProjectile ow) {
+				ow.hitBarrier(at.add(normal.scale(0.3)), normal);
+			} else {
+				dev.overcraft.hero.Barriers.stop(p, at.add(normal.scale(0.3)), true);
+			}
+			if (!s.barrierUp) {
+				// that broke it
+				return;
+			}
+		}
+	}
+
+	/**
+	 * A hero's burst at {@code at} (the rock's, a sphere's): each enemy Brigitte's up barrier in {@code radius} of it takes
+	 * what it would deal there, once, as an entity barrier does in those bursts (who's behind it asks {@link #shields}).
+	 */
+	public static void burst(ServerLevel level, Entity attacker, Vec3 at, double radius, java.util.function.DoubleUnaryOperator damage) {
+		for (ServerPlayer brig : level.players()) {
+			HeroState s = HeroManager.state(brig);
+			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || !stops(brig, attacker)) {
+				continue;
+			}
+			Vec3 near = nearest(brig, s, at);
+			double d = near.distanceTo(at);
+			if (d <= radius) {
+				take(level, brig, s, damage.applyAsDouble(d), near);
+			}
+		}
+	}
+
+	/** The point of her barrier's rectangle nearest {@code at}, on either side. */
+	private static Vec3 nearest(ServerPlayer brig, HeroState s, Vec3 at) {
+		Vec3 facing = facing(brig);
+		Vec3 side = new Vec3(facing.z, 0, -facing.x);
+		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
+		boolean rally = s.rallyTicks > 0;
+		double halfWidth = (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2, height = rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT;
+		double across = Math.clamp(at.subtract(centre).dot(side), -halfWidth, halfWidth);
+		double up = Math.clamp(at.y - brig.getY(), BOTTOM, height);
+		return centre.add(side.scale(across)).add(0, up, 0);
+	}
+
+	/** A blaze's small fireball (Minecraft health: SmallFireball.onHitEntity's 5). */
+	private static final float BLAZE_FIREBALL = 5;
+
+	/** Where the step from {@code a} to {@code b} goes through her barrier from the front, or null. */
+	private static @Nullable Vec3 meets(ServerPlayer brig, HeroState s, Vec3 a, Vec3 b) {
+		Vec3 facing = facing(brig);
+		Vec3 side = new Vec3(facing.z, 0, -facing.x);
+		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
+		boolean rally = s.rallyTicks > 0;
+		double halfWidth = (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2, height = rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT;
+		double da = a.subtract(centre).dot(facing), db = b.subtract(centre).dot(facing);
+		// from one side to the other, either way (Overwatch's barriers stop enemy fire both ways: hero.Barriers)
+		if (da == db || da > 0 && db > 0 || da < 0 && db < 0) {
+			return null;
+		}
+		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));
+		double up = at.y - brig.getY();
+		return Math.abs(at.subtract(centre).dot(side)) <= halfWidth && up >= BOTTOM && up <= height ? at : null;
+	}
+
+	/** Whether her barrier stops what {@code cause} sets off: not hers, not her ally's (Overwatch's stop only enemies). */
+	private static boolean stops(ServerPlayer brig, @Nullable Entity cause) {
+		return cause != brig && !(cause instanceof LivingEntity living && Allies.isSelfOrAlly(brig, living));
+	}
+
+	/**
 	 * Every hit passes here (LivingEntityMixin, before armor): what's left of {@code damage} (Minecraft health) after any
 	 * Brigitte's barrier that stands between the hit's source and {@code victim} took it. The victim is her or her ally.
+	 * A hit the barrier takes stops there, all of it, even one bigger than the barrier has left (it breaks): Overwatch's
+	 * barriers block a hit, they don't pass on what's over (the wiki's Barrier page: of Rip-Tire and Total Mayhem, "barriers
+	 * block the explosion"; no source gives a carry-over: M). Ours had passed the rest on as a hit of its own, so a creeper
+	 * 1.5 m ahead broke it and still hurt her and threw her 5 m back (#88). A blast's hit behind it is 0: the barrier took
+	 * the blast itself (blast). Melee goes through (the owner, 2026-11-02: "Melee goes through"; the wiki's Barrier page).
 	 */
 	public static float absorb(LivingEntity victim, DamageSource source, float damage) {
 		if (damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
 			return damage;
 		}
-		// the barriers that are entities (Sigma's) first: dev.overcraft.hero.Barriers
-		damage = dev.overcraft.hero.Barriers.absorb(victim, source, damage);
-		if (damage <= 0) {
+		// the barriers that are entities (Sigma's) by the same rules: dev.overcraft.hero.Barriers
+		if (dev.overcraft.hero.Barriers.absorb(victim, source, damage) < damage) {
 			return 0;
+		}
+		ServerPlayer brig = covering(victim, source);
+		if (brig == null) {
+			return damage;
+		}
+		if (blast != null) {
+			return 0;
+		}
+		HeroState s = HeroManager.state(brig);
+		Vec3 from = from(source, victim);
+		Vec3 to = victim.getBoundingBox().getCenter();
+		take(level, brig, s, Ow.toOw(damage), from == null ? to : to.add(from.subtract(to).normalize().scale(1)));
+		return 0;
+	}
+
+	/** {@code ow} on her barrier at {@code at}: its sounds, calls, ult charge, and its break. */
+	private static void take(ServerLevel level, ServerPlayer brig, HeroState s, double ow, Vec3 at) {
+		double took = Math.min(ow, s.barrierHealth);
+		s.barrierHealth -= took;
+		Barrier.took = true;
+		double after = s.barrierHealth / maxHealth(s);
+		// a hit on it (her flail's barrier contact 0015, M: anything hitting her barrier), and its calls
+		BrigitteSounds.at(level, "hit_barrier", at, 100);
+		dev.overcraft.hero.Voice.say(brig, "barrier_damaged", 1);
+		if (after > 0 && (after <= 0.5 && s.barrierLowCalled < 1 || after <= 0.25 && s.barrierLowCalled < 2)) {
+			// below 50 %, then 25 % (0540)
+			s.barrierLowCalled = after <= 0.25 ? 2 : 1;
+			BrigitteSounds.split(brig, "barrier.low", brig.getEyePosition(), 40);
+			dev.overcraft.hero.Voice.say(brig, "barrier_low", 1);
+		}
+		// 2% of what it absorbs is charge for her ult (0EE4 #149, M)
+		dev.overcraft.hero.Combat.addUltCharge(brig, took * BARRIER_ULT_SHARE, false);
+		if (s.barrierHealth <= 0) {
+			s.barrierHealth = 0;
+			s.barrierBrokenUntil = level.getGameTime() + Ow.ticks(BARRIER_BROKEN);
+			s.barrierUp = false;
+			s.barrierDownSince = level.getGameTime();
+			dev.overcraft.hero.Combat.animate(brig, "shield_lower");
+			stopLoops(brig);
+			BrigitteSounds.split(brig, "barrier.break", brig.getEyePosition(), 40);
+			dev.overcraft.hero.Voice.say(brig, "barrier_broken", 1);
+			// 268C at the barrier: its outline's flash, hexes and shards
+			Vec3 facing = facing(brig);
+			dev.overcraft.hero.Effects.play(level, "brigitte_barrier_break", brig.position().add(facing.scale(BARRIER_AHEAD)).add(0, 1.2, 0),
+				facing, brig, s.rallyTicks > 0 ? 1 : 0, brig);
+		}
+	}
+
+	/**
+	 * The Brigitte whose barrier stands between the hit's source and {@code victim} (her or her ally), or null: up, or
+	 * already struck by the blast being dealt. Asked before armor too (LivingEntityMixin): her armor takes 7 off a hit on
+	 * her, not off a hit on her barrier (it took 30.5 of a zombie's 37.5: #88). Melee goes through.
+	 */
+	public static @Nullable ServerPlayer covering(LivingEntity victim, DamageSource source) {
+		if (!(victim.level() instanceof ServerLevel level)) {
+			return null;
+		}
+		if (blast != null) {
+			return blocking(victim, blast, blastCause);
+		}
+		if (isMelee(source) || dev.overcraft.hero.Barriers.piercing(source)) {
+			// melee, and Gravitic Flux ("ignores barriers but cannot damage them": the wiki's Barrier page), go through
+			return null;
 		}
 		Vec3 from = from(source, victim);
 		if (from == null) {
-			return damage;
+			return null;
 		}
 		Vec3 to = victim.getBoundingBox().getCenter();
 		for (ServerPlayer brig : level.players()) {
 			HeroState s = HeroManager.state(brig);
-			if (s == null || s.hero != Hero.BRIGITTE || !s.barrierUp || brig.distanceToSqr(victim) > 100
-				|| !Allies.isSelfOrAlly(brig, victim) || source.getEntity() == brig || !crosses(brig, s, from, to)) {
-				continue;
-			}
-			double ow = Ow.toOw(damage);
-			double took = Math.min(ow, s.barrierHealth);
-			double before = s.barrierHealth / maxHealth(s);
-			s.barrierHealth -= took;
-			Barrier.took = true;
-			double after = s.barrierHealth / maxHealth(s);
-			// a hit on it (her flail's barrier contact 0015, M: anything hitting her barrier), and its calls
-			BrigitteSounds.at(level, "hit_barrier", to.add(from.subtract(to).normalize().scale(1)), 100);
-			dev.overcraft.hero.Voice.say(brig, "barrier_damaged", 1);
-			if (after > 0 && (after <= 0.5 && s.barrierLowCalled < 1 || after <= 0.25 && s.barrierLowCalled < 2)) {
-				// below 50 %, then 25 % (0540)
-				s.barrierLowCalled = after <= 0.25 ? 2 : 1;
-				BrigitteSounds.split(brig, "barrier.low", brig.getEyePosition(), 40);
-				dev.overcraft.hero.Voice.say(brig, "barrier_low", 1);
-			}
-			// 2% of what it absorbs is charge for her ult (0EE4 #149, M)
-			dev.overcraft.hero.Combat.addUltCharge(brig, took * BARRIER_ULT_SHARE, false);
-			if (s.barrierHealth <= 0) {
-				s.barrierHealth = 0;
-				s.barrierBrokenUntil = level.getGameTime() + Ow.ticks(BARRIER_BROKEN);
-				s.barrierUp = false;
-				s.barrierDownSince = level.getGameTime();
-				dev.overcraft.hero.Combat.animate(brig, "shield_lower");
-				stopLoops(brig);
-				BrigitteSounds.split(brig, "barrier.break", brig.getEyePosition(), 40);
-				dev.overcraft.hero.Voice.say(brig, "barrier_broken", 1);
-				// 268C at the barrier: its outline's flash, hexes and shards
-				float yaw = brig.getYRot() * (float) (Math.PI / 180);
-				Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
-				dev.overcraft.hero.Effects.play(level, "brigitte_barrier_break", brig.position().add(facing.scale(BARRIER_AHEAD)).add(0, 1.2, 0),
-					facing, brig, s.rallyTicks > 0 ? 1 : 0, brig);
-			}
-			damage = (float) Ow.hp(ow - took);
-			if (damage <= 0) {
-				return 0;
+			// her side, whoever shoots; or anyone, when it's her enemy who shoots (a shot at a zombie behind her stops at her too:
+			// a barrier doesn't ask what's behind it, Barriers.absorb, #83)
+			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp
+				&& source.getEntity() != brig && (Allies.isSelfOrAlly(brig, victim) || source.getEntity() != null && stops(brig, source.getEntity()))
+				&& crosses(brig, s, from, to)) {
+				return brig;
 			}
 		}
-		return damage;
+		return null;
 	}
 
-	/** Whether an up barrier stands between a blast's centre and {@code entity}, her or her ally (ServerExplosionMixin). */
-	public static boolean blocksBlast(Entity entity, Vec3 center, @Nullable Entity cause) {
-		if (!(entity instanceof LivingEntity victim) || !(entity.level() instanceof ServerLevel level)) {
-			return false;
-		}
-		if (dev.overcraft.hero.Barriers.blocksBlast(entity, center, cause)) {
-			return true;
+	/**
+	 * Whether a Brigitte's barrier stands between a blast's centre and {@code entity}, her or her ally: no damage and no
+	 * push behind it (ServerExplosionMixin). By where things are only, so a breeze's wind charge, which hurts no one,
+	 * doesn't throw her through it either (#88's critique). feature/sigma calls it with the same arguments.
+	 */
+	public static boolean blocksBlast(Entity entity, Vec3 centre, @Nullable Entity cause) {
+		return entity instanceof LivingEntity victim && blocking(victim, centre, cause) != null
+			|| dev.overcraft.hero.Barriers.blocksBlast(entity, centre, cause);
+	}
+
+	private static @Nullable ServerPlayer blocking(LivingEntity victim, Vec3 centre, @Nullable Entity cause) {
+		if (!(victim.level() instanceof ServerLevel level)) {
+			return null;
 		}
 		Vec3 to = victim.getBoundingBox().getCenter();
 		for (ServerPlayer brig : level.players()) {
 			HeroState s = HeroManager.state(brig);
-			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig.distanceToSqr(victim) <= 100
-				&& Allies.isSelfOrAlly(brig, victim) && crosses(brig, s, center, to)) {
+			if (s != null && s.hero == Hero.BRIGITTE && (s.barrierUp || blastKey != null && s.barrierBlast == blastKey)
+				&& brig.distanceToSqr(victim) <= 100 && Allies.isSelfOrAlly(brig, victim) && stops(brig, cause)
+				&& crosses(brig, s, centre, to)) {
+				return brig;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Melee: only a blow marked as one (meleeDepth): mobs' melee attacks, a player's own blow, heroes' quick melee, her
+	 * flail's swing. Overwatch's barriers let every melee attack through (the wiki's Barrier page), and the owner chose it
+	 * (2026-11-02: "Melee goes through"). Not by damage type: Minecraft's player-attack type is also the source of Lucio's
+	 * Soundwave and Jetpack Cat's Purr and Catnapper, which a barrier blocks (the wiki lists them nowhere among what
+	 * pierces), and a ravager's roar is a mob attack (#88's second critique).
+	 */
+	public static boolean isMelee(DamageSource source) {
+		return meleeDepth > 0;
+	}
+
+	/**
+	 * Whether a Brigitte's up barrier stands between {@code attacker}'s eyes and {@code victim}: an area ability's push, lockout
+	 * or knock-down stop there with its damage (Soundwave, Purr, Catnapper's landing).
+	 */
+	public static boolean shields(LivingEntity victim, Entity attacker) {
+		return shields(victim, attacker, attacker.getEyePosition());
+	}
+
+	/**
+	 * The same for what starts at {@code from}: a burst's centre (Biotic Grenade, the rock, a sphere), a field's or a zone's. Nothing of it
+	 * reaches them, damage or status, and a barrier takes a burst once ({@link #burst}), not per victim.
+	 */
+	public static boolean shields(LivingEntity victim, Entity attacker, Vec3 from) {
+		if (!(victim.level() instanceof ServerLevel level)) {
+			return false;
+		}
+		Vec3 to = victim.getBoundingBox().getCenter();
+		// any barrier, Sigma's too (dev.overcraft.hero.Barriers: the push stops at it as the damage did)
+		if (dev.overcraft.hero.Barriers.between(level, from, to, attacker) != null) {
+			return true;
+		}
+		for (ServerPlayer brig : level.players()) {
+			HeroState s = HeroManager.state(brig);
+			if (s != null && s.hero == Hero.BRIGITTE && s.barrierUp && brig != attacker && victim != attacker
+				&& stops(brig, attacker) && crosses(brig, s, from, to)) {
 				return true;
 			}
 		}
@@ -187,8 +461,9 @@ public final class Barrier {
 			Vec3 v = p.getDeltaMovement();
 			return v.lengthSqr() < 1.0E-6 ? p.position() : p.position().subtract(v.normalize().scale(6));
 		}
-		// a blast (TNT, a creeper, a fireball's): its centre. A primed TNT is the hit's direct entity with no attacker, and
-		// went through the barrier while only direct-less hits counted as blasts (found playing)
+		// a blast not dealt by an explosion (`/damage ... explosion at`; real explosions set `blast`): its centre. A primed
+		// TNT is the hit's direct entity with no attacker, and went through the barrier while only direct-less hits counted
+		// as blasts (found playing)
 		if (source.getSourcePosition() != null && !(direct instanceof LivingEntity)) {
 			return source.getSourcePosition();
 		}
@@ -196,21 +471,63 @@ public final class Barrier {
 		return attacker != null && attacker != victim ? attacker.getEyePosition() : null;
 	}
 
-	/** Whether the way from {@code a} to {@code b} crosses her barrier's rectangle (square to her facing, 0.9 m ahead). */
-	static boolean crosses(ServerPlayer brig, HeroState s, Vec3 a, Vec3 b) {
+	private static Vec3 facing(ServerPlayer brig) {
 		float yaw = brig.getYRot() * (float) (Math.PI / 180);
-		Vec3 facing = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+		return new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+	}
+
+	/**
+	 * The point of her barrier nearest {@code at} when {@code at} is in front of it, or against it (between her and it,
+	 * within its width: crosses); else null.
+	 */
+	private static @Nullable Vec3 nearestFront(ServerPlayer brig, HeroState s, Vec3 at) {
+		Vec3 facing = facing(brig);
+		Vec3 side = new Vec3(facing.z, 0, -facing.x);
 		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
+		boolean rally = s.rallyTicks > 0;
+		double halfWidth = (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2, height = rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT;
+		double da = at.subtract(centre).dot(facing);
+		double lateral = at.subtract(centre).dot(side);
+		if (da <= 0 && (at.subtract(brig.position()).dot(facing) <= 0 || Math.abs(lateral) > halfWidth)) {
+			return null;
+		}
+		double across = Math.clamp(lateral, -halfWidth, halfWidth);
+		double up = Math.clamp(at.y - brig.getY(), BOTTOM, height);
+		return centre.add(side.scale(across)).add(0, up, 0);
+	}
+
+	/**
+	 * Whether the way from {@code a} to {@code b} crosses her barrier's rectangle (square to her facing, BARRIER_AHEAD
+	 * ahead, from BOTTOM under her feet to its height), or starts against it: a source in front of her but nearer than the
+	 * barrier, within its width, counts as at the barrier for {@code b} behind the barrier within its width too. In
+	 * Overwatch there's no room between her and the shield she holds; Minecraft lets a creeper walk through it up to her
+	 * chest and go off there (ours, #88). Not for an ally off to her side: the blast's way to them never meets it.
+	 */
+	static boolean crosses(ServerPlayer brig, HeroState s, Vec3 a, Vec3 b) {
+		Vec3 facing = facing(brig);
+		Vec3 side = new Vec3(facing.z, 0, -facing.x);
+		Vec3 centre = brig.position().add(facing.scale(BARRIER_AHEAD));
+		boolean rally = s.rallyTicks > 0;
+		double halfWidth = (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2, height = rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT;
 		double da = a.subtract(centre).dot(facing), db = b.subtract(centre).dot(facing);
-		// from in front of it to behind it
-		if (da <= 0 || db > 0) {
+		Vec3 at;
+		if (da > 0 && db <= 0 || da < 0 && db >= 0) {
+			// from one side of it to the other, either way: where the way meets its plane. Overwatch's barriers stop enemy
+			// fire both ways (the wiki: an enemy inside Winston's dome "can still hit Winston or his allies if they are also
+			// inside", so "move outside of it so that the enemy has to exit the bubble"; hero.Barriers)
+			at = a.add(b.subtract(a).scale(da / (da - db)));
+		} else if (db > 0) {
+			// both in front of it
+			return false;
+		} else if (a.subtract(brig.position()).dot(facing) > 0 && Math.abs(b.subtract(centre).dot(side)) <= halfWidth) {
+			// between her and it (a creeper pressed to her chest, a fireball going off on her front), hitting what's behind
+			// it within its width: against it
+			at = a;
+		} else {
 			return false;
 		}
-		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));
-		Vec3 side = new Vec3(facing.z, 0, -facing.x);
 		double across = Math.abs(at.subtract(centre).dot(side));
 		double up = at.y - brig.getY();
-		boolean rally = s.rallyTicks > 0;
-		return across <= (rally ? BARRIER_WIDTH_RALLY : BARRIER_WIDTH) / 2 && up >= -0.2 && up <= (rally ? BARRIER_HEIGHT_RALLY : BARRIER_HEIGHT);
+		return across <= halfWidth && up >= BOTTOM && up <= height;
 	}
 }

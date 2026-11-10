@@ -41,7 +41,7 @@ public final class AnaStats {
 	public static final double SCOPED_SLOW = 0.65;
 	/** Aim sensitivity while zoomed, the option's default. */
 	public static final double SCOPED_SENSITIVITY = 0.3;       // D v8174; W
-	/** The zoomed field of view, degrees (D v172 = 30: L, unit unread; ours to check against the game by eye). */
+	/** The zoomed field of view, vertical degrees (D v172 = 30; the unit from community measures: techniques/heroes/ana.md, #90). */
 	public static final double SCOPED_FOV = 30;
 
 	// ---- Sleep Dart (ability 1) ----

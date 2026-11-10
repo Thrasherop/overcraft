@@ -12,6 +12,7 @@ import dev.overcraft.hero.HeroManager;
 import dev.overcraft.hero.HeroState;
 import dev.overcraft.hero.Perk;
 import dev.overcraft.hero.Perks;
+import dev.overcraft.hero.OwMovement;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.hero.HeroSounds;
@@ -20,8 +21,6 @@ import dev.overcraft.registry.OcSounds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -103,7 +102,7 @@ public final class JetpackCat implements HeroKit {
 			if (s.ultPhase != ULT_NONE) {
 				endUlt(player, s);
 			}
-			s.purrTicks = -1;
+			endPurr(s);
 		}
 		boolean modeAllows = player.isCreative() || player.isSpectator();
 		boolean want = cat || valkyrie || modeAllows;
@@ -281,7 +280,8 @@ public final class JetpackCat implements HeroKit {
 				it.remove();
 				continue;
 			}
-			double dealt = Combat.damage(w.target, player.damageSources().playerAttack(player), CLAWS_OUT_DAMAGE / Ow.ticks(1));
+			double dealt = Combat.damage(w.target, player.damageSources().playerAttack(player), CLAWS_OUT_DAMAGE / Ow.ticks(1),
+				dev.overcraft.hero.Blow.perk("claws_out").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			Combat.credit(player, dealt, w.target);
 		}
 	}
@@ -317,11 +317,12 @@ public final class JetpackCat implements HeroKit {
 
 	/** This ally is in her Lifeline's cylinder, in her sight, not on another rope, not just let go. */
 	public static boolean lifelineReaches(ServerPlayer cat, LivingEntity ally) {
-		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger()) {
+		// (asleep or carrying a rider isn't an ally to pull away, ours: a mob can't opt in, and a sleeper flew off its bed, a horse with its rider)
+		if (ally == cat || !ally.isAlive() || !Allies.isAlly(cat, ally) || ally.isPassenger() || ally.isVehicle() || ally.isSleeping()) {
 			return false;
 		}
 		Long until = LOCKED_OUT.get(ally);
-		if (until != null && cat.level().getGameTime() < until) {
+		if (until != null && cat.level().getServer().getTickCount() < until) {
 			return false;
 		}
 		Vec3 to = ally.position().subtract(cat.position());
@@ -373,12 +374,15 @@ public final class JetpackCat implements HeroKit {
 	/**
 	 * A player has just started to see her (joined, respawned, came into range): her Lifeline switched on and whoever
 	 * she tows or carries, which other players otherwise hear of only as they change (found playing with two players:
-	 * an ally who respawned under her got no Lifeline prompt until she switched it off and on).
+	 * an ally who respawned under her got no Lifeline prompt until she switched it off and on), and Catnapper's aim (#96).
 	 */
-	public static void showState(ServerPlayer cat, ServerPlayer viewer) {
-		HeroState s = HeroManager.state(cat);
-		if (s == null || s.hero != Hero.JETPACK_CAT) {
-			return;
+	@Override
+	public void showState(ServerPlayer cat, HeroState s, ServerPlayer viewer) {
+		if (s.ultPhase == ULT_AIM) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(cat.getId(), "ult_aim"));
+		}
+		if (s.purrTicks >= 0 && !dev.overcraft.hero.HeroManager.options(cat).hidePurrRing()) {
+			Effects.sendState(viewer, "purr_state", cat.position(), new Vec3(PURR_TIME - s.purrTicks / 20.0, 0, 0), null, cat.getId(), cat);
 		}
 		if (s.lifelineOn) {
 			Effects.send(viewer, "lifeline_state", cat.position(), null, cat.getId(), cat);
@@ -396,7 +400,7 @@ public final class JetpackCat implements HeroKit {
 		s.lifelineOnTicks = 0;
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
-			speed.addOrReplacePermanentModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
+			speed.addOrUpdateTransientModifier(new AttributeModifier(LIFELINE_SPEED_BUFF, LIFELINE_SPEED,
 				AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 		Combat.animate(player, "lifeline");
@@ -436,35 +440,130 @@ public final class JetpackCat implements HeroKit {
 		}
 		Entity found = player.level().getEntity(s.lifelineTarget);
 		Vec3 apart = found == null ? Vec3.ZERO : player.position().subtract(found.position());
-		if (!(found instanceof LivingEntity ally) || !ally.isAlive()
-			|| s.lifelineTicks >= Ow.ticks(LIFELINE_BREAK_GRACE) && apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK) {
+		if (!(found instanceof LivingEntity ally) || !ally.isAlive() || ally.isPassenger()
+			|| s.lifelineTicks >= Ow.ticks(LIFELINE_BREAK_GRACE) && (apart.horizontalDistance() > LIFELINE_ROPE * LIFELINE_BREAK
+				|| throughTerrain(player, ally, apart))) {
 			release(player, s);
 			return;
 		}
-		Vec3 to = player.position().subtract(ally.position());
-		double dist = to.length();
-		if (dist > LIFELINE_ROPE) {
-			// the rope pulls the slack out: her speed, plus a spring on the extra length (ours: the rope node's 30, 2)
-			Vec3 pull = to.normalize().scale((dist - LIFELINE_ROPE) * 0.5).add(player.getKnownMovement());
-			ally.setDeltaMovement(pull);
-			ally.syncVelocity = true;
-			ally.resetFallDistance();
-		}
+		tow(player, ally);
 		if (player.tickCount % 4 == 0) {
 			Combat.heal(ally, LIFELINE_HEAL / 5);
 		}
-		// a towed player lets go with their jump key, from 0.6 s into the tow (her data), launched along her flight: 8 m/s
-		// ahead and 10.5 up (her data's detach launch; the wiki's 13.2 m/s is the two together). Read from the keys the
-		// client sends: rising faster than her had been the test, and the rope's swing alone let a player go (found
-		// playing with a second player)
+		// a towed player lets go with their jump key, from 0.6 s into the tow (her data). D #1014: their vertical speed
+		// cancelled (x57643451 = 0) and (F.x x 8, 10.5, F.z x 8) added (xA634D7B9: Juno's and Sojourn's reading, M), F the
+		// ally's own facing (STU_021D01CD{self}, in the ally's context: M): what they had across is kept (W: "momentum kept").
+		// Read from the keys the client sends: rising faster than her had been the test, and the rope's swing alone let a
+		// player go (found playing with a second player)
 		s.lifelineTicks++;
-		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(0.6)) {
-			Vec3 heading = player.getKnownMovement().multiply(1, 0, 1);
-			heading = heading.lengthSqr() > 1.0E-4 ? heading.normalize() : player.getLookAngle().multiply(1, 0, 1).normalize();
+		if (ally instanceof ServerPlayer towed && towed.getLastClientInput().jump() && s.lifelineTicks >= Ow.ticks(LIFELINE_DETACH_AFTER)) {
+			Vec3 had = towed.getKnownMovement();
+			Vec3 facing = towed.getLookAngle().multiply(1, 0, 1);
+			facing = facing.lengthSqr() > 1.0E-4 ? facing.normalize() : Vec3.ZERO;
 			release(player, s);
-			towed.setDeltaMovement(heading.scale(Ow.speed(LIFELINE_LAUNCH_FORWARD)).add(0, Ow.speed(LIFELINE_LAUNCH_UP), 0));
-			towed.syncVelocity = true;
+			towed.setDeltaMovement(had.x + facing.x * Ow.speed(LIFELINE_LAUNCH_FORWARD), Ow.speed(LIFELINE_LAUNCH_UP),
+				had.z + facing.z * Ow.speed(LIFELINE_LAUNCH_FORWARD));
+			Combat.send(towed);
 		}
+	}
+
+	/**
+	 * The rope is broken pulled through terrain (W): straight up through a roof the data's across-only test (#928) never
+	 * fires, and she took a villager's rope 30 m up through one (found playing). The same 3 lengths, in any direction, with
+	 * something solid between them, is ours.
+	 */
+	private static boolean throughTerrain(ServerPlayer player, LivingEntity ally, Vec3 apart) {
+		return apart.length() > LIFELINE_ROPE * LIFELINE_BREAK
+			&& player.level().clip(new ClipContext(player.position().add(0, LIFELINE_SIGHT, 0), ally.getBoundingBox().getCenter(),
+				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
+	/** Where a towed mob was last tick and the speed it was last given (blocks a tick), null while it's left to itself. */
+	private static final class Towing {
+		Vec3 last;
+		@Nullable Vec3 sent;
+
+		Towing(Vec3 last) {
+			this.last = last;
+		}
+	}
+
+	private static final java.util.Map<LivingEntity, Towing> TOWING = new java.util.WeakHashMap<>();
+	/** Minecraft's air drag a tick, across and down (LivingEntity.travelInAir, decompiled). */
+	private static final double MC_AIR_DRAG = 0.91, MC_FALL_DRAG = 0.98;
+	/** Ours: a speed past this since last tick (m/s) wasn't a move, a teleport: not taken as its speed. */
+	private static final double BLINK_SPEED = 40;
+	/** Ours: a change past this (blocks a tick) over what Minecraft's drag explains is a hit, not its AI's little push (0.02 in the air). */
+	private static final double HIT_SEEN = 0.1;
+	/** Ours: m/s pressing a towed mob to the ground while the rope isn't lifting it (Minecraft's own gravity for a tick). */
+	private static final double PRESS_DOWN = 1.6;
+
+	/**
+	 * The rope on whoever it tows, this tick (LifelineRope). A player moves themselves: their own client pulls them
+	 * (ClientTow), keys and all, and here they're only kept from falls and from the floating kick. A mob moves here, by the
+	 * same math with no keys, so a villager on the rope behaves as a player who lets go of the keys.
+	 */
+	private static void tow(ServerPlayer player, LivingEntity ally) {
+		ally.resetFallDistance();
+		if (ally instanceof ServerPlayer towed) {
+			((dev.overcraft.mixin.ServerGamePacketListenerAccessor) towed.connection).overcraft$setAboveGroundTickCount(0);
+			return;
+		}
+		Towing t = TOWING.computeIfAbsent(ally, a -> new Towing(a.position()));
+		Vec3 pos = ally.position();
+		Vec3 moved = pos.subtract(t.last).scale(20);
+		Vec3 now = ally.getDeltaMovement();
+		t.last = pos;
+		Vec3 toHer = player.position().subtract(pos);
+		boolean taut = LifelineRope.taut(toHer, LIFELINE_ROPE);
+		Vec3 her = player.getKnownMovement().scale(20);
+		double dt = 0.05 / OwMovement.SUBSTEPS;
+		if (ally.isInLiquid()) {
+			// the water or lava has them, its own drag and all; the rope only adds to it
+			t.sent = null;
+			if (taut) {
+				Vec3 v = now.scale(20);
+				for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
+					v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+				}
+				ally.setDeltaMovement(v.scale(0.05));
+				ally.needsSync = true;
+			}
+			return;
+		}
+		if (ally.onGround() && !taut) {
+			t.sent = null; // on their own feet inside the rope: Minecraft walks them
+			return;
+		}
+		// the speed we gave it, less what a wall or the ground took. Not the speed it really moved at: that holds its AI's walk,
+		// which without Minecraft's friction adds up to 40 m/s² and held a villager against the rope, on its feet (found playing).
+		// Picked up from the ground it has no walk to speak of (a player's keys are their own: ClientTow)
+		Vec3 v = moved.lengthSqr() > BLINK_SPEED * BLINK_SPEED ? now.scale(20) : moved;
+		if (t.sent != null) {
+			Vec3 sent = t.sent.scale(20);
+			v = new Vec3(ally.horizontalCollision ? moved.x : sent.x, ally.verticalCollision ? moved.y : sent.y,
+				ally.horizontalCollision ? moved.z : sent.z);
+			// a hit since the last tick shows as a speed that isn't what Minecraft made of the one we gave it
+			if (!ally.horizontalCollision && !ally.verticalCollision) {
+				Vec3 expected = new Vec3(t.sent.x * MC_AIR_DRAG, (t.sent.y - ally.getGravity()) * MC_FALL_DRAG, t.sent.z * MC_AIR_DRAG);
+				Vec3 hit = now.subtract(expected);
+				if (hit.lengthSqr() > HIT_SEEN * HIT_SEEN && !ally.onGround()) {
+					v = v.add(hit.scale(20));
+				}
+			}
+		}
+		for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
+			v = LifelineRope.free(v, dt);
+			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+		}
+		if (ally.onGround() && v.y <= 0) {
+			// the rope isn't lifting them: on the ground, pressed to it as Minecraft keeps a walker (with no gravity here the pull's little
+			// upward share hopped them every other tick, found in a trace)
+			v = new Vec3(v.x, -PRESS_DOWN, v.z);
+		}
+		t.sent = v.scale(0.05);
+		ally.setDeltaMovement(t.sent);
+		ally.needsSync = true;
 	}
 
 	private static void startLifeline(ServerPlayer player, HeroState s, LivingEntity ally) {
@@ -483,10 +582,18 @@ public final class JetpackCat implements HeroKit {
 			return;
 		}
 		Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
+		// and whoever was on it, wherever they are: effects only go 96 m round her, and if she's blinked past that their client went
+		// on pulling them to her, let go by the server (found on a bot's rope)
+		if (player.level().getEntity(s.lifelineTarget) instanceof ServerPlayer towed) {
+			Effects.send(towed, "tether_end", player.position(), null, player.getId(), player);
+		}
+		int target = s.lifelineTarget;
+		TOWING.keySet().removeIf(a -> a.getId() == target);
 		HeroSounds.toOwner(player, OcSounds.JC_LIFELINE_DETACH);
 		if (player.level().getEntity(s.lifelineTarget) instanceof LivingEntity ally) {
-			LET_GO.put(ally, player.level().getGameTime() + Ow.ticks(LET_GO_GRACE));
-			LOCKED_OUT.put(ally, player.level().getGameTime() + Ow.ticks(LIFELINE_LOCKOUT));
+			// (the server's own count: /time set moved the world's clock under these, found locking a player out for good)
+			LET_GO.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LET_GO_GRACE));
+			LOCKED_OUT.put(ally, (long) player.level().getServer().getTickCount() + Ow.ticks(LIFELINE_LOCKOUT));
 		}
 		s.lifelineTarget = null;
 	}
@@ -505,18 +612,20 @@ public final class JetpackCat implements HeroKit {
 		// the cast: 30 damage and a knockback to enemies in 10 m, full within 5 m, 0.3 of it at 10 m (her data's 5A7E)
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(PURR_RADIUS))) {
 			double d = e.distanceTo(player);
-			if (e == player || !e.isAlive() || d > PURR_RADIUS || !Allies.canHurt(player, e)) {
+			if (e == player || !e.isAlive() || d > PURR_RADIUS || !Allies.areaHits(player, e)) {
 				continue;
 			}
 			double scale = d <= PURR_RADIUS / 2 ? 1 : 1 - 0.7 * (d - PURR_RADIUS / 2) / (PURR_RADIUS / 2);
-			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), PURR_DAMAGE * scale);
+			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), PURR_DAMAGE * scale, dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			Combat.credit(player, dealt, e);
+			if (dev.overcraft.brigitte.Barrier.shields(e, player)) {
+				// a barrier in the way took it: no push behind it (#88; any barrier: Barriers)
+				continue;
+			}
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			out = out.lengthSqr() < 1.0E-6 ? player.getViewVector(1.0f).multiply(1, 0, 1) : out.normalize();
-			Vec3 push = out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0)
-				.scale(dev.overcraft.hero.Tank.knockbackFactor(e));
-			e.push(push.x, push.y, push.z);
-			e.syncVelocity = true;
+			Combat.push(e, out.scale(Ow.speed(PURR_KNOCKBACK) * scale).add(0, Ow.speed(PURR_KNOCKBACK_UP) * scale, 0), player,
+				dev.overcraft.hero.Blow.ability("purr").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			// a blue-violet flash at its chest (741C)
 			Effects.play(level, "purr_hit", e.position().add(0, e.getBbHeight() * 0.6, 0), player);
 		}
@@ -652,7 +761,7 @@ public final class JetpackCat implements HeroKit {
 		}
 	}
 
-	/** The landing: 25 damage, a 1.5 s knock-down and a push in 5.5 m; the nearest enemy is tethered and carried. */
+	/** The landing: 25 damage, a 1.5 s knock-down and a push in 5.5 m; the nearest enemy but a boss is tethered and carried. */
 	private static void land(ServerPlayer player, HeroState s) {
 		ServerLevel level = player.level();
 		player.setDeltaMovement(Vec3.ZERO);
@@ -665,22 +774,29 @@ public final class JetpackCat implements HeroKit {
 		double radius = ULT_RADIUS;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius))) {
 			double d = e.distanceTo(player);
-			if (e == player || !e.isAlive() || d > radius || !Allies.canHurt(player, e)) {
+			if (e == player || !e.isAlive() || d > radius || !Allies.areaHits(player, e)) {
 				continue;
 			}
-			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE), e);
+			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), ULT_DAMAGE, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT)), e);
+			if (dev.overcraft.brigitte.Barrier.shields(e, player)) {
+				// a barrier in the way took it: no knock-down or push behind it (#88; any barrier: Barriers)
+				continue;
+			}
 			// the shockwave's per-target burst (7256), thrown out from her
 			Effects.play(level, "catnapper_hit", e.position(), e.position().subtract(player.position()), e, player.getId(), player);
-			// the knock-down (ours: Minecraft has no stun, so the heaviest Slowness and Weakness: no moving, no hitting)
-			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
-			e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Ow.ticks(ULT_KNOCKDOWN), 9, false, false));
+			// the knock-down: "knocked down (stun 1.5 s) and pushed" (W): held as Rally's and Accretion's are (Sleep: no AI, no keys, no
+			// shots), and it keeps the push, as a knock-down does
+			dev.overcraft.hero.Sleep.knockdown(e, ULT_KNOCKDOWN);
 			Vec3 out = e.position().subtract(player.position()).multiply(1, 0, 1);
 			if (out.lengthSqr() > 1.0E-6) {
-				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH) * dev.overcraft.hero.Tank.knockbackFactor(e));
-				e.push(push.x, 0.1, push.z);
-				e.syncVelocity = true;
+				Vec3 push = out.normalize().scale(Ow.speed(ULT_PUSH));
+				Combat.push(e, new Vec3(push.x, 0.1, push.z), player, dev.overcraft.hero.Blow.ult("catnapper").by(dev.overcraft.hero.Hero.JETPACK_CAT));
 			}
-			if (d < nearestD) {
+			// the tether takes the nearest it can carry: a boss is knocked down with the rest and stays where it is (Allies.isBoss, ours)
+			// (not one the landing killed, a shulker fixed to its wall, anything riding, or a dart's sleeper Sleep holds still: she'd hang on
+			// a tether that doesn't move)
+			if (d < nearestD && e.isAlive() && !Allies.isBoss(e) && !e.isPassenger() && !dev.overcraft.hero.Sleep.sleeping(e)
+				&& !(e instanceof net.minecraft.world.entity.monster.Shulker)) {
 				nearest = e;
 				nearestD = d;
 			}
@@ -752,5 +868,31 @@ public final class JetpackCat implements HeroKit {
 			s.primaryAmmo, reload, (int) Math.round(s.fuel), -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, mode, left, (float) (s.fuel / 100));
+	}
+
+	/** Her widgets (#85): target, who Lifeline tows (0BA3, 5A8F #1097: the towed ally's portrait v59143). Catnapper's carried enemy has none. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		return new HeroSyncPayload.Widgets(s.lifelineTarget == null ? -1 : s.lifelineTarget, -1, -1, false, 0, 0, 0, 0, "", "");
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): Lifeline lets go and its speed goes, Catnapper's carry ends, Purr stops. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.lifelineOn) {
+			lifelineOff(player, s, false);
+		}
+		if (s.ultPhase != ULT_NONE) {
+			endUlt(player, s);
+		}
+		endPurr(s);
+	}
+
+	/** A Purr cut short still costs its cooldown: its burst has gone out (it would come back at once on G back). */
+	private static void endPurr(HeroState s) {
+		if (s.purrTicks >= 0) {
+			s.ability2Cooldown = Ow.ticks(PURR_COOLDOWN);
+		}
+		s.purrTicks = -1;
 	}
 }

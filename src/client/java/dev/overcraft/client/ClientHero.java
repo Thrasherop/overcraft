@@ -54,6 +54,12 @@ public final class ClientHero {
 	 * round trip later. Null: the server's flag.
 	 */
 	private static @Nullable Boolean heroModeLocal;
+	/**
+	 * When it was switched here (millis): the server's word wins half a second later. The server can refuse (HeroBody.makeRoom:
+	 * no room for Sigma's box), and its flag then never changes to agree: the client stayed in hero mode with a 0.6 m box
+	 * while the server had him in Minecraft mode (found playing the G-in-a-tunnel rule, 2026-11-02).
+	 */
+	private static long heroModeLocalAt;
 	private static boolean openSelectOnJoin;
 	/** The join's hero select was opened and no hero is picked yet. */
 	private static boolean joinSelectShown;
@@ -98,6 +104,44 @@ public final class ClientHero {
 		return player != null && hero() != null && heroModeOn() && !player.isSpectator();
 	}
 
+	/** The roll now and when it was last eased (eased over 0.25 s: the wall-ride node's blend 4.0, M). */
+	private static float wallRollNow, wallRollAt = -1;
+
+	/** Lúcio's first-person roll on the wall this frame, eased in and out (HeroAnimator.wallRoll, CameraMixin). */
+	public static float wallRoll(net.minecraft.world.entity.@Nullable Entity entity, float partialTicks) {
+		Minecraft mc = Minecraft.getInstance();
+		if (entity != mc.player || mc.player == null) {
+			return 0;
+		}
+		float now = (mc.player.level().getGameTime() + partialTicks) / 20f;
+		float dt = wallRollAt < 0 ? 0 : Math.clamp(now - wallRollAt, 0, 0.25f);
+		wallRollAt = now;
+		float want = 0;
+		int side = dev.overcraft.hero.OwMovement.wallRiding(mc.player);
+		if (side != 0 && mc.options.getCameraType().isFirstPerson() && heroView()) {
+			want = dev.overcraft.client.model.HeroAnimator.wallRollFor(side, mc.player.getViewYRot(partialTicks) - dev.overcraft.hero.OwMovement.wallRideYaw(mc.player),
+				mc.player.getViewXRot(partialTicks));
+		}
+		wallRollNow += Math.clamp(want - wallRollNow, -dt * 80, dt * 80);
+		if (DEV_ROLLS.size() < 2000 && dt > 0) {
+			DEV_ROLLS.add(String.format(java.util.Locale.ROOT, "%.3f yaw %.1f want %.2f roll %.2f", now, mc.player.getViewYRot(partialTicks), want, wallRollNow));
+		}
+		return wallRollNow;
+	}
+
+	/** Dev only (DevBot "roll"): the last frames' roll. */
+	private static final java.util.List<String> DEV_ROLLS = new java.util.ArrayList<>();
+
+	public static float devRoll() {
+		return wallRollNow;
+	}
+
+	public static java.util.List<String> devRollTrace() {
+		java.util.List<String> out = new java.util.ArrayList<>(DEV_ROLLS);
+		DEV_ROLLS.clear();
+		return out;
+	}
+
 	/** Hero mode is switched on (G), whether or not the hero can act right now. */
 	public static boolean heroModeOn() {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -105,7 +149,7 @@ public final class ClientHero {
 			return false;
 		}
 		boolean synced = player.getAttachedOrElse(HeroManager.HERO_MODE, true);
-		if (heroModeLocal != null && heroModeLocal == synced) {
+		if (heroModeLocal != null && (heroModeLocal == synced || net.minecraft.util.Util.getMillis() - heroModeLocalAt > 500)) {
 			heroModeLocal = null;
 		}
 		return heroModeLocal != null ? heroModeLocal : synced;
@@ -114,6 +158,7 @@ public final class ClientHero {
 	/** A hero was just picked (the server puts the player in hero mode). */
 	public static void pickedHero() {
 		heroModeLocal = true;
+		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 	}
 
 	/**
@@ -157,6 +202,19 @@ public final class ClientHero {
 		return Minecraft.getInstance().player != null && ClientPlayNetworking.canSend(SelectHeroPayload.TYPE);
 	}
 
+	/**
+	 * Brigitte's barrier camera (0EE3 #857): 2 m back, 4 in Rally (v6054: v1261 2, v1262 4; H), a 0.3 s blend (H), the
+	 * change chased over 0.4 s (StateChaseVar #869 / #870's m_5BEFF040: M a time, since #699 gives its 30 m/s rate in
+	 * another field, m_9B0385B4). #857's 8.0 is the distance while v44373 (set by game message 1DC5, unknown: L), its 1.04
+	 * the field of view in Stadium's third person (1.04 x the "Third Person Field of View" setting v67256), not a height.
+	 * The rise is ours (0.5 m: her head and shoulders under the crosshair; at 1 m she sat on the screen's bottom edge under
+	 * the ult ring); #857's 6.67 and 2.0 are unread.
+	 */
+	static final float BARRIER_CAMERA = 2, BARRIER_CAMERA_RALLY = 4, BARRIER_CAMERA_CHASE = 0.4f, BARRIER_CAMERA_BLEND = 0.3f,
+		BARRIER_CAMERA_LIFT = 0.5f;
+
+	static final float LIFELINE_VIEW_SEEKING = 3.5f, LIFELINE_VIEW_TOWING = 6.75f, LIFELINE_VIEW_RISE = 0.35f, LIFELINE_VIEW_RIGHT = 0.85f;
+
 	public static void onDisconnect() {
 		EmoteCamera.stop(Minecraft.getInstance());
 		AbilityCamera.update(Minecraft.getInstance(), false);
@@ -191,8 +249,29 @@ public final class ClientHero {
 		}
 		// Jetpack Cat with Lifeline on (towing or seeking), or in Catnapper from its aim to the end of the carry: from behind
 		int mode = sync.mode();
-		AbilityCamera.update(mc, controls() && hero() == Hero.JETPACK_CAT
-			&& ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 || (mode & 7) != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE));
+		if (controls() && hero() == Hero.BRIGITTE) {
+			// Brigitte with her barrier up: from behind, 2 m back (4 in Rally, chased over 0.4 s), blended over 0.3 s, and
+			// not for the first 0.35 s of a Shield Bash (0EE3 #857: AbilityCamera, ClientBrigitte.barrierView)
+			float scale = player.getScale();
+			AbilityCamera.update(mc, ClientBrigitte.barrierView((mode & dev.overcraft.brigitte.Brigitte.MODE_BARRIER) != 0,
+					(mode & dev.overcraft.brigitte.Brigitte.MODE_BROKEN) != 0),
+				((mode & dev.overcraft.brigitte.Brigitte.MODE_RALLY) != 0 ? BARRIER_CAMERA_RALLY : BARRIER_CAMERA) * scale,
+				(BARRIER_CAMERA_RALLY - BARRIER_CAMERA) * scale / BARRIER_CAMERA_CHASE, BARRIER_CAMERA_BLEND, BARRIER_CAMERA_LIFT * scale);
+		} else {
+			boolean cat = controls() && hero() == Hero.JETPACK_CAT;
+			int ult = mode & 7;
+			boolean carrying = ult == dev.overcraft.jetpackcat.JetpackCat.ULT_CARRY;
+			if (cat && ((mode & dev.overcraft.jetpackcat.JetpackCat.MODE_LIFELINE) != 0 && ult == dev.overcraft.jetpackcat.JetpackCat.ULT_NONE || carrying)) {
+				// Lifeline's own view (5A8F #911 STU_582E0D5F, the node Brigitte's barrier view is, H; #1148, #1146, #1147, #1150): 3.5 m back
+				// seeking, 6.75 m with someone on the rope (v43716: Catnapper's carry sets it too), chased over 0.35 s and 0.45 s, blended
+				// over 0.3 s. Its (0, 0.35, 0) as the rise and its (-0.85, 0, 0) as to her right are M: the fields are unnamed
+				boolean towing = (mode & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0 || carrying;
+				AbilityCamera.update(mc, true, towing ? LIFELINE_VIEW_TOWING : LIFELINE_VIEW_SEEKING,
+					(LIFELINE_VIEW_TOWING - LIFELINE_VIEW_SEEKING) / (towing ? 0.45f : 0.35f), 0.3f, LIFELINE_VIEW_RISE, LIFELINE_VIEW_RIGHT);
+			} else {
+				AbilityCamera.update(mc, cat && ult != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE);
+			}
+		}
 		// hero chat is split into lines in its own face and width (ChatComponentMixin): split the history again on a switch
 		boolean view = heroView();
 		if (view != chatHeroView) {
@@ -458,6 +537,7 @@ public final class ClientHero {
 	/** Hero mode on or off: here at once, and on the server. */
 	public static void setHeroMode(boolean on) {
 		heroModeLocal = on;
+		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {
 			ClientPlayNetworking.send(new HeroModePayload(on));
 		}

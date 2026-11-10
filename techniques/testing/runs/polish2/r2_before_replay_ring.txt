@@ -1,0 +1,20 @@
+--- ray: bot Juno 400 m off, ult, arrive, leave, arrive
+bot add J1 juno - 400.5 -60 400.5 0 -> {"ok": true, "hero": "JUNO"}
+{'ok': True, 'hero': 'JUNO'}
+bot press J1 ultimate -> {"ok": true}
+{'ok': True}
+arrived rays {'rays': 1}
+ fx {'effect/juno_streak_v/juno_ray_rain_n': 30, 'effect/juno_ray_circle/juno_ray_decal_n': 4, 'effect/cat_speed_line_0/juno_ray_ally_rise': 3, 'effect/cat_speed_line_2/juno_ray_ally_rise': 3, 'effect/juno_jet_glow/juno_boot_jet_n': 2, 'effect/cat_speed_line_1/juno_ray_ally_rise': 2, 'effect/lucio_spark/heal_amber': 2, 'effect/juno_ray_disc/juno_ray_ground_n': 1}
+arrived again rays {'rays': 2}
+ fx {'effect/juno_streak_v/juno_ray_rain_n': 73, 'effect/juno_ray_circle/juno_ray_decal_n': 8, 'effect/cat_speed_line_1/juno_ray_column_edge_n': 4, 'effect/cat_speed_line_1/juno_ray_column_n': 4, 'effect/cat_band/juno_ray_rings_n': 3, 'effect/juno_ray_disc/juno_ray_ground_n': 2, 'effect/glow/juno_ray_ground_n': 2, 'effect/juno_jet_glow/juno_boot_jet_n': 2}
+--- rush: bot Kiriko, ult, arrive twice
+bot add K1 kiriko - 400.5 -60 400.5 0 -> {"ok": true, "hero": "KIRIKO"}
+{'ok': True, 'hero': 'KIRIKO'}
+bot press K1 ultimate -> {"ok": true}
+{'ok': True}
+ fx {'effect/talisman/teal_soft': 66, 'effect/petal/teal_soft': 42, 'effect/dome_noise/white': 6, 'effect/ring_line/teal_soft': 5, 'effect/speed_line/teal_soft': 3}
+ again fx {'effect/talisman/teal_soft': 132, 'effect/petal/teal_soft': 42, 'effect/dome_noise/white': 12, 'effect/speed_line/teal_soft': 6, 'effect/ring_line/teal_soft': 5}
+--- the ring on a cancelled lock
+hero juno -> {"ok": true}
+ ring locked {'effect/juno_ring_thin/enemy_soft': 1}
+ after cancel {'effect/juno_ring_thin/enemy_soft': 1}

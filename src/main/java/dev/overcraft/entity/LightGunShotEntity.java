@@ -75,12 +75,13 @@ public class LightGunShotEntity extends OwProjectile {
 		if (target != null && Allies.canHurt(owner, target)) {
 			boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
 			double damage = DvaStats.LIGHT_GUN_DAMAGE * (crit ? DvaStats.LIGHT_GUN_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
-				: Combat.damage(target, damageSources().thrown(this, owner), damage);
+			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage,
+				dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.DVA))
+				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.DVA));
 			if (owner instanceof ServerPlayer dva) {
 				// her Call Mech charges from it (W: damage as the pilot)
 				Combat.credit(dva, dealt, target);
-				Combat.addFireForDamage(dva, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(dva, dealt, target);
 				if (dealt > 0) {
 					if (crit) {
 						var s = dev.overcraft.hero.HeroManager.state(dva);

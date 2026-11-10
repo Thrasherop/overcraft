@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.30";
+	public static final String ASSETS_NEEDED = "0.3.31";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -102,6 +102,7 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Souls.init();
 		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
@@ -161,6 +162,7 @@ public class Overcraft implements ModInitializer {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			dev.overcraft.hero.Effects.tick(server);
 			HeroManager.tick(server);
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
@@ -175,15 +177,12 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.tickAll(server);
 			dev.overcraft.sojourn.Disruptor.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
+			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline)
-		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
-			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
-				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
-			}
-		});
+		// a player who starts seeing someone hears of the states others heard begin (#96)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register(HeroManager::showState);
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);
@@ -204,9 +203,17 @@ public class Overcraft implements ModInitializer {
 				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
-		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
+		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
+		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			Combat.clearHealing(entity);
+			if (entity instanceof ServerPlayer player) {
+				HeroManager.onDeath(player);
+			}
+		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
@@ -219,7 +226,11 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
 			}
+			if (damage > 0 && source.getEntity() instanceof net.minecraft.world.entity.Mob mob && source.getEntity() != entity) {
+				dev.overcraft.hero.Allies.remember(mob, entity);
+			}
 			if (damage > 0) {
+				Combat.onHurt(entity, source);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}
@@ -237,7 +248,10 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.hero.Effects.clear();
+			Comms.clearEmotes();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
+			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();

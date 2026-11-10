@@ -13,6 +13,7 @@ How to get answers out of Overwatch's data, offline and safely. Up: [Techniques]
   `E:\Overwatch Archive\extracted\154088`.
 
 ## The setup
+- **Display texts (.07C):** `DataTool.exe --online=false "E:\Overwatch Archive\build-154088" dump-strings` lists every one (`research\strings\strings-154088.txt`, 67,000 lines). Read a prompt's words there before writing any ([reticle](../hud/reticle.md)).
 - TankLib/TACTLib loaded with DataTool's bundled .NET runtime from Python (pythonnet), no SDK needed:
   `E:\Overwatch Archive\research\kiriko-anim\venv\Scripts\python.exe`, helpers in `...\scripts\owinit.py`
   (`o.guid(index, type)`, `o.u64`, `o.TH.OpenFile`, `o.instances(guid)` for an STU's instances as JSON-like dicts).

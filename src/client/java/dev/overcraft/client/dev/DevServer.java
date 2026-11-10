@@ -55,6 +55,12 @@ public final class DevServer {
 	private static int traceTick;
 	private static double traceX, traceZ;
 
+	/** Lifeline's tow since "towtrace start" (dev only, #89): one line per server tick. */
+	private static final java.util.List<String> TOW = new java.util.ArrayList<>();
+	private static boolean towTracing;
+	private static boolean towHooked;
+	private static int towTick;
+
 	/** Sounds heard since the last "heard" command (dev only). */
 	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
 	private static boolean listening;
@@ -183,6 +189,7 @@ public final class DevServer {
 							m.dot(right), m.dot(up), m.dot(look), player.getXRot()));
 					}
 					out.addProperty("anim1p", HeroAnimator.of(player).playingFirstPerson());
+					out.addProperty("camera", mc.options.getCameraType().name() + " " + dev.overcraft.client.AbilityCamera.describe());
 					String attached = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
 					out.addProperty("heroAttached", attached == null ? "" : attached);
 				}
@@ -231,7 +238,10 @@ public final class DevServer {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.cull = arg.endsWith("on");
 				} else if (arg.startsWith("stride ")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.stride = Integer.parseInt(arg.substring(7));
+				} else if (arg.startsWith("glow ")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glow = Integer.parseInt(arg.substring(5));
 				} else if (arg.equals("reset")) {
+					dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.pose = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.emit = 0;
 					dev.overcraft.client.model.HeroModelRenderer.Timing.shadow = 0;
@@ -243,6 +253,7 @@ public final class DevServer {
 					out.addProperty("fps", fps);
 					out.addProperty("poseMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.pose / 1e6 / frames);
 					out.addProperty("emitMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.emit / 1e6 / frames);
+					out.addProperty("glowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.glowEmit / 1e6 / frames);
 					out.addProperty("shadowMsPerFrame", dev.overcraft.client.model.HeroModelRenderer.Timing.shadow / 1e6 / frames);
 				}
 			}
@@ -266,6 +277,35 @@ public final class DevServer {
 				// shows which sound played in screenshots (on or off)
 				mc.options.showSubtitles().set(!arg.equals("off"));
 				out.addProperty("ok", true);
+			}
+			case "cut" -> {
+				// dev only: "cut sleep|stun|hack <seconds>" on the local player, in the one-player world: what an enemy's dart, stun or EMP
+				// does, without a second client
+				String[] a = arg.split(" ");
+				double seconds = a.length > 1 ? Double.parseDouble(a[1]) : 2;
+				var server = mc.getSingleplayerServer();
+				var target = server == null || player == null ? null : server.getPlayerList().getPlayer(player.getUUID());
+				if (target != null) {
+					server.execute(() -> {
+						switch (a[0]) {
+							case "sleep" -> dev.overcraft.hero.Sleep.put(target, seconds);
+							case "stun" -> dev.overcraft.hero.Sleep.stun(target, seconds);
+							case "hack" -> dev.overcraft.sombra.Hack.creature(target, seconds);
+							default -> {
+							}
+						}
+					});
+				}
+				out.addProperty("ok", target != null);
+			}
+			case "bot" -> {
+				// dev only: a second player with no second client (DevBot)
+				var server = mc.getSingleplayerServer();
+				if (server == null) {
+					out.addProperty("error", "no integrated server");
+				} else {
+					DevBot.handle(server, arg, out);
+				}
 			}
 			case "respawn" -> {
 				// what the death screen's Respawn button does
@@ -353,6 +393,26 @@ public final class DevServer {
 					case "front" -> CameraType.THIRD_PERSON_FRONT;
 					default -> CameraType.FIRST_PERSON;
 				});
+				out.addProperty("ok", true);
+			}
+			case "devwidget" -> {
+				// dev only, for shots of widgets one client can't reach (#85): "lockout": Sombra's hack lockout runs, with no enemy
+				// deployable about; "barrier1": Brigitte's barrier down to 1, so the next real hit breaks it
+				var server = mc.getSingleplayerServer();
+				java.util.UUID id = player.getUUID();
+				server.execute(() -> {
+					var serverPlayer = server.getPlayerList().getPlayer(id);
+					var state = serverPlayer == null ? null : dev.overcraft.hero.HeroManager.state(serverPlayer);
+					if (state != null && arg.equals("lockout")) {
+						state.hackLockoutUntil = serverPlayer.level().getGameTime() + 120;
+					} else if (state != null && arg.equals("barrier1")) {
+						state.barrierHealth = 1;
+					}
+				});
+				out.addProperty("ok", true);
+			}
+			case "devtowed" -> {
+				dev.overcraft.client.effect.JetpackCatFx.devTowed = arg.equals("on");
 				out.addProperty("ok", true);
 			}
 			case "hero" -> {
@@ -449,6 +509,58 @@ public final class DevServer {
 					out.addProperty("out", !animator.emoting() || dev.overcraft.client.model.HeroWeapon.inEmote(hero, animator));
 				}
 				out.add("placed", list);
+			}
+			case "turnclips" -> {
+				// dev only: "turnclips [hero]": the clips of a hero's model held at their first frame as turn-in-place stands
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted()
+						.filter(n -> dev.overcraft.client.model.HeroAnimator.turnsInPlace(loaded.model(), n)).forEach(list::add);
+				}
+				out.add("turns", list);
+			}
+			case "aimpose" -> {
+				// dev only: "aimpose <pitch> [turn]" / "aimpose off": the model aims this pitch, turned this far from the camera, to judge the
+				// aim sheets from any side with a level camera (the third-person camera otherwise swings with the aim)
+				String[] a = arg.trim().split(" ");
+				dev.overcraft.client.model.HeroModelRenderer.DEV_AIM = a[0].equals("off") ? null
+					: new float[] {Float.parseFloat(a[0]), a.length > 1 ? Float.parseFloat(a[1]) : 0};
+				out.addProperty("ok", true);
+			}
+			case "aimcheck" -> {
+				// dev only: the gun as posed now: the barrel's pitch (+ down) from its origin to its muzzle (hp 0006), and how far the origin is from the hand, in her model's space
+				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
+				float now = player.level().getGameTime() / 20f;
+				var placed = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
+				org.joml.Vector3f muzzle = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.muzzle(hero, animator, loaded.model(), false, now);
+				if (placed != null && muzzle != null) {
+					org.joml.Vector3f at = placed.at().getTranslation(new org.joml.Vector3f());
+					org.joml.Vector3f d = new org.joml.Vector3f(muzzle).sub(at);
+					out.addProperty("barrelPitch", Math.toDegrees(Math.atan2(-d.y, Math.hypot(d.x, d.z))));
+					out.addProperty("muzzleY", muzzle.y);
+				}
+				if (animator.aimSheetInUse() != null) {
+					out.addProperty("sheet", animator.aimSheetInUse().describe());
+				}
+			}
+			case "aimsheets" -> {
+				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
+				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				com.google.gson.JsonObject list = new com.google.gson.JsonObject();
+				if (loaded != null) {
+					loaded.model().clips.keySet().stream().sorted().filter(n -> n.startsWith("add_")).forEach(n -> {
+						var sheet = dev.overcraft.client.model.AimSheet.of(loaded.model(), loaded.model().clips.get(n));
+						if (sheet != null) {
+							list.addProperty(n, sheet.describe());
+						}
+					});
+				}
+				out.add("sheets", list);
 			}
 			case "viewbones" -> {
 				// dev only: the first-person hand bones in view space (x right, y up, -z ahead), Minecraft mode
@@ -614,6 +726,69 @@ public final class DevServer {
 					synchronized (TRACE) {
 						out.addProperty("trace", String.join("\n", TRACE));
 						TRACE.clear();
+					}
+				}
+			}
+			case "devtow" -> {
+				// dev only (#89): "devtow <entity type>" hangs the local player on a rope to the nearest of that type (JetpackCatFx.devTow);
+				// "devtow off". The player's own side of a tow, for want of a second client
+				net.minecraft.world.entity.Entity anchor = null;
+				if (!arg.equals("off")) {
+					double best = Double.MAX_VALUE;
+					for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+						if (e != player && net.minecraft.world.entity.EntityType.getKey(e.getType()).getPath().equals(arg) && e.distanceToSqr(player) < best) {
+							best = e.distanceToSqr(player);
+							anchor = e;
+						}
+					}
+				}
+				dev.overcraft.client.effect.JetpackCatFx.devTow(player, anchor == null ? -1 : anchor.getId());
+				out.addProperty("anchor", anchor == null ? -1 : anchor.getId());
+			}
+			case "towframes" -> {
+				// dev only (#89): "towframes start", then "towframes": each rendered frame, as drawn: time (s), her x y z, the towed one's x y z
+				if (arg.equals("start")) {
+					dev.overcraft.client.effect.JetpackCatFx.devFrames(true);
+					out.addProperty("ok", true);
+				} else {
+					out.addProperty("trace", dev.overcraft.client.effect.JetpackCatFx.devFrames(false));
+				}
+			}
+			case "towtrace" -> {
+				// dev only (#89): "towtrace start", then "towtrace": per server tick, the Jetpack Cat and whoever her Lifeline tows:
+				// tick, her x y z, their x y z, their on-ground (m). The server's view, so it reads a mob or a player the same
+				if (!towHooked) {
+					towHooked = true;
+					net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server -> {
+						if (!towTracing) {
+							return;
+						}
+						for (net.minecraft.server.level.ServerPlayer cat : server.getPlayerList().getPlayers()) {
+							dev.overcraft.hero.HeroState s = dev.overcraft.hero.HeroManager.state(cat);
+							if (s == null || s.hero != dev.overcraft.hero.Hero.JETPACK_CAT) {
+								continue;
+							}
+							net.minecraft.world.entity.Entity a = s.lifelineTarget == null ? null : cat.level().getEntity(s.lifelineTarget);
+							synchronized (TOW) {
+								TOW.add(a == null ? String.format(java.util.Locale.ROOT, "%d %.3f %.3f %.3f - - - -", towTick++, cat.getX(), cat.getY(), cat.getZ())
+									: String.format(java.util.Locale.ROOT, "%d %.3f %.3f %.3f %.3f %.3f %.3f %s", towTick++, cat.getX(), cat.getY(), cat.getZ(),
+										a.getX(), a.getY(), a.getZ(), a.onGround() ? "G" : "-"));
+							}
+						}
+					});
+				}
+				if (arg.equals("start")) {
+					synchronized (TOW) {
+						TOW.clear();
+					}
+					towTick = 0;
+					towTracing = true;
+					out.addProperty("ok", true);
+				} else {
+					towTracing = false;
+					synchronized (TOW) {
+						out.addProperty("trace", String.join("\n", TOW));
+						TOW.clear();
 					}
 				}
 			}

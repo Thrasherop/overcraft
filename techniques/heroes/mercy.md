@@ -59,3 +59,29 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
   Angel in Valkyrie still peaks at 25.8 m/s.
 - **Her shots leave her first-person blaster's muzzle** (0.16 m right, 0.11 down, 0.71 ahead of the eyes, measured
   from the posed view model, the same at every pitch): her data launches each volley from the blaster's hp 0006.
+
+## What Resurrect brings back: nothing twice (#98, 2026-11-04)
+- **Reproduced:** an iron golem killed and resurrected three times dropped 5, 3 and 5 ingots: an iron farm.
+- **The critique's other half was wrong:** a chested donkey does *not* come back with its inventory. `AbstractChestedHorse.dropEquipment`
+  drops the items and the chest, then `setChest(false)`, and its save writes `Items` only with a chest: played, 5 diamonds, 7 gold
+  and the chest on the ground, the donkey back with `ChestedHorse: 0b` and no `Items`. Read the save, not only the drop.
+- **The rule (ours; Overwatch has no loot):** a creature's loot comes once. The soul is saved after the drops, so what the mob
+  carried and dropped lies where it fell, as a resurrected player's inventory does. What its death made from nothing (the loot
+  table, experience) was given at the first death: `Souls.RESURRECTED` (a saved attachment) marks a brought-back mob and
+  `ResurrectedLootMixin` cancels `dropFromLootTable` and `dropExperience` for it. Rejected: holding the drops until the soul's 10 s end
+  (drops late for every pet with any player in the world, lost on a stop), and taking drops back at the Resurrect (already picked up by then).
+- **Played** (three deaths each): golem: 2 poppies and 3 ingots, then nothing, nothing. Donkey: 2 leather, the saddle, its chest and
+  contents once, then nothing. Allay: its 5 emeralds once, back with an empty inventory. Villager: no drops; its 4 bread (never
+  dropped) stay on it. Wolf: 2 XP at the first death, none after. The mark survives Save and Leave: a marked golem killed after a
+  rejoin dropped nothing. A fresh golem still drops (the control).
+- **The cure's thanks, once too** (critique L5): a villager's first Resurrect fires `ZOMBIE_VILLAGER_CURED` (#52); later ones don't, or kill-and-resurrect stacked the discount. By code, not played a second time on a trader's prices.
+- **For the owner** (critique L4): "once" also removes the XP of a mob that gave none at its first death (a wolf a skeleton killed); saddles and armor stay on the ground after Resurrect, which a player may read as a bug. Only `AbstractVillager`, iron and snow golems, allays and owned pets leave a soul, so copper golems and slimes don't arise (L6).
+- **What a critic should check:** a resurrected mob that picked up or was given items drops those (real items); a farm of
+  player-carried gear isn't a dup. Armored wolves: the armor takes the hit and breaks first, so its drop wasn't seen. The allay flew off out of Resurrect's reach on its second death: no duplicate, but also no third cycle.
+
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Wing glows (#114, 2026-11-05)
+The "white blobs": `wingGlows`, in Angelic Descent and Guardian Angel, drew the soft ball 139C alone at 1.5 m, added: over the sky it's white and very large (`b_114_mercy_day_1`), gold at night. The data's is three masks multiplied (139C x 13CC wisps x 4DB: PRODUCTS `mercy_wing_glow`, stretched, as the product peaks at 158 of 255), so wispy. Blended, at 0.6 (ours, by eye). **By day it's a faint yellow wisp over the sky, at night gold** (`f_114_mercy_day_1`, `_night_1`): the first version's note that "the yellow stays yellow" was false (a pale grey-blue haze: the critique read it right). The six bright orbs over her head by day were her wing motes and dots, added (data's top stop white): now blended, the dots in the data's yellow. The real game draws these in HDR through its own curve, which Minecraft can't: this is the look that reads, not the data's strength.

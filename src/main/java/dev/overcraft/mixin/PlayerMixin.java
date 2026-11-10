@@ -28,6 +28,10 @@ public abstract class PlayerMixin {
 		Player self = (Player) (Object) this;
 		// also when the box Minecraft holds isn't the one wanted: the client's own player kept Minecraft's box on rejoin while
 		// the server's was his (found playing: it changed only when a crouch refreshed it)
+		if (self instanceof net.minecraft.server.level.ServerPlayer server) {
+			// where his box doesn't fit (a doorway, beside the bed): moved to room, or back to Minecraft mode
+			dev.overcraft.hero.HeroBody.makeRoom(server);
+		}
 		boolean changed = dev.overcraft.hero.HeroBody.update(self);
 		net.minecraft.world.entity.EntityDimensions want = self.getDimensions(self.getPose());
 		if (changed || want.width() != self.getBbWidth() || want.height() != self.getBbHeight()) {

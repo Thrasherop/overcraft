@@ -30,12 +30,16 @@ import java.util.Set;
 /**
  * Barriers that are entities (sigma-plan.md "What the Tank role needs": a barrier that is an entity, not Brigitte's
  * state-bound rectangle; Sigma's Experimental Barrier first, Reinhardt's, Winston's, Orisa's and Ramattra's later). Each is
- * a {@link Shape}: a flat, upright rectangle with a front, its owner's. What it stops, from its front only and only from
- * its owner's enemies (Overwatch's barriers let allies' shots through and block nothing from behind):
+ * a {@link Shape}: a flat, upright rectangle with a front (the way it was put up), its owner's. What it stops, from either
+ * side, only from its owner's enemies: Overwatch's barriers "only affect the opposing team" (the wiki's Barrier page, rev
+ * 406358) and block them both ways: an enemy inside Winston's dome "can still hit Winston or his allies if they are also
+ * inside", so "move outside of it so that the enemy has to exit the bubble to attack you" (Winston, rev 408465); Sigma's
+ * own page has players "dance around your Experimental Barrier to block his shots" (rev 408635). Until the 2026-11-02
+ * release play ours blocked from its front only (an enemy on its back side shot Sigma through it):
  * <ul>
  * <li>projectiles crossing it ({@link #intercept}: arrows, tridents, fireballs, potions, shulker bullets, every hero
  * projectile), each charging it with the damage it would have dealt ({@link #projectileDamage});</li>
- * <li>blasts in front of it, as a block in the way would (ServerExplosionMixin: {@link #blast}, {@link #blocksBlast});</li>
+ * <li>blasts on either side of it, as a block in the way would (ServerExplosionMixin: {@link #blast}, {@link #blocksBlast});</li>
  * <li>a hero's hit without a projectile (a hitscan shot) from more than a melee's reach ({@link #absorb}).</li>
  * </ul>
  * Melee and creatures pass (Overwatch's barriers don't block movement or melee but Reinhardt's hammer). Brigitte's
@@ -67,8 +71,10 @@ public final class Barriers {
 
 	private static final Set<Shape> LIVE = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
 
-	/** A hero's hit with no projectile farther than this is a shot, not a melee blow (ours: past Minecraft's 3 m reach). */
-	private static final double MELEE_REACH = 3;
+	/** Damage that goes through every barrier and never hurts one (Gravitic Flux's lift and slam). */
+	public static boolean piercing(DamageSource source) {
+		return source.is(dev.overcraft.sigma.GraviticFlux.LIFT_TYPE) || source.is(dev.overcraft.sigma.GraviticFlux.SLAM_TYPE);
+	}
 
 	private Barriers() {
 	}
@@ -101,11 +107,12 @@ public final class Barriers {
 		return owner != null && (attacker == null || attacker != owner && !Allies.isSelfOrAlly(owner, attacker));
 	}
 
-	/** Where the way from {@code a} to {@code b} crosses {@code shape} from its front, or null. */
+	/** Where the way from {@code a} to {@code b} crosses {@code shape}, from either side, or null. */
 	public static @Nullable Vec3 crossing(Shape shape, Vec3 a, Vec3 b) {
 		Vec3 c = shape.barrierCentre(), f = shape.barrierFacing();
 		double da = a.subtract(c).dot(f), db = b.subtract(c).dot(f);
-		if (da <= 0 || db > 0) {
+		// from one side to the other (or onto it): the signs differ
+		if (da == db || da > 0 && db > 0 || da < 0 && db < 0) {
 			return null;
 		}
 		Vec3 at = a.add(b.subtract(a).scale(da / (da - db)));
@@ -113,7 +120,7 @@ public final class Barriers {
 		return Math.abs(at.subtract(c).dot(side)) <= shape.barrierWidth() / 2 && Math.abs(at.y - c.y) <= shape.barrierHeight() / 2 ? at : null;
 	}
 
-	/** The first barrier of {@code attacker}'s enemies the way from {@code a} to {@code b} crosses from its front. */
+	/** The first barrier of {@code attacker}'s enemies the way from {@code a} to {@code b} crosses. */
 	public static @Nullable Shape between(Level level, Vec3 a, Vec3 b, @Nullable Entity attacker) {
 		for (Shape s : in(level)) {
 			if (stops(s, attacker) && crossing(s, a, b) != null) {
@@ -222,8 +229,8 @@ public final class Barriers {
 	}
 
 	/**
-	 * Each tick of an entity barrier (its own tick): the projectiles whose last or next step crosses it from its front are
-	 * stopped there, and it takes their damage.
+	 * Each tick of an entity barrier (its own tick): the projectiles whose last or next step crosses it (either side) are
+	 * stopped there, on the side they came from, and it takes their damage.
 	 */
 	public static void intercept(Shape shape) {
 		if (!(shape.barrierLevel() instanceof ServerLevel level)) {
@@ -232,13 +239,16 @@ public final class Barriers {
 		Vec3 c = shape.barrierCentre();
 		double reach = Math.max(shape.barrierWidth(), shape.barrierHeight()) / 2 + 8;
 		for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(c, c).inflate(reach), Barriers::takes)) {
-			if (!stops(shape, p.getOwner())) {
+			if (!stops(shape, p.getOwner()) || p instanceof OwProjectile ow && ow.passesBarriers()) {
 				continue;
 			}
 			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo);
 			Vec3 at = crossing(shape, before, now);
 			if (at == null) {
 				at = crossing(shape, now, now.add(p.getDeltaMovement()));
+				if (at != null && !reaches(p, now, at)) {
+					continue;
+				}
 			}
 			if (at == null) {
 				continue;
@@ -247,8 +257,34 @@ public final class Barriers {
 			if (damage > 0) {
 				shape.barrierTake(damage, at);
 			}
-			stop(p, at.add(shape.barrierFacing().scale(0.3)), true);
+			double from = before.subtract(shape.barrierCentre()).dot(shape.barrierFacing());
+			Vec3 normal = shape.barrierFacing().scale(from < 0 ? -1 : 1);
+			if (p instanceof OwProjectile ow) {
+				// a hero projectile does its own (bursts, bounces: Petal Platform), on the side it came from
+				ow.hitBarrier(at.add(normal.scale(0.3)), normal);
+				continue;
+			}
+			stop(p, at.add(normal.scale(0.3)), true);
 		}
+	}
+
+	/**
+	 * Whether {@code p}, on its next step from {@code now}, gets as far as {@code at} (a barrier it's about to cross): not if a
+	 * block, or a creature it would hit, comes first (the critique of #104: looking a step ahead stopped a shot before its own tick
+	 * reached the Brigitte it was fired at, from behind; a zombie pressed to a barrier's front was out of reach the same way).
+	 */
+	public static boolean reaches(Projectile p, Vec3 now, Vec3 at) {
+		if (p.level().clip(new net.minecraft.world.level.ClipContext(now, at, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, p)).getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+			return false;
+		}
+		double r = p instanceof OwProjectile ow ? ow.hitRadius() : 0.3;
+		for (Entity e : p.level().getEntities(p, new AABB(now, at).inflate(r + 1))) {
+			if (((dev.overcraft.mixin.ProjectileInvoker) p).overcraft$canHitEntity(e) && e.getBoundingBox().inflate(r).clip(now, at).isPresent()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -282,17 +318,22 @@ public final class Barriers {
 	// ---- blasts ----
 
 	/**
-	 * A Minecraft blast (ServerExplosionMixin, before it hurts anyone): each enemy barrier with the blast's centre in front
-	 * of it takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule with full exposure: impact
+	 * A Minecraft blast (ServerExplosionMixin, before it hurts anyone): each enemy barrier near the blast's centre (either
+	 * side) takes what an entity at its nearest point would (ServerExplosion.hurtEntities' rule with full exposure: impact
 	 * (1 - d / 2r), (impact² + impact) / 2 x 7 x 2r + 1).
 	 */
-	public static void blast(Level level, Vec3 centre, float radius, @Nullable Entity cause) {
+	public static void blast(Level level, Vec3 centre, float radius, @Nullable Entity cause, boolean hurts) {
+		if (!hurts) {
+			// a breeze's wind charge hurts no one: its barrier takes nothing either (Brigitte's rule, #88); what it pushes
+			// behind a barrier is stopped by where they stand (blocksBlast)
+			return;
+		}
 		double reach = radius * 2;
 		for (Shape s : in(level)) {
 			if (!stops(s, cause)) {
 				continue;
 			}
-			Vec3 nearest = nearestFront(s, centre);
+			Vec3 nearest = nearest(s, centre);
 			double d = nearest == null ? reach : nearest.distanceTo(centre);
 			if (d >= reach) {
 				continue;
@@ -303,12 +344,9 @@ public final class Barriers {
 		}
 	}
 
-	/** The point of {@code shape} nearest {@code at}, when {@code at} is in front of it; else null. */
-	public static @Nullable Vec3 nearestFront(Shape shape, Vec3 at) {
+	/** The point of {@code shape} nearest {@code at} (on either side of it). */
+	public static Vec3 nearest(Shape shape, Vec3 at) {
 		Vec3 c = shape.barrierCentre(), f = shape.barrierFacing();
-		if (at.subtract(c).dot(f) <= 0) {
-			return null;
-		}
 		Vec3 side = new Vec3(f.z, 0, -f.x);
 		double across = Math.clamp(at.subtract(c).dot(side), -shape.barrierWidth() / 2, shape.barrierWidth() / 2);
 		double up = Math.clamp(at.y - c.y, -shape.barrierHeight() / 2, shape.barrierHeight() / 2);
@@ -344,14 +382,26 @@ public final class Barriers {
 	 * Every hit passes here first (Brigitte's Barrier.absorb, from LivingEntityMixin): what's left of {@code damage}
 	 * (Minecraft health) after the entity barriers between it and {@code victim}. A projectile whose last step crossed one
 	 * (a point-blank shot the barrier's own tick hadn't seen) is stopped whole; a blast's damage behind one is gone (the
-	 * barrier took the blast itself: {@link #blast}); a hero's shot from past melee reach crossing one is taken by it.
+	 * barrier took the blast itself: {@link #blast}); a shot without a projectile crossing one is taken by it, whole.
 	 */
 	public static float absorb(LivingEntity victim, DamageSource source, float damage) {
-		if (damage <= 0 || LIVE.isEmpty() || !(victim.level() instanceof ServerLevel level)) {
+		if (damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
+			return damage;
+		}
+		// melee goes through every barrier (Brigitte's marked blows: dev.overcraft.brigitte.Barrier.isMelee; the owner,
+		// 2026-11-02: "Melee goes through"), and so does Gravitic Flux (the wiki's Barrier page: it "ignores barriers but
+		// cannot damage them")
+		if (dev.overcraft.brigitte.Barrier.isMelee(source) || piercing(source)) {
 			return damage;
 		}
 		Entity direct = source.getDirectEntity(), attacker = source.getEntity();
 		Vec3 to = victim.getBoundingBox().getCenter();
+		if (attacker != null && attacker != victim && direct == null && !source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
+			&& dev.overcraft.sigma.KineticGrasp.absorbsShot(victim, source, damage)) {
+			// a hitscan shot (no direct entity: Combat.hitscan, Juno's rounds) into an enemy Sigma's Kinetic Grasp; an area
+			// ability's hit (Soundwave, Purr: the hero is its direct entity) isn't one ("AoE attacks" pass Grasp: the wiki)
+			return 0;
+		}
 		for (Shape s : in(level)) {
 			if (!stops(s, attacker)) {
 				continue;
@@ -364,21 +414,24 @@ public final class Barriers {
 				continue;
 			}
 			if (direct instanceof Projectile p) {
+				if (p instanceof OwProjectile ow && ow.passesBarriers()) {
+					continue;
+				}
 				if (crossing(s, new Vec3(p.xo, p.yo, p.zo), p.position()) != null) {
 					s.barrierTake(projectileDamage(p), p.position());
 					return 0;
 				}
 				continue;
 			}
-			if (attacker instanceof Player shooter && direct == attacker && shooter.distanceTo(victim) > MELEE_REACH) {
-				Vec3 at = crossing(s, shooter.getEyePosition(), to);
+			if (attacker != null && attacker != victim && (direct == null || direct == attacker)) {
+				// a shot with no projectile (hitscan: Sombra's pistol, Juno's Mediblaster, Ana's scoped shot, the Charged Shot
+				// build their source with no direct entity; the critique's #1) or a hero's own hit, judged from the
+				// shooter's eyes; the whole hit stops at it, even one bigger than it has left (it breaks: Brigitte's rule,
+				// #88, the wiki's "barriers block the explosion")
+				Vec3 at = crossing(s, attacker.getEyePosition(), to);
 				if (at != null) {
-					double ow = Ow.toOw(damage);
-					double took = s.barrierTake(ow, at);
-					damage = (float) Ow.hp(ow - took);
-					if (damage <= 0) {
-						return 0;
-					}
+					s.barrierTake(Ow.toOw(damage), at);
+					return 0;
 				}
 			}
 		}

@@ -31,7 +31,14 @@ public final class HeroModels {
 	 * A loaded model and its textures (by image index; null where the image didn't load), and which images are one flat
 	 * colour (Overwatch's shader-driven overlays use them: HeroModelRenderer.isEyeShadow).
 	 */
-	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures, boolean[] flat) {
+	public record Loaded(SkinnedModel model, @Nullable Identifier[] textures, boolean[] flat, Map<String, Glow> glow, Map<SkinnedModel.Piece, SkinnedModel.Piece> lit) {
+	}
+
+	/**
+	 * A material's added light (tools/glow_maps.py from its .owmat: hero_models/<model>_glow.json, hero_models/glow/<id>.png), drawn
+	 * lit by itself on the piece's own UVs: what Overwatch's shaders glow, and the pieces with no colour image at all.
+	 */
+	public record Glow(Identifier texture, float strength, @Nullable Identifier alt, boolean glass) {
 	}
 
 	private static final Map<Hero, Loaded> MODELS = new EnumMap<>(Hero.class);
@@ -55,7 +62,9 @@ public final class HeroModels {
 		"brigitte_shard", "brigitte_whip_ring", "brigitte_rally_ring",
 		// Juno's effects' meshes (JunoFx): the Hyper Ring (15AD6), the torpedo's nose shell (160EA), the disc flash
 		// (5E5E); her rings are cat_torus (15A26)
-		"juno_ring", "juno_half_shell", "juno_disc");
+		"juno_ring", "juno_half_shell", "juno_disc",
+		// Sombra's stealth detection ring (129B: SombraFx)
+		"sombra_cylinder");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -117,15 +126,142 @@ public final class HeroModels {
 			});
 	}
 
-	private record Prepared(SkinnedModel model, List<@Nullable NativeImage> images) {
+	private record Prepared(SkinnedModel model, List<@Nullable NativeImage> images, Map<String, PreparedGlow> glow, Map<SkinnedModel.Piece, SkinnedModel.Piece> lit) {
+	}
+
+	/** Darker than this (of 255, any channel) a glow's image adds nothing a player sees. */
+	private static final int GLOW_DIM = 10;
+
+	/**
+	 * Each glowing piece's triangles whose part of the glow image has any light, as a piece of their own: an emission map lives on a hero's main material, so
+	 * drawing whole pieces skinned and sent 49-100% of the hero's triangles twice (critique_parts C1). A triangle is sampled at a grid of points, so a thin lit strip in a large one isn't lost.
+	 */
+	private static Map<SkinnedModel.Piece, SkinnedModel.Piece> litPieces(SkinnedModel model, Map<String, PreparedGlow> glow) {
+		Map<SkinnedModel.Piece, SkinnedModel.Piece> out = new java.util.IdentityHashMap<>();
+		for (SkinnedModel.Piece piece : model.pieces) {
+			PreparedGlow g = glow.get(piece.material());
+			if (g != null) {
+				out.put(piece, litPart(piece, g));
+			}
+		}
+		return out;
+	}
+
+	private static SkinnedModel.Piece litPart(SkinnedModel.Piece piece, PreparedGlow g) {
+		int[] idx = piece.indices();
+		float[] uv = piece.uv();
+		int[] map = new int[piece.vertexCount()];
+		java.util.Arrays.fill(map, -1);
+		int[] kept = new int[idx.length];
+		int keptCount = 0, verts = 0;
+		for (int t = 0; t + 2 < idx.length; t += 3) {
+			if (!triangleLit(uv, idx[t], idx[t + 1], idx[t + 2], g)) {
+				continue;
+			}
+			for (int k = 0; k < 3; k++) {
+				int v = idx[t + k];
+				if (map[v] < 0) {
+					map[v] = verts++;
+				}
+				kept[keptCount++] = map[v];
+			}
+		}
+		float[] pos = new float[verts * 3], normal = new float[verts * 3], u = new float[verts * 2], weight = new float[verts * 4];
+		int[] joint = new int[verts * 4];
+		for (int v = 0; v < map.length; v++) {
+			int n = map[v];
+			if (n >= 0) {
+				System.arraycopy(piece.pos(), v * 3, pos, n * 3, 3);
+				System.arraycopy(piece.normal(), v * 3, normal, n * 3, 3);
+				System.arraycopy(uv, v * 2, u, n * 2, 2);
+				System.arraycopy(piece.joint4(), v * 4, joint, n * 4, 4);
+				System.arraycopy(piece.weight4(), v * 4, weight, n * 4, 4);
+			}
+		}
+		return new SkinnedModel.Piece(pos, normal, u, joint, weight, java.util.Arrays.copyOf(kept, keptCount), piece.image(), piece.mesh(), piece.material());
+	}
+
+	private static boolean triangleLit(float[] uv, int a, int b, int c, PreparedGlow g) {
+		int w = g.image().getWidth(), h = g.image().getHeight();
+		float ax = uv[a * 2] * w, ay = uv[a * 2 + 1] * h, bx = uv[b * 2] * w, by = uv[b * 2 + 1] * h, cx = uv[c * 2] * w, cy = uv[c * 2 + 1] * h;
+		// about one sample per 4 texels of its longest side, 2 to 12 a side
+		float longest = Math.max(Math.max(Math.abs(ax - bx) + Math.abs(ay - by), Math.abs(bx - cx) + Math.abs(by - cy)), Math.abs(cx - ax) + Math.abs(cy - ay));
+		int n = Math.clamp((int) (longest / 4), 2, 12);
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= n - i; j++) {
+				float s = i / (float) n, r = j / (float) n, q = 1 - s - r;
+				int x = Math.floorMod((int) Math.floor(ax * s + bx * r + cx * q), w), y = Math.floorMod((int) Math.floor(ay * s + by * r + cy * q), h);
+				if (lit(g.image(), x, y) || g.alt() != null && lit(g.alt(), x, y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean lit(NativeImage image, int x, int y) {
+		int p = image.getPixel(Math.min(x, image.getWidth() - 1), Math.min(y, image.getHeight() - 1));
+		return (p & 0xFF) > GLOW_DIM || (p >> 8 & 0xFF) > GLOW_DIM || (p >> 16 & 0xFF) > GLOW_DIM;
+	}
+
+	private record PreparedGlow(String texture, float strength, NativeImage image, @Nullable NativeImage alt, boolean glass) {
+	}
+
+	/** The model's glows, if the pack has them; a bad row is skipped, not the model. */
+	private static Map<String, PreparedGlow> readGlow(ResourceManager resources, String name, Map<String, NativeImage> images) {
+		Map<String, PreparedGlow> out = new HashMap<>();
+		Identifier table = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + "_glow.json");
+		Optional<Resource> res = table == null ? Optional.empty() : resources.getResource(table);
+		if (res.isEmpty()) {
+			return out;
+		}
+		try (java.io.Reader reader = res.get().openAsReader()) {
+			com.google.gson.JsonObject rows = com.google.gson.JsonParser.parseReader(reader).getAsJsonObject();
+			for (String material : rows.keySet()) {
+				com.google.gson.JsonObject row = rows.getAsJsonObject(material);
+				String texture = row.get("texture").getAsString();
+				Identifier id = Overcraft.id("hero_models/glow/" + texture + ".png");
+				Optional<Resource> png = resources.getResource(id);
+				Optional<Resource> alt = row.has("alt") ? resources.getResource(Overcraft.id("hero_models/glow/" + row.get("alt").getAsString() + ".png"))
+					: Optional.empty();
+				if (png.isPresent()) {
+					// one image for all the models that share it (the body, its view model, its props)
+					NativeImage image = images.get(texture);
+					if (image == null) {
+						try (InputStream in = png.get().open()) {
+							image = NativeImage.read(in);
+						}
+						images.put(texture, image);
+					}
+					NativeImage altImage = null;
+					if (alt.isPresent()) {
+						String altName = row.get("alt").getAsString();
+						altImage = images.get(altName);
+						if (altImage == null) {
+							try (InputStream a = alt.get().open()) {
+								altImage = NativeImage.read(a);
+							}
+							images.put(altName, altImage);
+						}
+					}
+					out.put(material, new PreparedGlow(texture, row.get("strength").getAsFloat(), image, altImage, row.has("glass")));
+				}
+			}
+		} catch (Exception e) {
+			Overcraft.LOG.warn("The {} model's glows didn't load: {}", name, e.toString());
+		}
+		return out;
 	}
 
 	/** Every model the pack has, by file name (hero ids and {@link #EXTRAS}). */
 	private static Map<String, Prepared> load(ResourceManager resources) {
 		Map<String, Prepared> out = new HashMap<>();
+		Map<String, NativeImage> glowImages = new HashMap<>();
 		List<String> names = new ArrayList<>(EXTRAS);
 		// the emotes' props, by the ids the emote data names (prop_<model id>)
 		names.addAll(EmoteData.load(resources));
+		// the weapons' attached parts (weapon_parts.json)
+		names.addAll(WeaponParts.load(resources));
 		for (Hero hero : Hero.values()) {
 			names.add(hero.id);
 			names.add(hero.id + "_1p");
@@ -175,13 +311,23 @@ public final class HeroModels {
 				for (byte[] png : model.images) {
 					images.add(readImage(png));
 				}
+				// the PNG bytes, read: kept they'd hold the pack's 2 GB of images on the heap twice over during a reload (F3+T ran out of memory at 3 GB, played)
+				model.images.clear();
 				// her cloth's drivers, from the game data (ClothSim)
 				model.clothDrivers = ClothSim.readDrivers(resources, name);
-				out.put(name, new Prepared(model, images));
+				colourHair(resources, model, images);
+				Map<String, PreparedGlow> glow = readGlow(resources, name, glowImages);
+				out.put(name, new Prepared(model, images, glow, litPieces(model, glow)));
 				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
 					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
 			} catch (Exception e) {
 				Overcraft.LOG.error("Couldn't load the {} model", name, e);
+			}
+		}
+		// a pack from before these parts degrades quietly in play (critique_parts F): say so where it can be seen
+		for (String part : WeaponParts.names()) {
+			if (!out.containsKey(part)) {
+				Overcraft.LOG.warn("Asset pack incomplete: no model {} (tools/build_asset_pack.py weapons)", part);
 			}
 		}
 		for (Hero hero : Hero.values()) {
@@ -330,6 +476,38 @@ public final class HeroModels {
 		return out;
 	}
 
+	/** The hair cards a pack is meant to hold colours for (the other black images are eye shadows and such, not drawn on purpose). */
+	private static final java.util.Set<String> HAIR_CARDS = java.util.Set.of("000000008052");
+
+	/**
+	 * Hair cards exported black (Lúcio's dreads, material 8052: his hair shader colours them and glTF kept only the black image) take their
+	 * real colours from hero_models/colour/<material>.png (tools/glow_maps.py, #105). Without it they stay black, and aren't drawn.
+	 */
+	private static void colourHair(ResourceManager resources, SkinnedModel model, List<@Nullable NativeImage> images) {
+		for (SkinnedModel.Piece piece : model.pieces) {
+			NativeImage image = piece.image() >= 0 && piece.image() < images.size() ? images.get(piece.image()) : null;
+			if (image == null || piece.material().isEmpty() || !isBlack(image)) {
+				continue;
+			}
+			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/colour/" + piece.material().toLowerCase(java.util.Locale.ROOT) + ".png");
+			var found = id == null ? java.util.Optional.<net.minecraft.server.packs.resources.Resource>empty() : resources.getResource(id);
+			if (found.isEmpty() && HAIR_CARDS.contains(piece.material())) {
+				Overcraft.LOG.warn("The asset pack has no hair colours for {}: his dreads won't be drawn (py tools/build_asset_pack.py glows, then zip)", piece.material());
+			}
+			if (found.isPresent()) {
+				try (InputStream in = found.get().open()) {
+					NativeImage coloured = readImage(in.readAllBytes());
+					if (coloured != null) {
+						image.close();
+						images.set(piece.image(), coloured);
+					}
+				} catch (Exception e) {
+					Overcraft.LOG.error("Couldn't read hair colours {}", id, e);
+				}
+			}
+		}
+	}
+
 	/** Every pixel black and opaque. */
 	private static boolean isBlack(NativeImage image) {
 		for (int y = 0; y < image.getHeight(); y++) {
@@ -358,8 +536,19 @@ public final class HeroModels {
 		return true;
 	}
 
+	/** One texture per glow image, whichever models use it. */
+	private static Identifier glowTexture(TextureManager textures, String name, NativeImage image) {
+		Identifier id = Overcraft.id("hero_models/glow_image/" + name);
+		if (!REGISTERED.contains(id)) {
+			textures.register(id, new HeroTexture(id, image));
+			REGISTERED.add(id);
+		}
+		return id;
+	}
+
 	private static void register(Map<String, Prepared> prepared) {
 		HeroArt.clear();
+		AimSheet.clear();
 		dev.overcraft.client.assets.AssetPackVersion.clear();
 		dev.overcraft.client.hud.HudShapes.clear();
 		dev.overcraft.client.effect.EffectArt.clear();
@@ -402,7 +591,13 @@ public final class HeroModels {
 				REGISTERED.add(id);
 				ids[i] = id;
 			}
-			Loaded loaded = new Loaded(p.model(), ids, flat);
+			Map<String, Glow> glow = new HashMap<>();
+			p.glow().forEach((material, g) -> {
+				Identifier id = glowTexture(textures, g.texture(), g.image());
+				Identifier alt = g.alt() == null ? null : glowTexture(textures, g.texture() + "_alt", g.alt());
+				glow.put(material, new Glow(id, g.strength(), alt, g.glass()));
+			});
+			Loaded loaded = new Loaded(p.model(), ids, flat, glow, p.lit());
 			Hero hero = Hero.byId(name);
 			if (hero != null) {
 				MODELS.put(hero, loaded);

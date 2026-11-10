@@ -11,6 +11,11 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py parts <DataTool output dir> [hero]  the models weapon_parts.json names (magazines, vials), from the hero's skin folder
+    py tools/build_asset_pack.py clips <DataTool output dir> [hero]  the clips-only files: each tools/clipmaps/<hero>[_1p]_clips.txt into hero_models/ (Blender)
+    py tools/build_asset_pack.py glows <DataTool output dir> [<dir> ...]  every glow, from the materials (tools/glow_maps.py; no Blender, needs Pillow)
+    py tools/build_asset_pack.py weapons <DataTool output dir> [<dir> ...]  parts, clips and glows, over every root (a root holds Heroes/<Hero>/Skin/...: the archive's
+                                                            extracted\\154088 and research\\<hero>\\extract each hold some heroes), then zip's completeness check
     py tools/build_asset_pack.py effects [--only <prefix>] <dir> [<dir>...]  the ability effects' texture masks, from the effects
                                                             extraction (<dir>/Kiriko/<Ability>/textures/<id>.png); each
                                                             mask from the first folder that has it (Jetpack Cat's are in
@@ -31,7 +36,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "dva"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
@@ -339,13 +344,14 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
                    "sombra": "../../research/sombra/extract", "brigitte": "../../research/brigitte/extract",
                    "lifeweaver": "../../research/lifeweaver/extract",
-                   "sojourn": "../../research/sojourn/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "sojourn": "../../research/sojourn/extract",
+                   "sigma": "../../research/sigma/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -868,6 +874,26 @@ EFFECT_MASKS = {
     "sojourn_swirl": ("Sojourn", "Disruptor", "000000003DB8", 1),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
+    # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,
+    # the noisy wisp, the burst's lens streak, thin streak, star, radial rays, the wispy ring; Barrier: the horizontal line,
+    # the soft square, the field's rim and its hex cells (for the baked field); Accretion: the rock chunks, the crater
+    # cracks; Flux: the soft disc, the reticle's rings and the vortex ring
+    "sigma_swirl": ("Sigma", "Hyperspheres", "000000020126", 1),
+    "sigma_wisp": ("Sigma", "Hyperspheres", "0000000200E4", 1),
+    "sigma_lens": ("Sigma", "Hyperspheres", "00000001FDB2", 1),
+    "sigma_streak": ("Sigma", "Hyperspheres", "00000001FBCE", 1),
+    "sigma_star": ("Sigma", "Hyperspheres", "0000000208CC", 1),
+    "sigma_rays": ("Sigma", "Hyperspheres", "0000000007AB", 1),
+    "sigma_wisp_ring": ("Sigma", "Hyperspheres", "00000001FC54", 1),
+    "sigma_lens_line": ("Sigma", "Barrier", "00000002006C", 1),
+    "sigma_soft_square": ("Sigma", "Barrier", "0000000208AE", 1),
+    "sigma_barrier_rim": ("Sigma", "Barrier", "00000001FE0A", 1),
+    "sigma_barrier_hex": ("Sigma", "Barrier", "000000018F9B", 1),
+    "sigma_rock_chunk": ("Sigma", "Accretion", "00000002C0F8", 4),
+    "sigma_crater": ("Sigma", "Accretion", "00000002048A", 1),
+    "sigma_disc": ("Sigma", "GraviticFlux", "000000009489", 1),
+    "sigma_flux_rings": ("Sigma", "GraviticFlux", "0000000202A6", 1),
+    "sigma_flux_vortex": ("Sigma", "GraviticFlux", "0000000202B3", 1),
 }
 
 
@@ -879,6 +905,8 @@ MIRRORED = {"cat_paw_marker"}
 # the listed masks, each stretched over the same UVs. Lifeline's rings (7490, research\jetpack_cat\assets2.md): the
 # 299E3 noise times the 1C7A strip, which across the torus's tube (its V) lights the outer rim and fades top and bottom
 PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
+            # Mercy's wing glows (17E9 / 019C: 139C x 13CC wisps x the noise 4DB)
+            "mercy_wing_glow": ("mercy_soft", "mercy_wisp", "mercy_noise"),
             # her shots' trails (707A / 7079): the gold tube tracer 18E48 x 7A9, the blue flat ribbon 299E1 x 7A9
             "cat_tracer": ("cat_cloud", "cat_fade"),
             "cat_trail_ribbon": ("cat_noise", "cat_fade"),
@@ -923,11 +951,22 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "juno_heal_trail": ("lw_wisp", "cat_fade"),
             "juno_dmg_trail": ("cat_ring_line", "juno_ribbon_edge", "cat_fade"),
             # Sojourn's field decal (2228 C21, tools/reference/sojourn-effects.md): the noise 299E5 x the swirl 3DB8
-            "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl")}
+            "sojourn_field_decal": ("sojourn_field_noise", "sojourn_swirl"),
+            # Sigma's (tools/reference/sigma-effects.md): his renderers multiply two masks where one alone is a full-frame
+            # noise that drew as a square on a quad (found playing): the launch cone's wisp 200E4 rounded by the soft glow
+            # 4C09 (ours: on its cone mesh CA08 the band 1C7A shapes it), the barrier's corner motes and the rock's flash
+            # 4DB x 1FC54, the burst's flash 208CC x 7AB, the send streaks 16E9D x 4C09, Flux's glows on him 4C09 x 4DB
+            "sigma_wisp_soft": ("sigma_wisp", "cat_soft"),
+            "sigma_mote": ("mercy_noise", "sigma_wisp_ring"),
+            "sigma_burst_flash": ("sigma_star", "sigma_rays"),
+            "sigma_send_streak": ("cat_cone_line", "cat_soft"),
+            "sigma_flux_glow": ("cat_soft", "mercy_noise"),
+            # Levitation's streaks (65BF: 299E1 x 299E8 x A7B6 on its half-shell 963D): the noise rounded by the glow A7B6
+            "sigma_levitate": ("cat_noise", "glow")}
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)
-STRETCHED = {"cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
+STRETCHED = {"mercy_wing_glow", "cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
@@ -1047,6 +1086,30 @@ def bake_cat_arcs(out):
     return made
 
 
+def bake_sigma_barrier(out):
+    """Sigma's barrier field (material 7C75 on C015, whose UVs run 0-1 over the whole barrier: tools/reference/sigma-effects.md):
+    the shader's soft rounded-rectangle rim 1FE0A stretched over it, plus its hex cells 18F9B tiled across it (4 across, 2.5
+    down: the 6.7 x 4.18 m barrier's cells kept round; the shader's tiling isn't readable, ours) as a faint shimmer, and a dim
+    floor so the middle still reads. Written as sigma_barrier_field.png (640 x 400), drawn through the LUT's rows."""
+    from PIL import Image
+    if not all((out / f"{n}.png").exists() for n in ("sigma_barrier_rim", "sigma_barrier_hex")):
+        return 0
+    rim = Image.open(out / "sigma_barrier_rim.png").convert("L").resize((640, 400), Image.BILINEAR)
+    hexes = Image.open(out / "sigma_barrier_hex.png").convert("L")
+    tile = hexes.resize((160, 160), Image.BILINEAR)
+    values = []
+    rp, tp = rim.load(), tile.load()
+    for y in range(400):
+        for x in range(640):
+            r = rp[x, y] / 255
+            h = tp[x % 160, y % 160] / 255
+            values.append(min(1.0, 0.06 + 0.9 * r + 0.12 * h))
+    img = Image.new("L", (640, 400))
+    img.putdata([int(255 * v) for v in values])
+    img.save(out / "sigma_barrier_field.png")
+    return 1
+
+
 def bake_cat_flame(out):
     """Jetpack Cat's flame tube (1B580 in 7064 / 7373 / 7163, research\jetpack_cat\workx_digest.txt): the tube's V runs
     from the nozzle (0) to its tip (1), its U once round it. Its masks multiplied: the strip 2C41F turned (its material
@@ -1154,6 +1217,8 @@ def add_effects(*sources, only=""):
     if "cat_".startswith(only) or only.startswith("cat_"):
         copied += bake_cat_arcs(out)
         copied += bake_cat_flame(out)
+    if "sigma_".startswith(only) or only.startswith("sigma_"):
+        copied += bake_sigma_barrier(out)
     print(f"{copied} effect textures -> {out}")
     for name, (hero, ability, model) in EFFECT_MODELS.items():
         if not name.startswith(only):
@@ -1181,6 +1246,7 @@ def add_props(source, only=None):
     model from its own Animations folder or the emote's (the fox's and the pod's are in the emote's)."""
     import json
     write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
     for data in sorted((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes").glob("*.json")):
         hero = json.loads(data.read_text(encoding="utf8"))
         if only and hero["hero"] != only:
@@ -1245,10 +1311,109 @@ def add_props(source, only=None):
             if not glb.exists():
                 print(f"{name}: export failed: {result.stderr[-2000:]}")
                 continue
+            # a prop another hero's emotes share keeps that hero's clips (Sombra's B9A7 and Sigma's AE48 on 1024E)
+            before = work / f"{name}.before.glb"
+            if dest.exists():
+                shutil.copyfile(dest, before)
             shutil.copyfile(glb, dest)
             subprocess.run([sys.executable, str(ROOT / "tools" / "rename_glb_clips.py"), str(dest)]
                            + [f"{a}={b}" for a, b in renames.items()], check=True)
+            if before.exists():
+                subprocess.run([sys.executable, str(ROOT / "tools" / "merge_glb_clips.py"), str(dest), str(before)], check=True)
+                before.unlink()
             print(f"{name}: {dest} (clips {', '.join(sorted(renames.values()))})")
+
+
+def add_parts(source, only=None):
+    """Converts every model src/main/resources/assets/overcraft/weapon_parts.json names by id (techniques/animation/weapon_parts.md)
+    into hero_models/<model>.glb, a static mesh on its origin. <source> is the extraction root holding Heroes/<Hero>/Skin. Then
+    tools/glow_maps.py for their glows."""
+    import json
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    for hero, parts in table.items():
+        if hero == "_" or (only and hero != only) or hero not in HERO_FOLDERS:
+            continue
+        done = set()
+        for part in parts:
+            if "id" not in part or part["model"] in done:
+                continue
+            done.add(part["model"])
+            padded = "%012X" % int(part["id"], 16)
+            found = sorted((Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin").glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+            if not found:
+                print(f"{part['model']}: no model {padded} under {source}")
+                continue
+            dest = MODELS / f"{part['model']}.glb"
+            cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+                   str(found[0]), str(dest)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+            print(part["model"] + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
+def clip_ids(clip_map):
+    """The clip ids a clip map names."""
+    import re
+    return [m.group(2) for line in clip_map.read_text(encoding="utf8").splitlines() for m in [re.match(r"\s*(\d+-\d+|emote)_([0-9A-F]+)\s*=", line)] if m]
+
+
+def add_clips(source, only=None):
+    """The clips-only files (techniques/animation/animation_import.md): each clip map named *_clips.txt, exported from the model folder that holds its first clip. Its emote_* clips come
+    from the hero's emote folders."""
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    for clip_map in sorted((ROOT / "tools" / "clipmaps").glob("*_clips.txt")):
+        name = clip_map.stem
+        hero = name[:-len("_1p_clips")] if name.endswith("_1p_clips") else name[:-len("_clips")]
+        if hero not in HERO_FOLDERS or (only and hero != only):
+            continue
+        ids = clip_ids(clip_map)
+        skin = Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin"
+        if not skin.is_dir():
+            continue
+        # a map with no clips of its own only takes the emotes (--emotes): from the hero's model, found by the hero's own map
+        look_for = ids or clip_ids(ROOT / "tools" / "clipmaps" / f"{hero}.txt")
+        folder = next((p.parents[3] for clip in look_for for p in skin.glob(f"*/*/Models/*/Animations/*/*/{clip}.owanimclip")), None)
+        if folder is None:
+            print(f"{name}: no clip of its map under {skin}")
+            continue
+        model = next(folder.glob("*.owmdl"))
+        work = LOCAL / "work" / name
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_survey.py"), "--", str(model), str(work), "--glb", "--clips-only",
+               f"--keep={clip_map}", "--only=" + ",".join(ids or ["none"])]
+        emotes = Path(source) / "Unlocks" / "Heroes" / HERO_FOLDERS[hero] / "Emote"
+        if emotes.is_dir():
+            cmd.append(f"--clips-from={emotes}" if ids else f"--emotes={emotes}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        out = work / f"{model.stem}.glb"
+        report = [line for line in result.stdout.splitlines() if line.startswith(("OWM_KEEP", "OWM_GLB"))]
+        print(name + ": " + (" ".join(report) or result.stderr[-1000:]))
+        if out.exists():
+            shutil.copyfile(out, MODELS / f"{name}.glb")
+
+
+def add_glows(*sources):
+    subprocess.run([sys.executable, str(ROOT / "tools" / "glow_maps.py"), *sources], check=True, env=dict(os.environ, OC_ASSET_PACK=str(PACK)))
+
+
+def missing():
+    """What the pack lacks of this build's weapon work: the zip goes out either way, but a pack without these shows the player none of it (critique_parts F)."""
+    import json
+    table = json.loads((ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "weapon_parts.json").read_text(encoding="utf8"))
+    gaps = [f"hero_models/{row['model']}.glb" for rows in table.values() if isinstance(rows, list) for row in rows if not (MODELS / f"{row['model']}.glb").exists()]
+    for hero in sorted(HERO_FOLDERS):
+        if (MODELS / f"{hero}.glb").exists() and not (MODELS / f"{hero}_glow.json").exists():
+            gaps.append(f"hero_models/{hero}_glow.json")
+    for name in ("mercy_clips", "jetpack_cat_clips", "lifeweaver_1p_clips"):
+        if not (MODELS / f"{name}.glb").exists():
+            gaps.append(f"hero_models/{name}.glb")
+    if not (MODELS / "colour" / "000000008052.png").exists():
+        gaps.append("hero_models/colour/000000008052.png (glows)")
+    if not (PACK / "assets" / "overcraft" / "textures" / "effect" / "mercy_wing_glow.png").exists():
+        gaps.append("textures/effect/mercy_wing_glow.png (effects)")
+    return sorted(set(gaps))
 
 
 def build_version():
@@ -1308,9 +1473,24 @@ def main():
         add_effects(*args, only=only)
     elif cmd == "props":
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "parts":
+        add_parts(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "clips":
+        add_clips(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "glows":
+        add_glows(*sys.argv[2:])
+    elif cmd == "weapons":
+        for root in sys.argv[2:]:
+            add_parts(root)
+            add_clips(root)
+        add_glows(*sys.argv[2:])
+        print("missing:", missing() or "nothing")
     elif cmd == "zip":
         if not PACK.exists():
             sys.exit("no pack yet: add a model first")
+        gaps = missing()
+        if gaps:
+            print("WARNING, this pack lacks:", *gaps, "(py tools/build_asset_pack.py weapons <roots>)", sep="\n  ")
         write_version()
         out = LOCAL / "overcraft-assets.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:

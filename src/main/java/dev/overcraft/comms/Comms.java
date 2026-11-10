@@ -90,11 +90,51 @@ public final class Comms {
 		HeroState state = HeroManager.state(player);
 		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive()) {
 			dev.overcraft.hero.Combat.animate(player, "emote:" + id);
+			EMOTING.put(player.getUUID(), new Emoting(id, player.level().getGameTime(), player.position()));
 		}
+	}
+
+	/** How far a hero moves before an emote ends on everyone's screens (HeroAnimator.poseEmote's rule, read there too). */
+	public static final double EMOTE_MOVE = 0.15;
+
+	/** An emote under way: the server only hands them out, so it keeps this for those who arrive later (#96). */
+	private record Emoting(String id, long since, net.minecraft.world.phys.Vec3 from) {
+	}
+
+	private static final Map<java.util.UUID, Emoting> EMOTING = new HashMap<>();
+
+	/**
+	 * A player has just started to see this hero: their emote, as far on as it has run ("emote:<id>@<ticks>": the client eases nothing
+	 * in and drops a one-shot already over, as it does at its end). A dance goes on until they move or do something else, as on
+	 * everyone's screens: that's what ends it here too (animated, the move checked now).
+	 */
+	public static void showEmote(ServerPlayer hero, ServerPlayer viewer) {
+		Emoting e = EMOTING.get(hero.getUUID());
+		if (e == null) {
+			return;
+		}
+		if (!hero.isAlive() || hero.position().distanceToSqr(e.from) > EMOTE_MOVE * EMOTE_MOVE) {
+			EMOTING.remove(hero.getUUID());
+			return;
+		}
+		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(hero.getId(),
+			"emote:" + e.id + "@" + (hero.level().getGameTime() - e.since)));
+	}
+
+	/** The hero did something (Combat.animate): doing anything ends an emote, as HeroAnimator.trigger has it. */
+	public static void animated(ServerPlayer hero, String clip) {
+		if (!clip.startsWith("emote:")) {
+			EMOTING.remove(hero.getUUID());
+		}
+	}
+
+	public static void clearEmotes() {
+		EMOTING.clear();
 	}
 
 	/** The hero's emote, if one's playing, ends on every screen ("emote:" with no id): switching modes with G. */
 	public static void endEmote(ServerPlayer player) {
+		EMOTING.remove(player.getUUID());
 		dev.overcraft.hero.Combat.animate(player, "emote:");
 	}
 
@@ -150,6 +190,7 @@ public final class Comms {
 	}
 
 	public static void forget(ServerPlayer player) {
+		EMOTING.remove(player.getUUID());
 		RECENT.remove(player.getUUID());
 	}
 }

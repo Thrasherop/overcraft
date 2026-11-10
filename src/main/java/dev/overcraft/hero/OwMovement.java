@@ -136,6 +136,8 @@ public final class OwMovement {
 	/** Guardian Angel's move: to this point at this speed (m/s), arriving within this distance. */
 	public record Glide(Vec3 to, double speed, double arrive) {
 	}
+	/** Set by the client: a Lifeline's rope is pulling this entity (ClientTow). */
+	public static Predicate<LivingEntity> roped = entity -> false;
 	/** Set by the client: the crouch key is down (flying, it sinks her). */
 	public static Predicate<LivingEntity> crouchHeld = entity -> false;
 
@@ -582,7 +584,8 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off); gliding,
 		// she's always in the air (no friction, her glide's mover)
-		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0;
+		// on a stretched Lifeline there's no friction: dragged along the ground they'd lag 4 m further back (M, the rope's)
+		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0 && !roped.test(entity);
 		Mover mover = gliding >= 0 ? GLIDE : OwMovement.mover.apply(entity);
 		// Lúcio's floor follows his run speed (5.5, 6.875 on Speed Boost, more amped, less slowed); everyone else's is
 		// scaled under a slow
@@ -1246,14 +1249,47 @@ public final class OwMovement {
 
 	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
 	public static int wallRiding(LivingEntity entity) {
-		Ride ride = RIDES.get(entity);
-		if (ride == null || !ride.riding) {
+		Ride ride = riding(entity);
+		if (ride == null) {
 			return 0;
 		}
 		// the wall is on the side the normal points away from: right if (heading x up) points into it
 		Vec3 heading = ride.heading();
 		double cross = heading.z * ride.normal.x - heading.x * ride.normal.z;
 		return cross > 0 ? 1 : -1;
+	}
+
+	/**
+	 * His ride, if he's truly on the wall. Only ride() ever cleared the flag, and it runs only for a hero the movement handles: dead, on a
+	 * ladder, under elytra or levitation (handles), out of hero mode (active), switched to another hero (wallRide), the flag stayed up, and the
+	 * camera's roll with it (the critique's B3). Those end the ride here, for good: it doesn't resume in mid air when they're over.
+	 */
+	private static @org.jspecify.annotations.Nullable Ride riding(LivingEntity entity) {
+		Ride ride = RIDES.get(entity);
+		if (ride == null || !ride.riding) {
+			return null;
+		}
+		if (!entity.isAlive() || !handles(entity) || !wallRide.test(entity) || entity.isInWater() || entity.onGround()) {
+			ride.riding = false;
+			return null;
+		}
+		return ride;
+	}
+
+	/** The wall's outward normal, or up off it (for a lifted effect: LucioFx). */
+	public static Vec3 wallRideNormal(@org.jspecify.annotations.Nullable LivingEntity entity) {
+		Ride ride = entity == null ? null : riding(entity);
+		return ride == null ? new Vec3(0, 1, 0) : ride.normal;
+	}
+
+	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it (the local player only: as wallRiding). */
+	public static float wallRideYaw(LivingEntity entity) {
+		Ride ride = riding(entity);
+		if (ride == null) {
+			return Float.NaN;
+		}
+		Vec3 heading = ride.heading();
+		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
 	}
 
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */

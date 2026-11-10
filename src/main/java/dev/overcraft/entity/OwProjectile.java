@@ -49,6 +49,24 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 		discard();
 	}
 
+	/** The same, with the barrier's face toward where it came from ({@code normal}: unit, horizontal), for a bounce. */
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at, net.minecraft.world.phys.Vec3 normal) {
+		hitBarrier(at);
+	}
+
+	/**
+	 * A "strong projectile" Kinetic Grasp can't absorb (the wiki's Sigma page: "Beam, Melee, Extended Melee or AoE attacks
+	 * or Strong Projectiles"; its list: Accretion, Petal Platform, Translocator): it flies on through the box.
+	 */
+	public boolean strong() {
+		return false;
+	}
+
+	/** Flies through enemy barriers (the wiki's Barrier page: the Translocator's beacon "can travel through barriers"). */
+	public boolean passesBarriers() {
+		return false;
+	}
+
 	/** Launches from {@code from} along {@code direction} at {@code speed} blocks per tick. */
 	public void launch(Vec3 from, Vec3 direction, double speed) {
 		setPos(from);

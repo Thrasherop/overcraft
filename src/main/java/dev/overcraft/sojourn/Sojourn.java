@@ -132,7 +132,7 @@ public final class Sojourn implements HeroKit {
 	private static final long AIR_KILL = 60;
 
 	/**
-	 * She killed an enemy (Voice.onDeath): in Overclock the kill counts and its count picks the line, 0B93 / 113C / 113D (3 and
+	 * She killed an enemy (Voice.onKill): in Overclock the kill counts and its count picks the line, 0B93 / 113C / 113D (3 and
 	 * 4) / 113E (2159 #1278 -> #1283); outside it a Charged Shot kill says 0B8F "Vaporized", 0E7A in the air after her slide
 	 * jump (v41319).
 	 */
@@ -386,5 +386,19 @@ public final class Sojourn implements HeroKit {
 			s.sojournUlt >= 0 ? (float) ((ultTicks() - s.sojournUlt) / 20.0)
 				: s.sojournSlide >= 0 ? (float) ((Ow.ticks(dualSync ? SLIDE_TIME_DUAL : SLIDE_TIME) - s.sojournSlide) / 20.0) : 0,
 			(float) (s.sojournEnergy / ENERGY_MAX));
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): a slide (its cooldown starts) and Overclock end; for good, her gun's look too. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.sojournSlide >= 0) {
+			endSlide(player, s, false);
+		}
+		// Overclock ends, its charge spent: its glow and loop went on through G and on her corpse (the synced gun: critique_systems M4)
+		s.sojournUlt = -1;
+		player.setAttached(HeroManager.SOJOURN_GUN, (int) Math.round(s.sojournEnergy));
+		if (why.forGood()) {
+			clear(player, s);
+		}
 	}
 }

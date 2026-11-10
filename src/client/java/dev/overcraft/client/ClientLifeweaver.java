@@ -128,6 +128,11 @@ public final class ClientLifeweaver {
 		}
 	}
 
+	/** Life Grip has the local player and their Jump would let go now: its prompt shows (21EE #617, #112). */
+	public static boolean gripJumpLive(LivingEntity entity) {
+		return gripTo != null && entity.level().getGameTime() - gripAt >= dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_JUMP_CANCEL);
+	}
+
 	/** Life Grip has the local player. */
 	public static boolean gripped() {
 		return gripTo != null;

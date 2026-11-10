@@ -72,8 +72,10 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
 			if (context.client().level != null) {
 				if (payload.clip().startsWith("emote:")) {
-					HeroAnimator.emote(payload.entityId(), payload.clip().substring("emote:".length()),
-						context.client().level.getGameTime() / 20f);
+					// "emote:<id>", or "emote:<id>@<ticks>": already that far on, for one who has just come to see it (Comms.showEmote, #96)
+					String[] emote = payload.clip().substring("emote:".length()).split("@");
+					float ran = emote.length > 1 ? Integer.parseInt(emote[1]) / 20f : 0;
+					HeroAnimator.emote(payload.entityId(), emote[0], context.client().level.getGameTime() / 20f - ran);
 					return;
 				}
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
@@ -106,6 +108,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.BrigitteFx.clear();
 			dev.overcraft.client.effect.JunoFx.clear();
 			dev.overcraft.client.effect.SojournFx.clear();
+			dev.overcraft.client.effect.SigmaFx.clear();
 			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
@@ -119,6 +122,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.LucioFx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
+		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
@@ -142,10 +146,12 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 				dev.overcraft.client.effect.SojournFx.tick(client);
+				dev.overcraft.client.effect.SigmaFx.tick(client);
 			}
 			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
 			JunoSounds.tick(client);
 			SojournSounds.tick(client);
+			SigmaSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -274,6 +280,7 @@ public class OvercraftClient implements ClientModInitializer {
 		dev.overcraft.hero.Tank.resistsSlows = entity -> entity == mc.player && ClientHero.controls()
 			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
+		OwMovement.roped = entity -> entity == mc.player && ClientTow.taut();
 		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
 			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;

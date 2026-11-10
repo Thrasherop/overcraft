@@ -30,6 +30,9 @@ import static dev.overcraft.dva.DvaStats.*;
  * after it ends; landing from it doesn't hurt (#35). Fusion fires without its slow, the matrix works. Stand-in look and sound.
  */
 public final class Boosters {
+	/** What its hits are, for the kill feed (Combat.damage, #84). */
+	static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ability("boosters").by(dev.overcraft.hero.Hero.DVA);
+
 	private Boosters() {
 	}
 
@@ -106,26 +109,23 @@ public final class Boosters {
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		flat = flat.lengthSqr() < 1.0E-6 ? Vec3.directionFromRotation(0, player.getYRot()) : flat.normalize();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(BOOSTERS_HIT_RADIUS + 2))) {
-			if (e == player || !e.isAlive() || s.dvaBoostHit.contains(e.getId()) || !Allies.canHurt(player, e)
+			if (e == player || !e.isAlive() || s.dvaBoostHit.contains(e.getId()) || !Allies.areaHits(player, e)
 				|| e.getBoundingBox().distanceToSqr(centre) > BOOSTERS_HIT_RADIUS * BOOSTERS_HIT_RADIUS) {
 				continue;
 			}
 			s.dvaBoostHit.add(e.getId());
-			Vec3 before = e.getDeltaMovement();
-			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), BOOSTERS_DAMAGE);
+			Vec3 before = Combat.motion(e);
+			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), BOOSTERS_DAMAGE, BLOW);
 			Combat.credit(player, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(player, e, false);
 			}
 			// thrown along her flight, 17 m/s and 4 up (the target's own resistance and a Stalwart's 40 % less count)
-			double f = Tank.knockbackFactor(e) * Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-			Vec3 push = flat.scale(Ow.speed(BOOSTERS_KNOCKBACK) * f).add(0, Ow.speed(BOOSTERS_KNOCKBACK_UP) * f, 0);
-			e.setDeltaMovement(new Vec3(before.x, Math.max(0, before.y), before.z).add(push));
-			e.needsSync = true;
-			if (e instanceof ServerPlayer hit) {
-				// a player's client moves them: the push straight to it (minecraft_26.md)
-				hit.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(hit));
+			// its fall cut first (the push lifts it); Combat.push scales, sends and credits it (#93)
+			if (before.y < 0) {
+				e.setDeltaMovement(before.x, 0, before.z);
 			}
+			Combat.push(e, flat.scale(Ow.speed(BOOSTERS_KNOCKBACK)).add(0, Ow.speed(BOOSTERS_KNOCKBACK_UP), 0), player, BLOW);
 			level.playSound(null, e.getX(), e.getY() + 1, e.getZ(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.4f, 1.6f);
 		}
 	}

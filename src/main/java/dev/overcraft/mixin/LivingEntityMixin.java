@@ -114,17 +114,19 @@ public abstract class LivingEntityMixin {
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
 		// a weakened attacker (Sombra's Cyberspace) deals half
-		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
+		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage, (LivingEntity) (Object) this) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
 			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
-		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce)
+		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce): not
+		// one a Brigitte's barrier takes instead, which it would have shrunk on the barrier (#88)
 		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player
+			&& dev.overcraft.brigitte.Barrier.covering(player, source) == null
 			? dev.overcraft.hero.Shields.armorReduce(player, boosted) : boosted;
 	}
 
 	/**
-	 * A Brigitte's barrier between the hit and them (dev.overcraft.brigitte.Barrier) takes it before anything else. All of
+	 * A Brigitte's barrier between the hit and them (dev.overcraft.brigitte.Barrier) takes it before anything else, all of
 	 * it: no hit at all (absorbed with 0 damage left, Minecraft still knocked her 3 m back and let the next arrow past her:
-	 * found playing), and a projectile stops at it. Part: the rest lands as a hit of its own.
+	 * found playing), and a projectile stops at it.
 	 */
 	@Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
 	private void overcraft$barrier(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
@@ -134,26 +136,40 @@ public abstract class LivingEntityMixin {
 			cir.setReturnValue(false);
 			return;
 		}
-		if (dev.overcraft.brigitte.Barrier.passing) {
-			return;
-		}
-		float left = dev.overcraft.brigitte.Barrier.absorb((LivingEntity) (Object) this, source, damage);
-		if (left >= damage) {
-			return;
-		}
-		if (left <= 0) {
+		if (dev.overcraft.brigitte.Barrier.absorb((LivingEntity) (Object) this, source, damage) < damage) {
 			if (source.getDirectEntity() instanceof net.minecraft.world.entity.projectile.Projectile projectile) {
 				projectile.discard();
 			}
 			cir.setReturnValue(false);
-			return;
 		}
-		dev.overcraft.brigitte.Barrier.passing = true;
-		try {
-			cir.setReturnValue(((LivingEntity) (Object) this).hurtServer(level, source, left));
-		} finally {
-			dev.overcraft.brigitte.Barrier.passing = false;
+	}
+
+	/**
+	 * A hero's hit takes no Minecraft knockback (#93, Combat.heroHit): Overwatch's weapons and most abilities don't push,
+	 * and those that do push for themselves after the hit. The hurt still tilts a hit player's view toward whoever hit
+	 * them (indicateDamage, from the shooter for a hitscan shot, which has no position of its own).
+	 */
+	@com.llamalad7.mixinextras.injector.v2.WrapWithCondition(method = "hurtServer", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/LivingEntity;dealDefaultKnockback(Lnet/minecraft/world/damagesource/DamageSource;FZ)V"))
+	private boolean overcraft$heroHitKnockback(LivingEntity self, net.minecraft.world.damagesource.DamageSource source, float damage,
+											   boolean blocked) {
+		if (!dev.overcraft.hero.Combat.heroHit(self, source)) {
+			return true;
 		}
+		net.minecraft.world.phys.Vec3 from = source.getSourcePosition() != null ? source.getSourcePosition()
+			: source.getEntity() != null ? source.getEntity().position() : null;
+		if (from != null && !blocked) {
+			self.indicateDamage(from.x - self.getX(), from.z - self.getZ());
+		}
+		return false;
+	}
+
+	/** Nor Minecraft's impact (#93): a hit player would be sent their stale motion, a jolt (minecraft_26.md, #82). */
+	@com.llamalad7.mixinextras.injector.v2.WrapWithCondition(method = "hurtServer", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/LivingEntity;markHurt()V"))
+	private boolean overcraft$heroHitImpact(LivingEntity self,
+											@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
+		return !dev.overcraft.hero.Combat.heroHit(self, source);
 	}
 
 	/**
@@ -174,27 +190,6 @@ public abstract class LivingEntityMixin {
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private double overcraft$flightResistance(double power) {
-		// Sigma flying in his Gravitic Flux: half (1E41 #1071)
-		// D.Va in her Boosters: a tenth (047E #243)
-		return overcraft$stateKnockback(power) * dev.overcraft.hero.Tank.knockbackFactor((LivingEntity) (Object) this)
-			* dev.overcraft.sigma.GraviticFlux.knockbackFactor((LivingEntity) (Object) this)
-			* dev.overcraft.dva.Boosters.knockbackFactor((LivingEntity) (Object) this);
-	}
-
-	private double overcraft$stateKnockback(double power) {
-		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.MERCY
-			&& HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s && dev.overcraft.mercy.Mercy.flying(s)) {
-			// Mercy in Valkyrie takes half the knockback (W; her data's 0A04B51B -0.5), a fifth of that just after a launch
-			// (006E #477: 0A04B51B x0.2)
-			return power * dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK
-				* (s.gaPhase == dev.overcraft.mercy.Mercy.GA_LAUNCHED ? dev.overcraft.mercy.MercyStats.GA_LAUNCH_KNOCKBACK_VALKYRIE : 1);
-		}
-		if ((Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.state(player) instanceof dev.overcraft.hero.HeroState s
-			&& dev.overcraft.juno.Juno.gliding(s)) {
-			// Juno in Glide Boost takes half the knockback (her data's 0A04B51B = 1DF3 -0.5, 47B7 #774)
-			return power * dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
-		}
-		return (Object) this instanceof Player player && HeroManager.controls(player) && HeroManager.hero(player) == Hero.JETPACK_CAT
-			? power * dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN : power;
+		return power * dev.overcraft.hero.Combat.knockbackTaken((LivingEntity) (Object) this);
 	}
 }

@@ -26,3 +26,6 @@ Everything learned about Kiriko, by subject. She was the flagship: where the met
 - **Her states, settled by Lúcio's data:** category 005 is her run (A8C7...), alias 0x006's 4-slot set (AFCB-AFD7)
   is a directional jump (unused so far: her jump is AA37), aliases 0x64-0x66 a knock-down (AF3C plays as her death).
   See [lucio](lucio.md).
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.

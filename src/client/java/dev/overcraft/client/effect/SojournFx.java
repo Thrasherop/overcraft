@@ -660,7 +660,7 @@ public final class SojournFx {
 	 * Its field opened (the server's sojourn_disruptor_field: its ticks, Deceleration Field, whose): drawn for its life by
 	 * fields(). At once: the flash 4A58 of 4.33 m (0.35 s, green to ice) and five puffs 18B18 of 0.58 m.
 	 */
-	private static void field(Vec3 at, int owner, int ticks, boolean slows, boolean enemy) {
+	private static void field(Vec3 at, int owner, int ticks, boolean slows, boolean enemy, float ran, boolean arriving) {
 		Minecraft mc = Minecraft.getInstance();
 		Vec3 ground = null;
 		if (mc.level != null) {
@@ -668,13 +668,13 @@ public final class SojournFx {
 				ClipContext.Fluid.ANY, net.minecraft.world.phys.shapes.CollisionContext.empty()));
 			ground = hit.getType() == HitResult.Type.MISS ? null : hit.getLocation();
 		}
-		Field f = new Field(++keys, at, ground, owner, Fx.now(), Math.max(0.1f, ticks / 20f), slows, enemy);
+		Field f = new Field(++keys, at, ground, owner, Fx.now() - ran, ran + Math.max(0.1f, ticks / 20f), slows, enemy);
 		FIELDS.add(f);
-		Particle flash = make("sojourn_dot", enemy, Palette.SOJ_FIELD_FLASH, Palette.SOJ_FIELD_FLASH_ENEMY);
+		Particle flash = arriving ? make("sojourn_dot", enemy, Palette.SOJ_FIELD_FLASH, Palette.SOJ_FIELD_FLASH_ENEMY) : null;
 		if (flash != null) {
 			Fx.add(flash.at(at).life(0.35f).size(range(4.33f, 4.37f), 3).alpha(0.6f).fade(0.01f, 0.6f).nearFade(3));
 		}
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; arriving && i < 5; i++) {
 			Particle puff = make("cat_puff", enemy, Palette.SOJ_FIELD_MOTE, Palette.SOJ_FIELD_MOTE_ENEMY);
 			if (puff != null) {
 				Fx.add(puff.at(at.add(randomUnit().scale(0.3))).life(range(0.24f, 0.29f)).size(0.58f, 0.3f).fade(0.01f, 0.6f).nearFade(0.5f));
@@ -783,7 +783,12 @@ public final class SojournFx {
 			case "sojourn_round_hit" -> roundHit(at, dir, enemy);
 			case "sojourn_charged_hit" -> chargedHit(at, dir, enemy);
 			case "sojourn_disruptor_field" -> field(at, e.entity(), e.variant() & (Disruptor.FX_SLOWS - 1),
-				(e.variant() & Disruptor.FX_SLOWS) != 0, enemy);
+				(e.variant() & Disruptor.FX_SLOWS) != 0, enemy, 0, true);
+			// for one who has just come to see it (Effects.showHeld, #96): the field, its time run in dx, no flash, one a place
+			case "sojourn_disruptor_field_state" -> {
+				FIELDS.removeIf(f -> f.centre.distanceToSqr(at) < 0.01);
+				field(at, e.entity(), e.variant() & (Disruptor.FX_SLOWS - 1), (e.variant() & Disruptor.FX_SLOWS) != 0, enemy, e.dx(), false);
+			}
 			default -> {
 				return false;
 			}

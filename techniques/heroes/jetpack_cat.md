@@ -28,12 +28,12 @@ turned up: [minecraft_26](../minecraft/minecraft_26.md)
 - A volley is 4 paws (4 each, double on the head) and a centre shot (8, no headshots): 24 to a body, 40 to a head
   (measured: 22.3 and 37.3 after a zombie's armour). Paws hit enemies at 0.19 m and allies at 0.31 m (centre 0.37 /
   0.62): `PawEntity.hitRadius` and an ally sweep before each move.
-- Lifeline: the rope pulls the ally by her real movement (`getKnownMovement`), so a villager hangs 3-4 m under her and
-  follows. It heals 25 a second and ends when she dies, leaves hero mode or changes hero.
+- Lifeline: a real rope since #89, [below](#lifelines-rope-as-a-force-89-2026-11-05). It heals 25 a second and ends when she
+  dies, leaves hero mode or changes hero.
 - Purr: 30 damage at the cast, full to 5 m and 0.3 at 10 m; every wave of the 4 pulses lands, past the 4 s too (300 a
   Purr, 360 with Purrfect Form, measured).
 - Catnapper: aim (a ring of the 5.5 m landing reach marks the spot), the 0.35 s windup, a 30 m/s dive, 25 damage and a
-  1.5 s knock-down (Slowness and Weakness: no stun in Minecraft), then the nearest enemy hangs under her for up to 4 s,
+  1.5 s knock-down (`Sleep.knockdown`, #101 below), then the nearest enemy but a boss hangs under her for up to 4 s,
   its top 1 m below her feet (held at her feet, a zombie hit her the whole carry and killed her).
 - Her quick melee's layers (`add_melee`, 132-0 19A96 / 97 / 98) are additive (bit 0x4 of the folder), and until #75 they
   were exported with rest values on the 189 channels the game doesn't key, which added her face, eyes and knees' rest
@@ -207,3 +207,94 @@ The owner's recording (`E:\Overwatch Archive\research\movement\workshop-2026-11-
   recording's 7.15 stretches are the same.
 - Ours (M): how fast a boost's direction follows the input (6 a second) and turns at cruise (the recording has no clean
   turn); the boost's first 0.2 s as one 20 m/s/s step (the three runs kick +1 to +3 m/s at different times).
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## Lifeline's rope, as a force (#89, 2026-11-05)
+The owner: "cat's tether physics are not really simulated lol". They weren't: `lifeline()` gave the ally her speed each tick. The first pass here was corrected by an independent critique; its answers are at the end. Traces are in the session's scratchpad (`tt_before\`, `tt_after\` first pass, `tt_m2\` the merged, fixed build), shots in `tt_shots\`.
+
+**What the data says (`research\jetpack_cat\graphs\000000005A8F.01B.json`, gaps.md):**
+- H: the rope is a node on the ally, not on her (#1137 `STU_5ADDD07D`, under #961 under what #963 runs on each of v468, so `self` = the ally; target = her). She isn't pulled by what she tows. Length max(v1648, 0.2) = 4 m. Catnapper's #391 has the same numbers.
+- **The numbers are undecoded.** m_81D6C3A4 30, m_D3298B60 0, m_725EB364 2, m_A7920B68 0.05, m_FD449F3B 20, m_B5ED6E63 0.1, m_BDAC583A 0.1, m_6211A3C1 10, m_F469D76A 0.2, m_AD67829E 0.1, three bools. gaps.md has stiffness as L and the 12 as "Still unknown"; nothing new was decoded here, and the old code already assumed the same reading. 30, 2, 20, 10 are the node's only STUConfigVarInt values, so counts (segments, iterations) are a live alternative. Weak evidence, but it stands against "stiffness". Of the 765 pulled graphs, only 5A8F and 5B7B use this node type.
+- H: nothing in the ally's subgraph overrides their mover (walked from #931 down). That's the case for "their own mover, plus a force".
+- H: the break is across only, `|(dx, 0, dz)|² > 9 x 4²` after 0.2 s (#928). Detach #1014: x57643451 = 0, xA634D7B9 = (F.x 8, 10.5, F.z 8), F = STU_021D01CD{self}: the pair Juno's Glide Boost and Sojourn's slide jump use.
+- The look: the beam (#966, effect 71B0) is ribbons of two points, so no sag or noise *in the geometry* (H). That doesn't rule out displacement in a shader, and this hero's shaders aren't decoded: **straight is M, not H**. Hook entity 6EC4 flies out at 4.5/s, back at 3.5/s (#1175, #874).
+- **Her view is in the data (found answering the critique, H for the numbers):** #911 is `STU_582E0D5F`, the node Brigitte's barrier view is. Its distance is v479, chased to **3.5 m seeking, 6.75 m with someone on the rope** (#1148, #1146 on v43716, #1150 0.35 s, #1147 0.45 s), blends 0.3 s for her own view, plus (0, 0.35, 0) and (-0.85, 0, 0) (M: rise, and to her right; unnamed). Her flight graph's "v479: L" in the notes above was this. Before, the view was Minecraft's, 1 m lifted (ours).
+- **No recording covers it.** No owner recording has a second player beside her. `tools/workshop/jetpack_cat_flight_recorder.md` says what to record.
+
+**What's done (`LifelineRope`, `JetpackCat.tow`, `ClientTow`):** past 4 m, a pull along the rope of 30 x stretch + 5 x how fast it's stretching, closing at no more than min(10, 3 x stretch) m/s, nothing when slack. Between pulls the ally's own air mover runs: gravity, and the decay above 5.5 m/s, which gives the trail (`tan = 2 x (v - 5.5) / g`, M). A player: their own client. A mob: the server, on our own speed, Minecraft's drag and gravity taken out. In water or lava their own physics plus the pull. On their feet inside the rope, Minecraft walks them.
+
+**Ours, shaped to look like a rope (`JetpackCatStats`):** the whole force. Stiffness 30 and reel 10 borrow the node's values, meaning L. Damping 5, was the node's 2: at 2 it bounced 4.2-5.1 m at each change of height. The arrival cap 3/s: at a flat 10 m/s every catch threw the ally past her. Swing damping 0.5/s. No friction while stretched. Breaking through terrain at 3 lengths in any direction (W says it breaks "pulled through terrain"; the data's test is across only). The first metre left off the rope on the towed player's own screen. Mobs leaning along the rope (`JetpackCatFx.tilt`: 0.8 of the angle, from the head). The outer glow's 0.18. **The bounce is a design choice until a recording exists.**
+
+**Measured, same keys, flat world, `towtrace` (before on bfac757, after on the merged, fixed build):**
+
+| | before | after |
+|---|---|---|
+| Hanging, she's still | stands at any offset it stopped at: 20.6° for 2 s (`before straight`, no longer capture) | settles to 4.50-4.53 m, side 1.7 m to 0.08 m over 7.5 s (`m2_hang_long`) |
+| Flying at 7.15 m/s | her exact speed, keeping whatever offset it had | 0.7-0.96 m behind her, 9-12° (10.7° predicted) (`m2 straight`, `m2 low wall`) |
+| She stops | stops with her | swings past her to 30.5°, then 16.7° back; half swing 33 ticks, about 3.3 s (`m2 straight`; first pass 34.9 and 33.6) |
+| Turning 90° and 180° | no lag | swings wide, 45° then up to 67° (`m2 hard turns`) |
+| Caught from 8 m under her | 45-64 m/s | 10 m/s; in 1.8 s rope never under 4.41 m, 18.6° (first pass: 2.64 m, 39.5°) |
+| Rising | rigid 4.0 | 4.25-4.53 steady after the start, 5.26 at the jerk (`m2 up then down`) |
+| Frenetic Flight | **not measured: no before trace boosts** | 77° and 5.36 m across at 23 m/s (`m2 boost`) |
+| On the ground under a taut rope | | steady `G` at y -60.000, 36 ticks (first pass: alternating `G` / `-`, y to -59.985) (`m2 lifted`) |
+| Lifted off the ground | at once, rigid | stretches to 5 m and comes up (`m2 lifted`) |
+
+**What a player sees (read):** flying level, the old view (`before_stop2`) has no ally or rope in frame; the data's view (`m2_stop2`, `m2_turn90`) has the rope running down to the ally. `m3_seqB3`: a villager leaning along the rope. `k3_first_up`: the towed first person with no fan. **Frame smoothness** (`towframes`, 30 fps, no screenshots): villager's step between frames max 0.317 m, jerk p95 0.019 m, the same as hers; me on a /tp'd bot's rope p95 0.042 m, max 0.209 m. Mob position updates don't show as stepping.
+
+**Played on the merged, fixed build** (`tt_m1`, `tt_m2`, `tt_m3`; the cat picked by harness clicks on the select screen, `screenclick` at GUI scale 3: harness input, not the mouse): low wall (rides up and over), roof (snaps at 12 m), water, let go (Health 20 3 s later), tamed wolf (swings as a villager does), allay (now hangs under gravity like the rest; first pass flew 3 m above her), sleeping villager and tamed horse with a rider (not caught now; both were), Catnapper on a zombie (below), a real night (below).
+
+**A real client on a bot cat's rope (`k3_*`, `k4_*`).** The bot is a real `ServerPlayer` moved by /tp; it has no client and doesn't fly. F on the prompt catches. Lifted, swings, W pulls against the rope. G to Minecraft mode on the rope: still towed, trails at 7 m/s, drops to Minecraft's physics and back (`k3_G`). Water: floats, rope slack as she comes down, lifted out. Dying: the rope ends, respawned with no pull. Switching hero on the rope (Kiriko to Juno near the respawn point): **stays on it**: nothing lets go, not decided if it should. Juno's `state` anim on it is `pulled`. Detach, first pass: vy 10.50, 1.91 to 9.91 m/s across.
+
+**NOT verified, and it blocks `main`: nobody has seen a player towed by a cat that truly flies.** The one-client rule stands until the owner says otherwise. The two-client pass must check: the towed view with a flying cat (no jolt, no rubber band: ClientTow runs on where it *sees* her, about 100 ms old); her view of them; a dedicated server (the float kick reset, "moved too quickly" at 23 m/s, falls); an enemy's red rope; abilities on the rope (W says a movement ability leaves it, **not done**).
+
+### The critique's answers (2026-11-05)
+1. "Frenetic Flight, before": had no data (that trace has nobody on the rope). Row now says not measured.
+2. "0.5 m ahead" came from the setup (summoned 3 m to +z, she flew +z). The bug: it keeps whatever offset it had. Fixed here and in CHANGES.md. Commit 305e069's message still says it; the record is what stands.
+3. "Zombies and a skeleton at night" was daylight and summoned. Now played: gamerule on, night running, only the ally summoned (`m4_nf*`, `m4 real night fight`). Slimes and others came (figures in `m4_nf6`); a natural slime killed her in 45 s at 225 HP, with Resistance II (from 136 at 39 s), hovering 3 m up with the villager at 20 Health throughout. She hardly fought back: Purr once, no shots (firing ends Lifeline). The rope ended with her, the villager stayed. It's a real death on the rope, not a won fight; **a fight she wins isn't played.**
+4. 3.3 s from the new trace. Settling captured (`m2_hang_long`).
+5. Relabelled here, `JetpackCatStats`, `LifelineRope`, `ClientTow`.
+6. `tow()`: `MC_AIR_DRAG`, `MC_FALL_DRAG` (Minecraft's), `BLINK_SPEED`, `HIT_SEEN`, `PRESS_DOWN` (ours), named and said.
+7. Reproduced worse than reported: a bot blinking 150 m threw me to x = 180 at 344 m/s (`r1 stale`). Her speed on the towed client is now over 0.25 s, changes at no more than 42.7 m/s², capped at 23.2 m/s in `pull` for all; a jump over 4 m is no speed; past 12 m across no pull. The 6 m /tp: peak 28.9 to 19.5 m/s. **Not cured:** the client lerps that jump over about 3 ticks, so it's under the blink test, and I still rise 4.5 m past her (dy -4.5, `k4 6 m tp`). She can't really move 6 m in 0.15 s, so no real flight should do it, but a hitch on a real server is untested (open: two clients).
+8. Fixed: gravity on the ground too, then pressed to it when the rope isn't lifting. Table above.
+9. Reproduced: let go by the server, pulled at 10 m/s to her for 3 s across 30 m (`r1 stale`). `tether_end` now goes straight to the towed player. After: falls and lands, no pull (`k3 stale`).
+10. `TOWING` cleared on release by id, found or not.
+11. Played on a zombie with next's stun (`m3_nap5-11`, `m3_nap_carry`): the dive, the landing, the carry, the rope. The hook's 0.22 s stays: her data runs the same chase there (v59143 set: 5A8F runs it for both; 5B7B draws "the same hook and rope"), and 72BE's burst covers it. The carry's view is 6.75 m too (v43716). **Catnapper's hold is still a point, not this rope.**
+12. The data has the view: above. It answers this: the ally and the rope are in frame at a level look.
+13. Heroes: `pulled` (0x1C8, its centre, the 2D blend isn't driven) where the clipmap has it: Ana, Brigitte, Juno, Sojourn, Sombra; `state` says `pulled` on Juno; **I read the anim name, I didn't open a picture of her pose.** Kiriko, Lúcio, Mercy, Sigma (`pulled_loop`, other name), her: not mapped, their air pose. Mobs lean (ours): `m3_seqA*`, `m3_seqB*`, a sequence I opened one frame of, plus the smoothness numbers.
+14. Widths against 71B0: 0.04 / 0.13 / 0.2573 m were right. The bar was ours: its 0.257 m strip is 1344 x the noise 18F00 in the data, and it was a plain soft line at 0.45; now 0.18 (ours). Attach points: drawn from bone 3E67 to the hook, which is 2.2 m over the ally's feet (0.8 x (h + 1.5) in flight, H); physics reads root to root (M, the node names only her entity). So at 4.55 m apart about 3 m of rope shows, in Overwatch as well if that reading holds. `k1_hanging` at 3 m was the bot fallen to my level. Unchanged.
+15. Damping and the arrival cap, as above: 2.64 m and 39.5° to 4.41 m and 18.6°, because a player's first sight of the ability was being thrown past her.
+16. `k3_first_up`: read, no hard trapezoid, a soft glow and her above. Numbers above; villager and player.
+17. Above. A tamed wolf, an allay, a sleeper, a ridden horse, G, hero switch, dying, water: all played. The sleeper's lying down wasn't confirmed: `r1_sleep2` shows it upright once caught, and I can't say it was asleep when caught; the filter is `isSleeping`.
+18. next merged first (83ad154); all `m2`, `m3`, `m4`, `k3`, `k4` runs are on it. After `m2` to `m4` only `ClientTow` (the blink) and the Juno pose's place changed: client only, not re-traced on mobs.
+19. Stays open, above.
+
+**Found along the way:** the lockouts ran on `getGameTime`. With `/time set` in my setups a towed player stayed locked out after their first release; on the server's tick count it stopped (the cause is M: I didn't separate `/time set` from the rest). A dev command, `bot ability1 <name>`, presses a bot's Shift.
+
+**What a critic should check:** the view's -0.85 as to her right, and 0.35 as the rise (M: if it's a rotation the view is wrong). That the trail angle is the air decay (M). 23 m/s under Lifeline (17.8 x 1.3): untouched, but the wiki's 17.8 may be a cap. Hero switch keeping the rope. The hook mesh 1BAD1 isn't drawn: still the balls. The hook glow and arcs are still fed once a tick. Only one frame of the mobs' lean sequence was opened.
+
+## Catnapper's knock-down and what it carries (#101, 2026-11-04)
+Up: [Techniques](../README.md) · who's an enemy: [allies](../minecraft/allies.md) · the hold: [minecraft_26](../minecraft/minecraft_26.md#holding-a-mob-still-without-its-saved-noai-flag-97-2026-11-04)
+- **The cause:** Slowness X and Weakness X stand in for "knocked down (stun 1.5 s)" (W), written before `Sleep` existed. AI runs under them. **The fix:** `Sleep.knockdown`, the stun that keeps its push (Accretion's). She keeps the push of 2.8 m/s; so does the mob she carries, moved by `Sleep.slide` for its first 1.5 s.
+- **A held creeper's fuse:** `Creeper.tick` runs the fuse outside its AI, so a creeper held mid-swell went off anyway. `Sleep.tick` now turns it back (`setSwellDir(-1)`) for Sleep Dart, Rally's stun and all, unless it's lit by flint and steel. Found reading `Creeper.java`; played below.
+- **The carry:** the nearest `Allies.areaHits` target that isn't `Allies.isBoss` (Ender Dragon, Wither, Warden, Elder Guardian). **Ours:** her data and the wiki have no such rule (only tanks pulled 30% slower, and no Minecraft mob counts as a tank). A boss is still damaged and knocked down.
+- **Played, old (985f73c) vs new, same script** (keys through DevServer, Resistance V on her, real AI mobs held by `movement_speed` 0 and each read by a line in the log):
+
+| Case | Old | New |
+|---|---|---|
+| Three skeletons 3 m off, arrows in the first 1.5 s after she lands | 1 at 1.2 s, then on (1 at 2.1, 1 at 2.7, ...) (`rl_old_101sk`) | 0, all three listed held, then 3 at once at 2.1 s when it ends (`rl_new_101sk`) |
+| A creeper with a 1.5 s fuse, 0.45 s into it at her confirm | gone by 1.6 s, the carry with it | held to 1.9 s and alive, goes off by 4.3 s (mode 4 through it) |
+| Nearest a cow, a zombie further on | carried the cow up (y -63 -> -45) | the cow stays on the ground, 10 health; the zombie goes up |
+| Nearest a Wither / Warden / Elder Guardian | carried each (-61 -> -49, -63 -> -44, -61 -> -44) | each stays; the zombie goes up. |
+| From the air, onto two zombies, a skeleton, a cow and a stand (`rl_new_play_aim`, `_land`, `_carry`) | not played | landed at 1.2 s; all three mobs held 1.2 -> 2.5 s and free at 2.8; cow 10, stand up, zombies 18.08; rose to y -26 with one |
+
+- **What a critic should check:** one run each: the arrow count is small (old 1 in 1.5 s against about 1 a second before she landed). Not played: a second player as the target (`Sleep.stun` freezes their keys and their client; the carry's speed is sent the old way, so being carried while stunned is unverified). A mob already asleep from a dart isn't turned into a knockdown (`Sleep.stun` returns), so it is tethered but `Sleep.tick` holds it still until it wakes. Water, lava, ladders, boats, the Nether: not tried. Flyers (a phantom, a blaze): not tried.
+
+### Round 2 (critique_rules, 2026-11-05)
+Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
+- **Landing on a creeper:** it's carried, its AI back at 1.5 s, and it goes off about 3.6 s after the landing, 1 m under her: **she dies** from 18 on the ground (18 -> 0), or is left with **1.5 of 18** flying up with it. Nothing changed: **the owner's call** whether the carry drops a creeper, holds its fuse or skips it.
+- **Two zombies and a skeleton:** she took 18 -> 12 in the first 0.4 s (they hit her before she landed: the confirm's 0.35 s), then regenerated through the carry at full speed to 18. No harm while they were held.
+- **Flyers keep their height** (NoAI, so only the knock-down moves them; a zombie nearer, so it's the carried one): phantom old -57 -> -60, new -57; blaze old -57 -> -59.8, new -57. **The Ender Dragon isn't pulled:** old -56 -> -95 in 1 s (through the bedrock), new stays -56. Slides feel water (not played).
+- **A creeper in Gravitic Flux** (200 health, 3 s fuse): old went off 1.9 s after the confirm, new alive 7.5 s+ (`Sleep.holdFuse`).
+- **The carry takes** no dead mob, shulker, rider or dart's sleeper (by code; a shulker not played).

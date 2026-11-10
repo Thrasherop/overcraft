@@ -26,12 +26,14 @@
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
 		"HeroFovMixin",
+		"ScopeFovMixin",
 		"CameraMixin",
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",
 		"EntityShadowMixin",
 		"HudFontTextureMixin",
-		"HeroChatFormatMixin"
+		"HeroChatFormatMixin",
+		"InventoryDollMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

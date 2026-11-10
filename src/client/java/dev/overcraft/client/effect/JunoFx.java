@@ -57,6 +57,7 @@ public final class JunoFx {
 		final int key;
 		final int target;
 		final boolean heal, enemy;
+		float nearReach = 1;
 		final float since;
 		Vec3 at;
 		@Nullable Vec3 heading;
@@ -90,6 +91,8 @@ public final class JunoFx {
 		final List<Float> piecesAlpha = new ArrayList<>();
 		Vec3 at;
 		int step;
+		/** Whose: her entity id. */
+		int owner = -1;
 
 		Ray(int key, Vec3 at, Vec3 along, int life, boolean enemy) {
 			this.key = key;
@@ -205,7 +208,9 @@ public final class JunoFx {
 			return null;
 		}
 		Posed p = POSED.get(juno.getId());
-		return p == null || juno.level().getGameTime() - p.tick > 1 || which >= p.points.length ? null : p.points[which];
+		// (a slow frame or a screenshot's stall skips ticks: past 1 tick her pods' glow fell back to the rest place on her chest,
+		// critique M4 (played: a screenshot stalls 4-5 ticks); a second of old pose is nearer than that)
+		return p == null || juno.level().getGameTime() - p.tick > 20 || which >= p.points.length ? null : p.points[which];
 	}
 
 	/**
@@ -213,6 +218,13 @@ public final class JunoFx {
 	 * the hardpoints' rest place, Torpedoes.launch).
 	 */
 	private static Vec3 pod(Entity juno, int side) {
+		if (ownFirstPerson(juno)) {
+			// her own view: the pod as her view model draws it (HeroModelRenderer.viewPod: up in a top corner while she locks)
+			org.joml.Vector3f view = dev.overcraft.client.model.HeroModelRenderer.viewPod(side);
+			if (view != null) {
+				return Minecraft.getInstance().gameRenderer.mainCamera().position().add(view.x, view.y, view.z);
+			}
+		}
 		Vec3 posed = point(juno, POD + side);
 		if (posed != null) {
 			return posed;
@@ -420,12 +432,12 @@ public final class JunoFx {
 	 * The pods while she locks (5254 on hp 048D / 048E, held: sizes by the lock's progress, M input): per pod a burst glow
 	 * 37C36 growing to 1 m over the last quarter, a star flare E221 to 0.73 m, sparks drifting back, blue (red to her enemies).
 	 * The progress here: her time locking over the longest lock (ours). After a volley, the pods' fire trails (62B6: 0.15 m
-	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). Not in her own view (the pods are behind her eyes there).
+	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). In her own view on the view model's pods as drawn (up in the top
+	 * corners while she locks: HeroModelRenderer.viewPod), a quarter the size (they're half a metre from her eyes there), no
+	 * sparks or trails (#86: nothing showed on them in her view).
 	 */
 	private static void pods(Player juno) {
-		if (ownFirstPerson(juno)) {
-			return;
-		}
+		boolean own = ownFirstPerson(juno);
 		HeroAnimator a = HeroAnimator.of(juno);
 		float t = juno.level().getGameTime() / 20f;
 		float lockFor = a.since("torpedo_lock", t);
@@ -437,26 +449,34 @@ public final class JunoFx {
 			// the burst glow only over the last quarter of it
 			float burst = Math.max(0, (progress - 0.75f) / 0.25f);
 			for (int side = 0; side < 2; side++) {
-				Vec3 at = pod(juno, side);
 				int s = side;
-				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side, at, () -> {
+				// in her own view the particle follows the drawn pod (its position a drift from it: none)
+				Vec3 at = own ? Vec3.ZERO : pod(juno, side);
+				java.util.function.Supplier<org.joml.Vector3f> view = () -> {
+					org.joml.Vector3f v = dev.overcraft.client.model.HeroModelRenderer.viewPod(s);
+					return v != null ? v : new org.joml.Vector3f(0, 0, -100);
+				};
+				float k = own ? 0.25f : 1;
+				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
 					Particle g = Fx.particle("lw_burst", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : own ? g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).follow(view).near()
+						: g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (glow != null) {
-					float size = 0.15f + 0.85f * burst;
+					float size = (0.15f + 0.85f * burst) * k;
 					glow.size(size, size);
 				}
-				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side, at, () -> {
+				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
 					Particle g = Fx.particle("lw_star", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : own ? g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).follow(view).near()
+						: g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (star != null) {
-					float size = 0.73f * progress;
+					float size = 0.73f * progress * k;
 					star.size(size, size);
 				}
 				// sparks up to 20 a second, drifting back
-				if (Fx.RANDOM.nextFloat() < progress) {
+				if (!own && Fx.RANDOM.nextFloat() < progress) {
 					Particle spark = Fx.particle("spark#4", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
 					if (spark != null) {
 						Fx.add(spark.at(at).velocity(facing(juno).scale(-range(0.3f, 1)).add(randomUnit().scale(0.3))).life(range(0.2f, 0.4f))
@@ -481,22 +501,48 @@ public final class JunoFx {
 	 * A torpedo launched (5AF3 on its pod): soft dots 0.35 / 0.64 m and lens flares 0.65 / 1.5 m for 0.05-0.1 s, blue to
 	 * yellow (red to peach to her enemies); then its flight.
 	 */
+	private static int podLaunches;
+
+	/**
+	 * Where a torpedo the server launched at this point leaves from as drawn: from the pods of the Juno it left (in turn), as
+	 * posed (raised over her shoulders while she locks) or in her own view as her view model draws them. The server's point,
+	 * her back's hardpoints at rest, is behind her eyes and under the raised pods (#86).
+	 */
+	private static Vec3 podLaunch(Minecraft mc, Vec3 at) {
+		if (mc.level != null) {
+			for (Player p : mc.level.players()) {
+				if ("juno".equals(p.getAttached(dev.overcraft.hero.HeroManager.HERO)) && at.distanceToSqr(p.getEyePosition()) < 1.5 * 1.5) {
+					return pod(p, podLaunches++ & 1);
+				}
+			}
+		}
+		return at;
+	}
+
 	private static void launch(Vec3 at, int target, boolean heal, boolean enemy) {
 		LOCKS.remove(target);
 		Palette p = enemy ? Palette.JUNO_TORP_LAUNCH_ENEMY_N : Palette.JUNO_TORP_LAUNCH_N;
-		for (float s : new float[] {0.65f, 1.5f}) {
+		// in her own view her pods are half a metre from her eyes: a quarter the size, as their lock glow (critique M5)
+		Minecraft mc = Minecraft.getInstance();
+		float k = mc.player != null && ownFirstPerson(mc.player) && at.distanceToSqr(mc.player.getEyePosition()) < 2 * 2 ? 0.25f : 1;
+		for (float s0 : new float[] {0.65f, 1.5f}) {
+			float s = s0 * k;
 			Particle lens = Fx.particle("juno_lens_flare", p);
 			if (lens != null) {
 				Fx.add(lens.at(at).life(range(0.05f, 0.1f)).size(s, s * 0.7f).alpha(0.35f).fade(0.01f, 0.5f).nearFade(1.5f));
 			}
 		}
-		for (float s : new float[] {0.35f, 0.64f}) {
+		for (float s0 : new float[] {0.35f, 0.64f}) {
+			float s = s0 * k;
 			Particle dot = Fx.particle("juno_soft_dot", p);
 			if (dot != null) {
 				Fx.add(dot.at(at).life(range(0.05f, 0.1f)).size(s, s * 0.7f).alpha(0.35f).fade(0.01f, 0.5f).nearFade(1.5f));
 			}
 		}
-		TORPEDOES.add(new Torpedo(-(100_000 + (keys++ & 0xFFFF)), target, at, heal, enemy, Fx.now()));
+		Torpedo flying = new Torpedo(-(100_000 + (keys++ & 0xFFFF)), target, at, heal, enemy, Fx.now());
+		// her own, from her eyes: faded until 3 m out, or the slow-launched ball hung in the screen's corner (critique M5)
+		flying.nearReach = k < 1 ? 3 : 1;
+		TORPEDOES.add(flying);
 	}
 
 	/**
@@ -535,7 +581,7 @@ public final class JunoFx {
 		float coreSize = f.heal ? 0.3f : 0.5f;
 		Particle c = Fx.attach("juno_torp/" + f.key, at, () -> {
 			Particle g = Fx.particle("juno_soft_dot", core);
-			return g == null ? null : g.life(0.15f).size(coreSize, coreSize).fade(0.02f, 0.5f).nearFade(1);
+			return g == null ? null : g.life(0.15f).size(coreSize, coreSize).fade(0.02f, 0.5f).nearFade(f.nearReach);
 		});
 		if (c != null) {
 			c.at(at);
@@ -544,7 +590,7 @@ public final class JunoFx {
 			: f.enemy ? Palette.JUNO_TORP_DMG_RIBBON_ENEMY_N : Palette.JUNO_TORP_DMG_RIBBON_N;
 		Particle halo = Fx.attach("juno_torp_halo/" + f.key, at, () -> {
 			Particle g = Fx.particle("lw_burst", burst);
-			return g == null ? null : g.life(0.15f).size(0.66f, 0.66f).alpha(0.5f).spin(range(0, 6.28f), 3).fade(0.02f, 0.5f).nearFade(1);
+			return g == null ? null : g.life(0.15f).size(0.66f, 0.66f).alpha(0.5f).spin(range(0, 6.28f), 3).fade(0.02f, 0.5f).nearFade(f.nearReach);
 		});
 		if (halo != null) {
 			halo.at(at);
@@ -557,7 +603,7 @@ public final class JunoFx {
 			Particle nose = Fx.particle("juno_noise_soft", core);
 			if (nose != null) {
 				Fx.add(nose.at(at.subtract(up.scale(size / 2))).mesh(shell, up.cross(f.heading), up).life(0.06f).size(size, size).alpha(0.5f)
-					.fade(0.01f, 0.3f).nearFade(1));
+					.fade(0.01f, 0.3f).nearFade(f.nearReach));
 			}
 		}
 		Fx.trail(f.key, at, f.heal ? "juno_heal_trail" : "juno_dmg_trail", burst, f.heal ? 0.38f : 1, 0.3f, 0.85f);
@@ -942,8 +988,22 @@ public final class JunoFx {
 	 * at 0, 0.07, 0.16, 0.26 s, life 1 s (754 x 1C7A, the cat_band strip; the data's size 8 is 27.7 m across, the visible band
 	 * narrower: ours 8 m across), and the shockwave decal 139C growing over 1.2 s (ours its recipe's 0 -> 7 m).
 	 */
-	private static void land(Vec3 at, Vec3 along, int ticks, boolean enemy) {
-		RAYS.add(new Ray(keys++ & 0xFFFF, at, along.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : along.normalize(), Math.max(ticks, 1), enemy));
+	/** A ray of this Juno's, its {@code left} ticks of {@code life} to go: one a Juno, so a repeat replaces. */
+	private static void addRay(Vec3 at, Vec3 along, int owner, int life, int left, boolean enemy) {
+		RAYS.removeIf(r -> r.owner == owner);
+		Ray ray = new Ray(keys++ & 0xFFFF, at, along.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : along.normalize(), Math.max(life, 1), enemy);
+		ray.owner = owner;
+		ray.step = Math.max(0, life - left);
+		RAYS.add(ray);
+	}
+
+	/** Dev only: the rays held now. */
+	public static int devRays() {
+		return RAYS.size();
+	}
+
+	private static void land(Vec3 at, Vec3 along, int owner, int ticks, boolean enemy) {
+		addRay(at, along, owner, ticks, ticks, enemy);
 		float[] torus = Fx.mesh("cat_torus");
 		float[][] drops = {{196, 0}, {150, 0.07f}, {100, 0.16f}, {50, 0.26f}};
 		for (float[] d : drops) {
@@ -1207,13 +1267,16 @@ public final class JunoFx {
 					LOCKS.put(e.entity(), new Held(now, now + (float) JunoStats.LOCK_WINDOW + 1, enemy));
 				}
 			}
-			case "juno_torpedo" -> launch(at, e.entity(), e.variant() == 1, enemy);
+			case "juno_torpedo" -> launch(podLaunch(mc, at), e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_hit" -> torpedoHit(at, e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_wall" -> wall(at, dir, e.entity(), enemy);
 			case "juno_ring" -> throwRing(entity, at, dir, enemy);
-			case "juno_ring_boost" -> BOOSTED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "juno_ray" -> land(at, dir, e.variant(), enemy);
-			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "juno_ring_boost" -> BOOSTED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "juno_ray" -> land(at, dir, e.entity(), e.variant(), enemy);
+			// one who has just come to see it (OrbitalRay.showTo): where it is now, its age from what's left, no landing
+			case "juno_ray_state" -> addRay(at, dir, e.entity(), (int) Math.round(JunoStats.RAY_TIME * 20), e.variant(), enemy);
+			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "juno_locks_gone" -> LOCKS.clear();
 			default -> {
 				return false;
 			}

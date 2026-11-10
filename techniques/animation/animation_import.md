@@ -75,6 +75,15 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
 - **When a clip "looks wrong" to the owner, re-identify it from the game's own graph**: alias chains, which sounds
   sit on it, its length against the stat. Render strips. A whole action can be mislabelled: the "reload" was an
   ofuda throw, and the real reload was filed as "equip".
+- **Stand clips are turn-in-place sheets: hold them at frame 0, found by what they do (#88, 2026-11-02).** Overwatch
+  picks a stand clip's frame by the turn's progress, so on the clock its root turns 120 degrees a second and the hero
+  spins. A name list held Kiriko's and Ana's; Brigitte's shield-up stand (`idle_shield`) wasn't on it, and with the
+  shield held she turned round and round in third person (the owner: "brig starts looking around"). Sombra's stealthed
+  stand and Mercy's blaster stand had the same fault, unseen. `HeroAnimator.turnsInPlace` now measures each clip once:
+  its root (the bone above the pelvis) facing more than 45 degrees away at the end than at the start. DevServer
+  `turnclips <hero>` lists what it finds (2026-11-02: every hero's idle and crouch stands, Brigitte's and Sombra's
+  variants, Mercy's blaster, Lifeweaver's thorn and charging stands, Juno's and Sojourn's crouch). A new hero needs no
+  name added; check the list against its clip map instead.
 - **Glitches that come "at random"** may be a layer under everything: the leg kick was the idle breathing clip's
   broken keys. Read a clip's keys (glb animation channels in Python) for single-frame jumps, and scan the data for
   every case, not just the one fixed ([hand_play](../testing/hand_play.md)).

@@ -93,6 +93,29 @@ public final class JetpackCatStats {
 	public static final double LIFELINE_BREAK_GRACE = 0.2;
 	public static final double LIFELINE_HEIGHT = 15;           // W: and 15 m tall
 	public static final double LIFELINE_ROPE = 4;              // W; her data's rope length, max(4, 0.2) (graph #1137)
+	/**
+	 * The rope's force is ours, shaped to look like a rope: D 5A8F #1137 (and 5B7B #391) holds numbers, none decoded (gaps.md:
+	 * "stiffness: L", the 12 under "Still unknown"). 30, 2, 20, 10 are its only STUConfigVarInt values, so counts (segments,
+	 * iterations) are as live a reading as force ones. No recording has an ally on the rope.
+	 * The pull, m/s² per metre past its length: 30 is m_81D6C3A4's value, its meaning L. An ally hangs about 0.56 m past the 4 m.
+	 */
+	public static final double ROPE_STIFFNESS = 30;
+	/**
+	 * Its damping along itself, a second. Ours: m_725EB364's 2, read as this (L), bounced 4.2-5.1 m at every change of height and
+	 * threw a catch about; 5 (a damping ratio of about 0.46) keeps a little stretch and no bungee. A design choice until a recording.
+	 */
+	public static final double ROPE_DAMPING = 5;
+	/** The most it reels an ally in at, m/s, closing on her: m_6211A3C1's value, its meaning L (ours). */
+	public static final double ROPE_REEL_SPEED = 10;
+	/** And it closes at no more than this many m/s per metre still to go, a second: ours, so a catch arrives and doesn't throw them. */
+	public static final double ROPE_ARRIVE = 3;
+	/** Her speed, as far as the rope takes it (m/s): 17.8 x 1.3, her measured top speed under Lifeline's bonus. Past it she has blinked. */
+	public static final double ROPE_HER_TOP = 23.2;
+	/**
+	 * How fast a swing dies, a second, on what's across the rope. Ours: nothing in the data reads as this, and with no damping
+	 * at all a mover keeps a swing under 5.5 m/s going for ever. 0.5 halves it in about 3 s, a swing or so.
+	 */
+	public static final double ROPE_SWING_DAMPING = 0.5;
 	/** The rope snaps when she is this many rope lengths from the ally across (her data's #928: M, a horizontal offset). */
 	public static final double LIFELINE_BREAK = 3;
 	public static final double LIFELINE_COOLDOWN = 2;          // W
@@ -105,6 +128,8 @@ public final class JetpackCatStats {
 
 	// Purr (ability 2)
 	public static final double PURR_COOLDOWN = 12;             // W
+	/** A towed player can let go from this far into the tow (5A8F; was inline in JetpackCat.lifeline). */
+	public static final double LIFELINE_DETACH_AFTER = 0.6;
 	public static final double PURR_TIME = 4;                  // W
 	public static final double PURR_RADIUS = 10;               // W
 	public static final double PURR_DAMAGE = 30;               // W: on the cast

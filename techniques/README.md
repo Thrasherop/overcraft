@@ -26,7 +26,9 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Animation**
   - [animation_import](animation/animation_import.md): getting clips out and into the game; frames; additive and
     partial clips; finding the right clip.
+  - [critique_parts](testing/critique_parts.md): the independent read of weapon parts, aim sheets and glows, 2026-11-04.
   - [additive_clips](animation/additive_clips.md): which clips are additive (bit 0x4 of the folder), what the
+  - [aim_sheets](animation/aim_sheets.md): how the body and gun follow the aim, every hero's sheet layout; [weapon_parts](animation/weapon_parts.md): the data's magazines and vials, a table; weapon clips by rule; on-gun displays.
     exporter does with them, and adding them in the bone's own frame (#75).
   - [cloth](animation/cloth.md): cloth is sometimes animated and sometimes simulated. For Kiriko, see
     [kiriko_cloth](animation/kiriko_cloth.md).
@@ -39,18 +41,24 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
     [ana_emotes](emotes/ana_emotes.md); for Sombra (a prop's clip starting in her stance, hologram materials),
     [sombra_emotes](emotes/sombra_emotes.md); for Juno (weapons that are geosets of her body, mask bits that aren't the
     geoset bits, an intro just off her stance), [juno_emotes](emotes/juno_emotes.md); for Sojourn (weapon clips whose
-    root is a bake of her carrier bone, a gun laid down and kicked back up), [sojourn_emotes](emotes/sojourn_emotes.md).
+    root is a bake of her carrier bone, a gun laid down and kicked back up), [sojourn_emotes](emotes/sojourn_emotes.md); for
+    Sigma (a weapon clip keyed in his space that isn't his hand, props spawned by a prop's clip, a prop two heroes share),
+    [sigma_emotes](emotes/sigma_emotes.md).
 - **Testing and review**
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
   - [visual_review](testing/visual_review.md): comparing with the real game, frames at exact times, critique agents.
+  - [critique_rules](testing/critique_rules.md): the critique of the ally, barrier, Catnapper and headshot rules (fix/rules, 2026-11-04).
+- **HUD**: [reticle](hud/reticle.md): every hero's widgets at the crosshair, what the data binds and what's ours (#85). [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
+  damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.
 - **Rendering**: [rendering](rendering/rendering.md). Minecraft 26.3's renderer, effects, glows, shadows, held items,
   fonts.
 - **Sound**: [sounds](sound/sounds.md). Bound and in-the-head sounds, checking what played, voice and music from the
   data.
 - **Minecraft**: [minecraft_26](minecraft/minecraft_26.md). Engine facts that cost time: input codes, projectiles,
   the dragon, the HUD bars, cameras. [barriers](minecraft/barriers.md): barriers as entities, what stops Minecraft's
-  projectiles, blasts and hits (Sigma's, Brigitte's).
+  projectiles, blasts and hits (Sigma's, Brigitte's). [allies](minecraft/allies.md): allies, enemies and bystanders, the one
+  rule, and what's ours.
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);

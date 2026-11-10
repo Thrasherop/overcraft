@@ -174,6 +174,18 @@ public final class FxRender {
 				.withTexture("Sampler0", t).useLightmap().useOverlay().sortOnUpload().createRenderSetup()));
 	}
 
+	/**
+	 * Added light on a model's own surface (HeroModelRenderer's glows): as {@link #additive}, not sorted on upload. Added light sums the same in any order, and the sort
+	 * would run over these meshes every frame.
+	 */
+	public static RenderType glow(Identifier texture) {
+		return GLOW_TYPES.computeIfAbsent(texture, t -> RenderType.create("overcraft_model_glow",
+			RenderSetup.builder(ADDITIVE).setOitPipelines(ADDITIVE_OIT)
+				.withTexture("Sampler0", t).useLightmap().useOverlay().createRenderSetup()));
+	}
+
+	private static final java.util.Map<Identifier, RenderType> GLOW_TYPES = new java.util.HashMap<>();
+
 	/** Blended by the texture's own alpha (colour sprites), full bright, no depth writes. */
 	public static RenderType blended(Identifier texture) {
 		return RenderTypes.eyes(texture);

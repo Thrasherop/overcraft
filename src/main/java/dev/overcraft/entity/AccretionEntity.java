@@ -24,6 +24,12 @@ import net.minecraft.world.phys.Vec3;
  * Allies and its owner don't stop it; no block breaks.
  */
 public class AccretionEntity extends OwProjectile {
+	/** Grasp can't absorb it (the wiki: "Accretion cannot"): it flies on and hits him. */
+	@Override
+	public boolean strong() {
+		return true;
+	}
+
 	public AccretionEntity(EntityType<? extends AccretionEntity> type, Level level) {
 		super(type, level);
 	}
@@ -53,17 +59,6 @@ public class AccretionEntity extends OwProjectile {
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-		if (level().isClientSide() && isAlive()) {
-			// stand-in look (his effects come with step 10): dust behind it
-			Vec3 p = position();
-			level().addParticle(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK,
-				net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()), p.x, p.y, p.z, 0, 0, 0);
-		}
-	}
-
-	@Override
 	protected boolean canHitEntity(Entity entity) {
 		return super.canHitEntity(entity) && entity != getOwner()
 			&& !(getOwner() instanceof LivingEntity owner && entity instanceof LivingEntity living && !Allies.canHurt(owner, living));
@@ -71,7 +66,7 @@ public class AccretionEntity extends OwProjectile {
 
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
-		impact(hit.getLocation(), hit.getEntity());
+		impact(hit.getLocation(), hit.getEntity(), Vec3.ZERO);
 	}
 
 	@Override
@@ -79,7 +74,8 @@ public class AccretionEntity extends OwProjectile {
 		super.onHitBlock(hit);
 		// the burst a little out of the face it hit (from the face itself, its sight checks started inside the block)
 		net.minecraft.core.Direction face = hit.getDirection();
-		impact(hit.getLocation().add(face.getStepX() * 0.15, face.getStepY() * 0.15, face.getStepZ() * 0.15), null);
+		impact(hit.getLocation().add(face.getStepX() * 0.15, face.getStepY() * 0.15, face.getStepZ() * 0.15), null,
+			new Vec3(face.getStepX(), face.getStepY(), face.getStepZ()));
 	}
 
 	/** An enemy barrier: it takes the 80, and the burst goes off at its front (Accretion.impact gives it the burst). */
@@ -90,15 +86,15 @@ public class AccretionEntity extends OwProjectile {
 
 	@Override
 	public void hitBarrier(Vec3 at) {
-		impact(at, null);
+		impact(at, null, Vec3.ZERO);
 	}
 
-	private void impact(Vec3 at, Entity direct) {
+	private void impact(Vec3 at, Entity direct, Vec3 face) {
 		if (!(level() instanceof ServerLevel) || !isAlive()) {
 			return;
 		}
 		if (getOwner() instanceof ServerPlayer owner) {
-			Accretion.impact(owner, this, at, direct);
+			Accretion.impact(owner, this, at, direct, face);
 		}
 		discard();
 	}

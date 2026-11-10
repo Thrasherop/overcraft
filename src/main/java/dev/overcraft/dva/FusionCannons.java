@@ -166,12 +166,12 @@ public final class FusionCannons {
 			float dealt;
 			Shields.pellets = h.pellets;
 			try {
-				dealt = Combat.damage(target, shotSource(player), h.damage);
+				dealt = Combat.damage(target, shotSource(player), h.damage, dev.overcraft.hero.Blow.weapon(h.crit).by(dev.overcraft.hero.Hero.DVA));
 			} finally {
 				Shields.pellets = 1;
 			}
 			Combat.credit(player, dealt, target);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {
 				if (h.crit) {
 					s.critAt = level.getGameTime();

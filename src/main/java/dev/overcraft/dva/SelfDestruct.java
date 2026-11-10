@@ -33,6 +33,9 @@ import static dev.overcraft.dva.DvaStats.*;
  * the mech fell out of the world first. Stand-in look and sound (hers: step 11).
  */
 public final class SelfDestruct {
+	/** What its hits are, for the kill feed (Combat.damage, #84). */
+	static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ult("self_destruct").by(dev.overcraft.hero.Hero.DVA);
+
 	private SelfDestruct() {
 	}
 
@@ -87,23 +90,26 @@ public final class SelfDestruct {
 		ServerLevel level = owner.level();
 		HeroState s = HeroManager.state(owner);
 		for (Barriers.Shape b : Barriers.enemyBarriers(level, owner)) {
-			Vec3 near = Barriers.nearestFront(b, c);
-			if (near != null && near.distanceTo(c) <= SELF_DESTRUCT_RADIUS) {
+			Vec3 near = Barriers.nearest(b, c);
+			if (near.distanceTo(c) <= SELF_DESTRUCT_RADIUS) {
 				b.barrierTake(damage(near.distanceTo(c)), near);
 			}
 		}
+		// a Brigitte's up barrier the same, once (Accretion's way)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, c, SELF_DESTRUCT_RADIUS, SelfDestruct::damage);
 		DamageSource source = level.damageSources().explosion(mech, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(SELF_DESTRUCT_RADIUS + 2))) {
-			if (e == owner || !e.isAlive() || !Allies.canHurt(owner, e)) {
+			if (e == owner || !e.isAlive() || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(c));
-			if (d > SELF_DESTRUCT_RADIUS || !MicroMissiles.inSight(level, c, e) || Barriers.between(level, c, e.getBoundingBox().getCenter(), owner) != null) {
+			if (d > SELF_DESTRUCT_RADIUS || !MicroMissiles.inSight(level, c, e) || Barriers.between(level, c, e.getBoundingBox().getCenter(), owner) != null
+				|| dev.overcraft.brigitte.Barrier.shields(e, owner, c)) {
 				continue;
 			}
-			float dealt = Combat.damage(e, source, damage(d));
+			float dealt = Combat.damage(e, source, damage(d), BLOW);
 			Combat.credit(owner, dealt, e);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, e, false);
 			}
@@ -111,13 +117,9 @@ public final class SelfDestruct {
 				// out from the centre and up (a Stalwart's 40 % less, the target's own resistance)
 				Vec3 out = new Vec3(e.getX() - c.x, 0, e.getZ() - c.z);
 				out = out.lengthSqr() < 1.0E-6 ? Vec3.ZERO : out.normalize();
-				double f = knockbackFactor(d) * Tank.knockbackFactor(e) * Math.max(0, 1 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-				e.setDeltaMovement(out.scale(Ow.speed(SELF_DESTRUCT_KNOCKBACK) * f).add(0, Ow.speed(SELF_DESTRUCT_KNOCKBACK_UP) * f, 0));
-				e.needsSync = true;
-				if (e instanceof ServerPlayer hit) {
-					// a player's client moves them: the push straight to it (minecraft_26.md)
-					hit.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(hit));
-				}
+				// replacing its motion, scaled by its share (Combat.pushShare), sent to a player, credited (#93)
+				double f = knockbackFactor(d);
+				Combat.launch(e, out.scale(Ow.speed(SELF_DESTRUCT_KNOCKBACK) * f).add(0, Ow.speed(SELF_DESTRUCT_KNOCKBACK_UP) * f, 0), owner, BLOW);
 			}
 		}
 		// her Call Mech is full (#274 message 0592 -> 026A #887), whatever form she's in now

@@ -100,11 +100,13 @@ public class SuzuEntity extends OwProjectile {
 		double r = KirikoStats.SUZU_RADIUS;
 		float healedTotal = 0;
 		for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(r))) {
-			if (!Allies.isSelfOrAlly(owner, entity) || !touches(entity, at, r) || !inSight(level, at, entity)) {
+			if (!Allies.isSelfOrAlly(owner, entity) || !touches(entity, at, r) || !inSight(level, at, entity)
+				|| dev.overcraft.brigitte.Barrier.shields(entity, owner, at)) {
 				continue;
 			}
-			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);
+			// (the cleanse first: her heal isn't cut by the healing reduction it takes off)
 			Combat.cleanse(entity);
+			healedTotal += Combat.heal(entity, KirikoStats.SUZU_HEAL);
 			Combat.phase(entity, KirikoStats.SUZU_PHASED);
 			// Foxtrot (perk): allies run faster for a while (the game data: allies; Kiriko is left out, ours to check)
 			if (entity != owner && owner instanceof Player kiriko && HeroManager.hasPerk(kiriko, Perk.KIRIKO_FOXTROT)) {

@@ -49,10 +49,40 @@ public final class Brigitte implements HeroKit {
 	}
 
 	/** Leaving her (another hero, leaving the world): the barrier down, its slow off. */
+	/**
+	 * Her whip, flail swing, bash and Rally's shockwave stop: they ran on through Minecraft mode, dealing damage (critique_systems
+	 * M1). The whip thrown and the bash begun cost their cooldowns.
+	 */
+	private static void endActions(ServerPlayer player, HeroState s) {
+		if (s.whipTicks >= 0) {
+			s.ability1Cooldown = Ow.ticks(WHIP_COOLDOWN);
+			if (s.whipOut != -2 && player.isAlive()) {
+				// the rope comes back on every client (it stays out otherwise)
+				BrigitteSounds.split(player, "whip.return", player.getEyePosition(), 70);
+				Effects.play(player.level(), "brigitte_whip_back", player.getEyePosition(), Vec3.ZERO, player, Ow.ticks(WHIP_RETURN), player);
+			}
+		}
+		s.whipTicks = -1;
+		s.whipOut = -1;
+		s.flailSwing = -1;
+		s.shockwaveIn = -1;
+		if (s.bashTicks >= 0) {
+			s.ability2Cooldown = Ow.ticks(BASH_COOLDOWN);
+			// her client stops moving her
+			Effects.play(player.level(), "brigitte_bash_end", player.position(), Vec3.ZERO, player, 0, player);
+		}
+		s.bashTicks = -1;
+	}
+
 	public static void clear(ServerPlayer player, HeroState s) {
 		Barrier.clear(player, s);
-		s.bashTicks = -1;
+		endActions(player, s);
 		endRally(player, s);
+		s.strikeFastUntil = -1;
+		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(STRIKE_FAST);
+		}
 	}
 
 	@Override
@@ -74,6 +104,10 @@ public final class Brigitte implements HeroKit {
 		swing(player, s);
 		bash(player, s);
 		Barrier.tick(player, s, controls);
+		if (!controls) {
+			// asleep or stunned too: what her arms were doing is cut
+			endActions(player, s);
+		}
 		boolean pressed = s.primaryHeld && !s.leftWas;
 		if (!s.primaryHeld && s.leftWas && !s.barrierUp && player.isAlive()) {
 			// the flail put up as the left button is let go (223A)
@@ -89,6 +123,7 @@ public final class Brigitte implements HeroKit {
 				startBash(player, s);
 			}
 		} else if (s.primaryHeld && s.flailSwing < 0) {
+			s.flailMelee = false;
 			startSwing(player, s);
 		}
 	}
@@ -120,14 +155,13 @@ public final class Brigitte implements HeroKit {
 			LivingEntity target = bashTarget(player);
 			if (target != null) {
 				s.bashHit = true;
-				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE);
+				float dealt = Combat.damage(target, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt, target);
-				Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.addFireForDamage(player, dealt, target);
 				Effects.hitMarker(player, target, false);
 				// a Stalwart takes 40% less of it (Tank)
-				Vec3 push = flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0).scale(dev.overcraft.hero.Tank.knockbackFactor(target));
-				target.push(push.x, push.y, push.z);
-				target.needsSync = true;
+				Combat.push(target, flat(player).scale(Ow.speed(BASH_KNOCKBACK) * 3).add(0, 0.25, 0), player,
+					dev.overcraft.hero.Blow.ability("shield_bash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.animate(player, "shield_bash_hit");
 				// 2206 on her shield (hp 01D8): the imprint, its edge, the streaks
 				Effects.play(player.level(), "brigitte_bash_hit", player.position().add(flat(player).scale(0.6)).add(0, 1.2, 0), flat(player),
@@ -162,7 +196,7 @@ public final class Brigitte implements HeroKit {
 			// Inspiring Strike: 30% faster for 2 s after the dash (51F2 #455 / #456)
 			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
 			if (speed != null) {
-				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(STRIKE_FAST,
+				speed.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(STRIKE_FAST,
 					INSPIRING_STRIKE_SPEED, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 			}
 			s.strikeFastUntil = player.level().getGameTime() + Ow.ticks(INSPIRING_STRIKE_TIME);
@@ -178,7 +212,7 @@ public final class Brigitte implements HeroKit {
 		LivingEntity best = null;
 		double bestDist = Double.MAX_VALUE;
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BASH_REACH + 1),
-			e -> e.isAlive() && Allies.canHurt(player, e))) {
+			e -> e.isAlive() && Allies.areaHits(player, e))) {
 			AABB box = e.getBoundingBox();
 			Vec3 near = new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
 			Vec3 to = new Vec3(box.getCenter().x - eye.x, 0, box.getCenter().z - eye.z);
@@ -247,14 +281,14 @@ public final class Brigitte implements HeroKit {
 			s.extraArmor = RALLY_ARMOR;
 			var max = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
 			if (max != null) {
-				max.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_HEALTH,
+				max.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_HEALTH,
 					Ow.hp(RALLY_ARMOR), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
 			}
 			// her armor is the layer at the top of her health (Shields): the 100 goes on as armor
 			dev.overcraft.hero.Shields.grant(player, s, RALLY_ARMOR);
 			var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
 			if (speed != null) {
-				speed.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_FAST, RALLY_SPEED,
+				speed.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(RALLY_FAST, RALLY_SPEED,
 					net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 			}
 		}
@@ -316,20 +350,19 @@ public final class Brigitte implements HeroKit {
 		Vec3 ahead = flat(player);
 		int hit = 0;
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
-			e -> e.isAlive() && Allies.canHurt(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS)) {
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS)) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (hit >= RALLY_SHOCKWAVE_TARGETS || to.lengthSqr() > 0.25 && to.normalize().dot(ahead) < 0) {
 				continue;
 			}
 			hit++;
-			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE);
+			float dealt = Combat.damage(e, flailSource(player), BASH_DAMAGE, dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			Combat.credit(player, dealt, e);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, e);
 			Effects.hitMarker(player, e, false);
 			Vec3 push = to.lengthSqr() < 1.0E-6 ? ahead : to.normalize();
-			double kept = dev.overcraft.hero.Tank.knockbackFactor(e);
-			e.push(push.x * Ow.speed(BASH_KNOCKBACK) * 3 * kept, 0.25 * kept, push.z * Ow.speed(BASH_KNOCKBACK) * 3 * kept);
-			e.needsSync = true;
+			Combat.push(e, new Vec3(push.x * Ow.speed(BASH_KNOCKBACK) * 3, 0.25, push.z * Ow.speed(BASH_KNOCKBACK) * 3), player,
+				dev.overcraft.hero.Blow.ult("rally").by(dev.overcraft.hero.Hero.BRIGITTE));
 			stun(player, e);
 		}
 	}
@@ -388,9 +421,9 @@ public final class Brigitte implements HeroKit {
 				}
 			}
 			if (hit != null) {
-				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE);
+				float dealt = Combat.damage(hit, flailSource(player), WHIP_DAMAGE, dev.overcraft.hero.Blow.ability("whip_shot").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(player, dealt, hit);
-				Combat.addFireForDamage(player, dealt, Ow.toOw(hit.getMaxHealth()));
+				Combat.addFireForDamage(player, dealt, hit);
 				Effects.hitMarker(player, hit, false);
 				BrigitteSounds.split(player, "whip.hit", hit.getEyePosition(), 60);
 				if (hit instanceof net.minecraft.world.entity.player.Player) {
@@ -399,8 +432,13 @@ public final class Brigitte implements HeroKit {
 				Vec3 level = new Vec3(s.whipDir.x, 0, s.whipDir.z);
 				Vec3 push = (level.lengthSqr() < 1.0E-6 ? Vec3.ZERO : level.normalize().scale(Ow.speed(WHIP_KNOCKBACK)))
 					.add(0, Ow.speed(WHIP_LIFT), 0);
-				PUSHED.add(new Push(hit, push, Ow.ticks(WHIP_PUSH_TIME),
-					HeroManager.hasPerk(player, Perk.BRIGITTE_WHIPLASH) ? player : null));
+				// a Stalwart's, a state's or a resistance's share (Combat.pushShare); a warden or a ravager isn't moved at all
+				double share = Combat.isPhased(hit) ? 0 : Combat.pushShare(hit);
+				if (share > 0) {
+					PUSHED.add(new Push(hit, push.scale(share), Ow.ticks(WHIP_PUSH_TIME),
+						HeroManager.hasPerk(player, Perk.BRIGITTE_WHIPLASH) ? player : null));
+					dev.overcraft.hero.Combat.pushed(hit, player, dev.overcraft.hero.Blow.ability("whip_shot").by(dev.overcraft.hero.Hero.BRIGITTE));
+				}
 				Inspire.trigger(player, s, true, INSPIRE_TIME * (HeroManager.hasPerk(player, Perk.BRIGITTE_MORALE_BOOST) ? MORALE_BOOST : 1));
 				back(player, s, "whip_return", a.add(s.whipDir.scale(Math.sqrt(best))));
 			} else if (block.getType() != HitResult.Type.MISS) {
@@ -446,24 +484,30 @@ public final class Brigitte implements HeroKit {
 			}
 			if (p.whiplash != null && p.whiplashLeft-- > 0 && p.target.horizontalCollision) {
 				// Whiplash: into a wall within 0.5 s, 60 more, and it stops there (551F #526)
-				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE);
+				float dealt = Combat.damage(p.target, flailSource(p.whiplash), WHIPLASH_DAMAGE, dev.overcraft.hero.Blow.perk("whiplash").by(dev.overcraft.hero.Hero.BRIGITTE));
 				Combat.credit(p.whiplash, dealt, p.target);
-				Combat.addFireForDamage(p.whiplash, dealt, Ow.toOw(p.target.getMaxHealth()));
+				Combat.addFireForDamage(p.whiplash, dealt, p.target);
 				Effects.hitMarker(p.whiplash, p.target, false);
 				BrigitteSounds.split(p.whiplash, "perk.whiplash", p.target.getEyePosition(), 45);
 				p.whiplash = null;
 				p.left = 0;
 				p.target.setDeltaMovement(Vec3.ZERO);
-				p.target.needsSync = true;
+				Combat.send(p.target);
 				return true;
 			}
 			if (p.left-- <= 0) {
 				return p.whiplash == null || p.whiplashLeft <= 0;
 			}
+			boolean first = p.left == Ow.ticks(WHIP_PUSH_TIME) - 1;
+			if (p.target instanceof net.minecraft.server.level.ServerPlayer && !first) {
+				// a player's client moves them: the one send below gives them the push. Each tick's would overwrite their own
+				// vertical speed from the server's stale copy (critique_systems S4), a stutter in the air
+				return false;
+			}
 			Vec3 v = p.target.getDeltaMovement();
 			// level speed held, its first lift once (Minecraft's gravity brings them down)
-			p.target.setDeltaMovement(p.velocity.x, p.left == Ow.ticks(WHIP_PUSH_TIME) - 1 ? p.velocity.y : v.y, p.velocity.z);
-			p.target.needsSync = true;
+			p.target.setDeltaMovement(p.velocity.x, first ? p.velocity.y : v.y, p.velocity.z);
+			Combat.send(p.target);
 			return false;
 		});
 	}
@@ -527,6 +571,7 @@ public final class Brigitte implements HeroKit {
 	/** Her quick melee is the flail's swing (1248 #267: no shared quick melee on her). */
 	public static void melee(ServerPlayer player, HeroState s) {
 		if (s.flailSwing < 0) {
+			s.flailMelee = true;
 			startSwing(player, s);
 		}
 	}
@@ -572,7 +617,7 @@ public final class Brigitte implements HeroKit {
 		float aimPitch = player.getXRot();
 		for (net.minecraft.world.entity.Entity e : level.getEntities(player, player.getBoundingBox().inflate(FLAIL_RANGE + 1))) {
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
-			if (target == null || !target.isAlive() || !Allies.canHurt(player, target) || s.flailHit.contains(target.getId())) {
+			if (target == null || !target.isAlive() || !Allies.areaHits(player, target) || s.flailHit.contains(target.getId())) {
 				continue;
 			}
 			AABB box = e.getBoundingBox();
@@ -592,9 +637,17 @@ public final class Brigitte implements HeroKit {
 				continue;
 			}
 			s.flailHit.add(target.getId());
-			float dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE);
+			// a melee blow: through enemy barriers (Barrier.isMelee; the wiki lists her flail among them)
+			Barrier.meleeDepth++;
+			float dealt;
+			try {
+				dealt = Combat.damage(target, flailSource(player), FLAIL_DAMAGE,
+					(s.flailMelee ? dev.overcraft.hero.Blow.MELEE : dev.overcraft.hero.Blow.WEAPON).by(dev.overcraft.hero.Hero.BRIGITTE));
+			} finally {
+				Barrier.meleeDepth--;
+			}
 			Combat.credit(player, dealt, target);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, false);
 				BrigitteSounds.split(player, "flail.impact", target.getEyePosition(), 60);
@@ -620,6 +673,41 @@ public final class Brigitte implements HeroKit {
 			(int) Math.ceil(s.barrierHealth), -1, s.secondaryAmmo, -1, (float) (s.ability1Cooldown / 20.0),
 			(float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
-			Perk.index(s.majorPerk), 0, 0, 0, 0);
+			Perk.index(s.majorPerk), 0, (s.barrierUp ? MODE_BARRIER : 0) | (s.rallyTicks > 0 ? MODE_RALLY : 0)
+				| (s.barrierLocked ? MODE_BROKEN : 0), 0, s.repairRecharge > 0 ? (float) (s.repairRecharge / 20.0) : 0);
+	}
+
+	/**
+	 * Her widgets (#85): preview, who Repair Pack would go to (as repairPack picks: 013C, 0EDD #469); flag, Inspire on her (7CCD, its state
+	 * stack v31949); count, the allies it's healing, herself not counted (0C7A, 12D8 #479: 067C = v702, the count its message 2AD8 brings); left and total, Rally's time (0237, 12BE #188); left2, the seconds her broken barrier stays down (0240,
+	 * 0EE3 #558). Her sync's meter is Repair Pack's recharge, in seconds.
+	 */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		float broken = Math.max(0, s.barrierBrokenUntil - player.level().getGameTime()) / 20f;
+		LivingEntity repair = s.secondaryAmmo > 0 && s.bashTicks < 0 ? dev.overcraft.hero.Targeting.allyInView(player, REPAIR_RANGE, REPAIR_CONE, true) : null;
+		return new HeroSyncPayload.Widgets(-1, -1, repair == null ? -1 : repair.getId(), Inspire.active(player), Inspire.healing(player),
+			s.rallyTicks / 20f, (float) RALLY_TIME, broken, "", "");
+	}
+
+	/**
+	 * A player who starts seeing her (Overcraft's START_TRACKING) hears of a barrier already up: it's an action others
+	 * heard begin, so one who came into range while she held it saw her without it, its stand or its field (#88).
+	 */
+	@Override
+	public void showState(ServerPlayer brig, HeroState s, ServerPlayer viewer) {
+		if (s.barrierUp) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer,
+				new dev.overcraft.net.HeroActionPayload(brig.getId(), "shield_raise"));
+		}
+	}
+
+	/** Her synced mode's bits (the client's barrier camera, ClientHero): the barrier up, Rally on, broken (locked out). */
+	public static final int MODE_BARRIER = 1, MODE_RALLY = 2, MODE_BROKEN = 4;
+
+	/** Out of play (#100: HeroKit.leavePlay): her barrier goes down, a bash and Rally end, Inspiring Strike's speed goes. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		clear(player, s);
 	}
 }

@@ -23,9 +23,8 @@ import java.util.Set;
  * <li>Stalwart: 40% less knockback (LivingEntityMixin, ServerExplosionMixin, the heroes' own pushes) and 40% less of a slow
  * received from others (OwMovement.speedFactor), in hero mode.</li>
  * <li>Initiator: a movement ability's start heals 50 over 1 s, at most every 5 s, not at full health ({@link #initiatorReady}).</li>
+ * <li>The healing reduction a hit starts is halved on a tank, 15% for the global 30% (D 01C7 #1308): {@link Combat#heal}.</li>
  * </ul>
- * Not yet: the role's healing reduction (15% on a tank, the global 30% halved: D 01C7 #1308) needs the global one first,
- * which Overcraft doesn't have (the plan's role pass: Open).
  */
 public final class Tank {
 	private Tank() {

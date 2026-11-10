@@ -24,6 +24,17 @@ public final class HotfixHeal {
 	private HotfixHeal() {
 	}
 
+	/** The allies her Hotfix is healing now (her 0D81 slots). */
+	public static java.util.List<Integer> healing(ServerPlayer sombra) {
+		java.util.List<Integer> ids = new ArrayList<>();
+		for (Heal heal : HEALS) {
+			if (heal.sombra == sombra) {
+				ids.add(heal.ally.getId());
+			}
+		}
+		return ids;
+	}
+
 	public static void start(ServerPlayer sombra, LivingEntity ally) {
 		double[] healed = {0};
 		HEALS.add(new Heal(sombra, ally, ally.level().getGameTime() + Ow.ticks(HOTFIX_HEAL_TIME), healed));

@@ -99,8 +99,25 @@ public final class KirikoFx {
 				}
 			}
 			case "rush_ripple" -> rushRipple(at);
-			case "rush_gate" -> rushGate(at, dir, e.variant() / 10f);
-			case "rush_tiles" -> rushTiles(at, dir, e.variant() / 10f);
+			case "rush_gate" -> {
+				rushLaid("gate", at, e.variant() / 10f);
+				rushGate(at, dir, e.variant() / 10f, true);
+			}
+			case "rush_tiles" -> {
+				rushLaid("tiles", at, e.variant() / 10f);
+				rushTiles(at, dir, e.variant() / 10f);
+			}
+			// for one who has just come to see them (Effects.showHeld, #96): what they'd have missed, and not what they saw: no petals, no second one
+			case "rush_gate_state" -> {
+				if (rushLaid("gate", at, e.variant() / 10f)) {
+					rushGate(at, dir, e.variant() / 10f, false);
+				}
+			}
+			case "rush_tiles_state" -> {
+				if (rushLaid("tiles", at, e.variant() / 10f)) {
+					rushTiles(at, dir, e.variant() / 10f);
+				}
+			}
 			case "rush_end" -> rushEnd(at);
 			case "rush_ally" -> {
 				rushAlly(at, dir);
@@ -114,7 +131,9 @@ public final class KirikoFx {
 				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy) && !MercyFx.dispatch(e, enemy)
 					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy) && !SombraFx.dispatch(e, enemy)) {
 					if (!BrigitteFx.dispatch(e, enemy) && !JunoFx.dispatch(e, enemy)) {
-						SojournFx.dispatch(e, enemy);
+						if (!SojournFx.dispatch(e, enemy)) {
+							SigmaFx.dispatch(e, enemy);
+						}
 					}
 				}
 			}
@@ -510,11 +529,22 @@ public final class KirikoFx {
 		}
 	}
 
+	/** What's laid along a rush on this client, by kind and place, until when: an arrival doesn't lay it twice. */
+	private static final java.util.Map<String, Float> RUSH_LAID = new java.util.HashMap<>();
+
+	/** Marks this one laid for {@code seconds}; true if it wasn't already (a world's change clears them with time: Fx.now is the game's). */
+	private static boolean rushLaid(String kind, Vec3 at, float seconds) {
+		float now = Fx.now();
+		RUSH_LAID.values().removeIf(until -> until < now || until > now + 60);
+		String key = kind + "/" + Math.round(at.x * 10) + "/" + Math.round(at.y * 10) + "/" + Math.round(at.z * 10);
+		return RUSH_LAID.put(key, now + seconds) == null;
+	}
+
 	/**
 	 * A torii gate across the path, held while the rush lasts (3C82, 10.67 s): until its model is converted, its
 	 * outline in glowing teal (two posts and two beams, ours), with its petals and "+" sparkles.
 	 */
-	static void rushGate(Vec3 base, Vec3 across, float seconds) {
+	static void rushGate(Vec3 base, Vec3 across, float seconds, boolean arriving) {
 		float life = seconds > 0 ? seconds : 10.67f;
 		Vec3 side = across.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : across.normalize();
 		double half = across.length() / 2;
@@ -539,7 +569,7 @@ public final class KirikoFx {
 			gateBar(base.add(0, 4.4, 0), side, (float) (2 * half + 1.6), 0.4f, life);
 			gateBar(base.add(0, 3.7, 0), side, (float) (2 * half), 0.25f, life);
 		}
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; arriving && i < 7; i++) {
 			Particle petal = Fx.soft("petal", p(Palette.TEAL));
 			if (petal != null) {
 				float size = range(0.05f, 0.09f);
@@ -549,7 +579,7 @@ public final class KirikoFx {
 					.spin(range(0, Mth.TWO_PI), range(-5, 5)).fade(0.05f, 0.4f));
 			}
 		}
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; arriving && i < 4; i++) {
 			// a glowing cross (EffectArt's soft sparkle: the pack's mask is a flat outlined cross, a sticker drawn as it
 			// is, the fourth critique), twinkling; the survey's 0.43-0.6 m, a little smaller
 			// blended: added, gold over grass turned lime and over the sky white (the seventh critique)

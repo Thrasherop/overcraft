@@ -103,6 +103,11 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				paw.getId(), at, paw.getDeltaMovement(), paw.centre(), paw.getOwner(), KirikoFx.enemyOf(paw.getOwner()),
 				paw.getOwner() == net.minecraft.client.Minecraft.getInstance().player
 					&& net.minecraft.client.Minecraft.getInstance().options.getCameraType().isFirstPerson());
+			// Sigma's: the spheres are their effect (2BDE: no model in his data); the rock its model C5CA and its flight 2D99
+			case dev.overcraft.entity.HypersphereEntity sphere -> s.drawnByEffect = dev.overcraft.client.effect.SigmaFx.sphereFlight(
+				sphere.getId(), at, sphere.getDeltaMovement(), dt, sphere.getOwner());
+			case dev.overcraft.entity.AccretionEntity rock -> dev.overcraft.client.effect.SigmaFx.rockFlight(rock.getId(), at, dt,
+				rock.getOwner());
 			default -> {
 			}
 		}

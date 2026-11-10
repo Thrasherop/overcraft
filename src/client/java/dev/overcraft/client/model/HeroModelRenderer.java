@@ -51,12 +51,14 @@ import java.util.Set;
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
 	/** {@code cull}: back faces left out before upload (not for the select screen's GUI view, whose camera isn't at the origin). */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull) {
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
 	/** The camera's inside her (the emote camera's first moments): she isn't drawn, not even as Minecraft's player. */
 	private static final RenderStateDataKey<Boolean> UNSEEN = RenderStateDataKey.create(() -> "overcraft:hero_unseen");
+	/** Sombra's stealth: how far phased out (0-1) and the time, for her phased-out look (ClientSombra.phase, #87). */
+	private static final RenderStateDataKey<float[]> STEALTH = RenderStateDataKey.create(() -> "overcraft:hero_stealth");
 
 	/**
 	 * Her body's shadow this frame (the owner, 2026-10-27: "casting a body shaped shadow would be good"): the direction
@@ -138,13 +140,15 @@ public final class HeroModelRenderer {
 
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
+		dev.overcraft.client.ClientSombra.clear();
 		LAST_HERO.clear();
 	}
 
 	/** While extracting a player's render state: a hero in hero mode with a model gets a {@link Draw}. */
 	public static void extract(LivingEntity entity, LivingEntityRenderState state, float partialTicks) {
 		state.setData(DRAW, null);
-		state.setData(UNSEEN, entity == Minecraft.getInstance().player && dev.overcraft.client.comms.EmoteCamera.inside());
+		state.setData(UNSEEN, entity == Minecraft.getInstance().player
+			&& (dev.overcraft.client.comms.EmoteCamera.inside() || dev.overcraft.client.AbilityCamera.inside()));
 		Hero hero;
 		String chosen = entity.getAttached(HeroManager.HERO);
 		if (preview != null && entity == Minecraft.getInstance().player) {
@@ -170,7 +174,7 @@ public final class HeroModelRenderer {
 		float now = (entity.level().getGameTime() + partialTicks) / 20f;
 		HeroAnimator animator = HeroAnimator.of(entity);
 		// the body faces her aim (HeroAnimator.facing); the head's turn is then measured from there
-		float facing = animator.facing(entity, partialTicks);
+		float facing = animator.facing(entity, partialTicks) + (DEV_AIM != null && entity == Minecraft.getInstance().player ? DEV_AIM[1] : 0);
 		state.yRot = Mth.wrapDegrees(state.yRot + state.bodyRot - facing);
 		state.bodyRot = facing;
 		long t0 = System.nanoTime();
@@ -183,7 +187,8 @@ public final class HeroModelRenderer {
 		Skeleton.Pose showcase = previewing ? HeroAnimator.showcasePose(loaded.model(), showcaseAt) : null;
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
-			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : state.yRot, previewing ? 0 : state.xRot);
+			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : DEV_AIM != null ? 0 : state.yRot,
+				previewing ? 0 : DEV_AIM != null && entity == Minecraft.getInstance().player ? DEV_AIM[0] : state.xRot);
 		}
 		Timing.pose += System.nanoTime() - t0;
 		// her weapons in an emote: as its GeoSetFlags hide them (the data); where the data has none, an emote with props
@@ -196,7 +201,10 @@ public final class HeroModelRenderer {
 		} else if (!previewing && EmoteProps.holds(hero.id, animator)) {
 			hidden = allProps(loaded.model());
 		}
-		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null));
+		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null,
+			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity)));
+		float phase = hero == Hero.SOMBRA && !previewing ? dev.overcraft.client.ClientSombra.phase(entity, now) : 0;
+		state.setData(STEALTH, phase > 0 ? new float[] {phase, now} : null);
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
 		state.setData(EmoteProps.HELD, previewing ? null : EmoteProps.held(hero.id, animator, loaded.model()));
 		// his weapon when it's a model of its own (Lúcio's), on its hardpoint; put away in an emote, as Overwatch's are
@@ -280,6 +288,29 @@ public final class HeroModelRenderer {
 					}
 				}
 				dev.overcraft.client.effect.SojournFx.posed(entity, points);
+			}
+		}
+		if (hero == Hero.SIGMA && !previewing && entity.isAlive()) {
+			// his hand spheres' cores and muzzle as held (SigmaFx.POINTS: bone_0442 / bone_0444 / hp 007C on 106B4) and his body's
+			// hardpoints, as posed, in the world
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.SigmaFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.SigmaFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.SigmaFx.posed(entity, points);
 			}
 		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
@@ -457,8 +488,102 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
-	/** How much of a stealthed hero shows to those who see her (ours). */
-	private static final float SEE_THROUGH = 0.25f;
+	/** How much of a stealthed hero shows to those who see her, and to her own eyes, fully phased out (ours). */
+	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.6f;
+	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
+	private static final int STEALTH_TINT = 0xC8B4FF, STEALTH_GLOW = 0x9A55FF;
+	/** 1AD9's wipe edge row, by the fade (sombra-effects: #6D0000 #CE0000 #F6502B #00DFB6; read by age: M). */
+	private static final int[] WIPE_EDGE = {0x6D0000, 0xCE0000, 0xF6502B, 0x00DFB6};
+	private static final Identifier WIPE_MASK = dev.overcraft.Overcraft.id("hud/sombra_wipe");
+	/** The wipe's mask is built: null not yet, false without the pack's frames. */
+	private static @Nullable Boolean wipeMade;
+
+	/**
+	 * A7BF's 6 frames as one mask for Minecraft's dissolve shader (RenderTypes.entityCutoutDissolve): each frame whites out
+	 * more of it, so a texel's alpha is when it goes (1 for the first frame's, 1/6 for the last's, near 0 for those never
+	 * white), against the vertex alpha falling 1 -> 0. The data's frames, on her own UVs.
+	 */
+	private static boolean wipeMask() {
+		if (wipeMade == null) {
+			wipeMade = false;
+			try {
+				var resources = Minecraft.getInstance().getResourceManager();
+				com.mojang.blaze3d.platform.NativeImage out = null;
+				for (int frame = 5; frame >= 0; frame--) {
+					try (java.io.InputStream in = resources.open(dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+						 com.mojang.blaze3d.platform.NativeImage image = com.mojang.blaze3d.platform.NativeImage.read(in)) {
+						if (out == null) {
+							out = new com.mojang.blaze3d.platform.NativeImage(image.getWidth(), image.getHeight(), true);
+							for (int y = 0; y < out.getHeight(); y++) {
+								for (int x = 0; x < out.getWidth(); x++) {
+									out.setPixel(x, y, 8 << 24 | 0xFFFFFF);
+								}
+							}
+						}
+						int alpha = Math.round(255 * (6 - frame) / 6f);
+						for (int y = 0; y < out.getHeight(); y++) {
+							for (int x = 0; x < out.getWidth(); x++) {
+								if ((image.getPixel(x, y) >> 16 & 0xFF) > 127) {
+									out.setPixel(x, y, alpha << 24 | 0xFFFFFF);
+								}
+							}
+						}
+					}
+				}
+				if (out != null) {
+					Minecraft.getInstance().getTextureManager().register(WIPE_MASK, new HeroTexture(WIPE_MASK, out, net.minecraft.client.renderer.texture.MipmapStrategy.MEAN));
+					wipeMade = true;
+				}
+			} catch (java.io.IOException e) {
+				dev.overcraft.Overcraft.LOG.warn("Sombra's stealth wipe: {}", e.toString());
+			}
+		}
+		return wipeMade;
+	}
+
+	/**
+	 * Sombra stealthed (#87), as she shows to those who still see her and in her own view. The fades are the data's: 1AD9 / 1AD8
+	 * wipe her solid self away along A7BF's diagonal frames, with its edge row's colours lit on the frame reached (phase 0 solid, 1
+	 * phased out). What's held has no art in the data (16EA is empty, the invisibility a renderer state, STU_33A46033: M): ours, one
+	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		phase = Math.clamp(phase, 0, 1);
+		boolean wipe = wipeMask();
+		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
+		float opacity = (own ? SEE_THROUGH_OWN : SEE_THROUGH) * (0.92f + 0.16f * pulse) * phase;
+		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+		// what's left of her solid self, as vertex alpha against the wipe's mask (or plainly fading without the pack)
+		int solid = Math.clamp(Math.round((1 - phase) * 255), 0, 255) << 24 | 0xFFFFFF;
+		float fading = phase;
+		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
+			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
+				continue;
+			}
+			if (fading < 1) {
+				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+			}
+			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
+		}
+		if (wipe) {
+			// mid-fade the edge: the frame reached, lit in the row's colour by the fade; held, the frames turning slowly as glints
+			float mid = 4 * phase * (1 - phase);
+			int frame = phase < 1 ? Math.clamp((int) (phase * 6), 0, 5) : Math.floorMod((int) Math.floor(time * 5), 6);
+			float along = phase * 3;
+			int from = Math.clamp((int) along, 0, 2);
+			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
+			float strength = phase < 1 ? 0.85f * mid : 0.1f;
+			if (strength > 0.01f) {
+				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
+			}
+		}
+		submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
+	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
 	public static boolean submit(LivingEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
@@ -513,13 +638,36 @@ public final class HeroModelRenderer {
 		}
 		float scale = state.scale;
 		poseStack.scale(scale, scale, scale);
-		if (seeThrough) {
-			// Overwatch's stealthed Sombra to those who see her: a faint purple shimmer of her (ours: 25%, her colour)
-			submitSpirit(draw.loaded(), draw.skin(), poseStack, collector, SEE_THROUGH, 0, 0xB89BFF, 0xB89BFF, false);
+		float[] stealth = state.getData(STEALTH);
+		if (seeThrough || stealth != null) {
+			// Overwatch's stealthed Sombra to those who see her (her side, an enemy within 4 m, herself from behind): phased
+			// out, her weapon too; fading there over the stealth's 0.75 s and back over its 0.3 s (#87)
+			float phase = stealth != null ? stealth[0] : 1;
+			float time = stealth != null ? stealth[1] : state.ageInTicks / 20f;
+			submitStealth(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), phase, time, light, overlay, false);
+			EmoteProps.Placed held = state.getData(WEAPON);
+			if (held != null) {
+				poseStack.pushPose();
+				poseStack.mulPose(held.at());
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+				poseStack.popPose();
+			}
+			// her magazine goes with the gun (critique_parts C9)
+			EmoteProps.Held heldParts = state.getData(SIDEARM);
+			if (heldParts != null) {
+				for (EmoteProps.Placed part : heldParts.props()) {
+					poseStack.pushPose();
+					poseStack.mulPose(part.at());
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+					poseStack.popPose();
+				}
+			}
 			poseStack.popPose();
 			return true;
 		}
+		altGlow = draw.angryFace();
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
+		altGlow = false;
 		if (state.outlineColor != 0) {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
 		}
@@ -767,6 +915,14 @@ public final class HeroModelRenderer {
 		return viewGunAt >= 0 && Util.getMillis() - viewGunAt < 200 ? new Vector3f(VIEW_GUN) : null;
 	}
 
+	private static final Vector3f[] VIEW_PODS = {new Vector3f(), new Vector3f()};
+	private static long viewPodsAt = -1;
+
+	/** Juno's own view's torpedo pod (0 or 1) as drawn, from the camera in the world's axes, or null (as viewGun). */
+	public static @Nullable Vector3f viewPod(int side) {
+		return viewPodsAt >= 0 && Util.getMillis() - viewPodsAt < 200 ? new Vector3f(VIEW_PODS[side]) : null;
+	}
+
 	public static @Nullable Vector3f viewMuzzle() {
 		return viewMuzzleAt >= 0 && Util.getMillis() - viewMuzzleAt < 200 ? new Vector3f(VIEW_MUZZLE) : null;
 	}
@@ -875,6 +1031,12 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
+		if (hero == Hero.ANA && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
+			// fully scoped, Overwatch draws nothing of her: her view model goes (0B94 #199, M) and her scope's overlay fills
+			// the view (HeroHud.anaScope, #90). Her held pose 3B92 already takes the arms out of view (played); not drawing
+			// them makes sure no edge of the rifle shows inside the lens while she turns (the arms' sway)
+			return true;
+		}
 		if (hero == Hero.BRIGITTE && !minecraft) {
 			// her barrier up, as her side sees it: square to her view, 0.9 m ahead, from about her feet up (HeroWeapon)
 			EmoteProps.Placed barrier = HeroWeapon.barrierShown(animator, now);
@@ -905,12 +1067,32 @@ public final class HeroModelRenderer {
 		// where her ofuda hand's fingertip is in the view: the throw's puff pops there
 		poseStack.last().pose().transformPosition(animator.fingertip, VIEW_FINGERTIP);
 		viewFingertipAt = Util.getMillis();
+		if (hero == Hero.JUNO && !minecraft && animator.viewPose() != null) {
+			// her torpedo pods (bones 0182 / 0183 = hp 048D / 048E) as her own view draws them: the lock raises them into the
+			// top corners (torpedo_lock_start), and her torpedoes leave from there (#86: they started behind her eyes)
+			for (int side = 0; side < 2; side++) {
+				int node = loaded.model().node(side == 0 ? "bone_0182" : "bone_0183");
+				if (node >= 0) {
+					Vector3f at = Skeleton.world(loaded.model(), animator.viewPose(), node).getTranslation(new Vector3f());
+					poseStack.last().pose().transformPosition(at, VIEW_PODS[side]);
+				}
+			}
+			viewPodsAt = Util.getMillis();
+		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
 		int overlay = white > 0 ? OverlayTexture.pack(white * 0.6f, false) : OverlayTexture.NO_OVERLAY;
 		int lit = Math.max(light & 0xFFFF, VIEW_MODEL_MIN_LIGHT << 4) | light & 0xFFFF0000;
-		submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
-		submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
+		// Sombra stealthed: her own arms and pistol phased out too, as Overwatch's (#87: they stayed solid)
+		float stealth = hero == Hero.SOMBRA && !minecraft ? dev.overcraft.client.ClientSombra.phase(player, now) : 0;
+		if (stealth > 0) {
+			submitStealth(loaded, skin, poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+		} else {
+			altGlow = hero == Hero.JUNO && !minecraft && dev.overcraft.client.ClientJuno.faceAngry(player);
+			submitModel(loaded, skin, poseStack, collector, lit, overlay, minecraft ? allProps(loaded.model()) : Set.of(), true);
+			altGlow = false;
+			submitGlow(loaded, skin, poseStack, collector, Set.of(), white, true);
+		}
 		// his weapon in his hand when it's a model of its own (Lúcio's), not in Minecraft mode (Minecraft's items then)
 		EmoteProps.Placed weapon = minecraft ? null : HeroWeapon.place(hero, animator, loaded.model(), true, now);
 		net.minecraft.world.phys.Vec3 cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
@@ -920,16 +1102,33 @@ public final class HeroModelRenderer {
 		animator.whipHead = whip == null ? null : new Matrix4f(poseStack.last().pose()).invert()
 			.transformPosition(new Vector3f((float) (whip.x - cam.x), (float) (whip.y - cam.y), (float) (whip.z - cam.z)));
 		if (!minecraft) {
-			EmoteProps.submit(new EmoteProps.Held(HeroWeapon.extras(hero, animator, loaded.model(), true, now)), poseStack, collector,
-				lit, overlay);
+			java.util.List<EmoteProps.Placed> viewParts = HeroWeapon.extras(hero, animator, loaded.model(), true, now);
+			if (stealth > 0) {
+				for (EmoteProps.Placed part : viewParts) {
+					poseStack.pushPose();
+					poseStack.mulPose(part.at());
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+					poseStack.popPose();
+				}
+			} else {
+				EmoteProps.submit(new EmoteProps.Held(viewParts), poseStack, collector, lit, overlay);
+			}
 			if (hero == Hero.BRIGITTE && animator.chainFrom != null && animator.chainTo != null) {
-				Vector3f a = poseStack.last().pose().transformPosition(new Vector3f(animator.chainFrom));
-				Vector3f b = poseStack.last().pose().transformPosition(new Vector3f(animator.chainTo));
-				dev.overcraft.client.effect.BrigitteFx.chain(player, cam.add(a.x, a.y, a.z), cam.add(b.x, b.y, b.z));
+				dev.overcraft.client.effect.BrigitteFx.viewChain(poseStack, collector, animator.chainFrom, animator.chainTo, now);
 			}
 		}
 		if (weapon != null) {
-			EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			if (stealth > 0) {
+				poseStack.pushPose();
+				poseStack.mulPose(weapon.at());
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+				poseStack.popPose();
+			} else {
+				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
+			}
+			if (hero == Hero.ANA) {
+				anaCounter(weapon, poseStack, collector);
+			}
 			// its hp 0006 (Mercy's staff head, her blaster's muzzle) as drawn: her own view's beam starts there (MercyFx)
 			Vector3f muzzle = HeroWeapon.muzzle(hero, animator, loaded.model(), true, now);
 			if (muzzle != null) {
@@ -1204,6 +1403,11 @@ public final class HeroModelRenderer {
 		public static long emit;
 		/** Her shadows' share (both passes). */
 		public static long shadow;
+		/** Its glows' share, apart from emit. */
+		public static long glowEmit;
+		/** Dev ("timing glow N"): how glows draw, to measure them: off, whole pieces sorted as they first were, whole unsorted, lit triangles unsorted (the shipped way). */
+		public static final int GLOW_OFF = 0, GLOW_WHOLE_SORTED = 1, GLOW_WHOLE = 2, GLOW_LIT = 3;
+		public static int glow = GLOW_LIT;
 		/** Dev: draw only every this many triangles (1 = all), to see what the vertex count costs. */
 		public static int stride = 1;
 		/** Dev: CPU back-face culling on (compare pictures with it off). */
@@ -1231,12 +1435,46 @@ public final class HeroModelRenderer {
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			if (texture == null || isEyeShadow(loaded, piece)) {
+			if (texture == null && piece.material().endsWith(SIGMA_CORE_MATERIAL)
+				&& (piece.mesh().endsWith(SIGMA_CORE) || piece.mesh().endsWith(SIGMA_CORE_BASE))) {
+				// Sigma's hand-sphere cores (submeshes 2 / 3 of 106B4, material 7C98: a shader, no colour texture): its cloud
+				// noise 19167 through its LUT's colour row times its emission (8000DFB0EAFE r1: plum, violet to blue), as added light
+				Identifier core = dev.overcraft.client.effect.EffectArt.get("cat_glow_noise",
+					dev.overcraft.client.effect.EffectArt.Palette.SIG_HAND_EMISSION, false);
+				if (core != null) {
+					collector.submitCustomGeometry(poseStack, FxRender.additive(core),
+						(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, 0xFFFFFFFF, false, false));
+				}
+				continue;
+			}
+			// its added light (HeroModels.Glow, tools/glow_maps.py): over its colour, or alone where the piece has none (a light card)
+			HeroModels.Glow glow = loaded.glow().get(piece.material());
+			if (texture == null && glow == null || texture != null && isEyeShadow(loaded, piece)) {
 				continue;
 			}
 			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
+			}
+			if (glow != null && Timing.glow != Timing.GLOW_OFF) {
+				int tint = Math.clamp(Math.round(glow.strength() * GLOW_ALPHA * 255), 0, 255) << 24 | 0xFFFFFF;
+				// a screen with two faces (Juno's gun 4E48C: the other on an enemy, by that Juno's own aim: altGlow)
+				Identifier image = glow.alt() != null && altGlow ? glow.alt() : glow.texture();
+				// its lit triangles alone (HeroModels.litPieces), not sorted: added light sums alike in any order
+				SkinnedModel.Piece part = Timing.glow == Timing.GLOW_LIT ? loaded.lit().getOrDefault(piece, piece) : piece;
+				if (part.indices().length > 0) {
+					collector.submitCustomGeometry(poseStack, Timing.glow == Timing.GLOW_WHOLE_SORTED ? FxRender.additive(image) : FxRender.glow(image),
+						(pose, buffer) -> {
+							long t0 = System.nanoTime();
+							emit(part, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, tint, cull && texture != null, false);
+							Timing.glowEmit += System.nanoTime() - t0;
+						});
+				}
+			}
+			if (glow != null) {
+				if (texture == null || glow.glass()) {
+					continue;
+				}
 			}
 			if (piece.mesh().startsWith("holo_") || piece.mesh().startsWith("holoc_")) {
 				// a hologram (tools/owm_static.py): its light mask added in the tint, lit by itself, seen from both sides; a
@@ -1253,6 +1491,75 @@ public final class HeroModelRenderer {
 			});
 		}
 	}
+
+	/** Ana's rifle's sight screen (the 48 vertices of material BB56, shader 0x32, the image 38704). */
+	private static final String ANA_SCREEN = "00000000BB56";
+	/** Her ammo's digits on it: colour from the screen's image, size and offset ours, read against the screen in first person. */
+	private static final int ANA_DIGITS = 0xFFC8F4FF;
+	/** A plate behind them, over the screen's own art: without it they read as a scribble on it at play distance (critique_parts D). */
+	private static final int ANA_DIGIT_PLATE = 0xF2081420;
+	private static final float ANA_DIGIT_SCALE = 0.00105f;
+
+	/**
+	 * The ammo counter on her rifle's sight: tens and units of her ammo, 9 from 100 up (0B94 #542 / #543, ana-map.md), which the data
+	 * sends to dataflows 0B9A / 0B9B and shows by a means not read; drawn as text on the screen's own piece, facing out of it.
+	 */
+	private static void anaCounter(EmoteProps.Placed weapon, PoseStack poseStack, SubmitNodeCollector collector) {
+		dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+		SkinnedModel.Piece screen = null;
+		for (SkinnedModel.Piece piece : weapon.loaded().model().pieces) {
+			if (piece.material().equals(ANA_SCREEN)) {
+				screen = piece;
+			}
+		}
+		if (s == null || screen == null || screen.vertexCount() == 0) {
+			return;
+		}
+		Vector3f c = new Vector3f(), n = new Vector3f();
+		for (int v = 0; v < screen.vertexCount(); v++) {
+			c.add(screen.pos()[v * 3], screen.pos()[v * 3 + 1], screen.pos()[v * 3 + 2]);
+			n.add(screen.normal()[v * 3], screen.normal()[v * 3 + 1], screen.normal()[v * 3 + 2]);
+		}
+		c.div(screen.vertexCount());
+		n.normalize();
+		Vector3f up = new Vector3f(0, 1, 0).sub(new Vector3f(n).mul(n.y)).normalize();
+		Vector3f right = new Vector3f(up).cross(n).normalize();
+		int ammo = s.primaryAmmo();
+		String digits = ammo > 99 ? "99" : String.format(java.util.Locale.ROOT, "%02d", ammo);
+		net.minecraft.client.gui.Font font = Minecraft.getInstance().font;
+		poseStack.pushPose();
+		poseStack.mulPose(weapon.at());
+		poseStack.mulPose(weapon.skin()[screen.joint4()[0]]);
+		poseStack.mulPose(new Matrix4f(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, n.x, n.y, n.z, 0, c.x + n.x * 0.0008f, c.y + n.y * 0.0008f, c.z + n.z * 0.0008f, 1));
+		poseStack.scale(ANA_DIGIT_SCALE, -ANA_DIGIT_SCALE, ANA_DIGIT_SCALE);
+		collector.submitText(poseStack, -font.width(digits) / 2f, -4, net.minecraft.network.chat.Component.literal(digits).getVisualOrderText(), false,
+			net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, FULL_BRIGHT, ANA_DIGITS, ANA_DIGIT_PLATE, 0);
+		poseStack.popPose();
+	}
+
+	/** Whether the piece screens drawn now show their other face (Juno's gun: this Juno aims at an enemy). */
+	private static boolean altGlow;
+
+	/** Dev only (DevServer "aimpose"): the local player's model aims this pitch and is turned this far, the camera left level. */
+	public static float @Nullable [] DEV_AIM;
+
+	/** A glow at strength 1 (ours: its image holds the colour, Overwatch's HDR strength is clamped to 2 by the tool). */
+	private static final float GLOW_ALPHA = 0.8f;
+
+	/**
+	 * Sigma's hand-sphere cores' material (7C98, a shader with no colour texture). The submesh keys below are shared with other
+	 * models' untextured pieces (Lucio's, Sombra's, Ana's pistol, Brigitte's and her shield, Lifeweaver's platform and flower
+	 * ring all have a 6B24EE2D2B083AFE piece), which keyed alone drew violet: found by the 2026-11-02 QA audit, seen on
+	 * Brigitte's shield in the release play.
+	 */
+	private static final String SIGMA_CORE_MATERIAL = "7C98";
+	/** Sigma's hand-sphere cores' submesh key (tools/reference/sigma-effects.md "The hand spheres' real look"). */
+	private static final String SIGMA_CORE = "6B24EE2D2B083AFE";
+	/**
+	 * The same cores on the spheres' base model D7DD (submeshes 2 / 3, material 7C98 again), which his emotes spawn as props
+	 * (Dans' juggled copy, Constellation's two: techniques/emotes/sigma_emotes.md); drawn dark without this.
+	 */
+	private static final String SIGMA_CORE_BASE = "3060878AEBDEB872";
 
 	/** A hologram's tint: the middle of its colour strip A06C (tools/reference/sombra-effects.md, M: the strip read as one colour). */
 	private static final int HOLOGRAM = 0xFF8344EF;
@@ -1284,8 +1591,14 @@ public final class HeroModelRenderer {
 	 */
 	public static void submitField(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector, int argb) {
 		HudShapes.ensure();
+		submitField(loaded, skin, poseStack, collector, argb, HudShapes.WHITE);
+	}
+
+	/** The same through a texture on the model's own UVs (Sigma's barrier: its field's rim and hexes, SigmaBarrierRenderer). */
+	public static void submitField(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector, int argb,
+		net.minecraft.resources.Identifier texture) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
-			collector.submitCustomGeometry(poseStack, FxRender.additive(HudShapes.WHITE),
+			collector.submitCustomGeometry(poseStack, FxRender.additive(texture),
 				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false, argb, false, false));
 		}
 	}

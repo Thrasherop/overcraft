@@ -96,6 +96,15 @@ final class ActionTrack {
 			case "ult_dive" -> start(now, "ult_dive_start", "ult_dive");
 			// Mercy: Valkyrie's cast is one clip (alias 0x1B8), as are Resurrect and Guardian Angel's launch
 			case "ult_cast_blaster" -> start(now, "ult_cast_blaster");
+			// Juno's first-person Pulsar Torpedoes (alias 0x165 by df 0x1A0, juno_1p.txt): the lock's start (cat 0x6E, 13/30 s),
+			// then its hold (the default, 39/30 s) looping for the whole lock window until the fire (cat 0x82) or a cancel.
+			// The start alone ran out after 0.43 s and the gun came back up mid-lock (#86)
+			case "torpedo_lock_view" -> {
+				start(now, "torpedo_lock_start", "torpedo_lock");
+				holdLast = true;
+			}
+			// the lock given up (nothing locked, or cancelled): the pods fold away from where they are
+			case "torpedo_cancel" -> cancel("torpedo_lock", now);
 			default -> start(now, action);
 		}
 	}

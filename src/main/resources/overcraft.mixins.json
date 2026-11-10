@@ -15,7 +15,14 @@
 		"ServerGamePacketListenerAccessor",
 		"ServerExplosionMixin",
 		"AbstractArrowAccessor",
-		"LargeFireballAccessor"
+		"LargeFireballAccessor",
+		"ProjectileInvoker",
+		"MeleeHitMixin",
+		"PlayerMeleeMixin",
+		"MobMixin",
+		"ConversionTypeMixin",
+		"BucketableMixin",
+		"ResurrectedLootMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

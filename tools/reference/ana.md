@@ -79,7 +79,7 @@ sizes 0.07 -> 0.04 (large) and 0.04 -> 0.02 (small)**. Nothing on 10-13 or 10-20
 - Same 75 / 75, ammo cost 1 and 0.8 s recovery as unscoped (D 0B95 for both; W) **H**.
 - **Move speed -65% while fully scoped**: 0.35 x 5.5 = **1.93 m/s** (D 1E61 0.65 into the shared slow channel, 0B94 #239 ->
   01C7 #1158: M; W -65%, 1.925 m/s) **H**. Not during the 0.25 s scope-in (D) **M**.
-- Zoom: D v172 = **30** (0B94 #83; unit L, perhaps the zoomed FOV in degrees); not in BZ or W **L**. **Relative aim
+- Zoom: D v172 = **30** (0B94 #83), vertical degrees (community: 51 horizontal at 16:9; #90); not in BZ or W **M**. **Relative aim
   sensitivity while zoomed 30%** by default (D v8174 0.3; W) **H**.
 - Unscopes: letting go (or pressing again with Toggle Zoom), a reload, the clip reaching 0, another ability taking the weapon
   (Nano Boost's cast); **a shot does not unscope**; she can't scope with an empty clip; a reload turns Toggle Zoom off (D 0B94

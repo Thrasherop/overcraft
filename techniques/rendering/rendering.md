@@ -135,6 +135,64 @@ What drawing heroes, effects and HUD in 26.3's renderer taught. Up: [Techniques]
 - **A sphere round an area must be very faint:** her field's sphere at 0.18 alpha drew a milky solid dome over everything in
   it; 0.06 reads as a shell.
 
+### Sigma's effects (2026-11-02; [sigma-effects](../../tools/reference/sigma-effects.md), hub [sigma](../heroes/sigma.md#step-10-his-effects-sounds-and-voice-from-the-data-played-2026-11-02))
+- **Even holding only references, the Palette enum is near its 64 KB:** his 200 rows (`SigmaPalettes`) didn't fit as enum
+  constants ("code too large" again); only the 112 SigmaFx draws are named in `EffectArt.Palette`, the rest stay in
+  `SigmaPalettes` for later. The next hero should move the enum's constants out (a map keyed by name) rather than trim.
+- **Many of his renderers multiply two masks, and one alone is a full-frame noise:** 200E4, 4DB, 7AB, 16E9D, 299E1 and
+  19167 fill their square, so on a quad they drew as squares (the launch cone, the barrier's corner motes, Grasp's disc,
+  the send streaks, Flux's glows, Levitation). Bake the data's pair (`PRODUCTS`: `sigma_mote` = 4DB x 1FC54 ...) or round
+  the noise with the soft glow 4C09; look at a mask sheet before drawing any mask on a quad.
+- **A shader-only material can still be drawn from its masks and LUT:** the barrier's 7C75 (rim 1FE0A over UV 0-1, hex
+  cells 18F9B tiled) baked into `sigma_barrier_field` and drawn on its own mesh through the LUT row as added light
+  (`HeroModelRenderer.submitField(..., texture)`); the hand spheres' cores (7C98, untextured submeshes skipped until
+  now) drawn in `submitModel` as added light through the cloud noise, both views, so the 1P view model shows them too
+  (where world particles can't). A LUT row whose alpha is its emission must be multiplied by it: drawn as RGB the cores
+  read pink (the row's dark plum middle), RGB x A gives the data's violet to blue (`SIG_HAND_EMISSION`).
+- **Added light over a big shape must be faint, more so by day:** the barrier at 0.6 strength was a solid cyan wall and
+  white against the sky; 0.22 reads see-through day and night. Flux's 15 m cylinders need 0.04-0.07 alpha, Grasp's 3 m
+  haze 0.05 with a 3 m near-fade (from the front camera it filled the screen).
+- **To look at effects in third person, turn after acting:** the camera behind a 2.5 m tank hides everything ahead of him;
+  act, then `look` 25-60 degrees aside and screenshot (what he left in the world stays put).
+
+## Glows: emission from the data (2026-11-04, #91)
+glTF keeps a material's colour image and the export dropped everything else (`owm_survey.py` `gltf_materials`), so every glowing part was lit by the world and went dark at night, and pieces whose
+shader has no colour image weren't drawn. A re-export of every hero costs hours; **`tools/glow_maps.py` doesn't need Blender**: it reads each model's material ids from its `.glb`, reads each `.owmat`, and bakes
+`hero_models/glow/<id>.png` and `<model>_glow.json`, drawn by `submitModel` as added light on the piece's own UVs (`FxRender.additive`, whose OIT set exists).
+- **Which slot is light** (io_scene_owm `shader_metadata`): 0xBCBE747D Emission and 0x5ACB436A Skin Emission are grey masks, multiplied by the colour image 0xAD10F602 (Sombra's lit strips, Ana's rifle: a grey mask alone would be white); 0xEDCD5483 on decals (shader 0x22) over 0x665648E9; 0x0403F89A on shader 0x26, as it is; shader 0x32 (a light card) its image in 0xCA8ECF6A / 0xD569F1CA, else mask x its ramp 0x5118206D's brightest row. A blank (000A, 4791) or a map under 12 of 255 isn't a glow.
+- **Strength:** the material's Emission Strength is HDR (Kiriko's 12, Sombra's 20), clamped to 2 and multiplied by 0.8 (ours, by eye, day and night).
+- **Only what lights, once.** An emission map lives on a hero's main material, so whole pieces were 49-100% of a hero's triangles drawn twice ([critique_parts](../testing/critique_parts.md) C1). `HeroModels.litPieces` keeps a piece's triangles whose part of the image has light (a grid of samples per triangle), `FxRender.glow` doesn't sort on upload (added light sums alike in any order), and one texture serves every model that shares an image. The models are named exactly (a prefix list had cut `juno_cell` and `brigitte_shield`).
+- **Measured** (`timing glow N`, ms of glow emit per frame on one hero, CPU: emit and pose were steady; the window ran at its 30 fps background cap, so fps says nothing here and the GPU's share wasn't measured):
+
+  | | whole pieces | lit triangles | |
+  |---|---|---|---|
+  | Lifeweaver 3P / 1P | 2.25 / 1.09 | 0.44 / 0.30 | |
+  | Mercy 3P / 1P | 2.60 / 1.37 | 0.40 / 0.21 | |
+  | Juno 3P / 1P | 1.70 / 1.09 | 0.12 / 0.09 | |
+  | Ana 3P / 1P | 2.40 / 1.21 | 0.05 / 0.04 | |
+
+  Sorted against unsorted showed no change in emit (the sort runs at upload, outside this timer). The hero's own emit is 1.9-2.8 ms in 3P for comparison.
+- **Played, then cut back:** shader 0x26's glow layer is often its colour image again; added at its strength over the lit colour, Lúcio's amp visor went flat white where the plain piece had detail (`z1_lucio_1p`): 0.25 now (ours). Juno's gun's glass FBC0 is a flat shell over the screen FB30: drawn solid it hid her face and read white, so it's only a faint added light (`GLASS`).
+- **The light cards were shown as data:** Ana's sight screen, Juno's gun's face, the amp's and pistol's cards. Their flipbooks and scrolling layers (Sombra's bars A5B6, letters 9F80) are one still image.
+- **Played:** next's client against this branch (`z0_*` in the next checkout's run/screenshots, `z1_*` in this one's): seven heroes first person at night and third person looking up; Improved Transparency toggled on with F3+X in play (no crash; `z1_it_juno*`).
+- **A critic should check:** third person at night, front and back, each hero: the parts lit in the shots stay lit; no piece glows that doesn't in Overwatch (the body's strips on Lifeweaver's flower are bright); Improved Transparency on. Not done: X13, a glow *effect* on a first-person gun (Sojourn's hp 007C particle) still hides behind it; the piece glows in the hand pass do show.
+
+## Ability cameras (2026-11-02, #88)
+- **An ability's third-person view is in its graph, not guessed.** Brigitte's barrier view is 0EE3 #857
+  (`STU_582E0D5F`): a distance (2 m times her scale, 4 in Rally, chased over 0.4 s), a 0.3 s blend in and out for her
+  own view, on while v1319 (shield up, she is the viewer, not in the first 0.35 s of a bash). Its 1.04 is Stadium's
+  third-person field of view (x the hero setting), not a height: read every field's condition before naming it. Search a hero's ability
+  graph for the node type and its condition before placing a view by eye; her hero settings (`herosettings_*.json`)
+  say whether Overwatch lets the player turn it off (hers don't).
+- `AbilityCamera` takes the distance, a chase speed and the blend; `CameraMixin` places the view (lifted 1 m for Jetpack
+  Cat, 0.5 m for Brigitte so her head and shoulders show under the crosshair, both ours; turned to the point the aim
+  meets; her model hidden while the view is under 1 m from her, mid-blend), and `HeroHud` draws the crosshair from behind while one holds the view: the
+  centre of the screen is where she aims. Blend by time, not frames: at a low frame rate a per-frame step capped at
+  0.1 s made the 0.3 s blend take over a second (found tracing it with the harness's `state` `camera` field).
+- **Foresee the player's own press.** The server's word that the barrier went up came 0.1-0.3 s after the press, and
+  the view sat in first person that long; `ClientBrigitte.barrierView` starts it from her own press (unless her barrier
+  is broken: a synced bit), for 0.5 s until the server agrees.
+
 ## Fonts and text
 - Minecraft's "ttf" font provider only takes TrueType outlines; CFF fonts (.otf "OTTO") are rejected. Fonts are placed
   by baseline 7 units below the draw position at any size.
@@ -189,3 +247,9 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
 - **Attached particles and slow frames:** `Fx.attach` holds a particle at `life x (1 - fadeOut)` each client tick, but
   `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
   field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).
+
+## Things in the hand pass (2026-11-05, #113, #114, #105)
+- **What must meet the first-person model goes in the hand pass, not the world:** a world particle fed from `submitArms` is a frame late, drawn under the other pass's projection and behind the depth that pass clears. `BrigitteFx.viewChain` submits a ribbon with `collector.submitCustomGeometry(poseStack, FxRender.additive(tex), ...)`: the same pose as the model, facing the eye (the pose's inverse at the origin). Sojourn's open case above can go the same way.
+- **Read a mask's falloff before calling it soft** (`lucio_soft`, 4F3: 255 to a third of its radius, then an edge; `mercy_soft` falls smoothly, but at 1.5 m added over the sky it's a sun). Sample a row across the middle.
+- **A black colour image with a shader that colours it:** `HeroModels.colourHair` takes `hero_models/colour/<material>.png` (`tools/glow_maps.py --colours`). glTF can't carry it, and a re-export isn't needed.
+- **A camera roll** is `rotation.rotateZ` and the three axes after `alignWithEntity`: `setRotation` has none (`CameraMixin.overcraft$wallRoll`). The arms stay square to the screen: their pass undoes the view.

@@ -41,6 +41,15 @@ public final class Combat {
 	public static final int REGEN_DELAY = Ow.ticks(6);
 	public static final double REGEN_FLAT = 10;
 	public static final double REGEN_PERCENT = 0.05;
+	/**
+	 * Being hurt by an enemy cuts the healing received (the role graph 01C7, everyone's since BZ 2026-02-10 "In-Combat Healing
+	 * Reduction on Damage: -30%", "Reduced effectiveness against Tanks: -15%"; BZ 2026-07-30's 15% was Quick Play Hacked's alone,
+	 * and the notes to 2026-11-03 change nothing else of it): D #1308 v25267 = 1A33 0.3, x 1CAC 0.5 for a tank, for 1E68 3 s (#881).
+	 * W's rules: a new hit doesn't stack; no self-damage; it multiplies with other healing modifiers; it's cleansable. W's box is
+	 * flagged "removed" and was edited on after that (its table of exempt abilities, none of them ours): D and BZ settle it
+	 * (tools/reference/sigma.md, Disagreements 11).
+	 */
+	public static final double HEAL_CUT = 0.3, HEAL_CUT_TANK_SHARE = 0.5, HEAL_CUT_TIME = 3;
 
 	private static final Identifier RUSH_SPEED = Overcraft.id("kitsune_rush_speed");
 	private static final Identifier RUSH_ATTACK = Overcraft.id("kitsune_rush_attack");
@@ -49,6 +58,8 @@ public final class Combat {
 	/** Ana's Biotic Grenade on a creature (game time it ends): healing received +50% (an ally), none (an enemy). */
 	private static final Map<UUID, Long> healBoostUntil = new HashMap<>();
 	private static final Map<UUID, Long> antiHealUntil = new HashMap<>();
+	/** The healing reduction on a creature hurt by an enemy (game time it ends). */
+	private static final Map<UUID, Long> healCutUntil = new HashMap<>();
 	private static final Map<UUID, Long> rushedUntil = new HashMap<>();
 	private static final Map<UUID, LivingEntity> rushedEntities = new HashMap<>();
 
@@ -65,42 +76,313 @@ public final class Combat {
 	 * clearing it let the cooldown drop every hit after the first in half a second (a volley's 5 shots did 4: found
 	 * playing Jetpack Cat).
 	 */
-	public static float damage(LivingEntity target, DamageSource source, double owDamage) {
-		float before = target.getHealth() + target.getAbsorptionAmount();
-		target.damageCooldownTime = 0;
-		target.hurt(source, Ow.hp(owDamage));
-		target.damageCooldownTime = 0;
-		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
-		return Math.max(0, Ow.toOw(dealt));
+	/**
+	 * A hitscan shot's damage from a hero (Ana's rifle, Sombra's pistol, Sojourn's Charged Shot): overcraft:hitscan, not a
+	 * projectile, so endermen take it instead of teleporting away (the owner's balance call, #92); otherwise as the arrow
+	 * type they used (armor; no knockback, as no hero hit has: heroHit). No direct entity, so the kill feed doesn't take it for melee.
+	 */
+	public static DamageSource hitscan(net.minecraft.server.level.ServerPlayer owner) {
+		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("hitscan"))), null, owner);
+	}
+
+	/**
+	 * Deals a hero's damage, saying what dealt it ({@code blow}: the weapon, melee, an ability, a perk, the ult, whether
+	 * it was critical, and the hero who dealt it, filled from the attacker's hero when not given). A death it causes is
+	 * told by it (KillFeed, which also calls Voice: they run inside the hurt). The hit itself moves no one (heroHit): what
+	 * pushes does so through push or launch, which remember it for the kill credit (#84).
+	 */
+	public static float damage(LivingEntity target, DamageSource source, double owDamage, Blow blow) {
+		return deal(target, target, source, blow, () -> target.hurt(source, Ow.hp(owDamage)));
 	}
 
 	/**
 	 * The same through one of the Ender Dragon's parts (its head and neck take it all, the rest a quarter plus one:
-	 * Minecraft's rule, EnderDragon.hurt).
+	 * Minecraft's rule, EnderDragon.hurt). The dragon's death runs inside this hurt too (LivingEntity.die calls its
+	 * handleKillingBlow, which starts the DYING phase), so its kill is told with the blow like any other.
 	 */
-	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage) {
-		LivingEntity dragon = part.parentMob;
-		float before = dragon.getHealth() + dragon.getAbsorptionAmount();
-		dragon.damageCooldownTime = 0;
-		part.hurtServer(level, source, Ow.hp(owDamage));
-		dragon.damageCooldownTime = 0;
-		float dealt = before - (dragon.isAlive() ? dragon.getHealth() + dragon.getAbsorptionAmount() : 0);
+	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage, Blow blow) {
+		return deal(part.parentMob, part, source, blow, () -> part.hurtServer(level, source, Ow.hp(owDamage)));
+	}
+
+	private static float deal(LivingEntity target, Entity hit, DamageSource source, Blow blow, Runnable hurt) {
+		blow = withHero(blow, source.getEntity());
+		float before = target.getHealth() + target.getAbsorptionAmount();
+		dealingWhile(source.getEntity(), target, blow, () -> {
+			target.damageCooldownTime = 0;
+			hurt.run();
+			target.damageCooldownTime = 0;
+		});
+		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
 		return Math.max(0, Ow.toOw(dealt));
+	}
+
+	/** The blow with its hero: as given, else the attacker's hero now (a hit that lands as it's made). */
+	public static Blow withHero(Blow blow, @org.jspecify.annotations.Nullable Entity attacker) {
+		return blow.hero() == null && attacker instanceof Player player ? blow.by(HeroManager.hero(player)) : blow;
+	}
+
+	/** The hero damage being dealt right now (inside Combat.damage's hurt): who, to whom, with what. */
+	private record Dealt(@org.jspecify.annotations.Nullable Object attacker, Object target, Blow blow) {
+	}
+
+	private static @org.jspecify.annotations.Nullable Dealt dealing;
+
+	/**
+	 * Runs {@code hurt} with this blow as the one being dealt, then puts back whatever was being dealt before (a hurt
+	 * that deals hero damage of its own, nested). Package-private for BlowTest.
+	 */
+	static void dealingWhile(@org.jspecify.annotations.Nullable Object attacker, Object target, Blow blow, Runnable hurt) {
+		Dealt outer = dealing;
+		dealing = new Dealt(attacker, target, blow);
+		try {
+			hurt.run();
+		} finally {
+			dealing = outer;
+		}
+	}
+
+	/**
+	 * Whether the hurt running on {@code victim} with {@code source} is a hero's hit (dealt through Combat.damage, #93).
+	 * Overwatch hits don't push: weapon fire and most abilities have no knockback at all (the wiki's Status effect page,
+	 * Knockback, rev 408792, lists the few that do: for our heroes Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr
+	 * and Catnapper, Lúcio's Soundwave, Sigma's Hyperspheres, Accretion and Hyper Strike, and quick melee's "very small"
+	 * one), and those push the target themselves after the hit. So a hero's hit takes none of Minecraft's default knockback
+	 * (0.4 and a hop, in a random direction when the hit has no position: hitscan, the flail) and no impact either (a hurt
+	 * player is sent the server's stale copy of their motion, a jolt: minecraft_26.md #82); an ability that pushes does it
+	 * through push or launch. LivingEntityMixin asks this inside LivingEntity.hurtServer.
+	 */
+	public static boolean heroHit(LivingEntity victim, DamageSource source) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == source.getEntity();
+	}
+
+	/**
+	 * What share of a push {@code target} takes from its state (M6): a Stalwart's (Tank), Sigma's in Flux, Mercy in Valkyrie and
+	 * just after a launch, Juno gliding, Jetpack Cat flying (the wiki's table of who takes less: Status effect, Knockback). Not
+	 * its knockback resistance, which Minecraft's own knockback applies itself.
+	 */
+	public static double knockbackTaken(@org.jspecify.annotations.Nullable Entity target) {
+		double state = 1;
+		if (target instanceof Player player && HeroManager.controls(player) && HeroManager.state(player) instanceof HeroState s) {
+			if (s.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.flying(s)) {
+				// half in Valkyrie (W; her data's 0A04B51B -0.5), a fifth of that just after a launch (006E #477: 0A04B51B x0.2)
+				state = dev.overcraft.mercy.MercyStats.VALKYRIE_KNOCKBACK
+					* (s.gaPhase == dev.overcraft.mercy.Mercy.GA_LAUNCHED ? dev.overcraft.mercy.MercyStats.GA_LAUNCH_KNOCKBACK_VALKYRIE : 1);
+			} else if (dev.overcraft.juno.Juno.gliding(s)) {
+				// half in Glide Boost (her data's 0A04B51B = 1DF3 -0.5, 47B7 #774)
+				state = dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
+			} else if (s.hero == Hero.JETPACK_CAT) {
+				state = dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN;
+			}
+		}
+		// D.Va in her Boosters: a tenth (047E #243)
+		double boosters = target instanceof LivingEntity living ? dev.overcraft.dva.Boosters.knockbackFactor(living) : 1;
+		return state * boosters * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
+	}
+
+	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
+	public static double pushShare(LivingEntity target) {
+		return knockbackTaken(target) * Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+	}
+
+	/** What it is moving at now: a player's client moves them, so the speed it reports (the server's copy is stale). */
+	public static net.minecraft.world.phys.Vec3 motion(LivingEntity target) {
+		return target instanceof ServerPlayer player ? player.getKnownMovement() : target.getDeltaMovement();
+	}
+
+	/**
+	 * A hero's push on top of what {@code target} is doing: the one way an ability knocks something back (#93). Scaled by
+	 * pushShare, none while it is phased (Protection Suzu, Life Grip), sent to its own client when it is a player, and remembered
+	 * for the kill credit.
+	 */
+	public static void push(LivingEntity target, net.minecraft.world.phys.Vec3 impulse, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (!isPhased(target)) {
+			target.setDeltaMovement(motion(target).add(impulse.scale(pushShare(target))));
+			send(target);
+			pushed(target, attacker, blow);
+		}
+	}
+
+	/** The same, replacing what it was doing: it leaves at {@code velocity} (Soundwave). */
+	public static void launch(LivingEntity target, net.minecraft.world.phys.Vec3 velocity, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (!isPhased(target)) {
+			target.setDeltaMovement(velocity.scale(pushShare(target)));
+			send(target);
+			pushed(target, attacker, blow);
+		}
+	}
+
+	/**
+	 * Sends a speed just set on {@code target}: to the others watching (needsSync), and at once to its own client when it is a
+	 * player, who moves on it. The tracker's syncVelocity isn't enough: played with two clients, it goes a tick later, after
+	 * their next movement packet has reset the server's copy (Accretion's first version: the rock's knockback reached a player as
+	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this.
+	 */
+	public static void send(LivingEntity target) {
+		target.needsSync = true;
+		if (target instanceof ServerPlayer player) {
+			player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
+			player.syncVelocity = false;
+		}
+	}
+
+	/** The blow being dealt to {@code victim} by {@code attacker} right now, or null. Package-private for BlowTest. */
+	static @org.jspecify.annotations.Nullable Blow dealtTo(Object victim, @org.jspecify.annotations.Nullable Object attacker) {
+		Dealt d = dealing;
+		return d != null && d.target == victim && d.attacker == attacker ? d.blow : null;
+	}
+
+	/**
+	 * A creature's last push by a hero: by whom, with what, when (game time), and its own tickCount then (to compare with
+	 * a later mob's blow, LivingEntity.lastHurtByMobTimestamp).
+	 */
+	public record LastPush(UUID attacker, Blow blow, long at, int victimTick) {
+	}
+
+	private static final Map<UUID, LastPush> lastPushes = new HashMap<>();
+
+	/**
+	 * How long a hero's push still counts for a death by the world (a fall, the void, lava, a wall): Minecraft's own kill
+	 * credit window (LivingEntity.lastHurtByPlayerMemoryTime, 100 ticks).
+	 */
+	public static final int CREDIT_TICKS = 100;
+
+	/**
+	 * A hero's blow moved {@code target} (push and launch call this; Flux, Whip Shot, quick melee and Accretion's rock call it
+	 * for their own moves): if the world kills it within CREDIT_TICKS, the kill is that hero's, with that blow.
+	 */
+	public static void pushed(LivingEntity target, @org.jspecify.annotations.Nullable Entity attacker, Blow blow) {
+		if (attacker instanceof Player hero && hero != target) {
+			lastPushes.put(target.getUUID(), new LastPush(hero.getUUID(), withHero(blow, hero), now(target), target.tickCount));
+		}
+	}
+
+	/**
+	 * What dealt the blow that is killing {@code victim} with {@code source}: the hero damage being dealt to it right
+	 * now, or null (not a hero's: a zombie's bite, a sword in Minecraft mode, the world).
+	 */
+	public static @org.jspecify.annotations.Nullable Blow blow(LivingEntity victim, DamageSource source) {
+		return dealtTo(victim, source.getEntity());
+	}
+
+	/**
+	 * The deaths the world deals that a push can cause: a fall, the void, lava, a wall it was pushed into (suffocation, or
+	 * flying into one). Not sunburn, drowning, starving, a dispenser's arrow, cramming or /kill.
+	 */
+	public static boolean pushDeath(DamageSource source) {
+		return source.getEntity() == null && (source.is(net.minecraft.tags.DamageTypeTags.IS_FALL)
+			|| source.typeHolder().unwrapKey().map(key -> pushDeathType(key.identifier().toString())).orElse(false));
+	}
+
+	/** The world's damage types (besides falls) a push can kill with, by id. Package-private for BlowTest. */
+	static boolean pushDeathType(String id) {
+		return switch (id) {
+			case "minecraft:out_of_world", "minecraft:lava", "minecraft:in_wall", "minecraft:fly_into_wall", "minecraft:fall" -> true;
+			default -> false;
+		};
+	}
+
+	/** Whether a push made at {@code at} still counts at {@code now} (game times). Package-private for BlowTest. */
+	static boolean inCreditWindow(long now, long at) {
+		return now - at <= CREDIT_TICKS;
+	}
+
+	/**
+	 * The hero push that a death by the world is credited to: within CREDIT_TICKS, and not overtaken by a later blow from
+	 * someone else (a skeleton's arrow after the hero's boop takes the kill, as Minecraft's own kill credit would);
+	 * null otherwise.
+	 */
+	public static @org.jspecify.annotations.Nullable LastPush recentPush(LivingEntity victim) {
+		LastPush last = lastPushes.get(victim.getUUID());
+		if (last == null || !inCreditWindow(now(victim), last.at)) {
+			return null;
+		}
+		LivingEntity other = victim.getLastHurtByMob();
+		if (other != null && !other.getUUID().equals(last.attacker) && victim.getLastHurtByMobTimestamp() > last.victimTick) {
+			return null;
+		}
+		return last;
+	}
+
+	/** It died: its last push has been told, and is forgotten. */
+	public static void forget(LivingEntity victim) {
+		lastPushes.remove(victim.getUUID());
 	}
 
 	/**
 	 * Heals in Overwatch units. Returns the healing actually done (OW), which is what ult charge counts. Ana's Biotic
-	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one. Minecraft's own healing (food,
-	 * potions) doesn't pass here and isn't scaled (ours: the owner's open question, ana-plan.md).
+	 * Grenade scales it: none on an anti-healed creature, +50% on a boosted one; a hurt one's takes the healing reduction too.
+	 * Minecraft's own healing (food, potions) doesn't pass here and isn't scaled, as Overwatch's health packs heal for their
+	 * full amount (W Global Passive Abilities; ours: the owner's open question, ana-plan.md).
 	 */
 	public static float heal(LivingEntity target, double owHeal) {
-		double scale = antiHealed(target) ? 0 : healBoosted(target) ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		double scale = healScale(antiHealed(target), healBoosted(target), healCut(target), healCutTank(target));
 		if (scale <= 0) {
 			return 0;
 		}
 		float before = target.getHealth();
 		target.heal(Ow.hp(owHeal * scale));
 		return Ow.toOw(target.getHealth() - before);
+	}
+
+	/** What healing received is multiplied by. Package-private for HealScaleTest. */
+	static double healScale(boolean antiHealed, boolean boosted, boolean cut, boolean tank) {
+		if (antiHealed) {
+			return 0;
+		}
+		double scale = boosted ? 1 + dev.overcraft.ana.AnaStats.GRENADE_BOOST : 1;
+		return cut ? scale * (1 - HEAL_CUT * (tank ? HEAL_CUT_TANK_SHARE : 1)) : scale;
+	}
+
+	/** Whether a hurt is the kind that cuts healing: by someone else, not on their side. Package-private for HealScaleTest. */
+	static boolean cutsHealing(boolean hasAttacker, boolean self, boolean ally) {
+		return hasAttacker && !self && !ally;
+	}
+
+	/**
+	 * It was hurt (Overcraft's AFTER_DAMAGE: a hurt whose amount, before armor, is over 0, a mob's as much as a hero's): the graph's path into the
+	 * reduction, 01C7 #1281 (message 0011: damage taken, v35367 its tags, v18513 the attacker) -> #1202 -> #882 -> #2712 -> #881:
+	 * <ul>
+	 * <li>#1202: the attacker, or its owner, passes a filter of a player hero (m_84065FD1 1) on the other side (m_66747E7D 2) (H nodes, M the filter's meaning, by
+	 * Ana's and Lifeweaver's graphs). So nothing with no attacker cuts (a fall, lava, drowning, and in Minecraft burning, poison and wither, which name
+	 * none), nor your own, nor your side's. Ours: a mob counts as that attacker, as Overcraft's fights are against mobs.</li>
+	 * <li>#882: not a hit tagged 191F, Local Anesthetic's damage over time (Sleep.quiet: the only damage that runs under it).</li>
+	 * <li>#2712: {v61743, not v76560} only a Damage hero's (#2702, category 084E): a mode's rule (M: Stadium's, by W Passive ability). Not ours.</li>
+	 * <li>#881: the 3 s wait, from the start again on each hit (m_0DBAFD7F 1: M, and W "doesn't stack").</li>
+	 * <li>Its stop, #1186 {v6604 or v8440} -> #881's stop plug: what sets those two isn't in the graph: read, undecoded. Message 2525 (#1191 -> #1185 -> a 0.25 s wait
+	 * -> #1184): read, undecoded. #610 StateCombatModFilter x9007B042, op67(v25267): the healing scale itself (M, as Ana's B064); m_7724EC51 and m_5BF820E4: undecoded.</li>
+	 * </ul>
+	 * A no-team hit from another player or their pet counts as their own side's (Allies: with no teams everyone is an ally): it cuts nothing: decision, ours.
+	 */
+	public static void onHurt(LivingEntity target, DamageSource source) {
+		Entity by = source.getEntity();
+		// a player's own side, or a pet's owner's (a mob asked about a player answers "no teams, so allied", Allies.playersAllied: played,
+		// a husk's hit cut nothing)
+		LivingEntity side = by instanceof Player player ? player
+			: by instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : null;
+		boolean ally = side != null && (side == target || Allies.wasAlly(side, target));
+		if (!Sleep.quiet() && cutsHealing(by != null, by == target, ally)) {
+			healCutUntil.put(target.getUUID(), now(target) + Ow.ticks(HEAL_CUT_TIME));
+		}
+	}
+
+	public static boolean healCut(LivingEntity target) {
+		Long until = healCutUntil.get(target.getUUID());
+		return until != null && now(target) < until;
+	}
+
+	/** Whether the reduction on this one is a tank's (a player in hero mode as a tank, as Tank.ultFactor reads it). */
+	private static boolean healCutTank(LivingEntity target) {
+		return target instanceof Player player && HeroManager.controls(player) && Tank.tank(HeroManager.hero(player));
+	}
+
+	/** It died: nothing that scales its healing comes back with it (a player respawns under the same UUID). */
+	public static void clearHealing(LivingEntity target) {
+		healCutUntil.remove(target.getUUID());
+		healBoostUntil.remove(target.getUUID());
+		antiHealUntil.remove(target.getUUID());
 	}
 
 	/** Healing received +50% for {@code seconds} (an ally in Biotic Grenade's burst), not on an anti-healed one. */
@@ -135,6 +417,8 @@ public final class Combat {
 			}
 		}
 		harmful.forEach(target::removeEffect);
+		// (W Global Passive Abilities: "cleansable")
+		healCutUntil.remove(target.getUUID());
 		target.clearFire();
 		target.setTicksFrozen(0);
 	}
@@ -151,6 +435,11 @@ public final class Combat {
 		}
 		Long until = phasedUntil.get(target.getUUID());
 		return until != null && now(target) < until;
+	}
+
+	/** Out of a Kitsune Rush at once (hers, when she leaves play: #100); the tick takes its buffs off. */
+	public static void endRush(LivingEntity target) {
+		rushedUntil.remove(target.getUUID());
 	}
 
 	/** Kitsune Rush: in (or just out of) a corridor until {@code until}. */
@@ -196,10 +485,11 @@ public final class Combat {
 	public static final double FIRE_DECAY_PER_SECOND = 5;
 	public static final int FIRE_COOLDOWN_TICKS = 60;
 
-	/** Points toward On Fire for damage dealt (Overwatch HP) to a victim of this max health (Overwatch HP). */
-	public static void addFireForDamage(Player hero, double dealt, double victimMaxHealth) {
-		if (victimMaxHealth > 0) {
-			addFire(hero, dealt / victimMaxHealth * 100);
+	/** Points toward On Fire for damage dealt (Overwatch HP) to a victim, worth 100 for all its health; a bystander none (Allies). */
+	public static void addFireForDamage(Player hero, double dealt, LivingEntity victim) {
+		double max = Ow.toOw(victim.getMaxHealth());
+		if (max > 0 && !Allies.isBystander(hero, victim)) {
+			addFire(hero, dealt / max * 100);
 		}
 	}
 
@@ -236,9 +526,13 @@ public final class Combat {
 
 	/**
 	 * The same, done to {@code target}: an enemy tank (a player in hero mode as a tank, not on the earner's side) gives 40%
-	 * less of both (the Tank role: Tank.ultFactor). Healing a tank ally counts in full.
+	 * less of both (the Tank role: Tank.ultFactor). Healing a tank ally counts in full. A bystander (a cow, an armor stand:
+	 * Allies) gives nothing, or a chicken farm would fill an ult (#99, ours).
 	 */
 	public static void credit(Player hero, double points, @org.jspecify.annotations.Nullable Entity target) {
+		if (target != null && Allies.isBystander(hero, target)) {
+			return;
+		}
 		credit(hero, points * Tank.ultFactor(hero, target));
 	}
 
@@ -341,7 +635,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		overhealth.put(entity.getUUID(), new Overhealth(entity, amount / Ow.ticks(seconds), now(entity) + Ow.ticks(seconds), now(entity)));
@@ -362,7 +656,7 @@ public final class Combat {
 		clearOverhealth(entity);
 		AttributeInstance max = entity.getAttribute(Attributes.MAX_ABSORPTION);
 		if (max != null) {
-			max.addOrReplacePermanentModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
+			max.addOrUpdateTransientModifier(new AttributeModifier(OVERHEALTH, amount, AttributeModifier.Operation.ADD_VALUE));
 		}
 		entity.setAbsorptionAmount(entity.getAbsorptionAmount() + (float) amount);
 		long holdUntil = now(entity) + Ow.ticks(hold);
@@ -443,6 +737,8 @@ public final class Combat {
 		if (server.getTickCount() % 200 == 0) {
 			long time = server.overworld().getGameTime();
 			phasedUntil.values().removeIf(until -> until < time);
+			healCutUntil.values().removeIf(until -> until < time);
+			lastPushes.values().removeIf(last -> time - last.at > CREDIT_TICKS);
 		}
 	}
 
@@ -464,6 +760,7 @@ public final class Combat {
 
 	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
 	public static void animate(ServerPlayer hero, String clip) {
+		dev.overcraft.comms.Comms.animated(hero, clip);
 		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
 		ServerPlayNetworking.send(hero, payload);
 		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
@@ -473,10 +770,15 @@ public final class Combat {
 
 	public static void clear() {
 		phasedUntil.clear();
+		healCutUntil.clear();
+		healBoostUntil.clear();
+		antiHealUntil.clear();
 		rushedUntil.clear();
 		rushedEntities.clear();
 		buffs.clear();
 		overhealth.clear();
 		overhealthLeft.clear();
+		lastPushes.clear();
+		dealing = null;
 	}
 }

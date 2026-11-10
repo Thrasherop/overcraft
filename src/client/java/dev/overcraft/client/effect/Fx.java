@@ -561,6 +561,7 @@ public final class Fx {
 
 	public static void render(LevelRenderContext context) {
 		Minecraft mc = Minecraft.getInstance();
+		JetpackCatFx.ropes();
 		if (mc.level == null || (PARTICLES.isEmpty() && TRAILS.isEmpty())) {
 			lastTime = now();
 			return;

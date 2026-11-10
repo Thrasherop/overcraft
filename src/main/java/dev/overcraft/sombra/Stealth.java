@@ -34,8 +34,17 @@ public final class Stealth {
 	/** Her landing: stealth starts, mobs after her lose her. */
 	public static void start(ServerPlayer player, HeroState s) {
 		long now = player.level().getGameTime();
+		if (stealthed(player, s) && now >= s.stealthFrom + Ow.ticks(STEALTH_FADE_IN)) {
+			// already stealthed: the timer refills, no new fade (420C #1046)
+			s.stealthUntil = now + Ow.ticks(STEALTH_TIME);
+			s.stealthTotal = Ow.ticks(STEALTH_TIME);
+			s.revealedUntil = -1;
+			dropTargets(player);
+			return;
+		}
 		s.stealthFrom = now;
 		s.stealthUntil = now + Ow.ticks(STEALTH_FADE_IN + STEALTH_TIME);
+		s.stealthTotal = Ow.ticks(STEALTH_FADE_IN + STEALTH_TIME);
 		s.revealedUntil = -1;
 		dropTargets(player);
 	}
@@ -49,7 +58,7 @@ public final class Stealth {
 		}
 	}
 
-	/** Firing, Cyberspace, EMP, quick melee: it ends (its 0.3 s fade-out: shown at once, ours). */
+	/** Firing, Cyberspace, EMP, quick melee: it ends (every client fades her back over 0.3 s: ClientSombra). */
 	public static void end(ServerPlayer player, HeroState s) {
 		if (s.stealthUntil > player.level().getGameTime()) {
 			s.stealthUntil = player.level().getGameTime();
@@ -92,7 +101,26 @@ public final class Stealth {
 			SombraSounds.split(player, "stealth.end", player.position(), 30);
 			dev.overcraft.hero.Voice.say(player, "uncloak", 1);
 		}
+		if (on) {
+			// state 0's alias 0486 (420C #868, plays 0.525 s) ends with the 0.75 s fade; 1AD9's sparkles at 0.77 s, the fade's end
+			long age = now - s.stealthFrom;
+			if (age == Ow.ticks(STEALTH_FADE_IN - STEALTH_IN_CLIP)) {
+				dev.overcraft.hero.Combat.animate(player, "stealth_486");
+			}
+			if (age == Ow.ticks(STEALTH_SPARKLES)) {
+				dev.overcraft.hero.Effects.play(player.level(), "sombra_stealth", player.position(), net.minecraft.world.phys.Vec3.ZERO, player, 0, player);
+			}
+		} else if (s.sombraStealthed && player.isAlive()) {
+			// state 2's alias 0487 (420C #869): the way back to the pistol
+			dev.overcraft.hero.Combat.animate(player, "stealth_487");
+		}
 		s.sombraStealthed = on;
+		// every client's look of her (#87): when it began while it lasts, -1 after
+		Long shown = player.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		long want = on ? s.stealthFrom : -1;
+		if (shown == null ? want >= 0 : shown != want) {
+			player.setAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH, want);
+		}
 		boolean potion = player.hasEffect(net.minecraft.world.effect.MobEffects.INVISIBILITY);
 		if (player.isInvisible() != (hidden || potion)) {
 			player.setInvisible(hidden || potion);

@@ -4,7 +4,30 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-05
+
+### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt
+- Healing reduction (#103), a player arriving learns what's going on (#96), Juno's lock cancels and Life Grip's prompt (#112), Brigitte's first-person chain (#113), Lúcio's dreads, lean and camera roll (#105), Lúcio's and Mercy's glows (#114).
+- The pack: `effects`, `glows`, then `zip` (techniques/building/building.md). An older pack shows in red in the pause menu.
+
+### Jetpack Cat's Lifeline: a real rope (#89; not in a build yet)
+- Whoever she tows now hangs under her and trails behind her as she flies, swings past her when she stops, swings wide in a turn, comes up off the ground on a stretch of rope, and rides over a wall.
+  They used to copy her speed, keeping whatever offset they had, and stood still at whatever angle they stopped.
+- A towed player keeps their keys: their own client pulls them. Not yet played with a real second player.
+- Her view backs off to 6.75 m with someone on the rope, as her data has it (3.5 m seeking), so you can see them.
+- Mobs lean along the rope; heroes with a towed pose play it.
+- The rope flies out from her arm and back. It breaks if it's pulled through terrain from any direction. Jump to Detach keeps what you had across.
+
 ## 2026-11-02
+
+### Brigitte's Barrier Shield fixed (#88; not in a build yet)
+- With the shield up she no longer turns round and round: her shield-up stand is held still, as every turn-in-place
+  stand now is (found by what the clip does, not by name: Sombra's stealthed stand and Mercy's blaster stand too).
+- Raising the shield moves the view behind her, as Overwatch does (her data: 2 m back, 4 m in Rally, a 0.3 s blend, first
+  person for the start of a Shield Bash), with the crosshair on what she aims at.
+- The barrier now stops a blast whole: a creeper or TNT that breaks it no longer hurts or throws her, a creeper right
+  against it is blocked, and a blast is charged to it once. Her armor no longer shrinks hits on the barrier.
+- Dying with the shield up no longer brings her back holding it; a player who comes into range sees it already up.
 
 ### Build 0.3.30 (Sojourn, the tenth hero)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.30): Sojourn's models (`tools/clipmaps/sojourn*.txt`: her body, first-person

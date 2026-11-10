@@ -159,6 +159,12 @@ WEAPON_SLOTS = {
     # away (action 1) in Triumph, Heroic, Handstand Push-ups, Wobble and the shared Mic Drop / 178AD; clips played on it
     # (action 4) in Confidence (8F4B), Standing By (7DD9, 7DDB, 7DDA) and Weapons Check (9546): sojourn_weapon.txt
     "sojourn": {"4E30": ("stow", "railgun", "sojourn_weapon.txt")},
+    # Sigma's hand spheres 31A7 (model 106B4, the classic skin's D7DD) hang in slot 54CE on 000A (research/sigma/work/
+    # ents_sigma_out.txt: hero entity 2AB1's child 31A7 "var 54CE"). EMOTE_CONTROLS=1: put away (action 1) in Dans, Magic
+    # Pumpkins, Applause, Inconsequential, Laugh, Maestro, Stepping Stones, Constellation's 2.0-5.9 s and the shared Listen Up /
+    # Mic Drop / Salty layer; clips played on it (action 4) in Heroic (7459), Observations (72F1), Relaxation (7365, 7367,
+    # 7366) and Constellation (CBE3): sigma_weapon.txt (techniques/emotes/sigma_emotes.md)
+    "sigma": {"54CE": ("stow", "spheres", "sigma_weapon.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -172,11 +178,13 @@ BODY_WEAPON_STOW = {"juno": [1]}
 EMOTE_SOUNDS = Path("E:/Overwatch Archive/research/emote-sounds/sounds.json")
 # sounds that duplicate another at the same moment: Dance Party's music plays on two buses at once (49D9 and 4A52) and
 # its intro hit twice (49DA and B1B9, the second adding only a duck state); one of each plays (sounds.json notes: M)
-DUPLICATES = {"lucio": {"4A52", "B1B9"}}
+DUPLICATES = {"lucio": {"4A52", "B1B9"},
+              # Maestro's music twice, the same file on two mixers at once (60D4 and 610B): the louder kept
+              "sigma": {"60D4"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True, "sigma": True}
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
@@ -630,7 +638,9 @@ def main():
                 if spawn.get("entity") and spawn["clip"] is None:
                     # a prop clip as long as the window (starts with it), else as long as her clip (runs with it)
                     for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
-                        match = [i for i, d in others.items() if abs(d - length) < 0.02]
+                        # never the clip whose effect spawns it: Magic Pumpkins' pumpkins (3B50) are spawned by the
+                        # carrier's own clip AE48 (on 1024E's bones 0986-0989), as long as itself, which isn't theirs
+                        match = [i for i, d in others.items() if abs(d - length) < 0.02 and i != clip["id"]]
                         # only clips whose bones the prop's skeleton holds (Dance Party's amplifier on the booth: 5677
                         # fits its 17 bones, the booth's own 5678 of the same length doesn't)
                         fitting = [i for i in match if bone_ids[i]

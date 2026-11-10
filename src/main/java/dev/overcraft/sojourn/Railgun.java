@@ -3,6 +3,7 @@ package dev.overcraft.sojourn;
 import dev.overcraft.Ow;
 import dev.overcraft.entity.RailgunShotEntity;
 import dev.overcraft.hero.Allies;
+import dev.overcraft.hero.Blow;
 import dev.overcraft.hero.Combat;
 import dev.overcraft.hero.Effects;
 import dev.overcraft.hero.HeroManager;
@@ -10,7 +11,6 @@ import dev.overcraft.hero.HeroState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
@@ -210,9 +210,12 @@ public final class Railgun {
 		DamageSource source = level.damageSources().thrown(shot, owner);
 		if (target == null || target instanceof ArmorStand) {
 			// an object (an end crystal, a boat, a minecart, an armor stand): hurt as an arrow does, +1 energy (+2 on a crit)
-			boolean crit = target != null && at.y >= target.getEyeY() - HEAD_DEPTH;
+			// (an armor stand is a bystander: no energy for it, #99; its old +1 was a boat's, an end crystal's)
+			boolean crit = target != null && dev.overcraft.hero.Headshot.crossed(target, at, shot.getDeltaMovement(), shot.hitRadius());
 			entity.hurtServer(level, source, Ow.hp(RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1)));
-			gain(owner, crit ? ENERGY_OBJECT_CRIT : ENERGY_OBJECT);
+			if (target == null) {
+				gain(owner, ENERGY_OBJECT);
+			}
 			struck(owner, at);
 			return;
 		}
@@ -220,26 +223,33 @@ public final class Railgun {
 			return;
 		}
 		struck(owner, at);
-		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, shot.getDeltaMovement(), shot.hitRadius());
 		HeroState s = HeroManager.state(owner);
-		if (crit && s != null) {
+		boolean pays = !Allies.isBystander(owner, target);
+		if (crit && s != null && pays) {
 			s.critAt = level.getGameTime();
 		}
 		double damage = RAILGUN_DAMAGE * (crit ? RAILGUN_CRIT : 1);
 		dev.overcraft.brigitte.Barrier.took = false;
-		float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+		float dealt = part != null ? Combat.damagePart(level, part, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN))
+			: Combat.damage(target, source, damage, Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOJOURN));
 		boolean barrier = dev.overcraft.brigitte.Barrier.took;
 		dev.overcraft.brigitte.Barrier.took = false;
 		Combat.credit(owner, dealt, target);
-		Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+		Combat.addFireForDamage(owner, dealt, target);
 		if (dealt > 0) {
 			Effects.hitMarker(owner, target, crit);
 		}
-		if (crit && s != null) {
+		if (crit && s != null && pays) {
 			Sojourn.sharpshooter(owner, s, dealt);
 		}
-		// energy from the hit, not the damage: none on a hit that did nothing (invulnerable), +1 on a barrier
-		gain(owner, barrier ? ENERGY_BARRIER : dealt > 0 ? crit ? ENERGY_CRIT : ENERGY_HIT : 0);
+		// energy from the hit, not the damage: none on a hit that did nothing (invulnerable) or on a bystander (#99), +1 on a barrier
+		gain(owner, barrier ? ENERGY_BARRIER : dealt > 0 && pays ? crit ? ENERGY_CRIT : ENERGY_HIT : 0);
+	}
+
+	/** A round stopped by a barrier: +1 energy (the +1 hit() gives for one took on the way to a target). */
+	public static void hitBarrier(ServerPlayer owner) {
+		gain(owner, ENERGY_BARRIER);
 	}
 
 	/**
@@ -311,18 +321,23 @@ public final class Railgun {
 				hit.entity().hurtServer(level, source, Ow.hp(base * falloff));
 				continue;
 			}
-			boolean crit = part != null ? part == part.parentMob.head : hit.at().y >= target.getEyeY() - HEAD_DEPTH;
-			if (crit) {
+			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, hit.at(), stop.subtract(eye), CHARGED_RADIUS);
+			boolean pays = !Allies.isBystander(player, target);
+			if (crit && pays) {
 				s.critAt = level.getGameTime();
 			}
 			double damage = base * falloff * (crit ? CHARGED_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, source, damage) : Combat.damage(target, source, damage);
+			// the Charged Shot is her weapon's secondary fire with an icon of its own (the wiki: "Sojourn via Charged Shot,
+			// Disruptor Shot or Overclock"); fired in Overclock, the ult's (it only exists so while the ult runs: kill_feed.md)
+			Blow blow = (Sojourn.overclocked(s) ? Blow.ult("overclock").crit(crit) : Blow.weapon("charged_shot", crit))
+				.by(dev.overcraft.hero.Hero.SOJOURN);
+			float dealt = part != null ? Combat.damagePart(level, part, source, damage, blow) : Combat.damage(target, source, damage, blow);
 			Combat.credit(player, dealt, target);
-			Combat.addFireForDamage(player, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, crit);
 			}
-			if (crit) {
+			if (crit && pays) {
 				Sojourn.sharpshooter(player, s, dealt);
 			}
 		}
@@ -354,12 +369,9 @@ public final class Railgun {
 			== HitResult.Type.MISS ? at : eye;
 	}
 
-	/** The head: the top of the box, 0.25 m under the eyes and up (Kiriko's kunai's band). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** Damage from her with no projectile of its own (the Charged Shot: hitscan), so a kill isn't a melee kill. */
 	private static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 }

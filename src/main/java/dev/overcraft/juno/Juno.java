@@ -34,6 +34,15 @@ public final class Juno implements HeroKit {
 		Torpedoes.clear(player, s);
 	}
 
+	/** A player has just started to see her (#96): her lock's pose (the sync's JUNO_LOCK is only her lock sounds') and her ray. */
+	@Override
+	public void showState(ServerPlayer juno, HeroState s, ServerPlayer viewer) {
+		if (s.junoLock >= 0) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(viewer, new dev.overcraft.net.HeroActionPayload(juno.getId(), "torpedo_lock"));
+		}
+		OrbitalRay.showTo(juno, viewer);
+	}
+
 	/** Leaving her (another hero, leaving the game): her synced glide and lock off, so her clients' loops stop with them. */
 	public static void clear(ServerPlayer player, HeroState s) {
 		Torpedoes.clear(player, s);
@@ -66,6 +75,10 @@ public final class Juno implements HeroKit {
 			Torpedoes.clear(player, s);
 			lockFlag(player, s);
 			return;
+		}
+		if (s.junoLock >= 0 && dev.overcraft.sombra.Hack.silenced(player)) {
+			// hacked: the lock ends (W: stun, knockdown or hack interrupt it); her gun still works
+			Torpedoes.clear(player, s);
 		}
 		ring(player, s);
 		ray(player, s);
@@ -225,5 +238,23 @@ public final class Juno implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), (float) (s.ability3Cooldown / 20.0), (s.junoGlide >= 0 ? MODE_GLIDE : 0) | (s.junoLock >= 0 ? MODE_LOCK : 0),
 			s.junoGlide >= 0 ? (float) ((Ow.ticks(GLIDE_TIME) - s.junoGlide) / 20.0) : 0, 0);
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her glide ends (its cooldown starts, as when it runs out), the torpedo lock. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.junoGlide >= 0) {
+			endGlide(player, s);
+		}
+		s.junoVolley = 0;
+		// casts are cut, not resumed on G back: the ray's charge was spent at the press; a ring already thrown costs its cooldown.
+		// A ray or ring already out goes on in the world
+		if (s.junoRingCast >= Ow.ticks(RING_THROW)) {
+			s.ability2Cooldown = Ow.ticks(RING_COOLDOWN);
+		}
+		s.junoRingCast = -1;
+		s.junoRayCast = -1;
+		HyperRing.unboost(player);
+		clear(player, s);
 	}
 }

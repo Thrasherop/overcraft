@@ -104,6 +104,21 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> DVA_FORM = AttachmentRegistry.create(Overcraft.id("dva_form"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Sigma's state as every client draws and hears it (SigmaFx, client.SigmaSounds): Sigma.SYNC_* bits (Kinetic Grasp, the
+	 * gather, Gravitic Flux's flight and its aim, Levitation, Hyper Strike charged). Absent or 0: none of them.
+	 */
+	public static final AttachmentType<Integer> SIGMA_STATE = AttachmentRegistry.create(Overcraft.id("sigma_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
+	 * Sombra's stealth as every client draws it (HeroModelRenderer's phased-out look, her stealthed clips): the game tick her
+	 * stealth began (Stealth.start: its 0.75 s fade-in counts from there) while it lasts, -1 once it's over (#87). Whether she
+	 * is hidden or seen through is still Minecraft's invisibility (Stealth.tick).
+	 */
+	public static final AttachmentType<Long> SOMBRA_STEALTH = AttachmentRegistry.create(Overcraft.id("sombra_stealth"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.all()));
+
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -201,14 +216,74 @@ public final class HeroManager {
 			if (on != heroMode(player)) {
 				// switching is doing something: an emote ends, as any action ends one (it kept kneeling in Minecraft mode)
 				dev.overcraft.comms.Comms.endEmote(player);
+				if (!on) {
+					// plain Minecraft from here: nothing of the hero's play carries over (#100)
+					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
+				}
 			}
 			player.setAttached(HERO_MODE, on);
 			HeroState state = STATES.get(player.getUUID());
-			if (state != null && state.hero == Hero.DVA) {
-				// out of hero mode she's the pilot, back in the mech she left (the plan's default 9)
-				dev.overcraft.dva.Dva.heroMode(player, state, on);
+			if (on && state != null && state.hero == Hero.DVA) {
+				// back in hero mode she's in the mech she left (the plan's default 9; G off is her leavePlay)
+				dev.overcraft.dva.Dva.heroMode(player, state, true);
 			}
 		}
+	}
+
+	/**
+	 * The hero leaves play (#100): G, death, a hero switch, leaving the world. The one place it happens, called with the
+	 * hero's state as it was, before anything resets it. The kit ends what the hero is doing (HeroKit.leavePlay); then the
+	 * rules every hero shares: Minecraft's flight permission goes back to the game mode (Jetpack Cat's flight, Mercy's
+	 * Valkyrie), and, when the hero is gone for good, the synced looks every client draws them by.
+	 */
+	public static void outOfPlay(ServerPlayer player, @Nullable HeroState state, HeroKit.OutOfPlay why) {
+		if (state == null || state.hero == null) {
+			return;
+		}
+		HeroKit kit = kit(state.hero);
+		if (kit != null) {
+			kit.leavePlay(player, state, why);
+		}
+		// whatever ult was running has ended (its charge stays spent: HeroKit.leavePlay)
+		state.ultActive = 0;
+		dev.overcraft.jetpackcat.JetpackCat.keepFlight(player, state, false);
+		if (why.forGood()) {
+			for (AttachmentType<?> look : HERO_LOOKS) {
+				player.removeAttached(look);
+			}
+		}
+	}
+
+	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
+	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM);
+
+	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
+	public static boolean devNoShowState;
+
+	/**
+	 * The one rule of #96: a player who starts seeing {@code tracked} learns the state it's in. Three kinds carry every state
+	 * others see: attachments (HERO_LOOKS and the like) go by themselves on tracking; timed effects go from Effects' list; and here
+	 * the hero's emote, with the time it has run, and whatever its kit holds (HeroKit.showState).
+	 */
+	public static void showState(net.minecraft.world.entity.Entity tracked, ServerPlayer viewer) {
+		if (devNoShowState) {
+			return;
+		}
+		Effects.showHeld(tracked, viewer);
+		if (tracked instanceof ServerPlayer hero) {
+			dev.overcraft.comms.Comms.showEmote(hero, viewer);
+			HeroState state = STATES.get(hero.getUUID());
+			HeroKit kit = state == null || state.hero == null ? null : kit(state.hero);
+			if (kit != null) {
+				kit.showState(hero, state, viewer);
+			}
+		}
+	}
+
+	/** A player died (AFTER_DEATH): their hero leaves play, as at a switch, but stays theirs. */
+	public static void onDeath(ServerPlayer player) {
+		outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.DEATH);
 	}
 
 	/** How close to their bed (respawn point) a player must be to change heroes (owner, 2026-10-25). */
@@ -264,33 +339,7 @@ public final class HeroManager {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
 		savePerks(player, state);
-		if (state.hero == Hero.MERCY) {
-			dev.overcraft.mercy.Mercy.clear(player, state);
-		}
-		if (state.hero == Hero.LIFEWEAVER) {
-			dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
-		}
-		if (state.hero == Hero.ANA) {
-			dev.overcraft.ana.Ana.clear(player, state);
-		}
-		if (state.hero == Hero.SOMBRA) {
-			dev.overcraft.sombra.Sombra.clear(player, state);
-		}
-		if (state.hero == Hero.BRIGITTE) {
-			dev.overcraft.brigitte.Brigitte.clear(player, state);
-		}
-		if (state.hero == Hero.JUNO) {
-			dev.overcraft.juno.Juno.clear(player, state);
-		}
-		if (state.hero == Hero.SOJOURN) {
-			dev.overcraft.sojourn.Sojourn.clear(player, state);
-		}
-		if (state.hero == Hero.SIGMA) {
-			dev.overcraft.sigma.Sigma.clear(player, state);
-		}
-		if (state.hero == Hero.DVA) {
-			dev.overcraft.dva.Dva.clear(player, state);
-		}
+		outOfPlay(player, state, HeroKit.OutOfPlay.SWITCH);
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -363,6 +412,7 @@ public final class HeroManager {
 		String saved = player.getAttached(HERO);
 		Hero hero = saved == null ? null : Hero.byId(saved);
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
+		dropStaleModifiers(player);
 		state.reset(hero != null && hero.playable ? hero : null);
 		state.freePick = true;
 		Double charge = player.getAttached(ULT_CHARGE);
@@ -374,37 +424,35 @@ public final class HeroManager {
 	}
 
 	public static void onLeave(ServerPlayer player) {
-		HeroState state = STATES.remove(player.getUUID());
+		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
 			player.setAttached(ULT_CHARGE, state.ultCharge);
 			savePerks(player, state);
-			if (state.hero == Hero.LIFEWEAVER) {
-				// his platform and tree leave with him
-				dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
-			}
-			if (state.hero == Hero.ANA) {
-				dev.overcraft.ana.Ana.clear(player, state);
-			}
-			if (state.hero == Hero.SOMBRA) {
-				dev.overcraft.sombra.Sombra.clear(player, state);
-			}
-			if (state.hero == Hero.BRIGITTE) {
-				dev.overcraft.brigitte.Brigitte.clear(player, state);
-			}
-			if (state.hero == Hero.JUNO) {
-				dev.overcraft.juno.Juno.clear(player, state);
-			}
-			if (state.hero == Hero.SOJOURN) {
-				dev.overcraft.sojourn.Sojourn.clear(player, state);
-			}
-			if (state.hero == Hero.SIGMA) {
-				dev.overcraft.sigma.Sigma.clear(player, state);
-			}
-			if (state.hero == Hero.DVA) {
-				dev.overcraft.dva.Dva.clear(player, state);
-			}
+			// what they were doing and what they placed leave with them (#100)
+			outOfPlay(player, state, HeroKit.OutOfPlay.LEAVE);
 		}
+		STATES.remove(player.getUUID());
 		OPTIONS.remove(player.getUUID());
+	}
+
+	/**
+	 * On joining: an Overcraft attribute modifier saved with the player from an older build (Lifeline's speed, Rally's
+	 * health and speed, Inspiring Strike's, the Hyper Ring's, overhealth's cap: they were permanent, so saved, and outlived
+	 * the ability, #100) is taken off. Every such modifier is transient now; only the hero's health is saved, and applyKit
+	 * sets it again.
+	 */
+	private static void dropStaleModifiers(ServerPlayer player) {
+		net.minecraft.core.registries.BuiltInRegistries.ATTRIBUTE.listElements().forEach(attribute -> {
+			AttributeInstance instance = player.getAttribute(attribute);
+			if (instance == null) {
+				return;
+			}
+			for (AttributeModifier modifier : java.util.List.copyOf(instance.getModifiers())) {
+				if (modifier.id().getNamespace().equals(Overcraft.MOD_ID) && !modifier.id().equals(HEALTH_MODIFIER)) {
+					instance.removeModifier(modifier.id());
+				}
+			}
+		});
 	}
 
 	/** Each player's hero options the server acts on (sent by their client: HeroOptionsPayload). */
@@ -523,7 +571,7 @@ public final class HeroManager {
 	}
 
 	public static void tick(MinecraftServer server) {
-		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
+		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.getTickCount());
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
@@ -562,7 +610,7 @@ public final class HeroManager {
 				}
 			}
 			if (kit != null) {
-				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
+				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield).withWidgets(kit.widgets(player, state)));
 			}
 			held(state);
 		}

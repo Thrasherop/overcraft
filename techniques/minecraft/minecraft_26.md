@@ -44,6 +44,16 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   pulling an ally by her stale speed barely lifted it, and Minecraft's airborne knockback keeps the target's stored
   vertical speed, so a zombie's hit threw a flying hero down at 22 m/s (`LivingEntityMixin` now starts a hero's
   knockback from the known movement).
+- **A speed set on a player reaches their own client only through `syncVelocity`** (the old `hurtMarked`): 26.3's
+  `ServerEntity.sendChanges` sends a `needsSync` speed to the others watching (`sendToTrackingPlayers`), and only
+  `syncVelocity` goes `...AndSelf`. Sigma's Gravitic Flux lifted a mob but left a lifted player's own client on the
+  ground (y -60.00 for 4 s, the lift's sounds heard), found in his release play (2026-11-02, [sigma](../heroes/sigma.md)).
+  Vanilla hurt knockback sets it for you; a lift or push on a no-knockback hit doesn't. **Setting `syncVelocity` wasn't
+  enough either** (played): the server's copy of a player's speed is their client's to set (each movement packet on the
+  ground zeroes its fall), so a lift that reads it back never builds up, and a hit's own `syncVelocity` sends that stale
+  copy a tick after your push and undoes it. What worked (`Accretion.sendSpeed`): send `ClientboundSetEntityMotionPacket`
+  to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. `LifeGrip` and
+  `Brigitte` set `needsSync` alone on targets that can be players: worth a look.
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
@@ -138,3 +148,87 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
   for a thrown projectile is its own position, a radius off the target's box. A splash measured from there loses its
   full-damage ring on a direct hit (131 of 135 a volley); burst at the box point nearest that position instead. Block hits
   are fine (the centre ray's point on the face). [dva](../heroes/dva.md)
+## Endermen dodge anything tagged is_projectile (#92, 2026-11-02)
+- `Enderman.hurtServer` teleports away and takes nothing from a damage type in `minecraft:is_projectile`, whatever
+  made it. Our hitscan weapons dealt `minecraft:arrow` (tagged), so endermen dodged Ana's rifle, Sombra's pistol and
+  Sojourn's Charged Shot. They use `overcraft:hitscan` now (`Combat.hitscan`: the arrow type's other settings, not a
+  projectile); real projectiles (Juno's rounds and torpedoes, kunai, darts) keep the dodge.
+- Played: an enderman at 8 m took Sombra's pistol (40 -> 27.5), Ana's scoped shot (-> 34) and the Charged Shot
+  (-> 25.6) in place; Juno's Mediblaster, the control, sent it 26 m away untouched.
+
+
+## Hero hits don't push (#93, 2026-11-03; second pass after [critique_systems](../testing/critique_systems.md), 2026-11-04)
+- **The cause:** every hero hit went through `LivingEntity.hurtServer`, which adds `dealDefaultKnockback` (0.4 and a hop on the ground) unless the damage type is in
+  `minecraft:no_knockback`. A hit with no position (`overcraft:hitscan` with no direct entity) has `xd = zd = 0`, and `LivingEntity.knockback` then picks a **random** direction. Heroes use Minecraft's
+  own types (`thrown`, `player_attack`), so tagging types couldn't fix it without changing vanilla skeletons' arrows. (The flail wasn't in it: `magic` is in `no_knockback`, measured 0.000 m before the
+  fix too. The critique's "flail" was a reading.)
+- **The rule (data):** the wiki's Status effect page, Knockback, lists what knocks enemies back; for our heroes Brigitte's Shield Bash and Whip Shot, Jetpack Cat's Purr and Catnapper, Lúcio's Soundwave, Sigma's
+  Hyperspheres, Accretion and Hyper Strike, plus quick melee's "very small knockback". Its Headbutt was removed (BZ 2026-08-11, `tools/reference/jetpack_cat.md`). Lúcio's Sonic rounds aren't on it, but BZ 2024-07-12 says
+  the knockback exists: their existence is sourced, their 0.6 m/s is ours. So: **a hit dealt through `Combat.damage` takes no Minecraft knockback and no Minecraft impact** (`Combat.heroHit`, asked by two
+  `@WrapWithCondition`s in `LivingEntityMixin`). A hit player's view still tilts toward the shooter (`indicateDamage`). Minecraft's own hits (a sword in Minecraft mode, a zombie) are untouched.
+- **One way to push (the second pass):** `Combat.push` (on top of what it's doing) and `Combat.launch` (replacing it). Both scale by `Combat.pushShare` (knockback resistance, a Stalwart's, Flux's, Valkyrie's, Glide Boost's, Jetpack
+  Cat's: they read differently per ability before, so a resistant mob was thrown by Whip Shot), do nothing while phased, send it (`Combat.send`) and remember it for the kill credit (`Combat.pushed`). **A new ability that pushes uses these.**
+  Whip Shot holds its own speed, and quick melee goes through Minecraft's `knockback`: each calls `send` and `pushed` itself.
+- **Kill credit** (found by the critique, reproduced): `Combat.deal` credited a push by seeing the hurt move the target, which only Minecraft's knockback ever did. So after the first pass quick melee, Hypersphere pulls and the rock's splash
+  lost it. Reproduced: a zombie quick-meleed off a 25 m ledge died with no feed row, no ELIMINATED, no line (`sys_rep_ledge1`). After: feed row and ELIMINATED (same picture, new build). The rock's burst off the ledge: eliminated, his elimination line. Whip Shot: the same.
+- **A force on a mob, every tick (#89, `JetpackCat.tow`):** set `setDeltaMovement` from your own stored speed, not from where it really moved: without Minecraft's friction its AI's walk (`moveRelative`, 40 m/s² on the ground) adds up and walks it against the force. Take back only what a collision took. A force on a *player* belongs on their client (`ClientTow`): the server's each-tick push overwrites their keys.
+- **Pushes on a player are UNVERIFIED** until the two-client pass. `Combat.send` uses what Sigma's two-client play found: `ClientboundSetEntityMotionPacket` to the player at once, `syncVelocity` cleared (the tracker's goes a tick later, after their next movement
+  packet reset the server's copy). `motion` starts from `getKnownMovement`, so Sonic rounds shouldn't bring back the #82 jolt, and Whip Shot sends a player its push once (each tick's send would overwrite their vertical speed with a stale one). All that is
+  from the code. Not one push has been seen on a second player's screen since the first pass.
+- **Measured** (a 200-health zombie with AI and `movement_speed` 0, `Pos` read through `/data`, three hits each; keys through DevServer):
+
+| | pre-#93 (9f1c001) | now |
+|---|---|---|
+| Kunai | 1.99 m each | 0.000 m |
+| Sombra's pistol | 3.4 m sideways with a hop in 0.1 s, then missing | 0.000 m over 1 s |
+| Flail | 0.000 m | 0.000 m |
+| Quick melee | 1.74 m (Minecraft's 0.4 and its own 0.15) | 0.50 m |
+| Soundwave, Whip Shot, Purr | not measured | 3.91, 7.75, 3.41 m |
+| Whip Shot, Purr at knockback resistance 1.0 | (2.34 m on a ravager, which walks: not a clean number) | 0.00 m, 0.00 m |
+
+- **What a critic should check:** the two-client pass above; the Hypersphere pull: its burst on a wall 2.8 m past a ledge didn't take the zombie off it, so its credit is by code, not seen. A fight after this: see [hand_play](../testing/hand_play.md#a-fight-after-93-2026-11-04).
+
+## Holding a mob still without its saved NoAI flag (#97, 2026-11-04)
+- **The cause:** Sleep, stuns, knockdowns and Gravitic Flux called `Mob.setNoAi(true)` and put it back from a map in memory.
+  `NoAI` is saved with the mob (`Mob.addAdditionalSaveData`), so a mob unloaded or saved mid-sleep (Save and Quit, its chunk
+  left behind, a server stop, even an autosave followed by a crash) stayed a statue for good: `wake` ran on the removed object,
+  after its save. Reproduced: dart a zombie, Save and Leave, rejoin: `NoAI: 1b`, 10 s after its sleep should have ended.
+- **The fix:** the flag isn't touched. `MobMixin` answers `Mob.isNoAi` with `Sleep.aiHeld` (the very object put to sleep, by
+  identity: the same mob loaded again is a new object, so it's awake; the client's copy shares the UUID and, in single player, the
+  JVM, so the mixin is also server-side only). `isNoAi` rather than `isEffectiveAi` because a dozen mobs read it directly: the
+  dragon's flight (`EnderDragon.aiStep`), the warden, shulkers, conversions in progress.
+- **Three places read `isNoAi` to save or copy it**, and read the mob's own flag now (`Sleep.ownAi`): its save (`MobMixin`),
+  a bucket (`BucketableMixin`, an interface mixin with `@WrapMethod`: the read is in a lambda inside the static method) and a
+  conversion (`ConversionTypeMixin`). Grep `isNoAi()` in the sources when Minecraft updates: a new reader that copies it leaks the hold.
+- **Played** (fresh world, a zombie with AI): asleep it stands (0.000 m in 2 s) and walks after its time (3.27 m), `NoAI` absent
+  throughout. Save and Leave mid-sleep, rejoin: absent, it walks (4.45 m in 2.5 s; one rejoin it had killed Ana on the select
+  screen, which is awake enough). Accretion's knockdown slid it and let it go. Gravitic Flux: Save and Leave at y -58.24 mid-lift,
+  rejoin: absent, on the ground, walks 6.18 m. A mob NoAI of its own stays `1b` through a sleep. A slept pig struck by lightning: its
+  zombified piglin has none. A slept axolotl caught in a bucket: `bucket_entity_data` has none. (Asleep confirmed by its bed
+  sound in `heard`: `ana.sleep ->`, not `ana.sleep.cast`, which is only the shot.)
+- **Threads (the critique's S1):** `Mob.addAdditionalSaveData` also runs on worldgen threads (`ProtoChunk.addEntity` saves a placed mob), so a plain counter for "read the own flag" could stick and stop every hold until a restart. It's a `ThreadLocal`, and the
+  maps it reads are concurrent. Played on normal terrain (`sysN`): 8 places, 400 m apart in new chunks, a zombie slept at each while the world generated: asleep (bed sound), moved 0.000 m in 2 s, `NoAI` absent, every time. That shows the hold keeps working while exploring; the race itself can't be shown, its removal is by construction.
+- **What a critic should check:** a world saved by an older build keeps its statues: nothing tells a leaked `NoAI` from a
+  map maker's (`/data merge entity <mob> {NoAI:0b}` frees one). A sleep doesn't survive a reload by design: it just ends. Stun on a
+  mob through Rally's bash shares this path and wasn't played on its own. Autosave mid-sleep followed by a crash: same save
+  path, not played. A dedicated server: same code, not played.
+
+## Who learns what when they start to see someone (#96, fix/polish-2, 2026-11-05)
+A player far off gets no packet: `Effects.play` reaches 96 m and `Combat.animate` reaches those tracking. Anyone arriving later (walking up, joining, respawning) must be told, and there is one way in: `EntityTrackingEvents.START_TRACKING` -> `HeroManager.showState`. Every state others see is one of three kinds:
+- **An attachment** (`HeroManager.HERO`, `SONG`, `MERCY`, `SIGMA_STATE`, `ANA`, `ASLEEP` ...): Fabric sends it on tracking by itself. Nothing to do; a new state should be this if it can.
+- **A timed effect**, told once with its length in its variant (Nano's glow, a hack, a stun, Sound Barrier on an ally, Cyberspace, the Disruptor's field, Kitsune Rush's corridor): name it in `Effects.HELD` and, if something ends it early, in `Effects.ENDS`. `showHeld` resends it with what's left and the time it has run, under its state-only name: see the critique's answers below.
+- **A held action or an emote**: `HeroKit.showState` (Brigitte's barrier, Jetpack Cat's Lifeline, tow, Catnapper's aim and Purr's wall, Juno's lock pose and ray); `Comms.showEmote` sends `emote:<id>@<ticks>`, so it joins the emote where it is (its sounds too, by `EmoteSounds` reading the time: read, not heard).
+- Left out on purpose, over before anyone arrives or starting from nothing: bursts, muzzle flashes, Repair Pack's arrival (`brigitte_pack_arrive`: it is a burst and a held heal at once; replaying it would burst again), Mercy's launch, whips.
+- **Played (2026-11-05, dev harness):** the viewer the real client, the hero a bot running its kit's own code, 400 m off so no packet could reach. With the rule off (`bot showstate off`) and on: an emote (`off_96_emote_arrive` standing, `a_96_emote_arrive` in it; `bot seen`: 5.10 s run after 3 + 2 s; gone once it had moved); Nano Boost (0 particles off, 10 on, `a_96_nano_arrive`); Catnapper's aim (`sinceAim` from the arrival); the barrier (base shot `b_96_barrier_arrive`: it already worked, from #88).
+- **What needs two real clients and wasn't tried:** the machine holds one client. A hero played by a real second client, a viewer who is a real second client joining mid-state, and every kind of `HELD` effect one by one (only Nano was played).
+- **Still not sent:** a viewer never sees a wall ride at all: `OwMovement.wallRiding` is the local player's only (`HELD_WALL_RIDE` goes to the server and stops there). That's not a catch-up: another player's Lúcio doesn't play it even in plain view: #115.
+- **The critique's answers (2026-11-05, after the first version; raw output [g2](../testing/runs/polish2/g2_replay_ring.txt), before the fix [r2](../testing/runs/polish2/r2_before_replay_ring.txt)).** The first version resent each effect under its own name. Reproduced: two arrivals made two client rays (`bot rays` 2) and the ray restarted at its landing point; the rush's gates and tiles doubled (dome_noise 6 to 12, talisman 66 to 132). Baseline showed nothing there, so that was a regression. Now:
+  - **Juno's ray** isn't in the list: it walks, so `OrbitalRay.showTo` sends where it is now and its age (`juno_ray_state`: no landing, its ramp from its age), keyed by Juno. Two arrivals: `rays` 1 and 1, `f_b1_ray_1`, `_2`.
+  - **The rush:** `rush_gate_state`, `rush_tiles_state` draw only what this client hasn't laid (`KirikoFx.rushLaid`, by kind and place), no petals or sparkles. Two arrivals: 6 and 6 gates, 66 and 66 tiles, `f_b1_rush_1`, `_2`.
+  - **On an entity:** a map by entity, so a repeat replaces; the time run comes in dx, so a client's fade-in doesn't start over.
+  - **Each entry:** played with a real kit: Nano (first round), the ray, the rush. Played by `bot fx`, the kit's `Effects.play` call made by hand on a bot (two arrivals each, g2): ana_asleep, ana_boosted, ana_anti_healed, ana_nano, ana_numbed, brigitte_stun, juno_ring_boost, juno_ray_ally, sombra_hotfixed, sombra_hacked, sombra_revealed, sombra_weakened, sound_barrier_ally, sombra_cyberspace, sojourn_disruptor_field. **Those counts are particles within 4-8 m and carry over from the entry before** (each ran within seconds): they show no doubling on the second arrival (never more than a few over the first), not a clean count of each. Screenshots `f_held_*`, at thumbnail size only. **Not played:** sombra_hacked_thing: it needs a deployable, and its handler is the same line as sombra_hacked.
+  - **Listed as not covered, on purpose:** sombra_strands (a 0.53 s channel, `STRAND_TIME`: over before anyone arrives, and it has no time in its variant), brigitte_pack_arrive (burst and held heal in one), bursts.
+  - **Juno's lock pose:** `Juno.showState` sends `torpedo_lock`; `f_96_torpedo_pose` was taken in the ray and doesn't show it well: sent, not seen well. **Purr's wall:** `purr_state`; played with a bot Cat's press, read from fxnear only (`f_96_purr`), not looked at closely.
+  - **A looping emote** replays from its time on a return within 0.15 m (g2: 2.30 then 4.65 s): that's what the rule means to do. Past 0.15 m the record goes.
+  - **`off_112_grip_*`** are the same script's Life Grip shots from the session with #96's rule off; the rule has nothing to do with the grip. Ignore them.
+- **What a critic should check:** an effect whose client holds a state by its variant and isn't in `HELD` (grep `e.variant() / 20f` in `*Fx.java`); `Effects.note` keeps a strong reference to entities until `over`: fine for its seconds, but check `over` covers a removed one; an emote replay's first frames (no ease in).

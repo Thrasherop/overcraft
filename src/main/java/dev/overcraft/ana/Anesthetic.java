@@ -59,7 +59,8 @@ public final class Anesthetic {
 			BURSTS.remove(b);
 			double r = AnaStats.ANESTHETIC_RADIUS;
 			for (LivingEntity e : b.level.getEntitiesOfClass(LivingEntity.class, new AABB(b.at, b.at).inflate(r + 2))) {
-				if (e.isAlive() && Allies.canHurt(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)) {
+				if (e.isAlive() && Allies.areaHits(b.ana, e) && e.getBoundingBox().distanceToSqr(b.at) <= r * r && inSight(b.level, b.at, e)
+					&& !dev.overcraft.brigitte.Barrier.shields(e, b.ana, b.at)) {
 					// a second burst on the same one starts its 3 s over (ours)
 					DOSED.put(e.getUUID(), new Dosed(e, b.ana, b.level.getGameTime()));
 					// numbed (7E60 / 7E70 on the enemy): theirs, and at them for everyone else, Ana too (she has no copy of
@@ -85,7 +86,7 @@ public final class Anesthetic {
 			}
 			// its ticks spread over the 3 s (30 in 60 game ticks: one every 2)
 			if (t > 0 && t * ticks / length != (t - 1) * ticks / length) {
-				float dealt = Sleep.quietly(() -> Combat.damage(d.entity, Ana.shotSource(d.ana), AnaStats.ANESTHETIC_DAMAGE / ticks));
+				float dealt = Sleep.quietly(() -> Combat.damage(d.entity, Ana.shotSource(d.ana), AnaStats.ANESTHETIC_DAMAGE / ticks, dev.overcraft.hero.Blow.perk("local_anesthetic").by(dev.overcraft.hero.Hero.ANA)));
 				Combat.credit(d.ana, dealt, d.entity);
 			}
 			double slow = AnaStats.ANESTHETIC_SLOW_FROM + (AnaStats.ANESTHETIC_SLOW_TO - AnaStats.ANESTHETIC_SLOW_FROM) * t / length;

@@ -415,18 +415,18 @@ public final class Dva implements HeroKit {
 		Vec3 from = player.position().add(Vec3.directionFromRotation(0, s.dvaCallYaw).scale(2));
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(CALL_RADIUS))) {
 			if (e == player || !e.isAlive() || e.position().add(0, e.getBbHeight() / 2, 0).distanceTo(centre) > CALL_RADIUS + e.getBbWidth() / 2
-				|| !Allies.canHurt(player, e)) {
+				|| !Allies.areaHits(player, e)) {
 				continue;
 			}
-			Vec3 before = e.getDeltaMovement();
-			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), CALL_DAMAGE), e);
+			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), CALL_DAMAGE, CALL_BLOW), e);
 			Vec3 away = e.position().subtract(from).multiply(1, 0, 1);
 			away = away.lengthSqr() < 1.0E-6 ? Vec3.directionFromRotation(0, s.dvaCallYaw) : away.normalize();
-			double f = Tank.knockbackFactor(e) * Math.max(0, 1 - e.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE));
-			e.setDeltaMovement(before.add(away.scale(Ow.speed(CALL_KNOCKBACK) * f)).add(0, Ow.speed(CALL_KNOCKBACK_UP) * f, 0));
-			e.needsSync = true;
+			// on top of what it's doing, scaled by its share (Combat.pushShare), sent to a player, credited (#93)
+			Combat.push(e, away.scale(Ow.speed(CALL_KNOCKBACK)).add(0, Ow.speed(CALL_KNOCKBACK_UP), 0), player, CALL_BLOW);
 		}
 	}
+
+	private static final dev.overcraft.hero.Blow CALL_BLOW = dev.overcraft.hero.Blow.ult("call_mech").by(Hero.DVA);
 
 	/** She drives the mech (D #98): the unmanned one goes, she is the mech at its spot, a new one at full 675. */
 	private static void link(ServerPlayer player, HeroState s) {
@@ -470,6 +470,22 @@ public final class Dva implements HeroKit {
 		// over 1 s (Lifeweaver's heals in flight carry it)
 		dev.overcraft.lifeweaver.Lifeweaver.healOver(player, player, INITIATOR_HEAL, INITIATOR_HEAL_TIME, false);
 		return true;
+	}
+
+	/**
+	 * Out of play (#100: HeroKit.leavePlay). G: what she's doing ends and she's the pilot, the mech kept for G back
+	 * ({@link #heroMode}); death: what she's doing ends (a Self-Destruct already flying still goes off, as it would in
+	 * Overwatch); a switch or a leave: the unmanned mech and a flying Self-Destruct go too ({@link #clear}).
+	 */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, OutOfPlay why) {
+		if (why.forGood()) {
+			clear(player, s);
+		} else if (why == OutOfPlay.MINECRAFT_MODE) {
+			heroMode(player, s, false);
+		} else {
+			stopMechKit(player, s);
+		}
 	}
 
 	@Override

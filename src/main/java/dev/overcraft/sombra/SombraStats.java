@@ -84,6 +84,8 @@ public final class SombraStats {
 	public static final double TRANSLOCATOR_COOLDOWN = 7.5;
 
 	// ---- Stealth (after every teleport: D 420C; no longer an ability of its own) ----
+	/** Alias 0486's play time in the fade (420C #868's 0.525), and 1AD9's sparkles (at 0.77 s of it, sombra-effects). */
+	public static final double STEALTH_IN_CLIP = 0.525, STEALTH_SPARKLES = 0.77;
 	public static final double STEALTH_FADE_IN = 0.75, STEALTH_TIME = 6.5, STEALTH_FADE_OUT = 0.3;   // D 420C; BZ
 	/** Faster while stealthed (D, M; W +60%; the recording 2026-11-01: 8.80 m/s throughout, 5.5 x 1.6). */
 	public static final double STEALTH_SPEED = 0.6;

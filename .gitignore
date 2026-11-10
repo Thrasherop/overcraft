@@ -17,3 +17,6 @@ overcraft-assets.zip
 *.blend
 *.blend1
 __pycache__/
+run3/
+logs/
+run_client.out

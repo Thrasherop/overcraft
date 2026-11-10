@@ -33,6 +33,9 @@ import static dev.overcraft.dva.DvaStats.*;
  * end. Usable with the Fusion Cannons, Defense Matrix and Boosters (W; D: its own graph). Stand-in look and sound.
  */
 public final class MicroMissiles {
+	/** What its hits are, for the kill feed (Combat.damage, #84). */
+	static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ability("micro_missiles").by(dev.overcraft.hero.Hero.DVA);
+
 	private MicroMissiles() {
 	}
 
@@ -134,12 +137,10 @@ public final class MicroMissiles {
 		LivingEntity target = part != null ? part.parentMob : direct instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
 			DamageSource hit = level.damageSources().thrown(missile, owner);
-			Vec3 before = target.getDeltaMovement();
-			float dealt = part != null ? Combat.damagePart(level, part, hit, MISSILES_IMPACT) : Combat.damage(target, hit, MISSILES_IMPACT);
-			// no knockback (D: its fields 0): Minecraft's own push from the hit undone
-			target.setDeltaMovement(before);
+			// no knockback (D: its fields 0; a hero hit takes none of Minecraft's, #93)
+			float dealt = part != null ? Combat.damagePart(level, part, hit, MISSILES_IMPACT, BLOW) : Combat.damage(target, hit, MISSILES_IMPACT, BLOW);
 			Combat.credit(owner, dealt, target);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}
@@ -147,30 +148,31 @@ public final class MicroMissiles {
 			direct.hurtServer(level, level.damageSources().thrown(missile, owner), Ow.hp(MISSILES_IMPACT));
 		}
 		for (Barriers.Shape b : Barriers.enemyBarriers(level, owner)) {
-			Vec3 near = Barriers.nearestFront(b, at);
-			if (near != null && near.distanceTo(at) <= MISSILES_SPLASH_RADIUS) {
+			Vec3 near = Barriers.nearest(b, at);
+			if (near.distanceTo(at) <= MISSILES_SPLASH_RADIUS) {
 				b.barrierTake(MISSILES_SPLASH * splashFactor(near.distanceTo(at)), near);
 			}
 		}
+		// a Brigitte's up barrier the same, once (Accretion's way)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, at, MISSILES_SPLASH_RADIUS, d -> MISSILES_SPLASH * splashFactor(d));
 		DamageSource source = level.damageSources().explosion(missile, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(MISSILES_SPLASH_RADIUS + 2))) {
 			boolean self = e == owner;
-			if (!e.isAlive() || !self && !Allies.canHurt(owner, e)) {
+			if (!e.isAlive() || !self && !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > MISSILES_SPLASH_RADIUS || !inSight(level, at, e) || !self && Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			if (d > MISSILES_SPLASH_RADIUS || !inSight(level, at, e) || !self && (Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null
+				|| dev.overcraft.brigitte.Barrier.shields(e, owner, at))) {
 				continue;
 			}
-			Vec3 before = e.getDeltaMovement();
-			float dealt = Combat.damage(e, source, MISSILES_SPLASH * splashFactor(d));
-			e.setDeltaMovement(before);
+			float dealt = Combat.damage(e, source, MISSILES_SPLASH * splashFactor(d), BLOW);
 			if (self) {
 				// her own burst hurts her (W), and gives her nothing
 				continue;
 			}
 			Combat.credit(owner, dealt, e);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+			Combat.addFireForDamage(owner, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, e, false);
 			}

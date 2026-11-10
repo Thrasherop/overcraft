@@ -23,6 +23,15 @@ import net.minecraft.world.phys.EntityHitResult;
  * (M: the hit filter). The burst is Ana.grenadeBurst.
  */
 public class BioticGrenadeEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.ana.AnaStats.GRENADE_DAMAGE;
+	}
+
+	// (a burst on an enemy barrier: the barrier takes it and it's gone, no splash on either side: ours, the wiki's
+	// "barriers block the explosion")
+
 	public BioticGrenadeEntity(EntityType<? extends BioticGrenadeEntity> type, Level level) {
 		super(type, level);
 	}
@@ -102,9 +111,14 @@ public class BioticGrenadeEntity extends OwProjectile {
 			return;
 		}
 		ServerPlayer owner = getOwner() instanceof ServerPlayer p ? p : null;
+		// the burst comes from where it is, not along its way: a barrier it has already flown past (round its edge) doesn't take what lands
+		// behind it (Barrier.from reads a moving projectile's way in)
+		net.minecraft.world.phys.Vec3 flight = getDeltaMovement();
+		setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
 		if (owner != null) {
 			if (bounced) {
-				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST);
+				Ana.grenadeBurst(level, owner, position(), this, AnaStats.BOUNCE_BURST, AnaStats.BOUNCE_BURST,
+					dev.overcraft.hero.Blow.perk("biotic_bounce"));
 			} else {
 				Ana.grenadeBurst(level, owner, position(), this);
 			}
@@ -115,7 +129,7 @@ public class BioticGrenadeEntity extends OwProjectile {
 		}
 		bounced = true;
 		noHit = 4;
-		net.minecraft.world.phys.Vec3 v = getDeltaMovement();
+		net.minecraft.world.phys.Vec3 v = flight;
 		if (block != null) {
 			// off a block: mirrored across its face, slowed
 			net.minecraft.core.Direction face = block.getDirection();

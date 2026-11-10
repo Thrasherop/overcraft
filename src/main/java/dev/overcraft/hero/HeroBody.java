@@ -17,8 +17,8 @@ import java.util.WeakHashMap;
  * <p>
  * The box grows only where it fits (ours): picking him or pressing G in a 2-high tunnel keeps Minecraft's box until he
  * steps out to where at least his crouched box fits (Minecraft then crouches him if only that fits), so a switch never
- * puts him inside blocks (suffocating). It never shrinks to fit a gap: crawling under a ledge is Minecraft's own swimming
- * pose, as for anyone already stuck.
+ * puts him inside blocks (suffocating). Put where even his crouched box doesn't fit (a respawn beside a bed, a /tp), he has
+ * Minecraft's box until he steps out, as after G in a tunnel.
  */
 public final class HeroBody {
 	private HeroBody() {
@@ -83,20 +83,69 @@ public final class HeroBody {
 	}
 
 	/**
-	 * Each tick (PlayerMixin): on when wanted and his crouched box fits where he is, off when not wanted; Minecraft's
-	 * dimensions refreshed when it changes. True when it changed.
+	 * Each tick (PlayerMixin): on while wanted and his crouched box fits where he is, off when not wanted or when he's been
+	 * put where it doesn't fit (a respawn beside the bed, a /tp: Minecraft places a player by its own 0.6 x 1.8 box; with his
+	 * kept, Minecraft laid him down in its swimming pose with a 0.4 m camera until he walked out: found in the release play,
+	 * 2026-11-02). Walking never gets him there, since his box collides first. Minecraft's dimensions refreshed when it
+	 * changes. True when it changed.
 	 */
 	public static boolean update(Player player) {
 		Hero hero = wanted(player);
 		boolean was = Boolean.TRUE.equals(BIG.get(player));
 		EntityDimensions crouched = of(hero, Pose.CROUCHING);
-		boolean now = crouched != null && (was || player.level().noCollision(player,
-			crouched.makeBoundingBox(player.position()).deflate(1.0E-7)));
+		boolean now = crouched != null && player.level().noCollision(player,
+			crouched.makeBoundingBox(player.position()).deflate(1.0E-7));
 		if (now == was) {
 			return false;
 		}
 		BIG.put(player, now);
 		return true;
+	}
+
+	/**
+	 * On the server, each tick: a hero in hero mode whose box doesn't fit where he is (G pressed in a doorway, a respawn
+	 * beside the bed, a /tp) is moved to the nearest spot within 2 m where his crouched box fits, or, with none, put back
+	 * in Minecraft mode with a word why. Otherwise G in a 1-wide doorway gave Sigma a 0.6 m box that walked him through
+	 * it and along any 1-wide corridor (the critique's #15), undoing the owner's "unable to fit through a door".
+	 */
+	public static void makeRoom(net.minecraft.server.level.ServerPlayer player) {
+		Hero hero = wanted(player);
+		EntityDimensions crouched = of(hero, Pose.CROUCHING);
+		if (crouched == null || big(player) || player.isPassenger() || player.isSpectator() || !player.isAlive()
+			|| fits(player, crouched, player.position())) {
+			return;
+		}
+		net.minecraft.world.phys.Vec3 at = player.position();
+		net.minecraft.world.phys.Vec3 best = null;
+		double bestD = Double.MAX_VALUE;
+		for (double dy : new double[] {0, 0.5, 1.0}) {
+			for (double dx = -2; dx <= 2.001; dx += 0.25) {
+				for (double dz = -2; dz <= 2.001; dz += 0.25) {
+					double d = dx * dx + dz * dz + dy * dy;
+					if (d >= bestD || d > 4.0) {
+						continue;
+					}
+					net.minecraft.world.phys.Vec3 to = at.add(dx, dy, dz);
+					if (fits(player, crouched, to) && !player.level().noCollision(player,
+						crouched.makeBoundingBox(to).move(0, -1.0, 0).deflate(0.05))) {
+						// room, and ground within a metre under it
+						best = to;
+						bestD = d;
+					}
+				}
+			}
+		}
+		if (best != null) {
+			player.connection.teleport(best.x, best.y, best.z, player.getYRot(), player.getXRot());
+		} else {
+			HeroManager.setHeroMode(player, false);
+			player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("overcraft.hero.no_room",
+				hero.displayName), true);
+		}
+	}
+
+	private static boolean fits(Player player, EntityDimensions box, net.minecraft.world.phys.Vec3 at) {
+		return player.level().noCollision(player, box.makeBoundingBox(at).deflate(1.0E-7));
 	}
 
 	public static boolean big(Player player) {
