@@ -4,9 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## Unreleased
+## 2026-11-10: 0.3.33 on next (not on main yet)
 
-### On fix/railgun-crisp (not released, version not bumped; built on fix/polish-4)
+polish-3, polish-4, the railgun (#126) and the Overwatch watcher merged into `next` as 0.3.33 (0.3.32 was the playtest
+zip of 2026-11-05). The network packets changed shape: a 0.3.33 client needs a 0.3.33 server. Played by real keys before
+the merge: [real_keys_0b027dd](techniques/testing/runs/integrate_2026-11/real_keys_0b027dd.md), and what wasn't.
+- Pressing G mid-fall makes you Steve when you land: Minecraft's fall damage, whatever ability was landing you (owner,
+  2026-11-10). A fall begun in Minecraft mode stays Minecraft's if G comes on before the ground.
+
+### On fix/railgun-crisp (built on fix/polish-4)
 - Sojourn's Charged Shot fires on the press and outranks everything but its recovery, Overclock's cast and a stun or sleep (#126). A press in a reload, in an empty magazine's reload or in a melee's recovery was lost; now it fires and cuts the reload (the magazine keeps what it had; R or an empty magazine reloads again). A held left button no longer delays it 0.16 s, a misreading of her data. Her sounds, tracer and clip start on the press, not about 67 ms later (168 ms over a held left button, 30 fps); the damage is still the server's, up to about 50 ms on. It goes along your crosshair from where your camera was as you pressed, also at a slide's speed: the server works out that point on your own path (a client can't name another); a moving target is where the server has it. One press, one shot: holding the button does nothing more (a question for the owner: her data may say it refires). Played by harness keys and, later, real mouse events; not by a person's hands.
 - The first shot of Sojourn's that a client draws no longer hitches, hers or an ally's or enemy's seen by another hero: 362 + 568 ms of frames became 41-68 ms as her, 209 ms became under 45 as a Kiriko watching. Her effect textures are made ahead by a worker as she's picked or first seen (ready about 2 s on: a shot sooner still hitches, for what isn't ready). Her first rounds, reload and Overclock gain the same. Other heroes' first uses have the same hitch, not touched (Kiriko's first ofuda about 250-300 ms) (#126).
 - The Charged Shot no longer snaps a melee or Disruptor's clip away; it takes the mouse's movement of that frame (a flick's click 3 of 6 -> 12 of 12); a press in its last 0.15 s fires, measured as the data has it, and its recovery is 0.65 s from a press, not 0.60; at a ping (a dev delay's 100 ms, not real latency) no ghost reload, no ghost or doubled shot in the cases found. One Sojourn's shot no longer silences another's reload (#126).
