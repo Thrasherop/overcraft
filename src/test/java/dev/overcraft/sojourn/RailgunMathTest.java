@@ -37,8 +37,8 @@ class RailgunMathTest {
 	@Test
 	void theShotsPlaceIsOnHerOwnPath() {
 		Vec3 t2 = new Vec3(0, 0, 0), t1 = new Vec3(1, 0, 0), now = new Vec3(2, 0, 0);
-		assertEquals(1.5, Railgun.pathPoint(now, t1, t2, 0.5f).x, 1e-6, "moved since the last tick: the step from t1");
-		assertEquals(0.5, Railgun.pathPoint(t1, t1, t2, 0.5f).x, 1e-6, "not since: the step from t2");
+		assertEquals(1.5, Railgun.pathPoint(now, t1, t2, 0.5f).x, 1e-6, "pushed since her last move: from t1");
+		assertEquals(0.5, Railgun.pathPoint(t1, t1, t2, 0.5f).x, 1e-6, "her last move: t2 to t1");
 		assertEquals(2, Railgun.pathPoint(now, t1, t2, 1e9f).x, 1e-6, "clamped");
 		assertEquals(1, Railgun.pathPoint(now, t1, t2, -5).x, 1e-6, "clamped");
 		assertEquals(2, Railgun.pathPoint(now, t1, t2, Float.NaN).x, 1e-6, "no sense: the latest");

@@ -38,8 +38,6 @@ public final class Railgun {
 	static void tick(ServerPlayer player, HeroState s, boolean controls) {
 		double attack = Combat.attackRate(player);
 		long now = player.level().getGameTime();
-		s.sojournPosT2 = s.sojournPosT1;
-		s.sojournPosT1 = player.position();
 		reload(s, attack);
 		if (s.reloadHeld > 0) {
 			s.reloadHeld--;
@@ -164,6 +162,15 @@ public final class Railgun {
 		}
 	}
 
+	/** A move packet handled (ServerMoveMixin): her last real step, from where to where. */
+	public static void moved(ServerPlayer player) {
+		HeroState s = HeroManager.state(player);
+		if (s != null && s.hero == dev.overcraft.hero.Hero.SOJOURN && !player.position().equals(s.sojournPosT1)) {
+			s.sojournPosT2 = s.sojournPosT1;
+			s.sojournPosT1 = player.position();
+		}
+	}
+
 	/**
 	 * A press her client left to this side: fired as the recovery ends, or now. Mashing, the held bit may never fall between two ticks, and the edge in {@link #tick}
 	 * never comes: 1 shot in 5 s at 15 clicks a second (real mouse events).
@@ -180,8 +187,8 @@ public final class Railgun {
 	private static final double PATH_STEP_MAX = 2;
 
 	/**
-	 * The point {@code partial} (0..1; anything else: the latest) of the way along her last step. {@code t1} and {@code t2}: where she was at the end of the last two
-	 * ticks: if she has moved since the last tick (this press came in with that move) the step began at t1, else at t2.
+	 * The point {@code partial} (0..1; anything else: the latest) of the way along her last step. {@code t1} and {@code t2}: where her last two move packets put
+	 * her (moved): the step is t2 to t1; if the server has moved her since (a push), from t1 to where she is.
 	 */
 	static Vec3 pathPoint(Vec3 now, @org.jspecify.annotations.Nullable Vec3 t1, @org.jspecify.annotations.Nullable Vec3 t2, float partial) {
 		Vec3 from = t1 != null && !t1.equals(now) ? t1 : t2;
@@ -401,7 +408,9 @@ public final class Railgun {
 		// a shown press's shot is what she was shown, wherever a move packet has turned her since; anything else, where the server has her
 		Aim aim = shown ? s.sojournAim : null;
 		s.sojournAim = null;
-		Vec3 eye = aim != null ? aim.eye() : player.getEyePosition();
+		// (a shown press that waited in the buffer: from where she pressed if she's still about there, else from where she is: a modified client could
+		// press from a corner and step back)
+		Vec3 eye = aim != null && aim.eye().distanceToSqr(player.getEyePosition()) <= PATH_STEP_MAX * PATH_STEP_MAX ? aim.eye() : player.getEyePosition();
 		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f %.2f", eye.x, eye.y, eye.z, aim != null ? aim.yaw() : player.getYRot()));
 		Vec3 end = eye.add((aim != null ? Vec3.directionFromRotation(aim.pitch(), aim.yaw()) : player.getViewVector(1.0f)).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));

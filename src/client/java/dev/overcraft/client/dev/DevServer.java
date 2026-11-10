@@ -349,6 +349,8 @@ public final class DevServer {
 						KeyMapping.click(bound);
 						KeyMapping.set(bound, false);
 					}
+					case "fps" -> mc.options.framerateLimit().set(Integer.parseInt(a[1]));
+					case "rtt" -> out.addProperty("rtt", dev.overcraft.client.ClientSojourn.measuredRoundTripMillis());
 					case "art" -> {
 						out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
 						out.addProperty("artBytes", dev.overcraft.client.effect.EffectArt.madeBytes());

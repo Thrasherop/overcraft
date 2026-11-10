@@ -100,6 +100,7 @@ public class OvercraftClient implements ClientModInitializer {
 		HeroModels.init();
 		ClientPlayConnectionEvents.JOIN.register((listener, sender, client) -> ClientHero.onJoin());
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			ClientSojourn.reset();
 			ClientHero.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();

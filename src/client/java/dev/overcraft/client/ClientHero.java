@@ -177,6 +177,7 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
+		ClientSojourn.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;

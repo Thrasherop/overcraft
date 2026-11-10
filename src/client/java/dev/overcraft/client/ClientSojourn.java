@@ -198,9 +198,27 @@ public final class ClientSojourn {
 	public static void acked() {
 		if (shownAt != 0) {
 			long rtt = System.nanoTime() - shownAt;
-			measuredRoundTrip = measuredRoundTrip == 0 ? rtt : (measuredRoundTrip * 3 + rtt) / 4;
+			// (over a second isn't a ping: a paused game, a hitch; taken, it held her clicks back for seconds)
+			if (rtt <= MAX_ROUND_TRIP_NANOS) {
+				measuredRoundTrip = measuredRoundTrip == 0 ? rtt : (measuredRoundTrip * 3 + rtt) / 4;
+			}
 			shownAt = 0;
 		}
+	}
+
+	private static final long MAX_ROUND_TRIP_NANOS = 1_000_000_000L;
+
+	/** Joining or leaving a world: the round trip is the next server's to measure. */
+	public static void reset() {
+		measuredRoundTrip = 0;
+		shownAt = 0;
+		serverMayFireUntil = 0;
+		lockedUntil = 0;
+	}
+
+	/** The round trip as measured, ms (the harness). */
+	public static long measuredRoundTripMillis() {
+		return measuredRoundTrip / 1_000_000L;
 	}
 
 	/** A key went up (KeyMapping.set): the next click on it is a press, whenever the next tick is. */
