@@ -624,7 +624,11 @@ public final class HeroHud {
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
 		// armor (Brigitte's) the same way, in Overwatch's armor yellow
-		int shieldMax = hero.layer(player) + (hero.armor(player) > 0 ? Math.max(0, max - hero.owHealth(player)) : 0);
+		// D.Va's Shield System: 100 of the mech's health as shields over its armor (DvaPerks.shields)
+		int dvaShields = hero == Hero.DVA && !dvaPilot(ClientHero.sync())
+			&& ClientHero.sync().majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.DVA_SHIELD_SYSTEM)
+			? dev.overcraft.dva.DvaStats.SHIELD_SYSTEM_SHIELDS : 0;
+		int shieldMax = hero.layer(player) + dvaShields + (hero.armor(player) > 0 ? Math.max(0, max - hero.owHealth(player)) : 0);
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);
@@ -638,7 +642,9 @@ public final class HeroHud {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor(player) > 0 ? ARMOR : SHIELD : WHITE);
+				// (shields over armor: the top pips blue, ours: drawn by place, not by which layer a hit took, M)
+				boolean armorPip = hero.armor(player) > 0 && (dvaShields == 0 || i * 25 < max - dvaShields);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? armorPip ? ARMOR : SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -978,6 +984,14 @@ public final class HeroHud {
 			}
 			ability(g, hero, w, "micro_missiles", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 				(float) dev.overcraft.dva.DvaStats.MISSILES_COOLDOWN, ability2ReadyAt);
+			if (s.majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.DVA_PRECISION_FUSION)) {
+				// Precision Fusion (R, the mech only), in Lucio's third place (ours), lit while it holds
+				ability(g, hero, w, "precision_fusion", w - 719, 900, HeroControls.get(Action.RELOAD), s.ability3Cooldown(),
+					(float) dev.overcraft.dva.DvaStats.PRECISION_COOLDOWN, ability3ReadyAt);
+				if ((s.mode() & dev.overcraft.dva.Dva.MODE_PRECISION) != 0) {
+					song(g, true, false, w - 719, 900, w);
+				}
+			}
 			return;
 		}
 		if (hero == Hero.SIGMA) {

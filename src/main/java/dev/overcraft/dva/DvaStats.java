@@ -169,4 +169,28 @@ public final class DvaStats {
 	public static final double INITIATOR_HEAL = 50, INITIATOR_HEAL_TIME = 1;
 	/** Then 5 s before it can heal again (D 01C7 #2889: v74592 chased from 257B 5) H. */
 	public static final double INITIATOR_LOCKOUT = 5;
+
+	// ---- perks (tools/reference/dva.md "Perks": live list 0042.177; BZ to 2026-11-05, W revision 408749: unchanged) ----
+	/** Bunny Power: 75 overhealth when she ejects, held 10 s, then 25 a second (D 514D #424-#427; W 75 / 10 s / 25/s) H. */
+	public static final double BUNNY_OVERHEALTH = 75, BUNNY_HOLD = 10, BUNNY_DECAY = 25;
+	/** And Call Mech's radius x1.5 = 4.5 m, its 250 falling off from 3 m to 0 at 4.5 m (D 026A #941 v38703 0.5, #908; W 4.5 m) H. */
+	public static final double BUNNY_CALL_RADIUS = 4.5;
+	/** Extended Boosters: a hit +0.5 s, at most 2 s left (D 047E #458-#463; W +0.5 s; the cap: D only) H. */
+	public static final double EXTENDED_BOOSTERS_TIME = 0.5, EXTENDED_BOOSTERS_CAP = 2;
+	/** And Boosters' hit x1.4 = 35 (D 514D #310 v73021 += 0.4 -> 33D9 #139; BZ 2026-01-08 +40 %; W 35) H. */
+	public static final double EXTENDED_BOOSTERS_DAMAGE = 35;
+	/** Shield System: 100 of the mech's health becomes shields (D 514D #399 / #400 / #406 v221 100; BZ 2026-06-16; W 100) H. */
+	public static final int SHIELD_SYSTEM_SHIELDS = 100;
+	/** And Defense Matrix gives 25 % of what it eats back as shields (D 514D #402 v176 0.25, message 2638; W 25 %) H. */
+	public static final double SHIELD_SYSTEM_SHARE = 0.25;
+	/** Precision Fusion (Reload, the mech): 3.1 s (3 + its 0.1 s ramp) (D 514D #616 v567; W 3 s) H. */
+	public static final double PRECISION_TIME = 3.1;
+	/** Spread -75 %, ramped in over 0.1 s and out over 0.15 s (D #636 / #639 / #643 v37527) H. */
+	public static final double PRECISION_SPREAD_CUT = 0.75, PRECISION_RAMP_IN = 0.1, PRECISION_RAMP_OUT = 0.15;
+	/** Fire rate x2 (13.33/s), damage x0.5 (1 a pellet), falloff x1.5 (15-30 m) (D #635 / #637 / #632; W 13.33/s, 1 -> 0.3, 15-30 m) H. */
+	public static final double PRECISION_RATE = 2, PRECISION_DAMAGE = 0.5, PRECISION_FALLOFF = 1.5;
+	/** Reload again ends it, from 0.4 s in (D #650 / #647) H. */
+	public static final double PRECISION_CANCEL_AFTER = 0.4;
+	/** Its cooldown, 7.5 s from its end (D 514D #610 / #613 v472 7.5; W 8 s) H (dva.md "Where the sources disagree" 5: D). */
+	public static final double PRECISION_COOLDOWN = 7.5;
 }

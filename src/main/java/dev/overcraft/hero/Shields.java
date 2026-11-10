@@ -36,7 +36,13 @@ public final class Shields {
 		float old = player.getHealth();
 		if (health < old) {
 			// a loss comes off the top: the shields first
-			s.shield = Math.max(0, s.shield - Ow.toOw(old - health));
+			double loss = Ow.toOw(old - health);
+			if (bothLayers(player, s)) {
+				// shields over armor (D.Va's Shield System): what gets past the shields comes off the armor (W Hit points)
+				double onArmor = Math.max(0, loss - shieldsLeft(player, s));
+				s.armorLost += Math.min(onArmor, armorLeft(player, s));
+			}
+			s.shield = Math.max(0, s.shield - loss);
 			return health;
 		}
 		if (health <= old) {
@@ -45,6 +51,10 @@ public final class Shields {
 		// a gain heals the health under the shields first, then the shields
 		double[] split = heal(Ow.toOw(old) - s.shield, s.shield, Ow.toOw(player.getMaxHealth()) - layer, layer,
 			Ow.toOw(Math.min(health, player.getMaxHealth()) - old));
+		if (bothLayers(player, s)) {
+			// healing mends the armor before the shields over it (W Hit points: health, armor, shields)
+			s.armorLost = Math.max(0, s.armorLost - split[1]);
+		}
 		s.shield += split[1];
 		return old + Ow.hp(split[0] + split[1]);
 	}
@@ -69,7 +79,9 @@ public final class Shields {
 	 */
 	public static float armorReduce(ServerPlayer player, float damage) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0) {
+		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0
+			|| bothLayers(player, s) && (shieldsLeft(player, s) > 0 || armorLeft(player, s) <= 0)) {
+			// (with shields over the armor, a hit on the shields isn't reduced: the armor's 7 is for hits on it)
 			return damage;
 		}
 		return (float) Ow.hp(armorReduce(Ow.toOw(damage), pellets));
@@ -111,14 +123,43 @@ public final class Shields {
 		}
 	}
 
+	/**
+	 * A hero with shields over armor (D.Va's Shield System, the first): the layer ({@link HeroState#shield}) is the armor
+	 * left ({@code armor - armorLost}) with the shields on top. Damage takes the shields, then the armor; healing mends the
+	 * armor, then the shields; only the shields regenerate (W Hit points).
+	 */
+	public static boolean bothLayers(net.minecraft.world.entity.player.Player player, HeroState s) {
+		return s.hero != null && s.shields(player) > 0 && s.armor(player) > 0;
+	}
+
+	/** The armor left under the shields (Overwatch points). */
+	public static double armorLeft(net.minecraft.world.entity.player.Player player, HeroState s) {
+		return Math.max(0, Math.min(s.shield, s.armor(player) + s.extraArmor - s.armorLost));
+	}
+
+	/** The shields left over the armor (Overwatch points). */
+	public static double shieldsLeft(net.minecraft.world.entity.player.Player player, HeroState s) {
+		return Math.max(0, s.shield - armorLeft(player, s));
+	}
+
+	/** Shields back (Overwatch points), up to their most: Shield System's 25 % of what Defense Matrix eats (D 514D #402). */
+	public static void restore(ServerPlayer player, HeroState s, double ow) {
+		double add = Math.min(ow, s.shields(player) - shieldsLeft(player, s));
+		if (add > 0) {
+			grant(player, s, add);
+		}
+	}
+
 	/** Each tick (HeroManager): the shields regenerate 3 s after the last damage. */
 	public static void tick(ServerPlayer player, HeroState s) {
 		int max = s.hero == null ? 0 : s.shields(player);
-		if (max == 0 || s.shield >= max || !player.isAlive()
+		// (over armor, the layer's shield part: armor never comes back by itself)
+		double have = bothLayers(player, s) ? shieldsLeft(player, s) : s.shield;
+		if (max == 0 || have >= max || !player.isAlive()
 			|| Combat.now(player) - s.lastDamagedTick < Ow.ticks(DELAY)) {
 			return;
 		}
-		double add = Math.min(max - s.shield, REGEN / 20.0);
+		double add = Math.min(max - have, REGEN / 20.0);
 		s.shield += add;
 		regenerating = true;
 		try {

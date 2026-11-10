@@ -83,6 +83,8 @@ public final class DefenseMatrix {
 		Barriers.absorbBox(player, BOX, (p, at, damage) -> {
 			// 4 % of what it eats to her ult (#255, M)
 			Combat.addUltCharge(player, damage * MATRIX_ULT_SHARE, false);
+			// Shield System: 25 % of it back as shields (514D #402)
+			DvaPerks.matrixAte(player, s, damage);
 			level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);
 			level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 0.8f, 1.6f);
 		});

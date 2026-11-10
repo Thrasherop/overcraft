@@ -376,6 +376,7 @@ public final class HeroManager {
 		}
 		if (full && state.hero != null) {
 			state.shield = state.layer(player);
+			state.armorLost = 0;
 			Shields.setRaw(player, player.getMaxHealth());
 		}
 		state.shield = Math.min(state.shield, state.layer(player));

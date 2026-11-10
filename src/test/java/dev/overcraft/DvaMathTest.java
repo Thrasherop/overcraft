@@ -180,4 +180,20 @@ class DvaMathTest {
 		assertEquals(18, Ow.ticks(DvaStats.LIGHT_GUN_RELOAD * DvaStats.LIGHT_GUN_RELOAD_AMMO));
 		assertEquals(28, Ow.ticks(DvaStats.LIGHT_GUN_RELOAD));
 	}
+
+	@Test
+	void perks() {
+		// Bunny Power's landing: 250 to 3 m, then down to 0 at 4.5 (026A #908); without it nothing past 3
+		assertEquals(250, dev.overcraft.dva.DvaPerks.callDamage(3, true), 1e-9);
+		assertEquals(125, dev.overcraft.dva.DvaPerks.callDamage(3.75, true), 1e-9);
+		assertEquals(0, dev.overcraft.dva.DvaPerks.callDamage(4.5, true), 1e-9);
+		assertEquals(0, dev.overcraft.dva.DvaPerks.callDamage(3.5, false), 1e-9);
+		// Precision Fusion: 13.33 volleys a second, 1 a pellet, falloff 15-30 m
+		assertEquals(13.33, 2 / DvaStats.FUSION_INTERVAL, 0.01);
+		assertEquals(1, dev.overcraft.dva.FusionCannons.falloff(15, DvaStats.PRECISION_FALLOFF), 1e-9);
+		assertEquals(0.3, dev.overcraft.dva.FusionCannons.falloff(30, DvaStats.PRECISION_FALLOFF), 1e-9);
+		assertEquals(62, Ow.ticks(DvaStats.PRECISION_TIME));
+		// Extended Boosters: 25 x 1.4
+		assertEquals(35, DvaStats.BOOSTERS_DAMAGE * 1.4, 1e-9);
+	}
 }

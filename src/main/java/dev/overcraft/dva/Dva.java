@@ -46,7 +46,7 @@ public final class Dva implements HeroKit {
 	 * The sync's mode: her form in the low bits ({@link #FORM_BITS}), then her mech kit's state for the HUD and her client: the
 	 * Fusion Cannons firing, Defense Matrix up, Boosters flying (her client moves her: OwMovement.dvaBoosters).
 	 */
-	public static final int FORM_BITS = 7, MODE_FIRING = 8, MODE_MATRIX = 16, MODE_BOOSTING = 32;
+	public static final int FORM_BITS = 7, MODE_FIRING = 8, MODE_MATRIX = 16, MODE_BOOSTING = 32, MODE_PRECISION = 64;
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -92,6 +92,7 @@ public final class Dva implements HeroKit {
 		Boosters.end(player, s);
 		MicroMissiles.stop(s);
 		FusionCannons.slow(player, false);
+		DvaPerks.end(player, s);
 	}
 
 	/** Leaving her (another hero, leaving the world): the unmanned mech goes. */
@@ -209,6 +210,11 @@ public final class Dva implements HeroKit {
 		}
 		// the mech's kit (steps 4-6): Defense Matrix first (no Fusion while it's up), Boosters, the Fusion Cannons
 		boolean mech = s.dvaForm == MECH && controls && player.isAlive() && !Sleep.asleep(player);
+		// her perks (step 10): Precision Fusion's time and cooldown, Shield System's shields
+		DvaPerks.tickPrecision(player, s, mech);
+		if (s.dvaForm == MECH) {
+			DvaPerks.tick(player, s);
+		}
 		DefenseMatrix.tick(player, s, mech);
 		Boosters.tick(player, s, mech);
 		MicroMissiles.tick(player, s, mech);
@@ -250,6 +256,10 @@ public final class Dva implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && s.dvaForm == PILOT) {
 			LightGun.reload(player, s);
+		}
+		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && s.dvaForm == MECH && !Sleep.asleep(player)) {
+			// Precision Fusion, the mech's Reload (514D #615, #605: mech only)
+			DvaPerks.press(player, s);
 		}
 	}
 
@@ -317,6 +327,8 @@ public final class Dva implements HeroKit {
 		player.setAttached(HeroManager.DVA_FORM, PILOT);
 		// the pilot's own 175, full (the 9999 heal of #97)
 		HeroManager.refreshHealth(player, s, true);
+		// Bunny Power: overhealth as she lands (514D #440)
+		DvaPerks.ejected(player, s);
 		// launched away from a point 1 m ahead of the mech: 6 m/s back, 7 up (#97's knockback); her fall from it doesn't hurt
 		Vec3 back = facing.scale(-Ow.speed(EJECT_BACK));
 		player.setDeltaMovement(back.x, Ow.speed(EJECT_UP), back.z);
@@ -413,12 +425,15 @@ public final class Dva implements HeroKit {
 		Vec3 centre = s.dvaCallSpot.add(0, 0.5, 0);
 		// the push comes from a point 2 m ahead of her (D m_C0139FA6: about the mech's centre, M)
 		Vec3 from = player.position().add(Vec3.directionFromRotation(0, s.dvaCallYaw).scale(2));
-		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(CALL_RADIUS))) {
-			if (e == player || !e.isAlive() || e.position().add(0, e.getBbHeight() / 2, 0).distanceTo(centre) > CALL_RADIUS + e.getBbWidth() / 2
-				|| !Allies.areaHits(player, e)) {
+		boolean bunny = s.has(Perk.DVA_BUNNY_POWER);
+		double radius = DvaPerks.callRadius(s);
+		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(radius))) {
+			double d = Math.max(0, e.position().add(0, e.getBbHeight() / 2, 0).distanceTo(centre) - e.getBbWidth() / 2);
+			if (e == player || !e.isAlive() || d > radius || !Allies.areaHits(player, e)) {
 				continue;
 			}
-			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), CALL_DAMAGE, CALL_BLOW), e);
+			// 250 inside 3 m; Bunny Power's 4.5 m falls off past 3 (026A #908)
+			Combat.credit(player, Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.callDamage(d, bunny), CALL_BLOW), e);
 			Vec3 away = e.position().subtract(from).multiply(1, 0, 1);
 			away = away.lengthSqr() < 1.0E-6 ? Vec3.directionFromRotation(0, s.dvaCallYaw) : away.normalize();
 			// on top of what it's doing, scaled by its share (Combat.pushShare), sent to a player, credited (#93)
@@ -496,9 +511,11 @@ public final class Dva implements HeroKit {
 		float reload = pilot && s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(LIGHT_GUN_RELOAD)) : -1;
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, ultCost(s), s.dvaForm == CALLING,
 			pilot ? s.primaryAmmo : -1, reload, -1, s.dvaMatrixCooldown > 0 ? s.dvaMatrixCooldown / 20f : -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero,
-			s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), lock,
+			s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk),
+			// the third slot: Call Mech's lock as the pilot, Precision Fusion's cooldown in the mech
+			pilot ? lock : (float) (s.ability3Cooldown / 20.0),
 			s.dvaForm | (s.primaryHeld && FusionCannons.firing(s, now) ? MODE_FIRING : 0) | (s.dvaMatrix ? MODE_MATRIX : 0)
-				| (Boosters.active(s) ? MODE_BOOSTING : 0),
-			Boosters.active(s) ? (float) ((Ow.ticks(BOOSTERS_TIME) - s.dvaBoost) / 20.0) : 0, (float) (s.dvaMatrixEnergy / MATRIX_ENERGY));
+				| (Boosters.active(s) ? MODE_BOOSTING : 0) | (DvaPerks.precision(s) ? MODE_PRECISION : 0),
+			Boosters.active(s) ? (float) (DvaPerks.boostersLeft(s) / 20.0) : 0, (float) (s.dvaMatrixEnergy / MATRIX_ENERGY));
 	}
 }

@@ -261,6 +261,14 @@ public final class HeroState {
 	public double dvaMissileClock, dvaGunRecovery;
 	public @Nullable Integer dvaSelfDestructId;
 	/**
+	 * D.Va's perks (step 10, DvaPerks): Extended Boosters' time added to this flight (ticks); Precision Fusion's ticks in (-1:
+	 * off) and when it last ended (game time, for its ramp out); the armor lost under Shield System's shields (Overwatch points:
+	 * a hero with both keeps them apart, Shields).
+	 */
+	public int dvaBoostExtra, dvaPrecision = -1;
+	public long dvaPrecisionEndedAt = -1000;
+	public double armorLost;
+	/**
 	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
 	 * Levitation's end, for others' look and sound (the server is told it began; ours: 1.75 s on, or a landing).
 	 */
@@ -433,7 +441,8 @@ public final class HeroState {
 
 	/** Shields in the body this player is in. */
 	public int shields(net.minecraft.world.entity.player.Player player) {
-		return hero == null ? 0 : hero.shields();
+		// D.Va's Shield System: 100 of the mech's health as shields, over its armor
+		return hero == Hero.DVA ? dev.overcraft.dva.DvaPerks.shields(player, this) : hero == null ? 0 : hero.shields();
 	}
 
 	/** The top layer (shields and armor) in the body this player is in. */

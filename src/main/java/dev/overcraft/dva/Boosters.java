@@ -52,6 +52,7 @@ public final class Boosters {
 			return;
 		}
 		s.dvaBoost = 0;
+		s.dvaBoostExtra = 0;
 		s.dvaBoostHit.clear();
 		s.softLanding = true;
 		// the Initiator's trigger (047E #487 message 2B3B -> 01C7 #2953)
@@ -84,7 +85,7 @@ public final class Boosters {
 		// stand-in thrusters: small flames low on her back (big ones filled the third-person camera: found playing)
 		Vec3 back = player.position().add(0, 0.9, 0).subtract(Vec3.directionFromRotation(0, player.getYRot()).scale(0.6));
 		level.sendParticles(ParticleTypes.SMALL_FLAME, back.x, back.y, back.z, 2, 0.15, 0.1, 0.15, 0.005);
-		if (s.dvaBoost >= Ow.ticks(BOOSTERS_TIME)) {
+		if (DvaPerks.boostersLeft(s) <= 0) {
 			end(player, s);
 		}
 	}
@@ -115,7 +116,9 @@ public final class Boosters {
 			}
 			s.dvaBoostHit.add(e.getId());
 			Vec3 before = Combat.motion(e);
-			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), BOOSTERS_DAMAGE, BLOW);
+			// 25, Extended Boosters' 35, and its +0.5 s (514D #310, 047E #458)
+			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.boostersDamage(s), BLOW);
+			DvaPerks.boostersHit(s);
 			Combat.credit(player, dealt, e);
 			if (dealt > 0) {
 				Effects.hitMarker(player, e, false);

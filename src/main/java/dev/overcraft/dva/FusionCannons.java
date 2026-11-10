@@ -53,7 +53,8 @@ public final class FusionCannons {
 		boolean firing = canFire && s.primaryHeld;
 		if (firing && s.weaponRecovery <= 0) {
 			volley(player, s);
-			s.weaponRecovery += Ow.ticks(FUSION_INTERVAL);
+			// Precision Fusion: twice the rate (514D #635)
+			s.weaponRecovery += Ow.ticks(FUSION_INTERVAL) / (DvaPerks.precision(s) ? PRECISION_RATE : 1);
 			s.dvaLastVolley = now;
 		}
 		// the slow holds while she fires (#376 while v233), not while boosting (gated by v87: 047E #241)
@@ -98,13 +99,19 @@ public final class FusionCannons {
 
 	/** A pellet's damage at {@code metres}: 2 to 10 m, down to x0.3 at 20 m, the floor past it. */
 	public static double falloff(double metres) {
-		if (metres <= FUSION_FALLOFF_START) {
+		return falloff(metres, 1);
+	}
+
+	/** The same with its distances x{@code scale} (Precision Fusion's 1.5: 15-30 m, 514D #632). */
+	public static double falloff(double metres, double scale) {
+		double start = FUSION_FALLOFF_START * scale, end = FUSION_FALLOFF_END * scale;
+		if (metres <= start) {
 			return 1;
 		}
-		if (metres >= FUSION_FALLOFF_END) {
+		if (metres >= end) {
 			return FUSION_FALLOFF_MIN;
 		}
-		return 1 - (1 - FUSION_FALLOFF_MIN) * (metres - FUSION_FALLOFF_START) / (FUSION_FALLOFF_END - FUSION_FALLOFF_START);
+		return 1 - (1 - FUSION_FALLOFF_MIN) * (metres - start) / (end - start);
 	}
 
 	/** A creature's pellets this volley: their summed damage, how many, and whether any was on the head. */
@@ -119,7 +126,12 @@ public final class FusionCannons {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
-		List<Vec3> dirs = pattern(look, FUSION_SPREAD, player.getRandom().nextDouble() * Math.PI * 2);
+		// Precision Fusion: spread -75 % (ramped), damage x0.5, falloff x1.5 (514D #636 / #637 / #632)
+		boolean precise = DvaPerks.precision(s);
+		double spread = FUSION_SPREAD * (1 - DvaPerks.spreadCut(s, level.getGameTime()));
+		double pellet = FUSION_DAMAGE * (precise ? PRECISION_DAMAGE : 1);
+		double falloffScale = precise ? PRECISION_FALLOFF : 1;
+		List<Vec3> dirs = pattern(look, spread, player.getRandom().nextDouble() * Math.PI * 2);
 		// the creatures any pellet could reach: one search a volley, not one a pellet
 		double widen = Math.tan(Math.toRadians(FUSION_SPREAD)) * FUSION_RANGE + 2;
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
@@ -153,7 +165,7 @@ public final class FusionCannons {
 			// the head: the top of the box, as Sombra's pistol, Kiriko's kunai and Ana's darts (ours: 0.25 m under the eyes and up)
 			boolean crit = bestAt.y >= best.getEyeY() - 0.25;
 			Hit h = hits.computeIfAbsent(best, k -> new Hit());
-			h.damage += FUSION_DAMAGE * falloff(Math.sqrt(bestDist)) * (crit ? FUSION_CRIT : 1);
+			h.damage += pellet * falloff(Math.sqrt(bestDist), falloffScale) * (crit ? FUSION_CRIT : 1);
 			h.pellets++;
 			h.crit |= crit;
 			h.at = bestAt;
