@@ -177,6 +177,7 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
+		ClientSojourn.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -413,11 +414,19 @@ public final class ClientHero {
 		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
 			lastWall = wall;
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra, wall));
+			dev.overcraft.hero.PressTrace.mark("sent");
+			dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(held, pressed, extra, wall));
 		}
 	}
 
 	private static int lastWall;
+
+	/** A press that can't wait for the next tick (Sojourn's Charged Shot: ClientSojourn): sent now, with the right button held. */
+	public static void pressNow(int pressed, float yaw, float pitch, float partial) {
+		lastHeld |= HeroInputPayload.HELD_SECONDARY;
+		dev.overcraft.hero.PressTrace.mark("sent");
+		dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(lastHeld, pressed, 0, lastWall, yaw, pitch, partial));
+	}
 
 	private static boolean chatHeroView;
 

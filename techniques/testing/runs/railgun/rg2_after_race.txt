@@ -1,0 +1,36 @@
+=== #126 table. TREE 946b16b dirty_src_files=0 launched=2026-11-06T02:52:17 at 02:53:23
+{'ok': True}
+WARM art ready after 2.11 s; frames over 40 ms (at ms, length): [(68, 162), (230, 293), (524, 55), (670, 118), (788, 241)] frames 42 misses ['719.8 art_miss:lucio_glow/soj_gun_glow', '804.6 art_miss:lucio_glow/soj_charged_muzzle', '824.2 art_miss:sojourn_flash_0/soj_charged_muzzle', '862.2 art_miss:sojourn_flash_1/soj_charged_muzzle', '891.3 art_miss:sojourn_flash_2/soj_charged_muzzle', '895.0 art_miss:sojourn_flash_3/soj_charged_muzzle', '898.9 art_miss:sojourn_flash_4/soj_charged_muzzle', '902.3 art_miss:sojourn_flash_5/soj_charged_muzzle', '906.0 art_miss:sojourn_flash_6/soj_charged_muzzle', '910.1 art_miss:sojourn_flash_7/soj_charged_muzzle', '913.7 art_miss:sojourn_flash_8/soj_charged_muzzle', '917.8 art_miss:sojourn_flash_9/soj_charged_muzzle'] of 23
+[02:54:14] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 505
+ours:
+203 (none of ours)
+79 effect.EffectArt.coloured
+26 hud.HudDraw.image
+20 model.HeroTexture.<init>
+16 effect.SojournFx.tick
+11 hud.HudShapes.cutHead
+11 model.HeroModelRenderer.emit
+10 HeroHud.render
+10 model.HeroModelRenderer.isClosed
+9 hud.HudShapes.ensure
+7 effect.Fx$Particle.<init>
+6 HeroHud.crosshair
+6 model.HeroAnimator.lambda$turnsInPlace$1
+6 model.HeroWeapon.pose
+5 ClientHero.tick
+5 effect.SojournFx.energyGlow
+5 hud.HudShapes.register
+4 HeroArt.lambda$present$0
+4 model.AimSheet.layout
+4 model.ClothSim.of
+3 ClientSojourn.show
+3 model.HeroModelRenderer.shadow
+3 model.HeroModelRenderer.skinned
+2 HeroHud.arc
+2 effect.SojournFx.posed
+top:
+154 jdk.internal.misc.Unsafe.park
+RACE ['795.6 press', '796.1 clip', '804.6 fx', '820.2 srv_shot']
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows

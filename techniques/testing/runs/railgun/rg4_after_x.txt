@@ -1,0 +1,44 @@
+=== #126 table. TREE e3f437f dirty_src_files=0 launched=2026-11-06T15:10:36 at 15:33:35
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### extra
+in the reload: ammo 20 rel 0.33333334 playing {'playing': 'overcraft:sojourn.railgun.reload'} anim idle+reload
+right after: ammo 20 rel -1.0 meter 0.0 playing {'playing': 'overcraft:sojourn.railgun.reload'} | 33.6 press | 33.6 click 0.500 -58.380 0.500 0.00 0.00 | 33.6 sent | 33.6 clip | 33.6 snd:charged.fire_mid | 33.8 snd:charged.shot | 33.8 fx | 36.0 frame | 66.0 srv_shot | 66.0 srv_eye 0.500 -58.380 0.500 0.00 | 100.3 snd
++0.4 s: ammo 20 rel -1.0
++1.2 s: ammo 20 rel -1.0 (a cut reload stays cut: R again or empty)
+R again: ammo 20 rel 0.33333334
+then: ammo 45 rel -1.0
+late cut, before: ammo 45 rel 0.7916667
+late cut, after: ammo 45 rel -1.0 | 33.3 press | 33.4 click 0.500 -58.380 0.500 0.00 0.00 | 33.4 sent | 33.4 clip | 33.4 snd:charged.fire_mid | 33.6 snd:cha
+empty: ammo 0 rel 0.16666667
+empty after the shot (t, ammo, rel): [(0.23, 0, -1.0), (0.37, 0, -1.0), (0.5, 0, -1.0), (0.63, 0, -1.0), (0.77, 0, 0.0), (0.9, 0, 0.12), (1.04, 0, 0.25), (1.17, 0, 0.33), (1.3, 0, 0.46), (1.44, 0, 0.58), (1.57, 0, 0.67), (1.7, 45, 0.79), (1.84, 45, 0.92), (1.97, 45, -1.0)] | 33.3 press | 33.3 click 0.500 -58.380 0.500 0.00 0.00 | 33.3 sent | 33.4 clip | 33.4 snd:charged.fire_mid | 33.5 snd:cha
+{'ok': True, 'hero': 'ANA'}
+{'ok': True}
+asleep True after 6 polls
+press asleep: 33.4 press | 33.9 sent | 133.9 sent | meter 0.5 still asleep True
+{'ok': True, 'hero': 'BRIGITTE'}
+{'ok': True}
+stunned (Rally) False after 39 polls
+{'ok': True, 'hero': 'SOMBRA'}
+{'ok': True}
+hacked True after 6 polls
+press hacked (the data: the weapon works): 33.3 press | 33.3 click 0.500 -58.380 0.500 0.00 0.00 | 33.3 sent | 33.3 clip | 33.4 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.8 fx | 35.3 frame | 72.1 srv_shot | 72.2 srv_eye 0.500 -58.380 0.
+press dead: 33.4 press
+GUARD 0.0 DeathScreen
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 29
+press with the comms wheel up (its emote page): 33.3 press
+press in Minecraft mode: 33.4 press
+### done
+=== #126 table. TREE e3f437f dirty_src_files=0 launched=2026-11-06T15:10:36 at 15:34:17
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+{'ok': True}
+stunned (Accretion) True after 22 polls
+press stunned: 34.2 press | 36.2 sent | 100.7 sent | meter 0.5
+{'ok': True}
+stunned (Accretion) True after 24 polls
+press stunned: 34.1 press | 34.7 sent | 100.6 sent | meter 0.5
+### done

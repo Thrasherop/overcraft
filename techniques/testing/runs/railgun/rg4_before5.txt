@@ -1,0 +1,17 @@
+=== #126 table. TREE dbe8819 dirty_src_files=0 launched=2026-11-06T14:47:52 at 14:48:58
+{'ok': True}
+WARM art ready after 2.18 s; frames over 40 ms (at ms, length): [(70, 153), (223, 307), (529, 54)] frames 52 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 14:49:45 fps 30
+### done
+### round four 14:49:45 fps 30 payload eye
+QREP gap 0.12 {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 0, 'fire': 1} GHOST ult started | 12.2 sent | 22.9 refused_q | 34.6 refused_q | 46.0 refused_q | 47.9 srv_ult | 57.6 refused_q | 58.2 sent | 68.8 refused_q | 80.5 refused_q | 91.7 refused_q | 103.0 refused_q | 114.2 refused_q | 114.9 
+QREP gap 0.16 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 9.0 sent | 17.0 refused_q | 33.3 refused_q | 44.1 srv_ult | 50.2 refused_q | 59.0 sent | 66.7 refused_q | 83.3 refused_q | 100.2 refused_q | 109.0 sent | 116.8 refused_q | 133.6 refused_q | 150.3 refu
+QREP gap 0.20 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 0.7 sent | 17.1 refused_q | 33.4 refused_q | 36.2 srv_ult | 50.1 refused_q | 50.7 sent | 66.8 refused_q | 83.6 refused_q | 100.6 refused_q | 101.3 sent | 117.3 refused_q | 134.4 refused_q | 144.2 sent
+QREP gap 0.24 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.0 refused_q | 33.4 refused_q | 42.5 sent | 50.2 refused_q | 67.3 refused_q | 81.9 srv_ult | 84.0 refused_q | 92.9 sent | 100.6 refused_q | 117.9 refused_q | 134.6 refused_q | 143.8 sent | 151.3 ref
+QREP gap 0.12 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 13.2 srv_ult | 17.1 refused_q | 25.9 sent | 34.2 refused_q | 51.1 refused_q | 67.9 refused_q | 76.8 sent | 84.6 refused_q | 101.2 refused_q | 118.3 refused_q | 127.1 sent | 134.9 refused_q | 143.2 pre
+QREP gap 0.16 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.0 refused_q | 33.4 refused_q | 34.0 sent | 50.1 refused_q | 66.7 refused_q | 77.0 srv_ult | 83.5 refused_q | 84.1 sent | 100.0 refused_q | 116.7 refused_q | 133.5 refused_q | 134.2 sent | 150.0 ref
+QREP gap 0.20 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.1 refused_q | 33.4 refused_q | 42.2 sent | 50.1 refused_q | 67.3 refused_q | 78.0 srv_ult | 84.2 refused_q | 93.0 sent | 100.7 refused_q | 117.5 refused_q | 134.4 refused_q | 143.1 sent | 151.1 ref
+QREP gap 0.24 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 0.5 sent | 16.9 refused_q | 33.3 refused_q | 42.0 srv_ult | 50.7 refused_q | 51.6 sent | 67.2 refused_q | 83.9 refused_q | 100.7 refused_q | 101.2 sent | 117.8 refused_q | 134.4 refused_q | 151.6 refu
+### done

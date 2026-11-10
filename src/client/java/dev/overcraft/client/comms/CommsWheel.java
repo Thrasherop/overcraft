@@ -60,6 +60,11 @@ public final class CommsWheel {
 		return open;
 	}
 
+	/** Its key is down: the fire buttons are the wheel's (ClientHero, ClientSojourn), from before it opens. */
+	public static boolean holding() {
+		return held;
+	}
+
 	/**
 	 * Each client tick in hero mode. True while the wheel has the key (held or open): the fire buttons are the wheel's
 	 * then.

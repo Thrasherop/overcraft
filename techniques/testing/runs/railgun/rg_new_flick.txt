@@ -1,0 +1,14 @@
+=== #126 table. TREE 4b45d79 dirty_src_files=0 launched=2026-11-06T00:55:21 at 01:08:45
+hero sojourn mode True screen  hp 18.0 fps 10
+=== rows
+{'ok': True}
+fps 10
+flick 0 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.0 press | 200.0 sent | 200.1 clip | 200.1 snd:charged.fire_mid | 200.2 snd:charged.shot | 200.3 fx | 202.5 frame | 241.9 srv_shot | 300.3 snd:char
+flick 1 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.1 press | 200.2 sent | 200.2 clip | 200.2 snd:charged.fire_mid | 200.3 snd:charged.shot | 200.4 fx | 202.7 frame | 240.6 srv_shot | 300.2 snd:char
+flick 2 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.1 press | 200.1 sent | 200.1 clip | 200.1 snd:charged.fire_mid | 200.2 snd:charged.shot | 200.2 fx | 202.5 frame | 238.1 srv_shot | 300.0 snd:char
+flick 3 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 199.9 press | 199.9 sent | 200.0 clip | 200.0 snd:charged.fire_mid | 200.3 snd:charged.shot | 200.4 fx | 202.8 frame | 233.7 srv_shot | 299.9 snd:char
+flick 4 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.2 press | 200.2 sent | 200.2 clip | 200.2 snd:charged.fire_mid | 200.4 snd:charged.shot | 200.4 fx | 202.7 frame | 228.6 srv_shot | 300.1 snd:char
+flick 5 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 201.6 press | 201.6 sent | 201.6 clip | 201.6 snd:charged.fire_mid | 201.7 snd:charged.shot | 201.7 fx | 204.0 frame | 226.9 srv_shot | 301.6 snd:char
+flick 6 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.0 press | 200.0 sent | 200.0 clip | 200.0 snd:charged.fire_mid | 200.1 snd:charged.shot | 200.2 fx | 202.5 frame | 222.0 srv_shot | 300.1 snd:char
+flick 7 side zombie took 8.27 ahead zombie took 0.0 meter before 0.5 after 0.0 fps 10 yaw -90.0 | 200.0 press | 200.1 sent | 200.1 clip | 200.1 snd:charged.fire_mid | 200.2 snd:charged.shot | 200.3 fx | 202.4 frame | 221.4 srv_shot | 300.2 snd:char
+### done

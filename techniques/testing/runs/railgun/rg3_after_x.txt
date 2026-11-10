@@ -1,0 +1,41 @@
+=== #126 table. TREE 2d98bb9 dirty_src_files=0 launched=2026-11-06T12:58:05 at 13:15:12
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### extra
+in the reload: ammo 20 rel 0.29166666 playing {'playing': 'overcraft:sojourn.railgun.reload'} anim idle+reload
+right after: ammo 20 rel -1.0 meter 0.0 playing {'playing': 'overcraft:sojourn.railgun.reload'} | 33.3 press | 33.3 sent | 33.3 clip | 33.4 snd:charged.fire_mid | 33.5 snd:charged.shot | 33.5 fx | 34.5 srv_shot | 34.5 srv_eye 0.500 -58.380 0.500 | 35.6 frame | 66.7 snd:charged.hit | 66.8 snd:charged.hit_enemy | 134.0
++0.4 s: ammo 20 rel -1.0
++1.2 s: ammo 20 rel -1.0 (a cut reload stays cut: R again or empty)
+R again: ammo 20 rel 0.29166666
+then: ammo 45 rel -1.0
+late cut, before: ammo 20 rel 0.75
+late cut, after: ammo 45 rel -1.0 | 33.3 press | 33.3 sent | 33.3 clip | 33.4 snd:charged.fire_mid | 33.5 snd:charged.shot | 33.5 fx | 34.6 frame | 72.9 srv
+empty: ammo 0 rel 0.16666667
+empty after the shot (t, ammo, rel): [(0.23, 0, -1.0), (0.37, 0, -1.0), (0.5, 0, -1.0), (0.63, 0, -1.0), (0.77, 0, 0.0), (0.9, 0, 0.12), (1.04, 0, 0.21), (1.17, 0, 0.33), (1.3, 0, 0.46), (1.44, 0, 0.54), (1.57, 0, 0.67), (1.71, 45, 0.79), (1.84, 45, 0.88), (1.97, 45, -1.0)] | 33.4 press | 33.4 sent | 33.4 clip | 33.5 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.6 fx | 34.7 frame | 65.0 srv
+{'ok': True, 'hero': 'ANA'}
+{'ok': True}
+asleep True after 7 polls
+press asleep: 33.3 press | 67.2 sent | 101.1 sent | meter 0.5 still asleep True
+{'ok': True, 'hero': 'BRIGITTE'}
+{'ok': True}
+stunned (Rally) False after 39 polls
+{'ok': True, 'hero': 'SOMBRA'}
+{'ok': True}
+hacked True after 6 polls
+press hacked (the data: the weapon works): 33.7 press | 33.8 sent | 33.8 clip | 33.8 snd:charged.fire_mid | 33.9 snd:charged.shot | 34.0 fx | 36.4 frame | 80.8 srv_shot | 80.9 srv_eye 0.500 -58.380 0.500 | 100.4 snd:charged.hit | 100.5 snd:cha
+press dead: 33.3 press
+GUARD 0.0 DeathScreen
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 29
+press with the comms wheel up (its emote page): 33.3 press
+press in Minecraft mode: 33.1 press
+### done
+=== #126 table. TREE 2d98bb9 dirty_src_files=0 launched=2026-11-06T12:58:05 at 13:15:54
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+control, nobody fires channels of reload_3p running over time: [(0.0, 2), (0.11, 2), (0.21, 2), (0.31, 2), (0.41, 2), (0.52, 2), (0.61, 2), (0.72, 2), (0.82, 2), (0.92, 2), (1.02, 2), (1.12, 2), (1.22, 0), (1.32, 0), (1.42, 0), (1.52, 0)]
+A fires channels of reload_3p running over time: [(0.03, 2), (0.15, 1), (0.25, 1), (0.35, 1), (0.45, 1), (0.55, 1), (0.65, 1), (0.75, 1), (0.85, 1), (0.95, 1), (1.05, 1), (1.15, 1), (1.25, 0), (1.35, 0), (1.45, 0), (1.55, 0)]
+A fires channels of reload_3p running over time: [(0.03, 2), (0.15, 1), (0.25, 1), (0.35, 1), (0.45, 1), (0.55, 1), (0.65, 1), (0.75, 1), (0.85, 1), (0.95, 1), (1.05, 1), (1.15, 1), (1.25, 0), (1.35, 0), (1.45, 0), (1.55, 0)]
+### done

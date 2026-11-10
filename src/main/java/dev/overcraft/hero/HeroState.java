@@ -197,6 +197,16 @@ public final class HeroState {
 	public boolean sojournRightWas;
 	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
 	public int sojournCharged;
+	/** The buffered press was already shown on her client (HeroInputPayload.PRESS_CHARGED_SHOWN). */
+	public boolean sojournChargedShown;
+	/** The shown press's shot, as she was shown it (Railgun.pressedShown); only while it waits. */
+	public dev.overcraft.sojourn.Railgun.@org.jspecify.annotations.Nullable Aim sojournAim;
+	/** Her position at the end of the last two ticks, for the point on her path she pressed from. */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 sojournPosT1, sojournPosT2;
+	/** Hacked, for her client (Sojourn.MODE_SILENCED). */
+	public boolean sojournSilenced;
+	/** Ticks left of the Charged Shot's recovery (D v2447, 1A23 #438 / #636). */
+	public double sojournChargedLock;
 	/**
 	 * Sojourn: ticks into Disruptor Shot's cast (-1 none), ticks until its cooldown is written (-1 none); ticks into Overclock (-1
 	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).

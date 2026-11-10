@@ -846,6 +846,17 @@ public final class Combat {
 		}
 	}
 
+	/** {@link #animate} for everyone but the hero, whose own client has already played it (Sojourn's Charged Shot: ClientSojourn). */
+	public static void animateOthers(ServerPlayer hero, String clip) {
+		dev.overcraft.comms.Comms.animated(hero, clip);
+		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
+		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
+			if (watcher != hero) {
+				ServerPlayNetworking.send(watcher, payload);
+			}
+		}
+	}
+
 	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
 	public static void animate(ServerPlayer hero, String clip) {
 		dev.overcraft.comms.Comms.animated(hero, clip);

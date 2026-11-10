@@ -583,6 +583,9 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		int pressed = input.pressed();
+		if ((pressed & HeroInputPayload.PRESS_CHARGED_SHOWN) != 0) {
+			dev.overcraft.sojourn.Railgun.pressedShown(player, state, input);
+		}
 		if (dev.overcraft.sombra.Hack.silenced(player)) {
 			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
 			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);

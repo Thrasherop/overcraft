@@ -43,6 +43,7 @@ public final class Railgun {
 			s.reloadHeld--;
 		}
 		s.weaponRecovery = Math.max(0, s.weaponRecovery - attack);
+		s.sojournChargedLock = Math.max(0, s.sojournChargedLock - attack);
 		decay(s, now);
 		boolean rightPressed = s.secondaryHeld && !s.sojournRightWas;
 		s.sojournRightWas = s.secondaryHeld;
@@ -62,29 +63,29 @@ public final class Railgun {
 		double rate = RAILGUN_RATE / 20 * attack;
 		if (!controls || !player.isAlive()) {
 			s.sojournShotClock = 1;
+			s.sojournCharged = 0;
+			// (or a press shown just before G would refuse the next one's edge; this tick doesn't run for the dead, so a death reaches it through the
+			// respawn's first tick, or Sojourn.equip on a switch)
+			s.sojournChargedShown = false;
+			s.sojournAim = null;
 			return;
+		}
+		// the right button first: it outranks the rounds and the reload (D: its v33 priority 0x79 over their 0x2, #425 / #233 / #571).
+		// Only its own recovery holds it back, a press then waiting 0.15 s (D: SECONDARY's buffer). A press her client has shown keeps
+		// that: this edge taking over made her copies come twice (reproduced with a 100 ms dev lag)
+		if (rightPressed && s.sojournEnergy > 0 && !s.sojournChargedShown) {
+			s.sojournCharged = bufferTicks();
+		}
+		chargedIfReady(player, s);
+		if (s.sojournCharged > 0 && --s.sojournCharged <= 0) {
+			s.sojournChargedShown = false;
+			s.sojournAim = null;
 		}
 		if (s.primaryAmmo == 0 && s.primaryReload < 0 && s.reloadHeld <= 0) {
 			startReload(player, s);
 		}
 		// her fire is locked through the whole reload (D #283) and the Charged Shot's 0.65 s
 		boolean ready = s.primaryReload < 0 && s.weaponRecovery <= 0;
-		// the right button, buffered 0.15 s while her gun is busy (D: SECONDARY's buffer); a press while the Railgun fires
-		// stops its rounds, and the shot goes 0.16 s after the last of them (D #513 / #230; ours, that the press waits for it
-		// rather than being lost while the left button stays held: found playing)
-		if (rightPressed && s.sojournEnergy > 0) {
-			s.sojournCharged = Ow.ticks(CHARGED_BUFFER);
-		} else if (s.sojournCharged > 0 && (!ready || s.sojournEnergy <= 0)) {
-			s.sojournCharged--;
-		}
-		if (s.sojournCharged > 0 && s.sojournEnergy > 0) {
-			if (ready && now - s.sojournShotAt >= Ow.ticks(RAILGUN_TO_CHARGED)) {
-				s.sojournCharged = 0;
-				chargedShot(player, s);
-				s.sojournShotClock = 1;
-			}
-			return;
-		}
 		if (s.primaryHeld && ready && s.primaryAmmo > 0) {
 			// an accumulator on the exact schedule: the first round at once, then 0.8 a tick (four rounds every five ticks)
 			while (s.sojournShotClock >= 1 && s.primaryAmmo > 0) {
@@ -99,6 +100,111 @@ public final class Railgun {
 			}
 		} else {
 			s.sojournShotClock = Math.min(1, s.sojournShotClock + rate);
+		}
+	}
+
+	/**
+	 * Ticks a press waits: set one tick and counted down before each check after it, so it's looked at the tick it's made and on the
+	 * 3 after, 0.15 s (D #421 m_246438AD). Set to 3 it was looked at for 0.10 s.
+	 */
+	static int bufferTicks() {
+		return Ow.ticks(CHARGED_BUFFER) + 1;
+	}
+
+	/**
+	 * Nothing holds the Charged Shot back but its own recovery and Overclock's cast (D #364: 0.75 s; W "can't fire until the cast
+	 * ends"; M how it blocks). A reload, the rounds, a melee's recovery, a slide, Disruptor's cast don't (kept here, not by
+	 * weaponRecovery, which is the rounds' and a melee's as well).
+	 */
+	static boolean chargedReady(HeroState s) {
+		return s.sojournChargedLock <= 0 && !(s.sojournUlt >= 0 && s.sojournUlt < Ow.ticks(OVERCLOCK_CAST));
+	}
+
+	/** The shot she was shown: where from and where to, kept for this one press while it waits. */
+	public record Aim(Vec3 eye, float yaw, float pitch) {
+	}
+
+	/**
+	 * Her client has already shown this press (ClientSojourn): the shot goes now, on the packet, not at the next tick (Fabric queues it behind her moves on the one
+	 * PacketProcessor, read: so her position here is the one she last sent). A client a moment ahead of the recovery here waits in the buffer. No energy here means her
+	 * client was behind: nothing happens, and what it showed was a shot that wasn't (ours: no damage; only when the energy ran out as she pressed).
+	 * <p>The rotation is hers, as in every move packet. The place isn't hers to say: the press says only how far between her last two positions she saw from, and it's
+	 * worked out here on her own reported path (played: 0.7 m behind at a slide, perfect flicks missed 3 of 10).
+	 */
+	public static void pressedShown(ServerPlayer player, HeroState s, dev.overcraft.net.HeroInputPayload input) {
+		if (s.hero != dev.overcraft.hero.Hero.SOJOURN) {
+			return;
+		}
+		float yaw = input.yaw(), pitch = input.pitch();
+		if (Float.isFinite(yaw) && Float.isFinite(pitch)) {
+			pitch = Math.clamp(pitch, -90f, 90f);
+			player.setYRot(yaw);
+			player.setYHeadRot(yaw);
+			player.setXRot(pitch);
+		}
+		s.sojournRightWas = true;
+		if (s.sojournEnergy > 0) {
+			s.sojournCharged = bufferTicks();
+			s.sojournChargedShown = true;
+			Vec3 at = pathPoint(player.position(), s.sojournPosT1, s.sojournPosT2, input.partial());
+			s.sojournAim = new Aim(at.add(0, player.getEyeHeight(), 0), player.getYRot(), player.getXRot());
+			chargedIfReady(player, s);
+			if (s.sojournCharged == 0) {
+				// fired on the packet, before this tick's countdown: a tick more, or 13 ticks of recovery ran out in 0.60 s against the data's
+				// 0.65 (measured: next shot +603 ms; D #438)
+				s.sojournChargedLock += 1;
+				s.weaponRecovery += 1;
+				// (at once, so her client can read a round trip off it: ClientSojourn.acked)
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "charged_ack"));
+			}
+		} else {
+			s.sojournAim = null;
+		}
+	}
+
+	/** A move packet handled (ServerMoveMixin): her last real step, from where to where. */
+	public static void moved(ServerPlayer player) {
+		HeroState s = HeroManager.state(player);
+		if (s != null && s.hero == dev.overcraft.hero.Hero.SOJOURN && !player.position().equals(s.sojournPosT1)) {
+			s.sojournPosT2 = s.sojournPosT1;
+			s.sojournPosT1 = player.position();
+		}
+	}
+
+	/**
+	 * A press her client left to this side: fired as the recovery ends, or now. Mashing, the held bit may never fall between two ticks, and the edge in {@link #tick}
+	 * never comes: 1 shot in 5 s at 15 clicks a second (real mouse events).
+	 */
+	static void pressedKept(ServerPlayer player, HeroState s) {
+		s.sojournRightWas = true;
+		if (s.sojournEnergy > 0 && !s.sojournChargedShown) {
+			s.sojournCharged = bufferTicks();
+			chargedIfReady(player, s);
+		}
+	}
+
+	/** A jump longer than this between two positions is a teleport, not a move: no point between them. Over a tick at the slide jump's 27.4 m/s (ours). */
+	private static final double PATH_STEP_MAX = 2;
+
+	/**
+	 * The point {@code partial} (0..1; anything else: the latest) of the way along her last step. {@code t1} and {@code t2}: where her last two move packets put
+	 * her (moved): the step is t2 to t1; if the server has moved her since (a push), from t1 to where she is.
+	 */
+	static Vec3 pathPoint(Vec3 now, @org.jspecify.annotations.Nullable Vec3 t1, @org.jspecify.annotations.Nullable Vec3 t2, float partial) {
+		Vec3 from = t1 != null && !t1.equals(now) ? t1 : t2;
+		if (from == null || !Float.isFinite(partial) || from.distanceToSqr(now) > PATH_STEP_MAX * PATH_STEP_MAX) {
+			return now;
+		}
+		return from.lerp(now, Math.clamp(partial, 0f, 1f));
+	}
+
+	private static void chargedIfReady(ServerPlayer player, HeroState s) {
+		if (s.sojournCharged > 0 && s.sojournEnergy > 0 && chargedReady(s)) {
+			boolean shown = s.sojournChargedShown;
+			s.sojournCharged = 0;
+			s.sojournChargedShown = false;
+			chargedShot(player, s, shown);
+			s.sojournShotClock = 1;
 		}
 	}
 
@@ -167,6 +273,7 @@ public final class Railgun {
 
 	/** One round from her eyes along her aim, spread inside the ellipse its ramp has reached. */
 	private static void shoot(ServerPlayer player, HeroState s, long now) {
+		dev.overcraft.hero.PressTrace.mark("srv_round");
 		double share = Math.min(s.sojournSpread, SPREAD_SHOTS) / SPREAD_SHOTS;
 		Vec3 dir = spread(player.getViewVector(1.0f), SPREAD_MAX * share, SPREAD_SIDE * share, player.getRandom());
 		s.sojournSpread = Math.min(SPREAD_SHOTS, s.sojournSpread + 1);
@@ -265,15 +372,47 @@ public final class Railgun {
 
 	// ---- Charged Shot ----
 
-	/** One shot along her aim, through every enemy on its line up to a block: 20 + energy each, spending it all. */
-	private static void chargedShot(ServerPlayer player, HeroState s) {
+	/** Her copy of its gun's sound, by the energy spent (below; ClientSojourn): 2835, pitched by energy in three bins (M). */
+	public static String chargedFireSound(double energy) {
+		double charge = Math.min(1, energy / ENERGY_MAX);
+		return charge <= 0.3 ? "charged.fire_low" : charge <= 0.9 ? "charged.fire_mid" : "charged.fire";
+	}
+
+	/**
+	 * One shot along her aim, through every enemy on its line up to a block: 20 + energy each, spending it all. {@code shown}: her
+	 * client has already played its sounds, look and clip (ClientSojourn), so only others get them from here; the damage is here.
+	 */
+	private static void chargedShot(ServerPlayer player, HeroState s, boolean shown) {
+		dev.overcraft.hero.PressTrace.mark("srv_shot");
 		ServerLevel level = player.level();
 		double energy = s.sojournEnergy;
 		s.sojournEnergy = 0;
-		s.weaponRecovery = Ow.ticks(CHARGED_LOCKOUT);
-		Combat.animate(player, "charged_shot");
-		Vec3 eye = player.getEyePosition();
-		Vec3 end = eye.add(player.getViewVector(1.0f).scale(CHARGED_RANGE));
+		// it ends a reload: on top of v33 at 0x79 it puts the reload's #233 (0x2) under it, whose under plug sets v51 = 0 (#234) and
+		// whose anim and wait stop: the magazine keeps what it has, full only past #285's 0.96 s (D H nodes, M the stack's meaning).
+		// The owner's rule for a cut reload too (HeroState.interruptReload). An empty magazine reloads again after the recovery
+		// (#75 needs v2447 = 0; startReload's weaponRecovery here). Every client's animator ends the reload's look on this clip
+		boolean cut = s.primaryReload >= 0;
+		s.interruptReload(0);
+		if (shown && cut) {
+			// her client cut what it knew of as she pressed, and this reload's clip and sound may have crossed her press on the wire:
+			// behind them in the same stream, this ends them (HeroAnimator.trigger; a ghost reload at a 100 ms dev lag)
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "reload_cut"));
+		}
+		s.sojournChargedLock = Ow.ticks(CHARGED_LOCKOUT);
+		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(CHARGED_LOCKOUT));
+		if (shown) {
+			Combat.animateOthers(player, "charged_shot");
+		} else {
+			Combat.animate(player, "charged_shot");
+		}
+		// a shown press's shot is what she was shown, wherever a move packet has turned her since; anything else, where the server has her
+		Aim aim = shown ? s.sojournAim : null;
+		s.sojournAim = null;
+		// (a shown press that waited in the buffer: from where she pressed if she's still about there, else from where she is: a modified client could
+		// press from a corner and step back)
+		Vec3 eye = aim != null && aim.eye().distanceToSqr(player.getEyePosition()) <= PATH_STEP_MAX * PATH_STEP_MAX ? aim.eye() : player.getEyePosition();
+		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f %.2f", eye.x, eye.y, eye.z, aim != null ? aim.yaw() : player.getYRot()));
+		Vec3 end = eye.add((aim != null ? Vec3.directionFromRotation(aim.pitch(), aim.yaw()) : player.getViewVector(1.0f)).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 stop = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
 		record Hit(Entity entity, Vec3 at, double dist) {
@@ -296,12 +435,17 @@ public final class Railgun {
 		double base = CHARGED_BASE + (CHARGED_FULL - CHARGED_BASE) * energy / ENERGY_MAX;
 		// 2484's 2835 (517B hers, 517D 100 m), pitched by game parameter 2139477060 (read as energy / 100, M: three bins), and
 		// its sound slot 3349 (8F11 + 551F, 60 m) for everyone
-		double charge = Math.min(1, energy / ENERGY_MAX);
-		String fire = charge <= 0.3 ? "charged.fire_low" : charge <= 0.9 ? "charged.fire_mid" : "charged.fire";
-		SojournSounds.split(player, fire, eye, 100);
-		SojournSounds.at(level, "charged.shot", eye, 60);
+		String fire = chargedFireSound(energy);
 		Vec3 from = muzzle(player);
-		Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player);
+		if (shown) {
+			SojournSounds.at(level, fire + "_3p", eye, 100, player);
+			SojournSounds.at(level, "charged.shot", eye, 60, player);
+			Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player, player);
+		} else {
+			SojournSounds.split(player, fire, eye, 100);
+			SojournSounds.at(level, "charged.shot", eye, 60);
+			Effects.play(level, "sojourn_tracer", from, stop.subtract(from), player, (int) Math.round(energy), player);
+		}
 		s.sojournCharging = true;
 		for (Hit hit : hits) {
 			EnderDragonPart part = hit.entity() instanceof EnderDragonPart p ? p : null;

@@ -1,0 +1,15 @@
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 10, 'anim': 'idle'}
+flick 0  MISS zombie 1000.0 -> 1000.0 yaw 7.5 | 1611.2 sent | 1611.2 clip | 1611.3 snd:charged.fire_mid | 1611.3 snd:charged.shot | 1611.4 fx | 1614.4 frame |
+flick 1  hit zombie 1000.0 -> 991.7344 yaw -0.0 | 1195.9 sent | 1195.9 clip | 1195.9 snd:charged.fire_mid | 1196.0 snd:charged.shot | 1196.1 fx | 1197.2 frame |
+flick 2  hit zombie 991.7344 -> 983.46875 yaw -0.0 | 1149.4 sent | 1149.5 clip | 1149.5 snd:charged.fire_mid | 1149.6 snd:charged.shot | 1149.7 fx | 1150.6 frame |
+flick 3  MISS zombie 983.46875 -> 983.46875 yaw -0.0 | 1145.0 sent | 1145.0 clip | 1145.0 snd:charged.fire_mid | 1145.1 snd:charged.shot | 1145.2 fx | 1147.7 frame |
+flick 4  MISS zombie 983.46875 -> 983.46875 yaw -0.0 | 1144.2 sent | 1144.3 clip | 1144.3 snd:charged.fire_mid | 1144.4 snd:charged.shot | 1144.5 fx | 1145.7 frame |
+flick 5  hit zombie 983.46875 -> 975.2031 yaw -0.0 | 1161.3 sent | 1161.4 clip | 1161.4 snd:charged.fire_mid | 1161.5 snd:charged.shot | 1161.6 fx | 1163.6 frame |
+flickhuman 0  hit zombie 975.2031 -> 966.9375 yaw -0.0 | 1368.0 sent | 1368.0 clip | 1368.0 snd:charged.fire_mid | 1368.2 snd:charged.shot | 1368.2 fx | 1369.2 frame |
+flickhuman 1  hit zombie 966.9375 -> 958.6719 yaw -0.0 | 1289.0 sent | 1289.1 clip | 1289.1 snd:charged.fire_mid | 1289.2 snd:charged.shot | 1289.3 fx | 1290.2 frame |
+flickhuman 2  hit zombie 958.6719 -> 950.40625 yaw -0.0 | 1280.9 sent | 1280.9 clip | 1281.0 snd:charged.fire_mid | 1281.1 snd:charged.shot | 1281.2 fx | 1283.1 frame |
+flickhuman 3  hit zombie 950.40625 -> 942.1406 yaw -0.0 | 1285.8 sent | 1285.9 clip | 1285.9 snd:charged.fire_mid | 1286.0 snd:charged.shot | 1286.0 fx | 1287.0 frame |
+flickhuman 4  hit zombie 942.1406 -> 933.875 yaw -0.0 | 1301.9 sent | 1301.9 clip | 1302.0 snd:charged.fire_mid | 1302.1 snd:charged.shot | 1302.2 fx | 1304.1 frame |
+flickhuman 5  hit zombie 933.875 -> 925.6094 yaw -0.0 | 1309.8 sent | 1309.9 clip | 1309.9 snd:charged.fire_mid | 1310.0 snd:charged.shot | 1310.1 fx | 1311.3 frame |

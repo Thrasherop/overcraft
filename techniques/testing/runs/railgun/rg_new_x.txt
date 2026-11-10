@@ -1,0 +1,53 @@
+=== #126 table. TREE 4b45d79 dirty_src_files=0 launched=2026-11-06T00:55:21 at 01:04:56
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### extra
+damage energy 50 zombie 1000.0 -> 991.7344 took 8.266 | expected HP 70 = 5.6 less a 2-armor zombie | 33.3 press | 33.4 sent | 33.4 clip | 33.5 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.7 fx | 35.8 frame | 39.4 srv_shot | 66.7 snd:charged.hit | 66.8 snd:charged.hit_enemy | 100.8 sent
+damage energy 100 zombie 991.7344 -> 977.56476 took 14.17 | expected HP 120 = 9.6 less a 2-armor zombie | 33.4 press | 33.4 sent | 33.4 clip | 33.5 snd:charged.fire | 33.6 snd:charged.shot | 33.6 fx | 36.2 frame | 52.2 srv_shot | 66.7 snd:charged.hit | 66.8 snd:charged.hit_enemy | 100.6 sent
+in the reload: ammo 20 rel 0.29166666 playing {'playing': 'overcraft:sojourn.railgun.reload'} anim idle+reload
+right after: ammo 20 rel -1.0 meter 0.0 playing {'playing': 'overcraft:sojourn.railgun.reload'} | 34.2 press | 34.2 sent | 34.2 clip | 34.3 snd:charged.fire_mid | 34.5 snd:charged.shot | 34.7 fx | 35.8 frame | 63.1 srv_shot | 67.5 snd:charged.hit | 67.6 snd:charged.hit_enemy | 101.5 sent
++0.4 s: ammo 20 rel -1.0
++1.2 s: ammo 20 rel -1.0 (a cut reload stays cut: R again or empty)
+R again: ammo 20 rel 0.33333334
+then: ammo 45 rel -1.0
+late cut, before: ammo 20 rel 0.75
+late cut, after: ammo 45 rel -1.0 | 34.0 press | 34.0 sent | 34.1 clip | 34.1 snd:charged.fire_mid | 34.2 snd:charged.shot | 34.3 fx | 35.3 frame | 70.1 srv
+empty: ammo 0 rel 0.16666667
+empty after the shot (t, ammo, rel): [(0.24, 0, -1.0), (0.37, 0, -1.0), (0.5, 0, -1.0), (0.64, 0, -1.0), (0.77, 0, 0.04), (0.9, 0, 0.12), (1.04, 0, 0.25), (1.17, 0, 0.38), (1.3, 0, 0.46), (1.44, 0, 0.58), (1.57, 0, 0.71), (1.71, 45, 0.83), (1.84, 45, 0.92), (1.97, 45, -1.0)] | 33.9 press | 33.9 sent | 34.0 clip | 34.0 snd:charged.fire_mid | 34.1 snd:charged.shot | 34.2 fx | 35.4 frame | 66.8 srv
+{'ok': True, 'hero': 'ANA'}
+{'ok': True}
+asleep True after 6 polls
+press asleep: 33.5 press | 34.1 sent | 100.7 sent | meter 0.5 still asleep True
+{'ok': True, 'hero': 'SOMBRA'}
+{'ok': True}
+hacked True after 5 polls
+press hacked (the data: the weapon works): 33.2 press | 33.5 sent | 33.5 clip | 33.5 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.7 fx | 36.6 frame | 48.5 srv_shot | 66.5 snd:charged.hit | 66.7 snd:charged.hit_enemy | 66.9 snd:charged.hit
+press dead: 33.3 press
+GUARD 0.0 DeathScreen
+hero sojourn mode True screen  hp 18.0 fps 30
+press with the comms wheel up (its emote page): 33.4 press | 33.4 sent | 33.4 clip | 33.5 snd:charged.fire_mid | 33.7 snd:charged.shot | 33.8 fx | 36.5 frame | 54.2 srv_shot | 66.7 snd:charged.hit | 66.9 snd:
+press in Minecraft mode: 33.3 press
+flick 0 took 8.27
+flick 1 took 0.0
+flick 2 took 0.0
+flick 3 took 0.0
+flick 4 took 0.0
+flick 5 took 0.0
+flick hits 1 of 6
+after: anim idle ammo 20 rel -1.0 meter 0.0
+left held through a shot: 33.4 press | 67.4 sent | 113.1 srv_round | 212.9 srv_round | 263.9 srv_round | 313.0 srv_round | 335.4 press | 335.4 sent | 335.4 clip | 335.4 snd:charged.fire_mid | 335.5 snd:charged.shot | 335.6 fx | 336.7 frame | 360.0 srv_shot | 368.8 snd:charged.hit | 368.9 snd:charged.hit_enemy | 402.7 sent | 962.7 srv_round | 1063.1 srv_round | 1113.0 srv_round | 1162.5 srv_round | 1212.5 srv_round | 1312.5 srv_round | 1362.9 srv_round | 1413.4 srv_round | 1462.6 srv_round | 1472.4 sent
+emote {'ok': True}
+emoting state {'anim': 'idle', 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00'} {'playing': ''}
+after the press {'anim': 'idle', 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00'} {'playing': ''} | 100.3 press | 100.3 sent | 100.3 clip | 100.3 snd:charged.fire_mid | 100.5 snd:charged.shot | 100.5 fx | 102.9 frame | 135.9 srv_shot | 200.2 snd:charged.hit | 200.3 snd:charged.hit_enemy | 201.1 sent
+recovery, pressed about 0.402 s after the shot: 100.1 press | 100.8 sent | 136.2 srv_shot | 200.0 clip | 200.2 snd:charged.fire_mid | 200.2 snd:charged.shot | 200.3 fx | 200.5 snd:charged.hit | 200.5 snd:charged.hit_enemy | 201.1 sent | 202.9 frame
+recovery, pressed about 0.502 s after the shot: 100.0 press | 100.1 sent | 100.1 clip | 100.1 snd:charged.fire_mid | 100.2 snd:charged.shot | 100.3 fx | 102.6 frame | 131.9 srv_shot | 200.0 snd:charged.hit | 200.1 snd:charged.hit_enemy | 201.4 sent
+recovery, pressed about 0.601 s after the shot: 100.3 press | 100.3 sent | 100.3 clip | 100.3 snd:charged.fire_mid | 100.4 snd:charged.shot | 100.5 fx | 102.8 frame | 130.6 srv_shot | 200.1 snd:charged.hit | 200.2 snd:charged.hit_enemy | 201.0 sent
+no energy heard: kiriko.ability.denied -> kiriko/ability/denied/0 (SimpleSoundInstance, in the head) | 100.0 press | 100.5 sent | 200.8 sent
+tap 0 1 1 meter 0.0
+tap 1 1 1 meter 0.0
+tap 2 1 1 meter 0.0
+tap 3 1 1 meter 0.0
+tap 4 1 1 meter 0.0
+tap 5 1 1 meter 0.0
+quick taps, shots 6 of 6
+### done

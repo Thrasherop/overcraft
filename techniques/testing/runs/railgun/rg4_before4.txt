@@ -1,0 +1,60 @@
+=== #126 table. TREE dbe8819 dirty_src_files=0 launched=2026-11-06T14:42:11 at 14:43:17
+{'ok': True}
+WARM art ready after 2.06 s; frames over 40 ms (at ms, length): [(70, 155), (225, 314), (539, 54), (618, 45)] frames 48 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 14:44:09 fps 30
+### done
+### round four 14:44:09 fps 30 payload eye
+TURN second click yaw 0.00 shot yaw 3.00 off by 3.0 waited 146
+TURN second click yaw 0.00 shot yaw 4.50 off by 4.5 waited 164
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 171
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 165
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 105
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 179
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 166
+TURN second click yaw 0.00 shot yaw 3.00 off by 3.0 waited 143
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 184
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 175
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 170
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 183
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 173
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 169
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 176
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 151
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 148
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 170
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 148
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 174
+TURN second click yaw 0.00 shot yaw 3.00 off by 3.0 waited 141
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 118
+TURN shot away from what she was shown: 4 of 22
+QREP {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0} no ult in this trace ult 0.0 | 11.0 refused_q | 11.6 sent | 78.8 press | 113.2 sent | 170.3 sent
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} no ult in this trace ult 0.0 | 0.7 sent | 8.3 refused_q | 50.9 sent | 75.5 press | 75.6 click 0.500 -58.380 0.500 0.00 0.00 | 75.6 sent | 75.6 clip | 75.7 snd:charged.fire | 75.8 snd:charged.shot | 75.9 fx | 77.5 frame | 152.2 sent | 196.4 srv_shot | 196.4 srv_eye 0.500 -58.380 0.500 0.00 | 311.7 snd:charged.hit | 311.8 snd:charg
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} no ult in this trace ult 0.0 | 8.7 refused_q | 39.3 sent | 71.8 press | 71.9 click 0.500 -58.380 0.500 0.00 0.00 | 71.9 sent | 71.9 clip | 72.0 snd:charged.fire | 72.2 snd:charged.shot | 72.3 fx | 73.8 frame | 139.5 sent | 183.7 srv_shot | 183.8 srv_eye 0.500 -58.380 0.500 0.00 | 298.8 snd:charged.hit | 298.9 snd:charged.hit_enem
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} no ult in this trace ult 0.0 | 8.4 refused_q | 25.6 sent | 75.1 press | 75.2 click 0.500 -58.380 0.500 0.00 0.00 | 75.2 sent | 75.2 clip | 75.3 snd:charged.fire | 75.4 snd:charged.shot | 75.5 fx | 78.4 frame | 125.7 sent | 226.0 srv_shot | 226.1 srv_eye 0.500 -58.380 0.500 0.00 | 335.0 snd:charged.hit | 335.1 snd:charged.hit_enem
+FLICKREAL slide top speed 14.3 yaw -112.5 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.82 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.21 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.2 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.77 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.85 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL slide agree 14 of 14
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.5 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.72 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray on a box by 0 server hit AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.78 server miss AGREE
+FLICKREAL run agree 8 of 8
+### done

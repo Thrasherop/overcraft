@@ -46,8 +46,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientHero.init();
 		DevServer.startIfEnabled();
 
-		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
-		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
+		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> ClientHero.onSync(payload)));
+		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> KirikoFx.play(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
@@ -61,15 +61,17 @@ public class OvercraftClient implements ClientModInitializer {
 				context.client().gui.setScreen(null);
 			}
 		});
-		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
-			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
+		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() ->
+			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed())));
 		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.EffectArt.frame());
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.PingPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.comms.Pings.receive(payload));
-		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> {
 			if (context.client().level != null) {
 				if (payload.clip().startsWith("emote:")) {
 					// "emote:<id>", or "emote:<id>@<ticks>": already that far on, for one who has just come to see it (Comms.showEmote, #96)
@@ -94,10 +96,11 @@ public class OvercraftClient implements ClientModInitializer {
 					}
 				}
 			}
-		});
+		}));
 		HeroModels.init();
 		ClientPlayConnectionEvents.JOIN.register((listener, sender, client) -> ClientHero.onJoin());
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			ClientSojourn.reset();
 			ClientHero.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
