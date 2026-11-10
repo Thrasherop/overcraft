@@ -49,13 +49,18 @@ public final class FusionCannons {
 	/** Each tick in the mech (Dva.tick): the left button held fires a volley whenever the last one's 0.15 s are over. */
 	static void tick(ServerPlayer player, HeroState s, boolean canFire, boolean boosting) {
 		long now = player.level().getGameTime();
-		s.weaponRecovery = Math.max(0, s.weaponRecovery - Combat.attackRate(player));
 		boolean firing = canFire && s.primaryHeld;
 		if (firing && s.weaponRecovery <= 0) {
 			volley(player, s);
-			// Precision Fusion: twice the rate (514D #635)
+			// Precision Fusion: twice the rate (514D #635): 1.5 ticks a volley, two volleys in three ticks
 			s.weaponRecovery += Ow.ticks(FUSION_INTERVAL) / (DvaPerks.precision(s) ? PRECISION_RATE : 1);
 			s.dvaLastVolley = now;
+		}
+		// the time comes off after the shot and keeps its fraction while she fires (a clamp at 0 lost the half tick:
+		// Precision Fusion fired every 2 ticks, 10 a second, found playing); idle, it rests at 0
+		s.weaponRecovery -= Combat.attackRate(player);
+		if (!firing) {
+			s.weaponRecovery = Math.max(0, s.weaponRecovery);
 		}
 		// the slow holds while she fires (#376 while v233), not while boosting (gated by v87: 047E #241)
 		slow(player, firing && !boosting);

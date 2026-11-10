@@ -262,11 +262,50 @@ the missile: **135.0**, three volleys. Block hits were right already (the clip i
   the button was held through it (unconfirmed: she may have been aiming at the wall; worth a look); the missile, Self-Destruct
   (3644 additive) and fire / reload clips are triggered but the additive layers don't play on her yet (step 11).
 
+## Step 10, perks, and step 11, voice (2026-11-10)
+Sources: BZ patch notes to 2026-11-05 (no D.Va change since 2026-10-06 but a Stadium fix) and W revision 408749 (the plan's): her
+four perks are unchanged. Code: `DvaPerks` (numbers in `DvaStats`, each cited: 514D, 026A #908 / #941, 047E #458-#463), `Shields`
+(a hero with shields over armor: `armorLost` keeps the two apart; damage takes shields then armor, healing mends armor then
+shields, only shields regenerate, a hit that lands on shields isn't armor-reduced: ours for the split hit, M), the HUD (blue pips
+over the yellow, Precision Fusion's slot on R lit while on). Voice: `tools/soundmaps/dva.txt` from
+`research\dva\scripts\sounds\dva_voice_gen.py` (Sigma's voice pipeline: `voiceset_dva.py` (TankLib, offline) -> `dva_voice.py`),
+her stimuli in `Voice`, `OcSounds.DVA_VOICE`; built into the shared pack (`overcraft_ana\local-assets\pack`) by the scratch-root
+method of [sounds](../sound/sounds.md) (backups `sounds.json.before_dva`, `lang\en_us.json.before_dva`).
+
+**Her own voice moments, from the data:** Boosters 03DA, Defense Matrix 03DB, its absorb line 06C1 0.75 s after (02CC #343), Call
+Mech 0479, its kill 11CE (026A #854), the mech lost 0497, back in a mech 049D, the pilot's kill 10AF (02B8 #353, 0.9), Self-Destruct
+04D1 to her side / 03DC to enemies (0B2F #443). 03DA / 03DB / 0479 / 0497 / 049D are named in no graph node read (the voice set
+lists them; M the trigger). Her 41 voice-line unlocks are in the pack. **Not mapped (listed in voice_lines.json):** the match,
+objective, PvE, CTF, Stadium and hero-interaction lines (the mod triggers none), 0EC6 (an environmental kill), 0FE5 ("Flying
+Tokki!"), 1893 / 1894 (perk unlock lines: the mod's perk pick has no voice hook yet), Revenge, KillStreak, HealthPack.
+
+**Played** (fresh `runClient`, worlds `dva10` / `dva11` flat; picked on the select screen; keys through the harness's key mappings,
+not the desktop keyboard; screenshots in `run/screenshots/`, not committed, each looked at):
+- Select: D.VA TANK INITIATOR, 350 + 325 (`p_select_dva.png`). Perk menu (LAlt): Shield System / Precision Fusion cards (`p_perkmenu.png`).
+- **Shield System:** HUD 675, four blue pips over the yellow (`p_hud_shield.png`). `/damage` 50 then 150: **525** (100 shields, 50
+  on the armor), "D.Va grunts" subtitle (`p_ss_hit150.png`); shields back from 3 s at 30/s (603 at 5.6 s; the global 6 s regen fills
+  the rest, so the 100 cap itself wasn't isolated). Matrix (RMB) eating three arrows from 525: **625** (+100, the shields' cap);
+  "dva.voice.matrix" heard.
+- **Bunny Power:** mech killed: wreck, "D.Va: Pilot disengaging!", the pilot at **250 | 175** (75 overhealth, green pips,
+  `p_bunny_eject.png`). Call Mech: "Calling in the big guns!"; a zombie about 3.5 m from the landing took **160** (falloff past 3 m;
+  none at all past 3 m without the perk). Its exact distance wasn't pinned (the zombies were gone at the second read).
+- **Extended Boosters:** a husk hit for **34.2** (35 less its 2 armor points; 25 without); a late in-line hit ran the flight to z
+  22.9 / 21.1 against 17.2 with no hit (two runs each: +0.45 s); an early hit adds only up to the 2 s cap, as the data says.
+- **Precision Fusion:** R lights its slot, then its 7.5 s countdown (`p_pf_active.png`, `p2_pf_cd_2.png`). **Bug found and fixed:**
+  2 s on a giant at 10 m dealt 220 against 304 normal (two runs): the rate was x1.5, not x2 (`FusionCannons` clamped the recovery at
+  0 and lost the half tick: 10 volleys a second). After the fix: **297 vs 304** (equal DPS at 10 m, as 2x rate x 0.5 damage gives).
+- **Voice heard:** pain, matrix, eject, call_mech, boosters, the Self-Destruct line (`dva.ult.friendly`, her own copy).
+- **Not shown:** the real desktop keyboard (harness keys only); Precision Fusion's R-again cancel and its spread cut by eye; falloff
+  x1.5 at 15-30 m; Shield System's shields after G and back, and its armor reduction rows; the enemy's copy of the ult line (needs a
+  second player); multikill, on_fire, call_mech_kill, pilot_kill, matrix_absorb (dropped while the matrix line held her voice: the
+  one-line rule), mech_back (likewise after the call line), the wheel lines; a night fight with the perks.
+
 ## Not yet
-Steps 10-13: perks, sounds / voice / effects (and the
-firing / matrix clips), emotes, two players. Open from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox` after Sigma's
-step 10 merges; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam against the matrix. Effects (111 extracted), sounds, voice
-(set 57.05F, 1129 subtitled lines) and her 15 emotes are extracted but not mapped.
+Step 11's rest: her **weapon, ability and ult sound effects** (the Wwise 02C pipeline of sounds.md "Sojourn's map": effect table,
+ww.py / dump_banks.py, measure, gen; nothing of it run for her yet: her skin extract holds ~3400 .ogg under her entities' and
+models' effects) and her **effects** (111 extracted); the firing / matrix clips. Steps 12-13: emotes, two players. Open from steps
+4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
+against the matrix. Her reticle widgets (#85, below).
 
 ## The merge of next (2026-11-10): what fix/systems asked of her, done
 next brought `HeroKit.leavePlay`, `Combat.push`/`launch`, `Blow`, `Allies.areaHits`, `Barriers.nearest` and the Brigitte barrier `burst`/`shields(e, owner, at)`. Done in the merge: `Dva.leavePlay` (G: `heroMode(false)`; death: `stopMechKit`, a flying Self-Destruct still goes off; switch/leave: `clear`), the G hook kept for "on" only, `DVA_FORM` in `HERO_LOOKS`, Call Mech, Boosters and Self-Destruct push through `Combat.push`/`launch` (credit and transport), the dead "undo Minecraft's push" in the missiles gone, every hit with its `Blow` (`call_mech`, `boosters`, `micro_missiles`, `self_destruct`, weapon), her splashes on Brigitte's barrier like Accretion's, Boosters' knockback taken in `Combat.knockbackTaken`. Still open from that list: her reticle widgets (#85, below).
