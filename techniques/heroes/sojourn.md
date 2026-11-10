@@ -639,3 +639,11 @@ Reproduced on e40c37c / dbe8819 (`rg4_before*.txt`); fixed on 85eb740, e3f437f, 
 **Texture memory, read through EffectArt (mips counted):** her own art 59.5 MB; a bystander's (hers and the enemy's) 94.5 MB.
 
 **Not shown:** a real ping or a remote server; a person's hands. The delayed art against the pick over more than one client. The old build at the turning case without the dev lag.
+
+### Last narrow round (2026-11-10, 0d7c573; raw `rg6.txt`)
+Fixes only, after a final critic; played after, not reproduced before.
+- **Her last step from each move packet** (`ServerMoveMixin`), not a per-tick sample: two moves in one tick made it two steps long, and past 2 m it counted as a teleport. Slide-jump flick by `aimpress` at a 15 fps cap (10 measured): 5 of 5 hits, the server's point 0.000 m from the camera; at 115-119 fps the same.
+- **The round trip:** a sample over 1 s isn't taken, and it resets on join and disconnect. Row: a press, Esc (the Overwatch menu) for 2 s, then a real 15/s mash: measured 52 and 35 ms after, 5 shots at 648-657 ms gaps, twice. The menu didn't produce an outlier here, so the rejection itself wasn't exercised.
+- **A shown press that waited in the buffer** fires from where she pressed only within a step (2 m) of it. Dev send pressed at x 0.5, then `/tp` to 6.5 while it waited: the shot left from 6.5, twice.
+- **Accuracy numbers taken under `presstrace lag` don't measure the eye fix:** the dev lag delays her input, not her moves.
+- **Noted, not fixed:** a quick Q tap, released, then a click within a round trip as her ult fills can still ghost: the held-Q rule doesn't cover it.
