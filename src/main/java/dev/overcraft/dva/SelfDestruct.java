@@ -62,6 +62,12 @@ public final class SelfDestruct {
 		Vec3 motion = Boosters.active(s) ? player.getViewVector(1.0f).scale(Ow.speed(BOOSTERS_SPEED))
 			: s.dvaForm == Dva.WRECK ? Vec3.ZERO : player.position().subtract(player.xo, player.yo, player.zo);
 		s.ultCharge = 0;
+		// the ult line: "Activating self destruct sequence!" to her side, "Nerf this!" to her enemies (0B2F #443: 04D1 / 03DC)
+		var friendly = DvaSounds.of("ult.friendly");
+		var enemy = DvaSounds.of("ult.enemy");
+		if (friendly != null && enemy != null) {
+			dev.overcraft.hero.HeroSounds.ultLine(player, friendly, enemy, 5);
+		}
 		DvaMechEntity mech = new DvaMechEntity(level, player, DvaMechEntity.SELF_DESTRUCT, player.position(), player.getYRot());
 		mech.setDeltaMovement(motion);
 		level.addFreshEntity(mech);

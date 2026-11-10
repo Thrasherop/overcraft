@@ -1,0 +1,271 @@
+# D.Va's sounds: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as sigma.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-10 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/dva/scripts/sounds/
+# (voiceset_dva.py, dva_voice.py, dva_voice_gen.py, which writes this file; Sigma's voice pipeline retargeted); data:
+# research/dva/sounds/voice_lines.json. Step 11 so far: her VOICE. Her weapon / ability / ult sound effects (the Wwise
+# 02C pipeline, sounds.md 'Sojourn's map') are not mapped yet: techniques/heroes/dva.md says what is left.
+
+# ===== Voice (HeroVoice/D.Va): the voice set 0057.05F's lines by moment (317 stimuli, 1054 lines; from dva_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/dva/extract). w = the line's weight. Lines with criteria are left out, as Sigma's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt. Pilot and mech
+# share one set (the pain, death and kill lines are the same pools in both bodies).
+# Elimination 0008: 18 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 12 a hero interaction, 10 Overwatch Classic only, 1 a scripted condition
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000000B94A.0B2-Are you even trying_.ogg | w=0.05
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000000B96B.0B2-That one's for my fans!.ogg | w=0.05
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000000BB3B.0B2-(Korean)_ Are you an A.I._.ogg | w=0.1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/0000000200B0.0B2-Target eliminated.ogg | w=0.1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/0000000200B1.0B2-Enemy down.ogg | w=0.05
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000005E944.0B2-(Korean)_ You can't beat me!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000005E980.0B2-You need aim training.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000006057D.0B2-(Korean)_ Get wrecked!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/000000062389.0B2-Hard countered.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000006238B.0B2-Wow... Cringe!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/0000000616D5.0B2-(Korean)_ Make some noise!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/0000000616D7.0B2-(Korean)_ Get good in your next life.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000006158A.0B2-Fail!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000006158C.0B2-Who invited the rookie_.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/00000006158B.0B2-Crushed!.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/000000061588.0B2-Too spicy for you_.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/000000061589.0B2-Fact check, you're dead.ogg | w=1
+dva.voice.elimination = ../../research/dva/extract/HeroVoice/D.Va/Elimination/0000000646FD.0B2-(sigh) It's a skill issue.ogg | w=1
+# Multikill 00C9: 3 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 4 Overwatch Classic only, 1 a skin / celebration, 1 a scripted condition
+dva.voice.multikill = ../../research/dva/extract/HeroVoice/D.Va/Multikill/00000005E991.0B2-Pure skill!.ogg | w=1
+dva.voice.multikill = ../../research/dva/extract/HeroVoice/D.Va/Multikill/00000005E98F.0B2-Aw. Go next!.ogg | w=1
+dva.voice.multikill = ../../research/dva/extract/HeroVoice/D.Va/Multikill/00000005E990.0B2-All me!.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 6 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 3 a scripted condition, 2 Overwatch Classic only, 1 a hero interaction
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/00000000B9D8.0B2-Ouch.ogg | w=0.1
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/00000000B97E.0B2-Don't mess with me!.ogg | w=0.1
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/00000005E993.0B2-Smack down!.ogg | w=1
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/00000005E994.0B2-Talk to the hand!.ogg | w=1
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/0000000616DA.0B2-(Korean)_ I've got hot hands!.ogg | w=1
+dva.voice.melee_kill = ../../research/dva/extract/HeroVoice/D.Va/MeleeEnemyKilledRemark/000000061595.0B2-Take this!.ogg | w=1
+# On Fire 0583: 4 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 2 Overwatch Classic only
+dva.voice.on_fire = ../../research/dva/extract/HeroVoice/D.Va/OnFire/0000000615C1.0B2-I'm on fire! What else is new_.ogg | w=1
+dva.voice.on_fire = ../../research/dva/extract/HeroVoice/D.Va/OnFire/0000000615C0.0B2-Your carry is here!.ogg | w=1
+dva.voice.on_fire = ../../research/dva/extract/HeroVoice/D.Va/OnFire/0000000615BF.0B2-Systems running hot!.ogg | w=1
+dva.voice.on_fire = ../../research/dva/extract/HeroVoice/D.Va/OnFire/000000069CAD.0B2-I'm popping off!.ogg | w=1
+# Respawn 002C: 10 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 8 Overwatch Classic only
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99D.0B2-I'm not giving up!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99A.0B2-Am I getting stream sniped_.ogg | w=0.1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99E.0B2-Reset and regroup.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99B.0B2-Don't tilt, Hana. You got this!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99F.0B2-That was only a warm-up!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E999.0B2-(Korean)_ I have to focus!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E998.0B2-(Korean)_ I'm still fighting!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E99C.0B2-They're counting on me!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/00000005E9B0.0B2-(Korean)_ This game is tough!.ogg | w=1
+dva.voice.respawn = ../../research/dva/extract/HeroVoice/D.Va/Respawn/000000069CB5.0B2-Ugh! I gotta lock in!.ogg | w=0.2
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B721.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B711.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B73B.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B730.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B725.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/00000000B72D.0B2-(shouts).ogg | w=0.7
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/000000063C04.0B2-(shouts).ogg | w=1
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/000000063C05.0B2-(shouts).ogg | w=1
+dva.voice.melee = ../../research/dva/extract/HeroVoice/D.Va/Melee/000000063C06.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+dva.voice.select = ../../research/dva/extract/HeroVoice/D.Va/HeroSelect/00000005FD04.0B2-Time to save the world_ Game on!.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B72B.0B2-(dying sounds).ogg | w=1
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B73C.0B2-(dying sounds).ogg | w=1
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B73F.0B2-(dying sounds).ogg | w=1
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B736.0B2-(dying sounds).ogg | w=1
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B715.0B2-(dying sounds).ogg | w=1
+dva.voice.death = ../../research/dva/extract/HeroVoice/D.Va/Death/00000000B71F.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B713.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B73E.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B70C.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B747.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B726.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B714.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B749.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B720.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B712.0B2-(grunts).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B71D.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B733.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B739.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B723.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B70E.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B734.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B717.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B731.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B735.0B2-(painful grunt).ogg | w=1
+dva.voice.pain = ../../research/dva/extract/HeroVoice/D.Va/Pain/00000000B748.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 3 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+dva.voice.resurrected = ../../research/dva/extract/HeroVoice/D.Va/Resurrected/00000000B9B9.0B2-Huge rez!.ogg | w=0.2
+dva.voice.resurrected = ../../research/dva/extract/HeroVoice/D.Va/Resurrected/00000000B972.0B2-1-up!.ogg | w=0.2
+dva.voice.resurrected = ../../research/dva/extract/HeroVoice/D.Va/Resurrected/00000005E9A0.0B2-Game changer!.ogg | w=0.2
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+dva.voice.ult_ready = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/Ready/00000000B9C8.0B2-Ultimate ready!.ogg | w=1
+# Ultimate/Charging 0574: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_ult_charging = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/Charging/00000002008B.0B2-My ultimate is charging!.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_ult_almost = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/AlmostReady/00000002008C.0B2-My ultimate is almost ready!.ogg | w=1
+# Hello 01CF: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/00000000B931.0B2-Hi!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/00000000B9CC.0B2-(Korean)_ Hi!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/000000020084.0B2-Hiya!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/000000063824.0B2-(Korean)_ Hi!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/000000063825.0B2-Hey!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/000000063828.0B2-Hiya!.ogg | w=1
+dva.voice.call_hello = ../../research/dva/extract/HeroVoice/D.Va/Hello/000000069CB7.0B2-What's up gamers_.ogg | w=0.001
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_thanks = ../../research/dva/extract/HeroVoice/D.Va/Thanks/00000000B97F.0B2-(Korean)_ Thanks!.ogg | w=1
+dva.voice.call_thanks = ../../research/dva/extract/HeroVoice/D.Va/Thanks/00000000B92D.0B2-Thanks!.ogg | w=1
+dva.voice.call_thanks = ../../research/dva/extract/HeroVoice/D.Va/Thanks/000000020097.0B2-Thank you!.ogg | w=1
+dva.voice.call_thanks = ../../research/dva/extract/HeroVoice/D.Va/Thanks/00000006382E.0B2-(Korean)_ Thanks!.ogg | w=1
+dva.voice.call_thanks = ../../research/dva/extract/HeroVoice/D.Va/Thanks/000000063831.0B2-Thanks!.ogg | w=1
+# Sorry 05E1: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_sorry = ../../research/dva/extract/HeroVoice/D.Va/Sorry/00000002EF61.0B2-(Korean)_ Sorry.ogg | w=1
+dva.voice.call_sorry = ../../research/dva/extract/HeroVoice/D.Va/Sorry/00000002EF62.0B2-Sorry about that!.ogg | w=1
+dva.voice.call_sorry = ../../research/dva/extract/HeroVoice/D.Va/Sorry/00000002EF63.0B2-Sorry.ogg | w=1
+dva.voice.call_sorry = ../../research/dva/extract/HeroVoice/D.Va/Sorry/00000002EF64.0B2-(Korean)_ Apologies.ogg | w=1
+dva.voice.call_sorry = ../../research/dva/extract/HeroVoice/D.Va/Sorry/00000002EF65.0B2-(Korean)_ I'm sorry.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_no = ../../research/dva/extract/HeroVoice/D.Va/No/00000000B9A8.0B2-(Korean)_ No way.ogg | w=1
+dva.voice.call_no = ../../research/dva/extract/HeroVoice/D.Va/No/00000000B9D1.0B2-No.ogg | w=1
+# GroupUp 02C6: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_group_up = ../../research/dva/extract/HeroVoice/D.Va/GroupUp/00000000B954.0B2-Group up with me!.ogg | w=1
+dva.voice.call_group_up = ../../research/dva/extract/HeroVoice/D.Va/GroupUp/000000020081.0B2-Group up!.ogg | w=1
+dva.voice.call_group_up = ../../research/dva/extract/HeroVoice/D.Va/GroupUp/000000020082.0B2-Join me!.ogg | w=1
+dva.voice.call_group_up = ../../research/dva/extract/HeroVoice/D.Va/GroupUp/000000020083.0B2-Group up here!.ogg | w=1
+dva.voice.call_group_up = ../../research/dva/extract/HeroVoice/D.Va/GroupUp/000000063836.0B2-Let's group up!.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_need_help = ../../research/dva/extract/HeroVoice/D.Va/AssistanceRequired/00000000B9DD.0B2-I could use a hand!.ogg | w=1
+dva.voice.call_need_help = ../../research/dva/extract/HeroVoice/D.Va/AssistanceRequired/000000020086.0B2-I need help!.ogg | w=1
+# Healing 0045: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.call_need_healing = ../../research/dva/extract/HeroVoice/D.Va/Healing/00000000B99A.0B2-I need healing!.ogg | w=1
+dva.voice.call_need_healing = ../../research/dva/extract/HeroVoice/D.Va/Healing/000000020088.0B2-Need healing!.ogg | w=1
+dva.voice.call_need_healing = ../../research/dva/extract/HeroVoice/D.Va/Healing/00000006381B.0B2-I'm low health. Pocket me!.ogg | w=0.005
+dva.voice.call_need_healing = ../../research/dva/extract/HeroVoice/D.Va/Healing/000000063819.0B2-Heals, please!.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+dva.voice.ping = ../../research/dva/extract/HeroVoice/D.Va/Unknown/11D9.078/0000000640C0.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+dva.voice.ping_warning = ../../research/dva/extract/HeroVoice/D.Va/Unknown/11DA.078/0000000640C1.0B2-Ping ping ping!.ogg | w=1
+dva.voice.ping_warning = ../../research/dva/extract/HeroVoice/D.Va/Unknown/11DA.078/0000000640C2.0B2-Watch out!.ogg | w=1
+dva.voice.ping_warning = ../../research/dva/extract/HeroVoice/D.Va/Unknown/11DA.078/0000000640C3.0B2-Heads up!.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+dva.voice.ping_enemy = ../../research/dva/extract/HeroVoice/D.Va/Unknown/1117.078/000000061E07.0B2-Enemy here!.ogg | w=1
+dva.voice.ping_enemy = ../../research/dva/extract/HeroVoice/D.Va/Unknown/1117.078/000000061E05.0B2-Enemy spotted!.ogg | w=1
+dva.voice.ping_enemy = ../../research/dva/extract/HeroVoice/D.Va/Unknown/1117.078/000000061E06.0B2-Found an enemy!.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 9 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000B96A.0B2-Power up!.ogg | w=0.5
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000B965.0B2-Damage buff!.ogg | w=0.5
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000B940.0B2-Now that's teamwork!.ogg | w=1
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000BB2F.0B2-Aw yeah!.ogg | w=0.3
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000B939.0B2-(Korean)_ Power up!.ogg | w=0.5
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000000B98E.0B2-(Korean)_ This feels awesome!.ogg | w=1
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/00000002007E.0B2-Now we're talking!.ogg | w=1
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/0000000200A6.0B2-Weapon systems overloaded!.ogg | w=1
+dva.voice.damage_boosted = ../../research/dva/extract/HeroVoice/D.Va/DamageBoosted/0000000200A7.0B2-Weapons optimized.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 2 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 2 Overwatch Classic only, 2 a scripted condition
+dva.voice.nano_boosted = ../../research/dva/extract/HeroVoice/D.Va/NanoBoosted/0000000615C3.0B2-(Korean)_ Who wants to mess with me_.ogg | w=1
+dva.voice.nano_boosted = ../../research/dva/extract/HeroVoice/D.Va/NanoBoosted/0000000615C4.0B2-Let's go!.ogg | w=1
+# Boosters 03DA ('Mobilizing!'; the stimulus her set lists beside the ability's, no graph node names it: M the trigger): 6 files; prio 60, 60 m, +0 dB, interrupt 0, cooldown 2-2 s; left out: 6 Overwatch Classic only
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E93E.0B2-Mobilizing!.ogg | w=1
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E93D.0B2-Engaging thrusters!.ogg | w=1
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E939.0B2-Diving in!.ogg | w=1
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E93C.0B2-Speeding up!.ogg | w=1
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E93A.0B2-Flying high!.ogg | w=1
+dva.voice.boosters = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DA.078/00000005E93B.0B2-(Korean)_ Keep up!.ogg | w=1
+# Defense Matrix 03DB ('Nothing gets past me!'; as 03DA: M the trigger): 6 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 2-2 s; left out: 7 Overwatch Classic only
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/00000005E942.0B2-Nothing gets past me!.ogg | w=1
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/00000005E941.0B2-Neutralizing projectiles!.ogg | w=1
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/00000005E943.0B2-Initiating defense matrix!.ogg | w=1
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/00000005E940.0B2-Forward barrier activated!.ogg | w=1
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/00000006057C.0B2-(Korean)_ Try me!.ogg | w=1
+dva.voice.matrix = ../../research/dva/extract/HeroVoice/D.Va/Unknown/3DB.078/000000062FA8.0B2-(Korean)_ Not a chance!.ogg | w=1
+# Defense Matrix ate something 06C1 ('Don't think so!'; 02CC #343 STU_40E05F6B on herself, 0.75 s after an absorb, H): 5 files; prio 85, 60 m, +0 dB, interrupt 0, cooldown 15-10 s; left out: 13 a hero interaction, 7 Overwatch Classic only
+dva.voice.matrix_absorb = ../../research/dva/extract/HeroVoice/D.Va/Unknown/6C1.078/00000005E93F.0B2-(Korean)_ Sorry about that!.ogg | w=1
+dva.voice.matrix_absorb = ../../research/dva/extract/HeroVoice/D.Va/Unknown/6C1.078/000000061580.0B2-Don't think so!.ogg | w=1
+dva.voice.matrix_absorb = ../../research/dva/extract/HeroVoice/D.Va/Unknown/6C1.078/00000006157D.0B2-Oops! Was that your best_.ogg | w=1
+dva.voice.matrix_absorb = ../../research/dva/extract/HeroVoice/D.Va/Unknown/6C1.078/000000061581.0B2-Excuse you!.ogg | w=1
+dva.voice.matrix_absorb = ../../research/dva/extract/HeroVoice/D.Va/Unknown/6C1.078/00000006157E.0B2-(yawns) Boring!.ogg | w=1
+# Call Mech 0479 ('Calling in the big guns!'; as 03DA: M the trigger): 6 files; prio 60, 60 m, +3 dB, interrupt 0, cooldown 2-2 s; left out: 4 Overwatch Classic only
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000005E9AC.0B2-Initializing systems!.ogg | w=1
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000005E9AF.0B2-Booting up!.ogg | w=1
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000005E9AD.0B2-Calling in the big guns!.ogg | w=1
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000005E9AE.0B2-New mech, new me!.ogg | w=0.1
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000005FD02.0B2-C'mere, Tokki!.ogg | w=1
+dva.voice.call_mech = ../../research/dva/extract/HeroVoice/D.Va/Unknown/479.078/00000006158D.0B2-(Korean)_ Hop hop!.ogg | w=1
+# Call Mech kill 11CE ('Squished!'; 026A #854 STU_40E05F6B, H; its name EnemyKilled/CallMech): 4 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-20 s
+dva.voice.call_mech_kill = ../../research/dva/extract/HeroVoice/D.Va/EnemyKilled/CallMech/000000063834.0B2-That was the wrong place to stand.ogg | w=0.1
+dva.voice.call_mech_kill = ../../research/dva/extract/HeroVoice/D.Va/EnemyKilled/CallMech/000000063830.0B2-Squished!.ogg | w=1
+dva.voice.call_mech_kill = ../../research/dva/extract/HeroVoice/D.Va/EnemyKilled/CallMech/000000063832.0B2-Get dunked on!.ogg | w=1
+dva.voice.call_mech_kill = ../../research/dva/extract/HeroVoice/D.Va/EnemyKilled/CallMech/000000063833.0B2-Oof, bad positioning!.ogg | w=1
+# the mech lost 0497 ('Pilot disengaging!'; as 03DA: M the trigger): 6 files; prio 60, 60 m, +3 dB, interrupt 0, cooldown 2-2 s; left out: 3 Overwatch Classic only
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/00000000B985.0B2-BRB!.ogg | w=0.001
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/00000005E97C.0B2-Pilot disengaging!.ogg | w=1
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/00000005E97D.0B2-Tokki compromised!.ogg | w=0.5
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/00000005E9AA.0B2-I'm out!.ogg | w=1
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/00000005E9AB.0B2-Gotta bail!.ogg | w=1
+dva.voice.eject = ../../research/dva/extract/HeroVoice/D.Va/Unknown/497.078/000000069CC2.0B2-I'm crashing out!.ogg | w=0.1
+# back in a mech 049D ('D.Va back in action!'; as 03DA: M the trigger): 6 files; prio 60, 60 m, +0 dB, interrupt 0, cooldown 2-2 s; left out: 2 Overwatch Classic only
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/00000000B98D.0B2-Game on!.ogg | w=1
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/00000005E97A.0B2-(Korean)_ Who's ready for trouble_.ogg | w=1
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/00000005E97B.0B2-D.Va back in action!.ogg | w=1
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/000000061584.0B2-Miss me_.ogg | w=1
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/000000061583.0B2-Let's mech up this party!.ogg | w=1
+dva.voice.mech_back = ../../research/dva/extract/HeroVoice/D.Va/Unknown/49D.078/000000069CBC.0B2-They're cooked!.ogg | w=1
+# a kill as the pilot 10AF ('No mech? No problem!'; 02B8 #353 ActionSendGameMessage 1B27 carrying it, chance 0.9, H): 4 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 1 a hero interaction, 1 a scripted condition
+dva.voice.pilot_kill = ../../research/dva/extract/HeroVoice/D.Va/Unknown/10AF.078/00000005E97E.0B2-No mech_ No problem!.ogg | w=1
+dva.voice.pilot_kill = ../../research/dva/extract/HeroVoice/D.Va/Unknown/10AF.078/000000061585.0B2-Don't call me _baby_.ogg | w=1
+dva.voice.pilot_kill = ../../research/dva/extract/HeroVoice/D.Va/Unknown/10AF.078/0000000616D2.0B2-(Korean) You were so embarrassed, you died!.ogg | w=1
+dva.voice.pilot_kill = ../../research/dva/extract/HeroVoice/D.Va/Unknown/10AF.078/0000000616D3.0B2-(Korean)_ I'm crazy good!.ogg | w=1
+# Self-Destruct, her own copy 183C ('Nerf this!'; 0B2F #443 STU_37D754C8 key F1AC, the own key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 2 a skin / celebration
+dva.voice.ultimate = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/00000006979F.0B2-Nerf this!.ogg | w=1
+# Self-Destruct line, allies and herself 04D1 ('Activating self destruct sequence!'; #443 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+dva.ult.friendly = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/000000020091.0B2-Activating self destruct sequence!.ogg | w=1
+# Self-Destruct line, enemies 03DC ('Nerf this!'; #443 key F1AA, the enemy key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 2 a skin / celebration
+dva.ult.enemy = ../../research/dva/extract/HeroVoice/D.Va/Ultimate/00000000B9B2.0B2-Nerf this!.ogg | w=1
+# GOOD JOB (the wheel key's tap): her set has no such category (as Sigma's); ours: her Teammate/KillSeen 001B lines
+#  (a teammate's kill seen) with no criteria.
+dva.voice.call_good_job = ../../research/dva/extract/HeroVoice/D.Va/Teammate/KillSeen/00000000B9B6.0B2-NS!.ogg | w=0.05
+dva.voice.call_good_job = ../../research/dva/extract/HeroVoice/D.Va/Teammate/KillSeen/000000060216.0B2-Wow! You're popping off!.ogg | w=1
+dva.voice.call_good_job = ../../research/dva/extract/HeroVoice/D.Va/Teammate/KillSeen/000000060217.0B2-Glad you're on my team!.ogg | w=1
+dva.voice.call_good_job = ../../research/dva/extract/HeroVoice/D.Va/Teammate/KillSeen/000000061586.0B2-Not bad!.ogg | w=0.1
+dva.voice.call_good_job = ../../research/dva/extract/HeroVoice/D.Va/Teammate/KillSeen/000000061587.0B2-You've been holding back on me!.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$dva.voice.elimination = D.Va remarks on a takedown
+$dva.voice.multikill = D.Va: Pure skill!
+$dva.voice.melee_kill = D.Va: Smack down!
+$dva.voice.on_fire = D.Va: I'm on fire! What else is new?
+$dva.voice.respawn = D.Va is back
+$dva.voice.melee = D.Va shouts
+$dva.voice.select = D.Va: Time to save the world? Game on!
+$dva.voice.death = D.Va dies
+$dva.voice.pain = D.Va grunts
+$dva.voice.resurrected = D.Va: 1-up!
+$dva.voice.ult_ready = D.Va: Ultimate ready!
+$dva.voice.call_ult_charging = D.Va: My ultimate is charging!
+$dva.voice.call_ult_almost = D.Va: My ultimate is almost ready!
+$dva.voice.call_hello = D.Va: Hi!
+$dva.voice.call_thanks = D.Va: Thanks!
+$dva.voice.call_sorry = D.Va: Sorry!
+$dva.voice.call_no = D.Va: No
+$dva.voice.call_group_up = D.Va: Group up!
+$dva.voice.call_need_help = D.Va: I need help!
+$dva.voice.call_need_healing = D.Va: I need healing!
+$dva.voice.ping = D.Va: Over there!
+$dva.voice.ping_warning = D.Va: Heads up!
+$dva.voice.ping_enemy = D.Va: Enemy spotted!
+$dva.voice.damage_boosted = D.Va: Power up!
+$dva.voice.nano_boosted = D.Va: Let's go!
+$dva.voice.boosters = D.Va: Mobilizing!
+$dva.voice.matrix = D.Va: Nothing gets past me!
+$dva.voice.matrix_absorb = D.Va: Don't think so!
+$dva.voice.call_mech = D.Va: Calling in the big guns!
+$dva.voice.call_mech_kill = D.Va: Squished!
+$dva.voice.eject = D.Va: Pilot disengaging!
+$dva.voice.mech_back = D.Va: D.Va back in action!
+$dva.voice.pilot_kill = D.Va: No mech? No problem!
+$dva.voice.ultimate = D.Va: Nerf this!
+$dva.voice.call_good_job = D.Va: Wow! You're popping off!
+$dva.ult.friendly = D.Va: Activating self destruct sequence!
+$dva.ult.enemy = D.Va: Nerf this!

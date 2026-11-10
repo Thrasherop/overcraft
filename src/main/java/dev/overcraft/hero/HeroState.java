@@ -267,6 +267,8 @@ public final class HeroState {
 	 */
 	public int dvaBoostExtra, dvaPrecision = -1;
 	public long dvaPrecisionEndedAt = -1000;
+	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
+	public long dvaMatrixLineAt = -1;
 	public double armorLost;
 	/**
 	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;

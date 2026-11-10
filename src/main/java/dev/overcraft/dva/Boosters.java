@@ -55,6 +55,8 @@ public final class Boosters {
 		s.dvaBoostExtra = 0;
 		s.dvaBoostHit.clear();
 		s.softLanding = true;
+		// "Mobilizing!" (03DA)
+		dev.overcraft.hero.Voice.say(player, "boosters", 1);
 		// the Initiator's trigger (047E #487 message 2B3B -> 01C7 #2953)
 		Dva.initiator(player, s);
 		// her flight clips (alias 0x3BB: 34BB start -> 307C flight, 1P 3313 -> 318A)

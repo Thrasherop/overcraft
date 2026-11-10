@@ -528,6 +528,18 @@ public final class OcSounds {
 		"ping_warning", "ping_enemy", "hyperspheres", "grasp", "grasp_absorb", "accretion", "accretion_kill", "barrier",
 		"barrier_recall", "barrier_broken", "barrier_damaged", "barrier_low", "flux_kill", "ultimate");
 
+	/**
+	 * D.Va's voice moments (tools/soundmaps/dva.txt, the voice section; her set 0057.05F; the wheel lines, "resurrected",
+	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init()). The ult line is ult.friendly / ult.enemy
+	 * (04D1 / 03DC); voice.ultimate (183C, her own copy, the enemy line's text) stays unplayed, as Sigma's.
+	 */
+	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
+		"pilot_kill", "ultimate");
+	/** D.Va's other sounds (tools/soundmaps/dva.txt): so far the ult lines; her weapons' and abilities' are step 11's rest. */
+	public static final java.util.List<String> DVA_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -549,6 +561,8 @@ public final class OcSounds {
 		SOJOURN_VOICE.forEach(moment -> register("sojourn.voice." + moment));
 		SIGMA_SOUNDS.forEach(name -> register("sigma." + name));
 		SIGMA_VOICE.forEach(moment -> register("sigma.voice." + moment));
+		DVA_SOUNDS.forEach(name -> register("dva." + name));
+		DVA_VOICE.forEach(moment -> register("dva.voice." + moment));
 	}
 
 	private OcSounds() {

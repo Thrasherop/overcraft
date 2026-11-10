@@ -64,6 +64,8 @@ public final class DefenseMatrix {
 	private static void start(ServerPlayer player, HeroState s) {
 		s.dvaMatrix = true;
 		s.dvaMatrixTicks = 0;
+		// "Nothing gets past me!" (03DB)
+		dev.overcraft.hero.Voice.say(player, "matrix", 1);
 		// stand-in sound (hers: step 11); its first-person arms' clips (0x3F6: 334E ..) come with the effects
 		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.6f, 1.8f);
 	}
@@ -83,6 +85,10 @@ public final class DefenseMatrix {
 		Barriers.absorbBox(player, BOX, (p, at, damage) -> {
 			// 4 % of what it eats to her ult (#255, M)
 			Combat.addUltCharge(player, damage * MATRIX_ULT_SHARE, false);
+			// "Don't think so!" 0.75 s after it eats something (06C1: 02CC #343)
+			if (s.dvaMatrixLineAt < 0) {
+				s.dvaMatrixLineAt = level.getGameTime() + Ow.ticks(0.75);
+			}
 			// Shield System: 25 % of it back as shields (514D #402)
 			DvaPerks.matrixAte(player, s, damage);
 			level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);

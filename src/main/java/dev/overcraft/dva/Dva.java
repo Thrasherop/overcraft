@@ -210,6 +210,10 @@ public final class Dva implements HeroKit {
 		}
 		// the mech's kit (steps 4-6): Defense Matrix first (no Fusion while it's up), Boosters, the Fusion Cannons
 		boolean mech = s.dvaForm == MECH && controls && player.isAlive() && !Sleep.asleep(player);
+		if (s.dvaMatrixLineAt >= 0 && now >= s.dvaMatrixLineAt) {
+			s.dvaMatrixLineAt = -1;
+			dev.overcraft.hero.Voice.say(player, "matrix_absorb", 1);
+		}
 		// her perks (step 10): Precision Fusion's time and cooldown, Shield System's shields
 		DvaPerks.tickPrecision(player, s, mech);
 		if (s.dvaForm == MECH) {
@@ -329,6 +333,10 @@ public final class Dva implements HeroKit {
 		HeroManager.refreshHealth(player, s, true);
 		// Bunny Power: overhealth as she lands (514D #440)
 		DvaPerks.ejected(player, s);
+		if (wreck) {
+			// "Pilot disengaging!" (0497)
+			dev.overcraft.hero.Voice.say(player, "eject", 1);
+		}
 		// launched away from a point 1 m ahead of the mech: 6 m/s back, 7 up (#97's knockback); her fall from it doesn't hurt
 		Vec3 back = facing.scale(-Ow.speed(EJECT_BACK));
 		player.setDeltaMovement(back.x, Ow.speed(EJECT_UP), back.z);
@@ -358,6 +366,8 @@ public final class Dva implements HeroKit {
 			return;
 		}
 		s.ultCharge = 0;
+		// "Calling in the big guns!" (0479)
+		dev.overcraft.hero.Voice.say(player, "call_mech", 1);
 		s.dvaForm = CALLING;
 		s.dvaTicks = 0;
 		s.dvaCallSpot = spot;
@@ -461,6 +471,20 @@ public final class Dva implements HeroKit {
 		s.ultActive = 0;
 		freshMech(s);
 		HeroManager.refreshHealth(player, s, true);
+		// "D.Va back in action!" (049D)
+		dev.overcraft.hero.Voice.say(player, "mech_back", 1);
+	}
+
+	/**
+	 * She killed an enemy (Voice.onKill), before the shared lines: Call Mech's landing "Squished!" (11CE, 026A #854), or a kill
+	 * as the pilot "No mech? No problem!" (10AF, 02B8 #353's message, 0.9 of the time).
+	 */
+	public static void killed(ServerPlayer player, HeroState s, dev.overcraft.hero.@Nullable Blow blow) {
+		if (blow != null && blow.kind() == dev.overcraft.hero.Blow.Kind.ULT && "call_mech".equals(blow.icon())) {
+			dev.overcraft.hero.Voice.say(player, "call_mech_kill", 1);
+		} else if (s.dvaForm == PILOT && blow != null && blow.kind() == dev.overcraft.hero.Blow.Kind.WEAPON) {
+			dev.overcraft.hero.Voice.say(player, "pilot_kill", 0.9f);
+		}
 	}
 
 	private static void removeMech(ServerPlayer player, HeroState s) {
