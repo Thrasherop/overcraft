@@ -1,0 +1,361 @@
+=== #126 table. TREE 85eb740 dirty_src_files=0 launched=2026-11-06T14:59:44 at 15:00:49
+{'ok': True}
+WARM art ready after 2.18 s; frames over 40 ms (at ms, length): [(103, 153), (256, 371), (627, 61)] frames 50 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 15:01:39 fps 30
+FIRST idle, nothing pressed long frames (ms after the press, length): [(3, 34), (37, 31), (68, 35), (103, 34), (136, 32), (168, 35), (203, 33), (236, 32), (268, 35), (303, 33), (336, 32), (368, 35), (403, 33), (436, 32), (468, 35), (503, 34), (537, 32), (569, 35), (604, 34), (637, 32), (669, 35), (705, 33), (738, 32), (770, 35), (804, 34), (838, 32), (870, 36), (906, 33), (939, 32), (970, 35)] | fps 30
+TRACE 2.7 36.6 68.0 102.8 136.4 168.3 203.1 236.2 268.0 303.2 336.3 368.2 403.3 436.4 468.1 502.9 536.9 568.7 603.5 637.0 669.3 704.6 738.0 769.5 804.3 837.8 870.0 905.5 938.7 970.2 1005.1 f
+FIRST first Charged Shot long frames (ms after the press, length): [(-64, 32), (-32, 45), (37, 32), (69, 34), (103, 33), (136, 32), (169, 35), (204, 33), (236, 32), (268, 35), (304, 34), (337, 32), (369, 35), (404, 33), (438, 32), (469, 35), (504, 34), (538, 31), (569, 35), (604, 34), (637, 32), (669, 35), (704, 34), (738, 32), (770, 35), (804, 34), (838, 32), (870, 35), (905, 34), (938, 31), (970, 35), (1005, 34), (1039, 31), (1070, 35), (1105, 34), (1139, 31), (1170, 35), (1205, 34), (1238, 32), (1270, 34), (1305, 34), (1338, 32), (1370, 36), (1406, 37), (1443, 32), (1475, 32), (1507, 34), (1542, 33), (1575, 33), (1608, 35), (1642, 34)] | fps 30
+TRACE 2.6 34.8 66.6 press | 67.0 click 0.500 -58.380 0.500 0.00 0.00 | 67.0 sent | 67.1 clip | 75.6 snd:charged.fire_mid | 75.7 snd:charged.shot | 76.0 fx | 79.8 frame | 103.8 113.9 srv_shot | 114.0 srv_eye 0.500 -58.380 0.500 0.00 | 133.2 snd:charged.hit | 133.4 snd:charged.hit_enemy | 135.5 167.2 sent | 169.7 203.1 235.2 270.3 302.9 334.9 370.1 403.7 435.6 471.0 504.1 535.8 570.7 604.4 635.8 670.4 703.9 735.7 770.9 804.6 836.2 871.0 904.5 936.5 971.2 1004.9 1036.3 1071.3 1105.4 1136.3 1171.7 1205.3 
+[15:01:49] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 536
+ours:
+480 (none of ours)
+24 model.HeroModelRenderer.emit
+5 effect.SojournFx.energyGlow
+4 hud.HudDraw.image
+3 ClientSojourn.show
+3 model.HeroModelRenderer.skinned
+2 ClientHero.hero
+2 effect.Fx$Particle.<init>
+2 model.HeroModelRenderer.shadow
+1 ClientSojourn.tick
+1 HeroHud.shortKey
+1 OvercraftClient.lambda$onInitializeClient$45
+1 controls.HeroControls.mouseButtonHeld
+1 controls.HeroControls.suppressedInHeroMode
+1 dev.DevServer.handle
+1 dev.overcraft.hero.OwMovement.verticalStep
+1 effect.Fx.atLiquid
+1 effect.SombraFx.tick
+1 hud.HudDraw.fill
+1 model.Skeleton$Pose.<init>
+top:
+415 jdk.internal.misc.Unsafe.park
+24 dev.overcraft.client.model.HeroModelRenderer.emit
+10 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+9 java.io.FileInputStream.open0
+9 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+5 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+4 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+3 dev.overcraft.client.model.HeroModelRenderer.skinned
+3 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+2 dev.overcraft.client.ClientHero.hero
+2 java.util.Comparator.lambda$comparing$ea9a8b3a$1
+2 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+2 org.lwjgl.system.JNI.invokePZ
+1 com.google.common.collect.RegularImmutableMap.get
+1 com.mojang.blaze3d.vertex.BufferBuilder.addVertex
+1 com.mojang.renderpearl.frontend.FrontendRenderPass.setUniform
+1 dev.overcraft.client.ClientSojourn.tick
+1 dev.overcraft.client.controls.HeroControls.mouseButtonHeld
+FIRST second Charged Shot long frames (ms after the press, length): [(-66, 35), (-31, 34), (4, 31), (35, 36), (70, 33), (103, 32), (135, 35), (170, 33), (203, 32), (235, 35), (270, 33), (303, 32), (335, 35), (370, 33), (402, 32), (435, 35), (470, 33), (503, 33), (536, 35), (570, 33), (603, 32), (635, 35), (670, 33), (703, 32), (735, 35), (770, 33), (803, 32), (835, 35), (870, 33), (903, 32), (935, 35), (970, 33), (1003, 32), (1035, 35), (1070, 33), (1103, 32), (1135, 35), (1170, 33), (1203, 32), (1235, 35), (1270, 33), (1303, 32), (1335, 35), (1370, 33), (1404, 32), (1436, 34), (1470, 33), (1504, 32), (1536, 35), (1570, 33), (1603, 32)] | fps 30
+TRACE 1.3 36.2 66.8 press | 66.8 click 0.500 -58.380 0.500 0.00 0.00 | 66.8 sent | 66.8 clip | 66.9 snd:charged.fire_mid | 67.1 snd:charged.shot | 67.2 fx | 70.4 frame | 101.4 110.4 srv_shot | 110.4 srv_eye 0.500 -58.380 0.500 0.00 | 133.4 snd:charged.hit | 133.5 snd:charged.hit_enemy | 134.6 sent | 136.9 169.5 201.5 236.5 269.8 301.5 336.3 369.5 401.7 436.5 469.3 501.6 536.5 569.6 602.3 637.0 670.0 702.0 736.8 770.1 802.1 837.1 870.0 902.0 937.1 969.9 1001.9 1036.8 1069.8 1102.1 1136.9 1170.1 1202.1 
+[15:01:54] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 529
+ours:
+485 (none of ours)
+18 model.HeroModelRenderer.emit
+8 model.HeroModelRenderer.skinned
+1 ClientHero.hero
+1 HeroHud.ability
+1 MercySounds.tick
+1 OvercraftClient.lambda$onInitializeClient$45
+1 SigmaSounds.things
+1 SojournSounds.tick
+1 dev.overcraft.hero.PressTrace.add
+1 effect.EffectArt.get
+1 effect.Fx.render
+1 effect.Fx.simulate
+1 hud.HudDraw.fill
+1 model.EmoteProps.submit
+1 model.HeroModelRenderer.shadow
+1 model.Skeleton.addAdditive
+1 model.Skeleton.sample
+1 model.Skeleton.skin
+1 model.WeaponClips.pick
+1 model.WeaponClips.play
+top:
+418 jdk.internal.misc.Unsafe.park
+18 dev.overcraft.client.model.HeroModelRenderer.emit
+9 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+8 dev.overcraft.client.model.HeroModelRenderer.skinned
+8 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+6 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+3 org.lwjgl.opengl.GL11C.glTexParameteri
+3 org.lwjgl.system.JNI.invokePZ
+2 java.util.HashMap.getNode
+2 jdk.internal.misc.Unsafe.allocateInstance
+2 org.joml.Matrix4f.mul
+2 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+1 dev.overcraft.client.ClientHero.hero
+1 dev.overcraft.client.HeroHud.ability
+1 dev.overcraft.client.MercySounds.tick
+1 dev.overcraft.client.SigmaSounds.things
+1 dev.overcraft.client.effect.Fx.simulate
+FIRST first rounds long frames (ms after the press, length): [(-66, 35), (-30, 35), (4, 30), (34, 62), (104, 32), (136, 37), (172, 32), (204, 31), (236, 37), (273, 32), (306, 30), (336, 37), (373, 33), (405, 31), (436, 35), (472, 35), (507, 30), (537, 35), (572, 33), (605, 32), (637, 36), (672, 33), (705, 32), (737, 36), (773, 33), (806, 32), (838, 35), (873, 33), (906, 32), (938, 35), (973, 33), (1006, 32), (1038, 35), (1073, 33), (1106, 32), (1138, 35), (1174, 33), (1207, 32), (1239, 36), (1275, 33), (1308, 32), (1340, 35), (1375, 33), (1408, 32), (1440, 35), (1474, 33), (1508, 32), (1540, 35), (1575, 33), (1608, 32), (1640, 36), (1676, 33), (1709, 32), (1741, 36), (1776, 33), (1810, 34), (1843, 32), (1875, 34), (1910, 33), (1943, 32)] | fps 29
+TRACE 1.2 36.3 66.7 press | 67.3 sent | 71.0 101.1 111.3 srv_round | 162.7 170.5 202.5 215.5 srv_round | 239.1 261.1 srv_round | 271.1 302.5 313.2 srv_round | 339.8 364.3 srv_round | 372.2 402.7 439.5 461.1 srv_round | 469.3 sent | 472.1 502.8 538.2 573.2 603.6 638.4 671.3 703.3 738.8 771.8 803.7 839.5 872.6 904.6 939.6 972.9 1004.6 1039.5 1072.9 1104.9 1140.0 1173.2 1205.1 1240.4 1273.8 1305.6 1341.6 1374.4 1406.2 1441.5 1474.2 1506.3 1541.1 1574.5 1606.2 1641.5 1674.4 1706.9 1742.8 1775.7 1807.3 184
+[15:01:57] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 531
+ours:
+476 (none of ours)
+28 model.HeroModelRenderer.emit
+8 effect.Fx.trail
+2 ClientHero.playOwn
+2 HeroHud.allyMarkers
+2 OvercraftClient.lambda$onInitializeClient$45
+2 hud.HudDraw.image
+2 model.HeroModelRenderer.skinned
+1 ClientHero.tick
+1 HeroArt.present
+1 OvercraftClient.lambda$onInitializeClient$0
+1 effect.EffectArt.get
+1 model.HeroModelRenderer.drawsHero
+1 model.HeroModelRenderer.drift
+1 model.HeroModelRenderer.shadow
+1 model.Skeleton.sample
+1 model.WeaponClips.base
+top:
+407 jdk.internal.misc.Unsafe.park
+28 dev.overcraft.client.model.HeroModelRenderer.emit
+9 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+8 java.io.FileInputStream.open0
+7 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+6 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+5 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+5 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+3 org.lwjgl.system.JNI.invokePZ
+2 com.google.common.collect.RegularImmutableMap.get
+2 dev.overcraft.client.model.HeroModelRenderer.skinned
+2 jdk.internal.misc.Unsafe.allocateInstance
+2 org.lwjgl.opengl.GL20C.glUseProgram
+2 org.lwjgl.opengl.GL33C.glBindSampler
+2 org.lwjgl.opengl.GL45C.nglMapNamedBufferRange
+1 com.mojang.blaze3d.vertex.PoseStack.pushPose
+1 com.mojang.renderpearl.backend.opengl.GlStateManager._scissorBox
+1 com.mojang.renderpearl.frontend.FrontendRenderPass.setPipeline
+1 dev.overcraft.client.ClientHero.tick
+1 dev.overcraft.client.model.HeroModelRenderer.drift
+1 dev.overcraft.client.model.Skeleton.sample
+FIRST rounds again long frames (ms after the press, length): [(-65, 35), (-30, 33), (3, 32), (35, 36), (70, 32), (103, 32), (135, 36), (170, 33), (203, 32), (236, 36), (272, 31), (303, 33), (336, 35), (370, 33), (404, 34), (437, 34), (472, 32), (504, 32), (536, 34), (571, 34), (605, 31), (636, 35), (671, 33), (704, 32), (736, 35), (770, 34), (804, 32), (836, 35), (871, 33), (904, 32), (936, 35), (971, 33), (1004, 32), (1036, 35), (1071, 33), (1104, 32), (1136, 35), (1171, 33), (1204, 32), (1236, 35), (1271, 34), (1305, 32), (1337, 34), (1372, 33), (1405, 32), (1437, 35), (1472, 33), (1505, 32), (1537, 35), (1572, 34), (1605, 33), (1638, 35), (1673, 33), (1706, 32), (1738, 35), (1773, 33), (1806, 32), (1838, 35), (1873, 33), (1906, 32), (1938, 35), (1973, 33), (2006, 33)] | fps 30
+TRACE 1.5 36.3 66.5 press | 67.3 sent | 69.2 101.1 119.1 srv_round | 136.9 169.4 201.3 219.5 srv_round | 236.9 267.8 srv_round | 269.5 302.0 317.9 srv_round | 338.3 368.2 srv_round | 369.6 402.2 436.8 469.1 srv_round | 470.1 503.6 517.5 srv_round | 535.5 sent | 538.0 570.5 602.9 637.4 671.3 702.5 737.3 770.2 802.2 836.8 870.4 902.3 937.3 970.6 1002.6 1037.6 1070.9 1102.6 1137.3 1170.5 1203.0 1237.6 1270.9 1302.7 1337.6 1371.5 1403.7 1438.2 1471.4 1503.2 1538.5 1571.4 1603.3 1638.1 1671.8 1704.4 1739.1
+[15:02:00] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 538
+ours:
+489 (none of ours)
+24 model.HeroModelRenderer.emit
+5 hud.HudDraw.image
+4 model.HeroModelRenderer.skinned
+3 hud.HudText.plain
+3 model.Skeleton$Pose.<init>
+2 model.Skeleton.sample
+1 ClientHero.playOwn
+1 HeroHud.shortKey
+1 dev.overcraft.hero.Hero.layer
+1 effect.SombraFx.zones
+1 hud.HudDraw.fill
+1 hud.ReticleHud.render
+1 model.HeroAnimator.tickState
+1 model.HeroAnimator.viewBase
+top:
+421 jdk.internal.misc.Unsafe.park
+24 dev.overcraft.client.model.HeroModelRenderer.emit
+13 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+7 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+6 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+6 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+5 com.mojang.blaze3d.vertex.BufferBuilder.addVertex
+4 dev.overcraft.client.model.HeroModelRenderer.skinned
+4 org.lwjgl.opengl.GL30C.glBindFramebuffer
+3 dev.overcraft.client.model.Skeleton$Pose.<init>
+3 java.util.Comparator.lambda$comparing$ea9a8b3a$1
+3 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+3 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+3 org.lwjgl.system.JNI.invokePZ
+2 dev.overcraft.client.model.Skeleton.sample
+2 java.lang.String.startsWith
+2 net.minecraft.world.level.levelgen.BitRandomSource.nextInt
+2 org.lwjgl.opengl.GL30C.glBindBufferRange
+2 org.lwjgl.opengl.GL45C.nglNamedBufferSubData
+1 com.google.common.collect.RegularImmutableMap.get
+1 com.mojang.blaze3d.systems.RenderSystem.getCompiledPipeline
+1 com.mojang.renderpearl.backend.opengl.FrameBufferCache$CacheKey.<init>
+1 com.mojang.renderpearl.frontend.FrontendRenderPass.setUniform
+FIRST first reload long frames (ms after the press, length): [(-66, 35), (-31, 33), (3, 32), (35, 36), (71, 32), (103, 32), (135, 35), (170, 33), (203, 32), (235, 35), (270, 33), (303, 32), (335, 34), (369, 34), (403, 33), (436, 35), (471, 33), (504, 32), (536, 35), (571, 34), (604, 31), (636, 35), (671, 33), (704, 32), (736, 35), (771, 43), (814, 32), (845, 32), (877, 35), (912, 33), (945, 32), (977, 38), (1015, 31), (1046, 32), (1078, 35), (1112, 34), (1146, 32), (1178, 34), (1212, 33), (1246, 32), (1278, 35), (1313, 33), (1346, 32), (1378, 34), (1412, 34), (1446, 32), (1478, 35), (1513, 33), (1546, 32), (1578, 35), (1613, 33)] | fps 30
+TRACE 1.2 36.1 66.8 press | 67.5 sent | 69.6 101.4 133.7 snd:railgun.reload | 137.6 170.1 201.8 236.4 269.7 301.8 336.5 369.8 401.8 436.2 470.1 502.9 537.5 570.7 602.8 637.5 671.2 702.6 737.4 770.6 803.1 838.1 880.7 912.2 944.0 979.1 1011.9 1044.0 1081.6 1112.6 1144.5 1179.1 1212.6 1244.6 1279.0 1312.3 1344.4 1379.4 1412.3 1444.6 1479.1 1512.6 1545.1 1579.8 1612.5 1644.8 1679.4 1712.4 f
+[15:02:03] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 528
+ours:
+475 (none of ours)
+25 model.HeroModelRenderer.emit
+7 model.HeroModelRenderer.skinned
+6 hud.HudDraw.image
+4 hud.HudText.plain
+3 model.Skeleton.sample
+1 ClientHero.hero
+1 ClientHero.wallRoll
+1 HeroHud.mouse
+1 OvercraftClient.lambda$onInitializeClient$43
+1 model.HeroAnimator.since
+1 model.HeroModelRenderer.extract
+1 model.HeroModelRenderer.submitModel
+1 model.Skeleton.skin
+top:
+401 jdk.internal.misc.Unsafe.park
+25 dev.overcraft.client.model.HeroModelRenderer.emit
+18 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+7 dev.overcraft.client.model.HeroModelRenderer.skinned
+7 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+6 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+4 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+3 dev.overcraft.client.model.Skeleton.sample
+3 java.util.ImmutableCollections$ListItr.next
+3 org.lwjgl.opengl.GL11C.glTexParameteri
+3 org.lwjgl.system.JNI.invokePZ
+2 java.util.Comparator.lambda$comparing$ea9a8b3a$1
+2 net.minecraft.client.gui.render.GuiRenderer.addElementToMesh
+2 net.minecraft.client.renderer.chunk.SectionRenderDispatcher.getRenderSectionSlice
+2 net.minecraft.client.renderer.state.gui.GuiRenderState.navigateToAboveHighestElementWithIntersectingBounds
+2 net.minecraft.world.level.levelgen.BitRandomSource.nextInt
+2 org.lwjgl.opengl.GL20C.glUseProgram
+2 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+1 com.ibm.icu.text.Bidi.getDirProps
+1 com.mojang.blaze3d.vertex.BufferBuilder.addVertex
+1 com.mojang.renderpearl.frontend.FrontendCommandEncoder.clearColorAndDepthTextures
+1 com.mojang.renderpearl.frontend.FrontendRenderPass.setPipeline
+1 dev.overcraft.client.ClientHero.hero
+1 dev.overcraft.client.HeroHud.mouse
+FIRST first slide long frames (ms after the press, length): [(-64, 32), (-32, 35), (3, 33), (36, 32), (68, 36), (104, 41), (168, 35), (203, 33), (236, 32), (268, 36), (303, 32), (336, 35), (371, 33), (403, 33), (436, 32), (468, 35), (503, 33), (536, 32), (568, 35), (603, 33), (636, 32), (669, 36), (705, 34), (739, 31), (770, 36), (806, 34), (840, 32), (871, 35), (906, 33), (939, 32), (971, 37), (1008, 34), (1042, 31), (1072, 35), (1107, 33), (1140, 32), (1172, 35), (1208, 33), (1240, 33), (1273, 35), (1308, 34), (1342, 32), (1373, 35), (1408, 33), (1441, 32), (1473, 35), (1508, 33), (1541, 32), (1574, 35), (1609, 33)] | fps 30
+TRACE 2.6 34.9 66.8 press | 67.5 sent | 69.7 103.0 134.9 170.7 211.5 234.6 269.7 302.8 334.6 370.2 402.6 437.4 470.0 503.3 535.0 569.9 602.8 634.9 670.0 703.2 735.7 771.7 805.7 836.8 872.6 906.3 937.8 973.1 1005.8 1037.9 1074.7 1108.4 1139.0 1173.9 1206.9 1239.1 1274.4 1307.0 1340.0 1374.8 1408.4 1440.1 1475.1 1508.2 1540.1 1574.8 1608.2 1640.5 1675.4 1708.2 f
+[15:02:06] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 537
+ours:
+486 (none of ours)
+21 model.HeroModelRenderer.emit
+9 hud.HudDraw.image
+4 model.HeroModelRenderer.skinned
+3 dev.overcraft.hero.OwMovement.travel
+3 hud.HudText.plain
+1 HeroHud.age
+1 HeroHud.shortKey
+1 hud.HudShapes.portrait
+1 model.AimSheet.layout
+1 model.HeroAnimator.pickAimSheet
+1 model.HeroModelRenderer.shadow
+1 model.Skeleton$Pose.<init>
+1 model.Skeleton.addAdditive
+1 model.Skeleton.sample
+1 model.Skeleton.skin
+1 model.WeaponClips.base
+top:
+422 jdk.internal.misc.Unsafe.park
+21 dev.overcraft.client.model.HeroModelRenderer.emit
+10 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+8 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+7 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+4 dev.overcraft.client.model.HeroModelRenderer.skinned
+4 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+4 org.lwjgl.system.JNI.invokePZ
+3 java.io.FileInputStream.open0
+3 net.minecraft.client.renderer.state.gui.GuiRenderState.navigateToAboveHighestElementWithIntersectingBounds
+3 org.lwjgl.opengl.GL20C.glUseProgram
+3 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+2 java.util.HashMap.hash
+2 org.lwjgl.opengl.GL20C.glLinkProgram
+1 com.mojang.blaze3d.vertex.BufferBuilder.addVertex
+1 dev.overcraft.client.HeroHud.age
+1 dev.overcraft.client.model.Skeleton$Pose.<init>
+1 dev.overcraft.client.model.Skeleton.addAdditive
+1 dev.overcraft.client.model.Skeleton.sample
+1 dev.overcraft.client.model.WeaponClips.base
+1 it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap.get
+FIRST first Disruptor long frames (ms after the press, length): [(-64, 32), (-32, 35), (3, 34), (37, 33), (69, 34), (103, 43), (168, 36), (204, 32), (236, 32), (268, 35), (303, 34), (337, 32), (369, 35), (404, 33), (437, 32), (469, 35), (504, 33), (537, 32), (569, 36), (605, 33), (638, 34), (672, 32), (704, 35), (738, 34), (772, 33), (805, 35), (840, 34), (874, 59), (941, 32), (973, 32), (1005, 35), (1040, 34), (1073, 32), (1105, 35), (1140, 33), (1173, 32), (1205, 35), (1240, 34), (1274, 33), (1306, 34), (1341, 33), (1374, 32), (1406, 34), (1441, 33), (1474, 32), (1506, 35), (1541, 60), (1601, 51), (1674, 31), (1706, 35), (1741, 33), (1774, 32), (1806, 36), (1841, 33), (1874, 32), (1907, 34), (1941, 34), (1976, 32), (2007, 34), (2041, 34), (2075, 32), (2107, 35), (2142, 34), (2175, 32), (2207, 34), (2241, 34), (2275, 32), (2307, 35), (2342, 33), (2375, 32), (2407, 35), (2442, 34), (2475, 32), (2507, 35)] | fps 29
+TRACE 2.9 34.9 66.7 press | 67.7 sent | 69.8 103.4 136.0 169.7 213.1 235.2 270.9 303.0 335.0 369.9 403.5 435.4 470.4 503.8 535.8 570.8 603.8 635.7 671.7 704.4 738.3 770.2 805.0 838.8 871.6 906.2 940.2 999.1 1007.6 1039.9 1071.8 1106.5 1140.1 1172.1 1206.8 1239.9 1272.0 1306.8 1340.4 1373.1 1407.6 1440.8 1473.1 1507.6 1540.9 1573.1 1608.1 1668.0 1719.3 1741.2 1772.6 1807.4 1840.7 1872.5 1908.1 1940.9 1973.4 2007.9 2042.3 2073.8 2108.2 2142.0 2173.6 2208.4 2242.0 2273.6 2308.1 2341.8 2373.9 2408.8 2441.
+[15:02:09] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 538
+ours:
+477 (none of ours)
+23 model.HeroModelRenderer.emit
+9 effect.SojournFx.field
+4 SojournSounds.lambda$flying$1
+4 hud.HudDraw.image
+3 model.HeroModelRenderer.skinned
+2 effect.Fx.mesh
+2 hud.HudText.plain
+2 model.Skeleton.sample
+1 HeroArt.present
+1 dev.overcraft.hero.OwMovement.travel
+1 effect.Fx.emit
+1 effect.Fx.simulate
+1 effect.SojournFx$Field.<init>
+1 hud.HudDraw.fill
+1 hud.HudText.styled
+1 hud.ReticleHud.render
+1 model.HeroAnimator.clip
+1 model.HeroAnimator.poseFirstPerson
+1 model.ProjectileModelRenderer.extractRenderState
+1 model.Skeleton.world
+top:
+400 jdk.internal.misc.Unsafe.park
+23 dev.overcraft.client.model.HeroModelRenderer.emit
+13 java.io.FileInputStream.open0
+11 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+9 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+6 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+6 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+5 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+4 net.minecraft.world.level.levelgen.BitRandomSource.nextInt
+4 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+4 org.lwjgl.system.JNI.invokePZ
+3 dev.overcraft.client.model.HeroModelRenderer.skinned
+2 dev.overcraft.client.effect.Fx.mesh
+2 dev.overcraft.client.model.Skeleton.sample
+2 java.util.Comparator.lambda$comparing$ea9a8b3a$1
+2 java.util.HashMap.forEach
+2 java.util.HashMap.getNode
+FIRST first Overclock long frames (ms after the press, length): [(-65, 32), (-33, 35), (3, 35), (37, 31), (69, 34), (103, 33), (136, 32), (168, 35), (203, 34), (237, 32), (268, 35), (303, 34), (337, 32), (368, 35), (403, 33), (437, 32), (469, 35), (503, 33), (537, 32), (569, 35), (604, 33), (637, 32), (669, 35), (704, 34), (738, 32), (770, 35), (804, 33), (838, 32), (870, 35), (905, 34), (938, 32), (970, 35), (1005, 33), (1038, 32), (1070, 35), (1105, 33), (1138, 32), (1171, 35), (1206, 34), (1239, 34), (1273, 32), (1305, 35), (1340, 33), (1373, 32), (1405, 34), (1440, 34), (1473, 31), (1505, 35), (1540, 33), (1573, 32), (1605, 35), (1640, 33), (1673, 32), (1705, 35), (1740, 33), (1773, 33), (1807, 35), (1841, 33), (1874, 32), (1907, 34), (1941, 34), (1975, 32), (2007, 35), (2042, 33), (2075, 32), (2107, 35), (2141, 34), (2175, 32), (2207, 35), (2242, 33), (2275, 32), (2308, 35), (2342, 34), (2376, 32), (2408, 34), (2443, 33), (2476, 32), (2508, 34)] | fps 30
+TRACE 2.7 34.8 67.5 press | 68.1 sent | 70.2 87.4 srv_ult | 104.9 136.1 170.5 203.8 235.5 270.3 304.2 335.7 370.8 404.4 435.9 470.9 504.1 536.1 570.8 604.1 636.2 671.0 704.3 736.1 771.4 805.2 837.1 871.8 905.2 937.4 972.1 1005.7 1037.7 1072.7 1106.0 1137.9 1172.7 1206.0 1238.2 1273.0 1306.5 1340.3 1372.8 1407.5 1440.4 1472.6 1507.1 1540.9 1572.3 1607.6 1640.3 1672.6 1707.6 1740.6 1772.7 1807.3 1840.7 1874.1 1908.8 1942.0 1974.1 2008.5 2042.2 2074.3 2109.1 2142.3 2174.2 2208.8 2242.5 2274.8 2309.7 2342
+[15:02:15] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 535
+ours:
+486 (none of ours)
+24 model.HeroModelRenderer.emit
+5 model.HeroModelRenderer.skinned
+4 hud.HudDraw.image
+3 hud.HudDraw.fill
+3 hud.HudText.plain
+1 ClientHero.wallRoll
+1 dev.overcraft.hero.OwMovement.travel
+1 effect.Fx.particle
+1 hud.HudText$Face.real
+1 model.ActionTrack.copy
+1 model.HeroAnimator.pose
+1 model.HeroModelRenderer.submitModel
+1 model.Skeleton.addAdditive
+1 model.Skeleton.world
+1 model.WeaponClips.play
+top:
+410 jdk.internal.misc.Unsafe.park
+24 dev.overcraft.client.model.HeroModelRenderer.emit
+12 net.minecraft.client.FramerateLimiter.limitDisplayFPS
+6 net.minecraft.client.renderer.state.gui.GuiRenderState.hasIntersection
+6 org.lwjgl.opengl.GL32C.nglDrawElementsInstancedBaseVertex
+5 dev.overcraft.client.model.HeroModelRenderer.skinned
+5 org.lwjgl.opengl.GL45C.glCopyNamedBufferSubData
+4 net.minecraft.client.renderer.StagedVertexBuffer.uploadDrawsToBuffers
+4 org.lwjgl.opengl.GL31C.glDrawArraysInstanced
+3 org.lwjgl.opengl.GL32C.glFenceSync
+2 com.ibm.icu.text.Bidi.getDirProps
+2 jdk.internal.misc.Unsafe.allocateInstance
+2 net.minecraft.client.renderer.state.gui.GuiRenderState.navigateToAboveHighestElementWithIntersectingBounds
+2 net.minecraft.world.level.levelgen.BitRandomSource.nextInt
+2 org.lwjgl.opengl.GL20C.glUseProgram
+2 org.lwjgl.opengl.GL45C.glBlitNamedFramebuffer
+2 org.lwjgl.system.JNI.invokePZ
+1 com.mojang.blaze3d.framegraph.FrameGraphBuilder.discoverAllRequiredPasses
+1 com.mojang.blaze3d.vertex.BufferBuilder.addVertex
+1 com.mojang.blaze3d.vertex.PoseStack.pushPose
+1 dev.overcraft.client.effect.Fx.particle
+1 dev.overcraft.client.model.ActionTrack.copy
+### done

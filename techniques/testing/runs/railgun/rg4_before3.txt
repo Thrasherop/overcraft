@@ -1,0 +1,73 @@
+=== #126 table. TREE dbe8819 dirty_src_files=0 launched=2026-11-06T14:35:54 at 14:37:08
+{'ok': True}
+WARM art ready after 2.31 s; frames over 40 ms (at ms, length): [(68, 174), (242, 390), (632, 86)] frames 52 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 14:38:11 fps 30
+### done
+### round four 14:38:11 fps 30 payload eye
+PEEK behind a wall, the zombie round its end took 8.27 shot ['srv_eye 71.400 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 8.27 shot ['srv_eye 71.400 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 8.27 shot ['srv_eye 71.400 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 8.27 shot ['srv_eye 71.400 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 8.27 shot ['srv_eye 71.400 -58.380 -9.500 0.00']
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 27
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 22
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 28
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 29
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 17
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 23
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 20
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 33
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 40
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 36
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 39
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 11
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 44
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 39
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 17
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 33
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 27
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 34
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 25
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 15
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 28
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 38
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 51
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 13
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 41
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 8
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 48
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 16
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 38
+TURN second click yaw 0.00 shot yaw 0.00 off by 0.0 waited 36
+TURN shot away from what she was shown: 0 of 30
+QREP {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0} ultActive? 0.0 | 9.3 refused_q | 26.5 sent | 76.2 press | 118.5 sent | 168.6 sent
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 8.3 refused_q | 42.2 sent | 75.9 press | 76.0 click 0.500 -58.380 0.500 0.00 0.00 | 76.0 sent | 76.0 clip | 76.0 snd:charged.fire | 76.1 snd:charged.shot | 76.2 fx | 77.6 frame | 143.5 sent | 216.3 srv_shot | 216.4 srv_e
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 8.3 refused_q | 17.1 sent | 76.5 press | 76.6 click 0.500 -58.380 0.500 0.00 0.00 | 76.6 sent | 76.6 clip | 76.6 snd:charged.fire | 76.7 snd:charged.shot | 76.9 fx | 78.3 frame | 168.9 sent | 189.9 srv_shot | 189.9 srv_e
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 0.6 sent | 8.4 refused_q | 51.6 sent | 76.4 press | 76.4 click 0.500 -58.380 0.500 0.00 0.00 | 76.4 sent | 76.5 clip | 76.5 snd:charged.fire | 76.6 snd:charged.shot | 76.7 fx | 78.1 frame | 153.7 sent | 226.5 srv_shot | 
+FLICKREAL slide top speed 14.3 yaw -112.5 camera to shot eye 0.0 her ray off a box by 0.6 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.82 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.73 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.73 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.59 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.6 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.95 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.93 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.55 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.62 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.67 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.82 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.84 server miss AGREE
+FLICKREAL slide top speed 14.3 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.93 server miss AGREE
+FLICKREAL slide agree 14 of 14
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.16 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.1 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.06 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.28 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.23 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.14 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.31 server miss AGREE
+FLICKREAL run top speed 5.73 yaw -120.0 camera to shot eye 0.0 her ray off a box by 0.24 server miss AGREE
+FLICKREAL run agree 8 of 8
+### done

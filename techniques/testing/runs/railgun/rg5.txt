@@ -1,0 +1,29 @@
+=== #126 table. TREE 3247936 dirty_src_files=0 launched=2026-11-10T15:38:25 at 15:42:18
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 15:42:26 fps 30
+### done
+### round four 15:42:26 fps 30 payload partial
+BANK eye claimed none to claim she is at 94.5 shot ['srv_eye 94.500 -58.380 0.500 0.00'] far zombie took 0.0
+BANK eye claimed none to claim she is at 94.5 shot ['srv_eye 94.500 -58.380 0.500 0.00'] far zombie took 0.0
+BANK eye claimed none to claim she is at 94.5 shot ['srv_eye 94.500 -58.380 0.500 0.00'] far zombie took 0.0
+BANK eye claimed none to claim she is at 94.5 shot ['srv_eye 94.500 -58.380 0.500 0.00'] far zombie took 0.0
+PEEK behind a wall, the zombie round its end took 0.0 shot ['srv_eye 65.500 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 0.0 shot ['srv_eye 65.500 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 0.0 shot ['srv_eye 65.500 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 0.0 shot ['srv_eye 65.500 -58.380 -9.500 0.00']
+PEEK behind a wall, the zombie round its end took 0.0 shot ['srv_eye 65.500 -58.380 -9.500 0.00']
+QREP gap 0.12 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 45.7 sent | 58.0 srv_ult | 88.9 sent | 143.5 press | 143.5 sent | 144.1 sent | 233.7 sent | 288.7 sent | 340.9 sent | 391.0 sent | 441.2 sent | 493.2 sent | 543.0 sent | 594.1 sent | 644.1 sent
+QREP gap 0.16 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 42.2 sent | 60.6 srv_ult | 93.8 sent | 143.8 sent | 177.0 press | 194.6 sent | 244.8 sent | 295.6 sent | 346.0 sent | 396.4 sent | 447.0 sent | 488.8 sent | 539.3 sent | 596.4 sent | 642.5 sent
+QREP gap 0.20 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 34.1 sent | 56.1 srv_ult | 85.9 sent | 135.9 sent | 185.8 sent | 233.9 press | 234.4 sent | 284.4 sent | 334.4 sent | 384.6 sent | 434.9 sent | 485.1 sent | 535.7 sent | 585.8 sent | 636.2 sent
+QREP gap 0.24 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.8 sent | 36.9 srv_ult | 68.6 sent | 116.3 sent | 167.1 sent | 217.2 sent | 267.3 press | 267.9 sent | 319.2 sent | 369.1 sent | 420.6 sent | 470.5 sent | 520.8 sent | 570.8 sent | 621.4 sent
+QREP gap 0.12 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 9.1 sent | 32.0 srv_ult | 59.2 sent | 110.3 sent | 143.4 press | 161.2 sent | 210.7 sent | 260.8 sent | 311.7 sent | 362.4 sent | 412.2 sent | 462.3 sent | 512.7 sent | 562.9 sent | 613.0 sent
+QREP gap 0.16 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 9.2 sent | 26.2 srv_ult | 62.3 sent | 113.4 sent | 163.3 sent | 188.1 press | 205.3 sent | 255.2 sent | 305.6 sent | 356.6 sent | 406.6 sent | 458.2 sent | 507.9 sent | 558.7 sent | 609.6 sent
+QREP gap 0.20 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.4 sent | 38.0 srv_ult | 68.3 sent | 118.7 sent | 169.0 sent | 219.2 sent | 227.0 press | 269.4 sent | 320.5 sent | 371.2 sent | 421.2 sent | 471.7 sent | 521.7 sent | 571.8 sent | 623.0 sent
+QREP gap 0.24 {'presses': 1, 'fx': 0, 'clip': 0, 'srv': 0, 'fire': 0}  ult started | 17.5 sent | 38.9 srv_ult | 67.4 sent | 117.7 sent | 171.8 sent | 221.3 sent | 263.8 press | 272.6 sent | 323.5 sent | 374.1 sent | 425.2 sent | 475.2 sent | 517.8 sent | 571.1 sent | 621.3 sent
+MASH real 15 cps, key up 30 ms: clicks 75; shots 8, looks 8, refused presses 0, gaps [654, 651, 649, 652, 648, 651, 650] fps 115
+MASH real 15 cps, key up 45 ms: clicks 75; shots 8, looks 8, refused presses 0, gaps [655, 648, 652, 648, 652, 648, 650] fps 117
+MASH real 20 cps, key up 25 ms: clicks 100; shots 8, looks 8, refused presses 0, gaps [652, 652, 650, 649, 650, 652, 648] fps 120
+MASH real 10 cps, key up 40 ms: clicks 50; shots 8, looks 8, refused presses 0, gaps [653, 650, 650, 650, 649, 651, 649] fps 118
+### done

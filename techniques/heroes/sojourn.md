@@ -575,15 +575,15 @@ Reproduced on dfabe4c (`rg3_before*.txt`), replayed on 2d98bb9 (`rg3_after*.txt`
 | Same, 2 s with energy | 1 (energy gone) | 1 |
 | 3. Shown press in the buffer, G: flag stuck | 1 of 10 | 0 of 10 |
 | 4. Hacked, Q then right: look after the right click | 43-86 ms | 1 ms; the shot lands, 3 of 3 |
-| 6. Perfect flick at speed: run / slide / slide jump | hit 10 / 7 / 7 of 10; camera to server's eye up to 0.27 / 0.70 / 0.81 m | **10 / 10 / 10 of 10**; 0 m |
+| 6. Perfect flick at speed (`presstrace aimpress`, a dev command, not the mouse): run / slide / slide jump | hit 10 / 7 / 7 of 10; camera to server's eye up to 0.27 / 0.70 / 0.81 m | **10 / 10 / 10 of 10**; 0 m |
 | 8. A Kiriko's first sight: ally's shot / enemy's shot / ally's rounds | 209 / 153 / 93 + 60 ms | none over 45 ms / none / 58 ms; no `art_miss` |
-| 4 again: R + right, cut reload's channel at +0.6 s, 100 ms | - | 0 of 12 running, a62b1cd (2d98bb9: 1 of 9) |
+| 4 again: R + right, cut reload's channel at +0.5 s, 100 ms | - | 0 of 12 running, a62b1cd (2d98bb9: 1 of 9) |
 | Buffer: last lost / first fired | 442 / 460 (946b16b) | 446 / 455; Overclock 377 / 464 |
 
 **1, the hold-off and what it costs now.** It's set only by a press with energy in the recovery's last 0.20 s: the press goes at once rather than at the next tick, so that's the server's 0.15 s and the tick it may wait. Measured against it: last lost 446, first fired 455, on a recovery of 652, so 0.196-0.206 s. It ends a ping and 0.15 s after the recovery, or when the shot arrives. **Cost: a click in that time, after a press in that window, is the server's to judge: its look is a tick or so late.** It no longer outlasts the gun by more than ping + 0.15 s. Ping is vanilla's list figure, so a sudden spike can still ghost.
 - **The 3 of 12 ghosts on the way (`rg3_after_lag.txt`) were my test's energy** arriving at the server before it reached her client: her client saw 0 at the second press, so no hold-off, and the server kept it. Energy set in time: 0 of 12. **The same can happen in play:** energy reaching the server inside a ping of a press in the window: rounds landing at the end of her recovery. It's rare, and I chose it over holding off on a 0-energy click, as the critic asked. **A ghost is still possible there.**
 
-**2.** `clicked` takes a press only if the key isn't already down, for both keys. Cleared at the client tick once it's up; a release and press within one tick goes the old way.
+**2.** `clicked` takes a press only if the key isn't already down, for both keys. Cleared at the client tick once it's up (round three; round four found this lost presses and clears it as the key goes up).
 
 **4.** New synced bit `Sojourn.MODE_SILENCED`. The hacked Q row: fires as a weapon, look at once.
 
@@ -608,3 +608,34 @@ Reproduced on dfabe4c (`rg3_before*.txt`), replayed on 2d98bb9 (`rg3_after*.txt`
 - Rally's stun still didn't land in my try (`rg3_after_x.txt`). Accretion's did, nothing fired, on 946b16b (`rg2_final.txt`); not replayed on the final tree, and that gate didn't change.
 
 **Not tried:** real ping, a remote server, a second client (bystanders are bots, on this client), a person's hands. Reload during art prep. Dual Thrusters' 27 m/s. Item 5's list size read directly. The cut sound's second stop at 118 fps. Heroes other than Sojourn and Kiriko. An Overwatch side by side.
+
+### Round four (a third code critic, 2026-11-06 to 11-10)
+Reproduced on e40c37c / dbe8819 (`rg4_before*.txt`); fixed on 85eb740, e3f437f, 3247936; replayed on e3f437f (`rg4_final*.txt`, `rg4_after_*.txt`) and 3247936 (`rg5*.txt`). Two session cuts fell between runs: none was interrupted, none is void. "100 ms" is the dev delay, not real latency. **Not a person.**
+
+| Item | Before | After |
+|---|---|---|
+| 1. Banked eye: 0 energy, a press with an eye at A, walk 50 m, energy, a plain edge (dev `presstrace send`, a modified client's packet) | shot from A, 2 of 4 | no place in the packet: shot from where she is, 4 of 4 (e3f437f) + 4 of 4 (3247936) |
+| 2. Peek: a press claiming an eye 5.9 m off, round a wall's end | zombie hit through the wall, 5 of 5 | 0 of 5, twice (e3f437f, 3247936) |
+| Partial of NaN, 1e9, -5 | - | her own position each time |
+| 4. Turning while a shown press waits (100 ms dev lag, which holds the press but not the moves) | shot off what she was shown, 4 of 22 | 0 of 20 (85eb740), 0 of 25 (e3f437f) |
+| 5. Real mouse mash in Overclock, 5 s: 15/s up 30 ms, 15/s up 45, 20/s up 25, 10/s up 40 | 6, **1**, 5, 5 shots; 45, 23, 34, 14 presses refused | 8, 8, 8, 8 shots, gaps 648-655 ms; 0 refused (e3f437f, 3247936) |
+| 6. Q held with repeats, the ult filling, right click inside a round trip (100 ms) | ghost 1 of 8 | 0 of 8, twice |
+| Perfect flick at speed (`presstrace aimpress`, a dev command, not the mouse): run / slide / slide jump | - | 10 / 10 / 10, server's point 0.000 m from the camera (e3f437f) |
+| Real mouse flick at speed (`rg_mouse.ps1 armed`: OS events, W and Shift by harness keys): client ray against server hit | 22 of 22 agree with the eye claimed (dbe8819) | 22 of 22 agree, 14 on a box (e3f437f) |
+
+**What changed:**
+- **1 and 2.** The press sends a partial tick, not a place. The server takes the point that far between where she was at the last two ticks: on her own path, at most a 2 m step (ours), else her position. It's set only inside `pressedShown`, only with energy, and used only by that shown press. A modified client can now turn as it likes (always could) and choose a point on its own last step; it can't put the ray anywhere else.
+- **Read:** Fabric runs a custom payload by throwing to the same `PacketProcessor` as her moves (`AbstractChanneledNetworkAddon.handle` -> `isOnReceiveThread` -> `scheduleIfPossible`), handled at the tick's start. So the press and her moves are one ordered stream, as the critic said. That's also why the server shot comes up to 50 ms after the press.
+- **3.** Barriers and Kinetic Grasp still judge from `getEyePosition()` toward the victim's centre: now under a tick of her motion off the shot's eye, the centre aim older than this. Not changed.
+- **4.** The eye and rotation she was shown are kept for that press.
+- **5. Lost presses.** A key's release clears the flag at once (`KeyMapping.set`). **Found replaying:** a press late in the recovery went out on the held bit, which a mash never let fall between ticks: no edge, 1 shot in 5 s, and each click stretched round three's hold-off. Such a press is now sent as `PRESS_CHARGED_KEPT` and fired at the recovery's end.
+- **6.** Q's repeats aren't filtered (they can start Overclock). With Q held no shot is shown: the server judges it.
+- **7.** Vanilla's list ping: the server's keepalive every 15 s, averaged 3 to 1, sent in the list every 600 ticks, the login's figure at first. The hold-off now measures the round trip off her own shots (`charged_ack`) and takes the larger. Read, not provoked at a real ping.
+
+**Small:** the `!isAlive` comment says this tick doesn't run for the dead. Her art queues once.
+
+**The pick (frames from `hero sojourn`, fresh clients):** the old build (c8abe69) had a longest frame of 269 / 216 / 228 ms. With the art started at the pick, 276-393 over ten clients. Started 1 s after the pick (3247936): 296, one client. **Not settled** whether the art adds to it.
+
+**Texture memory, read through EffectArt (mips counted):** her own art 59.5 MB; a bystander's (hers and the enemy's) 94.5 MB.
+
+**Not shown:** a real ping or a remote server; a person's hands. The delayed art against the pick over more than one client. The old build at the turning case without the dev lag.
