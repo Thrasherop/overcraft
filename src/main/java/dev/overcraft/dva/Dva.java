@@ -280,6 +280,9 @@ public final class Dva implements HeroKit {
 	public static void heroMode(ServerPlayer player, HeroState s, boolean on) {
 		if (!on) {
 			stopMechKit(player, s);
+			// the held states others hear go quiet too: tick stops writing them out of hero mode, so a Matrix held into G
+			// left its hum restarting on every client until G back (found in the two-player pass, 2026-11-11)
+			player.setAttached(HeroManager.DVA_STATE, 0);
 			switch (s.dvaForm) {
 				case MECH -> {
 					// the mech and its health kept for G back (the plan's default 9); the pilot's own health is full

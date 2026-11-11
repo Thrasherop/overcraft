@@ -365,8 +365,48 @@ emote page (`x_wheel_mic_drop.png`: MIC DROP at the top), the pointer up, the ke
 - **Not shown:** a critique agent, a second player (the "others" sound copies), emotes in water / on slopes, hologram colours
   ([dva_emotes](../emotes/dva_emotes.md#open)).
 
+## Step 13: two players (2026-11-11)
+Two dev clients under one lock: `runClient` "Kiriko" (A, D.Va, host of flat survival `dva13`, `/publish false 25565`) and
+`runClient2` "Viewer" (B, Kiriko, `connect 127.0.0.1:25565`), each `-Xmx3G` (`JAVA_TOOL_OPTIONS`), `OC_ASSET_PACK` the Ana checkout's
+pack, 1280x720, subtitles on, F3+B hit boxes on B. Both picked on the select screen by clicks (`screenclick`). **Input is the harness's
+(`KeyMapping.set`, dev `emote`, `/damage`, `/kill`, `/kick` for B's leave), not a real mouse and keys: those are still owed before the
+merge.** Both clients driven from one script (scratchpad `d13\two.py`, row files `r1..r24.txt`, not committed); trees: d062dd3 for
+r1-r21, then A rebuilt with the fixes below (B's client stayed on d062dd3 until r25: the fixes are server code, which runs on A); r25
+both on the fixed tree. Screenshots in `run2/screenshots/b*.png` (B's view) and `run/screenshots/a*.png`, not committed; each opened.
+
+| Row | Result |
+| --- | --- |
+| Her forms as B sees them | Mech, box 1.4 x 2.3 (`b1_mech_front/side`); the eject in the air over the fallen wreck, then the pilot 0.6 x 1.8, nothing left where the mech was (`sheet_b6`); Call Mech: the empty landing box at 0.4 s, the mech landing at 1.0 s, standing at 3 s (`sheet_b5`); Self-Destruct's mech arming (`b4_callmech_drop`, `b15_sd_arming`) and blast. 1 run each. |
+| "Heard by others" copies (B) | `matrix.on/chirp/loop/off/absorb_3p`, `fusion.fire_first/fire/fire_end/hit_enemy_3p`, `boosters.start/loop_3p` (+ `chirp`; `end` is hers only), `missiles.cast/volley/volley_end/hit_enemy_3p`, `perk.precision.start/end_3p` (its hum is hers only, by design), `call_mech.drop_3p`, `wreck_3p`, `wreck.chirp_3p`, `eject`, `self_destruct.arm/blast`, `ult.enemy` (enemy) / `ult.friendly` (A), her voice lines (matrix, boosters, call mech, eject, pain, death, elimination, respawn). Listen Up: **E54A / E54B on B, E548 / E549 on A, 2 of 2** (r25, `b25_listen_up`). |
+| Emotes, held loops | Mic Drop, Game On, Dance, Listen Up seen and heard on B (`b7_micdrop_0.8`, `dva.emote.*`); Matrix (stand-in sparks), Boosters (`b3_boosters_ally`), Precision Fusion (`b10_precision`, subtitle "Precision Fusion on"). Mic Drop's DA4F (chance 0.4) played on A and not on B: each client rolls its own chance (not chased). |
+| Matrix vs Kiriko's kunai | Enemy: every kunai eaten, A 54 -> 54, `absorb_3p` on B, 3 runs (r11, r23 x2). Control without Matrix: 54 -> 35.92. Ally: the kunai passed through her and the matrix (A 54 -> 54, no absorb; they killed a slime behind her). |
+| Her hits on B | Enemy: Fusion 0.5 s 20 -> 18.88; Missiles (aimed at the body) 20 -> 9.2, 18 `hit_enemy_3p`; Boosters 20 -> 18 (25) and thrown 6.7 m, up then down, on B's own client; Self-Destruct in the open 20 -> dead (`ult.enemy`, kill feed); behind a stone wall 20 -> 20. Ally: Fusion 20 -> 20 (rounds hit the floor past B), Missiles 20 -> 20 (`hit_block` x18), Boosters flew through B (20 -> 20, unmoved), Self-Destruct 250 / 250 on B's HUD. 1 run each. |
+| The ult -40 % | Kiriko's two kunai into D.Va: 226 dealt, her ult +135 after her passive (~5/s, read before): **0.60 a point**; run 2 the same +135 (201 to health, the rest to Shield System's shields). Into a Kiriko bot on D.Va's team: 240 dealt, +241: **1.00** (1 run). x0.60 (`Tank.ultFactor`). D.Va's own charge: up for two eaten kunai (Matrix's 4 % with her passive), full (1700) after hitting B; Self-Destruct's charge carried to the next mech, Call Mech full after a Self-Destruct (as in step 8). |
+| Joining late, leaving | B kicked (the server's leave) and back: during Dance it saw the emote and heard its sounds (`b8_late_dance`); a Game On join heard the same remaining events A did, no burst of the missed ones; as the pilot it saw the pilot and her box (`b17_rejoin_pilot`). **Held loops on a late join not shown:** Matrix, Boosters and Precision Fusion end within 3.1 s, a rejoin takes about 8. |
+| G, death, switch while B watches | G: the pilot, no mech left (`sheet_b18`); G back: the mech. The mech destroyed then the pilot killed: no wreck or mech left, kill feed (`b20_dead`). Switch to Kiriko mid-Matrix: `matrix.off_3p`, nothing heard in the next 9 s, no mech entity (`b21_switched`). |
+
+**Found and fixed** (each reproduced on d062dd3 first, then replayed on the fixed tree):
+1. **Matrix held into G kept humming on every client** while she was out of hero mode (`matrix.loop` / `loop_3p` restarted twice in 9 s,
+   2 of 2: r18, r19): `Dva.tick` stops writing `DVA_STATE` out of hero mode, so its Matrix bit stayed. `Dva.heroMode(false)` now clears
+   it. After: nothing in 9 s, 3 of 3 (r22 x2, r24).
+2. **The Matrix's stand-ins blinded the shooter:** the box reaches 10.25 m, so a kunai eaten at Kiriko's hand put its smoke over her whole
+   screen, and the sparks drew at her face (`b11_enemy_matrix`, `b2_fusion_ally`). Neither particle now spawns within 2.5 m of another
+   player's eyes (`DefenseMatrix.nearOthersEyes`). After: B's view clear, both kunai still eaten, A 54 -> 54, 2 runs (`sheet_b23`).
+3. **G gave her the mech's health in Minecraft mode** (54 / 54 with the pilot's box, 2 of 2: r18, r22; step 3 had read 14 / 14): since
+   the next merge her `leavePlay` runs while the hero-mode flag is still on, so the refresh measured the mech. `HeroManager.setHeroMode`
+   refreshes her health once the flag is off. After: 14 / 14, 2 of 2 (r24); G back: the mech (53.9 a second after 46.6 was stored:
+   peaceful regenerates about 1 a second, seen without G too; not measured on normal).
+
+**Listed, not fixed (not hers):** every hero hit plays the target's pain line (`PlayerMixin` swaps Minecraft's hurt sound): Micro
+Missiles on Kiriko gave 36 `kiriko.voice.pain` in about 1 s. Wants a rate limit for all heroes.
+
+**Not tried:** a real mouse and keys (owed before the merge); a dedicated server and real latency; B's view of Fusion's slow and of
+her Light Gun against B; Defense Matrix against a beam; the late join during a held loop (above); B leaving by its own pause menu
+(kicked instead); the Nether, water, a night; an Overwatch side by side; a critic on the fixes. Void: r3's Boosters (A teleported
+0.5 s before the press; stopped after 2.8 m); r3b / r3c with a wait flew the full 24.4 m, through B.
+
 ## Not yet
-Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); step 13: two players (and with them the `_3p` sounds). Open
+Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
 against the matrix. Her reticle widgets (#85, below).
 

@@ -293,6 +293,10 @@ public final class HeroManager {
 			if (on && state != null && state.hero == Hero.DVA) {
 				// back in hero mode she's in the mech she left (the plan's default 9; G off is her leavePlay)
 				dev.overcraft.dva.Dva.heroMode(player, state, true);
+			} else if (!on && state != null && state.hero == Hero.DVA) {
+				// her body's health once the flag is off: leavePlay ran while it was still on, so it measured the mech (54 / 54
+				// in Minecraft mode, not the pilot's 14: found in the two-player pass, 2026-11-11)
+				refreshHealth(player, state, false);
 			}
 		}
 	}

@@ -93,7 +93,9 @@ public final class DefenseMatrix {
 			}
 			// Shield System: 25 % of it back as shields (514D #402)
 			DvaPerks.matrixAte(player, s, damage);
-			level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);
+			if (!nearOthersEyes(player, at)) {
+				level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);
+			}
 			// each eaten projectile (#208 effect 1506: 2AC1 + 2D25 hers, 2AC4 + 2D28 at it for others)
 			DvaSounds.split(player, "matrix.absorb", at, 70);
 		});
@@ -109,7 +111,23 @@ public final class DefenseMatrix {
 			double x = (random.nextDouble() * 2 - 1) * MATRIX_SIDE;
 			double y = (random.nextDouble() * 2 - 1) * MATRIX_HALF_HEIGHT;
 			Vec3 at = eye.add(f.scale(z)).add(r.scale(x)).add(u.scale(y));
-			level.sendParticles(ParticleTypes.GLOW, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			if (!nearOthersEyes(player, at)) {
+				level.sendParticles(ParticleTypes.GLOW, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			}
 		}
+	}
+
+	/**
+	 * The stand-ins stay out of other players' faces too: the box reaches 10.25 m, so a shooter inside it had the eaten
+	 * kunai's smoke and the sparks over their whole screen (found in the two-player pass, 2026-11-11; ours, until her
+	 * effects are built).
+	 */
+	private static boolean nearOthersEyes(ServerPlayer player, Vec3 at) {
+		for (ServerPlayer other : player.level().players()) {
+			if (other != player && other.getEyePosition().distanceToSqr(at) < 2.5 * 2.5) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

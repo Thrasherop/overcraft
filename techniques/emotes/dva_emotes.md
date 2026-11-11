@@ -72,7 +72,7 @@ build (only her section as `emotes.txt`) and the merge of the 55 `dva.emote.*` k
 - **Heard** (the client's `heard`, wheel play, world `dvaemo3`): ^o^ 3AF6, 3AF7, the laugh v6a1, 3CF8 / 3CF9; Heart Power F49B; Choreography
   AA34, 3CFC, 3CF6 / 8 / 9, v15e3, v15e2; Listen Up E548 + E549 (her own copies); Mic Drop DA44; Salty EEA6; Game On 3B0B-3B10; Crazy
   Choreography C441, C440 and its foley; Make it Rain B9AB / AC / AD / AF. Not checked by ear against Overwatch; the "others" copies
-  (E54A / E54B) need a second player.
+  (E54A / E54B) heard on a second client in step 13 ([dva](../heroes/dva.md#step-13-two-players-2026-11-11)).
 
 ## The canopy: glass, from its shader (2026-11-11)
 The canopy is material A5D9 (FBB0 submesh 18, over her seated head): shader 0x26, as Juno's gun glass FBC0. The mod's glass path
