@@ -88,6 +88,12 @@ public final class Comms {
 			return;
 		}
 		HeroState state = HeroManager.state(player);
+		// D.Va emotes only in her MEKA: every body clip of her 15 animates the MEKA's skeleton (FBB0's 250 bones, 87 of them
+		// the mech's alone) and none the pilot's F2FF alone (techniques/emotes/dva_emotes.md); not in its wreck either
+		if (state != null && state.hero == dev.overcraft.hero.Hero.DVA
+			&& (dev.overcraft.dva.Dva.form(player) != dev.overcraft.dva.Dva.MECH || !HeroManager.heroMode(player))) {
+			return;
+		}
 		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive()) {
 			dev.overcraft.hero.Combat.animate(player, "emote:" + id);
 			EMOTING.put(player.getUUID(), new Emoting(id, player.level().getGameTime(), player.position()));

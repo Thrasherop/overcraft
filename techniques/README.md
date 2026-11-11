@@ -44,7 +44,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
     geoset bits, an intro just off her stance), [juno_emotes](emotes/juno_emotes.md); for Sojourn (weapon clips whose
     root is a bake of her carrier bone, a gun laid down and kicked back up), [sojourn_emotes](emotes/sojourn_emotes.md); for
     Sigma (a weapon clip keyed in his space that isn't his hand, props spawned by a prop's clip, a prop two heroes share),
-    [sigma_emotes](emotes/sigma_emotes.md).
+    [sigma_emotes](emotes/sigma_emotes.md); for D.Va (a hero with two bodies: which one the clips animate, entity props
+    paired with their own model's clips, a ragdoll that falls), [dva_emotes](emotes/dva_emotes.md).
 - **Testing and review**
   - [hand_play](testing/hand_play.md): playing it like a player, catching glitches, test worlds.
   - [harness](testing/harness.md): the dev harness, its commands and its traps.

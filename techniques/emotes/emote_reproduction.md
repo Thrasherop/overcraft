@@ -73,6 +73,12 @@ props are in hands."
 - The pack builder exports each prop with its clips named by id; the mod samples the prop's clip at her clip's time
   minus where the prop's clip starts.
 
+**A hero with two bodies** (D.Va: the MEKA FBB0 and the pilot F2FF): measure each emote clip's bones against both skeletons
+before exporting; the body whose bones the clips drive plays the emote, and the other may have none
+([dva_emotes](dva_emotes.md#which-body-plays-them-the-meka-every-one)). **An entity prop's clip** is first looked for in its own
+model's folder (`Models/<id>/Animations`, the entity's 020 set), then by length: Game On's three sprites share one length
+([dva_emotes](dva_emotes.md#props-from-the-data)).
+
 ## 6. Root motion
 We keep her on her spot: the emote's root motion is taken off the mover bone (`bone_0001`). A prop on a hardpoint is on
 one of her bones, so it moves with her by itself. Only a prop at the entity's origin needs the motion that was taken

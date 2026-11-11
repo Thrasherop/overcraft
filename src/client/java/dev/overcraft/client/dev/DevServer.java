@@ -518,6 +518,13 @@ public final class DevServer {
 				ClientPlayNetworking.send(new SelectHeroPayload(arg));
 				out.addProperty("ok", true);
 			}
+			case "equip" -> {
+				// dev only: "equip <slot 0-3> <emote id>": what the loadout screen does, equips an emote on the wheel's slot
+				// (up, right, down, left) for the current hero, so the wheel can play each in turn
+				String[] a = arg.trim().split(" ");
+				dev.overcraft.client.comms.Loadout.setEmote(dev.overcraft.client.ClientHero.hero(), Integer.parseInt(a[0]), a[1]);
+				out.addProperty("emotes", String.valueOf(dev.overcraft.client.comms.Loadout.emotes(dev.overcraft.client.ClientHero.hero())));
+			}
 			case "press" -> {
 				// a real key press through Minecraft's keyboard handler (Esc pauses, screens get keyPressed): the harness's
 				// way to type when the desktop can't take input. "press key.keyboard.escape"

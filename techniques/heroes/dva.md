@@ -301,7 +301,8 @@ not the desktop keyboard; screenshots in `run/screenshots/`, not committed, each
   one-line rule), mech_back (likewise after the call line), the wheel lines; a night fight with the perks.
 
 ## Step 11, her sound effects (2026-11-11)
-The owner: "Sound effects now". Sigma's pipeline retargeted, in `E:\Overwatch Archiveesearch\dva\scripts\sounds\` (the order of
+The owner: "Sound effects now". Sigma's pipeline retargeted, in `E:\Overwatch Archive
+esearch\dva\scripts\sounds\` (the order of
 [sounds](../sound/sounds.md#sojourn-sounds)): `fx_graph_dva.py` -> `fx_sounds2_dva.py` (her kit graphs' effects, 450 read) ->
 `clip_sounds_dva.py`, `fx_nodes.py` / `node_up.py` (which node plays each effect) -> `fx_timed.py` on her entities' slot effects and
 `contacts.py` on her contact sets -> `ww.py` (128 02C) -> `dump_banks.py` (17 banks) -> `extract_banks.py` (30 banks her export lacked,
@@ -338,8 +339,32 @@ client's `heard` list and the subtitles; screenshots `s1_fusion.png` .. `s11_eje
 - The firing and matrix clips left open in step 11 are animation, not this pass: still open. Her visual effects (the 111) are not
   started: the effect ids per ability are in `research\dva\workx_sounds.txt` (the same read), for the effects run.
 
+## Step 12: her emotes from the data (2026-11-11)
+All 15 from the data, on the MEKA ([dva_emotes](../emotes/dva_emotes.md)): 57 clips in `hero_models/dva_clips.glb` (FBB0's rig,
+`tools/clipmaps/dva_clips.txt`), `emotes/dva.json` (`tools/emote_data.py dva`), six props (`prop_38ef`, `prop_38f0`, `prop_38f4`,
+`prop_399f`, `prop_2cde`, `prop_162ca`) in the dev pack (`overcraft_ana\local-assets\pack`, not committed). **Which body:** every body
+clip drives the MEKA's skeleton (87 bones the mech's alone), none the pilot's: the pilot can't emote (`Comms.emote`). Tool fixes: her
+name, a prop's clips from its own model folder, a ragdoll entity falls. Found playing (fixed): the emote camera now frames by height too.
+
+**Played** (fresh `runClient`, flat creative worlds `dvaemo`, `dvaemo2`; D.Va clicked on the select screen, then READY by a second
+click; noon; keys through the harness's key mappings, not the desktop: **real mouse and keys still owed**). Each emote equipped on the
+wheel's top slot (`equip`, dev: what the loadout screen does), then the wheel the normal way: comms key held, right button to the
+emote page (`x_wheel_mic_drop.png`: MIC DROP at the top), the pointer up, the key let go. Burst screenshots at 0.6 / 1.5 / 3.0 / 5.0 /
+7.5 s (`w_<emote>_<t>.png`, sheets `ws_0..4.png`), each ended by W:
+- All 15 started from the wheel, the emote camera on, in third person (0 first-person frames), each ended by W. Chains in
+  [dva_emotes](../emotes/dva_emotes.md#contacts-tools-emote_bonespy-emote_contactspy-on-dva_clipsglb).
+- Held frames (`emoteat`): Mic Drop 0.6 (the mic on the raised left arm, from above: `x_mic_0.6_up.png`), 1.6 (on the ground);
+  Heartbreaker 2.0 front and side (the heart in front of her); Game On 4.0 front and side (seated, the screen and sprites); Make it Rain
+  (a bill in flight at 1.5 s).
+- Camera: Bow's antennae left the top at 2.69 blocks (`w_bow_0.6.png`); in at 2.92 (`v_bow_0.6.png`).
+- **The pilot:** survival, `/damage` 40 x 3: wreck, eject, the pilot 14 / 14 (0.6 x 1.8): Bow from the wheel: no emote, first person
+  (`y_pilot_bow.png`). Not shown: whether the old build (no gate) put the pilot's camera in third person.
+- **Not shown:** her emote sounds (not built), a critique agent, a second player, emotes in water / on slopes, the canopy (opaque) and
+  hologram colours ([dva_emotes](../emotes/dva_emotes.md#open)).
+
 ## Not yet
-Her **visual effects** (111) and the firing / matrix clips; steps 12-13: emotes, two players (and with them the `_3p` sounds). Open
+Her **visual effects** (111) and the firing / matrix clips; her emote sounds and voice lines, the see-through canopy (step 12's open
+list); step 13: two players (and with them the `_3p` sounds). Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
 against the matrix. Her reticle widgets (#85, below).
 
