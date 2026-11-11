@@ -1,0 +1,6 @@
+=== phase world 13:37:35
+select HeroSelectScreen
+{'screen': 'HeroSelectScreen', 'fps': 30, 'x': 1.5, 'y': -60.0, 'z': 7.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 5.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'}
+=== phase world 13:45:58
+select HeroSelectScreen
+{'screen': '', 'fps': 108, 'x': 4.5, 'y': -60.0, 'z': 6.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 20.25, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'}

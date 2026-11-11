@@ -1,6 +1,8 @@
 # Play of the Game with replay: the design
 
-A design, not a build: nothing here has run in the game yet. Up: [Techniques](../README.md) · issues: #44 (the outro), #45
+A design, with its first step built and measured (2026-11-11: [step 1, measured](#step-1-measured-2026-11-11)); the
+rest hasn't run. The owner's answers of 2026-11-11 are [under the questions](#questions-only-the-owner-can-answer) and
+override the text below where they differ. Up: [Techniques](../README.md) · issues: #44 (the outro), #45
 (the music) · builds on: [minecraft_26](../minecraft/minecraft_26.md), [kill_feed](../hud/kill_feed.md),
 [rendering](../rendering/rendering.md), [emote_reproduction](../emotes/emote_reproduction.md),
 [sounds](../sound/sounds.md), [music-round9](../../tools/reference/music-round9.md). Written 2026-11-06, on the owner's
@@ -31,16 +33,29 @@ removes most of what a running world would need (question 3).
 in and out, needs a chunk snapshot in the buffer, and leaves the live world with nobody to apply its packets. That's
 the heavy road on a machine that hard-crashed under load on 2026-11-04. See [the options](#the-options).
 
-**Cost, estimated and not measured:** about 0.5 to 1.5 MB per hero for the rolling buffer, up to about 5 MB per hero with
-kept plays. Nothing is recorded outside the fight in the first version.
+**Cost, measured for the tap and ring (step 1):** 5.5 to 12.4 KB/s, a rolling ring of 185 to 360 KB per hero, the tap
+0.05 to 0.13 ms a tick on average; about half the estimate below. Kept plays aren't built yet. Nothing is recorded
+outside the fight in the first version.
 
 **Smallest first step:** no ghosts at all. A tap, a ring, and a decode round trip that only logs bytes and packet types,
 in single player. That settles cost and decoding first. Then ghosts, then the camera. See [the plan](#the-plan).
 
 **How sure:** the approach survived a critique, but not as first written: twelve corrections, all found by reading, are
-listed [at the end](#the-critique-and-what-it-changed). Nothing has been run.
+listed [at the end](#the-critique-and-what-it-changed). Step 1 has run: everything recorded decodes, and the tap had to
+move (Fabric sends round the listener's `send`). Ghosts and the camera haven't.
 
 ## Questions only the owner can answer
+**The owner's answers (2026-11-11), which decide these:**
+- **Only the dragon kill triggers it.** No raid trigger (question 1).
+- **The world pauses during it:** the still world (question 3), so only that one is built.
+- **Nobody can skip it:** no skip key and no off switch (question 4). The note's skip key, skip option and "skipping
+  alone" are dropped everywhere below.
+- **The rest of the defaults stand:** the replay key stays a dev command (2), Minecraft-mode kills don't count (5), a
+  highlight intro picked for the first version (7), it ends on the replay and then the exit portal opens (8).
+- **Clips (6):** the owner will send real POTG clips for the camera, into `local-assets/raw/`. The camera comes last,
+  so nothing waits on them.
+
+The questions as first asked:
 1. **Is the dragon the right first moment?** And is a raid's victory the second? (Recommended: yes to both.)
 2. **Is a key for "replay my last 12 s" wanted in normal play**, or only as a dev command? It would mean recording all
    the time in hero mode, not only in fights. (Recommended: dev command first, decide after playing it.)
@@ -200,7 +215,10 @@ Mod's code was read. We can't leave.
 server, which is A's cost on the server's side.
 
 ### What gets recorded
-A tap on `ServerCommonPacketListenerImpl.send` per hero (**read**). Each kept packet is encoded on the spot with the game
+A tap on `Connection.send(packet, listener, flush)` for each hero's connection (**run**, step 1). The first draft had
+`ServerCommonPacketListenerImpl.send`, and that misses Fabric: its `PacketSender.sendPacket`
+(`AbstractChanneledNetworkAddon`) goes straight to the `Connection`, so attachment bundles went round the tap, and a
+keyframe's captured attachments reached the client every 5 s instead of the ring. Each kept packet is encoded on the spot with the game
 protocol's codec (`GameProtocols.CLIENTBOUND_TEMPLATE`, bound with the registries) into a byte ring, with its tick.
 Encoding at once means no mutable `ItemStack` is held.
 
@@ -251,7 +269,8 @@ Keyframes sit beside the stream, not in it. Playback uses only the first one in 
 it, and a run-in. **Kept plays:** when a window sets a new best, its segments are pinned, one per category per hero, at
 most 4.
 
-**Memory: still an estimate from the packets' fields (ours, M-L), which the first step replaces with a measurement.**
+**Memory: the estimate from the packets' fields (ours, M-L), kept for comparison; step 1's measurements are
+[below](#step-1-measured-2026-11-11) and came in at about half.**
 | | bytes/s |
 |---|---|
 | 30 mobs moving, about 7 updates/s, 12 bytes each | 2,500 |
@@ -367,7 +386,7 @@ their classes' maps swapped. `Camera` drives the listener, so positions come out
 the same rule.
 
 **HUD and input:** `HudMixin` hides ours and vanilla's, drawing the POTG's instead. Input is blanked, through
-`KeyboardInputMixin` and `KeyMappingMixin`; G and the hero menu too. One key skips.
+`KeyboardInputMixin` and `KeyMappingMixin`; G and the hero menu too. No key skips it (owner, 2026-11-11).
 
 ### Camera
 **Not `setCameraEntity(ghost)`.** The first draft had it, and claimed the body would go on sending its moves. The opposite
@@ -438,9 +457,9 @@ A viewer other than the hero receives the reel from the server: compressed, in p
 - The portal's order of events, and that holding tick 199 keeps it shut.
 
 **Needs a spike, in rough order of danger:**
-1. **Encoding and decoding outside the pipeline:** a bound `ProtocolInfo` with the registries, Fabric payloads encoded
-   outside `PacketEncoder`. Not found ready-made in what was read. Cost in ms per tick (target under 0.5, ours) and MB
-   against the estimates.
+1. ~~**Encoding and decoding outside the pipeline**~~ **Settled by step 1 (run):** `GameProtocols.CLIENTBOUND_TEMPLATE.bind(
+   RegistryFriendlyByteBuf.decorator(registries))` on each side encodes and decodes everything seen, Fabric payloads
+   included, with no pipeline. Costs [below](#step-1-measured-2026-11-11).
 2. **Do vanilla handlers work on ghosts, without side effects?** The whole design rests on it. Look for leaks into the
    real player, and crashes where something assumes storage (`EntityTickList`, `TransientEntitySectionManager`).
 3. **Do ghosts tick and draw right off storage?** The dragon especially: its renderer's latency ring needs ticks.
@@ -458,10 +477,11 @@ where it applies ([visual_review](../testing/visual_review.md)).
 
 1. **Tap and round trip, no ghosts, the smallest first step:** dev-only, single player. Tap, unbundling, ring, keyframes,
    then decode everything again on the client, and log only bytes and packet types. Settles costs, decoding, bundles,
-   Fabric payload encoding. If this is expensive or won't decode, nothing else matters.
-2. **Ghosts, then camera, the first replay:** dev-only `/overcraft replay`. Ghost view, the hero's own track, the freeze,
-   the statics list, chase camera last, sound, skip key. No card or scoring, no block packets. **Done when**, each by hand
-   with real keys:
+   Fabric payload encoding. If this is expensive or won't decode, nothing else matters. **Done 2026-11-11:**
+   [measured](#step-1-measured-2026-11-11); it's cheap and it all decodes.
+2. **Ghosts, then camera, the first replay:** dev-only `/overcraft replay`. Ghost view, the hero's own track, the freeze
+   (the owner's choice: the world pauses), the statics list, chase camera last, sound. No skip key (owner). No card or
+   scoring, no block packets. **Done when**, each by hand with real keys:
    - zombies and a skeleton fought for 30 s replay recognisably, and so does a summoned dragon;
    - it starts while walking, while in mid-air, and while holding jump, and the body does the right thing throughout;
    - with a block placed inside the window, the world's blocks are right during and after;
@@ -469,17 +489,110 @@ where it applies ([visual_review](../testing/visual_review.md)).
    - client and server position are compared afterwards and agree;
    - the game afterwards is exactly as before: health, mobs, hero, G, loops, held effects;
    - the costs are written down. If handlers or ghosts fail, stop and rethink.
-3. **Dragon POTG, one player:** `PlayScore`, kept plays, the tick 199 timeline, the viewer's protection, card (`0DC5`,
-   `0DC6`, drawn with `HudText`), announcer line, `5B1F` (#45's extraction), skip and option. Still the chase camera. A
-   dragon kill now feels like an ending, and the owner can judge it here.
-4. **First person:** the view subject in `submitArms` and friends, the reticle. The pull-back by the clip.
+3. **Dragon POTG, one player:** the dragon kill is the only trigger (owner). `PlayScore`, kept plays, the tick 199
+   timeline, the viewer's protection, card (`0DC5`, `0DC6`, drawn with `HudText`), announcer line, `5B1F` (#45's
+   extraction). No skip and no off switch (owner). Still the chase camera. A dragon kill now feels like an ending, and
+   the owner can judge it here.
+4. **First person:** the view subject in `submitArms` and friends, the reticle. The pull-back by the owner's clips
+   (`local-assets/raw/`).
 5. **Highlight intros:** per hero from the data, via the emote pipeline
    ([emote_reproduction](../emotes/emote_reproduction.md)): clip, 08F props and sounds, `2F6C`, contact checks.
-   `extract-unlocks "<Hero>|highlightintro=*"`; assets stay in the local pack.
-6. **Second player:** reel sending, skipping alone, the two-client pass (under one lock holder, as the owner approved for
-   that pass). Then a dedicated server, with the freeze as an option.
-7. **Block rewind**, raid trigger, a kill cam if wanted, slow motion if the clips show any.
+   `extract-unlocks "<Hero>|highlightintro=*"`; assets stay in the local pack. One picked for the first version (owner).
+6. **Second player:** reel sending, the two-client pass (under one lock holder, as the owner approved for that pass).
+   Then a dedicated server; the freeze is world-wide there, so it needs the owner's word again before shipping on one.
+7. **Block rewind**, a kill cam if wanted, slow motion if the clips show any. No raid trigger (owner).
 
+### Step 1, measured (2026-11-11)
+Built on `feature/potg`: `PotgTap` (server: the tap, ring, keyframes, own track), `PotgSendMixin` on `Connection.send`,
+`ChunkMapAccessor` and `TrackedEntityAccessor` for the keyframe, and `PotgDecode` on the client. `/overcraft potg
+start|stop|dump` exists only with `overcraft.dev` (runClient). The dump logs the server's numbers and hands a copy to the
+client in the same JVM, which decodes every record with its own bound protocol, checks every byte is used, encodes it
+again and compares. Nothing is handled or drawn. Raw rows: [runs_step1](runs_step1/) (`*_dump*.txt`, the driver
+`potg_drive.py` and its `*_driver.txt` logs).
+
+**How it ran.** One dev client (lock held, Overwatch and Battle.net checked closed, 5.4 to 7.6 GB free throughout),
+Kiriko, the harness: kunai held with `key secondary_fire`, aim set from the server (`/execute ... facing entity ... run
+tp`) every 0.25 s, Suzu and the ult by `key`, G by `press key.keyboard.g` (the keyboard handler). Not the real mouse:
+this step changes nothing a player sees, so it had no hand play with real keys; step 2 must. Tree: the commit after
+`72bc2a4` (the tap on `Connection`); the `tap1_*` files ran on `72bc2a4` (the tap on the listener) and only show the
+bypass.
+- **Night:** a fresh flat survival world, midnight, normal, Resistance II. 5 zombies and 3 skeletons summoned 18 to 26 m
+  off, and the night's own spawns: the last keyframe held 145 entities (49 slimes, 11 spiders, 4 creepers, 3 zombies, 2
+  skeletons, 33 XP orbs, 21 items, animals). Kunai for 85 s, Suzu, Kitsune Rush, G out and back at 37 s.
+- **Dragon:** the End's own dragon and 10 crystals, about 70 endermen, Resistance IV and Regeneration III, alive
+  throughout, 85 s of kunai at the dragon (few hits: it flies off).
+- **The death:** `/kill` on the dragon 8 s after arming, then 15 s of its death and the exit portal (`/kill` because
+  `/damage` on the dragon's body does nothing: it's hurt only through its parts). So no hero is credited; the packets are
+  the same.
+
+| | Estimate (above) | Night, 64 s | Night, 93 s | Dragon, 54 s | Dragon, 85 s | Death, 24 s |
+|---|---|---|---|---|---|---|
+| Tap, ms/tick mean | under 0.5 (target, ours) | 0.127 | 0.113 | 0.060 | 0.058 | 0.052 |
+| p50 / p99 | | 0.089 / **0.680** | 0.078 / 0.666 | 0.051 / 0.375 | 0.050 / 0.336 | 0.041 / 0.331 |
+| Worst tick | | **8.02** (first keyframe) | 8.02 | 1.33 | 1.33 | 0.77 |
+| Keyframe ms, mean / max | | 1.22 / 7.29 | 1.06 / 7.29 | 0.41 / 1.24 | 0.37 / 1.24 | 0.42 / 0.71 |
+| Bytes/s (stream + own track) | 15,000 to 25,000 heavy | **12,378** | 11,040 | 6,412 | 6,311 | 5,460 |
+| Own track, B/s | 1,500 with players | 680 | 680 | 680 | 680 | 681 |
+| Keyframe, average | 20,000 to 80,000 | 13,194 B | 13,171 B | 8,599 B | 8,319 B | 7,992 B |
+| Ring (5 s segments, 25 to 30 s) | 0.5 to 1.5 MB | **361 KB** | 327 KB | 275 KB | 260 KB | 189 KB |
+| Server tick, average | | 4.45 ms | 4.63 ms | 2.42 ms | 2.31 ms | 2.68 ms |
+| Client decode of the whole ring | | 23.5 ms | 8.7 ms | 9.1 ms | 7.4 ms | 3.4 ms |
+
+What the numbers say:
+- **About half the estimate**, so the 2 MB cap per hero has room, and no compression is needed in single player.
+  `HeroSync` is the largest single item, as estimated: 112 bytes, 20 a second, 2.2 KB/s (estimate 2.0), about a fifth of
+  the night's stream. Then mob movement: `move_entity_pos`, `set_entity_motion`, `entity_position_sync`, `rotate_head`.
+- **Keyframes cost by entity count, 90 to 160 bytes each** (not the estimate's 250), mostly `add_entity` and
+  `update_attributes`. A flat world's night (slimes, XP orbs, dropped items) made the largest. Dropping XP orbs and items
+  from keyframes would cut a third of that, if it ever matters.
+- **The tap's mean is a quarter of the target; its p99 in the night (0.68 ms) is over it**, and the first keyframe of a
+  run took 7 to 8 ms with 145 to 160 entities (a cold start: the next ones took about 1). Server ticks stayed under 5 ms,
+  so nothing showed. If it matters later, spread a keyframe over a few ticks.
+- **Every packet decodes.** 0 encode errors, 0 decode errors, 0 bytes left over, in every run, for every type seen,
+  kept or probed. Re-encoding gives the same bytes for every kept type; only `level_chunk_with_light` (all) and
+  `update_advancements` (some) differ, both probes and never kept (their maps aren't ordered).
+- **Bundles split:** `addPairing`'s bundles came apart in the tap (112 `add_entity` in one night window); an unsplit
+  bundle would have thrown in the encoder, and none did.
+- **Fabric payloads decode outside the pipeline**, to their own classes, none to `DiscardedPayload`: ours (`effect`,
+  `hero_action`, `own_sound`, `hero_sync`, `kill_feed`) and Fabric's `attachment_sync_v1`.
+- **Types seen and decoded, kept:** `add_entity`, `remove_entities`, `move_entity_pos`, `_pos_rot`, `_rot`,
+  `entity_position_sync`, `rotate_head`, `set_entity_motion`, `set_entity_data`, `set_equipment`, `update_attributes`,
+  `swing_animation`, `entity_event`, `damage_event`, `hurt_animation`, `update_mob_effect`, `remove_mob_effect`,
+  `projectile_power`, `take_item_entity`, `block_update`, `section_blocks_update`, `block_entity_data`, `level_event`,
+  `sound`, the five payloads above, and the own track's `set_equipment`. **Probed:** `boss_event`, `chunk_batch_start`,
+  `_finished`, `level_chunk_with_light`, `forget_level_chunk`, `player_combat_enter`, `_end`, `_kill`,
+  `player_info_update`, `player_position`, `set_chunk_cache_center`, `set_experience`, `set_health`, `set_time`,
+  `system_chat`, `update_advancements`.
+- **Never seen, so not shown to decode:** `explode`, `level_particles`, `sound_entity`, `animate`, `block_event`,
+  `block_destruction`, `set_passengers`, `set_entity_link`, `teleport_entity`, `move_minecart_along_track`,
+  `voice_line`. The dragon's death sent no `explode` or particles: the client makes those itself from the dying dragon.
+- **Found:** the design's tap point (`ServerCommonPacketListenerImpl.send`) misses Fabric's `PacketSender`, which writes to
+  the `Connection` (read in `AbstractChanneledNetworkAddon`'s bytecode). On that tree, keyframes held no attachments, and
+  the attachment bundles a keyframe meant to capture went to the client instead, every 5 s (inferred from the code and
+  the missing payloads; not watched on the client). On `Connection`, each keyframe holds them (2 bundles a keyframe).
+- **Found:** a dead hero's keyframes are empty, 0 bytes, own entity included, and the stream holds only `HeroSync` and
+  the own track (`dragon_try1_died_dump2.txt`: an 85 KB ring of nothing; the `tap1_` nights too). So 25 s after a death the ring holds no play.
+  Why the dead player's own entity wasn't found wasn't read.
+- **Minecraft mode doesn't count:** G out stopped the recording (102 ticks counted out of play), and G back started a
+  new segment with a keyframe.
+
+**Nothing changed for the player** (as far as shown): position, health, hero and hero mode read the same just before and
+after arming, each of the six dumps and the stop; G worked while armed and after; she stayed Kiriko through two deaths and
+respawns. **Not shown:** the mob counts (the driver's reads picked up other commands' answers: void); that the keyframe
+capture sends nothing to the client (it cancels by construction; not watched on the client); a fight with and without the
+tap compared for damage or timings; real mouse and keys; a second player; a dedicated server; a hero other than Kiriko;
+two heroes recording at once.
+
+**What step 2 (ghosts) needs now:**
+- Nothing about cost: keep the ring as built. Decoding a tick's packets during a replay costs well under a millisecond.
+- Get the ring to the client properly: today the dump hands it over through a static in one JVM. Single player can keep
+  that for step 2; step 6 needs the reel payload.
+- Death: the own track's alive flag and kept plays must cover it. A hero who dies at the end of a dragon fight (common)
+  has an empty ring 25 s later, so the play must be pinned before then, or kept as it scrolls out.
+- Fights that make the unseen types: a creeper (`explode`), a witch or potion (`level_particles`), a rider
+  (`set_passengers`), an enderman teleporting, a lead, a minecart. Check those decode before ghosts lean on them.
+- The keyframe's capture stays on `Connection`, and step 2 should watch on the client that no captured packet arrives.
+- The first-keyframe spike: measure again with ghosts; spread it if a tick goes over.
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):
 - Armed only in a dragon fight, so normal play pays nothing. Bytes bounded per hero: the rolling ring is fixed, the oldest
