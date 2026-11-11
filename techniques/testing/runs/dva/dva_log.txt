@@ -1,0 +1,59 @@
+before GenericMessageScreen
+{'ok': True}
+screen HeroSelectScreen hero 
+{'ok': True}
+done HeroSelectScreen
+{}
+{}
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 108, 'anim': 'idle'}
+{'trace': ''}
+zombie 1000.0
+{'trace': ''}
+zombie 989.2752
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 117, 'anim': 'idle'}
+0.00 meter 1.0 anim idle fx 0 heard 
+0.42 meter 1.0 anim idle fx 0 heard 
+0.84 meter 1.0 anim idle fx 0 heard 
+1.25 meter 0.8845 anim idle fx 0 heard rix/chirp/0 (SimpleSoundInstance, in the head) | dva.matrix.loop -> dva/matrix/loop/0 (SimpleSoundInstance, in the head)
+1.66 meter 0.7525 anim idle fx 0 heard 
+2.07 meter 0.6205 anim idle fx 0 heard 
+2.49 meter 0.472 anim idle fx 0 heard 
+2.90 meter 0.34 anim idle fx 0 heard 
+3.31 meter 0.208 anim idle fx 0 heard 
+mouse: sent rhold 
+after: meter 0.1585 anim idle
+{}
+{}
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 117, 'anim': 'idle'}
+read before boosters heroMode True y -60.0 z 0.5 hp 54.0 cd3 0.0
+read after Boosters heroMode True y -60.0 z 24.91 hp 54.0 cd3 0.0
+{'trace': '384.7 sent | 434.8 sent | 781.4 sent'}
+zombie 997.01587
+{}
+{}
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 117, 'anim': 'idle'}
+{'trace': ''}
+zombie 1000.0
+{'trace': ''}
+zombie 997.01587
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 117, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 118, 'anim': 'idle'}
+{'trace': '250.7 sent | 301.8 sent | 597.2 sent'}
+zombie 998.93585
+{}
+{}
+{'screen': '', 'hero': 'dva', 'heroMode': True, 'health': 54.0, 'fps': 114, 'anim': 'idle'}
+{'trace': '277.8 sent | 328.0 sent | 7275.1 sent'}
+zombie 998.93585
+read after G out of the mech heroMode False y -60.0 z 2.48 hp 14.0 cd3 0.0
+0.00 hp 0.01 / 54.0 y -60.0 anim destroyed_sm0 heroMode True screen 
+0.36 hp 0.01 / 54.0 y -60.0 anim destroyed_sm0 heroMode True screen 
+0.71 hp 0.01 / 54.0 y -60.0 anim destroyed_sm0 heroMode True screen 
+1.08 hp 14.0 / 14.0 y -59.14 anim eject heroMode True screen 
+1.44 hp 14.0 / 14.0 y -58.68 anim eject heroMode True screen 
+1.80 hp 14.0 / 14.0 y -60.0 anim run_back heroMode True screen 
+2.15 hp 12.0 / 14.0 y -58.73 anim jump heroMode True screen 
+2.51 hp 12.0 / 14.0 y -58.13 anim fall heroMode True screen 
+2.87 hp 12.0 / 14.0 y -59.62 anim fall heroMode True screen 
