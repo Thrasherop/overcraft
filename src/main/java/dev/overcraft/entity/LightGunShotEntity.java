@@ -90,6 +90,8 @@ public class LightGunShotEntity extends OwProjectile {
 						}
 					}
 					Effects.hitMarker(dva, target, crit);
+					// 'on a target' (147B: 5DC6 hers, 6D11 at it 200 m)
+					dev.overcraft.dva.DvaSounds.split(dva, "gun.hit", at, 200);
 				}
 			}
 		} else if (target == null) {
@@ -106,6 +108,8 @@ public class LightGunShotEntity extends OwProjectile {
 		if (level() instanceof ServerLevel level) {
 			Vec3 at = hit.getLocation();
 			level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 2, 0.03, 0.03, 0.03, 0.01);
+			// contact set 49D type 2 (899F + 89A1)
+			dev.overcraft.dva.DvaSounds.all(level, "gun.hit_block", at, 90);
 			discard();
 		}
 	}

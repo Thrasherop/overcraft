@@ -51,6 +51,9 @@ public final class FusionCannons {
 		long now = player.level().getGameTime();
 		boolean firing = canFire && s.primaryHeld;
 		if (firing && s.weaponRecovery <= 0) {
+			// 34DA's held streams: the burst's first volley, then a trigger a volley (050A #379)
+			DvaSounds.split(player, s.dvaFusionBurst ? "fusion.fire" : "fusion.fire_first", player.getEyePosition(), 100);
+			s.dvaFusionBurst = true;
 			volley(player, s);
 			// Precision Fusion: twice the rate (514D #635): 1.5 ticks a volley, two volleys in three ticks
 			s.weaponRecovery += Ow.ticks(FUSION_INTERVAL) / (DvaPerks.precision(s) ? PRECISION_RATE : 1);
@@ -61,6 +64,11 @@ public final class FusionCannons {
 		s.weaponRecovery -= Combat.attackRate(player);
 		if (!firing) {
 			s.weaponRecovery = Math.max(0, s.weaponRecovery);
+		}
+		if (!firing && s.dvaFusionBurst) {
+			// the burst's over: 34DA's Stop event (the spin-down)
+			s.dvaFusionBurst = false;
+			DvaSounds.split(player, "fusion.fire_end", player.getEyePosition(), 100);
 		}
 		// the slow holds while she fires (#376 while v233), not while boosting (gated by v87: 047E #241)
 		slow(player, firing && !boosting);
@@ -142,6 +150,7 @@ public final class FusionCannons {
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
 		List<Entity> near = level.getEntities(player, area, e -> e instanceof LivingEntity || e instanceof EnderDragonPart);
 		Map<LivingEntity, Hit> hits = new LinkedHashMap<>();
+		Vec3 wall = null;
 		for (Vec3 dir : dirs) {
 			Vec3 end = eye.add(dir.scale(FUSION_RANGE));
 			Vec3 block = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
@@ -162,6 +171,9 @@ public final class FusionCannons {
 				}
 			}
 			Vec3 stop = best != null ? bestAt : block;
+			if (best == null && wall == null && block.distanceToSqr(eye) < (FUSION_RANGE - 0.01) * (FUSION_RANGE - 0.01)) {
+				wall = block;
+			}
 			// stand-in look: a spark where each pellet stops
 			level.sendParticles(best != null ? ParticleTypes.CRIT : ParticleTypes.SMOKE, stop.x, stop.y, stop.z, 1, 0, 0, 0, 0);
 			if (best == null) {
@@ -175,8 +187,10 @@ public final class FusionCannons {
 			h.crit |= crit;
 			h.at = bestAt;
 		}
-		// stand-in sound, from both cannons
-		level.playSound(null, eye.x, eye.y, eye.z, SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.35f, 1.9f);
+		if (wall != null) {
+			// the pellets on the world, once a volley (contact set 4B3 type 2: 849E + 84CB)
+			DvaSounds.all(level, "fusion.hit_block", wall, 90);
+		}
 		for (Map.Entry<LivingEntity, Hit> e : hits.entrySet()) {
 			LivingEntity target = e.getKey();
 			Hit h = e.getValue();
@@ -189,6 +203,8 @@ public final class FusionCannons {
 			}
 			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, target);
+			// the hit, once a target a volley (4B3 type 0: 5D53 hers, 8F2F at the target 500 m)
+			DvaSounds.split(player, "fusion.hit_enemy", h.at != null ? h.at : target.getEyePosition(), 500);
 			if (dealt > 0) {
 				if (h.crit) {
 					s.critAt = level.getGameTime();

@@ -25,7 +25,7 @@ public final class DvaSounds {
 	}
 
 	/** {@code name} in her head, {@code name}_3p at {@code at} for everyone else out to {@code metres}. */
-	static void split(ServerPlayer dva, String name, Vec3 at, double metres) {
+	public static void split(ServerPlayer dva, String name, Vec3 at, double metres) {
 		SoundEvent own = of(name), others = of(name + "_3p");
 		if (own != null) {
 			HeroSounds.toOwner(dva, own);
@@ -36,15 +36,20 @@ public final class DvaSounds {
 	}
 
 	/** One copy for everyone at {@code at} (but {@code except}). */
-	static void at(ServerLevel level, String name, Vec3 at, double metres, Player... except) {
+	public static void at(ServerLevel level, String name, Vec3 at, double metres, Player... except) {
 		SoundEvent sound = of(name);
 		if (sound != null) {
 			HeroSounds.at(level, sound, at, metres, except);
 		}
 	}
 
+	/** One copy for everyone at {@code at} ('both' in the map). */
+	public static void all(ServerLevel level, String name, Vec3 at, double metres) {
+		at(level, name, at, metres);
+	}
+
 	/** In this player's head only. */
-	static void own(ServerPlayer player, String name) {
+	public static void own(ServerPlayer player, String name) {
 		SoundEvent sound = of(name);
 		if (sound != null) {
 			HeroSounds.toOwner(player, sound);

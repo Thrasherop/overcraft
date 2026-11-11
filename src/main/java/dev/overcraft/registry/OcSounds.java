@@ -537,8 +537,21 @@ public final class OcSounds {
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
 		"pilot_kill", "ultimate");
-	/** D.Va's other sounds (tools/soundmaps/dva.txt): so far the ult lines; her weapons' and abilities' are step 11's rest. */
-	public static final java.util.List<String> DVA_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy");
+	/**
+	 * D.Va's other sounds: the ult lines (tools/soundmaps/dva.txt) and her weapons', abilities' and perks' (dva_sfx.txt, read for
+	 * wiring there: each event's trigger in the data). The loops are her clients' (client.DvaSounds).
+	 */
+	public static final java.util.List<String> DVA_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"fusion.fire_first", "fusion.fire", "fusion.fire_end", "fusion.fire_first_3p", "fusion.fire_3p", "fusion.fire_end_3p",
+		"fusion.hit_enemy", "fusion.hit_enemy_3p", "fusion.hit_block", "matrix.on", "matrix.loop", "matrix.off", "matrix.on_3p",
+		"matrix.loop_3p", "matrix.off_3p", "matrix.chirp", "matrix.chirp_3p", "matrix.absorb", "matrix.absorb_3p",
+		"boosters.start", "boosters.loop", "boosters.end", "boosters.start_3p", "boosters.loop_3p", "boosters.chirp",
+		"boosters.hit", "missiles.cast", "missiles.cast_3p", "missiles.volley", "missiles.volley_end", "missiles.volley_3p",
+		"missiles.volley_end_3p", "missiles.burst", "missiles.hit_enemy", "missiles.hit_enemy_3p", "missiles.hit_block",
+		"self_destruct.arm", "self_destruct.blast", "call_mech.drop", "call_mech.drop_3p", "wreck", "wreck_3p", "wreck.chirp",
+		"wreck.chirp_3p", "eject", "gun.fire", "gun.hit", "gun.hit_3p", "gun.hit_block", "gun.reload", "gun.reload_3p",
+		"perk.precision.start", "perk.precision.start_3p", "perk.precision.loop", "perk.precision.end", "perk.precision.end_3p",
+		"perk.shield_system", "perk.bunny_power");
 
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {

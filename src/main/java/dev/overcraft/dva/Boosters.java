@@ -61,7 +61,10 @@ public final class Boosters {
 		Dva.initiator(player, s);
 		// her flight clips (alias 0x3BB: 34BB start -> 307C flight, 1P 3313 -> 318A)
 		Combat.animate(player, "boosters_se0");
-		player.level().playSound(null, player.getX(), player.getY() + 1, player.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.7f, 0.8f);
+		// 1492's ignition (5DC3 hers, 2AED others' 70 m; the roar is her clients' loop) and the MEKA's chirp (#196 effect 1635)
+		Vec3 at = player.position().add(0, 1, 0);
+		DvaSounds.split(player, "boosters.start", at, 70);
+		DvaSounds.all(player.level(), "boosters.chirp", at, 50);
 	}
 
 	/** Each tick in hero mode (Dva.tick); {@code can}: she's in her mech with her controls. */
@@ -98,6 +101,8 @@ public final class Boosters {
 		}
 		s.dvaBoost = -1;
 		s.dvaBoostEndedAt = player.level().getGameTime();
+		// 1492's Stop event (hers; others' roar just stops)
+		DvaSounds.own(player, "boosters.end");
 		s.dvaBoostCooldownIn = Ow.ticks(BOOSTERS_COOLDOWN_DELAY);
 		// the fall after it lands her safely (#35)
 		s.softLanding = true;
@@ -131,7 +136,8 @@ public final class Boosters {
 				e.setDeltaMovement(before.x, 0, before.z);
 			}
 			Combat.push(e, flat.scale(Ow.speed(BOOSTERS_KNOCKBACK)).add(0, Ow.speed(BOOSTERS_KNOCKBACK_UP), 0), player, BLOW);
-			level.playSound(null, e.getX(), e.getY() + 1, e.getZ(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.4f, 1.6f);
+			// the slam (message 2D4E -> #465 effect 68E6: C8DD, hers)
+			DvaSounds.own(player, "boosters.hit");
 		}
 	}
 

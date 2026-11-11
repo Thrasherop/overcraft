@@ -155,6 +155,7 @@ public class OvercraftClient implements ClientModInitializer {
 			JunoSounds.tick(client);
 			SojournSounds.tick(client);
 			SigmaSounds.tick(client);
+			DvaSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}

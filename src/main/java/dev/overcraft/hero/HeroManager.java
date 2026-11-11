@@ -112,6 +112,13 @@ public final class HeroManager {
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
 	/**
+	 * D.Va's held states as every client hears them (client.DvaSounds: Defense Matrix's and Boosters' loops, Precision Fusion's):
+	 * Dva.MODE_MATRIX / MODE_BOOSTING / MODE_PRECISION bits. Absent or 0: none.
+	 */
+	public static final AttachmentType<Integer> DVA_STATE = AttachmentRegistry.create(Overcraft.id("dva_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
 	 * Sigma's state as every client draws and hears it (SigmaFx, client.SigmaSounds): Sigma.SYNC_* bits (Kinetic Grasp, the
 	 * gather, Gravitic Flux's flight and its aim, Levitation, Hyper Strike charged). Absent or 0: none of them.
 	 */
@@ -316,7 +323,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, LUCIO_WALL);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;

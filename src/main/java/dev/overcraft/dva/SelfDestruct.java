@@ -73,7 +73,8 @@ public final class SelfDestruct {
 		level.addFreshEntity(mech);
 		s.dvaSelfDestructId = mech.getId();
 		Dva.eject(player, s, false);
-		level.playSound(null, mech.getX(), mech.getY() + 1, mech.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 2f, 1.4f);
+		// the arming whine and countdown (#419 effect 1702 on the mech: 2AEA, 5DBF, 2DD5, 75 m)
+		DvaSounds.all(level, "self_destruct.arm", mech.position().add(0, 1, 0), 75);
 	}
 
 	/** Each tick of the flying mech (DvaMechEntity): the warning, then the blast at 3 s. */
@@ -82,11 +83,8 @@ public final class SelfDestruct {
 		Vec3 c = mech.position().add(0, SELF_DESTRUCT_UP, 0);
 		int fuse = Ow.ticks(SELF_DESTRUCT_FUSE);
 		if (mech.tickCount < fuse) {
-			// stand-in warning: a glow growing to the blast, a beep each half second
+			// stand-in look: a glow growing to the blast
 			level.sendParticles(ParticleTypes.GLOW, c.x, c.y, c.z, 2 + mech.tickCount / 6, 0.6, 0.6, 0.6, 0.02);
-			if (mech.tickCount % 10 == 0) {
-				level.playSound(null, c.x, c.y, c.z, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 2f, 1.2f + mech.tickCount / 60f);
-			}
 		} else if (mech.tickCount == fuse) {
 			blast(owner, mech, c);
 		}
@@ -137,6 +135,7 @@ public final class SelfDestruct {
 		}
 		// stand-in look and sound
 		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 3, 2, 1, 2, 0);
-		level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 6f, 0.7f);
+		// the blast (#269 effect 1703: 5DC0 + 2DD8, 120 m)
+		DvaSounds.all(level, "self_destruct.blast", c, 120);
 	}
 }

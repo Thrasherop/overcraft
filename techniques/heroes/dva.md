@@ -300,11 +300,47 @@ not the desktop keyboard; screenshots in `run/screenshots/`, not committed, each
   second player); multikill, on_fire, call_mech_kill, pilot_kill, matrix_absorb (dropped while the matrix line held her voice: the
   one-line rule), mech_back (likewise after the call line), the wheel lines; a night fight with the perks.
 
+## Step 11, her sound effects (2026-11-11)
+The owner: "Sound effects now". Sigma's pipeline retargeted, in `E:\Overwatch Archiveesearch\dva\scripts\sounds\` (the order of
+[sounds](../sound/sounds.md#sojourn-sounds)): `fx_graph_dva.py` -> `fx_sounds2_dva.py` (her kit graphs' effects, 450 read) ->
+`clip_sounds_dva.py`, `fx_nodes.py` / `node_up.py` (which node plays each effect) -> `fx_timed.py` on her entities' slot effects and
+`contacts.py` on her contact sets -> `ww.py` (128 02C) -> `dump_banks.py` (17 banks) -> `extract_banks.py` (30 banks her export lacked,
+into `research\dva\sounds\ExtraSounds\D.Va`) -> `measure_dva.py` -> `stmg.py --offline` -> `overview.py` -> `dva_table.py` (the event
+table, each event's node cited) -> `dva_gen.py --write` -> `check_map.py` (58 events, 538 files, 0 problems). The map:
+`tools/soundmaps/dva_sfx.txt`; its pack build by the scratch-root method (backups `*.before_dva_sfx`). Code: `dva.DvaSounds` (the
+server's one-shots), `client.DvaSounds` (the loops: matrix hum, Boosters roar, Precision Fusion hum, from `HeroManager.DVA_STATE`),
+`OcSounds.DVA_SOUNDS`; every vanilla stand-in sound in her kit replaced.
+
+**Read from the data (not by ear):** Fusion 050A #379 effect 34DA (5DC5 hers / DBAB others' 100 m: a held stream, first volley,
+a trigger a volley, spin-down on its Stop); hits by the pellet's contact set 4B3. Matrix 02CC: 5F57 held (2AA8 / 2AA9: start,
+4.07 s hum, Stop), 1637 MEKA chirp at the press, 1506 per eaten projectile. Boosters 047E: 1492 held (5DC3 / 2AED / 2AEF), 1635
+chirp, 68E6 on an enemy hit. Missiles 1128: 1F99 cast, 4562 the volley, 1FA5 each burst, contact sets 783 / 772. Self-Destruct 0B2F:
+1702 arming, 1703 blast. Call Mech 026A #417 1573. The wreck 0276 #86 1572 and #143 1633; the eject: the destroyed clip 31C3's 78BF.
+Light Gun: its round's slot F03 (no own fire 02C: 02B8's 3398 holds none), 147B on a target, contact 49D; reload: the 1P clip 30BB's six
+and the 3P clip 3234's 2E14. Perks 514D: 6DB5 / 6E7C / 6DB6 Precision Fusion, 6420 Shield System's restore, 6730 Bunny Power. The
+Stadium powers' variants (34F5's twin aside, 7FFB / 7FFC, 5F5B-5F5D, 3C64, 674D, 641F) are left out.
+
+**Played** (fresh `runClient`, world `dva21`, D.Va picked on the select screen; keys through the harness's key mappings: desktop
+control was granted but the owner was at the PC and both real-key attempts were interrupted, so no real-mouse play this run; the
+client's `heard` list and the subtitles; screenshots `s1_fusion.png` .. `s11_eject.png` in `run/screenshots/`, not committed):
+- Fusion 1.6 s: `fusion.fire_first` once, `fusion.fire` x10, `fusion.fire_end` once; at a zombie `fusion.hit_enemy` x7, at the
+  floor `fusion.hit_block`. Precision Fusion 1.2 s: `fire` x16 (13.3/s), `perk.precision.start` / `.loop` / `.end`.
+- Matrix with two arrows: `matrix.on`, `.loop`, `.chirp`, `.absorb` x2, `.off`; with Shield System `perk.shield_system`.
+- Boosters into zombies: `boosters.start`, `.loop`, `.chirp`, `.hit`, `.end`.
+- Missiles at a husk: `missiles.cast`, `.volley`, `.burst` x18, `.hit_enemy` x18, `.volley_end`.
+- Self-Destruct: `self_destruct.arm` (subtitle "Self-Destruct arms" with the ult line, `s7_selfdestruct.png`), `.blast`.
+- As the pilot: `gun.fire` x7, `gun.hit` x7, `gun.reload`; Call Mech `call_mech.drop`.
+- Mech killed: `wreck`, `wreck.chirp`, `eject`; with Bunny Power `perk.bunny_power`.
+- **Not shown:** the real keyboard and mouse (above); every `_3p` copy and the others' loops (need a second player: they are built
+  and wired, unheard); `missiles.hit_block` and `gun.hit_block` (all hit targets); listening quality by ear against Overwatch (the
+  harness lists what played, not how it sounds); footsteps (no hero has its own: Minecraft's steps serve, as Sigma's map notes;
+  hers are contact sets 48A / 4ED, read but not mapped); the ult-ready sound (no hero has one beyond the voice line).
+- The firing and matrix clips left open in step 11 are animation, not this pass: still open. Her visual effects (the 111) are not
+  started: the effect ids per ability are in `research\dva\workx_sounds.txt` (the same read), for the effects run.
+
 ## Not yet
-Step 11's rest: her **weapon, ability and ult sound effects** (the Wwise 02C pipeline of sounds.md "Sojourn's map": effect table,
-ww.py / dump_banks.py, measure, gen; nothing of it run for her yet: her skin extract holds ~3400 .ogg under her entities' and
-models' effects) and her **effects** (111 extracted); the firing / matrix clips. Steps 12-13: emotes, two players. Open from steps
-4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
+Her **visual effects** (111) and the firing / matrix clips; steps 12-13: emotes, two players (and with them the `_3p` sounds). Open
+from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
 against the matrix. Her reticle widgets (#85, below).
 
 ## The merge of next (2026-11-10): what fix/systems asked of her, done

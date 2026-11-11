@@ -66,8 +66,9 @@ public final class DefenseMatrix {
 		s.dvaMatrixTicks = 0;
 		// "Nothing gets past me!" (03DB)
 		dev.overcraft.hero.Voice.say(player, "matrix", 1);
-		// stand-in sound (hers: step 11); its first-person arms' clips (0x3F6: 334E ..) come with the effects
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.6f, 1.8f);
+		// 5F57's start (2AA8 hers, 2AA9 others' 70 m; the hum is her clients' loop) and the MEKA's chirp (02CC #240 effect 1637)
+		DvaSounds.split(player, "matrix.on", player.getEyePosition(), 70);
+		DvaSounds.split(player, "matrix.chirp", player.getEyePosition(), 50);
 	}
 
 	static void end(ServerPlayer player, HeroState s, long now) {
@@ -77,7 +78,8 @@ public final class DefenseMatrix {
 		s.dvaMatrix = false;
 		s.dvaMatrixDownAt = now;
 		s.dvaMatrixCooldown = Ow.ticks(MATRIX_COOLDOWN);
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.4f, 1.8f);
+		// 5F57's Stop event
+		DvaSounds.split(player, "matrix.off", player.getEyePosition(), 70);
 	}
 
 	private static void absorb(ServerPlayer player, HeroState s) {
@@ -92,7 +94,8 @@ public final class DefenseMatrix {
 			// Shield System: 25 % of it back as shields (514D #402)
 			DvaPerks.matrixAte(player, s, damage);
 			level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);
-			level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 0.8f, 1.6f);
+			// each eaten projectile (#208 effect 1506: 2AC1 + 2D25 hers, 2AC4 + 2D28 at it for others)
+			DvaSounds.split(player, "matrix.absorb", at, 70);
 		});
 		// stand-in look: a few sparks through the box (past 3 m, out of her face)
 		Vec3 eye = player.getEyePosition();

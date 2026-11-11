@@ -54,6 +54,8 @@ public final class MicroMissiles {
 		s.dvaMissileClock = 1;
 		// her missile clips (alias 0x517: 33B6 -> 33B8, additive)
 		Combat.animate(player, "add_missiles_se0");
+		// the cast (#364 effect 1F99: 4373 hers, 4375 others' 60 m)
+		DvaSounds.split(player, "missiles.cast", player.getEyePosition(), 60);
 	}
 
 	/** Each tick in hero mode (Dva.tick); {@code can}: she's in her mech with her controls. */
@@ -62,10 +64,14 @@ public final class MicroMissiles {
 			return;
 		}
 		if (!can) {
-			stop(s);
+			stop(player, s);
 			return;
 		}
 		s.dvaMissileTicks++;
+		if (s.dvaMissileTicks == Ow.ticks(MISSILES_CAST)) {
+			// the volley (#357 holds effect 4562: 5DC4 hers, 4376 others' 70 m)
+			DvaSounds.split(player, "missiles.volley", player.getEyePosition(), 70);
+		}
 		if (s.dvaMissileTicks < Ow.ticks(MISSILES_CAST)) {
 			return;
 		}
@@ -76,14 +82,18 @@ public final class MicroMissiles {
 			shoot(player, s);
 		}
 		if (s.dvaMissilesLeft <= 0) {
-			stop(s);
+			stop(player, s);
 		}
 	}
 
 	/** The volley's over (all fired, or cut short): its 7 s from now (#412 -> #407). */
-	static void stop(HeroState s) {
+	static void stop(ServerPlayer player, HeroState s) {
 		if (!active(s)) {
 			return;
+		}
+		if (s.dvaMissileTicks >= Ow.ticks(MISSILES_CAST)) {
+			// 4562's Stop event
+			DvaSounds.split(player, "missiles.volley_end", player.getEyePosition(), 70);
 		}
 		s.dvaMissileTicks = -1;
 		s.dvaMissilesLeft = 0;
@@ -112,7 +122,6 @@ public final class MicroMissiles {
 		DvaMissileEntity missile = new DvaMissileEntity(player, level);
 		missile.launch(from, target.subtract(from), Ow.speed(MISSILES_SPEED));
 		level.addFreshEntity(missile);
-		level.playSound(null, from.x, from.y, from.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 0.35f, 1.6f);
 	}
 
 	/** The burst's share at {@code d} m: full to 0.1 m, then down to x0.25 at 1.5 m, nothing past it (linear between: M). */
@@ -180,7 +189,13 @@ public final class MicroMissiles {
 		// stand-in look and sound (hers: 1E8A's effects, step 11)
 		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 4, 0.2, 0.2, 0.2, 0.02);
-		level.playSound(null, at.x, at.y, at.z, SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.4f, 1.3f);
+		// its burst (1FA5: 4372, 200 m), and what it hit (contact sets 783 / 772)
+		DvaSounds.all(level, "missiles.burst", at, 200);
+		if (target != null) {
+			DvaSounds.split(owner, "missiles.hit_enemy", at, 500);
+		} else if (direct == null) {
+			DvaSounds.all(level, "missiles.hit_block", at, 90);
+		}
 	}
 
 	static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {

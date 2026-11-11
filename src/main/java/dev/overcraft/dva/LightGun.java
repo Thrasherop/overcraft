@@ -74,8 +74,8 @@ public final class LightGun {
 		s.primaryReload = 0;
 		// her reload (alias 0x4: 3234, 1P 30BB; the gun's 327D)
 		Combat.animate(player, "reload");
-		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.CROSSBOW_LOADING_MIDDLE.value(),
-			SoundSource.PLAYERS, 0.6f, 1.4f);
+		// her reload clips' sounds: 1P 30BB's six (hers), 3P 3234's 2E14 (45 m)
+		DvaSounds.split(player, "gun.reload", player.getEyePosition(), 45);
 	}
 
 	/**
@@ -105,6 +105,7 @@ public final class LightGun {
 		shot.launch(from, target.subtract(from), Ow.speed(LIGHT_GUN_SPEED));
 		level.addFreshEntity(shot);
 		Combat.animate(player, "fire");
-		level.playSound(null, player.getX(), player.getEyeY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 0.8f, 1.8f);
+		// the round's 'sound only' slot as it's made (entity 1000: effect F03, 228D 60 m, for everyone)
+		DvaSounds.all(level, "gun.fire", from, 60);
 	}
 }

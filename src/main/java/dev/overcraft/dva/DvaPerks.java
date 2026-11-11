@@ -27,6 +27,8 @@ public final class DvaPerks {
 	static void ejected(ServerPlayer player, HeroState s) {
 		if (s.has(Perk.DVA_BUNNY_POWER)) {
 			Combat.overhealthPool(player, BUNNY_OVERHEALTH, BUNNY_OVERHEALTH, BUNNY_HOLD, BUNNY_DECAY);
+			// 514D #437 effect 6730 (C6D8, hers)
+			DvaSounds.own(player, "perk.bunny_power");
 		}
 	}
 
@@ -91,6 +93,11 @@ public final class DvaPerks {
 	static void matrixAte(ServerPlayer player, HeroState s, double damage) {
 		if (shields(player, s) > 0) {
 			Shields.restore(player, s, damage * SHIELD_SYSTEM_SHARE);
+			if (player.level().getGameTime() >= s.dvaShieldSoundAt) {
+				// 514D #434 0.5 s -> #407 effect 6420 (C2CF, hers): once a half second at most (its 0.5 s wait)
+				s.dvaShieldSoundAt = player.level().getGameTime() + 10;
+				DvaSounds.own(player, "perk.shield_system");
+			}
 		}
 	}
 
@@ -115,7 +122,8 @@ public final class DvaPerks {
 			return;
 		}
 		s.dvaPrecision = 0;
-		DvaSounds.own(player, "perk.precision_fusion");
+		// #606 onBegin -> #644 effect 6DB5 (DA93 hers, DA92 others' 70 m); its hum is her client's loop
+		DvaSounds.split(player, "perk.precision.start", player.getEyePosition(), 70);
 	}
 
 	/** Each tick in hero mode: its 3.1 s, then its 7.5 s cooldown (from its end: #613). */
@@ -139,6 +147,8 @@ public final class DvaPerks {
 		}
 		s.dvaPrecision = -1;
 		s.dvaPrecisionEndedAt = player.level().getGameTime();
+		// #606 onEnd -> #645 effect 6DB6 (DA94 hers, DA95 others')
+		DvaSounds.split(player, "perk.precision.end", player.getEyePosition(), 70);
 		s.ability3Cooldown = Ow.ticks(PRECISION_COOLDOWN);
 	}
 

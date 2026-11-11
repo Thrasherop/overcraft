@@ -1,0 +1,1225 @@
+# D.Va's sound effects: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as
+# sigma.txt; her voice is dva.txt (dva_voice_gen.py). build_asset_pack.py sounds copies / mixes them into the local pack.
+# Read 2026-11-11 offline (Overwatch and Battle.net checked closed before every archive read and DataTool / TankLib run):
+# her 02C sounds' Wwise banks decoded (ww.py, dump_banks.py), the Init bank's game parameter defaults (1E818, stmg.py).
+# Scripts: E:/Overwatch Archive/research/dva/scripts/sounds/ (dva_gen.py writes this file from dva_table.py; Sigma's
+# pipeline copied and retargeted: fx_graph_dva.py, fx_sounds2_dva.py, clip_sounds_dva.py, fx_nodes.py, fx_timed.py,
+# contacts.py, ww.py, dump_banks.py, extract_banks.py, measure_dva.py, overview.py, stmg.py); their data: research/dva/
+# sounds/ (dva_ww.json, banks_raw.json, dva_measure.json, fx_proj.json, contacts.json, overview.txt, fx_nodes_out.txt,
+# clip_sounds.txt). The kit: tools/reference/dva-map.md. Her skin extraction is research/dva/extract and the 30 banks it
+# lacked (pellet, round and missile slots and contacts, Self-Destruct's Stadium-free sets, a perk) were extracted into
+# research/dva/sounds/ExtraSounds/D.Va (extract_banks.py; groups Fusion, Missiles, SelfDestruct, LightGun, Perks).
+# Ids: 02C sounds (5DC5 = 000000005DC5.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs
+# 01B with their node numbers. Confidence: H read in the data, M inferred, L guess. Stadium powers' sets are left out.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list); modulators: an LFO at its
+# middle, a time modulator at its start on one-shots and at its end on loops. As in sojourn.txt, ONE offset per family keeps
+# his sounds' balance with each other, bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches
+# sums): own -2 dB (loudest: dva.boosters.loop), 3p +3.5 dB (loudest: dva.missiles.hit_enemy_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek, Wwise states
+# and the voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB
+# under the loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are
+# tiled across it and beds more than 15 % longer are left out.
+# Own vs others: audience-1 copies and no-range copies are the player the effect plays on ('own': D.Va, or the shooter for
+# a hit, M as in Sigma's map); ranged copies are everyone else's ('3p'); where two ranged copies hold the same files the
+# louder is built (L which team's / near or far). A sound with no own copy is built once for everyone ('both').
+
+# ===== How each game event is put together (rules)
+# dva.fusion.fire_first: Fusion Cannons first volley, own: 5DC5's two 1.40-1.52 s bodies, its 0.13 s clicks, the 0.18
+#  s volley container and a 0.21 s spin click. Built per volley, as Sojourn's railgun: the first volley takes the
+#  once-only sets, each later one the 0.15 s trigger-rate container once (M); the 2.8-3.1 s ring-outs go to fire_end.
+# Trigger: PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379 effect 34DA held on her while she fires; #377's 34F5
+#  for the other cannon holds the same sets, H); the first volley of a burst.
+# Layers: a 5DC5 56008340 RanSeq 1.40-1.52 s x7, net -2.5; b 5DC5 601344719 RanSeq 1.40-1.52 s x7, net -2; c 5DC5
+#  1039784215 RanSeq 0.13-0.14 s x5 +146 cents, net -33.5; d 5DC5 673641030 RanSeq 0.13-0.14 s x5 +146 cents, net
+#  -34.5; e 5DC5 205461726 Sound 0.21 s, net -9; f 5DC5 446529139 RanSeq 0.18 s, net -17.
+@dva.fusion.fire_first = dva.fusion.fire_first.a@0.02:-4.5 + dva.fusion.fire_first.b@0.02:-4 + dva.fusion.fire_first.c*1.088@0.12:-35.5 + dva.fusion.fire_first.d*1.088@0.12:-36.5 + dva.fusion.fire_first.e:-11 + dva.fusion.fire_first.f@0.1:-19
+# dva.fusion.fire: Fusion Cannons volley, own: one trigger of 5DC5's 0.18 s volley container (a 0.15 s trigger-rate
+#  stream in the game). Built per volley, as Sojourn's railgun: the first volley takes the once-only sets, each later
+#  one the 0.15 s trigger-rate container once (M); the 2.8-3.1 s ring-outs go to fire_end.
+# Trigger: PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379 effect 34DA held on her while she fires; #377's 34F5
+#  for the other cannon holds the same sets, H); every later volley (6.67 a second, 13.33 with Precision Fusion).
+# Layers: a 5DC5 446529139 RanSeq 0.18 s, net -17.
+@dva.fusion.fire = dva.fusion.fire.a@0.1:-19
+# dva.fusion.fire_end: Fusion Cannons spin-down, own: 5DC5's 2.77-3.06 s ring-outs (+246 cents) and its Stop-event
+#  sets (a random 4 of 3.80-4.09 s at +330, a random 2 of 0.57-0.69 s at -150).
+# Trigger: the burst ends (PRIMARY let go, Defense Matrix or Boosters taking the cannons: #348 ends and 34DA stops;
+#  5DC5's Stop event, H).
+# Layers: a 5DC5 817256901 RanSeq 2.77-3.06 s x7 +246 cents, net -28; b 5DC5 44868063 RanSeq 2.77-3.06 s x7 +246
+#  cents, net -29; c 5DC5 Stop-event 1730347 RanSeq 3.80-4.09 s x4 +330 cents, net -9.5; d 5DC5 Stop-event 391821125
+#  RanSeq 0.57-0.69 s x2 -150 cents, net -8.5.
+@dva.fusion.fire_end = dva.fusion.fire_end.a*1.153@0.02:-30 + dva.fusion.fire_end.b*1.153@0.02:-31 + dva.fusion.fire_end.c*1.210:-11.5 + dva.fusion.fire_end.d*0.917@0.05:-10.5
+# dva.fusion.fire_first_3p: Fusion Cannons first volley heard by others: one trigger of DBAB's volley container and
+#  its click (all trigger-rate in the game).
+# Trigger: PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379 effect 34DA held on her while she fires; #377's 34F5
+#  for the other cannon holds the same sets, H); for everyone else: 34DA's DBAB (100 m, audience 2).
+# Layers: a DBAB 229107991 RanSeq 1.40-1.52 s x7, net -15; b DBAB 431536733 RanSeq 0.13-0.14 s x5 -1036 cents, net -35.
+@dva.fusion.fire_first_3p = dva.fusion.fire_first_3p.a:-11.5 + dva.fusion.fire_first_3p.b*0.550@0.001:-31.5
+# dva.fusion.fire_3p: Fusion Cannons volley heard by others: one trigger of DBAB's 1.40-1.52 s volley container (0.15
+#  s trigger rate).
+# Trigger: every later volley, at her for everyone else.
+# Layers: a DBAB 229107991 RanSeq 1.40-1.52 s x7, net -15.
+@dva.fusion.fire_3p = dva.fusion.fire_3p.a:-11.5
+# dva.fusion.fire_end_3p: Fusion Cannons spin-down heard by others: DBAB's 2.77-3.06 s ring-out and its Stop-event sets.
+# Trigger: the burst ends, at her for everyone else (DBAB's Stop event).
+# Layers: a DBAB 290871217 RanSeq 2.77-3.06 s x7 -936 cents, net -32; b DBAB Stop-event 920640594 RanSeq 3.80-4.09 s
+#  x4 +330 cents, net -20.5; c DBAB Stop-event 1047988531 RanSeq 0.57-0.69 s x2 -150 cents, net -23.5.
+@dva.fusion.fire_end_3p = dva.fusion.fire_end_3p.a*0.582:-28.5 + dva.fusion.fire_end_3p.b*1.210:-17 + dva.fusion.fire_end_3p.c*0.917@0.01:-20
+# dva.fusion.hit_enemy: Fusion Cannons hit on an enemy, own: 5D53 (random sets at +200 / +900 cents, a random 10 of 0.14-0.24 s).
+# Trigger: a volley's pellets hit a character: the pellet entity 0C18's m_contactSet 4B3, type 0, material 0001 ->
+#  5D53 (no range: the shooter's, M, Sojourn's reading); once a target a volley (ours: the volley is one hit).
+# Layers: a 5D53 869440074 RanSeq 0.14-0.24 s x10, net +2; b 5D53 923138318 RanSeq 0.28-0.30 s x8 +200 cents, net
+#  -7.5; c 5D53 21462275 RanSeq 0.13-0.31 s x7 +200 cents, net -18.5; d 5D53 607390467 RanSeq 0.13-0.31 s x7 +900
+#  cents, net -11.5.
+@dva.fusion.hit_enemy = dva.fusion.hit_enemy.a:0 + dva.fusion.hit_enemy.b*1.122:-9.5 + dva.fusion.hit_enemy.c*1.122:-20.5 + dva.fusion.hit_enemy.d*1.682@0.035:-13.5
+# dva.fusion.hit_enemy_3p: Fusion Cannons hit heard by others: 8F2F (500 m: a random 7 of 0.17-0.25 s).
+# Trigger: the same hit, at the target for everyone else: 4B3's 8F2F (500 m; 905C is 12 m, the same set: near / far,
+#  L; 8F2F built).
+# Layers: a 8F2F 1035846985 RanSeq 0.17-0.25 s x7, net +2.5.
+@dva.fusion.hit_enemy_3p = dva.fusion.hit_enemy_3p.a:+6
+# dva.fusion.hit_block: Fusion Cannons hit on the world: 849E (90 m) + 84CB (32 m). The other 20 materials have their
+#  own (contacts.json).
+# Trigger: a volley's pellets hit the world: 4B3 type 2, material 0001 -> 849E (90 m) + 84CB (32 m), built together
+#  (Sojourn's reading); once a volley (ours).
+# Layers: a 84CB 674937543 RanSeq 0.45-1.32 s x29 +55 cents, net -26; b 849E 941752556 RanSeq 0.45-1.32 s x28 -125
+#  cents, net -16; c 849E 153573411 RanSeq 0.15-0.27 s x22, net +1.5; d 84CB 214250824 RanSeq 0.15-0.27 s x22, net
+#  -7.5.
+@dva.fusion.hit_block = dva.fusion.hit_block.a*1.032@0.02:-22.5 + dva.fusion.hit_block.b*0.930@0.045:-13 + dva.fusion.hit_block.c:+5 + dva.fusion.hit_block.d:-4
+# dva.matrix.on: Defense Matrix up, own: 2AA8's 2.27 s start.
+# Trigger: SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3 held while the matrix is up -> #624 (no Stadium power
+#  02C8) -> #623 effect 5F57 held (H); 5F57's 2AA8 (no range, audience 1: hers).
+# Layers: a 2AA8 806956486 Sound 2.27 s, net -17.
+@dva.matrix.on = dva.matrix.on.a:-19
+# dva.matrix.loop: Defense Matrix hum, own: 2AA8's 4.07 s bed (looped in the game from 0.5 s).
+# Trigger: SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3 held while the matrix is up -> #624 (no Stadium power
+#  02C8) -> #623 effect 5F57 held (H); its 4.07 s bed, held.
+# Layers: a 2AA8 401449658 Sound 4.07 s, net -17.
+# LOOP LENGTH 4.069 s: play it again every LOOP LENGTH (the built file runs 4.07 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@dva.matrix.loop = dva.matrix.loop.a:-19
+# dva.matrix.off: Defense Matrix down, own: 2AA8's 1.04 s Stop sound.
+# Trigger: the matrix ends (let go, out of energy: 5F57 stops; 2AA8's Stop event, H).
+# Layers: a 2AA8 Stop-event 183232157 Sound 1.04 s, net -17.
+@dva.matrix.off = dva.matrix.off.a:-19
+# dva.matrix.on_3p: Defense Matrix up heard by others: 2AA9's 2.27 s start.
+# Trigger: SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3 held while the matrix is up -> #624 (no Stadium power
+#  02C8) -> #623 effect 5F57 held (H); 5F57's 2AA9 (70 m), everyone else.
+# Layers: a 2AA9 341422133 Sound 2.27 s, net -23.
+@dva.matrix.on_3p = dva.matrix.on_3p.a:-19.5
+# dva.matrix.loop_3p: Defense Matrix hum heard by others: 2AA9's 4.07 s bed.
+# Trigger: SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3 held while the matrix is up -> #624 (no Stadium power
+#  02C8) -> #623 effect 5F57 held (H); 2AA9's bed, everyone else.
+# Layers: a 2AA9 105003890 Sound 4.07 s, net -25.
+# LOOP LENGTH 4.069 s: play it again every LOOP LENGTH (the built file runs 4.07 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@dva.matrix.loop_3p = dva.matrix.loop_3p.a:-21.5
+# dva.matrix.off_3p: Defense Matrix down heard by others: 2AA9's Stop sound.
+# Trigger: the matrix ends, at her for everyone else (2AA9's Stop event).
+# Layers: a 2AA9 Stop-event 880824633 Sound 1.04 s, net -27.
+@dva.matrix.off_3p = dva.matrix.off_3p.a:-23.5
+# dva.matrix.chirp: MEKA chirp, own: 2BC5 (a 1.83 s set at +575 cents).
+# Trigger: the press: 02CC #175 -> #201 ActionCriteria (identifier 16CE) -> #240 effect 1637: 2BC5 (no range, audience
+#  1: hers, H); the MEKA's +575-cent chirp family (as Boosters' 1635, the wreck's 1633).
+# Layers: a 2BC5 390915103 Sound 1.83 s +575 cents, net -12.
+@dva.matrix.chirp = dva.matrix.chirp.a*1.394:-14
+# dva.matrix.chirp_3p: MEKA chirp heard by others: 2BC6 (50 m).
+# Trigger: the same press, at her for everyone else: 1637's 2BC6 (50 m).
+# Layers: a 2BC6 909286669 Sound 1.83 s +575 cents, net -23.
+@dva.matrix.chirp_3p = dva.matrix.chirp_3p.a*1.394:-19.5
+# dva.matrix.absorb: Defense Matrix eats a projectile, own: 2AC1 (0.25 s at -500 cents) + 2D25 (0.23 s at -750).
+# Trigger: each projectile it eats: 02CC #208 / #587 STU_7FE08772 effect 1506 drawn to the matrix's hardpoints 0228 /
+#  0229 (H): 2AC1 (hp 003E) and 2D25 (hp 003D), no range (hers, M).
+# Layers: a 2AC1 440416626 Sound 0.25 s -500 cents, net -6; b 2D25 776346227 Sound 0.23 s -750 cents, net -10.
+@dva.matrix.absorb = dva.matrix.absorb.a*0.749:-8 + dva.matrix.absorb.b*0.648:-12
+# dva.matrix.absorb_3p: Defense Matrix eats a projectile, heard by others: 2AC4 (20 m) + 2D28 (70 m).
+# Trigger: the same, at the eaten projectile for everyone else: 1506's 2AC4 (20 m) and 2D28 (70 m).
+# Layers: a 2AC4 68124304 Sound 0.25 s -500 cents, net -13; b 2D28 735554101 Sound 0.23 s -750 cents, net -13.
+@dva.matrix.absorb_3p = dva.matrix.absorb_3p.a*0.749:-9.5 + dva.matrix.absorb_3p.b*0.648:-9.5
+# dva.boosters.start: Boosters ignite, own: 5DC3's once sets (1.11 s, 2.71 s, 2.44 s).
+# Trigger: ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar (the flight) holds #162 effect 1492 (H); 1492's 5DC3
+#  (no range, audience 1: hers).
+# Layers: a 5DC3 560069392 Sound 1.11 s, net -9; b 5DC3 551524165 Sound 2.71 s, net -5; c 5DC3 559708567 Sound 2.44 s, net -8.
+@dva.boosters.start = dva.boosters.start.a:-11 + dva.boosters.start.b:-7 + dva.boosters.start.c:-10
+# dva.boosters.loop: Boosters roar, own: 5DC3's bed.
+# Trigger: ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar (the flight) holds #162 effect 1492 (H); 5DC3's 5.04
+#  s bed at +701 cents, held.
+# Layers: a 5DC3 318904477 Sound 5.04 s +701 cents, net -1.
+# LOOP LENGTH 3.360 s: play it again every LOOP LENGTH (the built file runs 3.36 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@dva.boosters.loop = dva.boosters.loop.a*1.499:-3
+# dva.boosters.end: Boosters cut out, own: 5DC3's Stop sounds (1.53 s, 0.64 s at -180 cents).
+# Trigger: the flight ends (#166 ends: 1492 stops; 5DC3's Stop event, H).
+# Layers: a 5DC3 Stop-event 269071764 Sound 1.53 s, net -5; b 5DC3 Stop-event 466877250 Sound 0.64 s -180 cents, net -16.
+@dva.boosters.end = dva.boosters.end.a:-7 + dva.boosters.end.b*0.901:-18
+# dva.boosters.start_3p: Boosters ignite heard by others: 2AED's 1.11 s start.
+# Trigger: ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar (the flight) holds #162 effect 1492 (H); 1492's 2AED
+#  (70 m), everyone else.
+# Layers: a 2AED 361256446 Sound 1.11 s, net -19.
+@dva.boosters.start_3p = dva.boosters.start_3p.a:-15.5
+# dva.boosters.loop_3p: Boosters roar heard by others: 2AEF's three beds (+257 / +757 / +1257 cents).
+# Trigger: ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar (the flight) holds #162 effect 1492 (H); 1492's 2AEF
+#  (60 m: the same three beds as 2AED's at nearly the same gains, 2AEF the louder: near / far, L), everyone else.
+# Layers: a 2AEF 288331519 Sound 2.53 s +257 cents, net -13; b 2AEF 463769109 Sound 2.44 s +757 cents, net -16, played
+#  x2; c 2AEF 770003413 Sound 3.40 s +1257 cents, net -22, played x2.
+# LOOP LENGTH 2.178 s: play it again every LOOP LENGTH (the built file runs 3.29 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@dva.boosters.loop_3p = dva.boosters.loop_3p.a*1.160:-9.5 + dva.boosters.loop_3p.b*1.548:-12.5 + dva.boosters.loop_3p.b*1.548@1.574:-12.5 + dva.boosters.loop_3p.c*2.067:-18.5 + dva.boosters.loop_3p.c*2.067@1.643:-18.5
+# dva.boosters.chirp: MEKA chirp: 2BBA (50 m, +575 cents).
+# Trigger: the flight starts: 047E #166 -> #193 ActionCriteria (16CD) -> #196 effect 1635: 2BBA (50 m, audience 2, no
+#  other copy: built for everyone).
+# Layers: a 2BBA 368518182 RanSeq 1.12-2.55 s x6 +575 cents, net -23; b 2BBA 768273164 RanSeq 1.93-2.16 s x2 +575 cents, net -21.
+@dva.boosters.chirp = dva.boosters.chirp.a*1.394:-19.5 + dva.boosters.chirp.b*1.394:-17.5
+# dva.boosters.hit: Boosters slam into an enemy, own: C8DD (a random 4 of 1.03-1.12 s).
+# Trigger: her Boosters hit an enemy: 047E #453 / #495 (an enemy) -> #457 / #493 message identifier 2D4E -> #465 /
+#  #489 effect 68E6: C8DD (no range: hers, M).
+# Layers: a C8DD 788816630 RanSeq 1.03-1.12 s x4, net -10.
+@dva.boosters.hit = dva.boosters.hit.a:-12
+# dva.missiles.cast: Micro Missiles cast, own: 4373 (a random 9 of 0.05-0.13 s, two beds of 2.3-2.4 s, a random 4 of
+#  0.50-0.57 s, all at +400 cents).
+# Trigger: ABILITY 2: 1128 #175 -> #363 StateWait onBegin -> #364 effect 1F99: 4373 (no range, audience 1: hers, H).
+# Layers: a 4373 286018519 RanSeq 0.05-0.13 s x9 +400 cents, net -0.5; b 4373 587993356 RanSeq 0.50-0.57 s x4 +400
+#  cents, net -12.5; c 4373 464178680 Sound 2.32 s +400 cents, net -12.5; d 4373 467560342 Sound 2.43 s +400 cents,
+#  net -12.5.
+@dva.missiles.cast = dva.missiles.cast.a*1.260:-2.5 + dva.missiles.cast.b*1.260@0.1:-14.5 + dva.missiles.cast.c*1.260:-14.5 + dva.missiles.cast.d*1.260:-14.5
+# dva.missiles.cast_3p: Micro Missiles cast heard by others: 4375's two beds.
+# Trigger: the same cast, at her for everyone else: 1F99's 4375 (60 m).
+# Layers: a 4375 452481409 Sound 2.32 s +400 cents, net -14.5; b 4375 943933591 Sound 2.43 s +400 cents, net -14.5.
+@dva.missiles.cast_3p = dva.missiles.cast_3p.a*1.260:-11 + dva.missiles.cast_3p.b*1.260:-11
+# dva.missiles.volley: Micro Missiles stream out, own: 5DC4 (a 1.59 s body, a random 4 of 0.39-0.41 s, the 1.08-1.10 s stream).
+# Trigger: the volley: 1128 #357 StateWeaponVolley holds #362 effect 4562: 5DC4 (no range, audience 1: hers); its 1.10
+#  s stream bed once (the volley runs 1.3 s, M).
+# Layers: a 5DC4 711052312 RanSeq 0.39-0.41 s x4 +12 cents, net -2.5; b 5DC4 1000648462 RanSeq 1.08-1.10 s x4, net
+#  -2.5; c 5DC4 191373171 Sound 1.59 s, net -10.
+@dva.missiles.volley = dva.missiles.volley.a*1.007:-4.5 + dva.missiles.volley.b@0.31:-4.5 + dva.missiles.volley.c:-12
+# dva.missiles.volley_end: Micro Missiles volley tail, own: 5DC4's Stop sounds (a 2.62 s tail at +300 cents, a random
+#  4 of 0.70-0.76 s).
+# Trigger: the volley ends (#357 ends: 4562 stops; 5DC4's Stop event, H).
+# Layers: a 5DC4 Stop-event 658514310 RanSeq 0.70-0.76 s x4, net -2.5; b 5DC4 Stop-event 141271716 Sound 2.62 s +300
+#  cents, net -7.5.
+@dva.missiles.volley_end = dva.missiles.volley_end.a:-4.5 + dva.missiles.volley_end.b*1.189:-9.5
+# dva.missiles.volley_3p: Micro Missiles stream heard by others: 4376.
+# Trigger: the volley, at her for everyone else: 4562's 4376 (70 m).
+# Layers: a 4376 490319314 RanSeq 0.39-0.41 s x4 +12 cents, net -10.5; b 4376 300173216 RanSeq 1.08-1.10 s x4, net -10.5.
+@dva.missiles.volley_3p = dva.missiles.volley_3p.a*1.007:-7 + dva.missiles.volley_3p.b@0.31:-7
+# dva.missiles.volley_end_3p: Micro Missiles volley tail heard by others.
+# Trigger: the volley ends, at her for everyone else (4376's Stop event).
+# Layers: a 4376 Stop-event 510577085 RanSeq 0.70-0.76 s x4, net -10.5.
+@dva.missiles.volley_end_3p = dva.missiles.volley_end_3p.a:-7
+# dva.missiles.burst: Micro Missile bursts: 4372 (a random 8 of 0.44-0.46 s).
+# Trigger: each missile bursts: entity 1E8A's slots m_6CB564CC / m_AED73588 effect 1FA5 (H slots, Sigma's reading of
+#  m_AED73588 as the burst on contact): 4372 (200 m; F3CE the same files: one built).
+# Layers: a 4372 617472340 RanSeq 0.44-0.46 s x8, net -25.
+@dva.missiles.burst = dva.missiles.burst.a:-21.5
+# dva.missiles.hit_enemy: Micro Missile hit on an enemy, own: 8BC5.
+# Trigger: a missile hits a character: 1E8A's m_contactSet 783, type 0, material 0001 -> 8BC5 (no range: the shooter's, M).
+# Layers: a 8BC5 855585076 RanSeq 0.28-0.54 s x10, net +2; b 8BC5 20109607 RanSeq 0.42-0.61 s x10 -160 cents, net -12;
+#  c 8BC5 587249142 RanSeq 0.13-0.31 s x7 +600 cents, net -9.5.
+@dva.missiles.hit_enemy = dva.missiles.hit_enemy.a@0.03:0 + dva.missiles.hit_enemy.b*0.912@0.15:-14 + dva.missiles.hit_enemy.c*1.414@0.035:-11.5
+# dva.missiles.hit_enemy_3p: Micro Missile hit heard by others: 9152 (500 m).
+# Trigger: the same hit, at the target for everyone else: 1E8A's m_D02E414F contact set 772, type 0, material 0001 ->
+#  9152 (500 m; 914E 12 m: near / far, L).
+# Layers: a 9152 339351756 RanSeq 0.42-0.61 s x10 +45 cents, net -16; b 9152 1035846985 RanSeq 0.17-0.25 s x7, net +2.5.
+@dva.missiles.hit_enemy_3p = dva.missiles.hit_enemy_3p.a*1.026@0.2:-12.5 + dva.missiles.hit_enemy_3p.b@0.03:+6
+# dva.missiles.hit_block: Micro Missile hit on the world: 858A (90 m) + 85C7 (32 m).
+# Trigger: a missile hits the world: 783 type 2, material 0001 -> 858A (90 m) + 85C7 (32 m), built together.
+# Layers: a 85C7 505818504 RanSeq 1.52-2.83 s x5 -112 cents, net -30; b 858A 585824077 RanSeq 1.52-2.83 s x5 -112
+#  cents, net -26.5; c 85C7 309612393 RanSeq 1.82-3.60 s x4 +88 cents, net -22; d 858A 436383870 RanSeq 1.82-3.60 s x4
+#  +88 cents, net -18.5.
+@dva.missiles.hit_block = dva.missiles.hit_block.a*0.937@0.05:-26.5 + dva.missiles.hit_block.b*0.937@0.0825:-23 + dva.missiles.hit_block.c*1.052:-18.5 + dva.missiles.hit_block.d*1.052@0.0325:-15
+# dva.self_destruct.arm: Self-Destruct arming: 2AEA's beeps (+1500 cents), 5DBF's 4.26 s whine at +500, 2DD5's 3.94 s countdown.
+# Trigger: the mech is sent: 0B2F #447 false -> #419 effect 1702 held on it (H): 2AEA at 0.267 s (40 m), 5DBF (75 m;
+#  D7C7 the same files: one built) and 2DD5 (75 m) from 0.
+# Layers: a 2AEA 983229481 RanSeq 0.65-1.01 s x9 +1500 cents, net -14; b 5DBF 812983907 Sound 4.26 s +500 cents, net
+#  -9; c 5DBF 707036648 Sound 2.81 s, net -10; d 2DD5 31006102 Sound 3.94 s, net -12; e 5DBF 185641559 Sound 2.39 s
+#  +500 cents, net -11.
+@dva.self_destruct.arm = dva.self_destruct.arm.a*2.378@0.2667:-10.5 + dva.self_destruct.arm.b*1.335:-5.5 + dva.self_destruct.arm.c:-6.5 + dva.self_destruct.arm.d:-8.5 + dva.self_destruct.arm.e*1.335@1.1:-7.5
+# dva.self_destruct.blast: Self-Destruct explodes: 5DC0 (a 3.21 s blast, a 1.50 s crack, a random 3 of 2.57-3.06 s at
+#  +1890 cents) + 2DD8 (a 3.21 s blast, a random 3 of 2.57-3.06 s).
+# Trigger: the blast: 0B2F #376 / #377 false -> #269 effect 1703 (H): 5DC0 (120 m; D7C9 the same files: one built) + 2DD8 (120 m).
+# Layers: a 5DC0 226796338 RanSeq 2.57-3.06 s x3 +1890 cents, net -5.5; b 2DD8 284627938 RanSeq 2.57-3.06 s x3 -110
+#  cents, net -19.5; c 5DC0 297427198 Sound 3.21 s, net -12; d 5DC0 351165648 Sound 1.50 s, net -8; e 2DD8 917192254
+#  Sound 3.21 s, net -16.
+@dva.self_destruct.blast = dva.self_destruct.blast.a*2.979@0.4:-2 + dva.self_destruct.blast.b*0.938@0.9:-16 + dva.self_destruct.blast.c:-8.5 + dva.self_destruct.blast.d:-4.5 + dva.self_destruct.blast.e:-12.5
+# dva.call_mech.drop: Call Mech, own: 5DC1 (the call, the drop and its landing from 0.8 s).
+# Trigger: Call Mech: 026A #94 spawns the mech -> #417 effect 1573 on her: 5DC1 (no range: hers, M): a 1.69 s call,
+#  the 2.81 s / 3.27 s fall and impact from 0.80 / 0.95 s (the landing at 0.9 s, H).
+# Layers: a 5DC1 467229399 Sound 1.69 s, net -13; b 5DC1 693082550 Sound 2.81 s, net -15; c 5DC1 603770693 Sound 0.31
+#  s, net -14; d 5DC1 200618291 Sound 3.27 s, net -19.
+@dva.call_mech.drop = dva.call_mech.drop.a:-15 + dva.call_mech.drop.b@0.8:-17 + dva.call_mech.drop.c@0.8:-16 + dva.call_mech.drop.d@0.946:-21
+# dva.call_mech.drop_3p: Call Mech heard by others: 9656 (70 m).
+# Trigger: the same, for everyone else: 1573's 9656 (70 m; 2AE0 the same files 10 dB down: one built).
+# Layers: a 9656 684428559 Sound 1.69 s, net -11.5; b 9656 906799345 Sound 2.81 s, net -11.5; c 9656 47775674 Sound
+#  3.27 s, net -11.5.
+@dva.call_mech.drop_3p = dva.call_mech.drop_3p.a:-8 + dva.call_mech.drop_3p.b@0.8:-8 + dva.call_mech.drop_3p.c@0.946:-8
+# dva.wreck: MEKA destroyed, own: 5DC2 (a 3.06 s blow-out, a 0.38 s crack).
+# Trigger: the mech is destroyed: 0276 #55 EntryGameMessage -> #384 -> #86 effect 1572 (H): 5DC2 (no range: hers, M).
+# Layers: a 5DC2 86667351 Sound 3.06 s, net -11; b 5DC2 1017749078 Sound 0.38 s, net -4.
+@dva.wreck = dva.wreck.a:-13 + dva.wreck.b:-6
+# dva.wreck_3p: MEKA destroyed heard by others: 2ADD (70 m).
+# Trigger: the same, for everyone else: 1572's 2ADD (70 m).
+# Layers: a 2ADD 625387111 Sound 3.06 s, net -21.
+@dva.wreck_3p = dva.wreck_3p.a:-17.5
+# dva.wreck.chirp: MEKA failing, own: 2BC3 (random sets at +575 cents).
+# Trigger: right after: 0276 #86 -> #143 effect 1633: 2BC3 (no range: hers, M; the +575-cent MEKA chirp family).
+# Layers: a 2BC3 692960433 RanSeq 2.37-5.16 s x6 +575 cents, net -2; b 2BC3 972586511 RanSeq 1.74-2.72 s x4 +575 cents, net -12.
+@dva.wreck.chirp = dva.wreck.chirp.a*1.394:-4 + dva.wreck.chirp.b*1.394:-14
+# dva.wreck.chirp_3p: MEKA failing heard by others: 2BC4 (50 m).
+# Trigger: the same, for everyone else: 1633's 2BC4 (50 m).
+# Layers: a 2BC4 625581891 RanSeq 1.74-2.72 s x4 +575 cents, net -23.
+@dva.wreck.chirp_3p = dva.wreck.chirp_3p.a*1.394:-19.5
+# dva.eject: MEKA breaks apart: 78BF (a 3.06 s body and pieces at -150 to -1220 cents from 0.56-1.4 s).
+# Trigger: the wreck blows apart: the MEKA's destroyed clip 31C3 (6 s, set 0282 alias 8, 0276 #482), its animation
+#  effect 170F: 78BF (70 m) from 0, its pieces from 0.56-1.4 s (the eject at 1.0 s, H).
+# Layers: a 78BF 880124330 RanSeq 0.76-0.80 s x2 -640 cents, net -20.5; b 78BF 228069356 RanSeq 0.58-0.81 s x2 -640
+#  cents, net -18; c 78BF 1008463482 Sound 3.06 s +60 cents, net -21; d 78BF 379210133 RanSeq 0.69 s -1220 cents, net
+#  -14; e 78BF 669158741 Sound 0.97 s -350 cents, net -25; f 78BF 341218375 Sound 0.55 s -150 cents, net -20.5; g 78BF
+#  442815029 RanSeq 1.01 s -950 cents, net -18; h 78BF 270312929 RanSeq 0.58 s -240 cents, net -19; i 78BF 724794647
+#  RanSeq 0.32 s -600 cents, net -8.
+@dva.eject = dva.eject.a*0.691:-17 + dva.eject.b*0.691@0.56:-14.5 + dva.eject.c*1.035:-17.5 + dva.eject.d*0.494@1.03:-10.5 + dva.eject.e*0.817@1.03:-21.5 + dva.eject.f*0.917@1.2:-17 + dva.eject.g*0.578@1.2:-14.5 + dva.eject.h*0.871@1.4:-15.5 + dva.eject.i*0.707@1.4:-4.5
+# dva.gun.fire: Light Gun shot: 228D (a random 4 of 0.33-0.35 s at +850 cents, a random 4 of 0.45-0.57 s at +1300).
+# Trigger: each Light Gun round as it is made: entity 1000's m_2170A015 'sound only' slot, effect F03 (H slot, Juno's
+#  / Ana's reading): 228D (60 m; 8F0B the same files: one built); her own fire has no other 02C (02B8's 3398 holds
+#  none, H).
+# Layers: a 228D 100331536 RanSeq 0.33-0.35 s x4 +850 cents, net -14; b 228D 1012089900 RanSeq 0.45-0.57 s x4 +1300
+#  cents, net -21.5.
+@dva.gun.fire = dva.gun.fire.a*1.634:-10.5 + dva.gun.fire.b*2.119:-18
+# dva.gun.hit: Light Gun hit, own: 5DC6.
+# Trigger: a round hits a character: 1000's m_A18274A3 'on a target' effect 147B: 5DC6 (no range: the shooter's, M).
+# Layers: a 5DC6 110622921 RanSeq 0.59-0.71 s x15, net +3.5; b 5DC6 279732721 RanSeq 2.77-3.06 s x7 +262 cents, net
+#  -20.5; c 5DC6 252277510 RanSeq 0.13-0.14 s x5 +162 cents, net -20; d 5DC6 371132468 RanSeq 0.20-0.21 s x2, net
+#  -11.5; e 5DC6 894158047 RanSeq 0.08 s, net -19.
+@dva.gun.hit = dva.gun.hit.a@0.04:+1.5 + dva.gun.hit.b*1.163@0.04:-22.5 + dva.gun.hit.c*1.098@0.14:-22 + dva.gun.hit.d:-13.5 + dva.gun.hit.e@0.05:-21
+# dva.gun.hit_3p: Light Gun hit heard by others: 6D11 (200 m).
+# Trigger: the same hit, at the target for everyone else: 147B's 6D11 (200 m).
+# Layers: a 6D11 622703776 RanSeq 0.59-0.71 s x15, net -9.5; b 6D11 132804579 RanSeq 2.77-3.06 s x7 +262 cents, net
+#  -38.5; c 6D11 727431291 RanSeq 0.20-0.21 s x2, net -24.5.
+@dva.gun.hit_3p = dva.gun.hit_3p.a@0.01:-6 + dva.gun.hit_3p.b*1.163@0.02:-35 + dva.gun.hit_3p.c:-21
+# dva.gun.hit_block: Light Gun hit on the world: 899F (90 m) + 89A1 (32 m).
+# Trigger: a round hits the world: 49D type 2, material 0001 -> 899F (90 m) + 89A1 (32 m).
+# Layers: a 899F 1051993922 RanSeq 0.16-0.30 s x15 +500 cents, net -14; b 89A1 831707544 RanSeq 0.16-0.30 s x15, net -18.
+@dva.gun.hit_block = dva.gun.hit_block.a*1.335:-10.5 + dva.gun.hit_block.b:-14.5
+# dva.gun.reload: Light Gun reload, own (1P): 1A13's six foley sets at 0 / 0.17 / 0.33 / 0.5 / 0.92 / 0.97 s.
+# Trigger: RELOAD as the pilot (02B8 #141 alias 4): her 1P reload clip 30BB (1.53 s) animation effect 1A13: 91A6-91AA
+#  and 91A5 at its times (H).
+# Layers: a 91A5 581791524 RanSeq 0.70-0.80 s x2, net -11.5; b 91A6 85279873 Sound 0.15 s, net -9.5; c 91A7 988519388
+#  Sound 0.17 s, net -9.5; d 91A8 497834541 Sound 0.29 s, net -9.5; e 91A9 172477357 Sound 0.34 s, net -9.5; f 91AA
+#  298280417 Sound 0.36 s, net -9.5.
+@dva.gun.reload = dva.gun.reload.a@0.9667:-13.5 + dva.gun.reload.b:-11.5 + dva.gun.reload.c@0.1667:-11.5 + dva.gun.reload.d@0.3333:-11.5 + dva.gun.reload.e@0.5:-11.5 + dva.gun.reload.f@0.9176:-11.5
+# dva.gun.reload_3p: Light Gun reload heard by others: 2E14 (1.31 s).
+# Trigger: the same reload for everyone else: her 3P reload clip 3234 animation effect 196B: 2E14 (45 m, H).
+# Layers: a 2E14 712527443 Sound 1.31 s, net -21.5.
+@dva.gun.reload_3p = dva.gun.reload_3p.a:-18
+# dva.perk.precision.start: Precision Fusion on, own: DA93.
+# Trigger: Precision Fusion (514D #615 StateAbility on RELOAD) -> #606 StateWait (its 3.1 s) onBegin -> #644 effect
+#  6DB5: DA93 (no range: hers, M).
+# Layers: a DA93 673535210 RanSeq 0.68-1.16 s x2, net -4; b DA93 417843241 Sound 0.39 s, net -10; c DA93 936777722
+#  Sound 0.83 s, net -16.
+@dva.perk.precision.start = dva.perk.precision.start.a@0.2:-6 + dva.perk.precision.start.b:-12 + dva.perk.precision.start.c:-18
+# dva.perk.precision.start_3p: Precision Fusion on heard by others: DA92.
+# Trigger: Precision Fusion (514D #615 StateAbility on RELOAD) -> #606 StateWait (its 3.1 s) onBegin -> 6DB5's DA92 (70 m).
+# Layers: a DA92 719521615 RanSeq 0.68-1.16 s x2, net -5; b DA92 532790739 Sound 0.39 s, net -10; c DA92 564413515
+#  Sound 0.83 s, net -17.
+@dva.perk.precision.start_3p = dva.perk.precision.start_3p.a@0.2:-1.5 + dva.perk.precision.start_3p.b:-6.5 + dva.perk.precision.start_3p.c:-13.5
+# dva.perk.precision.loop: Precision Fusion hum, own: DC07's bed.
+# Trigger: Precision Fusion (514D #615 StateAbility on RELOAD) -> #606 StateWait (its 3.1 s) subgraph -> #653 effect
+#  6E7C held: DC07's 3.73 s bed.
+# Layers: a DC07 201243644 Sound 3.73 s, net -14.
+# LOOP LENGTH 3.731 s: play it again every LOOP LENGTH (the built file runs 3.73 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@dva.perk.precision.loop = dva.perk.precision.loop.a:-16
+# dva.perk.precision.end: Precision Fusion off, own: DA94.
+# Trigger: Precision Fusion (514D #615 StateAbility on RELOAD) -> #606 StateWait (its 3.1 s) onEnd -> #645 effect
+#  6DB6: DA94 (no range: hers, M).
+# Layers: a DA94 291918390 Sound 0.83 s, net -9; b DA94 1073469426 Sound 0.64 s, net -7.
+@dva.perk.precision.end = dva.perk.precision.end.a:-11 + dva.perk.precision.end.b:-9
+# dva.perk.precision.end_3p: Precision Fusion off heard by others: DA95.
+# Trigger: Precision Fusion (514D #615 StateAbility on RELOAD) -> #606 StateWait (its 3.1 s) onEnd -> 6DB6's DA95 (70 m).
+# Layers: a DA95 900087998 Sound 0.83 s, net -10; b DA95 941037263 Sound 0.64 s, net -8.
+@dva.perk.precision.end_3p = dva.perk.precision.end_3p.a:-6.5 + dva.perk.precision.end_3p.b:-4.5
+# dva.perk.shield_system: Shield System restores shields, own: C2CF (1.43 s).
+# Trigger: Shield System's shields restored: 514D #430 (a heal with identifier 103B5) -> #434 StateWait 0.5 s onBegin
+#  -> #407 effect 6420 (perk 253E): C2CF (no range: hers, M).
+# Layers: a C2CF 953287578 Sound 1.43 s, net -7.
+@dva.perk.shield_system = dva.perk.shield_system.a:-9
+# dva.perk.bunny_power: Bunny Power overhealth, own: C6D8 (1.45 s).
+# Trigger: Bunny Power's 75 overhealth: 514D #424 (v469 = 75) -> #423 -> #437 effect 6730: C6D8 (no range: hers, M).
+# Layers: a C6D8 36037548 Sound 1.45 s, net -12.5.
+@dva.perk.bunny_power = dva.perk.bunny_power.a@0.15:-14.5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# dva.fusion.fire_first.a: 5DC5 play 56008340 (7 files, 1.404-1.524 s, 2ch); net -2.5 dB, +0 cents, @0.020 s. H.
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CF5.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D1D.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D21.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CE9.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CE5.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CF1.03F.ogg
+dva.fusion.fire_first.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D46.03F.ogg
+# dva.fusion.fire_first.b: 5DC5 play 601344719 (7 files, 1.404-1.524 s, 2ch); net -2 dB, +0 cents, @0.020 s. H.
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CF5.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D1D.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D21.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CE9.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CE5.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CF1.03F.ogg
+dva.fusion.fire_first.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D46.03F.ogg
+# dva.fusion.fire_first.c: 5DC5 play 1039784215 (5 files, 0.132-0.135 s, 2ch); net -33.5 dB, +146 cents, @0.120 s. H.
+dva.fusion.fire_first.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E00.03F.ogg
+dva.fusion.fire_first.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62AA.03F.ogg
+dva.fusion.fire_first.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62E7.03F.ogg
+dva.fusion.fire_first.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6294.03F.ogg
+dva.fusion.fire_first.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E83.03F.ogg
+# dva.fusion.fire_first.d: 5DC5 play 673641030 (5 files, 0.132-0.135 s, 2ch); net -34.5 dB, +146 cents, @0.120 s. H.
+dva.fusion.fire_first.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E00.03F.ogg
+dva.fusion.fire_first.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62AA.03F.ogg
+dva.fusion.fire_first.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62E7.03F.ogg
+dva.fusion.fire_first.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6294.03F.ogg
+dva.fusion.fire_first.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E83.03F.ogg
+# dva.fusion.fire_first.e: 5DC5 play 205461726 (1 file, 0.207 s, 2ch); net -9 dB, +0 cents, @0.000 s. H.
+dva.fusion.fire_first.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D15.03F.ogg
+# dva.fusion.fire_first.f: 5DC5 play 446529139 (1 file, 0.183 s, 1ch); net -17 dB, +0 cents, @0.100 s, period 0.150 s. H.
+dva.fusion.fire_first.f = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CEC.03F.ogg
+# dva.fusion.fire.a: 5DC5 play 446529139 (1 file, 0.183 s, 1ch); net -17 dB, +0 cents, @0.100 s, period 0.150 s. H.
+dva.fusion.fire.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CEC.03F.ogg
+# dva.fusion.fire_end.a: 5DC5 play 817256901 (7 files, 2.767-3.065 s, 2ch); net -28 dB, +246 cents, @0.020 s, avoid repeat 3. H.
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E69.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A641E.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6288.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62AB.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6344.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62C0.03F.ogg
+dva.fusion.fire_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5DCA.03F.ogg
+# dva.fusion.fire_end.b: 5DC5 play 44868063 (7 files, 2.767-3.065 s, 2ch); net -29 dB, +246 cents, @0.020 s, avoid repeat 3. H.
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5E69.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A641E.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6288.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62AB.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A6344.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A62C0.03F.ogg
+dva.fusion.fire_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A5DCA.03F.ogg
+# dva.fusion.fire_end.c: 5DC5 stop 1730347 (4 files, 3.799-4.095 s, 2ch); net -9.5 dB, +330 cents, @0.000 s. H.
+dva.fusion.fire_end.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D39.03F.ogg
+dva.fusion.fire_end.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D0C.03F.ogg
+dva.fusion.fire_end.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D3A.03F.ogg
+dva.fusion.fire_end.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D4E.03F.ogg
+# dva.fusion.fire_end.d: 5DC5 stop 391821125 (2 files, 0.572-0.695 s, 2ch); net -8.5 dB, -150 cents, @0.050 s. H.
+dva.fusion.fire_end.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7D0B.03F.ogg
+dva.fusion.fire_end.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/000000005DC5.02C/0000002A7CED.03F.ogg
+# dva.fusion.fire_first_3p.a: DBAB play 229107991 (7 files, 1.404-1.524 s, 2ch); net -15 dB, +0 cents, @0.000 s,
+#  period 0.150 s. H.
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CF5.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D1D.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D21.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CE9.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CE5.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CF1.03F.ogg
+dva.fusion.fire_first_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D46.03F.ogg
+# dva.fusion.fire_first_3p.b: DBAB play 431536733 (5 files, 0.132-0.135 s, 2ch); net -35 dB, -1036 cents, @0.001 s,
+#  period 0.300 s. H.
+dva.fusion.fire_first_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A5E00.03F.ogg
+dva.fusion.fire_first_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A62AA.03F.ogg
+dva.fusion.fire_first_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A62E7.03F.ogg
+dva.fusion.fire_first_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A6294.03F.ogg
+dva.fusion.fire_first_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A5E83.03F.ogg
+# dva.fusion.fire_3p.a: DBAB play 229107991 (7 files, 1.404-1.524 s, 2ch); net -15 dB, +0 cents, @0.000 s, period 0.150 s. H.
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CF5.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D1D.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D21.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CE9.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CE5.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CF1.03F.ogg
+dva.fusion.fire_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D46.03F.ogg
+# dva.fusion.fire_end_3p.a: DBAB play 290871217 (7 files, 2.767-3.065 s, 2ch); net -32 dB, -936 cents, @0.000 s,
+#  period 0.300 s, avoid repeat 3. H.
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A5E69.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A641E.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A6288.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A62AB.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A6344.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A62C0.03F.ogg
+dva.fusion.fire_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A5DCA.03F.ogg
+# dva.fusion.fire_end_3p.b: DBAB stop 920640594 (4 files, 3.799-4.095 s, 2ch); net -20.5 dB, +330 cents, @0.000 s. H.
+dva.fusion.fire_end_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D39.03F.ogg
+dva.fusion.fire_end_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D0C.03F.ogg
+dva.fusion.fire_end_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D3A.03F.ogg
+dva.fusion.fire_end_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D4E.03F.ogg
+# dva.fusion.fire_end_3p.c: DBAB stop 1047988531 (2 files, 0.572-0.695 s, 2ch); net -23.5 dB, -150 cents, @0.010 s. H.
+dva.fusion.fire_end_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7D0B.03F.ogg
+dva.fusion.fire_end_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000034DA.00D/Sounds/00000000DBAB.02C/0000002A7CED.03F.ogg
+# dva.fusion.hit_enemy.a: 5D53 play 869440074 (10 files, 0.137-0.244 s, 1ch); net +2 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFD25.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFD3D.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFE64.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFD28.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFE93.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFCD1.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFCCF.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFCEA.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFD3C.03F.ogg
+dva.fusion.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AFDEF.03F.ogg
+# dva.fusion.hit_enemy.b: 5D53 play 923138318 (8 files, 0.284-0.300 s, 2ch); net -7.5 dB, +200 cents, @0.000 s. H.
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE2D4.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE2A0.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE27D.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE2E6.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE338.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE32F.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE297.03F.ogg
+dva.fusion.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002AE275.03F.ogg
+# dva.fusion.hit_enemy.c: 5D53 play 21462275 (7 files, 0.127-0.311 s, 1ch); net -18.5 dB, +200 cents, @0.000 s, avoid repeat 3. H.
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC29.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC26.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC1B.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC32.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC27.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC53.03F.ogg
+dva.fusion.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC4B.03F.ogg
+# dva.fusion.hit_enemy.d: 5D53 play 607390467 (7 files, 0.127-0.311 s, 1ch); net -11.5 dB, +900 cents, @0.035 s, avoid
+#  repeat 3. H.
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABB7F.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC22.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC51.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC2B.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC46.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC48.03F.ogg
+dva.fusion.hit_enemy.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000005D53.02C/0000002ABC41.03F.ogg
+# dva.fusion.hit_enemy_3p.a: 8F2F play 1035846985 (7 files, 0.175-0.247 s, 1ch); net +2.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 6. H.
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE29A.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE2E5.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE2D9.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE2A8.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE341.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE33B.03F.ogg
+dva.fusion.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/000000008F2F.02C/0000002AE2CE.03F.ogg
+# dva.fusion.hit_block.a: 84CB play 674937543 (29 files, 0.449-1.324 s, 1ch); net -26 dB, +55 cents, @0.020 s, avoid repeat 10. H.
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A82.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A22.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A7F.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59E2.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A89.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59E1.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A83.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DF.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A8B.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A8D.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DC.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59D8.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A85.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DA.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A33.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A9F.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DE.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A88.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DD.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59D9.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A8A.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59DB.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A84.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A80.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A59E0.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A81.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A8C.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A34.03F.ogg
+dva.fusion.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002A5A87.03F.ogg
+# dva.fusion.hit_block.b: 849E play 941752556 (28 files, 0.449-1.324 s, 1ch); net -16 dB, -125 cents, @0.045 s, avoid
+#  repeat 10. H.
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A82.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A22.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A7F.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A89.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59E1.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A83.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DF.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A8B.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A8D.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DC.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59D8.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A85.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DA.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A33.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A9F.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DE.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A88.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DD.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59D9.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A8A.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59DB.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A84.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A80.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A59E0.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A81.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A8C.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A34.03F.ogg
+dva.fusion.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002A5A87.03F.ogg
+# dva.fusion.hit_block.c: 849E play 153573411 (22 files, 0.148-0.265 s, 1ch); net +1.5 dB, +0 cents, @0.000 s, avoid repeat 16. H.
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF723.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF71D.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF728.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF716.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF710.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF718.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF720.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF71B.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF72C.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF714.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF715.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF71C.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF727.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF6F5.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF6F4.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF721.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF6F2.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF70F.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF729.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF72B.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF722.03F.ogg
+dva.fusion.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/00000000849E.02C/0000002AF724.03F.ogg
+# dva.fusion.hit_block.d: 84CB play 214250824 (22 files, 0.148-0.265 s, 1ch); net -7.5 dB, +0 cents, @0.000 s, avoid repeat 16. H.
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF723.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF71D.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF728.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF716.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF710.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF718.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF720.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF71B.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF72C.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF714.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF715.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF71C.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF727.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF6F5.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF6F4.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF721.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF6F2.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF70F.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF729.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF72B.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF722.03F.ogg
+dva.fusion.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Fusion/Sounds/0000000084CB.02C/0000002AF724.03F.ogg
+# dva.matrix.on.a: 2AA8 play 806956486 (1 file, 2.268 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+dva.matrix.on.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA8.02C/0000002AB323.03F.ogg
+# dva.matrix.loop.a: 2AA8 play 401449658 (1 file, 4.069 s, 2ch); net -17 dB, +0 cents, @0.000 s, period 4.069 s. H.
+dva.matrix.loop.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA8.02C/0000002AB5D5.03F.ogg
+# dva.matrix.off.a: 2AA8 stop 183232157 (1 file, 1.036 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+dva.matrix.off.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA8.02C/0000002AB353.03F.ogg
+# dva.matrix.on_3p.a: 2AA9 play 341422133 (1 file, 2.268 s, 2ch); net -23 dB, +0 cents, @0.000 s. H.
+dva.matrix.on_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA9.02C/0000002AB323.03F.ogg
+# dva.matrix.loop_3p.a: 2AA9 play 105003890 (1 file, 4.069 s, 2ch); net -25 dB, +0 cents, @0.000 s, period 4.069 s. H.
+dva.matrix.loop_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA9.02C/0000002AB5D5.03F.ogg
+# dva.matrix.off_3p.a: 2AA9 stop 880824633 (1 file, 1.036 s, 2ch); net -27 dB, +0 cents, @0.000 s. H.
+dva.matrix.off_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000005F57.00D/Sounds/000000002AA9.02C/0000002AB353.03F.ogg
+# dva.matrix.chirp.a: 2BC5 play 390915103 (1 file, 1.831 s, 2ch); net -12 dB, +575 cents, @0.000 s. H.
+dva.matrix.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001637.00D/Sounds/000000002BC5.02C/0000002AB5DC.03F.ogg
+# dva.matrix.chirp_3p.a: 2BC6 play 909286669 (1 file, 1.831 s, 2ch); net -23 dB, +575 cents, @0.000 s. H.
+dva.matrix.chirp_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001637.00D/Sounds/000000002BC6.02C/0000002AB5DC.03F.ogg
+# dva.matrix.absorb.a: 2AC1 play 440416626 (1 file, 0.249 s, 2ch); net -6 dB, -500 cents, @0.000 s. H.
+dva.matrix.absorb.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001506.00D/Sounds/000000002AC1.02C/0000002AB313.03F.ogg
+# dva.matrix.absorb.b: 2D25 play 776346227 (1 file, 0.227 s, 2ch); net -10 dB, -750 cents, @0.000 s. H.
+dva.matrix.absorb.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001506.00D/Sounds/000000002D25.02C/0000002AB5C6.03F.ogg
+# dva.matrix.absorb_3p.a: 2AC4 play 68124304 (1 file, 0.249 s, 2ch); net -13 dB, -500 cents, @0.000 s. H.
+dva.matrix.absorb_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001506.00D/Sounds/000000002AC4.02C/0000002AB313.03F.ogg
+# dva.matrix.absorb_3p.b: 2D28 play 735554101 (1 file, 0.227 s, 2ch); net -13 dB, -750 cents, @0.000 s. H.
+dva.matrix.absorb_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001506.00D/Sounds/000000002D28.02C/0000002AB5C6.03F.ogg
+# dva.boosters.start.a: 5DC3 play 560069392 (1 file, 1.111 s, 1ch); net -9 dB, +0 cents, @0.000 s. H.
+dva.boosters.start.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB385.03F.ogg
+# dva.boosters.start.b: 5DC3 play 551524165 (1 file, 2.711 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+dva.boosters.start.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB342.03F.ogg
+# dva.boosters.start.c: 5DC3 play 559708567 (1 file, 2.436 s, 1ch); net -8 dB, +0 cents, @0.000 s. H.
+dva.boosters.start.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB299.03F.ogg
+# dva.boosters.loop.a: 5DC3 play 318904477 (1 file, 5.037 s, 2ch); net -1 dB, +701 cents, @0.000 s, period 3.360 s. H.
+dva.boosters.loop.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB33B.03F.ogg
+# dva.boosters.end.a: 5DC3 stop 269071764 (1 file, 1.529 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+dva.boosters.end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB2AE.03F.ogg
+# dva.boosters.end.b: 5DC3 stop 466877250 (1 file, 0.644 s, 2ch); net -16 dB, -180 cents, @0.000 s. H.
+dva.boosters.end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000005DC3.02C/0000002AB386.03F.ogg
+# dva.boosters.start_3p.a: 2AED play 361256446 (1 file, 1.111 s, 1ch); net -19 dB, +0 cents, @0.000 s. H.
+dva.boosters.start_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000002AED.02C/0000002AB385.03F.ogg
+# dva.boosters.loop_3p.a: 2AEF play 288331519 (1 file, 2.527 s, 2ch); net -13 dB, +257 cents, @0.000 s, period 2.178 s. H.
+dva.boosters.loop_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000002AEF.02C/0000002AB377.03F.ogg
+# dva.boosters.loop_3p.b: 2AEF play 463769109 (1 file, 2.437 s, 2ch); net -16 dB, +757 cents, @0.000 s, period 1.574 s. H.
+dva.boosters.loop_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000002AEF.02C/0000002AB35D.03F.ogg
+# dva.boosters.loop_3p.c: 2AEF play 770003413 (1 file, 3.395 s, 2ch); net -22 dB, +1257 cents, @0.000 s, period 1.643 s. H.
+dva.boosters.loop_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001492.00D/Sounds/000000002AEF.02C/0000002AB325.03F.ogg
+# dva.boosters.chirp.a: 2BBA play 368518182 (6 files, 1.124-2.551 s, 2ch); net -23 dB, +575 cents, @0.000 s. H.
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB36D.03F.ogg
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB5CA.03F.ogg
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB32B.03F.ogg
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB5D8.03F.ogg
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB2A0.03F.ogg
+dva.boosters.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB32A.03F.ogg
+# dva.boosters.chirp.b: 2BBA play 768273164 (2 files, 1.932-2.159 s, 2ch); net -21 dB, +575 cents, @0.000 s. H.
+dva.boosters.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB35E.03F.ogg
+dva.boosters.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001635.00D/Sounds/000000002BBA.02C/0000002AB298.03F.ogg
+# dva.boosters.hit.a: C8DD play 788816630 (4 files, 1.028-1.119 s, 2ch); net -10 dB, +0 cents, @0.000 s, avoid repeat 2. H.
+dva.boosters.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000068E6.00D/Sounds/00000000C8DD.02C/0000002BEB09.03F.ogg
+dva.boosters.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000068E6.00D/Sounds/00000000C8DD.02C/0000002BE85B.03F.ogg
+dva.boosters.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000068E6.00D/Sounds/00000000C8DD.02C/0000002BEB02.03F.ogg
+dva.boosters.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/0000000068E6.00D/Sounds/00000000C8DD.02C/0000002BE87F.03F.ogg
+# dva.missiles.cast.a: 4373 play 286018519 (9 files, 0.047-0.127 s, 1ch); net -0.5 dB, +400 cents, @0.000 s. H.
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB2C2.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB337.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB2CE.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB33C.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB371.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB31A.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB34E.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB2BD.03F.ogg
+dva.missiles.cast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB487.03F.ogg
+# dva.missiles.cast.b: 4373 play 587993356 (4 files, 0.500-0.575 s, 1ch); net -12.5 dB, +400 cents, @0.100 s. H.
+dva.missiles.cast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB382.03F.ogg
+dva.missiles.cast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB387.03F.ogg
+dva.missiles.cast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB321.03F.ogg
+dva.missiles.cast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB33F.03F.ogg
+# dva.missiles.cast.c: 4373 play 464178680 (1 file, 2.316 s, 2ch); net -12.5 dB, +400 cents, @0.000 s. H.
+dva.missiles.cast.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB32E.03F.ogg
+# dva.missiles.cast.d: 4373 play 467560342 (1 file, 2.428 s, 2ch); net -12.5 dB, +400 cents, @0.000 s. H.
+dva.missiles.cast.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004373.02C/0000002AB34C.03F.ogg
+# dva.missiles.cast_3p.a: 4375 play 452481409 (1 file, 2.316 s, 2ch); net -14.5 dB, +400 cents, @0.000 s. H.
+dva.missiles.cast_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004375.02C/0000002AB32E.03F.ogg
+# dva.missiles.cast_3p.b: 4375 play 943933591 (1 file, 2.428 s, 2ch); net -14.5 dB, +400 cents, @0.000 s. H.
+dva.missiles.cast_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001F99.00D/Sounds/000000004375.02C/0000002AB34C.03F.ogg
+# dva.missiles.volley.a: 5DC4 play 711052312 (4 files, 0.385-0.409 s, 2ch); net -2.5 dB, +12 cents, @0.000 s, avoid repeat 2. H.
+dva.missiles.volley.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6C6.03F.ogg
+dva.missiles.volley.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA675.03F.ogg
+dva.missiles.volley.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6C9.03F.ogg
+dva.missiles.volley.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6C2.03F.ogg
+# dva.missiles.volley.b: 5DC4 play 1000648462 (4 files, 1.080-1.104 s, 2ch); net -2.5 dB, +0 cents, @0.310 s, period
+#  1.104 s, avoid repeat 2. H.
+dva.missiles.volley.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6CF.03F.ogg
+dva.missiles.volley.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6C5.03F.ogg
+dva.missiles.volley.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6DB.03F.ogg
+dva.missiles.volley.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6C0.03F.ogg
+# dva.missiles.volley.c: 5DC4 play 191373171 (1 file, 1.593 s, 1ch); net -10 dB, +0 cents, @0.000 s. H.
+dva.missiles.volley.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA69F.03F.ogg
+# dva.missiles.volley_end.a: 5DC4 stop 658514310 (4 files, 0.703-0.759 s, 2ch); net -2.5 dB, +0 cents, @0.000 s. H.
+dva.missiles.volley_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6CE.03F.ogg
+dva.missiles.volley_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA673.03F.ogg
+dva.missiles.volley_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA674.03F.ogg
+dva.missiles.volley_end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6D1.03F.ogg
+# dva.missiles.volley_end.b: 5DC4 stop 141271716 (1 file, 2.615 s, 2ch); net -7.5 dB, +300 cents, @0.000 s. H.
+dva.missiles.volley_end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000005DC4.02C/0000002AA6BF.03F.ogg
+# dva.missiles.volley_3p.a: 4376 play 490319314 (4 files, 0.385-0.409 s, 2ch); net -10.5 dB, +12 cents, @0.000 s,
+#  avoid repeat 2. H.
+dva.missiles.volley_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6C6.03F.ogg
+dva.missiles.volley_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA675.03F.ogg
+dva.missiles.volley_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6C9.03F.ogg
+dva.missiles.volley_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6C2.03F.ogg
+# dva.missiles.volley_3p.b: 4376 play 300173216 (4 files, 1.080-1.104 s, 2ch); net -10.5 dB, +0 cents, @0.310 s,
+#  period 1.104 s, avoid repeat 2. H.
+dva.missiles.volley_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6CF.03F.ogg
+dva.missiles.volley_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6C5.03F.ogg
+dva.missiles.volley_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6DB.03F.ogg
+dva.missiles.volley_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6C0.03F.ogg
+# dva.missiles.volley_end_3p.a: 4376 stop 510577085 (4 files, 0.703-0.759 s, 2ch); net -10.5 dB, +0 cents, @0.000 s. H.
+dva.missiles.volley_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6CE.03F.ogg
+dva.missiles.volley_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA673.03F.ogg
+dva.missiles.volley_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA674.03F.ogg
+dva.missiles.volley_end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000004562.00D/Sounds/000000004376.02C/0000002AA6D1.03F.ogg
+# dva.missiles.burst.a: 4372 play 617472340 (8 files, 0.441-0.457 s, 2ch); net -25 dB, +0 cents, @0.000 s, avoid repeat 3. H.
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB2C3.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB326.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB365.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB346.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB2C0.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB2BC.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB2F9.03F.ogg
+dva.missiles.burst.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000004372.02C/0000002AB37A.03F.ogg
+# dva.missiles.hit_enemy.a: 8BC5 play 855585076 (10 files, 0.279-0.543 s, 1ch); net +2 dB, +0 cents, @0.030 s, avoid repeat 6. H.
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFE9D.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFE44.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFCEB.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFE6A.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFE8B.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFEA9.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFCE7.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFCE5.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFE56.03F.ogg
+dva.missiles.hit_enemy.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002AFD2E.03F.ogg
+# dva.missiles.hit_enemy.b: 8BC5 play 20109607 (10 files, 0.420-0.612 s, 2ch); net -12 dB, -160 cents, @0.150 s. H.
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84FB.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A8525.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A8507.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A8522.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84BC.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84F2.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84F4.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84F0.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A8506.03F.ogg
+dva.missiles.hit_enemy.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002A84EF.03F.ogg
+# dva.missiles.hit_enemy.c: 8BC5 play 587249142 (7 files, 0.127-0.311 s, 1ch); net -9.5 dB, +600 cents, @0.035 s,
+#  avoid repeat 3. H.
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABB7F.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC22.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC51.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC2B.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC46.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC48.03F.ogg
+dva.missiles.hit_enemy.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000008BC5.02C/0000002ABC41.03F.ogg
+# dva.missiles.hit_enemy_3p.a: 9152 play 339351756 (10 files, 0.420-0.612 s, 2ch); net -16 dB, +45 cents, @0.200 s. H.
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84FB.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A8525.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A8507.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A8522.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84BC.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84F2.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84F4.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84F0.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A8506.03F.ogg
+dva.missiles.hit_enemy_3p.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002A84EF.03F.ogg
+# dva.missiles.hit_enemy_3p.b: 9152 play 1035846985 (7 files, 0.175-0.247 s, 1ch); net +2.5 dB, +0 cents, @0.030 s,
+#  avoid repeat 6. H.
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE29A.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE2E5.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE2D9.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE2A8.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE341.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE33B.03F.ogg
+dva.missiles.hit_enemy_3p.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/000000009152.02C/0000002AE2CE.03F.ogg
+# dva.missiles.hit_block.a: 85C7 play 505818504 (5 files, 1.524-2.831 s, 2ch); net -30 dB, -112 cents, @0.050 s, avoid
+#  repeat 2. H.
+dva.missiles.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002A8C92.03F.ogg
+dva.missiles.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002A91FA.03F.ogg
+dva.missiles.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002A920E.03F.ogg
+dva.missiles.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002A91E4.03F.ogg
+dva.missiles.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002A91F8.03F.ogg
+# dva.missiles.hit_block.b: 858A play 585824077 (5 files, 1.524-2.831 s, 2ch); net -26.5 dB, -112 cents, @0.083 s,
+#  avoid repeat 2. H.
+dva.missiles.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002A8C92.03F.ogg
+dva.missiles.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002A91FA.03F.ogg
+dva.missiles.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002A920E.03F.ogg
+dva.missiles.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002A91E4.03F.ogg
+dva.missiles.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002A91F8.03F.ogg
+# dva.missiles.hit_block.c: 85C7 play 309612393 (4 files, 1.820-3.601 s, 2ch); net -22 dB, +88 cents, @0.000 s, avoid repeat 2. H.
+dva.missiles.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002ABFB0.03F.ogg
+dva.missiles.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002AC4D6.03F.ogg
+dva.missiles.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002AC4B5.03F.ogg
+dva.missiles.hit_block.c = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/0000000085C7.02C/0000002ABF97.03F.ogg
+# dva.missiles.hit_block.d: 858A play 436383870 (4 files, 1.820-3.601 s, 2ch); net -18.5 dB, +88 cents, @0.033 s,
+#  avoid repeat 2. H.
+dva.missiles.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002ABFB0.03F.ogg
+dva.missiles.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002AC4D6.03F.ogg
+dva.missiles.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002AC4B5.03F.ogg
+dva.missiles.hit_block.d = ../../research/dva/sounds/ExtraSounds/D.Va/Missiles/Sounds/00000000858A.02C/0000002ABF97.03F.ogg
+# dva.self_destruct.arm.a: 2AEA play 983229481 (9 files, 0.646-1.009 s, 2ch); net -14 dB, +1500 cents, @0.267 s. H.
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002A6CCB.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002AB332.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002A6CF4.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002A6CCD.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002A6CC7.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002A6CFD.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002AB5D0.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002AB344.03F.ogg
+dva.self_destruct.arm.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002AEA.02C/0000002AB315.03F.ogg
+# dva.self_destruct.arm.b: 5DBF play 812983907 (1 file, 4.260 s, 2ch); net -9 dB, +500 cents, @0.000 s. H.
+dva.self_destruct.arm.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000005DBF.02C/0000002AB5CE.03F.ogg
+# dva.self_destruct.arm.c: 5DBF play 707036648 (1 file, 2.807 s, 1ch); net -10 dB, +0 cents, @0.000 s. H.
+dva.self_destruct.arm.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000005DBF.02C/0000002AB369.03F.ogg
+# dva.self_destruct.arm.d: 2DD5 play 31006102 (1 file, 3.940 s, 2ch); net -12 dB, +0 cents, @0.000 s. H.
+dva.self_destruct.arm.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000002DD5.02C/0000002AB32C.03F.ogg
+# dva.self_destruct.arm.e: 5DBF play 185641559 (1 file, 2.391 s, 2ch); net -11 dB, +500 cents, @1.100 s. H.
+dva.self_destruct.arm.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001702.00D/Sounds/000000005DBF.02C/0000002AB38B.03F.ogg
+# dva.self_destruct.blast.a: 5DC0 play 226796338 (3 files, 2.572-3.063 s, 2ch); net -5.5 dB, +1890 cents, @0.400 s. H.
+dva.self_destruct.blast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000005DC0.02C/0000002A6A4E.03F.ogg
+dva.self_destruct.blast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000005DC0.02C/0000002A69EB.03F.ogg
+dva.self_destruct.blast.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000005DC0.02C/0000002A6A30.03F.ogg
+# dva.self_destruct.blast.b: 2DD8 play 284627938 (3 files, 2.572-3.063 s, 2ch); net -19.5 dB, -110 cents, @0.900 s. H.
+dva.self_destruct.blast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000002DD8.02C/0000002A6A4E.03F.ogg
+dva.self_destruct.blast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000002DD8.02C/0000002A69EB.03F.ogg
+dva.self_destruct.blast.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000002DD8.02C/0000002A6A30.03F.ogg
+# dva.self_destruct.blast.c: 5DC0 play 297427198 (1 file, 3.215 s, 2ch); net -12 dB, +0 cents, @0.000 s. H.
+dva.self_destruct.blast.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000005DC0.02C/0000002AB361.03F.ogg
+# dva.self_destruct.blast.d: 5DC0 play 351165648 (1 file, 1.505 s, 1ch); net -8 dB, +0 cents, @0.000 s. H.
+dva.self_destruct.blast.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000005DC0.02C/0000002AB36A.03F.ogg
+# dva.self_destruct.blast.e: 2DD8 play 917192254 (1 file, 3.215 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+dva.self_destruct.blast.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001703.00D/Sounds/000000002DD8.02C/0000002AB361.03F.ogg
+# dva.call_mech.drop.a: 5DC1 play 467229399 (1 file, 1.689 s, 2ch); net -13 dB, +0 cents, @0.000 s. H.
+dva.call_mech.drop.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000005DC1.02C/0000002AB364.03F.ogg
+# dva.call_mech.drop.b: 5DC1 play 693082550 (1 file, 2.815 s, 2ch); net -15 dB, +0 cents, @0.800 s. H.
+dva.call_mech.drop.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000005DC1.02C/0000002AB389.03F.ogg
+# dva.call_mech.drop.c: 5DC1 play 603770693 (1 file, 0.308 s, 1ch); net -14 dB, +0 cents, @0.800 s. H.
+dva.call_mech.drop.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000005DC1.02C/0000002AB366.03F.ogg
+# dva.call_mech.drop.d: 5DC1 play 200618291 (1 file, 3.265 s, 2ch); net -19 dB, +0 cents, @0.946 s. H.
+dva.call_mech.drop.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000005DC1.02C/0000002AB35A.03F.ogg
+# dva.call_mech.drop_3p.a: 9656 play 684428559 (1 file, 1.689 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+dva.call_mech.drop_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000009656.02C/0000002AB364.03F.ogg
+# dva.call_mech.drop_3p.b: 9656 play 906799345 (1 file, 2.815 s, 2ch); net -11.5 dB, +0 cents, @0.800 s. H.
+dva.call_mech.drop_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000009656.02C/0000002AB389.03F.ogg
+# dva.call_mech.drop_3p.c: 9656 play 47775674 (1 file, 3.265 s, 2ch); net -11.5 dB, +0 cents, @0.946 s. H.
+dva.call_mech.drop_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001573.00D/Sounds/000000009656.02C/0000002AB35A.03F.ogg
+# dva.wreck.a: 5DC2 play 86667351 (1 file, 3.065 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+dva.wreck.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001572.00D/Sounds/000000005DC2.02C/0000002A5B27.03F.ogg
+# dva.wreck.b: 5DC2 play 1017749078 (1 file, 0.375 s, 1ch); net -4 dB, +0 cents, @0.000 s. H.
+dva.wreck.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001572.00D/Sounds/000000005DC2.02C/0000002AB320.03F.ogg
+# dva.wreck_3p.a: 2ADD play 625387111 (1 file, 3.065 s, 2ch); net -21 dB, +0 cents, @0.000 s. H.
+dva.wreck_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001572.00D/Sounds/000000002ADD.02C/0000002A5B27.03F.ogg
+# dva.wreck.chirp.a: 2BC3 play 692960433 (6 files, 2.372-5.164 s, 2ch); net -2 dB, +575 cents, @0.000 s. H.
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB5D4.03F.ogg
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB2AA.03F.ogg
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB316.03F.ogg
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB349.03F.ogg
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB31F.03F.ogg
+dva.wreck.chirp.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB338.03F.ogg
+# dva.wreck.chirp.b: 2BC3 play 972586511 (4 files, 1.740-2.721 s, 2ch); net -12 dB, +575 cents, @0.000 s. H.
+dva.wreck.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB35F.03F.ogg
+dva.wreck.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB296.03F.ogg
+dva.wreck.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB2CB.03F.ogg
+dva.wreck.chirp.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC3.02C/0000002AB5D7.03F.ogg
+# dva.wreck.chirp_3p.a: 2BC4 play 625581891 (4 files, 1.740-2.721 s, 2ch); net -23 dB, +575 cents, @0.000 s. H.
+dva.wreck.chirp_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC4.02C/0000002AB35F.03F.ogg
+dva.wreck.chirp_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC4.02C/0000002AB296.03F.ogg
+dva.wreck.chirp_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC4.02C/0000002AB2CB.03F.ogg
+dva.wreck.chirp_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Effects/000000001633.00D/Sounds/000000002BC4.02C/0000002AB5D7.03F.ogg
+# dva.eject.a: 78BF play 880124330 (2 files, 0.764-0.799 s, 1ch); net -20.5 dB, -640 cents, @0.000 s, avoid repeat 3. H.
+dva.eject.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B0E.03F.ogg
+dva.eject.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5AF2.03F.ogg
+# dva.eject.b: 78BF play 228069356 (2 files, 0.583-0.809 s, 1ch); net -18 dB, -640 cents, @0.560 s, avoid repeat 3. H.
+dva.eject.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B28.03F.ogg
+dva.eject.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5AF1.03F.ogg
+# dva.eject.c: 78BF play 1008463482 (1 file, 3.065 s, 2ch); net -21 dB, +60 cents, @0.000 s. H.
+dva.eject.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B27.03F.ogg
+# dva.eject.d: 78BF play 379210133 (1 file, 0.689 s, 1ch); net -14 dB, -1220 cents, @1.030 s, avoid repeat 3. H.
+dva.eject.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B2A.03F.ogg
+# dva.eject.e: 78BF play 669158741 (1 file, 0.975 s, 1ch); net -25 dB, -350 cents, @1.030 s. H.
+dva.eject.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5AF0.03F.ogg
+# dva.eject.f: 78BF play 341218375 (1 file, 0.545 s, 2ch); net -20.5 dB, -150 cents, @1.200 s. H.
+dva.eject.f = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5AF4.03F.ogg
+# dva.eject.g: 78BF play 442815029 (1 file, 1.007 s, 1ch); net -18 dB, -950 cents, @1.200 s, avoid repeat 3. H.
+dva.eject.g = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B0C.03F.ogg
+# dva.eject.h: 78BF play 270312929 (1 file, 0.583 s, 1ch); net -19 dB, -240 cents, @1.400 s, avoid repeat 3. H.
+dva.eject.h = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5AF1.03F.ogg
+# dva.eject.i: 78BF play 724794647 (1 file, 0.319 s, 2ch); net -8 dB, -600 cents, @1.400 s. H.
+dva.eject.i = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000FBB0.00C/AnimationEffects/0000000031C3/Sounds/0000000078BF.02C/0000002A5B25.03F.ogg
+# dva.gun.fire.a: 228D play 100331536 (4 files, 0.332-0.351 s, 2ch); net -14 dB, +850 cents, @0.000 s. H.
+dva.gun.fire.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A6874.03F.ogg
+dva.gun.fire.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A687A.03F.ogg
+dva.gun.fire.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A68BC.03F.ogg
+dva.gun.fire.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A6867.03F.ogg
+# dva.gun.fire.b: 228D play 1012089900 (4 files, 0.447-0.567 s, 1ch); net -21.5 dB, +1300 cents, @0.000 s. H.
+dva.gun.fire.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A686B.03F.ogg
+dva.gun.fire.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A68C0.03F.ogg
+dva.gun.fire.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A6865.03F.ogg
+dva.gun.fire.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000228D.02C/0000002A6866.03F.ogg
+# dva.gun.hit.a: 5DC6 play 110622921 (15 files, 0.593-0.708 s, 2ch); net +3.5 dB, +0 cents, @0.040 s. H.
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7CE0.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7CE3.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7CF9.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D56.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D1F.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D3D.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D3C.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D52.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D4F.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D51.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D43.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D59.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7CE6.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D1B.03F.ogg
+dva.gun.hit.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D50.03F.ogg
+# dva.gun.hit.b: 5DC6 play 279732721 (7 files, 2.767-3.065 s, 2ch); net -20.5 dB, +262 cents, @0.040 s, avoid repeat 3. H.
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A5E69.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A641E.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A6288.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A62AB.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A6344.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A62C0.03F.ogg
+dva.gun.hit.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A5DCA.03F.ogg
+# dva.gun.hit.c: 5DC6 play 252277510 (5 files, 0.132-0.135 s, 2ch); net -20 dB, +162 cents, @0.140 s. H.
+dva.gun.hit.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A5E00.03F.ogg
+dva.gun.hit.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A62AA.03F.ogg
+dva.gun.hit.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A62E7.03F.ogg
+dva.gun.hit.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A6294.03F.ogg
+dva.gun.hit.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A5E83.03F.ogg
+# dva.gun.hit.d: 5DC6 play 371132468 (2 files, 0.201-0.209 s, 1ch); net -11.5 dB, +0 cents, @0.000 s. H.
+dva.gun.hit.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A69D4.03F.ogg
+dva.gun.hit.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A6A18.03F.ogg
+# dva.gun.hit.e: 5DC6 play 894158047 (1 file, 0.079 s, 1ch); net -19 dB, +0 cents, @0.050 s. H.
+dva.gun.hit.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000005DC6.02C/0000002A7D58.03F.ogg
+# dva.gun.hit_3p.a: 6D11 play 622703776 (15 files, 0.593-0.708 s, 2ch); net -9.5 dB, +0 cents, @0.010 s. H.
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7CE0.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7CE3.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7CF9.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D56.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D1F.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D3D.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D3C.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D52.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D4F.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D51.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D43.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D59.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7CE6.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D1B.03F.ogg
+dva.gun.hit_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A7D50.03F.ogg
+# dva.gun.hit_3p.b: 6D11 play 132804579 (7 files, 2.767-3.065 s, 2ch); net -38.5 dB, +262 cents, @0.020 s, avoid repeat 3. H.
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A5E69.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A641E.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A6288.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A62AB.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A6344.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A62C0.03F.ogg
+dva.gun.hit_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A5DCA.03F.ogg
+# dva.gun.hit_3p.c: 6D11 play 727431291 (2 files, 0.201-0.209 s, 1ch); net -24.5 dB, +0 cents, @0.000 s. H.
+dva.gun.hit_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A69D4.03F.ogg
+dva.gun.hit_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036F4.00D/Sounds/000000006D11.02C/0000002A6A18.03F.ogg
+# dva.gun.hit_block.a: 899F play 1051993922 (15 files, 0.159-0.297 s, 1ch); net -14 dB, +500 cents, @0.000 s, avoid repeat 10. H.
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4D1.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABF96.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABF83.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABFB4.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4DD.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4CD.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABF88.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4CA.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4C5.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4B2.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABF86.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABFB7.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABFA0.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002AC4A9.03F.ogg
+dva.gun.hit_block.a = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/00000000899F.02C/0000002ABFBE.03F.ogg
+# dva.gun.hit_block.b: 89A1 play 831707544 (15 files, 0.159-0.297 s, 1ch); net -18 dB, +0 cents, @0.000 s, avoid repeat 10. H.
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4D1.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABF96.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABF83.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABFB4.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4DD.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4CD.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABF88.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4CA.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4C5.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4B2.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABF86.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABFB7.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABFA0.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002AC4A9.03F.ogg
+dva.gun.hit_block.b = ../../research/dva/sounds/ExtraSounds/D.Va/LightGun/Sounds/0000000089A1.02C/0000002ABFBE.03F.ogg
+# dva.gun.reload.a: 91A5 play 581791524 (2 files, 0.705-0.801 s, 1ch); net -11.5 dB, +0 cents, @0.967 s. H.
+dva.gun.reload.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A5.02C/0000002A9785.03F.ogg
+dva.gun.reload.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A5.02C/0000002A9781.03F.ogg
+# dva.gun.reload.b: 91A6 play 85279873 (1 file, 0.152 s, 2ch); net -9.5 dB, +0 cents, @0.000 s. H.
+dva.gun.reload.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A6.02C/0000002A978B.03F.ogg
+# dva.gun.reload.c: 91A7 play 988519388 (1 file, 0.169 s, 2ch); net -9.5 dB, +0 cents, @0.167 s. H.
+dva.gun.reload.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A7.02C/0000002A977F.03F.ogg
+# dva.gun.reload.d: 91A8 play 497834541 (1 file, 0.288 s, 2ch); net -9.5 dB, +0 cents, @0.333 s. H.
+dva.gun.reload.d = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A8.02C/0000002A978A.03F.ogg
+# dva.gun.reload.e: 91A9 play 172477357 (1 file, 0.344 s, 2ch); net -9.5 dB, +0 cents, @0.500 s. H.
+dva.gun.reload.e = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091A9.02C/0000002A9795.03F.ogg
+# dva.gun.reload.f: 91AA play 298280417 (1 file, 0.361 s, 2ch); net -9.5 dB, +0 cents, @0.918 s. H.
+dva.gun.reload.f = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F32B.00C/AnimationEffects/0000000030BB/Sounds/0000000091AA.02C/0000002A9837.03F.ogg
+# dva.gun.reload_3p.a: 2E14 play 712527443 (1 file, 1.308 s, 2ch); net -21.5 dB, +0 cents, @0.000 s. H.
+dva.gun.reload_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Models/00000000F2FF.00C/AnimationEffects/000000003234/Sounds/000000002E14.02C/0000002A9782.03F.ogg
+# dva.perk.precision.start.a: DA93 play 673535210 (2 files, 0.679-1.161 s, 2ch); net -4 dB, +0 cents, @0.200 s. H.
+dva.perk.precision.start.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA93.02C/0000002CE168.03F.ogg
+dva.perk.precision.start.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA93.02C/0000002CE164.03F.ogg
+# dva.perk.precision.start.b: DA93 play 417843241 (1 file, 0.388 s, 2ch); net -10 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.start.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA93.02C/0000002CE165.03F.ogg
+# dva.perk.precision.start.c: DA93 play 936777722 (1 file, 0.833 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.start.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA93.02C/000000319A97.03F.ogg
+# dva.perk.precision.start_3p.a: DA92 play 719521615 (2 files, 0.679-1.161 s, 2ch); net -5 dB, +0 cents, @0.200 s. H.
+dva.perk.precision.start_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA92.02C/0000002CE168.03F.ogg
+dva.perk.precision.start_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA92.02C/0000002CE164.03F.ogg
+# dva.perk.precision.start_3p.b: DA92 play 532790739 (1 file, 0.388 s, 2ch); net -10 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.start_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA92.02C/0000002CE165.03F.ogg
+# dva.perk.precision.start_3p.c: DA92 play 564413515 (1 file, 0.833 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.start_3p.c = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB5.00D/Sounds/00000000DA92.02C/000000319A97.03F.ogg
+# dva.perk.precision.loop.a: DC07 play 201243644 (1 file, 3.731 s, 2ch); net -14 dB, +0 cents, @0.000 s, period 3.731 s. H.
+dva.perk.precision.loop.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006E7C.00D/Sounds/00000000DC07.02C/000000319AB8.03F.ogg
+# dva.perk.precision.end.a: DA94 play 291918390 (1 file, 0.833 s, 2ch); net -9 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.end.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB6.00D/Sounds/00000000DA94.02C/000000319AA6.03F.ogg
+# dva.perk.precision.end.b: DA94 play 1073469426 (1 file, 0.644 s, 2ch); net -7 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.end.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB6.00D/Sounds/00000000DA94.02C/0000002CE166.03F.ogg
+# dva.perk.precision.end_3p.a: DA95 play 900087998 (1 file, 0.833 s, 2ch); net -10 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.end_3p.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB6.00D/Sounds/00000000DA95.02C/000000319AA6.03F.ogg
+# dva.perk.precision.end_3p.b: DA95 play 941037263 (1 file, 0.644 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+dva.perk.precision.end_3p.b = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006DB6.00D/Sounds/00000000DA95.02C/0000002CE166.03F.ogg
+# dva.perk.shield_system.a: C2CF play 953287578 (1 file, 1.428 s, 1ch); net -7 dB, +0 cents, @0.000 s. H.
+dva.perk.shield_system.a = ../../research/dva/sounds/ExtraSounds/D.Va/Perks/Sounds/00000000C2CF.02C/0000002AB2F8.03F.ogg
+# dva.perk.bunny_power.a: C6D8 play 36037548 (1 file, 1.447 s, 2ch); net -12.5 dB, +0 cents, @0.150 s. H.
+dva.perk.bunny_power.a = ../../research/dva/extract/Heroes/D.Va/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006730.00D/Sounds/00000000C6D8.02C/0000002AAE88.03F.ogg
+
+# ===== Subtitles (the jar's lang names none of her events)
+$dva.fusion.fire_first = Fusion Cannons fire
+$dva.fusion.fire = Fusion Cannons fire
+$dva.fusion.fire_end = Fusion Cannons spin down
+$dva.fusion.fire_first_3p = Fusion Cannons fire
+$dva.fusion.fire_3p = Fusion Cannons fire
+$dva.fusion.fire_end_3p = Fusion Cannons spin down
+$dva.fusion.hit_enemy = Fusion Cannons hit
+$dva.fusion.hit_enemy_3p = Fusion Cannons hit
+$dva.fusion.hit_block = Fusion Cannons hit a wall
+$dva.matrix.on = Defense Matrix on
+$dva.matrix.loop = Defense Matrix hums
+$dva.matrix.off = Defense Matrix off
+$dva.matrix.on_3p = Defense Matrix on
+$dva.matrix.loop_3p = Defense Matrix hums
+$dva.matrix.off_3p = Defense Matrix off
+$dva.matrix.chirp = MEKA chirps
+$dva.matrix.chirp_3p = MEKA chirps
+$dva.matrix.absorb = Defense Matrix absorbs
+$dva.matrix.absorb_3p = Defense Matrix absorbs
+$dva.boosters.start = Boosters ignite
+$dva.boosters.loop = Boosters roar
+$dva.boosters.end = Boosters cut out
+$dva.boosters.start_3p = Boosters ignite
+$dva.boosters.loop_3p = Boosters roar
+$dva.boosters.chirp = MEKA chirps
+$dva.boosters.hit = Boosters slam
+$dva.missiles.cast = Micro Missiles launch
+$dva.missiles.cast_3p = Micro Missiles launch
+$dva.missiles.volley = Micro Missiles fire
+$dva.missiles.volley_end = Micro Missiles stop
+$dva.missiles.volley_3p = Micro Missiles fire
+$dva.missiles.volley_end_3p = Micro Missiles stop
+$dva.missiles.burst = Micro Missile explodes
+$dva.missiles.hit_enemy = Micro Missile hits
+$dva.missiles.hit_enemy_3p = Micro Missile hits
+$dva.missiles.hit_block = Micro Missile hits a wall
+$dva.self_destruct.arm = Self-Destruct arms
+$dva.self_destruct.blast = Self-Destruct explodes
+$dva.call_mech.drop = MEKA drops in
+$dva.call_mech.drop_3p = MEKA drops in
+$dva.wreck = MEKA destroyed
+$dva.wreck_3p = MEKA destroyed
+$dva.wreck.chirp = MEKA chirps
+$dva.wreck.chirp_3p = MEKA chirps
+$dva.eject = MEKA breaks apart
+$dva.gun.fire = Light Gun fires
+$dva.gun.hit = Light Gun hits
+$dva.gun.hit_3p = Light Gun hits
+$dva.gun.hit_block = Light Gun hits a wall
+$dva.gun.reload = D.Va reloads
+$dva.gun.reload_3p = D.Va reloads
+$dva.perk.precision.start = Precision Fusion on
+$dva.perk.precision.start_3p = Precision Fusion on
+$dva.perk.precision.loop = Precision Fusion hums
+$dva.perk.precision.end = Precision Fusion off
+$dva.perk.precision.end_3p = Precision Fusion off
+$dva.perk.shield_system = Shields restored
+$dva.perk.bunny_power = Bunny Power
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: D.Va, or the shooter; 3p = everyone else, at her
+# / the target / the hit point / the barrier; both = one rule for everyone). 'EXTRA' = in the data but not needed for the
+# kit's moments. Not built: see 'Not mapped'.
+#   dva.fusion.fire_first              one-shot own  1.54 s; PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379
+#     effect 34DA held on her while she fires; #377's 34F5 for the other cannon holds the same sets, H); the first
+#     volley of a burst
+#   dva.fusion.fire                    one-shot own  0.28 s; PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379
+#     effect 34DA held on her while she fires; #377's 34F5 for the other cannon holds the same sets, H); every later
+#     volley (6.67 a second, 13.33 with Precision Fusion)
+#   dva.fusion.fire_end                one-shot own  3.38 s; the burst ends (PRIMARY let go, Defense Matrix or
+#     Boosters taking the cannons: #348 ends and 34DA stops; 5DC5's Stop event, H)
+#   dva.fusion.fire_first_3p           one-shot 3p   1.52 s; PRIMARY held (050A #348 v33 -> #419 -> #378 -> #379
+#     effect 34DA held on her while she fires; #377's 34F5 for the other cannon holds the same sets, H); for everyone
+#     else: 34DA's DBAB (100 m, audience 2)
+#   dva.fusion.fire_3p                 one-shot 3p   1.52 s; every later volley, at her for everyone else
+#   dva.fusion.fire_end_3p             one-shot 3p   5.26 s; the burst ends, at her for everyone else (DBAB's Stop event)
+#   dva.fusion.hit_enemy               one-shot own  0.28 s; a volley's pellets hit a character: the pellet entity
+#     0C18's m_contactSet 4B3, type 0, material 0001 -> 5D53 (no range: the shooter's, M, Sojourn's reading); once a
+#     target a volley (ours: the volley is one hit)
+#   dva.fusion.hit_enemy_3p            one-shot 3p   0.25 s; the same hit, at the target for everyone else: 4B3's 8F2F
+#     (500 m; 905C is 12 m, the same set: near / far, L; 8F2F built)
+#   dva.fusion.hit_block               one-shot both 1.47 s; a volley's pellets hit the world: 4B3 type 2, material
+#     0001 -> 849E (90 m) + 84CB (32 m), built together (Sojourn's reading); once a volley (ours)
+#   dva.matrix.on                      one-shot own  2.27 s; SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3
+#     held while the matrix is up -> #624 (no Stadium power 02C8) -> #623 effect 5F57 held (H); 5F57's 2AA8 (no range,
+#     audience 1: hers)
+#   dva.matrix.loop                    LOOP     own  loop 4.069 s; SECONDARY: 02CC #175 StateAbility -> #214 effect
+#     08C3 held while the matrix is up -> #624 (no Stadium power 02C8) -> #623 effect 5F57 held (H); its 4.07 s bed,
+#     held
+#   dva.matrix.off                     one-shot own  1.04 s; the matrix ends (let go, out of energy: 5F57 stops;
+#     2AA8's Stop event, H)
+#   dva.matrix.on_3p                   one-shot 3p   2.27 s; SECONDARY: 02CC #175 StateAbility -> #214 effect 08C3
+#     held while the matrix is up -> #624 (no Stadium power 02C8) -> #623 effect 5F57 held (H); 5F57's 2AA9 (70 m),
+#     everyone else
+#   dva.matrix.loop_3p                 LOOP     3p   loop 4.069 s; SECONDARY: 02CC #175 StateAbility -> #214 effect
+#     08C3 held while the matrix is up -> #624 (no Stadium power 02C8) -> #623 effect 5F57 held (H); 2AA9's bed,
+#     everyone else
+#   dva.matrix.off_3p                  one-shot 3p   1.04 s; the matrix ends, at her for everyone else (2AA9's Stop event)
+#   dva.matrix.chirp                   one-shot own  1.31 s; the press: 02CC #175 -> #201 ActionCriteria (identifier
+#     16CE) -> #240 effect 1637: 2BC5 (no range, audience 1: hers, H); the MEKA's +575-cent chirp family (as Boosters'
+#     1635, the wreck's 1633)
+#   dva.matrix.chirp_3p                one-shot 3p   1.31 s; the same press, at her for everyone else: 1637's 2BC6 (50 m)
+#   dva.matrix.absorb                  one-shot own  0.35 s; each projectile it eats: 02CC #208 / #587 STU_7FE08772
+#     effect 1506 drawn to the matrix's hardpoints 0228 / 0229 (H): 2AC1 (hp 003E) and 2D25 (hp 003D), no range (hers,
+#     M)
+#   dva.matrix.absorb_3p               one-shot 3p   0.35 s; the same, at the eaten projectile for everyone else:
+#     1506's 2AC4 (20 m) and 2D28 (70 m)
+#   dva.boosters.start                 one-shot own  2.71 s; ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar
+#     (the flight) holds #162 effect 1492 (H); 1492's 5DC3 (no range, audience 1: hers)
+#   dva.boosters.loop                  LOOP     own  loop 3.360 s; ABILITY 1: 047E #78 StateAbility -> #166
+#     StateChaseVar (the flight) holds #162 effect 1492 (H); 5DC3's 5.04 s bed at +701 cents, held
+#   dva.boosters.end                   one-shot own  1.53 s; the flight ends (#166 ends: 1492 stops; 5DC3's Stop event, H)
+#   dva.boosters.start_3p              one-shot 3p   1.11 s; ABILITY 1: 047E #78 StateAbility -> #166 StateChaseVar
+#     (the flight) holds #162 effect 1492 (H); 1492's 2AED (70 m), everyone else
+#   dva.boosters.loop_3p               LOOP     3p   loop 2.178 s; ABILITY 1: 047E #78 StateAbility -> #166
+#     StateChaseVar (the flight) holds #162 effect 1492 (H); 1492's 2AEF (60 m: the same three beds as 2AED's at
+#     nearly the same gains, 2AEF the louder: near / far, L), everyone else
+#   dva.boosters.chirp                 one-shot both 1.83 s; the flight starts: 047E #166 -> #193 ActionCriteria
+#     (16CD) -> #196 effect 1635: 2BBA (50 m, audience 2, no other copy: built for everyone)
+#   dva.boosters.hit                   one-shot own  1.12 s; her Boosters hit an enemy: 047E #453 / #495 (an enemy) ->
+#     #457 / #493 message identifier 2D4E -> #465 / #489 effect 68E6: C8DD (no range: hers, M)
+#   dva.missiles.cast                  one-shot own  1.93 s; ABILITY 2: 1128 #175 -> #363 StateWait onBegin -> #364
+#     effect 1F99: 4373 (no range, audience 1: hers, H)
+#   dva.missiles.cast_3p               one-shot 3p   1.93 s; the same cast, at her for everyone else: 1F99's 4375 (60 m)
+#   dva.missiles.volley                one-shot own  1.59 s; the volley: 1128 #357 StateWeaponVolley holds #362 effect
+#     4562: 5DC4 (no range, audience 1: hers); its 1.10 s stream bed once (the volley runs 1.3 s, M)
+#   dva.missiles.volley_end            one-shot own  2.20 s; the volley ends (#357 ends: 4562 stops; 5DC4's Stop event, H)
+#   dva.missiles.volley_3p             one-shot 3p   1.41 s; the volley, at her for everyone else: 4562's 4376 (70 m)
+#   dva.missiles.volley_end_3p         one-shot 3p   0.76 s; the volley ends, at her for everyone else (4376's Stop event)
+#   dva.missiles.burst                 one-shot both 0.46 s; each missile bursts: entity 1E8A's slots m_6CB564CC /
+#     m_AED73588 effect 1FA5 (H slots, Sigma's reading of m_AED73588 as the burst on contact): 4372 (200 m; F3CE the
+#     same files: one built)
+#   dva.missiles.hit_enemy             one-shot own  0.82 s; a missile hits a character: 1E8A's m_contactSet 783, type
+#     0, material 0001 -> 8BC5 (no range: the shooter's, M)
+#   dva.missiles.hit_enemy_3p          one-shot 3p   0.80 s; the same hit, at the target for everyone else: 1E8A's
+#     m_D02E414F contact set 772, type 0, material 0001 -> 9152 (500 m; 914E 12 m: near / far, L)
+#   dva.missiles.hit_block             one-shot both 3.46 s; a missile hits the world: 783 type 2, material 0001 ->
+#     858A (90 m) + 85C7 (32 m), built together
+#   dva.self_destruct.arm              one-shot both 3.94 s; the mech is sent: 0B2F #447 false -> #419 effect 1702
+#     held on it (H): 2AEA at 0.267 s (40 m), 5DBF (75 m; D7C7 the same files: one built) and 2DD5 (75 m) from 0
+#   dva.self_destruct.blast            one-shot both 4.16 s; the blast: 0B2F #376 / #377 false -> #269 effect 1703
+#     (H): 5DC0 (120 m; D7C9 the same files: one built) + 2DD8 (120 m)
+#   dva.call_mech.drop                 one-shot own  4.21 s; Call Mech: 026A #94 spawns the mech -> #417 effect 1573
+#     on her: 5DC1 (no range: hers, M): a 1.69 s call, the 2.81 s / 3.27 s fall and impact from 0.80 / 0.95 s (the
+#     landing at 0.9 s, H)
+#   dva.call_mech.drop_3p              one-shot 3p   4.21 s; the same, for everyone else: 1573's 9656 (70 m; 2AE0 the
+#     same files 10 dB down: one built)
+#   dva.wreck                          one-shot own  3.06 s; the mech is destroyed: 0276 #55 EntryGameMessage -> #384
+#     -> #86 effect 1572 (H): 5DC2 (no range: hers, M)
+#   dva.wreck_3p                       one-shot 3p   3.06 s; the same, for everyone else: 1572's 2ADD (70 m)
+#   dva.wreck.chirp                    one-shot own  3.70 s; right after: 0276 #86 -> #143 effect 1633: 2BC3 (no
+#     range: hers, M; the +575-cent MEKA chirp family)
+#   dva.wreck.chirp_3p                 one-shot 3p   1.95 s; the same, for everyone else: 1633's 2BC4 (50 m)
+#   dva.eject                          one-shot both 2.96 s; the wreck blows apart: the MEKA's destroyed clip 31C3 (6
+#     s, set 0282 alias 8, 0276 #482), its animation effect 170F: 78BF (70 m) from 0, its pieces from 0.56-1.4 s (the
+#     eject at 1.0 s, H)
+#   dva.gun.fire                       one-shot both 0.27 s; each Light Gun round as it is made: entity 1000's
+#     m_2170A015 'sound only' slot, effect F03 (H slot, Juno's / Ana's reading): 228D (60 m; 8F0B the same files: one
+#     built); her own fire has no other 02C (02B8's 3398 holds none, H)
+#   dva.gun.hit                        one-shot own  2.67 s; a round hits a character: 1000's m_A18274A3 'on a target'
+#     effect 147B: 5DC6 (no range: the shooter's, M)
+#   dva.gun.hit_3p                     one-shot 3p   2.65 s; the same hit, at the target for everyone else: 147B's 6D11 (200 m)
+#   dva.gun.hit_block                  one-shot both 0.30 s; a round hits the world: 49D type 2, material 0001 -> 899F
+#     (90 m) + 89A1 (32 m)
+#   dva.gun.reload                     one-shot own  1.77 s; RELOAD as the pilot (02B8 #141 alias 4): her 1P reload
+#     clip 30BB (1.53 s) animation effect 1A13: 91A6-91AA and 91A5 at its times (H)
+#   dva.gun.reload_3p                  one-shot 3p   1.31 s; the same reload for everyone else: her 3P reload clip
+#     3234 animation effect 196B: 2E14 (45 m, H)
+#   dva.perk.precision.start           one-shot own  1.36 s; Precision Fusion (514D #615 StateAbility on RELOAD) ->
+#     #606 StateWait (its 3.1 s) onBegin -> #644 effect 6DB5: DA93 (no range: hers, M)
+#   dva.perk.precision.start_3p        one-shot 3p   1.36 s; Precision Fusion (514D #615 StateAbility on RELOAD) ->
+#     #606 StateWait (its 3.1 s) onBegin -> 6DB5's DA92 (70 m)
+#   dva.perk.precision.loop            LOOP     own  loop 3.731 s; Precision Fusion (514D #615 StateAbility on RELOAD)
+#     -> #606 StateWait (its 3.1 s) subgraph -> #653 effect 6E7C held: DC07's 3.73 s bed
+#   dva.perk.precision.end             one-shot own  0.83 s; Precision Fusion (514D #615 StateAbility on RELOAD) ->
+#     #606 StateWait (its 3.1 s) onEnd -> #645 effect 6DB6: DA94 (no range: hers, M)
+#   dva.perk.precision.end_3p          one-shot 3p   0.83 s; Precision Fusion (514D #615 StateAbility on RELOAD) ->
+#     #606 StateWait (its 3.1 s) onEnd -> 6DB6's DA95 (70 m)
+#   dva.perk.shield_system             one-shot own  1.43 s; Shield System's shields restored: 514D #430 (a heal with
+#     identifier 103B5) -> #434 StateWait 0.5 s onBegin -> #407 effect 6420 (perk 253E): C2CF (no range: hers, M)
+#   dva.perk.bunny_power               one-shot own  1.60 s; Bunny Power's 75 overhealth: 514D #424 (v469 = 75) ->
+#     #423 -> #437 effect 6730: C6D8 (no range: hers, M)

@@ -90,7 +90,7 @@ public final class Dva implements HeroKit {
 	static void stopMechKit(ServerPlayer player, HeroState s) {
 		DefenseMatrix.end(player, s, player.level().getGameTime());
 		Boosters.end(player, s);
-		MicroMissiles.stop(s);
+		MicroMissiles.stop(player, s);
 		FusionCannons.slow(player, false);
 		DvaPerks.end(player, s);
 	}
@@ -179,6 +179,9 @@ public final class Dva implements HeroKit {
 		s.dvaForm = WRECK;
 		s.dvaTicks = 0;
 		s.shield = 0;
+		// MEKA destroyed (0276 #86 effect 1572) and its failing chirp (#143 1633)
+		DvaSounds.split(player, "wreck", player.position().add(0, 1, 0), 70);
+		DvaSounds.split(player, "wreck.chirp", player.position().add(0, 1, 0), 50);
 		stopMechKit(player, s);
 		player.setAttached(HeroManager.DVA_FORM, WRECK);
 		return 0.01f;
@@ -220,6 +223,12 @@ public final class Dva implements HeroKit {
 			DvaPerks.tick(player, s);
 		}
 		DefenseMatrix.tick(player, s, mech);
+		// the held states others hear (client.DvaSounds)
+		int held = (s.dvaMatrix ? MODE_MATRIX : 0) | (Boosters.active(s) ? MODE_BOOSTING : 0) | (DvaPerks.precision(s) ? MODE_PRECISION : 0);
+		Integer was = player.getAttached(HeroManager.DVA_STATE);
+		if (was == null || was != held) {
+			player.setAttached(HeroManager.DVA_STATE, held);
+		}
 		Boosters.tick(player, s, mech);
 		MicroMissiles.tick(player, s, mech);
 		// the pilot's Light Gun (step 9)
@@ -313,6 +322,8 @@ public final class Dva implements HeroKit {
 		Vec3 facing = Vec3.directionFromRotation(0, player.getYRot());
 		stopMechKit(player, s);
 		if (wreck) {
+			// the MEKA breaks apart: its destroyed clip 31C3's 78BF (70 m)
+			DvaSounds.all(level, "eject", player.position().add(0, 1, 0), 70);
 			// the wreck stays where the mech died for 0.75 s, playing on its destruction (D 0276 #60 / #112)
 			level.addFreshEntity(new DvaMechEntity(level, player, DvaMechEntity.WRECK, player.position(), player.getYRot()));
 		}
@@ -368,6 +379,8 @@ public final class Dva implements HeroKit {
 		s.ultCharge = 0;
 		// "Calling in the big guns!" (0479)
 		dev.overcraft.hero.Voice.say(player, "call_mech", 1);
+		// the call, the drop and its landing (026A #417 effect 1573: 5DC1 hers, 9656 others' 70 m)
+		DvaSounds.split(player, "call_mech.drop", spot, 70);
 		s.dvaForm = CALLING;
 		s.dvaTicks = 0;
 		s.dvaCallSpot = spot;

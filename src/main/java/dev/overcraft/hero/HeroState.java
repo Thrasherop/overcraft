@@ -289,6 +289,10 @@ public final class HeroState {
 	public long dvaPrecisionEndedAt = -1000;
 	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
 	public long dvaMatrixLineAt = -1;
+	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
+	public boolean dvaFusionBurst;
+	/** When Shield System's restore sound may play again (game time). */
+	public long dvaShieldSoundAt;
 	public double armorLost;
 	/**
 	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
