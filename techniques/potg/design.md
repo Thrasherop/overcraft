@@ -5,7 +5,8 @@ rest hasn't run. The owner's answers of 2026-11-11 are [under the questions](#qu
 override the text below where they differ. Up: [Techniques](../README.md) · issues: #44 (the outro), #45
 (the music) · builds on: [minecraft_26](../minecraft/minecraft_26.md), [kill_feed](../hud/kill_feed.md),
 [rendering](../rendering/rendering.md), [emote_reproduction](../emotes/emote_reproduction.md),
-[sounds](../sound/sounds.md), [music-round9](../../tools/reference/music-round9.md). Written 2026-11-06, on the owner's
+[sounds](../sound/sounds.md), [music-round9](../../tools/reference/music-round9.md). The real thing, measured from
+the owner's clip: [potg_reference](potg_reference.md). Written 2026-11-06, on the owner's
 "try to design a POTG system with replay", and revised the same day after [a critique](#the-critique-and-what-it-changed).
 
 ## The recommendation
