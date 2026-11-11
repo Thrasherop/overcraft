@@ -128,6 +128,9 @@ public final class PotgTap {
 		int keyframes;
 		double keyframeMsMax;
 		double keyframeMsSum;
+		long keyframeEntitiesSum;
+		int keyframeEntitiesMax;
+		Map<String, Integer> lastKeyframeTypes = new TreeMap<>();
 		int ticksOutOfPlay;
 		int equipmentHash;
 		final ByteBuf scratch = Unpooled.buffer(1024);
@@ -331,6 +334,7 @@ public final class PotgTap {
 		List<Packet<?>> packets = new ArrayList<>();
 		Consumer<Packet<?>> sink = packets::add;
 		int entities = 0;
+		Map<String, Integer> kinds = new TreeMap<>();
 		CAPTURING.set(new Capture(player, sink));
 		try {
 			for (Object o : map.values()) {
@@ -342,6 +346,7 @@ public final class PotgTap {
 					continue;
 				}
 				entities++;
+				kinds.merge(net.minecraft.world.entity.EntityType.getKey(entity.getType()).getPath(), 1, Integer::sum);
 				serverEntity.sendPairingData(player, (Consumer) sink);
 				net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.invoker().onStartTracking(entity, player);
 			}
@@ -358,6 +363,9 @@ public final class PotgTap {
 		seg.keyframeEntities = entities;
 		seg.keyframeMs = (System.nanoTime() - t0) / 1e6;
 		r.keyframes++;
+		r.keyframeEntitiesSum += entities;
+		r.keyframeEntitiesMax = Math.max(r.keyframeEntitiesMax, entities);
+		r.lastKeyframeTypes = kinds;
 		r.keyframeBytes += seg.keyframe.writerIndex();
 		r.keyframeMsSum += seg.keyframeMs;
 		r.keyframeMsMax = Math.max(r.keyframeMsMax, seg.keyframeMs);
@@ -452,10 +460,12 @@ public final class PotgTap {
 					mean, p50, p99, max, r.keyframes == 0 ? 0 : r.keyframeMsSum / r.keyframes, r.keyframeMsMax));
 				long recordedBytes = r.streamBytes + r.trackBytes;
 				s.append(String.format(java.util.Locale.ROOT,
-					"[POTG] bytes/s: stream %.0f + own track %.0f = %.0f; keyframes %d, avg %.0f B, max %d B; ring now %d B in %d segments%n",
+					"[POTG] bytes/s: stream %.0f + own track %.0f = %.0f; keyframes %d, avg %.0f B, max in ring %d B; ring now %d B in %d segments%n",
 					r.streamBytes / Math.max(recSeconds, 1e-9), r.trackBytes / Math.max(recSeconds, 1e-9),
 					recordedBytes / Math.max(recSeconds, 1e-9), r.keyframes,
 					r.keyframes == 0 ? 0 : (double) r.keyframeBytes / r.keyframes, maxKeyframe, ringBytes, all.size()));
+				s.append(String.format(java.util.Locale.ROOT, "[POTG] keyframe entities: avg %.1f, max %d; last: %s%n",
+					r.keyframes == 0 ? 0 : (double) r.keyframeEntitiesSum / r.keyframes, r.keyframeEntitiesMax, r.lastKeyframeTypes));
 				s.append("[POTG] types seen (count, kept bytes, encode errors):\n");
 				for (Map.Entry<String, TypeStats> e : r.types.entrySet()) {
 					TypeStats t = e.getValue();
