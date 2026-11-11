@@ -94,6 +94,11 @@ public final class PotgReplayClient {
 		net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(mc -> step(mc));
 	}
 
+	/** The replay itself is playing (not the card before it). */
+	public static boolean playing() {
+		return active && playing;
+	}
+
 	public static boolean active() {
 		return active;
 	}

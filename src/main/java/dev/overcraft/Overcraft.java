@@ -290,6 +290,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sojourn.Disruptor.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 			dev.overcraft.potg.PotgReplay.clear();
+			// the tap and the scoring are statics: a world left must not hand its state to the next one
+			dev.overcraft.potg.PotgTap.stop();
 		});
 	}
 }

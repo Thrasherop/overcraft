@@ -81,7 +81,9 @@ public abstract class CameraMixin {
 	 */
 	@Inject(method = "alignWithEntity", at = @At("TAIL"))
 	private void overcraft$replayChase(float partialTicks, CallbackInfo ci) {
-		if (!dev.overcraft.client.dev.PotgReplayClient.active()) {
+		// only once the replay plays: under the card the view is the viewer's own, of the still world (found in play: a
+		// card showing the last replay's stale place)
+		if (!dev.overcraft.client.dev.PotgReplayClient.playing()) {
 			return;
 		}
 		Entity ghost = dev.overcraft.client.dev.PotgReplayClient.heroGhost();

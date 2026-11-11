@@ -55,6 +55,17 @@ public final class PotgReplay {
 	/** Set by the client in single player: plays a showing. */
 	public static volatile @Nullable Consumer<Show> clientPlayer;
 
+	private static boolean shown;
+
+	/** A dragon's POTG has been shown since the tap armed (PotgTap's disarm). */
+	public static boolean shownSinceArmed() {
+		return shown;
+	}
+
+	public static void armed() {
+		shown = false;
+	}
+
 	public static boolean active() {
 		return active;
 	}
@@ -126,17 +137,21 @@ public final class PotgReplay {
 			return;
 		}
 		dragonPending = false;
+		shown = true; // decided, a POTG or none: the tap may disarm once the dragon's gone
 		PlayScore.Choice choice = PlayScore.choose();
 		Overcraft.LOG.info("[POTG] at the dragon's tick 199: {}; plays:{}; {}", choice == null ? "no play" : choice.player() + " "
 			+ choice.category().title + " " + Math.round(choice.score()), choice == null ? "" : choice.table(), PlayScore.costReport());
 		if (!killerAllows || choice == null) {
 			return;
 		}
-		List<ServerPlayer> viewers = level.players();
+		// everyone in the dragon's level, the dead too (they aren't in level.players(); design: "The viewer is dead when it
+		// starts": it plays over the death screen)
+		List<ServerPlayer> viewers = level.getServer().getPlayerList().getPlayers().stream().filter(p -> p.level() == level).toList();
 		if (viewers.isEmpty()) {
 			return;
 		}
 		dev.overcraft.hero.Hero hero = dev.overcraft.hero.Hero.byId(choice.hero());
+		shown = true;
 		show(level.getServer(), viewers, new Show(choice.dump(), choice.player(), hero == null ? "" : hero.displayName,
 			choice.category().title), CARD_TICKS + WINDOW_TICKS);
 	}

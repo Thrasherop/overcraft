@@ -491,6 +491,13 @@ public final class DevServer {
 				player.connection.sendChat(arg);
 				out.addProperty("ok", true);
 			}
+			case "servercmd" -> {
+				// dev only: a command run by the integrated server itself, not the player (a dead player's commands find no
+				// entities: harness.md): POTG step 3 kills the dragon this way while its hero lies dead
+				var server = mc.getSingleplayerServer();
+				server.execute(() -> server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), arg));
+				out.addProperty("ok", true);
+			}
 			case "cmd" -> {
 				player.connection.sendCommand(arg.startsWith("/") ? arg.substring(1) : arg);
 				out.addProperty("ok", true);

@@ -197,6 +197,7 @@ public final class PotgTap {
 		armed = true;
 		armedAt = System.nanoTime();
 		PlayScore.open();
+		PotgReplay.armed();
 		Overcraft.LOG.info("[POTG] armed at tick {}", server.getTickCount());
 		return "POTG tap armed";
 	}
@@ -329,6 +330,12 @@ public final class PotgTap {
 
 	/** Armed by a dragon fight (not the dev command), so disarmed when it's over. */
 	private static boolean autoArmed;
+	private static int lastFightTick;
+	/**
+	 * A dragon out of sight isn't a fight over: its chunks unload when the End's last player dies or leaves, and it comes
+	 * back with them, so the plays wait for it this long (ours: 5 min), or until its POTG has been shown.
+	 */
+	private static final int NO_DRAGON_TICKS = 6000;
 
 	/**
 	 * Armed only while a dragon is in a level with players in it (design: "Only while armed: the first version records
@@ -341,16 +348,21 @@ public final class PotgTap {
 		}
 		boolean fight = false;
 		for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
-			if (!level.players().isEmpty() && !level.getEntities(net.minecraft.world.entity.EntityTypes.ENDER_DRAGON, d -> !d.isRemoved()).isEmpty()) {
+			// a dead hero isn't in level.players() but still watches: the dragon alone decides
+			if (!level.getEntities(net.minecraft.world.entity.EntityTypes.ENDER_DRAGON, d -> !d.isRemoved()).isEmpty()) {
 				fight = true;
 				break;
 			}
+		}
+		if (fight) {
+			lastFightTick = server.getTickCount();
 		}
 		if (fight && !armed) {
 			start(server);
 			autoArmed = true;
 			Overcraft.LOG.info("[POTG] a dragon fight: recording and scoring");
-		} else if (!fight && armed && autoArmed && !PotgReplay.active()) {
+		} else if (!fight && armed && autoArmed && !PotgReplay.active()
+			&& (PotgReplay.shownSinceArmed() || server.getTickCount() - lastFightTick > NO_DRAGON_TICKS)) {
 			stop();
 			Overcraft.LOG.info("[POTG] the dragon fight is over: nothing recorded any more");
 		}
