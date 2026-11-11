@@ -47,6 +47,7 @@ public final class KillFeed {
 			}
 		}
 		Combat.forget(victim);
+		dev.overcraft.potg.PlayScore.kill(killer, victim);
 		Voice.onKill(victim, source, killer, blow);
 		boolean heroKiller = blow != null || killer instanceof Player player && HeroManager.hero(player) != null;
 		if (!heroKiller && !(victim instanceof Player)) {

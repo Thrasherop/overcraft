@@ -195,7 +195,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
-			// Play of the Game's tap, dev only and off unless armed (/overcraft potg start): the last of the tick
+			// Play of the Game: the tap (armed in a dragon fight) and the scoring, the last of the tick
+			dev.overcraft.potg.PlayScore.tick(server);
 			dev.overcraft.potg.PotgTap.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
@@ -230,6 +231,7 @@ public class Overcraft implements ModInitializer {
 			Combat.clearHealing(entity);
 			if (entity instanceof ServerPlayer player) {
 				HeroManager.onDeath(player);
+				dev.overcraft.potg.PlayScore.died(player);
 			}
 		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
@@ -238,6 +240,8 @@ public class Overcraft implements ModInitializer {
 				for (ServerPlayer player : level.players()) {
 					ServerPlayNetworking.send(player, new VictoryPayload());
 				}
+				// its Play of the Game waits for the death's tick 199 (PotgReplay.dragonAt199)
+				dev.overcraft.potg.PotgReplay.dragonDied((EnderDragon) entity, source);
 			}
 		});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {

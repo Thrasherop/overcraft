@@ -50,7 +50,7 @@ public final class PotgReplayClient {
 	private record Rec(int tick, int kind, byte[] bytes) {
 	}
 
-	private static volatile PotgTap.@Nullable Dump pending;
+	private static volatile PotgReplay.@Nullable Show pending;
 	private static boolean active;
 	/** In the replay's step (packets onto ghosts, the ghosts' ticks), or drawing a frame. */
 	private static boolean stepping;
@@ -90,7 +90,7 @@ public final class PotgReplayClient {
 		}
 		// started from the client tick, not from a task: inside a task, Minecraft.execute queues instead of running, and Fabric's
 		// receivers (the attachments) would then land on the live entities after the step, not on the ghosts
-		PotgReplay.clientPlayer = dump -> pending = dump;
+		PotgReplay.clientPlayer = show -> pending = show;
 		net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(mc -> step(mc));
 	}
 
@@ -100,7 +100,7 @@ public final class PotgReplayClient {
 
 	/** Whether the level's lookups answer with ghosts now (PotgClientLevelMixin). */
 	public static boolean ghostView() {
-		return active && (stepping || rendering);
+		return active && playing && (stepping || rendering);
 	}
 
 	public static void rendering(boolean on) {
@@ -148,13 +148,55 @@ public final class PotgReplayClient {
 		}
 	}
 
-	private static void start(PotgTap.Dump dump) {
+	/** A showing begins: the world's held, the screen that takes every key opens, and the card (if any) shows first. */
+	private static void start(PotgReplay.Show show) {
 		Minecraft mc = Minecraft.getInstance();
-		ClientPacketListener connection = mc.getConnection();
-		if (connection == null || mc.level == null || active) {
+		if (mc.getConnection() == null || mc.level == null || active) {
 			PotgReplay.clientDone();
 			return;
 		}
+		ERRORS.clear();
+		steps = 0;
+		stepNanos = stepMax = 0;
+		maxGhosts = 0;
+		applied = 0;
+		frames = 0;
+		frameNanosMax = frameNanosSum = 0;
+		lastFrame = 0;
+		playing = false;
+		GHOSTS.clear();
+		LIVE_BEFORE.clear();
+		LIVE_POS.clear();
+		LIVE_BEFORE.putAll(liveSnapshot(mc));
+		active = true;
+		// sounds already going stop, music and the interface's excepted (design: "Sound"), then the client's maps keyed by
+		// entity id are emptied for the ghosts, which have the live entities' ids (design: "Statics"), and come back at the end
+		stopWorldSounds(mc);
+		liveAnimators = dev.overcraft.client.model.HeroAnimator.swapAll(new HashMap<>());
+		swapStatics();
+		dev.overcraft.client.effect.Fx.clear();
+		// the HUD hides, as F1 does (the hand with it)
+		hideGuiWas = mc.gui.hud.isHidden();
+		if (!hideGuiWas) {
+			mc.gui.hud.toggle();
+		}
+		screenWas = mc.gui.screen();
+		mc.gui.setScreen(new dev.overcraft.client.hud.PotgCard.Holder());
+		reel = show.dump();
+		if (show.player() != null) {
+			cardLeft = PotgReplay.CARD_TICKS;
+			dev.overcraft.client.hud.PotgCard.show(show.player(), show.hero(), show.category(), PotgReplay.CARD_TICKS / 20f);
+			Overcraft.LOG.info("[POTG] card: {} as {}, {}", show.player(), show.hero(), show.category());
+		} else {
+			cardLeft = 0;
+			beginPlay(reel);
+		}
+	}
+
+	/** The replay proper: the window's keyframe and a quiet run-in to its start, then it plays tick by tick (step). */
+	private static void beginPlay(PotgTap.Dump dump) {
+		Minecraft mc = Minecraft.getInstance();
+		ClientPacketListener connection = mc.getConnection();
 		long t0 = System.nanoTime();
 		protocol = GameProtocols.CLIENTBOUND_TEMPLATE.bind(RegistryFriendlyByteBuf.decorator(connection.registryAccess()));
 		heroId = dump.heroId();
@@ -175,28 +217,8 @@ public final class PotgReplayClient {
 			read(dump.streams().get(i), dump.starts().get(i), RECORDS);
 		}
 		// later keyframes aren't applied: their add_entity would make every ghost again (design: "Keyframes sit beside")
-		GHOSTS.clear();
-		ERRORS.clear();
-		steps = 0;
-		stepNanos = stepMax = 0;
-		maxGhosts = 0;
-		applied = 0;
-		frames = 0;
-		frameNanosMax = frameNanosSum = 0;
-		lastFrame = 0;
 		heroAlive = true;
-		LIVE_BEFORE.clear();
-		LIVE_POS.clear();
-		LIVE_BEFORE.putAll(liveSnapshot(mc));
-		active = true;
-		liveAnimators = dev.overcraft.client.model.HeroAnimator.swapAll(new HashMap<>());
-		dev.overcraft.client.effect.Fx.clear();
-		// the HUD hides, as F1 does (the hand with it)
-		hideGuiWas = mc.gui.hud.isHidden();
-		if (!hideGuiWas) {
-			mc.gui.hud.toggle();
-		}
-		// the run-in: the keyframe, then everything up to the window's start, quiet, with the ghosts ticked as it goes
+		playing = true;
 		stepping = true;
 		quiet = true;
 		try {
@@ -221,6 +243,95 @@ public final class PotgReplayClient {
 			hero == null ? "missing" : hero.getClass().getSimpleName() + (hero instanceof LivingEntity l ? " " + l.getMainHandItem().getItem() : ""));
 	}
 
+	private static PotgTap.@Nullable Dump reel;
+	private static int cardLeft;
+	private static boolean playing;
+	private static net.minecraft.client.gui.screens.@Nullable Screen screenWas;
+
+	/** Stops what's sounding in the world (not music, the interface or the master channel's own: VICTORY's, the POTG's). */
+	private static void stopWorldSounds(Minecraft mc) {
+		for (net.minecraft.sounds.SoundSource source : net.minecraft.sounds.SoundSource.values()) {
+			if (source != net.minecraft.sounds.SoundSource.MASTER && source != net.minecraft.sounds.SoundSource.MUSIC
+				&& source != net.minecraft.sounds.SoundSource.UI) {
+				mc.getSoundManager().stop(null, source);
+			}
+		}
+	}
+
+	/**
+	 * The client's static maps and sets keyed by entity id or UUID (design: "Statics": the effects', the sound classes',
+	 * the heroes' client states), emptied while a replay plays and filled again as they were after. Found by type from this
+	 * list of classes (each has at least one: a grep of `static ... Map<Integer|UUID` / `Set<...>`, 2026-11-11); HeroAnimator
+	 * has its own swap. A class that gains one needs adding here.
+	 */
+	private static final String[] STATIC_CLASSES = {"ClientJuno", "ClientSombra", "DvaSounds", "JunoSounds", "LucioMusic",
+		"MercySounds", "SigmaSounds", "SojournSounds", "comms.EmoteSounds", "effect.AnaFx", "effect.BrigitteFx", "effect.Cleansed",
+		"effect.Fx", "effect.JetpackCatFx", "effect.JunoFx", "effect.LifeweaverFx", "effect.LucioFx", "effect.MercyFx",
+		"effect.SigmaFx", "effect.SojournFx", "effect.SombraFx", "model.HeroModelRenderer", "ClientHero", "ClientTow",
+		"ClientLifeweaver", "ClientSigma", "ClientSojourn", "AbilityCamera", "effect.KirikoFx"};
+	private static final List<Object[]> SAVED = new ArrayList<>();
+	private static int swappedFields;
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void swapStatics() {
+		SAVED.clear();
+		swappedFields = 0;
+		for (String name : STATIC_CLASSES) {
+			Class<?> c;
+			try {
+				c = Class.forName("dev.overcraft.client." + name);
+			} catch (ClassNotFoundException e) {
+				continue;
+			}
+			for (java.lang.reflect.Field f : c.getDeclaredFields()) {
+				if (!java.lang.reflect.Modifier.isStatic(f.getModifiers()) || !keyedById(f)) {
+					continue;
+				}
+				try {
+					f.setAccessible(true);
+					Object v = f.get(null);
+					if (v instanceof Map m) {
+						SAVED.add(new Object[]{m, new java.util.LinkedHashMap(m)});
+						m.clear();
+						swappedFields++;
+					} else if (v instanceof java.util.Collection s) {
+						SAVED.add(new Object[]{s, new ArrayList(s)});
+						s.clear();
+						swappedFields++;
+					}
+				} catch (Throwable t) {
+					error("statics " + name + "." + f.getName(), t);
+				}
+			}
+		}
+	}
+
+	private static boolean keyedById(java.lang.reflect.Field f) {
+		if (!(Map.class.isAssignableFrom(f.getType()) || Set.class.isAssignableFrom(f.getType()))
+			|| !(f.getGenericType() instanceof java.lang.reflect.ParameterizedType p)) {
+			return false;
+		}
+		java.lang.reflect.Type key = p.getActualTypeArguments()[0];
+		return key == Integer.class || key == UUID.class;
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void restoreStatics() {
+		for (Object[] s : SAVED) {
+			try {
+				if (s[0] instanceof Map m) {
+					m.clear();
+					m.putAll((Map) s[1]);
+				} else if (s[0] instanceof java.util.Collection c) {
+					c.clear();
+					c.addAll((java.util.Collection) s[1]);
+				}
+			} catch (Throwable t) {
+				error("restore", t);
+			}
+		}
+		SAVED.clear();
+	}
 	private static void read(byte[] seg, int start, List<Rec> into) {
 		ByteBuf buf = Unpooled.wrappedBuffer(seg);
 		while (buf.isReadable()) {
@@ -234,7 +345,7 @@ public final class PotgReplayClient {
 
 	/** END_CLIENT_TICK: one server tick of the reel, then the ghosts' tick. Waits while the game's paused. */
 	private static void step(Minecraft mc) {
-		PotgTap.Dump next = pending;
+		PotgReplay.Show next = pending;
 		if (next != null) {
 			pending = null;
 			start(next);
@@ -249,6 +360,13 @@ public final class PotgReplayClient {
 			return;
 		}
 		if (mc.isPaused()) {
+			return;
+		}
+		if (cardLeft > 0) {
+			// the card holds over the still world; the replay begins as it goes
+			if (--cardLeft == 0) {
+				beginPlay(reel);
+			}
 			return;
 		}
 		long t0 = System.nanoTime();
@@ -401,13 +519,21 @@ public final class PotgReplayClient {
 			liveAnimators = null;
 		}
 		dev.overcraft.client.effect.Fx.clear();
+		restoreStatics();
+		stopWorldSounds(mc);
+		playing = false;
+		cardLeft = 0;
+		dev.overcraft.client.hud.PotgCard.hide();
+		if (mc.gui.screen() instanceof dev.overcraft.client.hud.PotgCard.Holder) {
+			mc.gui.setScreen(screenWas);
+		}
 		if (mc.gui.hud.isHidden() != hideGuiWas) {
 			mc.gui.hud.toggle();
 		}
 		Overcraft.LOG.info("[POTG] live world after the replay: {}", compareLive(mc));
 		Overcraft.LOG.info(String.format(java.util.Locale.ROOT,
-			"[POTG] replay ended (%s): %d steps, step ms mean %.3f max %.3f; frames %d, frame ms mean %.1f max %.1f; most ghosts %d; packets applied %d; errors %s",
-			why, steps, steps == 0 ? 0 : stepNanos / 1e6 / steps, stepMax / 1e6, frames, frames == 0 ? 0 : frameNanosSum / 1e6 / frames,
+			"[POTG] replay ended (%s): %d id-keyed client maps swapped; %d steps, step ms mean %.3f max %.3f; frames %d, frame ms mean %.1f max %.1f; most ghosts %d; packets applied %d; errors %s",
+			why, swappedFields, steps, steps == 0 ? 0 : stepNanos / 1e6 / steps, stepMax / 1e6, frames, frames == 0 ? 0 : frameNanosSum / 1e6 / frames,
 			frameNanosMax / 1e6, maxGhosts, applied, errorsText()));
 		PotgReplay.clientDone();
 	}

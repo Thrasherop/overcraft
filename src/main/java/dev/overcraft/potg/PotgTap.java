@@ -196,12 +196,15 @@ public final class PotgTap {
 		RECEIVED.clear();
 		armed = true;
 		armedAt = System.nanoTime();
+		PlayScore.open();
 		Overcraft.LOG.info("[POTG] armed at tick {}", server.getTickCount());
 		return "POTG tap armed";
 	}
 
 	public static String stop() {
 		armed = false;
+		autoArmed = false;
+		PlayScore.clear();
 		int n = RECORDERS.size();
 		RECORDERS.clear();
 		Overcraft.LOG.info("[POTG] disarmed, {} recorders dropped", n);
@@ -324,8 +327,38 @@ public final class PotgTap {
 		return KEPT.contains(type);
 	}
 
+	/** Armed by a dragon fight (not the dev command), so disarmed when it's over. */
+	private static boolean autoArmed;
+
+	/**
+	 * Armed only while a dragon is in a level with players in it (design: "Only while armed: the first version records
+	 * only heroes in the End with a dragon alive"), from its first sight to its removal after the POTG; elsewhere nothing
+	 * is recorded or scored. Checked once a second.
+	 */
+	private static void autoArm(MinecraftServer server) {
+		if (server.getTickCount() % 20 != 0) {
+			return;
+		}
+		boolean fight = false;
+		for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
+			if (!level.players().isEmpty() && !level.getEntities(net.minecraft.world.entity.EntityTypes.ENDER_DRAGON, d -> !d.isRemoved()).isEmpty()) {
+				fight = true;
+				break;
+			}
+		}
+		if (fight && !armed) {
+			start(server);
+			autoArmed = true;
+			Overcraft.LOG.info("[POTG] a dragon fight: recording and scoring");
+		} else if (!fight && armed && autoArmed && !PotgReplay.active()) {
+			stop();
+			Overcraft.LOG.info("[POTG] the dragon fight is over: nothing recorded any more");
+		}
+	}
+
 	/** END_SERVER_TICK: the own track, the segment roll and its keyframe, and the tick's cost. */
 	public static void tick(MinecraftServer server) {
+		autoArm(server);
 		if (!armed) {
 			return;
 		}

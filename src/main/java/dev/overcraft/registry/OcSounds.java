@@ -584,6 +584,9 @@ public final class OcSounds {
 	/** Overwatch's end of a won match: the announcer's "Victory!" and its music (#18). From the local pack only. */
 	public static final SoundEvent ANNOUNCER_VICTORY = register("announcer.victory");
 	public static final SoundEvent MUSIC_VICTORY = register("music.victory");
+	/** Play of the Game: the announcer's "Play of the game." (voice set 001D, file A8C4) and its music, cue 5B1F (D: music-round9). */
+	public static final SoundEvent ANNOUNCER_POTG = register("announcer.potg");
+	public static final SoundEvent MUSIC_POTG = register("music.potg");
 
 	private static SoundEvent register(String name) {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));

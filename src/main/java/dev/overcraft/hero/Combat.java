@@ -119,6 +119,8 @@ public final class Combat {
 			target.damageCooldownTime = 0;
 		});
 		float dealt = before - (target.isAlive() ? target.getHealth() + target.getAbsorptionAmount() : 0);
+		// Play of the Game's scoring: every hero hit passes here (dev.overcraft.potg.PlayScore)
+		dev.overcraft.potg.PlayScore.damage(source.getEntity(), target, Math.max(0, Ow.toOw(dealt)), blow);
 		return Math.max(0, Ow.toOw(dealt));
 	}
 
@@ -591,6 +593,7 @@ public final class Combat {
 
 	/** Points toward On Fire for healing done (Overwatch HP). */
 	public static void addFireForHealing(Player hero, double healed) {
+		dev.overcraft.potg.PlayScore.heal(hero, healed);
 		addFire(hero, healed / 5);
 	}
 

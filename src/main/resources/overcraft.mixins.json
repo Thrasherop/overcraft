@@ -27,7 +27,8 @@
 		"ChunkMapAccessor",
 		"TrackedEntityAccessor",
 		"PotgSendMixin",
-		"PotgFreezeMixin"
+		"PotgFreezeMixin",
+		"PotgDragonMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
