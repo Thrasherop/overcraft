@@ -1,0 +1,27 @@
+=== phase r_death 14:33:49
+  t 5 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1082.5, 'primaryAmmo': 14, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 11 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1289.25, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+dying {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 12, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 12, 'secondaryAmmo': 10, 'anim': 'death'}
+respawned {'screen': '', 'fps': 30, 'x': -3.5, 'y': -60.0, 'z': 5.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'}
+  t 5 {'screen': '', 'fps': 30, 'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+death before {'screen': '', 'fps': 30, 'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} server [-6.679843863575383d, -60.0d, 6.03163648912165d] {'zombie': 5, 'skeleton': 7, 'ender_dragon': 0, 'end_crystal': 0} game time is 2551 tick(s)
+    0.0s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 30, 'screen': ''}
+    1.0s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 30, 'screen': ''}
+    1.9s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 26, 'screen': ''}
+    2.9s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 24, 'screen': ''}
+    3.8s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 24, 'screen': ''}
+    4.8s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 24, 'screen': ''}
+    5.7s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 26, 'screen': ''}
+    6.7s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 25, 'screen': ''}
+    7.6s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 26, 'screen': ''}
+    8.6s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 25, 'screen': ''}
+    9.5s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 26, 'screen': ''}
+   10.5s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 25, 'screen': ''}
+   11.4s {'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'heroMode': True, 'fps': 26, 'screen': ''}
+  log [14:34:19] [Server thread/INFO] (Overcraft) [POTG] replay for Kiriko from tick 3525, world frozen (was false)
+  log [14:34:19] [Render thread/INFO] (Overcraft) [POTG] replay: 9401 records (297 in the keyframe), run-in 25 ticks in 7.5 ms, 1 ghosts, hero ghost RemotePlayer minecraft:air
+  log [14:34:31] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 166 before, 128 unchanged, 38 settled (under 0.5 m, nothing else), 0 new
+  log [14:34:31] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 241 steps, step ms mean 0.489 max 2.644; frames 307, frame ms mean 39.1 max 185.8; most ghosts 168; packets applied 8855; errors none
+  log [14:34:31] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 243 server ticks, world thawed
+death after {'screen': '', 'fps': 30, 'x': -6.68, 'y': -60.0, 'z': 6.03, 'health': 17.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle'} server [-6.679843863575383d, -60.0d, 6.03163648912165d] {'zombie': 5, 'skeleton': 7, 'ender_dragon': 0, 'end_crystal': 0} game time is 2601 tick(s)

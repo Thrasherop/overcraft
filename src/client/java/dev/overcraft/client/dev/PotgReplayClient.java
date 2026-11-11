@@ -50,6 +50,7 @@ public final class PotgReplayClient {
 	private record Rec(int tick, int kind, byte[] bytes) {
 	}
 
+	private static volatile PotgTap.@Nullable Dump pending;
 	private static boolean active;
 	/** In the replay's step (packets onto ghosts, the ghosts' ticks), or drawing a frame. */
 	private static boolean stepping;
@@ -87,7 +88,9 @@ public final class PotgReplayClient {
 		if (!Boolean.getBoolean("overcraft.dev")) {
 			return;
 		}
-		PotgReplay.clientPlayer = dump -> Minecraft.getInstance().execute(() -> start(dump));
+		// started from the client tick, not from a task: inside a task, Minecraft.execute queues instead of running, and Fabric's
+		// receivers (the attachments) would then land on the live entities after the step, not on the ghosts
+		PotgReplay.clientPlayer = dump -> pending = dump;
 		net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(mc -> step(mc));
 	}
 
@@ -102,18 +105,22 @@ public final class PotgReplayClient {
 
 	public static void rendering(boolean on) {
 		rendering = on;
-		if (active && on) {
-			long now = System.nanoTime();
-			if (lastFrame != 0) {
-				long d = now - lastFrame;
-				frameNanosSum += d;
-				frameNanosMax = Math.max(frameNanosMax, d);
-				frames++;
-			}
-			lastFrame = now;
-		}
 	}
 
+	/** A frame begins (GameRenderer.extract): its time, for the record. */
+	public static void frame() {
+		if (!active) {
+			return;
+		}
+		long now = System.nanoTime();
+		if (lastFrame != 0) {
+			long d = now - lastFrame;
+			frameNanosSum += d;
+			frameNanosMax = Math.max(frameNanosMax, d);
+			frames++;
+		}
+		lastFrame = now;
+	}
 	public static boolean quiet() {
 		return active && quiet;
 	}
@@ -178,6 +185,9 @@ public final class PotgReplayClient {
 		frameNanosMax = frameNanosSum = 0;
 		lastFrame = 0;
 		heroAlive = true;
+		LIVE_BEFORE.clear();
+		LIVE_POS.clear();
+		LIVE_BEFORE.putAll(liveSnapshot(mc));
 		active = true;
 		liveAnimators = dev.overcraft.client.model.HeroAnimator.swapAll(new HashMap<>());
 		dev.overcraft.client.effect.Fx.clear();
@@ -224,6 +234,12 @@ public final class PotgReplayClient {
 
 	/** END_CLIENT_TICK: one server tick of the reel, then the ghosts' tick. Waits while the game's paused. */
 	private static void step(Minecraft mc) {
+		PotgTap.Dump next = pending;
+		if (next != null) {
+			pending = null;
+			start(next);
+			return;
+		}
 		if (!active) {
 			return;
 		}
@@ -249,6 +265,12 @@ public final class PotgReplayClient {
 		// keys pressed while it played do nothing afterwards (the held ones stay held)
 		for (KeyMapping key : mc.options.keyMappings) {
 			while (key.consumeClick()) {
+			}
+		}
+		// the hero's own keys aren't in the options' list (G out of hero mode is HeroControls' MINECRAFT_MODE): a G pressed during
+		// a replay turned hero mode off after it, found with real keys
+		for (dev.overcraft.client.controls.HeroControls.Action action : dev.overcraft.client.controls.HeroControls.Action.values()) {
+			while (action.mapping.consumeClick()) {
 			}
 		}
 		if (cursor > endTick) {
@@ -382,6 +404,7 @@ public final class PotgReplayClient {
 		if (mc.gui.hud.isHidden() != hideGuiWas) {
 			mc.gui.hud.toggle();
 		}
+		Overcraft.LOG.info("[POTG] live world after the replay: {}", compareLive(mc));
 		Overcraft.LOG.info(String.format(java.util.Locale.ROOT,
 			"[POTG] replay ended (%s): %d steps, step ms mean %.3f max %.3f; frames %d, frame ms mean %.1f max %.1f; most ghosts %d; packets applied %d; errors %s",
 			why, steps, steps == 0 ? 0 : stepNanos / 1e6 / steps, stepMax / 1e6, frames, frames == 0 ? 0 : frameNanosSum / 1e6 / frames,
@@ -396,6 +419,54 @@ public final class PotgReplayClient {
 		StringBuilder s = new StringBuilder();
 		ERRORS.forEach((k, v) -> s.append(k).append(" x").append(v[0]).append(", "));
 		return s.toString();
+	}
+
+	/** The live level as it was before the replay: each entity's position, health and the local player's hero, to compare. */
+	private static final Map<Integer, String> LIVE_BEFORE = new HashMap<>();
+	private static final Map<Integer, Vec3> LIVE_POS = new HashMap<>();
+
+	private static Map<Integer, String> liveSnapshot(Minecraft mc) {
+		Map<Integer, String> out = new HashMap<>();
+		for (Entity e : mc.level.entitiesForRendering()) {
+			String s = String.format(java.util.Locale.ROOT, "%s %.2f %.2f %.2f", e.getType().toShortString(), e.getX(), e.getY(), e.getZ());
+			if (e instanceof LivingEntity l) {
+				s += String.format(java.util.Locale.ROOT, " hp %.1f %s", l.getHealth(), l.getMainHandItem().getItem());
+			}
+			s += " hero " + e.getAttached(dev.overcraft.hero.HeroManager.HERO) + " mode " + e.getAttached(dev.overcraft.hero.HeroManager.HERO_MODE);
+			out.put(e.getId(), s);
+			if (!active) {
+				LIVE_POS.put(e.getId(), e.position());
+			}
+		}
+		return out;
+	}
+
+	private static String compareLive(Minecraft mc) {
+		Map<Integer, String> now = liveSnapshot(mc);
+		int same = 0;
+		int settled = 0;
+		StringBuilder diff = new StringBuilder();
+		for (Map.Entry<Integer, String> e : LIVE_BEFORE.entrySet()) {
+			String after = now.get(e.getKey());
+			Entity live = mc.level.getEntity(e.getKey());
+			Vec3 was = LIVE_POS.get(e.getKey());
+			if (e.getValue().equals(after)) {
+				same++;
+			} else if (live != null && was != null && live.position().distanceTo(was) < 0.5
+				&& e.getValue().replaceAll("^\\S+ \\S+ \\S+ \\S+", "").equals(after == null ? "" : after.replaceAll("^\\S+ \\S+ \\S+ \\S+", ""))) {
+				// moved under half a metre, all else the same: an interpolation finishing after the freeze, not the replay
+				settled++;
+			} else if (diff.length() < 600) {
+				diff.append(" [").append(e.getKey()).append(": ").append(e.getValue()).append(" -> ").append(after).append(']');
+			}
+		}
+		int added = 0;
+		for (Integer id : now.keySet()) {
+			if (!LIVE_BEFORE.containsKey(id)) {
+				added++;
+			}
+		}
+		return LIVE_BEFORE.size() + " before, " + same + " unchanged, " + settled + " settled (under 0.5 m, nothing else), " + added + " new" + (diff.isEmpty() ? "" : "; changed:" + diff);
 	}
 
 	/** The hero's ghost, for the chase view (CameraMixin). */

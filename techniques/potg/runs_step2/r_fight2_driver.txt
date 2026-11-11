@@ -1,0 +1,28 @@
+=== phase r_fight 14:39:02
+  t 5 {'screen': '', 'fps': 30, 'x': 1.56, 'y': -60.0, 'z': -2.71, 'health': 17.6, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1476.58, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 11 {'screen': '', 'fps': 30, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 18.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2135.5, 'primaryAmmo': 9, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 16 {'screen': '', 'fps': 30, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 19.01, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2162.5, 'primaryAmmo': 14, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 21 {'screen': '', 'fps': 29, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 0.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 27 {'screen': '', 'fps': 75, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 6.5, 'primaryAmmo': 5, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_end'}
+  t 32 {'screen': '', 'fps': 117, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 32.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle+reload'}
+fight before {'screen': '', 'fps': 118, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 43.5, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} server [2.569001090400113d, -60.0d, -5.939517262880373d] {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0} game time is 957 tick(s)
+    0.0s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 118, 'screen': ''}
+    0.9s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 108, 'screen': ''}
+    1.8s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 70, 'screen': ''}
+    2.8s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 93, 'screen': ''}
+    3.7s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 94, 'screen': ''}
+    4.6s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 87, 'screen': ''}
+    5.5s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 90, 'screen': ''}
+    6.4s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 95, 'screen': ''}
+    7.3s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 96, 'screen': ''}
+    8.3s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 94, 'screen': ''}
+    9.2s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 91, 'screen': ''}
+   10.1s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 91, 'screen': ''}
+   11.0s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 117, 'screen': ''}
+   11.9s {'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'heroMode': True, 'fps': 116, 'screen': ''}
+  log [14:39:40] [Server thread/INFO] (Overcraft) [POTG] replay for Kiriko from tick 959, world frozen (was false)
+  log [14:39:40] [Render thread/INFO] (Overcraft) [POTG] replay: 11770 records (444 in the keyframe), run-in 76 ticks in 41.6 ms, 176 ghosts, hero ghost RemotePlayer minecraft:air
+  log [14:39:52] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 160 before, 121 unchanged, 39 settled (under 0.5 m, nothing else), 0 new
+  log [14:39:52] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 241 steps, step ms mean 0.533 max 8.180; frames 1155, frame ms mean 10.4 max 242.5; most ghosts 177; packets applied 11194; errors none
+  log [14:39:53] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 243 server ticks, world thawed
+fight after {'screen': '', 'fps': 118, 'x': 2.57, 'y': -60.0, 'z': -5.94, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 57.75, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle'} server [2.569001090400113d, -60.0d, -5.939517262880373d] {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0} game time is 1014 tick(s)

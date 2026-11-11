@@ -489,6 +489,7 @@ where it applies ([visual_review](../testing/visual_review.md)).
    - client and server position are compared afterwards and agree;
    - the game afterwards is exactly as before: health, mobs, hero, G, loops, held effects;
    - the costs are written down. If handlers or ghosts fail, stop and rethink.
+   **Done 2026-11-11, from the dev command:** [measured](#step-2-the-first-replay-2026-11-11); what's still open is listed there.
 3. **Dragon POTG, one player:** the dragon kill is the only trigger (owner). `PlayScore`, kept plays, the tick 199
    timeline, the viewer's protection, card (`0DC5`, `0DC6`, drawn with `HudText`), announcer line, `5B1F` (#45's
    extraction). No skip and no off switch (owner). Still the chase camera. A dragon kill now feels like an ending, and
@@ -593,6 +594,89 @@ two heroes recording at once.
   (`set_passengers`), an enderman teleporting, a lead, a minecart. Check those decode before ghosts lean on them.
 - The keyframe's capture stays on `Connection`, and step 2 should watch on the client that no captured packet arrives.
 - The first-keyframe spike: measure again with ghosts; spread it if a tick goes over.
+### Step 2, the first replay (2026-11-11)
+Built on `feature/potg`: `/overcraft potg replay` (dev only) plays the hero's last 12 s from the ring. Server:
+`PotgReplay` freezes the world (`setFrozen`), the viewer's own player isn't ticked (`PotgFreezeMixin` on
+`ServerPlayer.doTick`), the mod's `END_SERVER_TICK` work and the viewer's input, mode and hero payloads are skipped, and
+`ticking_state` and `set_time` are held back from the viewer; it thaws when the client is done, or after a 15 s watchdog,
+and sends held looks again (`HeroManager.showState` for everything the viewer tracks). Client: `PotgReplayClient` with
+`PotgClientLevelMixin` (getEntities, addEntity, removeEntity and getPushableEntities answer with the ghosts),
+`PotgReplayRenderMixin` (the ghost view is on during `GameRenderer.extract` and `render`, and in the replay's own step),
+`PotgReplayHoldMixin` (the local player doesn't tick), `PotgReplayKeysMixin` (no `handleKeybinds`),
+`PotgReplaySoundMixin` (the run-in is silent), `HeroAnimator.swapAll` (a map of its own while it plays), the chase view in
+`CameraMixin`, the HUD hidden as F1 does. Raw rows: [runs_step2](runs_step2/).
+
+**How it ran.** One dev client under the lock, Overwatch and Battle.net checked closed, Kiriko, the harness for the fights
+(kunai by `key`, aim from the server), and **real keys** for one check (the PC idle 76 min; `rk_keys.ps1`, the
+foreground window guarded before every event, after `rk_mouse.ps1`). The hero model needs the local pack:
+`OC_ASSET_PACK` pointed at the main checkout's (E: has no links), as `build.gradle` says. Screenshots are in the
+worktree's `run/screenshots/potg_*` and aren't committed (they show Overwatch models).
+
+**The types step 1 never saw** (`types_dump.txt`, a creeper, a splash potion, an enderman hit by `/damage ... arrow`, a
+chicken jockey, a leashed cow): `explode`, `level_particles`, `set_passengers`, `set_entity_link` came and decode, 0
+errors. The potion's splash is a `level_event`; the enderman's teleport is an `entity_position_sync`, not
+`teleport_entity`. Still never seen: `sound_entity`, `animate`, `block_event`, `block_destruction`, `teleport_entity`, a
+minecart, `voice_line`.
+
+**What replays** (12 s windows; screenshots looked at):
+- **The night fight** (`r_fight`): Kiriko's ghost in her own model with her kunai and her throw clips, the kunai's trails
+  (our effects), zombies, skeletons, slimes, arrows, XP orbs, dropped items. The chase view follows her.
+- **Her death in the window** (`r_death`): she dies where she fell, then stands at her respawn point; the run-in held one
+  ghost (the window's keyframe was taken while she was dead, as step 1 found) and the respawn's own `add_entity`s
+  brought back the rest (168 ghosts).
+- **The dragon** (`r_dragon`, the End's own dragon, 32 s of kunai): the dragon flying and flashing red when hit, the
+  crystals and their beams to it, about 70 endermen, the pillars.
+- **Leaving hero mode in the window** (G at 24 and 28 s of the fight): it played without an error; whether she showed
+  it isn't in a screenshot.
+- **Errors in every replay: none** (decode, handlers, ghost ticks), 1,900 to 11,200 packets applied.
+
+**The world pauses and comes back as it was:**
+| Check | Seen |
+|---|---|
+| Game time across a replay | 1493 -> 1556 ticks with 12 s of replay and about 3 s of reads: it didn't move while it played |
+| Hero's ult charge | about +16 over the reads around a 12 s replay (it would be +60 running): the mod's tick waits |
+| Health, hero, hero mode, position, client and server | the same before and after in each of the 8 replays on the last two trees (fight twice, walk, mid-air, jump, death, dragon, real keys), except the real-key run before its fix, which left hero mode off (below) |
+| Mob counts | the same before and after each (natural spawns between the runs) |
+| The live level, entity by entity, client | all unchanged but 4 to 43 that moved under 0.5 m with nothing else changed, every one: interpolations finishing after the freeze arrived; 0 new, none changed otherwise |
+| Nothing captured reaches the client (step 1's question) | sent against received by type over two replays and 22 keyframes: 39 types equal, none differ |
+
+**The body stays where it was** (client position read every second during the replay, server position before and after):
+- Walking (W held from before): it moved in the tick before the replay began, then held at the same point for 12 s, and
+  walked on after; client and server agreed after.
+- Mid-air (6 m up): held at y -55.07 for 12 s, then fell and landed (`land`); no kick.
+- Holding jump: held mid-jump at y -59.02, then landed.
+
+**Real keys during a replay** (`r_keys`): W held, Space, E, Q, G, 1, the left button. Nothing moved or fired, and the
+replay played through (no key skips it). **A bug found by them:** G turned hero mode off after the replay ended, because
+the hero's own keys aren't in the options' list, so their clicks waited. Fixed by draining `HeroControls`' mappings too,
+and the same keys again left hero mode, ult (not spent), Suzu (not on cooldown), slot and position as they were.
+
+**Costs:**
+| | Measured |
+|---|---|
+| Start (keyframe and run-in of 2 to 73 ticks) | 2 to 31 ms |
+| Replay step (a server tick of packets, then the ghosts' tick) | mean 0.23 to 0.55 ms, max 0.7 to 8.2 ms |
+| Ghosts | 81 to 200 |
+| Frame time while it plays, window in front | mean 8.5 to 10.4 ms; worst frame 15 to 254 ms, at the start |
+| The tap, first keyframe again (server side, ghosts don't touch it) | worst tick 7.5 ms (a keyframe of 6.7 ms with 157 entities); mean 0.142 ms/tick |
+| Memory | the client at 4.7 GB with Kiriko's model; free fell to 1.8 GB with gradle daemons up: tight, watch it |
+
+**Not shown, or not done:**
+- **First person, and the hero's own sounds as the view's**; the chase view only (step 4).
+- **A frozen world for anyone else**: one player; a second player, a LAN guest, a dedicated server: not tried.
+- **The statics list**: only `HeroAnimator` is swapped and `Fx` cleared at both ends (live held effects are sent again
+  by the server at the end). The other maps keyed by entity id (`MercyFx`, the sound classes and the rest) aren't
+  swapped; with Kiriko and mobs nothing showed, but a Mercy or Lúcio window would test it.
+- **Escape during a replay**: it opens the pause menu and the replay waits (by design of the step); not tried.
+- **The worst frame at the start** (up to 254 ms) wasn't traced: probably the first frame of 180 ghosts' render states.
+- **Sounds** weren't listened to (the harness has `heard`; not used): they go through the handlers, not checked by ear.
+- **A G inside the window**: no screenshot of that moment.
+- **Block packets** aren't applied (by design until block rewind), so blocks broken in the window stay broken.
+- Fights were scripted (harness keys, server aim), apart from the real-key check.
+
+**What step 3 needs:** the replay holds; next are `PlayScore`, kept plays (a death empties the ring in 25 s, and a
+keyframe taken while dead is empty: the replay then leans on the respawn's own `add_entity`s), the tick 199 hold, the
+card, the announcer and `5B1F`. The statics list should be finished before a support hero's window is shown.
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):
 - Armed only in a dragon fight, so normal play pays nothing. Bytes bounded per hero: the rolling ring is fixed, the oldest

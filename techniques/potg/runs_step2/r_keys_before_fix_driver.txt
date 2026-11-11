@@ -1,0 +1,10 @@
+=== phase r_keys 14:36:44
+cooldowns before {'heroMode': True, 'ult': 2725.0, 'ability2Cooldown': 0.0, 'slot': 0}
+real keys: sent W, Space, E, Q, G, 1, left button
+  during, after keys {'x': 30.5, 'y': 62.0, 'z': 0.5, 'heroMode': True, 'ult': 2725.0, 'ability2Cooldown': 0.0, 'slot': 0, 'screen': ''}
+after {'x': 30.5, 'y': 62.0, 'z': 0.5, 'heroMode': False, 'ult': 2725.0, 'ability2Cooldown': 0.0, 'slot': 0, 'screen': '', 'health': 20.0}
+  log [14:36:44] [Server thread/INFO] (Overcraft) [POTG] replay for Kiriko from tick 6425, world frozen (was false)
+  log [14:36:44] [Render thread/INFO] (Overcraft) [POTG] replay: 2384 records (227 in the keyframe), run-in 2 ticks in 2.0 ms, 81 ghosts, hero ghost RemotePlayer minecraft:slime_ball
+  log [14:36:56] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 84 before, 80 unchanged, 4 settled (under 0.5 m, nothing else), 0 new
+  log [14:36:56] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 241 steps, step ms mean 0.229 max 1.654; frames 1177, frame ms mean 10.2 max 39.9; most ghosts 84; packets applied 1899; errors none
+  log [14:36:56] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 243 server ticks, world thawed
