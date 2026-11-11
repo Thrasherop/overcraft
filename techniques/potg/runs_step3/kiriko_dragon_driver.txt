@@ -1,0 +1,24 @@
+=== phase potg_dragon 15:01:26
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 646.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+bot {'ok': True, 'hero': 'ANA'}
+fight over {'screen': '', 'fps': 112, 'x': 38.88, 'y': 60.0, 'z': 4.51, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1912.25, 'primaryAmmo': 6, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+real input: held the left button 40 s
+real input: sent W, Space, E, Q, G, 1, Escape, Enter, H, left button
+after {'screen': '', 'fps': 117, 'x': 41.02, 'y': 60.0, 'z': 7.12, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2000.75, 'primaryAmmo': 11, 'secondaryAmmo': 10, 'anim': 'idle'}
+end portal blocks at x0 z1, y: [60]
+  log [15:01:54] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 28 (pinned 181 KB)
+  log [15:01:55] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 55 (pinned 194 KB)
+  log [15:01:56] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 110 (pinned 201 KB)
+  log [15:02:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 138 (pinned 216 KB)
+  log [15:02:06] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 165 (pinned 224 KB)
+  log [15:02:14] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2665 (pinned 225 KB)
+  log [15:02:14] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
+  log [15:02:30] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 2665; plays: Kiriko[HS 2665, LS 0, SS 0, SD 0] anaB[HS 0, LS 0, SS 0, SD 0]; scoring ms/tick: mean 0.0173 max 1.776 over 908 ticks
+  log [15:02:30] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko (High Score) to 1 viewer(s), ring to tick 1149, world frozen (was false)
+  log [15:02:30] [Render thread/INFO] (Overcraft) [POTG] card: Kiriko as Kiriko, High Score
+  log [15:02:35] [Render thread/INFO] (Overcraft) [POTG] replay: 6005 records (232 in the keyframe), run-in 69 ticks in 22.8 ms, 77 ghosts, hero ghost RemotePlayer minecraft:air
+  log [15:02:47] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 126 before, 67 unchanged, 59 settled (under 0.5 m, nothing else), 0 new
+  log [15:02:47] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 65 id-keyed client maps swapped; 241 steps, step ms mean 0.453 max 1.927; frames 1461, frame ms mean 11.5 max 213.0; most ghosts 80; packets applied 5367; errors none
+  log [15:02:47] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 339 server ticks, world thawed
+  log [15:02:48] [Server thread/INFO] (Overcraft) [POTG] disarmed, 2 recorders dropped
+  log [15:02:48] [Server thread/INFO] (Overcraft) [POTG] the dragon fight is over: nothing recorded any more

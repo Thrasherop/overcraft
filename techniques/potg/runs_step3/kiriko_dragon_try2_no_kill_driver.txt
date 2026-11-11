@@ -1,0 +1,12 @@
+=== phase potg_dragon 15:32:11
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 58.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 646.25, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+bot {'ok': True, 'hero': 'ANA'}
+real input: held the left button 40 s
+fight over {'screen': '', 'fps': 116, 'x': 30.21, 'y': 58.0, 'z': 13.33, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1147.75, 'primaryAmmo': 11, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+after {'screen': '', 'fps': 118, 'x': 30.21, 'y': 58.0, 'z': 13.33, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1339.0, 'primaryAmmo': 11, 'secondaryAmmo': 10, 'anim': 'idle'} server [30.20837872276936d, 58.0d, 13.330445035811533d]
+end portal blocks at x0 z1, y: []
+  log [15:32:43] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 28 (pinned 195 KB)
+  log [15:32:48] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 55 (pinned 202 KB)
+  log [15:32:49] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 110 (pinned 208 KB)
+  log [15:32:50] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 138 (pinned 191 KB)
+  log [15:32:57] [Server thread/INFO] (Overcraft) [POTG] anaB: new best High Score 25 (pinned 91 KB)

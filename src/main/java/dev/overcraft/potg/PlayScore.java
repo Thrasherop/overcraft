@@ -29,14 +29,15 @@ import java.util.UUID;
  * Score falling to the others under a threshold. **Every weight here is ours**: no public source gives Blizzard's. Each
  * time a window sets a new best, the hero's ring is copied then (PotgTap.snapshot), so the play survives the ring's 25 s and
  * a death (whose keyframes are empty: step 1). Only heroes in hero mode score (owner, 2026-11-11: Minecraft-mode kills
- * don't count), and only while the tap is armed (a dragon fight).
+ * don't count), and only while the tap is armed: the whole run, in any dimension (owner, 2026-11-11: "Do the whole time").
  */
 public final class PlayScore {
 	private PlayScore() {
 	}
 
 	public enum Category {
-		HIGH_SCORE("High Score"), LIFE_SAVER("Life Saver"), SHARPSHOOTER("Sharpshooter"), SHUTDOWN("Shutdown");
+		// the names as the game has them (D: strings C27F "High Score", 405D LIFESAVER, 38F4 SHARPSHOOTER, 362B SHUTDOWN)
+		HIGH_SCORE("High Score"), LIFE_SAVER("Lifesaver"), SHARPSHOOTER("Sharpshooter"), SHUTDOWN("Shutdown");
 
 		public final String title;
 
@@ -45,22 +46,9 @@ public final class PlayScore {
 		}
 	}
 
-	/** Seconds in a window (W: the 12 s replay). */
-	public static final int WINDOW = 12;
-	// ---- weights, all ours ----
-	/** A kill is worth the victim's health in Overwatch points, capped. */
-	static final double KILL_CAP = 1000;
-	/** The Ender Dragon's kill on top (ours: #44, "the last hits count"). */
-	static final double DRAGON_KILL_BONUS = 1500;
-	/** An ult's start (ours), scaled down as the patent allows ("may be reduced by a set amount or share"). */
-	static final double ULT_START = 200;
-	static final double ULT_SHARE = 0.75;
-	/** A critical hit's damage again, more with distance: 1 + distance / 15 m (ours). */
-	static final double SHARP_PER_METRE = 1 / 15.0;
-	/** Stopping a lit creeper, or a hero in their ult (ours: the note's "was dangerous" rule for mobs). */
-	static final double SHUTDOWN_KILL = 500;
-	/** High Score under this gives way to the best of the others, if any scored (the patent's option; the number ours). */
-	static final double HIGH_SCORE_FLOOR = 300;
+	/** Seconds in a window: PotgValues (W: the 12 s replay). */
+	public static final int WINDOW = PotgValues.WINDOW_SECONDS;
+	static final double HIGH_SCORE_FLOOR = PotgValues.HIGH_SCORE_FLOOR;
 
 	/** One hero's rows: this second's points, the last WINDOW seconds, the best window and its copy of the ring. */
 	static final class Rows {
@@ -70,6 +58,9 @@ public final class PlayScore {
 		final double[] best = new double[4];
 		final PotgTap.Dump[] pinned = new PotgTap.Dump[4];
 		final String[] heroAt = new String[4];
+		/** Where each pinned play happened: a play from another dimension than the viewers' (owner: the whole run). */
+		@SuppressWarnings("unchecked")
+		final net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level>[] whereAt = new net.minecraft.resources.ResourceKey[4];
 		String name = "";
 		double lastUlt;
 		/** The server tick each best was pinned at, and when a death asks for the pins to be taken again. */
@@ -123,9 +114,9 @@ public final class PlayScore {
 		long t0 = System.nanoTime();
 		Rows r = rows(attacker);
 		if (r != null && dealt > 0 && target != attacker && !Allies.isBystander((LivingEntity) attacker, target)) {
-			r.now[Category.HIGH_SCORE.ordinal()] += dealt;
+			r.now[Category.HIGH_SCORE.ordinal()] += dealt * PotgValues.DAMAGE_PER_HP;
 			if (blow.crit()) {
-				r.now[Category.SHARPSHOOTER.ordinal()] += dealt * (1 + attacker.distanceTo(target) * SHARP_PER_METRE);
+				r.now[Category.SHARPSHOOTER.ordinal()] += dealt * (1 + attacker.distanceTo(target) / PotgValues.SHARP_METRES);
 			}
 		}
 		tickNanos += System.nanoTime() - t0;
@@ -136,13 +127,11 @@ public final class PlayScore {
 		long t0 = System.nanoTime();
 		Rows r = rows(killer);
 		if (r != null && killer != victim && !Allies.isBystander((LivingEntity) killer, victim)) {
-			double worth = Math.min(KILL_CAP, Ow.toOw(victim.getMaxHealth()));
-			if (victim instanceof EnderDragon) {
-				worth += DRAGON_KILL_BONUS;
-			}
+			double worth = Math.min(PotgValues.KILL_CAP, Ow.toOw(victim.getMaxHealth()))
+				+ PotgValues.KILL_BONUS.getOrDefault(net.minecraft.world.entity.EntityType.getKey(victim.getType()).toString(), 0.0);
 			r.now[Category.HIGH_SCORE.ordinal()] += worth;
 			if (dangerous(victim)) {
-				r.now[Category.SHUTDOWN.ordinal()] += SHUTDOWN_KILL;
+				r.now[Category.SHUTDOWN.ordinal()] += PotgValues.SHUTDOWN_KILL;
 			}
 		}
 		tickNanos += System.nanoTime() - t0;
@@ -155,12 +144,21 @@ public final class PlayScore {
 		return victim instanceof ServerPlayer p && HeroManager.state(p) instanceof HeroState s && s.ultActive > 0;
 	}
 
+	/** Player.take: a hero picked up an item; worth what PotgValues.PICKUP says (nothing yet: the owner's call). */
+	public static void pickup(Player hero, net.minecraft.world.item.ItemStack stack) {
+		Double worth = PotgValues.PICKUP.get(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+		Rows r = worth == null ? null : rows(hero);
+		if (r != null) {
+			r.now[Category.HIGH_SCORE.ordinal()] += worth * stack.getCount();
+		}
+	}
+
 	/** Combat.addFireForHealing: a hero healed someone (Overwatch HP). */
 	public static void heal(Player hero, double healed) {
 		long t0 = System.nanoTime();
 		Rows r = rows(hero);
 		if (r != null && healed > 0) {
-			r.now[Category.LIFE_SAVER.ordinal()] += healed;
+			r.now[Category.LIFE_SAVER.ordinal()] += healed * PotgValues.HEAL_PER_HP;
 		}
 		tickNanos += System.nanoTime() - t0;
 	}
@@ -182,7 +180,7 @@ public final class PlayScore {
 			}
 			double cost = Combat.ultCost(s);
 			if (r.lastUlt >= cost && s.ultCharge < r.lastUlt - cost * 0.5) {
-				r.now[Category.HIGH_SCORE.ordinal()] += ULT_START * ULT_SHARE;
+				r.now[Category.HIGH_SCORE.ordinal()] += PotgValues.ULT_START * PotgValues.ULT_SHARE;
 			}
 			r.lastUlt = s.ultCharge;
 		}
@@ -218,6 +216,7 @@ public final class PlayScore {
 					r.pinnedAt[c] = server.getTickCount();
 					Hero hero = HeroManager.hero(player);
 					r.heroAt[c] = hero == null ? "" : hero.id;
+					r.whereAt[c] = player.level().dimension();
 					Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: new best %s %.0f (pinned %d KB)", r.name,
 						Category.values()[c].title, sum, size(dump) / 1024));
 				}
@@ -237,8 +236,8 @@ public final class PlayScore {
 	}
 
 	/** How long after a best window a death still belongs to it, and how long after the death its pin is taken again (ours). */
-	static final int DEATH_REACH = 60;
-	static final int DEATH_TAIL = 20;
+	static final int DEATH_REACH = PotgValues.DEATH_REACH_TICKS;
+	static final int DEATH_TAIL = PotgValues.DEATH_TAIL_TICKS;
 
 	/**
 	 * A hero died (AFTER_DEATH). A play that ended just before it is taken again a second after it, so the kept play shows
@@ -306,7 +305,8 @@ public final class PlayScore {
 	}
 
 	/** The play chosen: whose, which category, its score and its copy of the ring. */
-	public record Choice(String player, String hero, Category category, double score, PotgTap.Dump dump, String table) {
+	public record Choice(String player, String hero, Category category, double score, PotgTap.Dump dump, String table,
+						 net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> where) {
 	}
 
 	/** Across every hero: each one's winning category, then the highest of those. Null when no hero has a play. */
@@ -320,10 +320,10 @@ public final class PlayScore {
 				continue;
 			}
 			if (best == null || r.best[c] > best.score()) {
-				best = new Choice(r.name, r.heroAt[c], Category.values()[c], r.best[c], r.pinned[c], "");
+				best = new Choice(r.name, r.heroAt[c], Category.values()[c], r.best[c], r.pinned[c], "", r.whereAt[c]);
 			}
 		}
-		return best == null ? null : new Choice(best.player(), best.hero(), best.category(), best.score(), best.dump(), table.toString());
+		return best == null ? null : new Choice(best.player(), best.hero(), best.category(), best.score(), best.dump(), table.toString(), best.where());
 	}
 
 	public static String costReport() {

@@ -490,7 +490,7 @@ where it applies ([visual_review](../testing/visual_review.md)).
    - the game afterwards is exactly as before: health, mobs, hero, G, loops, held effects;
    - the costs are written down. If handlers or ghosts fail, stop and rethink.
    **Done 2026-11-11, from the dev command:** [measured](#step-2-the-first-replay-2026-11-11); what's still open is listed there.
-3. **Dragon POTG, one player:** the dragon kill is the only trigger (owner). `PlayScore`, kept plays, the tick 199
+3. **Dragon POTG, one player:** the dragon kill is the only trigger (owner). **Built 2026-11-11:** [step 3](#step-3-the-dragons-play-of-the-game-2026-11-11); the owner then moved plays to the whole run and the replay toward an existing replay mod. `PlayScore`, kept plays, the tick 199
    timeline, the viewer's protection, card (`0DC5`, `0DC6`, drawn with `HudText`), announcer line, `5B1F` (#45's
    extraction). No skip and no off switch (owner). Still the chase camera. A dragon kill now feels like an ending, and
    the owner can judge it here.
@@ -677,6 +677,125 @@ and the same keys again left hero mode, ult (not spent), Suzu (not on cooldown),
 **What step 3 needs:** the replay holds; next are `PlayScore`, kept plays (a death empties the ring in 25 s, and a
 keyframe taken while dead is empty: the replay then leans on the respawn's own `add_entity`s), the tick 199 hold, the
 card, the announcer and `5B1F`. The statics list should be finished before a support hero's window is shown.
+### Step 3, the dragon's Play of the Game (2026-11-11)
+**The owner's turns during it** (2026-11-11), which this section follows:
+- "Do the whole time": plays come from the whole run, not just the dragon fight. If the best play was elsewhere (the
+  overworld), everyone is taken there to watch, as Overwatch's POTG changes submaps.
+- Replay through an existing replay mod, from the hero's first-person view, instead of our ghosts: that "fixes any
+  potential issues" and needs no block rewind. So the ghost engine (step 2) gets nothing more: no more map swaps, no first
+  person, no block rewind. It's the stand-in behind an interface until the replay mod's backend is chosen.
+- "Are you datamining?": [what the data says](#what-the-game-data-says-about-scoring) is below.
+- Scoring values are the owner's to tune: one table (`PotgValues`), no progression weighting until the owner says.
+
+**Built** (on `feature/potg`):
+- **`PlayScore`:** the patent's sliding window, 12 s in 1 s steps, over four categories named as the game names them
+  (D). It's fed by `Combat.deal` (damage, crits with distance), `KillFeed.onDeath` (kills, push credit included; the
+  Shutdown rule), `addFireForHealing` (Lifesaver) and `Player.take` (item pickups: the table is empty). Ult starts are
+  seen where the charge is spent: one place for every kit, since the kits' own `afterUlt` calls take no player.
+  - Each hero's best window per category is pinned as a copy of the ring when it's set.
+  - It's taken again a second after a death that follows it (within 3 s), so the kept play shows the death.
+  - Only heroes in hero mode score. The tap and scoring arm themselves the whole run once a hero is in play, in any
+    dimension (owner: "the whole time").
+- **`PotgValues`:** every number in one table, each marked: the window, the step, the floor, the per-event values, the
+  ult share, the death reach, `KILL_BONUS` by mob id (only the dragon: #44), `PICKUP` by item id (empty).
+- **The trigger:** the dragon's `AFTER_DEATH` closes scoring and decides whether the killer allows a POTG. A player out
+  of hero mode doesn't (owner); a hero, the world or a command does. At `tickDeath`'s tick 199 (`PotgDragonMixin`) the
+  best play is chosen, the world freezes, and the showing starts for everyone in the dragon's dimension, the dead
+  included. The exit portal is placed at tick 200, after the thaw. Scoring then starts again from nothing.
+- **The backend interface:** `PotgReplay.Backend` (`canReplay(where, here)`, `play(show, viewers)`; the backend calls
+  `clientDone`). `GHOSTS` is step 2's engine and replays only a play from the viewers' own dimension; for another it
+  shows the card alone. A replay-mod backend would take the viewers there (the owner's submap rule). The card, the line,
+  the music, the freeze and the choice don't depend on the backend.
+- **Client:**
+  - `PotgCard`: "PLAY OF THE GAME" (D 0DC5), "<NAME> AS <HERO>" (D 0DC6 " AS "), the category, drawn with `HudText` on
+    a band like VICTORY's. Layout and timings ours.
+  - `PotgCard.Holder`: the screen held open for the whole showing. It takes every key and click and no key closes it
+    (owner: nobody skips).
+  - The client's id-keyed static maps (65 found by type in 29 classes) are emptied while the replay plays and restored
+    after, as is HeroAnimator's.
+  - World sounds are stopped at both ends.
+- **Sounds:** the announcer's "Play of the game." (voice set 001D, file A8C4, 1.66 s) and cue 5B1F (bank 1E5C8, file
+  2B0E13, Opus stereo, 16.84 s). Extracted offline with Overwatch and Battle.net checked closed: round 8's
+  `extract_voice.py` and kiriko-sounds' `extract_banks.py "Potg=5B1F"`, into the archive's `extracted\154088`. They're
+  converted as the pack tool does (mono Vorbis q5) into the main checkout's local pack, with two entries added to its
+  `sounds.json`. The sound map entries are in `tools/soundmaps/kiriko.txt`, so the pack tool makes them next time. Never
+  committed.
+- **5B1F by proxy** (not heard; nobody listened):
+  - Its length, 16.84 s, is the card's 4.8 s plus the replay's 12 s, and the wiki's 17 s.
+  - Its loudness by second: -17 -17 -20 -23 -24 -16 -16 **-9 -10 -10** -12 -12 -23 -26 -30 -36 -47 dB. That rises to
+    a peak at 7 to 10 s and fades out by the end: music shaped like a highlight, not an effect.
+  - Where the data plays it: graph 0D3B's message 19C8, and graph 1B4C directly (music-round9: M-L).
+  - Identity M: the wiki calls the match-end cue the victory theme, and no POTG string ties 5B1F to the POTG.
+
+**What played** (one client, Overwatch and Battle.net checked closed, raw rows in [runs_step3](runs_step3/); screenshots
+in the worktree's `run/screenshots/` and not committed):
+- **The real dragon kill on the final code** (`final_*`):
+  - The overworld: Kiriko fought zombies at night. Her best High Score window there was 2500, pinned.
+  - The End: crystals removed, the dragon's health set to 24, then killed by her kunai with the left mouse button held
+    by real OS input. The input was guarded on the game window being in front; the aim was set from the server.
+  - VICTORY, then the dragon's death, then at tick 199 the card "KIRIKO AS KIRIKO / HIGH SCORE". Her End play (2615,
+    the kill's bonus in it) beat her overworld one. Then the 12 s replay with the dragon, endermen and her kunai.
+  - Then the exit portal opened (an end portal block at y 61 after; none before).
+  - Real keys during the card and the replay (W held, Space, E, Q, G, 1, Escape, Enter, H, left button): nothing
+    skipped, opened or changed.
+  - At the card against after: position 30.5 62.0 0.5, client and server; health 20; hero Kiriko; hero mode on; ult
+    full: the same.
+  - Scoring cost: mean 0.015 ms a tick, worst 2.9 ms (a tick with a pin's copy).
+- **Two heroes, Mercy shown, a death in the kept play** (`mercy_two_heroes_death_driver.txt`; the overworld, since
+  DevBot's bots live there; a summoned NoAI dragon killed by a server explosion):
+  - Mercy healed the bot Ana with her beam (the left button) for 10 s and scored Lifesaver 644. Ana's grenades on
+    husks scored High Score 177.
+  - Mercy died. Her Lifesaver play was taken again with the death in it.
+  - The dragon's death chose Mercy's play: card "KIRIKO AS MERCY / LIFESAVER", then the replay. Her ghost was in her
+    model, Ana and the husks were there, and she dies at its end.
+  - Real keys at the card left nothing changed.
+- **The first real kill** (`kiriko_dragon_driver.txt`, an earlier tree): the same chain in the End, screenshots looked
+  at.
+- **Errors in every replay: none.**
+
+**Found in play, and fixed:**
+- The tap's statics carried a world's state into the next (its bound protocol: `damage_event` failed to encode).
+- A dragon whose chunks unload ended the fight: the End unloads when its only player dies.
+- The dead weren't viewers (they aren't in `level.players()`).
+- The card showed the last replay's stale camera.
+- Scoring missed the dragon's own kill second.
+
+**Not shown, or not done:**
+- **Card only** (a best play in another dimension than the viewers'): built, never triggered in a run.
+- **A Minecraft-mode killer** taking the POTG away: the rule is in code, not played.
+- Mercy's beam isn't visible in the replay frames: probably `HeroSync`, which the replay doesn't apply (step 2). Left
+  for the replay-mod backend.
+- The `PICKUP` hook ran (a blaze rod picked up, no error, no score: the table is empty), but no value is set.
+- Sounds not listened to. A second player, a server, other heroes.
+- Most fights were scripted. The dragon's health was lowered and its crystals removed so a kunai could finish it.
+- No critique agent has read this step.
+
+#### What the game data says about scoring
+Searched offline with Overwatch and Battle.net closed (`runs_step3/potg_scan*.py`, `potg_types.py`, their json):
+- **Names (D H):** strings 38F4 SHARPSHOOTER, 405D LIFESAVER, 362B SHUTDOWN, 4AA5 ULTIMATE SHUTDOWN, 38D0 HIGHLIGHT,
+  C27F "High Score", 0DC5 PLAY OF THE GAME, 474A PLAY OF THE MATCH, "Today's Top 5". The categories are named as the
+  game names them (Lifesaver, one word). Ultimate Shutdown is a name the data has and we don't score separately yet.
+- **Structures (D, TankLib's schema):**
+  - Statescript action `STU_0FC6DAEA` carries a `PlayOfTheGameData`: a highlight type, id, value, targets and
+    description, as config vars.
+  - A highlight type `STU_C25281C3` holds a description, a list, and two floats defaulting to 1 and 8.
+  - The highlight file (`tePlayerHighlight`) records the kind (POTG, Top 5, manual), hero, intro, skin, position and
+    highlight type.
+  - `POTGType` is the intro's choice: Normal, Default, SombraHack, Random.
+- **Not in this build's client data:** none of the 5,687 statescript graphs holds a `STU_0FC6DAEA`, and no asset type's
+  root is a highlight type. So the events, values, window and selection aren't in what the client ships. They run on
+  Blizzard's servers (BZ: the patent describes server-side logging). The two floats' meaning is unknown (a weight and 8 s
+  is a guess, not used).
+- **So:** the names are D, the method is BZ, the window W, and every number is ours (in `PotgValues`).
+
+#### Progression events, for the owner to decide (none added)
+Proposals only, each a `PotgValues` entry when the owner wants it:
+- **Kills:** a blaze, an enderman, an end crystal (shooting one is a real dragon-fight play), a wither skeleton, an
+  elder guardian, the Wither.
+- **Pickups:** a blaze rod, an ender pearl, an eye of ender.
+- **Other events** (a new hook each): placing an eye in the end portal frame, opening the portal, the first entry into
+  the Nether or the End.
+- **And a question:** should a crystal broken by a hero count for Shutdown (it stops the dragon's healing)?
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):
 - Armed only in a dragon fight, so normal play pays nothing. Bytes bounded per hero: the rolling ring is fixed, the oldest

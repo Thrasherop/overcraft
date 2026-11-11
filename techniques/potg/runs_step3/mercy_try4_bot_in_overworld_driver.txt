@@ -1,0 +1,11 @@
+=== phase potg_mercy 15:19:34
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 521.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+bot {'ok': True, 'hero': 'ANA'}
+healing {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 595.5, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 8.0700035, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 33.0, 'z': 2.0}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 596.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+back in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 657.5, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'zombie': 3, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 0}
+dragon hit by a server explosion
+after {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 853.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+end portal blocks at x0 z1, y: [60]
+  log [15:20:22] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+  log [15:20:40] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: no play; plays:; scoring ms/tick: mean 0.0121 max 1.983 over 890 ticks

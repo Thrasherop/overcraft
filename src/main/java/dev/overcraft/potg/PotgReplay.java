@@ -39,9 +39,45 @@ public final class PotgReplay {
 	/** Thaws after this many server ticks past the showing's length whatever the client does (ours: 3 s). */
 	private static final int WATCHDOG_EXTRA = 60;
 
-	/** What a client is handed: the ring, and the card's words (player null for the dev replay, which has no card). */
-	public record Show(PotgTap.Dump dump, @Nullable String player, String hero, String category) {
+	/**
+	 * What a showing is: the ring (null: card only, the backend can't replay it), and the card's words (player null for the
+	 * dev replay, which has no card).
+	 */
+	public record Show(PotgTap.@Nullable Dump dump, @Nullable String player, String hero, String category) {
 	}
+
+	/**
+	 * The replay backend (owner, 2026-11-11: the replay may move to an existing replay mod): it plays a showing for these
+	 * viewers and calls clientDone when it's over. The card, line and music, the freeze and the choice stay here.
+	 * GHOSTS is step 2's engine: the ring redrawn as ghosts in the viewers' loaded level, single player only, and only a
+	 * play from the viewers' own dimension (another needs the viewers taken there: a backend that can, or none).
+	 */
+	public interface Backend {
+		/** Whether it can replay a play from {@code where} for viewers standing in {@code here}. */
+		boolean canReplay(net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> where, ServerLevel here);
+
+		/** Starts the showing; true if it started (then clientDone must come, or the watchdog thaws). */
+		boolean play(Show show, List<ServerPlayer> viewers);
+	}
+
+	public static final Backend GHOSTS = new Backend() {
+		@Override
+		public boolean canReplay(net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> where, ServerLevel here) {
+			return where == here.dimension();
+		}
+
+		@Override
+		public boolean play(Show show, List<ServerPlayer> viewers) {
+			Consumer<Show> play = clientPlayer;
+			if (play == null) {
+				return false;
+			}
+			play.accept(show);
+			return true;
+		}
+	};
+
+	public static Backend backend = GHOSTS;
 
 	private static final Set<UUID> VIEWERS = new HashSet<>();
 	private static boolean active;
@@ -84,12 +120,8 @@ public final class PotgReplay {
 	}
 
 	private static String show(MinecraftServer server, List<ServerPlayer> viewers, Show show, int length) {
-		Consumer<Show> play = clientPlayer;
 		if (active) {
 			return "A replay is already playing";
-		}
-		if (play == null) {
-			return "No client to play it (single player only for now)";
 		}
 		wasFrozen = server.tickRateManager().isFrozen();
 		VIEWERS.clear();
@@ -102,9 +134,13 @@ public final class PotgReplay {
 		endAsked = false;
 		// broadcast to everyone but the viewers, whose copies PotgTap.onSend holds back
 		server.tickRateManager().setFrozen(true);
-		Overcraft.LOG.info("[POTG] showing {} to {} viewer(s), ring to tick {}, world frozen (was {})",
-			show.player() == null ? "a replay" : show.player() + " (" + show.category() + ")", viewers.size(), show.dump().nowTick(), wasFrozen);
-		play.accept(show);
+		Overcraft.LOG.info("[POTG] showing {} to {} viewer(s), {}, world frozen (was {})",
+			show.player() == null ? "a replay" : show.player() + " (" + show.category() + ")", viewers.size(),
+			show.dump() == null ? "card only" : "ring to tick " + show.dump().nowTick(), wasFrozen);
+		if (!backend.play(show, viewers)) {
+			end(server, "no backend to play it");
+			return "No client to play it (single player only for now)";
+		}
 		return "Replaying the last " + WINDOW_TICKS / 20 + " s";
 	}
 
@@ -141,6 +177,8 @@ public final class PotgReplay {
 		PlayScore.Choice choice = PlayScore.choose();
 		Overcraft.LOG.info("[POTG] at the dragon's tick 199: {}; plays:{}; {}", choice == null ? "no play" : choice.player() + " "
 			+ choice.category().title + " " + Math.round(choice.score()), choice == null ? "" : choice.table(), PlayScore.costReport());
+		// the next plays start from nothing (the run goes on after the dragon: "the whole time")
+		PlayScore.open();
 		if (!killerAllows || choice == null) {
 			return;
 		}
@@ -152,7 +190,12 @@ public final class PotgReplay {
 		}
 		dev.overcraft.hero.Hero hero = dev.overcraft.hero.Hero.byId(choice.hero());
 		shown = true;
-		show(level.getServer(), viewers, new Show(choice.dump(), choice.player(), hero == null ? "" : hero.displayName,
+		boolean replayable = backend.canReplay(choice.where(), level);
+		if (!replayable) {
+			Overcraft.LOG.info("[POTG] the play was in {}, the viewers in {}: this backend can't take them there, card only",
+				choice.where().identifier(), level.dimension().identifier());
+		}
+		show(level.getServer(), viewers, new Show(replayable ? choice.dump() : null, choice.player(), hero == null ? "" : hero.displayName,
 			choice.category().title), CARD_TICKS + WINDOW_TICKS);
 	}
 

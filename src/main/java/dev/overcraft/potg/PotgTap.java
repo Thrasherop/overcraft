@@ -204,7 +204,6 @@ public final class PotgTap {
 
 	public static String stop() {
 		armed = false;
-		autoArmed = false;
 		PlayScore.clear();
 		int n = RECORDERS.size();
 		RECORDERS.clear();
@@ -328,46 +327,23 @@ public final class PotgTap {
 		return KEPT.contains(type);
 	}
 
-	/** Armed by a dragon fight (not the dev command), so disarmed when it's over. */
-	private static boolean autoArmed;
-	private static int lastFightTick;
 	/**
-	 * A dragon out of sight isn't a fight over: its chunks unload when the End's last player dies or leaves, and it comes
-	 * back with them, so the plays wait for it this long (ours: 5 min), or until its POTG has been shown.
-	 */
-	private static final int NO_DRAGON_TICKS = 6000;
-
-	/**
-	 * Armed only while a dragon is in a level with players in it (design: "Only while armed: the first version records
-	 * only heroes in the End with a dragon alive"), from its first sight to its removal after the POTG; elsewhere nothing
-	 * is recorded or scored. Checked once a second.
+	 * Armed the whole time once any player is in hero play (owner, 2026-11-11: "Do the whole time": plays come from the whole
+	 * run, not just the dragon fight), in any dimension; stays armed till the world closes (SERVER_STOPPED -> stop). Each
+	 * player is recorded only while in hero play (Minecraft mode doesn't count). Checked once a second.
 	 */
 	private static void autoArm(MinecraftServer server) {
-		if (server.getTickCount() % 20 != 0) {
+		if (armed || server.getTickCount() % 20 != 0) {
 			return;
 		}
-		boolean fight = false;
-		for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
-			// a dead hero isn't in level.players() but still watches: the dragon alone decides
-			if (!level.getEntities(net.minecraft.world.entity.EntityTypes.ENDER_DRAGON, d -> !d.isRemoved()).isEmpty()) {
-				fight = true;
-				break;
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (recording(player)) {
+				start(server);
+				Overcraft.LOG.info("[POTG] a hero in play: recording and scoring, the whole run");
+				return;
 			}
 		}
-		if (fight) {
-			lastFightTick = server.getTickCount();
-		}
-		if (fight && !armed) {
-			start(server);
-			autoArmed = true;
-			Overcraft.LOG.info("[POTG] a dragon fight: recording and scoring");
-		} else if (!fight && armed && autoArmed && !PotgReplay.active()
-			&& (PotgReplay.shownSinceArmed() || server.getTickCount() - lastFightTick > NO_DRAGON_TICKS)) {
-			stop();
-			Overcraft.LOG.info("[POTG] the dragon fight is over: nothing recorded any more");
-		}
 	}
-
 	/** END_SERVER_TICK: the own track, the segment roll and its keyframe, and the tick's cost. */
 	public static void tick(MinecraftServer server) {
 		autoArm(server);

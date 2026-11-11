@@ -1,0 +1,34 @@
+=== phase potg_mercy_ow 15:28:50
+bot {'ok': True, 'hero': 'ANA'}
+before {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 51.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 20.0, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+healing {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 759.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 13.440007, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 762.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+respawned {'screen': '', 'fps': 30, 'x': -7.5, 'y': -60.0, 'z': 3.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 777.25, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+at the card {'screen': 'Holder', 'fps': 26, 'x': -7.5, 'y': -60.0, 'z': 3.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 836.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+real input: sent W, Space, E, Q, G, 1, Escape, Enter, H, left button
+after {'screen': '', 'fps': 118, 'x': -7.5, 'y': -60.0, 'z': 3.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 849.25, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+  log [15:28:59] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 3 (pinned 166 KB)
+  log [15:29:00] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 58 (pinned 185 KB)
+  log [15:29:00] [Server thread/INFO] (Overcraft) [POTG] anaB: new best High Score 177 (pinned 16 KB)
+  log [15:29:01] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 113 (pinned 205 KB)
+  log [15:29:02] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 168 (pinned 231 KB)
+  log [15:29:03] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 223 (pinned 251 KB)
+  log [15:29:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 278 (pinned 289 KB)
+  log [15:29:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 333 (pinned 312 KB)
+  log [15:29:06] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 388 (pinned 334 KB)
+  log [15:29:07] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 443 (pinned 353 KB)
+  log [15:29:08] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 498 (pinned 376 KB)
+  log [15:29:09] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 553 (pinned 417 KB)
+  log [15:29:10] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 608 (pinned 436 KB)
+  log [15:29:11] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Life Saver 644 (pinned 460 KB)
+  log [15:29:12] [Server thread/INFO] (Overcraft) [POTG] Kiriko: Life Saver taken again to show the death (-6 ticks after the best)
+  log [15:29:19] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+  log [15:29:29] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko Life Saver 644; plays: Kiriko[HS 0, LS 644, SS 0, SD 0] anaB[HS 177, LS 0, SS 0, SD 0]; scoring ms/tick: mean 0.0211 max 0.886 over 507 ticks
+  log [15:29:29] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko (Life Saver) to 2 viewer(s), ring to tick 674, world frozen (was false)
+  log [15:29:29] [Render thread/INFO] (Overcraft) [POTG] card: Kiriko as Mercy, Life Saver
+  log [15:29:34] [Render thread/INFO] (Overcraft) [POTG] replay: 17995 records (495 in the keyframe), run-in 34 ticks in 12.4 ms, 199 ghosts, hero ghost RemotePlayer minecraft:air
+  log [15:29:45] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 202 before, 138 unchanged, 64 settled (under 0.5 m, nothing else), 0 new
+  log [15:29:45] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 65 id-keyed client maps swapped; 241 steps, step ms mean 0.392 max 2.333; frames 1453, frame ms mean 11.6 max 204.4; most ghosts 200; packets applied 17294; errors none
+  log [15:29:46] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 339 server ticks, world thawed
+  log [15:29:46] [Server thread/INFO] (Overcraft) [POTG] disarmed, 2 recorders dropped
+  log [15:29:46] [Server thread/INFO] (Overcraft) [POTG] the dragon fight is over: nothing recorded any more

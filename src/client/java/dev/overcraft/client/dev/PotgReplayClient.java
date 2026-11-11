@@ -370,6 +370,11 @@ public final class PotgReplayClient {
 		if (cardLeft > 0) {
 			// the card holds over the still world; the replay begins as it goes
 			if (--cardLeft == 0) {
+				if (reel == null) {
+					// the backend can't replay this play here (another dimension): the card alone
+					end(mc, "card only");
+					return;
+				}
 				beginPlay(reel);
 			}
 			return;

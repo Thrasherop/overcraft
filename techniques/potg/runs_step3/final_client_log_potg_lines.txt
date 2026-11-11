@@ -1,0 +1,28 @@
+﻿[15:37:23] [Server thread/INFO] (Overcraft) [POTG] armed at tick 120
+[15:37:23] [Server thread/INFO] (Overcraft) [POTG] a hero in play: recording and scoring, the whole run
+[15:37:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 236 (pinned 83 KB)
+[15:37:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 486 (pinned 83 KB)
+[15:37:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 618 (pinned 95 KB)
+[15:37:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 739 (pinned 95 KB)
+[15:37:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1000 (pinned 106 KB)
+[15:37:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 980 (pinned 106 KB)
+[15:37:33] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1500 (pinned 118 KB)
+[15:37:33] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1400 (pinned 118 KB)
+[15:37:34] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1618 (pinned 137 KB)
+[15:37:34] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1617 (pinned 137 KB)
+[15:37:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2000 (pinned 148 KB)
+[15:37:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1848 (pinned 148 KB)
+[15:37:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2236 (pinned 159 KB)
+[15:37:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 2263 (pinned 159 KB)
+[15:37:37] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2500 (pinned 172 KB)
+[15:37:37] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 2286 (pinned 172 KB)
+[15:38:29] [Server thread/INFO] (Overcraft) [POTG] anaB: new best High Score 59 (pinned 79 KB)
+[15:38:40] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2615 (pinned 187 KB)
+[15:38:40] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
+[15:38:54] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 2615; plays: Kiriko[HS 2615, LS 0, SS 2286, SD 0] anaB[HS 59, LS 0, SS 0, SD 0]; scoring ms/tick: mean 0.0150 max 2.863 over 1540 ticks
+[15:38:54] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko (High Score) to 1 viewer(s), ring to tick 1661, world frozen (was false)
+[15:38:54] [Render thread/INFO] (Overcraft) [POTG] card: Kiriko as Kiriko, High Score
+[15:38:59] [Render thread/INFO] (Overcraft) [POTG] replay: 2984 records (223 in the keyframe), run-in 1 ticks in 7.7 ms, 74 ghosts, hero ghost RemotePlayer minecraft:air
+[15:39:11] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 129 before, 70 unchanged, 59 settled (under 0.5 m, nothing else), 0 new
+[15:39:11] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 65 id-keyed client maps swapped; 241 steps, step ms mean 0.428 max 10.167; frames 1435, frame ms mean 11.7 max 294.1; most ghosts 79; packets applied 2503; errors none
+[15:39:11] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 340 server ticks, world thawed

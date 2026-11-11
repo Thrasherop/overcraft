@@ -28,7 +28,8 @@
 		"TrackedEntityAccessor",
 		"PotgSendMixin",
 		"PotgFreezeMixin",
-		"PotgDragonMixin"
+		"PotgDragonMixin",
+		"PotgPickupMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

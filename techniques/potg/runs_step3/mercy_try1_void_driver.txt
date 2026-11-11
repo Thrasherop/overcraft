@@ -1,0 +1,10 @@
+=== phase potg_mercy 15:07:32
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 61.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 521.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+bot {'ok': True, 'hero': 'ANA'}
+healing {'screen': '', 'fps': 29, 'x': 32.87, 'y': 61.0, 'z': 2.92, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 593.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 32.87, 'y': 61.0, 'z': 2.92, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 809.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+dragon killed by a server command, Mercy dead
+after {'screen': 'DeathScreen', 'fps': 30, 'x': 32.87, 'y': 61.0, 'z': 2.92, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 809.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+end portal blocks at x0 z1, y: []
+  log [15:08:05] [Server thread/INFO] (Overcraft) [POTG] disarmed, 2 recorders dropped
+  log [15:08:05] [Server thread/INFO] (Overcraft) [POTG] the dragon fight is over: nothing recorded any more
