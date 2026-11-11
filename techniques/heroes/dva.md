@@ -439,6 +439,17 @@ Minecraft units (12.5 Overwatch each).
 | 3 | The pilot lost 25 about 1 s after the eject's landing | **No:** `/damage 80` into the mech, a NoAI zombie 2 m beside, in front and behind (burning at noon), and with none: wreck, eject, landing, 14 / 14 for 2.5 s after, 4 runs. The pass's trace shows a rise to 1.27 m (above her 0.98 m jump) with the loss: a hit with knockback, source not read | Not found; not ours as far as shown | none |
 | 4 | Boosters took 2.98 from a zombie | Read: 25 Overwatch is 2.00; a zombie's and a husk's natural armour (2) takes 4 %: **1.92**, 2 of 2 on a husk, on a zombie with Fire Resistance and on a burning one. In the sun a zombie burns 1 a second, so a read across the bump adds that: 997.02 = 1000 - 1.92 - about 1 of fire. No perk was on (fresh world, none picked; `equip` sets emotes only) | Right as it is: mob armour applies to hero damage (ours, as for every hero) | - |
 
+**What's drawn against where they go (the coordinator's follow-up: "they still look high and wide to the right").** One client,
+2527ebf plus a dev readout `ents <class>` (this client's copies: position, motion), E at a husk 12 m out, read 0.25 / 0.35 / 0.45 s
+after the press against the server's `/data get ... Pos` (row `m1.txt`): **the client's missiles sit where the server's are**
+(9.20 -58.66 12.29 against 9.197 -58.658 12.286; 10.00 / 9.995; 8.81 / 8.812), same motion; the renderer draws the entity's own
+position (`ProjectileModelRenderer`), and there is no client-side aim of its own. Screenshots `m1_000/015/030.png` (`sheet_m1.png`):
+at 0 s none in view, at 0.15 and 0.3 s small, either side of the husk and closing on it. So what's drawn is where they fly: from
+the shoulder pods (hp 0075 / 0077: 0.88 m to either side, 0.24 m above her eyes) in to the target, which in the first metres reads as
+**up and to one side** of the crosshair (2.5 m out a right-pod missile is about 16 deg right and 4 deg up). A burst caught on
+right-pod missiles shows them up and right. **No fix:** this is the data's launch geometry. Not tried: the pass's own fps (117 against
+about 30 here) and FOV, and an Overwatch side by side of the launch.
+
 **Not tried:** the pass's exact keys for 2 and 3 (its client and world); real keys for the missile fix; missiles at a moving target, at an
 ally on the crosshair (they aim at it and pass through, as allies don't stop them: not played); a crosshair on a wall nearer than 1.5 m.
 

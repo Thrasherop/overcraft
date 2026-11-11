@@ -220,6 +220,18 @@ public final class DevServer {
 				});
 				out.addProperty("ok", true);
 			}
+			case "ents" -> {
+				// dev only: "ents <class name part>": this client's copies of those entities (position, motion), to set against the
+				// server's (/data get): what's drawn follows these
+				StringBuilder list = new StringBuilder();
+				for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+					if (e.getClass().getSimpleName().contains(arg)) {
+						list.append(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f v %.2f %.2f %.2f t%d | ", e.getId(), e.getX(), e.getY(),
+							e.getZ(), e.getDeltaMovement().x, e.getDeltaMovement().y, e.getDeltaMovement().z, e.tickCount));
+					}
+				}
+				out.addProperty("ents", list.toString());
+			}
 			case "players" -> {
 				// dev only: the other players this client sees, with the yaws it renders them by
 				com.google.gson.JsonArray list = new com.google.gson.JsonArray();
