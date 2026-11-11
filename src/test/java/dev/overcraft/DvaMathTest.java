@@ -166,9 +166,9 @@ class DvaMathTest {
 		// Self-Destruct: 1000 to 6 m, then 50 + 950 x (21 - d) / 15 (D #280)
 		assertEquals(1000, dev.overcraft.dva.SelfDestruct.damage(3), 1e-9);
 		assertEquals(1000, dev.overcraft.dva.SelfDestruct.damage(6), 1e-9);
-		assertEquals(620, dev.overcraft.dva.SelfDestruct.damage(12), 1e-9);
-		assertEquals(240, dev.overcraft.dva.SelfDestruct.damage(18), 1e-9);
-		assertEquals(50, dev.overcraft.dva.SelfDestruct.damage(21), 1e-9);
+		assertEquals(640, dev.overcraft.dva.SelfDestruct.damage(12), 1e-9);
+		assertEquals(280, dev.overcraft.dva.SelfDestruct.damage(18), 1e-9);
+		assertEquals(100, dev.overcraft.dva.SelfDestruct.damage(21), 1e-9);
 		assertEquals(0, dev.overcraft.dva.SelfDestruct.damage(21.5), 1e-9);
 		// its knockback: 22.4 m/s at the centre, 7.8 at 21 m (ours, linear)
 		double full = Math.hypot(DvaStats.SELF_DESTRUCT_KNOCKBACK, DvaStats.SELF_DESTRUCT_KNOCKBACK_UP);

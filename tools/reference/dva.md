@@ -110,7 +110,7 @@ Precision Fusion fixes; 2025-11-11 / 2026-01-08 Extended Boosters +100 % -> +40 
   (D 0276 #88 / 026A #775: a new mech's charge starts from the pilot's stored v2511, M; no public source) **L**.
 - Cast: she **ejects** (D #271 message 016C) and the mech flies on unmanned; **3 s fuse** (D 0C6A 3 at #410, misnamed "Outer Radius"; W)
   **M**.
-- **1000 within 6 m, then down to 50 at 21 m** (D #280: 03BB 1000, 03BC 6, 03B9 50, 03BD 21: 50 + 950 x (21 - d) / 15; BZ 2024-02-13 900 ->
+- **1000 within 6 m, then down to 100 at 21 m** (followed 2026-11-11: BZ names no minimum, W rev 408749 says 100; the data below reads 50) (D #280: 03BB 1000, 03BC 6, 03B9 50, 03BD 21: 50 + 950 x (21 - d) / 15; BZ 2024-02-13 900 ->
   1000, inner 4 -> 6 m; W 1000 -> **100**) **H** (max, inner) / **L** (the minimum: D 50, W 100).
 - Targets in sight of its centre, 1.3 m up (D, M); none if it fell off the map (D #364, M). **Knockback 20 horizontal / 10 vertical =
   22.4 m/s** at the centre, ring factors 0.75 / 0.75 / 0.25 at 21 m (D 1B59 / 1B5A / 1B5B / 1B5C; W 7.8 -> 22.4) **M** (max) / **L** (min).

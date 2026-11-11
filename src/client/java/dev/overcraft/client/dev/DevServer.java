@@ -151,6 +151,8 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					out.addProperty("ultCost", s.ultCost());
+					out.addProperty("shield", s.shield());
 					// the hero's state bits (Jetpack Cat: the ult phase in the low 3, 8 towing, 16 Lifeline on)
 					out.addProperty("mode", s.mode());
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;

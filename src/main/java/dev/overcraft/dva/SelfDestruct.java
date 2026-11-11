@@ -27,7 +27,7 @@ import static dev.overcraft.dva.DvaStats.*;
  * Self-Destruct (0B2F; dva-plan.md "Self-Destruct"): Q in the mech with 1700 charged, or in the wreck's 1.0 s (#213 / 0592).
  * She ejects (the eject's launch, 0.4 s immune) and the mech flies on unmanned with the motion it had (a
  * {@link DvaMechEntity} of kind SELF_DESTRUCT: no mover, it keeps its speed and falls), and 3 s later it bursts from 1.3 m
- * above its feet: 1000 to every enemy within 6 m, then down to 50 at 21 m, nothing past, only those in sight of the centre
+ * above its feet: 1000 to every enemy within 6 m, then down to 100 at 21 m (W; the data reads 50: DvaStats), nothing past, only those in sight of the centre
  * and not behind an enemy barrier; she and her allies spared. Knockback 20 out and 10 up (22.4 m/s) at the centre, down to
  * 7.8 at 21 m (ours, Open 4). No block damage, no fire (Overwatch's). Then her Call Mech is full (#274 -> 026A #887), unless
  * the mech fell out of the world first. Stand-in look and sound (hers: step 11).
@@ -39,7 +39,7 @@ public final class SelfDestruct {
 	private SelfDestruct() {
 	}
 
-	/** The damage at {@code d} m from the centre: 1000 to 6 m, then 50 + 950 x (21 - d) / 15, none past 21 (D #280). */
+	/** The damage at {@code d} m from the centre: 1000 to 6 m, then 100 + 900 x (21 - d) / 15, none past 21 (DvaStats). */
 	public static double damage(double d) {
 		if (d > SELF_DESTRUCT_RADIUS) {
 			return 0;
@@ -70,6 +70,11 @@ public final class SelfDestruct {
 		}
 		DvaMechEntity mech = new DvaMechEntity(level, player, DvaMechEntity.SELF_DESTRUCT, player.position(), player.getYRot());
 		mech.setDeltaMovement(motion);
+		// cast while boosting, the Boosters stay on for their remaining time (W rev 408749: "If Self-Destruct was activated
+		// while Boosters were on, they will remain active for their remaining duration"): no gravity on it until then
+		if (Boosters.active(s)) {
+			mech.boostTicks = DvaPerks.boostersLeft(s);
+		}
 		level.addFreshEntity(mech);
 		s.dvaSelfDestructId = mech.getId();
 		Dva.eject(player, s, false);
@@ -91,7 +96,8 @@ public final class SelfDestruct {
 	}
 
 	private static void blast(ServerPlayer owner, DvaMechEntity mech, Vec3 c) {
-		ServerLevel level = owner.level();
+		// the mech's own level: she may be elsewhere by now (a respawn in another dimension; the critic's finding, 2026-11-11)
+		ServerLevel level = (ServerLevel) mech.level();
 		HeroState s = HeroManager.state(owner);
 		for (Barriers.Shape b : Barriers.enemyBarriers(level, owner)) {
 			Vec3 near = Barriers.nearest(b, c);

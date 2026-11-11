@@ -145,8 +145,11 @@ public final class DvaStats {
 	// ---- Self-Destruct (dva.md "Self-Destruct", 0B2F) ----
 	/** Its fuse: 3 s from the cast (D 0C6A 3 at #410, misnamed "Outer Radius"; W 3) H. */
 	public static final double SELF_DESTRUCT_FUSE = 3;
-	/** 1000 within 6 m, then down to 50 at 21 m, none past (D #280: 03BB 1000, 03BC 6, 03B9 50, 03BD 21; BZ 2024-02-13; W 100 min) H / L. */
-	public static final double SELF_DESTRUCT_DAMAGE = 1000, SELF_DESTRUCT_INNER = 6, SELF_DESTRUCT_MIN = 50, SELF_DESTRUCT_RADIUS = 21;
+	/**
+	 * 1000 within 6 m, then down to 100 at 21 m, none past (BZ 2024-02-13: max 900 -> 1000, inner 4 -> 6 m; BZ names no minimum;
+	 * W rev 408749 "1000 - 100", followed as the newest public source; D #280 reads 03B9 = 50, the disagreement noted) H / M.
+	 */
+	public static final double SELF_DESTRUCT_DAMAGE = 1000, SELF_DESTRUCT_INNER = 6, SELF_DESTRUCT_MIN = 100, SELF_DESTRUCT_RADIUS = 21;
 	/** Its centre, 1.3 m above the mech's feet (D #259) M. */
 	public static final double SELF_DESTRUCT_UP = 1.3;
 	/** Its knockback at the centre: 20 m/s out, 10 up = 22.4 (D 1B59 20 / 1B5A 10 at #458 / #459) H values, M axes. */

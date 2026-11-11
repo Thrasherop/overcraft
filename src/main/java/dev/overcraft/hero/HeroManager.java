@@ -278,7 +278,10 @@ public final class HeroManager {
 	/** G: hero mode on or off (only with a hero picked). */
 	public static void setHeroMode(ServerPlayer player, boolean on) {
 		if (hero(player) != null) {
-			if (on != heroMode(player)) {
+			// a request for the mode she's already in changes nothing (D.Va's G-back hook fully healed a hurt mech on it: the
+			// critic's finding, 2026-11-11)
+			boolean changed = on != heroMode(player);
+			if (changed) {
 				// switching is doing something: an emote ends, as any action ends one (it kept kneeling in Minecraft mode)
 				dev.overcraft.comms.Comms.endEmote(player);
 				if (!on) {
@@ -290,10 +293,10 @@ public final class HeroManager {
 			}
 			player.setAttached(HERO_MODE, on);
 			HeroState state = STATES.get(player.getUUID());
-			if (on && state != null && state.hero == Hero.DVA) {
+			if (changed && on && state != null && state.hero == Hero.DVA) {
 				// back in hero mode she's in the mech she left (the plan's default 9; G off is her leavePlay)
 				dev.overcraft.dva.Dva.heroMode(player, state, true);
-			} else if (!on && state != null && state.hero == Hero.DVA) {
+			} else if (changed && !on && state != null && state.hero == Hero.DVA) {
 				// her body's health once the flag is off: leavePlay ran while it was still on, so it measured the mech (54 / 54
 				// in Minecraft mode, not the pilot's 14: found in the two-player pass, 2026-11-11)
 				refreshHealth(player, state, false);
@@ -503,7 +506,8 @@ public final class HeroManager {
 		PLAIN_FALLS.remove(player.getUUID());
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
-			player.setAttached(ULT_CHARGE, state.ultCharge);
+			// (D.Va rejoins in a mech: its charge, Dva.mechUlt)
+			player.setAttached(ULT_CHARGE, state.hero == Hero.DVA ? dev.overcraft.dva.Dva.mechUlt(state) : state.ultCharge);
 			savePerks(player, state);
 			// what they were doing and what they placed leave with them (#100)
 			outOfPlay(player, state, HeroKit.OutOfPlay.LEAVE);
@@ -549,7 +553,8 @@ public final class HeroManager {
 		if (state != null) {
 			Hero hero = state.hero;
 			// the ult's charge and the perks survive dying, as in Overwatch (the charge was being reset with everything else)
-			double charge = state.ultCharge;
+			// (D.Va respawns in a mech: the mech's Self-Destruct charge, not the pilot's Call Mech one: Dva.mechUlt)
+			double charge = hero == Hero.DVA ? dev.overcraft.dva.Dva.mechUlt(state) : state.ultCharge;
 			Perks.Progress perks = Perks.save(state);
 			state.reset(hero);
 			state.ultCharge = charge;

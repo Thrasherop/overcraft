@@ -405,6 +405,28 @@ her Light Gun against B; Defense Matrix against a beam; the late join during a h
 (kicked instead); the Nether, water, a night; an Overwatch side by side; a critic on the fixes. Void: r3's Boosters (A teleported
 0.5 s before the press; stopped after 2.8 m); r3b / r3c with a wait flew the full 24.4 m, through B.
 
+### The critic's round on d062dd3 (2026-11-11)
+A fresh critic read the branch (no game). Fixes 1 and 3 above covered two of its findings; the rest, one client (`runClient`, flat
+survival `dva14`, peaceful, harness input), each reproduced on deb0aed (rows `f*.txt`), fixed, replayed twice on the fixed tree (`g*.txt`;
+scratchpad `d13`). `state` now also reports `ultCost` and `shield` (dev only). Health in Minecraft units (12.5 Overwatch each).
+
+| # | Finding | Before (deb0aed) | Fix | After, 2 runs each |
+| --- | --- | --- | --- | --- |
+| 1 | G back threw away damage taken in Minecraft mode | pilot 14 -> 5 in Minecraft mode, G back: the mech 54 / 54 | **Decided (ours):** the plan's default 9 ("the mech at the health it had") less what she lost while out of it, at least 1: damage taken as the pilot in Minecraft mode is hers, so a near-dead player never comes back whole (`Dva.heroMode`) | mech 40.56, G off, pilot 14 -> 5, G back: 32.56 (40.56 - 9, +1 peaceful regeneration) both runs |
+| 2 | G in the wreck skipped the eject | wreck (0.01) at 909 ult, G: a pilot at 0.01 (4.01 after regen), ult 909 against Call Mech's 280: Q called a mech at once | G in the wreck is the eject (`eject(player, s, true)`): full 175, Self-Destruct's charge kept, Call Mech from 0, immunity and the call lock | G: ejected back 2.3 m, 14 / 14, ult 6 of 280, Q did nothing |
+| 3 | Dying or leaving as the pilot lost the mech's charge | mech 1498, eject, pilot 200 / 280, killed, respawned: 210 / 1700 | `Dva.mechUlt`: `onRespawn` and `onLeave` keep the mech's charge for D.Va (026A #775); she respawns and rejoins in a mech | the same steps: respawned at 1512 / 1700 |
+| 4 | `heromode on` while on healed the mech | 40.56 / shield 157, `heromode on` x2: 54 / 325 | `setHeroMode`'s D.Va hooks only on a change | 40.56 -> 33.56 (G steps before), shield 157 kept |
+| 5 | Respawning within 3 s cancelled a flying Self-Destruct | cast, the pilot killed, respawn 0.3 s later: no blast in 4 s | `equip` removes the unmanned mech only; a Self-Destruct in flight goes on (a switch away still takes it: `clear`) | killed 0.4 s in, respawned 0.8 s later: `self_destruct.blast` heard |
+| 6 | The blast searched her level, not the mech's | **not reproduced:** three tries; once she left for the Nether the overworld's chunk stopped ticking and the mech never went off (needs a player near the mech); two were void (my teleports mid-eject; she fell) | `SelfDestruct.blast` uses `mech.level()` (by reading) | not shown |
+| 7 | Call Mech cast mid-air | 0.96 m up mid-jump: cast | W rev 408749 "Has to be grounded to activate" (BZ silent): no cast unless on the ground, the charge kept | mid-jump (0.95 / 0.98 m up): ult stays 280; on the ground 2.5 s later: cast |
+| 8 | Self-Destruct's minimum 50 | (a number) | BZ names no minimum (2024-02-13: max 900 -> 1000, inner 4 -> 6 m); W rev 408749 "1000 - 100": **100**, the data's 50 noted (`DvaStats`, `tools/reference/dva.md`); `DvaMathTest` 640 / 280 / 100 | unit test |
+| 9a | G back clamped her layer to 325 (Shield System's 100 lost) | by reading (`Math.min(..., MECH_ARMOR)`): not run on the old tree | the layer as stored, up to `layer(player)`, never above her health | Shield System (perk menu), G off/on twice: shield 425 -> 425 -> 425 |
+| 9b | Self-Destruct while boosting fell at once | boosting 10 deg up, cast: the mech dropped to the floor and stopped 15.7 m on | W rev 408749: Boosters "remain active for their remaining duration": the mech flies on at its speed without gravity for the flight's ticks left (`DvaMechEntity.boostTicks`) | y -58.4 -> -56.0 and z 13.4 -> 28.1 over 1.2 s, along the aim, both runs |
+
+**Known, left:** `/kill` doesn't kill her through the wreck (it destroys the mech; a second `/kill` kills the pilot).
+**Not tried:** the old tree for 9a; 6 in game; a second player for any of these; real keys; normal difficulty (peaceful's regeneration
+is in 1's number); Extended Boosters' longer flight with 9b.
+
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam

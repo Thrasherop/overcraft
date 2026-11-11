@@ -32,6 +32,8 @@ public class DvaMechEntity extends Entity {
 	private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(DvaMechEntity.class, EntityDataSerializers.INT);
 
 	private @Nullable UUID ownerId;
+	/** A Self-Destruct cast while boosting: the Boosters' ticks left, flying on at its speed without falling (SelfDestruct.cast). */
+	public int boostTicks;
 
 	public DvaMechEntity(EntityType<? extends DvaMechEntity> type, Level level) {
 		super(type, level);
@@ -65,11 +67,14 @@ public class DvaMechEntity extends Entity {
 	public void tick() {
 		super.tick();
 		// it keeps whatever motion it has and falls (no mover of its own: D 0B2F has no mover node, M)
-		if (!onGround()) {
+		boolean boosting = boostTicks > 0;
+		if (boosting) {
+			boostTicks--;
+		} else if (!onGround()) {
 			setDeltaMovement(getDeltaMovement().add(0, -Ow.speed(17.5) / 20, 0));
 		}
 		move(MoverType.SELF, getDeltaMovement());
-		if (onGround()) {
+		if (onGround() && !boosting) {
 			setDeltaMovement(getDeltaMovement().multiply(0.5, 0, 0.5));
 		}
 		if (!(level() instanceof ServerLevel level)) {

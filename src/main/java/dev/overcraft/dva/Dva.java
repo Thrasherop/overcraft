@@ -50,7 +50,10 @@ public final class Dva implements HeroKit {
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
-		clear(player, s);
+		// a fresh kit: the unmanned mech goes, but a Self-Destruct already flying still goes off (a respawn within its 3 s:
+		// leavePlay's death rule; a switch away already took it with clear)
+		removeMech(player, s);
+		stopMechKit(player, s);
 		// a fresh kit (picked, respawned, joined) is in her mech (D 026A #763: a respawn links at once, no drop)
 		s.dvaForm = MECH;
 		s.dvaTicks = 0;
@@ -62,7 +65,6 @@ public final class Dva implements HeroKit {
 		s.dvaEjectedAt = -1000;
 		s.dvaInitiatorReadyAt = -1;
 		s.dvaCallSpot = null;
-		s.dvaSelfDestructId = null;
 		LightGun.refill(s);
 		freshMech(s);
 		player.setAttached(HeroManager.DVA_FORM, MECH);
@@ -140,6 +142,14 @@ public final class Dva implements HeroKit {
 
 	public static int armor(@Nullable Player player) {
 		return pilotBody(player) ? 0 : MECH_ARMOR;
+	}
+
+	/**
+	 * The mech's Self-Destruct charge, whatever body she's in: the meter in the mech or its wreck, the kept one otherwise (D 026A
+	 * #775: it carries to the next mech). A respawn and a rejoin put her in a mech, so they keep this one.
+	 */
+	public static double mechUlt(HeroState s) {
+		return s.dvaForm == MECH || s.dvaForm == WRECK ? s.ultCharge : s.dvaMechUlt;
 	}
 
 	/** The current body's ult (Self-Destruct 1700 in the mech, Call Mech 280 as the pilot). */
@@ -289,7 +299,9 @@ public final class Dva implements HeroKit {
 					s.dvaStoredHealth = player.getHealth();
 					s.dvaStoredArmor = s.shield;
 				}
-				case WRECK -> s.dvaForm = PILOT;
+				// G in the wreck is the eject, as its second would have been: the pilot at a full 175, Self-Destruct's charge kept
+				// for the next mech, Call Mech's from 0, the immunity and the call lock (the critic's finding, 2026-11-11)
+				case WRECK -> eject(player, s, true);
 				case CALLING -> {
 					// a call cut short is spent (D 026A #431 onAbort removes the new mech; the charge went at the press)
 					removeMech(player, s);
@@ -302,13 +314,20 @@ public final class Dva implements HeroKit {
 			HeroManager.refreshHealth(player, s, s.dvaForm == MECH);
 			return;
 		}
+		// what the pilot lost in Minecraft mode (her max there is the pilot's, not yet refreshed)
+		float lost = Math.max(0, player.getMaxHealth() - player.getHealth());
 		player.setAttached(HeroManager.DVA_FORM, s.dvaForm);
 		HeroManager.refreshHealth(player, s, false);
 		if (s.dvaForm == MECH) {
-			// the mech at the health it had (a mech never left, as after a respawn in Minecraft mode: full)
-			float health = s.dvaStoredHealth > 0 ? s.dvaStoredHealth : player.getMaxHealth();
-			s.shield = s.dvaStoredHealth > 0 ? Math.min(s.dvaStoredArmor, MECH_ARMOR) : MECH_ARMOR;
-			dev.overcraft.hero.Shields.setRaw(player, Math.min(player.getMaxHealth(), health));
+			// the mech at the health it had (the plan's default 9), less what she took while out of it: damage in Minecraft
+			// mode is hers, so a near-dead player doesn't come back whole (ours, the critic's finding, 2026-11-11); a mech
+			// never left (a respawn in Minecraft mode) is full. Its layer as it was, Shield System's shields with its armor.
+			boolean stored = s.dvaStoredHealth > 0;
+			float health = (stored ? s.dvaStoredHealth : player.getMaxHealth()) - lost;
+			s.shield = stored ? Math.min(s.dvaStoredArmor, s.layer(player)) : s.layer(player);
+			dev.overcraft.hero.Shields.setRaw(player, Math.max(1, Math.min(player.getMaxHealth(), health)));
+			// (the layer is the top of her health: no more of it than she has)
+			s.shield = Math.min(s.shield, dev.overcraft.Ow.toOw(player.getHealth()));
 			s.dvaStoredHealth = -1;
 		}
 	}
@@ -371,6 +390,11 @@ public final class Dva implements HeroKit {
 	static void callMech(ServerPlayer player, HeroState s) {
 		long now = player.level().getGameTime();
 		if (s.ultCharge < PILOT_ULT_COST || now < s.dvaCallLockUntil || Sleep.asleep(player)) {
+			return;
+		}
+		if (!player.onGround()) {
+			// "Has to be grounded to activate" (W rev 408749; BZ says nothing): no cast and the charge kept, as with no room
+			player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("overcraft.dva.call_mech.no_room"));
 			return;
 		}
 		Vec3 spot = callSpot(player);
