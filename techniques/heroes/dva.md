@@ -427,6 +427,21 @@ scratchpad `d13`). `state` now also reports `ultCost` and `shield` (dev only). H
 **Not tried:** the old tree for 9a; 6 in game; a second player for any of these; real keys; normal difficulty (peaceful's regeneration
 is in 1's number); Extended Boosters' longer flight with 9b.
 
+### The real-input pass's four findings (2026-11-11)
+From the coordinator's real-input pass on 09a6f4c ([real_keys_09a6f4c](../testing/runs/dva/real_keys_09a6f4c.md)). One client
+(`runClient`, flat survival `dva15`, easy, noon), harness input, on 5e8df3d, then the fix; rows `h*.txt` in scratchpad `d13`. Health in
+Minecraft units (12.5 Overwatch each).
+
+| # | Finding | Reproduced? | Cause / fix | After |
+| --- | --- | --- | --- | --- |
+| 1 | Micro Missiles mostly missed a zombie at 12 m | **Yes, worse:** a 1000-health NoAI husk with the crosshair on its middle, at 5, 12 and 20 m: 0 of 18 hit at each, `hit_block` x18, 1000 -> 1000 (no splash either) | The data has no spread, arc or homing (D 1128 #357: a straight 50 m/s projectile 1E8A, no spread field; W none). The aim was the bug: each missile flew from its shoulder muzzle (0.88 m to the side) to the **block** behind the crosshair, ignoring the creature on it, so both muzzles passed it by and burst on the ground beyond. Now the aim point is the first creature on the crosshair, else the block (`MicroMissiles.shoot`). | 18 of 18 `hit_enemy` at 5, 12 and 20 m, the husk 1000 -> 989.98 (125 of 135: a husk's armour and the splash's edge), 2 runs |
+| 2 | G back gave 658 / 675 with nothing lost | **No:** full mech, G out (14 / 14), G back at once: 54 / 54, twice; G out, walk and jump 3 s, G back: 54 / 54 and the HUD 675 / 675 (`h2_gback.png`) | Not found. The log shows 54.0 before G and 14.0 after; the 658 was read on the HUD, not in `state` | none |
+| 3 | The pilot lost 25 about 1 s after the eject's landing | **No:** `/damage 80` into the mech, a NoAI zombie 2 m beside, in front and behind (burning at noon), and with none: wreck, eject, landing, 14 / 14 for 2.5 s after, 4 runs. The pass's trace shows a rise to 1.27 m (above her 0.98 m jump) with the loss: a hit with knockback, source not read | Not found; not ours as far as shown | none |
+| 4 | Boosters took 2.98 from a zombie | Read: 25 Overwatch is 2.00; a zombie's and a husk's natural armour (2) takes 4 %: **1.92**, 2 of 2 on a husk, on a zombie with Fire Resistance and on a burning one. In the sun a zombie burns 1 a second, so a read across the bump adds that: 997.02 = 1000 - 1.92 - about 1 of fire. No perk was on (fresh world, none picked; `equip` sets emotes only) | Right as it is: mob armour applies to hero damage (ours, as for every hero) | - |
+
+**Not tried:** the pass's exact keys for 2 and 3 (its client and world); real keys for the missile fix; missiles at a moving target, at an
+ally on the crosshair (they aim at it and pass through, as allies don't stop them: not played); a crosshair on a wall nearer than 1.5 m.
+
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam

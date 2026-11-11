@@ -116,6 +116,15 @@ public final class MicroMissiles {
 		// toward what the crosshair is on (else the missile's 100 m out), so both muzzles meet it
 		Vec3 far = eye.add(look.scale(MISSILES_RANGE));
 		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		// a creature the crosshair is on comes first: the muzzles sit 0.88 m to either side, so aimed at the block behind it
+		// both passed it by (1-2 of 18 on a zombie at 12 m, none on a husk at 5, 12 or 20 m: the real-input pass, 2026-11-11).
+		// The volley has no spread or homing (D 1128 #357: no spread field, a straight 50 m/s projectile 1E8A; W none)
+		net.minecraft.world.phys.EntityHitResult onIt = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(level,
+			player, eye, target, new AABB(eye, target).inflate(1.0), e -> e != player && e.isPickable() && !e.isSpectator()
+				&& !(e instanceof DvaMissileEntity), 0.0f);
+		if (onIt != null) {
+			target = onIt.getLocation();
+		}
 		if (target.distanceTo(eye) < 1.5) {
 			target = far;
 		}
