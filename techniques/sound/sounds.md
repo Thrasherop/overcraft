@@ -226,6 +226,10 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     ones included. Audience stays as read from the music's own events (E548 / E549 own, E54A / E54B others).
   - Stepping Stones' footsteps 91C3 sit on his feet's hardpoints (001C, 001B); Relaxation's ticks on 0002 / 0003. His two hums
     (11B3, 12D3) are `Unknown\<078>`, his laugh 06A1 in `HeroVoice\Sigma\Laugh` (-4 dB).
+- <a id="dva-emote-sounds"></a>**D.Va's emote sounds and voice lines (2026-11-11; `emotes.txt`, D.Va's section; scripts
+  `research\dva\scripts\emote_sounds\`):** 52 02Cs and 3 voice stimuli, Sigma's pipeline unchanged but for `emote_events.py` now
+  flattening a random container of random containers (her MEKA foley; M). Detail and what was heard:
+  [dva_emotes](../emotes/dva_emotes.md#sounds-and-voice-lines-2026-11-11).
 - <a id="sojourn-sounds"></a>**Sojourn's map (2026-11-02; `tools/soundmaps/sojourn.txt`, read for wiring in
   `tools/reference/sojourn-sounds.md`; scripts `research\sojourn\scripts\sounds\` (Juno's pipeline; the event table is its own
   file, `sojourn_table.py`, and `sojourn_gen.py` writes the map), data `research\sojourn\sounds\`; hub: [sojourn](../heroes/sojourn.md)):**

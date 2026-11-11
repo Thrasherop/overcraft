@@ -57,12 +57,33 @@ is the data having no pilot clip.
   in a 2.3 m body. `EmoteCamera.reach` now also scales by the box height over 1.97 m (Sigma's 2.5 m over his eye ratio, so Sigma and
   Kiriko frame exactly as before): 2.92 blocks for her. Bow fits now; Choreography's jumps still leave the frame's top at its highest.
 
+## Sounds and voice lines (2026-11-11)
+52 02Cs and 3 voice stimuli, Sigma's pipeline: `emote_fx.py` -> `ww.py` (`dva_ids.txt`) -> `dump_banks.py work\dva_banks_raw.json`
+(banks 1E507, 1E79B, 1E416, 1E817, 1E701, 1E664, 1E827) -> her `extract_banks.py` (45 own 02Cs into `ExtraSounds\D.Va\Emotes`, log
+`research\dva\logs\extract-dva-emote-sounds.log`) -> `measure_emotes.py D.Va ... Lúcio:E548 ...` (the 7 shared) -> `facts.py` ->
+`dva_what.py` -> `gen_dva.py` (scripts `research\dva\scripts\emote_sounds\`) -> `apply_emote_sounds.py dva <repo>`, then the scratch-root
+build (only her section as `emotes.txt`) and the merge of the 55 `dva.emote.*` keys and 53 subtitles into the dev pack (backups
+`*.before_dva_emote`). Her section is appended to `tools/soundmaps/emotes.txt`.
+- **A random container of random containers** (her MEKA foley) stopped `emote_events.py`; it now takes the inner pools' sounds as one
+  pool (M: the inner weights aren't kept). Heroes before her never hit it, so their output is unchanged.
+- Most of hers are the MEKA's foley (servos, stomps, hiss), named from timing and measurement only (L). Crazy Choreography's C440 /
+  C441 are the dance music Mercy and Juno share (her own copy). Dance's C1F0 / C1F1 have no Play action: nothing to play.
+- Voice: ^o^'s laugh 06A1 (-4 dB), Choreography's "(digital beeps)" 15E2 / 15E3 (three lines each), `Unknown\<078>` in her extraction.
+- **Heard** (the client's `heard`, wheel play, world `dvaemo3`): ^o^ 3AF6, 3AF7, the laugh v6a1, 3CF8 / 3CF9; Heart Power F49B; Choreography
+  AA34, 3CFC, 3CF6 / 8 / 9, v15e3, v15e2; Listen Up E548 + E549 (her own copies); Mic Drop DA44; Salty EEA6; Game On 3B0B-3B10; Crazy
+  Choreography C441, C440 and its foley; Make it Rain B9AB / AC / AD / AF. Not checked by ear against Overwatch; the "others" copies
+  (E54A / E54B) need a second player.
+
+## The canopy: glass, from its shader (2026-11-11)
+The canopy is material A5D9 (FBB0 submesh 18, over her seated head): shader 0x26, as Juno's gun glass FBC0. The mod's glass path
+(`tools/glow_maps.py` `GLASS`: drawn only as faint added light, not as an opaque colour) now holds A5D9 too. Her glow tables
+(`dva*_glow.json`) were never in the dev pack, so her glows (the MEKA's lights, the pilot's) were off until now: baked with
+`glow_maps.py` in a scratch pack holding only her five models and copied in (the glow images were already there).
+Played: she is seen in the cockpit, waving in ^o^ (`g_o_1.5.png`), in Heart Power and in normal third person (`g_3p_front.png`);
+first person unchanged (`g_1p.png`: the 1P model 10354 has no A5D9). How the 0x26 shader really draws glass (its transparency) isn't
+read: the faint added light is ours, as Juno's.
+
 ## Open
-- **Her emote sounds and voice lines are not built**: 02Cs in every emote's effect and voice stimuli 6A1 (^o^), 15E2 / 15E3
-  (Choreography); the shared Listen Up / Mic Drop / Salty sounds are Lúcio's and may already play. The emote-sound pipeline
-  ([sounds](../sound/sounds.md#sigma-emote-sounds)) wasn't run for her.
-- **The canopy is drawn opaque:** her head and body are in FBB0 under it, so ^o^'s and Heart Power's faces can't be seen (as in play
-  since step 1). Overwatch's canopy is see-through.
 - **Hologram colour:** the heart and the game screen take Sombra's hologram tint (`HeroModelRenderer.HOLOGRAM`, purple, additive): the
   heart reads white-pink, Overwatch's is pink. Each hologram material's own colour isn't read.
 - Folder-4 layers 2375 (2.43 s, in 13 of 15) and 2379 (0.63 s) are never played by our plan.

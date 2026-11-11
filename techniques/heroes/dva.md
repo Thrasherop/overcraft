@@ -359,12 +359,14 @@ emote page (`x_wheel_mic_drop.png`: MIC DROP at the top), the pointer up, the ke
 - Camera: Bow's antennae left the top at 2.69 blocks (`w_bow_0.6.png`); in at 2.92 (`v_bow_0.6.png`).
 - **The pilot:** survival, `/damage` 40 x 3: wreck, eject, the pilot 14 / 14 (0.6 x 1.8): Bow from the wheel: no emote, first person
   (`y_pilot_bow.png`). Not shown: whether the old build (no gate) put the pilot's camera in third person.
-- **Not shown:** her emote sounds (not built), a critique agent, a second player, emotes in water / on slopes, the canopy (opaque) and
-  hologram colours ([dva_emotes](../emotes/dva_emotes.md#open)).
+- **Then (same day):** her emote sounds and voice lines built and heard, the shared Listen Up / Mic Drop / Salty ones too; the
+  canopy drawn as glass from its shader, so she's seen inside (world `dvaemo3`, `gs.png`):
+  [dva_emotes](../emotes/dva_emotes.md#sounds-and-voice-lines-2026-11-11).
+- **Not shown:** a critique agent, a second player (the "others" sound copies), emotes in water / on slopes, hologram colours
+  ([dva_emotes](../emotes/dva_emotes.md#open)).
 
 ## Not yet
-Her **visual effects** (111) and the firing / matrix clips; her emote sounds and voice lines, the see-through canopy (step 12's open
-list); step 13: two players (and with them the `_3p` sounds). Open
+Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); step 13: two players (and with them the `_3p` sounds). Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
 against the matrix. Her reticle widgets (#85, below).
 

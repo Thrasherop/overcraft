@@ -46,25 +46,35 @@
        "sound": "E548",
        "at": 0.0,
        "duration": 3.4333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 11.395,
+       "fade": 1.5,
+       "audience": "own"
       },
       {
        "sound": "E549",
        "at": 0.1116,
        "duration": 3.3217,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "own"
       },
       {
        "sound": "E54A",
        "at": 0.0,
        "duration": 3.4333,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 4.117,
+       "fade": 1.0,
+       "audience": "others"
       },
       {
        "sound": "E54B",
        "at": 0.1119,
        "duration": 3.3215,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "fade": 2.0,
+       "audience": "others"
       }
      ],
      "stow": [],
@@ -131,7 +141,8 @@
        "sound": "DA4F",
        "at": 0.101,
        "duration": 2.0667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "chance": 0.4
       }
      ],
      "stow": [],
@@ -752,13 +763,15 @@
        "sound": "3B0E",
        "at": 0.0,
        "duration": 9.4667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 3.2
       },
       {
        "sound": "3B0F",
        "at": 0.0667,
        "duration": 4.5667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 0.362
       },
       {
        "sound": "3B10",
@@ -1109,7 +1122,9 @@
        "sound": "B9AF",
        "at": 0.0,
        "duration": 2.5,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 0.165,
+       "fade": 0.15
       }
      ],
      "stow": [],
@@ -1150,7 +1165,8 @@
        "sound": "C441",
        "at": 0.0,
        "duration": 0.5667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "audience": "own"
       },
       {
        "sound": "3CFB",
@@ -1173,7 +1189,9 @@
        "sound": "C440",
        "at": 0.0,
        "duration": 7.3667,
-       "hardpoint": "00A4"
+       "hardpoint": "00A4",
+       "loop": 14.851,
+       "audience": "own"
       },
       {
        "sound": "3CF6",
