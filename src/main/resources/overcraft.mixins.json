@@ -23,7 +23,10 @@
 		"MobMixin",
 		"ConversionTypeMixin",
 		"BucketableMixin",
-		"ResurrectedLootMixin"
+		"ResurrectedLootMixin",
+		"ChunkMapAccessor",
+		"TrackedEntityAccessor",
+		"PotgSendMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

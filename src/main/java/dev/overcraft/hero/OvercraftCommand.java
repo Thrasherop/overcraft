@@ -62,6 +62,20 @@ public final class OvercraftCommand {
 				.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), 100))
 				.then(Commands.argument("percent", IntegerArgumentType.integer(0, 100))
 					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))));
+		// /overcraft potg start|stop|dump: Play of the Game's tap, dev builds only (runClient sets overcraft.dev): the first
+		// step of techniques/potg/design.md, recording and a decode round trip that only logs bytes and packet types
+		if (Boolean.getBoolean("overcraft.dev")) {
+			dispatcher.register(Commands.literal("overcraft").then(Commands.literal("potg")
+				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.then(Commands.literal("start").executes(c -> potg(c, dev.overcraft.potg.PotgTap.start(c.getSource().getServer()))))
+				.then(Commands.literal("stop").executes(c -> potg(c, dev.overcraft.potg.PotgTap.stop())))
+				.then(Commands.literal("dump").executes(c -> potg(c, dev.overcraft.potg.PotgTap.dump(c.getSource().getServer()))))));
+		}
+	}
+
+	private static int potg(CommandContext<CommandSourceStack> c, String result) {
+		c.getSource().sendSuccess(() -> Component.literal(result), false);
+		return 1;
 	}
 
 	private static int team(CommandContext<CommandSourceStack> c, String name) throws CommandSyntaxException {

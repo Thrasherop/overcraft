@@ -179,6 +179,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
+			// Play of the Game's tap, dev only and off unless armed (/overcraft potg start): the last of the tick
+			dev.overcraft.potg.PotgTap.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
 		// a player who starts seeing someone hears of the states others heard begin (#96)

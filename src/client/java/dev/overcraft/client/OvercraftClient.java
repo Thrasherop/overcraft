@@ -45,6 +45,7 @@ public class OvercraftClient implements ClientModInitializer {
 		FxRender.init();
 		ClientHero.init();
 		DevServer.startIfEnabled();
+		dev.overcraft.client.dev.PotgDecode.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> ClientHero.onSync(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> KirikoFx.play(payload)));
