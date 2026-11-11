@@ -4,6 +4,18 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-11: 0.3.34 on next (not on main yet)
+
+- **D.Va (#69)**, the second tank and the first hero with two bodies: the MEKA (Fusion Cannons, Defense Matrix, Boosters,
+  Micro Missiles, Self-Destruct) and the pilot (Light Gun, Call Mech), the wreck and the eject, the Initiator sub-role, her
+  four perks, her voice, her sound effects and her 15 emotes from the game data, the canopy as glass. Numbers from the
+  data, Blizzard's notes and the wiki, each cited in `DvaStats`; Self-Destruct's minimum follows the wiki's 100 over the
+  data's 50. Played by harness keys throughout, a two-client pass, a critic's round, and the coordinator's real-input pass
+  (`techniques/testing/runs/dva/real_keys_09a6f4c.md`), which found Micro Missiles aiming past the target (fixed).
+- Not yet: her 111 visual effects, her firing and Defense Matrix clips, footsteps of her own, the holograms' pink, an
+  Overwatch side by side. Unexplained, not reproduced: 658/675 on the HUD after G back once; the pilot losing 25 once after
+  an eject. Every hero hit plays a pain line: #129.
+
 ## 2026-11-10: 0.3.33 on next (not on main yet)
 
 polish-3, polish-4, the railgun (#126) and the Overwatch watcher merged into `next` as 0.3.33 (0.3.32 was the playtest
