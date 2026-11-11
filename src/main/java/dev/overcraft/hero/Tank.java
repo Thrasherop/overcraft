@@ -22,6 +22,7 @@ import java.util.Set;
  * Entity)}.</li>
  * <li>Stalwart: 40% less knockback (LivingEntityMixin, ServerExplosionMixin, the heroes' own pushes) and 40% less of a slow
  * received from others (OwMovement.speedFactor), in hero mode.</li>
+ * <li>Initiator: a movement ability's start heals 50 over 1 s, at most every 5 s, not at full health ({@link #initiatorReady}).</li>
  * <li>The healing reduction a hit starts is halved on a tank, 15% for the global 30% (D 01C7 #1308): {@link Combat#heal}.</li>
  * </ul>
  */
@@ -55,6 +56,19 @@ public final class Tank {
 
 	public static boolean stalwart(@Nullable Hero hero) {
 		return hero != null && hero.subRole.equals("stalwart");
+	}
+
+	/** Initiator (D.Va the first, D 01C7 tag 116D): a movement ability's start heals (D.Va's Boosters: dev.overcraft.dva.Dva.initiator). */
+	public static boolean initiator(@Nullable Hero hero) {
+		return hero != null && hero.subRole.equals("initiator");
+	}
+
+	/**
+	 * Whether Initiator's heal may land now: its 5 s since the last are over (D 01C7 #2955 / #2889) and the tank isn't at full
+	 * health (#2857; BZ 2026-03-10 "not at full health").
+	 */
+	public static boolean initiatorReady(long now, long readyAt, float health, float maxHealth) {
+		return now >= readyAt && health < maxHealth;
 	}
 
 	/** A speed modifier that is the hero's own (not resisted). */

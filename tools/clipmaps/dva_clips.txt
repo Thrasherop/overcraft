@@ -1,0 +1,3 @@
+# D.Va, the MEKA's third-person extra clips (owm_survey.py --clips-only), merged into hero_models/dva.glb by bone name (HeroModels).
+# Her 15 emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), all on the MEKA's
+# model FBB0: every one of their body clips animates its 250 bones, none the pilot's alone (techniques/emotes/dva_emotes.md).

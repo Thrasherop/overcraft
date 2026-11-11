@@ -133,6 +133,10 @@ public final class Loadout {
 	 * name's became an underscore ("isn_t_this_fun" -> "ISN'T THIS FUN").
 	 */
 	public static String emoteName(String id) {
+		// a folder name that is all punctuation but a letter: D.Va's "^o^" (her emote folder) became "o"
+		if (id.equals("o")) {
+			return "^O^";
+		}
 		return id.isEmpty() ? "-" : id.replaceAll("(?<=[a-z])_([ts])(?=_|$)", "'$1").replace('_', ' ').toUpperCase(java.util.Locale.ROOT);
 	}
 

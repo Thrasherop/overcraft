@@ -528,6 +528,31 @@ public final class OcSounds {
 		"ping_warning", "ping_enemy", "hyperspheres", "grasp", "grasp_absorb", "accretion", "accretion_kill", "barrier",
 		"barrier_recall", "barrier_broken", "barrier_damaged", "barrier_low", "flux_kill", "ultimate");
 
+	/**
+	 * D.Va's voice moments (tools/soundmaps/dva.txt, the voice section; her set 0057.05F; the wheel lines, "resurrected",
+	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init()). The ult line is ult.friendly / ult.enemy
+	 * (04D1 / 03DC); voice.ultimate (183C, her own copy, the enemy line's text) stays unplayed, as Sigma's.
+	 */
+	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
+		"pilot_kill", "ultimate");
+	/**
+	 * D.Va's other sounds: the ult lines (tools/soundmaps/dva.txt) and her weapons', abilities' and perks' (dva_sfx.txt, read for
+	 * wiring there: each event's trigger in the data). The loops are her clients' (client.DvaSounds).
+	 */
+	public static final java.util.List<String> DVA_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"fusion.fire_first", "fusion.fire", "fusion.fire_end", "fusion.fire_first_3p", "fusion.fire_3p", "fusion.fire_end_3p",
+		"fusion.hit_enemy", "fusion.hit_enemy_3p", "fusion.hit_block", "matrix.on", "matrix.loop", "matrix.off", "matrix.on_3p",
+		"matrix.loop_3p", "matrix.off_3p", "matrix.chirp", "matrix.chirp_3p", "matrix.absorb", "matrix.absorb_3p",
+		"boosters.start", "boosters.loop", "boosters.end", "boosters.start_3p", "boosters.loop_3p", "boosters.chirp",
+		"boosters.hit", "missiles.cast", "missiles.cast_3p", "missiles.volley", "missiles.volley_end", "missiles.volley_3p",
+		"missiles.volley_end_3p", "missiles.burst", "missiles.hit_enemy", "missiles.hit_enemy_3p", "missiles.hit_block",
+		"self_destruct.arm", "self_destruct.blast", "call_mech.drop", "call_mech.drop_3p", "wreck", "wreck_3p", "wreck.chirp",
+		"wreck.chirp_3p", "eject", "gun.fire", "gun.hit", "gun.hit_3p", "gun.hit_block", "gun.reload", "gun.reload_3p",
+		"perk.precision.start", "perk.precision.start_3p", "perk.precision.loop", "perk.precision.end", "perk.precision.end_3p",
+		"perk.shield_system", "perk.bunny_power");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -549,6 +574,8 @@ public final class OcSounds {
 		SOJOURN_VOICE.forEach(moment -> register("sojourn.voice." + moment));
 		SIGMA_SOUNDS.forEach(name -> register("sigma." + name));
 		SIGMA_VOICE.forEach(moment -> register("sigma.voice." + moment));
+		DVA_SOUNDS.forEach(name -> register("dva." + name));
+		DVA_VOICE.forEach(moment -> register("dva.voice." + moment));
 	}
 
 	private OcSounds() {

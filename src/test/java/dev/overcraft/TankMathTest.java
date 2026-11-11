@@ -27,10 +27,11 @@ class TankMathTest {
 		assertEquals(250, Hero.SIGMA.shields());
 		assertEquals(48f, Ow.hp(Hero.SIGMA.owHealth), 1e-5);
 		assertTrue(Tank.tank(Hero.SIGMA) && Tank.stalwart(Hero.SIGMA));
-		// no one else is a tank or gets the bonus
+		// no one else is a Stalwart; D.Va is the only other tank (an Initiator)
 		for (Hero hero : Hero.values()) {
 			if (hero != Hero.SIGMA) {
-				assertTrue(!Tank.tank(hero) && !Tank.stalwart(hero), hero.id);
+				assertTrue(!Tank.stalwart(hero), hero.id);
+				assertEquals(hero == Hero.DVA, Tank.tank(hero), hero.id);
 			}
 		}
 		assertEquals(250, Hero.KIRIKO.owHealth);

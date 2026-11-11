@@ -174,6 +174,61 @@ public final class Barriers {
 	}
 
 	/**
+	 * A box ahead of a hero's eyes along the aim that eats enemy projectiles (Sigma's Kinetic Grasp, D.Va's Defense Matrix):
+	 * {@code side} m either side of the aim, {@code down} below to {@code up} above it, from {@code near} to {@code far} ahead.
+	 */
+	public record Box(double side, double down, double up, double near, double far) {
+		/** Whether {@code rel} (from the eyes) is in it, in the aim's frame (forward f, right r, up u). */
+		public boolean contains(Vec3 rel, Vec3 f, Vec3 r, Vec3 u) {
+			double x = rel.dot(r), y = rel.dot(u), z = rel.dot(f);
+			return Math.abs(x) <= side && y >= -down && y <= up && z >= near && z <= far;
+		}
+	}
+
+	/** What a box does with each projectile it eats (where, and the damage it would have dealt: {@link #projectileDamage}). */
+	public interface Eater {
+		void eaten(Projectile p, Vec3 at, double damage);
+	}
+
+	/**
+	 * One tick of a projectile-eating box (dev.overcraft.dva.DefenseMatrix; Kinetic Grasp's is the same loop, its own until
+	 * Sigma's step 10 lands): every enemy projectile whose last or next step passes through it (sampled: an arrow covers 3 m
+	 * a tick) is stopped there ({@link #stop}, eaten whole) after {@code onEaten}. Returns what it ate (Overwatch points).
+	 */
+	public static double absorbBox(net.minecraft.server.level.ServerPlayer player, Box box, Eater onEaten) {
+		ServerLevel level = player.level();
+		Vec3 eye = player.getEyePosition();
+		Vec3 f = player.getViewVector(1.0f);
+		Vec3 r = f.cross(new Vec3(0, 1, 0));
+		r = r.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : r.normalize();
+		Vec3 u = r.cross(f).normalize();
+		double total = 0;
+		double reach = Math.max(box.far(), Math.max(box.side(), Math.max(box.up(), box.down()))) + 6;
+		for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(eye, eye).inflate(reach), Barriers::takes)) {
+			Entity owner = p.getOwner();
+			if (owner == player || owner != null && Allies.isSelfOrAlly(player, owner)) {
+				continue;
+			}
+			Vec3 now = p.position(), before = new Vec3(p.xo, p.yo, p.zo), next = now.add(p.getDeltaMovement());
+			Vec3 in = null;
+			for (int i = 0; i <= 8 && in == null; i++) {
+				Vec3 at = i <= 4 ? before.lerp(now, i / 4.0) : now.lerp(next, (i - 4) / 4.0);
+				if (box.contains(at.subtract(eye), f, r, u)) {
+					in = at;
+				}
+			}
+			if (in == null) {
+				continue;
+			}
+			double damage = projectileDamage(p);
+			total += damage;
+			onEaten.eaten(p, in, damage);
+			stop(p, in, false);
+		}
+		return total;
+	}
+
+	/**
 	 * Each tick of an entity barrier (its own tick): the projectiles whose last or next step crosses it (either side) are
 	 * stopped there, on the side they came from, and it takes their damage.
 	 */

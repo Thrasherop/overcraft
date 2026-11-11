@@ -88,6 +88,12 @@ public final class Comms {
 			return;
 		}
 		HeroState state = HeroManager.state(player);
+		// D.Va emotes only in her MEKA: every body clip of her 15 animates the MEKA's skeleton (FBB0's 250 bones, 87 of them
+		// the mech's alone) and none the pilot's F2FF alone (techniques/emotes/dva_emotes.md); not in its wreck either
+		if (state != null && state.hero == dev.overcraft.hero.Hero.DVA
+			&& (dev.overcraft.dva.Dva.form(player) != dev.overcraft.dva.Dva.MECH || !HeroManager.heroMode(player))) {
+			return;
+		}
 		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive()) {
 			dev.overcraft.hero.Combat.animate(player, "emote:" + id);
 			EMOTING.put(player.getUUID(), new Emoting(id, player.level().getGameTime(), player.position()));
@@ -162,7 +168,7 @@ public final class Comms {
 		String moment = "call_" + callout.id;
 		if (callout == Callout.ULTIMATE_STATUS && state != null && state.hero != null) {
 			// Overwatch's three: charging, almost ready (90%, ours), ready; the chat line gives the charge
-			int percent = (int) Math.floor(100 * state.ultCharge / Combat.ultCost(state.hero));
+			int percent = (int) Math.floor(100 * state.ultCharge / Combat.ultCost(state));
 			moment = percent >= 100 ? "ult_ready" : percent >= 90 ? "call_ult_almost" : "call_ult_charging";
 			text = percent >= 100 ? Component.translatable("overcraft.callout.ultimate_ready")
 				: Component.translatable("overcraft.callout.ultimate_charge", Math.min(99, percent));

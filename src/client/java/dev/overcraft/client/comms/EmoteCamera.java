@@ -26,7 +26,13 @@ public final class EmoteCamera {
 	 * had his head out of the top of the screen in every emote (found playing his emotes).
 	 */
 	private static final float EYE = 1.62f;
-	/** The hero's own reach: DISTANCE scaled by its eye height over EYE, never nearer than DISTANCE. */
+	/**
+	 * The body height that frames as Sigma's eye does (his 2.5 m box over his eye ratio 2.06 / 1.62: 1.97 m). D.Va's MEKA has a low
+	 * eye (1.74, the cockpit) in a 2.3 m body: framed by its eye, its antennae and raised arms left the top of the screen in Bow and
+	 * Choreography (found playing her emotes). Kiriko (1.8) and Sigma (exactly 2.5 / 1.97) are framed as before.
+	 */
+	private static final float HEIGHT = 2.5f * EYE / 2.06f;
+	/** The hero's own reach: DISTANCE scaled by its eye height over EYE or its height over HEIGHT, never nearer than DISTANCE. */
 	private static float reach = DISTANCE;
 	/** Nearer than this to the point it orbits, it's inside her head: she isn't drawn (her held ofuda filled the view). */
 	private static final float INSIDE = 0.8f;
@@ -80,7 +86,7 @@ public final class EmoteCamera {
 		if (mc.level == null) {
 			return 0;
 		}
-		reach = DISTANCE * Math.max(1, player.getEyeHeight() / EYE);
+		reach = DISTANCE * Math.max(1, Math.max(player.getEyeHeight() / EYE, player.getBbHeight() / HEIGHT));
 		Vec3 pivot = player.position().add(0, player.getEyeHeight() * PIVOT, 0);
 		float best = 0;
 		double bestRoom = -1;

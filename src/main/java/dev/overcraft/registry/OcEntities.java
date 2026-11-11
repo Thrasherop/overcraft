@@ -123,6 +123,23 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE, (float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE)
 			.clientTrackingRange(8).updateInterval(1));
+	/** D.Va's MEKA while nobody drives it (pet 0407): its mover's 1.4 x 2.3 m, not saved. */
+	public static final EntityType<dev.overcraft.entity.DvaMechEntity> DVA_MECH = register("dva_mech",
+		EntityType.Builder.<dev.overcraft.entity.DvaMechEntity>of(dev.overcraft.entity.DvaMechEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(dev.overcraft.dva.DvaStats.MECH_WIDTH, dev.overcraft.dva.DvaStats.MECH_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+	/** D.Va's Micro Missiles (1E8A): 0.175 m (not saved: 2 s of flight). */
+	public static final EntityType<dev.overcraft.entity.DvaMissileEntity> DVA_MISSILE = register("dva_missile",
+		EntityType.Builder.<dev.overcraft.entity.DvaMissileEntity>of(dev.overcraft.entity.DvaMissileEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
+	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
+		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

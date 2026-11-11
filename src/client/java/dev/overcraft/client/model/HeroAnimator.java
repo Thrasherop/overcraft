@@ -127,6 +127,14 @@ public final class HeroAnimator {
 	private boolean sojourn, sojournSliding;
 	/** Sigma (his actions' clips: trigger). */
 	private boolean sigma;
+	/** D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK, -1 not her), when it last changed, when she last ejected. */
+	private int dvaForm = -1;
+	private float dvaFormSince = -100, dvaEjectAt = -100;
+
+	/** D.Va in her mech's body (or its wreck): no Light Gun in her hand, the pilot seated inside (HeroWeapon). */
+	public boolean dvaMech() {
+		return dvaForm == dev.overcraft.dva.Dva.MECH || dvaForm == dev.overcraft.dva.Dva.WRECK;
+	}
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
@@ -1762,6 +1770,15 @@ public final class HeroAnimator {
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
+			? dev.overcraft.dva.Dva.form(p) : -1;
+		if (form != dvaForm) {
+			if (dvaForm == dev.overcraft.dva.Dva.WRECK && form == dev.overcraft.dva.Dva.PILOT) {
+				dvaEjectAt = now;
+			}
+			dvaForm = form;
+			dvaFormSince = now;
+		}
 		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
 		if (slideNow && !sojournSliding) {
 			slideSince = now;
@@ -1891,8 +1908,19 @@ public final class HeroAnimator {
 		wasSkating = skating;
 
 		String next;
+		SkinnedModel.Clip eject = clip(model, "eject");
 		if (entity.isDeadOrDying()) {
 			next = "death";
+		} else if (dvaForm == dev.overcraft.dva.Dva.WRECK) {
+			// her mech's destruction (alias 0x8, 31C3: D 0276 #482), frozen where it fell
+			next = "destroyed_sm0";
+		} else if (dvaForm == dev.overcraft.dva.Dva.CALLING) {
+			// Call Mech: the cast's 0.2 s, then her run and jump into the falling mech (0xE5, 3120 for 2 s from the spawn:
+			// D 026A #405)
+			next = now - dvaFormSince < dev.overcraft.dva.DvaStats.CALL_CAST ? "idle" : "call_mech";
+		} else if (dvaForm == dev.overcraft.dva.Dva.PILOT && eject != null && now - dvaEjectAt < eject.duration()) {
+			// the eject (alias 0x439, 3382, 0.567 s: D 026A #366)
+			next = "eject";
 		} else if (entity.isPassenger()) {
 			// riding (a boat, a horse): Overwatch has no sitting clip; crouched is the nearest
 			next = "crouch_idle";
@@ -2140,6 +2168,7 @@ public final class HeroAnimator {
 
 	private static boolean loops(String clip) {
 		return !(clip.startsWith("jump") || clip.equals("land") || clip.equals("climb_top") || clip.equals("death")
+			|| clip.equals("call_mech") || clip.equals("eject") || clip.startsWith("destroyed")
 			|| clip.startsWith("skate_stop") || clip.startsWith("knockdown"));
 	}
 

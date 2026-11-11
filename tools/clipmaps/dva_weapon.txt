@@ -1,0 +1,20 @@
+# D.Va's Light Gun (entity 0982, model 000000010246.00C, base 1E16, 11 bones; set 048B), on the pilot's hardpoint 000A
+# (Weapon_R). Each alias is the gun's part of her own action of the same alias.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\dva\scripts\clipmaps_dva.py from the
+# compacted blend-tree sets (research\dva\work\clipmap_dva\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-60_000000003121 = idle   # (was base: the gun's base pose) 0.0333 s; set 048B alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @2; on 2 paths
+4-32_0000000031D3 = add_pose_a0e_sm0_sm0   # 0.5 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[0] +add() @8122C003 sm[0]; on 5 paths
+0-60_000000003820 = pose_a0e_sm1_se5   # 0.0667 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[1] sel[5] @8122C00F; on 2 paths
+4-32_00000000381F = add_pose_a0e_sm1_sm0   # 0.5 s; set 048B alias A0E (poses (L: showcase / gallery)); sm[1] +add() @8122C010 sm[0]; on 5 paths
+0-32_000000003266 = melee_sm0   # 0.8 s; set 048B alias D (quick melee (0043 #117, cat 6A) (H)); sm[0] @8122C007
+0-32_00000000327D = reload_sm0   # 1.5 s; set 048B alias 4 (Light Gun reload (02B8 #141) (H)); sm[0] @8122C00A
+0-32_0000000034A7 = reload_sm1   # 1.5 s; set 048B alias 4 (Light Gun reload (02B8 #141) (H)); sm[1] @8122C00E
+4-4_00000000A9CC = add_a5e7_sm0   # 1 s; set 048B alias 5E7 (Light Gun (L)); sm[0]; on 2 paths
+4-4_00000000A9CB = add_a5e7_sm0_2   # 0.4 s; set 048B alias 5E7 (Light Gun (L)); sm[0] +add({'bound': '0000000000F6.013'}); on 2 paths
+4-4_00000000A9C9 = add_a5e7_sm1_sm0   # 0.8667 s; set 048B alias 5E7 (Light Gun (L)); sm[1] sm[0]
+4-32_00000000A9CD = add_a5e7_tr01   # 0.8667 s; set 048B alias 5E7 (Light Gun (L)); tr[0>1]
+# Extracted under this model but in none of its sets (2, not named): 00327E 00395B

@@ -56,7 +56,9 @@ HAIR_TINTS = {"000000008052": (74, 48, 44)}
 SHADER_26_STRENGTH = 0.25
 # A grey card's colour where its ramp says nothing (flat): Brigitte's shield's 479 v (6B00: image 14D13, the bracket and core), ours from the barrier's cyan.
 CARD_TINTS = {"000000006B00": (0.45, 0.85, 1.0)}
-GLASS = {"00000000FBC0": 0.1}
+# D.Va's MEKA canopy A5D9 (FBB0 submesh 18, over her seated head): shader 0x26 as Juno's glass; drawn solid it hid her face in every
+# view and emote (^o^, Heart Power), so the same faint added light (techniques/emotes/dva_emotes.md)
+GLASS = {"00000000FBC0": 0.1, "00000000A5D9": 0.1}
 SCREEN_FACES = {"00000000FB30": (0.62, 0.95, 1.0)}
 # A mask this dim everywhere adds nothing a player sees (out of 255).
 DIM = 12

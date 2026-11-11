@@ -151,6 +151,8 @@ public final class DevServer {
 					HeroSyncPayload s = ClientHero.sync();
 					out.addProperty("hero", s.heroId());
 					out.addProperty("ult", s.ultCharge());
+					out.addProperty("ultCost", s.ultCost());
+					out.addProperty("shield", s.shield());
 					// the hero's state bits (Jetpack Cat: the ult phase in the low 3, 8 towing, 16 Lifeline on)
 					out.addProperty("mode", s.mode());
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
@@ -217,6 +219,18 @@ public final class DevServer {
 					}
 				});
 				out.addProperty("ok", true);
+			}
+			case "ents" -> {
+				// dev only: "ents <class name part>": this client's copies of those entities (position, motion), to set against the
+				// server's (/data get): what's drawn follows these
+				StringBuilder list = new StringBuilder();
+				for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
+					if (e.getClass().getSimpleName().contains(arg)) {
+						list.append(String.format(java.util.Locale.ROOT, "%d %.2f %.2f %.2f v %.2f %.2f %.2f t%d | ", e.getId(), e.getX(), e.getY(),
+							e.getZ(), e.getDeltaMovement().x, e.getDeltaMovement().y, e.getDeltaMovement().z, e.tickCount));
+					}
+				}
+				out.addProperty("ents", list.toString());
 			}
 			case "players" -> {
 				// dev only: the other players this client sees, with the yaws it renders them by
@@ -518,6 +532,13 @@ public final class DevServer {
 				ClientPlayNetworking.send(new SelectHeroPayload(arg));
 				out.addProperty("ok", true);
 			}
+			case "equip" -> {
+				// dev only: "equip <slot 0-3> <emote id>": what the loadout screen does, equips an emote on the wheel's slot
+				// (up, right, down, left) for the current hero, so the wheel can play each in turn
+				String[] a = arg.trim().split(" ");
+				dev.overcraft.client.comms.Loadout.setEmote(dev.overcraft.client.ClientHero.hero(), Integer.parseInt(a[0]), a[1]);
+				out.addProperty("emotes", String.valueOf(dev.overcraft.client.comms.Loadout.emotes(dev.overcraft.client.ClientHero.hero())));
+			}
 			case "press" -> {
 				// a real key press through Minecraft's keyboard handler (Esc pauses, screens get keyPressed): the harness's
 				// way to type when the desktop can't take input. "press key.keyboard.escape"
@@ -680,9 +701,13 @@ public final class DevServer {
 				out.addProperty("held", java.util.Arrays.toString(held));
 			}
 			case "selectframe" -> {
-				// dev only: "selectframe <framing> <drop>": Sigma's size and drop on the hero select (HeroSelectScreen)
+				// dev only: "selectframe [dva] <framing> <drop>": Sigma's (or D.Va's) size and drop on the hero select
 				String[] a = arg.trim().split(" ");
 				float[] frame = dev.overcraft.client.HeroSelectScreen.SIGMA_FRAME;
+				if (a.length > 0 && a[0].equals("dva")) {
+					frame = dev.overcraft.client.HeroSelectScreen.DVA_FRAME;
+					a = java.util.Arrays.copyOfRange(a, 1, a.length);
+				}
 				for (int i = 0; i < a.length && i < 2 && !a[i].isEmpty(); i++) {
 					frame[i] = Float.parseFloat(a[i]);
 				}

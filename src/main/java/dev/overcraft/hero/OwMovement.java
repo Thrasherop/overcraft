@@ -126,6 +126,8 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> valkyrie = entity -> false;
 	/** Mercy's Guardian Angel: where it takes her and how fast (null when she isn't flying to someone). */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
+	/** Set by the client: D.Va flies in her Boosters (the sync's Dva.MODE_BOOSTING). */
+	public static Predicate<LivingEntity> dvaBoosters = entity -> false;
 	/** Lifeweaver's Rejuvenating Dash: its move this tick (blocks a tick: level, no gravity), or null when not dashing. */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Vec3> dash = entity -> null;
 	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
@@ -507,6 +509,15 @@ public final class OwMovement {
 	/** Replaces {@code LivingEntity.travelInAir}. {@code input}: x strafe, z forward, as Minecraft passes it. */
 	public static void travel(LivingEntity entity, Vec3 input) {
 		if (sigmaFly(entity, input)) {
+			return;
+		}
+		if (dvaBoosters.test(entity)) {
+			// D.Va's Boosters (dev.overcraft.dva.Boosters): 12 m/s along her aim, no gravity, turning with the mouse (047E #158);
+			// she leaves it at that speed, which the steps below then slow
+			entity.resetFallDistance();
+			Vec3 v = entity.getViewVector(1.0f).scale(Ow.speed(dev.overcraft.dva.DvaStats.BOOSTERS_SPEED * speedFactor(entity)));
+			entity.setDeltaMovement(v);
+			entity.move(MoverType.SELF, v);
 			return;
 		}
 		// Lifeweaver's dash first: its last tick sets the speed he leaves it with, which the steps below then start from

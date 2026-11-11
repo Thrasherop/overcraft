@@ -226,6 +226,10 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
     ones included. Audience stays as read from the music's own events (E548 / E549 own, E54A / E54B others).
   - Stepping Stones' footsteps 91C3 sit on his feet's hardpoints (001C, 001B); Relaxation's ticks on 0002 / 0003. His two hums
     (11B3, 12D3) are `Unknown\<078>`, his laugh 06A1 in `HeroVoice\Sigma\Laugh` (-4 dB).
+- <a id="dva-emote-sounds"></a>**D.Va's emote sounds and voice lines (2026-11-11; `emotes.txt`, D.Va's section; scripts
+  `research\dva\scripts\emote_sounds\`):** 52 02Cs and 3 voice stimuli, Sigma's pipeline unchanged but for `emote_events.py` now
+  flattening a random container of random containers (her MEKA foley; M). Detail and what was heard:
+  [dva_emotes](../emotes/dva_emotes.md#sounds-and-voice-lines-2026-11-11).
 - <a id="sojourn-sounds"></a>**Sojourn's map (2026-11-02; `tools/soundmaps/sojourn.txt`, read for wiring in
   `tools/reference/sojourn-sounds.md`; scripts `research\sojourn\scripts\sounds\` (Juno's pipeline; the event table is its own
   file, `sojourn_table.py`, and `sojourn_gen.py` writes the map), data `research\sojourn\sounds\`; hub: [sojourn](../heroes/sojourn.md)):**
@@ -280,6 +284,11 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **A third Play target that exists nowhere:** 5E0D's 925962713 (Gravitic Flux's start) is in none of the 1148 banks.
   - **Lines that only exist as hero interactions get no event:** 0BB4 (absorbing an enemy ultimate) has only HeroInteraction
     lines; Grasp's plain absorb line is 0B9B, chosen by the absorbed hit's damage tag (1D02 #450).
+- <a id="dva-sounds"></a>**D.Va's map (2026-11-11; `tools/soundmaps/dva_sfx.txt`, voice in `dva.txt`; scripts `research\dva\scripts\sounds\` (Sigma's pipeline); hub: [dva](../heroes/dva.md#step-11-her-sound-effects-2026-11-11)):**
+  - **A 02C named by an effect can be missing from the build** (0727, Stadium Fusion): `ww.py` now skips it with a line instead of stopping.
+  - **One map file per kind is fine:** the builder reads every `tools/soundmaps/*.txt`, so a hero's voice and effects can be two files
+    (`dva.txt`, `dva_sfx.txt`), each from its own generator.
+  - **A mech hero's held states need their own synced state for others' loops** (`HeroManager.DVA_STATE`), as Sigma's `SIGMA_STATE`.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

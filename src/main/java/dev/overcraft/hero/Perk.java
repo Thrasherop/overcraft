@@ -55,6 +55,11 @@ public enum Perk {
 	SIGMA_HYPER_REGENERATION(Hero.SIGMA, Tier.MINOR, "hyper_regeneration"),
 	SIGMA_HYPER_STRIKE(Hero.SIGMA, Tier.MAJOR, "hyper_strike"),
 	SIGMA_LEVITATION(Hero.SIGMA, Tier.MAJOR, "levitation"),
+	// D.Va's, the live list's order (D 0042.177 = [253B, 25E6, 253E, 273E].134): their effects come in step 10 (dva-plan.md)
+	DVA_BUNNY_POWER(Hero.DVA, Tier.MINOR, "bunny_power"),
+	DVA_EXTENDED_BOOSTERS(Hero.DVA, Tier.MINOR, "extended_boosters"),
+	DVA_SHIELD_SYSTEM(Hero.DVA, Tier.MAJOR, "shield_system"),
+	DVA_PRECISION_FUSION(Hero.DVA, Tier.MAJOR, "precision_fusion"),
 	// Sojourn's, the live list's order (BZ 2025-02-18 / 2025-08-26; W): their effects come in step 7 (sojourn-plan.md)
 	SOJOURN_OVERCHARGED(Hero.SOJOURN, Tier.MINOR, "overcharged"),
 	SOJOURN_DECELERATION_FIELD(Hero.SOJOURN, Tier.MINOR, "deceleration_field"),

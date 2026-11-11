@@ -105,6 +105,9 @@ For "the mod stays invisible" checks (#32):
 A "this landing is safe" flag cleared when the server first sees the player on the ground can be gone by the time
 Minecraft applies that fall's damage (it can come a tick later, from the move packets). Clear the fall distance while
 the flag is up rather than relying on the flag at the damage event (Mercy's landings: [heroes/mercy](../heroes/mercy.md)).
+Again 2026-11-02 (D.Va's Boosters, [heroes/dva](../heroes/dva.md)): the server took her client's "on the ground" 2 m above
+it, two ticks before she landed, and the cleared flag let a 12.8 m fall through (8.44 lost). Every new soft landing should
+reset the fall each tick from the start; check this note before writing one.
 
 ## A ledge assist must also carry the hero over
 Lifting a hero who presses into a ledge in the air (OwMovement.ledge) isn't enough: the ledge's face has already
@@ -133,6 +136,19 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - A one-off hit that must ignore armour, Resistance and Protection: a damage type in `bypasses_armor` and
   `bypasses_effects` (the latter skips both the effect and enchantments: `getDamageAfterMagicAbsorb`), plus
   `no_knockback` / `no_impact` when the ability moves the target itself (`overcraft:gravitic_slam`).
+
+## Pushing a hero player from the server (D.Va's eject, 2026-11-02)
+- `setDeltaMovement` + `needsSync = true` on a **ServerPlayer in hero mode** did not move her: the eject's 6 back / 7 up
+  launch left D.Va standing (`state` vy 0, same z), though the line above holds for mobs. Sending
+  `player.connection.send(new ClientboundSetEntityMotionPacket(player))` right after setting the motion did: 1.4 m up,
+  4.8 m back, 0.8 s in the air (7 m/s at 17.5 gravity, 6 m/s along). Use the packet whenever the server launches the
+  player's own client (M: why needsSync didn't arrive wasn't traced). Up: [Techniques](../README.md) ·
+  [heroes/dva](../heroes/dva.md)
+
+- **A projectile's entity hit is where its centre is, not where it touches** (2026-11-02, D.Va's missiles): `EntityHitResult.getLocation()`
+  for a thrown projectile is its own position, a radius off the target's box. A splash measured from there loses its
+  full-damage ring on a direct hit (131 of 135 a volley); burst at the box point nearest that position instead. Block hits
+  are fine (the centre ray's point on the face). [dva](../heroes/dva.md)
 ## Endermen dodge anything tagged is_projectile (#92, 2026-11-02)
 - `Enderman.hurtServer` teleports away and takes nothing from a damage type in `minecraft:is_projectile`, whatever
   made it. Our hitscan weapons dealt `minecraft:arrow` (tagged), so endermen dodged Ana's rifle, Sombra's pistol and

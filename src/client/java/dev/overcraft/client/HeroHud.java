@@ -624,7 +624,11 @@ public final class HeroHud {
 		// shields (Lifeweaver's): their pips after the health's, blue, each kept in place (the health under them shows
 		// its own empty pips): the health part is what's left without the shields
 		// armor (Brigitte's) the same way, in Overwatch's armor yellow
-		int shieldMax = hero.layer() + (hero.armor() > 0 ? Math.max(0, max - hero.owHealth) : 0);
+		// D.Va's Shield System: 100 of the mech's health as shields over its armor (DvaPerks.shields)
+		int dvaShields = hero == Hero.DVA && !dvaPilot(ClientHero.sync())
+			&& ClientHero.sync().majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.DVA_SHIELD_SYSTEM)
+			? dev.overcraft.dva.DvaStats.SHIELD_SYSTEM_SHIELDS : 0;
+		int shieldMax = hero.layer(player) + dvaShields + (hero.armor(player) > 0 ? Math.max(0, max - hero.owHealth(player)) : 0);
 		float shield = Math.min(ClientHero.sync().shield(), shieldMax);
 		int healthMax = max - shieldMax;
 		float healthNow = Math.max(0, now - shield);
@@ -638,7 +642,9 @@ public final class HeroHud {
 				// a nearly full pip reads as full, like Overwatch's (199 shows 8 whole pips); a partial one fills from
 				// the left (27 health shows one pip and a sliver)
 				float shown = held > 0.9f ? 1 : held;
-				box(g, pipX, 933, pipW * shown, 30, shieldPip ? hero.armor() > 0 ? ARMOR : SHIELD : WHITE);
+				// (shields over armor: the top pips blue, ours: drawn by place, not by which layer a hit took, M)
+				boolean armorPip = hero.armor(player) > 0 && (dvaShields == 0 || i * 25 < max - dvaShields);
+				box(g, pipX, 933, pipW * shown, 30, shieldPip ? armorPip ? ARMOR : SHIELD : WHITE);
 			}
 			float overFrom = Math.clamp((now - i * 25) / 25f, 0, 1);
 			float overTo = Math.clamp((now + over - i * 25) / 25f, 0, 1);
@@ -873,7 +879,8 @@ public final class HeroHud {
 			disc(g, cx, cy, 53, 0xFF36ACFF);
 			disc(g, cx, cy, 51, ULT_RING_INNER);
 			disc(g, cx, cy, 47, ULT_READY_DISC);
-			Identifier fox = HeroArt.ultimate(hero);
+			// D.Va's ult is her body's: Self-Destruct in the mech, Call Mech as the pilot
+			Identifier fox = hero == Hero.DVA && dvaPilot(s) ? HeroArt.ability(hero, "call_mech") : HeroArt.ultimate(hero);
 			if (fox != null) {
 				image(g, fox, cx - 30, cy - 30, 60, 60, ICON);
 			}
@@ -956,7 +963,37 @@ public final class HeroHud {
 
 	// ---- bottom right: abilities and weapons ----
 
+	/** D.Va as the pilot (or calling her mech): her HUD is the pilot's (the sync's mode is her form). */
+	private static boolean dvaPilot(HeroSyncPayload s) {
+		int form = s.mode() & dev.overcraft.dva.Dva.FORM_BITS;
+		return form == dev.overcraft.dva.Dva.PILOT || form == dev.overcraft.dva.Dva.CALLING;
+	}
+
 	private static void abilities(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.DVA) {
+			if (dvaPilot(s)) {
+				// the pilot has no abilities: her Light Gun and Call Mech only (D 040A's loadouts E0 / DF)
+				return;
+			}
+			// Boosters (Shift) and Micro Missiles (E), the mech's ABILITY 1 / 2 (D 047E / 1128), in Kiriko's two places (ours)
+			ability(g, hero, w, "boosters", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.dva.DvaStats.BOOSTERS_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0) {
+				// lit while she flies (as Sigma's Grasp)
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "micro_missiles", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.dva.DvaStats.MISSILES_COOLDOWN, ability2ReadyAt);
+			if (s.majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.DVA_PRECISION_FUSION)) {
+				// Precision Fusion (R, the mech only), in Lucio's third place (ours), lit while it holds
+				ability(g, hero, w, "precision_fusion", w - 719, 900, HeroControls.get(Action.RELOAD), s.ability3Cooldown(),
+					(float) dev.overcraft.dva.DvaStats.PRECISION_COOLDOWN, ability3ReadyAt);
+				if ((s.mode() & dev.overcraft.dva.Dva.MODE_PRECISION) != 0) {
+					song(g, true, false, w - 719, 900, w);
+				}
+			}
+			return;
+		}
 		if (hero == Hero.SIGMA) {
 			// Kinetic Grasp (Shift) and Accretion (E), his data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "kinetic_grasp", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1139,6 +1176,29 @@ public final class HeroHud {
 		g.pose().popMatrix();
 	}
 
+	/**
+	 * Sojourn's Railgun energy (0-1, 1.5 Overcharged) on her Charged Shot panel: its number (0-100, the data's v971) over a band
+	 * along the panel's foot, filling with it; her data's hero red, white when full (ours: Overwatch shows the energy round her
+	 * crosshair and on the gun).
+	 */
+	/**
+	 * D.Va's Defense Matrix energy on its panel: the number over a band along the panel's foot, her pink while it's up, white
+	 * when full (ours: Overwatch shows it as a bar under her crosshair).
+	 */
+	private static void matrixEnergy(GuiGraphicsExtractor g, float energy, boolean waiting, boolean up, float x, float y, float width,
+									 float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		int colour = waiting ? 0x99A0A0A0 : up ? 0xFFFC79BD : energy >= 0.999f ? 0xFFFFFFFF : 0xB3FCA8D4;
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(energy, 0, 1), 5, colour);
+		String number = String.valueOf(Math.round(energy * 100));
+		brush(g, number, x + width - 30, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 30, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
+
 	/** Sojourn's Railgun energy on her Charged Shot panel, where there's no reticle to show it: its number over a band (ours). */
 	private static void railgunEnergy(GuiGraphicsExtractor g, float energy, float x, float y, float width, float w) {
 		float cx = x + width / 2;
@@ -1273,6 +1333,24 @@ public final class HeroHud {
 	}
 
 	private static void weapons(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float w) {
+		if (hero == Hero.DVA) {
+			if (dvaPilot(s)) {
+				// the Light Gun (the left button, 20 rounds) where Kiriko's kunai are (full until it fires: step 9)
+				int clip = dev.overcraft.dva.DvaStats.LIGHT_GUN_AMMO;
+				weapon(g, hero, w, "light_gun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo() < 0 ? clip : s.primaryAmmo(),
+					clip, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+				return;
+			}
+			// the mech: Defense Matrix (the right button) where Kiriko's ofuda panel is, its energy along the panel's foot; the
+			// Fusion Cannons (the left: no ammo) where her kunai are
+			weapon(g, hero, w, "defense_matrix", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			matrixEnergy(g, s.meter(), s.secondaryReload() > 0, (s.mode() & dev.overcraft.dva.Dva.MODE_MATRIX) != 0,
+				w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "fusion_cannons", w - 307, 938.5f, 251, 65, 109, 36, w - 81, -1, 0,
+				HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.SIGMA) {
 			// Experimental Barrier (the right button) where Kiriko's ofuda panel is, its health along the panel's foot; Hyperspheres
 			// (the left: no ammo) where her kunai are

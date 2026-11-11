@@ -155,6 +155,7 @@ public class OvercraftClient implements ClientModInitializer {
 			JunoSounds.tick(client);
 			SojournSounds.tick(client);
 			SigmaSounds.tick(client);
+			DvaSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -209,6 +210,12 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"hypersphere", 0.6f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
+		EntityRendererRegistry.register(OcEntities.DVA_MECH, dev.overcraft.client.model.DvaMechRenderer::new);
+		// D.Va's missiles and Light Gun rounds: stand-in items until her effects (1E8A / 1000, step 11)
+		EntityRendererRegistry.register(OcEntities.DVA_MISSILE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"dva_missile", 0.35f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.LIGHT_GUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"dva_light_gun_shot", 0.3f, false, 1, false));
 		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
 		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"=sigma_rock", 1.2f, false, 1, false));
@@ -306,6 +313,9 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
 			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
 			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
+		// D.Va's Boosters: the server's flight, her client's move
+		OwMovement.dvaBoosters = entity -> entity == mc.player && ClientHero.hero() == Hero.DVA
+			&& (ClientHero.sync().mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;

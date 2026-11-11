@@ -9,6 +9,11 @@ public enum Hero {
 	// 200 health + 250 shields, + the role's 150 (Tank.BONUS_HEALTH, added below) = 600; colour his data's (0.486, 0.545, 0.549)
 	SIGMA("sigma", "Sigma", Role.TANK, "stalwart", dev.overcraft.sigma.SigmaStats.HEALTH + dev.overcraft.sigma.SigmaStats.SHIELDS, true,
 		0xFF7C8B8C),
+	// her kit is being built (#69), step by step on her branch: playable there, not merged until it's whole. The second Tank,
+	// two bodies (dev.overcraft.dva.Dva): the MEKA's 200 + 325 armor, + the role's 150 = 675 (the pilot's 175 is
+	// Dva.owHealth's); Initiator (D 0DA7, tag 116D); colour her data's (0.988, 0.475, 0.741)
+	DVA("dva", "D.Va", Role.TANK, "initiator", dev.overcraft.dva.DvaStats.MECH_HEALTH + dev.overcraft.dva.DvaStats.MECH_ARMOR, true,
+		0xFFFC79BD),
 	KIRIKO("kiriko", "Kiriko", Role.SUPPORT, "medic", 250, true, 0xFFE9A23B),
 	LUCIO("lucio", "Lúcio", Role.SUPPORT, "tactician", dev.overcraft.lucio.LucioStats.HEALTH, true, 0xFF7CC242),
 	JETPACK_CAT("jetpack_cat", "Jetpack Cat", Role.SUPPORT, "tactician", dev.overcraft.jetpackcat.JetpackCatStats.HEALTH, true,
@@ -62,12 +67,28 @@ public enum Hero {
 	 * and each hit on it is 7 smaller, at most halved (W Hit points: Armor; BZ 2024-09-17). Brigitte's 75.
 	 */
 	public int armor() {
-		return this == BRIGITTE ? dev.overcraft.brigitte.BrigitteStats.ARMOR : 0;
+		// D.Va's: the MEKA's 325 (as the pilot she has none: HeroState.armor(player) reads her body)
+		return this == BRIGITTE ? dev.overcraft.brigitte.BrigitteStats.ARMOR : this == DVA ? dev.overcraft.dva.DvaStats.MECH_ARMOR : 0;
 	}
 
 	/** The top layer of owHealth: shields or armor. */
 	public int layer() {
 		return shields() + armor();
+	}
+
+	/** Health in the body this player is in (D.Va: the mech's 675 or the pilot's 175; everyone else owHealth). */
+	public int owHealth(net.minecraft.world.entity.player.@Nullable Player player) {
+		return this == DVA ? dev.overcraft.dva.Dva.owHealth(player) : owHealth;
+	}
+
+	/** Armor in the body this player is in. */
+	public int armor(net.minecraft.world.entity.player.@Nullable Player player) {
+		return this == DVA ? dev.overcraft.dva.Dva.armor(player) : armor();
+	}
+
+	/** The top layer in the body this player is in. */
+	public int layer(net.minecraft.world.entity.player.@Nullable Player player) {
+		return shields() + armor(player);
 	}
 
 	Hero(String id, String displayName, Role role, String subRole, int owHealth, boolean playable, int color) {

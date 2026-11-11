@@ -210,7 +210,7 @@ BODY_WEAPON_GEOSETS = {"juno": {4: 1, 2: 2}}
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
-HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat"}
+HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat", "dva": "D.Va"}
 
 
 def plain(name):
@@ -286,7 +286,9 @@ def main():
         """An entity definition's model, and whether it flies off as a projectile."""
         data = json.dumps(o.instances(guid(eid, 0x003)))
         model = re.search(r'"m_model": "0*([0-9A-F]+)\.00C"', data)
-        return (model.group(1) if model else None), "STUProjectileVisualComponent" in data
+        # a ragdoll (STURagdollConfig) falls by physics once spawned too: Make it Rain's bills 5E1F (162CA), spawned for 0.067 s
+        # off her hands (techniques/emotes/dva_emotes.md)
+        return (model.group(1) if model else None), "STUProjectileVisualComponent" in data or "STURagdollConfig" in data
 
     def raw_controls(fx):
         """The effect's EntityControls in file order (as TankLib lists them), read raw: (identifier, action)."""
@@ -392,7 +394,7 @@ def main():
                 collect(v)
 
     # the unlock list names heroes as shown ("Jetpack Cat"): compared as our ids
-    collect(next((v for k, v in unlocks.items() if slug(plain(k)) == hero), {}))
+    collect(next((v for k, v in unlocks.items() if slug(plain(k)).replace("_", "") == hero.replace("_", "")), {}))
     for u in emote_unlocks:
         root = o.instances(o.u64(guid(u["GUID"].split(".")[0], 0x0A5)))[0]
         bts = root.get("m_emoteBlendTreeSet")
@@ -505,6 +507,7 @@ def main():
     used = set()
     bone_ids = {}
     found = []
+    emote_dirs = {}
     for emote in sorted(d for d in emotes_dir.glob("*/*") if (d / "Animations").is_dir()):
         name = slug(emote.name)
         clips = {}
@@ -625,6 +628,7 @@ def main():
                 c["geosets"] = geosets[name][c["id"]]
         out["emotes"][name] = {"clips": clips}
         found.append((name, clips))
+        emote_dirs[name] = emote
     # her skeleton: every bone her full-body clips animate
     most = max(c["bones"] for _, clips in found for c in clips.values())
     hers = set().union(*(bone_ids[c["id"]] for _, clips in found for c in clips.values() if c["bones"] >= 0.9 * most))
@@ -636,6 +640,18 @@ def main():
         for clip in clips.values():
             for spawn in clip["spawns"]:
                 if spawn.get("entity") and spawn["clip"] is None:
+                    # the prop model's own clips first: DataTool exports them under the emote's Models/<model>/Animations
+                    # (the entity's 020 names them). Game On's three sprites 38EF / 38F0 / 38F4 each have their own 1.8 s
+                    # clip (3E69 / 3E6E / 3E72); by length alone all three took 3E6E (techniques/emotes/dva_emotes.md)
+                    own_dir = emote_dirs[name] / "Models" / f"{int(spawn['model'], 16):012X}.00C" / "Animations"
+                    own = {q.stem.lstrip("0").upper() for q in own_dir.rglob("*.owanimclip")} if own_dir.is_dir() else set()
+                    for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
+                        mine = [c["id"] for c in clips.values() if c["id"] in own and abs(c["duration"] - length) < 0.02]
+                        if mine:
+                            spawn["clip"], spawn["clipStart"], spawn["clipBy"] = mine[0], begins, "its own folder"
+                            break
+                    if spawn["clip"] is not None:
+                        continue
                     # a prop clip as long as the window (starts with it), else as long as her clip (runs with it)
                     for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
                         # never the clip whose effect spawns it: Magic Pumpkins' pumpkins (3B50) are spawned by the

@@ -40,7 +40,8 @@ HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", 
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
-                "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma"}
+                "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
+                "dva": "D.Va"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -94,14 +95,16 @@ def slug(name):
     return "".join(c if c.isascii() and c.isalnum() else "_" for c in plain.lower()).strip("_")
 
 
-def add_ui(source):
-    """Copies each hero's icons to textures/gui/heroes/<hero>/: portrait, portrait_close, head, fullbody, card, bust,
+def add_ui(source, only=None):
+    """Copies each hero's icons (or only that hero's: `ui <source> <hero>`) to textures/gui/heroes/<hero>/: portrait, portrait_close, head, fullbody, card, bust,
     silhouette(_small), abilities/<ability>.png, perks/<perk>.png."""
     icons = Path(source) / "HeroIcons"
     if not icons.is_dir():
         sys.exit(f"no HeroIcons in {source}: run DataTool extract-hero-icons into it first")
     write_mcmeta()
     for hero, folder in sorted(HERO_FOLDERS.items()):
+        if only and hero != only:
+            continue
         src = icons / folder
         if not src.is_dir():
             print(f"{hero}: no icons ({src})")
@@ -128,6 +131,8 @@ def add_ui(source):
         for png in out.rglob("*.png"):
             png.with_name(png.name + ".mcmeta").write_text('{"texture": {"blur": true}}\n', encoding="utf8")
         print(f"{hero}: {sum(1 for _ in out.rglob('*.png'))} images -> {out}")
+    if only:
+        return  # one hero's icons: the shared ones (roles, kill feed, Lucio's song) are left as they are
     dump = Path(source) / "UITextures" / "UITextureDump"
     roles = PACK / "assets" / "overcraft" / "textures" / "gui" / "roles"
     for role, texture in ROLE_ICONS.items():
@@ -339,14 +344,15 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
                    "sombra": "../../research/sombra/extract", "brigitte": "../../research/brigitte/extract",
                    "lifeweaver": "../../research/lifeweaver/extract",
                    "sojourn": "../../research/sojourn/extract",
-                   "sigma": "../../research/sigma/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "sigma": "../../research/sigma/extract",
+                   "dva": "../../research/dva/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -1455,7 +1461,7 @@ def main():
         convert(str(src), out)
         print("added:", out, out.stat().st_size // 1024, "KB")
     elif cmd == "ui":
-        add_ui(sys.argv[2])
+        add_ui(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "sounds":
         add_sounds(sys.argv[2])
     elif cmd == "fonts":

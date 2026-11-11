@@ -82,6 +82,25 @@ public final class HeroModels {
 		return EXTRA_MODELS.get(hero.id + "_1p");
 	}
 
+	/**
+	 * The model this entity shows as this hero: D.Va's body (dev.overcraft.dva.Dva.pilotBody): the MEKA (dva.glb, FBB0) or
+	 * the pilot (dva_pilot.glb, F2FF); the hero's own for everyone else.
+	 */
+	public static @Nullable Loaded of(Hero hero, net.minecraft.world.entity.@Nullable Entity entity) {
+		if (hero == Hero.DVA && entity instanceof net.minecraft.world.entity.player.Player player && dev.overcraft.dva.Dva.pilotBody(player)) {
+			return EXTRA_MODELS.get("dva_pilot");
+		}
+		return get(hero);
+	}
+
+	/** The first-person model for the body this player is in (D.Va's cockpit 10354, or the pilot's arms F32B). */
+	public static @Nullable Loaded firstPerson(Hero hero, net.minecraft.world.entity.@Nullable Entity entity) {
+		if (hero == Hero.DVA && entity instanceof net.minecraft.world.entity.player.Player player && dev.overcraft.dva.Dva.pilotBody(player)) {
+			return EXTRA_MODELS.get("dva_pilot_1p");
+		}
+		return firstPerson(hero);
+	}
+
 	/** The hero's weapon when it's a model of its own (hero_models/<hero>_weapon.glb: Lúcio's Sonic Amplifier), or null. */
 	public static @Nullable Loaded weapon(Hero hero) {
 		return EXTRA_MODELS.get(hero.id + "_weapon");
@@ -257,6 +276,11 @@ public final class HeroModels {
 			if (hero == Hero.ANA) {
 				// her Sleep Dart pistol, out only during the dart's cast (HeroWeapon.sidearm)
 				names.add("ana_pistol");
+			}
+			if (hero == Hero.DVA) {
+				// her second body: the pilot (F2FF) and her first-person arms (F32B); her Light Gun is dva_weapon (10246)
+				names.add("dva_pilot");
+				names.add("dva_pilot_1p");
 			}
 			if (hero == Hero.SIGMA) {
 				// his Experimental Barrier (C015), its emitter orbs (FC88) and the Accretion rock (C5CA): drawn from steps 5 / 7

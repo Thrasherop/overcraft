@@ -85,6 +85,11 @@
   onto the mark in the same batch as the confirm.
 - **Scripted aim lags moving mobs:** `aim.py` reads positions about 0.4 s before the shot, so a strafing skeleton is
   missed; a scripted night fight measures nothing about a kit. Use still (NoAI) targets for numbers.
+- **Aiming a night fight from the server** (2026-11-02, D.Va): `cmd /execute as @s at @s anchored eyes facing entity
+  @e[tag=w,sort=nearest,limit=1] eyes run tp @s ~ ~ ~ ~ ~` turns her to the nearest at once, no log reading. Without
+  `anchored eyes` it aims from her feet (a tall hero fires over every close mob). Hold the fire button for the whole fight and
+  only aim in the loop: firing in short bursts between state reads killed nothing in 40 s. Driver: one socket, chat answers
+  read from the log (`dva_oc.py` in that session's scratchpad).
 - **Test worlds spawn mobs:** a superflat world has slimes; a hero hovering in place was killed twice mid-test. Turn
   spawning off and clear the world before measuring. In 26.3 the rule needs its namespace from a command:
   `cmd /gamerule minecraft:spawn_monsters false` (plain `spawn_mobs` was refused, "Incorrect argument"; 2026-10-29).

@@ -181,7 +181,9 @@ public final class Combat {
 				state = dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN;
 			}
 		}
-		return state * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
+		// D.Va in her Boosters: a tenth (047E #243)
+		double boosters = target instanceof LivingEntity living ? dev.overcraft.dva.Boosters.knockbackFactor(living) : 1;
+		return state * boosters * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
 	}
 
 	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
@@ -643,7 +645,7 @@ public final class Combat {
 		if (state == null || state.hero == null || state.ultActive > 0 || points <= 0) {
 			return;
 		}
-		double cost = ultCost(state.hero);
+		double cost = ultCost(state);
 		boolean wasReady = state.ultCharge >= cost;
 		if (tactician(state.hero) && !passive) {
 			double below = Math.max(0, Math.min(points, cost - state.ultCharge));
@@ -663,8 +665,8 @@ public final class Combat {
 	 * and don't count.
 	 */
 	public static void onAdvancement(Player player, AdvancementType type) {
-		Hero hero = HeroManager.hero(player);
-		if (hero == null) {
+		HeroState state = HeroManager.state(player);
+		if (state == null || state.hero == null) {
 			return;
 		}
 		double share = switch (type) {
@@ -672,7 +674,7 @@ public final class Combat {
 			case GOAL -> 0.25;
 			case CHALLENGE -> 0.50;
 		};
-		addUltCharge(player, share * ultCost(hero));
+		addUltCharge(player, share * ultCost(state));
 	}
 
 	/** Overwatch's Tactician sub-role (Lúcio): ult charge kept past 100% and after casting. */
@@ -683,6 +685,11 @@ public final class Combat {
 	/** What's left of the ult charge after casting: nothing, or a Tactician's excess. */
 	public static double afterUlt(Hero hero, double charge) {
 		return tactician(hero) ? Math.max(0, charge - ultCost(hero)) : 0;
+	}
+
+	/** The ult cost now: the hero's, or for D.Va her body's (Self-Destruct 1700 in the mech, Call Mech 280 as the pilot). */
+	public static int ultCost(HeroState state) {
+		return state.hero == Hero.DVA ? dev.overcraft.dva.Dva.ultCost(state) : state.hero == null ? 1 : ultCost(state.hero);
 	}
 
 	public static int ultCost(Hero hero) {
@@ -699,6 +706,7 @@ public final class Combat {
 			case JUNO -> (int) dev.overcraft.juno.JunoStats.ULT_COST;
 			case SIGMA -> (int) dev.overcraft.sigma.SigmaStats.ULT_COST;
 			case SOJOURN -> (int) dev.overcraft.sojourn.SojournStats.ULT_COST;
+			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};
 	}

@@ -247,6 +247,54 @@ public final class HeroState {
 	public int sigmaDirectHits;
 	public boolean sigmaStrikeReady;
 	/**
+	 * D.Va (dev.overcraft.dva.Dva): her form (Dva.MECH .. WRECK) and the ticks in it; the Self-Destruct charge kept while she's
+	 * the pilot (the next mech's); the mech's health and armor kept over Minecraft mode (G; -1: none kept); until when Call
+	 * Mech is locked and she can't be hurt (game time); when she last ejected; when Initiator's heal may land again; Call
+	 * Mech's spot and her facing at the press; the unmanned mech (entity id); the game time of her kit's last tick.
+	 */
+	public int dvaForm, dvaTicks;
+	public double dvaMechUlt;
+	public float dvaStoredHealth = -1;
+	public double dvaStoredArmor;
+	public long dvaCallLockUntil = -1, dvaImmuneUntil = -1, dvaEjectedAt = -1000, dvaInitiatorReadyAt = -1, dvaNow;
+	public net.minecraft.world.phys.@Nullable Vec3 dvaCallSpot;
+	public float dvaCallYaw;
+	public @Nullable Integer dvaMechId;
+	/**
+	 * D.Va's mech kit (steps 4-6): Fusion's last volley (game time); Defense Matrix up, its energy, its ticks up, when it went
+	 * down, its cooldown (ticks); Boosters' ticks flown (-1 not flying), ticks to its cooldown (-1 none), when it ended, the
+	 * creatures it hit this flight (each once).
+	 */
+	public long dvaLastVolley = -1000;
+	public boolean dvaMatrix;
+	public double dvaMatrixEnergy;
+	public int dvaMatrixTicks, dvaMatrixCooldown;
+	public long dvaMatrixDownAt = -1000;
+	public int dvaBoost = -1, dvaBoostCooldownIn = -1;
+	public long dvaBoostEndedAt = -1000;
+	public final java.util.Set<Integer> dvaBoostHit = new java.util.HashSet<>();
+	/**
+	 * D.Va's steps 7-9: Micro Missiles' ticks into the cast (-1: no volley), missiles left, the rate's accumulator, the muzzle
+	 * next; the Light Gun's ticks to its next round; the Self-Destructing mech (entity id).
+	 */
+	public int dvaMissileTicks = -1, dvaMissilesLeft, dvaMissileSide;
+	public double dvaMissileClock, dvaGunRecovery;
+	public @Nullable Integer dvaSelfDestructId;
+	/**
+	 * D.Va's perks (step 10, DvaPerks): Extended Boosters' time added to this flight (ticks); Precision Fusion's ticks in (-1:
+	 * off) and when it last ended (game time, for its ramp out); the armor lost under Shield System's shields (Overwatch points:
+	 * a hero with both keeps them apart, Shields).
+	 */
+	public int dvaBoostExtra, dvaPrecision = -1;
+	public long dvaPrecisionEndedAt = -1000;
+	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
+	public long dvaMatrixLineAt = -1;
+	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
+	public boolean dvaFusionBurst;
+	/** When Shield System's restore sound may play again (game time). */
+	public long dvaShieldSoundAt;
+	public double armorLost;
+	/**
 	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
 	 * Levitation's end, for others' look and sound (the server is told it began; ours: 1.75 s on, or a landing).
 	 */
@@ -406,6 +454,27 @@ public final class HeroState {
 		perkXp = 0;
 		perkTicks = 0;
 		minorPerk = majorPerk = null;
+	}
+
+	/** The hero's health in the body this player is in (D.Va: the mech's 675 or the pilot's 175), else Hero.owHealth. */
+	public int owHealth(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.owHealth(player) : hero == null ? 0 : hero.owHealth;
+	}
+
+	/** Armor in the body this player is in (D.Va: the mech's 325, the pilot none). */
+	public int armor(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.armor(player) : hero == null ? 0 : hero.armor();
+	}
+
+	/** Shields in the body this player is in. */
+	public int shields(net.minecraft.world.entity.player.Player player) {
+		// D.Va's Shield System: 100 of the mech's health as shields, over its armor
+		return hero == Hero.DVA ? dev.overcraft.dva.DvaPerks.shields(player, this) : hero == null ? 0 : hero.shields();
+	}
+
+	/** The top layer (shields and armor) in the body this player is in. */
+	public int layer(net.minecraft.world.entity.player.Player player) {
+		return shields(player) + armor(player);
 	}
 
 	public boolean has(Perk perk) {

@@ -182,7 +182,19 @@ public final class Voice {
 		java.util.Map.entry("sigma.barrier_damaged", new Stimulus(60, 40, 80, false)), // 0BA0
 		java.util.Map.entry("sigma.barrier_low", new Stimulus(60, 5, 12, false)), // 0BA1
 		java.util.Map.entry("sigma.flux_kill", new Stimulus(50, 5, 5, false)), // 0BA5
-		java.util.Map.entry("sigma.ultimate", new Stimulus(95, 1, 1, false))); // 185B
+		java.util.Map.entry("sigma.ultimate", new Stimulus(95, 1, 1, false)), // 185B
+		// D.Va's (tools/soundmaps/dva.txt, the voice section; her set 0057.05F)
+		java.util.Map.entry("dva.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("dva.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("dva.boosters", new Stimulus(60, 2, 2, false)), // 03DA
+		java.util.Map.entry("dva.matrix", new Stimulus(50, 2, 2, false)), // 03DB
+		java.util.Map.entry("dva.matrix_absorb", new Stimulus(85, 10, 15, false)), // 06C1 (its pair 15 / 10, read as 10-15)
+		java.util.Map.entry("dva.call_mech", new Stimulus(60, 2, 2, false)), // 0479
+		java.util.Map.entry("dva.call_mech_kill", new Stimulus(50, 20, 20, false)), // 11CE
+		java.util.Map.entry("dva.eject", new Stimulus(60, 2, 2, false)), // 0497
+		java.util.Map.entry("dva.mech_back", new Stimulus(60, 2, 2, false)), // 049D
+		java.util.Map.entry("dva.pilot_kill", new Stimulus(70, 15, 15, false)), // 10AF
+		java.util.Map.entry("dva.ultimate", new Stimulus(95, 1, 1, false))); // 183C
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -328,6 +340,10 @@ public final class Voice {
 			if (state.hero == Hero.SIGMA) {
 				// his own kill lines (the rock's "Collision!", the slam's "To the void!") first
 				dev.overcraft.sigma.Sigma.killed(killer, source);
+			}
+			if (state.hero == Hero.DVA) {
+				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"
+				dev.overcraft.dva.Dva.killed(killer, state, blow);
 			}
 			state.killChain = now - state.lastKillAt <= KILL_CHAIN ? state.killChain + 1 : 1;
 			state.lastKillAt = now;
