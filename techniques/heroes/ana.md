@@ -159,3 +159,6 @@ Not tried: a second player; 3P ability cameras while scoped; F1. Skins change th
 General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
 
 Sleep Dart at an enemy barrier stops there and sleeps no one behind it (#104): [barriers](../minecraft/barriers.md). A creeper held asleep burns its fuse back down (#101): [jetpack_cat](jetpack_cat.md).
+
+## The Nov 3 patch (#116)
+Biotic Grenade 60 to enemies, still 90 to allies: Biotic Bounce's second burst (60 / 60, W) now equals the first's damage. Suzu and Life Grip clear her anti-heal, and the phased don't take it (#117: [polish3](../testing/polish3.md)).

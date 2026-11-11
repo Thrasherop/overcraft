@@ -35,6 +35,10 @@ public final class LifeGrip {
 	private static final Map<UUID, Pull> PULLS = new HashMap<>();
 	/** Allies a pull let go, not yet landed: their fall doesn't count (the owner's rule for ability landings, #35). */
 	private static final Map<UUID, LivingEntity> LANDING = new HashMap<>();
+	/** Ticks each has stayed somewhere since it let go (HeroManager.landingOver). */
+	private static final Map<UUID, Integer> LANDING_TOUCH = new HashMap<>();
+	/** Jump was already held when the grip took them: only a press lets go (a swimmer holds Space; D 21EE reads the input from 0.65 s, press or hold not read, ours). */
+	private static final java.util.Set<UUID> JUMP_HELD = new java.util.HashSet<>();
 	private static final Map<UUID, Integer> CLOSE = new HashMap<>();
 	/** When each pull's vine reaches its ally (game time): its landing's sounds and his line. */
 	private static final Map<UUID, Long> LANDS = new HashMap<>();
@@ -76,7 +80,7 @@ public final class LifeGrip {
 		boolean far = ally.position().distanceTo(to) > GRIP_NEAR;
 		PULLS.put(ally.getUUID(), new Pull(ally, caster, to, caster.level().getGameTime(), far));
 		CLOSE.remove(ally.getUUID());
-		// (the cleanse first: the heal isn't cut by the healing reduction it takes off)
+		// (the cleanse first: the heal isn't cut by the healing reduction it takes off; D: 21EE #605 sends the same 1BC5 as Suzu's status, #606 sets the same v8440)
 		Combat.cleanse(ally);
 		float healed = Combat.heal(ally, GRIP_HEAL);
 		if (healed > 0) {
@@ -86,6 +90,9 @@ public final class LifeGrip {
 		ally.setDeltaMovement(Vec3.ZERO);
 		ally.needsSync = true;
 		if (ally instanceof ServerPlayer player) {
+			if (player.getLastClientInput().jump()) {
+				JUMP_HELD.add(player.getUUID());
+			}
 			ServerPlayNetworking.send(player, new GripPayload(true, to.x, to.y, to.z, far));
 			// gripped: theirs in their head (318E's 9C3B)
 			dev.overcraft.hero.HeroSounds.toOwner(player, dev.overcraft.registry.OcSounds.LW_GRIP_ALLY);
@@ -133,7 +140,10 @@ public final class LifeGrip {
 			}
 			long t = ally.level().getGameTime() - p.startedAt;
 			int moving = (int) (t - Ow.ticks(GRIP_PULL_FROM));
-			boolean jumped = ally instanceof ServerPlayer player && t >= Ow.ticks(GRIP_JUMP_CANCEL) && player.getLastClientInput().jump();
+			if (ally instanceof ServerPlayer held && !held.getLastClientInput().jump()) {
+				JUMP_HELD.remove(held.getUUID());
+			}
+			boolean jumped = ally instanceof ServerPlayer player && t >= Ow.ticks(GRIP_JUMP_CANCEL) && player.getLastClientInput().jump() && !JUMP_HELD.contains(player.getUUID());
 			int close = ally.distanceTo(p.caster) <= GRIP_CLOSE && moving > 0 ? CLOSE.merge(ally.getUUID(), 1, Integer::sum) : 0;
 			if (close == 0) {
 				CLOSE.remove(ally.getUUID());
@@ -161,15 +171,23 @@ public final class LifeGrip {
 				ally.needsSync = true;
 			}
 		}
+		// the grip's own landing, whoever it had, a mob or someone in Minecraft mode too; over on the ground, or as any landing ends (Holds): riding, or having stayed in water, on a ladder (#35)
 		LANDING.values().removeIf(e -> {
 			e.resetFallDistance();
-			return !e.isAlive() || e.isRemoved() || e.onGround();
+			int touch = dev.overcraft.hero.HeroManager.landingTouch(e, LANDING_TOUCH.getOrDefault(e.getUUID(), 0));
+			LANDING_TOUCH.put(e.getUUID(), touch);
+			boolean over = !e.isAlive() || e.isRemoved() || e.onGround() || dev.overcraft.hero.HeroManager.landingOver(e, touch);
+			if (over) {
+				LANDING_TOUCH.remove(e.getUUID());
+			}
+			return over;
 		});
 	}
 
 	private static void end(LivingEntity ally) {
 		PULLS.remove(ally.getUUID());
 		CLOSE.remove(ally.getUUID());
+		JUMP_HELD.remove(ally.getUUID());
 		LANDING.put(ally.getUUID(), ally);
 		if (ally instanceof ServerPlayer player) {
 			ServerPlayNetworking.send(player, GripPayload.OFF);
@@ -179,6 +197,8 @@ public final class LifeGrip {
 	public static void clear() {
 		PULLS.clear();
 		LANDING.clear();
+		LANDING_TOUCH.clear();
+		JUMP_HELD.clear();
 		CLOSE.clear();
 	}
 }

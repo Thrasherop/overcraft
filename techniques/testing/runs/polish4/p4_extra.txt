@@ -1,0 +1,28 @@
+=== extra cases, tree a20c352, harness input and bots
+hero mercy mode True screen  hp 18.0 / 18.0
+--- asleep in water, a bot Kiriko on the bank; y -61.90115293839412
+  slept False 18.0 y -62.0
+   +0.25 asleep False phased True y -62.0
+   +0.50 asleep False phased True y -62.0
+   +0.75 asleep False phased False y -62.0
+   +1.00 asleep False phased False y -62.0
+   +1.25 asleep False phased False y -62.0
+   +1.50 asleep False phased False y -62.0
+   +1.75 asleep False phased False y -62.0
+   +2.00 asleep False phased False y -62.0
+--- Catnapper's knock-down on the real client, a bot Kiriko throwing at the landing
+hero mercy mode True screen  hp 18.0 / 18.0
+   thrown at tick 31111
+   held ticks 31111..31132 = 22 (W 1.5 s = 30); phase 31114..31122
+   (the carry also holds its target by rope: the read is the knock-down, or nothing if the dive missed)
+DONE
+=== Catnapper control: the same with and without a Suzu, fix on, tree a20c352
+hero mercy mode True screen  hp 18.0 / 18.0
+Suzu False held ticks 32289 32318 = 30 (W 1.5 s = 30) phase None None
+hero mercy mode True screen  hp 18.0 / 18.0
+Suzu True held ticks 32535 32564 = 30 (W 1.5 s = 30) phase 32536 32545
+hero mercy mode True screen  hp 18.0 / 18.0
+Suzu False held ticks 32781 32810 = 30 (W 1.5 s = 30) phase None None
+hero mercy mode True screen  hp 18.0 / 18.0
+Suzu True held ticks 33029 33058 = 30 (W 1.5 s = 30) phase 33031 33040
+DONE

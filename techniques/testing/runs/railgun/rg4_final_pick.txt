@@ -1,0 +1,37 @@
+{'ok': True}
+=== TREE e3f437f dirty_src_files=0 launched=2026-11-06T15:40:21 hero before  fps 30
+PICK frames over 40 ms (at ms, length): [(102, 149), (251, 333), (585, 46), (2396, 43)] total frames 87 hero sojourn
+[15:42:27] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 523
+ours:
+303 (none of ours)
+36 hud.HudDraw.image
+21 model.HeroTexture.<init>
+16 model.HeroModelRenderer.emit
+13 hud.HudShapes.cutHead
+12 ClientHero.tick
+9 effect.SojournFx.tick
+8 HeroHud.render
+8 hud.ReticleHud.crosshair
+8 model.HeroModelRenderer.isClosed
+6 HeroHud.crosshair
+6 HeroHud.lambda$allyMarkers$0
+6 hud.HudShapes.ensure
+6 model.HeroWeapon.place
+5 hud.HudShapes.register
+5 model.HeroAnimator.lambda$turnsInPlace$1
+5 model.HeroWeapon.pose
+4 effect.SojournFx.posed
+4 model.ClothSim.of
+4 model.HeroModelRenderer.shadow
+4 model.HeroModelRenderer.skinned
+2 hud.HudText.plain
+2 model.AimSheet.layout
+2 model.Skeleton.addAdditive
+2 model.Skeleton.skin
+top:
+248 jdk.internal.misc.Unsafe.park
+80 java.io.FileInputStream.open0
+21 sun.nio.fs.WindowsNativeDispatcher.CreateFile0
+OWNART {'art': 0, 'artBytes': 59506633}
+### done

@@ -277,6 +277,31 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("charged_shot")) {
+			dev.overcraft.hero.PressTrace.seen("clip");
+		}
+		boolean own = net.minecraft.client.Minecraft.getInstance().player != null && net.minecraft.client.Minecraft.getInstance().player.getId() == entityId;
+		if ((action.equals("charged_shot") || action.equals("reload_cut")) && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) {
+			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound
+			a.actionAt.remove("reload");
+			a.actions.cancel("reload", now);
+			a.actionsFirstPerson.cancel("reload", now);
+			dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+		}
+		if (action.equals("charged_ack")) {
+			dev.overcraft.client.ClientSojourn.acked();
+			return;
+		}
+		if (action.equals("reload_cut")) {
+			// (the server to her alone: a reload that crossed her shown press on the wire)
+			return;
+		}
+		// (what her client knows of her fire's locks, for the press: ClientSojourn)
+		if (own && action.equals("charged_shot")) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.CHARGED_LOCKOUT);
+		} else if (own && action.equals("ult") && dev.overcraft.client.ClientHero.hero() == dev.overcraft.hero.Hero.SOJOURN) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.OVERCLOCK_CAST);
+		}
 		if (action.equals("fire")) {
 			a.fireFirst = a.since("fire", now) > BURST_GAP;
 			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);

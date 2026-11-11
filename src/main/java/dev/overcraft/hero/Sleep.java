@@ -30,7 +30,19 @@ public final class Sleep {
 		Sleeper(LivingEntity entity, long since, long until, boolean waking) {
 			this(entity, since, until, waking, false, false, 1);
 		}
+
+		Sleeper(LivingEntity entity, Holds.Hold hold) {
+			this(entity, hold.since(), hold.until(), hold.waking(), hold.stun(), hold.slides(), hold.gravity());
+		}
+
+		Holds.Hold hold() {
+			return new Holds.Hold(since, until, waking, stun, slides, gravity);
+		}
 	}
+
+	private static final net.minecraft.resources.Identifier FLOAT = dev.overcraft.Overcraft.id("knockdown_float");
+	/** Players on their way down from a float: no fall counts till they land. */
+	private static final Map<UUID, ServerPlayer> FLOATED = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/** (Concurrent: Mob.isNoAi asks this from worldgen threads too.) */
 	private static final Map<UUID, Sleeper> SLEEPERS = new java.util.concurrent.ConcurrentHashMap<>();
@@ -39,12 +51,20 @@ public final class Sleep {
 		return SLEEPERS.containsKey(entity.getUUID());
 	}
 
-	/** Puts it to sleep for {@code seconds}; a new sleep replaces one under way (ours: 224E's replace rule is M). */
+	/** Puts it to sleep for {@code seconds}, as Holds.stacked says (not on a knock-down: ours). */
 	public static void put(LivingEntity entity, double seconds) {
+		if (Combat.phaseStops(entity)) {
+			// (224E #96 fails on a phased one, #575 lets only a knock-down by)
+			return;
+		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false));
-		if (old == null) {
+		Holds.Hold hold = Holds.stacked(old == null ? null : old.hold(), Holds.sleep(now, now + Ow.ticks(seconds)));
+		if (hold == null) {
+			return;
+		}
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, hold));
+		if (old == null || old.stun) {
 			// the sleep's bed (1A1F, as long as the sleep): the sleeper's own, everyone else's at it (45 m)
 			sound(entity, dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET, dev.overcraft.registry.OcSounds.ANA_SLEEP);
 		}
@@ -64,11 +84,11 @@ public final class Sleep {
 	}
 
 	/**
-	 * A stun (Brigitte's Shield Bash in Rally, 224E with type 6BBE: 0.75 s): held as a sleeper is (a mob still, a player's
+	 * A stun (Brigitte's Shield Bash in Rally, 224E with no type of its own: its public schema's default, 4EB6: 0.75 s): held as a sleeper is (a mob still, a player's
 	 * movement and hero keys locked), but damage doesn't end it, and it has none of the sleep's look or sound.
 	 */
-	public static void stun(LivingEntity entity, double seconds) {
-		stun(entity, seconds, false, 1);
+	public static boolean stun(LivingEntity entity, double seconds) {
+		return stun(entity, seconds, false, 1);
 	}
 
 	/**
@@ -129,17 +149,61 @@ public final class Sleep {
 		return aiHeld(mob) && OWN_VIEW.get() == 0;
 	}
 
-	private static void stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
+	/** What Protection Suzu's cleanse does here (Combat.cleanse's table; Holds.cleansed has the rule). */
+	public static boolean cleanse(LivingEntity entity) {
+		Sleeper s = SLEEPERS.get(entity.getUUID());
+		if (s == null) {
+			return false;
+		}
+		boolean told = Holds.tells(s.hold());
+		Holds.Hold after = Holds.cleansed(s.hold(), entity.level().getGameTime(), Ow.ticks(AnaStats.SLEEP_WAKING));
+		if (after == null) {
+			wake(s);
+			if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+				Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
+			}
+		} else {
+			SLEEPERS.put(entity.getUUID(), new Sleeper(s.entity, after));
+		}
+		return told;
+	}
+
+	/** Lets a player's client go, unless something else still holds them (a Flux's first 0.4 s, or a hold here). */
+	public static void release(ServerPlayer player) {
+		if (Holds.letsGo(SLEEPERS.containsKey(player.getUUID()), dev.overcraft.sigma.GraviticFlux.holding(player))) {
+			player.removeAttached(HeroManager.ASLEEP);
+		}
+	}
+
+	private static boolean stun(LivingEntity entity, double seconds, boolean slides, double gravity) {
+		if (Combat.phaseStops(entity)) {
+			// (a stun: 224E #96 / #575. A knock-down: the hit's own filter, mask 20 (M) as 5B7B's and 1EB9 #338's, and W; hits don't get here, Allies: this is the door for what isn't a hit)
+			return false;
+		}
 		long now = entity.level().getGameTime();
 		Sleeper old = SLEEPERS.get(entity.getUUID());
-		if (old != null && !old.stun) {
-			return;
+		Holds.Hold hold = Holds.stacked(old == null ? null : old.hold(), Holds.stun(now, now + Ow.ticks(seconds), slides, gravity));
+		if (hold == null) {
+			return false;
 		}
-		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, now, now + Ow.ticks(seconds), false, true, slides, gravity));
+		SLEEPERS.put(entity.getUUID(), new Sleeper(entity, hold));
 		if (entity instanceof ServerPlayer player) {
 			// held still by their client as a sleeper is (a stunned player walked on through it: found playing, two clients)
 			player.setAttached(HeroManager.ASLEEP, true);
+			if (hold.gravity() == 1 && old != null && old.gravity != 1) {
+				// a plain knock-down ended the float (Holds.stacked, ours): its gravity back
+				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+			}
+			if (gravity != 1 && hold.gravity() != 1 && !Combat.devFixOff) {
+				// a player moves on their own client: Hyper Strike's float (#109) goes there as Minecraft's gravity attribute, which
+				// Minecraft mode falls by and hero mode reads (OvercraftClient's gravityScale); a mob's is in slide
+				Combat.buff(player, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, gravity - 1, seconds);
+				// Its landing doesn't hurt. Overwatch has no fall damage, and the float took a Brigitte struck aiming up 18 m: 13.92 -> 0 on the landing,
+				// where the floatless throw cost 4 (runs/polish3/c3_hyper_up.txt). Ours, from that: not the #84 rule for pushes, which keep their falls
+				FLOATED.put(player.getUUID(), player);
+			}
 		}
+		return true;
 	}
 
 	/** {@code own} in the sleeper's head (a player), {@code others} at it for everyone else, out to 45 m (3866). */
@@ -186,6 +250,11 @@ public final class Sleep {
 
 	/** Each server tick (HeroManager): sleepers stay put, and wake when their time is up. */
 	public static void tick(MinecraftServer server) {
+		FLOATED.values().removeIf(player -> {
+			player.resetFallDistance();
+			// (not the tick it began, still on the ground)
+			return !player.isAlive() || player.isRemoved() || player.onGround() && !SLEEPERS.containsKey(player.getUUID());
+		});
 		for (Sleeper s : new ArrayList<>(SLEEPERS.values())) {
 			LivingEntity e = s.entity;
 			if (e.isRemoved() || !e.isAlive() || e.level().getGameTime() >= s.until) {
@@ -258,6 +327,7 @@ public final class Sleep {
 
 	/** The world stopped: nothing held over (an entry would pin its mob and level until the next world's first tick). */
 	public static void clear() {
+		FLOATED.clear();
 		SLEEPERS.clear();
 	}
 
@@ -266,7 +336,7 @@ public final class Sleep {
 		if (s.stun) {
 			if (s.entity instanceof ServerPlayer player) {
 				// (left set, a stunned player stayed frozen for good: found playing, two clients)
-				player.removeAttached(HeroManager.ASLEEP);
+				release(player);
 			}
 			return;
 		}
@@ -287,7 +357,7 @@ public final class Sleep {
 			Effects.play(level, "ana_wake", s.entity.position(), Vec3.ZERO, s.entity, 0, null);
 		}
 		if (s.entity instanceof ServerPlayer player) {
-			player.removeAttached(HeroManager.ASLEEP);
+			release(player);
 		}
 	}
 }

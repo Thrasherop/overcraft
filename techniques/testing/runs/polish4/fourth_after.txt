@@ -1,0 +1,179 @@
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 18:26:09
+TREE (git at launch): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48 18:26:09
+{'ok': True}
+/difficulty normal ['[18:27:46] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[18:27:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[18:27:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[18:27:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[18:27:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[18:27:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[18:27:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[18:27:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[18:27:49] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+### falls after movement abilities: fall damage shows in the pain line (Lucio heals himself: the line, not the health)
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, ride off the wall's end (wall 8 m tall): y -60.00, top -55.49, x 400052.5 -> 400043.2, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, ride off the wall's end (wall 8 m tall): y -60.00, top -55.49, x 400112.5 -> 400103.0, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, jump off the wall in the ride: y -60.00, top -56.32, x 400172.5 -> 400187.6, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, jump off the wall in the ride: y -60.00, top -56.64, x 400232.5 -> 400246.0, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, off a wall and platform 9 m up: y -51.00, top -47.91 -> -60.00, x 400292.5 -> 400273.7, health 18.0 -> 18.0, ride ['lucio.wallride.start'], pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, off a wall and platform 9 m up: y -51.00, top -47.90 -> -60.00, x 400352.5 -> 400333.9, health 18.0 -> 18.0, ride ['lucio.wallride.start'], pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  control, Lucio walks off a 6 m ledge: y -54.00 -> -60.00, health 18.0 -> 15.8, pain ['lucio.voice.pain']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 18:29:37
+TREE (git at launch): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48 18:29:37
+/difficulty normal ['[18:29:37] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[18:29:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[18:29:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[18:29:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[18:29:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[18:29:39] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[18:29:39] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[18:29:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[18:29:40] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### falls after movement abilities: fall damage shows in the pain line (Lucio heals himself: the line, not the health)
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, ride off the wall's end (wall 8 m tall): y -60.00, top -55.49, x 500052.5 -> 500042.7, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, ride off the wall's end (wall 8 m tall): y -60.00, top -55.49, x 500112.5 -> 500103.0, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, jump off the wall in the ride: y -60.00, top -56.64, x 500172.5 -> 500186.0, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, jump off the wall in the ride: y -60.00, top -56.64, x 500232.5 -> 500246.2, landed y -60.00, health 18.0 -> 18.0, pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, off a wall and platform 9 m up: y -51.00, top -47.90 -> -60.00, x 500292.5 -> 500273.0, health 18.0 -> 18.0, ride ['lucio.wallride.start'], pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  Lucio, off a wall and platform 9 m up: y -51.00, top -47.90 -> -60.00, x 500352.5 -> 500333.9, health 18.0 -> 18.0, ride ['lucio.wallride.start'], pain []
+hero lucio mode True screen  hp 18.0 / 18.0
+  control, Lucio walks off a 6 m ledge: y -54.00 -> -60.00, health 18.0 -> 15.8, pain ['lucio.voice.pain']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  Jetpack Cat, climb then let go: top -42.3, y -60.00 -> -42.28, health 16.0 -> 16.0, pain []
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  Jetpack Cat, climb then let go: top -42.3, y -60.00 -> -42.28, health 16.0 -> 16.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off a 6 m ledge: z 2.0 -> 15.9, y -54.00 -> -60.00, health 19.0 -> 20.0, pain []
+hero brigitte mode True screen  hp 20.0 / 20.0
+  Brigitte, bash off a 6 m ledge: z 2.0 -> 15.9, y -54.00 -> -60.00, health 19.0 -> 20.0, pain []
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Kiriko, Swift Step up to an ally on a one-block perch 20 m up: arrived y -39.00, z 7.58; ended y -39.00, health 20.0 -> 20.0, pain [] (cd1 5.6)
+    stepped off: y -60.00, health 8.0, pain ['kiriko.voice.pain']
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Kiriko, Swift Step up to an ally on a one-block perch 20 m up: arrived y -39.00, z 7.58; ended y -39.00, health 20.0 -> 20.0, pain [] (cd1 5.6)
+    stepped off: y -60.00, health 8.0, pain ['kiriko.voice.pain']
+### a shot at a phased target: the client copy and the server copy, read together. The real client shoots a bot 5 m off, a zombie 13 m behind it
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased False client copy reached z None, server copy z None | target health=12.0 | zombie 200.0
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased True  client copy reached z 7.4, server copy z 13.6 | target health=18.0 | zombie 194.40796
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased False client copy reached z None, server copy z None | target health=12.0 | zombie 200.0
+hero ana mode True screen  hp 20.0 / 20.0
+  ana dart   phased True  client copy reached z 7.4, server copy z 13.6 | target health=18.0 | zombie 194.40796
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased False client copy reached z 4.1, server copy z 4.1 | target health=17.6 | zombie 200.0
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased True  client copy reached z 13.1, server copy z 16.1 | target health=18.0 | zombie 199.6288
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased False client copy reached z 1.1, server copy z 4.1 | target health=17.6 | zombie 200.0
+hero ana mode True screen  hp 20.0 / 20.0
+  sleep dart phased True  client copy reached z 13.1, server copy z 16.1 | target health=18.0 | zombie 199.6288
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased False client copy reached z None, server copy z None | target health=8.4 | zombie 200.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased True  client copy reached z 9.5, server copy z 14.0 | target health=18.0 | zombie 190.5536
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased False client copy reached z None, server copy z None | target health=8.4 | zombie 200.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  kunai      phased True  client copy reached z 9.5, server copy z 14.0 | target health=18.0 | zombie 190.5536
+hero sojourn mode True screen  hp 18.0 / 18.0
+  railgun    phased False client copy reached z None, server copy z None | target health=12.24 | zombie 200.0
+hero sojourn mode True screen  hp 18.0 / 18.0
+  railgun    phased True  client copy reached z 8.0, server copy z 15.5 | target health=18.0 | zombie 197.26746
+hero sojourn mode True screen  hp 18.0 / 18.0
+  railgun    phased False client copy reached z None, server copy z None | target health=15.12 | zombie 200.0
+hero sojourn mode True screen  hp 18.0 / 18.0
+  railgun    phased True  client copy reached z 8.0, server copy z 15.5 | target health=18.0 | zombie 197.26746
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased False client copy reached z 3.0, server copy z 3.0 | target health=3.92 | zombie 200.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased True  client copy reached z 13.0, server copy z 15.5 | target health=18.0 | zombie 186.14526
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased False client copy reached z 0.5, server copy z 3.0 | target health=3.92 | zombie 200.0
+hero lucio mode True screen  hp 18.0 / 18.0
+  sonic      phased True  client copy reached z 13.0, server copy z 15.5 | target health=18.0 | zombie 186.14526
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased False client copy reached z None, server copy z None | target health=14.16 | zombie 200.0
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased True  client copy reached z 6.1, server copy z 11.1 | target health=18.0 | zombie 194.59024
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased False client copy reached z None, server copy z None | target health=12.24 | zombie 200.0
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  thorn      phased True  client copy reached z 11.1, server copy z 16.1 | target health=18.0 | zombie 196.3935
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased False client copy reached z None, server copy z None | target health=11.6 | zombie 200.0
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased True  client copy reached z 33.5, server copy z 36.5 | target health=18.0 | zombie 195.22412
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased False client copy reached z 0.5, server copy z None | target health=11.6 | zombie 200.0
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+  paw        phased True  client copy reached z 33.5, server copy z 36.5 | target health=18.0 | zombie 195.22412
+hero juno mode True screen  hp 18.0 / 18.0
+  blaster    phased False client copy reached z None, server copy z None | target health=7.2 | zombie 200.0
+hero juno mode True screen  hp 18.0 / 18.0
+  blaster    phased True  client copy reached z None, server copy z None | target health=18.0 | zombie 194.09065
+### Sombra's EMP and a deployable whose owner is phased
+hero sombra mode True screen  hp 18.0 / 18.0
+  owner phased False before PetalPlatformEntity hacked=false | after EMP PetalPlatformEntity hacked=true | owner phased=False silenced=True
+hero sombra mode True screen  hp 18.0 / 18.0
+  owner phased True before PetalPlatformEntity hacked=false | after EMP PetalPlatformEntity hacked=true | owner phased=True silenced=False
+hero sombra mode True screen  hp 18.0 / 18.0
+  owner phased False before PetalPlatformEntity hacked=false | after EMP PetalPlatformEntity hacked=true | owner phased=False silenced=True
+hero sombra mode True screen  hp 18.0 / 18.0
+  owner phased True before PetalPlatformEntity hacked=false | after EMP PetalPlatformEntity hacked=true | owner phased=True silenced=False
+### Rally's shockwave at a zombie whose feet are in sight and whose eyes aren't: a floating wall at eye height
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall False bashed 14.4 past the wall 14.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall True bashed 14.4 past the wall 14.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  floating wall False bashed 14.4 past the wall 14.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 18:39:39
+TREE (git at launch): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48 18:39:39
+/difficulty normal ['[18:39:39] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[18:39:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[18:39:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[18:39:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[18:39:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[18:39:41] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[18:39:41] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[18:39:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[18:39:42] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### a Rally bash on a sleeper: the stun is refused (Holds); does its sound or halo play?
+hero mercy mode True screen  hp 18.0 / 18.0
+  before sleeping=True asleep=True, heard ['brigitte.bash.dash_3p'], held {'server': '[ana_asleep]', 'client': 'asleep '}, after sleeping=True asleep=True health=12.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  before sleeping=True asleep=True, heard ['brigitte.bash.dash_3p'], held {'server': '[ana_asleep]', 'client': 'asleep '}, after sleeping=True asleep=True health=12.0
+### Shield Bash's push: a bot Brigitte at a real client; a real one at a husk with AI (speed 0)
+hero mercy mode False screen DeathScreen hp 0.0 / 18.0
+  bash on hero mode on: moved 2.51 m, y top -59.734, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  bash on hero mode on: moved 2.51 m, y top -59.734, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  bash on hero mode off: moved 1.11 m, y top -59.781, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  bash on hero mode off: moved 1.11 m, y top -59.781, health 20.0 -> 14.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash on a husk from 2.5 m: pos tity data: [600420.5d, -60.0d, 4.752523820573635d] health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  bash on a husk from 2.5 m: pos tity data: [600480.5d, -60.0d, 4.752523820573635d] health 194.4
+DONE

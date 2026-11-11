@@ -1,0 +1,26 @@
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-06T00:50:56
+TIME 00:53:39
+TREE (git at launch): ac69e1a dirty_src_files=0 launched=2026-11-06T00:50:56 00:53:39
+/difficulty normal ['[00:53:39] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[00:53:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[00:53:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[00:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[00:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[00:53:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[00:53:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[00:53:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[00:53:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+### Lucio rides from a platform 9 m up along a wall that runs on past it, over nothing; let go (the wall jump) or crouch (drop off) there. Series: y, g = a read on the ground, s = soft. [CLEAN]: wallride.start heard, off the platform, no ground read from the top till the bottom
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G True, try 1: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 0 -48.0 -48.0 -47.2 -47.2 -47.5 -47.8 -47.8 -48.3 -48.7 -48.7 -49.3 -49.9 -49.9 -50.6 -51.4 -52.2 -52.2 -53.1 -54.0 -54.0 -55.0 -56.1 -56.1 -57.2 -58.4 -58.4 -59.6 -60.0g
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G True, try 2: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 0 -48.0 -48.0 -47.2 -47.2 -47.5 -47.8 -47.8 -48.3 -48.7 -49.3 -49.3 -49.9 -50.6 -50.6 -51.4 -52.2 -52.2 -53.1 -54.0 -54.0 -55.0 -56.1 -56.1 -57.2 -58.4 -58.4 -59.6 -60.0g
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G True, try 3: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 0 -48.0 -47.2 -47.2 -47.5 -47.8 -47.8 -48.3 -48.7 -48.7 -49.3 -49.9 -49.9 -50.6 -51.4 -51.4 -52.2 -53.1 -53.1 -54.0 -55.0 -55.0 -56.1 -57.2 -57.2 -58.4 -59.6 -59.6 -60.0g
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G False, try 1: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 8 -48.2 -48.5 -48.5 -49.0 -49.5 -49.5 -50.0 -50.5 -50.5 -51.1 -51.7 -51.7 -52.4 -53.1 -53.1 -53.8 -54.6 -54.6 -55.4 -56.2 -56.2 -57.1 -57.9 -57.9 -58.9 -59.8 -59.8 -60.0g
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G False, try 2: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 8 -48.2 -48.5 -48.5 -49.0 -49.4 -49.4 -50.0 -50.5 -50.5 -51.1 -51.7 -51.7 -52.4 -53.1 -53.1 -53.8 -54.6 -54.6 -55.4 -56.2 -56.2 -57.1 -57.9 -57.9 -58.9 -59.8 -59.8 -60.0g
+hero lucio mode True screen  hp 18.0 / 18.0
+  release, G False, try 3: rode True, left at x+1.2, ground before the bottom False, health 17.9 -> 18.0, end y -60.00, pain 0  [CLEAN] | 8 -48.2 -48.5 -48.5 -49.0 -49.4 -49.4 -50.0 -50.5 -50.5 -51.1 -51.7 -51.7 -52.4 -53.1 -53.1 -53.8 -54.6 -54.6 -55.4 -56.2 -56.2 -57.1 -57.9 -57.9 -58.9 -59.8 -59.8 -60.0g
+DONE

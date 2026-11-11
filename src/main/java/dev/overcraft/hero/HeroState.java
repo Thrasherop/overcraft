@@ -21,6 +21,10 @@ public final class HeroState {
 	 */
 	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
+	/** How he rides, as his client says (OwMovement.wallCode: side and ride yaw, 0 off the wall), for others to see (HeroManager.LUCIO_WALL). */
+	public int wallRide;
+	/** Soundwave Rider: ticks before a part charge starts to drain. */
+	public int riderDrainWait;
 	public boolean wallClimbing;
 
 	// weapons
@@ -113,6 +117,10 @@ public final class HeroState {
 	public double gaMomentum;
 	/** Mercy: an Angelic Descent or a launch is landing her (no fall damage until she's down). */
 	public boolean softLanding;
+	/** Kiriko: game time until which the server's onGround is still the place she stepped from. */
+	public long softLandingGrace;
+	/** Ticks of a soft landing spent in water or on a ladder, in a row (Holds.landingEnds). */
+	public int softLandingTouch;
 	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
 	public int flashCharges = 1;
 	public int flashCast = -1;
@@ -166,6 +174,8 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: who her last bash in Rally hit: its shockwave passes them over (0EE3 #890). */
+	public @Nullable UUID rallyBashed;
 	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
 	public @org.jspecify.annotations.Nullable Object barrierBlast;
 	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */
@@ -187,6 +197,16 @@ public final class HeroState {
 	public boolean sojournRightWas;
 	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
 	public int sojournCharged;
+	/** The buffered press was already shown on her client (HeroInputPayload.PRESS_CHARGED_SHOWN). */
+	public boolean sojournChargedShown;
+	/** The shown press's shot, as she was shown it (Railgun.pressedShown); only while it waits. */
+	public dev.overcraft.sojourn.Railgun.@org.jspecify.annotations.Nullable Aim sojournAim;
+	/** Her position at the end of the last two ticks, for the point on her path she pressed from. */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 sojournPosT1, sojournPosT2;
+	/** Hacked, for her client (Sojourn.MODE_SILENCED). */
+	public boolean sojournSilenced;
+	/** Ticks left of the Charged Shot's recovery (D v2447, 1A23 #438 / #636). */
+	public double sojournChargedLock;
 	/**
 	 * Sojourn: ticks into Disruptor Shot's cast (-1 none), ticks until its cooldown is written (-1 none); ticks into Overclock (-1
 	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).
@@ -381,6 +401,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		wallRide = 0;
 		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;

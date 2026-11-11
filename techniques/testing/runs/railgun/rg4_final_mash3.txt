@@ -1,0 +1,24 @@
+=== #126 table. TREE e3f437f dirty_src_files=0 launched=2026-11-06T15:10:36 at 15:17:48
+WARM art ready after 0.83 s; frames over 40 ms (at ms, length): [] frames 97 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 118
+=== rows
+### round two 15:17:55 fps 119
+### done
+### round three 15:17:55 fps 119
+MASH asked 0.42 0.75: presses at [0, 413, 748] looks at [0, 748] shots at [2, 752] third look late by 0 
+MASH asked 0.42 0.80: presses at [0, 412, 798] looks at [0, 798] shots at [38, 837] third look late by 0 
+MASH asked 0.44 0.75: presses at [0, 436, 747] looks at [0, 748] shots at [19, 770] third look late by 0 
+MASH asked 0.40 0.72: presses at [0, 395, 713] looks at [0, 713] shots at [6, 754] third look late by 0 
+MASH asked 0.52 0.75: presses at [0, 511, 745] looks at [0, 678] shots at [21, 674] third look late by none 
+MASH asked 0.52 0.85: presses at [0, 519, 846] looks at [0, 662] shots at [3, 656] third look late by none 
+MASH asked 0.60 0.85: presses at [0, 598, 844] looks at [0, 699] shots at [39, 692] third look late by none 
+MASH asked 0.42 0.75: presses at [0, 413, 748] looks at [0, 748] shots at [22, 771] third look late by 0 
+MASH asked 0.42 0.80: presses at [0, 419, 796] looks at [0, 796] shots at [47, 796] third look late by 0 
+MASH asked 0.44 0.75: presses at [0, 436, 747] looks at [0, 748] shots at [30, 780] third look late by 0 
+MASH asked 0.40 0.72: presses at [0, 396, 714] looks at [0, 714] shots at [10, 761] third look late by 0 
+MASH asked 0.52 0.75: presses at [0, 519, 746] looks at [0, 687] shots at [27, 680] third look late by none 
+MASH0 no energy at the middle click: presses [0, 547, 792] looks [0, 793] shots [9, 809] last look late by 0
+MASH0 no energy at the middle click: presses [0, 547, 799] looks [0, 799] shots [34, 834] last look late by 0
+MASH0 no energy at the middle click: presses [0, 545, 797] looks [0, 797] shots [17, 816] last look late by 0
+MASH0 no energy at the middle click: presses [0, 547, 800] looks [0, 800] shots [2, 801] last look late by 0
+### done

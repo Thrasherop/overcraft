@@ -53,6 +53,16 @@ loom {
 	}
 }
 
+// Overwatch never runs alongside a dev client (CLAUDE.md): every launch makes sure the watcher is up, so a reboot can't
+// leave a client unwatched. It stays running after the client; a second copy exits at once.
+def owWatch = file('tools/ow_watch.ps1').absolutePath
+tasks.matching { it.name ==~ /runClient\d?/ }.configureEach {
+	doFirst {
+		new ProcessBuilder('powershell', '-NoProfile', '-WindowStyle', 'Hidden', '-ExecutionPolicy', 'Bypass', '-File', owWatch)
+			.redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD).start()
+	}
+}
+
 // Overwatch assets are never shipped (CLAUDE.md): the build fails if the jar has a model, mesh or audio file in it,
 // or anything big enough to be one. Placeholders are small PNGs and JSON.
 def forbiddenAssets = ['glb', 'gltf', 'bin', 'fbx', 'blend', 'obj', 'smd', 'dmx', 'mdl', 'vtx', 'vvd', 'phy', 'vtf', 'vmt',

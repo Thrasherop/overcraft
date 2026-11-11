@@ -54,7 +54,8 @@ public final class Effects {
 	}
 	/** The effects that end a held one early. */
 	private static final java.util.Map<String, String> ENDS = java.util.Map.of("ana_wake", "ana_asleep", "ana_nano_end", "ana_nano",
-		"sombra_hotfixed_end", "sombra_hotfixed");
+		"sombra_hotfixed_end", "sombra_hotfixed", "ana_anti_healed_end", "ana_anti_healed", "ana_numbed_end", "ana_numbed",
+		"sombra_hacked_end", "sombra_hacked", "sombra_revealed_end", "sombra_revealed", "brigitte_stun_end", "brigitte_stun");
 
 	private record Held(String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, @Nullable Entity owner, long since, long until, Spec spec, int flagBits) {
 		boolean over() {
@@ -115,6 +116,12 @@ public final class Effects {
 		}
 	}
 
+	/** Dev only: the held states on this entity a late viewer would be told of. */
+	public static String devHeld(Entity entity) {
+		HELD_NOW.removeIf(Held::over);
+		return HELD_NOW.stream().filter(h -> h.entity == entity).map(Held::effect).toList().toString();
+	}
+
 	public static void clear() {
 		HELD_NOW.clear();
 	}
@@ -170,8 +177,17 @@ public final class Effects {
 	/** The same, made by owner: each player near it gets it in their own team's view of the owner. */
 	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant,
 							@Nullable Entity owner) {
+		play(level, effect, at, direction, entity, variant, owner, null);
+	}
+
+	/** The same but for {@code skip}, whose own client has already played it (Sojourn's Charged Shot: ClientSojourn). */
+	public static void play(ServerLevel level, String effect, Vec3 at, Vec3 direction, @Nullable Entity entity, int variant,
+							@Nullable Entity owner, @Nullable ServerPlayer skip) {
 		note(level, effect, at, direction, entity, variant, owner);
 		for (ServerPlayer player : PlayerLookup.around(level, at, RANGE)) {
+			if (player == skip) {
+				continue;
+			}
 			boolean enemy = owner != null && owner != player && !Allies.wasAlly(player, owner);
 			ServerPlayNetworking.send(player, new EffectPayload(effect, at.x, at.y, at.z, (float) direction.x,
 				(float) direction.y, (float) direction.z, entity == null ? -1 : entity.getId(), variant, enemy));

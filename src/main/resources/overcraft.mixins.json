@@ -13,6 +13,7 @@
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
+		"ServerMoveMixin",
 		"ServerExplosionMixin",
 		"AbstractArrowAccessor",
 		"LargeFireballAccessor",

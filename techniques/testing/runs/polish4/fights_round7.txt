@@ -1,0 +1,28 @@
+TREE: c83ddc3 dirty_src_files=0 launched=2026-11-06T02:42:42 02:46:29
+{'ok': True}
+ 20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q kiriko round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 7.1 end hp 13.2/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q kiriko round 2 mobs left 3 of 6 cleared at None deaths 0 lowest hp 10.0 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q brigitte round 1 mobs left 1 of 6 cleared at None deaths 0 lowest hp 15.3 end hp 20.0/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q brigitte round 2 mobs left 2 of 6 cleared at None deaths 0 lowest hp 16.6 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+ana 1 died at 8.6, back as ana hp 20.0 mode True
+## q ana round 1 mobs left 3 of 6 cleared at None deaths 1 lowest hp 1.6 end hp 20.0/20.0
+   death line: Kiriko was slain by Zombie
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q ana round 2 mobs left 1 of 6 cleared at None deaths 0 lowest hp 4.3 end hp 20.0/20.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## q sombra round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 2.9 end hp 8.3/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]

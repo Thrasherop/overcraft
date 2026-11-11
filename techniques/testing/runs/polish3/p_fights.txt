@@ -1,0 +1,46 @@
+=== #115 pictures on the final tree
+hero kiriko mode True screen  hp 20.0 / 20.0
+{'ok': True, 'hero': 'LUCIO'}
+bot {'pos': '(5.2, -57.0, 4.0)'}
+{'ok': True}
+{'animator': True, 'playing': 'wallride_left', 'wallSide': -1, 'wallYaw': 0.0, 'wallNormal': '(-1.0, 0.0, -0.0)', 'code': 1, 'emote': 'null', 'emoteTime': 1219.55, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+{'animator': True, 'playing': 'wallride_right', 'wallSide': 1, 'wallYaw': 180.0, 'wallNormal': '(-1.0, 0.0, 1.2246467991473532E-16)', 'code': 3602, 'emote': 'null', 'emoteTime': 1220.85, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+{'ok': True}
+{'animator': True, 'playing': 'idle', 'wallSide': 0, 'wallYaw': nan, 'wallNormal': '(0.0, 1.0, 0.0)', 'code': 0, 'emote': 'null', 'emoteTime': 1221.65, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+--- the rider himself, third person from the front, on the real wall (for the same clip and lean)
+hero lucio mode True screen  hp 18.0 / 18.0
+anim wallride_left
+=== Fights: a night, survival, flat; 3 zombies, 2 skeletons, 1 creeper with AI each round, 12-16 m round the hero. HARNESS INPUT: aim re-read from the nearest mob each 0.4 s, left button held, one ability every 2.5 s
+hero kiriko mode True screen  hp 20.0 / 20.0
+kiriko died at 13.8, back as kiriko hp 16.0 mode True
+## kiriko 22 s: deaths 1 lowest hp 2.5 hp now 9.0 / 20.0 cleared by ['[06:00:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 19 entities']
+hero brigitte mode True screen  hp 20.0 / 20.0
+## brigitte 22 s: deaths 0 lowest hp 10.0 hp now 17.622938 / 20.0 cleared by ['[06:01:21] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 21 entities']
+hero ana mode True screen  hp 20.0 / 20.0
+ana died at 18.8, back as ana hp 20.0 mode True
+## ana 22 s: deaths 1 lowest hp 1.0 hp now 16.0 / 20.0 cleared by ['[06:01:51] [Render thread/INFO] (Minecraft) Loaded 44 advancements']
+hero sombra mode True screen  hp 18.0 / 18.0
+sombra died at 9.8, back as sombra hp 18.0 mode True
+## sombra 22 s: deaths 1 lowest hp 1.8 hp now 18.0 / 18.0 cleared by ['[06:02:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 26 entities']
+hero jetpack_cat mode True screen  hp 16.0 / 16.0
+jetpack_cat died at 11.5, back as jetpack_cat hp 10.0 mode True
+## jetpack_cat 22 s: deaths 1 lowest hp 2.1 hp now 3.0800009 / 16.0 cleared by ['[06:02:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 29 entities']
+hero sigma mode True screen  hp 48.0 / 48.0
+sigma died at 15.6, back as sigma hp 48.0 mode True
+## sigma 22 s: deaths 1 lowest hp 1.1 hp now 42.27998 / 48.0 cleared by ['[06:03:19] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 21 entities']
+hero lucio mode True screen  hp 18.0 / 18.0
+## lucio 22 s: deaths 0 lowest hp 2.3 hp now 4.4080043 / 18.0 cleared by ['[06:03:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 26 entities']
+errors in log 18
+[05:58:11] [main/ERROR] (HkeyPerformanceDataUtil) Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: 
+com.sun.jna.platform.win32.Win32Exception: The parameter is incorrect.
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getUserTime()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getVirtualSize()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getResidentSetSize()" because "process" is null
+[05:58:19] [Download-2/ERROR] (Minecraft) Failed to fetch user properties
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at knot//com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:70)
+Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=ErrorResponse[path=/player/attributes, error=null, errorMessage=null, details=null]]
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.buildHttpException(MinecraftClient.java:170)
+[05:58:24] [Download-2/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[05:58:24] [Download-2/ERROR] (Minecraft) Failed to fetch Realms feature flags

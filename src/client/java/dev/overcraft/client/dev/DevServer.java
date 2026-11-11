@@ -61,6 +61,7 @@ public final class DevServer {
 	private static boolean towHooked;
 	private static int towTick;
 
+	private static boolean pressTraceListening;
 	/** Sounds heard since the last "heard" command (dev only). */
 	private static final java.util.List<String> HEARD = new java.util.ArrayList<>();
 	private static boolean listening;
@@ -307,6 +308,103 @@ public final class DevServer {
 					DevBot.handle(server, arg, out);
 				}
 			}
+			case "presstrace" -> {
+				// dev only (#126): "presstrace start", then a press, then "presstrace": from the press to the shot, its sounds, its
+				// look and clip, each on one clock (hero.PressTrace). "presstrace energy <n>": her energy, as if she'd just earned it; "ammo <n>"
+				String[] a = arg.split(" ");
+				switch (a[0]) {
+					case "start" -> {
+						if (!pressTraceListening) {
+							pressTraceListening = true;
+							mc.getSoundManager().addListener((sound, events, range) -> {
+								if (sound.getIdentifier().getPath().startsWith("sojourn.charged.") || sound.getIdentifier().getPath().startsWith("sojourn.railgun.reload")) {
+									dev.overcraft.hero.PressTrace.mark("snd:" + sound.getIdentifier().getPath().substring("sojourn.".length()));
+								}
+							});
+						}
+						dev.overcraft.hero.PressTrace.start();
+					}
+					case "lag" -> DevLag.set(Long.parseLong(a[1]));
+					// a modified client's press, as it would send it: "send <held> <pressed> <yaw> <pitch> <partial>"
+					case "send" -> net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.overcraft.net.HeroInputPayload(Integer.parseInt(a[1]), Integer.parseInt(a[2]), 0, 0,
+						Float.parseFloat(a[3]), Float.parseFloat(a[4]), Float.parseFloat(a[5])));
+					case "bind" -> dev.overcraft.client.controls.HeroControls.set(dev.overcraft.client.controls.HeroControls.Action.valueOf(a[1].toUpperCase(java.util.Locale.ROOT)), InputConstants.getKey(a[2]));
+					case "flags" -> {
+						var s = dev.overcraft.hero.HeroManager.state(mc.getSingleplayerServer().getPlayerList().getPlayer(player.getUUID()));
+						out.addProperty("shown", s.sojournChargedShown);
+						out.addProperty("buffer", s.sojournCharged);
+						out.addProperty("lock", s.sojournChargedLock);
+					}
+					case "aimpress" -> {
+						// dev only: from where the camera is this frame, aim at x y z, and the right button down, in one go: a perfect flick at speed
+						float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+						net.minecraft.world.phys.Vec3 cam = player.getEyePosition(partial);
+						net.minecraft.world.phys.Vec3 to = new net.minecraft.world.phys.Vec3(Double.parseDouble(a[1]), Double.parseDouble(a[2]), Double.parseDouble(a[3])).subtract(cam);
+						player.setYRot((float) Math.toDegrees(Math.atan2(-to.x, to.z)));
+						player.setXRot((float) -Math.toDegrees(Math.atan2(to.y, Math.hypot(to.x, to.z))));
+						player.setYHeadRot(player.getYRot());
+						dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "press cam %.3f %.3f %.3f", cam.x, cam.y, cam.z));
+						InputConstants.Key bound = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE));
+						KeyMapping.set(bound, true);
+						KeyMapping.click(bound);
+						KeyMapping.set(bound, false);
+					}
+					case "fps" -> mc.options.framerateLimit().set(Integer.parseInt(a[1]));
+					case "rtt" -> out.addProperty("rtt", dev.overcraft.client.ClientSojourn.measuredRoundTripMillis());
+					case "art" -> {
+						out.addProperty("art", dev.overcraft.client.effect.EffectArt.outstanding());
+						out.addProperty("artBytes", dev.overcraft.client.effect.EffectArt.madeBytes());
+					}
+					case "sounding" -> {
+						// the channels actually running, by id: SoundEngine lists a stopped sound for 20 ticks from its start, so "bot playing" can't tell
+						var f = net.minecraft.client.sounds.SoundManager.class.getDeclaredField("soundEngine");
+						f.setAccessible(true);
+						var g = net.minecraft.client.sounds.SoundEngine.class.getDeclaredField("instanceToChannel");
+						g.setAccessible(true);
+						int n = 0;
+						for (var e : new java.util.ArrayList<>(((java.util.Map<net.minecraft.client.resources.sounds.SoundInstance, net.minecraft.client.sounds.ChannelAccess.ChannelHandle>) g.get(f.get(mc.getSoundManager()))).entrySet())) {
+							if (e.getKey().getIdentifier().getPath().contains(a[1]) && !e.getValue().isStopped()) {
+								n++;
+							}
+						}
+						out.addProperty("sounding", n);
+					}
+					case "frames" -> dev.overcraft.hero.PressTrace.allFrames(a[1].equals("on"));
+					case "sample" -> {
+						// the client's thread sampled for this many ms from now, into the log (dev only)
+						Thread main = Thread.currentThread();
+						int ms = Integer.parseInt(a[1]);
+						Thread sampler = new Thread(() -> {
+							try {
+								dev.overcraft.Overcraft.LOG.info("SAMPLE\n{}", DevLag.sample(main, ms));
+							} catch (InterruptedException e) {
+								Thread.currentThread().interrupt();
+							}
+						}, "Overcraft sampler");
+						sampler.setDaemon(true);
+						sampler.start();
+					}
+					case "energy" -> {
+						var server = mc.getSingleplayerServer();
+						double energy = Double.parseDouble(a[1]);
+						java.util.UUID id = player.getUUID();
+						String named = a.length > 2 ? a[2] : null;
+						server.execute(() -> {
+							var who = named != null ? server.getPlayerList().getPlayerByName(named) : server.getPlayerList().getPlayer(id);
+							var s = dev.overcraft.hero.HeroManager.state(who);
+							s.sojournEnergy = energy;
+							s.sojournGainAt = who.level().getGameTime();
+						});
+					}
+					case "ammo" -> {
+						var server = mc.getSingleplayerServer();
+						int ammo = Integer.parseInt(a[1]);
+						java.util.UUID id = player.getUUID();
+						server.execute(() -> dev.overcraft.hero.HeroManager.state(server.getPlayerList().getPlayer(id)).primaryAmmo = ammo);
+					}
+					default -> out.addProperty("trace", dev.overcraft.hero.PressTrace.dump());
+				}
+			}
 			case "respawn" -> {
 				// what the death screen's Respawn button does
 				if (player != null) {
@@ -320,6 +418,7 @@ public final class DevServer {
 				InputConstants.Key bound = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key);
 				switch (a.length > 1 ? a[1] : "tap") {
 					case "down" -> {
+						dev.overcraft.hero.PressTrace.mark("press");
 						KeyMapping.set(bound, true);
 						KeyMapping.click(bound);
 					}
@@ -428,7 +527,8 @@ public final class DevServer {
 				long handle = mc.getWindow().handle();
 				net.minecraft.client.input.KeyEvent event = new net.minecraft.client.input.KeyEvent(key.getValue(), 0, 0);
 				if (a.length > 1) {
-					mc.keyboardHandler.keyPress(handle, a[1].equals("up") ? 0 : 1, event);
+					// (repeat: what the OS sends for a held key, through the same handler)
+					mc.keyboardHandler.keyPress(handle, a[1].equals("up") ? 0 : a[1].equals("repeat") ? 2 : 1, event);
 				} else {
 					mc.keyboardHandler.keyPress(handle, 1, event);
 					mc.keyboardHandler.keyPress(handle, 0, event);

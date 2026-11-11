@@ -1,0 +1,35 @@
+=== #126 table. TREE 946b16b dirty_src_files=0 launched=2026-11-06T03:17:22 at 03:19:15
+{'ok': True}
+WARM art ready after 2.22 s; frames over 40 ms (at ms, length): [(101, 147), (248, 292), (540, 55)] frames 54 misses [] of 0
+[03:20:06] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 512
+ours:
+309 (none of ours)
+26 hud.HudDraw.image
+22 model.HeroTexture.<init>
+14 model.HeroModelRenderer.emit
+11 HeroHud.render
+11 model.HeroModelRenderer.isClosed
+10 effect.SojournFx.tick
+9 hud.HudShapes.ensure
+8 hud.HudShapes.cutHead
+7 model.HeroModelRenderer.skinned
+7 model.HeroWeapon.pose
+6 ClientHero.tick
+6 HeroHud.crosshair
+5 hud.ReticleHud.crosshair
+4 HeroArt.lambda$present$0
+4 model.ClothSim.of
+4 model.HeroAnimator.lambda$turnsInPlace$1
+3 effect.SojournFx.posed
+3 model.AimSheet.layout
+3 model.HeroWeapon.place
+2 OvercraftClient.lambda$onInitializeClient$45
+2 hud.HudShapes.circle
+2 hud.HudShapes.lambda$ensure$25
+2 hud.HudShapes.lambda$ensure$26
+2 hud.HudShapes.register
+top:
+228 jdk.internal.misc.Unsafe.park
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows

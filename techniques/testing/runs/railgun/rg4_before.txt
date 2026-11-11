@@ -1,0 +1,49 @@
+=== #126 table. TREE e40c37c dirty_src_files=0 launched=2026-11-06T14:12:03 at 14:14:23
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 14:14:31 fps 30
+### done
+### round four 14:14:31 fps 30 payload eye
+BANK eye claimed (44.5, -56.4, 0.5) she is at 94.5 shot ['srv_eye 44.500 -56.400 0.500 0.00'] far zombie took 0.0
+BANK eye claimed (44.5, -56.4, 0.5) she is at 98.0 shot ['srv_eye 44.500 -56.400 0.500 0.00'] far zombie took 0.0
+BANK eye claimed (44.5, -56.4, 0.5) she is at 93.6 shot ['srv_eye 44.500 -56.400 0.500 0.00'] far zombie took 0.0
+BANK eye claimed (44.5, -56.4, 0.5) she is at 87.3 shot ['srv_eye 44.500 -56.400 0.500 0.00'] far zombie took 0.0
+PEEK from behind a wall, zombie took 0.0 shot ['srv_eye 65.500 -53.600 -9.500 0.00'] | 63.9 srv_shot | 64.0 srv_eye 65.500 -53.600 -9.500 0.00 | 66.6 snd:charged.hit_block
+PEEK from behind a wall, zombie took 0.0 shot ['srv_eye 65.500 -53.600 -9.500 0.00'] | 39.6 srv_shot | 39.6 srv_eye 65.500 -53.600 -9.500 0.00 | 67.5 snd:charged.hit_block
+PEEK from behind a wall, zombie took 0.0 shot ['srv_eye 65.500 -53.600 -9.500 0.00'] | 81.7 srv_shot | 81.8 srv_eye 65.500 -53.600 -9.500 0.00 | 99.9 snd:charged.hit_block
+PEEK from behind a wall, zombie took 0.0 shot ['srv_eye 65.500 -53.600 -9.500 0.00'] | 68.7 srv_shot | 68.8 srv_eye 65.500 -53.600 -9.500 0.00 | 100.2 snd:charged.hit_block
+TURN shot away from what she was shown: 0 of 0
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 8.4 refused_q | 17.0 press | 17.0 click 0.500 -58.380 0.500 0.00 0.00 | 17.0 sent | 17.0 clip | 17.1 snd:charged.fire | 17.2 snd:charged.shot | 17.4 fx | 18.4 sent | 20.2 frame | 66.0 sent | 154.5 srv_shot | 154.6 srv_ey
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 8.4 refused_q | 16.7 press | 16.7 click 0.500 -58.380 0.500 0.00 0.00 | 16.7 sent | 16.7 clip | 16.8 snd:charged.fire_mid | 16.8 snd:charged.shot | 16.9 fx | 17.7 sent | 19.8 frame | 68.4 sent | 155.4 srv_shot | 155.4 sr
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 12.5 refused_q | 20.8 press | 20.9 click 0.500 -58.380 0.500 0.00 0.00 | 20.9 sent | 20.9 clip | 20.9 snd:charged.fire | 21.0 snd:charged.shot | 21.2 fx | 22.5 frame | 46.7 sent | 98.1 sent | 133.4 srv_shot | 133.4 srv_e
+QREP {'presses': 1, 'fx': 1, 'clip': 1, 'srv': 1, 'fire': 1} ultActive? 0.0 | 8.4 refused_q | 16.7 press | 16.7 click 0.500 -58.380 0.500 0.00 0.00 | 16.7 sent | 16.7 clip | 16.8 snd:charged.fire | 17.0 snd:charged.shot | 17.2 fx | 18.4 frame | 25.5 sent | 76.4 sent | 162.3 srv_shot | 162.4 srv_ey
+MASH real 15 cps, key up 30 ms: clicks 75; shots 6, looks 6, refused presses 45, gaps [949, 1000, 801, 1000, 1000] fps 119
+MASH real 15 cps, key up 45 ms: clicks 75; shots 1, looks 1, refused presses 23, gaps [] fps 119
+MASH real 20 cps, key up 25 ms: clicks 100; shots 5, looks 5, refused presses 34, gaps [1000, 1399, 1101, 1149] fps 118
+MASH real 10 cps, key up 40 ms: clicks 50; shots 5, looks 5, refused presses 14, gaps [700, 1400, 1101, 1200] fps 117
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide top speed 14.3 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL slide agree 0 of 14
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run top speed 5.5 yaw -90.0 camera to shot eye 0.0 her ray off a box by None server miss DISAGREE
+FLICKREAL run agree 0 of 8
+### done

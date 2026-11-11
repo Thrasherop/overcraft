@@ -1,0 +1,28 @@
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 6
+## p4 kiriko round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 6.0 end hp 20.0/20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 6
+kiriko 2 died at 23.4, back as kiriko hp 20.0 mode True
+## p4 kiriko round 2 mobs left 2 of 6 cleared at None deaths 1 lowest hp 9.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 5
+## p4 brigitte round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 12.7 end hp 14.5/20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 5
+brigitte 2 died at 10.9, back as brigitte hp 20.0 mode True
+## p4 brigitte round 2 mobs left 1 of 6 cleared at None deaths 1 lowest hp 7.6 end hp 14.7/20.0
+   death line: Kiriko was blown up by Creeper
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 5
+## p4 ana round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 10.3 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 5
+ana 2 died at 13.9, back as ana hp 20.0 mode True
+ana 2 died at 30.1, back as ana hp 16.0 mode True
+## p4 ana round 2 mobs left 3 of 6 cleared at None deaths 2 lowest hp 2.0 end hp 16.0/20.0
+   death line: Kiriko was shot by Skeleton
+   death line: Kiriko was shot by Skeleton
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 5

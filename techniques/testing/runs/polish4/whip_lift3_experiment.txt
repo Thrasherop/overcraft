@@ -1,0 +1,104 @@
+TREE (git at launch; the client itself can't say): a6609b6 dirty_src_files=3 launched=2026-11-05T16:19:48
+TIME 16:23:03
+TREE (git at launch): a6609b6 dirty_src_files=3 launched=2026-11-05T16:19:48 16:23:03
+/difficulty normal ['[16:23:03] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[16:23:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[16:23:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[16:23:04] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[16:23:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[16:23:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[16:23:05] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[16:23:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[16:23:06] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+### lift mob mc hero = 2 0.25 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 5.88 m (z 0.50 -> 6.38), y -60.00 -> -60.00 top -59.884, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 9.96 4.17 0.85 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 5.88 m (z 0.50 -> 6.38), y -60.00 -> -60.00 top -59.884, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.25 m (z 0.50 -> 4.75), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 5.62 3.07 1.67 0.91 0.50 0.27
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.25 m (z 0.50 -> 4.75), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.25 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45 0.25
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.05 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.1 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.50 m (z 0.50 -> 8.00), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.50 m (z 0.50 -> 8.00), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.15 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.99 m (z 0.50 -> 8.49), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.2 0 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 13.65 12.42 11.30 10.29 9.36 5.11 2.79 1.52 0.83 0.45
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 4.66 m (z 0.50 -> 5.16), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.41 m (z 0.50 -> 8.91), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.41 m (z 0.50 -> 8.91), y -60.00 -> -60.00, health 194.4
+### lift mob mc hero = 3 0.25 0.25 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 21.97 20.37 18.93 17.64 16.46 15.40 14.44 8.18 3.35 0.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.04 m (z 0.50 -> 8.54), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 22.75 12.42 6.78 3.70 2.02 1.10
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00 top -59.781, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 8.75 m (z 0.50 -> 9.25), y -60.00 -> -60.00, health 194.4
+DONE

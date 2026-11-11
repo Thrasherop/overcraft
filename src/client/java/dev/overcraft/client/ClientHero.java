@@ -177,6 +177,7 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
+		ClientSojourn.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -409,10 +410,22 @@ public final class ClientHero {
 
 		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
 			| ClientSigma.input(player);
-		if (held != lastHeld || pressed != 0 || extra != 0) {
+		int wall = OwMovement.wallCode(player);
+		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
-			ClientPlayNetworking.send(new HeroInputPayload(held, pressed, extra));
+			lastWall = wall;
+			dev.overcraft.hero.PressTrace.mark("sent");
+			dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(held, pressed, extra, wall));
 		}
+	}
+
+	private static int lastWall;
+
+	/** A press that can't wait for the next tick (Sojourn's Charged Shot: ClientSojourn): sent now, with the right button held. */
+	public static void pressNow(int pressed, float yaw, float pitch, float partial) {
+		lastHeld |= HeroInputPayload.HELD_SECONDARY;
+		dev.overcraft.hero.PressTrace.mark("sent");
+		dev.overcraft.client.dev.DevLag.out(new HeroInputPayload(lastHeld, pressed, 0, lastWall, yaw, pitch, partial));
 	}
 
 	private static boolean chatHeroView;
@@ -536,6 +549,9 @@ public final class ClientHero {
 
 	/** Hero mode on or off: here at once, and on the server. */
 	public static void setHeroMode(boolean on) {
+		if (!on) {
+			ClientLifeweaver.endDash();
+		}
 		heroModeLocal = on;
 		heroModeLocalAt = net.minecraft.util.Util.getMillis();
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {

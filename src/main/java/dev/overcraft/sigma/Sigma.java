@@ -145,11 +145,14 @@ public final class Sigma implements HeroKit {
 			(float) (s.barrierHealth / BARRIER_HEALTH));
 	}
 
-	/** His widgets (#85): left and total, Gravitic Flux's aim (0237 and 00DB, 1E41 #1152, #1283, #1299), its 5 s as the phase runs. */
+	/**
+	 * His widgets (#85): left and total, Gravitic Flux's aim (0237 and 00DB, 1E41 #1152, #1283, #1299), its 5 s as the phase runs; flag, he
+	 * has Hyper Strike, left2 its direct hits so far, HYPER_STRIKE_HITS when charged (0243, 51E0 #425: 01D3 v11 / v181, the hits over 5).
+	 */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
 		boolean aiming = s.sigmaFluxPhase == GraviticFlux.AIM;
-		return new HeroSyncPayload.Widgets(-1, -1, -1, false, aiming ? 1 : 0, aiming ? (float) (FLUX_AIM - s.sigmaFluxTicks / 20.0) : 0, (float) FLUX_AIM, 0, "", "");
+		return new HeroSyncPayload.Widgets(-1, -1, -1, s.has(dev.overcraft.hero.Perk.SIGMA_HYPER_STRIKE), aiming ? 1 : 0, aiming ? (float) (FLUX_AIM - s.sigmaFluxTicks / 20.0) : 0, (float) FLUX_AIM, s.sigmaStrikeReady ? HYPER_STRIKE_HITS : s.sigmaDirectHits, "", "");
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): his barrier, Kinetic Grasp, Accretion's gather and Gravitic Flux end. */

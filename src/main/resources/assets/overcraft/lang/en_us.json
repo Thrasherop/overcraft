@@ -592,6 +592,7 @@
 	"overcraft.hud.prompt.build": "BUILD",
 	"overcraft.hud.prompt.fire": "FIRE",
 	"overcraft.hud.prompt.bash": "BASH",
+	"overcraft.hud.prompt.hyper_strike": "HYPER STRIKE",
 	"overcraft.hud.prompt.pounce": "POUNCE",
 	"overcraft.hud.prompt.grappled": "GRAPPLED",
 	"overcraft.hud.prompt.detach": "Detach",

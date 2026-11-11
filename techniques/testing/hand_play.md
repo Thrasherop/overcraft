@@ -1,7 +1,7 @@
 # Hand play: playing it like a player
 
 CLAUDE.md requires playing every change in the real game before claiming it. This is how that play works and what it
-catches. Up: [Techniques](../README.md) · the tools: [harness](harness.md) · looking closely: [visual_review](visual_review.md)
+catches. Up: [Techniques](../README.md) · the tools: [harness](harness.md) · looking closely: [visual_review](visual_review.md) · the whole QA loop: [polish_method](polish_method.md)
 
 ## A row in a table needs a trace with the thing in it (critique of #89, 2026-11-05)
 Open the raw file before writing the row. A "before" of 2-8° at 21 m/s came from a trace with nobody on the rope; "0.5 m ahead of her" was the test's own 3 m offset shrinking; a "night fight" was four daylight shots of summoned mobs. If no trace has it, the row says not measured. And check where a number's label came from: an old guess read again is still a guess (L stays L until something is decoded).
@@ -66,6 +66,9 @@ cursor. Turning with the real mouse still needs the owner.
   click the game rather than granting textinputhost.exe.
 - Check the screen is clear before a key run (`dev state`'s "screen"): a menu (OverwatchMenuScreen) was open once
   and swallowed the first try.
+- **Screenshots hide windows that still take clicks (2026-11-05).** With the game in front, the Claude app kept a panel over the right of the screen; the screenshot masked it and showed the game there, so clicks on the roster's right half went into Claude's window, about 12 of them, and looked like portraits that wouldn't select. Before clicking, ask Windows who owns the point (`WindowFromPoint` with `SetProcessDPIAware`), and place the game clear of it: `window 1180 664`, then `SetWindowPos` to the left of the screen, then check a grid of points across its rect. Keys go to the foreground window and weren't affected.
+- **`NoAI` mobs don't take pushes.** A real Whip Shot did its damage to a `NoAI` husk and moved it 0 m; the same shot on a husk with AI and `movement_speed` 0 moved it 7.75 m. Use the second for anything that pushes.
+- **What this input can't do:** the mouse can't turn the view, and only one key can be held per call, with no right button held. So Barrier and Bash together, W with Space, and aim all stay with the owner; say so in the record.
 
 ## Test worlds
 - **Summon test mobs** with `Tags:["x"]` and select `@e[tag=x]`.

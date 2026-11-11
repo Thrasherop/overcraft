@@ -4,7 +4,40 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-10: 0.3.33 on next (not on main yet)
+
+polish-3, polish-4, the railgun (#126) and the Overwatch watcher merged into `next` as 0.3.33 (0.3.32 was the playtest
+zip of 2026-11-05). The network packets changed shape: a 0.3.33 client needs a 0.3.33 server. Played by real keys before
+the merge: [real_keys_0b027dd](techniques/testing/runs/integrate_2026-11/real_keys_0b027dd.md), and what wasn't.
+- Pressing G mid-fall makes you Steve when you land: Minecraft's fall damage, whatever ability was landing you (owner,
+  2026-11-10). A fall begun in Minecraft mode stays Minecraft's if G comes on before the ground.
+
+### On fix/railgun-crisp (built on fix/polish-4)
+- Sojourn's Charged Shot fires on the press and outranks everything but its recovery, Overclock's cast and a stun or sleep (#126). A press in a reload, in an empty magazine's reload or in a melee's recovery was lost; now it fires and cuts the reload (the magazine keeps what it had; R or an empty magazine reloads again). A held left button no longer delays it 0.16 s, a misreading of her data. Her sounds, tracer and clip start on the press, not about 67 ms later (168 ms over a held left button, 30 fps); the damage is still the server's, up to about 50 ms on. It goes along your crosshair from where your camera was as you pressed, also at a slide's speed: the server works out that point on your own path (a client can't name another); a moving target is where the server has it. One press, one shot: holding the button does nothing more (a question for the owner: her data may say it refires). Played by harness keys and, later, real mouse events; not by a person's hands.
+- The first shot of Sojourn's that a client draws no longer hitches, hers or an ally's or enemy's seen by another hero: 362 + 568 ms of frames became 41-68 ms as her, 209 ms became under 45 as a Kiriko watching. Her effect textures are made ahead by a worker as she's picked or first seen (ready about 2 s on: a shot sooner still hitches, for what isn't ready). Her first rounds, reload and Overclock gain the same. Other heroes' first uses have the same hitch, not touched (Kiriko's first ofuda about 250-300 ms) (#126).
+- The Charged Shot no longer snaps a melee or Disruptor's clip away; it takes the mouse's movement of that frame (a flick's click 3 of 6 -> 12 of 12); a press in its last 0.15 s fires, measured as the data has it, and its recovery is 0.65 s from a press, not 0.60; at a ping (a dev delay's 100 ms, not real latency) no ghost reload, no ghost or doubled shot in the cases found. One Sojourn's shot no longer silences another's reload (#126).
+- A keyboard key's repeat no longer refires it. Mashing near the end of its recovery keeps the instant look. A hacked Sojourn's Q no longer delays her shot's look (#126).
+- Mashing the Charged Shot no longer loses presses: a shot every 0.65 s at 10-20 clicks a second, real mouse events (it was 1 to 6 in 5 s). Holding Q shows no shot that its cast would drop (#126).
+
 ## 2026-11-05
+
+### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
+- Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
+- Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
+- Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
+- The shockwave no longer goes through walls and barriers (#122). `/kill` and the void kill the phased. Filed, not fixed: #123, #124.
+- Kiriko's Suzu line now plays only 0.5 s after an actual cleanse, as the game's data has it, not on every throw (#121). A Suzu at a healthy ally says nothing; poison and fire, which the data doesn't know about, don't count.
+- Whip Shot pushes about 8 m on flat ground, as the wiki has it: the game data's 25 m/s and 3 up, one push (8.04 m on a hero; a mob 7.99 m; in Minecraft mode 4.66 m). Shield Bash and Rally's wave use the data's 6 and 3, a much smaller push than before (2.5 m on a hero, was 7.9 m).
+- Lucio off a wall ride, and Brigitte off a Shield Bash, land unhurt (#35). Shots you fire at someone phased no longer vanish on your screen. EMP and hack catch a deployable whose owner is phased. Rally's wave reaches someone whose feet are in sight. Whiplash slams into walls, not stairs, slabs or a wall it's brushing, and now slams a Minecraft-mode target too.
+- Rally: Brigitte herself takes no overhealth, as Blizzard's April 2023 patch has it (#125). G in the air ends an ability's soft landing; so does staying in water or climbing a ladder, but not what it started on, brushes past or slides down.
+- A hero slept or stunned in the air lands as they would awake. A Shield Bash lands her unhurt however it ended, off a ledge too. Whiplash ends with her (G, death, leaving). Guardian Angel, Life Grip, Shield Bash and Power Slide work from water and ladders (#127). Lifeweaver's Space there swims or climbs, and spends nothing, and on a mount it's the mount's. A hero picked mid-fall lands as Steve would, as with G. Riding, lava and cobwebs end a landing. A fall begun in Minecraft mode stays Minecraft's if G comes before the ground.
+- Record: techniques/testing/polish4.md.
+
+### On fix/polish-3 (not released, version not bumped)
+- Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
+- Protection Suzu and Life Grip clear Biotic Grenade's anti-heal (#117). Other players see Lucio's wall ride (#115). Hyper Strike's float reaches a struck player; every other push already did (#109). Sigma's Hyper Strike count and Soundwave Rider's charge at the crosshair (#85).
+- **HeroInputPayload's shape changed** (a ride's side and yaw): a client and server on builds either side of this don't work together: update both.
+- Record: techniques/testing/polish3.md.
 
 ### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt
 - Healing reduction (#103), a player arriving learns what's going on (#96), Juno's lock cancels and Life Grip's prompt (#112), Brigitte's first-person chain (#113), Lúcio's dreads, lean and camera roll (#105), Lúcio's and Mercy's glows (#114).

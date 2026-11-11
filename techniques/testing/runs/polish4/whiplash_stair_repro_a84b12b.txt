@@ -1,0 +1,29 @@
+NOTE: this file's TREE line below is wrong: the helper read overcraft_polish4's stamp (ac69e1a). The client was built and launched from a detached worktree at a84b12b, the commit before intoAWall (typed; confirmed by git worktree add, DevServer in its own log).
+TREE (git at launch; the client itself can't say): ac69e1a dirty_src_files=0 launched=2026-11-05T20:18:30
+TIME 20:50:44
+TREE (git at launch): a84b12b dirty_src_files=0 (the commit before intoAWall; launched 20:50, typed: the launch script's run dir didn't exist yet; DevServer log confirmed) 20:50:44
+/difficulty normal ['[20:50:44] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[20:50:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[20:50:44] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[20:50:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[20:50:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[20:50:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[20:50:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[20:50:46] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[20:50:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 69 entities']
+### Whiplash on one stair, one slab, on the commit before intoAWall (a84b12b)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one stair + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.783, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  one slab, no perk, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.734, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 23.73 20.27 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero mercy mode True screen  hp 18.0 / 18.0
+  one stair + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  one slab + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+DONE

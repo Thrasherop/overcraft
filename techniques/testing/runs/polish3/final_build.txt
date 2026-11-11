@@ -1,0 +1,27 @@
+> Task :compileJava
+Note: E:\claude\mods\overcraft_polish3\src\main\java\dev\overcraft\hero\Combat.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :classes
+
+> Task :compileClientJava
+Note: E:\claude\mods\overcraft_polish3\src\client\java\dev\overcraft\client\OvercraftClient.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :clientClasses
+> Task :jar
+> Task :assemble
+> Task :checkNoOverwatchAssets
+> Task :compileTestJava
+> Task :testClasses
+> Task :test
+> Task :check
+> Task :build
+
+[Incubating] Problems report is available at: file:///E:/claude/mods/overcraft_polish3/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 34s
+10 actionable tasks: 10 executed
+Configuration cache entry stored.
+
+tests 75 failures 0, WallCodeTest ran

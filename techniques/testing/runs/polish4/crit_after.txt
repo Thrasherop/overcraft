@@ -1,0 +1,300 @@
+TREE (git at launch; the client itself can't say): ffb4c49 dirty_src_files=0 launched=2026-11-05T09:54:30
+TIME 09:55:10
+=== after the critique's fixes. Harness keys, bots, summoned mobs: not a person.
+{'ok': True}
+/difficulty normal ['[09:56:21] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[09:56:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[09:56:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[09:56:22] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[09:56:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[09:56:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[09:56:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[09:56:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[09:56:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+### the same steps as crit_repro_abde763
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 1 control: knocked (352, 368, 17) carried by cat7711
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 1 phased at the landing: phase (625, 634, 10) knocked (620, 649, 30) carried from [620] health 18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 2 Soundwave: phase (914, 922, 9) effects [''] min speed 0.10000000149011612 z 0.5 0.5 health 18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+--- 3 EMP: stealth stealth=True phased=False
+    phase (1110, 1114, 5) silenced None stealth (1110, 1140, 31) reads 1110 1140 health 18.0 emp.hit []
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 4a strike, phased phased=True asleep=False gravity=0.08 health=18.0 {'server': '[]', 'client': ''} []
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 4b struck asleep=True gravity=0.001 {'server': '[]', 'client': 'lifted '}
+   +0.10 asleep=False gravity=0.08 phased=True  | overcraft:sigma.perk.hyper_strike.hit
+   +0.30 asleep=False gravity=0.08 phased=True  | overcraft:sigma.perk.hyper_strike.hit
+   +0.50 asleep=False gravity=0.08 phased=True  | overcraft:sigma.perk.hyper_strike.hit
+   +0.70 asleep=False gravity=0.08 phased=False  | overcraft:sigma.perk.hyper_strike.hit
+   +0.93 asleep=False gravity=0.08 phased=False  | overcraft:sigma.perk.hyper_strike.hit
+   +1.15 asleep=False gravity=0.08 phased=False  | overcraft:sigma.perk.hyper_strike.hit
+   +1.35 asleep=False gravity=0.08 phased=False  | overcraft:sigma.perk.hyper_strike.hit
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 5 Accretion, Rally, Suzu False held (1751, 1769, 19) phase None health 2.8000007
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 5 Accretion, Rally, Suzu True held (2021, 2042, 22) phase (2029, 2037, 9) health 9.200001
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 6 ally speed=0.06 me speed=0.061 {'playing': 'overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot'}
+   +0.15 ally speed=0.1 phased=True | me speed=0.062 | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot
+   +0.38 ally speed=0.1 phased=True | me speed=0.064 | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot
+   +0.62 ally speed=0.1 phased=False | me speed=0.066 | overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot_3p overcraft:ana.perk.anesthetic.dot
+   +0.87 ally speed=0.1 phased=False | me speed=0.067 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +1.10 ally speed=0.1 phased=False | me speed=0.069 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +1.33 ally speed=0.1 phased=False | me speed=0.07 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +1.56 ally speed=0.1 phased=False | me speed=0.072 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +1.80 ally speed=0.1 phased=False | me speed=0.073 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +2.03 ally speed=0.1 phased=False | me speed=0.075 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+   +2.27 ally speed=0.1 phased=False | me speed=0.076 | overcraft:ana.perk.anesthetic overcraft:ana.perk.anesthetic.dot
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 7 stun under Flux, Suzu False lifted (2549, 2575, 27) asleep (2549, 2562, 14) held (2549, 2562, 14) phase None
+hero mercy mode True screen  hp 18.0 / 18.0
+--- 7 stun under Flux, Suzu True lifted (2821, 2848, 28) asleep (2822, 2825, 4) held (2821, 2828, 8) phase (2826, 2835, 10)
+hero mercy mode True screen  hp 18.0 / 18.0
+--- dart, phased asleep=False phased=True health=18.0 ['ana.sleep.cast_3p', 'ana.sleep.dart.shot']
+hero mercy mode True screen  hp 18.0 / 18.0
+--- whip, phased: phase (3171, 3179, 9) z 0.5 0.5 health 18.0 ['brigitte.whip.throw_3p', 'brigitte.whip.return_3p']
+hero mercy mode True screen  hp 18.0 / 18.0
+--- Rally bash, phased asleep=False phased=True health=18.0 z=0.5
+DONE
+TREE (git at launch; the client itself can't say): ffb4c49 dirty_src_files=0 launched=2026-11-05T09:54:30
+TIME 09:59:33
+--- Catnapper landing with the phase over it; offsets: when the bot Kiriko throws after the cat confirms
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.0 phase (4107, 4114, 8) knocked None carried from [] health 18.0 y end -60.0 heard land []
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.1 phase (4422, 4431, 10) knocked None carried from [] health 18.0 y end -60.0 heard land []
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.2 phase (4736, 4745, 10) knocked None carried from [] health 18.0 y end -60.0 heard land []
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.3 phase (5051, 5060, 10) knocked None carried from [] health 18.0 y end -60.0 heard land []
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.05 phase (5360, 5369, 10) knocked None carried from [] health 18.0 y end -60.0 heard land []
+hero mercy mode True screen  hp 18.0 / 18.0
+offset 0.15 phase (5674, 5683, 10) knocked None carried from [] health 18.0 y end -60.0 heard land []
+DONE
+TREE (git at launch; the client itself can't say): ffb4c49 dirty_src_files=0 launched=2026-11-05T09:54:30
+TIME 10:01:07
+=== after the critique's fixes. Harness keys, bots, summoned mobs: not a person.
+/difficulty normal ['[10:01:08] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[10:01:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[10:01:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[10:01:09] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[10:01:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[10:01:10] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[10:01:10] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[10:01:11] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[10:01:11] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Suzu with poison, fire and a beneficial potion on the target
+hero mercy mode True screen  hp 18.0 / 18.0
+  before effects=strength wither speed poison slowness fire=161 health=13.0
+  after effects=strength speed fire=165 health=18.0 phased=True
+  bot ally before effects=regeneration poison
+hero kiriko mode True screen  hp 20.0 / 20.0
+  real Suzu cd 0.0
+  bot ally after (me() removed the bot: not read)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  bot ally before effects=regeneration fire_resistance poison
+  bot ally after effects=regeneration fire_resistance phased=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wolf before ['[10:01:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Wolf has the following entity data: [{duration: 595, show_icon: 1b, id: "minecraft:speed"}, {duration: 595, show_icon: 1b, id: "minecraft:poison"}]'] ['[10:01:47] [Render thread/INFO] (Minecraft) [System] [CHAT] Wolf has the following entity data: 189s']
+  wolf after ['[10:01:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Wolf has the following entity data: [{duration: 569, show_icon: 1b, id: "minecraft:speed"}]'] ['[10:01:48] [Render thread/INFO] (Minecraft) [System] [CHAT] Wolf has the following entity data: 0s']
+### Suzu on a tethered real client (mid-carry)
+hero mercy mode True screen  hp 18.0 / 18.0
+  tethered carriedBy=cat8071 asleep=True y=-60.0
+  phase (6824, 6833, 10) carried (6824, 6874, 51) knocked (6824, 6849, 26) y end -60.0
+### Life Grip's pull moving a slept ally, by tick, positions
+hero mercy mode True screen  hp 18.0 / 18.0
+  slept False asleep=False z=8.5 {'ok': True}
+    asleep None phase (7065, 7081, 17) first moved tick [7074] held None start tick 7065 z 8.5 -> -1.750022530980227
+     [(7065, 8.5, 0), (7068, 8.5, 0), (7070, 8.5, 0), (7072, 8.5, 0), (7074, 7.25, 0), (7076, 4.75, 0), (7078, 2.25, 0), (7080, -0.25, 0), (7082, -1.75, 0), (7084, -1.75, 0), (7086, -1.75, 0), (7088, -1.75, 0), (7090, -1.75, 0), (7092, -1.75, 0), (7094, -1.75, 0), (7096, -1.75, 0)]
+hero mercy mode True screen  hp 18.0 / 18.0
+  slept True asleep=True z=8.5 {'ok': True}
+    asleep (7262, 7271, 10) phase (7262, 7279, 18) first moved tick [7272] held (7262, 7271, 10) start tick 7262 z 8.5 -> -1.750022530980227
+     [(7262, 8.5, 1), (7264, 8.5, 1), (7266, 8.5, 1), (7268, 8.5, 1), (7270, 8.5, 1), (7272, 7.25, 0), (7274, 4.75, 0), (7277, 1.0, 0), (7279, -1.5, 0), (7281, -1.75, 0), (7283, -1.75, 0), (7285, -1.75, 0), (7287, -1.75, 0), (7289, -1.75, 0), (7291, -1.75, 0), (7293, -1.75, 0)]
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a bot (a bot isn't moved by a client):  asleep=True z=8.0 {'ok': True}
+    asleep (7469, 7477, 9) z 8.0 8.0
+### a mob ally other than a wolf: a tamed cat; and the villager the dart passes
+hero kiriko mode True screen  hp 20.0 / 20.0
+  side {'ally': True, 'enemy': False, 'bystander': False, 'area': False, 'target': 'null', 'brainTarget': 'null', 'y': -60.0}
+  after a dart {'asleep': 'cat@10481'} health 5.6
+   +0.2 {'asleep': 'cat@10481'} health 10.0
+   +0.4 {'asleep': ''} health 10.0
+   +0.6 {'asleep': ''} health 10.0
+   +0.8 {'asleep': ''} health 10.0
+   +1.0 {'asleep': ''} health 10.0
+### a hacked creeper on the blue team, fuse cut, a Suzu, a red bot near it
+hero mercy mode True screen  hp 18.0 / 18.0
+  side for Kiriko {'ally': False, 'enemy': True, 'bystander': False, 'area': True, 'target': "ServerPlayer['som8082'/3394, l='ServerLevel[p4d]', x=10541.50, y=-60.00, z=6.50]", 'brainTarget': 'null', 'y': -60.0}
+  side {'ally': False, 'enemy': True, 'bystander': False, 'area': True, 'target': "ServerPlayer['som8082'/3394, l='ServerLevel[p4d]', x=10541.50, y=-60.00, z=6.50]", 'brainTarget': 'null', 'y': -60.0}
+  hacked: exists ['[10:02:53] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed'] ['[10:02:54] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+   +0.35 exists ] [CHAT] Test failed bot health=0.0
+   +0.70 exists ] [CHAT] Test failed bot health=0.0
+   +1.05 exists ] [CHAT] Test failed bot health=0.0
+   +1.40 exists ] [CHAT] Test failed bot health=0.0
+   +1.75 exists ] [CHAT] Test failed bot health=0.0
+   +2.10 exists ] [CHAT] Test failed bot health=0.0
+   +2.45 exists ] [CHAT] Test failed bot health=0.0
+   +2.80 exists ] [CHAT] Test failed bot health=0.0
+   +3.15 exists ] [CHAT] Test failed bot health=0.0
+   +3.50 exists ] [CHAT] Test failed bot health=0.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  side for Kiriko {'ally': False, 'enemy': True, 'bystander': False, 'area': True, 'target': "ServerPlayer['som8084'/3501, l='ServerLevel[p4d]', x=10601.50, y=-60.00, z=6.50]", 'brainTarget': 'null', 'y': -60.0}
+  side {'ally': False, 'enemy': True, 'bystander': False, 'area': True, 'target': "ServerPlayer['som8084'/3501, l='ServerLevel[p4d]', x=10601.50, y=-60.00, z=6.50]", 'brainTarget': 'null', 'y': -60.0}
+  hacked: exists ['[10:03:10] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed'] ['[10:03:10] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+   +0.35 exists ] [CHAT] Test failed bot health=0.0
+   +0.70 exists ] [CHAT] Test failed bot health=0.0
+   +1.05 exists ] [CHAT] Test failed bot health=0.0
+   +1.40 exists ] [CHAT] Test failed bot health=0.0
+   +1.75 exists ] [CHAT] Test failed bot health=0.0
+   +2.10 exists ] [CHAT] Test failed bot health=0.0
+   +2.45 exists ] [CHAT] Test failed bot health=0.0
+   +2.80 exists ] [CHAT] Test failed bot health=0.0
+   +3.15 exists ] [CHAT] Test failed bot health=0.0
+   +3.50 exists ] [CHAT] Test failed bot health=0.0
+### Rally by keys: fix rally reply logged; a wall, a barrier, a phased target; distances: a 2.2 ahead, b 5.5 ahead, c 3.5 behind, helmets, midnight
+reply {'rally': False}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off a b c [14.4, 14.4, 10.0] stunned at once zombie@10661 0.2 s later zombie@10661 zombie@10661
+reply {'rally': True}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on a b c [14.4, 14.4, 10.0] stunned at once zombie@10721 0.2 s later zombie@10721 zombie@10721
+reply {'rally': False}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off a b c [8.799999, 14.4, 20.0] stunned at once zombie@10781 0.2 s later zombie@10781 zombie@10781
+reply {'rally': True}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on a b c [14.4, 14.4, 20.0] stunned at once zombie@10841 0.2 s later zombie@10841 zombie@10841
+--- a phased bot in the wave
+hero brigitte mode True screen  hp 20.0 / 20.0
+  phase (9635, 9639, 5) stun None health 18.0 18.0 bashed 20.0
+DONE
+TREE (git at launch; the client itself can't say): ffb4c49 dirty_src_files=0 launched=2026-11-05T09:54:30
+TIME 10:06:12
+/difficulty normal ['[10:06:13] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[10:06:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[10:06:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[10:06:14] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[10:06:15] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[10:06:15] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[10:06:16] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[10:06:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[10:06:16] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### fire: the block gone before the Suzu
+hero mercy mode True screen  hp 18.0 / 18.0
+  burning fire=160 health=15.0
+   +0.2 fire=-20 phased=True health=18.0
+   +0.4 fire=-20 phased=False health=18.0
+   +0.6 fire=-20 phased=False health=18.0
+   +0.8 fire=-20 phased=False health=18.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wolf Fire 186
+  wolf Fire after 0
+### a creeper, EMP, then a Suzu. Allies: a creeper is everyone's enemy, on a team or not, so the Suzu takes it for no ally
+hero mercy mode True screen  hp 18.0 / 18.0
+  side {'ally': False, 'enemy': True}
+   +0.61 creeper passed. Count: 1, Sombra health=18.0
+   +1.31 creeper passed. Count: 1, Sombra health=18.0
+   +2.01 creeper passed. Count: 1, Sombra health=18.0
+   +2.81 creeper passed. Count: 1, Sombra health=18.0
+   +3.51 creeper passed. Count: 1, Sombra health=18.0
+   +4.21 creeper passed. Count: 1, Sombra health=18.0
+   +4.91 creeper passed. Count: 1, Sombra health=18.0
+   +5.61 creeper passed. Count: 1, Sombra health=18.0
+   +6.31 creeper passed. Count: 1, Sombra health=18.0
+   +7.01 creeper passed. Count: 1, Sombra health=18.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  side {'ally': False, 'enemy': True}
+  Suzu {'ok': True}
+   +0.71 creeper passed. Count: 1, Sombra health=18.0
+   +1.41 creeper passed. Count: 1, Sombra health=18.0
+   +2.11 creeper passed. Count: 1, Sombra health=18.0
+   +2.91 creeper passed. Count: 1, Sombra health=18.0
+   +3.62 creeper passed. Count: 1, Sombra health=18.0
+   +4.31 creeper passed. Count: 1, Sombra health=18.0
+   +5.01 creeper passed. Count: 1, Sombra health=18.0
+   +5.72 creeper passed. Count: 1, Sombra health=18.0
+   +6.42 creeper passed. Count: 1, Sombra health=18.0
+   +7.12 creeper passed. Count: 1, Sombra health=18.0
+### the other phases: Swift Step, Translocator, Resurrect, a dart inside each
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Swift Step False phase None asleep (13375, 13383, 9) z 0.5
+hero kiriko mode True screen  hp 20.0 / 20.0
+  Swift Step True phase (13572, 13573, 2) asleep None z 6.5
+hero sombra mode True screen  hp 18.0 / 18.0
+  beacon out; me z 13.192915522625347
+  Translocator: phase None asleep None z 13.192915522625347 13.192915522625347 stealth (13777, 13795, 19)
+hero mercy mode True screen  hp 18.0 / 18.0
+  Resurrect, cd2 0.0
+  back ['[10:07:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Test passed. Count: 1'] phased? data: ['[10:07:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Cat has the following entity data: 10.0f']
+  a dart inside its 2.25 s: asleep {'asleep': ''}
+  a dart after it: asleep {'asleep': ''}
+### right after a cleanse: death, G, hero switch, leave and rejoin
+hero mercy mode True screen  hp 18.0 / 18.0
+  asleep asleep=True held=True
+  in the waking asleep=True held=True phased=True {'server': '[ana_asleep]', 'client': 'asleep '}
+  dead 18.0
+  after death asleep=False held=False phased=False health=18.0 [] mercy walks 3.42
+hero mercy mode True screen  hp 18.0 / 18.0
+  asleep asleep=True held=True
+  in the waking asleep=True held=True phased=True {'server': '[ana_asleep]', 'client': 'asleep '}
+  after G asleep=False held=False phased=False speed=0.1 False walks 2.51
+hero mercy mode True screen  hp 18.0 / 18.0
+  asleep asleep=True held=True
+  in the waking asleep=True held=True phased=True {'server': '[ana_asleep]', 'client': 'asleep '}
+  switch {'ok': True}
+  after a hero switch kiriko asleep=False held=False phased=False
+  walks 3.42
+hero mercy mode True screen  hp 18.0 / 18.0
+  asleep asleep=True held=True
+  in the waking asleep=True held=True phased=True {'server': '[ana_asleep]', 'client': 'asleep '}
+  pause OverwatchMenuScreen
+  left TitleScreen
+{'ok': True}
+  back HeroSelectScreen hero mercy
+  after leave and rejoin asleep=False held=False phased=False health=18.0 silenced=False {'server': '[]', 'client': ''} walks 2.71
+### places: asleep and woken on a ladder, in a boat, in lava (fire resistance), in shallow water; a real Kiriko in the Nether
+hero mercy mode True screen  hp 18.0 / 18.0
+  ladder y -60.0 asleep=False held=False health=18.0
+    asleep None phase (15425, 15434, 10) y -60.0
+hero mercy mode True screen  hp 18.0 / 18.0
+   riding ['NFO] (Minecraft) [System] [CHAT] Found no elements matching Passengers']
+  boat y -60.41 asleep=True held=True health=17.6
+    asleep (15649, 15659, 11) phase (15650, 15659, 10) y -60.4125
+hero mercy mode True screen  hp 18.0 / 18.0
+  lava y -61.0 asleep=False held=False health=18.0
+    asleep None phase (15850, 15859, 10) y -61.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  water y -61.0 asleep=False held=False health=18.0
+    asleep None phase (16056, 16065, 10) y -61.0
+--- the Nether: poison on a real Kiriko, her own Suzu at her feet (bots live in the overworld)
+hero kiriko mode True screen  hp 20.0 / 20.0
+  before effects=night_vision poison health=15.0
+  after effects=night_vision health=20.0 phased=False
+### Hack's and the stun's own sounds when cleansed: what's running, by name
+hero mercy mode True screen  hp 18.0 / 18.0
+  hacked: playing overcraft:sombra.hacked overcraft:sombra.hacked_3p | heard ['sombra.hacked', 'sombra.hacked_3p']
+   +0.25 silenced=False phased=True | overcraft:sombra.hacked overcraft:sombra.hacked_3p
+   +0.50 silenced=False phased=False | overcraft:sombra.hacked overcraft:sombra.hacked_3p
+   +0.75 silenced=False phased=False | overcraft:sombra.hacked overcraft:sombra.hacked_3p
+   +1.00 silenced=False phased=False | overcraft:sombra.hacked overcraft:sombra.hacked_3p
+   +1.25 silenced=False phased=False | overcraft:sombra.hacked
+   +1.50 silenced=False phased=False | overcraft:sombra.hacked
+   +1.75 silenced=False phased=False | overcraft:sombra.hacked
+   +2.00 silenced=False phased=False | overcraft:sombra.hacked
+   +2.25 silenced=False phased=False | overcraft:sombra.hacked
+   +2.50 silenced=False phased=False | overcraft:sombra.hacked
+hero mercy mode True screen  hp 18.0 / 18.0
+  stunned: playing overcraft:brigitte.stun | heard ['brigitte.stun']
+   +0.15 asleep=False phased=True | overcraft:brigitte.stun_3p overcraft:brigitte.stun
+   +0.30 asleep=False phased=True | overcraft:brigitte.stun_3p overcraft:brigitte.stun
+   +0.45 asleep=False phased=True | overcraft:brigitte.stun_3p overcraft:brigitte.stun
+   +0.60 asleep=False phased=False | overcraft:brigitte.stun_3p overcraft:brigitte.stun
+   +0.75 asleep=False phased=False | overcraft:brigitte.stun_3p
+   +0.90 asleep=False phased=False | overcraft:brigitte.stun_3p
+   +1.05 asleep=False phased=False | overcraft:brigitte.stun_3p
+   +1.20 asleep=False phased=False | overcraft:brigitte.stun_3p
+DONE

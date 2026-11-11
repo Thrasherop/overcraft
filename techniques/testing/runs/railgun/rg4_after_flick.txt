@@ -1,0 +1,28 @@
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 30, 'anim': 'idle'}
+flick 0  hit fps before the script 30 after its focus 34 yaw -0.0 | 1204.1 click 0.500 -58.380 0.500 -0.00 0.00 | 1204.1 sent | 1204.2 clip | 1204.2 snd:charg
+flick 1  hit fps before the script 119 after its focus 119 yaw -0.0 | 1151.7 click 0.500 -58.380 0.500 -0.00 0.00 | 1151.8 sent | 1151.8 clip | 1151.8 snd:charg
+flick 2  hit fps before the script 119 after its focus 119 yaw -0.0 | 1168.9 click 0.500 -58.380 0.500 -0.00 0.00 | 1168.9 sent | 1168.9 clip | 1168.9 snd:charg
+flick 3  hit fps before the script 119 after its focus 119 yaw -0.0 | 1148.7 click 0.500 -58.380 0.500 -0.00 0.00 | 1148.7 sent | 1148.7 clip | 1148.8 snd:charg
+flick 4  hit fps before the script 119 after its focus 119 yaw -0.0 | 1158.0 click 0.500 -58.380 0.500 -0.00 0.00 | 1158.0 sent | 1158.0 clip | 1158.0 snd:charg
+flick 5  hit fps before the script 119 after its focus 119 yaw -0.0 | 1144.6 click 0.500 -58.380 0.500 -0.00 0.00 | 1144.6 sent | 1144.6 clip | 1144.6 snd:charg
+flick 6  hit fps before the script 119 after its focus 119 yaw -0.0 | 1151.3 click 0.500 -58.380 0.500 -0.00 0.00 | 1151.3 sent | 1151.3 clip | 1151.3 snd:charg
+flick 7  hit fps before the script 119 after its focus 115 yaw -0.0 | 1146.4 click 0.500 -58.380 0.500 -0.00 0.00 | 1146.4 sent | 1146.4 clip | 1146.5 snd:charg
+flick 8  hit fps before the script 119 after its focus 119 yaw -0.0 | 1152.0 click 0.500 -58.380 0.500 -0.00 0.00 | 1152.0 sent | 1152.0 clip | 1152.1 snd:charg
+flick 9  hit fps before the script 119 after its focus 119 yaw -0.0 | 1138.7 click 0.500 -58.380 0.500 -0.00 0.00 | 1138.7 sent | 1138.7 clip | 1138.8 snd:charg
+FLICK flick 10 of 10
+flickhuman 0  hit fps before the script 119 after its focus 119 yaw -0.0 | 1312.2 click 0.500 -58.380 0.500 -0.00 0.00 | 1312.2 sent | 1312.2 clip | 1312.3 snd:charg
+flickhuman 1  hit fps before the script 119 after its focus 119 yaw -0.0 | 1316.8 click 0.500 -58.380 0.500 -0.00 0.00 | 1316.8 sent | 1316.9 clip | 1316.9 snd:charg
+flickhuman 2  hit fps before the script 119 after its focus 117 yaw -0.0 | 1297.7 click 0.500 -58.380 0.500 -0.00 0.00 | 1297.7 sent | 1297.7 clip | 1297.7 snd:charg
+flickhuman 3  hit fps before the script 119 after its focus 119 yaw -0.0 | 1303.7 click 0.500 -58.380 0.500 -0.00 0.00 | 1303.7 sent | 1303.7 clip | 1303.7 snd:charg
+flickhuman 4  hit fps before the script 119 after its focus 119 yaw -0.0 | 1306.1 click 0.500 -58.380 0.500 -0.00 0.00 | 1306.1 sent | 1306.1 clip | 1306.2 snd:charg
+flickhuman 5  hit fps before the script 119 after its focus 119 yaw -0.0 | 1304.6 click 0.500 -58.380 0.500 -0.00 0.00 | 1304.6 sent | 1304.6 clip | 1304.6 snd:charg
+FLICK flickhuman 6 of 6
+flickwait 0  hit fps before the script 119 after its focus 119 yaw -0.0 | 1202.0 click 0.500 -58.380 0.500 -0.00 0.00 | 1202.0 sent | 1202.1 clip | 1202.1 snd:charg
+flickwait 1  hit fps before the script 119 after its focus 119 yaw -0.0 | 1185.4 click 0.500 -58.380 0.500 -0.00 0.00 | 1185.4 sent | 1185.4 clip | 1185.4 snd:charg
+flickwait 2  hit fps before the script 119 after its focus 119 yaw -0.0 | 1203.1 click 0.500 -58.380 0.500 -0.00 0.00 | 1203.1 sent | 1203.1 clip | 1203.1 snd:charg
+flickwait 3  hit fps before the script 118 after its focus 119 yaw -0.0 | 1190.4 click 0.500 -58.380 0.500 -0.00 0.00 | 1190.4 sent | 1190.4 clip | 1190.5 snd:charg
+flickwait 4  hit fps before the script 118 after its focus 119 yaw -0.0 | 1179.9 click 0.500 -58.380 0.500 -0.00 0.00 | 1179.9 sent | 1179.9 clip | 1179.9 snd:charg
+flickwait 5  hit fps before the script 118 after its focus 117 yaw -0.0 | 1184.5 click 0.500 -58.380 0.500 -0.00 0.00 | 1184.5 sent | 1184.5 clip | 1184.5 snd:charg
+FLICK flickwait 6 of 6

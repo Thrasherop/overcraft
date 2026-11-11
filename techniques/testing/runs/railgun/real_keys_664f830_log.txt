@@ -1,0 +1,86 @@
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 113, 'anim': 'idle'}
+{'trace': '1930.7 sent | 1930.9 clip | 1941.8 snd:charged.fire_mid | 1942.1 snd:charged.shot | 1942.3 fx | 1944.1 srv_shot | 2278.6 snd:charged.hit | 2278.8 snd:charged.hit_enemy | 2740.2 sent | 2769.6 frame'}
+zombie 991.7344
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 116, 'anim': 'idle'}
+{'trace': ''}
+zombie 991.7344
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 116, 'anim': 'idle'}
+{'trace': '1296.5 sent | 1296.6 clip | 1296.7 snd:charged.fire_mid | 1297.0 snd:charged.shot | 1297.2 fx | 1298.6 frame | 1309.0 srv_shot | 1312.9 snd:charged.hit | 1313.1 snd:charged.hit_enemy | 1389.8 sent'}
+zombie 983.46875
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{'trace': '256.7 sent | 283.7 srv_round | 388.6 srv_round | 434.0 srv_round | 484.8 srv_round | 534.6 srv_round | 633.5 srv_round | 683.3 srv_round | 733.9 srv_round | 784.5 srv_round | 884.0 srv_round | 908.9 sent | 1036.8 sent | 1036.9 clip | 1036.9 snd:charged.fire | 1037.1 snd:charged.shot | 1037.2 fx | 1039.4 frame | 1079.6 srv_shot | 1088.4 snd:charged.hit | 1088.7 snd:charged.hit_enemy | 1105.5 sent'}
+zombie 955.6364
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 116, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 116, 'anim': 'idle'}
+{'trace': '116.8 sent | 140.5 snd:railgun.reload | 335.7 sent | 335.8 clip | 336.1 snd:charged.fire_mid | 336.2 snd:charged.shot | 336.3 fx | 337.3 srv_shot | 337.9 frame | 343.8 snd:charged.hit | 344.0 snd:charged.hit_enemy | 413.7 sent'}
+zombie 947.3708
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 114, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{'trace': '733.3 sent | 758.5 srv_round | 858.5 srv_round | 909.5 srv_round | 959.8 srv_round | 1009.4 srv_round | 1109.0 srv_round | 1158.9 srv_round | 1208.9 srv_round | 1259.5 srv_round | 1359.1 srv_round | 1393.5 sent | 1393.5 clip | 1393.6 snd:charged.fire | 1393.7 snd:charged.shot | 1393.9 fx | 1395.7 frame | 1405.9 srv_shot | 1410.0 snd:charged.hit | 1410.1 snd:charged.hit_enemy | 1486.9 sent | 2008.7 srv_round | 2109.2 srv_round | 2158.6 srv_round | 2209.5 srv_round | 2258.9 srv_round | 2359.8 srv_round | 2408.2 srv_round | 2459.5 srv_round | 2509.0 srv_round | 2608.6 srv_round | 2659.1 srv_round | 2709.5 srv_round | 2759.2 srv_round | 2859.4 srv_round | 2910.0 srv_round | 2959.4 srv_round | 2986.7 sent'}
+zombie 897.6781
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 113, 'anim': 'idle'}
+{'trace': '453.6 sent | 480.7 srv_round | 580.6 srv_round | 630.3 srv_round | 680.9 srv_round | 730.8 srv_round | 831.6 srv_round | 880.5 srv_round | 931.3 srv_round | 951.6 sent | 951.7 clip | 951.8 snd:charged.fire | 951.9 snd:charged.shot | 952.1 fx | 955.1 frame | 977.2 srv_shot | 978.1 snd:charged.hit | 978.2 snd:charged.hit_enemy | 1580.4 srv_shot | 1586.5 clip | 1586.6 snd:charged.fire_low | 1586.7 snd:charged.shot | 1586.7 fx | 1587.0 snd:charged.hit | 1587.0 snd:charged.hit_enemy | 1619.6 frame | 2230.1 srv_round | 2287.1 snd:railgun.reload | 2510.3 sent | 2810.0 sent'}
+zombie 866.48883
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 118, 'anim': 'idle+reload'}
+flick 0 sent flick  zombie 866.48883 -> 866.48883 yaw 7.499996 | 1212.0 sent | 1212.1 clip | 1212.2 snd:charged.fire_mid | 1212.3 snd:charged.shot | 1212.4 fx | 1213.7 frame | 1243.1 srv_shot | 1319.8 sent
+flick 1 sent flick  zombie 866.48883 -> 858.2232 yaw -3.8146973e-06 | 1184.8 sent | 1184.9 clip | 1184.9 snd:charged.fire_mid | 1185.1 snd:charged.shot | 1185.2 fx | 1187.4 frame | 1208.9 srv_shot | 1209.7 snd:charged.hit | 1209.8 snd:charged.hit_enemy | 1284.7 sent
+flick 2 sent flick  zombie 858.2232 -> 858.2232 yaw -4.7683716e-06 | 1172.1 sent | 1172.2 clip | 1172.2 snd:charged.fire_mid | 1172.4 snd:charged.shot | 1172.5 fx | 1173.6 frame | 1183.5 srv_shot | 1265.9 sent
+flick 3 sent flick  zombie 858.2232 -> 858.2232 yaw -4.7683716e-06 | 1184.2 sent | 1184.2 clip | 1184.2 snd:charged.fire_mid | 1184.3 snd:charged.shot | 1184.5 fx | 1186.8 frame | 1207.8 srv_shot | 1286.1 sent
+['ability1Cooldown', 'ability2Cooldown', 'ability3Cooldown', 'aimSeen', 'anim', 'anim1p', 'box', 'camera', 'clothLowest', 'crouching', 'emoteCamera', 'emoteClip', 'emoteClipAt', 'emoteFirstPersonFrames', 'fingertip', 'food', 'fps', 'fx', 'health', 'hero', 'heroAttached', 'heroMode', 'inWorld', 'maxHealth', 'meter', 'mode', 'muzzle', 'onFire', 'onGround', 'perkLevel', 'perkProgress', 'pitch', 'primaryAmmo', 'primaryReload', 'saturation', 'screen', 'secondaryAmmo', 'serverBox', 'slot', 'sprinting', 'ult', 'vx', 'vy', 'vz', 'x', 'y', 'yaw', 'z']
+flickhuman 0  hit zombie 858.2232 -> 849.9576 yaw -0.0 | 1376.4 sent | 1376.4 clip | 1376.5 snd:charged.fire_mid | 1376.6 snd:charged.shot | 1376.7 fx | 1377.7 frame |
+flickhuman 1  hit zombie 849.9576 -> 841.69196 yaw -0.0 | 1318.7 sent | 1318.8 clip | 1318.8 snd:charged.fire_mid | 1319.0 snd:charged.shot | 1319.1 fx | 1320.0 frame |
+flickhuman 2  hit zombie 841.69196 -> 833.42633 yaw -0.0 | 1345.2 sent | 1345.2 clip | 1345.3 snd:charged.fire_mid | 1345.4 snd:charged.shot | 1345.5 fx | 1346.6 frame |
+flickhuman 3  hit zombie 833.42633 -> 825.1607 yaw -0.0 | 1321.8 sent | 1321.9 clip | 1321.9 snd:charged.fire_mid | 1322.1 snd:charged.shot | 1322.2 fx | 1323.1 frame |
+flickhuman 4  hit zombie 825.1607 -> 816.8951 yaw -0.0 | 1325.3 sent | 1325.3 clip | 1325.3 snd:charged.fire_mid | 1325.5 snd:charged.shot | 1325.6 fx | 1326.6 frame |
+flickhuman 5  hit zombie 816.8951 -> 808.62946 yaw -0.0 | 1306.8 sent | 1306.9 clip | 1307.0 snd:charged.fire_mid | 1307.1 snd:charged.shot | 1307.3 fx | 1308.2 frame |
+flickwait 0  hit zombie 808.62946 -> 800.36383 yaw -0.0 | 1215.2 sent | 1215.2 clip | 1215.3 snd:charged.fire_mid | 1215.4 snd:charged.shot | 1215.5 fx | 1216.6 frame |
+flickwait 1  hit zombie 800.36383 -> 792.0982 yaw -0.0 | 1205.8 sent | 1205.8 clip | 1205.9 snd:charged.fire_mid | 1206.0 snd:charged.shot | 1206.1 fx | 1207.4 frame |
+flickwait 2  hit zombie 792.0982 -> 783.8326 yaw -0.0 | 1215.4 sent | 1215.5 clip | 1215.6 snd:charged.fire_mid | 1215.8 snd:charged.shot | 1215.8 fx | 1216.9 frame |
+flickwait 3  hit zombie 783.8326 -> 775.56696 yaw -0.0 | 1218.2 sent | 1218.2 clip | 1218.3 snd:charged.fire_mid | 1218.3 snd:charged.shot | 1218.4 fx | 1219.3 frame |
+flickwait 4  hit zombie 775.56696 -> 767.30133 yaw -0.0 | 1209.1 sent | 1209.2 clip | 1209.2 snd:charged.fire_mid | 1209.3 snd:charged.shot | 1209.4 fx | 1210.4 frame |
+flickwait 5  hit zombie 767.30133 -> 759.0357 yaw -0.0 | 1199.4 sent | 1199.4 clip | 1199.4 snd:charged.fire_mid | 1199.5 snd:charged.shot | 1199.6 fx | 1201.8 frame |
+flick 0  MISS zombie 759.0357 -> 759.0357 yaw -0.0 | 1181.6 sent | 1181.7 clip | 1181.8 snd:charged.fire_mid | 1181.9 snd:charged.shot | 1182.0 fx | 1183.0 frame |
+flick 1  hit zombie 759.0357 -> 750.7701 yaw -0.0 | 1169.1 sent | 1169.2 clip | 1169.2 snd:charged.fire_mid | 1169.3 snd:charged.shot | 1169.4 fx | 1170.5 frame |
+flick 2  MISS zombie 750.7701 -> 750.7701 yaw -0.0 | 1177.6 sent | 1177.7 clip | 1177.7 snd:charged.fire_mid | 1177.8 snd:charged.shot | 1177.9 fx | 1179.9 frame |
+flick 3  hit zombie 750.7701 -> 742.50446 yaw -0.0 | 1161.6 sent | 1161.6 clip | 1161.7 snd:charged.fire_mid | 1161.8 snd:charged.shot | 1161.8 fx | 1162.8 frame |
+flick 4  MISS zombie 742.50446 -> 742.50446 yaw -0.0 | 1175.6 sent | 1175.7 clip | 1175.7 snd:charged.fire_mid | 1175.9 snd:charged.shot | 1176.0 fx | 1178.6 frame |
+flick 5  hit zombie 742.50446 -> 734.23883 yaw -0.0 | 1183.0 sent | 1183.0 clip | 1183.0 snd:charged.fire_mid | 1183.1 snd:charged.shot | 1183.2 fx | 1184.1 frame |
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 112, 'anim': 'idle'}
+{'trace': '174.8 sent | 514.0 sent | 514.1 clip | 514.1 snd:charged.fire_mid | 514.2 snd:charged.shot | 514.3 fx | 515.3 frame | 549.0 srv_shot | 555.5 snd:charged.hit | 555.7 snd:charged.hit_enemy | 581.8 sent'}
+zombie 994.4896
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 115, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{'trace': '341.5 sent | 341.6 clip | 341.6 snd:charged.fire_mid | 341.7 snd:charged.shot | 341.8 fx | 343.0 frame | 343.9 srv_shot | 352.2 snd:charged.hit | 352.3 snd:charged.hit_enemy | 420.3 sent'}
+zombie 991.7344
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 115, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 115, 'anim': 'idle'}
+{'trace': '144.3 sent | 342.4 sent | 342.5 clip | 342.5 snd:charged.fire_mid | 342.6 snd:charged.shot | 342.7 fx | 366.1 srv_shot | 390.3 frame | 395.7 snd:charged.hit | 395.8 snd:charged.hit_enemy | 396.7 sent'}
+zombie 966.85144
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 113, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}
+{'trace': '3262.8 sent | 3262.9 clip | 3262.9 snd:charged.fire_mid | 3263.0 snd:charged.shot | 3263.1 fx | 3265.5 frame | 3283.4 srv_shot | 3287.8 snd:charged.hit | 3287.9 snd:charged.hit_enemy | 3317.1 sent'}
+zombie 991.7344
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 117, 'anim': 'idle'}

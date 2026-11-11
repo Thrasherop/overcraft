@@ -100,7 +100,7 @@ public final class GraviticFlux {
 		dev.overcraft.hero.HeroSounds.ultLine(player, SigmaSounds.of("ult.friendly"), SigmaSounds.of("ult.enemy"), 5);
 	}
 
-	/** Its end (done, or cut short: G, death, another hero, a stun): he lands safely, those lifted go on falling on their own. */
+	/** Its end (done, or cut short: death, another hero, a stun): he lands safely, those lifted go on falling on their own. Cut short by G he doesn't: nothing of the hero's play carries over (Holds.landingEnds clears it the next tick). */
 	static void end(ServerPlayer player, HeroState s) {
 		if (!active(s)) {
 			return;
@@ -225,7 +225,7 @@ public final class GraviticFlux {
 		Vec3 eye = at.add(0, 1, 0);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at.x - FLUX_RADIUS - 3, bottom, at.z - FLUX_RADIUS - 3,
 			at.x + FLUX_RADIUS + 3, top, at.z + FLUX_RADIUS + 3))) {
-			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e) || e.isSpectator() || LIFTED.containsKey(e.getUUID())) {
+			if (!e.isAlive() || e == owner || !Allies.areaTouches(owner, e) || e.isSpectator() || LIFTED.containsKey(e.getUUID())) {
 				continue;
 			}
 			AABB box = e.getBoundingBox();
@@ -278,6 +278,12 @@ public final class GraviticFlux {
 	private static final dev.overcraft.hero.Blow BLOW = dev.overcraft.hero.Blow.ult("gravitic_flux").by(dev.overcraft.hero.Hero.SIGMA);
 
 	/** Being lifted or slammed by a Gravitic Flux now (Sleep leaves its movement to this). */
+	/** Still in its first 0.4 s, held still (#586). */
+	public static boolean holding(LivingEntity entity) {
+		Lifted l = LIFTED.get(entity.getUUID());
+		return l != null && l.ticks < Ow.ticks(FLUX_HOLD);
+	}
+
 	public static boolean lifted(LivingEntity entity) {
 		return LIFTED.containsKey(entity.getUUID());
 	}
@@ -375,7 +381,8 @@ public final class GraviticFlux {
 				hx *= 0.91;
 				hz *= 0.91;
 				if (l.ticks == Ow.ticks(FLUX_HOLD) && e instanceof ServerPlayer p) {
-					p.removeAttached(HeroManager.ASLEEP);
+					// (a stun on top holds on: it was let go, 8 ticks into 15)
+					Sleep.release(p);
 				}
 			} else {
 				// the slam: gravity x22 (#582) to Overwatch's terminal speed; damage once ground is within 5 m below (#644)

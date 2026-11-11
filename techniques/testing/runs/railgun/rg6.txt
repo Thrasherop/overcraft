@@ -1,0 +1,27 @@
+=== #126 table. TREE 0d7c573 dirty_src_files=0 launched=2026-11-10T16:02:27 at 16:03:49
+{'ok': True}
+WARM art ready after 0.93 s; frames over 40 ms (at ms, length): [(103, 218), (321, 367), (688, 50)] frames 11 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 14
+=== rows
+### round two 16:05:14 fps 29
+### done
+### round three 16:05:14 fps 29
+### done
+### last round 16:05:14
+JUMP fps 15 measured 10 hit camera to shot eye 0.0
+JUMP fps 15 measured 10 hit camera to shot eye 0.0
+JUMP fps 15 measured 10 hit camera to shot eye 0.0
+JUMP fps 15 measured 10 hit camera to shot eye 0.0
+JUMP fps 15 measured 10 hit camera to shot eye 0.0
+JUMP fps 15 hits 5 of 5
+JUMP fps 120 measured 117 hit camera to shot eye 0.0
+JUMP fps 120 measured 116 hit camera to shot eye 0.0
+JUMP fps 120 measured 119 hit camera to shot eye 0.0
+JUMP fps 120 measured 115 hit camera to shot eye 0.0
+JUMP fps 120 measured 119 hit camera to shot eye 0.0
+JUMP fps 120 hits 5 of 5
+ESC screen during it OverwatchMenuScreen rtt after 52 ms; mash clicks 45 : shots 5 shown at the press 1 gaps [657, 648, 649, 649]
+ESC screen during it OverwatchMenuScreen rtt after 35 ms; mash clicks 45 : shots 5 shown at the press 1 gaps [655, 651, 649, 649]
+STEPBACK pressed at x 0.5, moved to 6.5 while it waited: shots ['srv_eye 0.500 -58.380 0.500 0.00', 'srv_eye 6.500 -58.380 0.500 0.00'] | 8.7 press | 8.8 click 0.500 -58.380 0.500 0.00 0.00 | 8.8 sent | 8.9 clip | 8.9 snd:charged.fire_mid | 9.1 snd:charged.shot | 9.1 fx | 10.4 frame | 25.3 srv_shot | 25.3 srv_eye 0.500 -58.380 0.500 0.0
+STEPBACK pressed at x 0.5, moved to 6.5 while it waited: shots ['srv_eye 0.500 -58.380 0.500 0.00', 'srv_eye 6.500 -58.380 0.500 0.00'] | 9.1 press | 9.2 click 0.500 -58.380 0.500 0.00 0.00 | 9.2 sent | 9.2 clip | 9.3 snd:charged.fire_mid | 9.4 snd:charged.shot | 9.5 fx | 12.0 frame | 54.7 srv_shot | 54.8 srv_eye 0.500 -58.380 0.500 0.0
+### done

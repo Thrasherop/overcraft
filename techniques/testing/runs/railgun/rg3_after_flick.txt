@@ -1,0 +1,28 @@
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 30, 'anim': 'idle'}
+flick 0  MISS fps before the script 30 after its focus 30 yaw 7.5 | 1283.2 sent | 1283.2 clip | 1283.3 snd:charged.fire_mid | 1283.3 snd:charged.shot | 1283.4
+flick 1  hit fps before the script 119 after its focus 118 yaw -0.0 | 1187.4 sent | 1187.5 clip | 1187.5 snd:charged.fire_mid | 1187.7 snd:charged.shot | 1187.8
+flick 2  hit fps before the script 119 after its focus 119 yaw -0.0 | 1158.7 sent | 1158.7 clip | 1158.8 snd:charged.fire_mid | 1158.8 snd:charged.shot | 1158.9
+flick 3  hit fps before the script 119 after its focus 119 yaw -0.0 | 1151.5 sent | 1151.6 clip | 1151.6 snd:charged.fire_mid | 1151.7 snd:charged.shot | 1151.7
+flick 4  hit fps before the script 118 after its focus 119 yaw -0.0 | 1155.3 sent | 1155.3 clip | 1155.3 snd:charged.fire_mid | 1155.4 snd:charged.shot | 1155.5
+flick 5  hit fps before the script 119 after its focus 118 yaw -0.0 | 1148.3 sent | 1148.4 clip | 1148.4 snd:charged.fire_mid | 1148.6 snd:charged.shot | 1148.7
+flick 6  hit fps before the script 119 after its focus 119 yaw -0.0 | 1154.1 sent | 1154.1 clip | 1154.1 snd:charged.fire_mid | 1154.2 snd:charged.shot | 1154.3
+flick 7  hit fps before the script 119 after its focus 118 yaw -0.0 | 1148.5 sent | 1148.6 clip | 1148.6 snd:charged.fire_mid | 1148.7 snd:charged.shot | 1148.8
+flick 8  hit fps before the script 119 after its focus 119 yaw -0.0 | 1145.3 sent | 1145.3 clip | 1145.3 snd:charged.fire_mid | 1145.5 snd:charged.shot | 1145.5
+flick 9  hit fps before the script 119 after its focus 119 yaw -0.0 | 1144.1 sent | 1144.1 clip | 1144.1 snd:charged.fire_mid | 1144.2 snd:charged.shot | 1144.2
+FLICK flick 9 of 10
+flickhuman 0  hit fps before the script 119 after its focus 119 yaw -0.0 | 1306.0 sent | 1306.0 clip | 1306.1 snd:charged.fire_mid | 1306.2 snd:charged.shot | 1306.3
+flickhuman 1  hit fps before the script 118 after its focus 119 yaw -0.0 | 1306.0 sent | 1306.0 clip | 1306.1 snd:charged.fire_mid | 1306.1 snd:charged.shot | 1306.2
+flickhuman 2  hit fps before the script 118 after its focus 119 yaw -0.0 | 1299.6 sent | 1299.6 clip | 1299.7 snd:charged.fire_mid | 1299.7 snd:charged.shot | 1299.8
+flickhuman 3  hit fps before the script 119 after its focus 118 yaw -0.0 | 1289.6 sent | 1289.7 clip | 1289.7 snd:charged.fire_mid | 1289.8 snd:charged.shot | 1290.1
+flickhuman 4  hit fps before the script 118 after its focus 119 yaw -0.0 | 1293.4 sent | 1293.5 clip | 1293.5 snd:charged.fire_mid | 1293.7 snd:charged.shot | 1293.8
+flickhuman 5  hit fps before the script 119 after its focus 119 yaw -0.0 | 1284.7 sent | 1284.7 clip | 1284.7 snd:charged.fire_mid | 1284.8 snd:charged.shot | 1284.9
+FLICK flickhuman 6 of 6
+flickwait 0  hit fps before the script 119 after its focus 119 yaw -0.0 | 1245.6 sent | 1245.6 clip | 1245.6 snd:charged.fire_mid | 1245.7 snd:charged.shot | 1245.7
+flickwait 1  hit fps before the script 118 after its focus 118 yaw -0.0 | 1181.8 sent | 1181.8 clip | 1181.9 snd:charged.fire_mid | 1182.0 snd:charged.shot | 1182.1
+flickwait 2  hit fps before the script 119 after its focus 119 yaw -0.0 | 1179.9 sent | 1179.9 clip | 1179.9 snd:charged.fire_mid | 1180.0 snd:charged.shot | 1180.1
+flickwait 3  hit fps before the script 118 after its focus 119 yaw -0.0 | 1198.2 sent | 1198.2 clip | 1198.2 snd:charged.fire_mid | 1198.3 snd:charged.shot | 1198.3
+flickwait 4  hit fps before the script 119 after its focus 119 yaw -0.0 | 1203.4 sent | 1203.4 clip | 1203.4 snd:charged.fire_mid | 1203.5 snd:charged.shot | 1203.5
+flickwait 5  hit fps before the script 119 after its focus 119 yaw -0.0 | 1200.2 sent | 1200.2 clip | 1200.2 snd:charged.fire_mid | 1200.3 snd:charged.shot | 1200.4
+FLICK flickwait 6 of 6

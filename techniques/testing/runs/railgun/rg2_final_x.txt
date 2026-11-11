@@ -1,0 +1,49 @@
+=== #126 table. TREE 946b16b dirty_src_files=0 launched=2026-11-06T02:54:21 at 03:03:54
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### extra
+damage energy 50 zombie 1000.0 -> 991.7344 took 8.266 | expected HP 70 = 5.6 less a 2-armor zombie | 33.4 press | 33.5 sent | 33.5 clip | 33.5 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.7 fx | 35.8 frame | 45.7 srv_shot | 66.7 snd:charged.hit | 66.7 snd:charged.hit_enemy | 134.1 sent
+damage energy 100 zombie 991.7344 -> 977.56476 took 14.17 | expected HP 120 = 9.6 less a 2-armor zombie | 33.4 press | 33.4 sent | 33.5 clip | 33.5 snd:charged.fire | 33.6 snd:charged.shot | 33.6 fx | 35.7 frame | 57.4 srv_shot | 66.7 snd:charged.hit | 66.7 snd:charged.hit_enemy | 100.6 sent
+in the reload: ammo 20 rel 0.29166666 playing {'playing': 'overcraft:sojourn.railgun.reload'} anim idle+reload
+right after: ammo 20 rel -1.0 meter 0.0 playing {'playing': 'overcraft:sojourn.railgun.reload'} | 33.3 press | 33.3 sent | 33.3 clip | 33.4 snd:charged.fire_mid | 33.5 snd:charged.shot | 33.6 fx | 34.8 frame | 83.0 srv_shot | 100.0 snd:charged.hit | 100.1 snd:charged.hit_enemy | 100.9 sent
++0.4 s: ammo 20 rel -1.0
++1.2 s: ammo 20 rel -1.0 (a cut reload stays cut: R again or empty)
+R again: ammo 20 rel 0.33333334
+then: ammo 45 rel -1.0
+late cut, before: ammo 20 rel 0.75
+late cut, after: ammo 45 rel -1.0 | 33.6 press | 33.6 sent | 33.6 clip | 33.7 snd:charged.fire_mid | 33.8 snd:charged.shot | 33.9 fx | 35.0 frame | 72.2 srv
+empty: ammo 0 rel 0.16666667
+empty after the shot (t, ammo, rel): [(0.23, 0, -1.0), (0.37, 0, -1.0), (0.5, 0, -1.0), (0.63, 0, -1.0), (0.77, 0, 0.0), (0.9, 0, 0.08), (1.04, 0, 0.21), (1.17, 0, 0.33), (1.3, 0, 0.46), (1.44, 0, 0.54), (1.57, 0, 0.67), (1.7, 45, 0.79), (1.84, 45, 0.88), (1.97, 45, -1.0)] | 33.3 press | 33.4 sent | 33.4 clip | 33.4 snd:charged.fire_mid | 33.5 snd:charged.shot | 33.6 fx | 36.0 frame | 66.4 srv
+{'ok': True, 'hero': 'ANA'}
+{'ok': True}
+asleep True after 6 polls
+press asleep: 34.1 press | 34.7 sent | 134.7 sent | meter 0.5 still asleep True
+{'ok': True, 'hero': 'BRIGITTE'}
+{'ok': True}
+stunned (Rally) False after 39 polls
+{'ok': True, 'hero': 'SOMBRA'}
+{'ok': True}
+hacked True after 4 polls
+press hacked (the data: the weapon works): 33.3 press | 33.4 sent | 33.4 clip | 33.4 snd:charged.fire_mid | 33.6 snd:charged.shot | 33.7 fx | 36.6 frame | 66.2 srv_shot | 100.8 snd:charged.hit | 100.9 snd:charged.hit_enemy | 101.2 snd:charged.
+press dead: 33.4 press
+GUARD 0.0 DeathScreen
+WARM art ready after 0.90 s; frames over 40 ms (at ms, length): [] frames 26 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+press with the comms wheel up (its emote page): 33.2 press
+press in Minecraft mode: 33.4 press
+emote {'ok': True}
+emoting state {'anim': 'idle', 'emoteClip': None, 'emoteClipAt': 0.76797485, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00'} {'playing': ''}
+after the press {'anim': 'idle', 'emoteClip': None, 'emoteClipAt': 0.76797485, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00'} {'playing': ''} | 34.6 press | 34.6 sent | 34.6 clip | 34.7 snd:charged.fire_mid | 34.8 snd:charged.shot | 34.8 fx | 37.1 frame | 41.8 srv_shot | 67.9 snd:charged.hit | 68.0 snd:charged.hit_enemy | 135.1 sent
+recovery, pressed about 0.367 s after the shot: 33.3 press | 33.9 sent | 133.8 sent
+recovery, pressed about 0.433 s after the shot: 33.4 press | 34.1 sent | 133.9 sent | 201.7 srv_shot | 233.4 clip | 233.4 snd:charged.fire_mid | 233.5 snd:charged.shot | 233.6 fx | 233.7 snd:charged.hit | 233.8 snd:charged.hit_enemy | 236.1 frame
+recovery, pressed about 0.500 s after the shot: 33.3 press | 67.3 sent | 100.5 sent | 131.5 srv_shot | 133.3 clip | 133.3 snd:charged.fire_mid | 133.4 snd:charged.shot | 133.5 fx | 133.7 snd:charged.hit | 133.7 snd:charged.hit_enemy | 135.0 frame
+no energy heard: kiriko.ability.denied -> kiriko/ability/denied/0 (SimpleSoundInstance, in the head) | 33.3 press | 34.0 sent | 134.6 sent
+tap 0 1 1 meter 0.0
+tap 1 1 1 meter 0.0
+tap 2 1 1 meter 0.0
+tap 3 1 1 meter 0.0
+tap 4 1 1 meter 0.0
+tap 5 1 1 meter 0.0
+quick taps, shots 6 of 6
+### done

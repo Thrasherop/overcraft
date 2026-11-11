@@ -1,0 +1,286 @@
+TREE (git at launch; the client itself can't say): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32
+TIME 14:48:55
+TREE (git at launch): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32 14:48:55
+/difficulty normal ['[14:48:55] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[14:48:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[14:48:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[14:48:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[14:48:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[14:48:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[14:48:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[14:48:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[14:48:58] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Suzu line, new build: each case, then 9.5 s for her 10 s limit. Expected: none on nobody, healthy, hurt, poison, numbed, knock-down; the line 0.5 s after the burst on sleep, stun, hack, anti-heal, claws
+--- round 0
+hero kiriko mode True screen  hp 20.0 / 20.0
+  nobody                     thrower me   status before:  | phase read at +None, line at +None, line after burst None | after: 
+hero kiriko mode True screen  hp 20.0 / 20.0
+  healthy                    thrower me   status before:  | phase read at +0.03, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hurt                       thrower me   status before: health=6.085 | phase read at +0.03, line at +None, line after burst None | after: phased=False health=16.14 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  sleep                      thrower me   status before: asleep=True | phase read at +0.03, line at +0.44, line after burst 0.4 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  anti-heal                  thrower me   status before: antiHeal=True | phase read at +0.1, line at +0.4, line after burst 0.3 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  claws                      thrower me   status before: speed=0.07 health=13.84 | phase read at +0.1, line at +0.4, line after burst 0.3 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  numbed                     thrower me   status before: speed=0.062 asleep=False health=17.64 | phase read at +0.1, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  poison                     thrower me   status before: poison given | phase read at +0.1, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  accretion knock-down       thrower me   status before: asleep=True | phase read at +0.1, line at +None, line after burst None | after: phased=False health=14.8 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hack (EMP, real Kiriko past it): before silenced=True glowing=True
+  hack: phase read +0.2999308109283447, line +0.8004064559936523, line after burst 0.5 | after silenced=False glowing=False phased=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stun (Rally's bash): read just before the throw asleep=True; phase read +0.3000311851501465, line +0.6997151374816895, line after burst 0.4 | after asleep=False phased=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stun (Rally's bash), thrown after it ended: read just before the throw asleep=False; phase read +0.0998067855834961, line +None, line after burst None | after asleep=False phased=False
+--- round 1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  nobody                     thrower me   status before:  | phase read at +None, line at +None, line after burst None | after: 
+hero kiriko mode True screen  hp 20.0 / 20.0
+  healthy                    thrower me   status before:  | phase read at +0.1, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hurt                       thrower me   status before: health=6.17 | phase read at +0.1, line at +None, line after burst None | after: phased=False health=16.905 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  sleep                      thrower me   status before: asleep=True | phase read at +0.1, line at +0.4, line after burst 0.3 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  anti-heal                  thrower me   status before: antiHeal=True | phase read at +0.1, line at +0.4, line after burst 0.3 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  claws                      thrower me   status before: speed=0.07 health=13.84 | phase read at +0.1, line at +0.4, line after burst 0.3 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  numbed                     thrower me   status before: speed=0.062 asleep=False health=17.64 | phase read at +0.1, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  poison                     thrower me   status before: poison given | phase read at +0.1, line at +None, line after burst None | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  accretion knock-down       thrower me   status before: asleep=True | phase read at +0.1, line at +None, line after burst None | after: phased=False health=14.8 asleep=False antiHeal=False silenced=False speed=0.1
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hack (EMP, real Kiriko past it): before silenced=True glowing=True
+  hack: phase read +0.30091142654418945, line +0.8019766807556152, line after burst 0.5 | after silenced=False glowing=False phased=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stun (Rally's bash): read just before the throw asleep=True; phase read +0.09983277320861816, line +0.6001858711242676, line after burst 0.5 | after asleep=False phased=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stun (Rally's bash), thrown after it ended: read just before the throw asleep=False; phase read +0.10020327568054199, line +None, line after burst None | after asleep=False phased=False
+--- a bot Kiriko cleanses the real client asleep: the line from her, heard here
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Kiriko, me asleep      thrower bot  status before: asleep=True | phase read at +0.1, line at +0.6, line after burst 0.5 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+--- the 10 s limit: a cleanse, a second one 3 s later (cooldown reset), a third 11 s after that
+hero kiriko mode True screen  hp 20.0 / 20.0
+  first: asleep before, phase +0.10278439521789551, line +0.4002516269683838
+  3 s later: asleep before, phase +0.09897041320800781, line +None
+TREE (git at launch; the client itself can't say): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32
+TIME 14:58:32
+TREE (git at launch): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32 14:58:32
+/difficulty normal ['[14:58:32] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[14:58:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[14:58:33] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[14:58:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[14:58:34] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[14:58:34] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[14:58:35] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[14:58:35] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[14:58:36] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Suzu line, new build: each case, then 9.5 s for her 10 s limit. Expected: none on nobody, healthy, hurt, poison, numbed, knock-down; the line 0.5 s after the burst on sleep, stun, hack, anti-heal, claws
+--- a bot Kiriko cleanses the real client asleep: the line from her, heard here
+hero mercy mode True screen  hp 18.0 / 18.0
+  bot Kiriko, me asleep      thrower bot  status before: asleep=True | phase read at +0.1, line at +0.6, line after burst 0.5 | after: phased=False health=18.0 asleep=False antiHeal=False silenced=False speed=0.1
+--- the 10 s limit: a cleanse, a second one 3 s later (cooldown reset), a third 11 s after that
+hero kiriko mode True screen  hp 20.0 / 20.0
+  first: asleep before, phase +0.09939813613891602, line +0.49927854537963867
+  3 s later: asleep before, phase +0.10027194023132324, line +None
+  14 s later: asleep before, phase +0.10020589828491211, line +0.40026021003723145
+--- she switches hero inside the 0.5 s: no line
+hero kiriko mode True screen  hp 20.0 / 20.0
+hero mercy mode True screen  hp 18.0 / 18.0
+  switched: line None
+### flat ground: W "~8 meter"; a bot Brigitte 5 m from a real client, a real Brigitte (keys) 5 m from a husk and a zombie
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 13.65 7.45 4.07
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  flat, hero mode off: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  flat zombie: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+### a wall 3 m behind: the hold stops, nothing more than the whip's damage; with the perk, the slam
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 19.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 19.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  wall husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.842, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 19.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.842, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall + Whiplash, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.842, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  no wall + Whiplash, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 9.6, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 24.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 7 m + Whiplash, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 9.6, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  wall at 12 m + Whiplash, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  wall + Whiplash husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -60.00, health 189.59999
+hero mercy mode True screen  hp 18.0 / 18.0
+  no wall + Whiplash husk: moved 7.75 m (z 0.50 -> 8.25), y -60.00 -> -60.00, health 194.4
+DONE
+TREE (git at launch; the client itself can't say): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32
+TIME 15:06:38
+TREE (git at launch): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32 15:06:38
+/difficulty normal ['[15:06:38] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:06:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:06:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[15:06:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:06:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:06:40] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[15:06:41] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[15:06:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:06:42] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### slopes and ledges
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 24.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 6.2 m, hero mode on: moved 6.20 m (z 0.50 -> 6.70), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 19.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up from 2.2 m, hero mode on: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.804, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs up, hero mode off: moved 2.20 m (z 0.50 -> 2.70), y -60.00 -> -60.00 top -59.880, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 19.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -59.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -59.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs up husk: moved 3.20 m (z 0.50 -> 3.70), y -60.00 -> -59.00, health 194.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 17.65 m (z 0.50 -> 18.15), y -55.00 -> -60.00 top -54.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 21.97 20.37 18.94
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 17.65 m (z 0.50 -> 18.15), y -55.00 -> -60.00 top -54.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  stairs down, hero mode on: moved 17.65 m (z 0.50 -> 18.15), y -55.00 -> -60.00 top -54.825, health 20.0 -> 14.4, ground True
+hero brigitte mode True screen  hp 20.0 / 20.0
+  stairs down husk: moved 11.67 m (z 0.50 -> 12.17), y -55.00 -> -60.00, health 192.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 16.10 m (z 0.50 -> 16.60), y -57.00 -> -60.00 top -56.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 21.97 20.37
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 16.10 m (z 0.50 -> 16.60), y -57.00 -> -60.00 top -56.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode on: moved 16.10 m (z 0.50 -> 16.60), y -57.00 -> -60.00 top -56.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge, hero mode off: moved 10.97 m (z 0.50 -> 11.47), y -57.00 -> -60.00 top -56.880, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 13.65 12.42 11.30 10.29 9.36
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 10.97 m (z 0.50 -> 11.47), y -57.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 10.97 m (z 0.50 -> 11.47), y -57.00 -> -60.00, health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  off a 3 m ledge husk: moved 10.97 m (z 0.50 -> 11.47), y -57.00 -> -60.00, health 194.4
+### a second push and other things in the hold
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a second Brigitte whips just after, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a second Brigitte whips just after, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a second Brigitte whips just after, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  her own second whip, 4.6 s on (the same bot, not moved: it may miss at range), hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 15.5, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  her own second whip, 4.6 s on (the same bot, not moved: it may miss at range), hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 15.7, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  phased as it hits, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 13.36 5.64 1.86 0.00
+hero kiriko mode True screen  hp 20.0 / 20.0
+  phased as it hits, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  phased as it hits, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 12.90 m (z 0.50 -> 13.40), y -60.00 -> -60.00 top -59.015, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 21.97 20.37 18.94 17.64
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 12.90 m (z 0.50 -> 13.40), y -60.00 -> -60.00 top -59.015, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  jumping as it comes, hero mode on: moved 12.90 m (z 0.50 -> 13.40), y -60.00 -> -60.00 top -59.015, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 4.15 m (z 0.50 -> 4.65), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 4.67 5.50 5.50 5.50 25.00 25.00 25.00 25.00 25.00 23.12 7.43 4.12 5.50 5.50
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 3.60 m (z 0.50 -> 4.10), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  running at her (faces her, W held), hero mode on: moved 3.60 m (z 0.50 -> 4.10), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.53 m (z 0.50 -> 9.03), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 24.20 13.62 5.75
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.53 m (z 0.50 -> 9.03), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  a dart from the other side in the hold, hero mode on: moved 8.53 m (z 0.50 -> 9.03), y -60.00 -> -60.00 top -59.825, health 20.0 -> 14.4, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  dies in the hold, respawns, hero mode on: moved 0.00 m (z 0.50 -> 0.50), y -60.00 -> -60.00 top -59.825, health 20.0 -> 20.0, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 23.73 17.14 9.36 8.52 7.75
+  after the respawn: x 0.5 z 0.5 health 20.0
+DONE
+TREE (git at launch; the client itself can't say): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32
+TIME 15:15:26
+TREE (git at launch): 2416667 dirty_src_files=0 launched=2026-11-05T14:39:32 15:15:26
+/difficulty normal ['[15:15:26] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:15:26] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:15:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[15:15:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:15:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:15:28] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[15:15:28] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[15:15:29] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:15:29] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### two Brigittes in line whip 0.1 s or so apart: the second lands inside the first's hold
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 12.93 m (z 0.50 -> 13.43), y -60.00 -> -60.00 top -59.667, health 20.0 -> 8.8, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 25.00 25.00 23.73 21.97
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 12.93 m (z 0.50 -> 13.43), y -60.00 -> -60.00 top -59.667, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode on: moved 8.48 m (z 0.50 -> 8.98), y -60.00 -> -60.00 top -59.825, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 11.25 m (z 0.50 -> 11.75), y -60.00 -> -60.00 top -59.761, health 20.0 -> 8.8, ground True | speeds 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 25.00 25.00 25.00 25.00 25.00 25.00 25.00 22.75 12.42 6.78
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 11.25 m (z 0.50 -> 11.75), y -60.00 -> -60.00 top -59.761, health 20.0 -> 8.8, ground True
+hero kiriko mode True screen  hp 20.0 / 20.0
+  overlapping whips, hero mode off: moved 11.25 m (z 0.50 -> 11.75), y -60.00 -> -60.00 top -59.761, health 20.0 -> 8.8, ground True
+DONE

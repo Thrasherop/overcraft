@@ -52,8 +52,9 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   enough either** (played): the server's copy of a player's speed is their client's to set (each movement packet on the
   ground zeroes its fall), so a lift that reads it back never builds up, and a hit's own `syncVelocity` sends that stale
   copy a tick after your push and undoes it. What worked (`Accretion.sendSpeed`): send `ClientboundSetEntityMotionPacket`
-  to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. `LifeGrip` and
-  `Brigitte` set `needsSync` alone on targets that can be players: worth a look.
+  to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. Since #93 every hero's
+  push goes that way; played on a real client, per blow, in [polish3](../testing/polish3.md). (`LifeGrip` has its own route, `GripPayload`.
+  A steady hold each tick is another case: Catnapper's carry lifts a real client on `syncVelocity` alone.)
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
@@ -172,7 +173,7 @@ step her over the edge, and give back the speed the face took. Measured on a 1-b
 - **Kill credit** (found by the critique, reproduced): `Combat.deal` credited a push by seeing the hurt move the target, which only Minecraft's knockback ever did. So after the first pass quick melee, Hypersphere pulls and the rock's splash
   lost it. Reproduced: a zombie quick-meleed off a 25 m ledge died with no feed row, no ELIMINATED, no line (`sys_rep_ledge1`). After: feed row and ELIMINATED (same picture, new build). The rock's burst off the ledge: eliminated, his elimination line. Whip Shot: the same.
 - **A force on a mob, every tick (#89, `JetpackCat.tow`):** set `setDeltaMovement` from your own stored speed, not from where it really moved: without Minecraft's friction its AI's walk (`moveRelative`, 40 m/s² on the ground) adds up and walks it against the force. Take back only what a collision took. A force on a *player* belongs on their client (`ClientTow`): the server's each-tick push overwrites their keys.
-- **Pushes on a player are UNVERIFIED** until the two-client pass. `Combat.send` uses what Sigma's two-client play found: `ClientboundSetEntityMotionPacket` to the player at once, `syncVelocity` cleared (the tracker's goes a tick later, after their next movement
+- **Pushes on a player: verified on a real client with a bot attacker** ([polish3](../testing/polish3.md), 2026-11-05; not two real clients). `Combat.send` uses what Sigma's two-client play found: `ClientboundSetEntityMotionPacket` to the player at once, `syncVelocity` cleared (the tracker's goes a tick later, after their next movement
   packet reset the server's copy). `motion` starts from `getKnownMovement`, so Sonic rounds shouldn't bring back the #82 jolt, and Whip Shot sends a player its push once (each tick's send would overwrite their vertical speed with a stale one). All that is
   from the code. Not one push has been seen on a second player's screen since the first pass.
 - **Measured** (a 200-health zombie with AI and `movement_speed` 0, `Pos` read through `/data`, three hits each; keys through DevServer):
@@ -232,3 +233,6 @@ A player far off gets no packet: `Effects.play` reaches 96 m and `Combat.animate
   - **A looping emote** replays from its time on a return within 0.15 m (g2: 2.30 then 4.65 s): that's what the rule means to do. Past 0.15 m the record goes.
   - **`off_112_grip_*`** are the same script's Life Grip shots from the session with #96's rule off; the rule has nothing to do with the grip. Ignore them.
 - **What a critic should check:** an effect whose client holds a state by its variant and isn't in `HELD` (grep `e.variant() / 20f` in `*Fx.java`); `Effects.note` keeps a strong reference to entities until `over`: fine for its seconds, but check `over` covers a removed one; an emote replay's first frames (no ease in).
+
+## A float or a lift a player must feel (polish3, 2026-11-05)
+A stun's gravity scale reached mobs only (`Sleep.slide`). What changes how a player falls belongs on their client: Minecraft's `Attributes.GRAVITY` as a transient modifier syncs to it, and hero mode's `OvercraftClient.gravityScale` reads it against the default 0.08. Hyper Strike: top y -59.52 to -56.19. Mind what it does to the landing: a longer float is a longer fall (`Sleep.FLOATED`).

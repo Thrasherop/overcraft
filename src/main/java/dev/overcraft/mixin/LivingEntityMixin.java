@@ -18,6 +18,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /** Overwatch movement and jump for a hero in slot 1 (see {@link OwMovement}). */
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+	/**
+	 * From water or a ladder too, an ability moves them (#127): LivingEntity.travel sends water to travelInFluid, which never reaches travelInAir, and handles() is false on a ladder, so these went nowhere with their cooldown running.
+	 */
+	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
+	private void overcraft$abilityTravel(Vec3 input, CallbackInfo ci) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		if (OwMovement.active.test(self) && OwMovement.abilityMoving.test(self)) {
+			OwMovement.travel(self, input);
+			ci.cancel();
+		}
+	}
+
 	@Inject(method = "travelInAir", at = @At("HEAD"), cancellable = true)
 	private void overcraft$owTravel(Vec3 input, CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
@@ -81,7 +93,7 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "calculateFallDamage", at = @At("HEAD"), cancellable = true)
 	private void overcraft$heroSafeFall(double fallDistance, float damageModifier, CallbackInfoReturnable<Integer> cir) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		Hero hero = self instanceof Player player && HeroManager.controls(player) ? HeroManager.hero(player) : null;
+		Hero hero = self instanceof Player player && HeroManager.inHeroPlay(player) ? HeroManager.hero(player) : null;
 		if (hero != null) {
 			double safe = Math.max(hero.safeFall(), self.getAttributeValue(Attributes.SAFE_FALL_DISTANCE));
 			cir.setReturnValue(Mth.floor((fallDistance + 1.0E-6 - safe) * damageModifier

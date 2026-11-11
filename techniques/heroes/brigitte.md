@@ -132,6 +132,9 @@ at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a 
 0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
 300, the villager's overhealth kept.
 
+- **Its stun is 224E's default type, 4EB6; the shockwave goes through walls and barriers still (#122).**
+- **The bashed target isn't in the shockwave** (#120, 0EE3 #890): 70, one push, 7.9 m on a hero, was 140, 19.7 m; step 6's play above read a husk behind it, not the bashed one. [polish4](../testing/polish4.md).
+
 ## Step 7 (perks)
 Each perk against its control, picked through the perk menu (Alt held, a click), dev client, flat world `perksb`:
 - **Combat Medic:** a pack thrown (recharge running), then one swing at three ravagers: the charge back after 2.2 s, against
@@ -424,3 +427,7 @@ General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation
 ## The first-person chain (#113, 2026-11-05)
 Stepped at 20 tps (`/tick freeze`, `/tick step 1`, a shot a tick): **no chain to be seen at all while the head flew** (`b_113_t01`, `t02`), though `fxnear` had it alive, 4.95 m long. Three causes, one fix: it was a world particle fed from the hand pass, so a frame late, under the world's projection and depth, and 0.04 m wide (ours; the data's ribbon is 0.075) additive over the sky. `BrigitteFx.viewChain` draws it in the hand pass in the arms' own pose, 0.075 m, tiled squares laid twice for the data's HDR (ours), from hp 0076 to the head's own hardpoint 0004 (both views: it was the head's origin). Played: `a_113_t00`-`t03`, handle to head in every frame. The critique's reading at `/tick rate 5` ("a tick-stepped chain") wasn't the cause. Not played: Whip Shot in first person (the same code: `whipHead`). Her barrier and bash in first person not touched.
 Second pass (the critique, 2026-11-05; final branch; all shots stepped a tick at a time at 20 tps except moving): `f_113_swing_00`-`18` with `f_113_idle`, `_idle_after`: handle to head while it flies; the arm and flail leave the view for three frames at the swing's end and come back as they are at rest, as they did in the baseline's frames at another tick (`b_113_t06`-`08`: the two runs aren't tick-paired, so the critic's t06 was the swing's offset). Aim up 45 and down 30 (`f_113_up_01`, `down_01`), Whip Shot (`f_113_whip_*`: key `ability_1`), night (`f_113_night_01`), moving (`f_113_moving_*`, real time). **A regression found in this pass and fixed:** with the own-view branch gone, `BrigitteFx.chain` could still run for her in first person, a yellow band across the view: it returns when it's her own view. Seen in `pl_e2`'s run, not in the final frames.
+
+## The Nov 3 patch (#116)
+Inspire's gate 1 s, 15 at once: the flail's triggers are 1.2 s apart now, every second swing ([polish3](../testing/polish3.md)). The data still says 1.25 and 12: it predates the patch.
+- **Whip Shot's push goes about 8 m (W rev 408812; owner 2026-11-05):** one push at 25 / 3: 8.04 m on a hero, in our mover on Overwatch's air numbers. The data also holds 2 up; 3 is what reaches W's figure. A mob needs a 0.15 s hold, ours (7.99 m): Minecraft's friction. Try the data before a fudge: the first answer here was a hold on lift 2. Shield Bash the same: 6 / 3. [polish4](../testing/polish4.md).

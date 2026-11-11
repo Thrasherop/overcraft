@@ -67,6 +67,11 @@ public final class SigmaFx {
 	private static final Map<Integer, Posed> POSED = new HashMap<>();
 	private static final Map<Integer, His> HIS = new HashMap<>();
 	private static final Map<Integer, Lift> LIFTED = new HashMap<>();
+
+	/** Dev only: what it draws on this entity now. */
+	public static String devHeld(int id) {
+		return LIFTED.containsKey(id) ? "lifted " : "";
+	}
 	private static final List<Pending> PENDING = new ArrayList<>();
 	/** Spheres and rocks already seen leaving (their launch), by entity id: when last seen. */
 	private static final Map<Integer, Float> SEEN = new HashMap<>();

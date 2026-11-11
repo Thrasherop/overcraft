@@ -30,6 +30,8 @@ import java.util.UUID;
 public final class Anesthetic {
 	private static final Identifier SLOW = dev.overcraft.Overcraft.id("ana_local_anesthetic");
 	private static final double SEARCH_DELAY = 0.15;
+	/** How far the numbed sound's 3p plays (7E70, as played below). */
+	private static final double EARSHOT = 45;
 
 	private record Burst(ServerLevel level, ServerPlayer ana, Vec3 at, long when) {
 	}
@@ -70,7 +72,7 @@ public final class Anesthetic {
 						dev.overcraft.hero.HeroSounds.toOwner(numbed, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT);
 					}
 					dev.overcraft.hero.HeroSounds.at(b.level, dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P,
-						e.getBoundingBox().getCenter(), 45, numbed);
+						e.getBoundingBox().getCenter(), EARSHOT, numbed);
 					dev.overcraft.hero.Effects.play(b.level, "ana_numbed", e.position(), Vec3.ZERO, e,
 						Ow.ticks(AnaStats.ANESTHETIC_TIME), b.ana);
 				}
@@ -94,13 +96,38 @@ public final class Anesthetic {
 		}
 	}
 
-	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
-		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
-				return true;
+	/** Protection Suzu's cleanse (Combat.cleanse's table): its damage, slow, look and sound stop. */
+	public static void cleanse(LivingEntity target) {
+		if (DOSED.remove(target.getUUID()) == null) {
+			return;
+		}
+		Combat.buff(target, Attributes.MOVEMENT_SPEED, SLOW, 0, 0);
+		if (target.level() instanceof ServerLevel level) {
+			dev.overcraft.hero.Effects.play(level, "ana_numbed_end", target.position(), Vec3.ZERO, target, 0, null);
+			// A stop packet names a sound, not one playing: their own goes to them alone, and the others' only to who has no other numbed one in earshot (the 45 m it plays at, above: a
+			// nearer one's would stop too). A listener with two near them hears this one out, up to its 3 s: ours.
+			if (target instanceof ServerPlayer numbed) {
+				numbed.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT.location(),
+					net.minecraft.sounds.SoundSource.PLAYERS));
+			}
+			var stop3p = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.registry.OcSounds.ANA_ANESTHETIC_DOT_3P.location(),
+				net.minecraft.sounds.SoundSource.PLAYERS);
+			for (ServerPlayer listener : level.players()) {
+				if (stops3p(listener == target, listener.distanceTo(target),
+					DOSED.values().stream().anyMatch(d -> d.entity != listener && d.entity.level() == level && d.entity.distanceTo(listener) <= EARSHOT))) {
+					listener.connection.send(stop3p);
+				}
 			}
 		}
-		return false;
+	}
+
+	/** Whether this listener gets the 3p stop. Package-private for AnestheticRuleTest. */
+	static boolean stops3p(boolean isTarget, double toTarget, boolean anotherNumbedInEarshot) {
+		return !isTarget && toTarget <= EARSHOT && !anotherNumbedInEarshot;
+	}
+
+	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
+		return Combat.inSight(level, at, e, e);
 	}
 
 	public static void clear() {

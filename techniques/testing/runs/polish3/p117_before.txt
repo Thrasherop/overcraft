@@ -1,0 +1,67 @@
+NOTE (added 2026-11-05): the "before" Suzu lines below are VOID. press('ability2') was a wrong key name, so no Suzu flew. Valid: the Life Grip section here, and p_final_a.txt for Suzu.
+=== #117 BEFORE, build e6f3cef (fix/polish-3 base)
+/difficulty normal ['[05:14:55] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[05:14:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[05:14:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[05:14:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[05:14:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[05:14:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[05:14:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[05:14:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[05:14:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 71 entities']
+hero kiriko True 20.0 20.0 
+{'ok': True, 'hero': 'ANA'}
+[]
+antiheal list {'antiHealed': 'player'}
+health 12.8
+cooldown 0.0
+-- before_grenade_then_suzu start health 20.0 antiheal {'antiHealed': ''}
+after grenade 12.8 antiheal {'antiHealed': 'player'}
+  +0.25s health 12.8 antiheal {'antiHealed': 'player'}
+  +0.50s health 12.8 antiheal {'antiHealed': 'player'}
+  +0.75s health 12.8 antiheal {'antiHealed': 'player'}
+  +1.00s health 12.8 antiheal {'antiHealed': 'player'}
+  +1.25s health 12.8 antiheal {'antiHealed': 'player'}
+  +1.50s health 12.8 antiheal {'antiHealed': 'player'}
+before_grenade_then_suzu Suzu change 0.0 (80 OW = +6.40)
+after run antiheal {'antiHealed': ''} health 12.8
+-- before_control_no_grenade start health 17.93 antiheal {'antiHealed': ''}
+(no grenade)
+  +0.25s health 18.83 antiheal {'antiHealed': ''}
+  +0.50s health 19.37 antiheal {'antiHealed': ''}
+  +0.75s health 19.91 antiheal {'antiHealed': ''}
+  +1.00s health 20.0 antiheal {'antiHealed': ''}
+  +1.25s health 20.0 antiheal {'antiHealed': ''}
+  +1.50s health 20.0 antiheal {'antiHealed': ''}
+before_control_no_grenade Suzu change 1.98 (80 OW = +6.40)
+=== #117 Life Grip before
+{'ok': True, 'hero': 'LIFEWEAVER'}
+after grenade 12.8 antiheal {'antiHealed': 'player'}
+{'ok': True}
+  +0.25s health 12.8 z 0.5 antiheal {'antiHealed': 'player'}
+  +0.50s health 12.8 z -4.5 antiheal {'antiHealed': 'player'}
+  +0.75s health 12.8 z -5.25 antiheal {'antiHealed': 'player'}
+  +1.00s health 12.8 z -5.25 antiheal {'antiHealed': 'player'}
+  +1.25s health 12.8 z -5.25 antiheal {'antiHealed': 'player'}
+  +1.50s health 12.8 z -5.25 antiheal {'antiHealed': 'player'}
+Life Grip change 0.0 (75 OW = +6.00) from 12.8
+trace 0 0.00 0.00 0.00 -60.000 G . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+1 0.00 0.00 0.00 -60.000 G . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+2 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+3 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+4 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+5 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+6 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+7 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+8 0.00 0.00 0.00 -60.000 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+9 25.00 -0.64 0.42 -59.979 - . -24.99 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+10 25.00 -0.64 0.42 -59.958 - . -24.99 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+11 25.00 -0.64 0.42 -59.936 - . -24.99 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+12 25.00 -0.64 0.42 -59.915 - . -24.99 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+13 15.05 -0.38 0.00 -59.903 - . -15.05 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+14 0.00 0.00 -0.88 -59.924 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+15 0.00 0.00 -1.75 -59.990 - . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+16 0.00 0.00 0.00 -60.000 G . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+17 0.00 0.00 0.00 -60.000 G . 0.00 180.00 a15 r-1.00 m0.0000 c10.00 c20.00 s10 u0
+18 0.00 0.00
+{}

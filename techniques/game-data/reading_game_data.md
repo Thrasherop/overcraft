@@ -124,7 +124,7 @@ From [heroes/sigma](../heroes/sigma.md) (scripts `research\sigma\scripts\`, Sojo
   `gvsummary_sigma.py` prints main, alt and readers together.
 - **Check a StateModifyHealth's mode before reading a rate:** `m_DD792FF0 = x60671788` is a share of max, `x00943466` an absolute amount.
   Sigma's barrier regenerates 0.122 of its max a second: 79.3/s at 650, where the patch notes still say 85 (0.122 x the old 700).
-- **Knockback is a pair:** `m_E33EFEE1` horizontal, `m_583C208B` vertical (Accretion 6 / 3 = the wiki's 6.7 m/s).
+- **Knockback is a pair:** `m_E33EFEE1` horizontal, `m_583C208B` vertical (Accretion 6 / 3 = the wiki's 6.7 m/s). Whip Shot's 1259 #638 alone has a vector beside it: `m_1376B4DF` says 25 and 2 up against the pair's 25 / 3, unsettled; the mod plays 3 because it reaches W's 8 m in our mover ([polish4](../testing/polish4.md)). No rule to take from that. Filter `m_89831602`: 1 enemies, 4 allies not the caster, 5 both, 6 allies and something more, read as the caster, against BZ on Rally (M-L, [polish4](../testing/polish4.md) on #125).
 - **Role and sub-role passives are in the shared graph 01C7,** keyed on the hero's category (0850 Tank, 084E / 0851 the others) and
   sub-role tags (116B Stalwart, 1173 Survivor): read them there for any hero of that role.
 - **A skin can swap every model** an entity names: map clips under the skin's `.owentity` models (106F7 for Sigma's D75A).

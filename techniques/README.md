@@ -20,6 +20,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Reading the game data**
   - [reading_game_data](game-data/reading_game_data.md): DataTool and TankLib offline, safely; ids; effects;
     statescript; research agents; the archive.
+  - [status_and_cleanse](game-data/status_and_cleanse.md): what a cleanse removes and a phase prevents, read from the statuses that listen; crowd-control types; list nodes (#119).
   - [model_data](game-data/model_data.md): inside a model: hardpoints, geosets, skeleton order, the cloth chunk.
   - [workshop_recordings](game-data/workshop_recordings.md): measuring movement in the real game with a Workshop
     script, when no source has the numbers (Lúcio's wall ride).
@@ -49,6 +50,9 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [harness](testing/harness.md): the dev harness, its commands and its traps.
   - [visual_review](testing/visual_review.md): comparing with the real game, frames at exact times, critique agents.
   - [critique_rules](testing/critique_rules.md): the critique of the ally, barrier, Catnapper and headshot rules (fix/rules, 2026-11-04).
+  - [polish_method](testing/polish_method.md): **how the polish runs work**: builder, a fresh critic each round, reproduce first, stamped raw evidence, mutations, real keys. The owner's pick; start here for any QA run.
+  - [polish3](testing/polish3.md): the Nov 3 patch, Suzu on anti-heal, the wall ride for others, every push on a real client, Hyper Strike's and Rider's widgets (fix/polish-3).
+  - [polish4](testing/polish4.md): Protection Suzu's whole list off and on, Rally's double hit, Kiriko's Suzu line from the graph (#121), Whip Shot's 8 m, what removing each fix does to the tests (fix/polish-4).
 - **HUD**: [reticle](hud/reticle.md): every hero's widgets at the crosshair, what the data binds and what's ours (#85). [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
   damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.
 - **Rendering**: [rendering](rendering/rendering.md). Minecraft 26.3's renderer, effects, glows, shadows, held items,
@@ -62,7 +66,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
-  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero,
+  [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero; her Charged Shot on the press, from a key's event, #126,
   being built); [sigma](heroes/sigma.md), his (the first Tank, being built: the Tank role, his body box);
   [dva](heroes/dva.md), hers (the second Tank, on Sigma's Tank shell; two bodies; being built).
 

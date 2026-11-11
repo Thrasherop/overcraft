@@ -1,0 +1,42 @@
+TREE: e299f07 dirty_src_files=0 launched=2026-11-05T13:03:16 13:05:05
+{'ok': True}
+ 20.0
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+kiriko 1 died at 8.4, back as kiriko hp 17.0 mode True
+## final3 kiriko round 1 mobs left 0 of 6 cleared at 20.1 deaths 1 lowest hp 8.3 end hp 8.3/20.0
+   death line: Kiriko was blown up by Creeper
+hero kiriko mode True screen  hp 20.0 / 20.0
+start kiriko 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+kiriko 2 died at 7.5, back as kiriko hp 17.0 mode True
+## final3 kiriko round 2 mobs left 3 of 6 cleared at None deaths 1 lowest hp 9.0 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 brigitte round 1 mobs left 0 of 6 cleared at None deaths 0 lowest hp 1.3 end hp 1.3/20.0
+   death line: Kiriko was shot by Skeleton
+hero brigitte mode True screen  hp 20.0 / 20.0
+start brigitte 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+brigitte 2 died at 8.5, back as brigitte hp 16.6 mode True
+## final3 brigitte round 2 mobs left 2 of 6 cleared at None deaths 1 lowest hp 16.4 end hp 20.0/20.0
+   death line: Kiriko was blown up by Creeper
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 ana round 1 mobs left 3 of 6 cleared at None deaths 0 lowest hp 7.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 ana round 2 mobs left 4 of 6 cleared at None deaths 0 lowest hp 0.0 end hp 20.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 3 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 ana round 3 mobs left 2 of 6 cleared at None deaths 0 lowest hp 8.0 end hp 8.0/20.0
+hero ana mode True screen  hp 20.0 / 20.0
+start ana 4 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 ana round 4 mobs left 2 of 6 cleared at None deaths 0 lowest hp 8.0 end hp 20.0/20.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 1 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+## final3 sombra round 1 mobs left 2 of 6 cleared at None deaths 0 lowest hp 4.9 end hp 18.0/18.0
+hero sombra mode True screen  hp 18.0 / 18.0
+start sombra 2 mobs 6 by type [('@e[type=minecraft:zombie]', [' Test passed. Count: 3']), ('@e[type=minecraft:skeleton]', [' Test passed. Count: 2']), ('@e[type=minecraft:creeper]', [' Test passed. Count: 1'])]
+sombra 2 died at 17.8, back as sombra hp 18.0 mode True
+## final3 sombra round 2 mobs left 1 of 6 cleared at None deaths 1 lowest hp 1.0 end hp 18.0/18.0
+   death line: Kiriko was shot by Skeleton
