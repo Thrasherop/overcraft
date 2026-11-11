@@ -69,7 +69,8 @@ public final class OvercraftCommand {
 				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("start").executes(c -> potg(c, dev.overcraft.potg.PotgTap.start(c.getSource().getServer()))))
 				.then(Commands.literal("stop").executes(c -> potg(c, dev.overcraft.potg.PotgTap.stop())))
-				.then(Commands.literal("dump").executes(c -> potg(c, dev.overcraft.potg.PotgTap.dump(c.getSource().getServer()))))));
+				.then(Commands.literal("dump").executes(c -> potg(c, dev.overcraft.potg.PotgTap.dump(c.getSource().getServer()))))
+				.then(Commands.literal("replay").executes(c -> potg(c, dev.overcraft.potg.PotgReplay.start(c.getSource().getPlayerOrException()))))));
 		}
 	}
 

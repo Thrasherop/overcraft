@@ -128,6 +128,9 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
+			if (dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+				return;
+			}
 			Hero hero = Hero.byId(payload.heroId());
 			HeroManager.select(context.player(), hero);
 			if (hero == null) {
@@ -135,11 +138,20 @@ public class Overcraft implements ModInitializer {
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(HeroModePayload.TYPE,
-			(payload, context) -> HeroManager.setHeroMode(context.player(), payload.on()));
+			(payload, context) -> {
+				if (!dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+					HeroManager.setHeroMode(context.player(), payload.on());
+				}
+			});
 		ServerPlayNetworking.registerGlobalReceiver(HeroOptionsPayload.TYPE,
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,
-			(payload, context) -> HeroManager.onInput(context.player(), payload));
+			(payload, context) -> {
+				// a replay's viewer acts on nothing (dev only, PotgReplay)
+				if (!dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+					HeroManager.onInput(context.player(), payload);
+				}
+			});
 		ServerPlayNetworking.registerGlobalReceiver(CalloutPayload.TYPE, (payload, context) -> {
 			Callout callout = Callout.byIndex(payload.callout());
 			if (callout != null) {
@@ -160,6 +172,10 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> Perks.pick(context.player(), Perk.byIndex(payload.perk())));
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			// a Play of the Game replay holds the world still, the mod's ticks with it (dev only, PotgReplay)
+			if (dev.overcraft.potg.PotgReplay.tick(server)) {
+				return;
+			}
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
 			dev.overcraft.hero.Effects.tick(server);
@@ -269,6 +285,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.clearAll();
 			dev.overcraft.sojourn.Disruptor.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
+			dev.overcraft.potg.PotgReplay.clear();
 		});
 	}
 }

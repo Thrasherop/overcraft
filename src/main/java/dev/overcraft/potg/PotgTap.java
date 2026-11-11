@@ -113,6 +113,7 @@ public final class PotgTap {
 	private static final class Recorder {
 		final UUID id;
 		final String name;
+		int playerId;
 		final ArrayDeque<Segment> segments = new ArrayDeque<>();
 		@Nullable Segment current;
 		final Map<String, TypeStats> types = new TreeMap<>();
@@ -138,6 +139,7 @@ public final class PotgTap {
 		Recorder(ServerPlayer player) {
 			this.id = player.getUUID();
 			this.name = player.getName().getString();
+			this.playerId = player.getId();
 		}
 	}
 
@@ -145,10 +147,53 @@ public final class PotgTap {
 		return armed;
 	}
 
+	/**
+	 * The leak check: what the server let go to players since arming, and what clients received (Connection.channelRead0,
+	 * PotgSendMixin), by type, bundles split. A packet a keyframe captured and still reached a client shows as a surplus.
+	 */
+	private static final Map<String, long[]> SENT = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, long[]> RECEIVED = new java.util.concurrent.ConcurrentHashMap<>();
+
+	public static void onReceived(Packet<?> packet) {
+		if (armed) {
+			count(RECEIVED, packet);
+		}
+	}
+
+	private static void count(Map<String, long[]> into, Packet<?> packet) {
+		if (packet instanceof ClientboundBundlePacket bundle) {
+			for (Packet<?> sub : bundle.subPackets()) {
+				count(into, sub);
+			}
+			return;
+		}
+		into.computeIfAbsent(typeName(packet), k -> new long[1])[0]++;
+	}
+
+	/** The types whose counts differ, sent against received (a few in flight at either end are expected). */
+	public static String leakReport() {
+		StringBuilder s = new StringBuilder();
+		java.util.Set<String> all = new java.util.TreeSet<>(SENT.keySet());
+		all.addAll(RECEIVED.keySet());
+		int same = 0;
+		for (String type : all) {
+			long sent = SENT.getOrDefault(type, new long[1])[0];
+			long got = RECEIVED.getOrDefault(type, new long[1])[0];
+			if (sent != got) {
+				s.append(' ').append(type).append(" sent ").append(sent).append(" got ").append(got).append(';');
+			} else {
+				same++;
+			}
+		}
+		return same + " types equal;" + (s.isEmpty() ? " none differ" : s.toString());
+	}
+
 	/** Starts recording every player now in hero play, and anyone who enters it, until {@link #stop}. */
 	public static String start(MinecraftServer server) {
 		protocol = GameProtocols.CLIENTBOUND_TEMPLATE.bind(RegistryFriendlyByteBuf.decorator(server.registryAccess()));
 		RECORDERS.clear();
+		SENT.clear();
+		RECEIVED.clear();
 		armed = true;
 		armedAt = System.nanoTime();
 		Overcraft.LOG.info("[POTG] armed at tick {}", server.getTickCount());
@@ -177,11 +222,19 @@ public final class PotgTap {
 			capture.sink.accept(packet);
 			return true;
 		}
+		if (PotgReplay.viewing(player)
+			&& (packet instanceof net.minecraft.network.protocol.game.ClientboundTickingStatePacket
+			|| packet instanceof net.minecraft.network.protocol.game.ClientboundSetTimePacket)) {
+			// the world is frozen for the replay, and the viewer's client mustn't hear it (design: "Freezing, with the news
+			// kept from the viewer"), or its clock and animators stop
+			return true;
+		}
 		if (!armed) {
 			return false;
 		}
+		count(SENT, packet);
 		Recorder r = RECORDERS.get(player.getUUID());
-		if (r == null || r.current == null) {
+		if (r == null || r.current == null || PotgReplay.viewing(player)) {
 			return false;
 		}
 		synchronized (r) {
@@ -285,7 +338,9 @@ public final class PotgTap {
 			}
 			synchronized (r) {
 				long t0 = System.nanoTime();
-				if (!recording(player)) {
+				if (PotgReplay.viewing(player)) {
+					// nothing is recorded while they watch: the world's still
+				} else if (!recording(player)) {
 					// Minecraft mode doesn't count (owner, 2026-11-11): nothing recorded, the ring keeps what it had
 					r.ticksOutOfPlay++;
 					if (r.current != null) {
@@ -411,7 +466,8 @@ public final class PotgTap {
 	}
 
 	/** A copy of one hero's ring for the client to decode, with the server's numbers. */
-	public record Dump(String player, List<byte[]> keyframes, List<byte[]> streams, List<byte[]> probes, String serverReport) {
+	public record Dump(String player, List<byte[]> keyframes, List<byte[]> streams, List<byte[]> probes, String serverReport,
+					   List<Integer> starts, int nowTick, int heroId) {
 	}
 
 	/** Reports the numbers, and hands each hero's ring to the client's decoder (single player). */
@@ -422,60 +478,7 @@ public final class PotgTap {
 		StringBuilder chat = new StringBuilder();
 		double seconds = (System.nanoTime() - armedAt) / 1e9;
 		for (Recorder r : RECORDERS.values()) {
-			Dump d;
-			synchronized (r) {
-				StringBuilder s = new StringBuilder();
-				int n = Math.min(r.ticks, r.perTick.length);
-				long[] sorted = java.util.Arrays.copyOf(r.perTick, n);
-				java.util.Arrays.sort(sorted);
-				long sum = 0;
-				for (long v : sorted) {
-					sum += v;
-				}
-				double mean = n == 0 ? 0 : sum / 1e6 / n;
-				double p50 = n == 0 ? 0 : sorted[n / 2] / 1e6;
-				double p99 = n == 0 ? 0 : sorted[Math.min(n - 1, (int) (n * 0.99))] / 1e6;
-				double max = n == 0 ? 0 : sorted[n - 1] / 1e6;
-				int ringBytes = 0;
-				List<byte[]> keyframes = new ArrayList<>();
-				List<byte[]> streams = new ArrayList<>();
-				List<Segment> all = new ArrayList<>(r.segments);
-				if (r.current != null) {
-					all.add(r.current);
-				}
-				int maxKeyframe = 0;
-				for (Segment seg : all) {
-					ringBytes += seg.bytes();
-					maxKeyframe = Math.max(maxKeyframe, seg.keyframe.writerIndex());
-					keyframes.add(copy(seg.keyframe));
-					streams.add(copy(seg.stream));
-				}
-				int recordedTicks = r.ticks;
-				double recSeconds = recordedTicks / 20.0;
-				s.append(String.format(java.util.Locale.ROOT,
-					"[POTG] %s: %.1f s armed, %d ticks recorded in hero play (%d out of it), server tick avg %.2f ms%n",
-					r.name, seconds, recordedTicks, r.ticksOutOfPlay, server.getAverageTickTimeNanos() / 1e6));
-				s.append(String.format(java.util.Locale.ROOT,
-					"[POTG] tap ms/tick: mean %.3f p50 %.3f p99 %.3f max %.3f (keyframe each 5 s: mean %.2f max %.2f ms)%n",
-					mean, p50, p99, max, r.keyframes == 0 ? 0 : r.keyframeMsSum / r.keyframes, r.keyframeMsMax));
-				long recordedBytes = r.streamBytes + r.trackBytes;
-				s.append(String.format(java.util.Locale.ROOT,
-					"[POTG] bytes/s: stream %.0f + own track %.0f = %.0f; keyframes %d, avg %.0f B, max in ring %d B; ring now %d B in %d segments%n",
-					r.streamBytes / Math.max(recSeconds, 1e-9), r.trackBytes / Math.max(recSeconds, 1e-9),
-					recordedBytes / Math.max(recSeconds, 1e-9), r.keyframes,
-					r.keyframes == 0 ? 0 : (double) r.keyframeBytes / r.keyframes, maxKeyframe, ringBytes, all.size()));
-				s.append(String.format(java.util.Locale.ROOT, "[POTG] keyframe entities: avg %.1f, max %d; last: %s%n",
-					r.keyframes == 0 ? 0 : (double) r.keyframeEntitiesSum / r.keyframes, r.keyframeEntitiesMax, r.lastKeyframeTypes));
-				s.append("[POTG] types seen (count, kept bytes, encode errors):\n");
-				for (Map.Entry<String, TypeStats> e : r.types.entrySet()) {
-					TypeStats t = e.getValue();
-					s.append(String.format(java.util.Locale.ROOT, "[POTG]   %-48s %s %8d %10d %d%s%n", e.getKey(),
-						t.kept ? "KEPT " : "probe", t.count, t.bytes, t.errors, t.firstError == null ? "" : " " + t.firstError));
-				}
-				d = new Dump(r.name, keyframes, streams, new ArrayList<>(r.probes), s.toString());
-				chat.append(String.format(java.util.Locale.ROOT, "%s: %.3f ms/tick mean, %.0f B/s, ring %d KB. ",
-					r.name, mean, recordedBytes / Math.max(recSeconds, 1e-9), ringBytes / 1024));
-			}
+			Dump d = build(r, server, chat, seconds);
 			for (String line : d.serverReport().split("\n")) {
 				Overcraft.LOG.info(line);
 			}
@@ -485,6 +488,76 @@ public final class PotgTap {
 			}
 		}
 		return chat.isEmpty() ? "POTG: nothing recorded yet" : chat.toString();
+	}
+
+	private static Dump build(Recorder r, MinecraftServer server, StringBuilder chat, double seconds) {
+		Dump d;
+		synchronized (r) {
+			StringBuilder s = new StringBuilder();
+			int n = Math.min(r.ticks, r.perTick.length);
+			long[] sorted = java.util.Arrays.copyOf(r.perTick, n);
+			java.util.Arrays.sort(sorted);
+			long sum = 0;
+			for (long v : sorted) {
+				sum += v;
+			}
+			double mean = n == 0 ? 0 : sum / 1e6 / n;
+			double p50 = n == 0 ? 0 : sorted[n / 2] / 1e6;
+			double p99 = n == 0 ? 0 : sorted[Math.min(n - 1, (int) (n * 0.99))] / 1e6;
+			double max = n == 0 ? 0 : sorted[n - 1] / 1e6;
+			int ringBytes = 0;
+			List<byte[]> keyframes = new ArrayList<>();
+			List<byte[]> streams = new ArrayList<>();
+			List<Integer> starts = new ArrayList<>();
+			List<Segment> all = new ArrayList<>(r.segments);
+			if (r.current != null) {
+				all.add(r.current);
+			}
+			int maxKeyframe = 0;
+			for (Segment seg : all) {
+				ringBytes += seg.bytes();
+				maxKeyframe = Math.max(maxKeyframe, seg.keyframe.writerIndex());
+				keyframes.add(copy(seg.keyframe));
+				starts.add(seg.startTick);
+				streams.add(copy(seg.stream));
+			}
+			int recordedTicks = r.ticks;
+			double recSeconds = recordedTicks / 20.0;
+			s.append(String.format(java.util.Locale.ROOT,
+				"[POTG] %s: %.1f s armed, %d ticks recorded in hero play (%d out of it), server tick avg %.2f ms%n",
+				r.name, seconds, recordedTicks, r.ticksOutOfPlay, server.getAverageTickTimeNanos() / 1e6));
+			s.append(String.format(java.util.Locale.ROOT,
+				"[POTG] tap ms/tick: mean %.3f p50 %.3f p99 %.3f max %.3f (keyframe each 5 s: mean %.2f max %.2f ms)%n",
+				mean, p50, p99, max, r.keyframes == 0 ? 0 : r.keyframeMsSum / r.keyframes, r.keyframeMsMax));
+			long recordedBytes = r.streamBytes + r.trackBytes;
+			s.append(String.format(java.util.Locale.ROOT,
+				"[POTG] bytes/s: stream %.0f + own track %.0f = %.0f; keyframes %d, avg %.0f B, max in ring %d B; ring now %d B in %d segments%n",
+				r.streamBytes / Math.max(recSeconds, 1e-9), r.trackBytes / Math.max(recSeconds, 1e-9),
+				recordedBytes / Math.max(recSeconds, 1e-9), r.keyframes,
+				r.keyframes == 0 ? 0 : (double) r.keyframeBytes / r.keyframes, maxKeyframe, ringBytes, all.size()));
+			s.append(String.format(java.util.Locale.ROOT, "[POTG] keyframe entities: avg %.1f, max %d; last: %s%n",
+				r.keyframes == 0 ? 0 : (double) r.keyframeEntitiesSum / r.keyframes, r.keyframeEntitiesMax, r.lastKeyframeTypes));
+			s.append("[POTG] types seen (count, kept bytes, encode errors):\n");
+			for (Map.Entry<String, TypeStats> e : r.types.entrySet()) {
+				TypeStats t = e.getValue();
+				s.append(String.format(java.util.Locale.ROOT, "[POTG]   %-48s %s %8d %10d %d%s%n", e.getKey(),
+					t.kept ? "KEPT " : "probe", t.count, t.bytes, t.errors, t.firstError == null ? "" : " " + t.firstError));
+			}
+			s.append("[POTG] leak check, sent against received: ").append(leakReport()).append('\n');
+			d = new Dump(r.name, keyframes, streams, new ArrayList<>(r.probes), s.toString(), starts, server.getTickCount(), r.playerId);
+			chat.append(String.format(java.util.Locale.ROOT, "%s: %.3f ms/tick mean, %.0f B/s, ring %d KB. ",
+				r.name, mean, recordedBytes / Math.max(recSeconds, 1e-9), ringBytes / 1024));
+		}
+		return d;
+	}
+
+	/** The ring of one hero, for the replay (PotgReplay), or null if there's none. */
+	public static @Nullable Dump snapshot(ServerPlayer player) {
+		Recorder r = RECORDERS.get(player.getUUID());
+		if (r == null || (r.segments.isEmpty() && r.current == null)) {
+			return null;
+		}
+		return build(r, player.level().getServer(), new StringBuilder(), (System.nanoTime() - armedAt) / 1e9);
 	}
 
 	private static byte[] copy(ByteBuf buf) {

@@ -26,7 +26,8 @@
 		"ResurrectedLootMixin",
 		"ChunkMapAccessor",
 		"TrackedEntityAccessor",
-		"PotgSendMixin"
+		"PotgSendMixin",
+		"PotgFreezeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

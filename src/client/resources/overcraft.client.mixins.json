@@ -4,6 +4,11 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"KeyboardInputMixin",
+		"PotgClientLevelMixin",
+		"PotgReplayHoldMixin",
+		"PotgReplayKeysMixin",
+		"PotgReplayRenderMixin",
+		"PotgReplaySoundMixin",
 		"MinecraftMixin",
 		"MinecraftPacksMixin",
 		"AvatarRendererMixin",

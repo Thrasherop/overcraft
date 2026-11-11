@@ -228,7 +228,7 @@ public final class ClientHero {
 	/** Start of each client tick, before Minecraft handles its own keys. */
 	public static void tick(Minecraft mc) {
 		LocalPlayer player = mc.player;
-		if (player == null) {
+		if (player == null || dev.overcraft.client.dev.PotgReplayClient.active()) {
 			return;
 		}
 		// emoting, the view swings out round her and the mouse orbits it, as Overwatch's does; back when it ends
@@ -506,6 +506,9 @@ public final class ClientHero {
 	}
 
 	public static void endTick(Minecraft mc) {
+		if (dev.overcraft.client.dev.PotgReplayClient.active()) {
+			return; // a replay plays: the hero does nothing (dev only)
+		}
 		if (hero() == Hero.LUCIO && sync.ultActive() && mc.level != null && mc.player != null) {
 			if (barrierStart < 0) {
 				barrierStart = mc.level.getGameTime();

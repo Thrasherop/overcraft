@@ -26,4 +26,12 @@ public abstract class PotgSendMixin {
 			ci.cancel();
 		}
 	}
+
+	/** The leak check's other end: what a client's connection received (PotgTap.onReceived). */
+	@Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"))
+	private void overcraft$received(io.netty.channel.ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
+		if (packet.type().flow() == net.minecraft.network.protocol.PacketFlow.CLIENTBOUND) {
+			PotgTap.onReceived(packet);
+		}
+	}
 }

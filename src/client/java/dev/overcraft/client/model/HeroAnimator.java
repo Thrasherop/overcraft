@@ -51,7 +51,17 @@ public final class HeroAnimator {
 	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
 	private static final float CLIMB_DUST_EVERY = 0.5f;
 
-	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
+	private static Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
+
+	/**
+	 * Play of the Game's replay (PotgReplayClient, dev only): its ghosts have the live entities' ids, so while it plays they
+	 * get a map of their own, and the live one comes back untouched at the end. Returns the map it replaced.
+	 */
+	public static Map<Integer, HeroAnimator> swapAll(Map<Integer, HeroAnimator> with) {
+		Map<Integer, HeroAnimator> old = BY_ENTITY;
+		BY_ENTITY = with;
+		return old;
+	}
 
 	private String base = "idle";
 	/** Seconds into the base clip (it can play faster or slower than real time: {@link #rate}). */
