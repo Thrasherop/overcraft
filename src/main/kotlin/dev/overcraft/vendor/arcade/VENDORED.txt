@@ -1,0 +1,19 @@
+Vendored: Arcade's replay engine (arcade-replay) and the parts of arcade-utils it needs, MIT licensed,
+Copyright (c) 2024 senseiwells (see LICENSE-arcade beside this file; the Java mixins under
+src/main/java/dev/overcraft/vendor/arcade carry the same licence).
+
+Source: https://github.com/CasualChampionships/Arcade, branch 26.3, commit 0325e1b (the engine ServerReplay 3.6.0+26.3,
+https://github.com/senseiwells/ServerReplay, uses). Taken for Overcraft's Play of the Game on 2026-11-11 (issue #44,
+techniques/potg/server_replay.md) and kept in Kotlin so it can be changed in place.
+
+Kept: the player recorder (with chunks), the Flashback writer and reader with snapshot-and-seek, the server-side viewer
+(many viewers, players put back exactly), the rejoin machinery, and the few Arcade utilities they call
+(utils/ArcadeUtilsLite.kt, utils/JsonUtils.kt, the accessors in mixins/utils).
+Left out: ReplayStudio and the ReplayMod format (GPL parts), chunk-area recorders, voice chat, resource packs,
+Carpet/C2ME/VMP/Polymer compat, the event bus, commands and config, and ServerReplay itself.
+
+Changed (each marked "Overcraft" in the code): packages moved from net.casual.arcade to dev.overcraft.vendor.arcade; the
+recording tap moved to Connection.send (dev.overcraft.mixin.PotgSendMixin, dev.overcraft.potg.ReplayTap); snapshots
+also record what Fabric's START_TRACKING listeners send (attachments, hero state); the viewer drops recorded chat, boss
+bar updates for bars it never added, sounds and particles while seeking, and all viewer input; it can lock the camera
+on an entity and stop at a time (playWindow); recordings go to the folder given; no progress bar; no replay commands.

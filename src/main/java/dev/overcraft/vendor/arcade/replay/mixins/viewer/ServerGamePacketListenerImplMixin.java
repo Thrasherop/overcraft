@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2025 senseiwells
+ * Licensed under the MIT License. See LICENSE file in the project root for details.
+ */
+package dev.overcraft.vendor.arcade.replay.mixins.viewer;
+
+import io.netty.channel.ChannelFutureListener;
+import dev.overcraft.vendor.arcade.replay.ducks.ReplayViewable;
+import dev.overcraft.vendor.arcade.replay.viewer.ReplayViewer;
+import dev.overcraft.vendor.arcade.replay.viewer.ReplayViewerPackets;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.LastSeenMessagesValidator;
+import net.minecraft.network.chat.RemoteChatSession;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.*;
+
+@Mixin(ServerGamePacketListenerImpl.class)
+public abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListenerImpl implements ReplayViewable {
+    @Unique private ReplayViewer arcade_viewer = null;
+
+    @Mutable @Shadow @Final private LastSeenMessagesValidator lastSeenMessages;
+    @Shadow @Nullable private RemoteChatSession chatSession;
+
+    @Shadow private int nextChatIndex;
+
+    public ServerGamePacketListenerImplMixin(MinecraftServer minecraftServer, Connection connection, CommonListenerCookie commonListenerCookie) {
+        super(minecraftServer, connection, commonListenerCookie);
+    }
+
+    @Override
+    public void arcade_startViewingReplay(ReplayViewer viewer) {
+        this.arcade_viewer = viewer;
+    }
+
+    @Override
+    public void arcade_stopViewingReplay() {
+        if (this.arcade_viewer != null) {
+            this.nextChatIndex = 0;
+            this.lastSeenMessages = new LastSeenMessagesValidator(20);
+            this.arcade_viewer = null;
+            // Reset chat session
+            this.chatSession = null;
+        }
+    }
+
+    @Override
+    public void arcade_sendReplayViewerPacket(Packet<?> packet) {
+        super.send(packet, null);
+    }
+
+    @Override
+    public ReplayViewer arcade_getViewingReplay() {
+        return this.arcade_viewer;
+    }
+
+    @Override
+    public void send(@NonNull Packet<?> packet, @Nullable ChannelFutureListener sendListener) {
+        if (this.arcade_viewer == null || ReplayViewerPackets.clientboundBypass(packet)) {
+            super.send(packet, sendListener);
+        }
+    }
+}

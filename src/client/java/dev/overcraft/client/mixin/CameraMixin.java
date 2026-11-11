@@ -75,31 +75,6 @@ public abstract class CameraMixin {
 		move(-getMaxZoom(EmoteCamera.distance()), 0, 0);
 	}
 
-	/**
-	 * Play of the Game's chase view (PotgReplayClient, dev only): behind the hero's ghost, 4 m back and a little above,
-	 * pulled in where a block's in the way. The camera entity stays the real player (design: "Camera").
-	 */
-	@Inject(method = "alignWithEntity", at = @At("TAIL"))
-	private void overcraft$replayChase(float partialTicks, CallbackInfo ci) {
-		// only once the replay plays: under the card the view is the viewer's own, of the still world (found in play: a
-		// card showing the last replay's stale place)
-		if (!dev.overcraft.client.dev.PotgReplayClient.playing()) {
-			return;
-		}
-		Entity ghost = dev.overcraft.client.dev.PotgReplayClient.heroGhost();
-		if (ghost != null) {
-			dev.overcraft.client.dev.PotgReplayClient.camX = Mth.lerp(partialTicks, ghost.xo, ghost.getX());
-			dev.overcraft.client.dev.PotgReplayClient.camY = Mth.lerp(partialTicks, ghost.yo, ghost.getY()) + ghost.getEyeHeight();
-			dev.overcraft.client.dev.PotgReplayClient.camZ = Mth.lerp(partialTicks, ghost.zo, ghost.getZ());
-			dev.overcraft.client.dev.PotgReplayClient.camYaw = ghost.getViewYRot(partialTicks);
-			dev.overcraft.client.dev.PotgReplayClient.camPitch = Mth.clamp(ghost.getViewXRot(partialTicks) * 0.5F + 12, -30, 45);
-		}
-		setRotation(dev.overcraft.client.dev.PotgReplayClient.camYaw, dev.overcraft.client.dev.PotgReplayClient.camPitch);
-		setPosition(dev.overcraft.client.dev.PotgReplayClient.camX, dev.overcraft.client.dev.PotgReplayClient.camY + 0.4,
-			dev.overcraft.client.dev.PotgReplayClient.camZ);
-		move(-getMaxZoom(4.0F), 0, 0);
-	}
-
 	@Inject(method = "alignWithEntity", at = @At("TAIL"))
 	private void overcraft$abilityView(float partialTicks, CallbackInfo ci) {
 		Minecraft mc = Minecraft.getInstance();

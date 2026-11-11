@@ -25,11 +25,11 @@ import java.util.UUID;
 /**
  * Play of the Game's scoring (techniques/potg/design.md, "Scoring from what the mod knows"): the patent's method, US
  * 10,456,680 B2 (BZ H): each hero's events scored per category, a 12 s window (W H: the replay's length) slid over them
- * in 1 s steps, each hero and category's best window kept, and the category whose best window scores highest wins, High
- * Score falling to the others under a threshold. **Every weight here is ours**: no public source gives Blizzard's. Each
- * time a window sets a new best, the hero's ring is copied then (PotgTap.snapshot), so the play survives the ring's 25 s and
- * a death (whose keyframes are empty: step 1). Only heroes in hero mode score (owner, 2026-11-11: Minecraft-mode kills
- * don't count), and only while the tap is armed: the whole run, in any dimension (owner, 2026-11-11: "Do the whole time").
+ * in 1 s steps; each window's category is the patent's pick (the highest, High Score falling to the others under a
+ * threshold), and each player's 5 best windows are kept as their highlights (Highlights: owner, 2026-11-11, "the top 5
+ * highlight scores from each player"), with their place in the player's recording (PotgRecorder). **Every weight here is
+ * ours**: no public source gives Blizzard's. Only heroes in hero mode score (owner, 2026-11-11: Minecraft-mode kills
+ * don't count), the whole run, in any dimension (owner, 2026-11-11: "Do the whole time").
  */
 public final class PlayScore {
 	private PlayScore() {
@@ -50,21 +50,14 @@ public final class PlayScore {
 	public static final int WINDOW = PotgValues.WINDOW_SECONDS;
 	static final double HIGH_SCORE_FLOOR = PotgValues.HIGH_SCORE_FLOOR;
 
-	/** One hero's rows: this second's points, the last WINDOW seconds, the best window and its copy of the ring. */
+	/** One hero's rows: this second's points and the last WINDOW seconds. */
 	static final class Rows {
 		final double[] now = new double[4];
 		final double[][] seconds = new double[4][WINDOW];
 		int head;
-		final double[] best = new double[4];
-		final PotgTap.Dump[] pinned = new PotgTap.Dump[4];
-		final String[] heroAt = new String[4];
-		/** Where each pinned play happened: a play from another dimension than the viewers' (owner: the whole run). */
-		@SuppressWarnings("unchecked")
-		final net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level>[] whereAt = new net.minecraft.resources.ResourceKey[4];
 		String name = "";
 		double lastUlt;
-		/** The server tick each best was pinned at, and when a death asks for the pins to be taken again. */
-		final int[] pinnedAt = new int[4];
+		/** The server tick of a death whose kept window is taken again a second later. */
 		int diedAt = -1;
 	}
 
@@ -98,7 +91,7 @@ public final class PlayScore {
 	}
 
 	private static @Nullable Rows rows(@Nullable Entity who) {
-		if (!open || !(who instanceof ServerPlayer player) || !PotgTap.armed()) {
+		if (!open || !(who instanceof ServerPlayer player)) {
 			return null;
 		}
 		if (HeroManager.hero(player) == null || !HeroManager.heroMode(player)) {
@@ -200,39 +193,25 @@ public final class PlayScore {
 	}
 
 	private static void step(MinecraftServer server, UUID id, Rows r) {
+		double[] sums = new double[4];
 		for (int c = 0; c < 4; c++) {
 			r.seconds[c][r.head] = r.now[c];
 			r.now[c] = 0;
 		}
 		r.head = (r.head + 1) % WINDOW;
-		ServerPlayer player = server.getPlayerList().getPlayer(id);
 		for (int c = 0; c < 4; c++) {
-			double sum = windowSum(r.seconds[c]);
-			if (sum > r.best[c] && player != null) {
-				PotgTap.Dump dump = PotgTap.snapshot(player);
-				if (dump != null) {
-					r.best[c] = sum;
-					r.pinned[c] = dump;
-					r.pinnedAt[c] = server.getTickCount();
-					Hero hero = HeroManager.hero(player);
-					r.heroAt[c] = hero == null ? "" : hero.id;
-					r.whereAt[c] = player.level().dimension();
-					Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: new best %s %.0f (pinned %d KB)", r.name,
-						Category.values()[c].title, sum, size(dump) / 1024));
-				}
-			}
+			sums[c] = windowSum(r.seconds[c]);
 		}
-	}
-
-	private static int size(PotgTap.Dump d) {
-		int n = 0;
-		for (byte[] b : d.keyframes()) {
-			n += b.length;
+		ServerPlayer player = server.getPlayerList().getPlayer(id);
+		int c = pick(sums);
+		if (c < 0 || player == null) {
+			return;
 		}
-		for (byte[] b : d.streams()) {
-			n += b.length;
+		Hero hero = HeroManager.hero(player);
+		Highlights.Highlight kept = Highlights.offer(player, Category.values()[c], sums[c], hero == null ? "" : hero.id);
+		if (kept != null) {
+			Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: highlight %s %.0f (%s)", r.name, kept.category, kept.score, kept.segment));
 		}
-		return n;
 	}
 
 	/** How long after a best window a death still belongs to it, and how long after the death its pin is taken again (ours). */
@@ -257,15 +236,8 @@ public final class PlayScore {
 			return;
 		}
 		ServerPlayer player = server.getPlayerList().getPlayer(id);
-		for (int c = 0; c < 4; c++) {
-			if (r.pinned[c] != null && r.pinnedAt[c] >= r.diedAt - DEATH_REACH && player != null) {
-				PotgTap.Dump dump = PotgTap.snapshot(player);
-				if (dump != null) {
-					r.pinned[c] = dump;
-					Overcraft.LOG.info("[POTG] {}: {} taken again to show the death ({} ticks after the best)", r.name,
-						Category.values()[c].title, r.diedAt - r.pinnedAt[c]);
-				}
-			}
+		if (player != null) {
+			Highlights.extend(player, DEATH_REACH + DEATH_TAIL);
 		}
 		r.diedAt = -1;
 	}
@@ -304,26 +276,18 @@ public final class PlayScore {
 		return top;
 	}
 
-	/** The play chosen: whose, which category, its score and its copy of the ring. */
-	public record Choice(String player, String hero, Category category, double score, PotgTap.Dump dump, String table,
-						 net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> where) {
+	/** The play chosen: whose, which category, its score, the highlight (its place in a recording) and where. */
+	public record Choice(String player, UUID owner, String hero, String category, double score, Highlights.Highlight highlight,
+						 String table) {
 	}
 
-	/** Across every hero: each one's winning category, then the highest of those. Null when no hero has a play. */
-	public static @Nullable Choice choose() {
-		Choice best = null;
-		StringBuilder table = new StringBuilder();
-		for (Rows r : ROWS.values()) {
-			table.append(String.format(Locale.ROOT, " %s[HS %.0f, LS %.0f, SS %.0f, SD %.0f]", r.name, r.best[0], r.best[1], r.best[2], r.best[3]));
-			int c = pick(r.best);
-			if (c < 0 || r.pinned[c] == null) {
-				continue;
-			}
-			if (best == null || r.best[c] > best.score()) {
-				best = new Choice(r.name, r.heroAt[c], Category.values()[c], r.best[c], r.pinned[c], "", r.whereAt[c]);
-			}
+	/** The best highlight of anyone's made since {@code sinceMs} (owner: the POTG is the best across everyone). */
+	public static @Nullable Choice choose(MinecraftServer server, long sinceMs) {
+		Highlights.Highlight best = Highlights.best(server, sinceMs);
+		if (best == null || Highlights.bestOwner == null) {
+			return null;
 		}
-		return best == null ? null : new Choice(best.player(), best.hero(), best.category(), best.score(), best.dump(), table.toString(), best.where());
+		return new Choice(best.player, Highlights.bestOwner, best.hero, best.category, best.score, best, Highlights.table(server));
 	}
 
 	public static String costReport() {

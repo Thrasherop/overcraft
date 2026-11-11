@@ -177,6 +177,10 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
+		if (ClientPotg.active()) {
+			// the replay engine logging this player into a replay or back (PotgReplay): not a join, nothing to pick
+			return;
+		}
 		ClientSojourn.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
@@ -228,7 +232,7 @@ public final class ClientHero {
 	/** Start of each client tick, before Minecraft handles its own keys. */
 	public static void tick(Minecraft mc) {
 		LocalPlayer player = mc.player;
-		if (player == null || dev.overcraft.client.dev.PotgReplayClient.active()) {
+		if (player == null || ClientPotg.active()) {
 			return;
 		}
 		// emoting, the view swings out round her and the mouse orbits it, as Overwatch's does; back when it ends
@@ -506,8 +510,8 @@ public final class ClientHero {
 	}
 
 	public static void endTick(Minecraft mc) {
-		if (dev.overcraft.client.dev.PotgReplayClient.active()) {
-			return; // a replay plays: the hero does nothing (dev only)
+		if (ClientPotg.active()) {
+			return; // a Play of the Game shows: the hero does nothing
 		}
 		if (hero() == Hero.LUCIO && sync.ultActive() && mc.level != null && mc.player != null) {
 			if (barrierStart < 0) {

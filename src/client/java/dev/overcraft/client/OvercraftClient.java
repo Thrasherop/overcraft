@@ -45,8 +45,7 @@ public class OvercraftClient implements ClientModInitializer {
 		FxRender.init();
 		ClientHero.init();
 		DevServer.startIfEnabled();
-		dev.overcraft.client.dev.PotgDecode.init();
-		dev.overcraft.client.dev.PotgReplayClient.init();
+		ClientPotg.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> ClientHero.onSync(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> KirikoFx.play(payload)));
@@ -104,6 +103,7 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
 			ClientSojourn.reset();
 			ClientHero.onDisconnect();
+			ClientPotg.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
 			ClientLifeweaver.clear();
@@ -127,6 +127,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.LucioFx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
+		ClientTickEvents.START_CLIENT_TICK.register(ClientPotg::tick);
 		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);

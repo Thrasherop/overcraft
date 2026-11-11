@@ -1,0 +1,256 @@
+/*
+ * Copyright (c) 2025 senseiwells
+ * Licensed under the MIT License. See LICENSE file in the project root for details.
+ */
+package dev.overcraft.vendor.arcade.replay.recorder
+
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet
+import it.unimi.dsi.fastutil.ints.IntSet
+import dev.overcraft.vendor.arcade.replay.recorder.player.ReplayPlayerRecorder
+import dev.overcraft.vendor.arcade.utils.ArcadeUtils
+import dev.overcraft.vendor.arcade.utils.WrappedTrackedEntity
+import dev.overcraft.vendor.arcade.utils.getTrackedEntities
+import dev.overcraft.vendor.arcade.utils.server
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.*
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.Mob
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.chunk.LevelChunk
+import org.jetbrains.annotations.ApiStatus.*
+import java.util.function.Consumer
+import kotlin.math.min
+
+/**
+ * This interface provides a way to resend any given chunks
+ * and any entities within those chunks.
+ *
+ * @see ReplayPlayerRecorder
+ * @see ReplayChunkRecorder
+ */
+public interface ChunkSender {
+    /**
+     * The level of which the chunks are in.
+     */
+    public val level: ServerLevel
+
+    /**
+     * The center chunk position of all the chunks being sent.
+     *
+     * @return The center most chunk position.
+     */
+    public fun getCenterChunk(): ChunkPos
+
+    /**
+     * This will iterate over every chunk position that is going
+     * to be sent, each chunk position will be accepted into the
+     * [consumer].
+     *
+     * @param consumer The consumer that will accept the given chunks positions.
+     */
+    public fun forEachChunk(consumer: Consumer<ChunkPos>)
+
+    /**
+     * This determines whether a given [entity] should be sent.
+     *
+     * @param entity The entity to check.
+     * @param range The entity's tracking range.
+     * @return Whether the entity should be tracked.
+     */
+    public fun shouldTrackEntity(entity: Entity, range: Double): Boolean
+
+    /**
+     * This method should consume a packet.
+     * This is used to send the chunk and entity packets.
+     *
+     * @param packet The packet to send.
+     */
+    public fun sendChunkPacket(packet: Packet<*>)
+
+    /**
+     * This is called when [shouldTrackEntity] returns `true`,
+     * this should be used to send any additional packets for this entity.
+     *
+     * @param tracked The [WrappedTrackedEntity].
+     */
+    public fun addTrackedEntity(tracked: WrappedTrackedEntity)
+
+    /**
+     * This gets the view distance of the server.
+     *
+     * @return The view distance of the server.
+     */
+    public fun getViewDistance(): Int {
+        return this.level.server.playerList.viewDistance
+    }
+
+    /**
+     * This is called when a chunk is successfully sent to the client.
+     *
+     * @param chunk The chunk that was sent.
+     */
+    @OverrideOnly
+    public fun onChunkSent(chunk: LevelChunk) {
+
+    }
+
+    /**
+     * This sends all chunk and entity packets.
+     *
+     * @param load If the chunk at [ChunkPos] is unloaded should be it be loaded to be (re)sent.
+     */
+    public fun sendChunksAndEntities(load: (ChunkPos) -> Boolean = { true }) {
+        this.sendChunkViewDistance()
+        this.sendChunks(load)
+        this.sendEntities(SeenEntities.mutable())
+    }
+
+    /**
+     * This sends all the chunk view distance and simulation distance packets.
+     */
+    @Internal
+    public fun sendChunkViewDistance() {
+        val center = this.getCenterChunk()
+        this.sendChunkPacket(ClientboundSetChunkCacheCenterPacket(center.x, center.z))
+        this.sendChunkPacket(ClientboundSetChunkCacheRadiusPacket(this.getViewDistance()))
+        this.sendChunkPacket(ClientboundSetSimulationDistancePacket(this.getViewDistance()))
+    }
+
+    /**
+     * This sends all chunk packets. This doesn't send any entities.
+     *
+     * @param load If the chunk at [ChunkPos] is unloaded should be it be loaded to be (re)sent.
+     */
+    @Internal
+    public fun sendChunks(load: (ChunkPos) -> Boolean = { true }) {
+        val source = this.level.chunkSource
+        this.forEachChunk { pos ->
+            var chunk = source.getChunk(pos.x, pos.z, false)
+            if (chunk != null) {
+                this.sendChunk(chunk, SeenEntities.all())
+            } else if (load.invoke(pos)) {
+                chunk = source.getChunk(pos.x, pos.z, true)
+                if (chunk != null) {
+                    this.sendChunk(chunk, SeenEntities.all())
+                } else {
+                    ArcadeUtils.logger.warn("Failed to get chunk at $pos, didn't send")
+                }
+            }
+        }
+    }
+
+    /**
+     * This sends a given chunk.
+     * Specify [seen] as [SeenEntities.mutable] to also send
+     * any entities within the chunk, or [SeenEntities.all]
+     * to *not* send any of the entities.
+     *
+     * @param chunk The current chunk that is being sent.
+     * @param seen The entities that have already been seen.
+     */
+    @Internal
+    public fun sendChunk(chunk: LevelChunk, seen: SeenEntities) {
+        PacketContext.runWithContext(this.getPacketContextProvider()) {
+            // We don't need to use the chunkSender
+            // We are only writing the packets to disk...
+            this.sendChunkPacket(ClientboundLevelChunkWithLightPacket(
+                chunk,
+                chunk.level.lightEngine,
+                null,
+                null
+            ))
+        }
+
+        this.sendEntities(seen) { entity -> entity.chunkPosition() == chunk.pos }
+
+        this.onChunkSent(chunk)
+    }
+
+    /**
+     * This sends all the entities.
+     *
+     * @param seen The [SeenEntities] of entity ids that have already been seen.
+     * @param predicate An additional predicate to determine whether to track the entity.
+     */
+    @Internal
+    public fun sendEntities(seen: SeenEntities, predicate: (Entity) -> Boolean = { true }) {
+        if (seen == SeenEntities.all()) {
+            return
+        }
+
+        val leashed = ArrayList<Mob>()
+        val ridden = ArrayList<Entity>()
+
+        val viewDistance = this.level.server.playerList.viewDistance
+        for (tracked in this.level.getTrackedEntities()) {
+            val entity = tracked.getEntity()
+            if (predicate.invoke(entity)) {
+                if (!seen.has(entity.id)) {
+                    val range = min(tracked.getRange(), viewDistance * 16).toDouble()
+                    if (this.shouldTrackEntity(entity, range)) {
+                        this.addTrackedEntity(tracked)
+                        seen.add(entity.id)
+                    }
+                }
+
+                if (entity is Mob && entity.leashHolder != null) {
+                    leashed.add(entity)
+                }
+                if (entity.passengers.isNotEmpty()) {
+                    ridden.add(entity)
+                }
+            }
+        }
+
+        for (entity in leashed) {
+            this.sendChunkPacket(ClientboundSetEntityLinkPacket(entity, entity.leashHolder))
+        }
+        for (entity in ridden) {
+            this.sendChunkPacket(ClientboundSetPassengersPacket(entity))
+        }
+    }
+
+    @Internal
+    public fun getPacketContextProvider(): PacketContextProvider
+
+    public interface SeenEntities {
+        public fun has(id: Int): Boolean
+
+        public fun add(id: Int): Boolean
+
+        private object All: SeenEntities {
+            override fun has(id: Int): Boolean {
+                return true
+            }
+
+            override fun add(id: Int): Boolean {
+                return false
+            }
+        }
+
+        private class Mutable: SeenEntities {
+            val seen = IntOpenHashSet()
+
+            override fun has(id: Int): Boolean {
+                return this.seen.contains(id)
+            }
+
+            override fun add(id: Int): Boolean {
+                return this.seen.add(id)
+            }
+        }
+
+        public companion object {
+            public fun all(): SeenEntities {
+                return All
+            }
+
+            public fun mutable(): SeenEntities {
+                return Mutable()
+            }
+        }
+    }
+}

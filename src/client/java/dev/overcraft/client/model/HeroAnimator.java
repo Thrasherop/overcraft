@@ -53,16 +53,6 @@ public final class HeroAnimator {
 
 	private static Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
-	/**
-	 * Play of the Game's replay (PotgReplayClient, dev only): its ghosts have the live entities' ids, so while it plays they
-	 * get a map of their own, and the live one comes back untouched at the end. Returns the map it replaced.
-	 */
-	public static Map<Integer, HeroAnimator> swapAll(Map<Integer, HeroAnimator> with) {
-		Map<Integer, HeroAnimator> old = BY_ENTITY;
-		BY_ENTITY = with;
-		return old;
-	}
-
 	private String base = "idle";
 	/** Seconds into the base clip (it can play faster or slower than real time: {@link #rate}). */
 	private float basePhase;

@@ -149,10 +149,6 @@ public final class HeroModelRenderer {
 		state.setData(DRAW, null);
 		state.setData(UNSEEN, entity == Minecraft.getInstance().player
 			&& (dev.overcraft.client.comms.EmoteCamera.inside() || dev.overcraft.client.AbilityCamera.inside()));
-		if (dev.overcraft.client.dev.PotgReplayClient.active() && entity == Minecraft.getInstance().player) {
-			// a replay plays: the real body isn't drawn, and its hero's ghost has the same id, so it mustn't pose that animator
-			return;
-		}
 		Hero hero;
 		String chosen = entity.getAttached(HeroManager.HERO);
 		if (preview != null && entity == Minecraft.getInstance().player) {

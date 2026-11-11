@@ -1,0 +1,542 @@
+/*
+ * Copyright (c) 2025 senseiwells
+ * Licensed under the MIT License. See LICENSE file in the project root for details.
+ */
+package dev.overcraft.vendor.arcade.replay.io.writer.flashback
+
+import com.google.gson.JsonObject
+import io.netty.handler.codec.EncoderException
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.IntArraySet
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import kotlinx.atomicfu.atomic
+import kotlinx.io.IOException
+import dev.overcraft.vendor.arcade.replay.io.FlashbackIO
+import dev.overcraft.vendor.arcade.replay.io.writer.ReplayWriter
+import dev.overcraft.vendor.arcade.replay.io.writer.ReplayWriter.Companion.close
+import dev.overcraft.vendor.arcade.replay.mixins.flashback.ClientboundMoveEntityPacketAccessor
+import dev.overcraft.vendor.arcade.replay.recorder.ReplayRecorder
+import dev.overcraft.vendor.arcade.replay.util.FileUtils
+import dev.overcraft.vendor.arcade.replay.util.ReplayMarker
+import dev.overcraft.vendor.arcade.replay.util.flashback.FlashbackAction
+import dev.overcraft.vendor.arcade.replay.util.flashback.FlashbackMarker.Location
+import dev.overcraft.vendor.arcade.utils.DateTimeUtils
+import dev.overcraft.vendor.arcade.utils.JsonUtils
+import net.minecraft.network.ConnectionProtocol
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.ProtocolInfo
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
+import net.minecraft.network.protocol.common.ClientboundDisconnectPacket
+import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket
+import net.minecraft.network.protocol.configuration.ClientboundFinishConfigurationPacket
+import net.minecraft.network.protocol.game.*
+import net.minecraft.resources.ResourceKey
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.EntityTypes
+import net.minecraft.world.entity.MobCategory
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec2
+import net.minecraft.world.phys.Vec3
+import org.slf4j.LoggerFactory
+import java.nio.file.Path
+import java.util.concurrent.CompletableFuture
+import kotlin.io.path.*
+import kotlin.time.Duration
+
+public class FlashbackWriter(
+    override val recorder: ReplayRecorder,
+    override val path: Path
+): ReplayWriter {
+    private val executor = ReplayWriter.createExecutor()
+
+    private val writer = FlashbackChunkedWriter(this.path, this.recorder.server.registryAccess(), this.recorder.settings)
+
+    private val types = Int2ObjectOpenHashMap<EntityType<*>>()
+    private val positions = Object2ObjectOpenHashMap<ResourceKey<Level>, Int2ObjectOpenHashMap<InterpolatedEntityPosition>>()
+    private val interpolating = Object2ObjectOpenHashMap<ResourceKey<Level>, IntOpenHashSet>()
+    private val dirty = Object2ObjectOpenHashMap<ResourceKey<Level>, IntArraySet>()
+    private val chunks = Object2IntOpenHashMap<ChunkPacketIdentity>()
+    private val recent = Object2ObjectOpenHashMap<ResourceKey<Level>, Long2IntOpenHashMap>()
+
+    private val forcePlaySnapshot = atomic(false)
+
+    private var dimension: ResourceKey<Level>? = null
+
+    private var ticksSinceLastSnapshot = 0
+    private var ticks = 1
+
+    /** Overcraft: the recording's own clock, in ticks (what the reader's timestamps count), for a play's place in it. */
+    public val recordedTicks: Int
+        get() = this.ticks
+
+    override var markers: Int = 0
+
+    override val cacheChunksOnUnload: Boolean
+        get() = true
+
+    override val closed: Boolean
+        get() = this.executor.isShutdown
+
+    init {
+        this.chunks.defaultReturnValue(-1)
+        this.path.createDirectories()
+    }
+
+    override fun tick() {
+        this.writeEntityMovement()
+        if (this.recorder.paused) {
+            return
+        }
+
+        val previous = this.dimension
+        this.dimension = this.recorder.level.dimension()
+
+        this.writeActionAsync(FlashbackAction.NextTick)
+        this.ticks++
+
+        val ticks = this.ticks
+        val chunkTicks = ticks - this.ticksSinceLastSnapshot
+        if (chunkTicks >= FlashbackIO.CHUNK_LENGTH || (previous != null && previous != this.dimension)) {
+            this.startNewReplayChunk()
+        }
+    }
+
+    override fun resume() {
+        this.startNewReplayChunk()
+        this.executor.execute {
+            this.forcePlaySnapshot.value = true
+        }
+    }
+
+    override fun beginInitialization() {
+        this.executor.execute {
+            this.writer.startSnapshot()
+        }
+    }
+
+    override fun endInitialization() {
+        this.executor.execute {
+            this.writer.endSnapshot()
+            this.writer.writeAction(FlashbackAction.NextTick)
+        }
+    }
+
+    override fun canRecordPacket(packet: Packet<*>): Boolean {
+        return !this.recorder.paused && !IGNORED_PACKETS.contains(packet::class.java)
+    }
+
+    override fun writePacket(
+        packet: Packet<*>,
+        protocol: ProtocolInfo<*>,
+        timestamp: Duration,
+        offThread: Boolean
+    ): CompletableFuture<Int?> {
+        val action = when (protocol.id()) {
+            ConnectionProtocol.PLAY -> FlashbackAction.GamePacket
+            ConnectionProtocol.CONFIGURATION -> FlashbackAction.ConfigurationPacket
+            else -> return CompletableFuture.completedFuture(null)
+        }
+
+        val replacement = when (packet) {
+            is ClientboundLevelChunkWithLightPacket -> return this.writeCachedChunk(packet, protocol)
+            is ClientboundAddEntityPacket -> this.initializePosition(packet)
+            is ClientboundRemoveEntitiesPacket -> this.removePositions(packet)
+            is ClientboundEntityPositionSyncPacket -> return this.updatePosition(packet)
+            is ClientboundMoveEntityPacket -> return this.updatePosition(packet)
+            else -> packet
+        }
+
+        return this.writeActionAsync(action) { buf ->
+            this.writePacketSync(buf, replacement, protocol, offThread)
+        }
+    }
+
+    override fun writePlayer(player: ServerPlayer, packets: Collection<Packet<*>>) {
+        val uuid = player.uuid
+        val position = player.position()
+        val rotation = player.rotationVector
+        val headRot = player.yHeadRot
+        val velocity = player.deltaMovement
+        val profile = player.gameProfile
+        val gamemode = player.gameMode().id
+        this.writeActionAsync(FlashbackAction.CreatePlayer) { buf ->
+            buf.writeUUID(uuid)
+            buf.writeDouble(position.x)
+            buf.writeDouble(position.y)
+            buf.writeDouble(position.z)
+            buf.writeFloat(rotation.x)
+            buf.writeFloat(rotation.y)
+            buf.writeFloat(headRot)
+            Vec3.STREAM_CODEC.encode(buf, velocity)
+            ByteBufCodecs.GAME_PROFILE.encode(buf, profile)
+            buf.writeVarInt(gamemode)
+        }
+        this.writePosition(player.id, position, rotation, headRot, EntityTypes.PLAYER, dirty = false)
+        val filtered = packets.filter { it !is ClientboundAddEntityPacket }
+        for (packet in filtered) {
+            this.recorder.record(packet)
+        }
+    }
+
+    override fun writeCachedChunk(pos: ChunkPos): Boolean {
+        val dimension = this.recorder.level.dimension()
+        val chunks = this.recent[dimension] ?: return false
+        val posAsLong = pos.pack()
+        if (!chunks.containsKey(posAsLong)) {
+            return false
+        }
+        val index = chunks.get(posAsLong)
+        this.writeActionAsync(FlashbackAction.CacheChunk) { buf ->
+            buf.writeVarInt(index)
+        }
+        return true
+    }
+
+    override fun writeMarker(marker: ReplayMarker) {
+        this.markers++
+        this.executor.execute {
+            val location = Location.from(marker.position, this.recorder.level.dimension())
+            this.writer.addMarker(this.ticks, marker.name, marker.color, location)
+        }
+    }
+
+    override fun getRawRecordingSize(): Long {
+        return this.writer.getWrittenBytes()
+    }
+
+    override fun getOutputPath(): Path {
+        return this.path.parent.resolve(this.path.name + ".zip")
+    }
+
+    override fun close(duration: Duration, save: Boolean): CompletableFuture<Long> {
+        val future = CompletableFuture.supplyAsync({
+            fun write() {
+                this.writer.endChunk(this.ticks, this.shouldForcePlaySnapshot())
+                this.writeCustomMeta()
+                FileUtils.zip(this.path, this.getOutputPath())
+            }
+            this.close(save, ::write, this.writer::close)
+        }, this.executor)
+        this.executor.shutdown()
+        return future
+    }
+
+    private fun writePacketSync(
+        buf: FriendlyByteBuf,
+        packet: Packet<*>,
+        protocol: ProtocolInfo<*>,
+        offThread: Boolean
+    ): Int {
+        try {
+            val start = buf.writerIndex()
+            ReplayWriter.encodePacket(packet, protocol, buf, this.recorder.getPacketContextProvider())
+            return buf.writerIndex() - start
+        } catch (e: EncoderException) {
+            ReplayWriter.handleLoggingEncoderException(LOGGER, packet, protocol, offThread, e)
+            throw e
+        }
+    }
+
+    private fun startNewReplayChunk() {
+        val ticks = this.ticks
+        this.ticksSinceLastSnapshot = ticks
+
+        this.executor.execute {
+            this.writer.endChunk(ticks, this.shouldForcePlaySnapshot())
+            this.writer.startSnapshot()
+        }
+        this.recorder.takeSnapshot()
+        this.executor.execute {
+            this.writer.endSnapshot()
+        }
+    }
+
+    private fun shouldForcePlaySnapshot(): Boolean {
+        return this.forcePlaySnapshot.getAndSet(false)
+    }
+
+    private fun writeCachedChunk(
+        packet: ClientboundLevelChunkWithLightPacket,
+        protocol: ProtocolInfo<*>
+    ): CompletableFuture<Int?> {
+        val dimension = this.recorder.level.dimension()
+        return this.writeActionAsync(FlashbackAction.CacheChunk) { buf ->
+            val identity = ChunkPacketIdentity.of(packet)
+            var index = this.chunks.getInt(identity)
+            var size = -buf.writerIndex()
+            if (index == -1) {
+                index = this.chunks.size
+                val fileIndex = FlashbackIO.getChunkCacheFileIndex(index)
+                this.writer.writeLevelChunk(fileIndex) { chunkBuf ->
+                    val start = chunkBuf.writerIndex()
+                    ReplayWriter.encodePacket(packet, protocol, chunkBuf, this.recorder.getPacketContextProvider())
+                    size += (chunkBuf.writerIndex() - start)
+                }
+                this.chunks.put(identity, index)
+            }
+            val map = this.recent.getOrPut(dimension, ::Long2IntOpenHashMap)
+            map.put(ChunkPos.pack(packet.x, packet.z), index)
+            buf.writeVarInt(index)
+            size + buf.writerIndex()
+        }
+    }
+
+    @Suppress("SameParameterValue")
+    private fun writeActionAsync(action: FlashbackAction) {
+        this.executor.execute {
+            this.writer.writeAction(action)
+        }
+    }
+
+    private fun <T> writeActionAsync(
+        action: FlashbackAction,
+        block: (RegistryFriendlyByteBuf) -> T
+    ): CompletableFuture<T> {
+        return CompletableFuture.supplyAsync({
+            this.writer.writeAction(action, block)
+        }, this.executor).exceptionally { e ->
+            LOGGER.error("Something went wrong writing action $action", e)
+            null
+        }
+    }
+
+    private fun writeCustomMeta() {
+        try {
+            val meta = JsonObject()
+            this.recorder.addMetadata(meta)
+            val path = this.path.resolve(ReplayWriter.ENTRY_ARCADE_REPLAY_META)
+            JsonUtils.encodeRaw(meta, path)
+        } catch (exception: Exception) {
+            LOGGER.error("Failed to write arcade-replay meta!", exception)
+        }
+    }
+
+    private fun writeEntityMovement() {
+        this.executor.execute {
+            this.tickInterpolations()
+
+            val entries = this.dirty.entries.iterator()
+            while (entries.hasNext()) {
+                val (dimension, ids) = entries.next()
+                val positions = this.positions[dimension]
+                if (positions == null) {
+                    entries.remove()
+                    continue
+                }
+                val iter = ids.iterator()
+                while (iter.hasNext()) {
+                    if (positions.get(iter.nextInt()) == null) {
+                        iter.remove()
+                    }
+                }
+                if (ids.isEmpty()) {
+                    entries.remove()
+                }
+            }
+
+            if (this.dirty.isNotEmpty()) {
+                this.writer.writeAction(FlashbackAction.MoveEntities) { buf ->
+                    buf.writeVarInt(this.dirty.size)
+                    for ((dimension, ids) in this.dirty) {
+                        val positions = this.positions[dimension]!!
+                        buf.writeResourceKey(dimension)
+                        buf.writeVarInt(ids.size)
+                        val iter = ids.iterator()
+                        while (iter.hasNext()) {
+                            val id = iter.nextInt()
+                            buf.writeVarInt(id)
+                            positions.get(id)!!.position.write(buf)
+                        }
+                    }
+                }
+                this.dirty.clear()
+            }
+        }
+    }
+
+    private fun tickInterpolations() {
+        val entries = this.interpolating.entries.iterator()
+        while (entries.hasNext()) {
+            val (dimension, ids) = entries.next()
+            val positions = this.positions[dimension]
+            if (positions == null) {
+                entries.remove()
+                continue
+            }
+            val dirty = this.dirty.getOrPut(dimension, ::IntArraySet)
+            val iter = ids.iterator()
+            while (iter.hasNext()) {
+                val id = iter.nextInt()
+                val position = positions.get(id)
+                if (position == null) {
+                    iter.remove()
+                    continue
+                }
+                if (position.tick()) {
+                    dirty.add(id)
+                }
+                if (!position.interpolating) {
+                    iter.remove()
+                }
+            }
+            if (ids.isEmpty()) {
+                entries.remove()
+            }
+        }
+    }
+
+    private fun initializePosition(packet: ClientboundAddEntityPacket): ClientboundAddEntityPacket {
+        this.writePosition(
+            packet.id,
+            Vec3(packet.x, packet.y, packet.z),
+            Vec2(packet.xRot, packet.yRot),
+            packet.yHeadRot,
+            packet.type,
+            dirty = false
+        )
+        return packet
+    }
+
+    private fun getInterpolationSteps(type: EntityType<*>?): Int {
+        if (type == null || type == EntityTypes.SHULKER) {
+            return 0
+        }
+        if (type.category != MobCategory.MISC || STEPPED_MISC_ENTITY_TYPES.contains(type)) {
+            return type.updateInterval()
+        }
+        return 0
+    }
+
+    private fun removePositions(packet: ClientboundRemoveEntitiesPacket): ClientboundRemoveEntitiesPacket {
+        this.executor.execute {
+            val ids = packet.entityIds
+            val dimension = this.currentClientDimension()
+            this.dirty[dimension]?.removeAll(ids)
+            this.interpolating[dimension]?.removeAll(ids)
+            this.getPositions().keys.removeAll(ids)
+            this.types.keys.removeAll(ids)
+        }
+        return packet
+    }
+
+    private fun updatePosition(packet: ClientboundEntityPositionSyncPacket): CompletableFuture<Int?> {
+        this.executor.execute {
+            val rotation = Vec2(packet.xRot, packet.yRot)
+            val positions = this.getPositions()
+            val position = positions.getOrPut(packet.id) {
+                InterpolatedEntityPosition(
+                    ExactEntityPosition(packet.position.endPosition(), rotation, packet.yRot, packet.onGround),
+                    this.getInterpolationSteps(this.types.get(packet.id))
+                )
+            }
+            position.move(packet.position, rotation, packet.yRot, packet.onGround)
+            this.markMoving(packet.id)
+        }
+        return CompletableFuture.completedFuture(ExactEntityPosition.size())
+    }
+
+    private fun updatePosition(packet: ClientboundMoveEntityPacket): CompletableFuture<Int?> {
+        this.executor.execute {
+            val id = (packet as ClientboundMoveEntityPacketAccessor).arcade_getEntityId()
+            val position = this.getPositions().get(id) ?: return@execute
+            val rotation = if (packet.hasRotation()) Vec2(packet.xRot, packet.yRot) else null
+            if (packet.hasPosition()) {
+                val codec = VecDeltaCodec()
+                codec.base = position.base
+                position.move(packet.positionDelta.decode(codec), rotation, rotation?.y, packet.isOnGround)
+            } else if (rotation != null) {
+                position.rotate(rotation, rotation.y, packet.isOnGround)
+            }
+            this.markMoving(id)
+        }
+        return CompletableFuture.completedFuture(ExactEntityPosition.size())
+    }
+
+    private fun markMoving(id: Int) {
+        val dimension = this.currentClientDimension()
+        this.dirty.getOrPut(dimension, ::IntArraySet).add(id)
+        val position = this.positions[dimension]?.get(id) ?: return
+        if (position.interpolating) {
+            this.interpolating.getOrPut(dimension, ::IntOpenHashSet).add(id)
+        }
+    }
+
+    private fun writePosition(
+        id: Int,
+        position: Vec3,
+        rotation: Vec2,
+        headRot: Float,
+        type: EntityType<*>,
+        onGround: Boolean = false,
+        dirty: Boolean = true
+    ) {
+        this.executor.execute {
+            this.types.put(id, type)
+            val exact = ExactEntityPosition(position, rotation, headRot, onGround)
+            val positions = this.getPositions()
+            val existing = positions.get(id)
+            if (existing != null) {
+                existing.snap(exact)
+            } else {
+                positions.put(id, InterpolatedEntityPosition(exact, this.getInterpolationSteps(type)))
+            }
+            if (dirty) {
+                this.getDirtyPositions().add(id)
+            }
+        }
+    }
+
+    private fun getPositions(): Int2ObjectOpenHashMap<InterpolatedEntityPosition> {
+        return this.positions.getOrPut(this.currentClientDimension(), ::Int2ObjectOpenHashMap)
+    }
+
+    private fun getDirtyPositions(): IntArraySet {
+        return this.dirty.getOrPut(this.currentClientDimension(), ::IntArraySet)
+    }
+
+    private fun currentClientDimension(): ResourceKey<Level> {
+        return this.recorder.level.dimension()
+    }
+
+    public companion object {
+        private val LOGGER = LoggerFactory.getLogger("flashback-writer")
+
+        private val STEPPED_MISC_ENTITY_TYPES = setOf(
+            EntityTypes.PLAYER,
+            EntityTypes.ARMOR_STAND,
+            EntityTypes.MANNEQUIN,
+            EntityTypes.VILLAGER,
+            EntityTypes.IRON_GOLEM,
+            EntityTypes.SNOW_GOLEM,
+            EntityTypes.COPPER_GOLEM
+        )
+
+        private val IGNORED_PACKETS = setOf(
+            ClientboundStartConfigurationPacket::class.java,
+            ClientboundFinishConfigurationPacket::class.java,
+            ClientboundSetChunkCacheCenterPacket::class.java,
+            ClientboundSetSimulationDistancePacket::class.java,
+            ClientboundSetChunkCacheRadiusPacket::class.java,
+            ClientboundDisconnectPacket::class.java,
+            // Overcraft: server resource packs aren't kept (the viewer never swaps packs: ours is a local pack)
+            ClientboundResourcePackPushPacket::class.java,
+            net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket::class.java,
+            ClientboundCooldownPacket::class.java,
+            ClientboundTickingStepPacket::class.java,
+            ClientboundTickingStatePacket::class.java,
+            ClientboundPlayerPositionPacket::class.java,
+            ClientboundMoveMinecartPacket::class.java,
+
+            ClientboundForgetLevelChunkPacket::class.java,
+            ClientboundDeleteChatPacket::class.java
+        )
+    }
+}

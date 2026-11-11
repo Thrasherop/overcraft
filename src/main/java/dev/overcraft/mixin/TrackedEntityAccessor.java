@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Set;
 
-/** One tracked entity's ServerEntity and who sees it, for a Play of the Game keyframe (PotgTap). */
+/** One tracked entity's ServerEntity and who sees it, for Play of the Game (PotgReplay). */
 @Mixin(targets = "net.minecraft.server.level.ChunkMap$TrackedEntity")
 public interface TrackedEntityAccessor {
 	@Accessor("serverEntity")

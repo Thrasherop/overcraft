@@ -126,6 +126,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.PotgPayload.TYPE, dev.overcraft.net.PotgPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			if (dev.overcraft.potg.PotgReplay.viewing(context.player())) {
@@ -172,7 +173,7 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> Perks.pick(context.player(), Perk.byIndex(payload.perk())));
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			// a Play of the Game replay holds the world still, the mod's ticks with it (dev only, PotgReplay)
+			// a Play of the Game showing holds the world still, the mod's ticks with it (PotgReplay)
 			if (dev.overcraft.potg.PotgReplay.tick(server)) {
 				return;
 			}
@@ -195,9 +196,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.brigitte.Brigitte.tickPushes();
 			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
-			// Play of the Game: the tap (armed in a dragon fight) and the scoring, the last of the tick
+			// Play of the Game: the scoring and the recorders (the whole run), the last of the tick
 			dev.overcraft.potg.PlayScore.tick(server);
-			dev.overcraft.potg.PotgTap.tick(server);
+			dev.overcraft.potg.PotgRecorder.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
 		// a player who starts seeing someone hears of the states others heard begin (#96)
@@ -267,6 +268,12 @@ public class Overcraft implements ModInitializer {
 				entity.discard();
 			}
 		});
+		// Play of the Game: scoring runs the whole time; the recorders' segments close (kept ones saved) as the world closes
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			dev.overcraft.potg.PotgRecorder.serverStarted(server);
+			dev.overcraft.potg.PlayScore.open();
+		});
+		ServerLifecycleEvents.SERVER_STOPPING.register(dev.overcraft.potg.PotgRecorder::stopAll);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
@@ -290,8 +297,9 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.sojourn.Disruptor.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
 			dev.overcraft.potg.PotgReplay.clear();
-			// the tap and the scoring are statics: a world left must not hand its state to the next one
-			dev.overcraft.potg.PotgTap.stop();
+			// the scoring and the highlights are statics: a world left must not hand its state to the next one
+			dev.overcraft.potg.PlayScore.clear();
+			dev.overcraft.potg.Highlights.clear();
 		});
 	}
 }

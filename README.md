@@ -47,3 +47,10 @@ The jar is in `build/libs/`. Gradle runs itself on Java 25 and downloads it if n
 
 Overcraft is a fan project, not affiliated with or endorsed by Blizzard Entertainment or Mojang. Overwatch is a
 trademark of Blizzard Entertainment. The repository contains no Overwatch game files.
+
+## Credits
+Play of the Game's replays run on a vendored copy of Arcade's replay engine (the engine of ServerReplay) by senseiwells,
+MIT licensed: https://github.com/CasualChampionships/Arcade and https://github.com/senseiwells/ServerReplay. Its
+licence is in `src/main/kotlin/dev/overcraft/vendor/arcade/LICENSE-arcade` and in the jar's `META-INF/LICENSE-arcade`.
+Overcraft needs [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) (1.14.1+kotlin.2.4.20 or later) for it.
+
