@@ -1,0 +1,41 @@
+=== phase soak 17:15:10
+t 0.6 min, cycle 1
+potg disk: root 47389 KB; 1e286f74[seg seg-2 raw 23367 KB, 0 zips 0 KB, folder 22445 KB, highlights 0] c6f66a25[seg seg-5 raw 21256 KB, 3 zips 4645 KB, folder 24942 KB, highlights 5]
+t 2.3 min, cycle 2
+potg disk: root 49500 KB; 1e286f74[seg seg-2 raw 25349 KB, 0 zips 0 KB, folder 23501 KB, highlights 0] c6f66a25[seg seg-5 raw 23257 KB, 3 zips 4645 KB, folder 25997 KB, highlights 5]
+t 3.7 min, cycle 3
+potg disk: root 49693 KB; 1e286f74[seg seg-2 raw 26559 KB, 0 zips 0 KB, folder 24347 KB, highlights 0] c6f66a25[seg seg-5 raw 24485 KB, 2 zips 3145 KB, folder 25344 KB, highlights 5]
+t 5.3 min, cycle 4
+potg disk: root 21781 KB; 1e286f74[seg seg-3 raw 9494 KB, 0 zips 0 KB, folder 8910 KB, highlights 0] c6f66a25[seg seg-6 raw 9263 KB, 3 zips 4206 KB, folder 12869 KB, highlights 5]
+t 7.1 min, cycle 5
+potg disk: root 23372 KB; 1e286f74[seg seg-3 raw 10838 KB, 0 zips 0 KB, folder 9748 KB, highlights 0] c6f66a25[seg seg-6 raw 10537 KB, 3 zips 4206 KB, folder 13622 KB, highlights 5]
+t 8.5 min, cycle 6
+potg disk: root 25358 KB; 1e286f74[seg seg-3 raw 12254 KB, 0 zips 0 KB, folder 10741 KB, highlights 0] c6f66a25[seg seg-6 raw 11961 KB, 3 zips 4206 KB, folder 14615 KB, highlights 5]
+t 10.1 min, cycle 7
+potg disk: root 21598 KB; 1e286f74[seg seg-4 raw 9038 KB, 0 zips 0 KB, folder 8414 KB, highlights 0] c6f66a25[seg seg-7 raw 9053 KB, 4 zips 4766 KB, folder 13182 KB, highlights 5]
+t 11.9 min, cycle 8
+potg disk: root 23615 KB; 1e286f74[seg seg-4 raw 10749 KB, 0 zips 0 KB, folder 9422 KB, highlights 0] c6f66a25[seg seg-7 raw 10777 KB, 4 zips 4766 KB, folder 14190 KB, highlights 5]
+t 13.3 min, cycle 9
+potg disk: root 25222 KB; 1e286f74[seg seg-4 raw 12103 KB, 0 zips 0 KB, folder 10226 KB, highlights 0] c6f66a25[seg seg-7 raw 12146 KB, 4 zips 4766 KB, folder 14994 KB, highlights 5]
+t 14.9 min, cycle 10
+potg disk: root 22387 KB; 1e286f74[seg seg-5 raw 9318 KB, 0 zips 0 KB, folder 8809 KB, highlights 0] c6f66a25[seg seg-8 raw 9333 KB, 4 zips 4766 KB, folder 13576 KB, highlights 5]
+t 16.6 min, cycle 11
+potg disk: root 24461 KB; 1e286f74[seg seg-5 raw 11068 KB, 0 zips 0 KB, folder 9846 KB, highlights 0] c6f66a25[seg seg-8 raw 11093 KB, 4 zips 4766 KB, folder 14613 KB, highlights 5]
+t 18.1 min, cycle 12
+potg disk: root 26785 KB; 1e286f74[seg seg-5 raw 12881 KB, 0 zips 0 KB, folder 11091 KB, highlights 0] c6f66a25[seg seg-8 raw 12744 KB, 4 zips 4766 KB, folder 15692 KB, highlights 5]
+t 19.7 min, cycle 13
+potg disk: root 21302 KB; 1e286f74[seg seg-6 raw 8319 KB, 0 zips 0 KB, folder 7841 KB, highlights 0] c6f66a25[seg seg-9 raw 8330 KB, 5 zips 5616 KB, folder 13459 KB, highlights 5]
+t 21.4 min, cycle 14
+potg disk: root 23288 KB; 1e286f74[seg seg-6 raw 10035 KB, 0 zips 0 KB, folder 8834 KB, highlights 0] c6f66a25[seg seg-9 raw 10075 KB, 5 zips 5616 KB, folder 14452 KB, highlights 5]
+t 22.8 min, cycle 15
+potg disk: root 24778 KB; 1e286f74[seg seg-6 raw 11264 KB, 0 zips 0 KB, folder 9579 KB, highlights 0] c6f66a25[seg seg-9 raw 11332 KB, 5 zips 5616 KB, folder 15197 KB, highlights 5]
+t 24.4 min, cycle 16
+potg disk: root 21198 KB; 1e286f74[seg seg-7 raw 8141 KB, 0 zips 0 KB, folder 7806 KB, highlights 0] c6f66a25[seg seg-10 raw 8109 KB, 5 zips 5616 KB, folder 13390 KB, highlights 5]
+t 26.2 min, cycle 17
+potg disk: root 22525 KB; 1e286f74[seg seg-7 raw 9606 KB, 0 zips 0 KB, folder 8636 KB, highlights 0] c6f66a25[seg seg-10 raw 9260 KB, 5 zips 5616 KB, folder 13886 KB, highlights 5]
+t 27.6 min, cycle 18
+potg disk: root 24527 KB; 1e286f74[seg seg-7 raw 11054 KB, 0 zips 0 KB, folder 9637 KB, highlights 0] c6f66a25[seg seg-10 raw 10723 KB, 5 zips 5616 KB, folder 14887 KB, highlights 5]
+t 29.2 min, cycle 19
+potg disk: root 26017 KB; 1e286f74[seg seg-7 raw 12308 KB, 0 zips 0 KB, folder 10382 KB, highlights 0] c6f66a25[seg seg-10 raw 11990 KB, 5 zips 5616 KB, folder 15632 KB, highlights 5]
+t 31.0 min, cycle 20
+potg disk: root 22951 KB; 1e286f74[seg seg-8 raw 9471 KB, 0 zips 0 KB, folder 8666 KB, highlights 0] c6f66a25[seg seg-11 raw 9488 KB, 5 zips 5616 KB, folder 14283 KB, highlights 5]

@@ -1,7 +1,7 @@
 # Play of the Game with replay: the design
 
-A design, with its first step built and measured (2026-11-11: [step 1, measured](#step-1-measured-2026-11-11)); the
-rest hasn't run. The owner's answers of 2026-11-11 are [under the questions](#questions-only-the-owner-can-answer) and
+A design, built in steps (2026-11-11: [step 1, measured](#step-1-measured-2026-11-11); step 4, [the replay
+engine](#step-4-the-replay-engine-2026-11-11), vendored from ServerReplay). The owner's answers of 2026-11-11 are [under the questions](#questions-only-the-owner-can-answer) and
 override the text below where they differ. Up: [Techniques](../README.md) · issues: #44 (the outro), #45
 (the music) · builds on: [minecraft_26](../minecraft/minecraft_26.md), [kill_feed](../hud/kill_feed.md),
 [rendering](../rendering/rendering.md), [emote_reproduction](../emotes/emote_reproduction.md),
@@ -797,6 +797,101 @@ Proposals only, each a `PotgValues` entry when the owner wants it:
 - **Other events** (a new hook each): placing an eye in the end portal frame, opening the portal, the first entry into
   the Nether or the End.
 - **And a question:** should a crystal broken by a hero count for Shutdown (it stops the dragon's healing)?
+### Step 4, the replay engine (2026-11-11)
+**The owner's decisions** (2026-11-11): vendor ServerReplay's engine and keep it in Kotlin, taking only what POTG needs;
+each player keeps their top 5 highlights, saved with the world, rewatchable alone; the end screen's enemy side is mobs.
+The spike that chose it: `techniques/potg/server_replay.md` on branch `spike/server-replay` (not merged here).
+
+**Vendored** (`src/main/kotlin/dev/overcraft/vendor/arcade`, mixins in `src/main/java/dev/overcraft/vendor/arcade`; what
+and why in `VENDORED.txt` there): Arcade's `arcade-replay` at `CasualChampionships/Arcade` 26.3 `0325e1b`, MIT,
+Copyright (c) 2024 senseiwells. 59 files, 6,206 lines (5,595 Kotlin, 611 Java), 203 classes and 741 KB in the jar.
+Kept: the player recorder (chunks included), the Flashback writer and reader (snapshot-and-seek), the server-side viewer
+and the rejoin code that puts a player back, and the few `arcade-utils` pieces they call. Left out: ReplayStudio and the
+ReplayMod format (GPL parts), chunk recorders, voice chat, packs, compat layers, the event bus, commands and config.
+The MIT text sits beside the files (`LICENSE-arcade`), in the jar (`META-INF/LICENSE-arcade`) and the README's credits.
+Needs `fabric-language-kotlin` 1.14.1+kotlin.2.4.20 or later (8.1 MB, the players install it). Packages moved to
+`dev.overcraft.vendor.arcade`, so a ServerReplay install beside it can't clash.
+
+**The spike's fixes** (each marked "Overcraft" in the vendored code):
+1. The tap is on `Connection.send` (`PotgSendMixin` -> `ReplayTap`), and a recorder's snapshot also records what Fabric's
+   `START_TRACKING` listeners send (the attachments, `HeroManager.showState`) without sending it. Replayed heroes are in
+   their models: Mercy seen from Kiriko's eyes (`now2_*_10s`), Kiriko from behind by client 2 (`ow_tp_2_24s`).
+2. Disk: `PotgRecorder` records every player with a hero in 5-minute segments (one Flashback chunk each: a seek
+   fast-forwards at most a segment). A finished segment is zipped only if a kept highlight is in it, else thrown away;
+   a kept one is deleted when its last highlight is replaced. Numbers below.
+3. Boss bars: the viewer passes updates only for bars the replay added, and removes those at the end. Two viewers in the
+   End over the dragon's bar: nobody kicked.
+4. On the replay's login and the return: no Hero Select, no asset-pack line, no toasts (`ClientPotg`, CARD/SOLO to END);
+   recorded chat isn't replayed; no progress bar (a `ServerBossEvent` starts visible: found in play, hidden).
+5. Camera on the scorer (`ClientboundSetCameraPacket` when the replay adds them and each second at the window: the add
+   alone didn't hold, found in play); the viewer's input is dropped (keep-alives pass); every viewer starts in one tick.
+   While seeking, sounds, particles and our one-shot payloads (`own_sound`, `kill_feed`) are skipped.
+6. Timing by wall clock: the card's end, the watchdog, and each viewer's end (its stream reaching the window's end), so
+   a paused integrated server holds nothing up.
+7. `PotgReplay.REPLAY` is the backend. The dragon's tick 199: the best highlight of anyone's since the last POTG; the
+   card, line and music for everyone online, the world frozen (its news kept from viewers), recorders stopped and zipped
+   under the card, then all viewers into the play's dimension through the scorer's eyes and back. **`GHOSTS` is
+   removed**, with `PotgTap` and the client ghost code (about 1,500 lines): this backend plays in single player, on a LAN
+   and (by the same path) on a server, any dimension, so no fallback is needed.
+
+**Highlights** (`Highlights`): per player the 5 best 12 s windows by score, any category (the window's category is the
+patent's pick); a new one replaces the lowest; two that overlap (same segment, ends under 12 s apart) keep only the
+higher. Each keeps its score, category, hero, time (epoch ms), dimension, segment, end tick and the scorer's entity id,
+in `<world>/overcraft/potg/<uuid>/highlights.json` beside its segment zips. They survive leaving and the server closing
+(segments close on `SERVER_STOPPING` and on disconnect; stray zips are tidied at start). From code:
+`Highlights.of(server, uuid)`, and `PotgReplay.watchHighlight(player, owner, highlight)` plays one to its owner alone:
+only they are taken out and put back, the world isn't held (single player pauses itself). Dev: `/overcraft potg
+highlights|watch [n]|now|disk`. The menu (after a dragon kill) and the hero's intro before each are the next step: the
+intro goes where `PotgReplay.watchHighlight` sends `PotgPayload.SOLO` (the client's `ClientPotg` SOLO case).
+The POTG chooses among highlights made after the last POTG (`world.txt`), so a later dragon doesn't show an old play.
+
+**Mobs for the end screen** (`MobStats`): per mob, over the run, players killed and damage dealt to players (Overwatch
+HP), its type and custom name; the top 8 and every dragon, in `overcraft/potg/mobs.json`; at a dragon's decision copied
+to `mobs_last.json` and cleared. Data only.
+
+**What played** (two dev clients over LAN, Overwatch and Battle.net checked closed before each launch, `-Xmx3G`, the lock
+held; harness-driven except the kill; raw rows in [runs_backend](runs_backend/); screenshots in the worktree's `run/` and
+`run2/screenshots/`, not committed):
+- **The real dragon kill:** Kiriko (client 1, host) and Mercy (client 2) in the End, crystals removed, the dragon's
+  health set to 30. Kiriko's kunai by the **real left button** (`potg_mouse.ps1`: OS input, refusing unless client 1's
+  window was in front, idle 29 min first), aim set by server `tp`. Then VICTORY's chain: at tick 199 the card
+  "KIRIKO AS KIRIKO / HIGH SCORE" on both clients (`dragon_tp_2_8s`), then the replay of the kill from Kiriko's eyes on
+  both, and both back: client 1 at 0.5 64 12.5, yaw 115.74 (-604.26), pitch -28.49 before and after; client 2 at
+  7.80 62 28.56, health 18, Mercy, hero mode, the same. Nobody kicked.
+  (That run's client 2 had the pause menu over the replay: fixed, and the next two runs had none.)
+- **Again after the fixes** (`kill2_*`): a summoned dragon, health 12, killed by the real left button: from Kiriko's eyes
+  on both clients, the dragon overhead (`kill2_tp_1_7s`, `kill2_tp_2_4s`), no menu over the replay; VICTORY was still
+  up on return (`kill2_tp_2_10s`); both back where they were.
+- **A play from the overworld at the dragon's death:** both in the End, the best play since the last POTG Kiriko's
+  overworld fight; a summoned dragon killed by explosion damage (no hero's kill: the world allows a POTG). The card,
+  then both viewers taken to the overworld at night, Kiriko in her model throwing kunai (`ow_tp_2_24s`, client 2 in
+  third person), from her eyes on client 1 (`ow_tp_1_17s`), then both back in the End exactly (0.5 62 30.5 and
+  6.5 62 30.5, yaw and pitch the same).
+- **Solo, across dimensions, after a restart:** the world closed (window closed: `SERVER_STOPPING`) and reopened; her
+  4 highlights were read back; `watch 0` (an overworld play) from the End took only her to the overworld and back to
+  0.5 64 12.5, yaw 115.74 (`solo_9s`).
+- **Disk:** a 31-minute run (`soak_driver.txt`, `soak_out.txt`) with both heroes in the overworld, moving on 40
+  blocks a cycle (new chunks each time), a fight every 1.5 minutes, the disk read every cycle, on top of 45 minutes
+  already recorded in that world. The whole `potg` folder stayed between **21 and 27 MB** for the two players (50 MB
+  in the first minutes, a long first segment); per player the folder peaked at **15.7 MB** with 5 highlights (the raw
+  segment being written, 8 to 12 MB, plus 5 kept zips, 5.6 MB) and **11 MB** with none (the raw segment alone). It
+  rolled every 5 minutes (segments 5 to 11), unkept segments were dropped, and a kept one was deleted when its
+  highlight was replaced (seg-8 by seg-11 at the end). A kept 5-minute segment zips to 0.6 to 2.8 MB (about 10 to 1);
+  raw, a segment is 8 to 26 MB, mostly chunks. **The bound per player:** one raw segment (about 10 to 25 MB, more while
+  exploring) plus at most 5 zips (at most about 14 MB); counted raw, 6 segments, about 70 MB, the brief's estimate.
+  For 6 players over 2 hours that's about 90 MB on disk as measured (at most about 240 MB), against about 2 GB raw
+  unbounded (the spike's figure). Kept highlights survive any length of run: only 5 per player.
+
+**Not shown, or not done:**
+- A dedicated server (the LAN guest takes the same network path); a dead viewer at the start.
+- Kiriko's first-person arms, weapon and HUD in the replay: spectating draws none (the spike's finding; client work).
+- The card's music and line by ear: they play from the local pack as in step 3; nobody listened.
+- The kill run's aim came from the server; only the button was real. The overworld fights were harness-driven.
+- A play that straddles two segments is cut at the segment's start (at most once in 5 minutes).
+- The menu, the hero intro, the end screen and the POTG's look from [potg_reference](potg_reference.md): next steps.
+- A mob killing a player for the mob stats (the heroes had resistance): only damage was counted in play.
+- No critique agent has read this step.
+
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):
 - Armed only in a dragon fight, so normal play pays nothing. Bytes bounded per hero: the rolling ring is fixed, the oldest

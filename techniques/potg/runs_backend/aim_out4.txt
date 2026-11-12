@@ -1,0 +1,4 @@
+=== phase aim 17:05:40
+aim ended at 4.3
+[17:05:45] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2500 (seg-2.zip)
+[17:05:45] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed

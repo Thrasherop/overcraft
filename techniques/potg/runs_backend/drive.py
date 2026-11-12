@@ -153,6 +153,30 @@ elif phase == "watch":
         say(x)
     for x in potglines(n2, 25600):
         say("c2", x)
+elif phase == "soak":
+    # the disk bound over a long run: both heroes in the overworld, moving on 40 blocks each cycle (new chunks), a
+    # fight each cycle, the disk read every cycle
+    minutes = float(sys.argv[2])
+    for cmd in ["/execute in minecraft:overworld run tp Kiriko 3.5 -60 8.5", "/execute in minecraft:overworld run tp Viewer 6.5 -60 8.5",
+                "/time set midnight", "/effect give @a minecraft:resistance 99999 2 true", "/effect give @a minecraft:regeneration 99999 2 true"]:
+        c("cmd " + cmd); time.sleep(0.5)
+    t0 = time.time(); k = 0
+    while time.time() - t0 < minutes * 60:
+        k += 1
+        x = 3 + 40 * k
+        c(f"cmd /tp Kiriko {x} -60 8"); c(f"cmd /tp Viewer {x + 3} -60 8")
+        time.sleep(3)
+        for i in range(5):
+            c(f"cmd /summon minecraft:zombie {x + 5 + i} -60 {11 - i * 2}"); time.sleep(0.1)
+        fight(20 + (k % 3) * 10, "minecraft:zombie")
+        c("cmd /kill @e[type=minecraft:zombie]")
+        n = loglen()
+        c("cmd /overcraft potg disk"); time.sleep(1)
+        say(f"t {round((time.time() - t0) / 60, 1)} min, cycle {k}")
+        for x2 in potglines(n):
+            if "potg disk" in x2:
+                say(x2[x2.index("potg disk"):])
+        time.sleep(max(0, 60 - 0))
 elif phase == "disk":
     n = loglen()
     c("cmd /overcraft potg disk"); time.sleep(1)
