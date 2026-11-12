@@ -12,6 +12,7 @@
 		"LivingEntityRendererMixin",
 		"FirstPersonHandsMixin",
 		"HudMixin",
+		"GuiPotgMixin",
 		"LevelExtractorMixin",
 		"KeyMappingMixin",
 		"MinecraftInvoker",

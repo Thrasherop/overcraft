@@ -41,10 +41,15 @@ public final class PotgReplay {
 	/** The replay's window: 12 s from the hero's point of view (W: the POTG's replay part). */
 	public static final int WINDOW_TICKS = 240;
 	/**
-	 * The card before it ("PLAY OF THE GAME", name, hero; the announcer's line and cue 5B1F begin under it): ours, 4.8 s, so
-	 * card and replay together are 5B1F's 16.84 s (D: music-round9) and the wiki's 17 s (W), the intro's place taken by it.
+	 * Before the play (techniques/potg/potg_reference.md, the owner's clip): the team lineup 2.95 s (8.00-10.95), a dip to
+	 * black 0.18 s (12.85-13.03), the hero's highlight intro 4.93 s (13.03 to the cut to white at 17.967). The play starts
+	 * under the white. A solo highlight has no lineup: it opens on the dip.
 	 */
-	public static final int CARD_TICKS = 96;
+	public static final int LINEUP_MS = 2950;
+	public static final int DIP_MS = 180;
+	public static final int INTRO_MS = 4930;
+	/** After the play (the clip): black 0.6 s, a 0.2 s fade into the end screen; the end screen 6 s and a 0.3 s fade out (ours). */
+	public static final int OUTRO_MS = 600 + 200 + 6000 + 300;
 	/** Ends regardless this long after the replay should have (ours: a slow seek, a lost client). */
 	private static final long WATCHDOG_EXTRA_MS = 20_000;
 
@@ -120,6 +125,8 @@ public final class PotgReplay {
 	private static boolean dragonPending;
 	private static boolean killerAllows;
 	private static boolean shown;
+	/** The world stays held (wall clock) through the POTG's end screen, after the viewers are back. */
+	private static long holdUntil;
 	private static final java.util.Timer TIMER = new java.util.Timer("overcraft-potg", true);
 
 	public static boolean shownSinceArmed() {
@@ -192,6 +199,141 @@ public final class PotgReplay {
 		startPotg(server, show(choice.highlight(), choice.owner()));
 	}
 
+	/**
+	 * What the viewers' screens show besides the play (techniques/potg/potg_look.md), as JSON: the POTG's player and hero,
+	 * their card (most-played heroes in this world, PlayerStats), and for the POTG the lineup (every viewer and their hero)
+	 * and the end screen's cards (players, then mobs with what they did: MobStats; the dragon always).
+	 */
+	static com.google.gson.JsonObject showData(MinecraftServer server, Show show, List<ServerPlayer> viewers, boolean potg) {
+		com.google.gson.JsonObject o = new com.google.gson.JsonObject();
+		o.addProperty("player", show.player());
+		o.addProperty("hero", show.highlight().hero);
+		o.addProperty("heroName", show.hero());
+		com.google.gson.JsonArray most = new com.google.gson.JsonArray();
+		for (var e : PlayerStats.mostPlayed(server, show.owner(), 3)) {
+			com.google.gson.JsonObject m = new com.google.gson.JsonObject();
+			m.addProperty("hero", e.getKey());
+			m.addProperty("seconds", e.getValue());
+			most.add(m);
+		}
+		o.add("most", most);
+		if (!potg) {
+			return o;
+		}
+		com.google.gson.JsonArray lineup = new com.google.gson.JsonArray();
+		com.google.gson.JsonArray cards = new com.google.gson.JsonArray();
+		for (ServerPlayer p : viewers) {
+			com.google.gson.JsonObject l = new com.google.gson.JsonObject();
+			l.addProperty("name", p.getName().getString());
+			l.addProperty("hero", heroOf(server, p));
+			lineup.add(l);
+		}
+		// the clip's end screen has two cards a side; ours: up to three players, then two mobs (ours)
+		List<ServerPlayer> byStat = new ArrayList<>(viewers);
+		byStat.sort(java.util.Comparator.comparingDouble((ServerPlayer p) -> statOf(server, p)[0]).reversed());
+		for (ServerPlayer p : byStat.subList(0, Math.min(3, byStat.size()))) {
+			double[] stat = statOf(server, p);
+			com.google.gson.JsonObject c = new com.google.gson.JsonObject();
+			c.addProperty("side", "ally");
+			c.addProperty("name", p.getName().getString());
+			c.addProperty("hero", heroOf(server, p));
+			c.addProperty("stat", Math.round(stat[0]));
+			// the clip's labels (HEALING DONE, HERO DAMAGE DONE); "DAMAGE DONE" since most of ours is on mobs
+			c.addProperty("label", stat[1] == 1 ? "HEALING DONE" : stat[1] == 2 ? "ELIMINATIONS" : "DAMAGE DONE");
+			cards.add(c);
+		}
+		MobStats.Mob dragon = null;
+		MobStats.Mob other = null;
+		for (MobStats.Mob m : MobStats.last(server)) {
+			if (m.type.equals("minecraft:ender_dragon")) {
+				dragon = dragon == null || better(m, dragon) ? m : dragon;
+			} else if (other == null || better(m, other)) {
+				other = m;
+			}
+		}
+		if (dragon == null) {
+			dragon = new MobStats.Mob();
+			dragon.type = "minecraft:ender_dragon";
+		}
+		List<MobStats.Mob> enemies = other == null || other.playersKilled == 0 && other.damageToPlayers < 1
+			? List.of(dragon) : List.of(dragon, other);
+		for (MobStats.Mob m : enemies) {
+			com.google.gson.JsonObject c = new com.google.gson.JsonObject();
+			c.addProperty("side", "enemy");
+			c.addProperty("mob", m.type);
+			c.addProperty("name", m.name != null ? m.name : "");
+			boolean kills = m.playersKilled > 0;
+			c.addProperty("stat", kills ? m.playersKilled : Math.round(m.damageToPlayers));
+			c.addProperty("label", kills ? (m.playersKilled == 1 ? "PLAYER KILLED" : "PLAYERS KILLED") : "DAMAGE TO PLAYERS");
+			cards.add(c);
+		}
+		o.add("lineup", lineup);
+		o.add("cards", cards);
+		return o;
+	}
+
+	private static String heroOf(MinecraftServer server, ServerPlayer p) {
+		dev.overcraft.hero.Hero hero = HeroManager.hero(p);
+		return hero != null ? hero.id : PlayerStats.of(server, p.getUUID()).lastHero;
+	}
+
+	private static boolean better(MobStats.Mob a, MobStats.Mob b) {
+		return a.playersKilled != b.playersKilled ? a.playersKilled > b.playersKilled : a.damageToPlayers > b.damageToPlayers;
+	}
+
+	/** A player's one stat for their card, a notable one as Overwatch shows: healing if it beats damage, else damage, else eliminations (ours). */
+	private static double[] statOf(MinecraftServer server, ServerPlayer p) {
+		PlayerStats.Player s = PlayerStats.of(server, p.getUUID());
+		if (s.healing > s.damage) {
+			return new double[] {s.healing, 1};
+		}
+		if (s.damage > 0 || s.kills == 0) {
+			return new double[] {s.damage, 0};
+		}
+		return new double[] {s.kills, 2};
+	}
+
+	/** Whether this world's dragon has been killed (the Highlights menu appears only after: owner, 2026-11-11). */
+	public static boolean dragonKilled(MinecraftServer server) {
+		ServerLevel end = server.getLevel(net.minecraft.world.level.Level.END);
+		var fight = end == null ? null : end.getDragonFight();
+		return fight != null && fight.hasPreviouslyKilledDragon();
+	}
+
+	/**
+	 * The Highlights menu (HighlightsPayload): watch -1 sends the player their own top 5, watch n plays their n-th to them
+	 * alone (nobody else is pulled in). Only after the world's dragon has died; not during a showing.
+	 */
+	public static void highlightsAsked(ServerPlayer player, int watch) {
+		MinecraftServer server = player.level().getServer();
+		com.google.gson.JsonObject o = new com.google.gson.JsonObject();
+		if (!dragonKilled(server)) {
+			o.addProperty("locked", true);
+			ServerPlayNetworking.send(player, new dev.overcraft.net.HighlightsPayload(-1, o.toString()));
+			return;
+		}
+		List<Highlights.Highlight> list = Highlights.of(server, player.getUUID());
+		if (watch >= 0) {
+			if (watch < list.size() && !active && player.isAlive()) {
+				Overcraft.LOG.info("[POTG] {} watches highlight {}: {}", player.getName().getString(), watch,
+					watchHighlight(player, player.getUUID(), list.get(watch)));
+			}
+			return;
+		}
+		com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+		for (Highlights.Highlight h : list) {
+			com.google.gson.JsonObject j = new com.google.gson.JsonObject();
+			j.addProperty("hero", h.hero);
+			j.addProperty("category", h.category);
+			j.addProperty("score", Math.round(h.score));
+			j.addProperty("epochMs", h.epochMs);
+			j.addProperty("dimension", h.dimension);
+			arr.add(j);
+		}
+		o.add("highlights", arr);
+		ServerPlayNetworking.send(player, new dev.overcraft.net.HighlightsPayload(-1, o.toString()));
+	}
+
 	/** A highlight as a showing, the hero by name for the card. */
 	public static Show show(Highlights.Highlight h, UUID owner) {
 		dev.overcraft.hero.Hero hero = dev.overcraft.hero.Hero.byId(h.hero);
@@ -207,15 +349,17 @@ public final class PotgReplay {
 		if (viewers.isEmpty()) {
 			return "Nobody to show it to";
 		}
-		begin(server, viewers, true);
+		int lead = LINEUP_MS + DIP_MS + INTRO_MS;
+		begin(server, viewers, true, lead);
 		PotgState.setLastPotg(server, System.currentTimeMillis());
-		float card = CARD_TICKS / 20f;
+		String data = showData(server, show, viewers, true).toString();
+		PlayerStats.runOver(server);
 		for (ServerPlayer p : viewers) {
-			ServerPlayNetworking.send(p, new PotgPayload(PotgPayload.CARD, show.player(), show.hero(), show.category(), card));
+			ServerPlayNetworking.send(p, new PotgPayload(PotgPayload.CARD, show.player(), show.hero(), show.category(), lead / 1000f, data));
 		}
 		Overcraft.LOG.info("[POTG] showing {} to {} viewer(s), world frozen (was {})", show.highlight(), viewers.size(), wasFrozen);
 		var zipped = PotgRecorder.hold(server);
-		later(server, CARD_TICKS * 50L, () -> zipped.whenComplete((v, err) -> server.execute(() -> replay(server, show, viewers))));
+		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> replay(server, show, viewers))));
 		return "Showing " + show.highlight();
 	}
 
@@ -225,20 +369,22 @@ public final class PotgReplay {
 		if (active) {
 			return "A showing is already playing";
 		}
-		begin(server, List.of(player), false);
-		// the hero's intro goes here, before each highlight (owner: "every one should open with the hero's intro"): next step
-		ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.SOLO, h.player, h.hero, h.category, 0));
+		int lead = DIP_MS + INTRO_MS;
+		begin(server, List.of(player), false, lead);
 		Show show = show(h, owner);
+		// every highlight opens with the hero's intro, as the POTG does (owner, 2026-11-11)
+		ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.SOLO, h.player, show.hero(), h.category, lead / 1000f,
+			showData(server, show, List.of(player), false).toString()));
 		var zipped = PotgRecorder.holdOne(server, owner).thenCompose(v -> PotgRecorder.holdOne(server, player.getUUID()));
-		zipped.whenComplete((v, err) -> server.execute(() -> {
+		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
 			if (active) {
 				replay(server, show, List.of(player));
 			}
-		}));
+		})));
 		return "Watching " + h;
 	}
 
-	private static void begin(MinecraftServer server, List<ServerPlayer> viewers, boolean holdWorld) {
+	private static void begin(MinecraftServer server, List<ServerPlayer> viewers, boolean holdWorld, int leadMs) {
 		generation++;
 		active = true;
 		holdsWorld = holdWorld;
@@ -248,8 +394,10 @@ public final class PotgReplay {
 			VIEWERS.add(viewer.getUUID());
 		}
 		startedAt = System.currentTimeMillis();
-		watchdogAt = startedAt + CARD_TICKS * 50L + WINDOW_TICKS * 50L + WATCHDOG_EXTRA_MS;
-		wasFrozen = server.tickRateManager().isFrozen();
+		watchdogAt = startedAt + leadMs + WINDOW_TICKS * 50L + WATCHDOG_EXTRA_MS;
+		// a new showing during the last one's end screen: the world is already held, by us
+		wasFrozen = holdUntil > 0 ? wasFrozen : server.tickRateManager().isFrozen();
+		holdUntil = 0;
 		if (holdWorld) {
 			// broadcast to everyone but the viewers, whose copies ReplayTap holds back
 			server.tickRateManager().setFrozen(true);
@@ -284,12 +432,30 @@ public final class PotgReplay {
 		if (!WATCHING.remove(id)) {
 			return;
 		}
+		cut(server, id);
 		ReplayViewer v = viewerOf(id);
 		if (v != null) {
 			v.stop();
 		}
 		if (WATCHING.isEmpty()) {
 			end(server, "replay done");
+		}
+	}
+
+	/** The play is over for this viewer: their screen cuts to black now, before they're put back (the clip's hard cut). */
+	private static void cut(MinecraftServer server, UUID id) {
+		PotgPayload cut = new PotgPayload(PotgPayload.CUT, "", "", "", 0);
+		ReplayViewer v = viewerOf(id);
+		if (v != null) {
+			// a viewer is out of the player list while it watches: through the viewer's own channel (found in play: the CUT
+			// sent to the player list never came, and the return's loading screen showed under the banner)
+			((dev.overcraft.vendor.arcade.replay.ducks.ReplayViewable) v.getConnection())
+				.arcade_sendReplayViewerPacket(new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(cut));
+			return;
+		}
+		ServerPlayer p = server.getPlayerList().getPlayer(id);
+		if (p != null) {
+			ServerPlayNetworking.send(p, cut);
 		}
 	}
 
@@ -307,6 +473,9 @@ public final class PotgReplay {
 		if (!active) {
 			return;
 		}
+		for (UUID id : new ArrayList<>(WATCHING)) {
+			cut(server, id);
+		}
 		for (ReplayViewer v : new ArrayList<>(ReplayViewers.viewers())) {
 			if (VIEWERS.contains(v.getPlayer().getUUID())) {
 				try {
@@ -320,7 +489,8 @@ public final class PotgReplay {
 		generation++;
 		WATCHING.clear();
 		if (holdsWorld) {
-			server.tickRateManager().setFrozen(wasFrozen);
+			// held on through the end screen (thawed in tick)
+			holdUntil = System.currentTimeMillis() + OUTRO_MS;
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (VIEWERS.contains(player.getUUID())) {
@@ -338,14 +508,19 @@ public final class PotgReplay {
 		}
 		PotgRecorder.release();
 		Overcraft.LOG.info("[POTG] showing ended ({}) after {} ms, world {}", why, System.currentTimeMillis() - startedAt,
-			!holdsWorld ? "not held" : wasFrozen ? "left frozen" : "thawed");
+			!holdsWorld ? "not held" : "held for the end screen");
 		VIEWERS.clear();
 	}
 
 	/** END_SERVER_TICK, first: true while a showing holds the world, and then the mod's own ticks are skipped too. */
 	public static boolean tick(MinecraftServer server) {
 		if (!active) {
-			return false;
+			if (holdUntil > 0 && System.currentTimeMillis() >= holdUntil) {
+				holdUntil = 0;
+				server.tickRateManager().setFrozen(wasFrozen);
+				Overcraft.LOG.info("[POTG] end screen over: world {}", wasFrozen ? "left frozen" : "thawed");
+			}
+			return holdUntil > 0;
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (VIEWERS.contains(player.getUUID())) {
@@ -361,6 +536,7 @@ public final class PotgReplay {
 
 	public static void clear() {
 		active = false;
+		holdUntil = 0;
 		dragonPending = false;
 		generation++;
 		VIEWERS.clear();

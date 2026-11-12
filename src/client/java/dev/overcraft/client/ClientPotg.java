@@ -1,24 +1,37 @@
 package dev.overcraft.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dev.overcraft.client.hud.PotgCard;
+import dev.overcraft.client.screen.HighlightsScreen;
+import dev.overcraft.net.HighlightsPayload;
 import dev.overcraft.net.PotgPayload;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
 /**
- * Play of the Game, the client's half (techniques/potg/design.md): from the server's CARD (or SOLO, a highlight watched
- * alone) to its END, this client is in a showing. The server's replay engine takes the player out of the world and logs
- * them into the replay and back again, so the mod's own join-time reactions are held off meanwhile: no Hero Select, no
- * asset-pack line, no toasts (the spike: Hero Select opened on the replay's login and again on return). The card's
- * screen (PotgCard.Holder) is kept open the whole time: it takes every key and click (owner: nobody skips) and keeps the
- * pause menu from opening when the window loses focus, which would hold a single player's replay stream.
+ * Play of the Game, the client's half (techniques/potg/design.md, techniques/potg/potg_look.md): from the server's CARD
+ * (or SOLO, a highlight watched alone) until the end screen has played out, this client is in a showing. The server's
+ * replay engine takes the player out of the world and logs them into the replay and back again, so the mod's own
+ * join-time reactions are held off meanwhile: no Hero Select, no asset-pack line, no toasts (the spike: Hero Select opened
+ * on the replay's login and again on return). The holder screen (PotgCard.Holder) is kept open the whole time: it takes
+ * every key and click (owner: nobody skips) and keeps the pause menu from opening when the window loses focus, which would
+ * hold a single player's replay stream. The look itself is PotgCard. Also the Highlights key (owner, 2026-11-11: a menu
+ * of the player's own top 5, after the world's dragon has died).
  */
 public final class ClientPotg {
 	private ClientPotg() {
 	}
 
+	/** The Highlights menu (ours: K; it's also in hero mode's Esc menu). */
+	public static final KeyMapping HIGHLIGHTS = KeyMappingHelper.registerKeyMapping(
+		new KeyMapping("key.overcraft.highlights", InputConstants.Type.KEYBOARD, InputConstants.KEY_K, ClientHero.CATEGORY));
+
 	private static boolean active;
-	/** Wall clock: the card's end (the body held still till then), and a safety end if the END never comes. */
+	/** The server said the viewer is back (END). */
+	private static boolean back;
+	/** Wall clock: the play's start (the body held still till then), and a safety end if nothing ends it. */
 	private static long cardUntil;
 	private static long giveUpAt;
 
@@ -26,37 +39,40 @@ public final class ClientPotg {
 		return active;
 	}
 
-	/** The card shows: the player's own body is held still under it (the world is frozen too). */
+	/** Before the play starts: the player's own body is held still (the world is frozen too). */
 	public static boolean holdBody() {
 		return active && net.minecraft.util.Util.getMillis() < cardUntil;
 	}
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(PotgPayload.TYPE, (payload, context) -> on(payload));
+		ClientPlayNetworking.registerGlobalReceiver(HighlightsPayload.TYPE, (payload, context) -> HighlightsScreen.received(payload.data()));
 		dev.overcraft.potg.ReplayTap.clientPaused = () -> Minecraft.getInstance().isPaused();
+	}
+
+	/** Asks the server for the player's highlights: the menu opens when they come. */
+	public static void openHighlights() {
+		ClientPlayNetworking.send(new HighlightsPayload(-1, ""));
 	}
 
 	private static void on(PotgPayload p) {
 		Minecraft mc = Minecraft.getInstance();
 		long now = net.minecraft.util.Util.getMillis();
 		switch (p.phase()) {
-			case PotgPayload.CARD -> {
+			case PotgPayload.CARD, PotgPayload.SOLO -> {
 				active = true;
+				back = false;
 				cardUntil = now + Math.round(p.cardSeconds() * 1000);
-				giveUpAt = now + 60_000;
-				mc.getSoundManager().stop();
-				PotgCard.show(p.player(), p.hero(), p.category(), p.cardSeconds());
+				giveUpAt = now + 90_000;
+				PotgCard.show(p.phase() == PotgPayload.CARD, p.data());
 				mc.gui.setScreen(new PotgCard.Holder());
 			}
-			case PotgPayload.SOLO -> {
-				// the hero's intro goes here (owner, 2026-11-11): the next step
-				active = true;
-				cardUntil = now;
-				giveUpAt = now + 60_000;
-				mc.getSoundManager().stop();
-				mc.gui.setScreen(new PotgCard.Holder());
+			case PotgPayload.CUT -> PotgCard.cut();
+			default -> {
+				back = true;
+				// the play ended without a CUT (a lost viewer): cut now
+				PotgCard.cut();
 			}
-			default -> finish(mc);
 		}
 	}
 
@@ -70,12 +86,19 @@ public final class ClientPotg {
 		}
 	}
 
-	/** Each client tick: the holder screen back if a login's loading screen took it, and the safety end. */
+	/** Each client tick: the look's clock, the holder back if a login's loading screen took it, the end, the safety end. */
 	public static void tick(Minecraft mc) {
 		if (!active) {
+			while (HIGHLIGHTS.consumeClick()) {
+				if (mc.player != null && mc.gui.screen() == null) {
+					openHighlights();
+				}
+			}
 			return;
 		}
-		if (net.minecraft.util.Util.getMillis() > giveUpAt) {
+		PotgCard.tick(mc);
+		long now = net.minecraft.util.Util.getMillis();
+		if (now > giveUpAt || back && PotgCard.finished()) {
 			finish(mc);
 			return;
 		}

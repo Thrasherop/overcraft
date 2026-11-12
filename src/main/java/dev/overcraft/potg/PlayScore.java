@@ -108,6 +108,7 @@ public final class PlayScore {
 		Rows r = rows(attacker);
 		if (r != null && dealt > 0 && target != attacker && !Allies.isBystander((LivingEntity) attacker, target)) {
 			r.now[Category.HIGH_SCORE.ordinal()] += dealt * PotgValues.DAMAGE_PER_HP;
+			PlayerStats.damage((ServerPlayer) attacker, dealt);
 			if (blow.crit()) {
 				r.now[Category.SHARPSHOOTER.ordinal()] += dealt * (1 + attacker.distanceTo(target) / PotgValues.SHARP_METRES);
 			}
@@ -123,6 +124,7 @@ public final class PlayScore {
 			double worth = Math.min(PotgValues.KILL_CAP, Ow.toOw(victim.getMaxHealth()))
 				+ PotgValues.KILL_BONUS.getOrDefault(net.minecraft.world.entity.EntityType.getKey(victim.getType()).toString(), 0.0);
 			r.now[Category.HIGH_SCORE.ordinal()] += worth;
+			PlayerStats.kill((ServerPlayer) killer);
 			if (dangerous(victim)) {
 				r.now[Category.SHUTDOWN.ordinal()] += PotgValues.SHUTDOWN_KILL;
 			}
@@ -152,6 +154,7 @@ public final class PlayScore {
 		Rows r = rows(hero);
 		if (r != null && healed > 0) {
 			r.now[Category.LIFE_SAVER.ordinal()] += healed * PotgValues.HEAL_PER_HP;
+			PlayerStats.healing((ServerPlayer) hero, healed);
 		}
 		tickNanos += System.nanoTime() - t0;
 	}

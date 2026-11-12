@@ -152,6 +152,22 @@ public final class MobStats {
 		save(server, "mobs.json", List.of());
 	}
 
+	/** The list of the last dragon's decision (mobs_last.json): the end screen's enemy side. */
+	public static List<Mob> last(MinecraftServer server) {
+		Path f = file(server, "mobs_last.json");
+		if (Files.exists(f)) {
+			try (Reader r = Files.newBufferedReader(f)) {
+				List<Mob> list = GSON.fromJson(r, new TypeToken<List<Mob>>() { }.getType());
+				if (list != null) {
+					return list;
+				}
+			} catch (Exception e) {
+				Overcraft.LOG.warn("[POTG] couldn't read {}: {}", f, e.toString());
+			}
+		}
+		return List.of();
+	}
+
 	private static void save(MinecraftServer server, String name, List<Mob> list) {
 		try {
 			Files.createDirectories(PotgRecorder.root(server));

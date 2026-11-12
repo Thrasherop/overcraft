@@ -138,6 +138,15 @@ public final class HeroModelRenderer {
 		showcaseSince = Util.getMillis();
 	}
 
+	/**
+	 * A Play of the Game screen draws the preview (techniques/potg/potg_look.md): this clip at this time instead of the
+	 * select screen's showcase, when the model has it (the highlight intro, potg_intro); and the showcase's own time when
+	 * set (each figure of a lineup at its own point of the hold). Null / negative: as the select screen.
+	 */
+	public static @Nullable String previewClip;
+	public static float previewClipAt;
+	public static float previewShowcaseAt = -1;
+
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
 		dev.overcraft.client.ClientSombra.clear();
@@ -183,8 +192,15 @@ public final class HeroModelRenderer {
 		// hair opened up: #29, #30)
 		boolean previewing = preview != null && entity == Minecraft.getInstance().player;
 		// on the select screen, Overwatch's hero select animation when the model has it (#29)
-		float showcaseAt = showcaseSince < 0 ? 1000 : (Util.getMillis() - showcaseSince) / 1000f;
-		Skeleton.Pose showcase = previewing ? HeroAnimator.showcasePose(loaded.model(), showcaseAt) : null;
+		float showcaseAt = previewShowcaseAt >= 0 ? previewShowcaseAt : showcaseSince < 0 ? 1000 : (Util.getMillis() - showcaseSince) / 1000f;
+		Skeleton.Pose showcase = null;
+		if (previewing && previewClip != null && loaded.model().clips.get(previewClip) instanceof SkinnedModel.Clip intro) {
+			showcase = new Skeleton.Pose(loaded.model().nodeNames.length).rest(loaded.model());
+			Skeleton.sample(intro, Math.min(previewClipAt, intro.duration() - 0.001f), showcase);
+			showcaseAt = 1000;
+		} else if (previewing) {
+			showcase = HeroAnimator.showcasePose(loaded.model(), showcaseAt);
+		}
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
 			skin = animator.pose(loaded.model(), entity, now, previewing ? 0 : DEV_AIM != null ? 0 : state.yRot,

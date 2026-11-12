@@ -269,6 +269,8 @@ public final class HeroModels {
 			// clips exported apart from the model (owm_survey.py --clips-only: the Hello wave), merged in below
 			names.add(hero.id + "_clips");
 			names.add(hero.id + "_1p_clips");
+			// the hero's Play of the Game highlight intro (tools/clipmaps/<hero>_intro_clips.txt, techniques/potg/potg_look.md)
+			names.add(hero.id + "_intro_clips");
 			if (hero == Hero.MERCY) {
 				names.add("mercy_staff");
 				names.add("mercy_blaster");
@@ -333,6 +335,7 @@ public final class HeroModels {
 		for (Hero hero : Hero.values()) {
 			mergeClips(out, hero.id + "_clips", hero.id);
 			mergeClips(out, hero.id + "_1p_clips", hero.id + "_1p");
+			mergeClips(out, hero.id + "_intro_clips", hero.id);
 		}
 		return out;
 	}

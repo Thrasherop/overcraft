@@ -127,6 +127,10 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.PotgPayload.TYPE, dev.overcraft.net.PotgPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.HighlightsPayload.TYPE,
+			(payload, context) -> dev.overcraft.potg.PotgReplay.highlightsAsked(context.player(), payload.watch()));
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			if (dev.overcraft.potg.PotgReplay.viewing(context.player())) {
@@ -199,6 +203,7 @@ public class Overcraft implements ModInitializer {
 			// Play of the Game: the scoring and the recorders (the whole run), the last of the tick
 			dev.overcraft.potg.PlayScore.tick(server);
 			dev.overcraft.potg.PotgRecorder.tick(server);
+			dev.overcraft.potg.PlayerStats.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
 		// a player who starts seeing someone hears of the states others heard begin (#96)
@@ -278,6 +283,7 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			dev.overcraft.potg.MobStats.flush(server);
+			dev.overcraft.potg.PlayerStats.flush(server);
 			dev.overcraft.potg.PotgRecorder.stopAll(server);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
@@ -307,6 +313,7 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.potg.PlayScore.clear();
 			dev.overcraft.potg.Highlights.clear();
 			dev.overcraft.potg.MobStats.clear();
+			dev.overcraft.potg.PlayerStats.clear();
 		});
 	}
 }
