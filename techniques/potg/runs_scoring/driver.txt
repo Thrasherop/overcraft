@@ -1,0 +1,368 @@
+=== 23:57:57
+[23:57:39] [main/ERROR] (HkeyPerformanceDataUtil) Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt:
+com.sun.jna.platform.win32.Win32Exception: The parameter is incorrect.
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getUserTime()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getVirtualSize()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getResidentSetSize()" because "process" is null
+[23:57:49] [Download-2/ERROR] (Minecraft) Failed to fetch user properties
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at knot//com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:70)
+Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=ErrorResponse[path=/player/attributes, error=null, errorMessage=null, details=null]]
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.buildHttpException(MinecraftClient.java:170)
+[23:57:54] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[23:57:54] [Download-1/ERROR] (Minecraft) Failed to fetch Realms feature flags
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC'
+=== 23:57:57
+> state {"screen": "GenericMessageScreen", "fps": 0, "fx": 0, "inWorld": false}
+> close {"ok": true}
+> newworld potg_scoring2 survival {"ok": true}
+{'screen': 'HeroSelectScreen', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': 5.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': '', 'heroMode': False, 'dimension': None}
+=== 23:58:34
+> hero kiriko {"ok": true}
+> close {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': 5.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> cmd /time set day {"ok": true}
+> cmd /gamerule doMobSpawning false {"ok": true}
+> cmd /kill @e[type=!player] {"ok": true}
+[23:57:58] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[23:57:58] [Download-1/ERROR] (Minecraft) Couldn't connect to realms
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC'
+=== 23:58:43
+> cmd /execute at @s run summon minecraft:blaze ~ ~1 ~7 {NoAI:1b} {"ok": true}
+fought minecraft:blaze 6
+> cmd /execute at @s run summon minecraft:enderman ~ ~ ~7 {NoAI:1b} {"ok": true}
+fought minecraft:enderman 8
+{'screen': '', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': 5.5, 'yaw': -7.6293945e-06, 'pitch': -7.5678654, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 23:59:05
+> screenshot sc_1.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_1.png"}
+=== 23:59:11
+fought minecraft:blaze 8
+[23:59:12] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 177 (seg-1.zip)
+[23:59:12] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +1000 High Score (kill minecraft:blaze)
+[23:59:13] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1250 (seg-1.zip)
+fought minecraft:enderman 10
+{'screen': '', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': 5.5, 'yaw': 89.52461, 'pitch': -0.44935825, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 23:59:39
+> cmd /kill @e[type=minecraft:enderman] {"ok": true}
+> cmd /execute at @s run summon minecraft:enderman ~ ~ ~2 {NoAI:1b} {"ok": true}
+> cmd /tp @s ~ ~ ~ 0 0 {"ok": true}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+> key melee tap {"error": "java.lang.IllegalArgumentException: no key mapping melee"}
+{'screen': '', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': 5.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 23:59:56
+> cmd /kill @e[type=minecraft:enderman] {"ok": true}
+> cmd /execute at @s run summon minecraft:enderman ~ ~ ~2 {NoAI:1b,Health:3f} {"ok": true}
+> cmd /tp @s ~ ~ ~ 0 20 {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> key quick_melee tap {"key": "key.keyboard.v"}
+[23:59:57] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +150 High Score (pickup 1 minecraft:ender_pearl)
+[23:59:58] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 150 (seg-1.zip)
+=== 00:00:04
+> key quick_melee tap {"key": "key.keyboard.v"}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> screenshot sc_2.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_2.png"}
+=== 00:00:20
+> cmd /execute if entity @e[type=minecraft:enderman] run say enderman_alive {"ok": true}
+=== 00:00:34
+> cmd /execute at @s run summon minecraft:enderman ~ ~ ~2 {Health:6f} {"ok": true}
+> cmd /tp @s ~ ~ ~ 0 20 {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> cmd /execute as @s at @s anchored eyes facing entity @e[type=minecraft:enderman,limit=1,sort=nearest] eyes run tp @s ~ ~ ~ ~ ~ {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> cmd /execute as @s at @s anchored eyes facing entity @e[type=minecraft:enderman,limit=1,sort=nearest] eyes run tp @s ~ ~ ~ ~ ~ {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+[00:00:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +1000 High Score (kill minecraft:enderman)
+[00:00:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1035 (seg-1.zip)
+=== 00:00:48
+> cmd /execute at @s run summon minecraft:wither_skeleton ~ ~ ~8 {"ok": true}
+fought minecraft:wither_skeleton 6
+[00:00:49] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 60 (seg-1.zip)
+[00:00:49] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +450 High Score (kill minecraft:wither_skeleton)
+[00:00:50] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 700 (seg-1.zip)
+> cmd /execute at @s run summon minecraft:zombie ~ ~ ~8 {"ok": true}
+fought minecraft:zombie 6
+[00:00:58] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 877 (seg-1.zip)
+[00:00:58] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +250 High Score (kill minecraft:zombie)
+[00:00:59] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1188 (seg-1.zip)
+{'screen': '', 'inWorld': True, 'x': 4.20699297827332, 'y': -60.0, 'z': 2.130419250143204, 'yaw': -7.6293945e-06, 'pitch': -0.8594328, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 00:01:10
+> cmd /execute at @s run summon minecraft:item ~ ~ ~2 {Item:{id:" minecraft:blaze_rod\,count:2}} cmd {"ok": true}
+> /execute {"error": "unknown command /execute"}
+> at {"error": "unknown command at"}
+> @s {"error": "unknown command @s"}
+> run {"error": "unknown command run"}
+> summon {"error": "unknown command summon"}
+> minecraft:item {"error": "unknown command minecraft:item"}
+> ~ {"error": "unknown command ~"}
+> ~ {"error": "unknown command ~"}
+> ~2 {"error": "unknown command ~2"}
+> {Item:{id:" {"error": "unknown command {Item:{id:\""}
+> minecraft:ender_pearl\,count:3}} {"error": "unknown command minecraft:ender_pearl\\,count:3}}"}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~2 {Item:{id:" minecraft:ender_eye\,count:1}} key {"ok": true}
+> move_forward {"error": "unknown command move_forward"}
+> down wait {"error": "unknown command down"}
+> 0.8 key {"error": "unknown command 0.8"}
+> move_forward {"error": "unknown command move_forward"}
+> up wait {"error": "unknown command up"}
+> 2 log {"error": "unknown command 2"}
+=== 00:01:17
+> cmd /kill @e[type=minecraft:item] {"ok": true}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~2 {Item:{id:'minecraft:blaze_rod',count:2}} {"ok": true}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~2 {Item:{id:'minecraft:ender_pearl',count:3}} {"ok": true}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~2 {Item:{id:'minecraft:ender_eye',count:1}} {"ok": true}
+> key move_forward down {"key": "key.keyboard.w"}
+> key move_forward up {"key": "key.keyboard.w"}
+[00:01:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +500 High Score (pickup 2 minecraft:blaze_rod)
+[00:01:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +450 High Score (pickup 3 minecraft:ender_pearl)
+[00:01:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 950 (seg-1.zip)
+=== 00:01:25
+> cmd /execute at @s run summon minecraft:end_crystal ~ ~ ~14 {ShowBottom:0b} {"ok": true}
+fought minecraft:end_crystal 2
+[00:01:25] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +400 High Score (end crystal)
+[00:01:26] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1350 (seg-1.zip)
+> cmd /execute at @s run summon minecraft:end_crystal ~ ~ ~16 {"ok": true}
+> cmd /execute at @s run summon minecraft:end_crystal ~3 ~ ~16 {"ok": true}
+> cmd /execute at @s run summon minecraft:end_crystal ~-3 ~ ~16 {"ok": true}
+fought minecraft:end_crystal 1.5
+[00:01:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +400 High Score (end crystal)
+[00:01:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +400 High Score (end crystal)
+[00:01:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +400 High Score (end crystal)
+[00:01:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1600 (seg-1.zip)
+> cmd /execute at @s run summon minecraft:end_crystal ~ ~ ~12 {"ok": true}
+> cmd /kill @e[type=minecraft:end_crystal] {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 4.20699297827332, 'y': -60.0, 'z': 6.926252583476497, 'yaw': -7.6293945e-06, 'pitch': -0.28637066, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 00:01:48
+> cmd /fill 16 -60 16 24 -55 24 minecraft:air {"ok": true}
+> cmd /fill 16 -61 16 24 -61 24 minecraft:grass_block {"ok": true}
+> cmd /setblock 19 -60 22 minecraft:end_portal_frame[facing=north,eye=true] {"ok": true}
+> cmd /setblock 20 -60 22 minecraft:end_portal_frame[facing=north,eye=true] {"ok": true}
+> cmd /setblock 21 -60 22 minecraft:end_portal_frame[facing=north,eye=true] {"ok": true}
+> cmd /setblock 19 -60 18 minecraft:end_portal_frame[facing=south,eye=true] {"ok": true}
+> cmd /setblock 20 -60 18 minecraft:end_portal_frame[facing=south,eye=false] {"ok": true}
+> cmd /setblock 21 -60 18 minecraft:end_portal_frame[facing=south,eye=false] {"ok": true}
+> cmd /setblock 18 -60 19 minecraft:end_portal_frame[facing=east,eye=true] {"ok": true}
+> cmd /setblock 22 -60 19 minecraft:end_portal_frame[facing=west,eye=true] {"ok": true}
+> cmd /setblock 18 -60 20 minecraft:end_portal_frame[facing=east,eye=true] {"ok": true}
+> cmd /setblock 22 -60 20 minecraft:end_portal_frame[facing=west,eye=true] {"ok": true}
+> cmd /setblock 18 -60 21 minecraft:end_portal_frame[facing=east,eye=true] {"ok": true}
+> cmd /setblock 22 -60 21 minecraft:end_portal_frame[facing=west,eye=true] {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:ender_eye 2 {"ok": true}
+> cmd /tp @s 20.5 -60 16.5 facing 20.5 -59.1 18.5 {"ok": true}
+> key interact tap {"key": "key.keyboard.f"}
+> screenshot sc_eye1.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_eye1.png"}
+> cmd /tp @s 21.5 -60 16.5 facing 21.5 -59.1 18.5 {"ok": true}
+> key interact tap {"key": "key.keyboard.f"}
+> screenshot sc_eye2.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_eye2.png"}
+=== 00:02:02
+{'screen': '', 'inWorld': True, 'x': 21.5, 'y': -60.0, 'z': 16.5, 'yaw': -7.6293945e-06, 'pitch': -24.227743, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> cmd /item replace entity @s weapon.mainhand with minecraft:ender_eye 2 {"ok": true}
+> cmd /tp @s 20.5 -60 16.6 {"ok": true}
+> look 0 45 {"ok": true}
+> screenshot sc_eye3.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_eye3.png"}
+> key interact tap {"key": "key.keyboard.f"}
+[00:02:03] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +100 High Score (eye of ender placed)
+{'screen': '', 'inWorld': True, 'x': 20.5, 'y': -60.0, 'z': 16.6, 'yaw': 0.0, 'pitch': 45.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 00:02:08
+> cmd /tp @s 21.5 -60 16.6 {"ok": true}
+> look 0 45 {"ok": true}
+> key interact tap {"key": "key.keyboard.f"}
+[00:02:09] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +200 High Score (eye of ender, portal opened)
+[00:02:10] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 300 (seg-1.zip)
+> look 0 60 {"ok": true}
+> screenshot sc_portal.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_portal.png"}
+=== 00:02:22
+> cmd /execute if block 20 -60 20 minecraft:end_portal run say portal_is_open {"ok": true}
+> cmd /fill 30 -60 10 30 -56 13 minecraft:obsidian {"ok": true}
+> cmd /fill 30 -59 11 30 -57 12 minecraft:air {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:flint_and_steel {"ok": true}
+> cmd /tp @s 31.5 -60 11.5 {"ok": true}
+> look 90 60 {"ok": true}
+> key interact tap {"key": "key.keyboard.f"}
+> screenshot sc_nether_portal.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_nether_portal.png"}
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+=== 00:02:37
+> cmd /fill 26 -60 6 36 -55 16 minecraft:air replace minecraft:fire {"ok": true}
+> cmd /tp @s 32.0 -60 11.5 {"ok": true}
+> look 90 28 {"ok": true}
+> key interact tap {"key": "key.keyboard.f"}
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+> look 90 0 {"ok": true}
+> screenshot sc_nether_portal2.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_nether_portal2.png"}
+=== 00:02:46
+> respawn {"ok": true}
+> close {"ok": true}
+{'screen': '', 'inWorld': True, 'x': -5.5, 'y': -60.0, 'z': 6.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> cmd /effect give @s minecraft:fire_resistance 600 0 true {"ok": true}
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+=== 00:02:56
+> cmd /fill 26 -60 6 36 -55 16 minecraft:air replace minecraft:fire {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:flint_and_steel {"ok": true}
+> cmd /tp @s 32.0 -60 11.5 {"ok": true}
+> look 90 28 {"ok": true}
+> screenshot sc_np_aim.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_np_aim.png"}
+> key interact tap {"key": "key.keyboard.f"}
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+=== 00:03:02
+> look 90 0 {"ok": true}
+> key move_forward down {"key": "key.keyboard.w"}
+> key move_forward up {"key": "key.keyboard.w"}
+[00:02:56] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +500 High Score (pickup 2 minecraft:blaze_rod)
+[00:02:57] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 500 (seg-1.zip)
+{'screen': '', 'inWorld': True, 'x': 29.4845082478532, 'y': -60.0, 'z': 22.3343029912549, 'yaw': 90.0, 'pitch': 0.0, 'health': 15.350002, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> screenshot sc_nether.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_nether.png"}
+=== 00:03:25
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+> cmd /tp @s 30.5 -59 11.9 90 0 {"ok": true}
+[00:03:29] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +500 High Score (first entry minecraft:the_nether)
+{'screen': 'LevelLoadingScreen', 'inWorld': True, 'x': 0.5, 'y': 37.0, 'z': -11.1, 'yaw': 90.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 00:03:41
+> cmd /execute in minecraft:overworld run tp @s 33 -60 11.5 {"ok": true}
+> cmd /tp @s 30.5 -59 11.9 90 0 {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': 37.0, 'z': -11.1, 'yaw': 90.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> screenshot sc_nether2.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_nether2.png"}
+=== 00:04:04
+> cmd /execute in minecraft:overworld run tp @s 20.5 -59 16.5 {"ok": true}
+> cmd /tp @s 20.5 -59.5 20.5 {"ok": true}
+[00:04:09] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +1000 High Score (first entry minecraft:the_end)
+[00:04:11] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1000 (seg-2.zip)
+{'screen': '', 'inWorld': True, 'x': 100.5, 'y': 49.0, 'z': 0.5, 'yaw': 90.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> screenshot sc_end.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_end.png"}
+=== 00:04:31
+> cmd /execute in minecraft:overworld run tp @s 4.5 -60 -10 0 0 {"ok": true}
+> cmd /kill @e[type=minecraft:item] {"ok": true}
+> key minecraft_mode tap {"key": "key.keyboard.g"}
+{'screen': '', 'inWorld': True, 'x': 4.5, 'y': -60.0, 'z': -9.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+> cmd /gamemode creative {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:diamond_sword {"ok": true}
+> cmd /execute at @s run summon minecraft:zombie ~ ~ ~2 {NoAI:1b} {"ok": true}
+> cmd /tp @s ~ ~ ~ 0 25 {"ok": true}
+> key attack tap {"key": "key.mouse.left"}
+> cmd /execute at @s run summon minecraft:blaze ~ ~ ~2 {NoAI:1b} {"ok": true}
+> key attack tap {"key": "key.mouse.left"}
+> cmd /execute at @s run summon minecraft:end_crystal ~ ~ ~3 {"ok": true}
+> cmd /tp @s ~ ~ ~ 0 20 {"ok": true}
+> key attack tap {"key": "key.mouse.left"}
+> cmd /gamemode survival {"ok": true}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~1 {Item:{id:'minecraft:blaze_rod',count:2},PickupDelay:0s} {"ok": true}
+> cmd /execute at @s run summon minecraft:item ~ ~ ~1 {Item:{id:'minecraft:ender_pearl',count:1},PickupDelay:0s} {"ok": true}
+> screenshot sc_mcmode.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_mcmode.png"}
+=== 00:04:48
+> cmd /execute if entity @e[type=minecraft:zombie] run say zombie_alive {"ok": true}
+> cmd /execute if entity @e[type=minecraft:blaze] run say blaze_alive {"ok": true}
+> cmd /execute if entity @e[type=minecraft:end_crystal] run say crystal_alive {"ok": true}
+> cmd /execute if items entity @s container.* minecraft:blaze_rod run say has_rods {"ok": true}
+=== 00:04:55
+> cmd /execute as @s at @s anchored eyes facing entity @e[type=minecraft:blaze,limit=1,sort=nearest] eyes run tp @s ~ ~ ~ ~ ~ {"ok": true}
+> key attack tap {"key": "key.mouse.left"}
+> key attack tap {"key": "key.mouse.left"}
+> key attack tap {"key": "key.mouse.left"}
+> key attack tap {"key": "key.mouse.left"}
+> key attack tap {"key": "key.mouse.left"}
+> cmd /execute as @s at @s anchored eyes facing entity @e[type=minecraft:end_crystal,limit=1,sort=nearest] eyes run tp @s ~ ~ ~ ~ ~ {"ok": true}
+> cmd /tp @s ~ ~ ~0.8 {"ok": true}
+> key attack tap {"key": "key.mouse.left"}
+> cmd /execute if entity @e[type=minecraft:blaze] run say blaze_alive {"ok": true}
+> cmd /execute if entity @e[type=minecraft:end_crystal] run say crystal_alive {"ok": true}
+=== 00:05:07
+{'screen': 'DeathScreen', 'inWorld': True, 'x': 10.27071302711764, 'y': -60.0, 'z': -6.009025126228818, 'yaw': 71.32202, 'pitch': 4.13517, 'health': 0.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+> cmd /setblock 21 -60 18 minecraft:end_portal_frame[facing=south,eye=false] {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:ender_eye 1 {"ok": true}
+> cmd /tp @s 21.5 -60 16.6 {"ok": true}
+> look 0 45 {"ok": true}
+> key use tap {"key": "key.mouse.right"}
+> cmd /execute if block 21 -60 18 minecraft:end_portal_frame[eye=true] run say eye_in_mc_mode {"ok": true}
+=== 00:05:15
+> respawn {"ok": true}
+> close {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 7.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+=== 00:05:22
+> cmd /setblock 21 -60 18 minecraft:end_portal_frame[facing=south,eye=false] {"ok": true}
+> cmd /item replace entity @s weapon.mainhand with minecraft:ender_eye 1 {"ok": true}
+> cmd /tp @s 21.5 -60 16.6 {"ok": true}
+> look 0 45 {"ok": true}
+> key use tap {"key": "key.mouse.right"}
+> cmd /execute if block 21 -60 18 minecraft:end_portal_frame[eye=true] run say eye_in_mc_mode {"ok": true}
+> cmd /kill @e[type=minecraft:item] {"ok": true}
+=== 00:05:36
+> screenshot sc_before_quit.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_before_quit.png"}
+> press key.keyboard.escape {"key": "key.keyboard.escape"}
+> state {"screen": "PauseScreen", "fps": 109, "fx": 0, "inWorld": true, "x": 29.31163613723639, "y": -60.0, "z": 17.9430811332249, "yaw": 0.0, "pitch": 45.0, "health": 15.333332, "maxHealth": 20.0, "onGround": true, "crouching": false, "sprinting": false, "box": "STANDING 0.60x1.80 eye 1.62", "serverBox": "
+=== 00:05:47
+> screenshot sc_pause.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_pause.png"}
+=== 00:05:52
+> screenclick 213 173 {"screen": "TitleScreen"}
+> state {"screen": "TitleScreen", "fps": 60, "fx": 0, "inWorld": false}
+=== 00:06:03
+> screenshot sc_title.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_title.png"}
+=== 00:06:08
+> screenclick 264 213 {"screen": "TitleScreen"}
+=== 00:07:24
+> close {"ok": true}
+> openworld potg_scoring2 {"ok": true}
+{'screen': 'HeroSelectScreen', 'inWorld': True, 'x': 38.582710124143254, 'y': -59.639199169871205, 'z': 22.528576146256587, 'yaw': 0.0, 'pitch': 45.0, 'health': 10.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+[00:07:08] [main/ERROR] (HkeyPerformanceDataUtil) Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt:
+com.sun.jna.platform.win32.Win32Exception: The parameter is incorrect.
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getUserTime()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getVirtualSize()" because "process" is null
+java.lang.NullPointerException: Cannot invoke "oshi.software.os.OSProcess.getResidentSetSize()" because "process" is null
+[00:07:17] [Download-2/ERROR] (Minecraft) Failed to fetch user properties
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at knot//com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:70)
+Caused by: MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=ErrorResponse[path=/player/attributes, error=null, errorMessage=null, details=null]]
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.buildHttpException(MinecraftClient.java:170)
+[00:07:21] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[00:07:21] [Download-1/ERROR] (Minecraft) Failed to fetch Realms feature flags
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC'
+[00:07:32] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[00:07:32] [Download-1/ERROR] (Minecraft) Couldn't connect to realms
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC'
+=== 00:07:56
+> hero kiriko {"ok": true}
+> close {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 43.55874116010372, 'y': -60.0, 'z': 25.021873415668114, 'yaw': 0.0, 'pitch': 45.0, 'health': 6.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+=== 00:08:03
+> cmd /effect give @s minecraft:instant_health 1 5 {"ok": true}
+> cmd /effect give @s minecraft:fire_resistance 600 0 true {"ok": true}
+> key minecraft_mode tap {"key": "key.keyboard.g"}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': 48.88080825186388, 'y': -60.0, 'z': 27.717804767201784, 'yaw': 0.0, 'pitch': 45.0, 'health': 0.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+> screenshot sc_rejoin.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_rejoin.png"}
+> cmd /tp @s 30.5 -59 11.9 90 0 {"ok": true}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': 48.88080825186388, 'y': -60.0, 'z': 27.717804767201784, 'yaw': 0.0, 'pitch': 45.0, 'health': 0.0, 'hero': 'kiriko', 'heroMode': False, 'dimension': None}
+=== 00:08:20
+> respawn {"ok": true}
+> close {"ok": true}
+> cmd /difficulty peaceful {"ok": true}
+{'screen': '', 'inWorld': True, 'x': -7.5, 'y': -60.0, 'z': 7.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+=== 00:08:29
+> cmd /execute if block 30 -59 11 minecraft:nether_portal run say nether_portal_lit {"ok": true}
+> cmd /tp @s 30.5 -59 11.9 90 0 {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': 37.0, 'z': -11.1, 'yaw': 90.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> cmd /execute in minecraft:overworld run tp @s 20.5 -59 16.5 {"ok": true}
+> cmd /tp @s 20.5 -59.5 20.5 {"ok": true}
+{'screen': '', 'inWorld': True, 'x': 100.5, 'y': 49.0, 'z': 0.5, 'yaw': 90.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'dimension': None}
+> screenshot sc_end_again.png {"file": "E:\\claude\\mods\\overcraft_scoring\\run\\screenshots\\sc_end_again.png"}
+=== 00:09:00
+> cmd /execute in minecraft:overworld run tp @s 4.5 -60 -20 0 20 {"ok": true}
+> cmd /difficulty normal {"ok": true}
+> cmd /execute at @s run summon minecraft:enderman ~ ~ ~2 {NoAI:1b,Health:3f} {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> cmd /execute if entity @e[type=minecraft:enderman] run say enderman_alive {"ok": true}
+[00:09:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +1000 High Score (kill minecraft:enderman)
+[00:09:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +150 High Score (pickup 1 minecraft:ender_pearl)
+[00:09:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1150 (seg-3.zip)
+> cmd /execute at @s run summon minecraft:cow ~ ~ ~2 {NoAI:1b,Health:1f} {"ok": true}
+> key quick_melee tap {"key": "key.keyboard.v"}
+> cmd /execute if entity @e[type=minecraft:cow,distance=..4] run say cow_alive {"ok": true}
+=== 00:09:14
+=== 00:09:18
+> key minecraft_mode tap {"key": "key.keyboard.g"}
+> press key.keyboard.escape {"key": "key.keyboard.escape"}
+> screen {"screen": "net.minecraft.client.gui.screens.PauseScreen"}
+> screenclick 213 173 {"screen": "TitleScreen"}
+> screen {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+> screenclick 264 213 {"screen": "TitleScreen"}

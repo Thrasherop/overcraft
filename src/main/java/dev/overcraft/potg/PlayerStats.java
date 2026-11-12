@@ -45,6 +45,36 @@ public final class PlayerStats {
 		public int kills;
 		/** The hero they last played, for the end screen's figure. */
 		public String lastHero = "";
+		/** The dimensions whose first entry has been awarded (PotgValues.FIRST_NETHER, FIRST_END), over the world's life. */
+		public List<String> entered = new ArrayList<>();
+	}
+
+	/**
+	 * A player reached a dimension: its first-entry worth (PotgValues: the Nether, the End; owner, 2026-11-11), once per
+	 * player per world, saved at once. The first entry is the first, whatever the mode: one in Minecraft mode scores
+	 * nothing (only heroes in hero mode score) and spends the once.
+	 */
+	public static void entered(ServerPlayer player) {
+		String dim = player.level().dimension().identifier().toString();
+		double worth = dim.equals("minecraft:the_nether") ? PotgValues.FIRST_NETHER
+			: dim.equals("minecraft:the_end") ? PotgValues.FIRST_END : 0;
+		if (worth <= 0) {
+			return;
+		}
+		Player p = of(player);
+		if (p.entered == null) {
+			p.entered = new ArrayList<>();
+		}
+		if (p.entered.contains(dim)) {
+			return;
+		}
+		p.entered.add(dim);
+		if (PlayScore.scores(player)) {
+			PlayScore.progress(player, worth, "first entry " + dim);
+		} else {
+			Overcraft.LOG.info("[POTG] {}: first entry {} (not scored: not a hero in hero mode)", p.name, dim);
+		}
+		flush(player.level().getServer());
 	}
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
