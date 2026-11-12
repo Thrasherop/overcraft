@@ -181,6 +181,7 @@ public final class PlayScore {
 			repinAfterDeath(server, e.getKey(), e.getValue());
 		}
 		if (server.getTickCount() % 20 == 0) {
+			MobStats.flush(server);
 			for (Map.Entry<UUID, Rows> e : ROWS.entrySet()) {
 				step(server, e.getKey(), e.getValue());
 			}

@@ -233,6 +233,7 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof ServerPlayer player) {
 				HeroManager.onDeath(player);
 				dev.overcraft.potg.PlayScore.died(player);
+				dev.overcraft.potg.MobStats.killed(player, source);
 			}
 		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
@@ -248,6 +249,8 @@ public class Overcraft implements ModInitializer {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
+				// the end screen's enemy side: what each mob did to players this run (owner, 2026-11-11)
+				dev.overcraft.potg.MobStats.damaged(player, source, damage);
 			}
 			if (damage > 0 && source.getEntity() instanceof net.minecraft.world.entity.Mob mob && source.getEntity() != entity) {
 				dev.overcraft.hero.Allies.remember(mob, entity);
@@ -273,7 +276,10 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.potg.PotgRecorder.serverStarted(server);
 			dev.overcraft.potg.PlayScore.open();
 		});
-		ServerLifecycleEvents.SERVER_STOPPING.register(dev.overcraft.potg.PotgRecorder::stopAll);
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			dev.overcraft.potg.MobStats.flush(server);
+			dev.overcraft.potg.PotgRecorder.stopAll(server);
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
@@ -300,6 +306,7 @@ public class Overcraft implements ModInitializer {
 			// the scoring and the highlights are statics: a world left must not hand its state to the next one
 			dev.overcraft.potg.PlayScore.clear();
 			dev.overcraft.potg.Highlights.clear();
+			dev.overcraft.potg.MobStats.clear();
 		});
 	}
 }

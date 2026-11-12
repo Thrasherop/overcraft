@@ -185,6 +185,7 @@ public final class PotgReplay {
 			+ choice.category() + " " + Math.round(choice.score()), choice == null ? "" : choice.table(), PlayScore.costReport());
 		// the next plays start from nothing (the run goes on after the dragon: "the whole time"); the highlights stay
 		PlayScore.open();
+		MobStats.decided(server, dragon);
 		if (!killerAllows || choice == null) {
 			return;
 		}

@@ -90,6 +90,10 @@ public final class PotgRecorder {
 		} catch (IOException e) {
 			Overcraft.LOG.warn("[POTG] couldn't tidy {}", root, e);
 		}
+		// and a saved segment no highlight uses (one closed by a crash or an older build)
+		for (UUID id : Highlights.owners(server)) {
+			Highlights.tidy(server, id);
+		}
 	}
 
 	/** END_SERVER_TICK: start, roll and stop each player's recorder; then the engine's own tick. */
@@ -169,6 +173,17 @@ public final class PotgRecorder {
 		CompletableFuture<Long> future = recorder.stop(keep);
 		CLOSING.add(future);
 		future.whenComplete((size, err) -> server.execute(() -> Highlights.tidy(server, r.id)));
+	}
+
+	/** A player left (the vendored listener's onDisconnect): their segment closes, kept only if a highlight is in it. */
+	public static void disconnected(MinecraftServer server, UUID id) {
+		Rec r = RECS.get(id);
+		if (r != null && r.recorder != null) {
+			finish(server, r);
+		}
+		for (ReplayPlayerRecorder left : new ArrayList<>(ReplayPlayerRecorders.get(id))) {
+			left.stop(false);
+		}
 	}
 
 	/** Where a player's recording is now: the segment, its tick, their entity id. Null if they aren't being recorded. */

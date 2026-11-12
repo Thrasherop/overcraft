@@ -79,7 +79,12 @@ public final class ClientPotg {
 			finish(mc);
 			return;
 		}
-		if (mc.gui.screen() == null && mc.level != null) {
+		var screen = mc.gui.screen();
+		// the holder back if a login's loading screen took it, or the pause menu (the window losing focus) did: that menu
+		// would hold a single player's replay stream (found in play: the LAN guest's menu opened mid-replay)
+		boolean loading = screen != null && (screen.getClass().getSimpleName().contains("Loading")
+			|| screen.getClass().getSimpleName().contains("Receiving"));
+		if (mc.level != null && !(screen instanceof PotgCard.Holder) && !loading) {
 			mc.gui.setScreen(new PotgCard.Holder());
 		}
 		mc.gui.toastManager().clear();

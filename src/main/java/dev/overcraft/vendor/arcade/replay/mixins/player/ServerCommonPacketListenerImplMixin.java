@@ -34,7 +34,8 @@ public abstract class ServerCommonPacketListenerImplMixin {
         at = @At("TAIL")
     )
     private void onDisconnect(DisconnectionDetails details, CallbackInfo ci) {
-        ReplayPlayerRecorders.stop(this.playerProfile().id());
+        // Overcraft: its segment is saved only if a highlight is in it, then the folder is tidied (PotgRecorder)
+        dev.overcraft.potg.PotgRecorder.disconnected(this.server, this.playerProfile().id());
 
         if (this instanceof ReplayViewable viewable) {
             ReplayViewer viewer = viewable.arcade_getViewingReplay();

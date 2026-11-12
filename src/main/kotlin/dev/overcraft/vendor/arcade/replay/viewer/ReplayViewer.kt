@@ -80,7 +80,10 @@ public class ReplayViewer internal constructor(
     private val players = Collections.synchronizedList(ArrayList<UUID>())
     private val objectives = Collections.synchronizedCollection(ArrayList<String>())
 
+    // Overcraft: hidden unless showProgress is called (a ServerBossEvent starts visible, so the bar showed: found in play)
     private val bossbar = ServerBossEvent(UUID.randomUUID(), Component.empty(), BossBarColor.BLUE, BossBarOverlay.PROGRESS)
+        .apply { isVisible = false }
+    private var cameraSentAt = Duration.ZERO
 
     // Overcraft (POTG): the entity whose eyes the viewer looks through, a recorded tick to stop at, and what to do then
     // (wall clock: the stream's own delays, never server ticks, since the integrated server pauses), boss bars the
@@ -295,6 +298,12 @@ public class ReplayViewer internal constructor(
                 if (protocol == ConnectionProtocol.PLAY) {
                     this.updateProgress(time)
                     lastTime = time
+                    // Overcraft: once at the window, the camera lock again each second (a re-add or a respawn on the
+                    // client puts the camera back on the viewer: the lock on the add alone didn't hold, found in play)
+                    if (time >= this.target && (time - this.cameraSentAt).inWholeMilliseconds >= 1000) {
+                        this.cameraSentAt = time
+                        this.sendCamera()
+                    }
                 }
             }
         }
