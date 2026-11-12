@@ -4,6 +4,23 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-12: 0.3.38 on next (not on main yet)
+
+- **Tracer (#71)**, the whole kit with her game data's numbers and the owner's Workshop recording:
+  - Pulse Pistols: 40 rounds in a second, 5.75 a bullet, falloff 10 to 20 m, a 1 s reload;
+  - Blink (Shift): 3 charges of 7.5 m, back one every 3 s; follows the ground up stairs and slopes, slides along walls;
+  - Recall (E): back to where she was 3 s ago with that health and full ammo, 12 s cooldown;
+  - Pulse Bomb (Q): sticks, 350 at the centre; Flanker (+50 from a potion of Healing, our stand-in for a health pack);
+    four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero.
+- Fixed in her critic's round: Blink stopped moving her after a few single Blinks but still spent the charge; Recall
+  after a dimension change sent her to the old dimension's coordinates; Blink stopped 1.5 m up any stairs; no wall
+  slide; a lingering Healing cloud counted as endless health packs; a bomb outlived G.
+- Played by her builder, a critic, the fixer, and the coordinator's real-input pass
+  (`techniques/testing/runs/tracer/real_keys_060766e.md`).
+- Not yet: her real visual effects (stand-in particles), Blink's first-person animation, emote sounds, a second player;
+  the bomb's fall (30 m/s², a medium-confidence data reading) needs an Overwatch side-by-side.
+
 ## 2026-11-12: 0.3.37 on next (not on main yet)
 
 - **Play of the Game scoring, the owner's values:** progress toward beating the game now scores, from one table
