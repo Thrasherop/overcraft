@@ -16,6 +16,8 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 	public static final int HELD_WALL_RIDE = 4;
 	/** Climbing a wall (Kiriko: the client moves her; the climb interrupts a reload, #42). */
 	public static final int HELD_WALL_CLIMB = 8;
+	/** Pharah's client hovered her this tick (her Hover Jets: dev.overcraft.pharah.Pharah.hovered). */
+	public static final int HELD_HOVER = 16;
 
 	public static final int PRESS_ABILITY_1 = 1;
 	public static final int PRESS_ABILITY_2 = 2;

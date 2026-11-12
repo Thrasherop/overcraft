@@ -1024,6 +1024,23 @@ public final class HeroHud {
 				(float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.PHARAH) {
+			// Jet Dash (the right button), Jump Jet (Shift), Concussive Blast (E), her data's SECONDARY / ABILITY 1 / 2, in Lucio's
+			// three places (ours); a jet's box lit while it's going
+			ability(g, hero, w, "jet_dash", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), s.ability3Cooldown(),
+				(float) dev.overcraft.pharah.PharahStats.JET_DASH_COOLDOWN, -1);
+			if ((s.mode() & dev.overcraft.pharah.Pharah.MODE_JET_DASH) != 0) {
+				song(g, true, false, w - 719, 900, w);
+			}
+			ability(g, hero, w, "jump_jet", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.pharah.PharahStats.JUMP_JET_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.pharah.Pharah.MODE_JUMP_JET) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "concussive_blast", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.pharah.PharahStats.CONCUSSIVE_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.JUNO) {
 			// Glide Boost (Shift) and Hyper Ring (E), her data's ABILITY 1 / 2, in Kiriko's two places (ours)
 			ability(g, hero, w, "glide_boost", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
@@ -1199,6 +1216,21 @@ public final class HeroHud {
 		g.pose().popMatrix();
 	}
 
+	/** Pharah's fuel (0-1, overfuel to 1.5 / 2) on her Hover Jets panel: its number over a band, her blue, white past full (ours). */
+	private static void fuel(GuiGraphicsExtractor g, float fuel, float x, float y, float width, float w) {
+		float cx = x + width / 2;
+		g.pose().pushMatrix();
+		curve(g, cx, y + 32, slopeAt(960 - (w - cx)));
+		fill(g, x + 8, y + 58, width - 16, 5, 0x66000000);
+		fill(g, x + 8, y + 58, (width - 16) * Math.clamp(fuel, 0, 1), 5, fuel <= 0.001f ? 0x99A0A0A0 : 0xFF6FB6FF);
+		if (fuel > 1) {
+			fill(g, x + 8, y + 54, (width - 16) * Math.clamp(fuel - 1, 0, 1), 3, 0xFFFFFFFF);
+		}
+		String number = String.valueOf(Math.round(fuel * 100));
+		brush(g, number, x + width - 30, y + 50, 26);
+		HudText.plain(g, Face.NUMBERS, number, x + width - 30, y + 50, 26, WHITE, Align.CENTER);
+		g.pose().popMatrix();
+	}
 	/** Sojourn's Railgun energy on her Charged Shot panel, where there's no reticle to show it: its number over a band (ours). */
 	private static void railgunEnergy(GuiGraphicsExtractor g, float energy, float x, float y, float width, float w) {
 		float cx = x + width / 2;
@@ -1372,6 +1404,16 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.PHARAH) {
+			// the Rocket Launcher's 6 (the left button) where Kiriko's kunai are; Hover Jets' fuel (Jump) as a band where her ofuda
+			// panel is (ours: Overwatch draws it as an arc beside the crosshair), white over 100 (overfuel)
+			weapon(g, hero, w, "hover_jets", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				net.minecraft.client.Minecraft.getInstance().options.keyJump, w - 355, 1009);
+			fuel(g, s.meter(), w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "rocket_launcher", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.pharah.PharahStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.JUNO) {

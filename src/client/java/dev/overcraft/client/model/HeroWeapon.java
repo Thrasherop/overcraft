@@ -46,7 +46,10 @@ public final class HeroWeapon {
 		Hero.DVA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Sojourn's Railgun, entity 2D20 (model D7B4) on her hardpoint 00C9 = bone_0606, no offset, in both views (var 4E30:
 		// research/sojourn/work/assets.md); hero_models/sojourn_weapon.glb
-		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
+		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
+		// Pharah's Rocket Launcher, entity 003B (model F131) on her hardpoint 000A = Weapon_R in both views (pharah-map.md, var 1B9F);
+		// hero_models/pharah_weapon.glb
+		Hero.PHARAH, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -412,12 +415,15 @@ public final class HeroWeapon {
 		// Sigma's hand spheres (their Flux aim clip is their own): Heroic, Observations, Relaxation and Constellation play
 		// their clips on slot 54CE (techniques/emotes/sigma_emotes.md)
 		boolean spheres = model.clips.containsKey("flux_aim_sm0");
-		if (!staff && !flail && !railgun && !spheres) {
+		// Pharah's Rocket Launcher (its Barrage and Jump Jet clips are its own): Justice Reloaded plays its 8B1A on slot 1B9F
+		// (tools/clipmaps/pharah_weapon.txt)
+		boolean launcher = model.clips.containsKey("barrage") && model.clips.containsKey("jump_jet");
+		if (!staff && !flail && !railgun && !spheres && !launcher) {
 			return null;
 		}
-		EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : spheres ? "sigma" : "brigitte");
+		EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : spheres ? "sigma" : launcher ? "pharah" : "brigitte");
 		return data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(),
-			staff ? "staff" : railgun ? "railgun" : spheres ? "spheres" : "flail");
+			staff ? "staff" : railgun ? "railgun" : spheres ? "spheres" : launcher ? "launcher" : "flail");
 	}
 
 	/** Sigma's spheres playing an emote clip that keys their root half a metre or more off rest: in his space (place). */

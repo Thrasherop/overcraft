@@ -165,6 +165,9 @@ WEAPON_SLOTS = {
     # Mic Drop / Salty layer; clips played on it (action 4) in Heroic (7459), Observations (72F1), Relaxation (7365, 7367,
     # 7366) and Constellation (CBE3): sigma_weapon.txt (techniques/emotes/sigma_emotes.md)
     "sigma": {"54CE": ("stow", "spheres", "sigma_weapon.txt")},
+    # Pharah's Rocket Launcher 003B (model F131) hangs in slot 1B9F on 000A (research/pharah/work/ents_pharah_out.txt: hero entity
+    # 0032's child 3B.003 "hp A.03C var 1B9F"; tools/reference/pharah-map.md): pharah_weapon.txt
+    "pharah": {"1B9F": ("stow", "launcher", "pharah_weapon.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -185,6 +188,10 @@ DUPLICATES = {"lucio": {"4A52", "B1B9"},
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
 STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True, "sigma": True}
+# heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
+# look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
+# entity (WEAPON_SLOTS), put away with the stow windows
+NO_PIECES = {"pharah"}
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
@@ -211,6 +218,8 @@ CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66
 
 # DataTool's folder for a hero whose name isn't our id capitalised
 HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat", "dva": "D.Va"}
+# weapon clips the data plays that the weapon's clip map lacks: all listed before the run stops (nothing is written)
+MISSING_WEAPON_CLIPS = []
 
 
 def plain(name):
@@ -288,7 +297,12 @@ def main():
         model = re.search(r'"m_model": "0*([0-9A-F]+)\.00C"', data)
         # a ragdoll (STURagdollConfig) falls by physics once spawned too: Make it Rain's bills 5E1F (162CA), spawned for 0.067 s
         # off her hands (techniques/emotes/dva_emotes.md)
-        return (model.group(1) if model else None), "STUProjectileVisualComponent" in data or "STURagdollConfig" in data
+        # Pharah (2026-11-11): only a blink of a window releases a ragdoll (the bills' 0.067 s); one held on its hardpoint for its
+        # window stays there (her Rocket Guitar's launcher 1588, a ragdoll with no projectile, on Weapon_L for the whole 7.83 s
+        # loop): "ragdoll" here, sorted by the window where the spawn is read (M)
+        if "STUProjectileVisualComponent" in data:
+            return (model.group(1) if model else None), True
+        return (model.group(1) if model else None), "ragdoll" if "STURagdollConfig" in data else False
 
     def raw_controls(fx):
         """The effect's EntityControls in file order (as TankLib lists them), read raw: (identifier, action)."""
@@ -492,7 +506,7 @@ def main():
                     if bit in BODY_WEAPON_GEOSETS[hero] and verts <= count <= verts * 1.02 + 2:
                         piece_geosets[name] = BODY_WEAPON_GEOSETS[hero][bit]
             print("first-LOD submeshes (geoset, vertices):", lod1)
-        for name, (count, size, centre) in (() if hero in BODY_WEAPON_GEOSETS else glb_meshes(hero_glb).items()):
+        for name, (count, size, centre) in (() if hero in BODY_WEAPON_GEOSETS or hero in NO_PIECES else glb_meshes(hero_glb).items()):
             if size <= PROP_SIZE and centre <= STOWED_RADIUS:
                 under = [(v, bit) for bit, v in per.items() if v <= count]
                 if under:
@@ -552,6 +566,8 @@ def main():
                     info["spawns"].append(spawn)
                 elif kind == "teEffectComponentEntity":
                     model, projectile = entity(gid(fields.get("Entity")))
+                    if projectile == "ragdoll":
+                        projectile = dur <= 0.1
                     spawn = {"model": model, "entity": gid(fields.get("Entity")), "hardpoint": hp, "start": start,
                              "duration": dur, "clip": None, "falls": projectile}
                     info["spawns"].append(spawn)
@@ -572,7 +588,10 @@ def main():
                         # the weapon stays out and plays its own clip over the window
                         own = clip_names(slot[2]).get(clip.lstrip("0").upper())
                         if own is None:
-                            sys.exit(f"{slot[1]} plays clip {clip}: not in tools/clipmaps/{slot[2]} (export it into the model first)")
+                            # listed all at once (Pharah: so one re-export takes every clip), then the run stops
+                            MISSING_WEAPON_CLIPS.append(f"{slot[1]} plays clip {clip} ({name} {start}-{round(start + dur, 4)} s): not in "
+                                                        f"tools/clipmaps/{slot[2]} (export it into the model first)")
+                            continue
                         info["weaponClips"].append({"clip": own, "weapon": slot[1], "start": start, "end": round(start + dur, 4)})
                     elif ident in CHILD_PROPS.get(hero, {}) and clip is not None and action == PLAY:
                         # a prop that is a child of the hero entity itself, shown and playing its clip over the window
@@ -710,6 +729,8 @@ def main():
                         e[ours] = h[theirs]
                 if h.get("audience") in ("own", "others"):
                     e["audience"] = h["audience"]
+    if MISSING_WEAPON_CLIPS:
+        sys.exit("\n".join(MISSING_WEAPON_CLIPS))
     target = ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes" / f"{hero}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(out, indent=1), encoding="utf8")

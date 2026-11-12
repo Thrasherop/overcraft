@@ -33,7 +33,9 @@ public enum Hero {
 		0xFFE85A9B),
 	// the first Damage hero (#2): her kit is being built, step by step on her branch: playable there, not merged until it's whole;
 	// Sharpshooter (D loadout 0DDD; BZ 2026-02-10); her data's hero colour (0.843, 0.243, 0.173)
-	SOJOURN("sojourn", "Sojourn", Role.DAMAGE, "sharpshooter", dev.overcraft.sojourn.SojournStats.HEALTH, true, 0xFFD73E2C);
+	SOJOURN("sojourn", "Sojourn", Role.DAMAGE, "sharpshooter", dev.overcraft.sojourn.SojournStats.HEALTH, true, 0xFFD73E2C),
+	// the second Damage hero (#70), Recon (D loadout 0DAD; BZ 2026-02-10); colour ours (her armour's blue, until her data's is read)
+	PHARAH("pharah", "Pharah", Role.DAMAGE, "recon", dev.overcraft.pharah.PharahStats.HEALTH, true, 0xFF3E7CC9);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

@@ -134,6 +134,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Pharah's rockets, Barrage's, Rocket Salvo's and Concussive Blast (pharah-map.md): 0.32 m at most (not saved: 5-10 s of flight). */
+	public static final EntityType<dev.overcraft.entity.PharahRocketEntity> PHARAH_ROCKET = register("pharah_rocket",
+		EntityType.Builder.<dev.overcraft.entity.PharahRocketEntity>of(dev.overcraft.entity.PharahRocketEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2, (float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)

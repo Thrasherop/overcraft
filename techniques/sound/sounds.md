@@ -289,6 +289,21 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **One map file per kind is fine:** the builder reads every `tools/soundmaps/*.txt`, so a hero's voice and effects can be two files
     (`dva.txt`, `dva_sfx.txt`), each from its own generator.
   - **A mech hero's held states need their own synced state for others' loops** (`HeroManager.DVA_STATE`), as Sigma's `SIGMA_STATE`.
+- <a id="pharah-sounds"></a>**Pharah's maps (2026-11-11; `tools/soundmaps/pharah_sfx.txt` (31 events), voice `pharah.txt` (31 events);
+  scripts `research\pharah\scripts\sounds\` (D.Va's pipeline retargeted, `pharah_table.py` / `pharah_gen.py`, `pharah_voice_gen.py`),
+  data `research\pharah\sounds\`, kit ids `tools/reference/pharah-map.md`):**
+  - **A weapon graph can play no sound at all.** Her Rocket Launcher graph 0023 names one particle effect; the shot is on her fire
+    clips' animation effects (1P 03AF -> 008B -> 10D5, hers; 3P 3B54 / 04F7 -> 10D4, 45 m). Read `clip_sounds.txt` before deciding a
+    weapon has no fire sound.
+  - **The rocket's slots:** `m_A18274A3` (0091: 5CFA hers / 6FAE others, plus the shared 8DE7 crack) as the direct hit, Juno's reading;
+    `m_6CB564CC` (0115: 5D00 / 5CFF, long tails) as the burst, as Concussive's 0116 (5E81) and Barrage's 0081 (5E83) share its tail
+    containers. Barrage's and Rocket Salvo's mini-rockets use D.Va's missile contact sets 0783 / 0772.
+  - **Held states with Stop sets:** the Hover Jets' 00F3 (0025 #122 holds it) is ignition + bed + Stop set, built as hover.start / .loop
+    (a client loop, `client.PharahSounds`, on `PHARAH_STATE`'s hover bit) / .end. Barrage's 1FCB is one held stream for the volley (no
+    per-rocket launch sound): built as cast (once sets + the 3.9 s bed) and end (its Stop set); `barrage.fire` stays empty.
+  - **Ult picks** 002B #367 (STU_37D754C8, the shared 545C): F1AA 008B enemies, F1AB 048F friends, F1AC 1857 her own (the enemy line's
+    text again, as Sojourn's and Sigma's). **Jet Dash has no voice stimulus** (4B92 names none): `pharah.voice.jet_dash` stays empty.
+  - Not mapped (direct-hit streak lines 11D4-11D6 on 0023's counter v42868; emote sounds): in the maps' headers.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

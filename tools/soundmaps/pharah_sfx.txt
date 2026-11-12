@@ -1,0 +1,756 @@
+# Pharah's sound effects: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as
+# dva_sfx.txt; her voice is pharah.txt (pharah_voice_gen.py). build_asset_pack.py sounds copies / mixes them into the local pack.
+# Read 2026-11-11 offline (Overwatch and Battle.net checked closed before every archive read and DataTool / TankLib run):
+# her 02C sounds' Wwise banks decoded (ww.py, dump_banks.py), the Init bank's game parameter defaults (1E818, stmg.py).
+# Scripts: E:/Overwatch Archive/research/pharah/scripts/sounds/ (pharah_gen.py writes this file from pharah_table.py; D.Va's
+# pipeline copied and retargeted: fx_graph_pharah.py, fx_sounds2_pharah.py, clip_sounds_pharah.py, fx_nodes.py, node_up.py,
+# fx_timed.py, contacts.py, ww.py, dump_banks.py, extract_banks.py, measure_pharah.py, overview.py, stmg.py); their data:
+# research/pharah/sounds/ (pharah_ww.json, banks_raw.json, pharah_measure.json, fx_proj.json, contacts.json, overview.txt,
+# fx_nodes_out.txt, clip_sounds.txt). The kit: tools/reference/pharah-map.md. Her skin extraction is research/pharah/extract and
+# the 24 banks it lacked (the projectiles' slot and contact sounds, the hover's Stadium-free sets) were extracted into
+# research/pharah/sounds/ExtraSounds/Pharah (extract_banks.py; groups Rocket, Concussive, Barrage, Hover, Shared).
+# Not mapped: barrage.fire (the volley is one held stream, 1FCB; the mini-rocket 0052 has no launch slot: barrage.cast holds it);
+# perk.helix (no effect in 51E9's Helix branch); Rocket Salvo armed 74B7 / F664 (51E9 #696, no call site); the ability-denied
+# 0186 / 0FCB (shared); 007B #284's charge pings 009B / 5F58 (L meaning); the Concussive's on-target 012F (5CFB / 1108); the
+# rocket's direct-hit contact set 0015 (8BC5 / 9025 / 9029, the shared character hit: the 0091 slot built instead); the fuel
+# regen hum 05AC / 1094 and the push loop 5921 / B04D (0025 #126 / #723); the Stadium 6056 (behind 07B9.134); footsteps.
+# Ids: 02C sounds (5DC5 = 000000005DC5.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs
+# 01B with their node numbers. Confidence: H read in the data, M inferred, L guess. Stadium powers' sets are left out.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list); modulators: an LFO at its
+# middle, a time modulator at its start on one-shots and at its end on loops. As in sojourn.txt, ONE offset per family keeps
+# his sounds' balance with each other, bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches
+# sums): own +0.5 dB (loudest: pharah.jet_dash), 3p -0.5 dB (loudest: pharah.jump_jet_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek, Wwise states
+# and the voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB
+# under the loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are
+# tiled across it and beds more than 15 % longer are left out.
+# Own vs others: audience-1 copies and no-range copies are the player the effect plays on ('own': D.Va, or the shooter for
+# a hit, M as in Sigma's map); ranged copies are everyone else's ('3p'); where two ranged copies hold the same files the
+# louder is built (L which team's / near or far). A sound with no own copy is built once for everyone ('both').
+
+# ===== How each game event is put together (rules)
+# pharah.rocket.fire: Rocket Launcher fire, own: 10D5 (a 0.60 s shot and a 0.17-0.23 s click at 0.58 s).
+# Trigger: PRIMARY (0023 #16): a rocket leaves; her fire clips' animation effects (1P 03AF / 3P 3B54, 04F7) play it;
+#  1P 03AF's 008B: 10D5 at 0.002 s (H).
+# Layers: a 10D5 627567541 RanSeq 0.17-0.23 s x3, net -4.5; b 10D5 844172344 Sound 0.60 s, net -4.5.
+@pharah.rocket.fire = pharah.rocket.fire.a@0.582:-4 + pharah.rocket.fire.b:-4
+# pharah.rocket.fire_3p: Rocket Launcher fire heard by others: 10D4 (45 m: the same two layers).
+# Trigger: PRIMARY (0023 #16): a rocket leaves; her fire clips' animation effects (1P 03AF / 3P 3B54, 04F7) play it;
+#  3P 3B54's 1CA3 / 04F7's 00A7: 10D4 (45 m, H).
+# Layers: a 10D4 41890556 RanSeq 0.17-0.23 s x3, net -16.5; b 10D4 717874034 Sound 0.60 s, net -13.5.
+@pharah.rocket.fire_3p = pharah.rocket.fire_3p.a@0.582:-17 + pharah.rocket.fire_3p.b:-14
+# pharah.rocket.burst: Rocket explosion: 5CFF (200 m: a 1.36 s crack, a 1.70 s body at +600 cents, 3.35-3.80 s and
+#  4.70-6.09 s tails).
+# Trigger: the rocket bursts (anything it touches, or its 5 s end): the rocket 0033's m_6CB564CC slot effect 0115 ->
+#  5D00 (audience 1, hers) / 5CFF (200 m, audience 2); the burst slot as Sigma's spheres' (M). The code plays one copy
+#  for everyone: 5CFF built (M).
+# Layers: a 5CFF 525401241 RanSeq 3.35-3.80 s x10, net -20.5; b 5CFF 741222748 RanSeq 4.70-6.09 s x7, net -14.5; c
+#  5CFF 215185971 RanSeq 1.36-1.38 s x6 -22 cents, net -10.5; d 5CFF 788123227 Sound 1.70 s +600 cents, net -16.
+@pharah.rocket.burst = pharah.rocket.burst.a@0.1:-21 + pharah.rocket.burst.b@0.1:-15 + pharah.rocket.burst.c*0.987:-11 + pharah.rocket.burst.d*1.414:-16.5
+# pharah.rocket.hit_enemy: Rocket direct hit, own: 5CFA (2.76-3.00 s, 1.04-1.48 s and 1.53-1.95 s sets, a 0.35 s tick)
+#  + 8DE7 (the shared hit crack).
+# Trigger: a direct hit on a character: the rocket 0033's m_A18274A3 slot ('on a target', Juno's reading, M) effect
+#  0091 -> 5CFA (audience 1, hers) and its sub-effect 405B -> 8DE7 (the shared hit-confirm crack, as Mercy's 4010).
+# Layers: a 8DE7 413748272 RanSeq 0.41-0.61 s x16 +430 cents, net -22; b 8DE7 19863385 RanSeq 0.54-0.60 s x10 +710
+#  cents, net -12; c 5CFA 1025677612 RanSeq 1.04-1.48 s x9 -100 cents, net -19; d 8DE7 1057399041 RanSeq 0.49-0.56 s
+#  x7 +535 cents, net -18.5; e 5CFA 528372743 RanSeq 2.82-2.98 s x6, net -10; f 5CFA 271327441 RanSeq 2.76-3.00 s x6
+#  -50 cents, net -17; g 5CFA 220387593 RanSeq 1.53-1.95 s x3 -300 cents, net -24.5; h 5CFA 277755899 Sound 0.35 s,
+#  net -11.
+@pharah.rocket.hit_enemy = pharah.rocket.hit_enemy.a*1.282@0.002:-21.5 + pharah.rocket.hit_enemy.b*1.507@0.002:-11.5 + pharah.rocket.hit_enemy.c*0.944@0.1025:-19 + pharah.rocket.hit_enemy.d*1.362@0.002:-18 + pharah.rocket.hit_enemy.e:-9.5 + pharah.rocket.hit_enemy.f*0.972@0.08:-16.5 + pharah.rocket.hit_enemy.g*0.841:-24 + pharah.rocket.hit_enemy.h:-10.5
+# pharah.rocket.hit_enemy_3p: Rocket direct hit heard by others: 6FAE (200 m, the same sets).
+# Trigger: the same direct hit, at the target for everyone else: 0091's 6FAE (200 m, audience 2).
+# Layers: a 6FAE 542112225 RanSeq 1.04-1.48 s x9 -100 cents, net -25.5; b 6FAE 80907360 RanSeq 2.82-2.98 s x6, net
+#  -15.5; c 6FAE 292219765 RanSeq 2.76-3.00 s x6 -50 cents, net -23.5; d 6FAE 121908739 RanSeq 1.64-1.92 s x4 -100
+#  cents, net -19.5; e 6FAE 447614237 RanSeq 1.53-1.95 s x3 -300 cents, net -31.
+@pharah.rocket.hit_enemy_3p = pharah.rocket.hit_enemy_3p.a*0.944@0.1025:-26 + pharah.rocket.hit_enemy_3p.b:-16 + pharah.rocket.hit_enemy_3p.c*0.972@0.08:-24 + pharah.rocket.hit_enemy_3p.d*0.944@0.04:-20 + pharah.rocket.hit_enemy_3p.e*0.841:-31.5
+# pharah.rocket.hit_block: Rocket hits the world: 858A (90 m) + 85C7 (32 m) debris.
+# Trigger: the rocket hits the world: 0033's m_contactSet 0245, type 2, material 0001 -> contact 3FBA: 858A (90 m) +
+#  85C7 (32 m), built together (Sojourn's reading); the other 21 materials have their own (contacts.json).
+# Layers: a 85C7 505818504 RanSeq 1.52-2.83 s x5 -112 cents, net -30; b 858A 585824077 RanSeq 1.52-2.83 s x5 -112
+#  cents, net -26.5; c 85C7 309612393 RanSeq 1.82-3.60 s x4 +88 cents, net -22; d 858A 436383870 RanSeq 1.82-3.60 s x4
+#  +88 cents, net -18.5.
+@pharah.rocket.hit_block = pharah.rocket.hit_block.a*0.937@0.05:-30.5 + pharah.rocket.hit_block.b*0.937@0.0825:-27 + pharah.rocket.hit_block.c*1.052:-22.5 + pharah.rocket.hit_block.d*1.052@0.0325:-19
+# pharah.reload: Rocket Launcher reload, own: four 0.36-0.47 s mechanism clacks over 1.37 s and a cloth rustle.
+# Trigger: RELOAD or an empty magazine (0023 #33 StateAnim alias 0004): her 1P reload clip 03C9's effect 008E: 9207
+#  @0, 1137 @0.333 (cloth), 9208 @0.633, 9209 @0.999, 920A @1.368 (H); B2A2 (@0.3 for 0.77 s) has no event in its
+#  bank.
+# Layers: a 1137 387810409 RanSeq 0.21-0.63 s x13 -400 cents, net -16; b 1137 343743015 RanSeq 0.32-0.41 s x5 -125
+#  cents, net -19.5; c 9207 866770254 Sound 0.44 s, net -12.5; d 9208 428825458 Sound 0.45 s, net -12.5; e 9209
+#  317843479 Sound 0.36 s, net -12.5; f 920A 103332500 Sound 0.47 s, net -7.5.
+@pharah.reload = pharah.reload.a*0.794@0.3533:-15.5 + pharah.reload.b*0.930@0.3583:-19 + pharah.reload.c:-12 + pharah.reload.d@0.6327:-12 + pharah.reload.e@0.999:-12 + pharah.reload.f@1.3679:-7
+# pharah.reload_3p: Rocket Launcher reload heard by others: the four clacks (45 m) and the rustle.
+# Trigger: the same reload for everyone else: the 3P clip 0462's effect 0098 on the launcher's hp 000B: DA2C-DA2F (45
+#  m) and 1138 (30 m) at their clip times (H); its no-range 9622-9625 hold the same files 17 dB quieter (left out: the
+#  ranged copy built).
+# Layers: a 1138 654180567 RanSeq 0.21-0.63 s x13 -400 cents, net -16; b 1138 839738080 RanSeq 0.32-0.41 s x5 -125
+#  cents, net -19.5; c DA2C 556977918 Sound 0.44 s, net -8.5; d DA2D 898577044 Sound 0.45 s, net -8.5; e DA2E 12705013
+#  Sound 0.36 s, net -8.5; f DA2F 181076741 Sound 0.47 s, net -3.5.
+@pharah.reload_3p = pharah.reload_3p.a*0.794@0.3533:-16.5 + pharah.reload_3p.b*0.930@0.3583:-20 + pharah.reload_3p.c:-9 + pharah.reload_3p.d@0.6335:-9 + pharah.reload_3p.e@1.0988:-9 + pharah.reload_3p.f@1.464:-4
+# pharah.jump_jet: Jump Jet, own: 5CFC (a 0.32 s ignition, 2.12-2.46 s and 1.68-1.85 s roars, a 1.44 s whoosh, ticks).
+# Trigger: ABILITY 1 (0027 #82): #36 the impulse -> #55 ActionEffect 00F2 on her (H); 00F2's 5CFC (audience 1, no range: hers).
+# Layers: a 5CFC 427421878 RanSeq 2.12-2.46 s x4 -50 cents, net -3; b 5CFC 16709578 RanSeq 0.24-0.29 s x3, net -11.5;
+#  c 5CFC 260950311 RanSeq 1.68-1.85 s x2 -50 cents, net -5; d 5CFC 614578081 Sound 0.32 s, net -8; e 5CFC 676027483
+#  Sound 1.44 s +10 cents, net -15; f 5CFC 958439947 Sound 1.95 s -88 cents, net -33.
+@pharah.jump_jet = pharah.jump_jet.a*0.972:-2.5 + pharah.jump_jet.b@0.1:-11 + pharah.jump_jet.c*0.972@0.15:-4.5 + pharah.jump_jet.d:-7.5 + pharah.jump_jet.e*1.006@0.15:-14.5 + pharah.jump_jet.f*0.950@0.5:-32.5
+# pharah.jump_jet_3p: Jump Jet heard by others: 105E (2.00 s + 2.36 s at +200 cents) and 2A9F (80 m).
+# Trigger: ABILITY 1 (0027 #82): #36 the impulse -> #55 ActionEffect 00F2 on her (H); 00F2's 105E (80 m, on hp 0004,
+#  held 3 s) + 2A9F (80 m), everyone else.
+# Layers: a 105E 57120284 Sound 2.00 s, net -4; b 105E 729395015 Sound 2.36 s +200 cents, net -0.5; c 2A9F 369217337
+#  Sound 2.00 s, net -18.
+@pharah.jump_jet_3p = pharah.jump_jet_3p.a:-5 + pharah.jump_jet_3p.b*1.122:-1 + pharah.jump_jet_3p.c:-18.5
+# pharah.jet_dash: Jet Dash, own: B03F (1.74-1.92 s thrust, 0.24-0.29 s ticks, a 0.30 s ignition).
+# Trigger: SECONDARY (4B92 #520 / #82): #36 the impulse -> #55 ActionEffect 5910 on her (H); 5910's B03F (no range:
+#  hers, Jetpack Cat's rule, M).
+# Layers: a B03F 143009719 RanSeq 1.74-1.92 s x3, net -10; b B03F 396401156 RanSeq 0.24-0.29 s x3, net -10.5; c B03F
+#  1011621512 Sound 0.30 s, net -2.
+@pharah.jet_dash = pharah.jet_dash.a:-9.5 + pharah.jet_dash.b:-10 + pharah.jet_dash.c:-1.5
+# pharah.jet_dash_3p: Jet Dash heard by others: B040 (70 m).
+# Trigger: SECONDARY (4B92 #520 / #82): #36 the impulse -> #55 ActionEffect 5910 on her (H); 5910's B040 (70 m, on hp
+#  0004), everyone else.
+# Layers: a B040 301251969 RanSeq 1.64-1.83 s x3, net -16; b B040 725761196 Sound 0.30 s, net -6.
+@pharah.jet_dash_3p = pharah.jet_dash_3p.a:-16.5 + pharah.jet_dash_3p.b:-6.5
+# pharah.hover.start: Hover Jets ignite, own: 105D's 1.65-2.31 s ignition (-595 cents).
+# Trigger: JUMP held in the air (0025 #21): #122 StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H);
+#  105D's once set at the start.
+# Layers: a 105D 366311019 RanSeq 1.65-2.31 s x3 -595 cents, net -21.
+@pharah.hover.start = pharah.hover.start.a*0.709:-20.5
+# pharah.hover.loop: Hover Jets thrust, own: 105D's bed (5.02 s at -1290 cents = 10.58 s; its quieter 3.35 s bed left
+#  out: one loop length).
+# Trigger: JUMP held in the air (0025 #21): #122 StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H);
+#  105D's 5.02 s bed at -1290 cents, held.
+# Layers: a 105D 135076481 Sound 5.02 s -1290 cents, net -15.
+# LOOP LENGTH 10.582 s: play it again every LOOP LENGTH (the built file runs 10.58 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@pharah.hover.loop = pharah.hover.loop.a*0.475:-14.5
+# pharah.hover.end: Hover Jets cut out, own: 105D's Stop set (0.48-0.57 s).
+# Trigger: the hover ends (let go, landed, out of fuel: 00F3 stops; 105D's Stop event, H).
+# Layers: a 105D Stop-event 13922032 RanSeq 0.48-0.57 s x3 +15 cents, net -5.
+@pharah.hover.end = pharah.hover.end.a*1.009:-4.5
+# pharah.hover.start_3p: Hover Jets ignite heard by others: 105C's ignition (+945 cents).
+# Trigger: JUMP held in the air (0025 #21): #122 StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H);
+#  105C's once set (80 m), everyone else.
+# Layers: a 105C 783939354 RanSeq 1.65-2.31 s x3 +945 cents, net -15.5.
+@pharah.hover.start_3p = pharah.hover.start_3p.a*1.726:-16
+# pharah.hover.loop_3p: Hover Jets thrust heard by others: 105C's 4.23 s bed (2AA0's quieter bed left out).
+# Trigger: JUMP held in the air (0025 #21): #122 StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H);
+#  105C's 4.23 s bed, held (80 m).
+# Layers: a 105C 200646879 Sound 4.23 s +35 cents, net -3.
+# LOOP LENGTH 4.146 s: play it again every LOOP LENGTH (the built file runs 4.15 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@pharah.hover.loop_3p = pharah.hover.loop_3p.a*1.020:-3.5
+# pharah.hover.end_3p: Hover Jets cut out heard by others: 105C's Stop sets.
+# Trigger: the hover ends, at her for everyone else (105C's Stop event).
+# Layers: a 105C Stop-event 162966139 RanSeq 0.55-0.57 s x2, net -23; b 105C Stop-event 74358586 Sound 0.55 s, net -28.
+@pharah.hover.end_3p = pharah.hover.end_3p.a:-23.5 + pharah.hover.end_3p.b:-28.5
+# pharah.hover.empty: Hover Jets out of fuel: B050 (a 1.14 s sputter and a 0.27 s click).
+# Trigger: her fuel runs out: 0025 #30 StateChaseVar (the 50/s drain) onFinished -> #724 ActionEffect 5939 -> B050 (no range, H).
+# Layers: a B050 358878134 Sound 1.14 s, net -11.5; b B050 478897352 Sound 0.27 s, net -21.5.
+@pharah.hover.empty = pharah.hover.empty.a:-11 + pharah.hover.empty.b@0.2:-21
+# pharah.concussive.cast: Concussive Blast cast, own: 1205 (0.32 s), 1C00 (1.12-1.14 s), 1206 (0.41 s).
+# Trigger: ABILITY 2 (007B #83): State #85 StateAnim 001E; her concussive clips play it; 1P clip 0514's effect 00AB:
+#  1205 @0, 1C00 @0, 1206 @0.467 (H).
+# Layers: a 1C00 1067789866 RanSeq 1.12-1.14 s x2, net -9.5; b 1205 437712589 Sound 0.32 s, net -14.5; c 1206
+#  841436124 Sound 0.41 s, net -14.5.
+@pharah.concussive.cast = pharah.concussive.cast.a@0.025:-9 + pharah.concussive.cast.b:-14 + pharah.concussive.cast.c@0.5667:-14
+# pharah.concussive.cast_3p: Concussive Blast cast heard by others: 1BFF (45 m).
+# Trigger: ABILITY 2 (007B #83): State #85 StateAnim 001E; her concussive clips play it; 3P clip 0491's effect 03E0:
+#  1BFF (45 m, H).
+# Layers: a 1BFF 790252522 RanSeq 1.12-1.14 s x2, net -21.5.
+@pharah.concussive.cast_3p = pharah.concussive.cast_3p.a@0.1:-22
+# pharah.concussive.burst: Concussive Blast burst: 5E81 (four 0.70-2.03 s layers and the rockets' 3.35-6.09 s tails).
+# Trigger: the blast bursts: 010F's m_6CB564CC slot effect 0116 -> 5E81 (200 m; its only copy: built once for everyone, M).
+# Layers: a 5E81 525401241 RanSeq 3.35-3.80 s x10, net -20.5; b 5E81 741222748 RanSeq 4.70-6.09 s x7, net -14.5; c
+#  5E81 1020064404 Sound 2.03 s -90 cents, net -14.5; d 5E81 987453938 Sound 0.76 s, net -13; e 5E81 94216568 Sound
+#  0.70 s +180 cents, net -17; f 5E81 605542758 Sound 1.10 s -70 cents, net -14.5.
+@pharah.concussive.burst = pharah.concussive.burst.a@0.1:-21 + pharah.concussive.burst.b@0.1:-15 + pharah.concussive.burst.c*0.949:-15 + pharah.concussive.burst.d:-13.5 + pharah.concussive.burst.e*1.110@0.05:-17.5 + pharah.concussive.burst.f*0.960@0.07:-15
+# pharah.barrage.cast: Barrage, own: 5E87 (1.26-1.36 s and 1.17 s starts, a 3.91 s bed).
+# Trigger: ULTIMATE (002B #20): #21 StateWeaponVolley -> #71 holds effect 1FCB on her for the 2.5 s volley (H); 5E87's
+#  once sets and its 3.91 s bed (built as one 4.1 s one-shot: the 2.5 s ult ends inside one bed, M).
+# Layers: a 5E87 1051377315 RanSeq 1.26-1.36 s x2, net -11; b 5E87 1018337786 Sound 1.17 s, net -13; c 5E87 446632127
+#  Sound 3.91 s, net -14.
+@pharah.barrage.cast = pharah.barrage.cast.a:-10.5 + pharah.barrage.cast.b:-12.5 + pharah.barrage.cast.c@0.2:-13.5
+# pharah.barrage.cast_3p: Barrage heard by others: 16F1 (200 m: a 1.44-1.71 s start and a 3.99 s bed).
+# Trigger: ULTIMATE (002B #20): #21 StateWeaponVolley -> #71 holds effect 1FCB on her for the 2.5 s volley (H); 16F1
+#  (200 m), everyone else.
+# Layers: a 16F1 992738970 RanSeq 1.44-1.71 s x2, net -24; b 16F1 580069598 Sound 3.99 s, net -11.
+@pharah.barrage.cast_3p = pharah.barrage.cast_3p.a:-24.5 + pharah.barrage.cast_3p.b@0.2:-11.5
+# pharah.barrage.end: Barrage ends, own: 5E87's Stop set (0.90-2.10 s at -1200 cents).
+# Trigger: the volley ends (1FCB stops; 5E87's Stop event, H).
+# Layers: a 5E87 Stop-event 133826180 RanSeq 0.90-2.10 s x5 -1200 cents, net -21.
+@pharah.barrage.end = pharah.barrage.end.a*0.500:-20.5
+# pharah.barrage.end_3p: Barrage ends heard by others: 16F1's Stop set.
+# Trigger: the volley ends, at her for everyone else (16F1's Stop event).
+# Layers: a 16F1 Stop-event 746496324 RanSeq 0.90-2.10 s x5 -1200 cents, net -25.
+@pharah.barrage.end_3p = pharah.barrage.end_3p.a*0.500:-25.5
+# pharah.barrage.burst: Barrage rocket explodes: 5E83 (0.71-0.74 s crack, 0.41 s body, the shared tails 6 dB under the rocket's).
+# Trigger: each mini-rocket bursts: 0052's m_AED73588 / m_BF7914D4 slot effect 0081 -> 5E83 (200 m; its only copy,
+#  built once for everyone).
+# Layers: a 5E83 525401241 RanSeq 3.35-3.80 s x10, net -26.5; b 5E83 741222748 RanSeq 4.70-6.09 s x7, net -20.5; c
+#  5E83 686699921 RanSeq 0.71-0.74 s x4 -50 cents, net -16; d 5E83 203427929 Sound 0.41 s, net -18.
+@pharah.barrage.burst = pharah.barrage.burst.a@0.1:-27 + pharah.barrage.burst.b@0.1:-21 + pharah.barrage.burst.c*0.972:-16.5 + pharah.barrage.burst.d:-18.5
+# pharah.perk.salvo: Rocket Salvo, own: BCCF (3.27-4.58 s, 1.84-3.49 s and 1.44-1.71 s sets, ticks).
+# Trigger: Rocket Salvo fires (28C6): #691 StateWeaponVolley (the 2 mini-rockets) onFinished -> #693 ActionEffect 6063
+#  -> BCCE + BCCF, both no range (H); BCCF, the louder, built as hers (L).
+# Layers: a BCCF 737410139 RanSeq 1.84-3.49 s x6 -200 cents, net -15; b BCCF 802912135 RanSeq 3.27-4.58 s x6 -250
+#  cents, net -5; c BCCF 918125431 RanSeq 1.44-1.71 s x2 -200 cents, net -6; d BCCF 818173380 RanSeq 0.16-0.26 s x2
+#  -612 cents, net -11; e BCCF 672718817 RanSeq 0.16-0.26 s x2 -612 cents, net -11.
+@pharah.perk.salvo = pharah.perk.salvo.a*0.891:-14.5 + pharah.perk.salvo.b*0.866@0.18:-4.5 + pharah.perk.salvo.c*0.891:-5.5 + pharah.perk.salvo.d*0.702@0.05:-10 + pharah.perk.salvo.e*0.702@0.05:-10
+# pharah.perk.salvo_3p: Rocket Salvo heard by others: BCCE.
+# Trigger: the same salvo for everyone else: 6063's BCCE (L which copy).
+# Layers: a BCCE 587957569 RanSeq 1.84-3.49 s x6 -200 cents, net -18; b BCCE 30397873 RanSeq 1.44-1.71 s x2 -200
+#  cents, net -13; c BCCE 683874517 RanSeq 0.16-0.26 s x2 -612 cents, net -18.5; d BCCE 90938262 RanSeq 0.16-0.26 s x2
+#  -612 cents, net -18.5.
+@pharah.perk.salvo_3p = pharah.perk.salvo_3p.a*0.891@0.095:-18.5 + pharah.perk.salvo_3p.b*0.891:-13.5 + pharah.perk.salvo_3p.c*0.702@0.05:-19 + pharah.perk.salvo_3p.d*0.702@0.05:-19
+# pharah.melee: Quick melee swing, own: 11E6 (0.91-1.09 s and 0.20-0.26 s whooshes).
+# Trigger: quick melee (0043 #117 alias D): her 1P melee clip 03E5's effect 0095: 11E6 (audience 1, H).
+# Layers: a 11E6 139038730 RanSeq 0.91-1.09 s x6, net -6.5; b 11E6 163606583 RanSeq 0.20-0.26 s x5 -150 cents, net -8.5.
+@pharah.melee = pharah.melee.a:-6 + pharah.melee.b*0.917:-8
+# pharah.melee_3p: Quick melee swing heard by others: 11DF (30 m).
+# Trigger: the same swing for everyone else: 3P clip 0555's effect 00B1: 11DF (30 m, H).
+# Layers: a 11DF 957802184 RanSeq 0.91-1.09 s x6, net -19.5.
+@pharah.melee_3p = pharah.melee_3p.a:-20
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# pharah.rocket.fire.a: 10D5 play 627567541 (3 files, 0.169-0.233 s, 2ch); net -4.5 dB, +0 cents, @0.582 s, avoid repeat 2. H.
+pharah.rocket.fire.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003AF/Sounds/0000000010D5.02C/0000002A8893.03F.ogg
+pharah.rocket.fire.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003AF/Sounds/0000000010D5.02C/0000002A8835.03F.ogg
+pharah.rocket.fire.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003AF/Sounds/0000000010D5.02C/0000002A887E.03F.ogg
+# pharah.rocket.fire.b: 10D5 play 844172344 (1 file, 0.599 s, 2ch); net -4.5 dB, +0 cents, @0.000 s. H.
+pharah.rocket.fire.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003AF/Sounds/0000000010D5.02C/0000002A8879.03F.ogg
+# pharah.rocket.fire_3p.a: 10D4 play 41890556 (3 files, 0.169-0.233 s, 2ch); net -16.5 dB, +0 cents, @0.582 s, avoid repeat 2. H.
+pharah.rocket.fire_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/0000000004F7/Sounds/0000000010D4.02C/0000002A8893.03F.ogg
+pharah.rocket.fire_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/0000000004F7/Sounds/0000000010D4.02C/0000002A8835.03F.ogg
+pharah.rocket.fire_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/0000000004F7/Sounds/0000000010D4.02C/0000002A887E.03F.ogg
+# pharah.rocket.fire_3p.b: 10D4 play 717874034 (1 file, 0.599 s, 2ch); net -13.5 dB, +0 cents, @0.000 s. H.
+pharah.rocket.fire_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/0000000004F7/Sounds/0000000010D4.02C/0000002A8879.03F.ogg
+# pharah.rocket.burst.a: 5CFF play 525401241 (10 files, 3.353-3.801 s, 2ch); net -20.5 dB, +0 cents, @0.100 s. H.
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B11.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B74.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B7F.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B3D.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B6E.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B77.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B6B.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5ACE.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5BA4.03F.ogg
+pharah.rocket.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5AE9.03F.ogg
+# pharah.rocket.burst.b: 5CFF play 741222748 (7 files, 4.697-6.087 s, 2ch); net -14.5 dB, +0 cents, @0.100 s. H.
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5AD5.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5AC2.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B3E.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B86.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B49.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5AB7.03F.ogg
+pharah.rocket.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A5B8D.03F.ogg
+# pharah.rocket.burst.c: 5CFF play 215185971 (6 files, 1.359-1.380 s, 2ch); net -10.5 dB, -22 cents, @0.000 s, avoid repeat 3. H.
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A8FC3.03F.ogg
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A90E2.03F.ogg
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A8FC1.03F.ogg
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A9066.03F.ogg
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A9107.03F.ogg
+pharah.rocket.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A8FB9.03F.ogg
+# pharah.rocket.burst.d: 5CFF play 788123227 (1 file, 1.695 s, 1ch); net -16 dB, +600 cents, @0.000 s. H.
+pharah.rocket.burst.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFF.02C/0000002A8E40.03F.ogg
+# pharah.rocket.hit_enemy.a: 8DE7 play 413748272 (16 files, 0.407-0.607 s, 2ch); net -22 dB, +430 cents, @0.002 s. H.
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+pharah.rocket.hit_enemy.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# pharah.rocket.hit_enemy.b: 8DE7 play 19863385 (10 files, 0.537-0.599 s, 1ch); net -12 dB, +710 cents, @0.002 s. H.
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+pharah.rocket.hit_enemy.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# pharah.rocket.hit_enemy.c: 5CFA play 1025677612 (9 files, 1.036-1.476 s, 1ch); net -19 dB, -100 cents, @0.103 s,
+#  avoid repeat 7. H.
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A23.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A1A.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A69EA.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A16.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A2C.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A47.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A40.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A3C.03F.ogg
+pharah.rocket.hit_enemy.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A41.03F.ogg
+# pharah.rocket.hit_enemy.d: 8DE7 play 1057399041 (7 files, 0.487-0.559 s, 2ch); net -18.5 dB, +535 cents, @0.002 s. H.
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+pharah.rocket.hit_enemy.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# pharah.rocket.hit_enemy.e: 5CFA play 528372743 (6 files, 2.820-2.983 s, 2ch); net -10 dB, +0 cents, @0.000 s, avoid repeat 4. H.
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A888A.03F.ogg
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A8875.03F.ogg
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A8860.03F.ogg
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A8892.03F.ogg
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A888C.03F.ogg
+pharah.rocket.hit_enemy.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A886C.03F.ogg
+# pharah.rocket.hit_enemy.f: 5CFA play 271327441 (6 files, 2.764-2.999 s, 2ch); net -17 dB, -50 cents, @0.080 s, avoid
+#  repeat 3. H.
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A698F.03F.ogg
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6975.03F.ogg
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A43.03F.ogg
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A35.03F.ogg
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A696F.03F.ogg
+pharah.rocket.hit_enemy.f = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A4A.03F.ogg
+# pharah.rocket.hit_enemy.g: 5CFA play 220387593 (3 files, 1.527-1.953 s, 2ch); net -24.5 dB, -300 cents, @0.000 s. H.
+pharah.rocket.hit_enemy.g = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A697C.03F.ogg
+pharah.rocket.hit_enemy.g = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A31.03F.ogg
+pharah.rocket.hit_enemy.g = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A6A24.03F.ogg
+# pharah.rocket.hit_enemy.h: 5CFA play 277755899 (1 file, 0.351 s, 1ch); net -11 dB, +0 cents, @0.000 s. H.
+pharah.rocket.hit_enemy.h = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000005CFA.02C/0000002A8869.03F.ogg
+# pharah.rocket.hit_enemy_3p.a: 6FAE play 542112225 (9 files, 1.036-1.476 s, 1ch); net -25.5 dB, -100 cents, @0.103 s,
+#  avoid repeat 7. H.
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A23.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A1A.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A69EA.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A16.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A2C.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A47.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A40.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A3C.03F.ogg
+pharah.rocket.hit_enemy_3p.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A41.03F.ogg
+# pharah.rocket.hit_enemy_3p.b: 6FAE play 80907360 (6 files, 2.820-2.983 s, 2ch); net -15.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 4. H.
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A888A.03F.ogg
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A8875.03F.ogg
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A8860.03F.ogg
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A8892.03F.ogg
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A888C.03F.ogg
+pharah.rocket.hit_enemy_3p.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A886C.03F.ogg
+# pharah.rocket.hit_enemy_3p.c: 6FAE play 292219765 (6 files, 2.764-2.999 s, 2ch); net -23.5 dB, -50 cents, @0.080 s,
+#  avoid repeat 3. H.
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A698F.03F.ogg
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6975.03F.ogg
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A43.03F.ogg
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A35.03F.ogg
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A696F.03F.ogg
+pharah.rocket.hit_enemy_3p.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A4A.03F.ogg
+# pharah.rocket.hit_enemy_3p.d: 6FAE play 121908739 (4 files, 1.636-1.921 s, 2ch); net -19.5 dB, -100 cents, @0.040 s. H.
+pharah.rocket.hit_enemy_3p.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A8858.03F.ogg
+pharah.rocket.hit_enemy_3p.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A885B.03F.ogg
+pharah.rocket.hit_enemy_3p.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A8868.03F.ogg
+pharah.rocket.hit_enemy_3p.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A888E.03F.ogg
+# pharah.rocket.hit_enemy_3p.e: 6FAE play 447614237 (3 files, 1.527-1.953 s, 2ch); net -31 dB, -300 cents, @0.000 s. H.
+pharah.rocket.hit_enemy_3p.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A697C.03F.ogg
+pharah.rocket.hit_enemy_3p.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A31.03F.ogg
+pharah.rocket.hit_enemy_3p.e = ../../research/pharah/sounds/ExtraSounds/Pharah/Rocket/Sounds/000000006FAE.02C/0000002A6A24.03F.ogg
+# pharah.rocket.hit_block.a: 85C7 play 505818504 (5 files, 1.524-2.831 s, 2ch); net -30 dB, -112 cents, @0.050 s,
+#  avoid repeat 2. H.
+pharah.rocket.hit_block.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002A8C92.03F.ogg
+pharah.rocket.hit_block.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002A91FA.03F.ogg
+pharah.rocket.hit_block.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002A920E.03F.ogg
+pharah.rocket.hit_block.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002A91E4.03F.ogg
+pharah.rocket.hit_block.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002A91F8.03F.ogg
+# pharah.rocket.hit_block.b: 858A play 585824077 (5 files, 1.524-2.831 s, 2ch); net -26.5 dB, -112 cents, @0.083 s,
+#  avoid repeat 2. H.
+pharah.rocket.hit_block.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002A8C92.03F.ogg
+pharah.rocket.hit_block.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002A91FA.03F.ogg
+pharah.rocket.hit_block.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002A920E.03F.ogg
+pharah.rocket.hit_block.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002A91E4.03F.ogg
+pharah.rocket.hit_block.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002A91F8.03F.ogg
+# pharah.rocket.hit_block.c: 85C7 play 309612393 (4 files, 1.820-3.601 s, 2ch); net -22 dB, +88 cents, @0.000 s, avoid
+#  repeat 2. H.
+pharah.rocket.hit_block.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002ABFB0.03F.ogg
+pharah.rocket.hit_block.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002AC4D6.03F.ogg
+pharah.rocket.hit_block.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002AC4B5.03F.ogg
+pharah.rocket.hit_block.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/0000000085C7.02C/0000002ABF97.03F.ogg
+# pharah.rocket.hit_block.d: 858A play 436383870 (4 files, 1.820-3.601 s, 2ch); net -18.5 dB, +88 cents, @0.033 s,
+#  avoid repeat 2. H.
+pharah.rocket.hit_block.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002ABFB0.03F.ogg
+pharah.rocket.hit_block.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002AC4D6.03F.ogg
+pharah.rocket.hit_block.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002AC4B5.03F.ogg
+pharah.rocket.hit_block.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Shared/Sounds/00000000858A.02C/0000002ABF97.03F.ogg
+# pharah.reload.a: 1137 play 387810409 (13 files, 0.209-0.631 s, 1ch); net -16 dB, -400 cents, @0.353 s, avoid repeat 5. H.
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABDFD.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABDE7.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABDE9.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE3B.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE33.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE3A.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE31.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABDEB.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE3E.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE2F.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE0F.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE0E.03F.ogg
+pharah.reload.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002ABE35.03F.ogg
+# pharah.reload.b: 1137 play 343743015 (5 files, 0.316-0.409 s, 1ch); net -19.5 dB, -125 cents, @0.358 s, avoid repeat 4. H.
+pharah.reload.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002A92C6.03F.ogg
+pharah.reload.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002A6B2F.03F.ogg
+pharah.reload.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002A9320.03F.ogg
+pharah.reload.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002A9284.03F.ogg
+pharah.reload.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000674/Sounds/000000001137.02C/0000002A931D.03F.ogg
+# pharah.reload.c: 9207 play 866770254 (1 file, 0.440 s, 1ch); net -12.5 dB, +0 cents, @0.000 s. H.
+pharah.reload.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003C9/Sounds/000000009207.02C/0000002A72DD.03F.ogg
+# pharah.reload.d: 9208 play 428825458 (1 file, 0.452 s, 1ch); net -12.5 dB, +0 cents, @0.633 s. H.
+pharah.reload.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003C9/Sounds/000000009208.02C/0000002A72E0.03F.ogg
+# pharah.reload.e: 9209 play 317843479 (1 file, 0.360 s, 1ch); net -12.5 dB, +0 cents, @0.999 s. H.
+pharah.reload.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003C9/Sounds/000000009209.02C/0000002A72E8.03F.ogg
+# pharah.reload.f: 920A play 103332500 (1 file, 0.468 s, 1ch); net -7.5 dB, +0 cents, @1.368 s. H.
+pharah.reload.f = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003C9/Sounds/00000000920A.02C/0000002A72EB.03F.ogg
+# pharah.reload_3p.a: 1138 play 654180567 (13 files, 0.209-0.631 s, 1ch); net -16 dB, -400 cents, @0.353 s, avoid repeat 5. H.
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABDFD.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABDE7.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABDE9.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE3B.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE33.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE3A.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE31.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABDEB.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE3E.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE2F.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE0F.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE0E.03F.ogg
+pharah.reload_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002ABE35.03F.ogg
+# pharah.reload_3p.b: 1138 play 839738080 (5 files, 0.316-0.409 s, 1ch); net -19.5 dB, -125 cents, @0.358 s, avoid repeat 4. H.
+pharah.reload_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002A92C6.03F.ogg
+pharah.reload_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002A6B2F.03F.ogg
+pharah.reload_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002A9320.03F.ogg
+pharah.reload_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002A9284.03F.ogg
+pharah.reload_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/000000001138.02C/0000002A931D.03F.ogg
+# pharah.reload_3p.c: DA2C play 556977918 (1 file, 0.440 s, 1ch); net -8.5 dB, +0 cents, @0.000 s. H.
+pharah.reload_3p.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/00000000DA2C.02C/0000002A72DD.03F.ogg
+# pharah.reload_3p.d: DA2D play 898577044 (1 file, 0.452 s, 1ch); net -8.5 dB, +0 cents, @0.633 s. H.
+pharah.reload_3p.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/00000000DA2D.02C/0000002A72E0.03F.ogg
+# pharah.reload_3p.e: DA2E play 12705013 (1 file, 0.360 s, 1ch); net -8.5 dB, +0 cents, @1.099 s. H.
+pharah.reload_3p.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/00000000DA2E.02C/0000002A72E8.03F.ogg
+# pharah.reload_3p.f: DA2F play 181076741 (1 file, 0.468 s, 1ch); net -3.5 dB, +0 cents, @1.464 s. H.
+pharah.reload_3p.f = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000462/Sounds/00000000DA2F.02C/0000002A72EB.03F.ogg
+# pharah.jump_jet.a: 5CFC play 427421878 (4 files, 2.121-2.455 s, 2ch); net -3 dB, -50 cents, @0.000 s. H.
+pharah.jump_jet.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B1671.03F.ogg
+pharah.jump_jet.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B164E.03F.ogg
+pharah.jump_jet.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B164C.03F.ogg
+pharah.jump_jet.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B168C.03F.ogg
+# pharah.jump_jet.b: 5CFC play 16709578 (3 files, 0.241-0.287 s, 2ch); net -11.5 dB, +0 cents, @0.100 s. H.
+pharah.jump_jet.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B165C.03F.ogg
+pharah.jump_jet.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B169C.03F.ogg
+pharah.jump_jet.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B1652.03F.ogg
+# pharah.jump_jet.c: 5CFC play 260950311 (2 files, 1.681-1.849 s, 2ch); net -5 dB, -50 cents, @0.150 s. H.
+pharah.jump_jet.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B168F.03F.ogg
+pharah.jump_jet.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B166D.03F.ogg
+# pharah.jump_jet.d: 5CFC play 614578081 (1 file, 0.321 s, 1ch); net -8 dB, +0 cents, @0.000 s. H.
+pharah.jump_jet.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002AF7FA.03F.ogg
+# pharah.jump_jet.e: 5CFC play 676027483 (1 file, 1.444 s, 2ch); net -15 dB, +10 cents, @0.150 s. H.
+pharah.jump_jet.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B169E.03F.ogg
+# pharah.jump_jet.f: 5CFC play 958439947 (1 file, 1.953 s, 1ch); net -33 dB, -88 cents, @0.500 s. H.
+pharah.jump_jet.f = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000005CFC.02C/0000002B1650.03F.ogg
+# pharah.jump_jet_3p.a: 105E play 57120284 (1 file, 2.001 s, 1ch); net -4 dB, +0 cents, @0.000 s. H.
+pharah.jump_jet_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/00000000105E.02C/0000002A7DAC.03F.ogg
+# pharah.jump_jet_3p.b: 105E play 729395015 (1 file, 2.356 s, 1ch); net -0.5 dB, +200 cents, @0.000 s. H.
+pharah.jump_jet_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/00000000105E.02C/0000002A7DAD.03F.ogg
+# pharah.jump_jet_3p.c: 2A9F play 369217337 (1 file, 2.001 s, 1ch); net -18 dB, +0 cents, @0.000 s. H.
+pharah.jump_jet_3p.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F2.00D/Sounds/000000002A9F.02C/0000002A7DAC.03F.ogg
+# pharah.jet_dash.a: B03F play 143009719 (3 files, 1.743-1.921 s, 2ch); net -10 dB, +0 cents, @0.000 s. H.
+pharah.jet_dash.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B1690.03F.ogg
+pharah.jet_dash.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B163D.03F.ogg
+pharah.jet_dash.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B1698.03F.ogg
+# pharah.jet_dash.b: B03F play 396401156 (3 files, 0.241-0.287 s, 2ch); net -10.5 dB, +0 cents, @0.000 s. H.
+pharah.jet_dash.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B165C.03F.ogg
+pharah.jet_dash.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B169C.03F.ogg
+pharah.jet_dash.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B1652.03F.ogg
+# pharah.jet_dash.c: B03F play 1011621512 (1 file, 0.305 s, 2ch); net -2 dB, +0 cents, @0.000 s. H.
+pharah.jet_dash.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B03F.02C/0000002B1649.03F.ogg
+# pharah.jet_dash_3p.a: B040 play 301251969 (3 files, 1.641-1.831 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+pharah.jet_dash_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B040.02C/0000002B1672.03F.ogg
+pharah.jet_dash_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B040.02C/0000002B1651.03F.ogg
+pharah.jet_dash_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B040.02C/0000002B1659.03F.ogg
+# pharah.jet_dash_3p.b: B040 play 725761196 (1 file, 0.305 s, 2ch); net -6 dB, +0 cents, @0.000 s. H.
+pharah.jet_dash_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005910.00D/Sounds/00000000B040.02C/0000002B1649.03F.ogg
+# pharah.hover.start.a: 105D play 366311019 (3 files, 1.652-2.313 s, 2ch); net -21 dB, -595 cents, @0.000 s. H.
+pharah.hover.start.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002B165A.03F.ogg
+pharah.hover.start.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002B164D.03F.ogg
+pharah.hover.start.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002B1661.03F.ogg
+# pharah.hover.loop.a: 105D play 135076481 (1 file, 5.023 s, 2ch); net -15 dB, -1290 cents, @0.000 s, period 10.582 s. H.
+pharah.hover.loop.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002AB333.03F.ogg
+# pharah.hover.end.a: 105D stop 13922032 (3 files, 0.484-0.572 s, 2ch); net -5 dB, +15 cents, @0.000 s. H.
+pharah.hover.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002A9699.03F.ogg
+pharah.hover.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002A96B8.03F.ogg
+pharah.hover.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105D.02C/0000002A96A1.03F.ogg
+# pharah.hover.start_3p.a: 105C play 783939354 (3 files, 1.652-2.313 s, 2ch); net -15.5 dB, +945 cents, @0.000 s. H.
+pharah.hover.start_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002B165A.03F.ogg
+pharah.hover.start_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002B164D.03F.ogg
+pharah.hover.start_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002B1661.03F.ogg
+# pharah.hover.loop_3p.a: 105C play 200646879 (1 file, 4.231 s, 2ch); net -3 dB, +35 cents, @0.000 s, period 4.146 s. H.
+pharah.hover.loop_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002B16A8.03F.ogg
+# pharah.hover.end_3p.a: 105C stop 162966139 (2 files, 0.551-0.567 s, 2ch); net -23 dB, +0 cents, @0.000 s. H.
+pharah.hover.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002A964A.03F.ogg
+pharah.hover.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002A96AE.03F.ogg
+# pharah.hover.end_3p.b: 105C stop 74358586 (1 file, 0.551 s, 2ch); net -28 dB, +0 cents, @0.000 s. H.
+pharah.hover.end_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000F3.00D/Sounds/00000000105C.02C/0000002A971E.03F.ogg
+# pharah.hover.empty.a: B050 play 358878134 (1 file, 1.135 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+pharah.hover.empty.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005939.00D/Sounds/00000000B050.02C/0000002B1674.03F.ogg
+# pharah.hover.empty.b: B050 play 478897352 (1 file, 0.271 s, 2ch); net -21.5 dB, +0 cents, @0.200 s. H.
+pharah.hover.empty.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000005939.00D/Sounds/00000000B050.02C/0000002B169A.03F.ogg
+# pharah.concussive.cast.a: 1C00 play 1067789866 (2 files, 1.116-1.137 s, 2ch); net -9.5 dB, +0 cents, @0.025 s. H.
+pharah.concussive.cast.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/000000000514/Sounds/000000001C00.02C/0000002A72EC.03F.ogg
+pharah.concussive.cast.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/000000000514/Sounds/000000001C00.02C/0000002A72DE.03F.ogg
+# pharah.concussive.cast.b: 1205 play 437712589 (1 file, 0.316 s, 1ch); net -14.5 dB, +0 cents, @0.000 s. H.
+pharah.concussive.cast.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/000000000514/Sounds/000000001205.02C/0000002A72E5.03F.ogg
+# pharah.concussive.cast.c: 1206 play 841436124 (1 file, 0.412 s, 1ch); net -14.5 dB, +0 cents, @0.567 s. H.
+pharah.concussive.cast.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/000000000514/Sounds/000000001206.02C/0000002A72E1.03F.ogg
+# pharah.concussive.cast_3p.a: 1BFF play 790252522 (2 files, 1.116-1.137 s, 2ch); net -21.5 dB, +0 cents, @0.100 s. H.
+pharah.concussive.cast_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000491/Sounds/000000001BFF.02C/0000002A72EC.03F.ogg
+pharah.concussive.cast_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000491/Sounds/000000001BFF.02C/0000002A72DE.03F.ogg
+# pharah.concussive.burst.a: 5E81 play 525401241 (10 files, 3.353-3.801 s, 2ch); net -20.5 dB, +0 cents, @0.100 s. H.
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B11.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B74.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B7F.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B3D.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B6E.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B77.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B6B.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5ACE.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5BA4.03F.ogg
+pharah.concussive.burst.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5AE9.03F.ogg
+# pharah.concussive.burst.b: 5E81 play 741222748 (7 files, 4.697-6.087 s, 2ch); net -14.5 dB, +0 cents, @0.100 s. H.
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5AD5.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5AC2.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B3E.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B86.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B49.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5AB7.03F.ogg
+pharah.concussive.burst.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A5B8D.03F.ogg
+# pharah.concussive.burst.c: 5E81 play 1020064404 (1 file, 2.028 s, 2ch); net -14.5 dB, -90 cents, @0.000 s. H.
+pharah.concussive.burst.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A69BE.03F.ogg
+# pharah.concussive.burst.d: 5E81 play 987453938 (1 file, 0.759 s, 1ch); net -13 dB, +0 cents, @0.000 s. H.
+pharah.concussive.burst.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002AE899.03F.ogg
+# pharah.concussive.burst.e: 5E81 play 94216568 (1 file, 0.703 s, 2ch); net -17 dB, +180 cents, @0.050 s. H.
+pharah.concussive.burst.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002A69CA.03F.ogg
+# pharah.concussive.burst.f: 5E81 play 605542758 (1 file, 1.100 s, 2ch); net -14.5 dB, -70 cents, @0.070 s. H.
+pharah.concussive.burst.f = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000116.00D/Sounds/000000005E81.02C/0000002AE8A2.03F.ogg
+# pharah.barrage.cast.a: 5E87 play 1051377315 (2 files, 1.263-1.364 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+pharah.barrage.cast.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B163C.03F.ogg
+pharah.barrage.cast.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B1643.03F.ogg
+# pharah.barrage.cast.b: 5E87 play 1018337786 (1 file, 1.169 s, 1ch); net -13 dB, +0 cents, @0.000 s. H.
+pharah.barrage.cast.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B166F.03F.ogg
+# pharah.barrage.cast.c: 5E87 play 446632127 (1 file, 3.909 s, 2ch); net -14 dB, +0 cents, @0.200 s, period 3.909 s. H.
+pharah.barrage.cast.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B1646.03F.ogg
+# pharah.barrage.cast_3p.a: 16F1 play 992738970 (2 files, 1.436-1.711 s, 2ch); net -24 dB, +0 cents, @0.000 s. H.
+pharah.barrage.cast_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B1645.03F.ogg
+pharah.barrage.cast_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B16A2.03F.ogg
+# pharah.barrage.cast_3p.b: 16F1 play 580069598 (1 file, 3.989 s, 2ch); net -11 dB, +0 cents, @0.200 s, period 3.989 s. H.
+pharah.barrage.cast_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B16AB.03F.ogg
+# pharah.barrage.end.a: 5E87 stop 133826180 (5 files, 0.895-2.100 s, 2ch); net -21 dB, -1200 cents, @0.000 s. H.
+pharah.barrage.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B1657.03F.ogg
+pharah.barrage.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B169D.03F.ogg
+pharah.barrage.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B166B.03F.ogg
+pharah.barrage.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B1648.03F.ogg
+pharah.barrage.end.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/000000005E87.02C/0000002B166A.03F.ogg
+# pharah.barrage.end_3p.a: 16F1 stop 746496324 (5 files, 0.895-2.100 s, 2ch); net -25 dB, -1200 cents, @0.000 s. H.
+pharah.barrage.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B1657.03F.ogg
+pharah.barrage.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B169D.03F.ogg
+pharah.barrage.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B166B.03F.ogg
+pharah.barrage.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B1648.03F.ogg
+pharah.barrage.end_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000001FCB.00D/Sounds/0000000016F1.02C/0000002B166A.03F.ogg
+# pharah.barrage.burst.a: 5E83 play 525401241 (10 files, 3.353-3.801 s, 2ch); net -26.5 dB, +0 cents, @0.100 s. H.
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B11.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B74.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B7F.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B3D.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B6E.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B77.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B6B.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5ACE.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5BA4.03F.ogg
+pharah.barrage.burst.a = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5AE9.03F.ogg
+# pharah.barrage.burst.b: 5E83 play 741222748 (7 files, 4.697-6.087 s, 2ch); net -20.5 dB, +0 cents, @0.100 s. H.
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5AD5.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5AC2.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B3E.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B86.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B49.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5AB7.03F.ogg
+pharah.barrage.burst.b = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002A5B8D.03F.ogg
+# pharah.barrage.burst.c: 5E83 play 686699921 (4 files, 0.713-0.745 s, 2ch); net -16 dB, -50 cents, @0.000 s, avoid repeat 2. H.
+pharah.barrage.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002AE897.03F.ogg
+pharah.barrage.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002AE89C.03F.ogg
+pharah.barrage.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002AE895.03F.ogg
+pharah.barrage.burst.c = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002AE8A3.03F.ogg
+# pharah.barrage.burst.d: 5E83 play 203427929 (1 file, 0.407 s, 1ch); net -18 dB, +0 cents, @0.000 s. H.
+pharah.barrage.burst.d = ../../research/pharah/sounds/ExtraSounds/Pharah/Barrage/Sounds/000000005E83.02C/0000002AE894.03F.ogg
+# pharah.perk.salvo.a: BCCF play 737410139 (6 files, 1.841-3.489 s, 2ch); net -15 dB, -200 cents, @0.000 s, avoid repeat 4. H.
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B164F.03F.ogg
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B164A.03F.ogg
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B16AE.03F.ogg
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1693.03F.ogg
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1638.03F.ogg
+pharah.perk.salvo.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B165B.03F.ogg
+# pharah.perk.salvo.b: BCCF play 802912135 (6 files, 3.273-4.577 s, 2ch); net -5 dB, -250 cents, @0.180 s, avoid repeat 4. H.
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B16A7.03F.ogg
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B165D.03F.ogg
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B169F.03F.ogg
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1653.03F.ogg
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1668.03F.ogg
+pharah.perk.salvo.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1647.03F.ogg
+# pharah.perk.salvo.c: BCCF play 918125431 (2 files, 1.436-1.711 s, 2ch); net -6 dB, -200 cents, @0.000 s. H.
+pharah.perk.salvo.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1645.03F.ogg
+pharah.perk.salvo.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B16A2.03F.ogg
+# pharah.perk.salvo.d: BCCF play 818173380 (2 files, 0.159-0.263 s, 1ch); net -11 dB, -612 cents, @0.050 s, avoid repeat 7. H.
+pharah.perk.salvo.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1662.03F.ogg
+pharah.perk.salvo.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1719.03F.ogg
+# pharah.perk.salvo.e: BCCF play 672718817 (2 files, 0.159-0.263 s, 1ch); net -11 dB, -612 cents, @0.050 s, avoid repeat 7. H.
+pharah.perk.salvo.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1662.03F.ogg
+pharah.perk.salvo.e = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCF.02C/0000002B1719.03F.ogg
+# pharah.perk.salvo_3p.a: BCCE play 587957569 (6 files, 1.841-3.489 s, 2ch); net -18 dB, -200 cents, @0.095 s, avoid repeat 4. H.
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B164F.03F.ogg
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B164A.03F.ogg
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B16AE.03F.ogg
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1693.03F.ogg
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1638.03F.ogg
+pharah.perk.salvo_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B165B.03F.ogg
+# pharah.perk.salvo_3p.b: BCCE play 30397873 (2 files, 1.436-1.711 s, 2ch); net -13 dB, -200 cents, @0.000 s. H.
+pharah.perk.salvo_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1645.03F.ogg
+pharah.perk.salvo_3p.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B16A2.03F.ogg
+# pharah.perk.salvo_3p.c: BCCE play 683874517 (2 files, 0.159-0.263 s, 1ch); net -18.5 dB, -612 cents, @0.050 s, avoid
+#  repeat 7. H.
+pharah.perk.salvo_3p.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1662.03F.ogg
+pharah.perk.salvo_3p.c = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1719.03F.ogg
+# pharah.perk.salvo_3p.d: BCCE play 90938262 (2 files, 0.159-0.263 s, 1ch); net -18.5 dB, -612 cents, @0.050 s, avoid repeat 7. H.
+pharah.perk.salvo_3p.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1662.03F.ogg
+pharah.perk.salvo_3p.d = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000006063.00D/Sounds/00000000BCCE.02C/0000002B1719.03F.ogg
+# pharah.melee.a: 11E6 play 139038730 (6 files, 0.905-1.089 s, 2ch); net -6.5 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE39.03F.ogg
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE34.03F.ogg
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABDE8.03F.ogg
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE37.03F.ogg
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE3F.03F.ogg
+pharah.melee.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE41.03F.ogg
+# pharah.melee.b: 11E6 play 163606583 (5 files, 0.201-0.260 s, 1ch); net -8.5 dB, -150 cents, @0.000 s. H.
+pharah.melee.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE45.03F.ogg
+pharah.melee.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE3D.03F.ogg
+pharah.melee.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE38.03F.ogg
+pharah.melee.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE4B.03F.ogg
+pharah.melee.b = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2B9.00C/AnimationEffects/0000000003E5/Sounds/0000000011E6.02C/0000002ABE42.03F.ogg
+# pharah.melee_3p.a: 11DF play 957802184 (6 files, 0.905-1.089 s, 2ch); net -19.5 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABE39.03F.ogg
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABE34.03F.ogg
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABDE8.03F.ogg
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABE37.03F.ogg
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABE3F.03F.ogg
+pharah.melee_3p.a = ../../research/pharah/extract/Heroes/Pharah/Skin/Overwatch/Overwatch/Models/00000000F2A5.00C/AnimationEffects/000000000555/Sounds/0000000011DF.02C/0000002ABE41.03F.ogg
+
+# ===== Subtitles (the jar's lang names none of her events)
+$pharah.rocket.fire = Rocket Launcher fires
+$pharah.rocket.fire_3p = Rocket Launcher fires
+$pharah.rocket.burst = Rocket explodes
+$pharah.rocket.hit_enemy = Rocket direct hit
+$pharah.rocket.hit_enemy_3p = Rocket direct hit
+$pharah.rocket.hit_block = Rocket hits a wall
+$pharah.reload = Rocket Launcher reloads
+$pharah.reload_3p = Rocket Launcher reloads
+$pharah.jump_jet = Jump Jet fires
+$pharah.jump_jet_3p = Jump Jet fires
+$pharah.jet_dash = Jet Dash fires
+$pharah.jet_dash_3p = Jet Dash fires
+$pharah.hover.start = Hover Jets ignite
+$pharah.hover.loop = Hover Jets thrust
+$pharah.hover.end = Hover Jets cut out
+$pharah.hover.start_3p = Hover Jets ignite
+$pharah.hover.loop_3p = Hover Jets thrust
+$pharah.hover.end_3p = Hover Jets cut out
+$pharah.hover.empty = Hover Jets sputter out
+$pharah.concussive.cast = Concussive Blast fires
+$pharah.concussive.cast_3p = Concussive Blast fires
+$pharah.concussive.burst = Concussive Blast bursts
+$pharah.barrage.cast = Barrage fires
+$pharah.barrage.cast_3p = Barrage fires
+$pharah.barrage.end = Barrage winds down
+$pharah.barrage.end_3p = Barrage winds down
+$pharah.barrage.burst = Barrage rocket explodes
+$pharah.perk.salvo = Rocket Salvo fires
+$pharah.perk.salvo_3p = Rocket Salvo fires
+$pharah.melee = Pharah swings
+$pharah.melee_3p = Pharah swings
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: D.Va, or the shooter; 3p = everyone else, at her
+# / the target / the hit point / the barrier; both = one rule for everyone). 'EXTRA' = in the data but not needed for the
+# kit's moments. Not built: see 'Not mapped'.
+#   pharah.rocket.fire                 one-shot own  0.81 s; PRIMARY (0023 #16): a rocket leaves; her fire clips'
+#     animation effects (1P 03AF / 3P 3B54, 04F7) play it; 1P 03AF's 008B: 10D5 at 0.002 s (H)
+#   pharah.rocket.fire_3p              one-shot 3p   0.81 s; PRIMARY (0023 #16): a rocket leaves; her fire clips'
+#     animation effects (1P 03AF / 3P 3B54, 04F7) play it; 3P 3B54's 1CA3 / 04F7's 00A7: 10D4 (45 m, H)
+#   pharah.rocket.burst                one-shot both 6.19 s; the rocket bursts (anything it touches, or its 5 s end):
+#     the rocket 0033's m_6CB564CC slot effect 0115 -> 5D00 (audience 1, hers) / 5CFF (200 m, audience 2); the burst
+#     slot as Sigma's spheres' (M). The code plays one copy for everyone: 5CFF built (M)
+#   pharah.rocket.hit_enemy            one-shot own  3.17 s; a direct hit on a character: the rocket 0033's m_A18274A3
+#     slot ('on a target', Juno's reading, M) effect 0091 -> 5CFA (audience 1, hers) and its sub-effect 405B -> 8DE7
+#     (the shared hit-confirm crack, as Mercy's 4010)
+#   pharah.rocket.hit_enemy_3p         one-shot 3p   3.17 s; the same direct hit, at the target for everyone else:
+#     0091's 6FAE (200 m, audience 2)
+#   pharah.rocket.hit_block            one-shot both 3.46 s; the rocket hits the world: 0033's m_contactSet 0245, type
+#     2, material 0001 -> contact 3FBA: 858A (90 m) + 85C7 (32 m), built together (Sojourn's reading); the other 21
+#     materials have their own (contacts.json)
+#   pharah.reload                      one-shot own  1.84 s; RELOAD or an empty magazine (0023 #33 StateAnim alias
+#     0004): her 1P reload clip 03C9's effect 008E: 9207 @0, 1137 @0.333 (cloth), 9208 @0.633, 9209 @0.999, 920A
+#     @1.368 (H); B2A2 (@0.3 for 0.77 s) has no event in its bank
+#   pharah.reload_3p                   one-shot 3p   1.93 s; the same reload for everyone else: the 3P clip 0462's
+#     effect 0098 on the launcher's hp 000B: DA2C-DA2F (45 m) and 1138 (30 m) at their clip times (H); its no-range
+#     9622-9625 hold the same files 17 dB quieter (left out: the ranged copy built)
+#   pharah.jump_jet                    one-shot own  2.55 s; ABILITY 1 (0027 #82): #36 the impulse -> #55 ActionEffect
+#     00F2 on her (H); 00F2's 5CFC (audience 1, no range: hers)
+#   pharah.jump_jet_3p                 one-shot 3p   2.10 s; ABILITY 1 (0027 #82): #36 the impulse -> #55 ActionEffect
+#     00F2 on her (H); 00F2's 105E (80 m, on hp 0004, held 3 s) + 2A9F (80 m), everyone else
+#   pharah.jet_dash                    one-shot own  1.92 s; SECONDARY (4B92 #520 / #82): #36 the impulse -> #55
+#     ActionEffect 5910 on her (H); 5910's B03F (no range: hers, Jetpack Cat's rule, M)
+#   pharah.jet_dash_3p                 one-shot 3p   1.83 s; SECONDARY (4B92 #520 / #82): #36 the impulse -> #55
+#     ActionEffect 5910 on her (H); 5910's B040 (70 m, on hp 0004), everyone else
+#   pharah.hover.start                 one-shot own  3.26 s; JUMP held in the air (0025 #21): #122 StateBooleanSwitch
+#     holds #72 effect 00F3 on her while she hovers (H); 105D's once set at the start
+#   pharah.hover.loop                  LOOP     own  loop 10.582 s; JUMP held in the air (0025 #21): #122
+#     StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H); 105D's 5.02 s bed at -1290 cents, held
+#   pharah.hover.end                   one-shot own  0.57 s; the hover ends (let go, landed, out of fuel: 00F3 stops;
+#     105D's Stop event, H)
+#   pharah.hover.start_3p              one-shot 3p   1.34 s; JUMP held in the air (0025 #21): #122 StateBooleanSwitch
+#     holds #72 effect 00F3 on her while she hovers (H); 105C's once set (80 m), everyone else
+#   pharah.hover.loop_3p               LOOP     3p   loop 4.146 s; JUMP held in the air (0025 #21): #122
+#     StateBooleanSwitch holds #72 effect 00F3 on her while she hovers (H); 105C's 4.23 s bed, held (80 m)
+#   pharah.hover.end_3p                one-shot 3p   0.57 s; the hover ends, at her for everyone else (105C's Stop event)
+#   pharah.hover.empty                 one-shot both 1.14 s; her fuel runs out: 0025 #30 StateChaseVar (the 50/s
+#     drain) onFinished -> #724 ActionEffect 5939 -> B050 (no range, H)
+#   pharah.concussive.cast             one-shot own  1.16 s; ABILITY 2 (007B #83): State #85 StateAnim 001E; her
+#     concussive clips play it; 1P clip 0514's effect 00AB: 1205 @0, 1C00 @0, 1206 @0.467 (H)
+#   pharah.concussive.cast_3p          one-shot 3p   1.24 s; ABILITY 2 (007B #83): State #85 StateAnim 001E; her
+#     concussive clips play it; 3P clip 0491's effect 03E0: 1BFF (45 m, H)
+#   pharah.concussive.burst            one-shot both 6.19 s; the blast bursts: 010F's m_6CB564CC slot effect 0116 ->
+#     5E81 (200 m; its only copy: built once for everyone, M)
+#   pharah.barrage.cast                one-shot own  4.11 s; ULTIMATE (002B #20): #21 StateWeaponVolley -> #71 holds
+#     effect 1FCB on her for the 2.5 s volley (H); 5E87's once sets and its 3.91 s bed (built as one 4.1 s one-shot:
+#     the 2.5 s ult ends inside one bed, M)
+#   pharah.barrage.cast_3p             one-shot 3p   4.19 s; ULTIMATE (002B #20): #21 StateWeaponVolley -> #71 holds
+#     effect 1FCB on her for the 2.5 s volley (H); 16F1 (200 m), everyone else
+#   pharah.barrage.end                 one-shot own  4.20 s; the volley ends (1FCB stops; 5E87's Stop event, H)
+#   pharah.barrage.end_3p              one-shot 3p   4.20 s; the volley ends, at her for everyone else (16F1's Stop event)
+#   pharah.barrage.burst               one-shot both 6.19 s; each mini-rocket bursts: 0052's m_AED73588 / m_BF7914D4
+#     slot effect 0081 -> 5E83 (200 m; its only copy, built once for everyone)
+#   pharah.perk.salvo                  one-shot own  5.47 s; Rocket Salvo fires (28C6): #691 StateWeaponVolley (the 2
+#     mini-rockets) onFinished -> #693 ActionEffect 6063 -> BCCE + BCCF, both no range (H); BCCF, the louder, built as
+#     hers (L)
+#   pharah.perk.salvo_3p               one-shot 3p   4.01 s; the same salvo for everyone else: 6063's BCCE (L which copy)
+#   pharah.melee                       one-shot own  1.09 s; quick melee (0043 #117 alias D): her 1P melee clip 03E5's
+#     effect 0095: 11E6 (audience 1, H)
+#   pharah.melee_3p                    one-shot 3p   1.09 s; the same swing for everyone else: 3P clip 0555's effect
+#     00B1: 11DF (30 m, H)

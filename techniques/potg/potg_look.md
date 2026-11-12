@@ -49,6 +49,13 @@ has the command), merged by `HeroModels` like `_clips`. Its two models (0797, 13
 `2F6C`) aren't read yet. **Every other hero has no intro extracted**: they fall back to the select screen's showcase
 (intro then hold), which is from the data but isn't their highlight intro: ours as a stand-in. Lúcio's are extracted
 (`research\lucio\extract\unlocks\Heroes\Lúcio\HighlightIntro`), not exported.
+- **Pharah (2026-11-11): the default intro is in the data.** Her progression unlocks (`0017.058`, an `STUProgressionUnlocks`; the
+  hero STU's only `.058`) list her default unlocks in `m_7846C401`: the default emote, poses, skin themes, a voice line and two
+  highlight intros, **Heroic** (`021D.0A5`, name `172F.07C`) and "Random from Favorites" (`0230.0A5`, a picker, no clip). So Heroic is
+  what Overwatch plays unless she picks one (H; `research\pharah\scripts\hero_unlocks_pharah.py`, `intro_names_pharah.py`; the same read
+  works for any hero). Heroic holds five clips (BE1B / BE1C / BE1D / BF1D 3.867 s, C0CD 3.133 s): which one a match plays isn't read,
+  BE1B taken (M). `hero_models/pharah_intro_clips.glb` (`tools/clipmaps/pharah_intro_clips.txt`), picked up by `HeroModels` with no
+  code: any hero with a `<hero>_intro_clips.glb` holding `potg_intro` gets its intro. Not played in game yet.
 
 ## Played (2026-11-11, two dev clients over LAN, Overwatch and Battle.net checked closed, idle 28 min, the lock held)
 Raw driver output: [runs_look](runs_look/). Screenshots in the worktree's `run/screenshots` and `run2/screenshots`

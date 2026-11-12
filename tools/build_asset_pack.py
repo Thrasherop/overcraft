@@ -36,12 +36,12 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
                 "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
-                "dva": "D.Va"}
+                "dva": "D.Va", "pharah": "Pharah"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -344,7 +344,7 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
@@ -352,7 +352,8 @@ VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research
                    "lifeweaver": "../../research/lifeweaver/extract",
                    "sojourn": "../../research/sojourn/extract",
                    "sigma": "../../research/sigma/extract",
-                   "dva": "../../research/dva/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "dva": "../../research/dva/extract",
+                   "pharah": "../../research/pharah/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat

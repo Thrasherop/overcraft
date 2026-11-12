@@ -93,6 +93,10 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> LUCIO_WALL = AttachmentRegistry.create(Overcraft.id("lucio_wall"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/** Pharah's look (dev.overcraft.pharah.Pharah.LOOK_*: hovering, a jet, Barrage), for every client to animate her. */
+	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -175,6 +179,7 @@ public final class HeroManager {
 		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
 		KITS.put(Hero.DVA, new dev.overcraft.dva.Dva());
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
+		KITS.put(Hero.PHARAH, new dev.overcraft.pharah.Pharah());
 	}
 
 	private HeroManager() {
@@ -250,10 +255,11 @@ public final class HeroManager {
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
 		// Sigma: Gravitic Flux's flight (and Levitation) land him; D.Va: the eject's launch lands her
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
-		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below)
+		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below); Pharah: her
+		// jets, her hover and her own blasts
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
 			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
-			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO)
+			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -330,7 +336,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;
@@ -610,6 +616,9 @@ public final class HeroManager {
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
 		state.wallRide = state.wallRiding ? input.wall() : 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
+		if (state.hero == Hero.PHARAH) {
+			dev.overcraft.pharah.Pharah.hovered(player, state, (input.held() & HeroInputPayload.HELD_HOVER) != 0 && controls(player));
+		}
 		if (!controls(player)) {
 			return;
 		}

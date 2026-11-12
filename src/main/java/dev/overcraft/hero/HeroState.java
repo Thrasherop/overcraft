@@ -182,6 +182,18 @@ public final class HeroState {
 	public boolean barrierLocked;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
+	/**
+	 * Pharah (dev.overcraft.pharah.Pharah): her fuel (0-100, overfuel to 150 / 200); ticks into a jet (-1 none) and which
+	 * (Pharah.JUMP_JET / JET_DASH); fuel a jet still adds; when overfuel was last filled and when she last hovered or left the
+	 * ground (game time); her client said she hovered this tick; ticks into Concussive Blast's cast and Barrage (-1 none),
+	 * Barrage's rocket owed and its pod; Rocket Salvo armed until (game time) and its mini-rockets due (-1 none); her right
+	 * button last tick; a rocket's recovery left (ticks).
+	 */
+	public double pharahFuel = dev.overcraft.pharah.PharahStats.FUEL_MAX, pharahJetFuel, pharahBarrageClock, pharahRecovery;
+	public int pharahJet = -1, pharahJetKind, pharahConcussive = -1, pharahBarrage = -1, pharahPod, pharahSalvoDue = -1;
+	public long pharahOverfuelAt = -1000, pharahAirAt = -1000, pharahSalvoUntil = -1;
+	public boolean pharahHovering, pharahRightWas, pharahSilenced;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 pharahSalvoAim;
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;
@@ -469,7 +481,10 @@ public final class HeroState {
 	/** Shields in the body this player is in. */
 	public int shields(net.minecraft.world.entity.player.Player player) {
 		// D.Va's Shield System: 100 of the mech's health as shields, over its armor
-		return hero == Hero.DVA ? dev.overcraft.dva.DvaPerks.shields(player, this) : hero == null ? 0 : hero.shields();
+		// Pharah's Helix Shields: 125 of her 225 as shields
+		return hero == Hero.DVA ? dev.overcraft.dva.DvaPerks.shields(player, this)
+			: hero == Hero.PHARAH ? (has(Perk.PHARAH_HELIX_SHIELDS) ? dev.overcraft.pharah.PharahStats.HELIX_SHIELDS : 0)
+			: hero == null ? 0 : hero.shields();
 	}
 
 	/** The top layer (shields and armor) in the body this player is in. */

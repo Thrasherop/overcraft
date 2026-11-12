@@ -469,7 +469,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -580,6 +580,15 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "power_slide"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "disruptor_shot"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "overclock"));
+			// her data's loadouts: the Rocket Launcher (the left button), Jet Dash (the right), Jump Jet, Concussive Blast, Barrage,
+			// Hover Jets (Jump held); no other passive (Recon is the sub-role's)
+			case PHARAH -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_launcher"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "jet_dash"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "jump_jet"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "concussive_blast"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "barrage"),
+				new Line(HeroHud.shortKey(net.minecraft.client.Minecraft.getInstance().options.keyJump), "hover_jets"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

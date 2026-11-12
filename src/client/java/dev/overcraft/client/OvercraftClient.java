@@ -148,6 +148,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
 				ClientSojourn.tick(client);
+				ClientPharah.tick(client);
 			ClientSigma.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
@@ -159,6 +160,7 @@ public class OvercraftClient implements ClientModInitializer {
 			SojournSounds.tick(client);
 			SigmaSounds.tick(client);
 			DvaSounds.tick(client);
+			PharahSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -217,6 +219,9 @@ public class OvercraftClient implements ClientModInitializer {
 		// D.Va's missiles and Light Gun rounds: stand-in items until her effects (1E8A / 1000, step 11)
 		EntityRendererRegistry.register(OcEntities.DVA_MISSILE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"dva_missile", 0.35f, false, 1, false));
+		// Pharah's rockets (12F5B; Barrage's and Rocket Salvo's the same model) and Concussive Blast (stand-in item)
+		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"pharah_rocket", 0.35f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.LIGHT_GUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"dva_light_gun_shot", 0.3f, false, 1, false));
 		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
@@ -326,6 +331,8 @@ public class OvercraftClient implements ClientModInitializer {
 		// Sojourn's Power Slide and its jump
 		OwMovement.slide = ClientSojourn::slide;
 		OwMovement.slideEnded = ClientSojourn::ended;
+		// Pharah's Hover Jets (and the push her jets turn on)
+		OwMovement.pharahHover = ClientPharah::hover;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

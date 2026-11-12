@@ -194,7 +194,13 @@ public final class Voice {
 		java.util.Map.entry("dva.eject", new Stimulus(60, 2, 2, false)), // 0497
 		java.util.Map.entry("dva.mech_back", new Stimulus(60, 2, 2, false)), // 049D
 		java.util.Map.entry("dva.pilot_kill", new Stimulus(70, 15, 15, false)), // 10AF
-		java.util.Map.entry("dva.ultimate", new Stimulus(95, 1, 1, false))); // 183C
+		java.util.Map.entry("dva.ultimate", new Stimulus(95, 1, 1, false)), // 183C
+		// Pharah's (tools/soundmaps/pharah.txt; her set 0004.05F). Jet Dash has no stimulus in the data (4B92 names none): its
+		// Voice.say falls to OTHER and plays nothing (the map has no pharah.voice.jet_dash file).
+		java.util.Map.entry("pharah.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("pharah.jump_jet", new Stimulus(50, 20, 30, false)), // 07F9 (0027 #111)
+		java.util.Map.entry("pharah.concussive", new Stimulus(50, 2, 5, false)), // 008E (007B #215)
+		java.util.Map.entry("pharah.ultimate", new Stimulus(95, 1, 1, false))); // 1857 (002B #367, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

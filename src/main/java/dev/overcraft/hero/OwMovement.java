@@ -128,6 +128,8 @@ public final class OwMovement {
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
 	/** Set by the client: D.Va flies in her Boosters (the sync's Dva.MODE_BOOSTING). */
 	public static Predicate<LivingEntity> dvaBoosters = entity -> false;
+	/** Set by the client: Pharah's Hover Jets this tick (dev.overcraft.pharah.Pharah.HOVER_*: 0 none). */
+	public static java.util.function.ToIntFunction<LivingEntity> pharahHover = entity -> 0;
 	/** Lifeweaver's Rejuvenating Dash: its move this tick (blocks a tick: level, no gravity), or null when not dashing. */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Vec3> dash = entity -> null;
 	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
@@ -553,8 +555,11 @@ public final class OwMovement {
 			v = boots(entity, boots, v, jumps, gliding);
 		}
 		Vec3 flat = new Vec3(input.x, 0, input.z);
+		// Pharah's Hover Jets: +30 % while she hovers with fuel (D 0025 #160)
+		int hover = pharahHover.applyAsInt(entity);
+		double hoverSpeed = dev.overcraft.pharah.Pharah.hoverFast(hover) ? 1 + dev.overcraft.pharah.PharahStats.HOVER_SPEED : 1;
 		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity)
-			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1);
+			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1) * hoverSpeed;
 		Vec3 wish = Vec3.ZERO;
 		if (speed > 0 && flat.lengthSqr() > 1.0E-7) {
 			Vec3 dir = flat.normalize();
@@ -593,7 +598,7 @@ public final class OwMovement {
 		// scaled under a slow
 		mover = Mover.LUCIO.equals(mover) ? mover.stopAt(RUN_SPEED * speedFactor(entity)) : mover.slowed(speedFactor(entity));
 		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
-		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
+		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity) * hoverSpeed;
 		for (int i = 0; i < SUBSTEPS; i++) {
 			if (gliding >= 0) {
 				// Glide Boost: the burst slows to her glide speed (the recording's curve), and her keys steer it (air
@@ -647,6 +652,20 @@ public final class OwMovement {
 			if (levitating.test(entity)) {
 				// Sigma's Levitation (perk, 51E0 #382): up at 25 m/s² to 3 m/s, gravity off while it holds (M)
 				vy = Math.min(Ow.speed(dev.overcraft.sigma.SigmaStats.LEVITATION_SPEED), v.y + Ow.accel(dev.overcraft.sigma.SigmaStats.LEVITATION_ACCEL));
+				dy = (v.y + vy) / 2;
+				entity.resetFallDistance();
+			}
+			if (hover != 0) {
+				// Pharah's Hover Jets (D 0025 #650 / #655): a push up that adds only while she rises slower than 2.9 m/s; with
+				// no fuel a weak one and her fall held at 8 m/s; her fall doesn't count while it holds
+				double push = dev.overcraft.pharah.Pharah.hoverPush(hover, v.y);
+				double limit = Ow.speed(dev.overcraft.pharah.PharahStats.HOVER_RISE);
+				if (vy < limit) {
+					vy = Math.min(limit, vy + Ow.accel(push));
+				}
+				if (hover == dev.overcraft.pharah.Pharah.HOVER_EMPTY) {
+					vy = Math.max(vy, -Ow.speed(dev.overcraft.pharah.PharahStats.EMPTY_FALL));
+				}
 				dy = (v.y + vy) / 2;
 				entity.resetFallDistance();
 			}

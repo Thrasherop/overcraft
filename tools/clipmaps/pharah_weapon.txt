@@ -1,0 +1,24 @@
+# Pharah's Rocket Launcher (entity 003B, model 00000000F131.00C, base 06A1; set 003F) on her hardpoint 000A.
+# 'not extracted' rows (3B2, 116F-1173) are clips the set names that DataTool didn't extract under this model.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\pharah\scripts\clipmaps_pharah.py from the
+# compacted blend-tree sets (research\pharah\work\clipmap_pharah\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-32_000000000580 = barrage   # 4.3333 s; set 003F alias 2 ((was base_sm0: 4.33 s, as the 3P barrage 384) the base tree (locomotion + layers)); sel[1] @2 sm[0]; on 2 paths
+0-36_00000000069B = jump_jet   # 0.5 s; set 003F alias 2 ((was base_sm1: 0.5 s, as the 1P jet 69A) the base tree (locomotion + layers)); sel[1] @2 sm[1]; on 2 paths
+0-36_0000000003CB = reload_1p   # 1.5 s; set 003F alias 35 ((was weapon_reload_sm0_sm0: 1.5 s, 1P reload) the launcher's reload machine (sm[0] 1P, sm[1] 3P) (M)); sel[1] @2 sm[2] @35 sm[0] @800FC006 sm[0]; on 3 paths
+# not extracted: 0000000003B2 = weapon_reload_sm0_sm1_sm0   # 0.6667 s; set 003F alias 35 (the launcher's reload machine (sm[0] 1P, sm[1] 3P) (M)); sel[1] @2 sm[2] @35 sm[0] @800FC006 sm[1] sm[0]; on 8 paths
+128-36_000000003B53 = reload   # 1.8 s; set 003F alias 35 ((was weapon_reload_sm1_sm0: 1.8 s, 3P reload) the launcher's reload machine (sm[0] 1P, sm[1] 3P) (M)); sel[1] @2 sm[2] @35 sm[1] @800FC00D sm[0]; on 3 paths
+4-12_000000010D64 = add_fire   # 0.3 s; set 003F alias 2 ((was add_base_sm2_sm0: additive 0.3 s (L)) the base tree (locomotion + layers)); sel[1] @2 sm[2] +add() sm[0]; on 2 paths
+0-60_000000001176 = idle   # 0.6667 s; set 003F alias 2 ((was base_sm2_sm0: +ovr sm[2] sm[0] (M)) the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[0]; on 2 paths
+# not extracted: 00000000116F = base_sm2_sm2   # 0.6667 s; set 003F alias 2 (the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[2]; on 2 paths
+# not extracted: 000000001170 = base_sm2_sm3   # 0.6667 s; set 003F alias 2 (the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[3]; on 2 paths
+# not extracted: 000000001171 = base_sm2_sm4   # 0.6667 s; set 003F alias 2 (the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[4]; on 2 paths
+# not extracted: 000000001173 = base_sm2_sm5   # 0.6667 s; set 003F alias 2 (the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[5]; on 2 paths
+# not extracted: 000000001172 = base_sm2_sm6   # 0.6667 s; set 003F alias 2 (the base tree (locomotion + layers)); sel[1] @2 +ovr() sm[2] sm[6]; on 2 paths
+# Extracted under this model but in none of its sets (6, not named): 01A309 01A30A 01A30B 01A30C 01A30D 01A30E
+# emote clips the data plays on the launcher (slot 1B9F, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS), from the
+# emote folders (--clips-from=<Emote>\Season 3\Justice Reloaded): Justice Reloaded, 0-6.167 s with her clips
+emote_000000008B1A = emote_justice_reloaded

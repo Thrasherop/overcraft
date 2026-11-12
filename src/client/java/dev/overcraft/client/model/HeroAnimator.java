@@ -123,6 +123,8 @@ public final class HeroAnimator {
 	private boolean brigitte;
 	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
 	private boolean juno, junoGliding;
+	/** Pharah's look (HeroManager.PHARAH_STATE: dev.overcraft.pharah.Pharah.LOOK_*), 0 not her. */
+	private int pharahLook;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
 	/** Sigma (his actions' clips: trigger). */
@@ -1767,6 +1769,9 @@ public final class HeroAnimator {
 			glideSince = now;
 		}
 		junoGliding = glideNow;
+		Integer pharahNow = "pharah".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			? entity.getAttached(dev.overcraft.hero.HeroManager.PHARAH_STATE) : null;
+		pharahLook = pharahNow == null ? 0 : pharahNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
@@ -2002,7 +2007,20 @@ public final class HeroAnimator {
 			String d = moving ? (direction(forward, left).isEmpty() ? "_forward" : direction(forward, left)) : "";
 			SkinnedModel.Clip take = clip(model, "double_jump");
 			next = (take != null && now - doubleJumpAt < take.duration() ? "double_jump" : "double_jump_fall") + d;
-		} else if (!onGround && entity.isInWater()) {
+		} else if (!onGround && (pharahLook & (dev.overcraft.pharah.Pharah.LOOK_HOVER | dev.overcraft.pharah.Pharah.LOOK_JET)) != 0) {
+			// Pharah's Hover Jets (alias 0x2F, 0025 #776: its 2D blend, still at its centre, else 8 ways by her motion against her
+			// facing; the jets play it too, D 0027 #346), their Jump Jet clip an action over it
+			String d = moving ? direction(forward, left) : "";
+			next = switch (d) {
+				case "", "_forward" -> moving ? "hover_f" : "hover";
+				case "_forward_left" -> "hover_lf";
+				case "_left" -> "hover_l";
+				case "_back_left" -> "hover_lb";
+				case "_back" -> "hover_b";
+				case "_back_right" -> "hover_rb";
+				case "_right" -> "hover_r";
+				default -> "hover_rf";
+			};		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";
 		} else if (!onGround && skates) {

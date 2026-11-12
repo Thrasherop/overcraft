@@ -79,6 +79,16 @@ before exporting; the body whose bones the clips drive plays the emote, and the 
 model's folder (`Models/<id>/Animations`, the entity's 020 set), then by length: Game On's three sprites share one length
 ([dva_emotes](dva_emotes.md#props-from-the-data)).
 
+**Pharah (2026-11-11; 15 emotes, 49 clips in `hero_models/pharah_clips.glb`, `emotes/pharah.json`):**
+- **A ragdoll entity held for its window isn't released.** Rocket Guitar spawns her launcher (entity 1588, model 06A1: a ragdoll, no
+  projectile) on 000B for the whole 7.83 s loop; the rule that a ragdoll "falls" (D.Va's bills, a 0.067 s window) would have dropped
+  it. `emote_data.py` now lets a ragdoll fall only from a window of 0.1 s or less (M). Contact: the barrel (the launcher's +Z) runs
+  22 degrees off her left knuckle line through the clip, her fist round the neck; the shared mic in Mic Drop 9 degrees, as Sojourn's.
+- **Body geosets that aren't weapons:** her geosets 1 / 2 are her head (bare face and helmet, submeshes 7-13, all 1.5-1.8 m up), and
+  Mic Drop's mask 7 would have hidden both while her launcher (its own entity) was stowed. `NO_PIECES` keeps them out of
+  `pieceGeosets`; the launcher goes away with its stow windows (slot 1B9F) and plays 8B1A in Justice Reloaded (`pharah_weapon.txt`).
+- `emote_data.py` now lists every weapon clip a weapon's clip map lacks before it stops, so one re-export takes them all.
+
 ## 6. Root motion
 We keep her on her spot: the emote's root motion is taken off the mover bone (`bone_0001`). A prop on a hardpoint is on
 one of her bones, so it moves with her by itself. Only a prop at the entity's origin needs the motion that was taken

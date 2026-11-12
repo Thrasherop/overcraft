@@ -72,6 +72,7 @@ public final class HeroArt {
 			case SIGMA -> "gravitic_flux";
 			case DVA -> "self_destruct";
 			case SOJOURN -> "overclock";
+			case PHARAH -> "barrage";
 			case ILLARI -> "captive_sun";
 		});
 	}

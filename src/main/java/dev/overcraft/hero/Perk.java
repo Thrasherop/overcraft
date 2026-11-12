@@ -64,7 +64,12 @@ public enum Perk {
 	SOJOURN_OVERCHARGED(Hero.SOJOURN, Tier.MINOR, "overcharged"),
 	SOJOURN_DECELERATION_FIELD(Hero.SOJOURN, Tier.MINOR, "deceleration_field"),
 	SOJOURN_DUAL_THRUSTERS(Hero.SOJOURN, Tier.MAJOR, "dual_thrusters"),
-	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators");
+	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators"),
+	// Pharah's, the live list's order (D 0057.177: 28E7, 2507; 2509, 28C6; pharah-map.md)
+	PHARAH_CONCUSSIVE_FORCE(Hero.PHARAH, Tier.MINOR, "concussive_force"),
+	PHARAH_HELIX_SHIELDS(Hero.PHARAH, Tier.MINOR, "helix_shields"),
+	PHARAH_FUEL_STORES(Hero.PHARAH, Tier.MAJOR, "fuel_stores"),
+	PHARAH_ROCKET_SALVO(Hero.PHARAH, Tier.MAJOR, "rocket_salvo");
 
 	public enum Tier { MINOR, MAJOR }
 

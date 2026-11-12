@@ -182,6 +182,7 @@ public final class ClientHero {
 			return;
 		}
 		ClientSojourn.reset();
+		ClientPharah.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -381,7 +382,7 @@ public final class ClientHero {
 		// for Lúcio the same buttons: the left fires the Sonic Amplifier, the right Soundwave (lucio-plan.md)
 		int held = (kunai ? HeroInputPayload.HELD_PRIMARY : 0) | (ofuda ? HeroInputPayload.HELD_SECONDARY : 0)
 			| (OwMovement.wallRiding(player) != 0 ? HeroInputPayload.HELD_WALL_RIDE : 0)
-			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0);
+			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0) | ClientPharah.held(player);
 
 		int pressed = 0;
 		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;

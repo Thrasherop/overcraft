@@ -533,6 +533,19 @@ public final class OcSounds {
 	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init()). The ult line is ult.friendly / ult.enemy
 	 * (04D1 / 03DC); voice.ultimate (183C, her own copy, the enemy line's text) stays unplayed, as Sigma's.
 	 */
+	/**
+	 * Pharah's sounds by name ("pharah." + name, played through dev.overcraft.pharah.PharahSounds; the map tools/soundmaps/pharah_sfx.txt
+	 * says which data event each is) and her voice moments (Voice.say: "pharah.voice.<moment>", tools/soundmaps/pharah.txt). A name
+	 * the pack lacks is silent.
+	 */
+	public static final java.util.List<String> PHARAH_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"rocket.fire", "rocket.fire_3p", "rocket.burst", "rocket.hit_enemy", "rocket.hit_enemy_3p", "rocket.hit_block", "reload", "reload_3p",
+		"jump_jet", "jump_jet_3p", "jet_dash", "jet_dash_3p", "hover.start", "hover.start_3p", "hover.loop", "hover.loop_3p", "hover.end", "hover.end_3p",
+		"hover.empty", "concussive.cast", "concussive.cast_3p", "concussive.burst", "barrage.cast", "barrage.cast_3p", "barrage.fire",
+		"barrage.fire_3p", "barrage.burst", "barrage.end", "barrage.end_3p", "perk.salvo", "perk.salvo_3p", "perk.helix", "melee", "melee_3p");
+	public static final java.util.List<String> PHARAH_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "jump_jet", "jet_dash", "concussive", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -576,6 +589,8 @@ public final class OcSounds {
 		SIGMA_VOICE.forEach(moment -> register("sigma.voice." + moment));
 		DVA_SOUNDS.forEach(name -> register("dva." + name));
 		DVA_VOICE.forEach(moment -> register("dva.voice." + moment));
+		PHARAH_SOUNDS.forEach(name -> register("pharah." + name));
+		PHARAH_VOICE.forEach(moment -> register("pharah.voice." + moment));
 	}
 
 	private OcSounds() {
