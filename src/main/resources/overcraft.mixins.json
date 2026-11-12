@@ -30,7 +30,9 @@
 		"PotgFreezeMixin",
 		"PotgDragonMixin",
 		"PotgPickupMixin",
-		"HealOrHarmMixin"
+		"HealOrHarmMixin",
+		"PotgCrystalMixin",
+		"PotgEyeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

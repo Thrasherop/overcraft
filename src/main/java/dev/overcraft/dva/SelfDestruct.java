@@ -107,7 +107,7 @@ public final class SelfDestruct {
 		}
 		// a Brigitte's up barrier the same, once (Accretion's way)
 		dev.overcraft.brigitte.Barrier.burst(level, owner, c, SELF_DESTRUCT_RADIUS, SelfDestruct::damage);
-		DamageSource source = level.damageSources().explosion(mech, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, mech, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(SELF_DESTRUCT_RADIUS + 2))) {
 			if (e == owner || !e.isAlive() || !Allies.areaHits(owner, e)) {
 				continue;

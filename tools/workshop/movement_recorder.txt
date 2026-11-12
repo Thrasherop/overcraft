@@ -62,8 +62,8 @@ rule("Start: recording on, counters at zero")
 
 	actions
 	{
-		"The Inspector's own recording off: it kept every variable change and action (the wall rays, about 20 writes a tick per player) and the log stopped after a few minutes (2026-11-01, twice); Log To Inspector lines still go to the log file"
-		Disable Inspector Recording;
+		"Inspector recording stays on: with it off no log file is written at all (owner, 2026-11-11). With it on the log stops after about 2 min 40 s, so record one hero per game and reset between (owner: more data per tick is better than a longer log)"
+		Enable Inspector Recording;
 		Event Player.lastEvent = Custom String("ready");
 		Event Player.rideCount = 0;
 		Event Player.marks = 0;

@@ -92,6 +92,20 @@ public final class Combat {
 	}
 
 	/**
+	 * A hero's explosion (Pharah's rockets, D.Va's missiles and Self-Destruct, Sigma's spheres and rock): overcraft:blast,
+	 * Minecraft's player explosion but scaled by the difficulty only when a mob causes it, as arrows are. Minecraft's own
+	 * explosion types always scale, so on Easy a hero's splash on herself or another player came off smaller and on Hard
+	 * larger (found playing Tracer: 51.8 came off as 38 on Easy). Tagged as an explosion (blast protection, panic,
+	 * armor stands), no knockback (the kits push themselves).
+	 */
+	public static DamageSource blast(net.minecraft.world.level.Level level, @org.jspecify.annotations.Nullable Entity direct,
+			@org.jspecify.annotations.Nullable Entity owner) {
+		return new DamageSource(level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("blast"))), direct, owner);
+	}
+
+	/**
 	 * Deals a hero's damage, saying what dealt it ({@code blow}: the weapon, melee, an ability, a perk, the ult, whether
 	 * it was critical, and the hero who dealt it, filled from the attacker's hero when not given). A death it causes is
 	 * told by it (KillFeed, which also calls Voice: they run inside the hurt). The hit itself moves no one (heroHit): what

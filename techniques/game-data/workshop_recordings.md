@@ -44,3 +44,21 @@ Both of the owner's first two all-hero sessions stopped writing while the game w
 with three (the game's AI bots are logged as players), about 100,000 lines each. The script had `Enable Inspector
 Recording`, which also keeps every variable change and action (the wall rays: about 20 writes a tick per player). Now
 `Disable Inspector Recording` (Log To Inspector still writes the file). Check a new script's first log ends when the play did.
+
+**That was wrong (2026-11-11):** with recording disabled no log file is written at all (the owner found it). Back to
+`Enable Inspector Recording`. The log then stops after about 2 min 40 s (the owner's 2026-11-11 log: Hanzo 78 s, D.Va
+75 s, Pharah 5 s). The owner's call: keep every per-tick line ("more data is better") and record one hero per game,
+resetting between. Raw logs live in `local-assets/raw/workshop/` (gitignored).
+
+## Two players under one slot tag (2026-11-11)
+`Slot Of` is per team: the owner (team 1, slot 0) and the game's AI bot (team 2, slot 0) were both logged as S0, their
+lines interleaved every tick, and read by slot the session looked like "Hanzo 78 s, then D.Va 75 s" (it was D.Va 150 s
+beside a Hanzo bot). Before measuring, check each tick has one T line: `split_subjects.py` splits by the T line's hero and
+matches each EVENT to its player by velocity. The bot is worth keeping: his health showed Boosters' 25, the missiles' 7.5
+and the push's direction ([dva_workshop_2026-11-11](../heroes/dva_workshop_2026-11-11.md)). A next script could tag lines
+with the team too.
+
+**A bot shares the player's slot tag (2026-11-11):** the owner's D.Va and Pharah logs each had an AI bot (Hanzo) logged as S0
+too, his lines interleaved with the player's over the same times. Split ticks by the hero on the T line and events by the T
+block they follow before measuring ([Pharah's analysis](../heroes/pharah_workshop_2026-11-11.md), `pharah_events.py`). Pharah's
+K / C resource meters read 0 (her fuel isn't a Workshop resource): read it from where the hover stops.

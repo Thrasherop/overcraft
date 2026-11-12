@@ -572,7 +572,7 @@ public final class Pharah implements HeroKit {
 			}
 		}
 		dev.overcraft.brigitte.Barrier.burst(level, owner, at, radius, d -> splash * splashFactor(d, full, radius, edge));
-		DamageSource source = level.damageSources().explosion(rocket, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, rocket, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(radius + 2))) {
 			boolean me = e == owner;
 			if (!e.isAlive() || !me && !Allies.areaHits(owner, e)) {
@@ -615,7 +615,7 @@ public final class Pharah implements HeroKit {
 										@Nullable LivingEntity hitDirect) {
 		ServerLevel level = owner.level();
 		boolean force = s != null && s.has(Perk.PHARAH_CONCUSSIVE_FORCE);
-		DamageSource source = level.damageSources().explosion(rocket, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, rocket, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(CONCUSSIVE_BLAST + 2))) {
 			boolean me = e == owner;
 			if (!e.isAlive() || !me && !Allies.areaHits(owner, e)) {

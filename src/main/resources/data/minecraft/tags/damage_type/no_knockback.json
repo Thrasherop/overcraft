@@ -2,6 +2,7 @@
   "values": [
     "overcraft:field",
     "overcraft:gravitic_flux",
-    "overcraft:gravitic_slam"
+    "overcraft:gravitic_slam",
+    "overcraft:blast"
   ]
 }

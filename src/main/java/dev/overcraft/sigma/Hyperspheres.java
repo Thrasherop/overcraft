@@ -142,7 +142,7 @@ public final class Hyperspheres {
 		}
 		// a Brigitte's up barrier the same, once (not once for each one behind it)
 		dev.overcraft.brigitte.Barrier.burst(level, owner, at, SPHERE_BURST_RADIUS, Hyperspheres::burstDamage);
-		DamageSource source = level.damageSources().explosion(sphere, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, sphere, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(SPHERE_BURST_RADIUS + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;

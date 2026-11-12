@@ -217,7 +217,12 @@ public class Overcraft implements ModInitializer {
 			HeroManager.onRespawn(newPlayer, resurrected);
 			// a Mercy's Resurrect puts them back where they fell, with its health (after the kit, which sets the health)
 			Souls.onRespawn(oldPlayer, newPlayer);
+			// Play of the Game: a respawn can land in a new dimension (an anchor in the Nether)
+			dev.overcraft.potg.PlayerStats.entered(newPlayer);
 		});
+		// Play of the Game: a player's first entry into the Nether and the End (PotgValues, owner 2026-11-11)
+		net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(
+			(player, origin, destination) -> dev.overcraft.potg.PlayerStats.entered(player));
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (Combat.refusesDamage(entity, source)) {
