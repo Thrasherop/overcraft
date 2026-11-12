@@ -1,0 +1,18 @@
+# Cassidy's Peacekeeper (entity 02A6, model 00000000EECF.00C, base 0915; set 00FA), on his hardpoint 000A (R), var 1901.
+# 'not extracted' rows are clips the set names that DataTool didn't extract under this model.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\cassidy\scripts\clipmaps_cassidy.py from the
+# compacted blend-tree sets (research\cassidy\work\clipmap_cassidy\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-28_00000000126C = idle   # 0.0333 s; set 00FA alias 6 ((was jump_takeoff: the gun's base pose (0.033 s, on 24 paths)) jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop (H tree)); sel[1] @2 sel[4] @86 df18=cat6 @6 sm[0] seq[0]; on 24 paths
+4-0_00000000130D = add_fire   # 1 s; set 00FA alias A ((was add_fire_sm0: alias A sm[0] (cylinder / hammer, M)) Peacekeeper primary: additive one-shot, 4 random picks; no StateAnim names it, the shot (01D2 #300 button -> #330 volley, 1 shot) drives it (L, as Tracer's)); sel[1] @2 sel[4] @86 df18:+add() sm[1] @A @803E8054 sm[0]; on 20 paths
+4-0_0000000015EE = add_fire_2   # 0.1667 s; set 00FA alias A ((was add_fire_sm0: alias A second layer (L)) Peacekeeper primary: additive one-shot, 4 random picks; no StateAnim names it, the shot (01D2 #300 button -> #330 volley, 1 shot) drives it (L, as Tracer's)); sel[1] @2 sel[4] @86 df18:+add() sm[1] @A +add({'bound': None}) @803E8055 sm[0]; on 20 paths
+0-0_000000001321 = reload   # 1.5 s; set 00FA alias 4 ((was reload_sm0: sm[0] 1.5 s, as the 1P reload) Peacekeeper reload (01D2 #318, length v581) (H)); sm[0] @803E8050
+2-0_0000000013A3 = reload_3p   # 1.6333 s; set 00FA alias 4 ((was reload_sm1: sm[1] 1.63 s, as the 3P reload) Peacekeeper reload (01D2 #318, length v581) (H)); sm[1] @803E8053
+# Extracted under this model but in none of its sets (1, not named): 00395B
+
+# emote clips the data plays on the Peacekeeper (slot 1901, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS), from
+# the emote folders (--clips-from): research\cassidy\extract\Unlocks\Heroes\Cassidy\Emote\Archives\Quick Draw\Animations\0\0
+emote_0000000085D6 = emote_quick_draw   # Quick Draw: 0-6.133 s

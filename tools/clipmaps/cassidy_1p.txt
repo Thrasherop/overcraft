@@ -1,0 +1,82 @@
+# Cassidy, first person (model 00000000F082.00C on entity 02A4 (Gameplay1P), base 0FD9; set 00E4; entity fields 1.425 / 0.9975 / 0.9).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\cassidy\scripts\clipmaps_cassidy.py from the
+# compacted blend-tree sets (research\cassidy\work\clipmap_cassidy\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_0000000014A3 = base_se4_air_sm0_se0   # 0.2333 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18=cat6 @8039008A sm[0] seq[0]
+0-32_0000000014A4 = base_se4_air_sm0_se1   # 0.3 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18=cat6 @8039008A sm[0] seq[1]; on 2 paths
+0-60_000000001383 = base_se4_crouch_move   # 0.0333 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18=cat65; on 4 paths
+4-4_000000001474 = add_base_se4_sm2_crouch_move   # 1.5 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18:+add() sm[2] df18=cat65; on 3 paths
+4-4_00000000127A = add_base_se4_sm2_crouch   # 3 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18:+add() sm[2] df18=cat66; on 3 paths
+4-4_000000001376 = add_base_se4_sm2_stand   # 3.6667 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18:+add() sm[2] df18=default[4]
+4-0_0000000014A2 = add_base_se4_sm2   # 0.3333 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 @8039008B df18:+add() sm[2] df18:tr[0>4, 2, 1, 3]
+4-4_00000000F472 = add_base_se4_sm2_move   # 1.5 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=catB6 @803900F6 +add({'bound': '000000000AD8.013'}) @803900F7 df18:+add() sm[2] df18=cat5
+0-32_000000001281 = jump   # 0.2333 s; set 00E4 alias 6 ((was jump_takeoff: 1P jump take-off) jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop (H tree)); sel[4] @80390093 dfE5=default[1] @80390087 df18=cat6 @6 sm[0] seq[0]; on 2 paths
+0-32_000000001282 = fall   # 0.3 s; set 00E4 alias 6 ((was jump_fall: 1P fall) jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall loop (H tree)); sel[4] @80390093 dfE5=default[1] @80390087 df18=cat6 @6 sm[0] seq[1]; on 4 paths
+0-36_0000000015E0 = crouch_move   # 0.8 s; set 00E4 alias A0E ((was base_se4_crouch_move: 1P crouch move) the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18=cat65
+0-60_00000000127B = crouch   # 0.1667 s; set 00E4 alias A0E ((was base_se4_crouch: 1P crouch) the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18=cat66
+0-36_00000000128C = run   # 0.8 s; set 00E4 alias A0E ((was base_se4_move: 1P move (df18 cat5)) the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18=cat5
+0-60_00000000126B = idle   # 0.0333 s; set 00E4 alias A0E ((was base_se4_stand: 1P stand (dfE5 default, df18 default)) the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18=default[4]
+4-0_000000001283 = add_base_se4_sm2_2   # 0.3 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18:+add() sm[2] df18:tr[0>4, 2, 1, 3]
+4-4_00000000127C = add_base_se4_sm2_3   # 0.3333 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18:+add() sm[2] df18:tr[4, 3>2, 1]
+4-4_00000000127D = add_base_se4_sm2_4   # 0.4333 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); sel[4] @80390093 dfE5=default[1] @80390087 df18:+add() sm[2] df18:tr[2, 1>4, 3]
+4-4_000000001382 = add_base_sm0   # 0.1667 s; set 00E4 alias A0E (the set's base tree (1P / weapon / poses)); +add(df102) @803900A5 @803900A6 dfE5=catB6 @8039008C sm[0]; on 10 paths
+4-4_000000001280 = add_fire   # 1 s; set 00E4 alias 92 ((was add_layer_92_sm0: alias A > alias 92 sm[0] (M: 1 s, the primary's recoil)) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A @92 sm[0]; on 15 paths
+4-4_0000000012B7 = add_fan_shot_first   # 0.1667 s; set 00E4 alias 93 ((was add_layer_93_sm0: alias A > alias 93 sm[0] (M: 0.17 s per shot, Fan the Hammer)) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A +add() sm[1] @93 sm[0]; on 3 paths
+4-4_000000001368 = add_fan_shot   # 0.1667 s; set 00E4 alias 93 ((was add_layer_93_sm2_ra0: alias 93 sm[2] rand[0]) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A +add() sm[1] @93 sm[2] rand[0]; on 6 paths
+4-4_000000001369 = add_fan_shot_2   # 0.1667 s; set 00E4 alias 93 ((was add_layer_93_sm2_ra1: alias 93 sm[2] rand[1]) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A +add() sm[1] @93 sm[2] rand[1]; on 3 paths
+4-4_00000000136A = add_fan_shot_3   # 0.1667 s; set 00E4 alias 93 ((was add_layer_93_sm2_ra2: alias 93 sm[2] rand[2]) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A +add() sm[1] @93 sm[2] rand[2]; on 3 paths
+4-4_0000000015E8 = add_fan_end   # 0.7667 s; set 00E4 alias 93 ((was add_layer_93_tr0234: alias 93 transition (L: the fan's recovery)) 1P (L)); +add(df102) @803900A5 @803900A6 dfE5=default[1] @A +add() sm[1] @93 tr[0, 2, 3>4]; on 3 paths
+4-6_00000000149F = add_layer_a2   # 0.1667 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=catB6 @80390079; on 3 paths
+4-6_0000000014A0 = add_layer_a2_2   # 0.4667 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=catB6 @80390079 +add(); on 3 paths
+4-6_0000000014A1 = add_layer_a2_3   # 1 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=catB6 @80390079 +add() +add(); on 3 paths
+4-6_00000000128D = add_layer_a2_4   # 0.1667 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=default[1] @8039007C; on 3 paths
+4-6_000000001278 = add_layer_a2_5   # 0.4667 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=default[1] @8039007C +add(); on 3 paths
+4-4_000000001279 = add_layer_a2_6   # 1 s; set 00E4 alias A2 (1P (L)); +add(df102) @803900A5 +add({'bound': None}) @140 @A2 dfE5=default[1] @8039007C +add() +add(); on 3 paths
+4-20_000000000C63 = add_layer_140_sm0_sm0   # 1.3333 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add(dfBC4) sm[0] sm[0]; on 4 paths
+4-4_000000005687 = add_layer_140_tr041   # 0.6667 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add(dfBC4) tr[0, 4>1]; on 2 paths
+4-4_000000003B47 = add_layer_140_sm0_sm0_2   # 0.5667 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add() sm[0] sm[0]; on 4 paths
+4-20_000000003B43 = add_layer_140_sm1_sm0_se0_sm0   # 0.3333 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add() sm[1] sm[0] seq[0] sm[0]; on 2 paths
+4-20_000000003B44 = add_layer_140_sm1_sm0_se0_sm1   # 0.3333 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add() sm[1] sm[0] seq[0] sm[1]; on 4 paths
+4-20_000000003B45 = add_layer_140_sm1_tr01   # 0.4333 s; set 00E4 alias 140 (1P generic layer (L)); +add(df102) @803900A5 +add({'bound': None}) @140 +add() sm[1] tr[0>1]; on 2 paths
+0-36_00000000128A = reload   # 1.5 s; set 00E4 alias 4 (Peacekeeper reload (01D2 #318, length v581) (H)); -
+0-32_000000001287 = melee   # 0.8 s; set 00E4 alias D (quick melee (0043 #117, cat 6A, 0.76 s) (H)); -
+0-32_000000001294 = flashbang   # 0.6 s; set 00E4 alias 14C (Flashbang throw (01E9 #114, 0.42 s; 1D blend by aim pitch) (H)); -
+0-32_00000000147A = deadeye_fire   # 0.3333 s; set 00E4 alias 19E (Deadeye's shot (022F #421 on the fire button #251, 0.5 s; #427 the timed-out auto shot, 0.33 s) (H)); -
+0-36_000000001292 = roll_s0   # 0.3 s; set 00E4 alias 14D ((was roll: alias 14D 4-slot s0) Combat Roll (01F0 #131, 0.3 s, cat 250; 4-slot by move direction) (H)); strafe 4slot:s0
+0-36_000000001446 = roll_s1   # 0.3 s; set 00E4 alias 14D ((was roll: s1) Combat Roll (01F0 #131, 0.3 s, cat 250; 4-slot by move direction) (H)); strafe 4slot:s1
+0-36_00000000144A = roll_s2   # 0.3 s; set 00E4 alias 14D ((was roll: s2) Combat Roll (01F0 #131, 0.3 s, cat 250; 4-slot by move direction) (H)); strafe 4slot:s2
+0-36_000000001448 = roll_s3   # 0.3 s; set 00E4 alias 14D ((was roll: s3) Combat Roll (01F0 #131, 0.3 s, cat 250; 4-slot by move direction) (H)); strafe 4slot:s3
+0-32_000000001373 = deadeye   # 0.8 s; set 00E4 alias 173 (Deadeye: the stance / draw at the ability's start (022F #308 from StateAbility #224, 0.8 s; replayed after each shot) (H)); -
+0-36_0000000014A8 = deadeye_end   # 0.6667 s; set 00E4 alias 19F (022F #448, 0.33 s after the waits (L: the ability's end)); -
+0-60_000000001475 = a202   # 0.0333 s; set 00E4 alias 202 (1P (L)); -
+4-6_000000001375 = add_a202   # 0.6667 s; set 00E4 alias 202 (1P (L)); +add({'bound': None}) @8039009C @80390077
+0-36_000000001E26 = hello   # 0.9333 s; set 00E4 alias 1EE (the comms wheel's Hello); -
+4-4_000000003894 = add_hello_add   # 0.9333 s; set 00E4 alias 2DE (Hello additive); -
+4-4_000000003AE6 = add_a467_se0_ra0   # 1.0667 s; set 00E4 alias 467 (1P (L)); seq[0] rand[0]
+4-4_000000003AE7 = add_a467_se0_ra1   # 1.1 s; set 00E4 alias 467 (1P (L)); seq[0] rand[1]
+0-36_000000003DDC = stun   # 1 s; set 00E4 alias 70 (shared CC); -
+0-36_00000000842F = a725   # 0.1 s; set 00E4 alias 725 (1P (L)); -
+4-4_00000000842D = add_a726   # 0.5 s; set 00E4 alias 726 (L); -
+0-36_000000008BD8 = a6d2   # 0.5 s; set 00E4 alias 6D2 (L); -
+0-36_000000008BD9 = a6d1   # 0.4 s; set 00E4 alias 6D1 (L); -
+4-4_000000000C4F = add_sway_sm0_sm0_up   # 1.2333 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[0] blend1d(dfF0) 1d@1.0
+4-4_0000000000F4 = add_sway_sm0_sm1   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[1] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F2 = add_sway_sm0_sm1_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[1] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000F5 = add_sway_sm0_sm2   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[2] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F3 = add_sway_sm0_sm2_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[2] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EB = add_sway_sm0_sm3   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[3] blend1d({'bound': '000000000044.013'})
+4-4_000000000074 = add_sway_sm0_sm3_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[3] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000E9 = add_sway_sm0_sm4   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[4] blend1d({'bound': '000000000044.013'})
+4-4_000000000076 = add_sway_sm0_sm4_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[4] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EC = add_sway_sm0_sm5   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[5] blend1d({'bound': '000000000044.013'})
+4-4_000000000075 = add_sway_sm0_sm5_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[5] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EA = add_sway_sm0_sm6   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[6] blend1d({'bound': '000000000044.013'})
+4-4_000000000073 = add_sway_sm0_sm6_up   # 0.5 s; set 00E4 alias C8 (1P weapon sway (shared)); sm[0] sm[6] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-6_0000000000F6 = add_sway   # 0.1667 s; set 00E4 alias C8 (1P weapon sway (shared)); +add()
+4-4_000000000958 = add_knockdown_end   # 1 s; set 00E4 alias 66 (shared CC); -; on 2 paths
+4-4_000000000959 = add_knockdown   # 0.6667 s; set 00E4 alias 65 (shared CC); -; on 2 paths
+4-4_000000000957 = add_knockdown_start   # 1 s; set 00E4 alias 64 (shared CC); -; on 2 paths
+# Extracted under this model but in none of its sets (9, not named): 001288 00128B 001293 001295 001447 001449 00144B 001473 00395B

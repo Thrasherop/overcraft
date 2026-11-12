@@ -1,0 +1,16 @@
+# Cassidy's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/cassidy.glb by bone name (HeroModels, from hero_models/cassidy_intro_clips.glb), as Tracer's (tracer_intro_clips.txt).
+# From DataTool's extract-unlocks "Cassidy|highlightintro=*" (build 154088, archived: research\cassidy\extract\Unlocks\Heroes\Cassidy\
+# HighlightIntro). The default Overwatch plays: "Heroic" (the Overwatch\Heroic folder; his other base intros are The name's Cassidy,
+# The Duel and Rolling into Action). Heroic holds four clips (Animations\0\28 and 0\32; research\cassidy\work\intro_clips_out.txt):
+# A23D 7.5 s (group 32, animation effect 3EB0), BCF2 3.8 s (effect 469B), BCF3 3.733 s (effect 46A3), and A25E 7.5 s in group 28
+# (effect 4811: L, the clip of a prop of the intro's own models 0801 / 0F5B, not his body; not kept). His intro set 42FA's alias B33 is
+# a SEQUENCE: seq[0] 7.5 -> seq[1] 1.667 -> seq[2] 3.733 -> seq[3] 3.467 -> seq[4] a 3.733 or a random pick of 3.733 / 3.8 / 3.467 / 1.667
+# (H tree, work\clipmap_cassidy\compact_42FA.txt; the set's own clip ids 19EC6-1A5C5 are not extracted under EFA3, as Tracer's weren't).
+# So A23D is the opening (H by length: the only 7.5 s body clip), BCF3 the 3.733 s step, BCF2 the 3.8 s random pick (M by length;
+# no 1.667 / 3.467 s clip is in Heroic). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <EFA3.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/cassidy_intro_clips.txt --clips-from=<...>\Heroes\Cassidy\HighlightIntro\Overwatch\Heroic
+emote_00000000A23D = potg_intro
+emote_00000000BCF3 = potg_intro_2
+emote_00000000BCF2 = potg_intro_2b
