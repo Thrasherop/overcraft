@@ -73,6 +73,7 @@ public final class HeroArt {
 			case DVA -> "self_destruct";
 			case SOJOURN -> "overclock";
 			case PHARAH -> "barrage";
+			case TRACER -> "pulse_bomb";
 			case ILLARI -> "captive_sun";
 		});
 	}

@@ -66,7 +66,9 @@ public final class HeroModels {
 		// Sombra's stealth detection ring (129B: SombraFx)
 		"sombra_cylinder",
 		// Pharah's rocket (12F5B: her launcher's, Barrage's and Rocket Salvo's)
-		"projectile_pharah_rocket");
+		"projectile_pharah_rocket",
+		// Tracer's Pulse Bomb (160BB)
+		"projectile_tracer_bomb");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

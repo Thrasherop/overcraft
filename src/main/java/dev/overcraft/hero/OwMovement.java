@@ -134,6 +134,8 @@ public final class OwMovement {
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Vec3> dash = entity -> null;
 	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
 	public static Predicate<LivingEntity> undamped = entity -> false;
+	/** Set by the client: an ability holds this entity still where it is (Tracer's Recall: the server moves her). */
+	public static Predicate<LivingEntity> held = entity -> false;
 	/** Mercy's Angelic Descent: held, her fall is capped. */
 	public static Predicate<LivingEntity> descent = entity -> false;
 
@@ -413,6 +415,14 @@ public final class OwMovement {
 		return Math.clamp(factor, 0, 1 + MAX_SPEED_BONUS);
 	}
 
+	/**
+	 * A hero's run against everyone's 5.5 (her mover's forward / strafe / back, back still 90 %, crouching the same 3 m/s):
+	 * Tracer 6.0 (TracerStats.RUN_SPEED). The air cap stays 5.5 (her mover's m_031FE7EE is the default).
+	 */
+	public static double heroRun(LivingEntity entity) {
+		return "tracer".equals(entity.getAttached(HeroManager.HERO)) ? dev.overcraft.tracer.TracerStats.RUN_SPEED / RUN_SPEED : 1;
+	}
+
 	/** Target speed in m/s for this input: x strafe (left +), z forward (+). */
 	public static double runSpeed(double x, double z, boolean crouching) {
 		if (x == 0 && z == 0) {
@@ -510,6 +520,11 @@ public final class OwMovement {
 
 	/** Replaces {@code LivingEntity.travelInAir}. {@code input}: x strafe, z forward, as Minecraft passes it. */
 	public static void travel(LivingEntity entity, Vec3 input) {
+		if (held.test(entity)) {
+			entity.setDeltaMovement(Vec3.ZERO);
+			entity.resetFallDistance();
+			return;
+		}
 		if (sigmaFly(entity, input)) {
 			return;
 		}
@@ -559,6 +574,7 @@ public final class OwMovement {
 		int hover = pharahHover.applyAsInt(entity);
 		double hoverSpeed = dev.overcraft.pharah.Pharah.hoverFast(hover) ? 1 + dev.overcraft.pharah.PharahStats.HOVER_SPEED : 1;
 		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity)
+			* (entity.isCrouching() ? 1 : heroRun(entity))
 			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1) * hoverSpeed;
 		Vec3 wish = Vec3.ZERO;
 		if (speed > 0 && flat.lengthSqr() > 1.0E-7) {

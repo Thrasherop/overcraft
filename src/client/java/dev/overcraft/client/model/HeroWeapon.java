@@ -49,7 +49,10 @@ public final class HeroWeapon {
 		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
 		// Pharah's Rocket Launcher, entity 003B (model F131) on her hardpoint 000A = Weapon_R in both views (pharah-map.md, var 1B9F);
 		// hero_models/pharah_weapon.glb
-		Hero.PHARAH, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.PHARAH, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Tracer's right Pulse Pistol, entity 0017 (model DA61) on her hardpoint 000A = Weapon_R (slot 1B9B), no offset, in both
+		// views (her models' hardpoint tables); the left one on 000B = Weapon_L is an extra (leftPistol); hero_models/tracer_weapon.glb
+		Hero.TRACER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private HeroWeapon() {
 	}
@@ -116,6 +119,34 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * Tracer's left Pulse Pistol: the same entity 0017 (model DA61) on her hardpoint 000B = Weapon_L (slot 1B9C), no offset, in
+	 * both views; posed as the right one (the data's two pistols play the same clips, M); put away in an emote as its own slot's
+	 * windows say ("stowLeft": emote_data.py WEAPON_SLOTS).
+	 */
+	private static EmoteProps.@Nullable Placed leftPistol(HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson, float now) {
+		HeroModels.Loaded weapon = HeroModels.weapon(Hero.TRACER);
+		if (weapon == null) {
+			return null;
+		}
+		if (!firstPerson && animator.emoting()) {
+			EmoteData.Emotes data = EmoteData.of(Hero.TRACER.id);
+			String emote = animator.emote();
+			if (data == null || emote == null || data.stowed(emote, animator.emoteClip(), animator.emoteAt(), "stowLeft")) {
+				return null;
+			}
+		}
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
+			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+		int bone = heroModel.node("Weapon_L");
+		if (heroPose == null || bone < 0 || heroPose.t.length != heroModel.nodeNames.length) {
+			return null;
+		}
+		Matrix4f at = Skeleton.world(heroModel, heroPose, bone);
+		Skeleton.Pose own = pose(weapon.model(), animator, firstPerson, now);
+		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
+	}
+
+	/**
 	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
 	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
 	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
@@ -128,6 +159,12 @@ public final class HeroWeapon {
 			out.add(pistol);
 		}
 		parts(hero, animator, heroModel, firstPerson, now, out);
+		if (hero == Hero.TRACER) {
+			EmoteProps.Placed left = leftPistol(animator, heroModel, firstPerson, now);
+			if (left != null) {
+				out.add(left);
+			}
+		}
 		if (hero == Hero.BRIGITTE) {
 			// in an emote the flail and its head go with the stow windows (slot 3572); the folded shield (339E) no emote touches
 			EmoteProps.Placed flail = animator.emoting() && !inEmote(hero, animator) ? null

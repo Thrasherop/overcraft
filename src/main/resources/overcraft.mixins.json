@@ -29,7 +29,8 @@
 		"PotgSendMixin",
 		"PotgFreezeMixin",
 		"PotgDragonMixin",
-		"PotgPickupMixin"
+		"PotgPickupMixin",
+		"HealOrHarmMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

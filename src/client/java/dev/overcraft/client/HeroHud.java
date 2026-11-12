@@ -1024,6 +1024,20 @@ public final class HeroHud {
 				(float) dev.overcraft.sojourn.SojournStats.DISRUPTOR_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.TRACER) {
+			// Blink (Shift; the right button too) with its charges in the corner and the next one's recharge as a band, its time
+			// shown only with none left (D 0024 #139-#142 / #172), and Recall (E), in Kiriko's two places (ours)
+			int blinks = s.secondaryAmmo();
+			ability(g, hero, w, "blink", w - 641, 903, HeroControls.get(Action.ABILITY_1), blinks > 0 ? 0 : s.ability1Cooldown(),
+				(float) dev.overcraft.tracer.TracerStats.BLINK_RECHARGE, ability1ReadyAt);
+			charges(g, blinks, w - 641, 903, w);
+			if (s.secondaryReload() >= 0 && blinks > 0) {
+				boxBand(g, s.secondaryReload(), 0xFFF29A2E, w - 641, 903, w);
+			}
+			ability(g, hero, w, "recall", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.PHARAH) {
 			// Jet Dash (the right button), Jump Jet (Shift), Concussive Blast (E), her data's SECONDARY / ABILITY 1 / 2, in Lucio's
 			// three places (ours); a jet's box lit while it's going
@@ -1404,6 +1418,12 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.TRACER) {
+			// the Pulse Pistols' 40 (the left button) where Kiriko's kunai are
+			weapon(g, hero, w, "pulse_pistols", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.tracer.TracerStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.PHARAH) {

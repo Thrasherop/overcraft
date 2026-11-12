@@ -140,6 +140,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2, (float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Tracer's Pulse Bomb (0045): 0.22 m (not saved: a 1 s fuse, 99 s unstuck). */
+	public static final EntityType<dev.overcraft.entity.PulseBombEntity> PULSE_BOMB = register("pulse_bomb",
+		EntityType.Builder.<dev.overcraft.entity.PulseBombEntity>of(dev.overcraft.entity.PulseBombEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2, (float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)

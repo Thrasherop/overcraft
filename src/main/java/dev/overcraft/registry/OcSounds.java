@@ -546,6 +546,20 @@ public final class OcSounds {
 	public static final java.util.List<String> PHARAH_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "jump_jet", "jet_dash", "concussive", "ultimate");
+	/**
+	 * Tracer's sounds by name ("tracer." + name, played through dev.overcraft.tracer.TracerSounds; tools/soundmaps/tracer_sfx.txt
+	 * says which data event each is) and her voice moments (Voice.say: "tracer.voice.<moment>", tools/soundmaps/tracer.txt).
+	 */
+	public static final java.util.List<String> TRACER_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"pistol.fire", "pistol.fire_3p", "pistol.fire_first", "pistol.fire_first_3p", "pistol.fire_end", "pistol.fire_end_3p",
+		"pistol.bullet_3p", "pistol.empty", "pistol.hit_enemy", "pistol.hit_enemy_3p", "pistol.hit_block", "reload", "reload_3p", "melee",
+		"blink_1", "blink_1_3p", "blink_2", "blink_2_3p", "blink_3", "blink_3_3p", "blink_empty", "blink_recharge_1",
+		"blink_recharge_2", "blink_recharge_3", "recall.start", "recall.rewind", "recall.rewind_3p", "recall.end", "recall.end_3p",
+		"pulse_bomb.throw", "pulse_bomb.throw_3p", "pulse_bomb.stick", "pulse_bomb.stick_3p", "pulse_bomb.stick_block",
+		"pulse_bomb.fuse", "pulse_bomb.explode", "perk.kinetic_reload", "perk.quantum", "perk.temporal_regen");
+	public static final java.util.List<String> TRACER_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "blink", "recall", "pulse_bomb_stick", "pulse_bomb_kill", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -591,6 +605,8 @@ public final class OcSounds {
 		DVA_VOICE.forEach(moment -> register("dva.voice." + moment));
 		PHARAH_SOUNDS.forEach(name -> register("pharah." + name));
 		PHARAH_VOICE.forEach(moment -> register("pharah.voice." + moment));
+		TRACER_SOUNDS.forEach(name -> register("tracer." + name));
+		TRACER_VOICE.forEach(moment -> register("tracer.voice." + moment));
 	}
 
 	private OcSounds() {

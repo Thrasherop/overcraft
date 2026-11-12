@@ -64,6 +64,7 @@ public final class Perks {
 			case DVA -> dev.overcraft.dva.DvaStats.PERK_MINOR_XP;
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MINOR_XP;
 			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MINOR_XP;
+			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -84,6 +85,7 @@ public final class Perks {
 			case DVA -> dev.overcraft.dva.DvaStats.PERK_MAJOR_XP;
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MAJOR_XP;
 			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MAJOR_XP;
+			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

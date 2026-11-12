@@ -180,6 +180,7 @@ public final class HeroManager {
 		KITS.put(Hero.DVA, new dev.overcraft.dva.Dva());
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
 		KITS.put(Hero.PHARAH, new dev.overcraft.pharah.Pharah());
+		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
 	}
 
 	private HeroManager() {
@@ -778,7 +779,10 @@ public final class HeroManager {
 			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0, true);
 		}
 		// Mercy's Swift Recovery starts it sooner; in Valkyrie it never stops (BZ 2023-04-11)
-		int regenDelay = state.hero == Hero.MERCY ? dev.overcraft.mercy.MercyStats.REGEN_DELAY : Combat.REGEN_DELAY;
+		// Tracer's Temporal Regen: 3 s (D 51EE #462 x0.5 on 01C7 #966)
+		int regenDelay = state.hero == Hero.MERCY ? dev.overcraft.mercy.MercyStats.REGEN_DELAY
+			: state.hero == Hero.TRACER && state.has(Perk.TRACER_TEMPORAL_REGEN) ? Ow.ticks(dev.overcraft.tracer.TracerStats.TEMPORAL_REGEN_DELAY)
+			: Combat.REGEN_DELAY;
 		boolean always = state.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.valkyrie(state);
 		if ((always || Combat.now(player) - state.lastDamagedTick >= regenDelay) && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());

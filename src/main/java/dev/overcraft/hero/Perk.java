@@ -69,7 +69,12 @@ public enum Perk {
 	PHARAH_CONCUSSIVE_FORCE(Hero.PHARAH, Tier.MINOR, "concussive_force"),
 	PHARAH_HELIX_SHIELDS(Hero.PHARAH, Tier.MINOR, "helix_shields"),
 	PHARAH_FUEL_STORES(Hero.PHARAH, Tier.MAJOR, "fuel_stores"),
-	PHARAH_ROCKET_SALVO(Hero.PHARAH, Tier.MAJOR, "rocket_salvo");
+	PHARAH_ROCKET_SALVO(Hero.PHARAH, Tier.MAJOR, "rocket_salvo"),
+	// Tracer's, the live list's order (D 005E.177: 2AC7, 26B6; 259B, 259D; tracer-map.md)
+	TRACER_TEMPORAL_REGEN(Hero.TRACER, Tier.MINOR, "temporal_regen"),
+	TRACER_KINETIC_RELOAD(Hero.TRACER, Tier.MINOR, "kinetic_reload"),
+	TRACER_BLINK_PACKS(Hero.TRACER, Tier.MAJOR, "blink_packs"),
+	TRACER_QUANTUM_ENTANGLEMENT(Hero.TRACER, Tier.MAJOR, "quantum_entanglement");
 
 	public enum Tier { MINOR, MAJOR }
 

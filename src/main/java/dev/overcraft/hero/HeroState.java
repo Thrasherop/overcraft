@@ -194,6 +194,20 @@ public final class HeroState {
 	public long pharahOverfuelAt = -1000, pharahAirAt = -1000, pharahSalvoUntil = -1;
 	public boolean pharahHovering, pharahRightWas, pharahSilenced;
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 pharahSalvoAim;
+	/**
+	 * Tracer (dev.overcraft.tracer.Tracer): Blink's charges, its recharge (ticks into the charge coming back), the next press it
+	 * takes and her last Blink (game time) and how many in a row; ticks into Recall (-1 none) with where it holds her and what it
+	 * gives back; ticks into Pulse Bomb's cast (-1 none); her pistols' bloom (0-1), the 0.2 s lock after she lets go, her
+	 * burst going, her last shot (game time); when her magazine went over 40 (Quantum Entanglement); her 3 s of history.
+	 */
+	public int tracerBlinks = dev.overcraft.tracer.TracerStats.BLINK_CHARGES, tracerBlinkRun, tracerRecall = -1, tracerBombCast = -1;
+	public double tracerBlinkTimer, tracerBloom, tracerRecallHealth;
+	public long tracerBlinkReady, tracerBlinkAt = -1000, tracerFireLockUntil, tracerLastShot = -1000, tracerOverAmmoAt = -1000,
+		tracerSpawnAt = -1000, tracerVoiceAt = -1;
+	public boolean tracerFiring, tracerSilenced;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 tracerHold, tracerRecallVelocity, tracerRecallTo;
+	public float tracerRecallYaw, tracerRecallPitch;
+	public final java.util.ArrayDeque<dev.overcraft.tracer.Tracer.Sample> tracerHistory = new java.util.ArrayDeque<>();
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;

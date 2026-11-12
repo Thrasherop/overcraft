@@ -183,6 +183,7 @@ public final class ClientHero {
 		}
 		ClientSojourn.reset();
 		ClientPharah.reset();
+		ClientTracer.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -390,6 +391,8 @@ public final class ClientHero {
 		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
 		pressed |= drain(HeroControls.get(Action.RELOAD)) ? HeroInputPayload.PRESS_RELOAD : 0;
 		pressed |= drain(HeroControls.get(Action.QUICK_MELEE)) ? HeroInputPayload.PRESS_MELEE : 0;
+		// Tracer's Blink: Shift or the right button, moved here at once (ClientTracer)
+		pressed = ClientTracer.input(player, pressed, ofudaPressed);
 
 		dev.overcraft.client.comms.Pings.tick(mc);
 

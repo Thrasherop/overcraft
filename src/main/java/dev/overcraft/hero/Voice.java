@@ -200,7 +200,14 @@ public final class Voice {
 		java.util.Map.entry("pharah.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
 		java.util.Map.entry("pharah.jump_jet", new Stimulus(50, 20, 30, false)), // 07F9 (0027 #111)
 		java.util.Map.entry("pharah.concussive", new Stimulus(50, 2, 5, false)), // 008E (007B #215)
-		java.util.Map.entry("pharah.ultimate", new Stimulus(95, 1, 1, false))); // 1857 (002B #367, the own key F1AC)
+		java.util.Map.entry("pharah.ultimate", new Stimulus(95, 1, 1, false)), // 1857 (002B #367, the own key F1AC)
+		// Tracer's (tools/soundmaps/tracer.txt; her set 0003.05F)
+		java.util.Map.entry("tracer.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("tracer.blink", new Stimulus(60, 2, 2, false)), // 0080 (criteria 05A6: the third in a row)
+		java.util.Map.entry("tracer.recall", new Stimulus(50, 2, 5, false)), // 0084 (criteria 05A7)
+		java.util.Map.entry("tracer.pulse_bomb_stick", new Stimulus(85, 0.1f, 0.1f, false)), // 0082
+		java.util.Map.entry("tracer.pulse_bomb_kill", new Stimulus(50, 2, 5, false)), // 0083
+		java.util.Map.entry("tracer.ultimate", new Stimulus(95, 2, 2, false))); // 0081
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

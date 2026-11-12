@@ -1,0 +1,101 @@
+2065 Tracer ticks, t 6.18 - 39.20
+median tick 0.019999999999999574
+ground speed with input: n 1036 p50 5.998 p90 6.003 max 6.007
+  forward: n 539 p50 5.999 max 6.007
+  back: n 78 p50 5.400 max 5.405
+  side: n 57 p50 5.999 max 6.005
+  diag fwd: n 318 p50 5.999 max 6.007
+  diag back: n 44 p50 5.600 max 5.983
+starts from standing (ground, speed < 0.2, then input):
+  t 6.56: 3.36 5.28 6.00 6.00 6.00 6.00
+  t 26.82: 3.36 5.28 6.00 6.00 6.00 6.00
+  t 28.77: 3.36 5.28 6.00 6.00 6.00 6.00
+  t 31.14: 3.36 5.28 5.40 5.40 5.40 5.40
+  t 32.53: 3.36 5.28 6.00 6.00 6.00 6.00
+  t 34.69: 3.36 5.28 6.00 6.00 6.00 6.00
+  t 36.42: 3.36 5.28 6.00 6.00 6.00 6.00
+max vy 5.72
+gravity p50 14.00
+
+Blinks (ticks while ab1 is in use):
+  t 7.10 ticks 6 lasted 0.110 horiz 8.07 dy -0.09 charges 3.0 -> 2.0 inp [0.0, 0.0, 1.0] vel before [5.92, -0.73, 0.96] after [5.92, -1.4, 0.96] face [0.98, -0.08, 0.16]
+     per-tick metres: 0.09 7.51 0.09 0.10 0.09 0.10 0.09
+     vy: -0.73 -1.01 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 9.04 ticks 6 lasted 0.120 horiz 8.08 dy -0.06 charges 2.0 -> 1.0 inp [0.0, 0.0, 1.0] vel before [5.33, 0.67, -2.75] after [5.33, -1.4, -2.75] face [0.89, -0.07, -0.46]
+     per-tick metres: 0.10 7.50 0.10 0.09 0.10 0.09 0.10
+     vy: 0.67 0.39 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 10.00 ticks 6 lasted 0.120 horiz 8.07 dy -0.08 charges 1.0 -> 1.0 inp [0.0, 0.0, 1.0] vel before [5.42, -0.17, -2.57] after [5.43, -1.4, -2.56] face [0.9, -0.06, -0.43]
+     per-tick metres: 0.10 7.50 0.10 0.09 0.10 0.10 0.09
+     vy: -0.17 -0.45 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 11.01 ticks 6 lasted 0.110 horiz 7.75 dy -1.40 charges 1.0 -> 0.0 inp [0.0, 0.0, 0.0] vel before [4.13, 0.0, -1.93] after [-4.89, 0.0, 2.29] face [0.9, -0.06, -0.42]
+     per-tick metres: 0.00 7.32 0.08 0.09 0.09 0.09 0.09
+     vy: 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+  t 13.74 ticks 6 lasted 0.110 horiz 8.08 dy -0.41 charges 1.0 -> 0.0 inp [-1.0, 0.0, 1.0] vel before [5.31, -0.45, -2.79] after [5.3, 0.0, -2.82] face [0.3, -0.11, -0.95]
+     per-tick metres: 0.10 7.50 0.09 0.10 0.09 0.10 0.09
+     vy: -0.45 -0.73 0.00 0.00 0.00 0.00 0.00 0.00
+  t 16.51 ticks 6 lasted 0.110 horiz 8.07 dy -0.05 charges 1.0 -> 0.0 inp [0.0, 0.0, 1.0] vel before [5.95, 0.96, -0.8] after [5.95, -1.4, -0.8] face [0.99, -0.1, -0.13]
+     per-tick metres: 0.09 7.51 0.09 0.10 0.09 0.10 0.09
+     vy: 0.96 0.67 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 23.98 ticks 6 lasted 0.110 horiz 8.08 dy -0.11 charges 2.0 -> 1.0 inp [0.0, 0.0, 1.0] vel before [4.43, -2.12, -4.04] after [4.43, -1.4, -4.04] face [0.73, -0.18, -0.66]
+     per-tick metres: 0.09 7.50 0.09 0.11 0.09 0.10 0.09
+     vy: -2.12 -2.40 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 24.25 ticks 6 lasted 0.110 horiz 8.08 dy -0.14 charges 1.0 -> 0.0 inp [0.0, 0.0, 1.0] vel before [4.36, -4.18, -4.12] after [4.28, -1.4, -4.21] face [0.71, -0.21, -0.67]
+     per-tick metres: 0.09 7.50 0.10 0.10 0.10 0.09 0.10
+     vy: -4.18 -4.45 0.00 -0.28 -0.56 -0.84 -1.12 -1.40
+  t 26.13 ticks 6 lasted 0.110 horiz 8.00 dy +1.00 charges 1.0 -> 0.0 inp [0.0, 0.0, 1.0] vel before [0.19, 0.0, 6.0] after [-0.08, 0.0, 6.0] face [0.03, 0.05, 1.0]
+     per-tick metres: 0.10 7.50 0.18 0.10 0.10 0.09 0.10
+     vy: 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+  t 30.35 ticks 6 lasted 0.120 horiz 8.07 dy +0.31 charges 1.0 -> 0.0 inp [0.0, 0.0, 1.0] vel before [-1.46, 0.0, 5.82] after [-1.46, 0.0, 5.82] face [-0.24, 0.02, 0.97]
+     per-tick metres: 0.09 7.49 0.10 0.09 0.09 0.10 0.09
+     vy: 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+  t 31.93 ticks 6 lasted 0.110 horiz 8.04 dy -0.08 charges 1.0 -> 0.0 inp [-1.0, 0.0, -1.0] vel before [-4.67, 0.39, -3.09] after [-4.82, 0.0, -2.86] face [0.15, -0.09, 0.98]
+     per-tick metres: 0.09 7.50 0.09 0.09 0.09 0.09 0.09
+     vy: 0.39 0.11 0.00 0.00 0.00 0.00 0.00 0.00
+  t 34.62 ticks 6 lasted 0.110 horiz 7.72 dy +1.39 charges 1.0 -> 0.0 inp [0.0, 0.0, 0.0] vel before [0.0, 2.64, 0.0] after [3.42, 0.0, 4.93] face [0.56, -0.12, 0.82]
+     per-tick metres: 0.00 7.51 0.00 0.00 0.04 0.08 0.09
+     vy: 2.64 2.36 0.00 0.00 0.00 0.00 0.00 0.00
+
+Blink charges (changes), cd_ab1:
+  t 6.18 charges 3.0 cd 0.0
+  t 7.10 charges 2.0 cd 0.0
+  t 9.04 charges 1.0 cd 0.0
+  t 10.00 charges 0.0 cd 0.0
+  t 10.10 charges 1.0 cd 0.0
+  t 11.01 charges 0.0 cd 0.0
+  t 13.10 charges 1.0 cd 0.0
+  t 13.74 charges 0.0 cd 0.0
+  t 16.11 charges 1.0 cd 0.0
+  t 16.51 charges 0.0 cd 0.0
+  t 19.12 charges 1.0 cd 0.0
+  t 22.13 charges 2.0 cd 0.0
+  t 23.98 charges 1.0 cd 0.0
+  t 24.25 charges 0.0 cd 0.0
+  t 25.14 charges 1.0 cd 0.0
+  t 26.13 charges 0.0 cd 0.0
+  t 28.14 charges 1.0 cd 0.0
+  t 30.35 charges 0.0 cd 0.0
+  t 31.15 charges 1.0 cd 0.0
+  t 31.93 charges 0.0 cd 0.0
+  t 34.16 charges 1.0 cd 0.0
+  t 34.62 charges 0.0 cd 0.0
+  t 37.17 charges 1.0 cd 0.0
+
+Recall:
+  in use t 27.49 - 28.37 (0.896 s), ticks 56
+  start pos [-29.11, 5.85, -106.22], end pos [-27.09, 7.92, -117.49], pos 3 s before start [-26.65, 7.63, -117.86] (t 24.48)
+  end vel [4.03, -9.48, -4.02], health 165.0 -> 175.0, phased during: 56/56
+  health over the last 3 s: max 175.0
+  per 0.1 s: t, pos, the history tick it matches (nearest point in the 3 s), its time
+    0.00  [-29.19, 5.85, -106.19]  near t-0.00 (0.00 m)
+    0.09  [-29.19, 5.85, -106.19]  near t-0.00 (0.00 m)
+    0.19  [-29.19, 5.85, -106.19]  near t-0.00 (0.00 m)
+    0.28  [-29.19, 5.85, -106.19]  near t-0.00 (0.00 m)
+    0.38  [-29.19, 5.85, -106.19]  near t-0.00 (0.00 m)
+    0.48  [-27.09, 7.92, -117.49]  near t-3.04 (0.42 m)
+    0.57  [-27.09, 7.92, -117.49]  near t-3.04 (0.42 m)
+    0.67  [-27.09, 7.92, -117.49]  near t-3.04 (0.42 m)
+    0.76  [-27.09, 7.92, -117.49]  near t-3.04 (0.42 m)
+    0.86  [-27.09, 7.92, -117.49]  near t-3.04 (0.42 m)
+  cd after: [(28.38, 0.0), (28.4, 0.0), (28.42, 0.0)]
+
+ult flag ticks: [27.14, 27.15, 27.17, 27.18, 27.2, 27.22, 27.23, 27.25, 27.26, 27.28, 27.3, 27.31]

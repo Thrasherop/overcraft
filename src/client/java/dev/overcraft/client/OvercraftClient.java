@@ -220,6 +220,9 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.DVA_MISSILE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"dva_missile", 0.35f, false, 1, false));
 		// Pharah's rockets (12F5B; Barrage's and Rocket Salvo's the same model) and Concussive Blast (stand-in item)
+		// Tracer's Pulse Bomb (model 160BB)
+		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"pharah_rocket", 0.35f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.LIGHT_GUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -333,6 +336,8 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.slideEnded = ClientSojourn::ended;
 		// Pharah's Hover Jets (and the push her jets turn on)
 		OwMovement.pharahHover = ClientPharah::hover;
+		// Tracer's Recall holds her still while the server moves her
+		OwMovement.held = ClientTracer::held;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

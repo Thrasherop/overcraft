@@ -81,6 +81,10 @@ public final class QuickMelee {
 			Combat.addFireForDamage(hero, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(hero, target, false);
+				if (s.hero == Hero.TRACER) {
+					// Kinetic Reload: 12 rounds an enemy hit (D 51EE #396 -> #393)
+					dev.overcraft.tracer.Tracer.meleeHit(hero, s);
+				}
 			}
 			// (minus the look: Minecraft's knockback takes the direction towards the attacker)
 			// (the only push now: Minecraft's own from the hurt is off for hero hits, #93; it pushed twice, X13)
@@ -118,6 +122,10 @@ public final class QuickMelee {
 		if (s.hero == Hero.PHARAH) {
 			HeroSounds.split(hero, dev.overcraft.pharah.PharahSounds.of("melee"), dev.overcraft.pharah.PharahSounds.of("melee_3p"),
 				hero.position(), 45);
+		}
+		if (s.hero == Hero.TRACER) {
+			// her 3P melee clip 01BE's 1788 @0.133 (30 m): one copy for everyone (tracer_sfx.txt)
+			dev.overcraft.tracer.TracerSounds.all(hero.level(), "melee", hero.position(), 30);
 		}
 		if (s.hero == Hero.SIGMA) {
 			// his melee clips' foley: 1P 6FCD's 3086 (59F1 + 5A6C) his, 3P 6F89's 306A (59F7, 30 m) for others
