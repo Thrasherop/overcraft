@@ -16,12 +16,12 @@ public abstract class HealOrHarmMixin {
 	@Inject(method = "applyInstantaneousEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"))
 	private void overcraft$packNow(net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.Entity source,
 		net.minecraft.world.entity.Entity owner, LivingEntity mob, int amplification, double scale, CallbackInfo ci) {
-		dev.overcraft.tracer.Tracer.healthPack(mob);
+		dev.overcraft.tracer.Tracer.healthPack(mob, source);
 	}
 
 	@Inject(method = "applyEffectTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"))
 	private void overcraft$packTick(net.minecraft.server.level.ServerLevel level, LivingEntity mob, int amplification,
 		CallbackInfoReturnable<Boolean> cir) {
-		dev.overcraft.tracer.Tracer.healthPack(mob);
+		dev.overcraft.tracer.Tracer.healthPack(mob, null);
 	}
 }

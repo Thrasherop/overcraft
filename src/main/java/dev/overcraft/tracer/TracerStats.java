@@ -75,9 +75,12 @@ public final class TracerStats {
 	/** 0.1 s before the next press does anything (D #153 StateWait 0.1; W 0.096 s; WS "lasted 0.10") H. */
 	public static final double BLINK_LOCKOUT = 0.1;
 	/**
-	 * How far up she may go over what's in her way, from where she started (D m_497165F8 1.5 on the blink node, L meaning; W
-	 * "cannot blink over an obstacle she could not jump over"; WS: 1.00 m up a step and 1.39 m up a ledge seen) L/M. Down: she
-	 * follows the ground down as far while she was on it (WS 1.40 m down a slope, landing on it), else stays level.
+	 * How far up she may step over what's in her way, from where she is at that step of the Blink, not from where she started
+	 * (critic d0c7e1f #3: a cap from the start stopped her 1.5 m up any stair). Data: the value 1.5 on the blink node
+	 * (m_497165F8, kit_tracer_move.md: H value, L meaning; no graph reads it, the path is engine-side). Ours: reading it as a
+	 * per-step step-up, so she follows stairs and ramps up as she follows them down (W "cannot blink over an obstacle she could
+	 * not jump over"; WS: 1.00 m up a step and 1.39 m up a ledge seen) L/M. Down: she follows the ground down as far a step while
+	 * she was on it (WS 1.40 m down a slope, landing on it), else stays level.
 	 */
 	public static final double BLINK_STEP = 1.5;
 
@@ -126,6 +129,12 @@ public final class TracerStats {
 	 * her (drunk, splashed, an arrow) is her health pack, for this and Blink Packs.
 	 */
 	public static final double FLANKER_PACK = 50;
+	/**
+	 * Ours: a lingering cloud of Healing re-applies itself every second she stands in it; it is one pack (counted once a cloud), and
+	 * a Healing effect with no thrown source (a command's) one at most this often (s). Counted every time it was an endless pack
+	 * (critic d0c7e1f).
+	 */
+	public static final double PACK_TICK_GAP = 1;
 
 	// ---- Perks (51EE; her live list D 005E.177) ----
 	/** Temporal Regen (minor): the regeneration starts after 3 s, not 6 (D #462 v42465 0.5 x 0B0F 6; W "100 % faster") H; BZ says 50 %. */

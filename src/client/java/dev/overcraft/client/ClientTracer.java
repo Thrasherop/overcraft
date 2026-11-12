@@ -13,14 +13,15 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Tracer on her own client: a Blink moves her here, the tick she presses (WS 2026-11-11: she's 7.5 m on within the press's
- * tick), as her movement is her client's; the press goes to the server, which takes the charge (Tracer.blink). Shift and the
- * right button both blink (her data's ABILITY 1 and SECONDARY): both go as ABILITY 1. Recall holds her still here while the
- * server moves her (OwMovement.held).
+ * tick), as her movement is her client's; the press goes to the server, which takes the charge (Tracer.blink). Only a press that
+ * moved her is sent: one that can't go plays its sound here and goes nowhere. Whether it can: the server's count less the
+ * presses sent that it hasn't seen yet (synced back in the mode's high bits, Tracer.SEEN_SHIFT), so both sides keep one count
+ * (critic d0c7e1f #1). Shift and the right button both blink (her data's ABILITY 1 and SECONDARY): both go as ABILITY 1. Recall
+ * holds her still here while the server moves her (OwMovement.held).
  */
 public final class ClientTracer {
-	/** Blinks this client made that the server's count doesn't show yet, and that count when it last changed. */
-	private static int spent;
-	private static int syncedCharges = -1;
+	/** The Blink presses this client has sent (mod 256; -1: take the server's seen count first). */
+	private static int sent = -1;
 	/** The game time of her last Blink here (the 0.1 s lockout). */
 	private static long lastBlink = Long.MIN_VALUE / 2;
 
@@ -28,8 +29,7 @@ public final class ClientTracer {
 	}
 
 	public static void reset() {
-		spent = 0;
-		syncedCharges = -1;
+		sent = -1;
 		lastBlink = Long.MIN_VALUE / 2;
 	}
 
@@ -41,24 +41,34 @@ public final class ClientTracer {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) == 0 && !rightPressed) {
 			return pressed;
 		}
-		blink(player);
-		return pressed | HeroInputPayload.PRESS_ABILITY_1;
+		// sent only when she went (the server takes a charge for each press it sees)
+		return blink(player) ? pressed | HeroInputPayload.PRESS_ABILITY_1 : pressed & ~HeroInputPayload.PRESS_ABILITY_1;
 	}
 
-	private static void blink(LocalPlayer player) {
+	private static boolean blink(LocalPlayer player) {
 		dev.overcraft.net.HeroSyncPayload s = ClientHero.sync();
 		int charges = s.secondaryAmmo();
-		if (charges != syncedCharges) {
-			syncedCharges = charges;
-			spent = 0;
+		int seen = (s.mode() >>> Tracer.SEEN_SHIFT) & 0xFF;
+		if (sent < 0 || Tracer.pending(sent, seen) > TracerStats.BLINK_CHARGES + 2) {
+			// a fresh start, or the server's count restarted (a new hero state): take its count
+			sent = seen;
 		}
 		long now = player.level().getGameTime();
-		boolean asleep = Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP));
-		if (charges - spent <= 0 || now - lastBlink < dev.overcraft.Ow.ticks(TracerStats.BLINK_LOCKOUT)
-			|| (s.mode() & (Tracer.MODE_RECALL | Tracer.MODE_SILENCED)) != 0 || asleep || player.isPassenger()) {
-			return;
+		if (now - lastBlink < dev.overcraft.Ow.ticks(TracerStats.BLINK_LOCKOUT)) {
+			// the 0.1 s after a Blink takes no press (D #153): no sound either
+			return false;
 		}
-		spent++;
+		boolean asleep = Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP));
+		if (!Tracer.clientMay(charges, sent, seen) || (s.mode() & (Tracer.MODE_RECALL | Tracer.MODE_SILENCED)) != 0 || asleep
+			|| player.isPassenger()) {
+			// a press that can't go: its own sound (0024 #57 false -> #200 -> #77 effect 007F), here, as nothing goes to the server
+			net.minecraft.sounds.SoundEvent empty = dev.overcraft.tracer.TracerSounds.of("blink_empty");
+			if (empty != null) {
+				Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(empty, 1));
+			}
+			return false;
+		}
+		sent = (sent + 1) & 0xFF;
 		lastBlink = now;
 		Vec3 dir = inputDirection(player);
 		Vec3 to = Blink.destination(player.level(), player, dir != null ? dir : forward(player), TracerStats.BLINK_DISTANCE);
@@ -67,6 +77,7 @@ public final class ClientTracer {
 		// her level speed kept, her vertical speed gone (WS: vy 0 the tick she lands, then gravity again)
 		player.setDeltaMovement(v.x, 0, v.z);
 		player.resetFallDistance();
+		return true;
 	}
 
 	private static Vec3 forward(LocalPlayer player) {

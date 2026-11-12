@@ -127,7 +127,7 @@ sizes down (large 0.07 -> 0.04, small 0.04 -> 0.02 m), Tracer torso hit volume 2
 Blink UI (on / off): the charge indicator under the crosshair.
 
 ## Disagreements and gaps
-1. **Temporal Regen:** BZ 2026-08-11 "50 % faster"; W "100 % faster", 6 s -> 3 s. 50 % would be 6 / 1.5 = 4 s. Ours: 4 s (BZ).
+1. **Temporal Regen:** BZ 2026-08-11 "50 % faster"; W "100 % faster", 6 s -> 3 s. 50 % would be 6 / 1.5 = 4 s. Ours: 3 s, the data (D #462 0.5 x 6 = W's 100 %); was "4 s (BZ)" before the data read.
 2. **6.0 m/s:** W Movement speed and Sub-Roles say Tracer moves at 6; no BZ note states it (the Flanker lists in BZ 2026-02-10 and
    2026-08-11 name only health packs). A game-data pass would settle it. Ours: 6.0.
 3. **Healing-reduction passive:** W's Global Passive page marks it "removed"; BZ never removes it and BZ 2026-07-30 (Hacked, not

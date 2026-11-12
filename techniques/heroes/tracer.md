@@ -41,19 +41,26 @@ Each number in `TracerStats` with its source (D / WS / BZ / W) and H / M / L.
   A shot's two bullets on one creature are one hit (as D.Va's pellets).
 - **Blink** (Shift or the right button: her data's ABILITY 1 and SECONDARY): 3 charges, one back every 3 s, 7.5 m along the move keys
   (forward with none), 0.1 s lockout. Her own client moves her the tick she presses (`Blink.destination`: her box swept 0.1 m at a time,
-  up over what's in the way by at most 1.5 m above her start, down the ground as far while on it, level off a deeper ledge, stopped
-  at a wall, never inside a block); the server takes the charge and plays the take (blink_1/2/3 by the count in a row, her line on
-  the third). No reload or fire cut (D: no action-stack slot).
+  each step up over what's in the way by at most 1.5 m above where she is at that step (so up stairs and ramps; the 1.5 is the blink
+  node's m_497165F8, H value, L meaning; the per-step reading is ours), down the ground by as much a step while on it, level off a
+  deeper ledge, sliding along a wall (the step's part along the block axes, ours on W/BZ's "around and over obstacles"), stopped
+  only when both fail, never inside a block; straight into a wall: no move, the charge spent). Her client is the one authority on
+  whether a press goes: it sends only a press it performed (the empty click plays on the client), and its count is the server's less
+  its own presses the server hasn't seen (synced back in the mode's bits 8-15); the server takes the charge and plays the take
+  (blink_1/2/3 by the count in a row, her line on the third). No reload or fire cut (D: no action-stack slot).
 - **Recall** (E): her last 3 s kept on the server (place, facing, speed from her own steps, health); phased and unseen 0.9 s, held
   still by her client (`OwMovement.held`); 0.44 s in, back to the oldest point facing as then, with her best health of the 3 s (never
   lower than now; a tenth of what it gives back as ult charge, D M); magazine full at 0.72 s; leaves with that moment's speed plus
   0.46 s of gravity; 12 s from its end; not in the first 3 s after spawning (D #254); cleanses as Combat.cleanse (W "lesser cleanse",
-  no node: ours).
+  no node: ours). **Ours (Minecraft has levels and blocks):** her history clears on a level change and a Recall cut by one ends; a
+  place since filled with blocks sends her to the nearest free one (3 m, 0.25 m apart); cut short (G, a switch) its phase ends too.
 - **Pulse Bomb** (Q, 1375): 0.15 s cast then 0.2 s before she fires; 15 m/s falling at 30 m/s² (D M), 0.22 m; sticks to the first
   enemy (5 to it; it rides it) or block or enemy barrier; 1 s later 350 to 2 m down to 70 at 4 m, linear; half on herself; no push; no
-  ult charge from it; goes off if she's dead.
+  ult charge from it; goes off if she's dead; gone on G or a hero switch (ours). Her own hit is `overcraft:blast` (`Combat.blast`):
+  "blown up", not scaled by the difficulty.
 - **Flanker:** +50 from a health pack. **Ours:** Minecraft has no packs, so a potion of Healing on her (drunk, splashed, lingering, an
-  arrow) is one (`HealOrHarmMixin`): +50 and Blink Packs' charge. **Damage role passive:** none since 2026-02-10 (global healing cut).
+  arrow) is one (`HealOrHarmMixin`): +50 and Blink Packs' charge; a lingering cloud counts once (it re-applies each second), a
+  sourceless effect once a second (`PACK_TICK_GAP`, ours). **Damage role passive:** none since 2026-02-10 (global healing cut).
 - **Perks:** Temporal Regen (regeneration from 3 s), Kinetic Reload (12 rounds an enemy hit by quick melee), Blink Packs (+1 charge a
   pack), Quantum Entanglement (Recall: 50 overhealth held 6 s then 25 a second; the magazine to 60, the extra kept 6 s then 20 a
   second, ours).
@@ -109,7 +116,38 @@ Drop, Spin, firing 3P and 1P), `t13_end.png`. Expected -> seen:
 3. **Still "on the ground" where Recall held her** (T7d): no move runs while held, so the flag was stale and ground friction ate the
    speed it gave her. The hold clears it. Seen fixed: T7e.
 
+## Critic d0c7e1f and its fixes (2026-11-12)
+The critic's report: [runs/tracer/critic_d0c7e1f.md](../testing/runs/tracer/critic_d0c7e1f.md). Each reproduced on the old build first,
+then played on the fix, one dev client, fresh flat worlds `fix_old` / `fix_new`, harness keys (not the real mouse and keys). Raw stamped
+log: [runs/tracer/fixer_d0c7e1f_runs.txt](../testing/runs/tracer/fixer_d0c7e1f_runs.txt); screenshots `f_old_stairs.png`, `f_new_stairs.png`, `f_new_slope.png`,
+`f_new_recall_nether.png`, `f_new_bomb_self.png`. Expected -> old -> fixed:
+1. **Blink's client count went stale** (critical): five single Blinks each after a full recharge -> 7.5 m each. Old: 8.0, 15.5, 23.0,
+   then 23.0, 23.0 with the server's count 3 -> 2 each time. Fixed: 8.0, 15.5, 23.0, 30.5, 38.0. Under `presstrace lag 150`, four
+   presses 0.15 s apart -> three Blinks: fixed 22.5 m and 0 charges, the fourth no move (the critic's old run: 15 m and 3 charges).
+2. **Recall across a level change**: Overworld 4.5 s, `/execute in the_nether tp` to the roof, E. Old: back to the Overworld's x/z/y in
+   the Nether (40.5, -70 and falling: out of the world). Fixed: no Overworld place used; E 1 s after a 3 m step in the Nether took her
+   back to her Nether start (0.5, 128, 0.5); back in the Overworld a Recall worked there (30.5 -> 23.5).
+3. **Blink's climb capped at 1.5 m over her start**: an oak staircase +1 a block. Old: y +1.5, z 3.2. Fixed: y +6.5, z 8.0 (the full
+   7.5 m). The critic's half-block slope: y +3.5, z 8.0 (old, the critic's: +1.5, z 4.7).
+4. **No slide along walls**: a wall on her left, W + A + Shift. Old: z 0.5 -> 4.40 (the walk and ~1 m). Fixed: 9.43 (5.3 m slid on
+   top of the walk). Straight into it (A alone): no move, a charge spent (kept: Overwatch's own).
+5. **Lows:** her own bomb's kill: old "Kiriko was shot", fixed "Kiriko was blown up by Kiriko" (easy). Bomb thrown up then G: old it
+   stayed and killed her in Minecraft mode ("was shot"); fixed it is gone, no blast. Recall then G 0.2 s in, a 2 MC /damage 0.3 s
+   later: old "Target is invulnerable" (the phase kept on plain Minecraft); fixed the hit lands. A lingering Healing cloud at 1
+   health: old 1 -> 8 -> 14 (the +50 twice); fixed 1 -> 8 -> 11 -> 14 (the +50 once, then the potion's own). Recall into her old place
+   filled with stone: fixed, 1 m off at (39.5, -60, 40.5), 14 health, no suffocation (not tried on the old build: the critic's code
+   read).
+6. **Kept, with why:** the spread's 3.5 degrees on the 4th shot (0, 1.17, 2.33, 3.5): the data has min 0, max 3.5, 3 shots to max
+   (kit_tracer_weapon.md), but which shot first fires at the max is the engine's (v231 is written by no graph): "after 3 shots",
+   M. The recovery stays 0.2 s held + 0.25 s (D nodes #82 / #83 / #45, M rates) against the wiki's 0.224 s: the data wins. The bomb's
+   30 m/s² fall stays until the owner's clip (a level throw at a wall 8 m off).
+7. **Tests** (`BlinkTest`): Blink on a block grid (open field, stairs up, a 2-high wall, the climb's headroom, a wall slide, straight
+   into a wall, down a step), the shared count (five single Blinks, three quick then a refusal, the mod-256 wrap), Recall's oldest
+   sample and best health, the head's x2. Each of the critic's three mutations now fails one (the headroom one checked by hand).
+
 **Not shown / not tried:**
+- From the critic's round: a hero switch with a bomb out (G only: the same branch), her death with a bomb out (kept: it goes off), a
+  real Nether portal (commands only), Blink while hacked (the server then takes no charge; her client moved her: not played).
 - **The real mouse and keys** (owed before the merge): every press here went through the harness's key mappings.
 - A second player (her `_3p` sounds, the bomb seen by another, Recall's invisibility from outside), the Nether, lava, a slope fight
   (only a 1-block step and drop), a stair run, a pulse bomb on a moving enemy that it reaches (the throw fell short of a walking zombie),

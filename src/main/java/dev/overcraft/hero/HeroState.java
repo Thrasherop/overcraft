@@ -208,6 +208,15 @@ public final class HeroState {
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 tracerHold, tracerRecallVelocity, tracerRecallTo, tracerRelease;
 	public float tracerRecallYaw, tracerRecallPitch;
 	public final java.util.ArrayDeque<dev.overcraft.tracer.Tracer.Sample> tracerHistory = new java.util.ArrayDeque<>();
+	/**
+	 * Tracer, more: the Blink presses her client sent that the server has seen (synced back so her client knows which of its Blinks
+	 * the count already shows); the level her history is in (Recall never crosses one); the last lingering cloud that counted as a
+	 * health pack, and when a sourceless one last did.
+	 */
+	public int tracerBlinkSeen;
+	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> tracerLevel, tracerRecallLevel;
+	public java.util.@org.jspecify.annotations.Nullable UUID tracerPackCloud;
+	public long tracerPackAt = -1000;
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;

@@ -52,9 +52,9 @@ class TracerMathTest {
 		HeroState s = new HeroState();
 		assertEquals(3, s.tracerBlinks);
 		assertTrue(Tracer.canBlink(s, false, false, false, 100));
+		// the 0.1 s lockout is her client's (ClientTracer): presses can reach the server in one tick under lag
 		s.tracerBlinkReady = 102;
-		assertFalse(Tracer.canBlink(s, false, false, false, 101));
-		assertTrue(Tracer.canBlink(s, false, false, false, 102));
+		assertTrue(Tracer.canBlink(s, false, false, false, 101));
 		assertFalse(Tracer.canBlink(s, true, false, false, 102));
 		s.tracerBlinks = 0;
 		assertFalse(Tracer.canBlink(s, false, false, false, 200));

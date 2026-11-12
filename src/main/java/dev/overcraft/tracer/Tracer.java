@@ -47,6 +47,8 @@ import static dev.overcraft.tracer.TracerStats.*;
 public final class Tracer implements HeroKit {
 	/** The synced mode's bits: Recall going (her client holds her still), hacked. */
 	public static final int MODE_RECALL = 1, MODE_SILENCED = 2;
+	/** The synced mode's bits from here up: the Blink presses the server has seen, mod 256 (HeroState.tracerBlinkSeen). */
+	public static final int SEEN_SHIFT = 8;
 
 	static final Blow PISTOL_BLOW = Blow.weapon(false).by(Hero.TRACER);
 	static final Blow BOMB_BLOW = Blow.ult("pulse_bomb").by(Hero.TRACER);
@@ -69,6 +71,7 @@ public final class Tracer implements HeroKit {
 		s.tracerFiring = false;
 		s.tracerHold = null;
 		s.tracerHistory.clear();
+		s.tracerLevel = null;
 		s.tracerSpawnAt = player.level().getGameTime();
 		s.tracerOverAmmoAt = -1000;
 		s.tracerVoiceAt = -1;
@@ -121,17 +124,30 @@ public final class Tracer implements HeroKit {
 
 	/** Whether a Blink would go now: what her client asks before it moves her, and what the press checks again. */
 	public static boolean canBlink(HeroState s, boolean asleep, boolean silenced, boolean passenger, long now) {
-		return s.tracerBlinks > 0 && now >= s.tracerBlinkReady && s.tracerRecall < 0 && !asleep && !silenced && !passenger;
+		return s.tracerBlinks > 0 && s.tracerRecall < 0 && !asleep && !silenced && !passenger;
 	}
 
+	/** The Blinks her client made that the server hasn't seen yet: its presses sent less those seen (mod 256, as synced). */
+	public static int pending(int sent, int seen) {
+		return (sent - seen) & 0xFF;
+	}
+
+	/** Whether her client may Blink now: the server's charges less its unseen presses (the one count both sides share). */
+	public static boolean clientMay(int charges, int sent, int seen) {
+		return charges - pending(sent, seen) > 0;
+	}
+
+	/**
+	 * A Blink her client already made (ClientTracer sends the press only for a Blink it made, and plays the empty press's sound
+	 * itself): the server takes the charge. Her client is the one authority on whether a press goes, from the server's count less
+	 * its own presses the server hasn't seen yet ({@code tracerBlinkSeen}, synced back), so the two never disagree on the count
+	 * (critic d0c7e1f #1: the client's own count went stale and the server took charges for Blinks that didn't move her). The 0.1
+	 * s lockout (D #153) is the client's too: presses 0.15 s apart can reach the server in one tick under lag.
+	 */
 	private static void blink(ServerPlayer player, HeroState s, long now) {
-		if (now < s.tracerBlinkReady) {
-			// the 0.1 s after a Blink takes no press (D #153)
-			return;
-		}
+		s.tracerBlinkSeen++;
 		if (!canBlink(s, Sleep.asleep(player), s.tracerSilenced, player.isPassenger(), now)) {
-			// a press that can't go: its own sound (0024 #57 false -> #200 -> #77 effect 007F)
-			TracerSounds.own(player, "blink_empty");
+			// her client moved her though the server says no (a hack or a sleep its sync hadn't shown yet): no charge to take
 			return;
 		}
 		s.tracerBlinks--;
@@ -160,6 +176,12 @@ public final class Tracer implements HeroKit {
 			s.tracerHistory.clear();
 			return;
 		}
+		if (s.tracerLevel != player.level().dimension()) {
+			// another level (a portal, a command): her history was of the last one, and Recall never crosses one (critic d0c7e1f
+			// #2: she was sent to the Overworld's place in the Nether and fell out of the world). Overwatch has no levels: ours.
+			s.tracerHistory.clear();
+			s.tracerLevel = player.level().dimension();
+		}
 		// her speed from her own last step (m/s): a player's client moves her, and the server's own copy of her speed was ~0
 		// (T7b: a Recall into a running jump left her standing)
 		Sample last = s.tracerHistory.peekLast();
@@ -173,16 +195,15 @@ public final class Tracer implements HeroKit {
 
 	private static void startRecall(ServerPlayer player, HeroState s, long now) {
 		if (s.tracerRecall >= 0 || s.ability2Cooldown > 0 || s.tracerBombCast >= 0 || s.tracerSilenced || player.isPassenger()
-			|| now - s.tracerSpawnAt < Ow.ticks(RECALL_SPAWN_LOCK) || s.tracerHistory.isEmpty()) {
+			|| now - s.tracerSpawnAt < Ow.ticks(RECALL_SPAWN_LOCK) || s.tracerHistory.isEmpty()
+			|| s.tracerLevel != player.level().dimension()) {
 			return;
 		}
 		// back to where she was 3 s ago (the oldest kept), her best health of those 3 s, never below now (W; WS 165 -> 175)
-		Sample back = s.tracerHistory.peekFirst();
-		double best = Ow.toOw(player.getHealth());
-		for (Sample sample : s.tracerHistory) {
-			best = Math.max(best, sample.health());
-		}
+		Sample back = recallTo(s.tracerHistory);
+		double best = recallHealth(s.tracerHistory, Ow.toOw(player.getHealth()));
 		s.tracerRecall = 0;
+		s.tracerRecallLevel = player.level().dimension();
 		s.tracerHold = player.position();
 		s.tracerRecallTo = back.pos();
 		s.tracerRecallYaw = back.yaw();
@@ -213,8 +234,16 @@ public final class Tracer implements HeroKit {
 		s.tracerRecall++;
 		s.softLanding = false;
 		player.resetFallDistance();
+		if (s.tracerRecallLevel != player.level().dimension()) {
+			// she changed level while recalling (a portal under her): no jump back into another level's place (ours)
+			endRecall(player, s, now, false);
+			return;
+		}
 		if (s.tracerRecall == Ow.ticks(RECALL_ARRIVE) && s.tracerRecallTo != null) {
-			// back where she was, facing as she did, her best health of the 3 s (WS: all at once, 0.44 s in)
+			// back where she was, facing as she did, her best health of the 3 s (WS: all at once, 0.44 s in); a place since filled
+			// with blocks: the nearest free one (ours: Overwatch's maps don't fill; W, moved platforms take her to their new place)
+			Vec3 free = freeNear(player, s.tracerRecallTo);
+			s.tracerRecallTo = free != null ? free : player.position();
 			double before = Ow.toOw(player.getHealth());
 			player.connection.teleport(new PositionMoveRotation(s.tracerRecallTo, Vec3.ZERO, s.tracerRecallYaw, s.tracerRecallPitch),
 				java.util.Set.of());
@@ -239,12 +268,56 @@ public final class Tracer implements HeroKit {
 		}
 	}
 
+	/** Her feet's nearest place to {@code to} (within 3 m, 0.25 m apart, nearest first) where her box is clear, or null. */
+	private static @org.jspecify.annotations.Nullable Vec3 freeNear(ServerPlayer player, Vec3 to) {
+		AABB box = player.getBoundingBox().move(to.subtract(player.position())).deflate(1.0E-4);
+		if (player.level().noCollision(player, box)) {
+			return to;
+		}
+		java.util.List<Vec3> offsets = new java.util.ArrayList<>();
+		for (int x = -12; x <= 12; x++) {
+			for (int y = -12; y <= 12; y++) {
+				for (int z = -12; z <= 12; z++) {
+					Vec3 o = new Vec3(x * 0.25, y * 0.25, z * 0.25);
+					if (o.lengthSqr() <= 9 && o.lengthSqr() > 0) {
+						offsets.add(o);
+					}
+				}
+			}
+		}
+		offsets.sort(java.util.Comparator.comparingDouble(Vec3::lengthSqr));
+		for (Vec3 o : offsets) {
+			if (player.level().noCollision(player, box.move(o))) {
+				return to.add(o);
+			}
+		}
+		return null;
+	}
+
+	/** Where Recall takes her: the oldest of her kept samples (3 s back). */
+	public static Sample recallTo(java.util.Deque<Sample> history) {
+		return history.peekFirst();
+	}
+
+	/** The health Recall gives her: her best of the kept samples, never below {@code now} (W; WS 165 -> 175). */
+	public static double recallHealth(Iterable<Sample> history, double now) {
+		double best = now;
+		for (Sample sample : history) {
+			best = Math.max(best, sample.health());
+		}
+		return best;
+	}
+
 	private static void endRecall(ServerPlayer player, HeroState s, long now, boolean landed) {
 		if (s.tracerRecall < 0) {
 			return;
 		}
 		s.tracerRecall = -1;
 		s.tracerHold = null;
+		if (!landed) {
+			// cut short (G, a switch, a level change): its phase ends with it, not on the next hero (critic d0c7e1f)
+			Combat.unphase(player);
+		}
 		player.setInvisible(player.hasEffect(net.minecraft.world.effect.MobEffects.INVISIBILITY));
 		// 12 s from its end (D #1 onFinished -> #92)
 		s.ability2Cooldown = Ow.ticks(RECALL_COOLDOWN);
@@ -348,9 +421,9 @@ public final class Tracer implements HeroKit {
 				continue;
 			}
 			double share = dev.overcraft.pharah.Pharah.splashFactor(d, BOMB_FULL, BOMB_RADIUS_OUT, BOMB_EDGE);
-			// on herself not an explosion's source: Minecraft scales those on a player by the difficulty (easy x0.5 + 1: found
-			// playing, 51.8 came off as 38); her own hit isn't a mob's
-			float dealt = Combat.damage(e, me ? Combat.hitscan(owner) : source, BOMB_DAMAGE * share * (me ? BOMB_SELF : 1), BOMB_BLOW);
+			// on herself overcraft:blast (Combat.blast): an explosion's death message, unscaled by the difficulty as Minecraft's own
+			// explosion types are on a player (easy x0.5 + 1: found playing, 51.8 came off as 38)
+			float dealt = Combat.damage(e, me ? Combat.blast(level, bomb, owner) : source, BOMB_DAMAGE * share * (me ? BOMB_SELF : 1), BOMB_BLOW);
 			if (!me && dealt > 0) {
 				Perks.add(owner, dealt);
 				Combat.addFireForDamage(owner, dealt, e);
@@ -453,6 +526,11 @@ public final class Tracer implements HeroKit {
 		return 1 - (1 - FALLOFF_MIN) * (metres - FALLOFF_START) / (FALLOFF_END - FALLOFF_START);
 	}
 
+	/** One bullet's damage at {@code metres}, x2 on the head. */
+	public static double bulletDamage(double metres, boolean crit) {
+		return BULLET_DAMAGE * falloff(metres) * (crit ? CRIT : 1);
+	}
+
 	private static final class Hit {
 		double damage;
 		int bullets;
@@ -503,7 +581,7 @@ public final class Tracer implements HeroKit {
 			}
 			boolean crit = dev.overcraft.hero.Headshot.crossed(best, bestAt, bestAt.subtract(eye), RADIUS);
 			Hit h = hits.computeIfAbsent(best, k -> new Hit());
-			h.damage += BULLET_DAMAGE * falloff(Math.sqrt(bestDist)) * (crit ? CRIT : 1);
+			h.damage += bulletDamage(Math.sqrt(bestDist), crit);
 			h.bullets++;
 			h.crit |= crit;
 			h.at = bestAt;
@@ -600,13 +678,26 @@ public final class Tracer implements HeroKit {
 	 * A health pack on her (ours: a potion of Healing, Minecraft having no packs; HealOrHarmMixin): Flanker's +50 (D 01C7 #2563)
 	 * and Blink Packs' charge (D 51EE #404).
 	 */
-	public static void healthPack(LivingEntity entity) {
+	public static void healthPack(LivingEntity entity, @org.jspecify.annotations.Nullable Entity source) {
 		if (!(entity instanceof ServerPlayer player)) {
 			return;
 		}
 		HeroState s = HeroManager.state(player);
 		if (s == null || s.hero != Hero.TRACER || !HeroManager.heroMode(player)) {
 			return;
+		}
+		// one pack a cloud, a sourceless effect at most once a PACK_TICK_GAP (ours: else a lingering cloud was endless packs)
+		long now = player.level().getGameTime();
+		if (source instanceof net.minecraft.world.entity.AreaEffectCloud cloud) {
+			if (cloud.getUUID().equals(s.tracerPackCloud)) {
+				return;
+			}
+			s.tracerPackCloud = cloud.getUUID();
+		} else if (source == null) {
+			if (now - s.tracerPackAt < Ow.ticks(PACK_TICK_GAP)) {
+				return;
+			}
+			s.tracerPackAt = now;
 		}
 		Combat.heal(player, FLANKER_PACK);
 		if (s.has(Perk.TRACER_BLINK_PACKS) && s.tracerBlinks < BLINK_CHARGES) {
@@ -617,7 +708,8 @@ public final class Tracer implements HeroKit {
 
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
-		int mode = (s.tracerRecall >= 0 ? MODE_RECALL : 0) | (s.tracerSilenced ? MODE_SILENCED : 0);
+		// the presses seen ride above the flags (ClientTracer: its Blinks the count already shows)
+		int mode = (s.tracerRecall >= 0 ? MODE_RECALL : 0) | (s.tracerSilenced ? MODE_SILENCED : 0) | (s.tracerBlinkSeen & 0xFF) << SEEN_SHIFT;
 		double charging = s.tracerBlinks >= BLINK_CHARGES ? -1 : s.tracerBlinkTimer / Ow.ticks(BLINK_RECHARGE);
 		float nextCharge = s.tracerBlinks >= BLINK_CHARGES ? 0 : (float) ((Ow.ticks(BLINK_RECHARGE) - s.tracerBlinkTimer) / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, false,
@@ -633,6 +725,15 @@ public final class Tracer implements HeroKit {
 	@Override
 	public void leavePlay(ServerPlayer player, HeroState s, HeroKit.OutOfPlay why) {
 		endRecall(player, s, player.level().getGameTime(), false);
+		if (why != HeroKit.OutOfPlay.DEATH) {
+			// her Pulse Bomb goes with the hero on G or a switch (it went off as Tracer's after she was someone else: critic
+			// d0c7e1f); on her death it still goes off, as Overwatch's (D 0C1B: nothing tests the owner)
+			for (ServerLevel level : player.level().getServer().getAllLevels()) {
+				for (PulseBombEntity bomb : level.getEntities(dev.overcraft.registry.OcEntities.PULSE_BOMB, b -> b.getOwner() == player)) {
+					bomb.discard();
+				}
+			}
+		}
 		s.tracerBombCast = -1;
 		s.tracerFiring = false;
 		s.tracerHistory.clear();

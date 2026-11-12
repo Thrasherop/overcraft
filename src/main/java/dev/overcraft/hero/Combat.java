@@ -511,6 +511,11 @@ public final class Combat {
 		phasedUntil.merge(target.getUUID(), until, Math::max);
 	}
 
+	/** The phase ended early (Tracer's Recall cut short by G or a switch: it isn't the next hero's). */
+	public static void unphase(LivingEntity target) {
+		phasedUntil.remove(target.getUUID());
+	}
+
 	/**
 	 * Whether the phase keeps a new negative state off it now (Combat.cleanse's table; off with the dev switch). Every phase here, not only Suzu's. Suzu: 180C. Life Grip: 21EE #606.
 	 * Resurrect (Souls, 2.25 s): D 00CA #677 sets the same v8440. Translocator (Sombra, 0.4 s): D 0C19 #330 too. Swift Step (Kiriko, 0.25 s): no v8440 in her graphs read but the shared 1065; W "phased"; W Status effect
