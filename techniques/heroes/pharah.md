@@ -21,6 +21,10 @@ her flight sits beside [Juno](juno.md)'s hover and glide in `OwMovement`.
   the jets' launches on her own client), `client.PharahSounds` (the hover loop), `OwMovement.pharahHover`, `HeroManager.PHARAH_STATE`
   (hover / jet / Barrage for every client's animation), `HeroInputPayload.HELD_HOVER`.
 
+- **The Overwatch recording** (the owner's Workshop log, 2026-11-11): [pharah_workshop_2026-11-11](pharah_workshop_2026-11-11.md),
+  measured against ours: the hover rises at 4.66 m/s (an ease, not the 2.9 push), the jets don't hover without the key, Barrage
+  holds her height, Concussive's cooldown starts after its 0.5 s recovery, Jet Dash keeps 30 % of her speed.
+
 ## What her data taught (2026-11-11)
 - **Jump Jet is still a press in this build** (0027 #82: no charge or hold state), though the brief expected a held charge: check the
   data before building a mechanic a recent patch "might" have changed.

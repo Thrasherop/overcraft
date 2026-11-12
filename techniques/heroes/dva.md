@@ -6,6 +6,8 @@ Everything learned about D.Va, by subject. Hero 8 of the owner's 2026-10-28 list
 [sigma](sigma.md), whose Tank role code she builds on) and Sojourn's ([sojourn](sojourn.md))
 
 ## Her notes and sources
+- **The owner's Workshop recording (2026-11-11):** [dva_workshop_2026-11-11](dva_workshop_2026-11-11.md): 150 s of her measured
+  against ours; two disagreements (Boosters' push direction, the eject dropping the mech's momentum) and the generic stop floor.
 - **Numbers:** [dva.md](../../tools/reference/dva.md): Blizzard's patch notes to 2026-11 and the wiki's revision 408749, each number with its
   game-data value. Her last change is BZ 2026-10-06 (missiles 11 -> 14 a second), the data build's own day, and the data has 14: the
   data's numbers are the live ones.
