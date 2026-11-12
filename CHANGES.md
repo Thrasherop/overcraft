@@ -4,6 +4,28 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-11: 0.3.35 on next (not on main yet)
+
+- **Play of the Game (#44)** after the dragon's death, recreated from the owner's real clip:
+  - the team lineup;
+  - the hero's highlight intro: Kiriko's from the game data; other heroes their select-screen pose for now;
+  - the left-stacked title, then the cut to white;
+  - the replay from the scorer's eyes, with the top band and a player card (portrait, name, most-played heroes in this world);
+  - the cut to black, and an end screen of the players' cards against the mobs that did most to players (the dragon always).
+- The best play of the whole run is shown to everyone, from any dimension. The world is paused, and there is no skipping.
+- Replays run on a vendored copy of Arcade's replay engine (ServerReplay's, MIT, Kotlin): **the mod now needs fabric-language-kotlin**.
+- Disk is bounded: each player keeps their current 5-minute segment plus their kept plays.
+- **Highlights**: each player's top 5 plays, kept with the world.
+  - The K key (or hero mode's Esc menu) lists them once the world's dragon has died.
+  - Picking one plays it for that player alone, opening with the hero's intro.
+- Scoring values are ours and placeholders (`PotgValues`); the owner tunes them.
+- Played by two-client LAN passes, a critic's round, and the coordinator's real-input pass (`techniques/potg/runs_look/real_keys_0f659e4.md`).
+- Not yet:
+  - the hero's first-person hands, weapon and HUD inside the replay (her kunai don't show);
+  - intros for heroes other than Kiriko;
+  - a dedicated server.
+- A flat disc seen once in an overworld replay is unexplained.
+
 ## 2026-11-11: 0.3.34 on next (not on main yet)
 
 - **D.Va (#69)**, the second tank and the first hero with two bodies: the MEKA (Fusion Cannons, Defense Matrix, Boosters,
