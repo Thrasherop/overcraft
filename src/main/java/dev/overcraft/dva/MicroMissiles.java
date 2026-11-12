@@ -173,7 +173,7 @@ public final class MicroMissiles {
 		}
 		// a Brigitte's up barrier the same, once (Accretion's way)
 		dev.overcraft.brigitte.Barrier.burst(level, owner, at, MISSILES_SPLASH_RADIUS, d -> MISSILES_SPLASH * splashFactor(d));
-		DamageSource source = level.damageSources().explosion(missile, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, missile, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(MISSILES_SPLASH_RADIUS + 2))) {
 			boolean self = e == owner;
 			if (!e.isAlive() || !self && !Allies.areaHits(owner, e)) {

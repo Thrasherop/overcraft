@@ -159,7 +159,7 @@ public final class Accretion {
 		}
 		// a Brigitte's up barrier the same, once (not once for each one behind it)
 		dev.overcraft.brigitte.Barrier.burst(level, owner, at, ROCK_BURST_RADIUS, Accretion::burstDamage);
-		DamageSource source = level.damageSources().explosion(rock, owner);
+		DamageSource source = dev.overcraft.hero.Combat.blast(level, rock, owner);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(ROCK_BURST_RADIUS + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
