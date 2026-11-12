@@ -1,25 +1,26 @@
 package dev.overcraft.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.overcraft.potg.PlayScore;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Play of the Game's scoring: a hero picking up an item (ItemEntity.playerTouch calls take before the item goes into the
- * inventory), worth what PotgValues.PICKUP says. The table is empty until the owner decides (owner, 2026-11-11).
+ * Play of the Game's scoring: a hero picking up an item, worth what PotgValues.PICKUP says. ItemEntity.playerTouch
+ * calls Player.take after the inventory took the stack, so by then the entity's stack is what's left (empty, an air
+ * stack, when all was taken): the item and the count before come from playerTouch's own locals, and the count taken is
+ * that less what's left.
  */
-@Mixin(LivingEntity.class)
+@Mixin(ItemEntity.class)
 public abstract class PotgPickupMixin {
-	@Inject(method = "take", at = @At("HEAD"))
-	private void overcraft$potgPickup(Entity entity, int count, CallbackInfo ci) {
-		if ((Object) this instanceof ServerPlayer player && entity instanceof ItemEntity item) {
-			PlayScore.pickup(player, item.getItem());
-		}
+	@Inject(method = "playerTouch", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"))
+	private void overcraft$potgPickup(Player player, CallbackInfo ci, @Local Item item, @Local int orgCount) {
+		PlayScore.pickup(player, item, orgCount - ((ItemEntity) (Object) this).getItem().getCount());
 	}
 }

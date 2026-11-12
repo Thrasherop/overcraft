@@ -9,8 +9,9 @@ import java.util.Map;
  * techniques/potg/design.md, "What the game data says about scoring": the categories' names are there (D), the events,
  * values and the selection aren't (the selection runs on Blizzard's servers, BZ), so every number below is ours.
  *
- * To change the scoring, change this table. The per-mob and per-item maps are empty on purpose: progression (blazes,
- * blaze rods, ender pearls, eyes) waits for the owner's word (the note lists the proposals).
+ * To change the scoring, change this table. The progression values at the end (kills of the run's mobs, rods and
+ * pearls, crystals, eyes, the portal, first entries) are the owner's (2026-11-11), each ours (no source); the note's
+ * "Progression events" has the decision.
  */
 public final class PotgValues {
 	private PotgValues() {
@@ -43,13 +44,32 @@ public final class PotgValues {
 	public static final int DEATH_REACH_TICKS = 60;
 	public static final int DEATH_TAIL_TICKS = 20;
 
-	// ---- per mob, per item: empty until the owner says (owner, 2026-11-11) ----
+	// ---- progression: the owner's decisions (owner, 2026-11-11), each ours (no source); no anti-farm cap (owner: "there
+	// won't be farms. This is a one-off speedrun") ----
 	/**
-	 * A kill's worth by entity type id ("minecraft:blaze"), replacing the victim's health; added to High Score. Only the
-	 * dragon has one, the owner's #44 ("the last hits count"): its health would be 2500 capped to KILL_CAP, so its worth
-	 * is the cap and this on top. Ours.
+	 * A kill's worth by entity type id ("minecraft:blaze"), on top of the victim's health (capped to KILL_CAP); to High
+	 * Score. The dragon's is the owner's #44 ("the last hits count"): 2500 health capped to 1000, and this on top. The rest
+	 * owner, 2026-11-11: a wither skeleton ~700 in all, "about 1.4 of a zombie" (a zombie is ~500 with its damage).
 	 */
-	public static final Map<String, Double> KILL_BONUS = Map.of("minecraft:ender_dragon", 1500.0);
-	/** Picking up an item, by item id ("minecraft:blaze_rod"), to High Score. Empty: progression is the owner's call. */
-	public static final Map<String, Double> PICKUP = Map.of();
+	public static final Map<String, Double> KILL_BONUS = Map.of(
+		"minecraft:ender_dragon", 1500.0, // ours (#44)
+		"minecraft:blaze", 750.0, // owner, 2026-11-11
+		"minecraft:enderman", 500.0, // owner, 2026-11-11
+		"minecraft:wither_skeleton", 200.0, // owner, 2026-11-11
+		"minecraft:elder_guardian", 1000.0, // owner, 2026-11-11
+		"minecraft:wither", 2000.0); // owner, 2026-11-11
+	/** Picking up an item, by item id, to High Score: per item, no cap (owner, 2026-11-11). */
+	public static final Map<String, Double> PICKUP = Map.of(
+		"minecraft:blaze_rod", 250.0, // owner, 2026-11-11
+		"minecraft:ender_pearl", 150.0); // owner, 2026-11-11
+	/** An end crystal destroyed by a hero, directly or by their projectile or explosion. Owner, 2026-11-11 ("there is like
+	 *  9 of them ... not the most exciting POTG"). Not Shutdown (undecided). */
+	public static final double END_CRYSTAL = 400;
+	/** An eye of ender placed in an End portal frame. Owner, 2026-11-11. */
+	public static final double EYE_PLACED = 100;
+	/** The eye that completes and opens the portal: this instead of EYE_PLACED, not on top. Owner, 2026-11-11. */
+	public static final double PORTAL_OPENED = 200;
+	/** A player's first entry into the Nether, and into the End: once per player per world, saved with it. Owner, 2026-11-11. */
+	public static final double FIRST_NETHER = 500;
+	public static final double FIRST_END = 1000;
 }

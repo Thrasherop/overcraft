@@ -789,14 +789,26 @@ Searched offline with Overwatch and Battle.net closed (`runs_step3/potg_scan*.py
   is a guess, not used).
 - **So:** the names are D, the method is BZ, the window W, and every number is ours (in `PotgValues`).
 
-#### Progression events, for the owner to decide (none added)
-Proposals only, each a `PotgValues` entry when the owner wants it:
-- **Kills:** a blaze, an enderman, an end crystal (shooting one is a real dragon-fight play), a wither skeleton, an
-  elder guardian, the Wither.
-- **Pickups:** a blaze rod, an ender pearl, an eye of ender.
-- **Other events** (a new hook each): placing an eye in the end portal frame, opening the portal, the first entry into
-  the Nether or the End.
-- **And a question:** should a crystal broken by a hero count for Shutdown (it stops the dragon's healing)?
+#### Progression events: the owner's decisions (2026-11-11)
+All ours (no source), all to High Score, all in `PotgValues`, only for heroes in hero mode. In-game check:
+`runs_scoring/scoring_values.md`.
+- **Kills** (`KILL_BONUS`, on top of the victim's capped health): blaze 750, enderman 500, wither skeleton 200 (~450 in
+  all with its health, ~700 with the damage that killed it: "about 1.4 of a zombie", a zombie ~500 with its damage),
+  elder guardian 1000, the Wither 2000; the dragon's 1500 unchanged (#44).
+- **Pickups** (`PICKUP`, per item, no cap): blaze rod 250, ender pearl 150. An eye of ender picked up: nothing.
+- **End crystal** destroyed by a hero (a hit, their projectile, or a chain from a crystal they set off): 400
+  (`END_CRYSTAL`; "there is like 9 of them ... not the most exciting POTG"). Choke point `EndCrystal.onDestroyedBy`
+  (`PotgCrystalMixin`): `hurtServer` passes the cause on to a chained crystal's blast.
+- **Eye of ender** placed in a frame: 100 (`EYE_PLACED`); the eye that completes and opens the portal 200 instead, not on
+  top (`PORTAL_OPENED`). Choke point `EnderEyeItem.useOn` (`PotgEyeMixin`: level event 1503 placed, 1038 opened).
+- **First entry** into the Nether 500, the End 1000 (`FIRST_NETHER`, `FIRST_END`): once per player per world, saved in
+  `players.json` (`entered`). Fabric's `AFTER_PLAYER_CHANGE_LEVEL` and `AFTER_RESPAWN`. The first entry is the first
+  whatever the mode: one in Minecraft mode scores nothing and spends it (our reading of "first").
+- **No anti-farm cap** (owner: "there won't be farms. This is a one-off speedrun").
+- **Not decided:** whether a crystal counts for Shutdown (it doesn't).
+- **Fixed on the way:** a pickup scored nothing even with a value: `Player.take` runs after the inventory took the stack,
+  so the entity's stack was already empty (air). The pickup hook moved to `ItemEntity.playerTouch`'s locals. And a calm
+  enderman killed in one blow scored 0 (a bystander): a type with a `KILL_BONUS` now scores even calm; a cow still doesn't.
 ### Step 4, the replay engine (2026-11-11)
 **The owner's decisions** (2026-11-11): vendor ServerReplay's engine and keep it in Kotlin, taking only what POTG needs;
 each player keeps their top 5 highlights, saved with the world, rewatchable alone; the end screen's enemy side is mobs.

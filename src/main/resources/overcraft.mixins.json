@@ -29,7 +29,9 @@
 		"PotgSendMixin",
 		"PotgFreezeMixin",
 		"PotgDragonMixin",
-		"PotgPickupMixin"
+		"PotgPickupMixin",
+		"PotgCrystalMixin",
+		"PotgEyeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

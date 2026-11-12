@@ -116,20 +116,31 @@ public final class PlayScore {
 		tickNanos += System.nanoTime() - t0;
 	}
 
-	/** KillFeed.onDeath: a kill, with the hero who made it. */
+	/**
+	 * KillFeed.onDeath: a kill, with the hero who made it. A bystander's (a calm neutral mob's) scores nothing, except a
+	 * run's mob with its own bonus: an enderman killed before it turns on you is still the run's pearl (owner's values,
+	 * 2026-11-11; seen in game: a one-blow enderman scored 0).
+	 */
 	public static void kill(@Nullable Entity killer, LivingEntity victim) {
 		long t0 = System.nanoTime();
 		Rows r = rows(killer);
-		if (r != null && killer != victim && !Allies.isBystander((LivingEntity) killer, victim)) {
-			double worth = Math.min(PotgValues.KILL_CAP, Ow.toOw(victim.getMaxHealth()))
-				+ PotgValues.KILL_BONUS.getOrDefault(net.minecraft.world.entity.EntityType.getKey(victim.getType()).toString(), 0.0);
+		String type = net.minecraft.world.entity.EntityType.getKey(victim.getType()).toString();
+		if (r != null && killer != victim
+			&& (!Allies.isBystander((LivingEntity) killer, victim) || PotgValues.KILL_BONUS.containsKey(type))) {
+			double worth = killWorth(type, Ow.toOw(victim.getMaxHealth()));
 			r.now[Category.HIGH_SCORE.ordinal()] += worth;
+			logEvent(r, worth, "kill " + type);
 			PlayerStats.kill((ServerPlayer) killer);
 			if (dangerous(victim)) {
 				r.now[Category.SHUTDOWN.ordinal()] += PotgValues.SHUTDOWN_KILL;
 			}
 		}
 		tickNanos += System.nanoTime() - t0;
+	}
+
+	/** A kill's High Score: the victim's health in Overwatch HP, capped, and its type's bonus (PotgValues.KILL_BONUS). */
+	static double killWorth(String typeId, double owHealth) {
+		return Math.min(PotgValues.KILL_CAP, owHealth) + PotgValues.KILL_BONUS.getOrDefault(typeId, 0.0);
 	}
 
 	private static boolean dangerous(LivingEntity victim) {
@@ -139,13 +150,34 @@ public final class PlayScore {
 		return victim instanceof ServerPlayer p && HeroManager.state(p) instanceof HeroState s && s.ultActive > 0;
 	}
 
-	/** Player.take: a hero picked up an item; worth what PotgValues.PICKUP says (nothing yet: the owner's call). */
-	public static void pickup(Player hero, net.minecraft.world.item.ItemStack stack) {
-		Double worth = PotgValues.PICKUP.get(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
-		Rows r = worth == null ? null : rows(hero);
+	/** ItemEntity.playerTouch: a hero picked up {@code count} of an item; each worth what PotgValues.PICKUP says. */
+	public static void pickup(Player hero, net.minecraft.world.item.Item item, int count) {
+		String id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).toString();
+		Double worth = PotgValues.PICKUP.get(id);
+		Rows r = worth == null || count <= 0 ? null : rows(hero);
 		if (r != null) {
-			r.now[Category.HIGH_SCORE.ordinal()] += worth * stack.getCount();
+			r.now[Category.HIGH_SCORE.ordinal()] += worth * count;
+			logEvent(r, worth * count, "pickup " + count + " " + id);
 		}
+	}
+
+	/** A progression event (PotgValues: a crystal, an eye, the portal, a first entry) by this player, to High Score. */
+	public static void progress(@Nullable Entity who, double worth, String what) {
+		Rows r = rows(who);
+		if (r != null) {
+			r.now[Category.HIGH_SCORE.ordinal()] += worth;
+			logEvent(r, worth, what);
+		}
+	}
+
+	/** Whether this player scores now (scoring open, a hero in hero mode). */
+	public static boolean scores(@Nullable Entity who) {
+		return open && who instanceof ServerPlayer player && HeroManager.hero(player) != null && HeroManager.heroMode(player);
+	}
+
+	/** One line per scored kill, pickup and progression event (not damage or healing: too many), to read a run back. */
+	private static void logEvent(Rows r, double worth, String what) {
+		Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: +%.0f High Score (%s)", r.name, worth, what));
 	}
 
 	/** Combat.addFireForHealing: a hero healed someone (Overwatch HP). */
