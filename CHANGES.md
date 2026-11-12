@@ -4,6 +4,24 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-11: 0.3.36 on next (not on main yet)
+
+- **Pharah (#70)**, the whole kit with the game data's numbers (build 154088; her last live change, 2026-08-11, is older):
+  - Rocket Launcher: 6 rockets, 40 direct + 80 splash, 25 % to herself, rocket jumps;
+  - Jump Jet (Shift), Jet Dash (right button), Concussive Blast (E), Hover Jets (hold Space, 100 fuel, overfuel), Barrage (Q);
+  - Recon (her sub-role passive), four perks, quick melee, HUD with a fuel band.
+  - Models, voice, emotes and her Play of the Game intro come from the player's own install, as for every hero.
+- Falls don't hurt while her jets, hover or her own blasts land her; G drops that, and the rest of the fall is Minecraft's.
+- Fixed in her critic's round: the hover kept running asleep or stunned; Space on a ladder, a boat, a horse or in lava
+  drained her fuel.
+- **Every hero:** joining a world in mid-air in hero mode no longer hurts on the landing.
+- Played by her builder, a critic, the fixer, and the coordinator's real-input pass (`techniques/testing/runs/pharah/real_keys_11884de.md`).
+- Not yet:
+  - stand-in particles for her effects, silent emotes;
+  - a second player (Recon, knockback, sounds as others hear them);
+  - Barrage started in the air: she falls unless Space is held (the patch notes and the wiki disagree; needs an Overwatch side-by-side).
+- Still as before: every cooldown resets when a player rejoins (all heroes).
+
 ## 2026-11-11: 0.3.35 on next (not on main yet)
 
 - **Play of the Game (#44)** after the dragon's death, recreated from the owner's real clip:
