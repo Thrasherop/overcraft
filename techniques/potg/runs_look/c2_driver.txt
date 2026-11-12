@@ -1,0 +1,17 @@
+=== phase c2 18:17:57
+window 1920 1080 {'ok': True}
+=== phase c2 18:21:31
+respawn {'ok': True}
+=== phase c2 18:33:44
+window 1920 1080 {'ok': True}
+=== phase c2 18:34:13
+respawn {'ok': True}
+=== phase c2 18:34:56
+respawn {'ok': True}
+=== phase c2 18:35:01
+heromode on {'ok': True}
+=== phase c2 18:35:08
+state {'screen': '', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': 6.5, 'y': 62.0, 'z': 30.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'maxHealth': 18.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'mercy', 'ult': 217.0, 'ultCost': 2150, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.023651225, 'primaryAmmo': 25, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 1, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.30727682, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.219 -0.244 0.217)', 'muzzle': '0.126 -0.128 1.008 pitch 0.0', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy'}
+=== phase c2 18:37:12
+screenshot solo1_2_9s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run2\\screenshots\\solo1_2_9s.png'}
+state {'screen': '', 'fps': 19, 'fx': 0, 'inWorld': True, 'x': 6.5, 'y': 62.0, 'z': 30.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'maxHealth': 18.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'mercy', 'ult': 697.5, 'ultCost': 2150, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.0760218, 'primaryAmmo': 25, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 1, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.30379593, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.22 -0.251 0.216)', 'muzzle': '0.128 -0.135 1.006 pitch 0.0', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy'}

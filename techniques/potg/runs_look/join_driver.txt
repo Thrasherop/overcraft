@@ -1,0 +1,15 @@
+=== phase join 18:17:58
+{'ok': True}
+select 2 DisconnectedScreen
+{'error': 'java.lang.IllegalStateException: Cannot send packets when not in game!'}
+{'screen': 'TitleScreen', 'inWorld': False, 'x': None, 'y': None, 'z': None, 'yaw': None, 'pitch': None, 'health': None, 'hero': None, 'heroMode': None, 'ult': None, 'primaryAmmo': None, 'camera': None, 'heroAttached': None, 'food': None}
+=== phase join 18:20:24
+{'ok': True}
+select 2 HeroSelectScreen
+{'ok': True}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': -60.0, 'z': 10.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 6.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+=== phase join 18:33:48
+{'ok': True}
+select 2 HeroSelectScreen
+{'ok': True}
+{'screen': '', 'inWorld': True, 'x': -2.65, 'y': 61.34, 'z': 28.27, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 44.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}

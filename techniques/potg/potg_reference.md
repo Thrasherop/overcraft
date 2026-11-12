@@ -172,6 +172,7 @@ those): the matches below are by time and shape only.
 | Announcer at the intro's first frame, music under all of it | Both start with the card (`PotgCard.show`): the right moment. |
 
 ## 7. What's missing (to build, in order of what a player sees)
+Items 1-7 built 2026-11-11, rank, title and capture skipped (owner): [potg_look](potg_look.md).
 1. **The intro scene:** the hero in third person playing a highlight intro, 4.93 s, in place of the black band.
 2. **The intro text** as in §1: the left stack, the sizes and colours, the name's pop-in, the word-by-word hero line, the
    flare across the title, the slow drift. Drop the category line and the band. Keep `" AS "` (D 0DC6) but on its own

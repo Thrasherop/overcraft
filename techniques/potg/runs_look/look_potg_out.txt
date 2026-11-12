@@ -1,0 +1,25 @@
+=== phase look 18:26:23
+showing seen 18:26:46
+  shot 1.5s at 1.5s
+  shot 3.8s at 3.8s
+  shot 4.3s at 4.3s
+  shot 6.1s at 6.1s
+  shot 7.6s at 7.6s
+  shot 8.25s at 8.25s
+  shot 9.3s at 9.3s
+  shot 11s at 11.0s
+  shot 15s at 15.0s
+  shot 19s at 19.0s
+  shot 21s at 21.0s
+  shot 22s at 22.0s
+  shot 23s at 23.0s
+Traceback (most recent call last):
+  File "E:\claude\mods\overcraft_potgb\techniques\potg\runs_look\drive.py", line 206, in <module>
+    c(f"screenshot {tag}_1_{t:g}s.png")
+  File "E:\claude\mods\overcraft_potgb\techniques\potg\runs_look\drive.py", line 24, in c
+    return json.loads(f.readline())
+                      ^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\socket.py", line 706, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host

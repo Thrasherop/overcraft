@@ -1,0 +1,22 @@
+=== phase aim 18:22:58
+aim ended at 40.0
+[18:23:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 28 (seg-2.zip)
+[18:23:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 83 (seg-2.zip)
+[18:23:19] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 110 (seg-2.zip)
+[18:23:20] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 165 (seg-2.zip)
+[18:23:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 193 (seg-2.zip)
+[18:23:24] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 253 (seg-2.zip)
+=== phase aim 18:26:23
+aim ended at 9.6
+[18:26:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 27 (seg-2.zip)
+[18:26:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:26:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2555 (seg-2.zip)
+[18:26:32] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
+=== phase aim 18:35:18
+aim ended at 5.9
+[18:35:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-3.zip)
+[18:35:22] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 110 (seg-3.zip)
+[18:35:23] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2637 (seg-3.zip)
+[18:35:23] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
