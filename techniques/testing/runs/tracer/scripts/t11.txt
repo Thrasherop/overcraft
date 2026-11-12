@@ -1,0 +1,45 @@
+MARK T11 /overcraft reset, perks 3, LAlt + the left button twice: Temporal Regen (minor left), Blink Packs (major left)
+cmd /overcraft reset
+sleep 1
+cmd /overcraft perks @s 3
+sleep 0.5
+key perk_menu down
+sleep 0.3
+key secondary_fire down
+sleep 0.15
+key secondary_fire up
+sleep 0.5
+key secondary_fire down
+sleep 0.15
+key secondary_fire up
+sleep 0.3
+key perk_menu up
+sleep 0.5
+MARK T11a Temporal Regen: 4 MC (50 OW) by /damage; expected the regeneration from 3 s (18.75 OW/s = 1.5 MC/s), not 6
+cmd /damage @s 4 minecraft:generic
+sleep 1
+state
+sleep 1
+state
+sleep 0.8
+state
+sleep 0.5
+state
+sleep 0.5
+state
+MARK T11b Blink Packs and Flanker: 2 Blinks spent, then a potion of Healing (instant_health effect, as a splash or a drink applies it); expected +1 charge and +50 (4 MC) besides the potion's own 4 MC, after 4 MC of /damage
+cmd /tp @s 20.5 -60 0.5 0 0
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+key ability_1 down
+sleep 0.1
+key ability_1 up
+cmd /damage @s 9 minecraft:generic
+sleep 0.3
+state
+cmd /effect give @s minecraft:instant_health 1 0
+sleep 0.3
+state
+heard

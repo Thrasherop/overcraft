@@ -1,0 +1,80 @@
+MARK T7c (velocity from her own steps) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down fast
+cmd /kill @e[type=!player]
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 13
+key forward down
+sleep 0.2
+key jump down
+sleep 0.1
+key jump up
+sleep 0.9
+key forward up
+sleep 2.5
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.5
+state
+sleep 0.42
+state
+sleep 0.05
+state
+sleep 0.05
+state
+sleep 0.5
+state
+MARK T10 perks: level 3 by the dev command, then LAlt (perk menu) + the right button twice: Kinetic Reload (minor right), Quantum Entanglement (major right)
+cmd /overcraft perks @s 3
+sleep 0.5
+state
+key perk_menu down
+sleep 0.3
+key primary_fire down
+sleep 0.15
+key primary_fire up
+sleep 0.5
+key primary_fire down
+sleep 0.15
+key primary_fire up
+sleep 0.3
+key perk_menu up
+sleep 0.5
+screenshot t10_perks.png
+MARK T10a Kinetic Reload: 20 rounds spent, a quick melee on a zombie 1.5 m off: expected 20 -> 32
+cmd /difficulty easy
+cmd /summon zombie 20.5 -60 2.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /tp @s 20.5 -60 0.5
+cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 30 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key secondary_fire down
+sleep 0.5
+key secondary_fire up
+sleep 0.4
+state
+cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 2.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.4
+key quick_melee down
+sleep 0.15
+key quick_melee up
+sleep 0.4
+state
+heard
+MARK T10b Quantum Entanglement: Recall gives 50 overhealth (absorption 4) and 60 rounds; after 6 s the overhealth goes at 25 a second and the rounds back toward 40
+cmd /kill @e[type=!player]
+cmd /difficulty peaceful
+sleep 13
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 1.2
+state
+hp @s AbsorptionAmount
+sleep 5.5
+hp @s AbsorptionAmount
+state
+sleep 1.5
+hp @s AbsorptionAmount
+state
+sleep 1.5
+hp @s AbsorptionAmount
+state

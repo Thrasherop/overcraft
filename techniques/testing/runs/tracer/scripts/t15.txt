@@ -1,0 +1,42 @@
+MARK T15 looks: the third person in front, idle with both pistols; emotes Bomb Spin, Mic Drop, Spin (Spin keeps a pistol out); a Blink in third person
+cmd /tp @s 20.5 -60 0.5 180 0
+sleep 1
+perspective front
+sleep 0.5
+screenshot t15_front.png
+emote bomb_spin
+sleep 1.5
+screenshot t15_bomb_spin.png
+sleep 2
+emote mic_drop
+sleep 1.2
+screenshot t15_mic_drop.png
+sleep 3
+emote spin
+sleep 1.0
+screenshot t15_spin.png
+sleep 3
+key jump down
+sleep 0.1
+key jump up
+sleep 2
+perspective back
+key secondary_fire down
+sleep 0.3
+screenshot t15_fire_3p.png
+key secondary_fire up
+perspective first
+key secondary_fire down
+sleep 0.3
+screenshot t15_fire_1p.png
+key secondary_fire up
+MARK T15b a 10 m drop after a Blink off a pillar: a plain fall from her 3 m (expected damage), and Blink doesn't reset it beyond its own height
+cmd /fill 20 -60 40 20 -51 40 stone
+cmd /tp @s 20.5 -50 40.5 0 0
+sleep 1
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 2
+state

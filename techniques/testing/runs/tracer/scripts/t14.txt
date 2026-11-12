@@ -1,0 +1,87 @@
+MARK T7d (fix: not "on the ground" while held) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down
+cmd /kill @e[type=!player]
+cmd /fill 15 -60 -5 30 -50 40 air
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 13
+key forward down
+sleep 0.2
+key jump down
+sleep 0.1
+key jump up
+sleep 0.9
+key forward up
+sleep 2.5
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.5
+state
+sleep 0.42
+state
+sleep 0.05
+state
+sleep 0.05
+state
+sleep 0.5
+state
+MARK T14a Recall presses with a 0.05 s tap, five times 13 s apart at low health (4 MC by /damage each time): each should start (cooldown 12 after)
+cmd /damage @s 6 minecraft:generic
+sleep 9
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 1.2
+state
+cmd /damage @s 6 minecraft:generic
+sleep 12
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 1.2
+state
+MARK T14b water: a 3-deep pool; Blink in it (expected 7.5 m, never into a block), Recall out of it
+cmd /fill 15 -63 20 30 -61 35 water
+cmd /tp @s 22.5 -61 22.5 0 0
+sleep 13
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+state
+sleep 2
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 1.2
+state
+MARK T14c a ladder: on it, Blink and Recall (expected no stuck state; blink off it level)
+cmd /fill 15 -63 20 30 -61 35 grass_block
+cmd /fill 20 -60 30 22 -54 30 stone
+cmd /setblock 21 -60 29 ladder[facing=north]
+cmd /setblock 21 -59 29 ladder[facing=north]
+cmd /setblock 21 -58 29 ladder[facing=north]
+cmd /setblock 21 -57 29 ladder[facing=north]
+cmd /tp @s 21.5 -60 28.6 0 0
+key forward down
+sleep 1
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+key forward up
+sleep 0.4
+state
+MARK T14d a boat: seated, Shift and E do nothing (no Blink or Recall from a seat)
+cmd /summon oak_boat 18.5 -60 10.5
+cmd /tp @s 18.5 -60 10.5
+sleep 0.5
+cmd /ride @s mount @e[type=oak_boat,limit=1,sort=nearest]
+sleep 0.5
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+state
+cmd /ride @s dismount
+cmd /kill @e[type=oak_boat]

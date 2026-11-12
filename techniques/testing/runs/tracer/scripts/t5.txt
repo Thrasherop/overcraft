@@ -1,0 +1,29 @@
+MARK T5 Pulse Bomb (ult full from the fight's damage): a 100-health zombie 6 m ahead (t1), another 2.7 m to its side (t2), a tamed wolf (ally) 1.5 m from t1. Expected: the bomb sticks to t1 (5), 1 s later 350 to t1 (355 = 28.4 MC), t2 by its box's distance (about 2.4 m: about 305 = 24.4), the wolf untouched, her 6 m off untouched
+cmd /kill @e[type=!player]
+cmd /fill 15 -60 -5 30 -50 40 air
+cmd /summon zombie 20.5 -60 6.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon zombie 23.2 -60 6.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon wolf 19.0 -60 6.5 {NoAI:1b,Tags:["w"],Owner:[I;0,0,0,0]}
+cmd /tp @s 20.5 -60 0.5
+cmd /execute as @s at @s anchored eyes facing 20.5 -59.0 6.5 run tp @s ~ ~ ~ ~ ~
+cmd /execute as @e[tag=w] run data modify entity @s Owner set from entity @p UUID
+sleep 1
+hp @e[tag=t1,limit=1]
+hp @e[tag=t2,limit=1]
+hp @e[tag=w,limit=1]
+state
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.4
+ents PulseBomb
+state
+sleep 0.4
+ents PulseBomb
+screenshot t5_stuck.png
+sleep 1.0
+hp @e[tag=t1,limit=1]
+hp @e[tag=t2,limit=1]
+hp @e[tag=w,limit=1]
+state
+heard

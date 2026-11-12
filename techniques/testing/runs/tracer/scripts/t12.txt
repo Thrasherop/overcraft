@@ -1,0 +1,35 @@
+MARK T12 hero switch mid-Recall: E, then H 0.2 s in, Pharah, READY; then H, Tracer, READY. Expected: the Recall over (visible, not held), Pharah normal; Tracer back with full kit
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 13
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.2
+key hero_select down
+sleep 0.05
+key hero_select up
+sleep 1
+screen
+screenclick 160 216 1
+sleep 1
+screenclick 240 244 1
+sleep 1.5
+state
+key forward down
+sleep 0.5
+key forward up
+state
+screenshot t12_pharah.png
+key hero_select down
+sleep 0.05
+key hero_select up
+sleep 1
+screenclick 180 216 1
+sleep 1
+screenclick 240 244 1
+sleep 1.5
+state
+perspective back
+sleep 0.5
+screenshot t12_back3p.png
+perspective first

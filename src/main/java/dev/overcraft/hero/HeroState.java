@@ -205,7 +205,7 @@ public final class HeroState {
 	public long tracerBlinkReady, tracerBlinkAt = -1000, tracerFireLockUntil, tracerLastShot = -1000, tracerOverAmmoAt = -1000,
 		tracerSpawnAt = -1000, tracerVoiceAt = -1;
 	public boolean tracerFiring, tracerSilenced;
-	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 tracerHold, tracerRecallVelocity, tracerRecallTo;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 tracerHold, tracerRecallVelocity, tracerRecallTo, tracerRelease;
 	public float tracerRecallYaw, tracerRecallPitch;
 	public final java.util.ArrayDeque<dev.overcraft.tracer.Tracer.Sample> tracerHistory = new java.util.ArrayDeque<>();
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */

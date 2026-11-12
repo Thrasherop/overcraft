@@ -1,0 +1,39 @@
+MARK T4 Recall: stand at z=0.5 (3.5 s), fire 0.3 s, walk forward 1.5 s, take 4 MC (50 OW) from /damage, wait, press E. Expected: still till 0.44 s, then back where she was 3 s before the press with full health (14), the magazine full at 0.72 s, phased (a /damage at 0.3 s does nothing), cooldown 12 s from 0.9 s
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 3.5
+key secondary_fire down
+sleep 0.3
+key secondary_fire up
+key forward down
+sleep 1.5
+key forward up
+cmd /damage @s 4 minecraft:generic
+sleep 0.6
+state
+key ability_2 down
+sleep 0.05
+state
+key ability_2 up
+sleep 0.1
+state
+cmd /damage @s 4 minecraft:generic
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.1
+state
+sleep 0.2
+state
+sleep 0.5
+state
+screenshot t4_after.png
+heard

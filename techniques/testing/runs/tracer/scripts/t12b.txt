@@ -1,0 +1,39 @@
+MARK T12b (near spawn: away from it H says too far, as for every hero) Pharah picked from the open select, then back to Tracer, then H 0.2 s into a Recall and back to Tracer
+screenclick 160 216 1
+sleep 1
+screenclick 240 244 1
+sleep 1.5
+state
+key hero_select down
+sleep 0.1
+key hero_select up
+sleep 1
+screenclick 180 216 1
+sleep 1
+screenclick 240 244 1
+sleep 1.5
+state
+sleep 3.5
+key forward down
+sleep 0.6
+key forward up
+sleep 1
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.2
+key hero_select down
+sleep 0.1
+key hero_select up
+sleep 1
+screen
+screenclick 180 216 1
+sleep 1
+screenclick 240 244 1
+sleep 1.5
+state
+hp @s Invisible
+key forward down
+sleep 0.5
+key forward up
+state

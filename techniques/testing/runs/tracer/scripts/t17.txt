@@ -1,0 +1,31 @@
+MARK T17 the left button held 3.5 s through an empty magazine (expected: 1 s of fire, 0.2 s lock, the 1 s reload, fire again)
+key secondary_fire down
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.25
+state
+key secondary_fire up

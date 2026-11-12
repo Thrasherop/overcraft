@@ -82,6 +82,12 @@ public final class Tracer implements HeroKit {
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		boolean able = controls && player.isAlive() && !Sleep.asleep(player);
 		blinkRecharge(player, s, rate);
+		// (before recall(): the speed its end left goes out the tick after, behind the sync that lets her client go)
+		if (s.tracerRelease != null && s.tracerRecall < 0) {
+			player.setDeltaMovement(s.tracerRelease);
+			Combat.send(player);
+			s.tracerRelease = null;
+		}
 		recall(player, s, now);
 		bombCast(player, s, able);
 		pistols(player, s, able, now);
@@ -154,8 +160,12 @@ public final class Tracer implements HeroKit {
 			s.tracerHistory.clear();
 			return;
 		}
-		s.tracerHistory.addLast(new Sample(now, player.position(), player.getYRot(), player.getXRot(),
-			Combat.motion(player).scale(20), Ow.toOw(player.getHealth())));
+		// her speed from her own last step (m/s): a player's client moves her, and the server's own copy of her speed was ~0
+		// (T7b: a Recall into a running jump left her standing)
+		Sample last = s.tracerHistory.peekLast();
+		Vec3 velocity = last == null || now - last.at() != 1 ? Vec3.ZERO : player.position().subtract(last.pos()).scale(20);
+		s.tracerHistory.addLast(new Sample(now, player.position(), player.getYRot(), player.getXRot(), velocity,
+			Ow.toOw(player.getHealth())));
 		while (!s.tracerHistory.isEmpty() && now - s.tracerHistory.peekFirst().at() > Ow.ticks(RECALL_HISTORY)) {
 			s.tracerHistory.removeFirst();
 		}
@@ -246,8 +256,9 @@ public final class Tracer implements HeroKit {
 			if (player.onGround() && v.y < 0) {
 				v = new Vec3(v.x, 0, v.z);
 			}
-			player.setDeltaMovement(v.scale(1.0 / 20));
-			Combat.send(player);
+			// sent the tick after: her client holds her still until the sync without MODE_RECALL reaches it, which goes out
+			// after this tick's packets; sent now, the speed came first and the hold zeroed it (T7: she dropped where she was)
+			s.tracerRelease = v.scale(1.0 / 20);
 			player.resetFallDistance();
 			TracerSounds.split(player, "recall.end", player.position(), 70);
 			s.tracerVoiceAt = now + Ow.ticks(0.25);
@@ -337,7 +348,9 @@ public final class Tracer implements HeroKit {
 				continue;
 			}
 			double share = dev.overcraft.pharah.Pharah.splashFactor(d, BOMB_FULL, BOMB_RADIUS_OUT, BOMB_EDGE);
-			float dealt = Combat.damage(e, source, BOMB_DAMAGE * share * (me ? BOMB_SELF : 1), BOMB_BLOW);
+			// on herself not an explosion's source: Minecraft scales those on a player by the difficulty (easy x0.5 + 1: found
+			// playing, 51.8 came off as 38); her own hit isn't a mob's
+			float dealt = Combat.damage(e, me ? Combat.hitscan(owner) : source, BOMB_DAMAGE * share * (me ? BOMB_SELF : 1), BOMB_BLOW);
 			if (!me && dealt > 0) {
 				Perks.add(owner, dealt);
 				Combat.addFireForDamage(owner, dealt, e);
@@ -624,5 +637,6 @@ public final class Tracer implements HeroKit {
 		s.tracerFiring = false;
 		s.tracerHistory.clear();
 		s.tracerVoiceAt = -1;
+		s.tracerRelease = null;
 	}
 }

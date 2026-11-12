@@ -1,0 +1,44 @@
+MARK T6 run: W held 1.5 s (expected 6.0 m/s = 0.30 blocks a tick), then S held (5.4 = 0.27), then crouch-walk (3.0 = 0.15)
+cmd /kill @e[type=!player]
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 1
+key forward down
+sleep 1.0
+state
+sleep 0.3
+state
+key forward up
+sleep 0.5
+key back down
+sleep 1.0
+state
+key back up
+sleep 0.5
+key crouch down
+key forward down
+sleep 1.0
+state
+key forward up
+key crouch up
+MARK T6b G mid-Recall: E, then G 0.2 s in (expected: Recall over where she stands, visible, its cooldown started; Minecraft mode)
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 13
+key forward down
+sleep 1
+key forward up
+sleep 2.2
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.2
+key minecraft_mode down
+sleep 0.05
+key minecraft_mode up
+sleep 0.6
+state
+screenshot t6b_g.png
+key hero_mode down
+sleep 0.05
+key hero_mode up
+sleep 0.6
+state

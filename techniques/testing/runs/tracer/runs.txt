@@ -1,0 +1,785 @@
+
+=== T1 2026-11-12 00:36:17
+00:36:17.759 MARK T1 pistols: a 100-health (1250 OW) zombie, armor 0, 5 m ahead; hold the left button 1.2 s (expected: 40 rounds in 1 s = 20 shots x 11.5 = 230 OW = 18.4 MC, then the reload)
+00:36:17.798 cmd /kill @e[type=!player] -> {"ok":true}
+00:36:17.828 cmd /fill -12 -60 0 12 -50 40 air -> {"ok":true}
+00:36:17.904 cmd /summon zombie -2.5 -60 15.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:36:17.911 cmd /tp @s -2.5 -60 10.5 facing -2.5 -58.9 15.5 -> {"ok":true}
+00:36:18.915 cmd /data get entity @e[tag=t1,limit=1] Health -> {"ok":true}
+00:36:18.948 state -> {"screen":"","fps":29,"fx":0,"inWorld":true,"x":-2.5,"y":-60.0,"z":10.5,"yaw":-7.6293945E-6,"pitch":-12.407416,"health":14.0,"maxHealth":14.0,"onGround":true,"crouching":false,"sprinting":false,"box":"STANDING 0.60x1.80 eye 1.62","serverBox":"STANDING 0.60x1.80 eye 1.62","slot":0,"heroMode":true,"hero":"tracer","ult":85.25,"ultCost":1375,"shield":0.0,"mode":0,"aimSeen":"","perkLevel":1,"perkProgress":0.0108253965,"primaryAmmo":40,"primaryReload":-1.0,"meter":0.0,"secondaryAmmo":3,"ability1Cooldown":0.0,"ability2Cooldown":0.0,"ability3Cooldown":0.0,"vx":0.0,"vy":0.0,"vz":0.0,"anim":"idle","clothLowest":0.0,"emoteClip":null,"emoteClipAt":0.0,"emoteCamera":false,"emoteFirstPersonFrames":0,"food":20,"saturation":5.0,"onFire":false,"fingertip":"(-0.256 -0.064 0.484)","muzzle":"0.211 -0.090 0.644 pitch -12.4","anim1p":null,"camera":"FIRST_PERSON off blend 0.00 dist -1.00","heroAttached":"tracer"}
+00:36:18.981 key secondary_fire down -> {"key":"key.mouse.left"}
+00:36:20.183 key secondary_fire up -> {"key":"key.mouse.left"}
+00:36:20.417 screenshot t1_after.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t1_after.png"}
+00:36:20.450 state -> {"screen":"","fps":30,"fx":0,"inWorld":true,"x":-2.5,"y":-60.0,"z":10.5,"yaw":-7.6293945E-6,"pitch":-12.407416,"health":14.0,"maxHealth":14.0,"onGround":true,"crouching":false,"sprinting":false,"box":"STANDING 0.60x1.80 eye 1.62","serverBox":"STANDING 0.60x1.80 eye 1.62","slot":0,"heroMode":true,"hero":"tracer","ult":92.75,"ultCost":1375,"shield":0.0,"mode":0,"aimSeen":"","perkLevel":1,"perkProgress":0.011777778,"primaryAmmo":0,"primaryReload":0.2,"meter":5.551115E-17,"secondaryAmmo":3,"ability1Cooldown":0.0,"ability2Cooldown":0.0,"ability3Cooldown":0.0,"vx":0.0,"vy":0.0,"vz":0.0,"anim":"idle+reload","clothLowest":0.0,"emoteClip":null,"emoteClipAt":0.0,"emoteCamera":false,"emoteFirstPersonFrames":0,"food":20,"saturation":5.0,"onFire":false,"fingertip":"(-0.249 -0.068 0.475)","muzzle":"0.214 -0.107 0.635 pitch -12.4","anim1p":"reload","camera":"FIRST_PERSON off blend 0.00 dist -1.00","heroAttached":"tracer"}
+00:36:20.663 cmd /data get entity @e[tag=t1,limit=1] Health -> {"ok":true}
+00:36:20.698 heard -> {"heard":""}
+00:36:21.899 state -> {"screen":"","fps":26,"fx":0,"inWorld":true,"x":-2.5,"y":-60.0,"z":10.5,"yaw":-7.6293945E-6,"pitch":-12.407416,"health":14.0,"maxHealth":14.0,"onGround":true,"crouching":false,"sprinting":false,"box":"STANDING 0.60x1.80 eye 1.62","serverBox":"STANDING 0.60x1.80 eye 1.62","slot":0,"heroMode":true,"hero":"tracer","ult":100.0,"ultCost":1375,"shield":0.0,"mode":0,"aimSeen":"","perkLevel":1,"perkProgress":0.012698413,"primaryAmmo":40,"primaryReload":-1.0,"meter":0.0,"secondaryAmmo":3,"ability1Cooldown":0.0,"ability2Cooldown":0.0,"ability3Cooldown":0.0,"vx":0.0,"vy":0.0,"vz":0.0,"anim":"idle","clothLowest":0.0,"emoteClip":null,"emoteClipAt":0.0,"emoteCamera":false,"emoteFirstPersonFrames":0,"food":20,"saturation":5.0,"onFire":false,"fingertip":"(-0.256 -0.064 0.484)","muzzle":"0.211 -0.090 0.644 pitch -12.4","anim1p":null,"camera":"FIRST_PERSON off blend 0.00 dist -1.00","heroAttached":"tracer"}
+00:36:21.899 MARK T1b falloff: the same zombie at 25 m (expected x0.3: 3.45 a shot, 69 OW = 5.52 MC over 20 shots)
+00:36:21.932 cmd /tp @e[tag=t1] -2.5 -60 35.5 -> {"ok":true}
+00:36:21.966 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+00:36:22.000 cmd /tp @s -2.5 -60 10.5 facing -2.5 -58.9 35.5 -> {"ok":true}
+00:36:23.035 key secondary_fire down -> {"key":"key.mouse.left"}
+00:36:24.237 key secondary_fire up -> {"key":"key.mouse.left"}
+00:36:24.740 cmd /data get entity @e[tag=t1,limit=1] Health -> {"ok":true}
+
+=== T1-again 2026-11-12 00:37:07
+00:37:07.323 MARK T1 pistols (difficulty easy, NoAI): a 100-health (1250 OW) zombie, armor 0, 5 m ahead; hold the left button 1.2 s (expected: 40 rounds in 1 s = 20 shots x 11.5 = 230 OW = 18.4 MC, then the reload)
+00:37:07.332 cmd /difficulty easy -> {"ok":true}
+00:37:07.365 cmd /kill @e[type=!player] -> {"ok":true}
+00:37:07.400 cmd /fill -12 -60 0 12 -50 40 air -> {"ok":true}
+00:37:07.434 cmd /summon zombie -2.5 -60 15.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:37:07.467 cmd /tp @s -2.5 -60 10.5 facing -2.5 -58.9 15.5 -> {"ok":true}
+00:37:08.888 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 99.0f
+00:37:08.922 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 335.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:37:08.947 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:10.152 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:10.386 screenshot t1_after.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t1_after.png"}
+00:37:10.419 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 342.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.2, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+00:37:11.042 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 97.0f
+00:37:11.068 heard -> {"heard":"tracer.pistol.fire_first -> tracer/pistol/fire_first/7 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/6 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/7 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/3 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/5 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/7 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/4 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/7 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fi...
+00:37:12.271 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 352.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:37:12.271 MARK T1b falloff: the same zombie at 25 m (expected x0.3: 3.45 a shot, 69 OW = 5.52 MC over 20 shots)
+00:37:12.304 cmd /tp @e[tag=t1] -2.5 -60 35.5 -> {"ok":true}
+00:37:12.338 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+00:37:12.372 cmd /tp @s -2.5 -60 10.5 facing -2.5 -58.9 35.5 -> {"ok":true}
+00:37:13.373 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:14.576 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:15.518 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 95.172f
+
+=== T1c 2026-11-12 00:37:35
+00:37:35.291 MARK T1c pistols, aimed from the eyes at the chest: a 100-health (1250 OW) zombie, armor 0, 5 m; hold the left button 1.2 s (expected 20 shots x 11.5 = 230 OW = 18.4 MC, crits possible on stray bullets up)
+00:37:35.303 cmd /kill @e[type=!player] -> {"ok":true}
+00:37:35.338 cmd /summon zombie -2.5 -60 15.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:37:35.379 cmd /tp @s -2.5 -60 10.5 -> {"ok":true}
+00:37:35.411 cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:37:36.854 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 100.0f
+00:37:36.882 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:38.084 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:38.828 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 80.60004f
+00:37:38.860 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 725.1, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": 0.7, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+00:37:39.287 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 727.35, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+00:37:39.823 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 730.1, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:37:39.823 MARK T1d falloff: the same zombie at 15 m (expected x0.65: 7.475 a shot, 149.5 OW = 11.96 MC) and at 25 m (x0.3: 69 OW = 5.52 MC)
+00:37:39.855 cmd /tp @e[tag=t1] -2.5 -60 25.5 -> {"ok":true}
+00:37:39.890 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+00:37:39.922 cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 25.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:37:41.426 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:42.631 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:43.376 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 89.28349f
+00:37:43.405 cmd /tp @e[tag=t1] -2.5 -60 35.5 -> {"ok":true}
+00:37:43.438 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+00:37:43.471 cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 35.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:37:44.974 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:46.178 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:46.919 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 95.895996f
+00:37:46.919 MARK T1e tap fire: 3 taps 0.1 s apart (expected: the 0.2 s lock after letting go: the second tap inside it fires nothing)
+00:37:46.946 cmd /tp @e[tag=t1] -2.5 -60 15.5 -> {"ok":true}
+00:37:46.979 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+00:37:47.013 cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:37:48.517 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 883.856, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:37:48.551 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:48.685 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:48.818 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:48.919 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:49.253 key secondary_fire down -> {"key":"key.mouse.left"}
+00:37:49.387 key secondary_fire up -> {"key":"key.mouse.left"}
+00:37:49.620 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 946.856, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 30, "primaryReload": -1.0, "meter": 0.467, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:37:49.620 MARK T1f R mid-magazine
+00:37:49.653 key reload tap -> {"key":"key.keyboard.r"}
+00:37:50.056 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 948.856, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 30, "primaryReload": 0.35, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+00:37:50.489 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 951.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": 0.8, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+00:37:50.923 state -> {"screen": "", "x": -2.5, "y": -60.0, "z": 10.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 953.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+
+=== T2 2026-11-12 00:38:11
+00:38:11.834 MARK T2a Blink standing, no keys, Shift: expected 7.5 m along her facing (+z), level, charges 3 -> 2
+00:38:11.845 cmd /kill @e[type=!player] -> {"ok":true}
+00:38:11.880 cmd /fill 15 -60 -5 30 -50 40 air -> {"ok":true}
+00:38:11.911 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:38:13.422 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1065.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:13.449 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:13.583 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:13.917 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1068.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:13.951 heard -> {"heard":"tracer.pistol.fire_first -> tracer/pistol/fire_first/4 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/4 (SimpleSoundInstance, in the head) | tracer.pistol.hit_enemy -> tracer/pistol/hit_enemy/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/6 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/4 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/7 (SimpleSoundInstance, in the head) | tracer.pistol.hit_enemy -> tracer/pistol/hit_enemy/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/5 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/4 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/3 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/6 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/3 (SimpleSoundInstance, in the head) | tracer.pistol.hit_enemy -> tracer/pistol/hit_enemy/3 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/5 (SimpleSoundInstance, in the head) | tracer.p...
+00:38:13.952 MARK T2b W held + the right button: forward 7.5 (on top of the walk)
+00:38:13.984 key forward down -> {"key":"key.keyboard.w"}
+00:38:14.285 key primary_fire down -> {"key":"key.mouse.right"}
+00:38:14.420 key primary_fire up -> {"key":"key.mouse.right"}
+00:38:14.520 key forward up -> {"key":"key.keyboard.w"}
+00:38:14.855 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1072.856, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:14.855 MARK T2c then A held + Shift with the last charge: 7.5 to her left (+x); then a 4th press with none: the empty sound, no move
+00:38:14.888 key left down -> {"key":"key.keyboard.a"}
+00:38:15.122 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:15.256 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:15.289 key left up -> {"key":"key.keyboard.a"}
+00:38:15.590 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1076.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.9, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:15.623 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:15.757 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:16.090 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1079.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.4, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:16.123 heard -> {"heard":"tracer.blink_2 -> tracer/blink_2/0 (SimpleSoundInstance, in the head) | tracer.blink_3 -> tracer/blink_3/1 (SimpleSoundInstance, in the head) | tracer.voice.blink -> tracer/voice/blink/4 (SimpleSoundInstance, in the head) | tracer.blink_empty -> tracer/blink_empty/0 (SimpleSoundInstance, in the head)"}
+00:38:16.123 MARK T2d the charges coming back: one at a time, 3 s each from the first Blink (expected at about +3, +6, +9 s after T2a)
+00:38:16.157 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1079.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:17.161 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1084.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:18.164 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1089.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:19.166 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1094.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:20.169 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1099.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:21.171 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1104.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:22.173 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1109.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:23.207 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1114.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:24.242 state -> {"screen": "", "x": 30.544, "y": -60.0, "z": 18.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1119.856, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:24.275 heard -> {"heard":"tracer.blink_recharge_1 -> tracer/blink_recharge_1/0 (SimpleSoundInstance, in the head) | tracer.blink_recharge_2 -> tracer/blink_recharge_2/0 (SimpleSoundInstance, in the head) | tracer.blink_recharge_3 -> tracer/blink_recharge_3/0 (SimpleSoundInstance, in the head)"}
+
+=== T3 2026-11-12 00:38:44
+00:38:44.981 MARK T3 Blink against the world. Lanes along +z from z=0.5: a 3-high stone wall at z=4 (x=40), a 1-block step from z=4 (x=45), a 2-high wall at z=4 (x=50), a 1-block drop from z=4 (x=55), a 3-block drop from z=4 (x=60)
+00:38:45.008 cmd /fill 38 -60 -2 62 -50 20 air -> {"ok":true}
+00:38:45.042 cmd /fill 38 -63 -2 62 -61 20 grass_block -> {"ok":true}
+00:38:45.077 cmd /fill 39 -60 4 41 -58 4 stone -> {"ok":true}
+00:38:45.108 cmd /fill 44 -60 4 46 -60 20 stone -> {"ok":true}
+00:38:45.142 cmd /fill 49 -60 4 51 -59 4 stone -> {"ok":true}
+00:38:45.175 cmd /fill 54 -61 4 56 -61 20 air -> {"ok":true}
+00:38:45.209 cmd /fill 59 -63 4 61 -61 20 air -> {"ok":true}
+00:38:45.209 MARK T3e wall: expected to stop at it, feet z <= 3.7, not inside
+00:38:45.244 cmd /tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+00:38:48.767 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:48.900 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:49.343 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 3.7, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1245.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:49.368 screenshot t3e_wall.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t3e_wall.png"}
+00:38:49.368 MARK T3f a 1-block step: expected up onto it, y -59, z 8.0
+00:38:49.401 cmd /tp @s 45.5 -60 0.5 0 0 -> {"ok":true}
+00:38:50.013 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:50.148 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:50.583 state -> {"screen": "", "x": 45.5, "y": -59.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1251.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:50.583 MARK T3g a 2-high wall: expected to stop at it (z <= 3.7), y -60
+00:38:50.616 cmd /tp @s 50.5 -60 0.5 0 0 -> {"ok":true}
+00:38:51.231 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:51.363 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:51.798 state -> {"screen": "", "x": 50.5, "y": -60.0, "z": 3.7, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1257.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:51.798 MARK T3h a 1-block drop: expected to follow the ground down, y -61, z 8.0
+00:38:54.805 cmd /tp @s 55.5 -60 0.5 0 0 -> {"ok":true}
+00:38:55.439 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:55.573 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:55.706 state -> {"screen": "", "x": 55.5, "y": -61.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1277.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:56.139 state -> {"screen": "", "x": 55.5, "y": -61.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1279.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:56.139 MARK T3i a 3-block drop: expected level at y -60 to z 8.0, then a fall to -63 (3 m: no damage at her 3 m)
+00:38:56.173 cmd /tp @s 60.5 -60 0.5 0 0 -> {"ok":true}
+00:38:56.774 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:38:56.908 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:38:56.975 state -> {"screen": "", "x": 60.5, "y": -60.35, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1283.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.8, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.174, "vz": 0.0, "anim": "fall"}
+00:38:57.979 state -> {"screen": "", "x": 60.5, "y": -63.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1288.606, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:38:57.979 MARK T3j in the air: a jump, Shift at its top: expected level (dy about 0 at the blink), then a fall
+00:39:00.987 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:39:01.589 key jump down -> {"key":"key.keyboard.space"}
+00:39:01.890 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:39:01.957 state -> {"screen": "", "x": 20.5, "y": -59.057, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1308.356, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.044, "vz": 0.0, "anim": "fall"}
+00:39:01.991 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:39:02.024 key jump up -> {"key":"key.keyboard.space"}
+00:39:02.091 state -> {"screen": "", "x": 20.5, "y": -59.385, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1309.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.174, "vz": 0.0, "anim": "fall"}
+00:39:03.093 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 8.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1314.106, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T4 2026-11-12 00:39:15
+00:39:15.755 MARK T4 Recall: stand at z=0.5 (3.5 s), fire 0.3 s, walk forward 1.5 s, take 4 MC (50 OW) from /damage, wait, press E. Expected: still till 0.44 s, then back where she was 3 s before the press with full health (14), the magazine full at 0.72 s, phased (a /damage at 0.3 s does nothing), cooldown 12 s from 0.9 s
+00:39:15.757 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:39:19.263 key secondary_fire down -> {"key":"key.mouse.left"}
+00:39:19.598 key secondary_fire up -> {"key":"key.mouse.left"}
+00:39:19.631 key forward down -> {"key":"key.keyboard.w"}
+00:39:21.135 key forward up -> {"key":"key.keyboard.w"}
+00:39:21.169 cmd /damage @s 4 minecraft:generic -> {"ok":true}
+00:39:21.777 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 9.644, "yaw": 0.0, "health": 10.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:21.804 key ability_2 down -> {"key":"key.keyboard.e"}
+00:39:21.871 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 9.644, "yaw": 0.0, "health": 10.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:21.906 key ability_2 up -> {"key":"key.keyboard.e"}
+00:39:22.039 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 9.644, "yaw": 0.0, "health": 10.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.071 cmd /damage @s 4 minecraft:generic -> {"ok":true}
+00:39:22.205 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 9.644, "yaw": 0.0, "health": 10.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.339 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.472 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 26, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.606 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.740 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 12.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.873 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.85, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:22.975 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:23.176 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.55, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:23.710 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.05, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:23.743 screenshot t4_after.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t4_after.png"}
+00:39:23.777 heard -> {"heard":"tracer.blink_1 -> tracer/blink_1/3 (SimpleSoundInstance, in the head) | tracer.blink_2 -> tracer/blink_2/7 (SimpleSoundInstance, in the head) | tracer.blink_3 -> tracer/blink_3/2 (SimpleSoundInstance, in the head) | tracer.voice.blink -> tracer/voice/blink/1 (SimpleSoundInstance, in the head) | tracer.blink_recharge_1 -> tracer/blink_recharge_1/0 (SimpleSoundInstance, in the head) | tracer.blink_recharge_2 -> tracer/blink_recharge_2/0 (SimpleSoundInstance, in the head) | tracer.blink_1 -> tracer/blink_1/4 (SimpleSoundInstance, in the head) | tracer.blink_2 -> tracer/blink_2/5 (SimpleSoundInstance, in the head) | tracer.blink_recharge_1 -> tracer/blink_recharge_1/0 (SimpleSoundInstance, in the head) | tracer.blink_recharge_2 -> tracer/blink_recharge_2/0 (SimpleSoundInstance, in the head) | tracer.blink_1 -> tracer/blink_1/3 (SimpleSoundInstance, in the head) | tracer.blink_recharge_2 -> tracer/blink_recharge_2/0 (SimpleSoundInstance, in the head) | tracer.blink_recharge_3 -> tracer/blink_recharge_3/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire_first -> tracer/pistol/fire_first/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/5 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/4 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> trac...
+
+=== T5 2026-11-12 00:39:41
+00:39:41.697 MARK T5 Pulse Bomb (ult full from the fight's damage): a 100-health zombie 6 m ahead (t1), another 2.7 m to its side (t2), a tamed wolf (ally) 1.5 m from t1. Expected: the bomb sticks to t1 (5), 1 s later 350 to t1 (355 = 28.4 MC), t2 by its box's distance (about 2.4 m: about 305 = 24.4), the wolf untouched, her 6 m off untouched
+00:39:41.714 cmd /kill @e[type=!player] -> {"ok":true}
+00:39:41.748 cmd /fill 15 -60 -5 30 -50 40 air -> {"ok":true}
+00:39:41.781 cmd /summon zombie 20.5 -60 6.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:39:41.814 cmd /summon zombie 23.2 -60 6.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:39:41.855 cmd /summon wolf 19.0 -60 6.5 {NoAI:1b,Tags:["w"],Owner:[I;0,0,0,0]} -> {"ok":true}
+00:39:41.881 cmd /tp @s 20.5 -60 0.5 -> {"ok":true}
+00:39:41.915 cmd /execute as @s at @s anchored eyes facing 20.5 -59.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:39:41.948 cmd /execute as @e[tag=w] run data modify entity @s Owner set from entity @p UUID -> {"ok":true}
+00:39:43.393 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 98.0f
+00:39:43.827 hp @e[tag=t2,limit=1] -> Zombie has the following entity data: 100.0f
+00:39:44.261 hp @e[tag=w,limit=1] -> Wolf has the following entity data: 8.0f
+00:39:44.294 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:44.322 key ultimate down -> {"key":"key.keyboard.q"}
+00:39:44.455 key ultimate up -> {"key":"key.keyboard.q"}
+00:39:44.859 ents PulseBomb -> {"ents":"954 20.35 -59.89 4.56 v 0.00 0.00 0.00 t8 | "}
+00:39:44.893 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 2.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+pulse_bomb"}
+00:39:45.327 ents PulseBomb -> {"ents":"954 20.35 -59.89 4.56 v 0.00 0.00 0.00 t26 | "}
+00:39:45.361 screenshot t5_stuck.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t5_stuck.png"}
+00:39:46.783 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 66.0f
+00:39:47.217 hp @e[tag=t2,limit=1] -> Zombie has the following entity data: 81.54141f
+00:39:47.651 hp @e[tag=w,limit=1] -> Wolf has the following entity data: 8.0f
+00:39:47.678 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 10.935, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 16.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:39:47.711 heard -> {"heard":"tracer.pulse_bomb.throw -> tracer/pulse_bomb/throw/0 (SimpleSoundInstance, in the head) | tracer.ult.friendly -> tracer/ult/friendly/6 (SimpleSoundInstance, in the head) | tracer.pulse_bomb.stick_block -> tracer/pulse_bomb/stick_block/1 (SimpleSoundInstance, at 20.3 -59.9 4.5) | tracer.pulse_bomb.fuse -> tracer/pulse_bomb/fuse/4 (SimpleSoundInstance, at 20.3 -59.9 4.5) | tracer.voice.pain -> tracer/voice/pain/5 (SimpleSoundInstance, at 20.5 -60.0 0.5) | tracer.pulse_bomb.explode -> tracer/pulse_bomb/explode/4 (SimpleSoundInstance, at 20.3 -59.6 4.5)"}
+
+=== T5b 2026-11-12 00:40:33
+00:40:33.527 MARK T5b Pulse Bomb aimed at t1's head height (the throw falls at 30 m/s2); health read before the stick, after it, after the blast
+00:40:33.539 cmd /kill @e[type=!player] -> {"ok":true}
+00:40:33.573 cmd /summon zombie 20.5 -60 6.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:40:33.606 cmd /summon zombie 23.2 -60 6.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:40:33.640 cmd /tp @s 20.5 -60 0.5 -> {"ok":true}
+00:40:33.672 cmd /execute as @s at @s anchored eyes facing 20.5 -58.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:40:33.707 ult 100 -> {"ok":true}
+00:40:35.150 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 100.0f
+00:40:35.176 key ultimate down -> {"key":"key.keyboard.q"}
+00:40:35.309 key ultimate up -> {"key":"key.keyboard.q"}
+00:40:36.250 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 100.0f
+00:40:36.276 ents PulseBomb -> {"ents":"1111 20.35 -59.89 5.83 v 0.00 0.00 0.00 t28 | "}
+00:40:37.921 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 70.0f
+00:40:38.354 hp @e[tag=t2,limit=1] -> Zombie has the following entity data: 73.45886f
+00:40:38.388 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 15.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:40:38.413 heard -> {"heard":"tracer.pulse_bomb.throw -> tracer/pulse_bomb/throw/1 (SimpleSoundInstance, in the head) | tracer.ult.friendly -> tracer/ult/friendly/3 (SimpleSoundInstance, in the head) | tracer.pulse_bomb.stick_block -> tracer/pulse_bomb/stick_block/0 (SimpleSoundInstance, at 20.3 -59.9 5.8) | tracer.pulse_bomb.fuse -> tracer/pulse_bomb/fuse/6 (SimpleSoundInstance, at 20.3 -59.9 5.8) | tracer.pulse_bomb.explode -> tracer/pulse_bomb/explode/2 (SimpleSoundInstance, at 20.3 -59.6 5.8)"}
+
+=== T6 2026-11-12 00:41:29
+00:41:29.293 MARK T6 run: W held 1.5 s (expected 6.0 m/s = 0.30 blocks a tick), then S held (5.4 = 0.27), then crouch-walk (3.0 = 0.15)
+00:41:29.299 cmd /kill @e[type=!player] -> {"ok":true}
+00:41:29.333 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:41:30.334 key forward down -> {"key":"key.keyboard.w"}
+00:41:31.346 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.756, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 280.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.3, "anim": "run"}
+00:41:31.673 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 8.556, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 281.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.3, "anim": "run"}
+00:41:31.706 key forward up -> {"key":"key.keyboard.w"}
+00:41:32.208 key back down -> {"key":"key.keyboard.s"}
+00:41:33.209 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 3.685, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 289.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": -0.27, "anim": "run_back"}
+00:41:33.243 key back up -> {"key":"key.keyboard.s"}
+00:41:33.777 key crouch down -> {"key":"key.keyboard.left.control"}
+00:41:33.809 key forward down -> {"key":"key.keyboard.w"}
+00:41:34.814 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.226, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 297.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.15, "anim": "crouch_walk"}
+00:41:34.848 key forward up -> {"key":"key.keyboard.w"}
+00:41:34.881 key crouch up -> {"key":"key.keyboard.left.control"}
+00:41:34.881 MARK T6b G mid-Recall: E, then G 0.2 s in (expected: Recall over where she stands, visible, its cooldown started; Minecraft mode)
+00:41:34.915 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:41:47.948 key forward down -> {"key":"key.keyboard.w"}
+00:41:48.950 key forward up -> {"key":"key.keyboard.w"}
+00:41:51.154 key ability_2 down -> {"key":"key.keyboard.e"}
+00:41:51.222 key ability_2 up -> {"key":"key.keyboard.e"}
+00:41:51.455 key minecraft_mode down -> {"key":"key.keyboard.g"}
+00:41:51.521 key minecraft_mode up -> {"key":"key.keyboard.g"}
+00:41:52.122 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.644, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 384.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.35, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+00:41:52.156 screenshot t6b_g.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t6b_g.png"}
+00:41:52.190 key hero_mode down -> {"key":"key.keyboard.g"}
+00:41:52.367 key hero_mode up -> {"key":"key.keyboard.g"}
+00:41:53.002 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.644, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 388.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.5, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T7 2026-11-12 00:42:04
+00:42:04.811 MARK T7 Recall into the air: a running jump, E 3.5 s after the jump (expected: back mid-jump, held there to 0.9 s, then leaves with that moment's speed plus 0.46 s of gravity: down, fast; lands unhurt from about 1 m)
+00:42:04.833 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:42:17.866 key forward down -> {"key":"key.keyboard.w"}
+00:42:18.068 key jump down -> {"key":"key.keyboard.space"}
+00:42:18.201 key jump up -> {"key":"key.keyboard.space"}
+00:42:19.135 key forward up -> {"key":"key.keyboard.w"}
+00:42:21.641 key ability_2 down -> {"key":"key.keyboard.e"}
+00:42:21.708 key ability_2 up -> {"key":"key.keyboard.e"}
+00:42:22.251 state -> {"screen": "", "x": 20.5, "y": -59.598, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 534.5, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:22.477 state -> {"screen": "", "x": 20.5, "y": -59.598, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 535.75, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:22.644 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.433, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 536.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.95, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:22.711 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.433, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 536.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:22.778 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.433, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 537.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:22.845 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.433, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 537.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:23.379 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.433, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 540.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.2, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T8 2026-11-12 00:42:46
+00:42:46.894 MARK T8 death and respawn: spend 2 blinks and 20 rounds, die (/damage 30), respawn. Expected: back as Tracer, 175, 40 rounds, 3 charges, Recall cooldown 0, E does nothing for 3 s after the respawn (D #254), then works
+00:42:46.905 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:42:46.939 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:42:47.073 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:42:47.307 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:42:47.440 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:42:47.474 key secondary_fire down -> {"key":"key.mouse.left"}
+00:42:47.975 key secondary_fire up -> {"key":"key.mouse.left"}
+00:42:48.015 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 15.5, "yaw": 0.0, "health": 12.75, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 663.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 20, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:48.041 cmd /damage @s 30 minecraft:generic -> {"ok":true}
+00:42:49.568 screenshot t8_dead.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t8_dead.png"}
+00:42:49.602 respawn -> {"ok":true}
+00:42:51.631 state -> {"screen": "", "x": 6.5, "y": -60.0, "z": 9.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 673.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:51.664 screen -> {"screen":""}
+00:42:51.698 key ability_2 down -> {"key":"key.keyboard.e"}
+00:42:51.764 key ability_2 up -> {"key":"key.keyboard.e"}
+00:42:52.098 state -> {"screen": "", "x": 6.5, "y": -60.0, "z": 9.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 676.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:55.105 key ability_2 down -> {"key":"key.keyboard.e"}
+00:42:55.172 key ability_2 up -> {"key":"key.keyboard.e"}
+00:42:56.375 state -> {"screen": "", "x": 6.5, "y": -60.0, "z": 9.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 697.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.65, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:42:56.408 screenshot t8_back.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t8_back.png"}
+00:42:56.442 heard -> {"heard":"tracer.recall.start -> tracer/recall/start/0 (SimpleSoundInstance, in the head) | tracer.recall.rewind -> tracer/recall/rewind/1 (SimpleSoundInstance, in the head) | tracer.recall.start -> tracer/recall/start/0 (SimpleSoundInstance, in the head) | tracer.recall.rewind -> tracer/recall/rewind/1 (SimpleSoundInstance, in the head) | tracer.recall.end -> tracer/recall/end/0 (SimpleSoundInstance, in the head) | tracer.voice.recall -> tracer/voice/recall/5 (SimpleSoundInstance, in the head) | tracer.voice.pain -> tracer/voice/pain/3 (SimpleSoundInstance, at 20.5 -60.0 5.4) | tracer.voice.pain -> tracer/voice/pain/7 (SimpleSoundInstance, at 25.5 -60.0 0.9) | tracer.blink_1 -> tracer/blink_1/5 (SimpleSoundInstance, in the head) | tracer.blink_2 -> tracer/blink_2/3 (SimpleSoundInstance, in the head) | tracer.pistol.fire_first -> tracer/pistol/fire_first/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/0 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.fire -> tracer/pistol/fire/1 (SimpleSoundInstance, in the head) | tracer.pistol.hit_block -> tracer/pistol/hit_block/6 (SimpleSoundInstance, at 20.1 -60.0 50.4) | tracer.pistol.fire -> tracer/pistol/fire/2 (SimpleSoundInstance, in the head) | tracer.pistol.hit_block -> tracer/pistol/hit_block/6 (SimpleSoundInstance, at 19.4 -60.0 48.9) | ...
+
+=== T5c 2026-11-12 00:47:28
+00:47:28.260 MARK T9 rejoin: the select screen came up with Tracer chosen (t9_rejoin.png); READY
+00:47:28.292 screenclick 240 244 1 -> {"screen":"DeathScreen"}
+00:47:29.323 cmd /difficulty peaceful -> {"ok":true}
+00:47:29.347 cmd /gamerule spawn_monsters false -> {"ok":true}
+00:47:29.378 cmd /time set day -> {"ok":true}
+00:47:30.388 state -> {"screen": "DeathScreen", "x": 25.11, "y": -60.0, "z": -14.548, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 917.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+00:47:30.388 MARK T5c Pulse Bomb thrown point blank at a zombie 2.5 m off (so it reaches it), the debug line per target; t2 2.7 m to t1's side; herself 2.5 m off
+00:47:30.414 cmd /difficulty easy -> {"ok":true}
+00:47:30.453 cmd /kill @e[type=!player] -> {"ok":true}
+00:47:30.519 cmd /summon zombie 20.5 -60 3.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:47:30.525 cmd /summon zombie 23.2 -60 3.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:47:30.558 cmd /tp @s 20.5 -60 0.5 -> {"ok":true}
+00:47:30.592 cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:47:30.625 ult 100 -> {"ok":true}
+00:47:32.071 hp @e[tag=t1,limit=1] -> No entity was found
+00:47:32.094 key ultimate down -> {"key":"key.keyboard.q"}
+00:47:32.227 key ultimate up -> {"key":"key.keyboard.q"}
+00:47:33.069 hp @e[tag=t1,limit=1] -> No entity was found
+00:47:33.094 ents PulseBomb -> {"ents":""}
+00:47:34.707 hp @e[tag=t1,limit=1] -> No entity was found
+00:47:35.143 hp @e[tag=t2,limit=1] -> No entity was found
+00:47:35.168 state -> {"screen": "DeathScreen", "x": 25.11, "y": -60.0, "z": -14.548, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+00:47:35.201 heard -> {"heard":""}
+
+=== T5c 2026-11-12 00:47:43
+00:47:43.665 MARK T9b killed by the superflat slimes just after READY (5 health from before the rejoin); respawn
+00:47:43.689 respawn -> {"ok":true}
+00:47:45.694 screen -> {"screen":""}
+00:47:45.728 cmd /gamerule spawn_monsters false -> {"ok":true}
+00:47:45.761 cmd /time set day -> {"ok":true}
+00:47:46.773 state -> {"screen": "", "x": -9.5, "y": -60.0, "z": -1.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:47:46.773 MARK T5c Pulse Bomb thrown point blank at a zombie 2.5 m off (so it reaches it), the debug line per target; t2 2.7 m to t1's side; herself 2.5 m off
+00:47:46.798 cmd /difficulty easy -> {"ok":true}
+00:47:46.832 cmd /kill @e[type=!player] -> {"ok":true}
+00:47:46.865 cmd /summon zombie 20.5 -60 3.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:47:46.898 cmd /summon zombie 23.2 -60 3.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:47:46.931 cmd /tp @s 20.5 -60 0.5 -> {"ok":true}
+00:47:46.965 cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:47:47.014 ult 100 -> {"ok":true}
+00:47:48.463 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 99.0f
+00:47:48.488 key ultimate down -> {"key":"key.keyboard.q"}
+00:47:48.620 key ultimate up -> {"key":"key.keyboard.q"}
+00:47:49.461 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 96.6f
+00:47:49.489 ents PulseBomb -> {"ents":"538 20.35 -59.26 3.20 v 0.00 0.00 0.00 t28 | "}
+00:47:51.134 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 66.6f
+00:47:51.565 hp @e[tag=t2,limit=1] -> Zombie has the following entity data: 73.16f
+00:47:51.592 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 2.24, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 14.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:47:51.625 heard -> {"heard":"tracer.voice.respawn -> tracer/voice/respawn/6 (SimpleSoundInstance, in the head) | tracer.pulse_bomb.throw -> tracer/pulse_bomb/throw/4 (SimpleSoundInstance, in the head) | tracer.ult.friendly -> tracer/ult/friendly/5 (SimpleSoundInstance, in the head) | tracer.pulse_bomb.stick -> tracer/pulse_bomb/stick/1 (SimpleSoundInstance, in the head) | tracer.voice.pulse_bomb_stick -> tracer/voice/pulse_bomb_stick/3 (SimpleSoundInstance, in the head) | tracer.pulse_bomb.fuse -> tracer/pulse_bomb/fuse/4 (SimpleSoundInstance, at 20.3 -59.3 3.1) | tracer.voice.pain -> tracer/voice/pain/2 (SimpleSoundInstance, at 20.5 -60.0 0.5) | tracer.pulse_bomb.explode -> tracer/pulse_bomb/explode/7 (SimpleSoundInstance, at 20.3 -59.0 3.1)"}
+
+=== T7b 2026-11-12 00:48:09
+00:48:09.360 MARK T7b (fix: the release speed a tick later) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down fast, landing a few metres on
+00:48:09.369 cmd /kill @e[type=!player] -> {"ok":true}
+00:48:09.405 cmd /effect give @s minecraft:instant_health 1 3 -> {"ok":true}
+00:48:09.436 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:48:22.456 key forward down -> {"key":"key.keyboard.w"}
+00:48:22.689 key jump down -> {"key":"key.keyboard.space"}
+00:48:22.822 key jump up -> {"key":"key.keyboard.space"}
+00:48:23.740 key forward up -> {"key":"key.keyboard.w"}
+00:48:26.261 key ability_2 down -> {"key":"key.keyboard.e"}
+00:48:26.328 key ability_2 up -> {"key":"key.keyboard.e"}
+00:48:26.836 state -> {"screen": "", "x": 20.601, "y": -59.236, "z": 5.088, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 190.75, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.022, "vy": 0.0, "vz": -0.035, "anim": "idle"}
+00:48:27.263 state -> {"screen": "", "x": 20.625, "y": -60.0, "z": 5.351, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 192.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.9, "vx": 0.025, "vy": 0.0, "vz": -0.028, "anim": "fall"}
+00:48:27.330 state -> {"screen": "", "x": 20.625, "y": -60.0, "z": 5.351, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 193.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.025, "vy": 0.0, "vz": -0.029, "anim": "fall"}
+00:48:27.398 state -> {"screen": "", "x": 20.625, "y": -60.0, "z": 5.351, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 193.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.75, "vx": 0.026, "vy": 0.0, "vz": -0.03, "anim": "idle"}
+00:48:27.464 state -> {"screen": "", "x": 20.625, "y": -60.0, "z": 5.351, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 193.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.03, "vy": 0.0, "vz": -0.032, "anim": "idle"}
+00:48:27.965 state -> {"screen": "", "x": 20.625, "y": -60.0, "z": 5.351, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 196.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.2, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:48:27.965 MARK T5d Pulse Bomb on a walking zombie (AI on, coming at her): expected it rides it for the 1 s, the blast where the zombie is
+00:48:28.000 cmd /summon zombie 20.5 -60 8.5 {Tags:["t3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:48:28.033 cmd /effect give @e[tag=t3] minecraft:fire_resistance 100 0 true -> {"ok":true}
+00:48:28.066 ult 100 -> {"ok":true}
+00:48:28.099 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:48:30.103 cmd /execute as @s at @s anchored eyes facing entity @e[tag=t3,limit=1] eyes run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:48:30.137 key ultimate down -> {"key":"key.keyboard.q"}
+00:48:30.238 key ultimate up -> {"key":"key.keyboard.q"}
+00:48:30.572 ents PulseBomb -> {"ents":"903 20.28 -58.79 2.24 v 0.00 0.00 0.00 t5 | "}
+00:48:31.017 hp @e[tag=t3,limit=1] Pos -> Zombie has the following entity data: [20.47295647939344d, -60.0d, 5.827053518239917d]
+00:48:31.342 ents PulseBomb -> {"ents":"903 20.26 -59.81 1.98 v 0.00 0.00 0.00 t37 | "}
+00:48:31.781 hp @e[tag=t3,limit=1] Pos -> Kiriko has made the advancement [Monster Hunter]
+00:48:32.093 ents PulseBomb -> {"ents":""}
+00:48:32.537 hp @e[tag=t3,limit=1] Pos -> Zombie has the following entity data: [20.442011747621095d, -60.0d, 4.739176024802884d]
+00:48:32.561 screenshot t5d_ride.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t5d_ride.png"}
+00:48:33.589 hp @e[tag=t3,limit=1] -> No entity was found
+00:48:33.616 state -> {"screen": "DeathScreen", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.679, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 142.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 7.75, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+00:48:33.649 cmd /kill @e[type=!player] -> {"ok":true}
+
+=== T10 2026-11-12 00:57:49
+00:57:49.620 MARK T7c (velocity from her own steps) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down fast
+00:57:49.654 cmd /kill @e[type=!player] -> {"ok":true}
+00:57:49.685 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:58:02.709 key forward down -> {"key":"key.keyboard.w"}
+00:58:02.943 key jump down -> {"key":"key.keyboard.space"}
+00:58:03.077 key jump up -> {"key":"key.keyboard.space"}
+00:58:04.011 key forward up -> {"key":"key.keyboard.w"}
+00:58:06.519 key ability_2 down -> {"key":"key.keyboard.e"}
+00:58:06.587 key ability_2 up -> {"key":"key.keyboard.e"}
+00:58:07.103 state -> {"screen": "", "x": 20.5, "y": -59.598, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 281.0, "shield": 0.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:07.527 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 283.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.95, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:07.593 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 283.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.85, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:07.661 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 283.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:08.195 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 286.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.25, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:08.195 MARK T10 perks: level 3 by the dev command, then LAlt (perk menu) + the right button twice: Kinetic Reload (minor right), Quantum Entanglement (major right)
+00:58:08.228 cmd /overcraft perks @s 3 -> {"ok":true}
+00:58:08.762 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 5.246, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 289.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:08.795 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+00:58:09.097 key primary_fire down -> {"key":"key.mouse.right"}
+00:58:09.264 key primary_fire up -> {"key":"key.mouse.right"}
+00:58:09.766 key primary_fire down -> {"key":"key.mouse.right"}
+00:58:09.934 key primary_fire up -> {"key":"key.mouse.right"}
+00:58:10.235 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+00:58:10.742 screenshot t10_perks.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t10_perks.png"}
+00:58:10.742 MARK T10a Kinetic Reload: 20 rounds spent, a quick melee on a zombie 1.5 m off: expected 20 -> 32
+00:58:10.770 cmd /difficulty easy -> {"ok":true}
+00:58:10.971 cmd /summon zombie 20.5 -60 2.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:58:10.985 cmd /tp @s 20.5 -60 0.5 -> {"ok":true}
+00:58:11.018 cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 30 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:58:11.551 key secondary_fire down -> {"key":"key.mouse.left"}
+00:58:12.084 key secondary_fire up -> {"key":"key.mouse.left"}
+00:58:12.486 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 537.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 20, "primaryReload": -1.0, "meter": 0.2, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 7.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:12.520 cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:58:12.953 key quick_melee down -> {"key":"key.keyboard.v"}
+00:58:13.121 key quick_melee up -> {"key":"key.keyboard.v"}
+00:58:13.555 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 583.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 32, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 5.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee_3"}
+00:58:13.588 heard -> {"heard":""}
+00:58:13.588 MARK T10b Quantum Entanglement: Recall gives 50 overhealth (absorption 4) and 60 rounds; after 6 s the overhealth goes at 25 a second and the rounds back toward 40
+00:58:13.623 cmd /kill @e[type=!player] -> {"ok":true}
+00:58:13.657 cmd /difficulty peaceful -> {"ok":true}
+00:58:26.685 key ability_2 down -> {"key":"key.keyboard.e"}
+00:58:26.752 key ability_2 up -> {"key":"key.keyboard.e"}
+00:58:27.957 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 655.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 60, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.6, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:28.398 hp @s AbsorptionAmount -> Kiriko has the following entity data: 4.0f
+00:58:34.316 hp @s AbsorptionAmount -> Kiriko has the following entity data: 3.2000008f
+00:58:34.342 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 687.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 45, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 5.25, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:36.253 hp @s AbsorptionAmount -> Kiriko has the following entity data: 0.0f
+00:58:36.279 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 696.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 3.3, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:58:38.191 hp @s AbsorptionAmount -> Kiriko has the following entity data: 0.0f
+00:58:38.218 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 706.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 1.35, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T11 2026-11-12 00:59:13
+00:59:13.128 MARK T11 /overcraft reset, perks 3, LAlt + the left button twice: Temporal Regen (minor left), Blink Packs (major left)
+00:59:13.137 cmd /overcraft reset -> {"ok":true}
+00:59:14.139 cmd /overcraft perks @s 3 -> {"ok":true}
+00:59:14.641 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+00:59:14.941 key secondary_fire down -> {"key":"key.mouse.left"}
+00:59:15.109 key secondary_fire up -> {"key":"key.mouse.left"}
+00:59:15.609 key secondary_fire down -> {"key":"key.mouse.left"}
+00:59:15.777 key secondary_fire up -> {"key":"key.mouse.left"}
+00:59:16.078 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+00:59:16.578 MARK T11a Temporal Regen: 4 MC (50 OW) by /damage; expected the regeneration from 3 s (18.75 OW/s = 1.5 MC/s), not 6
+00:59:16.579 cmd /damage @s 4 minecraft:generic -> {"ok":true}
+00:59:17.594 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 903.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:18.620 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 12.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 908.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:19.422 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 12.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 912.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:19.924 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 13.525, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 915.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:20.458 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 917.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:20.458 MARK T11b Blink Packs and Flanker: 2 Blinks spent, then a potion of Healing (instant_health effect, as a splash or a drink applies it); expected +1 charge and +50 (4 MC) besides the potion's own 4 MC, after 4 MC of /damage
+00:59:20.492 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:59:20.526 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:59:20.658 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:59:20.960 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:59:21.093 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:59:21.127 cmd /damage @s 9 minecraft:generic -> {"ok":true}
+00:59:21.462 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 15.5, "yaw": 0.0, "health": 5.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 922.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:21.495 cmd /effect give @s minecraft:instant_health 1 0 -> {"ok":true}
+00:59:21.829 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 15.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 924.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:21.862 heard -> {"heard":"tracer.perk.quantum -> tracer/perk/quantum/0 (SimpleSoundInstance, in the head) | tracer.recall.start -> tracer/recall/start/0 (SimpleSoundInstance, in the head) | tracer.recall.rewind -> tracer/recall/rewind/0 (SimpleSoundInstance, in the head) | tracer.recall.end -> tracer/recall/end/0 (SimpleSoundInstance, in the head) | tracer.perk.quantum -> tracer/perk/quantum/0 (SimpleSoundInstance, in the head) | tracer.voice.recall -> tracer/voice/recall/0 (SimpleSoundInstance, in the head) | tracer.voice.pain -> tracer/voice/pain/7 (SimpleSoundInstance, at 20.5 -60.0 0.5) | tracer.blink_1 -> tracer/blink_1/2 (SimpleSoundInstance, in the head) | tracer.blink_2 -> tracer/blink_2/5 (SimpleSoundInstance, in the head) | tracer.voice.pain -> tracer/voice/pain/4 (SimpleSoundInstance, at 20.5 -60.0 15.5) | tracer.blink_recharge_2 -> tracer/blink_recharge_2/0 (SimpleSoundInstance, in the head)"}
+
+=== T12 2026-11-12 00:59:34
+00:59:34.655 MARK T12 hero switch mid-Recall: E, then H 0.2 s in, Pharah, READY; then H, Tracer, READY. Expected: the Recall over (visible, not held), Pharah normal; Tracer back with full kit
+00:59:34.667 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+00:59:47.694 key ability_2 down -> {"key":"key.keyboard.e"}
+00:59:47.760 key ability_2 up -> {"key":"key.keyboard.e"}
+00:59:47.994 key hero_select down -> {"key":"key.keyboard.h"}
+00:59:48.061 key hero_select up -> {"key":"key.keyboard.h"}
+00:59:49.063 screen -> {"screen":""}
+00:59:49.097 screenclick 160 216 1 -> {"screen":""}
+00:59:50.099 screenclick 240 244 1 -> {"screen":""}
+00:59:51.609 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1073.499, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 9.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:51.635 key forward down -> {"key":"key.keyboard.w"}
+00:59:52.169 key forward up -> {"key":"key.keyboard.w"}
+00:59:52.204 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 3.756, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1076.499, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 8.4, "vx": 0.0, "vy": 0.0, "vz": 0.3, "anim": "run"}
+00:59:52.237 screenshot t12_pharah.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t12_pharah.png"}
+00:59:52.270 key hero_select down -> {"key":"key.keyboard.h"}
+00:59:52.450 key hero_select up -> {"key":"key.keyboard.h"}
+00:59:53.451 screenclick 180 216 1 -> {"screen":""}
+00:59:54.454 screenclick 240 244 1 -> {"screen":""}
+00:59:55.957 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 3.944, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1095.249, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 4.65, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:59:55.990 perspective back -> {"ok":true}
+00:59:56.502 screenshot t12_back3p.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t12_back3p.png"}
+00:59:56.534 perspective first -> {"ok":true}
+
+=== T12b 2026-11-12 01:00:14
+01:00:14.898 MARK T12b (near spawn: away from it H says too far, as for every hero) Pharah picked from the open select, then back to Tracer, then H 0.2 s into a Recall and back to Tracer
+01:00:14.913 screenclick 160 216 1 -> {"screen":"HeroSelectScreen"}
+01:00:15.945 screenclick 240 244 1 -> {"screen":""}
+01:00:17.469 state -> {"screen": "", "x": 4.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:00:17.496 key hero_select down -> {"key":"key.keyboard.h"}
+01:00:17.629 key hero_select up -> {"key":"key.keyboard.h"}
+01:00:18.630 screenclick 180 216 1 -> {"screen":"HeroSelectScreen"}
+01:00:19.634 screenclick 240 244 1 -> {"screen":""}
+01:00:21.138 state -> {"screen": "", "x": 4.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:00:24.650 key forward down -> {"key":"key.keyboard.w"}
+01:00:25.252 key forward up -> {"key":"key.keyboard.w"}
+01:00:26.285 key ability_2 down -> {"key":"key.keyboard.e"}
+01:00:26.353 key ability_2 up -> {"key":"key.keyboard.e"}
+01:00:26.587 key hero_select down -> {"key":"key.keyboard.h"}
+01:00:26.721 key hero_select up -> {"key":"key.keyboard.h"}
+01:00:27.721 screen -> {"screen":"dev.overcraft.client.HeroSelectScreen"}
+01:00:27.756 screenclick 180 216 1 -> {"screen":""}
+01:00:28.761 screenclick 240 244 1 -> {"screen":""}
+01:00:30.265 state -> {"screen": "", "x": 4.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 53.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 8.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:00:30.704 hp @s Invisible -> Found no elements matching Invisible
+01:00:30.732 key forward down -> {"key":"key.keyboard.w"}
+01:00:31.233 key forward up -> {"key":"key.keyboard.w"}
+01:00:31.267 state -> {"screen": "", "x": 4.5, "y": -60.0, "z": -0.375, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 58.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 7.9, "vx": 0.0, "vy": 0.0, "vz": 0.113, "anim": "run"}
+
+=== T13 2026-11-12 01:01:06
+01:01:06.834 MARK T13 night fight setup: normal, midnight, monsters spawning; her tamed wolf beside her; a wave of 6 zombies, 3 skeletons, a spider and a creeper 12-18 m around
+01:01:06.908 cmd /tp @s 4.5 -60 -3.5 0 0 -> {"ok":true}
+01:01:07.008 cmd /kill @e[type=!player] -> {"ok":true}
+01:01:07.109 cmd /difficulty normal -> {"ok":true}
+01:01:07.208 cmd /gamerule spawn_monsters true -> {"ok":true}
+01:01:07.309 cmd /time set midnight -> {"ok":true}
+01:01:07.409 cmd /summon wolf 5.5 -60 -3.5 {Tags:["w"]} -> {"ok":true}
+01:01:07.510 cmd /execute as @e[tag=w] run data modify entity @s Owner set from entity @p UUID -> {"ok":true}
+01:01:07.609 cmd /summon zombie 4.5 -60 12.5 -> {"ok":true}
+01:01:07.709 cmd /summon zombie 10.5 -60 10.5 -> {"ok":true}
+01:01:07.809 cmd /summon zombie -4.5 -60 12.5 -> {"ok":true}
+01:01:07.909 cmd /summon zombie 16.5 -60 -3.5 -> {"ok":true}
+01:01:08.010 cmd /summon zombie -10.5 -60 -6.5 -> {"ok":true}
+01:01:08.110 cmd /summon zombie 4.5 -60 -20.5 -> {"ok":true}
+01:01:08.210 cmd /summon skeleton 14.5 -60 8.5 -> {"ok":true}
+01:01:08.310 cmd /summon skeleton -12.5 -60 4.5 -> {"ok":true}
+01:01:08.410 cmd /summon skeleton 2.5 -60 -18.5 -> {"ok":true}
+01:01:08.510 cmd /summon spider -8.5 -60 14.5 -> {"ok":true}
+01:01:08.609 cmd /summon creeper 12.5 -60 -14.5 -> {"ok":true}
+01:01:10.119 hp @e[tag=w,limit=1] -> Wolf has the following entity data: 8.0f
+
+=== T13-fight 2026-11-12 01:01:10
+01:01:11.613 t 1 hp 10.00 ammo 40 blinks 3 ult 254 recallCd 0.0 | Zombie 9.1, Zombie 11.0, Zombie 11.5, Creeper 12.6
+01:01:15.115 t 5 hp 10.75 ammo 0 blinks 3 ult 269 recallCd 0.0 | Zombie 2.3, Zombie 2.5, Zombie 3.8, Zombie 6.0
+01:01:18.719 RECALL at health 5.12
+01:01:18.719 t 8 hp 5.12 ammo 4 blinks 2 ult 363 recallCd 0.0 | Zombie 2.3, Creeper 2.7, Zombie 5.2, Zombie 5.4
+01:01:20.421 RECALL at health 2.12
+01:01:21.923 t 12 hp 5.12 ammo 0 blinks 2 ult 390 recallCd 10.8 | Zombie 3.7, Zombie 4.9, Zombie 5.1, Creeper 5.6
+01:01:22.245 DEATH 1 at 19.3 -1.0
+01:01:25.325 respawned: {"hero": "tracer", "heroMode": false}
+01:01:26.627 t 16 hp 14.00 ammo 40 blinks 3 ult 404 recallCd 0.0 | Zombie 12.4, Skeleton 14.1, Skeleton 16.6, Spider 21.2
+01:01:29.634 t 19 hp 14.00 ammo 0 blinks 3 ult 420 recallCd 0.0 | Skeleton 11.6, Skeleton 12.5, Zombie 14.9, Skeleton 15.3
+01:01:32.636 t 22 hp 10.00 ammo 24 blinks 3 ult 449 recallCd 0.0 | Skeleton 8.9, Skeleton 9.7, Zombie 10.9, Skeleton 13.8
+01:01:34.338 RECALL at health 6.00
+01:01:36.541 RECALL at health 3.00
+01:01:36.541 t 26 hp 3.00 ammo 0 blinks 3 ult 582 recallCd 0.0 | Zombie 2.5, Skeleton 6.3, Skeleton 6.3, Zombie 7.1
+01:01:38.542 t 28 hp 6.08 ammo 0 blinks 2 ult 619 recallCd 10.3 | Zombie 2.8, Zombie 11.3, Zombie 13.3, Skeleton 13.6
+01:01:42.043 t 32 hp 1.15 ammo 6 blinks 2 ult 745 recallCd 6.8 | Zombie 2.3, Skeleton 6.6, Skeleton 12.7, Zombie 12.9
+01:01:42.344 DEATH 2 at 11.1 -19.6
+01:01:45.450 respawned: {"hero": "tracer", "heroMode": false}
+01:01:46.850 t 37 hp 14.00 ammo 40 blinks 3 ult 760 recallCd 0.0 | Zombie 12.0, Skeleton 12.9, Zombie 13.0, Skeleton 15.7
+01:01:49.854 t 40 hp 10.00 ammo 0 blinks 3 ult 792 recallCd 0.0 | Zombie 8.6, Skeleton 12.9, Spider 16.9, Skeleton 18.0
+01:01:53.056 RECALL at health 6.08
+01:01:53.056 t 43 hp 6.08 ammo 24 blinks 3 ult 850 recallCd 0.0 | Spider 3.7, Zombie 12.5, Skeleton 14.1, Skeleton 18.4
+01:01:55.157 RECALL at health 4.08
+01:01:55.157 t 45 hp 4.08 ammo 0 blinks 3 ult 858 recallCd 0.0 | Spider 0.8, Skeleton 10.2, Zombie 15.0, Spider 15.7
+01:01:57.158 t 47 hp 4.08 ammo 0 blinks 2 ult 876 recallCd 10.4 | Skeleton 2.3, Zombie 8.0, Spider 8.6, Spider 9.0
+01:02:00.158 t 50 hp 0.75 ammo 10 blinks 2 ult 928 recallCd 6.9 | Spider 7.2, Zombie 8.0, Skeleton 8.4, Zombie 8.5
+01:02:02.158 t 52 hp 0.75 ammo 38 blinks 2 ult 941 recallCd 5.4 | Spider 2.7, Spider 5.4, Zombie 6.2, Skeleton 11.3
+01:02:02.459 DEATH 3 at 1.2 -16.8
+01:02:05.562 respawned: {"hero": "tracer", "heroMode": false}
+01:02:06.863 t 57 hp 14.00 ammo 40 blinks 3 ult 949 recallCd 0.0 | Zombie 4.5, Skeleton 11.4, Zombie 13.9, Zombie 14.0
+01:02:10.266 t 60 hp 7.00 ammo 0 blinks 3 ult 976 recallCd 0.0 | Spider 2.0, Spider 2.5, Zombie 2.8, Zombie 6.7
+01:02:11.966 RECALL at health 2.00
+01:02:12.267 DEATH 4 at -6.2 10.5
+01:02:15.369 respawned: {"hero": "tracer", "heroMode": false}
+01:02:16.768 t 67 hp 10.00 ammo 40 blinks 3 ult 998 recallCd 0.0 | Zombie 3.3, Zombie 3.5, Skeleton 7.0, Zombie 8.2
+01:02:18.772 t 69 hp 10.00 ammo 28 blinks 3 ult 1055 recallCd 0.0 | Zombie 1.9, Zombie 2.4, Spider 5.2, Zombie 6.4
+01:02:20.474 RECALL at health 3.00
+01:02:20.774 END: 4 deaths, 10 blinks, 8 recalls, 0 bombs
+
+=== T14 2026-11-12 01:06:17
+01:06:17.338 MARK T7d (fix: not "on the ground" while held) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down
+01:06:17.363 cmd /kill @e[type=!player] -> {"ok":true}
+01:06:17.414 cmd /fill 15 -60 -5 30 -50 40 air -> {"ok":true}
+01:06:17.426 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+01:06:30.446 key forward down -> {"key":"key.keyboard.w"}
+01:06:30.648 key jump down -> {"key":"key.keyboard.space"}
+01:06:30.780 key jump up -> {"key":"key.keyboard.space"}
+01:06:31.683 key forward up -> {"key":"key.keyboard.w"}
+01:06:34.189 key ability_2 down -> {"key":"key.keyboard.e"}
+01:06:34.257 key ability_2 up -> {"key":"key.keyboard.e"}
+01:06:34.799 state -> {"screen": "", "x": 20.5, "y": -59.236, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+01:06:35.225 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+01:06:35.292 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+01:06:35.359 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+01:06:35.894 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.2, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:06:35.894 MARK T14a Recall presses with a 0.05 s tap, five times 13 s apart at low health (4 MC by /damage each time): each should start (cooldown 12 after)
+01:06:35.926 cmd /damage @s 6 minecraft:generic -> {"ok":true}
+01:06:44.950 key ability_2 down -> {"key":"key.keyboard.e"}
+01:06:45.016 key ability_2 up -> {"key":"key.keyboard.e"}
+01:06:46.220 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:06:46.254 cmd /damage @s 6 minecraft:generic -> {"ok":true}
+01:06:58.285 key ability_2 down -> {"key":"key.keyboard.e"}
+01:06:58.352 key ability_2 up -> {"key":"key.keyboard.e"}
+01:06:59.554 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 4.648, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.65, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:06:59.554 MARK T14b water: a 3-deep pool; Blink in it (expected 7.5 m, never into a block), Recall out of it
+01:06:59.587 cmd /fill 15 -63 20 30 -61 35 water -> {"ok":true}
+01:06:59.622 cmd /tp @s 22.5 -61 22.5 0 0 -> {"ok":true}
+01:07:12.645 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:07:12.778 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:07:13.080 state -> {"screen": "", "x": 22.5, "y": -63.0, "z": 30.0, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.005, "vz": 0.0, "anim": "idle"}
+01:07:15.084 key ability_2 down -> {"key":"key.keyboard.e"}
+01:07:15.152 key ability_2 up -> {"key":"key.keyboard.e"}
+01:07:16.353 state -> {"screen": "", "x": 22.5, "y": -63.0, "z": 22.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.65, "vx": 0.0, "vy": -0.005, "vz": 0.0, "anim": "idle"}
+01:07:16.353 MARK T14c a ladder: on it, Blink and Recall (expected no stuck state; blink off it level)
+01:07:16.387 cmd /fill 15 -63 20 30 -61 35 grass_block -> {"ok":true}
+01:07:16.420 cmd /fill 20 -60 30 22 -54 30 stone -> {"ok":true}
+01:07:16.455 cmd /setblock 21 -60 29 ladder[facing=north] -> {"ok":true}
+01:07:16.487 cmd /setblock 21 -59 29 ladder[facing=north] -> {"ok":true}
+01:07:16.520 cmd /setblock 21 -58 29 ladder[facing=north] -> {"ok":true}
+01:07:16.553 cmd /setblock 21 -57 29 ladder[facing=north] -> {"ok":true}
+01:07:16.587 cmd /tp @s 21.5 -60 28.6 0 0 -> {"ok":true}
+01:07:16.620 key forward down -> {"key":"key.keyboard.w"}
+01:07:17.623 state -> {"screen": "", "x": 21.5, "y": -58.236, "z": 29.512, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.4, "vx": 0.0, "vy": 0.118, "vz": -0.0, "anim": "jump"}
+01:07:17.656 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:07:17.790 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:07:17.823 key forward up -> {"key":"key.keyboard.w"}
+01:07:18.224 state -> {"screen": "", "x": 21.5, "y": -58.491, "z": 29.512, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 9.8, "vx": 0.0, "vy": -0.225, "vz": 0.0, "anim": "fall"}
+01:07:18.224 MARK T14d a boat: seated, Shift and E do nothing (no Blink or Recall from a seat)
+01:07:18.258 cmd /summon oak_boat 18.5 -60 10.5 -> {"ok":true}
+01:07:18.292 cmd /tp @s 18.5 -60 10.5 -> {"ok":true}
+01:07:18.793 cmd /ride @s mount @e[type=oak_boat,limit=1,sort=nearest] -> {"ok":true}
+01:07:19.295 state -> {"screen": "", "x": 18.5, "y": -60.413, "z": 10.5, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 8.7, "vx": 0.0, "vy": -0.044, "vz": 0.0, "anim": "crouch_walk"}
+01:07:19.328 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:07:19.462 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:07:19.796 state -> {"screen": "", "x": 18.5, "y": -60.413, "z": 10.5, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 8.2, "vx": 0.0, "vy": -0.044, "vz": 0.0, "anim": "crouch_walk"}
+01:07:19.829 cmd /ride @s dismount -> {"ok":true}
+01:07:19.862 cmd /kill @e[type=oak_boat] -> {"ok":true}
+
+=== T15 2026-11-12 01:08:24
+01:08:24.827 MARK T15 looks: the third person in front, idle with both pistols; emotes Bomb Spin, Mic Drop, Spin (Spin keeps a pistol out); a Blink in third person
+01:08:24.832 cmd /tp @s 20.5 -60 0.5 180 0 -> {"ok":true}
+01:08:25.844 perspective front -> {"ok":true}
+01:08:26.368 screenshot t15_front.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_front.png"}
+01:08:26.393 emote bomb_spin -> {"ok":true}
+01:08:27.920 screenshot t15_bomb_spin.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_bomb_spin.png"}
+01:08:29.942 emote mic_drop -> {"ok":true}
+01:08:31.143 screenshot t15_mic_drop.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_mic_drop.png"}
+01:08:34.167 emote spin -> {"ok":true}
+01:08:35.169 screenshot t15_spin.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_spin.png"}
+01:08:38.188 key jump down -> {"key":"key.keyboard.space"}
+01:08:38.322 key jump up -> {"key":"key.keyboard.space"}
+01:08:40.326 perspective back -> {"ok":true}
+01:08:40.359 key secondary_fire down -> {"key":"key.mouse.left"}
+01:08:40.693 screenshot t15_fire_3p.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_fire_3p.png"}
+01:08:40.727 key secondary_fire up -> {"key":"key.mouse.left"}
+01:08:40.911 perspective first -> {"ok":true}
+01:08:40.944 key secondary_fire down -> {"key":"key.mouse.left"}
+01:08:41.246 screenshot t15_fire_1p.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\t15_fire_1p.png"}
+01:08:41.278 key secondary_fire up -> {"key":"key.mouse.left"}
+01:08:41.278 MARK T15b a 10 m drop after a Blink off a pillar: a plain fall from her 3 m (expected damage), and Blink doesn't reset it beyond its own height
+01:08:41.456 cmd /fill 20 -60 40 20 -51 40 stone -> {"ok":true}
+01:08:41.490 cmd /tp @s 20.5 -50 40.5 0 0 -> {"ok":true}
+01:08:42.500 state -> {"screen": "", "x": 20.5, "y": -50.0, "z": 40.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:08:42.526 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:08:42.659 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:08:44.662 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 48.0, "yaw": 0.0, "health": 8.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T7e 2026-11-12 01:11:49
+01:11:49.558 MARK T7e (fix: the speed sent the tick after the end, before recall() runs) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down
+01:11:49.569 cmd /kill @e[type=!player] -> {"ok":true}
+01:11:49.612 cmd /fill 15 -60 -5 30 -50 40 air -> {"ok":true}
+01:11:49.632 cmd /tp @s 20.5 -60 0.5 0 0 -> {"ok":true}
+01:12:02.645 key forward down -> {"key":"key.keyboard.w"}
+01:12:02.878 key jump down -> {"key":"key.keyboard.space"}
+01:12:03.011 key jump up -> {"key":"key.keyboard.space"}
+01:12:03.912 key forward up -> {"key":"key.keyboard.w"}
+01:12:06.421 key ability_2 down -> {"key":"key.keyboard.e"}
+01:12:06.492 key ability_2 up -> {"key":"key.keyboard.e"}
+01:12:07.031 state -> {"screen": "", "x": 20.5, "y": -59.395, "z": 5.247, "yaw": 0.0, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+01:12:07.465 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.152, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.85, "vx": 0.0, "vy": 0.0, "vz": 0.239, "anim": "run"}
+01:12:07.532 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.275, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.067, "anim": "run"}
+01:12:07.599 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.279, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:12:08.133 state -> {"screen": "", "x": 20.5, "y": -60.0, "z": 6.279, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.2, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:12:08.133 MARK T14a Recall presses with a 0.05 s tap, five times 13 s apart at low health (4 MC by /damage each time): each should start (cooldown 12 after)
+
+=== T16 2026-11-12 01:12:15
+01:12:15.989 MARK T16 second night fight (the fixed build; ult full at the start) setup: normal, midnight, monsters spawning; her tamed wolf beside her; a wave of 6 zombies, 3 skeletons, a spider and a creeper 12-18 m around
+01:12:16.021 cmd /tp @s 4.5 -60 -3.5 0 0 -> {"ok":true}
+01:12:16.056 cmd /kill @e[type=!player] -> {"ok":true}
+01:12:16.088 cmd /difficulty normal -> {"ok":true}
+01:12:16.122 cmd /gamerule spawn_monsters true -> {"ok":true}
+01:12:16.156 cmd /time set midnight -> {"ok":true}
+01:12:16.220 cmd /summon wolf 5.5 -60 -3.5 {Tags:["w"]} -> {"ok":true}
+01:12:16.229 cmd /execute as @e[tag=w] run data modify entity @s Owner set from entity @p UUID -> {"ok":true}
+01:12:16.265 cmd /summon zombie 4.5 -60 12.5 -> {"ok":true}
+01:12:16.329 cmd /summon zombie 10.5 -60 10.5 -> {"ok":true}
+01:12:16.362 cmd /summon zombie -4.5 -60 12.5 -> {"ok":true}
+01:12:16.394 cmd /summon zombie 16.5 -60 -3.5 -> {"ok":true}
+01:12:16.428 cmd /summon zombie -10.5 -60 -6.5 -> {"ok":true}
+01:12:16.462 cmd /summon zombie 4.5 -60 -20.5 -> {"ok":true}
+01:12:16.495 cmd /summon skeleton 14.5 -60 8.5 -> {"ok":true}
+01:12:16.528 cmd /summon skeleton -12.5 -60 4.5 -> {"ok":true}
+01:12:16.561 cmd /summon skeleton 2.5 -60 -18.5 -> {"ok":true}
+01:12:16.594 cmd /summon spider -8.5 -60 14.5 -> {"ok":true}
+01:12:16.628 cmd /summon creeper 12.5 -60 -14.5 -> {"ok":true}
+01:12:17.663 ult 100 -> {"ok":true}
+
+=== T16-fight 2026-11-12 01:12:17
+01:12:18.230 t 0 hp 14.00 ammo 40 blinks 3 ult 1375 recallCd 1.5 | Zombie 11.7, Skeleton 13.2, Creeper 13.4, Zombie 14.8
+01:12:20.386 RECALL at health 6.00
+01:12:20.386 t 3 hp 6.00 ammo 0 blinks 3 ult 1375 recallCd 0.0 | Creeper 7.3, Zombie 7.8, Skeleton 9.4, Zombie 9.6
+01:12:21.156 RECALL at health 6.00
+01:12:22.025 PULSE BOMB at Creeper 3.8 m
+01:12:22.895 t 5 hp 14.00 ammo 4 blinks 3 ult 1 recallCd 10.9 | Zombie 2.0, Creeper 2.7, Zombie 4.9, Zombie 5.0
+01:12:24.921 t 7 hp 11.00 ammo 4 blinks 2 ult 12 recallCd 8.7 | Zombie 4.8, Skeleton 5.3, Zombie 9.1, Zombie 9.2
+01:12:27.125 t 9 hp 7.30 ammo 4 blinks 2 ult 94 recallCd 6.5 | Zombie 5.1, Skeleton 5.2, Zombie 7.9, Zombie 8.7
+01:12:29.365 t 12 hp 4.30 ammo 2 blinks 1 ult 230 recallCd 4.2 | Skeleton 3.6, Spider 6.4, Zombie 7.2, Zombie 7.4
+01:12:31.606 t 14 hp 2.30 ammo 0 blinks 1 ult 295 recallCd 2.0 | Spider 9.2, Zombie 11.3, Zombie 12.1, Skeleton 12.7
+01:12:31.874 DEATH 1 at 16.6 -9.5
+01:12:34.910 respawned: {"hero": "tracer", "heroMode": false}
+01:12:35.351 t 18 hp 14.00 ammo 40 blinks 3 ult 305 recallCd 0.0 | Zombie 17.1, Zombie 17.2, Zombie 18.9, Zombie 19.0
+01:12:37.370 t 20 hp 14.00 ammo 0 blinks 3 ult 474 recallCd 0.0 | Zombie 12.6, Zombie 12.6, Zombie 14.3, Zombie 14.3
+01:12:39.375 t 22 hp 14.00 ammo 0 blinks 3 ult 685 recallCd 0.0 | Zombie 8.4, Zombie 9.7, Zombie 10.1, Zombie 11.1
+01:12:41.381 t 24 hp 9.00 ammo 0 blinks 3 ult 812 recallCd 0.0 | Zombie 7.0, Zombie 7.4, Zombie 8.3, Zombie 11.1
+01:12:43.387 t 26 hp 9.00 ammo 2 blinks 3 ult 859 recallCd 0.0 | Zombie 5.4, Zombie 6.4, Zombie 9.4, Zombie 13.7
+01:12:45.860 t 28 hp 11.47 ammo 0 blinks 2 ult 994 recallCd 0.0 | Zombie 2.6, Zombie 3.2, Zombie 5.0, Zombie 5.5
+01:12:48.166 RECALL at health 6.07
+01:12:48.166 t 30 hp 6.07 ammo 0 blinks 0 ult 1028 recallCd 0.0 | Zombie 2.2, Zombie 2.2, Zombie 2.4, Zombie 3.8
+01:12:49.167 RECALL at health 6.07
+01:12:50.737 t 33 hp 6.07 ammo 0 blinks 0 ult 1049 recallCd 10.7 | Zombie 1.5, Zombie 1.8, Zombie 2.2, Zombie 2.6
+01:12:52.975 t 35 hp 3.07 ammo 0 blinks 0 ult 1200 recallCd 8.4 | Zombie 2.8, Zombie 3.3, Zombie 4.0, Zombie 4.0
+01:12:54.711 PULSE BOMB at Spider 2.2 m
+01:12:54.979 DEATH 2 at 7.4 14.3
+01:12:58.016 respawned: {"hero": "tracer", "heroMode": false}
+01:12:58.468 t 41 hp 14.00 ammo 40 blinks 3 ult 1375 recallCd 0.0 | Zombie 13.7, Witch 16.4, Skeleton 19.1, Skeleton 21.0
+01:13:00.471 t 43 hp 14.00 ammo 0 blinks 3 ult 1375 recallCd 0.0 | Zombie 9.0, Witch 14.8, Skeleton 14.9, Zombie 16.7
+01:13:02.645 PULSE BOMB at Zombie 4.5 m
+01:13:02.645 t 45 hp 14.00 ammo 0 blinks 3 ult 1375 recallCd 0.0 | Zombie 4.5, Witch 8.3, Zombie 12.1, Zombie 12.4
+01:13:04.858 t 47 hp 11.00 ammo 4 blinks 2 ult 9 recallCd 0.0 | Zombie 9.0, Skeleton 9.3, Witch 12.4, Zombie 15.8
+01:13:06.863 t 49 hp 11.15 ammo 12 blinks 3 ult 59 recallCd 0.0 | Skeleton 8.2, Witch 9.7, Zombie 10.9, Zombie 11.4
+01:13:08.866 t 51 hp 9.02 ammo 20 blinks 3 ult 158 recallCd 0.0 | Zombie 3.2, Zombie 3.8, Zombie 4.5, Zombie 5.3
+01:13:09.836 RECALL at health 6.02
+01:13:10.606 RECALL at health 6.02
+01:13:11.476 t 54 hp 13.02 ammo 30 blinks 2 ult 331 recallCd 11.8 | Zombie 1.2, Zombie 1.7, Zombie 2.6, Zombie 3.2
+01:13:13.681 t 56 hp 7.02 ammo 22 blinks 1 ult 474 recallCd 9.4 | Zombie 5.7, Zombie 6.6, Zombie 7.5, Zombie 8.2
+01:13:15.919 t 58 hp 0.02 ammo 20 blinks 0 ult 664 recallCd 7.2 | Zombie 1.6, Zombie 3.4, Zombie 4.1, Zombie 5.0
+01:13:17.056 DEATH 3 at -9.8 3.4
+01:13:20.095 respawned: {"hero": "tracer", "heroMode": false}
+01:13:20.095 END: 3 deaths, 17 blinks, 6 recalls, 3 bombs
+
+=== T17 2026-11-12 01:13:46
+01:13:46.140 MARK T17 the left button held 3.5 s through an empty magazine (expected: 1 s of fire, 0.2 s lock, the 1 s reload, fire again)
+01:13:46.147 key secondary_fire down -> {"key":"key.mouse.left"}
+01:13:46.423 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 801.654, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 30, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:46.682 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 802.904, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 20, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:46.950 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 804.404, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 8, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:47.218 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 805.654, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:47.493 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 807.154, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.1, "meter": 0.4, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:47.760 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 808.404, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.35, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:48.026 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 809.654, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.6, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:48.294 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 811.154, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 40, "primaryReload": 0.9, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:48.560 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 812.404, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 32, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:48.827 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 813.654, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 22, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:49.095 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 815.154, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 10, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:49.362 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 816.404, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+01:13:49.629 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 817.654, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.0, "meter": 0.8, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:49.896 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -3.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 819.154, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.3, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+01:13:49.930 key secondary_fire up -> {"key":"key.mouse.left"}

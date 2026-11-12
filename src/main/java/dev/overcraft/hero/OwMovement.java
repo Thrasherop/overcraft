@@ -523,6 +523,9 @@ public final class OwMovement {
 		if (held.test(entity)) {
 			entity.setDeltaMovement(Vec3.ZERO);
 			entity.resetFallDistance();
+			// not "on the ground" where she's held (no move runs to say so): a Recall that puts her in mid-air otherwise left
+			// her standing there on the stale flag, the ground friction eating the speed it gives her (T7c)
+			entity.setOnGround(false);
 			return;
 		}
 		if (sigmaFly(entity, input)) {
