@@ -168,6 +168,10 @@ WEAPON_SLOTS = {
     # Pharah's Rocket Launcher 003B (model F131) hangs in slot 1B9F on 000A (research/pharah/work/ents_pharah_out.txt: hero entity
     # 0032's child 3B.003 "hp A.03C var 1B9F"; tools/reference/pharah-map.md): pharah_weapon.txt
     "pharah": {"1B9F": ("stow", "launcher", "pharah_weapon.txt")},
+    # Tracer's two Pulse Pistols, entity 0017 (model DA61) twice: slot 1B9B on 000A and slot 1B9C on 000B
+    # (research/tracer/work/ents_tracer_out.txt: hero entity children "17.003 hp A.03C var 1B9B" / "hp B.03C var 1B9C";
+    # work_kit/kit_tracer_weapon.md): tracer_weapon.txt. The 000B one's windows go under "stowLeft" (EmoteData's second-weapon keys)
+    "tracer": {"1B9B": ("stow", "pistol", "tracer_weapon.txt"), "1B9C": ("stowLeft", "pistolLeft", "tracer_weapon.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -191,7 +195,7 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 # heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
 # look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
 # entity (WEAPON_SLOTS), put away with the stow windows
-NO_PIECES = {"pharah"}
+NO_PIECES = {"pharah", "tracer"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
