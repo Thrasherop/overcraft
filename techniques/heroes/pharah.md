@@ -112,3 +112,20 @@ firing 1P and 3P, the blast, Barrage), `sheet_fight.png`, `sheet_switch_emotes.p
   stays still: an Overwatch side by side settles it); her visual effects (stand-in particles); her emote sounds (silent); the intro in
   a real Play of the Game (wired by the agent through `HeroModels`' `<hero>_intro_clips`, not played); the select screen's framing
   (Sojourn's 0.72, not tuned); a critic.
+
+## Critic 1 and fix 1 (2026-11-11)
+Findings: [critic_1](../testing/runs/pharah/critic_1.md); each reproduced on c849b15 and shown fixed with the same steps:
+[fix_1](../testing/runs/pharah/fix_1.md) (raw rows beside it).
+- **Her hover ends while she can't act** (sleep, stun, knock-down, Gravitic Flux: the synced `ASLEEP`), and comes back on waking with
+  Jump still held. The server ends its hovering flag itself (`Pharah.tick`): her client sends input only on a change, so a flag set
+  before the sleep stayed and drained the fuel.
+- **No hover where Jump is Minecraft's or the mount's:** `HeroManager.jumpIsNotAirborne` (ladder, boat, horse, lava, water, cobweb,
+  powder snow); before, only water was left out and a ladder, a seat or lava emptied the tank.
+- **A rejoin in mid-air doesn't hurt** (every hero, `HeroManager.JOIN_FALLS`): the select screen is open and leaving ended her hover.
+  Lesson for any per-player fall flag: the server's onGround read true a tick before the landing's damage check, and the fall distance
+  stays 0 while the client is still loading, so the flag waits for the fall to begin and ends when the distance is back to 0.
+- **Data checks:** her jets cut a reload (0027 / 4B92 #82 push v33 at 0003 over the reload's 0023 #60 at 0002, M), and Barrage doesn't
+  end a jet (no message from 002B reaches 0027 / 4B92; same priority 0003, M). Code kept, cited. By the same reading Concussive (0001)
+  wouldn't cut a reload, though the code does: open, for a side by side.
+- Still owed: the real mouse and keys, a real Ana / Brigitte, a second player; every cooldown resets on a rejoin (shared, the owner's
+  call).

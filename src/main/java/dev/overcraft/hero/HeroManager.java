@@ -214,6 +214,17 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !PLAIN_FALLS.contains(player.getUUID());
 	}
 
+	/**
+	 * Joined in mid-air in hero mode, every hero: the fall to the ground hurts nobody (ours, CLAUDE.md #35's rule). Leaving
+	 * ended what held them up (Pharah's hover, Mercy's flight, a jet: outOfPlay LEAVE) and the hero select screen is open on
+	 * the rejoin, so they fall with no way to act (a Pharah who left hovering at 11 m rejoined and took 87 of her 225:
+	 * critic_1 #4). Till they land, ride, swim, climb or switch to Minecraft mode (G); a fall from Minecraft mode stays
+	 * Minecraft's (not added), and so does a join on the ground (the saved onGround, read at the join: right in fix_1).
+	 * Over by the distance, as PLAIN_FALLS, once the fall has begun (true here): the server's onGround read true at y -59.06,
+	 * a tick before the landing's damage check, and the distance stays 0 while their client is still loading (fix_1).
+	 */
+	private static final java.util.Map<UUID, Boolean> JOIN_FALLS = new java.util.HashMap<>();
+
 	/** Falling when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till the fall's over. */
 	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
 
@@ -250,6 +261,9 @@ public final class HeroManager {
 	 * height (Hero.safeFall): Kiriko's plain fall from her climb's height, her Swift Step's by its soft landing.
 	 */
 	public static boolean fallIsSafe(Player player) {
+		if (JOIN_FALLS.containsKey(player.getUUID())) {
+			return true;
+		}
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
@@ -506,10 +520,15 @@ public final class HeroManager {
 		}
 		loadPerks(player, state);
 		applyKit(player, state, true);
+		if (state.hero != null && heroMode(player) && !player.onGround()) {
+			JOIN_FALLS.put(player.getUUID(), false);
+			player.resetFallDistance();
+		}
 	}
 
 	public static void onLeave(ServerPlayer player) {
 		PLAIN_FALLS.remove(player.getUUID());
+		JOIN_FALLS.remove(player.getUUID());
 		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
 			// (D.Va rejoins in a mech: its charge, Dva.mechUlt)
@@ -696,6 +715,15 @@ public final class HeroManager {
 				// over by the distance, not onGround (which read true in mid-air after G): Minecraft clears it on landing, in water, on a ladder. An ability used ends it directly: its landing, Juno's glide (a level glide clears nothing), though the next packet adds to the distance again
 				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger() || state.softLanding || state.junoGlide >= 0) {
 					PLAIN_FALLS.remove(player.getUUID());
+				}
+				// a rejoin's fall is over once Minecraft has checked its landing (the distance zeroed) or they're held
+				Boolean fell = JOIN_FALLS.get(player.getUUID());
+				if (fell != null) {
+					if (fell && player.fallDistance <= 0 || !heroMode(player) || jumpIsNotAirborne(player)) {
+						JOIN_FALLS.remove(player.getUUID());
+					} else if (player.fallDistance > 0) {
+						JOIN_FALLS.put(player.getUUID(), true);
+					}
 				}
 				tickRules(player, state);
 				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past, nor while it runs (Holds.landingEnds, stayed)

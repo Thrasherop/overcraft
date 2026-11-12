@@ -1,0 +1,980 @@
+21:32:15.960 cmd /time set day -> {"ok": true}
+21:32:15.969 cmd /kill @e[type=!player] -> {"ok": true}
+21:32:15.973 cmd /gamemode survival -> {"ok": true}
+21:32:15.981 cmd /difficulty normal -> {"ok": true}
+
+=== 21:32:15 T1.0 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:32:15.990 cmd /effect clear @s -> {"ok": true}
+21:32:16.022 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:32:17.526 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 151.0, "anim": "idle", "screen": ""}
+21:32:17.538 cmd /tp @s 2.5 -60 -7.5 -> {"ok": true}
+21:32:18.540 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 156.0, "anim": "idle", "screen": ""}
+21:32:18.549 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:32:18.853 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:32:20.256 state -> {"x": 2.5, "y": -49.08399999999995, "z": -7.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 164.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.265 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:32:20.316 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:32:20.323 state -> {"x": 2.5, "y": -48.87529999876018, "z": -7.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 165.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.332 state -> {"x": 2.5, "y": -48.87529999876018, "z": -7.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 165.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.390 state -> {"x": 2.5, "y": -48.891273997856096, "z": -7.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 165.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.450 state -> {"x": 2.5, "y": -48.98532851880066, "z": -7.5, "vy": -0.17057343384549256, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 165.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.508 state -> {"x": 2.5, "y": -49.15590195264615, "z": -7.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 165.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.567 state -> {"x": 2.5, "y": -49.40146392259404, "z": -7.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 166.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.626 state -> {"x": 2.5, "y": -50.111584388987225, "z": -7.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 166.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.684 state -> {"x": 2.5, "y": -50.57323273301413, "z": -7.5, "vy": -0.530815387477487, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 166.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.744 state -> {"x": 2.5, "y": -51.10404812049162, "z": -7.5, "vy": -0.5985990913783162, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 167.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.802 state -> {"x": 2.5, "y": -51.70264721186994, "z": -7.5, "vy": -0.6650271224940004, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 167.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.861 state -> {"x": 2.5, "y": -52.36767433436394, "z": -7.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 167.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.920 state -> {"x": 2.5, "y": -53.891725006439565, "z": -7.5, "vy": -0.8564456129335899, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 168.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:20.971 state -> {"x": 2.5, "y": -54.748170619373155, "z": -7.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 168.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.022 state -> {"x": 2.5, "y": -55.66588733790935, "z": -7.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 168.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.082 state -> {"x": 2.5, "y": -56.64364974110477, "z": -7.5, "vy": -1.0366071753067212, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 168.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.140 state -> {"x": 2.5, "y": -57.68025691641149, "z": -7.5, "vy": -1.0942750530981786, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 169.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.199 state -> {"x": 2.5, "y": -58.77453196950967, "z": -7.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 169.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.258 state -> {"x": 2.5, "y": -59.925321543943404, "z": -7.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 169.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.310 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 169.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:21.915 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 10.833333, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 173.0, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1.0: y at G -48.88 (vy -0.015973999095916742) heroMode False, health 18.0 -> 10.833333 (ground -60)
+21:32:21.924 screenshot critic1_T1_0.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_0.png"}
+
+=== 21:32:21 T1.1 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:32:21.931 cmd /effect clear @s -> {"ok": true}
+21:32:21.976 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:32:23.480 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 180.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:23.488 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:32:23.993 cmd /tp @s 2.5 -60 -1.5 -> {"ok": true}
+21:32:40.002 state -> {"x": -3.8950146079570263, "y": -60.0, "z": -3.59470613362754, "vy": 0.0, "health": 16.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 263.25, "anim": "idle", "screen": ""}
+21:32:40.010 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:32:40.312 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:32:41.721 state -> {"x": -3.8950146079570263, "y": -48.93899999999995, "z": -3.59470613362754, "vy": 0.145, "health": 16.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 272.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:41.728 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:32:41.787 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:32:41.796 state -> {"x": -3.8950146079570263, "y": -48.79399999999995, "z": -3.59470613362754, "vy": 0.0637000012397766, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 272.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:41.803 state -> {"x": -3.8950146079570263, "y": -48.79399999999995, "z": -3.59470613362754, "vy": 0.0637000012397766, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 272.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:41.862 state -> {"x": -3.8950146079570263, "y": -48.730299998760174, "z": -3.59470613362754, "vy": -0.015973999095916742, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 272.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:41.921 state -> {"x": -3.8950146079570263, "y": -48.84032851880065, "z": -3.59470613362754, "vy": -0.17057343384549256, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 273.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:41.980 state -> {"x": -3.8950146079570263, "y": -49.010901952646144, "z": -3.59470613362754, "vy": -0.2455619699478917, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 273.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.038 state -> {"x": -3.8950146079570263, "y": -49.25646392259404, "z": -3.59470613362754, "vy": -0.3190507367585357, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 273.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.097 state -> {"x": -3.8950146079570263, "y": -49.57551465935257, "z": -3.59470613362754, "vy": -0.39106972963465375, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 273.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.148 state -> {"x": -3.8950146079570263, "y": -49.96658438898722, "z": -3.59470613362754, "vy": -0.46164834402690275, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 274.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.199 state -> {"x": -3.8950146079570263, "y": -50.42823273301413, "z": -3.59470613362754, "vy": -0.530815387477487, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 274.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.259 state -> {"x": -3.8950146079570263, "y": -50.959048120491616, "z": -3.59470613362754, "vy": -0.5985990913783162, "health": 16.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 274.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.318 state -> {"x": -3.8950146079570263, "y": -51.557647211869934, "z": -3.59470613362754, "vy": -0.6650271224940004, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 275.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.376 state -> {"x": -3.8950146079570263, "y": -52.95280092861832, "z": -3.59470613362754, "vy": -0.7939240778212358, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 275.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.435 state -> {"x": -3.8950146079570263, "y": -53.74672500643956, "z": -3.59470613362754, "vy": -0.8564456129335899, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 275.5, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.493 state -> {"x": -3.8950146079570263, "y": -54.60317061937315, "z": -3.59470613362754, "vy": -0.9177167185362006, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 275.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.553 state -> {"x": -3.8950146079570263, "y": -55.52088733790935, "z": -3.59470613362754, "vy": -0.9777624031954127, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 276.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.611 state -> {"x": -3.8950146079570263, "y": -56.498649741104764, "z": -3.59470613362754, "vy": -1.0366071753067212, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 276.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.671 state -> {"x": -3.8950146079570263, "y": -57.535256916411484, "z": -3.59470613362754, "vy": -1.0942750530981786, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 276.75, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.729 state -> {"x": -3.8950146079570263, "y": -59.7803215439434, "z": -3.59470613362754, "vy": -1.2061738064205076, "health": 16.666666, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 277.0, "anim": "idle+jump_jet", "screen": ""}
+21:32:42.787 state -> {"x": -3.8950146079570263, "y": -60.0, "z": -3.59470613362754, "vy": -0.0784000015258789, "health": 17.166666, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 277.25, "anim": "idle+jump_jet", "screen": ""}
+21:32:43.396 state -> {"x": -3.8950146079570263, "y": -60.0, "z": -3.59470613362754, "vy": -0.0784000015258789, "health": 9.499999, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.99808824, "primaryAmmo": 6, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 280.25, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1.1: y at G -48.79 (vy 0.0637000012397766) heroMode False, health 16.0 -> 9.499999 (ground -60)
+21:32:43.404 screenshot critic1_T1_1.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_1.png"}
+
+=== 21:32:43 T1.2 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:32:43.412 cmd /effect clear @s -> {"ok": true}
+21:32:43.451 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:32:44.958 state -> {"x": -3.8950146079570263, "y": -60.0, "z": -3.59470613362754, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 288.0, "anim": "idle", "screen": ""}
+21:32:44.967 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:32:45.474 cmd /tp @s 2.5 -60 4.5 -> {"ok": true}
+21:33:01.479 state -> {"x": -10.54499954501969, "y": -60.0, "z": 4.083118848045245, "vy": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 370.75, "anim": "idle", "screen": ""}
+21:33:01.487 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:33:01.792 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:33:03.196 state -> {"x": -10.54499954501969, "y": -49.08399999999995, "z": 4.083118848045245, "vy": 0.145, "health": 15.785001, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 379.25, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.203 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:33:03.262 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:33:03.271 state -> {"x": -10.54499954501969, "y": -48.87529999876018, "z": 4.083118848045245, "vy": -0.015973999095916742, "health": 15.955001, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 379.75, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.280 state -> {"x": -10.54499954501969, "y": -48.87529999876018, "z": 4.083118848045245, "vy": -0.015973999095916742, "health": 15.955001, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 379.75, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.339 state -> {"x": -10.54499954501969, "y": -48.891273997856096, "z": 4.083118848045245, "vy": -0.09405452094455717, "health": 16.04, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 380.0, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.399 state -> {"x": -10.54499954501969, "y": -48.98532851880066, "z": 4.083118848045245, "vy": -0.17057343384549256, "health": 16.125, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 380.25, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.450 state -> {"x": -10.54499954501969, "y": -49.15590195264615, "z": 4.083118848045245, "vy": -0.2455619699478917, "health": 16.21, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 380.5, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.509 state -> {"x": -10.54499954501969, "y": -49.40146392259404, "z": 4.083118848045245, "vy": -0.3190507367585357, "health": 16.294998, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 380.75, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.568 state -> {"x": -10.54499954501969, "y": -49.720514659352574, "z": 4.083118848045245, "vy": -0.39106972963465375, "health": 16.464996, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 381.25, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.620 state -> {"x": -10.54499954501969, "y": -50.111584388987225, "z": 4.083118848045245, "vy": -0.46164834402690275, "health": 16.549995, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 381.5, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.671 state -> {"x": -10.54499954501969, "y": -51.10404812049162, "z": 4.083118848045245, "vy": -0.5985990913783162, "health": 16.634995, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 381.75, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.729 state -> {"x": -10.54499954501969, "y": -51.70264721186994, "z": 4.083118848045245, "vy": -0.6650271224940004, "health": 17.053328, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 382.0, "anim": "idle+jump_jet", "screen": ""}
+21:33:03.788 state -> {"x": -10.54499954501969, "y": -52.36767433436394, "z": 4.083118848045245, "vy": -0.730126594254385, "health": 17.138327, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.6, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 382.25, "anim": "idle", "screen": ""}
+21:33:03.847 state -> {"x": -10.54499954501969, "y": -53.09780092861833, "z": 4.083118848045245, "vy": -0.7939240778212358, "health": 17.223326, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 382.5, "anim": "idle", "screen": ""}
+21:33:03.899 state -> {"x": -10.54499954501969, "y": -53.891725006439565, "z": 4.083118848045245, "vy": -0.8564456129335899, "health": 17.308325, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 382.75, "anim": "idle", "screen": ""}
+21:33:03.956 state -> {"x": -10.54499954501969, "y": -54.748170619373155, "z": 4.083118848045245, "vy": -0.9177167185362006, "health": 17.393324, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 383.0, "anim": "idle", "screen": ""}
+21:33:04.016 state -> {"x": -10.54499954501969, "y": -55.66588733790935, "z": 4.083118848045245, "vy": -0.9777624031954127, "health": 17.563322, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 383.5, "anim": "idle", "screen": ""}
+21:33:04.075 state -> {"x": -10.54499954501969, "y": -57.68025691641149, "z": 4.083118848045245, "vy": -1.0942750530981786, "health": 17.648321, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 383.75, "anim": "idle", "screen": ""}
+21:33:04.133 state -> {"x": -10.54499954501969, "y": -58.77453196950967, "z": 4.083118848045245, "vy": -1.1507895744337342, "health": 15.73332, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 384.0, "anim": "idle", "screen": ""}
+21:33:04.192 state -> {"x": -10.935282155042275, "y": -58.41373113938087, "z": 4.17083172114541, "vy": 0.27518481888206686, "health": 15.73332, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 384.25, "anim": "idle", "screen": ""}
+21:33:04.252 state -> {"x": -11.290439340398395, "y": -58.138546320498804, "z": 4.250650437966922, "vy": 0.1912811262272805, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 384.5, "anim": "idle", "screen": ""}
+21:33:04.309 state -> {"x": -11.613632388386833, "y": -57.94726519427152, "z": 4.323285472367826, "vy": 0.10905550582525392, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 384.75, "anim": "idle", "screen": ""}
+21:33:04.369 state -> {"x": -11.907738070532385, "y": -57.83820968844627, "z": 4.3893833555775785, "vy": 0.02847439626293863, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 385.25, "anim": "idle", "screen": ""}
+21:33:04.428 state -> {"x": -12.418923178420876, "y": -57.86023038482843, "z": 4.5042680912728805, "vy": -0.12788519328118755, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 385.5, "anim": "idle", "screen": ""}
+21:33:04.486 state -> {"x": -12.640552710582956, "y": -57.988115578109614, "z": 4.554077543527637, "vy": -0.20372749338065918, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 385.75, "anim": "idle", "screen": ""}
+21:33:04.545 state -> {"x": -12.842235590662915, "y": -58.191843071490275, "z": 4.599404146385769, "vy": -0.27805294892471843, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 386.0, "anim": "idle", "screen": ""}
+21:33:04.605 state -> {"x": -13.025767016825021, "y": -58.46989602041499, "z": 4.6406513561754075, "vy": -0.3508918967755421, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 386.25, "anim": "idle", "screen": ""}
+21:33:04.664 state -> {"x": -13.192780619445841, "y": -58.820787917190536, "z": 4.6781863181657295, "vy": -0.422274067058642, "health": 15.899987, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 386.75, "anim": "idle", "screen": ""}
+21:33:04.722 state -> {"x": -13.483066974512989, "y": -59.73529057954677, "z": 4.743425838377099, "vy": -0.5607840343060292, "health": 16.066654, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 387.0, "anim": "idle", "screen": ""}
+21:33:04.782 state -> {"x": -13.60892359293506, "y": -60.0, "z": 4.771711099664636, "vy": -0.0784000015258789, "health": 16.066654, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 11.6, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 387.25, "anim": "idle", "screen": ""}
+21:33:05.389 state -> {"x": -13.857541998695561, "y": -60.0, "z": 4.827586083880751, "vy": -0.0784000015258789, "health": 16.23332, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 390.25, "anim": "idle", "screen": ""}
+RESULT T1.2: y at G -48.88 (vy -0.015973999095916742) heroMode False, health 14.0 -> 16.23332 (ground -60)
+21:33:05.397 screenshot critic1_T1_2.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_2.png"}
+21:33:37.523 cmd /gamerule spawn_mobs false -> {"ok": true}
+21:33:37.532 cmd /gamerule doMobSpawning false -> {"ok": true}
+21:33:37.541 cmd /kill @e[type=!player] -> {"ok": true}
+21:33:37.668 cmd /time set day -> {"ok": true}
+21:33:37.677 cmd /kill @e[type=!player] -> {"ok": true}
+21:33:37.686 cmd /gamemode survival -> {"ok": true}
+21:33:37.693 cmd /difficulty normal -> {"ok": true}
+
+=== 21:33:37 T1.3 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:33:37.701 cmd /effect clear @s -> {"ok": true}
+21:33:37.710 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:33:39.214 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:39.225 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:33:39.729 cmd /tp @s 2.5 -60 10.5 -> {"ok": true}
+21:33:55.732 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:55.741 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:33:56.044 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:33:57.450 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:57.457 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:33:57.516 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:33:57.525 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:57.534 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:57.593 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:58.202 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+RESULT T1.3: y at G -60.00 (vy -0.0784000015258789) heroMode False, health 0.0 -> 0.0 (ground -60)
+21:33:58.210 screenshot critic1_T1_3.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_3.png"}
+
+=== 21:33:58 T1.4 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:33:58.218 cmd /effect clear @s -> {"ok": true}
+21:33:58.256 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:33:59.764 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:33:59.772 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:00.273 cmd /tp @s 2.5 -60 16.5 -> {"ok": true}
+21:34:16.280 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:16.289 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:34:16.593 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:34:18.001 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:18.008 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:18.059 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:34:18.068 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:18.077 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:18.135 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:18.741 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+RESULT T1.4: y at G -60.00 (vy -0.0784000015258789) heroMode False, health 0.0 -> 0.0 (ground -60)
+21:34:18.750 screenshot critic1_T1_4.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_4.png"}
+
+=== 21:34:18 T1.5 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:34:18.759 cmd /effect clear @s -> {"ok": true}
+21:34:18.795 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:34:20.302 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:20.310 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:20.816 cmd /tp @s 2.5 -60 22.5 -> {"ok": true}
+21:34:36.821 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:36.830 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:34:37.133 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:34:38.541 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:38.550 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:38.609 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:34:38.618 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:38.626 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:38.685 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:39.290 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+RESULT T1.5: y at G -60.00 (vy -0.0784000015258789) heroMode False, health 0.0 -> 0.0 (ground -60)
+21:34:39.299 screenshot critic1_T1_5.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_5.png"}
+
+=== 21:34:39 T1.6 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:34:39.308 cmd /effect clear @s -> {"ok": true}
+21:34:39.352 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:34:40.855 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:40.864 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:41.369 cmd /tp @s 2.5 -60 28.5 -> {"ok": true}
+21:34:57.373 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:57.381 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:34:57.682 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:34:59.087 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:59.095 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:34:59.154 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:34:59.163 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:59.171 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:59.229 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:34:59.836 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+RESULT T1.6: y at G -60.00 (vy -0.0784000015258789) heroMode False, health 0.0 -> 0.0 (ground -60)
+21:34:59.844 screenshot critic1_T1_6.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_6.png"}
+
+=== 21:34:59 T1.7 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:34:59.853 cmd /effect clear @s -> {"ok": true}
+21:34:59.890 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:35:01.396 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:01.405 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:35:01.910 cmd /tp @s 2.5 -60 34.5 -> {"ok": true}
+21:35:17.918 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:17.926 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:35:18.229 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:35:19.637 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:19.645 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:35:19.704 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:35:19.712 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:19.721 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:19.781 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+21:35:20.384 state -> {"x": -33.205795830576974, "y": -60.0, "z": 9.421958062968958, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 724.75, "anim": "idle", "screen": "DeathScreen"}
+RESULT T1.7: y at G -60.00 (vy -0.0784000015258789) heroMode False, health 0.0 -> 0.0 (ground -60)
+21:35:20.393 screenshot critic1_T1_7.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1_7.png"}
+
+=== 21:35:33 respawn after slime death (test artifact: slimes in flat world before spawn_mobs off)
+21:35:33.617 respawn -> {"ok": true}
+21:35:35.622 screen -> {"screen": ""}
+21:35:35.630 close -> {"ok": true}
+21:35:36.638 cmd /kill @e[type=!player] -> {"ok": true}
+21:35:36.646 state -> {"x": 6.5, "y": -60.0, "z": -5.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 739.75, "anim": "idle", "screen": ""}
+21:35:42.889 cmd /time set day -> {"ok": true}
+21:35:42.898 cmd /kill @e[type=!player] -> {"ok": true}
+21:35:42.907 cmd /gamemode survival -> {"ok": true}
+21:35:42.916 cmd /difficulty normal -> {"ok": true}
+
+=== 21:35:42 T1b.0 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:35:42.923 cmd /effect clear @s -> {"ok": true}
+21:35:42.932 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:35:44.442 state -> {"x": 6.5, "y": -60.0, "z": -5.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 778.75, "anim": "idle", "screen": ""}
+21:35:44.450 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:35:44.956 cmd /tp @s 2.5 -60 -7.5 -> {"ok": true}
+21:35:45.959 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 786.5, "anim": "idle", "screen": ""}
+21:35:45.968 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:35:46.272 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:35:47.680 state -> {"x": 2.5, "y": -48.93899999999995, "z": -7.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 795.0, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.688 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:35:47.739 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:35:47.747 state -> {"x": 2.5, "y": -48.79399999999995, "z": -7.5, "vy": 0.0637000012397766, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 795.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.756 state -> {"x": 2.5, "y": -48.79399999999995, "z": -7.5, "vy": 0.0637000012397766, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 795.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.814 state -> {"x": 2.5, "y": -48.730299998760174, "z": -7.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 795.75, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.865 state -> {"x": 2.5, "y": -48.74627399785609, "z": -7.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 796.0, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.924 state -> {"x": 2.5, "y": -49.010901952646144, "z": -7.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 796.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:47.983 state -> {"x": 2.5, "y": -49.25646392259404, "z": -7.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 796.5, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.041 state -> {"x": 2.5, "y": -49.57551465935257, "z": -7.5, "vy": -0.39106972963465375, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 796.75, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.101 state -> {"x": 2.5, "y": -49.96658438898722, "z": -7.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 797.0, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.161 state -> {"x": 2.5, "y": -50.42823273301413, "z": -7.5, "vy": -0.530815387477487, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 797.5, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.219 state -> {"x": 2.5, "y": -50.959048120491616, "z": -7.5, "vy": -0.5985990913783162, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.6, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 797.75, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.279 state -> {"x": 2.5, "y": -52.22267433436394, "z": -7.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 798.0, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.338 state -> {"x": 2.5, "y": -52.95280092861832, "z": -7.5, "vy": -0.7939240778212358, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 798.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.398 state -> {"x": 2.5, "y": -53.74672500643956, "z": -7.5, "vy": -0.8564456129335899, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 798.5, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.456 state -> {"x": 2.5, "y": -54.60317061937315, "z": -7.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 798.75, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.515 state -> {"x": 2.5, "y": -55.52088733790935, "z": -7.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 799.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.574 state -> {"x": 2.5, "y": -57.535256916411484, "z": -7.5, "vy": -1.0942750530981786, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 799.5, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.633 state -> {"x": 2.5, "y": -58.629531969509664, "z": -7.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 799.75, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.692 state -> {"x": 2.5, "y": -59.7803215439434, "z": -7.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 800.0, "anim": "idle+jump_jet", "screen": ""}
+21:35:48.743 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.8405882, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 800.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:49.349 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 10.833333, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.99808824, "primaryAmmo": 6, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 803.25, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1b.0: y at G -48.79 (vy 0.0637000012397766) heroMode False, health 18.0 -> 10.833333 (ground -60)
+21:35:49.358 screenshot critic1_T1b_0.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1b_0.png"}
+
+=== 21:35:49 T1b.1 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:35:49.366 cmd /effect clear @s -> {"ok": true}
+21:35:49.405 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:35:50.911 state -> {"x": 2.5, "y": -60.0, "z": -7.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 811.25, "anim": "idle+jump_jet", "screen": ""}
+21:35:50.920 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:35:51.427 cmd /tp @s 2.5 -60 -1.5 -> {"ok": true}
+21:36:07.429 state -> {"x": 2.5, "y": -60.0, "z": -1.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 893.75, "anim": "idle", "screen": ""}
+21:36:07.437 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:36:07.740 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:36:09.147 state -> {"x": 2.5, "y": -49.08399999999995, "z": -1.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 902.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.156 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:09.207 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:36:09.215 state -> {"x": 2.5, "y": -48.93899999999995, "z": -1.5, "vy": 0.0637000012397766, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 902.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.224 state -> {"x": 2.5, "y": -48.87529999876018, "z": -1.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 902.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.275 state -> {"x": 2.5, "y": -48.891273997856096, "z": -1.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 903.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.334 state -> {"x": 2.5, "y": -48.98532851880066, "z": -1.5, "vy": -0.17057343384549256, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 903.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.385 state -> {"x": 2.5, "y": -49.15590195264615, "z": -1.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 903.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.444 state -> {"x": 2.5, "y": -49.40146392259404, "z": -1.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 903.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.503 state -> {"x": 2.5, "y": -49.720514659352574, "z": -1.5, "vy": -0.39106972963465375, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 904.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.561 state -> {"x": 2.5, "y": -50.111584388987225, "z": -1.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 904.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.621 state -> {"x": 2.5, "y": -51.10404812049162, "z": -1.5, "vy": -0.5985990913783162, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 904.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.679 state -> {"x": 2.5, "y": -51.70264721186994, "z": -1.5, "vy": -0.6650271224940004, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 905.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.738 state -> {"x": 2.5, "y": -52.36767433436394, "z": -1.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.6, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 905.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.796 state -> {"x": 2.5, "y": -53.09780092861833, "z": -1.5, "vy": -0.7939240778212358, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 905.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.848 state -> {"x": 2.5, "y": -53.891725006439565, "z": -1.5, "vy": -0.8564456129335899, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 905.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.907 state -> {"x": 2.5, "y": -54.748170619373155, "z": -1.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 906.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:09.966 state -> {"x": 2.5, "y": -55.66588733790935, "z": -1.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 906.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:10.017 state -> {"x": 2.5, "y": -56.64364974110477, "z": -1.5, "vy": -1.0366071753067212, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 906.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:10.076 state -> {"x": 2.5, "y": -58.77453196950967, "z": -1.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 907.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:10.134 state -> {"x": 2.5, "y": -59.925321543943404, "z": -1.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 907.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:10.193 state -> {"x": 2.5, "y": -60.0, "z": -1.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 907.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:10.799 state -> {"x": 2.5, "y": -60.0, "z": -1.5, "vy": -0.0784000015258789, "health": 10.666667, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 910.5, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1b.1: y at G -48.94 (vy 0.0637000012397766) heroMode False, health 18.0 -> 10.666667 (ground -60)
+21:36:10.806 screenshot critic1_T1b_1.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1b_1.png"}
+
+=== 21:36:10 T1b.2 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:36:10.815 cmd /effect clear @s -> {"ok": true}
+21:36:10.854 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:36:12.363 state -> {"x": 2.5, "y": -60.0, "z": -1.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 918.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:12.371 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:12.875 cmd /tp @s 2.5 -60 4.5 -> {"ok": true}
+21:36:28.878 state -> {"x": 2.5, "y": -60.0, "z": 4.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1001.0, "anim": "idle", "screen": ""}
+21:36:28.886 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:36:29.190 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:36:30.594 state -> {"x": 2.5, "y": -49.08399999999995, "z": 4.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1009.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.604 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:30.663 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:36:30.674 state -> {"x": 2.5, "y": -48.87529999876018, "z": 4.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.683 state -> {"x": 2.5, "y": -48.87529999876018, "z": 4.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.733 state -> {"x": 2.5, "y": -48.891273997856096, "z": 4.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.797 state -> {"x": 2.5, "y": -48.98532851880066, "z": 4.5, "vy": -0.17057343384549256, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.856 state -> {"x": 2.5, "y": -49.15590195264615, "z": 4.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.916 state -> {"x": 2.5, "y": -49.40146392259404, "z": 4.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:30.975 state -> {"x": 2.5, "y": -50.111584388987225, "z": 4.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.033 state -> {"x": 2.5, "y": -50.57323273301413, "z": 4.5, "vy": -0.530815387477487, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.091 state -> {"x": 2.5, "y": -51.10404812049162, "z": 4.5, "vy": -0.5985990913783162, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.151 state -> {"x": 2.5, "y": -51.70264721186994, "z": 4.5, "vy": -0.6650271224940004, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.210 state -> {"x": 2.5, "y": -52.36767433436394, "z": 4.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.268 state -> {"x": 2.5, "y": -53.09780092861833, "z": 4.5, "vy": -0.7939240778212358, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.326 state -> {"x": 2.5, "y": -54.748170619373155, "z": 4.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.384 state -> {"x": 2.5, "y": -55.66588733790935, "z": 4.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.443 state -> {"x": 2.5, "y": -56.64364974110477, "z": 4.5, "vy": -1.0366071753067212, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.503 state -> {"x": 2.5, "y": -57.68025691641149, "z": 4.5, "vy": -1.0942750530981786, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1014.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.561 state -> {"x": 2.5, "y": -58.77453196950967, "z": 4.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1014.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.620 state -> {"x": 2.5, "y": -59.925321543943404, "z": 4.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1014.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:31.678 state -> {"x": 2.5, "y": -60.0, "z": 4.5, "vy": -0.0784000015258789, "health": 10.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1015.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:32.286 state -> {"x": 2.5, "y": -60.0, "z": 4.5, "vy": -0.0784000015258789, "health": 10.5, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1018.0, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1b.2: y at G -48.88 (vy -0.015973999095916742) heroMode False, health 18.0 -> 10.5 (ground -60)
+21:36:32.294 screenshot critic1_T1b_2.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1b_2.png"}
+
+=== 21:36:32 T1b.3 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:36:32.302 cmd /effect clear @s -> {"ok": true}
+21:36:32.338 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:36:33.842 state -> {"x": 2.5, "y": -60.0, "z": 4.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1025.75, "anim": "idle", "screen": ""}
+21:36:33.850 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:34.356 cmd /tp @s 2.5 -60 10.5 -> {"ok": true}
+21:36:50.363 state -> {"x": 2.5, "y": -60.0, "z": 10.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1108.5, "anim": "idle", "screen": ""}
+21:36:50.371 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:36:50.673 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:36:52.074 state -> {"x": 2.5, "y": -49.08399999999995, "z": 10.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1117.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.083 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:52.143 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:36:52.151 state -> {"x": 2.5, "y": -48.93899999999995, "z": 10.5, "vy": 0.0637000012397766, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1117.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.159 state -> {"x": 2.5, "y": -48.93899999999995, "z": 10.5, "vy": 0.0637000012397766, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1117.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.217 state -> {"x": 2.5, "y": -48.87529999876018, "z": 10.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1117.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.268 state -> {"x": 2.5, "y": -48.891273997856096, "z": 10.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1118.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.328 state -> {"x": 2.5, "y": -49.15590195264615, "z": 10.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1118.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.387 state -> {"x": 2.5, "y": -49.40146392259404, "z": 10.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1118.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.446 state -> {"x": 2.5, "y": -49.720514659352574, "z": 10.5, "vy": -0.39106972963465375, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1118.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.506 state -> {"x": 2.5, "y": -50.111584388987225, "z": 10.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1119.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.564 state -> {"x": 2.5, "y": -50.57323273301413, "z": 10.5, "vy": -0.530815387477487, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1119.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.623 state -> {"x": 2.5, "y": -51.70264721186994, "z": 10.5, "vy": -0.6650271224940004, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1119.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.682 state -> {"x": 2.5, "y": -52.36767433436394, "z": 10.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.6, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1120.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.734 state -> {"x": 2.5, "y": -53.09780092861833, "z": 10.5, "vy": -0.7939240778212358, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1120.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.792 state -> {"x": 2.5, "y": -53.891725006439565, "z": 10.5, "vy": -0.8564456129335899, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1120.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.851 state -> {"x": 2.5, "y": -54.748170619373155, "z": 10.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1120.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.911 state -> {"x": 2.5, "y": -55.66588733790935, "z": 10.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1121.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:52.970 state -> {"x": 2.5, "y": -56.64364974110477, "z": 10.5, "vy": -1.0366071753067212, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1121.5, "anim": "idle+jump_jet", "screen": ""}
+21:36:53.029 state -> {"x": 2.5, "y": -58.77453196950967, "z": 10.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1121.75, "anim": "idle+jump_jet", "screen": ""}
+21:36:53.089 state -> {"x": 2.5, "y": -59.925321543943404, "z": 10.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1122.0, "anim": "idle+jump_jet", "screen": ""}
+21:36:53.147 state -> {"x": 2.5, "y": -60.0, "z": 10.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1122.25, "anim": "idle+jump_jet", "screen": ""}
+21:36:53.752 state -> {"x": 2.5, "y": -60.0, "z": 10.5, "vy": -0.0784000015258789, "health": 10.333333, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1125.25, "anim": "idle+jump_jet", "screen": ""}
+RESULT T1b.3: y at G -48.94 (vy 0.0637000012397766) heroMode False, health 18.0 -> 10.333333 (ground -60)
+21:36:53.761 screenshot critic1_T1b_3.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1b_3.png"}
+
+=== 21:36:53 T1b.4 G mid-hover: Jump Jet, hold Space to hover up, G at the top, let go, land
+21:36:53.769 cmd /effect clear @s -> {"ok": true}
+21:36:53.809 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+21:36:55.310 state -> {"x": 2.5, "y": -60.0, "z": 10.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 9.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1133.25, "anim": "idle", "screen": ""}
+21:36:55.318 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:36:55.825 cmd /tp @s 2.5 -60 16.5 -> {"ok": true}
+21:37:11.832 state -> {"x": 2.5, "y": -60.0, "z": 16.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1215.75, "anim": "idle", "screen": ""}
+21:37:11.840 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:37:12.141 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:37:13.547 state -> {"x": 2.5, "y": -49.08399999999995, "z": 16.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1224.25, "anim": "idle+jump_jet", "screen": ""}
+21:37:13.556 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:37:13.613 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:37:13.621 state -> {"x": 2.5, "y": -48.87529999876018, "z": 16.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1224.75, "anim": "idle+jump_jet", "screen": ""}
+21:37:13.630 state -> {"x": 2.5, "y": -48.87529999876018, "z": 16.5, "vy": -0.015973999095916742, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1224.75, "anim": "idle+jump_jet", "screen": ""}
+21:37:13.690 state -> {"x": 2.5, "y": -48.891273997856096, "z": 16.5, "vy": -0.09405452094455717, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1225.0, "anim": "idle+jump_jet", "screen": ""}
+21:37:13.748 state -> {"x": 2.5, "y": -48.98532851880066, "z": 16.5, "vy": -0.17057343384549256, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1225.25, "anim": "idle+jump_jet", "screen": ""}
+21:37:13.807 state -> {"x": 2.5, "y": -49.15590195264615, "z": 16.5, "vy": -0.2455619699478917, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1225.5, "anim": "idle", "screen": ""}
+21:37:13.865 state -> {"x": 2.5, "y": -49.40146392259404, "z": 16.5, "vy": -0.3190507367585357, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1226.0, "anim": "idle", "screen": ""}
+21:37:13.925 state -> {"x": 2.5, "y": -50.111584388987225, "z": 16.5, "vy": -0.46164834402690275, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1226.25, "anim": "idle", "screen": ""}
+21:37:13.982 state -> {"x": 2.5, "y": -50.57323273301413, "z": 16.5, "vy": -0.530815387477487, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1226.5, "anim": "idle", "screen": ""}
+21:37:14.042 state -> {"x": 2.5, "y": -51.10404812049162, "z": 16.5, "vy": -0.5985990913783162, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1226.75, "anim": "idle", "screen": ""}
+21:37:14.101 state -> {"x": 2.5, "y": -51.70264721186994, "z": 16.5, "vy": -0.6650271224940004, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1227.0, "anim": "idle", "screen": ""}
+21:37:14.161 state -> {"x": 2.5, "y": -52.36767433436394, "z": 16.5, "vy": -0.730126594254385, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1227.5, "anim": "idle", "screen": ""}
+21:37:14.219 state -> {"x": 2.5, "y": -53.09780092861833, "z": 16.5, "vy": -0.7939240778212358, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1227.75, "anim": "idle", "screen": ""}
+21:37:14.277 state -> {"x": 2.5, "y": -54.748170619373155, "z": 16.5, "vy": -0.9177167185362006, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1228.0, "anim": "idle", "screen": ""}
+21:37:14.329 state -> {"x": 2.5, "y": -55.66588733790935, "z": 16.5, "vy": -0.9777624031954127, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1228.25, "anim": "idle", "screen": ""}
+21:37:14.387 state -> {"x": 2.5, "y": -56.64364974110477, "z": 16.5, "vy": -1.0366071753067212, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1228.5, "anim": "idle", "screen": ""}
+21:37:14.446 state -> {"x": 2.5, "y": -57.68025691641149, "z": 16.5, "vy": -1.0942750530981786, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1228.75, "anim": "idle", "screen": ""}
+21:37:14.506 state -> {"x": 2.5, "y": -58.77453196950967, "z": 16.5, "vy": -1.1507895744337342, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1229.0, "anim": "idle", "screen": ""}
+21:37:14.564 state -> {"x": 2.5, "y": -59.925321543943404, "z": 16.5, "vy": -1.2061738064205076, "health": 18.0, "onGround": false, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1229.5, "anim": "idle", "screen": ""}
+21:37:14.616 state -> {"x": 2.5, "y": -60.0, "z": 16.5, "vy": -0.0783739241897089, "health": 10.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1229.75, "anim": "idle", "screen": ""}
+21:37:15.222 state -> {"x": 2.5, "y": -60.0, "z": 16.5, "vy": -0.0784000015258789, "health": 10.333333, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1232.75, "anim": "idle", "screen": ""}
+RESULT T1b.4: y at G -48.88 (vy -0.015973999095916742) heroMode False, health 18.0 -> 10.333333 (ground -60)
+21:37:15.231 screenshot critic1_T1b_4.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T1b_4.png"}
+
+=== 21:37:45 T2 Barrage started in the air: Jump Jet, Q at the top, no Space held; then the same with Space held
+21:37:45.635 state -> {"x": 2.5, "y": -60.0, "z": 16.5, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1384.75, "anim": "idle", "screen": ""}
+21:37:45.644 press key.keyboard.g -> {"key": "key.keyboard.g"}
+21:37:46.148 cmd /kill @e[type=!player] -> {"ok": true}
+21:37:46.171 cmd /summon zombie 2.5 -60 12.5 {NoAI:1b,Tags:["z1"]} -> {"ok": true}
+21:37:46.174 cmd /tp @s 2.5 -60 -5.5 0 -30 -> {"ok": true}
+21:37:47.174 cmd /overcraft ult @s 100 -> {"ok": true}
+21:37:47.677 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2200.0, "anim": "idle", "screen": ""}
+21:37:47.685 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:37:48.292 look 0 30 -> {"ok": true}
+21:37:48.300 press key.keyboard.q -> {"key": "key.keyboard.q"}
+21:37:48.309 state -> {"x": 2.5, "y": -53.36999999999999, "z": -5.5, "vy": 0.4470000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2200.0, "anim": "idle+jump_jet", "screen": ""}
+21:37:48.463 state -> {"x": 2.5, "y": -52.216874999999995, "z": -5.5, "vy": 0.32175000000000026, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 5, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:48.614 state -> {"x": 2.5, "y": -51.4395, "z": -5.5, "vy": 0.19650000000000023, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:48.767 state -> {"x": 2.5, "y": -51.03787499999999, "z": -5.5, "vy": 0.07125000000000023, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:48.924 state -> {"x": 2.5, "y": -51.09084013746534, "z": -5.5, "vy": -0.09968611069461045, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.096 state -> {"x": 2.5, "y": -51.585353446979745, "z": -5.5, "vy": -0.22966691087835267, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.256 state -> {"x": 2.5, "y": -52.46553817324732, "z": -5.5, "vy": -0.3565228732182612, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.408 state -> {"x": 2.5, "y": -53.719318207763344, "z": -5.5, "vy": -0.4784859309821915, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.568 state -> {"x": 2.5, "y": -55.32969298891988, "z": -5.5, "vy": -0.5940531628519607, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 13.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.723 state -> {"x": 2.5, "y": -57.99477158832007, "z": -5.5, "vy": -0.7362176166385792, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:49.883 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.035 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.186 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.339 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.25, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.492 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.651 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 11.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.803 screenshot critic1_T2_barrage_air.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T2_barrage_air.png"}
+21:37:50.811 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 11.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:37:50.915 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 11.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.5, "anim": "idle+barrage", "screen": ""}
+21:37:51.420 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.3529412, "primaryAmmo": 6, "ability1Cooldown": 11.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.0, "anim": "idle+barrage", "screen": ""}
+RESULT T2a: health 18.0 -> 18.0
+
+=== 21:38:10 T3 death during Barrage while hovering (Space held), then respawn
+21:38:10.818 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:38:10.826 cmd /overcraft ult @s 100 -> {"ok": true}
+21:38:11.332 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:38:12.333 press key.keyboard.q -> {"key": "key.keyboard.q"}
+21:38:12.940 state -> {"x": 2.5, "y": -55.11699999999992, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:38:12.947 servercmd attribute @p minecraft:movement_speed modifier get overcraft:pharah_barrage_slow -> {"ok": true}
+21:38:12.956 cmd /kill @s -> {"ok": true}
+21:38:13.261 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:38:13.269 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.0, "anim": "idle+barrage", "screen": "DeathScreen"}
+21:38:14.772 screenshot critic1_T3_dead.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T3_dead.png"}
+21:38:14.780 respawn -> {"ok": true}
+21:38:16.787 close -> {"ok": true}
+21:38:17.791 state -> {"x": 1.5, "y": -60.0, "z": -0.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 15.0, "anim": "idle", "screen": ""}
+21:38:17.799 cmd /attribute @s minecraft:movement_speed modifier get overcraft:pharah_barrage_slow -> {"ok": true}
+21:38:17.808 cmd /attribute @s minecraft:movement_speed get -> {"ok": true}
+21:38:17.816 press key.keyboard.w down -> {"key": "key.keyboard.w"}
+21:38:18.822 state -> {"x": 1.5, "y": -60.0, "z": 5.233333333333334, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 20.25, "anim": "idle", "screen": ""}
+21:38:18.830 press key.keyboard.w up -> {"key": "key.keyboard.w"}
+21:38:19.334 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:38:20.842 state -> {"x": 1.5, "y": -55.406999999999925, "z": 5.395833333333335, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.3, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 30.25, "anim": "idle", "screen": ""}
+21:38:20.849 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:38:20.859 screenshot critic1_T3_respawn_hover.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T3_respawn_hover.png"}
+
+=== 21:38:36 T4 hero switch mid-hover: Jump Jet + hover to ~11 m, pick Kiriko (the select payload), let go, land; then back to Pharah
+21:38:36.840 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:38:51.842 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 185.25, "anim": "idle", "screen": ""}
+21:38:51.851 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:38:52.153 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:38:53.560 state -> {"x": 2.5, "y": -49.08399999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "primaryAmmo": 6, "ability1Cooldown": 13.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 194.0, "anim": "idle+jump_jet", "screen": ""}
+21:38:53.567 hero kiriko -> {"ok": true}
+21:38:53.677 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:38:53.685 state -> {"x": 2.5, "y": -48.73249999999995, "z": -5.5, "vy": 0.0615, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.5, "anim": "idle+jump_jet", "screen": ""}
+21:38:53.694 state -> {"x": 2.5, "y": -48.73249999999995, "z": -5.5, "vy": 0.0615, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.5, "anim": "idle+jump_jet", "screen": ""}
+21:38:53.752 state -> {"x": 2.5, "y": -48.69187499999995, "z": -5.5, "vy": 0.019750000000000004, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 0.75, "anim": "idle+jump_jet", "screen": ""}
+21:38:53.810 state -> {"x": 2.5, "y": -48.692999999999955, "z": -5.5, "vy": -0.021999999999999992, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1.25, "anim": "idle", "screen": ""}
+21:38:53.870 state -> {"x": 2.5, "y": -48.82444386558997, "z": -5.5, "vy": -0.10940655340224385, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1.5, "anim": "idle", "screen": ""}
+21:38:53.930 state -> {"x": 2.5, "y": -48.9556090459957, "z": -5.5, "vy": -0.15292380740921188, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1.75, "anim": "idle", "screen": ""}
+21:38:53.988 state -> {"x": 2.5, "y": -49.13018049252143, "z": -5.5, "vy": -0.19621908564224602, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2.0, "anim": "idle", "screen": ""}
+21:38:54.047 state -> {"x": 2.5, "y": -49.347900253848415, "z": -5.5, "vy": -0.2392204370117128, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2.25, "anim": "idle", "screen": ""}
+21:38:54.107 state -> {"x": 2.5, "y": -49.60843932291237, "z": -5.5, "vy": -0.28185770111618913, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2.5, "anim": "idle", "screen": ""}
+21:38:54.158 state -> {"x": 2.5, "y": -49.9113996541039, "z": -5.5, "vy": -0.32406296126688494, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.0, "anim": "idle", "screen": ""}
+21:38:54.217 state -> {"x": 2.5, "y": -50.256316618676266, "z": -5.5, "vy": -0.365770967877842, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.25, "anim": "idle", "screen": ""}
+21:38:54.275 state -> {"x": 2.5, "y": -51.06984655314232, "z": -5.5, "vy": -0.4474498475574529, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.5, "anim": "idle", "screen": ""}
+21:38:54.334 state -> {"x": 2.5, "y": -51.53722490130733, "z": -5.5, "vy": -0.4873068487725798, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.75, "anim": "idle", "screen": ""}
+21:38:54.393 state -> {"x": 2.5, "y": -52.04409803375488, "z": -5.5, "vy": -0.5264394161225113, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 4.0, "anim": "idle", "screen": ""}
+21:38:54.452 state -> {"x": 2.5, "y": -52.58971804819415, "z": -5.5, "vy": -0.5648006127560339, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 4.25, "anim": "idle", "screen": ""}
+21:38:54.510 state -> {"x": 2.5, "y": -53.1732922746652, "z": -5.5, "vy": -0.6023478401860696, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 4.75, "anim": "idle", "screen": ""}
+21:38:54.570 state -> {"x": 2.5, "y": -53.793987669790106, "z": -5.5, "vy": -0.6390429500637425, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 5.0, "anim": "idle", "screen": ""}
+21:38:54.628 state -> {"x": 2.5, "y": -55.14323485714928, "z": -5.5, "vy": -0.709746809217029, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 5.25, "anim": "idle", "screen": ""}
+21:38:54.687 state -> {"x": 2.5, "y": -55.86995918896026, "z": -5.5, "vy": -0.7437018544049283, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 5.5, "anim": "idle", "screen": ""}
+21:38:54.746 state -> {"x": 2.5, "y": -56.63015875567391, "z": -5.5, "vy": -0.7766972790223803, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 5.75, "anim": "idle", "screen": ""}
+21:38:54.805 state -> {"x": 2.5, "y": -57.422866019914785, "z": -5.5, "vy": -0.8087172494593653, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 6.0, "anim": "idle", "screen": ""}
+21:38:54.864 state -> {"x": 2.5, "y": -58.247099706697746, "z": -5.5, "vy": -0.8397501241065546, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 6.5, "anim": "idle", "screen": ""}
+21:38:54.922 state -> {"x": 2.5, "y": -59.986177028076284, "z": -5.5, "vy": -0.8988279476405242, "health": 20.0, "onGround": false, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 6.75, "anim": "idle", "screen": ""}
+21:38:54.980 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 7.0, "anim": "idle", "screen": ""}
+21:38:55.588 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "kiriko", "mode": 0, "meter": 0.0, "primaryAmmo": 15, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 10.0, "anim": "idle", "screen": ""}
+21:38:55.597 servercmd data get entity @p -> {"ok": true}
+RESULT T4: switched at y -48.73 hero kiriko, health 18.0 -> 17.0 (maxHealth Kiriko 20?)
+21:38:55.605 screenshot critic1_T4_switch.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T4_switch.png"}
+21:38:55.613 hero pharah -> {"ok": true}
+21:38:56.620 close -> {"ok": true}
+21:38:57.127 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 7.5, "anim": "idle", "screen": ""}
+
+=== 21:39:18 T5 rejoin with cooldowns running and mid-Barrage mid-hover: Jet Dash (right button), E, then hover, Q, Esc, Save and Quit
+21:39:18.449 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:39:18.458 cmd /overcraft ult @s 100 -> {"ok": true}
+21:39:18.964 key secondary_fire tap -> {"key": "key.mouse.left"}
+21:39:19.167 key primary_fire down -> {"key": "key.mouse.right"}
+21:39:19.318 key primary_fire up -> {"key": "key.mouse.right"}
+21:39:20.521 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:39:21.024 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:39:22.028 press key.keyboard.q -> {"key": "key.keyboard.q"}
+21:39:22.332 state -> {"x": 2.5, "y": -55.98699999999994, "z": 11.276577143849023, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 4, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 6.4, "ability3Cooldown": 6.75, "ult": 0.0, "anim": "idle+barrage", "screen": ""}
+21:39:22.402 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+21:39:22.912 screen -> {"screen": "dev.overcraft.client.screen.OverwatchMenuScreen"}
+21:39:22.920 screenshot critic1_T5_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T5_pause.png"}
+21:39:34.751 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:39:35.264 screenclick 80 205 -> {"screen": "TitleScreen"}
+21:39:39.267 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+21:39:39.598 openworld critic_pharah1 -> {"ok": true}
+21:39:39.600 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "GenericMessageScreen"}
+21:39:40.603 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "LevelLoadingScreen"}
+21:39:41.611 state -> {"x": 2.5, "y": -55.98699999999994, "z": 11.276577143849023, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 3.0, "anim": "idle", "screen": "LevelLoadingScreen"}
+21:39:41.620 screen -> {"screen": "net.minecraft.client.gui.screens.LevelLoadingScreen"}
+21:39:41.628 screenshot critic1_T5_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T5_rejoin.png"}
+21:39:41.639 close -> {"ok": true}
+21:39:42.147 state -> {"x": 2.5, "y": -58.59675080955211, "z": 11.276577143849023, "vy": -0.4673519249724499, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 5.75, "anim": "idle", "screen": "HeroSelectScreen"}
+21:39:42.156 cmd /attribute @s minecraft:movement_speed get -> {"ok": true}
+21:39:42.164 press key.keyboard.w down -> {"key": "key.keyboard.w"}
+21:39:43.169 state -> {"x": 2.5, "y": -60.0, "z": 11.276577143849023, "vy": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 10.75, "anim": "idle", "screen": "HeroSelectScreen"}
+21:39:43.178 press key.keyboard.w up -> {"key": "key.keyboard.w"}
+21:39:43.187 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:39:43.692 state -> {"x": 2.5, "y": -60.0, "z": 11.276577143849023, "vy": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 13.5, "anim": "idle", "screen": "HeroSelectScreen"}
+21:40:08.178 close -> {"ok": true}
+21:40:08.189 cmd /data get entity @s UUID -> {"ok": true}
+
+=== 21:40:19 T6 Concussive Blast at the ground between a tamed wolf (hers), a villager and a zombie; then a direct hit on the wolf
+21:40:19.925 cmd /kill @e[type=!player] -> {"ok": true}
+21:40:19.933 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:40:28.935 cmd /summon villager 0.5 -60 1.5 {NoAI:1b,Tags:["v"]} -> {"ok": true}
+21:40:28.947 cmd /summon wolf 4.5 -60 1.5 {Tags:["w"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058],Sitting:0b} -> {"ok": true}
+21:40:28.951 cmd /summon zombie 2.5 -60 4.5 {NoAI:1b,Tags:["z"]} -> {"ok": true}
+21:40:29.954 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:29.963 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:29.971 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:29.979 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:29.988 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:29.996 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:30.005 cmd /execute as @s at @s anchored eyes facing 2.5 -60 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:40:30.308 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:40:30.435 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:30.443 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:30.452 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:30.460 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:30.468 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:30.476 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:30.980 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:30.989 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:30.997 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:31.006 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:31.014 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:31.022 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:31.030 state -> {"x": 2.5, "y": -59.33888983273636, "z": -11.601938994620312, "vy": -0.08746278211805555, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 7.5, "ability3Cooldown": 0.0, "ult": 250.0, "anim": "idle+concussive", "screen": ""}
+21:40:31.039 screenshot critic1_T6_concussive.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T6_concussive.png"}
+
+=== 21:40:42 T6b (AI on) Concussive Blast at the ground between a tamed wolf (hers), a villager and a zombie; then a direct hit on the wolf
+21:40:42.077 cmd /kill @e[type=!player] -> {"ok": true}
+21:40:42.087 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:40:51.096 cmd /summon villager 0.5 -60 1.5 {Tags:["v"]} -> {"ok": true}
+21:40:51.105 cmd /summon wolf 4.5 -60 1.5 {Tags:["w"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058],Sitting:0b} -> {"ok": true}
+21:40:51.112 cmd /summon zombie 2.5 -60 4.5 {Tags:["z"],equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:40:52.114 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:52.123 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:52.131 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:52.139 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:52.149 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:52.159 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:52.167 cmd /execute as @s at @s anchored eyes facing 2.5 -60 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:40:52.469 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:40:52.596 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:52.604 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:52.612 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:52.622 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:52.629 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:52.637 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:53.139 cmd /data get entity @e[tag=v,limit=1] Pos -> {"ok": true}
+21:40:53.149 cmd /data get entity @e[tag=v,limit=1] Health -> {"ok": true}
+21:40:53.157 cmd /data get entity @e[tag=w,limit=1] Pos -> {"ok": true}
+21:40:53.165 cmd /data get entity @e[tag=w,limit=1] Health -> {"ok": true}
+21:40:53.173 cmd /data get entity @e[tag=z,limit=1] Pos -> {"ok": true}
+21:40:53.183 cmd /data get entity @e[tag=z,limit=1] Health -> {"ok": true}
+21:40:53.190 state -> {"x": 2.5, "y": -59.44815324239915, "z": -12.177338832338078, "vy": -0.13106403720752552, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 7.45, "ability3Cooldown": 0.0, "ult": 361.0, "anim": "idle+concussive", "screen": ""}
+21:40:53.198 screenshot critic1_T6_concussive.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T6_concussive.png"}
+
+=== 21:41:14 T6c Concussive Blast at the ground between her tamed wolf, a villager and a zombie (AI on): Motion polled
+21:41:14.878 cmd /kill @e[type=!player] -> {"ok": true}
+21:41:14.886 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:41:23.893 cmd /summon villager 0.5 -60 1.5 {Tags:["v"]} -> {"ok": true}
+21:41:23.901 cmd /summon wolf 4.5 -60 1.5 {Tags:["w"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]} -> {"ok": true}
+21:41:23.910 cmd /summon zombie 2.5 -60 4.5 {Tags:["z"],equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:41:24.912 cmd /execute as @s at @s anchored eyes facing 2.5 -60 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:41:25.223 cmd /say PRESS -> {"ok": true}
+21:41:25.225 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:41:25.233 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.248 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.250 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.308 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.318 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.325 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.385 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.393 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.401 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.460 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.469 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.477 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.535 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.543 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.552 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.610 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.619 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.628 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.685 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.694 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.702 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.762 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.770 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.779 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.838 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.846 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.854 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.912 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:25.922 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:25.930 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:25.990 cmd /say END -> {"ok": true}
+21:41:25.998 state -> {"x": 0.5456467385155838, "y": -60.0, "z": -32.33015284330345, "vy": -0.0784000015258789, "health": 0.0, "onGround": true, "heroMode": false, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 452.75, "anim": "idle", "screen": "DeathScreen"}
+
+=== 21:41:38 respawn: killed by T6b zombie (test artifact)
+21:41:38.865 respawn -> {"ok": true}
+21:41:40.872 close -> {"ok": true}
+21:41:41.377 state -> {"x": 10.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 465.25, "anim": "idle", "screen": ""}
+
+=== 21:41:41 T6c Concussive Blast at the ground between her tamed wolf, a villager and a zombie (AI on): Motion polled
+21:41:41.512 cmd /kill @e[type=!player] -> {"ok": true}
+21:41:41.521 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:41:50.525 cmd /summon villager 0.5 -60 1.5 {Tags:["v"]} -> {"ok": true}
+21:41:50.535 cmd /summon wolf 4.5 -60 1.5 {Tags:["w"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]} -> {"ok": true}
+21:41:50.543 cmd /summon zombie 2.5 -60 4.5 {Tags:["z"],equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:41:51.546 cmd /execute as @s at @s anchored eyes facing 2.5 -60 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:41:51.848 cmd /say PRESS -> {"ok": true}
+21:41:51.857 press key.keyboard.e -> {"key": "key.keyboard.e"}
+21:41:51.865 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:51.874 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:51.883 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:51.941 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:51.950 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:51.958 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.018 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.026 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.035 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.093 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.102 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.111 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.169 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.177 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.185 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.244 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.252 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.261 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.319 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.328 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.336 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.394 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.403 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.411 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.469 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.477 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.486 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.546 cmd /data get entity @e[tag=v,limit=1] Motion -> {"ok": true}
+21:41:52.555 cmd /data get entity @e[tag=w,limit=1] Motion -> {"ok": true}
+21:41:52.563 cmd /data get entity @e[tag=z,limit=1] Motion -> {"ok": true}
+21:41:52.622 cmd /say END -> {"ok": true}
+21:41:52.631 state -> {"x": 2.5, "y": -59.44815324239915, "z": -12.177338832338078, "vy": -0.13106403720752552, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 7.45, "ability3Cooldown": 0.0, "ult": 521.5, "anim": "idle", "screen": ""}
+
+=== 21:42:21 T7 rocket into water: a zombie (helmet) 3 blocks deep in a pool 8 m ahead; rocket fired at it from the bank; then a lava pool's edge
+21:42:21.510 cmd /kill @e[type=!player] -> {"ok": true}
+21:42:21.519 cmd /fill -1 -64 3 6 -61 10 water -> {"ok": true}
+21:42:21.527 cmd /summon zombie 2.5 -64 7.5 {NoAI:1b,Tags:["zw"],equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:42:21.536 cmd /tp @s 2.5 -60 -1.5 0 0 -> {"ok": true}
+21:42:23.041 cmd /data get entity @e[tag=zw,limit=1] Health -> {"ok": true}
+21:42:23.049 cmd /execute as @s at @s anchored eyes facing 2.5 -63.0 7.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:42:23.353 cmd /say FIRE -> {"ok": true}
+21:42:23.361 key secondary_fire down -> {"key": "key.mouse.left"}
+21:42:23.469 key secondary_fire up -> {"key": "key.mouse.left"}
+21:42:23.479 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.539 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.597 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.657 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.715 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.774 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.833 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.891 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:23.951 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:24.010 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:24.061 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:24.120 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:24.676 cmd /data get entity @e[tag=zw,limit=1] Health -> {"ok": true}
+21:42:24.684 screenshot critic1_T7_water.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T7_water.png"}
+
+=== 21:42:33 T7b rocket into water: a zombie (helmet) 3 blocks deep in a pool 8 m ahead; rocket fired at it from the bank; then a lava pool's edge
+21:42:33.499 cmd /kill @e[type=!player] -> {"ok": true}
+21:42:33.508 cmd /fill -1 -64 3 6 -61 10 water -> {"ok": true}
+21:42:33.515 cmd /summon zombie 2.5 -64 7.5 {NoAI:1b,Tags:["zw"],equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:42:33.524 cmd /tp @s 2.5 -60 2.4 0 0 -> {"ok": true}
+21:42:35.031 cmd /data get entity @e[tag=zw,limit=1] Health -> {"ok": true}
+21:42:35.040 cmd /execute as @s at @s anchored eyes facing 2.5 -63.0 7.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:42:35.342 cmd /say FIRE -> {"ok": true}
+21:42:35.351 key secondary_fire down -> {"key": "key.mouse.left"}
+21:42:35.452 key secondary_fire up -> {"key": "key.mouse.left"}
+21:42:35.461 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.520 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.578 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.636 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.695 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.754 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.813 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.872 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.931 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:35.990 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:36.041 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:36.099 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:42:36.656 cmd /data get entity @e[tag=zw,limit=1] Health -> {"ok": true}
+21:42:36.665 state -> {"x": 2.5, "y": -60.0, "z": 2.4, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 857.58997, "anim": "idle", "screen": ""}
+21:42:36.674 screenshot critic1_T7_water.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T7_water.png"}
+
+=== 21:42:49 T8 Jump Jet and Jet Dash under a low ceiling (stone at y -57: 3 blocks of air), then a 1-block gap ceiling (y -58)
+21:42:49.854 cmd /kill @e[type=!player] -> {"ok": true}
+21:42:49.863 cmd /fill -6 -57 -20 10 -57 -10 stone -> {"ok": true}
+21:42:49.871 cmd /tp @s 2.5 -60 -15.5 0 0 -> {"ok": true}
+21:43:04.874 state -> {"x": 2.5, "y": -60.0, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 998.58997, "anim": "idle", "screen": ""}
+21:43:04.882 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:43:04.891 state -> {"x": 2.5, "y": -60.0, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 998.83997, "anim": "idle", "screen": ""}
+21:43:04.949 state -> {"x": 2.5, "y": -60.0, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0294118, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 999.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.008 state -> {"x": 2.5, "y": -59.9275, "z": -15.5, "vy": 0.8644999999999999, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0588236, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 999.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.067 state -> {"x": 2.5, "y": -59.083875, "z": -15.5, "vy": 0.82275, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0882353, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 999.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.126 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.117647, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 999.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.185 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1000.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.243 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2058823, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1000.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.302 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2352941, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1000.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.361 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2647059, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1001.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.419 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1001.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.479 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.3235294, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1001.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.538 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.382353, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1002.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.596 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1002.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.654 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4411764, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1002.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.714 state -> {"x": 2.5, "y": -58.799999952316284, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1002.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.773 state -> {"x": 2.5, "y": -58.821874952316286, "z": -15.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 14.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1003.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.831 state -> {"x": 2.5, "y": -58.88748134337531, "z": -15.5, "vy": -0.08746278211805555, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1003.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.889 state -> {"x": 2.5, "y": -59.1495167840332, "z": -15.5, "vy": -0.1744800247826812, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.85, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1003.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:05.949 state -> {"x": 2.5, "y": -59.345575832491804, "z": -15.5, "vy": -0.21763807213452244, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1004.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:06.008 state -> {"x": 2.5, "y": -59.584628398635914, "z": -15.5, "vy": -0.26046706015369736, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1004.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:06.067 screenshot critic1_T8_ceiling_jj.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T8_ceiling_jj.png"}
+21:43:07.073 state -> {"x": 2.5, "y": -60.0, "z": -15.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1009.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.081 key primary_fire down -> {"key": "key.mouse.right"}
+21:43:07.183 key primary_fire up -> {"key": "key.mouse.right"}
+21:43:07.191 state -> {"x": 2.5, "y": -59.9275, "z": -15.5, "vy": 0.4, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.55, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.249 state -> {"x": 2.5, "y": -59.548375, "z": -14.588629537037036, "vy": 0.35825, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.5, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.307 state -> {"x": 2.5, "y": -59.211, "z": -13.730820399214677, "vy": 0.3165, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.45, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1010.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.359 state -> {"x": 2.5, "y": -58.915375, "z": -12.921393008016546, "vy": 0.27475, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.4, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.418 state -> {"x": 2.5, "y": -58.799999952316284, "z": -12.155668669352426, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.35, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.477 state -> {"x": 2.5, "y": -58.799999952316284, "z": -11.429421136179123, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.3, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1011.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.536 state -> {"x": 2.5, "y": -58.799999952316284, "z": -10.738832855195282, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.595 state -> {"x": 2.5, "y": -58.799999952316284, "z": -9.451173994051672, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.15, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.647 state -> {"x": 2.5, "y": -58.799999952316284, "z": -8.8481748163306, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.1, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.705 state -> {"x": 2.5, "y": -58.799999952316284, "z": -8.26891631835137, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.05, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1012.83997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.764 state -> {"x": 2.5, "y": -58.727499952316286, "z": -7.711102688454501, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.823 state -> {"x": 2.5, "y": -58.58249995231628, "z": -7.1726601284709925, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 11.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.882 state -> {"x": 2.5, "y": -58.43749995231628, "z": -6.651715384195519, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 11.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1013.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.941 state -> {"x": 2.5, "y": -58.147499952316274, "z": -5.655714561109696, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 2, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 11.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1014.08997, "anim": "idle+jump_jet", "screen": ""}
+21:43:07.998 state -> {"x": 2.5, "y": -58.023374952316274, "z": -5.18312814558905, "vy": 0.10325, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 11.75, "ability2Cooldown": 0.0, "ability3Cooldown": 9.0, "ult": 1014.33997, "anim": "idle+jump_jet", "screen": ""}
+21:43:08.057 state -> {"x": 2.5, "y": -57.940999952316275, "z": -4.729649068250789, "vy": 0.0615, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 11.7, "ability2Cooldown": 0.0, "ability3Cooldown": 8.95, "ult": 1014.58997, "anim": "idle+jump_jet", "screen": ""}
+21:43:09.109 state -> {"x": 2.5, "y": -60.0, "z": -0.04107509726365761, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 10.65, "ability2Cooldown": 0.0, "ability3Cooldown": 7.9, "ult": 1019.83997, "anim": "idle+jump_jet", "screen": ""}
+RESULT T8: health 18.0 -> 18.0
+21:43:09.118 cmd /fill -6 -58 -40 10 -58 -30 stone -> {"ok": true}
+21:43:09.126 cmd /tp @s 2.5 -60 -35.5 0 0 -> {"ok": true}
+21:43:24.131 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:43:24.139 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1095.09, "anim": "idle", "screen": ""}
+21:43:24.199 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0294118, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1095.34, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.257 state -> {"x": 2.5, "y": -59.9275, "z": -35.5, "vy": 0.8644999999999999, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0588236, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1095.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.316 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.0882353, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1095.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.375 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.117647, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1096.09, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.435 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1096.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.486 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2058823, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1096.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.545 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2352941, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1097.09, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.603 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2647059, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1097.34, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.663 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1097.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.722 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.3235294, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1097.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.780 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.3529412, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1098.09, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.838 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1098.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.897 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4411764, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1098.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:24.956 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1099.09, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.015 state -> {"x": 2.5, "y": -59.821874952316286, "z": -35.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 14.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1099.34, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.073 state -> {"x": 2.5, "y": -59.88748134337531, "z": -35.5, "vy": -0.08746278211805555, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.95, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1099.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.133 state -> {"x": 2.5, "y": -59.9967447530381, "z": -35.5, "vy": -0.13106403720752552, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.9, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1099.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.191 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.8, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1100.34, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.251 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 13.75, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1100.59, "anim": "idle+jump_jet", "screen": ""}
+21:43:25.309 screenshot critic1_T8_ceiling_low.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T8_ceiling_low.png"}
+21:43:26.315 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "primaryAmmo": 4, "ability1Cooldown": 12.7, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1105.84, "anim": "idle+jump_jet", "screen": ""}
+21:43:26.322 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:43:27.828 state -> {"x": 2.5, "y": -59.799999952316284, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.5905882, "primaryAmmo": 4, "ability1Cooldown": 11.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1113.34, "anim": "idle+jump_jet", "screen": ""}
+21:43:27.837 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:43:28.344 state -> {"x": 2.5, "y": -60.0, "z": -35.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.63308823, "primaryAmmo": 4, "ability1Cooldown": 10.65, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1116.09, "anim": "idle+jump_jet", "screen": ""}
+
+=== 21:43:44 T9 ladder: a 12-high ladder on a stone wall; W alone climbs (control), then W+Space; fuel and speed read
+21:43:44.122 cmd /fill 0 -60 -47 5 -48 -47 stone -> {"ok": true}
+21:43:44.129 cmd /fill 2 -60 -46 2 -48 -46 ladder[facing=south] -> {"ok": true}
+21:43:44.138 cmd /tp @s 2.5 -60 -45.3 180 0 -> {"ok": true}
+21:43:47.140 press key.keyboard.w down -> {"key": "key.keyboard.w"}
+21:43:47.149 state -> {"x": 2.5, "y": -60.0, "z": -45.3, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1210.09, "anim": "idle", "screen": ""}
+21:43:47.401 state -> {"x": 2.5, "y": -59.64719999313355, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1211.34, "anim": "idle", "screen": ""}
+21:43:47.653 state -> {"x": 2.5, "y": -59.05919998168946, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1212.59, "anim": "idle", "screen": ""}
+21:43:47.905 state -> {"x": 2.5, "y": -58.47119997024537, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1213.84, "anim": "idle", "screen": ""}
+21:43:48.160 state -> {"x": 2.5, "y": -57.883199958801285, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1215.09, "anim": "idle", "screen": ""}
+21:43:48.412 state -> {"x": 2.5, "y": -57.2951999473572, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1216.34, "anim": "idle", "screen": ""}
+21:43:48.666 state -> {"x": 2.5, "y": -56.70719993591311, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1217.59, "anim": "idle", "screen": ""}
+21:43:48.919 state -> {"x": 2.5, "y": -56.11919992446902, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1218.84, "anim": "idle", "screen": ""}
+21:43:49.171 press key.keyboard.w up -> {"key": "key.keyboard.w"}
+21:43:49.476 cmd /tp @s 2.5 -60 -45.3 180 0 -> {"ok": true}
+
+=== 21:43:52 T9b W+Space on the ladder
+21:43:52.477 press key.keyboard.w down -> {"key": "key.keyboard.w"}
+21:43:52.486 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:43:52.495 state -> {"x": 2.5, "y": -59.58000001311302, "z": -45.398000003367656, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1236.84, "anim": "idle", "screen": ""}
+21:43:52.747 state -> {"x": 2.5, "y": -58.992000001668934, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.9, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1238.09, "anim": "idle", "screen": ""}
+21:43:52.999 state -> {"x": 2.5, "y": -58.40399999022485, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.775, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1239.34, "anim": "idle", "screen": ""}
+21:43:53.251 state -> {"x": 2.5, "y": -57.81599997878076, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1240.59, "anim": "idle", "screen": ""}
+21:43:53.506 state -> {"x": 2.5, "y": -57.22799996733667, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.525, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1241.84, "anim": "idle", "screen": ""}
+21:43:53.758 state -> {"x": 2.5, "y": -56.639999955892584, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.4, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1243.09, "anim": "idle", "screen": ""}
+21:43:54.018 state -> {"x": 2.5, "y": -56.0519999444485, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.275, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1244.34, "anim": "idle", "screen": ""}
+21:43:54.270 state -> {"x": 2.5, "y": -55.46399993300441, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.15, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1245.59, "anim": "idle", "screen": ""}
+21:43:54.522 screenshot critic1_T9_ladder.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T9_ladder.png"}
+21:43:54.529 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:43:55.536 state -> {"x": 2.5, "y": -52.52399987578397, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1252.09, "anim": "idle", "screen": ""}
+21:43:55.544 press key.keyboard.w up -> {"key": "key.keyboard.w"}
+21:43:56.551 state -> {"x": 2.5, "y": -54.81408410263172, "z": -45.51249998807907, "vy": -0.22540001022815717, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1257.09, "anim": "idle", "screen": ""}
+
+=== 21:44:12 T10 seated: in a boat on land, then on a horse; hold Space 1.5 s; fuel read
+21:44:12.479 cmd /kill @e[type=!player] -> {"ok": true}
+21:44:12.488 cmd /tp @s 2.5 -60 -25.5 0 0 -> {"ok": true}
+21:44:16.494 cmd /summon oak_boat 2.5 -60 -23.5 {Tags:["b"]} -> {"ok": true}
+21:44:17.001 cmd /ride @s mount @e[tag=b,limit=1] -> {"ok": true}
+21:44:18.010 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1364.34, "anim": "idle", "screen": ""}
+21:44:18.018 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:44:19.524 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": 0.08125, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.275, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1371.84, "anim": "idle", "screen": ""}
+21:44:19.532 screenshot critic1_T10_boat.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T10_boat.png"}
+21:44:19.541 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:44:19.849 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:44:20.150 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.225, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1375.09, "anim": "idle", "screen": ""}
+21:44:20.159 cmd /ride @s dismount -> {"ok": true}
+21:44:21.162 cmd /kill @e[type=!player] -> {"ok": true}
+21:44:25.168 cmd /summon horse 2.5 -60 -23.5 {Tags:["h"],Tame:1b,SaddleItem:{id:"minecraft:saddle",count:1},equipment:{saddle:{id:"minecraft:saddle",count:1}}} -> {"ok": true}
+21:44:25.673 cmd /ride @s mount @e[tag=h,limit=1] -> {"ok": true}
+21:44:26.680 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1407.59, "anim": "idle", "screen": ""}
+21:44:26.688 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:44:28.196 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": 0.08125, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.25, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1415.34, "anim": "idle", "screen": ""}
+21:44:28.204 screenshot critic1_T10_horse.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T10_horse.png"}
+21:44:28.212 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:44:29.221 state -> {"x": 2.5, "y": -59.006249976158145, "z": -24.2, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.225, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1420.34, "anim": "idle", "screen": ""}
+21:44:29.229 cmd /ride @s dismount -> {"ok": true}
+21:44:29.734 cmd /kill @e[type=!player] -> {"ok": true}
+
+=== 21:44:42 T11 asleep mid-hover (dev 'cut sleep 3': what Ana's dart does), Space kept held; then stunned ('cut stun 2')
+21:44:42.924 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:44:46.932 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:44:47.738 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1513.09, "anim": "idle", "screen": ""}
+21:44:47.746 cut sleep 3 -> {"ok": true}
+21:44:47.754 state -> {"x": 2.5, "y": -57.291999999999966, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1513.09, "anim": "idle", "screen": ""}
+21:44:48.008 state -> {"x": 2.5, "y": -56.56699999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.5, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1514.34, "anim": "idle", "screen": ""}
+21:44:48.262 state -> {"x": 2.5, "y": -55.841999999999935, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.375, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1515.59, "anim": "idle", "screen": ""}
+21:44:48.514 state -> {"x": 2.5, "y": -55.11699999999992, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.25, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1516.84, "anim": "idle", "screen": ""}
+21:44:48.767 state -> {"x": 2.5, "y": -54.3919999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.125, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1518.09, "anim": "idle", "screen": ""}
+21:44:49.019 state -> {"x": 2.5, "y": -53.67849999999989, "z": -5.5, "vy": 0.122, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1519.34, "anim": "idle", "screen": ""}
+21:44:49.272 state -> {"x": 2.5, "y": -53.35599999999989, "z": -5.5, "vy": 0.007000000000000027, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1520.59, "anim": "idle", "screen": ""}
+21:44:49.524 state -> {"x": 2.5, "y": -53.62419368373827, "z": -5.5, "vy": -0.11571715359722286, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1521.84, "anim": "idle", "screen": ""}
+21:44:49.777 state -> {"x": 2.5, "y": -54.50994811287947, "z": -5.5, "vy": -0.23795557617190494, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1523.09, "anim": "idle", "screen": ""}
+21:44:50.031 state -> {"x": 2.5, "y": -55.99478632459228, "z": -5.5, "vy": -0.3549360650578559, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1524.34, "anim": "idle", "screen": ""}
+21:44:50.281 state -> {"x": 2.5, "y": -57.949456524058185, "z": -5.5, "vy": -0.4, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1525.84, "anim": "idle", "screen": ""}
+21:44:50.533 state -> {"x": 2.5, "y": -59.94945652405818, "z": -5.5, "vy": -0.4, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1527.09, "anim": "idle", "screen": ""}
+21:44:50.786 state -> {"x": 2.5, "y": -59.734875, "z": -5.5, "vy": 0.24424999999999997, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1528.34, "anim": "idle", "screen": ""}
+21:44:51.040 state -> {"x": 2.5, "y": -58.870875000000005, "z": -5.5, "vy": 0.06874999999999998, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1529.59, "anim": "idle", "screen": ""}
+21:44:51.292 screenshot critic1_T11_asleep_hover.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T11_asleep_hover.png"}
+21:44:51.301 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:44:53.309 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.6525, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1540.84, "anim": "idle", "screen": ""}
+
+=== 21:44:53 T11b stunned mid-hover
+21:44:53.317 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:44:57.322 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:44:58.132 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1564.84, "anim": "idle", "screen": ""}
+21:44:58.139 cut stun 2 -> {"ok": true}
+21:44:58.149 state -> {"x": 2.5, "y": -57.291999999999966, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1565.09, "anim": "idle", "screen": ""}
+21:44:58.400 state -> {"x": 2.5, "y": -56.56699999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.5, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1566.34, "anim": "idle", "screen": ""}
+21:44:58.653 state -> {"x": 2.5, "y": -55.841999999999935, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.375, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1567.59, "anim": "idle", "screen": ""}
+21:44:58.906 state -> {"x": 2.5, "y": -55.11699999999992, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.25, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1568.84, "anim": "idle", "screen": ""}
+21:44:59.166 state -> {"x": 2.5, "y": -54.3919999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.125, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1570.09, "anim": "idle", "screen": ""}
+21:44:59.419 state -> {"x": 2.5, "y": -53.67849999999989, "z": -5.5, "vy": 0.122, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1571.34, "anim": "idle", "screen": ""}
+21:44:59.671 state -> {"x": 2.5, "y": -53.35599999999989, "z": -5.5, "vy": 0.007000000000000027, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1572.59, "anim": "idle", "screen": ""}
+21:44:59.924 state -> {"x": 2.5, "y": -53.62419368373827, "z": -5.5, "vy": -0.11571715359722286, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1573.84, "anim": "idle", "screen": ""}
+21:45:00.177 state -> {"x": 2.5, "y": -54.50994811287947, "z": -5.5, "vy": -0.23795557617190494, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1575.09, "anim": "idle", "screen": ""}
+21:45:00.429 state -> {"x": 2.5, "y": -55.99478632459228, "z": -5.5, "vy": -0.3549360650578559, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1576.34, "anim": "idle", "screen": ""}
+21:45:00.683 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:45:02.685 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.72, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1587.84, "anim": "idle", "screen": ""}
+
+=== 21:45:16 T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+21:45:17.003 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+21:45:32.009 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 4, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1734.34, "anim": "idle", "screen": ""}
+21:45:32.017 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+21:45:32.320 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+21:45:33.721 state -> {"x": 2.5, "y": -49.08399999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "primaryAmmo": 4, "ability1Cooldown": 13.2, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1742.84, "anim": "idle", "screen": ""}
+21:45:33.731 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+21:45:34.032 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+21:45:34.874 screenclick 80 205 -> {"screen": "TitleScreen"}
+21:45:38.878 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+21:45:38.935 openworld critic_pharah1 -> {"ok": true}
+21:45:38.962 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "GenericMessageScreen"}
+21:45:39.212 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "GenericMessageScreen"}
+21:45:39.463 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "GenericMessageScreen"}
+21:45:39.714 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "GenericMessageScreen"}
+21:45:39.965 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "LevelLoadingScreen"}
+21:45:40.323 state -> {"x": null, "y": null, "z": null, "vy": null, "health": null, "onGround": null, "heroMode": null, "hero": null, "mode": null, "meter": null, "primaryAmmo": null, "ability1Cooldown": null, "ability2Cooldown": null, "ability3Cooldown": null, "ult": null, "anim": null, "screen": "LevelLoadingScreen"}
+21:45:40.595 state -> {"x": 2.5, "y": -49.08399999999995, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1744.59, "anim": "idle", "screen": "LevelLoadingScreen"}
+21:45:40.853 state -> {"x": 2.5, "y": -49.105874999999955, "z": -5.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1745.84, "anim": "idle", "screen": ""}
+21:45:40.865 state -> {"x": 2.5, "y": -49.17148139105898, "z": -5.5, "vy": -0.08746278211805555, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1745.84, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:41.074 state -> {"x": 2.5, "y": -49.86862844631958, "z": -5.5, "vy": -0.26046706015369736, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1746.84, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:41.277 state -> {"x": 2.5, "y": -51.24649999840262, "z": -5.5, "vy": -0.42714969732657004, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1747.84, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:41.479 state -> {"x": 2.5, "y": -53.27167687263341, "z": -5.5, "vy": -0.5835711836112188, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1749.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:41.680 state -> {"x": 2.5, "y": -55.896808614920204, "z": -5.5, "vy": -0.7267461128218556, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1750.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:41.885 state -> {"x": 2.5, "y": -59.06481954379147, "z": -5.5, "vy": -0.8548080458852843, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1751.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:42.093 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1752.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:42.295 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1753.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:42.503 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1754.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:42.705 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1755.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:42.906 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1756.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:43.108 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1757.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:43.310 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1758.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:43.515 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1759.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:43.717 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1760.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:43.921 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1761.09, "anim": "idle", "screen": "HeroSelectScreen"}
+21:45:44.123 screenshot critic1_T12_rejoin_fall.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T12_rejoin_fall.png"}
+21:45:44.130 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 11.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 1762.34, "anim": "idle", "screen": "HeroSelectScreen"}
+RESULT T12: health before 18.0 -> after rejoin fall 11.0
+21:45:53.393 screenclick 177 192 -> {"screen": "HeroSelectScreen"}
+21:45:53.902 screenshot critic1_select_kiriko.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_select_kiriko.png"}
+21:45:53.910 screenclick 133 192 -> {"screen": "HeroSelectScreen"}
+21:45:54.417 screenshot critic1_select_sojourn.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_select_sojourn.png"}
+21:45:54.425 screenclick 151 192 -> {"screen": "HeroSelectScreen"}
+21:45:54.928 screenshot critic1_select_pharah.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_select_pharah.png"}
+
+=== 21:46:29 T13 lava edge: a 2-deep lava pool; she stands at its edge and fires a rocket at the lava 2 m ahead; a zombie (helmet) at the far edge
+21:46:29.665 close -> {"ok": true}
+21:46:30.168 cmd /kill @e[type=!player] -> {"ok": true}
+21:46:30.178 cmd /fill -1 -62 -60 6 -61 -54 lava -> {"ok": true}
+21:46:30.187 cmd /summon zombie 2.5 -60 -52.5 {Tags:["zl"],NoAI:1b,equipment:{head:{id:"minecraft:leather_helmet",count:1}}} -> {"ok": true}
+21:46:30.195 cmd /tp @s 2.5 -60 -60.6 0 0 -> {"ok": true}
+21:46:32.203 state -> {"x": 2.5, "y": -60.0, "z": -60.6, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 6, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2002.59, "anim": "idle", "screen": ""}
+21:46:32.210 cmd /execute as @s at @s anchored eyes facing 2.5 -61 -58.5 run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+21:46:32.517 cmd /say FIRE -> {"ok": true}
+21:46:32.525 key secondary_fire down -> {"key": "key.mouse.left"}
+21:46:32.627 key secondary_fire up -> {"key": "key.mouse.left"}
+21:46:32.635 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:32.694 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:32.753 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:32.811 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:32.870 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:32.929 cmd /data get entity @e[type=overcraft:pharah_rocket,limit=1] Pos -> {"ok": true}
+21:46:33.981 state -> {"x": 2.5, "y": -60.0, "z": -60.6, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "primaryAmmo": 5, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "ability3Cooldown": 0.0, "ult": 2011.59, "anim": "idle", "screen": ""}
+21:46:33.990 cmd /data get entity @e[tag=zl,limit=1] Health -> {"ok": true}
+21:46:34.000 screenshot critic1_T13_lava.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\critic1_T13_lava.png"}
+RESULT T13: her health 18.0 -> 18.0, y -60.0
+21:46:42.799 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+21:46:44.266 screenclick 80 205 -> {"screen": "TitleScreen"}
+21:46:48.270 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}

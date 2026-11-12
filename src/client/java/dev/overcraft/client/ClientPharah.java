@@ -35,13 +35,18 @@ public final class ClientPharah {
 	}
 
 	private static boolean mine(LivingEntity entity) {
-		return entity == Minecraft.getInstance().player && ClientHero.hero() == Hero.PHARAH && ClientHero.controls();
+		return entity == Minecraft.getInstance().player && ClientHero.hero() == Hero.PHARAH && live(Minecraft.getInstance().player);
+	}
+
+	/** Her keys move her: hero mode, and not asleep, stunned, knocked down or held by Gravitic Flux (the synced ASLEEP, as KeyboardInputMixin's block): the hover stops with them (W: sleep and stun interrupt her; critic_1 #1). */
+	private static boolean live(LocalPlayer player) {
+		return player != null && ClientHero.controls() && !Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP));
 	}
 
 	/** Each client tick: a jet that just started launches her (D 0027 / 4B92 #36). */
 	public static void tick(Minecraft mc) {
 		LocalPlayer player = mc.player;
-		if (player == null || ClientHero.hero() != Hero.PHARAH || !ClientHero.controls()) {
+		if (player == null || ClientHero.hero() != Hero.PHARAH || !live(player)) {
 			jetsWas = 0;
 			groundHeld = 0;
 			return;
@@ -106,7 +111,9 @@ public final class ClientPharah {
 		if (jet) {
 			// the jets turn the hover on, key or not, and spend no fuel (D 0025 #698 / #694 / #29)
 			hover = fuel ? Pharah.HOVER_JET : Pharah.HOVER_JET_EMPTY;
-		} else if (engaged && !entity.isInWater()) {
+		} else if (engaged && !dev.overcraft.hero.HeroManager.jumpIsNotAirborne(entity)) {
+			// (not where Jump is Minecraft's or the mount's: water, lava, a cobweb, a ladder, powder snow, a boat or a horse:
+			// critic_1 #2 / #3; ours, Overwatch has none of them)
 			hover = fuel || barrage ? Pharah.HOVER_FUEL : Pharah.HOVER_EMPTY;
 		} else {
 			hover = Pharah.HOVER_NONE;

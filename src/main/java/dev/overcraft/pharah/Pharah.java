@@ -105,6 +105,12 @@ public final class Pharah implements HeroKit {
 		s.ability3Cooldown = Math.max(0, s.ability3Cooldown - rate);
 		s.pharahRecovery = Math.max(0, s.pharahRecovery - Combat.attackRate(player));
 		boolean able = controls && player.isAlive() && !Sleep.asleep(player);
+		if (!able && s.pharahHovering) {
+			// asleep, stunned, G, dead: the hover is over here, not when her client next sends its input (it sends only a change,
+			// so the flag stayed and the fuel drained on: critic_1 #1). Her client stops asking while she can't act and asks
+			// again once she can.
+			hovered(player, s, false);
+		}
 		jets(player, s, able);
 		fuel(player, s, now);
 		concussive(player, s, able);
@@ -242,6 +248,10 @@ public final class Pharah implements HeroKit {
 		s.pharahJetKind = kind;
 		s.pharahJetFuel = fuel;
 		s.softLanding = true;
+		// a jet cuts a reload (D, H nodes, M meaning): 0027 #82 and 4B92 #82 (StateAbility) push the shared stack v33 at
+		// priority 0003.024, over the reload's StateStack 0023 #60 at 0002.024, whose under plug #61 sets v51 = 0 (the reload
+		// over, its ammo at 0.6 s not given). The order 3 over 2 is read as Sojourn's 0x79 over 0x2 (sojourn.md: the 024
+		// assets' order itself isn't read). Rockets already in at 0.6 s stay.
 		s.interruptReload(0);
 		if (s.has(Perk.PHARAH_ROCKET_SALVO)) {
 			// a movement ability arms the next rocket's salvo (D 0027 #367 / 4B92 #108: message 1E66)
@@ -340,6 +350,9 @@ public final class Pharah implements HeroKit {
 	}
 
 	private static void barrage(ServerPlayer player, HeroState s, boolean able, long now) {
+		// A jet under way runs on through the cast (D, M): nothing 002B sends reaches 0027 / 4B92 (their message entries are
+		// 0093, a kill, which 002B also only receives, 21E2, 2623 and 1BB5), and 002B #24 / #137 push v33 at 0003.024, the
+		// jets' own priority, not over it. So the jet's 0.85 s, its fuel and its cooldown from its end are kept.
 		if (s.pharahBarrage < 0) {
 			return;
 		}
