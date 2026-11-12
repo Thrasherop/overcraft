@@ -1,0 +1,13 @@
+[19:14:00] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+[19:14:02] [Server thread/INFO] (Overcraft) [POTG] Kiriko asks to watch highlight 1794446510231: Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[19:14:08] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5408 ms after the card began
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 1500; highlights: [Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862), Kiriko High
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] mobs this run: [ { "uuid": "8b118f00-395c-4b01-aa30-f2c45730eaa0", "type": "minecraft:zombie", "playersKilled": 0, "damageToPlayers": 37.5 }, { "uuid
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] showing ended (the dragon's POTG) after 7933 ms, world not held
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-9.zip t3860) to 2 viewer(s), world frozen (was false)
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] the dragon's POTG: Showing Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-9.zip t3860)
+[19:14:18] [Server thread/INFO] (Overcraft) [POTG] replay started for 2 viewer(s) 8122 ms after the card began
+[19:14:31] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 20937 ms, world held for the end screen
+[19:14:38] [Render thread/INFO] (Minecraft) [System] [CHAT] A showing is already playing
+[19:14:38] [Server thread/INFO] (Overcraft) [POTG] end screen over (every end screen done): world thawed
+[19:14:50] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is running normally

@@ -125,8 +125,15 @@ public final class PotgReplay {
 	private static boolean dragonPending;
 	private static boolean killerAllows;
 	private static boolean shown;
-	/** The world stays held (wall clock) through the POTG's end screen, after the viewers are back. */
+	/**
+	 * The world stays held through the POTG's end screen, after the viewers are back: until every viewer's client says its
+	 * end screen is over (HighlightsPayload DONE), or this wall-clock worst case (critique 6: a client whose return loads
+	 * slowly starts its end screen later than the server's clock). 0: no hold.
+	 */
 	private static long holdUntil;
+	private static final Set<UUID> OUTRO = new HashSet<>();
+	/** The worst case past the end screen's own length: a slow return's loading screen (ours). */
+	private static final long OUTRO_SLACK_MS = 8_000;
 	private static final java.util.Timer TIMER = new java.util.Timer("overcraft-potg", true);
 
 	public static boolean shownSinceArmed() {
@@ -193,10 +200,16 @@ public final class PotgReplay {
 		// the next plays start from nothing (the run goes on after the dragon: "the whole time"); the highlights stay
 		PlayScore.open();
 		MobStats.decided(server, dragon);
-		if (!killerAllows || choice == null) {
-			return;
+		if (killerAllows && choice != null) {
+			if (active && !holdsWorld) {
+				// a highlight someone watches alone gives way to the dragon's POTG (critique 2: the POTG was refused and the
+				// run's plays were lost); the watcher is put back first, and sees the POTG with everyone
+				end(server, "the dragon's POTG");
+			}
+			Overcraft.LOG.info("[POTG] the dragon's POTG: {}", startPotg(server, show(choice.highlight(), choice.owner())));
 		}
-		startPotg(server, show(choice.highlight(), choice.owner()));
+		// the run is over at the dragon, POTG or not (critique 9): its totals start again; hero time stays
+		PlayerStats.runOver(server);
 	}
 
 	/**
@@ -209,6 +222,7 @@ public final class PotgReplay {
 		o.addProperty("player", show.player());
 		o.addProperty("hero", show.highlight().hero);
 		o.addProperty("heroName", show.hero());
+		o.addProperty("dimension", show.highlight().dimension);
 		com.google.gson.JsonArray most = new com.google.gson.JsonArray();
 		for (var e : PlayerStats.mostPlayed(server, show.owner(), 3)) {
 			com.google.gson.JsonObject m = new com.google.gson.JsonObject();
@@ -304,8 +318,12 @@ public final class PotgReplay {
 	 * The Highlights menu (HighlightsPayload): watch -1 sends the player their own top 5, watch n plays their n-th to them
 	 * alone (nobody else is pulled in). Only after the world's dragon has died; not during a showing.
 	 */
-	public static void highlightsAsked(ServerPlayer player, int watch) {
+	public static void highlightsAsked(ServerPlayer player, int watch, String arg) {
 		MinecraftServer server = player.level().getServer();
+		if (watch == dev.overcraft.net.HighlightsPayload.DONE) {
+			viewerDoneWatching(player);
+			return;
+		}
 		com.google.gson.JsonObject o = new com.google.gson.JsonObject();
 		if (!dragonKilled(server)) {
 			o.addProperty("locked", true);
@@ -313,10 +331,19 @@ public final class PotgReplay {
 			return;
 		}
 		List<Highlights.Highlight> list = Highlights.of(server, player.getUUID());
-		if (watch >= 0) {
-			if (watch < list.size() && !active && player.isAlive()) {
-				Overcraft.LOG.info("[POTG] {} watches highlight {}: {}", player.getName().getString(), watch,
-					watchHighlight(player, player.getUUID(), list.get(watch)));
+		if (watch == dev.overcraft.net.HighlightsPayload.WATCH) {
+			// by its time, not its place in the list (critique 8: the list can change between showing and click)
+			Highlights.Highlight h = null;
+			for (Highlights.Highlight x : list) {
+				if (Long.toString(x.epochMs).equals(arg)) {
+					h = x;
+				}
+			}
+			String result = h == null ? "That highlight is gone" : !player.isAlive() ? "Not while dead"
+				: watchHighlight(player, player.getUUID(), h);
+			Overcraft.LOG.info("[POTG] {} asks to watch highlight {}: {}", player.getName().getString(), arg, result);
+			if (!result.startsWith("Watching")) {
+				player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(result));
 			}
 			return;
 		}
@@ -353,7 +380,6 @@ public final class PotgReplay {
 		begin(server, viewers, true, lead);
 		PotgState.setLastPotg(server, System.currentTimeMillis());
 		String data = showData(server, show, viewers, true).toString();
-		PlayerStats.runOver(server);
 		for (ServerPlayer p : viewers) {
 			ServerPlayNetworking.send(p, new PotgPayload(PotgPayload.CARD, show.player(), show.hero(), show.category(), lead / 1000f, data));
 		}
@@ -366,7 +392,7 @@ public final class PotgReplay {
 	/** One player watches one of their saved highlights alone (owner, 2026-11-11): nobody else moves, the world runs on. */
 	public static String watchHighlight(ServerPlayer player, UUID owner, Highlights.Highlight h) {
 		MinecraftServer server = player.level().getServer();
-		if (active) {
+		if (active || holdUntil > 0) {
 			return "A showing is already playing";
 		}
 		int lead = DIP_MS + INTRO_MS;
@@ -395,9 +421,10 @@ public final class PotgReplay {
 		}
 		startedAt = System.currentTimeMillis();
 		watchdogAt = startedAt + leadMs + WINDOW_TICKS * 50L + WATCHDOG_EXTRA_MS;
-		// a new showing during the last one's end screen: the world is already held, by us
-		wasFrozen = holdUntil > 0 ? wasFrozen : server.tickRateManager().isFrozen();
-		holdUntil = 0;
+		// a new showing during the last one's end screen (only a dragon's POTG may start then): the hold ends first, so the
+		// world goes back to how it was before the first showing
+		thaw(server, "a new showing");
+		wasFrozen = server.tickRateManager().isFrozen();
 		if (holdWorld) {
 			// broadcast to everyone but the viewers, whose copies ReplayTap holds back
 			server.tickRateManager().setFrozen(true);
@@ -489,8 +516,14 @@ public final class PotgReplay {
 		generation++;
 		WATCHING.clear();
 		if (holdsWorld) {
-			// held on through the end screen (thawed in tick)
-			holdUntil = System.currentTimeMillis() + OUTRO_MS;
+			// held on through the end screen: thawed when every viewer's end screen is done, or the worst case (tick)
+			holdUntil = System.currentTimeMillis() + OUTRO_MS + OUTRO_SLACK_MS;
+			OUTRO.clear();
+			for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+				if (VIEWERS.contains(p.getUUID())) {
+					OUTRO.add(p.getUUID());
+				}
+			}
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (VIEWERS.contains(player.getUUID())) {
@@ -515,10 +548,11 @@ public final class PotgReplay {
 	/** END_SERVER_TICK, first: true while a showing holds the world, and then the mod's own ticks are skipped too. */
 	public static boolean tick(MinecraftServer server) {
 		if (!active) {
-			if (holdUntil > 0 && System.currentTimeMillis() >= holdUntil) {
-				holdUntil = 0;
-				server.tickRateManager().setFrozen(wasFrozen);
-				Overcraft.LOG.info("[POTG] end screen over: world {}", wasFrozen ? "left frozen" : "thawed");
+			if (holdUntil > 0) {
+				OUTRO.removeIf(id -> server.getPlayerList().getPlayer(id) == null);
+				if (OUTRO.isEmpty() || System.currentTimeMillis() >= holdUntil) {
+					thaw(server, OUTRO.isEmpty() ? "every end screen done" : "worst case");
+				}
 			}
 			return holdUntil > 0;
 		}
@@ -534,9 +568,31 @@ public final class PotgReplay {
 		return holdsWorld;
 	}
 
+	/** The end screen's hold is over (or must end now): the world back as it was before the showing. Every end path comes here. */
+	private static void thaw(MinecraftServer server, String why) {
+		if (holdUntil <= 0) {
+			return;
+		}
+		holdUntil = 0;
+		OUTRO.clear();
+		server.tickRateManager().setFrozen(wasFrozen);
+		Overcraft.LOG.info("[POTG] end screen over ({}): world {}", why, wasFrozen ? "left frozen" : "thawed");
+	}
+
+	/** A viewer's client: its end screen (or a solo's black) is over and its input is back. */
+	public static void viewerDoneWatching(ServerPlayer player) {
+		OUTRO.remove(player.getUUID());
+	}
+
+	/** Whether the POTG's end screen still holds the world (no highlight may start then: critique 1). */
+	public static boolean holding() {
+		return holdUntil > 0;
+	}
+
 	public static void clear() {
 		active = false;
 		holdUntil = 0;
+		OUTRO.clear();
 		dragonPending = false;
 		generation++;
 		VIEWERS.clear();

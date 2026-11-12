@@ -1,0 +1,8 @@
+[18:57:33] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862) to 1 viewer(s), world frozen (was false)
+[18:57:42] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 8298 ms after the card began
+[18:57:55] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 21436 ms, world held for the end screen
+[18:57:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[18:58:02] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5141 ms after the card began
+[18:58:15] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 17919 ms, world not held
+[18:58:27] [Render thread/INFO] (Minecraft) [System] [CHAT] The game is frozen
+[18:58:27] [Render thread/INFO] (Minecraft) [System] [CHAT] Target tick rate: 20.0 per second.\nAverage time per tick: 0.3ms (Target: 50.0ms)

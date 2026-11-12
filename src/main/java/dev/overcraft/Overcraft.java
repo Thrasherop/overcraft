@@ -130,7 +130,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.HighlightsPayload.TYPE,
-			(payload, context) -> dev.overcraft.potg.PotgReplay.highlightsAsked(context.player(), payload.watch()));
+			(payload, context) -> dev.overcraft.potg.PotgReplay.highlightsAsked(context.player(), payload.watch(), payload.data()));
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
 			if (dev.overcraft.potg.PotgReplay.viewing(context.player())) {

@@ -79,3 +79,32 @@ Raw driver output: [runs_look](runs_look/). Screenshots in the worktree's `run/s
 - Sound by ear: nobody listened.
 - A dedicated server; the two-client pass covered one LAN guest.
 - No critique agent has read this step.
+
+## The critique's round (2026-11-11)
+A critic read `94fca0f`/`bfb2c2b`; each finding below was reproduced on the old build first where it says so, then
+played again on the fix (one client, then two over LAN; Overwatch closed, the lock held). Raw output: `runs_look/repro1_log.txt`,
+`repro2_log.txt`, `fix12_log.txt`, `look_fix2_out.txt`, `look_solo_fix_out.txt`, `measure_*.txt`.
+1. **The world frozen for good** (reproduced: a highlight started during the end screen's hold, then `/tick query`: "The
+   game is frozen"). Highlights are refused while a hold is pending (`holding()`), and every end of a hold goes through
+   `thaw` (a new showing during the hold thaws first). After: the same request answered "A showing is already playing",
+   then "end screen over (every end screen done): world thawed", `/tick query`: running normally.
+2. **A highlight ate the dragon's POTG** (reproduced with two clients, so the integrated server didn't pause: tick 199
+   chose a play and nothing showed). Now a solo showing ends at tick 199 and the POTG starts for everyone; the run closes
+   either way. After: "showing ended (the dragon's POTG)", then the POTG to 2 viewers.
+3. **End screen** (reproduced: `repro1_endscreen_before.png`). Figures are drawn first, each clipped to its own slot (1.2
+   card widths; slots 20% W apart), then the cards' panels and text over them; mobs at most 0.44 H; the dragon turned
+   three quarters from above and fitted to its slot. After: `fix2_1_25s.png`, `fix2_2_25s.png`.
+4. **Intro text drift** counted from 2.97 s into the intro (where §1 was measured). Measured in the shot at that moment
+   (`measure_intro.py`): title 7.9% W, name 10.8% W, hero line 12.8% W; caps 3.8, 6.9, 3.0% H (the clip: 7.7, 10.5, 12.7;
+   3.9, 6.9, 3.0). Before: 9.1, 12.1, 14.1% W.
+5. **The solo path** played by K and Enter: `HIGHLIGHT` intro, white, the play, black, back; no end screen (`solo_fix_1_*`).
+6. The hold ends when every viewer's client reports its end screen done (`HighlightsPayload.DONE`), or 8 s past the end
+   screen's length.
+7. The lineup spaces and shrinks past six (code only: not played with seven players).
+8. A highlight is asked for by its `epochMs`, not its row.
+9. `players.json` is written to a temp file and moved over; the run totals reset at every dragon decision (POTG or not),
+   not at the dev command.
+10. The end screen names the play's dimension from the lang file (`overcraft.potg.dim.*`); the menu uses the same names.
+11. An unreadable reply shows `overcraft.highlights.error`, not "locked" (code only).
+12. Fewer than three most-played heroes are centred (one, centred, in the play shots).
+- The boss bar is hidden while a showing is on screen (`PotgBossBarMixin`).

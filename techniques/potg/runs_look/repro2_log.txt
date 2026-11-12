@@ -1,0 +1,6 @@
+[19:05:15] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+[19:05:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Watching Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239)
+[19:05:21] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5164 ms after the card began
+[19:05:25] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 1500; highlights: [Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862), Kiriko High Score 2637 as kiriko in minec
+[19:05:25] [Server thread/INFO] (Overcraft) [POTG] mobs this run: [ { "uuid": "a40155fa-e572-44d3-9703-4fe20b8151ac", "type": "minecraft:zombie", "playersKilled": 0, "damageToPlayers": 37.5 }, { "uuid": "6cc96d6b-a5bd-4010-b952-c7
+[19:05:34] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 17848 ms, world not held

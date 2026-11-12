@@ -1,0 +1,28 @@
+=== phase fix 19:10:09
+window 1920 1080 {'ok': True}
+openworld look1 {'ok': True}
+=== phase fix 19:10:10
+state {'screen': 'GenericMessageScreen', 'fps': 59, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:12
+state {'screen': 'GenericMessageScreen', 'fps': 59, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:14
+state {'screen': 'LevelLoadingScreen', 'fps': 24, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:16
+state {'screen': 'LevelLoadingScreen', 'fps': 52, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:18
+state {'screen': 'LevelLoadingScreen', 'fps': 56, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:21
+state {'screen': 'LevelLoadingScreen', 'fps': 56, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:23
+state {'screen': 'LevelLoadingScreen', 'fps': 0, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:31
+state {'screen': 'AccessibilityOnboardingScreen', 'fps': 45, 'fx': 0, 'inWorld': False}
+=== phase fix 19:10:34
+state {'screen': 'LevelLoadingScreen', 'fps': 21, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 61.0, 'z': 30.5, 'yaw': -96.95663, 'pitch': -9.894816, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': '', 'ult': 0.0, 'ultCost': 1, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.0, 'primaryAmmo': 0, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 0, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'fall', 'clothLowest': 0.04083471, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(0 0 0)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase fix 19:10:36
+state {'screen': 'HeroSelectScreen', 'fps': 16, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 61.0, 'z': 30.5, 'yaw': -96.95663, 'pitch': -9.894816, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 2, 'perkProgress': 0.2187414, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': -0.009800000190734863, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.04014507, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(0.543 0.055 -0.186)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase fix 19:10:37
+hero kiriko {'ok': True}
+close {'ok': True}
+heromode on {'ok': True}
+cmd /publish true 25700 {'ok': True}

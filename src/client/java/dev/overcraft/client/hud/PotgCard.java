@@ -79,6 +79,8 @@ public final class PotgCard {
 	private static final float DIP = dev.overcraft.potg.PotgReplay.DIP_MS / 1000f;
 	private static final float INTRO = dev.overcraft.potg.PotgReplay.INTRO_MS / 1000f;
 	private static final float INTRO_FADE = 0.27f;
+	/** The clip's §1 positions were measured at 16.0 s: 2.97 s into the intro (13.03 s). */
+	private static final float MEASURED_AT = 2.97f;
 	private static final float WHITE_HOLD = 0.3f;
 	private static final float WHITE_FADE = 0.5f;
 	/** The white holds at most this long waiting for the replay's login (ours). */
@@ -273,9 +275,10 @@ public final class PotgCard {
 	private static void lineup(GuiGraphicsExtractor g, Minecraft mc, float t, float scale, float w, float h) {
 		JsonArray list = data.has("lineup") ? data.getAsJsonArray("lineup") : new JsonArray();
 		int n = list.size();
-		// the clip: five heroes across 20-85% W, feet about 88% H, about 55% H tall; ours spaced 15% W about the middle
-		float spacing = 0.15f * w;
-		float figure = 0.55f * h;
+		// the clip: five heroes across 20-85% W, feet about 88% H, about 55% H tall; ours spaced 15% W about the middle,
+		// closer and smaller past six so all fit in 90% W (critique 7)
+		float spacing = Math.min(0.15f * w, 0.9f * w / Math.max(1, n));
+		float figure = 0.55f * h * Math.min(1, spacing / (0.15f * w));
 		for (int i = 0; i < n; i++) {
 			JsonObject p = list.get(i).getAsJsonObject();
 			float cx = w / 2 + (i - (n - 1) / 2f) * spacing;
@@ -293,7 +296,8 @@ public final class PotgCard {
 		for (int i = 0; i < n; i++) {
 			JsonObject p = list.get(i).getAsJsonObject();
 			float cx = w / 2 + (i - (n - 1) / 2f) * spacing;
-			HudText.draw(g, Face.BODY, str(p, "name").toUpperCase(Locale.ROOT), cx, 0.88f * h - figure - 0.02f * h, 0.014f * h,
+			HudText.draw(g, Face.BODY, str(p, "name").toUpperCase(Locale.ROOT), cx, 0.88f * h - figure - 0.02f * h,
+				0.014f * h * Math.max(0.7f, figure / (0.55f * h)),
 				alpha(LINEUP_NAME, 1), Align.CENTER);
 		}
 		g.pose().popMatrix();
@@ -314,11 +318,14 @@ public final class PotgCard {
 		}
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
-		// the block drifts right 0.43% W/s all through (§1)
-		float drift = 0.0043f * w * it;
+		// the block drifts right 0.43% W/s all through (§1); the measured positions and sizes are those at 16.0 s, MEASURED_AT
+		// into the intro, so the drift and the growth are about that moment (critique 4: added on top, the text sat 1.5% W
+		// too far right)
+		float since = it - MEASURED_AT;
+		float drift = 0.0043f * w * since;
 		// PLAY OF THE GAME: from 0.12 s (frame 789), readable 0.05 s later; grows 2%/s
 		float titleA = clamp01((it - 0.12f) / 0.08f);
-		float titleCap = 0.039f * h * (1 + 0.02f * it);
+		float titleCap = 0.039f * h * (1 + 0.02f * since);
 		String title = title();
 		shadowed(g, Face.NUMBERS, title, 0.077f * w + drift, 0.224f * h, titleCap, INTRO_TITLE, titleA);
 		// the flare: a blue-white streak sweeps left to right across the title line, 0.17-0.32 s (frames 792-801)
@@ -338,7 +345,7 @@ public final class PotgCard {
 		float pop = (it - 0.52f) / 0.23f;
 		if (pop >= 0) {
 			float e = 1 - (float) Math.pow(1 - clamp01(pop), 3);
-			float size = pop < 1 ? 1.5f - 0.5f * e : 1 + 0.05f * (it - 0.75f);
+			float size = (pop < 1 ? 1.5f - 0.5f * e : 1) * (1 + 0.05f * since);
 			float x = 0.105f * w + drift - 0.0164f * w * (1 - e);
 			float a = clamp01(pop / 0.15f);
 			String name = str(data, "player").toUpperCase(Locale.ROOT);
@@ -351,7 +358,7 @@ public final class PotgCard {
 			shadowed(g, Face.NUMBERS, name, x, 0.31f * h, cap, INTRO_NAME, a);
 		}
 		// AS at 1.37 s, the hero's name at 1.52 s, each a quick fade (14.4 and 14.5-14.6 s in the clip)
-		float heroCap = 0.030f * h * (1 + 0.02f * it);
+		float heroCap = 0.030f * h * (1 + 0.02f * since);
 		float asA = clamp01((it - 1.37f) / 0.1f);
 		float heroA = clamp01((it - 1.52f) / 0.1f);
 		if (asA > 0) {
@@ -432,9 +439,11 @@ public final class PotgCard {
 		// ours: the label, and the time in hero mode with that hero in this world
 		JsonArray most = data.has("most") ? data.getAsJsonArray("most") : new JsonArray();
 		HudText.draw(g, Face.SMALL, "MOST PLAYED", x0 + cw / 2, y0 + 0.67f * ch, 0.0085f * h, alpha(0x8FA3C4, 1), Align.CENTER);
-		float[] at = {0.21f, 0.475f, 0.74f};
+		// three at 21, 47.5 and 74% across (the clip); fewer are centred (critique 12)
+		float[][] ats = {{}, {0.5f}, {0.34f, 0.66f}, {0.21f, 0.475f, 0.74f}};
+		float[] at = ats[Math.min(3, most.size())];
 		float d = 0.2f * cw;
-		for (int i = 0; i < Math.min(3, most.size()); i++) {
+		for (int i = 0; i < at.length; i++) {
 			JsonObject m = most.get(i).getAsJsonObject();
 			Hero mh = Hero.byId(str(m, "hero"));
 			float cx = x0 + at[i] * cw;
@@ -500,14 +509,21 @@ public final class PotgCard {
 		// the clip's centres, two a side: 16.4, 36.4 | 64.5, 83.6% W; ours for one or three
 		float[][] allyAt = {{}, {0.264f}, {0.164f, 0.364f}, {0.11f, 0.265f, 0.42f}};
 		float[][] enemyAt = {{}, {0.74f}, {0.645f, 0.836f}};
-		int i = 0;
 		int na = Math.min(3, allies.size());
 		int ne = Math.min(2, enemies.size());
-		for (int k = 0; k < na; k++, i++) {
-			card(g, mc, allies.get(k), allyAt[na][k], true, et - i * CARD_STEP, scale, w, h, a);
-		}
-		for (int k = 0; k < ne; k++, i++) {
-			card(g, mc, enemies.get(k), enemyAt[ne][k], false, et - i * CARD_STEP, scale, w, h, a);
+		// the figures first, every one in its own slot, then the cards' panels and text over them (critique 3: the text
+		// stays readable, as the clip's)
+		for (int pass = 0; pass < 2; pass++) {
+			if (pass == 1) {
+				g.nextStratum();
+			}
+			int i = 0;
+			for (int k = 0; k < na; k++, i++) {
+				card(g, mc, allies.get(k), allyAt[na][k], true, et - i * CARD_STEP, scale, w, h, a, pass == 0);
+			}
+			for (int k = 0; k < ne; k++, i++) {
+				card(g, mc, enemies.get(k), enemyAt[ne][k], false, et - i * CARD_STEP, scale, w, h, a, pass == 0);
+			}
 		}
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
@@ -516,15 +532,16 @@ public final class PotgCard {
 		HudDraw.fill(g, 0, 0.125f * h, w, 0.003f * h, alpha(END_RULE, a));
 		String victory = Component.translatable("overcraft.hud.victory").getString().toUpperCase(Locale.ROOT);
 		HudText.plain(g, Face.BODY, victory, 0.026f * w, 0.080f * h, 0.037f * h, alpha(END_VICTORY, a), Align.LEFT);
-		// to its right the map's name (ours: the dragon's dimension)
+		// to its right the map's name (ours: the play's dimension, from the lang file)
 		float vw = HudText.width(Face.BODY, victory, 0.037f * h);
-		HudText.plain(g, Face.BODY, "THE END", 0.026f * w + vw + 0.015f * w, 0.058f * h, 0.012f * h, alpha(0xFFFFFF, a), Align.LEFT);
+		HudText.plain(g, Face.BODY, dimensionName(str(data, "dimension")), 0.026f * w + vw + 0.015f * w, 0.058f * h, 0.012f * h,
+			alpha(0xFFFFFF, a), Align.LEFT);
 		g.pose().popMatrix();
 	}
 
 	/** One card: the figure posed above it, the name, the stat, its label, the team's rule; it comes in with a streak. */
 	private static void card(GuiGraphicsExtractor g, Minecraft mc, JsonObject c, float centre, boolean ally, float ct, float scale,
-							 float w, float h, float a) {
+							 float w, float h, float a, boolean figureOnly) {
 		if (ct < 0) {
 			return;
 		}
@@ -534,20 +551,28 @@ public final class PotgCard {
 		float top = 0.69f * h;
 		float bottom = 0.87f * h;
 		int team = ally ? ALLY : ENEMY;
-		// the figure, standing on the card (the clip: feet about 85% H, about 50% H tall)
-		if (in > 0.3f) {
-			Hero hero = Hero.byId(str(c, "hero"));
-			try {
-				if (hero != null) {
-					drawHero(mc, g, hero, null, 0, 2 + ct, cx * scale, 0.85f * h * scale, 0.5f * h * scale, 0);
-				} else if (c.has("mob")) {
-					drawMob(mc, g, str(c, "mob"), cx * scale, 0.85f * h * scale, 0.5f * h * scale, cw * scale);
+		// the figure, standing behind its card in its own slot: clipped to 1.2 card widths (the slots are 20% W apart, so
+		// no figure reaches the next: critique 3), feet about 85% H, the heroes about 50% H tall (the clip, t_32.4)
+		if (figureOnly) {
+			if (in > 0.3f) {
+				Hero hero = Hero.byId(str(c, "hero"));
+				int sx0 = Math.round((cx - 0.6f * cw) * scale);
+				int sx1 = Math.round((cx + 0.6f * cw) * scale);
+				int sy0 = Math.round(0.14f * h * scale);
+				int sy1 = Math.round(bottom * scale);
+				try {
+					if (hero != null) {
+						drawHero(mc, g, hero, null, 0, 2 + ct, cx * scale, 0.85f * h * scale, 0.5f * h * scale, 0, sx0, sy0, sx1, sy1);
+					} else if (c.has("mob")) {
+						drawMob(mc, g, str(c, "mob"), cx * scale, 0.85f * h * scale, 0.44f * h * scale, cw * scale, sx0, sy0, sx1, sy1);
+					}
+				} catch (RuntimeException e) {
+					// a figure that can't be drawn leaves its card bare, never the game down
+					MOBS.remove(str(c, "mob"));
+					dev.overcraft.Overcraft.LOG.warn("[POTG] couldn't draw the figure for {}: {}", c, e.toString());
 				}
-			} catch (RuntimeException e) {
-				// a figure that can't be drawn leaves its card bare, never the game down
-				MOBS.remove(str(c, "mob"));
-				dev.overcraft.Overcraft.LOG.warn("[POTG] couldn't draw the figure for {}: {}", c, e.toString());
 			}
+			return;
 		}
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
@@ -586,14 +611,18 @@ public final class PotgCard {
 	 */
 	private static void drawHero(Minecraft mc, GuiGraphicsExtractor g, Hero hero, @Nullable String clip, float clipAt, float holdAt,
 								 float cx, float feet, float tall, float turn) {
+		float size = tall / 1.8f;
+		drawHero(mc, g, hero, clip, clipAt, holdAt, cx, feet, tall, turn, Math.round(cx - size * 1.6f), Math.round(feet - size * 2.6f),
+			Math.round(cx + size * 1.6f), Math.round(Math.min(g.guiHeight(), feet + size * 0.3f)));
+	}
+
+	/** As above, clipped to the box (x0, y0)-(x1, y1). */
+	private static void drawHero(Minecraft mc, GuiGraphicsExtractor g, Hero hero, @Nullable String clip, float clipAt, float holdAt,
+								 float cx, float feet, float tall, float turn, int x0, int y0, int x1, int y1) {
 		if (mc.player == null || dev.overcraft.client.model.HeroModels.get(hero) == null) {
 			return;
 		}
 		float size = tall / 1.8f;
-		int x0 = Math.round(cx - size * 1.6f);
-		int x1 = Math.round(cx + size * 1.6f);
-		int y0 = Math.round(feet - size * 2.6f);
-		int y1 = Math.round(Math.min(g.guiHeight(), feet + size * 0.3f));
 		float centreY = (y0 + y1) / 2f;
 		// HeroSelectScreen's rule: the model's middle (half its 1.8 m box) sits offsetY blocks below the frame's middle
 		float offsetY = (feet - centreY) / size - 0.9f;
@@ -612,8 +641,13 @@ public final class PotgCard {
 		}
 	}
 
-	/** A mob for the enemy side, as Minecraft draws one in a menu, fitted to the card's width and the figure's height. */
-	private static void drawMob(Minecraft mc, GuiGraphicsExtractor g, String type, float cx, float feet, float tall, float wide) {
+	/**
+	 * A mob for the enemy side, as Minecraft draws one in a menu, in the box (x0, y0)-(x1, y1), its feet at (cx, feet), at
+	 * most {@code tall} high and about {@code wide} across. The dragon, wider than tall, is turned three quarters and seen a
+	 * little from above, hovering in its slot, so it reads as the dragon (critique 3: face on it was a dark smudge).
+	 */
+	private static void drawMob(Minecraft mc, GuiGraphicsExtractor g, String type, float cx, float feet, float tall, float wide,
+								int x0, int y0, int x1, int y1) {
 		if (mc.level == null) {
 			return;
 		}
@@ -625,19 +659,22 @@ public final class PotgCard {
 		}
 		float bh = mob.getBbHeight();
 		float bw = mob.getBbWidth();
-		// ours, found in play: a mob at the heroes' height looked a head taller (their models stand under 1.8 m), and the
-		// dragon, wider than tall, sank into its card: it hovers over the card instead
-		tall *= 0.85f;
 		if (bw > bh) {
-			feet -= tall * 0.35f;
+			// the dragon: its wings may run to the slot's edges, which clip them
+			float size = (x1 - x0) * 1.15f / bw;
+			float centreY = (y0 + y1) / 2f;
+			var state = mc.getEntityRenderDispatcher().getRenderer(mob).createRenderState(mob, 1.0F);
+			state.shadowPieces.clear();
+			state.outlineColor = 0;
+			org.joml.Quaternionf tilt = new org.joml.Quaternionf().rotateX(-0.45f);
+			org.joml.Quaternionf rotation = new org.joml.Quaternionf().rotateZ((float) Math.PI).mul(tilt).rotateY(2.4f);
+			// its middle a little above the slot's middle
+			org.joml.Vector3f translation = new org.joml.Vector3f(0, state.boundingBoxHeight / 2 + 0.6f, 0);
+			g.entity(state, size, translation, rotation, tilt, x0, y0, x1, y1);
+			return;
 		}
-		// a wide mob (the dragon, 16 m) may spread past its card, as the clip's figures do (found in play: fitted to the card,
-		// the dragon was a speck)
-		float size = Math.min(tall / bh, wide * 2.4f / bw);
-		int x0 = Math.round(cx - wide * 1.4f);
-		int x1 = Math.round(cx + wide * 1.4f);
-		int y0 = Math.round(feet - tall * 1.3f);
-		int y1 = Math.round(Math.min(g.guiHeight(), feet + tall * 0.2f));
+		// ours, found in play: a mob at the heroes' height looked a head taller (their models stand under 1.8 m)
+		float size = Math.min(tall / bh, wide * 0.9f / bw);
 		float centreY = (y0 + y1) / 2f;
 		float offsetY = (feet - centreY) / size - bh / 2;
 		InventoryScreen.extractEntityInInventoryFollowsMouse(g, x0, y0, x1, y1, Math.round(size), offsetY, cx - 60, centreY + 12, mob);
@@ -651,6 +688,14 @@ public final class PotgCard {
 			mob.setId(nextId--);
 		}
 		return mob;
+	}
+
+	/** A dimension's name for the screens: overcraft.potg.dim.<namespace>.<path> in the lang file, else its path. */
+	public static String dimensionName(String dimension) {
+		String id = dimension.isEmpty() ? "minecraft:the_end" : dimension;
+		String key = "overcraft.potg.dim." + id.replace(':', '.');
+		String path = id.substring(id.indexOf(':') + 1).replace('_', ' ');
+		return Component.translatableWithFallback(key, path).getString().toUpperCase(Locale.ROOT);
 	}
 
 	/** PLAY OF THE GAME (string 0DC5, D) for the POTG; for a highlight watched alone, HIGHLIGHT (ours). */

@@ -52,7 +52,7 @@ public final class ClientPotg {
 
 	/** Asks the server for the player's highlights: the menu opens when they come. */
 	public static void openHighlights() {
-		ClientPlayNetworking.send(new HighlightsPayload(-1, ""));
+		ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.LIST, ""));
 	}
 
 	private static void on(PotgPayload p) {
@@ -78,6 +78,10 @@ public final class ClientPotg {
 
 	private static void finish(Minecraft mc) {
 		active = false;
+		// the server holds the world until every viewer's end screen is over (critique 6): this one's is
+		if (mc.getConnection() != null && ClientPlayNetworking.canSend(HighlightsPayload.TYPE)) {
+			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.DONE, ""));
+		}
 		PotgCard.hide();
 		mc.getSoundManager().stop();
 		mc.gui.toastManager().clear();

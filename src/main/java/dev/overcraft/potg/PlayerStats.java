@@ -133,7 +133,7 @@ public final class PlayerStats {
 		return list.subList(0, Math.min(n, list.size()));
 	}
 
-	/** A POTG was shown: the run's totals start again (hero time stays). */
+	/** A dragon's decision (POTG or not; not the dev command's): the run's totals start again (hero time stays). */
 	public static void runOver(MinecraftServer server) {
 		load(server);
 		for (Player p : PLAYERS.values()) {
@@ -154,8 +154,15 @@ public final class PlayerStats {
 		PLAYERS.forEach((k, v) -> out.put(k.toString(), v));
 		try {
 			Files.createDirectories(PotgRecorder.root(server));
-			try (Writer w = Files.newBufferedWriter(file(server))) {
+			// written whole, then moved over the old one (critique 9: a crash mid-write lost the file)
+			Path tmp = file(server).resolveSibling("players.json.tmp");
+			try (Writer w = Files.newBufferedWriter(tmp)) {
 				GSON.toJson(out, w);
+			}
+			try {
+				Files.move(tmp, file(server), java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+			} catch (java.nio.file.AtomicMoveNotSupportedException e) {
+				Files.move(tmp, file(server), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 			}
 		} catch (IOException e) {
 			Overcraft.LOG.warn("[POTG] couldn't save players.json: {}", e.toString());

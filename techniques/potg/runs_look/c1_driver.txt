@@ -271,3 +271,28 @@ heromode off {'ok': True}
 press key.keyboard.escape {'key': 'key.keyboard.escape'}
 === phase c1 18:46:29
 screenclick 240 182 1 {'screen': 'TitleScreen'}
+=== phase c1 19:04:49
+cmd /effect give @a minecraft:resistance 99999 3 true {'ok': True}
+cmd /effect give @a minecraft:regeneration 99999 2 true {'ok': True}
+=== phase c1 19:05:08
+cmd /kill @e[type=minecraft:zombie] {'ok': True}
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 90 0 {'ok': True}
+=== phase c1 19:05:47
+heromode off {'ok': True}
+=== phase c1 19:05:48
+press key.keyboard.escape {'key': 'key.keyboard.escape'}
+=== phase c1 19:05:49
+screenclick 240 182 1 {'screen': 'TitleScreen'}
+=== phase c1 19:13:38
+cmd /effect give @a minecraft:resistance 99999 3 true {'ok': True}
+cmd /effect give @a minecraft:regeneration 99999 2 true {'ok': True}
+cmd /tick query {'ok': True}
+=== phase c1 19:13:57
+cmd /kill @e[type=minecraft:zombie] {'ok': True}
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 90 0 {'ok': True}
+=== phase c1 19:16:41
+heromode off {'ok': True}
+=== phase c1 19:16:43
+press key.keyboard.escape {'key': 'key.keyboard.escape'}
+=== phase c1 19:16:44
+screenclick 240 182 1 {'screen': 'TitleScreen'}

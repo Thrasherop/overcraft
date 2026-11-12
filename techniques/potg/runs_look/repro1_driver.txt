@@ -1,0 +1,7 @@
+=== phase repro1 18:57:33
+cmd /overcraft potg now {'ok': True}
+=== phase repro1 18:57:57
+screenshot repro1_endscreen_before.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\repro1_endscreen_before.png'}
+cmd /overcraft potg watch 0 {'ok': True}
+=== phase repro1 18:58:27
+cmd /tick query {'ok': True}

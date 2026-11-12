@@ -194,7 +194,7 @@ if phase == "look":
     t_wait = time.time()
     while time.time() - t_wait < float(sys.argv[4] if len(sys.argv) > 4 else 120):
         lines = potglines(n)
-        if any("showing " in x and "viewer" in x for x in lines) or any("watches highlight" in x for x in lines):
+        if any("showing " in x and "viewer" in x for x in lines) or any("watch" in x and "highlight" in x for x in lines):
             break
         time.sleep(0.05)
     t0 = time.time()

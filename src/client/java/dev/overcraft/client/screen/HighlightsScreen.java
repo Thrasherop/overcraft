@@ -40,15 +40,18 @@ public class HighlightsScreen extends OwScreen {
 	private static final float ITEM_TOP = 300;
 	private static final float ITEM_STEP = 110;
 
-	private record Row(Hero hero, String when, String where) {
+	private record Row(Hero hero, String when, String where, long epochMs) {
 	}
 
+	/** The server's reply couldn't be read (critique 11: it showed as "locked"). */
+	private final boolean broken;
 	private final boolean locked;
 	private final List<Row> rows;
 	private int selected;
 
-	private HighlightsScreen(boolean locked, List<Row> rows) {
+	private HighlightsScreen(boolean broken, boolean locked, List<Row> rows) {
 		super(Component.translatable("overcraft.highlights.title"));
+		this.broken = broken;
 		this.locked = locked;
 		this.rows = rows;
 	}
@@ -56,6 +59,7 @@ public class HighlightsScreen extends OwScreen {
 	/** The server's answer to the key: the menu opens with it. */
 	public static void received(String json) {
 		boolean locked = false;
+		boolean broken = false;
 		List<Row> rows = new ArrayList<>();
 		try {
 			JsonObject o = JsonParser.parseString(json).getAsJsonObject();
@@ -69,15 +73,17 @@ public class HighlightsScreen extends OwScreen {
 					hero = Hero.KIRIKO;
 				}
 				String dim = h.has("dimension") ? h.get("dimension").getAsString() : "";
-				String where = dim.endsWith("the_end") ? "THE END" : dim.endsWith("the_nether") ? "THE NETHER" : "OVERWORLD";
-				rows.add(new Row(hero, format.format(new Date(h.get("epochMs").getAsLong())).toUpperCase(Locale.ROOT), where));
+				long epochMs = h.get("epochMs").getAsLong();
+				rows.add(new Row(hero, format.format(new Date(epochMs)).toUpperCase(Locale.ROOT),
+					dev.overcraft.client.hud.PotgCard.dimensionName(dim), epochMs));
 			}
 		} catch (Exception e) {
-			locked = true;
+			broken = true;
+			rows.clear();
 		}
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.gui.screen() == null || mc.gui.screen() instanceof OverwatchMenuScreen) {
-			mc.gui.setScreen(new HighlightsScreen(locked, rows));
+			mc.gui.setScreen(new HighlightsScreen(broken, locked, rows));
 		}
 	}
 
@@ -96,7 +102,8 @@ public class HighlightsScreen extends OwScreen {
 	private void watch(int i) {
 		if (i >= 0 && i < rows.size()) {
 			onClose();
-			ClientPlayNetworking.send(new HighlightsPayload(i, ""));
+			// by its time, a stable id (critique 8: a row's index could name another highlight by the time it arrives)
+			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.WATCH, Long.toString(rows.get(i).epochMs())));
 		}
 	}
 
@@ -134,9 +141,9 @@ public class HighlightsScreen extends OwScreen {
 		begin(g);
 		HudText.draw(g, Face.NUMBERS, Component.translatable("overcraft.highlights.title").getString().toUpperCase(Locale.ROOT),
 			ITEM_X, 200, 64, WHITE, Align.LEFT);
-		if (locked || rows.isEmpty()) {
-			String why = Component.translatable(locked ? "overcraft.highlights.locked" : "overcraft.highlights.none").getString()
-				.toUpperCase(Locale.ROOT);
+		if (broken || locked || rows.isEmpty()) {
+			String why = Component.translatable(broken ? "overcraft.highlights.error" : locked ? "overcraft.highlights.locked"
+				: "overcraft.highlights.none").getString().toUpperCase(Locale.ROOT);
 			HudText.draw(g, Face.BODY, why, ITEM_X, ITEM_TOP + 20, 18, TEXT, Align.LEFT);
 		}
 		for (int i = 0; i < rows.size(); i++) {
