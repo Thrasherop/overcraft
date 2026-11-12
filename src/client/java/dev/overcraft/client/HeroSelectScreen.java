@@ -469,7 +469,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER ? 0.72f
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -597,6 +597,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "blink"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "recall"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "pulse_bomb"));
+			// his data's loadouts: Peacekeeper (the left button), Fan the Hammer (the right), Combat Roll, Flashbang, Deadeye; no other
+			// passive (Sharpshooter is the sub-role's)
+			case CASSIDY -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "peacekeeper"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "fan_the_hammer"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "combat_roll"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "flashbang"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "deadeye"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

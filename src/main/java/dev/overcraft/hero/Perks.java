@@ -65,6 +65,7 @@ public final class Perks {
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MINOR_XP;
 			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MINOR_XP;
 			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MINOR_XP;
+			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -86,6 +87,7 @@ public final class Perks {
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MAJOR_XP;
 			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MAJOR_XP;
 			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MAJOR_XP;
+			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

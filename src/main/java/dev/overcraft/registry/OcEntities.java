@@ -146,6 +146,12 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2, (float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Cassidy's Flashbang (037D): 0.2 m (not saved: it goes off within 7 m). */
+	public static final EntityType<dev.overcraft.entity.FlashbangEntity> FLASHBANG = register("flashbang",
+		EntityType.Builder.<dev.overcraft.entity.FlashbangEntity>of(dev.overcraft.entity.FlashbangEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2, (float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)

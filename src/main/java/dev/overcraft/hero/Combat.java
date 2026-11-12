@@ -730,6 +730,7 @@ public final class Combat {
 			case SOJOURN -> (int) dev.overcraft.sojourn.SojournStats.ULT_COST;
 			case PHARAH -> (int) dev.overcraft.pharah.PharahStats.ULT_COST;
 			case TRACER -> (int) dev.overcraft.tracer.TracerStats.ULT_COST;
+			case CASSIDY -> (int) dev.overcraft.cassidy.CassidyStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};

@@ -74,7 +74,12 @@ public enum Perk {
 	TRACER_TEMPORAL_REGEN(Hero.TRACER, Tier.MINOR, "temporal_regen"),
 	TRACER_KINETIC_RELOAD(Hero.TRACER, Tier.MINOR, "kinetic_reload"),
 	TRACER_BLINK_PACKS(Hero.TRACER, Tier.MAJOR, "blink_packs"),
-	TRACER_QUANTUM_ENTANGLEMENT(Hero.TRACER, Tier.MAJOR, "quantum_entanglement");
+	TRACER_QUANTUM_ENTANGLEMENT(Hero.TRACER, Tier.MAJOR, "quantum_entanglement"),
+	// Cassidy's, the live list's order (D 006C.177: 2527, 2ADA; 286A, 2723; cassidy-map.md)
+	CASSIDY_BANG_BANG(Hero.CASSIDY, Tier.MINOR, "bang_bang"),
+	CASSIDY_GIDDY_UP(Hero.CASSIDY, Tier.MINOR, "giddy_up"),
+	CASSIDY_ROLLIN_ROUND_UP(Hero.CASSIDY, Tier.MAJOR, "rollin_round_up"),
+	CASSIDY_SILVER_BULLET(Hero.CASSIDY, Tier.MAJOR, "silver_bullet");
 
 	public enum Tier { MINOR, MAJOR }
 

@@ -184,6 +184,7 @@ public final class ClientHero {
 		ClientSojourn.reset();
 		ClientPharah.reset();
 		ClientTracer.reset();
+		ClientCassidy.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -417,7 +418,7 @@ public final class ClientHero {
 		}
 
 		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
-			| ClientSigma.input(player);
+			| ClientSigma.input(player) | ClientCassidy.extra(player, pressed);
 		int wall = OwMovement.wallCode(player);
 		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;

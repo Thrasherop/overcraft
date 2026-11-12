@@ -207,7 +207,14 @@ public final class Voice {
 		java.util.Map.entry("tracer.recall", new Stimulus(50, 2, 5, false)), // 0084 (criteria 05A7)
 		java.util.Map.entry("tracer.pulse_bomb_stick", new Stimulus(85, 0.1f, 0.1f, false)), // 0082
 		java.util.Map.entry("tracer.pulse_bomb_kill", new Stimulus(50, 2, 5, false)), // 0083
-		java.util.Map.entry("tracer.ultimate", new Stimulus(95, 2, 2, false))); // 0081
+		java.util.Map.entry("tracer.ultimate", new Stimulus(95, 2, 2, false)), // 0081
+		// Cassidy's (tools/soundmaps/cassidy.txt; his stimuli's .078)
+		java.util.Map.entry("cassidy.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("cassidy.roll", new Stimulus(30, 2, 5, false)), // 01D3 (01F0 #140)
+		java.util.Map.entry("cassidy.flashbang", new Stimulus(65, 2, 5, false)), // 01D4 (01E9 #116)
+		java.util.Map.entry("cassidy.deadeye_fire", new Stimulus(60, 0.1f, 0.1f, false)), // 020C (022F #473)
+		java.util.Map.entry("cassidy.deadeye_kill", new Stimulus(50, 2, 5, false)), // 01D6 (022F #452)
+		java.util.Map.entry("cassidy.ultimate", new Stimulus(95, 1, 1, false))); // 183B (022F #621, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

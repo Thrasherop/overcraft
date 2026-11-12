@@ -52,6 +52,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
+			(payload, context) -> dev.overcraft.client.hud.DeadeyeHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
@@ -119,6 +121,7 @@ public class OvercraftClient implements ClientModInitializer {
 			Cleansed.clear();
 			KillFeedHud.clear();
 			dev.overcraft.client.hud.ConspiratorHud.clear();
+			dev.overcraft.client.hud.DeadeyeHud.clear();
 			HeroHud.clearMoments();
 			VictoryHud.clear();
 			RushSound.clear();
@@ -221,6 +224,9 @@ public class OvercraftClient implements ClientModInitializer {
 			"dva_missile", 0.35f, false, 1, false));
 		// Pharah's rockets (12F5B; Barrage's and Rocket Salvo's the same model) and Concussive Blast (stand-in item)
 		// Tracer's Pulse Bomb (model 160BB)
+		// Cassidy's Flashbang (model 118EB on entity 037D)
+		EntityRendererRegistry.register(OcEntities.FLASHBANG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"cassidy_flashbang", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -313,9 +319,13 @@ public class OvercraftClient implements ClientModInitializer {
 		// Lifeweaver's dash, else Brigitte's Shield Bash
 		OwMovement.dash = entity -> {
 			net.minecraft.world.phys.Vec3 lw = ClientLifeweaver.dash(entity);
-			return lw != null ? lw : ClientBrigitte.bash(entity);
+			if (lw != null) {
+				return lw;
+			}
+			net.minecraft.world.phys.Vec3 roll = ClientCassidy.roll(entity);
+			return roll != null ? roll : ClientBrigitte.bash(entity);
 		};
-		OwMovement.abilityMoving = entity -> ClientLifeweaver.grip(entity) != null || ClientMercy.glide(entity) != null || ClientLifeweaver.dashing(entity) || ClientBrigitte.bashing(entity) || ClientSojourn.slide(entity) != null;
+		OwMovement.abilityMoving = entity -> ClientLifeweaver.grip(entity) != null || ClientMercy.glide(entity) != null || ClientLifeweaver.dashing(entity) || ClientBrigitte.bashing(entity) || ClientSojourn.slide(entity) != null || ClientCassidy.rolling(entity);
 		OwMovement.descent = ClientMercy::descent;
 		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
 		OwMovement.levitating = ClientSigma::levitating;

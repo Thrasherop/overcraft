@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -52,7 +52,16 @@ public final class HeroWeapon {
 		Hero.PHARAH, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Tracer's right Pulse Pistol, entity 0017 (model DA61) on her hardpoint 000A = Weapon_R (slot 1B9B), no offset, in both
 		// views (her models' hardpoint tables); the left one on 000B = Weapon_L is an extra (leftPistol); hero_models/tracer_weapon.glb
-		Hero.TRACER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.TRACER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Cassidy's Peacekeeper, entity 02A6 (model EECF) on his hardpoint 000A = Weapon_R (slot 1901), no offset, in both views
+		// (his models' hardpoint tables); hero_models/cassidy_weapon.glb (Map.of holds ten: the rest added here)
+		Hero.CASSIDY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+
+	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
+		Map<Hero, Spec> all = new java.util.EnumMap<>(first);
+		all.put(hero, spec);
+		return java.util.Collections.unmodifiableMap(all);
+	}
 
 	private HeroWeapon() {
 	}

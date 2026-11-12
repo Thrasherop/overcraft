@@ -217,6 +217,9 @@ public final class HeroState {
 	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> tracerLevel, tracerRecallLevel;
 	public java.util.@org.jspecify.annotations.Nullable UUID tracerPackCloud;
 	public long tracerPackAt = -1000;
+	/** Cassidy (dev.overcraft.cassidy.Cassidy): his kit's state, and the roll direction his client sent with its press. */
+	public final dev.overcraft.cassidy.CassidyState cassidy = new dev.overcraft.cassidy.CassidyState();
+	public int cassidyRollDir;
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;

@@ -37,7 +37,9 @@ public enum Hero {
 	// the second Damage hero (#70), Recon (D loadout 0DAD; BZ 2026-02-10); colour ours (her armour's blue, until her data's is read)
 	PHARAH("pharah", "Pharah", Role.DAMAGE, "recon", dev.overcraft.pharah.PharahStats.HEALTH, true, 0xFF3E7CC9),
 	// the third Damage hero (#71), Flanker (D tag 1187, 01C7 #2579; BZ 2026-02-10); colour ours (her jacket's orange)
-	TRACER("tracer", "Tracer", Role.DAMAGE, "flanker", dev.overcraft.tracer.TracerStats.HEALTH, true, 0xFFF29A2E);
+	TRACER("tracer", "Tracer", Role.DAMAGE, "flanker", dev.overcraft.tracer.TracerStats.HEALTH, true, 0xFFF29A2E),
+	// the fourth Damage hero (#72), Sharpshooter (D tag 1188; BZ 2026-02-10); colour ours (his serape's red)
+	CASSIDY("cassidy", "Cassidy", Role.DAMAGE, "sharpshooter", dev.overcraft.cassidy.CassidyStats.HEALTH, true, 0xFFB8392B);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

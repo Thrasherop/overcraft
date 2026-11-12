@@ -560,6 +560,19 @@ public final class OcSounds {
 	public static final java.util.List<String> TRACER_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "blink", "recall", "pulse_bomb_stick", "pulse_bomb_kill", "ultimate");
+	/**
+	 * Cassidy's sounds by name ("cassidy." + name, played through dev.overcraft.cassidy.CassidySounds; tools/soundmaps/cassidy_sfx.txt
+	 * says which data event each is) and his voice moments (Voice.say: "cassidy.voice.<moment>", tools/soundmaps/cassidy.txt). His set
+	 * has no reload line (H). The ult line is ult.friendly / ult.enemy, his own "ultimate".
+	 */
+	public static final java.util.List<String> CASSIDY_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"peacekeeper.fire", "peacekeeper.fire_3p", "fan.fire", "fan.fire_3p", "peacekeeper.bullet_3p", "peacekeeper.hit_enemy",
+		"peacekeeper.hit_enemy_3p", "peacekeeper.hit_block", "reload", "reload_3p", "roll", "roll_3p", "flashbang.throw",
+		"flashbang.throw_3p", "flashbang.fuse", "flashbang.explode", "flashbang.explode_3p", "deadeye.start", "deadeye.loop",
+		"deadeye.start_3p", "deadeye.loop_3p", "deadeye.fire", "deadeye.fire_3p", "deadeye.end", "melee");
+	public static final java.util.List<String> CASSIDY_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "roll", "flashbang", "deadeye_fire", "deadeye_kill", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -607,6 +620,8 @@ public final class OcSounds {
 		PHARAH_VOICE.forEach(moment -> register("pharah.voice." + moment));
 		TRACER_SOUNDS.forEach(name -> register("tracer." + name));
 		TRACER_VOICE.forEach(moment -> register("tracer.voice." + moment));
+		CASSIDY_SOUNDS.forEach(name -> register("cassidy." + name));
+		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
 	}
 
 	private OcSounds() {

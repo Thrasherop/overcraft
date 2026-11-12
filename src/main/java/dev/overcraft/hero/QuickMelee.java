@@ -127,6 +127,10 @@ public final class QuickMelee {
 			// her 3P melee clip 01BE's 1788 @0.133 (30 m): one copy for everyone (tracer_sfx.txt)
 			dev.overcraft.tracer.TracerSounds.all(hero.level(), "melee", hero.position(), 30);
 		}
+		if (s.hero == Hero.CASSIDY) {
+			// his melee clip's DBAD (cassidy_sfx.txt): one copy for everyone
+			dev.overcraft.cassidy.CassidySounds.all(hero.level(), "melee", hero.position(), 30);
+		}
 		if (s.hero == Hero.SIGMA) {
 			// his melee clips' foley: 1P 6FCD's 3086 (59F1 + 5A6C) his, 3P 6F89's 306A (59F7, 30 m) for others
 			HeroSounds.split(hero, dev.overcraft.sigma.SigmaSounds.of("melee"), dev.overcraft.sigma.SigmaSounds.of("melee_3p"),

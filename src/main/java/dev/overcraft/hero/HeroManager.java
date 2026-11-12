@@ -181,6 +181,7 @@ public final class HeroManager {
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
 		KITS.put(Hero.PHARAH, new dev.overcraft.pharah.Pharah());
 		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
+		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
 	}
 
 	private HeroManager() {
@@ -664,6 +665,10 @@ public final class HeroManager {
 		if (dev.overcraft.sombra.Hack.silenced(player)) {
 			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
 			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);
+		}
+		if (state.hero == Hero.CASSIDY && input.extra() != 0) {
+			// his roll's direction, sent with its press (ClientCassidy)
+			dev.overcraft.cassidy.Cassidy.extra(player, state, input.extra());
 		}
 		if (kit != null && pressed != 0) {
 			kit.press(player, state, pressed);

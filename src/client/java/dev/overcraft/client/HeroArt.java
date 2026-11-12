@@ -74,6 +74,7 @@ public final class HeroArt {
 			case SOJOURN -> "overclock";
 			case PHARAH -> "barrage";
 			case TRACER -> "pulse_bomb";
+			case CASSIDY -> "deadeye";
 			case ILLARI -> "captive_sun";
 		});
 	}

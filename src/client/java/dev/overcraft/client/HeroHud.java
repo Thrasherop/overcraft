@@ -231,6 +231,7 @@ public final class HeroHud {
 			perkMenu(g, hero, s, w, h);
 		}
 		dev.overcraft.client.hud.ConspiratorHud.render(g, player, hero, w, h);
+		dev.overcraft.client.hud.DeadeyeHud.render(g, player, hero, w, h);
 		dev.overcraft.client.comms.Pings.render(g, w, h);
 		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
@@ -1038,6 +1039,25 @@ public final class HeroHud {
 				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.CASSIDY) {
+			// Combat Roll (Shift) and Flashbang (E), in Kiriko's two places; with Silver Bullet its box where Lucio's third is, lit while
+			// it's aimed (ours)
+			if (s.majorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.CASSIDY_SILVER_BULLET)) {
+				ability(g, hero, w, "silver_bullet", w - 719, 900, HeroControls.get(Action.PRIMARY_FIRE), s.ability3Cooldown(),
+					(float) dev.overcraft.cassidy.CassidyStats.SILVER_COOLDOWN, -1);
+				if ((s.mode() & dev.overcraft.cassidy.Cassidy.MODE_SILVER) != 0) {
+					song(g, true, false, w - 719, 900, w);
+				}
+			}
+			ability(g, hero, w, "combat_roll", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.cassidy.CassidyStats.ROLL_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.cassidy.Cassidy.MODE_ROLL) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "flashbang", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.cassidy.CassidyStats.FLASH_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.PHARAH) {
 			// Jet Dash (the right button), Jump Jet (Shift), Concussive Blast (E), her data's SECONDARY / ABILITY 1 / 2, in Lucio's
 			// three places (ours); a jet's box lit while it's going
@@ -1418,6 +1438,12 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.CASSIDY) {
+			// Peacekeeper's 6 (the left button) where Kiriko's kunai are
+			weapon(g, hero, w, "peacekeeper", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.cassidy.CassidyStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.TRACER) {
