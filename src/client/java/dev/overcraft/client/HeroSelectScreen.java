@@ -588,7 +588,7 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "jump_jet"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "concussive_blast"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "barrage"),
-				new Line(HeroHud.shortKey(net.minecraft.client.Minecraft.getInstance().options.keyJump), "hover_jets"));
+				new Line(HeroHud.shortKey(HeroControls.get(Action.JUMP)), "hover_jets"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

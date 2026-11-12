@@ -50,7 +50,7 @@ public final class ClientPharah {
 		int fresh = jets & ~jetsWas;
 		jetsWas = jets;
 		if (fresh == 0) {
-			groundHeld = mc.options.keyJump.isDown() && player.onGround() ? groundHeld + 1 : 0;
+			groundHeld = dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.JUMP).isDown() && player.onGround() ? groundHeld + 1 : 0;
 			return;
 		}
 		Vec3 v = player.getDeltaMovement();
@@ -101,7 +101,7 @@ public final class ClientPharah {
 		boolean fuel = s.meter() > 0.001f;
 		boolean barrage = (s.mode() & Pharah.MODE_BARRAGE) != 0;
 		boolean jet = (s.mode() & (Pharah.MODE_JUMP_JET | Pharah.MODE_JET_DASH)) != 0;
-		boolean held = mc.options.keyJump.isDown() && mc.gui.screen() == null;
+		boolean held = dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.JUMP).isDown() && mc.gui.screen() == null;
 		boolean engaged = held && (!entity.onGround() || groundHeld >= Ow.ticks(PharahStats.HOVER_FROM_GROUND));
 		if (jet) {
 			// the jets turn the hover on, key or not, and spend no fuel (D 0025 #698 / #694 / #29)

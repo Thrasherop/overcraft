@@ -44,10 +44,12 @@ public final class PharahStats {
 	/** 40 m/s, no drop, 5 s (D 28F9 40; BZ 2024-02-13 35 -> 40; W) H; 0.32 m (D 28F8 0.2 + the global 0.12: BZ 2024-12-10) H/M. */
 	public static final double ROCKET_SPEED = 40, ROCKET_RADIUS = 0.32, ROCKET_LIFETIME = 5;
 	/**
-	 * Where a rocket leaves from, from her eyes in her look's frame (right, up, ahead, m): the launcher's hp 0006 as her 1P idle
-	 * holds it (D 0023 #2 m_muzzles; measured on the posed 1P model: research\pharah\scripts\muzzle_1p_pharah.py) M.
+	 * Where a rocket leaves from, from her eyes in her look's frame (right, up, ahead, m): the launcher's hp 0006 (D 0023 #2
+	 * m_muzzles) as her first-person view draws it at rest: the dev client's own point (DevServer "state" muzzle 0.107 / -0.165 /
+	 * 0.946; played 2026-11-11). The research's posed reading (0.075 / +0.13 / 0.945) put it above her eyes, where the drawn
+	 * launcher isn't.
 	 */
-	public static final double MUZZLE_RIGHT = 0.075, MUZZLE_UP = 0.13,MUZZLE_AHEAD = 0.945;
+	public static final double MUZZLE_RIGHT = 0.107, MUZZLE_UP = -0.165, MUZZLE_AHEAD = 0.946;
 
 	// ---- Jump Jet (0027, Shift) ----
 	/** A press, not a held charge (D 0027 #82: no charge state; W) H: 17 m/s up and 7 along the move input (D #36 1DA0 / 1D9F / 1DA1) H. */

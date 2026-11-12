@@ -1410,7 +1410,7 @@ public final class HeroHud {
 			// the Rocket Launcher's 6 (the left button) where Kiriko's kunai are; Hover Jets' fuel (Jump) as a band where her ofuda
 			// panel is (ours: Overwatch draws it as an arc beside the crosshair), white over 100 (overfuel)
 			weapon(g, hero, w, "hover_jets", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
-				net.minecraft.client.Minecraft.getInstance().options.keyJump, w - 355, 1009);
+				HeroControls.get(Action.JUMP), w - 355, 1009);
 			fuel(g, s.meter(), w - 484, 923.5f, 169, w);
 			weapon(g, hero, w, "rocket_launcher", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.pharah.PharahStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
