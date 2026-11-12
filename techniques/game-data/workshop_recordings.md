@@ -44,3 +44,8 @@ Both of the owner's first two all-hero sessions stopped writing while the game w
 with three (the game's AI bots are logged as players), about 100,000 lines each. The script had `Enable Inspector
 Recording`, which also keeps every variable change and action (the wall rays: about 20 writes a tick per player). Now
 `Disable Inspector Recording` (Log To Inspector still writes the file). Check a new script's first log ends when the play did.
+
+**That was wrong (2026-11-11):** with recording disabled no log file is written at all (the owner found it). Back to
+`Enable Inspector Recording`. The log then stops after about 2 min 40 s (the owner's 2026-11-11 log: Hanzo 78 s, D.Va
+75 s, Pharah 5 s). The owner's call: keep every per-tick line ("more data is better") and record one hero per game,
+resetting between. Raw logs live in `local-assets/raw/workshop/` (gitignored).
