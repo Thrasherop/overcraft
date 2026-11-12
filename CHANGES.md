@@ -12,6 +12,9 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   the one that opens the portal 200; the first trip to the Nether 500 and to the End 1000 (once per player, kept
   across restarts). Only heroes in hero mode score; nothing after G.
 - Played by its builder (every value) and the coordinator with real input (`techniques/potg/runs_scoring/real_keys_47b6490.md`).
+- **Every hero:** Pharah's rockets, D.Va's missiles and Self-Destruct, and Sigma's spheres and rock no longer hurt players
+  more on Hard (or differently on Easy): Minecraft scaled every explosion by the difficulty. Played: Pharah's own rocket
+  on Hard took 30 before, 20 now.
 - Open for the owner: a calm enderman killed in one hit now scores (it counted as a bystander); your own dropped items
   score again when picked back up.
 
