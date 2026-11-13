@@ -640,10 +640,16 @@ public final class HeroManager {
 		if (state.hero == Hero.PHARAH) {
 			dev.overcraft.pharah.Pharah.hovered(player, state, (input.held() & HeroInputPayload.HELD_HOVER) != 0 && controls(player));
 		}
+		if (state.hero == Hero.CASSIDY) {
+			// his packets counted and his client's roll taken or refused, before a hack strips the presses or hero mode drops them
+			// (ClientCassidy counts the same; Cassidy.input asks controls itself)
+			dev.overcraft.cassidy.Cassidy.input(player, state, input.pressed(), input.extra());
+		}
 		if (!controls(player)) {
 			return;
 		}
-		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
+		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0 && !dev.overcraft.cassidy.Cassidy.meleeBlocked(state)) {
+			// (not in Deadeye: W, no other abilities while channelling)
 			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
 			} else if (state.hero == Hero.BRIGITTE) {
@@ -665,10 +671,6 @@ public final class HeroManager {
 		if (dev.overcraft.sombra.Hack.silenced(player)) {
 			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
 			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);
-		}
-		if (state.hero == Hero.CASSIDY && input.extra() != 0) {
-			// his roll's direction, sent with its press (ClientCassidy)
-			dev.overcraft.cassidy.Cassidy.extra(player, state, input.extra());
 		}
 		if (kit != null && pressed != 0) {
 			kit.press(player, state, pressed);

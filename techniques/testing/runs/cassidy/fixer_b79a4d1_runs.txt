@@ -1,0 +1,436 @@
+
+=== old_f1 2026-11-12 23:52:55
+23:52:55.389 cmd /difficulty easy -> {"ok":true}
+23:52:55.393 cmd /time set noon -> {"ok":true}
+23:52:55.406 cmd /kill @e[type=!player] -> {"ok":true}
+23:52:55.407 MARK F1 (#1, client yes / server no) lag 150: one shot (ammo 5), E, then Shift 0.17 s later. Old (critic C6): he moved ~6 m, the server's ability1Cooldown stayed 0, ammo stayed 5. Fixed: he doesn't move, nothing spent
+23:52:55.412 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:52:56.419 key secondary_fire down -> {"key":"key.mouse.left"}
+23:52:56.523 key secondary_fire up -> {"key":"key.mouse.left"}
+23:52:57.531 presstrace lag 150 -> {}
+23:52:58.148 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 47.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:52:58.156 key ability_2 down -> {"key":"key.keyboard.e"}
+23:52:58.190 key ability_2 up -> {"key":"key.keyboard.e"}
+23:52:58.333 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:52:58.468 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:52:59.277 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 53.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+23:52:59.883 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 56.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.1, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+23:52:59.890 presstrace lag 0 -> {}
+23:53:11.892 MARK F2 (#1, client no / server yes) lag 150: roll, then Shift taps every ~0.17 s around the cooldown's end. Old (critic C7): a tap the client refused started a server roll (mode 2) with no move from it. Fixed: every server roll comes with its own move (z jumps ~6 with each mode-2)
+23:53:11.913 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:53:11.946 presstrace lag 150 -> {}
+23:53:12.548 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:12.681 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:17.465 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 143.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.85, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:17.497 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:17.598 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:17.633 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 144.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.7, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:17.664 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:17.764 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:17.798 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 145.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:17.831 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:17.932 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:17.968 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 146.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:18.002 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:18.099 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:18.133 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 147.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.15, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:18.169 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:18.266 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:18.299 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 148.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:18.332 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:18.433 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:18.467 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.913, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 148.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": 0.75, "anim": "idle+roll_s0"}
+23:53:19.069 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 12.825, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 152.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.65, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:53:19.102 presstrace lag 0 -> {}
+23:53:24.602 MARK F3 (#6 hinder cuts a roll) roll forward, hinder 0.1 s in. Old: the full ~6 m roll. Fixed: it stops ~1.5 m on, cooldown 5 s from then
+23:53:24.618 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:53:25.151 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:53:25.253 cut hinder -> {"ok":true}
+23:53:25.286 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:53:26.289 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.719, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 189.0, "shield": 0.0, "mode": 4, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.25, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+
+=== old_f2 2026-11-12 23:53:34
+23:53:34.406 cmd /kill @e[type=!player] -> {"ok":true}
+23:53:34.406 MARK F4 (#2) sealed stone box, Deadeye, left button 1 s in. Old (critic C1b): mode 1 -> 33 -> 0, ult 0. Fixed: the press does nothing, Deadeye goes on (mode 1), it times out unfired at 7 s
+23:53:34.440 cmd /fill -4 -61 -4 4 -55 4 stone hollow -> {"ok":true}
+23:53:34.474 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:53:34.509 cmd /overcraft ult @s 100 -> {"ok":true}
+23:53:35.543 key ultimate down -> {"key":"key.keyboard.q"}
+23:53:35.676 key ultimate up -> {"key":"key.keyboard.q"}
+23:53:36.685 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:53:36.710 key secondary_fire down -> {"key":"key.mouse.left"}
+23:53:36.844 key secondary_fire up -> {"key":"key.mouse.left"}
+23:53:37.278 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+23:53:37.278 MARK F5 (#4) jump and quick melee in Deadeye. Old (critic C2b, C3b): y rose ~1, the husk lost 3.2 MC. Fixed: no rise, no melee
+23:53:37.311 key jump down -> {"key":"key.keyboard.space"}
+23:53:37.445 key jump up -> {"key":"key.keyboard.space"}
+23:53:37.748 state -> {"screen": "", "x": 0.5, "y": -59.121, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "cassidy", "ult": 3.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.094, "vz": 0.0, "anim": "idle+deadeye_end"}
+23:53:37.796 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:53:37.815 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:53:38.657 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 100.0f
+23:53:38.682 key quick_melee down -> {"key":"key.keyboard.v"}
+23:53:38.815 key quick_melee up -> {"key":"key.keyboard.v"}
+23:53:39.828 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 96.8f
+23:53:39.855 key crouch down -> {"key":"key.keyboard.left.control"}
+23:53:40.290 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 55.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee_2"}
+23:53:40.322 key crouch up -> {"key":"key.keyboard.left.control"}
+23:53:40.322 MARK F6 (#6 Q again) the husk 2 m ahead in sight: Q again fires. Old: nothing. Fixed: it fires (mode 33, ammo down)
+23:53:40.355 key ultimate down -> {"key":"key.keyboard.q"}
+23:53:40.489 key ultimate up -> {"key":"key.keyboard.q"}
+23:53:40.991 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 59.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee_2"}
+23:53:41.434 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 96.8f
+23:53:42.963 cmd /fill -4 -61 -4 4 -55 4 air -> {"ok":true}
+23:53:42.997 cmd /fill -4 -61 -4 4 -61 4 grass_block -> {"ok":true}
+23:53:43.029 cmd /kill @e[type=!player] -> {"ok":true}
+23:53:43.029 MARK F7 (#6 hack ends Deadeye) Q, hack 2 s at 1 s. Old: Deadeye goes on (mode 1|8). Fixed: it ends unfired
+23:53:43.066 cmd /overcraft ult @s 100 -> {"ok":true}
+23:53:43.597 key ultimate down -> {"key":"key.keyboard.q"}
+23:53:43.731 key ultimate up -> {"key":"key.keyboard.q"}
+23:53:44.731 cut hack 2 -> {"ok":true}
+23:53:45.166 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 9, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+
+=== old_f2b 2026-11-12 23:53:58
+23:54:01.243 cmd /kill @e[type=!player] -> {"ok":true}
+23:54:01.243 MARK F5b (#4) in Deadeye (fresh, open ground, nothing in front): jump, quick melee on a husk 2 m ahead, crouch. Old (critic C2b, C3b): y rose ~1, the husk lost 3.2 MC. Fixed: no rise, no melee, no crouch
+23:54:01.276 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:54:01.309 cmd /overcraft ult @s 100 -> {"ok":true}
+23:54:01.843 key ultimate down -> {"key":"key.keyboard.q"}
+23:54:01.976 key ultimate up -> {"key":"key.keyboard.q"}
+23:54:02.779 key jump down -> {"key":"key.keyboard.space"}
+23:54:02.913 key jump up -> {"key":"key.keyboard.space"}
+23:54:03.222 state -> {"screen": "", "x": 0.5, "y": -59.121, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.094, "vz": 0.0, "anim": "idle"}
+23:54:03.249 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:54:03.282 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:54:04.023 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 100.0f
+23:54:04.049 key quick_melee down -> {"key":"key.keyboard.v"}
+23:54:04.183 key quick_melee up -> {"key":"key.keyboard.v"}
+23:54:05.093 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 96.8f
+23:54:05.120 key crouch down -> {"key":"key.keyboard.left.control"}
+23:54:05.522 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee"}
+23:54:05.555 key crouch up -> {"key":"key.keyboard.left.control"}
+23:54:05.555 MARK F6b (#6 Q again) the husk 2 m ahead in sight, Q pressed again. Old: nothing. Fixed: it fires (mode 33, ammo down)
+23:54:05.589 key ultimate down -> {"key":"key.keyboard.q"}
+23:54:05.722 key ultimate up -> {"key":"key.keyboard.q"}
+23:54:06.257 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee"}
+23:54:06.700 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 96.8f
+23:54:13.707 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 23.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:54:13.740 cmd /kill @e[type=!player] -> {"ok":true}
+
+=== old_f3 2026-11-12 23:54:19
+23:54:19.286 ﻿cmd /kill @e[type=!player] -> {"error":"unknown command ﻿cmd"}
+
+=== old_f3 2026-11-12 23:54:23
+23:54:23.467 cmd /kill @e[type=!player] -> {"ok":true}
+23:54:23.467 MARK F8 (#3) skull vs armor (critic C4c): a NoAI zombie, 60 MC (750 OW), full iron (17 armor), 8 m; Q, screenshot ~3.85 s in, fire. Old: the skull shown, the zombie left at 0.9. Fixed: no skull at that charge (or, shown, it dies)
+23:54:23.502 cmd /fill -6 -55 -2 6 -55 14 glass -> {"ok":true}
+23:54:23.535 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:54:23.568 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z3"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:54:23.602 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:54:23.681 cmd /overcraft ult @s 100 -> {"ok":true}
+23:54:25.525 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 60.0f
+23:54:25.552 key ultimate down -> {"key":"key.keyboard.q"}
+23:54:25.686 key ultimate up -> {"key":"key.keyboard.q"}
+23:54:29.393 screenshot FX_old_f8_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\FX_old_f8_skull.png"}
+23:54:29.426 key secondary_fire down -> {"key":"key.mouse.left"}
+23:54:29.532 key secondary_fire up -> {"key":"key.mouse.left"}
+23:54:31.376 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 1.9392052f
+23:54:31.402 cmd /kill @e[type=!player] -> {"ok":true}
+23:54:31.436 cmd /fill -6 -55 -2 6 -55 14 air -> {"ok":true}
+23:54:31.436 MARK F9 (#3) the same zombie, longer lock: fire once the skull shows (~5 s in). Fixed: the skull, then it dies
+23:54:31.469 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z4"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:54:31.502 cmd /overcraft ult @s 100 -> {"ok":true}
+23:54:32.904 key ultimate down -> {"key":"key.keyboard.q"}
+23:54:33.038 key ultimate up -> {"key":"key.keyboard.q"}
+23:54:38.657 screenshot FX_old_f9_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\FX_old_f9_skull.png"}
+23:54:38.691 key secondary_fire down -> {"key":"key.mouse.left"}
+23:54:38.796 key secondary_fire up -> {"key":"key.mouse.left"}
+23:54:40.643 hp @e[tag=z4,limit=1] -> Zombie has the following entity data: 60.0f
+23:54:40.666 cmd /kill @e[type=!player] -> {"ok":true}
+23:54:40.666 MARK F10 (#6 range) Flashbang thrown level at open air; a NoAI husk 100 MC whose near face is ~3.2 m past a 7.0 m burst (~2.7 m past the old 7.5 m one). Old: hit. Fixed: untouched
+23:54:40.701 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:54:40.733 cmd /summon husk 0.5 -60 11.45 {NoAI:1b,Tags:["f10"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:54:41.675 hp @e[tag=f10,limit=1] -> Husk has the following entity data: 100.0f
+23:54:41.702 key ability_2 down -> {"key":"key.keyboard.e"}
+23:54:41.769 key ability_2 up -> {"key":"key.keyboard.e"}
+23:54:41.802 ents Flashbang -> {"ents":""}
+23:54:41.835 ents Flashbang -> {"ents":""}
+23:54:41.869 ents Flashbang -> {"ents":""}
+23:54:41.902 ents Flashbang -> {"ents":""}
+23:54:41.935 ents Flashbang -> {"ents":""}
+23:54:41.969 ents Flashbang -> {"ents":""}
+23:54:42.002 ents Flashbang -> {"ents":""}
+23:54:42.036 ents Flashbang -> {"ents":""}
+23:54:42.979 hp @e[tag=f10,limit=1] -> Husk has the following entity data: 100.0f
+
+=== new_f1 2026-11-12 23:58:32
+23:58:32.866 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:58:32.875 cmd /difficulty easy -> {"ok":true}
+23:58:32.883 cmd /time set noon -> {"ok":true}
+23:58:32.892 cmd /kill @e[type=!player] -> {"ok":true}
+23:58:32.892 MARK F1 (#1, client yes / server no) lag 150: one shot (ammo 5), E, then Shift 0.17 s later. Old (critic C6): he moved ~6 m, the server's ability1Cooldown stayed 0, ammo stayed 5. Fixed: he doesn't move, nothing spent
+23:58:32.904 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:58:33.909 key secondary_fire down -> {"key":"key.mouse.left"}
+23:58:34.009 key secondary_fire up -> {"key":"key.mouse.left"}
+23:58:35.017 presstrace lag 150 -> {}
+23:58:35.634 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 53.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:58:35.640 key ability_2 down -> {"key":"key.keyboard.e"}
+23:58:35.674 key ability_2 up -> {"key":"key.keyboard.e"}
+23:58:35.816 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:35.953 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:36.754 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 58.75, "shield": 0.0, "mode": 256, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+23:58:37.363 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 61.75, "shield": 0.0, "mode": 256, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.1, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+23:58:37.371 presstrace lag 0 -> {}
+23:58:49.372 MARK F2 (#1, client no / server yes) lag 150: roll, then Shift taps every ~0.17 s around the cooldown's end. Old (critic C7): a tap the client refused started a server roll (mode 2) with no move from it. Fixed: every server roll comes with its own move (z jumps ~6 with each mode-2)
+23:58:49.387 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:58:49.420 presstrace lag 150 -> {}
+23:58:50.023 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:50.156 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:54.938 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 149.5, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.85, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:58:54.970 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.070 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.105 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 150.25, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.7, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:58:55.137 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.237 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.271 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 151.0, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.55, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:58:55.304 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.405 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.439 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 152.0, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:58:55.472 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.571 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.605 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 152.75, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.2, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:58:55.638 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.739 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.772 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 153.75, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:58:55.805 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:58:55.905 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:58:55.939 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.163, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 154.5, "shield": 0.0, "mode": 512, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": 0.75, "anim": "idle"}
+23:58:56.541 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 12.825, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 157.75, "shield": 0.0, "mode": 768, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 5.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:58:56.573 presstrace lag 0 -> {}
+23:59:02.074 MARK F3 (#6 hinder cuts a roll) roll forward, hinder 0.1 s in. Old: the full ~6 m roll. Fixed: it stops ~1.5 m on, cooldown 5 s from then
+23:59:02.091 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:59:02.592 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:59:02.728 cut hinder -> {"ok":true}
+23:59:02.759 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:59:03.763 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 3.688, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 194.5, "shield": 0.0, "mode": 66564, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.05, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+
+=== new_f2 2026-11-12 23:59:13
+23:59:13.226 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:59:13.259 cmd /kill @e[type=!player] -> {"ok":true}
+23:59:13.259 MARK F4 (#2) sealed stone box, Deadeye, left button 1 s in. Old (critic C1b): mode 1 -> 33 -> 0, ult 0. Fixed: the press does nothing, Deadeye goes on (mode 1), it times out unfired at 7 s
+23:59:13.294 cmd /fill -4 -61 -4 4 -55 4 stone hollow -> {"ok":true}
+23:59:13.327 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:59:13.359 cmd /overcraft ult @s 100 -> {"ok":true}
+23:59:14.362 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:14.495 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:15.507 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 66817, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:59:15.531 key secondary_fire down -> {"key":"key.mouse.left"}
+23:59:15.665 key secondary_fire up -> {"key":"key.mouse.left"}
+23:59:16.067 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 66817, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:59:16.067 MARK F5 (#4) jump and quick melee in Deadeye. Old (critic C2b, C3b): y rose ~1, the husk lost 3.2 MC. Fixed: no rise, no melee
+23:59:16.101 key jump down -> {"key":"key.keyboard.space"}
+23:59:16.235 key jump up -> {"key":"key.keyboard.space"}
+23:59:16.568 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 66817, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:59:16.616 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:59:16.635 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:59:17.481 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 100.0f
+23:59:17.503 key quick_melee down -> {"key":"key.keyboard.v"}
+23:59:17.637 key quick_melee up -> {"key":"key.keyboard.v"}
+23:59:18.679 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 100.0f
+23:59:18.707 key crouch down -> {"key":"key.keyboard.left.control"}
+23:59:19.141 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 66817, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:59:19.175 key crouch up -> {"key":"key.keyboard.left.control"}
+23:59:19.175 MARK F6 (#6 Q again) the husk 2 m ahead in sight: Q again fires. Old: nothing. Fixed: it fires (mode 33, ammo down)
+23:59:19.208 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:19.342 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:19.843 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.5, "shield": 0.0, "mode": 67072, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+23:59:20.286 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 60.4f
+23:59:21.815 cmd /fill -4 -61 -4 4 -55 4 air -> {"ok":true}
+23:59:21.849 cmd /fill -4 -61 -4 4 -61 4 grass_block -> {"ok":true}
+23:59:21.885 cmd /kill @e[type=!player] -> {"ok":true}
+23:59:21.885 MARK F7 (#6 hack ends Deadeye) Q, hack 2 s at 1 s. Old: Deadeye goes on (mode 1|8). Fixed: it ends unfired
+23:59:21.917 cmd /overcraft ult @s 100 -> {"ok":true}
+23:59:22.450 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:22.584 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:23.586 cut hack 2 -> {"ok":true}
+23:59:24.020 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 2.0, "shield": 0.0, "mode": 67336, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+
+=== new_f2b 2026-11-12 23:59:26
+23:59:29.169 cmd /kill @e[type=!player] -> {"ok":true}
+23:59:29.169 MARK F5b (#4) in Deadeye (fresh, open ground, nothing in front): jump, quick melee on a husk 2 m ahead, crouch. Old (critic C2b, C3b): y rose ~1, the husk lost 3.2 MC. Fixed: no rise, no melee, no crouch
+23:59:29.203 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:59:29.237 cmd /overcraft ult @s 100 -> {"ok":true}
+23:59:29.738 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:29.871 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:30.673 key jump down -> {"key":"key.keyboard.space"}
+23:59:30.806 key jump up -> {"key":"key.keyboard.space"}
+23:59:31.149 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 67585, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:59:31.174 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:59:31.208 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:59:31.950 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 100.0f
+23:59:31.975 key quick_melee down -> {"key":"key.keyboard.v"}
+23:59:32.109 key quick_melee up -> {"key":"key.keyboard.v"}
+23:59:33.052 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 100.0f
+23:59:33.079 key crouch down -> {"key":"key.keyboard.left.control"}
+23:59:33.513 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 67585, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:59:33.547 key crouch up -> {"key":"key.keyboard.left.control"}
+23:59:33.547 MARK F6b (#6 Q again) the husk 2 m ahead in sight, Q pressed again. Old: nothing. Fixed: it fires (mode 33, ammo down)
+23:59:33.580 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:33.713 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:34.214 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.5, "shield": 0.0, "mode": 67840, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+23:59:34.656 hp @e[tag=m5,limit=1] -> Husk has the following entity data: 65.2f
+23:59:41.672 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 38.0, "shield": 0.0, "mode": 67840, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:59:41.703 cmd /kill @e[type=!player] -> {"ok":true}
+
+=== new_f3 2026-11-12 23:59:48
+23:59:48.090 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:59:48.123 cmd /kill @e[type=!player] -> {"ok":true}
+23:59:48.123 MARK F8 (#3) skull vs armor (critic C4c): a NoAI zombie, 60 MC (750 OW), full iron (17 armor), 8 m; Q, screenshot ~3.85 s in, fire. Old: the skull shown, the zombie left at 0.9. Fixed: no skull at that charge (or, shown, it dies)
+23:59:48.157 cmd /fill -6 -55 -2 6 -55 14 glass -> {"ok":true}
+23:59:48.190 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:59:48.225 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z3"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:59:48.258 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:59:48.303 cmd /overcraft ult @s 100 -> {"ok":true}
+23:59:50.146 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 60.0f
+23:59:50.172 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:50.306 key ultimate up -> {"key":"key.keyboard.q"}
+23:59:54.014 screenshot FX_f8_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\FX_f8_skull.png"}
+23:59:54.047 key secondary_fire down -> {"key":"key.mouse.left"}
+23:59:54.150 key secondary_fire up -> {"key":"key.mouse.left"}
+23:59:55.998 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 1.9392052f
+23:59:56.023 cmd /kill @e[type=!player] -> {"ok":true}
+23:59:56.057 cmd /fill -6 -55 -2 6 -55 14 air -> {"ok":true}
+23:59:56.057 MARK F9 (#3) the same zombie, longer lock: fire once the skull shows (~5 s in). Fixed: the skull, then it dies
+23:59:56.091 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z4"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:59:56.123 cmd /overcraft ult @s 100 -> {"ok":true}
+23:59:57.527 key ultimate down -> {"key":"key.keyboard.q"}
+23:59:57.662 key ultimate up -> {"key":"key.keyboard.q"}
+00:00:03.278 screenshot FX_f9_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\FX_f9_skull.png"}
+00:00:03.311 key secondary_fire down -> {"key":"key.mouse.left"}
+00:00:03.417 key secondary_fire up -> {"key":"key.mouse.left"}
+00:00:05.263 hp @e[tag=z4,limit=1] -> No entity was found
+00:00:05.290 cmd /kill @e[type=!player] -> {"ok":true}
+00:00:06.291 MARK F10 (#6 range) Flashbang thrown level at open air; a NoAI husk 100 MC whose near face is ~3.2 m past a 7.0 m burst (~2.7 m past the old 7.5 m one). Old: hit. Fixed: untouched
+00:00:06.294 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+00:00:06.329 cmd /summon husk 0.5 -60 11.45 {NoAI:1b,Tags:["f10"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+00:00:07.272 hp @e[tag=f10,limit=1] -> Husk has the following entity data: 100.0f
+00:00:07.297 key ability_2 down -> {"key":"key.keyboard.e"}
+00:00:07.364 key ability_2 up -> {"key":"key.keyboard.e"}
+00:00:07.397 ents Flashbang -> {"ents":""}
+00:00:07.431 ents Flashbang -> {"ents":"835 0.70 -58.53 1.00 v 0.00 0.00 1.50 t0 | "}
+00:00:07.464 ents Flashbang -> {"ents":"835 0.70 -58.58 2.50 v 0.00 -0.05 1.50 t1 | "}
+00:00:07.498 ents Flashbang -> {"ents":"835 0.70 -58.53 1.00 v 0.00 -0.10 1.50 t2 | "}
+00:00:07.531 ents Flashbang -> {"ents":"835 0.70 -58.58 2.50 v 0.00 -0.05 1.50 t2 | "}
+00:00:07.564 ents Flashbang -> {"ents":"835 0.70 -58.68 4.00 v 0.00 -0.10 1.50 t3 | "}
+00:00:07.597 ents Flashbang -> {"ents":"835 0.70 -58.68 4.00 v 0.00 -0.10 1.50 t4 | "}
+00:00:07.631 ents Flashbang -> {"ents":"835 0.70 -58.83 5.50 v 0.00 -0.15 1.50 t4 | "}
+00:00:08.541 hp @e[tag=f10,limit=1] -> Husk has the following entity data: 100.0f
+
+=== new_f4 2026-11-13 00:00:23
+00:00:23.870 cmd /kill @e[type=!player] -> {"ok":true}
+00:00:23.870 MARK F11 (#5) Deadeye on the Ender Dragon (NoAI, 200 MC) 20 m ahead, fired ~3 s in (charge 600 OW = 48 MC). Old (code-read): through the body, 48/4+1 = 13. Fixed: through its head, 48
+00:00:23.904 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+00:00:23.937 cmd /summon ender_dragon 0.5 -57 20.5 {NoAI:1b,Tags:["d1"]} -> {"ok":true}
+00:00:23.970 cmd /execute as @s at @s anchored eyes facing 0.5 -56 20.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+00:00:24.004 cmd /overcraft ult @s 100 -> {"ok":true}
+00:00:25.445 hp @e[tag=d1,limit=1] -> Ender Dragon has the following entity data: 200.0f
+00:00:25.473 key ultimate down -> {"key":"key.keyboard.q"}
+00:00:25.607 key ultimate up -> {"key":"key.keyboard.q"}
+00:00:28.882 screenshot FX_f11_dragon.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\FX_f11_dragon.png"}
+00:00:28.915 key secondary_fire down -> {"key":"key.mouse.left"}
+00:00:29.020 key secondary_fire up -> {"key":"key.mouse.left"}
+00:00:30.664 hp @e[tag=d1,limit=1] -> Ender Dragon has the following entity data: 144.8f
+00:00:30.665 MARK F12 (#4 crouch) Deadeye, crouch held: not crouching. Then out of Deadeye, crouch held: crouching (the control)
+00:00:30.692 cmd /kill @e[type=!player] -> {"ok":true}
+00:00:30.726 cmd /overcraft ult @s 100 -> {"ok":true}
+00:00:31.227 key ultimate down -> {"key":"key.keyboard.q"}
+00:00:31.360 key ultimate up -> {"key":"key.keyboard.q"}
+00:00:31.964 key crouch down -> {"key":"key.keyboard.left.control"}
+00:00:32.373 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 69121, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+00:00:32.398 key crouch up -> {"key":"key.keyboard.left.control"}
+00:00:39.920 key crouch down -> {"key":"key.keyboard.left.control"}
+00:00:40.323 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 9.5, "shield": 0.0, "mode": 69120, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+00:00:40.356 key crouch up -> {"key":"key.keyboard.left.control"}
+
+=== new_f5 2026-11-13 00:01:06
+00:01:06.997 cmd /kill @e[type=!player] -> {"ok":true}
+00:01:06.997 MARK F13 control: E, then Shift 0.6 s later (after the throw's 0.45 s), no lag then lag 150: both roll ~6 m, server cooldown 5 s after, reload done
+00:01:07.031 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+00:01:07.064 key secondary_fire down -> {"key":"key.mouse.left"}
+00:01:07.197 key secondary_fire up -> {"key":"key.mouse.left"}
+00:01:08.201 key ability_2 down -> {"key":"key.keyboard.e"}
+00:01:08.268 key ability_2 up -> {"key":"key.keyboard.e"}
+00:01:08.903 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:01:09.036 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:01:10.048 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 79.5, "shield": 0.0, "mode": 69888, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.3, "ability2Cooldown": 10.65, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+00:01:22.073 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+00:01:22.107 presstrace lag 150 -> {}
+00:01:22.608 key secondary_fire down -> {"key":"key.mouse.left"}
+00:01:22.741 key secondary_fire up -> {"key":"key.mouse.left"}
+00:01:23.745 key ability_2 down -> {"key":"key.keyboard.e"}
+00:01:23.812 key ability_2 up -> {"key":"key.keyboard.e"}
+00:01:24.413 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:01:24.517 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:01:25.552 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 156.0, "shield": 0.0, "mode": 70144, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+00:01:25.584 presstrace lag 0 -> {}
+00:01:25.584 MARK F14 control: roll left (A held), no lag: ~6 m along -x... (+x is left at yaw 0), the clip roll_s3
+00:01:25.617 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+00:01:30.633 key left down -> {"key":"key.keyboard.a"}
+00:01:30.766 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+00:01:30.899 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+00:01:31.433 key left up -> {"key":"key.keyboard.a"}
+00:01:31.468 state -> {"screen": "", "x": 8.808, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 186.5, "shield": 0.0, "mode": 70400, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.7, "ability2Cooldown": 4.9, "vx": 0.094, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s3"}
+
+=== new_fight 2026-11-13 00:01:49
+00:01:50.324 t 1 hp 20.00 ammo 6 ult 278 rollCd 0.0 flashCd 0.0 | Skeleton 6.0, Zombie 6.4, Zombie 14.6, Zombie 16.4
+00:01:52.931 t 3 hp 13.00 ammo 5 ult 362 rollCd 5.0 flashCd 10.1 | Zombie 6.9, Zombie 12.2, Skeleton 15.8, Zombie 16.0
+00:01:54.938 t 5 hp 13.00 ammo 1 ult 510 rollCd 3.0 flashCd 8.1 | Zombie 2.7, Zombie 8.0, Zombie 11.5, Skeleton 16.0
+00:01:56.942 t 7 hp 10.00 ammo 6 ult 632 rollCd 0.2 flashCd 6.1 | Zombie 4.8, Zombie 9.6, Skeleton 19.3, Spider 27.6
+00:01:59.584 t 10 hp 7.00 ammo 5 ult 895 rollCd 5.0 flashCd 3.5 | Zombie 10.4, Skeleton 25.9, Skeleton 33.0, Spider 33.6
+00:02:01.591 t 12 hp 7.00 ammo 1 ult 1155 rollCd 3.0 flashCd 1.4 | Zombie 5.9, Skeleton 26.1, Skeleton 33.0, Spider 34.5
+00:02:03.597 t 14 hp 7.00 ammo 6 ult 1165 rollCd 1.0 flashCd 0.0 | Skeleton 28.8, Skeleton 33.0, Spider 34.6, Spider 36.3
+00:02:05.604 t 16 hp 9.16 ammo 2 ult 1221 rollCd 0.0 flashCd 0.0 | Skeleton 30.4, Skeleton 33.0, Spider 34.6, Spider 36.3
+00:02:07.608 t 18 hp 12.76 ammo 0 ult 1338 rollCd 0.0 flashCd 0.0 | Skeleton 25.6, Skeleton 33.0, Spider 34.6, Spider 36.3
+00:02:09.615 t 20 hp 16.36 ammo 3 ult 1375 rollCd 0.0 flashCd 0.0 | Skeleton 33.0, Spider 34.6, Spider 36.3, Skeleton 42.2
+00:02:11.622 t 22 hp 19.96 ammo 0 ult 1418 rollCd 0.0 flashCd 0.0 | Skeleton 29.9, Spider 34.6, Spider 36.3, Skeleton 42.2
+00:02:13.626 t 24 hp 20.00 ammo 4 ult 1566 rollCd 0.0 flashCd 0.0 | Skeleton 24.5, Spider 34.6, Spider 36.3, Skeleton 42.2
+00:02:15.633 t 26 hp 20.00 ammo 0 ult 1656 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:17.638 t 28 hp 20.00 ammo 5 ult 1666 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:19.644 t 30 hp 20.00 ammo 1 ult 1676 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:21.647 t 32 hp 20.00 ammo 6 ult 1686 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:23.652 t 34 hp 20.00 ammo 2 ult 1696 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:25.657 t 36 hp 20.00 ammo 0 ult 1706 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:27.664 t 38 hp 20.00 ammo 3 ult 1716 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 42.2, Skeleton 44.2
+00:02:29.670 t 40 hp 20.00 ammo 0 ult 1726 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 51.0, Creeper 56.3
+00:02:31.675 t 42 hp 20.00 ammo 4 ult 1736 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 51.0, Creeper 56.3
+00:02:33.678 t 44 hp 20.00 ammo 0 ult 1746 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 51.0, Creeper 56.3
+00:02:35.685 t 46 hp 20.00 ammo 5 ult 1756 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 51.0, Creeper 56.3
+00:02:37.691 t 48 hp 20.00 ammo 1 ult 1766 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Skeleton 51.0, Creeper 56.3
+00:02:39.700 t 50 hp 20.00 ammo 6 ult 1776 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Creeper 56.3, Zombie 60.8
+00:02:41.706 t 52 hp 20.00 ammo 2 ult 1786 rollCd 0.0 flashCd 0.0 | Spider 34.6, Spider 36.3, Creeper 56.3, Zombie 60.8
+00:02:43.712 t 54 hp 20.00 ammo 0 ult 1796 rollCd 0.0 flashCd 0.0 | Spider 36.3, Creeper 56.3, Zombie 60.8, Creeper 64.5
+00:02:45.718 t 56 hp 20.00 ammo 3 ult 1800 rollCd 0.0 flashCd 0.0 | Spider 36.3, Creeper 56.3, Zombie 60.8, Creeper 64.5
+00:02:47.722 t 58 hp 20.00 ammo 0 ult 1800 rollCd 0.0 flashCd 0.0 | Spider 36.3, Creeper 56.3, Zombie 60.8, Creeper 64.5
+00:02:49.728 t 60 hp 20.00 ammo 4 ult 1800 rollCd 0.0 flashCd 0.0 | Spider 36.3, Creeper 56.3, Zombie 60.8, Creeper 64.5
+00:02:49.996 END: 0 deaths, 2 rolls, 3 fans, 2 flashbangs, 0 deadeyes
+
+=== new_fight2 2026-11-13 00:02:56
+00:02:59.925 DEADEYE with 14 within 25 m
+00:03:01.365 t 4 hp 17.00 ammo 6 ult 0 rollCd 0.0 flashCd 0.0 | Spider 9.4, Spider 10.1, Spider 13.0, Spider 14.1
+00:03:03.705 t 7 hp 13.00 ammo 0 ult 0 rollCd 0.0 flashCd 0.0 | Spider 2.6, Spider 4.4, Spider 6.8, Spider 7.9
+00:03:05.815 t 9 hp 7.00 ammo 0 ult 0 rollCd 0.0 flashCd 0.0 | Spider 1.1, Spider 1.1, Spider 3.2, Spider 3.8
+00:03:07.151 DEATH 1 at -7.0 -4.5
+00:03:10.190 respawned: {"hero": "cassidy", "heroMode": false}
+00:03:11.206 t 14 hp 13.00 ammo 6 ult 8 rollCd 0.0 flashCd 0.0 | Zombie 1.4, Zombie 1.5, Skeleton 1.8, Zombie 1.9
+00:03:13.280 t 16 hp 5.50 ammo 4 ult 1128 rollCd 3.9 flashCd 0.0 | Spider 1.9, Zombie 3.1, Zombie 3.3, Zombie 3.5
+00:03:15.687 t 19 hp 2.50 ammo 3 ult 1426 rollCd 1.2 flashCd 9.5 | Zombie 2.2, Zombie 2.9, Zombie 2.9, Creeper 3.1
+00:03:15.954 DEATH 2 at 0.5 16.1
+00:03:18.996 respawned: {"hero": "cassidy", "heroMode": false}
+00:03:20.002 t 23 hp 13.00 ammo 6 ult 1584 rollCd 0.0 flashCd 0.0 | Zombie 0.6, Skeleton 2.8, Zombie 3.1, Zombie 3.3
+00:03:24.916 DEADEYE with 21 within 25 m
+00:03:26.355 t 29 hp 4.73 ammo 0 ult 0 rollCd 0.0 flashCd 7.3 | Creeper 5.6, Creeper 6.5, Zombie 11.8, Spider 12.5
+00:03:28.793 t 32 hp 1.73 ammo 5 ult 9 rollCd 0.0 flashCd 5.2 | Spider 2.5, Creeper 4.3, Creeper 5.7, Spider 10.4
+00:03:29.061 DEATH 3 at 29.1 0.2
+00:03:32.099 respawned: {"hero": "cassidy", "heroMode": false}
+00:03:32.675 t 36 hp 20.00 ammo 6 ult 18 rollCd 0.0 flashCd 0.0 | Zombie 5.1, Spider 5.5, Skeleton 5.7, Zombie 6.1
+00:03:35.492 t 39 hp 17.00 ammo 4 ult 243 rollCd 4.2 flashCd 10.2 | Spider 3.3, Zombie 4.4, Spider 6.0, Zombie 6.4
+00:03:37.095 END: 3 deaths, 7 rolls, 9 fans, 13 flashbangs, 2 deadeyes

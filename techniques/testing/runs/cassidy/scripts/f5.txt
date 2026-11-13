@@ -1,0 +1,45 @@
+cmd /kill @e[type=!player]
+MARK F13 control: E, then Shift 0.6 s later (after the throw's 0.45 s), no lag then lag 150: both roll ~6 m, server cooldown 5 s after, reload done
+cmd /tp @s 0.5 -60 0.5 0 0
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.6
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 1
+state
+sleep 12
+cmd /tp @s 0.5 -60 0.5 0 0
+presstrace lag 150
+sleep 0.5
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.6
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 1
+state
+presstrace lag 0
+MARK F14 control: roll left (A held), no lag: ~6 m along -x... (+x is left at yaw 0), the clip roll_s3
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 5
+key left down
+sleep 0.1
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.5
+key left up
+state

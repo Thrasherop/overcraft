@@ -55,6 +55,8 @@ public final class Cassidy implements HeroKit {
 	/** The synced mode's bits: Deadeye's cast or channel, rolling, hindered, hacked, Silver Bullet aimed, Deadeye firing, throwing. */
 	public static final int MODE_DEADEYE = 1, MODE_ROLL = 2, MODE_HINDERED = 4, MODE_SILENCED = 8, MODE_SILVER = 16,
 		MODE_FIRING = 32, MODE_CASTING = 64;
+	/** The synced mode's bits from here: the packets seen (CassidyState.pressSeen), and from CUT_SHIFT the rolls refused or cut. */
+	public static final int SEEN_SHIFT = 8, CUT_SHIFT = 16;
 
 	static final Blow FAN_BLOW = Blow.weapon("fan_the_hammer", false).by(Hero.CASSIDY);
 	static final Blow FLASH_BLOW = Blow.ability("flashbang").by(Hero.CASSIDY);
@@ -68,7 +70,11 @@ public final class Cassidy implements HeroKit {
 	private record Bleed(LivingEntity target, UUID owner, int[] left) {
 	}
 
-	private static final Map<UUID, Bleed> BLEEDS = new ConcurrentHashMap<>();
+	/**
+	 * By target and owner: two Cassidys' bleeds on one target each run (ours: the data's status is per caster, M); a second from the
+	 * same Cassidy (a roll resets Silver Bullet) starts his again.
+	 */
+	private static final Map<String, Bleed> BLEEDS = new ConcurrentHashMap<>();
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
@@ -100,6 +106,12 @@ public final class Cassidy implements HeroKit {
 			s.reloadHeld--;
 		}
 		boolean able = controls && player.isAlive() && !Sleep.asleep(player);
+		if (c.roll >= 0 && (c.hindered || !able)) {
+			// a hinder interrupts a roll under way (W rev 409375: "interrupting and preventing movement abilities"; the data's 0228
+			// blocks the ability, M), as a sleep or a stun does: it stops where it is, no reload if it hadn't come, its cooldown from
+			// now (ours); his client is told by the cut count and stops too
+			cutRoll(player, s, c);
+		}
 		roll(player, s, c);
 		giddy(player, s, c);
 		flashCast(player, s, c, able);
@@ -284,7 +296,8 @@ public final class Cassidy implements HeroKit {
 			}
 			java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(RADIUS).clip(eye, block);
 			if (hit.isPresent()) {
-				hits.add(new Object[] {target, hit.get(), hit.get().distanceTo(eye)});
+				// the part it crossed, when it's one of the dragon's (its head takes the whole hit: Combat.damagePart)
+				hits.add(new Object[] {target, hit.get(), hit.get().distanceTo(eye), e instanceof EnderDragonPart part ? part : null});
 			}
 		}
 		hits.sort(java.util.Comparator.comparingDouble(h -> (double) h[2]));
@@ -299,7 +312,9 @@ public final class Cassidy implements HeroKit {
 			double metres = (double) h[2];
 			boolean crit = crits && dev.overcraft.hero.Headshot.crossed(target, at, dir, RADIUS);
 			double dealtOw = damage * falloff(metres, start, end) * (crit ? CRIT : 1);
-			float dealt = Combat.damage(target, Combat.hitscan(player), dealtOw, blow.crit(crit));
+			// a dragon part through Combat.damagePart, as every other hero's shot (critic b79a4d1 #5: through the body it was quartered)
+			float dealt = h[3] instanceof EnderDragonPart part ? Combat.damagePart(level, part, Combat.hitscan(player), dealtOw, blow.crit(crit))
+				: Combat.damage(target, Combat.hitscan(player), dealtOw, blow.crit(crit));
 			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, target);
 			CassidySounds.split(player, "peacekeeper.hit_enemy", at, 500);
@@ -365,7 +380,7 @@ public final class Cassidy implements HeroKit {
 
 	private static void bleed(ServerPlayer owner, LivingEntity target) {
 		int steps = bleedSteps();
-		BLEEDS.put(target.getUUID(), new Bleed(target, owner.getUUID(), new int[] {steps, Ow.ticks(SILVER_BLEED_STEP)}));
+		BLEEDS.put(target.getUUID() + "/" + owner.getUUID(), new Bleed(target, owner.getUUID(), new int[] {steps, Ow.ticks(SILVER_BLEED_STEP)}));
 	}
 
 	/** The bleed's steps: 1.5 s in steps of 0.2 s, rounded (8). */
@@ -396,11 +411,35 @@ public final class Cassidy implements HeroKit {
 
 	// ---- Combat Roll (01F0) ----
 
-	private static void startRoll(ServerPlayer player, HeroState s, CassidyState c, int direction) {
-		if (c.roll >= 0 || s.ability1Cooldown > 0 || c.deadeye >= 0 || c.flashCast >= 0 || c.silenced || player.isPassenger()
-			|| Hinder.hindered(player) || Sleep.asleep(player)) {
+	/** Whether a roll may start now (the server's side of it: his client asks the same of the last sync, ClientCassidy). */
+	public static boolean mayRoll(boolean rolling, double cooldown, boolean deadeye, boolean casting, boolean silenced, boolean hindered,
+								  boolean asleep, boolean riding) {
+		return !rolling && cooldown <= 0 && !deadeye && !casting && !silenced && !hindered && !asleep && !riding;
+	}
+
+	/**
+	 * A roll his client made (it sends the roll's direction only for one it made: ClientCassidy). One authority: his client rolls only
+	 * when the last sync says the server will take it and every packet it sent that could change that has been seen; a press it
+	 * refuses isn't sent as a roll, so the server never rolls for a press that didn't move him. What the client couldn't know (a
+	 * hinder, a hack or a sleep landing in the round trip) the server refuses here, counts in {@code rollCut}, and his client stops.
+	 */
+	private static void clientRoll(ServerPlayer player, HeroState s, CassidyState c, int direction) {
+		if (!HeroManager.controls(player) || !mayRoll(c.roll >= 0, s.ability1Cooldown, c.deadeye >= 0, c.flashCast >= 0,
+			dev.overcraft.sombra.Hack.silenced(player), Hinder.hindered(player), Sleep.asleep(player), player.isPassenger())) {
+			c.rollCut = (c.rollCut + 1) & 0xFF;
 			return;
 		}
+		startRoll(player, s, c, direction);
+	}
+
+	/** The roll stops where it is (a hinder, a stun): his client stops with it (the cut count). */
+	private static void cutRoll(ServerPlayer player, HeroState s, CassidyState c) {
+		c.roll = -1;
+		c.rollCut = (c.rollCut + 1) & 0xFF;
+		s.ability1Cooldown = Ow.ticks(ROLL_COOLDOWN);
+	}
+
+	private static void startRoll(ServerPlayer player, HeroState s, CassidyState c, int direction) {
 		c.roll = 0;
 		c.giddy = -1;
 		speed(player, GIDDY_SPEED_ID, 0);
@@ -505,6 +544,31 @@ public final class Cassidy implements HeroKit {
 		player.level().addFreshEntity(flash);
 	}
 
+	/** Whether a Flashbang's burst takes one {@code metres} from it: within 3 m, in sight of it, no barrier between (01E9). */
+	public static boolean flashTakes(double metres, boolean inSight, boolean barrierBetween) {
+		return metres <= FLASH_BLAST && inSight && !barrierBetween;
+	}
+
+	/**
+	 * Where along {@code from -> to} (0..1) it is {@code range} from {@code start}: 0 when already there, -1 when the leg stays inside.
+	 * Flashbang's range along its move (FlashbangEntity.tick).
+	 */
+	public static double rangeCrossing(Vec3 start, Vec3 from, Vec3 to, double range) {
+		Vec3 d = to.subtract(from);
+		Vec3 f = from.subtract(start);
+		double c = f.lengthSqr() - range * range;
+		if (c >= 0) {
+			return 0;
+		}
+		double a = d.lengthSqr();
+		if (a < 1.0E-12) {
+			return -1;
+		}
+		double b = 2 * f.dot(d);
+		double t = (-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a);
+		return t <= 1 ? t : -1;
+	}
+
 	/** A Flashbang goes off at {@code at}: 75 (x {@code share}) to every enemy within 3 m in sight, and hinders them (01E9). */
 	public static void flashBang(ServerPlayer owner, Entity flash, Vec3 at, double share) {
 		ServerLevel level = owner.level();
@@ -519,11 +583,12 @@ public final class Cassidy implements HeroKit {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > FLASH_BLAST || !Combat.inSight(level, at, e, flash)
-				|| dev.overcraft.hero.Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			if (!flashTakes(d, d <= FLASH_BLAST && Combat.inSight(level, at, e, flash),
+				d <= FLASH_BLAST && dev.overcraft.hero.Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null)) {
 				continue;
 			}
-			float dealt = Combat.damage(e, level.damageSources().explosion(flash, owner), FLASH_DAMAGE * share, FLASH_BLOW);
+			// a hero's explosion (Combat.blast): not scaled by the difficulty, as Minecraft's own explosion was against players
+			float dealt = Combat.damage(e, Combat.blast(level, flash, owner), FLASH_DAMAGE * share, FLASH_BLOW);
 			if (dealt > 0) {
 				Combat.credit(owner, dealt, e);
 				Combat.addFireForDamage(owner, dealt, e);
@@ -563,13 +628,17 @@ public final class Cassidy implements HeroKit {
 		CassidySounds.split(player, "deadeye.loop", player.position(), 60);
 	}
 
-	/** Deadeye's self-cut now (0.4 -> 0 in 10 steps of 0.15 s after 2 s), {@code ticks} into the channel. */
+	/**
+	 * Deadeye's self-cut now (0.4 -> 0 in 10 steps of 0.15 s after 2 s), {@code ticks} into the channel. The steps read as Giddy Up's
+	 * (D #604 "10 steps every 0.15 s", the same loop as 51E5's): full at 2 s, the first step 0.15 s on, none from 3.5 s (W: 1.4 s).
+	 * It had its first step at 2.0 s, Giddy Up its at 0.15 s (critic b79a4d1 #6).
+	 */
 	public static double deadeyeFade(int ticks) {
 		double after = ticks / 20.0 - DEADEYE_FADE_AFTER;
 		if (after < 0) {
 			return 1;
 		}
-		int steps = Math.min(DEADEYE_FADE_STEPS, (int) Math.floor(after / DEADEYE_FADE_STEP + 1.0E-9) + 1);
+		int steps = Math.min(DEADEYE_FADE_STEPS, (int) Math.floor(after / DEADEYE_FADE_STEP + 1.0E-9));
 		return 1 - steps / (double) DEADEYE_FADE_STEPS;
 	}
 
@@ -602,8 +671,8 @@ public final class Cassidy implements HeroKit {
 		}
 		double fade = deadeyeFade(channel);
 		speed(player, DEADEYE_SPEED, -(DEADEYE_SLOW_AFTER + (DEADEYE_SLOW - DEADEYE_SLOW_AFTER) * fade));
-		if (!able) {
-			// stunned or asleep: it ends, no shot (W: a stun cancels it)
+		if (!able || c.silenced) {
+			// stunned, asleep or hacked: it ends, no shot (W rev 409375: "stunned, knocked down or hacked")
 			endDeadeye(player, s, c);
 			return;
 		}
@@ -611,10 +680,16 @@ public final class Cassidy implements HeroKit {
 		sendLocks(player, c);
 		if (s.secondaryFresh) {
 			// the right button cancels it (D 022F 0.1 s)
+			c.ultAgain = false;
 			c.deadeyeCancel = Ow.ticks(DEADEYE_CANCEL);
 			return;
 		}
-		if (s.primaryFresh) {
+		boolean asked = s.primaryFresh || c.ultAgain;
+		c.ultAgain = false;
+		if (asked && canFire(c.inSight)) {
+			// the left button or Q again (W: "press Ultimate again or Primary Fire"); with no one in sight in the cone the press does
+			// nothing and Deadeye goes on (W: "cannot be fired unless there is at least one target with unobstructed line of sight
+			// within the targeting area"; critic b79a4d1 #2: it fired at nothing and spent the ult)
 			startFire(player, c);
 			return;
 		}
@@ -629,21 +704,33 @@ public final class Cassidy implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
-		double cos = Math.cos(Math.toRadians(DEADEYE_CONE / 2));
+		c.inSight = 0;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(DEADEYE_RANGE))) {
+			// an enemy only, never a bystander (Allies.areaHits: what every lock and area ult takes; a cow or a sheep isn't one)
 			if (!e.isAlive() || !Allies.areaHits(player, e)) {
 				continue;
 			}
 			Vec3 at = aim(e);
 			Vec3 to = at.subtract(eye);
 			double dist = to.length();
-			if (dist > DEADEYE_RANGE || dist < 1.0E-3 || to.scale(1 / dist).dot(look) < cos || !Combat.inSight(level, eye, e, player)) {
+			if (!lockable(dist, dist < 1.0E-3 ? 1 : to.scale(1 / dist).dot(look), Combat.inSight(level, eye, e, player))) {
 				continue;
 			}
+			c.inSight++;
 			CassidyState.Lock lock = c.locks.computeIfAbsent(e.getId(), k -> new CassidyState.Lock());
 			lock.charge += lockStep(lock.ticks);
 			lock.ticks++;
 		}
+	}
+
+	/** Whether one {@code metres} off, at {@code cosine} from his aim, gains its lock: in the 105 degree cone, within 200 m, in sight. */
+	public static boolean lockable(double metres, double cosine, boolean inSight) {
+		return metres <= DEADEYE_RANGE && metres >= 1.0E-3 && cosine >= Math.cos(Math.toRadians(DEADEYE_CONE / 2)) && inSight;
+	}
+
+	/** Whether Deadeye can fire: someone in the cone and in sight now (W rev 409375). */
+	public static boolean canFire(int inSight) {
+		return inSight > 0;
 	}
 
 	/** Where Deadeye aims on a target (hp 0001, read as its chest: ours). */
@@ -660,10 +747,18 @@ public final class Cassidy implements HeroKit {
 			Entity e = player.level().getEntity(en.getKey());
 			ids[i] = en.getKey();
 			double health = e instanceof LivingEntity l ? Ow.toOw(l.getHealth() + l.getAbsorptionAmount()) : 1;
-			share[i] = (float) (en.getValue().charge / Math.max(1, health));
+			// what the shot would take off it (its armor, resistance, the hero damage path: Combat.projected), not the charge itself
+			// (critic b79a4d1 #3: the skull showed on a zombie in iron that the shot left at 0.9)
+			double lands = e instanceof LivingEntity l ? Combat.projected(l, Combat.hitscan(player), en.getValue().charge) : 0;
+			share[i] = (float) skullShare(lands, health);
 			i++;
 		}
 		send(player, new DeadeyePayload(ids, share));
+	}
+
+	/** The skull's share: what the shot would deal over the health it has (1 or more: the skull, the shot kills). */
+	public static double skullShare(double lands, double health) {
+		return lands / Math.max(1, health);
 	}
 
 	private static void send(ServerPlayer player, DeadeyePayload payload) {
@@ -673,9 +768,15 @@ public final class Cassidy implements HeroKit {
 	}
 
 	private static void startFire(ServerPlayer player, CassidyState c) {
-		// the most charged first (ours: the data's list order is the tracker's)
+		// the most charged first, the nearest first among equals (ours: the data's list order is the tracker's; played, the six rounds
+		// went to far-off slimes locked as long as the zombie in front of him)
 		c.deadeyeOrder = c.locks.entrySet().stream().filter(en -> en.getValue().charge > 0)
-			.sorted((a, b) -> Double.compare(b.getValue().charge, a.getValue().charge)).mapToInt(Map.Entry::getKey).toArray();
+			.sorted(java.util.Comparator.<Map.Entry<Integer, CassidyState.Lock>>comparingDouble(en -> -en.getValue().charge)
+				.thenComparingDouble(en -> {
+					Entity e = player.level().getEntity(en.getKey());
+					return e == null ? Double.MAX_VALUE : e.distanceToSqr(player);
+				}))
+			.mapToInt(Map.Entry::getKey).toArray();
 		c.deadeyeFire = 0;
 		speed(player, DEADEYE_SPEED, -DEADEYE_SLOW);
 	}
@@ -714,7 +815,10 @@ public final class Cassidy implements HeroKit {
 			return;
 		}
 		Vec3 at = aim(target);
-		float dealt = Combat.damage(target, Combat.hitscan(player), lock.charge, DEADEYE_BLOW);
+		// the dragon through its head, which takes the whole shot (Combat.damagePart; through the body it was quartered)
+		float dealt = target instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon dragon
+			? Combat.damagePart(player.level(), dragon.head, Combat.hitscan(player), lock.charge, DEADEYE_BLOW)
+			: Combat.damage(target, Combat.hitscan(player), lock.charge, DEADEYE_BLOW);
 		Combat.credit(player, dealt, target);
 		Combat.addFireForDamage(player, dealt, target);
 		trail(player.level(), fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), at);
@@ -755,18 +859,31 @@ public final class Cassidy implements HeroKit {
 		if (s == null || s.hero != Hero.CASSIDY || !HeroManager.heroMode(player)) {
 			return 1;
 		}
-		CassidyState c = s.cassidy;
-		if (c.roll >= 0) {
-			return (float) (1 - ROLL_DAMAGE_TAKEN);
+		return (float) takenFactorRule(s.cassidy.roll >= 0, s.cassidy.deadeye);
+	}
+
+	/** takenFactor's rule: rolling, or {@code deadeyeTicks} into Deadeye (-1 not in it). */
+	public static double takenFactorRule(boolean rolling, int deadeyeTicks) {
+		if (rolling) {
+			return 1 - ROLL_DAMAGE_TAKEN;
 		}
-		if (c.deadeye >= 0) {
-			int channel = c.deadeye - Ow.ticks(DEADEYE_CAST);
-			return (float) (1 - DEADEYE_DAMAGE_TAKEN * (channel < 0 ? 1 : deadeyeFade(channel)));
+		if (deadeyeTicks >= 0) {
+			int channel = deadeyeTicks - Ow.ticks(DEADEYE_CAST);
+			return 1 - DEADEYE_DAMAGE_TAKEN * (channel < 0 ? 1 : deadeyeFade(channel));
 		}
 		return 1;
 	}
 
-	/** A movement speed modifier of his own (a share of his base), or none at 0. */
+	/** Whether quick melee is his now: not during Deadeye (W rev 409375: no jump, crouch or other abilities while channelling). */
+	public static boolean meleeBlocked(HeroState s) {
+		return s.hero == Hero.CASSIDY && s.cassidy.deadeye >= 0;
+	}
+
+	/**
+	 * A movement speed modifier of his own, or none at 0: Giddy Up's a share of his base, Deadeye's slow multiplying the rest
+	 * (ADD_MULTIPLIED_TOTAL), so with another Cassidy's hinder it's x0.3 x0.5 and not -0.7 - 0.5 clamped to a stop (critic b79a4d1 #6;
+	 * ours that they multiply: no source read says how Overwatch stacks two slows).
+	 */
 	private static void speed(ServerPlayer player, Identifier id, double amount) {
 		AttributeInstance instance = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (instance == null) {
@@ -777,7 +894,8 @@ public final class Cassidy implements HeroKit {
 			instance.removeModifier(id);
 		} else if (current == null || current.amount() != amount) {
 			instance.removeModifier(id);
-			instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			instance.addTransientModifier(new AttributeModifier(id, amount, id.equals(DEADEYE_SPEED)
+				? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL : AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 	}
 
@@ -786,30 +904,63 @@ public final class Cassidy implements HeroKit {
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
 		CassidyState c = s.cassidy;
-		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
-			startRoll(player, s, c, s.cassidyRollDir);
-		}
+		// (Shift: the roll comes from his client's own, input below; a bare Shift press his client refused does nothing here)
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0) {
 			startFlash(player, s, c);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0) {
-			startDeadeye(player, s, c);
+			if (c.deadeye >= 0) {
+				c.ultAgain = true;
+			} else {
+				startDeadeye(player, s, c);
+			}
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && c.flashCast < 0) {
 			startReload(player, s);
 		}
 	}
 
-	/** His client's roll direction with the press (0 forward, 1 right, 2 back, 3 left: HeroInputPayload.extra - 1). */
-	public static void extra(ServerPlayer player, HeroState s, int extra) {
-		s.cassidyRollDir = Math.clamp(extra - 1, 0, 3);
+	/** Packets his client sent the server hasn't seen yet (mod 256). */
+	public static int pending(int sent, int seen) {
+		return (sent - seen) & 0xFF;
+	}
+
+	/**
+	 * Whether his client may roll now (ClientCassidy): the last sync's state says the server will take it, and the server has seen
+	 * every packet sent that could change that (an E or a Q it may have started, his last roll), and he isn't rolling there.
+	 */
+	public static boolean clientMay(int pending, double cooldown, int mode, boolean asleep, boolean riding, boolean rollingHere) {
+		return pending == 0 && !rollingHere && mayRoll((mode & MODE_ROLL) != 0, cooldown, (mode & MODE_DEADEYE) != 0,
+			(mode & MODE_CASTING) != 0, (mode & MODE_SILENCED) != 0, (mode & MODE_HINDERED) != 0, asleep, riding);
+	}
+
+	/** Whether a packet counts toward pressSeen: E, Q, or a roll (his client counts the same: ClientCassidy). */
+	public static boolean counts(int pressed, int extra) {
+		return (pressed & (HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE)) != 0 || extra != 0;
+	}
+
+	/**
+	 * Each packet from his client, before anything strips its presses (a hack) or drops them (out of hero mode): counted, and a roll it
+	 * made (its direction with it: 0 forward, 1 right, 2 back, 3 left, HeroInputPayload.extra - 1) taken or refused. HeroManager runs
+	 * this before the kit's press, so a roll and an E in one packet go as his client saw them: the roll, the throw refused.
+	 */
+	public static void input(ServerPlayer player, HeroState s, int pressed, int extra) {
+		CassidyState c = s.cassidy;
+		if (counts(pressed, extra)) {
+			c.pressSeen = (c.pressSeen + 1) & 0xFF;
+		}
+		if (extra != 0) {
+			s.cassidyRollDir = Math.clamp(extra - 1, 0, 3);
+			clientRoll(player, s, c, s.cassidyRollDir);
+		}
 	}
 
 	@Override
 	public HeroSyncPayload sync(HeroState s) {
 		CassidyState c = s.cassidy;
 		int mode = (c.deadeye >= 0 ? MODE_DEADEYE : 0) | (c.roll >= 0 ? MODE_ROLL : 0) | (c.hindered ? MODE_HINDERED : 0) | (c.silenced ? MODE_SILENCED : 0)
-			| (c.silverAim ? MODE_SILVER : 0) | (c.deadeyeFire >= 0 || c.deadeyeCancel >= 0 ? MODE_FIRING : 0) | (c.flashCast >= 0 ? MODE_CASTING : 0);
+			| (c.silverAim ? MODE_SILVER : 0) | (c.deadeyeFire >= 0 || c.deadeyeCancel >= 0 ? MODE_FIRING : 0) | (c.flashCast >= 0 ? MODE_CASTING : 0)
+			| (c.pressSeen & 0xFF) << SEEN_SHIFT | (c.rollCut & 0xFF) << CUT_SHIFT;
 		float left = c.deadeye < 0 ? 0 : (float) Math.max(0, (Ow.ticks(DEADEYE_CAST + DEADEYE_TIME) - c.deadeye) / 20.0);
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, c.deadeye >= 0,
 			s.primaryAmmo, s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(RELOAD)) : -1,

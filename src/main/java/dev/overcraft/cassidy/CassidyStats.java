@@ -81,7 +81,7 @@ public final class CassidyStats {
 	public static final double FLASH_LIFETIME = 5;
 	/**
 	 * Hinder (status 0079.053, graph 0228): 1.2 s, half speed, no movement abilities, no crouch (D 1.2 x (1 - CC resist) H, the
-	 * rest M; BZ 2024-06-20 0.9 -> 1.2 s; W) H/M. Ours: Minecraft creatures take the slow only.
+	 * rest M; BZ 2025-11-11 0.9 -> 1.2 s, after 2024-06-20 brought it in at 1.2 and 2024-09-17 cut it to 0.9; W) H/M. Ours: Minecraft creatures take the slow only.
 	 */
 	public static final double HINDER_TIME = 1.2, HINDER_SLOW = 0.5;
 	/** Where it leaves his hand (right, up, ahead from his eyes, m): ours. */

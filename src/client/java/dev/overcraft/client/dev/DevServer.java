@@ -294,7 +294,7 @@ public final class DevServer {
 				out.addProperty("ok", true);
 			}
 			case "cut" -> {
-				// dev only: "cut sleep|stun|hack <seconds>" on the local player, in the one-player world: what an enemy's dart, stun or EMP
+				// dev only: "cut sleep|stun|hack|hinder <seconds>" on the local player, in the one-player world: what an enemy's dart, stun or EMP
 				// does, without a second client
 				String[] a = arg.split(" ");
 				double seconds = a.length > 1 ? Double.parseDouble(a[1]) : 2;
@@ -306,6 +306,8 @@ public final class DevServer {
 							case "sleep" -> dev.overcraft.hero.Sleep.put(target, seconds);
 							case "stun" -> dev.overcraft.hero.Sleep.stun(target, seconds);
 							case "hack" -> dev.overcraft.sombra.Hack.creature(target, seconds);
+							// (an enemy Cassidy's Flashbang hinder, its own 1.2 s)
+							case "hinder" -> dev.overcraft.cassidy.Hinder.apply(target);
 							default -> {
 							}
 						}

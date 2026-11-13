@@ -126,10 +126,9 @@ public abstract class LivingEntityMixin {
 	private float overcraft$damageBoost(float damage,
 										@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
 		// a weakened attacker (Sombra's Cyberspace) deals half
-		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage, (LivingEntity) (Object) this) * dev.overcraft.ana.Nano.takenFactor((LivingEntity) (Object) this)
-			// Cassidy rolling (50 % less) or in Deadeye (40 % less, fading)
-			* dev.overcraft.cassidy.Cassidy.takenFactor((LivingEntity) (Object) this)
-			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
+		// Nano, Cassidy's roll and Deadeye, Cyberspace: Combat.takenScale (Deadeye's skull asks the same: Combat.projected)
+		float boosted = dev.overcraft.mercy.Boosts.amplify(source.getEntity(), damage, (LivingEntity) (Object) this)
+			* dev.overcraft.hero.Combat.takenScale((LivingEntity) (Object) this, source);
 		// a hero's armor (Brigitte's) takes each hit 7 smaller, at most halved (dev.overcraft.hero.Shields.armorReduce): not
 		// one a Brigitte's barrier takes instead, which it would have shrunk on the barrier (#88)
 		return (Object) this instanceof net.minecraft.server.level.ServerPlayer player

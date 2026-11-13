@@ -100,3 +100,53 @@ burn at noon: the first T1 read was off by the burning). Expected -> seen:
   real Play of the Game, his emotes played, the select screen's framing (0.72 kept), Silver Bullet's aim zoom (none built).
 - Sound events: every other hero's count in the pack could not be compared against a clean baseline (the pack's older `sounds.json`
   copies are partial); the data agent's check: only `cassidy.*` events added.
+
+## Critic b79a4d1 and its fixes (2026-11-13)
+The critic's report: [runs/cassidy/critic_b79a4d1.md](../testing/runs/cassidy/critic_b79a4d1.md) (raw: `critic_runs_b79a4d1.txt`). Each
+reproduced on the old build first (the fixes stashed), then played on the fix: one dev client, fresh flat worlds `fix_old` / `fix_new`,
+harness keys (not the real mouse and keys). Raw stamped log: [runs/cassidy/fixer_b79a4d1_runs.txt](../testing/runs/cassidy/fixer_b79a4d1_runs.txt)
+(labels `old_*`, `new_*`), scripts `f1..f5.txt`, `f2b.txt`. Screenshots (not committed, each opened): `FX_old_f8_skull.png`,
+`FX_old_f9_skull.png`, `FX_f8_skull.png`, `FX_f9_skull.png`. The synced `mode` now carries two counts above its flags (bits 8-15 seen,
+16-23 cut): read its low byte for the flags. Expected -> old -> fixed:
+1. **Combat Roll: client and server disagreed** (high). Now one authority, Tracer's Blink's way: his client rolls only when the last sync
+   says the server will take it **and** the server has seen every E, Q and roll it sent (`Cassidy.pending`, `clientMay`); the server rolls
+   only for a roll his client sent (its direction in the same packet: no stale clip), and one it can't take (a hinder, hack or sleep
+   landing in the round trip) it counts as cut, and his client stops. F1, lag 150, a shot, E, Shift 0.17 s later -> no move, nothing
+   spent. Old: z 0.5 -> 6.66, the server's roll cooldown 0, ammo 5 (no reload). Fixed: z 0.5, the throw went (cooldown 11.7), ammo 5.
+   F2, lag 150, taps every ~0.17 s as the cooldown ends -> every server roll with its move. Old (critic C7): a server roll from a tap the
+   client refused. Fixed: refused taps sent nothing (seen count unchanged); the one roll moved 6.16 m and the server's count and cooldown
+   followed. F13 control: E, Shift 0.6 s later: no lag, a roll (cooldown 4.3 s after); **under lag 150, refused** (his client still sees
+   the cast: it refuses for one round trip longer than the server would; a lost press, not a disagreement: ours, open).
+2. **Deadeye fired at nothing** (F4, sealed box, left button 1 s in) -> the press does nothing. Old: mode 1 -> 0, the ult spent. Fixed:
+   still channelling (mode low byte 1), times out unfired at 7 s. Q again fires it (W): F6b, old nothing (timed out, the husk alive);
+   fixed: fired, the husk 100 -> 65.2.
+3. **The skull ignored armor** (F8, the critic's C4c: a 60 MC zombie in full iron, fire ~3.85 s in) -> no skull unless it dies. The
+   share is now `Combat.projected` (the same path as Combat.damage: the hurt's scaling, armor and toughness, Resistance, protection,
+   without their side effects) over its health. Old: skulls on it (and on far-off slimes), left at 1.94. Fixed: the marker, no skull,
+   left at 1.94 (`FX_f8_skull.png`); F9, longer: the skull, then dead (`FX_f9_skull.png`).
+4. **Jump, crouch, quick melee in Deadeye** (F5b) -> none. Old: y -60 -> -59.12, the husk 100 -> 96.8. Fixed: y -60, husk 100;
+   crouch held: not crouching in Deadeye, crouching after it (control).
+5. **Dragon parts quartered** -> `Combat.damagePart` in his shots, Deadeye through the head. F11 (fixed only; old code-read): a NoAI
+   dragon 200 -> 144.8 from one Deadeye shot (~690 OW: the whole charge; through the body ~15).
+6. Lows:
+   - **Hack ends Deadeye** (F7, `cut hack 2` 1 s in): old mode 9 (going on, hacked); fixed: ended unfired.
+   - **Hinder cuts a roll** (F3, `cut hinder` 0.1 s in; reference cassidy.md: "interrupts and blocks movement abilities"): old the full
+     6.2 m; fixed stopped at 3.2 m, cooldown from the cut (ours), his client stopped by the cut count.
+   - **"Locks on passive animals"**: not so. In the critic's flat world they were **slimes** (`ents Slime`: dozens 50+ m off; flat
+     worlds spawn them, `Enemy`), which `Allies.areaHits` rightly takes; cows aren't locked. What was wrong: six rounds could go to far
+     slimes locked as long as the zombie in front. Now equal charges go nearest first (ours). Our runs: `/gamerule spawn_monsters false`.
+   - **Flashbang's range** (F10: a husk whose near face is 11.15 m out): old it burst at 7.5 m (z 8.5) and hit it (100 -> 94); fixed: the
+     leg that crosses 7 m is cut to end there (`Cassidy.rangeCrossing`), the husk untouched.
+   - **Deadeye's fade** now steps as Giddy Up does (full at 2 s, the first step 0.15 s on, none from 3.5 s); W says 1.4 s.
+   - **Two Cassidys** (ours, code only: one client): Deadeye's slow multiplies (ADD_MULTIPLIED_TOTAL: x0.3 x0.5 with a hinder, not
+     clamped to a stop); each Cassidy's bleed runs on its own (keyed by target and owner), his own second restarts his.
+   - **Flashbang's damage** is `Combat.blast` (not scaled by the difficulty against players). **HINDER_TIME's citation**: BZ 2025-11-11.
+7. **Tests** (CassidyMathTest): `damageTaken` (the roll's 50 %: the critic's first mutation), `deadeyeTargets` (`lockable` needs sight,
+   `canFire`, `skullShare`), `flashbang` (`flashTakes` needs sight and no barrier; `rangeCrossing`), `rollAuthority` (`clientMay`,
+   `pending`, `counts`), and the fade against Giddy Up's steps. They test the rules the code calls; a mutation that drops the
+   `Combat.inSight` call at its call site would still pass. No offline test for `Combat.projected` (it needs a live entity).
+
+**Not tried here:** the real mouse and keys; a second player (two Cassidys' slows and bleeds, a hinder or hack from a real enemy landing
+mid-round-trip, the enemy's view of the cut roll); a hack landing mid-roll (left going: no source read on it); Peacekeeper headshots on
+the dragon's head by hand (Deadeye only); a Shift press dropped at a hero switch (his client retakes the count after 2 s stuck); an
+Overwatch side by side.

@@ -329,8 +329,9 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.descent = ClientMercy::descent;
 		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
 		OwMovement.levitating = ClientSigma::levitating;
-		OwMovement.noJump = entity -> entity == mc.player && ClientHero.hero() == Hero.SIGMA
-			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0;
+		// (and Cassidy in Deadeye: W, no jump while channelling)
+		OwMovement.noJump = entity -> entity == mc.player && (ClientHero.hero() == Hero.SIGMA
+			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0 || ClientCassidy.inDeadeye());
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
 			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
 			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;

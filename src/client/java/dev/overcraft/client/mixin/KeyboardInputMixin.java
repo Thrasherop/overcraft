@@ -38,7 +38,9 @@ public abstract class KeyboardInputMixin extends ClientInput {
 		boolean right = HeroControls.get(Action.MOVE_RIGHT).isDown();
 		// D.Va's mech can't crouch (no crouch in any mech graph: D 0276 #246); her crouch key does nothing in it
 		boolean crouch = HeroControls.get(Action.CROUCH).isDown() && !dev.overcraft.dva.Dva.mechBody(player);
-		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown(), crouch, false);
+		// Cassidy in Deadeye: no jump, no crouch (W rev 409375: "cannot jump, crouch or use other abilities while channeling")
+		boolean deadeye = dev.overcraft.client.ClientCassidy.inDeadeye();
+		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown() && !deadeye, crouch && !deadeye, false);
 		this.moveVector = new Vec2(impulse(left, right), impulse(forward, back)).normalized();
 	}
 

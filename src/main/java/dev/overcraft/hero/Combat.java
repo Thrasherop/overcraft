@@ -124,6 +124,57 @@ public final class Combat {
 		return deal(part.parentMob, part, source, blow, () -> part.hurtServer(level, source, Ow.hp(owDamage)));
 	}
 
+	/**
+	 * What a hurt's damage is scaled by on {@code victim} before armor (LivingEntityMixin, hurtServer's head): Nano Boost on the
+	 * victim, Cassidy rolling (50 % less) or in Deadeye (40 % less, fading), a weakened attacker (Cyberspace). A Mercy's boost
+	 * (Boosts.amplify) is the mixin's own, as it credits her.
+	 */
+	public static float takenScale(LivingEntity victim, DamageSource source) {
+		return dev.overcraft.ana.Nano.takenFactor(victim) * dev.overcraft.cassidy.Cassidy.takenFactor(victim)
+			* (float) dev.overcraft.sombra.Cyberspace.dealtFactor(source.getEntity());
+	}
+
+	/**
+	 * The damage (OW) a hero's hit of {@code owDamage} would take off {@code target} if dealt now, without dealing it: the same path
+	 * as Combat.damage (LivingEntityMixin's scaling and Brigitte's armor, a player's difficulty when the type scales, Minecraft's
+	 * armor and toughness, Resistance, protection enchantments: LivingEntity.getDamageAfterArmorAbsorb / getDamageAfterMagicAbsorb,
+	 * 26.3, read without their side effects: armor wear, stats). Not a shield held up, nor a Brigitte barrier in the way. Deadeye's
+	 * skull (critic b79a4d1 #3).
+	 */
+	public static double projected(LivingEntity target, DamageSource source, double owDamage) {
+		float d = (float) Ow.hp(owDamage);
+		d = (float) (d * dev.overcraft.mercy.Boosts.damageFactor(source.getEntity())) * takenScale(target, source);
+		if (target instanceof ServerPlayer player) {
+			d = Shields.armorReduce(player, d);
+			if (source.scalesWithDifficulty()) {
+				switch (player.level().getDifficulty()) {
+					case PEACEFUL -> d = 0;
+					case EASY -> d = Math.min(d / 2 + 1, d);
+					case HARD -> d = d * 3 / 2;
+					default -> {
+					}
+				}
+			}
+		}
+		if (!source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ARMOR)) {
+			d = net.minecraft.world.damagesource.CombatRules.getDamageAfterAbsorb(target, d, source, target.getArmorValue(),
+				(float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+		}
+		if (!source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_EFFECTS)) {
+			MobEffectInstance resistance = target.getEffect(net.minecraft.world.effect.MobEffects.RESISTANCE);
+			if (resistance != null && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_RESISTANCE)) {
+				d = Math.max(d * (25 - (resistance.getAmplifier() + 1) * 5) / 25f, 0);
+			}
+			if (d > 0 && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ENCHANTMENTS) && target.level() instanceof ServerLevel level) {
+				float protection = net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageProtection(level, target, source);
+				if (protection > 0) {
+					d = net.minecraft.world.damagesource.CombatRules.getDamageAfterMagicAbsorb(d, protection);
+				}
+			}
+		}
+		return Math.max(0, Ow.toOw(d));
+	}
+
 	private static float deal(LivingEntity target, Entity hit, DamageSource source, Blow blow, Runnable hurt) {
 		blow = withHero(blow, source.getEntity());
 		float before = target.getHealth() + target.getAbsorptionAmount();

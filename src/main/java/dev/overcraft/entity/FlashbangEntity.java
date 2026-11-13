@@ -80,8 +80,21 @@ public class FlashbangEntity extends OwProjectile {
 
 	@Override
 	public void tick() {
+		boolean last = false;
+		if (!level().isClientSide() && !done && isAlive() && !isInWater()) {
+			// its range checked along the move, not after it (critic b79a4d1 #6: at 1.5 m a tick it went off at ~7.5 m): the leg that
+			// would cross it is cut to end there, and what it meets on the way still stops it first
+			Vec3 now = position();
+			Vec3 next = now.add(getDeltaMovement()).subtract(0, getGravity(), 0);
+			double t = Cassidy.rangeCrossing(start, now, next, range);
+			if (t >= 0 && t < 1) {
+				Vec3 to = now.add(next.subtract(now).scale(t));
+				setDeltaMovement(to.subtract(now).add(0, getGravity(), 0));
+				last = true;
+			}
+		}
 		super.tick();
-		if (!level().isClientSide() && !done && isAlive() && position().distanceTo(start) >= range) {
+		if (!level().isClientSide() && !done && isAlive() && (last || position().distanceTo(start) >= range - 1.0E-4)) {
 			// its range gone: it goes off where it is (D 01E9 m_FEC435C6)
 			bang(position());
 		}

@@ -5,7 +5,8 @@ import socket
 import sys
 import time
 
-RUNS = 'E:/claude/mods/overcraft_cassidy/techniques/testing/runs/cassidy/runs.txt'
+import os
+RUNS = os.environ.get('OC_RUNS', 'E:/claude/mods/overcraft_cassidy/techniques/testing/runs/cassidy/runs.txt')
 LOG = 'E:/claude/mods/overcraft_cassidy/run/logs/latest.log'
 KEEP = ('"x"', '"y"', '"z"', '"yaw"', '"health"', '"onGround"', '"hero"', '"heroMode"', '"ult"', '"mode"', '"primaryAmmo"',
         '"primaryReload"', '"meter"', '"secondaryAmmo"', '"ability1Cooldown"', '"ability2Cooldown"', '"vx"', '"vy"', '"vz"', '"anim"',

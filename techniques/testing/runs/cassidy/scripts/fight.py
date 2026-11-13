@@ -9,7 +9,8 @@ import socket
 import sys
 import time
 
-RUNS = 'E:/claude/mods/overcraft_cassidy/techniques/testing/runs/cassidy/runs.txt'
+import os
+RUNS = os.environ.get('OC_RUNS', 'E:/claude/mods/overcraft_cassidy/techniques/testing/runs/cassidy/runs.txt')
 secs, label = float(sys.argv[1]), sys.argv[2]
 out = open(RUNS, 'a', encoding='utf8')
 sock = socket.create_connection(('127.0.0.1', 25599), timeout=60)

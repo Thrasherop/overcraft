@@ -37,6 +37,15 @@ public final class CassidyState {
 	public boolean silenced, hindered;
 	/** When "It's high noon" is said (game time, -1 none). */
 	public long lineAt = -1;
+	/**
+	 * His client's packets the server has seen that could change whether a roll may start (E, Q, or a roll it made), mod 256, and the
+	 * rolls the server refused or cut short, mod 256: both synced back (Cassidy.SEEN_SHIFT, CUT_SHIFT) so his client rolls only when the
+	 * server will take it and stops a roll the server won't (critic b79a4d1 #1). Kept across clear(): his client's count goes on.
+	 */
+	public int pressSeen, rollCut;
+	/** Deadeye: enemies in the cone and in sight this tick (it can fire only with one: W), Q pressed again (fires, W). */
+	public int inSight;
+	public boolean ultAgain;
 
 	/** One Deadeye target. */
 	public static final class Lock {
@@ -61,5 +70,7 @@ public final class CassidyState {
 		silverAim = false;
 		silenced = hindered = false;
 		lineAt = -1;
+		inSight = 0;
+		ultAgain = false;
 	}
 }
