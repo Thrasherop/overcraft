@@ -182,6 +182,7 @@ public final class HeroManager {
 		KITS.put(Hero.PHARAH, new dev.overcraft.pharah.Pharah());
 		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
 		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
+		KITS.put(Hero.JUNKRAT, new dev.overcraft.junkrat.Junkrat());
 	}
 
 	private HeroManager() {
@@ -272,10 +273,10 @@ public final class HeroManager {
 		// Sigma: Gravitic Flux's flight (and Levitation) land him; D.Va: the eject's launch lands her
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
 		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below); Pharah: her
-		// jets, her hover and her own blasts
+		// jets, her hover and her own blasts; Junkrat: his mine's launch and his frags' push
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
 			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
-			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH)
+			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 

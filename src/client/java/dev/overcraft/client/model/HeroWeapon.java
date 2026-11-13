@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = with(Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -55,7 +55,10 @@ public final class HeroWeapon {
 		Hero.TRACER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
 		// Cassidy's Peacekeeper, entity 02A6 (model EECF) on his hardpoint 000A = Weapon_R (slot 1901), no offset, in both views
 		// (his models' hardpoint tables); hero_models/cassidy_weapon.glb (Map.of holds ten: the rest added here)
-		Hero.CASSIDY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.CASSIDY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Junkrat's Frag Launcher, entity 0452 (model 1022D) on his hardpoint 000A (var 193F), as Cassidy's: Weapon_R, no offset (M: his
+		// models' hardpoint tables not yet read for the turn); hero_models/junkrat_weapon.glb
+		Hero.JUNKRAT, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
 		Map<Hero, Spec> all = new java.util.EnumMap<>(first);

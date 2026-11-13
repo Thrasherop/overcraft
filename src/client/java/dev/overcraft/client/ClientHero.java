@@ -185,6 +185,7 @@ public final class ClientHero {
 		ClientPharah.reset();
 		ClientTracer.reset();
 		ClientCassidy.reset();
+		ClientJunkrat.reset();
 		sync = HeroSyncPayload.NONE;
 		lastHeld = 0;
 		ofudaOn = false;
@@ -276,6 +277,9 @@ public final class ClientHero {
 				boolean towing = (mode & dev.overcraft.jetpackcat.JetpackCat.MODE_TOWING) != 0 || carrying;
 				AbilityCamera.update(mc, true, towing ? LIFELINE_VIEW_TOWING : LIFELINE_VIEW_SEEKING,
 					(LIFELINE_VIEW_TOWING - LIFELINE_VIEW_SEEKING) / (towing ? 0.45f : 0.35f), 0.3f, LIFELINE_VIEW_RISE, LIFELINE_VIEW_RIGHT);
+			} else if (controls() && hero() == Hero.JUNKRAT) {
+				// RIP-Tire: from behind the tire while it runs (CameraMixin places it; this keeps the view out of first person)
+				AbilityCamera.update(mc, ClientJunkrat.tire() != null);
 			} else {
 				AbilityCamera.update(mc, cat && ult != dev.overcraft.jetpackcat.JetpackCat.ULT_NONE);
 			}

@@ -75,6 +75,7 @@ public final class HeroArt {
 			case PHARAH -> "barrage";
 			case TRACER -> "pulse_bomb";
 			case CASSIDY -> "deadeye";
+			case JUNKRAT -> "rip_tire";
 			case ILLARI -> "captive_sun";
 		});
 	}

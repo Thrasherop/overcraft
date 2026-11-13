@@ -152,6 +152,23 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2, (float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Junkrat's frag (0385) and Total Mayhem bombs (0515): 0.32 m against blocks (D 28ED + 28A4; not saved: 4.5 s at most). */
+	public static final EntityType<dev.overcraft.entity.FragEntity> FRAG = register("junkrat_frag",
+		EntityType.Builder.<dev.overcraft.entity.FragEntity>of(dev.overcraft.entity.FragEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.32f, 0.32f).clientTrackingRange(8).updateInterval(1));
+	/** His Concussion Mine (0F9B): 0.4 m (not saved: it goes with him). */
+	public static final EntityType<dev.overcraft.entity.ConcussionMineEntity> CONCUSSION_MINE = register("concussion_mine",
+		EntityType.Builder.<dev.overcraft.entity.ConcussionMineEntity>of(dev.overcraft.entity.ConcussionMineEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
+	/** His Steel Trap (11A9 / 103A): 0.6 m (not saved). */
+	public static final EntityType<dev.overcraft.entity.SteelTrapEntity> STEEL_TRAP = register("steel_trap",
+		EntityType.Builder.<dev.overcraft.entity.SteelTrapEntity>of(dev.overcraft.entity.SteelTrapEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.6f, 0.3f).clientTrackingRange(8).updateInterval(1));
+	/** His RIP-Tire (039C): 0.9 m across, 0.8 m tall (not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.RipTireEntity> RIP_TIRE = register("rip_tire",
+		EntityType.Builder.<dev.overcraft.entity.RipTireEntity>of(dev.overcraft.entity.RipTireEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized((float) dev.overcraft.junkrat.JunkratStats.TIRE_WIDTH, (float) dev.overcraft.junkrat.JunkratStats.TIRE_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)

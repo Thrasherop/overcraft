@@ -469,7 +469,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY ? 0.72f
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -605,6 +605,13 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "combat_roll"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "flashbang"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "deadeye"));
+			// his data's loadouts: the Frag Launcher (the left button), Concussion Mine (Shift; the right button sets it off), Steel Trap,
+			// RIP-Tire; Total Mayhem, his passive, has no key (no hero's passive is listed here; Specialist is the sub-role's)
+			case JUNKRAT -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "frag_launcher"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "concussion_mine"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "steel_trap"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "rip_tire"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),
