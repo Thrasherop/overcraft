@@ -4,7 +4,19 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.41 on next (not on main yet)
+## 2026-11-13: 0.3.42 on next (not on main yet)
+
+- **D.Va's Self-Destruct (#132)** plays her own animation from the game data: the mech crouches, opens and curls up
+  before the blast. Her eject animation now plays at the cast too.
+- **D.Va's Call Mech in first person (#133)**, as the owner described it from Overwatch: the view stays on the pilot,
+  she climbs into the landing mech with her own first-person clip, a brief black fade (its timing ours: the data has
+  none we could read), then the mech's view and HUD. No second pilot: the empty mech (the call's drop, the
+  Self-Destruct mech, the wreck) no longer shows the pilot built into its model. Others still see her run and dive in.
+- Fixed with it: a call cut short by a change of dimension dropped her into the void; the climb camera stays out of
+  walls and ledges.
+- Played by the builder, a critic, the fixer and the coordinator's real-input pass.
+
+## 2026-11-13: 0.3.41
 
 - **Junkrat (#73)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-09-08, is
   already in the data):
