@@ -24,6 +24,9 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 		HeroModels.@Nullable Loaded loaded;
 		@Nullable String clip;
 		float time;
+		/** An additive layer over the clip (Self-Destruct's), and its time from the cast. */
+		@Nullable String layer;
+		float layerTime;
 	}
 
 	public DvaMechRenderer(EntityRendererProvider.Context context) {
@@ -40,14 +43,18 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 		super.extractRenderState(entity, state, partialTicks);
 		state.yRot = entity.getYRot(partialTicks);
 		state.loaded = HeroModels.get(dev.overcraft.hero.Hero.DVA);
+		state.layer = null;
 		float t = (entity.tickCount + partialTicks) / 20f;
 		if (entity.kind() == DvaMechEntity.WRECK) {
 			state.clip = "destroyed_sm0";
 			state.time = (float) dev.overcraft.dva.DvaStats.WRECK_TIME + t;
 		} else if (entity.kind() == DvaMechEntity.SELF_DESTRUCT) {
-			// flying on to its blast: her stand (its own 3644 is an additive layer over the base: step 11)
+			// flying on to its blast: her stand, and over it the Self-Destruct layer (alias 0x175: 3644, additive, 5.03 s played
+			// over 3.5 s from the cast, D 0B2F #300; the mech's panels and arms open by stages, #132)
 			state.clip = "idle";
 			state.time = t;
+			state.layer = "add_self_destruct_sm0";
+			state.layerTime = t;
 		} else {
 			state.clip = "call_mech";
 			state.time = t;
@@ -63,6 +70,11 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 			SkinnedModel.Clip clip = state.clip == null ? null : model.clips.get(state.clip);
 			if (clip != null && clip.duration() > 0) {
 				Skeleton.sample(clip, Math.min(state.time, clip.duration()), pose);
+			}
+			SkinnedModel.Clip layer = state.layer == null ? null : model.clips.get(state.layer);
+			if (layer != null && layer.duration() > 0) {
+				float speed = layer.duration() / (float) dev.overcraft.dva.DvaStats.SELF_DESTRUCT_CLIP_TIME;
+				Skeleton.addAdditive(layer, Math.min(state.layerTime * speed, layer.duration()), pose, 1);
 			}
 			Matrix4f[] skin = Skeleton.skin(model, pose, -1, null);
 			poseStack.pushPose();

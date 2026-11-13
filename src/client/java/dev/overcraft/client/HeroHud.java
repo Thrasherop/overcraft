@@ -242,6 +242,11 @@ public final class HeroHud {
 		weapons(g, hero, s, w);
 		pickedPerks(g, hero, s, w);
 		g.pose().popMatrix();
+		// D.Va's Call Mech in first person: the brief black between her climb and the mech's view (DvaCallView, #133)
+		float black = hero == Hero.DVA ? DvaCallView.fade(player, delta.getGameTimeDeltaPartialTick(true)) : 0;
+		if (black > 0) {
+			g.fill(0, 0, g.guiWidth(), g.guiHeight(), Math.round(black * 255) << 24);
+		}
 	}
 
 	/** Notices cooldowns ending, the ofuda clip refilling and the ult starting, for the flashes and the countdown. */

@@ -455,6 +455,53 @@ about 30 here) and FOV, and an Overwatch side by side of the launch.
 **Not tried:** the pass's exact keys for 2 and 3 (its client and world); real keys for the missile fix; missiles at a moving target, at an
 ally on the crosshair (they aim at it and pass through, as allies don't stop them: not played); a crosshair on a wall nearer than 1.5 m.
 
+## Self-Destruct's animation (#132) and the first-person Call Mech (#133), 2026-11-13
+Branch `fix/dva-anims` (from `next` 363f198, 0.3.41). The owner, playing 0.3.41: "the dva bomb animation isn't correct" and "the remech
+happens in front of the pilot ... there's two pilots. In Overwatch, you are first person as baby dva and climb into the machine, then a
+brief black fade into mech UI." Every clip below was already in the pack (no Blender run); found with the clip maps and
+`research\dva\work\clipmap_dva\compact_<set>.txt`, timed by the graphs' StateAnim nodes.
+
+**From the data:**
+- **Self-Destruct** is alias **0x175** (0B2F #300: m_86701C3E 3.5, state length v215 = the 3 s fuse). On the 3P mech (set 0282) it is
+  **3644**, an additive 5.03 s clip (`add_self_destruct_sm0`): its panels and arms open by stages, the last at 4.0 s; played over **3.5 s**
+  (`DvaStats.SELF_DESTRUCT_CLIP_TIME`, M: that m_86701C3E is the play length; the same field is 2 / 1.66 / 0.2 on the call's clips) over
+  her stand, so it balls up just before the blast. The 1P mech has its own 0x175 (33CF, 0.6 s), unplayed: she is already the pilot
+  then. The pilot's eject 0x439 (3382) plays on any 016C, and Self-Destruct sends 016C at its cast (0B2F #271): it now plays on that eject
+  too, not only after the wreck (`HeroAnimator`, MECH -> PILOT).
+- **Call Mech, hers in first person:** the cast 0x433 (pilot 1P **3531**, 0.2 s: 026A #347), then 0xE5 (pilot 1P **3134**, 2 s from the
+  spawn: #405). 3134's `Camera` bone is laid out about the mech's spot: it starts 2.06 m behind it at 1.43 m, backs off, then climbs 2.9 m
+  forward into it, looking down up to 29 deg (`camtrack.py` in the session scratchpad). The link is spawn + 1.75 s (#431). Then the
+  mech's own 1P spawn **0x435** (mech 1P **3329**, its 1 s over 1.2 s: 0276 #176), whose camera starts at 1.37 m pitched down 21 deg
+  (where the climb left off) and rises to the mech's eye.
+- **No fade in the data:** no fade or screen node in 026A or 0276 (0276 #175 STU_A90C5991, right before #176, is unread: L). The fade is
+  ours, from the clip's camera track: black from 1.4 s into the climb (the camera reaching the cockpit) to the link, out over 0.35 s
+  (`DvaStats.CALL_FADE_START` / `CALL_FADE_OUT`).
+
+**Code:** `DvaMechRenderer` (the additive layer on the SELF_DESTRUCT mech), `HeroAnimator.dvaView` (the 1P clips by form and time),
+`client.DvaCallView` (the view: the clip camera anchored on her called mech's spot and yaw, blended in from her eyes over 0.3 s; the
+spawn view anchored on her feet, blended back to her own look over its last 0.4 s; the fade), `CameraMixin.overcraft$dvaCall`, the black
+in `HeroHud.render`. First person only; her third person and everyone else's view of her are unchanged.
+
+**Played** (fresh `runClient`, flat survival `dvaanim1` on 363f198, `dvaanim2` on the fix; `spawn_monsters` off, noon; harness keys,
+not the desktop; a D.Va bot (`bot add Dee dva`) for the side views; screenshots in `run/screenshots/`, not committed, each opened):
+
+| Moment | Expected | Before (363f198) | After |
+| --- | --- | --- | --- |
+| Call Mech, 1P (`/damage 60`, eject, `ult 100`, Q) | the view climbs into the mech, black, mech view and HUD | the pilot's arms idle with the Light Gun; the mech lands 1.5 m ahead with a pilot already in its cockpit; at 1.95 s a cut to the cockpit (`sheet_r133_1p.png`) | gun away, her hands reach out (0.4 s), the mech lands ahead (0.7-1.0 s), she climbs onto its seat, hands on the cockpit (1.3-1.7 s), black (1.9 s), the mech's view pitched down rising into the cockpit with the 675 HUD (2.1-2.6 s), the cannons up (3.2 s) (`sheet_a133.png`) |
+| Call Mech seen by others (bot, from the side) | 3120 run and dive, 311F | as expected | unchanged: she runs, dives into the falling mech, it stands (`sheet_a133_3p.png`) |
+| Self-Destruct from the side (bot) | the mech's own animation to the blast | the mech in its plain stand for 3 s, stand-in sparks (`sheet_r132b.png`) | it crouches, opens, curls into a ball by 2.8 s (`sheet_a132.png`) |
+| G at 1.2 s into the call | back to her own view, no black | - | Minecraft mode at her eyes, no black; G back: the pilot, Call Mech at 5 (spent, as before) (`sheet_e_g.png`) |
+| Death at 1.2 s into the call (`/kill`) | normal death | - | killed; she is back in a mech at once (54); its spawn view and the fade-out play then (the animator sees CALLING -> MECH; the data's respawn also starts the mech's spawn, 0276: L) (`e_death2.png`) |
+| Call Mech after that respawn | the same climb | - | the climb at 1.3 s, black at 2.05, the mech at 3.1 (`e_resp_call*.png`) |
+| Hero switch (Kiriko) at 1.6 s into the call | Kiriko, her own view | - | Kiriko 250, normal view, no black (`sheet_e_switch3.png`) |
+| An eject after the mech dies (`/damage 60`) | the `eject` clip | `eject` | `eject` (state at 1.1 / 1.25 s) |
+
+**Not tried / open:** real mouse and keys (harness keys only); an Overwatch side by side of the climb and of the bomb; the mech model's
+own pilot inside the cockpit during 311F (FBB0 carries her body; in first person the climb now covers it; in third person whether the diving
+pilot and a seated one overlap was not checked: open); the 1P mech's 0x175 (33CF); Self-Destruct's visual effects (the sparks
+are still the stand-in, step 11's effects run); whether 0276 #175 is the engine's own fade; a call on a slope or a ledge (the clip's camera
+assumes the spot's ground is level with hers); two clients (the bot stood in for the other player).
+
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam
