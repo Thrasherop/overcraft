@@ -48,3 +48,11 @@ input. The world was `full_play`: survival, Normal, real terrain (a jungle), wit
 Sigma, Sojourn and the supports (not new since main); Junkrat's kit beyond frags (played on 24d22a1); D.Va's Defense
 Matrix; Lúcio's wall jump (calibrated in 0.3.39); the blaze-rod and pearl pickup scoring (played in 0.3.39); a second
 player; water, lava and the Nether; mining stone with a pickaxe, building and chests (blocked by the crafting result).
+
+## Correction: the play ran from a partial asset pack
+
+The owner noticed missing assets in this play's screenshots. The main checkout's pack lacked the models, portraits,
+effect and UI textures of seven heroes, which were in the old shared pack (`overcraft_ana`). D.Va's missing model above
+came from that, not from her code. The packs were merged afterwards (`techniques/building/building.md`, "One local asset
+pack"). A recheck on the merged pack showed D.Va's model, every portrait and her ability icons on the select screen,
+and her controls and cannons in first person. The rest of this play's outcomes don't depend on assets.

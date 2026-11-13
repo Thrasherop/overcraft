@@ -2,6 +2,20 @@
 
 Gradle, code edits and git on this checkout. Up: [Techniques](../README.md) · engine: [minecraft_26](../minecraft/minecraft_26.md)
 
+## One local asset pack (2026-11-13)
+- **The dev pack is the main checkout's: `E:\claude\mods\overcraft\local-assets\pack`.** Build every hero's assets
+  into it (`OC_ASSET_PACK=E:\claude\mods\overcraft\local-assets\pack` from a worktree), and run worktree clients with the
+  same `OC_ASSET_PACK`. `local-assets/` is gitignored, so each worktree has its own copy, and copies drift apart.
+- How it went wrong: until 2026-11-11 the shared pack was `overcraft_ana/local-assets/pack`, which held Ana, Sombra,
+  Brigitte, Juno, Sojourn, Sigma and D.Va. Pharah's, Tracer's, Cassidy's and Junkrat's builders built into the main
+  checkout's pack instead. The 0.3.41 release play ran from that partial pack: no D.Va or Sigma model, no portraits, no
+  effect or UI textures for those heroes (the owner saw it in the screenshots). The two packs were merged into the main
+  checkout's: the shared pack's 834 missing files (models, 444 effect textures, UI icons, 65 glow tables) and its 8
+  newer files, keeping main's sounds (all heroes, rebuilt 2026-11-13) and its lang file (a superset). The ana pack is
+  now stale: don't build into it or run from it.
+- Before a play, glance at the select screen: every hero should have a portrait and its ability icons. A letter instead
+  of a portrait means the client is running from a partial pack.
+
 ## Gradle
 - **`gradlew classes` doesn't compile the client source set.** It reported success on client code that didn't
   compile, three times. Check with `gradlew compileJava compileClientJava`, and `gradlew build` before a commit (it also
