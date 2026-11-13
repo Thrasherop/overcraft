@@ -61,6 +61,50 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 		}
 	}
 
+	/**
+	 * D.Va's own body in the MEKA model (FBB0): the pieces skinned to her skeleton, the subtree under bone_0887 (her torso:
+	 * Neck / Head, both arms and hands, hair; its parent chain bone_0886 / 0885 / Spine_2 is the mech's). Read from the model:
+	 * those are exactly the pieces drawn with the pilot model F2FF's materials (body 98C0, eyes 98D0, face 98C1, lids, hair
+	 * 98C3, 9FF8) plus her 9FF7 gloves (submesh 5), while the mech's own 9FF7 parts hang on mech bones. Nobody is in an unmanned
+	 * mech (the call's drop, the wreck, Self-Destruct), so they're left out there, where they showed a second pilot (#133).
+	 * The data's own rule wasn't found: the pet's model 11CE / look 14B0 hold her, no visibility node in 026A / 0276 / 0B2F
+	 * was read, and 311F scales none of her bones. Ours, by the skeleton.
+	 */
+	private static final java.util.Map<SkinnedModel, java.util.Set<SkinnedModel.Piece>> PILOT = new java.util.WeakHashMap<>();
+
+	private static java.util.Set<SkinnedModel.Piece> pilotPieces(SkinnedModel model) {
+		return PILOT.computeIfAbsent(model, m -> {
+			int root = m.node("bone_0887");
+			java.util.Set<SkinnedModel.Piece> out = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+			if (root < 0) {
+				return out;
+			}
+			boolean[] under = new boolean[m.nodeNames.length];
+			for (int k = 0; k < m.order.length; k++) {
+				int i = m.order[k];
+				under[i] = i == root || m.parent[i] >= 0 && under[m.parent[i]];
+			}
+			for (SkinnedModel.Piece piece : m.pieces) {
+				int ours = 0, n = piece.vertexCount();
+				for (int v = 0; v < n; v++) {
+					int best = 0;
+					for (int k = 1; k < 4; k++) {
+						if (piece.weight4()[v * 4 + k] > piece.weight4()[v * 4 + best]) {
+							best = k;
+						}
+					}
+					if (under[m.joints[piece.joint4()[v * 4 + best]]]) {
+						ours++;
+					}
+				}
+				if (n > 0 && ours * 2 > n) {
+					out.add(piece);
+				}
+			}
+			return out;
+		});
+	}
+
 	@Override
 	public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
 		HeroModels.Loaded loaded = state.loaded;
@@ -81,7 +125,7 @@ public class DvaMechRenderer extends EntityRenderer<DvaMechEntity, DvaMechRender
 			// the models face +Z, like the heroes'
 			poseStack.rotateDegrees(Axis.YP, -state.yRot);
 			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
-				java.util.Set.of(), true, false);
+				java.util.Set.of(), true, false, pilotPieces(model)::contains);
 			poseStack.popPose();
 		}
 		super.submit(state, poseStack, collector, camera);

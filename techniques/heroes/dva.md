@@ -516,6 +516,23 @@ tree (`dvaanim4`), one client, harness keys:
 | 4 | 0276 #175 STU_A90C5991 | - | **Not decided; our fade kept.** Its three uses: here (1 / 1 / 1, on the mech's spawn, before #176), Junkrat's RIP-Tire 0233 #343 (m_5C22817C 1 only, on the tire entity) and Steel Trap 09BB #577 (m_2B82763B 0.25, m_5C22817C 0, after an 8 s wait on the trap). A trap has no camera of its own, so a screen fade doesn't fit all three; an entity's own appear / fade (a dissolve over m_2B82763B s) fits them better (L). | - |
 | 5 | Small guards | - | `DvaCallView.camera`: a pose time in the future (a rejoin into a world whose clock is behind) is stale. **F1 not done:** the black is drawn in the HUD, so a hidden GUI hides it (open) | by reading |
 
+### The built-in pilot on the unmanned mech (2026-11-13)
+The coordinator's real-key pass on 0764843: the climb, gun and HUD right, but the dropping mech's open cockpit already held a pilot
+(the owner's "two pilots"). **The MEKA model FBB0 carries her body:** pieces skinned to the subtree under `bone_0887` (Neck / Head, both
+arms and hands, hair), the same pieces drawn with the pilot model F2FF's materials (98C0, 98D0, 98C1, 8226, 8210, 82FB, 98C3, 9FF8) plus her
+9FF7 gloves (submesh 5); the mech's own 9FF7 parts hang on mech bones. **Overwatch's rule for hiding them wasn't found:** the pet 0407's
+model 11CE / look 14B0 hold her, no visibility node was read in 026A / 0276 / 0B2F, and 311F scales none of her bones (only bone_05F0).
+So, ours by the skeleton: `DvaMechRenderer` leaves out the pieces mostly weighted to that subtree (`HeroModelRenderer.submitModel`'s new
+piece filter) on every unmanned mech (the call's drop, Self-Destruct, the wreck). The player's own mech, the select screen and the POTG
+card don't use that renderer: unchanged.
+
+Played (one client, harness keys; before on 0764843 `dvaanim5`, after `dvaanim6` / `dvaanim7`): the wreck 1.2 s after a bot's mech died:
+before a pilot figure in the cockpit (`crop_d2.png`), after, with the ejected bot moved 25 m off and the camera 2 m from it, an empty seat
+and controls (`f_wreck_close.png`); the call's drop and Self-Destruct from a bot (`sheet_f2.png`), nothing of her on them; her own linked
+mech from the front still shows her in it, and her hands in first person (`sheet_f_keep.png`). **Not shown:** the 1P drop at 0.15-0.25 s
+(the mech was above the view's top looking up at 55 deg, `sheet_f_up.png`); the select screen's MEKA (the harness click closed it) and
+the POTG card (not reached): unchanged by code only.
+
 **Still open:** the F1 black (above); the wall row was not seen on screen either way; whether 0276 #175 is an entity fade; real mouse
 and keys.
 
