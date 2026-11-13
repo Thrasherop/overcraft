@@ -28,15 +28,55 @@ class OwMathTest {
 
 	@Test
 	void jumpApexMatchesWiki() {
-		// simulate the jump tick by tick: apex should be the wiki's 0.98 m (within a tick's worth)
+		// simulate the jump tick by tick: the top is the recording's 0.98 m (WS 2026-11-11), its landing 0.67 s after
 		double vy = Ow.speed(OwMovement.JUMP_SPEED);
-		double y = 0;
-		while (vy > 0) {
+		double y = 0, top = 0;
+		int ticks = 0;
+		do {
 			double[] step = OwMovement.verticalStep(vy, false);
 			y += step[0];
 			vy = step[1];
+			top = Math.max(top, y);
+			ticks++;
+		} while (y > 0);
+		assertEquals(0.98, top, 0.01);
+		// back to the ground between ticks 13 and 14 (0.67 s), as the recording's 0.67
+		assertEquals(0.67, 2 * OwMovement.JUMP_SPEED / OwMovement.GRAVITY_UP, 0.005);
+		assertEquals(14, ticks);
+		// rising gravity is the recording's 17.5, as falling
+		assertEquals(17.5, OwMovement.gravity(1), 1e-9);
+	}
+
+	@Test
+	void groundStopIsTheRecordings() {
+		// WS 2026-11-11 (#130): 5.5 -> 0 at a flat 82.5 m/s² (1.32 a 0.016 s tick), 0.067 s and about 0.14 m
+		Vec3 v = new Vec3(5.5, 0, 0);
+		double travelled = 0;
+		int steps = 0;
+		while (v.length() > 0) {
+			v = OwMovement.groundStep(v, Vec3.ZERO, 1.0 / 60);
+			travelled += v.length() / 60;
+			steps++;
 		}
-		assertEquals(0.98, y, 0.03);
+		assertEquals(4, steps); // 0.067 s
+		assertEquals(0.14, travelled, 0.005);
+		// the first step is the same 82.5 m/s² as the last
+		assertEquals(5.5 - 82.5 / 60, OwMovement.groundStep(new Vec3(5.5, 0, 0), Vec3.ZERO, 1.0 / 60).x, 1e-9);
+		assertEquals(Math.max(0, 1.5 - 82.5 / 60), OwMovement.groundStep(new Vec3(1.5, 0, 0), Vec3.ZERO, 1.0 / 60).x, 1e-9);
+	}
+
+	@Test
+	void lucioLeapTopsAtTheRecordings() {
+		// tools/reference/lucio-wallride-log.md: looking level, 1.41 m above the launch
+		double vy = Ow.speed(dev.overcraft.lucio.LucioStats.WALL_JUMP_SPEED);
+		double y = 0, top = 0;
+		do {
+			double[] step = OwMovement.verticalStep(vy, false);
+			y += step[0];
+			vy = step[1];
+			top = Math.max(top, y);
+		} while (vy > 0);
+		assertEquals(1.41, top, 0.02);
 	}
 
 	@Test

@@ -336,6 +336,7 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.slideEnded = ClientSojourn::ended;
 		// Pharah's Hover Jets (and the push her jets turn on)
 		OwMovement.pharahHover = ClientPharah::hover;
+		OwMovement.pharahBarrage = ClientPharah::barrageFlight;
 		// Tracer's Recall holds her still while the server moves her
 		OwMovement.held = ClientTracer::held;
 		OwMovement.undamped = ClientMercy::undamped;

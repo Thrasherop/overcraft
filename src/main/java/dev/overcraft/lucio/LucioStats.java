@@ -79,9 +79,10 @@ public final class LucioStats {
 	 * The leap off (his wall-ride graph 0263, research\lucio\wallride-data.md): 6.9 m/s up, the graph's 1.15 times his
 	 * 6 m/s jump (the owner's Workshop recording, 2026-10-28, tools/reference/lucio-wallride-log.md: 6.90 at the launch
 	 * looking level, peaking 1.41 m above it), plus 2.5 m/s (game value 212A) along where he looks with forward held,
-	 * along the keys with another, along his motion with none.
+	 * along the keys with another, along his motion with none. Ours 7.02 in our 20 Hz steps: with rising gravity at the
+	 * recordings' 17.5 (#130) 6.9 tops at 1.36 m; 7.02 gives the recording's 1.41 (v²/2g, compare tops: WS 2026-11-11).
 	 */
-	public static final double WALL_JUMP_SPEED = 6.9;
+	public static final double WALL_JUMP_SPEED = 7.02;
 	public static final double WALL_LEAP_FORWARD = 2.5;
 	/**
 	 * How he rises on the wall (the recording, 151 rides): no gravity; for his first 0.3 s at least 2.72 m/s (arriving

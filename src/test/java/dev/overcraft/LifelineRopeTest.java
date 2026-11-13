@@ -34,7 +34,7 @@ class LifelineRopeTest {
 	@Test
 	void hangsPastItsLengthByGravityOverStiffness() {
 		Vec3[] end = fly(t -> Vec3.ZERO, Vec3.ZERO, HANG, Vec3.ZERO, 0, 12);
-		assertEquals(4 + 17.1 / 30, end[0].distanceTo(end[1]), 0.1); // gravity is 16.7 rising, 17.5 falling
+		assertEquals(4 + 17.1 / 30, end[0].distanceTo(end[1]), 0.1); // gravity is 17.5 rising and falling
 		assertEquals(0, end[2].length(), 0.3); // a bob of about 0.04 m: the two gravities
 	}
 

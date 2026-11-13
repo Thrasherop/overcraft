@@ -133,3 +133,34 @@ Findings: [critic_1](../testing/runs/pharah/critic_1.md); each reproduced on c84
   wouldn't cut a reload, though the code does: open, for a side by side.
 - Still owed: the real mouse and keys, a real Ana / Brigitte, a second player; every cooldown resets on a rejoin (shared, the owner's
   call).
+
+## Calibrated to the Workshop recording (2026-11-12, branch feature/calibration-1111)
+The owner's call (2026-11-12): "our game should match overwatch". Applied from [pharah_workshop_2026-11-11](pharah_workshop_2026-11-11.md)
+and, for every hero, issue #130. Played with the harness (`dev.py` keys, `trace` per tick, `state`), not a person's hands; fresh flat
+survival worlds; the old build (`next` 89289d2) then this one. Raw: the session scratchpad `calib/`.
+
+| Change | Recording | Old build (seen) | This build (seen) |
+|---|---|---|---|
+| Hover eases to `HOVER_RISE` 4.66 at `HOVER_EASE` 6 /s, never below gravity's step (`Pharah.hoverStep`); `HOVER_PUSH*` retired | settles at 4.66; dv/dt = 6 (4.66 - vy) | ground press: 4.89, 4.05, 3.21, then **2.90** held | 4.99, 4.11, 3.24, 2.36, then 2.96, 3.40, 3.72 ... **4.66** from 1.2 s; fuel out at 2.15 s |
+| Hover 0.2 s after a ground press, airborne or not; an air press at once (`ClientPharah.hover`) | 13 ticks (0.21 s) of gravity, then the ease | (the push only acted below 2.9) | 3 ticks of plain gravity after the jump tick (0.2 s), then the ease |
+| No lift from a jet without Jump (`JET_PUSH`, `JET_PUSH_EMPTY` retired) | Jump Jet falls at -17.5 to its end; Jet Dash apex 1.72 m | Jump Jet top **9.02 m**; Jet Dash top 3.27 m (2.90 held 9 ticks), **16.1 m** to landing | Jump Jet top **8.25 m** (OW from standing about 8.4: our 20 Hz steps, below); Jet Dash top **1.83 m**, **11.0 m** to landing (OW 10.2 m in 0.85 s) |
+| Jump Jet with Jump held | gravity exact above 4.66, then the ease | - | 17.00, 16.13 ... 7.38 (gravity), then 6.67, 6.15 ... 4.66 |
+| Jet Dash keeps 0.3 of her horizontal speed (`JET_DASH_KEEP`) | 20.65 from a 5.5 run | (by code: 19, the run dropped) | first tick's average 19.66 from a run against 18.12 standing (19 + 1.65) |
+| Barrage cast in the air: speed zeroed, no gravity, a 3D move at 4.40 (`OwMovement.pharahBarrage`, `BARRAGE_UP` / `_DOWN`) | vy -4.81 -> 0; W+Jump 4.15 / +1.4-1.5; W+Crouch -3.11 at 45 deg; Jump+Crouch level; 0 -> 4.4 in 0.29 s | cast falling at -10 m/s: fell on through it to the ground (gravity) | cast at -3.23: 0.00 at once, held still with no key; W+Jump 4.12 / +1.54; W+Crouch 3.11 / -3.11; all three level at 4.40; 0 -> 4.4 in 0.25-0.3 s |
+| Concussive's cooldown from cast + recovery (`ability2Cooldown` = 0.5 + 8 at the release) | 8.66 s press to ready | (by code: 8.15 s; not timed in game) | cooldown shows 8.50 at the release, ready 173 ticks (8.65 s) after the press |
+| Every hero: `STOP_SPEED` 4.5 -> 5.5, `GRAVITY_UP` 16.7 -> 17.5, `JUMP_SPEED` 5.72 -> 5.86 (`OwMovement`, #130) | stop 0.067 s / 0.14 m; jump top 0.98 m, 0.67 s; 17.5 up and down | stop: 3.00 then 0.25 m/s ticks, 0.1625 m; top 0.979 m, 13 ticks up; 16.7 rising | stop: 2.75 then 0, 0.1375 m; top 0.979 m, 13 ticks; first air tick 4.99 (5.86 - 17.5/20) |
+
+The #130 check, hero by hero (each picked by `hero <id>`, hero mode on, a tap of Jump standing, a 1 s run forward and release), the
+same on both builds for Kiriko, D.Va (mech), Mercy, Lifeweaver, Ana, Sombra, Brigitte, Juno, Sojourn, Pharah and Sigma as above.
+Tracer (6.0 run): stop 3.37 / 0.38 / 0 old, 3.13 / 0.12 / 0 now (0.1875 -> 0.1625 m; the floor stays 5.5, her run's start isn't
+recorded stopping). Lúcio (his own 5.5-floor mover) and Jetpack Cat (she flies off the ground) unchanged, as meant. Illari isn't
+selectable in this build. Lúcio's leap: `WALL_JUMP_SPEED` 6.9 -> 7.02 so it still tops at the recording's 1.41 m under 17.5 (unit
+test only, not played). Juno's 10.8 double jump now tops at 3.33 m against "about 3.4" (was 3.49): left.
+
+**Mind the tick convention:** our steps move by the average of the speeds before and after (exact for constant gravity), so a launch
+v tops at v²/2g; Overwatch's 62.5 Hz steps, showing the speed after gravity, top a touch higher (Jump Jet from standing about 8.4 m
+against our 8.25). Only the jump (`JUMP_SPEED`) and Lúcio's leap were retuned to the recorded tops; the jets keep the data's 17 / 8.
+
+**Left as they were (unmeasured):** the fuel refill (45 a second on the ground after 0.3 s: the recording fits 100/s or an air refill
+better, from one window: a recording is asked for in the analysis) and whether Concussive Blast cuts a reload (no ammo channel in the
+log). Not played: Barrage with Jump alone and no move key (the log hasn't it either), the empty-tank fall's ease, real mouse and keys.
