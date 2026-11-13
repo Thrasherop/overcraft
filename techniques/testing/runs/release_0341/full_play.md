@@ -56,3 +56,9 @@ effect and UI textures of seven heroes, which were in the old shared pack (`over
 came from that, not from her code. The packs were merged afterwards (`techniques/building/building.md`, "One local asset
 pack"). A recheck on the merged pack showed D.Va's model, every portrait and her ability icons on the select screen,
 and her controls and cannons in first person. The rest of this play's outcomes don't depend on assets.
+
+## Correction: crafting works (#131 closed)
+
+The owner crafted logs into planks with their own mouse, on this build in this world: no problem. The failed result
+clicks came from how computer-use's clicks reach a result slot (ordinary slots take them). The plain-Minecraft check
+passed with the owner's craft. Building and chests weren't replayed.

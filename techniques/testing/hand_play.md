@@ -275,6 +275,8 @@ pointer up, T let go): Ana ("Mother knows best"), Sombra ("Did you mean to do th
 wheel shows the four slots with it on top, and saying it plays it with its subtitle ("Ana: Mother knows best.":
 `sheet_b_vl_<hero>`).
 
+**Crafting results and computer-use (2026-11-13, #131):** in the 0.3.41 play, clicks from computer-use (left, right, shift, held, dragged) took nothing from a crafting result slot, in the inventory grid and at a crafting table, on 0.3.30 and 0.3.41, though they did reach ordinary slots. Q over the result crafted. The owner crafted by hand on the same build with no problem, so it was the input, not the game. In a real-input play, take results with Q (it crafts and drops them; walk over to pick them up), or ask the owner for a hand craft. Don't file it as a bug again.
+
 **Minecraft-mode survival (`rel329bn`, Lucio from the select screen, G to Minecraft mode, an empty inventory):** a
 first try aimed at a trunk below the hill she stood on dug two dirt blocks out from under her and she fell 11 blocks
 into the hole (aim, not a bug); out again. Punched two spruce trunks (3 logs each, 4-6 s a log by the harness's polled
